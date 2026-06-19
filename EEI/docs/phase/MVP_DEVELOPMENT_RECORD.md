@@ -1014,7 +1014,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G4 T401 Exploration session and URL state
 
-Status: LOCAL CONTRACT PASS; remote PostgreSQL CI pending
+Status: PASS
 
 Completed:
 
@@ -1031,6 +1031,10 @@ Verification evidence:
 - Local `make verify`: PASS.
 - Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
 - Local `git diff --check`: PASS.
+- GitHub Actions run `27837609322`: PASS.
+- GitHub Actions job `82389170752`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -1039,5 +1043,5 @@ Acceptance status:
 
 Residual risks:
 
-- Remote CI must still prove the new migration and integration assertions against PostgreSQL.
+- GitHub Actions run `27837609322` proved the new migration and integration assertions against PostgreSQL.
 - T404 still owns breadcrumb/browser-history synchronization for reroot flows; T401 only closes canonical session and URL state serialization/restoration.

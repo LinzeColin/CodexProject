@@ -25,7 +25,7 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - Latest GitHub implementation commit proven by CI:
-  - `1125340` fix: stabilize EEI saved view restore
+  - `e8d131c` feat: persist EEI exploration URL state
 
 ## Completed
 
@@ -73,7 +73,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed T400 with A041-A044 by GitHub Actions run `27836910412`; job `82386959577` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
 - Fixed a saved-view restore hydration race exposed by GitHub Actions run `27836653255`: `restoreSavedView()` now reads the latest persisted saved-view payload from `localStorage` before applying workspace state.
 - Added T401 exploration session and URL state contract with migration `0002_exploration_state`, persisted direction/hops/budget, response `state.url_state`, restore payload, and A051 integration assertions.
-- Marked T401 and A051 as `DONE` locally; remote PostgreSQL CI is pending for this G4 batch.
+- Completed T401 with A051 by GitHub Actions run `27837609322`; job `82389170752` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
 
 ## Verification Evidence
 
@@ -169,6 +169,9 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `make verify` passed after T401 session/url state.
 - 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T401 because this host has no configured PostgreSQL.
 - 2026-06-19 update: local `git diff --check` passed after T401.
+- 2026-06-19 update: GitHub Actions run `27837609322` passed; job `82389170752` proved T401 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 
 Remote verification:
 
@@ -231,6 +234,8 @@ Remote verification:
 - GitHub Actions job `82386126081`: FAIL.
 - GitHub Actions run `27836910412`: PASS.
 - GitHub Actions job `82386959577`: PASS.
+- GitHub Actions run `27837609322`: PASS.
+- GitHub Actions job `82389170752`: PASS.
 
 ## Not Completed
 
@@ -253,7 +258,7 @@ Remote verification:
 - G3 is `PASS`.
 - T1205 / A173 / A174 are DONE and remote CI passed.
 - T400 / A041-A044 are DONE and remote CI passed.
-- T401 / A051 are locally DONE; remote PostgreSQL CI pending.
+- T401 / A051 are DONE and remote CI passed.
 - G4 remains open because recursive exploration, live context, accessible list/table equivalents, model preview propagation, and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -261,7 +266,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Push T401 and prove it in GitHub Actions PostgreSQL CI.
-2. Select the next minimal G4 task slice from T402-T409/T1114-T1117/T1207.
+1. Select the next minimal G4 task slice from T402-T409/T1114-T1117/T1207.
+2. Keep T400/T401 graph budget and URL-state contracts stable while adding reroot, expand, and path behavior.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3 state/history contracts while adding recursive exploration and governance views.
