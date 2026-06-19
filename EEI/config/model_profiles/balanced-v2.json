@@ -1,0 +1,99 @@
+{
+  "schema_version": "2.0",
+  "profile_key": "balanced-v2",
+  "name": "Balanced / 综合研究",
+  "description": "默认通用研究配置。用于排序和视觉聚焦，不代表投资收益概率。",
+  "model_version": "business-empire-model-v2",
+  "version": 2,
+  "weights": {
+    "supply_chain_criticality": 0.24,
+    "strategic_dependency": 0.18,
+    "capital_momentum": 0.14,
+    "control_influence": 0.12,
+    "policy_exposure": 0.1,
+    "technology_dependency": 0.08,
+    "strategic_signal": 0.08,
+    "time_relevance": 0.06
+  },
+  "quality_adjustment": {
+    "floor": 0.45,
+    "evidence_weight": 0.55
+  },
+  "coverage_adjustment": {
+    "floor": 0.65,
+    "coverage_weight": 0.35
+  },
+  "missing_value_policy": "renormalize_available",
+  "component_weights": {
+    "supply_chain_criticality": {
+      "bottleneck": 0.22,
+      "inverse_substitutability": 0.18,
+      "concentration": 0.16,
+      "lead_time_risk": 0.12,
+      "capacity_scarcity": 0.12,
+      "geographic_risk": 0.08,
+      "operational_materiality": 0.12
+    },
+    "strategic_dependency": {
+      "revenue_or_volume_exposure": 0.22,
+      "switching_cost": 0.18,
+      "technical_uniqueness": 0.16,
+      "exclusivity": 0.1,
+      "contract_duration": 0.1,
+      "counterparty_concentration": 0.12,
+      "operational_coupling": 0.12
+    },
+    "capital_momentum": {
+      "capex_signal": 0.24,
+      "investment_and_mna": 0.2,
+      "contract_commitment": 0.18,
+      "financing_activity": 0.14,
+      "capacity_expansion": 0.1,
+      "event_acceleration": 0.08,
+      "source_diversity": 0.06
+    },
+    "control_influence": {
+      "voting_control": 0.3,
+      "economic_interest": 0.2,
+      "board_appointment_power": 0.18,
+      "veto_or_special_rights": 0.12,
+      "control_chain_strength": 0.12,
+      "governance_persistence": 0.08
+    },
+    "policy_exposure": {
+      "government_contract_or_grant": 0.2,
+      "regulatory_intensity": 0.18,
+      "export_trade_restriction": 0.18,
+      "industrial_policy_dependency": 0.14,
+      "jurisdiction_concentration": 0.1,
+      "lobbying_activity": 0.08,
+      "litigation_or_approval_risk": 0.12
+    },
+    "technology_dependency": {
+      "ip_uniqueness": 0.22,
+      "software_platform_lockin": 0.2,
+      "data_dependency": 0.16,
+      "interoperability_cost": 0.14,
+      "standards_influence": 0.1,
+      "talent_concentration": 0.08,
+      "cyber_or_operational_risk": 0.1
+    },
+    "strategic_signal": {
+      "capex_acceleration": 0.28,
+      "investment_and_mna": 0.2,
+      "capacity_and_long_contracts": 0.18,
+      "talent_and_hiring": 0.14,
+      "patent_product_signal": 0.1,
+      "policy_alignment": 0.1
+    }
+  },
+  "half_life_days": {
+    "control_change": 730,
+    "mna": 730,
+    "long_term_supply": 540,
+    "capex_financing": 365,
+    "policy_regulatory": 270,
+    "product_partnership": 180,
+    "news_lead": 90
+  }
+}

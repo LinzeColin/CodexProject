@@ -1,0 +1,27 @@
+name: 关系或供应链范围变更
+description: 新增/修改关系类型、上下游角色、供应链阶段、行业、板块、公司、业务或资本对象
+title: "[Domain] "
+labels: ["data-model", "research-scope"]
+body:
+  - type: dropdown
+    id: catalog
+    attributes:
+      label: 目录类型
+      options: [关系家族, 关系类型, 上下游角色, 供应链阶段, 行业, 板块, 公司, 业务板块, 资本对象, 领域对象]
+    validations: {required: true}
+  - type: input
+    id: identifier
+    attributes: {label: 稳定 ID}
+    validations: {required: true}
+  - type: textarea
+    id: definition
+    attributes: {label: 定义、方向、时间、金额/比例与证据门槛}
+    validations: {required: true}
+  - type: textarea
+    id: migration
+    attributes: {label: 兼容、迁移、弃用和回滚}
+    validations: {required: true}
+  - type: textarea
+    id: trace
+    attributes: {label: 任务、验收、风险与测试}
+    validations: {required: true}

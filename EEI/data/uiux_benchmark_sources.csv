@@ -1,0 +1,30 @@
+﻿source_id,publisher,pattern,product_decision,official_url,accessed_date
+UX001,Nielsen Norman Group,10 usability heuristics,状态可见；使用用户语言；提供撤销与返回；降低记忆负担,https://www.nngroup.com/articles/ten-usability-heuristics/,2026-06-19
+UX002,Nielsen Norman Group,Complex-application heuristics,复杂研究工具仍须保持可预测反馈与真实世界语言,https://www.nngroup.com/articles/usability-heuristics-complex-applications/,2026-06-19
+UX003,W3C WCAG 2.2,Target Size Minimum,主要控件至少 24x24 CSS px；密集图提供等价操作,https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html,2026-06-19
+UX004,W3C WCAG 2.2,Focus Appearance,键盘焦点清晰可见且不被面板遮挡,https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html,2026-06-19
+UX005,W3C WCAG 2.2,Non-text Contrast,节点边焦点和状态线索满足非文本对比要求,https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html,2026-06-19
+UX006,W3C WCAG 2.2,Non-text Content,关系图提供等价文本或表格视图,https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html,2026-06-19
+UX007,IBM Carbon Design System,UI shell left panel,固定左侧导航承载频繁切换的二级入口,https://carbondesignsystem.com/components/UI-shell-left-panel/usage/,2026-06-19
+UX008,IBM Carbon Design System,UI shell header,顶部保留全局搜索定位状态和常用动作,https://carbondesignsystem.com/components/UI-shell-header/usage/,2026-06-19
+UX009,Microsoft,UI content guidance,动作标签简洁具体且以动词表达；建立一致术语表,https://learn.microsoft.com/en-us/power-platform/well-architected/experience-optimization/user-interface-content,2026-06-19
+UX010,Microsoft,Button text guidance,按钮文案应明确说明操作结果而不是使用泛化提交词,https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/buttons,2026-06-19
+UX011,Figma,Left sidebar and canvas pattern,左栏对象上下文加中央画布形成稳定空间模型,https://help.figma.com/hc/en-us/articles/360039831974-View-layers-and-pages-in-the-left-sidebar,2026-06-19
+UX012,Figma,Right properties panel,选中画布对象后在右侧展示上下文详情,https://help.figma.com/hc/en-us/articles/360039832014-Design-prototype-and-explore-layer-properties-in-the-right-sidebar,2026-06-19
+UX013,TradingView,Watchlists,Watchlist 作为持续研究和快速切换入口,https://www.tradingview.com/support/solutions/43000745825-mastering-the-tradingview-watchlists/,2026-06-19
+UX014,TradingView,Screeners,发现结果可进入关注与后续分析而非停留在卡片目录,https://www.tradingview.com/support/solutions/43000718885-tradingview-screeners-walkthrough/,2026-06-19
+UX015,Neo4j,Bloom scene interactions,选择节点后检查关系并按方向逐步展开局部邻居,https://neo4j.com/docs/bloom-user-guide/current/bloom-visual-tour/bloom-scene-interactions/,2026-06-19
+UX016,Neo4j,Bloom actions and shortcuts,提供选择适配展开揭示和键盘快捷操作,https://neo4j.com/docs/bloom-user-guide/current/bloom-appendix/bloom-appendix/,2026-06-19
+UX017,Kumu,View editors and controls,使用 focus filter clustering 等交互控制改变当前地图而非跳页,https://docs.kumu.io/overview/user-interfaces/view-editors,2026-06-19
+UX018,Kumu,System mapping,关系对象可附加背景叙述并逐步展开复杂系统,https://docs.kumu.io/disciplines/system-mapping,2026-06-19
+UX019,Cytoscape.js,Large-graph layouts,避免全局 hairball；按主体筛选相关子图并动态导航,https://blog.js.cytoscape.org/2020/05/11/layouts/,2026-06-19
+UX020,Sigma.js,Node and edge reducers,切换分析镜头时动态弱化或强调元素且不修改底层图数据,https://www.sigmajs.org/docs/advanced/data/,2026-06-19
+UX021,Palantir Foundry,Object Explorer,搜索对象后以可配置可视化表格与对象详情进行钻取并保存探索,https://palantir.com/docs/foundry/object-explorer/overview/,2026-06-19
+UX022,Palantir Foundry,Object Views,每个对象具有一致可复用的属性关系和关联应用详情入口,https://palantir.com/docs/foundry/object-views/overview/,2026-06-19
+UX023,Cambridge Intelligence,Graph visualization UX,用布局层级视角切换与可访问交互把复杂网络转为可理解调查体验,https://cambridge-intelligence.com/blog/designing-intuitive-data-experiences-with-graph-visualizations/,2026-06-19
+UX024,Shneiderman,Overview zoom filter details,先总览再缩放过滤最后按需查看细节,https://www.cs.umd.edu/~ben/papers/Shneiderman1996eyes.pdf,2026-06-19
+UX025,Material Design 3,Motion system,使用一致 motion token、自然反馈与 reduced motion,https://m3.material.io/styles/motion/overview/how-it-works,2026-06-19
+UX026,Apple Human Interface Guidelines,Motion,动画用于状态、反馈和层级，不做无意义装饰,https://developer.apple.com/design/human-interface-guidelines/motion,2026-06-19
+UX027,GitHub Docs,Issue forms,用结构化 Issue 收集功能、模型和数据变更信息,https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms,2026-06-19
+UX028,GitHub Docs,CODEOWNERS and PR review,目录所有者自动进入审查流程,https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners,2026-06-19
+UX029,GitHub Docs,Workflow path filters,目录变化触发治理一致性校验,https://docs.github.com/actions/using-workflows/workflow-syntax-for-github-actions,2026-06-19

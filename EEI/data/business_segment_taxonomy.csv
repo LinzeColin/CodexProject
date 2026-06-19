@@ -1,0 +1,21 @@
+﻿segment_id,parent_category,name_zh,slug,definition,legal_entity_required,default_visualization
+SEG-001,corporate,集团控股层,holding_group,集团顶层控制和资本配置,no,tree+matrix
+SEG-002,corporate,核心经营公司,core_operating_company,承担主要经营活动的法律实体,no,tree+matrix
+SEG-003,corporate,区域公司,regional_entity,按国家或地区设立的经营实体,no,tree+matrix
+SEG-004,corporate,合资/联盟,joint_venture_alliance,共同控制或长期协作结构,no,tree+matrix
+SEG-005,business,平台业务,platform_business,通过平台、生态和分发形成网络效应,no,tree+matrix
+SEG-006,business,硬件业务,hardware_business,芯片、终端、设备、系统等,no,tree+matrix
+SEG-007,business,软件业务,software_business,许可、订阅、基础软件、企业软件,no,tree+matrix
+SEG-008,business,云与基础设施,cloud_infrastructure,云服务、数据中心、网络、算力,no,tree+matrix
+SEG-009,business,服务业务,services_business,专业服务、维护、广告、金融等,no,tree+matrix
+SEG-010,business,研发与知识产权,research_ip,研发组织、专利、IP 授权,no,tree+matrix
+SEG-011,product,产品家族,product_family,相互关联的产品组合,no,tree+matrix
+SEG-012,product,解决方案,solution_group,面向行业或场景的组合方案,no,tree+matrix
+SEG-013,operations,制造,manufacturing,内部或外包生产活动,no,tree+matrix
+SEG-014,operations,供应与采购,procurement_supply,采购、供应商管理、长期供应,no,tree+matrix
+SEG-015,operations,物流与履约,logistics_fulfillment,仓储、配送、售后和履约,no,tree+matrix
+SEG-016,asset,数据中心与算力,data_center_compute,计算、存储、网络、冷却和电力资产,no,tree+matrix
+SEG-017,asset,能源与公用设施,energy_utilities,发电、电网、燃料、储能和水,no,tree+matrix
+SEG-018,market,客户行业组,customer_vertical,按客户行业聚合的市场板块,no,tree+matrix
+SEG-019,market,地区市场,geographic_market,按地区管理的市场板块,no,tree+matrix
+SEG-020,finance,资本配置组合,capital_allocation_portfolio,投资、并购、回购、债务与资本开支组合,no,tree+matrix

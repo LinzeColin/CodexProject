@@ -1,0 +1,14 @@
+changelog:
+  categories:
+    - title: 功能
+      labels: [feature]
+    - title: 数据与关系
+      labels: [data-quality]
+    - title: 模型
+      labels: [model-change]
+    - title: UI/UX
+      labels: [ux]
+    - title: 修复
+      labels: [bug]
+    - title: 其他
+      labels: ['*']

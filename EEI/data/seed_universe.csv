@@ -1,0 +1,31 @@
+﻿entity_key,canonical_name,entity_type,research_tier,cik,ticker,jurisdiction,status,primary_system,verification_status,notes
+alphabet,Alphabet Inc.,legal_entity,P0,0001652044,GOOGL/GOOG,US-DE,active,数字平台 / 云 / AI,needs_source_verification,母子公司与品牌分离；Google/Cloud/YouTube/Waymo；AI资本开支、并购、监管与数据依赖
+microsoft,Microsoft Corporation,legal_entity,P0,0000789019,MSFT,US-WA,active,云 / 企业软件 / AI,needs_source_verification,Azure、OpenAI经济与治理关系、AI基础设施资本开支、企业分发渠道与监管
+amazon,"Amazon.com, Inc.",legal_entity,P0,0001018724,AMZN,US-DE,active,云 / 电商 / 物流 / AI,needs_source_verification,AWS、Anthropic关系、物流网络、数据中心资本开支、供应链与政府合同
+meta,"Meta Platforms, Inc.",legal_entity,P0,0001326801,META,US-DE,active,社交平台 / 广告 / AI,needs_source_verification,创始人投票控制、平台矩阵、AI基础设施、战略投资、广告与监管
+apple,Apple Inc.,legal_entity,P0,0000320193,AAPL,US-CA,active,终端 / 平台 / 服务,needs_source_verification,全球供应链、服务收入、回购、AI合作、应用分发权力与监管
+nvidia,NVIDIA Corporation,legal_entity,P0,0001045810,NVDA,US-DE,active,AI计算 / 半导体,needs_source_verification,GPU生态、客户与代工依赖、战略投资、网络设备、资本回报与平台控制
+openai_group,OpenAI Group PBC,legal_entity,P0,,,US-DE,active,基础模型 / AI平台,needs_source_verification,与OpenAI Foundation分离建模；股东、算力、云、商业分发、治理权和融资事件
+anthropic,Anthropic PBC,legal_entity,P0,,,,needs_verification,基础模型 / AI平台,needs_source_verification,Long-Term Benefit Trust、Amazon/Google等资本与云关系、算力承诺、融资与治理
+spacex,Space Exploration Technologies Corp. (SpaceX),legal_entity,P0,,,,needs_verification,航天 / 卫星 / AI集团,needs_source_verification,SpaceX—xAI—X链条、Starlink、政府合同、双重股权、债务、资本开支与并购
+xai,X.AI Holdings Corp. / xAI operating entities,legal_entity,P0,,,,needs_verification,基础模型 / 社交数据 / AI基础设施,needs_source_verification,与SpaceX及X Holdings的有效日期关系、Colossus算力、融资、数据与产品分发
+x_corp,X Holdings Corp. / X Corp.,legal_entity,P0,,,,needs_verification,社交平台 / 数据分发,needs_source_verification,债务、平台现金流、广告、数据授权、xAI集成、治理与关联交易
+tesla,"Tesla, Inc.",legal_entity,P0,0001318605,TSLA,US-TX,active,汽车 / 能源 / AI / 机器人,needs_source_verification,创始人生态、关联方、AI与机器人资本开支、能源业务、供应链和交叉投资
+oracle,Oracle Corporation,legal_entity,P0,0001341439,ORCL,US-DE,active,数据库 / 云 / AI基础设施,needs_source_verification,OCI数据中心、AI客户与伙伴、债务融资、收购整合、能源与芯片依赖
+broadcom,Broadcom Inc.,legal_entity,P0,0001730168,AVGO,US-DE,active,半导体 / 基础设施软件,needs_source_verification,VMware整合、AI网络、客户集中度、债务、并购和平台议价权
+amd,"Advanced Micro Devices, Inc.",legal_entity,P0,,,,needs_verification,CPU / GPU / AI计算,needs_source_verification,AI加速器、代工和封装依赖、客户结构、收购与战略投资
+intel,Intel Corporation,legal_entity,P0,,,,needs_verification,半导体 / 晶圆代工,needs_source_verification,Foundry资本开支、政府补助、制造节点、资产重组、客户与供应链
+coreweave,"CoreWeave, Inc.",legal_entity,P0,0001769628,CRWV,US-DE,active,GPU云 / AI基础设施,needs_source_verification,客户集中、GPU担保与债务、数据中心租约、电力承诺、供应商依赖
+palantir,Palantir Technologies Inc.,legal_entity,P0,0001321655,PLTR,US-DE,active,数据软件 / 国防AI,needs_source_verification,政府合同、商业扩张、创始人控制、合作网络与政策影响
+blackrock,"BlackRock, Inc.",legal_entity,P0,,,,needs_verification,资产管理 / 基础设施资本,needs_source_verification,管理人、基金和受益所有权分离；13F/N-PORT/Form ADV、投票权与私募资产
+vanguard,"The Vanguard Group, Inc.",legal_entity,P0,,,,needs_verification,资产管理,needs_source_verification,基金持股与管理人权力分离；共同持股、代理投票、产品流量与治理影响
+state_street,State Street Corporation,legal_entity,P0,,,,needs_verification,托管 / 资产管理 / 银行,needs_source_verification,State Street Global Advisors、托管资产、基金持股、投票与银行体系关系
+berkshire,Berkshire Hathaway Inc.,legal_entity,P0,,,,needs_verification,多元化控股 / 保险 / 投资,needs_source_verification,运营子公司与证券投资组合分离；保险浮存金、资本配置、能源和铁路
+jpmorgan,JPMorgan Chase & Co.,legal_entity,P0,,,,needs_verification,银行 / 投行 / 资产管理,needs_source_verification,贷款、承销、M&A顾问、托管、资产管理、交易对手与集团结构
+goldman_sachs,"The Goldman Sachs Group, Inc.",legal_entity,P0,,,,needs_verification,投行 / 资管 / 私募资本,needs_source_verification,融资、承销、顾问、私募基金、交易对手、董事网络与战略投资
+morgan_stanley,Morgan Stanley,legal_entity,P0,,,,needs_verification,投行 / 财富管理 / 资管,needs_source_verification,资本市场中介、财富管理资金、13F、承销和重大企业关系
+blackstone,Blackstone Inc.,legal_entity,P0,,,,needs_verification,私募股权 / 信贷 / 基础设施,needs_source_verification,GP—基金—SPV—被投企业分层；数据中心、能源、地产和信贷关系
+apollo,"Apollo Global Management, Inc.",legal_entity,P0,,,,needs_verification,私募股权 / 私募信贷 / 保险,needs_source_verification,Apollo—Athene体系、私募信贷、保险资金、基础设施和企业融资
+lockheed_martin,Lockheed Martin Corporation,legal_entity,P0,,,,needs_verification,国防 / 航空航天,needs_source_verification,政府合同、项目依赖、分包商网络、游说、技术投资与供应链
+constellation_energy,Constellation Energy Corporation,legal_entity,P0,,,,needs_verification,核电 / 电力供应,needs_source_verification,数据中心电力协议、核电资产、并购、监管与AI电力需求信号
+nextera_energy,"NextEra Energy, Inc.",legal_entity,P0,,,,needs_verification,公用事业 / 可再生能源,needs_source_verification,公用事业与开发平台分离、电网和数据中心需求、资本开支、融资与监管

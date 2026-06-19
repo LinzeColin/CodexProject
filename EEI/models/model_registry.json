@@ -1,0 +1,112 @@
+[
+  {
+    "model_id": "MOD-001",
+    "name_zh": "综合研究优先级",
+    "slug": "node_priority",
+    "formula_id": "F-NP-001",
+    "scoring_object": "node",
+    "primary_outputs": "节点大小、排序、路径、Watchlist",
+    "configuration_file": "config/model_profiles/balanced-v2.json",
+    "status": "active"
+  },
+  {
+    "model_id": "MOD-002",
+    "name_zh": "证据质量",
+    "slug": "evidence_quality",
+    "formula_id": "F-EQ-001",
+    "scoring_object": "evidence",
+    "primary_outputs": "证据等级、发布门槛、解释",
+    "configuration_file": "config/model_runtime_defaults.yaml",
+    "status": "active"
+  },
+  {
+    "model_id": "MOD-003",
+    "name_zh": "时间相关性",
+    "slug": "recency_factor",
+    "formula_id": "F-RF-001",
+    "scoring_object": "fact_event",
+    "primary_outputs": "所有时间衰减",
+    "configuration_file": "config/model_runtime_defaults.yaml",
+    "status": "active"
+  },
+  {
+    "model_id": "MOD-004",
+    "name_zh": "关系重要性",
+    "slug": "edge_materiality",
+    "formula_id": "F-EM-001",
+    "scoring_object": "relationship",
+    "primary_outputs": "边显示、宽度、Top-N",
+    "configuration_file": "config/model_runtime_defaults.yaml",
+    "status": "active"
+  },
+  {
+    "model_id": "MOD-005",
+    "name_zh": "供应链关键性",
+    "slug": "supply_chain_criticality",
+    "formula_id": "F-SC-001",
+    "scoring_object": "relationship_path",
+    "primary_outputs": "瓶颈、替代性、关键路径",
+    "configuration_file": "config/model_runtime_defaults.yaml",
+    "status": "active"
+  },
+  {
+    "model_id": "MOD-006",
+    "name_zh": "控制影响",
+    "slug": "control_influence",
+    "formula_id": "F-CI-001",
+    "scoring_object": "entity_relationship",
+    "primary_outputs": "所有权与控制视图",
+    "configuration_file": "config/model_runtime_defaults.yaml",
+    "status": "active"
+  },
+  {
+    "model_id": "MOD-007",
+    "name_zh": "资本动量",
+    "slug": "capital_momentum",
+    "formula_id": "F-CM-001",
+    "scoring_object": "entity_period",
+    "primary_outputs": "资金与并购视图",
+    "configuration_file": "config/model_runtime_defaults.yaml",
+    "status": "active"
+  },
+  {
+    "model_id": "MOD-008",
+    "name_zh": "政策暴露",
+    "slug": "policy_exposure",
+    "formula_id": "F-PE-001",
+    "scoring_object": "entity_jurisdiction",
+    "primary_outputs": "政策雷达和风险",
+    "configuration_file": "config/model_runtime_defaults.yaml",
+    "status": "active"
+  },
+  {
+    "model_id": "MOD-009",
+    "name_zh": "战略信号",
+    "slug": "strategic_signal",
+    "formula_id": "F-SS-001",
+    "scoring_object": "entity_theme_period",
+    "primary_outputs": "战略主题和反证",
+    "configuration_file": "config/model_runtime_defaults.yaml",
+    "status": "active"
+  },
+  {
+    "model_id": "MOD-010",
+    "name_zh": "变化告警",
+    "slug": "alert_score",
+    "formula_id": "F-AS-001",
+    "scoring_object": "change_event",
+    "primary_outputs": "变化优先级和 Watchlist 告警",
+    "configuration_file": "config/model_runtime_defaults.yaml",
+    "status": "active"
+  },
+  {
+    "model_id": "MOD-011",
+    "name_zh": "依赖风险",
+    "slug": "dependency_risk",
+    "formula_id": "F-DR-001",
+    "scoring_object": "entity_path",
+    "primary_outputs": "跨关系族依赖风险",
+    "configuration_file": "config/model_runtime_defaults.yaml",
+    "status": "planned"
+  }
+]

@@ -1,0 +1,53 @@
+relationship_type,family,direction,amount_allowed,percentage_allowed,definition
+legal_parent,corporate_structure,directed,false,true,Subject is the direct legal or accounting parent of object for a stated period.
+subsidiary_of,corporate_structure,directed,false,true,Subject is a direct subsidiary of object for a stated period.
+segment_of,corporate_structure,directed,false,false,Subject business segment belongs to object entity.
+brand_of,corporate_structure,directed,false,false,Subject brand is operated by or mapped to object legal entity.
+product_of,corporate_structure,directed,false,false,Subject product or platform is operated by object entity.
+operates_facility,corporate_structure,directed,false,false,Subject operates object facility.
+owns_facility,corporate_structure,directed,false,true,Subject owns object facility or asset.
+beneficial_owner,ownership_control,directed,false,true,Subject reports beneficial ownership or control in object.
+institutional_holding,ownership_control,directed,true,true,Institution reports a holding for a stated report period.
+voting_control,ownership_control,directed,false,true,Subject controls specified voting rights in object.
+board_control,ownership_control,directed,false,false,Subject has documented board appointment or decision rights over object.
+veto_right,ownership_control,directed,false,false,Subject has documented veto or special governance rights.
+joint_venture_control,ownership_control,bidirectional,true,true,Subjects share documented control or ownership of a venture.
+supplier_to,supply_chain_operations,directed,true,false,Subject supplies material goods or services to object.
+wafer_foundry_for,supply_chain_operations,directed,true,false,Subject manufactures wafers or chips for object.
+packages_tests_for,supply_chain_operations,directed,true,false,Subject packages or tests products for object.
+equipment_provider_to,supply_chain_operations,directed,true,false,Subject provides production or infrastructure equipment to object.
+material_provider_to,supply_chain_operations,directed,true,false,Subject provides critical materials or chemicals to object.
+energy_provider_to,supply_chain_operations,directed,true,false,Subject provides electricity fuel or energy capacity to object.
+logistics_provider_to,supply_chain_operations,directed,true,false,Subject provides logistics or freight services to object.
+system_integrator_for,supply_chain_operations,directed,true,false,Subject integrates systems or finished equipment for object.
+distributor_for,supply_chain_operations,directed,true,false,Subject distributes products or services for object.
+customer_of,supply_chain_operations,directed,true,false,Subject is a documented customer of object.
+capacity_commitment,supply_chain_operations,directed,true,false,Subject commits to buy or provide specified capacity.
+invested_in,capital_financing,directed,true,true,Subject invested capital in object.
+lender_to,capital_financing,directed,true,false,Subject provided debt or credit to object.
+financed_by,capital_financing,directed,true,false,Subject received financing from object.
+underwrites_for,capital_financing,directed,true,false,Subject underwrites securities or financing for object.
+guarantees_obligation_of,capital_financing,directed,true,false,Subject guarantees an obligation of object.
+capital_commitment,capital_financing,directed,true,false,Subject made a capital commitment; distinguish commitment from deployed cash.
+acquired,mergers_acquisitions,directed,true,true,Subject acquired object; announced signed approved and effective dates must be distinguished.
+merged_with,mergers_acquisitions,bidirectional,true,true,Subjects merged under a documented transaction.
+divested,mergers_acquisitions,directed,true,true,Subject sold or divested object or an asset.
+spun_off,mergers_acquisitions,directed,true,true,Subject separated object through a spin-off.
+director_of,governance_people,directed,false,false,Person serves as director during an effective period.
+executive_of,governance_people,directed,false,false,Person serves as executive during an effective period.
+founder_of,governance_people,directed,false,false,Person is a documented founder; not equivalent to current control.
+interlocking_directorate,governance_people,bidirectional,false,false,Entities share one or more directors during an overlapping period.
+cloud_provider_to,commercial_dependency,directed,true,false,Subject provides cloud services or capacity to object.
+compute_provider_to,commercial_dependency,directed,true,false,Subject provides compute infrastructure or capacity to object.
+strategic_partner,commercial_dependency,bidirectional,true,false,Subjects have an official strategic partnership.
+licenses_ip_to,technology_data_ip,directed,true,false,Subject licenses intellectual property to object.
+provides_data_to,technology_data_ip,directed,true,false,Subject provides documented data access or data services to object.
+depends_on_standard,technology_data_ip,directed,false,false,Subject depends on a documented technical standard controlled or maintained by object.
+integrates_with,technology_data_ip,bidirectional,true,false,Products or platforms have a documented technical integration.
+government_award_to,government_policy,directed,true,false,Government body awards a contract grant loan or incentive to object.
+lobbies_on,government_policy,directed,true,false,Subject reports lobbying on a topic or government body.
+regulated_by,government_policy,directed,false,false,Subject is regulated or subject to action by object.
+export_restricted_by,government_policy,directed,false,false,Subject product or operation is affected by an export or trade restriction from object.
+signals_theme,strategic_signal,directed,true,false,Entity event or facility supports a theme under a versioned rule.
+counter_signal_to_theme,strategic_signal,directed,true,false,Entity event or fact contradicts a theme hypothesis.
+competes_in_theme,strategic_signal,bidirectional,false,false,Entities compete in a defined theme and time window.

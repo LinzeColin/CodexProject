@@ -1,0 +1,51 @@
+{
+  "schema_version": "2.0",
+  "threshold_profile_key": "default-v2",
+  "version": 2,
+  "evidence": {
+    "publish_min_evidence_count": 1,
+    "inferred_min_independent_sources": 2,
+    "minimum_evidence_quality": 55,
+    "minimum_entity_resolution_confidence": 0.88,
+    "conflict_penalty": 12,
+    "unknown_coverage_warning_below": 65
+  },
+  "graph": {
+    "minimum_adjusted_priority": 46,
+    "minimum_edge_materiality": 48,
+    "home_max_nodes": 42,
+    "home_max_edges": 64,
+    "expand_batch_size": 12,
+    "aggregate_same_type_after": 6,
+    "label_priority_threshold": 62,
+    "max_hops_interactive": 2,
+    "max_path_length": 8,
+    "fade_unselected_opacity": 0.16
+  },
+  "alerts": {
+    "high_priority": 80,
+    "material_score_delta": 8,
+    "new_relation_min_quality": 70,
+    "capital_event_usd": 100000000,
+    "policy_impact": 65,
+    "watchlist_relevance": 55
+  },
+  "refresh": {
+    "preview_debounce_ms": 120,
+    "preview_p95_ms": 250,
+    "session_apply_p95_ms": 700,
+    "small_scope_activate_p95_ms": 5000,
+    "sse_visible_p95_ms": 1500
+  },
+  "visual": {
+    "home_visual_surface_ratio": 0.9,
+    "system_visual_first_coverage": 0.8,
+    "home_text_max_lines": 3,
+    "primary_pointer_target_px": 40,
+    "minimum_pointer_target_px": 24
+  },
+  "calibration": {
+    "cadence_days": 14,
+    "auto_activate": false
+  }
+}

@@ -1,0 +1,40 @@
+name: 功能变更
+about: 新增或修改用户功能、导航或交互
+labels: ["feature", "needs-triage"]
+body:
+  - type: input
+    id: function_ids
+    attributes:
+      label: 功能 ID
+      description: 例如 FUN-EXP-01；新功能请写 NEW。
+    validations: {required: true}
+  - type: textarea
+    id: user_problem
+    attributes:
+      label: 用户问题与目标结果
+    validations: {required: true}
+  - type: textarea
+    id: scope
+    attributes:
+      label: 范围与明确非范围
+    validations: {required: true}
+  - type: textarea
+    id: visual
+    attributes:
+      label: 默认可视化、交互和反馈
+    validations: {required: true}
+  - type: textarea
+    id: data
+    attributes:
+      label: 对象、关系、数据表、API 与来源
+    validations: {required: true}
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance ID 与测试方式
+    validations: {required: true}
+  - type: textarea
+    id: risks
+    attributes:
+      label: 风险、控制和回滚
+    validations: {required: true}

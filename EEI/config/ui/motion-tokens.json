@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "durations_ms": {
+    "instant": 80,
+    "local": 160,
+    "panel": 220,
+    "data_update": 280,
+    "lens_change": 320,
+    "reroot": 380,
+    "full_relayout_max": 480,
+    "toast": 2400
+  },
+  "easing": {
+    "standard": "cubic-bezier(0.2, 0, 0, 1)",
+    "enter": "cubic-bezier(0, 0, 0, 1)",
+    "exit": "cubic-bezier(0.3, 0, 1, 1)"
+  },
+  "performance": {
+    "target_fps": 60,
+    "p95_min_fps": 55,
+    "long_task_ms": 50,
+    "long_task_max_share": 0.05
+  },
+  "haptics": {
+    "default_enabled": false,
+    "select_ms": 12,
+    "reroot_ms": 18,
+    "save_ms": 20,
+    "error_pattern_ms": [
+      35,
+      40,
+      35
+    ],
+    "throttle_ms": 250
+  },
+  "reduced_motion": {
+    "respect_system": true,
+    "disable_spatial_motion": true,
+    "fallback": "opacity"
+  }
+}

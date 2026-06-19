@@ -1,0 +1,209 @@
+US_Corporate_Power_Map_Codex_MVP_Task_Pack_v4.2_2026-06-19
+├── .codex
+│   └── config.toml.example
+├── .github
+│   ├── ISSUE_TEMPLATE
+│   │   ├── bug.yml
+│   │   ├── config.yml
+│   │   ├── data_relationship.yml
+│   │   ├── data_scope_change.yml
+│   │   ├── feature.yml
+│   │   ├── model_change.yml
+│   │   └── risk_control.yml
+│   ├── workflows
+│   │   └── governance-validation.yml
+│   ├── CODEOWNERS
+│   ├── pull_request_template.md
+│   └── release.yml
+├── artifacts
+│   ├── governance_blueprint_v42_source.html
+│   ├── model_config_import_preview.json
+│   ├── pdf_contact_sheet.png
+│   ├── pdf_visual_inspection.txt
+│   ├── preflight_output.txt
+│   ├── prototype_smoke_test.txt
+│   ├── README.md
+│   ├── static_validation.txt
+│   └── visual_coverage_validation.txt
+├── config
+│   ├── model_profiles
+│   │   └── balanced-v2.json
+│   ├── thresholds
+│   │   └── default-v2.json
+│   ├── ui
+│   │   ├── motion-tokens.json
+│   │   └── visual-coverage-targets.json
+│   └── model_runtime_defaults.yaml
+├── data
+│   ├── acceptance_matrix.csv
+│   ├── acceptance_traceability.csv
+│   ├── business_segment_taxonomy.csv
+│   ├── capital_object_taxonomy.csv
+│   ├── company_catalog.csv
+│   ├── content_inventory.csv
+│   ├── data_catalog_manifest.csv
+│   ├── data_dictionary.csv
+│   ├── default_weight_profiles.json
+│   ├── development_status_ledger.csv
+│   ├── domain_object_catalog.csv
+│   ├── exploration_acceptance_scenarios.json
+│   ├── formula_registry.csv
+│   ├── function_catalog.csv
+│   ├── github_document_registry.csv
+│   ├── governance_benchmark_sources.csv
+│   ├── industry_taxonomy.csv
+│   ├── metric_catalog.csv
+│   ├── mock_entities.json
+│   ├── mock_events.json
+│   ├── mock_relationships.json
+│   ├── model_registry.csv
+│   ├── navigation_catalog.csv
+│   ├── nvidia_public_source_anchors.csv
+│   ├── parameter_catalog.csv
+│   ├── relationship_family_catalog.csv
+│   ├── relationship_taxonomy.csv
+│   ├── release_gate_catalog.csv
+│   ├── research_seed_queue.csv
+│   ├── research_universe.csv
+│   ├── resolved_unresolved_register.csv
+│   ├── risk_control_traceability.csv
+│   ├── risk_register.csv
+│   ├── scoring_components.csv
+│   ├── sector_taxonomy.csv
+│   ├── seed_universe.csv
+│   ├── source_registry.csv
+│   ├── source_registry_extended.csv
+│   ├── supply_chain_stage_taxonomy.csv
+│   ├── task_backlog.csv
+│   ├── threshold_registry.csv
+│   ├── ui_copy_lexicon.csv
+│   ├── uiux_benchmark_sources.csv
+│   └── upstream_downstream_role_catalog.csv
+├── diagrams
+│   ├── domain_model.mmd
+│   ├── live_refresh_flow.mmd
+│   ├── module_architecture.mmd
+│   ├── recursive_focus_flow.mmd
+│   ├── system_context.mmd
+│   └── user_flow.mmd
+├── docs
+│   ├── 01_PRODUCT_REQUIREMENTS.md
+│   ├── 02_SCOPE_AND_BOUNDARIES.md
+│   ├── 03_UX_INFORMATION_ARCHITECTURE.md
+│   ├── 04_DATA_MODEL.md
+│   ├── 05_DATA_SOURCES_AND_PROVENANCE.md
+│   ├── 06_ARCHITECTURE.md
+│   ├── 07_MVP_ROADMAP.md
+│   ├── 08_ACCEPTANCE_AND_TEST_PLAN.md
+│   ├── 09_RISK_GOVERNANCE.md
+│   ├── 10_PHASE2_DAILY_UPDATE.md
+│   ├── 11_DECISION_LOG.md
+│   ├── 12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
+│   ├── 13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+│   ├── 14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
+│   ├── 15_SCORING_MODEL_AND_USER_TUNING.md
+│   ├── 16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
+│   ├── 17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
+│   ├── 18_UIUX_RESEARCH_BENCHMARK.md
+│   ├── 19_VISUAL_FIRST_WORKSPACE_SPEC.md
+│   ├── 20_CONTENT_LANGUAGE_GUIDE.md
+│   ├── 21_INTERACTION_STATE_AND_NAVIGATION.md
+│   ├── 22_USABILITY_TEST_AND_ACCEPTANCE.md
+│   ├── 23_SYSTEM_FUNCTION_MODULE_ARCHITECTURE.md
+│   ├── 24_MODEL_FORMULA_PARAMETER_THRESHOLD_CENTER.md
+│   ├── 25_LIVE_RECALCULATION_REFRESH_ARCHITECTURE.md
+│   ├── 26_DATABASE_FIRST_DATA_WORKBENCH.md
+│   ├── 27_MOTION_HAPTIC_INTERACTION_SYSTEM.md
+│   ├── 28_VISUAL_COVERAGE_UI_ACCEPTANCE.md
+│   ├── 29_FUNCTION_CATALOG_AND_SCOPE.md
+│   ├── 30_MODEL_MANAGEMENT.md
+│   ├── 31_DOMAIN_OBJECT_SCOPE_CATALOG.md
+│   ├── 32_IMPLEMENTATION_STATUS_RESOLVED_UNRESOLVED.md
+│   ├── 33_RISK_CONTROL_ACCEPTANCE_TRACEABILITY.md
+│   ├── 34_GITHUB_DOCUMENTATION_AND_BACKUP.md
+│   ├── 35_DATA_CATALOGS_AND_TAXONOMIES.md
+│   ├── 36_RELEASE_GATES_AND_DEFINITION_OF_DONE.md
+│   ├── INDEX.md
+│   └── STATUS.md
+├── models
+│   ├── formula_registry.json
+│   ├── FORMULA_REGISTRY.md
+│   ├── MODEL_MANAGEMENT.md
+│   └── model_registry.json
+├── prompts
+│   ├── 01_PLAN_ONLY.md
+│   ├── 02_BUILD_MVP.md
+│   └── 03_QA_RELEASE.md
+├── prototype
+│   ├── screenshots
+│   │   ├── data_1440x900.png
+│   │   ├── default_1280x800.png
+│   │   ├── default_1440x900.png
+│   │   ├── delivery_1440x900.png
+│   │   ├── governance_1440x900.png
+│   │   ├── models_1440x900.png
+│   │   ├── reroot_tsmc_1440x900.png
+│   │   └── taxonomy_1440x900.png
+│   ├── app.js
+│   ├── index.html
+│   ├── README.md
+│   ├── standalone.html
+│   └── styles.css
+├── scripts
+│   ├── apply_model_config.py
+│   ├── compile_model_runtime_defaults.py
+│   ├── generate_governance_pdf.py
+│   ├── preflight.sh
+│   ├── run_codex_autonomous.sh
+│   ├── smoke_test_prototype.py
+│   ├── validate_catalog_integrity.py
+│   ├── validate_governance.py
+│   ├── validate_model_config.py
+│   ├── validate_task_pack.py
+│   └── validate_visual_coverage.py
+├── specs
+│   ├── api_contract.yaml
+│   ├── calibration_report_schema.json
+│   ├── domain_schema.sql
+│   ├── event_schema.json
+│   ├── exploration_state_schema.json
+│   ├── live_refresh_event_schema.json
+│   ├── model_config_schema.json
+│   └── scoring_profile_schema.json
+├── wireframes
+│   ├── dashboard_wireframe.png
+│   ├── dashboard_wireframe.svg
+│   ├── home_default_view.png
+│   ├── home_default_view.svg
+│   ├── README.md
+│   ├── recursive_focus_explorer.png
+│   ├── recursive_focus_explorer.svg
+│   ├── visual_first_workspace.png
+│   ├── visual_first_workspace.svg
+│   └── visual_first_workspace_screenshot.png
+├── .gitignore
+├── AGENTS.md
+├── CHANGELOG.md
+├── CHECKSUMS.sha256
+├── CODEX_MASTER_TASK.md
+├── CONTRIBUTING.md
+├── DELIVERY_INDEX.md
+├── DEVELOPMENT_STATUS.md
+├── DIRECTORY_TREE.txt
+├── DOMAIN_DATA_CATALOG.md
+├── FUNCTION_CATALOG.md
+├── GITHUB_REPOSITORY_BACKUP_INDEX.md
+├── GOVERNANCE_INDEX.md
+├── manifest.txt
+├── MODEL_MANAGEMENT.md
+├── PLANS.md
+├── README.md
+├── REPORT.md
+├── RISK_AND_ACCEPTANCE.md
+├── RUN_CODEX.md
+├── SOURCES.md
+├── US_Corporate_Power_Map_Governance_Blueprint_v4.2.pdf
+├── US_Corporate_Power_Map_System_Model_Parameter_Architecture_v4.2.md
+├── US_Corporate_Power_Map_UIUX_Redesign_v4.2.md
+├── VALIDATION_REPORT.md
+└── VERSION

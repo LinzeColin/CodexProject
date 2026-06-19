@@ -1,0 +1,17 @@
+nav_id,nav_order,name_zh,name_en,purpose,existing_function_ids,priority
+NAV-001,10,商业版图,Commercial Map,当前主体的完整企业生态关系图,FUN-EXP-01,P0
+NAV-002,20,集团结构,Group Structure,母公司、子公司、控股公司、合资企业和业务集团,"FUN-EXP-03,FUN-EXP-05",P0
+NAV-003,30,业务板块,Business Segments,产品线、技术平台、收入板块和市场布局,FUN-EXP-03,P0
+NAV-004,40,供应链,Supply Chain,原材料、设备、制造、封装、系统、渠道和客户,FUN-EXP-02,P0
+NAV-005,50,资本网络,Capital Network,股权、投资、融资、基金、回购和资本支出,"FUN-EXP-04,FUN-EXP-05",P0
+NAV-006,60,并购交易,M&A Transactions,收购、出售、拆分、合并和战略投资,FUN-EXP-04,P0
+NAV-007,70,控制关系,Control Relationships,投票权、经济权益、董事席位和实际控制路径,FUN-EXP-05,P0
+NAV-008,80,政策环境,Policy Environment,补贴、合同、监管、出口管制和游说关系,FUN-EXP-06,P0
+NAV-009,90,战略信号,Strategic Signals,招聘、资本支出、专利、合作和管理层表态,FUN-EXP-07,P0
+NAV-010,100,时间演变,Temporal Evolution,历史关系、事件变化和商业版图演进,FUN-RM-02,P0
+NAV-011,110,证据中心,Evidence Center,来源、原始文件、证据片段和可信度,FUN-DM-01,P0
+NAV-012,120,模型中心,Model Center,公式、权重、阈值、时间衰减和模型版本,FUN-DM-02,P0
+NAV-013,130,数据中心,Data Center,数据来源、更新时间、覆盖率和异常状态,FUN-DM-01,P0
+NAV-014,140,我的关注,My Watchlist,Watchlist、保存视图和告警,"FUN-RM-01,FUN-RM-03",P0
+NAV-015,150,探索记录,Exploration History,用户递归探索路径及历史主体,FUN-RM-03,P0
+NAV-016,160,系统状态,System Status,数据任务、模型刷新和数据库状态,"FUN-DM-03,FUN-DM-04,FUN-SYS-02",P0

@@ -1,0 +1,14 @@
+flowchart LR
+  NAV[Left Navigation] --> CTX[Shared Analysis Context]
+  CTX --> A[Business Atlas]
+  CTX --> B[Supply Chain]
+  CTX --> C[Capital & M&A]
+  CTX --> D[Ownership & Control]
+  CTX --> E[Policy & Government]
+  CTX --> F[Strategic Signals]
+  CTX --> G[Data Catalog]
+  CTX --> H[Model & Parameters]
+  A & B & C & D & E & F & G & H --> API[Projection & Model APIs]
+  API --> PG[(PostgreSQL System of Record)]
+  API --> SSE[SSE Event Stream]
+  SSE --> CTX

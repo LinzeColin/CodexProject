@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: eei-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-eei}
+      POSTGRES_USER: ${POSTGRES_USER:-eei}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local-only}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-eei} -d $${POSTGRES_DB:-eei}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - eei-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  eei-postgres-data:
+

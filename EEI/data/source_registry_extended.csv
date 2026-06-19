@@ -1,0 +1,35 @@
+﻿code,name,information,engineering_limits,phase,official_entry,source_tier
+A01,SEC EDGAR Submissions API,公司申报历史、表单、accession、CIK,无需API key；声明User-Agent；限速不高于10 req/s,MVP必选,https://www.sec.gov/search-filings/edgar-application-programming-interfaces,A
+A02,SEC Companyfacts / XBRL API,标准化财务事实、期间值、单位与申报链接,概念映射不完整；必须保留原始tag和期间,MVP必选,https://data.sec.gov/,A
+A03,EDGAR Full-Text / Latest Filings / RSS,事件发现、全文检索、增量抓取,需去重、修订覆盖和表单分类,MVP必选,https://www.sec.gov/search-filings,A
+A04,10-K / 10-Q / 8-K / 20-F / 6-K,财务、风险、分部、重大事件、合同与承诺,披露口径与时间滞后不同,MVP必选,https://www.sec.gov/edgar/search/,A
+A05,DEF 14A / 信息声明,董事、薪酬、关联交易、投票权、受益所有权,一年一度为主；需结合最新8-K,MVP必选,https://www.sec.gov/edgar/search/,A
+A06,S-1 / S-4 / 424B / 并购附件,IPO、资本结构、风险、并购协议、子公司清单,交易状态须区分拟议/签署/完成,MVP必选,https://www.sec.gov/edgar/search/,A
+A07,Schedules 13D / 13G,超过5%的受益所有权与控制意图,不是完整股东名册；修订和衍生品需处理,MVP必选,https://www.sec.gov/resources-small-businesses/going-public/officers-directors-10-shareholders,A
+A08,Forms 3 / 4 / 5,董事、高管、10%股东交易和持仓,Form 4通常在交易后两个工作日；代码需解释,MVP必选,https://www.sec.gov/files/forms-3-4-5.pdf,A
+A09,Form 13F Data / Filings,机构管理人季度末披露持仓,最长可在季末后45天申报；只可称为持仓快照变化，不可称实时资金流,MVP必选,https://www.sec.gov/rules-regulations/staff-guidance/division-investment-management-frequently-asked-questions/frequently-asked-questions-about-form-13f,A
+A10,Form N-PORT Data Sets,注册基金月度组合数据的公开部分,公开与申报节奏不同；基金、系列和管理人需分离,Phase 1.5,https://www.sec.gov/data-research/sec-markets-data/form-n-port-data-sets,A
+A11,IAPD / Form ADV,投资顾问的所有权、业务、客户、关联方、AUM与纪律事项,管理人和基金车辆不能混为一体,Phase 1.5,https://adviserinfo.sec.gov/,A
+A12,Form D / D-A,私募证券发行通知、发行规模、投资者数量等,不是完整融资闭环；金额可为计划值,Phase 1.5,https://www.sec.gov/edgar/search/,A
+A13,USAspending API v2,联邦合同、补助、贷款、recipient、agency、obligation/outlay,award ceiling、obligation、outlay必须分开,Phase 1.5,https://api.usaspending.gov/,A
+A14,SAM.gov Public Data / UEI,政府供应商实体、UEI、排除和部分责任信息,只使用公开API/公开字段；遵守数据用途限制,Phase 1.5,https://sam.gov/entity-information,A
+A15,LDA.gov Lobbying Disclosure API,注册、客户、议题、机构、游说支出和贡献报告,旧站点将在2026-06-30后下线；新实现使用LDA.gov,Phase 1.5,https://lda.gov/,A
+A16,OpenFEC API,PAC、委员会、候选人及政治捐款披露,公司、PAC、个人和高管贡献需分开；需API key,Phase 2,https://api.open.fec.gov/developers/,A
+A17,USPTO Open Data Portal,专利申请、授权、assignee、文档和技术分类,assignee实体解析和转让历史需要审阅,Phase 1.5,https://data.uspto.gov/,A
+A18,FTC Competition Enforcement Database,公开并购与非并购执法事件,只反映公开执法，不代表所有审查活动,Phase 1.5,https://www.ftc.gov/competition-enforcement-database,A
+A19,DOJ Antitrust Case Filings,反垄断案件、诉状、和解、判决与行业分类,案件状态和救济结果需时间建模,Phase 1.5,https://www.justice.gov/atr/antitrust-case-filings,A
+A20,Federal Register API,拟议规则、最终规则、行政通知和机构文件,FederalRegister.gov展示版与正式PDF/法规文本需区分,Phase 2,https://www.federalregister.gov/developers/documentation/api/v1,A
+A21,FCC ECFS / Public API,通信监管案卷、许可与公开评论,案卷实体匹配和附件解析成本较高,Phase 2,https://www.fcc.gov/ecfs/help/public_api,A
+A22,EIA Open Data API,电力、燃料、发电、价格、设施和能源趋势,多为行业/设施级，不直接等于公司合同流,Phase 1.5,https://www.eia.gov/opendata/,A
+A23,IRS TEOS / Form 990 XML,非营利实体状态、治理、财务与关联组织,年度滞后；适用于基金会与非营利控制节点,Phase 1.5,https://www.irs.gov/charities-non-profits/tax-exempt-organization-search-bulk-data-downloads,A
+A24,GLEIF LEI API / Level 2,法律实体标识、直接/最终会计合并母公司、模糊匹配,覆盖并非完整；会计合并不等于所有控制关系,Phase 1.5,https://www.gleif.org/en/lei-data/gleif-api,A
+A25,FFIEC National Information Center / FR Y-9C,银行控股结构和合并财务,专用于受监管金融机构；字段和报告口径专业,Phase 1.5,https://www.ffiec.gov/npw,A
+A26,FDIC BankFind API,银行历史、并购、分支、财务和机构标识,银行子体与顶层控股公司需映射,Phase 1.5,https://api.fdic.gov/banks/docs,A
+A27,FINRA TRACE / Fixed Income Data,公司债券参考数据、市场聚合和部分交易历史,部分数据需协议/认证或付费；不等同发行人现金流,Phase 2,https://www.finra.org/filing-reporting/trace,A
+A28,州公司注册处 / UCC / 州级监管数据库,成立、存续、合并、担保权益和州级许可,各州格式、访问和许可差异大；先做人工研究队列,Phase 2,state-specific,A
+B01,公司IR、官方新闻室、治理文件、投资者演示,战略、融资、合同、组织与产品发布,自述性来源，必须与监管/合同文件交叉核验,MVP必选,source-specific,B
+B02,官方合作方公告与政府机构新闻稿,双边合作、合同、投资和审批,区分宣布、承诺、签署、交割和实际支出,MVP必选,source-specific,B
+C01,Bloomberg / LSEG / FactSet / S&P Capital IQ,实体主数据、交易、资本结构、估值与市场数据,商业许可；不可成为开源MVP硬依赖,可选付费,licensed,C
+C02,PitchBook / Preqin / Crunchbase,私募融资、基金、投资人与交易线索,私营公司数据可能估算或不完整；需原始文件复核,可选付费,licensed,C
+C03,AlphaSense / Tegus等研究平台,文件检索、电话会与研究工作流,许可和再分发限制；仅作分析辅助,可选付费,licensed,C
+D01,Reuters / FT / WSJ / Bloomberg News / The Information,事件发现、背景和未公开细节线索,不能单独支撑精确股权比例或法律事实；至少双源或回到原始文件,二级佐证,publisher-specific,D

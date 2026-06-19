@@ -1,0 +1,58 @@
+[
+  {
+    "scenario_id": "EX-001",
+    "name": "industry-to-company",
+    "steps": [
+      "Open home",
+      "Choose Semiconductors & Electronic Systems",
+      "Open NVIDIA fixture",
+      "Verify company summary and eight layers"
+    ],
+    "expected": "Within three primary actions the focus entity is NVIDIA and URL state is serializable."
+  },
+  {
+    "scenario_id": "EX-002",
+    "name": "three-consecutive-reroots",
+    "steps": [
+      "Focus NVIDIA fixture",
+      "Reroot to synthetic foundry node",
+      "Reroot to synthetic equipment node",
+      "Reroot to synthetic materials node"
+    ],
+    "expected": "Breadcrumb contains all steps; time, layers, filters and scoring profile persist; each request respects graph budget."
+  },
+  {
+    "scenario_id": "EX-003",
+    "name": "cross-industry-reroot",
+    "steps": [
+      "Focus AI infrastructure company",
+      "Open power dependency",
+      "Reroot to utility",
+      "Open equipment supplier"
+    ],
+    "expected": "Industry transition is shown without blocking navigation."
+  },
+  {
+    "scenario_id": "EX-004",
+    "name": "custom-scoring-profile",
+    "steps": [
+      "Clone Balanced profile",
+      "Set supply chain weight to 0.40",
+      "Preview Top-N changes",
+      "Save with reason",
+      "Activate and rollback"
+    ],
+    "expected": "Formula is visible; invalid totals are rejected; audit log stores old/new diff and versions."
+  },
+  {
+    "scenario_id": "EX-005",
+    "name": "biweekly-calibration",
+    "steps": [
+      "Run calibration on fixture snapshot A",
+      "Run again on snapshot B fourteen days later",
+      "Review drift and proposal",
+      "Reject proposal"
+    ],
+    "expected": "Current active profile remains unchanged; rejection is logged; both runs are reproducible."
+  }
+]

@@ -1,0 +1,25 @@
+name: 数据范围/关系/行业/公司变更
+about: 修改研究对象、关系本体、供应链阶段、行业、业务板块或资本对象
+labels: ["data", "taxonomy", "governance"]
+body:
+  - type: dropdown
+    id: catalog
+    attributes:
+      label: 目录类型
+      options: [公司, 关系类型, 关系家族, 供应链阶段, 行业, 业务板块, 资本对象, 上下游角色, 数据来源]
+    validations: {required: true}
+  - type: textarea
+    id: change
+    attributes:
+      label: 新增/修改/弃用内容
+    validations: {required: true}
+  - type: textarea
+    id: semantics
+    attributes:
+      label: 定义、方向、有效期、证据门槛和迁移规则
+    validations: {required: true}
+  - type: textarea
+    id: impact
+    attributes:
+      label: 影响功能、API、表、模型、任务和验收
+    validations: {required: true}

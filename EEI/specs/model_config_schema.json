@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/model_config_schema.json",
+  "title": "Business Atlas Model Profile v2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "profile_key",
+    "model_version",
+    "version",
+    "weights",
+    "quality_adjustment",
+    "coverage_adjustment",
+    "missing_value_policy",
+    "half_life_days"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "profile_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "model_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "weights": {
+      "type": "object",
+      "required": [
+        "supply_chain_criticality",
+        "strategic_dependency",
+        "capital_momentum",
+        "control_influence",
+        "policy_exposure",
+        "technology_dependency",
+        "strategic_signal",
+        "time_relevance"
+      ],
+      "properties": {
+        "supply_chain_criticality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.7
+        },
+        "strategic_dependency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.7
+        },
+        "capital_momentum": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.7
+        },
+        "control_influence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.7
+        },
+        "policy_exposure": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.7
+        },
+        "technology_dependency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.7
+        },
+        "strategic_signal": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.7
+        },
+        "time_relevance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.7
+        }
+      },
+      "additionalProperties": false
+    },
+    "quality_adjustment": {
+      "$ref": "#/$defs/pairAdjustment"
+    },
+    "coverage_adjustment": {
+      "$ref": "#/$defs/pairAdjustment"
+    },
+    "missing_value_policy": {
+      "enum": [
+        "renormalize_available",
+        "mark_unscored",
+        "conservative_penalty"
+      ]
+    },
+    "component_weights": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "half_life_days": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 30,
+        "maximum": 1825
+      }
+    }
+  },
+  "$defs": {
+    "pairAdjustment": {
+      "type": "object",
+      "minProperties": 2,
+      "maxProperties": 2,
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,7 @@
+﻿queue_id,subject,hypothesis,source_url,source_date,required_action,status
+Q001,OpenAI Foundation -> OpenAI Group PBC,Foundation controls Group under announced 2025 structure,https://openai.com/index/building-openai-to-benefit-everyone/,2025-10-28,Verify exact legal terms/effective date/later amendments,TO VERIFY
+Q002,Microsoft -> OpenAI Group,Historical disclosed economic stake after 2025 recapitalization,https://blogs.microsoft.com/blog/2025/10/28/microsoft-and-openai-joint-statement-on-partnership/,2025-10-28,Do not label percentage current; check later dilution/amount kind,TO VERIFY
+Q003,Amazon -> Anthropic,Announced investments and expanded partnership across 2024-2026,https://www.aboutamazon.com/news/company-news/amazon-anthropic-investment-ai-partnership,2026-04-20,Separate announced/committed/closed cash; cross-check parties,TO VERIFY
+Q004,SpaceX -> xAI,2026 announced acquisition/combination,https://www.spacex.com/updates/,2026-02-02,Resolve legal acquirer/target/effective status and later changes,TO VERIFY
+Q005,OpenAI 2026 financing,Major 2026 funding involving strategic investors,https://openai.com/news/,2026-02-27,Find exact release; separate commitment/close/valuation,TO VERIFY
+Q006,Anthropic 2026 financing,Later 2026 funding round,https://www.anthropic.com/news,2026-05-28,Verify official terms immediately before use; never infer cap table,TO VERIFY

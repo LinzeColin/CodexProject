@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Atlas Refresh Event",
+  "type": "object",
+  "required": [
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "data_snapshot_id",
+    "score_snapshot_id"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_type": {
+      "enum": [
+        "analysis.preview.changed",
+        "analysis.session.applied",
+        "model.profile.activated",
+        "score.snapshot.activated",
+        "data.snapshot.activated",
+        "source.health.changed",
+        "calibration.completed"
+      ]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "focus_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "data_snapshot_id": {
+      "type": "string"
+    },
+    "score_snapshot_id": {
+      "type": "string"
+    },
+    "model_version": {
+      "type": "string"
+    },
+    "profile_version": {
+      "type": "string"
+    },
+    "affected_modules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "progress": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

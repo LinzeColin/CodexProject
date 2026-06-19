@@ -1,0 +1,24 @@
+name: 缺陷/数据错误
+about: 报告功能、模型、数据、视觉、刷新或可追溯问题
+labels: ["bug", "needs-triage"]
+body:
+  - type: input
+    id: environment
+    attributes: {label: 环境与版本}
+    validations: {required: true}
+  - type: textarea
+    id: steps
+    attributes: {label: 复现步骤}
+    validations: {required: true}
+  - type: textarea
+    id: expected
+    attributes: {label: 期望结果与实际结果}
+    validations: {required: true}
+  - type: textarea
+    id: ids
+    attributes:
+      label: 相关实体、关系、快照、模型、参数和 Acceptance ID
+    validations: {required: true}
+  - type: textarea
+    id: evidence
+    attributes: {label: 截图、日志、来源或测试证据}

@@ -1,0 +1,58 @@
+name: governance-validation
+on:
+  pull_request:
+    paths:
+      - '*.md'
+      - 'VERSION'
+      - 'CHECKSUMS.sha256'
+      - 'manifest.txt'
+      - 'DIRECTORY_TREE.txt'
+      - 'docs/**'
+      - 'data/**'
+      - 'models/**'
+      - 'config/**'
+      - 'specs/**'
+      - 'prototype/**'
+      - 'scripts/**'
+      - 'prompts/**'
+      - 'diagrams/**'
+      - 'wireframes/**'
+      - '.github/**'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check pyyaml jsonschema pypdf
+      - name: Validate catalogs, governance and Task Pack
+        run: |
+          python scripts/validate_catalog_integrity.py
+          python scripts/validate_governance.py
+          python scripts/validate_task_pack.py
+      - name: Verify shell syntax
+        run: bash -n scripts/preflight.sh scripts/run_codex_autonomous.sh
+      - name: Verify checksums when present
+        run: |
+          if [ -f CHECKSUMS.sha256 ]; then sha256sum -c CHECKSUMS.sha256; fi
+  visual-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser validation dependencies
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          python -m playwright install --with-deps chromium
+      - name: Validate visual coverage at required viewports
+        run: python scripts/validate_visual_coverage.py
+

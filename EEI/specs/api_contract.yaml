@@ -1,0 +1,1608 @@
+openapi: 3.1.0
+info:
+  title: US Corporate Power Map API
+  version: 2.0.0
+  description: Provenance-first API for recursive company-centered business empire, supply-chain, capital, policy and scoring
+    exploration.
+servers:
+- url: http://localhost:8000
+paths:
+  /health/live:
+    get:
+      operationId: liveness
+      responses:
+        '200':
+          description: Process alive
+  /health/ready:
+    get:
+      operationId: readiness
+      responses:
+        '200':
+          description: Required dependencies ready
+        '503':
+          description: Not ready
+  /v1/entities:
+    get:
+      operationId: searchEntities
+      parameters:
+      - name: q
+        in: query
+        schema:
+          type: string
+      - name: type
+        in: query
+        schema:
+          $ref: '#/components/schemas/EntityType'
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: Entity search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntitySummary'
+  /v1/entities/{entityId}:
+    get:
+      operationId: getEntityDossier
+      parameters:
+      - name: entityId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Entity dossier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityDossier'
+        '404':
+          description: Not found
+  /v1/graph:
+    get:
+      operationId: getGraph
+      parameters:
+      - name: root
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: hops
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 2
+          default: 1
+      - name: families
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        style: form
+        explode: false
+      - name: as_of
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: min_confidence
+        in: query
+        schema:
+          type: number
+          minimum: 0
+          maximum: 1
+          default: 0
+      - name: max_nodes
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 300
+      - name: max_edges
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 2000
+          default: 1000
+      responses:
+        '200':
+          description: Bounded graph
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphResponse'
+        '422':
+          description: Invalid or excessive query
+  /v1/relationships/{relationshipId}:
+    get:
+      operationId: getRelationship
+      parameters:
+      - name: relationshipId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Relationship with evidence
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationshipDetail'
+        '404':
+          description: Not found
+  /v1/events:
+    get:
+      operationId: listEvents
+      parameters:
+      - name: entity
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: theme
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: from
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: event_type
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Capital and strategic events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+  /v1/themes:
+    get:
+      operationId: listThemeSignals
+      parameters:
+      - name: entity
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: window
+        in: query
+        schema:
+          type: string
+          enum:
+          - 30d
+          - 90d
+          - 1y
+          - 3y
+          default: 1y
+      responses:
+        '200':
+          description: Decomposed theme signals
+  /v1/changes:
+    get:
+      operationId: listChanges
+      parameters:
+      - name: since
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: change_type
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Change feed
+  /v1/sources/freshness:
+    get:
+      operationId: sourceFreshness
+      responses:
+        '200':
+          description: Source connector/content freshness
+  /v1/export:
+    get:
+      operationId: exportResearchSet
+      parameters:
+      - name: format
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - csv
+          - json
+      - name: root
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: hops
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 2
+          default: 1
+      responses:
+        '200':
+          description: Export with provenance identifiers
+  /v1/home:
+    get:
+      operationId: getHome
+      responses:
+        '200':
+          description: User-oriented home with industries, watchlist, recent paths, changes and model status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeResponse'
+  /v1/industries:
+    get:
+      operationId: listIndustries
+      parameters:
+      - name: parent
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      responses:
+        '200':
+          description: Versioned industry taxonomy
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IndustrySummary'
+  /v1/industries/{industryId}/landscape:
+    get:
+      operationId: getIndustryLandscape
+      parameters:
+      - name: industryId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: as_of
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      - name: profile
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      responses:
+        '200':
+          description: Industry chain, entities, bottlenecks, capital, policy and changes
+  /v1/explore:
+    post:
+      operationId: startOrRestoreExploration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExploreRequest'
+      responses:
+        '200':
+          description: Bounded recursive exploration state and graph
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExploreResponse'
+        '422':
+          description: Invalid budget, profile or filters
+  /v1/explore/reroot:
+    post:
+      operationId: rerootExploration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RerootRequest'
+      responses:
+        '200':
+          description: New focus with inherited or reset state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExploreResponse'
+        '409':
+          description: State/version conflict
+  /v1/explore/expand:
+    post:
+      operationId: expandExploration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpandRequest'
+      responses:
+        '200':
+          description: Incremental nodes and edges within budget
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExploreResponse'
+  /v1/paths:
+    get:
+      operationId: findRelationshipPaths
+      parameters:
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: to
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: path_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - shortest
+          - upstream
+          - downstream
+          - control
+          - capital
+          - policy
+          - bottleneck
+      - name: max_length
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 8
+          default: 4
+      - name: as_of
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      responses:
+        '200':
+          description: Evidence-bearing bounded paths
+  /v1/entities/{entityId}/empire:
+    get:
+      operationId: getEntityEmpire
+      parameters:
+      - name: entityId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: as_of
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      - name: profile
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      responses:
+        '200':
+          description: Corporate structure, segments, brands, products and facilities
+        '404':
+          description: Not found
+  /v1/entities/{entityId}/supply-chain:
+    get:
+      operationId: getEntitySupplyChain
+      parameters:
+      - name: entityId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: as_of
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      - name: profile
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      responses:
+        '200':
+          description: Upstream/downstream chain with stages and materiality
+        '404':
+          description: Not found
+  /v1/entities/{entityId}/capital:
+    get:
+      operationId: getEntityCapitalMap
+      parameters:
+      - name: entityId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: as_of
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      - name: profile
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      responses:
+        '200':
+          description: Financing, investment, M&A, contracts and capex
+        '404':
+          description: Not found
+  /v1/entities/{entityId}/policy:
+    get:
+      operationId: getEntityPolicyMap
+      parameters:
+      - name: entityId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: as_of
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      - name: profile
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      responses:
+        '200':
+          description: Government contracts, regulation, trade and lobbying
+        '404':
+          description: Not found
+  /v1/entities/{entityId}/strategy:
+    get:
+      operationId: getEntityStrategicSignals
+      parameters:
+      - name: entityId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: as_of
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      - name: profile
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      responses:
+        '200':
+          description: Decomposed signals, contradictions and alternatives
+        '404':
+          description: Not found
+  /v1/watchlists:
+    get:
+      operationId: listWatchlists
+      responses:
+        '200':
+          description: Local-user watchlists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Watchlist'
+    post:
+      operationId: createWatchlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WatchlistCreate'
+      responses:
+        '201':
+          description: Created
+  /v1/watchlists/{watchlistId}/items:
+    post:
+      operationId: addWatchlistItem
+      parameters:
+      - name: watchlistId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WatchlistItem'
+      responses:
+        '201':
+          description: Added and operation logged
+    delete:
+      operationId: removeWatchlistItem
+      parameters:
+      - name: watchlistId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: object_type
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: object_id
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Soft removed and operation logged
+  /v1/scoring/models:
+    get:
+      operationId: listScoringModels
+      responses:
+        '200':
+          description: Versioned formulas, inputs and constraints
+  /v1/scoring/profiles:
+    get:
+      operationId: listScoringProfiles
+      responses:
+        '200':
+          description: Default and custom profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScoringProfile'
+    post:
+      operationId: createScoringProfileVersion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoringProfile'
+      responses:
+        '201':
+          description: Version created and logged
+        '422':
+          description: Weights or parameters invalid
+  /v1/scoring/preview:
+    post:
+      operationId: previewScoringProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoringPreviewRequest'
+      responses:
+        '200':
+          description: Read-only Top-N and rank impact preview
+  /v1/scoring/profiles/{profileVersionId}/activate:
+    post:
+      operationId: activateScoringProfile
+      parameters:
+      - name: profileVersionId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Activated and logged
+  /v1/scoring/profiles/{profileVersionId}/rollback:
+    post:
+      operationId: rollbackScoringProfile
+      parameters:
+      - name: profileVersionId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: New rollback version created and logged
+  /v1/scoring/explain/{objectType}/{objectId}:
+    get:
+      operationId: explainScore
+      parameters:
+      - name: objectType
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: objectId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: profile
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      responses:
+        '200':
+          description: Inputs, contributions, missing values, evidence and versions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreExplanation'
+  /v1/audit-logs:
+    get:
+      operationId: listAuditLogs
+      parameters:
+      - name: object_type
+        in: query
+        schema:
+          type: string
+      - name: object_id
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      - name: since
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      responses:
+        '200':
+          description: Append-only operation log
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+  /v1/calibrations:
+    get:
+      operationId: listCalibrations
+      responses:
+        '200':
+          description: Biweekly and manual calibration runs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalibrationRun'
+  /v1/calibrations/run:
+    post:
+      operationId: runCalibration
+      responses:
+        '202':
+          description: Manual calibration queued; cadence remains 14 days
+  /v1/calibrations/{calibrationId}:
+    get:
+      operationId: getCalibration
+      parameters:
+      - name: calibrationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Coverage, drift, quality and proposal
+  /v1/calibrations/{calibrationId}/accept-proposal:
+    post:
+      operationId: acceptCalibrationProposal
+      parameters:
+      - name: calibrationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Proposal accepted; operation logged and active profile changed only when accepted
+  /v1/calibrations/{calibrationId}/reject-proposal:
+    post:
+      operationId: rejectCalibrationProposal
+      parameters:
+      - name: calibrationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Proposal rejected; operation logged and active profile changed only when accepted
+components:
+  schemas:
+    EntityType:
+      type: string
+      enum:
+      - legal_entity
+      - brand
+      - security
+      - fund
+      - government_body
+      - person
+      - theme
+      - facility
+      - product
+      - business_segment
+      - industry
+      - contract
+      - standard
+      - asset
+    EpistemicStatus:
+      type: string
+      enum:
+      - reported
+      - derived
+      - disputed
+      - superseded
+      - revoked
+      - unknown
+    EntitySummary:
+      type: object
+      required:
+      - id
+      - canonical_name
+      - entity_type
+      properties:
+        id:
+          type: string
+          format: uuid
+        canonical_name:
+          type: string
+        entity_type:
+          $ref: '#/components/schemas/EntityType'
+        primary_identifiers:
+          type: object
+          additionalProperties:
+            type: string
+    EvidenceSummary:
+      type: object
+      required:
+      - source_document_id
+      - role
+      - source_tier
+      - observed_at
+      properties:
+        source_document_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum:
+          - supports
+          - contradicts
+          - context
+        source_tier:
+          type: integer
+          minimum: 1
+          maximum: 5
+        document_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        observed_at:
+          type: string
+          format: date-time
+        locator:
+          type:
+          - string
+          - 'null'
+    GraphNode:
+      allOf:
+      - $ref: '#/components/schemas/EntitySummary'
+      - type: object
+        properties:
+          group_id:
+            type:
+            - string
+            - 'null'
+            format: uuid
+          freshness_status:
+            type: string
+          primary_industry_id:
+            type:
+            - string
+            - 'null'
+            format: uuid
+          adjusted_priority:
+            type:
+            - number
+            - 'null'
+            minimum: 0
+            maximum: 100
+          coverage:
+            type:
+            - number
+            - 'null'
+            minimum: 0
+            maximum: 100
+    GraphEdge:
+      type: object
+      required:
+      - id
+      - subject_id
+      - object_id
+      - relationship_type
+      - relationship_family
+      - status
+      - evidence_count
+      properties:
+        id:
+          type: string
+          format: uuid
+        subject_id:
+          type: string
+          format: uuid
+        object_id:
+          type: string
+          format: uuid
+        relationship_type:
+          type: string
+        relationship_family:
+          type: string
+        status:
+          $ref: '#/components/schemas/EpistemicStatus'
+        confidence:
+          type:
+          - number
+          - 'null'
+          minimum: 0
+          maximum: 1
+        valid_from:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        valid_to:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        amount:
+          type:
+          - number
+          - 'null'
+        currency:
+          type:
+          - string
+          - 'null'
+        amount_kind:
+          type:
+          - string
+          - 'null'
+        evidence_count:
+          type: integer
+          minimum: 1
+    GraphResponse:
+      type: object
+      required:
+      - as_of
+      - nodes
+      - edges
+      - truncated
+      properties:
+        as_of:
+          type: string
+          format: date-time
+        nodes:
+          type: array
+          maxItems: 500
+          items:
+            $ref: '#/components/schemas/GraphNode'
+        edges:
+          type: array
+          maxItems: 2000
+          items:
+            $ref: '#/components/schemas/GraphEdge'
+        truncated:
+          type: boolean
+        warnings:
+          type: array
+          items:
+            type: string
+    RelationshipDetail:
+      allOf:
+      - $ref: '#/components/schemas/GraphEdge'
+      - type: object
+        required:
+        - evidence
+        properties:
+          qualifiers:
+            type: object
+            additionalProperties: true
+          evidence:
+            type: array
+            minItems: 1
+            items:
+              $ref: '#/components/schemas/EvidenceSummary'
+    Event:
+      type: object
+      required:
+      - id
+      - event_type
+      - title
+      - status
+      - observed_at
+      - evidence_count
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+        title:
+          type: string
+        status:
+          $ref: '#/components/schemas/EpistemicStatus'
+        announced_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        effective_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        amount:
+          type:
+          - number
+          - 'null'
+        currency:
+          type:
+          - string
+          - 'null'
+        amount_kind:
+          type:
+          - string
+          - 'null'
+        observed_at:
+          type: string
+          format: date-time
+        evidence_count:
+          type: integer
+          minimum: 1
+    EntityDossier:
+      allOf:
+      - $ref: '#/components/schemas/EntitySummary'
+      - type: object
+        properties:
+          aliases:
+            type: array
+            items:
+              type: string
+          relationships_summary:
+            type: object
+            additionalProperties:
+              type: integer
+          recent_events:
+            type: array
+            items:
+              $ref: '#/components/schemas/Event'
+          freshness:
+            type: object
+            additionalProperties: true
+    IndustrySummary:
+      type: object
+      required:
+      - id
+      - slug
+      - name_zh
+      - name_en
+      - kind
+      - taxonomy_version
+      properties:
+        id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+        name_zh:
+          type: string
+        name_en:
+          type: string
+        parent_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        kind:
+          type: string
+        taxonomy_version:
+          type: string
+        entity_count:
+          type: integer
+        recent_change_count:
+          type: integer
+    HomeResponse:
+      type: object
+      required:
+      - as_of
+      - industries
+      - watchlists
+      - recent_explorations
+      - changes
+      - model_status
+      properties:
+        as_of:
+          type: string
+          format: date-time
+        industries:
+          type: array
+          items:
+            $ref: '#/components/schemas/IndustrySummary'
+        watchlists:
+          type: array
+          items:
+            $ref: '#/components/schemas/Watchlist'
+        recent_explorations:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        changes:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        model_status:
+          type: object
+          additionalProperties: true
+    ExploreRequest:
+      type: object
+      required:
+      - focus
+      - active_layers
+      - direction
+      - hops
+      - budget
+      properties:
+        session_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        focus:
+          type: object
+          required:
+          - object_type
+          - object_id
+          properties:
+            object_type:
+              type: string
+              enum:
+              - entity
+              - industry
+              - theme
+              - facility
+            object_id:
+              type: string
+              format: uuid
+        active_layers:
+          type: array
+          items:
+            type: string
+        direction:
+          type: string
+          enum:
+          - both
+          - upstream
+          - downstream
+          - in
+          - out
+        hops:
+          type: integer
+          minimum: 1
+          maximum: 2
+        as_of:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        scoring_profile_version_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        filters:
+          type: object
+          additionalProperties: true
+        budget:
+          $ref: '#/components/schemas/GraphBudget'
+    RerootRequest:
+      type: object
+      required:
+      - session_id
+      - new_focus_entity_id
+      - inherit_state
+      properties:
+        session_id:
+          type: string
+          format: uuid
+        new_focus_entity_id:
+          type: string
+          format: uuid
+        inherit_state:
+          type: boolean
+          default: true
+        open_in_new_workspace:
+          type: boolean
+          default: false
+    ExpandRequest:
+      type: object
+      required:
+      - session_id
+      - anchor_entity_id
+      - direction
+      - layers
+      - budget
+      properties:
+        session_id:
+          type: string
+          format: uuid
+        anchor_entity_id:
+          type: string
+          format: uuid
+        direction:
+          type: string
+          enum:
+          - upstream
+          - downstream
+          - in
+          - out
+          - both
+        layers:
+          type: array
+          items:
+            type: string
+        budget:
+          $ref: '#/components/schemas/GraphBudget'
+    GraphBudget:
+      type: object
+      required:
+      - max_nodes
+      - max_edges
+      - expand_nodes
+      properties:
+        max_nodes:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 80
+        max_edges:
+          type: integer
+          minimum: 1
+          maximum: 2000
+          default: 300
+        expand_nodes:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 40
+    ExploreResponse:
+      allOf:
+      - $ref: '#/components/schemas/GraphResponse'
+      - type: object
+        required:
+        - session_id
+        - focus
+        - history
+        - active_profile
+        properties:
+          session_id:
+            type: string
+            format: uuid
+          focus:
+            $ref: '#/components/schemas/EntitySummary'
+          history:
+            type: array
+            items:
+              type: object
+              additionalProperties: true
+          active_profile:
+            $ref: '#/components/schemas/ScoringProfile'
+          coverage:
+            type: object
+            additionalProperties: true
+          human_summary:
+            type: object
+            additionalProperties: true
+    Watchlist:
+      type: object
+      required:
+      - id
+      - name
+      - namespace
+      - items
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        namespace:
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+        default_scoring_profile_version_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WatchlistItem'
+        unread_change_count:
+          type: integer
+    WatchlistCreate:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type:
+          - string
+          - 'null'
+        default_scoring_profile_version_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    WatchlistItem:
+      type: object
+      required:
+      - object_type
+      - object_id
+      properties:
+        object_type:
+          type: string
+          enum:
+          - entity
+          - industry
+          - theme
+          - facility
+        object_id:
+          type: string
+          format: uuid
+        labels:
+          type: array
+          items:
+            type: string
+        note:
+          type:
+          - string
+          - 'null'
+        saved_state:
+          type: object
+          additionalProperties: true
+    ScoringProfile:
+      type: object
+      required:
+      - profile_key
+      - name
+      - version
+      - model_key
+      - weights
+      - quality_factor
+      - missing_value_policy
+      - reason
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        profile_key:
+          type: string
+        name:
+          type: string
+        version:
+          type: integer
+          minimum: 1
+        model_key:
+          type: string
+        weights:
+          type: object
+          additionalProperties:
+            type: number
+            minimum: 0
+            maximum: 0.7
+        quality_factor:
+          type: object
+          additionalProperties:
+            type: number
+            minimum: 0
+            maximum: 1
+        half_lives_days:
+          type: object
+          additionalProperties:
+            type: integer
+            minimum: 30
+            maximum: 1825
+        thresholds:
+          type: object
+          additionalProperties: true
+        missing_value_policy:
+          type: string
+          enum:
+          - renormalize_available
+          - mark_unscored
+          - conservative_penalty
+        reason:
+          type: string
+          minLength: 1
+        active:
+          type: boolean
+    ScoringPreviewRequest:
+      type: object
+      required:
+      - profile
+      - scope
+      properties:
+        profile:
+          $ref: '#/components/schemas/ScoringProfile'
+        scope:
+          type: object
+          additionalProperties: true
+        top_n:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+    ScoreExplanation:
+      type: object
+      required:
+      - object_type
+      - object_id
+      - raw_score
+      - evidence_quality
+      - adjusted_score
+      - coverage
+      - contributions
+      - missing_inputs
+      - model_version
+      - profile_version
+      properties:
+        object_type:
+          type: string
+        object_id:
+          type: string
+          format: uuid
+        raw_score:
+          type:
+          - number
+          - 'null'
+          minimum: 0
+          maximum: 100
+        evidence_quality:
+          type:
+          - number
+          - 'null'
+          minimum: 0
+          maximum: 100
+        adjusted_score:
+          type:
+          - number
+          - 'null'
+          minimum: 0
+          maximum: 100
+        coverage:
+          type: number
+          minimum: 0
+          maximum: 100
+        contributions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        missing_inputs:
+          type: array
+          items:
+            type: string
+        model_version:
+          type: string
+        profile_version:
+          type: string
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvidenceSummary'
+    AuditLog:
+      type: object
+      required:
+      - id
+      - occurred_at
+      - actor
+      - action_type
+      - object_type
+      - result_status
+      properties:
+        id:
+          type: string
+          format: uuid
+        occurred_at:
+          type: string
+          format: date-time
+        actor:
+          type: string
+          enum:
+          - local_user
+          - system
+          - codex
+        action_type:
+          type: string
+        object_type:
+          type: string
+        object_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        old_value: {}
+        new_value: {}
+        diff: {}
+        reason:
+          type:
+          - string
+          - 'null'
+        result_status:
+          type: string
+        error:
+          type:
+          - string
+          - 'null'
+    CalibrationRun:
+      type: object
+      required:
+      - id
+      - cadence_days
+      - data_snapshot_at
+      - status
+      - metrics
+      - drift_report
+      - proposal_status
+      properties:
+        id:
+          type: string
+          format: uuid
+        scheduled_for:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        cadence_days:
+          type: integer
+          const: 14
+        data_snapshot_at:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+          - scheduled
+          - running
+          - passed
+          - warning
+          - failed
+          - cancelled
+        metrics:
+          type: object
+          additionalProperties: true
+        drift_report:
+          type: object
+          additionalProperties: true
+        proposal:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+        proposal_status:
+          type: string
+          enum:
+          - none
+          - proposed
+          - accepted
+          - rejected

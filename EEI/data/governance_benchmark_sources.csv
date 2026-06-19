@@ -1,0 +1,8 @@
+﻿source_id,publisher,topic,official_url,applied_rule
+GOV001,GitHub Docs,CODEOWNERS,https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners,目录责任与审查
+GOV002,GitHub Docs,Issue forms,https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms,结构化变更请求
+GOV003,GitHub Docs,Pull request templates,https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/creating-a-pull-request-template-for-your-repository,PR 同步检查
+GOV004,GitHub Docs,Actions workflow syntax,https://docs.github.com/actions/using-workflows/workflow-syntax-for-github-actions,目录变化触发校验
+GOV005,W3C,WCAG 2.2 target size,https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html,24px 目标或等价控制
+GOV006,Material Design 3,Motion,https://m3.material.io/styles/motion/overview/how-it-works,一致且自然的动效反馈
+GOV007,Apple HIG,Motion,https://developer.apple.com/design/human-interface-guidelines/motion,运动传达状态与层级

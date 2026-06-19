@@ -1,0 +1,30 @@
+# Task execution artifacts
+artifacts/*.txt
+artifacts/**/*.log
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+.next/
+*.tsbuildinfo
+coverage/
+playwright-report/
+test-results/
+
+# Local data
+*.db
+*.sqlite*
+raw_snapshots/
+.DS_Store

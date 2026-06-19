@@ -1,0 +1,27 @@
+flowchart LR
+  U[研究者 / 投资者] --> HOME[用户导向首页\n行业 · Watchlist · 搜索 · 最近路径]
+  HOME --> WEB[Next.js 研究工作台]
+  WEB --> EXPLORE[递归焦点探索器\nreroot · expand · path · compare]
+  WEB --> DOSSIER[公司焦点页\n八层商业帝国视图]
+  WEB --> MODEL[模型与排序\n公式 · profile · preview · rollback]
+  EXPLORE --> API[FastAPI Contract Layer]
+  DOSSIER --> API
+  MODEL --> API
+  API --> DB[(PostgreSQL System of Record)]
+  API --> EXPORT[带 provenance 的 CSV / JSON 导出]
+
+  SEC[SEC EDGAR APIs] --> ING[Python Ingestion + Normalization]
+  OFF[官方/监管/政府/公司来源] --> QUEUE[Evidence Research Queue]
+  QUEUE --> ING
+  ING --> DB
+
+  OPS[Scheduler · Run Ledger · Freshness] --> ING
+  OPS --> CAL[14 天校准任务]
+  CAL --> DB
+  DB --> AUDIT[Append-only Operation Log]
+  API --> AUDIT
+  DB --> CHANGE[Change Feed · stale · conflict · failure]
+  CHANGE --> WEB
+
+  classDef external stroke-dasharray: 5 5;
+  class SEC,OFF external;

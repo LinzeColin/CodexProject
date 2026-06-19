@@ -1,0 +1,201 @@
+﻿acceptance_id,priority,category,criterion,verification,status
+A001,P0,planning,"Plan lists scope, files, commands, tests, risks, rollback and acceptance mapping",Review plan artifact,NOT STARTED
+A002,P0,planning,"ADRs cover graph budget, URL state, score versioning, append-only logs and 14-day calibration",ADR review,NOT STARTED
+A003,P0,planning,Prototype/MVP/robust tracks cannot silently change P0 Definition of Done,Plan review,NOT STARTED
+A004,P0,bootstrap,Runtime and dependencies pinned with lockfiles,Clean bootstrap + lock inspection,NOT STARTED
+A005,P0,bootstrap,Docker Compose PostgreSQL and health checks work from clean environment,Integration test,NOT STARTED
+A006,P0,bootstrap,Makefile exposes required non-interactive commands,Command smoke,NOT STARTED
+A007,P0,bootstrap,make verify fails on skipped or failed required suites,Negative test,NOT STARTED
+A008,P0,bootstrap,Network is off by default and secrets are absent,Config/secret scan,NOT STARTED
+A009,P0,bootstrap,OpenAPI and JSON Schemas parse successfully,Contract validation,NOT STARTED
+A010,P0,bootstrap,Repository tree follows target app/api/packages/infra/tests layout,Tree review,NOT STARTED
+A011,P0,data,Migrations upgrade and downgrade cleanly,Migration round-trip,NOT STARTED
+A012,P0,data,Published relationship and event require evidence,Deferred data-quality test,NOT STARTED
+A013,P0,data,Unknown remains unknown and is never coerced to zero/false,Unit/data tests,NOT STARTED
+A014,P0,data,Amount requires currency and amount_kind and incompatible kinds are not summed,Constraint + unit tests,NOT STARTED
+A015,P0,data,"Entity types distinguish legal entity, brand, segment, product, facility, industry and other types",Schema/API assertions,NOT STARTED
+A016,P0,data,All ten relationship families are represented in taxonomy and fixtures,Data check,NOT STARTED
+A017,P0,data,P0 seed contains at least 30 unique entities,CSV/data check,NOT STARTED
+A018,P0,data,Research universe contains 120 U.S. targets and 20 global context nodes,CSV/data check,NOT STARTED
+A019,P0,data,Industry taxonomy supports parent/child and multi-label membership,Migration/API test,NOT STARTED
+A020,P0,data,Supply-chain stage taxonomy contains 16 ordered stages,CSV/data check,NOT STARTED
+A021,P0,data,"Supply-chain attributes preserve tier, materiality, substitutability, capacity, geography and coverage",Schema/unit test,NOT STARTED
+A022,P0,data,"Temporal fields preserve validity, announcement, filing, report, observation and ingestion times",Schema/golden test,NOT STARTED
+A023,P0,data,Supersession and conflict preserve history,Repository integration test,NOT STARTED
+A024,P0,data,Seed and fixture load are idempotent,Run twice and compare,NOT STARTED
+A025,P0,data,Synthetic fixtures are visibly marked and never presented as live facts,UI/API content test,NOT STARTED
+A026,P0,data,Entity resolution precision is >=95% on at least 50 cases,Gold evaluation,NOT STARTED
+A027,P0,data,Relationship precision is >=90% on at least 100 cases,Gold evaluation,NOT STARTED
+A028,P0,data,Research/source/metric/parameter registries load without malformed rows,Static validation,NOT STARTED
+A029,P0,home,"Home shows global search, industries, Watchlist, recent explorations, changes and freshness",E2E,NOT STARTED
+A030,P0,home,Home shows active scoring profile and last/next calibration status,E2E,NOT STARTED
+A031,P0,industry,Industry list is human-readable and versioned,API/UI test,NOT STARTED
+A032,P0,industry,"Industry page shows chain stages, subindustries, entities, bottlenecks, capital, policy and changes",E2E,NOT STARTED
+A033,P0,industry,Entities may have primary and secondary industries,API/data test,NOT STARTED
+A034,P0,industry,Cross-industry navigation is allowed and visibly indicated,E2E,NOT STARTED
+A035,P0,watchlist,"Local-user Watchlist can create, add, remove, restore and persist items",Integration/E2E,NOT STARTED
+A036,P0,watchlist,"Watchlist supports entity, industry, theme and facility items",API test,NOT STARTED
+A037,P0,watchlist,Watchlist shows unread changes and saved view/profile state,E2E,NOT STARTED
+A038,P0,search,Search distinguishes aliases and entity types,Search integration,NOT STARTED
+A039,P0,home,New user reaches a company focus page within three primary actions,E2E,NOT STARTED
+A040,P0,accessibility,Home and industry core controls are keyboard reachable,Playwright/a11y,NOT STARTED
+A041,P0,explore,"Explore API accepts focus, layers, direction, hops, as-of, profile, filters and budget",Contract/integration,NOT STARTED
+A042,P0,explore,Default query is one hop and bounded to configured initial budget,Boundary test,NOT STARTED
+A043,P0,explore,"Hard limits enforce hops<=2, nodes<=500, edges<=2000 and path length<=8",Boundary/negative tests,NOT STARTED
+A044,P0,explore,Over-budget response is truncated with reason and continuation information,API/UI test,NOT STARTED
+A045,P0,reroot,Any focusable entity can become a new root,Integration/E2E,NOT STARTED
+A046,P0,reroot,"Reroot preserves time, layers, filters and scoring profile by default",E2E,NOT STARTED
+A047,P0,reroot,User can reroot with reset/default state,E2E,NOT STARTED
+A048,P0,reroot,Three consecutive reroots complete in semiconductor fixture,Critical E2E,NOT STARTED
+A049,P0,reroot,Breadcrumb contains full focus path and is clickable,E2E,NOT STARTED
+A050,P0,reroot,Browser back/forward restore the correct focus and state,E2E,NOT STARTED
+A051,P0,reroot,"URL serializes/restores focus, layers, direction, time, profile and filters",E2E,NOT STARTED
+A052,P0,explore,Incremental expand loads only selected direction/layers within expand budget,Integration/E2E,NOT STARTED
+A053,P0,explore,"Node actions include reroot, upstream, downstream, path, compare, pin, Watchlist and evidence",UI test,NOT STARTED
+A054,P0,explore,Pinned nodes and comparisons survive layout changes,E2E,NOT STARTED
+A055,P0,explore,Graph has filterable table/list alternative,E2E/a11y,NOT STARTED
+A056,P0,paths,Shortest/upstream/downstream/control/capital/policy/bottleneck paths are bounded and evidence-bearing,Integration,NOT STARTED
+A057,P0,explore,Truncation and inclusion sorting are explained to the user,UI/content test,NOT STARTED
+A058,P0,explore,Visual centrality is not presented as control and color is not the only encoding,Design/a11y review,NOT STARTED
+A059,P0,dossier,Every P0 seed opens a company/entity focus page,API/E2E,NOT STARTED
+A060,P0,dossier,"Human summary covers business, group, dependencies, capital, policy, signals and data gaps",Content/E2E,NOT STARTED
+A061,P0,dossier,Company workspace exposes eight required layers,E2E,NOT STARTED
+A062,P0,structure,"Corporate structure separates legal group, segment, brand, product and facility",API/UI assertions,NOT STARTED
+A063,P0,structure,Commercial empire label does not imply legal control,Content review,NOT STARTED
+A064,P0,supply_chain,Supply chain supports upstream/downstream and ordered stage view,E2E,NOT STARTED
+A065,P0,supply_chain,"Supply-chain edge shows stage, tier, materiality, substitutability, geography, time and evidence",E2E/API,NOT STARTED
+A066,P0,supply_chain,"Unknown supplier, amount, tier or capacity remains explicitly unknown",Data/UI test,NOT STARTED
+A067,P0,supply_chain,NVIDIA synthetic scenario spans design/manufacturing/equipment/materials/system/data-center/energy/customer stages,Fixture/E2E,NOT STARTED
+A068,P0,supply_chain,User can reroot from NVIDIA fixture to foundry/equipment/material nodes,Critical E2E,NOT STARTED
+A069,P0,capital,"Capital and M&A layers distinguish investment, debt, acquisition, commitment, capex, buyback and dividend semantics",Unit/UI,NOT STARTED
+A070,P0,policy,"Policy layer distinguishes awards, obligations, ceilings, regulation, lobbying and trade restrictions",Unit/UI,NOT STARTED
+A071,P0,technology,"Technology/data layer distinguishes IP, standards, data access, integration, cloud and compute",API/UI,NOT STARTED
+A072,P0,signals,"Strategic signals show support, contradiction, alternatives, time decay and rule version",Unit/E2E,NOT STARTED
+A073,P0,evidence,Every edge/detail opens evidence drawer with source and all relevant dates,E2E,NOT STARTED
+A074,P0,timeline,As-of reconstruction shows historical validity and supersession,Integration/E2E,NOT STARTED
+A075,P0,export,"Export includes exploration state, path, IDs, scores and provenance links",Export test,NOT STARTED
+A076,P0,scoring,Default Balanced and at least four alternative profiles load,Data/API,NOT STARTED
+A077,P0,scoring,"Formula, inputs, normalization, missing policy, half-life and version are visible",E2E,NOT STARTED
+A078,P0,scoring,"Raw score, evidence quality, adjusted score and coverage are separate",API/UI assertions,NOT STARTED
+A079,P0,scoring,Top-level weights sum to 1.0 within tolerance and each weight<=0.70,Schema/unit/negative tests,NOT STARTED
+A080,P0,scoring,Unknown inputs follow configured missing policy and are not zero-filled,Unit test,NOT STARTED
+A081,P0,scoring,Time decay uses configurable half-life between 30 and 1825 days,Unit/property test,NOT STARTED
+A082,P0,scoring,User can clone a default profile and edit weights/thresholds/half-lives,E2E,NOT STARTED
+A083,P0,scoring,Preview shows rank/Top-N impact without persisting results,Integration/E2E,NOT STARTED
+A084,P0,scoring,Save creates immutable new profile version with reason,DB/API test,NOT STARTED
+A085,P0,scoring,"Activate, rollback and reset-to-default are available and reproducible",E2E,NOT STARTED
+A086,P0,scoring,"Score explanation returns input values, sources, contributions, missing items and versions",API/E2E,NOT STARTED
+A087,P0,audit,Profile and configuration changes write append-only old/new/diff/reason log,DB/API/E2E,NOT STARTED
+A088,P0,audit,Audit log cannot be modified or deleted through public API,Negative/security test,NOT STARTED
+A089,P0,audit,"Watchlist, review, calibration and export actions are logged",Integration,NOT STARTED
+A090,P0,calibration,Calibration schedule cadence is exactly 14 days,Scheduler/config test,NOT STARTED
+A091,P0,calibration,Manual calibration can run against deterministic fixture clock,Integration,NOT STARTED
+A092,P0,calibration,"Calibration reports coverage, drift, quality, Top-N stability and proposal",Schema/E2E,NOT STARTED
+A093,P0,calibration,Proposal is never automatically activated,Negative/integration,NOT STARTED
+A094,P0,calibration,Accept/reject proposal writes log and preserves rollback,E2E,NOT STARTED
+A095,P0,calibration,Calibration failure leaves active profile and last successful scores unchanged,Failure injection,NOT STARTED
+A096,P0,ingest,SEC client uses descriptive User-Agent and domain allowlist,Mock HTTP,NOT STARTED
+A097,P0,ingest,SEC client rate is <=8 requests/sec,Deterministic limiter,NOT STARTED
+A098,P0,ingest,"Timeout, bounded retry/backoff/jitter and 429/503 handling work",Mock HTTP,NOT STARTED
+A099,P0,ingest,Hash/cache prevent unchanged duplicate processing,Repeated fixture,NOT STARTED
+A100,P0,ingest,"Submissions preserve accession, form, filed, report, accepted and document",Golden test,NOT STARTED
+A101,P0,ingest,"Company Facts preserve concept, unit, period, form, filed and frame",Golden test,NOT STARTED
+A102,P0,ingest,"Connector supports fixture, dry-run and idempotent upsert",CLI/integration,NOT STARTED
+A103,P0,ingest,"Ingestion report includes checkpoint, counts, status and error class",Integration,NOT STARTED
+A104,P0,freshness,API/UI show attempt/success/failure and document/report dates,API/E2E,NOT STARTED
+A105,P0,resilience,Failed batch cannot partially publish facts or scores,Failure injection,NOT STARTED
+A106,P0,changes,Change feed covers create/update/supersede/revoke/conflict/stale/fail,E2E,NOT STARTED
+A107,P0,changes,"Change shows old/new, trigger source and review need",API/E2E,NOT STARTED
+A108,P0,capital,Unreported amount is not rendered as zero or Sankey width,UI/data test,NOT STARTED
+A109,P0,capital,Incomparable amount kinds are not silently summed,Unit/UI,NOT STARTED
+A110,P0,capital,Capital River filters and opens evidence,E2E,NOT STARTED
+A111,P0,policy,Policy and government views open evidence and amount semantics,E2E,NOT STARTED
+A112,P0,signals,"No buy/sell, return probability or guaranteed outcome language",Content scan/review,NOT STARTED
+A113,P0,performance,300 nodes/1000 edges first usable render <=2s in recorded environment,Benchmark,NOT STARTED
+A114,P0,performance,Fixture reroot API p95 <=250ms excluding layout,Benchmark,NOT STARTED
+A115,P0,performance,Score preview Top-100 <=1s,Benchmark,NOT STARTED
+A116,P0,accessibility,Critical controls/evidence/table are keyboard reachable and charts are not color-only,Playwright/manual,NOT STARTED
+A117,P0,security,No secrets; URL/evidence HTML sanitized; dependencies have no unresolved critical vulnerability,Scan/audit/tests,NOT STARTED
+A118,P0,resilience,DB/network/parser/scoring/calibration failures are visible and recoverable,Failure injection,NOT STARTED
+A119,P0,rollback,Each migration downgrades and release/disposable data rollback is rehearsed,Migration/runbook,NOT STARTED
+A120,P0,release,New operator runs MVP from README and completes critical demo,Clean-room reproduction,NOT STARTED
+A121,P0,release,"Release report records exact versions, tests, benchmark environment, limits and debt",Review,NOT STARTED
+A122,P0,release,make verify passes all P0 checks and no required suite is skipped,CI evidence,NOT STARTED
+A123,P0,release,No unresolved critical/high risk lacks owner and mitigation,Risk review,NOT STARTED
+A124,P1,phase2,Scheduled identical data runs are replay-safe,Scheduler integration,NOT STARTED
+A125,P1,phase2,New connectors preserve source-specific semantics,Contract tests,NOT STARTED
+A126,P1,phase2,Candidate review workflow supports approve/reject/conflict,Workflow test,NOT STARTED
+A127,P1,phase2,Saved workspaces can be shared without introducing fact ambiguity,E2E,NOT STARTED
+A128,P1,phase2,Graph database migration requires benchmark and ADR,Architecture review,NOT STARTED
+A129,P0,uiux-planning,v3 plan names visual-first Watchlist-first workspace as canonical UI,Plan/ADR review,NOT STARTED
+A130,P0,uiux-planning,Old industry card dashboard is explicitly rejected as default home,Decision log review,NOT STARTED
+A131,P0,app-shell,Desktop shell contains nav rail context sidebar canvas inspector and timeline,Component/E2E,NOT STARTED
+A132,P0,app-shell,Responsive states collapse inspector then context sidebar without hiding core actions,Viewport E2E,NOT STARTED
+A133,P0,home,Existing session restores last subject lens time and path,E2E reload,NOT STARTED
+A134,P0,home,Watchlist user opens directly into highest-priority or last-viewed company map,E2E,NOT STARTED
+A135,P0,home,Empty Watchlist shows lightweight industry/demo overlay on canvas not separate dashboard,E2E screenshot,NOT STARTED
+A136,P0,visual-first,Central relationship visualization occupies at least 60 percent of usable first screen,Visual measurement,NOT STARTED
+A137,P0,visual-first,Critical upstream downstream business capital and policy relationships are visually represented,Fixture E2E,NOT STARTED
+A138,P0,layout,Upstream is left focus is center and downstream is right in default layout,Screenshot assertion,NOT STARTED
+A139,P0,layout,Capital/control is above and policy/risk is below when those layers are active,Screenshot assertion,NOT STARTED
+A140,P0,layout,Edges show direction and human-language relationship labels,DOM/SVG assertion,NOT STARTED
+A141,P0,lenses,Lens switch filters or fades relationships without navigating to a new page,E2E,NOT STARTED
+A142,P0,lenses,Lens change preserves subject selected node timeline and viewport,State test,NOT STARTED
+A143,P0,semantic-zoom,L0 to L3 semantic zoom levels are implemented and documented,E2E + contract,NOT STARTED
+A144,P0,semantic-zoom,Dense same-type nodes group with count and can be opened in list view,E2E,NOT STARTED
+A145,P0,semantic-zoom,Default first screen never renders an unbounded global hairball,Budget test,NOT STARTED
+A146,P0,inspector,Selecting a node opens readable context detail without changing subject,E2E,NOT STARTED
+A147,P0,inspector,Inspector offers set-as-center upstream downstream watch path and evidence actions,E2E,NOT STARTED
+A148,P0,pivot,Set-as-center is a visible primary action and succeeds in no more than two actions,Usability/E2E,NOT STARTED
+A149,P0,pivot,Double-click right-click hover and drag are not required for primary navigation,Keyboard/touch E2E,NOT STARTED
+A150,P0,pivot,Three consecutive subject changes use the same workspace model,E2E,NOT STARTED
+A151,P0,mental-map,Subject changes preserve directional grammar and positions of retained nodes where feasible,Visual regression,NOT STARTED
+A152,P0,mental-map,Subject transition indicates loading and never leaves blank canvas on failure,Failure E2E,NOT STARTED
+A153,P0,responsive,Core workspace works at 1440x900 1280x800 and 1024x768,Visual regression,NOT STARTED
+A154,P0,navigation,Breadcrumb browser back and app back restore identical subject state,E2E,NOT STARTED
+A155,P0,navigation,User can return to any prior subject in exploration path,E2E,NOT STARTED
+A156,P0,persistence,URL/session stores subject selected object lens time filters and semantic zoom,Contract/E2E,NOT STARTED
+A157,P0,persistence,Reload restores viewport panels and exploration path,Reload E2E,NOT STARTED
+A158,P0,saved-view,Saved view includes subject lens time filters layout and notes,Integration,NOT STARTED
+A159,P0,saved-view,Saved view restore is deterministic and versioned,Integration,NOT STARTED
+A160,P0,time,Timeline changes graph state with explicit as-of label and no false real-time claim,E2E,NOT STARTED
+A161,P0,accessibility,Every graph relationship is available in equivalent list/table view,A11y E2E,NOT STARTED
+A162,P0,accessibility,Graph-equivalent list retains direction type evidence status and time,Contract test,NOT STARTED
+A163,P0,accessibility,All primary operations are keyboard reachable with visible unobscured focus,Keyboard E2E,NOT STARTED
+A164,P0,accessibility,Pointer targets normally meet 24x24 and dense graph has equivalent controls,Axe/manual,NOT STARTED
+A165,P0,accessibility,Color is not the only encoding for relation family or evidence status,Visual/a11y review,NOT STARTED
+A166,P0,content,End-user UI contains no forbidden agent or graph-database jargon,Static copy lint,NOT STARTED
+A167,P0,visual-regression,Approved default lens pivot list empty loading error states have screenshots,Visual regression suite,NOT STARTED
+A168,P0,performance,Fixture first interactive graph P75 is under 2.5 seconds and metrics are recorded,Performance test,NOT STARTED
+A169,P0,catalog,"Relationship families, relationship types, upstream/downstream scope, supply-chain stages, industries, sectors, business segments, capital objects and companies have machine-readable catalogs",Catalog integrity test + manual review,NOT STARTED
+A170,P0,navigation,"Objects and scope is a visible navigation module and exposes counts, definitions, coverage and export links",E2E + visual regression,NOT STARTED
+A171,P0,model-governance,"Model management has one canonical registry for formulas, parameters, thresholds, files, versions, online edit, preview, activation and rollback",Schema validation + model center E2E,NOT STARTED
+A172,P0,architecture,"Function structure screen maps every module to route, data assets, API, status and acceptance criteria",Catalog/API mapping test,NOT STARTED
+A173,P0,delivery-governance,"Development status explicitly separates resolved, prototyped, specified, not started, blocked and out-of-scope items",Status catalog review,NOT STARTED
+A174,P0,delivery-governance,"Development status is visible in navigation and links tasks, risks, controls and acceptance evidence",E2E + link integrity,NOT STARTED
+A175,P0,audit,"Any catalog, model, threshold or scope change is captured by PR template, operation log and immutable release artifact",GitHub workflow + audit contract test,NOT STARTED
+A176,P0,prototype,index.html and standalone.html render the same canonical prototype and do not reference incompatible stale JS/CSS,Hash/content smoke test + browser screenshots,NOT STARTED
+A177,P0,github,"GitHub repository includes issue forms, PR template, code owners, catalog integrity workflow, release checklist and backup policy",Repository structure check,NOT STARTED
+A178,P0,live-refresh,All visible modules report the same active model version and data snapshot before a global refresh is declared complete,E2E consistency test,NOT STARTED
+A179,P0,model,保存、激活、回滚、恢复默认和导入均生成不可变版本和操作日志,DB/API/E2E,NOT STARTED
+A180,P0,github,仓库包含功能、模型、数据范围和缺陷的结构化 Issue 表单,file/schema review,NOT STARTED
+A181,P0,github,PR 模板要求变更范围、文档同步、测试、风险、回滚和验收证据,file review,NOT STARTED
+A182,P0,github,GitHub Actions 在目录、模型、任务或验收变更时运行治理一致性校验,workflow test,NOT STARTED
+A183,P0,traceability,每个 P0 功能至少映射一个任务、验收和测试证据路径,traceability validation,NOT STARTED
+A184,P0,status,开发状态明确区分规格完成、原型完成、产品实现和验证状态，并列出已解决/未解决,ledger review,NOT STARTED
+A185,P0,risk,每项高风险具有控制、触发器、责任、关联功能、任务和验收,risk traceability validation,NOT STARTED
+A186,P0,data,公司目录覆盖 140 个研究对象并明确层级、范围与事实核验状态,catalog validation,NOT STARTED
+A187,P0,data,关系目录包含 10 个关系家族和不少于 52 种关系类型,catalog validation,NOT STARTED
+A188,P0,data,供应链目录包含 16 个有序阶段并支持上游/下游语义,catalog validation,NOT STARTED
+A189,P0,data,行业目录不少于 26 个分类且支持多标签归属,catalog validation,NOT STARTED
+A190,P0,data,业务板块目录定义集团、法人、业务单元、品牌、产品、设施和地区口径,catalog validation,NOT STARTED
+A191,P0,data,资本对象目录区分证券、流量、承诺、政府资金和估值语义，未知金额不等于零,catalog validation,NOT STARTED
+A192,P0,data,上下游角色目录定义供应、使能、客户、竞争、合作和资本控制角色,catalog validation,NOT STARTED
+A193,P0,uiux,首页可视化信息承载覆盖评分达到 90/100 以上,visual coverage measurement,NOT STARTED
+A194,P0,uiux,所有核心系统页面的可视化信息承载覆盖评分平均达到 80/100 以上,visual coverage measurement,NOT STARTED
+A195,P0,motion,选择、切换主体、面板、重算和刷新具有统一时长、缓动和过渡，支持 reduced motion,visual/motion test,NOT STARTED
+A196,P1,motion,支持设备在关键成功、选择和错误操作提供非强制触觉反馈，不支持设备无副作用,device/API test,NOT STARTED
+A197,P0,database,用户能够从任意界面查看当前数据快照、模型版本、来源和字段血缘,E2E,NOT STARTED
+A198,P0,refresh,模型参数修改后商业版图、供应链、资本、控制、政策、信号、排序与告警同步刷新,cross-view E2E,NOT STARTED
+A199,P0,navigation,功能结构、模型与参数、数据库与来源、开发治理均为正式导航板块,E2E,NOT STARTED
+A200,P0,release,clean-room 校验通过 Markdown/CSV/JSON/GitHub/原型/PDF/ZIP 一致性,release verification,NOT STARTED

@@ -1,0 +1,21 @@
+name: 风险与控制
+description: 新增或修改风险、触发器、控制和发布停止条件
+title: "[Risk] "
+labels: ["risk", "governance"]
+body:
+  - type: input
+    id: risk_id
+    attributes: {label: Risk ID, placeholder: R054}
+    validations: {required: true}
+  - type: textarea
+    id: risk
+    attributes: {label: 风险与触发器}
+    validations: {required: true}
+  - type: textarea
+    id: control
+    attributes: {label: 预防、检测、补偿和回滚控制}
+    validations: {required: true}
+  - type: textarea
+    id: trace
+    attributes: {label: 关联功能、任务、验收和 Gate}
+    validations: {required: true}

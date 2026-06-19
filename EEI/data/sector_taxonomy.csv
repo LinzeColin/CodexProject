@@ -1,0 +1,14 @@
+﻿sector_id,slug,name_zh,name_en,source_industry_id,default_order,description,status
+SEC-001,semiconductors-electronics,半导体与电子系统,Semiconductors & Electronic Systems,IND-001,10,芯片设计制造封装设备材料存储网络和电子系统,ACTIVE
+SEC-002,ai-cloud-data,AI模型、数据与云,AI Models Data & Cloud,IND-002,20,基础模型云计算数据平台和AI基础设施,ACTIVE
+SEC-003,software-cybersecurity,软件与网络安全,Software & Cybersecurity,IND-003,30,企业软件开发工具工作流网络与安全,ACTIVE
+SEC-004,internet-media-platforms,互联网、媒体与平台,Internet Media & Platforms,IND-004,40,搜索社交广告流媒体内容与应用分发,ACTIVE
+SEC-005,finance-capital-markets,金融、资管与资本市场,Finance Asset Management & Capital Markets,IND-005,50,银行资管私募信贷保险交易所和支付,ACTIVE
+SEC-006,energy-utilities,能源、电力与公用事业,Energy Power & Utilities,IND-006,60,油气发电核电可再生电网与公用事业,ACTIVE
+SEC-007,automotive-robotics-mobility,汽车、机器人与移动出行,Automotive Robotics & Mobility,IND-007,70,汽车电池机器人自动驾驶与移动平台,ACTIVE
+SEC-008,aerospace-defense-space,航空航天、国防与卫星,Aerospace Defense & Space,IND-008,80,军工航空航天发射卫星与国防AI,ACTIVE
+SEC-009,industrial-logistics-infrastructure,工业、物流与基础设施,Industrials Logistics & Infrastructure,IND-009,90,工业设备工程机械铁路航空货运与工程服务,ACTIVE
+SEC-010,telecom-networks-datacenters,通信、网络与数据中心,Telecom Networks & Data Centers,IND-010,100,运营商网络光纤数据中心和边缘基础设施,ACTIVE
+SEC-011,healthcare-life-sciences,医疗、制药与生命科学,Healthcare Pharma & Life Sciences,IND-011,110,医疗保险制药生物科技和科研工具,ACTIVE
+SEC-012,consumer-retail-brands,消费、零售与品牌,Consumer Retail & Brands,IND-012,120,零售消费品餐饮品牌与供应链,ACTIVE
+SEC-013,real-estate-facilities-engineering,房地产、设施与工程,Real Estate Facilities & Engineering,IND-013,130,数据中心地产工业设施许可和工程建设,ACTIVE

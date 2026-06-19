@@ -1,0 +1,10 @@
+﻿source_code,source_name,tier,base_url,expected_cadence,typical_disclosure_lag,mvp_mode,rate_limit,notes
+sec_submissions,SEC EDGAR Submissions API,1,https://data.sec.gov/submissions/,intraday,form/report-period dependent,live_connector,client <=8 requests/sec,No API key; descriptive User-Agent.
+sec_companyfacts,SEC Company Facts API,1,https://data.sec.gov/api/xbrl/companyfacts/,intraday,filing/report-period dependent,live_connector,client <=8 requests/sec,Concept/company coverage varies.
+sec_13f,SEC Form 13F Data Sets,1,https://www.sec.gov/data-research/sec-markets-data/form-13f-data-sets,quarterly,up to about 45 days after quarter end,optional_phase2,SEC fair access,Not real-time flow; preserve report period.
+sec_ownership,SEC Forms 3/4/5 and Schedules 13D/G,1,https://www.sec.gov/edgar/search/,event-driven,form-specific,filing_classifier,SEC fair access,Handle amendments/supersession.
+usaspending,USAspending.gov API,1,https://api.usaspending.gov/,source-defined,award-system dependent,phase2,verify official docs,"Ceiling, obligation, outlay differ."
+gleif,GLEIF LEI API,1,https://api.gleif.org/api/v1/,weekly sufficient,registry/provider dependent,phase2,verify official docs,Not all entities have LEI/parent.
+senate_lda,U.S. Senate LDA / LDA.gov,1,https://lda.senate.gov/api/,periodic,filing dependent,phase2_gated,reverify transition,Reverify after 2026-06-30 endpoint transition.
+uspto_odp,USPTO Open Data Portal,1,https://data.uspto.gov/,source-defined,publication dependent,phase2_gated,verify official docs,Assignee entity resolution needs review.
+company_official,Official company IR/newsroom,2,source-specific,event-driven,self-reported,curated_fixture,source-specific,Cross-check selective/promotional statements.

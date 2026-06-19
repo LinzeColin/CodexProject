@@ -1,0 +1,87 @@
+[
+  {
+    "profile_key": "balanced-v1",
+    "name": "Balanced",
+    "version": 1,
+    "is_default": true,
+    "weights": {
+      "supply_chain_criticality": 0.28,
+      "strategic_dependency": 0.20,
+      "capital_momentum": 0.16,
+      "ownership_control_influence": 0.12,
+      "policy_exposure": 0.10,
+      "technology_data_dependency": 0.08,
+      "time_relevance": 0.06
+    },
+    "quality_factor": {"floor": 0.50, "evidence_weight": 0.50},
+    "missing_value_policy": "renormalize_available"
+  },
+  {
+    "profile_key": "supply-chain-v1",
+    "name": "Supply Chain",
+    "version": 1,
+    "is_default": false,
+    "weights": {
+      "supply_chain_criticality": 0.45,
+      "strategic_dependency": 0.25,
+      "capital_momentum": 0.08,
+      "ownership_control_influence": 0.05,
+      "policy_exposure": 0.07,
+      "technology_data_dependency": 0.07,
+      "time_relevance": 0.03
+    },
+    "quality_factor": {"floor": 0.50, "evidence_weight": 0.50},
+    "missing_value_policy": "renormalize_available"
+  },
+  {
+    "profile_key": "capital-v1",
+    "name": "Capital",
+    "version": 1,
+    "is_default": false,
+    "weights": {
+      "supply_chain_criticality": 0.10,
+      "strategic_dependency": 0.10,
+      "capital_momentum": 0.45,
+      "ownership_control_influence": 0.15,
+      "policy_exposure": 0.05,
+      "technology_data_dependency": 0.05,
+      "time_relevance": 0.10
+    },
+    "quality_factor": {"floor": 0.50, "evidence_weight": 0.50},
+    "missing_value_policy": "renormalize_available"
+  },
+  {
+    "profile_key": "control-v1",
+    "name": "Control",
+    "version": 1,
+    "is_default": false,
+    "weights": {
+      "supply_chain_criticality": 0.08,
+      "strategic_dependency": 0.20,
+      "capital_momentum": 0.08,
+      "ownership_control_influence": 0.50,
+      "policy_exposure": 0.05,
+      "technology_data_dependency": 0.05,
+      "time_relevance": 0.04
+    },
+    "quality_factor": {"floor": 0.50, "evidence_weight": 0.50},
+    "missing_value_policy": "renormalize_available"
+  },
+  {
+    "profile_key": "policy-v1",
+    "name": "Policy",
+    "version": 1,
+    "is_default": false,
+    "weights": {
+      "supply_chain_criticality": 0.15,
+      "strategic_dependency": 0.10,
+      "capital_momentum": 0.08,
+      "ownership_control_influence": 0.08,
+      "policy_exposure": 0.45,
+      "technology_data_dependency": 0.05,
+      "time_relevance": 0.09
+    },
+    "quality_factor": {"floor": 0.50, "evidence_weight": 0.50},
+    "missing_value_policy": "renormalize_available"
+  }
+]

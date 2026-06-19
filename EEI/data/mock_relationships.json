@@ -1,0 +1,670 @@
+[
+  {
+    "id": "10000000-0000-4000-8000-000000000001",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000013",
+    "object_entity_id": "00000000-0000-4000-8000-000000000012",
+    "relationship_type": "legal_parent",
+    "relationship_family": "corporate_structure",
+    "status": "reported",
+    "confidence": 0.95,
+    "valid_from": "2025-10-28T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000001",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Illustrative; reverify official structure."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000002",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000003",
+    "object_entity_id": "00000000-0000-4000-8000-000000000012",
+    "relationship_type": "invested_in",
+    "relationship_family": "capital_financing",
+    "status": "reported",
+    "confidence": 0.85,
+    "valid_from": "2025-10-28T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000002",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "No current percentage asserted."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000003",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000004",
+    "object_entity_id": "00000000-0000-4000-8000-000000000014",
+    "relationship_type": "invested_in",
+    "relationship_family": "capital_financing",
+    "status": "reported",
+    "confidence": 0.85,
+    "valid_from": "2024-11-22T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": "announced_investment",
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000003",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Amount intentionally unknown."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000004",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000006",
+    "object_entity_id": "00000000-0000-4000-8000-000000000012",
+    "relationship_type": "compute_provider_to",
+    "relationship_family": "commercial_dependency",
+    "status": "derived",
+    "confidence": 0.55,
+    "valid_from": null,
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000004",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic UI test edge."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000005",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000008",
+    "object_entity_id": "00000000-0000-4000-8000-000000000012",
+    "relationship_type": "cloud_provider_to",
+    "relationship_family": "commercial_dependency",
+    "status": "derived",
+    "confidence": 0.55,
+    "valid_from": null,
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000005",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic UI test edge."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000006",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000015",
+    "object_entity_id": "00000000-0000-4000-8000-000000000016",
+    "relationship_type": "acquired",
+    "relationship_family": "mergers_acquisitions",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-02-02T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000006",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Research hypothesis; exact legal transaction must be reverified."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000007",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000016",
+    "object_entity_id": "00000000-0000-4000-8000-000000000017",
+    "relationship_type": "strategic_partner",
+    "relationship_family": "commercial_dependency",
+    "status": "unknown",
+    "confidence": null,
+    "valid_from": null,
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000007",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Intentional unknown fixture."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000008",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000003",
+    "object_entity_id": "00000000-0000-4000-8000-000000000020",
+    "relationship_type": "signals_theme",
+    "relationship_family": "strategic_signal",
+    "status": "derived",
+    "confidence": 0.7,
+    "valid_from": "2025-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "rule_version": "fixture-v1"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000008",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture only."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000009",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000018",
+    "object_entity_id": "00000000-0000-4000-8000-000000000007",
+    "relationship_type": "founder_of",
+    "relationship_family": "governance_people",
+    "status": "derived",
+    "confidence": 0.4,
+    "valid_from": null,
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000009",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic person edge; not a factual assertion."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000010",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000019",
+    "object_entity_id": "00000000-0000-4000-8000-000000000009",
+    "relationship_type": "government_award_to",
+    "relationship_family": "government_policy",
+    "status": "derived",
+    "confidence": 0.5,
+    "valid_from": null,
+    "valid_to": null,
+    "amount": 500000000,
+    "currency": "USD",
+    "amount_kind": "award_ceiling",
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000010",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic award ceiling."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000011",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000004",
+    "object_entity_id": "00000000-0000-4000-8000-000000000014",
+    "relationship_type": "strategic_partner",
+    "relationship_family": "commercial_dependency",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2024-11-22T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000011",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Verify current terms."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000012",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000011",
+    "object_entity_id": "00000000-0000-4000-8000-000000000006",
+    "relationship_type": "supplier_to",
+    "relationship_family": "supply_chain_operations",
+    "status": "disputed",
+    "confidence": 0.3,
+    "valid_from": null,
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000012",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Intentional semantic conflict for review tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000013",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000001",
+    "object_entity_id": "00000000-0000-4000-8000-000000000020",
+    "relationship_type": "signals_theme",
+    "relationship_family": "strategic_signal",
+    "status": "derived",
+    "confidence": 0.65,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "rule_version": "fixture-v1"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000013",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture only."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000014",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000026",
+    "object_entity_id": "00000000-0000-4000-8000-000000000006",
+    "relationship_type": "segment_of",
+    "relationship_family": "corporate_structure",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "segment_role": "core_business"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000014",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000015",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000027",
+    "object_entity_id": "00000000-0000-4000-8000-000000000006",
+    "relationship_type": "product_of",
+    "relationship_family": "corporate_structure",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000015",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000016",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000011",
+    "object_entity_id": "00000000-0000-4000-8000-000000000024",
+    "relationship_type": "operates_facility",
+    "relationship_family": "corporate_structure",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000016",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000017",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000013",
+    "object_entity_id": "00000000-0000-4000-8000-000000000012",
+    "relationship_type": "board_control",
+    "relationship_family": "ownership_control",
+    "status": "reported",
+    "confidence": 0.9,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {},
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000017",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000018",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000021",
+    "object_entity_id": "00000000-0000-4000-8000-000000000006",
+    "relationship_type": "wafer_foundry_for",
+    "relationship_family": "supply_chain_operations",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "stage_from": "SC-06",
+      "stage_to": "SC-08",
+      "tier": "direct",
+      "materiality": "critical",
+      "substitutability": "low"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000018",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000019",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000022",
+    "object_entity_id": "00000000-0000-4000-8000-000000000021",
+    "relationship_type": "equipment_provider_to",
+    "relationship_family": "supply_chain_operations",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "stage_from": "SC-04",
+      "stage_to": "SC-06",
+      "tier": "Tier-1",
+      "materiality": "critical"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000019",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000020",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000023",
+    "object_entity_id": "00000000-0000-4000-8000-000000000021",
+    "relationship_type": "material_provider_to",
+    "relationship_family": "supply_chain_operations",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "stage_from": "SC-02",
+      "stage_to": "SC-06",
+      "tier": "Tier-1",
+      "materiality": "high"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000020",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000021",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000025",
+    "object_entity_id": "00000000-0000-4000-8000-000000000024",
+    "relationship_type": "energy_provider_to",
+    "relationship_family": "supply_chain_operations",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "stage_from": "SC-10",
+      "stage_to": "SC-10",
+      "tier": "direct",
+      "materiality": "critical"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000021",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000022",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000029",
+    "object_entity_id": "00000000-0000-4000-8000-000000000030",
+    "relationship_type": "system_integrator_for",
+    "relationship_family": "supply_chain_operations",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "stage_from": "SC-09",
+      "stage_to": "SC-12",
+      "tier": "direct",
+      "materiality": "high"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000022",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000023",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000030",
+    "object_entity_id": "00000000-0000-4000-8000-000000000006",
+    "relationship_type": "customer_of",
+    "relationship_family": "supply_chain_operations",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "stage_from": "SC-12",
+      "stage_to": "SC-08",
+      "tier": "direct",
+      "materiality": "medium"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000023",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000024",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000006",
+    "object_entity_id": "00000000-0000-4000-8000-000000000029",
+    "relationship_type": "licenses_ip_to",
+    "relationship_family": "technology_data_ip",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "scope": "synthetic platform software"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000024",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000025",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000027",
+    "object_entity_id": "00000000-0000-4000-8000-000000000030",
+    "relationship_type": "integrates_with",
+    "relationship_family": "technology_data_ip",
+    "status": "reported",
+    "confidence": 0.8,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "scope": "synthetic integration"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000025",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000026",
+    "subject_entity_id": "00000000-0000-4000-8000-000000000006",
+    "object_entity_id": "00000000-0000-4000-8000-000000000028",
+    "relationship_type": "signals_theme",
+    "relationship_family": "strategic_signal",
+    "status": "derived",
+    "confidence": 0.7,
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_to": null,
+    "amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "qualifiers": {
+      "rule_version": "fixture-v2",
+      "membership_context": "primary_industry"
+    },
+    "evidence": [
+      {
+        "source_document_id": "20000000-0000-4000-8000-000000000026",
+        "role": "supports",
+        "locator": "fixture",
+        "support_excerpt": "Synthetic fixture; not a publication claim."
+      }
+    ],
+    "fixture_notice": "Synthetic fixture for interaction and data-model tests."
+  }
+]

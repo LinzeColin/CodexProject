@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 开发文档总索引
+    url: https://github.com/OWNER/REPO/blob/main/GITHUB_REPOSITORY_BACKUP_INDEX.md
+    about: 提交前先确认单一事实来源和同步规则

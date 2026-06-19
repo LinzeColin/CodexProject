@@ -1,0 +1,9 @@
+component_id,name_zh,name_en,default_weight,min_weight,max_weight,formula_reference,missing_value_policy,display_order
+supply_chain_criticality,供应链关键性,Supply Chain Criticality,0.28,0,0.70,docs/15_SCORING_MODEL_AND_USER_TUNING.md#31-供应链关键性,renormalize_available,10
+strategic_dependency,战略依赖,Strategic Dependency,0.20,0,0.70,docs/15_SCORING_MODEL_AND_USER_TUNING.md#32-战略依赖,renormalize_available,20
+capital_momentum,资本动量,Capital Momentum,0.16,0,0.70,docs/15_SCORING_MODEL_AND_USER_TUNING.md#33-资本动量,renormalize_available,30
+ownership_control_influence,所有权与控制影响,Ownership & Control Influence,0.12,0,0.70,docs/15_SCORING_MODEL_AND_USER_TUNING.md#34-所有权与控制影响,renormalize_available,40
+policy_exposure,政策暴露,Policy Exposure,0.10,0,0.70,docs/15_SCORING_MODEL_AND_USER_TUNING.md#35-政策暴露,renormalize_available,50
+technology_data_dependency,技术与数据依赖,Technology & Data Dependency,0.08,0,0.70,docs/15_SCORING_MODEL_AND_USER_TUNING.md,renormalize_available,60
+time_relevance,时间相关性,Time Relevance,0.06,0,0.70,docs/15_SCORING_MODEL_AND_USER_TUNING.md#4-时间衰减,renormalize_available,70
+evidence_quality,证据质量,Evidence Quality,0.00,0,0.70,docs/15_SCORING_MODEL_AND_USER_TUNING.md#5-证据质量,separate_quality_factor,80

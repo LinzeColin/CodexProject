@@ -1,0 +1,11 @@
+gate_id,name,entry_exit_criteria,stop_condition,task_ids,status
+G0,Plan and governance,需求、文件范围、目录、风险、验收、回滚和 GitHub 治理通过,No code changes before approval,"T000,T001,T002,T003,T004,T1100,T1200,T1201,T1212,T1213,T1214",PASS
+G1,Repository foundation,Monorepo、版本、数据库容器、CI 和 verify 可复现,Clean-room bootstrap passes,"T100,T101,T102,T103,T104,T1101,T1102,T1202",IN PROGRESS
+G2,Domain and data model,实体、关系、时间、证据、行业、供应链和目录可迁移,Migrations+catalog validation pass,"T200,T201,T202,T203,T204,T205,T206,T207,T208,T1103,T1104,T1105,T1106,T1107,T1108,T1109,T1203",NOT_STARTED
+G3,Entry and management,搜索、Watchlist、行业、模型 registry 和配置导入可用,API+E2E pass,"T300,T301,T302,T303,T304,T305,T306,T1110,T1111,T1112,T1113,T1206",NOT_STARTED
+G4,Recursive exploration and live context,图查询、递归主体、数据库工作台、实时预览和治理页可用,Cross-view E2E and consistency pass,"T400,T401,T402,T403,T404,T405,T406,T407,T408,T409,T1114,T1115,T1116,T1117,T1204,T1205,T1207",NOT_STARTED
+G5,Company intelligence and interaction,八层公司视图、供应链、资本、政策、动画和视觉覆盖达标,Visual+motion+accessibility pass,"T500,T501,T502,T503,T504,T505,T506,T507,T508,T1118,T1119,T1208,T1209",NOT_STARTED
+G6,Model governance,模型引擎、解释、版本、日志、双周校准可用,Model+audit E2E pass,"T600,T601,T602,T603,T604,T605,T606,T607,T608,T1120,T1121",NOT_STARTED
+G7,Data ingestion,SEC fixture/connector、质量、新鲜度和变更管线可用,Idempotency+failure tests pass,"T700,T701,T702,T703,T704,T705,T706,T1122",NOT_STARTED
+G8,Research views,资本、政策、战略、变化和跨视图一致性可用,Domain E2E pass,"T800,T801,T802,T803,T804,T805,T1210",NOT_STARTED
+G9,Release,性能、安全、可访问、回滚、文档、PDF、ZIP 和 clean-room 全部通过,make verify + release report,"T900,T901,T902,T903,T904,T905,T906,T907,T1123,T1211,T1215",NOT_STARTED

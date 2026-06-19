@@ -1,0 +1,123 @@
+[
+  {
+    "formula_id": "F-EQ-001",
+    "name_zh": "证据质量",
+    "name_en": "Evidence Quality",
+    "formula": "0.28*source_authority + 0.18*locator_precision + 0.14*temporal_fit + 0.16*cross_source_confirmation + 0.12*source_independence + 0.12*entity_resolution_quality",
+    "output_range": "0..100",
+    "purpose": "衡量证据可信度与可定位性",
+    "missing_policy": "renormalize_available",
+    "online_edit": "component_weights",
+    "default_threshold": "minimum quality >= 55; inferred relation sources >= 2"
+  },
+  {
+    "formula_id": "F-RF-001",
+    "name_zh": "时间相关性",
+    "name_en": "Recency Factor",
+    "formula": "exp(-ln(2) * age_days / half_life_days)",
+    "output_range": "0..1",
+    "purpose": "按信息类型衰减时间贡献",
+    "missing_policy": "use_observed_at_or_disclose_unknown",
+    "online_edit": "half_life_days",
+    "default_threshold": "30..1825 days"
+  },
+  {
+    "formula_id": "F-NP-001",
+    "name_zh": "节点商业版图优先级",
+    "name_en": "Node Priority",
+    "formula": "sum(component_i * weight_i) * QualityFactor * CoverageFactor",
+    "output_range": "0..100",
+    "purpose": "控制节点大小、排序、路径和 Watchlist 优先级",
+    "missing_policy": "renormalize_available+coverage_penalty",
+    "online_edit": "weights;quality;coverage",
+    "default_threshold": "minimum adjusted priority >= 46"
+  },
+  {
+    "formula_id": "F-EM-001",
+    "name_zh": "关系重要性",
+    "name_en": "Edge Materiality",
+    "formula": "0.35*relationship_strength + 0.25*strategic_dependency + 0.20*transaction_materiality + 0.10*evidence_quality + 0.10*time_relevance",
+    "output_range": "0..100",
+    "purpose": "控制关系边显示、宽度和聚合",
+    "missing_policy": "renormalize_available",
+    "online_edit": "weights;display_threshold",
+    "default_threshold": "minimum edge materiality >= 48"
+  },
+  {
+    "formula_id": "F-SS-001",
+    "name_zh": "战略信号",
+    "name_en": "Strategic Signal",
+    "formula": "0.28*capex_acceleration + 0.20*investment_and_mna + 0.18*capacity_and_long_contracts + 0.14*talent_and_hiring + 0.10*patent_product_signal + 0.10*policy_alignment",
+    "output_range": "0..100",
+    "purpose": "形成下一步战略主题研究假设",
+    "missing_policy": "renormalize_available+contradiction_panel",
+    "online_edit": "weights;window;threshold",
+    "default_threshold": "watch >= 60; strong >= 75"
+  },
+  {
+    "formula_id": "F-AS-001",
+    "name_zh": "变化告警",
+    "name_en": "Alert Score",
+    "formula": "0.35*score_delta + 0.25*novelty + 0.20*evidence_quality + 0.20*watchlist_relevance",
+    "output_range": "0..100",
+    "purpose": "决定变化与告警优先级",
+    "missing_policy": "no_alert_without_evidence",
+    "online_edit": "weights;delta_threshold",
+    "default_threshold": "high-priority alert >= 80; material delta >= 8"
+  },
+  {
+    "formula_id": "F-SC-001",
+    "name_zh": "供应链关键性",
+    "name_en": "Supply Chain Criticality",
+    "formula": "0.30*uniqueness + 0.25*switching_cost + 0.20*lead_time + 0.15*capacity_concentration + 0.10*geopolitical_exposure",
+    "output_range": "0..100",
+    "purpose": "定位瓶颈、替代性和单点依赖",
+    "missing_policy": "unknown_not_zero",
+    "online_edit": "weights;stage_threshold",
+    "default_threshold": "critical >= 70"
+  },
+  {
+    "formula_id": "F-CI-001",
+    "name_zh": "控制影响",
+    "name_en": "Control Influence",
+    "formula": "0.30*voting_power + 0.25*board_rights + 0.20*special_rights + 0.15*economic_interest + 0.10*founder_management_power",
+    "output_range": "0..100",
+    "purpose": "区分经济所有权与实际控制",
+    "missing_policy": "separate_unknown_components",
+    "online_edit": "weights;control_threshold",
+    "default_threshold": "material >= 55"
+  },
+  {
+    "formula_id": "F-CM-001",
+    "name_zh": "资本动量",
+    "name_en": "Capital Momentum",
+    "formula": "0.25*capex_growth + 0.20*financing_activity + 0.20*strategic_investment + 0.15*mna_activity + 0.10*buyback_dividend_shift + 0.10*commitment_growth",
+    "output_range": "0..100",
+    "purpose": "识别资本配置方向",
+    "missing_policy": "amount_semantics_aware",
+    "online_edit": "weights;period",
+    "default_threshold": "material >= 60"
+  },
+  {
+    "formula_id": "F-PE-001",
+    "name_zh": "政策暴露",
+    "name_en": "Policy Exposure",
+    "formula": "0.25*revenue_dependency + 0.20*subsidy_dependency + 0.20*export_control + 0.15*regulatory_intensity + 0.10*government_contract + 0.10*geographic_concentration",
+    "output_range": "0..100",
+    "purpose": "呈现政策机会、约束和依赖",
+    "missing_policy": "jurisdiction_specific_unknown",
+    "online_edit": "weights;jurisdiction;half_life",
+    "default_threshold": "watch >= 55"
+  },
+  {
+    "formula_id": "F-DR-001",
+    "name_zh": "依赖风险",
+    "name_en": "Dependency Risk",
+    "formula": "0.30*concentration + 0.25*criticality + 0.20*switching_cost + 0.15*contract_lock_in + 0.10*policy_exposure",
+    "output_range": "0..100",
+    "purpose": "跨供应链、技术和商业依赖形成风险排序",
+    "missing_policy": "renormalize_available+coverage",
+    "online_edit": "weights;threshold",
+    "default_threshold": "high >= 70"
+  }
+]

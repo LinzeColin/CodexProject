@@ -1,0 +1,401 @@
+[
+  {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "entity_key": "alphabet",
+    "canonical_name": "Alphabet Inc.",
+    "entity_type": "legal_entity",
+    "tier": 0,
+    "status": "active",
+    "identifiers": [
+      {
+        "scheme": "CIK",
+        "value": "0001652044"
+      },
+      {
+        "scheme": "TICKER",
+        "value": "GOOGL/GOOG"
+      }
+    ],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000002",
+    "entity_key": "meta",
+    "canonical_name": "Meta Platforms, Inc.",
+    "entity_type": "legal_entity",
+    "tier": 0,
+    "status": "active",
+    "identifiers": [
+      {
+        "scheme": "CIK",
+        "value": "0001326801"
+      },
+      {
+        "scheme": "TICKER",
+        "value": "META"
+      }
+    ],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000003",
+    "entity_key": "microsoft",
+    "canonical_name": "Microsoft Corporation",
+    "entity_type": "legal_entity",
+    "tier": 0,
+    "status": "active",
+    "identifiers": [
+      {
+        "scheme": "CIK",
+        "value": "0000789019"
+      },
+      {
+        "scheme": "TICKER",
+        "value": "MSFT"
+      }
+    ],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000004",
+    "entity_key": "amazon",
+    "canonical_name": "Amazon.com, Inc.",
+    "entity_type": "legal_entity",
+    "tier": 0,
+    "status": "active",
+    "identifiers": [
+      {
+        "scheme": "CIK",
+        "value": "0001018724"
+      },
+      {
+        "scheme": "TICKER",
+        "value": "AMZN"
+      }
+    ],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000005",
+    "entity_key": "apple",
+    "canonical_name": "Apple Inc.",
+    "entity_type": "legal_entity",
+    "tier": 0,
+    "status": "active",
+    "identifiers": [
+      {
+        "scheme": "CIK",
+        "value": "0000320193"
+      },
+      {
+        "scheme": "TICKER",
+        "value": "AAPL"
+      }
+    ],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000006",
+    "entity_key": "nvidia",
+    "canonical_name": "NVIDIA Corporation",
+    "entity_type": "legal_entity",
+    "tier": 0,
+    "status": "active",
+    "identifiers": [
+      {
+        "scheme": "CIK",
+        "value": "0001045810"
+      },
+      {
+        "scheme": "TICKER",
+        "value": "NVDA"
+      }
+    ],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000007",
+    "entity_key": "tesla",
+    "canonical_name": "Tesla, Inc.",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [
+      {
+        "scheme": "CIK",
+        "value": "0001318605"
+      },
+      {
+        "scheme": "TICKER",
+        "value": "TSLA"
+      }
+    ],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000008",
+    "entity_key": "oracle",
+    "canonical_name": "Oracle Corporation",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [
+      {
+        "scheme": "CIK",
+        "value": "0001341439"
+      },
+      {
+        "scheme": "TICKER",
+        "value": "ORCL"
+      }
+    ],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000009",
+    "entity_key": "palantir",
+    "canonical_name": "Palantir Technologies Inc.",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [
+      {
+        "scheme": "CIK",
+        "value": "0001321655"
+      },
+      {
+        "scheme": "TICKER",
+        "value": "PLTR"
+      }
+    ],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000010",
+    "entity_key": "broadcom",
+    "canonical_name": "Broadcom Inc.",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [
+      {
+        "scheme": "CIK",
+        "value": "0001730168"
+      },
+      {
+        "scheme": "TICKER",
+        "value": "AVGO"
+      }
+    ],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000011",
+    "entity_key": "coreweave",
+    "canonical_name": "CoreWeave, Inc.",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [
+      {
+        "scheme": "CIK",
+        "value": "0001769628"
+      },
+      {
+        "scheme": "TICKER",
+        "value": "CRWV"
+      }
+    ],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000012",
+    "entity_key": "openai_group",
+    "canonical_name": "OpenAI Group PBC",
+    "entity_type": "legal_entity",
+    "tier": 0,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000013",
+    "entity_key": "openai_foundation",
+    "canonical_name": "OpenAI Foundation",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000014",
+    "entity_key": "anthropic",
+    "canonical_name": "Anthropic, PBC",
+    "entity_type": "legal_entity",
+    "tier": 0,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000015",
+    "entity_key": "spacex",
+    "canonical_name": "Space Exploration Technologies Corp.",
+    "entity_type": "legal_entity",
+    "tier": 0,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000016",
+    "entity_key": "xai",
+    "canonical_name": "xAI",
+    "entity_type": "brand",
+    "tier": 0,
+    "status": "needs_resolution",
+    "identifiers": [],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000017",
+    "entity_key": "x_corp",
+    "canonical_name": "X Corp.",
+    "entity_type": "legal_entity",
+    "tier": 0,
+    "status": "needs_resolution",
+    "identifiers": [],
+    "fixture_notice": "MVP fixture identity; live facts require verification."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000018",
+    "entity_key": "demo_person",
+    "canonical_name": "Demo Governance Person",
+    "entity_type": "person",
+    "tier": 9,
+    "status": "synthetic",
+    "identifiers": [],
+    "fixture_notice": "Synthetic support node for tests only."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000019",
+    "entity_key": "demo_government",
+    "canonical_name": "Demo U.S. Government Body",
+    "entity_type": "government_body",
+    "tier": 9,
+    "status": "synthetic",
+    "identifiers": [],
+    "fixture_notice": "Synthetic support node for tests only."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000020",
+    "entity_key": "theme_ai_infra",
+    "canonical_name": "AI Infrastructure",
+    "entity_type": "theme",
+    "tier": 9,
+    "status": "synthetic",
+    "identifiers": [],
+    "fixture_notice": "Synthetic support node for tests only."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000021",
+    "entity_key": "fixture_foundry",
+    "canonical_name": "Synthetic Advanced Foundry",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "Synthetic fixture for recursive supply-chain exploration; not a publication claim."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000022",
+    "entity_key": "fixture_equipment",
+    "canonical_name": "Synthetic Lithography Equipment Co.",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "Synthetic fixture for recursive supply-chain exploration; not a publication claim."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000023",
+    "entity_key": "fixture_materials",
+    "canonical_name": "Synthetic Specialty Materials Co.",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "Synthetic fixture for recursive supply-chain exploration; not a publication claim."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000024",
+    "entity_key": "fixture_datacenter",
+    "canonical_name": "Synthetic AI Data Center Campus",
+    "entity_type": "facility",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "Synthetic fixture for recursive supply-chain exploration; not a publication claim."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000025",
+    "entity_key": "fixture_utility",
+    "canonical_name": "Synthetic Grid Utility",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "Synthetic fixture for recursive supply-chain exploration; not a publication claim."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000026",
+    "entity_key": "fixture_segment",
+    "canonical_name": "Accelerated Computing Segment (Synthetic)",
+    "entity_type": "business_segment",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "Synthetic fixture for recursive supply-chain exploration; not a publication claim."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000027",
+    "entity_key": "fixture_product",
+    "canonical_name": "AI Accelerator Platform (Synthetic)",
+    "entity_type": "product",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "Synthetic fixture for recursive supply-chain exploration; not a publication claim."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000028",
+    "entity_key": "fixture_industry",
+    "canonical_name": "Semiconductors & Electronic Systems",
+    "entity_type": "industry",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "Synthetic fixture for recursive supply-chain exploration; not a publication claim."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000029",
+    "entity_key": "fixture_integrator",
+    "canonical_name": "Synthetic Systems Integrator",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "Synthetic fixture for recursive supply-chain exploration; not a publication claim."
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000030",
+    "entity_key": "fixture_cloud_customer",
+    "canonical_name": "Synthetic Cloud Customer",
+    "entity_type": "legal_entity",
+    "tier": 1,
+    "status": "active",
+    "identifiers": [],
+    "fixture_notice": "Synthetic fixture for recursive supply-chain exploration; not a publication claim."
+  }
+]

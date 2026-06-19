@@ -1,0 +1,23 @@
+stateDiagram-v2
+  [*] --> Home
+  Home --> IndustryLandscape: 选择行业
+  Home --> FocusWorkspace: 搜索 / Watchlist / 最近路径
+  IndustryLandscape --> FocusWorkspace: 选择节点
+
+  state FocusWorkspace {
+    [*] --> LoadFocus
+    LoadFocus --> BoundedGraph: 加载焦点 + 预算内邻接
+    BoundedGraph --> SelectNode: 单击节点
+    SelectNode --> Evidence: 查看证据
+    SelectNode --> Expand: 展开指定方向/层
+    SelectNode --> Reroot: 设为主视角
+    Expand --> BoundedGraph: 合并分页结果
+    Evidence --> SelectNode
+    Reroot --> PersistState: 保存 breadcrumb/URL/filters/profile
+    PersistState --> LoadFocus: 新实体成为 focus
+  }
+
+  FocusWorkspace --> FocusWorkspace: back/forward 恢复任一步
+  FocusWorkspace --> Compare: 固定并比较节点
+  FocusWorkspace --> Export: 导出带 provenance 的研究集
+  FocusWorkspace --> Home: 返回入口

@@ -1,0 +1,12 @@
+﻿model_id,name_zh,slug,formula_id,scoring_object,primary_outputs,configuration_file,status,versioning,online_edit,file_edit,explainability
+MOD-001,综合研究优先级,node_priority,F-NP-001,node,节点大小、排序、路径、Watchlist,config/model_profiles/balanced-v2.json,active,immutable,yes,yes,inputs+contributions+evidence+versions
+MOD-002,证据质量,evidence_quality,F-EQ-001,evidence,证据等级、发布门槛、解释,config/model_runtime_defaults.yaml,active,immutable,yes,yes,inputs+contributions+evidence+versions
+MOD-003,时间相关性,recency_factor,F-RF-001,fact_event,所有时间衰减,config/model_runtime_defaults.yaml,active,immutable,yes,yes,inputs+contributions+evidence+versions
+MOD-004,关系重要性,edge_materiality,F-EM-001,relationship,边显示、宽度、Top-N,config/model_runtime_defaults.yaml,active,immutable,yes,yes,inputs+contributions+evidence+versions
+MOD-005,供应链关键性,supply_chain_criticality,F-SC-001,relationship_path,瓶颈、替代性、关键路径,config/model_runtime_defaults.yaml,active,immutable,yes,yes,inputs+contributions+evidence+versions
+MOD-006,控制影响,control_influence,F-CI-001,entity_relationship,所有权与控制视图,config/model_runtime_defaults.yaml,active,immutable,yes,yes,inputs+contributions+evidence+versions
+MOD-007,资本动量,capital_momentum,F-CM-001,entity_period,资金与并购视图,config/model_runtime_defaults.yaml,active,immutable,yes,yes,inputs+contributions+evidence+versions
+MOD-008,政策暴露,policy_exposure,F-PE-001,entity_jurisdiction,政策雷达和风险,config/model_runtime_defaults.yaml,active,immutable,yes,yes,inputs+contributions+evidence+versions
+MOD-009,战略信号,strategic_signal,F-SS-001,entity_theme_period,战略主题和反证,config/model_runtime_defaults.yaml,active,immutable,yes,yes,inputs+contributions+evidence+versions
+MOD-010,变化告警,alert_score,F-AS-001,change_event,变化优先级和 Watchlist 告警,config/model_runtime_defaults.yaml,active,immutable,yes,yes,inputs+contributions+evidence+versions
+MOD-011,依赖风险,dependency_risk,F-DR-001,entity_path,跨关系族依赖风险,config/model_runtime_defaults.yaml,planned,immutable,yes,yes,inputs+contributions+evidence+versions

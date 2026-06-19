@@ -1,0 +1,66 @@
+version: 14
+profile_id: balanced-v2
+profile_name: 均衡 / 综合研究
+status: draft_import_template
+notes:
+  - 本文件是便于人工审阅和修改的组合导入模板；正式机器配置仍由 profile JSON、threshold JSON 和 motion JSON 分层保存。
+  - 权重合计必须为 1.0 ± 0.0001；未知值不得自动填 0。
+  - 修改后先 dry-run 和影响预览，再生成不可变配置版本并原子激活。
+
+weights:
+  supply_chain_criticality: 0.24
+  strategic_dependency: 0.18
+  capital_momentum: 0.14
+  control_influence: 0.12
+  policy_exposure: 0.10
+  technology_dependency: 0.08
+  strategic_signal: 0.08
+  time_relevance: 0.06
+
+quality_adjustment:
+  floor: 0.45
+  evidence_weight: 0.55
+coverage_adjustment:
+  floor: 0.65
+  coverage_weight: 0.35
+
+half_life_days:
+  control_change: 730
+  mna: 730
+  long_term_supply: 540
+  capex_financing: 365
+  policy_regulatory: 270
+  product_partnership: 180
+  news_lead: 90
+
+thresholds:
+  minimum_evidence_quality: 55
+  minimum_edge_materiality: 48
+  minimum_adjusted_priority: 46
+  high_priority_alert: 80
+  strategic_signal_watch: 60
+  supply_chain_critical: 70
+  control_material: 55
+  visible_nodes_home: 42
+  visible_edges_home: 64
+
+refresh:
+  preview_debounce_ms: 120
+  browser_preview_p95_ms: 250
+  session_apply_p95_ms: 700
+  atomic_snapshot_switch: true
+
+visual:
+  home_visual_surface_ratio: 0.90
+  system_visual_first_coverage: 0.80
+
+motion:
+  micro_feedback_ms: 80
+  selection_ms: 160
+  spatial_relayout_ms: 380
+  full_view_transition_ms: 480
+  respect_reduced_motion: true
+
+calibration:
+  cadence_days: 14
+  auto_activate: false

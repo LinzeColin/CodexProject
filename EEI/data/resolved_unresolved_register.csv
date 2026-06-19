@@ -1,0 +1,17 @@
+﻿item_id,item_type,status,title,resolution_or_question,source_doc
+DEC-001,decision,RESOLVED,首页默认入口,Watchlist 当前公司可视化商业版图，不使用行业卡片主页,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
+DEC-002,decision,RESOLVED,递归探索,任意节点可设为研究中心并保留路径、时间和筛选,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+DEC-003,decision,RESOLVED,数据底座,PostgreSQL 为 MVP system of record；图数据库须基准后再决策,docs/06_ARCHITECTURE.md
+DEC-004,decision,RESOLVED,模型修改,在线和文件两种方式；先预览、再版本化激活、可回滚,MODEL_MANAGEMENT.md
+DEC-005,decision,RESOLVED,校准周期,固定 14 天，只给建议，不自动激活,docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
+DEC-006,decision,RESOLVED,可视化目标,首页 90+；核心系统平均 80+,docs/28_VISUAL_COVERAGE_UI_ACCEPTANCE.md
+DEC-007,decision,RESOLVED,文档治理,Markdown + CSV/JSON + GitHub CI 三层一致,docs/34_GITHUB_DOCUMENTATION_AND_BACKUP.md
+OPEN-001,issue,OPEN,实际部署环境,云平台、地区、域名和预算未确定,docs/32_DEVELOPMENT_EXECUTION_LEDGER.md
+OPEN-002,issue,OPEN,身份认证,MVP 是否需要多用户和认证尚未决定,docs/32_DEVELOPMENT_EXECUTION_LEDGER.md
+OPEN-003,issue,OPEN,商业数据许可,付费供应链、交易、持股和专利数据源尚未选择,docs/05_DATA_SOURCES_AND_PROVENANCE.md
+OPEN-004,issue,OPEN,真实数据库规模,生产数据量、查询模式和分区策略需在接入后基准,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+OPEN-005,issue,OPEN,图渲染库最终选型,React Flow/Cytoscape/Sigma 需用目标规模基准后决定,docs/18_UIUX_RESEARCH_BENCHMARK.md
+OPEN-006,issue,OPEN,预测有效性,战略信号模型需要历史样本、反事实和误报率评估,MODEL_MANAGEMENT.md
+OPEN-007,issue,OPEN,全部公司真实关系,140 个对象只是研究目录，真实关系需逐条证据接入,DOMAIN_DATA_CATALOG.md
+DEFER-001,issue,DEFERRED,图数据库迁移,只有 PostgreSQL 基准不能满足目标才进入 ADR,docs/06_ARCHITECTURE.md
+DEFER-002,issue,DEFERRED,权限管理,用户已明确暂不纳入当前 MVP,docs/02_SCOPE_AND_BOUNDARIES.md

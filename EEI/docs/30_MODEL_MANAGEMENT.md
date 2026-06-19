@@ -1,0 +1,57 @@
+# 模型管理、公式、参数、门槛与即时刷新
+
+## 结论与使用路径
+
+默认使用均衡配置；用户可在 `模型与参数` 页面在线修改，也可编辑 `config/model_runtime_defaults.yaml` 后 dry-run 导入。任何修改先预览，不覆盖历史版本；全局激活完成后通过原子快照刷新所有可视化。
+
+## 模型清单
+
+| 模型 | 名称 | 公式 | 评分对象 | 作用 | 状态 |
+|---|---|---|---|---|---|
+| MOD-001 | 综合研究优先级 | F-NP-001 | node | 节点大小、排序、路径、Watchlist | active |
+| MOD-002 | 证据质量 | F-EQ-001 | evidence | 证据等级、发布门槛、解释 | active |
+| MOD-003 | 时间相关性 | F-RF-001 | fact_event | 所有时间衰减 | active |
+| MOD-004 | 关系重要性 | F-EM-001 | relationship | 边显示、宽度、Top-N | active |
+| MOD-005 | 供应链关键性 | F-SC-001 | relationship_path | 瓶颈、替代性、关键路径 | active |
+| MOD-006 | 控制影响 | F-CI-001 | entity_relationship | 所有权与控制视图 | active |
+| MOD-007 | 资本动量 | F-CM-001 | entity_period | 资金与并购视图 | active |
+| MOD-008 | 政策暴露 | F-PE-001 | entity_jurisdiction | 政策雷达和风险 | active |
+| MOD-009 | 战略信号 | F-SS-001 | entity_theme_period | 战略主题和反证 | active |
+| MOD-010 | 变化告警 | F-AS-001 | change_event | 变化优先级和 Watchlist 告警 | active |
+| MOD-011 | 依赖风险 | F-DR-001 | entity_path | 跨关系族依赖风险 | planned |
+
+
+## 配置与文档文件
+
+| 文件 | 作用 |
+|---|---|
+| `data/model_registry.csv` | 模型目录、公式、对象、输出和状态 |
+| `data/formula_registry.csv` | 完整公式、范围、缺失值和默认阈值 |
+| `data/parameter_catalog.csv` | 60 个可调参数、范围、步长、在线控件与刷新范围 |
+| `data/threshold_registry.csv` | 17 个核心发布/显示/视觉/性能门槛及其机器参数映射 |
+| `config/model_runtime_defaults.yaml` | 人类可编辑导入模板 |
+| `config/model_profiles/balanced-v2.json` | 默认机器配置 |
+| `config/thresholds/default-v2.json` | 默认阈值 |
+| `specs/model_config_schema.json` | 配置契约 |
+| `scripts/compile_model_runtime_defaults.py` | YAML 校验/编译 |
+
+## 修改流程
+
+```bash
+python scripts/compile_model_runtime_defaults.py --dry-run
+python scripts/validate_model_config.py config/model_profiles/balanced-v2.json config/thresholds/default-v2.json
+python scripts/apply_model_config.py --dry-run --profile config/model_profiles/balanced-v2.json --thresholds config/thresholds/default-v2.json
+```
+
+在线修改分五步：草稿输入 -> 即时预览 -> 会话应用 -> 保存不可变版本 -> 激活全局快照。失败不得部分发布。
+
+## 关键门槛
+
+- 顶层权重合计 `1.0 ± 0.0001`；单项不超过 `0.70`。
+- 分数/阈值 `0-100`；半衰期 `30-1825` 天。
+- 未知和缺失不得填 0；按可用输入归一化并显示 coverage。
+- 推断关系默认需要至少 2 个相互独立来源。
+- 浏览器预览 P95 `<250ms`；会话应用 P95 `<700ms`。
+- 大范围重算继续显示上一个成功快照，完成后原子切换。
+
+详细文档：`docs/24_MODEL_FORMULA_PARAMETER_THRESHOLD_CENTER.md`、`docs/25_LIVE_RECALCULATION_REFRESH_ARCHITECTURE.md`。

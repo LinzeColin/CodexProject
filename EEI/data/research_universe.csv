@@ -1,0 +1,141 @@
+﻿research_id,tier,canonical_name,power_system,initial_form,research_focus,verification_status
+P0-001,P0,Alphabet Inc.,数字平台 / 云 / AI,上市集团,母子公司与品牌分离；Google/Cloud/YouTube/Waymo；AI资本开支、并购、监管与数据依赖,needs_source_verification
+P0-002,P0,Microsoft Corporation,云 / 企业软件 / AI,上市集团,Azure、OpenAI经济与治理关系、AI基础设施资本开支、企业分发渠道与监管,needs_source_verification
+P0-003,P0,"Amazon.com, Inc.",云 / 电商 / 物流 / AI,上市集团,AWS、Anthropic关系、物流网络、数据中心资本开支、供应链与政府合同,needs_source_verification
+P0-004,P0,"Meta Platforms, Inc.",社交平台 / 广告 / AI,上市集团,创始人投票控制、平台矩阵、AI基础设施、战略投资、广告与监管,needs_source_verification
+P0-005,P0,Apple Inc.,终端 / 平台 / 服务,上市集团,全球供应链、服务收入、回购、AI合作、应用分发权力与监管,needs_source_verification
+P0-006,P0,NVIDIA Corporation,AI计算 / 半导体,上市集团,GPU生态、客户与代工依赖、战略投资、网络设备、资本回报与平台控制,needs_source_verification
+P0-007,P0,OpenAI Group PBC,基础模型 / AI平台,私营PBC；结构需持续核验,与OpenAI Foundation分离建模；股东、算力、云、商业分发、治理权和融资事件,needs_source_verification
+P0-008,P0,Anthropic PBC,基础模型 / AI平台,私营PBC,Long-Term Benefit Trust、Amazon/Google等资本与云关系、算力承诺、融资与治理,needs_source_verification
+P0-009,P0,Space Exploration Technologies Corp. (SpaceX),航天 / 卫星 / AI集团,上市集团,SpaceX—xAI—X链条、Starlink、政府合同、双重股权、债务、资本开支与并购,needs_source_verification
+P0-010,P0,X.AI Holdings Corp. / xAI operating entities,基础模型 / 社交数据 / AI基础设施,SpaceX集团子层级；法律实体需解析,与SpaceX及X Holdings的有效日期关系、Colossus算力、融资、数据与产品分发,needs_source_verification
+P0-011,P0,X Holdings Corp. / X Corp.,社交平台 / 数据分发,SpaceX集团下属链条；法律实体需解析,债务、平台现金流、广告、数据授权、xAI集成、治理与关联交易,needs_source_verification
+P0-012,P0,"Tesla, Inc.",汽车 / 能源 / AI / 机器人,上市集团,创始人生态、关联方、AI与机器人资本开支、能源业务、供应链和交叉投资,needs_source_verification
+P0-013,P0,Oracle Corporation,数据库 / 云 / AI基础设施,上市集团,OCI数据中心、AI客户与伙伴、债务融资、收购整合、能源与芯片依赖,needs_source_verification
+P0-014,P0,Broadcom Inc.,半导体 / 基础设施软件,上市集团,VMware整合、AI网络、客户集中度、债务、并购和平台议价权,needs_source_verification
+P0-015,P0,"Advanced Micro Devices, Inc.",CPU / GPU / AI计算,上市集团,AI加速器、代工和封装依赖、客户结构、收购与战略投资,needs_source_verification
+P0-016,P0,Intel Corporation,半导体 / 晶圆代工,上市集团,Foundry资本开支、政府补助、制造节点、资产重组、客户与供应链,needs_source_verification
+P0-017,P0,"CoreWeave, Inc.",GPU云 / AI基础设施,上市/融资密集型平台,客户集中、GPU担保与债务、数据中心租约、电力承诺、供应商依赖,needs_source_verification
+P0-018,P0,Palantir Technologies Inc.,数据软件 / 国防AI,上市集团,政府合同、商业扩张、创始人控制、合作网络与政策影响,needs_source_verification
+P0-019,P0,"BlackRock, Inc.",资产管理 / 基础设施资本,上市资产管理集团,管理人、基金和受益所有权分离；13F/N-PORT/Form ADV、投票权与私募资产,needs_source_verification
+P0-020,P0,"The Vanguard Group, Inc.",资产管理,私营资产管理集团,基金持股与管理人权力分离；共同持股、代理投票、产品流量与治理影响,needs_source_verification
+P0-021,P0,State Street Corporation,托管 / 资产管理 / 银行,上市金融集团,State Street Global Advisors、托管资产、基金持股、投票与银行体系关系,needs_source_verification
+P0-022,P0,Berkshire Hathaway Inc.,多元化控股 / 保险 / 投资,上市控股集团,运营子公司与证券投资组合分离；保险浮存金、资本配置、能源和铁路,needs_source_verification
+P0-023,P0,JPMorgan Chase & Co.,银行 / 投行 / 资产管理,上市银行控股集团,贷款、承销、M&A顾问、托管、资产管理、交易对手与集团结构,needs_source_verification
+P0-024,P0,"The Goldman Sachs Group, Inc.",投行 / 资管 / 私募资本,上市金融集团,融资、承销、顾问、私募基金、交易对手、董事网络与战略投资,needs_source_verification
+P0-025,P0,Morgan Stanley,投行 / 财富管理 / 资管,上市金融集团,资本市场中介、财富管理资金、13F、承销和重大企业关系,needs_source_verification
+P0-026,P0,Blackstone Inc.,私募股权 / 信贷 / 基础设施,上市另类资管集团,GP—基金—SPV—被投企业分层；数据中心、能源、地产和信贷关系,needs_source_verification
+P0-027,P0,"Apollo Global Management, Inc.",私募股权 / 私募信贷 / 保险,上市另类资管集团,Apollo—Athene体系、私募信贷、保险资金、基础设施和企业融资,needs_source_verification
+P0-028,P0,Lockheed Martin Corporation,国防 / 航空航天,上市集团,政府合同、项目依赖、分包商网络、游说、技术投资与供应链,needs_source_verification
+P0-029,P0,Constellation Energy Corporation,核电 / 电力供应,上市能源集团,数据中心电力协议、核电资产、并购、监管与AI电力需求信号,needs_source_verification
+P0-030,P0,"NextEra Energy, Inc.",公用事业 / 可再生能源,上市能源集团,公用事业与开发平台分离、电网和数据中心需求、资本开支、融资与监管,needs_source_verification
+P1-031,P1,International Business Machines Corporation,企业软件 / 混合云 / AI,上市集团,企业AI、云与咨询分发、收购和专利,needs_source_verification
+P1-032,P1,"Salesforce, Inc.",企业软件 / 数据 / AI,上市集团,平台生态、AI并购、资本回报与客户网络,needs_source_verification
+P1-033,P1,"ServiceNow, Inc.",企业软件 / 工作流 / AI,上市集团,企业入口、AI合作、战略投资和客户集中,needs_source_verification
+P1-034,P1,Adobe Inc.,创意软件 / 文档 / AI,上市集团,订阅平台、生成式AI、内容版权和并购监管,needs_source_verification
+P1-035,P1,"Cisco Systems, Inc.",网络设备 / 安全,上市集团,AI网络、收购整合、客户与供应链,needs_source_verification
+P1-036,P1,Dell Technologies Inc.,服务器 / 企业硬件,上市集团,AI服务器、供应链、融资和渠道,needs_source_verification
+P1-037,P1,Hewlett Packard Enterprise Company,服务器 / 网络 / 企业基础设施,上市集团,AI系统、网络、政府与企业客户,needs_source_verification
+P1-038,P1,"Arista Networks, Inc.",云网络 / 数据中心,上市集团,超大规模客户集中、AI网络和供应链,needs_source_verification
+P1-039,P1,"Cloudflare, Inc.",边缘网络 / 安全 / 开发者平台,上市集团,网络分发、AI推理、客户与数据治理,needs_source_verification
+P1-040,P1,"CrowdStrike Holdings, Inc.",网络安全,上市集团,平台集中度、政府和企业合同、事件风险,needs_source_verification
+P1-041,P1,"Palo Alto Networks, Inc.",网络安全,上市集团,并购整合、平台化、政府与企业关系,needs_source_verification
+P1-042,P1,Snowflake Inc.,数据云 / AI,上市集团,云依赖、数据平台、AI合作与客户,needs_source_verification
+P1-043,P1,"Databricks, Inc.",数据 / AI平台,私营；法律状态需核验,融资、云合作、收购、企业分发,needs_source_verification
+P1-044,P1,"Stripe, Inc.",支付基础设施,私营；法律状态需核验,支付流、银行伙伴、融资、平台依赖,needs_source_verification
+P1-045,P1,"Uber Technologies, Inc.",移动平台 / 物流,上市集团,平台网络、自动驾驶投资、监管与资本配置,needs_source_verification
+P1-046,P1,QUALCOMM Incorporated,无线芯片 / 许可,上市集团,专利许可、终端客户、AI边缘计算,needs_source_verification
+P1-047,P1,"Micron Technology, Inc.",存储半导体,上市集团,HBM、制造资本开支、政府补助和周期,needs_source_verification
+P1-048,P1,"Marvell Technology, Inc.",数据中心芯片 / 网络,上市集团,定制硅、云客户、并购和供应链,needs_source_verification
+P1-049,P1,"Applied Materials, Inc.",半导体设备,上市集团,晶圆厂资本开支、客户集中和出口管制,needs_source_verification
+P1-050,P1,Lam Research Corporation,半导体设备,上市集团,先进制程投资、客户与政策风险,needs_source_verification
+P1-051,P1,KLA Corporation,半导体设备 / 检测,上市集团,制造节点、客户和技术瓶颈,needs_source_verification
+P1-052,P1,Texas Instruments Incorporated,模拟半导体,上市集团,制造扩张、工业/汽车需求和资本回报,needs_source_verification
+P1-053,P1,"Synopsys, Inc.",EDA / 芯片IP,上市集团,设计工具控制点、并购与客户依赖,needs_source_verification
+P1-054,P1,"Cadence Design Systems, Inc.",EDA / 系统设计,上市集团,设计工具生态、AI辅助设计和客户,needs_source_verification
+P1-055,P1,GlobalFoundries Inc.,晶圆代工,上市集团,美国制造、长期供货协议、政府支持,needs_source_verification
+P1-056,P1,Bank of America Corporation,银行 / 投行,上市银行控股集团,贷款、承销、财富管理和企业关系,needs_source_verification
+P1-057,P1,Citigroup Inc.,全球银行 / 交易服务,上市银行控股集团,跨境资金、托管、交易服务和重组,needs_source_verification
+P1-058,P1,Wells Fargo & Company,银行 / 商业信贷,上市银行控股集团,企业信贷、监管限制和客户网络,needs_source_verification
+P1-059,P1,Fidelity Investments,资产管理 / 经纪,私营金融集团,基金持股、经纪流量、私募投资和治理,needs_source_verification
+P1-060,P1,Capital Group,资产管理,私营资产管理集团,基金持股、长期资本和代理投票,needs_source_verification
+P1-061,P1,"T. Rowe Price Group, Inc.",资产管理,上市资管集团,基金持股、私募成长投资和资金流,needs_source_verification
+P1-062,P1,The Charles Schwab Corporation,经纪 / 托管 / 银行,上市金融集团,客户现金、托管、ETF与经纪流量,needs_source_verification
+P1-063,P1,KKR & Co. Inc.,私募股权 / 信贷 / 基础设施,上市另类资管集团,基金/SPV、数据中心、能源和信贷,needs_source_verification
+P1-064,P1,The Carlyle Group Inc.,私募股权 / 国防 / 基础设施,上市另类资管集团,基金、政府网络、国防与企业控制,needs_source_verification
+P1-065,P1,Ares Management Corporation,私募信贷 / 另类资产,上市另类资管集团,私募信贷、基础设施和企业融资,needs_source_verification
+P1-066,P1,RTX Corporation,国防 / 航空航天,上市集团,政府合同、航空供应链和分包网络,needs_source_verification
+P1-067,P1,Northrop Grumman Corporation,国防 / 航天,上市集团,政府项目、导弹/太空资产和供应商,needs_source_verification
+P1-068,P1,The Boeing Company,航空 / 国防 / 航天,上市集团,商业航空、国防合同、供应链和监管,needs_source_verification
+P1-069,P1,General Dynamics Corporation,国防 / 船舶 / IT,上市集团,政府合同、船舶与信息系统,needs_source_verification
+P1-070,P1,"L3Harris Technologies, Inc.",国防电子 / 通信,上市集团,并购、政府合同和关键电子供应链,needs_source_verification
+P1-071,P1,"Anduril Industries, Inc.",国防科技 / AI,私营；法律状态需核验,融资、政府合同、传感器与自主系统,needs_source_verification
+P1-072,P1,"Blue Origin, LLC",航天 / 发射 / 基础设施,私营；法律状态需核验,创始人资本、政府合同、发射与供应链,needs_source_verification
+P1-073,P1,Exxon Mobil Corporation,油气 / 化工 / 能源,上市集团,资本开支、并购、能源转型、政策与游说,needs_source_verification
+P1-074,P1,Chevron Corporation,油气 / 能源,上市集团,并购、资本配置、能源政策与供应链,needs_source_verification
+P1-075,P1,GE Vernova Inc.,电力设备 / 电网 / 发电,上市集团,电网瓶颈、燃机、核电/风电供应链与AI用电,needs_source_verification
+P1-076,P1,Vistra Corp.,发电 / 零售电力,上市集团,电力资产、数据中心合同、并购与资本回报,needs_source_verification
+P1-077,P1,Duke Energy Corporation,公用事业,上市集团,电网资本开支、费率监管和数据中心负荷,needs_source_verification
+P1-078,P1,Comcast Corporation,宽带 / 媒体,上市集团,宽带基础设施、NBCUniversal、资本配置与监管,needs_source_verification
+P1-079,P1,AT&T Inc.,通信 / 光纤 / 无线,上市集团,网络资本开支、频谱、债务和政府关系,needs_source_verification
+P1-080,P1,Verizon Communications Inc.,通信 / 无线 / 光纤,上市集团,频谱、网络资本开支、债务和企业客户,needs_source_verification
+P2-081,P2,"Netflix, Inc.",流媒体 / 内容,上市集团,内容支出、广告、云与分发依赖,needs_source_verification
+P2-082,P2,The Walt Disney Company,媒体 / 乐园 / 流媒体,上市集团,内容IP、平台、董事治理、资本配置,needs_source_verification
+P2-083,P2,"Warner Bros. Discovery, Inc.",媒体 / 流媒体,上市集团；结构变化需监控,债务、资产重组、内容与分发,needs_source_verification
+P2-084,P2,"T-Mobile US, Inc.",无线通信,上市集团,控制股东、频谱、并购与网络资本开支,needs_source_verification
+P2-085,P2,"Charter Communications, Inc.",宽带 / 有线电视,上市集团,债务、网络投资、分发与监管,needs_source_verification
+P2-086,P2,Fox Corporation,新闻 / 体育 / 媒体,上市集团,家族控制、内容权利与政治影响,needs_source_verification
+P2-087,P2,"Nasdaq, Inc.",交易所 / 市场基础设施,上市集团,上市、数据、清算和指数基础设施,needs_source_verification
+P2-088,P2,"Intercontinental Exchange, Inc.",交易所 / 清算 / 数据,上市集团,交易与清算、NYSE、数据和抵押生态,needs_source_verification
+P2-089,P2,CME Group Inc.,衍生品交易所,上市集团,期货清算、风险集中和市场数据,needs_source_verification
+P2-090,P2,Capital One Financial Corporation,银行 / 信用卡,上市金融集团,消费信贷、并购、数据与支付,needs_source_verification
+P2-091,P2,UnitedHealth Group Incorporated,医疗保险 / 医疗服务,上市集团,保险—服务垂直整合、并购与监管,needs_source_verification
+P2-092,P2,Eli Lilly and Company,制药,上市集团,研发、产能、定价、并购与供应链,needs_source_verification
+P2-093,P2,Johnson & Johnson,医药 / 医疗器械,上市集团,分拆后结构、研发、诉讼和并购,needs_source_verification
+P2-094,P2,Pfizer Inc.,制药,上市集团,研发、专利悬崖、并购与资本配置,needs_source_verification
+P2-095,P2,"Merck & Co., Inc.",制药,上市集团,研发管线、并购与产品集中,needs_source_verification
+P2-096,P2,AbbVie Inc.,制药,上市集团,产品集中、并购与研发,needs_source_verification
+P2-097,P2,Thermo Fisher Scientific Inc.,生命科学工具,上市集团,科研供应链、并购与客户网络,needs_source_verification
+P2-098,P2,Danaher Corporation,生命科学 / 工业科技,上市集团,并购型资本配置、运营子公司网络,needs_source_verification
+P2-099,P2,Walmart Inc.,零售 / 物流 / 金融服务,上市集团,供应链、广告、支付、云合作与劳动力,needs_source_verification
+P2-100,P2,Costco Wholesale Corporation,零售 / 会员制,上市集团,供应链、会员现金流和资本配置,needs_source_verification
+P2-101,P2,"The Home Depot, Inc.",零售 / 建材,上市集团,供应链、专业客户、并购与回购,needs_source_verification
+P2-102,P2,The Procter & Gamble Company,消费品,上市集团,品牌组合、广告、供应链与资本回报,needs_source_verification
+P2-103,P2,The Coca-Cola Company,饮料 / 品牌授权,上市集团,装瓶体系、品牌控制和全球分销,needs_source_verification
+P2-104,P2,McDonald's Corporation,餐饮 / 特许经营 / 地产,上市集团,特许网络、地产和供应链,needs_source_verification
+P2-105,P2,Honeywell International Inc.,工业 / 航空 / 自动化,上市集团,分拆/组合调整、航空与工业技术,needs_source_verification
+P2-106,P2,Caterpillar Inc.,工程机械,上市集团,矿业/基建周期、经销商和融资,needs_source_verification
+P2-107,P2,Deere & Company,农业机械 / 软件,上市集团,设备、经销商、农业数据和融资,needs_source_verification
+P2-108,P2,GE Aerospace,航空发动机,上市集团,航空供应链、服务收入和国防关系,needs_source_verification
+P2-109,P2,"United Parcel Service, Inc.",物流,上市集团,网络资本开支、大客户和劳动力,needs_source_verification
+P2-110,P2,FedEx Corporation,物流,上市集团,网络重组、航空资产和大客户,needs_source_verification
+P2-111,P2,Union Pacific Corporation,铁路,上市集团,物流基础设施、资本开支和监管,needs_source_verification
+P2-112,P2,"Rocket Lab USA, Inc.",航天 / 卫星,上市集团,政府合同、发射与卫星系统,needs_source_verification
+P2-113,P2,"Shield AI, Inc.",国防AI / 自主系统,私营；法律状态需核验,融资、政府合同、无人系统,needs_source_verification
+P2-114,P2,"Scale AI, Inc.",数据 / AI基础设施,私营/控制关系需核验,股权变化、平台客户、数据与政府合同,needs_source_verification
+P2-115,P2,"Cerebras Systems, Inc.",AI芯片 / 计算系统,私营/上市状态需核验,融资、客户、供应链和算力合同,needs_source_verification
+P2-116,P2,"Groq, Inc.",AI推理芯片 / 云,私营；法律状态需核验,融资、推理基础设施和客户,needs_source_verification
+P2-117,P2,Crusoe Energy Systems LLC,AI数据中心 / 能源,私营；法律状态需核验,能源—数据中心耦合、融资和客户,needs_source_verification
+P2-118,P2,"Lambda, Inc.",GPU云 / AI基础设施,私营/上市状态需核验,GPU融资、数据中心、电力与客户,needs_source_verification
+P2-119,P2,"Figure AI, Inc.",人形机器人 / AI,私营；法律状态需核验,融资、制造伙伴、模型与客户,needs_source_verification
+P2-120,P2,"Perplexity AI, Inc.",AI搜索 / 分发,私营；法律状态需核验,融资、分发、内容授权和平台竞争,needs_source_verification
+X-001,X,Taiwan Semiconductor Manufacturing Company Limited (TSMC),晶圆代工,global_external_context,NVIDIA/AMD/Apple等制造瓶颈与美国建厂,needs_source_verification
+X-002,X,ASML Holding N.V.,光刻设备,global_external_context,先进制程核心设备与出口管制,needs_source_verification
+X-003,X,"Samsung Electronics Co., Ltd.",存储 / 代工 / 终端,global_external_context,HBM、代工、终端和美国投资,needs_source_verification
+X-004,X,SK hynix Inc.,存储半导体,global_external_context,HBM供应与AI计算链,needs_source_verification
+X-005,X,Arm Holdings plc,芯片架构 / IP,global_external_context,CPU架构授权和软银控制关系,needs_source_verification
+X-006,X,"Hon Hai Precision Industry Co., Ltd. (Foxconn)",电子制造服务,global_external_context,Apple/服务器等制造网络,needs_source_verification
+X-007,X,SoftBank Group Corp.,科技投资 / 控股,global_external_context,Arm及美国AI投资网络,needs_source_verification
+X-008,X,Sony Group Corporation,内容 / 传感器 / 游戏,global_external_context,图像传感器、内容和平台关系,needs_source_verification
+X-009,X,Tencent Holdings Limited,平台 / 游戏 / 投资,global_external_context,美国科技与游戏资产投资关系,needs_source_verification
+X-010,X,Alibaba Group Holding Limited,云 / 电商,global_external_context,跨境云、电商与资本市场关系,needs_source_verification
+X-011,X,ByteDance Ltd.,短视频 / AI平台,global_external_context,TikTok美国业务、监管与数据治理,needs_source_verification
+X-012,X,"Huawei Technologies Co., Ltd.",通信 / 芯片 / 云,global_external_context,美国供应链、出口管制和竞争关系,needs_source_verification
+X-013,X,Public Investment Fund of Saudi Arabia (PIF),主权资本,global_external_context,美国科技、娱乐、体育与基础设施投资,needs_source_verification
+X-014,X,MGX,主权支持科技投资,global_external_context,美国AI融资和基础设施资本,needs_source_verification
+X-015,X,Mubadala Investment Company,主权资本,global_external_context,半导体、AI和私募资本关系,needs_source_verification
+X-016,X,Qatar Investment Authority (QIA),主权资本,global_external_context,美国科技、地产和融资关系,needs_source_verification
+X-017,X,GIC Private Limited,主权资本,global_external_context,美国私募、科技和基础设施投资,needs_source_verification
+X-018,X,Temasek Holdings,主权资本,global_external_context,美国科技与金融资产关系,needs_source_verification
+X-019,X,Brookfield Asset Management Ltd.,基础设施 / 私募资本,global_external_context,数据中心、电力和美国资产,needs_source_verification
+X-020,X,Schneider Electric SE,电力设备 / 数据中心,global_external_context,数据中心配电、能效和供应链,needs_source_verification

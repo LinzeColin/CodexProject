@@ -1,0 +1,18 @@
+﻿threshold_id,parameter_key,label_zh,default_value,min_value,max_value,step,unit,behavior,online_edit,file_edit,requires_version
+TH-EQ-QUALITY,evidence.minimum_evidence_quality,最低证据质量,55,0,100,1,score,低于门槛不进入默认关系图,true,config/thresholds/default-v2.json,true
+TH-INDEP-SOURCES,evidence.inferred_min_independent_sources,推断关系独立来源数,2,1,6,1,count,推断关系至少需要相互独立来源,true,config/thresholds/default-v2.json,true
+TH-ENTITY-RESOLUTION,evidence.minimum_entity_resolution_confidence,实体解析最低置信度,0.88,0.5,1,0.01,ratio,低于门槛进入人工核验或未知状态,true,config/thresholds/default-v2.json,true
+TH-GRAPH-PRIORITY,graph.minimum_adjusted_priority,节点最低综合优先级,46,0,100,1,score,控制节点进入当前图谱,true,config/thresholds/default-v2.json,true
+TH-EDGE-MATERIALITY,graph.minimum_edge_materiality,关系最低重要性,48,0,100,1,score,控制关系显示、聚合或隐藏,true,config/thresholds/default-v2.json,true
+TH-HOME-NODES,graph.home_max_nodes,首页最大节点,42,12,120,1,count,约束首屏复杂度并保持可读性,true,config/thresholds/default-v2.json,true
+TH-HOME-EDGES,graph.home_max_edges,首页最大关系,64,16,240,1,count,约束首屏关系密度,true,config/thresholds/default-v2.json,true
+TH-EXPAND-BATCH,graph.expand_batch_size,单次展开数量,12,4,40,1,count,控制渐进展开的新增节点数,true,config/thresholds/default-v2.json,true
+TH-MAX-HOPS,graph.max_hops_interactive,交互最大层数,2,1,4,1,hops,限制单次递归探索深度,true,config/thresholds/default-v2.json,true
+TH-ALERT-HIGH,alerts.high_priority,高优先级告警门槛,80,0,100,1,score,控制 Watchlist 高优先级变化,true,config/thresholds/default-v2.json,true
+TH-CAPITAL-EVENT,alerts.capital_event_usd,重大资本事件金额,100000000,1000000,10000000000,1000000,USD,触发重大融资、并购或资本事件提醒,true,config/thresholds/default-v2.json,true
+TH-PREVIEW-DEBOUNCE,refresh.preview_debounce_ms,参数预览防抖,120,50,500,10,ms,控制在线修改后的预览触发频率,true,config/thresholds/default-v2.json,true
+TH-PREVIEW-P95,refresh.preview_p95_ms,当前视图预览 P95,250,100,1000,10,ms,当前已加载视图反馈性能目标,true,config/thresholds/default-v2.json,true
+TH-HOME-VISUAL,visual.home_visual_surface_ratio,首页视觉面积比,0.9,0.7,0.98,0.01,ratio,首页可视化表面积验收下限,true,config/thresholds/default-v2.json,true
+TH-SYSTEM-VISUAL,visual.system_visual_first_coverage,系统视觉优先覆盖,0.8,0.6,1.0,0.01,ratio,核心系统页面平均视觉优先覆盖下限,true,config/thresholds/default-v2.json,true
+TH-REROOT-MOTION,motion.reroot,主体切换动画,380,220,520,10,ms,控制研究中心切换的连续空间过渡,true,config/ui/motion-tokens.json,true
+TH-CALIBRATION,calibration.cadence_days,校准周期,14,14,14,0,days,固定每两周生成一次校准建议且不自动激活,false,config/thresholds/default-v2.json,true

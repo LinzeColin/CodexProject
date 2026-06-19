@@ -1,0 +1,61 @@
+﻿category,parameter_key,label_zh,scope,default_value,min_value,max_value,step,unit,online_control,file_source,live_preview,refresh_behavior,formula_id,validation,description
+综合权重,weights.supply_chain_criticality,供应链关键性,profile,0.24,0,0.7,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,all weights sum 1.0 ± 0.0001,控制节点综合优先级中的贡献
+综合权重,weights.strategic_dependency,战略依赖,profile,0.18,0,0.7,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,all weights sum 1.0 ± 0.0001,控制节点综合优先级中的贡献
+综合权重,weights.capital_momentum,资本动量,profile,0.14,0,0.7,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,all weights sum 1.0 ± 0.0001,控制节点综合优先级中的贡献
+综合权重,weights.control_influence,控制影响,profile,0.12,0,0.7,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,all weights sum 1.0 ± 0.0001,控制节点综合优先级中的贡献
+综合权重,weights.policy_exposure,政策暴露,profile,0.1,0,0.7,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,all weights sum 1.0 ± 0.0001,控制节点综合优先级中的贡献
+综合权重,weights.technology_dependency,技术依赖,profile,0.08,0,0.7,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,all weights sum 1.0 ± 0.0001,控制节点综合优先级中的贡献
+综合权重,weights.strategic_signal,战略信号,profile,0.08,0,0.7,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,all weights sum 1.0 ± 0.0001,控制节点综合优先级中的贡献
+综合权重,weights.time_relevance,时间相关性,profile,0.06,0,0.7,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,all weights sum 1.0 ± 0.0001,控制节点综合优先级中的贡献
+质量修正,quality_adjustment.floor,证据质量最低修正,profile,0.45,0,1,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,pair sums 1.0,低质量或低覆盖数据的排序修正
+质量修正,quality_adjustment.evidence_weight,证据质量修正权重,profile,0.55,0,1,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,pair sums 1.0,低质量或低覆盖数据的排序修正
+质量修正,coverage_adjustment.floor,覆盖率最低修正,profile,0.65,0,1,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,pair sums 1.0,低质量或低覆盖数据的排序修正
+质量修正,coverage_adjustment.coverage_weight,覆盖率修正权重,profile,0.35,0,1,0.01,ratio,slider+number,profile,True,all_loaded_views,F-NP-001,pair sums 1.0,低质量或低覆盖数据的排序修正
+时间半衰期,half_life_days.control_change,控制变化,profile,730,30,1825,1,days,slider+number,profile,True,all_loaded_views,F-RF-001,positive integer,控制不同信息类型的时间衰减
+时间半衰期,half_life_days.mna,并购,profile,730,30,1825,1,days,slider+number,profile,True,all_loaded_views,F-RF-001,positive integer,控制不同信息类型的时间衰减
+时间半衰期,half_life_days.long_term_supply,长期供应合同,profile,540,30,1825,1,days,slider+number,profile,True,all_loaded_views,F-RF-001,positive integer,控制不同信息类型的时间衰减
+时间半衰期,half_life_days.capex_financing,资本开支与融资,profile,365,30,1825,1,days,slider+number,profile,True,all_loaded_views,F-RF-001,positive integer,控制不同信息类型的时间衰减
+时间半衰期,half_life_days.policy_regulatory,政策监管,profile,270,30,1825,1,days,slider+number,profile,True,all_loaded_views,F-RF-001,positive integer,控制不同信息类型的时间衰减
+时间半衰期,half_life_days.product_partnership,产品与合作,profile,180,30,1825,1,days,slider+number,profile,True,all_loaded_views,F-RF-001,positive integer,控制不同信息类型的时间衰减
+时间半衰期,half_life_days.news_lead,新闻线索,profile,90,30,1825,1,days,slider+number,profile,True,all_loaded_views,F-RF-001,positive integer,控制不同信息类型的时间衰减
+证据门槛,evidence.publish_min_evidence_count,正式关系最少证据数,threshold,1,1,10,1,count,slider+number,threshold,True,graph+inspector+alerts,F-EQ-001,schema range,控制正式发布、推断和警告
+证据门槛,evidence.inferred_min_independent_sources,推断关系独立来源数,threshold,2,1,6,1,count,slider+number,threshold,True,graph+inspector+alerts,F-EQ-001,schema range,控制正式发布、推断和警告
+证据门槛,evidence.minimum_evidence_quality,最低证据质量,threshold,55,0,100,1,score,slider+number,threshold,True,graph+inspector+alerts,F-EQ-001,schema range,控制正式发布、推断和警告
+证据门槛,evidence.minimum_entity_resolution_confidence,实体解析最低置信度,threshold,0.88,0.5,1,0.01,ratio,slider+number,threshold,True,graph+inspector+alerts,F-EQ-001,schema range,控制正式发布、推断和警告
+证据门槛,evidence.conflict_penalty,冲突惩罚,threshold,12,0,50,1,points,slider+number,threshold,True,graph+inspector+alerts,F-EQ-001,schema range,控制正式发布、推断和警告
+证据门槛,evidence.unknown_coverage_warning_below,未知覆盖警告门槛,threshold,65,0,100,1,percent,slider+number,threshold,True,graph+inspector+alerts,F-EQ-001,schema range,控制正式发布、推断和警告
+图谱门槛,graph.minimum_adjusted_priority,节点最低优先级,threshold,46,0,100,1,score,slider+number,threshold,True,graph+all_graph_projections,F-EM-001,schema range,控制复杂度、显示和聚合
+图谱门槛,graph.minimum_edge_materiality,关系最低重要性,threshold,48,0,100,1,score,slider+number,threshold,True,graph+all_graph_projections,F-EM-001,schema range,控制复杂度、显示和聚合
+图谱门槛,graph.home_max_nodes,首页最大节点,threshold,42,12,120,1,count,slider+number,threshold,True,graph+all_graph_projections,F-EM-001,schema range,控制复杂度、显示和聚合
+图谱门槛,graph.home_max_edges,首页最大关系,threshold,64,16,240,1,count,slider+number,threshold,True,graph+all_graph_projections,F-EM-001,schema range,控制复杂度、显示和聚合
+图谱门槛,graph.expand_batch_size,单次展开数量,threshold,12,4,40,1,count,slider+number,threshold,True,graph+all_graph_projections,F-EM-001,schema range,控制复杂度、显示和聚合
+图谱门槛,graph.aggregate_same_type_after,同类聚合门槛,threshold,6,3,20,1,count,slider+number,threshold,True,graph+all_graph_projections,F-EM-001,schema range,控制复杂度、显示和聚合
+图谱门槛,graph.label_priority_threshold,标签显示门槛,threshold,62,0,100,1,score,slider+number,threshold,True,graph+all_graph_projections,F-EM-001,schema range,控制复杂度、显示和聚合
+图谱门槛,graph.max_hops_interactive,交互最大层数,threshold,2,1,4,1,hops,slider+number,threshold,True,graph+all_graph_projections,F-EM-001,schema range,控制复杂度、显示和聚合
+图谱门槛,graph.max_path_length,路径最大长度,threshold,8,2,16,1,edges,slider+number,threshold,True,graph+all_graph_projections,F-EM-001,schema range,控制复杂度、显示和聚合
+图谱门槛,graph.fade_unselected_opacity,未选对象透明度,threshold,0.16,0.05,0.6,0.01,opacity,slider+number,threshold,True,graph+all_graph_projections,F-EM-001,schema range,控制复杂度、显示和聚合
+告警门槛,alerts.high_priority,高优先级门槛,threshold,80,0,100,1,score,slider+number,threshold,True,changes+watchlist+badges,F-AS-001,schema range,控制变化和告警
+告警门槛,alerts.material_score_delta,重大变化分差,threshold,8,1,40,1,points,slider+number,threshold,True,changes+watchlist+badges,F-AS-001,schema range,控制变化和告警
+告警门槛,alerts.new_relation_min_quality,新关系告警最低质量,threshold,70,0,100,1,score,slider+number,threshold,True,changes+watchlist+badges,F-AS-001,schema range,控制变化和告警
+告警门槛,alerts.capital_event_usd,重大资本事件金额,threshold,100000000,1000000,10000000000,1000000,USD,slider+number,threshold,True,changes+watchlist+badges,F-AS-001,schema range,控制变化和告警
+告警门槛,alerts.policy_impact,政策影响门槛,threshold,65,0,100,1,score,slider+number,threshold,True,changes+watchlist+badges,F-AS-001,schema range,控制变化和告警
+告警门槛,alerts.watchlist_relevance,Watchlist 相关门槛,threshold,55,0,100,1,score,slider+number,threshold,True,changes+watchlist+badges,F-AS-001,schema range,控制变化和告警
+刷新与性能,refresh.preview_debounce_ms,参数预览防抖,threshold,120,50,500,10,ms,number,threshold,False,monitoring+acceptance,,positive integer,性能 SLO，不直接改变研究结论
+刷新与性能,refresh.preview_p95_ms,本地预览目标,threshold,250,100,1000,10,ms,number,threshold,False,monitoring+acceptance,,positive integer,性能 SLO，不直接改变研究结论
+刷新与性能,refresh.session_apply_p95_ms,会话应用目标,threshold,700,200,3000,50,ms,number,threshold,False,monitoring+acceptance,,positive integer,性能 SLO，不直接改变研究结论
+刷新与性能,refresh.small_scope_activate_p95_ms,小范围激活目标,threshold,5000,1000,30000,100,ms,number,threshold,False,monitoring+acceptance,,positive integer,性能 SLO，不直接改变研究结论
+刷新与性能,refresh.sse_visible_p95_ms,推送可见目标,threshold,1500,250,5000,50,ms,number,threshold,False,monitoring+acceptance,,positive integer,性能 SLO，不直接改变研究结论
+UI 门槛,visual.home_visual_surface_ratio,首页视觉面积比,threshold,0.9,0.7,0.98,0.01,ratio,number,threshold,False,acceptance,,schema range,UI/UX 自动验收参数
+UI 门槛,visual.system_visual_first_coverage,系统视觉优先覆盖,threshold,0.8,0.6,1.0,0.01,ratio,number,threshold,False,acceptance,,schema range,UI/UX 自动验收参数
+UI 门槛,visual.home_text_max_lines,首页说明最大行数,threshold,3,1,8,1,lines,number,threshold,False,acceptance,,schema range,UI/UX 自动验收参数
+UI 门槛,visual.primary_pointer_target_px,主要点击目标,threshold,40,32,64,1,px,number,threshold,False,acceptance,,schema range,UI/UX 自动验收参数
+UI 门槛,visual.minimum_pointer_target_px,最小点击目标,threshold,24,24,44,1,px,number,threshold,False,acceptance,,schema range,UI/UX 自动验收参数
+动画参数,motion.instant,即时反馈,ui,80,40,160,10,ms,slider+number,motion,True,all_visuals,,schema range,统一动画持续时间
+动画参数,motion.local,局部过渡,ui,160,80,240,10,ms,slider+number,motion,True,all_visuals,,schema range,统一动画持续时间
+动画参数,motion.panel,面板过渡,ui,220,120,360,10,ms,slider+number,motion,True,all_visuals,,schema range,统一动画持续时间
+动画参数,motion.data_update,数据更新过渡,ui,280,160,420,10,ms,slider+number,motion,True,all_visuals,,schema range,统一动画持续时间
+动画参数,motion.lens_change,镜头切换,ui,320,180,480,10,ms,slider+number,motion,True,all_visuals,,schema range,统一动画持续时间
+动画参数,motion.reroot,主体切换,ui,380,220,520,10,ms,slider+number,motion,True,all_visuals,,schema range,统一动画持续时间
+动画参数,motion.full_relayout_max,全布局最大时长,ui,480,260,700,10,ms,slider+number,motion,True,all_visuals,,schema range,统一动画持续时间
+治理,calibration.cadence_days,校准周期,threshold,14,14,14,0,days,read-only,threshold,False,scheduler,,const 14,每两周一次
+治理,calibration.auto_activate,校准建议自动激活,threshold,False,False,False,0,boolean,toggle,threshold,False,calibration,,must be false,建议必须人工确认

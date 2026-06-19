@@ -1,0 +1,37 @@
+﻿item_id,item_type,workstream,name,spec_status,prototype_status,implementation_status,validation_status,resolved,unresolved,next_action,owner,source_file
+FUN-EXP-01,function,探索,商业版图,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T400,T401,T402,T403,T404,T405,T406,T407,T408,T1103,T1104,T1105,T1106,T1107,T1108,T1109,T1110,T1111",Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+FUN-EXP-02,function,探索,全链供应链,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T201,T205,T502,T507,T1105",Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
+FUN-EXP-03,function,探索,集团业务与子板块,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T200,T204,T500,T501,T506",Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
+FUN-EXP-04,function,探索,资金与并购,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T503,T800,T801,T805",Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
+FUN-EXP-05,function,探索,所有权与控制,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T201,T500,T503,T506",Codex implementation,docs/04_DATA_MODEL.md
+FUN-EXP-06,function,探索,政策与政府,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T503,T802,T805",Codex implementation,docs/05_DATA_SOURCES_AND_PROVENANCE.md
+FUN-EXP-07,function,探索,战略信号,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T504,T803,T805",Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
+FUN-EXP-08,function,探索,行业地图,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T202,T302,T305,T409,T1120",Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
+FUN-RM-01,function,研究管理,Watchlist,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T203,T303,T306,T1102,T1120",Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
+FUN-RM-02,function,研究管理,重要变化,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T705,T804,T1113",Codex implementation,docs/25_LIVE_RECALCULATION_REFRESH_ARCHITECTURE.md
+FUN-RM-03,function,研究管理,已保存视图,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T401,T404,T1110,T1111,T1112",Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
+FUN-DM-01,function,数据与模型,数据库与来源,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T200,T206,T207,T700-T706,T1207",Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+FUN-DM-02,function,数据与模型,模型与参数,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T600-T604,T1203,T1204,T1205,T1206",Codex implementation,MODEL_MANAGEMENT.md
+FUN-DM-03,function,数据与模型,操作日志,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T604,T608,T1206",Codex implementation,docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
+FUN-DM-04,function,数据与模型,双周校准,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,T605-T608,Codex implementation,docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
+FUN-SYS-01,function,系统治理,功能结构,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T1200,T1201,T1213",Codex implementation,FUNCTION_CATALOG.md
+FUN-SYS-02,function,系统治理,开发治理,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T1208,T1211,T1212,T1213,T1214,T1215",Codex implementation,DEVELOPMENT_STATUS.md
+MOD-001,model,模型,综合研究优先级,DONE,DONE,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-NP-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md
+MOD-002,model,模型,证据质量,DONE,DONE,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-EQ-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md
+MOD-003,model,模型,时间相关性,DONE,DONE,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-RF-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md
+MOD-004,model,模型,关系重要性,DONE,DONE,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-EM-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md
+MOD-005,model,模型,供应链关键性,DONE,PARTIAL,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-SC-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md
+MOD-006,model,模型,控制影响,DONE,PARTIAL,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-CI-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md
+MOD-007,model,模型,资本动量,DONE,PARTIAL,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-CM-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md
+MOD-008,model,模型,政策暴露,DONE,PARTIAL,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-PE-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md
+MOD-009,model,模型,战略信号,DONE,PARTIAL,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-SS-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md
+MOD-010,model,模型,变化告警,DONE,PARTIAL,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-AS-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md
+MOD-011,model,模型,依赖风险,DONE,PARTIAL,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-DR-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md
+PKG-001,task_pack_artifact,Task Pack,功能清单与导航目录,DONE,DONE,N/A,VALIDATED,DONE,产品实现未开始,commit to GitHub and run G0,repository owner,GOVERNANCE_INDEX.md
+PKG-002,task_pack_artifact,Task Pack,模型管理与公式参数目录,DONE,DONE,N/A,VALIDATED,DONE,生产计算未开始,commit to GitHub and run G0,repository owner,GOVERNANCE_INDEX.md
+PKG-003,task_pack_artifact,Task Pack,关系/供应链/行业/业务/资本目录,DONE,DONE,N/A,VALIDATED,DONE,真实数据尚未导入,commit to GitHub and run G0,repository owner,GOVERNANCE_INDEX.md
+PKG-004,task_pack_artifact,Task Pack,GitHub Issue/PR/CI 治理模板,DONE,DONE,N/A,VALIDATED,DONE,需要推送到实际仓库启用,commit to GitHub and run G0,repository owner,GOVERNANCE_INDEX.md
+PKG-005,task_pack_artifact,Task Pack,UI 高保真交互原型,DONE,DONE,N/A,VALIDATED,DONE,原型 fixture 不是生产数据,commit to GitHub and run G0,repository owner,GOVERNANCE_INDEX.md
+PKG-006,task_pack_artifact,Task Pack,数据库工作台与数据血缘原型,DONE,DONE,N/A,VALIDATED,DONE,真实数据库连接未建立,commit to GitHub and run G0,repository owner,GOVERNANCE_INDEX.md
+PKG-007,task_pack_artifact,Task Pack,开发状态/风险/验收追踪,DONE,DONE,N/A,VALIDATED,DONE,任务证据需由 Build 阶段填充,commit to GitHub and run G0,repository owner,GOVERNANCE_INDEX.md
+PKG-008,task_pack_artifact,Task Pack,PDF 治理蓝图,DONE,DONE,N/A,VALIDATED,DONE,后续发布需持续再生成,commit to GitHub and run G0,repository owner,GOVERNANCE_INDEX.md

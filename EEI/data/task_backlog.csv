@@ -1,0 +1,121 @@
+﻿task_id,gate,priority,title,depends_on,acceptance_ids,status
+T000,G0,P0,Inventory repository and confirm v2.0 canonical inputs,,A001,NOT STARTED
+T001,G0,P0,Pin runtime/dependency versions and lockfiles,T000,"A004,A008,A009",NOT STARTED
+T002,G0,P0,"Write ADRs for recursion, URL state, scoring, logs and calibration",T001,A002,NOT STARTED
+T003,G0,P0,Map every P0 acceptance to tasks and tests,T002,"A001,A003",NOT STARTED
+T004,G0,P0,"Record exact file scope, commands, risks and rollback",T003,A001,NOT STARTED
+T100,G1,P0,Create pnpm/uv monorepo skeleton,T004,"A004,A010",NOT STARTED
+T101,G1,P0,Add Docker Compose PostgreSQL and health checks,T100,A005,NOT STARTED
+T102,G1,P0,Add Makefile and deterministic make verify,T100,"A006,A007",NOT STARTED
+T103,G1,P0,Create FastAPI and Next.js health shells,T101,A005,NOT STARTED
+T104,G1,P0,Add contract/static validation and secret scan,T102,"A008,A009",NOT STARTED
+T200,G2,P0,Implement core migrations and entity/time/evidence invariants,T104,"A011,A012,A013,A014,A015,A022",NOT STARTED
+T201,G2,P0,Implement ten relationship families and supply-chain attributes,T200,"A016,A020,A021",NOT STARTED
+T202,G2,P0,Implement industry taxonomy and multi-label memberships,T200,A019,NOT STARTED
+T203,G2,P0,"Implement exploration, Watchlist, scoring, audit and calibration tables",T200,"A011,A090",NOT STARTED
+T204,G2,P0,Load 30 P0 seeds and 140-node research universe,"T201,T202","A017,A018,A028",NOT STARTED
+T205,G2,P0,Load synthetic recursive supply-chain fixtures,T204,"A016,A025,A067",NOT STARTED
+T206,G2,P0,Implement supersession/conflict repositories,T200,A023,NOT STARTED
+T207,G2,P0,Implement idempotent seed loader and data checks,"T205,T206","A024,A028",NOT STARTED
+T208,G2,P0,Run migration round-trip and gold quality scaffolding,T207,"A011,A026,A027",NOT STARTED
+T300,G3,P0,Implement global typed search and aliases,T208,A038,NOT STARTED
+T301,G3,P0,Implement home aggregation API,T300,"A029,A030",NOT STARTED
+T302,G3,P0,Implement industry list and landscape API,T300,"A031,A032,A033,A034",NOT STARTED
+T303,G3,P0,Implement Watchlist CRUD and persistence,T300,"A035,A036,A037",NOT STARTED
+T304,G3,P0,Build user-oriented home page,"T301,T302,T303","A029,A039,A040",NOT STARTED
+T305,G3,P0,Build industry landscape page,T302,"A032,A034",NOT STARTED
+T306,G3,P0,Add home/industry/watchlist E2E,"T304,T305","A029,A035,A039,A040",NOT STARTED
+T400,G4,P0,Implement bounded graph query service,T208,"A041,A042,A043,A044",NOT STARTED
+T401,G4,P0,Implement exploration session and URL state,T400,"A041,A051",NOT STARTED
+T402,G4,P0,Implement reroot with inherited/reset state,T401,"A045,A046,A047",NOT STARTED
+T403,G4,P0,Implement incremental directional expand,T400,A052,NOT STARTED
+T404,G4,P0,Implement breadcrumb and browser history synchronization,T402,"A049,A050,A051",NOT STARTED
+T405,G4,P0,Build graph/table explorer and node actions,"T403,T404","A053,A054,A055,A058",NOT STARTED
+T406,G4,P0,Implement bounded evidence-bearing path queries,T400,A056,NOT STARTED
+T407,G4,P0,Add inclusion/truncation explanations,T405,"A044,A057",NOT STARTED
+T408,G4,P0,Add critical three-reroot E2E,"T405,T407",A048,NOT STARTED
+T409,G4,P0,Add cross-industry reroot E2E,T405,A034,NOT STARTED
+T500,G5,P0,Implement entity dossier and human summary API,T408,"A059,A060",NOT STARTED
+T501,G5,P0,Implement corporate group/business/brand/product/facility view,T500,"A061,A062,A063",NOT STARTED
+T502,G5,P0,Implement supply-chain stage/upstream/downstream view,T500,"A064,A065,A066",NOT STARTED
+T503,G5,P0,Implement capital/M&A and policy/technology layers,T500,"A069,A070,A071",NOT STARTED
+T504,G5,P0,"Implement strategic signals, contradictions and time decay",T500,A072,NOT STARTED
+T505,G5,P0,Implement evidence drawer and as-of timeline,"T501,T502,T503,T504","A073,A074",NOT STARTED
+T506,G5,P0,Build eight-layer company focus workspace,T505,"A060,A061",NOT STARTED
+T507,G5,P0,Add NVIDIA synthetic full-chain and reroot E2E,T506,"A067,A068",NOT STARTED
+T508,G5,P0,Implement research-path export with provenance,T506,A075,NOT STARTED
+T600,G6,P0,Implement scoring model engine and default profiles,T208,"A076,A078,A080,A081",NOT STARTED
+T601,G6,P0,Implement profile validation and immutable versions,T600,"A079,A084",NOT STARTED
+T602,G6,P0,Implement preview and score explanation,T601,"A077,A083,A086",NOT STARTED
+T603,G6,P0,Build model UI for clone/edit/save/activate/rollback/reset,T602,"A082,A085",NOT STARTED
+T604,G6,P0,Implement append-only operation log,T601,"A087,A088,A089",NOT STARTED
+T605,G6,P0,Implement 14-day scheduler and manual calibration,T604,"A090,A091",NOT STARTED
+T606,G6,P0,Implement calibration coverage/drift/quality/proposal,T605,"A092,A093,A095",NOT STARTED
+T607,G6,P0,Implement calibration accept/reject and rollback linkage,T606,A094,NOT STARTED
+T608,G6,P0,Add custom-profile/audit/two-calibration E2E,"T603,T607","A082,A087,A091,A094,A095",NOT STARTED
+T700,G7,P0,Implement SEC client User-Agent allowlist and limiter,T208,"A096,A097",NOT STARTED
+T701,G7,P0,Implement timeout retry jitter cache and hash,T700,"A098,A099",NOT STARTED
+T702,G7,P0,Normalize submissions and Company Facts,T701,"A100,A101",NOT STARTED
+T703,G7,P0,Implement dry-run fixture idempotent upsert and report,T702,"A102,A103",NOT STARTED
+T704,G7,P0,Implement freshness and failure status,T703,A104,NOT STARTED
+T705,G7,P0,Implement transactional derive/score/change pipeline,"T703,T600","A105,A106,A107",NOT STARTED
+T706,G7,P0,Add fixture tests and optional live smoke,T705,"A096,A098,A102",NOT STARTED
+T800,G8,P0,Implement event and amount semantic services,T705,"A108,A109",NOT STARTED
+T801,G8,P0,Build Capital River and event evidence,T800,A110,NOT STARTED
+T802,G8,P0,Build policy/government views,T800,A111,NOT STARTED
+T803,G8,P0,Build Strategic Radar and language guardrails,T800,A112,NOT STARTED
+T804,G8,P0,Build Change Feed and conflict display,T705,"A106,A107",NOT STARTED
+T805,G8,P0,Add cross-view consistency and export tests,"T801,T802,T803,T804","A075,A108,A109,A110,A111,A112",NOT STARTED
+T900,G9,P0,Run graph/reroot/score performance benchmarks,"T805,T608","A113,A114,A115",NOT STARTED
+T901,G9,P0,Run accessibility and keyboard/table audit,T805,A116,NOT STARTED
+T902,G9,P0,"Run security, dependency and sanitization tests",T805,A117,NOT STARTED
+T903,G9,P0,Run failure injection across ingest/scoring/calibration,"T805,T608",A118,NOT STARTED
+T904,G9,P0,Run quality evaluation and risk review,T903,"A026,A027,A123",NOT STARTED
+T905,G9,P0,"Rehearse migrations, rollback and clean-start",T904,"A119,A120",NOT STARTED
+T906,G9,P0,Write exact release report and demo evidence,T905,A121,NOT STARTED
+T907,G9,P0,Run final make verify,T906,"A007,A122",NOT STARTED
+T1000,Phase2,P1,Add USAspending and GLEIF adapters,T907,"A124,A125",NOT STARTED
+T1001,Phase2,P1,Add LDA USPTO energy and enforcement adapters,T1000,A125,NOT STARTED
+T1002,Phase2,P1,Add candidate review workflow,T1000,A126,NOT STARTED
+T1003,Phase2,P1,Evaluate shared workspaces,T1002,A127,NOT STARTED
+T1004,Phase2,P1,Benchmark PostgreSQL vs graph database before any migration,T907,A128,NOT STARTED
+T1100,G0,P0,Record UI benchmark decisions and v3 ADR,T004,"A129,A130",NOT STARTED
+T1101,G1,P0,Create design tokens and responsive application shell,T1100,"A131,A132,A153",NOT STARTED
+T1102,G1,P0,Implement Watchlist-first default state resolution,T1101,"A133,A134,A135",NOT STARTED
+T1103,G2,P0,Implement visual-first company workspace route,T1102,"A136,A137",NOT STARTED
+T1104,G2,P0,Implement left-to-right business map layout,T1103,"A138,A139,A140",NOT STARTED
+T1105,G2,P0,Implement analysis lenses on one persistent canvas,T1104,"A141,A142",NOT STARTED
+T1106,G2,P0,Implement semantic zoom and node grouping,T1104,"A143,A144,A145",NOT STARTED
+T1107,G2,P0,Implement contextual node inspector,T1104,"A146,A147",NOT STARTED
+T1108,G2,P0,Implement explicit set-as-center interaction,T1107,"A148,A149,A150",NOT STARTED
+T1109,G2,P0,Preserve mental map during center changes,T1108,"A151,A152",NOT STARTED
+T1110,G3,P0,Implement breadcrumb browser history and undo,T1108,"A154,A155",NOT STARTED
+T1111,G3,P0,Persist viewport lens timeline and selected object,T1110,"A156,A157",NOT STARTED
+T1112,G3,P0,Implement saved views and restore after reload,T1111,"A158,A159",NOT STARTED
+T1113,G3,P0,Implement timeline and change overlays,T1105,A160,NOT STARTED
+T1114,G4,P0,Implement graph-equivalent accessible list view,T1104,"A161,A162",NOT STARTED
+T1115,G4,P0,Implement complete keyboard interaction and visible focus,T1114,"A163,A164",NOT STARTED
+T1116,G4,P0,Add non-color visual encodings and evidence labels,T1104,A165,NOT STARTED
+T1117,G4,P0,Add UI copy lexicon and forbidden-term lint,T1107,A166,NOT STARTED
+T1118,G5,P0,Add visual regression tests for approved workspace states,T1117,A167,NOT STARTED
+T1119,G5,P0,Add performance tests for first interactive graph,T1106,A168,NOT STARTED
+T1120,G6,P1,Add guided empty Watchlist industry overlay,T1102,A135,NOT STARTED
+T1121,G6,P1,Add compare mode while preserving primary subject,T1107,A147,NOT STARTED
+T1122,G7,P1,Run five-user task-based usability study,T1118,"A148,A161",NOT STARTED
+T1123,G9,P0,Package prototype screenshots specs and clean-room QA,T1119,"A129,A167,A168",NOT STARTED
+T1200,G0,P0,Adopt function catalog and module navigation catalog as single source of truth,T1123,A172,NOT STARTED
+T1201,G0,P0,Adopt model registry formula registry parameter catalog and threshold registry as canonical model management inputs,T1200,A171,NOT STARTED
+T1202,G1,P0,Implement catalog integrity validator and GitHub CI workflow,"T1200,T1201","A169,A177",NOT STARTED
+T1203,G2,P0,Create taxonomy and object scope API from canonical catalogs,T1202,"A169,A170",NOT STARTED
+T1204,G4,P0,Implement Objects and Scope navigation screen,T1203,A170,NOT STARTED
+T1205,G4,P0,Implement Development Status navigation screen linked to tasks risks controls and acceptance,T1202,"A173,A174",NOT STARTED
+T1206,G3,P0,Implement immutable model version and active snapshot consistency contract,T1201,"A171,A178",NOT STARTED
+T1207,G4,P0,Wire online model edits to preview all loaded visual modules,T1206,"A157,A158,A178",NOT STARTED
+T1208,G5,P0,Add end-to-end test for global model/data version consistency,T1207,A178,NOT STARTED
+T1209,G5,P0,Add canonical prototype parity smoke test for index and standalone,T1202,A176,NOT STARTED
+T1210,G8,P0,Configure GitHub branch rules CODEOWNERS and required catalog checks,T1202,"A175,A177",NOT STARTED
+T1211,G9,P0,Publish reproducible release with manifest checksums status and acceptance evidence,"T1208,T1209,T1210","A175,A177",NOT STARTED
+T1212,G0,P0,Install GitHub governance consistency workflow,T1211,"A182,A183,A200",NOT STARTED
+T1213,G0,P0,Generate development status and requirement-function-task-test traceability,T1200,"A183,A184",NOT STARTED
+T1214,G0,P0,"Map risk controls to functions, tasks, acceptance and release gates",T1213,A185,NOT STARTED
+T1215,G9,P0,"Run clean-room governance, prototype, PDF and ZIP validation","T1210,T1212,T1214",A200,NOT STARTED

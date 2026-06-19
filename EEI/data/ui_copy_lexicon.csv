@@ -1,0 +1,16 @@
+﻿internal_term,user_facing_term,context,usage_note
+reroot,以它为中心,primary_action,把所选对象变为新的研究主体
+focus entity,当前公司 / 当前主体,label,避免图数据库术语
+hop,展开范围,filter,例如“只看直接关系/再展开一层”
+graph budget,当前显示范围,status,显示 X/Y 和继续展开
+scoring profile,分析偏好,settings,默认不在主图展开公式
+calibration,模型复核,settings,每 14 天复核一次
+reported,公开披露,evidence,一手公开文件直接支持
+derived,多源推断,evidence,多个来源支持但需解释推断
+disputed,信息冲突,evidence,来源之间不一致
+unknown,尚未披露,evidence,资料不足不等于不存在
+provenance,来源与依据,evidence,打开文件、时间和定位
+coverage,资料完整度,status,不得只显示裸百分比
+lag,更新延迟,status,附报告期/申报期
+agent,不在最终用户 UI 使用,forbidden,仅开发文档
+gate,不在最终用户 UI 使用,forbidden,仅开发文档

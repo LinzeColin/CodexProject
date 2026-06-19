@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/calibration-report.json",
+  "title": "Biweekly Calibration Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["calibration_id", "cadence_days", "data_snapshot_at", "status", "coverage", "drift", "quality_checks", "proposal"],
+  "properties": {
+    "calibration_id": {"type": "string", "format": "uuid"},
+    "cadence_days": {"const": 14},
+    "data_snapshot_at": {"type": "string", "format": "date-time"},
+    "profile_version_id": {"type": ["string", "null"], "format": "uuid"},
+    "status": {"type": "string", "enum": ["passed", "warning", "failed"]},
+    "coverage": {"type": "object", "additionalProperties": {"type": ["number", "integer", "string", "null"]}},
+    "drift": {"type": "object", "additionalProperties": true},
+    "quality_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "status", "value", "threshold"],
+        "properties": {
+          "check_id": {"type": "string"},
+          "status": {"type": "string", "enum": ["pass", "warning", "fail"]},
+          "value": {},
+          "threshold": {},
+          "notes": {"type": "string"}
+        }
+      }
+    },
+    "proposal": {
+      "type": "object",
+      "required": ["status", "changes", "impact_preview"],
+      "properties": {
+        "status": {"type": "string", "enum": ["none", "proposed", "accepted", "rejected"]},
+        "changes": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+        "impact_preview": {"type": "object", "additionalProperties": true}
+      }
+    }
+  }
+}

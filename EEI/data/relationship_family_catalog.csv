@@ -1,0 +1,11 @@
+﻿family_id,family_key,name_zh,slug,default_graph_zone,definition,relationship_type_count,default_evidence_threshold,default_visual_encoding,recursive_pivot
+RF-01,corporate_structure,集团与业务结构,group_structure,center,集团、母子公司、业务单元、品牌、产品和设施,7,reported:1 source; inferred:2 independent sources,color+line_pattern+direction_label,yes
+RF-02,ownership_control,所有权与控制,ownership_control,top,经济权益、投票权、董事任命和特殊权利,6,reported:1 source; inferred:2 independent sources,color+line_pattern+direction_label,yes
+RF-03,supply_chain_operations,供应链与运营,supply_chain_operations,left_right,供应、制造、物流、设施、能源和客户流,11,reported:1 source; inferred:2 independent sources,color+line_pattern+direction_label,yes
+RF-04,capital_financing,资本与融资,capital_financing,top,股权、债务、投资、回购、分红和资本开支,6,reported:1 source; inferred:2 independent sources,color+line_pattern+direction_label,yes
+RF-05,mergers_acquisitions,并购与交易,mergers_acquisitions,top,收购、出售、合资、资产交易和整合,4,reported:1 source; inferred:2 independent sources,color+line_pattern+direction_label,yes
+RF-06,governance_people,治理与人员,governance_people,top,董事、高管、创始人、任命和交叉任职,4,reported:1 source; inferred:2 independent sources,color+line_pattern+direction_label,yes
+RF-07,commercial_dependency,商业依赖,commercial_dependency,left_right,客户、供应商、合同、分销和平台依赖,3,reported:1 source; inferred:2 independent sources,color+line_pattern+direction_label,yes
+RF-08,technology_data_ip,技术、数据与知识产权,technology_data_ip,left_right,许可、专利、技术栈、数据和算力依赖,4,reported:1 source; inferred:2 independent sources,color+line_pattern+direction_label,yes
+RF-09,government_policy,政府与政策,government_policy,bottom,合同、补贴、监管、许可和出口限制,4,reported:1 source; inferred:2 independent sources,color+line_pattern+direction_label,yes
+RF-10,strategic_signal,战略信号,strategic_signal,bottom,资本、人力、产品、专利、合作和政策信号,3,reported:1 source; inferred:2 independent sources,color+line_pattern+direction_label,yes

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/scoring-profile.json",
+  "title": "Scoring Profile Version",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["profile_key", "name", "version", "model_key", "weights", "quality_factor", "missing_value_policy", "reason"],
+  "properties": {
+    "profile_key": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "version": {"type": "integer", "minimum": 1},
+    "model_key": {"type": "string", "minLength": 1},
+    "weights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supply_chain_criticality",
+        "strategic_dependency",
+        "capital_momentum",
+        "ownership_control_influence",
+        "policy_exposure",
+        "technology_data_dependency",
+        "time_relevance"
+      ],
+      "properties": {
+        "supply_chain_criticality": {"type": "number", "minimum": 0, "maximum": 0.7},
+        "strategic_dependency": {"type": "number", "minimum": 0, "maximum": 0.7},
+        "capital_momentum": {"type": "number", "minimum": 0, "maximum": 0.7},
+        "ownership_control_influence": {"type": "number", "minimum": 0, "maximum": 0.7},
+        "policy_exposure": {"type": "number", "minimum": 0, "maximum": 0.7},
+        "technology_data_dependency": {"type": "number", "minimum": 0, "maximum": 0.7},
+        "time_relevance": {"type": "number", "minimum": 0, "maximum": 0.7}
+      }
+    },
+    "quality_factor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["floor", "evidence_weight"],
+      "properties": {
+        "floor": {"type": "number", "minimum": 0, "maximum": 1},
+        "evidence_weight": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "half_lives_days": {
+      "type": "object",
+      "additionalProperties": {"type": "integer", "minimum": 30, "maximum": 1825}
+    },
+    "thresholds": {"type": "object", "additionalProperties": true},
+    "missing_value_policy": {
+      "type": "string",
+      "enum": ["renormalize_available", "mark_unscored", "conservative_penalty"]
+    },
+    "reason": {"type": "string", "minLength": 1, "maxLength": 500},
+    "active": {"type": "boolean", "default": false}
+  },
+  "$comment": "Application validation must additionally assert that all top-level weights sum to 1.0 within tolerance 0.0001."
+}

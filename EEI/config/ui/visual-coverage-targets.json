@@ -1,0 +1,21 @@
+{
+  "home_visual_surface_ratio_min": 0.9,
+  "system_visual_first_coverage_min": 0.8,
+  "model_studio_visual_surface_ratio_min": 0.65,
+  "visual_surface_selector": "[data-visual-surface]",
+  "workspace_selector": "[data-information-workspace]",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "width": 1024,
+      "height": 768
+    }
+  ]
+}

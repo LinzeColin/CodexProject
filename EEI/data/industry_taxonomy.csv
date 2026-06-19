@@ -1,0 +1,27 @@
+industry_id,slug,name_zh,name_en,parent_id,kind,default_order,description
+IND-001,semiconductors-electronics,半导体与电子系统,Semiconductors & Electronic Systems,,industry,10,芯片设计制造封装设备材料存储网络和电子系统
+IND-001-01,chip-design-ip,芯片设计与IP,Chip Design & IP,IND-001,subindustry,11,CPU GPU ASIC 架构 EDA 与IP
+IND-001-02,wafer-fabrication,晶圆制造与代工,Wafer Fabrication & Foundry,IND-001,subindustry,12,先进与成熟制程制造
+IND-001-03,packaging-test,封装测试,Packaging & Test,IND-001,subindustry,13,先进封装测试和基板
+IND-001-04,semiconductor-equipment,半导体设备与材料,Equipment & Materials,IND-001,subindustry,14,光刻沉积蚀刻检测化学品与气体
+IND-001-05,memory-networking,存储与网络芯片,Memory & Networking Silicon,IND-001,subindustry,15,HBM DRAM NAND 网络和互连
+IND-002,ai-cloud-data,AI模型、数据与云,AI Models Data & Cloud,,industry,20,基础模型云计算数据平台和AI基础设施
+IND-002-01,foundation-models,基础模型与AI平台,Foundation Models & AI Platforms,IND-002,subindustry,21,训练推理模型和开发平台
+IND-002-02,hyperscale-cloud,超大规模云,Hyperscale Cloud,IND-002,subindustry,22,云计算托管与AI算力
+IND-002-03,gpu-cloud,AI算力云与托管,GPU Cloud & Hosting,IND-002,subindustry,23,GPU云数据中心和专用托管
+IND-002-04,data-platforms,数据平台与分析,Data Platforms & Analytics,IND-002,subindustry,24,数据库数据云和分析平台
+IND-003,software-cybersecurity,软件与网络安全,Software & Cybersecurity,,industry,30,企业软件开发工具工作流网络与安全
+IND-004,internet-media-platforms,互联网、媒体与平台,Internet Media & Platforms,,industry,40,搜索社交广告流媒体内容与应用分发
+IND-005,finance-capital-markets,金融、资管与资本市场,Finance Asset Management & Capital Markets,,industry,50,银行资管私募信贷保险交易所和支付
+IND-005-01,banks-brokerage,银行与经纪,Banks & Brokerage,IND-005,subindustry,51,银行投行财富管理与经纪
+IND-005-02,asset-management,资产管理,Asset Management,IND-005,subindustry,52,传统资管ETF基金和投票治理
+IND-005-03,private-capital,私募股权与信贷,Private Equity & Credit,IND-005,subindustry,53,GP基金SPV保险资金与私募信贷
+IND-006,energy-utilities,能源、电力与公用事业,Energy Power & Utilities,,industry,60,油气发电核电可再生电网与公用事业
+IND-007,automotive-robotics-mobility,汽车、机器人与移动出行,Automotive Robotics & Mobility,,industry,70,汽车电池机器人自动驾驶与移动平台
+IND-008,aerospace-defense-space,航空航天、国防与卫星,Aerospace Defense & Space,,industry,80,军工航空航天发射卫星与国防AI
+IND-009,industrial-logistics-infrastructure,工业、物流与基础设施,Industrials Logistics & Infrastructure,,industry,90,工业设备工程机械铁路航空货运与工程服务
+IND-010,telecom-networks-datacenters,通信、网络与数据中心,Telecom Networks & Data Centers,,industry,100,运营商网络光纤数据中心和边缘基础设施
+IND-011,healthcare-life-sciences,医疗、制药与生命科学,Healthcare Pharma & Life Sciences,,industry,110,医疗保险制药生物科技和科研工具
+IND-012,consumer-retail-brands,消费、零售与品牌,Consumer Retail & Brands,,industry,120,零售消费品餐饮品牌与供应链
+IND-013,real-estate-facilities-engineering,房地产、设施与工程,Real Estate Facilities & Engineering,,industry,130,数据中心地产工业设施许可和工程建设
+IND-014,government-regulation-procurement,政府、监管与公共采购,Government Regulation & Public Procurement,,relationship_entry,140,政府合同监管许可补贴与政策关系入口

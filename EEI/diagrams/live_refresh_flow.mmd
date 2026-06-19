@@ -1,0 +1,20 @@
+sequenceDiagram
+  participant U as User
+  participant UI as Model Studio
+  participant W as Web Worker
+  participant API as API
+  participant DB as PostgreSQL
+  participant J as Recompute Worker
+  participant S as SSE
+  U->>UI: adjust weight / threshold
+  UI->>W: preview(normalized facts, draft config)
+  W-->>UI: scores + ranks + visibility
+  UI-->>U: all loaded visuals morph
+  U->>API: save & activate
+  API->>DB: transaction(config version + log + outbox)
+  DB-->>J: wake-up notification
+  J->>DB: compute new score snapshot
+  J->>DB: validate and atomically activate
+  DB-->>S: snapshot activated
+  S-->>UI: invalidate shared context
+  UI-->>U: all modules refresh to same snapshot

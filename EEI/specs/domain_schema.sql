@@ -1,0 +1,405 @@
+-- Logical MVP schema. Codex may adapt indexes/types while preserving invariants.
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE TYPE entity_type AS ENUM (
+  'legal_entity','brand','security','fund','government_body','person','theme',
+  'facility','product','business_segment','industry','contract','standard','asset'
+);
+CREATE TYPE epistemic_status AS ENUM (
+  'reported','derived','disputed','superseded','revoked','unknown'
+);
+CREATE TYPE evidence_role AS ENUM ('supports','contradicts','context');
+CREATE TYPE change_type AS ENUM (
+  'created','updated','superseded','revoked','conflict_detected','stale','ingestion_failed'
+);
+
+CREATE TABLE entities (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  canonical_name text NOT NULL,
+  entity_type entity_type NOT NULL,
+  jurisdiction text,
+  status text NOT NULL DEFAULT 'active',
+  description text,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE entity_aliases (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  entity_id uuid NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
+  alias text NOT NULL,
+  alias_type text NOT NULL DEFAULT 'name',
+  valid_from date,
+  valid_to date,
+  UNIQUE(entity_id, alias, alias_type)
+);
+
+CREATE TABLE entity_identifiers (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  entity_id uuid NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
+  scheme text NOT NULL,
+  value text NOT NULL,
+  issuer text,
+  valid_from date,
+  valid_to date,
+  UNIQUE(scheme, value)
+);
+
+CREATE TABLE sources (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  code text NOT NULL UNIQUE,
+  name text NOT NULL,
+  base_url text NOT NULL,
+  source_tier smallint NOT NULL CHECK (source_tier BETWEEN 1 AND 5),
+  expected_cadence text,
+  typical_disclosure_lag text,
+  terms_notes text,
+  active boolean NOT NULL DEFAULT true,
+  last_verified_at timestamptz
+);
+
+CREATE TABLE source_documents (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  source_id uuid NOT NULL REFERENCES sources(id),
+  external_id text,
+  url text NOT NULL,
+  title text,
+  publisher text,
+  document_date timestamptz,
+  observed_at timestamptz NOT NULL,
+  retrieved_at timestamptz NOT NULL DEFAULT now(),
+  content_hash text NOT NULL,
+  media_type text,
+  raw_storage_uri text,
+  parser_version text,
+  UNIQUE(source_id, external_id, content_hash)
+);
+
+CREATE TABLE relationships (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  subject_entity_id uuid NOT NULL REFERENCES entities(id),
+  object_entity_id uuid NOT NULL REFERENCES entities(id),
+  relationship_type text NOT NULL,
+  relationship_family text NOT NULL,
+  status epistemic_status NOT NULL,
+  confidence numeric(4,3) CHECK (confidence BETWEEN 0 AND 1),
+  valid_from timestamptz,
+  valid_to timestamptz,
+  announced_at timestamptz,
+  filed_at timestamptz,
+  observed_at timestamptz NOT NULL,
+  percentage numeric,
+  amount numeric,
+  currency char(3),
+  amount_kind text,
+  qualifiers jsonb NOT NULL DEFAULT '{}'::jsonb,
+  derivation_rule text,
+  derivation_version text,
+  supersedes_id uuid REFERENCES relationships(id),
+  created_at timestamptz NOT NULL DEFAULT now(),
+  CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_to >= valid_from),
+  CHECK (percentage IS NULL OR (percentage >= 0 AND percentage <= 100)),
+  CHECK (
+    (amount IS NULL)
+    OR (currency IS NOT NULL AND amount_kind IS NOT NULL)
+  )
+);
+
+CREATE TABLE relationship_evidence (
+  relationship_id uuid NOT NULL REFERENCES relationships(id) ON DELETE CASCADE,
+  source_document_id uuid NOT NULL REFERENCES source_documents(id),
+  role evidence_role NOT NULL,
+  locator text,
+  support_excerpt text,
+  structured_fact jsonb,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (relationship_id, source_document_id, role)
+);
+
+CREATE TABLE events (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_type text NOT NULL,
+  title text NOT NULL,
+  status epistemic_status NOT NULL,
+  announced_at timestamptz,
+  effective_at timestamptz,
+  period_start date,
+  period_end date,
+  observed_at timestamptz NOT NULL,
+  amount numeric,
+  currency char(3),
+  amount_kind text,
+  description text,
+  qualifiers jsonb NOT NULL DEFAULT '{}'::jsonb,
+  derivation_rule text,
+  derivation_version text,
+  supersedes_id uuid REFERENCES events(id),
+  created_at timestamptz NOT NULL DEFAULT now(),
+  CHECK (period_end IS NULL OR period_start IS NULL OR period_end >= period_start),
+  CHECK (
+    (amount IS NULL)
+    OR (currency IS NOT NULL AND amount_kind IS NOT NULL)
+  )
+);
+
+CREATE TABLE event_participants (
+  event_id uuid NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+  entity_id uuid NOT NULL REFERENCES entities(id),
+  role text NOT NULL,
+  direction text,
+  PRIMARY KEY (event_id, entity_id, role)
+);
+
+CREATE TABLE event_evidence (
+  event_id uuid NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+  source_document_id uuid NOT NULL REFERENCES source_documents(id),
+  role evidence_role NOT NULL,
+  locator text,
+  support_excerpt text,
+  structured_fact jsonb,
+  PRIMARY KEY (event_id, source_document_id, role)
+);
+
+CREATE TABLE ingestion_runs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  source_id uuid NOT NULL REFERENCES sources(id),
+  connector_version text NOT NULL,
+  mode text NOT NULL,
+  checkpoint jsonb,
+  started_at timestamptz NOT NULL,
+  finished_at timestamptz,
+  status text NOT NULL,
+  counts jsonb NOT NULL DEFAULT '{}'::jsonb,
+  error_class text,
+  error_message text
+);
+
+CREATE TABLE changes (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  change_type change_type NOT NULL,
+  object_type text NOT NULL,
+  object_id uuid,
+  old_value jsonb,
+  new_value jsonb,
+  source_document_id uuid REFERENCES source_documents(id),
+  ingestion_run_id uuid REFERENCES ingestion_runs(id),
+  review_required boolean NOT NULL DEFAULT false,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+
+
+-- Industry classifications are versioned and multi-label. They are navigation aids, not legal facts.
+CREATE TABLE industries (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug text NOT NULL UNIQUE,
+  name_zh text NOT NULL,
+  name_en text NOT NULL,
+  parent_id uuid REFERENCES industries(id),
+  kind text NOT NULL DEFAULT 'industry',
+  taxonomy_version text NOT NULL,
+  active boolean NOT NULL DEFAULT true,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE entity_industry_memberships (
+  entity_id uuid NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
+  industry_id uuid NOT NULL REFERENCES industries(id),
+  role text NOT NULL CHECK (role IN ('primary','secondary','supply_chain','historical')),
+  confidence numeric(4,3) CHECK (confidence BETWEEN 0 AND 1),
+  valid_from timestamptz,
+  valid_to timestamptz,
+  evidence_required boolean NOT NULL DEFAULT true,
+  PRIMARY KEY (entity_id, industry_id, role, valid_from)
+);
+
+-- Structured supply-chain qualifiers remain attached to a relationship and preserve unknowns.
+CREATE TABLE supply_chain_relationship_attributes (
+  relationship_id uuid PRIMARY KEY REFERENCES relationships(id) ON DELETE CASCADE,
+  stage_from text,
+  stage_to text,
+  supplier_role text,
+  buyer_role text,
+  tier text CHECK (tier IN ('direct','Tier-1','Tier-2','Tier-3','unknown')),
+  materiality text CHECK (materiality IN ('critical','high','medium','low','unknown')),
+  concentration_value numeric,
+  concentration_kind text,
+  substitutability_score numeric CHECK (substitutability_score BETWEEN 0 AND 100),
+  lead_time_days numeric CHECK (lead_time_days IS NULL OR lead_time_days >= 0),
+  capacity_value numeric,
+  capacity_unit text,
+  geographic_exposure jsonb NOT NULL DEFAULT '[]'::jsonb,
+  coverage numeric(5,2) CHECK (coverage BETWEEN 0 AND 100),
+  last_verified_at timestamptz
+);
+
+CREATE TABLE exploration_sessions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  namespace text NOT NULL DEFAULT 'local_user',
+  title text,
+  current_focus_entity_id uuid REFERENCES entities(id),
+  active_layers text[] NOT NULL DEFAULT ARRAY[]::text[],
+  as_of timestamptz,
+  scoring_profile_version_id uuid,
+  filters jsonb NOT NULL DEFAULT '{}'::jsonb,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE exploration_steps (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id uuid NOT NULL REFERENCES exploration_sessions(id) ON DELETE CASCADE,
+  sequence_no integer NOT NULL CHECK (sequence_no >= 0),
+  from_entity_id uuid REFERENCES entities(id),
+  to_entity_id uuid NOT NULL REFERENCES entities(id),
+  action text NOT NULL CHECK (action IN ('start','reroot','back','forward','restore')),
+  inherited_state jsonb NOT NULL DEFAULT '{}'::jsonb,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(session_id, sequence_no)
+);
+
+CREATE TABLE watchlists (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  namespace text NOT NULL DEFAULT 'local_user',
+  name text NOT NULL,
+  description text,
+  default_scoring_profile_version_id uuid,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(namespace, name)
+);
+
+CREATE TABLE watchlist_items (
+  watchlist_id uuid NOT NULL REFERENCES watchlists(id) ON DELETE CASCADE,
+  object_type text NOT NULL CHECK (object_type IN ('entity','industry','theme','facility')),
+  object_id uuid NOT NULL,
+  labels text[] NOT NULL DEFAULT ARRAY[]::text[],
+  note text,
+  saved_state jsonb NOT NULL DEFAULT '{}'::jsonb,
+  added_at timestamptz NOT NULL DEFAULT now(),
+  removed_at timestamptz,
+  PRIMARY KEY (watchlist_id, object_type, object_id)
+);
+
+CREATE TABLE scoring_models (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  model_key text NOT NULL,
+  version integer NOT NULL CHECK (version > 0),
+  name text NOT NULL,
+  formula jsonb NOT NULL,
+  input_schema jsonb NOT NULL,
+  status text NOT NULL CHECK (status IN ('draft','active','retired')),
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(model_key, version)
+);
+
+CREATE TABLE scoring_profiles (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  namespace text NOT NULL DEFAULT 'local_user',
+  profile_key text NOT NULL,
+  name text NOT NULL,
+  is_system_default boolean NOT NULL DEFAULT false,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(namespace, profile_key)
+);
+
+CREATE TABLE scoring_profile_versions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  profile_id uuid NOT NULL REFERENCES scoring_profiles(id) ON DELETE CASCADE,
+  model_id uuid NOT NULL REFERENCES scoring_models(id),
+  version integer NOT NULL CHECK (version > 0),
+  weights jsonb NOT NULL,
+  thresholds jsonb NOT NULL DEFAULT '{}'::jsonb,
+  half_lives jsonb NOT NULL DEFAULT '{}'::jsonb,
+  missing_value_policy text NOT NULL CHECK (missing_value_policy IN ('renormalize_available','mark_unscored','conservative_penalty')),
+  reason text NOT NULL,
+  active boolean NOT NULL DEFAULT false,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(profile_id, version)
+);
+
+ALTER TABLE exploration_sessions
+  ADD CONSTRAINT exploration_profile_fk
+  FOREIGN KEY (scoring_profile_version_id) REFERENCES scoring_profile_versions(id);
+ALTER TABLE watchlists
+  ADD CONSTRAINT watchlist_profile_fk
+  FOREIGN KEY (default_scoring_profile_version_id) REFERENCES scoring_profile_versions(id);
+
+CREATE TABLE scoring_runs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  model_id uuid NOT NULL REFERENCES scoring_models(id),
+  profile_version_id uuid NOT NULL REFERENCES scoring_profile_versions(id),
+  data_snapshot_at timestamptz NOT NULL,
+  parameters jsonb NOT NULL DEFAULT '{}'::jsonb,
+  status text NOT NULL,
+  started_at timestamptz NOT NULL,
+  finished_at timestamptz,
+  content_hash text,
+  UNIQUE(model_id, profile_version_id, data_snapshot_at, content_hash)
+);
+
+CREATE TABLE score_results (
+  scoring_run_id uuid NOT NULL REFERENCES scoring_runs(id) ON DELETE CASCADE,
+  object_type text NOT NULL,
+  object_id uuid NOT NULL,
+  raw_score numeric(6,3) CHECK (raw_score BETWEEN 0 AND 100),
+  evidence_quality numeric(6,3) CHECK (evidence_quality BETWEEN 0 AND 100),
+  adjusted_score numeric(6,3) CHECK (adjusted_score BETWEEN 0 AND 100),
+  coverage numeric(6,3) CHECK (coverage BETWEEN 0 AND 100),
+  contributions jsonb NOT NULL,
+  missing_inputs jsonb NOT NULL DEFAULT '[]'::jsonb,
+  PRIMARY KEY (scoring_run_id, object_type, object_id)
+);
+
+CREATE TABLE operation_logs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  occurred_at timestamptz NOT NULL DEFAULT now(),
+  actor text NOT NULL CHECK (actor IN ('local_user','system','codex')),
+  action_type text NOT NULL,
+  object_type text NOT NULL,
+  object_id uuid,
+  old_value jsonb,
+  new_value jsonb,
+  diff jsonb,
+  reason text,
+  request_id text,
+  session_id uuid REFERENCES exploration_sessions(id),
+  model_version text,
+  profile_version text,
+  result_status text NOT NULL,
+  error text
+);
+
+CREATE TABLE calibration_runs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  scheduled_for timestamptz,
+  cadence_days integer NOT NULL DEFAULT 14 CHECK (cadence_days = 14),
+  data_snapshot_at timestamptz NOT NULL,
+  profile_version_id uuid REFERENCES scoring_profile_versions(id),
+  status text NOT NULL CHECK (status IN ('scheduled','running','passed','warning','failed','cancelled')),
+  metrics jsonb NOT NULL DEFAULT '{}'::jsonb,
+  drift_report jsonb NOT NULL DEFAULT '{}'::jsonb,
+  proposal jsonb,
+  proposal_status text CHECK (proposal_status IN ('none','proposed','accepted','rejected')),
+  started_at timestamptz,
+  finished_at timestamptz,
+  error text
+);
+
+CREATE INDEX exploration_steps_session_idx ON exploration_steps(session_id, sequence_no);
+CREATE INDEX operation_logs_object_idx ON operation_logs(object_type, object_id, occurred_at DESC);
+CREATE INDEX calibration_runs_time_idx ON calibration_runs(scheduled_for DESC, status);
+CREATE INDEX score_results_object_idx ON score_results(object_type, object_id, adjusted_score DESC);
+
+CREATE INDEX relationships_subject_idx
+  ON relationships(subject_entity_id, relationship_family, valid_from, valid_to);
+CREATE INDEX relationships_object_idx
+  ON relationships(object_entity_id, relationship_family, valid_from, valid_to);
+CREATE INDEX events_time_idx
+  ON events(COALESCE(effective_at, announced_at), event_type);
+CREATE INDEX documents_observed_idx
+  ON source_documents(source_id, observed_at DESC);
+
+-- Public API/service invariant:
+-- relationship/event is publishable only when at least one evidence row exists.
+-- Implement as service validation plus deferred data-quality check.

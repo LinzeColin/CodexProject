@@ -1,0 +1,43 @@
+﻿field,type,requirement,rule
+entity_id,UUID/稳定键,必填,内部稳定主键；不得用ticker作主键
+canonical_name,text,必填,法律/规范名称
+entity_type,enum,必填,legal_entity / brand / fund / person / agency / security / facility / nonprofit / trust
+parent_entity_id,UUID,条件必填,仅表达已证实的直接法律/会计父级；复杂关系用edge
+cik,string,可选,SEC中央索引键，左侧补零保存
+lei,string,可选,法律实体识别码
+ein,string,受限可选,仅来自公开合规来源
+ticker_exchange,object,可选,ticker、exchange、valid_from/to；支持历史变更
+uei,string,可选,SAM.gov Unique Entity ID
+jurisdiction,string,必填,成立法域，不等于总部
+legal_status,enum,必填,active / dissolved / merged / acquired / unknown
+source_entity_id,UUID,关系必填,边的起点
+target_entity_id,UUID,关系必填,边的终点
+relationship_type,enum,关系必填,owns / controls / invests / lends / supplies / buys_from / partners / appoints / regulates / contracts_with 等
+relationship_subtype,string,可选,例如economic_ownership、voting_control、cloud_dependency
+directness,enum,必填,direct / indirect / look-through / inferred
+economic_ownership_pct,decimal,可选,必须同时记录basis和as_of_date
+voting_power_pct,decimal,可选,与经济所有权分开
+board_seats,integer,可选,已控制/提名席位
+amount_original,decimal,可选,原始金额
+currency_original,string,可选,ISO货币
+amount_usd,decimal,可选,使用指定汇率日换算
+instrument_type,enum,可选,common / preferred / convertible / debt / warrant / option / contract / grant
+transaction_status,enum,必填,rumor不入事实层；proposed / announced / signed / approved / closed / terminated
+report_period_start/end,date,条件必填,期间型数据
+as_of_date,date,条件必填,存量/比例/持仓快照
+announced_at,datetime,可选,对外宣布时间
+effective_at,datetime,可选,法律/交易生效时间
+filed_at,datetime,可选,监管申报时间
+observed_at,datetime,必填,来源页面/数据所代表的观察时间
+ingested_at,datetime,必填,系统抓取时间
+source_tier,enum,必填,A监管/法律、B官方自述、C商业数据、D新闻佐证
+source_url,text,必填,可复核原始链接
+accession_or_document_id,string,优先必填,SEC accession、award ID、filing UUID等
+source_locator,string,优先必填,页码、章节、表格或XBRL fact定位
+evidence_excerpt_hash,string,建议必填,证据片段哈希，避免全文版权复制
+confidence_score,integer 0-100,必填,机器+规则初分，人工可覆盖并留日志
+review_status,enum,必填,unreviewed / machine_verified / human_verified / disputed
+supersedes_record_id,UUID,可选,修订、重述和更正链
+stale_after_days,integer,必填,按来源类型配置
+last_verified_at,datetime,必填,最近一次复核
+contradiction_flag,boolean,必填,存在冲突时不得静默覆盖

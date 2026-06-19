@@ -1,0 +1,190 @@
+﻿path,category,canonical,update_trigger,owner,backup,status
+.codex/config.toml.example,codex-config,false,Codex execution policy change,repository owner,git+release-zip,ACTIVE
+.github/CODEOWNERS,github-governance,true,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/ISSUE_TEMPLATE/bug.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/ISSUE_TEMPLATE/config.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/ISSUE_TEMPLATE/data_relationship.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/ISSUE_TEMPLATE/data_scope_change.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/ISSUE_TEMPLATE/feature.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/ISSUE_TEMPLATE/model_change.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/ISSUE_TEMPLATE/risk_control.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/pull_request_template.md,github-governance,true,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/release.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/workflows/governance-validation.yml,github-governance,true,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.gitignore,repository-config,false,repository tooling change,repository owner,git+release-zip,ACTIVE
+AGENTS.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+CHANGELOG.md,root-governance,false,semantic or release change,repository owner,git+release-zip,ACTIVE
+CHECKSUMS.sha256,package-integrity-metadata,false,any package file change,release owner,release-zip+git,GENERATED
+CODEX_MASTER_TASK.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+CONTRIBUTING.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+DELIVERY_INDEX.md,root-governance,false,semantic or release change,repository owner,git+release-zip,ACTIVE
+DEVELOPMENT_STATUS.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+DIRECTORY_TREE.txt,package-integrity-metadata,false,any package file change,release owner,release-zip+git,GENERATED
+DOMAIN_DATA_CATALOG.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+FUNCTION_CATALOG.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+GITHUB_REPOSITORY_BACKUP_INDEX.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+GOVERNANCE_INDEX.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+MODEL_MANAGEMENT.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+PLANS.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+README.md,root-governance,false,semantic or release change,repository owner,git+release-zip,ACTIVE
+REPORT.md,root-governance,false,semantic or release change,repository owner,git+release-zip,ACTIVE
+RISK_AND_ACCEPTANCE.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+RUN_CODEX.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
+SOURCES.md,root-governance,false,semantic or release change,repository owner,git+release-zip,ACTIVE
+US_Corporate_Power_Map_Governance_Blueprint_v4.2.pdf,published-report,false,governance blueprint release,documentation owner,release-zip+git-lfs,GENERATED
+US_Corporate_Power_Map_System_Model_Parameter_Architecture_v4.2.md,root-governance,false,semantic or release change,repository owner,git+release-zip,ACTIVE
+US_Corporate_Power_Map_UIUX_Redesign_v4.2.md,root-governance,false,semantic or release change,repository owner,git+release-zip,ACTIVE
+VALIDATION_REPORT.md,root-governance,false,semantic or release change,repository owner,git+release-zip,ACTIVE
+VERSION,release-metadata,true,release version change,release owner,git+release-zip,ACTIVE
+artifacts/README.md,reproducible-report-source,false,PDF blueprint change,documentation owner,git+release-zip,ACTIVE
+artifacts/governance_blueprint_v42_source.html,reproducible-report-source,false,PDF blueprint change,documentation owner,git+release-zip,ACTIVE
+artifacts/model_config_import_preview.json,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
+artifacts/pdf_contact_sheet.png,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
+artifacts/pdf_visual_inspection.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
+artifacts/preflight_output.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
+artifacts/prototype_smoke_test.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
+artifacts/static_validation.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
+artifacts/visual_coverage_validation.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
+config/model_profiles/balanced-v2.json,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
+config/model_runtime_defaults.yaml,model-configuration,true,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
+config/thresholds/default-v2.json,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
+config/ui/motion-tokens.json,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
+config/ui/visual-coverage-targets.json,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
+data/acceptance_matrix.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/acceptance_traceability.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/business_segment_taxonomy.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/capital_object_taxonomy.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/company_catalog.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/content_inventory.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/data_catalog_manifest.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/data_dictionary.csv,machine-ssot-catalog,false,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/default_weight_profiles.json,machine-ssot-catalog,false,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/development_status_ledger.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/domain_object_catalog.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/exploration_acceptance_scenarios.json,fixture-or-seed-data,false,prototype/research seed change,research data owner,git+release-zip,FIXTURE
+data/formula_registry.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/function_catalog.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/github_document_registry.csv,machine-ssot-catalog,false,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/governance_benchmark_sources.csv,machine-ssot-catalog,false,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/industry_taxonomy.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/metric_catalog.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/mock_entities.json,fixture-or-seed-data,false,prototype/research seed change,research data owner,git+release-zip,FIXTURE
+data/mock_events.json,fixture-or-seed-data,false,prototype/research seed change,research data owner,git+release-zip,FIXTURE
+data/mock_relationships.json,fixture-or-seed-data,false,prototype/research seed change,research data owner,git+release-zip,FIXTURE
+data/model_registry.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/navigation_catalog.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/nvidia_public_source_anchors.csv,machine-ssot-catalog,false,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/parameter_catalog.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/relationship_family_catalog.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/relationship_taxonomy.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/release_gate_catalog.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/research_seed_queue.csv,fixture-or-seed-data,false,prototype/research seed change,research data owner,git+release-zip,FIXTURE
+data/research_universe.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/resolved_unresolved_register.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/risk_control_traceability.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/risk_register.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/scoring_components.csv,machine-ssot-catalog,false,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/sector_taxonomy.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/seed_universe.csv,fixture-or-seed-data,false,prototype/research seed change,research data owner,git+release-zip,FIXTURE
+data/source_registry.csv,machine-ssot-catalog,false,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/source_registry_extended.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/supply_chain_stage_taxonomy.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/task_backlog.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/threshold_registry.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/ui_copy_lexicon.csv,machine-ssot-catalog,false,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/uiux_benchmark_sources.csv,machine-ssot-catalog,false,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+data/upstream_downstream_role_catalog.csv,machine-ssot-catalog,true,domain/model/task/risk/acceptance change,data governance owner,git+release-zip,ACTIVE
+diagrams/domain_model.mmd,architecture-diagram-source,false,architecture/domain/flow change,architecture owner,git+release-zip,ACTIVE
+diagrams/live_refresh_flow.mmd,architecture-diagram-source,false,architecture/domain/flow change,architecture owner,git+release-zip,ACTIVE
+diagrams/module_architecture.mmd,architecture-diagram-source,false,architecture/domain/flow change,architecture owner,git+release-zip,ACTIVE
+diagrams/recursive_focus_flow.mmd,architecture-diagram-source,false,architecture/domain/flow change,architecture owner,git+release-zip,ACTIVE
+diagrams/system_context.mmd,architecture-diagram-source,false,architecture/domain/flow change,architecture owner,git+release-zip,ACTIVE
+diagrams/user_flow.mmd,architecture-diagram-source,false,architecture/domain/flow change,architecture owner,git+release-zip,ACTIVE
+docs/01_PRODUCT_REQUIREMENTS.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/02_SCOPE_AND_BOUNDARIES.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/03_UX_INFORMATION_ARCHITECTURE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/04_DATA_MODEL.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/05_DATA_SOURCES_AND_PROVENANCE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/06_ARCHITECTURE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/07_MVP_ROADMAP.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/08_ACCEPTANCE_AND_TEST_PLAN.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/09_RISK_GOVERNANCE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/10_PHASE2_DAILY_UPDATE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/11_DECISION_LOG.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/15_SCORING_MODEL_AND_USER_TUNING.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/18_UIUX_RESEARCH_BENCHMARK.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/19_VISUAL_FIRST_WORKSPACE_SPEC.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/20_CONTENT_LANGUAGE_GUIDE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/21_INTERACTION_STATE_AND_NAVIGATION.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/22_USABILITY_TEST_AND_ACCEPTANCE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/23_SYSTEM_FUNCTION_MODULE_ARCHITECTURE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/24_MODEL_FORMULA_PARAMETER_THRESHOLD_CENTER.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/25_LIVE_RECALCULATION_REFRESH_ARCHITECTURE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/26_DATABASE_FIRST_DATA_WORKBENCH.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/27_MOTION_HAPTIC_INTERACTION_SYSTEM.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/28_VISUAL_COVERAGE_UI_ACCEPTANCE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/29_FUNCTION_CATALOG_AND_SCOPE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/30_MODEL_MANAGEMENT.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/32_IMPLEMENTATION_STATUS_RESOLVED_UNRESOLVED.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/33_RISK_CONTROL_ACCEPTANCE_TRACEABILITY.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/34_GITHUB_DOCUMENTATION_AND_BACKUP.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/35_DATA_CATALOGS_AND_TAXONOMIES.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/36_RELEASE_GATES_AND_DEFINITION_OF_DONE.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/INDEX.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+docs/STATUS.md,detailed-spec,false,feature/model/domain/status/risk change,product+engineering,git+release-zip,ACTIVE
+manifest.txt,package-integrity-metadata,false,any package file change,release owner,release-zip+git,GENERATED
+models/FORMULA_REGISTRY.md,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
+models/MODEL_MANAGEMENT.md,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
+models/formula_registry.json,model-configuration,true,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
+models/model_registry.json,model-configuration,true,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
+prompts/01_PLAN_ONLY.md,codex-task-prompt,false,Codex phase or execution scope change,repository owner,git+release-zip,ACTIVE
+prompts/02_BUILD_MVP.md,codex-task-prompt,false,Codex phase or execution scope change,repository owner,git+release-zip,ACTIVE
+prompts/03_QA_RELEASE.md,codex-task-prompt,false,Codex phase or execution scope change,repository owner,git+release-zip,ACTIVE
+prototype/README.md,interactive-prototype,false,UI/UX or interaction change,design+frontend,git+release-zip,FIXTURE
+prototype/app.js,interactive-prototype,false,UI/UX or interaction change,design+frontend,git+release-zip,FIXTURE
+prototype/index.html,interactive-prototype,false,UI/UX or interaction change,design+frontend,git+release-zip,FIXTURE
+prototype/screenshots/data_1440x900.png,prototype-visual-evidence,false,prototype visual baseline change,design+frontend,git-lfs-or-release-zip,GENERATED
+prototype/screenshots/default_1280x800.png,prototype-visual-evidence,false,prototype visual baseline change,design+frontend,git-lfs-or-release-zip,GENERATED
+prototype/screenshots/default_1440x900.png,prototype-visual-evidence,false,prototype visual baseline change,design+frontend,git-lfs-or-release-zip,GENERATED
+prototype/screenshots/delivery_1440x900.png,prototype-visual-evidence,false,prototype visual baseline change,design+frontend,git-lfs-or-release-zip,GENERATED
+prototype/screenshots/governance_1440x900.png,prototype-visual-evidence,false,prototype visual baseline change,design+frontend,git-lfs-or-release-zip,GENERATED
+prototype/screenshots/models_1440x900.png,prototype-visual-evidence,false,prototype visual baseline change,design+frontend,git-lfs-or-release-zip,GENERATED
+prototype/screenshots/reroot_tsmc_1440x900.png,prototype-visual-evidence,false,prototype visual baseline change,design+frontend,git-lfs-or-release-zip,GENERATED
+prototype/screenshots/taxonomy_1440x900.png,prototype-visual-evidence,false,prototype visual baseline change,design+frontend,git-lfs-or-release-zip,GENERATED
+prototype/standalone.html,interactive-prototype,false,UI/UX or interaction change,design+frontend,git+release-zip,FIXTURE
+prototype/styles.css,interactive-prototype,false,UI/UX or interaction change,design+frontend,git+release-zip,FIXTURE
+scripts/apply_model_config.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/compile_model_runtime_defaults.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/generate_governance_pdf.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/preflight.sh,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/run_codex_autonomous.sh,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/smoke_test_prototype.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/validate_catalog_integrity.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/validate_governance.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/validate_model_config.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/validate_task_pack.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/validate_visual_coverage.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+specs/api_contract.yaml,technical-contract,true,schema/API/event/config contract change,engineering owner,git+release-zip,ACTIVE
+specs/calibration_report_schema.json,technical-contract,false,schema/API/event/config contract change,engineering owner,git+release-zip,ACTIVE
+specs/domain_schema.sql,technical-contract,true,schema/API/event/config contract change,engineering owner,git+release-zip,ACTIVE
+specs/event_schema.json,technical-contract,true,schema/API/event/config contract change,engineering owner,git+release-zip,ACTIVE
+specs/exploration_state_schema.json,technical-contract,false,schema/API/event/config contract change,engineering owner,git+release-zip,ACTIVE
+specs/live_refresh_event_schema.json,technical-contract,false,schema/API/event/config contract change,engineering owner,git+release-zip,ACTIVE
+specs/model_config_schema.json,technical-contract,false,schema/API/event/config contract change,engineering owner,git+release-zip,ACTIVE
+specs/scoring_profile_schema.json,technical-contract,false,schema/API/event/config contract change,engineering owner,git+release-zip,ACTIVE
+wireframes/README.md,wireframe-source,false,information architecture or workspace change,design owner,git+release-zip,ACTIVE
+wireframes/dashboard_wireframe.png,wireframe-render,false,wireframe source change,design owner,git-lfs-or-release-zip,GENERATED
+wireframes/dashboard_wireframe.svg,wireframe-source,false,information architecture or workspace change,design owner,git+release-zip,ACTIVE
+wireframes/home_default_view.png,wireframe-render,false,wireframe source change,design owner,git-lfs-or-release-zip,GENERATED
+wireframes/home_default_view.svg,wireframe-source,false,information architecture or workspace change,design owner,git+release-zip,ACTIVE
+wireframes/recursive_focus_explorer.png,wireframe-render,false,wireframe source change,design owner,git-lfs-or-release-zip,GENERATED
+wireframes/recursive_focus_explorer.svg,wireframe-source,false,information architecture or workspace change,design owner,git+release-zip,ACTIVE
+wireframes/visual_first_workspace.png,wireframe-render,false,wireframe source change,design owner,git-lfs-or-release-zip,GENERATED
+wireframes/visual_first_workspace.svg,wireframe-source,false,information architecture or workspace change,design owner,git+release-zip,ACTIVE
+wireframes/visual_first_workspace_screenshot.png,wireframe-render,false,wireframe source change,design owner,git-lfs-or-release-zip,GENERATED

@@ -1,0 +1,103 @@
+erDiagram
+  ENTITY ||--o{ ENTITY_IDENTIFIER : has
+  ENTITY }o--o{ INDUSTRY : classified_as
+  ENTITY ||--o{ RELATIONSHIP : source
+  ENTITY ||--o{ RELATIONSHIP : target
+  RELATIONSHIP ||--o| SUPPLY_CHAIN_ATTRIBUTE : specializes
+  ENTITY ||--o{ EVENT_PARTICIPANT : participates
+  EVENT ||--o{ EVENT_PARTICIPANT : includes
+  SOURCE_DOCUMENT ||--o{ EVIDENCE : contains
+  RELATIONSHIP ||--o{ RELATIONSHIP_EVIDENCE : supported_by
+  EVENT ||--o{ EVENT_EVIDENCE : supported_by
+  EVIDENCE ||--o{ RELATIONSHIP_EVIDENCE : links
+  EVIDENCE ||--o{ EVENT_EVIDENCE : links
+  INGESTION_RUN ||--o{ SOURCE_DOCUMENT : observes
+  INGESTION_RUN ||--o{ CHANGE_RECORD : produces
+
+  EXPLORATION_SESSION ||--o{ EXPLORATION_STEP : contains
+  ENTITY ||--o{ EXPLORATION_STEP : becomes_focus
+  WATCHLIST ||--o{ WATCHLIST_ITEM : contains
+  ENTITY ||--o{ WATCHLIST_ITEM : watches
+
+  SCORING_MODEL ||--o{ SCORING_PROFILE : provides
+  SCORING_PROFILE ||--o{ SCORING_PROFILE_VERSION : versions
+  SCORING_PROFILE_VERSION ||--o{ SCORING_RUN : executes
+  SCORING_RUN ||--o{ SCORE_RESULT : produces
+  ENTITY ||--o{ SCORE_RESULT : receives
+
+  CALIBRATION_RUN ||--o{ OPERATION_LOG : records
+  SCORING_PROFILE_VERSION ||--o{ CALIBRATION_RUN : evaluates
+  SCORING_PROFILE_VERSION ||--o{ OPERATION_LOG : changes
+
+  ENTITY {
+    uuid id PK
+    string canonical_name
+    string entity_type
+    string status
+  }
+  RELATIONSHIP {
+    uuid id PK
+    uuid source_entity_id FK
+    uuid target_entity_id FK
+    string family
+    string relationship_type
+    string status
+    datetime valid_from
+    datetime valid_to
+  }
+  SUPPLY_CHAIN_ATTRIBUTE {
+    uuid relationship_id PK
+    string stage_id
+    string tier
+    decimal materiality
+    decimal substitutability
+    decimal bottleneck_score
+  }
+  EXPLORATION_SESSION {
+    uuid id PK
+    uuid current_focus_entity_id FK
+    json state
+    datetime updated_at
+  }
+  EXPLORATION_STEP {
+    uuid id PK
+    uuid session_id FK
+    uuid from_entity_id FK
+    uuid to_entity_id FK
+    json inherited_state
+    integer sequence_no
+  }
+  SCORING_PROFILE_VERSION {
+    uuid id PK
+    uuid profile_id FK
+    integer version
+    json weights
+    json half_lives
+    string status
+  }
+  SCORE_RESULT {
+    uuid id PK
+    uuid scoring_run_id FK
+    uuid entity_id FK
+    decimal raw_score
+    decimal quality_factor
+    decimal adjusted_score
+    json explanation
+  }
+  OPERATION_LOG {
+    uuid id PK
+    string action_type
+    string object_type
+    uuid object_id
+    json old_value
+    json new_value
+    string reason
+    datetime occurred_at
+  }
+  CALIBRATION_RUN {
+    uuid id PK
+    datetime as_of
+    integer cadence_days
+    string status
+    json proposal
+  }

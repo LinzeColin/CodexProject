@@ -1,0 +1,39 @@
+name: 模型/公式/参数变更
+about: 修改公式、权重、阈值、半衰期、缺失值或刷新语义
+labels: ["model", "governance"]
+body:
+  - type: input
+    id: model_formula_ids
+    attributes:
+      label: 模型与公式 ID
+      description: 例如 MOD-001 / F-NP-001。
+    validations: {required: true}
+  - type: textarea
+    id: rationale
+    attributes:
+      label: 变更原因与研究假设
+    validations: {required: true}
+  - type: textarea
+    id: before_after
+    attributes:
+      label: 旧公式/参数与新公式/参数
+    validations: {required: true}
+  - type: textarea
+    id: impact
+    attributes:
+      label: 影响预览
+      description: 排名、可见关系、告警、行业、公司和计算成本变化。
+    validations: {required: true}
+  - type: checkboxes
+    id: guards
+    attributes:
+      label: 治理门槛
+      options:
+        - label: 权重、范围和 Schema 校验通过
+          required: true
+        - label: 缺失值和未知值没有自动填 0
+          required: true
+        - label: 已生成不可变新版本和回滚方案
+          required: true
+        - label: 已更新模型/公式/参数目录和操作日志要求
+          required: true

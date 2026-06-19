@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/exploration-state.json",
+  "title": "Recursive Exploration State",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "focus",
+    "active_layers",
+    "direction",
+    "hops",
+    "budget",
+    "filters",
+    "history"
+  ],
+  "properties": {
+    "focus": {
+      "type": "object",
+      "required": [
+        "object_type",
+        "object_id"
+      ],
+      "properties": {
+        "object_type": {
+          "type": "string",
+          "enum": [
+            "entity",
+            "industry",
+            "theme",
+            "facility"
+          ]
+        },
+        "object_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "active_layers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "corporate_structure",
+          "supply_chain_operations",
+          "ownership_control",
+          "capital_financing",
+          "mergers_acquisitions",
+          "governance_people",
+          "commercial_dependency",
+          "technology_data_ip",
+          "government_policy",
+          "strategic_signal"
+        ]
+      }
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "both",
+        "upstream",
+        "downstream",
+        "in",
+        "out"
+      ]
+    },
+    "hops": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2
+    },
+    "as_of": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "scoring_profile_version_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "budget": {
+      "type": "object",
+      "required": [
+        "max_nodes",
+        "max_edges",
+        "expand_nodes"
+      ],
+      "properties": {
+        "max_nodes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        },
+        "max_edges": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2000
+        },
+        "expand_nodes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      }
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "pinned_object_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    "comparison_object_ids": {
+      "type": "array",
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sequence_no",
+          "object_id",
+          "action"
+        ],
+        "properties": {
+          "sequence_no": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "object_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "start",
+              "reroot",
+              "back",
+              "forward",
+              "restore"
+            ]
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "workspace_mode": {
+      "type": "string",
+      "enum": [
+        "map",
+        "list",
+        "split"
+      ]
+    },
+    "visual_lens": {
+      "type": "string",
+      "enum": [
+        "all",
+        "supply_chain",
+        "capital_transactions",
+        "ownership_control",
+        "business_segments",
+        "policy_risk",
+        "strategic_change"
+      ]
+    },
+    "semantic_zoom_level": {
+      "type": "string",
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    "selected_object_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "saved_view_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "viewport": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "zoom": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 5
+        }
+      }
+    },
+    "sidebar_collapsed": {
+      "type": "boolean"
+    },
+    "inspector_open": {
+      "type": "boolean"
+    },
+    "timeline_open": {
+      "type": "boolean"
+    }
+  }
+}

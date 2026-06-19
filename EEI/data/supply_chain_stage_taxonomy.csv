@@ -1,0 +1,17 @@
+stage_id,stage_order,slug,name_zh,name_en,default_direction,examples
+SC-01,10,critical-minerals,原材料与关键矿物,Critical Minerals,upstream,铜锂稀土硅金属铀
+SC-02,20,chemicals-materials,化学品气体与基础材料,Chemicals Gases & Materials,upstream,光刻胶工业气体晶圆基板
+SC-03,30,ip-standards-eda,IP标准架构与设计工具,IP Standards Architecture & EDA,upstream,指令集EDA互连标准许可
+SC-04,40,production-equipment,专用设备与生产工具,Production Equipment & Tools,upstream,光刻沉积蚀刻检测和测试设备
+SC-05,50,design-rd-engineering,设计研发与工程服务,Design R&D & Engineering,upstream,芯片设计软件工程和研发服务
+SC-06,60,manufacturing-processing,制造与加工,Manufacturing & Processing,upstream,晶圆制造零部件加工电池制造
+SC-07,70,packaging-testing-certification,封装测试认证与质量,Packaging Testing Certification & Quality,upstream,先进封装测试认证和质量控制
+SC-08,80,modules-subsystems,模组板卡与子系统,Modules Boards & Subsystems,midstream,加速卡服务器模组传感器
+SC-09,90,system-integration,系统集成与整机,System Integration & Delivery,midstream,服务器整机汽车卫星和工程交付
+SC-10,100,infrastructure-energy-network,数据中心能源电网地产与网络,Infrastructure Energy Grid Real Estate & Network,midstream,数据中心电力光纤土地冷却
+SC-11,110,cloud-platform-software-channel,云平台软件分发与渠道,Cloud Platform Software Distribution & Channel,downstream,云服务平台应用商店分销商
+SC-12,120,end-customers-verticals,终端客户与垂直行业,End Customers & Verticals,downstream,企业消费者政府医疗金融和工业客户
+SC-13,130,aftermarket-maintenance,售后维护备件与服务,Aftermarket Maintenance & Services,downstream,维护订阅备件升级和运营服务
+SC-14,140,recycling-retirement,回收二级市场与退役,Recycling Secondary Market & Retirement,downstream,回收再制造二手设备和退役
+SC-15,150,finance-insurance-guarantees,金融保险担保与供应链融资,Finance Insurance Guarantees & Supply-chain Finance,crosscutting,贷款租赁保险担保和应收账款融资
+SC-16,160,policy-trade-geopolitics,政策许可贸易与地缘约束,Policy Trade Licensing & Geopolitics,crosscutting,出口管制关税补贴许可和制裁

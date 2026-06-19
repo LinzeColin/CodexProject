@@ -1,0 +1,18 @@
+﻿function_id,nav_group,nav_order,name_zh,name_en,priority,spec_status,prototype_status,implementation_status
+FUN-EXP-01,探索,10,商业版图,Business Empire Map,P0,DONE,DONE,NOT_STARTED
+FUN-EXP-02,探索,20,全链供应链,End-to-End Supply Chain,P0,DONE,DONE,NOT_STARTED
+FUN-EXP-03,探索,30,集团业务与子板块,Group and Business Segments,P0,DONE,PARTIAL,NOT_STARTED
+FUN-EXP-04,探索,40,资金与并购,"Capital, Financing and M&A",P0,DONE,PARTIAL,NOT_STARTED
+FUN-EXP-05,探索,50,所有权与控制,Ownership and Control,P0,DONE,PARTIAL,NOT_STARTED
+FUN-EXP-06,探索,60,政策与政府,Policy and Government,P0,DONE,PARTIAL,NOT_STARTED
+FUN-EXP-07,探索,70,战略信号,Strategic Signals,P0,DONE,PARTIAL,NOT_STARTED
+FUN-EXP-08,探索,80,行业地图,Industry Landscape,P1,DONE,PARTIAL,NOT_STARTED
+FUN-RM-01,研究管理,90,Watchlist,Watchlist,P0,DONE,DONE,NOT_STARTED
+FUN-RM-02,研究管理,100,重要变化,Material Changes,P0,DONE,PARTIAL,NOT_STARTED
+FUN-RM-03,研究管理,110,已保存视图,Saved Views,P0,DONE,DONE,NOT_STARTED
+FUN-DM-01,数据与模型,120,数据库与来源,Data Assets and Provenance,P0,DONE,DONE,NOT_STARTED
+FUN-DM-02,数据与模型,130,模型与参数,Models and Parameters,P0,DONE,DONE,NOT_STARTED
+FUN-DM-03,数据与模型,140,操作日志,Operation Log,P0,DONE,DONE,NOT_STARTED
+FUN-DM-04,数据与模型,150,双周校准,Biweekly Calibration,P1,DONE,PARTIAL,NOT_STARTED
+FUN-SYS-01,系统治理,160,功能结构,System Function Architecture,P0,DONE,DONE,NOT_STARTED
+FUN-SYS-02,系统治理,170,开发治理,Development Governance,P0,DONE,DONE,NOT_STARTED

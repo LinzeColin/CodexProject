@@ -1,0 +1,8 @@
+# Copy to .codex/config.toml only after review.
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = false
+
+project_doc_max_bytes = 32768
