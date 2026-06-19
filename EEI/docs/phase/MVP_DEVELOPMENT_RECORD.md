@@ -202,3 +202,23 @@ Residual risks:
 - Actual PostgreSQL migration execution has not been proven locally because Docker is unavailable.
 - GitHub Actions must be updated to run `make verify-g2-db` and prove migration/seed/rollback on PostgreSQL.
 - T205 synthetic recursive supply-chain fixtures and T1103-T1109 visual canvas tasks are not started.
+
+## 2026-06-19 - Phase 1 / G2 database CI repair loop 1
+
+Status: IN PROGRESS
+
+Failure evidence:
+
+- GitHub Actions run `27821508751` failed in `Verify G2 PostgreSQL migrations and E2E`.
+- Migration upgrade and schema table checks passed.
+- `scripts/load_seed_catalogs.py` failed while loading `relationship_taxonomy.csv`.
+- Root cause: `relationship_type_catalog.direction` allowed only `directed` and `undirected`, but the canonical taxonomy contains 6 `bidirectional` relationship types.
+
+Fix:
+
+- Updated `specs/domain_schema.sql` so `relationship_type_catalog.direction` allows `directed`, `undirected`, and `bidirectional`.
+
+Verification to run:
+
+- `make verify`.
+- Push and rerun GitHub Actions `make verify-g2-db`.

@@ -404,7 +404,7 @@ CREATE TABLE relationship_families (
 CREATE TABLE relationship_type_catalog (
   relationship_type text PRIMARY KEY,
   family_key text NOT NULL REFERENCES relationship_families(family_key),
-  direction text NOT NULL CHECK (direction IN ('directed','undirected')),
+  direction text NOT NULL CHECK (direction IN ('directed','undirected','bidirectional')),
   amount_allowed boolean NOT NULL,
   percentage_allowed boolean NOT NULL,
   definition text NOT NULL,
