@@ -12,12 +12,16 @@ import {
   LayoutDashboard,
   Network,
   Orbit,
+  Pause,
+  Play,
   RefreshCw,
   RotateCcw,
   Save,
   Search,
+  ZoomIn,
+  ZoomOut,
 } from "lucide-react";
-import type { ComponentType, CSSProperties, KeyboardEvent } from "react";
+import type { ComponentType, CSSProperties, KeyboardEvent, WheelEvent } from "react";
 import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
 import {
   emptyAtlas,
@@ -57,7 +61,7 @@ const defaultFilters: AtlasFilters = {
 };
 
 type ContributionScale = "day" | "week" | "month" | "year";
-type WritebackAction = "update_statement" | "add_context" | "change_tier" | "flag_conflict";
+type WritebackAction = "update_statement" | "add_context" | "change_tier" | "flag_conflict" | "rollback_to_version";
 type FilterKey = keyof AtlasFilters;
 
 interface TimelineEvent {
@@ -68,6 +72,12 @@ interface TimelineEvent {
   memory_tier: string;
   category: string;
   importance: string;
+}
+
+interface TimelineLayoutControls {
+  zoom: number;
+  center: number;
+  cursor: number;
 }
 
 interface DeltaStats {
@@ -189,6 +199,26 @@ interface WritebackProposal {
     revision: number;
     parent_proposal_id: string | null;
     rollback_unit: string;
+    supersedes_proposal_id?: string | null;
+  };
+  diff?: {
+    base_text: string;
+    proposed_text: string;
+    length_delta: number;
+    changed_segments: number;
+    summary: string;
+  };
+  rollback?: {
+    rollback_to_proposal_id: string;
+    rollback_to_revision: number;
+    rollback_text: string;
+    rollback_reason: string;
+  };
+  review?: {
+    human_summary: string;
+    agent_next_step: string;
+    conflict_policy: string;
+    apply_status: "proposal_only_pending_agent_apply";
   };
   safety: {
     direct_frontend_mutation_of_active_memory: false;
@@ -233,6 +263,7 @@ const writebackActionLabels: Record<WritebackAction, string> = {
   add_context: "补充长期上下文",
   change_tier: "调整层级/分类",
   flag_conflict: "标记冲突或过时",
+  rollback_to_version: "生成回滚提案",
 };
 
 async function clearTransientBrowserState(): Promise<void> {
@@ -897,18 +928,111 @@ function TimelineView({
   deltaStats: DeltaStats;
   onSelectNode: (node: AtlasNode) => void;
 }) {
-  const display = useMemo(() => buildTimelineLayout(timeline, nodeMap), [timeline, nodeMap]);
+  const [timelineZoom, setTimelineZoom] = useState(1);
+  const [timelineCenter, setTimelineCenter] = useState(0.5);
+  const [timelineCursor, setTimelineCursor] = useState(1);
+  const [timelinePlaying, setTimelinePlaying] = useState(false);
+  const [hoveredEventId, setHoveredEventId] = useState<string | null>(null);
+  const display = useMemo(
+    () => buildTimelineLayout(timeline, nodeMap, { zoom: timelineZoom, center: timelineCenter, cursor: timelineCursor }),
+    [timeline, nodeMap, timelineCenter, timelineCursor, timelineZoom],
+  );
+  const hoveredEvent = useMemo(
+    () => display.events.find((event) => event.id === hoveredEventId) ?? display.events.find((event) => event.source.node_id === selectedNode?.id) ?? display.events[display.events.length - 1] ?? null,
+    [display.events, hoveredEventId, selectedNode?.id],
+  );
+
+  useEffect(() => {
+    setTimelinePlaying(false);
+    setTimelineCursor(1);
+  }, [timeline.length]);
+
+  useEffect(() => {
+    if (!timelinePlaying) return undefined;
+    const timer = window.setInterval(() => {
+      setTimelineCursor((current) => {
+        if (current >= 0.995) {
+          setTimelinePlaying(false);
+          return 1;
+        }
+        return Math.min(1, current + 0.012);
+      });
+    }, 180);
+    return () => window.clearInterval(timer);
+  }, [timelinePlaying]);
+
+  const clampTimelineCenter = useCallback((value: number) => {
+    setTimelineCenter(Math.min(1, Math.max(0, value)));
+  }, []);
+  const clampTimelineZoom = useCallback((value: number) => {
+    setTimelineZoom(Math.min(8, Math.max(1, Number(value.toFixed(2)))));
+  }, []);
+  const handleTimelineWheel = useCallback((event: WheelEvent<SVGSVGElement>) => {
+    event.preventDefault();
+    clampTimelineZoom(timelineZoom + (event.deltaY < 0 ? 0.45 : -0.45));
+  }, [clampTimelineZoom, timelineZoom]);
+
+  function resetTimelineView() {
+    setTimelineZoom(1);
+    setTimelineCenter(0.5);
+    setTimelineCursor(1);
+    setTimelinePlaying(false);
+  }
+
   return (
     <div className="visual-workspace timeline-map">
       <div className="surface-heading compact">
         <div>
-          <p className="eyebrow">时间轴 / 分层轨道 / 事件密度</p>
-          <h2>按日期展开记忆、决策和项目事件，点击任意事件同步右侧详情</h2>
+          <p className="eyebrow">时间轴 / 动态窗口 / 事件密度</p>
+          <h2>按真实日期播放、缩放和定位记忆、决策、项目事件</h2>
         </div>
-        <span>{display.events.length} 个事件 / {display.lanes.length} 条轨道</span>
+        <span>{display.visibleCount} / {display.totalCount} 个事件 · {display.rangeLabel}</span>
       </div>
       <DeltaStrip stats={deltaStats} compact />
-      <svg className="timeline-canvas" viewBox="0 0 1000 640" role="img" aria-label="记忆时间轴">
+      <div className="timeline-control-bar" aria-label="时间轴控制">
+        <button aria-label={timelinePlaying ? "暂停时间轴播放" : "播放时间轴"} className="icon-control" onClick={() => setTimelinePlaying((value) => !value)} type="button">
+          {timelinePlaying ? <Pause size={15} /> : <Play size={15} />}
+        </button>
+        <button aria-label="缩小时间窗口" className="icon-control" onClick={() => clampTimelineZoom(timelineZoom - 0.5)} disabled={timelineZoom <= 1} type="button">
+          <ZoomOut size={15} />
+        </button>
+        <button aria-label="放大时间窗口" className="icon-control" onClick={() => clampTimelineZoom(timelineZoom + 0.5)} disabled={timelineZoom >= 8} type="button">
+          <ZoomIn size={15} />
+        </button>
+        <label className="timeline-range-control">
+          <span>窗口</span>
+          <input aria-label="时间窗口中心" max="1" min="0" onChange={(event) => clampTimelineCenter(Number(event.target.value))} step="0.01" type="range" value={timelineCenter} />
+        </label>
+        <label className="timeline-range-control">
+          <span>游标</span>
+          <input aria-label="时间播放游标" max="1" min="0" onChange={(event) => setTimelineCursor(Number(event.target.value))} step="0.01" type="range" value={timelineCursor} />
+        </label>
+        <button className="segmented" onClick={resetTimelineView} type="button">
+          <RotateCcw size={14} />
+          重置
+        </button>
+        <span className="timeline-zoom-readout">{timelineZoom.toFixed(1)}x · {display.cursorLabel}</span>
+      </div>
+      <div className="timeline-summary-grid" aria-label="时间轴摘要">
+        <div><span>窗口事件</span><strong>{display.visibleCount.toLocaleString()}</strong></div>
+        <div><span>高重要/决策</span><strong>{display.importantCount.toLocaleString()}</strong></div>
+        <div><span>核心画像</span><strong>{display.coreCount.toLocaleString()}</strong></div>
+        <div><span>密度峰值</span><strong>{display.peakDensity.toLocaleString()}</strong></div>
+      </div>
+      <div className="timeline-density-track" aria-label="时间密度轨">
+        {display.densityBands.map((band) => (
+          <button
+            aria-label={`${band.label} · ${band.count} 个事件`}
+            className={band.active ? "timeline-density-band active" : "timeline-density-band"}
+            key={band.key}
+            onClick={() => clampTimelineCenter(band.center)}
+            style={{ "--band-height": `${Math.max(8, band.intensity * 100)}%` } as CSSProperties}
+            title={`${band.label} · ${band.count} 个事件`}
+            type="button"
+          />
+        ))}
+      </div>
+      <svg className="timeline-canvas" viewBox="0 0 1000 640" role="img" aria-label="动态记忆时间轴" onWheel={handleTimelineWheel}>
         <defs>
           <filter id="softGlow">
             <feGaussianBlur stdDeviation="3.2" result="blur" />
@@ -918,6 +1042,9 @@ function TimelineView({
             </feMerge>
           </filter>
         </defs>
+        {display.densityBars.map((band) => (
+          <rect className="timeline-density-backdrop" height={band.height} key={band.key} width={band.width} x={band.x} y={band.y} />
+        ))}
         <line x1="80" x2="960" y1="540" y2="540" stroke="rgba(244,241,232,0.28)" strokeWidth="2" />
         {display.ticks.map((tick) => (
           <g key={tick.label}>
@@ -938,29 +1065,55 @@ function TimelineView({
             <text x="28" y={lane.y + 4} className="lane-label">{lane.label}</text>
           </g>
         ))}
+        <g className="timeline-cursor">
+          <line x1={display.cursorX} x2={display.cursorX} y1="58" y2="552" />
+          <text x={display.cursorX} y="50" textAnchor="middle">{display.cursorLabel}</text>
+        </g>
         {display.events.map((event) => {
-          const node = nodeMap.get(event.source.node_id);
+          const node = event.node;
           const selected = event.source.node_id === selectedNode?.id;
+          const hovered = event.id === hoveredEventId;
+          const statusClass = event.future ? "future" : "past";
           return (
             <g
-              className={selected ? "timeline-event selected" : "timeline-event"}
+              className={`timeline-event ${statusClass}${selected ? " selected" : ""}${hovered ? " hovered" : ""}`}
               aria-label={`${event.source.date} · ${normalizeMemoryTier(event.source.memory_tier)} · ${event.source.label}`}
-              key={`${event.source.date}-${event.source.node_id}`}
+              key={event.id}
               role="button"
               tabIndex={node ? 0 : -1}
               onClick={() => {
                 if (node) onSelectNode(node);
               }}
+              onMouseEnter={() => setHoveredEventId(event.id)}
+              onMouseLeave={() => setHoveredEventId(null)}
               onKeyDown={(keyboardEvent) => {
                 if (node && isActivationKey(keyboardEvent)) onSelectNode(node);
               }}
             >
               <line x1={event.x} x2={event.x} y1={event.y} y2="540" stroke={event.color} opacity="0.28" />
               <circle cx={event.x} cy={event.y} r={event.radius} fill={event.color} filter="url(#softGlow)" />
+              {(event.major || selected || hovered) ? (
+                <text x={Math.min(930, event.x + 10)} y={event.y - 10} className="timeline-point-label">{event.shortLabel}</text>
+              ) : null}
             </g>
           );
         })}
       </svg>
+      <div className="timeline-event-detail-strip" aria-label="时间轴事件详情">
+        {hoveredEvent ? (
+          <>
+            <div>
+              <span>{hoveredEvent.source.date} · {normalizeMemoryTier(hoveredEvent.source.memory_tier)} · {humanCategoryLabel(hoveredEvent.source.category)}</span>
+              <strong>{humanizeStatement(hoveredEvent.node?.statement) || hoveredEvent.source.label}</strong>
+            </div>
+            <button disabled={!hoveredEvent.node} onClick={() => hoveredEvent.node && onSelectNode(hoveredEvent.node)} type="button">
+              同步详情
+            </button>
+          </>
+        ) : (
+          <p>移动到事件点查看内容；点击事件同步右侧详情。滚轮缩放，窗口滑块定位年份内局部阶段。</p>
+        )}
+      </div>
     </div>
   );
 }
@@ -1975,6 +2128,9 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
   );
   const latest = nodeProposals[nodeProposals.length - 1] ?? null;
   const previous = nodeProposals[nodeProposals.length - 2] ?? null;
+  const baseText = node.statement ?? node.label;
+  const draftDiff = useMemo(() => buildProposalDiff(baseText, draftText), [baseText, draftText]);
+  const versionChain = useMemo(() => [...nodeProposals].reverse().slice(0, 6), [nodeProposals]);
 
   useEffect(() => {
     setDraftText(node.statement ?? node.label);
@@ -2010,10 +2166,72 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
         current_tier: normalizeMemoryTier(node.memory_tier),
         current_category: node.category ?? "",
       },
+      diff: buildProposalDiff(baseText, text),
       version: {
         revision: (latest?.version.revision ?? 0) + 1,
         parent_proposal_id: latest?.proposal_id ?? null,
         rollback_unit: policy.rollback_unit || "per_memory_version",
+        supersedes_proposal_id: null,
+      },
+      review: buildProposalReview(action, node, reason.trim()),
+      safety: {
+        direct_frontend_mutation_of_active_memory: false,
+        requires_conflict_check: true,
+        requires_agent_or_human_apply: true,
+        forbidden_payload: policy.frontend_payload_contract?.forbidden_payload ?? [
+          "plaintext secrets",
+          "raw conversation text",
+          "record hashes",
+          "local absolute paths",
+        ],
+      },
+    };
+    persist([...proposals, proposal]);
+  }
+
+  function createRollbackProposal() {
+    if (!editable || !latest) return;
+    const target = previous ?? latest;
+    const now = new Date().toISOString();
+    const rollbackText = target.payload.proposed_text || baseText;
+    const rollbackReason = `回滚到版本 ${target.version.revision}：${target.proposal_id}`;
+    const proposal: WritebackProposal = {
+      schema_version: policy.proposal_schema_version || "memory_change_proposal.v1",
+      proposal_id: `atlas_${compactTimestamp(now)}_${stableHash(`${node.id}:rollback:${latest.proposal_id}:${nodeProposals.length + 1}`)}`,
+      created_at: now,
+      status: "draft_pending_agent_apply",
+      target_ref: {
+        node_id: node.id,
+        memory_id: node.memory_id ?? node.id,
+        label: node.label,
+        source_file: node.source_label ?? node.data_source ?? "visual_snapshot",
+        base_date: node.date ?? "",
+      },
+      action: "rollback_to_version",
+      payload: {
+        proposed_text: rollbackText,
+        reason: rollbackReason,
+        current_tier: normalizeMemoryTier(node.memory_tier),
+        current_category: node.category ?? "",
+      },
+      diff: buildProposalDiff(latest.payload.proposed_text || baseText, rollbackText),
+      version: {
+        revision: (latest.version.revision ?? 0) + 1,
+        parent_proposal_id: latest.proposal_id,
+        rollback_unit: policy.rollback_unit || "per_memory_version",
+        supersedes_proposal_id: latest.proposal_id,
+      },
+      rollback: {
+        rollback_to_proposal_id: target.proposal_id,
+        rollback_to_revision: target.version.revision,
+        rollback_text: rollbackText,
+        rollback_reason: rollbackReason,
+      },
+      review: {
+        human_summary: `建议把当前写回提案回滚到版本 ${target.version.revision}。`,
+        agent_next_step: "重新读取当前主动记忆库，核对冲突与敏感字段后，写入提案历史，并用 git commit 建立回滚点。",
+        conflict_policy: "若当前库已存在更新版本，先生成冲突报告，不可直接覆盖。",
+        apply_status: "proposal_only_pending_agent_apply",
       },
       safety: {
         direct_frontend_mutation_of_active_memory: false,
@@ -2042,6 +2260,20 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
     downloadJson(`${latest.proposal_id}.json`, latest);
   }
 
+  function exportProposalHistory() {
+    if (!nodeProposals.length) return;
+    downloadJson(`memory_atlas_writeback_history_${node.id}.json`, {
+      schema_version: "memory_atlas_writeback_history.v1",
+      exported_at: new Date().toISOString(),
+      target_ref: {
+        node_id: node.id,
+        memory_id: node.memory_id ?? node.id,
+        label: node.label,
+      },
+      proposals: nodeProposals,
+    });
+  }
+
   return (
     <section className="writeback-panel" aria-label="长期记忆写回提案">
       <div className="panel-title-row">
@@ -2051,6 +2283,11 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
       <p>
         前端只生成版本化提案；不直接修改主动记忆库。后续受控代理写库前必须重新读库、做冲突检查并生成可回滚历史。
       </p>
+      <div className="writeback-diff-grid" aria-label="当前草稿差异">
+        <div><span>长度变化</span><strong>{draftDiff.length_delta > 0 ? "+" : ""}{draftDiff.length_delta}</strong></div>
+        <div><span>变更片段</span><strong>{draftDiff.changed_segments}</strong></div>
+        <div><span>回滚单位</span><strong>{policy.rollback_unit || "per_memory_version"}</strong></div>
+      </div>
       <label>
         动作
         <select value={action} onChange={(event) => setAction(event.target.value as WritebackAction)} disabled={!editable}>
@@ -2081,20 +2318,43 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
       <div className="writeback-actions">
         <button type="button" onClick={saveProposal} disabled={!editable || !draftText.trim()}>
           <Save size={15} />
-          保存提案
+          保存新版
         </button>
         <button type="button" onClick={exportLatest} disabled={!latest}>
           <Download size={15} />
-          导出 JSON
+          导出最新
+        </button>
+        <button type="button" onClick={exportProposalHistory} disabled={!nodeProposals.length}>
+          <GitBranch size={15} />
+          导出版本链
         </button>
         <button type="button" onClick={rollbackDraft} disabled={!previous}>
           <RotateCcw size={15} />
-          回滚草稿
+          载入上一版
+        </button>
+        <button type="button" onClick={createRollbackProposal} disabled={!latest}>
+          <RotateCcw size={15} />
+          生成回滚提案
         </button>
       </div>
+      {versionChain.length ? (
+        <div className="writeback-version-chain" aria-label="写回提案版本链">
+          {versionChain.map((proposal) => (
+            <button key={proposal.proposal_id} onClick={() => {
+              setAction(proposal.action);
+              setDraftText(proposal.payload.proposed_text);
+              setReason(proposal.payload.reason);
+            }} type="button">
+              <strong>v{proposal.version.revision} · {writebackActionLabels[proposal.action]}</strong>
+              <span>{proposal.diff?.summary ?? "旧版本无差异摘要"} · {new Date(proposal.created_at).toLocaleString("zh-CN")}</span>
+              <small>{proposal.version.parent_proposal_id ? `parent ${proposal.version.parent_proposal_id}` : "root proposal"}</small>
+            </button>
+          ))}
+        </div>
+      ) : null}
       <small>
         {latest
-          ? `最新版本 ${latest.version.revision} · ${new Date(latest.created_at).toLocaleString("zh-CN")}`
+          ? `最新版本 ${latest.version.revision} · ${new Date(latest.created_at).toLocaleString("zh-CN")} · 待受控代理应用`
           : "尚无本地提案版本"}
       </small>
     </section>
@@ -3230,16 +3490,31 @@ function buildObsidianLayout(
   return { nodes: layoutNodes, edges: layoutEdges };
 }
 
-function buildTimelineLayout(timeline: TimelineEvent[], nodeMap: Map<string, AtlasNode>) {
-  const events = timeline
+function buildTimelineLayout(timeline: TimelineEvent[], nodeMap: Map<string, AtlasNode>, controls: TimelineLayoutControls) {
+  const allEvents = timeline
     .map((event) => ({ source: event, day: parseDay(event.date), node: nodeMap.get(event.node_id) }))
     .filter((event): event is { source: TimelineEvent; day: Date; node: AtlasNode | undefined } => Boolean(event.day))
-    .sort((a, b) => a.day.getTime() - b.day.getTime())
-    .slice(-180);
-  const minDay = events[0]?.day ?? new Date();
-  const maxDay = events[events.length - 1]?.day ?? minDay;
-  const span = Math.max(1, maxDay.getTime() - minDay.getTime());
-  const laneKeys = uniqueSorted(events.map((event) => normalizeMemoryTier(event.source.memory_tier) || event.source.category)).slice(0, 7);
+    .sort((a, b) => a.day.getTime() - b.day.getTime());
+  const minAllDay = allEvents[0]?.day ?? new Date();
+  const maxAllDay = allEvents[allEvents.length - 1]?.day ?? minAllDay;
+  const totalSpan = Math.max(1, maxAllDay.getTime() - minAllDay.getTime());
+  const zoom = Math.min(8, Math.max(1, controls.zoom || 1));
+  const visibleSpan = Math.max(1, totalSpan / zoom);
+  const rawCenter = minAllDay.getTime() + totalSpan * Math.min(1, Math.max(0, controls.center));
+  const minWindow = minAllDay.getTime();
+  const maxWindow = maxAllDay.getTime();
+  const unclampedStart = rawCenter - visibleSpan / 2;
+  const windowStartMs = Math.max(minWindow, Math.min(Math.max(minWindow, maxWindow - visibleSpan), unclampedStart));
+  const windowEndMs = Math.min(maxWindow, windowStartMs + visibleSpan);
+  const minDay = new Date(windowStartMs);
+  const maxDay = new Date(windowEndMs);
+  const span = Math.max(1, windowEndMs - windowStartMs);
+  const cursor = Math.min(1, Math.max(0, controls.cursor));
+  const cursorMs = windowStartMs + span * cursor;
+  const visibleEvents = allEvents
+    .filter((event) => event.day.getTime() >= windowStartMs && event.day.getTime() <= windowEndMs)
+    .slice(-260);
+  const laneKeys = uniqueSorted(visibleEvents.map((event) => normalizeMemoryTier(event.source.memory_tier) || event.source.category)).slice(0, 7);
   const lanes = laneKeys.map((key, index) => ({
     key,
     label: translateTierOrKind(key),
@@ -3248,26 +3523,103 @@ function buildTimelineLayout(timeline: TimelineEvent[], nodeMap: Map<string, Atl
   }));
   const laneMap = new Map(lanes.map((lane) => [lane.key, lane]));
   const ticks = buildMonthTicks(minDay, maxDay, 80, 960);
-  const eventTicks = buildEventDateTicks(events, minDay, maxDay, 80, 960);
+  const eventTicks = buildEventDateTicks(visibleEvents, minDay, maxDay, 80, 960);
+  const densityBands = buildTimelineDensityBands(allEvents, minAllDay, maxAllDay, windowStartMs, windowEndMs);
+  const densityBars = buildTimelineDensityBackdrops(visibleEvents, minDay, maxDay);
+  const importantCount = visibleEvents.filter((event) => event.source.importance === "高" || event.source.category === "decision").length;
+  const coreCount = visibleEvents.filter((event) => normalizeMemoryTier(event.source.memory_tier) === "核心画像").length;
   return {
     lanes,
     ticks,
     eventTicks,
-    events: events.map((event, index) => {
+    densityBands,
+    densityBars,
+    rangeLabel: `${formatAxisDate(minDay)} - ${formatAxisDate(maxDay)}`,
+    cursorLabel: formatAxisDate(new Date(cursorMs)),
+    cursorX: 80 + cursor * 880,
+    totalCount: allEvents.length,
+    visibleCount: visibleEvents.length,
+    importantCount,
+    coreCount,
+    peakDensity: Math.max(0, ...densityBands.map((band) => band.count)),
+    events: visibleEvents.map((event, index) => {
       const lane = laneMap.get(normalizeMemoryTier(event.source.memory_tier) || event.source.category) ?? lanes[index % Math.max(lanes.length, 1)];
       const x = 80 + ((event.day.getTime() - minDay.getTime()) / span) * 880;
       const major = event.source.importance === "高" || event.source.category === "decision" || index % 11 === 0;
       return {
+        id: `${event.source.date}-${event.source.node_id}-${event.source.memory_id || index}`,
         source: event.source,
+        node: event.node,
         x,
         y: lane?.y ?? 300,
         radius: event.source.importance === "高" ? 9 : event.source.category === "decision" ? 8 : 5,
         color: event.node ? nodeColor(event.node) : lane?.color ?? "#94a3b8",
         major,
+        future: event.day.getTime() > cursorMs,
         shortLabel: truncate(event.source.label, 18),
       };
     }),
   };
+}
+
+function buildTimelineDensityBands(
+  events: Array<{ day: Date }>,
+  minDay: Date,
+  maxDay: Date,
+  windowStartMs: number,
+  windowEndMs: number,
+) {
+  const count = 48;
+  const totalSpan = Math.max(1, maxDay.getTime() - minDay.getTime());
+  const bins = Array.from({ length: count }, (_unused, index) => ({
+    key: `density-${index}`,
+    count: 0,
+    center: (index + 0.5) / count,
+    label: "",
+    intensity: 0,
+    active: false,
+  }));
+  for (const event of events) {
+    const ratio = Math.min(0.999, Math.max(0, (event.day.getTime() - minDay.getTime()) / totalSpan));
+    bins[Math.floor(ratio * count)].count += 1;
+  }
+  const peak = Math.max(1, ...bins.map((bin) => bin.count));
+  return bins.map((bin, index) => {
+    const start = new Date(minDay.getTime() + totalSpan * (index / count));
+    const end = new Date(minDay.getTime() + totalSpan * ((index + 1) / count));
+    return {
+      ...bin,
+      label: `${formatAxisDate(start)}-${formatAxisDate(end)}`,
+      intensity: bin.count > 0 ? Math.log1p(bin.count) / Math.log1p(peak) : 0,
+      active: end.getTime() >= windowStartMs && start.getTime() <= windowEndMs,
+    };
+  });
+}
+
+function buildTimelineDensityBackdrops(
+  events: Array<{ day: Date }>,
+  minDay: Date,
+  maxDay: Date,
+) {
+  const count = 36;
+  const span = Math.max(1, maxDay.getTime() - minDay.getTime());
+  const bins = Array.from({ length: count }, (_unused, index) => ({ key: `timeline-band-${index}`, count: 0 }));
+  for (const event of events) {
+    const ratio = Math.min(0.999, Math.max(0, (event.day.getTime() - minDay.getTime()) / span));
+    bins[Math.floor(ratio * count)].count += 1;
+  }
+  const peak = Math.max(1, ...bins.map((bin) => bin.count));
+  return bins.map((bin, index) => {
+    const width = 880 / count;
+    const intensity = bin.count > 0 ? Math.log1p(bin.count) / Math.log1p(peak) : 0;
+    return {
+      key: bin.key,
+      x: 80 + index * width,
+      y: 540 - Math.max(12, intensity * 430),
+      width: Math.max(8, width - 1),
+      height: Math.max(12, intensity * 430),
+    };
+  });
 }
 
 function buildContributionPeriods(atlas: MemoryAtlas, nodes: AtlasNode[], filters: AtlasFilters, selectedYear: number) {
@@ -3759,6 +4111,48 @@ function contributionTitle(bucket: PeriodCounts) {
 
 function scaleLabel(scale: ContributionScale): string {
   return { day: "日", week: "周", month: "月", year: "年" }[scale];
+}
+
+function buildProposalDiff(baseText: string, proposedText: string): NonNullable<WritebackProposal["diff"]> {
+  const base = normalizeTextForDiff(baseText);
+  const proposed = normalizeTextForDiff(proposedText);
+  const baseSegments = splitReadableSegments(base);
+  const proposedSegments = splitReadableSegments(proposed);
+  const baseSet = new Set(baseSegments);
+  const proposedSet = new Set(proposedSegments);
+  const changedSegments =
+    proposedSegments.filter((segment) => !baseSet.has(segment)).length +
+    baseSegments.filter((segment) => !proposedSet.has(segment)).length;
+  const lengthDelta = proposed.length - base.length;
+  return {
+    base_text: base,
+    proposed_text: proposed,
+    length_delta: lengthDelta,
+    changed_segments: changedSegments,
+    summary: `长度 ${lengthDelta > 0 ? "+" : ""}${lengthDelta}，片段变化 ${changedSegments}`,
+  };
+}
+
+function buildProposalReview(action: WritebackAction, node: AtlasNode, reason: string): NonNullable<WritebackProposal["review"]> {
+  const tier = normalizeMemoryTier(node.memory_tier);
+  const actionLabel = writebackActionLabels[action];
+  return {
+    human_summary: `${actionLabel}：${humanNodeTitle(node)}。${reason || "需要补充证据和冲突检查后再写入。"} `,
+    agent_next_step: "重新读取当前主动记忆库和历史提案，核对来源、冲突、敏感字段与版本号，然后写入提案历史并提交 git 回滚点。",
+    conflict_policy: `目标层级 ${tier || "未知"}；如果现有库已出现更新版本或同主题相反结论，必须先生成冲突报告，不可静默覆盖。`,
+    apply_status: "proposal_only_pending_agent_apply",
+  };
+}
+
+function normalizeTextForDiff(value: string | undefined): string {
+  return (value ?? "").replace(/\s+/g, " ").trim();
+}
+
+function splitReadableSegments(value: string): string[] {
+  return value
+    .split(/[。！？!?;；\n]+/)
+    .map((segment) => segment.trim())
+    .filter(Boolean);
 }
 
 function loadWritebackProposals(): WritebackProposal[] {

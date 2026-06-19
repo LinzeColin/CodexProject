@@ -173,6 +173,8 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         "docs/MEMORY_ATLAS_DEPLOYMENT.md",
         "docs/MEMORY_ATLAS_CLOUDFLARE_RUNBOOK.md",
         "docs/MEMORY_ATLAS_COMPETITOR_ARCHITECTURE_MATRIX.md",
+        "docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
+        "docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
         "docs/USER_REQUIREMENTS.md",
         "config/data_sources/source_registry.json",
         "config/cloudflare/pages_direct_upload.template.json",
@@ -310,6 +312,8 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
     codex_sync_source = read_text(repo_root / "scripts/sync_codex_memory_data.py")
     codex_weekly_source = read_text(repo_root / "scripts/install_codex_weekly_sync.py")
     deployment_doc = read_text(repo_root / "docs/MEMORY_ATLAS_DEPLOYMENT.md")
+    model_parameters_doc = read_text(repo_root / "docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md")
+    delivery_record_doc = read_text(repo_root / "docs/MEMORY_ATLAS_DELIVERY_RECORD.md")
     ci_workflow = read_text(repo_root / ".github/workflows/ci.yml")
 
     require(
@@ -338,13 +342,31 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and 'lang="zh-CN"' in installer_source
         and "记忆星图启动中" in installer_source
         and "个节点 /" in app_source
-        and "个事件 /" in app_source
+        and "个事件 ·" in app_source
         and "change proposal" not in app_source
         and "versioned proposal" not in app_source
         and "active memory" not in app_source,
         "chinese_user_facing_ui",
         "app shell, startup page, stats, and writeback explanation are Chinese-first",
         "found English user-facing text in core UI surfaces",
+    )
+    require(
+        checks,
+        "模型假设" in model_parameters_doc
+        and "输入" in model_parameters_doc
+        and "输出" in model_parameters_doc
+        and "参数与阈值" in model_parameters_doc
+        and "activity_score.v2" in model_parameters_doc
+        and "leverage_score" in model_parameters_doc
+        and "情绪分" in model_parameters_doc
+        and "当前未实现" in model_parameters_doc
+        and "交付运行方式" in delivery_record_doc
+        and "验收标准" in delivery_record_doc
+        and "历史过程记录" in delivery_record_doc
+        and "待开发清单" in delivery_record_doc,
+        "model_parameters_and_delivery_record_ready",
+        "Model parameters and delivery record distinguish formulas/thresholds from feature logs and keep run/acceptance/history readable",
+        "Model parameter or delivery record docs are missing assumptions, inputs, outputs, formulas, thresholds, delivery mode, acceptance, or history",
     )
     require(
         checks,

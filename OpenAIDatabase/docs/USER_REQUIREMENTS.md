@@ -104,6 +104,28 @@ Each section must show added, modified, deleted/demoted, and current items.
 Deleted/demoted means "do not continue using this as active personalization";
 historical records are still backed up and auditable.
 
+Timeline must be a real dynamic and interactive timeline, not a static scatter
+plot, table, or list. It must support real event-date positioning, zoom,
+timeline window selection, replay cursor/playback, density track, visible event
+density backdrops, hover details, and click-to-sync Inspector. It should help
+the user understand sequences, bursts, project phases, decisions, and behavior
+change over time.
+
+Frontend writeback must stay proposal-only but be useful enough for controlled
+agents to apply later. It must show a readable diff, proposal version chain,
+parent proposal id, exportable proposal history, rollback proposal generation,
+and pending-agent-apply status. The frontend may request a change, but it must
+not directly mutate active long-term memory.
+
+Every project must maintain true model-parameter documentation. "Model" means
+assumptions, data inputs, processing method, strategy, outputs, and iteration
+policy. "Parameters" means formulas, functions, thresholds, weights, gates,
+and numeric values, for example how activity score or emotion score is
+computed. If a model such as emotion score is not implemented, the document
+must say so directly instead of inventing a formula. Feature lists, development
+logs, delivery/run modes, acceptance standards, risks, and history belong in
+separate delivery/requirement records, not in the model-parameter section.
+
 The Contribution Grid must support year selection for day/week/month/year
 scales. The year selector should only show years with history. Day/week must
 share the same yearly coordinate plane: 7 Monday-to-Sunday rows by 52-54 natural

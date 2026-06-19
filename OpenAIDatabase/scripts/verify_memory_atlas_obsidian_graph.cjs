@@ -120,6 +120,58 @@ async function main() {
     const afterDrag = await firstNode.evaluate((node) => node.getAttribute("transform") || "");
     assertCondition(beforeDrag !== afterDrag, "Node drag did not update node position", { beforeDrag, afterDrag });
 
+    console.error("[obsidian-smoke] timeline");
+    await page.getByRole("button", { name: /时间轴/ }).click();
+    await page.waitForSelector(".timeline-map", { state: "visible" });
+    await page.waitForSelector(".timeline-event", { state: "visible" });
+    const timelineInitial = await page.evaluate(() => ({
+      controlBar: Boolean(document.querySelector(".timeline-control-bar")),
+      densityTrack: Boolean(document.querySelector(".timeline-density-track")),
+      densityBands: document.querySelectorAll(".timeline-density-band").length,
+      cursor: Boolean(document.querySelector(".timeline-cursor line")),
+      detailStrip: Boolean(document.querySelector(".timeline-event-detail-strip")),
+      eventCount: document.querySelectorAll(".timeline-event").length,
+      zoomReadout: document.querySelector(".timeline-zoom-readout")?.textContent || "",
+    }));
+    assertCondition(
+      timelineInitial.controlBar && timelineInitial.densityTrack && timelineInitial.cursor && timelineInitial.detailStrip,
+      "Timeline dynamic controls are missing",
+      timelineInitial,
+    );
+    assertCondition(timelineInitial.densityBands >= 24 && timelineInitial.eventCount > 0, "Timeline density or event layer is too sparse", timelineInitial);
+    await page.getByRole("button", { name: /放大时间窗口/ }).click();
+    const timelineZoomed = await page.locator(".timeline-zoom-readout").innerText();
+    assertCondition(timelineZoomed !== timelineInitial.zoomReadout, "Timeline zoom control did not update readout", { before: timelineInitial.zoomReadout, after: timelineZoomed });
+    const firstTimelineEvent = page.locator('.timeline-event[tabindex="0"]').first();
+    const eventBox = await firstTimelineEvent.boundingBox();
+    assertCondition(Boolean(eventBox), "First timeline event has no bounding box", timelineInitial);
+    await page.mouse.move(eventBox.x + eventBox.width / 2, eventBox.y + eventBox.height / 2);
+    await page.waitForTimeout(180);
+    const timelineDetail = await page.locator(".timeline-event-detail-strip").innerText();
+    assertCondition(!timelineDetail.includes("移动到事件点查看内容"), "Timeline hover did not populate event detail strip", { timelineDetail });
+
+    console.error("[obsidian-smoke] writeback");
+    await firstTimelineEvent.dispatchEvent("click");
+    await page.waitForSelector(".writeback-panel", { state: "visible", timeout: 5000 });
+    const writebackInitial = await page.evaluate(() => ({
+      diffGrid: Boolean(document.querySelector(".writeback-diff-grid")),
+      saveButton: Array.from(document.querySelectorAll(".writeback-panel button")).some((button) => button.textContent?.includes("保存新版")),
+      rollbackButton: Array.from(document.querySelectorAll(".writeback-panel button")).some((button) => button.textContent?.includes("生成回滚提案")),
+    }));
+    assertCondition(writebackInitial.diffGrid && writebackInitial.saveButton && writebackInitial.rollbackButton, "Writeback proposal controls are missing", writebackInitial);
+    console.error("[obsidian-smoke] writeback draft");
+    const draftBox = page.locator(".writeback-panel textarea").first();
+    const draftValue = await draftBox.inputValue();
+    await draftBox.fill(`${draftValue} smoke`);
+    console.error("[obsidian-smoke] writeback save");
+    await page.locator(".writeback-actions button", { hasText: "保存新版" }).click({ timeout: 5000 });
+    await page.waitForSelector(".writeback-version-chain", { state: "visible" });
+    console.error("[obsidian-smoke] writeback rollback");
+    await page.locator(".writeback-actions button", { hasText: "生成回滚提案" }).click({ timeout: 5000 });
+    await page.waitForFunction(() => document.querySelectorAll(".writeback-version-chain button").length >= 2, null, { timeout: 5000 });
+    const writebackVersionCount = await page.locator(".writeback-version-chain button").count();
+    assertCondition(writebackVersionCount >= 2, "Writeback rollback proposal did not create a second version", { writebackVersionCount });
+
     console.error("[obsidian-smoke] summary");
     await page.locator('button[title="总结与迭代"]').click({ force: true, timeout: 5000 });
     await page.waitForSelector(".summary-iteration-view", { state: "visible" });
@@ -133,7 +185,14 @@ async function main() {
     await page.screenshot({ path: "/private/tmp/memory-atlas-obsidian-smoke.png", fullPage: false });
     console.log(JSON.stringify({ status: "PASS", initial, hover, zoomed, beforeDrag, afterDrag }, null, 2));
   } finally {
-    await browser.close();
+    await Promise.race([
+      browser.close(),
+      new Promise((resolve) => setTimeout(resolve, 2500)),
+    ]);
+    const processHandle = typeof browser.process === "function" ? browser.process() : null;
+    if (processHandle && !processHandle.killed) {
+      processHandle.kill("SIGTERM");
+    }
   }
 }
 

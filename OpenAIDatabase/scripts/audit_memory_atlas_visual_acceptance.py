@@ -145,6 +145,50 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     )
     require(
         checks,
+        "const [timelineZoom, setTimelineZoom]" in timeline_view
+        and "const [timelineCenter, setTimelineCenter]" in timeline_view
+        and "const [timelineCursor, setTimelineCursor]" in timeline_view
+        and "const [timelinePlaying, setTimelinePlaying]" in timeline_view
+        and "buildTimelineLayout(timeline, nodeMap, { zoom: timelineZoom, center: timelineCenter, cursor: timelineCursor })" in timeline_view
+        and 'className="timeline-control-bar"' in timeline_view
+        and 'className="timeline-density-track"' in timeline_view
+        and 'className="timeline-event-detail-strip"' in timeline_view
+        and "onWheel={handleTimelineWheel}" in timeline_view
+        and "display.densityBands.map" in timeline_view
+        and "display.densityBars.map" in timeline_view
+        and 'className="timeline-cursor"' in timeline_view
+        and "function buildTimelineDensityBands" in app_source
+        and "function buildTimelineDensityBackdrops" in app_source
+        and ".timeline-control-bar" in css_source
+        and ".timeline-density-track" in css_source
+        and ".timeline-cursor line" in css_source
+        and ".timeline-event-detail-strip" in css_source
+        and "动态窗口" in readme
+        and "播放游标" in readme,
+        "timeline_is_dynamic_interactive",
+        "Timeline exposes zoom, window center, replay cursor, density track, density backdrops, hover detail strip, and wheel zoom",
+        "Timeline is still static or lacks dynamic controls, density layers, replay cursor, or hover/detail interaction",
+    )
+    require(
+        checks,
+        '"rollback_to_version"' in app_source
+        and "function createRollbackProposal" in app_source
+        and "function exportProposalHistory" in app_source
+        and "function buildProposalDiff" in app_source
+        and "function buildProposalReview" in app_source
+        and 'className="writeback-diff-grid"' in app_source
+        and 'className="writeback-version-chain"' in app_source
+        and "生成回滚提案" in app_source
+        and ".writeback-diff-grid" in css_source
+        and ".writeback-version-chain" in css_source
+        and "版本链" in readme
+        and "rollback proposal" in readme,
+        "writeback_has_version_diff_and_rollback",
+        "Writeback proposals expose readable diffs, version-chain export, rollback proposal generation, and pending-agent apply policy",
+        "Writeback proposals lack version chain, readable diff, rollback proposal, or explicit pending-agent apply contract",
+    )
+    require(
+        checks,
         "Array.from({ length: daysInYear }" in app_source
         and "const startWeekday = mondayWeekdayIndex(yearStart)" in app_source
         and "const weekColumns = Math.ceil((daysInYear + startWeekday) / 7)" in app_source
