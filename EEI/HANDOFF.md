@@ -37,7 +37,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Added a visual-first NVIDIA synthetic recursive supply-chain workspace with visible fixture notices, stage coverage, relationship labels, and three-step reroot path.
 - Completed T205, A025, and A067 by GitHub Actions run `27824233483`.
 - Added business, capital/control, and policy/risk layers to the visual workspace; split node selection from rerooting; added inspector actions and keyboard-reachable node selection.
-- Locally completed T1103, T1104, T1107, and T1108 with A136-A140 and A146-A150 covered by Playwright E2E. Remote CI is pending.
+- Completed T1103, T1104, T1107, and T1108 with A136-A140 and A146-A150 by GitHub Actions run `27825230977`.
 
 ## Verification Evidence
 
@@ -62,6 +62,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27823282804` passed; T203/T206 domain API repository and A023/A090 integration checks are proven.
 - 2026-06-19 update: GitHub Actions run `27824233483` passed; A025 visible fixture marking and A067 NVIDIA recursive supply-chain E2E are proven.
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 5 tests for A136-A140 and A146-A150.
+- 2026-06-19 update: GitHub Actions run `27825230977` passed; A136-A140 and A146-A150 visual workspace acceptance checks are proven.
 
 Remote verification:
 
@@ -76,13 +77,15 @@ Remote verification:
 - GitHub Actions job `82341300203`: PASS.
 - GitHub Actions run `27824233483`: PASS.
 - GitHub Actions job `82344470407`: PASS.
+- GitHub Actions run `27825230977`: PASS.
+- GitHub Actions job `82347837228`: PASS.
 
 ## Not Completed
 
 - Docker is not installed on the current host, so local `make verify-g1` still fails closed.
 - G2 database foundation subset passed remote PostgreSQL CI.
 - T205 is DONE, including backend fixture load, visible fixture marking, and recursive NVIDIA scenario E2E.
-- T1103/T1104/T1107/T1108 visual company workspace tasks are DONE locally; remote CI is pending.
+- T1103/T1104/T1107/T1108 visual company workspace tasks are DONE and remote CI passed.
 - T1105/T1106/T1109 visual company workspace tasks are not started.
 - T1203 taxonomy/object-scope API is not started.
 - MVP is not complete.
@@ -91,7 +94,6 @@ Remote verification:
 
 Continue G2 with a bounded company-workspace/API run:
 
-1. Push the T1103/T1104/T1107/T1108 visual workspace acceptance pass and wait for GitHub Actions.
-2. Start T1105/T1106/T1109 for lenses, semantic zoom, grouping, budget, and mental-map behavior.
-3. Add T1203 taxonomy/object-scope API from canonical catalogs.
-4. Keep fixture/live separation visible until live ingestion gates exist.
+1. Start T1105/T1106/T1109 for lenses, semantic zoom, grouping, budget, and mental-map behavior.
+2. Add T1203 taxonomy/object-scope API from canonical catalogs.
+3. Keep fixture/live separation visible until live ingestion gates exist.
