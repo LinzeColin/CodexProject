@@ -59,6 +59,10 @@ Current sequence:
   entity, evidence, job, task, and holding snapshot tables.
 - Source registry, homepage summary read model, task repository, holding
   snapshot repository, source version history, and point-in-time source replay.
+- Data-home boundary audit for `$PFI_OS_DATA_HOME`, Operational SQLite, and
+  public Git private/runtime/secret fixture paths.
+- Command-center latest cache ingestion into Operational Store source,
+  evidence, job, and task records before Web Shell homepage summary rendering.
 
 ## Start Here
 
@@ -86,6 +90,7 @@ Latest focused verification for PFI-001 through PFI-004 and Phase A:
 python -m pytest tests/test_pfi_product_contracts.py -q
 python -m pytest tests/test_config.py tests/test_data.py tests/test_data_lake_manifest.py tests/test_holdings_book.py tests/test_research_bus.py tests/test_app_dashboard.py tests/test_workspace_shell.py tests/test_scripts.py -q
 python -m pytest tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py tests/visual/test_pfi_web_shell_visual_baseline.py -q
+python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
 python -m compileall src/pfi_os/application src/pfi_os/app/streamlit_app.py
 git diff --check
@@ -96,8 +101,7 @@ commands after any follow-up edits.
 
 ## Not Done
 
-- `origin/main` contains remote commits that are not in this local branch.
-  Do not force-push; use a backup branch or deliberate merge/PR.
+- GitHub draft PR #2 is the current mergeable integration path for this work.
 - Legacy Streamlit pages still contain direct JSON/provider reads outside the
   new Web Shell vertical slice.
 - Existing legacy holdings sync and ResearchBus workflows are not fully moved
@@ -108,11 +112,8 @@ commands after any follow-up edits.
 
 ## Next Step
 
-Back up the current local PFI OS state to GitHub on an isolated branch, then
-continue Phase A:
+Continue Phase A:
 
-1. Migrate one real cached homepage slice into Operational Store records.
-2. Add private-path and Git fixture scans for the new data-home layout.
-3. Replace legacy Streamlit direct reads one vertical slice at a time.
-4. Add repository adapters for entities, evidence search, and job execution.
-5. Add source ingestion adapters with checksum and provenance enforcement.
+1. Replace legacy Streamlit direct reads one vertical slice at a time.
+2. Add repository adapters for entities, evidence search, and job execution.
+3. Add source ingestion adapters with checksum and provenance enforcement.

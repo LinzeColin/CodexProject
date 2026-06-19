@@ -27,20 +27,19 @@ on chat history.
 | Phase A source registry | In progress | `src/pfi_os/application/source_registry.py`, private URI redaction, freshness summary, point-in-time source replay |
 | Phase A homepage read model | In progress | `src/pfi_os/application/homepage_summary.py`, `PFIOSHomeSummaryV1`, Web Shell runtime injection |
 | Phase A thin repositories | In progress | `src/pfi_os/application/repositories.py`, task queue and holding snapshot adapters |
+| Phase A data-home boundary audit | Complete | `src/pfi_os/application/data_home_audit.py`, `$PFI_OS_DATA_HOME` outside Git checks, private/runtime/secret fixture scans |
+| Phase A homepage cache ingestion | Complete | `src/pfi_os/application/homepage_ingestion.py`, command-center latest cache to Operational Store source/evidence/job/task records |
 
 ## Open Backlog
 
-1. Push or PR the current local state without force-updating `origin/main`.
-2. Reconcile `origin/main` divergence deliberately; remote contains unrelated
-   commits that must not be overwritten.
-3. Migrate one real cached homepage slice into Operational Store records.
-4. Add private-path and Git fixture scans for `$PFI_OS_DATA_HOME`.
-5. Move legacy Streamlit direct reads onto Operational Store repositories one
+1. Merge or continue draft PR #2 as the current integration path; do not use
+   the superseded backup-only PR #1.
+2. Move legacy Streamlit direct reads onto Operational Store repositories one
    vertical slice at a time.
-6. Add entity, evidence-search, and job-execution repository adapters.
-7. Add source ingestion adapters with checksum, provenance, and domain
+3. Add entity, evidence-search, and job-execution repository adapters.
+4. Add source ingestion adapters with checksum, provenance, and domain
    enforcement.
-8. Prepare Phase B vertical workflow slices after Phase A contracts are stable.
+5. Prepare Phase B vertical workflow slices after Phase A contracts are stable.
 
 ## Key File Map
 
@@ -50,9 +49,9 @@ on chat history.
 | Data contracts | `docs/data/PFI_DATA_BOUNDARIES.md`, `docs/data/PFI_SOURCE_OF_TRUTH.md`, `docs/phase/PHASE_A_DATA_FOUNDATION.md` |
 | UX and shell contracts | `docs/ux/PFI_UX_CONTRACT.md`, `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`, `web/index.html`, `web/app/shell.js`, `web/styles/tokens.css` |
 | Target architecture | `docs/architecture/PFI_TARGET_ARCHITECTURE.md` |
-| Operational store | `src/pfi_os/application/operational_store.py`, `src/pfi_os/application/source_registry.py`, `src/pfi_os/application/homepage_summary.py`, `src/pfi_os/application/repositories.py` |
+| Operational store | `src/pfi_os/application/operational_store.py`, `src/pfi_os/application/source_registry.py`, `src/pfi_os/application/homepage_summary.py`, `src/pfi_os/application/homepage_ingestion.py`, `src/pfi_os/application/repositories.py`, `src/pfi_os/application/data_home_audit.py` |
 | Streamlit bridge | `src/pfi_os/app/streamlit_app.py` |
-| Contract tests | `tests/test_pfi_product_contracts.py`, `tests/contract/test_pfi_web_shell_contract.py`, `tests/contract/test_phase_a_operational_store.py`, `tests/contract/test_phase_a_source_registry_homepage.py`, `tests/contract/test_phase_a_repositories.py` |
+| Contract tests | `tests/test_pfi_product_contracts.py`, `tests/contract/test_pfi_web_shell_contract.py`, `tests/contract/test_phase_a_operational_store.py`, `tests/contract/test_phase_a_source_registry_homepage.py`, `tests/contract/test_phase_a_repositories.py`, `tests/contract/test_phase_a_data_home_audit.py`, `tests/contract/test_phase_a_homepage_ingestion.py` |
 | E2E and visual tests | `tests/e2e/test_pfi_web_shell_static_flow.py`, `tests/visual/test_pfi_web_shell_visual_baseline.py`, `web/tests/visual-baseline.json` |
 
 ## Model And Parameter Contracts
@@ -92,6 +91,7 @@ Run the focused contract suite after edits:
 ```bash
 python -m pytest tests/test_pfi_product_contracts.py -q
 python -m pytest tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py tests/visual/test_pfi_web_shell_visual_baseline.py -q
+python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
 python -m compileall src/pfi_os/application src/pfi_os/app/streamlit_app.py
 git diff --check
