@@ -52,6 +52,8 @@ const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: n
   { key: "summary", label: "总结与迭代", icon: RefreshCw },
 ];
 
+const visualFocusViews: ViewKey[] = ["galaxy", "notion", "roi", "obsidian", "timeline", "contribution", "wordcloud", "summary"];
+
 const defaultFilters: AtlasFilters = {
   query: "",
   source: "all",
@@ -505,7 +507,9 @@ export function App() {
   const loadedAt = runtimeState.snapshotLoadedAt ? runtimeState.snapshotLoadedAt.toLocaleString("zh-CN") : "读取中";
   const runtimeStatus = `${runtimeState.lifecycle} / ${runtimeState.serverMode}`;
   const selectedTitle = views.find((view) => view.key === activeView)?.label ?? "记忆星图";
-  const wideView = activeView === "contribution";
+  const wideView = visualFocusViews.includes(activeView);
+  const workspaceClassName = wideView ? `workspace visual-focus-workspace ${activeView}-workspace` : "workspace";
+  const showSideInspector = activeView === "contribution" || !wideView;
 
   return (
     <div className="app-shell">
@@ -544,7 +548,7 @@ export function App() {
         </div>
       </aside>
 
-      <main className={wideView ? "workspace contribution-workspace" : "workspace"}>
+      <main className={workspaceClassName}>
         <header className="topbar">
           <div>
             <p className="eyebrow">本地记忆 / 使用行为 / 后续动作</p>
@@ -633,7 +637,7 @@ export function App() {
           onSelectAdjacent={selectAdjacentNode}
         />
 
-        <div className={wideView ? "content-grid wide-view" : "content-grid"}>
+        <div className={wideView ? "content-grid wide-view" : "content-grid"} data-view={activeView}>
           <section className="view-surface">
             <ViewRouter
               activeView={activeView}
@@ -647,11 +651,13 @@ export function App() {
               onSelectContributionPeriod={handleSelectContributionPeriod}
             />
           </section>
-          {activeView === "contribution" && selectedContributionPeriod ? (
-            <ContributionPeriodInspector detail={selectedContributionPeriod} onSelectNode={handleSelectNode} />
-          ) : (
-            <NodeInspector atlas={scopedAtlas} node={selectedNode} edgeCount={edgeCountFor(selectedNode?.id, scopedAtlas.edges)} />
-          )}
+          {showSideInspector ? (
+            activeView === "contribution" && selectedContributionPeriod ? (
+              <ContributionPeriodInspector detail={selectedContributionPeriod} onSelectNode={handleSelectNode} />
+            ) : (
+              <NodeInspector atlas={scopedAtlas} node={selectedNode} edgeCount={edgeCountFor(selectedNode?.id, scopedAtlas.edges)} />
+            )
+          ) : null}
         </div>
       </main>
     </div>
@@ -1261,7 +1267,7 @@ function ContributionGrid({
           </div>
         </div>
       ) : scale === "year" ? (
-        <div className="year-trend-grid vertical-year-trend">
+        <div className="year-trend-grid year-comparison-trend">
           {periodData.yearCells.map((cell) => {
             const periodKey = String(cell.year);
             const active = selectedPeriod === periodKey;

@@ -70,8 +70,12 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
 
     require(
         checks,
-        'const wideView = activeView === "contribution"' in app_source
-        and 'className={wideView ? "workspace contribution-workspace" : "workspace"}' in app_source
+        'const visualFocusViews: ViewKey[] = ["galaxy", "notion", "roi", "obsidian", "timeline", "contribution", "wordcloud", "summary"]' in app_source
+        and "const wideView = visualFocusViews.includes(activeView)" in app_source
+        and "const workspaceClassName = wideView ? `workspace visual-focus-workspace ${activeView}-workspace` : \"workspace\"" in app_source
+        and "const showSideInspector = activeView === \"contribution\" || !wideView" in app_source
+        and "data-view={activeView}" in app_source
+        and ".workspace.visual-focus-workspace" in css_source
         and ".workspace.contribution-workspace" in css_source
         and "grid-template-rows: auto auto minmax(0, 1fr);" in css_source
         and ".visual-workspace.contribution-view" in css_source
@@ -119,12 +123,15 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "selectionStillVisible" in app_source
         and "<ContributionPeriodInspector detail={selectedContributionPeriod} onSelectNode={handleSelectNode} />" in app_source
         and '<NodeInspector atlas={scopedAtlas} node={selectedNode} edgeCount={edgeCountFor(selectedNode?.id, scopedAtlas.edges)} />' in app_source
-        and "grid-template-columns: minmax(0, 1fr) 340px;" in css_source
-        and ".content-grid.wide-view {\n    grid-template-columns: 1fr;" in css_source
+        and "grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);" in css_source
+        and ".content-grid.wide-view" in css_source
+        and "grid-template-columns: 1fr;" in css_source
+        and '.content-grid.wide-view[data-view="contribution"]' in css_source
+        and "grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);" in css_source
         and ".period-related-list" in css_source,
         "selection_updates_right_detail_panel",
-        "All visualization selections route into the right detail panel; contribution cells expose period details and related memory drill-downs",
-        "Selection state does not consistently update the right detail panel for nodes, filters, or contribution grid cells",
+        "Node selections keep detail routing in standard views; contribution cells preserve period drill-down while visual-first views reclaim the main scene area",
+        "Selection detail routing or contribution period drill-down is missing, or visual-first views are still squeezed by the side inspector",
     )
     require(
         checks,
@@ -161,6 +168,9 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "function buildTimelineDensityBackdrops" in app_source
         and ".timeline-control-bar" in css_source
         and ".timeline-density-track" in css_source
+        and "grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto;" in css_source
+        and ".timeline-map .timeline-canvas" in css_source
+        and "min-height: 360px;" in css_source
         and ".timeline-cursor line" in css_source
         and ".timeline-event-detail-strip" in css_source
         and "动态窗口" in readme
@@ -277,7 +287,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "grid-template-rows: repeat(var(--month-days), minmax(0, 1fr));" in css_source
         and "yearCells" in app_source
         and "monthSlots" in app_source
-        and 'className="year-trend-grid vertical-year-trend"' in contribution_grid
+        and 'className="year-trend-grid year-comparison-trend"' in contribution_grid
         and 'className={`year-cell year-summary-card level-${cell.activityLevel}${active ? " selected" : ""}`}' in contribution_grid
         and 'className="year-card-header"' in contribution_grid
         and 'className="year-month-track"' in contribution_grid
@@ -291,20 +301,26 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "cell.monthSlots.map" in contribution_grid
         and "grid-auto-rows: minmax(62px, 1fr);" in css_source
         and "grid-auto-rows: minmax(142px, 1fr);" in css_source
-        and ".year-trend-grid.vertical-year-trend" in css_source
+        and ".year-trend-grid.year-comparison-trend" in css_source
+        and "grid-template-columns: repeat(2, minmax(0, 1fr)) !important;" in css_source
+        and "grid-template-rows: 1fr;" in css_source
+        and "grid-auto-flow: column;" in css_source
         and "height: 100%;" in css_source
         and "aspect-ratio: auto;" in css_source
         and ".year-cell.year-summary-card" in css_source
+        and "grid-template-rows: auto minmax(0, 1fr) auto auto;" in css_source
         and ".year-month-track" in css_source
         and ".year-month-bar" in css_source
         and ".year-month-axis" in css_source
         and ".year-month-bar em" not in css_source
-        and "grid-template-rows: repeat(12, minmax(0, 1fr));" in css_source
-        and "width: var(--month-height, 9%);" in css_source
+        and "grid-template-columns: repeat(12, minmax(0, 1fr));" in css_source
+        and "height: var(--month-height, 9%);" in css_source
+        and "width: 100%;" in css_source
+        and "max-width: 100%;" in css_source
         and "const periodKey = cell.date" in contribution_grid,
         "contribution_month_year_grid_contract",
-        "Month mode keeps 24 selectable month columns with readable labels and smooth internal daily trends; year mode uses vertically stacked selectable year comparison cards with month bar trends, a clean quarter axis, and year summary metrics",
-        "Month/year grid contract is missing 24 month columns, smooth internal daily trends, vertically stacked year comparison cards, month bars, or year summary metrics",
+        "Month mode keeps 24 selectable month columns with readable labels and smooth internal daily trends; year mode uses side-by-side selectable year comparison cards with left-to-right month bar trends, a clean quarter axis, and year summary metrics",
+        "Month/year grid contract is missing 24 month columns, smooth internal daily trends, side-by-side year comparison cards, horizontal month bars, or year summary metrics",
     )
     require(
         checks,
@@ -411,9 +427,25 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "buildIterationHighlights" in app_source
         and "summary-iteration-view" in app_source
         and ".summary-iteration-view" in css_source
+        and ".visual-workspace.summary-iteration-view" in css_source
+        and "flex-direction: column;" in css_source
         and ".summary-signal-grid" in css_source
+        and ".summary-iteration-view > .summary-signal-grid" in css_source
+        and ".summary-iteration-view > .human-overview" in css_source
+        and ".summary-iteration-view > .iteration-panels" in css_source
+        and "flex: 1 1 auto;" in css_source
+        and "min-height: 88px;" in css_source
+        and ".summary-iteration-view .human-overview-grid" in css_source
+        and ".summary-iteration-view .human-lists" in css_source
+        and "grid-template-columns: repeat(4, minmax(0, 1fr));" in css_source
+        and ".iteration-panels" in css_source
+        and "grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);" in css_source
+        and "overflow: hidden;" in css_source
+        and "overflow: auto;" in css_source
         and ".config-memory-panel" in css_source
         and ".config-memory-grid" in css_source
+        and "overflow-wrap: anywhere;" in css_source
+        and "white-space: normal;" in css_source
         and "Summary & Iteration" in readme
         and "总结与迭代是独立导航板块" in readme
         and "config.toml" in readme
@@ -435,7 +467,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "semantic-dashboard" in app_source
         and "timeline-canvas" in app_source
         and "year-heatmap" in app_source
-        and "year-trend-grid vertical-year-trend" in app_source
+        and "year-trend-grid year-comparison-trend" in app_source
         and "ObsidianGraphScene" in obsidian_source
         and "GalaxyScene" in galaxy_source
         and ".roi-visual-strip" in css_source
@@ -718,12 +750,12 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "宽度约等于日表格下 3 列" in readme
         and "日/周必须共用同一个全年 7 行 x 52-54 列坐标面" in readme
         and "月视图保留连续两年 24 列坐标面" in readme
-        and "年视图改为上下纵向排列的两张年度对比卡片" in readme
+        and "年视图使用左右并排的两张年度对比卡片" in readme
         and "同源同色阶的 7 个日段" in readme
         and "连续渐变实现" in readme
-        and "周、月、年内部趋势必须从上到下读取" in readme
+        and "周、月内部趋势保持从上到下读取" in readme
         and "月格内部按每日颗粒度纵向排列" in readme
-        and "12 个月纵向热度带" in readme
+        and "12 个月从左到右的横向热度条" in readme
         and "年度对比卡片" in readme
         and "季度轴" in readme
         and "不得在狭窄月柱内部显示" in readme

@@ -15,12 +15,13 @@ import math
 import os
 import re
 from collections import Counter, defaultdict
-from datetime import UTC, date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
 
 DEFAULT_OUTPUT = Path("data/derived/visualization/memory_atlas.json")
+UTC = timezone.utc
 ACTIVE_MEMORY_SOURCE = "data/memory/active/active_memory.jsonl"
 DATA_SOURCE_REGISTRY_SOURCE = "config/data_sources/source_registry.json"
 CODEX_SESSION_SOURCE = "data/processed/codex/codex_session_manifest.jsonl"

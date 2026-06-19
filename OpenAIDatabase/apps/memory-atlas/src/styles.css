@@ -135,58 +135,72 @@ button {
   gap: 14px;
 }
 
+.workspace.visual-focus-workspace,
 .workspace.contribution-workspace {
   grid-template-rows: auto auto auto minmax(0, 1fr);
-  padding: 16px;
-  gap: 10px;
+  padding: 14px;
+  gap: 8px;
 }
 
+.visual-focus-workspace .topbar,
 .contribution-workspace .topbar {
   align-items: center;
 }
 
+.visual-focus-workspace .topbar h1,
 .contribution-workspace .topbar h1 {
   font-size: 24px;
 }
 
+.visual-focus-workspace .topbar .eyebrow,
 .contribution-workspace .topbar .eyebrow {
   margin-bottom: 3px;
 }
 
+.visual-focus-workspace .stat-strip,
 .contribution-workspace .stat-strip {
   grid-template-columns: repeat(4, minmax(74px, 1fr));
   min-width: min(420px, 42vw);
 }
 
+.visual-focus-workspace .metric,
 .contribution-workspace .metric {
   gap: 2px;
   padding: 7px 9px;
 }
 
+.visual-focus-workspace .metric strong,
 .contribution-workspace .metric strong {
   font-size: 16px;
 }
 
+.visual-focus-workspace .controls,
 .contribution-workspace .controls {
   grid-template-columns: minmax(220px, 1fr) minmax(170px, 230px) repeat(3, minmax(116px, 170px));
   gap: 8px;
 }
 
+.visual-focus-workspace .interaction-lens,
 .contribution-workspace .interaction-lens {
   grid-template-columns: minmax(180px, 1fr) auto auto minmax(160px, 0.8fr);
   min-height: 36px;
   padding: 5px 7px;
 }
 
+.visual-focus-workspace .lens-focus strong,
 .contribution-workspace .lens-focus strong {
   font-size: 12px;
 }
 
+.visual-focus-workspace .lens-focus span,
+.visual-focus-workspace .filter-chip-row button strong,
 .contribution-workspace .lens-focus span,
 .contribution-workspace .filter-chip-row button strong {
   font-size: 10px;
 }
 
+.visual-focus-workspace .search-box,
+.visual-focus-workspace .select-filter,
 .contribution-workspace .search-box,
 .contribution-workspace .select-filter {
   min-height: 36px;
@@ -454,14 +468,19 @@ h3 {
 
 .content-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
   min-height: 0;
   overflow: hidden;
   gap: 14px;
 }
 
 .content-grid.wide-view {
-  grid-template-columns: minmax(0, 1fr) 340px;
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.content-grid.wide-view[data-view="contribution"] {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);
 }
 
 .view-surface,
@@ -584,6 +603,14 @@ h3 {
 .human-lists {
   display: grid;
   gap: 8px;
+}
+
+.summary-iteration-view .human-overview-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.summary-iteration-view .human-lists {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .human-bullet-list {
@@ -731,7 +758,7 @@ h3 {
 
 .recommendation-columns {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
   gap: 10px;
 }
 
@@ -740,6 +767,8 @@ h3 {
   align-content: start;
   gap: 9px;
   min-width: 0;
+  min-height: 0;
+  overflow: auto;
   border: 1px solid rgba(244, 241, 232, 0.1);
   border-radius: 8px;
   background: rgba(16, 16, 20, 0.5);
@@ -773,6 +802,7 @@ h3 {
 .recommendation-list li {
   display: grid;
   gap: 3px;
+  min-width: 0;
   border-left: 2px solid rgba(126, 232, 212, 0.45);
   padding-left: 8px;
 }
@@ -803,14 +833,37 @@ h3 {
 }
 
 .summary-iteration-view {
-  grid-template-rows: auto auto auto auto minmax(0, 1fr);
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.summary-iteration-view > .surface-heading {
+  grid-row: 1;
+}
+
+.summary-iteration-view > .delta-strip {
+  grid-row: 2;
+}
+
+.summary-iteration-view > .summary-signal-grid {
+  grid-row: 3;
+}
+
+.summary-iteration-view > .human-overview {
+  grid-row: 4;
+  margin: 0 16px 10px;
+}
+
+.summary-iteration-view > .iteration-panels {
+  grid-row: 5;
 }
 
 .summary-signal-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
+  min-height: 88px;
   padding: 0 16px 10px;
 }
 
@@ -846,13 +899,21 @@ h3 {
 .config-memory-panel {
   display: grid;
   gap: 10px;
+  min-width: 0;
+  min-height: 0;
 }
 
 .iteration-panels {
+  flex: 1 1 auto;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  align-items: stretch;
+  overflow: hidden;
   padding: 0 16px 16px;
 }
 
 .config-memory-panel {
+  align-content: start;
+  overflow: hidden;
   border: 1px solid rgba(126, 224, 248, 0.2);
   border-radius: 8px;
   background: rgba(126, 224, 248, 0.05);
@@ -861,14 +922,17 @@ h3 {
 
 .config-memory-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
+  min-height: 0;
+  overflow: auto;
 }
 
 .config-memory-grid article {
   display: grid;
   gap: 6px;
   min-width: 0;
+  overflow: hidden;
   border: 1px solid rgba(244, 241, 232, 0.1);
   border-radius: 8px;
   background: rgba(16, 16, 20, 0.48);
@@ -885,6 +949,8 @@ h3 {
   color: #d9d4ca;
   font-size: 12px;
   line-height: 1.45;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .config-memory-grid small {
@@ -1442,6 +1508,11 @@ h3 {
   overflow: hidden;
 }
 
+.visual-workspace.summary-iteration-view {
+  display: flex;
+  flex-direction: column;
+}
+
 .visual-workspace.contribution-view {
   grid-template-rows: auto auto auto minmax(0, 1fr) auto auto;
   overflow: hidden;
@@ -1787,6 +1858,10 @@ h3 {
   background-size: 48px 48px, 48px 48px, auto, auto;
 }
 
+.timeline-map .timeline-canvas {
+  min-height: 360px;
+}
+
 .notion-map,
 .obsidian-map,
 .timeline-map {
@@ -1795,7 +1870,7 @@ h3 {
 
 .timeline-map {
   display: grid;
-  grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto;
   overflow: hidden;
 }
 
@@ -1892,8 +1967,8 @@ h3 {
   grid-template-columns: repeat(48, minmax(0, 1fr));
   align-items: end;
   gap: 1px;
-  height: 34px;
-  padding: 0 16px 8px;
+  height: 28px;
+  padding: 0 16px 6px;
 }
 
 .timeline-density-band {
@@ -2715,11 +2790,14 @@ h3 {
   grid-auto-rows: minmax(142px, 1fr);
 }
 
-.year-trend-grid.vertical-year-trend {
-  grid-template-columns: 1fr;
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-  grid-auto-rows: minmax(0, 1fr);
+.year-trend-grid.year-comparison-trend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-rows: 1fr;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
   align-content: stretch;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -2834,8 +2912,10 @@ h3 {
 }
 
 .year-cell.year-summary-card {
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
   align-content: stretch;
   gap: 10px;
+  min-height: 0;
   border-color: color-mix(in srgb, var(--year-accent, #1f9bd1) 42%, rgba(244, 241, 232, 0.1));
   border-radius: 8px;
   background:
@@ -2887,9 +2967,11 @@ h3 {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-rows: repeat(12, minmax(0, 1fr));
-  align-items: stretch;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: 1fr;
+  align-items: end;
   gap: 2px;
+  height: 100%;
   min-height: 58px;
   border: 1px solid rgba(244, 241, 232, 0.075);
   border-radius: 6px;
@@ -2901,10 +2983,10 @@ h3 {
 
 .year-month-track::after {
   position: absolute;
-  top: 7px;
-  bottom: 7px;
-  left: 9px;
-  width: 1px;
+  right: 6px;
+  bottom: 9px;
+  left: 6px;
+  height: 1px;
   background: rgba(244, 241, 232, 0.12);
   content: "";
 }
@@ -2912,14 +2994,17 @@ h3 {
 .year-month-bar {
   position: relative;
   display: block;
-  width: var(--month-height, 9%);
-  min-width: 9%;
-  height: 100%;
-  border-radius: 2px 5px 5px 2px;
+  align-self: end;
+  width: 100%;
+  min-width: 0;
+  height: var(--month-height, 9%);
+  min-height: 9%;
+  max-width: 100%;
+  border-radius: 5px 5px 2px 2px;
   background: var(--month-color, #0f1116);
   box-shadow:
     0 0 10px color-mix(in srgb, var(--month-color, #0f1116) 22%, transparent),
-    inset 1px 0 0 rgba(255, 255, 255, 0.16);
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 
 .year-month-axis {
@@ -3368,6 +3453,10 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  .content-grid.wide-view[data-view="contribution"] {
+    grid-template-columns: 1fr;
+  }
+
   .inspector {
     min-height: 280px;
   }
@@ -3392,8 +3481,19 @@ h3 {
     padding-inline: 6px;
   }
 
+  .summary-iteration-view .human-overview-grid,
+  .summary-iteration-view .human-lists,
+  .iteration-panels,
+  .recommendation-columns {
+    grid-template-columns: 1fr;
+  }
+
   .iteration-panels {
     padding-inline: 6px;
+  }
+
+  .timeline-map .timeline-canvas {
+    min-height: 300px;
   }
 
   .semantic-panel {
@@ -3631,6 +3731,10 @@ h3 {
     overflow: hidden;
     padding: 8px;
     gap: 8px;
+  }
+
+  .timeline-map .timeline-canvas {
+    min-height: 240px;
   }
 
   .topbar {

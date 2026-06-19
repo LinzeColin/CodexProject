@@ -17,12 +17,13 @@ import re
 import subprocess
 import sys
 from collections import Counter, defaultdict
-from datetime import UTC, date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
 
 DEFAULT_CODEX_HOME = Path.home() / ".codex"
+UTC = timezone.utc
 SESSION_INDEX = "session_index.jsonl"
 SESSION_OUTPUT = Path("data/processed/codex/codex_session_manifest.jsonl")
 DAILY_OUTPUT = Path("data/processed/codex/codex_daily_activity.jsonl")
