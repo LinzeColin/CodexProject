@@ -1,0 +1,21 @@
+[submodule "Alpha"]
+	path = Alpha
+	url = git@github.com:LinzeColin/Alpha.git
+[submodule "EVA_OS"]
+	path = EVA_OS
+	url = git@github.com:LinzeColin/EVA_OS.git
+[submodule "OpenAIDatabase"]
+	path = OpenAIDatabase
+	url = git@github.com:LinzeColin/OpenAIDatabase.git
+[submodule "FIFA"]
+	path = FIFA
+	url = git@github.com:LinzeColin/FIFA.git
+[submodule "Serenity-Alipay"]
+	path = Serenity-Alipay
+	url = git@github.com:LinzeColin/Serenity-Alipay.git
+[submodule "OpMe_System"]
+	path = OpMe_System
+	url = git@github.com:LinzeColin/OpMe_System.git
+[submodule "whkmSalary"]
+	path = whkmSalary
+	url = git@github.com:LinzeColin/whkmSalary.git
