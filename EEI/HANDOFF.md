@@ -102,6 +102,9 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T301.
 - 2026-06-19 update: GitHub Actions run `27830933960` failed because the integration test asserted non-empty home changes before any change records existed.
 - 2026-06-19 update: GitHub Actions run `27831147683` passed; job `82367964670` proved T301 home aggregation under PostgreSQL after aligning the changes-feed test lifecycle.
+- 2026-06-19 update: GitHub Actions run `27831351290` passed; job `82368640839` proved the final T301 evidence commit.
+- 2026-06-19 update: local `make verify` passed after T302 `/v1/industries` and `/v1/industries/{industryId}/landscape`.
+- 2026-06-19 update: GitHub Actions run `27831861052` passed; job `82370353436` proved T302 industry landscape API, fixture memberships, and A031/A033 checks under PostgreSQL.
 
 Remote verification:
 
@@ -140,6 +143,10 @@ Remote verification:
 - GitHub Actions job `82367238904`: FAIL.
 - GitHub Actions run `27831147683`: PASS.
 - GitHub Actions job `82367964670`: PASS.
+- GitHub Actions run `27831351290`: PASS.
+- GitHub Actions job `82368640839`: PASS.
+- GitHub Actions run `27831861052`: PASS.
+- GitHub Actions job `82370353436`: PASS.
 
 ## Not Completed
 
@@ -153,6 +160,7 @@ Remote verification:
 - T1204 / A170 Objects and Scope navigation screen is DONE and remote CI passed.
 - T300 / A038 typed entity search is DONE and remote CI passed.
 - T301 home aggregation API is DONE and remote CI passed.
+- T302 industry list and landscape API is DONE and remote CI passed; A031/A033 are DONE, while A032/A034 remain open for UI/E2E.
 - G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
@@ -160,6 +168,6 @@ Remote verification:
 
 Continue G3 with bounded entry/management implementation:
 
-1. Start T302/T303 industry and Watchlist entry-management implementation.
+1. Start T303 Watchlist item-type, restore, persistence, and unread-change implementation.
 2. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 3. Continue G4/T1205 only after the next G3 slice is bounded.

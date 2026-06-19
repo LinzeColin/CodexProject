@@ -687,3 +687,39 @@ Residual risks:
 
 - Home UI still needs to consume the new aggregation fields.
 - Industry API/page and Watchlist item-type breadth remain open in T302/T303/T305/T306.
+
+## 2026-06-19 - Phase 1 / G3 T302 Industry list and landscape API
+
+Status: T302 PASS; G3 IN PROGRESS
+
+Completed:
+
+- Added `/v1/industries` with human-readable, versioned taxonomy rows and optional parent filtering.
+- Added `/v1/industries/{industryId}/landscape` with industry summary, subindustries, chain stages, entities, bottlenecks, capital relationships, policy relationships, changes, cross-industry links, coverage, and explicit fixture/data mode.
+- Added synthetic fixture industry memberships for primary, secondary, and supply-chain roles across semiconductor, AI cloud, software, energy, telecom, real-estate and industrial nodes.
+- Updated OpenAPI with `IndustryLandscapeResponse`.
+- Added PostgreSQL-backed integration assertions for A031 and A033, plus API-level coverage for chain stages, bottlenecks, capital, policy, and cross-industry navigation payloads.
+- Marked T302 as `DONE`, A031 as `DONE`, and A033 as `DONE`; A032/A034 remain open because their declared evidence type is UI/E2E.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run ruff check apps/api/app/domain.py apps/api/app/domain_repository.py scripts/load_synthetic_fixtures.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_contracts.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- GitHub Actions run `27831861052`: PASS.
+- GitHub Actions job `82370353436`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A031 is covered by `/v1/industries`, `specs/api_contract.yaml`, and `tests/integration/test_database_migrations.py`.
+- A033 is covered by `entity_industry_memberships`, `scripts/load_synthetic_fixtures.py`, `/v1/industries/{industryId}/landscape`, and PostgreSQL integration assertions.
+- A032 and A034 remain `NOT STARTED` until T305/T306 provide user-facing industry landscape and visible cross-industry E2E evidence.
+
+Residual risks:
+
+- Industry landscape UI is still not implemented.
+- Landscape aggregation currently uses synthetic fixture memberships and relationship rows; live ingestion still belongs to later data-ingestion tasks.
