@@ -38,10 +38,10 @@ TR-FUN-EXP-01-A150,FUN-EXP-01,A150,T1108,E2E,tests/e2e/home.spec.ts,DONE,derived
 TR-FUN-EXP-01-A151,FUN-EXP-01,A151,T1109,Visual regression,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A152,FUN-EXP-01,A152,T1109,Failure E2E,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A153,FUN-EXP-01,A153,T1101,Visual regression,artifacts/tests/a153/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A154,FUN-EXP-01,A154,T1110,E2E,artifacts/tests/a154/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A155,FUN-EXP-01,A155,T1110,E2E,artifacts/tests/a155/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A156,FUN-EXP-01,A156,T1111,Contract/E2E,artifacts/tests/a156/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A157,FUN-EXP-01,A157,"T1111,T1207",Reload E2E,artifacts/tests/a157/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A154,FUN-EXP-01,A154,T1110,E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A155,FUN-EXP-01,A155,T1110,E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A156,FUN-EXP-01,A156,T1111,Contract/E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A157,FUN-EXP-01,A157,"T1111,T1207",Reload E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A193,FUN-EXP-01,A193,"T400,T401,T402,T403,T404,T405,T406,T407,T408,T1103,T1104,T1105,T1106,T1107,T1108,T1109,T1110,T1111",visual coverage measurement,artifacts/tests/a193/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-02-A016,FUN-EXP-02,A016,"T201,T205",Data check,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/relationship_family_catalog.csv,DONE,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
 TR-FUN-EXP-02-A020,FUN-EXP-02,A020,T201,CSV/data check,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/supply_chain_stage_taxonomy.csv,DONE,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
@@ -104,7 +104,7 @@ TR-FUN-EXP-06-A139,FUN-EXP-06,A139,T1104,Screenshot assertion,artifacts/tests/a1
 TR-FUN-EXP-06-A140,FUN-EXP-06,A140,T1104,DOM/SVG assertion,artifacts/tests/a140/,NOT_STARTED,derived_from_task,Codex implementation,docs/05_DATA_SOURCES_AND_PROVENANCE.md
 TR-FUN-EXP-07-A072,FUN-EXP-07,A072,T504,Unit/E2E,artifacts/tests/a072/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 TR-FUN-EXP-07-A112,FUN-EXP-07,A112,"T803,T805",Content scan/review,artifacts/tests/a112/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
-TR-FUN-EXP-07-A160,FUN-EXP-07,A160,T1113,E2E,artifacts/tests/a160/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
+TR-FUN-EXP-07-A160,FUN-EXP-07,A160,T1113,E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 TR-FUN-EXP-07-A174,FUN-EXP-07,A174,T1205,E2E + link integrity,artifacts/tests/a174/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 TR-FUN-EXP-08-A019,FUN-EXP-08,A019,T202,Migration/API test,scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
 TR-FUN-EXP-08-A031,FUN-EXP-08,A031,T302,API/UI test,apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
@@ -127,16 +127,16 @@ TR-FUN-RM-01-A135,FUN-RM-01,A135,"T1102,T1120",E2E screenshot,artifacts/tests/a1
 TR-FUN-RM-02-A105,FUN-RM-02,A105,T705,Failure injection,artifacts/tests/a105/,NOT_STARTED,derived_from_task,Codex implementation,docs/25_LIVE_RECALCULATION_REFRESH_ARCHITECTURE.md
 TR-FUN-RM-02-A106,FUN-RM-02,A106,"T705,T804",E2E,artifacts/tests/a106/,NOT_STARTED,derived_from_task,Codex implementation,docs/25_LIVE_RECALCULATION_REFRESH_ARCHITECTURE.md
 TR-FUN-RM-02-A107,FUN-RM-02,A107,"T705,T804",API/E2E,artifacts/tests/a107/,NOT_STARTED,derived_from_task,Codex implementation,docs/25_LIVE_RECALCULATION_REFRESH_ARCHITECTURE.md
-TR-FUN-RM-02-A160,FUN-RM-02,A160,T1113,E2E,artifacts/tests/a160/,NOT_STARTED,derived_from_task,Codex implementation,docs/25_LIVE_RECALCULATION_REFRESH_ARCHITECTURE.md
+TR-FUN-RM-02-A160,FUN-RM-02,A160,T1113,E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/25_LIVE_RECALCULATION_REFRESH_ARCHITECTURE.md
 TR-FUN-RM-03-A049,FUN-RM-03,A049,T404,E2E,artifacts/tests/a049/,NOT_STARTED,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
 TR-FUN-RM-03-A050,FUN-RM-03,A050,T404,E2E,artifacts/tests/a050/,NOT_STARTED,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
 TR-FUN-RM-03-A051,FUN-RM-03,A051,"T401,T404",E2E,artifacts/tests/a051/,NOT_STARTED,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
-TR-FUN-RM-03-A154,FUN-RM-03,A154,T1110,E2E,artifacts/tests/a154/,NOT_STARTED,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
-TR-FUN-RM-03-A155,FUN-RM-03,A155,T1110,E2E,artifacts/tests/a155/,NOT_STARTED,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
-TR-FUN-RM-03-A156,FUN-RM-03,A156,T1111,Contract/E2E,artifacts/tests/a156/,NOT_STARTED,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
-TR-FUN-RM-03-A157,FUN-RM-03,A157,"T1111,T1207",Reload E2E,artifacts/tests/a157/,NOT_STARTED,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
-TR-FUN-RM-03-A158,FUN-RM-03,A158,"T1112,T1207",Integration,artifacts/tests/a158/,NOT_STARTED,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
-TR-FUN-RM-03-A159,FUN-RM-03,A159,T1112,Integration,artifacts/tests/a159/,NOT_STARTED,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
+TR-FUN-RM-03-A154,FUN-RM-03,A154,T1110,E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
+TR-FUN-RM-03-A155,FUN-RM-03,A155,T1110,E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
+TR-FUN-RM-03-A156,FUN-RM-03,A156,T1111,Contract/E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
+TR-FUN-RM-03-A157,FUN-RM-03,A157,"T1111,T1207",Reload E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
+TR-FUN-RM-03-A158,FUN-RM-03,A158,"T1112,T1207",Integration,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
+TR-FUN-RM-03-A159,FUN-RM-03,A159,T1112,Integration,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
 TR-FUN-DM-01-A011,FUN-DM-01,A011,"T200,T203,T208",Migration round-trip,tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A012,FUN-DM-01,A012,T200,Deferred data-quality test,scripts/check_database_schema.py;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A013,FUN-DM-01,A013,T200,Unit/data tests,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/mock_relationships.json,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
@@ -187,7 +187,7 @@ TR-FUN-DM-02-A174,FUN-DM-02,A174,T1205,E2E + link integrity,artifacts/tests/a174
 TR-FUN-DM-02-A175,FUN-DM-02,A175,"T1210,T1211",GitHub workflow + audit contract test,artifacts/tests/a175/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
 TR-FUN-DM-02-A176,FUN-DM-02,A176,T1209,Hash/content smoke test + browser screenshots,artifacts/tests/a176/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
 TR-FUN-DM-02-A177,FUN-DM-02,A177,"T1202,T1210,T1211",Repository structure check,artifacts/tests/a177/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
-TR-FUN-DM-02-A178,FUN-DM-02,A178,"T1206,T1207,T1208",E2E consistency test,artifacts/tests/a178/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
+TR-FUN-DM-02-A178,FUN-DM-02,A178,"T1206,T1207,T1208",E2E consistency test,apps/web/src/app/analysis-contract.ts;apps/web/src/app/page.tsx;apps/web/src/app/industries/page.tsx;apps/web/src/app/objects-scope/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
 TR-FUN-DM-02-A179,FUN-DM-02,A179,"T600-T604,T1203,T1204,T1205,T1206",DB/API/E2E,artifacts/tests/a179/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
 TR-FUN-DM-02-A198,FUN-DM-02,A198,"T600-T604,T1203,T1204,T1205,T1206",cross-view E2E,artifacts/tests/a198/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
 TR-FUN-DM-03-A087,FUN-DM-03,A087,"T604,T608",DB/API/E2E,artifacts/tests/a087/,NOT_STARTED,derived_from_task,Codex implementation,docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
@@ -202,7 +202,7 @@ TR-FUN-DM-04-A094,FUN-DM-04,A094,"T607,T608",E2E,artifacts/tests/a094/,NOT_START
 TR-FUN-DM-04-A095,FUN-DM-04,A095,"T606,T608",Failure injection,artifacts/tests/a095/,NOT_STARTED,derived_from_task,Codex implementation,docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
 TR-FUN-SYS-01-A169,FUN-SYS-01,A169,"T1202,T1203",Catalog integrity test + manual review,tests/unit/test_api_health.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml,DONE,derived_from_task,Codex implementation,FUNCTION_CATALOG.md
 TR-FUN-SYS-01-A170,FUN-SYS-01,A170,"T1203,T1204",E2E + visual regression,tests/e2e/home.spec.ts;apps/web/src/app/objects-scope/page.tsx,DONE,derived_from_task,Codex implementation,FUNCTION_CATALOG.md
-TR-FUN-SYS-01-A171,FUN-SYS-01,A171,"T1201,T1206",Schema validation + model center E2E,artifacts/tests/a171/,NOT_STARTED,derived_from_task,Codex implementation,FUNCTION_CATALOG.md
+TR-FUN-SYS-01-A171,FUN-SYS-01,A171,"T1201,T1206",Schema validation + model center E2E,data/model_registry.csv;data/formula_registry.csv;data/parameter_catalog.csv;data/threshold_registry.csv;scripts/validate_model_config.py;scripts/validate_task_pack.py;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,FUNCTION_CATALOG.md
 TR-FUN-SYS-01-A172,FUN-SYS-01,A172,T1200,Catalog/API mapping test,artifacts/tests/a172/,NOT_STARTED,derived_from_task,Codex implementation,FUNCTION_CATALOG.md
 TR-FUN-SYS-01-A199,FUN-SYS-01,A199,"T1200,T1201,T1213",E2E,artifacts/tests/a199/,NOT_STARTED,derived_from_task,Codex implementation,FUNCTION_CATALOG.md
 TR-FUN-SYS-02-A180,FUN-SYS-02,A180,"T1208,T1211,T1212,T1213,T1214,T1215",file/schema review,artifacts/tests/a180/,NOT_STARTED,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md

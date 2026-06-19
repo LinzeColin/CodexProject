@@ -841,7 +841,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G3 T306 Home, industry and Watchlist E2E
 
-Status: T306 LOCAL PASS; G3 IN PROGRESS
+Status: T306 PASS; G3 IN PROGRESS
 
 Completed:
 
@@ -859,6 +859,10 @@ Verification evidence:
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS, static routes `/`, `/industries`, and `/objects-scope`.
 - Local `make verify`: PASS.
 - Local `git diff --check`: PASS.
+- GitHub Actions run `27834549643`: PASS.
+- GitHub Actions job `82379303157`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -869,3 +873,44 @@ Residual risks:
 
 - The MVP still lacks full create/remove Watchlist controls in the browser UI; API persistence for those actions is proven in T303.
 - G3 still remains open for model registry/config import tasks listed in the gate, unless explicitly deferred.
+
+## 2026-06-19 - Phase 1 / G3 State history, saved views, timeline and active context
+
+Status: LOCAL PASS; remote CI pending
+
+Completed:
+
+- Added a shared active analysis context for model/profile/data/score snapshot versions.
+- Added URL/session/localStorage workspace state for subject, selected node, lens, as-of time, filters, path, and semantic zoom.
+- Added browser back, app back, and clickable breadcrumb restoration.
+- Added versioned local saved views with subject, lens, time, filters, layout, notes, model version, and data snapshot.
+- Added as-of timeline controls and change overlay with explicit non-real-time fixture language.
+- Added cross-page active model/profile/data/score snapshot reporting on `/`, `/industries`, and `/objects-scope`.
+- Added model configuration validation to `scripts/validate_task_pack.py`.
+- Marked T1110, T1111, T1112, T1113, T1201, and T1206 as `DONE`.
+- Marked A154, A155, A156, A157, A158, A159, A160, A171, and A178 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 19 tests.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS, including `validate_model_config.py`.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A154/A155 are covered by `tests/e2e/state-contract.spec.ts` browser back, app back, and breadcrumb assertions.
+- A156/A157 are covered by URL/session/reload assertions in `tests/e2e/state-contract.spec.ts`.
+- A158/A159 are covered by versioned saved-view save/restore assertions in `tests/e2e/state-contract.spec.ts`.
+- A160 is covered by timeline/as-of overlay assertions in `tests/e2e/state-contract.spec.ts`.
+- A171 is covered by canonical model registry files plus `scripts/validate_model_config.py` through `scripts/validate_task_pack.py`.
+- A178 is covered by cross-page active context assertions in `tests/e2e/state-contract.spec.ts`.
+
+Residual risks:
+
+- Saved views are local browser persistence only; production `/v1/saved-views` create/share/export remains future work.
+- Timeline uses synthetic fixture snapshots; real snapshot comparison and change_events API remain future work.
+- Model online edit, preview, activation, rollback, score recomputation, and operation-log UI remain future work.
+- G3 remote CI still needs to prove this batch under GitHub Actions before the gate is closed.

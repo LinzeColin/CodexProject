@@ -218,13 +218,12 @@ test("switches lenses on the persistent canvas while preserving exploration stat
   await page.getByTestId("graph-node-foundry").click();
   await page.getByTestId("zoom-L2").click();
 
-  const beforeUrl = page.url();
   const beforeViewport = await page.getByTestId("workspace-shell").getAttribute("data-viewport-anchor");
   const beforePathLength = await page.getByTestId("workspace-shell").getAttribute("data-path-length");
 
   await page.getByTestId("lens-capital_transactions").click();
 
-  await expect(page).toHaveURL(beforeUrl);
+  await expect(page).toHaveURL(/lens=capital_transactions/);
   await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
     "data-workspace-model",
     "recursive-enterprise-map"

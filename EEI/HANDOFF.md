@@ -10,7 +10,7 @@ Updated: 2026-06-19 Australia/Sydney
 
 - GitHub target: `LinzeColin/CodexProject/EEI`
 - Current gate: Phase 1 / G3 - Entry and management
-- Gate status: IN PROGRESS
+- Gate status: IN PROGRESS; all listed G3 tasks are locally complete and remote CI is pending for the latest state/context batch
 - Previous gate: Phase 1 / G2 - Domain and data model
 - G2 status: PASS by GitHub Actions run `27828738097` plus `DEFER-003` for A026/A027 gold evaluation
 - Previous gate: Phase 1 / G1 - Repository foundation
@@ -59,7 +59,10 @@ Updated: 2026-06-19 Australia/Sydney
 - Added T305 `/industries` landscape page with chain stages, subindustries, entities, bottlenecks, capital, policy, changes, and visible cross-industry navigation path.
 - Completed T305 with A032/A034 by GitHub Actions run `27834152257`; job `82377987783` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
 - Added T306 Watchlist unread-change and saved-view/profile E2E restore behavior on the home workspace.
-- Completed T306 locally with A037; remote CI still needs to prove this commit after push.
+- Completed T306 with A037 by GitHub Actions run `27834549643`; job `82379303157` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
+- Added URL/session/localStorage workspace state, browser/app back, clickable breadcrumb restore, versioned local saved views, as-of timeline overlays, and shared active model/profile/data/score snapshot reporting.
+- Added model config validation to Task Pack validation and closed T1110, T1111, T1112, T1113, T1201, and T1206 locally.
+- Marked A154, A155, A156, A157, A158, A159, A160, A171, and A178 as `DONE` with local E2E/model-validation evidence.
 
 ## Verification Evidence
 
@@ -127,6 +130,13 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 15 tests after T306 Watchlist saved-view restore.
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed after T306 with static `/`, `/industries`, and `/objects-scope`.
 - 2026-06-19 update: local `make verify` passed after T306.
+- 2026-06-19 update: GitHub Actions run `27834549643` passed; job `82379303157` proved T306 remotely.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck` passed after T1110/T1111/T1112/T1113/T1201/T1206.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 19 tests after state/history/saved-view/timeline/active-context implementation.
+- 2026-06-19 update: local `.venv/bin/uv run python scripts/validate_task_pack.py` passed and now includes model config validation.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed after the state/context batch.
+- 2026-06-19 update: local `make verify` passed after the state/context batch.
+- 2026-06-19 update: local `git diff --check` passed after the state/context batch.
 
 Remote verification:
 
@@ -177,6 +187,8 @@ Remote verification:
 - GitHub Actions job `82375686964`: PASS.
 - GitHub Actions run `27834152257`: PASS.
 - GitHub Actions job `82377987783`: PASS.
+- GitHub Actions run `27834549643`: PASS.
+- GitHub Actions job `82379303157`: PASS.
 
 ## Not Completed
 
@@ -190,18 +202,19 @@ Remote verification:
 - T1204 / A170 Objects and Scope navigation screen is DONE and remote CI passed.
 - T300 / A038 typed entity search is DONE and remote CI passed.
 - T301 home aggregation API is DONE and remote CI passed.
-- T302 industry list and landscape API is DONE and remote CI passed; A031/A033 are DONE, while A032/A034 remain open for UI/E2E.
-- T303 Watchlist CRUD and persistence API is DONE and remote CI passed; A035/A036 are DONE, while A037 remains open for UI/E2E unread-change and saved-view evidence.
+- T302 industry list and landscape API is DONE and remote CI passed; A031/A033 are DONE.
+- T303 Watchlist CRUD and persistence API is DONE and remote CI passed; A035/A036 are DONE.
 - T304 user-oriented home page is DONE and remote CI passed; A029/A030/A039/A040 are DONE.
 - T305 industry landscape page is DONE and remote CI passed; A032/A034 are DONE.
-- T306 home/industry/watchlist E2E is DONE locally; A037 is DONE locally and awaiting remote CI proof after push.
+- T306 home/industry/watchlist E2E is DONE and remote CI passed; A037 is DONE.
+- T1110/T1111/T1112/T1113/T1201/T1206 are locally DONE; remote CI is pending.
 - G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
 ## Recommended Next Step
 
-Continue G3 with bounded entry/management implementation:
+Push the latest G3 state/context batch and wait for GitHub Actions:
 
-1. Push T306 and wait for GitHub Actions proof.
+1. Sync `work/EEI` to `LinzeColin/CodexProject/EEI` and push.
 2. Keep A026/A027 open until T904/G9 real gold precision evaluation.
-3. Continue remaining G3 tasks or explicitly defer non-MVP blockers after T306 remote CI passes.
+3. If remote CI passes, close G3 and begin the next bounded G4 batch.

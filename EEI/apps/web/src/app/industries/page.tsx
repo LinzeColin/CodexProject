@@ -10,6 +10,7 @@ import {
   Network,
   Route
 } from "lucide-react";
+import { ACTIVE_ANALYSIS_CONTEXT } from "../analysis-contract";
 
 type IndustryKey = "semiconductors" | "ai-cloud" | "energy";
 
@@ -182,7 +183,16 @@ export default function IndustriesPage() {
   }
 
   return (
-    <main className="industryWorkspace" data-testid="industry-landscape-page">
+    <main
+      className="industryWorkspace"
+      data-active-data-snapshot={ACTIVE_ANALYSIS_CONTEXT.dataSnapshot}
+      data-active-model-version={ACTIVE_ANALYSIS_CONTEXT.modelVersion}
+      data-active-profile-version={ACTIVE_ANALYSIS_CONTEXT.profileVersion}
+      data-active-score-snapshot={ACTIVE_ANALYSIS_CONTEXT.scoreSnapshot}
+      data-active-time={ACTIVE_ANALYSIS_CONTEXT.defaultAsOf}
+      data-analysis-contract={ACTIVE_ANALYSIS_CONTEXT.contractVersion}
+      data-testid="industry-landscape-page"
+    >
       <aside className="industryRail" aria-label="行业切换">
         <a className="backLink" href="/">
           <Route size={16} aria-hidden="true" />

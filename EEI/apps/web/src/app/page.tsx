@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import {
   Activity,
   ArrowDown,
@@ -8,6 +8,7 @@ import {
   Bell,
   Boxes,
   Building2,
+  ChevronLeft,
   CircleDollarSign,
   Clock3,
   Crosshair,
@@ -22,9 +23,12 @@ import {
   Search,
   Settings2,
   ShieldCheck,
+  RotateCcw,
+  Save,
   Star
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { ACTIVE_ANALYSIS_CONTEXT } from "./analysis-contract";
 
 type NavItem = {
   name: string;
@@ -59,6 +63,37 @@ type RelationshipLens = Exclude<LensKey, "all">;
 type SemanticZoom = "L0" | "L1" | "L2" | "L3";
 
 type TransitionState = "ready" | "loading" | "fallback";
+
+type TimelineKey = "2026-06-01" | "2026-06-12" | "2026-06-19";
+
+type WorkspaceState = {
+  focusKey: FocusKey;
+  selectedKey: NodeKey;
+  path: FocusKey[];
+  activeLens: LensKey;
+  semanticZoom: SemanticZoom;
+  asOf: TimelineKey;
+};
+
+type SavedViewRecord = WorkspaceState & {
+  id: string;
+  version: "saved-view-v1";
+  filters: string;
+  layout: string;
+  modelVersion: string;
+  dataSnapshot: string;
+  notes: string;
+  updatedAt: string;
+};
+
+type WorkspaceStateInput = {
+  focusKey?: unknown;
+  selectedKey?: unknown;
+  path?: unknown;
+  activeLens?: unknown;
+  semanticZoom?: unknown;
+  asOf?: unknown;
+};
 
 type Zone =
   | "upstream"
@@ -206,6 +241,38 @@ const semanticZoomItems: { key: SemanticZoom; label: string; title: string }[] =
   { key: "L3", label: "L3", title: "Detailed node role labels" }
 ];
 
+const timelineItems: {
+  key: TimelineKey;
+  label: string;
+  change: string;
+  overlay: string;
+}[] = [
+  {
+    key: "2026-06-01",
+    label: "Baseline",
+    change: "Baseline supplier and customer graph",
+    overlay: "No material-change overlay in this fixture snapshot"
+  },
+  {
+    key: "2026-06-12",
+    label: "Comparison",
+    change: "Packaging queue and customer-demand path changed",
+    overlay: "Change overlay highlights packaging and demand pressure"
+  },
+  {
+    key: "2026-06-19",
+    label: "Active",
+    change: "Current fixture snapshot for MVP validation",
+    overlay: "Active snapshot, not real-time market data"
+  }
+];
+
+const WORKSPACE_STATE_STORAGE_KEY = "eei.workspaceState.v1";
+const SAVED_VIEW_STORAGE_KEY = "eei.savedView.current.v1";
+const SAVED_VIEW_VERSION = "saved-view-v1";
+const WORKSPACE_LAYOUT_GRAMMAR =
+  "upstream-left focus-center downstream-right capital-top policy-bottom";
+
 const systemMakersGroupMembers = [
   "Synthetic Systems Integrator",
   "Synthetic Rack Manufacturer",
@@ -352,13 +419,13 @@ const homeChanges: HomeChangeEntry[] = [
 
 const homeFreshness = {
   status: "synthetic_fixture",
-  latestRelationshipObservedAt: "2026-06-19",
+  latestRelationshipObservedAt: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf,
   sourceDocumentCount: 3,
-  coverage: "fixture-v1"
+  coverage: ACTIVE_ANALYSIS_CONTEXT.dataSnapshot
 };
 
 const homeModelStatus = {
-  profile: "Balanced v2",
+  profile: ACTIVE_ANALYSIS_CONTEXT.profileLabel,
   latestCalibration: "scheduled",
   cadenceDays: 14,
   nextScheduledFor: "2026-07-03"
@@ -658,16 +725,164 @@ function node(
   };
 }
 
+const focusKeySet = new Set<FocusKey>(Object.keys(scenarios) as FocusKey[]);
+const nodeKeySet = new Set<NodeKey>(Object.keys(entityLabels) as NodeKey[]);
+const lensKeySet = new Set<LensKey>(lensItems.map((item) => item.key));
+const semanticZoomSet = new Set<SemanticZoom>(semanticZoomItems.map((item) => item.key));
+const timelineKeySet = new Set<TimelineKey>(timelineItems.map((item) => item.key));
+
+const defaultWorkspaceState: WorkspaceState = {
+  focusKey: "nvidia",
+  selectedKey: "nvidia",
+  path: ["nvidia"],
+  activeLens: "all",
+  semanticZoom: "L1",
+  asOf: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf
+};
+
+function isFocusKey(value: string | null | undefined): value is FocusKey {
+  return Boolean(value && focusKeySet.has(value as FocusKey));
+}
+
+function isNodeKey(value: string | null | undefined): value is NodeKey {
+  return Boolean(value && nodeKeySet.has(value as NodeKey));
+}
+
+function isLensKey(value: string | null | undefined): value is LensKey {
+  return Boolean(value && lensKeySet.has(value as LensKey));
+}
+
+function isSemanticZoom(value: string | null | undefined): value is SemanticZoom {
+  return Boolean(value && semanticZoomSet.has(value as SemanticZoom));
+}
+
+function isTimelineKey(value: string | null | undefined): value is TimelineKey {
+  return Boolean(value && timelineKeySet.has(value as TimelineKey));
+}
+
+function stringField(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+function normalizeWorkspaceState(input: WorkspaceStateInput): WorkspaceState {
+  const focusKeyValue = stringField(input.focusKey);
+  const selectedKeyValue = stringField(input.selectedKey);
+  const activeLensValue = stringField(input.activeLens);
+  const semanticZoomValue = stringField(input.semanticZoom);
+  const asOfValue = stringField(input.asOf);
+  const parsedPath = Array.isArray(input.path)
+    ? input.path.filter((item): item is string => typeof item === "string").filter(isFocusKey)
+    : [];
+  const focusKey = isFocusKey(focusKeyValue) ? focusKeyValue : defaultWorkspaceState.focusKey;
+  const selectedCandidate = isNodeKey(selectedKeyValue) ? selectedKeyValue : focusKey;
+  const selectedKey = scenarios[focusKey].nodes.some((item) => item.key === selectedCandidate)
+    ? selectedCandidate
+    : focusKey;
+  const path = parsedPath.length ? parsedPath : defaultWorkspaceState.path;
+  const normalizedPath = path[path.length - 1] === focusKey ? path : [...path, focusKey];
+
+  return {
+    focusKey,
+    selectedKey,
+    path: normalizedPath,
+    activeLens: isLensKey(activeLensValue) ? activeLensValue : defaultWorkspaceState.activeLens,
+    semanticZoom: isSemanticZoom(semanticZoomValue)
+      ? semanticZoomValue
+      : defaultWorkspaceState.semanticZoom,
+    asOf: isTimelineKey(asOfValue) ? asOfValue : defaultWorkspaceState.asOf
+  };
+}
+
+function readWorkspaceStateFromParams(params: URLSearchParams): WorkspaceState | null {
+  const hasState = ["subject", "selected", "lens", "zoom", "asOf", "path"].some((key) =>
+    params.has(key)
+  );
+  if (!hasState) return null;
+
+  return normalizeWorkspaceState({
+    focusKey: params.get("subject") ?? undefined,
+    selectedKey: params.get("selected") ?? undefined,
+    path: (params.get("path") ?? "").split("."),
+    activeLens: params.get("lens") ?? undefined,
+    semanticZoom: params.get("zoom") ?? undefined,
+    asOf: params.get("asOf") ?? undefined
+  });
+}
+
+function readWorkspaceStatePayload(rawValue: string | null): WorkspaceState | null {
+  if (!rawValue) return null;
+  try {
+    const parsed = JSON.parse(rawValue) as Partial<WorkspaceState>;
+    return normalizeWorkspaceState(parsed);
+  } catch {
+    return null;
+  }
+}
+
+function writeWorkspaceStateParams(params: URLSearchParams, state: WorkspaceState) {
+  params.set("subject", state.focusKey);
+  params.set("selected", state.selectedKey);
+  params.set("lens", state.activeLens);
+  params.set("zoom", state.semanticZoom);
+  params.set("asOf", state.asOf);
+  params.set("filters", state.activeLens);
+  params.set("path", state.path.join("."));
+}
+
+function createSavedView(state: WorkspaceState): SavedViewRecord {
+  const normalized = normalizeWorkspaceState(state);
+  return {
+    ...normalized,
+    id: `sv-${normalized.focusKey}-${normalized.activeLens}-${normalized.semanticZoom}-${normalized.asOf}`,
+    version: SAVED_VIEW_VERSION,
+    filters: normalized.activeLens,
+    layout: WORKSPACE_LAYOUT_GRAMMAR,
+    modelVersion: ACTIVE_ANALYSIS_CONTEXT.modelVersion,
+    dataSnapshot: ACTIVE_ANALYSIS_CONTEXT.dataSnapshot,
+    notes: `${entityLabels[normalized.focusKey]} / ${normalized.activeLens} / ${normalized.asOf}`,
+    updatedAt: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf
+  };
+}
+
+function readSavedViewPayload(rawValue: string | null): SavedViewRecord | null {
+  if (!rawValue) return null;
+  try {
+    const parsed = JSON.parse(rawValue) as Partial<SavedViewRecord>;
+    if (parsed.version !== SAVED_VIEW_VERSION) return null;
+    return {
+      ...createSavedView(normalizeWorkspaceState(parsed)),
+      id: parsed.id ?? createSavedView(normalizeWorkspaceState(parsed)).id,
+      notes: parsed.notes ?? createSavedView(normalizeWorkspaceState(parsed)).notes,
+      updatedAt: parsed.updatedAt ?? ACTIVE_ANALYSIS_CONTEXT.defaultAsOf
+    };
+  } catch {
+    return null;
+  }
+}
+
 export default function Home() {
   const [focusKey, setFocusKey] = useState<FocusKey>("nvidia");
   const [selectedKey, setSelectedKey] = useState<NodeKey>("nvidia");
   const [path, setPath] = useState<FocusKey[]>(["nvidia"]);
   const [activeLens, setActiveLens] = useState<LensKey>("all");
   const [semanticZoom, setSemanticZoom] = useState<SemanticZoom>("L1");
+  const [asOf, setAsOf] = useState<TimelineKey>(ACTIVE_ANALYSIS_CONTEXT.defaultAsOf);
   const [transitionState, setTransitionState] = useState<TransitionState>("ready");
   const [groupListOpen, setGroupListOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [savedView, setSavedView] = useState<SavedViewRecord>(() =>
+    createSavedView(defaultWorkspaceState)
+  );
+  const [savedViewStatus, setSavedViewStatus] = useState("ready");
+  const [stateReady, setStateReady] = useState(false);
+  const restoringHistoryState = useRef(false);
+  const hasWrittenHistoryState = useRef(false);
   const scenario = scenarios[focusKey];
+  const workspaceState = useMemo<WorkspaceState>(
+    () => ({ focusKey, selectedKey, path, activeLens, semanticZoom, asOf }),
+    [activeLens, asOf, focusKey, path, selectedKey, semanticZoom]
+  );
+  const currentTimeline = timelineItems.find((item) => item.key === asOf) ?? timelineItems[2];
   const nodeByKey = useMemo(
     () => new Map(scenario.nodes.map((item) => [item.key, item])),
     [scenario.nodes]
@@ -715,6 +930,46 @@ export default function Home() {
       scenario.edges.find((edge) => edge.from === selectedNode.key && nodeByKey.has(edge.to))?.to,
     [nodeByKey, scenario.edges, selectedNode.key]
   );
+
+  function applyWorkspaceState(nextState: WorkspaceStateInput) {
+    const normalized = normalizeWorkspaceState(nextState);
+    setFocusKey(normalized.focusKey);
+    setSelectedKey(normalized.selectedKey);
+    setPath(normalized.path);
+    setActiveLens(normalized.activeLens);
+    setSemanticZoom(normalized.semanticZoom);
+    setAsOf(normalized.asOf);
+    setGroupListOpen(false);
+    setTransitionState("ready");
+  }
+
+  function applyPathSubject(pathIndex: number) {
+    const nextFocus = path[pathIndex];
+    if (!nextFocus) return;
+    applyWorkspaceState({
+      ...workspaceState,
+      focusKey: nextFocus,
+      selectedKey: nextFocus,
+      path: path.slice(0, pathIndex + 1)
+    });
+  }
+
+  function browserBack() {
+    window.history.back();
+  }
+
+  function saveCurrentView() {
+    const nextSavedView = createSavedView(workspaceState);
+    window.localStorage.setItem(SAVED_VIEW_STORAGE_KEY, JSON.stringify(nextSavedView));
+    setSavedView(nextSavedView);
+    setSavedViewStatus("saved");
+  }
+
+  function restoreSavedView() {
+    restoringHistoryState.current = true;
+    applyWorkspaceState(savedView);
+    setSavedViewStatus("restored");
+  }
 
   const viewportAnchor = `${focusKey}:${selectedNode.key}:${semanticZoom}`;
   const visibleSearchResults = useMemo(() => {
@@ -784,6 +1039,58 @@ export default function Home() {
   }
 
   useEffect(() => {
+    const urlState = readWorkspaceStateFromParams(new URLSearchParams(window.location.search));
+    const sessionState = readWorkspaceStatePayload(
+      window.sessionStorage.getItem(WORKSPACE_STATE_STORAGE_KEY)
+    );
+    const storedSavedView = readSavedViewPayload(window.localStorage.getItem(SAVED_VIEW_STORAGE_KEY));
+
+    if (storedSavedView) {
+      setSavedView(storedSavedView);
+    }
+    if (urlState ?? sessionState) {
+      restoringHistoryState.current = true;
+      applyWorkspaceState((urlState ?? sessionState)!);
+    }
+
+    function handlePopState(event: PopStateEvent) {
+      const eventState = event.state as { eeiWorkspaceState?: WorkspaceStateInput } | null;
+      const nextState =
+        readWorkspaceStateFromParams(new URLSearchParams(window.location.search)) ??
+        (eventState?.eeiWorkspaceState
+          ? normalizeWorkspaceState(eventState.eeiWorkspaceState)
+          : null);
+      if (!nextState) return;
+      restoringHistoryState.current = true;
+      applyWorkspaceState(nextState);
+    }
+
+    window.addEventListener("popstate", handlePopState);
+    setStateReady(true);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  useEffect(() => {
+    if (!stateReady) return;
+    const normalized = normalizeWorkspaceState(workspaceState);
+    const payload = JSON.stringify(normalized);
+    window.sessionStorage.setItem(WORKSPACE_STATE_STORAGE_KEY, payload);
+    window.localStorage.setItem(WORKSPACE_STATE_STORAGE_KEY, payload);
+
+    const nextUrl = new URL(window.location.href);
+    writeWorkspaceStateParams(nextUrl.searchParams, normalized);
+    const historyState = { eeiWorkspaceState: normalized };
+    const shouldReplace = restoringHistoryState.current || !hasWrittenHistoryState.current;
+    if (shouldReplace) {
+      window.history.replaceState(historyState, "", nextUrl);
+      restoringHistoryState.current = false;
+      hasWrittenHistoryState.current = true;
+      return;
+    }
+    window.history.pushState(historyState, "", nextUrl);
+  }, [stateReady, workspaceState]);
+
+  useEffect(() => {
     function handleExternalCenterRequest(event: Event) {
       const detail = (event as CustomEvent<string | { focus?: string }>).detail;
       const nextFocus = typeof detail === "string" ? detail : detail?.focus;
@@ -799,8 +1106,14 @@ export default function Home() {
   return (
     <main
       className="workspace"
+      data-active-data-snapshot={ACTIVE_ANALYSIS_CONTEXT.dataSnapshot}
       data-active-lens={activeLens}
-      data-layout-grammar="upstream-left focus-center downstream-right capital-top policy-bottom"
+      data-active-model-version={ACTIVE_ANALYSIS_CONTEXT.modelVersion}
+      data-active-profile-version={ACTIVE_ANALYSIS_CONTEXT.profileVersion}
+      data-active-score-snapshot={ACTIVE_ANALYSIS_CONTEXT.scoreSnapshot}
+      data-active-time={asOf}
+      data-analysis-contract={ACTIVE_ANALYSIS_CONTEXT.contractVersion}
+      data-layout-grammar={WORKSPACE_LAYOUT_GRAMMAR}
       data-path-length={path.length}
       data-reroot-state={transitionState}
       data-selected-node={selectedNode.key}
@@ -860,7 +1173,7 @@ export default function Home() {
         <dl className="subjectStats" data-testid="home-model-status">
           <div>
             <dt>Snapshot</dt>
-            <dd>fixture-v1</dd>
+            <dd>{ACTIVE_ANALYSIS_CONTEXT.dataSnapshot}</dd>
           </div>
           <div>
             <dt>Model</dt>
@@ -1071,6 +1384,27 @@ export default function Home() {
           ))}
         </div>
 
+        <div
+          className="timelineBar"
+          aria-label="时间演变"
+          data-active-as-of={asOf}
+          data-testid="timeline-controls"
+        >
+          {timelineItems.map((item) => (
+            <button
+              aria-pressed={asOf === item.key}
+              className={asOf === item.key ? "timelineControl active" : "timelineControl"}
+              data-testid={`timeline-${item.key}`}
+              key={item.key}
+              onClick={() => setAsOf(item.key)}
+              type="button"
+            >
+              <span>{item.label}</span>
+              <small>{item.key}</small>
+            </button>
+          ))}
+        </div>
+
         <div className="stageRail" aria-label="供应链阶段覆盖">
           {stageRows.map((stage) => (
             <span className={`stagePill ${stage.side}`} key={stage.id}>
@@ -1090,6 +1424,16 @@ export default function Home() {
               Canvas preserved
             </div>
           ) : null}
+          <div
+            className="changeOverlay"
+            data-as-of={asOf}
+            data-testid="change-overlay"
+            data-timeline-mode="as-of-snapshot"
+          >
+            <strong>As of {asOf}</strong>
+            <span>{currentTimeline.change}</span>
+            <small>{currentTimeline.overlay}; not real-time.</small>
+          </div>
           <svg
             className={`ecosystemMap zoom-${semanticZoom}`}
             data-semantic-zoom={semanticZoom}
@@ -1188,9 +1532,25 @@ export default function Home() {
           </svg>
         </div>
 
+        <div className="historyControls" aria-label="历史恢复">
+          <button data-testid="app-back" onClick={browserBack} type="button">
+            <ChevronLeft size={16} aria-hidden="true" />
+            <span>返回</span>
+          </button>
+        </div>
+
         <ol className="breadcrumb" aria-label="探索路径" data-testid="reroot-breadcrumb">
           {path.map((key, index) => (
-            <li key={`${key}-${index}`}>{key === "nvidia" ? "NVIDIA" : entityLabels[key]}</li>
+            <li key={`${key}-${index}`}>
+              <button
+                aria-current={index === path.length - 1 ? "page" : undefined}
+                data-testid={`breadcrumb-subject-${key}-${index}`}
+                onClick={() => applyPathSubject(index)}
+                type="button"
+              >
+                {key === "nvidia" ? "NVIDIA" : entityLabels[key]}
+              </button>
+            </li>
           ))}
         </ol>
       </section>
@@ -1218,6 +1578,54 @@ export default function Home() {
               <dd>{scenario.heading}</dd>
             </div>
           </dl>
+        </section>
+
+        <section
+          className="savedViewPanel"
+          data-data-snapshot={savedView.dataSnapshot}
+          data-model-version={savedView.modelVersion}
+          data-saved-view-id={savedView.id}
+          data-saved-view-version={savedView.version}
+          data-testid="saved-view-panel"
+        >
+          <header>
+            <p className="eyebrow">Saved View</p>
+            <strong data-testid="saved-view-status">{savedViewStatus}</strong>
+          </header>
+          <dl data-testid="saved-view-contract">
+            <div>
+              <dt>Subject</dt>
+              <dd>{entityLabels[savedView.focusKey]}</dd>
+            </div>
+            <div>
+              <dt>Lens / Time</dt>
+              <dd>
+                {savedView.activeLens} / {savedView.asOf}
+              </dd>
+            </div>
+            <div>
+              <dt>Filters</dt>
+              <dd>{savedView.filters}</dd>
+            </div>
+            <div>
+              <dt>Layout</dt>
+              <dd>{savedView.layout}</dd>
+            </div>
+            <div>
+              <dt>Notes</dt>
+              <dd>{savedView.notes}</dd>
+            </div>
+          </dl>
+          <div className="savedViewActions">
+            <button data-testid="save-current-view" onClick={saveCurrentView} type="button">
+              <Save size={16} aria-hidden="true" />
+              <span>保存</span>
+            </button>
+            <button data-testid="restore-saved-view" onClick={restoreSavedView} type="button">
+              <RotateCcw size={16} aria-hidden="true" />
+              <span>恢复</span>
+            </button>
+          </div>
         </section>
 
         <ol className="pathList">
@@ -1302,6 +1710,17 @@ export default function Home() {
           <span>Data: synthetic fixture</span>
           <span>Live facts: disabled</span>
           <span>DB fixture notice: visible</span>
+          <span data-testid="model-contract-state">
+            Model: {ACTIVE_ANALYSIS_CONTEXT.modelVersion} / Profile:{" "}
+            {ACTIVE_ANALYSIS_CONTEXT.profileVersion} / Formula:{" "}
+            {ACTIVE_ANALYSIS_CONTEXT.formulaRegistryVersion} / Parameters:{" "}
+            {ACTIVE_ANALYSIS_CONTEXT.parameterCatalogVersion} / Thresholds:{" "}
+            {ACTIVE_ANALYSIS_CONTEXT.thresholdRegistryVersion}
+          </span>
+          <span data-testid="active-context-state">
+            Data: {ACTIVE_ANALYSIS_CONTEXT.dataSnapshot} / Score:{" "}
+            {ACTIVE_ANALYSIS_CONTEXT.scoreSnapshot} / As of: {asOf}
+          </span>
           <span data-testid="lens-state">Lens: {activeLens}</span>
           <span data-testid="zoom-state">Zoom: {semanticZoom}</span>
           <span data-testid="reroot-state">Canvas state: {transitionState}</span>

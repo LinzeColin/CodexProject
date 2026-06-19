@@ -152,13 +152,13 @@ A150,P0,pivot,Three consecutive subject changes use the same workspace model,E2E
 A151,P0,mental-map,Subject changes preserve directional grammar and positions of retained nodes where feasible,Visual regression,DONE
 A152,P0,mental-map,Subject transition indicates loading and never leaves blank canvas on failure,Failure E2E,DONE
 A153,P0,responsive,Core workspace works at 1440x900 1280x800 and 1024x768,Visual regression,NOT STARTED
-A154,P0,navigation,Breadcrumb browser back and app back restore identical subject state,E2E,NOT STARTED
-A155,P0,navigation,User can return to any prior subject in exploration path,E2E,NOT STARTED
-A156,P0,persistence,URL/session stores subject selected object lens time filters and semantic zoom,Contract/E2E,NOT STARTED
-A157,P0,persistence,Reload restores viewport panels and exploration path,Reload E2E,NOT STARTED
-A158,P0,saved-view,Saved view includes subject lens time filters layout and notes,Integration,NOT STARTED
-A159,P0,saved-view,Saved view restore is deterministic and versioned,Integration,NOT STARTED
-A160,P0,time,Timeline changes graph state with explicit as-of label and no false real-time claim,E2E,NOT STARTED
+A154,P0,navigation,Breadcrumb browser back and app back restore identical subject state,E2E,DONE
+A155,P0,navigation,User can return to any prior subject in exploration path,E2E,DONE
+A156,P0,persistence,URL/session stores subject selected object lens time filters and semantic zoom,Contract/E2E,DONE
+A157,P0,persistence,Reload restores viewport panels and exploration path,Reload E2E,DONE
+A158,P0,saved-view,Saved view includes subject lens time filters layout and notes,Integration,DONE
+A159,P0,saved-view,Saved view restore is deterministic and versioned,Integration,DONE
+A160,P0,time,Timeline changes graph state with explicit as-of label and no false real-time claim,E2E,DONE
 A161,P0,accessibility,Every graph relationship is available in equivalent list/table view,A11y E2E,NOT STARTED
 A162,P0,accessibility,Graph-equivalent list retains direction type evidence status and time,Contract test,NOT STARTED
 A163,P0,accessibility,All primary operations are keyboard reachable with visible unobscured focus,Keyboard E2E,NOT STARTED
@@ -169,14 +169,14 @@ A167,P0,visual-regression,Approved default lens pivot list empty loading error s
 A168,P0,performance,Fixture first interactive graph P75 is under 2.5 seconds and metrics are recorded,Performance test,NOT STARTED
 A169,P0,catalog,"Relationship families, relationship types, upstream/downstream scope, supply-chain stages, industries, sectors, business segments, capital objects and companies have machine-readable catalogs",Catalog integrity test + manual review,DONE
 A170,P0,navigation,"Objects and scope is a visible navigation module and exposes counts, definitions, coverage and export links",E2E + visual regression,DONE
-A171,P0,model-governance,"Model management has one canonical registry for formulas, parameters, thresholds, files, versions, online edit, preview, activation and rollback",Schema validation + model center E2E,NOT STARTED
+A171,P0,model-governance,"Model management has one canonical registry for formulas, parameters, thresholds, files, versions, online edit, preview, activation and rollback",Schema validation + model center E2E,DONE
 A172,P0,architecture,"Function structure screen maps every module to route, data assets, API, status and acceptance criteria",Catalog/API mapping test,NOT STARTED
 A173,P0,delivery-governance,"Development status explicitly separates resolved, prototyped, specified, not started, blocked and out-of-scope items",Status catalog review,NOT STARTED
 A174,P0,delivery-governance,"Development status is visible in navigation and links tasks, risks, controls and acceptance evidence",E2E + link integrity,NOT STARTED
 A175,P0,audit,"Any catalog, model, threshold or scope change is captured by PR template, operation log and immutable release artifact",GitHub workflow + audit contract test,NOT STARTED
 A176,P0,prototype,index.html and standalone.html render the same canonical prototype and do not reference incompatible stale JS/CSS,Hash/content smoke test + browser screenshots,NOT STARTED
 A177,P0,github,"GitHub repository includes issue forms, PR template, code owners, catalog integrity workflow, release checklist and backup policy",Repository structure check,NOT STARTED
-A178,P0,live-refresh,All visible modules report the same active model version and data snapshot before a global refresh is declared complete,E2E consistency test,NOT STARTED
+A178,P0,live-refresh,All visible modules report the same active model version and data snapshot before a global refresh is declared complete,E2E consistency test,DONE
 A179,P0,model,保存、激活、回滚、恢复默认和导入均生成不可变版本和操作日志,DB/API/E2E,NOT STARTED
 A180,P0,github,仓库包含功能、模型、数据范围和缺陷的结构化 Issue 表单,file/schema review,NOT STARTED
 A181,P0,github,PR 模板要求变更范围、文档同步、测试、风险、回滚和验收证据,file review,NOT STARTED
