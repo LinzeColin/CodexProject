@@ -21,7 +21,7 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - GitHub `CodexProject` commit pushed:
-  - `2b35e19` feat: add EEI domain API repositories
+  - `8ff658f` feat: add EEI fixture reroot workspace
 
 ## Completed
 
@@ -34,6 +34,8 @@ Updated: 2026-06-19 Australia/Sydney
 - Started G2 database foundation with reversible SQL migration scaffolding, seed loader, schema checks, and integration test.
 - Added G2 domain API repository anchors for home, exploration, Watchlist, scoring profiles, audit logs, calibration queueing, change feed, and relationship supersession/conflict preservation.
 - Completed T203 and T206 by GitHub Actions run `27823282804`.
+- Added a visual-first NVIDIA synthetic recursive supply-chain workspace with visible fixture notices, stage coverage, relationship labels, and three-step reroot path.
+- Completed T205, A025, and A067 by GitHub Actions run `27824233483`.
 
 ## Verification Evidence
 
@@ -56,6 +58,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: T205 synthetic fixture loader added locally; remote PostgreSQL CI still needs to prove it.
 - 2026-06-19 update: GitHub Actions run `27822341025` passed; backend fixture load/idempotency/live-separation/stage checks are proven.
 - 2026-06-19 update: GitHub Actions run `27823282804` passed; T203/T206 domain API repository and A023/A090 integration checks are proven.
+- 2026-06-19 update: GitHub Actions run `27824233483` passed; A025 visible fixture marking and A067 NVIDIA recursive supply-chain E2E are proven.
 
 Remote verification:
 
@@ -68,13 +71,16 @@ Remote verification:
 - GitHub Actions job `82338210943`: PASS.
 - GitHub Actions run `27823282804`: PASS.
 - GitHub Actions job `82341300203`: PASS.
+- GitHub Actions run `27824233483`: PASS.
+- GitHub Actions job `82344470407`: PASS.
 
 ## Not Completed
 
 - Docker is not installed on the current host, so local `make verify-g1` still fails closed.
 - G2 database foundation subset passed remote PostgreSQL CI.
-- T205 backend fixture loading is proven, but UI/API fixture marking and recursive scenario E2E are still open.
-- T1103-T1109 visual company workspace tasks are not started.
+- T205 is DONE, including backend fixture load, visible fixture marking, and recursive NVIDIA scenario E2E.
+- T1103/T1104/T1107/T1108 visual company workspace tasks are IN PROGRESS, not fully accepted.
+- T1105/T1106/T1109 visual company workspace tasks are not started.
 - T1203 taxonomy/object-scope API is not started.
 - MVP is not complete.
 
@@ -82,7 +88,7 @@ Remote verification:
 
 Continue G2 with a bounded company-workspace/API run:
 
-1. Add API responses and frontend surface tests that visibly expose fixture notices for A025.
-2. Add recursive supply-chain scenario E2E for A067.
-3. Start T1103-T1109 visual company workspace tasks.
-4. Add T1203 taxonomy/object-scope API from canonical catalogs.
+1. Continue T1103/T1104/T1107/T1108 to close visual workspace acceptance IDs A136-A140 and A146-A150.
+2. Start T1105/T1106/T1109 for lenses, semantic zoom, grouping, budget, and mental-map behavior.
+3. Add T1203 taxonomy/object-scope API from canonical catalogs.
+4. Keep fixture/live separation visible until live ingestion gates exist.

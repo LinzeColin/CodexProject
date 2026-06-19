@@ -362,3 +362,42 @@ Residual risks:
 - T205 remains `IN PROGRESS` until UI fixture marking and recursive scenario E2E exist.
 - T1103-T1109 visual company workspace tasks remain not started.
 - T1203 taxonomy/object-scope API remains not started.
+
+## 2026-06-19 - Phase 1 / G2 T205 fixture visibility and reroot E2E pass
+
+Status: FIXTURE VISIBILITY AND RECURSIVE SUPPLY-CHAIN E2E PASS; G2 IN PROGRESS
+
+Completed:
+
+- Rebuilt the Next.js workspace shell into a visual-first company workspace with a persistent EEI navigation rail, current-focus panel, central relationship graph, stage coverage rail, evidence inspector, and reroot breadcrumb.
+- Added visible fixture disclosures: `Synthetic fixture`, `Fixture-only data`, `Live facts: disabled`, relationship-level fixture notices, and stage-level synthetic supply-chain coverage.
+- Added a deterministic NVIDIA fixture scenario spanning materials, equipment, manufacturing, design/IP, advanced packaging, system integration, data center, energy, and customer stages.
+- Added set-as-center interactions for NVIDIA -> Synthetic Advanced Foundry -> Synthetic Lithography Equipment Co. -> Synthetic Specialty Materials Co.
+- Extended Playwright E2E to assert visible fixture marking and the recursive NVIDIA supply-chain reroot path.
+- Marked T205 as `DONE`.
+- Marked A025 and A067 as `DONE` with evidence in `tests/e2e/home.spec.ts`.
+- Marked T1103, T1104, T1107, and T1108 as `IN PROGRESS` because the workspace, directional layout, inspector, and set-as-center interaction have started but their full acceptance sets are not closed.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 2 tests.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- Local `make verify-g2-db`: FAIL CLOSED because Docker is not installed on this host.
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27824233483`.
+- GitHub Actions job: `82344470407`.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A025 is covered by Playwright assertions for visible fixture disclosure and disabled live-fact status.
+- A067 is covered by Playwright assertions for NVIDIA synthetic scenario stage coverage and three-step recursive reroot path.
+- A136-A152 remain open unless separately proven by visual measurement, screenshot/DOM assertions, lens behavior, semantic zoom/grouping, inspector coverage, set-as-center keyboard/touch behavior, mental-map regression, and failure-state tests.
+
+Residual risks:
+
+- The current workspace is still static fixture-driven and not bound to live API graph responses.
+- T1105/T1106/T1109 remain not started.
+- T1203 taxonomy/object-scope API remains not started.
