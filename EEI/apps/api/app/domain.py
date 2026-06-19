@@ -250,7 +250,6 @@ def add_watchlist_item(
 @router.delete("/watchlists/{watchlistId}/items", status_code=status.HTTP_204_NO_CONTENT)
 def remove_watchlist_item(
     watchlistId: UUID,
-    response: Response,
     object_type: Literal["entity", "industry", "theme", "facility"],
     object_id: UUID,
     repository: RepositoryDependency,
@@ -263,7 +262,7 @@ def remove_watchlist_item(
         )
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc
-    return response
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get("/changes")
