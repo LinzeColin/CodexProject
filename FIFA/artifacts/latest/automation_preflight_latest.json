@@ -1,0 +1,28 @@
+{
+  "technical_preflight_ready": false,
+  "automation_entry_ready": false,
+  "user_automation_authorized": false,
+  "automation_authorization": {
+    "authorized": false,
+    "allow_recurring": false,
+    "allow_auto_betting": false,
+    "cadence": "manual",
+    "approved_at": "",
+    "approved_by": "",
+    "scope": "report_generation_only",
+    "source": "config",
+    "config_file": "automation.toml",
+    "entry_authorized": false,
+    "blocking_reasons": [
+      "user has not authorized recurring automation"
+    ],
+    "warnings": []
+  },
+  "run_id": "20260613T043303Z-593b5282",
+  "failed_at": "2026-06-13T04:42:13.727988+00:00",
+  "failure_type": "GateFailure",
+  "blocking_reasons": [
+    "raw snapshot refresh failed; refusing to generate report: staged raw validation gate failed; refusing to publish raw snapshots: board refresh failures: australia_markets: australia_markets refresh failed after 1 attempt(s): {\n  \"error\": \"2026 World Cup Australia Markets route mismatch: landed on 2026 World Cup Matches; TAB live soccer nav may not list this board\"\n}; 2026 World Cup Australia Markets staged raw snapshot is missing.; Raw refresh batch manifest is missing: raw_refresh_batch_latest.json."
+  ],
+  "schema_version": 1
+}

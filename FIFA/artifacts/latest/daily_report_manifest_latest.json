@@ -1,0 +1,388 @@
+{
+  "run_id": "20260604T135753Z-212e8e9a",
+  "started_at": "2026-06-04T13:57:53.641069+00:00",
+  "finished_at": "2026-06-04T13:58:16.691681+00:00",
+  "status": "ready_for_manual_report",
+  "user_automation_authorized": false,
+  "automation_authorization": {
+    "authorized": false,
+    "allow_recurring": false,
+    "allow_auto_betting": false,
+    "cadence": "manual",
+    "approved_at": "",
+    "approved_by": "",
+    "scope": "report_generation_only",
+    "source": "config",
+    "config_file": "automation.toml",
+    "entry_authorized": false,
+    "blocking_reasons": [
+      "user has not authorized recurring automation"
+    ],
+    "warnings": []
+  },
+  "private_output_mode": true,
+  "raw_refresh_enabled": true,
+  "raw_refresh_mode": "reuse_fresh",
+  "report_date": "04062026",
+  "report_timezone": "Australia/Sydney",
+  "inputs": {
+    "matches_raw": "tab_fifa_matches_main_markets_raw_v0_9.json",
+    "futures_raw": "tab_fifa_world_cup_futures_raw_v0_13.json",
+    "group_betting_raw": "tab_fifa_world_cup_group_betting_raw_v0_14.json",
+    "australia_markets_raw": "tab_fifa_world_cup_australia_markets_expanded_raw_v0_17.json",
+    "team_futures_multi_raw": "tab_fifa_world_cup_team_futures_multi_raw_v0_16.json",
+    "previous_baseline": "previous_report_baseline_v0_11.json",
+    "previous_baseline_latest": "previous_report_baseline_latest.json",
+    "previous_portfolio_baseline": "portfolio_report_baseline_v0_11.json",
+    "previous_portfolio_baseline_latest": "portfolio_report_baseline_latest.json",
+    "raw_refresh_script": "refresh_tab_readonly.mjs",
+    "raw_refresh_batch_manifest": "raw_refresh_batch_latest.json",
+    "report_date": "04062026",
+    "report_timezone": "Australia/Sydney"
+  },
+  "steps": [
+    {
+      "name": "raw_snapshot_refresh",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:57:53.665569+00:00",
+      "details": {
+        "reused_fresh_validated_raw": true,
+        "ready_required_targets": "5/5",
+        "diagnostics": "raw_refresh_diagnostics_20260604T135753Z-212e8e9a.json"
+      }
+    },
+    {
+      "name": "public_source_audit",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:57:56.110368+00:00",
+      "details": {
+        "ready": true
+      }
+    },
+    {
+      "name": "event_monitor",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:10.653142+00:00",
+      "details": {
+        "ready": true
+      }
+    },
+    {
+      "name": "matches_board",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:10.691313+00:00",
+      "details": {
+        "recommendations": 7
+      }
+    },
+    {
+      "name": "futures_board",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:10.692008+00:00",
+      "details": {
+        "recommendations": 6
+      }
+    },
+    {
+      "name": "group_betting_board",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:10.692570+00:00",
+      "details": {
+        "recommendations": 6
+      }
+    },
+    {
+      "name": "australia_markets_board",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:10.693147+00:00",
+      "details": {
+        "recommendations": 14
+      }
+    },
+    {
+      "name": "team_futures_multi_board",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:10.693655+00:00",
+      "details": {
+        "recommendations": 5
+      }
+    },
+    {
+      "name": "portfolio_daily_compare",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:10.696240+00:00",
+      "details": {
+        "added": 0,
+        "removed": 0,
+        "changed": 5,
+        "retained": 38
+      }
+    },
+    {
+      "name": "model_comparison",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:10.711823+00:00",
+      "details": {
+        "ready": true,
+        "match_count": 26,
+        "high_divergence_count": 14
+      }
+    },
+    {
+      "name": "raw_refresh_gate",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:10.728066+00:00",
+      "details": {
+        "raw_refresh_ready": true,
+        "driver_ready": true
+      }
+    },
+    {
+      "name": "portfolio_gate",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:10.743149+00:00",
+      "details": {
+        "ready_required_boards": "5/5"
+      }
+    },
+    {
+      "name": "safety_gate",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:13.586146+00:00",
+      "details": {
+        "ready": true
+      }
+    },
+    {
+      "name": "portfolio_execution_stakes",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:16.662088+00:00",
+      "details": {
+        "time_adjusted_new_exposure_aud": 100.0,
+        "match_stake_count": 5
+      }
+    },
+    {
+      "name": "business_pdf",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:16.662822+00:00",
+      "details": {
+        "time_adjusted_new_exposure_aud": 100.0
+      }
+    },
+    {
+      "name": "automation_preflight",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:16.689873+00:00",
+      "details": {
+        "technical_preflight_ready": true,
+        "automation_entry_ready": false
+      }
+    },
+    {
+      "name": "public_artifact_safety",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:18.152989+00:00",
+      "details": {
+        "ready": true,
+        "issue_count": 0
+      }
+    },
+    {
+      "name": "convenience_latest_publish",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:20.753596+00:00",
+      "details": {
+        "ready": true,
+        "artifact_count": 8,
+        "error_count": 0
+      }
+    },
+    {
+      "name": "latest_commit_publish",
+      "status": "ok",
+      "completed_at": "2026-06-04T13:58:20.761611+00:00",
+      "details": {
+        "latest_commit": "latest_commit.json",
+        "artifact_count": 19
+      }
+    }
+  ],
+  "outputs": {
+    "version": "v0_11",
+    "run_id": "20260604T135753Z-212e8e9a",
+    "automation_ready": true,
+    "recommendations": 7,
+    "recommended_new_exposure_aud": 70.0,
+    "public_sources_ready": true,
+    "event_monitor_ready": true,
+    "futures_automation_ready": true,
+    "futures_recommendations": 6,
+    "futures_manual_report_ready": true,
+    "group_betting_automation_ready": true,
+    "group_betting_recommendations": 6,
+    "group_betting_manual_report_ready": true,
+    "australia_markets_automation_ready": true,
+    "australia_markets_recommendations": 14,
+    "australia_markets_manual_report_ready": true,
+    "team_futures_multi_automation_ready": true,
+    "team_futures_multi_recommendations": 5,
+    "team_futures_multi_manual_report_ready": true,
+    "board_results": {
+      "world_cup_matches": {
+        "automation_ready": true,
+        "manual_report_ready": true,
+        "recommendation_count": 7,
+        "artifact_version": "v0_11"
+      },
+      "world_cup_futures": {
+        "automation_ready": true,
+        "manual_report_ready": true,
+        "recommendation_count": 6,
+        "artifact_version": "v0_13"
+      },
+      "world_cup_group_betting": {
+        "automation_ready": true,
+        "manual_report_ready": true,
+        "recommendation_count": 6,
+        "artifact_version": "v0_14"
+      },
+      "world_cup_australia_markets": {
+        "automation_ready": true,
+        "manual_report_ready": true,
+        "recommendation_count": 14,
+        "artifact_version": "v0_17"
+      },
+      "world_cup_team_futures_multi": {
+        "automation_ready": true,
+        "manual_report_ready": true,
+        "recommendation_count": 5,
+        "artifact_version": "v0_16"
+      }
+    },
+    "portfolio_automation_ready": true,
+    "automation_safety_ready": true,
+    "raw_refresh_ready": true,
+    "refresh_driver_ready": true,
+    "raw_refresh_succeeded": true,
+    "technical_automation_ready": true,
+    "private_output_mode": true,
+    "raw_refresh_enabled": true,
+    "raw_refresh_mode": "reuse_fresh",
+    "report_date": "04062026",
+    "report_timezone": "Australia/Sydney",
+    "previous_baseline_used": "previous_report_baseline_v0_11.json",
+    "previous_portfolio_baseline_used": "portfolio_report_baseline_v0_11.json",
+    "latest_baseline": "previous_report_baseline_latest.json",
+    "portfolio_daily_compare": "portfolio_daily_compare_v0_11.json",
+    "portfolio_daily_compare_latest": "portfolio_daily_compare_latest.json",
+    "portfolio_baseline": "portfolio_report_baseline_v0_11.json",
+    "portfolio_baseline_latest": "portfolio_report_baseline_latest.json",
+    "automation_user_authorized": false,
+    "automation_authorization": {
+      "authorized": false,
+      "allow_recurring": false,
+      "allow_auto_betting": false,
+      "cadence": "manual",
+      "approved_at": "",
+      "approved_by": "",
+      "scope": "report_generation_only",
+      "source": "config",
+      "config_file": "automation.toml",
+      "entry_authorized": false,
+      "blocking_reasons": [
+        "user has not authorized recurring automation"
+      ],
+      "warnings": []
+    },
+    "automation_entry_ready": false,
+    "ready_required_boards": "5/5",
+    "pdf_time_adjusted_new_exposure_aud": 100.0,
+    "time_adjusted_new_exposure_aud": 100.0,
+    "model_comparison_ready": true,
+    "model_comparison_match_count": 26,
+    "model_comparison_high_divergence_count": 14,
+    "report": "tab_fifa_world_cup_matches_v0_11_pipeline_report.md",
+    "portfolio_report": "tab_fifa_portfolio_readiness_v0_12.md",
+    "portfolio_gate": "portfolio_automation_gate_v0_12.json",
+    "private_pdf_available": false,
+    "private_pdf_path_omitted": true,
+    "pdf_output_copy": "04062026_20260604T135753Z-212e8e9a.pdf",
+    "pdf_run_copy": "04062026_20260604T135753Z-212e8e9a.pdf",
+    "bankroll_plan": "tab_fifa_bankroll_plan_04062026_20260604T135753Z-212e8e9a.json",
+    "bankroll_plan_run_copy": "tab_fifa_bankroll_plan_04062026_20260604T135753Z-212e8e9a.json",
+    "model_comparison_json": "tab_fifa_model_comparison_v0_1.json",
+    "model_comparison_report": "tab_fifa_model_comparison_v0_1.md",
+    "current_baseline": "previous_report_baseline_v0_11.json",
+    "safety_gate": "automation_safety_gate.json",
+    "raw_refresh_manifest": "raw_refresh_manifest_latest.json",
+    "raw_refresh_batch_manifest": "raw_refresh_batch_latest.json",
+    "raw_refresh_health": "raw_refresh_health_latest.json",
+    "raw_refresh_diagnostics": "raw_refresh_diagnostics_20260604T135753Z-212e8e9a.json",
+    "raw_refresh_diagnostics_latest": "raw_refresh_diagnostics_latest.json",
+    "automation_preflight": "automation_preflight_latest.json",
+    "report_database": "tab_fifa_reports.sqlite3",
+    "dashboard": "tab_fifa_dashboard_latest.html",
+    "dashboard_run_copy": "tab_fifa_dashboard_20260604T135753Z-212e8e9a.html",
+    "dashboard_data": "tab_fifa_dashboard_data_latest.json",
+    "dashboard_data_run_copy": "tab_fifa_dashboard_data_20260604T135753Z-212e8e9a.json",
+    "manifest": "daily_report_manifest_20260604T135753Z-212e8e9a.json",
+    "latest_manifest": "daily_report_manifest_latest.json",
+    "latest_commit": "latest_commit.json",
+    "dashboard_latest": "tab_fifa_dashboard_latest.html",
+    "dashboard_data_latest": "tab_fifa_dashboard_data_latest.json",
+    "report_database_summary": {
+      "db_path": "tab_fifa_reports.sqlite3",
+      "run_id": "20260604T135753Z-212e8e9a",
+      "board_count": 5,
+      "recommendation_count": 38,
+      "model_comparison_count": 26,
+      "visual_chart_count": 10,
+      "evidence_summary": {
+        "source_count": 20,
+        "source_ok_count": 19,
+        "audit_count": 14,
+        "audit_blocker_count": 0,
+        "decision_count": 38,
+        "buy_decision_count": 7,
+        "missing_data_count": 0,
+        "manual_review_count": 12
+      },
+      "artifact_count": 28,
+      "diff_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      }
+    },
+    "public_artifact_safety_ready": true,
+    "public_artifact_safety": {
+      "public_artifact_safety_ready": true,
+      "public_artifact_issue_count": 0,
+      "public_artifact_issues": [],
+      "blocking_reasons": []
+    },
+    "convenience_latest_publish": {
+      "ready": true,
+      "artifacts": {
+        "pdf_latest_copy": "04062026.pdf",
+        "downloads_pdf_copy": "04062026.pdf",
+        "bankroll_plan_latest": "tab_fifa_bankroll_plan_04062026.json",
+        "dashboard_latest": "tab_fifa_dashboard_latest.html",
+        "dashboard_data_latest": "tab_fifa_dashboard_data_latest.json",
+        "latest_baseline": "previous_report_baseline_latest.json",
+        "portfolio_baseline_latest": "portfolio_report_baseline_latest.json",
+        "portfolio_daily_compare_latest": "portfolio_daily_compare_latest.json"
+      },
+      "errors": []
+    },
+    "pdf_latest_copy": "04062026.pdf",
+    "downloads_pdf_copy": "04062026.pdf",
+    "bankroll_plan_latest": "tab_fifa_bankroll_plan_04062026.json"
+  },
+  "technical_automation_ready": true,
+  "automation_entry_ready": false,
+  "schema_version": 1
+}

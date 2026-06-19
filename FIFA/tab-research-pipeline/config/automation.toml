@@ -1,0 +1,11 @@
+# TAB FIFA local report automation authorization.
+# Default is intentionally disabled. Do not change this file to enable recurring
+# automation unless the user explicitly authorizes it.
+
+authorized = false
+allow_recurring = false
+allow_auto_betting = false
+cadence = "manual"
+approved_at = ""
+approved_by = ""
+scope = "report_generation_only"

@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T19:47:19.429271+00:00",
+  "refresh_id": "20260613T194716Z-provider-2fec0bef",
+  "scope": "matches",
+  "source_mode": "third_party_tab_labeled_api",
+  "target_board_ids": [
+    "world_cup_matches"
+  ],
+  "ignored_board_ids": [
+    "world_cup_australia_markets"
+  ],
+  "region_markets_ignored": true,
+  "request_usage": {
+    "provider_payload_count": 3,
+    "provider_error_count": 0,
+    "request_kind_counts": {
+      "odds": 1,
+      "event_markets": 1,
+      "event_odds": 1
+    },
+    "estimated_credit_cost": 7,
+    "reported_last_request_cost": 7,
+    "reported_requests_used_max": 299,
+    "reported_requests_remaining_min": 201,
+    "sports": [
+      "soccer_fifa_world_cup"
+    ],
+    "markets": [
+      "btts",
+      "double_chance",
+      "draw_no_bet",
+      "h2h",
+      "spreads",
+      "totals"
+    ]
+  },
+  "required_target_count": 1,
+  "staged_required_target_count": 1,
+  "provider_analysis_ready_target_count": 1,
+  "formal_publish_ready_target_count": 0,
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "full_automation_required_target_count": 4,
+  "full_automation_ready_target_count": 0,
+  "current_executable_new_stake_aud": 0,
+  "manual_tab_verification_required": true,
+  "manual_tab_verification_status": "pending",
+  "missing_required_boards": [],
+  "targets": [
+    {
+      "board_id": "world_cup_matches",
+      "name": "2026 World Cup Matches",
+      "raw_snapshot": "tab_fifa_matches_main_markets_raw_v0_9.json",
+      "provider_staged_path": "provider_raw/20260613T194716Z-provider-2fec0bef/tab_fifa_matches_main_markets_raw_v0_9.json",
+      "sha256": "1be18b77ee6efa62e32c2a3781898d64bbac329139657a85830bbfb5d2574364",
+      "raw_valid": false,
+      "validation_errors": [
+        "full core coverage 3/64 below 90% for Result, Double Chance, Handicap, Total Goals Over/Under, Both Teams to Score, Draw No Bet",
+        "186 market expansion errors remain"
+      ],
+      "provider_analysis_ready": true,
+      "provider_analysis_errors": [],
+      "provider_analysis_warnings": [],
+      "provider_analysis_coverage": {
+        "match_count": 64,
+        "result_market_count": 64,
+        "handicap_market_count": 46,
+        "total_ou_market_count": 51,
+        "team_total_ou_market_count": 0,
+        "primary_market_focus": [
+          "Result",
+          "Total Goals Over/Under",
+          "Team Total Goals Over/Under"
+        ],
+        "secondary_market_available": "Total Goals Over/Under"
+      },
+      "event_count": 64,
+      "market_coverage": {
+        "Result": 64,
+        "Both Teams to Score": 14,
+        "Double Chance": 11,
+        "Draw No Bet": 12,
+        "Handicap": 46,
+        "Total Goals Over/Under": 51
+      },
+      "tab_manual_verified": false,
+      "formal_publish_ready": false
+    }
+  ],
+  "blocking_reasons": [
+    "2026 World Cup Matches primary-market provider analysis is ready, but strict formal raw publish is still blocked."
+  ],
+  "next_safe_action": "优先刷新 Matches 主盘口；只对进入推荐下注候选的 Result、Total O/U、Team Total O/U 做 TAB 页面人工最终校验，校验 hash 匹配后才允许发布对应 raw。未验证前新增执行金额保持 AUD 0。"
+}

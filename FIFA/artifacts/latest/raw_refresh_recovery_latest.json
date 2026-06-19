@@ -1,0 +1,817 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T15:06:43.076823+10:00",
+  "mode": "raw_refresh_recovery_dashboard",
+  "purpose": "Raw Refresh 恢复 Dashboard：定位 TAB 公开盘口抓取失败、判断是否允许补跑、给出恢复顺序；只读抓取，不自动下注。",
+  "executive_status": {
+    "ready_to_backfill": false,
+    "status": "blocked",
+    "primary_blocker": "TAB live 当前未列出 Australia Markets / deep link 路由到 Matches",
+    "recommended_next_action": "重新发现 TAB Soccer live board list；若 Australia Markets 仍缺失，保持该板块 unavailable，不用旧盘口生成下注建议。"
+  },
+  "summary": {
+    "raw_ready": false,
+    "raw_status": "blocked",
+    "diagnostics_status": "failed",
+    "diagnostics_interrupted": false,
+    "ready_required_target_count": 0,
+    "required_target_count": 5,
+    "attempt_count": 6,
+    "board_failure_count": 1,
+    "continued_after_board_failure": true,
+    "staged_batch_manifest_skipped": true,
+    "access_denied_attempt_count": 0,
+    "route_mismatch_attempt_count": 1,
+    "headed_fallback_attempt_count": 0,
+    "headless_access_denied_attempt_count": 0,
+    "backfill_queue_count": 8,
+    "blocked_queue_count": 3,
+    "recovery_phase_count": 8,
+    "ready_phase_count": 4,
+    "next_retry_step_count": 2,
+    "live_discovery_status": "blocked",
+    "live_discovery_ready": true,
+    "live_discovery_quality_status": "ready",
+    "live_discovery_failed": false,
+    "live_discovery_listed_expected_count": 3,
+    "live_discovery_missing_expected_count": 2,
+    "live_discovery_observed_world_cup_link_count": 30,
+    "effective_board_scope_source": "current_discovery+partial_raw_success",
+    "effective_board_scope_last_success_fallback_used": false,
+    "effective_board_scope_last_success_fresh_within_sla": true,
+    "effective_board_scope_research_allowed_count": 4,
+    "effective_board_scope_unavailable_count": 1,
+    "effective_board_scope_retry_count": 0,
+    "effective_board_scope_listed_expected_count": 4,
+    "effective_board_scope_missing_expected_count": 1,
+    "partial_refresh_status": "partial_ready",
+    "partial_refresh_freshness_status": "fresh_research_only",
+    "partial_refresh_fresh_within_sla": true,
+    "partial_evidence_source": "raw_refresh_research_only_latest.json",
+    "partial_refresh_age_hours": 0.41,
+    "partial_refresh_sla_hours": 4.0,
+    "partial_refresh_successful_board_count": 4,
+    "partial_refresh_attempted_board_count": 5,
+    "partial_refresh_failed_board_count": 1,
+    "research_only_raw_status": "partial_ready_research_only",
+    "research_only_raw_successful_board_count": 4,
+    "research_only_raw_failed_board_count": 1,
+    "research_only_raw_attempt_warning_count": 0,
+    "board_recovery_matrix_count": 5,
+    "board_recovery_research_only_ready_count": 4,
+    "board_recovery_auto_retry_count": 0,
+    "board_recovery_match_repair_count": 0,
+    "board_recovery_unavailable_count": 1,
+    "board_recovery_validation_fix_count": 0,
+    "board_recovery_partial_coverage_count": 0,
+    "board_recovery_staged_validation_error_count": 0,
+    "board_recovery_manual_review_count": 0,
+    "matches_repair_validation_status": "passed",
+    "matches_repair_validation_passed": true,
+    "matches_repair_validation_match_count": 9,
+    "matches_repair_validation_market_count": 54,
+    "matches_repair_validation_error_count": 0
+  },
+  "phase_rows": [
+    {
+      "phase_id": "diagnose_access",
+      "title": "诊断 Access Denied / 板块错配 / stale raw",
+      "status": "ready",
+      "score": 1.0,
+      "evidence": "attempts=6；board_failures=1；continued_after_failure=True；access_denied=False；route_mismatch=True",
+      "next_action": "保留最近 raw_refresh_diagnostics_latest.json，用于判断是否是 TAB 访问状态、Chrome 授权、板块下架/改名或批次问题。"
+    },
+    {
+      "phase_id": "live_board_discovery",
+      "title": "发现 TAB Soccer live board list",
+      "status": "ready",
+      "score": 1.0,
+      "evidence": "listed=3/5；missing=2；quality=ready",
+      "next_action": "route mismatch 时先读取 live_board_discovery_latest.json，缺失板块进入 unavailable review queue。"
+    },
+    {
+      "phase_id": "effective_board_scope",
+      "title": "确认当前研究范围来源",
+      "status": "ready",
+      "score": 1.0,
+      "evidence": "scope=current_discovery+partial_raw_success；research=4/5；excluded=1；fallback=False；fallback_fresh=True",
+      "next_action": "当前 discovery 失败时，只允许使用 4 小时内 last-success 范围生成 research-only 诊断；不能解锁新增下注。"
+    },
+    {
+      "phase_id": "partial_research_refresh",
+      "title": "记录 partial raw freshness 研究证据",
+      "status": "ready",
+      "score": 1.0,
+      "evidence": "status=partial_ready；freshness=fresh_research_only；success=4/5；age=0.41h",
+      "next_action": "只把成功板块用于研究诊断；全量 raw/private/preflight 未通过时，新增执行金额仍为 AUD 0。"
+    },
+    {
+      "phase_id": "headed_public_refresh",
+      "title": "重新执行 headed 只读公开盘口刷新",
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "raw_ready=False；targets=0/5",
+      "next_action": "点击本地入口“刷新公开盘口”；Matches 分块遇到 Access Denied 时会自动触发 headed fallback；成功前不触发补跑。"
+    },
+    {
+      "phase_id": "batch_validation",
+      "title": "验证 5 个 required board 同批次",
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "batch_ready=True；manifest_ready=True",
+      "next_action": "确认 5 个 raw 都来自同一 refresh_id，并通过 batch manifest sha256 检查。"
+    },
+    {
+      "phase_id": "private_position",
+      "title": "更新当日私有持仓快照",
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "private_position_ready=False",
+      "next_action": "raw 恢复后启动只读持仓读取；用真实余额和已下注结果更新预算。"
+    },
+    {
+      "phase_id": "safe_backfill",
+      "title": "执行安全补跑队列",
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "queue=8；last_backfill=blocked_by_raw_refresh",
+      "next_action": "仅生成 run-scoped PDF，不发布 latest_commit；补齐每日 4 次分析和日报缺口。"
+    }
+  ],
+  "target_rows": [
+    {
+      "board_id": "world_cup_matches",
+      "name": "2026 World Cup Matches",
+      "status": "blocked",
+      "raw_fresh": false,
+      "raw_valid": true,
+      "driver_configured": true,
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "raw_age_hours": 173.586
+    },
+    {
+      "board_id": "world_cup_futures",
+      "name": "2026 World Cup Futures",
+      "status": "blocked",
+      "raw_fresh": false,
+      "raw_valid": true,
+      "driver_configured": true,
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "raw_age_hours": 173.575
+    },
+    {
+      "board_id": "world_cup_group_betting",
+      "name": "2026 World Cup Group Betting",
+      "status": "blocked",
+      "raw_fresh": false,
+      "raw_valid": true,
+      "driver_configured": true,
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "raw_age_hours": 173.564
+    },
+    {
+      "board_id": "world_cup_australia_markets",
+      "name": "2026 World Cup Australia Markets",
+      "status": "blocked",
+      "raw_fresh": false,
+      "raw_valid": true,
+      "driver_configured": true,
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "raw_age_hours": 173.55
+    },
+    {
+      "board_id": "world_cup_team_futures_multi",
+      "name": "2026 World Cup Team Futures Multi",
+      "status": "blocked",
+      "raw_fresh": false,
+      "raw_valid": true,
+      "driver_configured": true,
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "raw_age_hours": 173.54
+    }
+  ],
+  "partial_research_refresh": {
+    "status": "partial_ready",
+    "freshness_status": "fresh_research_only",
+    "fresh_within_sla": true,
+    "freshness_sla_hours": 4.0,
+    "generated_at": "2026-06-13T04:41:49.602377+00:00",
+    "age_hours": 0.41,
+    "research_only_allowed": true,
+    "current_research_only_allowed": true,
+    "historical_research_evidence_available": true,
+    "execution_allowed": false,
+    "attempted_board_count": 5,
+    "successful_board_count": 4,
+    "failed_board_count": 1,
+    "successful_board_names": [
+      "2026 World Cup Matches",
+      "2026 World Cup Futures",
+      "2026 World Cup Group Betting",
+      "2026 World Cup Team Futures Multi"
+    ],
+    "failed_board_names": [
+      "2026 World Cup Australia Markets"
+    ],
+    "note": "来自 raw_refresh_research_only_latest.json；只用于当日研究诊断，不允许下注执行。"
+  },
+  "matches_repair_validation": {
+    "schema_version": 1,
+    "generated_at": "2026-06-13T04:32:41.951609+00:00",
+    "source": "playwright_read_only_match_detail_chunk_validation",
+    "status": "passed",
+    "passed": true,
+    "board_id": "matches",
+    "refresh_id": "prelive-test",
+    "scope": "pre-raw live discovery targets, matches-only staging validation",
+    "trigger": "pre_raw_live_board_discovery refreshed targets before raw refresh; previous stale target USA v Paraguay excluded",
+    "read_only_guard": "temporary staging only; market header expansion only; no odds click; no wager state mutation",
+    "match_count": 9,
+    "market_count": 54,
+    "error_count": 0,
+    "validated_matches": [
+      "Qatar v Switzerland",
+      "Brazil v Morocco",
+      "Haiti v Scotland",
+      "Australia v Turkiye",
+      "Germany v Curacao",
+      "Netherlands v Japan",
+      "Cote d Ivoire v Ecuador",
+      "Sweden v Tunisia"
+    ],
+    "evidence": "refresh_matches_board_to_staging temporary run returned valid=True for 9 live targets and 54 captured core markets."
+  },
+  "board_recovery_matrix": [
+    {
+      "board_id": "world_cup_matches",
+      "refresh_board_id": "matches",
+      "name": "2026 World Cup Matches",
+      "priority": 1,
+      "live_nav_status": "listed",
+      "matched_link_count": 20,
+      "raw_status": "blocked",
+      "raw_fresh": false,
+      "raw_valid": true,
+      "raw_age_hours": 173.586,
+      "attempt_count": 2,
+      "last_exit_code": 0,
+      "route_mismatch": false,
+      "access_denied": false,
+      "board_failure": false,
+      "staged_validation_error_count": 0,
+      "staged_validation_errors": [],
+      "repair_validation_status": "passed",
+      "repair_validation_passed": true,
+      "repair_validation_match_count": 9,
+      "repair_validation_market_count": 54,
+      "repair_validation_error_count": 0,
+      "partial_result": "partial_success",
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "automation_action": "research_only_ready",
+      "requires_user_presence": false,
+      "safe_to_retry_now": false,
+      "success_gate": "research-only raw 保持 4小时内 fresh/valid；正式执行仍等待 5/5 raw、私有持仓和发布门禁。",
+      "next_action": "纳入 research-only 诊断；继续等待完整 raw gate，不生成新增执行下注。",
+      "evidence": "live=listed；raw=blocked；fresh=False；valid=True；last_exit=0；repair_validation=passed/9 matches/54 markets/errors 0；blocker=stale_raw"
+    },
+    {
+      "board_id": "world_cup_futures",
+      "refresh_board_id": "futures",
+      "name": "2026 World Cup Futures",
+      "priority": 2,
+      "live_nav_status": "listed",
+      "matched_link_count": 1,
+      "raw_status": "blocked",
+      "raw_fresh": false,
+      "raw_valid": true,
+      "raw_age_hours": 173.575,
+      "attempt_count": 1,
+      "last_exit_code": 0,
+      "route_mismatch": false,
+      "access_denied": false,
+      "board_failure": false,
+      "staged_validation_error_count": 0,
+      "staged_validation_errors": [],
+      "repair_validation_status": "missing",
+      "repair_validation_passed": false,
+      "repair_validation_match_count": 0,
+      "repair_validation_market_count": 0,
+      "repair_validation_error_count": 0,
+      "partial_result": "partial_success",
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "automation_action": "research_only_ready",
+      "requires_user_presence": false,
+      "safe_to_retry_now": false,
+      "success_gate": "research-only raw 保持 4小时内 fresh/valid；正式执行仍等待 5/5 raw、私有持仓和发布门禁。",
+      "next_action": "纳入 research-only 诊断；继续等待完整 raw gate，不生成新增执行下注。",
+      "evidence": "live=listed；raw=blocked；fresh=False；valid=True；last_exit=0；blocker=stale_raw"
+    },
+    {
+      "board_id": "world_cup_group_betting",
+      "refresh_board_id": "group_betting",
+      "name": "2026 World Cup Group Betting",
+      "priority": 3,
+      "live_nav_status": "listed",
+      "matched_link_count": 19,
+      "raw_status": "blocked",
+      "raw_fresh": false,
+      "raw_valid": true,
+      "raw_age_hours": 173.564,
+      "attempt_count": 1,
+      "last_exit_code": 0,
+      "route_mismatch": false,
+      "access_denied": false,
+      "board_failure": false,
+      "staged_validation_error_count": 0,
+      "staged_validation_errors": [],
+      "repair_validation_status": "missing",
+      "repair_validation_passed": false,
+      "repair_validation_match_count": 0,
+      "repair_validation_market_count": 0,
+      "repair_validation_error_count": 0,
+      "partial_result": "partial_success",
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "automation_action": "research_only_ready",
+      "requires_user_presence": false,
+      "safe_to_retry_now": false,
+      "success_gate": "research-only raw 保持 4小时内 fresh/valid；正式执行仍等待 5/5 raw、私有持仓和发布门禁。",
+      "next_action": "纳入 research-only 诊断；继续等待完整 raw gate，不生成新增执行下注。",
+      "evidence": "live=listed；raw=blocked；fresh=False；valid=True；last_exit=0；blocker=stale_raw"
+    },
+    {
+      "board_id": "world_cup_australia_markets",
+      "refresh_board_id": "australia_markets",
+      "name": "2026 World Cup Australia Markets",
+      "priority": 4,
+      "live_nav_status": "missing_from_live_nav",
+      "matched_link_count": 0,
+      "raw_status": "blocked",
+      "raw_fresh": false,
+      "raw_valid": true,
+      "raw_age_hours": 173.55,
+      "attempt_count": 1,
+      "last_exit_code": 1,
+      "route_mismatch": true,
+      "access_denied": false,
+      "board_failure": true,
+      "staged_validation_error_count": 0,
+      "staged_validation_errors": [],
+      "repair_validation_status": "missing",
+      "repair_validation_passed": false,
+      "repair_validation_match_count": 0,
+      "repair_validation_market_count": 0,
+      "repair_validation_error_count": 0,
+      "partial_result": "partial_failed",
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "automation_action": "mark_unavailable_review",
+      "requires_user_presence": false,
+      "safe_to_retry_now": false,
+      "success_gate": "TAB live nav 重新列出该板块，且 deep link resolves 到预期 competition。",
+      "next_action": "保持 unavailable review queue；不使用旧盘口，不生成该板块当前执行建议。",
+      "evidence": "live=missing_from_live_nav；raw=blocked；fresh=False；valid=True；last_exit=1；failure=australia_markets refresh failed after 1 attempt(s): {   \"error\": \"2026 World Cup Austr...；blocker=stale_raw"
+    },
+    {
+      "board_id": "world_cup_team_futures_multi",
+      "refresh_board_id": "team_futures_multi",
+      "name": "2026 World Cup Team Futures Multi",
+      "priority": 5,
+      "live_nav_status": "missing_from_live_nav",
+      "matched_link_count": 0,
+      "raw_status": "blocked",
+      "raw_fresh": false,
+      "raw_valid": true,
+      "raw_age_hours": 173.54,
+      "attempt_count": 1,
+      "last_exit_code": 0,
+      "route_mismatch": false,
+      "access_denied": false,
+      "board_failure": false,
+      "staged_validation_error_count": 0,
+      "staged_validation_errors": [],
+      "repair_validation_status": "missing",
+      "repair_validation_passed": false,
+      "repair_validation_match_count": 0,
+      "repair_validation_market_count": 0,
+      "repair_validation_error_count": 0,
+      "partial_result": "partial_success",
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "automation_action": "research_only_ready",
+      "requires_user_presence": false,
+      "safe_to_retry_now": false,
+      "success_gate": "research-only raw 保持 4小时内 fresh/valid；正式执行仍等待 5/5 raw、私有持仓和发布门禁。",
+      "next_action": "纳入 research-only 诊断；继续等待完整 raw gate，不生成新增执行下注。",
+      "evidence": "live=missing_from_live_nav；raw=blocked；fresh=False；valid=True；last_exit=0；blocker=stale_raw"
+    }
+  ],
+  "attempt_rows": [
+    {
+      "board_id": "matches",
+      "attempt": 1,
+      "exit_code": 0,
+      "access_denied": false,
+      "route_mismatch": false,
+      "headed_fallback": false,
+      "chunk_offset": 0,
+      "chunk_limit": 5,
+      "chunk_quality_errors": [],
+      "repair_quality_errors": [],
+      "repair_match": "",
+      "repair_success": false,
+      "error": ""
+    },
+    {
+      "board_id": "matches",
+      "attempt": 2,
+      "exit_code": 0,
+      "access_denied": false,
+      "route_mismatch": false,
+      "headed_fallback": false,
+      "chunk_offset": 5,
+      "chunk_limit": 4,
+      "chunk_quality_errors": [],
+      "repair_quality_errors": [],
+      "repair_match": "",
+      "repair_success": false,
+      "error": ""
+    },
+    {
+      "board_id": "futures",
+      "attempt": 1,
+      "exit_code": 0,
+      "access_denied": false,
+      "route_mismatch": false,
+      "headed_fallback": false,
+      "chunk_offset": "",
+      "chunk_limit": "",
+      "chunk_quality_errors": [],
+      "repair_quality_errors": [],
+      "repair_match": "",
+      "repair_success": false,
+      "error": ""
+    },
+    {
+      "board_id": "group_betting",
+      "attempt": 1,
+      "exit_code": 0,
+      "access_denied": false,
+      "route_mismatch": false,
+      "headed_fallback": false,
+      "chunk_offset": "",
+      "chunk_limit": "",
+      "chunk_quality_errors": [],
+      "repair_quality_errors": [],
+      "repair_match": "",
+      "repair_success": false,
+      "error": ""
+    },
+    {
+      "board_id": "australia_markets",
+      "attempt": 1,
+      "exit_code": 1,
+      "access_denied": false,
+      "route_mismatch": true,
+      "headed_fallback": false,
+      "chunk_offset": "",
+      "chunk_limit": "",
+      "chunk_quality_errors": [],
+      "repair_quality_errors": [],
+      "repair_match": "",
+      "repair_success": false,
+      "error": "{   \"error\": \"2026 World Cup Australia Markets route mismatch: landed on 2026 World Cup Matches; TAB live soccer nav may not list this board\" }"
+    },
+    {
+      "board_id": "team_futures_multi",
+      "attempt": 1,
+      "exit_code": 0,
+      "access_denied": false,
+      "route_mismatch": false,
+      "headed_fallback": false,
+      "chunk_offset": "",
+      "chunk_limit": "",
+      "chunk_quality_errors": [],
+      "repair_quality_errors": [],
+      "repair_match": "",
+      "repair_success": false,
+      "error": ""
+    }
+  ],
+  "board_failure_rows": [
+    {
+      "rank": 1,
+      "board_id": "australia_markets",
+      "output": "tab_fifa_world_cup_australia_markets_expanded_raw_v0_17.json",
+      "error": "australia_markets refresh failed after 1 attempt(s): {   \"error\": \"2026 World Cup Australia Markets route mismatch: landed on 2026 World Cup Matches; TAB live soccer nav may not list this board\" }"
+    }
+  ],
+  "next_retry_plan": [
+    {
+      "rank": 1,
+      "scope": "2026 World Cup Australia Markets",
+      "trigger": "live board route mismatch / board not listed",
+      "operation": "重新发现 TAB Soccer live board list；若仍不在导航中，保持该板块 unavailable，不用旧盘口生成下注建议；discovery listed=3/5, missing=2",
+      "mode": "live_board_discovery_review",
+      "chunk": "",
+      "requires_user_presence": false,
+      "success_gate": "board URL resolves to Australia Markets and 14 expected markets priced"
+    },
+    {
+      "rank": 2,
+      "scope": "Backfill queue",
+      "trigger": "raw_refresh_ready=true",
+      "operation": "解锁 safe_no_latest_publish 补跑，不推进 latest_commit",
+      "mode": "safe_no_latest_publish",
+      "chunk": "",
+      "requires_user_presence": false,
+      "success_gate": "补跑 run-scoped PDF 生成并写入 active_timeline_audits"
+    }
+  ],
+  "backfill_queue_preview": [
+    {
+      "rank": 1,
+      "report_date": "07062026",
+      "display_date": "07/06/2026",
+      "priority_score": 160,
+      "reason": "有效分析 0/4；Downloads 正式日报缺失",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish"
+    },
+    {
+      "rank": 2,
+      "report_date": "08062026",
+      "display_date": "08/06/2026",
+      "priority_score": 160,
+      "reason": "有效分析 0/4；Downloads 正式日报缺失",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish"
+    },
+    {
+      "rank": 3,
+      "report_date": "09062026",
+      "display_date": "09/06/2026",
+      "priority_score": 160,
+      "reason": "有效分析 0/4；Downloads 正式日报缺失",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish"
+    },
+    {
+      "rank": 4,
+      "report_date": "10062026",
+      "display_date": "10/06/2026",
+      "priority_score": 160,
+      "reason": "有效分析 0/4；Downloads 正式日报缺失",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish"
+    },
+    {
+      "rank": 5,
+      "report_date": "11062026",
+      "display_date": "11/06/2026",
+      "priority_score": 160,
+      "reason": "有效分析 0/4；Downloads 正式日报缺失",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish"
+    },
+    {
+      "rank": 6,
+      "report_date": "06062026",
+      "display_date": "06/06/2026",
+      "priority_score": 75,
+      "reason": "Downloads 正式日报缺失",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish"
+    },
+    {
+      "rank": 7,
+      "report_date": "12062026",
+      "display_date": "12/06/2026",
+      "priority_score": 75,
+      "reason": "Downloads 正式日报缺失",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish"
+    }
+  ],
+  "backfill_guard": {
+    "allowed_now": false,
+    "current_status": "blocked_by_raw_refresh",
+    "requested_count": 0,
+    "completed_count": 0,
+    "blocked_queue_count": 3,
+    "guard_reason": "raw_refresh_not_ready",
+    "safe_backfill_mode": "safe_no_latest_publish",
+    "fail_closed_rule": "raw 未就绪时不执行历史补跑，不发布 latest_commit。"
+  },
+  "source_artifacts": {
+    "raw_refresh_health": "raw_refresh_health_latest.json",
+    "raw_refresh_diagnostics": "raw_refresh_diagnostics_latest.json",
+    "raw_refresh_research_only": "raw_refresh_research_only_latest.json",
+    "active_timeline": "active_timeline_latest.json",
+    "active_backfill": "active_backfill_latest.json",
+    "automation_readiness": "automation_readiness_latest.json",
+    "live_board_discovery": "live_board_discovery_latest.json",
+    "available_board_strategy": "available_board_strategy_latest.json",
+    "matches_repair_validation": "matches_repair_validation_latest.json"
+  },
+  "truthfulness_note": "公开盘口 raw 未就绪时，补跑必须保持 blocked_by_raw_refresh；不能用旧盘口生成可执行下注日报。",
+  "old_new_compare": {
+    "status": "compared_with_previous_artifact",
+    "previous_generated_at": "2026-06-13T15:02:58.945285+10:00",
+    "metric_count": 20,
+    "changed_count": 0,
+    "rows": [
+      {
+        "metric": "status",
+        "path": "executive_status.status",
+        "current": "blocked",
+        "previous": "blocked",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "ready_to_backfill",
+        "path": "executive_status.ready_to_backfill",
+        "current": "false",
+        "previous": "false",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "raw_ready",
+        "path": "summary.raw_ready",
+        "current": "false",
+        "previous": "false",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "ready_required_target_count",
+        "path": "summary.ready_required_target_count",
+        "current": "0",
+        "previous": "0",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "required_target_count",
+        "path": "summary.required_target_count",
+        "current": "5",
+        "previous": "5",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "board_failure_count",
+        "path": "summary.board_failure_count",
+        "current": "1",
+        "previous": "1",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "continued_after_board_failure",
+        "path": "summary.continued_after_board_failure",
+        "current": "true",
+        "previous": "true",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "access_denied_attempt_count",
+        "path": "summary.access_denied_attempt_count",
+        "current": "0",
+        "previous": "0",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "route_mismatch_attempt_count",
+        "path": "summary.route_mismatch_attempt_count",
+        "current": "1",
+        "previous": "1",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "backfill_queue_count",
+        "path": "summary.backfill_queue_count",
+        "current": "8",
+        "previous": "8",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "live_discovery_missing_expected_count",
+        "path": "summary.live_discovery_missing_expected_count",
+        "current": "2",
+        "previous": "2",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "effective_board_scope_source",
+        "path": "summary.effective_board_scope_source",
+        "current": "current_discovery+partial_raw_success",
+        "previous": "current_discovery+partial_raw_success",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "effective_board_scope_research_allowed_count",
+        "path": "summary.effective_board_scope_research_allowed_count",
+        "current": "4",
+        "previous": "4",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "effective_board_scope_unavailable_count",
+        "path": "summary.effective_board_scope_unavailable_count",
+        "current": "1",
+        "previous": "1",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "partial_refresh_successful_board_count",
+        "path": "summary.partial_refresh_successful_board_count",
+        "current": "4",
+        "previous": "4",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "partial_refresh_freshness_status",
+        "path": "summary.partial_refresh_freshness_status",
+        "current": "fresh_research_only",
+        "previous": "fresh_research_only",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "board_recovery_research_only_ready_count",
+        "path": "summary.board_recovery_research_only_ready_count",
+        "current": "4",
+        "previous": "4",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "board_recovery_match_repair_count",
+        "path": "summary.board_recovery_match_repair_count",
+        "current": "0",
+        "previous": "0",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "matches_repair_validation_status",
+        "path": "summary.matches_repair_validation_status",
+        "current": "passed",
+        "previous": "passed",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "board_recovery_partial_coverage_count",
+        "path": "summary.board_recovery_partial_coverage_count",
+        "current": "0",
+        "previous": "0",
+        "delta": "0",
+        "changed": false
+      }
+    ],
+    "summary": "0/20 个关键指标发生变化。"
+  },
+  "artifacts": {
+    "json": "raw_refresh_recovery_latest.json",
+    "markdown": "raw_refresh_recovery_latest.md",
+    "pdf": "raw_refresh_recovery_latest.pdf",
+    "pdf_summary": {
+      "path": "raw_refresh_recovery_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 6,
+      "detail_row_count": 8,
+      "extra_table_count": 8,
+      "extra_detail_row_count": 58
+    }
+  }
+}

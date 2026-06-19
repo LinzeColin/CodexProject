@@ -1,0 +1,877 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14T05:52:49.866262+10:00",
+  "mode": "provider_fallback_verification",
+  "status": "provider_blocked_manual_verification_required",
+  "scope": "matches",
+  "refresh_id": "20260613T194716Z-provider-2fec0bef",
+  "source_provider_status": "in_progress",
+  "provider_blocker_code": "provider_refresh_failed",
+  "queue_count": 64,
+  "top_priority_count": 51,
+  "manual_verification_queue": [
+    {
+      "event_id": "26634922d3f78c146440816023e40de8",
+      "match": "Qatar v Switzerland",
+      "commence_time": "2026-06-13T19:04:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Double Chance",
+        "Draw No Bet",
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 1
+    },
+    {
+      "event_id": "f6c8748a16516e0998f95de14235432a",
+      "match": "Brazil v Morocco",
+      "commence_time": "2026-06-13T22:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Double Chance",
+        "Draw No Bet",
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 2
+    },
+    {
+      "event_id": "5ae41a06735c926eeb7f74006933adce",
+      "match": "Haiti v Scotland",
+      "commence_time": "2026-06-14T01:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Double Chance",
+        "Draw No Bet",
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 3
+    },
+    {
+      "event_id": "564084f52cc9f1abcc18187c168a7cdc",
+      "match": "Australia v Turkey",
+      "commence_time": "2026-06-14T04:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Double Chance",
+        "Draw No Bet",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 4
+    },
+    {
+      "event_id": "d79edbd6aaeb578d33e313446b18d333",
+      "match": "Germany v Curaçao",
+      "commence_time": "2026-06-14T17:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 5
+    },
+    {
+      "event_id": "32ec06abda2398ac41501c86eb9aa376",
+      "match": "Netherlands v Japan",
+      "commence_time": "2026-06-14T20:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Double Chance",
+        "Draw No Bet",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 6
+    },
+    {
+      "event_id": "05752bb341e197001387b64f3a06b9b2",
+      "match": "Ivory Coast v Ecuador",
+      "commence_time": "2026-06-14T23:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Draw No Bet",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 7
+    },
+    {
+      "event_id": "b55f9569de3f4d731bc5537ff5ff43e4",
+      "match": "Sweden v Tunisia",
+      "commence_time": "2026-06-15T02:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Double Chance",
+        "Draw No Bet",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 8
+    },
+    {
+      "event_id": "c54f00b11925751d2b62988775c6c239",
+      "match": "Spain v Cape Verde",
+      "commence_time": "2026-06-15T16:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 9
+    },
+    {
+      "event_id": "fbfb95c62003fd6d828b309f96ee1f9b",
+      "match": "Belgium v Egypt",
+      "commence_time": "2026-06-15T19:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Double Chance",
+        "Draw No Bet",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 10
+    },
+    {
+      "event_id": "64b91c5f2db61c7358a4f05459e83c52",
+      "match": "Saudi Arabia v Uruguay",
+      "commence_time": "2026-06-15T22:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Double Chance",
+        "Draw No Bet",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 11
+    },
+    {
+      "event_id": "ec51b9c44ad5e34552f3ab53f7262813",
+      "match": "Iran v New Zealand",
+      "commence_time": "2026-06-16T01:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Double Chance",
+        "Draw No Bet",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 12
+    },
+    {
+      "event_id": "73a4fcd14cc9766b9b9bfd50b8ca153a",
+      "match": "France v Senegal",
+      "commence_time": "2026-06-16T19:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Double Chance",
+        "Draw No Bet",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 13
+    },
+    {
+      "event_id": "4d4f2b9b78182b557d4fbf8dcf4f4af2",
+      "match": "Iraq v Norway",
+      "commence_time": "2026-06-16T22:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Both Teams to Score",
+        "Double Chance",
+        "Draw No Bet",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 14
+    },
+    {
+      "event_id": "f31b2ee9e1cc6f7e641467f8237eaa21",
+      "match": "Argentina v Algeria",
+      "commence_time": "2026-06-17T01:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 15
+    },
+    {
+      "event_id": "25161cf6cf0cd9be17ae2e7e224a1f45",
+      "match": "Austria v Jordan",
+      "commence_time": "2026-06-17T04:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 16
+    },
+    {
+      "event_id": "6cc871c121a1869b4612d3fb22fa9d55",
+      "match": "Portugal v DR Congo",
+      "commence_time": "2026-06-17T17:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 17
+    },
+    {
+      "event_id": "689096c8cd7e2753b9fec95321943c5d",
+      "match": "England v Croatia",
+      "commence_time": "2026-06-17T20:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 18
+    },
+    {
+      "event_id": "87afdb85c977b451e1c00f5e3e632601",
+      "match": "Ghana v Panama",
+      "commence_time": "2026-06-17T23:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 19
+    },
+    {
+      "event_id": "22083e7a8e5362c711bc05c1e1319a1f",
+      "match": "Uzbekistan v Colombia",
+      "commence_time": "2026-06-18T02:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 20
+    },
+    {
+      "event_id": "66ebb9e3f949caded535d97ce686ca09",
+      "match": "Czech Republic v South Africa",
+      "commence_time": "2026-06-18T16:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 21
+    },
+    {
+      "event_id": "0f2aeae6ac8e77223848d23a4ca86b0d",
+      "match": "Mexico v South Korea",
+      "commence_time": "2026-06-19T01:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 70,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 22
+    },
+    {
+      "event_id": "065b3573e875f8d23803357f73e5b99e",
+      "match": "USA v Australia",
+      "commence_time": "2026-06-19T19:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 23
+    },
+    {
+      "event_id": "4cd769aa7bae0ad9762bd69b80ef2903",
+      "match": "Scotland v Morocco",
+      "commence_time": "2026-06-19T22:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 24
+    },
+    {
+      "event_id": "ef0f74a991d3e35798ae5af77667bce1",
+      "match": "Brazil v Haiti",
+      "commence_time": "2026-06-20T01:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 25
+    },
+    {
+      "event_id": "f955d4b3395ce6e3b5ac1031ca52ca4e",
+      "match": "Turkey v Paraguay",
+      "commence_time": "2026-06-20T03:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 26
+    },
+    {
+      "event_id": "4f0c518545b0096c68326daf25bffc1e",
+      "match": "Netherlands v Sweden",
+      "commence_time": "2026-06-20T17:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 27
+    },
+    {
+      "event_id": "f1ab0f69832972a329243522ceaa7804",
+      "match": "Germany v Ivory Coast",
+      "commence_time": "2026-06-20T20:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 28
+    },
+    {
+      "event_id": "681895f294b670b4c7b14495dfb583bc",
+      "match": "Ecuador v Curaçao",
+      "commence_time": "2026-06-21T00:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 29
+    },
+    {
+      "event_id": "dfc5202cf1b8ae002cf952cd04f235b9",
+      "match": "Tunisia v Japan",
+      "commence_time": "2026-06-21T04:00:00Z",
+      "missing_market": "Team Total Goals Over/Under",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "priority_score": 85,
+      "priority_tier": "high",
+      "verification_scope": "只校验 Team Total O/U；如果该场 Total O/U 也缺失，则同步记录 Total O/U 是否存在。",
+      "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+      "required_manual_fields": [
+        "tab_match_name",
+        "tab_market_name",
+        "selection_name",
+        "line",
+        "decimal_odds",
+        "observed_at_aest",
+        "operator_initials",
+        "evidence_note_or_screenshot_ref"
+      ],
+      "post_verification_gate": "人工记录后只进入 provider_tab_final_verification hash gate；未通过前 stake 仍为 AUD 0。",
+      "rank": 30
+    }
+  ],
+  "manual_verification_contract": {
+    "allowed_actions": [
+      "用户或人工操作员打开 TAB 页面读取盘口",
+      "只记录候选比赛的 Team Total O/U 盘口、选择、line、decimal odds、观察时间和证据备注",
+      "将人工记录写入后续 verification/import 文件，再走 hash gate"
+    ],
+    "forbidden_actions": [
+      "自动登录 TAB",
+      "自动点击赔率",
+      "自动加入 下注单",
+      "自动下注",
+      "绕过 CAPTCHA、Cloudflare、browser signature 或访问控制"
+    ],
+    "publish_gate": "provider_tab_final_verification refresh_id + board_id + sha256 匹配后才允许进入 formal raw publish；否则只作为研究证据。"
+  },
+  "recommended_next_action": "优先校验 high tier 候选；只记录盘口数据，不执行下注。",
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "current_executable_new_stake_aud": 0,
+  "truthfulness_note": "该队列只把 provider 无法覆盖的盘口转成人工校验任务；不自动登录 TAB、不点击赔率、不加入 下注单、不发布 formal raw，也不生成新增可执行下注金额。",
+  "artifacts": {
+    "json": "provider_fallback_verification_latest.json",
+    "markdown": "provider_fallback_verification_latest.md",
+    "pdf": "provider_fallback_verification_latest.pdf",
+    "pdf_summary": {
+      "path": "provider_fallback_verification_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 1,
+      "detail_row_count": 18,
+      "extra_table_count": 0,
+      "extra_detail_row_count": 0
+    }
+  }
+}

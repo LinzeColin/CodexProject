@@ -1,0 +1,777 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T14:45:04.949985+10:00",
+  "snapshot_id": "report-evolution-2026-06-13T144504-949985-1000",
+  "mode": "report_evolution_dashboard",
+  "purpose": "把日报 diff、报告目录快照、推荐操作变化、策略表现变化和产品完成度变化合并成跨报告族新旧变化总控台；用于 automation 前的报告质量和决策闭环审计。",
+  "executive_status": {
+    "status": "tracking_ready",
+    "evolution_score": 1.0,
+    "current_action": "继续生成并比对每次日报和报告族；raw/private 未通过时只做研究复盘，不发布新增可执行下注。",
+    "primary_gap": "raw/private/preflight 仍未全部恢复",
+    "recommended_next_action": "保持该 Dashboard 随每日报告生成；raw/private/preflight 通过前继续 fail-closed。"
+  },
+  "summary": {
+    "latest_report_date": "04062026",
+    "latest_status": "ready_for_manual_report",
+    "report_diff_count": 20,
+    "latest_diff_changed_count": 0,
+    "latest_diff_exposure_change_aud": 0.0,
+    "current_report_family_count": 21,
+    "artifact_ready_count": 21,
+    "artifact_review_count": 0,
+    "old_new_compare_count": 21,
+    "automation_view_count": 21,
+    "github_reference_count": 11,
+    "catalog_compare_status": "compared",
+    "catalog_changed_report_count": 1,
+    "catalog_report_count_delta": 0,
+    "signal_count": 3,
+    "evolution_score": 1.0
+  },
+  "report_diff_rows": [
+    {
+      "run_id": "20260613T043303Z-593b5282",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260613T040114Z-51bf2e2a",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260613T024632Z-3914a473",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260613T022432Z-80387039",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260613T015950Z-0f7dad26",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260613T014702Z-e40094b3",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260613T012612Z-60be1ce1",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260612T213854Z-63a3b9ff",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260612T201040Z-5be949bd",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260612T131829Z-d6ef19bc",
+      "report_date": "12062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260612T121732Z-2323d929",
+      "report_date": "12062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260612T073419Z-4122a953",
+      "report_date": "12062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260612T071418Z-351cc74d",
+      "report_date": "12062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260612T045002Z-1866f370",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260606T024653Z-69fb9511",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260605T232012Z-bad22171",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260605T225259Z-be7638ce",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260605T220116Z-ac437e5b",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260605T213802Z-18810b47",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    },
+    {
+      "run_id": "20260605T195704Z-d370cd95",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "added_count": 0,
+      "removed_count": 0,
+      "changed_count": 0,
+      "retained_count": 38,
+      "exposure_change_aud": 0.0
+    }
+  ],
+  "catalog_compare": {
+    "status": "compared",
+    "current_snapshot_id": "report-visual-inventory-2026-06-13T144504-599834-1000",
+    "previous_snapshot_id": "report-visual-inventory-2026-06-13T143803-813702-1000",
+    "current_generated_at": "2026-06-13T14:45:04.599834+10:00",
+    "previous_generated_at": "2026-06-13T14:38:03.813702+10:00",
+    "current_report_count": 21,
+    "previous_report_count": 21,
+    "report_count_delta": 0,
+    "average_score_delta": 0.0,
+    "changed_report_count": 1,
+    "new_report_ids": [],
+    "degraded_report_ids": [],
+    "rows": [
+      {
+        "report_id": "active_timeline",
+        "name": "主动测试时间线",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "automation_candidate",
+        "name": "自动化候选配置",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "automation_doctor",
+        "name": "Automation Doctor",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "automation_maturity",
+        "name": "Automation 成熟度验收",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "automation_readiness",
+        "name": "自动化就绪审计",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": -2,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "available_board_strategy",
+        "name": "可用板块策略",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "dashboard",
+        "name": "本地业务 Dashboard",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "fixture_sanity",
+        "name": "公开赛程校验",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "goal_traceability",
+        "name": "目标验收追踪",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "live_board_discovery",
+        "name": "TAB Live 板块发现",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "model_comparison",
+        "name": "开源模型对比",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "model_divergence_review",
+        "name": "模型分歧复核 Dashboard",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "position_monitor",
+        "name": "持仓监控",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "product_readiness",
+        "name": "产品完成度 Dashboard",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "raw_refresh_recovery",
+        "name": "Raw 恢复与补跑控制台",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "recommendation_operations",
+        "name": "推荐操作 Dashboard",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "report_evolution",
+        "name": "新旧报告变化总控台",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "report_index",
+        "name": "报告索引",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "report_intelligence",
+        "name": "研究智能层",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "source_model_registry",
+        "name": "开源模型库 Dashboard",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      },
+      {
+        "report_id": "strategy_performance",
+        "name": "策略表现 / CLV / ROI 回测 Dashboard",
+        "current_status": "完整",
+        "previous_status": "完整",
+        "score_delta": 0.0,
+        "chart_delta": 0,
+        "table_delta": 0,
+        "missing_capabilities": []
+      }
+    ]
+  },
+  "artifact_rows": [
+    {
+      "report_id": "recommendation_operations",
+      "name": "推荐操作 Dashboard",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 11,
+      "table_count": 27,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": true,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "strategy_performance",
+      "name": "策略表现 / CLV / ROI 回测 Dashboard",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 5,
+      "table_count": 4,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": false,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "report_evolution",
+      "name": "新旧报告变化总控台",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 5,
+      "table_count": 4,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": true,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "source_model_registry",
+      "name": "开源模型库 Dashboard",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 9,
+      "table_count": 5,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": true,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "product_readiness",
+      "name": "产品完成度 Dashboard",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 5,
+      "table_count": 3,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": true,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "goal_traceability",
+      "name": "目标验收追踪",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 5,
+      "table_count": 3,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": true,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "position_monitor",
+      "name": "持仓监控",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 4,
+      "table_count": 3,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": false,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "automation_maturity",
+      "name": "Automation 成熟度验收",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 5,
+      "table_count": 3,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": true,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "raw_refresh_recovery",
+      "name": "Raw 恢复与补跑控制台",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 6,
+      "table_count": 8,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": false,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "live_board_discovery",
+      "name": "TAB Live 板块发现",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 4,
+      "table_count": 3,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": false,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "available_board_strategy",
+      "name": "可用板块策略",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 6,
+      "table_count": 4,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": false,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "fixture_sanity",
+      "name": "公开赛程校验",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 4,
+      "table_count": 3,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": true,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "active_timeline",
+      "name": "主动测试时间线",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 5,
+      "table_count": 5,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": false,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "report_intelligence",
+      "name": "研究智能层",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 11,
+      "table_count": 6,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": true,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "automation_doctor",
+      "name": "Automation Doctor",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 7,
+      "table_count": 6,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": false,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "report_index",
+      "name": "报告索引",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 4,
+      "table_count": 99,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": false,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "automation_readiness",
+      "name": "自动化就绪审计",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 5,
+      "table_count": 106,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": false,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "automation_candidate",
+      "name": "自动化候选配置",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 5,
+      "table_count": 86,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": false,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "model_comparison",
+      "name": "开源模型对比",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 6,
+      "table_count": 5,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": true,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "model_divergence_review",
+      "name": "模型分歧复核 Dashboard",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 4,
+      "table_count": 3,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": true,
+      "next_action": "保持自动生成并纳入 report center。"
+    },
+    {
+      "report_id": "dashboard",
+      "name": "本地业务 Dashboard",
+      "status": "完整",
+      "score": 1.0,
+      "chart_count": 8,
+      "table_count": 3,
+      "has_old_new_compare": true,
+      "has_automation_view": true,
+      "has_github_reference": true,
+      "next_action": "保持自动生成并纳入 report center。"
+    }
+  ],
+  "signal_rows": [
+    {
+      "signal": "推荐操作",
+      "status": "research_only_blocked",
+      "current_value": "候选 0 / 可执行 AUD 0",
+      "old_new_status": "compared",
+      "risk_note": "raw blocked 时执行金额保持 0。"
+    },
+    {
+      "signal": "策略表现",
+      "status": "tracking_ready_outcome_pending",
+      "current_value": "买入样本 427 / 加权EV 12.89%",
+      "old_new_status": "compared",
+      "risk_note": "ROI=outcome_pending；CLV=clv_pending。"
+    },
+    {
+      "signal": "产品完成度",
+      "status": "in_progress",
+      "current_value": "8/4/1 ready/partial/blocked",
+      "old_new_status": "compared",
+      "risk_note": "当前可执行新增金额 AUD 0。"
+    }
+  ],
+  "evidence_layers": [
+    {
+      "layer": "FACT",
+      "text": "日报级变化来自 SQLite report_diffs/report_runs。"
+    },
+    {
+      "layer": "FACT",
+      "text": "报告族覆盖来自 report_visual_inventory_snapshots/report_catalog_items。"
+    },
+    {
+      "layer": "FACT",
+      "text": "推荐操作和策略表现来自最新公开 JSON 及对应 SQLite 快照。"
+    },
+    {
+      "layer": "INFERENCE",
+      "text": "evolution_score 由 report diff 覆盖、报告族覆盖、新旧对比覆盖和关键业务信号覆盖综合计算。"
+    }
+  ],
+  "automation_note": "该 Dashboard 可被每日 automation 只读生成，用于发现新报告相对旧报告的变化、缺失和质量退化；不自动下注。",
+  "truthfulness_note": "本报告只汇总已有数据库和公开产物；不伪造 TAB live odds、结算结果、CLV 或 ROI。",
+  "safety_note": "只生成研究报告和本地数据库快照，不点击赔率、不添加 下注单、不提交下注。",
+  "artifacts": {
+    "json": "report_evolution_latest.json",
+    "markdown": "report_evolution_latest.md",
+    "pdf": "report_evolution_latest.pdf",
+    "pdf_summary": {
+      "path": "report_evolution_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 5,
+      "detail_row_count": 18,
+      "extra_table_count": 4,
+      "extra_detail_row_count": 33
+    }
+  },
+  "storage": {
+    "status": "stored",
+    "database": "tab_fifa_reports.sqlite3",
+    "table": "report_evolution_snapshots",
+    "snapshot_id": "report-evolution-2026-06-13T144504-949985-1000"
+  }
+}

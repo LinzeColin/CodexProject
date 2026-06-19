@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14T06:02:38.612373+10:00",
+  "refresh_id": "20260613T194716Z-provider-2fec0bef",
+  "source_mode": "provider_manual_team_total_overlay_preview",
+  "overlay_preview_only": true,
+  "status": "waiting_for_import",
+  "board": "world_cup_matches",
+  "market_family": "Team Total Goals Over/Under",
+  "matches": [],
+  "team_total_overlay_event_count": 0,
+  "team_total_overlay_row_count": 0,
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "current_executable_new_stake_aud": 0,
+  "blocked_reason": "等待人工导入 Team Total CSV；当前 overlay raw 只生成空预览 envelope。",
+  "truthfulness_note": "没有完整人工导入行时不生成可用 overlay matches；该文件只保留为预览状态 envelope。"
+}

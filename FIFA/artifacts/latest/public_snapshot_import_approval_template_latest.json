@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "mode": "public_snapshot_import_approval",
+  "save_as": "manual_verification/public_snapshot_import_approval.json",
+  "scope": "matches",
+  "board_id": "world_cup_matches",
+  "selected_snapshot_file": "",
+  "selected_snapshot_sha256": "",
+  "preview_raw_snapshot": "public_snapshot_import_preview_raw_latest.json",
+  "preview_raw_sha256": "d980285c984bdcf4d4a5536f0dae9557f78ff4a29f695242b723f7de39794d46",
+  "snapshot_import_preview_ready": false,
+  "approved_by_user": false,
+  "operator_initials": "",
+  "signed_at_aest": "",
+  "source_verification_note": "",
+  "required_manual_checks": [
+    "确认 selected_snapshot_file 来自用户可审计的 TAB/公开盘口导出路径。",
+    "确认 JSON 内 match、market、selection、line、decimal odds 未被手工篡改。",
+    "确认 preview_raw_sha256 与页面显示值一致。",
+    "确认该签名只允许进入后续显式 publish gate，不自动下注。"
+  ],
+  "forbidden_actions": [
+    "不得把 approved_by_user 默认设为 true。",
+    "不得自动登录 TAB、点击赔率、加入 下注单 或提交投注。",
+    "不得把 public snapshot preview 当成 TAB 官方真实性证明。"
+  ]
+}

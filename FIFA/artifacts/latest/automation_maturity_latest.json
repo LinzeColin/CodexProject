@@ -1,0 +1,405 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T15:34:18.577251+10:00",
+  "snapshot_id": "automation-maturity-2026-06-13T15-34-18-577251-10-00",
+  "mode": "automation_maturity",
+  "purpose": "把用户要求的自动爬虫、PDF日报、本地数据库、新旧对比、图表/Dashboard、开源模型参考、主动测试和安全边界拆成可验证验收矩阵。",
+  "executive_status": {
+    "automation_ready": false,
+    "overall_score": 0.4667,
+    "status": "blocked",
+    "primary_gap": "自动爬虫抓取公开盘口",
+    "recommended_next_action": "先在本地入口点击“刷新公开盘口”，或运行只读 raw refresh 后重跑日报门禁。"
+  },
+  "summary": {
+    "requirement_count": 15,
+    "required_count": 15,
+    "required_ready_count": 7,
+    "required_blocked_count": 8,
+    "average_score": 0.4667,
+    "ready_ratio": 0.4667,
+    "p0_blocker_count": 3,
+    "blocked_titles": [
+      "自动爬虫抓取公开盘口",
+      "每4-5小时至少一次分析",
+      "每天一份中文PDF日报",
+      "业务可读的自动化总控台",
+      "首页推荐下注板块可直接操作",
+      "已下注持仓和收益率监控",
+      "本地入口和报告中心",
+      "可进入每日automation调度"
+    ]
+  },
+  "rows": [
+    {
+      "requirement_id": "public_raw_crawler",
+      "title": "自动爬虫抓取公开盘口",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "0/5",
+      "gap": "公开盘口 raw 当前 blocked/stale，不能发布新日报。",
+      "next_action": "先在本地入口点击“刷新公开盘口”，或运行只读 raw refresh 后重跑日报门禁。",
+      "user_value": "保证下注建议来自当前盘口，而不是旧赔率。"
+    },
+    {
+      "requirement_id": "four_hour_cadence",
+      "title": "每4-5小时至少一次分析",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "缺口日 5；补跑队列 8",
+      "gap": "主动测试仍发现每日分析缺口。",
+      "next_action": "raw 恢复后执行安全补跑；补跑报告不发布 latest_commit。",
+      "user_value": "让报告具备时间效应，避免预算长期闲置或错过早盘变化。"
+    },
+    {
+      "requirement_id": "daily_pdf_report",
+      "title": "每天一份中文PDF日报",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "日报缺口日 8；formal=False",
+      "gap": "当前正式日报门禁未通过，缺口日报不能作为可执行报告。",
+      "next_action": "修复 raw 和私有持仓快照后重跑日报；只在门禁通过时复制为 DDMMYYYY.pdf。",
+      "user_value": "每天打开一个明确的 PDF 决策包。"
+    },
+    {
+      "requirement_id": "research_only_daily_report",
+      "title": "正式门禁失败时仍生成研究诊断PDF",
+      "required_for_automation": true,
+      "status": "ready",
+      "score": 1.0,
+      "evidence": "partial_daily_research_latest.pdf 已生成并保持 research-only / AUD 0，不替代正式可执行下注日报。",
+      "gap": "",
+      "next_action": "保持自动生成并持续审计。",
+      "user_value": "即使 TAB 部分板块缺失，仍能每日拿到研究诊断和缺口说明，不误当作下注执行报告。"
+    },
+    {
+      "requirement_id": "local_database",
+      "title": "本地SQLite数据库保存报告历史",
+      "required_for_automation": true,
+      "status": "ready",
+      "score": 1.0,
+      "evidence": "SQLite 存在并保存 run、recommendation、automation audit 等记录。",
+      "gap": "",
+      "next_action": "保持自动生成并持续审计。",
+      "user_value": "支持日报/周报、回测和新旧报告对比。"
+    },
+    {
+      "requirement_id": "old_new_compare",
+      "title": "新报告与旧报告对比",
+      "required_for_automation": true,
+      "status": "ready",
+      "score": 1.0,
+      "evidence": "Report Intelligence 和 Report Index 提供 added/removed/changed/retained 对比。",
+      "gap": "",
+      "next_action": "保持自动生成并持续审计。",
+      "user_value": "看清推荐变化、赔率变化和仓位变化，不重复下注。"
+    },
+    {
+      "requirement_id": "visual_reports_dashboard",
+      "title": "所有核心报表有图表和Dashboard",
+      "required_for_automation": true,
+      "status": "ready",
+      "score": 1.0,
+      "evidence": "核心报告包含图表、附表和本地 Dashboard。",
+      "gap": "",
+      "next_action": "保持自动生成并持续审计。",
+      "user_value": "不用读技术日志，一页看懂下注和自动化状态。"
+    },
+    {
+      "requirement_id": "report_intelligence_dashboard",
+      "title": "业务可读的自动化总控台",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "ready_count=3；blocked_count=4；average_score=0.3263888888888889",
+      "gap": "缺少业务可读的自动化总控台；用户仍需看多个技术报告。",
+      "next_action": "重建 report_intelligence_latest.*，确认 Automation Dashboard ready_count 至少 6。",
+      "user_value": "用户一眼看到 raw、节奏、PDF、数据库、新旧对比、模型和发布门禁，而不是阅读工程日志。"
+    },
+    {
+      "requirement_id": "open_source_models",
+      "title": "GitHub开源模型参考已转化",
+      "required_for_automation": true,
+      "status": "ready",
+      "score": 1.0,
+      "evidence": "已把 Elo/Dixon-Coles/Monte Carlo、goalmodel xG/OU/BTTS、penaltyblog no-vig/盘口概率、socceraction xT/VAEP、openfootball 赛程源等转成模型、报告、界面参考和 UI蓝图，并通过 GitHub元数据追踪来源新鲜度。4小时freshness=stale_or_partial 0/6，stale=6。",
+      "gap": "",
+      "next_action": "保持自动生成并持续审计。",
+      "user_value": "比只看隐含概率更有独立研究价值，能同时解释盘口价值、基本面、赛程证据和报告界面设计来源。"
+    },
+    {
+      "requirement_id": "bet_recommendation_board",
+      "title": "首页推荐下注板块可直接操作",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "时间, 板块, 盘口, 下注, 赔率, 金额, 分析一致性, 盘口价值, EV, 概率赔率编辑, 置信度",
+      "gap": "入口缺少关键下注决策字段。",
+      "next_action": "刷新 Downloads app entry 并检查推荐表字段。",
+      "user_value": "打开首页即可知道应该看哪些盘、下注什么、金额多少。"
+    },
+    {
+      "requirement_id": "private_position_monitoring",
+      "title": "已下注持仓和收益率监控",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "status=raw_ready_import_needed；report_date=04062026",
+      "gap": "当前私有持仓快照不适用于最新日报。",
+      "next_action": "在本地入口启动只读持仓读取；完成 TAB 授权后导入快照并重跑日报。",
+      "user_value": "胜利会增加可用余额，失败会降低预算；策略可按真实余额滚动。"
+    },
+    {
+      "requirement_id": "fail_closed_publish",
+      "title": "失败run不覆盖最新成功报告",
+      "required_for_automation": true,
+      "status": "ready",
+      "score": 1.0,
+      "evidence": "当前 blocked attempted run 没有推进 latest_commit，仍保留最后可信成功报告。",
+      "gap": "",
+      "next_action": "保持自动生成并持续审计。",
+      "user_value": "避免把失败报告误当成下注日报。"
+    },
+    {
+      "requirement_id": "local_app_report_center",
+      "title": "本地入口和报告中心",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "entry=TAB FIFA盘口研究系统.html；links=0",
+      "gap": "入口或报告中心产物缺失。",
+      "next_action": "运行 build_downloads_app_entry.py 刷新入口和 app_assets。",
+      "user_value": "所有 PDF、JSON、Dashboard 有统一入口。"
+    },
+    {
+      "requirement_id": "scheduler_authorization",
+      "title": "可进入每日automation调度",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "candidate=review_required_not_installed；installed=False；recurring=False",
+      "gap": "当前只能手动触发；调度候选未安装或授权/技术门禁未通过。",
+      "next_action": "所有 P0 门禁通过后，再由用户明确授权创建 recurring automation。",
+      "user_value": "进入无人值守日报，但仍只生成报告、不下注。"
+    },
+    {
+      "requirement_id": "no_auto_wagering",
+      "title": "安全边界：不自动下注",
+      "required_for_automation": true,
+      "status": "ready",
+      "score": 1.0,
+      "evidence": "系统只生成研究报告、检查和补跑队列，不点击赔率、不添加投注单。",
+      "gap": "",
+      "next_action": "保持自动生成并持续审计。",
+      "user_value": "研究建议可用于人工下注参考，不会越权操作账户。"
+    }
+  ],
+  "manual_review_queue": [
+    {
+      "requirement_id": "public_raw_crawler",
+      "title": "自动爬虫抓取公开盘口",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "0/5",
+      "gap": "公开盘口 raw 当前 blocked/stale，不能发布新日报。",
+      "next_action": "先在本地入口点击“刷新公开盘口”，或运行只读 raw refresh 后重跑日报门禁。",
+      "user_value": "保证下注建议来自当前盘口，而不是旧赔率。"
+    },
+    {
+      "requirement_id": "four_hour_cadence",
+      "title": "每4-5小时至少一次分析",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "缺口日 5；补跑队列 8",
+      "gap": "主动测试仍发现每日分析缺口。",
+      "next_action": "raw 恢复后执行安全补跑；补跑报告不发布 latest_commit。",
+      "user_value": "让报告具备时间效应，避免预算长期闲置或错过早盘变化。"
+    },
+    {
+      "requirement_id": "daily_pdf_report",
+      "title": "每天一份中文PDF日报",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "日报缺口日 8；formal=False",
+      "gap": "当前正式日报门禁未通过，缺口日报不能作为可执行报告。",
+      "next_action": "修复 raw 和私有持仓快照后重跑日报；只在门禁通过时复制为 DDMMYYYY.pdf。",
+      "user_value": "每天打开一个明确的 PDF 决策包。"
+    },
+    {
+      "requirement_id": "report_intelligence_dashboard",
+      "title": "业务可读的自动化总控台",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "ready_count=3；blocked_count=4；average_score=0.3263888888888889",
+      "gap": "缺少业务可读的自动化总控台；用户仍需看多个技术报告。",
+      "next_action": "重建 report_intelligence_latest.*，确认 Automation Dashboard ready_count 至少 6。",
+      "user_value": "用户一眼看到 raw、节奏、PDF、数据库、新旧对比、模型和发布门禁，而不是阅读工程日志。"
+    },
+    {
+      "requirement_id": "bet_recommendation_board",
+      "title": "首页推荐下注板块可直接操作",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "时间, 板块, 盘口, 下注, 赔率, 金额, 分析一致性, 盘口价值, EV, 概率赔率编辑, 置信度",
+      "gap": "入口缺少关键下注决策字段。",
+      "next_action": "刷新 Downloads app entry 并检查推荐表字段。",
+      "user_value": "打开首页即可知道应该看哪些盘、下注什么、金额多少。"
+    },
+    {
+      "requirement_id": "private_position_monitoring",
+      "title": "已下注持仓和收益率监控",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "status=raw_ready_import_needed；report_date=04062026",
+      "gap": "当前私有持仓快照不适用于最新日报。",
+      "next_action": "在本地入口启动只读持仓读取；完成 TAB 授权后导入快照并重跑日报。",
+      "user_value": "胜利会增加可用余额，失败会降低预算；策略可按真实余额滚动。"
+    },
+    {
+      "requirement_id": "local_app_report_center",
+      "title": "本地入口和报告中心",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "entry=TAB FIFA盘口研究系统.html；links=0",
+      "gap": "入口或报告中心产物缺失。",
+      "next_action": "运行 build_downloads_app_entry.py 刷新入口和 app_assets。",
+      "user_value": "所有 PDF、JSON、Dashboard 有统一入口。"
+    },
+    {
+      "requirement_id": "scheduler_authorization",
+      "title": "可进入每日automation调度",
+      "required_for_automation": true,
+      "status": "blocked",
+      "score": 0.0,
+      "evidence": "candidate=review_required_not_installed；installed=False；recurring=False",
+      "gap": "当前只能手动触发；调度候选未安装或授权/技术门禁未通过。",
+      "next_action": "所有 P0 门禁通过后，再由用户明确授权创建 recurring automation。",
+      "user_value": "进入无人值守日报，但仍只生成报告、不下注。"
+    }
+  ],
+  "automation_recovery_playbook": [
+    {
+      "priority": "P0",
+      "order": 1,
+      "title": "恢复公开盘口 raw refresh",
+      "linked_requirement_id": "public_raw_crawler",
+      "status": "blocked",
+      "ready": false,
+      "evidence": "raw_ready=False；blockers=refresh_command_failed, route_mismatch, stale_raw",
+      "action": "在本地入口点击“刷新公开盘口”，或运行只读 raw refresh；如果 TAB 仍 route mismatch，则继续 unavailable，不用旧盘口生成建议。",
+      "verify": "检查 raw_refresh_health_latest.json ready=true，且 portfolio/preflight 不再出现 stale_raw 或 route_mismatch。",
+      "allowed_scope": "只读抓取公开盘口、写入 diagnostics 和研究-only 报告。",
+      "forbidden_scope": "不点击赔率、不登录下注、不把 blocked raw 发布为最新正式日报。",
+      "user_value": "保证下注建议来自当前盘口，而不是旧赔率。"
+    },
+    {
+      "priority": "P0",
+      "order": 2,
+      "title": "导入最新只读持仓快照",
+      "linked_requirement_id": "private_position_monitoring",
+      "status": "blocked",
+      "ready": false,
+      "evidence": "private_position_status=raw_ready_import_needed",
+      "action": "从本地入口启动只读持仓读取；用户完成 TAB 授权后，只导入聚合快照并重跑日报门禁。",
+      "verify": "检查 automation_readiness_latest.json private_position_bootstrap.ready=true，且 report_date 为当前报告日期。",
+      "allowed_scope": "只读读取 私有持仓/余额聚合状态，公开报告只显示安全聚合值。",
+      "forbidden_scope": "不提交投注单、不修改账户、不在公开产物泄露账户明细或余额路径。",
+      "user_value": "胜利会增加可用余额，失败会降低预算；策略可按真实余额滚动。"
+    },
+    {
+      "priority": "P1",
+      "order": 3,
+      "title": "补齐主动测试时间线缺口",
+      "linked_requirement_id": "four_hour_cadence",
+      "status": "blocked",
+      "ready": false,
+      "evidence": "missing_analysis_days=5；missing_report_days=8；backfill_queue=8",
+      "action": "raw_ready=true 后运行 safe_no_latest_publish 补跑；历史补跑只标注 reconstruction，不覆盖 latest_commit。",
+      "verify": "检查 active_timeline_report_latest.json cadence_ready_for_all_days=true 且 formal_report_ready_for_all_days=true。",
+      "allowed_scope": "补跑缺口分析和报告，保留时间线证据。",
+      "forbidden_scope": "不使用 stale/blocked raw 重建下注建议，不覆盖真实 latest success。",
+      "user_value": "让报告具备时间效应，避免预算长期闲置或错过早盘变化。"
+    },
+    {
+      "priority": "P1",
+      "order": 4,
+      "title": "重跑正式 PDF 日报门禁",
+      "linked_requirement_id": "daily_pdf_report",
+      "status": "blocked",
+      "ready": false,
+      "evidence": "日报缺口日 8；formal=False",
+      "action": "raw/private/preflight/public-safety 都通过后，重跑 daily report；通过后才复制为 FIFA Report/DDMMYYYY.pdf。",
+      "verify": "检查 latest_commit.json status=ready_for_manual_report，public_artifact_safety_ready=true，PDF QA 通过。",
+      "allowed_scope": "生成正式 PDF、dashboard、SQLite 记录和新旧对比。",
+      "forbidden_scope": "不在任一 P0 门禁失败时发布可执行新增下注金额。",
+      "user_value": "每天打开一个明确的 PDF 决策包。"
+    },
+    {
+      "priority": "P2",
+      "order": 5,
+      "title": "安装每日自动报告调度候选",
+      "linked_requirement_id": "scheduler_authorization",
+      "status": "blocked",
+      "ready": false,
+      "evidence": "candidate=review_required_not_installed；installed=False",
+      "action": "所有 P0/P1 门禁通过后，再由用户明确允许创建 recurring automation；allow_auto_betting 必须保持 false。",
+      "verify": "检查 automation_candidate_latest.json activation_ready_after_authorization=true 且 recurring_automation_ready=true。",
+      "allowed_scope": "每日生成研究 PDF、Dashboard、数据库记录和缺口提醒。",
+      "forbidden_scope": "不自动下注、不点击赔率、不添加 下注单。",
+      "user_value": "进入无人值守日报，但仍只生成报告、不下注。"
+    }
+  ],
+  "old_new_compare": {
+    "status": "compared",
+    "previous_generated_at": "2026-06-13T14:45:01.363733+10:00",
+    "previous_status": "blocked",
+    "score_delta": -0.1487,
+    "ready_delta": -1,
+    "blocked_delta": 3,
+    "p0_blocker_delta": 0
+  },
+  "source_artifacts": {
+    "latest_commit": "latest_commit.json",
+    "automation_readiness": "automation_readiness_latest.json",
+    "automation_candidate": "automation_candidate_latest.json",
+    "automation_doctor": "automation_doctor_latest.json",
+    "report_intelligence": "report_intelligence_latest.json",
+    "report_index": "report_index_latest.json",
+    "active_timeline": "active_timeline_latest.json",
+    "raw_refresh_health": "raw_refresh_health_latest.json",
+    "model_comparison": "tab_fifa_model_comparison_v0_1.json",
+    "source_model_registry": "source_model_registry_latest.json",
+    "database": "tab_fifa_reports.sqlite3",
+    "downloads_entry": "TAB FIFA盘口研究系统.html"
+  },
+  "truthfulness_note": "本矩阵只证明报告系统成熟度；不自动下注。被阻塞的项目不能用人工乐观判断改成 ready。",
+  "automation_boundary_note": "恢复 playbook 只允许只读刷新、补跑报告和人工授权调度；禁止自动下注、点击赔率、添加 下注单 或绕过 fail-closed 门禁。",
+  "artifacts": {
+    "json": "automation_maturity_latest.json",
+    "markdown": "automation_maturity_latest.md",
+    "pdf": "automation_maturity_latest.pdf",
+    "pdf_summary": {
+      "path": "automation_maturity_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 5,
+      "detail_row_count": 15,
+      "extra_table_count": 3,
+      "extra_detail_row_count": 18
+    }
+  },
+  "storage": {
+    "status": "stored",
+    "database": "tab_fifa_reports.sqlite3",
+    "table": "automation_maturity_snapshots"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T05:26:20.629572+00:00",
+  "status": "review_required_not_installed",
+  "candidate_ready": true,
+  "installed": false,
+  "recommended_cadence": "4h",
+  "timezone": "Australia/Sydney",
+  "rrule": "FREQ=HOURLY;INTERVAL=4",
+  "entrypoint": "scripts/run_tab_fifa_daily_automation.sh --allow-research-only-success",
+  "verify_only_entrypoint": "scripts/run_tab_fifa_daily_automation.sh --allow-research-only-success --verify-only",
+  "scope": "report_generation_only",
+  "auto_wagering_allowed": false,
+  "requires_user_authorization": true,
+  "authorization": {
+    "authorized": false,
+    "allow_recurring": false,
+    "allow_auto_betting": false,
+    "cadence": "manual",
+    "approved_at": "",
+    "approved_by": "",
+    "scope": "report_generation_only",
+    "source": "config",
+    "config_file": "automation.toml",
+    "entry_authorized": false,
+    "blocking_reasons": [
+      "user has not authorized recurring automation"
+    ],
+    "warnings": []
+  },
+  "activation_ready_after_authorization": false,
+  "blocking_reasons": [
+    "user has not authorized recurring automation"
+  ],
+  "guardrails": [
+    {
+      "code": "report_only",
+      "message": "只生成本地研究报告、dashboard、SQLite记录和新旧对比。"
+    },
+    {
+      "code": "research_only_daily_allowed",
+      "message": "正式 raw/private 不完整时，允许生成 research-only 诊断日报；新增执行金额固定 AUD 0。"
+    },
+    {
+      "code": "no_auto_wagering",
+      "message": "禁止自动下注、禁止自动提交任何投注指令。"
+    },
+    {
+      "code": "fresh_data_required",
+      "message": "TAB raw 超过 freshness gate 时拒绝发布正式日报。"
+    },
+    {
+      "code": "private_position_required",
+      "message": "需要当日私有持仓快照才能更新真实持仓和收益率。"
+    },
+    {
+      "code": "latest_pointer_fail_closed",
+      "message": "失败 run 不覆盖 latest_commit.json。"
+    }
+  ],
+  "required_gates": [
+    {
+      "name": "research-only daily PDF",
+      "evidence": "partial_daily_research_latest.json ready, fresh, public-safe, execution stake AUD 0",
+      "fail_closed": true
+    },
+    {
+      "name": "fresh TAB raw",
+      "evidence": "raw_refresh_latest.json reports all required boards fresh",
+      "fail_closed": true
+    },
+    {
+      "name": "private position snapshot",
+      "evidence": "current-day private position snapshot parsed without unknown statuses",
+      "fail_closed": true
+    },
+    {
+      "name": "PDF QA",
+      "evidence": "pdf_qa_latest.json reports required terms and minimum text/page/size",
+      "fail_closed": true
+    },
+    {
+      "name": "public artifact safety",
+      "evidence": "public artifact scan has zero private detail or local path markers",
+      "fail_closed": true
+    },
+    {
+      "name": "latest pointer consistency",
+      "evidence": "latest_commit and report_index latest_success_run_id match",
+      "fail_closed": true
+    },
+    {
+      "name": "user authorization",
+      "evidence": "config/automation.toml explicitly authorizes recurring report generation only",
+      "fail_closed": true
+    }
+  ],
+  "expected_artifacts": [
+    "DDMMYYYY_partial_daily_research.pdf",
+    "partial_daily_research_latest.pdf",
+    "partial_daily_research_latest.json",
+    "DDMMYYYY.pdf",
+    "tab_fifa_dashboard_latest.html",
+    "tab_fifa_reports.sqlite3",
+    "report_index_latest.json",
+    "automation_readiness_latest.json",
+    "tab_fifa_model_comparison_v0_1.pdf"
+  ],
+  "review_actions": [
+    "保持候选包 review-only；未授权前不创建 recurring automation。",
+    "确认 4 小时 cadence 是否符合你的正式运行节奏。",
+    "授权时只允许 report_generation_only，auto_wagering_allowed 必须保持 false。"
+  ]
+}

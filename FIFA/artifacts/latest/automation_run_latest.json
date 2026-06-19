@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "mode": "verify-only",
+  "verify_mode": "hermetic",
+  "status": "verified",
+  "exit_code": 0,
+  "started_at": "2026-06-12T14:35:09Z",
+  "finished_at": "2026-06-12T14:35:26Z",
+  "stdout_log": "tab_fifa_daily_20260612T143509Z-93070.stdout.log",
+  "stderr_log": "tab_fifa_daily_20260612T143509Z-93070.stderr.log",
+  "run_id": "20260604T135753Z-212e8e9a",
+  "latest_commit_status": "ready_for_manual_report",
+  "technical_automation_ready": true,
+  "automation_entry_ready": false,
+  "automation_authorization": {
+    "authorized": false,
+    "allow_recurring": false,
+    "allow_auto_betting": false,
+    "cadence": "manual",
+    "approved_at": "",
+    "approved_by": "",
+    "scope": "report_generation_only",
+    "source": "config",
+    "config_file": "automation.toml",
+    "entry_authorized": false,
+    "blocking_reasons": [
+      "user has not authorized recurring automation"
+    ],
+    "warnings": []
+  },
+  "public_artifact_safety_ready": true,
+  "ready_required_boards": "5/5",
+  "time_adjusted_new_exposure_aud": 100.0,
+  "raw_refresh_status": "blocked",
+  "raw_refresh_ready": false,
+  "raw_refresh_blocker_codes": [
+    "refresh_command_failed",
+    "route_mismatch",
+    "stale_raw"
+  ],
+  "raw_refresh_diagnostics_status": "failed",
+  "raw_refresh_heartbeat_count": 5,
+  "pdf_report": "",
+  "dashboard": "",
+  "database": "tab_fifa_reports.sqlite3",
+  "last_success": {
+    "run_id": "20260604T135753Z-212e8e9a",
+    "status": "ready_for_manual_report",
+    "technical_automation_ready": true,
+    "automation_entry_ready": false,
+    "automation_authorization": {
+      "authorized": false,
+      "allow_recurring": false,
+      "allow_auto_betting": false,
+      "cadence": "manual",
+      "approved_at": "",
+      "approved_by": "",
+      "scope": "report_generation_only",
+      "source": "config",
+      "config_file": "automation.toml",
+      "entry_authorized": false,
+      "blocking_reasons": [
+        "user has not authorized recurring automation"
+      ],
+      "warnings": []
+    },
+    "ready_required_boards": "5/5",
+    "time_adjusted_new_exposure_aud": 100.0
+  },
+  "stderr_tail": "locks_sensitive_raw_before_promote) ... ok\ntest_staged_raw_refresh_gate_validates_before_promote (test_pipeline.PipelineTests.test_staged_raw_refresh_gate_validates_before_promote) ... ok\ntest_team_futures_multi_gate_blocks_invalid_decimal_odds (test_pipeline.PipelineTests.test_team_futures_multi_gate_blocks_invalid_decimal_odds) ... ok\ntest_team_futures_multi_gate_requires_expected_codes (test_pipeline.PipelineTests.test_team_futures_multi_gate_requires_expected_codes) ... ok\ntest_team_futures_multi_parser (test_pipeline.PipelineTests.test_team_futures_multi_parser) ... ok\ntest_team_futures_multi_skips_incomplete_rows (test_pipeline.PipelineTests.test_team_futures_multi_skips_incomplete_rows) ... ok\ntest_time_aware_bankroll_plan_uses_pending_results (test_pipeline.PipelineTests.test_time_aware_bankroll_plan_uses_pending_results) ... ok\ntest_verify_readiness_script_splits_hermetic_and_live_artifact_gates (test_pipeline.PipelineTests.test_verify_readiness_script_splits_hermetic_and_live_artifact_gates) ... ok\ntest_write_outputs (test_pipeline.PipelineTests.test_write_outputs) ... ok\n\n----------------------------------------------------------------------\nRan 121 tests in 10.858s\n\nOK\n",
+  "my_bets_capture": {
+    "enabled": false,
+    "report_date": "",
+    "wait_for_login_ms": 0,
+    "capture_exit_code": 0,
+    "import_exit_code": 0,
+    "raw_text_seen": false,
+    "raw_text_fresh": false,
+    "raw_scraped_at": "",
+    "import_skipped_reason": "",
+    "capture_log": "",
+    "import_log": ""
+  },
+  "automation_candidate": {
+    "status": "review_required_not_installed",
+    "candidate_ready": true,
+    "installed": false,
+    "recommended_cadence": "4h",
+    "artifact": "automation_candidate_latest.json",
+    "report_artifact": "automation_candidate_latest.md",
+    "pdf_artifact": "automation_candidate_latest.pdf",
+    "report_mermaid_blocks": 4,
+    "pdf_chart_count": 4
+  },
+  "automation_readiness": {
+    "status": "current_run_preflight_blocked",
+    "formal_report_publish_ready": false,
+    "recurring_automation_ready": false,
+    "blocking_reasons": [
+      "2026 World Cup Matches raw snapshot is stale.; 2026 World Cup Futures raw snapshot is stale.; 2026 World Cup Group Betting raw snapshot is stale.; 2026 World Cup Australia Markets raw snapshot is stale.; 2026 World Cup Team Futures Multi raw snapshot is stale.",
+      "raw snapshot refresh failed; refusing to generate report: australia_markets refresh failed after 1 attempt(s): {\n  \"error\": \"2026 World Cup Australia Markets route mismatch: landed on 2026 World Cup Matches; TAB live soccer nav may not list this board\"\n}",
+      "user has not authorized recurring automation"
+    ],
+    "private_position_bootstrap": {
+      "schema_version": 1,
+      "report_date": "04062026",
+      "status": "raw_ready_import_needed",
+      "ready": false,
+      "profile": {
+        "profile_name": "tab_chrome_profile",
+        "default_profile": true,
+        "exists": false,
+        "private_path_required": true
+      },
+      "files": {
+        "raw_text_ref": "private_raw_text_04062026.txt",
+        "raw_text_exists": true,
+        "snapshot_ref": "private_position_snapshot_04062026.json",
+        "snapshot_exists": true,
+        "diagnostics_ref": "private_capture_diagnostic_04062026.json",
+        "diagnostics_exists": false
+      },
+      "snapshot_validation": {
+        "valid": false,
+        "issue_count": 1,
+        "issues": [
+          "snapshot report_date does not match current report date"
+        ]
+      },
+      "capture_diagnostic": {
+        "report_date": "",
+        "ready": false,
+        "auth_status": "",
+        "auth_mode": "",
+        "reason": "",
+        "text_length": 0
+      },
+      "next_action": "已读取私有持仓 raw text；下一步运行 `python3 import_my_bets_snapshot.py --source <private raw text for 04062026> --report-date 04062026`。"
+    },
+    "artifact": "automation_readiness_latest.json",
+    "report_artifact": "automation_readiness_latest.md",
+    "pdf_artifact": "automation_readiness_latest.pdf",
+    "report_mermaid_blocks": 4,
+    "pdf_chart_count": 4
+  },
+  "automation_run_store": {
+    "db_path": "tab_fifa_reports.sqlite3",
+    "automation_run_id": "tab_fifa_daily_20260612T143509Z-93070",
+    "mode": "verify-only",
+    "verify_mode": "hermetic",
+    "status": "verified"
+  }
+}

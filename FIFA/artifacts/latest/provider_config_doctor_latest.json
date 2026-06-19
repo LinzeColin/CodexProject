@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14T05:52:49.690981+10:00",
+  "mode": "provider_config_doctor",
+  "status": "ready",
+  "local_env": {
+    "relative_path": "config/odds_providers.local.env",
+    "exists": true,
+    "effective_exists": true,
+    "fallback_example_relative_path": "config/odds_providers.local.env.example",
+    "fallback_example_exists": true,
+    "using_example_fallback": false,
+    "tracked_by_git": false,
+    "truthfulness_note": "本产物只输出 key 是否存在，不输出真实 API key；example fallback 可用于本机临时运行，但提交前必须 secret scan。"
+  },
+  "the_odds_api": {
+    "api_key_present": true,
+    "requested_sports": [
+      "soccer_fifa_world_cup"
+    ],
+    "recommended_sports": [
+      "soccer_fifa_world_cup"
+    ],
+    "known_invalid_or_legacy_sports": [],
+    "sports_discovery_enabled": true,
+    "match_markets": [
+      "h2h",
+      "totals",
+      "spreads"
+    ],
+    "extra_match_markets": [],
+    "event_market_probe_limit": 0,
+    "event_odds_limit": 3,
+    "event_odds_markets": [
+      "alternate_totals",
+      "alternate_spreads",
+      "btts",
+      "double_chance",
+      "draw_no_bet"
+    ],
+    "unknown_sport_guard": "enabled"
+  },
+  "opticodds": {
+    "api_key_present": false,
+    "endpoint": "/fixtures/odds",
+    "query": "sport=soccer&sportsbook=TAB",
+    "note": "只显示 endpoint/query；真实 key 不写入 artifact。"
+  },
+  "credit_policy": {
+    "matches_first": true,
+    "ignore_region_markets": true,
+    "event_market_probe_limit": 0,
+    "event_odds_limit": 3,
+    "team_total_policy": "The Odds API event odds 只补已验证可见的非 Team Total alternate/value-support markets；Team Total 走 OpticOdds 官方访问或 TAB 人工最终校验。"
+  },
+  "issues": [],
+  "recommended_env_patch": {
+    "TAB_FIFA_THE_ODDS_API_SPORTS": "soccer_fifa_world_cup",
+    "TAB_FIFA_THE_ODDS_API_SPORT_DISCOVERY": "1",
+    "TAB_FIFA_THE_ODDS_API_MATCH_MARKETS": "h2h,totals,spreads",
+    "TAB_FIFA_THE_ODDS_API_EXTRA_MATCH_MARKETS": "",
+    "TAB_FIFA_THE_ODDS_API_EVENT_MARKET_PROBE_LIMIT": "0",
+    "TAB_FIFA_THE_ODDS_API_EVENT_ODDS_MARKETS": "alternate_totals,alternate_spreads,btts,double_chance,draw_no_bet",
+    "TAB_FIFA_IGNORE_REGION_MARKETS": "1"
+  },
+  "recommended_commands": [
+    {
+      "title": "安全配置检查",
+      "command": "python3 scripts/build_provider_config_doctor.py",
+      "why": "不请求 odds，不消耗 odds credits；只验证本机 provider 配置是否会再次触发 Unknown sport 或 credit 风险。"
+    },
+    {
+      "title": "Matches 主盘口刷新",
+      "command": "python3 refresh_odds_provider_raw.py --provider the_odds_api --scope matches --event-market-probe-limit 0",
+      "why": "只刷新 Result / Total O/U / Handicap 主盘口；不做 event-level alternate probe。"
+    },
+    {
+      "title": "Team Total 人工下一批",
+      "command": "open '/Users/linzezhang/Downloads/FIFA Report/app_assets/provider_manual_next_batch_pair_template_latest.csv'",
+      "why": "Team Total 当前走人工最终校验或官方白名单路径，不用 The Odds API 盲扫。"
+    }
+  ],
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "current_executable_new_stake_aud": 0,
+  "safety_boundary": "该诊断只检查 provider 配置和 credit-safe 参数；不请求 odds、不登录 TAB、不点击赔率、不下注。",
+  "summary": {
+    "status": "ready",
+    "issue_count": 0,
+    "critical_issue_count": 0,
+    "legacy_sport_count": 0,
+    "the_odds_api_key_present": true,
+    "opticodds_key_present": false,
+    "sports_discovery_enabled": true,
+    "next_safe_action": "配置可用；下一步执行 matches 主盘口刷新或 Team Total 人工下一批。"
+  },
+  "artifacts": {
+    "json": "provider_config_doctor_latest.json",
+    "markdown": "provider_config_doctor_latest.md",
+    "pdf": "provider_config_doctor_latest.pdf",
+    "pdf_summary": {
+      "path": "provider_config_doctor_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 2,
+      "detail_row_count": 0,
+      "extra_table_count": 0,
+      "extra_detail_row_count": 0
+    }
+  }
+}

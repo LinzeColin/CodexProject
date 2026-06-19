@@ -1,0 +1,1221 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14T05:52:49.722197+10:00",
+  "mode": "provider_alternate_plan",
+  "status": "in_progress",
+  "scope": "matches",
+  "refresh_id": "20260613T194716Z-provider-2fec0bef",
+  "event_count": 64,
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "current_executable_new_stake_aud": 0,
+  "market_family_gaps": [
+    {
+      "id": "handicap",
+      "label": "Handicap",
+      "covered_count": 46,
+      "event_count": 64,
+      "coverage_ratio": 0.7188,
+      "required_ratio": 0.7,
+      "missing_count": 18,
+      "status": "ready",
+      "provider_markets": [
+        "spreads",
+        "alternate_spreads"
+      ],
+      "role": "core_price_context",
+      "available_probe_count": 14,
+      "provider_status": "coverage_threshold_met_no_remaining_the_odds_api_queue",
+      "sample_evidence": "14/14 个 TAB event-market 样本暴露该盘口族。",
+      "recommended_provider_action": "已达到可用阈值但仍缺 18 场；The Odds API 当前没有可继续补齐的 TAB event-level 队列。保留现有覆盖，只有进入候选下注研究时才做 OpticOdds/TAB 人工最终校验。"
+    },
+    {
+      "id": "total_ou",
+      "label": "Total Goals Over/Under",
+      "covered_count": 51,
+      "event_count": 64,
+      "coverage_ratio": 0.7969,
+      "required_ratio": 0.7,
+      "missing_count": 13,
+      "status": "ready",
+      "provider_markets": [
+        "totals",
+        "alternate_totals"
+      ],
+      "role": "core_price_context",
+      "available_probe_count": 14,
+      "provider_status": "coverage_threshold_met_no_remaining_the_odds_api_queue",
+      "sample_evidence": "14/14 个 TAB event-market 样本暴露该盘口族。",
+      "recommended_provider_action": "已达到可用阈值但仍缺 13 场；The Odds API 当前没有可继续补齐的 TAB event-level 队列。保留现有覆盖，只有进入候选下注研究时才做 OpticOdds/TAB 人工最终校验。"
+    },
+    {
+      "id": "btts",
+      "label": "Both Teams to Score",
+      "covered_count": 14,
+      "event_count": 64,
+      "coverage_ratio": 0.2188,
+      "required_ratio": 0.35,
+      "missing_count": 50,
+      "status": "gap",
+      "provider_markets": [
+        "btts"
+      ],
+      "role": "value_support",
+      "available_probe_count": 14,
+      "provider_status": "available_in_current_the_odds_api_tab_sample",
+      "sample_evidence": "14/14 个 TAB event-market 样本暴露该盘口族。",
+      "recommended_provider_action": "可按 credit-safe 队列拉 event odds；仅补非 Team Total 的已发现 markets。"
+    },
+    {
+      "id": "double_chance",
+      "label": "Double Chance",
+      "covered_count": 11,
+      "event_count": 64,
+      "coverage_ratio": 0.1719,
+      "required_ratio": 0.35,
+      "missing_count": 53,
+      "status": "gap",
+      "provider_markets": [
+        "double_chance"
+      ],
+      "role": "value_support",
+      "available_probe_count": 11,
+      "provider_status": "available_in_current_the_odds_api_tab_sample",
+      "sample_evidence": "11/14 个 TAB event-market 样本暴露该盘口族。",
+      "recommended_provider_action": "可按 credit-safe 队列拉 event odds；仅补非 Team Total 的已发现 markets。"
+    },
+    {
+      "id": "draw_no_bet",
+      "label": "Draw No Bet",
+      "covered_count": 12,
+      "event_count": 64,
+      "coverage_ratio": 0.1875,
+      "required_ratio": 0.35,
+      "missing_count": 52,
+      "status": "gap",
+      "provider_markets": [
+        "draw_no_bet"
+      ],
+      "role": "value_support",
+      "available_probe_count": 12,
+      "provider_status": "available_in_current_the_odds_api_tab_sample",
+      "sample_evidence": "12/14 个 TAB event-market 样本暴露该盘口族。",
+      "recommended_provider_action": "可按 credit-safe 队列拉 event odds；仅补非 Team Total 的已发现 markets。"
+    },
+    {
+      "id": "team_total_ou",
+      "label": "Team Total Goals Over/Under",
+      "covered_count": 0,
+      "event_count": 64,
+      "coverage_ratio": 0.0,
+      "required_ratio": 0.5,
+      "missing_count": 64,
+      "status": "fallback_required",
+      "provider_markets": [
+        "team_totals",
+        "alternate_team_totals"
+      ],
+      "role": "manual_or_official_fallback",
+      "available_probe_count": 0,
+      "provider_status": "low_yield_in_current_the_odds_api_tab_sample",
+      "sample_evidence": "14 个 TAB event-market 样本均未暴露 Team Total market key。",
+      "recommended_provider_action": "停止默认扩大 The Odds API team_totals 探测；除非人工指定候选，否则切换 OpticOdds 官方访问或 TAB 人工最终校验。"
+    }
+  ],
+  "event_probe_evidence": {
+    "market_probe_count": 14,
+    "event_odds_count": 14,
+    "probed_event_ids": [
+      "05752bb341e197001387b64f3a06b9b2",
+      "26634922d3f78c146440816023e40de8",
+      "32ec06abda2398ac41501c86eb9aa376",
+      "4d4f2b9b78182b557d4fbf8dcf4f4af2",
+      "564084f52cc9f1abcc18187c168a7cdc",
+      "5ae41a06735c926eeb7f74006933adce",
+      "64b91c5f2db61c7358a4f05459e83c52",
+      "73a4fcd14cc9766b9b9bfd50b8ca153a",
+      "b55f9569de3f4d731bc5537ff5ff43e4",
+      "c54f00b11925751d2b62988775c6c239",
+      "d79edbd6aaeb578d33e313446b18d333",
+      "ec51b9c44ad5e34552f3ab53f7262813",
+      "f6c8748a16516e0998f95de14235432a",
+      "fbfb95c62003fd6d828b309f96ee1f9b"
+    ],
+    "event_odds_event_ids": [
+      "05752bb341e197001387b64f3a06b9b2",
+      "26634922d3f78c146440816023e40de8",
+      "32ec06abda2398ac41501c86eb9aa376",
+      "4d4f2b9b78182b557d4fbf8dcf4f4af2",
+      "564084f52cc9f1abcc18187c168a7cdc",
+      "5ae41a06735c926eeb7f74006933adce",
+      "64b91c5f2db61c7358a4f05459e83c52",
+      "73a4fcd14cc9766b9b9bfd50b8ca153a",
+      "b55f9569de3f4d731bc5537ff5ff43e4",
+      "c54f00b11925751d2b62988775c6c239",
+      "d79edbd6aaeb578d33e313446b18d333",
+      "ec51b9c44ad5e34552f3ab53f7262813",
+      "f6c8748a16516e0998f95de14235432a",
+      "fbfb95c62003fd6d828b309f96ee1f9b"
+    ],
+    "team_total_available_probe_count": 0,
+    "total_available_probe_count": 14,
+    "canonical_available_market_counts": {
+      "spreads": 14,
+      "totals": 14,
+      "btts": 14,
+      "double_chance": 11,
+      "draw_no_bet": 12,
+      "h2h": 14
+    },
+    "market_probes": [
+      {
+        "event_id": "26634922d3f78c146440816023e40de8",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "f6c8748a16516e0998f95de14235432a",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "5ae41a06735c926eeb7f74006933adce",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "564084f52cc9f1abcc18187c168a7cdc",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "d79edbd6aaeb578d33e313446b18d333",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_totals",
+          "btts",
+          "h2h",
+          "h2h_3_way",
+          "spreads"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "32ec06abda2398ac41501c86eb9aa376",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "05752bb341e197001387b64f3a06b9b2",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "b55f9569de3f4d731bc5537ff5ff43e4",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "c54f00b11925751d2b62988775c6c239",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_totals",
+          "btts",
+          "h2h",
+          "h2h_3_way",
+          "spreads"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "fbfb95c62003fd6d828b309f96ee1f9b",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "64b91c5f2db61c7358a4f05459e83c52",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "ec51b9c44ad5e34552f3ab53f7262813",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "73a4fcd14cc9766b9b9bfd50b8ca153a",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "4d4f2b9b78182b557d4fbf8dcf4f4af2",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      }
+    ],
+    "event_odds_fetches": [
+      {
+        "event_id": "26634922d3f78c146440816023e40de8",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "alternate_spreads",
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "f6c8748a16516e0998f95de14235432a",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "alternate_spreads",
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "5ae41a06735c926eeb7f74006933adce",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "alternate_spreads",
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "564084f52cc9f1abcc18187c168a7cdc",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "d79edbd6aaeb578d33e313446b18d333",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "32ec06abda2398ac41501c86eb9aa376",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "05752bb341e197001387b64f3a06b9b2",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "b55f9569de3f4d731bc5537ff5ff43e4",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "c54f00b11925751d2b62988775c6c239",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "fbfb95c62003fd6d828b309f96ee1f9b",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "64b91c5f2db61c7358a4f05459e83c52",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "ec51b9c44ad5e34552f3ab53f7262813",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "73a4fcd14cc9766b9b9bfd50b8ca153a",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "4d4f2b9b78182b557d4fbf8dcf4f4af2",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      }
+    ]
+  },
+  "probe_queue_count": 50,
+  "recommended_batch_size": 1,
+  "estimated_next_batch_credit_floor": 4,
+  "estimated_next_batch_credit_ceiling": 7,
+  "next_probe_queue": [
+    {
+      "event_id": "f31b2ee9e1cc6f7e641467f8237eaa21",
+      "match": "Argentina v Algeria",
+      "commence_time": "2026-06-17T01:00:00Z",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "25161cf6cf0cd9be17ae2e7e224a1f45",
+      "match": "Austria v Jordan",
+      "commence_time": "2026-06-17T04:00:00Z",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "6cc871c121a1869b4612d3fb22fa9d55",
+      "match": "Portugal v DR Congo",
+      "commence_time": "2026-06-17T17:00:00Z",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "689096c8cd7e2753b9fec95321943c5d",
+      "match": "England v Croatia",
+      "commence_time": "2026-06-17T20:00:00Z",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "87afdb85c977b451e1c00f5e3e632601",
+      "match": "Ghana v Panama",
+      "commence_time": "2026-06-17T23:00:00Z",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "22083e7a8e5362c711bc05c1e1319a1f",
+      "match": "Uzbekistan v Colombia",
+      "commence_time": "2026-06-18T02:00:00Z",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "66ebb9e3f949caded535d97ce686ca09",
+      "match": "Czech Republic v South Africa",
+      "commence_time": "2026-06-18T16:00:00Z",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "0f2aeae6ac8e77223848d23a4ca86b0d",
+      "match": "Mexico v South Korea",
+      "commence_time": "2026-06-19T01:00:00Z",
+      "covered_markets": [
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "065b3573e875f8d23803357f73e5b99e",
+      "match": "USA v Australia",
+      "commence_time": "2026-06-19T19:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "4cd769aa7bae0ad9762bd69b80ef2903",
+      "match": "Scotland v Morocco",
+      "commence_time": "2026-06-19T22:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "ef0f74a991d3e35798ae5af77667bce1",
+      "match": "Brazil v Haiti",
+      "commence_time": "2026-06-20T01:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "f955d4b3395ce6e3b5ac1031ca52ca4e",
+      "match": "Turkey v Paraguay",
+      "commence_time": "2026-06-20T03:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "4f0c518545b0096c68326daf25bffc1e",
+      "match": "Netherlands v Sweden",
+      "commence_time": "2026-06-20T17:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "f1ab0f69832972a329243522ceaa7804",
+      "match": "Germany v Ivory Coast",
+      "commence_time": "2026-06-20T20:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "681895f294b670b4c7b14495dfb583bc",
+      "match": "Ecuador v Curaçao",
+      "commence_time": "2026-06-21T00:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "dfc5202cf1b8ae002cf952cd04f235b9",
+      "match": "Tunisia v Japan",
+      "commence_time": "2026-06-21T04:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "73529a242e319a86bf3d00ddb4accc37",
+      "match": "Spain v Saudi Arabia",
+      "commence_time": "2026-06-21T16:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "5f92f257386ec5bf7c6e2498a21f3a61",
+      "match": "Belgium v Iran",
+      "commence_time": "2026-06-21T19:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "852a3abe6d46820720febc0fedebff9a",
+      "match": "Uruguay v Cape Verde",
+      "commence_time": "2026-06-21T22:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    },
+    {
+      "event_id": "c1ec9a65f4b4cf74477b368a7d6282de",
+      "match": "New Zealand v Egypt",
+      "commence_time": "2026-06-22T01:00:00Z",
+      "covered_markets": [
+        "Handicap",
+        "Result",
+        "Total Goals Over/Under"
+      ],
+      "missing_families": [
+        "Double Chance",
+        "Draw No Bet",
+        "Both Teams to Score"
+      ],
+      "recommended_markets": [
+        "double_chance",
+        "draw_no_bet",
+        "btts"
+      ],
+      "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+    }
+  ],
+  "fallback_queue_count": 64,
+  "fallback_queue": [
+    {
+      "event_id": "26634922d3f78c146440816023e40de8",
+      "match": "Qatar v Switzerland",
+      "commence_time": "2026-06-13T19:04:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "f6c8748a16516e0998f95de14235432a",
+      "match": "Brazil v Morocco",
+      "commence_time": "2026-06-13T22:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "5ae41a06735c926eeb7f74006933adce",
+      "match": "Haiti v Scotland",
+      "commence_time": "2026-06-14T01:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "564084f52cc9f1abcc18187c168a7cdc",
+      "match": "Australia v Turkey",
+      "commence_time": "2026-06-14T04:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "d79edbd6aaeb578d33e313446b18d333",
+      "match": "Germany v Curaçao",
+      "commence_time": "2026-06-14T17:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "32ec06abda2398ac41501c86eb9aa376",
+      "match": "Netherlands v Japan",
+      "commence_time": "2026-06-14T20:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "05752bb341e197001387b64f3a06b9b2",
+      "match": "Ivory Coast v Ecuador",
+      "commence_time": "2026-06-14T23:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "b55f9569de3f4d731bc5537ff5ff43e4",
+      "match": "Sweden v Tunisia",
+      "commence_time": "2026-06-15T02:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "c54f00b11925751d2b62988775c6c239",
+      "match": "Spain v Cape Verde",
+      "commence_time": "2026-06-15T16:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "fbfb95c62003fd6d828b309f96ee1f9b",
+      "match": "Belgium v Egypt",
+      "commence_time": "2026-06-15T19:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "64b91c5f2db61c7358a4f05459e83c52",
+      "match": "Saudi Arabia v Uruguay",
+      "commence_time": "2026-06-15T22:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "ec51b9c44ad5e34552f3ab53f7262813",
+      "match": "Iran v New Zealand",
+      "commence_time": "2026-06-16T01:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "73a4fcd14cc9766b9b9bfd50b8ca153a",
+      "match": "France v Senegal",
+      "commence_time": "2026-06-16T19:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "4d4f2b9b78182b557d4fbf8dcf4f4af2",
+      "match": "Iraq v Norway",
+      "commence_time": "2026-06-16T22:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "f31b2ee9e1cc6f7e641467f8237eaa21",
+      "match": "Argentina v Algeria",
+      "commence_time": "2026-06-17T01:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "25161cf6cf0cd9be17ae2e7e224a1f45",
+      "match": "Austria v Jordan",
+      "commence_time": "2026-06-17T04:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "6cc871c121a1869b4612d3fb22fa9d55",
+      "match": "Portugal v DR Congo",
+      "commence_time": "2026-06-17T17:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "689096c8cd7e2753b9fec95321943c5d",
+      "match": "England v Croatia",
+      "commence_time": "2026-06-17T20:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "87afdb85c977b451e1c00f5e3e632601",
+      "match": "Ghana v Panama",
+      "commence_time": "2026-06-17T23:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    },
+    {
+      "event_id": "22083e7a8e5362c711bc05c1e1319a1f",
+      "match": "Uzbekistan v Colombia",
+      "commence_time": "2026-06-18T02:00:00Z",
+      "missing_families": [
+        "Team Total Goals Over/Under"
+      ],
+      "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+    }
+  ],
+  "credit_policy": {
+    "status": "partial",
+    "reported_used": 299,
+    "reported_remaining": 201,
+    "reported_last_request_cost": 7,
+    "inferred_monthly_limit": 500,
+    "remaining_ratio": 0.402,
+    "recommended_batch_size": 1,
+    "queue_count": 50,
+    "primary_refresh_credit_floor": 3,
+    "estimated_event_probe_credit_floor": 1,
+    "estimated_event_probe_credit_ceiling": 4,
+    "estimated_next_batch_credit_floor": 4,
+    "estimated_next_batch_credit_ceiling": 7
+  },
+  "operational_decision": {
+    "status": "alternate_probe_plus_team_total_manual",
+    "title": "非 Team Total 可小批量补齐，Team Total 转人工",
+    "primary_action": "先按 recommended command 小批量补 50 场非 Team Total alternate/value markets；Team Total 继续 TT-001 人工校验。",
+    "why": "The Odds API 已完成 14 个 TAB event-market 样本，Team Total 可用样本 0；但 BTTS/Double Chance/Draw No Bet/alternate spreads/totals 已在样本中可见。",
+    "operator_next_step": "执行推荐命令时保持小批量；完成后重建 KPI。Team Total 不跟随 The Odds API 盲扫，继续 TT-001 人工只读填写。",
+    "credit_guidance": "下一批建议 1 场，预计 4-7 credits。",
+    "stake_policy": "provider event odds 只增加研究覆盖；formal publish、TAB 人工最终校验和持仓 gate 未通过前，新增执行金额保持 AUD 0。"
+  },
+  "recommended_command": "python3 refresh_odds_provider_raw.py --provider the_odds_api --scope matches --event-market-probe-limit 1 --event-odds-limit 1 --event-odds-markets double_chance,draw_no_bet,btts",
+  "recommended_next_action": "The Odds API 当前 TAB sample 未提供 Team Total；继续用小批量 event odds 补非 Team Total 的 alternate/value-support markets，同时把 Team Total 转入 OpticOdds/TAB 人工校验。",
+  "stop_conditions": [
+    "Team Total O/U 连续小样本仍为 0 覆盖时，停止扩大 The Odds API event odds 消耗，改查 OpticOdds 或 TAB 人工最终校验。",
+    "reported_remaining 低于 20% 或 provider_error_count 增加时，暂停自动 probe，只保留已缓存证据。",
+    "formal publish 和 TAB 人工最终校验未通过前，current_executable_new_stake_aud 保持 AUD 0。"
+  ],
+  "truthfulness_note": "本计划只描述授权 provider 覆盖缺口和下一批最小 probe，不代表下注建议，也不会自动下注。",
+  "artifacts": {
+    "json": "provider_alternate_plan_latest.json",
+    "markdown": "provider_alternate_plan_latest.md",
+    "pdf": "provider_alternate_plan_latest.pdf",
+    "evidence": "provider_alternate_probe_evidence_latest.json",
+    "pdf_summary": {
+      "path": "provider_alternate_plan_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 1,
+      "detail_row_count": 20,
+      "extra_table_count": 0,
+      "extra_detail_row_count": 0
+    }
+  }
+}

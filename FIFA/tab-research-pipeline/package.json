@@ -1,0 +1,17 @@
+{
+  "name": "tab-fifa-research-pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Read-only TAB FIFA 2026 odds research pipeline and local report generator.",
+  "scripts": {
+    "check:refresh": "node --check scripts/refresh_tab_readonly.mjs",
+    "check:my-bets-capture": "node --check scripts/capture_tab_my_bets_readonly.mjs",
+    "test:refresh-security": "node scripts/refresh_tab_readonly_security.test.mjs",
+    "test:my-bets-capture-security": "node scripts/capture_tab_my_bets_readonly_security.test.mjs",
+    "verify": "scripts/verify_fifa_automation_readiness.sh"
+  },
+  "dependencies": {
+    "playwright": "1.60.0"
+  }
+}

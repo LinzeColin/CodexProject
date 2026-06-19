@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14T01:52:01.453077+10:00",
+  "source": "public_snapshot_import_preview",
+  "source_mode": "user_public_snapshot_import_preview",
+  "board_id": "world_cup_matches",
+  "snapshot_import_status": "waiting_for_snapshot_import",
+  "snapshot_import_preview_only": true,
+  "matches": [],
+  "reason": "未发现 public raw snapshot JSON 导入文件。",
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "current_executable_new_stake_aud": 0
+}

@@ -1,0 +1,2388 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14T06:02:38.724638+10:00",
+  "mode": "provider_manual_team_total_workbench",
+  "status": "waiting_for_first_batch",
+  "refresh_id": "20260613T194716Z-provider-2fec0bef",
+  "scope": "matches",
+  "board_id": "world_cup_matches",
+  "market_family": "Team Total Goals Over/Under",
+  "batch_size": 8,
+  "queue_count": 64,
+  "remaining_event_count": 64,
+  "remaining_high_priority_count": 51,
+  "partial_event_count": 0,
+  "invalid_row_count": 0,
+  "verified_event_count": 0,
+  "completion": {
+    "valid_row_count": 0,
+    "invalid_row_count": 0,
+    "complete_event_count": 0,
+    "partial_event_count": 0,
+    "queue_count": 64,
+    "completion_pct": 0.0,
+    "high_priority_complete_count": 0,
+    "high_priority_count": 51,
+    "high_priority_completion_pct": 0.0
+  },
+  "import_quality": {
+    "status": "waiting_for_manual_rows",
+    "queue_count": 64,
+    "import_row_count": 0,
+    "complete_event_count": 0,
+    "partial_event_count": 0,
+    "invalid_event_count": 0,
+    "missing_event_count": 64,
+    "next_action": "当前未检测到人工行；从 TT-001 下一批成对模板开始填写。"
+  },
+  "batch_count": 8,
+  "next_batch": {
+    "batch_id": "TT-001",
+    "status": "pending_manual_readonly_verification",
+    "event_count": 8,
+    "rank_start": 1,
+    "rank_end": 8,
+    "priority_mix": {
+      "high": 8
+    },
+    "action": "人工只读 TAB Team Total O/U，补齐 Over/Under 成对赔率；不点击 odds，不加入 下注单。",
+    "rows": [
+      {
+        "rank": 1,
+        "event_id": "26634922d3f78c146440816023e40de8",
+        "match": "Qatar v Switzerland",
+        "commence_time": "2026-06-13T19:04:00Z",
+        "priority_tier": "high",
+        "covered_markets": [
+          "Both Teams to Score",
+          "Double Chance",
+          "Draw No Bet",
+          "Handicap",
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+        "required_fields": [
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref"
+        ]
+      },
+      {
+        "rank": 2,
+        "event_id": "f6c8748a16516e0998f95de14235432a",
+        "match": "Brazil v Morocco",
+        "commence_time": "2026-06-13T22:00:00Z",
+        "priority_tier": "high",
+        "covered_markets": [
+          "Both Teams to Score",
+          "Double Chance",
+          "Draw No Bet",
+          "Handicap",
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+        "required_fields": [
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref"
+        ]
+      },
+      {
+        "rank": 3,
+        "event_id": "5ae41a06735c926eeb7f74006933adce",
+        "match": "Haiti v Scotland",
+        "commence_time": "2026-06-14T01:00:00Z",
+        "priority_tier": "high",
+        "covered_markets": [
+          "Both Teams to Score",
+          "Double Chance",
+          "Draw No Bet",
+          "Handicap",
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+        "required_fields": [
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref"
+        ]
+      },
+      {
+        "rank": 4,
+        "event_id": "564084f52cc9f1abcc18187c168a7cdc",
+        "match": "Australia v Turkey",
+        "commence_time": "2026-06-14T04:00:00Z",
+        "priority_tier": "high",
+        "covered_markets": [
+          "Both Teams to Score",
+          "Double Chance",
+          "Draw No Bet",
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+        "required_fields": [
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref"
+        ]
+      },
+      {
+        "rank": 5,
+        "event_id": "d79edbd6aaeb578d33e313446b18d333",
+        "match": "Germany v Curaçao",
+        "commence_time": "2026-06-14T17:00:00Z",
+        "priority_tier": "high",
+        "covered_markets": [
+          "Both Teams to Score",
+          "Handicap",
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+        "required_fields": [
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref"
+        ]
+      },
+      {
+        "rank": 6,
+        "event_id": "32ec06abda2398ac41501c86eb9aa376",
+        "match": "Netherlands v Japan",
+        "commence_time": "2026-06-14T20:00:00Z",
+        "priority_tier": "high",
+        "covered_markets": [
+          "Both Teams to Score",
+          "Double Chance",
+          "Draw No Bet",
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+        "required_fields": [
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref"
+        ]
+      },
+      {
+        "rank": 7,
+        "event_id": "05752bb341e197001387b64f3a06b9b2",
+        "match": "Ivory Coast v Ecuador",
+        "commence_time": "2026-06-14T23:00:00Z",
+        "priority_tier": "high",
+        "covered_markets": [
+          "Both Teams to Score",
+          "Draw No Bet",
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+        "required_fields": [
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref"
+        ]
+      },
+      {
+        "rank": 8,
+        "event_id": "b55f9569de3f4d731bc5537ff5ff43e4",
+        "match": "Sweden v Tunisia",
+        "commence_time": "2026-06-15T02:00:00Z",
+        "priority_tier": "high",
+        "covered_markets": [
+          "Both Teams to Score",
+          "Double Chance",
+          "Draw No Bet",
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+        "required_fields": [
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref"
+        ]
+      }
+    ]
+  },
+  "next_batch_quality": {
+    "batch_id": "TT-001",
+    "event_count": 8,
+    "status_counts": {
+      "missing_rows": 8
+    },
+    "missing_field_counts": {
+      "tab_match_name": 8,
+      "team_scope": 8,
+      "tab_market_name": 8,
+      "selection_name": 8,
+      "line": 8,
+      "decimal_odds": 8,
+      "observed_at_aest": 8,
+      "operator_initials": 8,
+      "evidence_note_or_screenshot_ref": 8,
+      "verification_status": 8
+    },
+    "missing_direction_counts": {
+      "over": 8,
+      "under": 8
+    },
+    "rows": [
+      {
+        "event_id": "26634922d3f78c146440816023e40de8",
+        "rank": 1,
+        "match": "Qatar v Switzerland",
+        "commence_time": "2026-06-13T19:04:00Z",
+        "priority_tier": "high",
+        "status": "missing_rows",
+        "raw_row_count": 0,
+        "valid_row_count": 0,
+        "missing_fields": [
+          "tab_match_name",
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref",
+          "verification_status"
+        ],
+        "missing_directions": [
+          "over",
+          "under"
+        ],
+        "invalid_issues": [],
+        "next_action": "补字段 tab_match_name, team_scope, tab_market_name, selection_name；补方向 over/under"
+      },
+      {
+        "event_id": "f6c8748a16516e0998f95de14235432a",
+        "rank": 2,
+        "match": "Brazil v Morocco",
+        "commence_time": "2026-06-13T22:00:00Z",
+        "priority_tier": "high",
+        "status": "missing_rows",
+        "raw_row_count": 0,
+        "valid_row_count": 0,
+        "missing_fields": [
+          "tab_match_name",
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref",
+          "verification_status"
+        ],
+        "missing_directions": [
+          "over",
+          "under"
+        ],
+        "invalid_issues": [],
+        "next_action": "补字段 tab_match_name, team_scope, tab_market_name, selection_name；补方向 over/under"
+      },
+      {
+        "event_id": "5ae41a06735c926eeb7f74006933adce",
+        "rank": 3,
+        "match": "Haiti v Scotland",
+        "commence_time": "2026-06-14T01:00:00Z",
+        "priority_tier": "high",
+        "status": "missing_rows",
+        "raw_row_count": 0,
+        "valid_row_count": 0,
+        "missing_fields": [
+          "tab_match_name",
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref",
+          "verification_status"
+        ],
+        "missing_directions": [
+          "over",
+          "under"
+        ],
+        "invalid_issues": [],
+        "next_action": "补字段 tab_match_name, team_scope, tab_market_name, selection_name；补方向 over/under"
+      },
+      {
+        "event_id": "564084f52cc9f1abcc18187c168a7cdc",
+        "rank": 4,
+        "match": "Australia v Turkey",
+        "commence_time": "2026-06-14T04:00:00Z",
+        "priority_tier": "high",
+        "status": "missing_rows",
+        "raw_row_count": 0,
+        "valid_row_count": 0,
+        "missing_fields": [
+          "tab_match_name",
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref",
+          "verification_status"
+        ],
+        "missing_directions": [
+          "over",
+          "under"
+        ],
+        "invalid_issues": [],
+        "next_action": "补字段 tab_match_name, team_scope, tab_market_name, selection_name；补方向 over/under"
+      },
+      {
+        "event_id": "d79edbd6aaeb578d33e313446b18d333",
+        "rank": 5,
+        "match": "Germany v Curaçao",
+        "commence_time": "2026-06-14T17:00:00Z",
+        "priority_tier": "high",
+        "status": "missing_rows",
+        "raw_row_count": 0,
+        "valid_row_count": 0,
+        "missing_fields": [
+          "tab_match_name",
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref",
+          "verification_status"
+        ],
+        "missing_directions": [
+          "over",
+          "under"
+        ],
+        "invalid_issues": [],
+        "next_action": "补字段 tab_match_name, team_scope, tab_market_name, selection_name；补方向 over/under"
+      },
+      {
+        "event_id": "32ec06abda2398ac41501c86eb9aa376",
+        "rank": 6,
+        "match": "Netherlands v Japan",
+        "commence_time": "2026-06-14T20:00:00Z",
+        "priority_tier": "high",
+        "status": "missing_rows",
+        "raw_row_count": 0,
+        "valid_row_count": 0,
+        "missing_fields": [
+          "tab_match_name",
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref",
+          "verification_status"
+        ],
+        "missing_directions": [
+          "over",
+          "under"
+        ],
+        "invalid_issues": [],
+        "next_action": "补字段 tab_match_name, team_scope, tab_market_name, selection_name；补方向 over/under"
+      },
+      {
+        "event_id": "05752bb341e197001387b64f3a06b9b2",
+        "rank": 7,
+        "match": "Ivory Coast v Ecuador",
+        "commence_time": "2026-06-14T23:00:00Z",
+        "priority_tier": "high",
+        "status": "missing_rows",
+        "raw_row_count": 0,
+        "valid_row_count": 0,
+        "missing_fields": [
+          "tab_match_name",
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref",
+          "verification_status"
+        ],
+        "missing_directions": [
+          "over",
+          "under"
+        ],
+        "invalid_issues": [],
+        "next_action": "补字段 tab_match_name, team_scope, tab_market_name, selection_name；补方向 over/under"
+      },
+      {
+        "event_id": "b55f9569de3f4d731bc5537ff5ff43e4",
+        "rank": 8,
+        "match": "Sweden v Tunisia",
+        "commence_time": "2026-06-15T02:00:00Z",
+        "priority_tier": "high",
+        "status": "missing_rows",
+        "raw_row_count": 0,
+        "valid_row_count": 0,
+        "missing_fields": [
+          "tab_match_name",
+          "team_scope",
+          "tab_market_name",
+          "selection_name",
+          "line",
+          "decimal_odds",
+          "observed_at_aest",
+          "operator_initials",
+          "evidence_note_or_screenshot_ref",
+          "verification_status"
+        ],
+        "missing_directions": [
+          "over",
+          "under"
+        ],
+        "invalid_issues": [],
+        "next_action": "补字段 tab_match_name, team_scope, tab_market_name, selection_name；补方向 over/under"
+      }
+    ],
+    "next_action": "下一批尚未填写；从成对模板开始录入。"
+  },
+  "batches": [
+    {
+      "batch_id": "TT-001",
+      "status": "pending_manual_readonly_verification",
+      "event_count": 8,
+      "rank_start": 1,
+      "rank_end": 8,
+      "priority_mix": {
+        "high": 8
+      },
+      "action": "人工只读 TAB Team Total O/U，补齐 Over/Under 成对赔率；不点击 odds，不加入 下注单。",
+      "rows": [
+        {
+          "rank": 1,
+          "event_id": "26634922d3f78c146440816023e40de8",
+          "match": "Qatar v Switzerland",
+          "commence_time": "2026-06-13T19:04:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Double Chance",
+            "Draw No Bet",
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 2,
+          "event_id": "f6c8748a16516e0998f95de14235432a",
+          "match": "Brazil v Morocco",
+          "commence_time": "2026-06-13T22:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Double Chance",
+            "Draw No Bet",
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 3,
+          "event_id": "5ae41a06735c926eeb7f74006933adce",
+          "match": "Haiti v Scotland",
+          "commence_time": "2026-06-14T01:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Double Chance",
+            "Draw No Bet",
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 4,
+          "event_id": "564084f52cc9f1abcc18187c168a7cdc",
+          "match": "Australia v Turkey",
+          "commence_time": "2026-06-14T04:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Double Chance",
+            "Draw No Bet",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 5,
+          "event_id": "d79edbd6aaeb578d33e313446b18d333",
+          "match": "Germany v Curaçao",
+          "commence_time": "2026-06-14T17:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 6,
+          "event_id": "32ec06abda2398ac41501c86eb9aa376",
+          "match": "Netherlands v Japan",
+          "commence_time": "2026-06-14T20:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Double Chance",
+            "Draw No Bet",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 7,
+          "event_id": "05752bb341e197001387b64f3a06b9b2",
+          "match": "Ivory Coast v Ecuador",
+          "commence_time": "2026-06-14T23:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Draw No Bet",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 8,
+          "event_id": "b55f9569de3f4d731bc5537ff5ff43e4",
+          "match": "Sweden v Tunisia",
+          "commence_time": "2026-06-15T02:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Double Chance",
+            "Draw No Bet",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        }
+      ]
+    },
+    {
+      "batch_id": "TT-002",
+      "status": "pending_manual_readonly_verification",
+      "event_count": 8,
+      "rank_start": 9,
+      "rank_end": 16,
+      "priority_mix": {
+        "high": 8
+      },
+      "action": "人工只读 TAB Team Total O/U，补齐 Over/Under 成对赔率；不点击 odds，不加入 下注单。",
+      "rows": [
+        {
+          "rank": 9,
+          "event_id": "c54f00b11925751d2b62988775c6c239",
+          "match": "Spain v Cape Verde",
+          "commence_time": "2026-06-15T16:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 10,
+          "event_id": "fbfb95c62003fd6d828b309f96ee1f9b",
+          "match": "Belgium v Egypt",
+          "commence_time": "2026-06-15T19:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Double Chance",
+            "Draw No Bet",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 11,
+          "event_id": "64b91c5f2db61c7358a4f05459e83c52",
+          "match": "Saudi Arabia v Uruguay",
+          "commence_time": "2026-06-15T22:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Double Chance",
+            "Draw No Bet",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 12,
+          "event_id": "ec51b9c44ad5e34552f3ab53f7262813",
+          "match": "Iran v New Zealand",
+          "commence_time": "2026-06-16T01:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Double Chance",
+            "Draw No Bet",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 13,
+          "event_id": "73a4fcd14cc9766b9b9bfd50b8ca153a",
+          "match": "France v Senegal",
+          "commence_time": "2026-06-16T19:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Double Chance",
+            "Draw No Bet",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 14,
+          "event_id": "4d4f2b9b78182b557d4fbf8dcf4f4af2",
+          "match": "Iraq v Norway",
+          "commence_time": "2026-06-16T22:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Both Teams to Score",
+            "Double Chance",
+            "Draw No Bet",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 15,
+          "event_id": "f31b2ee9e1cc6f7e641467f8237eaa21",
+          "match": "Argentina v Algeria",
+          "commence_time": "2026-06-17T01:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 16,
+          "event_id": "25161cf6cf0cd9be17ae2e7e224a1f45",
+          "match": "Austria v Jordan",
+          "commence_time": "2026-06-17T04:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        }
+      ]
+    },
+    {
+      "batch_id": "TT-003",
+      "status": "pending_manual_readonly_verification",
+      "event_count": 8,
+      "rank_start": 17,
+      "rank_end": 24,
+      "priority_mix": {
+        "high": 8
+      },
+      "action": "人工只读 TAB Team Total O/U，补齐 Over/Under 成对赔率；不点击 odds，不加入 下注单。",
+      "rows": [
+        {
+          "rank": 17,
+          "event_id": "6cc871c121a1869b4612d3fb22fa9d55",
+          "match": "Portugal v DR Congo",
+          "commence_time": "2026-06-17T17:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 18,
+          "event_id": "689096c8cd7e2753b9fec95321943c5d",
+          "match": "England v Croatia",
+          "commence_time": "2026-06-17T20:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 19,
+          "event_id": "87afdb85c977b451e1c00f5e3e632601",
+          "match": "Ghana v Panama",
+          "commence_time": "2026-06-17T23:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 20,
+          "event_id": "22083e7a8e5362c711bc05c1e1319a1f",
+          "match": "Uzbekistan v Colombia",
+          "commence_time": "2026-06-18T02:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 21,
+          "event_id": "66ebb9e3f949caded535d97ce686ca09",
+          "match": "Czech Republic v South Africa",
+          "commence_time": "2026-06-18T16:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 22,
+          "event_id": "0f2aeae6ac8e77223848d23a4ca86b0d",
+          "match": "Mexico v South Korea",
+          "commence_time": "2026-06-19T01:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 23,
+          "event_id": "065b3573e875f8d23803357f73e5b99e",
+          "match": "USA v Australia",
+          "commence_time": "2026-06-19T19:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 24,
+          "event_id": "4cd769aa7bae0ad9762bd69b80ef2903",
+          "match": "Scotland v Morocco",
+          "commence_time": "2026-06-19T22:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        }
+      ]
+    },
+    {
+      "batch_id": "TT-004",
+      "status": "pending_manual_readonly_verification",
+      "event_count": 8,
+      "rank_start": 25,
+      "rank_end": 32,
+      "priority_mix": {
+        "high": 8
+      },
+      "action": "人工只读 TAB Team Total O/U，补齐 Over/Under 成对赔率；不点击 odds，不加入 下注单。",
+      "rows": [
+        {
+          "rank": 25,
+          "event_id": "ef0f74a991d3e35798ae5af77667bce1",
+          "match": "Brazil v Haiti",
+          "commence_time": "2026-06-20T01:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 26,
+          "event_id": "f955d4b3395ce6e3b5ac1031ca52ca4e",
+          "match": "Turkey v Paraguay",
+          "commence_time": "2026-06-20T03:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 27,
+          "event_id": "4f0c518545b0096c68326daf25bffc1e",
+          "match": "Netherlands v Sweden",
+          "commence_time": "2026-06-20T17:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 28,
+          "event_id": "f1ab0f69832972a329243522ceaa7804",
+          "match": "Germany v Ivory Coast",
+          "commence_time": "2026-06-20T20:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 29,
+          "event_id": "681895f294b670b4c7b14495dfb583bc",
+          "match": "Ecuador v Curaçao",
+          "commence_time": "2026-06-21T00:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 30,
+          "event_id": "dfc5202cf1b8ae002cf952cd04f235b9",
+          "match": "Tunisia v Japan",
+          "commence_time": "2026-06-21T04:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 31,
+          "event_id": "73529a242e319a86bf3d00ddb4accc37",
+          "match": "Spain v Saudi Arabia",
+          "commence_time": "2026-06-21T16:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 32,
+          "event_id": "5f92f257386ec5bf7c6e2498a21f3a61",
+          "match": "Belgium v Iran",
+          "commence_time": "2026-06-21T19:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        }
+      ]
+    },
+    {
+      "batch_id": "TT-005",
+      "status": "pending_manual_readonly_verification",
+      "event_count": 8,
+      "rank_start": 33,
+      "rank_end": 40,
+      "priority_mix": {
+        "high": 8
+      },
+      "action": "人工只读 TAB Team Total O/U，补齐 Over/Under 成对赔率；不点击 odds，不加入 下注单。",
+      "rows": [
+        {
+          "rank": 33,
+          "event_id": "852a3abe6d46820720febc0fedebff9a",
+          "match": "Uruguay v Cape Verde",
+          "commence_time": "2026-06-21T22:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 34,
+          "event_id": "c1ec9a65f4b4cf74477b368a7d6282de",
+          "match": "New Zealand v Egypt",
+          "commence_time": "2026-06-22T01:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 35,
+          "event_id": "be6c63f416c67bca1300a98f5b89c3af",
+          "match": "Argentina v Austria",
+          "commence_time": "2026-06-22T17:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 36,
+          "event_id": "7ad7a0ce2ef2618bb59b066da5642f70",
+          "match": "France v Iraq",
+          "commence_time": "2026-06-22T21:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 37,
+          "event_id": "3f48473742ca0fd2a85930554720c75e",
+          "match": "Norway v Senegal",
+          "commence_time": "2026-06-23T00:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 38,
+          "event_id": "fd8533b650e655030f6a7946f8795db2",
+          "match": "Jordan v Algeria",
+          "commence_time": "2026-06-23T03:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 39,
+          "event_id": "8ba93d190f1f934e33862a97a6353a6e",
+          "match": "Portugal v Uzbekistan",
+          "commence_time": "2026-06-23T17:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 40,
+          "event_id": "2f49dd8deae3079dc4eb2d634d18a99c",
+          "match": "England v Ghana",
+          "commence_time": "2026-06-23T20:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        }
+      ]
+    },
+    {
+      "batch_id": "TT-006",
+      "status": "pending_manual_readonly_verification",
+      "event_count": 8,
+      "rank_start": 41,
+      "rank_end": 48,
+      "priority_mix": {
+        "high": 8
+      },
+      "action": "人工只读 TAB Team Total O/U，补齐 Over/Under 成对赔率；不点击 odds，不加入 下注单。",
+      "rows": [
+        {
+          "rank": 41,
+          "event_id": "c1bc8c26480cd42b89a0de5329581314",
+          "match": "Panama v Croatia",
+          "commence_time": "2026-06-23T23:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 42,
+          "event_id": "68bfc965eb267508e04d8e8d75c1a0ae",
+          "match": "Colombia v DR Congo",
+          "commence_time": "2026-06-24T02:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 43,
+          "event_id": "d1279ce7f33136a33e99ad442fc855e8",
+          "match": "Morocco v Haiti",
+          "commence_time": "2026-06-24T22:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 44,
+          "event_id": "885ba95805db310a7bcc3fb1a7a6dd28",
+          "match": "Scotland v Brazil",
+          "commence_time": "2026-06-24T22:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 45,
+          "event_id": "5993bd5196ca09f83990f0c3261e442e",
+          "match": "Czech Republic v Mexico",
+          "commence_time": "2026-06-25T01:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 46,
+          "event_id": "c0355dfc6e26ec327e379b6ef5824a5f",
+          "match": "South Africa v South Korea",
+          "commence_time": "2026-06-25T01:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 47,
+          "event_id": "a5a0b544a984ab16e564264f3e859b43",
+          "match": "Curaçao v Ivory Coast",
+          "commence_time": "2026-06-25T20:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 48,
+          "event_id": "0ec28b84ec399bd4dffbe8d1bc72b3c4",
+          "match": "Ecuador v Germany",
+          "commence_time": "2026-06-25T20:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        }
+      ]
+    },
+    {
+      "batch_id": "TT-007",
+      "status": "pending_manual_readonly_verification",
+      "event_count": 8,
+      "rank_start": 49,
+      "rank_end": 56,
+      "priority_mix": {
+        "high": 3,
+        "medium": 5
+      },
+      "action": "人工只读 TAB Team Total O/U，补齐 Over/Under 成对赔率；不点击 odds，不加入 下注单。",
+      "rows": [
+        {
+          "rank": 49,
+          "event_id": "0ed0233bddc4eafc8507f86a9c17b998",
+          "match": "Japan v Sweden",
+          "commence_time": "2026-06-25T23:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 50,
+          "event_id": "f3c4657daa143a0c5bd62cb370d01ce4",
+          "match": "Tunisia v Netherlands",
+          "commence_time": "2026-06-25T23:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 51,
+          "event_id": "22f6ac06dfcc88a847920f62633e6459",
+          "match": "Paraguay v Australia",
+          "commence_time": "2026-06-26T02:00:00Z",
+          "priority_tier": "high",
+          "covered_markets": [
+            "Handicap",
+            "Result",
+            "Total Goals Over/Under"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Total O/U 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 52,
+          "event_id": "f41aeac9a8343a84b4950f15ea25fba2",
+          "match": "Turkey v USA",
+          "commence_time": "2026-06-26T02:00:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 53,
+          "event_id": "b86b4d60f773e9e3c46c00e9a6496e79",
+          "match": "Norway v France",
+          "commence_time": "2026-06-26T19:00:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 54,
+          "event_id": "7e6aee294ea1a4792c59558791084528",
+          "match": "Senegal v Iraq",
+          "commence_time": "2026-06-26T19:00:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 55,
+          "event_id": "e07b1926be5a4d515c7eb108dbcee9c5",
+          "match": "Cape Verde v Saudi Arabia",
+          "commence_time": "2026-06-27T00:00:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 56,
+          "event_id": "dcff2e31c0bce001a4db5caaf4fa8822",
+          "match": "Uruguay v Spain",
+          "commence_time": "2026-06-27T00:00:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        }
+      ]
+    },
+    {
+      "batch_id": "TT-008",
+      "status": "pending_manual_readonly_verification",
+      "event_count": 8,
+      "rank_start": 57,
+      "rank_end": 64,
+      "priority_mix": {
+        "medium": 8
+      },
+      "action": "人工只读 TAB Team Total O/U，补齐 Over/Under 成对赔率；不点击 odds，不加入 下注单。",
+      "rows": [
+        {
+          "rank": 57,
+          "event_id": "3e3b5fa2b3c963e74cf044c60db0b573",
+          "match": "Egypt v Iran",
+          "commence_time": "2026-06-27T03:00:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 58,
+          "event_id": "581691da05dcd75b5c6d3be91ee9d2ab",
+          "match": "New Zealand v Belgium",
+          "commence_time": "2026-06-27T03:00:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 59,
+          "event_id": "537c0997cd899394f47f16545b7068b2",
+          "match": "Croatia v Ghana",
+          "commence_time": "2026-06-27T21:00:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 60,
+          "event_id": "4be17c8e1ccfecb0f2a5ef79e045c415",
+          "match": "Panama v England",
+          "commence_time": "2026-06-27T21:00:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 61,
+          "event_id": "67ae5751c401a98409b8566ae4897069",
+          "match": "Colombia v Portugal",
+          "commence_time": "2026-06-27T23:30:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 62,
+          "event_id": "13eab94a136b9c264ba974cf437a5f71",
+          "match": "DR Congo v Uzbekistan",
+          "commence_time": "2026-06-27T23:30:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 63,
+          "event_id": "8756200e539155e571557c4f2e0d7f05",
+          "match": "Algeria v Austria",
+          "commence_time": "2026-06-28T02:00:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        },
+        {
+          "rank": 64,
+          "event_id": "54697f453437ab26276d773be1d72e9b",
+          "match": "Jordan v Argentina",
+          "commence_time": "2026-06-28T02:00:00Z",
+          "priority_tier": "medium",
+          "covered_markets": [
+            "Handicap",
+            "Result"
+          ],
+          "rank_reason": "Result 已由 provider 覆盖；Handicap 已由 provider 覆盖；Team Total 是当前主要缺口。",
+          "required_fields": [
+            "team_scope",
+            "tab_market_name",
+            "selection_name",
+            "line",
+            "decimal_odds",
+            "observed_at_aest",
+            "operator_initials",
+            "evidence_note_or_screenshot_ref"
+          ]
+        }
+      ]
+    }
+  ],
+  "operator_checklist": [
+    "打开 TAB 的 2026 World Cup Matches，对照 batch 中 match 和 commence_time。",
+    "只读 Team Total Goals Over/Under；每个 event 至少记录同一 line 的 Over 与 Under 成对赔率。",
+    "保存 event_id、team_scope、selection_name、line、decimal_odds、observed_at_aest、operator_initials 和证据备注。",
+    "写入 manual_verification/provider_team_total_manual_verification.csv 后重建 app；通过 hash gate 前 stake 保持 AUD 0。"
+  ],
+  "gate_snapshot": {
+    "import_status": "import_missing",
+    "hash_gate_status": "waiting_for_import",
+    "overlay_preview_status": "waiting_for_import",
+    "overlay_publish_preflight_status": "waiting_for_import",
+    "ready_for_manual_signature": false,
+    "ready_for_publish_preflight": false,
+    "overlay_publish_preflight_passed": false
+  },
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "current_executable_new_stake_aud": 0,
+  "recommended_next_action": "下一批执行 TT-001，校验 8 场；剩余高优先级 51 场，仍保持 stake AUD 0。",
+  "truthfulness_note": "该 workbench 只组织人工只读校验任务；不自动登录 TAB、不点击赔率、不修改 下注单、不发布正式 raw，也不生成新增下注金额。",
+  "pair_templates": {
+    "all_candidates_csv": "provider_manual_pair_template_latest.csv",
+    "next_batch_csv": "provider_manual_next_batch_pair_template_latest.csv",
+    "all_candidate_pair_rows": 128,
+    "next_batch_pair_rows": 16,
+    "import_target": "manual_verification/provider_team_total_manual_verification.csv",
+    "note": "成对模板预留 Over/Under 两行，但核心字段默认留空；人工填写后保存到 import_target。"
+  },
+  "operator_cockpit": {
+    "title": "TT-001 Team Total 补齐操作台",
+    "status": "waiting_for_first_batch",
+    "primary_action": "下一批执行 TT-001，校验 8 场；剩余高优先级 51 场，仍保持 stake AUD 0。",
+    "current_batch_id": "TT-001",
+    "current_batch_event_count": 8,
+    "current_batch_pair_rows": 16,
+    "next_batch_pair_template_csv": "provider_manual_next_batch_pair_template_latest.csv",
+    "all_pair_template_csv": "provider_manual_pair_template_latest.csv",
+    "import_target": "manual_verification/provider_team_total_manual_verification.csv",
+    "import_status": "import_missing",
+    "hash_gate_status": "waiting_for_import",
+    "overlay_preview_status": "waiting_for_import",
+    "overlay_publish_preflight_status": "waiting_for_import",
+    "publish_status": "blocked_until_manual_import_and_signature",
+    "can_publish_now": false,
+    "stake_policy": "通过 manual import、hash gate、overlay preview、签名预检和 explicit publish 前，current executable new stake 固定 AUD 0。",
+    "operator_warning": "只读 TAB 页面并人工记录；禁止点击赔率、加入 Bet Slip、提交下注或绕过 TAB 访问控制。"
+  },
+  "next_batch_summary": {
+    "batch_id": "TT-001",
+    "event_count": 8,
+    "pair_rows_required": 16,
+    "rank_start": 1,
+    "rank_end": 8,
+    "high_priority_count": 8,
+    "priority_mix": {
+      "high": 8
+    },
+    "top_matches": [
+      {
+        "rank": 1,
+        "match": "Qatar v Switzerland",
+        "commence_time": "2026-06-13T19:04:00Z",
+        "priority_tier": "high"
+      },
+      {
+        "rank": 2,
+        "match": "Brazil v Morocco",
+        "commence_time": "2026-06-13T22:00:00Z",
+        "priority_tier": "high"
+      },
+      {
+        "rank": 3,
+        "match": "Haiti v Scotland",
+        "commence_time": "2026-06-14T01:00:00Z",
+        "priority_tier": "high"
+      },
+      {
+        "rank": 4,
+        "match": "Australia v Turkey",
+        "commence_time": "2026-06-14T04:00:00Z",
+        "priority_tier": "high"
+      },
+      {
+        "rank": 5,
+        "match": "Germany v Curaçao",
+        "commence_time": "2026-06-14T17:00:00Z",
+        "priority_tier": "high"
+      }
+    ]
+  },
+  "field_checklist": [
+    {
+      "field": "event_id",
+      "label": "事件 ID",
+      "required": true,
+      "validation": "必须来自模板，不要手写改动。",
+      "reason": "用于把人工 Team Total 行合回 provider staged match。"
+    },
+    {
+      "field": "team_scope",
+      "label": "主/客队范围",
+      "required": true,
+      "validation": "home 或 away。",
+      "reason": "区分 Team Total 属于哪支球队。"
+    },
+    {
+      "field": "tab_match_name",
+      "label": "TAB 比赛名",
+      "required": true,
+      "validation": "按 TAB 页面显示填写。",
+      "reason": "用于人工复核 provider match 与 TAB match 是否一致。"
+    },
+    {
+      "field": "tab_market_name",
+      "label": "TAB 盘口名",
+      "required": true,
+      "validation": "必须包含 Team Total / Team Goals 等语义。",
+      "reason": "防止把 Total Score O/U 错填为 Team Total。"
+    },
+    {
+      "field": "selection_name",
+      "label": "下注项名称",
+      "required": true,
+      "validation": "同一 event、team_scope、line 必须有 Over 与 Under 两行。",
+      "reason": "成对记录才能进入 hash gate。"
+    },
+    {
+      "field": "line",
+      "label": "盘口线",
+      "required": true,
+      "validation": "必须是数字，如 0.5、1.5、2.5。",
+      "reason": "用于验证 Over/Under 是否同线。"
+    },
+    {
+      "field": "decimal_odds",
+      "label": "十进制赔率",
+      "required": true,
+      "validation": "必须大于 1.00。",
+      "reason": "进入概率/EV 研究前必须是可解析价格。"
+    },
+    {
+      "field": "observed_at_aest",
+      "label": "观察时间",
+      "required": true,
+      "validation": "使用 AEST 时间戳。",
+      "reason": "后续 CLV、回测和旧报告对比需要时间点。"
+    },
+    {
+      "field": "operator_initials",
+      "label": "操作员缩写",
+      "required": true,
+      "validation": "填写人工核验人缩写。",
+      "reason": "人工签名和后续复盘需要责任链。"
+    },
+    {
+      "field": "evidence_note_or_screenshot_ref",
+      "label": "证据备注",
+      "required": true,
+      "validation": "写明 TAB 页面观察备注或截图引用。",
+      "reason": "正式发布前需要人工复核依据。"
+    },
+    {
+      "field": "verification_status",
+      "label": "校验状态",
+      "required": true,
+      "validation": "verified / manual_verified / pending_review。",
+      "reason": "只有明确人工校验状态的行才能进入质量诊断。"
+    }
+  ],
+  "quality_gate_summary": {
+    "import_quality_status": "waiting_for_manual_rows",
+    "next_batch_quality_status_counts": {
+      "missing_rows": 8
+    },
+    "missing_event_count": 64,
+    "partial_event_count": 0,
+    "invalid_event_count": 0,
+    "complete_event_count": 0,
+    "hash_gate_status": "waiting_for_import",
+    "overlay_preview_status": "waiting_for_import",
+    "publish_preflight_status": "waiting_for_import",
+    "next_action": "当前未检测到人工行；从 TT-001 下一批成对模板开始填写。"
+  },
+  "workflow_steps": [
+    {
+      "step": 1,
+      "title": "打开下一批模板",
+      "action": "使用 provider_manual_next_batch_pair_template_latest.csv。",
+      "output": "TT-001 的 Over/Under 成对待填行。",
+      "status": "manual_required"
+    },
+    {
+      "step": 2,
+      "title": "只读 TAB 核验",
+      "action": "按 match、commence_time、team_scope 查 Team Total Goals Over/Under。",
+      "output": "同一 team_scope + line 的 Over 与 Under 两行。",
+      "status": "manual_required"
+    },
+    {
+      "step": 3,
+      "title": "保存导入文件",
+      "action": "把填好的行保存到 manual_verification/provider_team_total_manual_verification.csv。",
+      "output": "manual import CSV。",
+      "status": "import_missing"
+    },
+    {
+      "step": 4,
+      "title": "重建工作台与 Hash Gate",
+      "action": "运行 build/download app 或 provider manual verification bundle。",
+      "output": "hash gate、overlay preview、publish preflight。",
+      "status": "waiting_for_import"
+    },
+    {
+      "step": 5,
+      "title": "签名后显式发布",
+      "action": "只有 overlay approval hash 匹配后，才运行 publish_provider_manual_overlay.py。",
+      "output": "正式 Matches raw publish gate；仍不自动下注。",
+      "status": "blocked_until_manual_import_and_signature"
+    }
+  ],
+  "action_contract": {
+    "allowed_actions": [
+      "读取 TAB 页面上的 Team Total 盘口文字和赔率",
+      "填写 CSV 模板",
+      "运行本地状态/报告重建命令",
+      "在签名 gate 通过后显式发布 raw"
+    ],
+    "forbidden_actions": [
+      "自动下注",
+      "点击赔率",
+      "加入 Bet Slip",
+      "提交或修改 wagering ticket",
+      "绕过 TAB CAPTCHA、指纹、登录或访问控制"
+    ],
+    "unlock_conditions": [
+      "manual CSV 结构完整",
+      "hash gate ready_for_manual_signature=true",
+      "overlay preview ready_for_publish_preflight=true",
+      "overlay approval hash 匹配且 approved_by_user=true",
+      "explicit publish command 成功"
+    ],
+    "stake_boundary": "所有条件满足前 current_executable_new_stake_aud 必须保持 0。"
+  },
+  "manual_intake_contract": {
+    "title": "TT-001 Team Total 人工导入合同",
+    "status": "waiting_for_first_batch",
+    "current_batch_id": "TT-001",
+    "template_csv": "provider_manual_next_batch_pair_template_latest.csv",
+    "template_asset_path": "app_assets/provider_manual_next_batch_pair_template_latest.csv",
+    "import_target": "manual_verification/provider_team_total_manual_verification.csv",
+    "import_target_display": "outputs/manual_verification/provider_team_total_manual_verification.csv",
+    "rebuild_command": "TAB_FIFA_FAST_ENTRY_REBUILD=1 python3 scripts/build_downloads_app_entry.py",
+    "status_check_command": "python3 -m unittest tab-research-pipeline.tests.test_pipeline.PipelineTests.test_provider_manual_verification_accepts_complete_over_under_pair",
+    "publish_command_after_signature": "python3 publish_provider_manual_overlay.py",
+    "current_state": {
+      "missing_event_count": 64,
+      "partial_event_count": 0,
+      "invalid_event_count": 0,
+      "complete_event_count": 0,
+      "next_batch_pair_rows": 16,
+      "can_publish_now": false,
+      "current_executable_new_stake_aud": 0
+    },
+    "operator_steps": [
+      "打开 provider_manual_next_batch_pair_template_latest.csv，只处理当前批次 TT-001。",
+      "在 TAB 页面只读核验 Team Total Goals Over/Under；每个 event 至少填同一 team_scope + line 的 Over 与 Under 两行。",
+      "保存完整 CSV 到 outputs/manual_verification/provider_team_total_manual_verification.csv。",
+      "运行 rebuild_command 重建 workbench、hash gate、overlay preview 和 Downloads app。",
+      "只有 hash/approval/preflight 全部通过后，才允许人工显式运行 publish_command_after_signature；仍不自动下注。"
+    ],
+    "acceptance_criteria": [
+      "next_batch_quality.status_counts 中不再出现 missing_rows 或 invalid_rows。",
+      "import_quality.invalid_event_count=0。",
+      "hash_gate_status 不再是 waiting_for_import。",
+      "overlay_preview_status 不再是 waiting_for_import。",
+      "formal_publish_allowed=false 直到人工签名和显式 publish 通过。",
+      "current_executable_new_stake_aud=0。"
+    ],
+    "forbidden_actions": [
+      "自动下注",
+      "点击赔率",
+      "加入 Bet Slip",
+      "提交或修改 wagering ticket",
+      "绕过 TAB CAPTCHA、指纹、登录或访问控制"
+    ],
+    "next_safe_action": "当前未检测到人工行；从 TT-001 下一批成对模板开始填写。"
+  },
+  "artifacts": {
+    "json": "provider_manual_workbench_latest.json",
+    "markdown": "provider_manual_workbench_latest.md",
+    "pdf": "provider_manual_workbench_latest.pdf",
+    "pdf_summary": {
+      "path": "provider_manual_workbench_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 1,
+      "detail_row_count": 8,
+      "extra_table_count": 0,
+      "extra_detail_row_count": 0
+    }
+  }
+}

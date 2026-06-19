@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TAB FIFA 盘口研究仪表盘</title>
+  <style>
+    :root {
+      --ink:#172033;
+      --muted:#5F6B7A;
+      --line:#D9E1EA;
+      --surface:#FFFFFF;
+      --soft:#F5F7FA;
+      --head:#FBFCFE;
+      --green:#247A5A;
+      --red:#C62828;
+      --blue:#1F4E79;
+      --amber:#A56710;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+      color:var(--ink);
+      background:#F1F4F7;
+    }
+    main { max-width:1240px; margin:0 auto; padding:24px; }
+    header { display:flex; justify-content:space-between; gap:16px; align-items:flex-end; margin-bottom:18px; }
+    h1 { margin:0; font-size:25px; line-height:1.25; letter-spacing:0; }
+    h2 { margin:0 0 10px; font-size:17px; line-height:1.3; }
+    .sub { color:var(--muted); font-size:13px; margin-top:6px; }
+    .pill { display:inline-flex; align-items:center; min-height:26px; padding:4px 9px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--muted); font-size:12px; }
+    .grid { display:grid; gap:14px; }
+    .kpis { grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); margin-bottom:14px; }
+    .panel { background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:14px; }
+    .kpi-label { color:var(--muted); font-size:12px; margin-bottom:8px; }
+    .kpi-value { font-size:20px; font-weight:700; white-space:nowrap; }
+    .state-ok { border-top:3px solid var(--green); }
+    .state-warn { border-top:3px solid var(--amber); }
+    .state-alert { border-top:3px solid var(--red); }
+    .state-neutral { border-top:3px solid #91A0B3; }
+    .layout { grid-template-columns:1.1fr .9fr; }
+    .charts { grid-template-columns:1fr 1fr; }
+    table { width:100%; border-collapse:collapse; font-size:12px; }
+    th { background:var(--head); color:#0B1F3A; text-align:left; font-weight:700; }
+    th,td { border-bottom:1px solid var(--line); padding:8px 7px; vertical-align:top; overflow-wrap:anywhere; }
+    tr:nth-child(even) td { background:#FAFBFC; }
+    .buy { background:var(--red); color:white; border-radius:5px; padding:2px 6px; display:inline-block; }
+    .watch { color:var(--muted); }
+    .ok { color:var(--green); font-weight:700; }
+    .bad { color:var(--red); font-weight:700; }
+    svg { width:100%; height:auto; display:block; }
+    .note { color:var(--muted); font-size:12px; line-height:1.55; }
+    .artifacts a { color:var(--blue); text-decoration:none; word-break:break-all; }
+    .artifacts a:hover { text-decoration:underline; }
+    @media (max-width: 960px) {
+      main { padding:14px; }
+      header { display:block; }
+      .kpis,.layout,.charts { grid-template-columns:1fr; }
+      .kpi-value { white-space:normal; }
+      .panel { min-width:0; overflow:hidden; }
+      table { font-size:11px; table-layout:fixed; }
+      th,td { padding:7px 5px; }
+      .recommendation-table { table-layout:auto; }
+      .recommendation-table thead { display:none; }
+      .recommendation-table tr { display:block; border-bottom:1px solid var(--line); padding:8px 0; }
+      .recommendation-table td {
+        display:grid;
+        grid-template-columns:72px minmax(0,1fr);
+        gap:8px;
+        border-bottom:0;
+        padding:4px 2px;
+        background:transparent !important;
+      }
+      .recommendation-table td::before {
+        content:attr(data-label);
+        color:var(--muted);
+        font-weight:700;
+      }
+      .recommendation-table .buy,
+      .recommendation-table .watch {
+        justify-self:start;
+        width:max-content;
+      }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>TAB FIFA 2026 盘口研究仪表盘</h1>
+      <div class="sub">报告日期 04062026 · Run 20260604T135753Z-212e8e9a</div>
+    </div>
+    <div class="pill">静态本地文件 · 不自动下注 · 更新时间 2026-06-06T02:35:35.957339+00:00</div>
+  </header>
+
+  <section class="grid kpis">
+    <div class="panel state-ok">
+      <div class="kpi-label">技术自动化</div>
+      <div class="kpi-value">通过</div>
+    </div>
+<div class="panel state-neutral">
+      <div class="kpi-label">正式调度入口</div>
+      <div class="kpi-value">未授权</div>
+    </div>
+<div class="panel state-ok">
+      <div class="kpi-label">板块就绪</div>
+      <div class="kpi-value">5/5</div>
+    </div>
+<div class="panel state-alert">
+      <div class="kpi-label">新增执行金额</div>
+      <div class="kpi-value">AUD 100</div>
+    </div>
+<div class="panel state-ok">
+      <div class="kpi-label">报告对比</div>
+      <div class="kpi-value">+0 / 改0</div>
+    </div>
+<div class="panel state-warn">
+      <div class="kpi-label">模型分歧</div>
+      <div class="kpi-value">14场高分歧</div>
+    </div>
+<div class="panel state-ok">
+      <div class="kpi-label">本地数据库</div>
+      <div class="kpi-value">已保存</div>
+    </div>
+<div class="panel state-ok">
+      <div class="kpi-label">自动化历史</div>
+      <div class="kpi-value">8次</div>
+    </div>
+  </section>
+
+  <section class="grid layout">
+    <div class="panel">
+      <h2>板块自动化状态</h2>
+      <svg viewBox="0 0 620 204" role="img" aria-label="板块自动化就绪度"><title>板块自动化就绪度</title><text x="0" y="38" font-size="11" fill="#172033">Matches</text><rect x="210" y="24" width="320" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="24" width="320" height="17" fill="#247A5A" rx="4"></rect><text x="542" y="38" font-size="12" fill="#5F6B7A">100%</text><text x="0" y="68" font-size="11" fill="#172033">Futures</text><rect x="210" y="54" width="320" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="54" width="320" height="17" fill="#247A5A" rx="4"></rect><text x="542" y="68" font-size="12" fill="#5F6B7A">100%</text><text x="0" y="98" font-size="11" fill="#172033">Group Betting</text><rect x="210" y="84" width="320" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="84" width="320" height="17" fill="#247A5A" rx="4"></rect><text x="542" y="98" font-size="12" fill="#5F6B7A">100%</text><text x="0" y="128" font-size="11" fill="#172033">Australia Markets</text><rect x="210" y="114" width="320" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="114" width="320" height="17" fill="#247A5A" rx="4"></rect><text x="542" y="128" font-size="12" fill="#5F6B7A">100%</text><text x="0" y="158" font-size="11" fill="#172033">Team Futures Multi</text><rect x="210" y="144" width="320" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="144" width="320" height="17" fill="#247A5A" rx="4"></rect><text x="542" y="158" font-size="12" fill="#5F6B7A">100%</text><text x="0" y="198" font-size="11" fill="#5F6B7A">Raw新鲜度、Raw有效性、gate通过、报告存在四项等权计分。</text></svg>
+      <table aria-label="板块状态表">
+        <thead><tr><th>板块</th><th>就绪</th><th>Raw</th><th>Gate</th><th>缺口</th></tr></thead>
+        <tbody><tr><td>2026 World Cup Matches</td><td><span class="ok">就绪</span></td><td>新鲜/有效</td><td>通过</td><td>none</td></tr>
+<tr><td>2026 World Cup Futures</td><td><span class="ok">就绪</span></td><td>新鲜/有效</td><td>通过</td><td>none</td></tr>
+<tr><td>2026 World Cup Group Betting</td><td><span class="ok">就绪</span></td><td>新鲜/有效</td><td>通过</td><td>none</td></tr>
+<tr><td>2026 World Cup Australia Markets</td><td><span class="ok">就绪</span></td><td>新鲜/有效</td><td>通过</td><td>none</td></tr>
+<tr><td>2026 World Cup Team Futures Multi</td><td><span class="ok">就绪</span></td><td>新鲜/有效</td><td>通过</td><td>none</td></tr></tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <h2>新旧报告对比</h2>
+      <svg viewBox="0 0 430 174" role="img" aria-label="新旧报告对比"><title>新旧报告对比</title><text x="0" y="38" font-size="11" fill="#172033">新增</text><rect x="170" y="24" width="170" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="24" width="0" height="17" fill="#247A5A" rx="4"></rect><text x="352" y="38" font-size="12" fill="#5F6B7A">0</text><text x="0" y="68" font-size="11" fill="#172033">移除</text><rect x="170" y="54" width="170" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="54" width="0" height="17" fill="#C62828" rx="4"></rect><text x="352" y="68" font-size="12" fill="#5F6B7A">0</text><text x="0" y="98" font-size="11" fill="#172033">变化</text><rect x="170" y="84" width="170" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="84" width="0" height="17" fill="#A56710" rx="4"></rect><text x="352" y="98" font-size="12" fill="#5F6B7A">0</text><text x="0" y="128" font-size="11" fill="#172033">保留</text><rect x="170" y="114" width="170" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="114" width="170" height="17" fill="#1F4E79" rx="4"></rect><text x="352" y="128" font-size="12" fill="#5F6B7A">38</text><text x="0" y="168" font-size="11" fill="#5F6B7A">暴露变化 AUD 0</text></svg>
+      <div class="note">current-day private position snapshot missing; latest 私有持仓 capture diagnostic: access_denied via fresh-context (TAB 私有持仓 page access denied)<br>user has not authorized recurring automation<br>technical automation preflight failed; refusing to publish latest artifacts: current-day private position snapshot missing; latest 私有持仓 capture diagnostic: access_denied via fresh-context (TAB 私有持仓 page access denied)</div>
+      <table aria-label="板块级新旧报告对比">
+        <thead><tr><th>板块</th><th>新增</th><th>移除</th><th>变化</th><th>金额变化</th></tr></thead>
+        <tbody><tr><td>Australia Markets</td><td>0</td><td>0</td><td>0</td><td>AUD 0</td></tr>
+<tr><td>Futures</td><td>0</td><td>0</td><td>0</td><td>AUD 0</td></tr>
+<tr><td>Group Betting</td><td>0</td><td>0</td><td>0</td><td>AUD 0</td></tr>
+<tr><td>Matches</td><td>0</td><td>0</td><td>0</td><td>AUD 0</td></tr>
+<tr><td>Team Futures Multi</td><td>0</td><td>0</td><td>0</td><td>AUD 0</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+		  <section class="grid charts" style="margin-top:14px;">
+	    <div class="panel">
+	      <h2>盘口推荐分布</h2>
+	      <svg viewBox="0 0 530 204" role="img" aria-label="盘口推荐分布"><title>盘口推荐分布</title><text x="0" y="38" font-size="11" fill="#172033">Matches</text><rect x="170" y="24" width="270" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="24" width="135" height="17" fill="#C62828" rx="4"></rect><text x="452" y="38" font-size="12" fill="#5F6B7A">7个</text><text x="0" y="68" font-size="11" fill="#172033">Futures</text><rect x="170" y="54" width="270" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="54" width="115" height="17" fill="#1F4E79" rx="4"></rect><text x="452" y="68" font-size="12" fill="#5F6B7A">6个</text><text x="0" y="98" font-size="11" fill="#172033">Group Betting</text><rect x="170" y="84" width="270" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="84" width="115" height="17" fill="#1F4E79" rx="4"></rect><text x="452" y="98" font-size="12" fill="#5F6B7A">6个</text><text x="0" y="128" font-size="11" fill="#172033">Australia Markets</text><rect x="170" y="114" width="270" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="114" width="270" height="17" fill="#1F4E79" rx="4"></rect><text x="452" y="128" font-size="12" fill="#5F6B7A">14个</text><text x="0" y="158" font-size="11" fill="#172033">Team Futures Multi</text><rect x="170" y="144" width="270" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="144" width="96" height="17" fill="#1F4E79" rx="4"></rect><text x="452" y="158" font-size="12" fill="#5F6B7A">5个</text><text x="0" y="198" font-size="11" fill="#5F6B7A">红色代表该板块存在新增执行金额，蓝色代表观察池。</text></svg>
+	    </div>
+	    <div class="panel">
+	      <h2>跨板块新增金额</h2>
+	      <svg viewBox="0 0 530 204" role="img" aria-label="跨板块新增金额分配"><title>跨板块新增金额分配</title><text x="0" y="38" font-size="11" fill="#172033">Matches</text><rect x="170" y="24" width="270" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="24" width="270" height="17" fill="#C62828" rx="4"></rect><text x="452" y="38" font-size="12" fill="#5F6B7A">AUD 100</text><text x="0" y="68" font-size="11" fill="#172033">Futures</text><rect x="170" y="54" width="270" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="54" width="0" height="17" fill="#91A0B3" rx="4"></rect><text x="452" y="68" font-size="12" fill="#5F6B7A">AUD 0</text><text x="0" y="98" font-size="11" fill="#172033">Group Betting</text><rect x="170" y="84" width="270" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="84" width="0" height="17" fill="#91A0B3" rx="4"></rect><text x="452" y="98" font-size="12" fill="#5F6B7A">AUD 0</text><text x="0" y="128" font-size="11" fill="#172033">Australia Markets</text><rect x="170" y="114" width="270" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="114" width="0" height="17" fill="#91A0B3" rx="4"></rect><text x="452" y="128" font-size="12" fill="#5F6B7A">AUD 0</text><text x="0" y="158" font-size="11" fill="#172033">Team Futures Multi</text><rect x="170" y="144" width="270" height="17" fill="#EEF2F6" rx="4"></rect><rect x="170" y="144" width="0" height="17" fill="#91A0B3" rx="4"></rect><text x="452" y="158" font-size="12" fill="#5F6B7A">AUD 0</text><text x="0" y="198" font-size="11" fill="#5F6B7A">金额分配只展示研究建议暴露；正式系统不自动下注。</text></svg>
+	    </div>
+	    <div class="panel">
+	      <h2>比赛盘口价值排序</h2>
+	      <svg viewBox="0 0 590 264" role="img" aria-label="比赛盘口价值排序"><title>比赛盘口价值排序</title><text x="0" y="38" font-size="11" fill="#172033">France v Senegal / Senegal</text><rect x="210" y="24" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="24" width="290" height="17" fill="#C62828" rx="4"></rect><text x="512" y="38" font-size="12" fill="#5F6B7A">23.8%</text><text x="0" y="68" font-size="11" fill="#172033">Brazil v Morocco / Morocco</text><rect x="210" y="54" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="54" width="272" height="17" fill="#C62828" rx="4"></rect><text x="512" y="68" font-size="12" fill="#5F6B7A">22.4%</text><text x="0" y="98" font-size="11" fill="#172033">England v Croatia / Croatia</text><rect x="210" y="84" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="84" width="208" height="17" fill="#C62828" rx="4"></rect><text x="512" y="98" font-size="12" fill="#5F6B7A">17.1%</text><text x="0" y="128" font-size="11" fill="#172033">Netherlands v Japan / Japan</text><rect x="210" y="114" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="114" width="109" height="17" fill="#C62828" rx="4"></rect><text x="512" y="128" font-size="12" fill="#5F6B7A">9.0%</text><text x="0" y="158" font-size="11" fill="#172033">South Korea v Czechia / Only One …</text><rect x="210" y="144" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="144" width="75" height="17" fill="#C62828" rx="4"></rect><text x="512" y="158" font-size="12" fill="#5F6B7A">6.2%</text><text x="0" y="188" font-size="11" fill="#172033">Belgium v Egypt / Under 2.5 Goals</text><rect x="210" y="174" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="174" width="70" height="17" fill="#C62828" rx="4"></rect><text x="512" y="188" font-size="12" fill="#5F6B7A">5.8%</text><text x="0" y="218" font-size="11" fill="#172033">Brazil v Morocco / Under 2.5 Goals</text><rect x="210" y="204" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="204" width="41" height="17" fill="#C62828" rx="4"></rect><text x="512" y="218" font-size="12" fill="#5F6B7A">3.4%</text><text x="0" y="258" font-size="11" fill="#5F6B7A">按正EV排序，红色代表进入执行候选。</text></svg>
+	    </div>
+	    <div class="panel">
+	      <h2>概率-赔率边际</h2>
+	      <svg viewBox="0 0 590 264" role="img" aria-label="概率-赔率边际"><title>概率-赔率边际</title><text x="0" y="38" font-size="11" fill="#172033">Brazil v Morocco / Morocco</text><rect x="210" y="24" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="24" width="290" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="38" font-size="12" fill="#5F6B7A">+4.1%</text><text x="0" y="68" font-size="11" fill="#172033">England v Croatia / Croatia</text><rect x="210" y="54" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="54" width="256" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="68" font-size="12" fill="#5F6B7A">+3.6%</text><text x="0" y="98" font-size="11" fill="#172033">South Korea v Czechia / Only One …</text><rect x="210" y="84" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="84" width="236" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="98" font-size="12" fill="#5F6B7A">+3.3%</text><text x="0" y="128" font-size="11" fill="#172033">Belgium v Egypt / Under 2.5 Goals</text><rect x="210" y="114" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="114" width="228" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="128" font-size="12" fill="#5F6B7A">+3.2%</text><text x="0" y="158" font-size="11" fill="#172033">France v Senegal / Senegal</text><rect x="210" y="144" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="144" width="226" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="158" font-size="12" fill="#5F6B7A">+3.2%</text><text x="0" y="188" font-size="11" fill="#172033">Netherlands v Japan / Japan</text><rect x="210" y="174" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="174" width="177" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="188" font-size="12" fill="#5F6B7A">+2.5%</text><text x="0" y="218" font-size="11" fill="#172033">Brazil v Morocco / Under 2.5 Goals</text><rect x="210" y="204" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="204" width="134" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="218" font-size="12" fill="#5F6B7A">+1.9%</text><text x="0" y="258" font-size="11" fill="#5F6B7A">边际 = 模型概率 - 赔率盈亏平衡概率；正值才进入价值观察。</text></svg>
+	    </div>
+		    <div class="panel">
+		      <h2>开源模型分歧</h2>
+		      <svg viewBox="0 0 590 264" role="img" aria-label="开源模型分歧"><title>开源模型分歧</title><text x="0" y="38" font-size="11" fill="#172033">Germany v Curacao / Germany</text><rect x="210" y="24" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="24" width="290" height="17" fill="#C62828" rx="4"></rect><text x="512" y="38" font-size="12" fill="#5F6B7A">28.4%</text><text x="0" y="68" font-size="11" fill="#172033">Portugal v DR Congo / Portugal</text><rect x="210" y="54" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="54" width="251" height="17" fill="#C62828" rx="4"></rect><text x="512" y="68" font-size="12" fill="#5F6B7A">24.6%</text><text x="0" y="98" font-size="11" fill="#172033">Spain v Cabo Verde / Spain</text><rect x="210" y="84" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="84" width="246" height="17" fill="#C62828" rx="4"></rect><text x="512" y="98" font-size="12" fill="#5F6B7A">24.1%</text><text x="0" y="128" font-size="11" fill="#172033">Iraq v Norway / Norway</text><rect x="210" y="114" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="114" width="239" height="17" fill="#C62828" rx="4"></rect><text x="512" y="128" font-size="12" fill="#5F6B7A">23.5%</text><text x="0" y="158" font-size="11" fill="#172033">Uzbekistan v Colombia / Colombia</text><rect x="210" y="144" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="144" width="235" height="17" fill="#C62828" rx="4"></rect><text x="512" y="158" font-size="12" fill="#5F6B7A">23.1%</text><text x="0" y="188" font-size="11" fill="#172033">Austria v Jordan / Austria</text><rect x="210" y="174" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="174" width="227" height="17" fill="#C62828" rx="4"></rect><text x="512" y="188" font-size="12" fill="#5F6B7A">22.2%</text><text x="0" y="218" font-size="11" fill="#172033">Paraguay v Australia / Australia</text><rect x="210" y="204" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="204" width="227" height="17" fill="#C62828" rx="4"></rect><text x="512" y="218" font-size="12" fill="#5F6B7A">22.2%</text><text x="0" y="258" font-size="11" fill="#5F6B7A">比较当前市场Poisson、Elo+Dixon-Coles、goalmodel proxy 的最大方向分歧。</text></svg>
+		    </div>
+		    <div class="panel">
+		      <h2>模型共识强度</h2>
+		      <svg viewBox="0 0 590 264" role="img" aria-label="模型共识强度"><title>模型共识强度</title><text x="0" y="38" font-size="11" fill="#172033">Germany v Curacao / Germany</text><rect x="210" y="24" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="24" width="270" height="17" fill="#1F4E79" rx="4"></rect><text x="512" y="38" font-size="12" fill="#5F6B7A">71.5% low</text><text x="0" y="68" font-size="11" fill="#172033">Portugal v DR Congo / Portugal</text><rect x="210" y="54" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="54" width="278" height="17" fill="#1F4E79" rx="4"></rect><text x="512" y="68" font-size="12" fill="#5F6B7A">73.6% low</text><text x="0" y="98" font-size="11" fill="#172033">Spain v Cabo Verde / Spain</text><rect x="210" y="84" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="84" width="290" height="17" fill="#1F4E79" rx="4"></rect><text x="512" y="98" font-size="12" fill="#5F6B7A">76.7% low</text><text x="0" y="128" font-size="11" fill="#172033">Iraq v Norway / Norway</text><rect x="210" y="114" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="114" width="284" height="17" fill="#1F4E79" rx="4"></rect><text x="512" y="128" font-size="12" fill="#5F6B7A">75.3% low</text><text x="0" y="158" font-size="11" fill="#172033">Uzbekistan v Colombia / Colombia</text><rect x="210" y="144" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="144" width="268" height="17" fill="#1F4E79" rx="4"></rect><text x="512" y="158" font-size="12" fill="#5F6B7A">71.0% low</text><text x="0" y="188" font-size="11" fill="#172033">Austria v Jordan / Austria</text><rect x="210" y="174" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="174" width="277" height="17" fill="#1F4E79" rx="4"></rect><text x="512" y="188" font-size="12" fill="#5F6B7A">73.3% low</text><text x="0" y="218" font-size="11" fill="#172033">Paraguay v Australia / Australia</text><rect x="210" y="204" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="204" width="136" height="17" fill="#1F4E79" rx="4"></rect><text x="512" y="218" font-size="12" fill="#5F6B7A">36.0% low</text><text x="0" y="258" font-size="11" fill="#5F6B7A">展示当前市场Poisson、Elo+Dixon-Coles、goalmodel proxy 的共识方向概率。</text></svg>
+		    </div>
+		    <div class="panel">
+		      <h2>开源模型采用覆盖</h2>
+		      <svg viewBox="0 0 590 144" role="img" aria-label="开源模型采用覆盖"><title>开源模型采用覆盖</title><text x="0" y="38" font-size="11" fill="#172033">Hicruben 2026 WC</text><rect x="210" y="24" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="24" width="290" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="38" font-size="12" fill="#5F6B7A">5项</text><text x="0" y="68" font-size="11" fill="#172033">goalmodel</text><rect x="210" y="54" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="54" width="290" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="68" font-size="12" fill="#5F6B7A">5项</text><text x="0" y="98" font-size="11" fill="#172033">RyanSCodes DC</text><rect x="210" y="84" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="84" width="232" height="17" fill="#A56710" rx="4"></rect><text x="512" y="98" font-size="12" fill="#5F6B7A">4项</text><text x="0" y="138" font-size="11" fill="#5F6B7A">绿色代表已进入本地概率交叉验证；琥珀色代表设计参考或下一阶段接口。</text></svg>
+		    </div>
+		    <div class="panel">
+		      <h2>模型能力覆盖矩阵</h2>
+		      <svg viewBox="0 0 590 264" role="img" aria-label="模型能力覆盖矩阵"><title>模型能力覆盖矩阵</title><text x="0" y="38" font-size="11" fill="#172033">1X2</text><rect x="210" y="24" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="24" width="290" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="38" font-size="12" fill="#5F6B7A">2/2已接入</text><text x="0" y="68" font-size="11" fill="#172033">评分规则</text><rect x="210" y="54" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="54" width="145" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="68" font-size="12" fill="#5F6B7A">1/1已接入</text><text x="0" y="98" font-size="11" fill="#172033">模型分歧</text><rect x="210" y="84" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="84" width="145" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="98" font-size="12" fill="#5F6B7A">1/1已接入</text><text x="0" y="128" font-size="11" fill="#172033">晋级路径</text><rect x="210" y="114" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="114" width="145" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="128" font-size="12" fill="#5F6B7A">1/1已接入</text><text x="0" y="158" font-size="11" fill="#172033">回测评价</text><rect x="210" y="144" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="144" width="145" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="158" font-size="12" fill="#5F6B7A">1/1已接入</text><text x="0" y="188" font-size="11" fill="#172033">xG反推</text><rect x="210" y="174" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="174" width="145" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="188" font-size="12" fill="#5F6B7A">1/1已接入</text><text x="0" y="218" font-size="11" fill="#172033">Over/Under</text><rect x="210" y="204" width="290" height="17" fill="#EEF2F6" rx="4"></rect><rect x="210" y="204" width="145" height="17" fill="#247A5A" rx="4"></rect><text x="512" y="218" font-size="12" fill="#5F6B7A">1/1已接入</text><text x="0" y="258" font-size="11" fill="#5F6B7A">按开源参考覆盖能力聚合；已接入表示进入本地概率交叉验证或报告证据层。</text></svg>
+		    </div>
+		  </section>
+
+	  <section class="panel" style="margin-top:14px;">
+	    <h2>候选盘口与操作建议</h2>
+    <table class="recommendation-table" aria-label="候选盘口">
+      <thead><tr><th>板块</th><th>比赛/对象</th><th>盘口</th><th>选择</th><th>赔率</th><th>概率</th><th>EV</th><th>金额</th><th>操作</th><th>模型/理由</th></tr></thead>
+      <tbody><tr><td data-label="板块">Matches</td><td data-label="对象">France v Senegal</td><td data-label="盘口">Result</td><td data-label="选择">Senegal</td><td data-label="赔率">7.50</td><td data-label="概率">16.5%</td><td data-label="EV">23.8%</td><td data-label="金额">AUD 15</td><td data-label="操作"><span class="buy">买入</span></td><td data-label="模型/理由">模型交叉验证：三模型概率：市场Poisson 16.51%，goalmodel 15.06%，Elo-DC 12.27%；共识方向France，均值60.68%，置信度medium；最大模型分歧4.84%；当前选择与共识不完全一致，需小仓或观察。</td></tr>
+<tr><td data-label="板块">Matches</td><td data-label="对象">Brazil v Morocco</td><td data-label="盘口">Result</td><td data-label="选择">Morocco</td><td data-label="赔率">5.50</td><td data-label="概率">22.3%</td><td data-label="EV">22.4%</td><td data-label="金额">AUD 15</td><td data-label="操作"><span class="buy">买入</span></td><td data-label="模型/理由">模型交叉验证：三模型概率：市场Poisson 22.25%，goalmodel 20.66%，Elo-DC 21.08%；共识方向Brazil，均值51.13%，置信度high；最大模型分歧1.18%；当前选择与共识不完全一致，需小仓或观察。</td></tr>
+<tr><td data-label="板块">Matches</td><td data-label="对象">England v Croatia</td><td data-label="盘口">Result</td><td data-label="选择">Croatia</td><td data-label="赔率">4.75</td><td data-label="概率">24.6%</td><td data-label="EV">17.1%</td><td data-label="金额">AUD 15</td><td data-label="操作"><span class="buy">买入</span></td><td data-label="模型/理由">模型交叉验证：三模型概率：市场Poisson 24.65%，goalmodel 23.00%，Elo-DC 22.73%；共识方向England，均值47.93%，置信度high；最大模型分歧1.92%；当前选择与共识不完全一致，需小仓或观察。</td></tr>
+<tr><td data-label="板块">Matches</td><td data-label="对象">Netherlands v Japan</td><td data-label="盘口">Result</td><td data-label="选择">Japan</td><td data-label="赔率">3.60</td><td data-label="概率">30.3%</td><td data-label="EV">9.0%</td><td data-label="金额">AUD 15</td><td data-label="操作"><span class="buy">买入</span></td><td data-label="模型/理由">模型交叉验证：三模型概率：市场Poisson 30.27%，goalmodel 28.61%，Elo-DC 24.21%；共识方向Netherlands，均值43.92%，置信度medium；最大模型分歧6.06%；当前选择与共识不完全一致，需小仓或观察。</td></tr>
+<tr><td data-label="板块">Matches</td><td data-label="对象">South Korea v Czechia</td><td data-label="盘口">Both Teams to Score</td><td data-label="选择">Only One or Neither to score</td><td data-label="赔率">1.87</td><td data-label="概率">56.8%</td><td data-label="EV">6.2%</td><td data-label="金额">AUD 15</td><td data-label="操作"><span class="buy">买入</span></td><td data-label="模型/理由">模型交叉验证：三模型概率：市场Poisson 56.80%，goalmodel 55.05%，Elo-DC 47.22%；共识方向South Korea，均值41.00%，置信度low；最大模型分歧17.45%；当前选择与共识不完全一致，需小仓或观察。</td></tr>
+<tr><td data-label="板块">Matches</td><td data-label="对象">Belgium v Egypt</td><td data-label="盘口">Total Goals Over/Under</td><td data-label="选择">Under 2.5 Goals</td><td data-label="赔率">1.80</td><td data-label="概率">58.8%</td><td data-label="EV">5.8%</td><td data-label="金额">AUD 15</td><td data-label="操作"><span class="buy">买入</span></td><td data-label="模型/理由">模型交叉验证：三模型概率：市场Poisson 58.76%，goalmodel 58.76%，Elo-DC 49.36%；共识方向Belgium，均值56.19%，置信度medium；最大模型分歧9.48%；当前选择与共识不完全一致，需小仓或观察。</td></tr>
+<tr><td data-label="板块">Matches</td><td data-label="对象">Brazil v Morocco</td><td data-label="盘口">Total Goals Over/Under</td><td data-label="选择">Under 2.5 Goals</td><td data-label="赔率">1.80</td><td data-label="概率">57.4%</td><td data-label="EV">3.4%</td><td data-label="金额">AUD 10</td><td data-label="操作"><span class="buy">买入</span></td><td data-label="模型/理由">模型交叉验证：三模型概率：市场Poisson 57.44%，goalmodel 57.44%，Elo-DC 49.36%；共识方向Brazil，均值51.13%，置信度high；最大模型分歧1.18%；当前选择与共识不完全一致，需小仓或观察。</td></tr>
+<tr><td data-label="板块">Futures</td><td data-label="对象">Belgium</td><td data-label="盘口">To Qualify for Quarter Final</td><td data-label="选择">Belgium</td><td data-label="赔率">2.75</td><td data-label="概率">28.9%</td><td data-label="EV">待同步</td><td data-label="金额">AUD 0</td><td data-label="操作"><span class="watch">观察</span></td><td data-label="模型/理由">Better suited to quarter/semi qualification than outright winner.</td></tr>
+<tr><td data-label="板块">Futures</td><td data-label="对象">Colombia</td><td data-label="盘口">To Qualify for Quarter Final</td><td data-label="选择">Colombia</td><td data-label="赔率">3.30</td><td data-label="概率">24.1%</td><td data-label="EV">待同步</td><td data-label="金额">AUD 0</td><td data-label="操作"><span class="watch">观察</span></td><td data-label="模型/理由">Potentially live in qualification-stage futures if draw path supports it.</td></tr>
+<tr><td data-label="板块">Futures</td><td data-label="对象">Japan</td><td data-label="盘口">To Qualify for Quarter Final</td><td data-label="选择">Japan</td><td data-label="赔率">3.75</td><td data-label="概率">21.2%</td><td data-label="EV">待同步</td><td data-label="金额">AUD 0</td><td data-label="操作"><span class="watch">观察</span></td><td data-label="模型/理由">Model already likes Japan in match market; futures price is worth monitoring, not automatic staking.</td></tr>
+<tr><td data-label="板块">Futures</td><td data-label="对象">Morocco</td><td data-label="盘口">To Qualify for Quarter Final</td><td data-label="选择">Morocco</td><td data-label="赔率">4.50</td><td data-label="概率">17.7%</td><td data-label="EV">待同步</td><td data-label="金额">AUD 0</td><td data-label="操作"><span class="watch">观察</span></td><td data-label="模型/理由">Strong underdog profile; outright price is long but quarter-final path price may be more usable.</td></tr>
+<tr><td data-label="板块">Futures</td><td data-label="对象">Croatia</td><td data-label="盘口">To Qualify for Quarter Final</td><td data-label="选择">Croatia</td><td data-label="赔率">4.50</td><td data-label="概率">17.7%</td><td data-label="EV">待同步</td><td data-label="金额">AUD 0</td><td data-label="操作"><span class="watch">观察</span></td><td data-label="模型/理由">Tournament profile is stronger than outright price implies, but age/squad risk must be checked.</td></tr></tbody>
+    </table>
+	  </section>
+
+		  <section class="panel" style="margin-top:14px;">
+		    <h2>模型共识交叉验证</h2>
+		    <table aria-label="模型共识交叉验证">
+		      <thead><tr><th>比赛</th><th>共识方向</th><th>均值概率</th><th>置信</th><th>最大分歧</th><th>评级来源</th></tr></thead>
+		      <tbody><tr><td>Germany v Curacao</td><td>Germany</td><td>71.5%</td><td>low</td><td><span class="bad">28.4%</span></td><td>partial_hicruben_market_implied</td></tr>
+<tr><td>Portugal v DR Congo</td><td>Portugal</td><td>73.6%</td><td>low</td><td><span class="bad">24.6%</span></td><td>partial_hicruben_market_implied</td></tr>
+<tr><td>Spain v Cabo Verde</td><td>Spain</td><td>76.7%</td><td>low</td><td><span class="bad">24.1%</span></td><td>partial_hicruben_market_implied</td></tr>
+<tr><td>Iraq v Norway</td><td>Norway</td><td>75.3%</td><td>low</td><td><span class="bad">23.5%</span></td><td>market_implied_fallback</td></tr>
+<tr><td>Uzbekistan v Colombia</td><td>Colombia</td><td>71.0%</td><td>low</td><td><span class="bad">23.1%</span></td><td>partial_hicruben_market_implied</td></tr>
+<tr><td>Austria v Jordan</td><td>Austria</td><td>73.3%</td><td>low</td><td><span class="bad">22.2%</span></td><td>partial_hicruben_market_implied</td></tr>
+<tr><td>Paraguay v Australia</td><td>Australia</td><td>36.0%</td><td>low</td><td><span class="bad">22.2%</span></td><td>hicruben_elo_seed</td></tr>
+<tr><td>Australia v Turkiye</td><td>Turkiye</td><td>57.9%</td><td>low</td><td><span class="bad">21.3%</span></td><td>partial_hicruben_market_implied</td></tr></tbody>
+		    </table>
+		  </section>
+
+		  <section class="panel" style="margin-top:14px;">
+		    <h2>开源模型采用矩阵</h2>
+		    <table aria-label="开源模型采用矩阵">
+		      <thead><tr><th>来源</th><th>方法族</th><th>状态</th><th>覆盖盘口/模块</th><th>可复用/UI启发</th><th>本系统用途</th></tr></thead>
+		      <tbody><tr><td>Hicruben 2026 WC</td><td>Elo + Dixon-Coles + Monte Carlo</td><td>已进入本地交叉验证</td><td>1X2, 晋级路径, 模型分歧, 回测评价, Monte Carlo</td><td>48队赛事路径 Monte Carlo 接口; walk-forward 回测摘要 / 方法论、回测指标、示例预测分块展示; 用进度条/百分比呈现三结果概率</td><td>用于48队强弱先验、低比分修正和比赛结果概率交叉验证；其walk-forward/backtest思路进入本地模型审计，Monte Carlo路径作为晋级/淘汰赛模拟接口。</td></tr>
+<tr><td>goalmodel</td><td>Expected goals probability model</td><td>已进入本地交叉验证</td><td>1X2, Over/Under, BTTS, xG反推, 评分规则</td><td>同一 xG 分布同时驱动 1X2、OU、BTTS; 市场概率反推 xG / 按预测函数族分组展示能力覆盖; 把模型公式和可调用函数并列作为证据</td><td>用于市场隐含概率反推xG，并把同一xG分布转换为1X2、大小球、BTTS和评分规则敏感性检查。</td></tr>
+<tr><td>RyanSCodes DC</td><td>Dixon-Coles weighted history</td><td>设计参考</td><td>时间衰减, 攻防参数, 低比分校正, Poisson比分矩阵</td><td>指数时间衰减思路; 主场优势参数 / 把时间衰减列为模型风险说明，不直接复制旧实现; 用攻防参数解释模型分歧来源</td><td>作为后续回测/时间衰减权重设计参考；当前不复制其Python 2.7实现。</td></tr></tbody>
+		    </table>
+		  </section>
+
+		  <section class="grid layout" style="margin-top:14px;">
+		    <div class="panel">
+		      <h2>证据源日志</h2>
+		      <table aria-label="证据源日志">
+		        <thead><tr><th>类型</th><th>来源</th><th>状态</th><th>证据层</th><th>用途/说明</th></tr></thead>
+		        <tbody><tr><td>官方公开源</td><td>FIFA World Cup 2026 official schedule</td><td>通过</td><td>FACT</td><td>fixture, venue, host context</td></tr>
+<tr><td>官方公开源</td><td>FIFA qualified teams tracker</td><td>通过</td><td>FACT</td><td>qualification context and confederation coverage</td></tr>
+<tr><td>官方公开源</td><td>FIFA/Coca-Cola men&#x27;s world ranking</td><td>通过</td><td>FACT</td><td>team-strength baseline and official ranking-change monitor</td></tr>
+<tr><td>事件新闻源</td><td>Brazil</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>事件新闻源</td><td>Morocco</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>事件新闻源</td><td>France</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>事件新闻源</td><td>Senegal</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>事件新闻源</td><td>England</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>事件新闻源</td><td>Croatia</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>事件新闻源</td><td>Netherlands</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>事件新闻源</td><td>Japan</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>事件新闻源</td><td>Belgium</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>事件新闻源</td><td>Egypt</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>事件新闻源</td><td>South Korea</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>事件新闻源</td><td>Czechia</td><td>通过</td><td>OBSERVATION</td><td>injury/squad/lineup/suspension monitor</td></tr>
+<tr><td>开源模型</td><td>Hicruben/world-cup-2026-prediction-model</td><td>通过</td><td>INFERENCE</td><td>用于48队强弱先验、低比分修正和比赛结果概率交叉验证；其walk-forward/backtest思路进入本地模型审计，Monte Carlo路径作为晋级/淘汰赛模拟接口。</td></tr>
+<tr><td>开源模型</td><td>opisthokonta/goalmodel</td><td>通过</td><td>INFERENCE</td><td>用于市场隐含概率反推xG，并把同一xG分布转换为1X2、大小球、BTTS和评分规则敏感性检查。</td></tr>
+<tr><td>开源模型</td><td>RyanSCodes/Dixon-Coles-Football-Predictor</td><td>观察</td><td>INFERENCE</td><td>作为后续回测/时间衰减权重设计参考；当前不复制其Python 2.7实现。</td></tr></tbody>
+		      </table>
+		    </div>
+		    <div class="panel">
+		      <h2>运行审计与人工复核</h2>
+		      <table aria-label="运行审计">
+		        <thead><tr><th>检查</th><th>状态</th><th>级别</th><th>说明</th></tr></thead>
+		        <tbody><tr><td>raw_refresh</td><td>通过</td><td>info</td><td>passed</td></tr>
+<tr><td>automation_preflight</td><td>阻塞</td><td>blocker</td><td>current-day private position snapshot missing; latest 私有持仓 capture diagnostic: access_denied via fresh-context (TAB 私有持仓 page access denied); user has not authorized recurring automation; technical automation preflight failed; refusing to publish latest artifacts: current-day private position snapshot missing; latest 私有持仓 capture diagnostic: access_denied via fresh-context (TAB 私有持仓 page access denied)</td></tr>
+<tr><td>public_safety</td><td>通过</td><td>info</td><td>passed</td></tr>
+<tr><td>portfolio_gate</td><td>通过</td><td>info</td><td>passed</td></tr>
+<tr><td>preflight:portfolio_gate</td><td>通过</td><td>info</td><td>5/5 required boards ready</td></tr>
+<tr><td>preflight:safety_gate</td><td>通过</td><td>info</td><td>safety gate clear</td></tr>
+<tr><td>preflight:raw_refresh_enabled</td><td>通过</td><td>info</td><td>raw refresh runs before report generation</td></tr>
+<tr><td>preflight:raw_refresh_execution</td><td>通过</td><td>info</td><td>raw refresh completed in this run</td></tr>
+<tr><td>preflight:raw_refresh_gate</td><td>通过</td><td>info</td><td></td></tr>
+<tr><td>preflight:output_pdf_copy</td><td>通过</td><td>info</td><td>06062026_20260605T232012Z-bad22171.pdf size=252184</td></tr>
+<tr><td>preflight:bankroll_plan</td><td>通过</td><td>info</td><td>tab_fifa_bankroll_plan_06062026_20260605T232012Z-bad22171.json size=463</td></tr>
+<tr><td>preflight:no_private_positions_in_public_outputs</td><td>通过</td><td>info</td><td>public outputs clean</td></tr>
+<tr><td>preflight:private_positions_available</td><td>阻塞</td><td>blocker</td><td>current-day private position snapshot missing; latest 私有持仓 capture diagnostic: access_denied via fresh-context (TAB 私有持仓 page access denied)</td></tr>
+<tr><td>preflight:no_auto_betting_code_path</td><td>通过</td><td>info</td><td>no risky execution patterns found</td></tr></tbody>
+		      </table>
+		      <div style="height:10px"></div>
+		      <table aria-label="人工复核队列">
+		        <thead><tr><th>队列</th><th>对象</th><th>级别</th><th>说明</th></tr></thead>
+		        <tbody><tr><td>缺失数据</td><td>preflight</td><td>blocker</td><td>current-day private position snapshot missing; latest 私有持仓 capture diagnostic: access_denied via fresh-context (TAB 私有持仓 page access denied)</td></tr>
+<tr><td>缺失数据</td><td>preflight</td><td>blocker</td><td>technical automation preflight failed; refusing to publish latest artifacts: current-day private position snapshot missing; latest 私有持仓 capture diagnostic: access_denied via fresh-context (TAB 私有持仓 page access denied)</td></tr>
+<tr><td>模型分歧</td><td>Germany v Curacao</td><td>review</td><td>Germany: 28.4% max model gap</td></tr>
+<tr><td>模型分歧</td><td>Portugal v DR Congo</td><td>review</td><td>Portugal: 24.6% max model gap</td></tr>
+<tr><td>模型分歧</td><td>Spain v Cabo Verde</td><td>review</td><td>Spain: 24.1% max model gap</td></tr>
+<tr><td>模型分歧</td><td>Iraq v Norway</td><td>review</td><td>Norway: 23.5% max model gap</td></tr>
+<tr><td>模型分歧</td><td>Uzbekistan v Colombia</td><td>review</td><td>Colombia: 23.1% max model gap</td></tr>
+<tr><td>模型分歧</td><td>Austria v Jordan</td><td>review</td><td>Austria: 22.2% max model gap</td></tr>
+<tr><td>模型分歧</td><td>Paraguay v Australia</td><td>review</td><td>Australia: 22.2% max model gap</td></tr>
+<tr><td>模型分歧</td><td>Australia v Turkiye</td><td>review</td><td>Turkiye: 21.3% max model gap</td></tr>
+<tr><td>模型分歧</td><td>Argentina v Algeria</td><td>review</td><td>Argentina: 20.5% max model gap</td></tr>
+<tr><td>模型分歧</td><td>South Korea v Czechia</td><td>review</td><td>South Korea: 17.4% max model gap</td></tr>
+<tr><td>模型分歧</td><td>Sweden v Tunisia</td><td>review</td><td>Sweden: 15.1% max model gap</td></tr>
+<tr><td>模型分歧</td><td>USA v Paraguay</td><td>review</td><td>USA: 11.2% max model gap</td></tr></tbody>
+		      </table>
+		    </div>
+		  </section>
+
+  <section class="grid layout" style="margin-top:14px;">
+    <div class="panel">
+      <h2>最近运行记录</h2>
+      <svg viewBox="0 0 530 228" role="img" aria-label="报告历史索引"><title>报告历史索引</title><text x="0" y="37" font-size="11" fill="#172033">06062026 / blocked_by_gate</text><rect x="190" y="24" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="24" width="0" height="15" fill="#A56710" rx="4"></rect><text x="432" y="36" font-size="11" fill="#5F6B7A">AUD 0</text><text x="0" y="61" font-size="11" fill="#172033">06062026 / blocked_by_gate</text><rect x="190" y="48" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="48" width="0" height="15" fill="#A56710" rx="4"></rect><text x="432" y="60" font-size="11" fill="#5F6B7A">AUD 0</text><text x="0" y="85" font-size="11" fill="#172033">06062026 / blocked_by_gate</text><rect x="190" y="72" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="72" width="0" height="15" fill="#A56710" rx="4"></rect><text x="432" y="84" font-size="11" fill="#5F6B7A">AUD 0</text><text x="0" y="109" font-size="11" fill="#172033">06062026 / blocked_by_gate</text><rect x="190" y="96" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="96" width="0" height="15" fill="#A56710" rx="4"></rect><text x="432" y="108" font-size="11" fill="#5F6B7A">AUD 0</text><text x="0" y="133" font-size="11" fill="#172033">06062026 / blocked_by_gate</text><rect x="190" y="120" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="120" width="0" height="15" fill="#A56710" rx="4"></rect><text x="432" y="132" font-size="11" fill="#5F6B7A">AUD 0</text><text x="0" y="157" font-size="11" fill="#172033">05062026 / blocked_by_gate</text><rect x="190" y="144" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="144" width="0" height="15" fill="#A56710" rx="4"></rect><text x="432" y="156" font-size="11" fill="#5F6B7A">AUD 0</text><text x="0" y="181" font-size="11" fill="#172033">05062026 / blocked_by_gate</text><rect x="190" y="168" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="168" width="0" height="15" fill="#A56710" rx="4"></rect><text x="432" y="180" font-size="11" fill="#5F6B7A">AUD 0</text><text x="0" y="205" font-size="11" fill="#172033">05062026 / blocked_by_gate</text><rect x="190" y="192" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="192" width="0" height="15" fill="#A56710" rx="4"></rect><text x="432" y="204" font-size="11" fill="#5F6B7A">AUD 0</text><text x="0" y="12" font-size="12" fill="#5F6B7A">报告历史索引：绿色=技术通过，琥珀=未通过/阻塞</text></svg>
+      <table aria-label="最近运行记录">
+        <thead><tr><th>Run</th><th>状态</th><th>报告日</th><th>技术</th><th>金额</th></tr></thead>
+        <tbody><tr><td>20260605T232012Z-bad22171</td><td>blocked_by_gate</td><td>06062026</td><td>未通过</td><td>AUD 0</td></tr>
+<tr><td>20260605T225259Z-be7638ce</td><td>blocked_by_gate</td><td>06062026</td><td>未通过</td><td>AUD 0</td></tr>
+<tr><td>20260605T220116Z-ac437e5b</td><td>blocked_by_gate</td><td>06062026</td><td>未通过</td><td>AUD 0</td></tr>
+<tr><td>20260605T213802Z-18810b47</td><td>blocked_by_gate</td><td>06062026</td><td>未通过</td><td>AUD 0</td></tr>
+<tr><td>20260605T195704Z-d370cd95</td><td>blocked_by_gate</td><td>06062026</td><td>未通过</td><td>AUD 0</td></tr>
+<tr><td>20260605T111049Z-428e2593</td><td>blocked_by_gate</td><td>05062026</td><td>未通过</td><td>AUD 0</td></tr>
+<tr><td>20260605T084257Z-6cd72c59</td><td>blocked_by_gate</td><td>05062026</td><td>未通过</td><td>AUD 0</td></tr>
+<tr><td>20260605T082615Z-d31a7543</td><td>blocked_by_gate</td><td>05062026</td><td>未通过</td><td>AUD 0</td></tr></tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <h2>自动化运行历史</h2>
+      <svg viewBox="0 0 530 228" role="img" aria-label="自动化运行历史"><title>自动化运行历史</title><text x="0" y="12" font-size="12" fill="#5F6B7A">自动化运行：绿色=可发布，琥珀=门禁未发布，红色=runner失败</text><text x="0" y="37" font-size="11" fill="#172033">verify-only / hermetic / veri…</text><rect x="190" y="24" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="24" width="150" height="15" fill="#A56710" rx="4"></rect><text x="432" y="36" font-size="11" fill="#5F6B7A">不发布</text><text x="0" y="61" font-size="11" fill="#172033">verify-only / hermetic / veri…</text><rect x="190" y="48" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="48" width="150" height="15" fill="#A56710" rx="4"></rect><text x="432" y="60" font-size="11" fill="#5F6B7A">不发布</text><text x="0" y="85" font-size="11" fill="#172033">verify-only / hermetic / veri…</text><rect x="190" y="72" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="72" width="150" height="15" fill="#A56710" rx="4"></rect><text x="432" y="84" font-size="11" fill="#5F6B7A">不发布</text><text x="0" y="109" font-size="11" fill="#172033">verify-only / hermetic / veri…</text><rect x="190" y="96" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="96" width="150" height="15" fill="#A56710" rx="4"></rect><text x="432" y="108" font-size="11" fill="#5F6B7A">不发布</text><text x="0" y="133" font-size="11" fill="#172033">verify-only / hermetic / veri…</text><rect x="190" y="120" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="120" width="150" height="15" fill="#A56710" rx="4"></rect><text x="432" y="132" font-size="11" fill="#5F6B7A">不发布</text><text x="0" y="157" font-size="11" fill="#172033">verify-only / hermetic / fail…</text><rect x="190" y="144" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="144" width="90" height="15" fill="#C62828" rx="4"></rect><text x="432" y="156" font-size="11" fill="#5F6B7A">runner失败</text><text x="0" y="181" font-size="11" fill="#172033">verify-only / verified</text><rect x="190" y="168" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="168" width="150" height="15" fill="#A56710" rx="4"></rect><text x="432" y="180" font-size="11" fill="#5F6B7A">不发布</text><text x="0" y="205" font-size="11" fill="#172033">verify-only / failed</text><rect x="190" y="192" width="230" height="15" fill="#EEF2F6" rx="4"></rect><rect x="190" y="192" width="90" height="15" fill="#C62828" rx="4"></rect><text x="432" y="204" font-size="11" fill="#5F6B7A">runner失败</text></svg>
+      <table aria-label="自动化运行历史">
+        <thead><tr><th>Run</th><th>模式</th><th>状态</th><th>Raw</th><th>发布</th><th>私有持仓</th><th>Capture/Import</th></tr></thead>
+        <tbody><tr><td>tab_fifa_daily_20260606T023417Z-50205</td><td>verify-only / hermetic</td><td><span class="ok">通过</span><br>verified</td><td>Ready</td><td>不发布</td><td>未启用<br>raw未见</td><td>capture 0 / import 0</td></tr>
+<tr><td>tab_fifa_daily_20260606T022109Z-26855</td><td>verify-only / hermetic</td><td><span class="ok">通过</span><br>verified</td><td>Ready</td><td>不发布</td><td>未启用<br>raw未见</td><td>capture 0 / import 0</td></tr>
+<tr><td>tab_fifa_daily_20260606T013504Z-41760</td><td>verify-only / hermetic</td><td><span class="ok">通过</span><br>verified</td><td>Ready</td><td>不发布</td><td>未启用<br>raw未见</td><td>capture 0 / import 0</td></tr>
+<tr><td>tab_fifa_daily_20260606T013314Z-38471</td><td>verify-only / hermetic</td><td><span class="ok">通过</span><br>verified</td><td>Ready</td><td>不发布</td><td>未启用<br>raw未见</td><td>capture 0 / import 0</td></tr>
+<tr><td>tab_fifa_daily_20260606T012700Z-33044</td><td>verify-only / hermetic</td><td><span class="ok">通过</span><br>verified</td><td>Ready</td><td>不发布</td><td>未启用<br>raw未见</td><td>capture 0 / import 0</td></tr>
+<tr><td>tab_fifa_daily_20260606T012303Z-28376</td><td>verify-only / hermetic</td><td><span class="bad">失败</span><br>failed</td><td>Ready</td><td>不发布</td><td>未启用<br>raw未见</td><td>capture 0 / import 0</td></tr>
+<tr><td>tab_fifa_daily_20260606T010345Z-8196</td><td>verify-only</td><td><span class="ok">通过</span><br>verified</td><td>Ready</td><td>不发布</td><td>未启用<br>raw未见</td><td>capture 0 / import 0</td></tr>
+<tr><td>tab_fifa_daily_20260606T005300Z-95768</td><td>verify-only</td><td><span class="bad">失败</span><br>failed</td><td>Ready</td><td>不发布</td><td>未启用<br>raw未见</td><td>capture 0 / import 0</td></tr></tbody>
+      </table>
+    </div>
+    <div class="panel artifacts" style="grid-column:1 / -1;">
+      <h2>本地产物</h2>
+      <p class="note">PDF、JSON、SQLite 和仪表盘都保存在本地；正式自动化只生成报告和数据库记录，不自动下注。</p>
+      <ul><li><strong>公开 PDF 副本</strong><br><a href="04062026_20260604T135753Z-212e8e9a.pdf">04062026_20260604T135753Z-212e8e9a.pdf</a></li>
+<li><strong>公开资金计划 JSON</strong><br><a href="tab_fifa_bankroll_plan_04062026_20260604T135753Z-212e8e9a.json">tab_fifa_bankroll_plan_04062026_20260604T135753Z-212e8e9a.json</a></li>
+<li><strong>开源模型对比报告</strong><br><a href="tab_fifa_model_comparison_v0_1.md">tab_fifa_model_comparison_v0_1.md</a></li>
+<li><strong>运行 Manifest</strong><br><a href="daily_report_manifest_20260604T135753Z-212e8e9a.json">daily_report_manifest_20260604T135753Z-212e8e9a.json</a></li>
+<li><strong>本地 SQLite 数据库</strong><br><a href="tab_fifa_reports.sqlite3">tab_fifa_reports.sqlite3</a></li></ul>
+    </div>
+  </section>
+</main>
+</body>
+</html>
