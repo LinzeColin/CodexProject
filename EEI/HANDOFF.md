@@ -47,6 +47,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Added T1204 `/objects-scope` visible navigation screen and marked A170 done locally.
 - Completed T1204 and A170 by GitHub Actions run `27828194718`; job `82357916025` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - Added A012-A014 data quality and amount/unknown regression checks locally; A026/A027 remain open because real gold precision evaluation is not implemented.
+- Completed A012-A014 data contract checks by GitHub Actions run `27828738097`; job `82359769929` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 
 ## Verification Evidence
 
@@ -86,6 +87,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `make verify` passed after T1204.
 - 2026-06-19 update: GitHub Actions run `27828194718` passed; job `82357916025` proved T1204 remotely.
 - 2026-06-19 update: local `make verify` passed after A012-A014 data contract checks.
+- 2026-06-19 update: GitHub Actions run `27828738097` passed; job `82359769929` proved A012-A014 data contract checks under PostgreSQL.
 
 Remote verification:
 
@@ -110,6 +112,8 @@ Remote verification:
 - GitHub Actions job `82355514060`: PASS.
 - GitHub Actions run `27828194718`: PASS.
 - GitHub Actions job `82357916025`: PASS.
+- GitHub Actions run `27828738097`: PASS.
+- GitHub Actions job `82359769929`: PASS.
 
 ## Not Completed
 
@@ -126,8 +130,8 @@ Remote verification:
 
 ## Recommended Next Step
 
-Prove A012-A014 remotely, then decide how to handle the remaining gold precision gates:
+Decide how to handle the remaining gold precision gates:
 
-1. Push A012-A014 checks and wait for GitHub Actions.
-2. Implement T904-style gold evaluation for A026/A027 or explicitly defer them with a governance decision.
+1. Implement T904-style gold evaluation for A026/A027 or explicitly defer them with a governance decision.
+2. If A026/A027 are deferred, set G2 to `PASS` only with the deferral recorded.
 3. Continue G4 with T1205 Development Status screen.

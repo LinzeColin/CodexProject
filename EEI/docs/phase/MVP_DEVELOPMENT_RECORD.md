@@ -616,6 +616,10 @@ Verification evidence:
 - Local `.venv/bin/uv run ruff check scripts/check_database_schema.py tests/integration/test_database_migrations.py`: PASS.
 - Local `make verify`: PASS.
 - Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27828738097`.
+- GitHub Actions job: `82359769929`.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -626,5 +630,4 @@ Acceptance status:
 
 Residual risks:
 
-- Remote GitHub Actions still needs to prove A012-A014 under PostgreSQL.
 - `data/release_gate_catalog.csv` remains `G2=IN PROGRESS` while A026 and A027 remain open.
