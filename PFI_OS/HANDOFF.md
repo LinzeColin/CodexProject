@@ -42,6 +42,11 @@ Current sequence:
     install/runtime separation, and clean-install/offline-start evidence are
     complete for the local repair scope. PFI-001 still needs PR/CI injected
     failure evidence before release Gate 1 is fully closed.
+17. v0.2 PFI-003 runtime supervisor:
+    Durable Job Store core lifecycle is implemented on top of `job_records`.
+    It covers idempotent enqueue, atomic claim, lease, heartbeat, bounded
+    retry, cancel/resume, expired-lease recovery, and dead letter. It is not
+    yet the full release-grade supervisor/launchd/sleep-wake/crash matrix.
 
 ## Current Local State
 
@@ -144,6 +149,10 @@ Current sequence:
 - PFI Web Shell is now the default runtime path in `StartPFIOS.command`,
   `scripts/startPFIOS.sh`, `streamlit_app.py`, `web/index.html`, and the Web
   Shell contract; `PFI_UI_V2=0` remains the legacy opt-out.
+- PFI-003 Durable Job Store first slice is implemented in
+  `src/pfi_os/application/durable_jobs.py` with contract tests in
+  `tests/contract/test_pfi003_durable_jobs.py` and a development record in
+  `docs/development/PFI003_DURABLE_JOB_STORE.md`.
 - Downloads and Applications `PFI_OS.app` entries were reinstalled and verified
   against the current worktree. Desktop remains best-effort because macOS can
   attach Finder/resource metadata there.
@@ -222,6 +231,20 @@ Observed:
 - Cache cleanup removed 31 disposable cache items, 339 files, about 5.2 MB;
   reports, holdings, SQLite, market caches, source samples, and private data
   were outside the deletion policy.
+
+Latest PFI-003 Durable Job Store verification, 2026-06-20:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /opt/anaconda3/bin/python3.12 -m pytest tests/contract/test_pfi003_durable_jobs.py -q
+PYTHONPYCACHEPREFIX=/private/tmp/pfi003-pycache /opt/anaconda3/bin/python3.12 -m py_compile src/pfi_os/application/durable_jobs.py
+git diff --check
+```
+
+Observed: the focused contract test passed 8/8. The contract covers
+idempotency, atomic claim, active lease ownership, heartbeat extension,
+owner-only completion/failure, bounded retry, dead letter, cancel/resume,
+expired-lease recovery, Web/API/Worker readiness separation, and research-only
+no-execution safety boundaries.
 
 Latest PFI-001 reproducible-environment repair verification, 2026-06-20:
 

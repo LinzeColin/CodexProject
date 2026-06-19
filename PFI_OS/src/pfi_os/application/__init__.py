@@ -26,6 +26,13 @@ from pfi_os.application.deployment_backup_restore import (
     build_phase_d_backup_restore_contract,
     run_phase_d_backup_restore_acceptance,
 )
+from pfi_os.application.durable_jobs import (
+    PFI003_DURABLE_JOB_STORE_SCHEMA,
+    PFI003_RUNTIME_SUPERVISOR_SCHEMA,
+    DurableJobStore,
+    build_pfi003_runtime_supervisor_contract,
+    durable_job_id,
+)
 from pfi_os.application.phase5_acceptance_package import (
     PHASE5_ACCEPTANCE_PACKAGE_SCHEMA,
     build_phase5_acceptance_package,
@@ -119,6 +126,7 @@ __all__ = [
     "EvidenceRepository",
     "EntityProfile",
     "EntityRepository",
+    "DurableJobStore",
     "JobRecord",
     "JobRepository",
     "JobRunItem",
@@ -137,6 +145,7 @@ __all__ = [
     "build_phase_d_deployment_readiness",
     "build_phase_d_deployment_readiness_contract",
     "build_phase_d_backup_restore_contract",
+    "build_pfi003_runtime_supervisor_contract",
     "build_phase5_acceptance_package",
     "build_v011_findings_baseline",
     "build_command_center_read_model",
@@ -191,4 +200,7 @@ __all__ = [
     "PHASE_D_BACKUP_RESTORE_ACCEPTANCE_SCHEMA",
     "PHASE5_ACCEPTANCE_PACKAGE_SCHEMA",
     "V011_FINDINGS_BASELINE_SCHEMA",
+    "PFI003_DURABLE_JOB_STORE_SCHEMA",
+    "PFI003_RUNTIME_SUPERVISOR_SCHEMA",
+    "durable_job_id",
 ]

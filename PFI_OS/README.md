@@ -19,6 +19,7 @@ Read the PFI-001 contracts before new development:
 | Development record and backlog | `docs/development/PFI_PHASE_0_TO_A_RECORD.md` |
 | PFI-goal matrix | `docs/development/PFI_GOAL_GATE_MATRIX.md` |
 | Reproducible environment | `docs/development/PFI_REPRODUCIBLE_ENV.md` |
+| PFI-003 durable job store | `docs/development/PFI003_DURABLE_JOB_STORE.md` |
 | Legacy migration record | `docs/archive/legacy-migration.md` |
 
 PFI-002 has retired the old value-ledger product surface from active code,
