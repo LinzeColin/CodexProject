@@ -45,8 +45,10 @@ Current sequence:
 17. v0.2 PFI-003 runtime supervisor:
     Durable Job Store core lifecycle is implemented on top of `job_records`.
     It covers idempotent enqueue, atomic claim, lease, heartbeat, bounded
-    retry, cancel/resume, expired-lease recovery, and dead letter. It is not
-    yet the full release-grade supervisor/launchd/sleep-wake/crash matrix.
+    retry, cancel/resume, expired-lease recovery, and dead letter.
+    `scripts/pfiSupervisor.sh` now exposes contract/status/doctor/lifecycle
+    commands plus double-worker and crash-recovery smoke. It is not yet the
+    full release-grade supervisor/launchd/sleep-wake/crash matrix.
 
 ## Current Local State
 
@@ -151,7 +153,9 @@ Current sequence:
   Shell contract; `PFI_UI_V2=0` remains the legacy opt-out.
 - PFI-003 Durable Job Store first slice is implemented in
   `src/pfi_os/application/durable_jobs.py` with contract tests in
-  `tests/contract/test_pfi003_durable_jobs.py` and a development record in
+  `tests/contract/test_pfi003_durable_jobs.py`, CLI tests in
+  `tests/contract/test_pfi003_supervisor_cli.py`, script entry
+  `scripts/pfiSupervisor.sh`, and a development record in
   `docs/development/PFI003_DURABLE_JOB_STORE.md`.
 - Downloads and Applications `PFI_OS.app` entries were reinstalled and verified
   against the current worktree. Desktop remains best-effort because macOS can
@@ -236,15 +240,23 @@ Latest PFI-003 Durable Job Store verification, 2026-06-20:
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /opt/anaconda3/bin/python3.12 -m pytest tests/contract/test_pfi003_durable_jobs.py -q
-PYTHONPYCACHEPREFIX=/private/tmp/pfi003-pycache /opt/anaconda3/bin/python3.12 -m py_compile src/pfi_os/application/durable_jobs.py
+PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /opt/anaconda3/bin/python3.12 -m pytest tests/contract/test_pfi003_supervisor_cli.py -q
+PYTHONPYCACHEPREFIX=/private/tmp/pfi003-pycache /opt/anaconda3/bin/python3.12 -m py_compile src/pfi_os/application/durable_jobs.py src/pfi_os/examples/pfi_supervisor.py
+PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json doctor --recover-expired
+PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json smoke-double-worker --job-type shell_double_worker --idempotency-key shell-double-worker
+PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json smoke-crash-recovery --job-type shell_crash_recovery --idempotency-key shell-crash-recovery --lease-seconds 2 --advance-seconds 3
 git diff --check
 ```
 
-Observed: the focused contract test passed 8/8. The contract covers
+Observed: the focused durable job contract test passed 8/8 and the supervisor
+CLI contract test passed 6/6. The contract covers
 idempotency, atomic claim, active lease ownership, heartbeat extension,
 owner-only completion/failure, bounded retry, dead letter, cancel/resume,
 expired-lease recovery, Web/API/Worker readiness separation, and research-only
-no-execution safety boundaries.
+no-execution safety boundaries. The CLI smoke checks cover double-worker claim
+exclusion and simulated crash recovery through expired lease recovery. The
+actual shell smoke used a temporary SQLite DB under `/private/tmp` and passed
+doctor `7/7`, double-worker `Pass`, and crash-recovery `Pass`.
 
 Latest PFI-001 reproducible-environment repair verification, 2026-06-20:
 

@@ -99,6 +99,7 @@ def test_shell_scripts_have_valid_zsh_syntax():
         "scripts/stopPFIOS.sh",
         "scripts/installMacAppLaunchers.sh",
         "scripts/statusPFIOS.sh",
+        "scripts/pfiSupervisor.sh",
         "scripts/devReadyCheck.sh",
         "scripts/installLockedEnv.sh",
         "scripts/secretScan.sh",

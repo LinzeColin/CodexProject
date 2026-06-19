@@ -24,7 +24,7 @@ ensure_test_deps() {
 }
 
 echo "Checking shell scripts..."
-zsh -n StartPFIOS.command StopPFIOS.command scripts/pfiRuntime.sh scripts/startPFIOS.sh scripts/stopPFIOS.sh scripts/installMacAppLaunchers.sh scripts/statusPFIOS.sh scripts/verifyPFIOS.sh scripts/finalAcceptanceCheck.sh scripts/createSampleReport.sh scripts/setupEnv.sh scripts/validateRealData.sh scripts/validateCrossSource.sh scripts/checkMoomoo.sh scripts/dailyCheck.sh scripts/runTests.sh scripts/cleanCache.sh scripts/cleanReportJunk.sh scripts/openReports.sh scripts/auditPFIIntegration.sh scripts/commandCenter.sh scripts/reportDecisionSupport.sh scripts/reportGapTasks.sh scripts/validationPriorityPlan.sh scripts/runValidationTask.sh scripts/vectorizedResearch.sh scripts/hotspotRuntimeSummary.sh
+zsh -n StartPFIOS.command StopPFIOS.command scripts/pfiRuntime.sh scripts/startPFIOS.sh scripts/stopPFIOS.sh scripts/installMacAppLaunchers.sh scripts/statusPFIOS.sh scripts/pfiSupervisor.sh scripts/verifyPFIOS.sh scripts/finalAcceptanceCheck.sh scripts/createSampleReport.sh scripts/setupEnv.sh scripts/validateRealData.sh scripts/validateCrossSource.sh scripts/checkMoomoo.sh scripts/dailyCheck.sh scripts/runTests.sh scripts/cleanCache.sh scripts/cleanReportJunk.sh scripts/openReports.sh scripts/auditPFIIntegration.sh scripts/commandCenter.sh scripts/reportDecisionSupport.sh scripts/reportGapTasks.sh scripts/validationPriorityPlan.sh scripts/runValidationTask.sh scripts/vectorizedResearch.sh scripts/hotspotRuntimeSummary.sh
 
 echo "Checking Python syntax..."
 "$PYTHON_BIN" -m py_compile \
@@ -34,6 +34,8 @@ echo "Checking Python syntax..."
   src/pfi_os/analysis/portfolio.py \
   src/pfi_os/app/dashboard.py \
   src/pfi_os/app/streamlit_app.py \
+  src/pfi_os/application/durable_jobs.py \
+  src/pfi_os/examples/pfi_supervisor.py \
   src/pfi_os/approvals/registry.py \
   src/pfi_os/data/provider_status.py \
   src/pfi_os/data/moomoo_diagnostics.py \
