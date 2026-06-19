@@ -1,6 +1,6 @@
 # Pursuing Goal
 
-Generated: 2026-06-19 Australia/Sydney
+Generated: 2026-06-20 Australia/Sydney
 
 ## Objective
 
@@ -12,8 +12,8 @@ Generated: 2026-06-19 Australia/Sydney
 - English name: Enterprise Ecosystem Intelligence
 - Subtitle: 企业商业版图与供应链递归探索系统
 - Repository target: LinzeColin/CodexProject/EEI
-- Product version: v0.1
-- Task Pack version: v4.2.0
+- Target product version: v0.1; do not claim or tag v0.1 until this pursuing goal is actually complete.
+- Task Pack baseline: v4.2.0 + v5.0 production-blocker sync
 
 ## MVP Boundary
 
@@ -28,6 +28,19 @@ Required MVP scope:
 - Use the NVIDIA-centered semiconductor and AI infrastructure ecosystem as the Golden Vertical.
 - Keep fixture, curated official fixture, dry-run, and live records visibly separated in API and UI.
 - Keep scoring research-oriented; do not output buy/sell, return probability, or deterministic investment conclusions.
+
+v5 production blockers now included in the MVP boundary:
+
+- PostgreSQL production database and reversible migrations.
+- Real data ingestion, entity resolution and evidence chain.
+- Production API, recursive graph query and scoring service.
+- Model config versioning, transactional activation and atomic global refresh.
+- Background scheduler, auto wake, idempotency, retry and dead-letter.
+- Server-side saved views, conflict control and recovery.
+- 10k, 100k and 1m relationship scale tests.
+- 4h and 24h soak tests.
+- Production componentized frontend, real routes and real controls.
+- Formal EEI brand legal and market clearance before public brand launch.
 
 ## Golden Vertical
 
@@ -48,4 +61,3 @@ Minimum path and branch requirements:
 - Do not present fixture or synthetic data as live fact.
 - Do not auto-activate calibration or model changes.
 - Stop and report if a required validation cannot run or fails for a non-environment reason.
-

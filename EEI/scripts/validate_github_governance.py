@@ -65,6 +65,8 @@ def validate_codeowners() -> None:
         [
             "* @linzezhang35",
             "/docs/ @linzezhang35",
+            "/reviews/ @linzezhang35",
+            "/brand/ @linzezhang35",
             "/data/ @linzezhang35",
             "/models/ @linzezhang35",
             "/config/ @linzezhang35",
@@ -119,6 +121,7 @@ def validate_workflow() -> None:
             "python scripts/validate_governance.py",
             "python scripts/validate_task_pack.py",
             "python scripts/validate_governance_consistency.py",
+            "python scripts/validate_v5_production_readiness_sync.py",
             "python scripts/manage_development_status_artifacts.py validate",
             "python scripts/manage_risk_control_artifacts.py validate",
             "python scripts/manage_clean_room_release.py validate",

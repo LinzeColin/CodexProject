@@ -1,0 +1,8 @@
+﻿id,name,decision,reason,clearance_scope,repository_policy,public_anchor,checked_date
+BR-001,商脉,DISQUALIFIED,已被商业社群/企业服务应用使用；描述性与同名风险高,中文商标、应用商店、域名、企业名称,不得作为产品名、模块名或代码命名空间,https://apps.apple.com/cn/app/%E5%95%86%E8%84%89/id1069678343,2026-06-19
+BR-002,NexAtlas,DISQUALIFIED,已有航空导航应用及企业技术服务使用,全球商标、应用商店、域名、公司名,不得作为产品名或缩写,https://apps.apple.com/us/app/nexatlas/id1577761625,2026-06-19
+BR-003,Nexus Atlas,DISQUALIFIED,已有资本管理/投资类产品使用，且与 Atlas 组合高度拥挤,金融类别商标、域名、产品目录,不得作为产品名或模型名,https://nexusatlas.com/,2026-06-19
+BR-004,Orbiscope,DISQUALIFIED,已有网页监测和元搜索软件使用,软件类别商标、代码仓库、域名,不得作为产品名或爬取模块名,https://www.orbiscope.net/,2026-06-19
+BR-005,产业星图,DISQUALIFIED,已成为产业研究报告中的通用表达，显著性弱,中文商标、报告标题、SEO,仅可作为普通描述，不可作主品牌,https://www.google.com/search?q=%E4%BA%A7%E4%B8%9A%E6%98%9F%E5%9B%BE,2026-06-19
+BR-006,Atlas / *Atlas,HIGH_RISK_FAMILY,Altana Atlas 已是全球供应链/价值链可视化平台，多个 GIS、浏览器、教育产品也使用 Atlas,全类别商标、同类产品、域名、开源包、数据库对象,禁止作为用户可见品牌和新内部命名；仅允许历史迁移键,https://altana.ai/atlas,2026-06-19
+BR-007,企业网络研究台,HISTORICAL_SOURCE_ONLY,v5 来源包旧工作名；EEI 不采用该名称,如未来重新启用需完整商标、域名、企业名称、应用商店和语言审查,不得作为 EEI 产品名、仓库名、UI 名称、数据库 schema、API namespace 或公开 URL,,2026-06-19

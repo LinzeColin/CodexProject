@@ -27,10 +27,15 @@ REQUIRED_MARKDOWN = {
     "GOVERNANCE_INDEX.md",
     "DEVELOPMENT_STATUS.md",
     "RISK_AND_ACCEPTANCE.md",
+    "REVIEW_AND_ITERATION_INDEX.md",
+    "TEST_STRATEGY.md",
+    "CONTINUITY_PLAN.md",
     "MODEL_MANAGEMENT.md",
     "FUNCTION_CATALOG.md",
     "DOMAIN_DATA_CATALOG.md",
     "docs/phase/MVP_DEVELOPMENT_RECORD.md",
+    "docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
+    "brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md",
 }
 
 REQUIRED_CSV = {
@@ -39,6 +44,9 @@ REQUIRED_CSV = {
     "data/development_status_ledger.csv",
     "data/github_document_registry.csv",
     "data/risk_control_traceability.csv",
+    "data/review_issue_register.csv",
+    "data/brand_name_conflict_register.csv",
+    "data/competitive_product_landscape.csv",
     "data/task_backlog.csv",
     "artifacts/requirement_function_task_test_traceability_t1213.csv",
     "artifacts/risk_control_mapping_t1214.csv",
@@ -70,9 +78,12 @@ REQUIRED_SUPPORTING = {
     "scripts/manage_clean_room_release.py",
     "scripts/manage_release_artifacts.py",
     "scripts/validate_governance_consistency.py",
+    "scripts/validate_v5_production_readiness_sync.py",
     "scripts/validate_github_governance.py",
     "scripts/validate_prototype_parity.py",
 }
+
+REQUIRED_CONFIG = {"config/brand_policy.yaml"}
 
 REQUIRED_PACKAGE_PATHS = (
     REQUIRED_MARKDOWN
@@ -82,6 +93,7 @@ REQUIRED_PACKAGE_PATHS = (
     | REQUIRED_PROTOTYPE
     | REQUIRED_PDF
     | REQUIRED_SUPPORTING
+    | REQUIRED_CONFIG
 )
 
 EXCLUDED_FROM_PACKAGE = {

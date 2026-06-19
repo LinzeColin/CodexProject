@@ -8,6 +8,8 @@ on:
       - 'manifest.txt'
       - 'DIRECTORY_TREE.txt'
       - 'docs/**'
+      - 'reviews/**'
+      - 'brand/**'
       - 'data/**'
       - 'models/**'
       - 'config/**'
@@ -38,6 +40,7 @@ jobs:
           python scripts/validate_governance.py
           python scripts/validate_task_pack.py
           python scripts/validate_governance_consistency.py
+          python scripts/validate_v5_production_readiness_sync.py
           python scripts/manage_development_status_artifacts.py validate
           python scripts/manage_risk_control_artifacts.py validate
           python scripts/manage_clean_room_release.py validate

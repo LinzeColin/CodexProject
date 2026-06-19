@@ -61,7 +61,7 @@ product_navigation = require(
 )
 models = require("model_registry.csv", ["model_id", "formula_id", "scoring_object", "status"], exact_rows=11)
 formulas = require("formula_registry.csv", ["formula_id", "formula", "missing_policy", "default_threshold"], exact_rows=11)
-parameters = require("parameter_catalog.csv", ["parameter_key", "default_value", "min_value", "max_value", "refresh_behavior"], exact_rows=60)
+parameters = require("parameter_catalog.csv", ["parameter_key", "default_value", "min_value", "max_value", "refresh_behavior"], exact_rows=75)
 thresholds = require("threshold_registry.csv", ["threshold_id", "parameter_key", "default_value", "behavior"], exact_rows=17)
 relationships = require("relationship_taxonomy.csv", ["relationship_type", "family", "direction"], exact_rows=52)
 families = require("relationship_family_catalog.csv", ["family_key", "relationship_type_count"], exact_rows=10)
@@ -72,12 +72,27 @@ segments = require("business_segment_taxonomy.csv", ["segment_id", "name_zh", "d
 capital = require("capital_object_taxonomy.csv", ["capital_object_id", "family", "name_zh", "amount_semantics"], exact_rows=30)
 roles = require("upstream_downstream_role_catalog.csv", ["role_id", "direction", "name_zh", "recursive_pivot"], exact_rows=24)
 companies = require("company_catalog.csv", ["company_id", "canonical_name", "tier", "fact_status"], exact_rows=140)
-tasks = require("task_backlog.csv", ["task_id", "depends_on", "acceptance_ids"], exact_rows=120)
-acceptance = require("acceptance_matrix.csv", ["acceptance_id", "priority", "criterion", "verification", "status"], exact_rows=200)
+tasks = require("task_backlog.csv", ["task_id", "depends_on", "acceptance_ids"], exact_rows=130)
+acceptance = require("acceptance_matrix.csv", ["acceptance_id", "priority", "criterion", "verification", "status"], exact_rows=211)
 risks = require("risk_register.csv", ["risk_id", "severity", "risk", "control", "trigger", "owner", "status"], exact_rows=53)
 status = require("development_status_ledger.csv", ["item_id", "spec_status", "prototype_status", "implementation_status", "unresolved", "next_action"], min_rows=30)
 resolved = require("resolved_unresolved_register.csv", ["item_id", "item_type", "status", "title", "resolution_or_question"], min_rows=14)
 manifest = require("data_catalog_manifest.csv", ["catalog_path", "row_count", "primary_key", "source_of_truth"], min_rows=20)
+review_issues = require(
+    "review_issue_register.csv",
+    ["issue_id", "severity", "blocks_production_merge", "status", "finding", "recommended_fix"],
+    exact_rows=40,
+)
+brand_conflicts = require(
+    "brand_name_conflict_register.csv",
+    ["id", "name", "decision", "reason", "repository_policy", "checked_date"],
+    exact_rows=7,
+)
+competitive_products = require(
+    "competitive_product_landscape.csv",
+    ["category", "product", "vendor", "primary_job", "official_url", "checked_date"],
+    exact_rows=49,
+)
 
 for rows_, key, label in [
     (functions, "function_id", "functions"), (navigation, "function_id", "navigation"),
@@ -88,6 +103,9 @@ for rows_, key, label in [
     (capital, "capital_object_id", "capital"), (roles, "role_id", "roles"),
     (companies, "company_id", "companies"), (tasks, "task_id", "tasks"),
     (acceptance, "acceptance_id", "acceptance"), (risks, "risk_id", "risks"),
+    (review_issues, "issue_id", "review_issues"),
+    (brand_conflicts, "id", "brand_conflicts"),
+    (competitive_products, "product", "competitive_products"),
 ]:
     if rows_:
         unique(rows_, key, label)
@@ -152,6 +170,9 @@ for parameter in parameters:
 for required in [
     "GOVERNANCE_INDEX.md", "FUNCTION_CATALOG.md", "MODEL_MANAGEMENT.md", "DOMAIN_DATA_CATALOG.md",
     "DEVELOPMENT_STATUS.md", "RISK_AND_ACCEPTANCE.md", "CONTRIBUTING.md",
+    "REVIEW_AND_ITERATION_INDEX.md", "TEST_STRATEGY.md", "CONTINUITY_PLAN.md",
+    "docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
+    "brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md", "config/brand_policy.yaml",
     "prototype/standalone.html", "prototype/index.html", "models/model_registry.json", "models/formula_registry.json",
     ".github/CODEOWNERS", ".github/pull_request_template.md", ".github/workflows/governance-validation.yml",
 ]:
@@ -180,5 +201,6 @@ print(
     f"functions={len(functions)} product_nav={len(product_navigation)} models={len(models)} formulas={len(formulas)} parameters={len(parameters)} "
     f"relationships={len(relationships)} families={len(families)} stages={len(stages)} industries={len(industries)} sectors={len(sectors)} "
     f"segments={len(segments)} capital_objects={len(capital)} roles={len(roles)} companies={len(companies)} "
-    f"tasks={len(tasks)} acceptance={len(acceptance)} risks={len(risks)}"
+    f"tasks={len(tasks)} acceptance={len(acceptance)} risks={len(risks)} "
+    f"review_issues={len(review_issues)} brand_conflicts={len(brand_conflicts)} competitive_products={len(competitive_products)}"
 )

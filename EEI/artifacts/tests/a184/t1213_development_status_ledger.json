@@ -11,17 +11,18 @@
     "validation_status"
   ],
   "ledger": {
-    "rows": 36,
+    "rows": 46,
     "spec_status": {
-      "DONE": 36
+      "DONE": 46
     },
     "prototype_status": {
       "DONE": 21,
-      "PARTIAL": 15
+      "NOT_STARTED": 9,
+      "PARTIAL": 16
     },
     "implementation_status": {
       "N/A": 8,
-      "NOT_STARTED": 15,
+      "NOT_STARTED": 25,
       "PARTIAL": 13
     },
     "validation_status": {
@@ -29,14 +30,14 @@
       "CI_VALIDATED": 4,
       "LOCAL_E2E_VALIDATED": 6,
       "LOCAL_VALIDATED": 3,
-      "SPEC_VALIDATED": 4,
+      "SPEC_VALIDATED": 14,
       "VALIDATED": 8
     },
     "lane_counts": {
       "resolved": 21,
       "prototyped": 21,
-      "specified": 15,
-      "not_started_tasks": 63,
+      "specified": 25,
+      "not_started_tasks": 73,
       "blocked_tasks": 0,
       "out_of_scope_tasks": 8
     },

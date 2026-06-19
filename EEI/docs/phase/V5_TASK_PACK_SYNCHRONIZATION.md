@@ -1,0 +1,92 @@
+# v5 Task Pack Synchronization and MVP v0.1 Blocker Map
+
+Generated: 2026-06-20 Australia/Sydney
+
+## Executive Summary
+
+This file records the controlled synchronization of the v5 source package into EEI governance. It does not implement production features. It converts the v5 review findings and the user's current "still to build" list into bounded tasks, Acceptance IDs, model/runtime parameters, documentation and validation checks.
+
+EEI identity is unchanged:
+
+- Chinese name: 商域图谱
+- English name: Enterprise Ecosystem Intelligence
+- Subtitle: 企业商业版图与供应链递归探索系统
+- Target repository: LinzeColin/CodexProject/EEI
+- Target product release: v0.1 only after all MVP blockers below have current evidence.
+
+## Source Evidence
+
+| Source | Imported into EEI |
+|---|---|
+| `/Users/linzezhang/Downloads/US_Corporate_Power_Map_Codex_MVP_Task_Pack_v5.0_2026-06-19.zip` | Source archive for v5 review, brand, test and continuity material |
+| `reviews/00_CONSOLIDATED_REVIEW.md` | 16 production blockers and merge/release decision |
+| `data/review_issue_register.csv` | 40 issue rows including `OPEN_PRODUCTION`, `PARTIAL_V5` and `FIXED_IN_V5` status |
+| `brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md` | EEI-adapted brand and market clearance summary |
+| `data/competitive_product_landscape.csv` | 49 representative mature products |
+| `data/brand_name_conflict_register.csv` | 7 naming conflict records |
+| `TEST_STRATEGY.md` | layered static/unit/contract/integration/E2E/non-functional test strategy |
+| `CONTINUITY_PLAN.md` | phase chain, issue closure and GitHub anti-drift rules |
+
+## MVP v0.1 Blocking Scope
+
+| Blocker | Source issue(s) | EEI task(s) | Acceptance ID(s) | Default status |
+|---|---|---|---|---|
+| PostgreSQL database and reversible migrations | ARCH-001 | T1300 | A201 | NOT_STARTED |
+| Real data ingestion, entity resolution and evidence chain | ARCH-003, UX-010 | T1301 | A202 | NOT_STARTED |
+| Production API, recursive graph query and scoring service | ARCH-002, UX-008, UX-011 | T1302 | A203 | NOT_STARTED |
+| Model config versioning, transactional activation and atomic global refresh | STRESS-010 | T1303 | A204, A205 | NOT_STARTED |
+| Scheduler, auto wake, idempotency, retry and dead-letter | STRESS-007 | T1304 | A206 | NOT_STARTED |
+| Server-side saved views, conflict control and recovery | STRESS-011 | T1305 | A207 | NOT_STARTED |
+| 10k, 100k and 1m relationship scale tests | STRESS-008 | T1306 | A208 | NOT_STARTED |
+| 4h and 24h soak tests | STRESS-012 | T1307 | A209 | NOT_STARTED |
+| Production componentized frontend, real routes and real controls | UX-003, UX-009, UX-012 | T1308 | A211 | NOT_STARTED |
+| Formal brand legal and market clearance | BRAND-001 and EEI user constraint | T1309 | A210 | NOT_STARTED |
+
+## Implementation Boundaries
+
+T1300-T1309 are new MVP production blockers. They are intentionally not marked done by this synchronization. Each task must close in a separate bounded implementation run with:
+
+- explicit files and services changed;
+- migration or rollback path where applicable;
+- unit/contract/integration/E2E/performance evidence as applicable;
+- updated `data/acceptance_traceability.csv`;
+- updated `data/development_status_ledger.csv`;
+- release evidence under `artifacts/tests/<acceptance_id>/`;
+- CI evidence from GitHub before any production-ready claim.
+
+## Default Architecture Decisions Reaffirmed
+
+| Area | Decision for MVP v0.1 |
+|---|---|
+| Production database | PostgreSQL remains the system of record; facts, evidence, time validity and version pointers must be separate layers. |
+| Graph query | Recursive query responses must be bounded, snapshot-scoped and evidence-bearing; large graph rendering must use server-side subgraphs, budgets and aggregation. |
+| API | API responses must expose data snapshot, model config version, source state and request budget metadata. |
+| Calculation | Scoring stays research-oriented; model changes activate transactionally and never auto-activate calibration proposals. |
+| Cache | Cache invalidation is tied to atomic snapshot and config version switches; stale clients must see conflict/refresh semantics. |
+| Search | Evidence search must preserve source, snippet, parser version, confidence, review status and counter-evidence. |
+| Frontend visualization | Production frontend must be componentized with real route/state/query wiring; toast-only controls are not accepted. |
+| Data ingestion | The Golden Vertical is NVIDIA-centered semiconductor and AI infrastructure, with minimum path NVIDIA -> TSMC -> ASML and at least one data-center or energy branch. |
+| Background jobs | Job lease, idempotency key, heartbeat, retry cap, dead-letter and graceful shutdown are mandatory. |
+| Brand | EEI remains the system name; formal legal/market clearance remains a release blocker for public brand use. |
+
+## Rollback Procedures
+
+| Change type | Rollback rule |
+|---|---|
+| Migration | `make migrate-down` must restore the prior schema for T1300 evidence; destructive data migration requires snapshot backup and restore drill. |
+| Data ingestion | Disable the source connector, keep raw snapshots immutable, mark derived facts revoked/disputed rather than deleting lineage. |
+| Model activation | Failed activation leaves the previous active config version and snapshot pointer unchanged. |
+| Global refresh | Failed refresh keeps the previous successful snapshot visible and records the failed run in operation logs/dead-letter. |
+| Saved views | Schema migrations must preserve version history or provide reversible export/import recovery. |
+| Frontend route/control rollout | Incomplete controls must be disabled or marked as planned; no toast-only fake success. |
+| Brand/public launch | If clearance fails, halt public launch and keep EEI internal until a cleared identity or signed waiver exists. |
+
+## Unresolved Decisions
+
+| Decision | Default for now | Required closure |
+|---|---|---|
+| Commercial data source licensing | Use public/official or explicitly licensed sources only. | Source license register before live ingestion. |
+| Authn/authz boundary | Treat production API and saved views as requiring authenticated user/workspace scope. | ADR and middleware implementation before public use. |
+| Large graph rendering engine | Server-side subgraph + aggregation is mandatory; client library remains benchmark-driven. | T1306 benchmark evidence. |
+| Search backend | Keep evidence search contract first; engine choice remains open. | ADR before production implementation. |
+| Brand clearance jurisdiction depth | Minimum CN/US/EU/UK/AU from v5. | Legal sign-off or risk waiver before public launch. |

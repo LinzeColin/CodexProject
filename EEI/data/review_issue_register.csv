@@ -1,0 +1,41 @@
+﻿issue_id,review_unit,category,severity,blocks_pack_merge,blocks_production_merge,status,finding,recommended_fix,retest,owner_phase
+SEC-001,A,安全,CRITICAL,YES,YES,FIXED_IN_V5,操作日志将用户变更说明直接拼入 innerHTML，可形成持久化 DOM 注入,审计时间线改为 createElement/textContent；输入长度限制与控制字符清理,恶意 img/svg/script payload 浏览器测试,G0
+SEC-002,A,安全/状态,HIGH,YES,YES,FIXED_IN_V5,loadState 无 Schema、枚举、范围和类型校验,增加 sanitizeState、白名单、数值夹取、历史和日志上限,畸形状态/越界参数测试,G0
+BUG-001,A,结果有效性,CRITICAL,YES,YES,FIXED_IN_V5,Microsoft/Meta 复用 NVIDIA dataset，产生事实错配,移除数据集别名；未接入对象明确禁用并显示待接入状态,主体不切换和提示测试,G0
+TEST-001,A,测试可信度,HIGH,YES,YES,FIXED_IN_V5,浏览器执行 embedded JS，但语法检查 external app.js，二者可漂移,建立确定性 bundle builder 和 embedded/source byte parity 校验,构建后 SHA/内容一致性校验,G0
+CONC-001,A,并发/竞态,HIGH,YES,YES,FIXED_IN_V5,模型发布按钮可重复触发多个计时器和版本递增,发布锁、token、按钮 busy/disabled、原子完成路径,12 次快速触发仅生成一个版本,G0
+CONC-002,A,并发/运维,HIGH,YES,YES,FIXED_IN_V5,Codex 自主脚本无互斥锁，重叠执行可覆盖 artifacts,目录锁、run ID、每次运行独立目录、原子兼容输出,双进程竞争锁测试,G0
+OPS-001,A,运维,HIGH,YES,YES,FIXED_IN_V5,自主运行缺少 timeout、checkpoint、信号清理与最终状态,超时、状态 JSON、检查点、trap、仅清理自有子进程/缓存；浏览器与 runner 使用独立 CI 进程树,dry-run 生命周期测试；独立浏览器进程组 supervisor,G0
+STATE-001,A,可维护性,MEDIUM,NO,YES,FIXED_IN_V5,auditLog 和历史状态无界增长，localStorage quota 失败静默,日志上限 100、历史上限 50、保存失败提示,日志上限和存储失败测试,G0
+TRUTH-001,A,产品真实性,HIGH,YES,YES,FIXED_IN_V5,Ops 页面把 fixture 指标表达为生产服务健康,改为原型状态、0 生产 API/管线、明确生产阻塞项,文案与 DOM 检查,G0
+A11Y-001,A,可访问性,MEDIUM,NO,YES,FIXED_IN_V5,SVG 边声明 role=button 但无键盘激活,Enter/Space 激活与 aria-label,键盘关系详情测试,G0
+A11Y-002,A,可访问性,MEDIUM,NO,YES,PARTIAL_V5,详情抽屉关闭后焦点恢复不完整，缺少完整 focus trap,保存触发源并恢复；生产组件仍需 focus trap/inert,键盘 E2E 待生产实现,G4
+MAINT-001,A,可维护性,MEDIUM,NO,YES,FIXED_IN_V5,品牌名渗透 UI、数据库名、存储键和导出名,中性工作名、品牌策略、自动扫描；保留单一历史迁移键,brand policy validator,G0
+ARCH-001,A,架构,CRITICAL,NO,YES,OPEN_PRODUCTION,当前仍是单文件 fixture 原型，无生产数据库,按 DDL/迁移实现 PostgreSQL，事实/证据/时间/版本分层,迁移、回滚、完整性与数据追溯测试,G2
+ARCH-002,A,架构,CRITICAL,NO,YES,OPEN_PRODUCTION,无生产 API、图查询、评分和刷新服务,实现受契约约束的 API/graph query/scoring/config snapshot 服务,契约、集成、并发与回滚测试,G3-G5
+ARCH-003,A,数据,CRITICAL,NO,YES,OPEN_PRODUCTION,无真实采集、实体解析和证据管线,先完成半导体 Golden Vertical 的端到端真实数据管线,来源、解析器版本、证据片段和失败恢复测试,G3
+STRESS-001,B,交互极限,HIGH,YES,YES,FIXED_IN_V5,无快速递归切换竞态测试,focus transition token 和 60 次循环压力测试,最终主体/aria-busy/无错误,G0
+STRESS-002,B,生命周期,HIGH,YES,YES,FIXED_IN_V5,无自动启动-执行-退出-缓存清理验证,runner dry-run 生命周期测试覆盖锁、输出、状态和清理,test_autonomous_runner_lifecycle.sh,G0
+STRESS-003,B,状态容错,HIGH,YES,YES,FIXED_IN_V5,畸形持久化状态可破坏页面或放大资源消耗,统一状态归一化和审计日志上限,恶意状态 + 140 条日志,G0
+STRESS-004,B,结果有效性,HIGH,YES,YES,FIXED_IN_V5,无递归对象数据隔离测试,未接入对象禁用；独立数据集标志,Microsoft 不得显示 NVIDIA 图,G0
+STRESS-005,B,模型并发,HIGH,YES,YES,FIXED_IN_V5,发布重复触发造成版本竞态,busy lock/token,12 次触发仅一次审计和版本,G0
+STRESS-006,B,缓存/存储,MEDIUM,NO,YES,PARTIAL_V5,本地存储失败缺少明确反馈；生产缓存策略尚无实现,原型提示失败；生产需 quota、TTL、namespacing、server persistence,原型故障注入通过；生产待集成测试,G4
+STRESS-007,B,后台任务,CRITICAL,NO,YES,OPEN_PRODUCTION,尚无真实调度器、自动唤醒、幂等运行、重试和关闭协议,实现 job lease、idempotency key、heartbeat、graceful shutdown、dead-letter,并发 worker/崩溃恢复/重复事件测试,G3
+STRESS-008,B,性能,HIGH,NO,YES,OPEN_PRODUCTION,未验证 10k/100k/1m 节点边查询、布局与渲染预算,建立分层基准、服务端子图、聚合、虚拟化、Web Worker/GPU 方案,P50/P95/P99、内存、帧率和长任务预算,G5
+STRESS-009,B,响应式/输入,MEDIUM,NO,YES,OPEN_PRODUCTION,未覆盖 768 以下、触屏、高 DPI、缩放 200%、长文本和 IME,建立设备矩阵与视觉回归,跨浏览器/触屏/缩放 E2E,G5
+STRESS-010,B,结果有效性,HIGH,NO,YES,OPEN_PRODUCTION,模型重算仍是动画模拟，未验证全局一致快照,数据库事务/版本指针/缓存失效/事件确认,跨视图同一 config_version 和 rollback 测试,G4
+STRESS-011,B,数据保存,HIGH,NO,YES,OPEN_PRODUCTION,保存视图只存在本地状态，无版本、冲突和恢复语义,服务端 saved_view、optimistic concurrency、版本历史,多会话冲突、刷新恢复、迁移测试,G4
+STRESS-012,B,长期稳定性,MEDIUM,NO,YES,OPEN_PRODUCTION,无 4h/24h soak、内存泄漏、计时器和 listener 泄漏测试,加入浏览器与 worker soak suite,heap/DOM/listener/CPU 趋势门槛,G5
+UX-001,C,品牌/UI,HIGH,YES,YES,FIXED_IN_V5,Atlas 与同类供应链平台直接冲突且品牌未清权,统一中性工作名和“品牌待定”，加入品牌 Gate,自动品牌扫描,G0
+UX-002,C,信息真实性,HIGH,YES,YES,FIXED_IN_V5,数据库与运行页视觉上像生产系统，但没有生产底座,所有指标标注 fixture/设计态/生产待实现,文案审查和视觉测试,G0
+UX-003,C,导航/功能连接,MEDIUM,NO,YES,OPEN_PRODUCTION,若干导航别名聚合到同一页面，用户会误认为独立功能已实现,生产版使用真实路由；未实现入口禁用或标注“规划中”,路由表和入口可达性测试,G4
+UX-004,C,交互反馈,MEDIUM,NO,YES,PARTIAL_V5,已有 hover/选中/过渡/触觉，但缺少全链路 loading/error/empty/partial 状态系统,建立统一 async state、toast/inline error、skeleton、retry、undo tokens,状态矩阵视觉回归,G4
+UX-005,C,动画,MEDIUM,NO,YES,PARTIAL_V5,计时器动画已防竞态并尊重 reduced motion，但尚无真实图布局连续性与性能预算,主体切换使用 shared-position/FLIP，动效 120–280ms，支持中断,60fps、长任务和 reduced motion 测试,G4-G5
+UX-006,C,多模态反馈,LOW,NO,NO,PARTIAL_V5,Vibration API 支持有限，桌面端不能依赖“触觉”,视觉、声音可选、触觉仅增强；不得作为唯一反馈,能力检测和用户设置,G4
+UX-007,C,页面布局,MEDIUM,NO,YES,OPEN_PRODUCTION,模型/数据/治理页信息密度高，缺少用户任务优先级和渐进披露实测,首屏保留决策信息；高级字段抽屉/二级页；可保存布局,任务完成率和可用性测试,G4
+UX-008,C,图谱可读性,HIGH,NO,YES,OPEN_PRODUCTION,真实大图下固定坐标和首屏覆盖指标可能形成“毛线团”或被装饰性元素游戏化,服务器子图、关系预算、聚合节点、语义缩放、等价列表,Golden tasks + 图可读性指标,G4-G5
+UX-009,C,功能完整性,HIGH,NO,YES,OPEN_PRODUCTION,筛选、深度、地区、比较、固定、展开等控件多为 toast-only,实现真实状态/查询/API；未完成前禁用并标注,逐控件输入-输出-持久化测试,G4
+UX-010,C,证据体验,HIGH,NO,YES,OPEN_PRODUCTION,原型的关系证据摘要仍是 fixture，缺少原文片段、冲突证据和来源版本,证据抽屉包含来源、片段、时间、解析器、置信度、反证和审核状态,每条边可追溯验收,G3-G4
+UX-011,C,架构,HIGH,NO,YES,OPEN_PRODUCTION,UI 状态、图查询、模型配置、数据版本尚未形成单一上下文契约,定义 WorkspaceContext: focus/filter/time/config/data snapshot/path,跨页一致性与深链恢复测试,G1-G4
+UX-012,C,可维护性,MEDIUM,NO,YES,OPEN_PRODUCTION,单文件原型不可直接作为生产组件架构,拆分 shell、graph、inspector、model center、data workbench、state/query 层,组件、契约和视觉测试,G1-G4
+BRAND-001,C,品牌战略,HIGH,YES,YES,FIXED_IN_V5,命名研究此前缺乏同类成熟产品对照和法律 Gate,新增 49 个代表性产品矩阵、冲突登记、品牌策略和验证脚本,目录完整性与 brand validator,G0

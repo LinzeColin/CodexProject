@@ -1698,3 +1698,28 @@ Residual risks:
 
 - Local database integration remains unrun on this host because there is no `.env` and no Docker-backed PostgreSQL.
 - T501 creates the bounded structure workspace and API contract only; T502/T503/T506-T508 still own full supply-chain, capital/policy/technology, evidence drawer, timeline, export and cross-layer workspace depth.
+
+## 2026-06-20 - v5 Task Pack synchronization and MVP v0.1 blocker registration
+
+Status: LOCAL GOVERNANCE SYNC IN PROGRESS
+
+Completed:
+
+- Imported v5 review evidence into `reviews/`, `data/review_issue_register.csv`, `TEST_STRATEGY.md` and `CONTINUITY_PLAN.md`.
+- Adapted v5 brand/competitive research to the active EEI identity without changing the system name: 商域图谱 / Enterprise Ecosystem Intelligence.
+- Added `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md` as the source-of-truth mapping from v5 production blockers to EEI tasks, Acceptance IDs, rollback rules and unresolved decisions.
+- Added T1300-T1309 to `data/task_backlog.csv` for PostgreSQL, real ingestion, production API/query/scoring, model activation/refresh, scheduler/dead-letter, saved views, 10k/100k/1m scale, 4h/24h soak, production frontend and brand clearance.
+- Added A201-A211 to `data/acceptance_matrix.csv` and corresponding trace rows in `data/acceptance_traceability.csv`.
+- Added 15 production runtime/model governance parameters to `data/parameter_catalog.csv` and `config/model_runtime_defaults.yaml`.
+- Added V5-001 through V5-010 to `data/development_status_ledger.csv` so the blocker list appears in the development record.
+
+Important boundary:
+
+- This synchronization does not implement the blockers. T1300-T1309 and A201-A211 remain `NOT STARTED`.
+- Current pursuing goal may only become v0.1 after these blockers have implementation, tests, rollback evidence and CI evidence.
+
+Residual risks:
+
+- Formal EEI legal/market clearance is not complete.
+- Production-scale benchmarks and soak tests are not yet executable evidence.
+- Production PostgreSQL, ingestion, graph/API/scoring, scheduler, saved views and componentized frontend remain active MVP blockers.

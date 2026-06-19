@@ -1,0 +1,50 @@
+﻿category,product,vendor,primary_job,mature_pattern,lesson_for_project,official_url,checked_date
+供应链可见性/风险,Altana Atlas,Altana,全球价值链地图、贸易与供应链网络,动态多层价值链图、合规与国家安全,与本项目名称和价值主张高度直接冲突；学习多层图、证据和工作流,https://altana.ai/atlas,2026-06-19
+供应链可见性/风险,Interos,Interos,多层供应商风险与韧性,持续监测、网络级风险建模,学习多层供应网络、风险信号与行动闭环,https://www.interos.ai/,2026-06-19
+供应链可见性/风险,Everstream Analytics,Everstream Analytics,端到端供应链风险分析,预测风险、物流与天气/地缘信号,学习事件到节点/路径影响传播,https://www.everstream.ai/,2026-06-19
+供应链可见性/风险,Supply Chain Explorer,Exiger,供应链可视化、第三方与合规风险,AI 辅助多层映射、政府/企业合规,学习证据驱动关系、供应商审核和解释性,https://www.exiger.com/solutions/supply-chain-explorer/,2026-06-19
+供应链可见性/风险,Resilinc,Resilinc,供应链事件监控与多层映射,事件响应、BOM/地点级风险,学习事件室、替代方案和连续性工作流,https://www.resilinc.com/,2026-06-19
+供应链可见性/风险,Prewave,Prewave,供应链风险与可持续性监控,多语言新闻信号、供应商风险,学习信号置信度、去重和告警解释,https://www.prewave.com/,2026-06-19
+供应链可见性/风险,Sourcemap,Sourcemap,供应链映射与尽职调查,原产地、多层供应商、ESG/法规,学习供应链层级、证据包和披露工作流,https://sourcemap.com/,2026-06-19
+供应链可见性/风险,Craft Intelligence Portal,Craft,公司与供应链情报,企业档案、供应商监测与风险,学习公司 dossier 与关系浏览的结合,https://craft.co/,2026-06-19
+供应链可见性/风险,Sayari Graph,Sayari,企业/贸易/所有权图谱与风险调查,全球实体解析、贸易与控制关系,学习实体解析、证据图和调查路径,https://sayari.com/solutions/sayari-graph/,2026-06-19
+电子供应链/元器件,Z2Data,Z2Data,电子元器件与供应链风险,BOM、生命周期、合规和供应商风险,学习产品/BOM/元器件层级的可钻取体验,https://www.z2data.com/,2026-06-19
+供应链可见性/风险,Sphera Supply Chain Risk Management,Sphera,供应商风险和事件监控,riskmethods 能力整合,学习风险评分、供应商行动与审计,https://sphera.com/solutions/supply-chain-risk-management/,2026-06-19
+供应链可见性/风险,IntegrityNext,IntegrityNext,供应商 ESG/尽调与法规合规,大规模供应商问卷与风险数据,学习供应商证据状态和合规任务,https://www.integritynext.com/,2026-06-19
+供应链可见性/风险,Assent,Assent,产品合规与供应链可持续性,复杂制造业供应商数据,学习法规-产品-供应商证据链,https://www.assent.com/,2026-06-19
+第三方风险,Aravo,Aravo,第三方生命周期与风险管理,供应商准入、持续监控、工作流,学习关系审核、Owner 和补救闭环,https://www.aravo.com/,2026-06-19
+物流可见性,project44,project44,运输可见性与供应链事件,多式联运实时状态,学习实时事件时间轴与异常反馈,https://www.project44.com/,2026-06-19
+物流可见性,FourKites,FourKites,端到端物流与库存可见性,数字孪生、ETA 与网络协作,学习空间/时间状态和异常导航,https://www.fourkites.com/,2026-06-19
+供应链规划/数字孪生,Maestro,Kinaxis,并发供应链规划与编排,实时情景分析、端到端计划,学习参数改动-影响预览-情景比较,https://www.kinaxis.com/en/maestro,2026-06-19
+供应链规划/数字孪生,Digital Brain,o9 Solutions,企业计划与知识图谱,数字孪生、计划、知识模型,学习业务对象模型与可解释计划,https://o9solutions.com/solutions/o9-digital-brain-platform/,2026-06-19
+供应链规划/数字孪生,Luminate / Supply Chain,Blue Yonder,供应链计划与执行,预测、仓储、运输、网络优化,学习跨模块工作区和异常优先级,https://blueyonder.com/solutions/supply-chain-management,2026-06-19
+供应链规划/数字孪生,SAP Integrated Business Planning,SAP,S&OP、需求、供应与库存规划,ERP/业务网络整合,学习数据治理、情景和角色化视图,https://www.sap.com/products/scm/integrated-business-planning.html,2026-06-19
+供应链规划/数字孪生,Oracle Fusion Cloud SCM,Oracle,端到端供应链套件,计划、采购、制造、物流,学习模块边界和统一对象模型,https://www.oracle.com/scm/,2026-06-19
+供应链规划/数字孪生,E2open Connected Supply Chain,E2open,多企业供应链网络,渠道、物流、贸易与计划,学习跨企业网络与权限/协作边界,https://www.e2open.com/,2026-06-19
+供应链规划/数字孪生,Anaplan,Anaplan,连接式规划,可配置模型、情景与协作,学习透明公式、模型版本和影响预览,https://www.anaplan.com/,2026-06-19
+图谱调查/分析,Foundry + Ontology,Palantir,数据整合、对象本体与运营应用,Ontology、操作闭环、细粒度治理,学习对象-关系-行动的统一架构,https://www.palantir.com/platforms/foundry/,2026-06-19
+图谱调查/分析,Neo4j Bloom,Neo4j,无代码/低代码图探索,搜索、透视、场景与图查询,学习渐进展开、图预算和保存视图,https://neo4j.com/product/bloom/,2026-06-19
+图谱调查/分析,Linkurious Enterprise,Linkurious,企业级图可视化与调查,可视调查、告警、协作,学习调查路径、筛选和案件工作流,https://linkurious.com/product/,2026-06-19
+图谱调查/分析,Decision Intelligence Platform,Quantexa,实体解析、图分析与决策智能,上下文图、风险/客户决策,学习实体匹配、上下文评分和决策链,https://www.quantexa.com/platform/,2026-06-19
+图谱调查/分析,Maltego,Maltego Technologies,OSINT 与关系调查,Transform、图谱和调查协作,学习调查画布、数据来源标注和操作反馈,https://www.maltego.com/,2026-06-19
+图谱调查/分析,i2 Analyst’s Notebook,Harris / i2,情报链接分析,时间线、网络图、调查分析,学习证据密集图和时间分析,https://i2group.com/products/analysts-notebook,2026-06-19
+图谱调查/分析,Graphistry,Graphistry,GPU 加速图可视化与分析,大规模图、交互与 Python 集成,学习性能分层、聚合和大图导航,https://www.graphistry.com/,2026-06-19
+图谱调查/分析,GraphStudio,TigerGraph,图数据建模、查询与可视化,企业图数据库工具链,学习图模型管理与查询工作台,https://www.tigergraph.com/graphstudio/,2026-06-19
+企业/市场情报,Orbis,Moody’s,全球私营与上市公司、所有权数据,公司族谱、受益所有权、财务,学习公司主数据、所有权穿透和覆盖说明,https://www.moodys.com/web/en/us/capabilities/company-reference-data/orbis.html,2026-06-19
+企业/市场情报,Capital IQ Pro,S&P Global,公司、市场、交易与财务情报,筛选、可比公司、交易和市场数据,学习 dossier、筛选和可追溯市场指标,https://www.spglobal.com/marketintelligence/en/solutions/sp-capital-iq-pro,2026-06-19
+企业/市场情报,D&B Hoovers,Dun & Bradstreet,公司和销售情报,D-U-N-S、企业族谱、联系人,学习实体标识、企业族谱和覆盖率,https://www.dnb.com/products/marketing-sales/dnb-hoovers.html,2026-06-19
+企业/市场情报,FactSet Workstation,FactSet,金融数据、研究与工作流,组合、公司、供应链/关系数据,学习专业工作台的信息密度和快捷操作,https://www.factset.com/,2026-06-19
+企业/市场情报,LSEG Workspace,LSEG,市场、公司、新闻与分析,跨资产数据和协作工作流,学习多面板工作区和上下文联动,https://www.lseg.com/en/data-analytics/products/workspace,2026-06-19
+企业/市场情报,AlphaSense,AlphaSense,市场情报与文档搜索,企业文件、电话会、专家访谈、AI 搜索,学习证据片段、引用和主题变化,https://www.alpha-sense.com/,2026-06-19
+企业/市场情报,PitchBook,Morningstar PitchBook,私募市场、交易和投资者数据,融资、基金、并购与公司档案,学习资本对象、交易路径和历史轮次,https://pitchbook.com/,2026-06-19
+企业/市场情报,CB Insights,CB Insights,科技市场与公司情报,市场地图、企业战略和信号,学习产业分类、战略信号与市场地图，但避免“报告式静态星图”,https://www.cbinsights.com/,2026-06-19
+企业/市场情报,Crunchbase,Crunchbase,公司、融资、人物与交易数据,搜索、公司档案、关系数据,学习自助搜索、关注列表和融资事件,https://www.crunchbase.com/,2026-06-19
+企业/市场情报,Tracxn,Tracxn,创业公司与行业情报,行业 taxonomy、公司跟踪、交易,学习行业入口与可配置 Watchlist,https://tracxn.com/,2026-06-19
+企业/市场情报,Dealroom,Dealroom.co,创业生态、投资与城市/行业数据,生态地图和投资数据,学习生态入口、地域/行业切换,https://dealroom.co/,2026-06-19
+企业/市场情报,Bloomberg Terminal,Bloomberg,全球金融数据与交易工作流,实时市场、新闻、分析、通信,学习键盘效率、状态密度和专业工作流,https://www.bloomberg.com/professional/solution/bloomberg-terminal/,2026-06-19
+贸易/企业实体,Panjiva,S&P Global,全球贸易与供应链数据,海关/提单、买卖方关系,学习贸易证据、时间序列和供应商发现,https://panjiva.com/,2026-06-19
+贸易/企业实体,ImportGenius,ImportGenius,海关贸易数据与供应链研究,提单、进出口网络,学习货物流向、实体别名和关系置信度,https://www.importgenius.com/,2026-06-19
+贸易/企业实体,Datamyne,Descartes,全球贸易数据库,进出口、商品、企业和路线,学习商品/地点/公司多维钻取,https://www.datamyne.com/,2026-06-19
+贸易/企业实体,OpenCorporates,OpenCorporates,开放公司注册数据聚合,法定实体、注册信息、来源链接,学习法定实体 ID、来源和更新时间,https://opencorporates.com/,2026-06-19
+贸易/企业实体,GLEIF LEI Data,GLEIF,全球法人识别编码与关系数据,LEI、直接/最终母公司,学习稳定实体标识和法律层级,https://www.gleif.org/en/lei-data,2026-06-19
+贸易/企业实体,OpenSanctions,OpenSanctions,制裁、PEP 与企业风险实体,实体解析、来源和风险名单,学习风险标签、来源证据和更新治理,https://www.opensanctions.org/,2026-06-19
