@@ -1,0 +1,2 @@
+asset_code,asset_name,asset_type,market,fund_company,risk_level,theme,is_off_platform_fund,is_excluded,exclusion_reason,official_source_count,fallback_aggregated,evidence_level,source_name,source_type,source_url,missing_nav_days,missing_holding_days,conflict_flag,as_of
+REPLACE_ASSET_CODE,REPLACE_ASSET_NAME,off_platform_fund,CN/US,REPLACE_FUND_COMPANY,high,REPLACE_THEME,true,false,,2,false,Strong,REPLACE_MOOMOO_ALIPAY_OR_OFFICIAL_SOURCE,official,REPLACE_URL_OR_LOCAL_EVIDENCE_PATH,0,0,false,YYYY-MM-DD

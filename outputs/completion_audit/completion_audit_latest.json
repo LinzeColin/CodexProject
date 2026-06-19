@@ -1,0 +1,721 @@
+{
+  "generated_at": "2026-06-14T10:37:29+08:00",
+  "overall_status": "complete",
+  "completion_percent": 98.59,
+  "pass_count": 70,
+  "warn_count": 1,
+  "block_count": 0,
+  "total_count": 71,
+  "items": [
+    {
+      "item_id": "schedule_exact",
+      "area": "Schedule",
+      "requirement": "Beijing schedule must contain 10 hourly runs from 08:30 through 17:30.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "configured_slots={'R1': '08:30', 'R2': '09:30', 'R3': '10:30', 'R4': '11:30', 'R5': '12:30', 'R6': '13:30', 'R7': '14:30', 'R8': '15:30', 'R9': '16:30', 'R10': '17:30'}",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/scheduler.py",
+      "next_action": "None"
+    },
+    {
+      "item_id": "business_day_schedule_gate",
+      "area": "Schedule",
+      "requirement": "Recurring automation must skip Beijing weekends by default while preserving manual override support for controlled backfills.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "saturday_default=none, saturday_override=R1",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/scheduler.py",
+      "next_action": "None"
+    },
+    {
+      "item_id": "risk_thresholds",
+      "area": "Risk",
+      "requirement": "Max drawdown block must be 40%; recovery-to-origin repair time must be under 1 year.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "max_drawdown_block=40.00%, recovery_time_block_days=365",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/config.py",
+      "next_action": "None"
+    },
+    {
+      "item_id": "no_trade_execution_code",
+      "area": "Safety",
+      "requirement": "System must not contain automatic real buy/sell/order execution paths.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "no forbidden trade execution patterns found in app/",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app",
+      "next_action": "None"
+    },
+    {
+      "item_id": "benchmark_dynamic_window",
+      "area": "Benchmark",
+      "requirement": "Benchmark smoke default window must be dynamic so recurring automation does not keep using stale hard-coded dates.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "default window is latest Beijing weekday plus 103-day lookback",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/benchmark_smoke.py",
+      "next_action": "None"
+    },
+    {
+      "item_id": "formal_pdf",
+      "area": "Deliverables",
+      "requirement": "Required deliverable `PRODUCTION_READINESS_REPORT.pdf` must exist and be non-empty.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "exists=True, size=171499",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.pdf",
+      "next_action": "None"
+    },
+    {
+      "item_id": "task_pack",
+      "area": "Deliverables",
+      "requirement": "Required deliverable `13_CODEX_PROMPT.md` must exist and be non-empty.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "exists=True, size=1560",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/task_pack/13_CODEX_PROMPT.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "launchd_plist",
+      "area": "Deliverables",
+      "requirement": "Required deliverable `com.serenity.daily-analysis.plist` must exist and be non-empty.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "exists=True, size=1247",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/com.serenity.daily-analysis.plist",
+      "next_action": "None"
+    },
+    {
+      "item_id": "codex_automation_notes",
+      "area": "Deliverables",
+      "requirement": "Required deliverable `CODEX_AUTOMATION_PROPOSALS.md` must exist and be non-empty.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "exists=True, size=1592",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/CODEX_AUTOMATION_PROPOSALS.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "application_portal",
+      "area": "Deliverables",
+      "requirement": "Required deliverable `index.html` must exist and be non-empty.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "exists=True, size=87196",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/application/index.html",
+      "next_action": "None"
+    },
+    {
+      "item_id": "intake_pack",
+      "area": "Deliverables",
+      "requirement": "Required deliverable `README_PRODUCTION_DATA_INTAKE.md` must exist and be non-empty.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "exists=True, size=6167",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/README_PRODUCTION_DATA_INTAKE.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "intake_evidence_guide",
+      "area": "Deliverables",
+      "requirement": "Required deliverable `EVIDENCE_INTAKE_GUIDE.md` must exist and be non-empty.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "exists=True, size=1628",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/EVIDENCE_INTAKE_GUIDE.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "validation_summary",
+      "area": "Deliverables",
+      "requirement": "Required deliverable `VALIDATION_SUMMARY.md` must exist and be non-empty.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "exists=True, size=17095",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/tests/VALIDATION_SUMMARY.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "web_application_entry",
+      "area": "Web",
+      "requirement": "A stable local web application portal must exist and link to the continuously updated offline report index.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "portal links report index, readiness report, package, and no-trading boundary",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/application/index.html",
+      "next_action": "None"
+    },
+    {
+      "item_id": "downloads_application_entry",
+      "area": "Web",
+      "requirement": "Downloads root must provide a `.app` entry point to the Serenity Daily Analysis portal, not `~/Downloads/application`.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "Downloads root app bundle opens the current workspace application portal; exists=True, info=True, pkginfo=True, executable=True, icon=True, icon_size=604959, bundle_id_scoped=True, chinese_name=True, points_to_workspace=True, starts_server=True, has_health_check=True, icon_plist=True",
+      "evidence_path": "/Users/linzezhang/Downloads/Serenity 每日分析.app",
+      "next_action": "None"
+    },
+    {
+      "item_id": "applications_app_entry",
+      "area": "Web",
+      "requirement": "/Applications must provide a `.app` entry point to the Serenity Daily Analysis portal.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "/Applications app bundle opens the current workspace application portal; exists=True, info=True, pkginfo=True, executable=True, icon=True, icon_size=604959, bundle_id_scoped=True, chinese_name=True, points_to_workspace=True, starts_server=True, has_health_check=True, icon_plist=True",
+      "evidence_path": "/Applications/Serenity 每日分析.app",
+      "next_action": "None"
+    },
+    {
+      "item_id": "legacy_downloads_application_entry_removed",
+      "area": "Web",
+      "requirement": "`~/Downloads/application` must not remain the active Serenity app entry location.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "legacy Serenity entries removed from ~/Downloads/application",
+      "evidence_path": "/Users/linzezhang/Downloads/application",
+      "next_action": "None"
+    },
+    {
+      "item_id": "codex_app_automation_active",
+      "area": "Automation",
+      "requirement": "Codex app must have active recurring wake-up automations for the Serenity production tick workflow.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "serenity-daily-analysis-beijing-hour-slots=PAUSED; serenity-daily-analysis-beijing-half-hour-slots=ACTIVE",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/CODEX_AUTOMATION_READY.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "launchd_schedule_contract",
+      "area": "Automation",
+      "requirement": "launchd template must poll frequently enough to catch Beijing slots and run the preflight-gated shadow-safe automation command.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "StartInterval=180, command=automation-tick, dry_run_env=true, mail_send_enabled=false",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/com.serenity.daily-analysis.plist",
+      "next_action": "None"
+    },
+    {
+      "item_id": "launchd_runtime_status",
+      "area": "Automation",
+      "requirement": "Installed launchd runtime status snapshot must show a loaded job, successful safe tick, dry-run safety, and disabled real mail sending.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "install_state=loaded, latest_tick_action=non_business_day, dry_run=True, stderr_bytes=0, mail_send_enabled=False",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/LAUNCHD_STATUS.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "apple_mail_smoke_artifact",
+      "area": "Notification",
+      "requirement": "Controlled Apple Mail smoke must prove draft generation, Mail scriptability, and current production-send config without sending by default.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "draft_ready=True, app_scriptable=True, production_send_ready=True, send_status=not_requested",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/apple_mail_smoke_latest.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "mail_unlock_workflow",
+      "area": "Notification",
+      "requirement": "Real Apple Mail production-send unlock must have a controlled checklist, real-send smoke command, production-mail launchd template, and rollback command without sending by default.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "workflow_ready=True, production_send_ready_now=False, mail_sent=False, launchd_modified=False",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/mail_unlock_check_latest.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "alipay_execution_window_evidence",
+      "area": "Execution Rules",
+      "requirement": "Alipay/off-platform fund execution window must be source-backed, including 15:00 cutoff, T+1 confirmation, and product-specific exceptions.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "md_exists=True, json_exists=True, has_15_cutoff=True, has_t_plus_1=True, has_exceptions=True",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/ALIPAY_FUND_EXECUTION_WINDOW_EVIDENCE.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "source_evidence_reference_gate",
+      "area": "Evidence",
+      "requirement": "Production intake validation must block unverifiable fund-rule and candidate source URLs or local evidence paths.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "validator blocks unverifiable fund-rule url_or_path and candidate source_url references",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/intake_validator.py",
+      "next_action": "None"
+    },
+    {
+      "item_id": "source_evidence_audit_manifest",
+      "area": "Evidence",
+      "requirement": "Source evidence references must be exportable as an audit manifest with URL/local-file status and local-file hashes.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "md_exists=True, csv_exists=True, json_exists=True, rows=17, status=pass, invalid_count=0, local_hashed_count=3",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/source_evidence_audit_latest.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "production_unblock_matrix",
+      "area": "Production Gate",
+      "requirement": "Remaining production blockers or warning-level evidence items must be mapped to field-level requirements and exact refresh/unlock commands.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "md_exists=True, csv_exists=True, json_exists=True, rows=6, production_ready=True, has_locked_language=False",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_UNBLOCK_EVIDENCE_MATRIX.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "production_unlock_workflow",
+      "area": "Production Gate",
+      "requirement": "A fail-closed production unlock workflow must verify pack evidence, dry-run promotion, preflight, and completion audit without sending mail or placing trades.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "status=blocked, stages=['source_evidence_audit_pack', 'promote_intake_pack_dry_run', 'preflight', 'completion_audit'], production_ready=False, stop_reason=pack source evidence audit failed",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/production_unlock_check_latest.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "production_action_queue",
+      "area": "Production Gate",
+      "requirement": "Remaining production blockers must have a prioritized No-New-Order action queue with target files, fields, evidence requirements, and unlock commands.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "rows=4, blockers={'benchmark_source_priority': 2, 'benchmark_history': 2}, priority_counts={'P2': 4}",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/production_action_queue_latest.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "production_data_request_contract",
+      "area": "Production Gate",
+      "requirement": "Production blockers must have a concise input contract for baseline generation, fund rules, candidate sources, evidence rules, and unlock commands.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "input contract ready",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_DATA_REQUEST.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "alipay_position_normalizer",
+      "area": "Data Quality",
+      "requirement": "Current Alipay holdings/OCR CSVs must have a safe normalizer into intake-pack format without touching production files by default.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "CLI `normalize-alipay-positions` is available with candidate-output default and explicit `--write-pack` option",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/alipay_position_normalizer.py",
+      "next_action": "None"
+    },
+    {
+      "item_id": "fund_rule_normalizer",
+      "area": "Data Quality",
+      "requirement": "Current Alipay/fund-company rule OCR CSVs must have a safe normalizer into intake-pack fund-rule format without touching production files by default.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "CLI `normalize-fund-rules` is available with candidate-output default and explicit `--write-pack` option",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/fund_rule_normalizer.py",
+      "next_action": "None"
+    },
+    {
+      "item_id": "candidate_normalizer",
+      "area": "Data Quality",
+      "requirement": "Current candidate/source-chain OCR CSVs must have a safe normalizer into intake-pack candidate-universe format without touching production files by default.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "CLI `normalize-candidates` is available with candidate-output default and explicit `--write-pack` option",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/candidate_normalizer.py",
+      "next_action": "None"
+    },
+    {
+      "item_id": "intake_bundle_normalizer",
+      "area": "Data Quality",
+      "requirement": "Holdings, fund-rule, and candidate normalizers must be available as a single staged intake-pack workflow that audits evidence and dry-runs promotion without touching production files.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "CLI `normalize-intake-bundle` is available with staged pack write, source-evidence audit, promotion dry-run, and no production copy",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/intake_bundle_normalizer.py",
+      "next_action": "None"
+    },
+    {
+      "item_id": "final_zip_integrity",
+      "area": "Deliverables",
+      "requirement": "Final ZIP package must exist and pass archive integrity verification.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "364 members",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/package/serenity_daily_analysis_delivery.zip",
+      "next_action": "None"
+    },
+    {
+      "item_id": "final_zip_private_evidence_exclusion",
+      "area": "Deliverables",
+      "requirement": "Final ZIP must exclude private evidence directories unless explicitly requested.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "no private evidence members found",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/package/serenity_daily_analysis_delivery.zip",
+      "next_action": "None"
+    },
+    {
+      "item_id": "readiness_report_package_consistency",
+      "area": "Deliverables",
+      "requirement": "Formal readiness report must match the latest package manifest member count and private-evidence status.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "report matches package member_count=364, private_members=0",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "readiness_report_benchmark_consistency",
+      "area": "Deliverables",
+      "requirement": "Formal readiness report benchmark row counts, dates, and 1m/3m/10d returns must match current benchmark history.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "000001.SH: rows=71, latest=2026-06-12; SPX: rows=73, latest=2026-06-12",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "production_preflight",
+      "area": "Production Gate",
+      "requirement": "Production execution must only unlock when baseline candidate universe, fund rules, benchmark sources, scheduler, Mail, and MooMoo gates pass; Alipay holdings are optional overlay data.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "production_ready=True; blockers=[]",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/preflight_latest.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "readiness_report_preflight_consistency",
+      "area": "Deliverables",
+      "requirement": "Formal readiness report production-ready/blocked status must match the latest production preflight result.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "report production-ready language matches preflight production_ready=True",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "shadow_ready_gate",
+      "area": "Production Gate",
+      "requirement": "When production data is incomplete, system must remain runnable in shadow mode only.",
+      "status": "warn",
+      "severity": "warn",
+      "proof": "shadow_ready=True, production_ready=True",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/preflight_latest.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "mail_send_config_gate",
+      "area": "Notification",
+      "requirement": "Production alert delivery must have real Apple Mail sending enabled before rebalance or urgent risk alerts can claim readiness.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "{'mail_send_enabled': True, 'recipient_email': 'linzezhang35@gmail.com', 'env_var': 'SERENITY_MAIL_SEND_ENABLED'}",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/preflight_latest.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "moomoo_opend_gate",
+      "area": "Data Source",
+      "requirement": "MooMoo/OpenD socket and SDK must be available; OpenD lifecycle must respect user-opened process ownership.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "OpenD socket reachable at 127.0.0.1:11111; Python import `moomoo` is available; installed distribution version=10.6.6608",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/preflight_latest.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "benchmark_gate",
+      "area": "Benchmark",
+      "requirement": "Shanghai Composite and S&P 500 must have 1m, 3m, and recent 10 trading day comparison data.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "{'production_ready_by_benchmark': {'S&P 500': True, 'Shanghai Composite': True}, 'proxy_available': {'S&P 500': True, 'Shanghai Composite': False}, 'json_path': '/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/benchmark_smoke_latest.json', 'markdown_path': '/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/benchmark_smoke_latest.md'}",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/preflight_latest.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "intake_pack_user_facing_path_redaction",
+      "area": "Safety",
+      "requirement": "Production intake-pack user-facing Markdown/CSV helpers must not expose absolute local paths or user-home identifiers.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "no intake-pack user-facing local path markers found",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack",
+      "next_action": "None"
+    },
+    {
+      "item_id": "intake_validation",
+      "area": "Data Quality",
+      "requirement": "NAV/holding freshness, fees, redemption status, official source count, conflicts, and aggregated fallback must be validated and timestamped.",
+      "status": "pass",
+      "severity": "warn",
+      "proof": "block_count=0, warn_count=6, block_areas=[]",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/intake_validation_latest.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "intake_promotion_safety",
+      "area": "Data Quality",
+      "requirement": "Filled intake pack must be blocked when placeholders remain and backed up before production copy.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "applied=False, placeholder_blocked=True, production_ready=False",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/promotion_latest.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "holdings_review_matrix",
+      "area": "Data Quality",
+      "requirement": "Discovered local holding candidates must be triaged into a review matrix before manual promotion.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "review_rows=28, matrix_exists=True, row_production_candidate_count=0, stale_or_missing_date_count=28, special_rule_count=12",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/holdings_discovery_latest.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "holdings_discovery_markdown_redaction",
+      "area": "Safety",
+      "requirement": "Holdings discovery Markdown must not expose absolute local paths or user-home identifiers.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "no absolute local path markers found",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/holdings_discovery_latest.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "intake_review_prefill",
+      "area": "Data Quality",
+      "requirement": "Production intake pack should include review-matrix assisted holding prefill and special-fund checklist files.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "review_prefill_rows=28, special_checklist_rows=12, helper_ready=True",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack",
+      "next_action": "None"
+    },
+    {
+      "item_id": "intake_fund_rule_review_helper",
+      "area": "Data Quality",
+      "requirement": "Production intake pack should include per-holding fund-rule source queries and required execution fields.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "fund_rule_helper_rows=28, helper_ready=True",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/08_fund_rules_from_review_checklist.csv",
+      "next_action": "None"
+    },
+    {
+      "item_id": "intake_candidate_source_helper",
+      "area": "Data Quality",
+      "requirement": "Production intake pack should include per-holding candidate source-chain queries for filling candidate universe evidence.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "candidate_helper_rows=28, helper_ready=True",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/09_candidate_source_review_prefill.csv",
+      "next_action": "None"
+    },
+    {
+      "item_id": "sqlite_schema",
+      "area": "Archive",
+      "requirement": "SQLite DB must include run/source/score/recommendation/comparison/notification/missing/manual-review/decision audit tables.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "missing_tables=[]",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "next_action": "None"
+    },
+    {
+      "item_id": "history_integrity_append_only",
+      "area": "Archive",
+      "requirement": "Previously observed historical rows and artifacts must remain append-only: no edits, deletes, overwrites, or rerendered past facts.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "baseline=/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/audit/history_integrity_baseline.json, violations=0, latest_manifest=/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/audit/history_integrity_latest.json",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/audit/history_integrity_latest.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "latest_strategy_report",
+      "area": "Reporting",
+      "requirement": "Latest strategy run must have Markdown and offline HTML reports.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, status=success, data_quality_status=pass, markdown=True, html=True",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/reports/sda_20260613T094539Z_r7_31fb1cc3_report.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "production_slot_backfill_verified",
+      "area": "Automation",
+      "requirement": "Latest production verification must be a non-dry-run Beijing business-day slot with data-quality pass and sent Mail/local notification evidence.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, run_time_bj=2026-06-15T14:30:00+08:00, verification_kind=future_controlled_backfill, tick_action=ran, dry_run=0, sent_notifications=1",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "next_action": "None"
+    },
+    {
+      "item_id": "offline_web_index_updates_latest",
+      "area": "Web",
+      "requirement": "Offline web report index must update to include the latest production verification run.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "index=/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/reports/index.html, latest_html=sda_20260613T094539Z_r7_31fb1cc3_report.html, linked=True",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/reports/index.html",
+      "next_action": "None"
+    },
+    {
+      "item_id": "source_traceability",
+      "area": "Evidence",
+      "requirement": "Every run must persist source traceability records.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, source_log_rows=16",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "next_action": "None"
+    },
+    {
+      "item_id": "top5_weights",
+      "area": "Recommendation",
+      "requirement": "All-market mixed Top5 candidate pool and target weights must be produced.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, top5_weight_rows=5",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "next_action": "None"
+    },
+    {
+      "item_id": "score_grade_mapping",
+      "area": "Scoring",
+      "requirement": "Scoring must map candidates to Action-Ready, Watch, Manual Review, or Block bands.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, distinct_grade_count=3",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "next_action": "None"
+    },
+    {
+      "item_id": "conservative_exclusion",
+      "area": "Filtering",
+      "requirement": "Bond/money/Yuebao/conservative assets must be excluded from aggressive candidate pool.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "excluded_bond_like_assets=1",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "next_action": "None"
+    },
+    {
+      "item_id": "hard_risk_gate_evidence",
+      "area": "Risk",
+      "requirement": "MDD >=40% and recovery >=365 days must create Block/Manual Review evidence.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, hard_gate_review_rows=0, regression_status=pass, passed_cases=['max_drawdown_block', 'recovery_time_block']",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/tests/risk_gate_regression_latest.json",
+      "next_action": "None"
+    },
+    {
+      "item_id": "same_day_and_period_comparisons",
+      "area": "Comparison",
+      "requirement": "Reports must compare same-day slots and previous day/week/month snapshots.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, comparison_types=['previous_day', 'previous_month', 'previous_week', 'same_day_previous']",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "next_action": "None"
+    },
+    {
+      "item_id": "discipline_actions",
+      "area": "Discipline",
+      "requirement": "Serenity baseline reference vs target weights must produce Maintain/Reduce/Increase/Pause/Clear discipline labels; rebalance events are required only when thresholds fire.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, decision_rows=5, rebalance_events=1",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "next_action": "None"
+    },
+    {
+      "item_id": "notification_drafts",
+      "area": "Notification",
+      "requirement": "Triggering rebalance/risk/watch conditions must create Mail-ready and local-notification artifacts.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, notification_rows=3",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "next_action": "None"
+    },
+    {
+      "item_id": "execution_lock_zero_order",
+      "area": "Safety",
+      "requirement": "When latest strategy run is not data-quality pass, reports and notifications must force No-New-Order with suggested amount 0.00 and suggested units 0.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "data_quality_status=pass, report_locked=False, notification_locked=False",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/reports/sda_20260613T094539Z_r7_31fb1cc3_report.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "moomoo_kline_archive",
+      "area": "Data Source",
+      "requirement": "Read-only MooMoo K-line collection must persist K-line rows and source evidence.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "moomoo_kline_rows=253",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "next_action": "None"
+    },
+    {
+      "item_id": "source_evidence_sqlite_archive",
+      "area": "Evidence",
+      "requirement": "Source evidence audit rows must be persisted in SQLite for future comparison and review.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "source_evidence_rows=316, audit_runs=16",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "next_action": "None"
+    },
+    {
+      "item_id": "test_evidence",
+      "area": "Testing",
+      "requirement": "Validation summary must record current test pass evidence.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "found `101 passed`",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/tests/VALIDATION_SUMMARY.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "benchmark_language_boundary",
+      "area": "Safety",
+      "requirement": "System may target benchmark outperformance but must not guarantee future outperformance.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "readiness report includes no-guarantee language",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "formal_report_path_redaction",
+      "area": "Safety",
+      "requirement": "Formal user-facing readiness report must not expose absolute local paths or user-home identifiers.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "no absolute local path markers found",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
+      "next_action": "None"
+    },
+    {
+      "item_id": "auxiliary_markdown_path_redaction",
+      "area": "Safety",
+      "requirement": "Auxiliary user-facing Markdown reports must not expose absolute local paths or user-home directories.",
+      "status": "pass",
+      "severity": "info",
+      "proof": "no auxiliary Markdown local path markers found",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight",
+      "next_action": "None"
+    }
+  ]
+}

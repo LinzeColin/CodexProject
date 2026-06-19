@@ -1,0 +1,3 @@
+asset_code,date,close,source_name,source_type,source_priority,url_or_path,evidence_level,as_of
+000001.SH,YYYY-MM-DD,0.0,REPLACE_EXACT_SHANGHAI_COMPOSITE_SOURCE,official,2,REPLACE_URL_OR_LOCAL_EVIDENCE_PATH,Strong,YYYY-MM-DD
+SPX,YYYY-MM-DD,0.0,REPLACE_EXACT_SP500_SOURCE,official,2,REPLACE_URL_OR_LOCAL_EVIDENCE_PATH,Strong,YYYY-MM-DD

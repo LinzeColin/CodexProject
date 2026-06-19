@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-06-13T05:57:05+08:00",
+  "output_dir": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack",
+  "production_ready": false,
+  "block_count": 33,
+  "warn_count": 2,
+  "files": {
+    "README": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/README_PRODUCTION_DATA_INTAKE.md",
+    "field_guide": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/FIELD_GUIDE.md",
+    "evidence_guide": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/EVIDENCE_INTAKE_GUIDE.md",
+    "alipay_positions_to_fill": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/01_alipay_positions_to_fill.csv",
+    "fund_rules_to_fill": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+    "candidates_to_fill": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+    "gap_actions": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/04_gap_actions.csv",
+    "discovered_files": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/05_discovered_candidate_files.csv",
+    "review_prefill": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/06_alipay_positions_review_prefill.csv",
+    "special_rule_checklist": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/07_special_fund_rule_checklist.csv",
+    "fund_rule_review_checklist": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/08_fund_rules_from_review_checklist.csv",
+    "candidate_source_review_prefill": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/09_candidate_source_review_prefill.csv",
+    "summary_json": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/production_intake_pack_latest.json"
+  }
+}

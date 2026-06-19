@@ -1,0 +1,1 @@
+display notification "# [Serenity AUTO][ALERT][Urgent] Discipline Review | sda_20260612T135355Z_r10_1ed0cc9a  - 运行时间：2026-06-12T15:30:00+08:00 / 2026-06-12T17:30:00+10:00 - 触发类型：Urgent - Top5：FUND001, FUND003, FUND005, FUND002, FUND007 - 对比摘要" with title "[Serenity AUTO][ALERT][Urgent] Discipline Review | sda_20260612T135355Z_r10_1ed0cc9a"

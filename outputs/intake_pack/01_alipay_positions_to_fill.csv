@@ -1,0 +1,5 @@
+asset_code,asset_name,platform,current_amount,current_weight,cost_basis,unrealized_pnl,as_of,source_note
+FUND001,AI Infrastructure Growth Fund,Alipay,,,,,YYYY-MM-DD,REPLACE_WITH_REAL_ALIPAY_EXPORT_OR_VERIFIED_CURRENT_HOLDINGS
+FUND003,US AI Leaders QDII Fund,Alipay,,,,,YYYY-MM-DD,REPLACE_WITH_REAL_ALIPAY_EXPORT_OR_VERIFIED_CURRENT_HOLDINGS
+FUND004,Robotics Advanced Manufacturing Fund,Alipay,,,,,YYYY-MM-DD,REPLACE_WITH_REAL_ALIPAY_EXPORT_OR_VERIFIED_CURRENT_HOLDINGS
+FUND005,Biotech Innovation Growth Fund,Alipay,,,,,YYYY-MM-DD,REPLACE_WITH_REAL_ALIPAY_EXPORT_OR_VERIFIED_CURRENT_HOLDINGS

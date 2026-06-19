@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-06-13T08:03:29+08:00",
+  "status": "watch",
+  "production_ready": false,
+  "no_new_order": true,
+  "row_count": 4,
+  "priority_counts": {
+    "P2": 4
+  },
+  "blocker_counts": {
+    "benchmark_source_priority": 2,
+    "benchmark_history": 2
+  },
+  "validation_status": "pass",
+  "validation_block_count": 0,
+  "validation_warn_count": 6,
+  "files": {
+    "markdown": "outputs/preflight/production_action_queue_latest.md",
+    "csv": "outputs/preflight/production_action_queue_latest.csv",
+    "json": "outputs/preflight/production_action_queue_latest.json"
+  }
+}

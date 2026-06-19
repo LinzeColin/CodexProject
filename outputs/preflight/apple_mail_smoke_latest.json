@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-06-13T06:43:43+08:00",
+  "status": "pass",
+  "recipient_email": "linzezhang35@gmail.com",
+  "mail_send_enabled": true,
+  "draft_ready": true,
+  "draft_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/notifications/mail_smoke_20260613T064343.md",
+  "apple_mail": {
+    "osascript": "/usr/bin/osascript",
+    "app_scriptable": true,
+    "stdout": "com.apple.mail",
+    "stderr": ""
+  },
+  "production_send_ready": true,
+  "send_requested": false,
+  "send_status": "not_requested",
+  "send_error": "",
+  "json_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/apple_mail_smoke_latest.json",
+  "markdown_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/apple_mail_smoke_latest.md"
+}

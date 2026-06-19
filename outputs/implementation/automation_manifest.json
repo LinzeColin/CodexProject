@@ -1,0 +1,56 @@
+{
+  "automation_name": "Serenity Daily Analysis",
+  "status": "codex_app_half_hour_active_hour_paused",
+  "working_directory": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5",
+  "default_command": "/opt/anaconda3/bin/python -m app.cli automation-tick --no-dry-run --send-mail --local --require-production --json",
+  "codex_app_automation_ids": [
+    "serenity-daily-analysis-beijing-hour-slots",
+    "serenity-daily-analysis-beijing-half-hour-slots"
+  ],
+  "manual_smoke_commands": [
+    "python -m app.cli doctor",
+    "python -m app.cli moomoo-smoke --json",
+    "python -m app.cli collect-moomoo --symbol US.SPY --start 2026-06-01 --end 2026-06-12 --require-success --json",
+    "python -m app.cli benchmark-smoke --json",
+    "python -m app.cli preflight --json",
+    "python -m app.cli init-db",
+    "python -m app.cli import-alipay --csv data/imports/alipay_positions.csv",
+    "python -m app.cli run --slot R7 --dry-run",
+    "python -m app.cli report",
+    "python -m app.cli notify --dry-run",
+    "python -m app.cli scheduler-tick --now 2026-06-12T14:30:00+08:00 --dry-run --allow-duplicate",
+    "SERENITY_MAIL_SEND_ENABLED=true python -m app.cli automation-tick --now 2026-06-15T14:30:00+08:00 --allow-duplicate --no-dry-run --send-mail --local --require-production --json"
+  ],
+  "schedule_timezone": "Asia/Shanghai",
+  "display_timezone": "Australia/Sydney",
+  "slots": {
+    "R1": "08:30",
+    "R2": "09:30",
+    "R3": "10:30",
+    "R4": "11:30",
+    "R5": "12:30",
+    "R6": "13:30",
+    "R7": "14:30",
+    "R8": "15:30",
+    "R9": "16:30",
+    "R10": "17:30"
+  },
+  "safety": {
+    "automatic_trading": false,
+    "dry_run_default": true,
+    "mail_send_default": false,
+    "opend_unavailable_behavior": "explicit_degraded_status",
+    "aggregated_fallback_cap": "cannot_be_action_ready_by_itself",
+    "production_gate": "python -m app.cli preflight --require-production --json",
+    "automation_gate": "/opt/anaconda3/bin/python -m app.cli automation-tick --no-dry-run --send-mail --local --require-production --json"
+  },
+  "outputs": {
+    "sqlite": "data/serenity_daily.sqlite",
+    "reports": "data/reports/",
+    "offline_index": "data/reports/index.html",
+    "notifications": "data/notifications/",
+    "application_portal": "outputs/application/index.html",
+    "downloads_app": "~/Downloads/Serenity 每日分析.app",
+    "applications_app": "/Applications/Serenity 每日分析.app"
+  }
+}

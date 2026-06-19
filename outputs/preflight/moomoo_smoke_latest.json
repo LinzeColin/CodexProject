@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-06-14T10:06:53+08:00",
+  "status": "pass",
+  "production_ready_for_moomoo_data": true,
+  "socket": {
+    "host": "127.0.0.1",
+    "port": 11111,
+    "reachable": true,
+    "detail": "OpenD socket reachable at 127.0.0.1:11111"
+  },
+  "sdk": {
+    "import_available": true,
+    "distribution_version": "10.6.6608",
+    "detail": "Python import `moomoo` is available; installed distribution version=10.6.6608"
+  },
+  "workbenches": [
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench",
+      "exists": true,
+      "start_script": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/start_opend.sh",
+      "check_script": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/check_opend.py",
+      "quote_script": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/quote_smoke_test.py",
+      "config_path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/config.json",
+      "sdk_vendor_path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/vendor/MMAPI4Python_10.6.6608",
+      "opend_vendor_path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/vendor/moomoo_OpenD_GUI"
+    }
+  ],
+  "processes": [
+    {
+      "pid": "31663",
+      "command": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/vendor/moomoo_OpenD_GUI/moomoo_OpenD.app/Contents/MacOS/moomoo_OpenD"
+    },
+    {
+      "pid": "31688",
+      "command": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/vendor/moomoo_OpenD_GUI/moomoo_OpenD.app/Contents/Frameworks/CrashReporter.app/Contents/MacOS/CrashReporter --no-rate-limit --database=/Users/linzezhang/.com.moomoo.OpenD//Crash/Database --metrics-dir=/Users/linzezhang/.com.moomoo.OpenD//Crash/Database --url=https://api.moomoo.com/apm-system-event-file/v2/upload --annotation=apm_app_name=opend_moomoo_desktop --annotation=channel=official --annotation=mach_port_group=6HE4ZULJ45.com.moomoo.opend --annotation=main_client_type=60 --annotation=main_client_version=10.6.6608 --handshake-fd=11"
+    }
+  ],
+  "recommended_actions": [
+    "Moomoo/OpenD smoke is ready for read-only market data collection",
+    "Optional independent quote smoke: python /Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/quote_smoke_test.py",
+    "Keep OpenD running and logged in before scheduled collection windows"
+  ]
+}

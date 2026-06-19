@@ -1,0 +1,81 @@
+# Changelog
+
+## 2026-06-12
+
+- Created Task Pack for Serenity Daily Analysis.
+- Updated schedule to 10 Beijing-time hourly slots:
+  - 08:30
+  - 09:30
+  - 10:30
+  - 11:30
+  - 12:30
+  - 13:30
+  - 14:30
+  - 15:30
+  - 16:30
+  - 17:30
+- Clarified benchmark rule:
+  - The system must target and evaluate outperformance versus Shanghai Composite and S&P 500.
+  - The system must not guarantee future outperformance.
+- Set first implementation boundary to Phases 0-2.
+- Implemented MooMoo/OpenD lifecycle handling:
+  - User-opened OpenD is left running.
+  - Tool-started OpenD is cleaned up after the command unless explicitly kept.
+- Added read-only MooMoo collection, benchmark smoke, intake validator, and holdings discovery utilities.
+- Added benchmark fallback history generation for Shanghai Composite and S&P 500 through Yahoo Finance chart data.
+- Tightened return-window logic so 1m/3m/10d returns are `None` when the required history window is not covered.
+- Added `automation-tick`, a preflight-gated single command for Codex Automation and launchd.
+- Updated launchd template to use `/opt/anaconda3/bin/python`, because `/usr/bin/python3` does not have the MooMoo SDK.
+- Rendered two paused Codex automation proposal cards for hour and half-hour slot groups.
+- Added `production-intake-pack`, a read-only fill-ready intake bundle generator under `outputs/intake_pack/`.
+- Added `promote-intake-pack`, a placeholder-blocking promotion command with production-file backups.
+- Added `completion-audit`, a requirement-by-requirement evidence gate under `outputs/completion_audit/`.
+- Added source-backed Alipay/off-platform fund execution-window evidence for 15:00/T+1 general rules and exceptions.
+- Added Alipay/QuantLab holdings review matrix for stale/special-rule/manual-review triage.
+- Added review-assisted intake helper files: `06_alipay_positions_review_prefill.csv`, `07_special_fund_rule_checklist.csv`, `08_fund_rules_from_review_checklist.csv`, and `09_candidate_source_review_prefill.csv`.
+- Added `production-unblock-matrix`, a read-only field-level evidence matrix for the remaining production blockers.
+- Added source evidence reference validation for Alipay `source_note`, fund-rule `url_or_path`, and candidate `source_url`.
+- Added `source-evidence-audit`, a read-only manifest that hashes local evidence files and records source-reference status.
+- Persisted source evidence audit rows into SQLite `source_evidence_audit_snapshot`.
+- Added `EVIDENCE_INTAKE_GUIDE.md`, pack-relative `evidence/...` audit support, and promotion copying for validated pack-local evidence files.
+- Added `package-delivery`, a privacy-aware ZIP builder that excludes private evidence directories by default and is checked by completion audit.
+- Added a formal report path-redaction gate that blocks readiness Markdown/PDF if absolute local paths or user-home identifiers leak into user-facing reports.
+- Added dynamic benchmark-smoke default window: latest Beijing weekday plus 103-day lookback; explicit `--start/--end` still override.
+- Added completion-audit gate `benchmark_dynamic_window` to block stale hard-coded benchmark windows.
+- Added execution-lock and zero-order guard: when data quality is not `pass`, reports and notifications retain research action labels but force execution status to `No-New-Order`, suggested amount `0.00`, and suggested units `0`.
+- Added completion-audit gate `execution_lock_zero_order` to prevent degraded reports from being mistaken for executable trade instructions.
+- Installed local launchd runtime `com.serenity.daily-analysis` for shadow-only scheduled ticks; kick smoke wrote `no_due_slot`, `dry_run=true`, stderr bytes `0`.
+- Added launchd runtime status snapshots: `outputs/implementation/LAUNCHD_STATUS.md` and `outputs/implementation/LAUNCHD_STATUS.json`.
+- Added completion-audit gate `launchd_runtime_status` to verify loaded runtime evidence, safe dry-run tick, disabled real mail sending, and no automatic trading.
+- Added Beijing business-day schedule gate: recurring dispatcher skips weekend due times by logging `non_business_day` without preflight, report generation, or notification.
+- Added completion-audit gate `business_day_schedule_gate` and weekend due-time regression tests.
+- Added production alert-send gate `mail_send_config`: Apple Mail must be script-addressable and `SERENITY_MAIL_SEND_ENABLED=true` before rebalance/risk email delivery can be production-ready.
+- Added `mail-smoke`, a controlled Apple Mail draft/send readiness smoke; default mode writes a draft and audit artifact without sending.
+- Added completion-audit gate `apple_mail_smoke_artifact`.
+- Added completion-audit gate `readiness_report_package_consistency` so the formal readiness report must match the latest package manifest.
+- Hardened MooMoo benchmark smoke so exact-index benchmark data must cover the required 1m/3m/recent-10-trading-day window before it can unlock production benchmark proof; SPY/VOO proxy data remains warning-only.
+- Added completion-audit gate `readiness_report_benchmark_consistency` so the formal readiness report must match current benchmark row counts, dates, and return windows.
+- Added `production-unlock-check`, a fail-closed workflow for pack evidence audit, dry-run promotion, optional apply, preflight, completion audit, and optional package build.
+- Added `production-unlock-check --full-diagnostics`, a read-only diagnostic mode that continues preflight and completion audit after pack blockers while still refusing apply/package side effects.
+- Routed child preflight stdout to stderr inside the unlock workflow so `--json` remains machine-readable even when MooMoo SDK emits connection diagnostics.
+- Added completion-audit gate `readiness_report_preflight_consistency` so the formal readiness report cannot drift from `preflight_latest.json` production-ready/blocked status.
+- Added completion-audit gate `production_unlock_workflow` so the fail-closed unlock command is itself delivered, boundary-checked, and path-redacted in Markdown.
+- Added `production-action-queue`, a prioritized No-New-Order queue that maps remaining blockers to target files, fields, evidence requirements, and unlock commands without sending mail or placing trades.
+- Added completion-audit gate `production_action_queue` so the prioritized queue must exist, stay fail-closed, and avoid local path leaks.
+- Added `normalize-alipay-positions`, a safe current-Alipay/OCR CSV normalizer that writes canonical intake-pack rows and pack-relative evidence references without touching production files by default.
+- Added completion-audit gate `alipay_position_normalizer`.
+- Added `normalize-fund-rules`, a safe current-Alipay/fund-company/OCR rule CSV normalizer that writes canonical intake-pack fund-rule rows and pack-relative evidence references without touching production files by default.
+- Added completion-audit gate `fund_rule_normalizer`.
+- Added `normalize-candidates`, a safe current-MooMoo/Alipay/official-source/OCR candidate CSV normalizer that writes canonical intake-pack candidate rows, pack-relative evidence references, and conservative-asset exclusions without touching production files by default.
+- Added completion-audit gate `candidate_normalizer`.
+- Added `normalize-intake-bundle`, a staged workflow that normalizes holdings, fund rules, and candidate sources into the intake pack, audits pack evidence, and dry-runs promotion without copying production files.
+- Added completion-audit gate `intake_bundle_normalizer`.
+- Added `mail-unlock-check`, a controlled workflow that generates the production-mail launchd template, real-send smoke command, and rollback command without sending mail or modifying launchd.
+- Added completion-audit gate `mail_unlock_workflow`.
+- Hardened `package-delivery` to write ZIPs atomically so audits cannot read a half-written final package.
+- Added `PRODUCTION_DATA_REQUEST.md`, a concise input contract for the three production unlock data files, evidence rules, and unlock commands.
+- Added completion-audit gate `production_data_request_contract`.
+- Redacted absolute local paths from `holdings_discovery_latest.md` while keeping JSON machine-verifiable.
+- Added completion-audit gate `holdings_discovery_markdown_redaction`.
+- Added completion-audit gate `launchd_schedule_contract` to verify the launchd template uses the preflight-gated `automation-tick` command, `StartInterval<=180`, the current workspace, and shadow-safe mail/dry-run environment variables.
+- Current validation: `pytest -q` = 82 passed; completion audit is 95.16% with 3 blockers (`production_preflight`, `mail_send_config_gate`, `intake_validation`).

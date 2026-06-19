@@ -1,0 +1,3 @@
+case_id,status,max_drawdown,recovery_time_days,grade,action_label,manual_review_required,hard_block_reason
+max_drawdown_block,pass,0.4583333333333333,49,Block,Clear,True,max_drawdown 45.83% >= 40.00%
+recovery_time_block,pass,0.2,365,Manual Review,Manual Review,True,recovery_time_days 365 >= 365

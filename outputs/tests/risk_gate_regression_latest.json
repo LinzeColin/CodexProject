@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-06-13T07:58:40+08:00",
+  "status": "pass",
+  "thresholds": {
+    "max_drawdown_block": 0.4,
+    "recovery_time_block_days": 365
+  },
+  "cases": [
+    {
+      "case_id": "max_drawdown_block",
+      "requirement": "MDD >= max_drawdown_block must create Block/Clear/manual-review evidence.",
+      "status": "pass",
+      "points": 120,
+      "metrics": {
+        "returns": {
+          "1m": 0.06868537666174279,
+          "3m": -0.3619929453262788,
+          "10d": 0.02117148906139743
+        },
+        "max_drawdown": 0.4583333333333333,
+        "recovery_time_days": 49,
+        "recovered": false,
+        "drawdown_7d": 0.0
+      },
+      "score": {
+        "total_score": 75.0,
+        "data_score": 25.0,
+        "timeliness_score": 15.0,
+        "source_score": 15.0,
+        "return_score": 10.0,
+        "risk_score": 0.0,
+        "executable_score": 10.0,
+        "evidence_coverage": 1.0,
+        "grade": "Block",
+        "hard_block_reason": "max_drawdown 45.83% >= 40.00%",
+        "action_label": "Clear",
+        "trigger_reason": "max_drawdown 45.83% >= 40.00%",
+        "manual_review_required": true,
+        "missing_fields": []
+      }
+    },
+    {
+      "case_id": "recovery_time_block",
+      "requirement": "Recovery time >= recovery_time_block_days must create Block or Manual Review evidence.",
+      "status": "pass",
+      "points": 381,
+      "metrics": {
+        "returns": {
+          "1m": 0.019756379080426267,
+          "3m": 0.055469620716306345,
+          "10d": 0.008201583913896915
+        },
+        "max_drawdown": 0.2,
+        "recovery_time_days": 365,
+        "recovered": true,
+        "drawdown_7d": 0.0
+      },
+      "score": {
+        "total_score": 85.0,
+        "data_score": 25.0,
+        "timeliness_score": 15.0,
+        "source_score": 15.0,
+        "return_score": 15.0,
+        "risk_score": 5.0,
+        "executable_score": 10.0,
+        "evidence_coverage": 1.0,
+        "grade": "Manual Review",
+        "hard_block_reason": "recovery_time_days 365 >= 365",
+        "action_label": "Manual Review",
+        "trigger_reason": "recovery_time_days 365 >= 365",
+        "manual_review_required": true,
+        "missing_fields": []
+      }
+    }
+  ]
+}
