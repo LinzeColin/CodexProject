@@ -170,3 +170,35 @@ Residual risks:
 
 - Local host still cannot run Docker-based `make verify-g1`; G1 PASS is based on GitHub Actions evidence.
 - G2 has a wide acceptance surface; implementation should split database migrations/data checks from visual canvas work to keep diffs reviewable.
+
+## 2026-06-19 - Phase 1 / G2 database foundation batch 1
+
+Status: IN PROGRESS
+
+Completed:
+
+- Added `infra/db/migrations/0001_core_domain/up.sql` and `down.sql`.
+- Added `scripts/migrate.py` for versioned PostgreSQL upgrade/downgrade/status operations.
+- Added `scripts/load_seed_catalogs.py` for deterministic catalog and research-universe seed loading.
+- Added `scripts/check_database_schema.py` for table and seed-count invariants.
+- Added `tests/integration/test_database_migrations.py` for migration, seed idempotency, and rollback.
+- Added `make verify-g2-db` to run Docker PostgreSQL, health, static verification, integration tests, and E2E.
+- Extended `specs/domain_schema.sql` with catalog-backed relationship families, relationship types, supply-chain stages, seed runs, and research-universe tables.
+- Marked T200, T201, T202, T203, T204, T206, T207, and T208 as `IN PROGRESS`.
+
+Verification results:
+
+- `make lint`: PASS.
+- `make verify`: PASS.
+- `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- `make verify-g2-db`: expected FAIL on current host because `docker` is not installed.
+
+Acceptance IDs touched:
+
+- A011, A012, A013, A014, A015, A016, A017, A018, A019, A020, A021, A022, A023, A024, A026, A027, A028, A090.
+
+Residual risks:
+
+- Actual PostgreSQL migration execution has not been proven locally because Docker is unavailable.
+- GitHub Actions must be updated to run `make verify-g2-db` and prove migration/seed/rollback on PostgreSQL.
+- T205 synthetic recursive supply-chain fixtures and T1103-T1109 visual canvas tasks are not started.

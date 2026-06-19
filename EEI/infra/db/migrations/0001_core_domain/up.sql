@@ -1,0 +1,3 @@
+-- G2 core domain schema.
+-- Acceptance IDs: A011,A012,A013,A014,A015,A016,A019,A020,A021,A022,A023,A026,A027
+-- include: specs/domain_schema.sql

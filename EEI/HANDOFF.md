@@ -31,6 +31,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Fixed release gate mapping drift and added validator coverage.
 - Added pinned pnpm/uv workspace, FastAPI health shell, Next.js Watchlist-first workspace shell, worker/package/infra anchors, contract validation, secret scan, unit test, and Playwright smoke test.
 - Pushed the current EEI subtree to GitHub at `LinzeColin/CodexProject/EEI`.
+- Started G2 database foundation with reversible SQL migration scaffolding, seed loader, schema checks, and integration test.
 
 ## Verification Evidence
 
@@ -48,6 +49,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: `scripts/wait_for_database.py` and `make wait-db` added to prevent immediate post-startup database readiness races.
 - 2026-06-19 update: `make verify` passes after the wait-contract change; local `make verify-g1` still fails closed because Docker is not installed.
 - 2026-06-19 update: GitHub Actions run `27820777762` passed; step 8 `Verify G1 PostgreSQL readiness and E2E` passed.
+- 2026-06-19 update: `make verify-g2-db` added; local run fails closed because Docker is not installed.
 
 Remote verification:
 
@@ -58,15 +60,16 @@ Remote verification:
 ## Not Completed
 
 - Docker is not installed on the current host, so local `make verify-g1` still fails closed.
-- G2 domain schema/migration/data model implementation has not started.
+- G2 migration/seed implementation has not yet passed remote PostgreSQL CI.
+- T205 synthetic recursive supply-chain fixtures are not started.
+- T1103-T1109 visual company workspace tasks are not started.
 - MVP is not complete.
 
 ## Recommended Next Step
 
 Start G2 with a bounded database-first run:
 
-1. Add reversible PostgreSQL migrations for `specs/domain_schema.sql` core tables.
-2. Add a migration runner and schema validation tests.
-3. Add seed-loader scaffolding for 30 P0 seeds and the 140-node research universe.
-4. Keep fixture records marked as fixture/synthetic and separated from live evidence.
-5. Run `make verify`; rely on GitHub Actions for Docker-backed `make verify-g1` until local Docker is available.
+1. Update the root GitHub Actions workflow to run `make verify-g2-db`.
+2. Push the G2 database foundation batch and inspect Actions.
+3. If CI passes, mark the database subset of G2 as proven and proceed to T205 fixtures.
+4. If CI fails, fix migration/seed/rollback without weakening the integration test.

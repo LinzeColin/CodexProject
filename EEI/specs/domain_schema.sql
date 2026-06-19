@@ -192,6 +192,7 @@ CREATE TABLE changes (
 -- Industry classifications are versioned and multi-label. They are navigation aids, not legal facts.
 CREATE TABLE industries (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  external_id text UNIQUE,
   slug text NOT NULL UNIQUE,
   name_zh text NOT NULL,
   name_en text NOT NULL,
@@ -386,10 +387,80 @@ CREATE TABLE calibration_runs (
   error text
 );
 
+CREATE TABLE relationship_families (
+  family_key text PRIMARY KEY,
+  family_id text NOT NULL UNIQUE,
+  name_zh text NOT NULL,
+  slug text NOT NULL UNIQUE,
+  default_graph_zone text NOT NULL,
+  definition text NOT NULL,
+  relationship_type_count integer NOT NULL CHECK (relationship_type_count >= 0),
+  default_evidence_threshold text NOT NULL,
+  default_visual_encoding text NOT NULL,
+  recursive_pivot boolean NOT NULL DEFAULT false,
+  loaded_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE relationship_type_catalog (
+  relationship_type text PRIMARY KEY,
+  family_key text NOT NULL REFERENCES relationship_families(family_key),
+  direction text NOT NULL CHECK (direction IN ('directed','undirected')),
+  amount_allowed boolean NOT NULL,
+  percentage_allowed boolean NOT NULL,
+  definition text NOT NULL,
+  loaded_at timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE relationships
+  ADD CONSTRAINT relationships_family_fk
+  FOREIGN KEY (relationship_family) REFERENCES relationship_families(family_key);
+
+ALTER TABLE relationships
+  ADD CONSTRAINT relationships_type_fk
+  FOREIGN KEY (relationship_type) REFERENCES relationship_type_catalog(relationship_type);
+
+CREATE TABLE supply_chain_stages (
+  stage_id text PRIMARY KEY,
+  stage_order integer NOT NULL UNIQUE,
+  slug text NOT NULL UNIQUE,
+  name_zh text NOT NULL,
+  name_en text NOT NULL,
+  default_direction text NOT NULL CHECK (default_direction IN ('upstream','downstream','internal','market')),
+  examples text,
+  loaded_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE company_research_universe (
+  research_id text PRIMARY KEY,
+  tier text NOT NULL CHECK (tier IN ('P0','P1','P2','X')),
+  canonical_name text NOT NULL,
+  power_system text NOT NULL,
+  initial_form text NOT NULL,
+  research_focus text NOT NULL,
+  verification_status text NOT NULL,
+  data_mode text NOT NULL DEFAULT 'research_target_not_verified_fact',
+  source_path text NOT NULL,
+  entity_id uuid REFERENCES entities(id),
+  loaded_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE seed_runs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  seed_name text NOT NULL,
+  source_path text NOT NULL,
+  source_hash text NOT NULL,
+  row_count integer NOT NULL CHECK (row_count >= 0),
+  status text NOT NULL CHECK (status IN ('loaded','failed')),
+  loaded_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(source_path, source_hash)
+);
+
 CREATE INDEX exploration_steps_session_idx ON exploration_steps(session_id, sequence_no);
 CREATE INDEX operation_logs_object_idx ON operation_logs(object_type, object_id, occurred_at DESC);
 CREATE INDEX calibration_runs_time_idx ON calibration_runs(scheduled_for DESC, status);
 CREATE INDEX score_results_object_idx ON score_results(object_type, object_id, adjusted_score DESC);
+CREATE INDEX company_research_universe_tier_idx ON company_research_universe(tier, canonical_name);
+CREATE INDEX relationship_type_family_idx ON relationship_type_catalog(family_key, relationship_type);
 
 CREATE INDEX relationships_subject_idx
   ON relationships(subject_entity_id, relationship_family, valid_from, valid_to);
