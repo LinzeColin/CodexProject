@@ -36,6 +36,11 @@ from pfi_os.application.repositories import (
 )
 from pfi_os.application.source_ingestion import SourceIngestionResult, ingest_file_source
 from pfi_os.application.source_registry import SourceRegistry, SourceRegistryRow
+from pfi_os.application.vectorized_read_model import (
+    build_vectorized_research_read_model,
+    empty_vectorized_research_read_model,
+    ingest_vectorized_research_cache,
+)
 
 __all__ = [
     "DataDomain",
@@ -62,13 +67,16 @@ __all__ = [
     "build_data_home_boundary_contract",
     "build_command_center_read_model",
     "build_phase_a_data_foundation_contract",
+    "build_vectorized_research_read_model",
     "build_homepage_summary",
     "default_data_home",
     "default_operational_db_path",
     "empty_homepage_summary",
     "empty_command_center_read_model",
+    "empty_vectorized_research_read_model",
     "ingest_command_center_cache",
     "ingest_file_source",
+    "ingest_vectorized_research_cache",
     "SourceRegistry",
     "SourceRegistryRow",
 ]

@@ -60,10 +60,13 @@ from pfi_os.approvals import StrategyApprovalRegistry
 from pfi_os.application import (
     OperationalStore,
     build_command_center_read_model,
+    build_vectorized_research_read_model,
     build_homepage_summary,
     empty_command_center_read_model,
+    empty_vectorized_research_read_model,
     empty_homepage_summary,
     ingest_command_center_cache,
+    ingest_vectorized_research_cache,
 )
 from pfi_os.analysis import (
     HOTSPOT_REFRESH_TTL_SECONDS,
@@ -1699,7 +1702,7 @@ def render_workspace_shell_status() -> None:
 
 
 def render_vectorized_research_panel() -> None:
-    payload = _read_json_payload(ROOT / "data" / "vectorized" / "VectorizedResearch_latest.json")
+    payload = _vectorized_research_operational_payload()
     summary = vectorized_research_shell_summary(payload)
     st.markdown("#### Vectorized Research")
     st.caption(summary["token_policy"])
@@ -1727,6 +1730,17 @@ def render_vectorized_research_panel() -> None:
             st.code("\n".join(f"{key}: {value}" for key, value in outputs.items()), language="text")
         st.code("\n".join(summary["commands"]), language="text")
     st.caption(summary["safety_policy"])
+
+
+def _vectorized_research_operational_payload() -> dict:
+    # VectorizedResearch_latest.json is ingested into the Operational Store before UI reads it.
+    store = OperationalStore()
+    try:
+        store.initialize()
+        ingest_vectorized_research_cache(store, project_root=ROOT)
+        return build_vectorized_research_read_model(store)
+    except Exception:
+        return empty_vectorized_research_read_model()
 
 
 LIFECYCLE_SCRIPT_ALLOWLIST = {

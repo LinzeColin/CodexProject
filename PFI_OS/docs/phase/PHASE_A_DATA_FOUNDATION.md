@@ -43,11 +43,15 @@ moving UI pages or vertical workflows onto it.
 - File source ingestion now enforces checksum/provenance metadata, public
   project-relative URIs, private-source-outside-Git boundaries, and rejects
   ephemeral runtime files as fact sources.
+- The legacy Streamlit Vectorized Research panel now ingests
+  `data/vectorized/VectorizedResearch_latest.json` into Operational Store and
+  renders a sanitized vectorized research read model instead of reading the
+  latest JSON directly during page render.
 
 ## Not Done
 
 - Legacy Streamlit UI still has direct JSON/provider reads outside the Web
-  Shell and command-center vertical slices.
+  Shell, command-center, and vectorized research vertical slices.
 - Existing legacy holdings sync and ResearchBus code is not migrated yet.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
 - Full source ingestion and vertical workflow migration are not complete.

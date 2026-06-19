@@ -69,6 +69,8 @@ Current sequence:
 - File-source ingestion adapter with checksum, provenance, public
   project-relative URI enforcement, private-source-outside-Git enforcement,
   and ephemeral runtime source rejection.
+- Vectorized Research latest cache ingestion into Operational Store and a
+  sanitized read model for the legacy Streamlit Vectorized Research panel.
 
 ## Start Here
 
@@ -97,6 +99,7 @@ python -m pytest tests/test_pfi_product_contracts.py -q
 python -m pytest tests/test_config.py tests/test_data.py tests/test_data_lake_manifest.py tests/test_holdings_book.py tests/test_research_bus.py tests/test_app_dashboard.py tests/test_workspace_shell.py tests/test_scripts.py -q
 python -m pytest tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py tests/visual/test_pfi_web_shell_visual_baseline.py -q
 python -m pytest tests/contract/test_phase_a_command_center_read_model.py -q
+python -m pytest tests/contract/test_phase_a_vectorized_read_model.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
@@ -111,7 +114,7 @@ commands after any follow-up edits.
 
 - GitHub draft PR #2 is the current mergeable integration path for this work.
 - Legacy Streamlit pages still contain direct JSON/provider reads outside the
-  new Web Shell vertical slice.
+  new Web Shell, command-center, and vectorized research vertical slices.
 - Existing legacy holdings sync and ResearchBus workflows are not fully moved
   onto Operational Store repositories.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
