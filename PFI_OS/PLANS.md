@@ -10,7 +10,8 @@ Phase B vertical workflows are complete. Phase C now has the cached workflow
 runtime read model, local scheduler/retry/60-second acceptance slice, and
 Web Shell workflow-card rendering implemented and covered by focused tests.
 Phase D local deployment readiness and backup/restore acceptance are now
-implemented as private-runtime-only local gates.
+implemented as private-runtime-only local gates. Phase 5 packaging is now a
+GitHub-safe engineering handoff for Phase 6 deployment preparation.
 
 Execution order:
 
@@ -22,6 +23,8 @@ Execution order:
 6. `Phase B`: promote Strategy Lab, Markets, Research + Policy, and Portfolio into Operational Store-backed vertical workflow contracts. Complete for the first four vertical slices.
 7. `Phase C`: promote Phase B workflows into cached runtime cards, scheduler jobs, retry/backoff, 60-second local cache acceptance, and Web Shell workflow-card rendering. Complete for current scope.
 8. `Phase D`: establish local deployment, backup/restore, and local-model readiness contracts. Complete for readiness and backup/restore acceptance.
+9. `Phase 5`: package verified docs, contracts, tests, validation evidence, and
+   Phase 6 preparation boundaries. Complete for engineering handoff.
 
 Current PFI decisions:
 
@@ -73,8 +76,11 @@ Current PFI decisions:
   restores them into private staging, verifies SQLite integrity and official
   table row-count parity, and exposes only sanitized public summaries for
   GitHub documentation.
-- Next product target is Phase 5 packaging while keeping research-only
-  boundaries.
+- Phase 5 packaging now builds `PFIOSPhase5AcceptancePackageV1`, verifies the
+  required GitHub-safe handoff file inventory, records validation evidence, and
+  keeps user-supplied Phase 6 materials outside public Git.
+- Next product target is Phase 6 deployment preparation on the target Mac while
+  keeping research-only boundaries.
 
 ## Execution Rules
 

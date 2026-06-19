@@ -32,7 +32,8 @@ Current sequence:
 13. Phase D local deployment, backup/restore, and model readiness:
     readiness and backup/restore acceptance complete.
 14. Phase 5 package:
-    next.
+    engineering acceptance package complete; Phase 6 user materials remain
+    external.
 
 ## Current Local State
 
@@ -127,6 +128,9 @@ Current sequence:
 - Phase D backup/restore acceptance complete with private runtime SQLite
   backup, private restore staging, checksum/row-count validation,
   GitHub-safe sanitized public summary, and no Operational SQLite mutation.
+- Phase 5 acceptance package complete as a GitHub-safe manifest and handoff
+  document for Phase 6 deployment preparation, with private/user-supplied
+  materials explicitly kept outside public Git.
 
 ## Start Here
 
@@ -151,7 +155,8 @@ Read in this order:
 17. `docs/phase/PHASE_B_PORTFOLIO.md`
 18. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
 19. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
-20. `docs/archive/legacy-migration.md`
+20. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
+21. `docs/archive/legacy-migration.md`
 
 ## Current Verification Evidence
 
@@ -175,6 +180,7 @@ python -m pytest tests/contract/test_phase_c_workflow_runtime_read_model.py -q
 python -m pytest tests/contract/test_phase_c_workflow_runtime_scheduler.py -q
 python -m pytest tests/contract/test_phase_d_deployment_readiness.py -q
 python -m pytest tests/contract/test_phase_d_backup_restore_acceptance.py -q
+python -m pytest tests/contract/test_phase5_acceptance_package.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
@@ -199,13 +205,16 @@ commands after any follow-up edits.
   it materially improves local observability.
 - Controlled local deployment acceptance is deferred unless the release gate
   requires a real service start/stop check.
-- Final Phase 5 packaging is not complete.
+- User-supplied Phase 6 deployment materials remain external: local repository
+  backup, hardware/disk audit, sanitized holdings, representative symbols and
+  policy documents, Fast Path target source list, workflow examples, and final
+  subjective acceptance score.
 
 ## Next Step
 
-Continue from Phase 5 packaging:
+Continue from Phase 6 deployment preparation:
 
-1. Build the Phase 5 acceptance package for Phase 6 deployment preparation.
+1. Collect external user-supplied Phase 6 materials on the deployment Mac.
 2. Add controlled local deployment acceptance only if a release gate requires
    real service start/stop evidence.
 3. Replace remaining legacy Streamlit direct reads one vertical slice at a time

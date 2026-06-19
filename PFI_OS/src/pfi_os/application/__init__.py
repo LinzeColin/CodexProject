@@ -26,6 +26,10 @@ from pfi_os.application.deployment_backup_restore import (
     build_phase_d_backup_restore_contract,
     run_phase_d_backup_restore_acceptance,
 )
+from pfi_os.application.phase5_acceptance_package import (
+    PHASE5_ACCEPTANCE_PACKAGE_SCHEMA,
+    build_phase5_acceptance_package,
+)
 from pfi_os.application.command_center_read_model import (
     build_command_center_read_model,
     empty_command_center_read_model,
@@ -129,6 +133,7 @@ __all__ = [
     "build_phase_d_deployment_readiness",
     "build_phase_d_deployment_readiness_contract",
     "build_phase_d_backup_restore_contract",
+    "build_phase5_acceptance_package",
     "build_command_center_read_model",
     "build_macos_runtime_acceptance_read_model",
     "build_phase_b_strategy_lab_contract",
@@ -179,4 +184,5 @@ __all__ = [
     "WORKFLOW_RUNTIME_SCHEDULER_SCHEMA",
     "PHASE_D_DEPLOYMENT_READINESS_SCHEMA",
     "PHASE_D_BACKUP_RESTORE_ACCEPTANCE_SCHEMA",
+    "PHASE5_ACCEPTANCE_PACKAGE_SCHEMA",
 ]

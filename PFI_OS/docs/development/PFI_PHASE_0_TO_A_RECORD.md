@@ -45,6 +45,7 @@ on chat history.
 | Phase C Web Shell workflow cards | Complete third slice | `web/index.html`, `web/app/shell.js`, `web/styles/tokens.css`, responsive `workflow_cards` rendering, Fast Path badge, private-safe evidence drawer updates, hidden-state visual guard |
 | Phase D local deployment readiness | Complete first slice | `src/pfi_os/application/deployment_readiness.py`, `PFIOSPhaseDLocalDeploymentReadinessV1`, repo surface checks, data-home boundary, backup/restore path plan, DisabledProvider/local-model optionality |
 | Phase D backup/restore acceptance | Complete second slice | `src/pfi_os/application/deployment_backup_restore.py`, `PFIOSPhaseDBackupRestoreAcceptanceV1`, private runtime backup, restore staging, checksum/row-count validation, GitHub-safe sanitized summary, `tests/contract/test_phase_d_backup_restore_acceptance.py` |
+| Phase 5 acceptance package | Complete engineering handoff | `src/pfi_os/application/phase5_acceptance_package.py`, `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`, `PFIOSPhase5AcceptancePackageV1`, GitHub-safe file inventory, validation evidence matrix, Phase 6 user-material boundary, `tests/contract/test_phase5_acceptance_package.py` |
 
 ## Open Backlog
 
@@ -54,20 +55,22 @@ on chat history.
    repositories one vertical slice at a time when those workflows enter scope.
 3. Add SSE/WebSocket-style progress only if it improves local workflow
    observability enough to justify the added complexity.
-4. Add controlled local deployment acceptance only if required by the release
-   gate, then build the final Phase 5 acceptance package.
+4. Collect user-supplied Phase 6 deployment materials on the target Mac:
+   repository backup, hardware/disk audit, sanitized holdings, representative
+   symbols/policy documents, Fast Path source list, workflow examples, and
+   final subjective acceptance score.
 
 ## Key File Map
 
 | Area | Files |
 | --- | --- |
 | Product contracts | `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`, `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`, `docs/product/PFI_FEATURE_DISPOSITION.md` |
-| Data contracts | `docs/data/PFI_DATA_BOUNDARIES.md`, `docs/data/PFI_SOURCE_OF_TRUTH.md`, `docs/phase/PHASE_A_DATA_FOUNDATION.md`, `docs/phase/PHASE_A_COMPLETION_AUDIT.md`, `docs/phase/PHASE_B_MARKETS.md`, `docs/phase/PHASE_B_RESEARCH_POLICY.md`, `docs/phase/PHASE_B_STRATEGY_LAB.md`, `docs/phase/PHASE_B_PORTFOLIO.md`, `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`, `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md` |
+| Data contracts | `docs/data/PFI_DATA_BOUNDARIES.md`, `docs/data/PFI_SOURCE_OF_TRUTH.md`, `docs/phase/PHASE_A_DATA_FOUNDATION.md`, `docs/phase/PHASE_A_COMPLETION_AUDIT.md`, `docs/phase/PHASE_B_MARKETS.md`, `docs/phase/PHASE_B_RESEARCH_POLICY.md`, `docs/phase/PHASE_B_STRATEGY_LAB.md`, `docs/phase/PHASE_B_PORTFOLIO.md`, `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`, `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`, `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md` |
 | UX and shell contracts | `docs/ux/PFI_UX_CONTRACT.md`, `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`, `web/index.html`, `web/app/shell.js`, `web/styles/tokens.css` |
 | Target architecture | `docs/architecture/PFI_TARGET_ARCHITECTURE.md` |
-| Operational store | `src/pfi_os/application/operational_store.py`, `src/pfi_os/application/source_registry.py`, `src/pfi_os/application/source_ingestion.py`, `src/pfi_os/application/homepage_summary.py`, `src/pfi_os/application/homepage_ingestion.py`, `src/pfi_os/application/command_center_read_model.py`, `src/pfi_os/application/vectorized_read_model.py`, `src/pfi_os/application/macos_runtime_read_model.py`, `src/pfi_os/application/private_reviewed_inputs.py`, `src/pfi_os/application/strategy_lab_workflow.py`, `src/pfi_os/application/markets_workflow.py`, `src/pfi_os/application/research_policy_workflow.py`, `src/pfi_os/application/portfolio_workflow.py`, `src/pfi_os/application/workflow_runtime_read_model.py`, `src/pfi_os/application/workflow_runtime_scheduler.py`, `src/pfi_os/application/deployment_readiness.py`, `src/pfi_os/application/deployment_backup_restore.py`, `src/pfi_os/application/repositories.py`, `src/pfi_os/application/data_home_audit.py` |
+| Operational store | `src/pfi_os/application/operational_store.py`, `src/pfi_os/application/source_registry.py`, `src/pfi_os/application/source_ingestion.py`, `src/pfi_os/application/homepage_summary.py`, `src/pfi_os/application/homepage_ingestion.py`, `src/pfi_os/application/command_center_read_model.py`, `src/pfi_os/application/vectorized_read_model.py`, `src/pfi_os/application/macos_runtime_read_model.py`, `src/pfi_os/application/private_reviewed_inputs.py`, `src/pfi_os/application/strategy_lab_workflow.py`, `src/pfi_os/application/markets_workflow.py`, `src/pfi_os/application/research_policy_workflow.py`, `src/pfi_os/application/portfolio_workflow.py`, `src/pfi_os/application/workflow_runtime_read_model.py`, `src/pfi_os/application/workflow_runtime_scheduler.py`, `src/pfi_os/application/deployment_readiness.py`, `src/pfi_os/application/deployment_backup_restore.py`, `src/pfi_os/application/phase5_acceptance_package.py`, `src/pfi_os/application/repositories.py`, `src/pfi_os/application/data_home_audit.py` |
 | Streamlit bridge | `src/pfi_os/app/streamlit_app.py` |
-| Contract tests | `tests/test_pfi_product_contracts.py`, `tests/contract/test_pfi_web_shell_contract.py`, `tests/contract/test_phase_a_operational_store.py`, `tests/contract/test_phase_a_source_registry_homepage.py`, `tests/contract/test_phase_a_repositories.py`, `tests/contract/test_phase_a_data_home_audit.py`, `tests/contract/test_phase_a_homepage_ingestion.py`, `tests/contract/test_phase_a_source_ingestion.py`, `tests/contract/test_phase_a_command_center_read_model.py`, `tests/contract/test_phase_a_vectorized_read_model.py`, `tests/contract/test_phase_a_macos_runtime_read_model.py`, `tests/contract/test_phase_a_private_reviewed_inputs.py`, `tests/contract/test_phase_a_streamlit_data_boundary.py`, `tests/contract/test_phase_a_completion_audit.py`, `tests/contract/test_phase_b_strategy_lab_workflow.py`, `tests/contract/test_phase_b_markets_workflow.py`, `tests/contract/test_phase_b_research_policy_workflow.py`, `tests/contract/test_phase_b_portfolio_workflow.py`, `tests/contract/test_phase_c_workflow_runtime_read_model.py`, `tests/contract/test_phase_c_workflow_runtime_scheduler.py`, `tests/contract/test_phase_d_deployment_readiness.py`, `tests/contract/test_phase_d_backup_restore_acceptance.py` |
+| Contract tests | `tests/test_pfi_product_contracts.py`, `tests/contract/test_pfi_web_shell_contract.py`, `tests/contract/test_phase_a_operational_store.py`, `tests/contract/test_phase_a_source_registry_homepage.py`, `tests/contract/test_phase_a_repositories.py`, `tests/contract/test_phase_a_data_home_audit.py`, `tests/contract/test_phase_a_homepage_ingestion.py`, `tests/contract/test_phase_a_source_ingestion.py`, `tests/contract/test_phase_a_command_center_read_model.py`, `tests/contract/test_phase_a_vectorized_read_model.py`, `tests/contract/test_phase_a_macos_runtime_read_model.py`, `tests/contract/test_phase_a_private_reviewed_inputs.py`, `tests/contract/test_phase_a_streamlit_data_boundary.py`, `tests/contract/test_phase_a_completion_audit.py`, `tests/contract/test_phase_b_strategy_lab_workflow.py`, `tests/contract/test_phase_b_markets_workflow.py`, `tests/contract/test_phase_b_research_policy_workflow.py`, `tests/contract/test_phase_b_portfolio_workflow.py`, `tests/contract/test_phase_c_workflow_runtime_read_model.py`, `tests/contract/test_phase_c_workflow_runtime_scheduler.py`, `tests/contract/test_phase_d_deployment_readiness.py`, `tests/contract/test_phase_d_backup_restore_acceptance.py`, `tests/contract/test_phase5_acceptance_package.py` |
 | E2E and visual tests | `tests/e2e/test_pfi_web_shell_static_flow.py`, `tests/visual/test_pfi_web_shell_visual_baseline.py`, `web/tests/visual-baseline.json` |
 
 ## Model And Parameter Contracts
@@ -121,6 +124,7 @@ python -m pytest tests/contract/test_phase_c_workflow_runtime_read_model.py -q
 python -m pytest tests/contract/test_phase_c_workflow_runtime_scheduler.py -q
 python -m pytest tests/contract/test_phase_d_deployment_readiness.py -q
 python -m pytest tests/contract/test_phase_d_backup_restore_acceptance.py -q
+python -m pytest tests/contract/test_phase5_acceptance_package.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
