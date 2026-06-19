@@ -34,7 +34,8 @@ It opens:
 http://127.0.0.1:4177
 ```
 
-Force a fresh visualization snapshot before opening:
+Normal app launches refresh the latest redacted Codex/source snapshot before
+serving `memory_atlas.json`. Force a full static runtime rebuild before opening:
 
 ```bash
 MEMORY_ATLAS_REFRESH=1 open "/Applications/Memory Atlas.app"
@@ -134,6 +135,10 @@ records `server.pid` under
 watchdog to stop that server after two hours by default. Override the lifetime
 with `MEMORY_ATLAS_TTL_SECONDS=<seconds>` or disable auto-stop with
 `MEMORY_ATLAS_TTL_SECONDS=0`. The runtime includes `memory_atlas_build.json`.
+Every launcher run refreshes the latest redacted Codex/source snapshot and
+copies it into the runtime before serving the page, so the UI's snapshot
+generation time should move forward with each real launch. The manifest records
+`snapshot_generated_at` for audit.
 When the launcher sees that the cached runtime commit does not match the current
 repository HEAD, it stops the stale local server, rebuilds the static runtime,
 and only then redirects the browser. When the cached runtime must be rebuilt

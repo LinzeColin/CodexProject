@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -327,10 +328,14 @@ class MemoryAtlasDataTests(unittest.TestCase):
             self.assertTrue(out.exists())
             data = json.loads(out.read_text(encoding="utf-8"))
             self.assertEqual(data["overview"]["memory_node_count"], 1)
+            first_generated_at = data["overview"]["generated_at"]
             os.utime(out, (1, 1))
+            time.sleep(0.02)
             second_result = module.main(["--database-dir", str(db), "--output", str(out)])
             self.assertEqual(second_result, 0)
-            self.assertEqual(out.stat().st_mtime, 1)
+            refreshed = json.loads(out.read_text(encoding="utf-8"))
+            self.assertNotEqual(refreshed["overview"]["generated_at"], first_generated_at)
+            self.assertNotEqual(out.stat().st_mtime, 1)
 
 
 if __name__ == "__main__":

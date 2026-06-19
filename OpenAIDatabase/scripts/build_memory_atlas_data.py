@@ -193,25 +193,8 @@ def source_summary(
     }
 
 
-def without_generated_at(data: dict[str, Any]) -> dict[str, Any]:
-    clone = json.loads(json.dumps(data, ensure_ascii=False))
-    if isinstance(clone.get("overview"), dict):
-        clone["overview"]["generated_at"] = "<generated>"
-    return clone
-
-
 def write_json(path: Path, data: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists():
-        try:
-            current_data = json.loads(path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            current_data = None
-        if isinstance(current_data, dict) and without_generated_at(current_data) == without_generated_at(data):
-            previous_generated_at = current_data.get("overview", {}).get("generated_at")
-            if previous_generated_at and isinstance(data.get("overview"), dict):
-                data["overview"]["generated_at"] = previous_generated_at
-
     payload = json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     if path.exists() and path.read_text(encoding="utf-8") == payload:
         return
@@ -1205,7 +1188,7 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
         "edge_count": len(edges),
         "memory_node_count": sum(1 for node in nodes if node["kind"] == "memory"),
         "theme_node_count": sum(1 for node in nodes if node["kind"] == "theme"),
-        "generated_at": datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "generated_at": datetime.now(UTC).isoformat(timespec="milliseconds").replace("+00:00", "Z"),
     }
 
     return {

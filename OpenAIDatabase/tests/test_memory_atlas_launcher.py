@@ -61,7 +61,12 @@ class MemoryAtlasLauncherTests(unittest.TestCase):
 
             launcher_text = executable.read_text(encoding="utf-8")
             self.assertIn(str(REPO_ROOT), launcher_text)
-            self.assertIn("scripts/build_memory_atlas_data.py", launcher_text)
+            self.assertIn("scripts/sync_codex_memory_data.py", launcher_text)
+            self.assertIn("--build-atlas", launcher_text)
+            self.assertIn("refresh_latest_snapshot", launcher_text)
+            self.assertIn("copy_latest_snapshot_to_runtime", launcher_text)
+            self.assertIn("snapshot_generated_at", launcher_text)
+            self.assertIn("正在刷新最新脱敏数据快照", launcher_text)
             self.assertIn("隐私与安全性 > 文件和文件夹", launcher_text)
             self.assertIn("on run argv", launcher_text)
             self.assertIn("display notification", launcher_text)
@@ -79,9 +84,12 @@ class MemoryAtlasLauncherTests(unittest.TestCase):
             self.assertNotIn('node "$APP_DIR/node_modules/typescript/bin/tsc" -b', launcher_text)
             self.assertIn("scripts/audit_memory_atlas_release.py", launcher_text)
             self.assertIn("scripts/audit_memory_atlas_acceptance.py", launcher_text)
+            prepare_block = launcher_text[
+                launcher_text.index("prepare_runtime()") : launcher_text.index('echo "=== $(date')
+            ]
             self.assertLess(
-                launcher_text.index('mv "$staged_runtime" "$RUNTIME_DIR"'),
-                launcher_text.index('--publish-dir "$RUNTIME_DIR"'),
+                prepare_block.index('mv "$staged_runtime" "$RUNTIME_DIR"'),
+                prepare_block.index('--publish-dir "$RUNTIME_DIR"'),
             )
             self.assertNotIn('Memory Atlas 验收审计失败，请查看日志：$LOG_FILE。"\n    exit 1\n  fi\n  stop_managed_server', launcher_text)
             self.assertIn("memory_atlas_server.py", launcher_text)

@@ -466,6 +466,12 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "Memory Atlas macOS app icon was not created" in installer_source
         and "memory_atlas_build.json" in installer_source
         and "runtime_is_stale" in installer_source
+        and "refresh_latest_snapshot" in installer_source
+        and "copy_latest_snapshot_to_runtime" in installer_source
+        and "scripts/sync_codex_memory_data.py" in installer_source
+        and "--build-atlas" in installer_source
+        and "snapshot_generated_at" in installer_source
+        and "正在刷新最新脱敏数据快照" in installer_source
         and "local static runtime build manifest matches current git HEAD" in read_text(repo_root / "scripts/audit_memory_atlas_acceptance.py")
         and "def remove_tree" in installer_source
         and "clean_frontend_dependencies" in installer_source
@@ -480,7 +486,7 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and '"-m http.server"' in installer_source
         and "last_seen_at = time.time() - max" not in installer_source,
         "local_app_launcher_contract",
-        "installer creates Downloads/Applications launchers, custom icon, runtime cache manifest/stale checks, cleanup guard, release audit gate, and immediate tab-close shutdown",
+        "installer creates Downloads/Applications launchers, custom icon, current-run snapshot refresh, runtime cache manifest/stale checks, cleanup guard, release audit gate, and immediate tab-close shutdown",
         "local app launcher contract missing required pieces",
     )
 

@@ -350,15 +350,18 @@ launcher has a custom galaxy graph icon, prepares a static local runtime under
 the runtime copy of the redacted visualization snapshot, starts a lightweight
 local static server on `http://127.0.0.1:4177`, and opens the browser. It is a thin local launcher, not
 a Tauri package and not a third-party plugin. First install can take a few
-minutes because it builds the runtime; normal launches should not wait for the
-Vite dev server or rebuild visualization data. The runtime includes
+minutes because it builds the runtime. Normal launches do not wait for the Vite
+dev server, but they do rebuild the latest redacted source snapshot before
+serving the page, so the displayed snapshot generation time is not a stale
+cached build time. The runtime includes
 `memory_atlas_build.json`; if the launcher sees that the cached runtime commit
 does not match the current repository HEAD, it stops the stale local server and
-rebuilds the static runtime before opening. To force snapshot regeneration
-from the memory database before opening, run the launcher with
-`MEMORY_ATLAS_REFRESH=1`. The launcher opens a small local starting page
-immediately, then redirects to Memory Atlas when the local server is ready; it
-does not open a second browser target after the server starts.
+rebuilds the static runtime before opening. `MEMORY_ATLAS_REFRESH=1` now forces
+a complete static runtime rebuild as well as the default snapshot refresh. The
+launcher opens a small local starting page immediately, then redirects to Memory
+Atlas when the latest snapshot has passed release/acceptance audit and the
+local server is ready; it does not open a second browser target after the server
+starts.
 The page reads `memory_atlas.json` with a cache-busting runtime request and
 shows both the snapshot generation time and the current page load time. The
 local static server writes its PID under
@@ -375,8 +378,8 @@ intentionally want to disable that fallback cap. 关闭 tab 必须释放本地�
 
 If macOS blocks access because the repository is under `Documents`, allow
 Memory Atlas in System Settings > Privacy & Security > Files and Folders. The
-normal launcher path does not touch `Documents` when the cached runtime exists;
-forced refresh and runtime rebuilds need Documents access. The launcher log is
+normal launcher path now reads `Documents` on every launch because it refreshes
+the latest redacted source snapshot before serving the app. The launcher log is
 `~/Library/Logs/OpenAIDatabase/memory-atlas-launcher.log`.
 
 Local generated folders such as `apps/memory-atlas/node_modules`,

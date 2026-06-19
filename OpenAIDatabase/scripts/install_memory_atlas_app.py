@@ -10,6 +10,7 @@ import platform
 import shutil
 import stat
 import subprocess
+import sys
 import tempfile
 import time
 from pathlib import Path
@@ -100,10 +101,19 @@ def git_commit_count(repo_root: Path) -> str:
 
 
 def write_runtime_build_info(repo_root: Path, runtime_dir: Path) -> None:
+    snapshot_path = runtime_dir / "memory_atlas.json"
+    snapshot_generated_at = ""
+    if snapshot_path.exists():
+        try:
+            snapshot_generated_at = json.loads(snapshot_path.read_text(encoding="utf-8")).get("overview", {}).get("generated_at") or ""
+        except json.JSONDecodeError:
+            snapshot_generated_at = ""
     payload = {
         "schema_version": "memory_atlas_build.v1",
         "git_commit": git_commit(repo_root),
         "built_at_epoch": int(time.time()),
+        "snapshot_generated_at": snapshot_generated_at,
+        "snapshot_mtime_epoch": int(snapshot_path.stat().st_mtime) if snapshot_path.exists() else None,
     }
     (runtime_dir / "memory_atlas_build.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -161,6 +171,19 @@ def clean_frontend_dependencies(app_dir: Path) -> None:
         remove_tree(node_modules)
     if node_modules.exists():
         raise RuntimeError(f"Memory Atlas dependency cleanup failed: {node_modules}")
+
+
+def refresh_memory_atlas_snapshot(repo_root: Path) -> None:
+    run_command(
+        [
+            sys.executable,
+            "scripts/sync_codex_memory_data.py",
+            "--database-dir",
+            str(repo_root),
+            "--build-atlas",
+        ],
+        cwd=repo_root,
+    )
 
 
 def create_icon_image():
@@ -276,6 +299,7 @@ def prepare_static_runtime(repo_root: Path, keep_build_cache: bool = False) -> P
     runtime_dir = runtime_root() / "runtime"
     staging_dir = runtime_root() / "runtime.next"
     try:
+        refresh_memory_atlas_snapshot(repo_root)
         if not frontend_dependencies_ready(app_dir):
             clean_frontend_dependencies(app_dir)
             run_npm_ci(repo_root, app_dir)
@@ -398,7 +422,7 @@ write_status_page() {{
   <main>
     <div class="mark" aria-hidden="true"></div>
     <h1>记忆星图启动中</h1>
-    <p>本地运行环境正在打开。服务准备好后，此页面会自动跳转到记忆星图。</p>
+    <p>正在刷新最新脱敏数据快照并打开本地运行环境。服务准备好后，此页面会自动跳转到记忆星图。</p>
     <p><a href="$URL">打开记忆星图</a></p>
   </main>
   <script>
@@ -720,9 +744,79 @@ stop_managed_server() {{
   fi
 }}
 
+refresh_latest_snapshot() {{
+  ensure_repo_access
+  notify_status "正在刷新最新 Memory Atlas 数据快照..."
+  echo "Refreshing latest Memory Atlas source data and redacted snapshot..."
+  if ! python3 scripts/sync_codex_memory_data.py \\
+    --database-dir . \\
+    --build-atlas; then
+    notify_error "Memory Atlas 无法刷新最新数据快照。如果 macOS 阻止 Documents 访问，请在系统设置 > 隐私与安全性 > 文件和文件夹中允许 Memory Atlas，或从终端运行 README 中的命令。"
+    exit 1
+  fi
+  if [[ ! -f "$SNAPSHOT" ]]; then
+    notify_error "Memory Atlas 快照刷新后仍缺少 memory_atlas.json，请查看日志：$LOG_FILE。"
+    exit 1
+  fi
+}}
+
+write_runtime_build_info() {{
+  local target_build_info="${{1:-$BUILD_INFO}}"
+  local target_snapshot="${{2:-$RUNTIME_DIR/memory_atlas.json}}"
+  local snapshot_generated_at
+  snapshot_generated_at="$(python3 - "$target_snapshot" <<'PY'
+import json
+import sys
+from pathlib import Path
+try:
+    print(json.loads(Path(sys.argv[1]).read_text(encoding="utf-8")).get("overview", {{}}).get("generated_at") or "")
+except Exception:
+    print("")
+PY
+)"
+  local current_commit
+  current_commit="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
+  python3 - "$target_build_info" "$current_commit" "$snapshot_generated_at" "$target_snapshot" <<'PY'
+import json
+import sys
+import time
+from pathlib import Path
+snapshot = Path(sys.argv[4])
+Path(sys.argv[1]).write_text(json.dumps({{
+    "schema_version": "memory_atlas_build.v1",
+    "git_commit": sys.argv[2],
+    "built_at_epoch": int(time.time()),
+    "snapshot_generated_at": sys.argv[3],
+    "snapshot_mtime_epoch": int(snapshot.stat().st_mtime) if snapshot.exists() else None,
+}}, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+PY
+}}
+
+copy_latest_snapshot_to_runtime() {{
+  if [[ ! -f "$RUNTIME_DIR/index.html" ]]; then
+    return 1
+  fi
+  refresh_latest_snapshot
+  cp "$SNAPSHOT" "$RUNTIME_DIR/memory_atlas.json"
+  write_runtime_build_info
+  if ! python3 scripts/audit_memory_atlas_release.py \\
+    --repo-root . \\
+    --publish-dir "$RUNTIME_DIR"; then
+    notify_error "Memory Atlas 最新快照发布审计失败，请查看日志：$LOG_FILE。"
+    exit 1
+  fi
+  if ! python3 scripts/audit_memory_atlas_acceptance.py \\
+    --repo-root . \\
+    --publish-dir "$RUNTIME_DIR"; then
+    notify_error "Memory Atlas 最新快照验收审计失败，请查看日志：$LOG_FILE。"
+    exit 1
+  fi
+}}
+
 prepare_runtime() {{
   notify_status "正在准备本地运行环境，首次启动可能需要几分钟。"
   ensure_repo_access
+  refresh_latest_snapshot
   if ! command -v npm >/dev/null 2>&1; then
     notify_error "需要 npm 才能准备 Memory Atlas 本地运行环境。"
     exit 1
@@ -760,29 +854,8 @@ prepare_runtime() {{
   rm -rf "$staged_runtime"
   mkdir -p "$APP_SUPPORT"
   cp -R "$APP_DIR/dist" "$staged_runtime"
-  if [[ ! -f "$SNAPSHOT" ]]; then
-    notify_status "正在生成 Memory Atlas 快照..."
-    if ! python3 scripts/build_memory_atlas_data.py \\
-      --database-dir . \\
-      --output data/derived/visualization/memory_atlas.json; then
-      notify_error "Memory Atlas 无法生成初始快照。"
-      exit 1
-    fi
-  fi
   cp "$SNAPSHOT" "$staged_runtime/memory_atlas.json"
-  local current_commit
-  current_commit="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
-  python3 - "$staged_runtime/memory_atlas_build.json" "$current_commit" <<'PY'
-import json
-import sys
-import time
-from pathlib import Path
-Path(sys.argv[1]).write_text(json.dumps({{
-    "schema_version": "memory_atlas_build.v1",
-    "git_commit": sys.argv[2],
-    "built_at_epoch": int(time.time()),
-}}, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
-PY
+  write_runtime_build_info "$staged_runtime/memory_atlas_build.json" "$staged_runtime/memory_atlas.json"
   if ! python3 scripts/audit_memory_atlas_release.py \\
     --repo-root . \\
     --publish-dir "$staged_runtime"; then
@@ -814,20 +887,12 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-if runtime_is_stale; then
+if runtime_is_stale || [[ "${{MEMORY_ATLAS_REFRESH:-0}}" == "1" ]]; then
   prepare_runtime
-fi
-
-if [[ "${{MEMORY_ATLAS_REFRESH:-0}}" == "1" ]]; then
-  ensure_repo_access
-  notify_status "正在刷新 Memory Atlas 快照..."
-  if ! python3 scripts/build_memory_atlas_data.py \\
-    --database-dir . \\
-    --output data/derived/visualization/memory_atlas.json; then
-    notify_error "Memory Atlas 无法刷新数据。如果 macOS 阻止 Documents 访问，请在系统设置 > 隐私与安全性 > 文件和文件夹中允许 Memory Atlas，或从终端运行 README 中的命令。"
-    exit 1
+else
+  if ! copy_latest_snapshot_to_runtime; then
+    prepare_runtime
   fi
-  cp "$SNAPSHOT" "$RUNTIME_DIR/memory_atlas.json"
 fi
 
 if [[ ! -f "$RUNTIME_DIR/memory_atlas.json" ]]; then
