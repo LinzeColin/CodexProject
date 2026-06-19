@@ -2,7 +2,7 @@
 
 Schema: `PFIOSPhaseBResearchPolicyContractV1`
 
-Status: first Research + Policy vertical slice in progress.
+Status: first Research + Policy vertical slice complete.
 
 As of: 2026-06-19 Australia/Sydney
 
@@ -54,11 +54,10 @@ The tests verify:
 - Legal, tax, compliance, subsidy, or investment conclusions.
 - Portfolio impact calculations that require private holdings.
 - Full Web Shell Research UI migration.
-- Portfolio vertical slice.
+- Portfolio vertical slice is covered by `docs/phase/PHASE_B_PORTFOLIO.md`.
 
 ## Next Iterations
 
-1. Add Portfolio vertical slice.
-2. Promote the four Phase B workflow contracts into Web Shell read models.
-3. Start Phase C worker/reliability only after the four Phase B workflows have
+1. Promote the four Phase B workflow contracts into Web Shell read models.
+2. Start Phase C worker/reliability only after the four Phase B workflows have
    evidence contracts.

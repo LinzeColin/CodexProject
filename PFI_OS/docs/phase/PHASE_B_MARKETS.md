@@ -2,7 +2,7 @@
 
 Schema: `PFIOSPhaseBMarketsContractV1`
 
-Status: first Markets vertical slice in progress.
+Status: first Markets vertical slice complete.
 
 As of: 2026-06-19 Australia/Sydney
 
@@ -52,12 +52,11 @@ The tests verify:
 - Direct provider fetching inside this workflow.
 - Portfolio impact calculations that require private holdings.
 - Full Web Shell Markets UI migration.
-- Research + Policy and Portfolio vertical slices.
+- Research + Policy and Portfolio vertical slices are covered by their Phase B
+  workflow docs.
 
 ## Next Iterations
 
-1. Add Research + Policy vertical slice.
-2. Add Portfolio vertical slice.
-3. Promote the Phase B workflow set into Web Shell read models.
-4. Start Phase C worker/reliability only after the four Phase B workflows have
+1. Promote the Phase B workflow set into Web Shell read models.
+2. Start Phase C worker/reliability only after the four Phase B workflows have
    evidence contracts.

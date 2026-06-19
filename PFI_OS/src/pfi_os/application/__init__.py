@@ -39,6 +39,12 @@ from pfi_os.application.private_reviewed_inputs import (
     private_reviewed_input_contract,
     private_reviewed_input_output_dir,
 )
+from pfi_os.application.portfolio_workflow import (
+    PORTFOLIO_WORKFLOW_SCHEMA,
+    build_phase_b_portfolio_contract,
+    build_portfolio_workflow,
+    record_portfolio_workflow,
+)
 from pfi_os.application.research_policy_workflow import (
     RESEARCH_POLICY_WORKFLOW_SCHEMA,
     build_phase_b_research_policy_contract,
@@ -104,6 +110,7 @@ __all__ = [
     "build_homepage_summary",
     "build_markets_workflow",
     "build_phase_b_markets_contract",
+    "build_phase_b_portfolio_contract",
     "build_phase_b_research_policy_contract",
     "default_data_home",
     "default_operational_db_path",
@@ -119,12 +126,15 @@ __all__ = [
     "private_reviewed_input_contract",
     "private_reviewed_input_output_dir",
     "record_markets_workflow",
+    "record_portfolio_workflow",
     "record_research_policy_workflow",
     "record_strategy_lab_workflow",
+    "build_portfolio_workflow",
     "build_research_policy_workflow",
     "SourceRegistry",
     "SourceRegistryRow",
     "MARKETS_WORKFLOW_SCHEMA",
+    "PORTFOLIO_WORKFLOW_SCHEMA",
     "RESEARCH_POLICY_WORKFLOW_SCHEMA",
     "STRATEGY_LAB_WORKFLOW_SCHEMA",
 ]

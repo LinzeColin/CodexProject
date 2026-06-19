@@ -2,7 +2,7 @@
 
 Schema: `PFIOSPhaseBStrategyLabContractV1`
 
-Status: first Phase B vertical slice in progress.
+Status: first Strategy Lab vertical slice complete.
 
 As of: 2026-06-19 Australia/Sydney
 
@@ -49,15 +49,13 @@ The tests verify:
 ## Out Of Scope
 
 - Migrating every legacy Strategy Lab UI panel into the Web Shell.
-- Completing the other three Phase B vertical slices.
+- The other three Phase B vertical slices are covered by their workflow docs.
 - Building Phase C worker/SSE reliability.
 - Building Phase D deployment, backup/restore, local LLM, and final MVP
   acceptance.
 
 ## Next Iterations
 
-1. Add Markets vertical slice.
-2. Add Research + Policy vertical slice.
-3. Add Portfolio vertical slice.
-4. Connect Strategy Lab workflow read models to the Web Shell when the Phase B
+1. Connect Strategy Lab workflow read models to the Web Shell when the Phase B
    workflow set is stable.
+2. Start Phase C worker/SSE reliability from the completed Phase B contracts.
