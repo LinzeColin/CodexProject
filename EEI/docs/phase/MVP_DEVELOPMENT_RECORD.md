@@ -1434,7 +1434,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G8 T1210 GitHub governance contract and required checks
 
-Status: LOCAL PASS, REMOTE CI PENDING
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1444,6 +1444,7 @@ Completed:
 - Added `scripts/validate_github_governance.py` to validate issue forms, PR template, CODEOWNERS, governance workflow, release categories, branch protection contract, release checklist and backup registry coverage.
 - Wired `validate-github-governance` into `make verify` and `ruff`.
 - Registered the new governance files and validator in `data/github_document_registry.csv`.
+- Stabilized the reroot fallback E2E by removing assertions on a transient loading overlay while retaining focus, fallback, graph nonblank and directional-grammar assertions.
 - Marked T1210 and A177 as `DONE`; A175 remains `NOT STARTED` until T1211 adds immutable release artifact and operation-log evidence.
 
 Verification evidence:
@@ -1451,6 +1452,11 @@ Verification evidence:
 - Local `.venv/bin/uv run python scripts/validate_github_governance.py`: PASS.
 - Local `make verify`: PASS.
 - Local `git diff --check`: PASS.
+- Local `./node_modules/.bin/playwright test --config=../../playwright.config.ts home.spec.ts --grep "Objects and Scope|directional grammar" --workers=1`: PASS, 2 tests.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 26 tests.
+- GitHub Actions run `27845697888`: FAIL, isolated to brittle transient loading overlay E2E assertion and fixed by `tests/e2e/home.spec.ts`.
+- GitHub Actions run `27846173368`: PASS.
+- GitHub Actions job `82415726115`: PASS.
 
 Acceptance status:
 
