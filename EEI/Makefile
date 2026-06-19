@@ -7,7 +7,7 @@ UV := $(VENV)/bin/uv
 PNPM_VERSION := 11.8.0
 PNPM := npx --yes pnpm@$(PNPM_VERSION)
 
-.PHONY: bootstrap bootstrap-python bootstrap-node db-up db-down db-logs health validate-governance validate-catalogs validate-contracts secret-scan lint typecheck test test-unit test-integration test-e2e verify verify-g1 dev-api dev-web clean-local
+.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up db-down db-logs health validate-governance validate-catalogs validate-contracts secret-scan lint typecheck test test-unit test-integration test-e2e verify verify-g1 dev-api dev-web clean-local
 
 $(UV):
 	$(PYTHON) -m venv $(VENV)
@@ -21,6 +21,9 @@ bootstrap-node:
 	if [[ -f pnpm-lock.yaml ]]; then $(PNPM) install --frozen-lockfile; else $(PNPM) install; fi
 
 bootstrap: bootstrap-python bootstrap-node
+
+doctor:
+	if [[ -f .env ]]; then set -a; source .env; set +a; fi; $(UV) run python scripts/env_doctor.py
 
 db-up:
 	command -v docker >/dev/null || { echo "ERROR: docker is required for G1 PostgreSQL verification"; exit 1; }
@@ -50,7 +53,7 @@ secret-scan:
 	$(UV) run python scripts/secret_scan.py
 
 lint:
-	$(UV) run ruff check apps tests scripts/validate_contracts.py scripts/secret_scan.py
+	$(UV) run ruff check apps tests scripts/env_doctor.py scripts/validate_contracts.py scripts/secret_scan.py
 
 typecheck:
 	$(PNPM) --filter @eei/web typecheck

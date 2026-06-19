@@ -82,3 +82,26 @@ Residual risks:
 
 - G1 cannot pass until Docker/PostgreSQL readiness is verified on a host with Docker or an approved PostgreSQL service path.
 - The current host has no `docker` and no `psql` executable.
+
+## 2026-06-19 - Phase 1 / G1 environment doctor and GitHub validation entry
+
+Status: IN PROGRESS
+
+Completed:
+
+- Added `scripts/env_doctor.py` and `make doctor` for structured local environment diagnostics.
+- Confirmed the current host reports `docker=null`, `psql=null`, `postgres=null`, `initdb=null`, `database.status=not_configured`, and `g1_ready=false`.
+- Added a root GitHub Actions workflow in `LinzeColin/CodexProject` at `.github/workflows/eei-validation.yml` because nested `EEI/.github/workflows/*` files do not run when EEI is stored as a subdirectory.
+
+Verification results:
+
+- `make doctor`: PASS as diagnostic output; reports G1 not ready.
+- `.github/workflows/eei-validation.yml` YAML parse: PASS.
+- `make lint`: PASS.
+- `make verify`: PASS.
+- `make verify-g1`: expected FAIL on current host because `docker` is not installed.
+
+Residual risks:
+
+- The root GitHub workflow has been added for future remote verification, but remote Actions status still needs to be inspected after push.
+- G1 remains blocked on an actual Docker/PostgreSQL-capable runtime.

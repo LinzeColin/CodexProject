@@ -37,6 +37,8 @@ Run from `work/EEI`:
 - `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS
 - `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS
 - 2026-06-19 update: `make health` now correctly fails closed without `DATABASE_URL`; `make verify-g1` correctly fails because `docker` is not installed.
+- 2026-06-19 update: `make doctor` added; current host reports no `docker`, `psql`, `postgres`, or `initdb`, and `g1_ready=false`.
+- 2026-06-19 update: root GitHub workflow `.github/workflows/eei-validation.yml` added in `LinzeColin/CodexProject` so EEI subdirectory changes can be validated by GitHub Actions.
 
 Remote verification:
 
@@ -48,6 +50,7 @@ Remote verification:
 - `docker compose up -d postgres` and PostgreSQL container health checks have not been run.
 - `/health/ready` now requires a real PostgreSQL readiness check; no database means `not_ready`.
 - G1 is not PASS yet.
+- Remote GitHub Actions status for the new root EEI workflow still needs to be inspected after push.
 - G2 domain schema/migration/data model work has not started.
 - MVP is not complete.
 
@@ -60,3 +63,4 @@ Resolve G1 database service verification:
 3. Export/copy a valid `DATABASE_URL` into `.env` and run `make health`.
 4. Re-run `make verify` and E2E.
 5. Run `make verify-g1`; only then consider G1 PASS and proceed to G2.
+6. Inspect GitHub Actions for `.github/workflows/eei-validation.yml` after the next push.

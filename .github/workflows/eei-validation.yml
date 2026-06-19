@@ -1,0 +1,42 @@
+name: EEI validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "EEI/**"
+      - ".github/workflows/eei-validation.yml"
+  pull_request:
+    paths:
+      - "EEI/**"
+      - ".github/workflows/eei-validation.yml"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: EEI
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Bootstrap pinned dependencies
+        run: make bootstrap
+      - name: Install Playwright Chromium
+        run: npx --yes pnpm@11.8.0 --filter @eei/web exec playwright install --with-deps chromium
+      - name: Verify static, contract, lint, typecheck and unit tests
+        run: make verify
+      - name: Verify G1 PostgreSQL readiness and E2E
+        run: |
+          cp .env.example .env
+          make verify-g1
+      - name: Stop PostgreSQL
+        if: always()
+        run: make db-down
+
