@@ -18,6 +18,7 @@ AGENTS.md
 CHANGELOG.md
 CHECKSUMS.sha256
 CODEX_MASTER_TASK.md
+CONTINUITY_PLAN.md
 CONTRIBUTING.md
 CURRENT_PHASE.md
 DELIVERY_INDEX.md
@@ -34,9 +35,11 @@ PLANS.md
 PURSUING_GOAL.md
 README.md
 REPORT.md
+REVIEW_AND_ITERATION_INDEX.md
 RISK_AND_ACCEPTANCE.md
 RUN_CODEX.md
 SOURCES.md
+TEST_STRATEGY.md
 US_Corporate_Power_Map_Governance_Blueprint_v4.2.pdf
 US_Corporate_Power_Map_System_Model_Parameter_Architecture_v4.2.md
 US_Corporate_Power_Map_UIUX_Redesign_v4.2.md
@@ -90,6 +93,8 @@ artifacts/tests/a185/t1214_high_risk_traceability.json
 artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip
 artifacts/tests/a200/t1212_clean_room_preflight.json
 artifacts/tests/a200/t1215_clean_room_release.json
+brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
+config/brand_policy.yaml
 config/model_profiles/balanced-v2.json
 config/model_runtime_defaults.yaml
 config/thresholds/default-v2.json
@@ -97,9 +102,11 @@ config/ui/motion-tokens.json
 config/ui/visual-coverage-targets.json
 data/acceptance_matrix.csv
 data/acceptance_traceability.csv
+data/brand_name_conflict_register.csv
 data/business_segment_taxonomy.csv
 data/capital_object_taxonomy.csv
 data/company_catalog.csv
+data/competitive_product_landscape.csv
 data/content_inventory.csv
 data/data_catalog_manifest.csv
 data/data_dictionary.csv
@@ -127,6 +134,7 @@ data/release_gate_catalog.csv
 data/research_seed_queue.csv
 data/research_universe.csv
 data/resolved_unresolved_register.csv
+data/review_issue_register.csv
 data/risk_control_traceability.csv
 data/risk_register.csv
 data/scoring_components.csv
@@ -143,6 +151,7 @@ data/upstream_downstream_role_catalog.csv
 diagrams/domain_model.mmd
 diagrams/live_refresh_flow.mmd
 diagrams/module_architecture.mmd
+diagrams/module_architecture_v5_review.mmd
 diagrams/recursive_focus_flow.mmd
 diagrams/system_context.mmd
 diagrams/user_flow.mmd
@@ -196,6 +205,7 @@ docs/adr/ADR-013-frontend-visualization.md
 docs/adr/ADR-014-data-ingestion.md
 docs/adr/ADR-015-fixture-and-live-data-separation.md
 docs/phase/MVP_DEVELOPMENT_RECORD.md
+docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md
 infra/db/migrations/0001_core_domain/down.sql
 infra/db/migrations/0001_core_domain/up.sql
 infra/db/migrations/0002_exploration_state/down.sql
@@ -235,6 +245,10 @@ prototype/screenshots/taxonomy_1440x900.png
 prototype/standalone.html
 prototype/styles.css
 pyproject.toml
+reviews/00_CONSOLIDATED_REVIEW.md
+reviews/01_SECURITY_CODE_QUALITY_REVIEW.md
+reviews/02_STRESS_LIFECYCLE_INTERACTION_REVIEW.md
+reviews/03_UIUX_ARCHITECTURE_REVIEW.md
 scripts/apply_model_config.py
 scripts/check_database_schema.py
 scripts/compile_model_runtime_defaults.py
@@ -261,6 +275,7 @@ scripts/validate_model_config.py
 scripts/validate_prototype_parity.py
 scripts/validate_task_pack.py
 scripts/validate_ui_copy.py
+scripts/validate_v5_production_readiness_sync.py
 scripts/validate_visual_coverage.py
 scripts/wait_for_database.py
 specs/api_contract.yaml
