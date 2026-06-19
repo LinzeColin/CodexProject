@@ -180,6 +180,13 @@ def test_quiet_start_uses_stable_local_streamlit_settings():
     assert "--browser.gatherUsageStats false" in script
     assert "_stcore/health" in script
     assert "pfi_os_ensure_app_python" in script
+    assert "正在启动 PFI OS" in script
+    assert "PFI OS 已就绪" in script
+    assert "pfi_os_streamlit.log" in script
+    assert "PFI_START_FOREGROUND" in script
+    assert "No browser opened" not in script
+    assert "service_url_if_current_project" in script
+    assert 'cwd_path" == "$PROJECT_DIR"' in script
     assert "PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION" in runtime
     assert "PFI_PYTHON" in runtime
     assert "/opt/anaconda3/bin/python3.12" in runtime
@@ -703,11 +710,12 @@ def test_ui_visual_acceptance_uses_browser_without_heavy_smoke():
     assert "PFIOSUIVisualAcceptanceV1" in script
     assert "playwright" in script
     assert "Google Chrome.app" in script
-    assert "工作台状态" in script
-    assert "macOS 生命周期" in script
-    assert "运行时验收证据" in script
-    assert "LifecycleButton" in script
-    assert "scrollIntoViewIfNeeded" in script
+    assert "PFIWebShellFrame" in script
+    assert "WorkspaceSwitch" in script
+    assert "FeatureOpen" in script
+    assert "策略实验室" in script
+    assert "数据与系统" in script
+    assert "盘感训练" in script
     assert "scripts/startPFIOS.sh" in script
     assert "scripts/stopPFIOS.sh" in script
     assert "scripts/finalAcceptanceCheck.sh" in script

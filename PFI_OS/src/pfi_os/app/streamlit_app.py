@@ -905,7 +905,13 @@ def run_backtest_for_strategy(
 
 
 def _pfi_ui_v2_enabled() -> bool:
-    return os.environ.get("PFI_UI_V2", "1") != "0"
+    env_enabled = os.environ.get("PFI_UI_V2", "1") != "0"
+    if not env_enabled:
+        return False
+    try:
+        return st.query_params.get("pfi_shell", "1") != "0"
+    except Exception:
+        return True
 
 
 def _pfi_web_shell_html(home_summary: dict | None = None) -> str:

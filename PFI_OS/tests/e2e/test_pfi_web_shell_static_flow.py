@@ -17,7 +17,8 @@ def test_workspace_switching_is_local_state_without_full_page_reload():
     assert "writeContext({ ...currentContext(), workspace: workspaceId })" in js
     assert "main.dataset.activeWorkspace = workspaceId" in js
     assert "location.reload" not in js
-    assert "window.location" not in js
+    assert "window.location.href" not in js
+    assert "window.open" not in js
     assert "href=\"/\"" not in html
     assert 'data-active-workspace="home"' in html
 
@@ -161,3 +162,21 @@ def test_user_visible_shell_text_is_chinese_first_not_english_placeholders():
 
     for fragment in forbidden_visible_text:
         assert fragment not in active_text
+
+
+def test_feature_cards_have_working_open_actions_for_real_function_pages():
+    html = _text(WEB_ROOT / "index.html")
+    js = _text(WEB_ROOT / "app" / "shell.js")
+    css = _text(WEB_ROOT / "styles" / "tokens.css")
+
+    for view in ["single", "hotspots", "reports", "holdings"]:
+        assert f'data-feature-view="{view}"' in html
+    for view in ["single", "scan", "market_feel", "big_data"]:
+        assert f'view: "{view}"' in js
+    assert "featureOpenControl" in js
+    assert "legacyViewUrl" in js
+    assert 'params.set("pfi_shell", "0")' in js
+    assert 'params.set("view", view)' in js
+    assert "dataset.featureWorkspace" in js
+    assert ".workflow-actions" in css
+    assert ".workflow-open" in css

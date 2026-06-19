@@ -51,6 +51,33 @@ const CARD_SOURCES = {
   strategy_runs: "证据记录",
 };
 
+const FEATURE_TARGETS = {
+  市场快照: { workspace: "market", label: "打开市场" },
+  研究队列: { workspace: "research", label: "打开研究" },
+  持仓复核: { workspace: "portfolio", label: "打开持仓" },
+  策略实验室: { workspace: "strategy", label: "打开策略" },
+  指数与ETF: { workspace: "market", label: "打开市场" },
+  主题催化: { workspace: "market", label: "打开市场" },
+  自选监控: { workspace: "market", label: "打开市场" },
+  来源状态: { workspace: "data", label: "打开来源" },
+  公司研究: { workspace: "research", label: "打开研究" },
+  基金研究: { workspace: "research", label: "打开研究" },
+  政策雷达: { view: "policy", label: "打开政策雷达" },
+  报告验证: { view: "reports", label: "打开报告中心" },
+  组合暴露: { view: "holdings", label: "打开持仓" },
+  集中度风险: { view: "holdings", label: "打开持仓" },
+  纪律检查: { view: "profile", label: "打开画像" },
+  订单意图: { view: "holdings", label: "打开持仓" },
+  单标的回测: { view: "single", label: "打开回测" },
+  参数扫描: { view: "scan", label: "打开扫描" },
+  盘感训练: { view: "market_feel", label: "打开训练" },
+  模拟实验: { view: "big_data", label: "打开模拟" },
+  来源登记: { workspace: "data", label: "打开数据" },
+  任务监控: { workspace: "data", label: "打开任务" },
+  隐私边界: { workspace: "data", label: "打开系统" },
+  备份恢复: { workspace: "data", label: "打开系统" },
+};
+
 const DEFAULT_WORKSPACES = {
   home: {
     label: "首页",
@@ -242,8 +269,8 @@ const DEFAULT_WORKSPACES = {
 
 const WORKSPACES = structuredClone(DEFAULT_WORKSPACES);
 
-function feature(title, status, evidence, description) {
-  return { title, status, evidence, description };
+function feature(title, status, evidence, description, target = null) {
+  return { title, status, evidence, description, target: target || featureTarget(title) };
 }
 
 function row(priority, object, evidence, action, status) {
@@ -486,17 +513,73 @@ function renderFeatureCards(cards) {
       meta.appendChild(rowNode);
     });
 
-    const button = document.createElement("button");
-    button.type = "button";
-    button.dataset.workflowEvidence = String(index);
-    button.textContent = "查看证据";
-    button.addEventListener("click", () => showWorkflowEvidence(card));
+    const actions = document.createElement("div");
+    actions.className = "workflow-actions";
+
+    const openAction = featureOpenControl(card);
+    const evidenceButton = document.createElement("button");
+    evidenceButton.type = "button";
+    evidenceButton.dataset.workflowEvidence = String(index);
+    evidenceButton.textContent = "查看证据";
+    evidenceButton.addEventListener("click", () => showWorkflowEvidence(card));
+
+    actions.appendChild(openAction);
+    actions.appendChild(evidenceButton);
 
     item.appendChild(head);
     item.appendChild(meta);
-    item.appendChild(button);
+    item.appendChild(actions);
     grid.appendChild(item);
   });
+}
+
+function featureTarget(title) {
+  const compact = String(title || "").replace(/\s+/g, "");
+  if (Object.prototype.hasOwnProperty.call(FEATURE_TARGETS, compact)) return FEATURE_TARGETS[compact];
+  if (/回测|参数|盘感|策略|模拟/.test(compact)) return { workspace: "strategy", label: "打开策略" };
+  if (/持仓|订单|组合|纪律/.test(compact)) return { workspace: "portfolio", label: "打开持仓" };
+  if (/研究|政策|报告|证据/.test(compact)) return { workspace: "research", label: "打开研究" };
+  if (/数据|来源|任务|隐私|备份|系统/.test(compact)) return { workspace: "data", label: "打开系统" };
+  if (/市场|指数|主题|自选/.test(compact)) return { workspace: "market", label: "打开市场" };
+  return { workspace: "home", label: "打开入口" };
+}
+
+function featureOpenControl(card) {
+  const target = card.target || featureTarget(card.title);
+  if (target.view) {
+    const link = document.createElement("a");
+    link.className = "workflow-open";
+    link.href = legacyViewUrl(target.view);
+    link.target = "_top";
+    link.dataset.featureView = target.view;
+    link.textContent = target.label || "打开功能";
+    return link;
+  }
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "workflow-open";
+  button.dataset.featureWorkspace = target.workspace || "home";
+  button.textContent = target.label || "打开入口";
+  button.addEventListener("click", () => setActiveWorkspace(target.workspace || "home"));
+  return button;
+}
+
+function legacyViewUrl(view) {
+  let search = window.location.search || "";
+  let pathname = window.location.pathname || "/";
+  try {
+    if (window.parent && window.parent !== window) {
+      search = window.parent.location.search || search;
+      pathname = window.parent.location.pathname || pathname;
+    }
+  } catch (_error) {
+    search = window.location.search || "";
+    pathname = window.location.pathname || "/";
+  }
+  const params = new URLSearchParams(search);
+  params.set("pfi_shell", "0");
+  params.set("view", view);
+  return `${pathname}?${params.toString()}`;
 }
 
 function renderDecisionRows(rows) {

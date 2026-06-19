@@ -276,6 +276,23 @@ if (!browserExecutable) {
   writePayload(basePayload('Blocked', checks), 3);
 }
 
+async function findShellFrame(page) {
+  for (let attempt = 0; attempt < 90; attempt += 1) {
+    for (const frame of page.frames()) {
+      const text = await frame.locator('body').innerText({ timeout: 1000 }).catch(() => '');
+      if (text.includes('PFI OS') && text.includes('策略实验室') && text.includes('数据与系统')) {
+        return frame;
+      }
+    }
+    await page.waitForTimeout(1000);
+  }
+  return null;
+}
+
+async function frameText(frame) {
+  return frame.locator('body').innerText({ timeout: 10000 }).catch(() => '');
+}
+
 (async () => {
   const checks = [check('BrowserExecutable', 'Pass', browserExecutable)];
   let browser;
@@ -284,53 +301,69 @@ if (!browserExecutable) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
     const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
     checks.push(check('HTTPStatus', response && response.ok() ? 'Pass' : 'Fail', `status=${response ? response.status() : 'missing'}`));
-    await page.waitForFunction(
-      () => document.body && document.body.innerText && document.body.innerText.includes('工作台状态'),
-      null,
-      { timeout: 90000 }
-    );
-    let bodyText = '';
-    for (let attempt = 0; attempt < 12; attempt += 1) {
-      bodyText = await page.locator('body').innerText({ timeout: 10000 }).catch(() => '');
-      if (bodyText.includes('macOS 生命周期')) {
-        break;
-      }
-      await page.mouse.wheel(0, 1000);
-      await page.waitForTimeout(1000);
-    }
-    if (!bodyText.includes('macOS 生命周期')) {
-      await page.waitForFunction(
-        () => document.body && document.body.innerText && document.body.innerText.includes('macOS 生命周期'),
-        null,
-        { timeout: 60000 }
-      );
+    const shellFrame = await findShellFrame(page);
+    checks.push(check('PFIWebShellFrame', shellFrame ? 'Pass' : 'Fail', shellFrame ? 'PFI Web Shell iframe rendered' : 'PFI Web Shell iframe missing'));
+    if (!shellFrame) {
+      throw new Error('PFI Web Shell iframe did not render expected Chinese workspace text.');
     }
     await page.waitForTimeout(1200);
-    bodyText = await page.locator('body').innerText({ timeout: 10000 });
+    let bodyText = await frameText(shellFrame);
     const requiredText = [
-      'PFI_OS',
-      '工作台状态',
-      'macOS 生命周期',
-      '运行时验收证据',
-      '缓存预览',
+      'PFI OS',
+      '首页',
+      '市场',
+      '研究',
+      '持仓',
+      '策略实验室',
+      '数据与系统',
+      '功能板块',
+      '盘感训练',
     ];
     for (const text of requiredText) {
       checks.push(check(`VisibleText:${text}`, bodyText.includes(text) ? 'Pass' : 'Fail', text));
     }
-    const lifecycleHeading = page.getByText('macOS 生命周期').first();
-    await lifecycleHeading.scrollIntoViewIfNeeded({ timeout: 30000 });
-    await page.waitForTimeout(1200);
-    const lifecycleButtons = ['开发检查', '轻量验收', '生命周期验收'];
-    for (const name of lifecycleButtons) {
-      const button = page.getByRole('button', { name }).first();
-      const visible = await button.isVisible({ timeout: 10000 }).catch(() => false);
-      checks.push(check(`LifecycleButton:${name}`, visible ? 'Pass' : 'Fail', name));
+
+    const workspaceLabels = [
+      ['home', '首页'],
+      ['market', '市场'],
+      ['research', '研究'],
+      ['portfolio', '持仓'],
+      ['strategy', '策略实验室'],
+      ['data', '数据与系统'],
+    ];
+    for (const [workspaceId, label] of workspaceLabels) {
+      await shellFrame.locator(`[data-workspace="${workspaceId}"]`).click({ timeout: 10000 });
+      await shellFrame.waitForFunction(
+        ([expectedId, expectedLabel]) => {
+          const main = document.querySelector('#main-workspace');
+          const title = document.querySelector('#workspace-title');
+          return main && title && main.dataset.activeWorkspace === expectedId && title.textContent.includes(expectedLabel);
+        },
+        [workspaceId, label],
+        { timeout: 10000 }
+      );
+      const activeTitle = await shellFrame.locator('#workspace-title').innerText({ timeout: 5000 });
+      checks.push(check(`WorkspaceSwitch:${workspaceId}`, activeTitle.includes(label) ? 'Pass' : 'Fail', activeTitle));
     }
-    const forbiddenText = ['Traceback', 'ModuleNotFoundError', 'ImportError:', 'Connection lost'];
+
+    const featureLinks = [
+      ['single', '打开回测'],
+      ['scan', '打开扫描'],
+      ['market_feel', '打开训练'],
+    ];
+    await shellFrame.locator('[data-workspace="strategy"]').click({ timeout: 10000 });
+    for (const [view, label] of featureLinks) {
+      const locator = shellFrame.locator(`[data-feature-view="${view}"]`).first();
+      const visible = await locator.isVisible({ timeout: 10000 }).catch(() => false);
+      const href = visible ? await locator.getAttribute('href') : '';
+      checks.push(check(`FeatureOpen:${view}`, visible && href && href.includes(`view=${view}`) && href.includes('pfi_shell=0') ? 'Pass' : 'Fail', `${label}; href=${href}`));
+    }
+    bodyText = await frameText(shellFrame);
+    const forbiddenText = ['Traceback', 'ModuleNotFoundError', 'ImportError:', 'Connection lost', 'EVA', 'QuantLab', 'Token ROI', 'Global Search'];
     for (const text of forbiddenText) {
       checks.push(check(`NoVisibleError:${text}`, bodyText.includes(text) ? 'Fail' : 'Pass', text));
     }
-    checks.push(check('BodyTextLength', bodyText.length > 1000 ? 'Pass' : 'Fail', `length=${bodyText.length}`));
+    checks.push(check('BodyTextLength', bodyText.length > 600 ? 'Pass' : 'Fail', `length=${bodyText.length}`));
     await page.screenshot({ path: screenshotPath, fullPage: true });
     const screenshotBytes = fs.existsSync(screenshotPath) ? fs.statSync(screenshotPath).size : 0;
     checks.push(check('ScreenshotCaptured', screenshotBytes > 10000 ? 'Pass' : 'Fail', `bytes=${screenshotBytes}`));

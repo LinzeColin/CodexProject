@@ -8,13 +8,27 @@ LOG_FILE="$PROJECT_DIR/data/cache/pfi_os_macos_app.log"
 exec >> "$LOG_FILE" 2>&1
 echo "==== PFI_OS launch $(date -u +"%Y-%m-%dT%H:%M:%SZ") pid=$$ ===="
 
+process_cwd() {
+  local pid="$1"
+  lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | awk '/^n/ {sub(/^n/, ""); print; exit}'
+}
+
 open_existing_service() {
+  local existing_port pids pid command cwd_path
   for EXISTING_PORT in {8501..8510}; do
     if curl -s -o /dev/null -w "%{http_code}" "http://localhost:$EXISTING_PORT/_stcore/health" | grep -q "200"; then
-      EXISTING_URL="http://localhost:$EXISTING_PORT"
-      echo "PFIOS is already running at $EXISTING_URL. Reusing the existing service."
-      open "$EXISTING_URL" >/dev/null 2>&1
-      return 0
+      pids="$(lsof -tiTCP:"$EXISTING_PORT" -sTCP:LISTEN 2>/dev/null || true)"
+      for pid in ${(f)pids}; do
+        command="$(ps -p "$pid" -o command= 2>/dev/null || true)"
+        cwd_path="$(process_cwd "$pid")"
+        if [[ "$command" == *"src/pfi_os/app/streamlit_app.py"* && ( "$command" == *"$PROJECT_DIR"* || "$cwd_path" == "$PROJECT_DIR" ) ]]; then
+          EXISTING_URL="http://localhost:$EXISTING_PORT"
+          echo "PFI OS current project service is already running at $EXISTING_URL. Reusing the existing service."
+          open "$EXISTING_URL" >/dev/null 2>&1
+          return 0
+        fi
+      done
+      echo "Healthy Streamlit found on port $EXISTING_PORT, but it is not this PFI_OS project. Ignoring it."
     fi
   done
   return 1

@@ -410,8 +410,27 @@ button:active {
   overflow-wrap: anywhere;
 }
 
-.workflow-card button {
+.workflow-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.workflow-card button,
+.workflow-open {
   width: 100%;
+}
+
+.workflow-open {
+  min-height: var(--pfi-target);
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--pfi-blue);
+  border-radius: var(--pfi-radius);
+  background: var(--pfi-blue);
+  color: #ffffff;
+  font-weight: 760;
+  text-decoration: none;
 }
 
 .content-grid {

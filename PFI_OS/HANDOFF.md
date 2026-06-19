@@ -188,18 +188,40 @@ Read in this order:
 Latest user-orientation repair verification, 2026-06-20:
 
 ```bash
-python -m pytest tests/test_pfi_product_contracts.py tests/contract/test_phase_a_homepage_ingestion.py tests/contract/test_v011_findings_baseline.py tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py -q
-python -m pytest tests/visual/test_pfi_web_shell_visual_baseline.py -q
-python -m compileall src/pfi_os/application src/pfi_os/app/streamlit_app.py
+PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /opt/anaconda3/bin/python3.12 -m pytest tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py tests/test_scripts.py -q
+zsh -n scripts/uiVisualAcceptance.sh scripts/startPFIOS.sh StartPFIOS.command
+scripts/uiVisualAcceptance.sh --summary-json
+scripts/installPFIOSEntryApps.sh
+PFI_CLEANUP_PYTHON=/opt/anaconda3/bin/python3.12 scripts/cleanCache.sh --json
 git diff --check
 ```
 
-The repair also ran Playwright against both static `web/index.html` and the
-actual `PFI_UI_V2=1 scripts/startPFIOS.sh` Streamlit runtime at
-`http://127.0.0.1:8501`. Both checks clicked all six workspaces and verified
-task center, evidence drawer, cached refresh, command-palette navigation, and
-absence of retired or English placeholder user text. A local screenshot of the
-runtime strategy workspace was captured for this Codex run.
+Observed:
+
+- Target Web Shell/script tests passed: 48 passed.
+- `git diff --check` passed.
+- `scripts/uiVisualAcceptance.sh --summary-json` passed 31/31 checks against
+  the actual Streamlit runtime at `http://127.0.0.1:8501`, including rendered
+  PFI Web Shell iframe, Chinese primary surface, all six workspace switches,
+  strategy feature links for `single`, `scan`, and `market_feel`, no visible
+  `EVA`, `QuantLab`, `Token ROI`, `Global Search`, and screenshot capture
+  (`screenshot_bytes=197759`).
+- `scripts/startPFIOS.sh` now defaults to quiet background startup: user-facing
+  output is Chinese and Streamlit ANSI/English runtime logs are redirected to
+  `data/cache/pfi_os_streamlit.log`. `PFI_START_FOREGROUND=1` remains available
+  for debugging.
+- `StartPFIOS.command` and `scripts/startPFIOS.sh` only reuse a healthy service
+  when the listening process belongs to the current PFI_OS project; unrelated
+  Streamlit/EVA-era ports are ignored.
+- `~/Downloads/PFI_OS.app` and `/Applications/PFI_OS.app` were reinstalled,
+  bound to this checkout, and passed `codesign --verify --deep --strict`.
+  Desktop remains an optional convenience copy; macOS Desktop/File Provider can
+  attach Finder metadata that blocks strict signature verification there.
+- No `EVA*.app` / `EVA_OS*.app` was found in Desktop, Downloads, or
+  Applications.
+- Cache cleanup removed 31 disposable cache items, 339 files, about 5.2 MB;
+  reports, holdings, SQLite, market caches, source samples, and private data
+  were outside the deletion policy.
 
 Latest PFI-001 reproducible-environment repair verification, 2026-06-20:
 

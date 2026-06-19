@@ -80,6 +80,7 @@ def test_streamlit_launcher_exposes_pfi_ui_v2_feature_flag_with_fallback():
 
     assert "def _pfi_ui_v2_enabled" in source
     assert 'os.environ.get("PFI_UI_V2", "1") != "0"' in source
+    assert 'st.query_params.get("pfi_shell", "1") != "0"' in source
     assert "render_pfi_ui_v2_shell()" in source
     assert "return" in source.split("render_pfi_ui_v2_shell()", maxsplit=1)[1]
     assert '[data-testid="stToolbar"]' in source
@@ -93,8 +94,14 @@ def test_launch_scripts_default_to_pfi_web_shell_with_legacy_opt_out():
 
     for source in (app_launcher, cli_launcher):
         assert 'export PFI_UI_V2="${PFI_UI_V2:-1}"' in source
-        assert "Starting PFI OS at" in source
         assert "streamlit run src/pfi_os/app/streamlit_app.py" in source
+        assert "src/pfi_os/app/streamlit_app.py" in source
+        assert "process_cwd" in source
+        assert 'cwd_path" == "$PROJECT_DIR"' in source
+    assert "正在启动 PFI OS" in cli_launcher
+    assert "pfi_os_streamlit.log" in cli_launcher
+    assert "PFI_START_FOREGROUND" in cli_launcher
+    assert "No browser opened" not in cli_launcher
     assert 'data-fallback-flag-value="1"' in shell_html
 
 
