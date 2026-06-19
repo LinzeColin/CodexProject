@@ -13,20 +13,20 @@ A011,P0,data,Migrations upgrade and downgrade cleanly,Migration round-trip,DONE
 A012,P0,data,Published relationship and event require evidence,Deferred data-quality test,NOT STARTED
 A013,P0,data,Unknown remains unknown and is never coerced to zero/false,Unit/data tests,NOT STARTED
 A014,P0,data,Amount requires currency and amount_kind and incompatible kinds are not summed,Constraint + unit tests,NOT STARTED
-A015,P0,data,"Entity types distinguish legal entity, brand, segment, product, facility, industry and other types",Schema/API assertions,NOT STARTED
-A016,P0,data,All ten relationship families are represented in taxonomy and fixtures,Data check,NOT STARTED
-A017,P0,data,P0 seed contains at least 30 unique entities,CSV/data check,NOT STARTED
-A018,P0,data,Research universe contains 120 U.S. targets and 20 global context nodes,CSV/data check,NOT STARTED
-A019,P0,data,Industry taxonomy supports parent/child and multi-label membership,Migration/API test,NOT STARTED
-A020,P0,data,Supply-chain stage taxonomy contains 16 ordered stages,CSV/data check,NOT STARTED
-A021,P0,data,"Supply-chain attributes preserve tier, materiality, substitutability, capacity, geography and coverage",Schema/unit test,NOT STARTED
-A022,P0,data,"Temporal fields preserve validity, announcement, filing, report, observation and ingestion times",Schema/golden test,NOT STARTED
+A015,P0,data,"Entity types distinguish legal entity, brand, segment, product, facility, industry and other types",Schema/API assertions,DONE
+A016,P0,data,All ten relationship families are represented in taxonomy and fixtures,Data check,DONE
+A017,P0,data,P0 seed contains at least 30 unique entities,CSV/data check,DONE
+A018,P0,data,Research universe contains 120 U.S. targets and 20 global context nodes,CSV/data check,DONE
+A019,P0,data,Industry taxonomy supports parent/child and multi-label membership,Migration/API test,DONE
+A020,P0,data,Supply-chain stage taxonomy contains 16 ordered stages,CSV/data check,DONE
+A021,P0,data,"Supply-chain attributes preserve tier, materiality, substitutability, capacity, geography and coverage",Schema/unit test,DONE
+A022,P0,data,"Temporal fields preserve validity, announcement, filing, report, observation and ingestion times",Schema/golden test,DONE
 A023,P0,data,Supersession and conflict preserve history,Repository integration test,DONE
-A024,P0,data,Seed and fixture load are idempotent,Run twice and compare,NOT STARTED
+A024,P0,data,Seed and fixture load are idempotent,Run twice and compare,DONE
 A025,P0,data,Synthetic fixtures are visibly marked and never presented as live facts,UI/API content test,DONE
 A026,P0,data,Entity resolution precision is >=95% on at least 50 cases,Gold evaluation,NOT STARTED
 A027,P0,data,Relationship precision is >=90% on at least 100 cases,Gold evaluation,NOT STARTED
-A028,P0,data,Research/source/metric/parameter registries load without malformed rows,Static validation,NOT STARTED
+A028,P0,data,Research/source/metric/parameter registries load without malformed rows,Static validation,DONE
 A029,P0,home,"Home shows global search, industries, Watchlist, recent explorations, changes and freshness",E2E,NOT STARTED
 A030,P0,home,Home shows active scoring profile and last/next calibration status,E2E,NOT STARTED
 A031,P0,industry,Industry list is human-readable and versioned,API/UI test,NOT STARTED

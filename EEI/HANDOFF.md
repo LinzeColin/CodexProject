@@ -42,6 +42,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed T1105, T1106, and T1109 with A141-A145 and A151-A152 by GitHub Actions run `27826081868`.
 - Added the T1203 CSV-backed taxonomy and object-scope API with catalog inventory, catalog detail, CSV export, object-scope coverage counts, and A169 local verification.
 - Completed T1203 and A169 by GitHub Actions run `27826870509`; G2 task list is complete, but G2 remains `IN PROGRESS` pending acceptance audit for unresolved G2-linked IDs.
+- Completed G2 acceptance audit pass 1 locally: A015-A022, A024, and A028 now have explicit validator/integration evidence; A012-A014, A026-A027, and A170 remain open.
 
 ## Verification Evidence
 
@@ -74,6 +75,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip.
 - 2026-06-19 update: local `make verify-g2-db` still fails closed because Docker is not installed.
 - 2026-06-19 update: GitHub Actions run `27826870509` passed; job `82353421402` proved T1203 through static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
+- 2026-06-19 update: local `make verify` passed after strengthening G2 schema checks and acceptance traceability.
 
 Remote verification:
 
@@ -103,14 +105,14 @@ Remote verification:
 - T1103/T1104/T1107/T1108 visual company workspace tasks are DONE and remote CI passed.
 - T1105/T1106/T1109 visual company workspace tasks are DONE and remote CI passed.
 - T1203 taxonomy/object-scope API is DONE and remote CI passed.
-- G2 task list is complete, but release gate status remains `IN PROGRESS` because G2-linked acceptance IDs still need a separate audit before the gate is closed.
+- G2 task list is complete, but release gate status remains `IN PROGRESS` because A012, A013, A014, A026, A027, and A170 remain open.
 - A170 / T1204 Objects and Scope navigation screen is not started.
 - MVP is not complete.
 
 ## Recommended Next Step
 
-Close the G2 acceptance audit, then continue G4 with the visible Objects and Scope screen:
+Close or explicitly defer the six remaining G2-linked acceptance gaps, then continue G4 with the visible Objects and Scope screen:
 
-1. Audit unresolved G2-linked Acceptance IDs against existing migration, catalog, integration, and visual evidence.
-2. Update only evidence-backed acceptance statuses, then decide whether G2 can become `PASS`.
+1. Implement or defer A012, A013, A014, A026, and A027 with explicit contracts.
+2. Keep A170 for T1204 visible navigation screen and visual regression.
 3. Start T1204 for A170 visible navigation screen and visual regression.

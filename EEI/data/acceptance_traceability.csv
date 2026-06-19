@@ -43,9 +43,9 @@ TR-FUN-EXP-01-A155,FUN-EXP-01,A155,T1110,E2E,artifacts/tests/a155/,NOT_STARTED,d
 TR-FUN-EXP-01-A156,FUN-EXP-01,A156,T1111,Contract/E2E,artifacts/tests/a156/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A157,FUN-EXP-01,A157,"T1111,T1207",Reload E2E,artifacts/tests/a157/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A193,FUN-EXP-01,A193,"T400,T401,T402,T403,T404,T405,T406,T407,T408,T1103,T1104,T1105,T1106,T1107,T1108,T1109,T1110,T1111",visual coverage measurement,artifacts/tests/a193/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-02-A016,FUN-EXP-02,A016,"T201,T205",Data check,artifacts/tests/a016/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
-TR-FUN-EXP-02-A020,FUN-EXP-02,A020,T201,CSV/data check,artifacts/tests/a020/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
-TR-FUN-EXP-02-A021,FUN-EXP-02,A021,T201,Schema/unit test,artifacts/tests/a021/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
+TR-FUN-EXP-02-A016,FUN-EXP-02,A016,"T201,T205",Data check,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/relationship_family_catalog.csv,DONE,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
+TR-FUN-EXP-02-A020,FUN-EXP-02,A020,T201,CSV/data check,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/supply_chain_stage_taxonomy.csv,DONE,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
+TR-FUN-EXP-02-A021,FUN-EXP-02,A021,T201,Schema/unit test,scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
 TR-FUN-EXP-02-A064,FUN-EXP-02,A064,T502,E2E,artifacts/tests/a064/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
 TR-FUN-EXP-02-A065,FUN-EXP-02,A065,T502,E2E/API,artifacts/tests/a065/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
 TR-FUN-EXP-02-A066,FUN-EXP-02,A066,T502,Data/UI test,artifacts/tests/a066/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
@@ -66,9 +66,9 @@ TR-FUN-EXP-03-A011,FUN-EXP-03,A011,"T200,T203,T208",Migration round-trip,tests/i
 TR-FUN-EXP-03-A012,FUN-EXP-03,A012,T200,Deferred data-quality test,artifacts/tests/a012/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
 TR-FUN-EXP-03-A013,FUN-EXP-03,A013,T200,Unit/data tests,artifacts/tests/a013/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
 TR-FUN-EXP-03-A014,FUN-EXP-03,A014,T200,Constraint + unit tests,artifacts/tests/a014/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
-TR-FUN-EXP-03-A015,FUN-EXP-03,A015,T200,Schema/API assertions,artifacts/tests/a015/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
-TR-FUN-EXP-03-A017,FUN-EXP-03,A017,T204,CSV/data check,artifacts/tests/a017/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
-TR-FUN-EXP-03-A018,FUN-EXP-03,A018,T204,CSV/data check,artifacts/tests/a018/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
+TR-FUN-EXP-03-A015,FUN-EXP-03,A015,T200,Schema/API assertions,scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
+TR-FUN-EXP-03-A017,FUN-EXP-03,A017,T204,CSV/data check,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/seed_universe.csv,DONE,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
+TR-FUN-EXP-03-A018,FUN-EXP-03,A018,T204,CSV/data check,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/research_universe.csv,DONE,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
 TR-FUN-EXP-03-A059,FUN-EXP-03,A059,T500,API/E2E,artifacts/tests/a059/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
 TR-FUN-EXP-03-A060,FUN-EXP-03,A060,"T500,T506",Content/E2E,artifacts/tests/a060/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
 TR-FUN-EXP-03-A061,FUN-EXP-03,A061,"T501,T506",E2E,artifacts/tests/a061/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
@@ -82,9 +82,9 @@ TR-FUN-EXP-04-A108,FUN-EXP-04,A108,"T800,T805",UI/data test,artifacts/tests/a108
 TR-FUN-EXP-04-A109,FUN-EXP-04,A109,"T800,T805",Unit/UI,artifacts/tests/a109/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
 TR-FUN-EXP-04-A110,FUN-EXP-04,A110,"T801,T805",E2E,artifacts/tests/a110/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
 TR-FUN-EXP-04-A191,FUN-EXP-04,A191,"T503,T800,T801,T805",catalog validation,artifacts/tests/a191/,NOT_STARTED,derived_from_task,Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
-TR-FUN-EXP-05-A020,FUN-EXP-05,A020,T201,CSV/data check,artifacts/tests/a020/,NOT_STARTED,derived_from_task,Codex implementation,docs/04_DATA_MODEL.md
-TR-FUN-EXP-05-A021,FUN-EXP-05,A021,T201,Schema/unit test,artifacts/tests/a021/,NOT_STARTED,derived_from_task,Codex implementation,docs/04_DATA_MODEL.md
-TR-FUN-EXP-05-A022,FUN-EXP-05,A022,T200,Schema/golden test,artifacts/tests/a022/,NOT_STARTED,derived_from_task,Codex implementation,docs/04_DATA_MODEL.md
+TR-FUN-EXP-05-A020,FUN-EXP-05,A020,T201,CSV/data check,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/supply_chain_stage_taxonomy.csv,DONE,derived_from_task,Codex implementation,docs/04_DATA_MODEL.md
+TR-FUN-EXP-05-A021,FUN-EXP-05,A021,T201,Schema/unit test,scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/04_DATA_MODEL.md
+TR-FUN-EXP-05-A022,FUN-EXP-05,A022,T200,Schema/golden test,scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/04_DATA_MODEL.md
 TR-FUN-EXP-05-A023,FUN-EXP-05,A023,T206,Repository integration test,tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/04_DATA_MODEL.md
 TR-FUN-EXP-05-A069,FUN-EXP-05,A069,T503,Unit/UI,artifacts/tests/a069/,NOT_STARTED,derived_from_task,Codex implementation,docs/04_DATA_MODEL.md
 TR-FUN-EXP-05-A070,FUN-EXP-05,A070,T503,Unit/UI,artifacts/tests/a070/,NOT_STARTED,derived_from_task,Codex implementation,docs/04_DATA_MODEL.md
@@ -106,7 +106,7 @@ TR-FUN-EXP-07-A072,FUN-EXP-07,A072,T504,Unit/E2E,artifacts/tests/a072/,NOT_START
 TR-FUN-EXP-07-A112,FUN-EXP-07,A112,"T803,T805",Content scan/review,artifacts/tests/a112/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 TR-FUN-EXP-07-A160,FUN-EXP-07,A160,T1113,E2E,artifacts/tests/a160/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 TR-FUN-EXP-07-A174,FUN-EXP-07,A174,T1205,E2E + link integrity,artifacts/tests/a174/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
-TR-FUN-EXP-08-A019,FUN-EXP-08,A019,T202,Migration/API test,artifacts/tests/a019/,NOT_STARTED,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
+TR-FUN-EXP-08-A019,FUN-EXP-08,A019,T202,Migration/API test,scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
 TR-FUN-EXP-08-A031,FUN-EXP-08,A031,T302,API/UI test,artifacts/tests/a031/,NOT_STARTED,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
 TR-FUN-EXP-08-A032,FUN-EXP-08,A032,"T302,T305",E2E,artifacts/tests/a032/,NOT_STARTED,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
 TR-FUN-EXP-08-A033,FUN-EXP-08,A033,T302,API/data test,artifacts/tests/a033/,NOT_STARTED,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
@@ -138,20 +138,20 @@ TR-FUN-DM-01-A011,FUN-DM-01,A011,"T200,T203,T208",Migration round-trip,tests/int
 TR-FUN-DM-01-A012,FUN-DM-01,A012,T200,Deferred data-quality test,artifacts/tests/a012/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A013,FUN-DM-01,A013,T200,Unit/data tests,artifacts/tests/a013/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A014,FUN-DM-01,A014,T200,Constraint + unit tests,artifacts/tests/a014/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
-TR-FUN-DM-01-A015,FUN-DM-01,A015,T200,Schema/API assertions,artifacts/tests/a015/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
-TR-FUN-DM-01-A016,FUN-DM-01,A016,"T201,T205",Data check,artifacts/tests/a016/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
-TR-FUN-DM-01-A017,FUN-DM-01,A017,T204,CSV/data check,artifacts/tests/a017/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
-TR-FUN-DM-01-A018,FUN-DM-01,A018,T204,CSV/data check,artifacts/tests/a018/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
-TR-FUN-DM-01-A019,FUN-DM-01,A019,T202,Migration/API test,artifacts/tests/a019/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
-TR-FUN-DM-01-A020,FUN-DM-01,A020,T201,CSV/data check,artifacts/tests/a020/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
-TR-FUN-DM-01-A021,FUN-DM-01,A021,T201,Schema/unit test,artifacts/tests/a021/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
-TR-FUN-DM-01-A022,FUN-DM-01,A022,T200,Schema/golden test,artifacts/tests/a022/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+TR-FUN-DM-01-A015,FUN-DM-01,A015,T200,Schema/API assertions,scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+TR-FUN-DM-01-A016,FUN-DM-01,A016,"T201,T205",Data check,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/relationship_family_catalog.csv,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+TR-FUN-DM-01-A017,FUN-DM-01,A017,T204,CSV/data check,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/seed_universe.csv,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+TR-FUN-DM-01-A018,FUN-DM-01,A018,T204,CSV/data check,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/research_universe.csv,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+TR-FUN-DM-01-A019,FUN-DM-01,A019,T202,Migration/API test,scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+TR-FUN-DM-01-A020,FUN-DM-01,A020,T201,CSV/data check,scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/supply_chain_stage_taxonomy.csv,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+TR-FUN-DM-01-A021,FUN-DM-01,A021,T201,Schema/unit test,scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+TR-FUN-DM-01-A022,FUN-DM-01,A022,T200,Schema/golden test,scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A023,FUN-DM-01,A023,T206,Repository integration test,tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
-TR-FUN-DM-01-A024,FUN-DM-01,A024,T207,Run twice and compare,artifacts/tests/a024/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+TR-FUN-DM-01-A024,FUN-DM-01,A024,T207,Run twice and compare,tests/integration/test_database_migrations.py;scripts/load_seed_catalogs.py;scripts/load_synthetic_fixtures.py,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A025,FUN-DM-01,A025,T205,UI/API content test,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A026,FUN-DM-01,A026,"T208,T904",Gold evaluation,artifacts/tests/a026/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A027,FUN-DM-01,A027,"T208,T904",Gold evaluation,artifacts/tests/a027/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
-TR-FUN-DM-01-A028,FUN-DM-01,A028,"T204,T207",Static validation,artifacts/tests/a028/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+TR-FUN-DM-01-A028,FUN-DM-01,A028,"T204,T207",Static validation,scripts/validate_task_pack.py;scripts/validate_governance.py;scripts/validate_catalog_integrity.py,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A096,FUN-DM-01,A096,"T700,T706",Mock HTTP,artifacts/tests/a096/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A097,FUN-DM-01,A097,T700,Deterministic limiter,artifacts/tests/a097/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A098,FUN-DM-01,A098,"T701,T706",Mock HTTP,artifacts/tests/a098/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md

@@ -530,3 +530,34 @@ Residual risks:
 - The G2 task list is complete, but `data/release_gate_catalog.csv` remains `IN PROGRESS` until a separate acceptance audit resolves G2-linked IDs that are still `NOT STARTED`.
 - T1204 / A170 remains open.
 - MVP is not complete.
+
+## 2026-06-19 - Phase 1 / G2 acceptance audit pass 1
+
+Status: ACCEPTANCE TRACEABILITY PARTIAL CLOSE; G2 IN PROGRESS
+
+Completed:
+
+- Added schema-check assertions for required entity type labels, supply-chain attribute columns, temporal columns, research universe tier counts, industry parent/child taxonomy, and multi-label industry membership support.
+- Marked A015, A016, A017, A018, A019, A020, A021, A022, A024, and A028 as `DONE` only where existing validators/integration tests now provide explicit evidence.
+- Updated duplicate traceability rows for the closed IDs so each function-level trace points to concrete scripts, schemas, data files, and integration tests.
+- Left A012, A013, A014, A026, A027, and A170 as `NOT STARTED`.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `.venv/bin/uv run ruff check scripts/check_database_schema.py`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+
+Acceptance status:
+
+- A015-A022, A024, and A028 are covered by `scripts/check_database_schema.py`, `tests/integration/test_database_migrations.py`, `specs/domain_schema.sql`, and the canonical CSV validators.
+- A012 still needs a publishable relationship/event evidence enforcement contract, not only evidence tables.
+- A013 still needs explicit unknown/null coercion regression tests.
+- A014 still needs amount-kind compatibility and non-summing regression tests beyond the basic currency/kind constraint.
+- A026 and A027 still require gold-set precision evaluation.
+- A170 still requires T1204 UI plus E2E/visual regression.
+
+Residual risks:
+
+- `data/release_gate_catalog.csv` remains `G2=IN PROGRESS`.
+- Remote GitHub Actions still needs to prove the strengthened schema checker under PostgreSQL.
