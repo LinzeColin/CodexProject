@@ -1,0 +1,46 @@
+{
+  "schema_version": "qbvs-quantlab-readonly-adapter-pack-v1",
+  "created_at": "2026-06-04T23:59:46",
+  "source_system": "quant_behavior_validation_system",
+  "target_system": "quantlab",
+  "pack_dir": "handoff/quantlab_readonly_adapter_pack",
+  "writes_quantlab_database": false,
+  "modifies_quantlab_source": false,
+  "ingestion_mode": "external_evidence_only",
+  "quantlab_alignment": {
+    "quantlab_root": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance",
+    "independent_validation_module": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/src/quantlab/integrations/independent_validation.py",
+    "research_bus_module": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/src/quantlab/integrations/research_bus.py",
+    "recommended_quantlab_table": "independent_validation_runs"
+  },
+  "artifacts": [
+    {
+      "path": "adapter_pack_manifest.json",
+      "kind": "manifest"
+    },
+    {
+      "path": "quantlab_qbvs_readonly_adapter.py",
+      "kind": "readonly_adapter_source"
+    },
+    {
+      "path": "test_quantlab_qbvs_readonly_adapter.py",
+      "kind": "adapter_unit_test"
+    },
+    {
+      "path": "README.md",
+      "kind": "instructions"
+    },
+    {
+      "path": "sample_ingestion_request.json",
+      "kind": "sample_request"
+    }
+  ],
+  "consumable_qbvs_inputs": [
+    "quantlab_bundle_manifest.json",
+    "quantlab_ingestion_payload.json",
+    "quantlab_candidate_strategies.csv",
+    "campaign_plan.json",
+    "campaign_status.csv",
+    "promotion_candidates.csv"
+  ]
+}

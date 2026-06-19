@@ -1,0 +1,71 @@
+{
+  "protocol_version": "qbvs-quantlab-handshake-v1",
+  "message_type": "handshake_ack",
+  "source_system": "quantlab",
+  "target_system": "quant_behavior_validation_system",
+  "created_at": "2026-06-05T04:45:56Z",
+  "created_at_local": "2026-06-05 14:45 AEST",
+  "quantlab_root": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance",
+  "qbvs_root": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system",
+  "accepted": true,
+  "consume_mode": "external_artifact_read",
+  "quantlab_entrypoint": "ReviewOnly external evidence ingestion through scripts/runIndependentValidation.sh, src/quantlab/integrations/independent_validation.py, src/quantlab/integrations/research_bus.py, and the Streamlit 大数据模拟 / 研究总线 views; QuantLab will read QBVS bundles as external evidence and will not write approved strategies without explicit user approval.",
+  "quantlab_can_read_qbvs_root": true,
+  "accepted_artifacts": [
+    "QUANTLAB_INTEGRATION_CONTRACT.json",
+    "HANDSHAKE_PROTOCOL.json",
+    "HANDOFF.md",
+    "handoff/qbvs_handshake_request.json",
+    "handoff/quantlab_readonly_adapter_pack/*",
+    "handoff/researchbus_schema_mapping_20260605/qbvs_to_quantlab_researchbus_mapping.json",
+    "handoff/quantlab_bundle_moomoo_batch100_top20_finalist_3windows/quantlab_bundle_manifest.json",
+    "handoff/quantlab_bundle_moomoo_batch100_top20_finalist_3windows/quantlab_ingestion_payload.json",
+    "handoff/quantlab_bundle_moomoo_batch100_top20_finalist_3windows/quantlab_candidate_strategies.csv",
+    "handoff/quantlab_bundle_yahoo_public_top20_finalist_200symbols_5windows/quantlab_bundle_manifest.json",
+    "handoff/quantlab_bundle_yahoo_public_top20_finalist_200symbols_5windows/quantlab_ingestion_payload.json",
+    "handoff/quantlab_bundle_yahoo_public_top20_finalist_200symbols_5windows/quantlab_candidate_strategies.csv",
+    "handoff/quantlab_bundle_yahoo_public_200x200_full_40000/quantlab_bundle_manifest.json",
+    "handoff/quantlab_bundle_yahoo_public_200x200_full_40000/quantlab_ingestion_payload.json",
+    "handoff/quantlab_bundle_yahoo_public_200x200_full_40000/quantlab_candidate_strategies.csv",
+    "runs/**/strategy_summary.csv",
+    "runs/**/validation_results.csv",
+    "runs/**/task_status.csv",
+    "runs/**/Behavior_Strategy_*.pdf",
+    "data_cache/**/cache_index.csv",
+    "warehouse/qbvs_results.sqlite"
+  ],
+  "review_status": "ReviewOnly",
+  "research_bus_target_tables": [
+    "independent_validation_runs",
+    "independent_validation_shards"
+  ],
+  "hard_guards": [
+    "Do not connect to live trading.",
+    "Do not place real orders.",
+    "Do not write QBVS artifacts into QuantLab approved strategy library without explicit user approval.",
+    "Do not treat Yahoo public-history evidence as account-tradable proof.",
+    "Reject any QBVS bundle that declares writes_quantlab_database=true, writes_quantlab_source=true, or ingestion_mode other than external_evidence_only.",
+    "Fast-screening candidates remain ReviewOnly until exact validation and user approval are present."
+  ],
+  "quantlab_will_not_write_qbvs_without_user_approval": true,
+  "quantlab_will_not_write_strategy_library_without_user_approval": true,
+  "recommended_qbvs_next_actions": [
+    "Run: PYTHONPATH=. python3 -m qbvs.cli verify-handshake --ack handoff/quantlab_handshake_ack.json",
+    "Run: PYTHONPATH=. python3 -m qbvs.cli audit-goal-readiness --summary runs/yahoo_public_200x200_pair_full_40000_exact/strategy_summary.csv --results runs/yahoo_public_200x200_pair_full_40000_exact/validation_results.csv --manifest runs/manifests/yahoo_public_200x200_pair_manifest.csv --moomoo-probe runs/moomoo_opend_probe_iteration26_after_sdk.json --handshake-ack handoff/quantlab_handshake_ack.json --output-dir runs/goal_readiness_audit_quantlab_ack_20260605_from_quantlab_thread",
+    "Resume only the smallest verification needed to satisfy the active QBVS pursuing goal.",
+    "Do not trigger OpenD batch refetch until historical K-line quota recovers.",
+    "If continuing before OpenD quota recovery, use quota-safe public-history or replacement-to-200 resumable campaign paths only."
+  ],
+  "known_non_ack_blockers": [
+    "OpenD historical K-line quota is still constrained; batch 81-140 has 39 opend_quota_exhausted items.",
+    "BRK-B provider alias is snapshot-confirmed as US.BRK.B; historical K-line confirmation should wait for OpenD quota recovery."
+  ],
+  "notes": "QuantLab acknowledges QBVS as an external behavior-strategy validation layer. This ACK closes the missing QuantLab handshake file only; it does not approve strategy promotion, live trading, database mutation, OpenD refetch, or long-run validation by itself.",
+  "blockers": [],
+  "last_verified_at": "2026-06-05T16:47:43+10:00",
+  "verify_handshake_result": {
+    "valid": true,
+    "errors": []
+  },
+  "latest_goal_readiness_audit": "runs/goal_readiness_audit_quantlab_ack_20260605_from_quantlab_thread/goal_readiness_audit.json"
+}

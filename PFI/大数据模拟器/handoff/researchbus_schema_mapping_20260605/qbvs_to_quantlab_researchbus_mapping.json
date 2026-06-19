@@ -1,0 +1,227 @@
+{
+  "schema_version": "qbvs-quantlab-researchbus-mapping-v1",
+  "created_at": "2026-06-05",
+  "source_system": "quant_behavior_validation_system",
+  "target_system": "quantlab",
+  "target_researchbus_table": "independent_validation_runs",
+  "target_candidate_table": "independent_validation_candidates",
+  "target_status": "ReviewOnly",
+  "active_goal": "Validate behavior-rule trading strategies, not portfolio allocation, against user floors before QuantLab approval.",
+  "boundary": {
+    "qbvs_writes_quantlab_source": false,
+    "qbvs_writes_quantlab_database": false,
+    "quantlab_strategy_library_write_allowed": false,
+    "requires_quantlab_ack_before_closed_loop": true,
+    "requires_user_approval_before_approved_strategy_write": true
+  },
+  "hard_guards": [
+    "Reject bundle if writes_quantlab_database is not false.",
+    "Reject bundle if writes_quantlab_source is not false.",
+    "Reject payload if ingestion_mode is not external_evidence_only.",
+    "Store as ReviewOnly until QuantLab ACK, QuantLab-side review, and user approval are present.",
+    "Do not treat public-history evidence as account-tradable proof."
+  ],
+  "bundle_priority": [
+    {
+      "priority": 1,
+      "bundle_id": "moomoo_batch100_top20_finalist_3windows",
+      "bundle_dir": "handoff/quantlab_bundle_moomoo_batch100_top20_finalist_3windows",
+      "evidence_level": "real_tradable_moomoo_batch100",
+      "scope": "20 strategies x 100 Moomoo/OpenD cached symbols x 3 windows = 6000 samples",
+      "quantlab_use": "primary ReviewOnly external evidence for strategy approval page and report display"
+    },
+    {
+      "priority": 2,
+      "bundle_id": "yahoo_public_top20_finalist_200symbols_5windows",
+      "bundle_dir": "handoff/quantlab_bundle_yahoo_public_top20_finalist_200symbols_5windows",
+      "evidence_level": "public_history_deep_validation",
+      "scope": "20 finalist strategies x 200 public-history symbols x 5 windows = 20000 tasks",
+      "quantlab_use": "secondary cross-market deep validation evidence"
+    },
+    {
+      "priority": 3,
+      "bundle_id": "yahoo_public_200x200_full_40000",
+      "bundle_dir": "handoff/quantlab_bundle_yahoo_public_200x200_full_40000",
+      "evidence_level": "public_history_broad_screen",
+      "scope": "200 strategies x 200 public-history symbols = 40000 pair tasks",
+      "quantlab_use": "broad strategy pool screening and traceability evidence"
+    }
+  ],
+  "field_map": [
+    {
+      "qbvs_field": "bundle.manifest.schema_version",
+      "quantlab_field": "researchbus.schema_version",
+      "type": "string",
+      "meaning": "must equal qbvs-quantlab-evidence-bundle-v1",
+      "rule": "schema guard"
+    },
+    {
+      "qbvs_field": "bundle.manifest.bundle_dir",
+      "quantlab_field": "independent_validation_runs.manifest_path",
+      "type": "string",
+      "meaning": "path to QBVS external evidence bundle",
+      "rule": "required"
+    },
+    {
+      "qbvs_field": "bundle.manifest.source_run_dir",
+      "quantlab_field": "independent_validation_runs.source_run_dir",
+      "type": "string",
+      "meaning": "QBVS run dir containing raw summary/results",
+      "rule": "required"
+    },
+    {
+      "qbvs_field": "bundle.manifest.engine",
+      "quantlab_field": "independent_validation_runs.engine",
+      "type": "string",
+      "meaning": "exact_backtest currently preferred",
+      "rule": "required"
+    },
+    {
+      "qbvs_field": "bundle.manifest.ingestion_mode",
+      "quantlab_field": "independent_validation_runs.ingestion_mode",
+      "type": "string",
+      "meaning": "must be external_evidence_only",
+      "rule": "hard guard"
+    },
+    {
+      "qbvs_field": "bundle.manifest.writes_quantlab_database",
+      "quantlab_field": "independent_validation_runs.writes_quantlab_database",
+      "type": "boolean",
+      "meaning": "must be false",
+      "rule": "hard guard"
+    },
+    {
+      "qbvs_field": "bundle.manifest.writes_quantlab_source",
+      "quantlab_field": "independent_validation_runs.writes_quantlab_source",
+      "type": "boolean",
+      "meaning": "must be false",
+      "rule": "hard guard"
+    },
+    {
+      "qbvs_field": "payload.user_acceptance_floor.total_return_gap_vs_buy_hold_min",
+      "quantlab_field": "independent_validation_runs.floor_total_gap_min",
+      "type": "float",
+      "meaning": "-0.08 user floor",
+      "rule": "metric policy"
+    },
+    {
+      "qbvs_field": "payload.user_acceptance_floor.annualized_return_gap_vs_buy_hold_min",
+      "quantlab_field": "independent_validation_runs.floor_annualized_gap_min",
+      "type": "float",
+      "meaning": "-0.03 user floor",
+      "rule": "metric policy"
+    },
+    {
+      "qbvs_field": "payload.user_acceptance_floor.drawdown_improvement_min",
+      "quantlab_field": "independent_validation_runs.floor_drawdown_improvement_min",
+      "type": "float",
+      "meaning": "-0.005 tolerance",
+      "rule": "metric policy"
+    },
+    {
+      "qbvs_field": "candidate.strategy_id",
+      "quantlab_field": "independent_validation_candidates.strategy_id",
+      "type": "string",
+      "meaning": "behavior strategy identifier",
+      "rule": "required"
+    },
+    {
+      "qbvs_field": "candidate.samples",
+      "quantlab_field": "independent_validation_candidates.samples",
+      "type": "integer",
+      "meaning": "validation sample count",
+      "rule": "required"
+    },
+    {
+      "qbvs_field": "candidate.pass_rate",
+      "quantlab_field": "independent_validation_candidates.pass_rate",
+      "type": "float",
+      "meaning": "share passing user floors",
+      "rule": "required"
+    },
+    {
+      "qbvs_field": "candidate.avg_total_gap",
+      "quantlab_field": "independent_validation_candidates.avg_total_gap",
+      "type": "float",
+      "meaning": "strategy total return minus buy-hold total return",
+      "rule": "required"
+    },
+    {
+      "qbvs_field": "candidate.avg_annualized_gap",
+      "quantlab_field": "independent_validation_candidates.avg_annualized_gap",
+      "type": "float",
+      "meaning": "strategy annualized return minus buy-hold annualized return",
+      "rule": "required"
+    },
+    {
+      "qbvs_field": "candidate.avg_drawdown_improvement",
+      "quantlab_field": "independent_validation_candidates.avg_drawdown_improvement",
+      "type": "float",
+      "meaning": "positive means less drawdown than buy-hold",
+      "rule": "required"
+    },
+    {
+      "qbvs_field": "candidate.avg_var_5",
+      "quantlab_field": "independent_validation_candidates.avg_var_5",
+      "type": "float",
+      "meaning": "5 percent value-at-risk proxy",
+      "rule": "risk metric"
+    },
+    {
+      "qbvs_field": "candidate.avg_cvar_5",
+      "quantlab_field": "independent_validation_candidates.avg_cvar_5",
+      "type": "float",
+      "meaning": "5 percent conditional value-at-risk proxy",
+      "rule": "risk metric"
+    },
+    {
+      "qbvs_field": "candidate.avg_turnover",
+      "quantlab_field": "independent_validation_candidates.avg_turnover",
+      "type": "float",
+      "meaning": "execution intensity proxy",
+      "rule": "cost/risk review"
+    },
+    {
+      "qbvs_field": "candidate.avg_trades",
+      "quantlab_field": "independent_validation_candidates.avg_trades",
+      "type": "float",
+      "meaning": "trade count proxy",
+      "rule": "cost/risk review"
+    },
+    {
+      "qbvs_field": "candidate.approval_state",
+      "quantlab_field": "independent_validation_candidates.status",
+      "type": "string",
+      "meaning": "external_evidence_only -> ReviewOnly",
+      "rule": "hard guard"
+    },
+    {
+      "qbvs_field": "candidate.requires_exact_validation",
+      "quantlab_field": "independent_validation_candidates.requires_quantlab_exact_rerun",
+      "type": "boolean",
+      "meaning": "true for fast-screen candidates; false for QBVS exact bundles but QuantLab may still rerun for approval",
+      "rule": "approval guard"
+    },
+    {
+      "qbvs_field": "candidate.requires_user_approval_before_quantlab_write",
+      "quantlab_field": "independent_validation_candidates.requires_user_approval",
+      "type": "boolean",
+      "meaning": "must be true before strategy-library write",
+      "rule": "hard guard"
+    },
+    {
+      "qbvs_field": "reports[].path/source",
+      "quantlab_field": "researchbus.attachments",
+      "type": "array",
+      "meaning": "PDF/report pointers for display only",
+      "rule": "read-only attachment"
+    }
+  ],
+  "paused_until_ack_or_quota_recovery": [
+    "Expand strategy catalog count",
+    "Repeat long-run validation without new decision value",
+    "Batch OpenD refetch while quota is exhausted",
+    "Nonessential PDF generation"
+  ],
+  "next_priority": "QuantLab should write handoff/quantlab_handshake_ack.json or implement read-only ResearchBus ingestion using this mapping."
+}

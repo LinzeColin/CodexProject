@@ -1,0 +1,16 @@
+{
+  "created_at": "2026-06-05T00:38:00",
+  "summary_path": "runs/seed_yahoo_balanced_40_stratified_4000_exact/strategy_summary.csv",
+  "output_path": "handoff/promotion_candidates_seed_yahoo_balanced_40_stratified_4000.csv",
+  "promotion_config": {
+    "top_n": 20,
+    "min_samples": 80,
+    "min_pass_rate": 0.6,
+    "min_avg_total_gap": -0.08,
+    "min_avg_annualized_gap": -0.03,
+    "min_avg_drawdown_improvement": -0.005
+  },
+  "candidate_rows": 20,
+  "external_candidate_rows": 20,
+  "writes_quantlab_database": false
+}

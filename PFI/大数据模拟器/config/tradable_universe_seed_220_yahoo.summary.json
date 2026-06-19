@@ -1,0 +1,12 @@
+{
+  "schema_version": "qbvs-tradable-universe-seed-v1",
+  "created_at": "2026-06-05T00:15:44",
+  "source_universe_path": "config/tradable_universe_seed_220.csv",
+  "path": "config/tradable_universe_seed_220_yahoo.csv",
+  "symbols": 220,
+  "provider": "yahoo_public_chart",
+  "writes_quantlab_database": false,
+  "writes_quantlab_source": false,
+  "starts_background_processes": false,
+  "boundary": "public historical data fallback; use Moomoo/OpenD or Alipay fund NAV for final tradability checks"
+}

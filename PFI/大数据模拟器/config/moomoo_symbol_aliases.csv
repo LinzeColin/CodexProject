@@ -1,0 +1,2 @@
+provider,symbol,market,original_source_symbol,normalized_source_symbol,rule_id,status,required_validation,evidence_note
+moomoo_opend,BRK-B,US_STOCK,US.BRK-B,US.BRK.B,us_class_share_dash_to_dot,provider_snapshot_confirmed,Historical K-line probe after OpenD quota is safe; do not batch retry before quota check,"Moomoo snapshot probe returned code=US.BRK.B and name=Berkshire Hathaway-B on 2026-06-05 without requesting history K-line data. This confirms the provider symbol alias, not historical K-line quota availability."

@@ -1,0 +1,581 @@
+symbol,market,returncode,stdout,stderr
+US.VYM,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.IWB,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.IWF,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.IWD,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.IVE,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.IVW,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.MDY,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.IJH,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.IJR,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.IJS,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.EFA,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.EEM,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.VEA,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.VWO,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.ACWI,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.VT,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.IEFA,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.IEMG,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.HYG,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"
+US.LQD,US_ETF,1,,"Traceback (most recent call last):
+  File ""<frozen runpy>"", line 198, in _run_module_as_main
+  File ""<frozen runpy>"", line 88, in _run_code
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+    row = cache_moomoo_history(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+    futu = _load_futu_module()
+           ^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+    import moomoo as futu  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
+    from .quote.open_quote_context import OpenQuoteContext
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/quote/open_quote_context.py"", line 10, in <module>
+    from ..common.open_context_base import OpenContextBase, ContextStatus
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/__init__.py"", line 7, in <module>
+    from .ft_logger import *
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 262, in <module>
+    logger = FTLog()
+             ^^^^^^^
+  File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/common/ft_logger.py"", line 71, in __init__
+    self.log_path = os.path.join(os.environ['HOME'], (""."" + __LogPathName__))
+                                 ~~~~~~~~~~^^^^^^^^
+  File ""<frozen os>"", line 714, in __getitem__
+KeyError: 'HOME'"

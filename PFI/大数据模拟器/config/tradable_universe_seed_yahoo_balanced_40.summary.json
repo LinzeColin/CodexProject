@@ -1,0 +1,29 @@
+{
+  "schema_version": "qbvs-tradable-universe-seed-v1",
+  "created_at": "2026-06-05T00:31:06",
+  "source_universe_path": "config/tradable_universe_seed_220_yahoo.csv",
+  "path": "config/tradable_universe_seed_yahoo_balanced_40.csv",
+  "source_symbols": 220,
+  "sampled_symbols": 40,
+  "seed": 20260605,
+  "group_cols": [
+    "market",
+    "asset_class"
+  ],
+  "market_counts": {
+    "US_ETF": 17,
+    "CN_ETF": 9,
+    "HK": 7,
+    "US_STOCK": 7
+  },
+  "asset_class_counts": {
+    "ETF": 14,
+    "STOCK": 12,
+    "BOND": 6,
+    "COMMODITY": 5,
+    "FX": 3
+  },
+  "starts_background_processes": false,
+  "writes_quantlab_database": false,
+  "writes_quantlab_source": false
+}

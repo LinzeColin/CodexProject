@@ -1,0 +1,40 @@
+{
+  "schema_version": "qbvs-quantlab-evidence-bundle-v1",
+  "created_at": "2026-06-05T07:01:00",
+  "source_system": "quant_behavior_validation_system",
+  "target_system": "quantlab",
+  "source_run_dir": "runs/yahoo_public_200x200_pair_full_40000_exact",
+  "bundle_dir": "handoff/quantlab_bundle_yahoo_public_200x200_full_40000",
+  "engine": "exact_backtest",
+  "candidate_count": 20,
+  "writes_quantlab_database": false,
+  "writes_quantlab_source": false,
+  "ingestion_mode": "external_evidence_only",
+  "approval_boundary": "QuantLab may read this bundle; user approval is required before writing approved strategy records.",
+  "selection_config": {
+    "top_n": 20,
+    "min_pass_rate": 0.6,
+    "min_avg_total_gap": -0.08,
+    "min_avg_annualized_gap": -0.03,
+    "min_avg_drawdown_improvement": -0.005
+  },
+  "source_artifacts": {
+    "summary": "runs/yahoo_public_200x200_pair_full_40000_exact/strategy_summary.csv",
+    "results": "runs/yahoo_public_200x200_pair_full_40000_exact/validation_results.csv"
+  },
+  "artifacts": [
+    {
+      "path": "quantlab_candidate_strategies.csv",
+      "kind": "candidate_strategy_table"
+    },
+    {
+      "path": "quantlab_ingestion_payload.json",
+      "kind": "quantlab_payload"
+    },
+    {
+      "path": "reports/Behavior_Strategy_Task_Run_Report.pdf",
+      "source": "runs/yahoo_public_200x200_pair_full_40000_exact/Behavior_Strategy_Task_Run_Report.pdf",
+      "kind": "pdf_report"
+    }
+  ]
+}

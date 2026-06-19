@@ -1,0 +1,109 @@
+{
+  "schema_version": "qbvs-goal-readiness-audit-v1",
+  "created_at": "2026-06-06T12:55:04",
+  "summary_path": "runs/yahoo_public_200x200_pair_full_40000_exact/strategy_summary.csv",
+  "results_path": "runs/yahoo_public_200x200_pair_full_40000_exact/validation_results.csv",
+  "manifest_path": "runs/manifests/yahoo_public_200x200_pair_manifest.csv",
+  "moomoo_probe_path": "runs/moomoo_opend_probe_iteration26_after_sdk.json",
+  "handshake_ack_path": "handoff/quantlab_handshake_ack.json",
+  "config": {
+    "target_symbols": 200,
+    "target_strategies": 200,
+    "target_tests_per_strategy": 1000000,
+    "min_avg_total_gap": -0.08,
+    "min_avg_annualized_gap": -0.03,
+    "min_avg_drawdown_improvement": -0.005
+  },
+  "score": {
+    "passed": 9,
+    "partial": 1,
+    "blocked": 0,
+    "missing": 0,
+    "readiness_score": 0.95,
+    "readiness_percent": 95.0
+  },
+  "items": [
+    {
+      "requirement_id": "strategy_scope_200",
+      "requirement": "Validate at least 200 meaningful behavior-strategy variants.",
+      "status": "passed",
+      "evidence": "Observed 200 unique strategy_id values in validation_results.csv.",
+      "gap": "",
+      "next_action": "Keep strategy generation curated; avoid low-value combinations."
+    },
+    {
+      "requirement_id": "symbol_scope_200",
+      "requirement": "Validate at least 200 tradable-candidate symbols across markets and asset classes.",
+      "status": "passed",
+      "evidence": "Observed 200 unique symbols in validation_results.csv.",
+      "gap": "",
+      "next_action": "Replace public fallback symbols with Moomoo/Alipay confirmed tradable symbols when data gates are ready."
+    },
+    {
+      "requirement_id": "pair_baseline_40000",
+      "requirement": "Produce a complete 200-symbol by 200-strategy exact pair baseline.",
+      "status": "passed",
+      "evidence": "Observed 40000 validation rows; expected pair baseline is 40000.",
+      "gap": "",
+      "next_action": "Use this as the current public-history interoperability baseline."
+    },
+    {
+      "requirement_id": "user_return_floor",
+      "requirement": "Candidate behavior strategies must keep average total-return gap >= -8% and annualized gap >= -3%.",
+      "status": "passed",
+      "evidence": "Top candidate=bw92_boll_lower_none_ma_trend_full_none; samples=200; pass_rate=0.9950; avg_total_gap=-0.002120; avg_annualized_gap=0.000348.",
+      "gap": "",
+      "next_action": "Promote only external_candidate rows and rerun finalists in QuantLab before approval."
+    },
+    {
+      "requirement_id": "downside_protection",
+      "requirement": "Candidate behavior strategies should improve drawdown or avoid materially worse drawdown.",
+      "status": "passed",
+      "evidence": "Top candidate avg_drawdown_improvement=0.014112.",
+      "gap": "",
+      "next_action": "Stress finalists on bear/crash/high-volatility windows before strategy-library approval."
+    },
+    {
+      "requirement_id": "real_tradable_moomoo_gate",
+      "requirement": "Moomoo/OpenD must be ready before claiming account-level tradable-market validation.",
+      "status": "passed",
+      "evidence": "ready_for_fetch=True; errors=[].",
+      "gap": "",
+      "next_action": "Install/enable futu or moomoo SDK, verify OpenD login and permissions, then run cache-moomoo-history plan."
+    },
+    {
+      "requirement_id": "quantlab_handshake_ack",
+      "requirement": "QuantLab must return a real accepted handshake ack before calling integration complete.",
+      "status": "passed",
+      "evidence": "accepted=True; entrypoint=ReviewOnly external evidence ingestion through scripts/runIndependentValidation.sh, src/quantlab/integrations/independent_validation.py, src/quantlab/integrations/research_bus.py, and the Streamlit 大数据模拟 / 研究总线 views; QuantLab will read QBVS bundles as external evidence and will not write approved strategies without explicit user approval..",
+      "gap": "",
+      "next_action": "Run the same instruction on the QuantLab side and write handoff/quantlab_handshake_ack.json."
+    },
+    {
+      "requirement_id": "million_scale_execution",
+      "requirement": "Reach at least 1,000,000 tests per strategy before final production-level claim.",
+      "status": "partial",
+      "evidence": "Current exact public-history rows=40000; target effective tests across 200 strategies is 200000000.",
+      "gap": "Executed evidence is far below the million-scale target.",
+      "next_action": "Use fast screening for pruning, then distributed/resumable exact campaigns for finalist strategies."
+    },
+    {
+      "requirement_id": "formal_artifacts",
+      "requirement": "Provide machine-readable and PDF-first artifacts for QuantLab and user review.",
+      "status": "passed",
+      "evidence": "This command writes goal_readiness_audit.json, goal_readiness_audit.csv, and Goal_Readiness_Audit_Report.pdf.",
+      "gap": "",
+      "next_action": "Keep PDF reports as formal deliverables and JSON/CSV as auxiliary evidence."
+    },
+    {
+      "requirement_id": "read_only_quantlab_boundary",
+      "requirement": "Independent validation must not write QuantLab source or database in this workflow.",
+      "status": "passed",
+      "evidence": "Audit artifacts are written only under the QBVS output directory.",
+      "gap": "",
+      "next_action": "QuantLab-side ingestion must remain ReviewOnly until user approval and exact rerun gates pass."
+    }
+  ],
+  "writes_quantlab_database": false,
+  "writes_quantlab_source": false
+}

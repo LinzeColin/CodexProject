@@ -1,0 +1,13 @@
+check_id,status,path,note
+quantlab_ack_present,passed,handoff/quantlab_handshake_ack.json,"ACK file exists and verify-handshake returned valid=true, errors=[]."
+handshake_request_present,passed,handoff/qbvs_handshake_request.json,QBVS request is ready for QuantLab.
+handshake_protocol_present,passed,HANDSHAKE_PROTOCOL.json,Protocol is available.
+integration_contract_present,passed,QUANTLAB_INTEGRATION_CONTRACT.json,Contract is available.
+bundle_moomoo_batch100_valid,passed,handoff/quantlab_bundle_moomoo_batch100_top20_finalist_3windows,Verified valid with no warnings.
+bundle_yahoo_top20_deep_valid,passed,handoff/quantlab_bundle_yahoo_public_top20_finalist_200symbols_5windows,Verified valid with no warnings.
+bundle_yahoo_40000_valid,passed,handoff/quantlab_bundle_yahoo_public_200x200_full_40000,Verified valid with no warnings.
+readonly_adapter_pack_test,passed,handoff/quantlab_readonly_adapter_pack,Unit test passed.
+researchbus_mapping_valid,passed,handoff/researchbus_schema_mapping_20260605/qbvs_to_quantlab_researchbus_mapping.json,ReviewOnly mapping is valid.
+researchbus_sample_valid,passed,handoff/researchbus_schema_mapping_20260605/sample_independent_validation_run_reviewonly.json,ReviewOnly sample record is valid.
+opend_quota_available,blocked,runs/moomoo_batch81_140_retry_plan_20260605.json,39 OpenD historical K-line quota failures remain; avoid batch refetch.
+symbol_mapping_clean,passed,runs/moomoo_brk_b_alias_snapshot_probe_20260605.json,BRK-B provider alias snapshot-confirmed as US.BRK.B; historical K-line confirmation remains quota-dependent.

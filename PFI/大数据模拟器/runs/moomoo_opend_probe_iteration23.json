@@ -1,0 +1,12 @@
+{
+  "host": "127.0.0.1",
+  "port": 11111,
+  "socket_reachable": true,
+  "futu_sdk_available": false,
+  "moomoo_sdk_available": false,
+  "ready_for_fetch": false,
+  "checked_at": "2026-06-05T07:05:33",
+  "errors": [
+    "moomoo_or_futu_sdk_not_installed"
+  ]
+}

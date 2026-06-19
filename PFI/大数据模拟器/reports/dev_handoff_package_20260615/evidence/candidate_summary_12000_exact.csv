@@ -1,0 +1,4 @@
+strategy_id,samples,pass_rate,avg_total_gap,avg_annualized_gap,avg_drawdown_improvement,role
+bw99_boll_or_rsi_none_ma_trend_full_none,4000,99.850%,-0.0827%,-0.0052%,0.1310%,主候选：99% 基础仓位，RSI/BOLL 补仓，MA 趋势参与，不因上涨自动卖出
+bw99_none_none_ma_trend_full_none,4000,99.775%,-0.0700%,0.0135%,0.2493%,对照候选：数值略强，解释性较弱
+bw98_boll_or_rsi_none_ma_trend_full_none,4000,99.400%,-0.1654%,-0.0107%,0.2470%,保守候选：多 1% 现金缓冲

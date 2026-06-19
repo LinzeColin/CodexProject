@@ -1,0 +1,16 @@
+{
+  "schema_version": "qbvs-quantlab-readonly-adapter-pack-v1",
+  "source_system": "quant_behavior_validation_system",
+  "target_system": "quantlab",
+  "ingestion_mode": "external_evidence_only",
+  "bundle_dir": "handoff/quantlab_bundle_fund_smoke",
+  "campaign_dir": "campaigns/simcsv_campaign_smoke",
+  "promotion_candidates": "handoff/promotion_candidates_smoke.csv",
+  "required_quantlab_actions": [
+    "read_bundle_or_campaign",
+    "display_external_evidence",
+    "register_independent_validation_review_only",
+    "rerun_exact_validation_before_approval",
+    "require_user_approval_before_database_write"
+  ]
+}
