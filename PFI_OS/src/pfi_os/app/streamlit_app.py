@@ -929,6 +929,25 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
 
 
 def render_pfi_ui_v2_shell() -> None:
+    st.markdown(
+        """
+        <style>
+        [data-testid="stToolbar"],
+        [data-testid="stDecoration"],
+        [data-testid="stStatusWidget"],
+        header[data-testid="stHeader"] {
+            display: none !important;
+        }
+        .block-container {
+            padding-top: 0 !important;
+        }
+        iframe {
+            display: block;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
     store = OperationalStore()
     try:
         store.initialize()

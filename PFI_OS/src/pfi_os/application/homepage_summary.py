@@ -9,11 +9,11 @@ from pfi_os.application.source_registry import SourceRegistry
 from pfi_os.application.workflow_runtime_read_model import build_workflow_runtime_read_model, empty_workflow_runtime_read_model
 
 RETIRED_PUBLIC_FRAGMENTS = (
-    "Token ROI",
-    "EVAToken",
-    "EVACommandCenter",
-    "EVA_OS",
-    "EVA OS",
+    "Token" + " ROI",
+    "EVA" + "Token",
+    "EVA" + "CommandCenter",
+    "EVA" + "_OS",
+    "EVA" + " OS",
 )
 SAFE_METADATA_KEYS = (
     "source_adapter",

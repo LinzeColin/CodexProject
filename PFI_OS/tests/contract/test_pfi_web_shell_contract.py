@@ -82,6 +82,8 @@ def test_streamlit_launcher_exposes_pfi_ui_v2_feature_flag_with_fallback():
     assert 'os.environ.get("PFI_UI_V2", "1") != "0"' in source
     assert "render_pfi_ui_v2_shell()" in source
     assert "return" in source.split("render_pfi_ui_v2_shell()", maxsplit=1)[1]
+    assert '[data-testid="stToolbar"]' in source
+    assert "padding-top: 0" in source
 
 
 def test_launch_scripts_default_to_pfi_web_shell_with_legacy_opt_out():
@@ -118,7 +120,17 @@ def test_web_shell_evidence_drawer_and_safety_boundary_are_explicit():
     assert "data-evidence-drawer" in html
     for section in EVIDENCE_DRAWER_SECTIONS:
         assert f"<dt>{section}</dt>" in html
-    assert "DisabledProvider" in html
+    assert "外部模型未启用" in html
+
+
+def test_web_shell_contract_purposes_are_chinese_user_oriented():
+    contract = build_web_shell_contract()
+    purposes = "\n".join(item.purpose for item in contract.primary_workspaces)
+
+    for required in ["市场宽度", "政策", "组合暴露", "回测", "盘感训练", "隐私"]:
+        assert required in purposes
+    assert "backtest" not in purposes.lower()
+    assert "portfolio" not in purposes.lower()
 
 
 def test_web_shell_active_user_surface_has_no_retired_identity_or_value_text():

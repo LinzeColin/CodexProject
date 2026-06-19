@@ -40,12 +40,12 @@ class WebShellContract:
 
 
 PRIMARY_WORKSPACES = (
-    WorkspaceContract("home", "首页", "Daily brief, blockers, freshness, and next work.", "daily_brief", "overview"),
-    WorkspaceContract("market", "市场", "Market breadth, themes, catalysts, and watchlist context.", "market_events", "overview"),
-    WorkspaceContract("research", "研究", "Research library, evidence, policy, companies, funds, and estimates.", "research_queue", "evidence"),
-    WorkspaceContract("portfolio", "持仓", "Portfolio exposure, attribution, risk, discipline, and decision queue.", "portfolio_risk", "review"),
-    WorkspaceContract("strategy", "策略实验室", "Backtests, parameter scans, validation, simulation, and training mode.", "strategy_runs", "experiment"),
-    WorkspaceContract("data", "数据与系统", "Sources, jobs, quality, lineage, privacy, backup, and diagnostics.", "data_freshness", "diagnostics"),
+    WorkspaceContract("home", "首页", "今日简报、阻塞项、数据新鲜度和下一步任务。", "daily_brief", "overview"),
+    WorkspaceContract("market", "市场", "市场宽度、主题、催化、自选监控和来源状态。", "market_events", "overview"),
+    WorkspaceContract("research", "研究", "研究库、证据、政策、公司、基金和估值线索。", "research_queue", "evidence"),
+    WorkspaceContract("portfolio", "持仓", "组合暴露、归因、风险、纪律和决策队列。", "portfolio_risk", "review"),
+    WorkspaceContract("strategy", "策略实验室", "回测、参数扫描、验证、模拟和盘感训练。", "strategy_runs", "experiment"),
+    WorkspaceContract("data", "数据与系统", "来源、任务、质量、血缘、隐私、备份和诊断。", "data_freshness", "diagnostics"),
 )
 
 GLOBAL_CONTEXT_FIELDS = (
@@ -61,20 +61,20 @@ GLOBAL_CONTEXT_FIELDS = (
 )
 
 EVIDENCE_DRAWER_SECTIONS = (
-    "Evidence",
-    "Source",
-    "Model",
-    "Parameters",
-    "Data lineage",
-    "Raw document",
+    "证据",
+    "来源",
+    "模型",
+    "参数",
+    "数据血缘",
+    "原始记录",
 )
 
 FEEDBACK_SLA = (
-    FeedbackContract(100, "instant", "pressed, focus, disabled, or local state feedback"),
-    FeedbackContract(300, "cached", "page switch or cached result without full reload"),
-    FeedbackContract(301, "loading", "skeleton for work taking more than 300ms"),
-    FeedbackContract(1000, "stepped", "explicit step, progress, and current phase"),
-    FeedbackContract(10000, "background", "background job id with leave-page-safe progress"),
+    FeedbackContract(100, "instant", "按下、聚焦、禁用或本地状态反馈"),
+    FeedbackContract(300, "cached", "不刷新整页的工作区切换或缓存结果"),
+    FeedbackContract(301, "loading", "超过 300ms 的任务显示骨架态"),
+    FeedbackContract(1000, "stepped", "展示明确步骤、进度和当前阶段"),
+    FeedbackContract(10000, "background", "展示可离页的后台任务编号和进度"),
 )
 
 

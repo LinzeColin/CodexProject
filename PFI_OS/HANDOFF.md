@@ -144,7 +144,7 @@ Current sequence:
   attach Finder/resource metadata there.
 - Homepage ingestion no longer falls back to retired
   `EVACommandCenter_latest.json`; stale local SQLite rows containing retired
-  Token ROI/EVA command-center metadata are hidden from the active homepage
+  value-ledger and command-center metadata are hidden from the active homepage
   summary.
 - Cache cleanup was run through `scripts/cleanCache.sh --json`; only
   disposable pycache, pytest cache, and root runtime log files were deleted.
@@ -177,6 +177,22 @@ Read in this order:
 22. `docs/archive/legacy-migration.md`
 
 ## Current Verification Evidence
+
+Latest user-orientation repair verification, 2026-06-20:
+
+```bash
+python -m pytest tests/test_pfi_product_contracts.py tests/contract/test_phase_a_homepage_ingestion.py tests/contract/test_v011_findings_baseline.py tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py -q
+python -m pytest tests/visual/test_pfi_web_shell_visual_baseline.py -q
+python -m compileall src/pfi_os/application src/pfi_os/app/streamlit_app.py
+git diff --check
+```
+
+The repair also ran Playwright against both static `web/index.html` and the
+actual `PFI_UI_V2=1 scripts/startPFIOS.sh` Streamlit runtime at
+`http://127.0.0.1:8501`. Both checks clicked all six workspaces and verified
+task center, evidence drawer, cached refresh, command-palette navigation, and
+absence of retired or English placeholder user text. A local screenshot of the
+runtime strategy workspace was captured for this Codex run.
 
 Latest focused verification for PFI-001 through PFI-004 and Phase A:
 
@@ -215,8 +231,9 @@ Latest runtime smoke:
 - `PFI_UI_V2=1 scripts/startPFIOS.sh` launched `http://127.0.0.1:8501`.
 - Browser iframe text contained `PFI OS`, `首页`, `市场`, `研究`, `持仓`,
   `策略实验室`, and `数据与系统`.
-- Browser iframe text did not contain `功能导航`, `Token ROI`,
-  `EVACommandCenter`, `EVAToken`, `EVA_OS`, or `EVA OS`.
+- Browser iframe text did not contain retired navigation, retired value-ledger,
+  retired command-center, retired value-artifact, or retired product identity
+  text.
 - `scripts/stopPFIOS.sh` stopped the local service after verification.
 
 ## Not Done
@@ -237,7 +254,7 @@ Latest runtime smoke:
   backup, hardware/disk audit, sanitized holdings, representative symbols and
   policy documents, Fast Path target source list, workflow examples, and final
   subjective acceptance score.
-- Tracked legacy `data/commandCenter/EVA*` and `data/value/EVAToken*` artifacts
+- Tracked legacy command-center and value-ledger artifacts
   still exist as historical files. Active PFI homepage ingestion ignores them;
   physical deletion should be handled by a dedicated legacy-data migration run.
 - `st.components.v1.html` currently emits a Streamlit deprecation warning in

@@ -41,7 +41,7 @@ closed by this baseline.
   worktree and use `StartPFIOS.command`.
 - Homepage cache ingestion no longer falls back to retired
   `EVACommandCenter_latest.json` files.
-- Retired Token ROI and EVA command-center metadata are hidden from the active
+- Retired value-ledger and command-center metadata are hidden from the active
   homepage read model when stale local SQLite rows exist.
 
 ## Policy Overrides

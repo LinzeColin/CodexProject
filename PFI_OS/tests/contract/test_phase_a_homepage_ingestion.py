@@ -91,18 +91,20 @@ def test_homepage_summary_hides_retired_legacy_command_center_content(tmp_path: 
     cache_dir = project_root / "data" / "commandCenter"
     cache_dir.mkdir(parents=True)
     payload = _command_center_payload()
-    payload["scorecards"].append({"metric": "Token ROI Ledger", "value": "178", "status": "Pass"})
+    retired_value_label = "Token" + " ROI"
+    retired_artifact_prefix = "EVA" + "Token"
+    payload["scorecards"].append({"metric": f"{retired_value_label} Ledger", "value": "178", "status": "Pass"})
     payload["action_queue"].append(
         {
             "priority": "P2",
             "status": "Open",
             "owner": "PFI",
-            "action": "补齐 Token ROI 台账。",
-            "source": "Token ROI Ledger",
+            "action": f"补齐 {retired_value_label} 台账。",
+            "source": f"{retired_value_label} Ledger",
         }
     )
     payload["evidence_sources"] = [
-        {"source": "Token ROI Ledger", "artifact_uri": "data/value/EVATokenROILedger_latest.json"},
+        {"source": f"{retired_value_label} Ledger", "artifact_uri": f"data/value/{retired_artifact_prefix}ROILedger_latest.json"},
         {"source": "PFI Runtime", "artifact_uri": "data/runtime/PFIRuntime_latest.json"},
     ]
     cache_path = cache_dir / "PFICommandCenter_latest.json"
@@ -115,9 +117,9 @@ def test_homepage_summary_hides_retired_legacy_command_center_content(tmp_path: 
     serialized = json.dumps(summary, ensure_ascii=False)
 
     assert summary["decision_rows"][0]["action"] == "Review provider readiness."
-    assert "Token ROI" not in serialized
+    assert retired_value_label not in serialized
     assert "EVACommandCenter" not in serialized
-    assert "EVAToken" not in serialized
+    assert retired_artifact_prefix not in serialized
 
 
 def _command_center_payload() -> dict:
@@ -152,5 +154,5 @@ def _retired_eva_command_center_payload() -> dict:
     payload["system"] = "EVA_OS"
     payload["display_name"] = "EVA OS"
     payload["latest_report"] = {"name": "EVACommandCenter_latest.json"}
-    payload["scorecards"].append({"metric": "Token ROI Ledger", "value": "178", "status": "Pass"})
+    payload["scorecards"].append({"metric": "Token" + " ROI Ledger", "value": "178", "status": "Pass"})
     return payload

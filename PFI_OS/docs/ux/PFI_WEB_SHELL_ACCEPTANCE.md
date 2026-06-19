@@ -1,37 +1,36 @@
-# PFI Web Shell Acceptance
+# PFI Web Shell 验收契约
 
-Version: PFI-004
+Version: PFI-004 / v0.1.1 repair
 
-PFI Web Shell is the new user-facing skeleton for PFI OS. It is intentionally
-thin in this slice: it frames the product, preserves global context, shows
-cached homepage content, and exposes feedback states without migrating legacy
-business pages.
+PFI Web Shell 是 PFI OS 的默认用户入口。交付标准是中文优先、面向真实使用、六个一级入口可切换完整功能板块，而不是只替换标题或展示旧系统壳。
 
-## Scope
+## 用户可见范围
 
-- Six primary workspaces: 首页, 市场, 研究, 持仓, 策略实验室, 数据与系统.
-- Top bar: product identity, global search, market/entity/portfolio/as-of
-  context, sync status, task center, notification surface, settings entry.
-- Right drawer: evidence, source, model, parameters, data lineage, raw document.
-- Homepage: cached summary, freshness, decision queue, compact table controls,
-  and recoverable feedback states.
-- Feature flag: `PFI_UI_V2=1` opens the new shell; `PFI_UI_V2=0` keeps the
-  migration fallback.
+- 一级入口固定为：首页、市场、研究、持仓、策略实验室、数据与系统。
+- 每个入口必须同步切换：标题、副标题、结论、状态卡、功能卡、决策表格、任务中心、证据抽屉和图表。
+- 策略实验室必须保留策略回测、参数扫描、模拟实验和盘感训练。
+- 持仓入口只生成人工复核材料和订单意图草案，不连接券商、不自动提交订单。
+- 数据与系统入口必须展示来源、任务、隐私边界、备份和诊断状态。
+- 首屏、按钮、错误、缓存兜底、任务状态和证据抽屉必须使用中文用户文案；技术标识、schema、文件名和证券代码可保留英文。
 
-## Non-Scope
+## 交互契约
 
-- No business-page migration.
-- No backtest kernel rewrite.
-- No local model integration.
-- No Docker or separate web/api/worker startup.
-- No live automatic order route.
+- 工作区切换在本地完成，不刷新整页，不跳回旧页面。
+- 全局上下文保存到本地状态，覆盖市场、标的、组合、日期、币种、新鲜度、研究任务、证据集和模拟场景。
+- 命令面板、任务中心、证据抽屉、表格筛选、排序、导出、缓存刷新和缓存兜底按钮必须可触发。
+- 超过 300ms 的反馈显示骨架态；超过 1s 显示步骤；超过 10s 显示后台任务编号。
+- Streamlit 嵌入入口必须隐藏无关工具栏噪音，让用户默认看到 PFI 工作台。
 
-## Acceptance
+## 非目标
 
-- Contract tests verify the six workspaces, feature flag, global context,
-  evidence sections, safety boundary, and no retired user text.
-- E2E static-flow tests verify localStorage context persistence, no full-page
-  reload, command palette navigation, task center, evidence drawer, table
-  controls, and recoverable cache fallback.
-- Visual tests verify layout regions, theme tokens, 44px targets, skeleton,
-  drawer, compact table, canvas chart, and screenshot baseline metadata.
+- 本轮不重写回测内核。
+- 本轮不接入本地模型。
+- 本轮不新增 Docker、独立 Web API 或 Worker。
+- 本轮不迁移旧业务页面目录。
+- 本轮不创建任何实盘自动下单、支付、投注或无人值守执行路径。
+
+## 验收
+
+- 合同测试覆盖六入口、中文证据抽屉、全局上下文、功能开关、隐私边界和无退休品牌文本。
+- 静态 E2E 测试覆盖本地状态保存、六入口完整重渲染、任务中心、证据抽屉、命令面板、表格控件和缓存兜底。
+- 浏览器验证必须实际点击六个入口，并确认页面内容随入口切换且无退休品牌或旧价值账本用户可见内容。

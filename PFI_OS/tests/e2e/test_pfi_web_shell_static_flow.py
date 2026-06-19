@@ -44,8 +44,8 @@ def test_phase_c_workflow_cards_update_from_cached_runtime_summary():
     assert "data-workflow-cards" in html
     assert "data-workflow-evidence" in html
     assert "applyWorkflowRuntime(summary.workflow_runtime || {})" in js
-    assert "applyWorkflowCards(runtime.workflow_cards || [])" in js
-    assert "applyFastPathBadge(runtime.fast_path || {})" in js
+    assert "localizedWorkflowCard" in js
+    assert "fastPathLabel(runtime.fast_path)" in js
     assert "showWorkflowEvidence(card)" in js
     assert "setEvidenceDrawer(true)" in js
     assert "holdings_json" not in js
@@ -67,8 +67,8 @@ def test_response_feedback_acceptance_states_are_wired():
     assert "data-retry" in html
     assert "data-cache-fallback" in html
     assert "showRecoverableError" in js
-    assert "Cached fallback is active" in js
-    assert "Background job PFI-" in js
+    assert "已切换到缓存兜底" in js
+    assert "后台任务 PFI-" in js
 
 
 def test_task_center_evidence_drawer_and_command_palette_are_reachable():
@@ -106,10 +106,58 @@ def test_accessibility_contract_covers_keyboard_focus_and_named_regions():
     css = _text(WEB_ROOT / "styles" / "tokens.css")
 
     assert "skip-link" in html
-    assert "aria-label=\"Primary workspaces\"" in html
-    assert "aria-label=\"Global context\"" in html
-    assert "aria-label=\"Evidence drawer\"" in html
+    assert "aria-label=\"一级工作区\"" in html
+    assert "aria-label=\"全局上下文\"" in html
+    assert "aria-label=\"证据抽屉\"" in html
     assert "aria-live=\"polite\"" in html
     assert "aria-live=\"assertive\"" in html
     assert ":focus-visible" in css
     assert "--pfi-target: 44px" in css
+
+
+def test_six_primary_workspaces_render_distinct_chinese_business_panels():
+    js = _text(WEB_ROOT / "app" / "shell.js")
+
+    assert "const DEFAULT_WORKSPACES" in js
+    for marker in ["今日总览", "市场监控", "证据研究", "持仓复核", "回测与训练", "数据治理"]:
+        assert marker in js
+    for required_call in [
+        "renderCards(workspace.cards)",
+        "renderFeatureCards(workspace.features)",
+        "renderDecisionRows(workspace.rows)",
+        "renderTasks(workspace.tasks)",
+        "applyEvidenceDrawer(workspace.evidence)",
+        "drawSparkline(workspace.chart)",
+    ]:
+        assert required_call in js
+    assert 'detail.id = "task-phase"' in js
+    assert 'detail.id = "background-job-label"' in js
+
+
+def test_user_visible_shell_text_is_chinese_first_not_english_placeholders():
+    active_text = "\n".join(
+        [
+            _text(WEB_ROOT / "index.html"),
+            _text(WEB_ROOT / "app" / "shell.js"),
+            _text(PROJECT_ROOT / "docs" / "ux" / "PFI_WEB_SHELL_ACCEPTANCE.md"),
+        ]
+    )
+    forbidden_visible_text = [
+        "Global Search",
+        "Global context",
+        "Open tasks",
+        "Daily decision queue",
+        "Workflow cards",
+        "Refresh cached slice",
+        "Evidence drawer",
+        "Task Center",
+        "Current work",
+        "Could not refresh this slice",
+        "Cached fallback is active",
+        "Operational evidence",
+        "DisabledProvider",
+        "Fast Path Review",
+    ]
+
+    for fragment in forbidden_visible_text:
+        assert fragment not in active_text
