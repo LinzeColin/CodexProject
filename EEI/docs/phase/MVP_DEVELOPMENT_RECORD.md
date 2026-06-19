@@ -1303,4 +1303,35 @@ Acceptance status:
 
 Residual risks:
 
-- T1114/T1115/T1116/T1117 still own responsive/accessibility/model-preview follow-up slices in G4.
+- T1114/T1115/T1116/T1117 are completed below and await remote CI evidence.
+
+## 2026-06-19 - Phase 1 / G4 T1114-T1117 Accessibility and UI copy contract
+
+Status: LOCAL VALIDATION PASS - REMOTE CI PENDING
+
+Completed:
+
+- Strengthened the graph table alternative into a graph-equivalent accessible list with `direction`, `type`, `evidence_status` and `observed_at` fields.
+- Added visible evidence labels and retained non-color encodings through labels, arrows, stages, roles and evidence pills.
+- Added global visible focus styling and E2E assertions for keyboard-reachable graph node, primary center action and table filter.
+- Added target-size assertions for dense graph nodes and equivalent controls.
+- Added `scripts/validate_ui_copy.py` and wired `copy-lint` into `make verify`.
+- Replaced visible internal copy such as `Rerooted`, `Profile`, `Calibration` and `Gate` with user-facing wording.
+- Marked T1114, T1115, T1116, T1117 and A161-A166 as `DONE`.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/validate_ui_copy.py`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/home.spec.ts`: PASS, 25 tests.
+- Local `make verify`: PASS.
+
+Acceptance status:
+
+- A161/A162 are covered by `graph-table-alternative` contract attributes and table row assertions in `tests/e2e/home.spec.ts`.
+- A163/A164 are covered by keyboard focus and 24px target-size assertions in `tests/e2e/home.spec.ts`.
+- A165 is covered by non-color encoding metadata and evidence labels in `apps/web/src/app/page.tsx`.
+- A166 is covered by `scripts/validate_ui_copy.py` and the `copy-lint` Makefile target.
+
+Residual risks:
+
+- Remote PostgreSQL/E2E CI evidence is pending for the T1114-T1117 implementation commit.

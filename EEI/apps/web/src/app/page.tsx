@@ -588,7 +588,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   business: {
     focus: "business",
     heading: "Synthetic Accelerated Computing Segment",
-    subtitle: "Rerooted business-segment view with focus company and customer demand retained",
+    subtitle: "Centered business-segment view with company and customer demand retained",
     nodes: [
       node("nvidia", 150, 246, "upstream", "SC-05 Design / IP", "parent platform"),
       node("business", 360, 238, "focus", "Business segment", "current focus"),
@@ -601,7 +601,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   capital: {
     focus: "capital",
     heading: "Synthetic Capital Commitment",
-    subtitle: "Rerooted capital/control view with focus-company exposure retained",
+    subtitle: "Centered capital/control view with company exposure retained",
     nodes: [
       node("capital", 350, 210, "focus", "Capital / control", "current focus"),
       node("nvidia", 560, 244, "downstream", "SC-05 Design / IP", "company exposure"),
@@ -613,7 +613,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   policy: {
     focus: "policy",
     heading: "Synthetic Export Control Context",
-    subtitle: "Rerooted policy/risk view with constrained company and downstream demand retained",
+    subtitle: "Centered policy/risk view with constrained company and downstream demand retained",
     nodes: [
       node("policy", 340, 252, "focus", "Policy / risk", "current focus"),
       node("nvidia", 540, 238, "downstream", "SC-05 Design / IP", "constrained company"),
@@ -625,7 +625,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   foundry: {
     focus: "foundry",
     heading: "Synthetic Advanced Foundry",
-    subtitle: "Rerooted manufacturing view with inherited supply-chain lens",
+    subtitle: "Centered manufacturing view with inherited supply-chain lens",
     nodes: [
       node("materials", 92, 318, "upstream", "SC-02 Materials", "specialty materials"),
       node("equipment", 104, 142, "upstream", "SC-04 Equipment", "lithography equipment"),
@@ -639,7 +639,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   equipment: {
     focus: "equipment",
     heading: "Synthetic Lithography Equipment Co.",
-    subtitle: "Rerooted equipment view with manufacturing dependency retained",
+    subtitle: "Centered equipment view with manufacturing dependency retained",
     nodes: [
       node("materials", 118, 314, "upstream", "SC-02 Materials", "material dependency"),
       node("equipment", 332, 210, "focus", "SC-04 Equipment", "current focus"),
@@ -652,7 +652,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   materials: {
     focus: "materials",
     heading: "Synthetic Specialty Materials Co.",
-    subtitle: "Rerooted materials view with downstream manufacturing chain",
+    subtitle: "Centered materials view with downstream manufacturing chain",
     nodes: [
       node("materials", 328, 240, "focus", "SC-02 Materials", "current focus"),
       node("equipment", 158, 150, "upstream", "SC-04 Equipment", "adjacent equipment"),
@@ -665,7 +665,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   systems: {
     focus: "systems",
     heading: "Synthetic Systems Integrator",
-    subtitle: "Rerooted system view across customer and infrastructure stages",
+    subtitle: "Centered system view across customer and infrastructure stages",
     nodes: [
       node("nvidia", 138, 240, "upstream", "SC-05 Design / IP", "upstream IP"),
       node("systems", 356, 236, "focus", "SC-09 System", "current focus"),
@@ -679,7 +679,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   cloud: {
     focus: "cloud",
     heading: "Synthetic Cloud Customer",
-    subtitle: "Rerooted customer view with system and data-center dependencies",
+    subtitle: "Centered customer view with system and data-center dependencies",
     nodes: [
       node("nvidia", 112, 236, "upstream", "SC-08 Packaging", "upstream platform"),
       node("systems", 260, 204, "upstream", "SC-09 System", "system integrator"),
@@ -693,7 +693,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   datacenter: {
     focus: "datacenter",
     heading: "Synthetic AI Data Center Campus",
-    subtitle: "Rerooted infrastructure view",
+    subtitle: "Centered infrastructure view",
     nodes: [
       node("energy", 132, 310, "upstream", "SC-10 Energy", "grid utility"),
       node("datacenter", 360, 240, "focus", "SC-10 Data center", "current focus"),
@@ -705,7 +705,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   energy: {
     focus: "energy",
     heading: "Synthetic Grid Utility",
-    subtitle: "Rerooted energy view",
+    subtitle: "Centered energy view",
     nodes: [
       node("energy", 340, 244, "focus", "SC-10 Energy", "current focus"),
       node("datacenter", 548, 244, "downstream", "SC-10 Data center", "AI data center"),
@@ -1266,7 +1266,7 @@ export default function Home() {
             </dd>
           </div>
           <div>
-            <dt>Calibration</dt>
+            <dt>Model review</dt>
             <dd>
               {homeModelStatus.latestCalibration} / {homeModelStatus.cadenceDays}d /{" "}
               {homeModelStatus.nextScheduledFor}
@@ -1764,7 +1764,9 @@ export default function Home() {
 
         <section
           className="graphTablePanel"
+          data-accessibility-equivalent="graph-relationships"
           data-color-independent-encoding="labels,arrows,stages,roles,evidence"
+          data-equivalent-fields="direction,type,evidence_status,observed_at"
           data-testid="graph-table-alternative"
         >
           <header>
@@ -1797,24 +1799,40 @@ export default function Home() {
               <tr>
                 <th scope="col">From</th>
                 <th scope="col">To</th>
+                <th scope="col">Direction</th>
+                <th scope="col">Type</th>
                 <th scope="col">Relationship</th>
                 <th scope="col">Stage</th>
+                <th scope="col">Evidence</th>
+                <th scope="col">Time</th>
               </tr>
             </thead>
             <tbody>
               {tableEdges.map((edge) => (
                 <tr
+                  data-direction={`${edge.from}->${edge.to}`}
+                  data-evidence-status="fixture-evidence"
                   data-lens={edge.lens}
+                  data-observed-at={asOf}
+                  data-relationship-type={edge.lens}
                   data-testid={`graph-table-row-${edge.from}-${edge.to}`}
                   key={`${edge.from}-${edge.to}`}
                 >
                   <td>{nodeByKey.get(edge.from)?.shortLabel ?? edge.from}</td>
                   <td>{nodeByKey.get(edge.to)?.shortLabel ?? edge.to}</td>
+                  <td>{`${nodeByKey.get(edge.from)?.shortLabel ?? edge.from} -> ${
+                    nodeByKey.get(edge.to)?.shortLabel ?? edge.to
+                  }`}</td>
+                  <td>{edge.lens.replaceAll("_", " ")}</td>
                   <td>
                     <span>{edge.label}</span>
                     <small>{edge.fixtureNotice}</small>
                   </td>
                   <td>{edge.stage}</td>
+                  <td>
+                    <span className="evidencePill">fixture evidence</span>
+                  </td>
+                  <td>{asOf}</td>
                 </tr>
               ))}
             </tbody>
@@ -1929,7 +1947,7 @@ export default function Home() {
           <span>Live facts: disabled</span>
           <span>DB fixture notice: visible</span>
           <span data-testid="model-contract-state">
-            Model: {ACTIVE_ANALYSIS_CONTEXT.modelVersion} / Profile:{" "}
+            Model: {ACTIVE_ANALYSIS_CONTEXT.modelVersion} / Preference:{" "}
             {ACTIVE_ANALYSIS_CONTEXT.profileVersion} / Formula:{" "}
             {ACTIVE_ANALYSIS_CONTEXT.formulaRegistryVersion} / Parameters:{" "}
             {ACTIVE_ANALYSIS_CONTEXT.parameterCatalogVersion} / Thresholds:{" "}

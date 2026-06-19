@@ -159,12 +159,12 @@ A157,P0,persistence,Reload restores viewport panels and exploration path,Reload 
 A158,P0,saved-view,Saved view includes subject lens time filters layout and notes,Integration,DONE
 A159,P0,saved-view,Saved view restore is deterministic and versioned,Integration,DONE
 A160,P0,time,Timeline changes graph state with explicit as-of label and no false real-time claim,E2E,DONE
-A161,P0,accessibility,Every graph relationship is available in equivalent list/table view,A11y E2E,NOT STARTED
-A162,P0,accessibility,Graph-equivalent list retains direction type evidence status and time,Contract test,NOT STARTED
-A163,P0,accessibility,All primary operations are keyboard reachable with visible unobscured focus,Keyboard E2E,NOT STARTED
-A164,P0,accessibility,Pointer targets normally meet 24x24 and dense graph has equivalent controls,Axe/manual,NOT STARTED
-A165,P0,accessibility,Color is not the only encoding for relation family or evidence status,Visual/a11y review,NOT STARTED
-A166,P0,content,End-user UI contains no forbidden agent or graph-database jargon,Static copy lint,NOT STARTED
+A161,P0,accessibility,Every graph relationship is available in equivalent list/table view,A11y E2E,DONE
+A162,P0,accessibility,Graph-equivalent list retains direction type evidence status and time,Contract test,DONE
+A163,P0,accessibility,All primary operations are keyboard reachable with visible unobscured focus,Keyboard E2E,DONE
+A164,P0,accessibility,Pointer targets normally meet 24x24 and dense graph has equivalent controls,Axe/manual,DONE
+A165,P0,accessibility,Color is not the only encoding for relation family or evidence status,Visual/a11y review,DONE
+A166,P0,content,End-user UI contains no forbidden agent or graph-database jargon,Static copy lint,DONE
 A167,P0,visual-regression,Approved default lens pivot list empty loading error states have screenshots,Visual regression suite,NOT STARTED
 A168,P0,performance,Fixture first interactive graph P75 is under 2.5 seconds and metrics are recorded,Performance test,NOT STARTED
 A169,P0,catalog,"Relationship families, relationship types, upstream/downstream scope, supply-chain stages, industries, sectors, business segments, capital objects and companies have machine-readable catalogs",Catalog integrity test + manual review,DONE

@@ -304,14 +304,69 @@ test("offers a filterable graph table alternative and explicit visual semantics"
 
   const table = page.getByTestId("graph-table-alternative");
   await expect(table).toBeVisible();
+  await expect(table).toHaveAttribute("data-accessibility-equivalent", "graph-relationships");
+  await expect(table).toHaveAttribute(
+    "data-equivalent-fields",
+    "direction,type,evidence_status,observed_at"
+  );
   await expect(table).toHaveAttribute(
     "data-color-independent-encoding",
     "labels,arrows,stages,roles,evidence"
+  );
+  await expect(page.getByTestId("graph-table-row-materials-foundry")).toHaveAttribute(
+    "data-direction",
+    "materials->foundry"
+  );
+  await expect(page.getByTestId("graph-table-row-materials-foundry")).toHaveAttribute(
+    "data-relationship-type",
+    "supply_chain"
+  );
+  await expect(page.getByTestId("graph-table-row-materials-foundry")).toHaveAttribute(
+    "data-evidence-status",
+    "fixture-evidence"
+  );
+  await expect(page.getByTestId("graph-table-row-materials-foundry")).toHaveAttribute(
+    "data-observed-at",
+    "2026-06-19"
+  );
+  await expect(page.getByTestId("graph-table-row-materials-foundry")).toContainText(
+    "fixture evidence"
   );
   await page.getByTestId("graph-table-filter").selectOption("supply_chain");
   await expect(table.locator("tbody tr").first()).toHaveAttribute("data-lens", "supply_chain");
   expect(await table.locator("tbody tr:not([data-lens='supply_chain'])").count()).toBe(0);
   await expect(table).toContainText("wafer foundry for");
+});
+
+test("keeps graph-equivalent controls keyboard reachable with visible focus and target size", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  const foundryNode = page.getByTestId("graph-node-foundry");
+  await foundryNode.focus();
+  await expect(foundryNode).toBeFocused();
+  const foundryBox = await boxFor(foundryNode);
+  expect(foundryBox.width).toBeGreaterThanOrEqual(24);
+  expect(foundryBox.height).toBeGreaterThanOrEqual(24);
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("selected-node-title")).toHaveText("Synthetic Advanced Foundry");
+
+  const primaryAction = page.getByTestId("primary-set-center");
+  await primaryAction.focus();
+  await expect(primaryAction).toBeFocused();
+  const primaryBox = await boxFor(primaryAction);
+  expect(primaryBox.width).toBeGreaterThanOrEqual(24);
+  expect(primaryBox.height).toBeGreaterThanOrEqual(24);
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
+
+  const tableFilter = page.getByTestId("graph-table-filter");
+  await tableFilter.focus();
+  await expect(tableFilter).toBeFocused();
+  const filterBox = await boxFor(tableFilter);
+  expect(filterBox.width).toBeGreaterThanOrEqual(24);
+  expect(filterBox.height).toBeGreaterThanOrEqual(24);
 });
 
 test("implements semantic zoom levels and grouped dense-node list view", async ({ page }) => {

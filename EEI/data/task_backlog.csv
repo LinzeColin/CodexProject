@@ -93,10 +93,10 @@ T1110,G3,P0,Implement breadcrumb browser history and undo,T1108,"A154,A155",DONE
 T1111,G3,P0,Persist viewport lens timeline and selected object,T1110,"A156,A157",DONE
 T1112,G3,P0,Implement saved views and restore after reload,T1111,"A158,A159",DONE
 T1113,G3,P0,Implement timeline and change overlays,T1105,A160,DONE
-T1114,G4,P0,Implement graph-equivalent accessible list view,T1104,"A161,A162",NOT STARTED
-T1115,G4,P0,Implement complete keyboard interaction and visible focus,T1114,"A163,A164",NOT STARTED
-T1116,G4,P0,Add non-color visual encodings and evidence labels,T1104,A165,NOT STARTED
-T1117,G4,P0,Add UI copy lexicon and forbidden-term lint,T1107,A166,NOT STARTED
+T1114,G4,P0,Implement graph-equivalent accessible list view,T1104,"A161,A162",DONE
+T1115,G4,P0,Implement complete keyboard interaction and visible focus,T1114,"A163,A164",DONE
+T1116,G4,P0,Add non-color visual encodings and evidence labels,T1104,A165,DONE
+T1117,G4,P0,Add UI copy lexicon and forbidden-term lint,T1107,A166,DONE
 T1118,G5,P0,Add visual regression tests for approved workspace states,T1117,A167,NOT STARTED
 T1119,G5,P0,Add performance tests for first interactive graph,T1106,A168,NOT STARTED
 T1120,G6,P1,Add guided empty Watchlist industry overlay,T1102,A135,NOT STARTED

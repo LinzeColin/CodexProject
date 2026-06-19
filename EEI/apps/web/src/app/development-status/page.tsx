@@ -205,7 +205,7 @@ export default function DevelopmentStatusPage() {
 
         <section className="statusSummary" aria-label="状态摘要">
           <div data-testid="status-current-gate">
-            <dt>Gate</dt>
+            <dt>Release phase</dt>
             <dd>
               {currentGate.gate_id} / {currentGate.status}
             </dd>
