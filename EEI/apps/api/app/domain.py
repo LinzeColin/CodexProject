@@ -37,21 +37,21 @@ class FocusRef(BaseModel):
 
 
 class GraphBudget(BaseModel):
-    max_nodes: int = Field(default=80, ge=1, le=500)
-    max_edges: int = Field(default=300, ge=1, le=2000)
-    expand_nodes: int = Field(default=40, ge=1, le=100)
+    max_nodes: int = Field(default=42, ge=1, le=500)
+    max_edges: int = Field(default=64, ge=1, le=2000)
+    expand_nodes: int = Field(default=12, ge=1, le=100)
 
 
 class ExploreRequest(BaseModel):
     session_id: UUID | None = None
     focus: FocusRef
-    active_layers: list[str]
-    direction: Literal["both", "upstream", "downstream", "in", "out"]
-    hops: int = Field(ge=1, le=2)
+    active_layers: list[str] = Field(default_factory=lambda: ["supply_chain_operations"])
+    direction: Literal["both", "upstream", "downstream", "in", "out"] = "both"
+    hops: int = Field(default=1, ge=1, le=2)
     as_of: datetime | None = None
     scoring_profile_version_id: UUID | None = None
     filters: dict[str, Any] = Field(default_factory=dict)
-    budget: GraphBudget
+    budget: GraphBudget = Field(default_factory=GraphBudget)
 
 
 class RerootRequest(BaseModel):

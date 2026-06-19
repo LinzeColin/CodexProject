@@ -1,8 +1,8 @@
 ﻿trace_id,requirement_or_function_id,acceptance_id,task_ids,test_type,evidence_path,status,release_gate,owner,source_doc
-TR-FUN-EXP-01-A041,FUN-EXP-01,A041,"T400,T401",Contract/integration,artifacts/tests/a041/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A042,FUN-EXP-01,A042,T400,Boundary test,artifacts/tests/a042/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A043,FUN-EXP-01,A043,T400,Boundary/negative tests,artifacts/tests/a043/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A044,FUN-EXP-01,A044,"T400,T407",API/UI test,artifacts/tests/a044/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A041,FUN-EXP-01,A041,"T400,T401",Contract/integration,apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A042,FUN-EXP-01,A042,T400,Boundary test,apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A043,FUN-EXP-01,A043,T400,Boundary/negative tests,apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A044,FUN-EXP-01,A044,"T400,T407",API/UI test,apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A045,FUN-EXP-01,A045,T402,Integration/E2E,artifacts/tests/a045/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A046,FUN-EXP-01,A046,T402,E2E,artifacts/tests/a046/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A047,FUN-EXP-01,A047,T402,E2E,artifacts/tests/a047/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md

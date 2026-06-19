@@ -1065,10 +1065,74 @@ components:
       - nodes
       - edges
       - truncated
+      - query
+      - truncation
+      - continuation
       properties:
         as_of:
           type: string
           format: date-time
+        query:
+          type: object
+          required:
+          - focus
+          - direction
+          - hops
+          - active_layers
+          - budget
+          - hard_limits
+          properties:
+            focus:
+              type: object
+              additionalProperties: true
+            focus_entity_id:
+              type: string
+              format: uuid
+            direction:
+              type: string
+            hops:
+              type: integer
+              minimum: 1
+              maximum: 2
+            as_of:
+              type:
+              - string
+              - 'null'
+              format: date-time
+            scoring_profile_version_id:
+              type:
+              - string
+              - 'null'
+              format: uuid
+            active_layers:
+              type: array
+              items:
+                type: string
+            filters:
+              type: object
+              additionalProperties: true
+            budget:
+              $ref: '#/components/schemas/GraphBudget'
+            hard_limits:
+              type: object
+              required:
+              - max_hops
+              - max_nodes
+              - max_edges
+              - max_path_length
+              properties:
+                max_hops:
+                  type: integer
+                  maximum: 2
+                max_nodes:
+                  type: integer
+                  maximum: 500
+                max_edges:
+                  type: integer
+                  maximum: 2000
+                max_path_length:
+                  type: integer
+                  maximum: 8
         nodes:
           type: array
           maxItems: 500
@@ -1081,6 +1145,64 @@ components:
             $ref: '#/components/schemas/GraphEdge'
         truncated:
           type: boolean
+        truncation:
+          type: object
+          required:
+          - applied
+          - reasons
+          - message
+          - fetched_edge_count
+          - returned_edge_count
+          - returned_node_count
+          properties:
+            applied:
+              type: boolean
+            reasons:
+              type: array
+              items:
+                type: string
+                enum:
+                - edge_budget
+                - node_budget
+            message:
+              type: string
+            fetched_edge_count:
+              type: integer
+              minimum: 0
+            returned_edge_count:
+              type: integer
+              minimum: 0
+              maximum: 2000
+            returned_node_count:
+              type: integer
+              minimum: 0
+              maximum: 500
+        continuation:
+          type: object
+          required:
+          - available
+          properties:
+            available:
+              type: boolean
+            expand_endpoint:
+              type:
+              - string
+              - 'null'
+            anchor_entity_id:
+              type:
+              - string
+              - 'null'
+              format: uuid
+            direction:
+              type:
+              - string
+              - 'null'
+            expand_nodes:
+              type:
+              - integer
+              - 'null'
+              minimum: 1
+              maximum: 100
         warnings:
           type: array
           items:
@@ -1487,10 +1609,6 @@ components:
       type: object
       required:
       - focus
-      - active_layers
-      - direction
-      - hops
-      - budget
       properties:
         session_id:
           type:
@@ -1515,10 +1633,13 @@ components:
               format: uuid
         active_layers:
           type: array
+          default:
+          - supply_chain_operations
           items:
             type: string
         direction:
           type: string
+          default: both
           enum:
           - both
           - upstream
@@ -1529,6 +1650,7 @@ components:
           type: integer
           minimum: 1
           maximum: 2
+          default: 1
         as_of:
           type:
           - string
@@ -1594,26 +1716,22 @@ components:
           $ref: '#/components/schemas/GraphBudget'
     GraphBudget:
       type: object
-      required:
-      - max_nodes
-      - max_edges
-      - expand_nodes
       properties:
         max_nodes:
           type: integer
           minimum: 1
           maximum: 500
-          default: 80
+          default: 42
         max_edges:
           type: integer
           minimum: 1
           maximum: 2000
-          default: 300
+          default: 64
         expand_nodes:
           type: integer
           minimum: 1
           maximum: 100
-          default: 40
+          default: 12
     ExploreResponse:
       allOf:
       - $ref: '#/components/schemas/GraphResponse'

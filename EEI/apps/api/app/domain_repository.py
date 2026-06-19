@@ -1376,7 +1376,7 @@ class DomainRepository:
                 "as_of": session["as_of"],
                 "scoring_profile_version_id": session["scoring_profile_version_id"],
                 "filters": session["filters"] if request["inherit_state"] else {},
-                "budget": {"max_nodes": 80, "max_edges": 300, "expand_nodes": 40},
+                "budget": {"max_nodes": 42, "max_edges": 64, "expand_nodes": 12},
             }
             return self.exploration_response_for_connection(
                 connection,
@@ -1459,11 +1459,14 @@ class DomainRepository:
         focus_entity_id: UUID,
         request: dict[str, Any],
     ) -> dict[str, Any]:
-        budget = request["budget"]
-        max_nodes = min(int(budget["max_nodes"]), 500)
-        max_edges = min(int(budget["max_edges"]), 2000)
-        direction = request["direction"]
+        budget = request.get("budget") or {}
+        max_nodes = min(int(budget.get("max_nodes", 42)), 500)
+        max_edges = min(int(budget.get("max_edges", 64)), 2000)
+        expand_nodes = min(int(budget.get("expand_nodes", 12)), 100)
+        direction = request.get("direction") or "both"
+        hops = min(int(request.get("hops") or 1), 2)
         as_of = request.get("as_of")
+        truncation_reasons: list[str] = []
         if direction in {"upstream", "in"}:
             direction_clause = "r.object_entity_id = %(focus)s"
         elif direction in {"downstream", "out"}:
@@ -1496,7 +1499,10 @@ class DomainRepository:
             """,
             {"focus": focus_entity_id, "as_of": as_of, "limit": max_edges + 1},
         ).fetchall()
-        truncated = len(rows) > max_edges
+        fetched_edge_count = len(rows)
+        truncated = fetched_edge_count > max_edges
+        if truncated:
+            truncation_reasons.append("edge_budget")
         rows = rows[:max_edges]
         ordered_node_ids: list[UUID] = [focus_entity_id]
         for row in rows:
@@ -1505,6 +1511,7 @@ class DomainRepository:
                     ordered_node_ids.append(row[key])
         if len(ordered_node_ids) > max_nodes:
             truncated = True
+            truncation_reasons.append("node_budget")
             ordered_node_ids = ordered_node_ids[:max_nodes]
         node_set = set(ordered_node_ids)
         rows = [
@@ -1563,10 +1570,57 @@ class DomainRepository:
         return _jsonable(
             {
                 "as_of": as_of or _now(),
+                "query": {
+                    "focus": request.get(
+                        "focus",
+                        {"object_type": "entity", "object_id": str(focus_entity_id)},
+                    ),
+                    "focus_entity_id": focus_entity_id,
+                    "direction": direction,
+                    "hops": hops,
+                    "as_of": as_of,
+                    "scoring_profile_version_id": request.get("scoring_profile_version_id"),
+                    "active_layers": request.get("active_layers") or ["supply_chain_operations"],
+                    "filters": request.get("filters") or {},
+                    "budget": {
+                        "max_nodes": max_nodes,
+                        "max_edges": max_edges,
+                        "expand_nodes": expand_nodes,
+                    },
+                    "hard_limits": {
+                        "max_hops": 2,
+                        "max_nodes": 500,
+                        "max_edges": 2000,
+                        "max_path_length": 8,
+                    },
+                },
                 "nodes": nodes,
                 "edges": edges,
                 "truncated": truncated,
-                "warnings": ["bounded_graph_budget_applied"] if truncated else [],
+                "truncation": {
+                    "applied": truncated,
+                    "reasons": truncation_reasons,
+                    "message": (
+                        "Graph response was truncated by the bounded graph budget."
+                        if truncated
+                        else "Graph response is within the bounded graph budget."
+                    ),
+                    "fetched_edge_count": fetched_edge_count,
+                    "returned_edge_count": len(edges),
+                    "returned_node_count": len(nodes),
+                },
+                "continuation": {
+                    "available": truncated,
+                    "expand_endpoint": "/v1/explore/expand" if truncated else None,
+                    "anchor_entity_id": focus_entity_id if truncated else None,
+                    "direction": direction if truncated else None,
+                    "expand_nodes": expand_nodes if truncated else None,
+                },
+                "warnings": (
+                    [f"bounded_graph_budget_applied:{reason}" for reason in truncation_reasons]
+                    if truncated
+                    else []
+                ),
                 "coverage": {
                     "visible_nodes": len(nodes),
                     "visible_edges": len(edges),

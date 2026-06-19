@@ -25,7 +25,7 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - Latest GitHub `CodexProject` commit pushed:
-  - `c270494` feat: persist EEI workspace state contracts
+  - `0347dbc` feat: add EEI development status screen
 
 ## Completed
 
@@ -68,7 +68,9 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed the remaining G3 state/history/saved-view/timeline/model-context batch by GitHub Actions run `27835479352`; job `82382357217` passed.
 - Closed G3 as `PASS` and started G4 as `IN PROGRESS`.
 - Added T1205 `/development-status` navigation screen with six delivery status lanes, tasks/risks/controls/acceptance evidence links, function status, task evidence, acceptance evidence, and risk-control panels.
-- Marked T1205, A173, and A174 as `DONE` locally; remote CI is pending for this G4 batch.
+- Completed T1205 with A173/A174 by GitHub Actions run `27836121209`; job `82384436376` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
+- Added T400 bounded `/v1/explore` query defaults, hard limits, truncation metadata, continuation metadata, OpenAPI contract updates, and integration assertions for A041-A044.
+- Marked T400, A041, A042, A043, and A044 as `DONE` locally; remote PostgreSQL CI is pending for this G4 batch.
 
 ## Verification Evidence
 
@@ -149,6 +151,11 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 21 tests after T1205.
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed with static `/development-status`.
 - 2026-06-19 update: local `make verify` passed after T1205.
+- 2026-06-19 update: GitHub Actions run `27836121209` passed; job `82384436376` proved T1205 remotely.
+- 2026-06-19 update: local `.venv/bin/uv run python scripts/validate_task_pack.py` passed after T400 bounded graph query service.
+- 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T400 because this host has no configured PostgreSQL.
+- 2026-06-19 update: local `make verify` passed after T400.
+- 2026-06-19 update: local `git diff --check` passed after T400.
 
 Remote verification:
 
@@ -203,6 +210,10 @@ Remote verification:
 - GitHub Actions job `82379303157`: PASS.
 - GitHub Actions run `27835479352`: PASS.
 - GitHub Actions job `82382357217`: PASS.
+- GitHub Actions run `27835657493`: PASS.
+- GitHub Actions job `82382936095`: PASS.
+- GitHub Actions run `27836121209`: PASS.
+- GitHub Actions job `82384436376`: PASS.
 
 ## Not Completed
 
@@ -223,7 +234,8 @@ Remote verification:
 - T306 home/industry/watchlist E2E is DONE and remote CI passed; A037 is DONE.
 - T1110/T1111/T1112/T1113/T1201/T1206 are DONE and remote CI passed.
 - G3 is `PASS`.
-- T1205 / A173 / A174 are locally DONE; remote CI pending.
+- T1205 / A173 / A174 are DONE and remote CI passed.
+- T400 / A041-A044 are locally DONE; remote PostgreSQL CI pending.
 - G4 remains open because recursive exploration, live context, accessible list/table equivalents, model preview propagation, and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -231,6 +243,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Select the next minimal G4 task slice from T400-T409/T1114-T1117/T1205/T1207.
-2. Keep A026/A027 open until T904/G9 real gold precision evaluation.
-3. Preserve the existing G3 state/history contracts while adding recursive exploration and governance views.
+1. Push T400 and prove it in GitHub Actions PostgreSQL CI.
+2. Select the next minimal G4 task slice from T401-T409/T1114-T1117/T1207.
+3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
+4. Preserve the existing G3 state/history contracts while adding recursive exploration and governance views.

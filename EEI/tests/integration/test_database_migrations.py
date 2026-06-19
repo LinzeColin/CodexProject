@@ -178,6 +178,111 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert exploration["coverage"]["synthetic_fixture_edges"] >= 1
     assert any(edge["synthetic"] is True for edge in exploration["edges"])
     assert all(edge["fixture_notice"] for edge in exploration["edges"] if edge["synthetic"])
+    assert exploration["query"]["focus"]["object_id"] == NVIDIA_ID
+    assert exploration["query"]["active_layers"] == [
+        "supply_chain_operations",
+        "technology_data_ip",
+    ]
+    assert exploration["query"]["direction"] == "both"
+    assert exploration["query"]["hops"] == 1
+    assert exploration["query"]["budget"] == {
+        "max_nodes": 42,
+        "max_edges": 64,
+        "expand_nodes": 12,
+    }
+    assert exploration["query"]["hard_limits"] == {
+        "max_hops": 2,
+        "max_nodes": 500,
+        "max_edges": 2000,
+        "max_path_length": 8,
+    }
+
+    default_explore_response = client.post(
+        "/v1/explore",
+        json={"focus": {"object_type": "entity", "object_id": NVIDIA_ID}},
+    )
+    assert default_explore_response.status_code == 200
+    default_exploration = default_explore_response.json()
+    assert default_exploration["query"]["active_layers"] == ["supply_chain_operations"]
+    assert default_exploration["query"]["direction"] == "both"
+    assert default_exploration["query"]["hops"] == 1
+    assert default_exploration["query"]["budget"] == {
+        "max_nodes": 42,
+        "max_edges": 64,
+        "expand_nodes": 12,
+    }
+    assert len(default_exploration["nodes"]) <= 42
+    assert len(default_exploration["edges"]) <= 64
+
+    profile_id = profiles[0]["id"]
+    explicit_explore_response = client.post(
+        "/v1/explore",
+        json={
+            "focus": {"object_type": "entity", "object_id": NVIDIA_ID},
+            "active_layers": ["capital_control", "policy_regulatory"],
+            "direction": "upstream",
+            "hops": 2,
+            "as_of": "2026-06-19T00:00:00Z",
+            "scoring_profile_version_id": profile_id,
+            "filters": {"relationship_family": ["capital_financing"]},
+            "budget": {"max_nodes": 7, "max_edges": 8, "expand_nodes": 3},
+        },
+    )
+    assert explicit_explore_response.status_code == 200
+    explicit_exploration = explicit_explore_response.json()
+    assert explicit_exploration["query"]["direction"] == "upstream"
+    assert explicit_exploration["query"]["hops"] == 2
+    assert explicit_exploration["query"]["as_of"] == "2026-06-19T00:00:00Z"
+    assert explicit_exploration["query"]["scoring_profile_version_id"] == profile_id
+    assert explicit_exploration["query"]["filters"] == {
+        "relationship_family": ["capital_financing"]
+    }
+    assert explicit_exploration["query"]["budget"] == {
+        "max_nodes": 7,
+        "max_edges": 8,
+        "expand_nodes": 3,
+    }
+
+    for invalid_payload in (
+        {
+            "focus": {"object_type": "entity", "object_id": NVIDIA_ID},
+            "hops": 3,
+        },
+        {
+            "focus": {"object_type": "entity", "object_id": NVIDIA_ID},
+            "budget": {"max_nodes": 501, "max_edges": 64, "expand_nodes": 12},
+        },
+        {
+            "focus": {"object_type": "entity", "object_id": NVIDIA_ID},
+            "budget": {"max_nodes": 42, "max_edges": 2001, "expand_nodes": 12},
+        },
+    ):
+        invalid_explore_response = client.post("/v1/explore", json=invalid_payload)
+        assert invalid_explore_response.status_code == 422
+
+    over_budget_response = client.post(
+        "/v1/explore",
+        json={
+            "focus": {"object_type": "entity", "object_id": NVIDIA_ID},
+            "budget": {"max_nodes": 2, "max_edges": 1, "expand_nodes": 1},
+        },
+    )
+    assert over_budget_response.status_code == 200
+    over_budget = over_budget_response.json()
+    assert over_budget["truncated"] is True
+    assert over_budget["truncation"]["applied"] is True
+    assert set(over_budget["truncation"]["reasons"]) & {"edge_budget", "node_budget"}
+    assert over_budget["truncation"]["returned_edge_count"] <= 1
+    assert over_budget["truncation"]["returned_node_count"] <= 2
+    assert len(over_budget["edges"]) <= 1
+    assert len(over_budget["nodes"]) <= 2
+    assert over_budget["continuation"]["available"] is True
+    assert over_budget["continuation"]["expand_endpoint"] == "/v1/explore/expand"
+    assert over_budget["continuation"]["anchor_entity_id"] == NVIDIA_ID
+    assert any(
+        warning.startswith("bounded_graph_budget_applied:")
+        for warning in over_budget["warnings"]
+    )
 
     home_response = client.get("/v1/home")
     assert home_response.status_code == 200

@@ -39,10 +39,10 @@ A037,P0,watchlist,Watchlist shows unread changes and saved view/profile state,E2
 A038,P0,search,Search distinguishes aliases and entity types,Search integration,DONE
 A039,P0,home,New user reaches a company focus page within three primary actions,E2E,DONE
 A040,P0,accessibility,Home and industry core controls are keyboard reachable,Playwright/a11y,DONE
-A041,P0,explore,"Explore API accepts focus, layers, direction, hops, as-of, profile, filters and budget",Contract/integration,NOT STARTED
-A042,P0,explore,Default query is one hop and bounded to configured initial budget,Boundary test,NOT STARTED
-A043,P0,explore,"Hard limits enforce hops<=2, nodes<=500, edges<=2000 and path length<=8",Boundary/negative tests,NOT STARTED
-A044,P0,explore,Over-budget response is truncated with reason and continuation information,API/UI test,NOT STARTED
+A041,P0,explore,"Explore API accepts focus, layers, direction, hops, as-of, profile, filters and budget",Contract/integration,DONE
+A042,P0,explore,Default query is one hop and bounded to configured initial budget,Boundary test,DONE
+A043,P0,explore,"Hard limits enforce hops<=2, nodes<=500, edges<=2000 and path length<=8",Boundary/negative tests,DONE
+A044,P0,explore,Over-budget response is truncated with reason and continuation information,API/UI test,DONE
 A045,P0,reroot,Any focusable entity can become a new root,Integration/E2E,NOT STARTED
 A046,P0,reroot,"Reroot preserves time, layers, filters and scoring profile by default",E2E,NOT STARTED
 A047,P0,reroot,User can reroot with reset/default state,E2E,NOT STARTED
