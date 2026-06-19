@@ -257,6 +257,15 @@ const heatStops: HeatStop[] = [
   { stop: 0.9, rgb: [126, 224, 248] },
   { stop: 1, rgb: [167, 236, 255] },
 ];
+const yearMonthHeatStops: HeatStop[] = [
+  { stop: 0, rgb: [15, 17, 22] },
+  { stop: 0.14, rgb: [23, 34, 58] },
+  { stop: 0.32, rgb: [29, 63, 119] },
+  { stop: 0.52, rgb: [31, 155, 209] },
+  { stop: 0.72, rgb: [126, 224, 248] },
+  { stop: 0.88, rgb: [199, 235, 255] },
+  { stop: 1, rgb: [255, 255, 255] },
+];
 const heatLevelAnchors = [0, 0.16, 0.34, 0.54, 0.74, 0.93] as const;
 const emptyHeatColor = "#0f1116";
 
@@ -1267,7 +1276,7 @@ function ContributionGrid({
           </div>
         </div>
       ) : scale === "year" ? (
-        <div className="year-trend-grid year-comparison-trend">
+        <div className="year-trend-grid vertical-year-trend">
           {periodData.yearCells.map((cell) => {
             const periodKey = String(cell.year);
             const active = selectedPeriod === periodKey;
@@ -1701,8 +1710,11 @@ function monthBarStyle(slot: Pick<PeriodCounts, "activityScore" | "activityLevel
   const score = Math.max(0, slot.activityScore);
   const ratio = maxScore > 0 ? score / maxScore : 0;
   const height = score > 0 ? Math.round(24 + Math.sqrt(ratio) * 76) : 9;
+  const level = Math.max(0, Math.min(5, Math.round(slot.activityLevel)));
+  const relativeScore = maxScore > 0 ? Math.log1p(score) / Math.log1p(maxScore) : level / 5;
+  const monthIntensity = score > 0 || level > 0 ? Math.min(1, Math.max(0.08, relativeScore * 0.9 + (level / 5) * 0.1)) : 0;
   return {
-    "--month-color": trendColor(slot, maxScore),
+    "--month-color": interpolateColorStops(monthIntensity, yearMonthHeatStops),
     "--month-height": `${height}%`,
   } as CSSProperties;
 }
@@ -1722,13 +1734,17 @@ function heatIntensityForScore(score: number, maxScore: number, fallbackLevel: n
 }
 
 function interpolateHeatColor(value: number) {
+  return interpolateColorStops(value, heatStops);
+}
+
+function interpolateColorStops(value: number, stops: HeatStop[]) {
   const bounded = Math.min(1, Math.max(0, value));
-  let left = heatStops[0];
-  let right = heatStops[heatStops.length - 1];
-  for (let index = 1; index < heatStops.length; index += 1) {
-    if (bounded <= heatStops[index].stop) {
-      right = heatStops[index];
-      left = heatStops[index - 1];
+  let left = stops[0];
+  let right = stops[stops.length - 1];
+  for (let index = 1; index < stops.length; index += 1) {
+    if (bounded <= stops[index].stop) {
+      right = stops[index];
+      left = stops[index - 1];
       break;
     }
   }

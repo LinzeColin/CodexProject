@@ -75,7 +75,6 @@ def frontend_dependencies_ready(app_dir: Path) -> bool:
         (app_dir / "node_modules" / ".bin" / "vite").exists()
         and (app_dir / "node_modules" / ".bin" / "tsc").exists()
         and (app_dir / "node_modules" / "vite" / "dist" / "client" / "client.mjs").exists()
-        and (app_dir / "node_modules" / "lightningcss" / "package.json").exists()
         and (app_dir / "node_modules" / "typescript" / "package.json").exists()
     )
 
@@ -880,7 +879,7 @@ prepare_runtime() {{
     notify_error "需要 npm 才能准备 Memory Atlas 本地运行环境。"
     exit 1
   fi
-  if [[ ! -x "$APP_DIR/node_modules/.bin/vite" || ! -x "$APP_DIR/node_modules/.bin/tsc" || ! -f "$APP_DIR/node_modules/vite/dist/client/client.mjs" || ! -f "$APP_DIR/node_modules/lightningcss/package.json" || ! -f "$APP_DIR/node_modules/typescript/package.json" ]]; then
+  if [[ ! -x "$APP_DIR/node_modules/.bin/vite" || ! -x "$APP_DIR/node_modules/.bin/tsc" || ! -f "$APP_DIR/node_modules/vite/dist/client/client.mjs" || ! -f "$APP_DIR/node_modules/typescript/package.json" ]]; then
     rm -rf "$APP_DIR/node_modules"
     if [[ -d "$APP_DIR/node_modules" ]]; then
       notify_error "Memory Atlas 旧依赖清理失败，请查看日志：$LOG_FILE。"
@@ -897,7 +896,7 @@ prepare_runtime() {{
     fi
     rm -rf "$npm_cache"
   fi
-  if [[ ! -x "$APP_DIR/node_modules/.bin/vite" || ! -x "$APP_DIR/node_modules/.bin/tsc" || ! -f "$APP_DIR/node_modules/vite/dist/client/client.mjs" || ! -f "$APP_DIR/node_modules/lightningcss/package.json" || ! -f "$APP_DIR/node_modules/typescript/package.json" ]]; then
+  if [[ ! -x "$APP_DIR/node_modules/.bin/vite" || ! -x "$APP_DIR/node_modules/.bin/tsc" || ! -f "$APP_DIR/node_modules/vite/dist/client/client.mjs" || ! -f "$APP_DIR/node_modules/typescript/package.json" ]]; then
     notify_error "Memory Atlas 依赖安装不完整，请查看日志：$LOG_FILE。"
     exit 1
   fi

@@ -2790,15 +2790,14 @@ h3 {
   grid-auto-rows: minmax(142px, 1fr);
 }
 
-.year-trend-grid.year-comparison-trend {
+.year-trend-grid.vertical-year-trend {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  grid-template-rows: minmax(150px, 1fr);
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(2, minmax(150px, 1fr));
+  grid-auto-rows: minmax(150px, 1fr);
   align-content: stretch;
   height: 100%;
-  min-height: 168px;
+  min-height: 320px;
   overflow: hidden;
 }
 
@@ -2913,7 +2912,7 @@ h3 {
 }
 
 .year-cell.year-summary-card {
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-rows: auto minmax(72px, 1fr) auto auto;
   align-content: stretch;
   gap: 10px;
   min-height: 150px;
@@ -2968,11 +2967,9 @@ h3 {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-template-rows: 1fr;
-  align-items: end;
+  grid-template-rows: repeat(12, minmax(0, 1fr));
+  align-items: stretch;
   gap: 2px;
-  height: 100%;
   min-height: 58px;
   border: 1px solid rgba(244, 241, 232, 0.075);
   border-radius: 6px;
@@ -2984,10 +2981,10 @@ h3 {
 
 .year-month-track::after {
   position: absolute;
-  right: 6px;
-  bottom: 9px;
-  left: 6px;
-  height: 1px;
+  top: 7px;
+  bottom: 7px;
+  left: 9px;
+  width: 1px;
   background: rgba(244, 241, 232, 0.12);
   content: "";
 }
@@ -2995,17 +2992,15 @@ h3 {
 .year-month-bar {
   position: relative;
   display: block;
-  align-self: end;
-  width: 100%;
-  min-width: 0;
-  height: var(--month-height, 9%);
-  min-height: 9%;
-  max-width: 100%;
-  border-radius: 5px 5px 2px 2px;
-  background: var(--month-color, #0f1116);
+  width: var(--month-height, 9%);
+  min-width: 9%;
+  height: 100%;
+  border-radius: 2px 5px 5px 2px;
+  background-color: var(--month-color, #0f1116);
+  background-image: linear-gradient(90deg, color-mix(in srgb, var(--month-color, #0f1116) 68%, rgba(255, 255, 255, 0.18)), var(--month-color, #0f1116));
   box-shadow:
     0 0 10px color-mix(in srgb, var(--month-color, #0f1116) 22%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    inset 1px 0 0 rgba(255, 255, 255, 0.16);
 }
 
 .year-month-axis {
@@ -3405,6 +3400,16 @@ h3 {
 
 .level-5 {
   background: var(--heat-bg, #a7ecff);
+}
+
+.year-month-bar.level-0,
+.year-month-bar.level-1,
+.year-month-bar.level-2,
+.year-month-bar.level-3,
+.year-month-bar.level-4,
+.year-month-bar.level-5 {
+  background-color: var(--month-color, #0f1116);
+  background-image: linear-gradient(90deg, color-mix(in srgb, var(--month-color, #0f1116) 68%, rgba(255, 255, 255, 0.18)), var(--month-color, #0f1116));
 }
 
 .period-grid {

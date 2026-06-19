@@ -287,7 +287,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "grid-template-rows: repeat(var(--month-days), minmax(0, 1fr));" in css_source
         and "yearCells" in app_source
         and "monthSlots" in app_source
-        and 'className="year-trend-grid year-comparison-trend"' in contribution_grid
+        and 'className="year-trend-grid vertical-year-trend"' in contribution_grid
         and 'className={`year-cell year-summary-card level-${cell.activityLevel}${active ? " selected" : ""}`}' in contribution_grid
         and 'className="year-card-header"' in contribution_grid
         and 'className="year-month-track"' in contribution_grid
@@ -301,26 +301,25 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "cell.monthSlots.map" in contribution_grid
         and "grid-auto-rows: minmax(62px, 1fr);" in css_source
         and "grid-auto-rows: minmax(142px, 1fr);" in css_source
-        and ".year-trend-grid.year-comparison-trend" in css_source
-        and "grid-template-columns: repeat(2, minmax(0, 1fr)) !important;" in css_source
-        and "grid-template-rows: 1fr;" in css_source
-        and "grid-auto-flow: column;" in css_source
+        and ".year-trend-grid.vertical-year-trend" in css_source
+        and "grid-template-columns: 1fr;" in css_source
+        and "grid-template-rows: repeat(2, minmax(150px, 1fr));" in css_source
+        and "grid-auto-rows: minmax(150px, 1fr);" in css_source
         and "height: 100%;" in css_source
+        and "min-height: 320px;" in css_source
         and "aspect-ratio: auto;" in css_source
         and ".year-cell.year-summary-card" in css_source
-        and "grid-template-rows: auto minmax(0, 1fr) auto auto;" in css_source
         and ".year-month-track" in css_source
         and ".year-month-bar" in css_source
         and ".year-month-axis" in css_source
         and ".year-month-bar em" not in css_source
-        and "grid-template-columns: repeat(12, minmax(0, 1fr));" in css_source
-        and "height: var(--month-height, 9%);" in css_source
-        and "width: 100%;" in css_source
-        and "max-width: 100%;" in css_source
+        and "grid-template-rows: repeat(12, minmax(0, 1fr));" in css_source
+        and "width: var(--month-height, 9%);" in css_source
+        and "background-color: var(--month-color, #0f1116);" in css_source
         and "const periodKey = cell.date" in contribution_grid,
         "contribution_month_year_grid_contract",
-        "Month mode keeps 24 selectable month columns with readable labels and smooth internal daily trends; year mode uses side-by-side selectable year comparison cards with left-to-right month bar trends, a clean quarter axis, and year summary metrics",
-        "Month/year grid contract is missing 24 month columns, smooth internal daily trends, side-by-side year comparison cards, horizontal month bars, or year summary metrics",
+        "Month mode keeps 24 selectable month columns with readable labels and smooth internal daily trends; year mode uses vertically stacked selectable year comparison cards with month bar trends, a clean quarter axis, and year summary metrics",
+        "Month/year grid contract is missing 24 month columns, smooth internal daily trends, vertically stacked year comparison cards, month bars, or year summary metrics",
     )
     require(
         checks,
@@ -467,7 +466,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "semantic-dashboard" in app_source
         and "timeline-canvas" in app_source
         and "year-heatmap" in app_source
-        and "year-trend-grid year-comparison-trend" in app_source
+        and "year-trend-grid vertical-year-trend" in app_source
         and "ObsidianGraphScene" in obsidian_source
         and "GalaxyScene" in galaxy_source
         and ".roi-visual-strip" in css_source
@@ -750,12 +749,12 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "宽度约等于日表格下 3 列" in readme
         and "日/周必须共用同一个全年 7 行 x 52-54 列坐标面" in readme
         and "月视图保留连续两年 24 列坐标面" in readme
-        and "年视图使用左右并排的两张年度对比卡片" in readme
+        and "年视图使用上下堆叠的两张年度对比卡片" in readme
         and "同源同色阶的 7 个日段" in readme
         and "连续渐变实现" in readme
         and "周、月内部趋势保持从上到下读取" in readme
         and "月格内部按每日颗粒度纵向排列" in readme
-        and "12 个月从左到右的横向热度条" in readme
+        and "12 个月从上到下的纵向热度条" in readme
         and "年度对比卡片" in readme
         and "季度轴" in readme
         and "不得在狭窄月柱内部显示" in readme
