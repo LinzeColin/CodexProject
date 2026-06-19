@@ -33,6 +33,7 @@ import {
 import type { ActivityBucket, AtlasEdge, AtlasFilters, AtlasMetric, AtlasNode, MemoryAtlas, ViewKey } from "./types";
 
 const GalaxyScene = lazy(() => import("./components/GalaxyScene").then((module) => ({ default: module.GalaxyScene })));
+const ObsidianGraphScene = lazy(() => import("./components/ObsidianGraphScene").then((module) => ({ default: module.ObsidianGraphScene })));
 
 const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: number }> }> = [
   { key: "galaxy", label: "银河星云", icon: Orbit },
@@ -804,68 +805,10 @@ function ObsidianGraph({
   deltaStats: DeltaStats;
   onSelectNode: (node: AtlasNode) => void;
 }) {
-  const [localOnly, setLocalOnly] = useState(false);
-  const [depth, setDepth] = useState(1);
-  const display = useMemo(() => buildObsidianLayout(nodes, edges, selectedNode, localOnly, depth), [nodes, edges, selectedNode, localOnly, depth]);
   return (
-    <div className="visual-workspace obsidian-map">
-      <div className="surface-heading compact">
-        <div>
-          <p className="eyebrow">全局/局部图谱 / 深度 / 分组着色</p>
-          <h2>按 Obsidian 思路重做：过滤后图谱、局部深度、连接强度和孤立节点可见</h2>
-        </div>
-        <span>{display.nodes.length} 个节点 / {display.edges.length} 条连接</span>
-      </div>
-      <div className="graph-controls">
-        <button className={!localOnly ? "segmented active" : "segmented"} onClick={() => setLocalOnly(false)} type="button">全局图</button>
-        <button className={localOnly ? "segmented active" : "segmented"} onClick={() => setLocalOnly(true)} type="button">局部图</button>
-        <label>
-          深度
-          <input min={1} max={3} step={1} type="range" value={depth} onChange={(event) => setDepth(Number(event.target.value))} />
-          <strong>{depth}</strong>
-        </label>
-      </div>
-      <GraphUsageStrip
-        items={[
-          { label: "全局图", value: "找高连接主题" },
-          { label: "局部图", value: "看选中节点邻域" },
-          { label: "深度", value: `${depth} 层关系` },
-        ]}
-      />
-      <DeltaStrip stats={deltaStats} compact />
-      <svg className="relation-canvas" viewBox="0 0 1000 600" role="img" aria-label="Obsidian 图谱">
-        <defs>
-          <filter id="softGlow">
-            <feGaussianBlur stdDeviation="1.25" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        <g opacity="0.14">
-          {display.edges.map((edge) => (
-            <line
-              key={edge.id}
-              x1={edge.source.x}
-              y1={edge.source.y}
-              x2={edge.target.x}
-              y2={edge.target.y}
-              stroke={edge.color}
-              strokeWidth={Math.max(0.45, edge.weight * 1.8)}
-            />
-          ))}
-        </g>
-        {display.nodes.map((item) => (
-          <GraphSvgNode
-            key={item.node.id}
-            item={item}
-            selected={item.node.id === selectedNode?.id}
-            onSelectNode={onSelectNode}
-          />
-        ))}
-      </svg>
-    </div>
+    <Suspense fallback={<div className="galaxy-loading">正在载入 Obsidian 动态图谱...</div>}>
+      <ObsidianGraphScene nodes={nodes} edges={edges} selectedNode={selectedNode} deltaStats={deltaStats} onSelectNode={onSelectNode} />
+    </Suspense>
   );
 }
 

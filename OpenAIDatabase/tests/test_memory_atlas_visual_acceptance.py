@@ -28,6 +28,7 @@ class MemoryAtlasVisualAcceptanceTests(unittest.TestCase):
         self.assertIn("galaxy_webgl_has_no_visible_html_dot_overlay", check_names)
         self.assertIn("galaxy_compact_layout_keeps_hud_visible", check_names)
         self.assertIn("graph_nodes_have_no_internal_text_labels", check_names)
+        self.assertIn("obsidian_graph_matches_core_graph_view_contract", check_names)
         self.assertIn("contribution_grid_uses_full_scene_layout", check_names)
 
 

@@ -173,7 +173,13 @@ Current visualization modes:
 - Galaxy: Three.js scene. WebGL 正常时不叠加 HTML 点层，并使用不透明 WebGL 背景和逐帧清屏，避免 2D 残影；WebGL 内部程序化星云纹理负责旋臂、核心辉光、尘埃带和星云云团，避免退回只有光点的点云；只有 WebGL fallback 才启用可点击点层。Galaxy 支持 hover 最近星体预览、点击选中后相机自动飞近并聚焦、关联边高亮、关联邻居节点脉冲高亮、右上角视角重置和缩放按钮；hover 只做预览，点击才同步右侧 Inspector。聚焦后必须使用局部邻域布局：高权重邻居进入内环 primary layer，次级邻居进入外环 secondary layer；高连接主题节点只显示 Top 局部邻居和有限焦点边线，其余显示为折叠数量，避免一次性拉出过多边线。选中节点后，画布边缘显示内环邻居小型详情卡，卡片包含标签、层级/分类、权重排名，并可点击跳转到对应邻居节点。
 - Notion Map: project/document nodes linked through atlas edges. 顶部保留简短状态条，说明当前图谱按主题簇、节点详情和项目/决策关系读取。
 - ROI Dashboard: memories sorted by `metrics.roi.leverage_score`.
-- Obsidian Graph: graph node list ranked by degree. 顶部保留全局图、局部图和深度状态，帮助判断当前是在看全图还是选中节点邻域。
+- Obsidian Graph: lazy-loaded force-directed graph scene modeled on Obsidian's
+  built-in Graph View contract. It supports global graph/local graph, local
+  depth, search-file filtering, tag/attachment/existing-file/orphan toggles,
+  color groups, arrows, text fade threshold, node size, link thickness,
+  time-order animation, center/repel/link force controls, link distance,
+  wheel/+/- zoom, drag-to-pan, drag-to-position nodes, hover neighbor
+  highlighting, click-to-sync Inspector, and a right-click context menu.
 - Timeline: memory, decision, project, and timeline-event nodes are positioned
   by real event dates. 横轴必须显示可读的真实事件日期标签，淡色月份网格只作为背景定位参考；
   点击事件同步 Inspector。
@@ -241,9 +247,10 @@ Real Codex local data sync:
   that runs every Monday 09:00 local time, rebuilds the Atlas snapshot, commits
   the redacted Codex-derived data, and pushes to GitHub.
 
-Notion Map 和 Obsidian Graph 的图内节点不渲染文字标签；
-详情通过 title、aria 和 Inspector 查看；鼠标悬停、键盘选中或点击后查看详情，
-降低光污染并保留具体信息入口。
+Notion Map 的图内节点不渲染文字标签；详情通过 title、aria 和 Inspector 查看。
+Obsidian Graph 按 Obsidian Graph View 的文字淡出阈值显示节点标签：默认保持克制，
+缩放、悬停、选中或高连接节点才显示标签，同时通过 hover 邻接高亮和 Inspector 保留
+具体信息入口。
 Galaxy 低高度视口保留最小画布高度，HUD 自动换行且不裁切，避免选择卡片压出
 银河画面或遮挡核心区域。
 

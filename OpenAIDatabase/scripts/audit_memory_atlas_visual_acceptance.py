@@ -56,6 +56,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
 
     app_source = read_text(repo_root / "apps/memory-atlas/src/App.tsx")
     galaxy_source = read_text(repo_root / "apps/memory-atlas/src/components/GalaxyScene.tsx")
+    obsidian_source = read_text(repo_root / "apps/memory-atlas/src/components/ObsidianGraphScene.tsx")
     css_source = read_text(repo_root / "apps/memory-atlas/src/styles.css")
     data_builder_source = read_text(repo_root / "scripts/build_memory_atlas_data.py")
     readme = read_text(repo_root / "README.md")
@@ -525,11 +526,49 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and graph_node.count("<circle") == 2
         and "stdDeviation=\"1.25\"" in app_source
         and '<g opacity="0.13">' in app_source
-        and '<g opacity="0.14">' in app_source
         and ".graph-node.parent-node .graph-node-core" in css_source,
         "graph_nodes_have_no_internal_text_labels",
-        "Notion/Obsidian graph nodes keep the picture clean: no internal text labels; details stay in title, aria, and Inspector",
-        "Graph nodes may still render internal text labels or may lack title/aria/detail affordances",
+        "Notion map graph nodes keep the picture clean: no internal text labels; details stay in title, aria, and Inspector",
+        "Notion graph nodes may still render internal text labels or may lack title/aria/detail affordances",
+    )
+    require(
+        checks,
+        'const ObsidianGraphScene = lazy(() => import("./components/ObsidianGraphScene")' in app_source
+        and "function ObsidianGraphScene" in obsidian_source
+        and "function useObsidianForceGraph" in obsidian_source
+        and "function stepObsidianForceSimulation" in obsidian_source
+        and "buildObsidianDataset" in obsidian_source
+        and "graphDepthMap" in obsidian_source
+        and "creationOrderMap" in obsidian_source
+        and 'role="application"' in obsidian_source
+        and "onWheel={handleWheel}" in obsidian_source
+        and "onPointerDown={handleCanvasPointerDown}" in obsidian_source
+        and "onPointerMove={handleCanvasPointerMove}" in obsidian_source
+        and "onContextMenu" in obsidian_source
+        and "activeNeighborhood" in obsidian_source
+        and "markerEnd={settings.showArrows" in obsidian_source
+        and "文字淡出阈值" in obsidian_source
+        and "节点大小" in obsidian_source
+        and "连线粗细" in obsidian_source
+        and "中心力" in obsidian_source
+        and "排斥力" in obsidian_source
+        and "链接力" in obsidian_source
+        and "链接距离" in obsidian_source
+        and "搜索文件" in obsidian_source
+        and "标签" in obsidian_source
+        and "附件" in obsidian_source
+        and "仅现有文件" in obsidian_source
+        and "孤立节点" in obsidian_source
+        and "全局图" in obsidian_source
+        and "局部图" in obsidian_source
+        and ".obsidian-graph-canvas" in css_source
+        and ".obsidian-settings-panel" in css_source
+        and ".obsidian-node-label" in css_source
+        and ".obsidian-link.focused" in css_source
+        and ".obsidian-context-menu" in css_source,
+        "obsidian_graph_matches_core_graph_view_contract",
+        "Obsidian Graph is a lazy-loaded force-directed interactive scene with zoom, pan, drag, context menu, local depth, filters, groups, display controls, and force controls",
+        "Obsidian Graph may still be a static SVG/list or may lack core Graph View interaction/settings contracts",
     )
     require(
         checks,
@@ -564,6 +603,9 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "HUD 自动换行且不裁切" in readme
         and "图内节点不渲染文字标签" in readme
         and "详情通过 title、aria 和 Inspector 查看" in readme
+        and "Obsidian Graph 按 Obsidian Graph View 的文字淡出阈值显示节点标签" in readme
+        and "hover 邻接高亮" in readme
+        and "center/repel/link force controls" in readme
         and "不能只显示模板句" in readme
         and "同类重复" in readme
         and "未来回答与个性化" in readme
@@ -574,7 +616,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "Bubble Chart" in readme
         and "Word Cloud" in readme,
         "visual_requirements_documented",
-        "README documents the no-ghost-layer, full-grid, and no-internal-node-label visual contracts",
+        "README documents the no-ghost-layer, full-grid, Notion no-label, and Obsidian Graph View interaction contracts",
         "README does not document the current visual acceptance contracts",
     )
 
