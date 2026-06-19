@@ -1626,7 +1626,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G5 T500 Entity dossier and human summary API
 
-Status: LOCAL STATIC PASS / REMOTE DB CI PENDING
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1646,6 +1646,10 @@ Verification evidence:
 - Local `.venv/bin/uv run pytest tests/unit -q`: PASS.
 - Local `.venv/bin/uv run python scripts/manage_development_status_artifacts.py validate`: PASS.
 - Local `.venv/bin/uv run pytest tests/integration -q`: SKIPPED because this host has no `.env` and no Docker-backed PostgreSQL.
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27850433769`.
+- GitHub Actions job: `82428282411`.
+- GitHub Actions step `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -1655,4 +1659,4 @@ Acceptance status:
 Residual risks:
 
 - T500 does not implement the full eight-layer workspace UI; T501-T508 still own group structure, supply-chain, capital/policy/technology layers, strategic signals, evidence drawer, timeline and export UX.
-- Local database integration could not run on this host; GitHub Actions PostgreSQL validation is required before marking remote status PASS.
+- Local database integration could not run on this host; GitHub Actions PostgreSQL validation passed and is the database/E2E evidence for this run.
