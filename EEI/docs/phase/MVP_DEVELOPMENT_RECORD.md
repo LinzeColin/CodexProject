@@ -954,7 +954,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G4 T400 Bounded graph query service
 
-Status: LOCAL CONTRACT PASS; remote PostgreSQL CI pending
+Status: PASS
 
 Completed:
 
@@ -972,6 +972,10 @@ Verification evidence:
 - Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured database.
 - Local `make verify`: PASS.
 - Local `git diff --check`: PASS.
+- GitHub Actions run `27836910412`: PASS.
+- GitHub Actions job `82386959577`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -982,13 +986,13 @@ Acceptance status:
 
 Residual risks:
 
-- Local PostgreSQL execution is still unavailable on this host; GitHub Actions must prove the new integration assertions against the real migration/seed/fixture path.
+- Local PostgreSQL execution is still unavailable on this host; GitHub Actions run `27836910412` proved the new integration assertions against the real migration/seed/fixture path.
 - `/v1/explore/expand` is referenced only as continuation metadata; the actual incremental expand endpoint remains T403.
 - Two-hop traversal accepts and records `hops=2`, but bounded multi-hop traversal semantics remain future work outside T400.
 
 ## 2026-06-19 - Phase 1 / G4 Saved-view restore CI hardening
 
-Status: LOCAL PASS; remote CI pending
+Status: PASS
 
 Completed:
 
@@ -1001,7 +1005,9 @@ Verification evidence:
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 21 tests.
 - Local `make verify`: PASS.
 - Local `git diff --check`: PASS.
+- GitHub Actions run `27836910412`: PASS.
+- GitHub Actions job `82386959577`: PASS.
 
 Residual risks:
 
-- Remote CI still needs to prove the saved-view hardening and T400 together.
+- Saved-view persistence is still browser-local; production shared saved-view APIs remain future work.

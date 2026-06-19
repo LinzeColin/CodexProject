@@ -24,8 +24,8 @@ Updated: 2026-06-19 Australia/Sydney
   - `3e04747` PostgreSQL readiness contract
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
-- Latest GitHub `CodexProject` commit pushed:
-  - `0347dbc` feat: add EEI development status screen
+- Latest GitHub implementation commit proven by CI:
+  - `1125340` fix: stabilize EEI saved view restore
 
 ## Completed
 
@@ -70,7 +70,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Added T1205 `/development-status` navigation screen with six delivery status lanes, tasks/risks/controls/acceptance evidence links, function status, task evidence, acceptance evidence, and risk-control panels.
 - Completed T1205 with A173/A174 by GitHub Actions run `27836121209`; job `82384436376` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
 - Added T400 bounded `/v1/explore` query defaults, hard limits, truncation metadata, continuation metadata, OpenAPI contract updates, and integration assertions for A041-A044.
-- Marked T400, A041, A042, A043, and A044 as `DONE` locally; remote PostgreSQL CI is pending for this G4 batch.
+- Completed T400 with A041-A044 by GitHub Actions run `27836910412`; job `82386959577` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
 - Fixed a saved-view restore hydration race exposed by GitHub Actions run `27836653255`: `restoreSavedView()` now reads the latest persisted saved-view payload from `localStorage` before applying workspace state.
 
 ## Verification Evidence
@@ -161,6 +161,9 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts` passed 21 tests after the saved-view restore hardening.
 - 2026-06-19 update: local `make verify` passed after the saved-view restore hardening.
 - 2026-06-19 update: local `git diff --check` passed after the saved-view restore hardening.
+- 2026-06-19 update: GitHub Actions run `27836910412` passed; job `82386959577` proved T400 and the saved-view restore hardening remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 
 Remote verification:
 
@@ -221,6 +224,8 @@ Remote verification:
 - GitHub Actions job `82384436376`: PASS.
 - GitHub Actions run `27836653255`: FAIL, fixed by reading persisted saved-view state during restore instead of relying only on hydration-populated React state.
 - GitHub Actions job `82386126081`: FAIL.
+- GitHub Actions run `27836910412`: PASS.
+- GitHub Actions job `82386959577`: PASS.
 
 ## Not Completed
 
@@ -242,7 +247,7 @@ Remote verification:
 - T1110/T1111/T1112/T1113/T1201/T1206 are DONE and remote CI passed.
 - G3 is `PASS`.
 - T1205 / A173 / A174 are DONE and remote CI passed.
-- T400 / A041-A044 are locally DONE; first remote run `27836653255` proved PostgreSQL integration but failed E2E due a saved-view restore race that is now fixed locally.
+- T400 / A041-A044 are DONE and remote CI passed.
 - G4 remains open because recursive exploration, live context, accessible list/table equivalents, model preview propagation, and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -250,7 +255,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Push the saved-view restore hardening and prove T400 plus E2E in GitHub Actions CI.
-2. Select the next minimal G4 task slice from T401-T409/T1114-T1117/T1207.
+1. Select the next minimal G4 task slice from T401-T409/T1114-T1117/T1207.
+2. Keep the T400 budget/truncation contract stable while adding session URL state, reroot, expand, and path queries.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3 state/history contracts while adding recursive exploration and governance views.
