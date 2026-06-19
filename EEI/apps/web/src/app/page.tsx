@@ -632,6 +632,18 @@ export default function Home() {
             );
           })}
         </nav>
+        <div className="systemNav" aria-label="系统模块">
+          <span className="navGroupLabel">系统模块</span>
+          <a
+            className="navItem"
+            data-testid="objects-scope-nav-link"
+            href="/objects-scope"
+            title="对象与范围"
+          >
+            <Database size={18} strokeWidth={1.8} aria-hidden="true" />
+            <span>对象与范围</span>
+          </a>
+        </div>
       </aside>
 
       <section className="focusPanel" aria-label="当前主体">

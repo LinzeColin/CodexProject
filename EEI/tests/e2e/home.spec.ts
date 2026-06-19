@@ -23,9 +23,48 @@ test("renders the watchlist-first EEI workspace", async ({ page }) => {
     "recursive-enterprise-map"
   );
   await expect(page.getByRole("navigation", { name: "主导航" })).toContainText("商业版图");
+  await expect(page.getByLabel("系统模块")).toContainText("对象与范围");
   await expect(page.getByRole("img", { name: /NVIDIA synthetic recursive supply-chain graph/ })).toBeVisible();
   await expect(page.getByTestId("fixture-disclosure")).toContainText("Fixture-only data");
   await expect(page.getByText("Live facts: disabled")).toBeVisible();
+});
+
+test("exposes the Objects and Scope navigation screen with counts definitions and exports", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByTestId("objects-scope-nav-link").click();
+
+  await expect(page).toHaveURL(/\/objects-scope$/);
+  await expect(page.getByTestId("objects-scope-screen")).toBeVisible();
+  await expect(page.getByTestId("objects-scope-nav-active")).toHaveAttribute("aria-current", "page");
+  await expect(page.getByTestId("object-scope-catalog-count")).toHaveText("10");
+  await expect(page.getByTestId("object-scope-total-rows")).toHaveText("363");
+
+  await expect(page.getByTestId("object-scope-coverage-relationship_types")).toContainText("52");
+  await expect(page.getByTestId("object-scope-coverage-companies")).toContainText("140");
+  await expect(page.getByTestId("object-scope-catalog-relationship")).toContainText("关系类型");
+  await expect(page.getByTestId("object-scope-definition-relationship")).toContainText(
+    "Fifty-two machine-readable relationship types"
+  );
+  await expect(page.getByTestId("object-scope-catalog-domain-object")).toContainText(
+    "领域对象"
+  );
+  await expect(page.getByTestId("object-scope-export-relationship-json")).toHaveAttribute(
+    "href",
+    "/v1/catalogs/relationship"
+  );
+  await expect(page.getByTestId("object-scope-export-relationship-csv")).toHaveAttribute(
+    "href",
+    "/v1/catalogs/relationship?format=csv"
+  );
+  await expect(page.locator("article[data-testid^='object-scope-catalog-']")).toHaveCount(10);
+
+  const screenBox = await boxFor(page.getByTestId("objects-scope-screen"));
+  const summaryBox = await boxFor(page.getByLabel("覆盖摘要"));
+  const matrixBox = await boxFor(page.getByLabel("目录定义与导出"));
+  expect(summaryBox.width / screenBox.width).toBeGreaterThan(0.55);
+  expect(matrixBox.height).toBeGreaterThan(400);
 });
 
 test("measures visual-first relationship layout and critical relationship layers", async ({ page }) => {

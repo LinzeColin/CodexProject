@@ -565,3 +565,32 @@ Residual risks:
 
 - `data/release_gate_catalog.csv` remains `G2=IN PROGRESS`.
 - Remaining G2-linked open IDs are A012, A013, A014, A026, A027, and A170.
+
+## 2026-06-19 - Phase 1 / G4 T1204 Objects and Scope screen
+
+Status: OBJECTS AND SCOPE SCREEN LOCAL PASS; G4 IN PROGRESS
+
+Completed:
+
+- Added `/objects-scope` as a visible Objects and Scope navigation screen.
+- Added a secondary system-module navigation entry labelled `对象与范围` without changing the frozen 16 primary product navigation modules.
+- The screen reads canonical CSV catalogs at build time and exposes counts, definitions, coverage, primary keys, source files, and JSON/CSV export links.
+- Added E2E coverage for A170 navigation visibility, counts, definitions, export links, and visual layout contract.
+- Marked T1204 and A170 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 10 tests.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS, static routes `/` and `/objects-scope`.
+- Local `make verify`: PASS.
+
+Acceptance status:
+
+- A170 is covered by `tests/e2e/home.spec.ts` and `apps/web/src/app/objects-scope/page.tsx`.
+- G4 remains open because T1205 and T1208 are not complete.
+
+Residual risks:
+
+- Remote GitHub Actions still needs to prove the T1204 screen.
+- The remaining G2-linked open IDs after A170 closure are A012, A013, A014, A026, and A027.

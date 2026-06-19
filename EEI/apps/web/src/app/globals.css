@@ -94,6 +94,20 @@ button {
   gap: 6px;
 }
 
+.systemNav {
+  display: grid;
+  gap: 6px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.navGroupLabel {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 720;
+  text-transform: uppercase;
+}
+
 .navItem,
 .watchItem,
 .lens,
@@ -114,6 +128,7 @@ button {
 .navItem {
   justify-content: flex-start;
   padding: 0 10px;
+  text-decoration: none;
 }
 
 .navItem span {
@@ -631,20 +646,195 @@ dd {
   font-size: 13px;
 }
 
+.catalogWorkspace {
+  display: grid;
+  grid-template-columns: 210px minmax(720px, 1fr);
+  gap: 1px;
+  min-height: 100vh;
+  background: var(--line);
+}
+
+.objectScopeMain {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  min-width: 0;
+  background: var(--panel);
+  padding: 24px;
+}
+
+.objectScopeHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.returnLink,
+.exportLinks a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fbfcfc;
+  color: var(--ink);
+  padding: 0 11px;
+  text-decoration: none;
+}
+
+.scopeSummary,
+.coverageGrid {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.scopeSummary {
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+}
+
+.scopeSummary div,
+.coverageCell {
+  min-width: 0;
+  background: #fbfcfc;
+  padding: 14px;
+}
+
+.scopeSummary dd {
+  font-size: 22px;
+}
+
+.coverageGrid {
+  grid-template-columns: repeat(5, minmax(130px, 1fr));
+}
+
+.coverageCell {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.coverageCell span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.catalogMatrix {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 12px;
+}
+
+.catalogTile {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfc;
+  padding: 14px;
+}
+
+.catalogTile header {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  gap: 10px;
+}
+
+.catalogTile h2 {
+  font-size: 18px;
+}
+
+.catalogTile p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.catalogTile header > strong {
+  color: #134aa1;
+  font-size: 22px;
+}
+
+.catalogMeta {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.45fr) minmax(180px, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+
+.catalogMeta div {
+  min-width: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+
+.catalogMeta dd,
+.definitionList span {
+  overflow-wrap: anywhere;
+}
+
+.definitionList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.definitionList li {
+  display: grid;
+  gap: 3px;
+  border-left: 3px solid #b9c9f5;
+  background: #f3f6fb;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.definitionList span {
+  color: var(--muted);
+}
+
+.exportLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 @media (max-width: 1240px) {
   .workspace {
     grid-template-columns: 78px minmax(210px, 250px) minmax(500px, 1fr);
   }
 
   .navItem span,
+  .navGroupLabel,
   .brandMark span:not(.brandGlyph),
   .inspector {
     display: none;
   }
+
+  .catalogWorkspace {
+    grid-template-columns: 78px minmax(520px, 1fr);
+  }
+
+  .coverageGrid,
+  .catalogMatrix {
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+  }
 }
 
 @media (max-width: 900px) {
-  .workspace {
+  .workspace,
+  .catalogWorkspace {
     grid-template-columns: 1fr;
   }
 
@@ -661,6 +851,13 @@ dd {
   .navRail nav {
     display: flex;
     min-width: max-content;
+  }
+
+  .systemNav {
+    display: flex;
+    min-width: max-content;
+    border-top: 0;
+    padding-top: 0;
   }
 
   .navItem {
@@ -690,5 +887,17 @@ dd {
   .mapSurface,
   .ecosystemMap {
     min-height: 390px;
+  }
+
+  .objectScopeMain,
+  .objectScopeHeader {
+    display: grid;
+  }
+
+  .scopeSummary,
+  .coverageGrid,
+  .catalogMatrix,
+  .catalogMeta {
+    grid-template-columns: 1fr;
   }
 }

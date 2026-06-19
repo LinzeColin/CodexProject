@@ -44,6 +44,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed T1203 and A169 by GitHub Actions run `27826870509`; G2 task list is complete, but G2 remains `IN PROGRESS` pending acceptance audit for unresolved G2-linked IDs.
 - Completed G2 acceptance audit pass 1 locally: A015-A022, A024, and A028 now have explicit validator/integration evidence; A012-A014, A026-A027, and A170 remain open.
 - Completed G2 acceptance audit pass 1 remote CI by GitHub Actions run `27827498238`; job `82355514060` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
+- Added T1204 `/objects-scope` visible navigation screen and marked A170 done locally.
 
 ## Verification Evidence
 
@@ -78,6 +79,9 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27826870509` passed; job `82353421402` proved T1203 through static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - 2026-06-19 update: local `make verify` passed after strengthening G2 schema checks and acceptance traceability.
 - 2026-06-19 update: GitHub Actions run `27827498238` passed; job `82355514060` proved strengthened G2 schema checks under PostgreSQL.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 10 tests for the Objects and Scope screen.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed with static route `/objects-scope`.
+- 2026-06-19 update: local `make verify` passed after T1204.
 
 Remote verification:
 
@@ -109,14 +113,15 @@ Remote verification:
 - T1103/T1104/T1107/T1108 visual company workspace tasks are DONE and remote CI passed.
 - T1105/T1106/T1109 visual company workspace tasks are DONE and remote CI passed.
 - T1203 taxonomy/object-scope API is DONE and remote CI passed.
-- G2 task list is complete, but release gate status remains `IN PROGRESS` because A012, A013, A014, A026, A027, and A170 remain open.
-- A170 / T1204 Objects and Scope navigation screen is not started.
+- G2 task list is complete, but release gate status remains `IN PROGRESS` because A012, A013, A014, A026, and A027 remain open.
+- T1204 / A170 Objects and Scope navigation screen is locally done; remote CI is pending.
+- G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
 ## Recommended Next Step
 
-Close or explicitly defer the six remaining G2-linked acceptance gaps, then continue G4 with the visible Objects and Scope screen:
+Prove T1204 remotely, then close or explicitly defer the five remaining G2-linked acceptance gaps:
 
-1. Implement or defer A012, A013, A014, A026, and A027 with explicit contracts.
-2. Keep A170 for T1204 visible navigation screen and visual regression.
-3. Start T1204 for A170 visible navigation screen and visual regression.
+1. Push T1204 and wait for GitHub Actions.
+2. Implement or defer A012, A013, A014, A026, and A027 with explicit contracts.
+3. Continue G4 with T1205 Development Status screen.
