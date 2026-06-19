@@ -40,7 +40,11 @@ $PFI_OS_HOME/scripts/macosRuntimeAcceptance.sh --output-dir data/systemAudit
 
 写入的 JSON 会包含本机 project root 和本机端口状态。默认只作为本地验收证据；提交公共 GitHub 前必须脱敏或确认这些路径可以公开。
 
-统一 Workspace 的 `macOS 生命周期` 面板会只读显示 `data/systemAudit/MacOSRuntimeAcceptance_latest.json` 的最近证据，包括状态、检查通过数、最近运行时间、启动方式和失败检查摘要。页面不会自动运行 runtime acceptance；生成或刷新该证据仍必须在 Terminal 中显式执行上面的命令。
+统一 Workspace 的 `macOS 生命周期` 面板会把本地
+`data/systemAudit/MacOSRuntimeAcceptance_latest.json` ingest 到 private
+Operational Store，然后只读显示脱敏 read model，包括状态、检查通过数、
+最近运行时间、启动方式和失败检查摘要。页面不会自动运行 runtime
+acceptance；生成或刷新该证据仍必须在 Terminal 中显式执行上面的命令。
 
 ## 安全默认值
 

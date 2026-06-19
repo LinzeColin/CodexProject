@@ -60,12 +60,15 @@ from pfi_os.approvals import StrategyApprovalRegistry
 from pfi_os.application import (
     OperationalStore,
     build_command_center_read_model,
+    build_macos_runtime_acceptance_read_model,
     build_vectorized_research_read_model,
     build_homepage_summary,
     empty_command_center_read_model,
+    empty_macos_runtime_acceptance_read_model,
     empty_vectorized_research_read_model,
     empty_homepage_summary,
     ingest_command_center_cache,
+    ingest_macos_runtime_acceptance_cache,
     ingest_vectorized_research_cache,
 )
 from pfi_os.analysis import (
@@ -1754,6 +1757,17 @@ LIFECYCLE_SCRIPT_ALLOWLIST = {
 }
 
 
+def _macos_runtime_operational_payload() -> dict:
+    # MacOSRuntimeAcceptance_latest.json is local-only raw evidence; the UI reads its sanitized Operational Store model.
+    store = OperationalStore()
+    try:
+        store.initialize()
+        ingest_macos_runtime_acceptance_cache(store, project_root=ROOT)
+        return build_macos_runtime_acceptance_read_model(store)
+    except Exception:
+        return empty_macos_runtime_acceptance_read_model()
+
+
 def render_macos_lifecycle_panel() -> None:
     runtime = _run_lifecycle_script("scripts/statusPFIOS.sh")
     is_running = "PFIOS running:" in runtime["stdout"]
@@ -1773,9 +1787,7 @@ def render_macos_lifecycle_panel() -> None:
         st.code("\n".join(lifecycle["app_paths"]), language="text")
     with st.expander("生命周期命令", expanded=False):
         st.code("\n".join(str(item["命令"]) for item in lifecycle["actions"]), language="text")
-    runtime_evidence = macos_runtime_evidence_summary(
-        _read_json_payload(ROOT / "data" / "systemAudit" / "MacOSRuntimeAcceptance_latest.json")
-    )
+    runtime_evidence = macos_runtime_evidence_summary(_macos_runtime_operational_payload())
     st.markdown("##### 运行时验收证据")
     st.caption(runtime_evidence["token_policy"])
     evidence_cols = st.columns(len(runtime_evidence["cards"]))

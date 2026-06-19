@@ -22,6 +22,11 @@ from pfi_os.application.command_center_read_model import (
 )
 from pfi_os.application.homepage_summary import build_homepage_summary, empty_homepage_summary
 from pfi_os.application.homepage_ingestion import ingest_command_center_cache
+from pfi_os.application.macos_runtime_read_model import (
+    build_macos_runtime_acceptance_read_model,
+    empty_macos_runtime_acceptance_read_model,
+    ingest_macos_runtime_acceptance_cache,
+)
 from pfi_os.application.repositories import (
     EntityProfile,
     EntityRepository,
@@ -66,6 +71,7 @@ __all__ = [
     "audit_data_home_boundary",
     "build_data_home_boundary_contract",
     "build_command_center_read_model",
+    "build_macos_runtime_acceptance_read_model",
     "build_phase_a_data_foundation_contract",
     "build_vectorized_research_read_model",
     "build_homepage_summary",
@@ -73,9 +79,11 @@ __all__ = [
     "default_operational_db_path",
     "empty_homepage_summary",
     "empty_command_center_read_model",
+    "empty_macos_runtime_acceptance_read_model",
     "empty_vectorized_research_read_model",
     "ingest_command_center_cache",
     "ingest_file_source",
+    "ingest_macos_runtime_acceptance_cache",
     "ingest_vectorized_research_cache",
     "SourceRegistry",
     "SourceRegistryRow",

@@ -170,7 +170,7 @@ def macos_runtime_evidence_summary(payload: dict | None) -> dict:
                 "scripts/macosRuntimeAcceptance.sh --summary-json",
                 "scripts/macosRuntimeAcceptance.sh --launch-method app --app-path ~/Downloads/PFI_OS.app --summary-json",
             ],
-            "token_policy": "UI reads only data/systemAudit/MacOSRuntimeAcceptance_latest.json; it does not start or stop services.",
+            "token_policy": "UI reads only the sanitized Operational Store runtime evidence model derived from data/systemAudit/MacOSRuntimeAcceptance_latest.json; it does not start or stop services.",
             "safety_policy": "Read-only runtime evidence display; runtime acceptance remains Terminal-only and is not allowlisted in the UI.",
             "next_action": "Run runtime acceptance from Terminal after confirming no active workbench session is in use.",
         }
@@ -200,7 +200,7 @@ def macos_runtime_evidence_summary(payload: dict | None) -> dict:
             "scripts/macosRuntimeAcceptance.sh --summary-json",
             "scripts/macosRuntimeAcceptance.sh --launch-method app --app-path ~/Downloads/PFI_OS.app --summary-json",
         ],
-        "token_policy": "UI reads only data/systemAudit/MacOSRuntimeAcceptance_latest.json; it does not start or stop services.",
+        "token_policy": "UI reads only the sanitized Operational Store runtime evidence model derived from data/systemAudit/MacOSRuntimeAcceptance_latest.json; it does not start or stop services.",
         "safety_policy": str(payload.get("safety_boundary", "")) or "Read-only runtime evidence display; no market refresh, broker calls, orders, or holdings mutation.",
         "heavy_smoke_policy": str(payload.get("heavy_smoke_policy", "")),
         "next_action": str(payload.get("next_action", "")) or "If missing or stale, run runtime acceptance from Terminal.",

@@ -47,11 +47,16 @@ moving UI pages or vertical workflows onto it.
   `data/vectorized/VectorizedResearch_latest.json` into Operational Store and
   renders a sanitized vectorized research read model instead of reading the
   latest JSON directly during page render.
+- The legacy Streamlit macOS runtime evidence panel now ingests the local-only
+  `data/systemAudit/MacOSRuntimeAcceptance_latest.json` into Operational
+  Store as `PRIVATE_DERIVED` evidence and renders a sanitized read model
+  without raw local paths, PIDs, screenshots, browser paths, or logs.
 
 ## Not Done
 
 - Legacy Streamlit UI still has direct JSON/provider reads outside the Web
-  Shell, command-center, and vectorized research vertical slices.
+  Shell, command-center, vectorized research, and macOS runtime evidence
+  vertical slices.
 - Existing legacy holdings sync and ResearchBus code is not migrated yet.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
 - Full source ingestion and vertical workflow migration are not complete.

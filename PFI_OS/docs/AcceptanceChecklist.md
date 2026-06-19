@@ -38,9 +38,9 @@ Double-clicking `StopPFIOS.command` stops PFIOS.
 
 `scripts/macosRuntimeAcceptance.sh --launch-method app --app-path ~/Downloads/PFI_OS.app --json` must complete start, health, cache guard, stop, and post-stop checks through the real `.app` open path; the native launcher must start local `StartPFIOS.command` through `/bin/zsh`, not route through Terminal or GitHub fallback.
 
-工作台状态页必须显示 `macOS 生命周期` 面板，列出 Desktop、Downloads、Applications 三个 app 入口，展示启动、停止、状态、开发检查、轻量验收、生命周期验收、运行时验收、缓存清理和最终验收命令，并只读展示 `MacOSRuntimeAcceptance_latest.json` 的最近运行时验收证据；页面内只允许执行 allowlisted 本地状态/停止/开发检查/轻量验收/生命周期验收/缓存清理脚本；运行时验收和最终验收只能展示命令和最近证据，不能在页面内 allowlist 执行；缓存清理必须在服务运行时自动拒绝，并展示 dry-run 候选数量和大小。
+工作台状态页必须显示 `macOS 生命周期` 面板，列出 Desktop、Downloads、Applications 三个 app 入口，展示启动、停止、状态、开发检查、轻量验收、生命周期验收、运行时验收、缓存清理和最终验收命令，并只读展示由 `MacOSRuntimeAcceptance_latest.json` ingest 到 private Operational Store 后生成的脱敏运行时验收 read model；页面内只允许执行 allowlisted 本地状态/停止/开发检查/轻量验收/生命周期验收/缓存清理脚本；运行时验收和最终验收只能展示命令和最近证据，不能在页面内 allowlist 执行；缓存清理必须在服务运行时自动拒绝，并展示 dry-run 候选数量和大小。
 
-The workspace status page must show a `macOS Lifecycle` panel with Desktop, Downloads, and Applications app entry points, start/stop/status/dev-ready/lite-acceptance/lifecycle-readiness/runtime-acceptance/cache-clean/final-acceptance commands, plus read-only evidence from `MacOSRuntimeAcceptance_latest.json`; only allowlisted local status/stop/dev-ready/lite-acceptance/lifecycle-readiness/cache-clean scripts may run from the page; runtime acceptance and final acceptance must be displayed as commands and recent evidence only, not allowlisted in-page actions; cache cleanup must fail closed while the service is running and show dry-run candidate count and size.
+The workspace status page must show a `macOS Lifecycle` panel with Desktop, Downloads, and Applications app entry points, start/stop/status/dev-ready/lite-acceptance/lifecycle-readiness/runtime-acceptance/cache-clean/final-acceptance commands, plus the sanitized runtime acceptance read model produced after ingesting `MacOSRuntimeAcceptance_latest.json` into the private Operational Store; only allowlisted local status/stop/dev-ready/lite-acceptance/lifecycle-readiness/cache-clean scripts may run from the page; runtime acceptance and final acceptance must be displayed as commands and recent evidence only, not allowlisted in-page actions; cache cleanup must fail closed while the service is running and show dry-run candidate count and size.
 
 `scripts/uiVisualAcceptance.sh --summary-json` 必须能用 headless Chrome 打开本机工作台并验证 `PFI_OS`、`工作台状态`、`macOS 生命周期`、`运行时验收证据` 和生命周期按钮文案可见，同时保存本地截图；它不得运行 final acceptance、CI smoke、full pytest、行情刷新、券商连接、订单、付款或持仓写入。
 
@@ -58,9 +58,9 @@ The workspace status page must show a `macOS Lifecycle` panel with Desktop, Down
 
 `scripts/vectorizedResearch.sh --json-only --symbol SPY` builds stable OHLCV input and a parameter-scan summary from `data/replay/EventReplay_latest.json` without network access, market refresh, broker connection, order creation, or holdings mutation.
 
-工作台状态页必须只读展示 `data/vectorized/VectorizedResearch_latest.json` 的 compact summary cards、参数扫描表和图表，不得在页面渲染时重新读取 EventReplay records 或重新运行参数扫描。
+工作台状态页必须只读展示由 `data/vectorized/VectorizedResearch_latest.json` ingest 到 Operational Store 后生成的 compact read model cards、参数扫描表和图表，不得在页面渲染时重新读取 EventReplay records 或重新运行参数扫描。
 
-The workspace status page must display compact summary cards, parameter-scan rows, and charts from `data/vectorized/VectorizedResearch_latest.json` read-only; it must not reload EventReplay records or rerun parameter scans during page rendering.
+The workspace status page must display compact read model cards, parameter-scan rows, and charts produced after ingesting `data/vectorized/VectorizedResearch_latest.json` into Operational Store; it must not reload EventReplay records or rerun parameter scans during page rendering.
 
 `scripts/dailyCheck.sh` 可以汇总系统状态、数据源配置和报告资产数量。
 
