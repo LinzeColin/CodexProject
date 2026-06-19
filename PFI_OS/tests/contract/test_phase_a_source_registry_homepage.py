@@ -51,6 +51,42 @@ def test_source_registry_redacts_private_uris_and_reports_freshness(tmp_path: Pa
     assert summary["truth_role"] == "Operational source_records table is the source registry; ResearchBus remains compatibility events only."
 
 
+def test_source_registry_supports_point_in_time_source_versions(tmp_path: Path):
+    store = OperationalStore(tmp_path / "private" / "operational" / "pfi.sqlite")
+    store.initialize()
+    registry = SourceRegistry(store)
+    registry.register_source(
+        SourceRecord(
+            source_id="src-market",
+            domain=DataDomain.PUBLIC_SHARED_CANONICAL,
+            source_type="market_event_digest",
+            uri="shared/canonical/market/events-v1.json",
+            as_of="2026-06-18T08:00:00+00:00",
+            evidence_class="cached_public_fact",
+            checksum="v1",
+        )
+    )
+    registry.register_source(
+        SourceRecord(
+            source_id="src-market",
+            domain=DataDomain.PUBLIC_SHARED_CANONICAL,
+            source_type="market_event_digest",
+            uri="shared/canonical/market/events-v2.json",
+            as_of="2026-06-19T08:00:00+00:00",
+            evidence_class="cached_public_fact",
+            checksum="v2",
+        )
+    )
+
+    old_rows = registry.point_in_time_rows("2026-06-18T23:59:00+00:00")
+    new_rows = registry.point_in_time_rows("2026-06-19T23:59:00+00:00")
+
+    assert len(store.table_rows("source_versions")) == 2
+    assert old_rows[0].uri == "shared/canonical/market/events-v1.json"
+    assert new_rows[0].uri == "shared/canonical/market/events-v2.json"
+    assert store.table_rows("source_records")[0]["uri"] == "shared/canonical/market/events-v2.json"
+
+
 def test_homepage_summary_uses_operational_store_read_model(tmp_path: Path):
     store = OperationalStore(tmp_path / "private" / "operational" / "pfi.sqlite")
     store.initialize()

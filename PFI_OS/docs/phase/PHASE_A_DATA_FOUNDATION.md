@@ -18,9 +18,12 @@ moving UI pages or vertical workflows onto it.
 - Defines default operational DB path:
   `$PFI_OS_DATA_HOME/private/operational/pfi.sqlite`.
 - Creates official SQLite tables for sources, entities, evidence, jobs, tasks,
-  and holding snapshots.
+  source versions, and holding snapshots.
 - Requires `source_id`, `as_of`, and `evidence_class` on fact-bearing records.
 - Keeps ResearchBus as an internal compatibility layer, not a truth source.
+- Every source upsert appends an immutable `source_versions` row for
+  point-in-time source replay.
+- Source Registry exposes point-in-time rows for a requested `as_of`.
 - Web Shell homepage now consumes `PFIOSHomeSummaryV1` when the runtime injects
   it; static fallback remains available for offline shell loading.
 - Homepage card source markers now point to `operational_store:*` read models,
@@ -34,13 +37,12 @@ moving UI pages or vertical workflows onto it.
   Web Shell vertical slice.
 - Existing legacy holdings sync and ResearchBus code is not migrated yet.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
-- Full source ingestion, point-in-time query APIs, and vertical workflow
-  migration are not complete.
+- Full source ingestion and vertical workflow migration are not complete.
 
 ## Next Phase A Iterations
 
-1. Add point-in-time source query APIs and immutable source versioning.
-2. Migrate one real cached homepage slice into Operational Store records.
-3. Add private-path and Git fixture scans for the new data-home layout.
-4. Replace legacy Streamlit direct reads one vertical slice at a time.
-5. Add repository adapters for entities, evidence search, and job execution.
+1. Migrate one real cached homepage slice into Operational Store records.
+2. Add private-path and Git fixture scans for the new data-home layout.
+3. Replace legacy Streamlit direct reads one vertical slice at a time.
+4. Add repository adapters for entities, evidence search, and job execution.
+5. Add source ingestion adapters with checksum and provenance enforcement.

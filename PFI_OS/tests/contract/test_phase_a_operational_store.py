@@ -38,6 +38,7 @@ def test_phase_a_contract_declares_domains_tables_and_internal_bus_role(tmp_path
     assert contract["required_fact_fields"] == ["source_id", "as_of", "evidence_class"]
     assert set(contract["official_tables"]) == {
         "source_records",
+        "source_versions",
         "entity_records",
         "evidence_records",
         "job_records",
@@ -55,7 +56,7 @@ def test_operational_store_initializes_official_tables_with_foreign_keys(tmp_pat
         tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         foreign_keys = conn.execute("PRAGMA foreign_key_list(evidence_records)").fetchall()
 
-    assert {"source_records", "entity_records", "evidence_records", "job_records", "task_records", "holding_snapshots"} <= tables
+    assert {"source_records", "source_versions", "entity_records", "evidence_records", "job_records", "task_records", "holding_snapshots"} <= tables
     assert any(row[2] == "source_records" for row in foreign_keys)
 
 
@@ -116,6 +117,7 @@ def test_store_records_source_evidence_job_task_and_holding_snapshot(tmp_path: P
     )
 
     assert store.table_rows("source_records")[0]["source_id"] == source.source_id
+    assert store.table_rows("source_versions")[0]["source_id"] == source.source_id
     assert store.table_rows("evidence_records")[0]["evidence_class"] == "cached_public_fact"
     assert store.table_rows("job_records")[0]["progress"] == 0.4
     task = store.table_rows("task_records")[0]

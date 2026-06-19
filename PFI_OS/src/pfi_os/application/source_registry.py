@@ -35,6 +35,19 @@ class SourceRegistry:
 
     def rows(self, *, include_private_uri: bool = False, now: datetime | None = None) -> list[SourceRegistryRow]:
         records = self.store.table_rows("source_records")
+        return self._rows_from_records(records, include_private_uri=include_private_uri, now=now)
+
+    def point_in_time_rows(self, as_of: str, *, include_private_uri: bool = False, now: datetime | None = None) -> list[SourceRegistryRow]:
+        records = self.store.point_in_time_sources(as_of)
+        return self._rows_from_records(records, include_private_uri=include_private_uri, now=now)
+
+    def _rows_from_records(
+        self,
+        records: list[dict[str, Any]],
+        *,
+        include_private_uri: bool,
+        now: datetime | None,
+    ) -> list[SourceRegistryRow]:
         return [
             SourceRegistryRow(
                 source_id=str(row["source_id"]),
