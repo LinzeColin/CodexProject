@@ -88,6 +88,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── requirement_function_task_test_traceability_t1213.csv
 │   ├── risk_control_mapping_t1214.csv
 │   └── risk_control_summary_t1214.json
+├── brand
+│   └── BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
 ├── config
 │   ├── model_profiles
 │   │   └── balanced-v2.json
@@ -96,13 +98,16 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── ui
 │   │   ├── motion-tokens.json
 │   │   └── visual-coverage-targets.json
+│   ├── brand_policy.yaml
 │   └── model_runtime_defaults.yaml
 ├── data
 │   ├── acceptance_matrix.csv
 │   ├── acceptance_traceability.csv
+│   ├── brand_name_conflict_register.csv
 │   ├── business_segment_taxonomy.csv
 │   ├── capital_object_taxonomy.csv
 │   ├── company_catalog.csv
+│   ├── competitive_product_landscape.csv
 │   ├── content_inventory.csv
 │   ├── data_catalog_manifest.csv
 │   ├── data_dictionary.csv
@@ -130,6 +135,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── research_seed_queue.csv
 │   ├── research_universe.csv
 │   ├── resolved_unresolved_register.csv
+│   ├── review_issue_register.csv
 │   ├── risk_control_traceability.csv
 │   ├── risk_register.csv
 │   ├── scoring_components.csv
@@ -147,6 +153,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── domain_model.mmd
 │   ├── live_refresh_flow.mmd
 │   ├── module_architecture.mmd
+│   ├── module_architecture_v5_review.mmd
 │   ├── recursive_focus_flow.mmd
 │   ├── system_context.mmd
 │   └── user_flow.mmd
@@ -163,7 +170,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── ADR-014-data-ingestion.md
 │   │   └── ADR-015-fixture-and-live-data-separation.md
 │   ├── phase
-│   │   └── MVP_DEVELOPMENT_RECORD.md
+│   │   ├── MVP_DEVELOPMENT_RECORD.md
+│   │   └── V5_TASK_PACK_SYNCHRONIZATION.md
 │   ├── 01_PRODUCT_REQUIREMENTS.md
 │   ├── 02_SCOPE_AND_BOUNDARIES.md
 │   ├── 03_UX_INFORMATION_ARCHITECTURE.md
@@ -253,6 +261,11 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── index.html
 │   ├── standalone.html
 │   └── styles.css
+├── reviews
+│   ├── 00_CONSOLIDATED_REVIEW.md
+│   ├── 01_SECURITY_CODE_QUALITY_REVIEW.md
+│   ├── 02_STRESS_LIFECYCLE_INTERACTION_REVIEW.md
+│   └── 03_UIUX_ARCHITECTURE_REVIEW.md
 ├── scripts
 │   ├── apply_model_config.py
 │   ├── check_database_schema.py
@@ -280,6 +293,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_prototype_parity.py
 │   ├── validate_task_pack.py
 │   ├── validate_ui_copy.py
+│   ├── validate_v5_production_readiness_sync.py
 │   ├── validate_visual_coverage.py
 │   └── wait_for_database.py
 ├── specs
@@ -323,6 +337,7 @@ Enterprise_Ecosystem_Intelligence_release
 ├── CHANGELOG.md
 ├── CHECKSUMS.sha256
 ├── CODEX_MASTER_TASK.md
+├── CONTINUITY_PLAN.md
 ├── CONTRIBUTING.md
 ├── CURRENT_PHASE.md
 ├── DELIVERY_INDEX.md
@@ -339,9 +354,11 @@ Enterprise_Ecosystem_Intelligence_release
 ├── PURSUING_GOAL.md
 ├── README.md
 ├── REPORT.md
+├── REVIEW_AND_ITERATION_INDEX.md
 ├── RISK_AND_ACCEPTANCE.md
 ├── RUN_CODEX.md
 ├── SOURCES.md
+├── TEST_STRATEGY.md
 ├── US_Corporate_Power_Map_Governance_Blueprint_v4.2.pdf
 ├── US_Corporate_Power_Map_System_Model_Parameter_Architecture_v4.2.md
 ├── US_Corporate_Power_Map_UIUX_Redesign_v4.2.md

@@ -115,7 +115,7 @@ def main() -> int:
     unique(thresholds, "threshold_id", "thresholds")
     formula_ids = {item["formula_id"] for item in formulas}
     parameter_keys = {item["parameter_key"] for item in parameters}
-    if len(models) != 11 or len(formulas) != 11 or len(parameters) != 60 or len(thresholds) != 17:
+    if len(models) != 11 or len(formulas) != 11 or len(parameters) != 75 or len(thresholds) != 17:
         raise AssertionError("model/formula/parameter/threshold canonical counts invalid")
     if any(item["formula_id"] not in formula_ids for item in models):
         raise AssertionError("model references unknown formula")
@@ -178,10 +178,10 @@ def main() -> int:
     unique(trace, "trace_id", "acceptance trace")
     unique(gates, "gate_id", "release gates")
     if (
-        len(tasks) != 120
-        or len(acceptance) != 200
+        len(tasks) != 130
+        or len(acceptance) != 211
         or len(risks) != 53
-        or len(trace) != 221
+        or len(trace) != 232
         or len(gates) != 10
     ):
         raise AssertionError("task/acceptance/risk/trace/gate canonical counts invalid")
@@ -258,8 +258,8 @@ def main() -> int:
 
     inventory = rows("data/content_inventory.csv")
     unique(inventory, "catalog_id", "content inventory")
-    if len(inventory) != 24:
-        raise AssertionError(f"expected 24 content inventory rows, got {len(inventory)}")
+    if len(inventory) != 27:
+        raise AssertionError(f"expected 27 content inventory rows, got {len(inventory)}")
 
     yaml_files = [
         ".github/ISSUE_TEMPLATE/feature.yml",
