@@ -21,7 +21,7 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - GitHub `CodexProject` commit pushed:
-  - `5de38fd` wait for EEI PostgreSQL readiness
+  - `2b35e19` feat: add EEI domain API repositories
 
 ## Completed
 
@@ -32,6 +32,8 @@ Updated: 2026-06-19 Australia/Sydney
 - Added pinned pnpm/uv workspace, FastAPI health shell, Next.js Watchlist-first workspace shell, worker/package/infra anchors, contract validation, secret scan, unit test, and Playwright smoke test.
 - Pushed the current EEI subtree to GitHub at `LinzeColin/CodexProject/EEI`.
 - Started G2 database foundation with reversible SQL migration scaffolding, seed loader, schema checks, and integration test.
+- Added G2 domain API repository anchors for home, exploration, Watchlist, scoring profiles, audit logs, calibration queueing, change feed, and relationship supersession/conflict preservation.
+- Completed T203 and T206 by GitHub Actions run `27823282804`.
 
 ## Verification Evidence
 
@@ -53,6 +55,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27821808812` passed; `make verify-g2-db` proved PostgreSQL migration, seed idempotency, rollback, and E2E.
 - 2026-06-19 update: T205 synthetic fixture loader added locally; remote PostgreSQL CI still needs to prove it.
 - 2026-06-19 update: GitHub Actions run `27822341025` passed; backend fixture load/idempotency/live-separation/stage checks are proven.
+- 2026-06-19 update: GitHub Actions run `27823282804` passed; T203/T206 domain API repository and A023/A090 integration checks are proven.
 
 Remote verification:
 
@@ -63,22 +66,23 @@ Remote verification:
 - GitHub Actions job `82336483266`: PASS.
 - GitHub Actions run `27822341025`: PASS.
 - GitHub Actions job `82338210943`: PASS.
+- GitHub Actions run `27823282804`: PASS.
+- GitHub Actions job `82341300203`: PASS.
 
 ## Not Completed
 
 - Docker is not installed on the current host, so local `make verify-g1` still fails closed.
 - G2 database foundation subset passed remote PostgreSQL CI.
 - T205 backend fixture loading is proven, but UI/API fixture marking and recursive scenario E2E are still open.
-- T203 exploration/Watchlist/scoring/audit/calibration repository and API behavior remains in progress.
-- T206 supersession/conflict repository behavior remains in progress.
 - T1103-T1109 visual company workspace tasks are not started.
+- T1203 taxonomy/object-scope API is not started.
 - MVP is not complete.
 
 ## Recommended Next Step
 
-Start G2 with a bounded database-first run:
+Continue G2 with a bounded company-workspace/API run:
 
-1. Implement T203/T206 repository/API behavior on top of the proven schema.
-2. Add API responses that expose fixture notices so A025 can be tested.
-3. Add recursive supply-chain scenario E2E for A067.
+1. Add API responses and frontend surface tests that visibly expose fixture notices for A025.
+2. Add recursive supply-chain scenario E2E for A067.
+3. Start T1103-T1109 visual company workspace tasks.
 4. Add T1203 taxonomy/object-scope API from canonical catalogs.

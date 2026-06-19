@@ -3,17 +3,17 @@ FUN-EXP-01,function,探索,商业版图,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功
 FUN-EXP-02,function,探索,全链供应链,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T201,T205,T502,T507,T1105",Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
 FUN-EXP-03,function,探索,集团业务与子板块,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T200,T204,T500,T501,T506",Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
 FUN-EXP-04,function,探索,资金与并购,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T503,T800,T801,T805",Codex implementation,docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md
-FUN-EXP-05,function,探索,所有权与控制,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T201,T500,T503,T506",Codex implementation,docs/04_DATA_MODEL.md
+FUN-EXP-05,function,探索,所有权与控制,DONE,PARTIAL,PARTIAL,CI_VALIDATED,冲突/替代关系 repository 已保留旧记录、新记录和 change feed 证据,控制树、穿透路径和 UI/E2E 尚未实现,"T500,T503,T506",Codex implementation,docs/04_DATA_MODEL.md
 FUN-EXP-06,function,探索,政策与政府,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T503,T802,T805",Codex implementation,docs/05_DATA_SOURCES_AND_PROVENANCE.md
 FUN-EXP-07,function,探索,战略信号,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T504,T803,T805",Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 FUN-EXP-08,function,探索,行业地图,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T202,T302,T305,T409,T1120",Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
-FUN-RM-01,function,研究管理,Watchlist,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T203,T303,T306,T1102,T1120",Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
+FUN-RM-01,function,研究管理,Watchlist,DONE,DONE,PARTIAL,CI_VALIDATED,Watchlist API anchor、home 聚合和操作日志已通过 PostgreSQL CI,完整 CRUD UI、恢复/告警/default-entry E2E 尚未实现,"T303,T306,T1102,T1120",Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
 FUN-RM-02,function,研究管理,重要变化,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T705,T804,T1113",Codex implementation,docs/25_LIVE_RECALCULATION_REFRESH_ARCHITECTURE.md
 FUN-RM-03,function,研究管理,已保存视图,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T401,T404,T1110,T1111,T1112",Codex implementation,docs/21_INTERACTION_STATE_AND_NAVIGATION.md
-FUN-DM-01,function,数据与模型,数据库与来源,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T200,T206,T207,T700-T706,T1207",Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+FUN-DM-01,function,数据与模型,数据库与来源,DONE,DONE,PARTIAL,CI_VALIDATED,PostgreSQL migration/seed/fixture/domain API 和 A023 change feed 已通过 CI,完整数据工作台、source health、live ingestion 和 lineage UI 尚未实现,"T700-T706,T1207",Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 FUN-DM-02,function,数据与模型,模型与参数,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T600-T604,T1203,T1204,T1205,T1206",Codex implementation,MODEL_MANAGEMENT.md
 FUN-DM-03,function,数据与模型,操作日志,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T604,T608,T1206",Codex implementation,docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
-FUN-DM-04,function,数据与模型,双周校准,DONE,PARTIAL,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,T605-T608,Codex implementation,docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
+FUN-DM-04,function,数据与模型,双周校准,DONE,PARTIAL,PARTIAL,CI_VALIDATED,默认 scoring profile seed、手动 calibration queue 和 14-day cadence 已通过 CI,真实调度器、漂移指标、proposal 接受/拒绝和 UI 尚未实现,T605-T608,Codex implementation,docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
 FUN-SYS-01,function,系统治理,功能结构,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T1200,T1201,T1213",Codex implementation,FUNCTION_CATALOG.md
 FUN-SYS-02,function,系统治理,开发治理,DONE,DONE,NOT_STARTED,SPEC_VALIDATED,功能边界、输入输出、视觉形式和验收已定义,真实产品代码、数据库和数据接入尚未实现,"T1208,T1211,T1212,T1213,T1214,T1215",Codex implementation,DEVELOPMENT_STATUS.md
 MOD-001,model,模型,综合研究优先级,DONE,DONE,NOT_STARTED,CATALOG_VALIDATED,公式、输入输出、配置和阈值已定义（F-NP-001）,生产计算引擎、真实基准和回测尚未实现,"T1203,T1204,T1205,T1206",model owner,MODEL_MANAGEMENT.md

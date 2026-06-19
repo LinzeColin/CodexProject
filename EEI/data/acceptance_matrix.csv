@@ -9,7 +9,7 @@ A007,P0,bootstrap,make verify fails on skipped or failed required suites,Negativ
 A008,P0,bootstrap,Network is off by default and secrets are absent,Config/secret scan,NOT STARTED
 A009,P0,bootstrap,OpenAPI and JSON Schemas parse successfully,Contract validation,NOT STARTED
 A010,P0,bootstrap,Repository tree follows target app/api/packages/infra/tests layout,Tree review,NOT STARTED
-A011,P0,data,Migrations upgrade and downgrade cleanly,Migration round-trip,NOT STARTED
+A011,P0,data,Migrations upgrade and downgrade cleanly,Migration round-trip,DONE
 A012,P0,data,Published relationship and event require evidence,Deferred data-quality test,NOT STARTED
 A013,P0,data,Unknown remains unknown and is never coerced to zero/false,Unit/data tests,NOT STARTED
 A014,P0,data,Amount requires currency and amount_kind and incompatible kinds are not summed,Constraint + unit tests,NOT STARTED
@@ -21,7 +21,7 @@ A019,P0,data,Industry taxonomy supports parent/child and multi-label membership,
 A020,P0,data,Supply-chain stage taxonomy contains 16 ordered stages,CSV/data check,NOT STARTED
 A021,P0,data,"Supply-chain attributes preserve tier, materiality, substitutability, capacity, geography and coverage",Schema/unit test,NOT STARTED
 A022,P0,data,"Temporal fields preserve validity, announcement, filing, report, observation and ingestion times",Schema/golden test,NOT STARTED
-A023,P0,data,Supersession and conflict preserve history,Repository integration test,NOT STARTED
+A023,P0,data,Supersession and conflict preserve history,Repository integration test,DONE
 A024,P0,data,Seed and fixture load are idempotent,Run twice and compare,NOT STARTED
 A025,P0,data,Synthetic fixtures are visibly marked and never presented as live facts,UI/API content test,NOT STARTED
 A026,P0,data,Entity resolution precision is >=95% on at least 50 cases,Gold evaluation,NOT STARTED
@@ -88,7 +88,7 @@ A086,P0,scoring,"Score explanation returns input values, sources, contributions,
 A087,P0,audit,Profile and configuration changes write append-only old/new/diff/reason log,DB/API/E2E,NOT STARTED
 A088,P0,audit,Audit log cannot be modified or deleted through public API,Negative/security test,NOT STARTED
 A089,P0,audit,"Watchlist, review, calibration and export actions are logged",Integration,NOT STARTED
-A090,P0,calibration,Calibration schedule cadence is exactly 14 days,Scheduler/config test,NOT STARTED
+A090,P0,calibration,Calibration schedule cadence is exactly 14 days,Scheduler/config test,DONE
 A091,P0,calibration,Manual calibration can run against deterministic fixture clock,Integration,NOT STARTED
 A092,P0,calibration,"Calibration reports coverage, drift, quality, Top-N stability and proposal",Schema/E2E,NOT STARTED
 A093,P0,calibration,Proposal is never automatically activated,Negative/integration,NOT STARTED
