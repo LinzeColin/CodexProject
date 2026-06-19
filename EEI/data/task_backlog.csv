@@ -19,7 +19,7 @@ T206,G2,P0,Implement supersession/conflict repositories,T200,A023,DONE
 T207,G2,P0,Implement idempotent seed loader and data checks,"T205,T206","A024,A028",DONE
 T208,G2,P0,Run migration round-trip and gold quality scaffolding,T207,"A011,A026,A027",DONE
 T300,G3,P0,Implement global typed search and aliases,T208,A038,DONE
-T301,G3,P0,Implement home aggregation API,T300,"A029,A030",NOT STARTED
+T301,G3,P0,Implement home aggregation API,T300,"A029,A030",DONE
 T302,G3,P0,Implement industry list and landscape API,T300,"A031,A032,A033,A034",NOT STARTED
 T303,G3,P0,Implement Watchlist CRUD and persistence,T300,"A035,A036,A037",NOT STARTED
 T304,G3,P0,Build user-oriented home page,"T301,T302,T303","A029,A039,A040",NOT STARTED

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import csv
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -44,6 +44,22 @@ def _escape_like(value: str) -> str:
 
 
 ROOT = Path(__file__).resolve().parents[3]
+ENTITY_TYPES = (
+    "legal_entity",
+    "brand",
+    "security",
+    "fund",
+    "government_body",
+    "person",
+    "theme",
+    "facility",
+    "product",
+    "business_segment",
+    "industry",
+    "contract",
+    "standard",
+    "asset",
+)
 
 
 def _read_csv(path: Path) -> list[dict[str, str]]:
@@ -681,7 +697,8 @@ class DomainRepository:
             active_profile = self.active_scoring_profile(connection)
             calibration = connection.execute(
                 """
-                SELECT id, status, data_snapshot_at, scheduled_for, proposal_status
+                SELECT id, status, data_snapshot_at, scheduled_for, cadence_days,
+                       proposal_status, finished_at
                 FROM calibration_runs
                 ORDER BY COALESCE(started_at, scheduled_for, data_snapshot_at) DESC
                 LIMIT 1
@@ -693,22 +710,109 @@ class DomainRepository:
             relationship_count = connection.execute(
                 "SELECT count(*)::int AS count FROM relationships"
             ).fetchone()
+            freshness = self.home_freshness(connection)
         return _jsonable(
             {
                 "as_of": _now(),
+                "global_search": {
+                    "endpoint": "/v1/entities",
+                    "query_param": "q",
+                    "type_filter_param": "type",
+                    "default_limit": 20,
+                    "supported_entity_types": ENTITY_TYPES,
+                    "example": {"q": "NVDA", "type": "legal_entity"},
+                },
                 "industries": industries,
                 "watchlists": self.list_watchlists(),
                 "recent_explorations": sessions,
                 "changes": changes,
+                "freshness": freshness,
                 "model_status": {
                     "active_profile": active_profile,
                     "latest_calibration": calibration,
+                    "calibration": self.home_calibration_status(calibration),
                     "fixture_policy": (
                         "Synthetic fixtures are explicitly marked and not live facts."
                     ),
                     "entity_count": entity_count["count"],
                     "relationship_count": relationship_count["count"],
                 },
+            }
+        )
+
+    def home_freshness(self, connection: psycopg.Connection[dict[str, Any]]) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              (SELECT count(*)::int FROM source_documents) AS source_document_count,
+              (SELECT max(observed_at) FROM source_documents) AS latest_source_observed_at,
+              (SELECT max(retrieved_at) FROM source_documents) AS latest_source_retrieved_at,
+              (SELECT max(observed_at) FROM relationships) AS latest_relationship_observed_at,
+              (SELECT max(observed_at) FROM events) AS latest_event_observed_at,
+              (SELECT max(finished_at) FROM ingestion_runs) AS latest_ingestion_finished_at,
+              (
+                SELECT status
+                FROM ingestion_runs
+                ORDER BY started_at DESC
+                LIMIT 1
+              ) AS latest_ingestion_status,
+              (
+                SELECT count(*)::int
+                FROM ingestion_runs
+                WHERE status IN ('failed', 'error')
+              ) AS failed_ingestion_count,
+              (SELECT count(*)::int FROM fixture_entity_notices) AS synthetic_fixture_entities
+            """
+        ).fetchone()
+        data_mode = (
+            "synthetic_fixture"
+            if row["synthetic_fixture_entities"] > 0
+            else "live_or_seed"
+        )
+        if row["source_document_count"] == 0:
+            status_value = "missing"
+        elif row["failed_ingestion_count"] > 0:
+            status_value = "ingestion_failed"
+        elif data_mode == "synthetic_fixture":
+            status_value = "synthetic_fixture"
+        else:
+            status_value = "available"
+        return _jsonable(
+            {
+                **dict(row),
+                "status": status_value,
+                "data_mode": data_mode,
+                "source_mode": (
+                    "fixture_evidence"
+                    if data_mode == "synthetic_fixture"
+                    else "configured_sources"
+                ),
+            }
+        )
+
+    def home_calibration_status(self, calibration: dict[str, Any] | None) -> dict[str, Any]:
+        cadence_days = 14
+        if calibration is None:
+            return {
+                "latest_status": "not_scheduled",
+                "cadence_days": cadence_days,
+                "next_scheduled_for": None,
+                "proposal_status": None,
+            }
+        cadence_days = int(calibration.get("cadence_days") or cadence_days)
+        scheduled_for = calibration.get("scheduled_for")
+        data_snapshot_at = calibration.get("data_snapshot_at")
+        next_scheduled_for = scheduled_for
+        if calibration["status"] in {"passed", "warning", "failed", "cancelled"}:
+            anchor = data_snapshot_at or calibration.get("finished_at") or scheduled_for
+            next_scheduled_for = anchor + timedelta(days=cadence_days) if anchor else None
+        return _jsonable(
+            {
+                "latest_status": calibration["status"],
+                "cadence_days": cadence_days,
+                "latest_calibration_id": calibration["id"],
+                "next_scheduled_for": next_scheduled_for,
+                "proposal_status": calibration.get("proposal_status"),
             }
         )
 

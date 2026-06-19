@@ -1339,11 +1339,16 @@ components:
       - watchlists
       - recent_explorations
       - changes
+      - global_search
+      - freshness
       - model_status
       properties:
         as_of:
           type: string
           format: date-time
+        global_search:
+          type: object
+          additionalProperties: true
         industries:
           type: array
           items:
@@ -1362,6 +1367,9 @@ components:
           items:
             type: object
             additionalProperties: true
+        freshness:
+          type: object
+          additionalProperties: true
         model_status:
           type: object
           additionalProperties: true

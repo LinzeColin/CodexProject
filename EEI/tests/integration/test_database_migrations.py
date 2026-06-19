@@ -136,13 +136,28 @@ def exercise_domain_api_and_repository_contracts() -> None:
     home_response = client.get("/v1/home")
     assert home_response.status_code == 200
     home = home_response.json()
+    assert home["global_search"]["endpoint"] == "/v1/entities"
+    assert "legal_entity" in home["global_search"]["supported_entity_types"]
+    assert home["global_search"]["example"] == {"q": "NVDA", "type": "legal_entity"}
+    assert home["industries"][0]["taxonomy_version"]
     assert home["watchlists"][0]["items"][0]["object_id"] == NVIDIA_ID
+    assert home["recent_explorations"][0]["current_focus_entity_id"] == NVIDIA_ID
+    assert len(home["changes"]) >= 1
+    assert home["freshness"]["status"] == "synthetic_fixture"
+    assert home["freshness"]["source_document_count"] >= 1
+    assert home["freshness"]["latest_relationship_observed_at"]
     assert home["model_status"]["active_profile"]["profile_key"] == "balanced-v2"
+    assert home["model_status"]["calibration"]["latest_status"] == "not_scheduled"
+    assert home["model_status"]["calibration"]["cadence_days"] == 14
     assert "Synthetic fixtures" in home["model_status"]["fixture_policy"]
 
     calibration_response = client.post("/v1/calibrations/run")
     assert calibration_response.status_code == 202
     assert calibration_response.json()["cadence_days"] == 14
+    home_after_calibration = client.get("/v1/home").json()
+    calibration_status = home_after_calibration["model_status"]["calibration"]
+    assert calibration_status["latest_status"] == "scheduled"
+    assert calibration_status["next_scheduled_for"]
     calibration_list = client.get("/v1/calibrations")
     assert calibration_list.status_code == 200
     assert calibration_list.json()[0]["status"] == "scheduled"
