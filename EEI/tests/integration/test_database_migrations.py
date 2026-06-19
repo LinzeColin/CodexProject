@@ -337,7 +337,7 @@ def exercise_domain_api_and_repository_contracts() -> None:
     )
     assert reset_reroot_response.status_code == 200
     reset_reroot = reset_reroot_response.json()
-    assert reset_reroot["focus"]["canonical_name"] == "AI Infrastructure Buildout Theme"
+    assert reset_reroot["focus"]["canonical_name"] == "AI Infrastructure"
     assert reset_reroot["state"]["focus"] == {
         "object_type": "entity",
         "object_id": THEME_AI_INFRA_ID,
