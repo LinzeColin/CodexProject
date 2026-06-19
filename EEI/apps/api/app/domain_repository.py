@@ -116,6 +116,78 @@ DOSSIER_LAYER_DEFINITIONS = {
         "gap": "No strategic-signal or technology fixture records are loaded.",
     },
 }
+EMPIRE_WORKSPACE_LAYERS = (
+    {
+        "key": "group_structure",
+        "label_zh": "集团结构",
+        "label_en": "Group Structure",
+        "description": "Legal group, parent, subsidiary and operating-entity structure.",
+    },
+    {
+        "key": "business_segments",
+        "label_zh": "业务板块",
+        "label_en": "Business Segments",
+        "description": "Business segments, product lines, platforms and markets.",
+    },
+    {
+        "key": "supply_chain",
+        "label_zh": "供应链",
+        "label_en": "Supply Chain",
+        "description": "Upstream, downstream, stage and dependency relationships.",
+    },
+    {
+        "key": "capital_network",
+        "label_zh": "资本网络",
+        "label_en": "Capital Network",
+        "description": "Financing, investment, funds, buybacks and capex.",
+    },
+    {
+        "key": "ma_transactions",
+        "label_zh": "并购交易",
+        "label_en": "M&A Transactions",
+        "description": "Acquisitions, divestitures, splits, mergers and strategic investments.",
+    },
+    {
+        "key": "control_relationships",
+        "label_zh": "控制关系",
+        "label_en": "Control Relationships",
+        "description": "Voting rights, economic interest, board seats and actual control paths.",
+    },
+    {
+        "key": "policy_environment",
+        "label_zh": "政策环境",
+        "label_en": "Policy Environment",
+        "description": "Subsidies, contracts, regulations, export controls and lobbying.",
+    },
+    {
+        "key": "strategic_signals",
+        "label_zh": "战略信号",
+        "label_en": "Strategic Signals",
+        "description": "Hiring, capex, patents, partnerships and management statements.",
+    },
+)
+EMPIRE_STRUCTURE_SECTIONS = {
+    "legal_group": {
+        "label": "Legal group",
+        "gap": "No parent, subsidiary or legal-control relationship is loaded.",
+    },
+    "business_segments": {
+        "label": "Business segments",
+        "gap": "No business-segment relationship is loaded.",
+    },
+    "brands": {
+        "label": "Brands",
+        "gap": "No brand relationship is loaded.",
+    },
+    "products": {
+        "label": "Products",
+        "gap": "No product relationship is loaded.",
+    },
+    "facilities": {
+        "label": "Facilities",
+        "gap": "No direct facility operation or ownership relationship is loaded.",
+    },
+}
 PATH_TYPE_RELATIONSHIP_FAMILY_MAP = {
     "shortest": RELATIONSHIP_FAMILIES,
     "upstream": {"supply_chain_operations"},
@@ -481,6 +553,68 @@ class DomainRepository:
                     "focus_route": f"/v1/entities/{entity_id}",
                     "ui_route": f"/?focus=entity:{entity_id}",
                     "data_mode": freshness["data_mode"],
+                }
+            )
+
+    def get_entity_empire(
+        self,
+        *,
+        entity_id: UUID,
+        as_of: datetime | None = None,
+        profile_id: UUID | None = None,
+    ) -> dict[str, Any]:
+        with self.connect() as connection:
+            focus = self.entity_summary(connection, entity_id)
+            direct_relationships = self.corporate_structure_relationships_for_entity(
+                connection,
+                entity_id,
+                as_of=as_of,
+            )
+            adjacent_facilities = self.adjacent_facility_relationships_for_entity(
+                connection,
+                entity_id,
+                as_of=as_of,
+            )
+            structure = self.entity_empire_structure(
+                focus=focus,
+                direct_relationships=direct_relationships,
+                adjacent_facilities=adjacent_facilities,
+            )
+            return _jsonable(
+                {
+                    "as_of": as_of or _now(),
+                    "profile_id": profile_id,
+                    "focus": focus,
+                    "workspace_layers": list(EMPIRE_WORKSPACE_LAYERS),
+                    "structure": structure,
+                    "content_rules": {
+                        "commercial_empire_is_legal_control": False,
+                        "commercial_empire_label": (
+                            "Commercial empire is an ecosystem relationship view, "
+                            "not a legal-control assertion."
+                        ),
+                        "legal_control_requires": [
+                            "legal_parent",
+                            "ownership_control",
+                            "voting_right",
+                            "board_control",
+                        ],
+                        "facility_policy": (
+                            "Adjacent facilities may indicate ecosystem exposure; they do "
+                            "not imply ownership or operation by the focus entity."
+                        ),
+                    },
+                    "coverage": {
+                        "required_workspace_layer_count": len(EMPIRE_WORKSPACE_LAYERS),
+                        "required_workspace_layers_present": True,
+                        "separated_structure_types": list(EMPIRE_STRUCTURE_SECTIONS),
+                        "separates_legal_group_segment_brand_product_facility": True,
+                        "commercial_empire_control_claim": False,
+                        "direct_structure_relationship_count": len(direct_relationships),
+                        "adjacent_facility_relationship_count": len(adjacent_facilities),
+                    },
+                    "data_mode": "synthetic_fixture" if focus.get("synthetic") else "database",
+                    "fixture_notice": focus.get("fixture_notice"),
                 }
             )
 
@@ -906,6 +1040,109 @@ class DomainRepository:
         ).fetchall()
         return _jsonable(rows)
 
+    def corporate_structure_relationships_for_entity(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_id: UUID,
+        *,
+        as_of: datetime | None,
+    ) -> list[dict[str, Any]]:
+        rows = connection.execute(
+            """
+            SELECT
+              r.id, r.subject_entity_id AS subject_id, r.object_entity_id AS object_id,
+              r.relationship_type, r.relationship_family, r.status, r.confidence,
+              r.valid_from, r.valid_to, r.observed_at, r.qualifiers,
+              subject.canonical_name AS subject_name, subject.entity_type AS subject_type,
+              object.canonical_name AS object_name, object.entity_type AS object_type,
+              (
+                SELECT count(*)::int
+                FROM relationship_evidence re
+                WHERE re.relationship_id = r.id
+              ) AS evidence_count,
+              frn.fixture_notice, COALESCE(frn.synthetic, false) AS synthetic
+            FROM relationships r
+            JOIN entities subject ON subject.id = r.subject_entity_id
+            JOIN entities object ON object.id = r.object_entity_id
+            LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+            WHERE r.status NOT IN ('superseded', 'revoked')
+              AND r.relationship_family = 'corporate_structure'
+              AND (r.subject_entity_id = %(entity_id)s OR r.object_entity_id = %(entity_id)s)
+              AND (
+                %(as_of)s::timestamptz IS NULL
+                OR (
+                  (r.valid_from IS NULL OR r.valid_from <= %(as_of)s::timestamptz)
+                  AND (r.valid_to IS NULL OR r.valid_to >= %(as_of)s::timestamptz)
+                )
+              )
+            ORDER BY r.confidence DESC NULLS LAST, r.observed_at DESC, r.id
+            LIMIT 80
+            """,
+            {"entity_id": entity_id, "as_of": as_of},
+        ).fetchall()
+        return _jsonable(rows)
+
+    def adjacent_facility_relationships_for_entity(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_id: UUID,
+        *,
+        as_of: datetime | None,
+    ) -> list[dict[str, Any]]:
+        rows = connection.execute(
+            """
+            WITH first_hop AS (
+              SELECT DISTINCT
+                CASE
+                  WHEN r.subject_entity_id = %(entity_id)s THEN r.object_entity_id
+                  ELSE r.subject_entity_id
+                END AS entity_id
+              FROM relationships r
+              WHERE r.status NOT IN ('superseded', 'revoked')
+                AND (r.subject_entity_id = %(entity_id)s OR r.object_entity_id = %(entity_id)s)
+            )
+            SELECT
+              r.id, r.subject_entity_id AS subject_id, r.object_entity_id AS object_id,
+              r.relationship_type, r.relationship_family, r.status, r.confidence,
+              r.valid_from, r.valid_to, r.observed_at, r.qualifiers,
+              subject.canonical_name AS subject_name, subject.entity_type AS subject_type,
+              object.canonical_name AS object_name, object.entity_type AS object_type,
+              (
+                SELECT count(*)::int
+                FROM relationship_evidence re
+                WHERE re.relationship_id = r.id
+              ) AS evidence_count,
+              frn.fixture_notice, COALESCE(frn.synthetic, false) AS synthetic
+            FROM relationships r
+            JOIN entities subject ON subject.id = r.subject_entity_id
+            JOIN entities object ON object.id = r.object_entity_id
+            LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+            WHERE r.status NOT IN ('superseded', 'revoked')
+              AND r.relationship_family = 'corporate_structure'
+              AND r.relationship_type IN ('operates_facility', 'owns_facility')
+              AND (subject.entity_type = 'facility' OR object.entity_type = 'facility')
+              AND NOT (
+                r.subject_entity_id = %(entity_id)s
+                OR r.object_entity_id = %(entity_id)s
+              )
+              AND (
+                r.subject_entity_id IN (SELECT entity_id FROM first_hop)
+                OR r.object_entity_id IN (SELECT entity_id FROM first_hop)
+              )
+              AND (
+                %(as_of)s::timestamptz IS NULL
+                OR (
+                  (r.valid_from IS NULL OR r.valid_from <= %(as_of)s::timestamptz)
+                  AND (r.valid_to IS NULL OR r.valid_to >= %(as_of)s::timestamptz)
+                )
+              )
+            ORDER BY r.confidence DESC NULLS LAST, r.observed_at DESC, r.id
+            LIMIT 24
+            """,
+            {"entity_id": entity_id, "as_of": as_of},
+        ).fetchall()
+        return _jsonable(rows)
+
     @staticmethod
     def relationship_family_counts(relationships: list[dict[str, Any]]) -> dict[str, int]:
         counts = {family: 0 for family in sorted(RELATIONSHIP_FAMILIES)}
@@ -1107,6 +1344,162 @@ class DomainRepository:
         if prefix:
             return f"{prefix} {body}"
         return body
+
+    @staticmethod
+    def entity_empire_structure(
+        *,
+        focus: dict[str, Any],
+        direct_relationships: list[dict[str, Any]],
+        adjacent_facilities: list[dict[str, Any]],
+    ) -> dict[str, dict[str, Any]]:
+        sections = {
+            key: {
+                "label": definition["label"],
+                "items": [],
+                "data_status": "missing",
+                "data_gap": definition["gap"],
+            }
+            for key, definition in EMPIRE_STRUCTURE_SECTIONS.items()
+        }
+        sections["legal_group"]["items"].append(
+            {
+                "entity": {
+                    "id": focus["id"],
+                    "canonical_name": focus["canonical_name"],
+                    "entity_type": focus["entity_type"],
+                },
+                "relationship": {
+                    "relationship_type": "focus_entity",
+                    "relationship_family": "corporate_structure",
+                    "status": "reported",
+                },
+                "relationship_scope": "focus",
+                "relationship_direction": "current_subject",
+                "control_semantics": "Current legal entity only; no parent or subsidiary claim.",
+                "fixture_notice": focus.get("fixture_notice"),
+            }
+        )
+        for relationship in direct_relationships:
+            category = DomainRepository.structure_category(relationship)
+            if category not in sections:
+                continue
+            sections[category]["items"].append(
+                DomainRepository.structure_item(
+                    focus_id=str(focus["id"]),
+                    relationship=relationship,
+                    relationship_scope="direct_to_focus",
+                )
+            )
+        for relationship in adjacent_facilities:
+            sections["facilities"]["items"].append(
+                DomainRepository.structure_item(
+                    focus_id=str(focus["id"]),
+                    relationship=relationship,
+                    relationship_scope="adjacent_ecosystem",
+                )
+            )
+        for section in sections.values():
+            section["item_count"] = len(section["items"])
+            if section["items"]:
+                section["data_status"] = "covered"
+                section["data_gap"] = None
+        return sections
+
+    @staticmethod
+    def structure_category(relationship: dict[str, Any]) -> str:
+        relationship_type = relationship["relationship_type"]
+        related_types = {relationship["subject_type"], relationship["object_type"]}
+        if relationship_type in {"segment_of"} or "business_segment" in related_types:
+            return "business_segments"
+        if relationship_type in {"brand_of"} or "brand" in related_types:
+            return "brands"
+        if relationship_type in {"product_of"} or "product" in related_types:
+            return "products"
+        if (
+            relationship_type in {"operates_facility", "owns_facility"}
+            or "facility" in related_types
+        ):
+            return "facilities"
+        return "legal_group"
+
+    @staticmethod
+    def structure_item(
+        *,
+        focus_id: str,
+        relationship: dict[str, Any],
+        relationship_scope: str,
+    ) -> dict[str, Any]:
+        related = DomainRepository.related_structure_entity(focus_id, relationship)
+        return {
+            "entity": related,
+            "relationship": {
+                "id": relationship["id"],
+                "relationship_type": relationship["relationship_type"],
+                "relationship_family": relationship["relationship_family"],
+                "status": relationship["status"],
+                "confidence": relationship["confidence"],
+                "observed_at": relationship["observed_at"],
+                "evidence_count": relationship["evidence_count"],
+                "qualifiers": relationship["qualifiers"],
+            },
+            "relationship_scope": relationship_scope,
+            "relationship_direction": DomainRepository.structure_direction(
+                focus_id,
+                relationship,
+            ),
+            "control_semantics": DomainRepository.structure_control_semantics(
+                relationship,
+                relationship_scope,
+            ),
+            "fixture_notice": relationship["fixture_notice"],
+            "synthetic": relationship["synthetic"],
+        }
+
+    @staticmethod
+    def related_structure_entity(focus_id: str, relationship: dict[str, Any]) -> dict[str, Any]:
+        subject = {
+            "id": relationship["subject_id"],
+            "canonical_name": relationship["subject_name"],
+            "entity_type": relationship["subject_type"],
+        }
+        object_entity = {
+            "id": relationship["object_id"],
+            "canonical_name": relationship["object_name"],
+            "entity_type": relationship["object_type"],
+        }
+        if relationship["subject_id"] == focus_id:
+            return object_entity
+        if relationship["object_id"] == focus_id:
+            return subject
+        if subject["entity_type"] == "facility":
+            return subject
+        if object_entity["entity_type"] == "facility":
+            return object_entity
+        return object_entity
+
+    @staticmethod
+    def structure_direction(focus_id: str, relationship: dict[str, Any]) -> str:
+        if relationship["subject_id"] == focus_id:
+            return "outbound_from_focus"
+        if relationship["object_id"] == focus_id:
+            return "inbound_to_focus"
+        return "adjacent_to_focus_ecosystem"
+
+    @staticmethod
+    def structure_control_semantics(
+        relationship: dict[str, Any],
+        relationship_scope: str,
+    ) -> str:
+        relationship_type = relationship["relationship_type"]
+        if relationship_scope == "adjacent_ecosystem":
+            return "Adjacent ecosystem facility exposure; no focus ownership or operation claim."
+        if relationship_type == "legal_parent":
+            return "Legal parent or legal-group relationship; verify current control separately."
+        if relationship_type in {"segment_of", "brand_of", "product_of"}:
+            return "Business mapping; not a legal-control assertion."
+        if relationship_type in {"operates_facility", "owns_facility"}:
+            return "Facility operation or ownership only for the stated subject entity."
+        return "Commercial empire context; not a legal-control assertion."
 
     def cross_industry_links(
         self,

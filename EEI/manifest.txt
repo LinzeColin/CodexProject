@@ -79,6 +79,9 @@ artifacts/risk_control_mapping_t1214.csv
 artifacts/risk_control_summary_t1214.json
 artifacts/tests/a059/t500_entity_focus_dossier_api.json
 artifacts/tests/a060/t500_human_summary_dossier_api.json
+artifacts/tests/a061/t501_company_workspace_layers.json
+artifacts/tests/a062/t501_structure_type_separation.json
+artifacts/tests/a063/t501_commercial_empire_not_control.json
 artifacts/tests/a182/t1212_governance_consistency_workflow.json
 artifacts/tests/a183/t1212_p0_traceability_validator.json
 artifacts/tests/a183/t1213_requirement_function_task_test_traceability.json

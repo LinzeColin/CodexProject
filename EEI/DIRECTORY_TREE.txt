@@ -59,6 +59,12 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t500_entity_focus_dossier_api.json
 │   │   ├── a060
 │   │   │   └── t500_human_summary_dossier_api.json
+│   │   ├── a061
+│   │   │   └── t501_company_workspace_layers.json
+│   │   ├── a062
+│   │   │   └── t501_structure_type_separation.json
+│   │   ├── a063
+│   │   │   └── t501_commercial_empire_not_control.json
 │   │   ├── a182
 │   │   │   └── t1212_governance_consistency_workflow.json
 │   │   ├── a183

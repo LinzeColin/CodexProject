@@ -59,9 +59,9 @@ A057,P0,explore,Truncation and inclusion sorting are explained to the user,UI/co
 A058,P0,explore,Visual centrality is not presented as control and color is not the only encoding,Design/a11y review,DONE
 A059,P0,dossier,Every P0 seed opens a company/entity focus page,API/E2E,DONE
 A060,P0,dossier,"Human summary covers business, group, dependencies, capital, policy, signals and data gaps",Content/E2E,DONE
-A061,P0,dossier,Company workspace exposes eight required layers,E2E,NOT STARTED
-A062,P0,structure,"Corporate structure separates legal group, segment, brand, product and facility",API/UI assertions,NOT STARTED
-A063,P0,structure,Commercial empire label does not imply legal control,Content review,NOT STARTED
+A061,P0,dossier,Company workspace exposes eight required layers,E2E,DONE
+A062,P0,structure,"Corporate structure separates legal group, segment, brand, product and facility",API/UI assertions,DONE
+A063,P0,structure,Commercial empire label does not imply legal control,Content review,DONE
 A064,P0,supply_chain,Supply chain supports upstream/downstream and ordered stage view,E2E,NOT STARTED
 A065,P0,supply_chain,"Supply-chain edge shows stage, tier, materiality, substitutability, geography, time and evidence",E2E/API,NOT STARTED
 A066,P0,supply_chain,"Unknown supplier, amount, tier or capacity remains explicitly unknown",Data/UI test,NOT STARTED

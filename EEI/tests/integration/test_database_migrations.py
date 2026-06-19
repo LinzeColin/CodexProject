@@ -42,6 +42,16 @@ DOSSIER_HUMAN_SUMMARY_KEYS = {
     "signals",
     "data_gaps",
 }
+EMPIRE_WORKSPACE_LAYER_KEYS = [
+    "group_structure",
+    "business_segments",
+    "supply_chain",
+    "capital_network",
+    "ma_transactions",
+    "control_relationships",
+    "policy_environment",
+    "strategic_signals",
+]
 
 
 def run_script(*args: str) -> None:
@@ -219,6 +229,50 @@ def exercise_domain_api_and_repository_contracts() -> None:
         assert seed_dossier["id"] == seed_entity["id"]
         assert seed_dossier["coverage"]["entity_focus_page_openable"] is True
         assert set(seed_dossier["human_summary"]) >= DOSSIER_HUMAN_SUMMARY_KEYS
+
+    empire_response = client.get(f"/v1/entities/{NVIDIA_ID}/empire")
+    assert empire_response.status_code == 200
+    nvidia_empire = empire_response.json()
+    assert nvidia_empire["focus"]["id"] == NVIDIA_ID
+    assert [layer["key"] for layer in nvidia_empire["workspace_layers"]] == (
+        EMPIRE_WORKSPACE_LAYER_KEYS
+    )
+    assert nvidia_empire["coverage"]["required_workspace_layer_count"] == 8
+    assert nvidia_empire["coverage"]["required_workspace_layers_present"] is True
+    assert nvidia_empire["coverage"][
+        "separates_legal_group_segment_brand_product_facility"
+    ] is True
+    assert nvidia_empire["coverage"]["commercial_empire_control_claim"] is False
+    assert nvidia_empire["content_rules"]["commercial_empire_is_legal_control"] is False
+    assert "not a legal-control assertion" in nvidia_empire["content_rules"][
+        "commercial_empire_label"
+    ]
+
+    structure = nvidia_empire["structure"]
+    assert set(structure) >= {
+        "legal_group",
+        "business_segments",
+        "brands",
+        "products",
+        "facilities",
+    }
+    assert structure["legal_group"]["items"][0]["relationship"][
+        "relationship_type"
+    ] == "focus_entity"
+    segment_names = {
+        item["entity"]["canonical_name"] for item in structure["business_segments"]["items"]
+    }
+    assert "Accelerated Computing Segment (Synthetic)" in segment_names
+    product_names = {item["entity"]["canonical_name"] for item in structure["products"]["items"]}
+    assert "AI Accelerator Platform (Synthetic)" in product_names
+    assert structure["brands"]["data_status"] == "missing"
+    facility_item = next(
+        item
+        for item in structure["facilities"]["items"]
+        if item["entity"]["canonical_name"] == "Synthetic AI Data Center Campus"
+    )
+    assert facility_item["relationship_scope"] == "adjacent_ecosystem"
+    assert "no focus ownership or operation claim" in facility_item["control_semantics"]
 
     watchlist_response = client.post(
         "/v1/watchlists",

@@ -260,6 +260,95 @@ dd {
   color: var(--muted);
 }
 
+.workspaceLayerStrip,
+.structureMatrix {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.workspaceLayerStrip header,
+.structureMatrix header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 720;
+  text-transform: uppercase;
+}
+
+.workspaceLayerStrip header small,
+.structureMatrix header small {
+  color: #39443f;
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: none;
+}
+
+.workspaceLayerStrip div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.workspaceLayerStrip button {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fbfcfc;
+  color: #22302a;
+  font-size: 12px;
+  font-weight: 720;
+  cursor: pointer;
+}
+
+.workspaceLayerStrip button[data-layer-state="active"] {
+  border-color: #b9dbc8;
+  background: #edf8f1;
+  color: #12614f;
+}
+
+.workspaceLayerStrip button[data-layer-state="stub"] {
+  color: var(--muted);
+}
+
+.structureMatrix {
+  overflow-x: auto;
+}
+
+.structureMatrix table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  border: 1px solid var(--line);
+  background: #fbfcfc;
+  font-size: 12px;
+}
+
+.structureMatrix th,
+.structureMatrix td {
+  border-bottom: 1px solid var(--line);
+  padding: 7px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.structureMatrix th {
+  color: #39443f;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.structureMatrix td {
+  color: #22302a;
+  line-height: 1.35;
+}
+
+.structureMatrix tr[data-scope="missing"] td {
+  color: var(--muted);
+}
+
 .watchItem,
 .actionStack button {
   justify-content: space-between;

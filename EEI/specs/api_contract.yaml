@@ -493,6 +493,10 @@ paths:
       responses:
         '200':
           description: Corporate structure, segments, brands, products and facilities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityEmpireResponse'
         '404':
           description: Not found
   /v1/entities/{entityId}/supply-chain:
@@ -1584,6 +1588,153 @@ components:
         fixture_disclosure:
           type:
           - string
+          - 'null'
+    EntityEmpireResponse:
+      type: object
+      required:
+      - as_of
+      - focus
+      - workspace_layers
+      - structure
+      - content_rules
+      - coverage
+      properties:
+        as_of:
+          type: string
+          format: date-time
+        profile_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        focus:
+          $ref: '#/components/schemas/EntitySummary'
+        workspace_layers:
+          type: array
+          minItems: 8
+          items:
+            $ref: '#/components/schemas/EmpireWorkspaceLayer'
+        structure:
+          type: object
+          required:
+          - legal_group
+          - business_segments
+          - brands
+          - products
+          - facilities
+          properties:
+            legal_group:
+              $ref: '#/components/schemas/EmpireStructureSection'
+            business_segments:
+              $ref: '#/components/schemas/EmpireStructureSection'
+            brands:
+              $ref: '#/components/schemas/EmpireStructureSection'
+            products:
+              $ref: '#/components/schemas/EmpireStructureSection'
+            facilities:
+              $ref: '#/components/schemas/EmpireStructureSection'
+        content_rules:
+          type: object
+          required:
+          - commercial_empire_is_legal_control
+          - commercial_empire_label
+          - legal_control_requires
+          - facility_policy
+          properties:
+            commercial_empire_is_legal_control:
+              type: boolean
+              enum:
+              - false
+            commercial_empire_label:
+              type: string
+            legal_control_requires:
+              type: array
+              items:
+                type: string
+            facility_policy:
+              type: string
+        coverage:
+          type: object
+          additionalProperties: true
+        data_mode:
+          type: string
+        fixture_notice:
+          type:
+          - string
+          - 'null'
+    EmpireWorkspaceLayer:
+      type: object
+      required:
+      - key
+      - label_zh
+      - label_en
+      - description
+      properties:
+        key:
+          type: string
+        label_zh:
+          type: string
+        label_en:
+          type: string
+        description:
+          type: string
+    EmpireStructureSection:
+      type: object
+      required:
+      - label
+      - items
+      - data_status
+      - item_count
+      properties:
+        label:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmpireStructureItem'
+        data_status:
+          type: string
+          enum:
+          - covered
+          - missing
+        data_gap:
+          type:
+          - string
+          - 'null'
+        item_count:
+          type: integer
+          minimum: 0
+    EmpireStructureItem:
+      type: object
+      required:
+      - entity
+      - relationship
+      - relationship_scope
+      - relationship_direction
+      - control_semantics
+      properties:
+        entity:
+          $ref: '#/components/schemas/EntitySummary'
+        relationship:
+          type: object
+          additionalProperties: true
+        relationship_scope:
+          type: string
+          enum:
+          - focus
+          - direct_to_focus
+          - adjacent_ecosystem
+        relationship_direction:
+          type: string
+        control_semantics:
+          type: string
+        fixture_notice:
+          type:
+          - string
+          - 'null'
+        synthetic:
+          type:
+          - boolean
           - 'null'
     IndustrySummary:
       type: object

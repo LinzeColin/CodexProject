@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "task_id": "T501",
+  "acceptance_id": "A063",
+  "status": "DONE",
+  "evidence_type": "commercial_empire_control_semantics",
+  "content_rule": "Commercial empire is an ecosystem relationship view, not a legal-control assertion.",
+  "validated_by": [
+    "apps/api/app/domain_repository.py::get_entity_empire",
+    "tests/integration/test_database_migrations.py::exercise_domain_api_and_repository_contracts",
+    "apps/web/src/app/page.tsx data-commercial-empire-control-claim=false",
+    "tests/e2e/home.spec.ts::exposes eight company layers and separates structure object types"
+  ],
+  "assertions": [
+    "The API returns coverage.commercial_empire_control_claim=false.",
+    "The UI structure matrix returns data-commercial-empire-control-claim=false.",
+    "Adjacent facilities carry relationship_scope=adjacent_ecosystem and no focus ownership or operation claim.",
+    "Commercial empire copy explicitly distinguishes ecosystem relationship mapping from legal control."
+  ],
+  "rollback": "Revert T501 content/API/UI/test/status changes and regenerate release artifacts."
+}
