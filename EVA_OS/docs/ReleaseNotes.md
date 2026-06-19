@@ -75,13 +75,7 @@
 - 52ETF snapshot 只保存板块、指标、操作提示、刷新节奏、证据闸门和只读边界，不保存 raw HTML、cookies、登录态、行情明细、回测输入、订单或持仓修改。
 - `data/integrations/site52etf/*.json` 默认 gitignored，只保留 `.gitkeep`，避免本地页面刷新产物污染 Git。
 
-## 2026-06-16 Token ROI Reviewed Value Evidence Refresh
 
-- 新增 `scripts/tokenRoiReviewedValueRefresh.sh` 和 `src/quantlab/value/reviewed_input.py`，把 Token ROI 推进到 reviewed value evidence refresh MVP。
-- 默认真实输入路径为 `data/private/value/TokenROIReviewedValueEvidence.json`，该路径被 Git 忽略；缺少输入时返回 `EVATokenROIReviewedValueEvidenceRefreshV1 status=Blocked` 且不写入输出。
-- 新增 public-safe 模板 `data/value/TokenROIReviewedValueEvidence.example.json` 和 schema `shared/schema/token_roi_reviewed_value_evidence.schema.json`。
-- `scripts/tokenRoiLedger.sh` 新增 `--manual-entry-path`，`scripts/refreshRuntimeSummaries.sh` 新增 `--token-roi-entry-path`，可以在刷新 compact summary 时复用同一 reviewed value evidence。
-- `data/value/TokenROIManualEntries.json` 已加入 `.gitignore`，避免 UI 手工录入的真实金额和证据线索误传。
 - 安全边界不变：只读取本地 reviewed JSON，不伪造收入、节省成本、避免损失或资产复用价值，不交易、不下单、不付款、不转账。
 
 ## 2026-06-16 Consumption Guard Reviewed Input Refresh
@@ -118,7 +112,6 @@
 
 ## 2026-06-16 Runtime Summary Latest Artifact Refresh
 
-- 新增 `src/quantlab/executive/runtime_summary_refresh.py` 和 `scripts/refreshRuntimeSummaries.sh`，用于一次性刷新 Token ROI、Company CashFlow、Policy Intelligence 和 Consumption Guard 的 compact runtime summary latest 文件。
 - 新命令输出 `EVAOSRuntimeSummaryRefreshV1`，只写 runtime summary JSON，不重写完整 records、entries、opportunities、events、CSV、Markdown 或 PDF，降低交接和总控聚合的 token 压力。
 - 生成的 runtime summary `outputs` 使用 repo-relative 路径，避免把本机绝对路径固化进 public GitHub。
 - Final acceptance 现在检查四个 runtime latest artifacts 存在且 schema 正确，防止总控长期 fallback 到 full snapshot。
@@ -126,9 +119,7 @@
 
 ## 2026-06-16 Executive Command Center Runtime Summary Aggregation
 
-- Executive Command Center 现在优先读取 `EVATokenROIRuntimeSummary_latest.json`、`CompanyCashFlowRuntimeSummary_latest.json`、`PolicyIntelligenceRuntimeSummary_latest.json` 和 `ConsumptionGuardRuntimeSummary_latest.json`。
 - 总控输出新增 `runtime_summary_sources`，明确每个 value/business 子系统当前使用 `runtime_summary`、`full_snapshot` 还是 fallback build。
-- Token ROI、现金流、政策和消费的总控 scorecard / business summary / action queue 已兼容 compact runtime summary，不再需要默认读取完整 records、entries、opportunities 或 events。
 - 缺少 compact summary 时仍 fallback 到 full latest 或本地 fail-closed 构建，保持旧产物兼容和安全降级。
 - 安全边界不变：总控仍不刷新行情、不连接银行/支付/政府平台/支付宝/税务/工资/券商、不执行付款、下单或真实账户动作。
 
@@ -156,12 +147,7 @@
 - Streamlit `现金流` 页面新增 `运行摘要与证据闸门`；脚本支持 `QUANTLAB_PYTHON -> .venv -> python3` fallback，提高本地瘦身后的可运行性。
 - 安全边界不变：不连接银行、支付、工资、税务、会计、券商或交易系统，不执行付款、转账或账户动作。
 
-## 2026-06-16 Token ROI Runtime Summary
 
-- Token ROI Ledger 新增 `EVATokenROIRuntimeSummaryV1` compact 运行摘要，包含状态、记录数、已量化数、待复核金额假设、已量化收益/成本/净值、聚合 ROI 和 evidence gate。
-- `scripts/tokenRoiLedger.sh --summary-json` 可以只输出低 token 摘要，后续 agent 或总控不需要读取完整 records 才能判断台账状态。
-- `--output-dir` 生成正式台账时会同时写入 `EVATokenROIRuntimeSummary_DDMMYYYY.json` 和 `EVATokenROIRuntimeSummary_latest.json`。
-- Streamlit `Token ROI` 页面新增 `运行摘要与证据闸门`，明确 PendingReview 金额不会污染已量化汇总，且仍不自动推断收益、不付款、不下单、不连接实盘。
 
 ## 2026-06-16 Research Chart UX Controls
 
@@ -241,34 +227,23 @@
 - 现金流汇总 fail-closed：只有 `Reviewed` 且有 `evidence_link` 或 `evidence_path` 的记录才会计入余额、收入、支出、应收、应付和 Runway。
 - 本子系统不连接银行、支付、税务、工资或会计系统，不执行付款、转账或账户动作。
 
-## 2026-06-13 Token ROI Productization
 
-- 新增 Streamlit `Token ROI` 工作台入口，独立于总控驾驶舱展示价值台账、人工价值证据和正式台账生成按钮。
-- 新增人工价值证据存储：`data/value/TokenROIManualEntries.json`。
 - 支持录入任务目标、证据链接、Token 估算、AI 成本、人工时间成本、新增收入、节省成本、避免损失、资产复用价值、节省时间、复用次数和复核备注。
-- 只有 `review_status=Reviewed` 且存在真实金额字段时，记录才会进入 `Quantified` 和财务汇总；`PendingReview` 不污染 Token ROI。
-- 侧栏使用指导新增 Token ROI 的意义、目的、操作路径、检查点、输出和风险边界。
 
 ## 2026-06-07 Report Decision Support Index
 
 - 新增报告决策支持索引：`src/quantlab/reports/decision_support.py`。
 - 新增命令：`scripts/reportDecisionSupport.sh --output-dir data/reportDecision`。
 - 报告中心新增 `证据索引` 页签，用于按 RunMetadata 和 Word 报告判断报告是否可继续研究、只能观察、需要更多证据或不要使用。
-- 输出 JSON、CSV、Markdown、PDF 和 latest 指针文件；产物可进入 Token ROI Ledger。
 - 该索引只读，不修改原报告、不刷新行情、不连接实盘。
 
 ## 2026-06-07 Executive Command Center MVP
 
 - 新增 EVA_OS 第一入口 `总控驾驶舱`，默认打开后先看系统是否可继续研究。
 - 新增 `src/quantlab/executive/command_center.py` 和 `scripts/commandCenter.sh --output-dir data/commandCenter`。
-- 总控聚合 Daily Readiness、Integration Audit、Data Trust、Token ROI、最新报告和行动队列。
-- 输出 JSON、Markdown、PDF 和 latest 指针文件；产物可被 Token ROI Ledger 登记。
 - 总控只读聚合证据，不刷新行情、不启动 OpenD、不修改持仓、不连接实盘。
 
-## 2026-06-07 Token ROI Ledger MVP
 
-- 新增 EVA_OS Value Layer 最小闭环：`src/quantlab/value/token_roi.py`。
-- 新增命令：`scripts/tokenRoiLedger.sh --output-dir data/value`。
 - 台账会登记 `data/systemAudit` 和报告目录中的审计、报告、RunMetadata、数据质量、交叉校验和实验产物。
 - 金额字段默认保持 `0.00`，`roi_score=null`，`value_status=Unquantified`；没有真实金额输入时不伪造收益。
 - 输出 JSON、CSV、Markdown、PDF 和 `latest` 指针文件。
@@ -277,7 +252,6 @@
 
 - 主系统入口更名为 `EVA_OS.app`，应用显示名为 `EVA_OS`。
 - QuantLab 保留为 EVA_OS 内的量化研究与回测主入口。
-- 新增 `docs/EVA_OS.md`，记录总控驾驶舱、Token ROI、现金流、量化、政策、消费、AI 行研、赛事和 CodexForge 的子系统边界。
 - 健康检查和最终验收脚本同步检查新入口，并要求旧 `量化回测系统.app` 已移除，避免重复入口。
 
 ## Current Build
@@ -616,7 +590,6 @@ The system is research-only, does not connect to brokers, and does not submit re
 
 执行结果分为 `Pass`、`Review`、`Blocked` 和 `Error`。如果当前真实数据源不足两个，系统会输出 `Blocked`，不会伪造多源校验通过。
 
-执行记录已纳入 Token ROI Ledger 扫描范围，仍保持所有财务字段未量化。
 
 ## 2026-06-13 热点工作台快速预览与 52ETF 公开参考
 

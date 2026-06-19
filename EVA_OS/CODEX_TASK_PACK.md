@@ -54,9 +54,7 @@ Daily Readiness now reports `ReadyForResearch` for the current local state and w
 
 EVA_OS identity is now the user-facing master-system entry. The generated macOS app bundle is `EVA_OS.app`, the display name is `EVA_OS`, and QuantLab remains the embedded quantitative research subsystem.
 
-Token ROI Ledger MVP is now implemented as the EVA_OS Value Layer entry. It registers local system audit, readiness, report, RunMetadata, data quality, cross-validation, and experiment artifacts into `data/value/EVATokenROILedger_*` JSON/CSV/Markdown/PDF outputs. It explicitly keeps financial fields at 0.00 and `roi_score=null` until real measured value inputs exist.
 
-Executive Command Center MVP is now implemented as the EVA_OS first daily entry. It aggregates Daily Readiness, Integration Audit, Data Trust, Token ROI Ledger, the latest report, risk gates, evidence sources, and an action queue into `data/commandCenter/EVACommandCenter_*` JSON/Markdown/PDF outputs.
 
 Report Decision Support Index is now implemented as the Report Layer decision-readiness audit. It scans RunMetadata and linked Word reports, classifies each report as `ContinueResearch`, `WatchOnly`, `NeedsMoreEvidence`, or `DoNotUse`, and writes `data/reportDecision/ReportDecisionSupportIndex_*` JSON/CSV/Markdown/PDF outputs.
 

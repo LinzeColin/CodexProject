@@ -47,7 +47,6 @@ scripts/auditResearchBusInterop.sh --json
 
 ## 下一步开发优先级
 
-1. 强化 ResearchBus schema 变更流程和跨系统字段兼容。
-2. 把报告验证队列与 Decision Quality Score 更紧密联动。
-3. 为总控驾驶舱增加更清晰的“统一下一步”和 blocker 解释。
-4. 继续把候选研究结论分为 ContinueResearch、WatchOnly、NeedsMoreEvidence、DoNotUse。
+2. PFI-003：目录、namespace、脚本、env var、app identity 和 artifact prefix 迁移到 PFI。
+3. PFI-004：新 PFI Web Shell、6 个工作区、全局上下文、任务中心和证据抽屉。
+4. 强化 ResearchBus schema 变更流程和跨系统字段兼容。

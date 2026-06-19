@@ -26,7 +26,6 @@ def test_command_center_reports_ready_when_core_evidence_is_closed(tmp_path: Pat
         report_root=tmp_path / "reports",
         daily_readiness_payload=_daily("ReadyForResearch"),
         integration_payload=_integration("Pass"),
-        token_roi_payload=_token_roi(record_count=8, unquantified=8),
         cashflow_payload=_cashflow("Stable"),
         policy_payload=_policy("Observe"),
         consumption_payload=_consumption("Stable"),
@@ -38,10 +37,9 @@ def test_command_center_reports_ready_when_core_evidence_is_closed(tmp_path: Pat
     assert payload["subsystem"] == "Executive Command Center"
     assert payload["command_status"] == "ReadyForResearch"
     assert payload["latest_report"]["artifact_type"] == "Backtest Word Report"
-    assert any(row["metric"] == "Token ROI Ledger" for row in payload["scorecards"])
     assert any(row["metric"] == "Company CashFlow Command" for row in payload["scorecards"])
     assert any(row["source"] == "Company CashFlow Command" for row in payload["evidence_sources"])
-    assert any(row["source"] == "Token ROI Ledger" for row in payload["action_queue"])
+    assert all("Value" not in row["owner"] for row in payload["action_queue"])
     assert payload["cashflow_summary"]["cashflow_status"] == "Stable"
     assert payload["policy_summary"]["policy_status"] == "Observe"
     assert payload["consumption_summary"]["guard_status"] == "Stable"
@@ -55,7 +53,6 @@ def test_command_center_downgrades_when_report_or_gate_is_missing(tmp_path: Path
         report_root=tmp_path / "reports",
         daily_readiness_payload=_daily("NeedsReview", gate_status="Review"),
         integration_payload=_integration("Review", item_status="Review"),
-        token_roi_payload=_token_roi(record_count=0, unquantified=0),
         report_artifacts=pd.DataFrame(),
     )
 
@@ -83,7 +80,6 @@ def test_command_center_downgrades_when_business_subsystem_needs_review(tmp_path
         report_root=tmp_path / "reports",
         daily_readiness_payload=_daily("ReadyForResearch"),
         integration_payload=_integration("Pass"),
-        token_roi_payload=_token_roi(record_count=8, unquantified=0),
         cashflow_payload=_cashflow("MissingBalance"),
         policy_payload=_policy("Observe"),
         consumption_payload=_consumption("Stable"),
@@ -104,7 +100,6 @@ def test_write_command_center_outputs_json_markdown_pdf_and_latest(tmp_path: Pat
         output_dir=output_dir,
         daily_readiness_payload=_daily("NeedsReview", gate_status="Review"),
         integration_payload=_integration("Review", item_status="Review"),
-        token_roi_payload=_token_roi(record_count=0, unquantified=0),
         report_artifacts=pd.DataFrame(),
     )
 
@@ -133,7 +128,6 @@ def test_command_center_markdown_contains_key_tables(tmp_path: Path) -> None:
         report_root=tmp_path / "reports",
         daily_readiness_payload=_daily("ReadyForResearch"),
         integration_payload=_integration("Pass"),
-        token_roi_payload=_token_roi(record_count=3, unquantified=3),
         cashflow_payload=_cashflow("Stable"),
         policy_payload=_policy("Observe"),
         consumption_payload=_consumption("Stable"),
@@ -154,27 +148,11 @@ def test_command_center_markdown_contains_key_tables(tmp_path: Path) -> None:
     assert "## Scorecards" in markdown
     assert "## Risk Gates" in markdown
     assert "## Action Queue" in markdown
-    assert "## Token ROI Summary" in markdown
     assert "## Runtime Summary Sources" in markdown
     assert "## Business Systems Summary" in markdown
 
 
 def test_command_center_prefers_compact_runtime_summaries_over_full_latest(tmp_path: Path) -> None:
-    _write_json(
-        tmp_path / "data" / "value" / "EVATokenROIRuntimeSummary_latest.json",
-        {
-            "schema": "EVATokenROIRuntimeSummaryV1",
-            "record_count": 12,
-            "quantified_records": 3,
-            "unquantified_records": 9,
-            "status": "NeedsReview",
-            "top_actions": [{"priority": "P2", "status": "Open", "action": "补价值证据。", "source": "Token ROI"}],
-        },
-    )
-    _write_json(
-        tmp_path / "data" / "value" / "EVATokenROILedger_latest.json",
-        {"schema": "EVATokenROILedgerV1", "record_count": 0, "summary": {"quantified_records": 0, "unquantified_records": 0}},
-    )
     _write_json(
         tmp_path / "data" / "cashflow" / "CompanyCashFlowRuntimeSummary_latest.json",
         {
@@ -252,13 +230,11 @@ def test_command_center_prefers_compact_runtime_summaries_over_full_latest(tmp_p
     )
 
     assert payload["command_status"] == "ReadyForResearch"
-    assert payload["token_roi_summary"]["record_count"] == 12
     assert payload["cashflow_summary"]["latest_balance"] == 12345.0
     assert payload["policy_summary"]["opportunity_count"] == 2
     assert payload["consumption_summary"]["counted_spend"] == 88.0
     assert all(row["mode"] == "runtime_summary" for row in payload["runtime_summary_sources"])
     schemas = {row["source"]: row["schema"] for row in payload["evidence_sources"]}
-    assert schemas["Token ROI Ledger"] == "EVATokenROIRuntimeSummaryV1"
     assert schemas["Company CashFlow Command"] == "EVAOSCompanyCashFlowRuntimeSummaryV1"
     assert schemas["Policy Intelligence Radar"] == "EVAOSPolicyIntelligenceRuntimeSummaryV1"
     assert schemas["Consumption Guard"] == "EVAOSConsumptionGuardRuntimeSummaryV1"
@@ -292,27 +268,6 @@ def _integration(status: str, *, item_status: str = "Pass") -> dict:
             {"layer": "ResearchBusInterop", "status": item_status, "summary": "Interop status.", "next_action": "Keep sync."},
         ],
     }
-
-
-def _token_roi(*, record_count: int, unquantified: int) -> dict:
-    return {
-        "schema": "EVATokenROILedgerV1",
-        "record_count": record_count,
-        "summary": {
-            "quantified_records": 0,
-            "unquantified_records": unquantified,
-            "financial_totals": {
-                "ai_cost": 0.0,
-                "human_time_cost": 0.0,
-                "revenue_generated": 0.0,
-                "cost_saved": 0.0,
-                "loss_avoided": 0.0,
-                "asset_reuse_value": 0.0,
-            },
-        },
-        "records": [],
-    }
-
 
 def _cashflow(status: str) -> dict:
     latest_balance = 10000.0 if status != "MissingBalance" else None

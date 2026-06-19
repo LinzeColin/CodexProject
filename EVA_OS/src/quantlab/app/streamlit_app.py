@@ -13,10 +13,12 @@ from urllib.parse import urlparse
 
 import pandas as pd
 
+os.environ.setdefault("PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION", "python")
+
 try:
     import streamlit as st
     import streamlit.components.v1 as components
-except ModuleNotFoundError:  # pragma: no cover - enables logic-level imports without optional UI deps
+except (ModuleNotFoundError, ImportError, TypeError):  # pragma: no cover - enables logic-level imports without optional UI deps
     class _MissingStreamlit:
         def cache_data(self, *decorator_args, **decorator_kwargs):
             if decorator_args and callable(decorator_args[0]) and len(decorator_args) == 1 and not decorator_kwargs:
@@ -234,14 +236,6 @@ from quantlab.reports.catalog import (
     strategy_run_summary_frame,
 )
 from quantlab.risk import evaluate_decision_quality, evaluate_research_risk_gates
-from quantlab.value import (
-    append_manual_token_roi_entry,
-    build_token_roi_ledger,
-    build_token_roi_runtime_summary,
-    create_manual_token_roi_entry,
-    load_manual_token_roi_entries,
-    write_token_roi_ledger,
-)
 from quantlab.strategies import (
     AlipayStrategy,
     AlipayEnhancedStrategy,
@@ -319,7 +313,6 @@ SCAN_DATA_OPTIONS = [option for option in DATA_OPTIONS if option != "CSV"]
 
 VIEW_OPTIONS = {
     "command": "总控驾驶舱",
-    "token_roi": "Token ROI",
     "cashflow": "现金流",
     "policy": "政策雷达",
     "consumption": "消费守卫",
@@ -398,7 +391,6 @@ TERM_HELP = {
     "参数网格": "每一行用 参数名=值1,值2,值3。系统会组合所有参数值逐一回测，组合太多会变慢。",
     "Train-Test 验证": "先用训练期挑参数，再在测试期检验同一参数是否延续，帮助识别过拟合。",
     "Walk-Forward 验证": "用多个滚动训练/测试窗口重复检验参数，观察参数是否在不同市场阶段仍然有效。",
-    "Token ROI": "把 AI 运行消耗、人工成本、产出证据和真实价值放到同一张台账里复核，避免只看 token 消耗不看回报。",
     "人工价值录入": "由用户手工登记真实收入、节省成本、避免损失、资产复用价值和证据链接；系统不会自动编造金额。",
     "复核状态": "PendingReview 表示待复核，Reviewed 表示可纳入已量化统计，Rejected 表示证据不足或口径不成立。",
     "价值状态": "只有已复核且存在真实金额字段的记录才会成为 Quantified；其他记录只保留为待复核证据。",
@@ -872,8 +864,6 @@ def main() -> None:
 
     if selected_view == "command":
         executive_command_center_view()
-    elif selected_view == "token_roi":
-        token_roi_view()
     elif selected_view == "cashflow":
         cashflow_view()
     elif selected_view == "policy":
@@ -1081,7 +1071,7 @@ def _view_key_from_target(target_en: str) -> str:
 
 def executive_command_center_view() -> None:
     st.subheader("总控驾驶舱")
-    st.caption("聚合就绪检查、总集成审计、Token ROI、现金流、政策、消费、最新报告和行动队列。仅用于研究管理，不连接实盘。")
+    st.caption("聚合就绪检查、总集成审计、现金流、政策、消费、最新报告和行动队列。仅用于研究管理，不连接实盘。")
     payload = build_command_center(project_root=ROOT, report_root=REPORT_ROOT_DIR)
     status = str(payload.get("command_status", "NeedsReview"))
     status_label = {
@@ -1090,7 +1080,6 @@ def executive_command_center_view() -> None:
         "Blocked": "阻断",
     }.get(status, status)
     action_count = len(payload.get("action_queue", []))
-    token_summary = payload.get("token_roi_summary", {})
     latest_report = payload.get("latest_report", {})
     business_summary = payload.get("business_system_summary", [])
     business_review_count = sum(1 for row in business_summary if row.get("status") != "Pass")
@@ -1098,8 +1087,8 @@ def executive_command_center_view() -> None:
     metric_cols = st.columns(5)
     metric_cols[0].metric("总控状态", status_label)
     metric_cols[1].metric("待处理事项", action_count)
-    metric_cols[2].metric("Token ROI 记录", int(token_summary.get("record_count", 0) or 0))
-    metric_cols[3].metric("子系统复核", business_review_count)
+    metric_cols[2].metric("子系统复核", business_review_count)
+    metric_cols[3].metric("证据来源", len(payload.get("evidence_sources", [])))
     metric_cols[4].metric("最新报告", latest_report.get("name") or "缺失")
 
     st.info(str(payload.get("status_reason", "")))
@@ -1156,130 +1145,6 @@ def render_command_center_action_router(payload: dict) -> None:
             column.link_button(f"打开{row.get('入口', '')}", str(row.get("链接", "")), use_container_width=True)
         st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
     st.caption(str(router.get("safety_boundary", "")))
-
-
-def token_roi_view() -> None:
-    st.subheader("Token ROI")
-    st.caption("登记真实可复核的价值证据。未复核或无证据的金额不会计入已量化 ROI。")
-    ledger = build_token_roi_ledger(project_root=ROOT, report_root=REPORT_ROOT_DIR)
-    runtime_summary = ledger.get("runtime_summary") or build_token_roi_runtime_summary(ledger)
-    summary = ledger.get("summary", {})
-    totals = summary.get("financial_totals", {})
-    runtime_totals = runtime_summary.get("financial_totals", {})
-
-    metric_cols = st.columns(5)
-    metric_cols[0].metric("台账记录", int(ledger.get("record_count", 0) or 0))
-    metric_cols[1].metric("已量化", int(summary.get("quantified_records", 0) or 0))
-    metric_cols[2].metric("未量化", int(summary.get("unquantified_records", 0) or 0))
-    metric_cols[3].metric("确认收益/节省", f"${float(totals.get('revenue_generated', 0.0) or 0.0) + float(totals.get('cost_saved', 0.0) or 0.0):,.2f}")
-    metric_cols[4].metric("确认AI+人工成本", f"${float(totals.get('ai_cost', 0.0) or 0.0) + float(totals.get('human_time_cost', 0.0) or 0.0):,.2f}")
-
-    runtime_cols = st.columns(5)
-    runtime_cols[0].metric("运行状态", str(runtime_summary.get("status", "Unknown")))
-    runtime_cols[1].metric("净价值", f"${float(runtime_totals.get('net_value', 0.0) or 0.0):,.2f}")
-    runtime_cols[2].metric("聚合ROI", _roi_label(runtime_totals.get("aggregate_roi_score")))
-    runtime_cols[3].metric("待复核金额假设", int(runtime_summary.get("pending_financial_hypothesis_count", 0) or 0))
-    runtime_cols[4].metric("Token估算", int(runtime_summary.get("manual_input_totals", {}).get("token_estimate_total", 0) or 0))
-
-    with st.expander("运行摘要与证据闸门", expanded=True):
-        st.caption(str(runtime_summary.get("token_policy", "")))
-        gate_frame = pd.DataFrame(runtime_summary.get("evidence_gate", []))
-        if gate_frame.empty:
-            st.info("暂无 Token ROI 运行摘要。")
-        else:
-            st.dataframe(gate_frame, use_container_width=True, hide_index=True)
-        st.caption(str(runtime_summary.get("safety_boundary", "")))
-
-    with st.expander("公式与边界", expanded=True):
-        st.code(str(ledger.get("formula", "")), language="text")
-        st.markdown(
-            "- 只有 `review_status=Reviewed` 且存在真实金额字段时，记录才会进入已量化统计。\n"
-            "- `PendingReview` 可先保存证据和估算，但不会污染汇总金额。\n"
-            "- 页面只做价值复核，不连接实盘、不下单、不付款。"
-        )
-
-    st.markdown("#### 人工价值录入")
-    with st.form("token_roi_manual_entry"):
-        date_col, subsystem_col, status_col = st.columns([1, 1, 1])
-        run_date = date_col.date_input("运行日期")
-        subsystem = subsystem_col.text_input("子系统", value="EVA_OS")
-        review_status = status_col.selectbox("复核状态", ["PendingReview", "Reviewed", "Rejected"], index=0)
-        task_goal = st.text_input("任务目标", placeholder="例如：把热点分析按钮耗时降到可接受范围")
-        title = st.text_input("证据标题", placeholder="可留空，默认使用任务目标")
-        value_contribution = st.selectbox(
-            "价值贡献",
-            ["Decision Support", "System Reliability", "Data Credibility", "Validation Efficiency", "Traceability", "Reusable Asset"],
-            index=0,
-        )
-        evidence_link = st.text_input("证据链接或说明", placeholder="报告路径、Notion 链接、截图说明或可复核出处")
-        output_path = st.text_input("本地产物路径", placeholder="可选：关联的报告、JSON、CSV、PDF 或源码路径")
-        amount_cols = st.columns(4)
-        revenue_generated = amount_cols[0].number_input("新增收入", min_value=0.0, value=0.0, step=10.0)
-        cost_saved = amount_cols[1].number_input("节省成本", min_value=0.0, value=0.0, step=10.0)
-        loss_avoided = amount_cols[2].number_input("避免损失", min_value=0.0, value=0.0, step=10.0)
-        asset_reuse_value = amount_cols[3].number_input("资产复用价值", min_value=0.0, value=0.0, step=10.0)
-        cost_cols = st.columns(4)
-        ai_cost = cost_cols[0].number_input("AI成本", min_value=0.0, value=0.0, step=1.0)
-        human_time_cost = cost_cols[1].number_input("人工时间成本", min_value=0.0, value=0.0, step=10.0)
-        token_estimate = cost_cols[2].number_input("Token估算", min_value=0, value=0, step=1000)
-        time_saved_hours = cost_cols[3].number_input("节省时间小时", min_value=0.0, value=0.0, step=0.25)
-        reuse_count = st.number_input("复用次数", min_value=0, value=0, step=1)
-        notes = st.text_area("复核备注", placeholder="记录口径、假设、证据缺口或为什么暂不量化")
-        submitted = st.form_submit_button("保存价值证据", type="primary")
-        if submitted:
-            try:
-                entry = create_manual_token_roi_entry(
-                    run_date=run_date.isoformat(),
-                    task_goal=task_goal,
-                    title=title,
-                    subsystem=subsystem,
-                    value_contribution=value_contribution,
-                    evidence_link=evidence_link,
-                    output_path=output_path,
-                    token_estimate=int(token_estimate),
-                    ai_cost=float(ai_cost),
-                    human_time_cost=float(human_time_cost),
-                    revenue_generated=float(revenue_generated),
-                    cost_saved=float(cost_saved),
-                    loss_avoided=float(loss_avoided),
-                    asset_reuse_value=float(asset_reuse_value),
-                    time_saved_hours=float(time_saved_hours),
-                    reuse_count=int(reuse_count),
-                    review_status=review_status,
-                    notes=notes,
-                )
-            except ValueError as exc:
-                st.error(str(exc))
-            else:
-                append_manual_token_roi_entry(entry, ROOT / "data" / "value" / "TokenROIManualEntries.json")
-                st.success("已保存人工价值证据。")
-                st.json({"roi_id": entry["roi_id"], "value_status": entry["value_status"], "roi_score": entry["roi_score"]}, expanded=False)
-
-    action_cols = st.columns([1, 2])
-    if action_cols[0].button("生成 Token ROI 台账", type="primary"):
-        saved = write_token_roi_ledger(project_root=ROOT, report_root=REPORT_ROOT_DIR, output_dir=ROOT / "data" / "value")
-        action_cols[1].success("已生成 Token ROI 台账。")
-        action_cols[1].json(saved.get("outputs", {}), expanded=False)
-
-    manual_entries = load_manual_token_roi_entries(ROOT / "data" / "value" / "TokenROIManualEntries.json")
-    st.markdown("#### 人工价值证据")
-    if manual_entries:
-        manual_frame = pd.DataFrame(manual_entries)
-        st.dataframe(
-            manual_frame[["run_date", "title", "review_status", "value_status", "cost_saved", "revenue_generated", "ai_cost", "human_time_cost", "roi_score", "next_action"]],
-            use_container_width=True,
-            hide_index=True,
-        )
-    else:
-        st.info("暂无人工价值证据。先保存 PendingReview 记录，再在证据充分后改为 Reviewed。")
-
-    st.markdown("#### 最新台账记录")
-    records = pd.DataFrame(ledger.get("records", []))
-    if records.empty:
-        st.warning("当前没有可登记产物。")
-    else:
-        columns = ["record_type", "artifact_type", "title", "value_contribution", "review_status", "value_status", "source_path", "next_action"]
-        st.dataframe(records[[column for column in columns if column in records.columns]], use_container_width=True, hide_index=True)
 
 
 def _money_label(value: object) -> str:

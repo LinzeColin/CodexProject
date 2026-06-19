@@ -11,7 +11,6 @@
 | Daily Readiness | 判断日常就绪状态、核心门禁和行动项。 |
 | Integration Audit | 判断 Data Trust、Entity、Workflow、Report Evidence、ResearchBus 和禁止实盘边界是否闭合。 |
 | Data Trust Audit | 判断本地证据链是否有待复核或拒绝项。 |
-| Token ROI Runtime Summary | 优先读取 compact 价值运行摘要，判断系统产出是否进入价值台账且没有伪造金额。 |
 | Company CashFlow Runtime Summary | 优先读取 compact 现金流运行摘要，汇总余额、净现金流、runway、证据缺口和行动项。 |
 | Policy Intelligence Runtime Summary | 优先读取 compact 政策运行摘要，汇总政策机会、来源权威、证据缺口和行动项。 |
 | Consumption Guard Runtime Summary | 优先读取 compact 消费运行摘要，汇总支出、冲动风险、固定成本、可投资现金流压力和止血行动项。 |
@@ -25,7 +24,6 @@
 | `NeedsReview` | 有证据缺口或报告缺失。 | 先处理行动队列，再使用研究结论。 |
 | `Blocked` | 有失败或阻断项。 | 停止使用下游结论，修复 P0 后复跑。 |
 
-总控优先读取 `EVATokenROIRuntimeSummary_latest.json`、`CompanyCashFlowRuntimeSummary_latest.json`、`PolicyIntelligenceRuntimeSummary_latest.json` 和 `ConsumptionGuardRuntimeSummary_latest.json`。如果 compact summary 不存在，才 fallback 到 full latest 快照或本地 fail-closed 构建。
 
 需要刷新这些低 token 状态面时，先运行：
 
@@ -65,20 +63,6 @@ data/commandCenter/EVACommandCenter_DDMMYYYY.pdf
 data/commandCenter/EVACommandCenter_latest.json
 data/commandCenter/EVACommandCenter_latest.md
 data/commandCenter/EVACommandCenter_latest.pdf
-```
-
-生成后可运行：
-
-```bash
-$EVA_OS_HOME/scripts/tokenRoiLedger.sh --output-dir data/value
-```
-
-这样总控报告会进入 Token ROI Ledger。
-
-如需把 reviewed Token ROI value evidence 同步到总控的低 token latest 摘要：
-
-```bash
-$EVA_OS_HOME/scripts/refreshRuntimeSummaries.sh --token-roi-entry-path data/private/value/TokenROIReviewedValueEvidence.json
 ```
 
 ## Risk Boundary

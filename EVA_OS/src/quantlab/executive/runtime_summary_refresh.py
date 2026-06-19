@@ -10,7 +10,6 @@ from quantlab.config import PROJECT_ROOT, REPORT_ROOT_DIR
 from quantlab.consumption import build_consumption_guard
 from quantlab.policy import build_policy_radar
 from quantlab.storage import atomic_write_json
-from quantlab.value import build_token_roi_ledger
 
 
 @dataclass(frozen=True)
@@ -31,33 +30,17 @@ def refresh_runtime_summary_latest(
     artifact_limit: int = 300,
     lookback_days: int = 30,
     monthly_investable_budget: float = 0.0,
-    token_roi_entry_path: Path | str | None = None,
     cashflow_entry_path: Path | str | None = None,
     policy_entry_path: Path | str | None = None,
     consumption_event_path: Path | str | None = None,
 ) -> dict[str, Any]:
     root = Path(project_root).expanduser()
-    reports = Path(report_root).expanduser()
-    token_roi_input = Path(token_roi_entry_path).expanduser() if token_roi_entry_path else None
+    Path(report_root).expanduser()
     cashflow_input = Path(cashflow_entry_path).expanduser() if cashflow_entry_path else None
     policy_input = Path(policy_entry_path).expanduser() if policy_entry_path else None
     consumption_input = Path(consumption_event_path).expanduser() if consumption_event_path else None
     snapshot_date = _clean_date(as_of or date.today().isoformat())
     targets = [
-        RuntimeSummaryTarget(
-            subsystem="Token ROI",
-            folder="value",
-            stem="EVATokenROIRuntimeSummary",
-            latest_name="EVATokenROIRuntimeSummary_latest.json",
-            expected_schema="EVATokenROIRuntimeSummaryV1",
-            builder=lambda: build_token_roi_ledger(
-                as_of=snapshot_date,
-                project_root=root,
-                report_root=reports,
-                manual_entry_path=token_roi_input,
-                artifact_limit=artifact_limit,
-            ),
-        ),
         RuntimeSummaryTarget(
             subsystem="Company CashFlow Command",
             folder="cashflow",
@@ -110,7 +93,7 @@ def refresh_runtime_summary_latest(
         "summary_count": len(rows),
         "runtime_summary_only": True,
         "public_upload_safety": (
-            "Writes compact runtime summaries only; no full records, entries, opportunities, events, "
+            "Writes compact runtime summaries only; no full entries, opportunities, events, "
             "private holdings, raw imports, account credentials, or external execution state."
         ),
         "outputs": rows,

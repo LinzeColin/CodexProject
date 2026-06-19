@@ -36,14 +36,13 @@ class EvaFoundationLayer:
 
 EVA_SUBSYSTEMS: tuple[EvaSubsystem, ...] = (
     EvaSubsystem(1, "executive_command_center", "Executive Command Center", "总控驾驶舱", "research_bus", "weekly_command_report"),
-    EvaSubsystem(2, "token_roi_ledger", "Token ROI Ledger", "Token经济转化台账", "research_bus", "token_roi_summary"),
-    EvaSubsystem(3, "company_cashflow_command", "Company CashFlow Command", "公司经营现金流系统", "research_bus", "weekly_cashflow_report"),
-    EvaSubsystem(4, "quantlab", "QuantLab", "量化研究与回测系统", "single", "backtest_report"),
-    EvaSubsystem(5, "policy_intelligence_radar", "Policy Intelligence Radar", "政策机会情报系统", "industry", "policy_brief"),
-    EvaSubsystem(6, "consumption_guard", "Consumption Guard", "个人消费止血系统", "profile", "monthly_guard_report"),
-    EvaSubsystem(7, "ai_research_engine", "AI Research Engine", "AI行业研究系统", "industry", "ai_research_weekly"),
-    EvaSubsystem(8, "sports_market_lab", "Sports Market Lab", "赛事市场分析系统", "research_bus", "calibration_report"),
-    EvaSubsystem(9, "codexforge_factory", "CodexForge Factory", "Codex工程交付工厂", "research_bus", "release_package"),
+    EvaSubsystem(2, "company_cashflow_command", "Company CashFlow Command", "公司经营现金流系统", "research_bus", "weekly_cashflow_report"),
+    EvaSubsystem(3, "quantlab", "QuantLab", "量化研究与回测系统", "single", "backtest_report"),
+    EvaSubsystem(4, "policy_intelligence_radar", "Policy Intelligence Radar", "政策机会情报系统", "industry", "policy_brief"),
+    EvaSubsystem(5, "consumption_guard", "Consumption Guard", "个人消费止血系统", "profile", "monthly_guard_report"),
+    EvaSubsystem(6, "ai_research_engine", "AI Research Engine", "AI行业研究系统", "industry", "ai_research_weekly"),
+    EvaSubsystem(7, "sports_market_lab", "Sports Market Lab", "赛事市场分析系统", "research_bus", "calibration_report"),
+    EvaSubsystem(8, "codexforge_factory", "CodexForge Factory", "Codex工程交付工厂", "research_bus", "release_package"),
 )
 
 EVA_FOUNDATION_LAYERS: tuple[EvaFoundationLayer, ...] = (
@@ -51,7 +50,7 @@ EVA_FOUNDATION_LAYERS: tuple[EvaFoundationLayer, ...] = (
     EvaFoundationLayer("data", "Data Layer", "数据层", "所有数据必须记录来源、时间、质量状态和限制条件。"),
     EvaFoundationLayer("decision", "Decision Layer", "决策层", "所有结论必须经过风控层并降级不足证据。"),
     EvaFoundationLayer("engineering", "Engineering Layer", "工程层", "所有系统必须经过 Codex 工程层和可复跑验收。"),
-    EvaFoundationLayer("value", "Value Layer", "价值层", "所有产出必须进入 Token ROI 台账。"),
+    EvaFoundationLayer("review", "Review Layer", "复核层", "所有行动建议必须进入人工复核队列。"),
 )
 
 
@@ -92,6 +91,6 @@ def eva_manifest() -> dict[str, object]:
             "所有输入必须进入证据层。",
             "所有结论必须经过风控层。",
             "所有系统必须经过 Codex 工程层。",
-            "所有产出必须进入 Token ROI 台账。",
+            "所有行动建议必须进入人工复核队列。",
         ],
     }

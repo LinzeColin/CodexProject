@@ -23,7 +23,7 @@ ensure_test_deps() {
 }
 
 echo "Checking shell scripts..."
-zsh -n StartQuantLab.command StopQuantLab.command scripts/quantlabRuntime.sh scripts/startQuantLab.sh scripts/stopQuantLab.sh scripts/installMacAppLaunchers.sh scripts/statusQuantLab.sh scripts/verifyQuantLab.sh scripts/finalAcceptanceCheck.sh scripts/createSampleReport.sh scripts/setupEnv.sh scripts/validateRealData.sh scripts/validateCrossSource.sh scripts/checkMoomoo.sh scripts/dailyCheck.sh scripts/runTests.sh scripts/cleanCache.sh scripts/cleanReportJunk.sh scripts/openReports.sh scripts/auditQuantLabIntegration.sh scripts/tokenRoiLedger.sh scripts/commandCenter.sh scripts/reportDecisionSupport.sh scripts/reportGapTasks.sh scripts/validationPriorityPlan.sh scripts/runValidationTask.sh scripts/vectorizedResearch.sh scripts/hotspotRuntimeSummary.sh
+zsh -n StartQuantLab.command StopQuantLab.command scripts/quantlabRuntime.sh scripts/startQuantLab.sh scripts/stopQuantLab.sh scripts/installMacAppLaunchers.sh scripts/statusQuantLab.sh scripts/verifyQuantLab.sh scripts/finalAcceptanceCheck.sh scripts/createSampleReport.sh scripts/setupEnv.sh scripts/validateRealData.sh scripts/validateCrossSource.sh scripts/checkMoomoo.sh scripts/dailyCheck.sh scripts/runTests.sh scripts/cleanCache.sh scripts/cleanReportJunk.sh scripts/openReports.sh scripts/auditQuantLabIntegration.sh scripts/commandCenter.sh scripts/reportDecisionSupport.sh scripts/reportGapTasks.sh scripts/validationPriorityPlan.sh scripts/runValidationTask.sh scripts/vectorizedResearch.sh scripts/hotspotRuntimeSummary.sh
 
 echo "Checking Python syntax..."
 "$PYTHON_BIN" -m py_compile \
@@ -71,9 +71,7 @@ echo "Checking Python syntax..."
   src/quantlab/system/eva_identity.py \
   src/quantlab/system/health.py \
   src/quantlab/system/integration_audit.py \
-  src/quantlab/system/shutdown_monitor.py \
-  src/quantlab/value/token_roi.py \
-  src/quantlab/examples/token_roi_ledger.py
+  src/quantlab/system/shutdown_monitor.py
 
 echo "Running tests..."
 ensure_test_deps

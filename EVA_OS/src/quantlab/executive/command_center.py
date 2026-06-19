@@ -14,7 +14,6 @@ from quantlab.policy import build_policy_radar
 from quantlab.reports.catalog import latest_report_artifact, report_artifacts_frame
 from quantlab.storage import atomic_write_json, atomic_write_text
 from quantlab.system import MASTER_DISPLAY_NAME, MASTER_SYSTEM_ID, build_daily_readiness, build_quantlab_integration_audit
-from quantlab.value import build_token_roi_ledger
 
 
 def build_command_center(
@@ -24,7 +23,6 @@ def build_command_center(
     report_root: Path | str = REPORT_ROOT_DIR,
     daily_readiness_payload: dict[str, Any] | None = None,
     integration_payload: dict[str, Any] | None = None,
-    token_roi_payload: dict[str, Any] | None = None,
     cashflow_payload: dict[str, Any] | None = None,
     policy_payload: dict[str, Any] | None = None,
     consumption_payload: dict[str, Any] | None = None,
@@ -44,12 +42,6 @@ def build_command_center(
         project_root=root,
         report_root=reports,
         integration_payload=integration,
-    )
-    token_roi = token_roi_payload or _load_latest_token_roi(root) or build_token_roi_ledger(
-        as_of=audit_date,
-        project_root=root,
-        report_root=reports,
-        artifact_limit=artifact_limit,
     )
     cashflow = cashflow_payload or _load_latest_cashflow(root) or build_cashflow_command(
         as_of=audit_date,
@@ -72,9 +64,9 @@ def build_command_center(
         "policy": policy,
         "consumption": consumption,
     }
-    scorecards = _scorecards(daily, integration, token_roi, latest, risk_gates, business_systems)
-    action_queue = _action_queue(daily, integration, token_roi, latest, business_systems)
-    status = _command_status(daily, integration, token_roi, latest, business_systems)
+    scorecards = _scorecards(daily, integration, latest, risk_gates, business_systems)
+    action_queue = _action_queue(daily, integration, latest, business_systems)
+    status = _command_status(daily, integration, latest, business_systems)
     business_summary = _business_system_summary(cashflow, policy, consumption)
     return {
         "schema": "EVACommandCenterV1",
@@ -91,9 +83,8 @@ def build_command_center(
         "risk_gates": risk_gates,
         "action_queue": action_queue,
         "latest_report": latest,
-        "evidence_sources": _evidence_sources(root, token_roi, latest, business_systems),
-        "runtime_summary_sources": _runtime_summary_sources(root, token_roi, business_systems),
-        "token_roi_summary": _token_roi_summary(token_roi),
+        "evidence_sources": _evidence_sources(root, latest, business_systems),
+        "runtime_summary_sources": _runtime_summary_sources(root, business_systems),
         "business_system_summary": business_summary,
         "cashflow_summary": _cashflow_summary(cashflow),
         "policy_summary": _policy_summary(policy),
@@ -102,9 +93,8 @@ def build_command_center(
             "总控驾驶舱只聚合本地证据，不刷新行情、不启动 Moomoo OpenD、不修改持仓、不连接实盘。",
             "所有输入必须进入证据层；没有证据的结论降级为观察或待复核。",
             "所有结论必须经过风控层；Blocked 或 NeedsReview 不应作为交易前参考。",
-            "所有产出必须进入 Token ROI 台账；没有真实金额输入时不伪造收益、节省成本或 ROI。",
             "CashFlow、Policy、Consumption 只读取本地 latest 快照或 fail-closed fallback，不连接银行、支付、政府平台、支付宝、税务、工资或券商系统。",
-            "总控优先读取 Token ROI、CashFlow、Policy、Consumption 的 compact runtime summary latest；缺失时才 fallback 到 full latest 或本地 fail-closed 构建。",
+            "总控优先读取 CashFlow、Policy、Consumption 的 compact runtime summary latest；缺失时才 fallback 到 full latest 或本地 fail-closed 构建。",
             "Research-only boundary remains active: no live trading, no real orders, no payments, no betting execution.",
         ],
     }
@@ -119,7 +109,6 @@ def write_command_center(
     artifact_limit: int = 300,
     daily_readiness_payload: dict[str, Any] | None = None,
     integration_payload: dict[str, Any] | None = None,
-    token_roi_payload: dict[str, Any] | None = None,
     cashflow_payload: dict[str, Any] | None = None,
     policy_payload: dict[str, Any] | None = None,
     consumption_payload: dict[str, Any] | None = None,
@@ -132,7 +121,6 @@ def write_command_center(
         artifact_limit=artifact_limit,
         daily_readiness_payload=daily_readiness_payload,
         integration_payload=integration_payload,
-        token_roi_payload=token_roi_payload,
         cashflow_payload=cashflow_payload,
         policy_payload=policy_payload,
         consumption_payload=consumption_payload,
@@ -192,9 +180,6 @@ def command_center_markdown(payload: dict[str, Any]) -> str:
         "## Runtime Summary Sources",
         _markdown_table(payload.get("runtime_summary_sources", []), ["subsystem", "mode", "schema", "path"]),
         "",
-        "## Token ROI Summary",
-        _markdown_table([payload.get("token_roi_summary", {})], ["record_count", "quantified_records", "unquantified_records", "roi_status"]),
-        "",
         "## Business Systems Summary",
         _markdown_table(payload.get("business_system_summary", []), ["subsystem", "status", "metric", "value", "evidence"]),
         "",
@@ -207,7 +192,6 @@ def command_center_markdown(payload: dict[str, Any]) -> str:
 def _command_status(
     daily: dict[str, Any],
     integration: dict[str, Any],
-    token_roi: dict[str, Any],
     latest: dict[str, Any],
     business_systems: dict[str, dict[str, Any]],
 ) -> str:
@@ -220,8 +204,6 @@ def _command_status(
     if integration.get("status") != "Pass":
         return "NeedsReview"
     if not latest.get("path"):
-        return "NeedsReview"
-    if int(token_roi.get("record_count", 0) or 0) <= 0:
         return "NeedsReview"
     if any(_business_status_level(payload) == "Review" for payload in business_systems.values()):
         return "NeedsReview"
@@ -241,12 +223,10 @@ def _status_reason(status: str, gates: list[dict[str, str]], latest: dict[str, A
 def _scorecards(
     daily: dict[str, Any],
     integration: dict[str, Any],
-    token_roi: dict[str, Any],
     latest: dict[str, Any],
     gates: list[dict[str, str]],
     business_systems: dict[str, dict[str, Any]],
 ) -> list[dict[str, str]]:
-    token_summary = _token_roi_summary(token_roi)
     rows = [
         {
             "metric": "Daily Readiness",
@@ -265,16 +245,6 @@ def _scorecards(
             "value": f"{_count_gate_status(gates, 'Pass')}/{len(gates)} Pass",
             "status": "Pass" if gates and _count_gate_status(gates, "Pass") == len(gates) else "Review",
             "evidence": ", ".join(f"{row['gate']}={row['status']}" for row in gates),
-        },
-        {
-            "metric": "Token ROI Ledger",
-            "value": str(token_summary.get("record_count", 0)),
-            "status": "Pass" if int(token_summary.get("record_count", 0) or 0) > 0 else "Review",
-            "evidence": (
-                f"quantified={token_summary.get('quantified_records', 0)}; "
-                f"unquantified={token_summary.get('unquantified_records', 0)}; "
-                f"schema={_payload_schema(token_roi)}"
-            ),
         },
         {
             "metric": "Latest Report",
@@ -330,7 +300,6 @@ def _risk_gate_rows(daily: dict[str, Any], integration: dict[str, Any]) -> list[
 def _action_queue(
     daily: dict[str, Any],
     integration: dict[str, Any],
-    token_roi: dict[str, Any],
     latest: dict[str, Any],
     business_systems: dict[str, dict[str, Any]],
 ) -> list[dict[str, str]]:
@@ -366,17 +335,6 @@ def _action_queue(
                 "source": "Report Evidence",
             }
         )
-    token_summary = _token_roi_summary(token_roi)
-    if int(token_summary.get("unquantified_records", 0) or 0) > 0:
-        rows.append(
-            {
-                "priority": "P2",
-                "status": "Open",
-                "owner": "Value Layer",
-                "action": "为高价值产物补充真实节省时间、避免损失、复用价值或成本数据；未量化前 ROI 保持空值。",
-                "source": "Token ROI Ledger",
-            }
-        )
     _append_business_actions(rows, business_systems.get("cashflow", {}), "Company CashFlow Command")
     _append_business_actions(rows, business_systems.get("policy", {}), "Policy Intelligence Radar")
     _append_business_actions(rows, business_systems.get("consumption", {}), "Consumption Guard")
@@ -395,7 +353,6 @@ def _action_queue(
 
 def _evidence_sources(
     root: Path,
-    token_roi: dict[str, Any],
     latest: dict[str, Any],
     business_systems: dict[str, dict[str, Any]],
 ) -> list[dict[str, str]]:
@@ -403,11 +360,6 @@ def _evidence_sources(
         _source_row("Daily Readiness", _latest_file(root / "data" / "systemAudit", "QuantLabDailyReadiness_*.json"), "QuantLabDailyReadinessV1"),
         _source_row("Integration Audit", _latest_file(root / "data" / "systemAudit", "QuantLabIntegrationAudit_*.json"), "QuantLabIntegrationAuditV1"),
         _source_row("Data Trust Audit", _latest_file(root / "data" / "systemAudit", "QuantLabDataTrustAudit_*.json"), "QuantLabDataTrustAuditV1"),
-        _source_row(
-            "Token ROI Ledger",
-            _latest_payload_path(root, token_roi, "value", "EVATokenROIRuntimeSummary_latest.json", "EVATokenROILedger_latest.json"),
-            _payload_schema(token_roi, "EVATokenROILedgerV1"),
-        ),
         {
             "source": "Latest Report",
             "status": "Present" if latest.get("path") else "Missing",
@@ -437,9 +389,8 @@ def _evidence_sources(
     return rows
 
 
-def _runtime_summary_sources(root: Path, token_roi: dict[str, Any], business_systems: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
+def _runtime_summary_sources(root: Path, business_systems: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     return [
-        _runtime_summary_source_row(root, "Token ROI", token_roi, "value", "EVATokenROIRuntimeSummary_latest.json", "EVATokenROILedger_latest.json"),
         _runtime_summary_source_row(root, "Company CashFlow Command", business_systems.get("cashflow", {}), "cashflow", "CompanyCashFlowRuntimeSummary_latest.json", "CompanyCashFlowCommand_latest.json"),
         _runtime_summary_source_row(root, "Policy Intelligence Radar", business_systems.get("policy", {}), "policy", "PolicyIntelligenceRuntimeSummary_latest.json", "PolicyIntelligenceRadar_latest.json"),
         _runtime_summary_source_row(root, "Consumption Guard", business_systems.get("consumption", {}), "consumption", "ConsumptionGuardRuntimeSummary_latest.json", "ConsumptionGuard_latest.json"),
@@ -470,23 +421,6 @@ def _source_row(source: str, path: Path | None, schema: str) -> dict[str, str]:
         "status": "Present" if path and path.exists() else "Missing",
         "path": str(path or ""),
         "schema": schema,
-    }
-
-
-def _token_roi_summary(token_roi: dict[str, Any]) -> dict[str, Any]:
-    if token_roi.get("schema") == "EVATokenROIRuntimeSummaryV1":
-        return {
-            "record_count": _safe_int(token_roi.get("record_count", 0)),
-            "quantified_records": _safe_int(token_roi.get("quantified_records", 0)),
-            "unquantified_records": _safe_int(token_roi.get("unquantified_records", 0)),
-            "roi_status": "Unquantified" if _safe_int(token_roi.get("quantified_records", 0)) == 0 else "PartlyQuantified",
-        }
-    summary = token_roi.get("summary", {})
-    return {
-        "record_count": int(token_roi.get("record_count", 0) or 0),
-        "quantified_records": int(summary.get("quantified_records", 0) or 0),
-        "unquantified_records": int(summary.get("unquantified_records", 0) or 0),
-        "roi_status": "Unquantified" if int(summary.get("quantified_records", 0) or 0) == 0 else "PartlyQuantified",
     }
 
 
@@ -673,10 +607,6 @@ def _load_latest_schema(path: Path, schema: str) -> dict[str, Any] | None:
     return payload if isinstance(payload, dict) and payload.get("schema") == schema else None
 
 
-def _load_latest_token_roi(root: Path) -> dict[str, Any] | None:
-    return _load_latest_schema(root / "data" / "value" / "EVATokenROIRuntimeSummary_latest.json", "EVATokenROIRuntimeSummaryV1") or _load_latest_schema(root / "data" / "value" / "EVATokenROILedger_latest.json", "EVATokenROILedgerV1")
-
-
 def _safe_int(value: Any) -> int:
     try:
         return int(value or 0)
@@ -734,7 +664,6 @@ def _cell(value: Any) -> str:
 
 def _write_command_center_pdf(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    token_summary = payload.get("token_roi_summary", {})
     lines = [
         f"EVA_OS Command Center {payload.get('as_of', '')}",
         f"System: {payload.get('system', '')}",
@@ -752,15 +681,7 @@ def _write_command_center_pdf(path: Path, payload: dict[str, Any]) -> None:
     lines.extend(["", "Top Actions:"])
     for row in payload.get("action_queue", [])[:12]:
         lines.append(f"- {row.get('priority')} {row.get('action')} [{row.get('source')}]")
-    lines.extend(
-        [
-            "",
-            "Token ROI:",
-            f"- records={token_summary.get('record_count', 0)} quantified={token_summary.get('quantified_records', 0)} unquantified={token_summary.get('unquantified_records', 0)}",
-            "",
-            "Research-only. No live trading. No real orders.",
-        ]
-    )
+    lines.extend(["", "Research-only. No live trading. No real orders."])
     content = ["BT", "/F1 10 Tf", "56 760 Td", "12 TL"]
     for line in lines[:58]:
         content.append(f"({_pdf_escape(_pdf_ascii(line))}) Tj")

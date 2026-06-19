@@ -1,5 +1,22 @@
 # AGENTS.md
 
+## PFI-First Transition Contract
+
+This repository is in a controlled transition from legacy `EVA_OS` / `QuantLab`
+to `PFI OS`. Until the directory and namespace migration is performed in a
+later issue, agents must treat `EVA_OS/` as the legacy working directory and
+the documents under `docs/product`, `docs/data`, `docs/ux`,
+`docs/architecture`, and `docs/archive/legacy-migration.md` as the governing
+PFI-001 product contracts.
+
+PFI OS is the target product. EVA_OS is legacy input, not the target
+architecture. Do not add new user-facing EVA, QuantLab, cashflow, consumption,
+or retired value-ledger product surfaces during this transition.
+
+PFI-002 has removed the retired value-ledger active surface. Do not restore its
+modules, scripts, tests, navigation entries, command-center sources, or formal
+docs. Historical context belongs only in `docs/archive/legacy-migration.md`.
+
 ## Project
 
 This project is the local-first EVA_OS entry, displayed as EVA_OS. QuantLab is the embedded quantitative research, analysis, and backtesting subsystem and remains the main operating entry for now.
@@ -19,6 +36,8 @@ This project is the local-first EVA_OS entry, displayed as EVA_OS. QuantLab is t
 - Every backtest result must save data range, provider, adjustment mode, strategy version, parameters, cost model, and run timestamp.
 - Add tests for indicators, signal generation, portfolio accounting, metrics, and edge cases.
 - Prefer clear, inspectable logic over black-box shortcuts.
+- PFI OS must keep strategy backtesting as a core workflow and preserve market-feel training as a Strategy Lab training mode.
+- Public/shared data, private user data, derived private data, secrets, and ephemeral runtime artifacts must follow `docs/data/PFI_DATA_BOUNDARIES.md`.
 
 ## Validation Discipline
 
@@ -37,3 +56,4 @@ Every backtest should calculate total return, annualized return, volatility, Sha
 - Never connect to live trading by default.
 - Never place real orders.
 - If paper trading is added later, require paper-only keys, dry-run mode, and explicit human confirmation.
+- Never create autonomous real-money trading, payment, betting, or broker-order execution flows.
