@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 import json
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -31,6 +31,8 @@ def _jsonable(value: Any) -> Any:
         if value.utcoffset() == timedelta(0) and serialized.endswith("+00:00"):
             return f"{serialized[:-6]}Z"
         return serialized
+    if isinstance(value, date):
+        return value.isoformat()
     if isinstance(value, Decimal):
         return float(value)
     if isinstance(value, dict):
@@ -78,6 +80,41 @@ LAYER_RELATIONSHIP_FAMILY_MAP = {
     "strategic_signal": {"strategic_signal"},
     "supply_chain_operations": {"supply_chain_operations"},
     "technology_data_ip": {"technology_data_ip"},
+}
+DOSSIER_LAYER_DEFINITIONS = {
+    "business": {
+        "label": "Business context",
+        "families": {"corporate_structure", "commercial_dependency"},
+        "gap": "No business-segment or commercial-dependency fixture records are loaded.",
+    },
+    "group": {
+        "label": "Group and control context",
+        "families": {"corporate_structure", "ownership_control"},
+        "gap": "No group, ownership, or control fixture records are loaded.",
+    },
+    "dependencies": {
+        "label": "Supply-chain and platform dependencies",
+        "families": {"supply_chain_operations", "commercial_dependency", "technology_data_ip"},
+        "gap": "No supply-chain, commercial-dependency, or technology fixture records are loaded.",
+    },
+    "capital": {
+        "label": "Capital and M&A context",
+        "families": {"capital_financing", "mergers_acquisitions", "ownership_control"},
+        "gap": "No direct capital, M&A, or ownership-control fixture records are loaded.",
+    },
+    "policy": {
+        "label": "Policy and government context",
+        "families": {"government_policy"},
+        "gap": (
+            "No direct policy, government contract, subsidy, or regulatory fixture "
+            "records are loaded."
+        ),
+    },
+    "signals": {
+        "label": "Strategic signals",
+        "families": {"strategic_signal", "technology_data_ip"},
+        "gap": "No strategic-signal or technology fixture records are loaded.",
+    },
 }
 PATH_TYPE_RELATIONSHIP_FAMILY_MAP = {
     "shortest": RELATIONSHIP_FAMILIES,
@@ -395,7 +432,57 @@ class DomainRepository:
 
     def get_entity(self, entity_id: UUID) -> dict[str, Any]:
         with self.connect() as connection:
-            return self.entity_summary(connection, entity_id)
+            entity = self.entity_summary(connection, entity_id)
+            aliases = self.aliases_for_entity(connection, entity_id)
+            industries = self.industry_memberships_for_entities(
+                connection,
+                [entity_id],
+            ).get(entity_id, [])
+            relationships = self.relationship_summaries_for_entities(
+                connection,
+                [entity_id],
+                families=sorted(RELATIONSHIP_FAMILIES),
+                limit=80,
+            )
+            recent_events = self.event_summaries_for_entity(connection, entity_id, limit=8)
+            dossier_layers = self.entity_dossier_layers(
+                relationships=relationships,
+                industries=industries,
+            )
+            relationships_summary = self.relationship_family_counts(relationships)
+            freshness = self.entity_dossier_freshness(
+                entity=entity,
+                relationships=relationships,
+                events=recent_events,
+            )
+            coverage = self.entity_dossier_coverage(
+                relationships=relationships,
+                industries=industries,
+                events=recent_events,
+                layers=dossier_layers,
+            )
+            human_summary = self.entity_human_summary(
+                entity=entity,
+                industries=industries,
+                events=recent_events,
+                layers=dossier_layers,
+            )
+            return _jsonable(
+                {
+                    **entity,
+                    "aliases": aliases,
+                    "industries": industries,
+                    "relationships_summary": relationships_summary,
+                    "dossier_layers": dossier_layers,
+                    "recent_events": recent_events,
+                    "freshness": freshness,
+                    "coverage": coverage,
+                    "human_summary": human_summary,
+                    "focus_route": f"/v1/entities/{entity_id}",
+                    "ui_route": f"/?focus=entity:{entity_id}",
+                    "data_mode": freshness["data_mode"],
+                }
+            )
 
     def list_industries(self, parent: UUID | None = None) -> list[dict[str, Any]]:
         with self.connect() as connection:
@@ -754,6 +841,272 @@ class DomainRepository:
             (families, entity_ids, entity_ids, limit),
         ).fetchall()
         return _jsonable(rows)
+
+    def aliases_for_entity(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_id: UUID,
+    ) -> list[str]:
+        rows = connection.execute(
+            """
+            SELECT alias
+            FROM entity_aliases
+            WHERE entity_id = %s
+            ORDER BY alias_type, alias
+            """,
+            (entity_id,),
+        ).fetchall()
+        return [row["alias"] for row in rows]
+
+    def event_summaries_for_entity(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_id: UUID,
+        *,
+        limit: int,
+    ) -> list[dict[str, Any]]:
+        rows = connection.execute(
+            """
+            SELECT
+              ev.id, ev.event_type, ev.title, ev.status, ev.announced_at,
+              ev.effective_at, ev.period_start, ev.period_end, ev.observed_at,
+              ev.amount, ev.currency, ev.amount_kind, ev.description, ev.qualifiers,
+              (
+                SELECT count(*)::int
+                FROM event_evidence ee
+                WHERE ee.event_id = ev.id
+              ) AS evidence_count,
+              (
+                SELECT COALESCE(
+                  jsonb_agg(
+                    jsonb_build_object(
+                      'entity_id', ep.entity_id,
+                      'role', ep.role,
+                      'direction', ep.direction
+                    )
+                    ORDER BY ep.role, ep.entity_id
+                  ),
+                  '[]'::jsonb
+                )
+                FROM event_participants ep
+                WHERE ep.event_id = ev.id
+              ) AS participants
+            FROM events ev
+            WHERE ev.status NOT IN ('superseded', 'revoked')
+              AND EXISTS (
+                SELECT 1
+                FROM event_participants focus_ep
+                WHERE focus_ep.event_id = ev.id
+                  AND focus_ep.entity_id = %s
+              )
+            ORDER BY ev.observed_at DESC, ev.announced_at DESC NULLS LAST, ev.id
+            LIMIT %s
+            """,
+            (entity_id, limit),
+        ).fetchall()
+        return _jsonable(rows)
+
+    @staticmethod
+    def relationship_family_counts(relationships: list[dict[str, Any]]) -> dict[str, int]:
+        counts = {family: 0 for family in sorted(RELATIONSHIP_FAMILIES)}
+        for relationship in relationships:
+            family = relationship["relationship_family"]
+            counts[family] = counts.get(family, 0) + 1
+        return {family: count for family, count in counts.items() if count > 0}
+
+    @staticmethod
+    def entity_dossier_layers(
+        *,
+        relationships: list[dict[str, Any]],
+        industries: list[dict[str, Any]],
+    ) -> dict[str, dict[str, Any]]:
+        layers: dict[str, dict[str, Any]] = {}
+        for layer_key, definition in DOSSIER_LAYER_DEFINITIONS.items():
+            families = definition["families"]
+            layer_relationships = [
+                relationship
+                for relationship in relationships
+                if relationship["relationship_family"] in families
+            ][:12]
+            has_context = bool(layer_relationships or (layer_key == "business" and industries))
+            layer: dict[str, Any] = {
+                "label": definition["label"],
+                "relationship_families": sorted(families),
+                "relationship_count": len(layer_relationships),
+                "relationships": layer_relationships,
+                "data_status": "covered" if has_context else "missing",
+                "data_gap": None if has_context else definition["gap"],
+            }
+            if layer_key == "business":
+                layer["industries"] = industries
+                layer["industry_count"] = len(industries)
+            layers[layer_key] = layer
+        return layers
+
+    @staticmethod
+    def entity_dossier_freshness(
+        *,
+        entity: dict[str, Any],
+        relationships: list[dict[str, Any]],
+        events: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        relationship_observed = [
+            relationship["observed_at"]
+            for relationship in relationships
+            if relationship.get("observed_at")
+        ]
+        event_observed = [event["observed_at"] for event in events if event.get("observed_at")]
+        observed_values = relationship_observed + event_observed
+        synthetic = bool(entity.get("synthetic")) or any(
+            relationship.get("synthetic") for relationship in relationships
+        )
+        return {
+            "as_of": _now(),
+            "data_mode": "synthetic_fixture" if synthetic else "database",
+            "latest_observed_at": max(observed_values) if observed_values else None,
+            "oldest_observed_at": min(observed_values) if observed_values else None,
+            "relationship_observation_count": len(relationship_observed),
+            "event_observation_count": len(event_observed),
+            "fixture_disclosure": (
+                "Synthetic fixture records are explicitly marked and are not live facts."
+                if synthetic
+                else None
+            ),
+        }
+
+    @staticmethod
+    def entity_dossier_coverage(
+        *,
+        relationships: list[dict[str, Any]],
+        industries: list[dict[str, Any]],
+        events: list[dict[str, Any]],
+        layers: dict[str, dict[str, Any]],
+    ) -> dict[str, Any]:
+        data_available = {
+            layer_key: layer["data_status"] == "covered"
+            for layer_key, layer in layers.items()
+        }
+        return {
+            "entity_focus_page_openable": True,
+            "required_human_summary_dimensions": [
+                "business",
+                "group",
+                "dependencies",
+                "capital",
+                "policy",
+                "signals",
+                "data_gaps",
+            ],
+            "human_summary_dimensions_present": {
+                "business": True,
+                "group": True,
+                "dependencies": True,
+                "capital": True,
+                "policy": True,
+                "signals": True,
+                "data_gaps": True,
+            },
+            "data_available_dimensions": data_available,
+            "relationship_count": len(relationships),
+            "relationship_family_count": len({row["relationship_family"] for row in relationships}),
+            "industry_membership_count": len(industries),
+            "recent_event_count": len(events),
+        }
+
+    @staticmethod
+    def entity_human_summary(
+        *,
+        entity: dict[str, Any],
+        industries: list[dict[str, Any]],
+        events: list[dict[str, Any]],
+        layers: dict[str, dict[str, Any]],
+    ) -> dict[str, Any]:
+        entity_name = entity["canonical_name"]
+        industry_names = [
+            f"{industry['name_en']} ({industry['role']})" for industry in industries[:4]
+        ]
+        data_gaps = []
+        for layer_key in ("group", "dependencies", "capital", "policy", "signals"):
+            layer = layers[layer_key]
+            if layer["data_status"] == "missing":
+                data_gaps.append(
+                    {
+                        "dimension": layer_key,
+                        "message": f"{layer['data_gap']} Treat this as unknown, not zero.",
+                    }
+                )
+        if not industries:
+            data_gaps.append(
+                {
+                    "dimension": "business",
+                    "message": (
+                        "No industry membership is loaded; treat business context "
+                        "as unknown."
+                    ),
+                }
+            )
+        if not events:
+            data_gaps.append(
+                {
+                    "dimension": "events",
+                    "message": "No direct event records are loaded for this entity.",
+                }
+            )
+
+        return {
+            "headline": (
+                f"{entity_name} has an entity dossier with "
+                f"{sum(layer['relationship_count'] for layer in layers.values())} "
+                "dimension-linked relationship references."
+            ),
+            "business": DomainRepository.layer_sentence(
+                entity_name,
+                layers["business"],
+                prefix=(
+                    "Industry memberships: "
+                    + (", ".join(industry_names) if industry_names else "not loaded")
+                    + "."
+                ),
+            ),
+            "group": DomainRepository.layer_sentence(entity_name, layers["group"]),
+            "dependencies": DomainRepository.layer_sentence(entity_name, layers["dependencies"]),
+            "capital": DomainRepository.layer_sentence(entity_name, layers["capital"]),
+            "policy": DomainRepository.layer_sentence(entity_name, layers["policy"]),
+            "signals": DomainRepository.layer_sentence(entity_name, layers["signals"]),
+            "recent_events": (
+                f"{len(events)} direct event record(s) are loaded."
+                if events
+                else "No direct event records are loaded."
+            ),
+            "data_gaps": data_gaps,
+            "fixture_disclosure": entity.get("fixture_notice"),
+        }
+
+    @staticmethod
+    def layer_sentence(
+        entity_name: str,
+        layer: dict[str, Any],
+        *,
+        prefix: str | None = None,
+    ) -> str:
+        if layer["relationship_count"] == 0:
+            body = f"{layer['data_gap']} Treat this as unknown, not zero."
+        else:
+            previews = []
+            for relationship in layer["relationships"][:3]:
+                previews.append(
+                    f"{relationship['subject_name']} -> {relationship['object_name']} "
+                    f"({relationship['relationship_type']})"
+                )
+            body = (
+                f"{entity_name} has {layer['relationship_count']} "
+                f"{layer['label'].lower()} relationship record(s): "
+                + "; ".join(previews)
+                + "."
+            )
+        if prefix:
+            return f"{prefix} {body}"
+        return body
 
     def cross_industry_links(
         self,

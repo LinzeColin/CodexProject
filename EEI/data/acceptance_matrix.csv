@@ -57,8 +57,8 @@ A055,P0,explore,Graph has filterable table/list alternative,E2E/a11y,DONE
 A056,P0,paths,Shortest/upstream/downstream/control/capital/policy/bottleneck paths are bounded and evidence-bearing,Integration,DONE
 A057,P0,explore,Truncation and inclusion sorting are explained to the user,UI/content test,DONE
 A058,P0,explore,Visual centrality is not presented as control and color is not the only encoding,Design/a11y review,DONE
-A059,P0,dossier,Every P0 seed opens a company/entity focus page,API/E2E,NOT STARTED
-A060,P0,dossier,"Human summary covers business, group, dependencies, capital, policy, signals and data gaps",Content/E2E,NOT STARTED
+A059,P0,dossier,Every P0 seed opens a company/entity focus page,API/E2E,DONE
+A060,P0,dossier,"Human summary covers business, group, dependencies, capital, policy, signals and data gaps",Content/E2E,DONE
 A061,P0,dossier,Company workspace exposes eight required layers,E2E,NOT STARTED
 A062,P0,structure,"Corporate structure separates legal group, segment, brand, product and facility",API/UI assertions,NOT STARTED
 A063,P0,structure,Commercial empire label does not imply legal control,Content review,NOT STARTED

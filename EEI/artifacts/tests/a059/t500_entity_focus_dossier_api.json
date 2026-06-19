@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "task_id": "T500",
+  "acceptance_id": "A059",
+  "status": "DONE",
+  "evidence_type": "entity_focus_dossier_api",
+  "scope": {
+    "seed_source": "data/mock_entities.json",
+    "seed_count": 30,
+    "route": "/v1/entities/{entityId}",
+    "boundary_note": "The 30 fixture seed entities are loaded into the entities table by scripts/load_synthetic_fixtures.py. The 140-node research universe remains a catalog until later ingestion tasks materialize it as entities."
+  },
+  "validated_by": [
+    "tests/integration/test_database_migrations.py::exercise_domain_api_and_repository_contracts",
+    "make verify-g2-db",
+    "GitHub Actions governance-validation"
+  ],
+  "assertions": [
+    "Every fixture seed entity returns HTTP 200 from /v1/entities/{entityId}.",
+    "Each response includes coverage.entity_focus_page_openable=true.",
+    "Each response includes the required human_summary key set."
+  ],
+  "rollback": "Revert T500 repository/test/status changes and regenerate release artifacts."
+}

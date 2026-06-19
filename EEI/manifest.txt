@@ -77,6 +77,8 @@ artifacts/release_operation_log_t1211.jsonl
 artifacts/requirement_function_task_test_traceability_t1213.csv
 artifacts/risk_control_mapping_t1214.csv
 artifacts/risk_control_summary_t1214.json
+artifacts/tests/a059/t500_entity_focus_dossier_api.json
+artifacts/tests/a060/t500_human_summary_dossier_api.json
 artifacts/tests/a182/t1212_governance_consistency_workflow.json
 artifacts/tests/a183/t1212_p0_traceability_validator.json
 artifacts/tests/a183/t1213_requirement_function_task_test_traceability.json

@@ -1437,15 +1437,52 @@ components:
       allOf:
       - $ref: '#/components/schemas/EntitySummary'
       - type: object
+        required:
+        - aliases
+        - relationships_summary
+        - dossier_layers
+        - recent_events
+        - freshness
+        - coverage
+        - human_summary
+        - focus_route
+        - ui_route
         properties:
           aliases:
             type: array
             items:
               type: string
+          industries:
+            type: array
+            items:
+              type: object
+              additionalProperties: true
           relationships_summary:
             type: object
             additionalProperties:
               type: integer
+          dossier_layers:
+            type: object
+            required:
+            - business
+            - group
+            - dependencies
+            - capital
+            - policy
+            - signals
+            properties:
+              business:
+                $ref: '#/components/schemas/EntityDossierLayer'
+              group:
+                $ref: '#/components/schemas/EntityDossierLayer'
+              dependencies:
+                $ref: '#/components/schemas/EntityDossierLayer'
+              capital:
+                $ref: '#/components/schemas/EntityDossierLayer'
+              policy:
+                $ref: '#/components/schemas/EntityDossierLayer'
+              signals:
+                $ref: '#/components/schemas/EntityDossierLayer'
           recent_events:
             type: array
             items:
@@ -1453,6 +1490,101 @@ components:
           freshness:
             type: object
             additionalProperties: true
+          coverage:
+            type: object
+            additionalProperties: true
+          human_summary:
+            $ref: '#/components/schemas/EntityDossierHumanSummary'
+          focus_route:
+            type: string
+          ui_route:
+            type: string
+          data_mode:
+            type: string
+    EntityDossierLayer:
+      type: object
+      required:
+      - label
+      - relationship_families
+      - relationship_count
+      - relationships
+      - data_status
+      properties:
+        label:
+          type: string
+        relationship_families:
+          type: array
+          items:
+            type: string
+        relationship_count:
+          type: integer
+          minimum: 0
+        relationships:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        data_status:
+          type: string
+          enum:
+          - covered
+          - missing
+        data_gap:
+          type:
+          - string
+          - 'null'
+        industries:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        industry_count:
+          type: integer
+          minimum: 0
+    EntityDossierHumanSummary:
+      type: object
+      required:
+      - headline
+      - business
+      - group
+      - dependencies
+      - capital
+      - policy
+      - signals
+      - data_gaps
+      properties:
+        headline:
+          type: string
+        business:
+          type: string
+        group:
+          type: string
+        dependencies:
+          type: string
+        capital:
+          type: string
+        policy:
+          type: string
+        signals:
+          type: string
+        recent_events:
+          type: string
+        data_gaps:
+          type: array
+          items:
+            type: object
+            required:
+            - dimension
+            - message
+            properties:
+              dimension:
+                type: string
+              message:
+                type: string
+        fixture_disclosure:
+          type:
+          - string
+          - 'null'
     IndustrySummary:
       type: object
       required:
