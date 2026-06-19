@@ -1,0 +1,110 @@
+{
+  "schema": "EVAOSReproducibleDataLakeManifestV1",
+  "as_of": "2026-06-13",
+  "generated_at": "2026-06-13T09:17:39",
+  "layer": "Reproducible Data Lake",
+  "lake_status": "Pass",
+  "project_root": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance",
+  "asset_count": 1,
+  "immutable_asset_count": 1,
+  "latest_alias_count": 4,
+  "partition_count": 1,
+  "replay_cursor_count": 1,
+  "assets": [
+    {
+      "asset_id": "7f9c515424d2a839ba055442",
+      "dataset": "market_events",
+      "asset_type": "event_jsonl",
+      "format": "jsonl",
+      "relative_path": "data/marketEvents/MarketEventLog_SPY_1d_13062026.jsonl",
+      "size_bytes": 2969,
+      "checksum_sha256": "dbe3dac854ba1ab4161c87b432b989e5c4010725fb7f2b298104768edd93dfc9",
+      "schema": "EVAOSMarketEventV1",
+      "market": "US",
+      "symbol": "SPY",
+      "interval": "1d",
+      "source": "sample",
+      "partition": "dataset=market_events/market=US/symbol=SPY/interval=1d",
+      "row_count": 7,
+      "first_event_time": "2026-01-01T00:00:00",
+      "last_event_time": "2026-01-09T00:00:00",
+      "quality_status": "Pass",
+      "replay_cursor_id": "06306f6b26f7d3cbddd1ecc4"
+    }
+  ],
+  "partitions": [
+    {
+      "partition": "dataset=market_events/market=US/symbol=SPY/interval=1d",
+      "dataset": "market_events",
+      "asset_count": 1,
+      "row_count": 7,
+      "first_event_time": "2026-01-01T00:00:00",
+      "last_event_time": "2026-01-09T00:00:00"
+    }
+  ],
+  "replay_cursors": [
+    {
+      "cursor_id": "06306f6b26f7d3cbddd1ecc4",
+      "dataset": "market_events",
+      "market": "US",
+      "symbol": "SPY",
+      "interval": "1d",
+      "source": "sample",
+      "asset_count": 1,
+      "event_count": 7,
+      "first_event_time": "2026-01-01T00:00:00",
+      "last_event_time": "2026-01-09T00:00:00",
+      "next_after": "2026-01-09T00:00:00"
+    }
+  ],
+  "latest_aliases": [
+    {
+      "relative_path": "data/marketEvents/MarketEventLog_latest.csv",
+      "size_bytes": 1353,
+      "checksum_sha256": "27c9804740f90e1ef2e6dc1f62f79abf454f7a5f06948f49c4a879819f55439e",
+      "status": "MutableAlias"
+    },
+    {
+      "relative_path": "data/marketEvents/MarketEventLog_latest.json",
+      "size_bytes": 5717,
+      "checksum_sha256": "94f9d07cf1f4b4b2cbe65360b6ee2c1175b4365d41c2933d67ae0c47ff1d9e7f",
+      "status": "MutableAlias"
+    },
+    {
+      "relative_path": "data/marketEvents/MarketEventLog_latest.jsonl",
+      "size_bytes": 2969,
+      "checksum_sha256": "dbe3dac854ba1ab4161c87b432b989e5c4010725fb7f2b298104768edd93dfc9",
+      "status": "MutableAlias"
+    },
+    {
+      "relative_path": "data/marketEvents/MarketEventLog_latest.md",
+      "size_bytes": 2448,
+      "checksum_sha256": "8c0e748dde4d81e516bea7f45314a88996b590866d6f1924d1e37249a6e8d39f",
+      "status": "MutableAlias"
+    }
+  ],
+  "missing_data_log": [
+    {
+      "dataset": "bar_cache",
+      "status": "Missing",
+      "message": "No structured bar cache CSV/Parquet files found."
+    }
+  ],
+  "assumptions": [
+    "The manifest indexes local immutable data assets and records mutable latest files only as aliases.",
+    "Checksums are SHA-256 over file bytes; replay cursors are derived from event_time windows.",
+    "This MVP does not copy assets, stream Kafka, write QuestDB/ClickHouse, or connect to live trading."
+  ],
+  "outputs": {
+    "json": "data/dataLake/DataLakeManifest_13062026.json",
+    "assets_csv": "data/dataLake/DataLakeManifest_13062026_assets.csv",
+    "replay_cursors_json": "data/dataLake/DataLakeManifest_13062026_replay_cursors.json",
+    "replay_cursors_csv": "data/dataLake/DataLakeManifest_13062026_replay_cursors.csv",
+    "markdown": "data/dataLake/DataLakeManifest_13062026.md",
+    "latest_json": "data/dataLake/DataLakeManifest_latest.json",
+    "latest_assets_csv": "data/dataLake/DataLakeManifest_latest_assets.csv",
+    "latest_replay_cursors_json": "data/dataLake/DataLakeManifest_latest_replay_cursors.json",
+    "latest_replay_cursors_csv": "data/dataLake/DataLakeManifest_latest_replay_cursors.csv",
+    "latest_markdown": "data/dataLake/DataLakeManifest_latest.md"
+  }
+}

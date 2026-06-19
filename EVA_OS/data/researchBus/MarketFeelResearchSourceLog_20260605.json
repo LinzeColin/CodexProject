@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "marketFeelResearchSourceLog.v1",
+  "generatedAt": "2026-06-05",
+  "purpose": "盘感训练三档模式、隐藏答案区间、事前技术分析和多维复盘设计来源日志",
+  "sources": [
+    {
+      "name": "TradingView Bar Replay",
+      "url": "https://www.tradingview.com/support/solutions/43000712747-what-is-bar-replay/",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "参考历史行情回放、风险-free practice、从历史位置开始训练判断的交互模式",
+      "localAdoption": "QuantLab 不接实盘交易，只保留隐藏答案区间、限时判断和揭示后复盘。"
+    },
+    {
+      "name": "TradingView Bar Replay start workflow",
+      "url": "https://www.tradingview.com/support/solutions/43000474024-how-do-i-turn-bar-replay-on/",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "参考选择起点、播放/前进、速度控制等低摩擦训练流程",
+      "localAdoption": "QuantLab 用开始限时判断、提交答案和揭示完整走势替代交易按钮。"
+    },
+    {
+      "name": "StockCharts ChartSchool Technical Analysis",
+      "url": "https://chartschool.stockcharts.com/table-of-contents/overview/technical-analysis",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "参考趋势、支撑、压力、成交量、相对强弱和技术面只能辅助时机判断的说明",
+      "localAdoption": "新增 20 日支撑/压力，并要求技术面结论与风险、量价和其他证据联动。"
+    },
+    {
+      "name": "StockCharts Bollinger Bands",
+      "url": "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-overlays/bollinger-bands",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "参考 Bollinger 作为波动和位置工具，需要结合趋势和其他指标确认",
+      "localAdoption": "QuantLab 把 Bollinger 位置纳入动能/拥挤判断，不单独作为方向答案。"
+    },
+    {
+      "name": "TA-Lib Technical Analysis Library",
+      "url": "https://ta-lib.org/index.html",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "参考 RSI、MACD、Bollinger Bands、ATR 等常见技术指标集合",
+      "localAdoption": "QuantLab 继续使用本地指标实现，避免新增重量级依赖。"
+    },
+    {
+      "name": "Fidelity Support and Resistance",
+      "url": "https://www.fidelity.com/learning-center/trading-investing/technical-analysis/support-and-resistance?print=true",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "参考支撑压力角色转换的技术分析概念",
+      "localAdoption": "QuantLab 使用近 20 日高低点作为训练用结构参考，并明确不是固定价格墙。"
+    },
+    {
+      "name": "FinBERT model card",
+      "url": "https://huggingface.co/ProsusAI/finbert",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "后续情绪分析和盘感失效复盘可接金融文本情绪证据",
+      "localAdoption": "本轮不引入模型依赖，只把情绪证据列入后续多维复盘来源。"
+    }
+  ],
+  "blockedOrManualSources": [
+    {
+      "name": "用户提供的视频 ScreenRecording_06-05-2026 12-31-33",
+      "accessStatus": "用户提供；本机只能无界面抽取首帧预览",
+      "usedFor": "参考倒计时、K线、均线、成交量、MACD 和关键动作卡片的交互形态",
+      "limitation": "未逐帧 OCR 全视频；核心需求以用户文字说明为准。"
+    },
+    {
+      "name": "小红书 / B站 / 知乎 / 公众号盘感训练内容",
+      "accessStatus": "需要公开链接、授权接口或用户手动导出",
+      "usedFor": "可作为后续训练题库、错误案例和社区情绪样本",
+      "limitation": "不得绕过平台限制批量抓取。"
+    }
+  ]
+}

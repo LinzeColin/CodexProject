@@ -1,0 +1,176 @@
+{
+  "last_refreshed": "2026-06-05",
+  "source_note": "Offline parser registry. It records delivery capability only; it does not store document text or secret values.",
+  "capability_targets": [
+    {
+      "capability": "pdf_text_extraction",
+      "label": "PDF 文本层抽取",
+      "required_for_report_quality": true
+    },
+    {
+      "capability": "office_xml_extraction",
+      "label": "DOCX/XLSX 结构化抽取",
+      "required_for_report_quality": true
+    },
+    {
+      "capability": "presentation_xml_extraction",
+      "label": "PPTX 演示稿抽取",
+      "required_for_report_quality": false
+    },
+    {
+      "capability": "ocr_extraction",
+      "label": "扫描件/OCR 抽取",
+      "required_for_report_quality": true
+    },
+    {
+      "capability": "legacy_office_extraction",
+      "label": "DOC/XLS/PPT 旧格式抽取",
+      "required_for_report_quality": true
+    },
+    {
+      "capability": "research_pdf_structure",
+      "label": "研究论文结构与引用抽取",
+      "required_for_report_quality": false
+    },
+    {
+      "capability": "failure_audit",
+      "label": "失败原因可审计",
+      "required_for_report_quality": true
+    },
+    {
+      "capability": "no_secret_logging",
+      "label": "不记录账号、cookie、API key",
+      "required_for_report_quality": true
+    }
+  ],
+  "parsers": [
+    {
+      "parser_id": "pdf_text_layer",
+      "name": "PDF text-layer parser",
+      "family": "built_in",
+      "status": "ready",
+      "priority": 100,
+      "formats": ["pdf"],
+      "mime_types": ["application/pdf"],
+      "engines": ["pypdf", "PyMuPDF"],
+      "capability_tags": ["pdf_text_extraction", "failure_audit", "no_secret_logging"],
+      "business_value": "政府白皮书、政策 PDF 和附件公告的正文抽取，是单文件深度分析的基础能力。",
+      "current_implementation": "extract_attachment_text() 先用 pypdf，失败后用 PyMuPDF，再进入 OCR fallback。",
+      "next_action": "保持单元测试覆盖；对超大 PDF 增加分段抽取和页级证据定位。",
+      "failure_mode": "无文本层或依赖缺失时进入 OCR 或记录 parse_failed。",
+      "acceptance_check": "PDF 文本层可返回 parsed；扫描 PDF 进入 pdf_ocr 状态。"
+    },
+    {
+      "parser_id": "docx_ooxml",
+      "name": "DOCX OOXML parser",
+      "family": "built_in",
+      "status": "ready",
+      "priority": 95,
+      "formats": ["docx"],
+      "mime_types": ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
+      "engines": ["zipfile", "ElementTree"],
+      "capability_tags": ["office_xml_extraction", "failure_audit", "no_secret_logging"],
+      "business_value": "覆盖政策附件、征求意见稿和地方实施细则常见 Word 格式。",
+      "current_implementation": "读取 word/document.xml，并合并 header/footer、footnotes/endnotes/comments 中的文本节点。",
+      "next_action": "增加修订痕迹、样式标题层级和页码/目录噪音过滤。",
+      "failure_mode": "压缩包损坏或 XML 缺失时记录 parse_failed:docx。",
+      "acceptance_check": "DOCX fixture 能抽取政策标题、核心条款、页眉页脚和批注文本。"
+    },
+    {
+      "parser_id": "xlsx_ooxml",
+      "name": "XLSX OOXML parser",
+      "family": "built_in",
+      "status": "ready",
+      "priority": 90,
+      "formats": ["xlsx"],
+      "mime_types": ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+      "engines": ["zipfile", "ElementTree"],
+      "capability_tags": ["office_xml_extraction", "failure_audit", "no_secret_logging"],
+      "business_value": "覆盖政策清单、项目清单、资助目录、标准目录和名单类附件。",
+      "current_implementation": "读取 workbook sheet 名称、sharedStrings 和前 8 个 sheet 的单元格值。",
+      "next_action": "增加表头识别、合并单元格和金额/日期字段归一化。",
+      "failure_mode": "缺少 sharedStrings 或 sheet XML 异常时记录 parse_failed:xlsx。",
+      "acceptance_check": "XLSX fixture 能抽取 sheet 名称、行业词和清单标题。"
+    },
+    {
+      "parser_id": "pptx_ooxml",
+      "name": "PPTX OOXML parser",
+      "family": "built_in",
+      "status": "ready",
+      "priority": 84,
+      "formats": ["pptx"],
+      "mime_types": ["application/vnd.openxmlformats-officedocument.presentationml.presentation"],
+      "engines": ["zipfile", "ElementTree"],
+      "capability_tags": ["presentation_xml_extraction", "failure_audit", "no_secret_logging"],
+      "business_value": "覆盖发布会材料、政策宣讲课件、图解政策和行业培训材料，补充外部研究解读证据。",
+      "current_implementation": "读取 ppt/slides/slide*.xml 的文本节点，并保留 slide 序号作为弱定位证据。",
+      "next_action": "增加备注页、图表数据、图片 OCR 和演讲者备注抽取。",
+      "failure_mode": "压缩包损坏或 slide XML 缺失时记录 parse_failed:pptx。",
+      "acceptance_check": "PPTX fixture 能抽取至少 2 页 slide 文本和 slide 序号。"
+    },
+    {
+      "parser_id": "pdf_ocr",
+      "name": "PDF OCR fallback",
+      "family": "optional_dependency",
+      "status": "partial",
+      "priority": 82,
+      "formats": ["pdf"],
+      "mime_types": ["application/pdf"],
+      "engines": ["PyMuPDF", "Pillow", "pytesseract"],
+      "capability_tags": ["ocr_extraction", "failure_audit", "no_secret_logging"],
+      "business_value": "处理扫描版公告、图片化红头文件和历史 PDF，降低空白报告风险。",
+      "current_implementation": "文本层为空时渲染前 3 页为图片并调用 OCR。",
+      "next_action": "确认本机 tesseract 中文语言包；增加页级 OCR 成功率和置信度记录。",
+      "failure_mode": "依赖缺失时记录 ocr_unavailable，不阻塞主流程。",
+      "acceptance_check": "扫描 PDF fixture 能进入 pdf_ocr 并返回 ocr_parsed 或可审计失败状态。"
+    },
+    {
+      "parser_id": "image_ocr",
+      "name": "Image OCR parser",
+      "family": "optional_dependency",
+      "status": "partial",
+      "priority": 78,
+      "formats": ["png", "jpg", "jpeg", "tif", "tiff", "bmp", "webp"],
+      "mime_types": ["image/png", "image/jpeg", "image/tiff", "image/bmp", "image/webp"],
+      "engines": ["Pillow", "pytesseract"],
+      "capability_tags": ["ocr_extraction", "failure_audit", "no_secret_logging"],
+      "business_value": "处理图片公告、平台截图、视频封面字幕线索和地方网站图片化通知。",
+      "current_implementation": "图片附件直接走 pytesseract OCR。",
+      "next_action": "增加图片预处理、方向校正和低置信度复核队列。",
+      "failure_mode": "依赖缺失、图片损坏或 OCR 为空时记录 ocr_unavailable/ocr_empty。",
+      "acceptance_check": "图片 fixture 能被路由到 image_ocr parser。"
+    },
+    {
+      "parser_id": "apache_tika_bridge",
+      "name": "Apache Tika bridge",
+      "family": "optional_external_service",
+      "status": "partial",
+      "priority": 72,
+      "formats": ["doc", "xls", "ppt", "rtf", "odt", "ods", "epub"],
+      "mime_types": ["application/msword", "application/vnd.ms-excel", "application/vnd.ms-powerpoint", "application/rtf", "application/vnd.oasis.opendocument.text", "application/vnd.oasis.opendocument.spreadsheet", "application/epub+zip"],
+      "engines": ["Apache Tika"],
+      "capability_tags": ["legacy_office_extraction", "failure_audit", "no_secret_logging"],
+      "business_value": "补齐旧格式、复杂 Office 和多媒体元数据，减少政府附件无法解析的盲区；PPTX 基础文本已由内置 OOXML parser 覆盖。",
+      "current_implementation": "DOC/XLS/PPT/RTF/ODT/ODS/EPUB 会路由到可选 Tika bridge；配置 TIKA_SERVER_URL 后用 PUT /tika 抽取纯文本，未配置时记录 needs_dependency:tika_server。",
+      "next_action": "增加 Tika 在线健康检查、fixture 样本库、并发限流和超大附件分段策略。",
+      "failure_mode": "服务未配置时记录 needs_dependency:tika_server；请求失败时记录 parse_failed:tika:*；不记录 URL 密钥或正文。",
+      "acceptance_check": "DOC/XLS/PPT/RTF/ODT/ODS/EPUB 可由 Tika 返回文本，或进入明确可审计失败状态。"
+    },
+    {
+      "parser_id": "grobid_research_pdf",
+      "name": "GROBID research PDF parser",
+      "family": "optional_external_service",
+      "status": "partial",
+      "priority": 62,
+      "formats": ["pdf"],
+      "mime_types": ["application/pdf"],
+      "engines": ["GROBID"],
+      "capability_tags": ["research_pdf_structure", "failure_audit", "no_secret_logging"],
+      "business_value": "面向智库报告、蓝皮书、论文型解读，抽取章节、作者、引用和参考文献，提升外部研究证据质量。",
+      "current_implementation": "配置 GROBID_SERVER_URL 后，PDF 会先尝试 POST /api/processFulltextDocument，并从 TEI 中抽取标题、作者、章节摘要和参考文献；失败时回退普通 PDF 文本层。",
+      "next_action": "增加在线健康检查、参考文献去重、作者机构归一化和来源权威性关联。",
+      "failure_mode": "服务未配置时不调用；请求或 TEI 解析失败时记录 parse_failed:grobid:* 并回退 pypdf/PyMuPDF/OCR。",
+      "acceptance_check": "研究 PDF fixture 能通过 mock GROBID 抽取标题、作者、章节和至少 1 条参考文献；无 GROBID 时普通 PDF 路径不受影响。"
+    }
+  ]
+}

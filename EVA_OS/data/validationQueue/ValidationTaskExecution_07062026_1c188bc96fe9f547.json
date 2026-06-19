@@ -1,0 +1,59 @@
+{
+  "schema": "QuantLabValidationTaskExecutionV1",
+  "system": "EVA_OS",
+  "subsystem": "Validation Task Execution",
+  "as_of": "2026-06-07",
+  "generated_at": "2026-06-07T13:50:39",
+  "project_root": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance",
+  "execution_id": "validationExecution_1c188bc96fe9f547cc56b3f1",
+  "task_id": "reportGapTask_e075e54ff090b224301e",
+  "source_report": "/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx",
+  "research_topic": "补齐报告证据：RunMetadata_07062026 / CrossSourceValidation",
+  "evidence_gap": "CrossSourceValidation",
+  "symbol": "AAPL",
+  "market": "US",
+  "request": {
+    "symbol": "AAPL",
+    "market": "US",
+    "interval": "1d",
+    "start": "2024-01-01",
+    "end": "2024-01-31"
+  },
+  "tolerance_pct": 0.01,
+  "providers_requested": [
+    "Yahoo Finance"
+  ],
+  "providers_used": [],
+  "execution_status": "Blocked",
+  "evidence_status": "NeedsMoreEvidence",
+  "result_status": "NotRun",
+  "blockers": [
+    "at_least_two_real_providers_required"
+  ],
+  "cross_validation_report_path": "",
+  "result": {
+    "overlap_rows": 0,
+    "max_close_diff_pct": 0.0,
+    "mean_close_diff_pct": 0.0,
+    "details_preview": []
+  },
+  "error": "Validation input is incomplete or fewer than two real providers are available.",
+  "fact": "Cross-source validation was not run because required inputs or provider coverage were missing.",
+  "inference": "The evidence gap remains open; no data-quality conclusion should be upgraded.",
+  "next_action": "Configure at least two real providers or fill missing symbol/market fields, then rerun.",
+  "assumptions": [
+    "This execution record is research-only; it does not connect to live trading and does not place orders.",
+    "A blocked or error status is valid evidence of an execution attempt, not evidence that the strategy or data passed.",
+    "The original validation queue is not mutated by this runner."
+  ],
+  "outputs": {
+    "json": "data/validationQueue/ValidationTaskExecution_07062026_1c188bc96fe9f547.json",
+    "csv": "data/validationQueue/ValidationTaskExecution_07062026_1c188bc96fe9f547.csv",
+    "markdown": "data/validationQueue/ValidationTaskExecution_07062026_1c188bc96fe9f547.md",
+    "pdf": "data/validationQueue/ValidationTaskExecution_07062026_1c188bc96fe9f547.pdf",
+    "latest_json": "data/validationQueue/ValidationTaskExecution_latest.json",
+    "latest_csv": "data/validationQueue/ValidationTaskExecution_latest.csv",
+    "latest_markdown": "data/validationQueue/ValidationTaskExecution_latest.md",
+    "latest_pdf": "data/validationQueue/ValidationTaskExecution_latest.pdf"
+  }
+}

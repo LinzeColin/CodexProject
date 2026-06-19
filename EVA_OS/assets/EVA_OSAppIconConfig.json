@@ -1,0 +1,10 @@
+{
+  "name": "EVA_OSAppIcon",
+  "product": "EVA_OS",
+  "generated_at": "2026-06-13",
+  "style": "macOS rounded-square app icon with finance OS signal grid, geometric E mark, orbit nodes, and teal-gold accents",
+  "source_preview": "assets/EVA_OSAppIconPreview.png",
+  "iconset": "assets/EVA_OSAppIcon.iconset",
+  "icns": "assets/EVA_OSAppIcon.icns",
+  "bundle_resource": "macos/EVA_OS.app/Contents/Resources/EVA_OSAppIcon.icns"
+}

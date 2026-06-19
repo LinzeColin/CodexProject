@@ -1,0 +1,124 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 2464 >>
+stream
+BT
+/F1 10 Tf
+56 760 Td
+12 TL
+(Report Evidence Gap Tasks 2026-06-07) Tj
+T*
+(Source Records: 31) Tj
+T*
+(Candidate Tasks: 163) Tj
+T*
+(Pending New Tasks: 0) Tj
+T*
+(Appended Tasks: 0) Tj
+T*
+(Skipped Existing: 163) Tj
+T*
+() Tj
+T*
+(Gap Counts:) Tj
+T*
+(- CrossSourceValidation: 31) Tj
+T*
+(- DecisionQuality: 31) Tj
+T*
+(- DataQuality: 30) Tj
+T*
+(- ReportEvidence: 30) Tj
+T*
+(- RiskGate: 26) Tj
+T*
+(- ParameterStability: 5) Tj
+T*
+(- TrainTestValidation: 5) Tj
+T*
+(- WalkForwardValidation: 5) Tj
+T*
+() Tj
+T*
+(Top Tasks:) Tj
+T*
+(- CrossSourceValidation: ???????RunMetadata_07062026 / CrossSourceValidation) Tj
+T*
+(- ParameterStability: ???????RunMetadata_07062026 / ParameterStability) Tj
+T*
+(- TrainTestValidation: ???????RunMetadata_07062026 / TrainTestValidation) Tj
+T*
+(- WalkForwardValidation: ???????RunMetadata_07062026 / WalkForwardValidation) Tj
+T*
+(- DecisionQuality: ???????RunMetadata_07062026 / DecisionQuality) Tj
+T*
+(- ReportEvidence: ???????RunMetadata7_04062026 / ReportEvidence) Tj
+T*
+(- DataQuality: ???????RunMetadata7_04062026 / DataQuality) Tj
+T*
+(- CrossSourceValidation: ???????RunMetadata7_04062026 / CrossSourceValidation) Tj
+T*
+(- ParameterStability: ???????RunMetadata7_04062026 / ParameterStability) Tj
+T*
+(- TrainTestValidation: ???????RunMetadata7_04062026 / TrainTestValidation) Tj
+T*
+(- WalkForwardValidation: ???????RunMetadata7_04062026 / WalkForwardValidation) Tj
+T*
+(- DecisionQuality: ???????RunMetadata7_04062026 / DecisionQuality) Tj
+T*
+(- ReportEvidence: ???????RunMetadata6_04062026 / ReportEvidence) Tj
+T*
+(- DataQuality: ???????RunMetadata6_04062026 / DataQuality) Tj
+T*
+(- CrossSourceValidation: ???????RunMetadata6_04062026 / CrossSourceValidation) Tj
+T*
+(- ParameterStability: ???????RunMetadata6_04062026 / ParameterStability) Tj
+T*
+(- TrainTestValidation: ???????RunMetadata6_04062026 / TrainTestValidation) Tj
+T*
+(- WalkForwardValidation: ???????RunMetadata6_04062026 / WalkForwardValidation) Tj
+T*
+(- DecisionQuality: ???????RunMetadata6_04062026 / DecisionQuality) Tj
+T*
+(- ReportEvidence: ???????RunMetadata5_04062026 / ReportEvidence) Tj
+T*
+(- DataQuality: ???????RunMetadata5_04062026 / DataQuality) Tj
+T*
+(- CrossSourceValidation: ???????RunMetadata5_04062026 / CrossSourceValidation) Tj
+T*
+(- ParameterStability: ???????RunMetadata5_04062026 / ParameterStability) Tj
+T*
+(- TrainTestValidation: ???????RunMetadata5_04062026 / TrainTestValidation) Tj
+T*
+() Tj
+T*
+(Research-only. No live trading. No real orders.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2827
+%%EOF

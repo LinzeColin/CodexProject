@@ -1,0 +1,168 @@
+{
+  "schema": "QuantLabDailyReadinessV1",
+  "system": "QuantLab",
+  "as_of": "2026-06-07",
+  "generated_at": "2026-06-07T11:29:16",
+  "readiness_status": "ReadyForResearch",
+  "project_root": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance",
+  "report_root": "/Users/linzezhang/Downloads/量化回测分析",
+  "core_gates": [
+    {
+      "gate": "DataTrust",
+      "status": "Pass",
+      "evidence": "audit_status=Pass; review=0; rejected=0",
+      "next_action": "Keep evidence audit clean before using research outputs."
+    },
+    {
+      "gate": "IntegrationAudit",
+      "status": "Pass",
+      "evidence": "summary={'pass': 6, 'review': 0, 'fail': 0, 'item_count': 6}",
+      "next_action": "Run scripts/auditQuantLabIntegration.sh --no-write if not Pass."
+    },
+    {
+      "gate": "NoLiveTradingBoundary",
+      "status": "Pass",
+      "evidence": "No live order path must remain enforced.",
+      "next_action": "Remove or fail closed any real-order code path."
+    },
+    {
+      "gate": "ReportEvidence",
+      "status": "Pass",
+      "evidence": "run_metadata=31; report_evidence_layer=Pass",
+      "next_action": "Generate a report with RunMetadata before using results."
+    },
+    {
+      "gate": "LatestWordReport",
+      "status": "Pass",
+      "evidence": "/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx",
+      "next_action": "Generate at least one Word report for the current research session."
+    }
+  ],
+  "health_summary": {
+    "Pass": 19,
+    "Info": 3
+  },
+  "provider_summary": {
+    "ready": 5,
+    "needs_config": 3,
+    "needs_package": 0,
+    "needs_opend": 0,
+    "other": 0
+  },
+  "provider_rows": [
+    {
+      "provider": "Sample",
+      "market_cn": "美股样例",
+      "market_en": "US sample",
+      "credential_cn": "不需要",
+      "credential_en": "Not required",
+      "status": "Ready",
+      "note_cn": "离线样例数据，适合第一次跑通流程。",
+      "note_en": "Offline sample data, best for first-run workflow validation."
+    },
+    {
+      "provider": "CSV",
+      "market_cn": "取决于文件",
+      "market_en": "Depends on file",
+      "credential_cn": "不需要",
+      "credential_en": "Not required",
+      "status": "Ready",
+      "note_cn": "上传 OHLCV CSV，适合复用你自己的数据。",
+      "note_en": "Upload an OHLCV CSV file to reuse your own data."
+    },
+    {
+      "provider": "Moomoo",
+      "market_cn": "A 股 / 港股 / 美股优先",
+      "market_en": "CN / HK / US first",
+      "credential_cn": "需要 Moomoo OpenD",
+      "credential_en": "Requires Moomoo OpenD",
+      "status": "Ready",
+      "note_cn": "作为优先真实数据入口；需要本机启动 Moomoo OpenD，不接交易接口。",
+      "note_en": "Primary real-data entry; requires local Moomoo OpenD and does not connect to trading APIs."
+    },
+    {
+      "provider": "AKShare",
+      "market_cn": "A 股优先",
+      "market_en": "A-share first",
+      "credential_cn": "不需要 API Key",
+      "credential_en": "No API key",
+      "status": "Ready",
+      "note_cn": "需要网络和 akshare 包；当前支持 A 股日/周/月线。",
+      "note_en": "Requires network and the akshare package; currently supports A-share daily, weekly, and monthly bars."
+    },
+    {
+      "provider": "TuShare",
+      "market_cn": "A 股优先",
+      "market_en": "A-share first",
+      "credential_cn": "需要 TUSHARE_TOKEN",
+      "credential_en": "Requires TUSHARE_TOKEN",
+      "status": "NeedsConfig",
+      "note_cn": "当前支持 A 股日线；未配置 token 时不可用。",
+      "note_en": "Currently supports A-share daily bars; unavailable without token configuration."
+    },
+    {
+      "provider": "Yahoo Finance",
+      "market_cn": "美股优先，可查部分港股",
+      "market_en": "US first, some HK symbols",
+      "credential_cn": "不需要 API Key",
+      "credential_en": "No API key",
+      "status": "Ready",
+      "note_cn": "需要网络和 yfinance 包；分钟线可能受数据源历史长度限制。",
+      "note_en": "Requires network and the yfinance package; intraday history may be limited by the provider."
+    },
+    {
+      "provider": "Alpha Vantage",
+      "market_cn": "美股优先",
+      "market_en": "US first",
+      "credential_cn": "需要 ALPHA_VANTAGE_API_KEY",
+      "credential_en": "Requires ALPHA_VANTAGE_API_KEY",
+      "status": "NeedsConfig",
+      "note_cn": "适合美股补充校验；免费额度可能有限。",
+      "note_en": "Useful as a US-market validation source; free quota may be limited."
+    },
+    {
+      "provider": "Polygon",
+      "market_cn": "美股优先",
+      "market_en": "US first",
+      "credential_cn": "需要 POLYGON_API_KEY",
+      "credential_en": "Requires POLYGON_API_KEY",
+      "status": "NeedsConfig",
+      "note_cn": "已接入聚合行情接口；未配置 key 时不可用。",
+      "note_en": "Aggregate market data fetching is implemented; unavailable without key configuration."
+    }
+  ],
+  "report_counts": {
+    "Word Report": 39,
+    "Backtest Word Report": 37,
+    "Experiment Research Report": 1,
+    "Strategy Review Report": 1,
+    "Run Metadata": 31,
+    "Data Quality": 51,
+    "Cross Validation": 0,
+    "Experiment Summary": 2,
+    "Experiment Validation": 2,
+    "Walk Forward": 2
+  },
+  "latest_report": {
+    "name": "SampleBacktestReport_07062026.docx",
+    "artifact_type": "Backtest Word Report",
+    "date_folder": "2026-06-07",
+    "size_kb": 742.96,
+    "path": "/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx"
+  },
+  "action_items": [
+    "Configure provider API keys only for the data sources you actually use; do not store keys in source code.",
+    "Open the latest report from Report Center and check data quality, cross-source validation, and risk gates before using it."
+  ],
+  "assumptions": [
+    "This readiness check is read-only.",
+    "It does not refresh market data, start Moomoo OpenD, open Streamlit, mutate holdings, or place orders.",
+    "Provider API keys and OpenD are real-data readiness notes, not proof that a specific research conclusion is valid.",
+    "InsufficientData validation records must not be treated as successful out-of-sample evidence."
+  ],
+  "outputs": {
+    "json": "data/systemAudit/QuantLabDailyReadiness_07062026.json",
+    "markdown": "data/systemAudit/QuantLabDailyReadiness_07062026.md",
+    "pdf": "data/systemAudit/QuantLabDailyReadiness_07062026.pdf"
+  }
+}

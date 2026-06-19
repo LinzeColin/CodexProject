@@ -1,0 +1,74 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 949 >>
+stream
+BT
+/F1 10 Tf
+56 760 Td
+12 TL
+(Validation Task Execution 2026-06-07) Tj
+T*
+(Execution Status: Blocked) Tj
+T*
+(Evidence Status: NeedsMoreEvidence) Tj
+T*
+(Task: reportGapTask_e075e54ff090b224301e) Tj
+T*
+(Symbol: AAPL / US) Tj
+T*
+(Providers Requested: Yahoo Finance) Tj
+T*
+(Providers Used: ) Tj
+T*
+(Result Status: NotRun) Tj
+T*
+(Overlap Rows: 0) Tj
+T*
+(Max Close Diff: 0.00%) Tj
+T*
+(Mean Close Diff: 0.00%) Tj
+T*
+(Blockers: at_least_two_real_providers_required) Tj
+T*
+() Tj
+T*
+(FACT: Cross-source validation was not run because required inputs or provider coverage were missing.) Tj
+T*
+(INFERENCE: The evidence gap remains open; no data-quality conclusion should be upgraded.) Tj
+T*
+(Next Action: Configure at least two real providers or fill missing symbol/market fields, then rerun.) Tj
+T*
+() Tj
+T*
+(Research-only. No live trading. No real orders.) Tj
+T*
+(Error: Validation input is incomplete or fewer than two real providers are available.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1311
+%%EOF

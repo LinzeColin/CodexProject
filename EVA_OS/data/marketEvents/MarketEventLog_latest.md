@@ -1,0 +1,32 @@
+# Market Event Layer 2026-06-13
+
+## Summary
+- Status: `Pass`
+- Events: `7`
+- Source: `sample`
+- Symbol: `US:SPY`
+- Interval: `1d`
+- Window: `2026-01-01T00:00:00` -> `2026-01-09T00:00:00`
+
+## Quality
+- Quality Status: `Pass`
+- Rows: `7`
+- Missing Values: `0`
+- Duplicate Datetimes: `0`
+- Checksum: `31845558d4afb7fb62032a6473613f7099651004dc13c64c42cdac4d2b40a80e`
+
+## Event Sample
+| event_id | event_time | event_type | symbol | market | interval | source | sequence | quality_status | evidence_layer | open | high | low | close | volume |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2577b42b42d1044d705f45b5 | 2026-01-01T00:00:00 | BarClosed | SPY | US | 1d | sample | 1 | Pass | OBSERVATION | 2164.7386826457673 | 2179.837498867649 | 2144.3823777244747 | 2159.4442659674423 | 2000000.0 |
+| bd745bdb60b45c09fe38e973 | 2026-01-02T00:00:00 | BarClosed | SPY | US | 1d | sample | 2 | Pass | OBSERVATION | 2154.234485726072 | 2170.8900614948393 | 2142.2845342000737 | 2158.914150968936 | 1467797.0 |
+| 1cbf713b74a0ed207e611eb3 | 2026-01-05T00:00:00 | BarClosed | SPY | US | 1d | sample | 3 | Pass | OBSERVATION | 2175.8084828198175 | 2185.86112607626 | 2165.3507699634774 | 2175.4015330355946 | 1409645.0 |
+| 3a19ad448d37bf25176dd1d0 | 2026-01-06T00:00:00 | BarClosed | SPY | US | 1d | sample | 4 | Pass | OBSERVATION | 2183.1704983589084 | 2197.2313272975584 | 2167.769510385464 | 2181.82165200544 | 1997717.0 |
+| 7adcef2ea926374fed979618 | 2026-01-07T00:00:00 | BarClosed | SPY | US | 1d | sample | 5 | Pass | OBSERVATION | 2182.7955174589433 | 2200.140447610894 | 2168.4402926152025 | 2185.765689336383 | 1523060.0 |
+| 3ef8eeed359f2c1c2fd6886c | 2026-01-08T00:00:00 | BarClosed | SPY | US | 1d | sample | 6 | Pass | OBSERVATION | 2190.159267139134 | 2199.741675574737 | 2176.3168467924465 | 2185.880534872512 | 1796915.0 |
+| d19da62e50a368522761fa99 | 2026-01-09T00:00:00 | BarClosed | SPY | US | 1d | sample | 7 | Pass | OBSERVATION | 2176.3335364923105 | 2196.4654911125267 | 2161.3662368489477 | 2181.4629151906547 | 1900931.0 |
+
+## Assumptions
+- This layer normalizes market observations into local research events; it does not connect to live trading or submit orders.
+- Sample or CSV inputs are observation evidence until cross-source validation upgrades them.
+- Kafka, QuestDB, ClickHouse, and external real-time feeds are future adapters; this local event log is the stable contract first.

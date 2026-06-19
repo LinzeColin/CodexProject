@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/EVA_OS/shared/schema/token_roi_reviewed_value_evidence.schema.json",
+  "title": "EVA_OS Token ROI Reviewed Value Evidence",
+  "description": "Public contract for local reviewed Token ROI value evidence. Real inputs should stay under data/private/value and must not be committed.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["run_date", "task_goal", "title", "review_status"],
+    "additionalProperties": true,
+    "properties": {
+      "roi_id": {"type": "string"},
+      "run_date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+      "task_goal": {"type": "string", "minLength": 1},
+      "title": {"type": "string", "minLength": 1},
+      "subsystem": {"type": "string"},
+      "value_contribution": {
+        "type": "string",
+        "enum": [
+          "Data Credibility",
+          "System Reliability",
+          "Traceability",
+          "Decision Support",
+          "Validation Efficiency",
+          "Reusable Asset"
+        ]
+      },
+      "evidence_link": {"type": "string"},
+      "source_path": {"type": "string"},
+      "output_path": {"type": "string"},
+      "token_estimate": {"type": "integer", "minimum": 0},
+      "ai_cost": {"type": "number", "minimum": 0},
+      "human_time_cost": {"type": "number", "minimum": 0},
+      "revenue_generated": {"type": "number", "minimum": 0},
+      "cost_saved": {"type": "number", "minimum": 0},
+      "loss_avoided": {"type": "number", "minimum": 0},
+      "asset_reuse_value": {"type": "number", "minimum": 0},
+      "time_saved_hours": {"type": "number", "minimum": 0},
+      "reuse_count": {"type": "integer", "minimum": 0},
+      "review_status": {"type": "string", "enum": ["PendingReview", "Reviewed", "Rejected"]},
+      "notes": {"type": "string"}
+    }
+  }
+}

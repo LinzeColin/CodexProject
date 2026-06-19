@@ -1,0 +1,63 @@
+{
+  "last_refreshed": "2026-06-04",
+  "operator_contact": "local-operator@example.invalid",
+  "default_user_agent": "PolicyIntelligenceBot/0.1 (+local operator; respects robots and access controls)",
+  "default_policy": {
+    "profile": "default_public",
+    "respect_robots": true,
+    "respect_nofollow": true,
+    "min_delay_seconds": 1.0,
+    "max_retries": 2,
+    "timeout_seconds": 20,
+    "snapshot_retention_days": 365,
+    "allowed_content_types": ["text/html", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+    "blocked_handling": "record_gap_only",
+    "compliance": "只抓取公开可访问或用户授权范围内页面；验证码、付费墙、登录访问控制和平台禁止接口只记录缺口。"
+  },
+  "profiles": {
+    "official_government": {
+      "match_source_types": ["government_portal", "ministry_site", "provincial_portal", "local_government_site", "government_info_platform", "information_disclosure"],
+      "respect_robots": true,
+      "min_delay_seconds": 1.0,
+      "max_retries": 2,
+      "timeout_seconds": 20,
+      "snapshot_retention_days": 1825,
+      "allowed_content_types": ["text/html", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+      "blocked_handling": "record_gap_only",
+      "compliance": "政府公开网站优先保留长周期快照；仍尊重 robots、nofollow、验证码和访问控制。"
+    },
+    "public_media_or_site": {
+      "match_domains": ["people.cn", "cctv.com", "xinhuanet.com", "yicai.com"],
+      "respect_robots": true,
+      "min_delay_seconds": 2.0,
+      "max_retries": 1,
+      "timeout_seconds": 20,
+      "snapshot_retention_days": 730,
+      "allowed_content_types": ["text/html", "application/pdf"],
+      "blocked_handling": "lead_only",
+      "compliance": "只抽取公开文章正文；遇到登录、验证码、付费墙或脚本依赖时保留线索，不计入有效参考。"
+    },
+    "search_entry": {
+      "match_domains": ["baidu.com", "sogou.com", "so.com", "bing.com", "google.com"],
+      "respect_robots": true,
+      "min_delay_seconds": 3.0,
+      "max_retries": 1,
+      "timeout_seconds": 15,
+      "snapshot_retention_days": 90,
+      "allowed_content_types": ["text/html"],
+      "blocked_handling": "search_landing_only",
+      "compliance": "搜索结果页只作为线索入口；不绕过反爬、验证码或平台限制，入口本身不计入 5 份有效参考。"
+    },
+    "authorized_platform": {
+      "match_domains": ["bilibili.com", "douyin.com", "kuaishou.com", "weibo.com", "zhihu.com", "weixin.qq.com", "xiaohongshu.com", "toutiao.com"],
+      "respect_robots": true,
+      "min_delay_seconds": 4.0,
+      "max_retries": 1,
+      "timeout_seconds": 20,
+      "snapshot_retention_days": 180,
+      "allowed_content_types": ["text/html", "application/json"],
+      "blocked_handling": "record_auth_gap",
+      "compliance": "仅使用公开页面、开放 API 或你授权的本地 cookie/session；不在报告、日志或 dashboard 展示 secret。"
+    }
+  }
+}

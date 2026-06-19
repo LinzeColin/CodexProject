@@ -1,0 +1,34 @@
+{
+  "schema": "source_registry_sample.v1",
+  "sources": [
+    {
+      "source_id": "sample_gov_portal",
+      "name": "Example Government Portal",
+      "country_code": "CN",
+      "source_type": "official_government_portal",
+      "authority_tier": "A",
+      "authority_score": 95,
+      "review_status": "system_scored",
+      "crawl_enabled": true,
+      "evidence": [
+        "official_directory_entry",
+        "organization_page",
+        "public_domain_match"
+      ]
+    },
+    {
+      "source_id": "sample_research_interpretation",
+      "name": "Example Public Research Interpretation Source",
+      "country_code": "CN",
+      "source_type": "public_research_interpretation",
+      "authority_tier": "C",
+      "authority_score": 68,
+      "review_status": "needs_review",
+      "crawl_enabled": false,
+      "evidence": [
+        "public_article_url",
+        "author_profile_present"
+      ]
+    }
+  ]
+}

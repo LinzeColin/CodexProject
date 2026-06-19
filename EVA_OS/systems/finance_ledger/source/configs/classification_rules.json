@@ -1,0 +1,194 @@
+{
+  "version": "0.1.0",
+  "notes": [
+    "Rules are evaluated top to bottom. The first matching rule sets the exclusive primary_bucket.",
+    "risk_level is also used to build overlapping risk spending views."
+  ],
+  "rules": [
+    {
+      "name": "failed_or_closed_transactions",
+      "primary_bucket": "excluded",
+      "mechanism": "失败或关闭交易",
+      "risk_level": "none",
+      "status_keywords": ["关闭", "失败", "已关闭"],
+      "reason": "交易未成功，不进入消费统计"
+    },
+    {
+      "name": "refund_or_income",
+      "primary_bucket": "income_refund",
+      "mechanism": "收入/退款",
+      "risk_level": "none",
+      "directions": ["收入"],
+      "reason": "收入或退款，不计入消费"
+    },
+    {
+      "name": "refund_category",
+      "primary_bucket": "income_refund",
+      "mechanism": "收入/退款",
+      "risk_level": "none",
+      "transaction_types": ["退款", "收入"],
+      "reason": "退款/收入类交易"
+    },
+    {
+      "name": "credit_turnover_cost",
+      "primary_bucket": "financial_spending",
+      "mechanism": "信用周转成本",
+      "risk_level": "high",
+      "transaction_types": ["信用借还"],
+      "any_keywords": ["花呗", "借呗", "备用金", "网商贷", "信用卡", "分期", "还款", "主动还款", "自动还款", "手续费", "利息"],
+      "reason": "信用借还、分期或周转相关"
+    },
+    {
+      "name": "yu_e_bao_account_movement",
+      "primary_bucket": "account_transfer",
+      "mechanism": "账户搬运损耗",
+      "risk_level": "low",
+      "any_keywords": ["余额宝-单次转入", "余额宝-自动转入", "余额宝-转出", "转账收款到余额宝", "余额转入", "网商银行转入", "转出到银行卡", "转出到余额", "提现", "充值", "账户存取", "银行卡"],
+      "reason": "账户间搬运，默认不计入真实消费"
+    },
+    {
+      "name": "insurance_long_term_fee",
+      "primary_bucket": "financial_spending",
+      "mechanism": "订阅/保险长期扣费",
+      "risk_level": "medium",
+      "any_keywords": ["保险", "寿险", "年金", "车险", "承保", "保费"],
+      "reason": "保险或长期扣费"
+    },
+    {
+      "name": "fund_buy_liquidity_lock",
+      "primary_bucket": "financial_spending",
+      "mechanism": "流动性锁定",
+      "risk_level": "medium",
+      "transaction_types": ["投资理财"],
+      "any_keywords": ["买入", "定投", "基金", "ETF", "QDII", "指数", "黄金"],
+      "reason": "基金/理财买入会锁定流动性"
+    },
+    {
+      "name": "fund_sell_or_financial_transfer",
+      "primary_bucket": "financial_spending",
+      "mechanism": "金融资产调仓",
+      "risk_level": "low",
+      "transaction_types": ["投资理财"],
+      "any_keywords": ["卖出", "赎回", "转入", "转出", "收益"],
+      "reason": "金融资产卖出、赎回或调仓"
+    },
+    {
+      "name": "social_transfer_type",
+      "primary_bucket": "social_spending",
+      "mechanism": "社交场景消费",
+      "risk_level": "medium",
+      "transaction_types": ["亲友代付", "转账红包"],
+      "reason": "支付宝交易分类为亲友代付或转账红包"
+    },
+    {
+      "name": "social_family_keywords",
+      "primary_bucket": "social_spending",
+      "mechanism": "社交场景消费",
+      "risk_level": "medium",
+      "any_keywords": ["亲情卡", "代付", "群收款", "AA", "请客", "礼物", "小荷包", "人情"],
+      "reason": "红包、亲情卡、代付或人情往来"
+    },
+    {
+      "name": "business_personal_mixed",
+      "primary_bucket": "business_personal_mixed",
+      "mechanism": "公司个人混同支出",
+      "risk_level": "medium",
+      "any_keywords": ["办公", "发票", "报销", "差旅", "商旅", "酒店", "机票", "火车票", "云服务", "服务器", "广告", "经营码", "商业服务", "商业协作", "WPS 365"],
+      "reason": "疑似公司、报销、办公或经营相关"
+    },
+    {
+      "name": "subscription_small_long_term",
+      "primary_bucket": "optimizable_spending",
+      "mechanism": "订阅费长期扣费",
+      "risk_level": "medium",
+      "any_keywords": ["App Store", "Apple Music", "会员", "订阅", "自动续费", "月卡", "年卡", "VIP", "话费", "手机充值", "联通", "移动", "电信"],
+      "reason": "固定订阅或通信扣费，需要周期复盘"
+    },
+    {
+      "name": "platform_convenience_premium",
+      "primary_bucket": "optimizable_spending",
+      "mechanism": "平台便利溢价",
+      "risk_level": "medium",
+      "any_keywords": ["外卖", "淘宝闪购", "美团", "饿了么", "盒马", "京东到家", "叮咚", "闪送", "配送", "达达", "滴滴", "花小猪", "高德打车", "携程", "HUNGRYPANDA", "Fantuan Delivery", "街电", "小电", "充电宝"],
+      "reason": "即时零售、外卖、打车或平台便利溢价"
+    },
+    {
+      "name": "high_frequency_small_food",
+      "primary_bucket": "optimizable_spending",
+      "mechanism": "高频小额消费",
+      "risk_level": "medium",
+      "amount_max": 80,
+      "any_keywords": ["奶茶", "咖啡", "瑞幸", "星巴克", "茶", "便利店", "罗森", "全家", "711", "小吃", "牛肉面", "汉堡", "大米先生", "老乡鸡", "蔡林记", "食堂", "美食", "餐饮", "小卖部"],
+      "reason": "小额但高频的食品饮料/便利消费"
+    },
+    {
+      "name": "low_repurchase_shopping",
+      "primary_bucket": "risk_spending",
+      "mechanism": "低复购价值消费",
+      "risk_level": "high",
+      "any_keywords": ["淘宝", "天猫", "京东", "拼多多", "得物", "数码", "电器", "服饰", "美妆", "美容", "盲盒", "手办", "潮玩", "短期兴趣", "Chanel", "奢侈", "奢侈品"],
+      "reason": "冲动购物、数码服饰或短期兴趣消费"
+    },
+    {
+      "name": "car_and_transport_necessary",
+      "primary_bucket": "real_consumption",
+      "mechanism": "交通/车辆刚性支出",
+      "risk_level": "low",
+      "transaction_types": ["交通出行", "爱车养车"],
+      "any_keywords": ["高速", "ETC", "停车", "加油", "铁路", "12306", "公交", "地铁", "出行"],
+      "reason": "交通和车辆相关刚性支出"
+    },
+    {
+      "name": "car_category_general",
+      "primary_bucket": "real_consumption",
+      "mechanism": "交通/车辆刚性支出",
+      "risk_level": "low",
+      "transaction_types": ["爱车养车"],
+      "reason": "爱车养车类支出"
+    },
+    {
+      "name": "housing_utilities_medical",
+      "primary_bucket": "real_consumption",
+      "mechanism": "必要生活支出",
+      "risk_level": "low",
+      "any_keywords": ["物业", "水费", "电费", "燃气", "供电", "医疗", "药", "医院", "住房", "房租", "宽带"],
+      "reason": "住房、公用事业或医疗类必要支出"
+    },
+    {
+      "name": "ordinary_food",
+      "primary_bucket": "real_consumption",
+      "mechanism": "日常餐饮",
+      "risk_level": "low",
+      "transaction_types": ["餐饮美食"],
+      "reason": "普通餐饮支出"
+    },
+    {
+      "name": "ordinary_retail",
+      "primary_bucket": "real_consumption",
+      "mechanism": "日用消费",
+      "risk_level": "low",
+      "transaction_types": ["日用百货", "生活服务", "家居家装", "宠物", "文化休闲", "运动户外", "医疗健康", "公共服务", "母婴亲子"],
+      "reason": "普通生活消费"
+    }
+  ],
+  "default_buckets": {
+    "支出": {
+      "primary_bucket": "real_consumption",
+      "mechanism": "未分类真实支出",
+      "risk_level": "low",
+      "reason": "默认支出口径"
+    },
+    "不计收支": {
+      "primary_bucket": "account_transfer",
+      "mechanism": "未分类不计收支",
+      "risk_level": "low",
+      "reason": "支付宝标记为不计收支，默认视为账户搬运"
+    },
+    "收入": {
+      "primary_bucket": "income_refund",
+      "mechanism": "收入/退款",
+      "risk_level": "none",
+      "reason": "默认收入口径"
+    }
+  }
+}

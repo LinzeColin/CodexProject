@@ -1,0 +1,2 @@
+execution_id,task_id,execution_status,evidence_status,evidence_gap,symbol,market,providers_requested,providers_used,overlap_rows,max_close_diff_pct,mean_close_diff_pct,result_status,blockers,cross_validation_report_path,source_report
+validationExecution_1c188bc96fe9f547cc56b3f1,reportGapTask_e075e54ff090b224301e,Blocked,NeedsMoreEvidence,CrossSourceValidation,AAPL,US,Yahoo Finance,,0,0.0,0.0,NotRun,at_least_two_real_providers_required,,/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx

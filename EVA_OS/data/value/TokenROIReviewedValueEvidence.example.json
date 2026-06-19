@@ -1,0 +1,42 @@
+[
+  {
+    "run_date": "2026-06-16",
+    "task_goal": "Productize reviewed-input refresh for Consumption Guard.",
+    "title": "Consumption Guard reviewed-input MVP",
+    "subsystem": "EVA_OS Consumption Guard",
+    "value_contribution": "System Reliability",
+    "evidence_link": "sample://token-roi/consumption-reviewed-input-2026-06-16",
+    "source_path": "sample://token-roi/consumption-reviewed-input-2026-06-16",
+    "token_estimate": 9000,
+    "ai_cost": 12.5,
+    "human_time_cost": 45.0,
+    "revenue_generated": 0.0,
+    "cost_saved": 520.0,
+    "loss_avoided": 0.0,
+    "asset_reuse_value": 180.0,
+    "time_saved_hours": 2.0,
+    "reuse_count": 2,
+    "review_status": "Reviewed",
+    "notes": "Synthetic public-safe value evidence for workflow smoke only. Replace with private reviewed evidence under data/private/value."
+  },
+  {
+    "run_date": "2026-06-16",
+    "task_goal": "Reduce agent context cost with compact runtime summaries.",
+    "title": "Runtime summary low-token handoff",
+    "subsystem": "EVA_OS Executive Command Center",
+    "value_contribution": "Validation Efficiency",
+    "evidence_link": "sample://token-roi/runtime-summary-low-token-2026-06-16",
+    "source_path": "sample://token-roi/runtime-summary-low-token-2026-06-16",
+    "token_estimate": 6500,
+    "ai_cost": 8.0,
+    "human_time_cost": 30.0,
+    "revenue_generated": 0.0,
+    "cost_saved": 360.0,
+    "loss_avoided": 120.0,
+    "asset_reuse_value": 240.0,
+    "time_saved_hours": 1.5,
+    "reuse_count": 3,
+    "review_status": "Reviewed",
+    "notes": "Synthetic public-safe value evidence. It is not a claim about actual revenue or saved cash."
+  }
+]

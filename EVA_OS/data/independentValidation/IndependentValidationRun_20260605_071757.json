@@ -1,0 +1,250 @@
+{
+  "run_id": "independentValidationRun_6a827a2e0b72d2d961c8",
+  "status": "Completed",
+  "mode": "checksum",
+  "manifest_path": "",
+  "total_rows": 10000000,
+  "shard_count": 10,
+  "started_at": "2026-06-05T07:17:57",
+  "completed_at": "2026-06-05T07:17:57",
+  "output_path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/independentValidation/IndependentValidationRun_20260605_071757.json",
+  "assumptions": [
+    "该入口默认只生成可审计的分片验证计划，不自动下单、不生成交易指令。",
+    "亿万级别数据测试通过 manifest 和分片登记支持；实际执行应由批处理或分布式执行器逐片消费。",
+    "dry_run 模式不会把大数据一次性载入内存；只读取文件元数据和必要行数统计。",
+    "checksum 模式会逐片流式读取实际文件或生成合成数据分片校验码，不把完整数据集一次性载入内存。",
+    "任一分片文件缺失、格式不支持或实际行数不足，整次校验会标记为 Failed，防止未验证数据被当成已通过。"
+  ],
+  "shards": [
+    {
+      "shard_id": "validationShard_6e401c48cf3b64937231",
+      "run_id": "independentValidationRun_6a827a2e0b72d2d961c8",
+      "shard_index": 0,
+      "source_path": "synthetic://scale-test",
+      "start_row": 0,
+      "end_row": 1000000,
+      "status": "Completed",
+      "payload_json": {
+        "row_count": 1000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 1000000 行；执行器应逐片读取。",
+        "expected_rows": 1000000,
+        "observed_rows": 1000000,
+        "checksum": "137ba032e46207ef3df0100efeb87b4ed82956f664cd76da5d3d5cc87a539d5a",
+        "checksum_algorithm": "sha256",
+        "execution_mode": "checksum",
+        "executed_at": "2026-06-05T07:17:57"
+      }
+    },
+    {
+      "shard_id": "validationShard_4537baf9ed5ee134bdfa",
+      "run_id": "independentValidationRun_6a827a2e0b72d2d961c8",
+      "shard_index": 1,
+      "source_path": "synthetic://scale-test",
+      "start_row": 1000000,
+      "end_row": 2000000,
+      "status": "Completed",
+      "payload_json": {
+        "row_count": 1000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 1000000 行；执行器应逐片读取。",
+        "expected_rows": 1000000,
+        "observed_rows": 1000000,
+        "checksum": "7d2426dcfacd34ef77b551702bbd2a208233d807b6125fd68faf59dd133969e4",
+        "checksum_algorithm": "sha256",
+        "execution_mode": "checksum",
+        "executed_at": "2026-06-05T07:17:57"
+      }
+    },
+    {
+      "shard_id": "validationShard_b55216fcff714c0d2047",
+      "run_id": "independentValidationRun_6a827a2e0b72d2d961c8",
+      "shard_index": 2,
+      "source_path": "synthetic://scale-test",
+      "start_row": 2000000,
+      "end_row": 3000000,
+      "status": "Completed",
+      "payload_json": {
+        "row_count": 1000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 1000000 行；执行器应逐片读取。",
+        "expected_rows": 1000000,
+        "observed_rows": 1000000,
+        "checksum": "40a0c9198957a7631edb589b0b5836156a41fcd8a26d19f261c6b76f7e006d84",
+        "checksum_algorithm": "sha256",
+        "execution_mode": "checksum",
+        "executed_at": "2026-06-05T07:17:57"
+      }
+    },
+    {
+      "shard_id": "validationShard_f1f6ccde1ade15cb9229",
+      "run_id": "independentValidationRun_6a827a2e0b72d2d961c8",
+      "shard_index": 3,
+      "source_path": "synthetic://scale-test",
+      "start_row": 3000000,
+      "end_row": 4000000,
+      "status": "Completed",
+      "payload_json": {
+        "row_count": 1000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 1000000 行；执行器应逐片读取。",
+        "expected_rows": 1000000,
+        "observed_rows": 1000000,
+        "checksum": "0f5cbcb0ab1869ff3a8a3af195a814aef5774f5cd9a67d737a2037f679bdb50a",
+        "checksum_algorithm": "sha256",
+        "execution_mode": "checksum",
+        "executed_at": "2026-06-05T07:17:57"
+      }
+    },
+    {
+      "shard_id": "validationShard_6766712866d08799c48a",
+      "run_id": "independentValidationRun_6a827a2e0b72d2d961c8",
+      "shard_index": 4,
+      "source_path": "synthetic://scale-test",
+      "start_row": 4000000,
+      "end_row": 5000000,
+      "status": "Completed",
+      "payload_json": {
+        "row_count": 1000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 1000000 行；执行器应逐片读取。",
+        "expected_rows": 1000000,
+        "observed_rows": 1000000,
+        "checksum": "eff2abc61265aef1f50d683f10b79986f139e9e864e791c9d79bfb42d8c37b75",
+        "checksum_algorithm": "sha256",
+        "execution_mode": "checksum",
+        "executed_at": "2026-06-05T07:17:57"
+      }
+    },
+    {
+      "shard_id": "validationShard_ba9d38652af57ae2dbbf",
+      "run_id": "independentValidationRun_6a827a2e0b72d2d961c8",
+      "shard_index": 5,
+      "source_path": "synthetic://scale-test",
+      "start_row": 5000000,
+      "end_row": 6000000,
+      "status": "Completed",
+      "payload_json": {
+        "row_count": 1000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 1000000 行；执行器应逐片读取。",
+        "expected_rows": 1000000,
+        "observed_rows": 1000000,
+        "checksum": "5b475ac8dd2cac3299f9f84f876634197ad676b5a6e96531879a518e2b30afcc",
+        "checksum_algorithm": "sha256",
+        "execution_mode": "checksum",
+        "executed_at": "2026-06-05T07:17:57"
+      }
+    },
+    {
+      "shard_id": "validationShard_152c1ec58551a6fbcd68",
+      "run_id": "independentValidationRun_6a827a2e0b72d2d961c8",
+      "shard_index": 6,
+      "source_path": "synthetic://scale-test",
+      "start_row": 6000000,
+      "end_row": 7000000,
+      "status": "Completed",
+      "payload_json": {
+        "row_count": 1000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 1000000 行；执行器应逐片读取。",
+        "expected_rows": 1000000,
+        "observed_rows": 1000000,
+        "checksum": "25592e52fdbfdbe50918d26a1a4f1d298ce0843b37a12448332a3d5da827b25d",
+        "checksum_algorithm": "sha256",
+        "execution_mode": "checksum",
+        "executed_at": "2026-06-05T07:17:57"
+      }
+    },
+    {
+      "shard_id": "validationShard_2c065b15d7f3db6c842d",
+      "run_id": "independentValidationRun_6a827a2e0b72d2d961c8",
+      "shard_index": 7,
+      "source_path": "synthetic://scale-test",
+      "start_row": 7000000,
+      "end_row": 8000000,
+      "status": "Completed",
+      "payload_json": {
+        "row_count": 1000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 1000000 行；执行器应逐片读取。",
+        "expected_rows": 1000000,
+        "observed_rows": 1000000,
+        "checksum": "301f48c0af10dce6a95d7b87138ca9d7b0e6733d72260ddebc05637f62f05e6f",
+        "checksum_algorithm": "sha256",
+        "execution_mode": "checksum",
+        "executed_at": "2026-06-05T07:17:57"
+      }
+    },
+    {
+      "shard_id": "validationShard_55077a1a4e34d751ecea",
+      "run_id": "independentValidationRun_6a827a2e0b72d2d961c8",
+      "shard_index": 8,
+      "source_path": "synthetic://scale-test",
+      "start_row": 8000000,
+      "end_row": 9000000,
+      "status": "Completed",
+      "payload_json": {
+        "row_count": 1000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 1000000 行；执行器应逐片读取。",
+        "expected_rows": 1000000,
+        "observed_rows": 1000000,
+        "checksum": "1e714c6ca381321e1a139adebc390c68acf496df37aef4e044c69a354a8a152c",
+        "checksum_algorithm": "sha256",
+        "execution_mode": "checksum",
+        "executed_at": "2026-06-05T07:17:57"
+      }
+    },
+    {
+      "shard_id": "validationShard_907884d33a3c920cb7fb",
+      "run_id": "independentValidationRun_6a827a2e0b72d2d961c8",
+      "shard_index": 9,
+      "source_path": "synthetic://scale-test",
+      "start_row": 9000000,
+      "end_row": 10000000,
+      "status": "Completed",
+      "payload_json": {
+        "row_count": 1000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 1000000 行；执行器应逐片读取。",
+        "expected_rows": 1000000,
+        "observed_rows": 1000000,
+        "checksum": "a0048d67eb5edb0b67232434144ff8e3b3c28b1044645719a78accd19aa799ab",
+        "checksum_algorithm": "sha256",
+        "execution_mode": "checksum",
+        "executed_at": "2026-06-05T07:17:57"
+      }
+    }
+  ]
+}

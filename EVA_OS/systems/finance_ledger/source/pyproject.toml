@@ -1,0 +1,9 @@
+[project]
+name = "economic-bleed-analyzer"
+version = "0.1.0"
+description = "Repeatable local bill analysis for economic bleed mechanisms."
+requires-python = ">=3.10"
+dependencies = ["pillow>=10.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

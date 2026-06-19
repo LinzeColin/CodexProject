@@ -1,0 +1,4 @@
+"""QuantLab: personal quantitative research and backtesting."""
+
+__version__ = "0.1.0"
+

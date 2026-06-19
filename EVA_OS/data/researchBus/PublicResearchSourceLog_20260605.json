@@ -1,0 +1,151 @@
+{
+  "schemaVersion": "publicResearchSourceLog.v1",
+  "generatedAt": "2026-06-05",
+  "purpose": "公开研究驱动的 QuantLab 总系统升级来源日志",
+  "accessPolicy": "Only public, user-provided, or user-authorized sources are allowed. Unauthorized credentials, cookies, scraping, and private platform data are excluded.",
+  "sources": [
+    {
+      "name": "Microsoft Qlib",
+      "url": "https://github.com/microsoft/qlib",
+      "sourceType": "GitHub / Official documentation",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "AI-oriented quantitative research workflow, data/model/workflow separation",
+      "adoptionRecommendation": "Borrow workflow and experiment-recording concepts; do not migrate QuantLab wholesale."
+    },
+    {
+      "name": "QuantConnect LEAN",
+      "url": "https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/algorithm-engine",
+      "sourceType": "Official documentation",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "Event-driven algorithm engine, backtesting engine design, implementation-risk comparison",
+      "adoptionRecommendation": "Use as reference engine and conceptual benchmark; keep live trading disabled."
+    },
+    {
+      "name": "vectorbt",
+      "url": "https://github.com/polakowo/vectorbt",
+      "sourceType": "GitHub",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "Vectorized backtesting, parameter sweeps, large grid research",
+      "adoptionRecommendation": "Adopt parameter-grid and array-first ideas for QuantLab scanner; optional backend only after tests."
+    },
+    {
+      "name": "Backtrader",
+      "url": "https://www.backtrader.com/",
+      "sourceType": "Official documentation",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "Strategy, indicator, analyzer and ledger-style examples",
+      "adoptionRecommendation": "Use as strategy education/reference engine; do not replace current QuantLab core."
+    },
+    {
+      "name": "OpenBB Open Data Platform",
+      "url": "https://openbb.co/products/odp",
+      "sourceType": "Official product documentation",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "Provider abstraction, local-first data integration, standardized financial data interfaces",
+      "adoptionRecommendation": "Build QuantLab Data Provider Registry around similar provider-layer concepts."
+    },
+    {
+      "name": "moomoo OpenAPI",
+      "url": "https://openapi.moomoo.com/moomoo-api-doc/en/",
+      "sourceType": "Official API documentation",
+      "accessStatus": "公开可访问；账户能力需要用户授权",
+      "evidenceLayer": "FACT",
+      "usedFor": "OpenD, SDK, authorized market data access",
+      "adoptionRecommendation": "Use read-only market data as primary candidate when user authorization and OpenD readiness pass; keep trading calls disabled."
+    },
+    {
+      "name": "AKShare",
+      "url": "https://akshare.akfamily.xyz/introduction.html",
+      "sourceType": "Official documentation / GitHub",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "A-share and Chinese financial data interface",
+      "adoptionRecommendation": "Use as A-share supplementary data source with freshness and cross-source checks."
+    },
+    {
+      "name": "TuShare Pro",
+      "url": "https://tushare.pro/document/2?doc_id=32",
+      "sourceType": "Official documentation",
+      "accessStatus": "公开可访问；API 调用需要 token / 积分",
+      "evidenceLayer": "FACT",
+      "usedFor": "A-share daily indicators and market data",
+      "adoptionRecommendation": "Use as high-quality A-share provider after token is configured; mark blocked without token."
+    },
+    {
+      "name": "Ray",
+      "url": "https://docs.ray.io/en/master/ray-overview/getting-started.html",
+      "sourceType": "Official documentation",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "Distributed task and actor architecture",
+      "adoptionRecommendation": "Optional backend for independent validation workers after local sharding is stable."
+    },
+    {
+      "name": "Dask DataFrame",
+      "url": "https://docs.dask.org/en/stable/dataframe.html",
+      "sourceType": "Official documentation",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "Parallel dataframe and larger-than-memory processing",
+      "adoptionRecommendation": "Optional backend for batch data preparation and big validation results."
+    },
+    {
+      "name": "Pandera",
+      "url": "https://pandera.readthedocs.io/en/v0.23.0/dataframe_models.html",
+      "sourceType": "Official documentation",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "Runtime DataFrame schema validation",
+      "adoptionRecommendation": "Preferred lightweight first step for QuantLab data quality gates."
+    },
+    {
+      "name": "Great Expectations",
+      "url": "https://docs.greatexpectations.io/docs/guides/validation/validate_data_overview/",
+      "sourceType": "Official documentation",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "Validation result reports and data documentation",
+      "adoptionRecommendation": "Use later for shareable data-quality reports; avoid early complexity."
+    },
+    {
+      "name": "FinGPT",
+      "url": "https://fingpt.io/docs",
+      "sourceType": "Official documentation",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "Financial NLP, sentiment analysis, RAG and financial AI workflow reference",
+      "adoptionRecommendation": "Use as model/reference source for evidence-type sentiment observation; no direct trading signal."
+    },
+    {
+      "name": "FinBERT",
+      "url": "https://huggingface.co/ProsusAI/finbert",
+      "sourceType": "Model card",
+      "accessStatus": "公开可访问",
+      "evidenceLayer": "FACT",
+      "usedFor": "Financial text sentiment classification",
+      "adoptionRecommendation": "Candidate model for market and holdings sentiment module, with source-count and freshness gates."
+    }
+  ],
+  "blockedOrConditionalSources": [
+    {
+      "name": "小红书 / B站 / 知乎 / 公众号公开内容",
+      "accessStatus": "公开页面可人工查看；批量抓取通常需要授权或用户手动导出",
+      "handling": "默认标记为需要授权或需要用户手动导出；不得绕过平台限制。"
+    },
+    {
+      "name": "moomoo account-specific data",
+      "accessStatus": "需要用户授权、OpenD readiness、账号权限和本地连接",
+      "handling": "只读行情优先；交易接口保持禁用。"
+    },
+    {
+      "name": "TuShare Pro API",
+      "accessStatus": "需要 token 和积分权限",
+      "handling": "无 token 时只能记录为 blocked，不能伪造数据。"
+    }
+  ]
+}

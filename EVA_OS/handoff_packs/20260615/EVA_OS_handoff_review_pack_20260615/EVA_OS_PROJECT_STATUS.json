@@ -1,0 +1,102 @@
+{
+  "generated_at": "2026-06-15T00:00:00+10:00",
+  "project_name": "EVA_OS",
+  "repository": "https://github.com/LinzeColin/EVA_OS",
+  "verified_remote_head": "b9a2c0351efaed332bd6f15b677b32c5835576da",
+  "local_source": "/Users/linzezhang/Documents/Codex/2026-06-13/files-mentioned-by-the-user-eva/outputs/CodexFinance",
+  "safety_boundary": {
+    "research_only": true,
+    "live_trading": false,
+    "real_order_submission": false,
+    "automatic_betting": false,
+    "automatic_payment": false,
+    "store_broker_passwords": false
+  },
+  "scale": {
+    "python_source_files": 132,
+    "test_files": 63,
+    "scripts": 40,
+    "markdown_docs": 32
+  },
+  "last_verified_run": {
+    "date": "2026-06-13",
+    "checks": [
+      "EVA_OS app plist/icon check passed for Desktop, Downloads, and Applications",
+      "legacy-name scan found no deprecated product-name text or filename residue",
+      "Token ROI, Policy Radar, Consumption Guard, Report Decision Support, and Command Center regenerated",
+      "py_compile passed for renamed app/report/data/integration modules",
+      "target pytest passed: 28 passed in 31.48s"
+    ],
+    "full_suite_passed": false
+  },
+  "app_entries": [
+    "/Users/linzezhang/Desktop/EVA_OS.app",
+    "/Users/linzezhang/Downloads/EVA_OS.app",
+    "/Applications/EVA_OS.app"
+  ],
+  "subsystems": [
+    {
+      "name": "Executive Command Center",
+      "status": "partial_product",
+      "purpose": "aggregate readiness, evidence, Token ROI, business subsystems, reports, and action queue"
+    },
+    {
+      "name": "Token ROI Ledger",
+      "status": "partial_product",
+      "purpose": "register reusable outputs and value evidence without fabricating financial ROI"
+    },
+    {
+      "name": "Company CashFlow Command",
+      "status": "partial_product",
+      "purpose": "record cash balance, income, expenses, receivables, payables, and runway evidence"
+    },
+    {
+      "name": "QuantLab",
+      "status": "usable_core",
+      "purpose": "quant research, backtesting, strategy scanning, reports, and validation"
+    },
+    {
+      "name": "Policy Intelligence Radar",
+      "status": "partial_product",
+      "purpose": "structure policy opportunities and missing evidence"
+    },
+    {
+      "name": "Consumption Guard",
+      "status": "partial_product",
+      "purpose": "review consumption events, impulse risk, and cashflow pressure"
+    },
+    {
+      "name": "AI Research Engine",
+      "status": "planned_or_partial",
+      "purpose": "AI industry research workflow"
+    },
+    {
+      "name": "Sports Market Lab",
+      "status": "planned_or_partial",
+      "purpose": "sports market analysis and calibration reports"
+    },
+    {
+      "name": "CodexForge Factory",
+      "status": "planned_workflow_layer",
+      "purpose": "Codex engineering delivery, task packs, handoffs, and packages"
+    }
+  ],
+  "highest_priority_next_tasks": [
+    "Rebuild full .venv and define smoke/target/full test gates",
+    "Implement Vectorized Research Mode MVP from EventReplay_latest.json",
+    "Optimize hotspot analysis button latency",
+    "Consolidate workbench surfaces to reduce token/context pressure",
+    "Productize 52ETF read-only reference ingestion",
+    "Complete real evidence gates for Token ROI, CashFlow, Policy, and Consumption"
+  ],
+  "package_files": [
+    "README.md",
+    "docs/01_EXECUTIVE_PROGRESS_REPORT.md",
+    "docs/02_FUNCTION_CATALOG.md",
+    "docs/03_DEVELOPER_HANDOFF.md",
+    "docs/04_TASK_ROADMAP.md",
+    "docs/05_USER_GUIDE_BRIEF.md",
+    "docs/06_REVIEW_AUDIT_CHECKLIST.md",
+    "EVA_OS_PROJECT_STATUS.json"
+  ]
+}

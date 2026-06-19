@@ -1,0 +1,35 @@
+# Event Replay 2026-06-13
+
+## Summary
+- Status: `Pass`
+- Cursors: `1`
+- Assets: `1`
+- Source Events: `7`
+- Emitted Events: `7`
+- Window: `2026-01-01T00:00:00` -> `2026-01-09T00:00:00`
+- Next After: `2026-01-09T00:00:00`
+
+## Selected Cursors
+| cursor_id | dataset | market | symbol | interval | source | event_count | first_event_time | last_event_time |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 06306f6b26f7d3cbddd1ecc4 | market_events | US | SPY | 1d | sample | 7 | 2026-01-01T00:00:00 | 2026-01-09T00:00:00 |
+
+## Replay Records
+| replay_index | cursor_id | asset_id | event_id | event_time | event_type | symbol | market | interval | source | quality_status | evidence_layer | payload_json |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 06306f6b26f7d3cbddd1ecc4 | 7f9c515424d2a839ba055442 | 2577b42b42d1044d705f45b5 | 2026-01-01T00:00:00 | BarClosed | SPY | US | 1d | sample | Pass | OBSERVATION | {"close": 2159.4442659674423, "high": 2179.837498867649, "low": 2144.3823777244747, "open": 2164.7386826457673, "volume": 2000000.0} |
+| 2 | 06306f6b26f7d3cbddd1ecc4 | 7f9c515424d2a839ba055442 | bd745bdb60b45c09fe38e973 | 2026-01-02T00:00:00 | BarClosed | SPY | US | 1d | sample | Pass | OBSERVATION | {"close": 2158.914150968936, "high": 2170.8900614948393, "low": 2142.2845342000737, "open": 2154.234485726072, "volume": 1467797.0} |
+| 3 | 06306f6b26f7d3cbddd1ecc4 | 7f9c515424d2a839ba055442 | 1cbf713b74a0ed207e611eb3 | 2026-01-05T00:00:00 | BarClosed | SPY | US | 1d | sample | Pass | OBSERVATION | {"close": 2175.4015330355946, "high": 2185.86112607626, "low": 2165.3507699634774, "open": 2175.8084828198175, "volume": 1409645.0} |
+| 4 | 06306f6b26f7d3cbddd1ecc4 | 7f9c515424d2a839ba055442 | 3a19ad448d37bf25176dd1d0 | 2026-01-06T00:00:00 | BarClosed | SPY | US | 1d | sample | Pass | OBSERVATION | {"close": 2181.82165200544, "high": 2197.2313272975584, "low": 2167.769510385464, "open": 2183.1704983589084, "volume": 1997717.0} |
+| 5 | 06306f6b26f7d3cbddd1ecc4 | 7f9c515424d2a839ba055442 | 7adcef2ea926374fed979618 | 2026-01-07T00:00:00 | BarClosed | SPY | US | 1d | sample | Pass | OBSERVATION | {"close": 2185.765689336383, "high": 2200.140447610894, "low": 2168.4402926152025, "open": 2182.7955174589433, "volume": 1523060.0} |
+| 6 | 06306f6b26f7d3cbddd1ecc4 | 7f9c515424d2a839ba055442 | 3ef8eeed359f2c1c2fd6886c | 2026-01-08T00:00:00 | BarClosed | SPY | US | 1d | sample | Pass | OBSERVATION | {"close": 2185.880534872512, "high": 2199.741675574737, "low": 2176.3168467924465, "open": 2190.159267139134, "volume": 1796915.0} |
+| 7 | 06306f6b26f7d3cbddd1ecc4 | 7f9c515424d2a839ba055442 | d19da62e50a368522761fa99 | 2026-01-09T00:00:00 | BarClosed | SPY | US | 1d | sample | Pass | OBSERVATION | {"close": 2181.4629151906547, "high": 2196.4654911125267, "low": 2161.3662368489477, "open": 2176.3335364923105, "volume": 1900931.0} |
+
+## Missing Data Log
+| dataset | status | message |
+| --- | --- | --- |
+
+## Assumptions
+- Event replay is deterministic and ordered by event_time, then event_id.
+- This MVP replays local market event JSONL assets only; it does not simulate orders or connect to live trading.
+- The replay batch is a stable input contract for later vectorized, discrete-event, and agent-market simulation modes.

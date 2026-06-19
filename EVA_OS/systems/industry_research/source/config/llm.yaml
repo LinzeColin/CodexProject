@@ -1,0 +1,4 @@
+provider: stub
+model: deterministic-research-writer
+temperature: 0.2
+max_tokens: 2500

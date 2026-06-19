@@ -1,0 +1,134 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 4357 >>
+stream
+BT
+/F1 10 Tf
+56 760 Td
+12 TL
+(EVA_OS Token ROI Ledger 2026-06-13) Tj
+T*
+(Generated At: 2026-06-13T16:32:22) Tj
+T*
+(System: EVA_OS) Tj
+T*
+(Record Count: 178) Tj
+T*
+(Quantified Records: 0) Tj
+T*
+(Unquantified Records: 178) Tj
+T*
+() Tj
+T*
+(Formula:) Tj
+T*
+(Token ROI = \(revenue_generated + cost_saved + loss_avoided + asset_reuse_value - ai_cost - human_time_cost\) / \(ai_cost + human_time_cost\)) Tj
+T*
+() Tj
+T*
+(Top Records:) Tj
+T*
+(- Executive Command Center: EVACommandCenter_13062026 | System Reliability | Unquantified) Tj
+T*
+(- Executive Command Center: EVACommandCenter_latest | System Reliability | Unquantified) Tj
+T*
+(- Executive Command Center: EVACommandCenter_13062026 | System Reliability | Unquantified) Tj
+T*
+(- Executive Command Center: EVACommandCenter_latest | System Reliability | Unquantified) Tj
+T*
+(- Executive Command Center: EVACommandCenter_07062026 | System Reliability | Unquantified) Tj
+T*
+(- Executive Command Center: EVACommandCenter_07062026 | System Reliability | Unquantified) Tj
+T*
+(- Report Decision Support Index: ReportDecisionSupportIndex_07062026 | Reusable Asset | Unquantified) Tj
+T*
+(- Report Decision Support Index: ReportDecisionSupportIndex_latest | Reusable Asset | Unquantified) Tj
+T*
+(- Report Decision Support Index: ReportDecisionSupportIndex_07062026 | Reusable Asset | Unquantified) Tj
+T*
+(- Report Decision Support Index: ReportEvidenceGapTasks_07062026 | Reusable Asset | Unquantified) Tj
+T*
+(- Report Decision Support Index: ReportEvidenceGapTasks_latest | Reusable Asset | Unquantified) Tj
+T*
+(- Report Decision Support Index: ReportDecisionSupportIndex_latest | Reusable Asset | Unquantified) Tj
+T*
+(- Validation Task Execution: ValidationTaskExecution_latest | Validation Efficiency | Unquantified) Tj
+T*
+(- Validation Task Priority Plan: ValidationTaskPriorityPlan_07062026 | Validation Efficiency | Unquantified) Tj
+T*
+(- Validation Task Priority Plan: ValidationTaskPriorityPlan_latest | Validation Efficiency | Unquantified) Tj
+T*
+(- Validation Task Execution: ValidationTaskExecution_07062026_1c188bc96fe9f547 | Validation Efficiency | Unquantified) Tj
+T*
+(- Executive Command Center: EVACommandCenter_13062026 | System Reliability | Unquantified) Tj
+T*
+(- Executive Command Center: EVACommandCenter_latest | System Reliability | Unquantified) Tj
+T*
+(- Executive Command Center: EVACommandCenter_07062026 | System Reliability | Unquantified) Tj
+T*
+(- Validation Task Execution: ValidationTaskExecution_latest | Validation Efficiency | Unquantified) Tj
+T*
+(- Validation Task Execution: ValidationTaskExecution_07062026_1c188bc96fe9f547 | Validation Efficiency | Unquantified) Tj
+T*
+(- Validation Task Execution: ValidationTaskExecution_07062026_1c188bc96fe9f547 | Validation Efficiency | Unquantified) Tj
+T*
+(- Validation Task Execution: ValidationTaskExecution_latest | Validation Efficiency | Unquantified) Tj
+T*
+(- Validation Task Execution: ValidationTaskExecution_latest | Validation Efficiency | Unquantified) Tj
+T*
+(- Validation Task Execution: ValidationTaskExecution_07062026_1c188bc96fe9f547 | Validation Efficiency | Unquantified) Tj
+T*
+(- Validation Task Priority Plan: ValidationTaskPriorityPlan_07062026 | Validation Efficiency | Unquantified) Tj
+T*
+(- Validation Task Priority Plan: ValidationTaskPriorityPlan_latest | Validation Efficiency | Unquantified) Tj
+T*
+(- Validation Task Priority Plan: ValidationTaskPriorityPlan_07062026 | Validation Efficiency | Unquantified) Tj
+T*
+() Tj
+T*
+(Assumptions:) Tj
+T*
+(- This ledger records reusable value evidence; it does not fabricate financial gains.) Tj
+T*
+(- Financial fields stay 0.00 and roi_score stays null until the user supplies measured revenue, cost saved, loss avoided, asset reuse value, AI cost, or human time cost.) Tj
+T*
+(- Manual value entries are counted as Quantified only when review_status is Reviewed and at least one real financial field is supplied.) Tj
+T*
+(- System audit, readiness, validation queue, report, metadata, data-quality, and cross-validation files are FACT evidence that the output exists and can be reviewed.) Tj
+T*
+(- value_contribution is an INFERENCE used for prioritization, not proof of cash profit.) Tj
+T*
+(- Research-only boundary remains active: no live trading, no real orders, no payments, no betting execution.) Tj
+T*
+() Tj
+T*
+(Research-only. No live trading. No real orders.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+4720
+%%EOF

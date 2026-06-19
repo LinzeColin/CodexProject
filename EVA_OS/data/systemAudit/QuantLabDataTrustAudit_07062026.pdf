@@ -1,0 +1,68 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 525 >>
+stream
+BT
+/F1 12 Tf
+72 760 Td
+14 TL
+(QuantLab Data Trust Audit 2026-06-07) Tj
+T*
+(Run ID: 7e20bce5a6ecf2a987d4bb28) Tj
+T*
+(Generated At: 2026-06-07T10:16:26) Tj
+T*
+(Audit Status: Pass) Tj
+T*
+(Records: 145) Tj
+T*
+(Review Count: 0) Tj
+T*
+(Rejected Count: 0) Tj
+T*
+() Tj
+T*
+(Status Counts:) Tj
+T*
+(- ARCHIVED: 55) Tj
+T*
+(- PARSED_CANDIDATE: 18) Tj
+T*
+(- RAW_IMPORTED: 2) Tj
+T*
+(- RECONCILED: 68) Tj
+T*
+(- USER_CONFIRMED: 2) Tj
+T*
+() Tj
+T*
+(Key rule: candidate, video, OCR, stale cache, and weak evidence must not be promoted.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+887
+%%EOF
