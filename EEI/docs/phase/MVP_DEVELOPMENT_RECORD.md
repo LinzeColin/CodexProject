@@ -802,3 +802,35 @@ Residual risks:
 
 - Homepage data is still a synthetic UI projection of the already-proven `/v1/home` contract; live frontend API hydration is not implemented in T304.
 - Industry landscape UI remains open in T305, and Watchlist unread/saved-view E2E remains open in T306/A037.
+
+## 2026-06-19 - Phase 1 / G3 T305 Industry landscape page
+
+Status: T305 LOCAL PASS; G3 IN PROGRESS
+
+Completed:
+
+- Added `/industries` as a user-facing industry landscape page.
+- Added visible industry chain stages, subindustries, top entities, bottlenecks, capital items, policy items, and changes.
+- Added cross-industry navigation between semiconductors, AI cloud infrastructure, and power/data-center energy.
+- Added a visible cross-industry path indicator so industry jumps are preserved and inspectable.
+- Added homepage link to the industry map from the industry entry section.
+- Marked T305 as `DONE`; marked A032 and A034 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/industry.spec.ts`: PASS, 14 tests ran and passed.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS, static route `/industries`.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A032 is covered by `apps/web/src/app/industries/page.tsx` and `tests/e2e/industry.spec.ts`.
+- A034 is covered by cross-industry navigation controls and visible path assertions in `tests/e2e/industry.spec.ts`.
+
+Residual risks:
+
+- Industry page still uses synthetic UI projection; live frontend API hydration remains future work.
+- T306 remains open for consolidated home/industry/watchlist E2E and A037 Watchlist unread/saved-view evidence.

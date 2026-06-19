@@ -885,7 +885,9 @@ export default function Home() {
         <section className="homeSection" aria-label="行业入口" data-testid="home-industries">
           <header>
             <span>行业</span>
-            <small>v4.2</small>
+            <a data-testid="home-industry-map-link" href="/industries">
+              地图
+            </a>
           </header>
           <div className="compactList">
             {homeIndustries.map((industry) => (

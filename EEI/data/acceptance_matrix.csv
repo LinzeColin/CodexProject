@@ -30,9 +30,9 @@ A028,P0,data,Research/source/metric/parameter registries load without malformed 
 A029,P0,home,"Home shows global search, industries, Watchlist, recent explorations, changes and freshness",E2E,DONE
 A030,P0,home,Home shows active scoring profile and last/next calibration status,E2E,DONE
 A031,P0,industry,Industry list is human-readable and versioned,API/UI test,DONE
-A032,P0,industry,"Industry page shows chain stages, subindustries, entities, bottlenecks, capital, policy and changes",E2E,NOT STARTED
+A032,P0,industry,"Industry page shows chain stages, subindustries, entities, bottlenecks, capital, policy and changes",E2E,DONE
 A033,P0,industry,Entities may have primary and secondary industries,API/data test,DONE
-A034,P0,industry,Cross-industry navigation is allowed and visibly indicated,E2E,NOT STARTED
+A034,P0,industry,Cross-industry navigation is allowed and visibly indicated,E2E,DONE
 A035,P0,watchlist,"Local-user Watchlist can create, add, remove, restore and persist items",Integration/E2E,DONE
 A036,P0,watchlist,"Watchlist supports entity, industry, theme and facility items",API test,DONE
 A037,P0,watchlist,Watchlist shows unread changes and saved view/profile state,E2E,NOT STARTED
