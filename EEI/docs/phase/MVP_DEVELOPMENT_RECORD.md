@@ -723,3 +723,43 @@ Residual risks:
 
 - Industry landscape UI is still not implemented.
 - Landscape aggregation currently uses synthetic fixture memberships and relationship rows; live ingestion still belongs to later data-ingestion tasks.
+
+## 2026-06-19 - Phase 1 / G3 T303 Watchlist CRUD and persistence API
+
+Status: T303 PASS; G3 IN PROGRESS
+
+Completed:
+
+- Added `/v1/watchlists/{watchlistId}` detail retrieval.
+- Added PostgreSQL-backed Watchlist item remove/restore assertions.
+- Enforced Watchlist item object validation for `entity`, `industry`, `theme`, and `facility`.
+- Preserved `saved_state` for restored Watchlist items.
+- Added operation-log assertions for Watchlist item removal.
+- Marked T303 as `DONE`, A035 as `DONE`, and A036 as `DONE`; A037 remains open because its declared evidence type is E2E.
+- Fixed a CI-only DELETE response bug by returning an explicit `Response(status_code=204)` from `/v1/watchlists/{watchlistId}/items`.
+
+Verification evidence:
+
+- Local `git diff --check`: PASS.
+- Local `.venv/bin/uv run ruff check apps/api/app/domain.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_contracts.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- GitHub Actions run `27832285368`: FAIL in step 8 because the DELETE Watchlist item route returned a response object with status code `None`.
+- GitHub Actions job `82371769481`: FAIL.
+- GitHub Actions run `27832504683`: PASS after the explicit 204 response fix.
+- GitHub Actions job `82372497975`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A035 is covered by `/v1/watchlists/{watchlistId}`, item remove/restore integration assertions, and PostgreSQL persistence checks.
+- A036 is covered by item-type validation for `entity`, `industry`, `theme`, and `facility`.
+- A037 remains `NOT STARTED` until T306 provides user-facing unread-change and saved-view/profile E2E evidence.
+
+Residual risks:
+
+- Watchlist UI still needs to consume detail, saved state, unread changes, and restore flows.
+- Current Watchlist API is proven on synthetic fixtures; live ingestion and alert freshness remain later MVP tasks.

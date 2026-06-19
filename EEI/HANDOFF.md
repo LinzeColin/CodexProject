@@ -23,7 +23,7 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - GitHub `CodexProject` commit pushed:
-  - `8ff658f` feat: add EEI fixture reroot workspace
+  - `b6fe941` fix: return watchlist delete 204 response
 
 ## Completed
 
@@ -52,6 +52,8 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed A012-A014 data contract checks by GitHub Actions run `27828738097`; job `82359769929` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - Closed G2 as `PASS` with `DEFER-003`; A026/A027 remain open for T904/G9 gold precision evaluation rather than synthetic self-grading.
 - Proved G2 gate-close commit by GitHub Actions run `27829131193`; job `82361095081` passed.
+- Added T303 Watchlist persistence breadth: `/v1/watchlists/{watchlistId}` detail, item remove/restore, entity/industry/theme/facility item validation, saved state persistence, and operation-log checks.
+- Completed T303 with A035/A036 by GitHub Actions run `27832504683`; A037 remains open for T306 UI/E2E unread-change and saved-view evidence.
 
 ## Verification Evidence
 
@@ -105,6 +107,10 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27831351290` passed; job `82368640839` proved the final T301 evidence commit.
 - 2026-06-19 update: local `make verify` passed after T302 `/v1/industries` and `/v1/industries/{industryId}/landscape`.
 - 2026-06-19 update: GitHub Actions run `27831861052` passed; job `82370353436` proved T302 industry landscape API, fixture memberships, and A031/A033 checks under PostgreSQL.
+- 2026-06-19 update: local `make verify` passed after T303 Watchlist persistence breadth and explicit DELETE 204 response fix.
+- 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T303.
+- 2026-06-19 update: GitHub Actions run `27832285368` failed because `DELETE /v1/watchlists/{watchlistId}/items` returned a response object with no status code.
+- 2026-06-19 update: GitHub Actions run `27832504683` passed; job `82372497975` proved T303 Watchlist CRUD/restore/item-type persistence under PostgreSQL after returning an explicit 204 response.
 
 Remote verification:
 
@@ -147,6 +153,10 @@ Remote verification:
 - GitHub Actions job `82368640839`: PASS.
 - GitHub Actions run `27831861052`: PASS.
 - GitHub Actions job `82370353436`: PASS.
+- GitHub Actions run `27832285368`: FAIL, fixed by returning an explicit `Response(status_code=204)` from the Watchlist item delete route.
+- GitHub Actions job `82371769481`: FAIL.
+- GitHub Actions run `27832504683`: PASS.
+- GitHub Actions job `82372497975`: PASS.
 
 ## Not Completed
 
@@ -161,6 +171,7 @@ Remote verification:
 - T300 / A038 typed entity search is DONE and remote CI passed.
 - T301 home aggregation API is DONE and remote CI passed.
 - T302 industry list and landscape API is DONE and remote CI passed; A031/A033 are DONE, while A032/A034 remain open for UI/E2E.
+- T303 Watchlist CRUD and persistence API is DONE and remote CI passed; A035/A036 are DONE, while A037 remains open for UI/E2E unread-change and saved-view evidence.
 - G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
@@ -168,6 +179,6 @@ Remote verification:
 
 Continue G3 with bounded entry/management implementation:
 
-1. Start T303 Watchlist item-type, restore, persistence, and unread-change implementation.
+1. Start T304 user-oriented home page using the now-proven `/v1/home`, `/v1/entities`, `/v1/industries`, and `/v1/watchlists/{watchlistId}` contracts.
 2. Keep A026/A027 open until T904/G9 real gold precision evaluation.
-3. Continue G4/T1205 only after the next G3 slice is bounded.
+3. Continue T305/T306 after T304 to close industry UI and Watchlist unread-change/saved-view E2E evidence.
