@@ -1,0 +1,15 @@
+[
+  {
+    "point": "支承轮A",
+    "vibration": 2.6,
+    "temperature": 468,
+    "note": "振动明显"
+  },
+  {
+    "point": "传动端",
+    "vibration": 1.8,
+    "temperature": 442,
+    "note": "异响待复核"
+  }
+]
+
