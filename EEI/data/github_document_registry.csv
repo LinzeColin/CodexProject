@@ -45,6 +45,8 @@ artifacts/pdf_contact_sheet.png,qa-and-generation-evidence,false,validation or g
 artifacts/pdf_visual_inspection.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
 artifacts/preflight_output.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
 artifacts/prototype_smoke_test.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
+artifacts/release_evidence_t1211.json,qa-and-generation-evidence,true,release evidence or checksum change,release owner,git+release-zip,GENERATED
+artifacts/release_operation_log_t1211.jsonl,qa-and-generation-evidence,true,release evidence or checksum change,release owner,git+release-zip,GENERATED
 artifacts/static_validation.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
 artifacts/visual_coverage_validation.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
 config/model_profiles/balanced-v2.json,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
@@ -169,6 +171,7 @@ scripts/run_codex_autonomous.sh,automation-and-validation,false,validation/build
 scripts/smoke_test_prototype.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_prototype_parity.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_github_governance.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/manage_release_artifacts.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_catalog_integrity.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_governance.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_model_config.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "artifact_id": "release-t1211-manifest-checksum-evidence",
+  "generated_at": "2026-06-19T20:21:35+00:00",
+  "source_commit": "f03626f",
+  "system": {
+    "zh_name": "商域图谱",
+    "en_name": "Enterprise Ecosystem Intelligence",
+    "subtitle": "企业商业版图与供应链递归探索系统"
+  },
+  "task_id": "T1211",
+  "acceptance_ids": [
+    "A175",
+    "A177"
+  ],
+  "artifact_paths": [
+    "CHECKSUMS.sha256",
+    "DIRECTORY_TREE.txt",
+    "artifacts/release_evidence_t1211.json",
+    "artifacts/release_operation_log_t1211.jsonl",
+    "manifest.txt",
+    "scripts/manage_release_artifacts.py"
+  ],
+  "required_commands": [
+    "make verify",
+    "make verify-g2-db",
+    "sha256sum -c CHECKSUMS.sha256"
+  ],
+  "release_checks": [
+    "manifest.txt is generated from git ls-files plus required release evidence files",
+    "DIRECTORY_TREE.txt is generated from manifest.txt",
+    "CHECKSUMS.sha256 covers every manifest file except CHECKSUMS.sha256",
+    "artifacts/release_operation_log_t1211.jsonl records the release artifact publish operation"
+  ],
+  "rollback": {
+    "procedure": [
+      "Revert the release evidence commit.",
+      "Regenerate manifest.txt, DIRECTORY_TREE.txt and CHECKSUMS.sha256.",
+      "Run make verify and sha256sum -c CHECKSUMS.sha256.",
+      "Push a restoring commit and cite the CI run in the development record."
+    ],
+    "owner": "repository owner"
+  },
+  "remote_verification": {
+    "status": "PENDING",
+    "run_id": "",
+    "job_id": ""
+  }
+}
