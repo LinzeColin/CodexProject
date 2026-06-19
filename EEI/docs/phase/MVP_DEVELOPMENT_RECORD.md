@@ -242,3 +242,31 @@ Verification to run:
 
 - `make verify`.
 - Push and rerun GitHub Actions `make verify-g2-db`.
+
+## 2026-06-19 - Phase 1 / G2 database foundation CI pass
+
+Status: DATABASE SUBSET PASS; G2 IN PROGRESS
+
+Completed:
+
+- GitHub Actions run `27821808812` completed with conclusion `success`.
+- Step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- Integration test `tests/integration/test_database_migrations.py` passed on PostgreSQL.
+- E2E smoke test passed after the database integration test.
+- Marked T200, T201, T202, T204, T207, and T208 as `DONE`.
+
+Verification evidence:
+
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27821808812`.
+- GitHub Actions job: `82336483266`.
+- `make verify-g2-db`: PASS in GitHub Actions.
+- PostgreSQL readiness: PASS.
+- Migration upgrade/schema check/seed idempotency/rollback integration test: PASS.
+- Playwright E2E smoke: PASS.
+
+Still open in G2:
+
+- T203 remains `IN PROGRESS` because exploration, Watchlist, scoring, audit, and calibration repository/API behavior is not implemented yet.
+- T205 remains `NOT STARTED` because synthetic recursive supply-chain fixtures are not loaded yet.
+- T206 remains `IN PROGRESS` because supersession/conflict repository behavior is not implemented beyond schema fields.
+- T1103-T1109 and T1203 remain not started or only indirectly scaffolded.

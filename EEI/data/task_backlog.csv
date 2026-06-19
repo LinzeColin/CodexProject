@@ -9,15 +9,15 @@ T101,G1,P0,Add Docker Compose PostgreSQL and health checks,T100,A005,NOT STARTED
 T102,G1,P0,Add Makefile and deterministic make verify,T100,"A006,A007",NOT STARTED
 T103,G1,P0,Create FastAPI and Next.js health shells,T101,A005,NOT STARTED
 T104,G1,P0,Add contract/static validation and secret scan,T102,"A008,A009",NOT STARTED
-T200,G2,P0,Implement core migrations and entity/time/evidence invariants,T104,"A011,A012,A013,A014,A015,A022",IN PROGRESS
-T201,G2,P0,Implement ten relationship families and supply-chain attributes,T200,"A016,A020,A021",IN PROGRESS
-T202,G2,P0,Implement industry taxonomy and multi-label memberships,T200,A019,IN PROGRESS
+T200,G2,P0,Implement core migrations and entity/time/evidence invariants,T104,"A011,A012,A013,A014,A015,A022",DONE
+T201,G2,P0,Implement ten relationship families and supply-chain attributes,T200,"A016,A020,A021",DONE
+T202,G2,P0,Implement industry taxonomy and multi-label memberships,T200,A019,DONE
 T203,G2,P0,"Implement exploration, Watchlist, scoring, audit and calibration tables",T200,"A011,A090",IN PROGRESS
-T204,G2,P0,Load 30 P0 seeds and 140-node research universe,"T201,T202","A017,A018,A028",IN PROGRESS
+T204,G2,P0,Load 30 P0 seeds and 140-node research universe,"T201,T202","A017,A018,A028",DONE
 T205,G2,P0,Load synthetic recursive supply-chain fixtures,T204,"A016,A025,A067",NOT STARTED
 T206,G2,P0,Implement supersession/conflict repositories,T200,A023,IN PROGRESS
-T207,G2,P0,Implement idempotent seed loader and data checks,"T205,T206","A024,A028",IN PROGRESS
-T208,G2,P0,Run migration round-trip and gold quality scaffolding,T207,"A011,A026,A027",IN PROGRESS
+T207,G2,P0,Implement idempotent seed loader and data checks,"T205,T206","A024,A028",DONE
+T208,G2,P0,Run migration round-trip and gold quality scaffolding,T207,"A011,A026,A027",DONE
 T300,G3,P0,Implement global typed search and aliases,T208,A038,NOT STARTED
 T301,G3,P0,Implement home aggregation API,T300,"A029,A030",NOT STARTED
 T302,G3,P0,Implement industry list and landscape API,T300,"A031,A032,A033,A034",NOT STARTED
