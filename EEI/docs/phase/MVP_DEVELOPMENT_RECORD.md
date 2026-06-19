@@ -105,3 +105,26 @@ Residual risks:
 
 - The root GitHub workflow has been added for future remote verification, but remote Actions status still needs to be inspected after push.
 - G1 remains blocked on an actual Docker/PostgreSQL-capable runtime.
+
+## 2026-06-19 - Phase 1 / G1 PostgreSQL startup wait contract
+
+Status: IN PROGRESS
+
+Completed:
+
+- Confirmed the first root GitHub Actions run reached the G1 PostgreSQL/E2E step and failed there after static, contract, lint, typecheck, and unit tests passed.
+- Added `scripts/wait_for_database.py` to poll the same `select 1` database readiness contract used by `/health/ready`.
+- Added `make wait-db` and changed `make db-up` so Docker startup waits for PostgreSQL before `make health`.
+- Added the wait script to `make lint`.
+
+Verification results:
+
+- `make lint`: PASS.
+- `make verify`: PASS.
+- `env -u DATABASE_URL .venv/bin/uv run python scripts/wait_for_database.py --timeout 1`: expected FAIL with `ERROR: DATABASE_URL is required before waiting for PostgreSQL`.
+- `make verify-g1`: expected FAIL on current host because `docker` is not installed.
+
+Residual risks:
+
+- The current host still has no Docker runtime, so local `make verify-g1` remains an expected fail-closed check until Docker/PostgreSQL is available.
+- Remote GitHub Actions must be re-run after this change to determine whether the failure was solely a PostgreSQL startup race.
