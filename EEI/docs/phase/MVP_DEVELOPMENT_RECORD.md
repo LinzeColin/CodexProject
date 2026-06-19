@@ -1048,7 +1048,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G4 T402 Reroot inherited and reset state
 
-Status: LOCAL CONTRACT PASS; remote PostgreSQL CI pending
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1057,6 +1057,8 @@ Completed:
 - Added integration assertions that reroot from NVIDIA to a facility entity preserves state by default.
 - Added integration assertions that reroot from the same session to a theme entity resets state and persists the reset values in `exploration_sessions`.
 - Updated the OpenAPI contract so `inherit_state` is optional with default `true`.
+- Canonicalized UTC `datetime` API serialization to `Z` so inherited reroot state matches URL/session restore contracts after PostgreSQL round-trips.
+- Aligned the reset-reroot fixture assertion with `data/mock_entities.json` for the `AI Infrastructure` theme entity.
 - Marked T402, A045, A046, and A047 as `DONE`.
 
 Verification evidence:
@@ -1064,6 +1066,12 @@ Verification evidence:
 - Local `make verify`: PASS.
 - Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
 - Local `git diff --check`: PASS.
+- GitHub Actions run `27838042448`: FAIL in step 8 on inherited `as_of` timestamp serialization (`+00:00` vs `Z`); fixed by canonical UTC serialization.
+- GitHub Actions run `27838285776`: FAIL in step 8 on reset-reroot fixture display name (`AI Infrastructure` vs stale expected label); fixed by aligning the test with the fixture catalog.
+- GitHub Actions run `27838436423`: PASS.
+- GitHub Actions job `82391789245`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -1073,5 +1081,4 @@ Acceptance status:
 
 Residual risks:
 
-- Remote CI must still prove the reroot integration assertions against PostgreSQL.
 - T404 still owns breadcrumb/browser-history synchronization for reroot flows; T408 still owns critical three-reroot E2E.
