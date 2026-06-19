@@ -57,6 +57,7 @@ if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
 from pfi_os.approvals import StrategyApprovalRegistry
+from pfi_os.application import OperationalStore, build_homepage_summary, empty_homepage_summary
 from pfi_os.analysis import (
     HOTSPOT_REFRESH_TTL_SECONDS,
     HOTSPOT_RUNTIME_SUMMARY_SCHEMA,
@@ -858,20 +859,34 @@ def _pfi_ui_v2_enabled() -> bool:
     return os.environ.get("PFI_UI_V2", "0") == "1"
 
 
-def _pfi_web_shell_html() -> str:
+def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     shell_path = ROOT / "web" / "index.html"
     css_path = ROOT / "web" / "styles" / "tokens.css"
     js_path = ROOT / "web" / "app" / "shell.js"
     shell_html = shell_path.read_text(encoding="utf-8")
     css = css_path.read_text(encoding="utf-8")
     js = js_path.read_text(encoding="utf-8")
+    summary_payload = home_summary if isinstance(home_summary, dict) else empty_homepage_summary()
+    summary_json = json.dumps(summary_payload, ensure_ascii=False).replace("</", "<\\/")
     shell_html = shell_html.replace('<link rel="stylesheet" href="./styles/tokens.css" />', f"<style>{css}</style>")
+    shell_html = re.sub(
+        r'<script type="application/json" id="pfi-home-summary">.*?</script>',
+        f'<script type="application/json" id="pfi-home-summary">{summary_json}</script>',
+        shell_html,
+        flags=re.DOTALL,
+    )
     shell_html = shell_html.replace('<script src="./app/shell.js"></script>', f"<script>{js}</script>")
     return shell_html
 
 
 def render_pfi_ui_v2_shell() -> None:
-    components.html(_pfi_web_shell_html(), height=980, scrolling=True)
+    store = OperationalStore()
+    try:
+        store.initialize()
+        home_summary = build_homepage_summary(store)
+    except Exception:
+        home_summary = empty_homepage_summary()
+    components.html(_pfi_web_shell_html(home_summary), height=980, scrolling=True)
 
 
 def main() -> None:

@@ -49,10 +49,11 @@ def test_web_shell_preserves_global_context_and_cached_home_contract():
     assert "pfi-context-v1" in js
     for field in GLOBAL_CONTEXT_FIELDS:
         assert f'data-context-field="{field}"' in html
-    assert 'data-card-source="data/systemAudit/latest"' in html
-    assert 'data-card-source="data/marketEvents/latest"' in html
-    assert 'data-card-source="data/holdings/latest"' in html
-    assert 'data-card-source="data/vectorized/latest"' in html
+    assert 'data-card-source="operational_store:task_records"' in html
+    assert 'data-card-source="operational_store:source_records"' in html
+    assert 'data-card-source="operational_store:holding_snapshots"' in html
+    assert 'data-card-source="operational_store:evidence_records"' in html
+    assert "PFIOSHomeSummaryV1" in html
 
 
 def test_streamlit_launcher_exposes_pfi_ui_v2_feature_flag_with_fallback():
@@ -86,7 +87,7 @@ def test_web_shell_evidence_drawer_and_safety_boundary_are_explicit():
     assert "data-evidence-drawer" in html
     for section in EVIDENCE_DRAWER_SECTIONS:
         assert f"<dt>{section}</dt>" in html
-    assert "Disabled provider; deterministic cached summary only." in html
+    assert "DisabledProvider" in html
 
 
 def test_web_shell_active_user_surface_has_no_retired_identity_or_value_text():

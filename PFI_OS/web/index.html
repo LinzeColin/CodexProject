@@ -92,25 +92,25 @@
         </section>
 
         <section class="metric-grid" aria-label="Home cached summary">
-          <article class="metric-tile" data-card-source="data/systemAudit/latest">
+          <article class="metric-tile" data-home-card="open_tasks" data-card-source="operational_store:task_records">
             <span>Open tasks</span>
-            <strong>7</strong>
-            <small>source: task snapshot · updated 08:45 · status Ready</small>
+            <strong data-card-value>0</strong>
+            <small data-card-detail>source: task_records · updated missing · status Missing</small>
           </article>
-          <article class="metric-tile" data-card-source="data/marketEvents/latest">
+          <article class="metric-tile" data-home-card="market_events" data-card-source="operational_store:source_records">
             <span>Market events</span>
-            <strong>12</strong>
-            <small>source: cached event digest · updated 08:42 · status Stale watch</small>
+            <strong data-card-value>0</strong>
+            <small data-card-detail>source: source_records · updated missing · status Missing</small>
           </article>
-          <article class="metric-tile" data-card-source="data/holdings/latest">
+          <article class="metric-tile" data-home-card="portfolio_risk" data-card-source="operational_store:holding_snapshots">
             <span>Portfolio risk</span>
-            <strong>Review</strong>
-            <small>source: local portfolio cache · updated 08:30 · status Human review</small>
+            <strong data-card-value>Missing</strong>
+            <small data-card-detail>source: holding_snapshots · updated missing · status Needs data</small>
           </article>
-          <article class="metric-tile" data-card-source="data/vectorized/latest">
+          <article class="metric-tile" data-home-card="strategy_runs" data-card-source="operational_store:evidence_records">
             <span>Strategy runs</span>
-            <strong>3</strong>
-            <small>source: cached validation summary · updated 08:21 · status Ready</small>
+            <strong data-card-value>0</strong>
+            <small data-card-detail>source: evidence_records · updated missing · status Missing</small>
           </article>
         </section>
 
@@ -141,7 +141,7 @@
                   <th scope="col">Status</th>
                 </tr>
               </thead>
-              <tbody id="decision-rows">
+              <tbody id="decision-rows" data-home-decision-rows>
                 <tr>
                   <td>P0</td>
                   <td>Data freshness</td>
@@ -210,23 +210,23 @@
         <div class="drawer-header">
           <div>
             <p class="panel-kicker">Evidence</p>
-            <h2>SPY · Daily brief</h2>
+            <h2 data-evidence-title>PFI · Operational evidence</h2>
           </div>
           <button type="button" class="icon-button" data-evidence-toggle aria-label="Close evidence drawer">×</button>
         </div>
         <dl class="evidence-list">
           <dt>Evidence</dt>
-          <dd>Cached market digest, portfolio impact note, and strategy run summary.</dd>
+          <dd data-evidence-field="Evidence">No operational evidence records are available.</dd>
           <dt>Source</dt>
-          <dd>Local cache · public/shared domain · private portfolio facts redacted.</dd>
+          <dd data-evidence-field="Source">Operational Store is empty.</dd>
           <dt>Model</dt>
-          <dd>Disabled provider; deterministic cached summary only.</dd>
+          <dd data-evidence-field="Model">DisabledProvider</dd>
           <dt>Parameters</dt>
-          <dd>market=US · entity=SPY · portfolio=Main · currency=USD</dd>
+          <dd data-evidence-field="Parameters">market=US · entity=SPY · portfolio=Main · currency=USD</dd>
           <dt>Data lineage</dt>
-          <dd>Raw source → canonical event → cached card → decision queue.</dd>
+          <dd data-evidence-field="Data lineage">Operational Store summary → cached card → decision queue.</dd>
           <dt>Raw document</dt>
-          <dd><button type="button" data-raw-document>Open sanitized source record</button></dd>
+          <dd><button type="button" data-raw-document data-evidence-field="Raw document">No source record.</button></dd>
         </dl>
       </aside>
     </div>
@@ -248,6 +248,14 @@
       </form>
     </dialog>
     <noscript>PFI OS shell needs browser scripting for local navigation state.</noscript>
+    <script type="application/json" id="pfi-home-summary">
+      {
+        "schema": "PFIOSHomeSummaryV1",
+        "metric_cards": [],
+        "decision_rows": [],
+        "evidence_drawer": {}
+      }
+    </script>
     <script src="./app/shell.js"></script>
   </body>
 </html>
