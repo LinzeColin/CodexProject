@@ -2,49 +2,63 @@
 
 Last updated: 2026-06-19 Australia/Sydney
 
-This checkout is still physically under `PFI_OS/`, but the active product
-direction is PFI OS. The target product is a local-first, single-user,
-research and decision-support operating system for personal financial
-intelligence.
+This repository is the current handoff surface for PFI OS. Treat files in
+this checkout as the source of truth, then verify with local commands before
+changing code or running heavier acceptance gates.
 
 ## Current Objective
 
-Continue the controlled migration toward PFI OS without large-bang rewrites.
-The current sequence is:
+Continue the controlled PFI OS rebuild after the Phase 0 transition contracts.
+The active product is a local-first, single-user, research and
+decision-support operating system for personal financial intelligence.
+
+Current sequence:
 
 1. PFI-001 product contracts: complete.
-2. PFI-002 retired value-ledger cleanup: active in this handoff.
-3. PFI-003 identity, directory, namespace, app, script, and env migration.
-4. PFI-004 new PFI Web Shell.
-5. Post-shell MVP phases: data/workflow foundation, four vertical slices,
-   one-minute worker reliability, local deployment, local LLM as optional
-   deep-analysis provider, and full MVP acceptance.
+2. PFI-002 retired value-ledger cleanup: complete.
+3. PFI-003 identity, directory, namespace, app, script, and env migration:
+   complete.
+4. PFI-004 new PFI Web Shell skeleton: complete.
+5. Phase A data foundation: in progress, first contract slices complete.
+
+## Current Local State
+
+- Repository root: `CodexProject`.
+- Product directory: `PFI_OS/`.
+- Runtime/private data root: `$PFI_OS_DATA_HOME`, outside public Git.
+- Official operational SQLite path:
+  `$PFI_OS_DATA_HOME/private/operational/pfi.sqlite`.
+- ResearchBus remains an internal compatibility/event layer, not a truth
+  source or user-facing product boundary.
 
 ## Boundaries
 
 - Research, evidence, backtesting, simulation, reports, review queues, and
-  human-approved order-intent style outputs only.
+  human-reviewed order-intent style outputs only.
 - No autonomous real-money trading.
 - No unattended broker order placement.
 - No payments, bank actions, betting execution, or account mutation.
-- No stored brokerage passwords, tokens, API keys, private holdings,
-  private imports, raw account screenshots, runtime SQLite state, local logs,
-  or secrets in public Git.
+- No stored brokerage passwords, tokens, API keys, private holdings, private
+  imports, raw account screenshots, runtime SQLite state, local logs, or
+  secrets in public Git.
 
-## PFI-002 State
+## Completed In This Phase
 
-The retired value-ledger product surface must stay removed from active code.
-Do not restore its modules, shell scripts, UI route, command-center source,
-runtime summary target, dedicated tests, formal docs, schema, or public
-example.
-
-Historical context is allowed only in:
-
-```text
-docs/archive/legacy-migration.md
-```
-
-The user runtime data directory is intentionally not deleted by this cleanup.
+- Product constitution, six-workspace information architecture, data boundary,
+  source-of-truth, UX contract, target architecture, legacy migration archive,
+  and product contract tests.
+- Active product surface cleanup for the retired value-ledger workflow, while
+  preserving historical context only in the archive and leaving user runtime
+  data untouched.
+- PFI identity migration across active code, docs, scripts, tests, app naming,
+  and env examples.
+- New static PFI Web Shell with six primary workspaces, global context, task
+  center, evidence drawer, keyboard shortcuts, visual baseline contracts, and
+  optional Streamlit embedding through `PFI_UI_V2=1`.
+- Phase A operational store contract with official source, source-version,
+  entity, evidence, job, task, and holding snapshot tables.
+- Source registry, homepage summary read model, task repository, holding
+  snapshot repository, source version history, and point-in-time source replay.
 
 ## Start Here
 
@@ -53,30 +67,52 @@ Read in this order:
 1. `README.md`
 2. `AGENTS.md`
 3. `PLANS.md`
-4. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
-5. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
-6. `docs/data/PFI_DATA_BOUNDARIES.md`
-7. `docs/ux/PFI_UX_CONTRACT.md`
-8. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
-9. `docs/archive/legacy-migration.md`
+4. `docs/development/PFI_PHASE_0_TO_A_RECORD.md`
+5. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
+6. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
+7. `docs/data/PFI_DATA_BOUNDARIES.md`
+8. `docs/data/PFI_SOURCE_OF_TRUTH.md`
+9. `docs/ux/PFI_UX_CONTRACT.md`
+10. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
+11. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
+12. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
+13. `docs/archive/legacy-migration.md`
 
-## Verification
+## Current Verification Evidence
 
-For PFI-002 use:
+Latest focused verification for PFI-001 through PFI-004 and Phase A:
 
 ```bash
-python -m pytest tests/test_app_dashboard.py tests/test_command_center.py tests/test_workspace_shell.py -q
-python -m pytest tests/test_pfi_product_contracts.py tests/test_runtime_summary_refresh.py tests/test_scripts.py -q
-PFI_RETIRED_VALUE_REGEX='<see task pack PFI-002 pattern>'
-rg -n --hidden --glob '!data/**' --glob '!docs/archive/legacy-migration.md' "$PFI_RETIRED_VALUE_REGEX" .
+python -m pytest tests/test_pfi_product_contracts.py -q
+python -m pytest tests/test_config.py tests/test_data.py tests/test_data_lake_manifest.py tests/test_holdings_book.py tests/test_research_bus.py tests/test_app_dashboard.py tests/test_workspace_shell.py tests/test_scripts.py -q
+python -m pytest tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py tests/visual/test_pfi_web_shell_visual_baseline.py -q
+python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
+python -m compileall src/pfi_os/application src/pfi_os/app/streamlit_app.py
 git diff --check
 ```
 
-Do not run heavy release gates by default. `scripts/finalAcceptanceCheck.sh`,
-`scripts/ciSmoke.sh`, full pytest, browser automation, or real runtime app
-acceptance should only run when explicitly required for a release gate.
+The focused suite passed locally before this handoff update. Re-run the target
+commands after any follow-up edits.
+
+## Not Done
+
+- `origin/main` contains remote commits that are not in this local branch.
+  Do not force-push; use a backup branch or deliberate merge/PR.
+- Legacy Streamlit pages still contain direct JSON/provider reads outside the
+  new Web Shell vertical slice.
+- Existing legacy holdings sync and ResearchBus workflows are not fully moved
+  onto Operational Store repositories.
+- DuckDB/Parquet query surfaces remain in the existing `DataStore`.
+- Full source ingestion, checksum enforcement, and vertical workflow migration
+  are not complete.
 
 ## Next Step
 
-Finish PFI-002 verification. If it passes, move to PFI-003 from the
-`CodexProject` parent directory so `git mv PFI_OS PFI_OS` can preserve history.
+Back up the current local PFI OS state to GitHub on an isolated branch, then
+continue Phase A:
+
+1. Migrate one real cached homepage slice into Operational Store records.
+2. Add private-path and Git fixture scans for the new data-home layout.
+3. Replace legacy Streamlit direct reads one vertical slice at a time.
+4. Add repository adapters for entities, evidence search, and job execution.
+5. Add source ingestion adapters with checksum and provenance enforcement.
