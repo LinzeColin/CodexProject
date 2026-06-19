@@ -10,6 +10,7 @@ from pfi_os.application.operational_store import (
     default_operational_db_path,
 )
 from pfi_os.application.homepage_summary import build_homepage_summary, empty_homepage_summary
+from pfi_os.application.repositories import HoldingSnapshot, HoldingSnapshotRepository, TaskQueueItem, TaskRepository
 from pfi_os.application.source_registry import SourceRegistry, SourceRegistryRow
 
 __all__ = [
@@ -19,6 +20,10 @@ __all__ = [
     "OperationalStore",
     "SourceRecord",
     "TaskRecord",
+    "HoldingSnapshot",
+    "HoldingSnapshotRepository",
+    "TaskQueueItem",
+    "TaskRepository",
     "build_phase_a_data_foundation_contract",
     "build_homepage_summary",
     "default_data_home",
