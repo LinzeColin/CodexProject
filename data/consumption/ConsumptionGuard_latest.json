@@ -1,0 +1,57 @@
+{
+  "schema": "EVAOSConsumptionGuardV1",
+  "system": "EVA_OS",
+  "subsystem": "Consumption Guard",
+  "as_of": "2026-06-13",
+  "generated_at": "2026-06-13T16:32:50",
+  "project_root": "/Users/linzezhang/Documents/Codex/2026-06-13/files-mentioned-by-the-user-eva/outputs/CodexFinance",
+  "event_path": "/Users/linzezhang/Documents/Codex/2026-06-13/files-mentioned-by-the-user-eva/outputs/CodexFinance/data/consumption/ConsumptionGuardEvents.json",
+  "lookback_days": 30,
+  "monthly_investable_budget": 0.0,
+  "guard_status": "MissingConsumptionEvidence",
+  "summary": {
+    "total_records": 0,
+    "counted_records": 0,
+    "pending_review_records": 0,
+    "reviewed_missing_evidence_records": 0,
+    "lookback_start": "2026-05-15",
+    "lookback_end": "2026-06-13",
+    "counted_spend": 0,
+    "essential_spend": 0,
+    "discretionary_spend": 0,
+    "impulse_spend": 0,
+    "fixed_cost": 0,
+    "high_risk_event_count": 0,
+    "average_risk_score": 0.0,
+    "monthly_investable_budget": 0.0,
+    "investable_cashflow_pressure": null,
+    "guard_status": "MissingConsumptionEvidence"
+  },
+  "action_queue": [
+    {
+      "priority": "P0",
+      "status": "Open",
+      "action": "录入至少一条消费事件，并附上账单、截图、导出 CSV 或可复核说明。",
+      "source": "Consumption Evidence"
+    }
+  ],
+  "category_totals": [],
+  "events": [],
+  "assumptions": [
+    "Only Reviewed events with evidence_link or evidence_path are counted in spend, impulse, fixed-cost, and pressure summaries.",
+    "PendingReview, Rejected, or missing-evidence events stay in the ledger but do not affect guard metrics.",
+    "monthly_investable_budget is a user-supplied planning value; it is not read from bank, payroll, Alipay, tax, or brokerage systems.",
+    "Risk scores are behavior-review aids, not medical, legal, financial, investment, or payment advice.",
+    "No payment, transfer, bank action, investment order, or external account action is executed."
+  ],
+  "outputs": {
+    "json": "data/consumption/ConsumptionGuard_13062026.json",
+    "csv": "data/consumption/ConsumptionGuard_13062026.csv",
+    "markdown": "data/consumption/ConsumptionGuard_13062026.md",
+    "pdf": "data/consumption/ConsumptionGuard_13062026.pdf",
+    "latest_json": "data/consumption/ConsumptionGuard_latest.json",
+    "latest_csv": "data/consumption/ConsumptionGuard_latest.csv",
+    "latest_markdown": "data/consumption/ConsumptionGuard_latest.md",
+    "latest_pdf": "data/consumption/ConsumptionGuard_latest.pdf"
+  }
+}

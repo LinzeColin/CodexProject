@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#D9E2EC"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="230" fill="url(#bg)"/>
+  <rect x="112" y="154" width="800" height="570" rx="92" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="8"/>
+  <polyline points="210,548 304,514 402,536 500,444 604,460 706,348 820,286" fill="none" stroke="#C83D4B" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="512" y="920" text-anchor="middle" font-family="Avenir Next, Helvetica, Arial" font-size="238" font-weight="700" fill="#102033">EVA</text>
+</svg>

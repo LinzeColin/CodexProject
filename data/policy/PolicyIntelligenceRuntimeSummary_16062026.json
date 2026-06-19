@@ -1,0 +1,71 @@
+{
+  "schema": "EVAOSPolicyIntelligenceRuntimeSummaryV1",
+  "command_schema": "EVAOSPolicyIntelligenceRadarV1",
+  "as_of": "2026-06-16",
+  "generated_at": "2026-06-16T07:07:09",
+  "status": "Blocked",
+  "policy_status": "MissingPolicyEvidence",
+  "opportunity_count": 0,
+  "actionable_count": 0,
+  "watch_count": 0,
+  "observe_count": 0,
+  "missing_evidence_count": 0,
+  "pending_review_count": 0,
+  "authoritative_source_records": 0,
+  "needs_authority_review_records": 0,
+  "reviewed_missing_evidence_records": 0,
+  "rejected_records": 0,
+  "max_impact_score": 0.0,
+  "evidence_gate": [
+    {
+      "gate": "CommandSchema",
+      "status": "Pass",
+      "evidence": "schema=EVAOSPolicyIntelligenceRadarV1"
+    },
+    {
+      "gate": "PolicyEvidence",
+      "status": "Blocked",
+      "evidence": "opportunity_count=0"
+    },
+    {
+      "gate": "SourceAuthority",
+      "status": "Pass",
+      "evidence": "authoritative_sources=0; needs_authority_review=0"
+    },
+    {
+      "gate": "EvidenceCompleteness",
+      "status": "Pass",
+      "evidence": "missing_evidence=0; reviewed_missing_evidence=0"
+    },
+    {
+      "gate": "ManualReview",
+      "status": "Pass",
+      "evidence": "pending_review=0; rejected=0"
+    },
+    {
+      "gate": "ActionableQuality",
+      "status": "Pass",
+      "evidence": "actionable=0; broken_actionable=0"
+    },
+    {
+      "gate": "NoExternalExecution",
+      "status": "Pass",
+      "evidence": "does not log in to government portals, submit applications, pay fees, file legal documents, or trade"
+    }
+  ],
+  "top_actions": [
+    {
+      "priority": "P0",
+      "status": "Open",
+      "action": "录入至少一条政策机会，并附上官方、监管或政府来源证据。",
+      "source": "Policy Evidence"
+    }
+  ],
+  "top_opportunities": [],
+  "token_policy": "Compact Policy Intelligence runtime summary for UI and agent handoff; it does not include full opportunities and does not read live policy feeds.",
+  "safety_boundary": "Local policy evidence review only. No government-portal login, no application submission, no payment, no legal, tax, compliance, subsidy, or investment conclusion, and no trading execution.",
+  "outputs": {
+    "runtime_summary_json": "data/policy/PolicyIntelligenceRuntimeSummary_16062026.json",
+    "latest_runtime_summary_json": "data/policy/PolicyIntelligenceRuntimeSummary_latest.json"
+  }
+}

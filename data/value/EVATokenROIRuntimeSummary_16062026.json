@@ -1,0 +1,136 @@
+{
+  "schema": "EVATokenROIRuntimeSummaryV1",
+  "ledger_schema": "EVATokenROILedgerV1",
+  "as_of": "2026-06-16",
+  "generated_at": "2026-06-16T07:07:09",
+  "status": "NeedsReview",
+  "record_count": 182,
+  "artifact_record_count": 182,
+  "manual_record_count": 0,
+  "quantified_records": 0,
+  "unquantified_records": 182,
+  "pending_manual_records": 0,
+  "pending_financial_hypothesis_count": 0,
+  "rejected_manual_records": 0,
+  "quantified_without_evidence_count": 0,
+  "financial_totals": {
+    "benefit_total": 0.0,
+    "cost_total": 0.0,
+    "net_value": 0.0,
+    "aggregate_roi_score": null,
+    "revenue_generated": 0.0,
+    "cost_saved": 0.0,
+    "loss_avoided": 0.0,
+    "asset_reuse_value": 0.0,
+    "ai_cost": 0.0,
+    "human_time_cost": 0.0
+  },
+  "manual_input_totals": {
+    "token_estimate_total": 0,
+    "time_saved_hours_total": 0,
+    "reuse_count_total": 0
+  },
+  "top_value_contributions": [
+    {
+      "value_contribution": "Data Credibility",
+      "count": 57
+    },
+    {
+      "value_contribution": "Decision Support",
+      "count": 34
+    },
+    {
+      "value_contribution": "Reusable Asset",
+      "count": 20
+    },
+    {
+      "value_contribution": "System Reliability",
+      "count": 13
+    },
+    {
+      "value_contribution": "Traceability",
+      "count": 32
+    },
+    {
+      "value_contribution": "Validation Efficiency",
+      "count": 26
+    }
+  ],
+  "top_artifact_types": [
+    {
+      "artifact_type": "Backtest Word Report",
+      "count": 33
+    },
+    {
+      "artifact_type": "Daily Readiness",
+      "count": 3
+    },
+    {
+      "artifact_type": "Data Quality",
+      "count": 53
+    },
+    {
+      "artifact_type": "Data Trust Audit",
+      "count": 4
+    },
+    {
+      "artifact_type": "Executive Command Center",
+      "count": 8
+    },
+    {
+      "artifact_type": "Experiment Research Report",
+      "count": 1
+    },
+    {
+      "artifact_type": "Experiment Summary",
+      "count": 3
+    },
+    {
+      "artifact_type": "Experiment Validation",
+      "count": 3
+    }
+  ],
+  "evidence_gate": [
+    {
+      "gate": "LedgerSchema",
+      "status": "Pass",
+      "evidence": "schema=EVATokenROILedgerV1"
+    },
+    {
+      "gate": "RecordsPresent",
+      "status": "Pass",
+      "evidence": "records=182"
+    },
+    {
+      "gate": "QuantifiedValuePresent",
+      "status": "Review",
+      "evidence": "quantified=0; unquantified=182"
+    },
+    {
+      "gate": "PendingValueReview",
+      "status": "Pass",
+      "evidence": "pending_manual=0; pending_with_amounts=0"
+    },
+    {
+      "gate": "QuantifiedEvidenceLinks",
+      "status": "Pass",
+      "evidence": "quantified_without_evidence=0"
+    },
+    {
+      "gate": "FormulaReady",
+      "status": "Pass",
+      "evidence": "benefit_total=0.00; cost_total=0.00; aggregate_roi_score=None"
+    },
+    {
+      "gate": "ResearchOnlyBoundary",
+      "status": "Pass",
+      "evidence": "does not trade, pay, place orders, or infer financial value without reviewed evidence"
+    }
+  ],
+  "token_policy": "Compact Token ROI runtime summary for UI and agent handoff; it does not include full records and does not rescan report artifacts beyond the ledger build.",
+  "safety_boundary": "Research-only value accounting. No live trading, no real orders, no payments, no bank transfers, and no fabricated revenue, savings, avoided loss, or ROI.",
+  "outputs": {
+    "runtime_summary_json": "data/value/EVATokenROIRuntimeSummary_16062026.json",
+    "latest_runtime_summary_json": "data/value/EVATokenROIRuntimeSummary_latest.json"
+  }
+}

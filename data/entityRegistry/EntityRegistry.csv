@@ -1,0 +1,29 @@
+entity_id,name,market,original_symbol,canonical_symbol,provider_symbol_akshare,provider_symbol_tushare,proxy_symbol,proxy_market,status,confidence,source_system,reason,updated_at
+e82c42151df7e7d042201524,前海开源沪港深核心资源灵活配置混合C,CN,,,,,,,MissingSymbol,,支付宝视频候选持仓,缺少代码，且没有匹配到本地代理规则。,2026-06-05T12:41:00+10:00
+59cd1b3ef2c6c1e4c445be15,华夏中证AH经济蓝筹股票指数A,CN,,,,,,,MissingSymbol,,支付宝视频候选持仓,缺少代码，且没有匹配到本地代理规则。,2026-06-05T12:41:00+10:00
+82c3baf589943e12c315fd81,华夏国证自由现金流ETF联接A,CN,,,,,,,MissingSymbol,,支付宝视频候选持仓,缺少代码，且没有匹配到本地代理规则。,2026-06-05T12:41:00+10:00
+6585ba8147c30e5f8c9ede80,华夏新锦绣灵活配置混合A,CN,,,,,,,MissingSymbol,,支付宝视频候选持仓,缺少代码，且没有匹配到本地代理规则。,2026-06-05T12:41:00+10:00
+0c0d967f9efc13ea6833280c,华夏新锦绣灵活配置混合C,CN,,,,,,,MissingSymbol,,支付宝视频候选持仓,缺少代码，且没有匹配到本地代理规则。,2026-06-05T12:41:00+10:00
+b78fe0522b86999bbc2e2591,富国蓝筹精选股票(QDII),CN,,,,,,,MissingSymbol,,支付宝视频候选持仓,缺少代码，且没有匹配到本地代理规则。,2026-06-05T12:41:00+10:00
+597e40929f29ecda234213a7,广发量化多因子灵活配置混合A,CN,,,,,,,MissingSymbol,,支付宝视频候选持仓,缺少代码，且没有匹配到本地代理规则。,2026-06-05T12:41:00+10:00
+b109d16e91029ea7ea1b30b8,诺安多策略混合C,CN,,,,,,,MissingSymbol,,支付宝视频延续持仓,缺少代码，且没有匹配到本地代理规则。,2026-06-05T12:41:00+10:00
+d6a2c794cffcdcf38fd27f70,中金中证500指数增强A,CN,,510500,510500,510500.SH,510500,CN,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含中证500，使用中证500 ETF 代理。,2026-06-05T12:41:00+10:00
+25208d0a53014b2bb40a0aea,华夏国证半导体芯片ETF联接A,CN,,159995,159995,159995.SZ,159995,CN,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含半导体或芯片，使用国证半导体芯片 ETF 代理。,2026-06-05T12:41:00+10:00
+9c8aebf930a90ce37b04d496,华安纳斯达克100ETF联接(QDII)A,CN,,QQQ,QQQ,,QQQ,US,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含纳斯达克，使用 QQQ 作为行情代理。,2026-06-05T12:41:00+10:00
+bebd0b6da4bc49d18c04200a,华安纳斯达克100ETF联接(QDII)C,CN,,QQQ,QQQ,,QQQ,US,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含纳斯达克，使用 QQQ 作为行情代理。,2026-06-05T12:41:00+10:00
+c3001c42b98236206207dc02,华泰柏瑞科创50联接A,CN,,588000,588000,588000.SH,588000,CN,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含科创50，使用科创50 ETF 代理。,2026-06-05T12:41:00+10:00
+9a29a99064d854a3f4894945,南方纳斯达克100指数(QDII)A,CN,,QQQ,QQQ,,QQQ,US,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含纳斯达克，使用 QQQ 作为行情代理。,2026-06-05T12:41:00+10:00
+2ce0a99eb5d617e61da6d423,南方纳斯达克100指数(QDII)C,CN,,QQQ,QQQ,,QQQ,US,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含纳斯达克，使用 QQQ 作为行情代理。,2026-06-05T12:41:00+10:00
+b6ef0882ff6d2f05339e6497,博时中证机器人指数A,CN,,562500,562500,562500.SH,562500,CN,ProxyMapped,ProxyMedium,支付宝视频延续持仓,名称包含机器人，使用机器人主题 ETF 代理。,2026-06-05T12:41:00+10:00
+7066b6688626a933edd37d00,博时中证银行ETF联接(LOF)A,CN,,512800,512800,512800.SH,512800,CN,ProxyMapped,ProxyMedium,支付宝视频候选持仓,名称包含银行，使用银行 ETF 作为行业代理。,2026-06-05T12:41:00+10:00
+6ee79374a5384703fa54822d,博时恒生科技ETF联接(QDII)A,CN,,3033.HK,3033.HK,,3033.HK,HK,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含恒生科技，使用港股恒生科技 ETF 代理。,2026-06-05T12:41:00+10:00
+c9dace1a2bf79034deb3167d,博时标普500ETF联接(QDII)A,CN,,SPY,SPY,,SPY,US,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含标普500，使用 SPY 作为行情代理。,2026-06-05T12:41:00+10:00
+1c400f9e21ea39ae8b97287a,国泰黄金ETF联接A,CN,,518880,518880,518880.SH,518880,CN,ProxyMapped,ProxyHigh,支付宝视频延续持仓,名称包含黄金，使用 A 股黄金 ETF 作为行情代理。,2026-06-05T12:41:00+10:00
+7edad8c791c975eea656b10a,天弘中证农业主题ETF联接C,CN,,159825,159825,159825.SZ,159825,CN,ProxyMapped,ProxyMedium,支付宝视频候选持仓,名称包含农业，使用农业主题 ETF 代理。,2026-06-05T12:41:00+10:00
+f943aff804043667f351ce08,摩根标普500指数(QDII)A,CN,,SPY,SPY,,SPY,US,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含标普500，使用 SPY 作为行情代理。,2026-06-05T12:41:00+10:00
+a7d346288a84cb65166a1d89,摩根标普500指数(QDII)C,CN,,SPY,SPY,,SPY,US,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含标普500，使用 SPY 作为行情代理。,2026-06-05T12:41:00+10:00
+971696b085c3c03a40c0ec95,易方达人工智能ETF联接A,CN,,159819,159819,159819.SZ,159819,CN,ProxyMapped,ProxyHigh,支付宝视频候选持仓,名称包含人工智能，使用人工智能主题 ETF 代理。,2026-06-05T12:41:00+10:00
+fd4ac4c7455279d0dccbc250,易方达全球成长精选混合(QDII)A,CN,,QQQ,QQQ,,QQQ,US,ProxyMapped,ProxyLow,支付宝视频候选持仓,名称包含全球成长，使用 QQQ 作为成长风格粗略代理。,2026-06-05T12:41:00+10:00
+5945267a9a0b8afae54d3c9e,易方达全球成长精选混合(QDII)C,CN,,QQQ,QQQ,,QQQ,US,ProxyMapped,ProxyLow,支付宝视频候选持仓,名称包含全球成长，使用 QQQ 作为成长风格粗略代理。,2026-06-05T12:41:00+10:00
+5a5677308feacf859a7769d8,易方达石油化工ETF联接A,CN,,XLE,XLE,,XLE,US,ProxyMapped,ProxyLow,支付宝视频延续持仓,名称包含石油，使用美股能源行业 ETF 作为粗略代理。,2026-06-05T12:41:00+10:00
+fb95b9ba56cf94080ba3a3b4,易方达红利低波ETF联接A,CN,,512890,512890,512890.SH,512890,CN,ProxyMapped,ProxyMedium,支付宝视频候选持仓,名称包含红利低波，使用红利低波 ETF 代理。,2026-06-05T12:41:00+10:00

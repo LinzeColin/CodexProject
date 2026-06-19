@@ -1,0 +1,30 @@
+{
+  "schema": "policy_queue_sample.v1",
+  "run_id": "2026061501_sample",
+  "queue": [
+    {
+      "document_id": "sample_doc_ai_001",
+      "title": "Example AI Policy Document",
+      "industry_priority": "AI / Artificial Intelligence",
+      "published_date": "2026-06-01",
+      "source_id": "sample_gov_portal",
+      "authority_tier_snapshot": "A",
+      "authority_score_snapshot": 95,
+      "queue_status": "pending",
+      "required_external_references": 5,
+      "required_external_platforms": 2
+    },
+    {
+      "document_id": "sample_doc_materials_001",
+      "title": "Example New Materials Policy Document",
+      "industry_priority": "Chemicals / New Materials",
+      "published_date": "2026-05-20",
+      "source_id": "sample_gov_portal",
+      "authority_tier_snapshot": "A",
+      "authority_score_snapshot": 95,
+      "queue_status": "generated",
+      "required_external_references": 5,
+      "required_external_platforms": 2
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "schema": "ResearchBusInteropAuditV1",
+  "generated_at": "2026-06-05T10:39:33",
+  "status": "Pass",
+  "db_path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/researchBus/ResearchBus.sqlite",
+  "schema_path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/docs/ResearchBusSchema.json",
+  "ai_research_root": "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-codex/outputs/AI-Research-System",
+  "table_counts": {
+    "system_state": 9,
+    "system_registry": 5,
+    "system_artifacts": 253,
+    "orchestration_runs": 1,
+    "research_reports": 47,
+    "validation_tasks": 10149,
+    "quantlab_results": 30,
+    "holdings_master": 28,
+    "holding_symbol_mappings": 28,
+    "portfolio_transactions": 1117,
+    "holding_update_candidates": 0,
+    "consumer_behavior_state": 2,
+    "independent_validation_runs": 4,
+    "independent_validation_shards": 130,
+    "bus_api_requests": 3,
+    "bus_chat_inputs": 2,
+    "bus_system_outbox": 7,
+    "bus_heartbeats": 2,
+    "sync_events": 81
+  },
+  "summary": {
+    "pass": 15,
+    "warn": 0,
+    "fail": 0
+  },
+  "items": [
+    {
+      "requirement": "共享 JSON schema 合约",
+      "status": "Pass",
+      "evidence": "schema 覆盖 19 张核心表和 26 个请求类型。",
+      "remediation": ""
+    },
+    {
+      "requirement": "共享 SQLite 数据库",
+      "status": "Pass",
+      "evidence": "数据库可读：/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/researchBus/ResearchBus.sqlite；核心表完整。",
+      "remediation": ""
+    },
+    {
+      "requirement": "本地母子系统注册表",
+      "status": "Pass",
+      "evidence": "已注册系统：['AI-Research-System', 'FIFA-Research-System', 'GovernmentPolicySystem', 'IndependentValidation', 'QuantLab']。",
+      "remediation": ""
+    },
+    {
+      "requirement": "子系统产物索引",
+      "status": "Pass",
+      "evidence": "artifact_counts={'AI-Research-System': 9, 'FIFA-Research-System': 41, 'GovernmentPolicySystem': 113, 'IndependentValidation': 73, 'QuantLab': 17}。",
+      "remediation": ""
+    },
+    {
+      "requirement": "双向 API 和消息队列",
+      "status": "Pass",
+      "evidence": "API 表完整；历史请求数=3。",
+      "remediation": ""
+    },
+    {
+      "requirement": "任意聊天框输入同步",
+      "status": "Pass",
+      "evidence": "投递箱存在；聊天输入记录数=2。",
+      "remediation": ""
+    },
+    {
+      "requirement": "行研报告解析为待验证任务",
+      "status": "Pass",
+      "evidence": "research_reports=47；validation_tasks=10149。",
+      "remediation": ""
+    },
+    {
+      "requirement": "QuantLab 回测结论回写行研系统",
+      "status": "Pass",
+      "evidence": "quantlab_results=30；桥接文件存在。",
+      "remediation": ""
+    },
+    {
+      "requirement": "消费行为系统状态实时同步",
+      "status": "Pass",
+      "evidence": "consumer_behavior_state=2。",
+      "remediation": ""
+    },
+    {
+      "requirement": "持仓统一主数据表",
+      "status": "Pass",
+      "evidence": "holdings_master=28；holding_symbol_mappings=28；portfolio_transactions=1117。",
+      "remediation": ""
+    },
+    {
+      "requirement": "独立验证系统任意入口运行",
+      "status": "Pass",
+      "evidence": "请求类型完整；independent_validation_runs=4。",
+      "remediation": ""
+    },
+    {
+      "requirement": "独立验证两级架构与本机 worker pool",
+      "status": "Pass",
+      "evidence": "latest_total_rows=10000000000；shards=10；execution_tier=local_worker_pool；worker_count=4。",
+      "remediation": ""
+    },
+    {
+      "requirement": "系统心跳与内部状态",
+      "status": "Pass",
+      "evidence": "已有心跳：['AI-Research-System', 'ResearchBus']。",
+      "remediation": ""
+    },
+    {
+      "requirement": "行研系统桥接输出",
+      "status": "Pass",
+      "evidence": "桥接文件完整：/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-codex/outputs/AI-Research-System/data/report_artifacts/research_bus_bridge。",
+      "remediation": ""
+    },
+    {
+      "requirement": "行研系统 automation 保留",
+      "status": "Pass",
+      "evidence": "关键 automation 脚本存在：/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-codex/outputs/AI-Research-System/scripts/run_report_automation.sh；/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-codex/outputs/AI-Research-System/scripts/watch_research_bus.sh",
+      "remediation": ""
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1624 >>
+stream
+BT
+/F1 10 Tf
+56 760 Td
+12 TL
+(Validation Task Priority Plan 2026-06-07) Tj
+T*
+(Queue Records: 7058) Tj
+T*
+(Candidate Records: 7058) Tj
+T*
+(Prioritized Tasks: 200) Tj
+T*
+() Tj
+T*
+(Action Buckets:) Tj
+T*
+(- ManualReview: 6912) Tj
+T*
+(- PrepareInputs: 72) Tj
+T*
+(- BatchValidate: 43) Tj
+T*
+(- RunFirst: 31) Tj
+T*
+() Tj
+T*
+(Top Tasks:) Tj
+T*
+(1. 100 RunFirst CrossSourceValidation AAPL) Tj
+T*
+(2. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(3. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(4. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(5. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(6. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(7. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(8. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(9. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(10. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(11. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(12. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(13. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(14. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(15. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(16. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(17. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(18. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(19. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(20. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(21. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(22. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(23. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(24. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+(25. 89 RunFirst ReportEvidence NO_SYMBOL) Tj
+T*
+() Tj
+T*
+(Research-only. No live trading. No real orders.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1987
+%%EOF

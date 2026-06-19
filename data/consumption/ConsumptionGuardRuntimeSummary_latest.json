@@ -1,0 +1,83 @@
+{
+  "schema": "EVAOSConsumptionGuardRuntimeSummaryV1",
+  "guard_schema": "EVAOSConsumptionGuardV1",
+  "as_of": "2026-06-16",
+  "generated_at": "2026-06-16T07:07:09",
+  "status": "Blocked",
+  "guard_status": "MissingConsumptionEvidence",
+  "event_count": 0,
+  "counted_records": 0,
+  "pending_review_records": 0,
+  "reviewed_missing_evidence_records": 0,
+  "rejected_records": 0,
+  "lookback_days": 30,
+  "lookback_start": "2026-05-18",
+  "lookback_end": "2026-06-16",
+  "counted_spend": 0.0,
+  "essential_spend": 0.0,
+  "discretionary_spend": 0.0,
+  "impulse_spend": 0.0,
+  "fixed_cost": 0.0,
+  "high_risk_event_count": 0,
+  "average_risk_score": 0.0,
+  "monthly_investable_budget": 1000.0,
+  "investable_cashflow_pressure": 0.0,
+  "category_count": 0,
+  "evidence_gate": [
+    {
+      "gate": "GuardSchema",
+      "status": "Pass",
+      "evidence": "schema=EVAOSConsumptionGuardV1"
+    },
+    {
+      "gate": "ConsumptionEvidence",
+      "status": "Blocked",
+      "evidence": "event_count=0"
+    },
+    {
+      "gate": "EvidenceCompleteness",
+      "status": "Pass",
+      "evidence": "reviewed_missing_evidence=0"
+    },
+    {
+      "gate": "ManualReview",
+      "status": "Pass",
+      "evidence": "pending_review=0; rejected=0"
+    },
+    {
+      "gate": "ImpulseRisk",
+      "status": "Pass",
+      "evidence": "high_risk_event_count=0; impulse_spend=0"
+    },
+    {
+      "gate": "InvestableBudget",
+      "status": "Pass",
+      "evidence": "monthly_investable_budget=1000.0"
+    },
+    {
+      "gate": "InvestableCashflowPressure",
+      "status": "Pass",
+      "evidence": "pressure=0.0"
+    },
+    {
+      "gate": "NoExternalExecution",
+      "status": "Pass",
+      "evidence": "does not connect Alipay, banks, payroll, tax, payment, broker, or trading systems"
+    }
+  ],
+  "top_actions": [
+    {
+      "priority": "P0",
+      "status": "Open",
+      "action": "录入至少一条消费事件，并附上账单、截图、导出 CSV 或可复核说明。",
+      "source": "Consumption Evidence"
+    }
+  ],
+  "top_risk_events": [],
+  "token_policy": "Compact Consumption Guard runtime summary for UI and agent handoff; it does not include full events and does not connect external financial or payment systems.",
+  "safety_boundary": "Local consumption evidence review only. No Alipay login, no bank login, no payroll or tax access, no payment, no transfer, no refund, no account freeze, no broker action, and no real-money execution.",
+  "outputs": {
+    "runtime_summary_json": "data/consumption/ConsumptionGuardRuntimeSummary_16062026.json",
+    "latest_runtime_summary_json": "data/consumption/ConsumptionGuardRuntimeSummary_latest.json"
+  }
+}

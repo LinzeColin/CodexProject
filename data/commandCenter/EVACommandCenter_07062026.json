@@ -1,0 +1,184 @@
+{
+  "schema": "EVACommandCenterV1",
+  "system": "EVA_OS",
+  "display_name": "EVA_OS",
+  "subsystem": "Executive Command Center",
+  "as_of": "2026-06-07",
+  "generated_at": "2026-06-07T13:51:25",
+  "project_root": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance",
+  "report_root": "/Users/linzezhang/Downloads/量化回测分析",
+  "command_status": "ReadyForResearch",
+  "status_reason": "核心证据闸门、报告证据和本地价值台账已闭合，可继续研究。",
+  "scorecards": [
+    {
+      "metric": "Daily Readiness",
+      "value": "ReadyForResearch",
+      "status": "Pass",
+      "evidence": "gates=5"
+    },
+    {
+      "metric": "Integration Audit",
+      "value": "Pass",
+      "status": "Pass",
+      "evidence": "summary={'pass': 6, 'review': 0, 'fail': 0, 'item_count': 6}"
+    },
+    {
+      "metric": "Risk Gates",
+      "value": "8/8 Pass",
+      "status": "Pass",
+      "evidence": "DataTrust=Pass, IntegrationAudit=Pass, NoLiveTradingBoundary=Pass, ReportEvidence=Pass, LatestWordReport=Pass, EntityRegistry=Pass, WorkflowInputs=Pass, ResearchBusInterop=Pass"
+    },
+    {
+      "metric": "Token ROI Ledger",
+      "value": "180",
+      "status": "Pass",
+      "evidence": "quantified=0; unquantified=180"
+    },
+    {
+      "metric": "Latest Report",
+      "value": "SampleBacktestReport_07062026.docx",
+      "status": "Pass",
+      "evidence": "/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx"
+    }
+  ],
+  "risk_gates": [
+    {
+      "gate": "DataTrust",
+      "status": "Pass",
+      "evidence": "audit_status=Pass; review=0; rejected=0",
+      "next_action": "Keep evidence audit clean before using research outputs."
+    },
+    {
+      "gate": "IntegrationAudit",
+      "status": "Pass",
+      "evidence": "summary={'pass': 6, 'review': 0, 'fail': 0, 'item_count': 6}",
+      "next_action": "Run scripts/auditQuantLabIntegration.sh --no-write if not Pass."
+    },
+    {
+      "gate": "NoLiveTradingBoundary",
+      "status": "Pass",
+      "evidence": "No live order path must remain enforced.",
+      "next_action": "Remove or fail closed any real-order code path."
+    },
+    {
+      "gate": "ReportEvidence",
+      "status": "Pass",
+      "evidence": "run_metadata=31; report_evidence_layer=Pass",
+      "next_action": "Generate a report with RunMetadata before using results."
+    },
+    {
+      "gate": "LatestWordReport",
+      "status": "Pass",
+      "evidence": "/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx",
+      "next_action": "Generate at least one Word report for the current research session."
+    },
+    {
+      "gate": "EntityRegistry",
+      "status": "Pass",
+      "evidence": "Entity Registry schema=QuantLabEntityRegistryV1; records=28.",
+      "next_action": "确认 ProxyMapped 和 MissingSymbol 的报告口径。"
+    },
+    {
+      "gate": "WorkflowInputs",
+      "status": "Pass",
+      "evidence": "Workflow inputs are queryable; rows=3.",
+      "next_action": "新报告应引用 workflow_input_id 或明确标注 ManualOrLocalOnly。"
+    },
+    {
+      "gate": "ResearchBusInterop",
+      "status": "Pass",
+      "evidence": "ResearchBus interoperability status=Pass.",
+      "next_action": "继续保持跨系统同步审计。"
+    }
+  ],
+  "action_queue": [
+    {
+      "priority": "P1",
+      "status": "Open",
+      "owner": "QuantLab",
+      "action": "If using Moomoo real data, start Moomoo OpenD first; this system remains quote/research-only.",
+      "source": "Daily Readiness"
+    },
+    {
+      "priority": "P1",
+      "status": "Open",
+      "owner": "QuantLab",
+      "action": "Configure provider API keys only for the data sources you actually use; do not store keys in source code.",
+      "source": "Daily Readiness"
+    },
+    {
+      "priority": "P1",
+      "status": "Open",
+      "owner": "QuantLab",
+      "action": "Open the latest report from Report Center and check data quality, cross-source validation, and risk gates before using it.",
+      "source": "Daily Readiness"
+    },
+    {
+      "priority": "P2",
+      "status": "Open",
+      "owner": "Value Layer",
+      "action": "为高价值产物补充真实节省时间、避免损失、复用价值或成本数据；未量化前 ROI 保持空值。",
+      "source": "Token ROI Ledger"
+    }
+  ],
+  "latest_report": {
+    "name": "SampleBacktestReport_07062026.docx",
+    "artifact_type": "Backtest Word Report",
+    "date_folder": "2026-06-07",
+    "size_kb": 742.96,
+    "path": "/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx"
+  },
+  "evidence_sources": [
+    {
+      "source": "Daily Readiness",
+      "status": "Present",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/systemAudit/QuantLabDailyReadiness_07062026.json",
+      "schema": "QuantLabDailyReadinessV1"
+    },
+    {
+      "source": "Integration Audit",
+      "status": "Present",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/systemAudit/QuantLabIntegrationAudit_07062026.json",
+      "schema": "QuantLabIntegrationAuditV1"
+    },
+    {
+      "source": "Data Trust Audit",
+      "status": "Present",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/systemAudit/QuantLabDataTrustAudit_07062026.json",
+      "schema": "QuantLabDataTrustAuditV1"
+    },
+    {
+      "source": "Token ROI Ledger",
+      "status": "Present",
+      "path": "data/value/EVATokenROILedger_latest.json",
+      "schema": "EVATokenROILedgerV1"
+    },
+    {
+      "source": "Latest Report",
+      "status": "Present",
+      "path": "/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx",
+      "schema": "Backtest Word Report"
+    }
+  ],
+  "token_roi_summary": {
+    "record_count": 180,
+    "quantified_records": 0,
+    "unquantified_records": 180,
+    "roi_status": "Unquantified"
+  },
+  "assumptions": [
+    "总控驾驶舱只聚合本地证据，不刷新行情、不启动 Moomoo OpenD、不修改持仓、不连接实盘。",
+    "所有输入必须进入证据层；没有证据的结论降级为观察或待复核。",
+    "所有结论必须经过风控层；Blocked 或 NeedsReview 不应作为交易前参考。",
+    "所有产出必须进入 Token ROI 台账；没有真实金额输入时不伪造收益、节省成本或 ROI。",
+    "Research-only boundary remains active: no live trading, no real orders, no payments, no betting execution."
+  ],
+  "outputs": {
+    "json": "data/commandCenter/EVACommandCenter_07062026.json",
+    "markdown": "data/commandCenter/EVACommandCenter_07062026.md",
+    "pdf": "data/commandCenter/EVACommandCenter_07062026.pdf",
+    "latest_json": "data/commandCenter/EVACommandCenter_latest.json",
+    "latest_markdown": "data/commandCenter/EVACommandCenter_latest.md",
+    "latest_pdf": "data/commandCenter/EVACommandCenter_latest.pdf"
+  }
+}

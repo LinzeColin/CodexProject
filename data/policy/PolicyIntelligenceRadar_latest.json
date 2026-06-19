@@ -1,0 +1,48 @@
+{
+  "schema": "EVAOSPolicyIntelligenceRadarV1",
+  "system": "EVA_OS",
+  "subsystem": "Policy Intelligence Radar",
+  "as_of": "2026-06-13",
+  "generated_at": "2026-06-13T16:32:33",
+  "project_root": "/Users/linzezhang/Documents/Codex/2026-06-13/files-mentioned-by-the-user-eva/outputs/CodexFinance",
+  "entry_path": "/Users/linzezhang/Documents/Codex/2026-06-13/files-mentioned-by-the-user-eva/outputs/CodexFinance/data/policy/PolicyOpportunityEntries.json",
+  "opportunity_count": 0,
+  "policy_status": "MissingPolicyEvidence",
+  "summary": {
+    "total_records": 0,
+    "actionable_count": 0,
+    "watch_count": 0,
+    "observe_count": 0,
+    "missing_evidence_count": 0,
+    "pending_review_count": 0,
+    "max_impact_score": 0.0,
+    "policy_status": "MissingPolicyEvidence"
+  },
+  "action_queue": [
+    {
+      "priority": "P0",
+      "status": "Open",
+      "action": "录入至少一条政策机会，并附上官方、监管或政府来源证据。",
+      "source": "Policy Evidence"
+    }
+  ],
+  "sector_exposure": [],
+  "opportunities": [],
+  "assumptions": [
+    "This radar stores manually reviewed policy opportunities; it does not claim real-time policy coverage.",
+    "Only Reviewed opportunities with Official/Regulator/Government/Exchange source type and source evidence are Actionable.",
+    "Research, News, or Manual sources can support Watch or Observe status, but not Actionable policy decisions.",
+    "Scores are prioritization aids, not proof of subsidy availability, regulatory approval, investment return, or compliance advice.",
+    "No trading, payment, application submission, legal filing, or government-portal action is executed."
+  ],
+  "outputs": {
+    "json": "data/policy/PolicyIntelligenceRadar_13062026.json",
+    "csv": "data/policy/PolicyIntelligenceRadar_13062026.csv",
+    "markdown": "data/policy/PolicyIntelligenceRadar_13062026.md",
+    "pdf": "data/policy/PolicyIntelligenceRadar_13062026.pdf",
+    "latest_json": "data/policy/PolicyIntelligenceRadar_latest.json",
+    "latest_csv": "data/policy/PolicyIntelligenceRadar_latest.csv",
+    "latest_markdown": "data/policy/PolicyIntelligenceRadar_latest.md",
+    "latest_pdf": "data/policy/PolicyIntelligenceRadar_latest.pdf"
+  }
+}

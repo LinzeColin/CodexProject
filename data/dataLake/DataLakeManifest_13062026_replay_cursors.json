@@ -1,0 +1,19 @@
+{
+  "schema": "EVAOSDataLakeReplayCursorV1",
+  "as_of": "2026-06-13",
+  "replay_cursors": [
+    {
+      "cursor_id": "06306f6b26f7d3cbddd1ecc4",
+      "dataset": "market_events",
+      "market": "US",
+      "symbol": "SPY",
+      "interval": "1d",
+      "source": "sample",
+      "asset_count": 1,
+      "event_count": 7,
+      "first_event_time": "2026-01-01T00:00:00",
+      "last_event_time": "2026-01-09T00:00:00",
+      "next_after": "2026-01-09T00:00:00"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "background_top": "#F8FAFC",
+  "background_bottom": "#D9E2EC",
+  "panel": "#FFFFFF",
+  "panel_outline": "#CBD5E1",
+  "text": "#102033",
+  "muted": "#64748B",
+  "accent": "#C83D4B",
+  "accent_secondary": "#4AA3C7",
+  "label": "EVA",
+  "subtitle": "OS"
+}

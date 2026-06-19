@@ -1,0 +1,70 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 987 >>
+stream
+BT
+/F1 10 Tf
+56 760 Td
+12 TL
+(EVA_OS Consumption Guard 2026-06-13) Tj
+T*
+(Generated At: 2026-06-13T16:32:50) Tj
+T*
+(Status: MissingConsumptionEvidence) Tj
+T*
+(Counted Spend: 0) Tj
+T*
+(Impulse Spend: 0) Tj
+T*
+(Fixed Cost: 0) Tj
+T*
+(Investable Cashflow Pressure: None) Tj
+T*
+() Tj
+T*
+(Action Queue:) Tj
+T*
+(- P0: ?????????????????????? CSV ???????) Tj
+T*
+() Tj
+T*
+(Assumptions:) Tj
+T*
+(- Only Reviewed events with evidence_link or evidence_path are counted in spend, impulse, fixed-cost, and pressure summaries.) Tj
+T*
+(- PendingReview, Rejected, or missing-evidence events stay in the ledger but do not affect guard metrics.) Tj
+T*
+(- monthly_investable_budget is a user-supplied planning value; it is not read from bank, payroll, Alipay, tax, or brokerage systems.) Tj
+T*
+(- Risk scores are behavior-review aids, not medical, legal, financial, investment, or payment advice.) Tj
+T*
+(- No payment, transfer, bank action, investment order, or external account action is executed.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1349
+%%EOF

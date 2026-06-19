@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+data/private/
+02_reports/word_reports/*
+02_reports/pdf_reports/*
+!02_reports/word_reports/.gitkeep
+!02_reports/pdf_reports/.gitkeep

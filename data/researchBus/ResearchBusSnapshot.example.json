@@ -1,0 +1,37 @@
+{
+  "schema": "ResearchBusSnapshotV1",
+  "purpose": "Public-safe example snapshot for EVA_OS ResearchBus integration.",
+  "public_safe": true,
+  "generated_at": "2026-06-15T00:00:00+10:00",
+  "systems": [
+    {
+      "system_name": "EVA_OS",
+      "status": "Ready",
+      "capabilities": ["research_bus", "orchestration", "report_center"]
+    },
+    {
+      "system_name": "finance_ledger",
+      "status": "RegisteredManifestOnly",
+      "capabilities": ["ledger_summary", "manual_review_queue"]
+    },
+    {
+      "system_name": "industry_research",
+      "status": "RegisteredManifestOnly",
+      "capabilities": ["research_reports", "validation_tasks"]
+    },
+    {
+      "system_name": "policy_intelligence",
+      "status": "RegisteredManifestOnly",
+      "capabilities": ["policy_events", "source_authority"]
+    }
+  ],
+  "excluded_from_public_example": [
+    "raw bills",
+    "portfolio holdings",
+    "broker-adjacent state",
+    "transaction rows",
+    "local absolute paths to private source files",
+    "SQLite runtime state"
+  ],
+  "notes": "Real ResearchBusSnapshot.json is runtime state and must remain local or private-only."
+}

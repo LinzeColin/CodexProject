@@ -1,0 +1,105 @@
+{
+  "schema": "QuantLabIntegrationAuditV1",
+  "system": "QuantLab",
+  "as_of": "2026-06-07",
+  "generated_at": "2026-06-07T11:28:28",
+  "status": "Pass",
+  "summary": {
+    "pass": 6,
+    "review": 0,
+    "fail": 0,
+    "item_count": 6
+  },
+  "items": [
+    {
+      "layer": "DataTrust",
+      "status": "Pass",
+      "summary": "Data Trust status=Pass; records=145.",
+      "evidence": {
+        "audit_status": "Pass",
+        "record_count": 145,
+        "review_count": 0,
+        "rejected_count": 0
+      },
+      "next_action": "继续保持只读审计和证据链记录。"
+    },
+    {
+      "layer": "EntityRegistry",
+      "status": "Pass",
+      "summary": "Entity Registry schema=QuantLabEntityRegistryV1; records=28.",
+      "evidence": {
+        "json": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/entityRegistry/EntityRegistry.json",
+        "csv": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/entityRegistry/EntityRegistry.csv",
+        "markdown": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/entityRegistry/EntityRegistry.md",
+        "schema": "QuantLabEntityRegistryV1",
+        "record_count": 28,
+        "status_counts": {
+          "MissingSymbol": 8,
+          "ProxyMapped": 20
+        }
+      },
+      "next_action": "确认 ProxyMapped 和 MissingSymbol 的报告口径。"
+    },
+    {
+      "layer": "WorkflowInputs",
+      "status": "Pass",
+      "summary": "Workflow inputs are queryable; rows=3.",
+      "evidence": {
+        "db_path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/researchBus/ResearchBus.sqlite",
+        "input_count": 3,
+        "status_counts": {
+          "Pending": 2,
+          "Completed": 1
+        },
+        "input_type_counts": {
+          "chat": 2,
+          "api_request": 1
+        }
+      },
+      "next_action": "新报告应引用 workflow_input_id 或明确标注 ManualOrLocalOnly。"
+    },
+    {
+      "layer": "ReportEvidence",
+      "status": "Pass",
+      "summary": "RunMetadata files=31; report_evidence=1.",
+      "evidence": {
+        "report_root": "/Users/linzezhang/Downloads/量化回测分析",
+        "metadata_count": 31,
+        "report_evidence_count": 1
+      },
+      "next_action": "旧报告可保留；新报告必须包含 QuantLabReportEvidenceV1。"
+    },
+    {
+      "layer": "ResearchBusInterop",
+      "status": "Pass",
+      "summary": "ResearchBus interoperability status=Pass.",
+      "evidence": {
+        "status": "Pass",
+        "summary": {
+          "pass": 15,
+          "warn": 0,
+          "fail": 0
+        }
+      },
+      "next_action": "继续保持跨系统同步审计。"
+    },
+    {
+      "layer": "NoLiveTradingBoundary",
+      "status": "Pass",
+      "summary": "No live order code was found; policy boundary is documented.",
+      "evidence": {
+        "policy_boundary_documented": true
+      },
+      "next_action": "保持研究-only 边界。"
+    }
+  ],
+  "assumptions": [
+    "The integration audit is read-only unless write_quantlab_integration_audit is called.",
+    "It does not refresh market data, open Streamlit, start Moomoo OpenD, or mutate holdings.",
+    "Pass means local evidence chains are connected; it does not approve live trading or real orders."
+  ],
+  "outputs": {
+    "json": "data/systemAudit/QuantLabIntegrationAudit_07062026.json",
+    "markdown": "data/systemAudit/QuantLabIntegrationAudit_07062026.md"
+  }
+}

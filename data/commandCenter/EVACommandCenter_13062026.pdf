@@ -1,0 +1,102 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1758 >>
+stream
+BT
+/F1 10 Tf
+56 760 Td
+12 TL
+(EVA_OS Command Center 2026-06-13) Tj
+T*
+(System: EVA_OS) Tj
+T*
+(Status: NeedsReview) Tj
+T*
+(Reason: ?????Company CashFlow Command, Policy Intelligence Radar, Consumption Guard) Tj
+T*
+(Generated At: 2026-06-13T16:33:21) Tj
+T*
+() Tj
+T*
+(Scorecards:) Tj
+T*
+(- Daily Readiness: ReadyForResearch | Pass) Tj
+T*
+(- Integration Audit: Pass | Pass) Tj
+T*
+(- Risk Gates: 8/8 Pass | Pass) Tj
+T*
+(- Token ROI Ledger: 178 | Pass) Tj
+T*
+(- Latest Report: SampleBacktestReport_07062026.docx | Pass) Tj
+T*
+(- Company CashFlow Command: MissingBalance | Review) Tj
+T*
+(- Policy Intelligence Radar: MissingPolicyEvidence | Review) Tj
+T*
+(- Consumption Guard: MissingConsumptionEvidence | Review) Tj
+T*
+() Tj
+T*
+(Business Systems:) Tj
+T*
+(- Company CashFlow Command: MissingBalance | Review) Tj
+T*
+(- Policy Intelligence Radar: MissingPolicyEvidence | Review) Tj
+T*
+(- Consumption Guard: MissingConsumptionEvidence | Review) Tj
+T*
+() Tj
+T*
+(Top Actions:) Tj
+T*
+(- P1 Configure provider API keys only for the data sources you actually use; do not store keys in source code. [Daily Readiness]) Tj
+T*
+(- P1 Open the latest report from Report Center and check data quality, cross-source validation, and risk gates before using it. [Daily Readiness]) Tj
+T*
+(- P2 ?????????????????????????????????? ROI ????? [Token ROI Ledger]) Tj
+T*
+(- P0 ????????????? BalanceSnapshot????????? [Company CashFlow Command: BalanceSnapshot]) Tj
+T*
+(- P0 ??????????????????????????? [Policy Intelligence Radar: Policy Evidence]) Tj
+T*
+(- P0 ?????????????????????? CSV ??????? [Consumption Guard: Consumption Evidence]) Tj
+T*
+() Tj
+T*
+(Token ROI:) Tj
+T*
+(- records=178 quantified=0 unquantified=178) Tj
+T*
+() Tj
+T*
+(Research-only. No live trading. No real orders.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2121
+%%EOF

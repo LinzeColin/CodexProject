@@ -1,0 +1,1 @@
+event_id,event_date,event_type,category,amount,currency,merchant,payment_method,planned,recurring,necessity_score,impulse_score,regret_score,risk_score,risk_level,evidence_link,evidence_path,evidence_status,review_status,notes,created_at,updated_at,next_action

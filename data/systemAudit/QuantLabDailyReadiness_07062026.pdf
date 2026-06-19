@@ -1,0 +1,72 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1127 >>
+stream
+BT
+/F1 11 Tf
+72 760 Td
+13 TL
+(QuantLab Daily Readiness 2026-06-07) Tj
+T*
+(Generated At: 2026-06-07T11:29:16) Tj
+T*
+(Readiness Status: ReadyForResearch) Tj
+T*
+(Health Summary: {'Pass': 19, 'Info': 3}) Tj
+T*
+(Provider Summary: {'ready': 5, 'needs_config': 3, 'needs_package': 0, 'needs_opend': 0, 'other': 0}) Tj
+T*
+() Tj
+T*
+(Core Gates:) Tj
+T*
+(- DataTrust: Pass | audit_status=Pass; review=0; rejected=0) Tj
+T*
+(- IntegrationAudit: Pass | summary={'pass': 6, 'review': 0, 'fail': 0, 'item_count': 6}) Tj
+T*
+(- NoLiveTradingBoundary: Pass | No live order path must remain enforced.) Tj
+T*
+(- ReportEvidence: Pass | run_metadata=31; report_evidence_layer=Pass) Tj
+T*
+(- LatestWordReport: Pass | /Users/linzezhang/Downloads/??????/2026-06-07/SampleBacktestReport_07062026.docx) Tj
+T*
+() Tj
+T*
+(Top Actions:) Tj
+T*
+(- Configure provider API keys only for the data sources you actually use; do not store keys in source code.) Tj
+T*
+(- Open the latest report from Report Center and check data quality, cross-source validation, and risk gates before using it.) Tj
+T*
+() Tj
+T*
+(Research-only. No live trading. No real orders.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1490
+%%EOF

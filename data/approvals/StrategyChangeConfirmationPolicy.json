@@ -1,0 +1,22 @@
+{
+  "schema": "QuantLabStrategyChangeConfirmationPolicyV1",
+  "status": "USER_CONFIRMED",
+  "policy_name": "Strategy Change Confirmation Policy",
+  "effective_date": "2026-06-07",
+  "scope": [
+    "built_in_strategy_edits",
+    "custom_strategy_edits",
+    "parameter_template_changes",
+    "strategy_library_order_changes"
+  ],
+  "rules": [
+    "Strategy changes must preserve research-only behavior.",
+    "The system must not place real orders or connect to live trading.",
+    "A changed strategy must keep version, parameters, assumptions, and validation evidence traceable.",
+    "A strategy change confirmation is not evidence that the strategy is profitable or safe."
+  ],
+  "research_only": true,
+  "live_trading_allowed": false,
+  "real_order_submission_allowed": false,
+  "notes": "This file records the standing confirmation policy requested by the user. It does not approve any individual strategy result."
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "EVAOSCompanyCashFlowRuntimeSummaryV1",
+  "command_schema": "EVAOSCompanyCashFlowCommandV1",
+  "as_of": "2026-06-16",
+  "generated_at": "2026-06-16T07:07:09",
+  "status": "Blocked",
+  "cashflow_status": "MissingBalance",
+  "entry_count": 0,
+  "counted_records": 0,
+  "pending_review_records": 0,
+  "reviewed_missing_evidence_records": 0,
+  "rejected_records": 0,
+  "lookback_days": 30,
+  "latest_balance": null,
+  "latest_balance_date": null,
+  "inflow": 0.0,
+  "outflow": 0.0,
+  "net_cashflow": 0.0,
+  "receivable": 0.0,
+  "payable": 0.0,
+  "daily_burn": 0.0,
+  "runway_days": null,
+  "evidence_gate": [
+    {
+      "gate": "CommandSchema",
+      "status": "Pass",
+      "evidence": "schema=EVAOSCompanyCashFlowCommandV1"
+    },
+    {
+      "gate": "BalanceSnapshot",
+      "status": "Blocked",
+      "evidence": "latest_balance=None"
+    },
+    {
+      "gate": "EvidenceCompleteness",
+      "status": "Pass",
+      "evidence": "reviewed_missing_evidence=0"
+    },
+    {
+      "gate": "ManualReview",
+      "status": "Pass",
+      "evidence": "pending_review=0; rejected=0"
+    },
+    {
+      "gate": "Runway",
+      "status": "Review",
+      "evidence": "runway_days=None; daily_burn=0.0"
+    },
+    {
+      "gate": "NetCashflow",
+      "status": "Pass",
+      "evidence": "net_cashflow=0"
+    },
+    {
+      "gate": "BalanceFreshness",
+      "status": "Pass",
+      "evidence": "lookback_end=2026-06-16; latest_balance_date=None"
+    },
+    {
+      "gate": "NoExternalExecution",
+      "status": "Pass",
+      "evidence": "does not connect banks, payment providers, payroll, tax, accounting, broker, or trading systems"
+    }
+  ],
+  "top_actions": [
+    {
+      "priority": "P0",
+      "status": "Open",
+      "action": "录入并复核最新公司现金余额 BalanceSnapshot，附上可复核证据。",
+      "source": "BalanceSnapshot"
+    }
+  ],
+  "token_policy": "Compact Company CashFlow runtime summary for UI and agent handoff; it does not include full entries and does not connect external financial systems.",
+  "safety_boundary": "Local evidence review only. No bank login, no payment, no transfer, no payroll or tax filing, no accounting-system mutation, no broker action, and no real-money execution.",
+  "outputs": {
+    "runtime_summary_json": "data/cashflow/CompanyCashFlowRuntimeSummary_16062026.json",
+    "latest_runtime_summary_json": "data/cashflow/CompanyCashFlowRuntimeSummary_latest.json"
+  }
+}

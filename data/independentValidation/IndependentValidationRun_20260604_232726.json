@@ -1,0 +1,86 @@
+{
+  "run_id": "independentValidationRun_b6d50fa0af6b3fcc23d5",
+  "status": "Planned",
+  "mode": "dry_run",
+  "manifest_path": "",
+  "total_rows": 1000000000,
+  "shard_count": 4,
+  "started_at": "2026-06-04T23:27:26",
+  "completed_at": "2026-06-04T23:27:26",
+  "output_path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/independentValidation/IndependentValidationRun_20260604_232726.json",
+  "assumptions": [
+    "该入口默认只生成可审计的分片验证计划，不自动下单、不生成交易指令。",
+    "亿万级别数据测试通过 manifest 和分片登记支持；实际执行应由批处理或分布式执行器逐片消费。",
+    "dry_run 模式不会把大数据一次性载入内存；只读取文件元数据和必要行数统计。"
+  ],
+  "shards": [
+    {
+      "shard_id": "validationShard_396929eb02a0b4d14693",
+      "run_id": "independentValidationRun_b6d50fa0af6b3fcc23d5",
+      "shard_index": 0,
+      "source_path": "synthetic://scale-test",
+      "start_row": 0,
+      "end_row": 250000000,
+      "status": "Planned",
+      "payload_json": {
+        "row_count": 250000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 250000000 行；执行器应逐片读取。"
+      }
+    },
+    {
+      "shard_id": "validationShard_eaf23e12365fa7dc5596",
+      "run_id": "independentValidationRun_b6d50fa0af6b3fcc23d5",
+      "shard_index": 1,
+      "source_path": "synthetic://scale-test",
+      "start_row": 250000000,
+      "end_row": 500000000,
+      "status": "Planned",
+      "payload_json": {
+        "row_count": 250000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 250000000 行；执行器应逐片读取。"
+      }
+    },
+    {
+      "shard_id": "validationShard_e848aad0c8bdb283b28c",
+      "run_id": "independentValidationRun_b6d50fa0af6b3fcc23d5",
+      "shard_index": 2,
+      "source_path": "synthetic://scale-test",
+      "start_row": 500000000,
+      "end_row": 750000000,
+      "status": "Planned",
+      "payload_json": {
+        "row_count": 250000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 250000000 行；执行器应逐片读取。"
+      }
+    },
+    {
+      "shard_id": "validationShard_bb4e779154392d5a8b79",
+      "run_id": "independentValidationRun_b6d50fa0af6b3fcc23d5",
+      "shard_index": 3,
+      "source_path": "synthetic://scale-test",
+      "start_row": 750000000,
+      "end_row": 1000000000,
+      "status": "Planned",
+      "payload_json": {
+        "row_count": 250000000,
+        "source_payload": {
+          "format": "synthetic",
+          "purpose": "大规模容量和分片调度测试"
+        },
+        "memory_policy": "每片最多 250000000 行；执行器应逐片读取。"
+      }
+    }
+  ]
+}
