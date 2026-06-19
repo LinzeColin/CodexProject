@@ -120,13 +120,19 @@ def build_cashflow_command(
     as_of: str | None = None,
     project_root: Path | str = PROJECT_ROOT,
     entry_path: Path | str | None = None,
+    entries: list[dict[str, Any]] | None = None,
     lookback_days: int = 30,
 ) -> dict[str, Any]:
     root = Path(project_root).expanduser()
     audit_date = _clean_date(as_of or date.today().isoformat())
-    path = Path(entry_path).expanduser() if entry_path else root / "data" / "cashflow" / "CompanyCashFlowEntries.json"
-    entries = load_cashflow_entries(path)
-    summary = _summary(entries, as_of=audit_date, lookback_days=max(1, int(lookback_days)))
+    if entries is None:
+        path = Path(entry_path).expanduser() if entry_path else root / "data" / "cashflow" / "CompanyCashFlowEntries.json"
+        loaded_entries = load_cashflow_entries(path)
+        entry_source = str(path)
+    else:
+        loaded_entries = [_normalize_entry(item) for item in entries if isinstance(item, dict)]
+        entry_source = "operational_store:private_reviewed_inputs/company_cashflow"
+    summary = _summary(loaded_entries, as_of=audit_date, lookback_days=max(1, int(lookback_days)))
     payload = {
         "schema": "PFIOSCompanyCashFlowCommandV1",
         "system": MASTER_SYSTEM_ID,
@@ -134,13 +140,13 @@ def build_cashflow_command(
         "as_of": audit_date,
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "project_root": str(root),
-        "entry_path": str(path),
+        "entry_path": entry_source,
         "lookback_days": max(1, int(lookback_days)),
         "cashflow_status": summary["cashflow_status"],
         "summary": summary,
         "action_queue": _action_queue(summary),
-        "category_totals": _category_totals(entries, as_of=audit_date, lookback_days=max(1, int(lookback_days))),
-        "entries": sorted(entries, key=lambda row: (row.get("entry_date", ""), row.get("created_at", "")), reverse=True),
+        "category_totals": _category_totals(loaded_entries, as_of=audit_date, lookback_days=max(1, int(lookback_days))),
+        "entries": sorted(loaded_entries, key=lambda row: (row.get("entry_date", ""), row.get("created_at", "")), reverse=True),
         "assumptions": [
             "Only entries with review_status=Reviewed and evidence_status=Pass are counted in cashflow totals.",
             "PendingReview entries are stored for review but do not affect balance, runway, inflow, outflow, receivable, or payable totals.",
@@ -247,6 +253,7 @@ def write_cashflow_command(
     as_of: str | None = None,
     project_root: Path | str = PROJECT_ROOT,
     entry_path: Path | str | None = None,
+    entries: list[dict[str, Any]] | None = None,
     output_dir: Path | str | None = None,
     lookback_days: int = 30,
 ) -> dict[str, Any]:
@@ -254,6 +261,7 @@ def write_cashflow_command(
         as_of=as_of,
         project_root=project_root,
         entry_path=entry_path,
+        entries=entries,
         lookback_days=lookback_days,
     )
     root = Path(project_root).expanduser()

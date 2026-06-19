@@ -56,6 +56,10 @@ ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
+CASHFLOW_LEDGER = "company_cashflow"
+POLICY_LEDGER = "policy_radar"
+CONSUMPTION_LEDGER = "consumption_guard"
+
 from pfi_os.approvals import StrategyApprovalRegistry
 from pfi_os.application import (
     OperationalStore,
@@ -67,9 +71,12 @@ from pfi_os.application import (
     empty_macos_runtime_acceptance_read_model,
     empty_vectorized_research_read_model,
     empty_homepage_summary,
+    append_private_reviewed_input_entry,
     ingest_command_center_cache,
     ingest_macos_runtime_acceptance_cache,
     ingest_vectorized_research_cache,
+    load_private_reviewed_input_entries,
+    private_reviewed_input_output_dir,
 )
 from pfi_os.analysis import (
     HOTSPOT_REFRESH_TTL_SECONDS,
@@ -121,21 +128,17 @@ from pfi_os.backtest import BacktestConfig, BacktestEngine, PortfolioBacktestEng
 from pfi_os.business import (
     CASHFLOW_CATEGORIES,
     CASHFLOW_DIRECTIONS,
-    append_cashflow_entry,
     build_cashflow_command,
     build_cashflow_runtime_summary,
     create_cashflow_entry,
-    load_cashflow_entries,
     write_cashflow_command,
 )
 from pfi_os.consumption import (
     CONSUMPTION_CATEGORIES,
     CONSUMPTION_EVENT_TYPES,
-    append_consumption_event,
     build_consumption_guard,
     build_consumption_runtime_summary,
     create_consumption_event,
-    load_consumption_events,
     write_consumption_guard,
 )
 from pfi_os.config import REPORT_ROOT_DIR
@@ -205,11 +208,9 @@ from pfi_os.policy import (
     POLICY_LEVELS,
     POLICY_OPPORTUNITY_TYPES,
     POLICY_SOURCE_TYPES,
-    append_policy_opportunity,
     build_policy_radar,
     build_policy_runtime_summary,
     create_policy_opportunity,
-    load_policy_opportunities,
     write_policy_radar,
 )
 from pfi_os.research import (
@@ -324,6 +325,34 @@ HOTSPOT_WORKBENCH_PROFILES = {
 }
 SCAN_BUILT_IN_STRATEGY_IDS = {"ma_crossover", "rsi_reversion", "bollinger_reversion", "breakout"}
 SCAN_DATA_OPTIONS = [option for option in DATA_OPTIONS if option != "CSV"]
+
+
+def _operational_store() -> OperationalStore:
+    store = OperationalStore()
+    store.initialize()
+    return store
+
+
+def _load_private_reviewed_rows(ledger: str) -> list[dict]:
+    try:
+        return load_private_reviewed_input_entries(_operational_store(), ledger=ledger)
+    except Exception:
+        return []
+
+
+def _append_private_reviewed_row(ledger: str, entry: dict, *, entry_id_key: str, as_of_key: str) -> dict:
+    return append_private_reviewed_input_entry(
+        _operational_store(),
+        ledger=ledger,
+        entry=entry,
+        entry_id_key=entry_id_key,
+        as_of_key=as_of_key,
+    )
+
+
+def _private_reviewed_output_dir(ledger: str) -> Path:
+    return private_reviewed_input_output_dir(ledger)
+
 
 VIEW_OPTIONS = {
     "command": "总控驾驶舱",
@@ -1240,7 +1269,8 @@ def _number_label(value: object) -> str:
 def cashflow_view() -> None:
     st.subheader("现金流")
     st.caption("Company CashFlow Command：录入、复核和导出公司经营现金流证据。所有金额必须来自人工证据，不连接银行或支付账户。")
-    payload = build_cashflow_command(project_root=ROOT)
+    cashflow_entries = _load_private_reviewed_rows(CASHFLOW_LEDGER)
+    payload = build_cashflow_command(project_root=ROOT, entries=cashflow_entries)
     runtime_summary = payload.get("runtime_summary") or build_cashflow_runtime_summary(payload)
     summary = payload.get("summary", {})
 
@@ -1320,13 +1350,17 @@ def cashflow_view() -> None:
             except ValueError as exc:
                 st.error(str(exc))
             else:
-                append_cashflow_entry(entry, ROOT / "data" / "cashflow" / "CompanyCashFlowEntries.json")
+                _append_private_reviewed_row(CASHFLOW_LEDGER, entry, entry_id_key="entry_id", as_of_key="entry_date")
                 st.success("已保存现金流证据。")
                 st.json({"entry_id": entry["entry_id"], "review_status": entry["review_status"], "evidence_status": entry["evidence_status"]}, expanded=False)
 
     action_cols = st.columns([1, 2])
     if action_cols[0].button("生成现金流快照", type="primary"):
-        saved = write_cashflow_command(project_root=ROOT, output_dir=ROOT / "data" / "cashflow")
+        saved = write_cashflow_command(
+            project_root=ROOT,
+            entries=_load_private_reviewed_rows(CASHFLOW_LEDGER),
+            output_dir=_private_reviewed_output_dir(CASHFLOW_LEDGER),
+        )
         action_cols[1].success("已生成 Company CashFlow Command 快照。")
         action_cols[1].json(saved.get("outputs", {}), expanded=False)
 
@@ -1335,7 +1369,7 @@ def cashflow_view() -> None:
         st.markdown("#### 分类汇总")
         st.dataframe(category_totals, use_container_width=True, hide_index=True)
 
-    entries = pd.DataFrame(load_cashflow_entries(ROOT / "data" / "cashflow" / "CompanyCashFlowEntries.json"))
+    entries = pd.DataFrame(_load_private_reviewed_rows(CASHFLOW_LEDGER))
     st.markdown("#### 现金流台账")
     if entries.empty:
         st.info("暂无现金流记录。建议先录入一条 Reviewed + evidence 的 BalanceSnapshot。")
@@ -1347,7 +1381,8 @@ def cashflow_view() -> None:
 def policy_radar_view() -> None:
     st.subheader("政策雷达")
     st.caption("Policy Intelligence Radar：登记政策来源、影响行业、机会类型、影响评分和人工行动队列。缺少权威来源时 fail-closed。")
-    payload = build_policy_radar(project_root=ROOT)
+    policy_opportunities = _load_private_reviewed_rows(POLICY_LEDGER)
+    payload = build_policy_radar(project_root=ROOT, opportunities=policy_opportunities)
     summary = payload.get("summary", {})
     runtime_summary = payload.get("runtime_summary") or build_policy_runtime_summary(payload)
 
@@ -1440,13 +1475,17 @@ def policy_radar_view() -> None:
             except ValueError as exc:
                 st.error(str(exc))
             else:
-                append_policy_opportunity(entry, ROOT / "data" / "policy" / "PolicyOpportunityEntries.json")
+                _append_private_reviewed_row(POLICY_LEDGER, entry, entry_id_key="policy_id", as_of_key="published_date")
                 st.success("已保存政策机会。")
                 st.json({"policy_id": entry["policy_id"], "impact_score": entry["impact_score"], "opportunity_status": entry["opportunity_status"]}, expanded=False)
 
     action_cols = st.columns([1, 2])
     if action_cols[0].button("生成政策雷达快照", type="primary"):
-        saved = write_policy_radar(project_root=ROOT, output_dir=ROOT / "data" / "policy")
+        saved = write_policy_radar(
+            project_root=ROOT,
+            opportunities=_load_private_reviewed_rows(POLICY_LEDGER),
+            output_dir=_private_reviewed_output_dir(POLICY_LEDGER),
+        )
         action_cols[1].success("已生成 Policy Intelligence Radar 快照。")
         action_cols[1].json(saved.get("outputs", {}), expanded=False)
 
@@ -1456,7 +1495,7 @@ def policy_radar_view() -> None:
         st.dataframe(sector_exposure, use_container_width=True, hide_index=True)
 
     st.markdown("#### 政策机会台账")
-    opportunities = pd.DataFrame(load_policy_opportunities(ROOT / "data" / "policy" / "PolicyOpportunityEntries.json"))
+    opportunities = pd.DataFrame(_load_private_reviewed_rows(POLICY_LEDGER))
     if opportunities.empty:
         st.info("暂无政策机会。建议先录入一条带官方或监管来源的 PendingReview 记录。")
     else:
@@ -1468,7 +1507,8 @@ def consumption_guard_view() -> None:
     st.subheader("消费守卫")
     st.caption("Consumption Guard：登记消费证据、识别冲动风险、固定成本和可投资现金流压力。不会连接支付宝、银行或支付账户。")
     budget = st.number_input("月可投资现金流预算", min_value=0.0, value=0.0, step=100.0, help=TERM_HELP["可投资现金流压力"])
-    payload = build_consumption_guard(project_root=ROOT, monthly_investable_budget=float(budget))
+    consumption_events = _load_private_reviewed_rows(CONSUMPTION_LEDGER)
+    payload = build_consumption_guard(project_root=ROOT, events=consumption_events, monthly_investable_budget=float(budget))
     summary = payload.get("summary", {})
     runtime_summary = payload.get("runtime_summary") or build_consumption_runtime_summary(payload)
 
@@ -1556,13 +1596,18 @@ def consumption_guard_view() -> None:
             except ValueError as exc:
                 st.error(str(exc))
             else:
-                append_consumption_event(event, ROOT / "data" / "consumption" / "ConsumptionGuardEvents.json")
+                _append_private_reviewed_row(CONSUMPTION_LEDGER, event, entry_id_key="event_id", as_of_key="event_date")
                 st.success("已保存消费事件。")
                 st.json({"event_id": event["event_id"], "risk_score": event["risk_score"], "risk_level": event["risk_level"]}, expanded=False)
 
     action_cols = st.columns([1, 2])
     if action_cols[0].button("生成消费守卫快照", type="primary"):
-        saved = write_consumption_guard(project_root=ROOT, output_dir=ROOT / "data" / "consumption", monthly_investable_budget=float(budget))
+        saved = write_consumption_guard(
+            project_root=ROOT,
+            events=_load_private_reviewed_rows(CONSUMPTION_LEDGER),
+            output_dir=_private_reviewed_output_dir(CONSUMPTION_LEDGER),
+            monthly_investable_budget=float(budget),
+        )
         action_cols[1].success("已生成 Consumption Guard 快照。")
         action_cols[1].json(saved.get("outputs", {}), expanded=False)
 
@@ -1572,7 +1617,7 @@ def consumption_guard_view() -> None:
         st.dataframe(category_totals, use_container_width=True, hide_index=True)
 
     st.markdown("#### 消费事件台账")
-    events = pd.DataFrame(load_consumption_events(ROOT / "data" / "consumption" / "ConsumptionGuardEvents.json"))
+    events = pd.DataFrame(_load_private_reviewed_rows(CONSUMPTION_LEDGER))
     if events.empty:
         st.info("暂无消费事件。建议先录入一条带账单证据的 PendingReview 记录。")
     else:

@@ -51,12 +51,17 @@ moving UI pages or vertical workflows onto it.
   `data/systemAudit/MacOSRuntimeAcceptance_latest.json` into Operational
   Store as `PRIVATE_DERIVED` evidence and renders a sanitized read model
   without raw local paths, PIDs, screenshots, browser paths, or logs.
+- The legacy Streamlit cashflow, policy radar, and consumption guard input
+  workspaces now store user-entered reviewed ledgers in private Operational
+  Store records and generate snapshots under
+  `$PFI_OS_DATA_HOME/private/derived/*` instead of writing public Git
+  `data/**` ledger files.
 
 ## Not Done
 
 - Legacy Streamlit UI still has direct JSON/provider reads outside the Web
-  Shell, command-center, vectorized research, and macOS runtime evidence
-  vertical slices.
+  Shell, command-center, vectorized research, macOS runtime evidence, and
+  private reviewed-input vertical slices.
 - Existing legacy holdings sync and ResearchBus code is not migrated yet.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
 - Full source ingestion and vertical workflow migration are not complete.

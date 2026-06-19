@@ -74,6 +74,9 @@ Current sequence:
 - macOS runtime acceptance latest cache ingestion into Operational Store as
   private derived evidence and a sanitized read model for the legacy Streamlit
   runtime evidence panel.
+- Private reviewed-input ledger adapter for cashflow, policy radar, and
+  consumption guard Streamlit inputs; user-entered rows now stay in private
+  Operational Store and snapshots go under `$PFI_OS_DATA_HOME/private/derived`.
 
 ## Start Here
 
@@ -104,6 +107,7 @@ python -m pytest tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pf
 python -m pytest tests/contract/test_phase_a_command_center_read_model.py -q
 python -m pytest tests/contract/test_phase_a_vectorized_read_model.py -q
 python -m pytest tests/contract/test_phase_a_macos_runtime_read_model.py -q
+python -m pytest tests/contract/test_phase_a_private_reviewed_inputs.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
@@ -119,7 +123,7 @@ commands after any follow-up edits.
 - GitHub draft PR #2 is the current mergeable integration path for this work.
 - Legacy Streamlit pages still contain direct JSON/provider reads outside the
   new Web Shell, command-center, vectorized research, and macOS runtime
-  evidence vertical slices.
+  evidence/private reviewed-input vertical slices.
 - Existing legacy holdings sync and ResearchBus workflows are not fully moved
   onto Operational Store repositories.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.

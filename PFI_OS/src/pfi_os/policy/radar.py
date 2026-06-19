@@ -127,12 +127,18 @@ def build_policy_radar(
     as_of: str | None = None,
     project_root: Path | str = PROJECT_ROOT,
     entry_path: Path | str | None = None,
+    opportunities: list[dict[str, Any]] | None = None,
     opportunity_limit: int = 300,
 ) -> dict[str, Any]:
     root = Path(project_root).expanduser()
     audit_date = _clean_date(as_of or date.today().isoformat())
-    path = Path(entry_path).expanduser() if entry_path else root / "data" / "policy" / "PolicyOpportunityEntries.json"
-    entries = load_policy_opportunities(path)
+    if opportunities is None:
+        path = Path(entry_path).expanduser() if entry_path else root / "data" / "policy" / "PolicyOpportunityEntries.json"
+        entries = load_policy_opportunities(path)
+        entry_source = str(path)
+    else:
+        entries = [_normalize_opportunity(item) for item in opportunities if isinstance(item, dict)]
+        entry_source = "operational_store:private_reviewed_inputs/policy_radar"
     entries.sort(key=lambda row: (float(row.get("impact_score", 0.0) or 0.0), str(row.get("published_date", ""))), reverse=True)
     limited = entries[: max(1, int(opportunity_limit))]
     summary = _summary(limited)
@@ -143,7 +149,7 @@ def build_policy_radar(
         "as_of": audit_date,
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "project_root": str(root),
-        "entry_path": str(path),
+        "entry_path": entry_source,
         "opportunity_count": len(limited),
         "policy_status": summary["policy_status"],
         "summary": summary,
@@ -255,6 +261,7 @@ def write_policy_radar(
     as_of: str | None = None,
     project_root: Path | str = PROJECT_ROOT,
     entry_path: Path | str | None = None,
+    opportunities: list[dict[str, Any]] | None = None,
     output_dir: Path | str | None = None,
     opportunity_limit: int = 300,
 ) -> dict[str, Any]:
@@ -262,6 +269,7 @@ def write_policy_radar(
         as_of=as_of,
         project_root=project_root,
         entry_path=entry_path,
+        opportunities=opportunities,
         opportunity_limit=opportunity_limit,
     )
     root = Path(project_root).expanduser()

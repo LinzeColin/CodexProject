@@ -136,15 +136,21 @@ def build_consumption_guard(
     as_of: str | None = None,
     project_root: Path | str = PROJECT_ROOT,
     event_path: Path | str | None = None,
+    events: list[dict[str, Any]] | None = None,
     lookback_days: int = 30,
     monthly_investable_budget: float = 0.0,
 ) -> dict[str, Any]:
     root = Path(project_root).expanduser()
     audit_date = _clean_date(as_of or date.today().isoformat())
-    path = Path(event_path).expanduser() if event_path else root / "data" / "consumption" / "ConsumptionGuardEvents.json"
-    events = load_consumption_events(path)
+    if events is None:
+        path = Path(event_path).expanduser() if event_path else root / "data" / "consumption" / "ConsumptionGuardEvents.json"
+        loaded_events = load_consumption_events(path)
+        event_source = str(path)
+    else:
+        loaded_events = [_normalize_event(item) for item in events if isinstance(item, dict)]
+        event_source = "operational_store:private_reviewed_inputs/consumption_guard"
     summary = _summary(
-        events,
+        loaded_events,
         as_of=audit_date,
         lookback_days=max(1, int(lookback_days)),
         monthly_investable_budget=_money(monthly_investable_budget),
@@ -156,14 +162,14 @@ def build_consumption_guard(
         "as_of": audit_date,
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "project_root": str(root),
-        "event_path": str(path),
+        "event_path": event_source,
         "lookback_days": max(1, int(lookback_days)),
         "monthly_investable_budget": _money(monthly_investable_budget),
         "guard_status": summary["guard_status"],
         "summary": summary,
         "action_queue": _action_queue(summary),
-        "category_totals": _category_totals(events, as_of=audit_date, lookback_days=max(1, int(lookback_days))),
-        "events": sorted(events, key=lambda row: (row.get("event_date", ""), row.get("created_at", "")), reverse=True),
+        "category_totals": _category_totals(loaded_events, as_of=audit_date, lookback_days=max(1, int(lookback_days))),
+        "events": sorted(loaded_events, key=lambda row: (row.get("event_date", ""), row.get("created_at", "")), reverse=True),
         "assumptions": [
             "Only Reviewed events with evidence_link or evidence_path are counted in spend, impulse, fixed-cost, and pressure summaries.",
             "PendingReview, Rejected, or missing-evidence events stay in the ledger but do not affect guard metrics.",
@@ -276,6 +282,7 @@ def write_consumption_guard(
     as_of: str | None = None,
     project_root: Path | str = PROJECT_ROOT,
     event_path: Path | str | None = None,
+    events: list[dict[str, Any]] | None = None,
     output_dir: Path | str | None = None,
     lookback_days: int = 30,
     monthly_investable_budget: float = 0.0,
@@ -284,6 +291,7 @@ def write_consumption_guard(
         as_of=as_of,
         project_root=project_root,
         event_path=event_path,
+        events=events,
         lookback_days=lookback_days,
         monthly_investable_budget=monthly_investable_budget,
     )

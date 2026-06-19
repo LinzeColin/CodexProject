@@ -27,6 +27,12 @@ from pfi_os.application.macos_runtime_read_model import (
     empty_macos_runtime_acceptance_read_model,
     ingest_macos_runtime_acceptance_cache,
 )
+from pfi_os.application.private_reviewed_inputs import (
+    append_private_reviewed_input_entry,
+    load_private_reviewed_input_entries,
+    private_reviewed_input_contract,
+    private_reviewed_input_output_dir,
+)
 from pfi_os.application.repositories import (
     EntityProfile,
     EntityRepository,
@@ -68,6 +74,7 @@ __all__ = [
     "HoldingSnapshotRepository",
     "TaskQueueItem",
     "TaskRepository",
+    "append_private_reviewed_input_entry",
     "audit_data_home_boundary",
     "build_data_home_boundary_contract",
     "build_command_center_read_model",
@@ -85,6 +92,9 @@ __all__ = [
     "ingest_file_source",
     "ingest_macos_runtime_acceptance_cache",
     "ingest_vectorized_research_cache",
+    "load_private_reviewed_input_entries",
+    "private_reviewed_input_contract",
+    "private_reviewed_input_output_dir",
     "SourceRegistry",
     "SourceRegistryRow",
 ]

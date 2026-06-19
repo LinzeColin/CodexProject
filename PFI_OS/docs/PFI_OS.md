@@ -31,11 +31,11 @@
 | Engineering Layer | 工程层 | 所有系统必须经过 Codex 工程层、测试和可复跑验收。 |
 
 
-当前公司经营现金流系统见 `docs/CompanyCashFlowCommand.md`。它把现金余额、收入、支出、应收和应付记录成可复核证据，输出 `data/cashflow/CompanyCashFlowCommand_latest.*`，但不连接银行、支付或会计系统，也不会执行付款。
+当前公司经营现金流系统见 `docs/CompanyCashFlowCommand.md`。它把现金余额、收入、支出、应收和应付记录成可复核证据，Streamlit 台账进入 private Operational Store，快照输出到 `$PFI_OS_DATA_HOME/private/derived/company_cashflow`，但不连接银行、支付或会计系统，也不会执行付款。
 
-当前政策机会情报系统见 `docs/PolicyIntelligenceRadar.md`。它把政策来源、影响行业、机会类型和影响评分整理为 `data/policy/PolicyIntelligenceRadar_latest.*`，但不自动抓取实时政策，不提交申请，不生成法律、税务、合规或投资结论。
+当前政策机会情报系统见 `docs/PolicyIntelligenceRadar.md`。它把政策来源、影响行业、机会类型和影响评分整理到 private Operational Store，快照输出到 `$PFI_OS_DATA_HOME/private/derived/policy_radar`，但不自动抓取实时政策，不提交申请，不生成法律、税务、合规或投资结论。
 
-当前个人消费止血系统见 `docs/ConsumptionGuard.md`。它把消费事件、账单证据、冲动风险、固定成本和可投资现金流压力整理为 `data/consumption/ConsumptionGuard_latest.*`，但不连接支付宝、银行、工资、税务、券商或支付系统，也不执行付款或投资操作。
+当前个人消费止血系统见 `docs/ConsumptionGuard.md`。它把消费事件、账单证据、冲动风险、固定成本和可投资现金流压力整理到 private Operational Store，快照输出到 `$PFI_OS_DATA_HOME/private/derived/consumption_guard`，但不连接支付宝、银行、工资、税务、券商或支付系统，也不执行付款或投资操作。
 
 
 当前事件驱动行情层的最小实现见 `docs/MarketEventLayer.md`。它把 Sample 或本地 CSV 的 OHLCV bar 转成 `data/marketEvents/MarketEventLog_latest.*`，为后续可复现数据湖、事件回放和三模式回测/模拟内核提供统一事件契约；它不连接实时行情、不启动 Moomoo OpenD、不推 Kafka、不写 QuestDB/ClickHouse、不连接实盘。

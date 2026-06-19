@@ -7,10 +7,10 @@ Consumption Guard 是 PFI_OS 的消费行为复盘与止血子系统。它把消
 - 提供 Streamlit `消费守卫` 工作台。
 - 支持人工录入消费日期、事件类型、分类、金额、商户、支付方式、是否计划内、是否周期性、必要性、冲动分、后悔分、证据和复核状态。
 - 支持月可投资现金流预算，用于计算非必要/冲动消费压力。
-- 人工台账保存到 `data/consumption/ConsumptionGuardEvents.json`。
+- Streamlit 人工台账保存到 private Operational Store `consumption_guard` reviewed-input ledger，不写 public Git `data/**` 台账。
 - 输出 JSON、CSV、Markdown、PDF 和 latest 指针文件。
 - 输出 `PFIOSConsumptionGuardRuntimeSummaryV1` compact 运行摘要，供 UI、总控和后续 agent 低 token 判断证据、风险和现金流压力。
-- 支持从 reviewed input 刷新正式快照，默认真实输入为 `data/private/consumption/ConsumptionGuardReviewedInput.json`，公共仓库只保留 `data/consumption/ConsumptionGuardReviewedInput.example.json` 和 `shared/schema/consumption_guard_reviewed_input.schema.json`。
+- 支持从 reviewed input 刷新正式快照，默认真实输入和派生输出留在 `$PFI_OS_DATA_HOME/private/derived/consumption_guard`，公共仓库只保留示例和 schema。
 
 ## Fail-Closed 规则
 
@@ -98,18 +98,18 @@ shared/schema/consumption_guard_reviewed_input.schema.json
 ## 输出位置
 
 ```text
-data/consumption/ConsumptionGuardEvents.json
+$PFI_OS_DATA_HOME/private/operational/pfi.sqlite
 data/consumption/ConsumptionGuardReviewedInput.example.json
-data/consumption/ConsumptionGuard_DDMMYYYY.json
-data/consumption/ConsumptionGuard_DDMMYYYY.csv
-data/consumption/ConsumptionGuard_DDMMYYYY.md
-data/consumption/ConsumptionGuard_DDMMYYYY.pdf
-data/consumption/ConsumptionGuard_latest.json
-data/consumption/ConsumptionGuard_latest.csv
-data/consumption/ConsumptionGuard_latest.md
-data/consumption/ConsumptionGuard_latest.pdf
-data/consumption/ConsumptionGuardRuntimeSummary_DDMMYYYY.json
-data/consumption/ConsumptionGuardRuntimeSummary_latest.json
+$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuard_DDMMYYYY.json
+$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuard_DDMMYYYY.csv
+$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuard_DDMMYYYY.md
+$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuard_DDMMYYYY.pdf
+$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuard_latest.json
+$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuard_latest.csv
+$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuard_latest.md
+$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuard_latest.pdf
+$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuardRuntimeSummary_DDMMYYYY.json
+$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuardRuntimeSummary_latest.json
 shared/schema/consumption_guard_reviewed_input.schema.json
 ```
 

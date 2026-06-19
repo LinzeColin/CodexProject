@@ -720,9 +720,9 @@ def usage_guide_sections() -> list[UsageGuideSection]:
                 "PendingReview 和 Reviewed 但缺证据的记录是否仍未进入汇总。",
             ),
             outputs=(
-                "现金流台账：`data/cashflow/CompanyCashFlowEntries.json`。",
-                "正式快照：`data/cashflow/CompanyCashFlowCommand_DDMMYYYY.json/csv/md/pdf`。",
-                "最新指针：`data/cashflow/CompanyCashFlowCommand_latest.json/csv/md/pdf`。",
+                "现金流台账：private Operational Store `company_cashflow` reviewed-input ledger。",
+                "正式快照：`$PFI_OS_DATA_HOME/private/derived/company_cashflow/CompanyCashFlowCommand_DDMMYYYY.json/csv/md/pdf`。",
+                "最新指针：`$PFI_OS_DATA_HOME/private/derived/company_cashflow/CompanyCashFlowCommand_latest.json/csv/md/pdf`。",
                 "页面输出：状态指标、行动队列、分类汇总和现金流台账。",
             ),
             risks=(
@@ -752,9 +752,9 @@ def usage_guide_sections() -> list[UsageGuideSection]:
                 "下一步行动是否仍是人工复核、验证或跟踪，而不是自动交易、付款或申报。",
             ),
             outputs=(
-                "政策机会台账：`data/policy/PolicyOpportunityEntries.json`。",
-                "正式快照：`data/policy/PolicyIntelligenceRadar_DDMMYYYY.json/csv/md/pdf`。",
-                "最新指针：`data/policy/PolicyIntelligenceRadar_latest.json/csv/md/pdf`。",
+                "政策机会台账：private Operational Store `policy_radar` reviewed-input ledger。",
+                "正式快照：`$PFI_OS_DATA_HOME/private/derived/policy_radar/PolicyIntelligenceRadar_DDMMYYYY.json/csv/md/pdf`。",
+                "最新指针：`$PFI_OS_DATA_HOME/private/derived/policy_radar/PolicyIntelligenceRadar_latest.json/csv/md/pdf`。",
                 "页面输出：政策状态、行动队列、行业暴露和政策机会表。",
             ),
             risks=(
@@ -784,9 +784,9 @@ def usage_guide_sections() -> list[UsageGuideSection]:
                 "非必要和冲动消费是否超过月可投资预算的 60%。",
             ),
             outputs=(
-                "消费事件台账：`data/consumption/ConsumptionGuardEvents.json`。",
-                "正式快照：`data/consumption/ConsumptionGuard_DDMMYYYY.json/csv/md/pdf`。",
-                "最新指针：`data/consumption/ConsumptionGuard_latest.json/csv/md/pdf`。",
+                "消费事件台账：private Operational Store `consumption_guard` reviewed-input ledger。",
+                "正式快照：`$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuard_DDMMYYYY.json/csv/md/pdf`。",
+                "最新指针：`$PFI_OS_DATA_HOME/private/derived/consumption_guard/ConsumptionGuard_latest.json/csv/md/pdf`。",
                 "页面输出：守卫状态、行动队列、分类汇总和消费事件表。",
             ),
             risks=(
