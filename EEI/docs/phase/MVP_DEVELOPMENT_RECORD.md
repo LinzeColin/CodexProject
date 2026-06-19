@@ -1431,3 +1431,32 @@ Acceptance status:
 Residual risks:
 
 - T1209 validates static parity and stale asset references; it does not replace later visual-regression screenshots or clean-room release packaging in T1118/T1119/T1123/T1215.
+
+## 2026-06-19 - Phase 1 / G8 T1210 GitHub governance contract and required checks
+
+Status: LOCAL PASS, REMOTE CI PENDING
+
+Completed:
+
+- Added `.github/branch_protection.md` as the versioned source contract for required `main` branch protection.
+- Added `.github/release_checklist.md` for release gate commands, required checks, manifest/checksum refresh and rollback evidence.
+- Expanded `.github/CODEOWNERS` to cover `.github/` and `scripts/`.
+- Added `scripts/validate_github_governance.py` to validate issue forms, PR template, CODEOWNERS, governance workflow, release categories, branch protection contract, release checklist and backup registry coverage.
+- Wired `validate-github-governance` into `make verify` and `ruff`.
+- Registered the new governance files and validator in `data/github_document_registry.csv`.
+- Marked T1210 and A177 as `DONE`; A175 remains `NOT STARTED` until T1211 adds immutable release artifact and operation-log evidence.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/validate_github_governance.py`: PASS.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A177 is covered by `.github/CODEOWNERS`, `.github/branch_protection.md`, `.github/release_checklist.md`, `.github/workflows/governance-validation.yml`, `scripts/validate_github_governance.py` and `data/github_document_registry.csv`.
+
+Residual risks:
+
+- Actual GitHub branch protection must still be applied in repository settings or through the GitHub API; T1210 versions and validates the required contract.
+- A175 still depends on T1211 reproducible release evidence and immutable operation-log/release artifacts.

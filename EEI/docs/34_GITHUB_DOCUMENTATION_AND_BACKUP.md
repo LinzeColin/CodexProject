@@ -14,7 +14,10 @@
 - `.github/ISSUE_TEMPLATE/` 结构化变更入口；
 - `.github/pull_request_template.md` 同步检查；
 - `.github/CODEOWNERS` 责任人；
-- `.github/workflows/governance-validation.yml` 自动校验。
+- `.github/branch_protection.md` 分支保护契约；
+- `.github/release_checklist.md` 发布检查清单；
+- `.github/workflows/governance-validation.yml` 自动校验；
+- `CHECKSUMS.sha256` 发布包完整性校验。
 
 ## 变更规则
 
@@ -27,3 +30,7 @@
 ## 建议分支规则
 
 `main` 只接受 PR；要求治理校验通过并由 CODEOWNER 审查。实际 GitHub 仓库启用 branch protection 后生效。
+
+## 发布备份规则
+
+发布前按 `.github/release_checklist.md` 执行 `make verify`、`make verify-g2-db`、`sha256sum -c CHECKSUMS.sha256`，并在 release note 中记录任务、Acceptance ID、CI run、rollback 和未解决风险。

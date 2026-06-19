@@ -349,6 +349,7 @@ Remote verification:
 - T1207 / A157-A158/A178 is DONE and remote CI passed; model preview context now propagates across the home workspace, saved-view metadata, and `/industries`, with local E2E 26/26 plus `make verify`.
 - T1208 / A178 is DONE and remote CI passed; the active model/profile/data/score snapshot E2E now covers `/`, `/industries`, `/objects-scope` and `/development-status`, with serial local E2E 26/26 plus `make verify`.
 - T1209 / A176 is DONE and remote CI passed; prototype parity validation now checks index/standalone byte identity, canonical hash, required views, DOM anchors and stale JS/CSS references.
+- T1210 / A177 is locally complete pending remote CI; GitHub branch protection/release checklist contracts, CODEOWNERS scope, governance validator and registry coverage are wired into `make verify`.
 - G4/G5 remain open because saved-view API persistence, visual regression/performance suites and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -356,7 +357,8 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Start T1210 GitHub branch/CODEOWNERS/catalog-check governance as the next bounded slice.
-2. Keep T1118/T1119 visual regression and performance suites separate in G5.
-3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
-4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.
+1. Push T1210 and wait for GitHub Actions to confirm remote PostgreSQL/E2E CI.
+2. Start T1211 reproducible release manifest/checksum/status evidence as the next bounded slice.
+3. Keep T1118/T1119 visual regression and performance suites separate in G5.
+4. Keep A026/A027 open until T904/G9 real gold precision evaluation.
+5. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.

@@ -1,6 +1,7 @@
 ﻿path,category,canonical,update_trigger,owner,backup,status
 .codex/config.toml.example,codex-config,false,Codex execution policy change,repository owner,git+release-zip,ACTIVE
 .github/CODEOWNERS,github-governance,true,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/branch_protection.md,github-governance,true,governance or workflow change,repository owner,git+release-zip,ACTIVE
 .github/ISSUE_TEMPLATE/bug.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
 .github/ISSUE_TEMPLATE/config.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
 .github/ISSUE_TEMPLATE/data_relationship.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
@@ -10,6 +11,7 @@
 .github/ISSUE_TEMPLATE/risk_control.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
 .github/pull_request_template.md,github-governance,true,governance or workflow change,repository owner,git+release-zip,ACTIVE
 .github/release.yml,github-governance,false,governance or workflow change,repository owner,git+release-zip,ACTIVE
+.github/release_checklist.md,github-governance,true,governance or workflow change,repository owner,git+release-zip,ACTIVE
 .github/workflows/governance-validation.yml,github-governance,true,governance or workflow change,repository owner,git+release-zip,ACTIVE
 .gitignore,repository-config,false,repository tooling change,repository owner,git+release-zip,ACTIVE
 AGENTS.md,root-governance,true,semantic or release change,repository owner,git+release-zip,ACTIVE
@@ -166,6 +168,7 @@ scripts/preflight.sh,automation-and-validation,false,validation/build/release au
 scripts/run_codex_autonomous.sh,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/smoke_test_prototype.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_prototype_parity.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/validate_github_governance.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_catalog_integrity.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_governance.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_model_config.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
