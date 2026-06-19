@@ -766,7 +766,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G3 T304 User-oriented home page
 
-Status: T304 LOCAL PASS; G3 IN PROGRESS
+Status: T304 PASS; G3 IN PROGRESS
 
 Completed:
 
@@ -786,6 +786,10 @@ Verification evidence:
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 12 tests.
 - Local `make verify`: PASS.
 - Local `git diff --check`: PASS.
+- GitHub Actions run `27833468626`: PASS.
+- GitHub Actions job `82375686964`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 

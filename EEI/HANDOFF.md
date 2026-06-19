@@ -55,7 +55,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Added T303 Watchlist persistence breadth: `/v1/watchlists/{watchlistId}` detail, item remove/restore, entity/industry/theme/facility item validation, saved state persistence, and operation-log checks.
 - Completed T303 with A035/A036 by GitHub Actions run `27832504683`; A037 remains open for T306 UI/E2E unread-change and saved-view evidence.
 - Added T304 user-oriented home entry controls on the existing Watchlist-first graph workspace: global search, industries, Watchlist, recent explorations, important changes, freshness, active model status, calibration status, and keyboard entry coverage.
-- Completed T304 locally with A029/A030/A039/A040; remote CI still needs to prove this commit after push.
+- Completed T304 with A029/A030/A039/A040 by GitHub Actions run `27833468626`; job `82375686964` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
 
 ## Verification Evidence
 
@@ -115,6 +115,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27832504683` passed; job `82372497975` proved T303 Watchlist CRUD/restore/item-type persistence under PostgreSQL after returning an explicit 204 response.
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 12 tests after T304 home page entry controls.
 - 2026-06-19 update: local `make verify` passed after T304; governance trace count is now 215 after adding missing A039/A040 traceability rows.
+- 2026-06-19 update: GitHub Actions run `27833468626` passed; job `82375686964` proved T304 user-oriented home entry and updated governance count on remote CI.
 
 Remote verification:
 
@@ -161,6 +162,8 @@ Remote verification:
 - GitHub Actions job `82371769481`: FAIL.
 - GitHub Actions run `27832504683`: PASS.
 - GitHub Actions job `82372497975`: PASS.
+- GitHub Actions run `27833468626`: PASS.
+- GitHub Actions job `82375686964`: PASS.
 
 ## Not Completed
 
@@ -176,7 +179,7 @@ Remote verification:
 - T301 home aggregation API is DONE and remote CI passed.
 - T302 industry list and landscape API is DONE and remote CI passed; A031/A033 are DONE, while A032/A034 remain open for UI/E2E.
 - T303 Watchlist CRUD and persistence API is DONE and remote CI passed; A035/A036 are DONE, while A037 remains open for UI/E2E unread-change and saved-view evidence.
-- T304 user-oriented home page is DONE locally; A029/A030/A039/A040 are DONE locally and awaiting remote CI proof after push.
+- T304 user-oriented home page is DONE and remote CI passed; A029/A030/A039/A040 are DONE.
 - G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
@@ -184,6 +187,6 @@ Remote verification:
 
 Continue G3 with bounded entry/management implementation:
 
-1. Push T304 and wait for GitHub Actions proof.
+1. Start T305 industry landscape page for A032/A034.
 2. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 3. Continue T305/T306 after T304 to close industry UI and Watchlist unread-change/saved-view E2E evidence.
