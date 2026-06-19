@@ -72,6 +72,18 @@ type TransitionState = "ready" | "loading" | "fallback";
 
 type TimelineKey = "2026-06-01" | "2026-06-12" | "2026-06-19";
 
+type WorkspaceLayerKey =
+  | "group_structure"
+  | "business_segments"
+  | "supply_chain"
+  | "capital_network"
+  | "ma_transactions"
+  | "control_relationships"
+  | "policy_environment"
+  | "strategic_signals";
+
+type StructureKind = "legal_group" | "business_segment" | "brand" | "product" | "facility";
+
 type WorkspaceState = {
   focusKey: FocusKey;
   selectedKey: NodeKey;
@@ -240,6 +252,71 @@ const lensItems: { key: LensKey; label: string }[] = [
   { key: "business_segments", label: "业务" },
   { key: "capital_transactions", label: "资本" },
   { key: "policy_risk", label: "政策" }
+];
+
+const workspaceLayerItems: {
+  key: WorkspaceLayerKey;
+  label: string;
+  state: "active" | "available" | "stub";
+}[] = [
+  { key: "group_structure", label: "集团结构", state: "active" },
+  { key: "business_segments", label: "业务板块", state: "active" },
+  { key: "supply_chain", label: "供应链", state: "available" },
+  { key: "capital_network", label: "资本网络", state: "available" },
+  { key: "ma_transactions", label: "并购交易", state: "stub" },
+  { key: "control_relationships", label: "控制关系", state: "stub" },
+  { key: "policy_environment", label: "政策环境", state: "available" },
+  { key: "strategic_signals", label: "战略信号", state: "stub" }
+];
+
+const structureRows: {
+  kind: StructureKind;
+  label: string;
+  typeLabel: string;
+  relationship: string;
+  scope: "focus" | "direct" | "adjacent" | "missing";
+  control: string;
+}[] = [
+  {
+    kind: "legal_group",
+    label: "NVIDIA Corporation",
+    typeLabel: "legal_entity",
+    relationship: "focus_entity",
+    scope: "focus",
+    control: "当前主体；不是母子控制声明"
+  },
+  {
+    kind: "business_segment",
+    label: "Accelerated Computing Segment (Synthetic)",
+    typeLabel: "business_segment",
+    relationship: "segment_of",
+    scope: "direct",
+    control: "业务映射；不是法律控制声明"
+  },
+  {
+    kind: "brand",
+    label: "No brand fixture loaded",
+    typeLabel: "brand",
+    relationship: "unknown",
+    scope: "missing",
+    control: "未知保留；不补零"
+  },
+  {
+    kind: "product",
+    label: "AI Accelerator Platform (Synthetic)",
+    typeLabel: "product",
+    relationship: "product_of",
+    scope: "direct",
+    control: "产品映射；不是法律控制声明"
+  },
+  {
+    kind: "facility",
+    label: "Synthetic AI Data Center Campus",
+    typeLabel: "facility",
+    relationship: "operates_facility via CoreWeave",
+    scope: "adjacent",
+    control: "相邻生态设施；不表示 NVIDIA 拥有或运营"
+  }
 ];
 
 const semanticZoomItems: { key: SemanticZoom; label: string; title: string }[] = [
@@ -1316,6 +1393,84 @@ export default function Home() {
           <strong>Fixture-only data</strong>
           <span>Visible synthetic notices are required; no live fact claim is shown.</span>
         </div>
+
+        <section
+          aria-label="公司八层视图"
+          className="workspaceLayerStrip"
+          data-layer-count={workspaceLayerItems.length}
+          data-required-layers={workspaceLayerItems.map((item) => item.key).join(",")}
+          data-testid="workspace-layer-strip"
+        >
+          <header>
+            <span>八层视图</span>
+            <small>{workspaceLayerItems.length}/8</small>
+          </header>
+          <div>
+            {workspaceLayerItems.map((item) => (
+              <button
+                data-layer-key={item.key}
+                data-layer-state={item.state}
+                data-testid={`workspace-layer-${item.key}`}
+                key={item.key}
+                onClick={() => {
+                  if (item.key === "business_segments" || item.key === "group_structure") {
+                    setActiveLens("business_segments");
+                  } else if (item.key === "supply_chain") {
+                    setActiveLens("supply_chain");
+                  } else if (item.key === "capital_network") {
+                    setActiveLens("capital_transactions");
+                  } else if (item.key === "policy_environment") {
+                    setActiveLens("policy_risk");
+                  }
+                }}
+                type="button"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-label="集团结构与业务板块"
+          className="structureMatrix"
+          data-api-contract="/v1/entities/{entityId}/empire"
+          data-commercial-empire-control-claim="false"
+          data-separates="legal_group,business_segment,brand,product,facility"
+          data-testid="company-structure-matrix"
+        >
+          <header>
+            <span>集团结构</span>
+            <small>商业版图不是法律控制声明</small>
+          </header>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">对象</th>
+                <th scope="col">类型</th>
+                <th scope="col">关系</th>
+                <th scope="col">控制语义</th>
+              </tr>
+            </thead>
+            <tbody>
+              {structureRows.map((row) => (
+                <tr
+                  data-control-claim="false"
+                  data-relationship={row.relationship}
+                  data-scope={row.scope}
+                  data-structure-kind={row.kind}
+                  data-testid={`structure-row-${row.kind}`}
+                  key={row.kind}
+                >
+                  <td>{row.label}</td>
+                  <td>{row.typeLabel}</td>
+                  <td>{row.relationship}</td>
+                  <td>{row.control}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
 
         <form
           aria-label="全局搜索"

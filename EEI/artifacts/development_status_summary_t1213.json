@@ -21,8 +21,8 @@
     },
     "validation_status": {
       "CATALOG_VALIDATED": 11,
-      "CI_VALIDATED": 4,
-      "LOCAL_E2E_VALIDATED": 6,
+      "CI_VALIDATED": 3,
+      "LOCAL_E2E_VALIDATED": 7,
       "LOCAL_VALIDATED": 3,
       "SPEC_VALIDATED": 4,
       "VALIDATED": 8
@@ -31,7 +31,7 @@
       "resolved": 21,
       "prototyped": 21,
       "specified": 15,
-      "not_started_tasks": 64,
+      "not_started_tasks": 63,
       "blocked_tasks": 0,
       "out_of_scope_tasks": 8
     },
@@ -91,9 +91,9 @@
       "task_ids": "T200;T204;T500;T501;T506",
       "acceptance_ids": "A011;A012;A013;A014;A015;A017;A018;A059;A060;A061;A062;A063;A190",
       "traceability_rows": "13",
-      "done_traceability_rows": "9",
+      "done_traceability_rows": "12",
       "test_types": "API integration;API/UI assertions;CSV/data check;Constraint + unit tests;Content review;Content/API integration;Deferred data-quality test;E2E;Migration round-trip;Schema/API assertions;Unit/data tests;catalog validation",
-      "evidence_paths": "apps/api/app/domain_repository.py;artifacts/tests/a059/t500_entity_focus_dossier_api.json;artifacts/tests/a060/t500_human_summary_dossier_api.json;artifacts/tests/a061/;artifacts/tests/a062/;artifacts/tests/a063/;artifacts/tests/a190/;data/mock_relationships.json;data/research_universe.csv;data/seed_universe.csv;scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py",
+      "evidence_paths": "apps/api/app/domain.py;apps/api/app/domain_repository.py;apps/web/src/app/globals.css;apps/web/src/app/page.tsx;artifacts/tests/a059/t500_entity_focus_dossier_api.json;artifacts/tests/a060/t500_human_summary_dossier_api.json;artifacts/tests/a061/t501_company_workspace_layers.json;artifacts/tests/a062/t501_structure_type_separation.json;artifacts/tests/a063/t501_commercial_empire_not_control.json;artifacts/tests/a190/;data/mock_relationships.json;data/research_universe.csv;data/seed_universe.csv;scripts/check_database_schema.py;specs/api_contract.yaml;specs/domain_schema.sql;tests/e2e/home.spec.ts;tests/integration/test_database_migrations.py",
       "missing_task_ids": "",
       "missing_acceptance_ids": "",
       "source_doc": "docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md"

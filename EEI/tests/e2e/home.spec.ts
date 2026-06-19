@@ -57,6 +57,67 @@ test("shows user-oriented home contract entry points and model freshness", async
   await expect(page.getByTestId("home-model-status")).toContainText("2026-07-03");
 });
 
+test("exposes eight company layers and separates structure object types", async ({ page }) => {
+  await page.goto("/");
+
+  const layerStrip = page.getByTestId("workspace-layer-strip");
+  await expect(layerStrip).toHaveAttribute("data-layer-count", "8");
+  await expect(layerStrip).toHaveAttribute(
+    "data-required-layers",
+    "group_structure,business_segments,supply_chain,capital_network,ma_transactions,control_relationships,policy_environment,strategic_signals"
+  );
+  for (const layer of [
+    "group_structure",
+    "business_segments",
+    "supply_chain",
+    "capital_network",
+    "ma_transactions",
+    "control_relationships",
+    "policy_environment",
+    "strategic_signals"
+  ]) {
+    await expect(page.getByTestId(`workspace-layer-${layer}`)).toBeVisible();
+  }
+  await page.getByTestId("workspace-layer-business_segments").click();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-lens",
+    "business_segments"
+  );
+
+  const structure = page.getByTestId("company-structure-matrix");
+  await expect(structure).toHaveAttribute(
+    "data-separates",
+    "legal_group,business_segment,brand,product,facility"
+  );
+  await expect(structure).toHaveAttribute("data-commercial-empire-control-claim", "false");
+  await expect(structure).toContainText("商业版图不是法律控制声明");
+  await expect(page.getByTestId("structure-row-legal_group")).toContainText(
+    "NVIDIA Corporation"
+  );
+  await expect(page.getByTestId("structure-row-business_segment")).toHaveAttribute(
+    "data-relationship",
+    "segment_of"
+  );
+  await expect(page.getByTestId("structure-row-brand")).toHaveAttribute(
+    "data-scope",
+    "missing"
+  );
+  await expect(page.getByTestId("structure-row-product")).toContainText(
+    "AI Accelerator Platform"
+  );
+  await expect(page.getByTestId("structure-row-facility")).toHaveAttribute(
+    "data-scope",
+    "adjacent"
+  );
+  await expect(page.getByTestId("structure-row-facility")).toHaveAttribute(
+    "data-control-claim",
+    "false"
+  );
+  await expect(page.getByTestId("structure-row-facility")).toContainText(
+    "不表示 NVIDIA 拥有或运营"
+  );
+});
+
 test("reaches company focus within three actions and keeps home controls keyboard reachable", async ({
   page
 }) => {

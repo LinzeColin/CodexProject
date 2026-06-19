@@ -170,6 +170,23 @@ def get_entity(entityId: UUID, repository: RepositoryDependency) -> dict[str, An
         raise translate_repository_error(exc) from exc
 
 
+@router.get("/entities/{entityId}/empire")
+def get_entity_empire(
+    entityId: UUID,
+    repository: RepositoryDependency,
+    as_of: Annotated[datetime | None, Query()] = None,
+    profile: Annotated[UUID | None, Query()] = None,
+) -> dict[str, Any]:
+    try:
+        return repository.get_entity_empire(
+            entity_id=entityId,
+            as_of=as_of,
+            profile_id=profile,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
 @router.get("/industries")
 def list_industries(
     repository: RepositoryDependency,

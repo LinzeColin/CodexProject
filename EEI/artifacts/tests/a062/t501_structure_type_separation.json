@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "task_id": "T501",
+  "acceptance_id": "A062",
+  "status": "DONE",
+  "evidence_type": "structure_type_separation_api_ui",
+  "scope": {
+    "route": "/v1/entities/{entityId}/empire",
+    "golden_entity_id": "00000000-0000-4000-8000-000000000006",
+    "golden_entity_name": "NVIDIA Corporation",
+    "data_mode": "synthetic_fixture"
+  },
+  "structure_sections": [
+    "legal_group",
+    "business_segments",
+    "brands",
+    "products",
+    "facilities"
+  ],
+  "validated_by": [
+    "apps/api/app/domain_repository.py::get_entity_empire",
+    "apps/api/app/domain.py::get_entity_empire",
+    "tests/integration/test_database_migrations.py::exercise_domain_api_and_repository_contracts",
+    "tests/e2e/home.spec.ts::exposes eight company layers and separates structure object types",
+    "specs/api_contract.yaml#/components/schemas/EntityEmpireResponse"
+  ],
+  "assertions": [
+    "The empire API separates legal group, business segment, brand, product and facility sections.",
+    "The UI structure matrix exposes rows for legal group, business segment, brand, product and adjacent facility.",
+    "Missing brand coverage is displayed as missing instead of being coerced into a false empty fact.",
+    "The NVIDIA fixture exposes business segment and product objects from direct relationships and facility objects only as adjacent ecosystem context."
+  ],
+  "rollback": "Revert T501 API/UI/test/status changes and regenerate release artifacts."
+}

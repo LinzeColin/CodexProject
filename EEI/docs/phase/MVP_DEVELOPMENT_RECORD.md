@@ -1660,3 +1660,37 @@ Residual risks:
 
 - T500 does not implement the full eight-layer workspace UI; T501-T508 still own group structure, supply-chain, capital/policy/technology layers, strategic signals, evidence drawer, timeline and export UX.
 - Local database integration could not run on this host; GitHub Actions PostgreSQL validation passed and is the database/E2E evidence for this run.
+
+## 2026-06-20 - Phase 1 / G5 T501 Group, business and structure workspace
+
+Status: LOCAL E2E PASS, REMOTE CI PENDING
+
+Completed:
+
+- Added `/v1/entities/{entityId}/empire` as the bounded company empire structure endpoint without adding new database tables.
+- Added an eight-layer company focus workspace strip for group structure, business segments, supply chain, capital network, M&A transactions, control relationships, policy environment and strategic signals.
+- Added a structure matrix that separates legal group, business segment, brand, product and facility rows.
+- Preserved missing coverage semantics for brands and adjacent ecosystem semantics for facilities.
+- Added the explicit rule that commercial empire is an ecosystem relationship view, not a legal-control assertion.
+- Added A061, A062 and A063 evidence artifacts under `artifacts/tests/a061/`, `artifacts/tests/a062/` and `artifacts/tests/a063/`.
+- Marked T501, A061, A062 and A063 as `DONE`; FUN-EXP-03 remains `PARTIAL` because T502/T503/T506-T508 still own deeper layer detail, evidence drawer and timeline scope.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_contracts.py`: PASS.
+- Local `.venv/bin/uv run pytest tests/unit -q`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts --grep "eight company layers"`: PASS.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A061 is covered by `apps/web/src/app/page.tsx`, `apps/web/src/app/globals.css`, `tests/e2e/home.spec.ts` and `artifacts/tests/a061/t501_company_workspace_layers.json`.
+- A062 is covered by `apps/api/app/domain_repository.py`, `apps/api/app/domain.py`, `specs/api_contract.yaml`, `tests/integration/test_database_migrations.py`, `apps/web/src/app/page.tsx`, `tests/e2e/home.spec.ts` and `artifacts/tests/a062/t501_structure_type_separation.json`.
+- A063 is covered by `apps/api/app/domain_repository.py`, `apps/web/src/app/page.tsx`, `tests/e2e/home.spec.ts` and `artifacts/tests/a063/t501_commercial_empire_not_control.json`.
+
+Residual risks:
+
+- Local database integration remains unrun on this host because there is no `.env` and no Docker-backed PostgreSQL.
+- T501 creates the bounded structure workspace and API contract only; T502/T503/T506-T508 still own full supply-chain, capital/policy/technology, evidence drawer, timeline, export and cross-layer workspace depth.
