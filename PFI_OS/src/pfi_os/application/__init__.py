@@ -18,7 +18,18 @@ from pfi_os.application.data_home_audit import (
 )
 from pfi_os.application.homepage_summary import build_homepage_summary, empty_homepage_summary
 from pfi_os.application.homepage_ingestion import ingest_command_center_cache
-from pfi_os.application.repositories import HoldingSnapshot, HoldingSnapshotRepository, TaskQueueItem, TaskRepository
+from pfi_os.application.repositories import (
+    EntityProfile,
+    EntityRepository,
+    EvidenceItem,
+    EvidenceRepository,
+    HoldingSnapshot,
+    HoldingSnapshotRepository,
+    JobRepository,
+    JobRunItem,
+    TaskQueueItem,
+    TaskRepository,
+)
 from pfi_os.application.source_registry import SourceRegistry, SourceRegistryRow
 
 __all__ = [
@@ -26,7 +37,13 @@ __all__ = [
     "DataHomeAuditFinding",
     "DataHomeBoundaryAudit",
     "EvidenceRecord",
+    "EvidenceItem",
+    "EvidenceRepository",
+    "EntityProfile",
+    "EntityRepository",
     "JobRecord",
+    "JobRepository",
+    "JobRunItem",
     "OperationalStore",
     "SourceRecord",
     "SourceVersion",

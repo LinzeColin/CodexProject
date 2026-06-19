@@ -57,8 +57,9 @@ Current sequence:
   optional Streamlit embedding through `PFI_UI_V2=1`.
 - Phase A operational store contract with official source, source-version,
   entity, evidence, job, task, and holding snapshot tables.
-- Source registry, homepage summary read model, task repository, holding
-  snapshot repository, source version history, and point-in-time source replay.
+- Source registry, homepage summary read model, entity repository, evidence
+  repository, job repository, task repository, holding snapshot repository,
+  source version history, and point-in-time source replay.
 - Data-home boundary audit for `$PFI_OS_DATA_HOME`, Operational SQLite, and
   public Git private/runtime/secret fixture paths.
 - Command-center latest cache ingestion into Operational Store source,
@@ -115,5 +116,4 @@ commands after any follow-up edits.
 Continue Phase A:
 
 1. Replace legacy Streamlit direct reads one vertical slice at a time.
-2. Add repository adapters for entities, evidence search, and job execution.
-3. Add source ingestion adapters with checksum and provenance enforcement.
+2. Add source ingestion adapters with checksum and provenance enforcement.

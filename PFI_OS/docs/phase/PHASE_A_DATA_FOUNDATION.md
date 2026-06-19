@@ -12,8 +12,8 @@ moving UI pages or vertical workflows onto it.
 - Adds `pfi_os.application.operational_store`.
 - Adds `pfi_os.application.source_registry`.
 - Adds `pfi_os.application.homepage_summary`.
-- Adds `pfi_os.application.repositories` for review tasks and holding
-  snapshots.
+- Adds `pfi_os.application.repositories` for entities, evidence search, job
+  execution state, review tasks, and holding snapshots.
 - Defines six data domains from the PFI data boundary.
 - Defines default operational DB path:
   `$PFI_OS_DATA_HOME/private/operational/pfi.sqlite`.
@@ -28,8 +28,8 @@ moving UI pages or vertical workflows onto it.
   it; static fallback remains available for offline shell loading.
 - Homepage card source markers now point to `operational_store:*` read models,
   not direct `data/**` JSON artifacts.
-- Task queue and holding snapshot writes now have thin repository adapters over
-  Operational Store official tables.
+- Entity, evidence, job, task queue, and holding snapshot workflows now have
+  thin repository adapters over Operational Store official tables.
 - Data-home boundary audit now checks that `$PFI_OS_DATA_HOME` and Operational
   SQLite stay outside public Git and that private/runtime/secret path fixtures
   fail closed before migration work adds new data surfaces.
@@ -49,5 +49,4 @@ moving UI pages or vertical workflows onto it.
 ## Next Phase A Iterations
 
 1. Replace legacy Streamlit direct reads one vertical slice at a time.
-2. Add repository adapters for entities, evidence search, and job execution.
-3. Add source ingestion adapters with checksum and provenance enforcement.
+2. Add source ingestion adapters with checksum and provenance enforcement.

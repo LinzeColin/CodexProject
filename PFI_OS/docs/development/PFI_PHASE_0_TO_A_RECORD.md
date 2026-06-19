@@ -26,7 +26,7 @@ on chat history.
 | Phase A operational store | In progress | `src/pfi_os/application/operational_store.py`, official SQLite tables, data domains, fail-closed required fact fields |
 | Phase A source registry | In progress | `src/pfi_os/application/source_registry.py`, private URI redaction, freshness summary, point-in-time source replay |
 | Phase A homepage read model | In progress | `src/pfi_os/application/homepage_summary.py`, `PFIOSHomeSummaryV1`, Web Shell runtime injection |
-| Phase A thin repositories | In progress | `src/pfi_os/application/repositories.py`, task queue and holding snapshot adapters |
+| Phase A thin repositories | Complete | `src/pfi_os/application/repositories.py`, entity, evidence search, job execution, task queue, and holding snapshot adapters |
 | Phase A data-home boundary audit | Complete | `src/pfi_os/application/data_home_audit.py`, `$PFI_OS_DATA_HOME` outside Git checks, private/runtime/secret fixture scans |
 | Phase A homepage cache ingestion | Complete | `src/pfi_os/application/homepage_ingestion.py`, command-center latest cache to Operational Store source/evidence/job/task records |
 
@@ -36,10 +36,9 @@ on chat history.
    the superseded backup-only PR #1.
 2. Move legacy Streamlit direct reads onto Operational Store repositories one
    vertical slice at a time.
-3. Add entity, evidence-search, and job-execution repository adapters.
-4. Add source ingestion adapters with checksum, provenance, and domain
+3. Add source ingestion adapters with checksum, provenance, and domain
    enforcement.
-5. Prepare Phase B vertical workflow slices after Phase A contracts are stable.
+4. Prepare Phase B vertical workflow slices after Phase A contracts are stable.
 
 ## Key File Map
 
