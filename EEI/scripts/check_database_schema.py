@@ -347,11 +347,102 @@ def main() -> int:
                 raise RuntimeError(
                     f"Missing NVIDIA synthetic supply-chain stages: {missing_stages}"
                 )
+
+            publishable_relationships_without_evidence = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM (
+                      SELECT r.id
+                      FROM relationships r
+                      LEFT JOIN relationship_evidence re ON re.relationship_id = r.id
+                      WHERE r.status IN ('reported', 'derived', 'disputed', 'unknown')
+                      GROUP BY r.id
+                      HAVING count(re.source_document_id) = 0
+                    ) missing_relationship_evidence
+                    """,
+                )
+                or 0
+            )
+            publishable_events_without_evidence = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM (
+                      SELECT e.id
+                      FROM events e
+                      LEFT JOIN event_evidence ee ON ee.event_id = e.id
+                      WHERE e.status IN ('reported', 'derived', 'disputed', 'unknown')
+                      GROUP BY e.id
+                      HAVING count(ee.source_document_id) = 0
+                    ) missing_event_evidence
+                    """,
+                )
+                or 0
+            )
+            unknown_relationships = int(
+                scalar(connection, "SELECT count(*) FROM relationships WHERE status = 'unknown'")
+            )
+            unknown_relationships_coerced_to_zero = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM relationships
+                    WHERE status = 'unknown'
+                      AND (amount = 0 OR percentage = 0 OR confidence = 0)
+                    """,
+                )
+            )
+            amount_semantic_violations = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM relationships
+                    WHERE amount IS NOT NULL
+                      AND (currency IS NULL OR amount_kind IS NULL)
+                    """,
+                )
+            )
+            amount_buckets = rows(
+                connection,
+                """
+                SELECT amount_kind, currency, count(*)
+                FROM relationships
+                WHERE amount IS NOT NULL
+                GROUP BY amount_kind, currency
+                ORDER BY amount_kind, currency
+                """,
+            )
+            if publishable_relationships_without_evidence:
+                raise RuntimeError("Publishable relationships must have evidence")
+            if publishable_events_without_evidence:
+                raise RuntimeError("Publishable events must have evidence")
+            if unknown_relationships < 1:
+                raise RuntimeError("Unknown relationship fixtures must remain explicitly unknown")
+            if unknown_relationships_coerced_to_zero:
+                raise RuntimeError("Unknown relationships must not be coerced to zero")
+            if amount_semantic_violations:
+                raise RuntimeError("Amounts require currency and amount_kind")
             payload["fixture_counts"] = fixture_counts | {
                 "non_fixture_entities": non_fixture_entities,
                 "unmarked_relationships": unmarked_relationships,
                 "relationship_families": len(fixture_families),
                 "nvidia_supply_chain_stages": len(fixture_stages),
+                "publishable_relationships_without_evidence": (
+                    publishable_relationships_without_evidence
+                ),
+                "publishable_events_without_evidence": publishable_events_without_evidence,
+                "unknown_relationships": unknown_relationships,
+                "unknown_relationships_coerced_to_zero": unknown_relationships_coerced_to_zero,
+                "amount_semantic_violations": amount_semantic_violations,
+                "amount_buckets": [
+                    {"amount_kind": row[0], "currency": row[1], "row_count": int(row[2])}
+                    for row in amount_buckets
+                ],
             }
 
     print(json.dumps(payload, indent=2))

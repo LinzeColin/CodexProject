@@ -10,9 +10,9 @@ A008,P0,bootstrap,Network is off by default and secrets are absent,Config/secret
 A009,P0,bootstrap,OpenAPI and JSON Schemas parse successfully,Contract validation,NOT STARTED
 A010,P0,bootstrap,Repository tree follows target app/api/packages/infra/tests layout,Tree review,NOT STARTED
 A011,P0,data,Migrations upgrade and downgrade cleanly,Migration round-trip,DONE
-A012,P0,data,Published relationship and event require evidence,Deferred data-quality test,NOT STARTED
-A013,P0,data,Unknown remains unknown and is never coerced to zero/false,Unit/data tests,NOT STARTED
-A014,P0,data,Amount requires currency and amount_kind and incompatible kinds are not summed,Constraint + unit tests,NOT STARTED
+A012,P0,data,Published relationship and event require evidence,Deferred data-quality test,DONE
+A013,P0,data,Unknown remains unknown and is never coerced to zero/false,Unit/data tests,DONE
+A014,P0,data,Amount requires currency and amount_kind and incompatible kinds are not summed,Constraint + unit tests,DONE
 A015,P0,data,"Entity types distinguish legal entity, brand, segment, product, facility, industry and other types",Schema/API assertions,DONE
 A016,P0,data,All ten relationship families are represented in taxonomy and fixtures,Data check,DONE
 A017,P0,data,P0 seed contains at least 30 unique entities,CSV/data check,DONE

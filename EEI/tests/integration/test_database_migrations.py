@@ -8,6 +8,7 @@ from uuid import UUID
 
 import pytest
 from fastapi.testclient import TestClient
+from psycopg import errors
 
 from apps.api.app.domain_repository import DomainRepository
 from apps.api.app.main import app
@@ -157,3 +158,20 @@ def exercise_domain_api_and_repository_contracts() -> None:
         ).fetchone()[0]
     assert old_status == "superseded"
     assert str(new_supersedes_id) == COREWEAVE_NVIDIA_RELATIONSHIP_ID
+
+    with connect_database() as connection:
+        try:
+            connection.execute(
+                """
+                INSERT INTO relationships(
+                  subject_entity_id, object_entity_id, relationship_type, relationship_family,
+                  status, observed_at, amount
+                )
+                VALUES (%s, %s, 'customer_of', 'commercial_dependency', 'reported', now(), 100)
+                """,
+                (NVIDIA_ID, NVIDIA_ID),
+            )
+        except errors.CheckViolation:
+            connection.rollback()
+        else:  # pragma: no cover - should be unreachable with the migration constraint.
+            raise AssertionError("amount without currency and amount_kind must be rejected")

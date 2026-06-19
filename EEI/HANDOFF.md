@@ -46,6 +46,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed G2 acceptance audit pass 1 remote CI by GitHub Actions run `27827498238`; job `82355514060` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - Added T1204 `/objects-scope` visible navigation screen and marked A170 done locally.
 - Completed T1204 and A170 by GitHub Actions run `27828194718`; job `82357916025` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
+- Added A012-A014 data quality and amount/unknown regression checks locally; A026/A027 remain open because real gold precision evaluation is not implemented.
 
 ## Verification Evidence
 
@@ -84,6 +85,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed with static route `/objects-scope`.
 - 2026-06-19 update: local `make verify` passed after T1204.
 - 2026-06-19 update: GitHub Actions run `27828194718` passed; job `82357916025` proved T1204 remotely.
+- 2026-06-19 update: local `make verify` passed after A012-A014 data contract checks.
 
 Remote verification:
 
@@ -117,15 +119,15 @@ Remote verification:
 - T1103/T1104/T1107/T1108 visual company workspace tasks are DONE and remote CI passed.
 - T1105/T1106/T1109 visual company workspace tasks are DONE and remote CI passed.
 - T1203 taxonomy/object-scope API is DONE and remote CI passed.
-- G2 task list is complete, but release gate status remains `IN PROGRESS` because A012, A013, A014, A026, and A027 remain open.
+- G2 task list is complete, but release gate status remains `IN PROGRESS` because A026 and A027 require gold precision evaluation.
 - T1204 / A170 Objects and Scope navigation screen is DONE and remote CI passed.
 - G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
 ## Recommended Next Step
 
-Prove T1204 remotely, then close or explicitly defer the five remaining G2-linked acceptance gaps:
+Prove A012-A014 remotely, then decide how to handle the remaining gold precision gates:
 
-1. Push T1204 and wait for GitHub Actions.
-2. Implement or defer A012, A013, A014, A026, and A027 with explicit contracts.
+1. Push A012-A014 checks and wait for GitHub Actions.
+2. Implement T904-style gold evaluation for A026/A027 or explicitly defer them with a governance decision.
 3. Continue G4 with T1205 Development Status screen.

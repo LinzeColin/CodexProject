@@ -598,3 +598,33 @@ Residual risks:
 
 - The remaining G2-linked open IDs after A170 closure are A012, A013, A014, A026, and A027.
 - G4 remains open because T1205 and T1208 are not complete.
+
+## 2026-06-19 - Phase 1 / G2 data contract audit pass 2
+
+Status: DATA CONTRACT LOCAL PASS; G2 IN PROGRESS
+
+Completed:
+
+- Added PostgreSQL-backed data quality checks for publishable relationship/event evidence coverage.
+- Added unknown-semantics regression checks so intentionally unknown relationships remain `unknown` and are not coerced to numeric zero.
+- Added amount semantics checks and an integration regression proving amount facts without `currency` and `amount_kind` are rejected.
+- Marked A012, A013, and A014 as `DONE`.
+- Left A026 and A027 as `NOT STARTED` because they require real gold precision evaluation, not synthetic fixture self-grading.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run ruff check scripts/check_database_schema.py tests/integration/test_database_migrations.py`: PASS.
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+
+Acceptance status:
+
+- A012 is covered by `scripts/check_database_schema.py` and `tests/integration/test_database_migrations.py`.
+- A013 is covered by `scripts/check_database_schema.py`, `tests/integration/test_database_migrations.py`, and `data/mock_relationships.json`.
+- A014 is covered by `specs/domain_schema.sql`, `scripts/check_database_schema.py`, and `tests/integration/test_database_migrations.py`.
+- A026 and A027 remain open and should be handled by T904 quality evaluation or an explicit approved defer decision.
+
+Residual risks:
+
+- Remote GitHub Actions still needs to prove A012-A014 under PostgreSQL.
+- `data/release_gate_catalog.csv` remains `G2=IN PROGRESS` while A026 and A027 remain open.
