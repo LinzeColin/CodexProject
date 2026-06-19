@@ -88,14 +88,30 @@ button {
 
 .navRail nav,
 .watchlistStack,
-.actionStack {
+.actionStack,
+.zoomBar {
   display: grid;
   gap: 6px;
+}
+
+.systemNav {
+  display: grid;
+  gap: 6px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.navGroupLabel {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 720;
+  text-transform: uppercase;
 }
 
 .navItem,
 .watchItem,
 .lens,
+.zoomControl,
 .actionStack button {
   display: flex;
   align-items: center;
@@ -112,6 +128,7 @@ button {
 .navItem {
   justify-content: flex-start;
   padding: 0 10px;
+  text-decoration: none;
 }
 
 .navItem span {
@@ -122,7 +139,8 @@ button {
 
 .navItem.active,
 .watchItem.current,
-.lens.active {
+.lens.active,
+.zoomControl.active {
   border-color: #b9c9f5;
   background: #eef4ff;
   color: #134aa1;
@@ -244,7 +262,7 @@ dd {
 
 .canvas {
   display: grid;
-  grid-template-rows: auto auto minmax(620px, 1fr) auto;
+  grid-template-rows: auto auto auto minmax(620px, 1fr) auto;
   gap: 14px;
   padding: 20px;
 }
@@ -266,6 +284,18 @@ dd {
   padding: 0 12px;
   border-color: var(--line);
   background: #fbfcfc;
+}
+
+.zoomBar {
+  grid-template-columns: repeat(4, minmax(48px, 1fr));
+}
+
+.zoomControl {
+  justify-content: center;
+  min-height: 32px;
+  border-color: var(--line);
+  background: #fbfcfc;
+  cursor: pointer;
 }
 
 .stageRail {
@@ -301,6 +331,7 @@ dd {
 }
 
 .mapSurface {
+  position: relative;
   min-height: 620px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -323,6 +354,35 @@ dd {
   fill: #6f7d76;
 }
 
+.canvasOverlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  border: 1px solid #b9c9f5;
+  border-radius: 7px;
+  background: #eef4ff;
+  color: #134aa1;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.canvasOverlay.warning {
+  border-color: #f0c36d;
+  background: #fff7e8;
+  color: #8a580c;
+}
+
+.edgeGroup {
+  transition: opacity 180ms ease;
+}
+
+.edgeGroup.faded,
+.node.faded {
+  opacity: 0.22;
+}
+
 .edge {
   stroke: #7f8d86;
   stroke-width: 2.8;
@@ -336,6 +396,15 @@ dd {
   stroke-width: 5px;
   font-size: 11px;
   font-weight: 650;
+}
+
+.edgeEvidence {
+  fill: #8a580c;
+  paint-order: stroke;
+  stroke: #fff7e8;
+  stroke-width: 5px;
+  font-size: 10px;
+  font-weight: 720;
 }
 
 .node circle {
@@ -373,6 +442,15 @@ dd {
   stroke-width: 4px;
 }
 
+.nodeRole {
+  fill: #39443f !important;
+  font-size: 10px !important;
+  font-weight: 650 !important;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: 4px;
+}
+
 .node.focus circle {
   fill: var(--blue);
 }
@@ -383,6 +461,11 @@ dd {
 
 .node.downstream circle {
   fill: var(--violet);
+}
+
+.node[data-node-kind="aggregate"] circle {
+  stroke-dasharray: 5 4;
+  stroke-width: 5;
 }
 
 .node.infrastructure circle {
@@ -505,6 +588,19 @@ dd {
   background: var(--red);
 }
 
+.groupList {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 18px;
+  padding: 10px 10px 10px 28px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfc;
+  color: #39443f;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .actionStack {
   margin: 18px 0;
 }
@@ -550,20 +646,195 @@ dd {
   font-size: 13px;
 }
 
+.catalogWorkspace {
+  display: grid;
+  grid-template-columns: 210px minmax(720px, 1fr);
+  gap: 1px;
+  min-height: 100vh;
+  background: var(--line);
+}
+
+.objectScopeMain {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  min-width: 0;
+  background: var(--panel);
+  padding: 24px;
+}
+
+.objectScopeHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.returnLink,
+.exportLinks a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fbfcfc;
+  color: var(--ink);
+  padding: 0 11px;
+  text-decoration: none;
+}
+
+.scopeSummary,
+.coverageGrid {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.scopeSummary {
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+}
+
+.scopeSummary div,
+.coverageCell {
+  min-width: 0;
+  background: #fbfcfc;
+  padding: 14px;
+}
+
+.scopeSummary dd {
+  font-size: 22px;
+}
+
+.coverageGrid {
+  grid-template-columns: repeat(5, minmax(130px, 1fr));
+}
+
+.coverageCell {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.coverageCell span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.catalogMatrix {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 12px;
+}
+
+.catalogTile {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfc;
+  padding: 14px;
+}
+
+.catalogTile header {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  gap: 10px;
+}
+
+.catalogTile h2 {
+  font-size: 18px;
+}
+
+.catalogTile p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.catalogTile header > strong {
+  color: #134aa1;
+  font-size: 22px;
+}
+
+.catalogMeta {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.45fr) minmax(180px, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+
+.catalogMeta div {
+  min-width: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+
+.catalogMeta dd,
+.definitionList span {
+  overflow-wrap: anywhere;
+}
+
+.definitionList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.definitionList li {
+  display: grid;
+  gap: 3px;
+  border-left: 3px solid #b9c9f5;
+  background: #f3f6fb;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.definitionList span {
+  color: var(--muted);
+}
+
+.exportLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 @media (max-width: 1240px) {
   .workspace {
     grid-template-columns: 78px minmax(210px, 250px) minmax(500px, 1fr);
   }
 
   .navItem span,
+  .navGroupLabel,
   .brandMark span:not(.brandGlyph),
   .inspector {
     display: none;
   }
+
+  .catalogWorkspace {
+    grid-template-columns: 78px minmax(520px, 1fr);
+  }
+
+  .coverageGrid,
+  .catalogMatrix {
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+  }
 }
 
 @media (max-width: 900px) {
-  .workspace {
+  .workspace,
+  .catalogWorkspace {
     grid-template-columns: 1fr;
   }
 
@@ -580,6 +851,13 @@ dd {
   .navRail nav {
     display: flex;
     min-width: max-content;
+  }
+
+  .systemNav {
+    display: flex;
+    min-width: max-content;
+    border-top: 0;
+    padding-top: 0;
   }
 
   .navItem {
@@ -609,5 +887,17 @@ dd {
   .mapSurface,
   .ecosystemMap {
     min-height: 390px;
+  }
+
+  .objectScopeMain,
+  .objectScopeHeader {
+    display: grid;
+  }
+
+  .scopeSummary,
+  .coverageGrid,
+  .catalogMatrix,
+  .catalogMeta {
+    grid-template-columns: 1fr;
   }
 }

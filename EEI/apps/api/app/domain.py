@@ -4,13 +4,31 @@ from datetime import datetime
 from typing import Annotated, Any, Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-from .domain_repository import DomainRepository, NotFoundError, RepositoryError
+from .domain_repository import CatalogRepository, DomainRepository, NotFoundError, RepositoryError
 from .settings import get_settings
 
 router = APIRouter(prefix="/v1", tags=["domain"])
+
+EntityType = Literal[
+    "legal_entity",
+    "brand",
+    "security",
+    "fund",
+    "government_body",
+    "person",
+    "theme",
+    "facility",
+    "product",
+    "business_segment",
+    "industry",
+    "contract",
+    "standard",
+    "asset",
+]
 
 
 class FocusRef(BaseModel):
@@ -68,6 +86,7 @@ def get_repository() -> DomainRepository:
 
 
 RepositoryDependency = Annotated[DomainRepository, Depends(get_repository)]
+CatalogRepositoryDependency = Annotated[CatalogRepository, Depends(CatalogRepository)]
 
 
 def translate_repository_error(error: RepositoryError) -> HTTPException:
@@ -80,6 +99,56 @@ def translate_repository_error(error: RepositoryError) -> HTTPException:
 def get_home(repository: RepositoryDependency) -> dict[str, Any]:
     try:
         return repository.list_home()
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.get("/catalogs")
+def list_catalogs(repository: CatalogRepositoryDependency) -> dict[str, Any]:
+    return repository.list_catalogs()
+
+
+@router.get("/catalogs/{catalogKey}", response_model=None)
+def get_catalog(
+    catalogKey: str,
+    repository: CatalogRepositoryDependency,
+    format: Literal["json", "csv"] = Query(default="json"),
+) -> dict[str, Any] | FileResponse:
+    try:
+        if format == "csv":
+            csv_path = repository.csv_path_for_key(catalogKey)
+            return FileResponse(
+                csv_path,
+                media_type="text/csv",
+                filename=csv_path.name,
+            )
+        return repository.get_catalog(catalogKey)
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.get("/system/object-scope")
+def get_object_scope(repository: CatalogRepositoryDependency) -> dict[str, Any]:
+    return repository.object_scope()
+
+
+@router.get("/entities")
+def search_entities(
+    repository: RepositoryDependency,
+    q: Annotated[str | None, Query()] = None,
+    type: Annotated[EntityType | None, Query()] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+) -> list[dict[str, Any]]:
+    try:
+        return repository.search_entities(query=q, entity_type=type, limit=limit)
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.get("/entities/{entityId}")
+def get_entity(entityId: UUID, repository: RepositoryDependency) -> dict[str, Any]:
+    try:
+        return repository.get_entity(entityId)
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc
 

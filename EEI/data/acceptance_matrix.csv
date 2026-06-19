@@ -10,23 +10,23 @@ A008,P0,bootstrap,Network is off by default and secrets are absent,Config/secret
 A009,P0,bootstrap,OpenAPI and JSON Schemas parse successfully,Contract validation,NOT STARTED
 A010,P0,bootstrap,Repository tree follows target app/api/packages/infra/tests layout,Tree review,NOT STARTED
 A011,P0,data,Migrations upgrade and downgrade cleanly,Migration round-trip,DONE
-A012,P0,data,Published relationship and event require evidence,Deferred data-quality test,NOT STARTED
-A013,P0,data,Unknown remains unknown and is never coerced to zero/false,Unit/data tests,NOT STARTED
-A014,P0,data,Amount requires currency and amount_kind and incompatible kinds are not summed,Constraint + unit tests,NOT STARTED
-A015,P0,data,"Entity types distinguish legal entity, brand, segment, product, facility, industry and other types",Schema/API assertions,NOT STARTED
-A016,P0,data,All ten relationship families are represented in taxonomy and fixtures,Data check,NOT STARTED
-A017,P0,data,P0 seed contains at least 30 unique entities,CSV/data check,NOT STARTED
-A018,P0,data,Research universe contains 120 U.S. targets and 20 global context nodes,CSV/data check,NOT STARTED
-A019,P0,data,Industry taxonomy supports parent/child and multi-label membership,Migration/API test,NOT STARTED
-A020,P0,data,Supply-chain stage taxonomy contains 16 ordered stages,CSV/data check,NOT STARTED
-A021,P0,data,"Supply-chain attributes preserve tier, materiality, substitutability, capacity, geography and coverage",Schema/unit test,NOT STARTED
-A022,P0,data,"Temporal fields preserve validity, announcement, filing, report, observation and ingestion times",Schema/golden test,NOT STARTED
+A012,P0,data,Published relationship and event require evidence,Deferred data-quality test,DONE
+A013,P0,data,Unknown remains unknown and is never coerced to zero/false,Unit/data tests,DONE
+A014,P0,data,Amount requires currency and amount_kind and incompatible kinds are not summed,Constraint + unit tests,DONE
+A015,P0,data,"Entity types distinguish legal entity, brand, segment, product, facility, industry and other types",Schema/API assertions,DONE
+A016,P0,data,All ten relationship families are represented in taxonomy and fixtures,Data check,DONE
+A017,P0,data,P0 seed contains at least 30 unique entities,CSV/data check,DONE
+A018,P0,data,Research universe contains 120 U.S. targets and 20 global context nodes,CSV/data check,DONE
+A019,P0,data,Industry taxonomy supports parent/child and multi-label membership,Migration/API test,DONE
+A020,P0,data,Supply-chain stage taxonomy contains 16 ordered stages,CSV/data check,DONE
+A021,P0,data,"Supply-chain attributes preserve tier, materiality, substitutability, capacity, geography and coverage",Schema/unit test,DONE
+A022,P0,data,"Temporal fields preserve validity, announcement, filing, report, observation and ingestion times",Schema/golden test,DONE
 A023,P0,data,Supersession and conflict preserve history,Repository integration test,DONE
-A024,P0,data,Seed and fixture load are idempotent,Run twice and compare,NOT STARTED
+A024,P0,data,Seed and fixture load are idempotent,Run twice and compare,DONE
 A025,P0,data,Synthetic fixtures are visibly marked and never presented as live facts,UI/API content test,DONE
 A026,P0,data,Entity resolution precision is >=95% on at least 50 cases,Gold evaluation,NOT STARTED
 A027,P0,data,Relationship precision is >=90% on at least 100 cases,Gold evaluation,NOT STARTED
-A028,P0,data,Research/source/metric/parameter registries load without malformed rows,Static validation,NOT STARTED
+A028,P0,data,Research/source/metric/parameter registries load without malformed rows,Static validation,DONE
 A029,P0,home,"Home shows global search, industries, Watchlist, recent explorations, changes and freshness",E2E,NOT STARTED
 A030,P0,home,Home shows active scoring profile and last/next calibration status,E2E,NOT STARTED
 A031,P0,industry,Industry list is human-readable and versioned,API/UI test,NOT STARTED
@@ -36,7 +36,7 @@ A034,P0,industry,Cross-industry navigation is allowed and visibly indicated,E2E,
 A035,P0,watchlist,"Local-user Watchlist can create, add, remove, restore and persist items",Integration/E2E,NOT STARTED
 A036,P0,watchlist,"Watchlist supports entity, industry, theme and facility items",API test,NOT STARTED
 A037,P0,watchlist,Watchlist shows unread changes and saved view/profile state,E2E,NOT STARTED
-A038,P0,search,Search distinguishes aliases and entity types,Search integration,NOT STARTED
+A038,P0,search,Search distinguishes aliases and entity types,Search integration,DONE
 A039,P0,home,New user reaches a company focus page within three primary actions,E2E,NOT STARTED
 A040,P0,accessibility,Home and industry core controls are keyboard reachable,Playwright/a11y,NOT STARTED
 A041,P0,explore,"Explore API accepts focus, layers, direction, hops, as-of, profile, filters and budget",Contract/integration,NOT STARTED
@@ -139,18 +139,18 @@ A137,P0,visual-first,Critical upstream downstream business capital and policy re
 A138,P0,layout,Upstream is left focus is center and downstream is right in default layout,Screenshot assertion,DONE
 A139,P0,layout,Capital/control is above and policy/risk is below when those layers are active,Screenshot assertion,DONE
 A140,P0,layout,Edges show direction and human-language relationship labels,DOM/SVG assertion,DONE
-A141,P0,lenses,Lens switch filters or fades relationships without navigating to a new page,E2E,NOT STARTED
-A142,P0,lenses,Lens change preserves subject selected node timeline and viewport,State test,NOT STARTED
-A143,P0,semantic-zoom,L0 to L3 semantic zoom levels are implemented and documented,E2E + contract,NOT STARTED
-A144,P0,semantic-zoom,Dense same-type nodes group with count and can be opened in list view,E2E,NOT STARTED
-A145,P0,semantic-zoom,Default first screen never renders an unbounded global hairball,Budget test,NOT STARTED
+A141,P0,lenses,Lens switch filters or fades relationships without navigating to a new page,E2E,DONE
+A142,P0,lenses,Lens change preserves subject selected node timeline and viewport,State test,DONE
+A143,P0,semantic-zoom,L0 to L3 semantic zoom levels are implemented and documented,E2E + contract,DONE
+A144,P0,semantic-zoom,Dense same-type nodes group with count and can be opened in list view,E2E,DONE
+A145,P0,semantic-zoom,Default first screen never renders an unbounded global hairball,Budget test,DONE
 A146,P0,inspector,Selecting a node opens readable context detail without changing subject,E2E,DONE
 A147,P0,inspector,Inspector offers set-as-center upstream downstream watch path and evidence actions,E2E,DONE
 A148,P0,pivot,Set-as-center is a visible primary action and succeeds in no more than two actions,Usability/E2E,DONE
 A149,P0,pivot,Double-click right-click hover and drag are not required for primary navigation,Keyboard/touch E2E,DONE
 A150,P0,pivot,Three consecutive subject changes use the same workspace model,E2E,DONE
-A151,P0,mental-map,Subject changes preserve directional grammar and positions of retained nodes where feasible,Visual regression,NOT STARTED
-A152,P0,mental-map,Subject transition indicates loading and never leaves blank canvas on failure,Failure E2E,NOT STARTED
+A151,P0,mental-map,Subject changes preserve directional grammar and positions of retained nodes where feasible,Visual regression,DONE
+A152,P0,mental-map,Subject transition indicates loading and never leaves blank canvas on failure,Failure E2E,DONE
 A153,P0,responsive,Core workspace works at 1440x900 1280x800 and 1024x768,Visual regression,NOT STARTED
 A154,P0,navigation,Breadcrumb browser back and app back restore identical subject state,E2E,NOT STARTED
 A155,P0,navigation,User can return to any prior subject in exploration path,E2E,NOT STARTED
@@ -167,8 +167,8 @@ A165,P0,accessibility,Color is not the only encoding for relation family or evid
 A166,P0,content,End-user UI contains no forbidden agent or graph-database jargon,Static copy lint,NOT STARTED
 A167,P0,visual-regression,Approved default lens pivot list empty loading error states have screenshots,Visual regression suite,NOT STARTED
 A168,P0,performance,Fixture first interactive graph P75 is under 2.5 seconds and metrics are recorded,Performance test,NOT STARTED
-A169,P0,catalog,"Relationship families, relationship types, upstream/downstream scope, supply-chain stages, industries, sectors, business segments, capital objects and companies have machine-readable catalogs",Catalog integrity test + manual review,NOT STARTED
-A170,P0,navigation,"Objects and scope is a visible navigation module and exposes counts, definitions, coverage and export links",E2E + visual regression,NOT STARTED
+A169,P0,catalog,"Relationship families, relationship types, upstream/downstream scope, supply-chain stages, industries, sectors, business segments, capital objects and companies have machine-readable catalogs",Catalog integrity test + manual review,DONE
+A170,P0,navigation,"Objects and scope is a visible navigation module and exposes counts, definitions, coverage and export links",E2E + visual regression,DONE
 A171,P0,model-governance,"Model management has one canonical registry for formulas, parameters, thresholds, files, versions, online edit, preview, activation and rollback",Schema validation + model center E2E,NOT STARTED
 A172,P0,architecture,"Function structure screen maps every module to route, data assets, API, status and acceptance criteria",Catalog/API mapping test,NOT STARTED
 A173,P0,delivery-governance,"Development status explicitly separates resolved, prototyped, specified, not started, blocked and out-of-scope items",Status catalog review,NOT STARTED

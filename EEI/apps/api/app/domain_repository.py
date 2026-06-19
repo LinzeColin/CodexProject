@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import csv
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
+from pathlib import Path
 from typing import Any
 from uuid import UUID
 
@@ -37,12 +39,267 @@ def _now() -> datetime:
     return datetime.now(tz=UTC)
 
 
+def _escape_like(value: str) -> str:
+    return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
+ROOT = Path(__file__).resolve().parents[3]
+ENTITY_TYPES = (
+    "legal_entity",
+    "brand",
+    "security",
+    "fund",
+    "government_body",
+    "person",
+    "theme",
+    "facility",
+    "product",
+    "business_segment",
+    "industry",
+    "contract",
+    "standard",
+    "asset",
+)
+
+
+def _read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8-sig", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def _catalog_key(path: str) -> str:
+    return Path(path).stem.replace("_catalog", "").replace("_taxonomy", "").replace("_", "-")
+
+
+@dataclass(frozen=True)
+class CatalogRepository:
+    root: Path = ROOT
+
+    object_scope_paths: tuple[str, ...] = (
+        "data/relationship_family_catalog.csv",
+        "data/relationship_taxonomy.csv",
+        "data/supply_chain_stage_taxonomy.csv",
+        "data/upstream_downstream_role_catalog.csv",
+        "data/industry_taxonomy.csv",
+        "data/sector_taxonomy.csv",
+        "data/business_segment_taxonomy.csv",
+        "data/capital_object_taxonomy.csv",
+        "data/domain_object_catalog.csv",
+        "data/company_catalog.csv",
+    )
+
+    def _content_inventory(self) -> list[dict[str, str]]:
+        return _read_csv(self.root / "data/content_inventory.csv")
+
+    def _manifest_by_path(self) -> dict[str, dict[str, str]]:
+        return {
+            row["catalog_path"]: row
+            for row in _read_csv(self.root / "data/data_catalog_manifest.csv")
+        }
+
+    def list_catalogs(self) -> dict[str, Any]:
+        manifest = self._manifest_by_path()
+        catalogs = [
+            self._catalog_summary(row, manifest.get(row["path"], {}))
+            for row in self._content_inventory()
+        ]
+        return {
+            "as_of": _now().isoformat(),
+            "catalog_version": "v4.2.0",
+            "catalog_count": len(catalogs),
+            "source_of_truth_count": sum(1 for row in catalogs if row["source_of_truth"]),
+            "total_declared_rows": sum(row["row_count"] for row in catalogs),
+            "catalogs": catalogs,
+        }
+
+    def get_catalog(self, catalog_key: str) -> dict[str, Any]:
+        manifest = self._manifest_by_path()
+        for row in self._content_inventory():
+            summary = self._catalog_summary(row, manifest.get(row["path"], {}))
+            if summary["catalog_key"] == catalog_key:
+                csv_path = self.root / row["path"]
+                records = _read_csv(csv_path)
+                return {
+                    **summary,
+                    "as_of": _now().isoformat(),
+                    "fields": list(records[0].keys()) if records else [],
+                    "records": records,
+                    "actual_row_count": len(records),
+                }
+        raise NotFoundError(f"Catalog not found: {catalog_key}")
+
+    def csv_path_for_key(self, catalog_key: str) -> Path:
+        for row in self._content_inventory():
+            if _catalog_key(row["path"]) == catalog_key:
+                path = (self.root / row["path"]).resolve()
+                if not path.is_relative_to(self.root):
+                    raise NotFoundError(f"Catalog not found: {catalog_key}")
+                return path
+        raise NotFoundError(f"Catalog not found: {catalog_key}")
+
+    def object_scope(self) -> dict[str, Any]:
+        catalog_map = {row["path"]: row for row in self._content_inventory()}
+        manifest = self._manifest_by_path()
+        catalogs = [
+            self._catalog_summary(catalog_map[path], manifest.get(path, {}))
+            for path in self.object_scope_paths
+        ]
+        counts = {row["catalog_key"]: row["row_count"] for row in catalogs}
+        return {
+            "as_of": _now().isoformat(),
+            "catalog_version": "v4.2.0",
+            "navigation_module": {
+                "name_zh": "对象与范围",
+                "name_en": "Objects and Scope",
+                "visible": True,
+                "route": "/objects-scope",
+                "api_paths": [
+                    "/v1/system/object-scope",
+                    "/v1/catalogs",
+                    "/v1/catalogs/{catalogKey}",
+                ],
+                "source_doc": "docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md",
+                "acceptance_ids": ["A169", "A170"],
+            },
+            "coverage": {
+                "required_catalogs_present": True,
+                "object_scope_catalog_count": len(catalogs),
+                "total_declared_rows": sum(row["row_count"] for row in catalogs),
+                "relationship_families": counts["relationship-family"],
+                "relationship_types": counts["relationship"],
+                "upstream_downstream_roles": counts["upstream-downstream-role"],
+                "supply_chain_stages": counts["supply-chain-stage"],
+                "industries": counts["industry"],
+                "sectors": counts["sector"],
+                "business_segments": counts["business-segment"],
+                "capital_objects": counts["capital-object"],
+                "domain_objects": counts["domain-object"],
+                "companies": counts["company"],
+            },
+            "catalogs": catalogs,
+        }
+
+    def _catalog_summary(self, row: dict[str, str], manifest: dict[str, str]) -> dict[str, Any]:
+        path = row["path"]
+        row_count = int(manifest.get("row_count") or row["row_count"])
+        catalog_key = _catalog_key(path)
+        return {
+            "catalog_id": row["catalog_id"],
+            "catalog_key": catalog_key,
+            "name_zh": row["name_zh"],
+            "path": path,
+            "primary_key": manifest.get("primary_key") or row["primary_key"],
+            "row_count": row_count,
+            "owner": manifest.get("owner") or row["owner"],
+            "ui_surfaces": row["ui_surfaces"],
+            "scope": row["scope"],
+            "status": row["status"],
+            "source_of_truth": (manifest.get("source_of_truth") or row["source_of_truth"]).lower()
+            in {"yes", "true"},
+            "export_links": {
+                "json": f"/v1/catalogs/{catalog_key}",
+                "csv": f"/v1/catalogs/{catalog_key}?format=csv",
+                "source": path,
+            },
+        }
+
+
 @dataclass(frozen=True)
 class DomainRepository:
     database_url: str
 
     def connect(self) -> psycopg.Connection[dict[str, Any]]:
         return psycopg.connect(self.database_url, connect_timeout=5, row_factory=dict_row)
+
+    def search_entities(
+        self,
+        query: str | None,
+        entity_type: str | None,
+        limit: int,
+    ) -> list[dict[str, Any]]:
+        search_term = (query or "").strip()
+        pattern = f"%{_escape_like(search_term)}%"
+        with self.connect() as connection:
+            rows = connection.execute(
+                """
+                WITH matches AS (
+                  SELECT
+                    e.id,
+                    e.canonical_name,
+                    e.entity_type,
+                    fen.fixture_notice,
+                    COALESCE(fen.synthetic, false) AS synthetic,
+                    'canonical' AS match_type,
+                    e.canonical_name AS matched_value,
+                    1 AS rank
+                  FROM entities e
+                  LEFT JOIN fixture_entity_notices fen ON fen.entity_id = e.id
+                  WHERE (
+                    %(entity_type)s::entity_type IS NULL
+                    OR e.entity_type = %(entity_type)s::entity_type
+                  )
+                    AND (
+                      %(query)s = ''
+                      OR e.canonical_name ILIKE %(pattern)s ESCAPE '\\'
+                    )
+                  UNION ALL
+                  SELECT
+                    e.id,
+                    e.canonical_name,
+                    e.entity_type,
+                    fen.fixture_notice,
+                    COALESCE(fen.synthetic, false) AS synthetic,
+                    lower(ei.scheme) AS match_type,
+                    ei.value AS matched_value,
+                    2 AS rank
+                  FROM entities e
+                  JOIN entity_identifiers ei ON ei.entity_id = e.id
+                  LEFT JOIN fixture_entity_notices fen ON fen.entity_id = e.id
+                  WHERE (
+                    %(entity_type)s::entity_type IS NULL
+                    OR e.entity_type = %(entity_type)s::entity_type
+                  )
+                    AND (%(query)s = '' OR ei.value ILIKE %(pattern)s ESCAPE '\\')
+                  UNION ALL
+                  SELECT
+                    e.id,
+                    e.canonical_name,
+                    e.entity_type,
+                    fen.fixture_notice,
+                    COALESCE(fen.synthetic, false) AS synthetic,
+                    'alias:' || ea.alias_type AS match_type,
+                    ea.alias AS matched_value,
+                    3 AS rank
+                  FROM entities e
+                  JOIN entity_aliases ea ON ea.entity_id = e.id
+                  LEFT JOIN fixture_entity_notices fen ON fen.entity_id = e.id
+                  WHERE (
+                    %(entity_type)s::entity_type IS NULL
+                    OR e.entity_type = %(entity_type)s::entity_type
+                  )
+                    AND (%(query)s = '' OR ea.alias ILIKE %(pattern)s ESCAPE '\\')
+                ),
+                ranked AS (
+                  SELECT DISTINCT ON (id)
+                    id, canonical_name, entity_type, fixture_notice, synthetic,
+                    match_type, matched_value, rank
+                  FROM matches
+                  ORDER BY id, rank, length(matched_value), matched_value
+                )
+                SELECT id, canonical_name, entity_type, fixture_notice, synthetic,
+                       match_type, matched_value
+                FROM ranked
+                ORDER BY rank, canonical_name
+                LIMIT %(limit)s
+                """,
+                {
+                    "query": search_term,
+                    "pattern": pattern,
+                    "entity_type": entity_type,
+                    "limit": limit,
+                },
+            ).fetchall()
+            return self._with_primary_identifiers(connection, rows)
 
     def entity_summary(
         self,
@@ -74,6 +331,40 @@ class DomainRepository:
             item["scheme"]: item["value"] for item in identifier_rows
         }
         return _jsonable(payload)
+
+    def get_entity(self, entity_id: UUID) -> dict[str, Any]:
+        with self.connect() as connection:
+            return self.entity_summary(connection, entity_id)
+
+    def _with_primary_identifiers(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_rows: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        if not entity_rows:
+            return []
+        entity_ids = [row["id"] for row in entity_rows]
+        identifier_rows = connection.execute(
+            """
+            SELECT entity_id, scheme, value
+            FROM entity_identifiers
+            WHERE entity_id = ANY(%s)
+            ORDER BY scheme
+            """,
+            (entity_ids,),
+        ).fetchall()
+        identifiers: dict[UUID, dict[str, str]] = {}
+        for row in identifier_rows:
+            identifiers.setdefault(row["entity_id"], {})[row["scheme"]] = row["value"]
+        return [
+            _jsonable(
+                {
+                    **dict(row),
+                    "primary_identifiers": identifiers.get(row["id"], {}),
+                }
+            )
+            for row in entity_rows
+        ]
 
     def active_scoring_profile(
         self,
@@ -406,7 +697,8 @@ class DomainRepository:
             active_profile = self.active_scoring_profile(connection)
             calibration = connection.execute(
                 """
-                SELECT id, status, data_snapshot_at, scheduled_for, proposal_status
+                SELECT id, status, data_snapshot_at, scheduled_for, cadence_days,
+                       proposal_status, finished_at
                 FROM calibration_runs
                 ORDER BY COALESCE(started_at, scheduled_for, data_snapshot_at) DESC
                 LIMIT 1
@@ -418,22 +710,109 @@ class DomainRepository:
             relationship_count = connection.execute(
                 "SELECT count(*)::int AS count FROM relationships"
             ).fetchone()
+            freshness = self.home_freshness(connection)
         return _jsonable(
             {
                 "as_of": _now(),
+                "global_search": {
+                    "endpoint": "/v1/entities",
+                    "query_param": "q",
+                    "type_filter_param": "type",
+                    "default_limit": 20,
+                    "supported_entity_types": ENTITY_TYPES,
+                    "example": {"q": "NVDA", "type": "legal_entity"},
+                },
                 "industries": industries,
                 "watchlists": self.list_watchlists(),
                 "recent_explorations": sessions,
                 "changes": changes,
+                "freshness": freshness,
                 "model_status": {
                     "active_profile": active_profile,
                     "latest_calibration": calibration,
+                    "calibration": self.home_calibration_status(calibration),
                     "fixture_policy": (
                         "Synthetic fixtures are explicitly marked and not live facts."
                     ),
                     "entity_count": entity_count["count"],
                     "relationship_count": relationship_count["count"],
                 },
+            }
+        )
+
+    def home_freshness(self, connection: psycopg.Connection[dict[str, Any]]) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              (SELECT count(*)::int FROM source_documents) AS source_document_count,
+              (SELECT max(observed_at) FROM source_documents) AS latest_source_observed_at,
+              (SELECT max(retrieved_at) FROM source_documents) AS latest_source_retrieved_at,
+              (SELECT max(observed_at) FROM relationships) AS latest_relationship_observed_at,
+              (SELECT max(observed_at) FROM events) AS latest_event_observed_at,
+              (SELECT max(finished_at) FROM ingestion_runs) AS latest_ingestion_finished_at,
+              (
+                SELECT status
+                FROM ingestion_runs
+                ORDER BY started_at DESC
+                LIMIT 1
+              ) AS latest_ingestion_status,
+              (
+                SELECT count(*)::int
+                FROM ingestion_runs
+                WHERE status IN ('failed', 'error')
+              ) AS failed_ingestion_count,
+              (SELECT count(*)::int FROM fixture_entity_notices) AS synthetic_fixture_entities
+            """
+        ).fetchone()
+        data_mode = (
+            "synthetic_fixture"
+            if row["synthetic_fixture_entities"] > 0
+            else "live_or_seed"
+        )
+        if row["source_document_count"] == 0:
+            status_value = "missing"
+        elif row["failed_ingestion_count"] > 0:
+            status_value = "ingestion_failed"
+        elif data_mode == "synthetic_fixture":
+            status_value = "synthetic_fixture"
+        else:
+            status_value = "available"
+        return _jsonable(
+            {
+                **dict(row),
+                "status": status_value,
+                "data_mode": data_mode,
+                "source_mode": (
+                    "fixture_evidence"
+                    if data_mode == "synthetic_fixture"
+                    else "configured_sources"
+                ),
+            }
+        )
+
+    def home_calibration_status(self, calibration: dict[str, Any] | None) -> dict[str, Any]:
+        cadence_days = 14
+        if calibration is None:
+            return {
+                "latest_status": "not_scheduled",
+                "cadence_days": cadence_days,
+                "next_scheduled_for": None,
+                "proposal_status": None,
+            }
+        cadence_days = int(calibration.get("cadence_days") or cadence_days)
+        scheduled_for = calibration.get("scheduled_for")
+        data_snapshot_at = calibration.get("data_snapshot_at")
+        next_scheduled_for = scheduled_for
+        if calibration["status"] in {"passed", "warning", "failed", "cancelled"}:
+            anchor = data_snapshot_at or calibration.get("finished_at") or scheduled_for
+            next_scheduled_for = anchor + timedelta(days=cadence_days) if anchor else None
+        return _jsonable(
+            {
+                "latest_status": calibration["status"],
+                "cadence_days": cadence_days,
+                "latest_calibration_id": calibration["id"],
+                "next_scheduled_for": next_scheduled_for,
+                "proposal_status": calibration.get("proposal_status"),
             }
         )
 

@@ -1,5 +1,6 @@
 -- Logical MVP schema. Codex may adapt indexes/types while preserving invariants.
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 CREATE TYPE entity_type AS ENUM (
   'legal_entity','brand','security','fund','government_body','person','theme',
@@ -44,6 +45,13 @@ CREATE TABLE entity_identifiers (
   valid_to date,
   UNIQUE(scheme, value)
 );
+
+CREATE INDEX idx_entities_canonical_name_trgm
+  ON entities USING gin (canonical_name gin_trgm_ops);
+CREATE INDEX idx_entity_aliases_alias_trgm
+  ON entity_aliases USING gin (alias gin_trgm_ops);
+CREATE INDEX idx_entity_identifiers_value_trgm
+  ON entity_identifiers USING gin (value gin_trgm_ops);
 
 CREATE TABLE sources (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

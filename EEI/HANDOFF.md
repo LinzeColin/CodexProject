@@ -9,8 +9,10 @@ Updated: 2026-06-19 Australia/Sydney
 ## Current Status
 
 - GitHub target: `LinzeColin/CodexProject/EEI`
-- Current gate: Phase 1 / G2 - Domain and data model
+- Current gate: Phase 1 / G3 - Entry and management
 - Gate status: IN PROGRESS
+- Previous gate: Phase 1 / G2 - Domain and data model
+- G2 status: PASS by GitHub Actions run `27828738097` plus `DEFER-003` for A026/A027 gold evaluation
 - Previous gate: Phase 1 / G1 - Repository foundation
 - G1 status: PASS by GitHub Actions run `27820777762`
 - Local EEI repo commits:
@@ -38,6 +40,18 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed T205, A025, and A067 by GitHub Actions run `27824233483`.
 - Added business, capital/control, and policy/risk layers to the visual workspace; split node selection from rerooting; added inspector actions and keyboard-reachable node selection.
 - Completed T1103, T1104, T1107, and T1108 with A136-A140 and A146-A150 by GitHub Actions run `27825230977`.
+- Added persistent analysis lenses, semantic zoom L0-L3, grouped synthetic system-maker list expansion, bounded first-screen graph budget checks, directional grammar assertions, and nonblank reroot fallback behavior.
+- Completed T1105, T1106, and T1109 with A141-A145 and A151-A152 by GitHub Actions run `27826081868`.
+- Added the T1203 CSV-backed taxonomy and object-scope API with catalog inventory, catalog detail, CSV export, object-scope coverage counts, and A169 local verification.
+- Completed T1203 and A169 by GitHub Actions run `27826870509`; G2 task list is complete, but G2 remains `IN PROGRESS` pending acceptance audit for unresolved G2-linked IDs.
+- Completed G2 acceptance audit pass 1 locally: A015-A022, A024, and A028 now have explicit validator/integration evidence; A012-A014, A026-A027, and A170 remain open.
+- Completed G2 acceptance audit pass 1 remote CI by GitHub Actions run `27827498238`; job `82355514060` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
+- Added T1204 `/objects-scope` visible navigation screen and marked A170 done locally.
+- Completed T1204 and A170 by GitHub Actions run `27828194718`; job `82357916025` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
+- Added A012-A014 data quality and amount/unknown regression checks locally; A026/A027 remain open because real gold precision evaluation is not implemented.
+- Completed A012-A014 data contract checks by GitHub Actions run `27828738097`; job `82359769929` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
+- Closed G2 as `PASS` with `DEFER-003`; A026/A027 remain open for T904/G9 gold precision evaluation rather than synthetic self-grading.
+- Proved G2 gate-close commit by GitHub Actions run `27829131193`; job `82361095081` passed.
 
 ## Verification Evidence
 
@@ -63,6 +77,26 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27824233483` passed; A025 visible fixture marking and A067 NVIDIA recursive supply-chain E2E are proven.
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 5 tests for A136-A140 and A146-A150.
 - 2026-06-19 update: GitHub Actions run `27825230977` passed; A136-A140 and A146-A150 visual workspace acceptance checks are proven.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 9 tests for A141-A145 and A151-A152.
+- 2026-06-19 update: GitHub Actions run `27826081868` passed; A141-A145 and A151-A152 lens, semantic-zoom, budget, and mental-map checks are proven.
+- 2026-06-19 update: local `.venv/bin/uv run pytest tests/unit/test_api_health.py -q` passed 7 tests for catalog/object-scope API coverage.
+- 2026-06-19 update: local `make verify` passed after the T1203 catalog API change.
+- 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip.
+- 2026-06-19 update: local `make verify-g2-db` still fails closed because Docker is not installed.
+- 2026-06-19 update: GitHub Actions run `27826870509` passed; job `82353421402` proved T1203 through static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
+- 2026-06-19 update: local `make verify` passed after strengthening G2 schema checks and acceptance traceability.
+- 2026-06-19 update: GitHub Actions run `27827498238` passed; job `82355514060` proved strengthened G2 schema checks under PostgreSQL.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 10 tests for the Objects and Scope screen.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed with static route `/objects-scope`.
+- 2026-06-19 update: local `make verify` passed after T1204.
+- 2026-06-19 update: GitHub Actions run `27828194718` passed; job `82357916025` proved T1204 remotely.
+- 2026-06-19 update: local `make verify` passed after A012-A014 data contract checks.
+- 2026-06-19 update: GitHub Actions run `27828738097` passed; job `82359769929` proved A012-A014 data contract checks under PostgreSQL.
+- 2026-06-19 update: local `make verify` passed after T300/A038 typed entity search, alias seeding, `pg_trgm` schema support, and governance trace count repair.
+- 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip.
+- 2026-06-19 update: local `make verify-g2-db` still fails closed because Docker is not installed.
+- 2026-06-19 update: GitHub Actions run `27830167274` failed on A038 because SQL `ILIKE` treated `_` as a wildcard; fixed by escaping LIKE patterns.
+- 2026-06-19 update: GitHub Actions run `27830403844` passed; job `82365417548` proved T300/A038 typed entity search under PostgreSQL.
 
 Remote verification:
 
@@ -79,6 +113,22 @@ Remote verification:
 - GitHub Actions job `82344470407`: PASS.
 - GitHub Actions run `27825230977`: PASS.
 - GitHub Actions job `82347837228`: PASS.
+- GitHub Actions run `27826081868`: PASS.
+- GitHub Actions job `82350766117`: PASS.
+- GitHub Actions run `27826870509`: PASS.
+- GitHub Actions job `82353421402`: PASS.
+- GitHub Actions run `27827498238`: PASS.
+- GitHub Actions job `82355514060`: PASS.
+- GitHub Actions run `27828194718`: PASS.
+- GitHub Actions job `82357916025`: PASS.
+- GitHub Actions run `27828738097`: PASS.
+- GitHub Actions job `82359769929`: PASS.
+- GitHub Actions run `27829131193`: PASS.
+- GitHub Actions job `82361095081`: PASS.
+- GitHub Actions run `27830167274`: FAIL, fixed by escaping SQL LIKE patterns for `_`, `%`, and `\`.
+- GitHub Actions job `82364621109`: FAIL.
+- GitHub Actions run `27830403844`: PASS.
+- GitHub Actions job `82365417548`: PASS.
 
 ## Not Completed
 
@@ -86,14 +136,18 @@ Remote verification:
 - G2 database foundation subset passed remote PostgreSQL CI.
 - T205 is DONE, including backend fixture load, visible fixture marking, and recursive NVIDIA scenario E2E.
 - T1103/T1104/T1107/T1108 visual company workspace tasks are DONE and remote CI passed.
-- T1105/T1106/T1109 visual company workspace tasks are not started.
-- T1203 taxonomy/object-scope API is not started.
+- T1105/T1106/T1109 visual company workspace tasks are DONE and remote CI passed.
+- T1203 taxonomy/object-scope API is DONE and remote CI passed.
+- G2 is `PASS`; A026 and A027 remain open for T904/G9 gold precision evaluation under `DEFER-003`.
+- T1204 / A170 Objects and Scope navigation screen is DONE and remote CI passed.
+- T300 / A038 typed entity search is DONE and remote CI passed.
+- G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
 ## Recommended Next Step
 
-Continue G2 with a bounded company-workspace/API run:
+Continue G3 with bounded entry/management implementation:
 
-1. Start T1105/T1106/T1109 for lenses, semantic zoom, grouping, budget, and mental-map behavior.
-2. Add T1203 taxonomy/object-scope API from canonical catalogs.
-3. Keep fixture/live separation visible until live ingestion gates exist.
+1. Start T301/T302/T303 home, industry and Watchlist entry-management implementation.
+2. Keep A026/A027 open until T904/G9 real gold precision evaluation.
+3. Continue G4/T1205 only after the next G3 slice is bounded.
