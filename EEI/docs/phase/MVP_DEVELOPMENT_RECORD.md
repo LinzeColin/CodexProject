@@ -1113,3 +1113,29 @@ Acceptance status:
 Residual risks:
 
 - T405 still owns full graph/table explorer node actions; T406 still owns bounded evidence-bearing path queries.
+
+## 2026-06-19 - Phase 1 / G4 T404 Breadcrumb and browser history synchronization
+
+Status: LOCAL E2E PASS; remote CI pending
+
+Completed:
+
+- Added stable workspace attributes for current focus key and serialized focus path so browser/history assertions can compare UI state and URL state.
+- Strengthened the state-contract E2E to cover reroot browser back, browser forward, app back, full breadcrumb visibility, and clickable intermediate breadcrumb restoration.
+- Marked T404, A049, and A050 as `DONE`; A051 was already done by T401 and remains covered by state-contract URL assertions.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 21 tests.
+
+Acceptance status:
+
+- A049 is covered by full path breadcrumb assertions for `nvidia.foundry.equipment.materials` and clickable restoration to `nvidia.foundry`.
+- A050 is covered by browser `goBack`, browser `goForward`, and in-app back assertions restoring identical focus/path state.
+- A051 remains covered by URL/session path and state assertions in `tests/e2e/state-contract.spec.ts` plus the T401 API state contract.
+
+Residual risks:
+
+- Remote CI must still prove the browser-history E2E under the GitHub runner.
+- T408 still owns the critical three-reroot E2E acceptance A048.

@@ -47,8 +47,8 @@ A045,P0,reroot,Any focusable entity can become a new root,Integration/E2E,DONE
 A046,P0,reroot,"Reroot preserves time, layers, filters and scoring profile by default",E2E,DONE
 A047,P0,reroot,User can reroot with reset/default state,E2E,DONE
 A048,P0,reroot,Three consecutive reroots complete in semiconductor fixture,Critical E2E,NOT STARTED
-A049,P0,reroot,Breadcrumb contains full focus path and is clickable,E2E,NOT STARTED
-A050,P0,reroot,Browser back/forward restore the correct focus and state,E2E,NOT STARTED
+A049,P0,reroot,Breadcrumb contains full focus path and is clickable,E2E,DONE
+A050,P0,reroot,Browser back/forward restore the correct focus and state,E2E,DONE
 A051,P0,reroot,"URL serializes/restores focus, layers, direction, time, profile and filters",E2E,DONE
 A052,P0,explore,Incremental expand loads only selected direction/layers within expand budget,Integration/E2E,DONE
 A053,P0,explore,"Node actions include reroot, upstream, downstream, path, compare, pin, Watchlist and evidence",UI test,NOT STARTED

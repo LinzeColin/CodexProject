@@ -22,6 +22,12 @@ async function expectCloudState(page: Page) {
   await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-active-time", "2026-06-12");
 }
 
+async function expectWorkspacePath(page: Page, focusKey: string, path: string) {
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-focus-key", focusKey);
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-path", path);
+  await expect(page).toHaveURL(new RegExp(`path=${path.replaceAll(".", "\\.")}`));
+}
+
 test("stores subject selected node lens time filters and zoom in URL session and reload state", async ({
   page
 }) => {
@@ -62,28 +68,45 @@ test("restores identical subject state through browser back app back and breadcr
 
   await page.getByRole("button", { name: "以 Synthetic Advanced Foundry 为中心" }).click();
   await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
+  await expectWorkspacePath(page, "foundry", "nvidia.foundry");
   await page.getByRole("button", { name: "以 Synthetic Lithography Equipment Co. 为中心" }).click();
   await expect(page.getByTestId("current-focus-title")).toHaveText(
     "Synthetic Lithography Equipment Co."
   );
+  await expectWorkspacePath(page, "equipment", "nvidia.foundry.equipment");
 
   await page.goBack();
   await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
+  await expectWorkspacePath(page, "foundry", "nvidia.foundry");
 
-  await page.getByRole("button", { name: "以 Synthetic Lithography Equipment Co. 为中心" }).click();
+  await page.goForward();
   await expect(page.getByTestId("current-focus-title")).toHaveText(
     "Synthetic Lithography Equipment Co."
   );
+  await expectWorkspacePath(page, "equipment", "nvidia.foundry.equipment");
+
   await page.getByTestId("app-back").click();
   await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
+  await expectWorkspacePath(page, "foundry", "nvidia.foundry");
 
   await page.getByRole("button", { name: "以 Synthetic Lithography Equipment Co. 为中心" }).click();
   await expect(page.getByTestId("current-focus-title")).toHaveText(
     "Synthetic Lithography Equipment Co."
   );
-  await page.getByTestId("breadcrumb-subject-nvidia-0").click();
-  await expect(page.getByTestId("current-focus-title")).toHaveText("NVIDIA");
-  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-path-length", "1");
+  await page.getByRole("button", { name: "以 Synthetic Specialty Materials Co. 为中心" }).click();
+  await expect(page.getByTestId("current-focus-title")).toHaveText(
+    "Synthetic Specialty Materials Co."
+  );
+  await expectWorkspacePath(page, "materials", "nvidia.foundry.equipment.materials");
+  await expect(page.getByTestId("breadcrumb-subject-nvidia-0")).toBeVisible();
+  await expect(page.getByTestId("breadcrumb-subject-foundry-1")).toBeVisible();
+  await expect(page.getByTestId("breadcrumb-subject-equipment-2")).toBeVisible();
+  await expect(page.getByTestId("breadcrumb-subject-materials-3")).toBeVisible();
+
+  await page.getByTestId("breadcrumb-subject-foundry-1").click();
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-path-length", "2");
+  await expectWorkspacePath(page, "foundry", "nvidia.foundry");
 });
 
 test("saves versioned views restores deterministically and shows as-of change overlays", async ({

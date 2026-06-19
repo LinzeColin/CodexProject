@@ -1117,7 +1117,9 @@ export default function Home() {
       data-active-score-snapshot={ACTIVE_ANALYSIS_CONTEXT.scoreSnapshot}
       data-active-time={asOf}
       data-analysis-contract={ACTIVE_ANALYSIS_CONTEXT.contractVersion}
+      data-focus-key={focusKey}
       data-layout-grammar={WORKSPACE_LAYOUT_GRAMMAR}
+      data-path={path.join(".")}
       data-path-length={path.length}
       data-reroot-state={transitionState}
       data-selected-node={selectedNode.key}
