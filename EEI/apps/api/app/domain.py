@@ -153,6 +153,31 @@ def get_entity(entityId: UUID, repository: RepositoryDependency) -> dict[str, An
         raise translate_repository_error(exc) from exc
 
 
+@router.get("/industries")
+def list_industries(
+    repository: RepositoryDependency,
+    parent: Annotated[UUID | None, Query()] = None,
+) -> list[dict[str, Any]]:
+    return repository.list_industries(parent=parent)
+
+
+@router.get("/industries/{industryId}/landscape")
+def get_industry_landscape(
+    industryId: UUID,
+    repository: RepositoryDependency,
+    as_of: Annotated[datetime | None, Query()] = None,
+    profile: Annotated[UUID | None, Query()] = None,
+) -> dict[str, Any]:
+    try:
+        return repository.get_industry_landscape(
+            industry_id=industryId,
+            as_of=as_of,
+            profile_id=profile,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
 @router.post("/explore")
 def start_or_restore_exploration(
     payload: ExploreRequest,

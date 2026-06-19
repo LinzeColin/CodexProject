@@ -69,6 +69,50 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert relationship_catalog["actual_row_count"] == 52
     assert relationship_catalog["records"][0]["definition"]
 
+    industries_response = client.get("/v1/industries")
+    assert industries_response.status_code == 200
+    industries = industries_response.json()
+    semiconductor = next(
+        row for row in industries if row["slug"] == "semiconductors-electronics"
+    )
+    assert semiconductor["taxonomy_version"] == "v4.2.0"
+    assert semiconductor["name_zh"] == "半导体与电子系统"
+    assert semiconductor["entity_count"] >= 2
+    subindustry_response = client.get(f"/v1/industries?parent={semiconductor['id']}")
+    assert subindustry_response.status_code == 200
+    assert any(row["slug"] == "chip-design-ip" for row in subindustry_response.json())
+
+    semiconductor_landscape_response = client.get(
+        f"/v1/industries/{semiconductor['id']}/landscape"
+    )
+    assert semiconductor_landscape_response.status_code == 200
+    semiconductor_landscape = semiconductor_landscape_response.json()
+    assert semiconductor_landscape["industry"]["slug"] == "semiconductors-electronics"
+    assert semiconductor_landscape["taxonomy_version"] == "v4.2.0"
+    assert len(semiconductor_landscape["chain_stages"]) == 16
+    assert any(
+        row["relationship_count"] > 0
+        for row in semiconductor_landscape["chain_stages"]
+    )
+    assert semiconductor_landscape["bottlenecks"]
+    assert semiconductor_landscape["navigation"]["cross_industry_allowed"] is True
+    assert semiconductor_landscape["cross_industry_links"]
+    nvidia_industry_row = next(
+        row for row in semiconductor_landscape["entities"] if row["id"] == NVIDIA_ID
+    )
+    nvidia_roles = {row["role"] for row in nvidia_industry_row["industries"]}
+    assert {"primary", "secondary"} <= nvidia_roles
+    assert nvidia_industry_row["primary_industry_id"] == semiconductor["id"]
+    assert nvidia_industry_row["secondary_industry_ids"]
+    assert nvidia_industry_row["cross_industry"] is True
+
+    ai_cloud = next(row for row in industries if row["slug"] == "ai-cloud-data")
+    ai_landscape = client.get(f"/v1/industries/{ai_cloud['id']}/landscape").json()
+    assert ai_landscape["capital"]
+    software = next(row for row in industries if row["slug"] == "software-cybersecurity")
+    software_landscape = client.get(f"/v1/industries/{software['id']}/landscape").json()
+    assert software_landscape["policy"]
+
     entity_search = client.get("/v1/entities?q=NVDA&type=legal_entity&limit=5")
     assert entity_search.status_code == 200
     entity_results = entity_search.json()

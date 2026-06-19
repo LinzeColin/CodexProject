@@ -15,7 +15,7 @@
 | FUN-EXP-05 | 探索 | 所有权与控制 | P0 | DONE | PARTIAL | NOT_STARTED |
 | FUN-EXP-06 | 探索 | 政策与政府 | P0 | DONE | PARTIAL | NOT_STARTED |
 | FUN-EXP-07 | 探索 | 战略信号 | P0 | DONE | PARTIAL | NOT_STARTED |
-| FUN-EXP-08 | 探索 | 行业地图 | P1 | DONE | PARTIAL | NOT_STARTED |
+| FUN-EXP-08 | 探索 | 行业地图 | P1 | DONE | PARTIAL | PARTIAL |
 | FUN-RM-01 | 研究管理 | Watchlist | P0 | DONE | DONE | NOT_STARTED |
 | FUN-RM-02 | 研究管理 | 重要变化 | P0 | DONE | PARTIAL | NOT_STARTED |
 | FUN-RM-03 | 研究管理 | 已保存视图 | P0 | DONE | DONE | NOT_STARTED |

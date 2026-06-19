@@ -20,7 +20,7 @@ T207,G2,P0,Implement idempotent seed loader and data checks,"T205,T206","A024,A0
 T208,G2,P0,Run migration round-trip and gold quality scaffolding,T207,"A011,A026,A027",DONE
 T300,G3,P0,Implement global typed search and aliases,T208,A038,DONE
 T301,G3,P0,Implement home aggregation API,T300,"A029,A030",DONE
-T302,G3,P0,Implement industry list and landscape API,T300,"A031,A032,A033,A034",NOT STARTED
+T302,G3,P0,Implement industry list and landscape API,T300,"A031,A032,A033,A034",DONE
 T303,G3,P0,Implement Watchlist CRUD and persistence,T300,"A035,A036,A037",NOT STARTED
 T304,G3,P0,Build user-oriented home page,"T301,T302,T303","A029,A039,A040",NOT STARTED
 T305,G3,P0,Build industry landscape page,T302,"A032,A034",NOT STARTED

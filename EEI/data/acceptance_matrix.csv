@@ -29,9 +29,9 @@ A027,P0,data,Relationship precision is >=90% on at least 100 cases,Gold evaluati
 A028,P0,data,Research/source/metric/parameter registries load without malformed rows,Static validation,DONE
 A029,P0,home,"Home shows global search, industries, Watchlist, recent explorations, changes and freshness",E2E,NOT STARTED
 A030,P0,home,Home shows active scoring profile and last/next calibration status,E2E,NOT STARTED
-A031,P0,industry,Industry list is human-readable and versioned,API/UI test,NOT STARTED
+A031,P0,industry,Industry list is human-readable and versioned,API/UI test,DONE
 A032,P0,industry,"Industry page shows chain stages, subindustries, entities, bottlenecks, capital, policy and changes",E2E,NOT STARTED
-A033,P0,industry,Entities may have primary and secondary industries,API/data test,NOT STARTED
+A033,P0,industry,Entities may have primary and secondary industries,API/data test,DONE
 A034,P0,industry,Cross-industry navigation is allowed and visibly indicated,E2E,NOT STARTED
 A035,P0,watchlist,"Local-user Watchlist can create, add, remove, restore and persist items",Integration/E2E,NOT STARTED
 A036,P0,watchlist,"Watchlist supports entity, industry, theme and facility items",API test,NOT STARTED
