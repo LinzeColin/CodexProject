@@ -27,7 +27,7 @@ test("shows development status navigation with separated state classes", async (
   }
 
   await expect(page.getByTestId("status-current-gate")).toContainText("G4 / IN PROGRESS");
-  await expect(page.getByTestId("status-task-count")).toHaveText("120");
+  await expect(page.getByTestId("status-task-count")).toHaveText("130");
   await expect(page.getByTestId("status-acceptance-done")).not.toHaveText("0");
   await expect(page.getByTestId("status-open-risks")).not.toHaveText("0");
 });
