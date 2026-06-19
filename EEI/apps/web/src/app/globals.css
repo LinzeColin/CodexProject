@@ -409,6 +409,46 @@ dd {
   font-weight: 650;
 }
 
+.modelPreviewPanel {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0;
+  border: 1px solid #b9c9f5;
+  border-radius: 8px;
+  background: #f7f9ff;
+  padding: 10px 12px;
+}
+
+.modelPreviewPanel > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.modelPreviewPanel strong {
+  color: #102f66;
+  font-size: 12px;
+}
+
+.modelPreviewPanel span {
+  color: #134aa1;
+  font-size: 12px;
+  font-weight: 680;
+}
+
+.modelPreviewActions button {
+  min-height: 32px;
+  border: 1px solid #b9c9f5;
+  border-radius: 7px;
+  background: #ffffff;
+  padding: 0 10px;
+  color: #134aa1;
+  font-size: 12px;
+  font-weight: 720;
+}
+
 .searchInputRow:focus-within,
 .searchInputRow button:focus-visible,
 .searchResults button:focus-visible,

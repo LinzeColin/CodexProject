@@ -10,7 +10,7 @@ import {
   Network,
   Route
 } from "lucide-react";
-import { ACTIVE_ANALYSIS_CONTEXT } from "../analysis-contract";
+import { useAnalysisContext } from "../use-analysis-context";
 
 type IndustryKey = "semiconductors" | "ai-cloud" | "energy";
 
@@ -172,6 +172,7 @@ const landscapes: Record<IndustryKey, IndustryLandscape> = {
 const orderedIndustryKeys: IndustryKey[] = ["semiconductors", "ai-cloud", "energy"];
 
 export default function IndustriesPage() {
+  const { analysisContext } = useAnalysisContext();
   const [activeKey, setActiveKey] = useState<IndustryKey>("semiconductors");
   const [path, setPath] = useState<IndustryKey[]>(["semiconductors"]);
   const active = landscapes[activeKey];
@@ -185,12 +186,12 @@ export default function IndustriesPage() {
   return (
     <main
       className="industryWorkspace"
-      data-active-data-snapshot={ACTIVE_ANALYSIS_CONTEXT.dataSnapshot}
-      data-active-model-version={ACTIVE_ANALYSIS_CONTEXT.modelVersion}
-      data-active-profile-version={ACTIVE_ANALYSIS_CONTEXT.profileVersion}
-      data-active-score-snapshot={ACTIVE_ANALYSIS_CONTEXT.scoreSnapshot}
-      data-active-time={ACTIVE_ANALYSIS_CONTEXT.defaultAsOf}
-      data-analysis-contract={ACTIVE_ANALYSIS_CONTEXT.contractVersion}
+      data-active-data-snapshot={analysisContext.dataSnapshot}
+      data-active-model-version={analysisContext.modelVersion}
+      data-active-profile-version={analysisContext.profileVersion}
+      data-active-score-snapshot={analysisContext.scoreSnapshot}
+      data-active-time={analysisContext.defaultAsOf}
+      data-analysis-contract={analysisContext.contractVersion}
       data-testid="industry-landscape-page"
     >
       <aside className="industryRail" aria-label="行业切换">

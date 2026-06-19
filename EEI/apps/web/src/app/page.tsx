@@ -29,7 +29,12 @@ import {
   Star
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { ACTIVE_ANALYSIS_CONTEXT } from "./analysis-contract";
+import {
+  ACTIVE_ANALYSIS_CONTEXT,
+  ANALYSIS_PREVIEW_STORAGE_KEY,
+  type AnalysisContext
+} from "./analysis-contract";
+import { useAnalysisContext } from "./use-analysis-context";
 
 type NavItem = {
   name: string;
@@ -82,7 +87,9 @@ type SavedViewRecord = WorkspaceState & {
   filters: string;
   layout: string;
   modelVersion: string;
+  profileVersion: string;
   dataSnapshot: string;
+  scoreSnapshot: string;
   notes: string;
   updatedAt: string;
 };
@@ -844,7 +851,10 @@ function writeWorkspaceStateParams(params: URLSearchParams, state: WorkspaceStat
   params.set("path", state.path.join("."));
 }
 
-function createSavedView(state: WorkspaceState): SavedViewRecord {
+function createSavedView(
+  state: WorkspaceState,
+  analysisContext: AnalysisContext = ACTIVE_ANALYSIS_CONTEXT
+): SavedViewRecord {
   const normalized = normalizeWorkspaceState(state);
   return {
     ...normalized,
@@ -852,8 +862,10 @@ function createSavedView(state: WorkspaceState): SavedViewRecord {
     version: SAVED_VIEW_VERSION,
     filters: normalized.activeLens,
     layout: WORKSPACE_LAYOUT_GRAMMAR,
-    modelVersion: ACTIVE_ANALYSIS_CONTEXT.modelVersion,
-    dataSnapshot: ACTIVE_ANALYSIS_CONTEXT.dataSnapshot,
+    modelVersion: analysisContext.modelVersion,
+    profileVersion: analysisContext.profileVersion,
+    dataSnapshot: analysisContext.dataSnapshot,
+    scoreSnapshot: analysisContext.scoreSnapshot,
     notes: `${entityLabels[normalized.focusKey]} / ${normalized.activeLens} / ${normalized.asOf}`,
     updatedAt: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf
   };
@@ -876,6 +888,7 @@ function readSavedViewPayload(rawValue: string | null): SavedViewRecord | null {
 }
 
 export default function Home() {
+  const { analysisContext, applyPreview, clearPreview, isPreviewActive } = useAnalysisContext();
   const [focusKey, setFocusKey] = useState<FocusKey>("nvidia");
   const [selectedKey, setSelectedKey] = useState<NodeKey>("nvidia");
   const [path, setPath] = useState<FocusKey[]>(["nvidia"]);
@@ -998,7 +1011,7 @@ export default function Home() {
   }
 
   function saveCurrentView() {
-    const nextSavedView = createSavedView(workspaceState);
+    const nextSavedView = createSavedView(workspaceState, analysisContext);
     window.localStorage.setItem(SAVED_VIEW_STORAGE_KEY, JSON.stringify(nextSavedView));
     setSavedView(nextSavedView);
     setSavedViewStatus("saved");
@@ -1175,13 +1188,13 @@ export default function Home() {
   return (
     <main
       className="workspace"
-      data-active-data-snapshot={ACTIVE_ANALYSIS_CONTEXT.dataSnapshot}
+      data-active-data-snapshot={analysisContext.dataSnapshot}
       data-active-lens={activeLens}
-      data-active-model-version={ACTIVE_ANALYSIS_CONTEXT.modelVersion}
-      data-active-profile-version={ACTIVE_ANALYSIS_CONTEXT.profileVersion}
-      data-active-score-snapshot={ACTIVE_ANALYSIS_CONTEXT.scoreSnapshot}
+      data-active-model-version={analysisContext.modelVersion}
+      data-active-profile-version={analysisContext.profileVersion}
+      data-active-score-snapshot={analysisContext.scoreSnapshot}
       data-active-time={asOf}
-      data-analysis-contract={ACTIVE_ANALYSIS_CONTEXT.contractVersion}
+      data-analysis-contract={analysisContext.contractVersion}
       data-focus-key={focusKey}
       data-layout-grammar={WORKSPACE_LAYOUT_GRAMMAR}
       data-path={path.join(".")}
@@ -1253,11 +1266,11 @@ export default function Home() {
         <dl className="subjectStats" data-testid="home-model-status">
           <div>
             <dt>Snapshot</dt>
-            <dd>{ACTIVE_ANALYSIS_CONTEXT.dataSnapshot}</dd>
+            <dd>{analysisContext.dataSnapshot}</dd>
           </div>
           <div>
             <dt>Model</dt>
-            <dd>{homeModelStatus.profile}</dd>
+            <dd>{analysisContext.profileLabel}</dd>
           </div>
           <div>
             <dt>Budget</dt>
@@ -1273,6 +1286,28 @@ export default function Home() {
             </dd>
           </div>
         </dl>
+        <section
+          className="modelPreviewPanel"
+          data-preview-scope="workspace,graph-table,saved-view,industry-landscape"
+          data-preview-state={isPreviewActive ? "preview" : "active"}
+          data-preview-storage={ANALYSIS_PREVIEW_STORAGE_KEY}
+          data-testid="model-preview-panel"
+        >
+          <div>
+            <strong>Model preview</strong>
+            <span data-testid="model-preview-status">
+              {analysisContext.profileLabel} / {analysisContext.scoreSnapshot}
+            </span>
+          </div>
+          <div className="modelPreviewActions">
+            <button data-testid="preview-model-edit" onClick={applyPreview} type="button">
+              Preview supply-chain emphasis
+            </button>
+            <button data-testid="clear-model-preview" onClick={clearPreview} type="button">
+              Clear preview
+            </button>
+          </div>
+        </section>
         <div
           className="fixtureDisclosure"
           data-testid="fixture-disclosure"
@@ -1417,7 +1452,7 @@ export default function Home() {
           <span>{homeFreshness.status}</span>
           <span>{homeFreshness.latestRelationshipObservedAt}</span>
           <span>{homeFreshness.sourceDocumentCount} sources</span>
-          <span>{homeFreshness.coverage}</span>
+          <span>{analysisContext.dataSnapshot}</span>
         </div>
       </section>
 
@@ -1678,8 +1713,10 @@ export default function Home() {
           className="savedViewPanel"
           data-data-snapshot={savedView.dataSnapshot}
           data-model-version={savedView.modelVersion}
+          data-profile-version={savedView.profileVersion}
           data-saved-view-id={savedView.id}
           data-saved-view-version={savedView.version}
+          data-score-snapshot={savedView.scoreSnapshot}
           data-testid="saved-view-panel"
         >
           <header>
@@ -1947,15 +1984,14 @@ export default function Home() {
           <span>Live facts: disabled</span>
           <span>DB fixture notice: visible</span>
           <span data-testid="model-contract-state">
-            Model: {ACTIVE_ANALYSIS_CONTEXT.modelVersion} / Preference:{" "}
-            {ACTIVE_ANALYSIS_CONTEXT.profileVersion} / Formula:{" "}
-            {ACTIVE_ANALYSIS_CONTEXT.formulaRegistryVersion} / Parameters:{" "}
-            {ACTIVE_ANALYSIS_CONTEXT.parameterCatalogVersion} / Thresholds:{" "}
-            {ACTIVE_ANALYSIS_CONTEXT.thresholdRegistryVersion}
+            Model: {analysisContext.modelVersion} / Preference: {analysisContext.profileVersion} /
+            Formula: {analysisContext.formulaRegistryVersion} / Parameters:{" "}
+            {analysisContext.parameterCatalogVersion} / Thresholds:{" "}
+            {analysisContext.thresholdRegistryVersion}
           </span>
           <span data-testid="active-context-state">
-            Data: {ACTIVE_ANALYSIS_CONTEXT.dataSnapshot} / Score:{" "}
-            {ACTIVE_ANALYSIS_CONTEXT.scoreSnapshot} / As of: {asOf}
+            Data: {analysisContext.dataSnapshot} / Score: {analysisContext.scoreSnapshot} / As of:{" "}
+            {asOf}
           </span>
           <span data-testid="lens-state">Lens: {activeLens}</span>
           <span data-testid="zoom-state">Zoom: {semanticZoom}</span>

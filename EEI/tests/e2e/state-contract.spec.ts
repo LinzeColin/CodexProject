@@ -7,11 +7,37 @@ const expectedContext = {
   scoreSnapshot: "score-fixture-v1"
 };
 
+const expectedPreviewContext = {
+  modelVersion: "business-empire-model-v2",
+  profileVersion: "supply-chain-preview@draft",
+  dataSnapshot: "fixture-v1",
+  scoreSnapshot: "score-preview-session-v1"
+};
+
 async function expectActiveContext(target: Locator) {
   await expect(target).toHaveAttribute("data-active-model-version", expectedContext.modelVersion);
   await expect(target).toHaveAttribute("data-active-profile-version", expectedContext.profileVersion);
   await expect(target).toHaveAttribute("data-active-data-snapshot", expectedContext.dataSnapshot);
   await expect(target).toHaveAttribute("data-active-score-snapshot", expectedContext.scoreSnapshot);
+}
+
+async function expectPreviewContext(target: Locator) {
+  await expect(target).toHaveAttribute(
+    "data-active-model-version",
+    expectedPreviewContext.modelVersion
+  );
+  await expect(target).toHaveAttribute(
+    "data-active-profile-version",
+    expectedPreviewContext.profileVersion
+  );
+  await expect(target).toHaveAttribute(
+    "data-active-data-snapshot",
+    expectedPreviewContext.dataSnapshot
+  );
+  await expect(target).toHaveAttribute(
+    "data-active-score-snapshot",
+    expectedPreviewContext.scoreSnapshot
+  );
 }
 
 async function expectCloudState(page: Page) {
@@ -191,6 +217,55 @@ test("A034 visibly marks cross-industry reroot path from chips to energy", async
   await expect(page.getByTestId("breadcrumb-subject-datacenter-2")).toBeVisible();
   await expect(page.getByTestId("breadcrumb-subject-energy-3")).toBeVisible();
   await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-reroot-state", "ready");
+});
+
+test("previews model edits across loaded visual modules before global refresh", async ({
+  page
+}) => {
+  await page.goto("/");
+  await expectActiveContext(page.getByTestId("workspace-shell"));
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-preview-state",
+    "active"
+  );
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-preview-scope",
+    "workspace,graph-table,saved-view,industry-landscape"
+  );
+
+  await page.getByTestId("preview-model-edit").click();
+  await expectPreviewContext(page.getByTestId("workspace-shell"));
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-preview-state",
+    "preview"
+  );
+  await expect(page.getByTestId("model-preview-status")).toContainText("Supply chain preview");
+  await expect(page.getByTestId("model-contract-state")).toContainText(
+    "supply-chain-preview@draft"
+  );
+  await expect(page.getByTestId("active-context-state")).toContainText("score-preview-session-v1");
+
+  await page.getByTestId("save-current-view").click();
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute(
+    "data-profile-version",
+    expectedPreviewContext.profileVersion
+  );
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute(
+    "data-score-snapshot",
+    expectedPreviewContext.scoreSnapshot
+  );
+
+  await page.goto("/industries");
+  await expectPreviewContext(page.getByTestId("industry-landscape-page"));
+
+  await page.goto("/");
+  await expectPreviewContext(page.getByTestId("workspace-shell"));
+  await page.getByTestId("clear-model-preview").click();
+  await expectActiveContext(page.getByTestId("workspace-shell"));
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-preview-state",
+    "active"
+  );
 });
 
 test("saves versioned views restores deterministically and shows as-of change overlays", async ({

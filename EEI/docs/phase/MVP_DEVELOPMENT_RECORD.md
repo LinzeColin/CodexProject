@@ -1338,4 +1338,34 @@ Acceptance status:
 
 Residual risks:
 
-- T1207 still owns model-preview and saved-view persistence follow-up work in G4.
+- T1207 is completed below and awaits remote CI evidence.
+
+## 2026-06-19 - Phase 1 / G4 T1207 Model preview context propagation
+
+Status: LOCAL PASS / REMOTE CI PENDING
+
+Completed:
+
+- Added a typed shared analysis context hook with active and preview model/profile/data/score snapshots.
+- Added a visible model preview panel on the commercial-map workspace with explicit preview scope and storage contract metadata.
+- Persisted preview profile and score snapshot metadata into versioned saved-view records.
+- Propagated preview context from the home workspace to the industry landscape page through session localStorage.
+- Added an E2E contract that previews a supply-chain-emphasis model edit, saves the previewed view, navigates to `/industries`, returns to `/`, and clears the preview.
+- Marked T1207 as `DONE`; A157/A158/A178 remain `DONE` with added preview propagation evidence.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 26 tests.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions: PENDING.
+
+Acceptance status:
+
+- A157 is covered by reload/session context assertions in `tests/e2e/state-contract.spec.ts`.
+- A158 is covered by saved-view preview profile and score snapshot persistence assertions.
+- A178 is covered by cross-page active/preview context assertions on `/` and `/industries`.
+
+Residual risks:
+
+- T1207 is a local session preview contract, not a real online model editor. Real edit, activation, rollback, score recompute and model-center UI remain in T600-T604/T1208.
