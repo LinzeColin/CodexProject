@@ -385,11 +385,11 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "const weekColumns = Math.ceil((daysInYear + startWeekday) / 7)" in app_source
         and "Array.from({ length: daysInYear }" in app_source
         and "Array.from({ length: 24 }" in app_source
-        and 'className="year-trend-grid vertical-year-trend"' in app_source
+        and 'className="year-trend-grid year-comparison-trend"' in app_source
         and "startColumn" not in app_source
         and '(["day", "week", "month", "year"] as ContributionScale[])' in app_source,
         "contribution_grid_time_scales",
-        "day/week use 365/366 daily cells; month uses 24 two-year columns; year uses vertically stacked comparison cards",
+        "day/week use 365/366 daily cells; month uses 24 two-year columns; year uses side-by-side comparison cards",
         "contribution grid time-scale requirements are not represented in source",
     )
     require(

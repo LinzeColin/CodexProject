@@ -259,12 +259,13 @@ const heatStops: HeatStop[] = [
 ];
 const yearMonthHeatStops: HeatStop[] = [
   { stop: 0, rgb: [15, 17, 22] },
-  { stop: 0.14, rgb: [23, 34, 58] },
-  { stop: 0.32, rgb: [29, 63, 119] },
-  { stop: 0.52, rgb: [31, 155, 209] },
-  { stop: 0.72, rgb: [126, 224, 248] },
-  { stop: 0.88, rgb: [199, 235, 255] },
-  { stop: 1, rgb: [255, 255, 255] },
+  { stop: 0.12, rgb: [21, 32, 52] },
+  { stop: 0.28, rgb: [29, 76, 125] },
+  { stop: 0.46, rgb: [31, 143, 178] },
+  { stop: 0.64, rgb: [91, 214, 207] },
+  { stop: 0.8, rgb: [245, 200, 75] },
+  { stop: 0.92, rgb: [255, 143, 63] },
+  { stop: 1, rgb: [255, 230, 168] },
 ];
 const heatLevelAnchors = [0, 0.16, 0.34, 0.54, 0.74, 0.93] as const;
 const emptyHeatColor = "#0f1116";
@@ -1276,7 +1277,7 @@ function ContributionGrid({
           </div>
         </div>
       ) : scale === "year" ? (
-        <div className="year-trend-grid vertical-year-trend">
+        <div className="year-trend-grid year-comparison-trend">
           {periodData.yearCells.map((cell) => {
             const periodKey = String(cell.year);
             const active = selectedPeriod === periodKey;
@@ -1701,7 +1702,7 @@ function heatCellStyle(bucket: Pick<PeriodCounts, "activityScore" | "activityLev
 function yearCellStyle(bucket: Pick<PeriodCounts, "activityScore" | "activityLevel">, maxScore: number): CSSProperties {
   return {
     ...heatCellStyle(bucket, maxScore),
-    "--year-accent": heatColorForScore(bucket.activityScore, maxScore, bucket.activityLevel),
+    "--year-accent": yearHeatColorForScore(bucket.activityScore, maxScore, bucket.activityLevel),
   } as CSSProperties;
 }
 
@@ -1711,12 +1712,26 @@ function monthBarStyle(slot: Pick<PeriodCounts, "activityScore" | "activityLevel
   const ratio = maxScore > 0 ? score / maxScore : 0;
   const height = score > 0 ? Math.round(24 + Math.sqrt(ratio) * 76) : 9;
   const level = Math.max(0, Math.min(5, Math.round(slot.activityLevel)));
-  const relativeScore = maxScore > 0 ? Math.log1p(score) / Math.log1p(maxScore) : level / 5;
-  const monthIntensity = score > 0 || level > 0 ? Math.min(1, Math.max(0.08, relativeScore * 0.9 + (level / 5) * 0.1)) : 0;
+  const positiveScores = slots.map((item) => Math.max(0, item.activityScore)).filter((value) => value > 0).sort((left, right) => left - right);
+  const lowerScoreCount = positiveScores.filter((value) => value < score).length;
+  const equalScoreCount = positiveScores.filter((value) => value === score).length;
+  const rankRatio =
+    score > 0 && positiveScores.length > 1
+      ? (lowerScoreCount + Math.max(0, equalScoreCount - 1) / 2) / (positiveScores.length - 1)
+      : score > 0
+        ? 0.58
+        : 0;
+  const monthIntensity =
+    score > 0 || level > 0 ? Math.min(1, Math.max(0.08, ratio * 0.42 + rankRatio * 0.42 + (level / 5) * 0.16)) : 0;
   return {
     "--month-color": interpolateColorStops(monthIntensity, yearMonthHeatStops),
     "--month-height": `${height}%`,
   } as CSSProperties;
+}
+
+function yearHeatColorForScore(score: number, maxScore: number, fallbackLevel: number) {
+  if (score <= 0 && fallbackLevel <= 0) return emptyHeatColor;
+  return interpolateColorStops(heatIntensityForScore(score, maxScore, fallbackLevel), yearMonthHeatStops);
 }
 
 function heatColorForScore(score: number, maxScore: number, fallbackLevel: number) {
