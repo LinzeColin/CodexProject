@@ -122,6 +122,7 @@ def _cache_metadata(payload: dict[str, Any], relative_uri: str) -> dict[str, Any
         "risk_gate_count": len(payload.get("risk_gates", []) or []),
         "action_count": len(payload.get("action_queue", []) or []),
         "artifact_uri": relative_uri,
+        "command_center_read_model": _sanitize_command_center_payload(payload, relative_uri),
     }
 
 
@@ -129,6 +130,57 @@ def _evidence_summary(payload: dict[str, Any]) -> str:
     status = str(payload.get("command_status", "") or "Missing")
     reason = str(payload.get("status_reason", "") or "No status reason recorded.")
     return f"Command center status {status}: {reason}"
+
+
+def _sanitize_command_center_payload(payload: dict[str, Any], relative_uri: str) -> dict[str, Any]:
+    return {
+        "schema": "PFIOSCommandCenterReadModelV1",
+        "source_schema": str(payload.get("schema", "")),
+        "system": str(payload.get("system", "")),
+        "display_name": str(payload.get("display_name", "")),
+        "subsystem": str(payload.get("subsystem", "")),
+        "as_of": str(payload.get("as_of", "")),
+        "generated_at": str(payload.get("generated_at", "")),
+        "command_status": str(payload.get("command_status", "NeedsReview")),
+        "status_reason": str(payload.get("status_reason", "")),
+        "scorecards": _sanitize_rows(payload.get("scorecards", []), limit=12),
+        "risk_gates": _sanitize_rows(payload.get("risk_gates", []), limit=12),
+        "action_queue": _sanitize_rows(payload.get("action_queue", []), limit=12),
+        "latest_report": _sanitize_dict(payload.get("latest_report", {})),
+        "evidence_sources": _sanitize_rows(payload.get("evidence_sources", []), limit=16),
+        "runtime_summary_sources": _sanitize_rows(payload.get("runtime_summary_sources", []), limit=16),
+        "business_system_summary": _sanitize_rows(payload.get("business_system_summary", []), limit=12),
+        "source_uri": relative_uri,
+        "read_policy": "Operational Store read model; sanitized from command-center cache without private absolute paths.",
+    }
+
+
+def _sanitize_rows(rows: Any, *, limit: int) -> list[dict[str, Any]]:
+    if not isinstance(rows, list):
+        return []
+    return [_sanitize_dict(row) for row in rows[:limit] if isinstance(row, dict)]
+
+
+def _sanitize_dict(row: dict[str, Any]) -> dict[str, Any]:
+    sanitized: dict[str, Any] = {}
+    for key, value in row.items():
+        if isinstance(value, dict):
+            sanitized[str(key)] = _sanitize_dict(value)
+        elif isinstance(value, list):
+            sanitized[str(key)] = [
+                _sanitize_dict(item) if isinstance(item, dict) else _sanitize_value(item)
+                for item in value[:16]
+            ]
+        else:
+            sanitized[str(key)] = _sanitize_value(value)
+    return sanitized
+
+
+def _sanitize_value(value: Any) -> Any:
+    if isinstance(value, str):
+        if value.startswith("/Users/") or value.startswith("/private/") or value.startswith("~"):
+            return "[redacted-private-uri]"
+    return value
 
 
 def _upsert_first_action_task(

@@ -57,7 +57,14 @@ if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
 from pfi_os.approvals import StrategyApprovalRegistry
-from pfi_os.application import OperationalStore, build_homepage_summary, empty_homepage_summary, ingest_command_center_cache
+from pfi_os.application import (
+    OperationalStore,
+    build_command_center_read_model,
+    build_homepage_summary,
+    empty_command_center_read_model,
+    empty_homepage_summary,
+    ingest_command_center_cache,
+)
 from pfi_os.analysis import (
     HOTSPOT_REFRESH_TTL_SECONDS,
     HOTSPOT_RUNTIME_SUMMARY_SCHEMA,
@@ -1112,7 +1119,7 @@ def _view_key_from_target(target_en: str) -> str:
 def executive_command_center_view() -> None:
     st.subheader("总控驾驶舱")
     st.caption("聚合就绪检查、总集成审计、现金流、政策、消费、最新报告和行动队列。仅用于研究管理，不连接实盘。")
-    payload = build_command_center(project_root=ROOT, report_root=REPORT_ROOT_DIR)
+    payload = _command_center_operational_payload()
     status = str(payload.get("command_status", "NeedsReview"))
     status_label = {
         "ReadyForResearch": "可继续研究",
@@ -1164,6 +1171,16 @@ def executive_command_center_view() -> None:
         saved = write_command_center(project_root=ROOT, report_root=REPORT_ROOT_DIR, output_dir=ROOT / "data" / "commandCenter")
         st.success("已生成总控报告。")
         st.json(saved.get("outputs", {}), expanded=False)
+
+
+def _command_center_operational_payload() -> dict:
+    store = OperationalStore()
+    try:
+        store.initialize()
+        ingest_command_center_cache(store, project_root=ROOT)
+        return build_command_center_read_model(store)
+    except Exception:
+        return empty_command_center_read_model()
 
 
 def render_command_center_action_router(payload: dict) -> None:

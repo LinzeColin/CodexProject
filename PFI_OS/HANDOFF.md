@@ -64,6 +64,8 @@ Current sequence:
   public Git private/runtime/secret fixture paths.
 - Command-center latest cache ingestion into Operational Store source,
   evidence, job, and task records before Web Shell homepage summary rendering.
+- Sanitized command-center read model for the legacy Streamlit total-control
+  page; rendering is now read-only over Operational Store evidence metadata.
 - File-source ingestion adapter with checksum, provenance, public
   project-relative URI enforcement, private-source-outside-Git enforcement,
   and ephemeral runtime source rejection.
@@ -94,6 +96,7 @@ Latest focused verification for PFI-001 through PFI-004 and Phase A:
 python -m pytest tests/test_pfi_product_contracts.py -q
 python -m pytest tests/test_config.py tests/test_data.py tests/test_data_lake_manifest.py tests/test_holdings_book.py tests/test_research_bus.py tests/test_app_dashboard.py tests/test_workspace_shell.py tests/test_scripts.py -q
 python -m pytest tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py tests/visual/test_pfi_web_shell_visual_baseline.py -q
+python -m pytest tests/contract/test_phase_a_command_center_read_model.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
@@ -119,5 +122,7 @@ commands after any follow-up edits.
 
 Continue Phase A:
 
-1. Replace legacy Streamlit direct reads one vertical slice at a time.
-2. Add source ingestion adapters with checksum and provenance enforcement.
+1. Replace remaining legacy Streamlit direct reads one vertical slice at a
+   time.
+2. Prepare Phase B vertical workflow slices after the next direct-read
+   migration checkpoint.

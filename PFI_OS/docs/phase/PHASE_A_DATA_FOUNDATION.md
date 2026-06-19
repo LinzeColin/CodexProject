@@ -37,18 +37,22 @@ moving UI pages or vertical workflows onto it.
   Operational Store source, evidence, job, and task records before building
   `PFIOSHomeSummaryV1`; the Web Shell still consumes only the compact read
   model.
+- The legacy Streamlit command-center view now reads a sanitized Operational
+  Store command-center read model for display instead of directly building the
+  full command-center payload during page render.
 - File source ingestion now enforces checksum/provenance metadata, public
   project-relative URIs, private-source-outside-Git boundaries, and rejects
   ephemeral runtime files as fact sources.
 
 ## Not Done
 
-- Legacy Streamlit UI still has direct JSON/provider reads outside the new
-  Web Shell vertical slice.
+- Legacy Streamlit UI still has direct JSON/provider reads outside the Web
+  Shell and command-center vertical slices.
 - Existing legacy holdings sync and ResearchBus code is not migrated yet.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
 - Full source ingestion and vertical workflow migration are not complete.
 
 ## Next Phase A Iterations
 
-1. Replace legacy Streamlit direct reads one vertical slice at a time.
+1. Replace remaining legacy Streamlit direct reads one vertical slice at a
+   time.

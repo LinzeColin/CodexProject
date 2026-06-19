@@ -16,6 +16,10 @@ from pfi_os.application.data_home_audit import (
     audit_data_home_boundary,
     build_data_home_boundary_contract,
 )
+from pfi_os.application.command_center_read_model import (
+    build_command_center_read_model,
+    empty_command_center_read_model,
+)
 from pfi_os.application.homepage_summary import build_homepage_summary, empty_homepage_summary
 from pfi_os.application.homepage_ingestion import ingest_command_center_cache
 from pfi_os.application.repositories import (
@@ -56,11 +60,13 @@ __all__ = [
     "TaskRepository",
     "audit_data_home_boundary",
     "build_data_home_boundary_contract",
+    "build_command_center_read_model",
     "build_phase_a_data_foundation_contract",
     "build_homepage_summary",
     "default_data_home",
     "default_operational_db_path",
     "empty_homepage_summary",
+    "empty_command_center_read_model",
     "ingest_command_center_cache",
     "ingest_file_source",
     "SourceRegistry",
