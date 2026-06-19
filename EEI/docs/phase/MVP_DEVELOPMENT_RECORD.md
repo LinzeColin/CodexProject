@@ -1184,7 +1184,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G4 T406 Bounded evidence-bearing path queries
 
-Status: LOCAL STATIC PASS / REMOTE POSTGRESQL CI PENDING
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1201,6 +1201,10 @@ Verification evidence:
 - Local `make verify`: PASS.
 - Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
 - Local `git diff --check`: PASS.
+- GitHub Actions run `27840744734`: PASS.
+- GitHub Actions job `82399027153`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -1208,6 +1212,5 @@ Acceptance status:
 
 Residual risks:
 
-- Remote PostgreSQL CI is pending for the new recursive CTE.
 - T407 still owns visible truncation and inclusion sorting explanations.
 - T408 still owns the critical three-reroot E2E acceptance A048.
