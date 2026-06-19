@@ -9,8 +9,10 @@ Updated: 2026-06-19 Australia/Sydney
 ## Current Status
 
 - GitHub target: `LinzeColin/CodexProject/EEI`
-- Current gate: Phase 1 / G2 - Domain and data model
+- Current gate: Phase 1 / G3 - Entry and management
 - Gate status: IN PROGRESS
+- Previous gate: Phase 1 / G2 - Domain and data model
+- G2 status: PASS by GitHub Actions run `27828738097` plus `DEFER-003` for A026/A027 gold evaluation
 - Previous gate: Phase 1 / G1 - Repository foundation
 - G1 status: PASS by GitHub Actions run `27820777762`
 - Local EEI repo commits:
@@ -48,6 +50,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed T1204 and A170 by GitHub Actions run `27828194718`; job `82357916025` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - Added A012-A014 data quality and amount/unknown regression checks locally; A026/A027 remain open because real gold precision evaluation is not implemented.
 - Completed A012-A014 data contract checks by GitHub Actions run `27828738097`; job `82359769929` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
+- Closed G2 as `PASS` with `DEFER-003`; A026/A027 remain open for T904/G9 gold precision evaluation rather than synthetic self-grading.
 
 ## Verification Evidence
 
@@ -123,15 +126,15 @@ Remote verification:
 - T1103/T1104/T1107/T1108 visual company workspace tasks are DONE and remote CI passed.
 - T1105/T1106/T1109 visual company workspace tasks are DONE and remote CI passed.
 - T1203 taxonomy/object-scope API is DONE and remote CI passed.
-- G2 task list is complete, but release gate status remains `IN PROGRESS` because A026 and A027 require gold precision evaluation.
+- G2 is `PASS`; A026 and A027 remain open for T904/G9 gold precision evaluation under `DEFER-003`.
 - T1204 / A170 Objects and Scope navigation screen is DONE and remote CI passed.
 - G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
 ## Recommended Next Step
 
-Decide how to handle the remaining gold precision gates:
+Continue G3 with bounded entry/management implementation:
 
-1. Implement T904-style gold evaluation for A026/A027 or explicitly defer them with a governance decision.
-2. If A026/A027 are deferred, set G2 to `PASS` only with the deferral recorded.
-3. Continue G4 with T1205 Development Status screen.
+1. Start T300/T301 search and entity lookup contracts or T1206 model snapshot consistency, depending on dependency readiness.
+2. Keep A026/A027 open until T904/G9 real gold precision evaluation.
+3. Continue G4/T1205 only after the next G3 slice is bounded.

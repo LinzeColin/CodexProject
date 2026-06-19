@@ -631,3 +631,24 @@ Acceptance status:
 Residual risks:
 
 - `data/release_gate_catalog.csv` remains `G2=IN PROGRESS` while A026 and A027 remain open.
+
+## 2026-06-19 - Phase 1 / G2 gate close with gold-evaluation deferral
+
+Status: G2 PASS; G3 IN PROGRESS
+
+Completed:
+
+- Recorded `DEFER-003` for A026/A027 because entity-resolution and relationship precision require real gold evaluation and must not be satisfied by synthetic self-graded fixtures.
+- Left A026 and A027 as `NOT STARTED` in `data/acceptance_matrix.csv`.
+- Advanced `data/release_gate_catalog.csv` from `G2=IN PROGRESS` to `G2=PASS` because the explicit G2 stop condition is `Migrations+catalog validation pass` and remote CI has repeatedly passed that gate.
+- Advanced `G3` to `IN PROGRESS`.
+
+Verification evidence:
+
+- GitHub Actions run `27828738097`: PASS for strengthened A012-A014 PostgreSQL data contracts.
+- GitHub Actions run `27828895082`: PASS for the final documentation commit after A012-A014 evidence recording.
+
+Residual risks:
+
+- A026 and A027 remain P0 release-quality acceptance IDs and must be implemented by T904/G9 or an explicit later release deferral.
+- G3 implementation has not started yet.
