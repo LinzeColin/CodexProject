@@ -1879,6 +1879,379 @@ h3 {
   grid-template-rows: auto auto auto minmax(0, 1fr);
 }
 
+.ivgraph-map {
+  grid-template-rows: auto auto minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.ivgraph-workbench {
+  display: grid;
+  grid-template-columns: minmax(210px, 245px) minmax(0, 1fr) minmax(230px, 280px);
+  min-height: 0;
+  overflow: hidden;
+  border-top: 1px solid rgba(244, 241, 232, 0.08);
+  background:
+    radial-gradient(circle at 54% 46%, rgba(126, 224, 248, 0.09), transparent 36%),
+    linear-gradient(90deg, rgba(244, 241, 232, 0.035) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(244, 241, 232, 0.025) 1px, transparent 1px),
+    #080b12;
+  background-size: auto, 42px 42px, 42px 42px, auto;
+}
+
+.ivgraph-sidebar,
+.ivgraph-properties-panel {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 0;
+  overflow: hidden auto;
+  border-right: 1px solid rgba(244, 241, 232, 0.08);
+  background: rgba(12, 16, 27, 0.78);
+  padding: 12px;
+}
+
+.ivgraph-properties-panel {
+  border-right: 0;
+  border-left: 1px solid rgba(244, 241, 232, 0.08);
+}
+
+.ivgraph-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.ivgraph-stat-grid .metric {
+  min-height: 60px;
+  border-color: rgba(126, 224, 248, 0.16);
+  background: rgba(126, 224, 248, 0.055);
+}
+
+.ivgraph-card {
+  display: grid;
+  gap: 9px;
+  min-width: 0;
+  border: 1px solid rgba(126, 224, 248, 0.13);
+  border-radius: 8px;
+  background: rgba(13, 18, 30, 0.76);
+  padding: 10px;
+}
+
+.ivgraph-card-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: #dbeafe;
+  font-size: 12px;
+}
+
+.ivgraph-card-title svg {
+  flex: 0 0 auto;
+  color: #7ee8d4;
+}
+
+.ivgraph-card p {
+  margin: 0;
+  color: #96a8bb;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.ivgraph-action-row,
+.ivgraph-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.ivgraph-action-row button,
+.ivgraph-mode-grid button,
+.ivgraph-panel-section button,
+.ivgraph-search-results button {
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-radius: 7px;
+  background: rgba(244, 241, 232, 0.045);
+  color: #d9d4ca;
+}
+
+.ivgraph-action-row button,
+.ivgraph-mode-grid button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 8px;
+  font-size: 11px;
+}
+
+.ivgraph-action-row button:hover,
+.ivgraph-action-row button:focus-visible,
+.ivgraph-mode-grid button:hover,
+.ivgraph-mode-grid button:focus-visible,
+.ivgraph-mode-grid button.active,
+.ivgraph-panel-section button:hover,
+.ivgraph-panel-section button:focus-visible,
+.ivgraph-search-results button:hover,
+.ivgraph-search-results button:focus-visible {
+  border-color: rgba(126, 224, 248, 0.64);
+  background: rgba(126, 224, 248, 0.11);
+  color: #ffffff;
+  outline: none;
+}
+
+.ivgraph-style-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px auto;
+  align-items: center;
+  gap: 8px;
+  color: #b8c7d6;
+  font-size: 11px;
+}
+
+.ivgraph-style-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ivgraph-style-row i {
+  width: 20px;
+  height: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  box-shadow: 0 0 12px currentColor;
+}
+
+.ivgraph-style-row b {
+  color: #e5f6ff;
+}
+
+.ivgraph-scene-shell {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 47%, rgba(143, 211, 255, 0.16), transparent 34%),
+    radial-gradient(circle at 76% 28%, rgba(167, 139, 250, 0.11), transparent 28%),
+    #05070d;
+}
+
+.ivgraph-search {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: auto minmax(170px, 280px) auto;
+  align-items: center;
+  gap: 8px;
+  max-width: min(560px, calc(100% - 28px));
+  border: 1px solid rgba(126, 224, 248, 0.2);
+  border-radius: 10px;
+  background: rgba(8, 12, 22, 0.86);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.26);
+  padding: 8px 10px;
+}
+
+.ivgraph-search svg {
+  color: #7ee8d4;
+}
+
+.ivgraph-search input {
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 12px;
+  outline: none;
+}
+
+.ivgraph-search span {
+  color: #90a4b8;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.ivgraph-search-results {
+  position: absolute;
+  top: 58px;
+  left: 14px;
+  z-index: 5;
+  display: grid;
+  gap: 6px;
+  width: min(420px, calc(100% - 28px));
+  max-height: 240px;
+  overflow: hidden auto;
+  border: 1px solid rgba(126, 224, 248, 0.18);
+  border-radius: 10px;
+  background: rgba(8, 12, 22, 0.94);
+  padding: 8px;
+}
+
+.ivgraph-search-results button,
+.ivgraph-panel-section button {
+  display: grid;
+  gap: 2px;
+  padding: 7px 8px;
+  text-align: left;
+}
+
+.ivgraph-search-results strong,
+.ivgraph-panel-section span {
+  overflow: hidden;
+  color: #eef8ff;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ivgraph-search-results span,
+.ivgraph-panel-section em {
+  overflow: hidden;
+  color: #8fa4b8;
+  font-size: 10px;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ivgraph-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.ivgraph-background {
+  fill: url("#ivgraphCore");
+}
+
+.ivgraph-projection-ring {
+  fill: none;
+  stroke: rgba(126, 224, 248, 0.18);
+  stroke-dasharray: 4 12;
+  stroke-width: 1;
+}
+
+.ivgraph-projection-ring.secondary {
+  stroke: rgba(167, 139, 250, 0.14);
+}
+
+.ivgraph-edge-layer path {
+  fill: none;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ivgraph-node {
+  cursor: pointer;
+  outline: none;
+}
+
+.ivgraph-node-core,
+.ivgraph-node-halo,
+.ivgraph-node-outline {
+  transition:
+    r 140ms ease,
+    opacity 140ms ease,
+    stroke-width 140ms ease;
+}
+
+.ivgraph-node-outline {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 1;
+}
+
+.ivgraph-node:hover .ivgraph-node-core,
+.ivgraph-node:focus-visible .ivgraph-node-core,
+.ivgraph-node.selected .ivgraph-node-core {
+  stroke: #ffffff;
+  stroke-width: 3;
+}
+
+.ivgraph-node.selected .ivgraph-node-halo {
+  opacity: 0.34;
+}
+
+.ivgraph-gizmo {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  z-index: 4;
+  display: flex;
+  gap: 6px;
+  border: 1px solid rgba(126, 224, 248, 0.18);
+  border-radius: 999px;
+  background: rgba(8, 12, 22, 0.78);
+  padding: 6px;
+}
+
+.ivgraph-gizmo span {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(126, 224, 248, 0.08);
+  color: #dbeafe;
+  font-size: 10px;
+}
+
+.ivgraph-properties-panel h3 {
+  margin: 0;
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ivgraph-properties {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.ivgraph-properties div {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 8px;
+  border: 1px solid rgba(244, 241, 232, 0.08);
+  border-radius: 7px;
+  background: rgba(244, 241, 232, 0.04);
+  padding: 6px 8px;
+}
+
+.ivgraph-properties dt {
+  color: #8fa4b8;
+  font-size: 10px;
+}
+
+.ivgraph-properties dd {
+  margin: 0;
+  overflow: hidden;
+  color: #e5f6ff;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ivgraph-panel-section {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ivgraph-panel-section > strong {
+  color: #dbeafe;
+  font-size: 12px;
+}
+
 .timeline-control-bar {
   display: grid;
   grid-template-columns: repeat(3, 34px) minmax(150px, 1fr) minmax(150px, 1fr) auto auto;

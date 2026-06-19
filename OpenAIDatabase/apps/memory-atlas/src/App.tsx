@@ -6,9 +6,12 @@ import {
   ChevronRight,
   Cloud,
   Crosshair,
+  Database,
   Download,
+  Eye,
   FilterX,
   GitBranch,
+  Layers3,
   LayoutDashboard,
   Network,
   Orbit,
@@ -18,6 +21,8 @@ import {
   RotateCcw,
   Save,
   Search,
+  Settings,
+  Sparkles,
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
@@ -263,9 +268,9 @@ const yearMonthHeatStops: HeatStop[] = [
   { stop: 0.28, rgb: [29, 76, 125] },
   { stop: 0.46, rgb: [31, 143, 178] },
   { stop: 0.64, rgb: [91, 214, 207] },
-  { stop: 0.8, rgb: [245, 200, 75] },
-  { stop: 0.92, rgb: [255, 143, 63] },
-  { stop: 1, rgb: [255, 230, 168] },
+  { stop: 0.8, rgb: [126, 224, 248] },
+  { stop: 0.92, rgb: [167, 139, 250] },
+  { stop: 1, rgb: [218, 239, 255] },
 ];
 const heatLevelAnchors = [0, 0.16, 0.34, 0.54, 0.74, 0.93] as const;
 const emptyHeatColor = "#0f1116";
@@ -787,67 +792,207 @@ function NotionMap({
   deltaStats: DeltaStats;
   onSelectNode: (node: AtlasNode) => void;
 }) {
-  const display = useMemo(() => buildMapLayout(nodes, edges, 170), [nodes, edges]);
+  const [projectionMode, setProjectionMode] = useState<IvGraphProjection>("overview");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [privacyMode, setPrivacyMode] = useState(false);
+  const activeNode = selectedNode ?? nodes[0] ?? null;
+  const display = useMemo(
+    () => buildIvGraphLayout(nodes, edges, activeNode, projectionMode, searchQuery, 190),
+    [activeNode, edges, nodes, projectionMode, searchQuery],
+  );
+  const focusedNode = display.nodes.find((item) => item.node.id === activeNode?.id)?.node ?? display.nodes[0]?.node ?? activeNode;
+  const searchResults = useMemo(() => ivGraphSearchResults(nodes, searchQuery, 8), [nodes, searchQuery]);
+  const connectedNodes = useMemo(() => connectedNodesFor(focusedNode?.id, nodes, edges, 8), [edges, focusedNode?.id, nodes]);
+  const similarNodes = useMemo(() => similarNodesFor(focusedNode, nodes, 5), [focusedNode, nodes]);
+  const databaseRows = useMemo(() => topRows(countBy(nodes, (node) => ivDatabaseLabel(node)), 5), [nodes]);
+  const selectedDegree = focusedNode ? edges.filter((edge) => edge.source === focusedNode.id || edge.target === focusedNode.id).length : 0;
+
   return (
-    <div className="visual-workspace notion-map">
+    <div className="visual-workspace notion-map ivgraph-map">
       <div className="surface-heading compact">
         <div>
-          <p className="eyebrow">数据库关系地图</p>
-          <h2>把 Notion 式数据库关系转成主题、项目、决策、记忆的可探索地图</h2>
+          <p className="eyebrow">Notion 知识图谱 / 3D 投影 / 数据库关系</p>
+          <h2>用 IVGraph 式工作台查看页面、数据库、关系、搜索和节点属性</h2>
         </div>
-        <span>{display.nodes.length} 个节点 / {display.edges.length} 条连接</span>
+        <span>{display.nodes.length} 个节点 / {display.edges.length} 条连接 / 隐藏 {display.hiddenCount}</span>
       </div>
-      <GraphUsageStrip
-        items={[
-          { label: "主题簇", value: "外圈分组" },
-          { label: "点击节点", value: "右侧详情" },
-          { label: "适合查看", value: "项目和决策关系" },
-        ]}
-      />
       <DeltaStrip stats={deltaStats} compact />
-      <svg className="relation-canvas" viewBox="0 0 1000 620" role="img" aria-label="Notion 关系地图">
-        <defs>
-          <filter id="softGlow">
-            <feGaussianBlur stdDeviation="1.25" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        <g opacity="0.13">
-          {display.edges.map((edge) => (
-            <line
-              key={edge.id}
-              x1={edge.source.x}
-              y1={edge.source.y}
-              x2={edge.target.x}
-              y2={edge.target.y}
-              stroke={edge.color}
-              strokeWidth={Math.max(0.45, edge.weight * 1.65)}
+      <div className="ivgraph-workbench">
+        <aside className="ivgraph-sidebar" aria-label="Notion 图谱控制">
+          <div className="ivgraph-stat-grid">
+            <Metric label="页面" value={display.pageCount} />
+            <Metric label="数据库" value={databaseRows.length} />
+            <Metric label="连接" value={display.edges.length} />
+            <Metric label="焦点" value={selectedDegree} />
+          </div>
+          <section className="ivgraph-card sync-card">
+            <div className="ivgraph-card-title">
+              <Database size={15} />
+              <strong>工作区同步</strong>
+            </div>
+            <p>Memory Atlas 本地快照已连接；切换数据源或筛选后，图谱、搜索和属性面板同步更新。</p>
+            <div className="ivgraph-action-row">
+              <button type="button" onClick={() => setProjectionMode("overview")}>
+                <RefreshCw size={13} />
+                全图
+              </button>
+              <button type="button" onClick={() => setPrivacyMode((value) => !value)}>
+                <Eye size={13} />
+                {privacyMode ? "显示" : "隐私"}
+              </button>
+            </div>
+          </section>
+          <section className="ivgraph-card">
+            <div className="ivgraph-card-title">
+              <Settings size={15} />
+              <strong>投影控制</strong>
+            </div>
+            <div className="ivgraph-mode-grid">
+              {([
+                ["overview", "全图"],
+                ["database", "数据库"],
+                ["semantic", "语义"],
+                ["local", "局部"],
+              ] as Array<[IvGraphProjection, string]>).map(([mode, label]) => (
+                <button className={projectionMode === mode ? "active" : ""} key={mode} onClick={() => setProjectionMode(mode)} type="button">
+                  {label}
+                </button>
+              ))}
+            </div>
+          </section>
+          <section className="ivgraph-card database-card">
+            <div className="ivgraph-card-title">
+              <Layers3 size={15} />
+              <strong>数据库节点样式</strong>
+            </div>
+            {databaseRows.map((row, index) => (
+              <div className="ivgraph-style-row" key={row.label}>
+                <span>{row.label}</span>
+                <i style={{ background: laneColor(row.label, index) }} />
+                <b>{row.count}</b>
+              </div>
+            ))}
+          </section>
+        </aside>
+        <section className="ivgraph-scene-shell" aria-label="Notion 3D 知识图谱">
+          <div className="ivgraph-search">
+            <Search size={14} />
+            <input
+              aria-label="智能搜索 Notion 图谱节点"
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="智能搜索页面、项目、决策、主题"
+              value={searchQuery}
             />
-          ))}
-        </g>
-        {display.groups.map((group) => (
-          <g key={group.id}>
-            <circle cx={group.x} cy={group.y} r={group.r} fill={group.color} opacity="0.026" />
-            <circle cx={group.x} cy={group.y} r={group.r} fill="none" stroke={group.color} strokeDasharray="8 12" opacity="0.16" />
-          </g>
-        ))}
-        {display.nodes.map((item) => (
-          <GraphSvgNode
-            key={item.node.id}
-            item={item}
-            selected={item.node.id === selectedNode?.id}
-            onSelectNode={onSelectNode}
-          />
-        ))}
-      </svg>
-      <div className="map-legend">
-        <LegendItem color="#8fd3ff" label="主题/数据库中心" />
-        <LegendItem color="#f48fb1" label="决策信标" />
-        <LegendItem color="#7ee8d4" label="核心画像/高权重" />
-        <LegendItem color="#94a3b8" label="临时/外层信息" />
+            <span>{searchResults.length ? `${searchResults.length} 个结果` : "语义过滤"}</span>
+          </div>
+          {searchQuery.trim() ? (
+            <div className="ivgraph-search-results" aria-label="搜索结果">
+              {searchResults.map((node) => (
+                <button key={node.id} onClick={() => onSelectNode(node)} type="button">
+                  <strong>{privacyMode ? "已隐藏标题" : humanNodeDisplayTitle(node)}</strong>
+                  <span>{translateKind(node.kind)} / {ivDatabaseLabel(node)}</span>
+                </button>
+              ))}
+            </div>
+          ) : null}
+          <svg className="ivgraph-canvas" viewBox="0 0 1000 620" role="img" aria-label="Notion IVGraph 风格知识图谱">
+            <defs>
+              <filter id="ivgraphGlow">
+                <feGaussianBlur stdDeviation="2.3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <radialGradient id="ivgraphCore" cx="50%" cy="50%" r="60%">
+                <stop offset="0%" stopColor="#8fd3ff" stopOpacity="0.18" />
+                <stop offset="64%" stopColor="#0b1020" stopOpacity="0.28" />
+                <stop offset="100%" stopColor="#05070d" stopOpacity="0.96" />
+              </radialGradient>
+            </defs>
+            <rect className="ivgraph-background" x="0" y="0" width="1000" height="620" />
+            <ellipse className="ivgraph-projection-ring" cx="500" cy="315" rx="330" ry="150" />
+            <ellipse className="ivgraph-projection-ring secondary" cx="500" cy="315" rx="245" ry="104" />
+            <g className="ivgraph-edge-layer">
+              {display.edges.map((edge) => (
+                <path
+                  d={`M ${edge.source.x} ${edge.source.y} C ${edge.midX} ${edge.midY - edge.lift}, ${edge.midX} ${edge.midY + edge.lift}, ${edge.target.x} ${edge.target.y}`}
+                  key={edge.id}
+                  opacity={edge.opacity}
+                  stroke={edge.color}
+                  strokeWidth={Math.max(0.35, edge.weight * 1.35)}
+                />
+              ))}
+            </g>
+            <g className="ivgraph-node-layer">
+              {display.nodes.map((item) => {
+                const selected = item.node.id === focusedNode?.id;
+                return (
+                  <g
+                    aria-label={`${translateKind(item.node.kind)} · ${privacyMode ? "隐私模式节点" : item.node.label}`}
+                    className={`ivgraph-node${selected ? " selected" : ""}${isGraphParentNode(item.node) ? " parent-node" : ""}`}
+                    key={item.node.id}
+                    onClick={() => onSelectNode(item.node)}
+                    onKeyDown={(event) => {
+                      if (isActivationKey(event)) onSelectNode(item.node);
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    transform={`translate(${item.x} ${item.y})`}
+                  >
+                    <title>{`${translateKind(item.node.kind)} · ${privacyMode ? "隐私模式节点" : item.node.label}`}</title>
+                    <circle className="ivgraph-node-halo" r={item.r * 2.1} fill={item.color} opacity={item.opacity * 0.16} />
+                    <circle className="ivgraph-node-core" r={item.r} fill={privacyMode ? "#8fd3ff" : item.color} filter="url(#ivgraphGlow)" opacity={item.opacity} />
+                    {isGraphParentNode(item.node) ? <circle className="ivgraph-node-outline" r={item.r + 4} /> : null}
+                  </g>
+                );
+              })}
+            </g>
+          </svg>
+          <div className="ivgraph-gizmo" aria-label="3D 视角状态">
+            <span>X</span>
+            <span>Y</span>
+            <span>Z</span>
+          </div>
+        </section>
+        <aside className="ivgraph-properties-panel" aria-label="节点属性和连接">
+          <div className="ivgraph-card-title">
+            <Sparkles size={15} />
+            <strong>节点详情</strong>
+          </div>
+          {focusedNode ? (
+            <>
+              <h3>{privacyMode ? "隐私模式标题已隐藏" : humanNodeDisplayTitle(focusedNode)}</h3>
+              <dl className="ivgraph-properties">
+                <div><dt>类型</dt><dd>{translateKind(focusedNode.kind)}</dd></div>
+                <div><dt>数据库</dt><dd>{ivDatabaseLabel(focusedNode)}</dd></div>
+                <div><dt>层级</dt><dd>{normalizeMemoryTier(focusedNode.memory_tier) || "未标注"}</dd></div>
+                <div><dt>重要性</dt><dd>{focusedNode.importance || "未知"}</dd></div>
+                <div><dt>ROI</dt><dd>{formatScore(focusedNode.metrics?.roi?.leverage_score)}</dd></div>
+              </dl>
+              <div className="ivgraph-panel-section">
+                <strong>直接连接</strong>
+                {connectedNodes.map((node) => (
+                  <button key={node.id} onClick={() => onSelectNode(node)} type="button">
+                    <span>{privacyMode ? "已隐藏标题" : humanNodeDisplayTitle(node)}</span>
+                    <em>{translateKind(node.kind)}</em>
+                  </button>
+                ))}
+              </div>
+              <div className="ivgraph-panel-section">
+                <strong>相似节点</strong>
+                {similarNodes.map((node) => (
+                  <button key={node.id} onClick={() => onSelectNode(node)} type="button">
+                    <span>{privacyMode ? "已隐藏标题" : humanNodeDisplayTitle(node)}</span>
+                    <em>{ivDatabaseLabel(node)}</em>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p>暂无可显示节点。</p>
+          )}
+        </aside>
       </div>
     </div>
   );
@@ -2610,6 +2755,28 @@ interface LayoutGroup {
   color: string;
 }
 
+type IvGraphProjection = "overview" | "database" | "semantic" | "local";
+
+interface IvGraphNode extends LayoutNode {
+  z: number;
+  perspective: number;
+  opacity: number;
+}
+
+interface IvGraphEdge extends LayoutEdge {
+  midX: number;
+  midY: number;
+  lift: number;
+  opacity: number;
+}
+
+interface IvGraphLayout {
+  nodes: IvGraphNode[];
+  edges: IvGraphEdge[];
+  pageCount: number;
+  hiddenCount: number;
+}
+
 function buildFilteredSlice(atlas: MemoryAtlas, filteredMemoryNodes: AtlasNode[], filters: AtlasFilters): FilteredAtlasSlice {
   const visibleGraph = visibleGraphFor(atlas, filteredMemoryNodes);
   const visibleNodeIds = new Set(visibleGraph.nodes.map((node) => node.id));
@@ -3482,6 +3649,163 @@ function buildMapLayout(nodes: AtlasNode[], edges: AtlasEdge[], limit: number): 
     };
   });
   return { nodes: layoutNodes, edges: layoutEdges, groups };
+}
+
+function buildIvGraphLayout(
+  nodes: AtlasNode[],
+  edges: AtlasEdge[],
+  selectedNode: AtlasNode | null,
+  projectionMode: IvGraphProjection,
+  searchQuery: string,
+  limit: number,
+): IvGraphLayout {
+  const degree = degreeMap(edges);
+  const normalizedQuery = normalizeDisplayKey(searchQuery);
+  let candidates = nodes.filter((node) => ["theme", "project", "decision", "memory", "category", "tier"].includes(node.kind));
+
+  if (projectionMode === "local" && selectedNode) {
+    const localIds = expandGraphIds(selectedNode.id, edges, 2);
+    candidates = candidates.filter((node) => localIds.has(node.id) || node.id === selectedNode.id);
+  } else if (projectionMode === "database") {
+    candidates = [...candidates].sort((a, b) => ivDatabaseLabel(a).localeCompare(ivDatabaseLabel(b)) || (degree.get(b.id) ?? 0) - (degree.get(a.id) ?? 0));
+  } else if (projectionMode === "semantic") {
+    candidates = [...candidates].sort(
+      (a, b) =>
+        (b.metrics?.roi?.leverage_score ?? 0) - (a.metrics?.roi?.leverage_score ?? 0) ||
+        humanThemeLabel(a).localeCompare(humanThemeLabel(b)),
+    );
+  } else {
+    candidates = [...candidates].sort((a, b) => (degree.get(b.id) ?? 0) - (degree.get(a.id) ?? 0));
+  }
+
+  if (normalizedQuery) {
+    candidates = candidates.filter((node) => ivGraphNodeMatchesQuery(node, normalizedQuery));
+  }
+
+  if (selectedNode && !candidates.some((node) => node.id === selectedNode.id)) {
+    candidates = [selectedNode, ...candidates];
+  }
+
+  const displayNodes = candidates.slice(0, limit);
+  const count = Math.max(1, displayNodes.length);
+  const layoutNodes = displayNodes.map((node, index): IvGraphNode => {
+    const clusterSeed = clusterIndex(node);
+    const databaseSeed = stableUnit(ivDatabaseLabel(node), "ivgraph-database");
+    const baseAngle = projectionMode === "database" ? databaseSeed * Math.PI * 2 : (index / count) * Math.PI * 2;
+    const angle = baseAngle + clusterSeed * 0.19 + stableUnit(node.id, "ivgraph-angle") * 0.36;
+    const baseRing = node.kind === "theme" || node.kind === "category" || node.kind === "tier" ? 118 : node.kind === "project" ? 184 : node.kind === "decision" ? 238 : 292;
+    const localOffset = (stableUnit(node.id, "ivgraph-radius") - 0.5) * 72;
+    const z =
+      projectionMode === "database"
+        ? (node.kind === "theme" || node.kind === "category" || node.kind === "tier" ? 0.78 : node.kind === "project" ? 0.42 : stableUnit(node.id, "ivgraph-z") * 1.35 - 0.58)
+        : stableUnit(`${node.id}:${projectionMode}`, "ivgraph-z") * 2 - 1;
+    const perspective = 0.72 + ((z + 1) / 2) * 0.42;
+    const ring = Math.max(40, baseRing + localOffset);
+    const yFlatten = 0.52 + perspective * 0.18;
+    return {
+      node,
+      x: 500 + Math.cos(angle) * ring * perspective,
+      y: 312 + Math.sin(angle) * ring * yFlatten - z * 46,
+      r: Math.max(4.5, nodeRadius(node, degree.get(node.id) ?? 0) * (0.72 + perspective * 0.38)),
+      color: nodeColor(node),
+      label: shortNodeLabel(node, 16),
+      degree: degree.get(node.id) ?? 0,
+      z,
+      perspective,
+      opacity: Math.min(0.98, Math.max(0.28, 0.48 + perspective * 0.42)),
+    };
+  });
+  const byId = new Map(layoutNodes.map((node) => [node.node.id, node]));
+  const layoutEdges = edges
+    .map((edge): IvGraphEdge | null => {
+      const source = byId.get(edge.source);
+      const target = byId.get(edge.target);
+      if (!source || !target) return null;
+      const midX = (source.x + target.x) / 2;
+      const midY = (source.y + target.y) / 2;
+      const depth = (source.z + target.z) / 2;
+      return {
+        id: edge.id,
+        source,
+        target,
+        weight: edge.weight,
+        color: edge.kind === "belongs_to_theme" ? target.color : source.color,
+        midX,
+        midY,
+        lift: 18 + Math.abs(depth) * 38 + stableUnit(edge.id, "ivgraph-edge") * 18,
+        opacity: Math.min(0.32, Math.max(0.045, 0.07 + edge.weight * 0.1 + ((source.opacity + target.opacity) / 2) * 0.12)),
+      };
+    })
+    .filter((edge): edge is IvGraphEdge => Boolean(edge))
+    .sort((a, b) => a.opacity - b.opacity)
+    .slice(0, 560);
+  return {
+    nodes: layoutNodes.sort((a, b) => a.z - b.z),
+    edges: layoutEdges,
+    pageCount: displayNodes.filter((node) => node.kind === "memory").length,
+    hiddenCount: Math.max(0, candidates.length - displayNodes.length),
+  };
+}
+
+function ivGraphNodeMatchesQuery(node: AtlasNode, normalizedQuery: string): boolean {
+  const haystack = normalizeDisplayKey(`${node.label} ${node.statement ?? ""} ${node.category ?? ""} ${humanThemeLabel(node)} ${ivDatabaseLabel(node)}`);
+  return haystack.includes(normalizedQuery);
+}
+
+function ivGraphSearchResults(nodes: AtlasNode[], query: string, limit: number): AtlasNode[] {
+  const normalizedQuery = normalizeDisplayKey(query);
+  if (!normalizedQuery) return [];
+  return nodes
+    .filter((node) => ivGraphNodeMatchesQuery(node, normalizedQuery))
+    .sort((a, b) => (b.metrics?.roi?.leverage_score ?? 0) - (a.metrics?.roi?.leverage_score ?? 0))
+    .slice(0, limit);
+}
+
+function connectedNodesFor(nodeId: string | undefined, nodes: AtlasNode[], edges: AtlasEdge[], limit: number): AtlasNode[] {
+  if (!nodeId) return [];
+  const nodeMap = new Map(nodes.map((node) => [node.id, node]));
+  const neighbors = new Map<string, number>();
+  for (const edge of edges) {
+    if (edge.source === nodeId) neighbors.set(edge.target, Math.max(neighbors.get(edge.target) ?? 0, edge.weight));
+    if (edge.target === nodeId) neighbors.set(edge.source, Math.max(neighbors.get(edge.source) ?? 0, edge.weight));
+  }
+  return Array.from(neighbors.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([id]) => nodeMap.get(id))
+    .filter((node): node is AtlasNode => Boolean(node))
+    .slice(0, limit);
+}
+
+function similarNodesFor(node: AtlasNode | null | undefined, nodes: AtlasNode[], limit: number): AtlasNode[] {
+  if (!node) return [];
+  const database = ivDatabaseLabel(node);
+  const tier = normalizeMemoryTier(node.memory_tier);
+  return nodes
+    .filter((candidate) => candidate.id !== node.id)
+    .map((candidate) => {
+      const score =
+        (ivDatabaseLabel(candidate) === database ? 4 : 0) +
+        (candidate.category === node.category ? 3 : 0) +
+        (normalizeMemoryTier(candidate.memory_tier) === tier ? 2 : 0) +
+        (candidate.visual?.cluster && candidate.visual.cluster === node.visual?.cluster ? 2 : 0) +
+        (candidate.metrics?.roi?.leverage_score ?? 0);
+      return { candidate, score };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((item) => item.candidate);
+}
+
+function ivDatabaseLabel(node: AtlasNode): string {
+  if (node.kind === "theme") return "主题库";
+  if (node.kind === "project") return "项目库";
+  if (node.kind === "decision") return "决策库";
+  if (node.kind === "category") return "分类库";
+  if (node.kind === "tier") return "层级库";
+  const theme = humanThemeLabel(node);
+  if (theme && theme !== "记忆") return compactThemeLabel(theme);
+  return humanCategoryLabel(node.category);
 }
 
 function buildObsidianLayout(

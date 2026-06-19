@@ -190,7 +190,13 @@ Current visualization modes:
   controls. Filter chips clear individual filters without mutating the memory
   database; theme focus only changes the current browser view.
 - Galaxy: Three.js scene. WebGL 正常时不叠加 HTML 点层，并使用不透明 WebGL 背景和逐帧清屏，避免 2D 残影；WebGL 内部程序化星云纹理负责旋臂、核心辉光、尘埃带和星云云团，避免退回只有光点的点云；只有 WebGL fallback 才启用可点击点层。Galaxy 支持 hover 最近星体预览、点击选中后相机自动飞近并聚焦、关联边高亮、关联邻居节点脉冲高亮、右上角视角重置和缩放按钮；hover 只做预览，点击才同步右侧 Inspector。聚焦后必须使用局部邻域布局：高权重邻居进入内环 primary layer，次级邻居进入外环 secondary layer；高连接主题节点只显示 Top 局部邻居和有限焦点边线，其余显示为折叠数量，避免一次性拉出过多边线。选中节点后，画布边缘显示内环邻居小型详情卡，卡片包含标签、层级/分类、权重排名，并可点击跳转到对应邻居节点。
-- Notion Map: project/document nodes linked through atlas edges. 顶部保留简短状态条，说明当前图谱按主题簇、节点详情和项目/决策关系读取。
+- Notion Map: IVGraph-style Notion knowledge-graph workbench. It keeps Memory
+  Atlas data local while presenting a Notion-like workspace graph with a left
+  sync/control panel, 3D projected node-link scene, smart search, projection
+  controls, database node styling, privacy mode, right-side page properties,
+  direct connections, and similar-node discovery. It must remain visually close
+  to a 3D Notion graph workflow without copying IVGraph brand assets or
+  proprietary UI pixels.
 - ROI Dashboard: memories sorted by `metrics.roi.leverage_score`. It must show
   synchronized mini-bar visual summaries for level assets, topic categories, and
   recommended actions so the page is not just numeric cards plus a list.
@@ -280,7 +286,10 @@ Real Codex local data sync:
   that runs every Monday 09:00 local time, rebuilds the Atlas snapshot, commits
   the redacted Codex-derived data, and pushes to GitHub.
 
-Notion Map 的图内节点不渲染文字标签；详情通过 title、aria 和 Inspector 查看。
+Notion Map 的图内节点不渲染文字标签；详情通过 title、aria 和 Inspector 查看，
+并通过搜索结果、右侧节点详情、
+直接连接和相似节点面板查看。Notion Map 必须保留 IVGraph 式 3D 投影工作台结构：
+左侧同步/控制/数据库样式，中间 3D 图谱和搜索，右侧页面属性与关系发现。
 Obsidian Graph 按 Obsidian Graph View 的文字淡出阈值显示节点标签：默认保持克制，
 缩放、悬停、选中或高连接节点才显示标签，同时通过 hover 邻接高亮和 Inspector 保留
 具体信息入口。记忆节点标签统一显示为 `层级 · 主题 · 关键词`，关键词不能重复层级或

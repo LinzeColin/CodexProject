@@ -64,6 +64,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     atlas_path = repo_root / "data/derived/visualization/memory_atlas.json"
     atlas_source = atlas_path.read_text(encoding="utf-8") if atlas_path.exists() else ""
 
+    notion_map = function_block(app_source, "NotionMap", "RoiDashboard")
     graph_node = function_block(app_source, "GraphSvgNode", "Metric")
     timeline_view = function_block(app_source, "TimelineView", "ContributionGrid")
     contribution_grid = function_block(app_source, "ContributionGrid", "SearchReview")
@@ -520,6 +521,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "#ff9f7a" not in atlas_source
         and "255, 209, 102" not in css_source
         and "255, 209, 102" not in galaxy_source
+        and "245, 200, 75" not in app_source
+        and "255, 143, 63" not in app_source
         and "#ffe6a3" not in galaxy_source,
         "memory_atlas_avoids_yellow_primary_palette",
         "Memory Atlas UI, galaxy renderer, and generated visualization data avoid yellow/orange primary accents and use the blue-forward palette",
@@ -668,6 +671,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         "<text" not in graph_node
+        and "<text" not in notion_map
         and ".graph-node-label" not in app_source
         and ".graph-node-label" not in css_source
         and "isGraphParentNode(item.node)" in graph_node
@@ -678,12 +682,45 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "className=\"graph-node-halo\"" in graph_node
         and "className=\"graph-node-core\"" in graph_node
         and graph_node.count("<circle") == 2
-        and "stdDeviation=\"1.25\"" in app_source
-        and '<g opacity="0.13">' in app_source
+        and "id=\"ivgraphGlow\"" in notion_map
+        and "stdDeviation=\"2.3\"" in notion_map
+        and "className=\"ivgraph-node-halo\"" in notion_map
+        and "className=\"ivgraph-node-core\"" in notion_map
         and ".graph-node.parent-node .graph-node-core" in css_source,
         "graph_nodes_have_no_internal_text_labels",
         "Notion map graph nodes keep the picture clean: no internal text labels; details stay in title, aria, and Inspector",
         "Notion graph nodes may still render internal text labels or may lack title/aria/detail affordances",
+    )
+    require(
+        checks,
+        "ivgraph-map" in notion_map
+        and "ivgraph-workbench" in notion_map
+        and "ivgraph-sidebar" in notion_map
+        and "ivgraph-scene-shell" in notion_map
+        and "ivgraph-properties-panel" in notion_map
+        and "ivgraph-search" in notion_map
+        and "ivgraph-search-results" in notion_map
+        and "ivgraph-mode-grid" in notion_map
+        and "projectionMode" in notion_map
+        and "privacyMode" in notion_map
+        and "工作区同步" in notion_map
+        and "投影控制" in notion_map
+        and "数据库节点样式" in notion_map
+        and "节点详情" in notion_map
+        and "直接连接" in notion_map
+        and "相似节点" in notion_map
+        and "function buildIvGraphLayout" in app_source
+        and "type IvGraphProjection" in app_source
+        and "function ivGraphSearchResults" in app_source
+        and "function connectedNodesFor" in app_source
+        and "function similarNodesFor" in app_source
+        and ".ivgraph-workbench" in css_source
+        and ".ivgraph-canvas" in css_source
+        and ".ivgraph-properties-panel" in css_source
+        and ".ivgraph-gizmo" in css_source,
+        "notion_ivgraph_workbench_ready",
+        "Notion Map is implemented as an IVGraph-style 3D knowledge-graph workbench with controls, search, properties, links, and similar-node discovery",
+        "Notion Map is missing the IVGraph-style workbench, projection controls, search, node details, or 3D graph surface",
     )
     require(
         checks,
@@ -770,6 +807,11 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "详情通过 title、aria 和 Inspector 查看" in readme
         and "Obsidian Graph 按 Obsidian Graph View 的文字淡出阈值显示节点标签" in readme
         and "hover 邻接高亮" in readme
+        and "IVGraph-style Notion knowledge-graph workbench" in readme
+        and "3D projected node-link scene" in readme
+        and "smart search" in readme
+        and "privacy mode" in readme
+        and "直接连接和相似节点面板" in readme
         and "层级 · 主题 · 关键词" in readme
         and "Focus - Connectivity" in readme
         and "图谱设置必须可折叠" in readme
