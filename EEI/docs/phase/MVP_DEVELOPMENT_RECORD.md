@@ -1404,7 +1404,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G5 T1209 Prototype parity smoke test
 
-Status: LOCAL PASS / REMOTE CI PENDING
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1419,7 +1419,10 @@ Verification evidence:
 - Local `.venv/bin/uv run python scripts/validate_prototype_parity.py`: PASS; canonical hash `7f06f96c917ff14fc42c94de09b0e5f89f622a22a44a0dd64da3941429486719`.
 - Local `make verify`: PASS.
 - Local `git diff --check`: PASS.
-- GitHub Actions: PENDING.
+- GitHub Actions run `27844984873`: PASS.
+- GitHub Actions job `82412132613`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 

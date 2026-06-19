@@ -25,7 +25,7 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - Latest GitHub implementation commit proven by CI:
-  - `f4f5eb9` test: add EEI global context consistency E2E
+  - `b5a9f5b` test: add EEI prototype parity validator
 
 ## Completed
 
@@ -212,6 +212,12 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27844479321` passed; job `82410608346` proved T1208 remotely.
 - 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
 - 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `.venv/bin/uv run python scripts/validate_prototype_parity.py` passed after T1209 with canonical hash `7f06f96c917ff14fc42c94de09b0e5f89f622a22a44a0dd64da3941429486719`.
+- 2026-06-19 update: local `make verify` passed after T1209.
+- 2026-06-19 update: local `git diff --check` passed after T1209.
+- 2026-06-19 update: GitHub Actions run `27844984873` passed; job `82412132613` proved T1209 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 
 Remote verification:
 
@@ -306,6 +312,8 @@ Remote verification:
 - GitHub Actions job `82408058091`: PASS.
 - GitHub Actions run `27844479321`: PASS.
 - GitHub Actions job `82410608346`: PASS.
+- GitHub Actions run `27844984873`: PASS.
+- GitHub Actions job `82412132613`: PASS.
 
 ## Not Completed
 
@@ -340,7 +348,7 @@ Remote verification:
 - T1114-T1117 / A161-A166 are DONE and remote CI passed; accessible graph-equivalent table fields, keyboard/focus/target assertions, non-color evidence labels, and UI copy lint passed local E2E plus `make verify`.
 - T1207 / A157-A158/A178 is DONE and remote CI passed; model preview context now propagates across the home workspace, saved-view metadata, and `/industries`, with local E2E 26/26 plus `make verify`.
 - T1208 / A178 is DONE and remote CI passed; the active model/profile/data/score snapshot E2E now covers `/`, `/industries`, `/objects-scope` and `/development-status`, with serial local E2E 26/26 plus `make verify`.
-- T1209 / A176 is DONE locally and awaits verification; prototype parity validation now checks index/standalone byte identity, canonical hash, required views, DOM anchors and stale JS/CSS references.
+- T1209 / A176 is DONE and remote CI passed; prototype parity validation now checks index/standalone byte identity, canonical hash, required views, DOM anchors and stale JS/CSS references.
 - G4/G5 remain open because saved-view API persistence, visual regression/performance suites and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -348,7 +356,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Finish T1209 validation, commit, remote CI, and evidence recording.
+1. Start T1210 GitHub branch/CODEOWNERS/catalog-check governance as the next bounded slice.
 2. Keep T1118/T1119 visual regression and performance suites separate in G5.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.
