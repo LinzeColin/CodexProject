@@ -1,0 +1,224 @@
+{
+  "schema_version": "memory_atlas_data_source_registry.v1",
+  "contract_version": "canonical_memory_event.v1",
+  "purpose": "Register every Memory Atlas data source before ingestion so future agents can add platform data without changing the visualization core.",
+  "canonical_event_contract": {
+    "required_fields": [
+      "source_id",
+      "record_id",
+      "occurred_at",
+      "record_type",
+      "title",
+      "summary",
+      "topics",
+      "sensitivity",
+      "memory_tier",
+      "importance",
+      "confidence",
+      "dedupe_key"
+    ],
+    "optional_fields": [
+      "source_label",
+      "source_kind",
+      "actor_summary",
+      "project_refs",
+      "decision_refs",
+      "behavior_metrics",
+      "agent_use",
+      "risk_flags",
+      "opportunity_flags",
+      "proposal_ref"
+    ],
+    "allowed_memory_tiers": [
+      "核心画像",
+      "一般",
+      "临时"
+    ],
+    "allowed_importance": [
+      "高",
+      "中",
+      "低"
+    ],
+    "privacy_contract": {
+      "public_snapshot_policy": "redacted_summary_only",
+      "raw_payload_policy": "never_commit_raw_platform_exports_or_full_messages_to_github",
+      "secret_policy": "secret_ref_only_with_local_authorized_resolver",
+      "writeback_policy": "proposal_only_with_history_and_git_rollback",
+      "mock_policy": "planned_sources_must_not_create_fake_nodes_or_activity"
+    }
+  },
+  "sources": [
+    {
+      "id": "memory_atlas",
+      "label": "ChatGPT",
+      "platform": "openai_export_derived_memory",
+      "status": "active",
+      "description": "ChatGPT / OpenAI export 派生的长期记忆、项目索引、决策日志、时间线和对话记录摘要。",
+      "record_types": [
+        "active_memory",
+        "candidate_memory",
+        "decision",
+        "project_context",
+        "timeline_event"
+      ],
+      "ingestion_status": "active_redacted_derived_data",
+      "expected_minimal_fields": [
+        "id",
+        "date",
+        "statement",
+        "memory_tier",
+        "category",
+        "importance",
+        "validity",
+        "confidence",
+        "sensitivity"
+      ],
+      "agent_use": [
+        "personalization",
+        "rag",
+        "timeline",
+        "decision_recall",
+        "human_review"
+      ],
+      "privacy_level": "private_redacted_derived",
+      "raw_payload_policy": "derived_memory_records_only",
+      "writeback_policy": "proposal_only"
+    },
+    {
+      "id": "codex",
+      "label": "Codex",
+      "platform": "codex_local_derived_behavior",
+      "status": "active",
+      "description": "真实 Codex session、工具调用、偏好信号和 agent personalization 建议的脱敏派生摘要。",
+      "record_types": [
+        "codex_session_summary",
+        "daily_activity",
+        "agent_recommendation",
+        "behavior_signal"
+      ],
+      "ingestion_status": "active_real_local_redacted_summary",
+      "expected_minimal_fields": [
+        "session_id",
+        "day",
+        "message_count",
+        "tool_call_count",
+        "topics",
+        "preference_signals"
+      ],
+      "agent_use": [
+        "agent_personalization",
+        "workflow_improvement",
+        "behavior_analysis",
+        "tool_usage_analysis"
+      ],
+      "privacy_level": "private_redacted_derived",
+      "raw_payload_policy": "no_raw_transcripts_or_source_files",
+      "writeback_policy": "proposal_only"
+    },
+    {
+      "id": "wechat",
+      "label": "微信数据（计划接入）",
+      "platform": "wechat",
+      "status": "planned",
+      "description": "未来接入真实微信导出或授权本地派生摘要，用于联系人、社群、沟通习惯、机会线索和长期关系图谱分析；当前不包含真实数据。",
+      "record_types": [
+        "message_summary",
+        "contact_interaction_summary",
+        "group_interaction_summary",
+        "favorite_summary",
+        "service_event_redacted"
+      ],
+      "ingestion_status": "planned_no_real_data",
+      "expected_minimal_fields": [
+        "source_id",
+        "record_id",
+        "occurred_at",
+        "record_type",
+        "title",
+        "summary",
+        "topics",
+        "sensitivity",
+        "dedupe_key"
+      ],
+      "agent_use": [
+        "relationship_memory",
+        "communication_pattern_analysis",
+        "opportunity_discovery",
+        "follow_up_recommendations"
+      ],
+      "privacy_level": "private_or_sensitive_redacted_derived",
+      "raw_payload_policy": "no_raw_messages_no_media_no_plaintext_credentials",
+      "writeback_policy": "proposal_only"
+    },
+    {
+      "id": "xiaohongshu",
+      "label": "小红书数据（计划接入）",
+      "platform": "xiaohongshu",
+      "status": "planned",
+      "description": "未来接入真实小红书内容、收藏、互动或授权本地派生摘要，用于兴趣图谱、审美偏好、内容策略、消费线索和品牌机会分析；当前不包含真实数据。",
+      "record_types": [
+        "post_summary",
+        "saved_note_summary",
+        "comment_interaction_summary",
+        "topic_interest_signal",
+        "creator_or_brand_signal"
+      ],
+      "ingestion_status": "planned_no_real_data",
+      "expected_minimal_fields": [
+        "source_id",
+        "record_id",
+        "occurred_at",
+        "record_type",
+        "title",
+        "summary",
+        "topics",
+        "sensitivity",
+        "dedupe_key"
+      ],
+      "agent_use": [
+        "taste_profile",
+        "content_strategy",
+        "consumer_interest_analysis",
+        "brand_and_investment_opportunity_discovery"
+      ],
+      "privacy_level": "private_redacted_derived",
+      "raw_payload_policy": "no_raw_exports_no_private_messages_no_plaintext_credentials",
+      "writeback_policy": "proposal_only"
+    },
+    {
+      "id": "douyin",
+      "label": "抖音数据（计划接入）",
+      "platform": "douyin",
+      "status": "planned",
+      "description": "未来接入真实抖音观看、收藏、搜索、互动或授权本地派生摘要，用于注意力分布、兴趣迁移、内容消费、趋势发现和机会分析；当前不包含真实数据。",
+      "record_types": [
+        "watch_interest_summary",
+        "saved_video_summary",
+        "search_topic_summary",
+        "interaction_summary",
+        "creator_or_trend_signal"
+      ],
+      "ingestion_status": "planned_no_real_data",
+      "expected_minimal_fields": [
+        "source_id",
+        "record_id",
+        "occurred_at",
+        "record_type",
+        "title",
+        "summary",
+        "topics",
+        "sensitivity",
+        "dedupe_key"
+      ],
+      "agent_use": [
+        "attention_analysis",
+        "interest_shift_detection",
+        "trend_discovery",
+        "content_and_investment_opportunity_discovery"
+      ],
+      "privacy_level": "private_redacted_derived",
+      "raw_payload_policy": "no_raw_exports_no_private_messages_no_plaintext_credentials",
+      "writeback_policy": "proposal_only"
+    }
+  ]
+}

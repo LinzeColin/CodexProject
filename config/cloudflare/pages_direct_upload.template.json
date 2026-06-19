@@ -1,0 +1,44 @@
+{
+  "template_kind": "memory_atlas_cloudflare_pages_direct_upload",
+  "project_name": "openai-memory-atlas",
+  "source": {
+    "repo_root": ".",
+    "publish_dir": "apps/memory-atlas/dist",
+    "snapshot": "data/derived/visualization/memory_atlas.json"
+  },
+  "build": {
+    "commands": [
+      "python3 scripts/build_memory_atlas_data.py --database-dir . --output data/derived/visualization/memory_atlas.json",
+      "npm ci --prefix apps/memory-atlas",
+      "npm run build --prefix apps/memory-atlas",
+      "python3 scripts/audit_memory_atlas_release.py --publish-dir apps/memory-atlas/dist",
+      "python3 scripts/audit_memory_atlas_acceptance.py --publish-dir apps/memory-atlas/dist",
+      "python3 scripts/preflight_cloudflare_pages_access.py --publish-dir apps/memory-atlas/dist"
+    ]
+  },
+  "deploy": {
+    "authorized_command": "npx wrangler pages deploy apps/memory-atlas/dist --project-name openai-memory-atlas",
+    "requires_explicit_user_authorization": true,
+    "must_not_upload": [
+      "OpenAI-export.zip",
+      "chatgpt_memory_vault_codex_pack.zip",
+      ".local_keys/",
+      ".env",
+      "cookies",
+      "sessions",
+      "auth.json",
+      "data/processed/indexes/memory_index.sqlite",
+      "data/memory/active/active_memory.jsonl",
+      "plaintext secrets"
+    ]
+  },
+  "post_deploy": {
+    "expected_hostname": "openai-memory-atlas.pages.dev",
+    "access_required": true,
+    "verify": [
+      "open hostname in a fresh browser session and confirm Cloudflare Access challenge appears before app content",
+      "authenticate as allowed user and confirm Memory Atlas loads /memory_atlas.json",
+      "run a publish-directory release audit against the deployed artifact source before every redeploy"
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "template_kind": "memory_atlas_cloudflare_access_self_hosted_application",
+  "application": {
+    "name": "Memory Atlas",
+    "type": "self_hosted_public_hostname",
+    "hostname_placeholder": "memory-atlas.example.com",
+    "pages_hostname_placeholder": "openai-memory-atlas.pages.dev",
+    "session_duration": "24h",
+    "app_launcher_visible": false,
+    "instant_auth": true
+  },
+  "policy": {
+    "name": "Memory Atlas owner allowlist",
+    "action": "allow",
+    "include": [
+      {
+        "selector": "email",
+        "value_placeholder": "owner@example.com"
+      }
+    ],
+    "exclude": [],
+    "require": [],
+    "deny_by_default": true,
+    "must_not_use_selectors": [
+      "everyone",
+      "emails_ending_in:*",
+      "bypass"
+    ]
+  },
+  "agent_access": {
+    "default": "deny",
+    "finance_or_trading_agents": "only add if they need the redacted graph; plaintext secrets stay local and require explicit authorization",
+    "real_broker_payment_or_trade_actions": "fail_closed_without_concrete_user_approval"
+  },
+  "review_gate": {
+    "requires_explicit_user_authorization": true,
+    "requires_pages_deploy_success": true,
+    "requires_access_challenge_verification": true,
+    "requires_allowed_user_load_test": true
+  }
+}

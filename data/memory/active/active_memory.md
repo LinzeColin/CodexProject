@@ -1,0 +1,162 @@
+# Active Memory
+
+Generated from the full memory-analysis flow. All three tiers are backed up; retrieval weight controls personalization strength.
+
+## 核心画像
+
+- Count: 6
+
+- [high/高/长期] 复杂工程、研究或系统任务应输出当前阶段状态表，按严格高标准推进，并以可验证、可维护、可落地的交付为目标；部署、本地运行、PDF 报告等只在任务明确需要时作为交付要求。
+- [high/高/长期] 研究和决策支持任务优先使用公开、合规、授权、可验证的信息来源，避免依赖未授权或不可审计来源。
+- [high/高/长期] 用户长期关注 AI 时代对社会、工作方式、沟通、人类能力边界和个人突破路径的影响；讨论这类问题时应先做深度研究，再输出结构化机会、风险和行动建议。
+- [high/高/长期] 如果具备联网能力，涉及最新事实、官方文档、行业报告、论文、政策、价格、API 或高风险决策时，必须先检索权威来源再回答。
+- [high/高/长期] 默认交互方式应优先使用编号选择题、多选矩阵、默认推荐项、少量必要填空、当前步骤状态表和下一步 A/B/C，避免让用户大量自由文本输入。
+- [high/高/长期] 如果当前环境不具备联网或外部验证能力，必须明确标注“待外部验证”，不要把未验证信息说成确定事实。
+
+## 重要中长期
+
+- Count: 57
+
+- [medium/中/项目结束前] codex 5h的usage和weekly usage有联系吗，比如5h还有的情况下weekly没有了，那还能用codex吗
+- [medium/中/半年] 详细专业全面深度讲解workflow, loop, skill
+- [medium/中/项目结束前] 把我的codex dev变成codex能安装的skill
+- [medium/中/项目结束前] 我的codex有多少个agent
+- [medium/中/项目结束前] codex中side chat是建立在main chat下的吗，还是独立的new chat
+- [medium/中/项目结束前] 这是我目前codex token的使用情况，有什么办法能降低上下文压力但是又要确保逻辑和工作的一贯性持续性稳定性记忆能力，还有其他能节省token usage的办法吗
+- [medium/中/项目结束前] 以前我看过一个报告,说人类社会人类群体在不同方向的研究进度,就像是一个圆,只不过这个圆是有凸有凹的。意思就是说,比如说人类群体作为一个整体,这个社会它在某个方向进展的多,发育的好,研究的多的话,就是熟练技术点点的多的话,那么它就会突出去一块。然后一方面就是说,Codex它给了每个个人一个自由发挥的空间,它会产生大量的迭代,大量的重复性,创造性工具。然后这一个现象也会改变社会,改变社会的一个那个组成,然后技能框架,技术点、方方面面的一些东西,然后特别是会影响整个这个技术源的一个现状。我想问的问题就是说,我如何在用Codex,然后在现在这个社会背景下,去突破我个人的一个源,然后再如何用我个人的一…
+- [medium/低/长期] 然后在进行的一个思考过程中,我发现就是人最困难的一个点就是沟通,因为如果我和AI沟通,其实就是我单方面的一个输出,我不太需要担心往来情绪,然后AI听到我的一些感受。但是我和人之间,我是需要会顾及我的限制,顾及我说的话会不会让他感觉到备受冲击,那会不会有冒犯,会不会我把对方惹生气,惹情绪了,或者怎么样子了,那我要考虑很多,但是我对AI就不用考虑这些,我觉得这是一个很好的点,但是我也觉得这是一个,因为毕竟我们现在还处于一个90%以上,依旧处于人与人主动主要联系的一个社会,我们不可能断掉和人的社会,但是我发现这是我的一个缺点,那么关于这个点的话,那我们就单独的来说,我应该怎么样去注意,当然我肯定是…
+- [medium/中/项目结束前] 为什么我用codex写的程序总是不能满足我的需求，在我的要求下
+- [medium/中/项目结束前] 我想让codex能每天自动运行某些程序去收集汇总更新精简升级优化完善长期记忆，自我优化，功能升级，挖掘能更适应我的要求和标准
+- [medium/中/项目结束前] 怎么部署codex cli
+- [medium/中/项目结束前] 轻量版学习节奏，考虑我codex开发压力、公司工作压力、软开学习安排、学校学习压力，合理安排我的时间，产品经理和软开的学习都允许你给我发邮件通知我学习，过程中逐步引导我推进并走到目标预期，按着你的checklist，study plan准备详细专业全面深度带着我成长
+- [medium/中/半年] 用户希望在多步骤任务中持续看到当前环节和步骤；该偏好已由核心画像中的阶段状态表规则覆盖。
+- [medium/中/项目结束前] 21:45:31 Info [REDACTED:phone:e903d257b3]T22:00:00.000Z | EVA OS Codex Prompt 2：Lifecycle v2 安全复核与修补
+- [medium/中/项目结束前] 21:45:31 Info [REDACTED:phone:b60518d709]T10:30:00.000Z | Codex Dev 低压推进｜任务包/代码阅读 30 分钟
+- [medium/中/半年] 我可以怎么充分利用这些数据呢？我想搭建一个系统，就和你了解到我的codex中的内容，通过导入数据自动生产回转窑动态运行数据报告，我们可以根据开发流程Task Pack, Run Contract等，丰富需求明确内容，然后逐步完善应该给codex的文件资料包
+- [medium/中/项目结束前] 21:45:31 Info [REDACTED:phone:c91d7c5e3d]T22:00:00.000Z | EVA OS Codex Prompt 1：Lifecycle v2 初始化
+- [medium/中/项目结束前] 怎么部署本地ai，offline codex，offline chatgpt
+- [medium/中/项目结束前] 技术看你和codex的需求，其他需求需要在探索其他板块过程中逐步发现完善
+- [medium/中/项目结束前] 21:45:31 Info [REDACTED:phone:32dfbd0b53]T22:00:00.000Z | EVA OS Codex Prompt v3：Dashboard、PDF 报告与 Task Pack
+- [medium/中/项目结束前] 回转窑动态测量调整是用户的重要长期项目目标，需要分阶段学习计划、步骤状态和高标准材料支持，但只在相关任务中高优先级召回。
+- [medium/低/长期] 不要一次性交付太多东西，给我dashboard, daily update email push就行
+- [medium/中/项目结束前] 这个不是给codex 的开发task pack，是你要引领我打成我的目标的study plan和material pack，修改你的下一步。就和codex, PM, Architecturer study plan / dashboard是一样的，
+- [medium/中/项目结束前] 这个不是给codex 的开发task pack，是你要引领我打成我的目标的study plan和material pack，修改你的下一步
+- [medium/中/项目结束前] 回转窑学习计划需要 Notion dashboard 和早晚 Nitrosend 推送；触发格式为“开始 回转窑 W1D1”时应按 study plan workflow 推进。
+- [medium/中/项目结束前] 把ACCT5925 Group Activity 2.1 - The reporting frameworks (GRI& SASB)整理为 Notion 可直接复制或pure text格式发我
+- [medium/中/项目结束前] 我需要一个能让codex做到这个目的的skill
+- [medium/中/项目结束前] 我应该怎么生存manifest_detailed.txt或folder file structure path,给你做一套“Codex 需求转工程规格模板,给 Codex 下任务的高标准 prompt 模板”
+- [medium/中/项目结束前] codex设置pack
+- [medium/中/项目结束前] codex如何使用https://github.com/microsoft/markitdown
+- [medium/中/项目结束前] 用户需要把学习计划、需求清单、边界要求和标准目的整理成稳定的 ChatGPT/Nitrosend 邮件推进 workflow prompt。
+- [medium/高/长期] 我决定放在notion中做本地数据架构库，数据不要日文名和英文名，我是做数据分析用的，要最全最新最深度的信息，不考虑剧透层级，不要静态图。更新要求后做长期维护深度研究的数据分析库
+- [medium/中/半年] # ChatGPT Nitrosend workflow
+- [medium/中/项目结束前] 合并条线“codex”和“codex官方能力边界”，合并后再和“prompt engineering”合并，合计8周，需要达到各自领域的top1%。
+- [medium/中/项目结束前] 已连接。发件人为该项目名称，LLM Agent Study Project
+- [medium/中/项目结束前] Lenovo/Windows/XiaoXin、Obsidian/Notion 属于独立于 AI Study Project 的 System Study Project，应单独安排 4 周学习计划并按 study plan/Nitrosend workflow 推进。
+- [medium/中/项目结束前] 用户正在整理 PM、架构师、Codex、回转窑相关学习计划、需求清单、边界要求和标准目的。
+- [medium/中/项目结束前] - 如果进入 Codex Dev 流程，必须按：需求确认 -> 外部研究 -> PDF 报告 -> Codex Task Pack -> ZIP 交付 的顺序设计。
+- [medium/中/项目结束前] 我已经连接好了nitrosend，邮件标题为AI Study W0xD0x (PM PE Architecturer Kiln Codex)
+- [medium/中/项目结束前] LLM Agent Study Project 和 System Study Project、AI Study Project是互相独立的，不要干涉修改污染其余的项目，A，新建独立 LLM Agent Study Project 排程，不覆盖旧项目。
+- [medium/中/项目结束前] 继续推进确保彻底完成，本项目BSG Study Project和其余所有Study Project都是互相独立的，不要干涉修改污染，本项目发件人为BSG Study Project.
+- [medium/中/项目结束前] 此外回转窑软件/系统等可以作为作为 PM、架构、Codex 的统一实战场景
+- [medium/中/项目结束前] 详细专业全面深度讲解什么是ainative含研发生命周期的系统，如何用codex搭建
+- [medium/中/半年] 给我一套可以直接给codex的package，让他能直接运行，确保你提供的workflow是完整的能闭环的系统
+- [medium/中/项目结束前] 分析一下2026world cup fifa 6月13日加拿大的赛事，在澳洲平台tab上你推荐哪几个bet，从概率从大到小排序，对双份球队从详细专业全面深度和各策略、开源模型等角度全面分析
+- [medium/中/项目结束前] 分析一下2026world cup fifa 6月14日瑞士卡塔尔的赛事，在澳洲平台tab上你推荐哪几个bet，从概率从大到小排序，对双份球队从详细专业全面深度和各策略、开源模型等角度全面分析
+- [medium/中/项目结束前] 分析一下2026world cup fifa 6月15日澳大利亚土耳其的赛事，在澳洲平台tab上你推荐哪几个bet，从概率从大到小排序，对双份球队从详细专业全面深度和各策略、开源模型等角度全面分析
+- [medium/中/项目结束前] 分析一下2026world cup fifa 6月12日韩国的赛事，在澳洲平台tab上你推荐哪几个bet，从概率从大到小排序
+- [medium/中/项目结束前] 可以按你的这个方案我们来继续走codex dev流程，丰富明确目的结果标准，需求，边界，交付和运行方式
+- [medium/中/项目结束前] 分析一下2026world cup fifa 6月15日日本netherlands的赛事，在澳洲平台tab上你推荐哪几个bet，从概率从大到小排序，对双份球队从详细专业全面深度和各策略、开源模型等角度全面分析
+- [medium/中/项目结束前] 分析一下2026world cup fifa 6月14日海地苏格兰的赛事，在澳洲平台tab上你推荐哪几个bet，从概率从大到小排序，对双份球队从详细专业全面深度和各策略、开源模型等角度全面分析
+- [medium/中/项目结束前] 分析一下2026world cup fifa 6月15日德国的赛事，在澳洲平台tab上你推荐哪几个bet，从概率从大到小排序，对双份球队从详细专业全面深度和各策略、开源模型等角度全面分析
+- [medium/中/项目结束前] 分析一下2026world cup fifa 6月13日美国的赛事，在澳洲平台tab上你推荐哪几个bet，从概率从大到小排序，对双份球队从详细专业全面深度和各策略、开源模型等角度全面分析
+- [medium/中/项目结束前] 详细专业全面深度告诉我一般分析足球赛事、fifa等常用的下注分析策略有哪些
+- [medium/中/项目结束前] 完整codex可以用的taskpack
+- [medium/中/项目结束前] 不自动写入 ChatGPT Memory
+- [medium/中/半年] 把 B Phase 和 C Phase 组合成一个稳定、可维护、可审计的长期个人记忆系统。
+
+## 一般短期
+
+- Count: 215
+
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=52785f56159818a5。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=52785f56159818a5
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=ebf476a06918e6e3
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=ebf476a06918e6e3。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=9a43279462731529
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=9a43279462731529。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=505e74c757ee60f1。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=d676a8ab30a2ad87。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=d27c95f0984774d3。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=3890b6874dd5894d。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=5fdb2509b87c7347
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=16975c09334343a0。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=0901bf34154d74d2
+- [low/中/长期] 所以就這個邏輯 隨便了打電話打到他那裏去 這證明我們控制不了,這是假通的行為 當他說假通電話 他可以選擇報也可以選擇不報 不報的話自己撕個通告,把這個合同給委託出去,你也不知道 或者說他不撕個通告 我就說我現在不再跟你搞了,你別跟我打電話 那你能怎麼辦?
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=dab920f9c50ed0f1。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=1df7812b091f3f36。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=826e68357ff38395
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=2648d2aa9beb7e0d。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=6d7708cd0441ee00
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=d676a8ab30a2ad87
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=5fdb2509b87c7347。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=1b7b7bbccf55f33e。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=16975c09334343a0
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=25092b3c8a8b7ae2
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=496c6a4b1e38e80a。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=1301565de5518417。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=6d7708cd0441ee00。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=e526d919c0072231
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=496c6a4b1e38e80a
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=1301565de5518417
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=e526d919c0072231。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=2648d2aa9beb7e0d
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=d27c95f0984774d3
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=1df7812b091f3f36
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=826e68357ff38395。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=505e74c757ee60f1
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=9406b59385ef0c2d。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=1b7b7bbccf55f33e
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=aa4dc57689bdaeb7
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=9406b59385ef0c2d
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=0901bf34154d74d2。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=aa4dc57689bdaeb7。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=35b527ea6578308c。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/中/半年] 公司内部的沟通不太流畅 然后比如说我们施工从头到尾的一个环节是 搜标 招标投标中标 然后再签订合同 再谈进场时间 进场前的准备工作 提交技术方案 然后提交人员资料 购买保险 提交公司资质 在施工前准备工作做完之后 我们就开始进场 进场之后安全培训 然后再施工 然后施工这有分两种情况 第一种简单的 就是直接你一个项目搞完了 你就可以直接走后续的 验收结算 离场 开发票 回款的流程 如果你是复杂的合同 比如说交叉作业或者怎么样的 那么你就是阶段性完工 属于你有是阶段性完工 阶段性 验收阶段性 结算 但是他是在整个项目走完之后 他才会到开票和回款的一个流程 然后目前他任意环节 现场负责人都面临一个…
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=dab920f9c50ed0f1
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=35b527ea6578308c
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=3890b6874dd5894d
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=25092b3c8a8b7ae2。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/高/长期] 将“技术报告/巡检”做成可售标准包、把大工程的“材料采购/替甲方采购”做成代垫采购服务、出售高价值服务“年包/月包”的预付点检、锁定固定小额“订阅式”服务不可行
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=815f989bdd19d25e
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=815f989bdd19d25e。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=c6c52b253335ee22
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=8215def8f1c54ca7
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=c6c52b253335ee22。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=79da8c5e80f5ae9a
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=8215def8f1c54ca7。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=79da8c5e80f5ae9a。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=be0e3eb3a692a45d
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=be0e3eb3a692a45d。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=01a7df75fe787465
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=eb01ec9c44662361
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=5768041861a4a626。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=692b250943a143c1。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=eb01ec9c44662361。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=89852e799d85e2f8。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=5768041861a4a626
+- [low/低/临时] - 优先使用显式传入的 weights
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=01a7df75fe787465。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=76e849e99b89221a。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=692b250943a143c1
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=89852e799d85e2f8
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=18b50e4bfefcc461
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=18b50e4bfefcc461。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=91e35861151ae035。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=91e35861151ae035
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=73552703982b1975
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=ad037ce85718e73e。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=9b67ee59fdfb5441。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 短期/敏感资料已脱敏备份；redacted_source_hash=73552703982b1975。原始内容仅保留在本地加密归档引用中，不提升为核心画像。
+- [low/低/临时] 检测到临时或敏感内容，已避免写入长期记忆；redacted_source_hash=9b67ee59fdfb5441
+- 另有 135 条已写入 `active_memory.jsonl`。

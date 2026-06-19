@@ -1,0 +1,16 @@
+{
+  "schema_version": "memory_atlas.cloudflare_live_evidence.v1",
+  "deployment_url": "https://openai-memory-atlas.pages.dev",
+  "git_commit": "<git commit deployed>",
+  "cloudflare_pages_project": "openai-memory-atlas",
+  "access_hostname": "<protected hostname>",
+  "allowed_email": "<allowed user email>",
+  "verified_at": "<ISO-8601 timestamp>",
+  "operator": "<authorized operator>",
+  "access_challenge_verified": true,
+  "allowed_user_app_load_verified": true,
+  "memory_atlas_json_fetch_verified": true,
+  "published_artifact_audited": true,
+  "no_raw_sensitive_artifacts_verified": true,
+  "notes": "No tokens, cookies, API keys, account IDs, or secrets belong in this evidence file."
+}

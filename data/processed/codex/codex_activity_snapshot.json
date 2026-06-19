@@ -1,0 +1,108 @@
+{
+  "abort_count": 49,
+  "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
+  "day_count": 15,
+  "error_event_count": 0,
+  "generated_at": "2026-06-17T21:18:55Z",
+  "message_count": 48461,
+  "range_end": "2026-06-17",
+  "range_start": "2026-06-03",
+  "recommendation_counts": {
+    "memory_added": 0,
+    "memory_current": 5,
+    "memory_deleted": 0,
+    "memory_modified": 5,
+    "meta_added": 0,
+    "meta_current": 2,
+    "meta_deleted": 0,
+    "meta_modified": 2
+  },
+  "schema_version": "codex_activity_snapshot.v1",
+  "session_count": 317,
+  "source": "real_codex_local_data",
+  "tool_call_count": 168761,
+  "top_tools": [
+    {
+      "count": 72195,
+      "name": "function_call_output"
+    },
+    {
+      "count": 56674,
+      "name": "exec_command"
+    },
+    {
+      "count": 11712,
+      "name": "apply_patch"
+    },
+    {
+      "count": 11712,
+      "name": "custom_tool_call_output"
+    },
+    {
+      "count": 8674,
+      "name": "write_stdin"
+    },
+    {
+      "count": 2961,
+      "name": "update_plan"
+    },
+    {
+      "count": 1110,
+      "name": "js"
+    },
+    {
+      "count": 476,
+      "name": "tool_search_call"
+    },
+    {
+      "count": 442,
+      "name": "web_search_call"
+    },
+    {
+      "count": 410,
+      "name": "_fetch_file"
+    },
+    {
+      "count": 367,
+      "name": "automation_update"
+    },
+    {
+      "count": 190,
+      "name": "_create_file"
+    }
+  ],
+  "top_topics": [
+    {
+      "count": 3052,
+      "label": "Codex 本地数据 / agent 工作流"
+    },
+    {
+      "count": 2459,
+      "label": "高质量交付 / 验证 / CI"
+    },
+    {
+      "count": 2446,
+      "label": "安全边界 / secret / 权限"
+    },
+    {
+      "count": 1456,
+      "label": "GitHub 备份 / durable state"
+    },
+    {
+      "count": 1134,
+      "label": "前端交互 / Three.js / Dashboard"
+    },
+    {
+      "count": 1072,
+      "label": "金融 / trading / 风险边界"
+    },
+    {
+      "count": 533,
+      "label": "长期记忆数据库 / RAG"
+    },
+    {
+      "count": 426,
+      "label": "Memory Atlas / 记忆可视化"
+    }
+  ]
+}

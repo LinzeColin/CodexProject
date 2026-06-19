@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Memory Atlas icon">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#213778"/>
+      <stop offset="46%" stop-color="#111a3c"/>
+      <stop offset="100%" stop-color="#070912"/>
+    </radialGradient>
+    <linearGradient id="orbit" x1="170" x2="850" y1="230" y2="790">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="52%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#f472b6"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1024" height="1024" rx="224" fill="url(#bg)"/>
+  <path d="M192 710C340 830 640 814 802 636C930 496 836 286 602 236C398 192 214 300 194 466"
+        fill="none" stroke="url(#orbit)" stroke-width="34" stroke-linecap="round" opacity=".9"/>
+  <path d="M240 352C388 238 646 250 784 398C890 512 806 696 608 746C420 794 248 720 210 578"
+        fill="none" stroke="#38bdf8" stroke-width="14" stroke-linecap="round" opacity=".48"/>
+  <path d="M300 606L438 442L566 578L716 378" fill="none" stroke="#e0f2fe" stroke-width="28"
+        stroke-linecap="round" stroke-linejoin="round" opacity=".92" filter="url(#glow)"/>
+  <g fill="#f8fafc" filter="url(#glow)">
+    <circle cx="300" cy="606" r="42"/>
+    <circle cx="438" cy="442" r="34"/>
+    <circle cx="566" cy="578" r="38"/>
+    <circle cx="716" cy="378" r="46"/>
+  </g>
+  <g fill="#7dd3fc" opacity=".95">
+    <circle cx="194" cy="280" r="8"/>
+    <circle cx="834" cy="280" r="11"/>
+    <circle cx="804" cy="744" r="8"/>
+    <circle cx="306" cy="802" r="10"/>
+    <circle cx="512" cy="208" r="7"/>
+    <circle cx="664" cy="820" r="6"/>
+  </g>
+  <circle cx="512" cy="512" r="104" fill="none" stroke="#ffffff" stroke-width="10" opacity=".18"/>
+  <circle cx="512" cy="512" r="152" fill="none" stroke="#67e8f9" stroke-width="7" opacity=".14"/>
+</svg>
