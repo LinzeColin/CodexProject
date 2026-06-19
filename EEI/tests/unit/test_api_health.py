@@ -4,6 +4,7 @@ from fastapi.testclient import TestClient
 
 from apps.api.app.db_health import check_database
 from apps.api.app.main import app
+from apps.api.app.settings import get_settings
 
 
 def test_live_health_contains_product_identity() -> None:
@@ -25,6 +26,20 @@ def test_ready_health_requires_database_configuration(monkeypatch) -> None:
     payload = response.json()
     assert payload["status"] == "not_ready"
     assert payload["checks"]["database"] == "not_configured"
+
+
+def test_settings_reads_database_url_at_call_time(monkeypatch) -> None:
+    monkeypatch.setenv("DATABASE_URL", "postgresql://eei:test@localhost:5432/eei")
+
+    assert get_settings().database_url == "postgresql://eei:test@localhost:5432/eei"
+
+
+def test_domain_api_fails_closed_without_database(monkeypatch) -> None:
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    response = TestClient(app).get("/v1/home")
+
+    assert response.status_code == 503
+    assert response.json()["detail"] == "DATABASE_URL is required for domain API endpoints"
 
 
 def test_database_health_can_pass_with_select_one() -> None:

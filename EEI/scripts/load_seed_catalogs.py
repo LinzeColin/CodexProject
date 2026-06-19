@@ -3,9 +3,11 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import json
 from pathlib import Path
 
 from db_tools import ROOT, connect_database
+from psycopg.types.json import Jsonb
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -227,6 +229,89 @@ def load_research_universe(connection: object) -> int:
     return len(rows)
 
 
+def load_default_scoring_profile(connection: object) -> int:
+    profile_path = ROOT / "config/model_profiles/balanced-v2.json"
+    threshold_path = ROOT / "config/thresholds/default-v2.json"
+    profile = json.loads(profile_path.read_text(encoding="utf-8"))
+    thresholds = json.loads(threshold_path.read_text(encoding="utf-8"))
+    model_key = profile["model_version"]
+    version = int(profile["version"])
+    model_row = connection.execute(
+        """
+        INSERT INTO scoring_models(model_key, version, name, formula, input_schema, status)
+        VALUES (%s, %s, %s, %s, %s, 'active')
+        ON CONFLICT (model_key, version) DO UPDATE SET
+          name = EXCLUDED.name,
+          formula = EXCLUDED.formula,
+          input_schema = EXCLUDED.input_schema,
+          status = 'active'
+        RETURNING id
+        """,
+        (
+            model_key,
+            version,
+            profile["name"],
+            Jsonb(profile),
+            Jsonb(
+                {
+                    "schema_version": profile["schema_version"],
+                    "components": list(profile["weights"].keys()),
+                    "component_weights": profile["component_weights"],
+                }
+            ),
+        ),
+    ).fetchone()
+    profile_row = connection.execute(
+        """
+        INSERT INTO scoring_profiles(namespace, profile_key, name, is_system_default)
+        VALUES ('system', %s, %s, true)
+        ON CONFLICT (namespace, profile_key) DO UPDATE SET
+          name = EXCLUDED.name,
+          is_system_default = true
+        RETURNING id
+        """,
+        (profile["profile_key"], profile["name"]),
+    ).fetchone()
+    connection.execute(
+        """
+        UPDATE scoring_profile_versions
+        SET active = false
+        WHERE profile_id = %s
+        """,
+        (profile_row[0],),
+    )
+    connection.execute(
+        """
+        INSERT INTO scoring_profile_versions(
+          profile_id, model_id, version, weights, thresholds, half_lives,
+          missing_value_policy, reason, active
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, true)
+        ON CONFLICT (profile_id, version) DO UPDATE SET
+          model_id = EXCLUDED.model_id,
+          weights = EXCLUDED.weights,
+          thresholds = EXCLUDED.thresholds,
+          half_lives = EXCLUDED.half_lives,
+          missing_value_policy = EXCLUDED.missing_value_policy,
+          reason = EXCLUDED.reason,
+          active = true
+        """,
+        (
+            profile_row[0],
+            model_row[0],
+            version,
+            Jsonb(profile["weights"]),
+            Jsonb(thresholds),
+            Jsonb(profile["half_life_days"]),
+            profile["missing_value_policy"],
+            "Seeded from config/model_profiles/balanced-v2.json for MVP default profile.",
+        ),
+    )
+    record_seed_run(connection, "default_scoring_profile", profile_path, 1)
+    record_seed_run(connection, "default_threshold_profile", threshold_path, 1)
+    return 1
+
+
 def main() -> int:
     with connect_database() as connection:
         counts = {
@@ -235,6 +320,7 @@ def main() -> int:
             "industries": load_industries(connection),
             "supply_chain_stages": load_supply_chain_stages(connection),
             "research_universe": load_research_universe(connection),
+            "default_scoring_profiles": load_default_scoring_profile(connection),
         }
     print("Seed catalogs loaded:")
     for name, count in counts.items():

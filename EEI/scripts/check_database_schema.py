@@ -25,6 +25,13 @@ REQUIRED_TABLES = {
     "supply_chain_stages",
     "company_research_universe",
     "seed_runs",
+    "exploration_steps",
+    "watchlist_items",
+    "scoring_profiles",
+    "scoring_profile_versions",
+    "scoring_runs",
+    "score_results",
+    "changes",
 }
 
 SEED_EXPECTATIONS = {
@@ -33,6 +40,9 @@ SEED_EXPECTATIONS = {
     "industries": 26,
     "supply_chain_stages": 16,
     "company_research_universe": 140,
+    "scoring_models": 1,
+    "scoring_profiles": 1,
+    "scoring_profile_versions": 1,
 }
 
 FIXTURE_EXPECTATIONS = {
@@ -121,9 +131,46 @@ def main() -> int:
                 raise RuntimeError(
                     "Seeded research universe/fixtures must not create live entity facts"
                 )
+            active_profile_count = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM scoring_profile_versions
+                    WHERE active = true
+                    """,
+                )
+            )
+            weight_sum = float(
+                scalar(
+                    connection,
+                    """
+                    SELECT COALESCE(sum((value)::numeric), 0)
+                    FROM scoring_profile_versions spv,
+                         jsonb_each_text(spv.weights)
+                    WHERE spv.active = true
+                    """,
+                )
+            )
+            calibration_cadence_violations = int(
+                scalar(connection, "SELECT count(*) FROM calibration_runs WHERE cadence_days <> 14")
+            )
+            if active_profile_count != 1:
+                raise RuntimeError(
+                    f"Expected exactly one active scoring profile, found {active_profile_count}"
+                )
+            if abs(weight_sum - 1.0) > 0.0001:
+                raise RuntimeError(
+                    f"Active scoring profile weights must sum to 1.0, found {weight_sum}"
+                )
+            if calibration_cadence_violations:
+                raise RuntimeError("Calibration cadence must remain fixed at 14 days")
             payload["seed_counts"] = seed_counts | {
                 "p0_research_universe": p0_count,
                 "live_entities": live_entity_count,
+                "active_scoring_profiles": active_profile_count,
+                "active_profile_weight_sum": round(weight_sum, 4),
+                "calibration_cadence_violations": calibration_cadence_violations,
             }
 
         if args.expect_fixtures:
