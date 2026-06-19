@@ -25,7 +25,7 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - Latest GitHub implementation commit proven by CI:
-  - `b7a3ad0` feat: add EEI accessibility and copy lint contracts
+  - `2493ce2` feat: add EEI model preview context
 
 ## Completed
 
@@ -199,6 +199,12 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27839493483` passed; job `82395103164` proved T404 remotely.
 - 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
 - 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts` passed 26 tests after T1207 model preview propagation.
+- 2026-06-19 update: local `make verify` passed after T1207.
+- 2026-06-19 update: local `git diff --check` passed after T1207.
+- 2026-06-19 update: GitHub Actions run `27843659754` passed; job `82408058091` proved T1207 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 
 Remote verification:
 
@@ -289,6 +295,8 @@ Remote verification:
 - GitHub Actions job `82403504484`: PASS.
 - GitHub Actions run `27842880134`: PASS.
 - GitHub Actions job `82405633120`: PASS.
+- GitHub Actions run `27843659754`: PASS.
+- GitHub Actions job `82408058091`: PASS.
 
 ## Not Completed
 
@@ -321,7 +329,7 @@ Remote verification:
 - T408 / A048 is DONE and remote CI passed; `tests/e2e/state-contract.spec.ts` now has a dedicated critical three-reroot E2E ending at `nvidia.foundry.equipment.materials`, and local E2E plus `make verify` passed.
 - T409 / A034 is DONE and remote CI passed; the workspace now visibly marks cross-industry reroot paths, and `tests/e2e/state-contract.spec.ts` covers `nvidia.cloud.datacenter.energy` with 24 passing local E2E tests plus `make verify`.
 - T1114-T1117 / A161-A166 are DONE and remote CI passed; accessible graph-equivalent table fields, keyboard/focus/target assertions, non-color evidence labels, and UI copy lint passed local E2E plus `make verify`.
-- T1207 / A157-A158/A178 is DONE locally; model preview context now propagates across the home workspace, saved-view metadata, and `/industries`, and awaits `make verify` plus remote CI evidence.
+- T1207 / A157-A158/A178 is DONE and remote CI passed; model preview context now propagates across the home workspace, saved-view metadata, and `/industries`, with local E2E 26/26 plus `make verify`.
 - G4 remains open because saved-view API persistence, visual regression/performance suites, and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -329,7 +337,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Finish T1207 validation, commit, remote CI, and evidence recording.
+1. Start T1208 global model/data version consistency as the next bounded governance slice.
 2. Keep T1118/T1119 visual regression and performance suites separate in G5.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.

@@ -1342,7 +1342,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G4 T1207 Model preview context propagation
 
-Status: LOCAL PASS / REMOTE CI PENDING
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1358,7 +1358,10 @@ Verification evidence:
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 26 tests.
 - Local `make verify`: PASS.
 - Local `git diff --check`: PASS.
-- GitHub Actions: PENDING.
+- GitHub Actions run `27843659754`: PASS.
+- GitHub Actions job `82408058091`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
