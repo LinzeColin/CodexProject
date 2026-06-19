@@ -876,7 +876,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G3 State history, saved views, timeline and active context
 
-Status: LOCAL PASS; remote CI pending
+Status: T1110/T1111/T1112/T1113/T1201/T1206 PASS; G3 PASS; G4 IN PROGRESS
 
 Completed:
 
@@ -898,6 +898,10 @@ Verification evidence:
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS.
 - Local `make verify`: PASS.
 - Local `git diff --check`: PASS.
+- GitHub Actions run `27835479352`: PASS.
+- GitHub Actions job `82382357217`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -913,4 +917,4 @@ Residual risks:
 - Saved views are local browser persistence only; production `/v1/saved-views` create/share/export remains future work.
 - Timeline uses synthetic fixture snapshots; real snapshot comparison and change_events API remain future work.
 - Model online edit, preview, activation, rollback, score recomputation, and operation-log UI remain future work.
-- G3 remote CI still needs to prove this batch under GitHub Actions before the gate is closed.
+- G4 remains open for recursive exploration, live context, model preview propagation, governance/status screens, accessibility/list equivalents, and visual regression/performance checks.

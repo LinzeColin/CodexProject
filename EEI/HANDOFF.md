@@ -9,8 +9,10 @@ Updated: 2026-06-19 Australia/Sydney
 ## Current Status
 
 - GitHub target: `LinzeColin/CodexProject/EEI`
-- Current gate: Phase 1 / G3 - Entry and management
-- Gate status: IN PROGRESS; all listed G3 tasks are locally complete and remote CI is pending for the latest state/context batch
+- Current gate: Phase 1 / G4 - Recursive exploration and live context
+- Gate status: IN PROGRESS
+- Previous gate: Phase 1 / G3 - Entry and management
+- G3 status: PASS by GitHub Actions run `27835479352`
 - Previous gate: Phase 1 / G2 - Domain and data model
 - G2 status: PASS by GitHub Actions run `27828738097` plus `DEFER-003` for A026/A027 gold evaluation
 - Previous gate: Phase 1 / G1 - Repository foundation
@@ -22,8 +24,8 @@ Updated: 2026-06-19 Australia/Sydney
   - `3e04747` PostgreSQL readiness contract
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
-- GitHub `CodexProject` commit pushed:
-  - `b6fe941` fix: return watchlist delete 204 response
+- Latest GitHub `CodexProject` commit pushed:
+  - `c270494` feat: persist EEI workspace state contracts
 
 ## Completed
 
@@ -63,6 +65,8 @@ Updated: 2026-06-19 Australia/Sydney
 - Added URL/session/localStorage workspace state, browser/app back, clickable breadcrumb restore, versioned local saved views, as-of timeline overlays, and shared active model/profile/data/score snapshot reporting.
 - Added model config validation to Task Pack validation and closed T1110, T1111, T1112, T1113, T1201, and T1206 locally.
 - Marked A154, A155, A156, A157, A158, A159, A160, A171, and A178 as `DONE` with local E2E/model-validation evidence.
+- Completed the remaining G3 state/history/saved-view/timeline/model-context batch by GitHub Actions run `27835479352`; job `82382357217` passed.
+- Closed G3 as `PASS` and started G4 as `IN PROGRESS`.
 
 ## Verification Evidence
 
@@ -137,6 +141,9 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed after the state/context batch.
 - 2026-06-19 update: local `make verify` passed after the state/context batch.
 - 2026-06-19 update: local `git diff --check` passed after the state/context batch.
+- 2026-06-19 update: GitHub Actions run `27835479352` passed; job `82382357217` proved the G3 state/history/saved-view/timeline/model-context batch remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 
 Remote verification:
 
@@ -189,6 +196,8 @@ Remote verification:
 - GitHub Actions job `82377987783`: PASS.
 - GitHub Actions run `27834549643`: PASS.
 - GitHub Actions job `82379303157`: PASS.
+- GitHub Actions run `27835479352`: PASS.
+- GitHub Actions job `82382357217`: PASS.
 
 ## Not Completed
 
@@ -207,14 +216,15 @@ Remote verification:
 - T304 user-oriented home page is DONE and remote CI passed; A029/A030/A039/A040 are DONE.
 - T305 industry landscape page is DONE and remote CI passed; A032/A034 are DONE.
 - T306 home/industry/watchlist E2E is DONE and remote CI passed; A037 is DONE.
-- T1110/T1111/T1112/T1113/T1201/T1206 are locally DONE; remote CI is pending.
+- T1110/T1111/T1112/T1113/T1201/T1206 are DONE and remote CI passed.
+- G3 is `PASS`.
 - G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
 ## Recommended Next Step
 
-Push the latest G3 state/context batch and wait for GitHub Actions:
+Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Sync `work/EEI` to `LinzeColin/CodexProject/EEI` and push.
+1. Select the next minimal G4 task slice from T400-T409/T1114-T1117/T1205/T1207.
 2. Keep A026/A027 open until T904/G9 real gold precision evaluation.
-3. If remote CI passes, close G3 and begin the next bounded G4 batch.
+3. Preserve the existing G3 state/history contracts while adding recursive exploration and governance views.
