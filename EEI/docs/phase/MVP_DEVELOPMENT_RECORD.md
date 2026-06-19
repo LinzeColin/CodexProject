@@ -1497,3 +1497,33 @@ Acceptance status:
 Residual risks:
 
 - T1211 does not replace T1215 clean-room Markdown/CSV/JSON/GitHub/prototype/PDF/ZIP validation.
+
+## 2026-06-19 - Phase 1 / G0 T1212 GitHub governance consistency workflow
+
+Status: LOCAL PASS
+
+Completed:
+
+- Added `scripts/validate_governance_consistency.py` to validate governance workflow path triggers, required workflow commands, `make verify` wiring, P0 function traceability and release clean-room preflight files.
+- Wired `validate-governance-consistency` into `make verify` and the packaged `.github/workflows/governance-validation.yml`.
+- Added acceptance evidence files for A182, A183 and the A200 clean-room preflight contract.
+- Marked T1212, A182 and A183 as `DONE`; A200 remains open for the final T1215 clean-room release run.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/validate_governance_consistency.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_github_governance.py`: PASS.
+- Local `.venv/bin/uv run python scripts/manage_release_artifacts.py validate`: PASS.
+- Local `sha256sum -c CHECKSUMS.sha256`: PASS.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A182 is covered by `.github/workflows/governance-validation.yml`, `Makefile`, `scripts/validate_governance_consistency.py`, `scripts/validate_github_governance.py` and `artifacts/tests/a182/t1212_governance_consistency_workflow.json`.
+- A183 is covered by `scripts/validate_governance_consistency.py`, the canonical function/task/acceptance/traceability CSVs and `artifacts/tests/a183/t1212_p0_traceability_validator.json`.
+- A200 has a T1212 preflight contract in `artifacts/tests/a200/t1212_clean_room_preflight.json`, but remains `NOT_STARTED` until T1215 completes the full clean-room release verification.
+
+Residual risks:
+
+- T1212 validates that the clean-room prerequisites exist and are checksummed; it does not run the final Markdown/CSV/JSON/GitHub/prototype/PDF/ZIP clean-room package validation.

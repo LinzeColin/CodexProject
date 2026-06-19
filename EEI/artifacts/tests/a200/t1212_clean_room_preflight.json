@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "task_id": "T1212",
+  "acceptance_id": "A200",
+  "status": "PREFLIGHT_INSTALLED",
+  "evidence_type": "clean_room_preflight_contract",
+  "validated_by": [
+    "scripts/validate_governance_consistency.py",
+    "scripts/manage_release_artifacts.py",
+    "sha256sum -c CHECKSUMS.sha256",
+    "make verify"
+  ],
+  "contract": "Clean-room release validation cannot start unless manifest.txt, DIRECTORY_TREE.txt, CHECKSUMS.sha256, release evidence and release operation log are present and checksummed.",
+  "remaining_gate": "T1215 must run the final Markdown/CSV/JSON/GitHub/prototype/PDF/ZIP clean-room verification before A200 can be marked DONE.",
+  "rollback": "Revert the T1212 preflight evidence and regenerate release artifacts."
+}

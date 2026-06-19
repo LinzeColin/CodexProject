@@ -17,6 +17,7 @@
 - `.github/branch_protection.md` 分支保护契约；
 - `.github/release_checklist.md` 发布检查清单；
 - `.github/workflows/governance-validation.yml` 自动校验；
+- `scripts/validate_governance_consistency.py` 校验目录、模型、任务、验收、P0 traceability 和 clean-room 前置文件一致性；
 - `CHECKSUMS.sha256` 发布包完整性校验。
 
 ## 变更规则
@@ -26,6 +27,7 @@
 3. 数据范围变更必须提供定义、方向、时间、证据门槛、迁移和弃用规则。
 4. 每个 PR 更新 `DEVELOPMENT_STATUS.md` 或明确说明为何无状态变化。
 5. 任何目录变化触发 `python scripts/validate_task_pack.py`。
+6. 任何目录、模型、任务或验收变更必须通过 `python scripts/validate_governance_consistency.py`。
 
 ## 建议分支规则
 
@@ -33,4 +35,4 @@
 
 ## 发布备份规则
 
-发布前按 `.github/release_checklist.md` 执行 `make verify`、`make verify-g2-db`、`sha256sum -c CHECKSUMS.sha256`，并在 release note 中记录任务、Acceptance ID、CI run、rollback 和未解决风险。
+发布前按 `.github/release_checklist.md` 执行 `make verify`、`make verify-g2-db`、`sha256sum -c CHECKSUMS.sha256`，并在 release note 中记录任务、Acceptance ID、CI run、rollback 和未解决风险。T1212 起，clean-room 发布验证前置条件由 `scripts/validate_governance_consistency.py` 硬校验；A200 最终状态仍需 T1215 完整 clean-room 运行确认。

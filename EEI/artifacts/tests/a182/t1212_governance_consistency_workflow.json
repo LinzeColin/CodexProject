@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "task_id": "T1212",
+  "acceptance_id": "A182",
+  "status": "DONE",
+  "evidence_type": "workflow_contract",
+  "validated_by": [
+    "scripts/validate_governance_consistency.py",
+    "scripts/validate_github_governance.py",
+    "make verify"
+  ],
+  "workflow_paths": [
+    ".github/workflows/governance-validation.yml",
+    "../.github/workflows/eei-validation.yml"
+  ],
+  "trigger_contract": [
+    "packaged EEI workflow runs on docs, data, models, config, specs, scripts, GitHub metadata and release artifact path changes",
+    "root CodexProject workflow runs on EEI/** changes and delegates to make verify"
+  ],
+  "rollback": "Revert the T1212 workflow and validator commit, then rerun make verify."
+}

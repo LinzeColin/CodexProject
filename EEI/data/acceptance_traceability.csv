@@ -213,10 +213,10 @@ TR-FUN-SYS-01-A172,FUN-SYS-01,A172,T1200,Catalog/API mapping test,artifacts/test
 TR-FUN-SYS-01-A199,FUN-SYS-01,A199,"T1200,T1201,T1213",E2E,artifacts/tests/a199/,NOT_STARTED,derived_from_task,Codex implementation,FUNCTION_CATALOG.md
 TR-FUN-SYS-02-A180,FUN-SYS-02,A180,"T1208,T1211,T1212,T1213,T1214,T1215",file/schema review,artifacts/tests/a180/,NOT_STARTED,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
 TR-FUN-SYS-02-A181,FUN-SYS-02,A181,"T1208,T1211,T1212,T1213,T1214,T1215",file review,artifacts/tests/a181/,NOT_STARTED,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
-TR-FUN-SYS-02-A182,FUN-SYS-02,A182,T1212,workflow test,artifacts/tests/a182/,NOT_STARTED,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
-TR-FUN-SYS-02-A183,FUN-SYS-02,A183,"T1212,T1213",traceability validation,artifacts/tests/a183/,NOT_STARTED,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
+TR-FUN-SYS-02-A182,FUN-SYS-02,A182,T1212,workflow test,.github/workflows/governance-validation.yml;Makefile;scripts/validate_governance_consistency.py;scripts/validate_github_governance.py;artifacts/tests/a182/t1212_governance_consistency_workflow.json,DONE,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
+TR-FUN-SYS-02-A183,FUN-SYS-02,A183,"T1212,T1213",traceability validation,scripts/validate_governance_consistency.py;data/function_catalog.csv;data/task_backlog.csv;data/acceptance_matrix.csv;data/acceptance_traceability.csv;artifacts/tests/a183/t1212_p0_traceability_validator.json,DONE,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
 TR-FUN-SYS-02-A184,FUN-SYS-02,A184,T1213,ledger review,artifacts/tests/a184/,NOT_STARTED,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
 TR-FUN-SYS-02-A185,FUN-SYS-02,A185,T1214,risk traceability validation,artifacts/tests/a185/,NOT_STARTED,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
 TR-FUN-SYS-02-A186,FUN-SYS-02,A186,"T1208,T1211,T1212,T1213,T1214,T1215",catalog validation,artifacts/tests/a186/,NOT_STARTED,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
 TR-FUN-SYS-02-A199,FUN-SYS-02,A199,"T1208,T1211,T1212,T1213,T1214,T1215",E2E,artifacts/tests/a199/,NOT_STARTED,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
-TR-FUN-SYS-02-A200,FUN-SYS-02,A200,"T1212,T1215",release verification,artifacts/tests/a200/,NOT_STARTED,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
+TR-FUN-SYS-02-A200,FUN-SYS-02,A200,"T1212,T1215",release verification,scripts/validate_governance_consistency.py;scripts/manage_release_artifacts.py;artifacts/tests/a200/t1212_clean_room_preflight.json,NOT_STARTED,derived_from_task,Codex implementation,DEVELOPMENT_STATUS.md
