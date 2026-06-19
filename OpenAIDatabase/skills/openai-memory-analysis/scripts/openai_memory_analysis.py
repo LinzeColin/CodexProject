@@ -25,10 +25,12 @@ import textwrap
 import zipfile
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
+
+UTC = timezone.utc
 
 IMPORTANCE_HIGH = "高"
 IMPORTANCE_MEDIUM = "中"
