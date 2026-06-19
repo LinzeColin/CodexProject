@@ -10,6 +10,23 @@ from psycopg.types.json import Jsonb
 
 DATASET_KEY = "synthetic_nvidia_recursive_supply_chain_v1"
 OBSERVED_AT = "2026-01-01T00:00:00Z"
+ENTITY_INDUSTRY_MEMBERSHIPS = {
+    "amazon": [("IND-002-02", "primary", 0.9)],
+    "anthropic": [("IND-002-01", "primary", 0.92)],
+    "coreweave": [("IND-002-03", "primary", 0.95), ("IND-001", "secondary", 0.78)],
+    "microsoft": [("IND-002-02", "primary", 0.93), ("IND-003", "secondary", 0.86)],
+    "nvidia": [("IND-001", "primary", 0.96), ("IND-002", "secondary", 0.72)],
+    "openai_group": [("IND-002-01", "primary", 0.94), ("IND-003", "secondary", 0.7)],
+    "palantir": [("IND-003", "primary", 0.91), ("IND-008", "secondary", 0.7)],
+    "tsmc": [("IND-001-02", "primary", 0.95), ("IND-001", "supply_chain", 0.91)],
+    "fixture_foundry": [("IND-001-02", "primary", 0.9)],
+    "fixture_equipment": [("IND-001-04", "primary", 0.9)],
+    "fixture_materials": [("IND-001-04", "primary", 0.82)],
+    "fixture_datacenter": [("IND-002-03", "primary", 0.88), ("IND-010", "secondary", 0.72)],
+    "fixture_utility": [("IND-006", "primary", 0.86), ("IND-013", "secondary", 0.64)],
+    "fixture_integrator": [("IND-009", "primary", 0.82), ("IND-001", "secondary", 0.7)],
+    "fixture_cloud_customer": [("IND-002-02", "primary", 0.84)],
+}
 
 
 def read_json(path: Path) -> list[dict[str, object]]:
@@ -136,6 +153,24 @@ def load_entities(connection: object, entities: list[dict[str, object]]) -> None
             """,
             (entity["id"], DATASET_KEY, entity["fixture_notice"]),
         )
+        for industry_external_id, role, confidence in ENTITY_INDUSTRY_MEMBERSHIPS.get(
+            str(entity["entity_key"]),
+            [],
+        ):
+            connection.execute(
+                """
+                INSERT INTO entity_industry_memberships(
+                  entity_id, industry_id, role, confidence, valid_from, evidence_required
+                )
+                SELECT %s, id, %s, %s, %s, false
+                FROM industries
+                WHERE external_id = %s
+                ON CONFLICT (entity_id, industry_id, role, valid_from) DO UPDATE SET
+                  confidence = EXCLUDED.confidence,
+                  evidence_required = false
+                """,
+                (entity["id"], role, confidence, OBSERVED_AT, industry_external_id),
+            )
 
 
 def ensure_source_document(

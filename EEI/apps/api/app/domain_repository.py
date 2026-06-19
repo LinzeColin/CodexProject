@@ -336,6 +336,408 @@ class DomainRepository:
         with self.connect() as connection:
             return self.entity_summary(connection, entity_id)
 
+    def list_industries(self, parent: UUID | None = None) -> list[dict[str, Any]]:
+        with self.connect() as connection:
+            return self.list_industries_for_connection(connection, parent=parent)
+
+    def list_industries_for_connection(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        *,
+        parent: UUID | None = None,
+        limit: int | None = None,
+    ) -> list[dict[str, Any]]:
+        where = "i.active = true"
+        params: list[Any] = []
+        if parent is not None:
+            where = f"{where} AND i.parent_id = %s"
+            params.append(parent)
+        limit_clause = ""
+        if limit is not None:
+            limit_clause = "LIMIT %s"
+            params.append(limit)
+        rows = connection.execute(
+            f"""
+            SELECT
+              i.id, i.external_id, i.slug, i.name_zh, i.name_en, i.parent_id, i.kind,
+              i.taxonomy_version,
+              count(DISTINCT eim.entity_id)::int AS entity_count,
+              count(DISTINCT CASE WHEN eim.role = 'primary' THEN eim.entity_id END)::int
+                AS primary_entity_count,
+              count(DISTINCT CASE WHEN eim.role = 'secondary' THEN eim.entity_id END)::int
+                AS secondary_entity_count,
+              count(DISTINCT c.id)::int AS recent_change_count
+            FROM industries i
+            LEFT JOIN entity_industry_memberships eim ON eim.industry_id = i.id
+            LEFT JOIN changes c ON c.object_type = 'industry' AND c.object_id = i.id
+            WHERE {where}
+            GROUP BY i.id
+            ORDER BY
+              CASE i.kind WHEN 'industry' THEN 0 ELSE 1 END,
+              i.slug
+            {limit_clause}
+            """,
+            params,
+        ).fetchall()
+        return _jsonable(rows)
+
+    def industry_summary(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        industry_id: UUID,
+    ) -> dict[str, Any]:
+        rows = connection.execute(
+            """
+            SELECT
+              i.id, i.external_id, i.slug, i.name_zh, i.name_en, i.parent_id, i.kind,
+              i.taxonomy_version,
+              count(DISTINCT eim.entity_id)::int AS entity_count,
+              count(DISTINCT CASE WHEN eim.role = 'primary' THEN eim.entity_id END)::int
+                AS primary_entity_count,
+              count(DISTINCT CASE WHEN eim.role = 'secondary' THEN eim.entity_id END)::int
+                AS secondary_entity_count,
+              count(DISTINCT c.id)::int AS recent_change_count
+            FROM industries i
+            LEFT JOIN entity_industry_memberships eim ON eim.industry_id = i.id
+            LEFT JOIN changes c ON c.object_type = 'industry' AND c.object_id = i.id
+            WHERE i.id = %s AND i.active = true
+            GROUP BY i.id
+            """,
+            (industry_id,),
+        ).fetchall()
+        if not rows:
+            raise NotFoundError(f"Industry not found: {industry_id}")
+        return _jsonable(rows[0])
+
+    def industry_memberships_for_entities(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_ids: list[UUID],
+    ) -> dict[UUID, list[dict[str, Any]]]:
+        if not entity_ids:
+            return {}
+        rows = connection.execute(
+            """
+            SELECT
+              eim.entity_id, eim.role, eim.confidence, eim.valid_from, eim.valid_to,
+              i.id AS industry_id, i.external_id, i.slug, i.name_zh, i.name_en,
+              i.kind, i.parent_id, i.taxonomy_version
+            FROM entity_industry_memberships eim
+            JOIN industries i ON i.id = eim.industry_id
+            WHERE eim.entity_id = ANY(%s)
+            ORDER BY
+              CASE eim.role WHEN 'primary' THEN 0 WHEN 'secondary' THEN 1 ELSE 2 END,
+              i.slug
+            """,
+            (entity_ids,),
+        ).fetchall()
+        memberships: dict[UUID, list[dict[str, Any]]] = {}
+        for row in rows:
+            memberships.setdefault(row["entity_id"], []).append(
+                _jsonable(
+                    {
+                        "industry_id": row["industry_id"],
+                        "external_id": row["external_id"],
+                        "slug": row["slug"],
+                        "name_zh": row["name_zh"],
+                        "name_en": row["name_en"],
+                        "kind": row["kind"],
+                        "parent_id": row["parent_id"],
+                        "taxonomy_version": row["taxonomy_version"],
+                        "role": row["role"],
+                        "confidence": row["confidence"],
+                        "valid_from": row["valid_from"],
+                        "valid_to": row["valid_to"],
+                    }
+                )
+            )
+        return memberships
+
+    def get_industry_landscape(
+        self,
+        *,
+        industry_id: UUID,
+        as_of: datetime | None = None,
+        profile_id: UUID | None = None,
+    ) -> dict[str, Any]:
+        with self.connect() as connection:
+            industry = self.industry_summary(connection, industry_id)
+            selected_rows = connection.execute(
+                """
+                WITH RECURSIVE selected AS (
+                  SELECT id FROM industries WHERE id = %s AND active = true
+                  UNION ALL
+                  SELECT child.id
+                  FROM industries child
+                  JOIN selected parent ON child.parent_id = parent.id
+                  WHERE child.active = true
+                )
+                SELECT id FROM selected
+                """,
+                (industry_id,),
+            ).fetchall()
+            selected_ids = [row["id"] for row in selected_rows]
+            subindustries = self.list_industries_for_connection(
+                connection,
+                parent=industry_id,
+            )
+            entity_rows = connection.execute(
+                """
+                SELECT
+                  e.id, e.canonical_name, e.entity_type, fen.fixture_notice,
+                  COALESCE(fen.synthetic, false) AS synthetic,
+                  min(
+                    CASE eim.role WHEN 'primary' THEN 0 WHEN 'secondary' THEN 1 ELSE 2 END
+                  ) AS membership_rank,
+                  max(eim.confidence) AS membership_confidence,
+                  array_agg(DISTINCT eim.role ORDER BY eim.role) AS membership_roles
+                FROM entity_industry_memberships eim
+                JOIN entities e ON e.id = eim.entity_id
+                LEFT JOIN fixture_entity_notices fen ON fen.entity_id = e.id
+                WHERE eim.industry_id = ANY(%s)
+                GROUP BY e.id, fen.fixture_notice, fen.synthetic
+                ORDER BY membership_rank, membership_confidence DESC NULLS LAST, e.canonical_name
+                LIMIT 80
+                """,
+                (selected_ids,),
+            ).fetchall()
+            entity_ids = [row["id"] for row in entity_rows]
+            memberships = self.industry_memberships_for_entities(connection, entity_ids)
+            selected_id_strings = {str(item) for item in selected_ids}
+            entities = []
+            for row in entity_rows:
+                entity_memberships = memberships.get(row["id"], [])
+                primary = next(
+                    (
+                        item
+                        for item in entity_memberships
+                        if item["role"] == "primary"
+                    ),
+                    None,
+                )
+                secondary_ids = [
+                    item["industry_id"]
+                    for item in entity_memberships
+                    if item["role"] == "secondary"
+                ]
+                cross_industry = any(
+                    item["industry_id"] not in selected_id_strings
+                    for item in entity_memberships
+                )
+                entities.append(
+                    _jsonable(
+                        {
+                            **dict(row),
+                            "industries": entity_memberships,
+                            "primary_industry_id": primary["industry_id"] if primary else None,
+                            "secondary_industry_ids": secondary_ids,
+                            "cross_industry": cross_industry,
+                        }
+                    )
+                )
+            stage_rows = self.industry_chain_stages(connection, entity_ids)
+            bottlenecks = self.industry_bottlenecks(connection, entity_ids)
+            capital = self.relationship_summaries_for_entities(
+                connection,
+                entity_ids,
+                families=["capital_financing"],
+                limit=12,
+            )
+            policy = self.relationship_summaries_for_entities(
+                connection,
+                entity_ids,
+                families=["government_policy"],
+                limit=12,
+            )
+            cross_links = self.cross_industry_links(
+                connection,
+                member_ids=entity_ids,
+                selected_industry_ids=selected_ids,
+            )
+            return _jsonable(
+                {
+                    "as_of": as_of or _now(),
+                    "profile_id": profile_id,
+                    "industry": industry,
+                    "taxonomy_version": industry["taxonomy_version"],
+                    "subindustries": subindustries,
+                    "chain_stages": stage_rows,
+                    "entities": entities,
+                    "bottlenecks": bottlenecks,
+                    "capital": capital,
+                    "policy": policy,
+                    "changes": self.list_changes_for_connection(connection, limit=8),
+                    "cross_industry_links": cross_links,
+                    "navigation": {
+                        "cross_industry_allowed": True,
+                        "indicator": "cross_industry",
+                    },
+                    "coverage": {
+                        "selected_industry_count": len(selected_ids),
+                        "entity_count": len(entities),
+                        "chain_stage_count": len(stage_rows),
+                        "bottleneck_count": len(bottlenecks),
+                        "capital_relationship_count": len(capital),
+                        "policy_relationship_count": len(policy),
+                        "cross_industry_link_count": len(cross_links),
+                    },
+                    "data_mode": "synthetic_fixture" if any(row["synthetic"] for row in entities)
+                    else "catalog_only",
+                    "fixture_notice": (
+                        "Synthetic fixtures are explicitly marked and not live facts."
+                    ),
+                }
+            )
+
+    def industry_chain_stages(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_ids: list[UUID],
+    ) -> list[dict[str, Any]]:
+        rows = connection.execute(
+            """
+            SELECT
+              sc.stage_id, sc.slug, sc.name_zh, sc.name_en, sc.default_direction,
+              sc.stage_order,
+              count(DISTINCT r.id)::int AS relationship_count,
+              count(DISTINCT r.id) FILTER (
+                WHERE sca.materiality IN ('critical', 'high')
+              )::int AS bottleneck_count
+            FROM supply_chain_stages sc
+            LEFT JOIN supply_chain_relationship_attributes sca
+              ON sc.stage_id IN (sca.stage_from, sca.stage_to)
+            LEFT JOIN relationships r
+              ON r.id = sca.relationship_id
+             AND r.status NOT IN ('superseded', 'revoked')
+             AND (
+               r.subject_entity_id = ANY(%s)
+               OR r.object_entity_id = ANY(%s)
+             )
+            GROUP BY sc.stage_id, sc.slug, sc.name_zh, sc.name_en,
+                     sc.default_direction, sc.stage_order
+            ORDER BY sc.stage_order
+            """,
+            (entity_ids, entity_ids),
+        ).fetchall()
+        return _jsonable(rows)
+
+    def industry_bottlenecks(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_ids: list[UUID],
+    ) -> list[dict[str, Any]]:
+        if not entity_ids:
+            return []
+        rows = connection.execute(
+            """
+            SELECT
+              r.id, r.relationship_type, r.relationship_family, r.confidence,
+              r.status, r.observed_at, r.qualifiers,
+              sca.stage_from, sca.stage_to, sca.tier, sca.materiality,
+              subject.id AS subject_id, subject.canonical_name AS subject_name,
+              object.id AS object_id, object.canonical_name AS object_name,
+              frn.fixture_notice, COALESCE(frn.synthetic, false) AS synthetic
+            FROM relationships r
+            JOIN supply_chain_relationship_attributes sca ON sca.relationship_id = r.id
+            JOIN entities subject ON subject.id = r.subject_entity_id
+            JOIN entities object ON object.id = r.object_entity_id
+            LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+            WHERE r.status NOT IN ('superseded', 'revoked')
+              AND sca.materiality IN ('critical', 'high')
+              AND (
+                r.subject_entity_id = ANY(%s)
+                OR r.object_entity_id = ANY(%s)
+              )
+            ORDER BY
+              CASE sca.materiality WHEN 'critical' THEN 0 WHEN 'high' THEN 1 ELSE 2 END,
+              r.confidence DESC NULLS LAST,
+              r.observed_at DESC
+            LIMIT 12
+            """,
+            (entity_ids, entity_ids),
+        ).fetchall()
+        return _jsonable(rows)
+
+    def relationship_summaries_for_entities(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_ids: list[UUID],
+        *,
+        families: list[str],
+        limit: int,
+    ) -> list[dict[str, Any]]:
+        if not entity_ids:
+            return []
+        rows = connection.execute(
+            """
+            SELECT
+              r.id, r.relationship_type, r.relationship_family, r.confidence,
+              r.status, r.observed_at, r.amount, r.currency, r.amount_kind,
+              r.qualifiers,
+              subject.id AS subject_id, subject.canonical_name AS subject_name,
+              object.id AS object_id, object.canonical_name AS object_name,
+              frn.fixture_notice, COALESCE(frn.synthetic, false) AS synthetic
+            FROM relationships r
+            JOIN entities subject ON subject.id = r.subject_entity_id
+            JOIN entities object ON object.id = r.object_entity_id
+            LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+            WHERE r.status NOT IN ('superseded', 'revoked')
+              AND r.relationship_family = ANY(%s)
+              AND (
+                r.subject_entity_id = ANY(%s)
+                OR r.object_entity_id = ANY(%s)
+              )
+            ORDER BY r.confidence DESC NULLS LAST, r.observed_at DESC, r.id
+            LIMIT %s
+            """,
+            (families, entity_ids, entity_ids, limit),
+        ).fetchall()
+        return _jsonable(rows)
+
+    def cross_industry_links(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        *,
+        member_ids: list[UUID],
+        selected_industry_ids: list[UUID],
+    ) -> list[dict[str, Any]]:
+        if not member_ids:
+            return []
+        rows = connection.execute(
+            """
+            SELECT
+              r.id, r.relationship_type, r.relationship_family, r.confidence,
+              r.status, r.observed_at,
+              subject.id AS subject_id, subject.canonical_name AS subject_name,
+              object.id AS object_id, object.canonical_name AS object_name,
+              frn.fixture_notice, COALESCE(frn.synthetic, false) AS synthetic,
+              true AS navigation_allowed,
+              'cross_industry' AS indicator
+            FROM relationships r
+            JOIN entities subject ON subject.id = r.subject_entity_id
+            JOIN entities object ON object.id = r.object_entity_id
+            LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+            WHERE r.status NOT IN ('superseded', 'revoked')
+              AND (
+                r.subject_entity_id = ANY(%s)
+                OR r.object_entity_id = ANY(%s)
+              )
+              AND (
+                NOT (r.subject_entity_id = ANY(%s) AND r.object_entity_id = ANY(%s))
+                OR EXISTS (
+                  SELECT 1
+                  FROM entity_industry_memberships eim
+                  WHERE eim.entity_id IN (r.subject_entity_id, r.object_entity_id)
+                    AND NOT (eim.industry_id = ANY(%s))
+                )
+              )
+            ORDER BY r.confidence DESC NULLS LAST, r.observed_at DESC, r.id
+            LIMIT 12
+            """,
+            (member_ids, member_ids, member_ids, member_ids, selected_industry_ids),
+        ).fetchall()
+        return _jsonable(rows)
+
     def _with_primary_identifiers(
         self,
         connection: psycopg.Connection[dict[str, Any]],

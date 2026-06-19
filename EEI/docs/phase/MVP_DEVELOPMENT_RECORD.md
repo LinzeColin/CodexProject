@@ -654,3 +654,36 @@ Residual risks:
 
 - A026 and A027 remain P0 release-quality acceptance IDs and must be implemented by T904/G9 or an explicit later release deferral.
 - G3 implementation has not started yet.
+
+## 2026-06-19 - Phase 1 / G3 T301 Home aggregation API
+
+Status: T301 PASS; G3 IN PROGRESS
+
+Completed:
+
+- Added `/v1/home` aggregation fields for global search metadata, freshness, Watchlist, recent explorations, changes, active scoring profile, fixture policy, entity/relationship counts, and last/next calibration status.
+- Updated the OpenAPI `HomeResponse` contract so `global_search` and `freshness` are required.
+- Added PostgreSQL-backed integration assertions for search entry metadata, Watchlist presence, recent exploration state, synthetic fixture freshness, active model profile, and queued calibration status.
+- Marked T301 as `DONE` in `data/task_backlog.csv`; A029/A030 remain open until the user-facing home UI and E2E coverage in T304/T306.
+- Fixed a CI-only lifecycle assertion by allowing `home.changes` to be an empty list before any change records exist, then asserting non-empty home changes after supersession/conflict records are created.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- GitHub Actions run `27830933960`: FAIL in step 8 because the integration test asserted `len(home["changes"]) >= 1` before any `changes` rows existed.
+- GitHub Actions job `82367238904`: FAIL.
+- GitHub Actions run `27831147683`: PASS after the test lifecycle fix.
+- GitHub Actions job `82367964670`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- T301 is complete for API/data contract coverage.
+- A029 and A030 remain `NOT STARTED` in `data/acceptance_matrix.csv` because their declared evidence type is E2E and will close through T304/T306, not by API assertions alone.
+
+Residual risks:
+
+- Home UI still needs to consume the new aggregation fields.
+- Industry API/page and Watchlist item-type breadth remain open in T302/T303/T305/T306.

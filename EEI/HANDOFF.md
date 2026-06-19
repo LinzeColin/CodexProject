@@ -97,6 +97,11 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `make verify-g2-db` still fails closed because Docker is not installed.
 - 2026-06-19 update: GitHub Actions run `27830167274` failed on A038 because SQL `ILIKE` treated `_` as a wildcard; fixed by escaping LIKE patterns.
 - 2026-06-19 update: GitHub Actions run `27830403844` passed; job `82365417548` proved T300/A038 typed entity search under PostgreSQL.
+- 2026-06-19 update: GitHub Actions run `27830557839` passed; job `82365960123` proved the final T300 evidence commit.
+- 2026-06-19 update: local `make verify` passed after T301 `/v1/home` aggregation, freshness, global-search metadata, and calibration status contract.
+- 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T301.
+- 2026-06-19 update: GitHub Actions run `27830933960` failed because the integration test asserted non-empty home changes before any change records existed.
+- 2026-06-19 update: GitHub Actions run `27831147683` passed; job `82367964670` proved T301 home aggregation under PostgreSQL after aligning the changes-feed test lifecycle.
 
 Remote verification:
 
@@ -129,6 +134,12 @@ Remote verification:
 - GitHub Actions job `82364621109`: FAIL.
 - GitHub Actions run `27830403844`: PASS.
 - GitHub Actions job `82365417548`: PASS.
+- GitHub Actions run `27830557839`: PASS.
+- GitHub Actions job `82365960123`: PASS.
+- GitHub Actions run `27830933960`: FAIL, fixed by moving non-empty home changes assertion after generated change records.
+- GitHub Actions job `82367238904`: FAIL.
+- GitHub Actions run `27831147683`: PASS.
+- GitHub Actions job `82367964670`: PASS.
 
 ## Not Completed
 
@@ -141,6 +152,7 @@ Remote verification:
 - G2 is `PASS`; A026 and A027 remain open for T904/G9 gold precision evaluation under `DEFER-003`.
 - T1204 / A170 Objects and Scope navigation screen is DONE and remote CI passed.
 - T300 / A038 typed entity search is DONE and remote CI passed.
+- T301 home aggregation API is DONE and remote CI passed.
 - G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
@@ -148,6 +160,6 @@ Remote verification:
 
 Continue G3 with bounded entry/management implementation:
 
-1. Start T301/T302/T303 home, industry and Watchlist entry-management implementation.
+1. Start T302/T303 industry and Watchlist entry-management implementation.
 2. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 3. Continue G4/T1205 only after the next G3 slice is bounded.

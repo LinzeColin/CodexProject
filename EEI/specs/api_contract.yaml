@@ -361,6 +361,10 @@ paths:
       responses:
         '200':
           description: Industry chain, entities, bottlenecks, capital, policy and changes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndustryLandscapeResponse'
   /v1/explore:
     post:
       operationId: startOrRestoreExploration
@@ -1176,6 +1180,93 @@ components:
           type: integer
         recent_change_count:
           type: integer
+    IndustryLandscapeResponse:
+      type: object
+      required:
+      - as_of
+      - industry
+      - taxonomy_version
+      - subindustries
+      - chain_stages
+      - entities
+      - bottlenecks
+      - capital
+      - policy
+      - changes
+      - cross_industry_links
+      - navigation
+      - coverage
+      - data_mode
+      properties:
+        as_of:
+          type: string
+          format: date-time
+        profile_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        industry:
+          $ref: '#/components/schemas/IndustrySummary'
+        taxonomy_version:
+          type: string
+        subindustries:
+          type: array
+          items:
+            $ref: '#/components/schemas/IndustrySummary'
+        chain_stages:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        entities:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        bottlenecks:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        capital:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        policy:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        changes:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        cross_industry_links:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        navigation:
+          type: object
+          required:
+          - cross_industry_allowed
+          - indicator
+          properties:
+            cross_industry_allowed:
+              type: boolean
+            indicator:
+              type: string
+        coverage:
+          type: object
+          additionalProperties:
+            type: integer
+        data_mode:
+          type: string
+        fixture_notice:
+          type: string
     CatalogExportLinks:
       type: object
       required:
