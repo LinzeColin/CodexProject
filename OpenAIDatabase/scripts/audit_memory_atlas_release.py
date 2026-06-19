@@ -58,6 +58,7 @@ ALLOWED_TRACKED_FILES = {
     "data/derived/codex/codex_agent_recommendations.json",
     "data/derived/codex/codex_behavior_report.md",
 }
+SOURCE_SCAN_EXCLUDED_DIRS = {".git", ".local_keys", "node_modules", "dist", "__pycache__", ".pytest_cache", ".mypy_cache"}
 
 
 class AuditError(RuntimeError):
@@ -170,6 +171,8 @@ def audit_tracked_files(repo_root: Path) -> list[str]:
             capture_output=True,
         )
     except (OSError, subprocess.CalledProcessError) as exc:
+        if (repo_root / "memory_atlas_source_workspace.json").exists():
+            return audit_source_workspace_files(repo_root)
         return [f"unable to inspect tracked files: {exc}"]
 
     problems: list[str] = []
@@ -181,6 +184,25 @@ def audit_tracked_files(repo_root: Path) -> list[str]:
         suffix = Path(line).suffix.lower()
         if suffix in {".app", ".key", ".pem", ".env"}:
             problems.append(f"forbidden tracked suffix: {line}")
+    return problems
+
+
+def audit_source_workspace_files(repo_root: Path) -> list[str]:
+    problems: list[str] = []
+    for path in repo_root.rglob("*"):
+        if not path.is_file():
+            continue
+        relative_path = path.relative_to(repo_root)
+        relative = relative_path.as_posix()
+        if any(part in SOURCE_SCAN_EXCLUDED_DIRS for part in relative_path.parts):
+            continue
+        if relative in ALLOWED_TRACKED_FILES:
+            continue
+        if any(pattern.search(relative) for pattern in FORBIDDEN_NAME_PATTERNS):
+            problems.append(f"forbidden source workspace filename: {relative}")
+        suffix = path.suffix.lower()
+        if suffix in {".app", ".key", ".pem", ".env"}:
+            problems.append(f"forbidden source workspace suffix: {relative}")
     return problems
 
 

@@ -465,6 +465,11 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "CFBundleIconFile" in installer_source
         and "Memory Atlas macOS app icon was not created" in installer_source
         and "memory_atlas_build.json" in installer_source
+        and "source_workspace_root" in installer_source
+        and "sync_source_workspace" in installer_source
+        and "memory_atlas_source_workspace.json" in installer_source
+        and "ORIGINAL_REPO_ROOT" in installer_source
+        and "INSTALLED_GIT_COMMIT" in installer_source
         and "runtime_is_stale" in installer_source
         and "refresh_latest_snapshot" in installer_source
         and "copy_latest_snapshot_to_runtime" in installer_source
@@ -486,7 +491,7 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and '"-m http.server"' in installer_source
         and "last_seen_at = time.time() - max" not in installer_source,
         "local_app_launcher_contract",
-        "installer creates Downloads/Applications launchers, custom icon, current-run snapshot refresh, runtime cache manifest/stale checks, cleanup guard, release audit gate, and immediate tab-close shutdown",
+        "installer creates Downloads/Applications launchers, custom icon, an Application Support source workspace for every-launch snapshot refresh, runtime cache manifest/stale checks, cleanup guard, release audit gate, and immediate tab-close shutdown",
         "local app launcher contract missing required pieces",
     )
 
@@ -528,7 +533,8 @@ def audit_local_apps(repo_root: Path, checks: list[dict[str, str]]) -> None:
                 and plist.get("CFBundleExecutable") == "memory-atlas-launcher"
                 and plist.get("CFBundleIconFile") == "MemoryAtlas"
                 and str(plist.get("CFBundleVersion", "")).isdigit()
-                and "脱敏可视化快照" in plist.get("NSDocumentsFolderUsageDescription", "")
+                and "Application Support" in plist.get("NSDocumentsFolderUsageDescription", "")
+                and "脱敏快照" in plist.get("NSDocumentsFolderUsageDescription", "")
             )
         icon_path = target / "Contents/Resources/MemoryAtlas.icns"
         icon_ok = icon_path.exists() and icon_path.stat().st_size > 1024

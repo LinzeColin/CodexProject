@@ -345,17 +345,20 @@ python3 scripts/audit_memory_atlas_goal_completion.py --require-local-apps
 ```
 
 This creates `Memory Atlas.app` in `~/Downloads` and `/Applications`. The app
-launcher has a custom galaxy graph icon, prepares a static local runtime under
+launcher has a custom galaxy graph icon, installs a source workspace under
+`~/Library/Application Support/OpenAIDatabase/MemoryAtlas/source`, prepares a
+static local runtime under
 `~/Library/Application Support/OpenAIDatabase/MemoryAtlas/runtime`, refreshes
-the runtime copy of the redacted visualization snapshot, starts a lightweight
+the runtime copy of the redacted visualization snapshot from that Application
+Support source workspace, starts a lightweight
 local static server on `http://127.0.0.1:4177`, and opens the browser. It is a thin local launcher, not
 a Tauri package and not a third-party plugin. First install can take a few
 minutes because it builds the runtime. Normal launches do not wait for the Vite
-dev server, but they do rebuild the latest redacted source snapshot before
-serving the page, so the displayed snapshot generation time is not a stale
-cached build time. The runtime includes
+dev server, but they do rebuild the latest redacted source snapshot from the
+installed source workspace before serving the page, so the displayed snapshot
+generation time is not a stale cached build time. The runtime includes
 `memory_atlas_build.json`; if the launcher sees that the cached runtime commit
-does not match the current repository HEAD, it stops the stale local server and
+does not match the installed source commit, it stops the stale local server and
 rebuilds the static runtime before opening. `MEMORY_ATLAS_REFRESH=1` now forces
 a complete static runtime rebuild as well as the default snapshot refresh. The
 launcher opens a small local starting page immediately, then redirects to Memory
@@ -376,10 +379,16 @@ page does not leave a stale background process. `MEMORY_ATLAS_TTL_SECONDS=7200`
 is still kept as a hard maximum session length; set it to `0` only when you
 intentionally want to disable that fallback cap. 关闭 tab 必须释放本地服务并清理临时浏览器缓存。
 
-If macOS blocks access because the repository is under `Documents`, allow
-Memory Atlas in System Settings > Privacy & Security > Files and Folders. The
-normal launcher path now reads `Documents` on every launch because it refreshes
-the latest redacted source snapshot before serving the app. The launcher log is
+The normal launcher path no longer reads the `Documents` repository on every
+open. It runs from the installed Application Support source workspace, which is
+refreshed by rerunning the installer from the trusted main repo:
+
+```bash
+cd /Users/linzezhang/Documents/Codex/2026-06-15/files-mentioned-by-the-user-chatgpt/work/CodexProject/OpenAIDatabase
+python3 scripts/install_memory_atlas_app.py
+```
+
+The launcher log is
 `~/Library/Logs/OpenAIDatabase/memory-atlas-launcher.log`.
 
 Local generated folders such as `apps/memory-atlas/node_modules`,

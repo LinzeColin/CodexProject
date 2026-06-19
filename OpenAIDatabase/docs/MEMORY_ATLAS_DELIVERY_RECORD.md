@@ -113,13 +113,14 @@ Writeback：
 - 2026-06-18：补多数据源架构，首页数据源为 总数据源 / ChatGPT / Codex；新增 Codex 本地数据红线：真实脱敏摘要，不上传 raw transcript。
 - 2026-06-18：重做 Obsidian Graph、贡献网格、Galaxy 局部邻域、运行缓存释放、本地 app icon 与 Downloads/Applications app 入口。
 - 2026-06-19：本轮重点修复 Timeline 动态交互、writeback proposal 版本控制/rollback、模型参数文档边界、交付历史记录。
+- 2026-06-19：修复 `.app` 每次打开刷新最新快照时依赖 Documents 仓库权限的问题；installer 现在同步 Application Support source workspace，launcher 每次从该运行副本刷新数据并写入 runtime。
 
 近期提交参考：
 
 - `3e50dd2` / `8e25c80` / `12d7a70`：Contribution Grid 趋势渐变与布局优化。
 - `f1ec3f9`：Obsidian Graph 重做。
 - `ef23323`：Memory Atlas runtime cleanup and visual density。
-- 本轮后续提交：Timeline 动态交互、writeback rollback、模型参数/交付记录。
+- 本轮后续提交：Timeline 动态交互、writeback rollback、模型参数/交付记录、Application Support source workspace 启动刷新。
 
 ## 6. 待开发清单
 

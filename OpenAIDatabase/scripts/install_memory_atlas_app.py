@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import plistlib
 import platform
 import shutil
@@ -32,7 +33,14 @@ def default_targets() -> list[Path]:
 
 
 def runtime_root() -> Path:
+    override = os.environ.get("MEMORY_ATLAS_APP_SUPPORT_ROOT")
+    if override:
+        return Path(override).expanduser()
     return Path.home() / "Library" / "Application Support" / "OpenAIDatabase" / "MemoryAtlas"
+
+
+def source_workspace_root() -> Path:
+    return runtime_root() / "source"
 
 
 def run_command(args: list[str], cwd: Path) -> None:
@@ -173,6 +181,50 @@ def clean_frontend_dependencies(app_dir: Path) -> None:
         raise RuntimeError(f"Memory Atlas dependency cleanup failed: {node_modules}")
 
 
+def source_workspace_ignore(_directory: str, names: list[str]) -> set[str]:
+    excluded_names = {
+        ".DS_Store",
+        ".git",
+        ".local_keys",
+        ".mypy_cache",
+        ".pytest_cache",
+        "__pycache__",
+        "dist",
+        "node_modules",
+        "raw",
+        "raw_encrypted",
+        "tsconfig.tsbuildinfo",
+    }
+    excluded_suffixes = (".pyc", ".pyo")
+    return {name for name in names if name in excluded_names or name.endswith(excluded_suffixes)}
+
+
+def sync_source_workspace(repo_root: Path) -> Path:
+    source_dir = source_workspace_root()
+    staging_dir = source_dir.with_name("source.next")
+    if staging_dir.exists():
+        remove_tree(staging_dir)
+    source_dir.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(repo_root, staging_dir, ignore=source_workspace_ignore)
+
+    manifest = {
+        "schema_version": "memory_atlas_source_workspace.v1",
+        "original_repo_root": str(repo_root),
+        "installed_git_commit": git_commit(repo_root),
+        "installed_at_epoch": int(time.time()),
+        "purpose": "Runs Memory Atlas snapshot refresh outside Documents so every app launch can use the latest local data.",
+    }
+    (staging_dir / "memory_atlas_source_workspace.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    if source_dir.exists():
+        remove_tree(source_dir)
+    staging_dir.rename(source_dir)
+    return source_dir
+
+
 def refresh_memory_atlas_snapshot(repo_root: Path) -> None:
     run_command(
         [
@@ -294,10 +346,11 @@ def create_app_icon(resources_dir: Path) -> bool:
     return True
 
 
-def prepare_static_runtime(repo_root: Path, keep_build_cache: bool = False) -> Path:
+def prepare_static_runtime(repo_root: Path, keep_build_cache: bool = False, build_info_repo_root: Path | None = None) -> Path:
     app_dir = repo_root / "apps" / "memory-atlas"
     runtime_dir = runtime_root() / "runtime"
     staging_dir = runtime_root() / "runtime.next"
+    build_info_repo_root = build_info_repo_root or repo_root
     try:
         refresh_memory_atlas_snapshot(repo_root)
         if not frontend_dependencies_ready(app_dir):
@@ -318,7 +371,7 @@ def prepare_static_runtime(repo_root: Path, keep_build_cache: bool = False) -> P
         atlas_data = repo_root / "data" / "derived" / "visualization" / "memory_atlas.json"
         if atlas_data.exists():
             shutil.copy2(atlas_data, staging_dir / "memory_atlas.json")
-        write_runtime_build_info(repo_root, staging_dir)
+        write_runtime_build_info(build_info_repo_root, staging_dir)
 
         run_command(
             [
@@ -356,12 +409,16 @@ def prepare_static_runtime(repo_root: Path, keep_build_cache: bool = False) -> P
             clean_frontend_build_cache(app_dir)
 
 
-def build_launcher_script(repo_root: Path) -> str:
+def build_launcher_script(repo_root: Path, original_repo_root: Path) -> str:
     quoted_repo = shell_quote(str(repo_root))
+    quoted_original_repo = shell_quote(str(original_repo_root))
+    installed_commit = shell_quote(git_commit(original_repo_root))
     return f"""#!/bin/zsh
 set -euo pipefail
 
 REPO_ROOT={quoted_repo}
+ORIGINAL_REPO_ROOT={quoted_original_repo}
+INSTALLED_GIT_COMMIT={installed_commit}
 APP_DIR="$REPO_ROOT/apps/memory-atlas"
 APP_SUPPORT="$HOME/Library/Application Support/OpenAIDatabase/MemoryAtlas"
 RUNTIME_DIR="$APP_SUPPORT/runtime"
@@ -540,6 +597,12 @@ class MemoryAtlasHTTPServer(ThreadingHTTPServer):
     daemon_threads = True
     allow_reuse_address = True
 
+    def handle_error(self, request: object, client_address: object) -> None:
+        exc_type, exc, _traceback = sys.exc_info()
+        if exc_type in {{BrokenPipeError, ConnectionResetError}} or isinstance(exc, (BrokenPipeError, ConnectionResetError)):
+            return
+        super().handle_error(request, client_address)
+
 
 class Handler(SimpleHTTPRequestHandler):
     def end_headers(self) -> None:
@@ -686,18 +749,14 @@ stop_port_managed_server() {{
 
 ensure_repo_access() {{
   if [[ ! -d "$REPO_ROOT" ]]; then
-    notify_error "未找到 Memory Atlas 仓库：$REPO_ROOT。"
+    notify_error "未找到 Memory Atlas 运行副本：$REPO_ROOT。请从终端重新安装：cd $ORIGINAL_REPO_ROOT && python3 scripts/install_memory_atlas_app.py"
     exit 1
   fi
   cd "$REPO_ROOT"
 }}
 
 current_git_commit() {{
-  if [[ ! -d "$REPO_ROOT" ]]; then
-    echo unknown
-    return
-  fi
-  git rev-parse HEAD 2>/dev/null || echo unknown
+  echo "$INSTALLED_GIT_COMMIT"
 }}
 
 runtime_git_commit() {{
@@ -751,7 +810,7 @@ refresh_latest_snapshot() {{
   if ! python3 scripts/sync_codex_memory_data.py \\
     --database-dir . \\
     --build-atlas; then
-    notify_error "Memory Atlas 无法刷新最新数据快照。如果 macOS 阻止 Documents 访问，请在系统设置 > 隐私与安全性 > 文件和文件夹中允许 Memory Atlas，或从终端运行 README 中的命令。"
+    notify_error "Memory Atlas 无法刷新最新数据快照。请从终端重新安装运行副本：cd $ORIGINAL_REPO_ROOT && python3 scripts/install_memory_atlas_app.py"
     exit 1
   fi
   if [[ ! -f "$SNAPSHOT" ]]; then
@@ -775,7 +834,7 @@ except Exception:
 PY
 )"
   local current_commit
-  current_commit="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
+  current_commit="$INSTALLED_GIT_COMMIT"
   python3 - "$target_build_info" "$current_commit" "$snapshot_generated_at" "$target_snapshot" <<'PY'
 import json
 import sys
@@ -935,9 +994,10 @@ exit 1
 """
 
 
-def install_app(target: Path, repo_root: Path) -> Path:
+def install_app(target: Path, repo_root: Path, original_repo_root: Path) -> Path:
     target = target.expanduser().resolve()
     repo_root = repo_root.expanduser().resolve()
+    original_repo_root = original_repo_root.expanduser().resolve()
 
     if target.exists():
         if target.name != APP_NAME or not target.is_dir():
@@ -962,9 +1022,9 @@ def install_app(target: Path, repo_root: Path) -> Path:
         "CFBundleName": "Memory Atlas",
         "CFBundlePackageType": "APPL",
         "CFBundleShortVersionString": "0.1.0",
-        "CFBundleVersion": git_commit_count(repo_root),
+        "CFBundleVersion": git_commit_count(original_repo_root),
         "LSMinimumSystemVersion": "13.0",
-        "NSDocumentsFolderUsageDescription": "Memory Atlas 需要读取 Documents 中的本地 OpenAIDatabase 仓库，用于刷新脱敏可视化快照。",
+        "NSDocumentsFolderUsageDescription": "Memory Atlas 默认使用 Application Support 中的运行副本刷新脱敏快照，不需要每次打开访问 Documents 主仓库。",
         "NSHighResolutionCapable": True,
     }
     if icon_created:
@@ -973,7 +1033,7 @@ def install_app(target: Path, repo_root: Path) -> Path:
         plistlib.dump(plist, handle, sort_keys=True)
 
     executable = macos_dir / EXECUTABLE_NAME
-    executable.write_text(build_launcher_script(repo_root), encoding="utf-8")
+    executable.write_text(build_launcher_script(repo_root, original_repo_root), encoding="utf-8")
     executable.chmod(executable.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
     (contents_dir / "PkgInfo").write_text("APPL????", encoding="utf-8")
@@ -1043,10 +1103,11 @@ def main() -> int:
     if not (repo_root / "apps" / "memory-atlas" / "package.json").exists():
         raise SystemExit(f"Memory Atlas package not found under repo root: {repo_root}")
 
+    source_repo_root = sync_source_workspace(repo_root)
     targets = args.target or default_targets()
-    installed = [install_app(target, repo_root) for target in targets]
+    installed = [install_app(target, source_repo_root, repo_root) for target in targets]
     if not args.skip_runtime:
-        runtime_dir = prepare_static_runtime(repo_root, keep_build_cache=args.keep_build_cache)
+        runtime_dir = prepare_static_runtime(source_repo_root, keep_build_cache=args.keep_build_cache, build_info_repo_root=repo_root)
         print(runtime_dir)
     for path in installed:
         print(path)

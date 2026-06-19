@@ -18,6 +18,9 @@ class MemoryAtlasLauncherTests(unittest.TestCase):
     def test_installer_creates_macos_app_bundle(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             target = Path(temp_dir) / "Memory Atlas.app"
+            app_support = Path(temp_dir) / "app-support"
+            env = os.environ.copy()
+            env["MEMORY_ATLAS_APP_SUPPORT_ROOT"] = str(app_support)
             subprocess.run(
                 [
                     sys.executable,
@@ -31,15 +34,24 @@ class MemoryAtlasLauncherTests(unittest.TestCase):
                 check=True,
                 text=True,
                 capture_output=True,
+                env=env,
             )
 
             info_plist = target / "Contents" / "Info.plist"
             executable = target / "Contents" / "MacOS" / "memory-atlas-launcher"
             icon = target / "Contents" / "Resources" / "MemoryAtlas.icns"
+            source_workspace = app_support / "source"
 
             self.assertTrue(info_plist.exists())
             self.assertTrue(executable.exists())
             self.assertTrue(os.access(executable, os.X_OK))
+            self.assertTrue(source_workspace.exists())
+            self.assertTrue((source_workspace / "apps/memory-atlas/package.json").exists())
+            self.assertTrue((source_workspace / "scripts/sync_codex_memory_data.py").exists())
+            self.assertTrue((source_workspace / "memory_atlas_source_workspace.json").exists())
+            self.assertFalse((source_workspace / ".git").exists())
+            self.assertFalse((source_workspace / ".local_keys").exists())
+            self.assertFalse((source_workspace / "apps/memory-atlas/node_modules").exists())
             icon_expected = shutil.which("iconutil") is not None
             try:
                 import PIL  # noqa: F401
@@ -57,17 +69,21 @@ class MemoryAtlasLauncherTests(unittest.TestCase):
             if icon_expected:
                 self.assertEqual(plist["CFBundleIconFile"], "MemoryAtlas")
             self.assertEqual(plist["CFBundlePackageType"], "APPL")
-            self.assertIn("Documents", plist["NSDocumentsFolderUsageDescription"])
+            self.assertIn("Application Support", plist["NSDocumentsFolderUsageDescription"])
 
             launcher_text = executable.read_text(encoding="utf-8")
             self.assertIn(str(REPO_ROOT), launcher_text)
+            self.assertIn(str(source_workspace), launcher_text)
+            self.assertIn("ORIGINAL_REPO_ROOT", launcher_text)
+            self.assertIn("INSTALLED_GIT_COMMIT", launcher_text)
             self.assertIn("scripts/sync_codex_memory_data.py", launcher_text)
             self.assertIn("--build-atlas", launcher_text)
             self.assertIn("refresh_latest_snapshot", launcher_text)
             self.assertIn("copy_latest_snapshot_to_runtime", launcher_text)
             self.assertIn("snapshot_generated_at", launcher_text)
             self.assertIn("正在刷新最新脱敏数据快照", launcher_text)
-            self.assertIn("隐私与安全性 > 文件和文件夹", launcher_text)
+            self.assertIn("重新安装运行副本", launcher_text)
+            self.assertNotIn("隐私与安全性 > 文件和文件夹", launcher_text)
             self.assertIn("on run argv", launcher_text)
             self.assertIn("display notification", launcher_text)
             self.assertIn("Application Support/OpenAIDatabase/MemoryAtlas", launcher_text)
