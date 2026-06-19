@@ -592,12 +592,12 @@ Verification evidence:
 Acceptance status:
 
 - A170 is covered by `tests/e2e/home.spec.ts` and `apps/web/src/app/objects-scope/page.tsx`.
-- G4 remains open because T1205 and T1208 are not complete.
+- At this checkpoint, G4 remained open because T1205 and T1208 were not complete.
 
 Residual risks:
 
 - The remaining G2-linked open IDs after A170 closure are A012, A013, A014, A026, and A027.
-- G4 remains open because T1205 and T1208 are not complete.
+- At this checkpoint, G4 remained open because T1205 and T1208 were not complete.
 
 ## 2026-06-19 - Phase 1 / G2 data contract audit pass 2
 
@@ -1371,4 +1371,30 @@ Acceptance status:
 
 Residual risks:
 
-- T1207 is a local session preview contract, not a real online model editor. Real edit, activation, rollback, score recompute and model-center UI remain in T600-T604/T1208.
+- T1207 is a local session preview contract, not a real online model editor. Real edit, activation, rollback, score recompute and model-center UI remain in T600-T604.
+
+## 2026-06-19 - Phase 1 / G5 T1208 Global model/data version consistency E2E
+
+Status: LOCAL PASS / REMOTE CI PENDING
+
+Completed:
+
+- Extended the global active context E2E to include `/development-status` in addition to `/`, `/industries` and `/objects-scope`.
+- Confirmed the development governance screen participates in the same active model/profile/data/score snapshot contract through `data-active-*` attributes.
+- Marked T1208 as `DONE`; A178 remains `DONE` with added all-current-navigation-page consistency evidence.
+
+Verification evidence:
+
+- Local `./node_modules/.bin/playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep "reports one active model profile" --workers=1`: PASS, 1 test.
+- Local `./node_modules/.bin/playwright test --config=../../playwright.config.ts --workers=1`: PASS, 26 tests.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions: PENDING.
+
+Acceptance status:
+
+- A178 is covered by cross-page active context assertions on `/`, `/industries`, `/objects-scope` and `/development-status`.
+
+Residual risks:
+
+- T1208 only verifies the active context contract across current navigation pages; real model editing, activation, rollback and recalculation remain in T600-T604.

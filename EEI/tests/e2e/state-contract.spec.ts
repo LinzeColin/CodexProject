@@ -332,4 +332,7 @@ test("reports one active model profile data and score snapshot across visible mo
 
   await page.goto("/objects-scope");
   await expectActiveContext(page.getByTestId("objects-scope-screen"));
+
+  await page.goto("/development-status");
+  await expectActiveContext(page.getByTestId("development-status-screen"));
 });
