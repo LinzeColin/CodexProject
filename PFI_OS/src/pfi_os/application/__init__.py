@@ -27,6 +27,12 @@ from pfi_os.application.macos_runtime_read_model import (
     empty_macos_runtime_acceptance_read_model,
     ingest_macos_runtime_acceptance_cache,
 )
+from pfi_os.application.markets_workflow import (
+    MARKETS_WORKFLOW_SCHEMA,
+    build_markets_workflow,
+    build_phase_b_markets_contract,
+    record_markets_workflow,
+)
 from pfi_os.application.private_reviewed_inputs import (
     append_private_reviewed_input_entry,
     load_private_reviewed_input_entries,
@@ -90,6 +96,8 @@ __all__ = [
     "build_strategy_lab_workflow",
     "build_vectorized_research_read_model",
     "build_homepage_summary",
+    "build_markets_workflow",
+    "build_phase_b_markets_contract",
     "default_data_home",
     "default_operational_db_path",
     "empty_homepage_summary",
@@ -103,8 +111,10 @@ __all__ = [
     "load_private_reviewed_input_entries",
     "private_reviewed_input_contract",
     "private_reviewed_input_output_dir",
+    "record_markets_workflow",
     "record_strategy_lab_workflow",
     "SourceRegistry",
     "SourceRegistryRow",
+    "MARKETS_WORKFLOW_SCHEMA",
     "STRATEGY_LAB_WORKFLOW_SCHEMA",
 ]

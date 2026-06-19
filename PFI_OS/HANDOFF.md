@@ -20,7 +20,8 @@ Current sequence:
    complete.
 4. PFI-004 new PFI Web Shell skeleton: complete.
 5. Phase A data foundation: complete for the data-boundary gate.
-6. Phase B Strategy Lab vertical slice: in progress.
+6. Phase B Markets vertical slice: in progress.
+7. Phase B Strategy Lab vertical slice: in progress.
 
 ## Current Local State
 
@@ -87,6 +88,9 @@ Current sequence:
 - Phase B Strategy Lab workflow contract for approved-strategy backtests,
   reproducibility hashes, market-feel training retention, decision-support
   evidence fields, and Operational Store evidence/job/review-task recording.
+- Phase B Markets workflow contract for local observed market bars, market
+  event logs, hotspot cards, sentiment cards, freshness metadata, and
+  Operational Store evidence/job/review-task recording.
 
 ## Start Here
 
@@ -105,8 +109,9 @@ Read in this order:
 11. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
 12. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
 13. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
-14. `docs/phase/PHASE_B_STRATEGY_LAB.md`
-15. `docs/archive/legacy-migration.md`
+14. `docs/phase/PHASE_B_MARKETS.md`
+15. `docs/phase/PHASE_B_STRATEGY_LAB.md`
+16. `docs/archive/legacy-migration.md`
 
 ## Current Verification Evidence
 
@@ -122,6 +127,7 @@ python -m pytest tests/contract/test_phase_a_macos_runtime_read_model.py -q
 python -m pytest tests/contract/test_phase_a_private_reviewed_inputs.py -q
 python -m pytest tests/contract/test_phase_a_streamlit_data_boundary.py -q
 python -m pytest tests/contract/test_phase_a_completion_audit.py -q
+python -m pytest tests/contract/test_phase_b_markets_workflow.py -q
 python -m pytest tests/contract/test_phase_b_strategy_lab_workflow.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
@@ -144,8 +150,7 @@ commands after any follow-up edits.
   onto Operational Store repositories.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
 - Full vertical workflow migration is not complete.
-- Markets, Research + Policy, and Portfolio Phase B vertical slices are not
-  complete.
+- Research + Policy and Portfolio Phase B vertical slices are not complete.
 
 ## Next Step
 
@@ -153,7 +158,6 @@ Continue from the Phase A completion baseline:
 
 1. Prepare Phase B vertical workflow slices or Phase 5 packaging from
    `docs/phase/PHASE_A_COMPLETION_AUDIT.md`.
-2. Continue Phase B with Markets, Research + Policy, or Portfolio vertical
-   slices.
+2. Continue Phase B with Research + Policy or Portfolio vertical slices.
 3. Replace remaining legacy Streamlit direct reads one vertical slice at a
    time when those workflows enter scope.
