@@ -22,6 +22,21 @@ def test_workspace_switching_is_local_state_without_full_page_reload():
     assert 'data-active-workspace="home"' in html
 
 
+def test_homepage_summary_read_model_updates_cards_table_and_evidence_drawer():
+    html = _text(WEB_ROOT / "index.html")
+    js = _text(WEB_ROOT / "app" / "shell.js")
+
+    assert 'id="pfi-home-summary"' in html
+    assert "readHomeSummary" in js
+    assert "applyHomeSummary(readHomeSummary())" in js
+    assert "applyDecisionRows" in js
+    assert "applyEvidenceDrawer" in js
+    assert "data-home-card" in html
+    assert "data-home-decision-rows" in html
+    assert "data-evidence-field" in html
+    assert "PFIOSHomeSummaryV1" in html
+
+
 def test_response_feedback_acceptance_states_are_wired():
     html = _text(WEB_ROOT / "index.html")
     js = _text(WEB_ROOT / "app" / "shell.js")
