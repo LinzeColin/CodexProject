@@ -142,7 +142,7 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert home["industries"][0]["taxonomy_version"]
     assert home["watchlists"][0]["items"][0]["object_id"] == NVIDIA_ID
     assert home["recent_explorations"][0]["current_focus_entity_id"] == NVIDIA_ID
-    assert len(home["changes"]) >= 1
+    assert isinstance(home["changes"], list)
     assert home["freshness"]["status"] == "synthetic_fixture"
     assert home["freshness"]["source_document_count"] >= 1
     assert home["freshness"]["latest_relationship_observed_at"]
@@ -188,6 +188,8 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert supersession_changes[0]["old_value"]["id"] == COREWEAVE_NVIDIA_RELATIONSHIP_ID
     conflict_changes = client.get("/v1/changes?change_type=conflict_detected").json()
     assert conflict_changes[0]["review_required"] is True
+    home_after_changes = client.get("/v1/home").json()
+    assert len(home_after_changes["changes"]) >= 2
 
     with connect_database() as connection:
         old_status = connection.execute(
