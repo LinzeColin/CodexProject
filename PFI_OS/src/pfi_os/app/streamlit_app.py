@@ -854,8 +854,32 @@ def run_backtest_for_strategy(
     return BacktestEngine(config).run(data, strategy)
 
 
+def _pfi_ui_v2_enabled() -> bool:
+    return os.environ.get("PFI_UI_V2", "0") == "1"
+
+
+def _pfi_web_shell_html() -> str:
+    shell_path = ROOT / "web" / "index.html"
+    css_path = ROOT / "web" / "styles" / "tokens.css"
+    js_path = ROOT / "web" / "app" / "shell.js"
+    shell_html = shell_path.read_text(encoding="utf-8")
+    css = css_path.read_text(encoding="utf-8")
+    js = js_path.read_text(encoding="utf-8")
+    shell_html = shell_html.replace('<link rel="stylesheet" href="./styles/tokens.css" />', f"<style>{css}</style>")
+    shell_html = shell_html.replace('<script src="./app/shell.js"></script>', f"<script>{js}</script>")
+    return shell_html
+
+
+def render_pfi_ui_v2_shell() -> None:
+    components.html(_pfi_web_shell_html(), height=980, scrolling=True)
+
+
 def main() -> None:
     st.set_page_config(page_title=MASTER_DISPLAY_NAME, page_icon="PFI", layout="wide", initial_sidebar_state="expanded")
+    if _pfi_ui_v2_enabled():
+        render_pfi_ui_v2_shell()
+        return
+
     install_shutdown_heartbeat()
     apply_theme()
     workspace_header()

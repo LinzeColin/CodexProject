@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>PFI OS</title>
+    <link rel="stylesheet" href="./styles/tokens.css" />
+  </head>
+  <body
+    data-shell-schema="PFIOSWebShellContractV1"
+    data-feature-flag="PFI_UI_V2"
+    data-fallback-flag-value="0"
+    data-cached-home-target-seconds="2"
+  >
+    <a class="skip-link" href="#main-workspace">跳到内容</a>
+    <div class="app-shell" data-state="ready">
+      <header class="top-bar" aria-label="PFI OS top bar">
+        <div class="brand" aria-label="PFI OS">
+          <span class="brand-mark" aria-hidden="true">PFI</span>
+          <span class="brand-name">PFI OS</span>
+        </div>
+        <label class="global-search">
+          <span class="sr-only">Global Search</span>
+          <input id="global-search" type="search" placeholder="Search ticker, fund, policy, evidence" autocomplete="off" />
+        </label>
+        <form class="global-context" aria-label="Global context">
+          <label>
+            <span>Market</span>
+            <select data-context-field="market" aria-label="Market">
+              <option>US</option>
+              <option>CN</option>
+              <option>HK</option>
+            </select>
+          </label>
+          <label>
+            <span>Entity</span>
+            <input data-context-field="entity" value="SPY" aria-label="Entity" />
+          </label>
+          <label>
+            <span>Portfolio</span>
+            <select data-context-field="portfolio" aria-label="Portfolio">
+              <option>Main</option>
+              <option>Watch</option>
+              <option>Sandbox</option>
+            </select>
+          </label>
+          <label>
+            <span>As-of</span>
+            <input data-context-field="as_of" type="date" value="2026-06-19" aria-label="As-of date" />
+          </label>
+          <input type="hidden" data-context-field="currency" value="USD" />
+          <input type="hidden" data-context-field="research_task" value="daily_brief" />
+          <input type="hidden" data-context-field="evidence_set" value="cached_home" />
+          <input type="hidden" data-context-field="simulation_scenario" value="base" />
+        </form>
+        <div class="top-actions" aria-label="Shell actions">
+          <button class="icon-button" type="button" data-command-open aria-label="Open command palette">⌘K</button>
+          <button class="icon-button" type="button" data-task-toggle aria-label="Open task center">
+            <span aria-hidden="true">TC</span>
+          </button>
+          <button class="icon-button" type="button" data-evidence-toggle aria-label="Toggle evidence drawer">
+            <span aria-hidden="true">EV</span>
+          </button>
+          <button class="icon-button" type="button" aria-label="Settings">
+            <span aria-hidden="true">ST</span>
+          </button>
+        </div>
+      </header>
+
+      <nav class="side-nav" aria-label="Primary workspaces" data-primary-workspaces="6">
+        <button class="nav-item is-active" type="button" data-workspace="home">首页</button>
+        <button class="nav-item" type="button" data-workspace="market">市场</button>
+        <button class="nav-item" type="button" data-workspace="research">研究</button>
+        <button class="nav-item" type="button" data-workspace="portfolio">持仓</button>
+        <button class="nav-item" type="button" data-workspace="strategy">策略实验室</button>
+        <button class="nav-item" type="button" data-workspace="data">数据与系统</button>
+      </nav>
+
+      <main id="main-workspace" class="workspace" tabindex="-1" data-active-workspace="home">
+        <section class="workspace-header" aria-labelledby="workspace-title">
+          <div>
+            <p class="workspace-kicker" id="workspace-kicker">Cached daily brief</p>
+            <h1 id="workspace-title">首页</h1>
+            <p id="workspace-conclusion">今日可用缓存已加载；先处理数据新鲜度和证据阻塞，再进入研究或策略实验室。</p>
+          </div>
+          <div class="sync-status" aria-live="polite">
+            <span class="status-dot status-ready" aria-hidden="true"></span>
+            <span>Sync Ready</span>
+            <strong id="freshness-label" data-context-field="freshness">Updated 08:45</strong>
+          </div>
+        </section>
+
+        <section class="metric-grid" aria-label="Home cached summary">
+          <article class="metric-tile" data-card-source="data/systemAudit/latest">
+            <span>Open tasks</span>
+            <strong>7</strong>
+            <small>source: task snapshot · updated 08:45 · status Ready</small>
+          </article>
+          <article class="metric-tile" data-card-source="data/marketEvents/latest">
+            <span>Market events</span>
+            <strong>12</strong>
+            <small>source: cached event digest · updated 08:42 · status Stale watch</small>
+          </article>
+          <article class="metric-tile" data-card-source="data/holdings/latest">
+            <span>Portfolio risk</span>
+            <strong>Review</strong>
+            <small>source: local portfolio cache · updated 08:30 · status Human review</small>
+          </article>
+          <article class="metric-tile" data-card-source="data/vectorized/latest">
+            <span>Strategy runs</span>
+            <strong>3</strong>
+            <small>source: cached validation summary · updated 08:21 · status Ready</small>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel main-panel" aria-labelledby="main-panel-title">
+            <div class="panel-toolbar">
+              <div>
+                <p class="panel-kicker">Snapshot</p>
+                <h2 id="main-panel-title">Daily decision queue</h2>
+              </div>
+              <button type="button" class="secondary-action" data-run-refresh>Refresh cached slice</button>
+            </div>
+            <div class="chart-strip" aria-label="Market freshness sparkline">
+              <canvas id="market-sparkline" width="760" height="116"></canvas>
+            </div>
+            <div class="table-toolbar" aria-label="Compact table controls">
+              <input type="search" placeholder="Filter" aria-label="Filter table" data-table-filter />
+              <button type="button" data-table-sort>Sort</button>
+              <button type="button" data-table-export>Export</button>
+            </div>
+            <table class="compact-table">
+              <thead>
+                <tr>
+                  <th scope="col">Priority</th>
+                  <th scope="col">Object</th>
+                  <th scope="col">Evidence</th>
+                  <th scope="col">Action</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody id="decision-rows">
+                <tr>
+                  <td>P0</td>
+                  <td>Data freshness</td>
+                  <td>Source clock mismatch</td>
+                  <td>Review cached fallback</td>
+                  <td><span class="status-pill status-review">Review</span></td>
+                </tr>
+                <tr>
+                  <td>P1</td>
+                  <td>SPY</td>
+                  <td>Market event digest</td>
+                  <td>Open evidence drawer</td>
+                  <td><span class="status-pill status-ready">Ready</span></td>
+                </tr>
+                <tr>
+                  <td>P1</td>
+                  <td>Strategy run</td>
+                  <td>Backtest metadata complete</td>
+                  <td>Validate stability</td>
+                  <td><span class="status-pill status-watch">Watch</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <aside class="panel task-center" aria-labelledby="task-title" data-task-center>
+            <div class="panel-toolbar">
+              <div>
+                <p class="panel-kicker">Task Center</p>
+                <h2 id="task-title">Current work</h2>
+              </div>
+              <button type="button" class="icon-button" data-task-toggle aria-label="Close task center">×</button>
+            </div>
+            <ol class="task-list" aria-live="polite">
+              <li data-task-state="ready">
+                <strong>Data freshness review</strong>
+                <span>Ready · cached fallback available</span>
+              </li>
+              <li data-task-state="running">
+                <strong>Strategy validation</strong>
+                <span id="task-phase">Step 1 of 3 · waiting</span>
+              </li>
+              <li data-task-state="queued">
+                <strong>Evidence export</strong>
+                <span id="background-job-label">Queued · background job id pending</span>
+              </li>
+            </ol>
+          </aside>
+        </section>
+
+        <section class="feedback-panel" aria-live="assertive" data-feedback-region>
+          <div class="skeleton-row" hidden data-skeleton>
+            <span></span><span></span><span></span>
+          </div>
+          <div class="inline-error" hidden data-error-banner>
+            <strong>Could not refresh this slice.</strong>
+            <span>Using cached snapshot from 08:45. Retry when the source clock is available.</span>
+            <button type="button" data-retry>Retry</button>
+            <button type="button" data-cache-fallback>Use cached snapshot</button>
+          </div>
+          <div class="toast" hidden data-toast role="status"></div>
+        </section>
+      </main>
+
+      <aside class="evidence-drawer" aria-label="Evidence drawer" data-evidence-drawer>
+        <div class="drawer-header">
+          <div>
+            <p class="panel-kicker">Evidence</p>
+            <h2>SPY · Daily brief</h2>
+          </div>
+          <button type="button" class="icon-button" data-evidence-toggle aria-label="Close evidence drawer">×</button>
+        </div>
+        <dl class="evidence-list">
+          <dt>Evidence</dt>
+          <dd>Cached market digest, portfolio impact note, and strategy run summary.</dd>
+          <dt>Source</dt>
+          <dd>Local cache · public/shared domain · private portfolio facts redacted.</dd>
+          <dt>Model</dt>
+          <dd>Disabled provider; deterministic cached summary only.</dd>
+          <dt>Parameters</dt>
+          <dd>market=US · entity=SPY · portfolio=Main · currency=USD</dd>
+          <dt>Data lineage</dt>
+          <dd>Raw source → canonical event → cached card → decision queue.</dd>
+          <dt>Raw document</dt>
+          <dd><button type="button" data-raw-document>Open sanitized source record</button></dd>
+        </dl>
+      </aside>
+    </div>
+
+    <dialog class="command-palette" data-command-palette aria-label="Command palette">
+      <form method="dialog">
+        <label>
+          <span class="sr-only">Command</span>
+          <input data-command-input placeholder="Jump to workspace or evidence" />
+        </label>
+        <div class="command-results" role="listbox">
+          <button type="button" role="option" data-command-workspace="home">首页</button>
+          <button type="button" role="option" data-command-workspace="market">市场</button>
+          <button type="button" role="option" data-command-workspace="research">研究</button>
+          <button type="button" role="option" data-command-workspace="portfolio">持仓</button>
+          <button type="button" role="option" data-command-workspace="strategy">策略实验室</button>
+          <button type="button" role="option" data-command-workspace="data">数据与系统</button>
+        </div>
+      </form>
+    </dialog>
+    <noscript>PFI OS shell needs browser scripting for local navigation state.</noscript>
+    <script src="./app/shell.js"></script>
+  </body>
+</html>
