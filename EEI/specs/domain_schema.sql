@@ -425,7 +425,8 @@ CREATE TABLE supply_chain_stages (
   slug text NOT NULL UNIQUE,
   name_zh text NOT NULL,
   name_en text NOT NULL,
-  default_direction text NOT NULL CHECK (default_direction IN ('upstream','downstream','internal','market')),
+  default_direction text NOT NULL
+    CHECK (default_direction IN ('upstream','downstream','midstream','crosscutting')),
   examples text,
   loaded_at timestamptz NOT NULL DEFAULT now()
 );

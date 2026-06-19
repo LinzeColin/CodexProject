@@ -222,3 +222,23 @@ Verification to run:
 
 - `make verify`.
 - Push and rerun GitHub Actions `make verify-g2-db`.
+
+## 2026-06-19 - Phase 1 / G2 database CI repair loop 2
+
+Status: IN PROGRESS
+
+Failure evidence:
+
+- GitHub Actions run `27821664492` failed in `Verify G2 PostgreSQL migrations and E2E`.
+- Migration upgrade and relationship taxonomy loading passed after repair loop 1.
+- `scripts/load_seed_catalogs.py` failed while loading `supply_chain_stage_taxonomy.csv`.
+- Root cause: `supply_chain_stages.default_direction` allowed an invented set, while the canonical taxonomy contains `upstream`, `downstream`, `midstream`, and `crosscutting`.
+
+Fix:
+
+- Updated `specs/domain_schema.sql` so `supply_chain_stages.default_direction` matches the canonical taxonomy.
+
+Verification to run:
+
+- `make verify`.
+- Push and rerun GitHub Actions `make verify-g2-db`.
