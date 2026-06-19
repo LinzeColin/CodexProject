@@ -92,6 +92,31 @@ test("reaches company focus within three actions and keeps home controls keyboar
   );
 });
 
+test("shows watchlist unread changes and restores saved view profile state", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByTestId("watchlist-saved-state-cloud")).toContainText("2 unread");
+  await expect(page.getByTestId("watchlist-saved-state-cloud")).toContainText("supply_chain");
+  await expect(page.getByTestId("watchlist-saved-state-cloud")).toContainText("L2");
+  await expect(page.getByTestId("watchlist-saved-state-cloud")).toContainText("Balanced v2");
+
+  await page.getByTestId("lens-capital_transactions").click();
+  await page.getByTestId("zoom-L0").click();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-lens",
+    "capital_transactions"
+  );
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-semantic-zoom", "L0");
+
+  await page.getByTestId("home-watchlist-cloud").click();
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Cloud Customer");
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-lens",
+    "supply_chain"
+  );
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-semantic-zoom", "L2");
+});
+
 test("exposes the Objects and Scope navigation screen with counts definitions and exports", async ({
   page
 }) => {

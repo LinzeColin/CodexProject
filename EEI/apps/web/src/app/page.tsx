@@ -124,6 +124,9 @@ type HomeWatchItem = {
   label: string;
   unread: number;
   state: string;
+  savedLens: LensKey;
+  savedZoom: SemanticZoom;
+  profile: string;
 };
 
 type HomeRecentEntry = {
@@ -288,11 +291,51 @@ const homeIndustries: HomeIndustryEntry[] = [
 ];
 
 const homeWatchItems: HomeWatchItem[] = [
-  { key: "nvidia", label: "NVIDIA", unread: 3, state: "last viewed" },
-  { key: "foundry", label: "Advanced Foundry", unread: 2, state: "upstream" },
-  { key: "equipment", label: "Lithography Equipment", unread: 1, state: "supplier" },
-  { key: "materials", label: "Specialty Materials", unread: 1, state: "materials" },
-  { key: "cloud", label: "Cloud Customer", unread: 2, state: "downstream" }
+  {
+    key: "nvidia",
+    label: "NVIDIA",
+    unread: 3,
+    state: "last viewed",
+    savedLens: "supply_chain",
+    savedZoom: "L2",
+    profile: "Balanced v2"
+  },
+  {
+    key: "foundry",
+    label: "Advanced Foundry",
+    unread: 2,
+    state: "upstream",
+    savedLens: "supply_chain",
+    savedZoom: "L2",
+    profile: "Balanced v2"
+  },
+  {
+    key: "equipment",
+    label: "Lithography Equipment",
+    unread: 1,
+    state: "supplier",
+    savedLens: "supply_chain",
+    savedZoom: "L1",
+    profile: "Balanced v2"
+  },
+  {
+    key: "materials",
+    label: "Specialty Materials",
+    unread: 1,
+    state: "materials",
+    savedLens: "supply_chain",
+    savedZoom: "L1",
+    profile: "Balanced v2"
+  },
+  {
+    key: "cloud",
+    label: "Cloud Customer",
+    unread: 2,
+    state: "downstream",
+    savedLens: "supply_chain",
+    savedZoom: "L2",
+    profile: "Balanced v2"
+  }
 ];
 
 const homeRecentExplorations: HomeRecentEntry[] = [
@@ -728,6 +771,12 @@ export default function Home() {
     setTransitionState("ready");
   }
 
+  function restoreWatchItem(item: HomeWatchItem) {
+    setActiveLens(item.savedLens);
+    setSemanticZoom(item.savedZoom);
+    setCenter(item.key);
+  }
+
   function submitSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const firstResult = visibleSearchResults[0] ?? homeSearchResults[0];
@@ -917,11 +966,14 @@ export default function Home() {
               className={item.key === focusKey ? "watchItem current" : "watchItem"}
               data-testid={`home-watchlist-${item.key}`}
               key={item.key}
-              onClick={() => setCenter(item.key)}
+              onClick={() => restoreWatchItem(item)}
               type="button"
             >
               <span>{item.label}</span>
-              <small>{item.unread} / {item.state}</small>
+              <small data-testid={`watchlist-saved-state-${item.key}`}>
+                {item.unread} unread / {item.state} / {item.savedLens} / {item.savedZoom} /{" "}
+                {item.profile}
+              </small>
               <Route size={16} aria-hidden="true" />
             </button>
           ))}

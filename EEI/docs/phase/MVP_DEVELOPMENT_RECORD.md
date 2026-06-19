@@ -805,7 +805,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G3 T305 Industry landscape page
 
-Status: T305 LOCAL PASS; G3 IN PROGRESS
+Status: T305 PASS; G3 IN PROGRESS
 
 Completed:
 
@@ -824,6 +824,10 @@ Verification evidence:
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS, static route `/industries`.
 - Local `make verify`: PASS.
 - Local `git diff --check`: PASS.
+- GitHub Actions run `27834152257`: PASS.
+- GitHub Actions job `82377987783`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -834,3 +838,34 @@ Residual risks:
 
 - Industry page still uses synthetic UI projection; live frontend API hydration remains future work.
 - T306 remains open for consolidated home/industry/watchlist E2E and A037 Watchlist unread/saved-view evidence.
+
+## 2026-06-19 - Phase 1 / G3 T306 Home, industry and Watchlist E2E
+
+Status: T306 LOCAL PASS; G3 IN PROGRESS
+
+Completed:
+
+- Added Watchlist unread-change and saved-view/profile state display to the home workspace.
+- Added Watchlist restore behavior so selecting a Watchlist item restores saved lens, semantic zoom, profile context, and focus subject.
+- Added Playwright coverage for A037 saved view/profile state restoration.
+- Updated T306 to include A037 alongside A029/A035/A039/A040.
+- Marked T306 as `DONE`; marked A037 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 15 tests.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS, static routes `/`, `/industries`, and `/objects-scope`.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A037 is covered by `apps/web/src/app/page.tsx` and `tests/e2e/home.spec.ts`.
+- A035 now has both PostgreSQL persistence coverage and frontend Watchlist restore E2E coverage.
+
+Residual risks:
+
+- The MVP still lacks full create/remove Watchlist controls in the browser UI; API persistence for those actions is proven in T303.
+- G3 still remains open for model registry/config import tasks listed in the gate, unless explicitly deferred.
