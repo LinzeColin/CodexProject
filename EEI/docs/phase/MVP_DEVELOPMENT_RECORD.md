@@ -584,6 +584,10 @@ Verification evidence:
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 10 tests.
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS, static routes `/` and `/objects-scope`.
 - Local `make verify`: PASS.
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27828194718`.
+- GitHub Actions job: `82357916025`.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -592,5 +596,5 @@ Acceptance status:
 
 Residual risks:
 
-- Remote GitHub Actions still needs to prove the T1204 screen.
 - The remaining G2-linked open IDs after A170 closure are A012, A013, A014, A026, and A027.
+- G4 remains open because T1205 and T1208 are not complete.

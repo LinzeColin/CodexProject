@@ -45,6 +45,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed G2 acceptance audit pass 1 locally: A015-A022, A024, and A028 now have explicit validator/integration evidence; A012-A014, A026-A027, and A170 remain open.
 - Completed G2 acceptance audit pass 1 remote CI by GitHub Actions run `27827498238`; job `82355514060` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - Added T1204 `/objects-scope` visible navigation screen and marked A170 done locally.
+- Completed T1204 and A170 by GitHub Actions run `27828194718`; job `82357916025` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 
 ## Verification Evidence
 
@@ -82,6 +83,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 10 tests for the Objects and Scope screen.
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed with static route `/objects-scope`.
 - 2026-06-19 update: local `make verify` passed after T1204.
+- 2026-06-19 update: GitHub Actions run `27828194718` passed; job `82357916025` proved T1204 remotely.
 
 Remote verification:
 
@@ -104,6 +106,8 @@ Remote verification:
 - GitHub Actions job `82353421402`: PASS.
 - GitHub Actions run `27827498238`: PASS.
 - GitHub Actions job `82355514060`: PASS.
+- GitHub Actions run `27828194718`: PASS.
+- GitHub Actions job `82357916025`: PASS.
 
 ## Not Completed
 
@@ -114,7 +118,7 @@ Remote verification:
 - T1105/T1106/T1109 visual company workspace tasks are DONE and remote CI passed.
 - T1203 taxonomy/object-scope API is DONE and remote CI passed.
 - G2 task list is complete, but release gate status remains `IN PROGRESS` because A012, A013, A014, A026, and A027 remain open.
-- T1204 / A170 Objects and Scope navigation screen is locally done; remote CI is pending.
+- T1204 / A170 Objects and Scope navigation screen is DONE and remote CI passed.
 - G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
