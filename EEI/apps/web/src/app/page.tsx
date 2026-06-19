@@ -967,8 +967,11 @@ export default function Home() {
   }
 
   function restoreSavedView() {
+    const storedSavedView = readSavedViewPayload(window.localStorage.getItem(SAVED_VIEW_STORAGE_KEY));
+    const nextSavedView = storedSavedView ?? savedView;
+    setSavedView(nextSavedView);
     restoringHistoryState.current = true;
-    applyWorkspaceState(savedView);
+    applyWorkspaceState(nextSavedView);
     setSavedViewStatus("restored");
   }
 

@@ -985,3 +985,23 @@ Residual risks:
 - Local PostgreSQL execution is still unavailable on this host; GitHub Actions must prove the new integration assertions against the real migration/seed/fixture path.
 - `/v1/explore/expand` is referenced only as continuation metadata; the actual incremental expand endpoint remains T403.
 - Two-hop traversal accepts and records `hops=2`, but bounded multi-hop traversal semantics remain future work outside T400.
+
+## 2026-06-19 - Phase 1 / G4 Saved-view restore CI hardening
+
+Status: LOCAL PASS; remote CI pending
+
+Completed:
+
+- Investigated GitHub Actions run `27836653255`, where Step 8 passed PostgreSQL integration but failed one E2E state restoration assertion.
+- Identified the failure as a hydration/storage race: after reload, `restoreSavedView()` could use the default React state before `useEffect` had reloaded the saved view from `localStorage`.
+- Changed `restoreSavedView()` to synchronously read the latest `localStorage` saved-view payload before applying workspace state.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 21 tests.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+
+Residual risks:
+
+- Remote CI still needs to prove the saved-view hardening and T400 together.
