@@ -1,4 +1,4 @@
-US_Corporate_Power_Map_Codex_MVP_Task_Pack_v4.2_2026-06-19
+Enterprise_Ecosystem_Intelligence_release
 ├── .codex
 │   └── config.toml.example
 ├── .github
@@ -13,18 +13,53 @@ US_Corporate_Power_Map_Codex_MVP_Task_Pack_v4.2_2026-06-19
 │   ├── workflows
 │   │   └── governance-validation.yml
 │   ├── CODEOWNERS
+│   ├── branch_protection.md
 │   ├── pull_request_template.md
-│   └── release.yml
+│   ├── release.yml
+│   └── release_checklist.md
+├── apps
+│   ├── api
+│   │   ├── app
+│   │   │   ├── __init__.py
+│   │   │   ├── db_health.py
+│   │   │   ├── domain.py
+│   │   │   ├── domain_repository.py
+│   │   │   ├── health.py
+│   │   │   ├── healthcheck.py
+│   │   │   ├── main.py
+│   │   │   └── settings.py
+│   │   └── __init__.py
+│   ├── web
+│   │   ├── src
+│   │   │   └── app
+│   │   │       ├── development-status
+│   │   │       │   └── page.tsx
+│   │   │       ├── industries
+│   │   │       │   └── page.tsx
+│   │   │       ├── objects-scope
+│   │   │       │   └── page.tsx
+│   │   │       ├── analysis-contract.ts
+│   │   │       ├── globals.css
+│   │   │       ├── layout.tsx
+│   │   │       ├── page.tsx
+│   │   │       └── use-analysis-context.ts
+│   │   ├── next-env.d.ts
+│   │   ├── next.config.ts
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── worker
+│   │   ├── app
+│   │   │   ├── __init__.py
+│   │   │   └── main.py
+│   │   └── __init__.py
+│   └── __init__.py
 ├── artifacts
+│   ├── README.md
 │   ├── governance_blueprint_v42_source.html
 │   ├── model_config_import_preview.json
 │   ├── pdf_contact_sheet.png
-│   ├── pdf_visual_inspection.txt
-│   ├── preflight_output.txt
-│   ├── prototype_smoke_test.txt
-│   ├── README.md
-│   ├── static_validation.txt
-│   └── visual_coverage_validation.txt
+│   ├── release_evidence_t1211.json
+│   └── release_operation_log_t1211.jsonl
 ├── config
 │   ├── model_profiles
 │   │   └── balanced-v2.json
@@ -60,6 +95,7 @@ US_Corporate_Power_Map_Codex_MVP_Task_Pack_v4.2_2026-06-19
 │   ├── navigation_catalog.csv
 │   ├── nvidia_public_source_anchors.csv
 │   ├── parameter_catalog.csv
+│   ├── product_navigation_catalog.csv
 │   ├── relationship_family_catalog.csv
 │   ├── relationship_taxonomy.csv
 │   ├── release_gate_catalog.csv
@@ -87,6 +123,19 @@ US_Corporate_Power_Map_Codex_MVP_Task_Pack_v4.2_2026-06-19
 │   ├── system_context.mmd
 │   └── user_flow.mmd
 ├── docs
+│   ├── adr
+│   │   ├── ADR-006-runtime-and-repository-layout.md
+│   │   ├── ADR-007-production-database.md
+│   │   ├── ADR-008-graph-query.md
+│   │   ├── ADR-009-api-contract.md
+│   │   ├── ADR-010-calculation-and-snapshots.md
+│   │   ├── ADR-011-cache.md
+│   │   ├── ADR-012-search.md
+│   │   ├── ADR-013-frontend-visualization.md
+│   │   ├── ADR-014-data-ingestion.md
+│   │   └── ADR-015-fixture-and-live-data-separation.md
+│   ├── phase
+│   │   └── MVP_DEVELOPMENT_RECORD.md
 │   ├── 01_PRODUCT_REQUIREMENTS.md
 │   ├── 02_SCOPE_AND_BOUNDARIES.md
 │   ├── 03_UX_INFORMATION_ARCHITECTURE.md
@@ -125,11 +174,38 @@ US_Corporate_Power_Map_Codex_MVP_Task_Pack_v4.2_2026-06-19
 │   ├── 36_RELEASE_GATES_AND_DEFINITION_OF_DONE.md
 │   ├── INDEX.md
 │   └── STATUS.md
+├── infra
+│   ├── db
+│   │   ├── migrations
+│   │   │   ├── 0001_core_domain
+│   │   │   │   ├── down.sql
+│   │   │   │   └── up.sql
+│   │   │   ├── 0002_exploration_state
+│   │   │   │   ├── down.sql
+│   │   │   │   └── up.sql
+│   │   │   └── README.md
+│   │   └── seeds
+│   │       └── README.md
+│   └── docker
+│       └── README.md
 ├── models
-│   ├── formula_registry.json
 │   ├── FORMULA_REGISTRY.md
 │   ├── MODEL_MANAGEMENT.md
+│   ├── formula_registry.json
 │   └── model_registry.json
+├── packages
+│   ├── catalogs
+│   │   └── README.md
+│   ├── contracts
+│   │   └── README.md
+│   ├── graph
+│   │   └── README.md
+│   ├── ingestion
+│   │   └── README.md
+│   ├── scoring
+│   │   └── README.md
+│   └── ui
+│       └── README.md
 ├── prompts
 │   ├── 01_PLAN_ONLY.md
 │   ├── 02_BUILD_MVP.md
@@ -144,49 +220,79 @@ US_Corporate_Power_Map_Codex_MVP_Task_Pack_v4.2_2026-06-19
 │   │   ├── models_1440x900.png
 │   │   ├── reroot_tsmc_1440x900.png
 │   │   └── taxonomy_1440x900.png
+│   ├── README.md
 │   ├── app.js
 │   ├── index.html
-│   ├── README.md
 │   ├── standalone.html
 │   └── styles.css
 ├── scripts
 │   ├── apply_model_config.py
+│   ├── check_database_schema.py
 │   ├── compile_model_runtime_defaults.py
+│   ├── db_tools.py
+│   ├── env_doctor.py
 │   ├── generate_governance_pdf.py
+│   ├── load_seed_catalogs.py
+│   ├── load_synthetic_fixtures.py
+│   ├── manage_release_artifacts.py
+│   ├── migrate.py
 │   ├── preflight.sh
 │   ├── run_codex_autonomous.sh
+│   ├── secret_scan.py
 │   ├── smoke_test_prototype.py
 │   ├── validate_catalog_integrity.py
+│   ├── validate_contracts.py
+│   ├── validate_github_governance.py
 │   ├── validate_governance.py
 │   ├── validate_model_config.py
+│   ├── validate_prototype_parity.py
 │   ├── validate_task_pack.py
-│   └── validate_visual_coverage.py
+│   ├── validate_ui_copy.py
+│   ├── validate_visual_coverage.py
+│   └── wait_for_database.py
 ├── specs
 │   ├── api_contract.yaml
 │   ├── calibration_report_schema.json
 │   ├── domain_schema.sql
+│   ├── domain_schema_v0001.sql
 │   ├── event_schema.json
 │   ├── exploration_state_schema.json
 │   ├── live_refresh_event_schema.json
 │   ├── model_config_schema.json
 │   └── scoring_profile_schema.json
+├── tests
+│   ├── e2e
+│   │   ├── README.md
+│   │   ├── development-status.spec.ts
+│   │   ├── home.spec.ts
+│   │   ├── industry.spec.ts
+│   │   └── state-contract.spec.ts
+│   ├── fixtures
+│   │   └── README.md
+│   ├── integration
+│   │   ├── README.md
+│   │   └── test_database_migrations.py
+│   └── unit
+│       └── test_api_health.py
 ├── wireframes
+│   ├── README.md
 │   ├── dashboard_wireframe.png
 │   ├── dashboard_wireframe.svg
 │   ├── home_default_view.png
 │   ├── home_default_view.svg
-│   ├── README.md
 │   ├── recursive_focus_explorer.png
 │   ├── recursive_focus_explorer.svg
 │   ├── visual_first_workspace.png
 │   ├── visual_first_workspace.svg
 │   └── visual_first_workspace_screenshot.png
+├── .env.example
 ├── .gitignore
 ├── AGENTS.md
 ├── CHANGELOG.md
 ├── CHECKSUMS.sha256
 ├── CODEX_MASTER_TASK.md
 ├── CONTRIBUTING.md
+├── CURRENT_PHASE.md
 ├── DELIVERY_INDEX.md
 ├── DEVELOPMENT_STATUS.md
 ├── DIRECTORY_TREE.txt
@@ -194,9 +300,11 @@ US_Corporate_Power_Map_Codex_MVP_Task_Pack_v4.2_2026-06-19
 ├── FUNCTION_CATALOG.md
 ├── GITHUB_REPOSITORY_BACKUP_INDEX.md
 ├── GOVERNANCE_INDEX.md
-├── manifest.txt
+├── HANDOFF.md
 ├── MODEL_MANAGEMENT.md
+├── Makefile
 ├── PLANS.md
+├── PURSUING_GOAL.md
 ├── README.md
 ├── REPORT.md
 ├── RISK_AND_ACCEPTANCE.md
@@ -206,4 +314,12 @@ US_Corporate_Power_Map_Codex_MVP_Task_Pack_v4.2_2026-06-19
 ├── US_Corporate_Power_Map_System_Model_Parameter_Architecture_v4.2.md
 ├── US_Corporate_Power_Map_UIUX_Redesign_v4.2.md
 ├── VALIDATION_REPORT.md
-└── VERSION
+├── VERSION
+├── docker-compose.yml
+├── manifest.txt
+├── package.json
+├── playwright.config.ts
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+├── pyproject.toml
+└── uv.lock

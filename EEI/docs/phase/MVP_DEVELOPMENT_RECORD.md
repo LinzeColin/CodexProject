@@ -1466,3 +1466,33 @@ Residual risks:
 
 - Actual GitHub branch protection must still be applied in repository settings or through the GitHub API; T1210 versions and validates the required contract.
 - A175 still depends on T1211 reproducible release evidence and immutable operation-log/release artifacts.
+
+## 2026-06-19 - Phase 1 / G9 T1211 Reproducible release evidence
+
+Status: LOCAL PASS, REMOTE CI PENDING
+
+Completed:
+
+- Added `scripts/manage_release_artifacts.py` to generate and validate release artifacts from tracked repository paths plus required release evidence files.
+- Regenerated `manifest.txt`, `DIRECTORY_TREE.txt` and `CHECKSUMS.sha256` for the current EEI product repository tree.
+- Added `artifacts/release_evidence_t1211.json` with release commands, rollback procedure, artifact paths and remote verification fields.
+- Added `artifacts/release_operation_log_t1211.jsonl` with one immutable `release_artifact_publish` operation for T1211.
+- Wired `validate-release-artifacts` into `make verify`.
+- Marked T1211 and A175 as `DONE`; A177 remains `DONE` with release artifact evidence added.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/manage_release_artifacts.py generate`: PASS; manifest paths 273, checksum paths 272.
+- Local `.venv/bin/uv run python scripts/manage_release_artifacts.py validate`: PASS.
+- Local `sha256sum -c CHECKSUMS.sha256`: PASS.
+- Local `make verify`: PASS.
+
+Acceptance status:
+
+- A175 is covered by `.github/pull_request_template.md`, `artifacts/release_evidence_t1211.json`, `artifacts/release_operation_log_t1211.jsonl`, `manifest.txt`, `DIRECTORY_TREE.txt`, `CHECKSUMS.sha256` and `scripts/manage_release_artifacts.py`.
+- A177 remains covered by GitHub governance files plus manifest/checksum/release evidence.
+
+Residual risks:
+
+- Remote CI evidence is pending for the implementation commit and must be written back into `artifacts/release_evidence_t1211.json`.
+- T1211 does not replace T1215 clean-room Markdown/CSV/JSON/GitHub/prototype/PDF/ZIP validation.

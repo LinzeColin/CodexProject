@@ -350,6 +350,7 @@ Remote verification:
 - T1208 / A178 is DONE and remote CI passed; the active model/profile/data/score snapshot E2E now covers `/`, `/industries`, `/objects-scope` and `/development-status`, with serial local E2E 26/26 plus `make verify`.
 - T1209 / A176 is DONE and remote CI passed; prototype parity validation now checks index/standalone byte identity, canonical hash, required views, DOM anchors and stale JS/CSS references.
 - T1210 / A177 is DONE and remote CI passed; GitHub branch protection/release checklist contracts, CODEOWNERS scope, governance validator and registry coverage are wired into `make verify`. Run `27845697888` failed on a brittle transient loading overlay E2E assertion; `2535e84` fixed it and run `27846173368` / job `82415726115` passed.
+- T1211 / A175 is locally complete pending remote CI; release artifact generation and validation now cover `manifest.txt`, `DIRECTORY_TREE.txt`, `CHECKSUMS.sha256`, `artifacts/release_evidence_t1211.json`, `artifacts/release_operation_log_t1211.jsonl` and `scripts/manage_release_artifacts.py`.
 - G4/G5 remain open because saved-view API persistence, visual regression/performance suites and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -357,7 +358,9 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Start T1211 reproducible release manifest/checksum/status evidence as the next bounded slice.
-2. Keep T1118/T1119 visual regression and performance suites separate in G5.
-3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
-4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.
+1. Push T1211 and wait for GitHub Actions to confirm remote PostgreSQL/E2E CI.
+2. Backfill T1211 remote run/job IDs into `artifacts/release_evidence_t1211.json`, regenerate release artifacts and push a docs/evidence commit.
+3. Start T1212 GitHub governance consistency workflow as the next bounded slice.
+4. Keep T1118/T1119 visual regression and performance suites separate in G5.
+5. Keep A026/A027 open until T904/G9 real gold precision evaluation.
+6. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.

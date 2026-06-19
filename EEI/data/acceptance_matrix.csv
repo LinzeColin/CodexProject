@@ -173,7 +173,7 @@ A171,P0,model-governance,"Model management has one canonical registry for formul
 A172,P0,architecture,"Function structure screen maps every module to route, data assets, API, status and acceptance criteria",Catalog/API mapping test,NOT STARTED
 A173,P0,delivery-governance,"Development status explicitly separates resolved, prototyped, specified, not started, blocked and out-of-scope items",Status catalog review,DONE
 A174,P0,delivery-governance,"Development status is visible in navigation and links tasks, risks, controls and acceptance evidence",E2E + link integrity,DONE
-A175,P0,audit,"Any catalog, model, threshold or scope change is captured by PR template, operation log and immutable release artifact",GitHub workflow + audit contract test,NOT STARTED
+A175,P0,audit,"Any catalog, model, threshold or scope change is captured by PR template, operation log and immutable release artifact",GitHub workflow + audit contract test,DONE
 A176,P0,prototype,index.html and standalone.html render the same canonical prototype and do not reference incompatible stale JS/CSS,Hash/content smoke test + browser screenshots,DONE
 A177,P0,github,"GitHub repository includes issue forms, PR template, code owners, catalog integrity workflow, release checklist and backup policy",Repository structure check,DONE
 A178,P0,live-refresh,All visible modules report the same active model version and data snapshot before a global refresh is declared complete,E2E consistency test,DONE
