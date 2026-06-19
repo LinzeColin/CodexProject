@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
 import {
   Activity,
   ArrowDown,
@@ -19,6 +19,7 @@ import {
   PackageSearch,
   Route,
   Scale,
+  Search,
   Settings2,
   ShieldCheck,
   Star
@@ -98,6 +99,44 @@ type FocusScenario = {
   nodes: MapNode[];
   edges: MapEdge[];
   nextCenters: FocusKey[];
+};
+
+type HomeSearchResult = {
+  key: string;
+  label: string;
+  description: string;
+  aliases: string[];
+  target: FocusKey;
+  objectType: "entity" | "industry" | "theme" | "facility";
+};
+
+type HomeIndustryEntry = {
+  key: string;
+  name: string;
+  taxonomy: string;
+  entityCount: number;
+  recentChangeCount: number;
+  target: FocusKey;
+};
+
+type HomeWatchItem = {
+  key: FocusKey;
+  label: string;
+  unread: number;
+  state: string;
+};
+
+type HomeRecentEntry = {
+  key: FocusKey;
+  label: string;
+  path: string;
+};
+
+type HomeChangeEntry = {
+  key: string;
+  label: string;
+  severity: string;
+  target: FocusKey;
 };
 
 const navItems: NavItem[] = [
@@ -185,6 +224,102 @@ const stageRows = [
   { id: "SC-10", name: "Data center / Energy", side: "downstream" },
   { id: "SC-12", name: "Customer", side: "downstream" }
 ] as const;
+
+const homeSearchResults: HomeSearchResult[] = [
+  {
+    key: "nvidia",
+    label: "NVIDIA Corporation",
+    description: "legal_entity / AI infrastructure focus",
+    aliases: ["nvda", "nvidia", "gpu", "accelerated computing"],
+    target: "nvidia",
+    objectType: "entity"
+  },
+  {
+    key: "tsmc",
+    label: "TSMC representative foundry",
+    description: "entity / semiconductor manufacturing",
+    aliases: ["tsmc", "taiwan semiconductor", "foundry", "晶圆制造"],
+    target: "foundry",
+    objectType: "entity"
+  },
+  {
+    key: "semiconductors",
+    label: "Semiconductors",
+    description: "industry / taxonomy v4.2",
+    aliases: ["semiconductor", "semiconductors", "半导体", "industry"],
+    target: "nvidia",
+    objectType: "industry"
+  },
+  {
+    key: "ai-cloud",
+    label: "AI cloud demand",
+    description: "theme / customer and infrastructure demand",
+    aliases: ["ai cloud", "cloud", "demand", "customer"],
+    target: "cloud",
+    objectType: "theme"
+  }
+];
+
+const homeIndustries: HomeIndustryEntry[] = [
+  {
+    key: "semiconductors",
+    name: "Semiconductors",
+    taxonomy: "taxonomy-v4.2",
+    entityCount: 8,
+    recentChangeCount: 2,
+    target: "nvidia"
+  },
+  {
+    key: "ai-cloud",
+    name: "AI cloud infrastructure",
+    taxonomy: "taxonomy-v4.2",
+    entityCount: 6,
+    recentChangeCount: 1,
+    target: "cloud"
+  },
+  {
+    key: "energy",
+    name: "Power and data-center energy",
+    taxonomy: "taxonomy-v4.2",
+    entityCount: 3,
+    recentChangeCount: 1,
+    target: "energy"
+  }
+];
+
+const homeWatchItems: HomeWatchItem[] = [
+  { key: "nvidia", label: "NVIDIA", unread: 3, state: "last viewed" },
+  { key: "foundry", label: "Advanced Foundry", unread: 2, state: "upstream" },
+  { key: "equipment", label: "Lithography Equipment", unread: 1, state: "supplier" },
+  { key: "materials", label: "Specialty Materials", unread: 1, state: "materials" },
+  { key: "cloud", label: "Cloud Customer", unread: 2, state: "downstream" }
+];
+
+const homeRecentExplorations: HomeRecentEntry[] = [
+  { key: "nvidia", label: "NVIDIA", path: "NVIDIA" },
+  { key: "foundry", label: "Advanced Foundry", path: "NVIDIA -> Foundry" },
+  { key: "equipment", label: "Lithography Equipment", path: "NVIDIA -> Foundry -> Equipment" }
+];
+
+const homeChanges: HomeChangeEntry[] = [
+  { key: "capital", label: "Capital/control signal refreshed", severity: "material", target: "capital" },
+  { key: "policy", label: "Policy-risk context updated", severity: "watch", target: "policy" },
+  { key: "cloud", label: "Customer-demand path changed", severity: "watch", target: "cloud" }
+];
+
+const homeFreshness = {
+  status: "synthetic_fixture",
+  latestRelationshipObservedAt: "2026-06-19",
+  sourceDocumentCount: 3,
+  coverage: "fixture-v1"
+};
+
+const homeModelStatus = {
+  profile: "Balanced v2",
+  latestCalibration: "scheduled",
+  cadenceDays: 14,
+  nextScheduledFor: "2026-07-03"
+};
 
 const baseEdges: MapEdge[] = [
   {
@@ -488,6 +623,7 @@ export default function Home() {
   const [semanticZoom, setSemanticZoom] = useState<SemanticZoom>("L1");
   const [transitionState, setTransitionState] = useState<TransitionState>("ready");
   const [groupListOpen, setGroupListOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const scenario = scenarios[focusKey];
   const nodeByKey = useMemo(
     () => new Map(scenario.nodes.map((item) => [item.key, item])),
@@ -538,6 +674,17 @@ export default function Home() {
   );
 
   const viewportAnchor = `${focusKey}:${selectedNode.key}:${semanticZoom}`;
+  const visibleSearchResults = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+    if (!normalizedQuery) {
+      return homeSearchResults.slice(0, 3);
+    }
+    return homeSearchResults.filter((result) =>
+      [result.label, result.description, ...result.aliases].some((value) =>
+        value.toLowerCase().includes(normalizedQuery)
+      )
+    );
+  }, [searchQuery]);
 
   function requestCenter(nextFocus: string) {
     setTransitionState("loading");
@@ -554,7 +701,7 @@ export default function Home() {
       );
       setGroupListOpen(false);
       setTransitionState("ready");
-    }, 160);
+    }, 360);
   }
 
   function setCenter(nextFocus: FocusKey) {
@@ -579,6 +726,12 @@ export default function Home() {
     setPath(["nvidia"]);
     setGroupListOpen(false);
     setTransitionState("ready");
+  }
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const firstResult = visibleSearchResults[0] ?? homeSearchResults[0];
+    setCenter(firstResult.target);
   }
 
   useEffect(() => {
@@ -655,14 +808,14 @@ export default function Home() {
           </div>
           <span className="snapshotTag">Synthetic fixture</span>
         </div>
-        <dl className="subjectStats">
+        <dl className="subjectStats" data-testid="home-model-status">
           <div>
             <dt>Snapshot</dt>
             <dd>fixture-v1</dd>
           </div>
           <div>
             <dt>Model</dt>
-            <dd>Balanced v2</dd>
+            <dd>{homeModelStatus.profile}</dd>
           </div>
           <div>
             <dt>Budget</dt>
@@ -670,23 +823,154 @@ export default function Home() {
               {displayNodes.length} / {displayEdges.length}
             </dd>
           </div>
+          <div>
+            <dt>Calibration</dt>
+            <dd>
+              {homeModelStatus.latestCalibration} / {homeModelStatus.cadenceDays}d /{" "}
+              {homeModelStatus.nextScheduledFor}
+            </dd>
+          </div>
         </dl>
-        <div className="fixtureDisclosure" data-testid="fixture-disclosure">
+        <div
+          className="fixtureDisclosure"
+          data-testid="fixture-disclosure"
+          data-freshness-status={homeFreshness.status}
+        >
           <strong>Fixture-only data</strong>
           <span>Visible synthetic notices are required; no live fact claim is shown.</span>
         </div>
-        <div className="watchlistStack" aria-label="关注主体">
-          {(["nvidia", "foundry", "equipment", "materials", "cloud"] as FocusKey[]).map((key) => (
+
+        <form
+          aria-label="全局搜索"
+          className="homeSearch"
+          data-endpoint="/v1/entities"
+          data-primary-actions-to-focus="2"
+          data-supported-types="legal_entity,industry,theme,facility"
+          data-testid="home-global-search"
+          onSubmit={submitSearch}
+          role="search"
+        >
+          <label htmlFor="global-search-input">全局搜索</label>
+          <div className="searchInputRow">
+            <Search size={16} aria-hidden="true" />
+            <input
+              autoComplete="off"
+              data-testid="global-search-input"
+              id="global-search-input"
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="NVIDIA, TSMC, 半导体"
+              type="search"
+              value={searchQuery}
+            />
+            <button data-testid="global-search-submit" type="submit">
+              打开
+            </button>
+          </div>
+          <div className="searchResults" data-testid="global-search-results">
+            {visibleSearchResults.map((result) => (
+              <button
+                data-object-type={result.objectType}
+                data-testid={`search-result-${result.key}`}
+                key={result.key}
+                onClick={() => setCenter(result.target)}
+                type="button"
+              >
+                <span>{result.label}</span>
+                <small>{result.description}</small>
+              </button>
+            ))}
+          </div>
+        </form>
+
+        <section className="homeSection" aria-label="行业入口" data-testid="home-industries">
+          <header>
+            <span>行业</span>
+            <small>v4.2</small>
+          </header>
+          <div className="compactList">
+            {homeIndustries.map((industry) => (
+              <button
+                data-testid={`home-industry-${industry.key}`}
+                key={industry.key}
+                onClick={() => setCenter(industry.target)}
+                type="button"
+              >
+                <span>{industry.name}</span>
+                <small>
+                  {industry.entityCount} entities / {industry.recentChangeCount} changes
+                </small>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="homeSection" aria-label="关注主体" data-testid="home-watchlist">
+          <header>
+            <span>我的关注</span>
+            <small>{homeWatchItems.reduce((total, item) => total + item.unread, 0)} unread</small>
+          </header>
+          <div className="watchlistStack">
+            {homeWatchItems.map((item) => (
             <button
-              className={key === focusKey ? "watchItem current" : "watchItem"}
-              key={key}
-              onClick={() => setCenter(key)}
+              className={item.key === focusKey ? "watchItem current" : "watchItem"}
+              data-testid={`home-watchlist-${item.key}`}
+              key={item.key}
+              onClick={() => setCenter(item.key)}
               type="button"
             >
-              <span>{key === "nvidia" ? "NVIDIA" : entityLabels[key].replace("Synthetic ", "")}</span>
+              <span>{item.label}</span>
+              <small>{item.unread} / {item.state}</small>
               <Route size={16} aria-hidden="true" />
             </button>
           ))}
+          </div>
+        </section>
+
+        <section className="homeSection" aria-label="最近探索" data-testid="home-recent-explorations">
+          <header>
+            <span>探索记录</span>
+            <small>{homeRecentExplorations.length}</small>
+          </header>
+          <div className="compactList">
+            {homeRecentExplorations.map((entry) => (
+              <button
+                data-testid={`home-recent-${entry.key}`}
+                key={entry.key}
+                onClick={() => setCenter(entry.key)}
+                type="button"
+              >
+                <span>{entry.label}</span>
+                <small>{entry.path}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="homeSection" aria-label="重要变化" data-testid="home-changes">
+          <header>
+            <span>重要变化</span>
+            <small>{homeChanges.length}</small>
+          </header>
+          <div className="compactList">
+            {homeChanges.map((change) => (
+              <button
+                data-testid={`home-change-${change.key}`}
+                key={change.key}
+                onClick={() => setCenter(change.target)}
+                type="button"
+              >
+                <span>{change.label}</span>
+                <small>{change.severity}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <div className="freshnessGrid" data-testid="home-freshness">
+          <span>{homeFreshness.status}</span>
+          <span>{homeFreshness.latestRelationshipObservedAt}</span>
+          <span>{homeFreshness.sourceDocumentCount} sources</span>
+          <span>{homeFreshness.coverage}</span>
         </div>
       </section>
 

@@ -151,6 +151,10 @@ button {
   padding: 20px;
 }
 
+.focusPanel {
+  overflow-y: auto;
+}
+
 .subjectHeader,
 .canvasTopbar,
 .inspectorHeader {
@@ -256,8 +260,146 @@ dd {
 }
 
 .watchItem span,
+.watchItem small,
 .actionStack button {
   overflow-wrap: anywhere;
+}
+
+.watchItem {
+  min-height: 42px;
+}
+
+.watchItem small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.homeSearch,
+.homeSection {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.homeSearch label,
+.homeSection header {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 720;
+  text-transform: uppercase;
+}
+
+.homeSection header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.homeSection header small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 620;
+  text-transform: none;
+}
+
+.searchInputRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfc;
+  padding: 6px 8px;
+}
+
+.searchInputRow input {
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+}
+
+.searchInputRow button,
+.searchResults button,
+.compactList button {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fbfcfc;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.searchInputRow button {
+  min-height: 28px;
+  padding: 0 9px;
+  color: #134aa1;
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.searchResults,
+.compactList {
+  display: grid;
+  gap: 6px;
+}
+
+.searchResults button,
+.compactList button {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  min-height: 42px;
+  padding: 7px 9px;
+  text-align: left;
+}
+
+.searchResults button span,
+.compactList button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 680;
+}
+
+.searchResults button small,
+.compactList button small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.freshnessGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.freshnessGrid span {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fbfcfc;
+  padding: 6px 8px;
+  color: #39443f;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.searchInputRow:focus-within,
+.searchInputRow button:focus-visible,
+.searchResults button:focus-visible,
+.compactList button:focus-visible,
+.watchItem:focus-visible {
+  outline: 2px solid #1f6feb;
+  outline-offset: 2px;
 }
 
 .canvas {

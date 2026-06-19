@@ -27,8 +27,8 @@ A025,P0,data,Synthetic fixtures are visibly marked and never presented as live f
 A026,P0,data,Entity resolution precision is >=95% on at least 50 cases,Gold evaluation,NOT STARTED
 A027,P0,data,Relationship precision is >=90% on at least 100 cases,Gold evaluation,NOT STARTED
 A028,P0,data,Research/source/metric/parameter registries load without malformed rows,Static validation,DONE
-A029,P0,home,"Home shows global search, industries, Watchlist, recent explorations, changes and freshness",E2E,NOT STARTED
-A030,P0,home,Home shows active scoring profile and last/next calibration status,E2E,NOT STARTED
+A029,P0,home,"Home shows global search, industries, Watchlist, recent explorations, changes and freshness",E2E,DONE
+A030,P0,home,Home shows active scoring profile and last/next calibration status,E2E,DONE
 A031,P0,industry,Industry list is human-readable and versioned,API/UI test,DONE
 A032,P0,industry,"Industry page shows chain stages, subindustries, entities, bottlenecks, capital, policy and changes",E2E,NOT STARTED
 A033,P0,industry,Entities may have primary and secondary industries,API/data test,DONE
@@ -37,8 +37,8 @@ A035,P0,watchlist,"Local-user Watchlist can create, add, remove, restore and per
 A036,P0,watchlist,"Watchlist supports entity, industry, theme and facility items",API test,DONE
 A037,P0,watchlist,Watchlist shows unread changes and saved view/profile state,E2E,NOT STARTED
 A038,P0,search,Search distinguishes aliases and entity types,Search integration,DONE
-A039,P0,home,New user reaches a company focus page within three primary actions,E2E,NOT STARTED
-A040,P0,accessibility,Home and industry core controls are keyboard reachable,Playwright/a11y,NOT STARTED
+A039,P0,home,New user reaches a company focus page within three primary actions,E2E,DONE
+A040,P0,accessibility,Home and industry core controls are keyboard reachable,Playwright/a11y,DONE
 A041,P0,explore,"Explore API accepts focus, layers, direction, hops, as-of, profile, filters and budget",Contract/integration,NOT STARTED
 A042,P0,explore,Default query is one hop and bounded to configured initial budget,Boundary test,NOT STARTED
 A043,P0,explore,"Hard limits enforce hops<=2, nodes<=500, edges<=2000 and path length<=8",Boundary/negative tests,NOT STARTED

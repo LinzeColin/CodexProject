@@ -29,6 +29,69 @@ test("renders the watchlist-first EEI workspace", async ({ page }) => {
   await expect(page.getByText("Live facts: disabled")).toBeVisible();
 });
 
+test("shows user-oriented home contract entry points and model freshness", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByTestId("home-global-search")).toHaveAttribute(
+    "data-endpoint",
+    "/v1/entities"
+  );
+  await expect(page.getByTestId("home-global-search")).toHaveAttribute(
+    "data-supported-types",
+    "legal_entity,industry,theme,facility"
+  );
+  await expect(page.getByTestId("global-search-input")).toBeVisible();
+  await expect(page.getByTestId("global-search-results")).toContainText("NVIDIA Corporation");
+  await expect(page.getByTestId("home-industries")).toContainText("Semiconductors");
+  await expect(page.getByTestId("home-industries")).toContainText("AI cloud infrastructure");
+  await expect(page.getByTestId("home-watchlist")).toContainText("NVIDIA");
+  await expect(page.getByTestId("home-watchlist")).toContainText("unread");
+  await expect(page.getByTestId("home-recent-explorations")).toContainText(
+    "NVIDIA -> Foundry"
+  );
+  await expect(page.getByTestId("home-changes")).toContainText("Capital/control signal refreshed");
+  await expect(page.getByTestId("home-freshness")).toContainText("synthetic_fixture");
+  await expect(page.getByTestId("home-freshness")).toContainText("3 sources");
+  await expect(page.getByTestId("home-model-status")).toContainText("Balanced v2");
+  await expect(page.getByTestId("home-model-status")).toContainText("scheduled / 14d");
+  await expect(page.getByTestId("home-model-status")).toContainText("2026-07-03");
+});
+
+test("reaches company focus within three actions and keeps home controls keyboard reachable", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  await expect(page.getByTestId("home-global-search")).toHaveAttribute(
+    "data-primary-actions-to-focus",
+    "2"
+  );
+  await page.getByTestId("global-search-input").focus();
+  await page.getByTestId("global-search-input").fill("tsmc");
+  await page.getByTestId("global-search-input").press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
+
+  await page.getByTestId("home-industry-semiconductors").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText("NVIDIA");
+
+  await page.getByTestId("home-watchlist-cloud").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Cloud Customer");
+
+  await page.getByTestId("home-recent-equipment").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText(
+    "Synthetic Lithography Equipment Co."
+  );
+
+  await page.getByTestId("home-change-policy").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText(
+    "Synthetic Export Control Context"
+  );
+});
+
 test("exposes the Objects and Scope navigation screen with counts definitions and exports", async ({
   page
 }) => {

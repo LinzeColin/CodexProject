@@ -113,8 +113,10 @@ TR-FUN-EXP-08-A033,FUN-EXP-08,A033,T302,API/data test,scripts/load_synthetic_fix
 TR-FUN-EXP-08-A034,FUN-EXP-08,A034,"T302,T305,T409",E2E,artifacts/tests/a034/,NOT_STARTED,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
 TR-FUN-EXP-08-A135,FUN-EXP-08,A135,"T1102,T1120",E2E screenshot,artifacts/tests/a135/,NOT_STARTED,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
 TR-FUN-EXP-08-A189,FUN-EXP-08,A189,"T202,T302,T305,T409,T1120",catalog validation,artifacts/tests/a189/,NOT_STARTED,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
-TR-FUN-RM-01-A029,FUN-RM-01,A029,"T301,T304,T306",E2E,artifacts/tests/a029/,NOT_STARTED,derived_from_task,Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
-TR-FUN-RM-01-A030,FUN-RM-01,A030,T301,E2E,artifacts/tests/a030/,NOT_STARTED,derived_from_task,Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
+TR-FUN-RM-01-A029,FUN-RM-01,A029,"T301,T304,T306",E2E,apps/web/src/app/page.tsx;tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
+TR-FUN-RM-01-A030,FUN-RM-01,A030,"T301,T304",E2E,apps/web/src/app/page.tsx;tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
+TR-FUN-RM-01-A039,FUN-RM-01,A039,T304,E2E,apps/web/src/app/page.tsx;tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
+TR-FUN-RM-01-A040,FUN-RM-01,A040,T304,Playwright/a11y,apps/web/src/app/page.tsx;tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
 TR-FUN-RM-01-A035,FUN-RM-01,A035,"T303,T306",Integration/E2E,apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
 TR-FUN-RM-01-A036,FUN-RM-01,A036,T303,API test,apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md
 TR-FUN-RM-01-A037,FUN-RM-01,A037,T303,E2E,artifacts/tests/a037/,NOT_STARTED,derived_from_task,Codex implementation,docs/14_DEFAULT_HOME_AND_INTERACTION_SPEC.md

@@ -763,3 +763,38 @@ Residual risks:
 
 - Watchlist UI still needs to consume detail, saved state, unread changes, and restore flows.
 - Current Watchlist API is proven on synthetic fixtures; live ingestion and alert freshness remain later MVP tasks.
+
+## 2026-06-19 - Phase 1 / G3 T304 User-oriented home page
+
+Status: T304 LOCAL PASS; G3 IN PROGRESS
+
+Completed:
+
+- Added user-oriented home entry controls to the existing Watchlist-first graph workspace without reverting to an industry-card dashboard.
+- Added global search projection for `/v1/entities`, with legal-entity, industry, theme, and facility supported-type metadata.
+- Added visible industries, Watchlist, recent explorations, important changes, freshness, active scoring profile, and calibration cadence/status.
+- Added keyboard-reachable home controls for search, industry, Watchlist, recent exploration, and change-feed entry points.
+- Added a new-user path from search query `tsmc` to a company focus within two primary actions.
+- Marked T304 as `DONE`; marked A029, A030, A039, and A040 as `DONE`.
+- Added missing A039/A040 acceptance traceability rows and updated the canonical trace count from 213 to 215.
+- Adjusted the reroot loading state to 360ms so the existing transition test observes the loading state and the interaction remains within the documented 320-420ms animation threshold.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 12 tests.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A029 is covered by `apps/web/src/app/page.tsx` and `tests/e2e/home.spec.ts` for global search, industries, Watchlist, recent explorations, changes, and freshness.
+- A030 is covered by the model status E2E assertions for active profile, calibration status, cadence, and next scheduled date.
+- A039 is covered by the search-to-company-focus E2E path with `data-primary-actions-to-focus="2"`.
+- A040 is covered by keyboard E2E assertions across home search, industry, Watchlist, recent exploration, and change-feed controls.
+
+Residual risks:
+
+- Homepage data is still a synthetic UI projection of the already-proven `/v1/home` contract; live frontend API hydration is not implemented in T304.
+- Industry landscape UI remains open in T305, and Watchlist unread/saved-view E2E remains open in T306/A037.
