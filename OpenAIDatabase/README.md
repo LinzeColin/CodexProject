@@ -130,9 +130,8 @@ The app is one merged platform with multiple selectable data-source slices.
 The homepage data-source selector must expose exactly three choices:
 `总数据源` (all data sources together), `ChatGPT`, and `Codex`. Galaxy,
 Notion Map, ROI, Obsidian Graph, Timeline, Contribution Grid, Word Cloud,
-Search, and
-recommendations all share the same visual shell; only the selected analysis
-source changes.
+Search, Summary & Iteration, and recommendations all share the same visual
+shell; only the selected analysis source changes.
 
 Future platform sources are registered in
 `config/data_sources/source_registry.json`. Current active internal sources are
@@ -154,8 +153,10 @@ read raw exports or mutate `active_memory.jsonl` directly.
 The committed snapshot is `public_redacted_read_only_visualization`: private
 memory statements are represented as low-sensitive summaries, and public JSON
 must not contain source refs, record hashes, record indexes, local absolute
-paths, conversation refs, or writeback conflict tokens. Full memory content
-remains in the database/search layer for authorized agents.
+paths, conversation refs, writeback conflict tokens, frontend proposal refs,
+statement policy flags, retrieval-weight internals, source-kind internals, or
+sensitivity detail fields. Full memory content remains in the database/search
+layer for authorized agents.
 
 Writeback goes through versioned change proposals. The frontend can create and
 export local proposal JSON from the Inspector, but it cannot mutate
@@ -165,6 +166,12 @@ before changing long-term memory.
 
 Current visualization modes:
 
+- Visual density rule: every navigation page must keep 视觉化程度 80%+ as the
+  default reading surface. Lists and text can exist as drill-down, but Galaxy,
+  Notion Map, ROI Dashboard, Obsidian Graph, Timeline, Contribution Grid, Word
+  Cloud, Search, and Summary & Iteration must all expose evidence-bearing visual
+  marks, charts, graphs, grids, timelines, or signal cards synchronized with the
+  current filters.
 - Interaction Lens: every view shares a compact focus layer between filters and
   the visualization. It shows the current selected node or contribution period,
   active filter chips, previous/next focus buttons, theme focus, and reset
@@ -172,7 +179,9 @@ Current visualization modes:
   database; theme focus only changes the current browser view.
 - Galaxy: Three.js scene. WebGL 正常时不叠加 HTML 点层，并使用不透明 WebGL 背景和逐帧清屏，避免 2D 残影；WebGL 内部程序化星云纹理负责旋臂、核心辉光、尘埃带和星云云团，避免退回只有光点的点云；只有 WebGL fallback 才启用可点击点层。Galaxy 支持 hover 最近星体预览、点击选中后相机自动飞近并聚焦、关联边高亮、关联邻居节点脉冲高亮、右上角视角重置和缩放按钮；hover 只做预览，点击才同步右侧 Inspector。聚焦后必须使用局部邻域布局：高权重邻居进入内环 primary layer，次级邻居进入外环 secondary layer；高连接主题节点只显示 Top 局部邻居和有限焦点边线，其余显示为折叠数量，避免一次性拉出过多边线。选中节点后，画布边缘显示内环邻居小型详情卡，卡片包含标签、层级/分类、权重排名，并可点击跳转到对应邻居节点。
 - Notion Map: project/document nodes linked through atlas edges. 顶部保留简短状态条，说明当前图谱按主题簇、节点详情和项目/决策关系读取。
-- ROI Dashboard: memories sorted by `metrics.roi.leverage_score`.
+- ROI Dashboard: memories sorted by `metrics.roi.leverage_score`. It must show
+  synchronized mini-bar visual summaries for level assets, topic categories, and
+  recommended actions so the page is not just numeric cards plus a list.
 - Obsidian Graph: lazy-loaded force-directed graph scene modeled on Obsidian's
   built-in Graph View contract. It supports global graph/local graph, local
   depth, search-file filtering, tag/attachment/existing-file/orphan toggles,
@@ -180,6 +189,10 @@ Current visualization modes:
   time-order animation, center/repel/link force controls, link distance,
   wheel/+/- zoom, drag-to-pan, drag-to-position nodes, hover neighbor
   highlighting, click-to-sync Inspector, and a right-click context menu.
+  图谱设置必须可折叠，折叠后保留清晰的“图谱设置”入口。节点显示名必须采用
+  `层级 · 主题 · 关键词`，关键词不得重复层级或主题词。图谱中必须显式显示
+  `Focus - Connectivity`，包括当前焦点、连接数、可见邻居数、关系密度和层级，
+  不能只靠边线高亮表达连接状态。
 - Timeline: memory, decision, project, and timeline-event nodes are positioned
   by real event dates. 横轴必须显示可读的真实事件日期标签，淡色月份网格只作为背景定位参考；
   点击事件同步 Inspector。
@@ -206,11 +219,17 @@ Current visualization modes:
   `Word Cloud` 三层。Heatmap 显示主题 x 记忆层级密度；Bubble Chart 显示
   主题 ROI 与近期增量；Word Cloud 显示高频语义词。三层都必须可点击并同步右侧
   Inspector，不能只是静态装饰图。
+- Summary & Iteration: 总结与迭代是独立导航板块。它必须显示本次切片的
+  核心画像、决策、近期增量、可行动线索，并内置给 ChatGPT / Codex 等 agent
+  使用的建议 `Personalization / Memory`、`Agents.md / 执行规则`、`config.toml`
+  和 `Memory` 内容，同时显示更新时间。新增、修改、降权/删除含义必须在
+  personalization/config 层表达，不代表删除底层历史备份。
 - Human Summary: Inspector 和搜索复盘页默认展示人能直接使用的内容：
   目前记录了什么、需要做什么、记得做什么、机会/增长方向、风险提醒；低敏
   数据库摘要保留为折叠详情，避免把 agent 内部字段当成主要信息。回答规则、
   决策、项目背景等分类不能只显示模板句，必须提炼成主题化短标题；同类重复
-  只在显示层合并并标注数量，不删除底层历史。
+  只在显示层合并并标注数量，不删除底层历史。搜索复盘页必须有当前结果分布、
+  高频主题、记忆层级、近期/决策等可视化摘要，不能退回纯搜索结果列表。
 - Recommendations: 搜索复盘页内置两个建议板块：
   `Memory（给 ChatGPT / Codex Personalization）：未来回答与个性化` 和
   `Meta Data（给 ChatGPT / Codex Agents.md）：执行规则与验收标准`。每个板块显示新增、修改、
@@ -250,7 +269,8 @@ Real Codex local data sync:
 Notion Map 的图内节点不渲染文字标签；详情通过 title、aria 和 Inspector 查看。
 Obsidian Graph 按 Obsidian Graph View 的文字淡出阈值显示节点标签：默认保持克制，
 缩放、悬停、选中或高连接节点才显示标签，同时通过 hover 邻接高亮和 Inspector 保留
-具体信息入口。
+具体信息入口。记忆节点标签统一显示为 `层级 · 主题 · 关键词`，关键词不能重复层级或
+主题词；设置面板支持折叠，Focus - Connectivity 状态条必须常驻显示焦点连接强度。
 Galaxy 低高度视口保留最小画布高度，HUD 自动换行且不裁切，避免选择卡片压出
 银河画面或遮挡核心区域。
 
@@ -330,10 +350,14 @@ shows both the snapshot generation time and the current page load time. The
 local static server writes its PID under
 `~/Library/Application Support/OpenAIDatabase/MemoryAtlas/server.pid`; the
 browser page sends a same-origin heartbeat while open, and the server exits
-after `MEMORY_ATLAS_IDLE_SECONDS=45` seconds without a heartbeat so closing the
+when closing tab/page triggers the same-origin release endpoint. The frontend
+also clears transient `sessionStorage`, Memory Atlas cache entries, and matching
+service-worker registrations during release; local writeback proposal history is
+preserved for version control and rollback. `MEMORY_ATLAS_IDLE_SECONDS=45`
+remains only as a fallback if page release cannot be delivered, so closing the
 page does not leave a stale background process. `MEMORY_ATLAS_TTL_SECONDS=7200`
 is still kept as a hard maximum session length; set it to `0` only when you
-intentionally want to disable that fallback cap.
+intentionally want to disable that fallback cap. 关闭 tab 必须释放本地服务并清理临时浏览器缓存。
 
 If macOS blocks access because the repository is under `Documents`, allow
 Memory Atlas in System Settings > Privacy & Security > Files and Folders. The

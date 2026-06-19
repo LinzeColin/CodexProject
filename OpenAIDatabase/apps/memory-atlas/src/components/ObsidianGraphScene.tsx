@@ -113,7 +113,7 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
   const [localOnly, setLocalOnly] = useState(false);
   const [depth, setDepth] = useState(1);
   const [query, setQuery] = useState("");
-  const [settingsOpen, setSettingsOpen] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [settings, setSettings] = useState<ObsidianSettings>(DEFAULT_OBSIDIAN_SETTINGS);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [draggingNodeId, setDraggingNodeId] = useState<string | null>(null);
@@ -133,6 +133,7 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
 
   const activeFocusId = hoveredNodeId ?? selectedNode?.id ?? null;
   const activeNeighborhood = useMemo(() => buildNeighborhood(activeFocusId, graph.edges), [activeFocusId, graph.edges]);
+  const focusStats = useMemo(() => buildFocusConnectivity(activeFocusId, graph.nodes, graph.edges), [activeFocusId, graph.nodes, graph.edges]);
   const visibleNodeIds = useMemo(
     () => new Set(graph.nodes.filter((node) => node.visibleAt <= revealProgress).map((node) => node.node.id)),
     [graph.nodes, revealProgress],
@@ -268,8 +269,8 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
     <div className="visual-workspace obsidian-map obsidian-graph-view" ref={containerRef}>
       <div className="surface-heading compact">
         <div>
-          <p className="eyebrow">Obsidian Graph View / 力导向 / 可拖拽缩放</p>
-          <h2>像 Obsidian 内置图谱一样探索记忆节点、关系、过滤器、分组和力参数</h2>
+          <p className="eyebrow">Obsidian 图谱</p>
+          <h2>拖拽、缩放、搜索和聚焦记忆关系</h2>
         </div>
         <span>{dataset.nodes.length} 个节点 / {dataset.edges.length} 条连接</span>
       </div>
@@ -288,15 +289,35 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
           <button aria-label="缩小图谱" title="缩小" type="button" onClick={() => zoomBy(-1)}><Minus size={15} /></button>
           <button aria-label="放大图谱" title="放大" type="button" onClick={() => zoomBy(1)}><Plus size={15} /></button>
           <button aria-label="重置图谱视角" title="重置视角" type="button" onClick={resetView}><RotateCcw size={15} /></button>
-          <button aria-label="打开或关闭图谱设置" title="图谱设置" type="button" onClick={() => setSettingsOpen((value) => !value)}><Settings size={15} /></button>
+          <button
+            aria-expanded={settingsOpen}
+            aria-label="打开或收起图谱设置"
+            title="图谱设置"
+            type="button"
+            onClick={() => setSettingsOpen((value) => !value)}
+          >
+            <Settings size={15} />
+          </button>
         </div>
       </div>
 
       <div className="obsidian-status-strip" aria-label="图谱状态">
-        <span><b>{localOnly ? "局部图" : "全局图"}</b><em>{localOnly && selectedNode ? `${selectedNode.label} · ${depth} 层` : "全部可见关系"}</em></span>
+        <span><b>{localOnly ? "局部图" : "全局图"}</b><em>{localOnly && selectedNode ? `${displayNodeLabel(selectedNode)} · ${depth} 层` : "全部可见关系"}</em></span>
         <span><b>筛选</b><em>{query.trim() || "无搜索词"}</em></span>
         <span><b>增量</b><em>{formatDelta(deltaStats.deltaCount, deltaStats.deltaRate)}</em></span>
         <span><b>隐藏</b><em>{dataset.hiddenByLimit} 个超限节点 / {dataset.orphanCount} 个孤立节点</em></span>
+      </div>
+      <div className="obsidian-focus-connectivity" aria-label="Focus - Connectivity">
+        <div>
+          <span>Focus - Connectivity</span>
+          <strong>{focusStats.title}</strong>
+        </div>
+        <dl>
+          <div><dt>连接</dt><dd>{focusStats.degree}</dd></div>
+          <div><dt>可见邻居</dt><dd>{focusStats.visibleNeighborCount}</dd></div>
+          <div><dt>关系密度</dt><dd>{focusStats.density}</dd></div>
+          <div><dt>层级</dt><dd>{focusStats.tier}</dd></div>
+        </dl>
       </div>
 
       <div className="obsidian-scene-shell">
@@ -358,7 +379,7 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
                     className={`obsidian-node${selected ? " selected" : ""}${hovered ? " hovered" : ""}${related ? "" : " dimmed"}`}
                     role="button"
                     tabIndex={0}
-                    aria-label={`${kindLabel(item.node.kind)} · ${item.node.label}`}
+                    aria-label={`${kindLabel(item.node.kind)} · ${displayNodeLabel(item.node, item.groupLabel)}`}
                     transform={`translate(${item.x} ${item.y})`}
                     onPointerDown={(event) => {
                       event.stopPropagation();
@@ -390,7 +411,7 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
                       }
                     }}
                   >
-                    <title>{`${kindLabel(item.node.kind)} · ${item.node.label} · ${item.degree} 条连接`}</title>
+                    <title>{`${kindLabel(item.node.kind)} · ${displayNodeLabel(item.node, item.groupLabel)} · ${item.degree} 条连接`}</title>
                     <circle className="obsidian-node-aura" r={item.r * 2.25} fill={item.color} opacity={selected || hovered ? 0.2 : 0.08} />
                     <circle className="obsidian-node-core" r={item.r} fill={item.color} />
                     {labelVisible && (
@@ -412,6 +433,7 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
             settings={settings}
             setSetting={updateSetting}
             groups={dataset.groups}
+            onClose={() => setSettingsOpen(false)}
             onReset={() => {
               setSettings(DEFAULT_OBSIDIAN_SETTINGS);
               setQuery("");
@@ -420,6 +442,12 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
               resetView();
             }}
           />
+        )}
+        {!settingsOpen && (
+          <button className="obsidian-settings-collapsed" type="button" onClick={() => setSettingsOpen(true)}>
+            <Settings size={14} />
+            图谱设置
+          </button>
         )}
 
         {contextNode && (
@@ -458,6 +486,7 @@ function ObsidianSettingsPanel({
   settings,
   setSetting,
   groups,
+  onClose,
   onReset,
 }: {
   query: string;
@@ -465,13 +494,17 @@ function ObsidianSettingsPanel({
   settings: ObsidianSettings;
   setSetting: <K extends keyof ObsidianSettings>(key: K, value: ObsidianSettings[K]) => void;
   groups: Array<{ label: string; color: string; count: number; query: string }>;
+  onClose: () => void;
   onReset: () => void;
 }) {
   return (
     <aside className="obsidian-settings-panel" aria-label="Obsidian 图谱设置">
       <div className="obsidian-settings-head">
         <strong>图谱设置</strong>
-        <button type="button" onClick={onReset}>恢复默认</button>
+        <div>
+          <button type="button" onClick={onReset}>默认</button>
+          <button type="button" onClick={onClose}>收起</button>
+        </div>
       </div>
       <section>
         <h3>过滤器</h3>
@@ -688,7 +721,7 @@ function buildObsidianDataset(
 
   if (normalizedQuery) {
     candidates = candidates.filter((node) =>
-      [node.label, node.statement, node.category, node.memory_tier, node.source_kind, node.source_label, node.data_source, node.visual?.cluster]
+      [node.label, node.statement, node.category, node.memory_tier, node.source_label, node.data_source, node.visual?.cluster]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(normalizedQuery)),
     );
@@ -740,7 +773,7 @@ function buildObsidianDataset(
       node,
       r: nodeRadius(node, nodeDegree),
       color: nodeColor(node),
-      label: shortNodeLabel(node, node.kind === "memory" ? 26 : 22),
+      label: shortNodeLabel(node, node.kind === "memory" ? 34 : 22),
       degree: nodeDegree,
       depth: depthByNode.get(node.id) ?? 0,
       visibleAt: visibleAt.get(node.id) ?? 1,
@@ -848,6 +881,31 @@ function buildNeighborhood(focusId: string | null, edges: ObsidianSimEdge[]): Se
   return ids;
 }
 
+function buildFocusConnectivity(focusId: string | null, nodes: ObsidianSimNode[], edges: ObsidianSimEdge[]) {
+  const focus = focusId ? nodes.find((node) => node.node.id === focusId) : null;
+  if (!focus) {
+    return {
+      title: "选择或悬停一个节点",
+      degree: 0,
+      visibleNeighborCount: 0,
+      density: "0.00%",
+      tier: "无",
+    };
+  }
+  const relatedEdges = edges.filter((edge) => edge.source.node.id === focus.node.id || edge.target.node.id === focus.node.id);
+  const neighbors = new Set(
+    relatedEdges.map((edge) => (edge.source.node.id === focus.node.id ? edge.target.node.id : edge.source.node.id)),
+  );
+  const possibleEdges = Math.max(1, nodes.length - 1);
+  return {
+    title: displayNodeLabel(focus.node, focus.groupLabel),
+    degree: relatedEdges.length,
+    visibleNeighborCount: neighbors.size,
+    density: `${((relatedEdges.length / possibleEdges) * 100).toFixed(2)}%`,
+    tier: normalizeMemoryTier(focus.node.memory_tier) || kindLabel(focus.node.kind),
+  };
+}
+
 function degreeMap(edges: Array<AtlasEdge | ObsidianEdgeDatum>): Map<string, number> {
   const counts = new Map<string, number>();
   for (const edge of edges) {
@@ -946,8 +1004,66 @@ function kindLabel(kind: AtlasNode["kind"]): string {
 }
 
 function shortNodeLabel(node: AtlasNode, length: number): string {
-  const prefix = node.kind === "memory" ? "" : `${kindLabel(node.kind)} · `;
-  return truncate(`${prefix}${node.label}`, length);
+  return truncate(displayNodeLabel(node), length);
+}
+
+function displayNodeLabel(node: AtlasNode, groupLabel?: string): string {
+  if (node.kind !== "memory") return `${kindLabel(node.kind)} · ${node.label}`;
+  const tier = normalizeMemoryTier(node.memory_tier);
+  const theme = compactThemeLabel(node.visual?.cluster || groupLabel || node.category || "");
+  const keyword = memoryKeyword(node, tier, theme);
+  return [tier, theme, keyword].filter(Boolean).join(" · ");
+}
+
+function compactThemeLabel(value: string): string {
+  const themeMap: Record<string, string> = {
+    "memory-rag-continuity": "长期记忆",
+    "codex-agent-workflow": "Codex 工作流",
+    "learning-notion-nitrosend": "学习/Notion",
+    "rotary-kiln-industrial": "工业服务",
+    "finance-trading-probability": "金融概率",
+    "course-reporting": "课程报告",
+    "ai-era-growth": "AI 成长",
+    "formal-engineering-delivery": "系统交付",
+    uncategorized: "其他主题",
+  };
+  const normalized = value.trim();
+  if (!normalized) return "";
+  return themeMap[normalized] ?? normalized.split("/")[0].trim();
+}
+
+function memoryKeyword(node: AtlasNode, tier: string, theme: string): string {
+  const source = `${node.label} ${node.statement ?? ""} ${node.category ?? ""}`;
+  const banned = normalizeForCompare(`${tier} ${theme} ${node.memory_tier ?? ""} ${node.visual?.cluster ?? ""}`);
+  const candidates = source
+    .replace(/静态图谱低敏摘要[:：]?/g, " ")
+    .replace(/redacted_source_hash=[A-Za-z0-9_-]+/g, " ")
+    .split(/[，。；、|/·:：;,\s]+/)
+    .map((token) => token.trim())
+    .filter((token) => token.length >= 2 && token.length <= 18)
+    .filter((token) => !/^\d{4}(-\d{2}){0,2}$/.test(token))
+    .filter((token) => !normalizeForCompare(token).includes("unknown"))
+    .filter((token) => {
+      const normalized = normalizeForCompare(token);
+      return normalized && !banned.includes(normalized) && !normalized.includes("层级") && !normalized.includes("主题");
+    });
+  return dedupe(candidates).slice(0, 2).join(" / ") || kindLabel(node.kind);
+}
+
+function normalizeForCompare(value: string): string {
+  return value.toLowerCase().replace(/[\s/·:_-]+/g, "");
+}
+
+function dedupe(values: string[]): string[] {
+  const seen = new Set<string>();
+  const output: string[] = [];
+  for (const value of values) {
+    const key = normalizeForCompare(value);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    output.push(value);
+  }
+  return output;
 }
 
 function formatDelta(deltaCount: number, deltaRate: number | null): string {

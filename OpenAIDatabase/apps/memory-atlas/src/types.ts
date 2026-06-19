@@ -6,7 +6,8 @@ export type ViewKey =
   | "timeline"
   | "contribution"
   | "wordcloud"
-  | "search";
+  | "search"
+  | "summary";
 
 export interface AtlasNode {
   id: string;
@@ -22,18 +23,6 @@ export interface AtlasNode {
   importance?: string;
   validity?: string;
   confidence?: string;
-  sensitivity?: string;
-  retrieval_weight?: string;
-  evidence_count?: number;
-  source_kind?: string;
-  source_file?: string;
-  proposal_ref?: {
-    schema_version: string;
-    allowed_actions: string[];
-    requires_conflict_check: boolean;
-    client_payload?: string;
-    conflict_tokens?: string;
-  };
   visual?: {
     cluster?: string;
     color?: string;
@@ -47,16 +36,10 @@ export interface AtlasNode {
   metrics?: {
     weight_score?: number;
     roi?: {
-      retrieval_weight_score?: number;
-      evidence_count?: number;
-      recency_days?: number | null;
-      decision_impact?: number;
-      sensitivity_penalty?: number;
       staleness_status?: string;
       leverage_score?: number;
       recommended_action?: string;
     };
-    usage?: Record<string, number>;
   };
 }
 

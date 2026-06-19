@@ -438,7 +438,7 @@ is_managed_server() {{
   local pid="$1"
   local command_line
   command_line="$(ps -p "$pid" -o command= 2>/dev/null || true)"
-  [[ ( "$command_line" == *"memory_atlas_server.py"* && "$command_line" == *"$RUNTIME_DIR"* ) || ( "$command_line" == *"python3 -m http.server"* && "$command_line" == *"$RUNTIME_DIR"* ) ]]
+  [[ ( "$command_line" == *"memory_atlas_server.py"* && "$command_line" == *"$RUNTIME_DIR"* ) || ( "$command_line" == *"-m http.server"* && "$command_line" == *"$RUNTIME_DIR"* ) ]]
 }}
 
 write_runtime_server() {{
@@ -465,6 +465,9 @@ idle_seconds = int(sys.argv[4])
 started_at = time.time()
 last_seen_at = started_at
 had_client = False
+release_requested = False
+released_at: float | None = None
+shutdown_timer: threading.Timer | None = None
 state_lock = threading.Lock()
 httpd: ThreadingHTTPServer | None = None
 
@@ -482,6 +485,36 @@ def snapshot_mtime() -> int | None:
     if not snapshot.exists():
         return None
     return int(snapshot.stat().st_mtime)
+
+
+def request_shutdown(reason: str) -> None:
+    global had_client, last_seen_at, release_requested, released_at, shutdown_timer
+    start_timer = False
+    with state_lock:
+        had_client = True
+        last_seen_at = time.time()
+        release_requested = True
+        released_at = last_seen_at
+        if shutdown_timer is None:
+            start_timer = True
+    if not start_timer:
+        return
+    sys.stderr.write("Memory Atlas server release requested (%s); shutting down.\\n" % reason)
+
+    def shutdown_later() -> None:
+        if httpd is not None:
+            httpd.shutdown()
+
+    timer = threading.Timer(0.2, shutdown_later)
+    timer.daemon = True
+    with state_lock:
+        shutdown_timer = timer
+    timer.start()
+
+
+class MemoryAtlasHTTPServer(ThreadingHTTPServer):
+    daemon_threads = True
+    allow_reuse_address = True
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -514,12 +547,17 @@ class Handler(SimpleHTTPRequestHandler):
             with state_lock:
                 last_seen = int(last_seen_at)
                 active = had_client
+                released = release_requested
+                release_epoch = int(released_at) if released_at else None
             self.send_json({{
                 "status": "running",
                 "pid": os.getpid(),
                 "started_at_epoch": int(started_at),
                 "last_seen_epoch": last_seen,
                 "had_client": active,
+                "release_requested": released,
+                "released_at_epoch": release_epoch,
+                "active_thread_count": threading.active_count(),
                 "idle_seconds": idle_seconds,
                 "ttl_seconds": ttl_seconds,
                 "snapshot_mtime_epoch": snapshot_mtime(),
@@ -536,10 +574,7 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_empty()
             return
         if path == "/__memory_atlas_release":
-            global had_client, last_seen_at
-            with state_lock:
-                had_client = True
-                last_seen_at = time.time() - max(0, idle_seconds - 8)
+            request_shutdown("page_release")
             self.send_empty()
             return
         self.send_error(404, "Not found")
@@ -552,6 +587,12 @@ def monitor_idle() -> None:
         with state_lock:
             idle_for = now - last_seen_at
             client_seen = had_client
+            release_seen = release_requested
+        if release_seen:
+            sys.stderr.write("Memory Atlas server release flag observed; shutting down.\\n")
+            if httpd is not None:
+                httpd.shutdown()
+            return
         if ttl_seconds > 0 and now - started_at >= ttl_seconds:
             sys.stderr.write("Memory Atlas server reached TTL; shutting down.\\n")
             if httpd is not None:
@@ -570,8 +611,7 @@ def main() -> int:
         sys.stderr.write("runtime directory missing: %s\\n" % runtime_dir)
         return 1
     handler = partial(Handler, directory=str(runtime_dir))
-    httpd = ThreadingHTTPServer(("127.0.0.1", port), handler)
-    httpd.daemon_threads = True
+    httpd = MemoryAtlasHTTPServer(("127.0.0.1", port), handler)
     threading.Thread(target=monitor_idle, daemon=True).start()
     try:
         httpd.serve_forever()

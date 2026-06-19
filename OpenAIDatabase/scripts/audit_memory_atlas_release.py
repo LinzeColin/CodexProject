@@ -42,6 +42,7 @@ FORBIDDEN_JSON_KEYS = {
     "evidence",
     "source_ref",
     "conversation_ref",
+    "source_file",
     "record_hash",
     "source_snapshot_hash",
     "record_index",

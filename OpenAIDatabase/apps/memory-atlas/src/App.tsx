@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   Network,
   Orbit,
+  RefreshCw,
   RotateCcw,
   Save,
   Search,
@@ -44,6 +45,7 @@ const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: n
   { key: "contribution", label: "贡献网格", icon: Activity },
   { key: "wordcloud", label: "词云洞察", icon: Cloud },
   { key: "search", label: "搜索与复盘", icon: Search },
+  { key: "summary", label: "总结与迭代", icon: RefreshCw },
 ];
 
 const defaultFilters: AtlasFilters = {
@@ -209,6 +211,8 @@ interface RuntimeState {
 }
 
 const WRITEBACK_QUEUE_KEY = "memory-atlas.writeback.proposals.v1";
+const TRANSIENT_STORAGE_PREFIXES = ["memory-atlas.runtime.", "memory-atlas.cache.", "memory-atlas.temp.", "memory-atlas.view."];
+const TRANSIENT_CACHE_PREFIXES = ["memory-atlas", "memory_atlas", "vite-memory-atlas"];
 const LOCAL_RUNTIME_HEARTBEAT_MS = 10_000;
 const weekdayLabels = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
 const heatStops: HeatStop[] = [
@@ -230,6 +234,49 @@ const writebackActionLabels: Record<WritebackAction, string> = {
   change_tier: "调整层级/分类",
   flag_conflict: "标记冲突或过时",
 };
+
+async function clearTransientBrowserState(): Promise<void> {
+  try {
+    window.sessionStorage.clear();
+  } catch {
+    // Browser privacy settings may block storage access during page release.
+  }
+  try {
+    for (let index = window.localStorage.length - 1; index >= 0; index -= 1) {
+      const key = window.localStorage.key(index);
+      if (!key || key === WRITEBACK_QUEUE_KEY) continue;
+      if (TRANSIENT_STORAGE_PREFIXES.some((prefix) => key.startsWith(prefix))) {
+        window.localStorage.removeItem(key);
+      }
+    }
+  } catch {
+    // Keep release best-effort; the server shutdown signal is still sent.
+  }
+  try {
+    if ("caches" in window) {
+      const cacheKeys = await caches.keys();
+      await Promise.all(
+        cacheKeys
+          .filter((key) => TRANSIENT_CACHE_PREFIXES.some((prefix) => key.startsWith(prefix)))
+          .map((key) => caches.delete(key)),
+      );
+    }
+  } catch {
+    // Cache Storage may be unavailable for static previews or blocked profiles.
+  }
+  try {
+    if ("serviceWorker" in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(
+        registrations
+          .filter((registration) => registration.scope.includes("memory-atlas") || registration.scope.includes("127.0.0.1"))
+          .map((registration) => registration.unregister()),
+      );
+    }
+  } catch {
+    // Memory Atlas does not depend on a service worker; unregister is best-effort cleanup.
+  }
+}
 
 export function App() {
   const [activeView, setActiveView] = useState<ViewKey>("galaxy");
@@ -276,10 +323,14 @@ export function App() {
     let cancelled = false;
     let heartbeatTimer = 0;
     let heartbeatEnabled = false;
+    let released = false;
 
-    const release = () => {
-      if (!heartbeatEnabled) return;
-      const payload = new Blob([JSON.stringify({ reason: "page_release", at: new Date().toISOString() })], {
+    const release = (reason: "page_release" | "react_unmount" = "page_release") => {
+      if (!heartbeatEnabled || released) return;
+      released = true;
+      window.clearInterval(heartbeatTimer);
+      void clearTransientBrowserState();
+      const payload = new Blob([JSON.stringify({ reason, at: new Date().toISOString() })], {
         type: "application/json",
       });
       if (navigator.sendBeacon) {
@@ -288,6 +339,8 @@ export function App() {
       }
       void fetch("/__memory_atlas_release", { method: "POST", body: payload, keepalive: true }).catch(() => undefined);
     };
+
+    const handlePageRelease = () => release("page_release");
 
     const heartbeat = () => {
       if (!heartbeatEnabled) return;
@@ -309,7 +362,8 @@ export function App() {
         setRuntimeState((current) => ({ ...current, serverMode: "本地自释放" }));
         heartbeat();
         heartbeatTimer = window.setInterval(heartbeat, LOCAL_RUNTIME_HEARTBEAT_MS);
-        window.addEventListener("pagehide", release);
+        window.addEventListener("pagehide", handlePageRelease);
+        window.addEventListener("beforeunload", handlePageRelease);
         document.addEventListener("visibilitychange", handleVisibilityChange);
       })
       .catch(() => {
@@ -328,9 +382,10 @@ export function App() {
       cancelled = true;
       window.clearInterval(heartbeatTimer);
       window.clearTimeout(fallbackTimer);
-      window.removeEventListener("pagehide", release);
+      window.removeEventListener("pagehide", handlePageRelease);
+      window.removeEventListener("beforeunload", handlePageRelease);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      release();
+      release("react_unmount");
     };
   }, []);
 
@@ -461,7 +516,7 @@ export function App() {
       <main className={wideView ? "workspace contribution-workspace" : "workspace"}>
         <header className="topbar">
           <div>
-            <p className="eyebrow">独立本地运行 / 派生数据 / 可版本回滚</p>
+            <p className="eyebrow">本地记忆 / 使用行为 / 后续动作</p>
             <h1>{selectedTitle}</h1>
           </div>
           <div className="stat-strip" aria-label="星图总览">
@@ -634,6 +689,9 @@ function ViewRouter({
   if (activeView === "wordcloud") {
     return <WordCloudView nodes={slice.memoryNodes} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
   }
+  if (activeView === "summary") {
+    return <SummaryIterationView atlas={atlas} nodes={slice.memoryNodes} deltaStats={slice.deltaStats} />;
+  }
   return <SearchReview atlas={atlas} nodes={slice.memoryNodes} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
 }
 
@@ -762,6 +820,9 @@ function RoiDashboard({
   const tierValues = filteredMetricValues(nodes, "memory_tier");
   const categoryValues = filteredMetricValues(nodes, "category");
   const globalTierValues = metricValues(atlas, "tier");
+  const tierRows = topRows(tierValues, 4);
+  const categoryRows = topRows(remapValues(categoryValues, humanCategoryLabel), 8);
+  const actionRows = topRows(countBy(nodes, (node) => translateAction(node.metrics?.roi?.recommended_action)), 5);
   const highLeverage = [...nodes]
     .sort((a, b) => (b.metrics?.roi?.leverage_score ?? 0) - (a.metrics?.roi?.leverage_score ?? 0))
     .slice(0, 12);
@@ -771,6 +832,17 @@ function RoiDashboard({
       <InsightCard title="长期资产密度" value={sumValues(tierValues, ["核心画像", "一般"])} note="当前筛选中的核心画像 + 一般" />
       <InsightCard title="临时信息池" value={tierValues["临时"] ?? 0} note={`全局临时 ${globalTierValues["临时"] ?? 0} 条；保留但低权重召回`} />
       <InsightCard title="近期增量" value={deltaStats.recentCount} note={`近 30 天较前 30 天 ${formatSigned(deltaStats.deltaCount)} 条`} />
+      <section className="wide-panel roi-visual-strip" aria-label="ROI 视觉密度分布">
+        <div className="panel-title-row">
+          <h2>ROI 视觉分布</h2>
+          <span>层级、分类和建议动作同步当前筛选</span>
+        </div>
+        <div className="roi-mini-bars">
+          <MiniBarList title="层级资产" rows={tierRows} />
+          <MiniBarList title="主题分类" rows={categoryRows} />
+          <MiniBarList title="建议动作" rows={actionRows} />
+        </div>
+      </section>
       <section className="wide-panel">
         <div className="panel-title-row">
           <h2>优先观察的高杠杆记忆</h2>
@@ -1525,11 +1597,22 @@ function SearchReview({
   onSelectNode: (node: AtlasNode) => void;
 }) {
   const displayNodes = useMemo(() => dedupeNodesForDisplay(nodes).slice(0, 150), [nodes]);
+  const searchVisualRows = useMemo(() => buildSearchVisualRows(nodes), [nodes]);
   return (
     <div className="search-review">
       <DeltaStrip stats={deltaStats} compact />
       <HumanOverviewPanel nodes={nodes} deltaStats={deltaStats} />
-      <AgentRecommendationsPanel atlas={atlas} />
+      <section className="search-visual-summary" aria-label="搜索结果视觉摘要">
+        <div className="panel-title-row">
+          <h3>当前结果分布</h3>
+          <span>{nodes.length.toLocaleString()} 条</span>
+        </div>
+        <div className="search-topic-bars">
+          <MiniBarList title="高频主题" rows={searchVisualRows.topics} />
+          <MiniBarList title="记忆层级" rows={searchVisualRows.tiers} />
+          <MiniBarList title="近期/决策" rows={searchVisualRows.signals} />
+        </div>
+      </section>
       <div className="writeback-banner">
         <strong>写回策略</strong>
         <span>前端以后可以提交修改建议，但只能进入变更提案；受控写入层重新计算冲突、生成版本历史并支持回滚。</span>
@@ -1537,14 +1620,80 @@ function SearchReview({
       {displayNodes.map(({ node, duplicateCount }) => {
         const preview = buildSearchResultPreview(node, duplicateCount);
         return (
-        <button key={node.id} onClick={() => onSelectNode(node)} type="button">
-          <strong>{preview.title}</strong>
-          <span>{preview.summary}</span>
-          <small>{preview.meta}</small>
-        </button>
+          <button key={node.id} onClick={() => onSelectNode(node)} type="button">
+            <strong>{preview.title}</strong>
+            <span>{preview.summary}</span>
+            <small>{preview.meta}</small>
+          </button>
         );
       })}
     </div>
+  );
+}
+
+function MiniBarList({ title, rows }: { title: string; rows: Array<{ label: string; count: number }> }) {
+  const max = Math.max(1, ...rows.map((row) => row.count));
+  return (
+    <div className="mini-bar-list">
+      <strong>{title}</strong>
+      {rows.length ? (
+        rows.map((row) => (
+          <div className="mini-bar-row" key={`${title}-${row.label}`}>
+            <span>{row.label}</span>
+            <i style={{ "--bar-width": `${Math.max(4, Math.round((row.count / max) * 100))}%` } as CSSProperties} aria-hidden="true" />
+            <b>{row.count.toLocaleString()}</b>
+          </div>
+        ))
+      ) : (
+        <p>暂无</p>
+      )}
+    </div>
+  );
+}
+
+function SummaryIterationView({
+  atlas,
+  nodes,
+  deltaStats,
+}: {
+  atlas: MemoryAtlas;
+  nodes: AtlasNode[];
+  deltaStats: DeltaStats;
+}) {
+  const recommendations = atlas.agent_recommendations;
+  const updatedAt = formatUpdatedAt(recommendations?.generated_at || atlas.overview.generated_at);
+  const highlights = useMemo(() => buildIterationHighlights(nodes, deltaStats), [nodes, deltaStats]);
+  return (
+    <div className="summary-iteration-view visual-workspace">
+      <div className="surface-heading compact">
+        <div>
+          <p className="eyebrow">总结与迭代</p>
+          <h2>把当前记忆切片转成可更新的 Personalization、Agents.md 和 Memory 建议</h2>
+        </div>
+        <span>更新时间：{updatedAt}</span>
+      </div>
+      <DeltaStrip stats={deltaStats} compact />
+      <div className="summary-signal-grid" aria-label="总结与迭代关键结论">
+        {highlights.map((item) => (
+          <SummarySignalCard key={item.label} label={item.label} value={item.value} note={item.note} />
+        ))}
+      </div>
+      <HumanOverviewPanel nodes={nodes} deltaStats={deltaStats} />
+      <section className="iteration-panels" aria-label="给 ChatGPT 和 Codex 使用的更新建议">
+        <AgentRecommendationsPanel atlas={atlas} />
+        <ConfigMemoryPanel atlas={atlas} updatedAt={updatedAt} />
+      </section>
+    </div>
+  );
+}
+
+function SummarySignalCard({ label, value, note }: { label: string; value: string | number; note: string }) {
+  return (
+    <article className="summary-signal-card">
+      <span>{label}</span>
+      <strong>{typeof value === "number" ? value.toLocaleString() : value}</strong>
+      <p>{note}</p>
+    </article>
   );
 }
 
@@ -1556,12 +1705,52 @@ function AgentRecommendationsPanel({ atlas }: { atlas: MemoryAtlas }) {
   return (
     <section className="agent-recommendations" aria-label="建议写入 ChatGPT 与 Codex 的内容">
       <div className="panel-title-row">
-        <h3>可写入的长期规则与偏好建议</h3>
-        <span>{recommendations.session_count ? `${recommendations.session_count.toLocaleString()} 个 Codex session` : "待同步"}</span>
+        <h3>Personalization / Agents.md 建议</h3>
+        <span>{formatUpdatedAt(recommendations.generated_at)}</span>
       </div>
       <div className="recommendation-columns">
-        <RecommendationBucket title="Memory（给 ChatGPT / Codex Personalization）：未来回答与个性化" section={recommendations.memory} />
-        <RecommendationBucket title="Meta Data（给 ChatGPT / Codex Agents.md）：执行规则与验收标准" section={recommendations.meta_data} />
+        <RecommendationBucket title="Memory / Personalization" section={recommendations.memory} />
+        <RecommendationBucket title="Agents.md / 执行规则" section={recommendations.meta_data} />
+      </div>
+    </section>
+  );
+}
+
+function ConfigMemoryPanel({ atlas, updatedAt }: { atlas: MemoryAtlas; updatedAt: string }) {
+  const recommendations = atlas.agent_recommendations;
+  const memoryCurrent = recommendations?.memory.current ?? [];
+  const metaCurrent = recommendations?.meta_data.current ?? [];
+  const configItems = [
+    {
+      title: "config.toml",
+      statement: "保留中文优先、真实验证、低上下文成本、每轮输出进度/风险/下一步；写库必须走提案与版本回滚。",
+      count: metaCurrent.length,
+    },
+    {
+      title: "Memory",
+      statement: "优先装载核心画像、长期偏好、项目历史、决策日志和回答规则；短期信息保留但低权重召回。",
+      count: memoryCurrent.length,
+    },
+    {
+      title: "新增/删除/修改",
+      statement: `新增 ${recommendations?.memory.added.length ?? 0} / 修改 ${recommendations?.memory.modified.length ?? 0} / 降权 ${recommendations?.memory.deleted.length ?? 0}；Meta 同步显示在上方。`,
+      count: (recommendations?.memory.added.length ?? 0) + (recommendations?.memory.modified.length ?? 0) + (recommendations?.memory.deleted.length ?? 0),
+    },
+  ];
+  return (
+    <section className="config-memory-panel" aria-label="config.toml 和 Memory 建议">
+      <div className="panel-title-row">
+        <h3>config.toml / Memory</h3>
+        <span>更新时间：{updatedAt}</span>
+      </div>
+      <div className="config-memory-grid">
+        {configItems.map((item) => (
+          <article key={item.title}>
+            <strong>{item.title}</strong>
+            <p>{item.statement}</p>
+            <small>{item.count.toLocaleString()} 条相关建议</small>
+          </article>
+        ))}
       </div>
     </section>
   );
@@ -1811,7 +2000,7 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
         node_id: node.id,
         memory_id: node.memory_id ?? node.id,
         label: node.label,
-        source_file: node.source_file ?? "",
+        source_file: node.source_label ?? node.data_source ?? "visual_snapshot",
         base_date: node.date ?? "",
       },
       action,
@@ -2907,8 +3096,16 @@ function humanCategoryLabel(value: string | undefined): string {
 
 function countBy<T>(items: T[], getKey: (item: T) => string): Record<string, number> {
   return items.reduce<Record<string, number>>((acc, item) => {
-    const key = getKey(item);
+    const key = getKey(item) || "未分类";
     acc[key] = (acc[key] ?? 0) + 1;
+    return acc;
+  }, {});
+}
+
+function remapValues(values: Record<string, number>, mapKey: (key: string) => string): Record<string, number> {
+  return Object.entries(values).reduce<Record<string, number>>((acc, [key, count]) => {
+    const label = mapKey(key) || "未分类";
+    acc[label] = (acc[label] ?? 0) + count;
     return acc;
   }, {});
 }
@@ -2919,6 +3116,25 @@ function topRows(values: Record<string, number>, limit: number): Array<{ label: 
     .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, "zh-CN"))
     .slice(0, limit);
   return rows.length ? rows : [{ label: "暂无数据", count: 0 }];
+}
+
+function buildSearchVisualRows(nodes: AtlasNode[]): {
+  topics: Array<{ label: string; count: number }>;
+  tiers: Array<{ label: string; count: number }>;
+  signals: Array<{ label: string; count: number }>;
+} {
+  const latest = maxNodeDate(nodes) ?? new Date();
+  const recentStart = addDays(latest, -29);
+  return {
+    topics: topRows(countBy(nodes, (node) => compactThemeLabel(humanThemeLabel(node)) || humanCategoryLabel(node.category)), 7),
+    tiers: topRows(countBy(nodes, (node) => normalizeMemoryTier(node.memory_tier)), 4),
+    signals: [
+      { label: "近 30 天", count: nodes.filter((node) => isNodeBetween(node, recentStart, latest)).length },
+      { label: "决策", count: nodes.filter((node) => node.category === "decision").length },
+      { label: "核心画像", count: nodes.filter((node) => normalizeMemoryTier(node.memory_tier) === "核心画像").length },
+      { label: "待行动", count: nodes.filter((node) => /todo|action|执行|继续|需要|下一步/i.test(`${node.label} ${node.statement ?? ""}`)).length },
+    ],
+  };
 }
 
 function buildMapLayout(nodes: AtlasNode[], edges: AtlasEdge[], limit: number): { nodes: LayoutNode[]; edges: LayoutEdge[]; groups: LayoutGroup[] } {
@@ -3688,6 +3904,41 @@ function contributionYears(atlas: MemoryAtlas, nodes: AtlasNode[]): number[] {
   }
   if (!years.size) years.add(new Date().getUTCFullYear());
   return Array.from(years).sort((a, b) => a - b);
+}
+
+function buildIterationHighlights(nodes: AtlasNode[], deltaStats: DeltaStats) {
+  const coreCount = nodes.filter((node) => normalizeMemoryTier(node.memory_tier) === "核心画像").length;
+  const decisionCount = nodes.filter((node) => node.category === "decision").length;
+  const actionCount = nodes.filter((node) => /todo|action|执行|继续|需要|下一步/i.test(`${node.label} ${node.statement ?? ""}`)).length;
+  return [
+    {
+      label: "核心画像",
+      value: coreCount,
+      note: "优先进入 ChatGPT / Codex Personalization，影响默认理解。",
+    },
+    {
+      label: "决策",
+      value: decisionCount,
+      note: "后续 agent 执行时应继承，除非新证据明确推翻。",
+    },
+    {
+      label: "近期增量",
+      value: formatSigned(deltaStats.deltaCount),
+      note: deltaStats.deltaRate === null ? "没有上一周期基准。" : `较上一周期 ${(deltaStats.deltaRate * 100).toFixed(2)}%。`,
+    },
+    {
+      label: "可行动线索",
+      value: actionCount,
+      note: "适合进入下一轮任务、周复盘或项目待办。",
+    },
+  ];
+}
+
+function formatUpdatedAt(value: string | undefined): string {
+  if (!value) return "待同步";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString("zh-CN");
 }
 
 function toDayKey(day: Date): string {

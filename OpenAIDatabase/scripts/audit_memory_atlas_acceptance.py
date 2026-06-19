@@ -285,9 +285,9 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         checks,
         atlas.get("visual_layers", {}).get("primary") == "galaxy"
         and set(atlas.get("visual_layers", {}).get("secondary", []))
-        >= {"notion_map", "roi_dashboard", "obsidian_graph", "timeline", "contribution_grid"},
+        >= {"notion_map", "roi_dashboard", "obsidian_graph", "timeline", "contribution_grid", "summary_iteration"},
         "visual_layers_declared",
-        "galaxy primary plus Notion/ROI/Obsidian/timeline/contribution secondary layers",
+        "galaxy primary plus Notion/ROI/Obsidian/timeline/contribution/summary secondary layers",
         "visual_layers missing required modes",
     )
     require(
@@ -450,9 +450,15 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "clean_frontend_build_cache" in installer_source
         and "构建缓存清理失败" in installer_source
         and "Application Support/OpenAIDatabase/MemoryAtlas" in installer_source
-        and "scripts/audit_memory_atlas_release.py" in installer_source,
+        and "scripts/audit_memory_atlas_release.py" in installer_source
+        and "request_shutdown" in installer_source
+        and "release_requested" in installer_source
+        and "active_thread_count" in installer_source
+        and "allow_reuse_address = True" in installer_source
+        and '"-m http.server"' in installer_source
+        and "last_seen_at = time.time() - max" not in installer_source,
         "local_app_launcher_contract",
-        "installer creates Downloads/Applications launchers, custom icon, runtime cache manifest/stale checks, cleanup guard, and release audit gate",
+        "installer creates Downloads/Applications launchers, custom icon, runtime cache manifest/stale checks, cleanup guard, release audit gate, and immediate tab-close shutdown",
         "local app launcher contract missing required pieces",
     )
 

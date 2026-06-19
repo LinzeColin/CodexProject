@@ -39,7 +39,7 @@ export const emptyAtlas: MemoryAtlas = {
   },
   visual_layers: {
     primary: "galaxy",
-    secondary: [],
+    secondary: ["notion_map", "roi_dashboard", "obsidian_graph", "timeline", "contribution_grid", "summary_iteration"],
     navigation: "left_sidebar",
   },
   nodes: [],
@@ -140,7 +140,6 @@ export function filterMemoryNodes(nodes: AtlasNode[], filters: AtlasFilters): At
         node.category,
         node.memory_tier,
         normalizeMemoryTier(node.memory_tier),
-        node.source_kind,
         node.source_label,
         node.data_source,
       ]

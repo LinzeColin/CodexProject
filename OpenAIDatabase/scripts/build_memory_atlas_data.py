@@ -99,6 +99,36 @@ THEMES: list[dict[str, Any]] = [
     },
 ]
 
+CATEGORY_LABELS = {
+    "answering_rule": "回答规则",
+    "project_context": "项目背景",
+    "preference": "偏好",
+    "decision": "决策",
+    "security_boundary": "安全边界",
+    "workflow": "工作流",
+    "temporary_or_sensitive": "敏感临时",
+    "codex_development_record": "Codex开发",
+    "codex_usage_record": "Codex使用",
+    "codex_personalization": "个性化",
+    "codex_agent_metadata": "Agent规则",
+}
+
+GENERIC_LABEL_TOKENS = {
+    "静态图谱低敏摘要",
+    "层级",
+    "分类",
+    "重要性",
+    "有效期",
+    "主题",
+    "unknown",
+    "private",
+    "derived",
+    "memory",
+    "atlas",
+    "codex",
+    "agent",
+}
+
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
@@ -208,11 +238,6 @@ def stable_hash(value: str) -> int:
     return int(hashlib.sha256(value.encode("utf-8")).hexdigest()[:12], 16)
 
 
-def canonical_hash(value: Any) -> str:
-    payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
-
-
 def stable_unit(value: str, salt: str) -> float:
     return (stable_hash(f"{salt}:{value}") % 1000000) / 1000000
 
@@ -282,33 +307,65 @@ def static_summary(row: dict[str, Any], themes: list[dict[str, Any]] | None = No
     return truncate_label(statement, 180)
 
 
-def build_source_ref(row: dict[str, Any], record_index: int, source_snapshot_hash: str | None) -> dict[str, Any]:
-    record_hash = canonical_hash(row)
-    return {
-        "source_file": ACTIVE_MEMORY_SOURCE,
-        "record_index": record_index,
-        "json_pointer": f"/records/{record_index}",
-        "record_hash": record_hash,
-        "source_snapshot_hash": source_snapshot_hash,
-        "editable_fields": EDITABLE_MEMORY_FIELDS,
-        "proposal_schema_version": PROPOSAL_SCHEMA_VERSION,
-        "rollback_ref": {
-            "source_file": ACTIVE_MEMORY_SOURCE,
-            "source_snapshot_hash": source_snapshot_hash,
-            "record_hash": record_hash,
-        },
-    }
-
-
 def public_node_label(row: dict[str, Any], memory_id: str, day: date | None, themes: list[dict[str, Any]]) -> str:
-    sensitivity = row.get("sensitivity")
-    if sensitivity in {"private", "sensitive", "secret"} or row.get("category") == "temporary_or_sensitive":
-        theme_label = themes[0]["label"] if themes else "未归类主题"
-        return truncate_label(
-            f"{normalize_tier(row.get('memory_tier')) or '记忆'} · {row.get('category') or 'unknown'} · {theme_label} · {day.isoformat() if day else memory_id}",
-            96,
-        )
-    return truncate_label(str(row.get("title") or row.get("statement") or memory_id), 96)
+    _ = day
+    return display_node_label(row, memory_id, themes)
+
+
+def display_node_label(row: dict[str, Any], memory_id: str, themes: list[dict[str, Any]]) -> str:
+    tier = normalize_tier(row.get("memory_tier") or "临时")
+    theme_label = display_theme_label(themes)
+    keywords = keyword_candidates(row, tier, theme_label, themes)[:2]
+    keyword_text = " / ".join(keywords) if keywords else category_label(row.get("category")) or memory_id
+    return truncate_label(f"{tier} · {theme_label} · {keyword_text}", 96)
+
+
+def display_theme_label(themes: list[dict[str, Any]]) -> str:
+    if not themes:
+        return "其他主题"
+    label = str(themes[0].get("label") or themes[0].get("id") or "其他主题")
+    return label.split("/")[0].strip() or label
+
+
+def category_label(value: Any) -> str:
+    text = str(value or "").strip()
+    return CATEGORY_LABELS.get(text, text or "记忆")
+
+
+def normalize_compare(value: str) -> str:
+    return re.sub(r"[\s/·:_\-，。；、|]+", "", value.lower())
+
+
+def keyword_candidates(row: dict[str, Any], tier: str, theme_label: str, themes: list[dict[str, Any]]) -> list[str]:
+    theme_words = " ".join(
+        [theme_label]
+        + [str(theme.get("label") or "") for theme in themes]
+        + [str(keyword) for theme in themes for keyword in theme.get("keywords", [])]
+    )
+    banned = normalize_compare(f"{tier} {theme_words} {row.get('memory_tier') or ''}")
+    generic_tokens = {normalize_compare(item) for item in GENERIC_LABEL_TOKENS}
+    source = " ".join(str(row.get(field, "")) for field in ("title", "statement", "category", "use_when", "reason"))
+    source = re.sub(r"redacted_source_hash=[A-Za-z0-9_-]+", " ", source)
+    source = re.sub(r"PRIVATE CORE DETAIL|SECRET DETAIL", " ", source, flags=re.I)
+    tokens = [
+        token.strip()
+        for token in re.split(r"[\s，。；、|/·:：;,()（）\[\]【】]+", source)
+        if 2 <= len(token.strip()) <= 18
+    ]
+    tokens.append(category_label(row.get("category")))
+    output: list[str] = []
+    seen: set[str] = set()
+    for token in tokens:
+        key = normalize_compare(token)
+        if not key or key in seen or key in generic_tokens:
+            continue
+        if key in banned or banned in key:
+            continue
+        if re.fullmatch(r"\d{4}(?:-\d{2}){0,2}", token):
+            continue
+        seen.add(key)
+        output.append(token)
+    return output
 
 
 def keyword_regex(keywords: Iterable[str]) -> re.Pattern[str]:
@@ -367,11 +424,6 @@ def roi_metrics(row: dict[str, Any], day: date | None) -> dict[str, Any]:
     else:
         recommended_action = "keep_as_context"
     return {
-        "retrieval_weight_score": memory_weight(row),
-        "evidence_count": int(row.get("evidence_count") or 0),
-        "recency_days": recency_days,
-        "decision_impact": decision_impact,
-        "sensitivity_penalty": sensitivity_penalty,
         "staleness_status": staleness_status,
         "leverage_score": leverage_score,
         "recommended_action": recommended_action,
@@ -622,9 +674,6 @@ def build_nodes_and_edges(
             "label": truncate_label(label_text),
             "memory_id": memory_id,
             "statement": display_statement,
-            "statement_policy": "redacted_static_preview"
-            if row.get("sensitivity") in {"private", "sensitive", "secret"} or category == "temporary_or_sensitive"
-            else "static_preview",
             "date": day.isoformat() if day else "",
             "data_source": row.get("data_source") or "memory_atlas",
             "source_label": row.get("source_label") or "Memory Atlas / OpenAI Export 记忆库",
@@ -633,17 +682,6 @@ def build_nodes_and_edges(
             "importance": row.get("importance") or "",
             "validity": row.get("validity") or "",
             "confidence": row.get("confidence") or "",
-            "sensitivity": row.get("sensitivity") or "",
-            "retrieval_weight": row.get("retrieval_weight") or "",
-            "evidence_count": int(row.get("evidence_count") or 0),
-            "source_kind": row.get("source_kind") or "",
-            "proposal_ref": {
-                "schema_version": PROPOSAL_SCHEMA_VERSION,
-                "allowed_actions": ["propose_update", "propose_merge", "propose_reweight", "propose_note"],
-                "requires_conflict_check": True,
-                "client_payload": "memory_id_plus_requested_changes_only",
-                "conflict_tokens": "server_or_cli_recomputes_from_current_active_memory",
-            },
             "visual": {
                 "cluster": primary_theme["id"],
                 "color": primary_theme["color"],
@@ -774,9 +812,6 @@ def add_memory_like_node(
         "label": truncate_label(label_text),
         "memory_id": memory_id,
         "statement": static_summary(row, themes),
-        "statement_policy": "redacted_static_preview"
-        if row.get("sensitivity") in {"private", "sensitive", "secret"} or category == "temporary_or_sensitive"
-        else "static_preview",
         "date": day.isoformat() if day else "",
         "data_source": row.get("data_source") or "memory_atlas",
         "source_label": row.get("source_label") or "Memory Atlas / OpenAI Export 记忆库",
@@ -785,18 +820,6 @@ def add_memory_like_node(
         "importance": row.get("importance") or "",
         "validity": row.get("validity") or "",
         "confidence": row.get("confidence") or "",
-        "sensitivity": row.get("sensitivity") or "private",
-        "retrieval_weight": row.get("retrieval_weight") or "",
-        "evidence_count": int(row.get("evidence_count") or 0),
-        "source_kind": row.get("source_kind") or "",
-        "source_file": source_file,
-        "proposal_ref": {
-            "schema_version": PROPOSAL_SCHEMA_VERSION,
-            "allowed_actions": proposal_actions or ["propose_update", "propose_reweight", "propose_note"],
-            "requires_conflict_check": True,
-            "client_payload": "memory_id_plus_requested_changes_only",
-            "conflict_tokens": "server_or_cli_recomputes_from_current_source",
-        },
         "visual": {
             "cluster": primary_theme["id"],
             "color": primary_theme["color"],
@@ -810,7 +833,6 @@ def add_memory_like_node(
         "metrics": {
             "weight_score": weight,
             "roi": roi_metrics(row, day),
-            "usage": row.get("usage") or {},
         },
     }
     nodes.append(node)
@@ -980,6 +1002,7 @@ def build_metrics_from_memory_nodes(memory_nodes: list[dict[str, Any]]) -> list[
 def parse_markdown_headings(path: Path, kind: str, prefix: str, source_file: str) -> list[dict[str, Any]]:
     if not path.exists():
         return []
+    _ = source_file
     nodes: list[dict[str, Any]] = []
     for line_number, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
         match = re.match(r"^(#{2,3})\s+(.+?)\s*$", line)
@@ -1000,7 +1023,6 @@ def parse_markdown_headings(path: Path, kind: str, prefix: str, source_file: str
                 "kind": kind,
                 "label": truncate_label(label, 100),
                 "date": day,
-                "source_file": source_file,
                 "visual": {"color": "#f5d0fe", "size": 8, "brightness": 0.68},
             }
         )
@@ -1241,7 +1263,7 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
         },
         "visual_layers": {
             "primary": "galaxy",
-            "secondary": ["notion_map", "roi_dashboard", "obsidian_graph", "timeline", "contribution_grid"],
+            "secondary": ["notion_map", "roi_dashboard", "obsidian_graph", "timeline", "contribution_grid", "summary_iteration"],
             "navigation": "left_sidebar",
         },
         "nodes": nodes,

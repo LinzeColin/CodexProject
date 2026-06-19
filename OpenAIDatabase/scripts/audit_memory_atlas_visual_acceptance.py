@@ -59,6 +59,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     obsidian_source = read_text(repo_root / "apps/memory-atlas/src/components/ObsidianGraphScene.tsx")
     css_source = read_text(repo_root / "apps/memory-atlas/src/styles.css")
     data_builder_source = read_text(repo_root / "scripts/build_memory_atlas_data.py")
+    installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
     readme = read_text(repo_root / "README.md")
     atlas_path = repo_root / "data/derived/visualization/memory_atlas.json"
     atlas_source = atlas_path.read_text(encoding="utf-8") if atlas_path.exists() else ""
@@ -343,14 +344,89 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "为什么重要" in app_source
         and "未来应该怎么用" in app_source
         and "Agent 结构化字段 / 原始摘要" in app_source
-        and "未来回答与个性化" in app_source
-        and "执行规则与验收标准" in app_source
+        and "Memory / Personalization" in app_source
+        and "Agents.md / 执行规则" in app_source
         and "降权/不再默认使用" in app_source
         and ".human-overview" in css_source
         and ".human-node-card" in css_source,
         "memory_atlas_has_human_facing_summary",
         "Inspector and search views expose human-readable topics, actions, reminders, opportunities, folded agent/source summaries, deduped display rows, and recommendation buckets",
         "Memory Atlas may still expose repeated template text or mostly agent/internal metadata instead of human-facing memory conclusions",
+    )
+    require(
+        checks,
+        '"summary"' in app_source
+        and 'label: "总结与迭代"' in app_source
+        and "function SummaryIterationView" in app_source
+        and "function ConfigMemoryPanel" in app_source
+        and "Personalization / Agents.md 建议" in app_source
+        and "Memory / Personalization" in app_source
+        and "Agents.md / 执行规则" in app_source
+        and "config.toml / Memory" in app_source
+        and "更新时间" in app_source
+        and "buildIterationHighlights" in app_source
+        and "summary-iteration-view" in app_source
+        and ".summary-iteration-view" in css_source
+        and ".summary-signal-grid" in css_source
+        and ".config-memory-panel" in css_source
+        and ".config-memory-grid" in css_source
+        and "Summary & Iteration" in readme
+        and "总结与迭代是独立导航板块" in readme
+        and "config.toml" in readme
+        and "Personalization / Memory" in readme,
+        "summary_iteration_view_ready",
+        "Summary & Iteration exposes updated-at, human highlights, Personalization/Memory, Agents.md, config.toml, and Memory suggestions as a first-class navigation mode",
+        "Summary & Iteration navigation mode, updated-at, or agent configuration suggestion panels are missing",
+    )
+    require(
+        checks,
+        "function MiniBarList" in app_source
+        and "roi-visual-strip" in app_source
+        and "roi-mini-bars" in app_source
+        and "search-visual-summary" in app_source
+        and "search-topic-bars" in app_source
+        and "buildSearchVisualRows" in app_source
+        and "remapValues" in app_source
+        and "summary-signal-grid" in app_source
+        and "semantic-dashboard" in app_source
+        and "timeline-canvas" in app_source
+        and "year-heatmap" in app_source
+        and "year-trend-grid vertical-year-trend" in app_source
+        and "ObsidianGraphScene" in obsidian_source
+        and "GalaxyScene" in galaxy_source
+        and ".roi-visual-strip" in css_source
+        and ".roi-mini-bars" in css_source
+        and ".search-visual-summary" in css_source
+        and ".search-topic-bars" in css_source
+        and ".mini-bar-list" in css_source
+        and ".mini-bar-row" in css_source
+        and "视觉化程度 80%+" in readme,
+        "all_views_visual_density_at_least_80_contract",
+        "All navigation views keep an evidence-bearing visual surface; ROI and Search include synchronized mini-bar summaries instead of pure list/table layouts",
+        "One or more navigation views may still be primarily text/list/table without the 80%+ visual-density contract",
+    )
+    require(
+        checks,
+        "function clearTransientBrowserState" in app_source
+        and "window.sessionStorage.clear()" in app_source
+        and "TRANSIENT_STORAGE_PREFIXES" in app_source
+        and "TRANSIENT_CACHE_PREFIXES" in app_source
+        and "caches.keys()" in app_source
+        and "serviceWorker.getRegistrations" in app_source
+        and 'window.addEventListener("pagehide", handlePageRelease)' in app_source
+        and 'window.addEventListener("beforeunload", handlePageRelease)' in app_source
+        and 'release("react_unmount")' in app_source
+        and "request_shutdown" in installer_source
+        and "release_requested" in installer_source
+        and "active_thread_count" in installer_source
+        and "allow_reuse_address = True" in installer_source
+        and '"-m http.server"' in installer_source
+        and "last_seen_at = time.time() - max" not in installer_source
+        and "关闭 tab" in readme
+        and "清理临时浏览器缓存" in readme,
+        "runtime_tab_close_cache_cleanup_contract",
+        "Browser pagehide/beforeunload/react unmount release the local runtime, clear transient browser state, and the embedded server shuts down immediately instead of waiting for idle TTL",
+        "Tab-close release, browser cache cleanup, or immediate embedded server shutdown contract is missing",
     )
     require(
         checks,
@@ -561,14 +637,25 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "孤立节点" in obsidian_source
         and "全局图" in obsidian_source
         and "局部图" in obsidian_source
+        and "useState(false)" in obsidian_source
+        and "obsidian-settings-collapsed" in obsidian_source
+        and "onClose={() => setSettingsOpen(false)}" in obsidian_source
+        and "Focus - Connectivity" in obsidian_source
+        and "buildFocusConnectivity" in obsidian_source
+        and "displayNodeLabel" in obsidian_source
+        and "memoryKeyword" in obsidian_source
+        and "层级" in obsidian_source
+        and "主题" in obsidian_source
         and ".obsidian-graph-canvas" in css_source
         and ".obsidian-settings-panel" in css_source
+        and ".obsidian-settings-collapsed" in css_source
+        and ".obsidian-focus-connectivity" in css_source
         and ".obsidian-node-label" in css_source
         and ".obsidian-link.focused" in css_source
         and ".obsidian-context-menu" in css_source,
         "obsidian_graph_matches_core_graph_view_contract",
-        "Obsidian Graph is a lazy-loaded force-directed interactive scene with zoom, pan, drag, context menu, local depth, filters, groups, display controls, and force controls",
-        "Obsidian Graph may still be a static SVG/list or may lack core Graph View interaction/settings contracts",
+        "Obsidian Graph is a lazy-loaded force-directed scene with zoom, pan, drag, context menu, local depth, collapsible settings, Focus-Connectivity metrics, and level-theme-keyword node labels",
+        "Obsidian Graph may still be a static SVG/list or may lack interaction, collapsible settings, Focus-Connectivity metrics, or level-theme-keyword labels",
     )
     require(
         checks,
@@ -605,6 +692,9 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "详情通过 title、aria 和 Inspector 查看" in readme
         and "Obsidian Graph 按 Obsidian Graph View 的文字淡出阈值显示节点标签" in readme
         and "hover 邻接高亮" in readme
+        and "层级 · 主题 · 关键词" in readme
+        and "Focus - Connectivity" in readme
+        and "图谱设置必须可折叠" in readme
         and "center/repel/link force controls" in readme
         and "不能只显示模板句" in readme
         and "同类重复" in readme
@@ -614,9 +704,13 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "Word Cloud: 词云洞察是独立导航板块" in readme
         and "Heatmap" in readme
         and "Bubble Chart" in readme
-        and "Word Cloud" in readme,
+        and "Word Cloud" in readme
+        and "Summary & Iteration" in readme
+        and "总结与迭代是独立导航板块" in readme
+        and "frontend proposal refs" in readme
+        and "sensitivity detail fields" in readme,
         "visual_requirements_documented",
-        "README documents the no-ghost-layer, full-grid, Notion no-label, and Obsidian Graph View interaction contracts",
+        "README documents the no-ghost-layer, full-grid, Notion no-label, Obsidian Graph View, slim visual snapshot, and Summary & Iteration contracts",
         "README does not document the current visual acceptance contracts",
     )
 
