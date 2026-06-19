@@ -5,17 +5,18 @@
 Current approved direction: controlled migration from legacy `PFI_OS` /
 `PFIOS` to `PFI OS`.
 
-PFI-001 is complete. PFI-002 is now the active cleanup layer: the retired
-value-ledger product surface has no active module, script, UI route, command
-center source, dedicated test, or formal-doc reference outside the migration
-archive.
+PFI-001 through PFI-004 are complete. Phase A data foundation is now active:
+the first official Operational Store, Source Registry, Web Shell homepage read
+model, task repository, holding snapshot repository, and source versioning
+contract slices are implemented and covered by focused tests.
 
 Execution order:
 
-1. `PFI-001`: write product contracts and contract tests.
-2. `PFI-002`: remove retired value-ledger and non-core active entrances without deleting user runtime data.
-3. `PFI-003`: migrate identity, directory, namespace, env vars, scripts, app names, and artifact prefixes to PFI.
-4. `PFI-004`: create the new PFI Web Shell with six workspaces, global context, task center, evidence drawer, and consistent feedback.
+1. `PFI-001`: write product contracts and contract tests. Complete.
+2. `PFI-002`: remove retired value-ledger and non-core active entrances without deleting user runtime data. Complete.
+3. `PFI-003`: migrate identity, directory, namespace, env vars, scripts, app names, and artifact prefixes to PFI. Complete.
+4. `PFI-004`: create the new PFI Web Shell with six workspaces, global context, task center, evidence drawer, and consistent feedback. Complete.
+5. `Phase A`: establish the local operational store and migrate read models slice by slice. Active.
 
 Current PFI decisions:
 
@@ -25,6 +26,8 @@ Current PFI decisions:
 - Market-feel training is retained as `策略实验室 -> 训练模式`.
 - ResearchBus becomes an internal event/workflow compatibility layer, not a second user-facing product or fact source.
 - PFI OS remains research-only and human-reviewed; no autonomous live trading, payments, betting, or broker order submission.
+- The current development record, open backlog, key file map, and parameter
+  contracts live in `docs/development/PFI_PHASE_0_TO_A_RECORD.md`.
 
 ## Current Delivery Focus
 

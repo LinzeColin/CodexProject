@@ -2,9 +2,8 @@
 
 ## PFI-First Transition Notice
 
-`PFI OS` is the target product direction. This `PFI_OS/` directory is currently
-the legacy working directory and reusable asset source until the later
-PFI-003 directory and namespace migration.
+`PFI OS` is the target product direction. This `PFI_OS/` directory is the
+current renamed product workspace after the Phase 0 transition.
 
 Read the PFI-001 contracts before new development:
 
@@ -17,6 +16,7 @@ Read the PFI-001 contracts before new development:
 | Source of truth | `docs/data/PFI_SOURCE_OF_TRUTH.md` |
 | UX contract | `docs/ux/PFI_UX_CONTRACT.md` |
 | Target architecture | `docs/architecture/PFI_TARGET_ARCHITECTURE.md` |
+| Development record and backlog | `docs/development/PFI_PHASE_0_TO_A_RECORD.md` |
 | Legacy migration record | `docs/archive/legacy-migration.md` |
 
 PFI-002 has retired the old value-ledger product surface from active code,
@@ -57,6 +57,7 @@ Agent 接手优先读：
 ```text
 AGENT_CONTINUITY.md
 HANDOFF.md
+docs/development/PFI_PHASE_0_TO_A_RECORD.md
 15_OPEN_QUESTIONS.md
 UPLOAD_MANIFEST.md
 ```
