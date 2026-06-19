@@ -55,7 +55,7 @@ A053,P0,explore,"Node actions include reroot, upstream, downstream, path, compar
 A054,P0,explore,Pinned nodes and comparisons survive layout changes,E2E,DONE
 A055,P0,explore,Graph has filterable table/list alternative,E2E/a11y,DONE
 A056,P0,paths,Shortest/upstream/downstream/control/capital/policy/bottleneck paths are bounded and evidence-bearing,Integration,DONE
-A057,P0,explore,Truncation and inclusion sorting are explained to the user,UI/content test,NOT STARTED
+A057,P0,explore,Truncation and inclusion sorting are explained to the user,UI/content test,DONE
 A058,P0,explore,Visual centrality is not presented as control and color is not the only encoding,Design/a11y review,DONE
 A059,P0,dossier,Every P0 seed opens a company/entity focus page,API/E2E,NOT STARTED
 A060,P0,dossier,"Human summary covers business, group, dependencies, capital, policy, signals and data gaps",Content/E2E,NOT STARTED

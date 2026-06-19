@@ -355,6 +355,25 @@ test("keeps the default graph bounded below the first-screen hairball budget", a
   expect(renderedNodeCount).toBeLessThanOrEqual(42);
   expect(renderedEdgeCount).toBeLessThanOrEqual(40);
   await expect(page.getByTestId("budget-state")).toContainText("max 40 first-screen edges");
+  const inclusionPolicy = page.getByTestId("inclusion-truncation-explanation");
+  await expect(inclusionPolicy).toBeVisible();
+  await expect(inclusionPolicy).toHaveAttribute(
+    "data-sort-keys",
+    "active-lens,evidence,confidence,observed_at,id"
+  );
+  await expect(inclusionPolicy).toHaveAttribute(
+    "data-truncation-contract",
+    "edge_budget,node_budget,returned_counts,continuation"
+  );
+  await expect(inclusionPolicy).toHaveAttribute(
+    "data-continuation-endpoint",
+    "/v1/explore/expand"
+  );
+  await expect(inclusionPolicy).toContainText(
+    "Active lens, evidence-bearing edges, confidence, observed time, stable id"
+  );
+  await expect(inclusionPolicy).toContainText("edge_budget and node_budget");
+  await expect(inclusionPolicy).toContainText("/v1/explore/expand");
 });
 
 test("preserves directional grammar during reroot and keeps a nonblank fallback state", async ({

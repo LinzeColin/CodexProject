@@ -309,6 +309,7 @@ Remote verification:
 - T404 / A049-A050 is DONE and remote CI passed.
 - T405 / A053-A055/A058 is DONE and remote CI passed; `tests/e2e/home.spec.ts` passed with 22 tests after adding graph table alternative, node actions, pin/compare/Watchlist state, and explicit non-color visual semantics.
 - T406 / A056 is DONE and remote CI passed; `/v1/paths` now supports bounded evidence-bearing shortest/upstream/downstream/control/capital/policy/bottleneck path queries.
+- T407 / A057 is DONE locally; the graph inspector now explains inclusion sorting, truncation reasons and `/v1/explore/expand` continuation metadata. Local `tests/e2e/home.spec.ts` passed with 22 tests. Remote CI is pending.
 - G4 remains open because recursive exploration, live context, accessible list/table equivalents, model preview propagation, and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -316,7 +317,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Start T407 inclusion/truncation explanations for A044/A057 as the next bounded G4 slice.
-2. Keep T408 critical three-reroot E2E separate after T407.
+1. Push T407 and confirm GitHub Actions before starting the next implementation slice.
+2. Start T408 critical three-reroot E2E after T407 remote CI passes.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3 state/history contracts while adding recursive exploration and governance views.

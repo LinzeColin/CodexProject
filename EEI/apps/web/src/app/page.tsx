@@ -1695,6 +1695,33 @@ export default function Home() {
         </ol>
 
         <section
+          className="graphPolicyPanel"
+          data-continuation-endpoint="/v1/explore/expand"
+          data-sort-keys="active-lens,evidence,confidence,observed_at,id"
+          data-testid="inclusion-truncation-explanation"
+          data-truncation-contract="edge_budget,node_budget,returned_counts,continuation"
+        >
+          <header>
+            <p className="eyebrow">Inclusion policy</p>
+            <strong>Bounded relationship set</strong>
+          </header>
+          <dl>
+            <div>
+              <dt>Included first</dt>
+              <dd>Active lens, evidence-bearing edges, confidence, observed time, stable id</dd>
+            </div>
+            <div>
+              <dt>Truncation</dt>
+              <dd>edge_budget and node_budget return reasons, counts and continuation metadata</dd>
+            </div>
+            <div>
+              <dt>Continuation</dt>
+              <dd>/v1/explore/expand preserves the current focus and loads a bounded increment</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section
           className="graphTablePanel"
           data-color-independent-encoding="labels,arrows,stages,roles,evidence"
           data-testid="graph-table-alternative"

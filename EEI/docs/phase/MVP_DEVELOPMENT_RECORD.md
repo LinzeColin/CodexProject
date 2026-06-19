@@ -1179,7 +1179,7 @@ Acceptance status:
 Residual risks:
 
 - T406 is completed below and awaits remote PostgreSQL CI evidence.
-- T407 still owns visible truncation and inclusion sorting explanations.
+- T407 is completed below and awaits remote CI evidence.
 - T408 still owns the critical three-reroot E2E acceptance A048.
 
 ## 2026-06-19 - Phase 1 / G4 T406 Bounded evidence-bearing path queries
@@ -1212,5 +1212,32 @@ Acceptance status:
 
 Residual risks:
 
-- T407 still owns visible truncation and inclusion sorting explanations.
+- T407 is completed below and awaits remote CI evidence.
+- T408 still owns the critical three-reroot E2E acceptance A048.
+
+## 2026-06-19 - Phase 1 / G4 T407 Inclusion and truncation explanations
+
+Status: LOCAL E2E PASS / REMOTE CI PENDING
+
+Completed:
+
+- Added a visible inclusion/truncation explanation panel to the graph inspector.
+- Exposed machine-readable UI contract attributes for inclusion sorting keys, truncation reasons and continuation endpoint.
+- Documented the inclusion order as active lens, evidence-bearing edges, confidence, observed time and stable id.
+- Documented truncation reasons as `edge_budget` and `node_budget`, with returned counts and `/v1/explore/expand` continuation metadata.
+- Strengthened home E2E coverage to assert the visible explanation and contract attributes.
+- Marked T407 and A057 as `DONE`; A044 remains `DONE` with additional UI evidence.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/home.spec.ts`: PASS, 22 tests.
+
+Acceptance status:
+
+- A057 is covered by `tests/e2e/home.spec.ts` assertions for `inclusion-truncation-explanation`.
+- A044 retains API coverage from T400 and now has UI coverage for visible truncation reasons and continuation metadata.
+
+Residual risks:
+
+- Remote CI is pending for T407.
 - T408 still owns the critical three-reroot E2E acceptance A048.

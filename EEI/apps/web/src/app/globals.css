@@ -773,6 +773,50 @@ dd {
   line-height: 1.35;
 }
 
+.graphPolicyPanel {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+  border: 1px solid #b9dbc8;
+  border-radius: 8px;
+  background: #edf8f1;
+  padding: 12px;
+}
+
+.graphPolicyPanel header {
+  display: grid;
+  gap: 4px;
+}
+
+.graphPolicyPanel header strong {
+  color: #184c35;
+  font-size: 13px;
+}
+
+.graphPolicyPanel dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.graphPolicyPanel dl div {
+  border-top: 1px solid #cfe6d8;
+  padding-top: 8px;
+}
+
+.graphPolicyPanel dt {
+  color: #184c35;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.graphPolicyPanel dd {
+  margin: 3px 0 0;
+  color: #38624e;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .graphTablePanel {
   display: grid;
   gap: 10px;
