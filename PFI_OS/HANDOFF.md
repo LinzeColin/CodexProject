@@ -37,6 +37,11 @@ Current sequence:
 15. v0.1.1 preparation:
     P0/P1 findings baseline complete; runtime entry correction and legacy
     command-center cache isolation complete.
+16. v0.2 PFI-goal execution:
+    PFI-001 reproducible environment, lock, CI wiring, secret scan, explicit
+    install/runtime separation, and clean-install/offline-start evidence are
+    complete for the local repair scope. PFI-001 still needs PR/CI injected
+    failure evidence before release Gate 1 is fully closed.
 
 ## Current Local State
 
@@ -157,24 +162,26 @@ Read in this order:
 2. `AGENTS.md`
 3. `PLANS.md`
 4. `docs/development/PFI_PHASE_0_TO_A_RECORD.md`
-5. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
-6. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
-7. `docs/data/PFI_DATA_BOUNDARIES.md`
-8. `docs/data/PFI_SOURCE_OF_TRUTH.md`
-9. `docs/ux/PFI_UX_CONTRACT.md`
-10. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
-11. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
-12. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
-13. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
-14. `docs/phase/PHASE_B_MARKETS.md`
-15. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
-16. `docs/phase/PHASE_B_STRATEGY_LAB.md`
-17. `docs/phase/PHASE_B_PORTFOLIO.md`
-18. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
-19. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
-20. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
-21. `docs/phase/V0_1_1_FINDINGS_BASELINE.md`
-22. `docs/archive/legacy-migration.md`
+5. `docs/development/PFI_GOAL_GATE_MATRIX.md`
+6. `docs/development/PFI_REPRODUCIBLE_ENV.md`
+7. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
+8. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
+9. `docs/data/PFI_DATA_BOUNDARIES.md`
+10. `docs/data/PFI_SOURCE_OF_TRUTH.md`
+11. `docs/ux/PFI_UX_CONTRACT.md`
+12. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
+13. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
+14. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
+15. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
+16. `docs/phase/PHASE_B_MARKETS.md`
+17. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
+18. `docs/phase/PHASE_B_STRATEGY_LAB.md`
+19. `docs/phase/PHASE_B_PORTFOLIO.md`
+20. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
+21. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
+22. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
+23. `docs/phase/V0_1_1_FINDINGS_BASELINE.md`
+24. `docs/archive/legacy-migration.md`
 
 ## Current Verification Evidence
 
@@ -193,6 +200,25 @@ actual `PFI_UI_V2=1 scripts/startPFIOS.sh` Streamlit runtime at
 task center, evidence drawer, cached refresh, command-palette navigation, and
 absence of retired or English placeholder user text. A local screenshot of the
 runtime strategy workspace was captured for this Codex run.
+
+Latest PFI-001 reproducible-environment repair verification, 2026-06-20:
+
+```bash
+python -m pytest tests/contract/test_pfi_reproducible_env.py tests/test_scripts.py -q
+scripts/secretScan.sh
+rm -rf /tmp/pfi_os_clean_env_pfi001
+PFI_PYTHON=/opt/anaconda3/bin/python3.12 PFI_VENV_DIR=/tmp/pfi_os_clean_env_pfi001 scripts/installLockedEnv.sh
+PFI_PYTHON=/tmp/pfi_os_clean_env_pfi001/bin/python scripts/pfiGate.sh fast
+PFI_PYTHON=/tmp/pfi_os_clean_env_pfi001/bin/python scripts/pfiGate.sh target
+PFI_PYTHON=/tmp/pfi_os_clean_env_pfi001/bin/python PFI_UI_V2=1 scripts/startPFIOS.sh
+curl http://127.0.0.1:8501/_stcore/health
+scripts/stopPFIOS.sh
+```
+
+Observed: clean install from `requirements.lock` succeeded in
+`/tmp/pfi_os_clean_env_pfi001`; fast gate passed 13 tests plus secret scan;
+target gate passed 36 tests plus secret scan and diff check; offline warm start
+reached Streamlit health without dependency installation output.
 
 Latest focused verification for PFI-001 through PFI-004 and Phase A:
 
@@ -263,11 +289,12 @@ Latest runtime smoke:
 
 ## Next Step
 
-Continue from v0.1.1 / PFI-001:
+Continue from v0.2 PFI-goal execution:
 
-1. Close PFI-001 reproducible environment, CI, dependency lock, and
-   secret-scan gates.
-2. Add controlled local deployment acceptance only if a release gate requires
-   real service start/stop evidence.
-3. Replace remaining legacy Streamlit direct reads one vertical slice at a time
-   when those workflows enter scope.
+1. Use `docs/development/PFI_GOAL_GATE_MATRIX.md` as the active completion
+   matrix for PFI-001 through PFI-012 and Gate 1 through Gate 7.
+2. Next recommended issue: PFI-003 Supervisor/Durable Jobs/lifecycle. Gate 1
+   cannot close until double-start, crash, sleep/wake, job lease, cancel,
+   resume, dead-letter, backup/restore and private-log scan are proven.
+3. Keep PFI-010/PFI-011/PFI-012 active but do not mark them complete until the
+   matrix evidence is strong enough for the full acceptance scope.

@@ -50,7 +50,8 @@ def test_verify_script_does_not_lower_bootstrap_simulation_count():
     assert "/private/tmp/pfi_os-report-test" in script
     assert "src/pfi_os/system/pfi_identity.py" in script
     assert "pfi_os_ensure_app_python" in script
-    assert "${PROJECT_DIR}[test]" in script
+    assert "installLockedEnv.sh" in script
+    assert "pip install" not in script
     assert "scripts/pfiRuntime.sh" in script
     assert "MPLCONFIGDIR" in script
 
@@ -99,6 +100,9 @@ def test_shell_scripts_have_valid_zsh_syntax():
         "scripts/installMacAppLaunchers.sh",
         "scripts/statusPFIOS.sh",
         "scripts/devReadyCheck.sh",
+        "scripts/installLockedEnv.sh",
+        "scripts/secretScan.sh",
+        "scripts/pfiGate.sh",
         "scripts/macosAcceptance.sh",
         "scripts/macosAppAcceptanceLite.sh",
         "scripts/macosLifecycleReadiness.sh",
@@ -181,7 +185,8 @@ def test_quiet_start_uses_stable_local_streamlit_settings():
     assert "/opt/anaconda3/bin/python3.12" in runtime
     assert "pyarrow" in runtime
     assert ".pfi_os_app_ready" in runtime
-    assert "[app]" in runtime
+    assert "installLockedEnv.sh" in runtime
+    assert "pip install" not in runtime
     assert ".[app,test,data]" not in runtime
     assert "process_cwd" in stop_script
     assert 'cwd_path" == "$PROJECT_DIR"' in stop_script

@@ -17,6 +17,8 @@ Read the PFI-001 contracts before new development:
 | UX contract | `docs/ux/PFI_UX_CONTRACT.md` |
 | Target architecture | `docs/architecture/PFI_TARGET_ARCHITECTURE.md` |
 | Development record and backlog | `docs/development/PFI_PHASE_0_TO_A_RECORD.md` |
+| PFI-goal matrix | `docs/development/PFI_GOAL_GATE_MATRIX.md` |
+| Reproducible environment | `docs/development/PFI_REPRODUCIBLE_ENV.md` |
 | Legacy migration record | `docs/archive/legacy-migration.md` |
 
 PFI-002 has retired the old value-ledger product surface from active code,
@@ -844,14 +846,13 @@ Enter the project directory.
 cd $PFI_OS_HOME
 ```
 
-手动创建并安装本地环境。
+按锁文件创建本地环境。安装必须显式执行；启动和测试命令不会自动安装依赖。
 
-Manually create and install the local environment.
+Create the local environment from the lock file. Installation is explicit;
+startup and test commands never install dependencies automatically.
 
 ```bash
-~/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m venv .venv
-.venv/bin/python -m pip install --upgrade pip
-.venv/bin/pip install -e ".[app,test,data]"
+scripts/installLockedEnv.sh
 ```
 
 运行测试。
@@ -860,6 +861,15 @@ Run tests.
 
 ```bash
 scripts/runTests.sh
+```
+
+运行 PFI gate。
+
+Run PFI gates.
+
+```bash
+scripts/pfiGate.sh fast
+scripts/pfiGate.sh target
 ```
 
 运行示例回测。

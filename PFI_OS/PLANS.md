@@ -13,6 +13,12 @@ Phase D local deployment readiness and backup/restore acceptance are now
 implemented as private-runtime-only local gates. Phase 5 packaging is now a
 GitHub-safe engineering handoff for Phase 6 deployment preparation.
 
+PFI-goal v0.2 execution now tracks PFI-001 through PFI-012 and Gate 1 through
+Gate 7 in `docs/development/PFI_GOAL_GATE_MATRIX.md`. The v0.2 PFI-001
+reproducible-environment slice has a lock file, explicit installer,
+runtime-no-install contract, secret scan, CI lock install, gate commands, and
+local clean-install/offline-start evidence.
+
 Execution order:
 
 1. `PFI-001`: write product contracts and contract tests. Complete.

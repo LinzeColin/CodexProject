@@ -13,7 +13,8 @@ mkdir -p "$MPLCONFIGDIR"
 source "$PROJECT_DIR/scripts/pfiRuntime.sh"
 PYTHON_BIN="$(pfi_os_ensure_app_python "$PROJECT_DIR")"
 if ! "$PYTHON_BIN" -m pytest --version >/dev/null 2>&1; then
-  echo "Installing verification test dependencies..."
-  "$PYTHON_BIN" -m pip install -e "${PROJECT_DIR}[test]"
+  echo "PFI OS test dependency pytest is missing." >&2
+  echo "Run scripts/installLockedEnv.sh once, then retry." >&2
+  exit 67
 fi
 "$PYTHON_BIN" -m pytest -q -p no:cacheprovider

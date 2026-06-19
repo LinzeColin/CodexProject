@@ -38,20 +38,28 @@ pfi_os_python_can_create_venv() {
 import sys
 import venv  # noqa: F401
 
-raise SystemExit(0 if sys.version_info >= (3, 10) else 1)
+raise SystemExit(0 if (3, 11) <= sys.version_info < (3, 14) else 1)
 PY
 }
 
 pfi_os_choose_app_python() {
   local project_dir="$1"
   local ready_marker="$project_dir/.venv/.pfi_os_app_ready"
+  local resolved_override
+  if [[ -n "${PFI_PYTHON:-}" ]]; then
+    resolved_override="$(pfi_os_resolve_command "$PFI_PYTHON" || true)"
+    if [[ -n "$resolved_override" ]]; then
+      if pfi_os_python_has_app_deps "$resolved_override" "$project_dir"; then
+        printf "%s\n" "$resolved_override"
+        return 0
+      fi
+    fi
+  fi
   if [[ -x "$project_dir/.venv/bin/python" && -f "$ready_marker" ]]; then
     printf "%s\n" "$project_dir/.venv/bin/python"
     return 0
   fi
   local candidates=(
-    "${PFI_PYTHON:-}"
-    "${PFI_PYTHON:-}"
     "$project_dir/.venv/bin/python"
     "/opt/anaconda3/bin/python3.12"
     "/opt/anaconda3/bin/python3"
@@ -94,7 +102,7 @@ pfi_os_choose_venv_python() {
 
 pfi_os_ensure_app_python() {
   local project_dir="$1"
-  local python_bin base_python
+  local python_bin
   python_bin="$(pfi_os_choose_app_python "$project_dir" || true)"
   if [[ -n "$python_bin" ]]; then
     if [[ "$python_bin" == "$project_dir/.venv/bin/python" ]]; then
@@ -104,22 +112,8 @@ pfi_os_ensure_app_python() {
     return 0
   fi
 
-  base_python="$(pfi_os_choose_venv_python "$project_dir" || true)"
-  if [[ -z "$base_python" ]]; then
-    echo "No Python >= 3.10 runtime with venv support was found." >&2
-    echo "Set PFI_PYTHON to a valid Python binary and retry." >&2
-    return 1
-  fi
-
-  echo "PFIOS app dependencies are not ready. Creating .venv with $base_python..." >&2
-  "$base_python" -m venv "$project_dir/.venv"
-  "$project_dir/.venv/bin/python" -m pip install --upgrade pip >&2
-  "$project_dir/.venv/bin/python" -m pip install -e "${project_dir}[app]" >&2
-
-  if ! pfi_os_python_has_app_deps "$project_dir/.venv/bin/python" "$project_dir"; then
-    echo "PFIOS app dependencies are still incomplete after installation." >&2
-    return 1
-  fi
-  date -u +"%Y-%m-%dT%H:%M:%SZ" > "$project_dir/.venv/.pfi_os_app_ready"
-  printf "%s\n" "$project_dir/.venv/bin/python"
+  echo "PFI OS app dependencies are not ready." >&2
+  echo "Run scripts/installLockedEnv.sh once, then retry this runtime command." >&2
+  echo "Runtime commands do not install or upgrade dependencies." >&2
+  return 1
 }

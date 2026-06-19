@@ -18,8 +18,9 @@ ensure_test_deps() {
   if "$PYTHON_BIN" -m pytest --version >/dev/null 2>&1; then
     return
   fi
-  echo "Installing verification test dependencies..."
-  "$PYTHON_BIN" -m pip install -e "${PROJECT_DIR}[test]"
+  echo "PFI OS test dependency pytest is missing." >&2
+  echo "Run scripts/installLockedEnv.sh once, then retry." >&2
+  exit 67
 }
 
 echo "Checking shell scripts..."
