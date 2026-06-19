@@ -34,6 +34,7 @@ REQUIRED_WORKFLOW_COMMANDS = {
     "python scripts/validate_governance_consistency.py",
     "python scripts/manage_development_status_artifacts.py validate",
     "python scripts/manage_risk_control_artifacts.py validate",
+    "python scripts/manage_clean_room_release.py validate",
     "sha256sum -c CHECKSUMS.sha256",
 }
 
@@ -43,6 +44,8 @@ REQUIRED_RELEASE_FILES = {
     "CHECKSUMS.sha256",
     "artifacts/release_evidence_t1211.json",
     "artifacts/release_operation_log_t1211.jsonl",
+    "artifacts/tests/a200/t1215_clean_room_release.json",
+    "artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
 }
 
 
@@ -173,6 +176,7 @@ def validate_makefile_target() -> dict[str, Any]:
         "validate-prototype-parity",
         "validate-github-governance",
         "validate-governance-consistency",
+        "validate-clean-room-release",
         "validate-release-artifacts",
     }
     missing_targets = sorted(

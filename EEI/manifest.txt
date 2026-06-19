@@ -82,7 +82,9 @@ artifacts/tests/a183/t1212_p0_traceability_validator.json
 artifacts/tests/a183/t1213_requirement_function_task_test_traceability.json
 artifacts/tests/a184/t1213_development_status_ledger.json
 artifacts/tests/a185/t1214_high_risk_traceability.json
+artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip
 artifacts/tests/a200/t1212_clean_room_preflight.json
+artifacts/tests/a200/t1215_clean_room_release.json
 config/model_profiles/balanced-v2.json
 config/model_runtime_defaults.yaml
 config/thresholds/default-v2.json
@@ -236,6 +238,7 @@ scripts/env_doctor.py
 scripts/generate_governance_pdf.py
 scripts/load_seed_catalogs.py
 scripts/load_synthetic_fixtures.py
+scripts/manage_clean_room_release.py
 scripts/manage_development_status_artifacts.py
 scripts/manage_release_artifacts.py
 scripts/manage_risk_control_artifacts.py

@@ -1,0 +1,43 @@
+{
+  "acceptance_ids": [
+    "A200"
+  ],
+  "artifact_id": "a200-clean-room-release-validation",
+  "category_counts": {
+    "csv": 42,
+    "github": 13,
+    "json": 29,
+    "markdown": 95,
+    "pdf": 1,
+    "prototype": 13
+  },
+  "commands": [
+    "python scripts/manage_clean_room_release.py generate",
+    "python scripts/manage_clean_room_release.py validate",
+    "make verify",
+    "sha256sum -c CHECKSUMS.sha256"
+  ],
+  "generated_at": "2026-06-19T21:34:39+00:00",
+  "package": {
+    "bytes": 12289893,
+    "entry_count": 284,
+    "internal_checksums": "PACKAGE_CHECKSUMS.sha256",
+    "internal_manifest": "PACKAGE_MANIFEST.json",
+    "path": "artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "sha256": "028c452af32bdaea8baa9de89de93cdaf6de8743948c81a226ecb2c6b8a5b698"
+  },
+  "rollback": [
+    "Revert the T1215 clean-room release evidence commit.",
+    "Regenerate clean-room package and release artifacts.",
+    "Run make verify and sha256sum -c CHECKSUMS.sha256."
+  ],
+  "schema_version": 1,
+  "source_checks": {
+    "pdf_pages": 16,
+    "prototype_bytes": 173467,
+    "prototype_hash": "7f06f96c917ff14fc42c94de09b0e5f89f622a22a44a0dd64da3941429486719"
+  },
+  "source_commit": "4fa61f6",
+  "status": "LOCAL_PASS",
+  "task_id": "T1215"
+}
