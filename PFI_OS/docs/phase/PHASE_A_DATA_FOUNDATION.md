@@ -30,6 +30,9 @@ moving UI pages or vertical workflows onto it.
   not direct `data/**` JSON artifacts.
 - Task queue and holding snapshot writes now have thin repository adapters over
   Operational Store official tables.
+- Data-home boundary audit now checks that `$PFI_OS_DATA_HOME` and Operational
+  SQLite stay outside public Git and that private/runtime/secret path fixtures
+  fail closed before migration work adds new data surfaces.
 
 ## Not Done
 
