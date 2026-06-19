@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import hashlib
 import sqlite3
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field, is_dataclass
@@ -29,6 +30,21 @@ class SourceRecord:
     as_of: str
     evidence_class: str
     observed_at: str = ""
+    title: str = ""
+    checksum: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class SourceVersion:
+    version_id: str
+    source_id: str
+    domain: DataDomain
+    source_type: str
+    uri: str
+    as_of: str
+    evidence_class: str
+    observed_at: str
     title: str = ""
     checksum: str = ""
     metadata: dict[str, Any] = field(default_factory=dict)
@@ -103,6 +119,7 @@ def build_phase_a_data_foundation_contract(data_home: Path | str | None = None) 
         "domains": [item.value for item in DataDomain],
         "official_tables": [
             "source_records",
+            "source_versions",
             "entity_records",
             "evidence_records",
             "job_records",
@@ -175,6 +192,30 @@ class OperationalStore:
                     record.checksum,
                     _json(record.metadata),
                     now,
+                    now,
+                ),
+            )
+            version_id = _stable_version_id(record.source_id, record.as_of, record.checksum, record.uri)
+            conn.execute(
+                """
+                INSERT OR IGNORE INTO source_versions(
+                    version_id, source_id, domain, source_type, uri, as_of, evidence_class,
+                    observed_at, title, checksum, metadata_json, created_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    version_id,
+                    record.source_id,
+                    record.domain.value,
+                    record.source_type,
+                    record.uri,
+                    record.as_of,
+                    record.evidence_class,
+                    observed_at,
+                    record.title,
+                    record.checksum,
+                    _json(record.metadata),
                     now,
                 ),
             )
@@ -370,6 +411,31 @@ class OperationalStore:
             rows = conn.execute(f"SELECT * FROM {table}").fetchall()
         return [dict(row) for row in rows]
 
+    def point_in_time_sources(self, as_of: str) -> list[dict[str, Any]]:
+        self._require_record(as_of, "as_of")
+        with self.connect() as conn:
+            rows = conn.execute(
+                """
+                SELECT sv.*
+                FROM source_versions sv
+                INNER JOIN (
+                    SELECT source_id, MAX(as_of) AS latest_as_of
+                    FROM source_versions
+                    WHERE as_of <= ?
+                    GROUP BY source_id
+                ) latest
+                    ON sv.source_id = latest.source_id
+                   AND sv.as_of = latest.latest_as_of
+                ORDER BY sv.source_type, sv.source_id, sv.version_id
+                """,
+                (as_of,),
+            ).fetchall()
+        deduped: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            payload = dict(row)
+            deduped[payload["source_id"]] = payload
+        return list(deduped.values())
+
     @staticmethod
     def _require_record(value: str, field_name: str) -> None:
         if not str(value or "").strip():
@@ -378,6 +444,7 @@ class OperationalStore:
 
 OFFICIAL_TABLES = {
     "source_records",
+    "source_versions",
     "entity_records",
     "evidence_records",
     "job_records",
@@ -400,6 +467,21 @@ CREATE TABLE IF NOT EXISTS source_records (
   metadata_json TEXT NOT NULL DEFAULT '{}',
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS source_versions (
+  version_id TEXT PRIMARY KEY,
+  source_id TEXT NOT NULL REFERENCES source_records(source_id),
+  domain TEXT NOT NULL,
+  source_type TEXT NOT NULL,
+  uri TEXT NOT NULL,
+  as_of TEXT NOT NULL,
+  evidence_class TEXT NOT NULL,
+  observed_at TEXT NOT NULL,
+  title TEXT NOT NULL DEFAULT '',
+  checksum TEXT NOT NULL DEFAULT '',
+  metadata_json TEXT NOT NULL DEFAULT '{}',
+  created_at TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS entity_records (
@@ -487,3 +569,9 @@ def _json_default(value: Any) -> Any:
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _stable_version_id(source_id: str, as_of: str, checksum: str, uri: str) -> str:
+    raw = "\x1f".join([str(source_id), str(as_of), str(checksum), str(uri)])
+    digest = hashlib.sha256(raw.encode("utf-8")).hexdigest()[:20]
+    return f"sourceVersion_{digest}"
