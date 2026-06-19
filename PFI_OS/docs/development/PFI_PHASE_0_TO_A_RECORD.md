@@ -34,6 +34,7 @@ on chat history.
 | Phase A vectorized research vertical slice | Complete | `src/pfi_os/application/vectorized_read_model.py`, legacy Streamlit Vectorized Research panel renders sanitized Operational Store read model |
 | Phase A macOS runtime evidence vertical slice | Complete | `src/pfi_os/application/macos_runtime_read_model.py`, legacy Streamlit runtime evidence panel renders sanitized Operational Store read model |
 | Phase A private reviewed-input ledgers | Complete | `src/pfi_os/application/private_reviewed_inputs.py`, cashflow/policy/consumption Streamlit inputs stored in private Operational Store with private derived snapshot outputs |
+| Phase A Streamlit data-boundary classification | Complete | `tests/contract/test_phase_a_streamlit_data_boundary.py`, remaining Streamlit `ROOT / "data"` top-level paths are explicit public artifact/runtime categories and uploaded CSV uses private runtime storage |
 
 ## Open Backlog
 
@@ -53,7 +54,7 @@ on chat history.
 | Target architecture | `docs/architecture/PFI_TARGET_ARCHITECTURE.md` |
 | Operational store | `src/pfi_os/application/operational_store.py`, `src/pfi_os/application/source_registry.py`, `src/pfi_os/application/source_ingestion.py`, `src/pfi_os/application/homepage_summary.py`, `src/pfi_os/application/homepage_ingestion.py`, `src/pfi_os/application/command_center_read_model.py`, `src/pfi_os/application/vectorized_read_model.py`, `src/pfi_os/application/macos_runtime_read_model.py`, `src/pfi_os/application/private_reviewed_inputs.py`, `src/pfi_os/application/repositories.py`, `src/pfi_os/application/data_home_audit.py` |
 | Streamlit bridge | `src/pfi_os/app/streamlit_app.py` |
-| Contract tests | `tests/test_pfi_product_contracts.py`, `tests/contract/test_pfi_web_shell_contract.py`, `tests/contract/test_phase_a_operational_store.py`, `tests/contract/test_phase_a_source_registry_homepage.py`, `tests/contract/test_phase_a_repositories.py`, `tests/contract/test_phase_a_data_home_audit.py`, `tests/contract/test_phase_a_homepage_ingestion.py`, `tests/contract/test_phase_a_source_ingestion.py`, `tests/contract/test_phase_a_command_center_read_model.py`, `tests/contract/test_phase_a_vectorized_read_model.py`, `tests/contract/test_phase_a_macos_runtime_read_model.py`, `tests/contract/test_phase_a_private_reviewed_inputs.py` |
+| Contract tests | `tests/test_pfi_product_contracts.py`, `tests/contract/test_pfi_web_shell_contract.py`, `tests/contract/test_phase_a_operational_store.py`, `tests/contract/test_phase_a_source_registry_homepage.py`, `tests/contract/test_phase_a_repositories.py`, `tests/contract/test_phase_a_data_home_audit.py`, `tests/contract/test_phase_a_homepage_ingestion.py`, `tests/contract/test_phase_a_source_ingestion.py`, `tests/contract/test_phase_a_command_center_read_model.py`, `tests/contract/test_phase_a_vectorized_read_model.py`, `tests/contract/test_phase_a_macos_runtime_read_model.py`, `tests/contract/test_phase_a_private_reviewed_inputs.py`, `tests/contract/test_phase_a_streamlit_data_boundary.py` |
 | E2E and visual tests | `tests/e2e/test_pfi_web_shell_static_flow.py`, `tests/visual/test_pfi_web_shell_visual_baseline.py`, `web/tests/visual-baseline.json` |
 
 ## Model And Parameter Contracts
@@ -97,6 +98,7 @@ python -m pytest tests/contract/test_phase_a_command_center_read_model.py -q
 python -m pytest tests/contract/test_phase_a_vectorized_read_model.py -q
 python -m pytest tests/contract/test_phase_a_macos_runtime_read_model.py -q
 python -m pytest tests/contract/test_phase_a_private_reviewed_inputs.py -q
+python -m pytest tests/contract/test_phase_a_streamlit_data_boundary.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q

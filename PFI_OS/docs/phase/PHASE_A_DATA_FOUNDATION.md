@@ -56,12 +56,18 @@ moving UI pages or vertical workflows onto it.
   Store records and generate snapshots under
   `$PFI_OS_DATA_HOME/private/derived/*` instead of writing public Git
   `data/**` ledger files.
+- Streamlit CSV market uploads now use `$PFI_OS_DATA_HOME/runtime/uploads`
+  instead of public `data/cache`, and the remaining Streamlit `ROOT / "data"`
+  top-level paths are contract-tested as explicit public artifact/runtime
+  categories: `cache`, `commandCenter`, `reportDecision`, `strategyLibrary`,
+  and `validationQueue`.
 
 ## Not Done
 
-- Legacy Streamlit UI still has direct JSON/provider reads outside the Web
-  Shell, command-center, vectorized research, macOS runtime evidence, and
-  private reviewed-input vertical slices.
+- Legacy Streamlit UI still has provider/runtime workflows outside the Web
+  Shell, but its remaining public `ROOT / "data"` top-level directories are
+  now contract-classified and no longer include private user-input ledgers,
+  local runtime acceptance evidence, vectorized latest JSON, or uploaded CSV.
 - Existing legacy holdings sync and ResearchBus code is not migrated yet.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
 - Full source ingestion and vertical workflow migration are not complete.

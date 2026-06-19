@@ -72,6 +72,7 @@ from pfi_os.application import (
     empty_vectorized_research_read_model,
     empty_homepage_summary,
     append_private_reviewed_input_entry,
+    default_data_home,
     ingest_command_center_cache,
     ingest_macos_runtime_acceptance_cache,
     ingest_vectorized_research_cache,
@@ -352,6 +353,12 @@ def _append_private_reviewed_row(ledger: str, entry: dict, *, entry_id_key: str,
 
 def _private_reviewed_output_dir(ledger: str) -> Path:
     return private_reviewed_input_output_dir(ledger)
+
+
+def _private_runtime_upload_path(content: bytes, *, suffix: str = ".csv") -> Path:
+    digest = hashlib.sha256(content).hexdigest()[:16]
+    clean_suffix = suffix if suffix.startswith(".") and len(suffix) <= 12 else ".csv"
+    return default_data_home() / "runtime" / "uploads" / f"market_bars_{digest}{clean_suffix}"
 
 
 VIEW_OPTIONS = {
@@ -6932,9 +6939,10 @@ def load_data(data_mode: str, csv_file, symbol: str, market: str, interval: str,
     request = BarDataRequest(symbol=symbol, market=market, interval=interval, start=str(start), end=str(end))
     csv_path = None
     if data_mode == "CSV" and csv_file is not None:
-        temp_path = ROOT / "data" / "cache" / "_uploaded.csv"
+        content = csv_file.read()
+        temp_path = _private_runtime_upload_path(content, suffix=Path(str(getattr(csv_file, "name", "uploaded.csv"))).suffix)
         temp_path.parent.mkdir(parents=True, exist_ok=True)
-        temp_path.write_bytes(csv_file.read())
+        temp_path.write_bytes(content)
         csv_path = temp_path
     provider = make_provider(data_mode, csv_path=csv_path)
     data, resampled_from = get_bars_with_interval_fallback(provider, request)

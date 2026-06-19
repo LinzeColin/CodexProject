@@ -77,6 +77,9 @@ Current sequence:
 - Private reviewed-input ledger adapter for cashflow, policy radar, and
   consumption guard Streamlit inputs; user-entered rows now stay in private
   Operational Store and snapshots go under `$PFI_OS_DATA_HOME/private/derived`.
+- Streamlit data-boundary contract for remaining public `ROOT / "data"`
+  top-level paths, plus private runtime storage for uploaded market CSV files
+  under `$PFI_OS_DATA_HOME/runtime/uploads`.
 
 ## Start Here
 
@@ -108,6 +111,7 @@ python -m pytest tests/contract/test_phase_a_command_center_read_model.py -q
 python -m pytest tests/contract/test_phase_a_vectorized_read_model.py -q
 python -m pytest tests/contract/test_phase_a_macos_runtime_read_model.py -q
 python -m pytest tests/contract/test_phase_a_private_reviewed_inputs.py -q
+python -m pytest tests/contract/test_phase_a_streamlit_data_boundary.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
@@ -121,9 +125,10 @@ commands after any follow-up edits.
 ## Not Done
 
 - GitHub draft PR #2 is the current mergeable integration path for this work.
-- Legacy Streamlit pages still contain direct JSON/provider reads outside the
-  new Web Shell, command-center, vectorized research, and macOS runtime
-  evidence/private reviewed-input vertical slices.
+- Legacy Streamlit pages still contain provider/runtime workflows outside the
+  new Web Shell, but remaining public `ROOT / "data"` top-level paths are
+  contract-classified and no longer include private input ledgers, runtime
+  acceptance evidence, vectorized latest JSON, or uploaded CSV temp files.
 - Existing legacy holdings sync and ResearchBus workflows are not fully moved
   onto Operational Store repositories.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
