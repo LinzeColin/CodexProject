@@ -1011,3 +1011,33 @@ Verification evidence:
 Residual risks:
 
 - Saved-view persistence is still browser-local; production shared saved-view APIs remain future work.
+
+## 2026-06-19 - Phase 1 / G4 T401 Exploration session and URL state
+
+Status: LOCAL CONTRACT PASS; remote PostgreSQL CI pending
+
+Completed:
+
+- Added migration `0002_exploration_state` to persist exploration `state_version`, `direction`, `hops`, and `budget` on `exploration_sessions`.
+- Updated the logical PostgreSQL schema and schema checker so exploration session state columns are required.
+- Added canonical `state` and `state.url_state` to `/v1/explore` responses, including URL query fields and a full `restore_payload`.
+- Updated `/v1/explore` create/update paths to persist direction, hops, budget, active layers, as-of time, scoring profile, and filters.
+- Updated recent exploration rows returned by `/v1/home` to include persisted session state fields.
+- Added integration assertions that serialize focus/layers/direction/time/profile/filters into URL state, POST the restore payload, and verify the same session state is persisted.
+- Marked T401 and A051 as `DONE`.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A051 is covered by `state.url_state.query`, `state.url_state.query_string`, and `state.url_state.restore_payload` assertions in `tests/integration/test_database_migrations.py`.
+- Existing G3 URL/session browser coverage in `tests/e2e/state-contract.spec.ts` remains part of the traceability evidence for A051.
+
+Residual risks:
+
+- Remote CI must still prove the new migration and integration assertions against PostgreSQL.
+- T404 still owns breadcrumb/browser-history synchronization for reroot flows; T401 only closes canonical session and URL state serialization/restoration.

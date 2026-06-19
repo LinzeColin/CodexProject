@@ -1739,6 +1739,7 @@ components:
         required:
         - session_id
         - focus
+        - state
         - history
         - active_profile
         properties:
@@ -1747,6 +1748,91 @@ components:
             format: uuid
           focus:
             $ref: '#/components/schemas/EntitySummary'
+          state:
+            type: object
+            required:
+            - version
+            - session_id
+            - focus
+            - active_layers
+            - direction
+            - hops
+            - filters
+            - budget
+            - url_state
+            properties:
+              version:
+                type: string
+                enum:
+                - exploration-state-v1
+              session_id:
+                type: string
+                format: uuid
+              focus:
+                type: object
+                required:
+                - object_type
+                - object_id
+                properties:
+                  object_type:
+                    type: string
+                  object_id:
+                    type: string
+                    format: uuid
+              active_layers:
+                type: array
+                items:
+                  type: string
+              direction:
+                type: string
+                enum:
+                - both
+                - upstream
+                - downstream
+                - in
+                - out
+              hops:
+                type: integer
+                minimum: 1
+                maximum: 2
+              as_of:
+                type:
+                - string
+                - 'null'
+                format: date-time
+              scoring_profile_version_id:
+                type:
+                - string
+                - 'null'
+                format: uuid
+              filters:
+                type: object
+                additionalProperties: true
+              budget:
+                $ref: '#/components/schemas/GraphBudget'
+              url_state:
+                type: object
+                required:
+                - version
+                - route
+                - query
+                - query_string
+                - restore_payload
+                properties:
+                  version:
+                    type: string
+                    enum:
+                    - exploration-url-state-v1
+                  route:
+                    type: string
+                  query:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  query_string:
+                    type: string
+                  restore_payload:
+                    $ref: '#/components/schemas/ExploreRequest'
           history:
             type: array
             items:

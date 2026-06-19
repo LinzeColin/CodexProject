@@ -56,6 +56,17 @@ REQUIRED_SUPPLY_CHAIN_ATTRIBUTE_COLUMNS = {
     "coverage",
 }
 
+REQUIRED_EXPLORATION_SESSION_COLUMNS = {
+    "active_layers",
+    "as_of",
+    "budget",
+    "direction",
+    "filters",
+    "hops",
+    "scoring_profile_version_id",
+    "state_version",
+}
+
 REQUIRED_TEMPORAL_COLUMNS = {
     "relationships": {"valid_from", "valid_to", "announced_at", "filed_at", "observed_at"},
     "events": {"announced_at", "effective_at", "period_start", "period_end", "observed_at"},
@@ -196,6 +207,15 @@ def main() -> int:
                 f"Missing supply-chain attribute columns: {missing_supply_chain_columns}"
             )
 
+        exploration_session_columns = columns_by_table.get("exploration_sessions", set())
+        missing_exploration_columns = sorted(
+            REQUIRED_EXPLORATION_SESSION_COLUMNS - exploration_session_columns
+        )
+        if missing_exploration_columns:
+            raise RuntimeError(
+                f"Missing exploration session columns: {missing_exploration_columns}"
+            )
+
         for table_name, required_columns in REQUIRED_TEMPORAL_COLUMNS.items():
             missing_temporal_columns = sorted(
                 required_columns - columns_by_table.get(table_name, set())
@@ -211,6 +231,7 @@ def main() -> int:
             "required_extensions": sorted(extensions),
             "required_entity_types": sorted(REQUIRED_ENTITY_TYPES),
             "supply_chain_attribute_columns": sorted(REQUIRED_SUPPLY_CHAIN_ATTRIBUTE_COLUMNS),
+            "exploration_session_columns": sorted(REQUIRED_EXPLORATION_SESSION_COLUMNS),
             "temporal_tables_checked": sorted(REQUIRED_TEMPORAL_COLUMNS),
             "seed_counts": {},
         }

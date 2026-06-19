@@ -242,6 +242,57 @@ def exercise_domain_api_and_repository_contracts() -> None:
         "max_edges": 8,
         "expand_nodes": 3,
     }
+    explicit_state = explicit_exploration["state"]
+    assert explicit_state["version"] == "exploration-state-v1"
+    assert explicit_state["session_id"] == explicit_exploration["session_id"]
+    assert explicit_state["focus"] == {"object_type": "entity", "object_id": NVIDIA_ID}
+    assert explicit_state["active_layers"] == ["capital_control", "policy_regulatory"]
+    assert explicit_state["direction"] == "upstream"
+    assert explicit_state["hops"] == 2
+    assert explicit_state["as_of"] == "2026-06-19T00:00:00Z"
+    assert explicit_state["scoring_profile_version_id"] == profile_id
+    assert explicit_state["filters"] == {"relationship_family": ["capital_financing"]}
+    assert explicit_state["budget"] == {"max_nodes": 7, "max_edges": 8, "expand_nodes": 3}
+    url_state = explicit_state["url_state"]
+    assert url_state["version"] == "exploration-url-state-v1"
+    assert url_state["route"] == "/"
+    assert url_state["query"]["session"] == explicit_exploration["session_id"]
+    assert url_state["query"]["focus"] == f"entity:{NVIDIA_ID}"
+    assert url_state["query"]["layers"] == "capital_control,policy_regulatory"
+    assert url_state["query"]["direction"] == "upstream"
+    assert url_state["query"]["hops"] == "2"
+    assert url_state["query"]["as_of"] == "2026-06-19T00:00:00Z"
+    assert url_state["query"]["profile"] == profile_id
+    assert url_state["query"]["filters"] == '{"relationship_family":["capital_financing"]}'
+    assert "direction=upstream" in url_state["query_string"]
+    assert "hops=2" in url_state["query_string"]
+
+    restored_explore_response = client.post(
+        "/v1/explore",
+        json=url_state["restore_payload"],
+    )
+    assert restored_explore_response.status_code == 200
+    restored_exploration = restored_explore_response.json()
+    assert restored_exploration["session_id"] == explicit_exploration["session_id"]
+    assert restored_exploration["state"]["url_state"]["query"] == url_state["query"]
+    assert restored_exploration["state"]["url_state"]["restore_payload"] == url_state[
+        "restore_payload"
+    ]
+    with connect_database() as connection:
+        session_row = connection.execute(
+            """
+            SELECT active_layers, direction, hops, budget, filters, state_version
+            FROM exploration_sessions
+            WHERE id = %s
+            """,
+            (explicit_exploration["session_id"],),
+        ).fetchone()
+    assert session_row[0] == ["capital_control", "policy_regulatory"]
+    assert session_row[1] == "upstream"
+    assert session_row[2] == 2
+    assert session_row[3] == {"max_nodes": 7, "max_edges": 8, "expand_nodes": 3}
+    assert session_row[4] == {"relationship_family": ["capital_financing"]}
+    assert session_row[5] == "exploration-state-v1"
 
     for invalid_payload in (
         {

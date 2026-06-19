@@ -49,7 +49,7 @@ A047,P0,reroot,User can reroot with reset/default state,E2E,NOT STARTED
 A048,P0,reroot,Three consecutive reroots complete in semiconductor fixture,Critical E2E,NOT STARTED
 A049,P0,reroot,Breadcrumb contains full focus path and is clickable,E2E,NOT STARTED
 A050,P0,reroot,Browser back/forward restore the correct focus and state,E2E,NOT STARTED
-A051,P0,reroot,"URL serializes/restores focus, layers, direction, time, profile and filters",E2E,NOT STARTED
+A051,P0,reroot,"URL serializes/restores focus, layers, direction, time, profile and filters",E2E,DONE
 A052,P0,explore,Incremental expand loads only selected direction/layers within expand budget,Integration/E2E,NOT STARTED
 A053,P0,explore,"Node actions include reroot, upstream, downstream, path, compare, pin, Watchlist and evidence",UI test,NOT STARTED
 A054,P0,explore,Pinned nodes and comparisons survive layout changes,E2E,NOT STARTED

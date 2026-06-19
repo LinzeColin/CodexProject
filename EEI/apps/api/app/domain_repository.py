@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import csv
+import json
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlencode
 from uuid import UUID
 
 import psycopg
@@ -44,6 +46,9 @@ def _escape_like(value: str) -> str:
 
 
 ROOT = Path(__file__).resolve().parents[3]
+EXPLORATION_STATE_VERSION = "exploration-state-v1"
+DEFAULT_GRAPH_BUDGET = {"max_nodes": 42, "max_edges": 64, "expand_nodes": 12}
+GRAPH_HARD_LIMITS = {"max_hops": 2, "max_nodes": 500, "max_edges": 2000, "max_path_length": 8}
 ENTITY_TYPES = (
     "legal_entity",
     "brand",
@@ -1118,7 +1123,8 @@ class DomainRepository:
                 """
                 SELECT
                   es.id, es.title, es.current_focus_entity_id, e.canonical_name, es.updated_at,
-                  es.active_layers, es.filters
+                  es.active_layers, es.direction, es.hops, es.budget, es.as_of,
+                  es.scoring_profile_version_id, es.filters, es.state_version
                 FROM exploration_sessions es
                 LEFT JOIN entities e ON e.id = es.current_focus_entity_id
                 ORDER BY es.updated_at DESC
@@ -1248,12 +1254,96 @@ class DomainRepository:
             }
         )
 
+    def normalize_graph_budget(self, budget: dict[str, Any] | None) -> dict[str, int]:
+        raw_budget = budget or {}
+        return {
+            "max_nodes": min(
+                int(raw_budget.get("max_nodes", DEFAULT_GRAPH_BUDGET["max_nodes"])),
+                500,
+            ),
+            "max_edges": min(
+                int(raw_budget.get("max_edges", DEFAULT_GRAPH_BUDGET["max_edges"])),
+                2000,
+            ),
+            "expand_nodes": min(
+                int(raw_budget.get("expand_nodes", DEFAULT_GRAPH_BUDGET["expand_nodes"])),
+                100,
+            ),
+        }
+
+    def normalize_exploration_state(
+        self,
+        *,
+        session_id: UUID,
+        request: dict[str, Any],
+    ) -> dict[str, Any]:
+        focus = request.get("focus") or {}
+        return {
+            "version": EXPLORATION_STATE_VERSION,
+            "session_id": str(session_id),
+            "focus": {
+                "object_type": focus.get("object_type", "entity"),
+                "object_id": str(focus.get("object_id")),
+            },
+            "active_layers": request.get("active_layers") or ["supply_chain_operations"],
+            "direction": request.get("direction") or "both",
+            "hops": min(int(request.get("hops") or 1), GRAPH_HARD_LIMITS["max_hops"]),
+            "as_of": _jsonable(request.get("as_of")),
+            "scoring_profile_version_id": (
+                str(request["scoring_profile_version_id"])
+                if request.get("scoring_profile_version_id")
+                else None
+            ),
+            "filters": request.get("filters") or {},
+            "budget": self.normalize_graph_budget(request.get("budget")),
+        }
+
+    def exploration_url_state(self, state: dict[str, Any]) -> dict[str, Any]:
+        filters_json = json.dumps(
+            _jsonable(state["filters"]),
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        query: dict[str, str] = {
+            "session": state["session_id"],
+            "focus": f"{state['focus']['object_type']}:{state['focus']['object_id']}",
+            "layers": ",".join(state["active_layers"]),
+            "direction": state["direction"],
+            "hops": str(state["hops"]),
+            "filters": filters_json,
+        }
+        if state.get("as_of"):
+            query["as_of"] = str(state["as_of"])
+        if state.get("scoring_profile_version_id"):
+            query["profile"] = str(state["scoring_profile_version_id"])
+        restore_payload = {
+            "session_id": state["session_id"],
+            "focus": state["focus"],
+            "active_layers": state["active_layers"],
+            "direction": state["direction"],
+            "hops": state["hops"],
+            "as_of": state["as_of"],
+            "scoring_profile_version_id": state["scoring_profile_version_id"],
+            "filters": state["filters"],
+            "budget": state["budget"],
+        }
+        return {
+            "version": "exploration-url-state-v1",
+            "route": "/",
+            "query": query,
+            "query_string": urlencode(query),
+            "restore_payload": restore_payload,
+        }
+
     def start_exploration(self, request: dict[str, Any]) -> dict[str, Any]:
         focus = request["focus"]
         if focus["object_type"] != "entity":
             raise RepositoryError("Only entity focus is supported in the G2 API anchor")
         focus_entity_id = UUID(str(focus["object_id"]))
         as_of = request.get("as_of")
+        direction = request.get("direction") or "both"
+        hops = min(int(request.get("hops") or 1), GRAPH_HARD_LIMITS["max_hops"])
+        budget = self.normalize_graph_budget(request.get("budget"))
         with self.connect() as connection:
             self.entity_summary(connection, focus_entity_id)
             session_id = request.get("session_id")
@@ -1263,6 +1353,9 @@ class DomainRepository:
                     UPDATE exploration_sessions
                     SET current_focus_entity_id = %s,
                         active_layers = %s,
+                        direction = %s,
+                        hops = %s,
+                        budget = %s,
                         as_of = %s,
                         scoring_profile_version_id = %s,
                         filters = %s,
@@ -1273,6 +1366,9 @@ class DomainRepository:
                     (
                         focus_entity_id,
                         request["active_layers"],
+                        direction,
+                        hops,
+                        Jsonb(budget),
                         as_of,
                         request.get("scoring_profile_version_id"),
                         Jsonb(request.get("filters") or {}),
@@ -1286,16 +1382,19 @@ class DomainRepository:
                 row = connection.execute(
                     """
                     INSERT INTO exploration_sessions(
-                      title, current_focus_entity_id, active_layers, as_of,
-                      scoring_profile_version_id, filters
+                      title, current_focus_entity_id, active_layers, direction, hops, budget,
+                      as_of, scoring_profile_version_id, filters
                     )
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING id
                     """,
                     (
                         f"Exploration: {focus_entity_id}",
                         focus_entity_id,
                         request["active_layers"],
+                        direction,
+                        hops,
+                        Jsonb(budget),
                         as_of,
                         request.get("scoring_profile_version_id"),
                         Jsonb(request.get("filters") or {}),
@@ -1308,7 +1407,7 @@ class DomainRepository:
                 from_entity_id=None,
                 to_entity_id=focus_entity_id,
                 action="start",
-                inherited_state={"direction": request["direction"], "budget": request["budget"]},
+                inherited_state={"direction": direction, "hops": hops, "budget": budget},
             )
             return self.exploration_response_for_connection(connection, session_uuid, request)
 
@@ -1320,7 +1419,7 @@ class DomainRepository:
             session = connection.execute(
                 """
                 SELECT id, current_focus_entity_id, active_layers, as_of,
-                       scoring_profile_version_id, filters
+                       scoring_profile_version_id, filters, direction, hops, budget
                 FROM exploration_sessions
                 WHERE id = %s
                 """,
@@ -1333,16 +1432,19 @@ class DomainRepository:
                 row = connection.execute(
                     """
                     INSERT INTO exploration_sessions(
-                      title, current_focus_entity_id, active_layers, as_of,
-                      scoring_profile_version_id, filters
+                      title, current_focus_entity_id, active_layers, direction, hops, budget,
+                      as_of, scoring_profile_version_id, filters
                     )
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING id
                     """,
                     (
                         f"Reroot: {new_focus}",
                         new_focus,
                         session["active_layers"],
+                        session["direction"],
+                        session["hops"],
+                        Jsonb(session["budget"]),
                         session["as_of"],
                         session["scoring_profile_version_id"],
                         Jsonb(session["filters"] if request["inherit_state"] else {}),
@@ -1371,12 +1473,12 @@ class DomainRepository:
             session_request = {
                 "focus": {"object_type": "entity", "object_id": str(new_focus)},
                 "active_layers": session["active_layers"],
-                "direction": "both",
-                "hops": 1,
+                "direction": session["direction"],
+                "hops": session["hops"],
                 "as_of": session["as_of"],
                 "scoring_profile_version_id": session["scoring_profile_version_id"],
                 "filters": session["filters"] if request["inherit_state"] else {},
-                "budget": {"max_nodes": 42, "max_edges": 64, "expand_nodes": 12},
+                "budget": session["budget"],
             }
             return self.exploration_response_for_connection(
                 connection,
@@ -1428,6 +1530,8 @@ class DomainRepository:
         focus_entity_id = UUID(str(request["focus"]["object_id"]))
         focus = self.entity_summary(connection, focus_entity_id)
         graph = self.graph_for_focus(connection, focus_entity_id, request)
+        state = self.normalize_exploration_state(session_id=session_id, request=request)
+        url_state = self.exploration_url_state(state)
         history = connection.execute(
             """
             SELECT sequence_no, from_entity_id, to_entity_id, action, inherited_state, created_at
@@ -1442,6 +1546,7 @@ class DomainRepository:
                 **graph,
                 "session_id": session_id,
                 "focus": focus,
+                "state": {**state, "url_state": url_state},
                 "history": history,
                 "active_profile": self.active_scoring_profile(connection) or {},
                 "coverage": graph["coverage"],
@@ -1459,12 +1564,12 @@ class DomainRepository:
         focus_entity_id: UUID,
         request: dict[str, Any],
     ) -> dict[str, Any]:
-        budget = request.get("budget") or {}
-        max_nodes = min(int(budget.get("max_nodes", 42)), 500)
-        max_edges = min(int(budget.get("max_edges", 64)), 2000)
-        expand_nodes = min(int(budget.get("expand_nodes", 12)), 100)
+        budget = self.normalize_graph_budget(request.get("budget"))
+        max_nodes = budget["max_nodes"]
+        max_edges = budget["max_edges"]
+        expand_nodes = budget["expand_nodes"]
         direction = request.get("direction") or "both"
-        hops = min(int(request.get("hops") or 1), 2)
+        hops = min(int(request.get("hops") or 1), GRAPH_HARD_LIMITS["max_hops"])
         as_of = request.get("as_of")
         truncation_reasons: list[str] = []
         if direction in {"upstream", "in"}:
@@ -1582,17 +1687,8 @@ class DomainRepository:
                     "scoring_profile_version_id": request.get("scoring_profile_version_id"),
                     "active_layers": request.get("active_layers") or ["supply_chain_operations"],
                     "filters": request.get("filters") or {},
-                    "budget": {
-                        "max_nodes": max_nodes,
-                        "max_edges": max_edges,
-                        "expand_nodes": expand_nodes,
-                    },
-                    "hard_limits": {
-                        "max_hops": 2,
-                        "max_nodes": 500,
-                        "max_edges": 2000,
-                        "max_path_length": 8,
-                    },
+                    "budget": budget,
+                    "hard_limits": GRAPH_HARD_LIMITS,
                 },
                 "nodes": nodes,
                 "edges": edges,
