@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T15:07:49.624961+10:00",
+  "snapshot_id": "product-readiness-2026-06-13T150749-624961-1000",
+  "mode": "product_readiness_dashboard",
+  "purpose": "用用户视角验收 TAB FIFA 盘口研究系统：下注决策体验、可视化报告、开源模型吸收、数据库/新旧对比、主动测试补缺、持仓收益率和 automation 准入。",
+  "executive_status": {
+    "status": "in_progress",
+    "product_readiness_score": 0.822,
+    "automation_entry_ready": false,
+    "current_executable_new_stake_aud": 0.0,
+    "primary_user_action": "导入只读 私有持仓 结算结果和开赛前/收盘赔率后，按板块、EV bucket 和 CLV/ROI 偏差校准下注阈值。",
+    "primary_gap": "每日 automation 准入",
+    "recommended_next_action": "每日 automation 准入：导入只读 私有持仓 结算结果和开赛前/收盘赔率后，按板块、EV bucket 和 CLV/ROI 偏差校准下注阈值。"
+  },
+  "summary": {
+    "capability_count": 13,
+    "ready_count": 8,
+    "partial_count": 4,
+    "blocked_count": 1,
+    "average_score": 0.822,
+    "current_executable_new_stake_aud": 0.0,
+    "automation_candidate_ready": false,
+    "database_ready": true,
+    "homepage_ready": true,
+    "blocked_titles": [
+      "每日 automation 准入"
+    ],
+    "partial_titles": [
+      "策略表现与回测闭环",
+      "实时盘口与板块门禁",
+      "主动测试与补缺",
+      "持仓金额与收益率闭环"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "betting_decision_home",
+      "title": "下注决策首页",
+      "status": "ready",
+      "score": 1.0,
+      "user_takeaway": "首页第一屏已显示推荐下注板块、主动测试、补跑按钮和概率/赔率即时 EV 编辑。",
+      "evidence": "推荐表字段 21/21；EV 输入 11 个。",
+      "next_action": "保持并随每次日报重算。",
+      "value_over_static_report": "强于静态报告：打开入口即可看到该怎么操作、为什么暂停或下注、金额和 EV。"
+    },
+    {
+      "row_id": "recommendation_operation_archive",
+      "title": "推荐操作归档",
+      "status": "ready",
+      "score": 1.0,
+      "user_takeaway": "首页推荐下注板块已沉淀为正式 PDF/JSON/Markdown 操作研究报告，并写入本地 SQLite 快照。",
+      "evidence": "候选盘口 0；研究候选金额 AUD 0；当前可执行金额 AUD 0；状态 research_only_blocked。",
+      "next_action": "保持并随每次日报重算。",
+      "value_over_static_report": "比静态报告更直接：用户可以把首页操作建议、暂停原因、新旧变化和金额归档到同一份研究报告。"
+    },
+    {
+      "row_id": "strategy_performance_tracking",
+      "title": "策略表现与回测闭环",
+      "status": "partial",
+      "score": 0.75,
+      "user_takeaway": "历史推荐、EV/Edge、研究金额、预期收益、CLV/ROI 准备度和新旧变化已形成策略表现 Dashboard；真实收益缺失时明确 outcome_pending。",
+      "evidence": "历史推荐 2318；买入样本 427；研究金额 AUD 5,210；加权EV 12.89%；ROI=outcome_pending；CLV=clv_pending；状态 tracking_ready_outcome_pending。",
+      "next_action": "导入只读 私有持仓 结算结果和开赛前/收盘赔率后，按板块、EV bucket 和 CLV/ROI 偏差校准下注阈值。",
+      "value_over_static_report": "不只给下注建议，还能追踪这些建议后来有没有变好：预期收益、真实收益、CLV、EV 分桶和板块表现能逐日优化。"
+    },
+    {
+      "row_id": "visual_report_system",
+      "title": "可视化报告体系",
+      "status": "ready",
+      "score": 1.0,
+      "user_takeaway": "公开报告族已纳入图表、表格、Dashboard、自动化状态、新旧对比和 GitHub 参考审计。",
+      "evidence": "报告族 21；图表 21；Dashboard 21；新旧对比 21/21。",
+      "next_action": "保持并随每次日报重算。",
+      "value_over_static_report": "比单一 PDF 更适合每日复盘：报告、仪表盘、状态门禁和源证据能一起看。"
+    },
+    {
+      "row_id": "report_evolution_control",
+      "title": "新旧报告变化总控",
+      "status": "ready",
+      "score": 1.0,
+      "user_takeaway": "已把日报 diff、报告族目录、推荐操作变化、策略表现变化和产品完成度变化汇总成跨报告族新旧变化总控台。",
+      "evidence": "status=tracking_ready；diffs=20；报告族=21；新旧覆盖=21；目录变化=1。",
+      "next_action": "保持并随每次日报重算。",
+      "value_over_static_report": "比静态报告更适合长期优化：能直接看新报告相对旧报告哪些变了、哪些退化、哪些仍不能执行。"
+    },
+    {
+      "row_id": "open_source_model_adoption",
+      "title": "开源模型吸收",
+      "status": "ready",
+      "score": 1.0,
+      "user_takeaway": "已把 Hicruben、goalmodel、Dixon-Coles、penaltyblog、socceraction、openfootball 等 GitHub/开源模型和公开数据源转为本地模型审计、分歧、基本面、赛程校验、布局参考和 UI/Dashboard 蓝图。",
+      "evidence": "参考源 6；已落地 3；design reference 3；GitHub元数据 ready 6/6；4小时freshness=stale_or_partial 0/6，stale=6，max_age=6.62h；stars/open issues 1431/47。 UI蓝图 4/6；partial 1；data_required 1。 UI界面覆盖 6/6；gated 2；layout_ready=True。",
+      "next_action": "保持并随每次日报重算。",
+      "value_over_static_report": "下注建议不只看隐含概率，能展示模型共识、赔率去水、基本面、赛程校验、分歧、开源方法来源和对应的报告界面设计。"
+    },
+    {
+      "row_id": "public_fixture_sanity",
+      "title": "公开赛程校验",
+      "status": "ready",
+      "score": 1.0,
+      "user_takeaway": "已把 openfootball/worldcup.json 公开赛程接入为 TAB Matches raw 的辅助校验，帮助发现队名、日期、分组、场地和赛果差异。",
+      "evidence": "status=ready_with_delayed_public_source；openfootball=104；TAB raw=26；matched=23；review=84。",
+      "next_action": "保持并随每次日报重算。",
+      "value_over_static_report": "比静态报告更可靠：能把公开赛程源与 TAB raw 做每日差异检查，并写入新旧对比。"
+    },
+    {
+      "row_id": "database_and_old_new_compare",
+      "title": "数据库与新旧对比",
+      "status": "ready",
+      "score": 0.9,
+      "user_takeaway": "日报 run、推荐、artifact、report diff、automation audit 和当前产品成熟度快照写入 SQLite。",
+      "evidence": "runs=61；diffs=61；recommendations=2318；report_evolution=125；strategy_performance=125；fixture_sanity=128；report_catalog=5305；visual_inventory=256；automation_maturity=101；automation_doctor=86；product_snapshots=398。",
+      "next_action": "保持并随每次日报重算。",
+      "value_over_static_report": "能做日报/周报、回测、能力变化和旧报告差异追踪。"
+    },
+    {
+      "row_id": "live_data_and_board_gate",
+      "title": "实时盘口与板块门禁",
+      "status": "partial",
+      "score": 0.57,
+      "user_takeaway": "系统已把 TAB Live discovery、available board strategy 和 raw refresh 作为执行建议前置门禁。",
+      "evidence": "raw_ready=False；discovery_ready=True；listed=3/5；missing=2；route_mismatch=True；matches_live_targets=9；partial_refresh=4/5。",
+      "next_action": "Matches/Futures/Group Betting 已能只读刷新，当前 Matches live targets=9；最新 raw diagnostics 已证明 4/5 个尝试板块可研究；Australia Markets、Team Futures Multi 未在 TAB live 导航中列出并出现 route mismatch。保持这两个板块 unavailable，不用旧盘口；等待 TAB 重新列出或只生成研究-only 诊断，新增执行金额维持 AUD 0。",
+      "value_over_static_report": "阻止用旧盘口或被拦截页面生成误导性下注建议。"
+    },
+    {
+      "row_id": "active_test_and_backfill",
+      "title": "主动测试与补缺",
+      "status": "partial",
+      "score": 0.55,
+      "user_takeaway": "主动测试会按每天至少 4 次分析、每天 1 份报告检查时间线，并在 raw 通过后补跑缺口。",
+      "evidence": "检查天数 9；分析缺口日 5；日报缺口日 8；补跑队列 8。",
+      "next_action": "raw_ready=true 后运行 safe_no_latest_publish 补跑，再重跑日报门禁。",
+      "value_over_static_report": "减少人工漏跑，后续 automation 能主动发现缺口并修复。"
+    },
+    {
+      "row_id": "position_roi_loop",
+      "title": "持仓金额与收益率闭环",
+      "status": "partial",
+      "score": 0.45,
+      "user_takeaway": "已建立公开安全的持仓监控 Dashboard；私有资金状态、已下注金额和收益率未 ready 时显示 funding-update-pending。",
+      "evidence": "snapshot_ready=False；funding_state=funding-update-pending。",
+      "next_action": "从 .app 启动只读持仓读取，用户完成 TAB 授权后导入当前日期私有快照。",
+      "value_over_static_report": "胜负结果会影响下一期可用余额和下注金额，而不是静态预算分配。"
+    },
+    {
+      "row_id": "automation_without_autobet",
+      "title": "每日 automation 准入",
+      "status": "blocked",
+      "score": 0.6154,
+      "user_takeaway": "系统已将每日自动报告和不自动下注分离；automation 只允许生成研究、PDF、Dashboard 和补缺报告。",
+      "evidence": "maturity_ready=8/13；latest_success=04062026；current_executable=0；public_safety=是/是；blockers=3。",
+      "next_action": "先恢复 Live/raw/private snapshot，再安装 recurring automation；allow_auto_betting 保持 false。",
+      "value_over_static_report": "成熟后可每日生成报告，但不会越权下注。"
+    },
+    {
+      "row_id": "formal_pdf_archive",
+      "title": "正式 PDF 归档",
+      "status": "ready",
+      "score": 0.85,
+      "user_takeaway": "最新可信成功报告继续通过 latest_commit 指针和 FIFA Report/DDMMYYYY.pdf 管理。",
+      "evidence": "latest_status=ready_for_manual_report；latest_date=04062026；intelligence_changed=0。",
+      "next_action": "保持并随每次日报重算。",
+      "value_over_static_report": "避免 PDF 存在就误认为可下注，保留真实可信的报告版本线。"
+    }
+  ],
+  "db_summary": {
+    "ready": true,
+    "database": "tab_fifa_reports.sqlite3",
+    "run_count": 61,
+    "recommendation_count": 2318,
+    "report_diff_count": 61,
+    "artifact_count": 696,
+    "automation_run_count": 18,
+    "report_visual_inventory_count": 256,
+    "report_catalog_item_count": 5305,
+    "recommendation_operation_count": 144,
+    "report_evolution_count": 125,
+    "strategy_performance_count": 125,
+    "fixture_sanity_count": 128,
+    "automation_maturity_count": 101,
+    "automation_doctor_count": 86,
+    "product_readiness_count": 398
+  },
+  "downloads_entry": {
+    "ready": true,
+    "recommendation_first": true,
+    "required_column_count": 21,
+    "present_required_column_count": 21,
+    "ev_input_count": 11,
+    "all_required_columns": true
+  },
+  "chatgpt_baseline_note": "本面板不声称访问到 ChatGPT 私有实现；只把用户要求中的 ChatGPT 版本参照转化为可验证能力：本地 Dashboard、PDF、SQLite、新旧对比、开源模型审计、主动测试和 fail-closed 门禁。",
+  "truthfulness_note": "该 Dashboard 只评估产品/报告系统成熟度；raw/private/preflight 未通过时仍不得发布当前可执行下注日报，也不会自动下注。",
+  "old_new_compare": {
+    "status": "compared",
+    "previous_generated_at": "2026-06-13T14:45:25.465657+10:00",
+    "score_delta": 0.0385,
+    "status_delta": "in_progress -> in_progress",
+    "newly_ready": [
+      "下注决策首页"
+    ],
+    "newly_blocked": []
+  },
+  "artifacts": {
+    "json": "product_readiness_dashboard_latest.json",
+    "markdown": "product_readiness_dashboard_latest.md",
+    "pdf": "product_readiness_dashboard_latest.pdf",
+    "pdf_summary": {
+      "path": "product_readiness_dashboard_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 5,
+      "detail_row_count": 13,
+      "extra_table_count": 3,
+      "extra_detail_row_count": 23
+    }
+  },
+  "storage": {
+    "status": "stored",
+    "database": "tab_fifa_reports.sqlite3",
+    "table": "product_readiness_snapshots"
+  }
+}

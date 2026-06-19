@@ -1,0 +1,2819 @@
+{
+  "generated_at": "2026-06-13T16:55:40+1000",
+  "started_at": "2026-06-13T16:55:38+1000",
+  "root": "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-fifa",
+  "github_repo": "https://github.com/LinzeColin/FIFA",
+  "backup_commit_before_cleanup": "a94ec0b",
+  "policy": "Deletion executed only after GitHub push to origin/main succeeded.",
+  "before_file_count_excluding_git_internal": 3524,
+  "after_file_count_excluding_git_internal": 572,
+  "deleted_file_count": 2952,
+  "deleted_path_count": 397,
+  "bytes_deleted": 167478694,
+  "before_bytes_excluding_git_internal": 207922853,
+  "after_bytes_excluding_git_internal": 40444159,
+  "github_backed_up_archives": [
+    "artifacts/backups/tab_fifa_reports_20260613.sqlite3.gz",
+    "artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz",
+    "artifacts/backups/legacy_fifa_analysis_db_20260613.sqlite3.gz"
+  ],
+  "github_backed_up_source_dirs": [
+    "tab-research-pipeline/",
+    "legacy/fifa-analysis-system/"
+  ],
+  "github_backed_up_latest_artifacts_dir": "artifacts/latest/",
+  "local_retained_necessary": [
+    "work/tab-research-pipeline/ source tree",
+    "outputs/*_latest.* current public status artifacts",
+    "outputs/13062026_partial_daily_research.* research-only daily report",
+    "outputs/04062026.pdf latest trusted formal report",
+    "outputs/research_only_raw/ fresh partial raw evidence",
+    "outputs/tab_fifa_app_entry_runtime.html runtime entry copy",
+    "work/private/tab_fifa/tab_chrome_profile non-cache files for user-authorized read-only My Bets bootstrap",
+    "work/private/tab_fifa/tab_fifa_bankroll_plan_*.json local private bankroll plans",
+    "work/private/tab_fifa/tab_my_bets_positions_*.json local private positions",
+    "work/private/tab_fifa/tab_my_bets_capture_diagnostics_*.json sanitized private diagnostics",
+    "github_sync/FIFA local GitHub worktree"
+  ],
+  "deleted_rows": [
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/urllib3/contrib/_securetransport/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 32765,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/pyproject_hooks/_in_process/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 16747,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/urllib3/packages/backports/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 9901,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/__pycache__",
+      "files_deleted": 9,
+      "bytes_deleted": 122497,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/metadata/importlib/__pycache__",
+      "files_deleted": 4,
+      "bytes_deleted": 29495,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/operations/install/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 37062,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/cachecontrol/caches/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 11414,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/pygments/formatters/__pycache__",
+      "files_deleted": 14,
+      "bytes_deleted": 174478,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/resolution/legacy/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 23235,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/packaging/licenses/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 51903,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/operations/build/__pycache__",
+      "files_deleted": 8,
+      "bytes_deleted": 22888,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/resolvelib/compat/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 776,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/uvicorn/protocols/websockets/__pycache__",
+      "files_deleted": 4,
+      "bytes_deleted": 43796,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/urllib3/packages/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 42372,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/pygments/filters/__pycache__",
+      "files_deleted": 1,
+      "bytes_deleted": 38046,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/pyproject_hooks/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 18640,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/urllib3/contrib/__pycache__",
+      "files_deleted": 7,
+      "bytes_deleted": 88612,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/pygments/lexers/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 126287,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/pygments/styles/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 6443,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/distributions/__pycache__",
+      "files_deleted": 5,
+      "bytes_deleted": 16971,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/pkg_resources/__pycache__",
+      "files_deleted": 1,
+      "bytes_deleted": 161694,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/cachecontrol/__pycache__",
+      "files_deleted": 9,
+      "bytes_deleted": 49632,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/platformdirs/__pycache__",
+      "files_deleted": 8,
+      "bytes_deleted": 84034,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/urllib3/util/__pycache__",
+      "files_deleted": 13,
+      "bytes_deleted": 101500,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/operations/__pycache__",
+      "files_deleted": 4,
+      "bytes_deleted": 44794,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/resolution/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 1594,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/locations/__pycache__",
+      "files_deleted": 4,
+      "bytes_deleted": 36066,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/uvicorn/protocols/http/__pycache__",
+      "files_deleted": 5,
+      "bytes_deleted": 61848,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/truststore/__pycache__",
+      "files_deleted": 6,
+      "bytes_deleted": 57542,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/resolvelib/__pycache__",
+      "files_deleted": 5,
+      "bytes_deleted": 46437,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/commands/__pycache__",
+      "files_deleted": 18,
+      "bytes_deleted": 152435,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/metadata/__pycache__",
+      "files_deleted": 4,
+      "bytes_deleted": 60068,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pydantic/experimental/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 36295,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/packaging/__pycache__",
+      "files_deleted": 14,
+      "bytes_deleted": 178512,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/network/__pycache__",
+      "files_deleted": 8,
+      "bytes_deleted": 75324,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/websockets/extensions/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 23971,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/fastapi/dependencies/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 42475,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/pygments/__pycache__",
+      "files_deleted": 16,
+      "bytes_deleted": 168878,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/requests/__pycache__",
+      "files_deleted": 18,
+      "bytes_deleted": 211366,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/models/__pycache__",
+      "files_deleted": 12,
+      "bytes_deleted": 68620,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/starlette/middleware/__pycache__",
+      "files_deleted": 11,
+      "bytes_deleted": 65806,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pydantic/deprecated/__pycache__",
+      "files_deleted": 8,
+      "bytes_deleted": 53574,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/uvicorn/supervisors/__pycache__",
+      "files_deleted": 5,
+      "bytes_deleted": 29525,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/msgpack/__pycache__",
+      "files_deleted": 4,
+      "bytes_deleted": 54344,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/distlib/__pycache__",
+      "files_deleted": 13,
+      "bytes_deleted": 474598,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/certifi/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 4420,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/urllib3/__pycache__",
+      "files_deleted": 11,
+      "bytes_deleted": 167223,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/utils/__pycache__",
+      "files_deleted": 26,
+      "bytes_deleted": 159086,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/index/__pycache__",
+      "files_deleted": 4,
+      "bytes_deleted": 76078,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pydantic/_internal/__pycache__",
+      "files_deleted": 29,
+      "bytes_deleted": 483183,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/uvicorn/middleware/__pycache__",
+      "files_deleted": 5,
+      "bytes_deleted": 22228,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/fastapi/middleware/__pycache__",
+      "files_deleted": 6,
+      "bytes_deleted": 2021,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/distro/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 53625,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/websockets/asyncio/__pycache__",
+      "files_deleted": 8,
+      "bytes_deleted": 157358,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/uvicorn/protocols/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 3450,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/tomli/__pycache__",
+      "files_deleted": 4,
+      "bytes_deleted": 34620,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/cli/__pycache__",
+      "files_deleted": 13,
+      "bytes_deleted": 107806,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/req/__pycache__",
+      "files_deleted": 6,
+      "bytes_deleted": 128002,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/vcs/__pycache__",
+      "files_deleted": 6,
+      "bytes_deleted": 73484,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/websockets/legacy/__pycache__",
+      "files_deleted": 9,
+      "bytes_deleted": 169684,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/uvicorn/lifespan/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 9768,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/fastapi/security/__pycache__",
+      "files_deleted": 7,
+      "bytes_deleted": 47145,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/idna/__pycache__",
+      "files_deleted": 8,
+      "bytes_deleted": 285944,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/rich/__pycache__",
+      "files_deleted": 77,
+      "bytes_deleted": 1137167,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/httptools/parser/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 4193,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/annotated_types/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 32346,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pydantic/plugin/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 17145,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/uvloop/includes/__pycache__",
+      "files_deleted": 1,
+      "bytes_deleted": 678,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/fastapi/openapi/__pycache__",
+      "files_deleted": 5,
+      "bytes_deleted": 56778,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/anyio/_backends/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 216344,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/websockets/sync/__pycache__",
+      "files_deleted": 7,
+      "bytes_deleted": 115161,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pydantic_core/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 145503,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/uvicorn/loops/__pycache__",
+      "files_deleted": 4,
+      "bytes_deleted": 2447,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_internal/__pycache__",
+      "files_deleted": 9,
+      "bytes_deleted": 115280,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/anyio/streams/__pycache__",
+      "files_deleted": 7,
+      "bytes_deleted": 68932,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pydantic/v1/__pycache__",
+      "files_deleted": 26,
+      "bytes_deleted": 593774,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/_vendor/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 147481,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/anyio/_core/__pycache__",
+      "files_deleted": 16,
+      "bytes_deleted": 208051,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/websockets/__pycache__",
+      "files_deleted": 21,
+      "bytes_deleted": 182791,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/watchfiles/__pycache__",
+      "files_deleted": 7,
+      "bytes_deleted": 55133,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/starlette/__pycache__",
+      "files_deleted": 24,
+      "bytes_deleted": 293279,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/httptools/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 1032,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/anyio/abc/__pycache__",
+      "files_deleted": 8,
+      "bytes_deleted": 59207,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pydantic/__pycache__",
+      "files_deleted": 35,
+      "bytes_deleted": 647390,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/certifi/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 3218,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/fastapi/__pycache__",
+      "files_deleted": 23,
+      "bytes_deleted": 303806,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/uvicorn/__pycache__",
+      "files_deleted": 10,
+      "bytes_deleted": 94779,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/dotenv/__pycache__",
+      "files_deleted": 8,
+      "bytes_deleted": 46568,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/uvloop/__pycache__",
+      "files_deleted": 4,
+      "bytes_deleted": 40812,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/click/__pycache__",
+      "files_deleted": 17,
+      "bytes_deleted": 476465,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/anyio/__pycache__",
+      "files_deleted": 8,
+      "bytes_deleted": 98274,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/_yaml/__pycache__",
+      "files_deleted": 1,
+      "bytes_deleted": 948,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/idna/__pycache__",
+      "files_deleted": 10,
+      "bytes_deleted": 165661,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/yaml/__pycache__",
+      "files_deleted": 17,
+      "bytes_deleted": 259401,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/h11/__pycache__",
+      "files_deleted": 11,
+      "bytes_deleted": 82483,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/pip/__pycache__",
+      "files_deleted": 3,
+      "bytes_deleted": 4035,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/.venv/lib/python3.13/site-packages/__pycache__",
+      "files_deleted": 1,
+      "bytes_deleted": 162940,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "github_sync/FIFA/tab-research-pipeline/scripts/__pycache__",
+      "files_deleted": 1,
+      "bytes_deleted": 38032,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "github_sync/FIFA/tab-research-pipeline/tests/__pycache__",
+      "files_deleted": 1,
+      "bytes_deleted": 495919,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/tab-research-pipeline/tab_research/__pycache__",
+      "files_deleted": 111,
+      "bytes_deleted": 3554691,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "github_sync/FIFA/tab-research-pipeline/__pycache__",
+      "files_deleted": 1,
+      "bytes_deleted": 117034,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/tab-research-pipeline/scripts/__pycache__",
+      "files_deleted": 14,
+      "bytes_deleted": 860402,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/tab-research-pipeline/tests/__pycache__",
+      "files_deleted": 2,
+      "bytes_deleted": 942853,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/tests/__pycache__",
+      "files_deleted": 5,
+      "bytes_deleted": 18977,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/fifa-analysis-system/app/__pycache__",
+      "files_deleted": 12,
+      "bytes_deleted": 96447,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/tab-research-pipeline/__pycache__",
+      "files_deleted": 4,
+      "bytes_deleted": 364601,
+      "reason": "Python bytecode cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": ".DS_Store",
+      "files_deleted": 1,
+      "bytes_deleted": 8196,
+      "reason": "macOS metadata; not project data"
+    },
+    {
+      "category": "cache",
+      "path": "work/.DS_Store",
+      "files_deleted": 1,
+      "bytes_deleted": 6148,
+      "reason": "macOS metadata; not project data"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "work/fifa-analysis-system",
+      "files_deleted": 1078,
+      "bytes_deleted": 22262714,
+      "reason": "Legacy FIFA app code backed to GitHub legacy/fifa-analysis-system; .venv removed as cache"
+    },
+    {
+      "category": "cache",
+      "path": "work/pdf_qa",
+      "files_deleted": 1,
+      "bytes_deleted": 281542,
+      "reason": "PDF QA screenshot/output cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/pdf_qa_final",
+      "files_deleted": 1,
+      "bytes_deleted": 264579,
+      "reason": "PDF QA screenshot/output cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/pdf_qa_latest",
+      "files_deleted": 1,
+      "bytes_deleted": 237639,
+      "reason": "PDF QA screenshot/output cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/pdf_qa_light_header",
+      "files_deleted": 1,
+      "bytes_deleted": 290376,
+      "reason": "PDF QA screenshot/output cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/pdf_qa_new",
+      "files_deleted": 1,
+      "bytes_deleted": 289074,
+      "reason": "PDF QA screenshot/output cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/pdf_qa_safety",
+      "files_deleted": 1,
+      "bytes_deleted": 289874,
+      "reason": "PDF QA screenshot/output cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/pdf_qa_time",
+      "files_deleted": 1,
+      "bytes_deleted": 287656,
+      "reason": "PDF QA screenshot/output cache; reproducible"
+    },
+    {
+      "category": "cache",
+      "path": "work/tab-research-pipeline/work/pdf_preview",
+      "files_deleted": 6,
+      "bytes_deleted": 1182684,
+      "reason": "PDF preview cache; reproducible"
+    },
+    {
+      "category": "private_cache",
+      "path": "work/private/tab_fifa/tab_chrome_profile/Default/Shared Dictionary/Cache",
+      "files_deleted": 2,
+      "bytes_deleted": 72,
+      "reason": "Chrome cache under private profile; auth profile retained"
+    },
+    {
+      "category": "private_cache",
+      "path": "work/private/tab_fifa/tab_chrome_profile/Default/Cache",
+      "files_deleted": 274,
+      "bytes_deleted": 9474456,
+      "reason": "Chrome cache under private profile; auth profile retained"
+    },
+    {
+      "category": "private_cache",
+      "path": "work/private/tab_fifa/tab_chrome_profile/Default/Code Cache",
+      "files_deleted": 73,
+      "bytes_deleted": 1026398,
+      "reason": "Chrome cache under private profile; auth profile retained"
+    },
+    {
+      "category": "private_cache",
+      "path": "work/private/tab_fifa/tab_chrome_profile/GPUPersistentCache/GPUCache",
+      "files_deleted": 3,
+      "bytes_deleted": 16488,
+      "reason": "Chrome cache under private profile; auth profile retained"
+    },
+    {
+      "category": "private_cache",
+      "path": "work/private/tab_fifa/tab_chrome_profile/Default/GPUCache",
+      "files_deleted": 5,
+      "bytes_deleted": 1642864,
+      "reason": "Chrome cache under private profile; auth profile retained"
+    },
+    {
+      "category": "private_cache",
+      "path": "work/private/tab_fifa/tab_chrome_profile/Default/DawnGraphiteCache",
+      "files_deleted": 5,
+      "bytes_deleted": 557424,
+      "reason": "Chrome cache under private profile; auth profile retained"
+    },
+    {
+      "category": "private_cache",
+      "path": "work/private/tab_fifa/tab_chrome_profile/Default/DawnWebGPUCache",
+      "files_deleted": 5,
+      "bytes_deleted": 557424,
+      "reason": "Chrome cache under private profile; auth profile retained"
+    },
+    {
+      "category": "private_cache",
+      "path": "work/private/tab_fifa/tab_chrome_profile/GraphiteDawnCache",
+      "files_deleted": 5,
+      "bytes_deleted": 557424,
+      "reason": "Chrome cache under private profile; auth profile retained"
+    },
+    {
+      "category": "private_not_uploaded_deleted",
+      "path": "work/private/tab_fifa/active_backfill_logs",
+      "files_deleted": 2,
+      "bytes_deleted": 2311,
+      "reason": "Private or sensitive historical raw/log/quarantine data; not uploaded to GitHub"
+    },
+    {
+      "category": "private_not_uploaded_deleted",
+      "path": "work/private/tab_fifa/app_server_logs",
+      "files_deleted": 8,
+      "bytes_deleted": 32039,
+      "reason": "Private or sensitive historical raw/log/quarantine data; not uploaded to GitHub"
+    },
+    {
+      "category": "private_not_uploaded_deleted",
+      "path": "work/private/tab_fifa/automation_run_logs",
+      "files_deleted": 81,
+      "bytes_deleted": 393545,
+      "reason": "Private or sensitive historical raw/log/quarantine data; not uploaded to GitHub"
+    },
+    {
+      "category": "private_not_uploaded_deleted",
+      "path": "work/private/tab_fifa/public_output_quarantine",
+      "files_deleted": 102,
+      "bytes_deleted": 2234546,
+      "reason": "Private or sensitive historical raw/log/quarantine data; not uploaded to GitHub"
+    },
+    {
+      "category": "private_not_uploaded_deleted",
+      "path": "work/private/tab_fifa/raw_backups",
+      "files_deleted": 44,
+      "bytes_deleted": 1201906,
+      "reason": "Private or sensitive historical raw/log/quarantine data; not uploaded to GitHub"
+    },
+    {
+      "category": "private_not_uploaded_deleted",
+      "path": "work/private/tab_fifa/sensitive_archive",
+      "files_deleted": 23,
+      "bytes_deleted": 551327,
+      "reason": "Private or sensitive historical raw/log/quarantine data; not uploaded to GitHub"
+    },
+    {
+      "category": "private_not_uploaded_deleted",
+      "path": "work/private/tab_fifa/tab_my_bets_raw_04062026.txt",
+      "files_deleted": 1,
+      "bytes_deleted": 2794,
+      "reason": "Private or sensitive historical raw/log/quarantine data; not uploaded to GitHub"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/.tab_fifa_daily_report.lock",
+      "files_deleted": 1,
+      "bytes_deleted": 63,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/03062026.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 270218,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T054258Z-9ce90b24.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 174576,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T060433Z-67b8909b.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 201947,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T061518Z-c1351ff0.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 201926,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T063532Z-3bf52aab.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 201926,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T074242Z-c5c5c9cd.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 201926,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T075153Z-70cc02da.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 201926,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T080147Z-bb44feb7.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 201926,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T112011Z-37548791.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 204296,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T112100Z-c0e83634.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 204292,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T113700Z-e942bffd.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 204292,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T114533Z-07df2701.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 204299,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T120123Z-cae53e8b.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 204299,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T120317Z-dd539627.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 204299,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T124554Z-b2488ad8.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 205544,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T131447Z-fc57e8bb.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 205544,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T132624Z-2a4e122e.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 222723,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T133257Z-8fc567ae.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 222726,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T134623Z-8f44df8b.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 222726,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T135315Z-871b092c.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 222726,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/04062026_20260604T135753Z-212e8e9a.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 222726,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/05062026.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 235335,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/05062026_20260604T141023Z-817e2977.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 235335,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/05062026_20260604T141232Z-d2eff3e0.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 235335,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/05062026_20260605T084257Z-6cd72c59.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 252206,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/05062026_20260605T111049Z-428e2593.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 252194,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/06062026_20260605T225259Z-be7638ce.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 252197,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/06062026_20260605T232012Z-bad22171.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 252184,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/06062026_20260606T024653Z-69fb9511.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 252184,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_australia_markets_v0_15.json",
+      "files_deleted": 1,
+      "bytes_deleted": 736,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_australia_markets_v0_17.json",
+      "files_deleted": 1,
+      "bytes_deleted": 416,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_futures_v0_13.json",
+      "files_deleted": 1,
+      "bytes_deleted": 480,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_group_betting_v0_14.json",
+      "files_deleted": 1,
+      "bytes_deleted": 429,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_team_futures_multi_v0_16.json",
+      "files_deleted": 1,
+      "bytes_deleted": 409,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_v0_10.json",
+      "files_deleted": 1,
+      "bytes_deleted": 829,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_v0_11.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1101,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_v0_4.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1126,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_v0_5.json",
+      "files_deleted": 1,
+      "bytes_deleted": 627,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_v0_6.json",
+      "files_deleted": 1,
+      "bytes_deleted": 627,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_v0_7.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2313,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_v0_8.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2135,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_gate_v0_9.json",
+      "files_deleted": 1,
+      "bytes_deleted": 720,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260605T045508Z-1e503a13.json",
+      "files_deleted": 1,
+      "bytes_deleted": 945,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260605T053308Z-e1c56980.json",
+      "files_deleted": 1,
+      "bytes_deleted": 875,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260605T055626Z-ba247362.json",
+      "files_deleted": 1,
+      "bytes_deleted": 875,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260605T064819Z-e3602800.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1127,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260605T082615Z-d31a7543.json",
+      "files_deleted": 1,
+      "bytes_deleted": 983,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260605T084257Z-6cd72c59.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2720,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260605T195704Z-d370cd95.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1028,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260605T213802Z-18810b47.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1289,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260605T220116Z-ac437e5b.json",
+      "files_deleted": 1,
+      "bytes_deleted": 992,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260605T225259Z-be7638ce.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2720,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260605T232012Z-bad22171.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3392,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260606T024653Z-69fb9511.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3392,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260612T045002Z-1866f370.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1028,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260612T071418Z-351cc74d.json",
+      "files_deleted": 1,
+      "bytes_deleted": 932,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260612T073419Z-4122a953.json",
+      "files_deleted": 1,
+      "bytes_deleted": 991,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260612T121732Z-2323d929.json",
+      "files_deleted": 1,
+      "bytes_deleted": 925,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260612T131829Z-d6ef19bc.json",
+      "files_deleted": 1,
+      "bytes_deleted": 991,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260612T201040Z-5be949bd.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2246,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260612T213854Z-63a3b9ff.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3251,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260612T235439Z-3dcb6f8d.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1892,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260613T012612Z-60be1ce1.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2501,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260613T014702Z-e40094b3.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2500,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260613T015950Z-0f7dad26.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2319,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260613T022432Z-80387039.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1574,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260613T024632Z-3914a473.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1475,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260613T040114Z-51bf2e2a.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1865,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_preflight_20260613T043303Z-593b5282.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1241,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/automation_safety_gate.json",
+      "files_deleted": 1,
+      "bytes_deleted": 379,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T080147Z-bb44feb7.json",
+      "files_deleted": 1,
+      "bytes_deleted": 10766,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T082800Z-ce9b5a79.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2870,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T083405Z-5ca7845e.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1442,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T110255Z-8215819e.json",
+      "files_deleted": 1,
+      "bytes_deleted": 4390,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T111616Z-2fb08fb2.json",
+      "files_deleted": 1,
+      "bytes_deleted": 4115,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T112011Z-37548791.json",
+      "files_deleted": 1,
+      "bytes_deleted": 11517,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T112100Z-c0e83634.json",
+      "files_deleted": 1,
+      "bytes_deleted": 11517,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T113348Z-902f1fb3.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2987,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T113700Z-e942bffd.json",
+      "files_deleted": 1,
+      "bytes_deleted": 11517,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T114533Z-07df2701.json",
+      "files_deleted": 1,
+      "bytes_deleted": 12029,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T120123Z-cae53e8b.json",
+      "files_deleted": 1,
+      "bytes_deleted": 11764,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T120317Z-dd539627.json",
+      "files_deleted": 1,
+      "bytes_deleted": 11764,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T124554Z-b2488ad8.json",
+      "files_deleted": 1,
+      "bytes_deleted": 11764,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T131447Z-fc57e8bb.json",
+      "files_deleted": 1,
+      "bytes_deleted": 12662,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T132624Z-2a4e122e.json",
+      "files_deleted": 1,
+      "bytes_deleted": 12663,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T133257Z-8fc567ae.json",
+      "files_deleted": 1,
+      "bytes_deleted": 12663,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T134623Z-8f44df8b.json",
+      "files_deleted": 1,
+      "bytes_deleted": 12950,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T135315Z-871b092c.json",
+      "files_deleted": 1,
+      "bytes_deleted": 12950,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T135753Z-212e8e9a.json",
+      "files_deleted": 1,
+      "bytes_deleted": 12950,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T141023Z-817e2977.json",
+      "files_deleted": 1,
+      "bytes_deleted": 13345,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T141232Z-d2eff3e0.json",
+      "files_deleted": 1,
+      "bytes_deleted": 5577,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260604T213057Z-db1e3650.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2035,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T045508Z-1e503a13.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2025,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T053308Z-e1c56980.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2367,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T055626Z-ba247362.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2367,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T064819Z-e3602800.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2871,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T082615Z-d31a7543.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2583,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T084257Z-6cd72c59.json",
+      "files_deleted": 1,
+      "bytes_deleted": 5852,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T111049Z-428e2593.json",
+      "files_deleted": 1,
+      "bytes_deleted": 5688,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T195704Z-d370cd95.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2683,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T213802Z-18810b47.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3195,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T220116Z-ac437e5b.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2601,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T225259Z-be7638ce.json",
+      "files_deleted": 1,
+      "bytes_deleted": 5852,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260605T232012Z-bad22171.json",
+      "files_deleted": 1,
+      "bytes_deleted": 5688,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260606T024653Z-69fb9511.json",
+      "files_deleted": 1,
+      "bytes_deleted": 5768,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260612T045002Z-1866f370.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2683,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260612T071418Z-351cc74d.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2481,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260612T073419Z-4122a953.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2599,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260612T121732Z-2323d929.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2585,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260612T125723Z-59714c2b.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1719,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260612T131829Z-d6ef19bc.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2717,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260612T201040Z-5be949bd.json",
+      "files_deleted": 1,
+      "bytes_deleted": 5227,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260612T213854Z-63a3b9ff.json",
+      "files_deleted": 1,
+      "bytes_deleted": 7237,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260612T225411Z-f6ff3b66.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1719,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260612T235439Z-3dcb6f8d.json",
+      "files_deleted": 1,
+      "bytes_deleted": 4519,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260613T012612Z-60be1ce1.json",
+      "files_deleted": 1,
+      "bytes_deleted": 5737,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260613T014702Z-e40094b3.json",
+      "files_deleted": 1,
+      "bytes_deleted": 5735,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260613T015950Z-0f7dad26.json",
+      "files_deleted": 1,
+      "bytes_deleted": 5373,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260613T022432Z-80387039.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3883,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260613T024632Z-3914a473.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3685,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260613T040114Z-51bf2e2a.json",
+      "files_deleted": 1,
+      "bytes_deleted": 4580,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/daily_report_manifest_20260613T043303Z-593b5282.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3725,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/event_monitor_v0_11.json",
+      "files_deleted": 1,
+      "bytes_deleted": 10365,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/fifa_delivery_summary.md",
+      "files_deleted": 1,
+      "bytes_deleted": 3202,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/fifa_prd_and_technical_plan.md",
+      "files_deleted": 1,
+      "bytes_deleted": 10215,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/fifa_world_cup_2026_public_odds_research_report.md",
+      "files_deleted": 1,
+      "bytes_deleted": 17987,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/pdf_qa_20260604T141023Z-817e2977.json",
+      "files_deleted": 1,
+      "bytes_deleted": 901,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/pdf_qa_20260604T141232Z-d2eff3e0.json",
+      "files_deleted": 1,
+      "bytes_deleted": 901,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/pdf_qa_20260605T084257Z-6cd72c59.json",
+      "files_deleted": 1,
+      "bytes_deleted": 979,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/pdf_qa_20260605T111049Z-428e2593.json",
+      "files_deleted": 1,
+      "bytes_deleted": 979,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/pdf_qa_20260605T225259Z-be7638ce.json",
+      "files_deleted": 1,
+      "bytes_deleted": 979,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/pdf_qa_20260605T232012Z-bad22171.json",
+      "files_deleted": 1,
+      "bytes_deleted": 979,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/pdf_qa_20260606T024653Z-69fb9511.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1871,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/portfolio_automation_gate_v0_12.json",
+      "files_deleted": 1,
+      "bytes_deleted": 4401,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/portfolio_daily_compare_v0_11.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2224,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/portfolio_report_baseline_v0_11.json",
+      "files_deleted": 1,
+      "bytes_deleted": 20943,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/previous_report_baseline_v0_11.json",
+      "files_deleted": 1,
+      "bytes_deleted": 15244,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/previous_report_baseline_v0_4.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3877,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/public_source_audit_v0_10.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1762,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/public_source_audit_v0_11.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1762,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_2026-06-12T172552327991+0000-manual-raw.json",
+      "files_deleted": 1,
+      "bytes_deleted": 9307,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T114533Z-07df2701.json",
+      "files_deleted": 1,
+      "bytes_deleted": 15052,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T120123Z-cae53e8b.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1975,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T120317Z-dd539627.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2052,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T124554Z-b2488ad8.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2052,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T131447Z-fc57e8bb.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2050,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T132624Z-2a4e122e.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2051,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T133257Z-8fc567ae.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2051,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T134623Z-8f44df8b.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2051,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T135315Z-871b092c.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2052,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T135753Z-212e8e9a.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2052,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T141023Z-817e2977.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2051,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T141232Z-d2eff3e0.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2051,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260604T213057Z-db1e3650.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3573,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T045508Z-1e503a13.json",
+      "files_deleted": 1,
+      "bytes_deleted": 575,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T053308Z-e1c56980.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1243,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T055626Z-ba247362.json",
+      "files_deleted": 1,
+      "bytes_deleted": 1243,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T064819Z-e3602800.json",
+      "files_deleted": 1,
+      "bytes_deleted": 19899,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T082615Z-d31a7543.json",
+      "files_deleted": 1,
+      "bytes_deleted": 16642,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T084257Z-6cd72c59.json",
+      "files_deleted": 1,
+      "bytes_deleted": 20560,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T111049Z-428e2593.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2059,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T195704Z-d370cd95.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2851,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T213802Z-18810b47.json",
+      "files_deleted": 1,
+      "bytes_deleted": 15231,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T220116Z-ac437e5b.json",
+      "files_deleted": 1,
+      "bytes_deleted": 16492,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T225259Z-be7638ce.json",
+      "files_deleted": 1,
+      "bytes_deleted": 20560,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260605T232012Z-bad22171.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2058,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260606T024653Z-69fb9511.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2059,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260612T045002Z-1866f370.json",
+      "files_deleted": 1,
+      "bytes_deleted": 2851,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260612T071418Z-351cc74d.json",
+      "files_deleted": 1,
+      "bytes_deleted": 16094,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260612T073419Z-4122a953.json",
+      "files_deleted": 1,
+      "bytes_deleted": 16271,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260612T121732Z-2323d929.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3902,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260612T125723Z-59714c2b.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3432,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260612T131829Z-d6ef19bc.json",
+      "files_deleted": 1,
+      "bytes_deleted": 9293,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260612T201040Z-5be949bd.json",
+      "files_deleted": 1,
+      "bytes_deleted": 18902,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260612T213854Z-63a3b9ff.json",
+      "files_deleted": 1,
+      "bytes_deleted": 13051,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260612T225411Z-f6ff3b66.json",
+      "files_deleted": 1,
+      "bytes_deleted": 5156,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260612T235439Z-3dcb6f8d.json",
+      "files_deleted": 1,
+      "bytes_deleted": 10863,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260613T012612Z-60be1ce1.json",
+      "files_deleted": 1,
+      "bytes_deleted": 16790,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260613T014702Z-e40094b3.json",
+      "files_deleted": 1,
+      "bytes_deleted": 13824,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260613T015950Z-0f7dad26.json",
+      "files_deleted": 1,
+      "bytes_deleted": 12119,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260613T022432Z-80387039.json",
+      "files_deleted": 1,
+      "bytes_deleted": 11374,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260613T024632Z-3914a473.json",
+      "files_deleted": 1,
+      "bytes_deleted": 11276,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260613T040114Z-51bf2e2a.json",
+      "files_deleted": 1,
+      "bytes_deleted": 12351,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_20260613T043303Z-593b5282.json",
+      "files_deleted": 1,
+      "bytes_deleted": 12443,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/raw_refresh_diagnostics_prelive-run.json",
+      "files_deleted": 1,
+      "bytes_deleted": 9795,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/report_index_20260604T135753Z-212e8e9a.json",
+      "files_deleted": 1,
+      "bytes_deleted": 28300,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/report_index_20260604T135753Z-212e8e9a.md",
+      "files_deleted": 1,
+      "bytes_deleted": 4924,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/report_index_20260604T135753Z-212e8e9a.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 28971,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_2026_betting_research_report_v1_0.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 13300,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_04062026.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_04062026_20260604T124554Z-b2488ad8.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_04062026_20260604T131447Z-fc57e8bb.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_04062026_20260604T132624Z-2a4e122e.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_04062026_20260604T133257Z-8fc567ae.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_04062026_20260604T134623Z-8f44df8b.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_04062026_20260604T135315Z-871b092c.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_04062026_20260604T135753Z-212e8e9a.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_05062026.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_05062026_20260604T141023Z-817e2977.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_05062026_20260604T141232Z-d2eff3e0.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_05062026_20260605T084257Z-6cd72c59.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_05062026_20260605T111049Z-428e2593.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_06062026_20260605T225259Z-be7638ce.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_06062026_20260605T232012Z-bad22171.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_bankroll_plan_06062026_20260606T024653Z-69fb9511.json",
+      "files_deleted": 1,
+      "bytes_deleted": 463,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T050307Z-aad163ff.html",
+      "files_deleted": 1,
+      "bytes_deleted": 24660,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T054258Z-9ce90b24.html",
+      "files_deleted": 1,
+      "bytes_deleted": 24776,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T060433Z-67b8909b.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27344,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T061518Z-c1351ff0.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27247,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T063532Z-3bf52aab.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27254,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T074242Z-c5c5c9cd.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27365,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T075153Z-70cc02da.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27364,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T080147Z-bb44feb7.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27363,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T112011Z-37548791.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27347,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T112100Z-c0e83634.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27350,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T113700Z-e942bffd.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27351,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T114533Z-07df2701.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27358,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T120123Z-cae53e8b.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27374,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T120317Z-dd539627.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27381,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T124554Z-b2488ad8.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27388,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T131447Z-fc57e8bb.html",
+      "files_deleted": 1,
+      "bytes_deleted": 27388,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T132624Z-2a4e122e.html",
+      "files_deleted": 1,
+      "bytes_deleted": 36502,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T133257Z-8fc567ae.html",
+      "files_deleted": 1,
+      "bytes_deleted": 36510,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T134623Z-8f44df8b.html",
+      "files_deleted": 1,
+      "bytes_deleted": 43141,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T135315Z-871b092c.html",
+      "files_deleted": 1,
+      "bytes_deleted": 43023,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T135753Z-212e8e9a.html",
+      "files_deleted": 1,
+      "bytes_deleted": 55045,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_20260604T141023Z-817e2977.html",
+      "files_deleted": 1,
+      "bytes_deleted": 46333,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_data_20260604T124554Z-b2488ad8.json",
+      "files_deleted": 1,
+      "bytes_deleted": 86278,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_data_20260604T131447Z-fc57e8bb.json",
+      "files_deleted": 1,
+      "bytes_deleted": 86882,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_data_20260604T132624Z-2a4e122e.json",
+      "files_deleted": 1,
+      "bytes_deleted": 92693,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_data_20260604T133257Z-8fc567ae.json",
+      "files_deleted": 1,
+      "bytes_deleted": 94595,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_data_20260604T134623Z-8f44df8b.json",
+      "files_deleted": 1,
+      "bytes_deleted": 166295,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_data_20260604T135315Z-871b092c.json",
+      "files_deleted": 1,
+      "bytes_deleted": 165948,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_data_20260604T135753Z-212e8e9a.json",
+      "files_deleted": 1,
+      "bytes_deleted": 205702,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_data_20260604T141023Z-817e2977.json",
+      "files_deleted": 1,
+      "bytes_deleted": 198979,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_qa_desktop.png",
+      "files_deleted": 1,
+      "bytes_deleted": 458348,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_dashboard_qa_mobile.png",
+      "files_deleted": 1,
+      "bytes_deleted": 447671,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_matches_main_markets_raw_v0_3.json",
+      "files_deleted": 1,
+      "bytes_deleted": 113044,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_matches_main_markets_raw_v0_8.json",
+      "files_deleted": 1,
+      "bytes_deleted": 118789,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_matches_main_markets_raw_v0_9.json",
+      "files_deleted": 1,
+      "bytes_deleted": 91503,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_model_comparison_v0_1.json",
+      "files_deleted": 1,
+      "bytes_deleted": 88950,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_model_comparison_v0_1.md",
+      "files_deleted": 1,
+      "bytes_deleted": 11966,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_model_comparison_v0_1.pdf",
+      "files_deleted": 1,
+      "bytes_deleted": 141044,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_portfolio_readiness_v0_12.md",
+      "files_deleted": 1,
+      "bytes_deleted": 1301,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_reports.sqlite3",
+      "files_deleted": 1,
+      "bytes_deleted": 95404032,
+      "reason": "Compressed in artifacts/backups/tab_fifa_reports_20260613.sqlite3.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_reports.sqlite3-shm",
+      "files_deleted": 1,
+      "bytes_deleted": 32768,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_reports.sqlite3-wal",
+      "files_deleted": 1,
+      "bytes_deleted": 0,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_reports.sqlite3.schema.lock",
+      "files_deleted": 1,
+      "bytes_deleted": 0,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_australia_markets_expanded_raw_v0_17.json",
+      "files_deleted": 1,
+      "bytes_deleted": 13830,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_australia_markets_recommendations_v0_17.json",
+      "files_deleted": 1,
+      "bytes_deleted": 24542,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_australia_markets_v0_17_report.md",
+      "files_deleted": 1,
+      "bytes_deleted": 10158,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_futures_raw_v0_13.json",
+      "files_deleted": 1,
+      "bytes_deleted": 25639,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_futures_recommendations_v0_13.json",
+      "files_deleted": 1,
+      "bytes_deleted": 21969,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_futures_v0_13_report.md",
+      "files_deleted": 1,
+      "bytes_deleted": 4927,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_group_betting_raw_v0_14.json",
+      "files_deleted": 1,
+      "bytes_deleted": 29338,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_group_betting_recommendations_v0_14.json",
+      "files_deleted": 1,
+      "bytes_deleted": 11582,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_group_betting_v0_14_report.md",
+      "files_deleted": 1,
+      "bytes_deleted": 3432,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_matches_recommendations_v0_11.json",
+      "files_deleted": 1,
+      "bytes_deleted": 51157,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_matches_recommendations_v0_3.json",
+      "files_deleted": 1,
+      "bytes_deleted": 3737,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_matches_v0_11_pipeline_report.md",
+      "files_deleted": 1,
+      "bytes_deleted": 5152,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_matches_v0_5_progress_summary.md",
+      "files_deleted": 1,
+      "bytes_deleted": 2222,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_team_futures_multi_raw_v0_16.json",
+      "files_deleted": 1,
+      "bytes_deleted": 30732,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_team_futures_multi_recommendations_v0_16.json",
+      "files_deleted": 1,
+      "bytes_deleted": 8773,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    },
+    {
+      "category": "backed_up_then_removed",
+      "path": "outputs/tab_fifa_world_cup_team_futures_multi_v0_16_report.md",
+      "files_deleted": 1,
+      "bytes_deleted": 3083,
+      "reason": "Compressed in artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz before local deletion"
+    }
+  ]
+}

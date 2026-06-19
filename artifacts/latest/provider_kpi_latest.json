@@ -1,0 +1,600 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14T05:52:49.769539+10:00",
+  "mode": "provider_kpi",
+  "executive_status": {
+    "status": "in_progress",
+    "overall_score": 0.615,
+    "overall_progress_pct": 0.615,
+    "primary_gap": "Team Total Score O/U 覆盖: 0/64 (0.00%)",
+    "recommended_next_action": "The Odds API 当前 TAB sample 未提供 Team Total；继续用小批量 event odds 补非 Team Total 的 alternate/value-support markets，同时把 Team Total 转入 OpticOdds/TAB 人工校验。"
+  },
+  "scope": "matches",
+  "refresh_id": "20260613T194716Z-provider-2fec0bef",
+  "provider_analysis_ready": true,
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "current_executable_new_stake_aud": 0,
+  "summary": {
+    "required_count": 10,
+    "required_ready_count": 5,
+    "partial_count": 2,
+    "blocked_count": 3,
+    "average_score": 0.615,
+    "event_count": 64,
+    "covered_market_family_count": 3,
+    "request_usage": {
+      "provider_payload_count": 3,
+      "provider_error_count": 0,
+      "request_kind_counts": {
+        "odds": 1,
+        "event_markets": 1,
+        "event_odds": 1
+      },
+      "estimated_credit_cost": 7,
+      "reported_last_request_cost": 7,
+      "reported_requests_used_max": 299,
+      "reported_requests_remaining_min": 201,
+      "sports": [
+        "soccer_fifa_world_cup"
+      ],
+      "markets": [
+        "btts",
+        "double_chance",
+        "draw_no_bet",
+        "h2h",
+        "spreads",
+        "totals"
+      ]
+    },
+    "credit": {
+      "reported_used": 299,
+      "reported_remaining": 201,
+      "reported_last_request_cost": 7,
+      "inferred_monthly_limit": 500,
+      "remaining_ratio": 0.402
+    },
+    "alternate_plan": {
+      "status": "in_progress",
+      "probe_queue_count": 50,
+      "recommended_batch_size": 1,
+      "estimated_next_batch_credit_floor": 4,
+      "estimated_next_batch_credit_ceiling": 7,
+      "fallback_queue_count": 64,
+      "recommended_next_action": "The Odds API 当前 TAB sample 未提供 Team Total；继续用小批量 event odds 补非 Team Total 的 alternate/value-support markets，同时把 Team Total 转入 OpticOdds/TAB 人工校验。",
+      "recommended_command": "python3 refresh_odds_provider_raw.py --provider the_odds_api --scope matches --event-market-probe-limit 1 --event-odds-limit 1 --event-odds-markets double_chance,draw_no_bet,btts",
+      "operational_decision_status": "alternate_probe_plus_team_total_manual",
+      "operational_decision_title": "非 Team Total 可小批量补齐，Team Total 转人工",
+      "operational_primary_action": "先按 recommended command 小批量补 50 场非 Team Total alternate/value markets；Team Total 继续 TT-001 人工校验。"
+    }
+  },
+  "market_coverage": [
+    {
+      "market": "Result",
+      "covered_count": 64,
+      "event_count": 64,
+      "coverage_ratio": 1.0
+    },
+    {
+      "market": "Handicap",
+      "covered_count": 46,
+      "event_count": 64,
+      "coverage_ratio": 0.7188
+    },
+    {
+      "market": "Total Goals Over/Under",
+      "covered_count": 51,
+      "event_count": 64,
+      "coverage_ratio": 0.7969
+    },
+    {
+      "market": "Team Total Goals Over/Under",
+      "covered_count": 0,
+      "event_count": 64,
+      "coverage_ratio": 0.0
+    }
+  ],
+  "kpi_rows": [
+    {
+      "id": "authorized_provider_raw",
+      "name": "授权 provider raw",
+      "status": "ready",
+      "ready": true,
+      "score": 1.0,
+      "severity": "low",
+      "evidence": "provider_analysis_ready=True",
+      "ready_definition": "The Odds API / TAB-labeled payload 已进入 staging。",
+      "next_action": "先恢复 provider live refresh。"
+    },
+    {
+      "id": "result_coverage",
+      "name": "Result 覆盖",
+      "status": "ready",
+      "ready": true,
+      "score": 1.0,
+      "severity": "low",
+      "evidence": "64/64 (100.00%)",
+      "ready_definition": "Result 覆盖 已达到可用覆盖阈值。",
+      "next_action": "Result 覆盖 已达到可用覆盖阈值；后续只做监控或候选场次人工复核。",
+      "coverage_ratio": 1.0,
+      "covered_count": 64,
+      "total_count": 64
+    },
+    {
+      "id": "handicap_coverage",
+      "name": "Handicap 覆盖",
+      "status": "ready",
+      "ready": true,
+      "score": 1.0,
+      "severity": "low",
+      "evidence": "46/64 (71.88%)",
+      "ready_definition": "Handicap 覆盖 已达到可用覆盖阈值。",
+      "next_action": "Handicap 覆盖 已达到可用覆盖阈值；后续只做监控或候选场次人工复核。",
+      "coverage_ratio": 0.71875,
+      "covered_count": 46,
+      "total_count": 64
+    },
+    {
+      "id": "total_ou_coverage",
+      "name": "Total Score O/U 覆盖",
+      "status": "ready",
+      "ready": true,
+      "score": 1.0,
+      "severity": "low",
+      "evidence": "51/64 (79.69%)",
+      "ready_definition": "Total Score O/U 覆盖 已达到可用覆盖阈值。",
+      "next_action": "Total Score O/U 覆盖 已达到可用覆盖阈值；后续只做监控或候选场次人工复核。",
+      "coverage_ratio": 0.796875,
+      "covered_count": 51,
+      "total_count": 64
+    },
+    {
+      "id": "team_total_ou_coverage",
+      "name": "Team Total Score O/U 覆盖",
+      "status": "blocked",
+      "ready": false,
+      "score": 0.0,
+      "severity": "high",
+      "evidence": "0/64 (0.00%)",
+      "ready_definition": "Team Total Score O/U 覆盖 已达到可用覆盖阈值。",
+      "next_action": "切换授权 provider 或人工校验补齐 Team Total Score O/U 覆盖。",
+      "coverage_ratio": 0.0,
+      "covered_count": 0,
+      "total_count": 64
+    },
+    {
+      "id": "alternate_market_probe",
+      "name": "Alternate markets 探测",
+      "status": "ready",
+      "ready": true,
+      "score": 1.0,
+      "severity": "low",
+      "evidence": "event_market_probe_count=1",
+      "ready_definition": "已用 /events/{eventId}/markets 探测单场可用 market keys。",
+      "next_action": "用 --event-market-probe-limit 小样本探测，再按可用 markets 拉 event odds。"
+    },
+    {
+      "id": "alternate_probe_plan",
+      "name": "Alternate markets 补齐计划",
+      "status": "partial",
+      "ready": false,
+      "score": 0.65,
+      "severity": "medium",
+      "evidence": "status=in_progress / queue=50 / fallback=64 / batch=1 / credit=4-7",
+      "ready_definition": "已生成 credit-aware 下一批 probe 队列、停止条件和推荐命令。",
+      "next_action": "按计划小批量 probe，不要全量扫 68 场；Team Total 连续 0 覆盖则切换 provider 或人工校验。"
+    },
+    {
+      "id": "provider_credit_budget",
+      "name": "Provider credit 预算",
+      "status": "partial",
+      "ready": false,
+      "score": 0.5,
+      "severity": "medium",
+      "evidence": "used=299 / remaining=201 / last=7 / inferred_limit=500",
+      "ready_definition": "剩余额度支持继续小样本探测。",
+      "next_action": "把 probe limit 控制在小样本，优先推荐候选场次。"
+    },
+    {
+      "id": "formal_publish_gate",
+      "name": "正式 raw 发布门禁",
+      "status": "blocked",
+      "ready": false,
+      "score": 0.0,
+      "severity": "high",
+      "evidence": "formal_publish_allowed=False",
+      "ready_definition": "已通过 TAB 人工最终校验，可发布当前 scope raw。",
+      "next_action": "对推荐候选做 TAB 人工最终校验 hash。"
+    },
+    {
+      "id": "full_automation_gate",
+      "name": "完整 automation 门禁",
+      "status": "blocked",
+      "ready": false,
+      "score": 0.0,
+      "severity": "high",
+      "evidence": "full_automation_allowed=False",
+      "ready_definition": "完整日报 gate 通过。",
+      "next_action": "补齐 raw、持仓、正式日报、CLV 数据闭环。"
+    }
+  ],
+  "manual_review_queue": [
+    {
+      "id": "team_total_ou_coverage",
+      "name": "Team Total Score O/U 覆盖",
+      "status": "blocked",
+      "ready": false,
+      "score": 0.0,
+      "severity": "high",
+      "evidence": "0/64 (0.00%)",
+      "ready_definition": "Team Total Score O/U 覆盖 已达到可用覆盖阈值。",
+      "next_action": "切换授权 provider 或人工校验补齐 Team Total Score O/U 覆盖。",
+      "coverage_ratio": 0.0,
+      "covered_count": 0,
+      "total_count": 64
+    },
+    {
+      "id": "alternate_probe_plan",
+      "name": "Alternate markets 补齐计划",
+      "status": "partial",
+      "ready": false,
+      "score": 0.65,
+      "severity": "medium",
+      "evidence": "status=in_progress / queue=50 / fallback=64 / batch=1 / credit=4-7",
+      "ready_definition": "已生成 credit-aware 下一批 probe 队列、停止条件和推荐命令。",
+      "next_action": "按计划小批量 probe，不要全量扫 68 场；Team Total 连续 0 覆盖则切换 provider 或人工校验。"
+    },
+    {
+      "id": "provider_credit_budget",
+      "name": "Provider credit 预算",
+      "status": "partial",
+      "ready": false,
+      "score": 0.5,
+      "severity": "medium",
+      "evidence": "used=299 / remaining=201 / last=7 / inferred_limit=500",
+      "ready_definition": "剩余额度支持继续小样本探测。",
+      "next_action": "把 probe limit 控制在小样本，优先推荐候选场次。"
+    },
+    {
+      "id": "formal_publish_gate",
+      "name": "正式 raw 发布门禁",
+      "status": "blocked",
+      "ready": false,
+      "score": 0.0,
+      "severity": "high",
+      "evidence": "formal_publish_allowed=False",
+      "ready_definition": "已通过 TAB 人工最终校验，可发布当前 scope raw。",
+      "next_action": "对推荐候选做 TAB 人工最终校验 hash。"
+    },
+    {
+      "id": "full_automation_gate",
+      "name": "完整 automation 门禁",
+      "status": "blocked",
+      "ready": false,
+      "score": 0.0,
+      "severity": "high",
+      "evidence": "full_automation_allowed=False",
+      "ready_definition": "完整日报 gate 通过。",
+      "next_action": "补齐 raw、持仓、正式日报、CLV 数据闭环。"
+    }
+  ],
+  "alternate_plan": {
+    "status": "in_progress",
+    "probe_queue_count": 50,
+    "recommended_batch_size": 1,
+    "estimated_next_batch_credit_floor": 4,
+    "estimated_next_batch_credit_ceiling": 7,
+    "fallback_queue_count": 64,
+    "recommended_next_action": "The Odds API 当前 TAB sample 未提供 Team Total；继续用小批量 event odds 补非 Team Total 的 alternate/value-support markets，同时把 Team Total 转入 OpticOdds/TAB 人工校验。",
+    "recommended_command": "python3 refresh_odds_provider_raw.py --provider the_odds_api --scope matches --event-market-probe-limit 1 --event-odds-limit 1 --event-odds-markets double_chance,draw_no_bet,btts",
+    "operational_decision_status": "alternate_probe_plus_team_total_manual",
+    "operational_decision_title": "非 Team Total 可小批量补齐，Team Total 转人工",
+    "operational_primary_action": "先按 recommended command 小批量补 50 场非 Team Total alternate/value markets；Team Total 继续 TT-001 人工校验。",
+    "operational_decision": {
+      "status": "alternate_probe_plus_team_total_manual",
+      "title": "非 Team Total 可小批量补齐，Team Total 转人工",
+      "primary_action": "先按 recommended command 小批量补 50 场非 Team Total alternate/value markets；Team Total 继续 TT-001 人工校验。",
+      "why": "The Odds API 已完成 14 个 TAB event-market 样本，Team Total 可用样本 0；但 BTTS/Double Chance/Draw No Bet/alternate spreads/totals 已在样本中可见。",
+      "operator_next_step": "执行推荐命令时保持小批量；完成后重建 KPI。Team Total 不跟随 The Odds API 盲扫，继续 TT-001 人工只读填写。",
+      "credit_guidance": "下一批建议 1 场，预计 4-7 credits。",
+      "stake_policy": "provider event odds 只增加研究覆盖；formal publish、TAB 人工最终校验和持仓 gate 未通过前，新增执行金额保持 AUD 0。"
+    },
+    "market_family_gaps": [
+      {
+        "id": "handicap",
+        "label": "Handicap",
+        "covered_count": 46,
+        "event_count": 64,
+        "coverage_ratio": 0.7188,
+        "required_ratio": 0.7,
+        "missing_count": 18,
+        "status": "ready",
+        "provider_markets": [
+          "spreads",
+          "alternate_spreads"
+        ],
+        "role": "core_price_context",
+        "available_probe_count": 14,
+        "provider_status": "coverage_threshold_met_no_remaining_the_odds_api_queue",
+        "sample_evidence": "14/14 个 TAB event-market 样本暴露该盘口族。",
+        "recommended_provider_action": "已达到可用阈值但仍缺 18 场；The Odds API 当前没有可继续补齐的 TAB event-level 队列。保留现有覆盖，只有进入候选下注研究时才做 OpticOdds/TAB 人工最终校验。"
+      },
+      {
+        "id": "total_ou",
+        "label": "Total Goals Over/Under",
+        "covered_count": 51,
+        "event_count": 64,
+        "coverage_ratio": 0.7969,
+        "required_ratio": 0.7,
+        "missing_count": 13,
+        "status": "ready",
+        "provider_markets": [
+          "totals",
+          "alternate_totals"
+        ],
+        "role": "core_price_context",
+        "available_probe_count": 14,
+        "provider_status": "coverage_threshold_met_no_remaining_the_odds_api_queue",
+        "sample_evidence": "14/14 个 TAB event-market 样本暴露该盘口族。",
+        "recommended_provider_action": "已达到可用阈值但仍缺 13 场；The Odds API 当前没有可继续补齐的 TAB event-level 队列。保留现有覆盖，只有进入候选下注研究时才做 OpticOdds/TAB 人工最终校验。"
+      },
+      {
+        "id": "btts",
+        "label": "Both Teams to Score",
+        "covered_count": 14,
+        "event_count": 64,
+        "coverage_ratio": 0.2188,
+        "required_ratio": 0.35,
+        "missing_count": 50,
+        "status": "gap",
+        "provider_markets": [
+          "btts"
+        ],
+        "role": "value_support",
+        "available_probe_count": 14,
+        "provider_status": "available_in_current_the_odds_api_tab_sample",
+        "sample_evidence": "14/14 个 TAB event-market 样本暴露该盘口族。",
+        "recommended_provider_action": "可按 credit-safe 队列拉 event odds；仅补非 Team Total 的已发现 markets。"
+      },
+      {
+        "id": "double_chance",
+        "label": "Double Chance",
+        "covered_count": 11,
+        "event_count": 64,
+        "coverage_ratio": 0.1719,
+        "required_ratio": 0.35,
+        "missing_count": 53,
+        "status": "gap",
+        "provider_markets": [
+          "double_chance"
+        ],
+        "role": "value_support",
+        "available_probe_count": 11,
+        "provider_status": "available_in_current_the_odds_api_tab_sample",
+        "sample_evidence": "11/14 个 TAB event-market 样本暴露该盘口族。",
+        "recommended_provider_action": "可按 credit-safe 队列拉 event odds；仅补非 Team Total 的已发现 markets。"
+      },
+      {
+        "id": "draw_no_bet",
+        "label": "Draw No Bet",
+        "covered_count": 12,
+        "event_count": 64,
+        "coverage_ratio": 0.1875,
+        "required_ratio": 0.35,
+        "missing_count": 52,
+        "status": "gap",
+        "provider_markets": [
+          "draw_no_bet"
+        ],
+        "role": "value_support",
+        "available_probe_count": 12,
+        "provider_status": "available_in_current_the_odds_api_tab_sample",
+        "sample_evidence": "12/14 个 TAB event-market 样本暴露该盘口族。",
+        "recommended_provider_action": "可按 credit-safe 队列拉 event odds；仅补非 Team Total 的已发现 markets。"
+      },
+      {
+        "id": "team_total_ou",
+        "label": "Team Total Goals Over/Under",
+        "covered_count": 0,
+        "event_count": 64,
+        "coverage_ratio": 0.0,
+        "required_ratio": 0.5,
+        "missing_count": 64,
+        "status": "fallback_required",
+        "provider_markets": [
+          "team_totals",
+          "alternate_team_totals"
+        ],
+        "role": "manual_or_official_fallback",
+        "available_probe_count": 0,
+        "provider_status": "low_yield_in_current_the_odds_api_tab_sample",
+        "sample_evidence": "14 个 TAB event-market 样本均未暴露 Team Total market key。",
+        "recommended_provider_action": "停止默认扩大 The Odds API team_totals 探测；除非人工指定候选，否则切换 OpticOdds 官方访问或 TAB 人工最终校验。"
+      }
+    ],
+    "next_probe_queue_preview": [
+      {
+        "event_id": "f31b2ee9e1cc6f7e641467f8237eaa21",
+        "match": "Argentina v Algeria",
+        "commence_time": "2026-06-17T01:00:00Z",
+        "covered_markets": [
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "missing_families": [
+          "Double Chance",
+          "Draw No Bet",
+          "Both Teams to Score"
+        ],
+        "recommended_markets": [
+          "double_chance",
+          "draw_no_bet",
+          "btts"
+        ],
+        "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+      },
+      {
+        "event_id": "25161cf6cf0cd9be17ae2e7e224a1f45",
+        "match": "Austria v Jordan",
+        "commence_time": "2026-06-17T04:00:00Z",
+        "covered_markets": [
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "missing_families": [
+          "Double Chance",
+          "Draw No Bet",
+          "Both Teams to Score"
+        ],
+        "recommended_markets": [
+          "double_chance",
+          "draw_no_bet",
+          "btts"
+        ],
+        "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+      },
+      {
+        "event_id": "6cc871c121a1869b4612d3fb22fa9d55",
+        "match": "Portugal v DR Congo",
+        "commence_time": "2026-06-17T17:00:00Z",
+        "covered_markets": [
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "missing_families": [
+          "Double Chance",
+          "Draw No Bet",
+          "Both Teams to Score"
+        ],
+        "recommended_markets": [
+          "double_chance",
+          "draw_no_bet",
+          "btts"
+        ],
+        "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+      },
+      {
+        "event_id": "689096c8cd7e2753b9fec95321943c5d",
+        "match": "England v Croatia",
+        "commence_time": "2026-06-17T20:00:00Z",
+        "covered_markets": [
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "missing_families": [
+          "Double Chance",
+          "Draw No Bet",
+          "Both Teams to Score"
+        ],
+        "recommended_markets": [
+          "double_chance",
+          "draw_no_bet",
+          "btts"
+        ],
+        "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+      },
+      {
+        "event_id": "87afdb85c977b451e1c00f5e3e632601",
+        "match": "Ghana v Panama",
+        "commence_time": "2026-06-17T23:00:00Z",
+        "covered_markets": [
+          "Result",
+          "Total Goals Over/Under"
+        ],
+        "missing_families": [
+          "Double Chance",
+          "Draw No Bet",
+          "Both Teams to Score"
+        ],
+        "recommended_markets": [
+          "double_chance",
+          "draw_no_bet",
+          "btts"
+        ],
+        "recommended_action": "先 probe /events/{eventId}/markets；只有 TAB 返回目标 markets 时再拉 /events/{eventId}/odds。"
+      }
+    ],
+    "fallback_queue_preview": [
+      {
+        "event_id": "26634922d3f78c146440816023e40de8",
+        "match": "Qatar v Switzerland",
+        "commence_time": "2026-06-13T19:04:00Z",
+        "missing_families": [
+          "Team Total Goals Over/Under"
+        ],
+        "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+      },
+      {
+        "event_id": "f6c8748a16516e0998f95de14235432a",
+        "match": "Brazil v Morocco",
+        "commence_time": "2026-06-13T22:00:00Z",
+        "missing_families": [
+          "Team Total Goals Over/Under"
+        ],
+        "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+      },
+      {
+        "event_id": "5ae41a06735c926eeb7f74006933adce",
+        "match": "Haiti v Scotland",
+        "commence_time": "2026-06-14T01:00:00Z",
+        "missing_families": [
+          "Team Total Goals Over/Under"
+        ],
+        "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+      },
+      {
+        "event_id": "564084f52cc9f1abcc18187c168a7cdc",
+        "match": "Australia v Turkey",
+        "commence_time": "2026-06-14T04:00:00Z",
+        "missing_families": [
+          "Team Total Goals Over/Under"
+        ],
+        "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+      },
+      {
+        "event_id": "d79edbd6aaeb578d33e313446b18d333",
+        "match": "Germany v Curaçao",
+        "commence_time": "2026-06-14T17:00:00Z",
+        "missing_families": [
+          "Team Total Goals Over/Under"
+        ],
+        "recommended_action": "OpticOdds 授权 raw 或 TAB 人工最终校验候选盘口；不继续用 The Odds API team_totals 盲扫。"
+      }
+    ],
+    "stop_conditions": [
+      "Team Total O/U 连续小样本仍为 0 覆盖时，停止扩大 The Odds API event odds 消耗，改查 OpticOdds 或 TAB 人工最终校验。",
+      "reported_remaining 低于 20% 或 provider_error_count 增加时，暂停自动 probe，只保留已缓存证据。",
+      "formal publish 和 TAB 人工最终校验未通过前，current_executable_new_stake_aud 保持 AUD 0。"
+    ]
+  },
+  "last_blocked_attempt": {
+    "provider": "the_odds_api",
+    "refresh_id": "20260613T170402Z-provider-05f31513",
+    "blocker_code": "provider_refresh_failed",
+    "is_current_refresh_blocker": false,
+    "stale_history_only": true,
+    "last_good_coverage_preserved": true,
+    "next_safe_action": "保留 last-good provider coverage；检查 provider endpoint/query、账户权限、rate limit 与返回 schema 后再重试。"
+  },
+  "source_artifacts": {
+    "odds_provider_coverage": "odds_provider_coverage_latest.json",
+    "odds_provider_blocked": "odds_provider_blocked_latest.json",
+    "odds_provider_raw": "odds_provider_raw_latest.json",
+    "provider_alternate_plan": "provider_alternate_plan_latest.json"
+  },
+  "truthfulness_note": "Provider KPI 只证明授权数据源覆盖度和平台就绪度；不自动下注，也不把未覆盖盘口伪装为可执行建议。",
+  "automation_boundary_note": "未通过 formal publish 和人工 TAB final verification 前，新增可执行下注金额保持 AUD 0。",
+  "artifacts": {
+    "json": "provider_kpi_latest.json",
+    "markdown": "provider_kpi_latest.md",
+    "pdf": "provider_kpi_latest.pdf",
+    "pdf_summary": {
+      "path": "provider_kpi_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 2,
+      "detail_row_count": 10,
+      "extra_table_count": 0,
+      "extra_detail_row_count": 0
+    }
+  }
+}

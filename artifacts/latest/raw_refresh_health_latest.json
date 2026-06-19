@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T04:41:50.372776+00:00",
+  "ready": false,
+  "status": "blocked",
+  "required_target_count": 5,
+  "ready_required_target_count": 0,
+  "refresh_driver_ready": true,
+  "refresh_batch_ready": true,
+  "refresh_batch_manifest_ready": true,
+  "refresh_error": "staged raw validation gate failed; refusing to publish raw snapshots: board refresh failures: australia_markets: australia_markets refresh failed after 1 attempt(s): {\n  \"error\": \"2026 World Cup Australia Markets route mismatch: landed on 2026 World Cup Matches; TAB live soccer nav may not list this board\"\n}; 2026 World Cup Australia Markets staged raw snapshot is missing.; Raw refresh batch manifest is missing: raw_refresh_batch_latest.json.",
+  "blocker_codes": [
+    "refresh_command_failed",
+    "route_mismatch",
+    "stale_raw",
+    "access_denied",
+    "ai_controlled_access_rejected"
+  ],
+  "blocking_reasons": [
+    "2026 World Cup Matches raw snapshot is stale.",
+    "2026 World Cup Futures raw snapshot is stale.",
+    "2026 World Cup Group Betting raw snapshot is stale.",
+    "2026 World Cup Australia Markets raw snapshot is stale.",
+    "2026 World Cup Team Futures Multi raw snapshot is stale."
+  ],
+  "targets": [
+    {
+      "board_id": "world_cup_matches",
+      "name": "2026 World Cup Matches",
+      "status": "blocked",
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "raw_snapshot": "tab_fifa_matches_main_markets_raw_v0_9.json",
+      "raw_timestamp": "2026-06-05T23:06:40.155661+00:00",
+      "raw_age_hours": 173.586,
+      "raw_exists": true,
+      "raw_fresh": false,
+      "raw_valid": true,
+      "driver_configured": true,
+      "refresh_id": "20260605T225259Z-9a5baa3e",
+      "validation_errors": []
+    },
+    {
+      "board_id": "world_cup_futures",
+      "name": "2026 World Cup Futures",
+      "status": "blocked",
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "raw_snapshot": "tab_fifa_world_cup_futures_raw_v0_13.json",
+      "raw_timestamp": "2026-06-05T23:07:21.536Z",
+      "raw_age_hours": 173.575,
+      "raw_exists": true,
+      "raw_fresh": false,
+      "raw_valid": true,
+      "driver_configured": true,
+      "refresh_id": "20260605T225259Z-9a5baa3e",
+      "validation_errors": []
+    },
+    {
+      "board_id": "world_cup_group_betting",
+      "name": "2026 World Cup Group Betting",
+      "status": "blocked",
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "raw_snapshot": "tab_fifa_world_cup_group_betting_raw_v0_14.json",
+      "raw_timestamp": "2026-06-05T23:08:01.572Z",
+      "raw_age_hours": 173.564,
+      "raw_exists": true,
+      "raw_fresh": false,
+      "raw_valid": true,
+      "driver_configured": true,
+      "refresh_id": "20260605T225259Z-9a5baa3e",
+      "validation_errors": []
+    },
+    {
+      "board_id": "world_cup_australia_markets",
+      "name": "2026 World Cup Australia Markets",
+      "status": "blocked",
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "raw_snapshot": "tab_fifa_world_cup_australia_markets_expanded_raw_v0_17.json",
+      "raw_timestamp": "2026-06-05T23:08:49.576Z",
+      "raw_age_hours": 173.55,
+      "raw_exists": true,
+      "raw_fresh": false,
+      "raw_valid": true,
+      "driver_configured": true,
+      "refresh_id": "20260605T225259Z-9a5baa3e",
+      "validation_errors": []
+    },
+    {
+      "board_id": "world_cup_team_futures_multi",
+      "name": "2026 World Cup Team Futures Multi",
+      "status": "blocked",
+      "blocker_codes": [
+        "stale_raw"
+      ],
+      "raw_snapshot": "tab_fifa_world_cup_team_futures_multi_raw_v0_16.json",
+      "raw_timestamp": "2026-06-05T23:09:24.825Z",
+      "raw_age_hours": 173.54,
+      "raw_exists": true,
+      "raw_fresh": false,
+      "raw_valid": true,
+      "driver_configured": true,
+      "refresh_id": "20260605T225259Z-9a5baa3e",
+      "validation_errors": []
+    }
+  ],
+  "partial_research_refresh": {
+    "status": "partial_ready",
+    "research_only_allowed": true,
+    "freshness_status": "fresh_research_only",
+    "freshness_sla_hours": 4.0,
+    "generated_at": "2026-06-13T04:33:32.802095+00:00",
+    "age_hours": 0.14,
+    "fresh_within_sla": true,
+    "execution_allowed": false,
+    "attempted_board_count": 5,
+    "successful_board_count": 4,
+    "failed_board_count": 1,
+    "successful_boards": [
+      {
+        "refresh_board_id": "futures",
+        "board_id": "world_cup_futures",
+        "name": "2026 World Cup Futures",
+        "exit_code": 0,
+        "access_denied": false,
+        "error_class": ""
+      },
+      {
+        "refresh_board_id": "group_betting",
+        "board_id": "world_cup_group_betting",
+        "name": "2026 World Cup Group Betting",
+        "exit_code": 0,
+        "access_denied": false,
+        "error_class": ""
+      },
+      {
+        "refresh_board_id": "matches",
+        "board_id": "world_cup_matches",
+        "name": "2026 World Cup Matches",
+        "exit_code": 0,
+        "access_denied": false,
+        "error_class": ""
+      },
+      {
+        "refresh_board_id": "team_futures_multi",
+        "board_id": "world_cup_team_futures_multi",
+        "name": "2026 World Cup Team Futures Multi",
+        "exit_code": 0,
+        "access_denied": false,
+        "error_class": ""
+      }
+    ],
+    "failed_boards": [
+      {
+        "refresh_board_id": "australia_markets",
+        "board_id": "world_cup_australia_markets",
+        "name": "2026 World Cup Australia Markets",
+        "exit_code": 1,
+        "access_denied": false,
+        "error_class": ""
+      }
+    ],
+    "matches_target_count": 9,
+    "matches_target_source": "live_board_discovery",
+    "refresh_id": "20260613T043332Z-8ae221d0",
+    "diagnostics_status": "failed",
+    "note": "成功板块只允许进入研究诊断；只要全量 raw/private/preflight 未通过，当前可执行新增下注仍为 AUD 0。"
+  },
+  "recommended_next_action": "TAB 拒绝 AI controlled access；停止自动公开 raw 抓取。请接入官方/授权数据源，或导入用户导出的公开盘口快照。",
+  "access_policy": {
+    "status": "blocked_by_access_policy",
+    "blocker_code": "ai_controlled_access_rejected",
+    "automated_public_raw_refresh_allowed": false,
+    "next_safe_action": "TAB 拒绝 AI controlled access；停止自动公开 raw 抓取。请接入官方/授权数据源，或导入用户导出的公开盘口快照。",
+    "forbidden_recovery": [
+      "headed_fallback",
+      "captcha_bypass",
+      "fingerprint_spoofing",
+      "stealth_browser"
+    ],
+    "allowed_recovery": [
+      "official_data_feed",
+      "user_authorized_manual_export_import",
+      "research_only_from_existing_fresh_partial_raw"
+    ]
+  },
+  "automated_public_raw_refresh_allowed": false,
+  "updated_for_access_policy_at": "2026-06-13T08:32:42.237132+00:00"
+}

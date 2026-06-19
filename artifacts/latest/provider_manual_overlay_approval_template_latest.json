@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "mode": "provider_manual_team_total_overlay_approval",
+  "refresh_id": "20260613T194716Z-provider-2fec0bef",
+  "board_id": "world_cup_matches",
+  "market_family": "Team Total Goals Over/Under",
+  "manual_import_sha256": "",
+  "overlay_raw_sha256": "fef7bb4305f0c52eb17d56e148aa84e14b098b457bccdb25c3c375402c0dfda9",
+  "overlay_event_count": 0,
+  "approved_by_user": false,
+  "operator_initials": "",
+  "signed_at_aest": "",
+  "evidence_note_or_screenshot_ref": "",
+  "approval_scope": "只确认人工 Team Total CSV 与 overlay raw hash 匹配；不自动发布、不自动下注。",
+  "save_as": "manual_verification/provider_team_total_overlay_approval.json"
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T04:32:41.951609+00:00",
+  "source": "playwright_read_only_match_detail_chunk_validation",
+  "status": "passed",
+  "board_id": "matches",
+  "refresh_id": "prelive-test",
+  "scope": "pre-raw live discovery targets, matches-only staging validation",
+  "trigger": "pre_raw_live_board_discovery refreshed targets before raw refresh; previous stale target USA v Paraguay excluded",
+  "read_only_guard": "temporary staging only; market header expansion only; no odds click; no wager state mutation",
+  "match_count": 9,
+  "market_count": 54,
+  "error_count": 0,
+  "validated_matches": [
+    "Qatar v Switzerland",
+    "Brazil v Morocco",
+    "Haiti v Scotland",
+    "Australia v Turkiye",
+    "Germany v Curacao",
+    "Netherlands v Japan",
+    "Cote d Ivoire v Ecuador",
+    "Sweden v Tunisia",
+    "Spain v Cabo Verde"
+  ],
+  "evidence": "refresh_matches_board_to_staging temporary run returned valid=True for 9 live targets and 54 captured core markets."
+}

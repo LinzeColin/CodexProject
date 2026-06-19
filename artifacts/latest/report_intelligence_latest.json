@@ -1,0 +1,1248 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T14:45:01.171741+10:00",
+  "mode": "report_intelligence",
+  "purpose": "把推荐下注、报告历史、主动测试、开源模型对齐和自动化门禁合并成业务可读的日报决策层。",
+  "executive_status": {
+    "trusted_run_id": "20260604T135753Z-212e8e9a",
+    "trusted_report_date": "04062026",
+    "trusted_status": "ready_for_manual_report",
+    "latest_success_run_id": "20260604T135753Z-212e8e9a",
+    "latest_attempt_run_id": "20260613T043303Z-593b5282",
+    "formal_report_publish_ready": false,
+    "recurring_automation_ready": false,
+    "active_timeline_backfill_queue_count": 8,
+    "active_timeline_missing_analysis_day_count": 5,
+    "active_timeline_missing_report_day_count": 8,
+    "current_action": "保留上一份可信报告；当前 attempted run 不发布为下注日报"
+  },
+  "recommendation_summary": {
+    "run_id": "20260604T135753Z-212e8e9a",
+    "display_note": "只展示研究建议，不自动下注；执行前需复核 TAB 实时赔率。",
+    "top_count": 12,
+    "buy_count": 7,
+    "total_recommended_stake_aud": 100.0,
+    "rows": [
+      {
+        "board": "2026 World Cup Matches",
+        "rank": 1,
+        "event": "Brazil v Morocco",
+        "market": "Result",
+        "selection": "Morocco",
+        "odds": 5.5,
+        "probability": 0.22251729621632046,
+        "breakeven_probability": 0.18181818181818182,
+        "probability_edge": 0.04069911439813864,
+        "expected_value": 0.22384512918976252,
+        "stake_aud": 15.0,
+        "action": "买入",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "高价值",
+        "reason": "模型概率 22.25% 高于赔率盈亏平衡 18.18%，边际 +4.07pp，EV 22.38%。 建议金额 AUD 15，属于分散小仓位。 赛前仍需复核伤停、阵容和新闻。"
+      },
+      {
+        "board": "2026 World Cup Matches",
+        "rank": 2,
+        "event": "France v Senegal",
+        "market": "Result",
+        "selection": "Senegal",
+        "odds": 7.0,
+        "probability": 0.1708966330257714,
+        "breakeven_probability": 0.14285714285714285,
+        "probability_edge": 0.028039490168628556,
+        "expected_value": 0.19627643118039995,
+        "stake_aud": 15.0,
+        "action": "买入",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "高价值",
+        "reason": "模型概率 17.09% 高于赔率盈亏平衡 14.29%，边际 +2.80pp，EV 19.63%。 建议金额 AUD 15，属于分散小仓位。 赛前仍需复核伤停、阵容和新闻。"
+      },
+      {
+        "board": "2026 World Cup Matches",
+        "rank": 3,
+        "event": "England v Croatia",
+        "market": "Result",
+        "selection": "Croatia",
+        "odds": 4.75,
+        "probability": 0.24638867023577377,
+        "breakeven_probability": 0.21052631578947367,
+        "probability_edge": 0.03586235444630009,
+        "expected_value": 0.17034618361992537,
+        "stake_aud": 15.0,
+        "action": "买入",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "高价值",
+        "reason": "模型概率 24.64% 高于赔率盈亏平衡 21.05%，边际 +3.59pp，EV 17.03%。 建议金额 AUD 15，属于分散小仓位。 赛前仍需复核伤停、阵容和新闻。"
+      },
+      {
+        "board": "2026 World Cup Matches",
+        "rank": 4,
+        "event": "Netherlands v Japan",
+        "market": "Result",
+        "selection": "Japan",
+        "odds": 3.5,
+        "probability": 0.3105432713539286,
+        "breakeven_probability": 0.2857142857142857,
+        "probability_edge": 0.02482898563964292,
+        "expected_value": 0.08690144973875014,
+        "stake_aud": 15.0,
+        "action": "买入",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "中高价值",
+        "reason": "模型概率 31.05% 高于赔率盈亏平衡 28.57%，边际 +2.48pp，EV 8.69%。 建议金额 AUD 15，属于分散小仓位。 赛前仍需复核伤停、阵容和新闻。"
+      },
+      {
+        "board": "2026 World Cup Matches",
+        "rank": 5,
+        "event": "Belgium v Egypt",
+        "market": "Total Goals Over/Under",
+        "selection": "Under 2.5 Goals",
+        "odds": 1.87,
+        "probability": 0.5697087466575106,
+        "breakeven_probability": 0.53475935828877,
+        "probability_edge": 0.03494938836874062,
+        "expected_value": 0.0653553562495448,
+        "stake_aud": 15.0,
+        "action": "买入",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "中高价值",
+        "reason": "模型概率 56.97% 高于赔率盈亏平衡 53.48%，边际 +3.49pp，EV 6.54%。 建议金额 AUD 15，属于分散小仓位。 赛前仍需复核伤停、阵容和新闻。"
+      },
+      {
+        "board": "2026 World Cup Matches",
+        "rank": 6,
+        "event": "South Korea v Czechia",
+        "market": "Both Teams to Score",
+        "selection": "Only One or Neither to score",
+        "odds": 1.87,
+        "probability": 0.5602140536820481,
+        "breakeven_probability": 0.53475935828877,
+        "probability_edge": 0.02545469539327816,
+        "expected_value": 0.04760028038543007,
+        "stake_aud": 15.0,
+        "action": "买入",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "小正边际",
+        "reason": "模型概率 56.02% 高于赔率盈亏平衡 53.48%，边际 +2.55pp，EV 4.76%。 建议金额 AUD 15，属于分散小仓位。 赛前仍需复核伤停、阵容和新闻。"
+      },
+      {
+        "board": "2026 World Cup Matches",
+        "rank": 7,
+        "event": "Brazil v Morocco",
+        "market": "Total Goals Over/Under",
+        "selection": "Under 2.5 Goals",
+        "odds": 1.8,
+        "probability": 0.5744185379356577,
+        "breakeven_probability": 0.5555555555555556,
+        "probability_edge": 0.01886298238010209,
+        "expected_value": 0.03395336828418394,
+        "stake_aud": 10.0,
+        "action": "买入",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "小正边际",
+        "reason": "模型概率 57.44% 高于赔率盈亏平衡 55.56%，边际 +1.89pp，EV 3.40%。 建议金额 AUD 10，属于分散小仓位。 赛前仍需复核伤停、阵容和新闻。"
+      },
+      {
+        "board": "2026 World Cup Futures",
+        "rank": 1,
+        "event": "Belgium",
+        "market": "To Qualify for Quarter Final",
+        "selection": "Belgium",
+        "odds": 2.75,
+        "probability": 0.2891856846738146,
+        "breakeven_probability": 0.36363636363636365,
+        "probability_edge": -0.07445067896254903,
+        "expected_value": null,
+        "stake_aud": 0.0,
+        "action": "观察/不下注",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "观察价值",
+        "reason": "证据不足以形成强下注结论，当前应以观察为主。"
+      },
+      {
+        "board": "2026 World Cup Group Betting",
+        "rank": 1,
+        "event": "Group K",
+        "market": "Group Winner",
+        "selection": "Colombia",
+        "odds": 3.0,
+        "probability": 0.29629332606220027,
+        "breakeven_probability": 0.3333333333333333,
+        "probability_edge": -0.037040007271133046,
+        "expected_value": null,
+        "stake_aud": 0.0,
+        "action": "观察/不下注",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "观察价值",
+        "reason": "证据不足以形成强下注结论，当前应以观察为主。"
+      },
+      {
+        "board": "2026 World Cup Australia Markets",
+        "rank": 1,
+        "event": "AUS Group Match Wins",
+        "market": "AUS Group Match Wins",
+        "selection": "AUS Win 0 Grp Matches",
+        "odds": 1.75,
+        "probability": 0.49440159881114043,
+        "breakeven_probability": 0.5714285714285714,
+        "probability_edge": -0.07702697261743097,
+        "expected_value": null,
+        "stake_aud": 0.0,
+        "action": "观察/不下注",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "观察价值",
+        "reason": "证据不足以形成强下注结论，当前应以观察为主。"
+      },
+      {
+        "board": "2026 World Cup Team Futures Multi",
+        "rank": 1,
+        "event": "Belgium",
+        "market": "Reach Quarter Final",
+        "selection": "Belgium",
+        "odds": 2.75,
+        "probability": 0.521437681221161,
+        "breakeven_probability": 0.36363636363636365,
+        "probability_edge": 0.15780131758479732,
+        "expected_value": null,
+        "stake_aud": 0.0,
+        "action": "观察/不下注",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "观察价值",
+        "reason": "证据不足以形成强下注结论，当前应以观察为主。"
+      },
+      {
+        "board": "2026 World Cup Futures",
+        "rank": 2,
+        "event": "Colombia",
+        "market": "To Qualify for Quarter Final",
+        "selection": "Colombia",
+        "odds": 3.3,
+        "probability": 0.2409880705615122,
+        "breakeven_probability": 0.30303030303030304,
+        "probability_edge": -0.06204223246879084,
+        "expected_value": null,
+        "stake_aud": 0.0,
+        "action": "观察/不下注",
+        "analysis_consistency": "待校准",
+        "confidence": "待校准",
+        "value_label": "观察价值",
+        "reason": "证据不足以形成强下注结论，当前应以观察为主。"
+      }
+    ],
+    "board_exposure": [
+      {
+        "board": "2026 World Cup Matches",
+        "recommendation_count": 7,
+        "buy_count": 7,
+        "stake_aud": 100.0,
+        "avg_expected_value": 0.11775402837828526
+      },
+      {
+        "board": "2026 World Cup Australia Markets",
+        "recommendation_count": 14,
+        "buy_count": 0,
+        "stake_aud": 0.0,
+        "avg_expected_value": null
+      },
+      {
+        "board": "2026 World Cup Futures",
+        "recommendation_count": 6,
+        "buy_count": 0,
+        "stake_aud": 0.0,
+        "avg_expected_value": null
+      },
+      {
+        "board": "2026 World Cup Group Betting",
+        "recommendation_count": 6,
+        "buy_count": 0,
+        "stake_aud": 0.0,
+        "avg_expected_value": null
+      },
+      {
+        "board": "2026 World Cup Team Futures Multi",
+        "recommendation_count": 5,
+        "buy_count": 0,
+        "stake_aud": 0.0,
+        "avg_expected_value": null
+      }
+    ]
+  },
+  "reference_alignment": [
+    {
+      "feature": "4-5 小时一次分析节奏",
+      "reference_requirement": "参考版定时 refresh_runs；用户要求每天至少四次。",
+      "current_implementation": "主动测试按 5 个时间窗回测有效分析次数，并生成缺口队列。",
+      "status": "部分落地",
+      "next_gap": "缺口日需要安全补跑；正式 automation 尚需用户授权。"
+    },
+    {
+      "feature": "每日一份中文报告",
+      "reference_requirement": "参考版每日 Markdown/报告输出；用户要求 PDF 保存到本地报告夹。",
+      "current_implementation": "正式 PDF、report index、Downloads app 已接入；失败门禁时保留上次可信报告。",
+      "status": "部分落地",
+      "next_gap": "当前日期序列仍有日报缺口，需要补跑后复测。"
+    },
+    {
+      "feature": "本地数据库与新旧对比",
+      "reference_requirement": "参考版 SQLite 记录 predictions/reports/backtests。",
+      "current_implementation": "本系统使用 SQLite 记录 run、板块、推荐、图表、diff、缺失数据和审计。",
+      "status": "已落地",
+      "next_gap": "继续补足真实赛果/结算字段后可做完整命中率回测。"
+    },
+    {
+      "feature": "业务首页 Dashboard",
+      "reference_requirement": "参考版有 dashboard API；用户要求一眼能知道怎么操作。",
+      "current_implementation": "Downloads app 首屏展示推荐下注板块、金额、EV、概率/赔率编辑和主动测试按钮。",
+      "status": "已落地",
+      "next_gap": "继续减少工程状态词，把缺口、赔率变化和行动建议前置。"
+    },
+    {
+      "feature": "开源模型参考",
+      "reference_requirement": "用户要求参考 GitHub 开源版本模型。",
+      "current_implementation": "已桥接 Elo、Dixon-Coles、goalmodel 思路，输出模型分歧和能力覆盖。",
+      "status": "已落地",
+      "next_gap": "下一步把晋级路径 Monte Carlo 与赛果回测连到同一评价表。"
+    },
+    {
+      "feature": "主动回测/缺失补齐",
+      "reference_requirement": "参考版 backtests + refresh_runs；用户要求缺失则主动补上。",
+      "current_implementation": "主动测试可识别缺失分析和日报；补跑使用 no-latest-publish 重建模式。",
+      "status": "部分落地",
+      "next_gap": "补跑不能伪装历史原时点盘口；需要标记为当前数据重建。"
+    },
+    {
+      "feature": "私有持仓读取",
+      "reference_requirement": "用户要求能自动读取 TAB 已下注状态。",
+      "current_implementation": "已有只读专用浏览器 profile 和导入链，但当前未完成私有快照 bootstrap。",
+      "status": "阻塞",
+      "next_gap": "需要一次性完成本地浏览器授权；系统不保存密码、不自动下注。"
+    },
+    {
+      "feature": "自动化准入门禁",
+      "reference_requirement": "参考版 scheduler 可每 4 小时跑；用户要求成熟后再进入 automation。",
+      "current_implementation": "已有 hermetic verifier、public safety、PDF QA、raw freshness、report publish gates。",
+      "status": "已落地",
+      "next_gap": "正式 recurring automation 仍处于用户未授权状态。"
+    }
+  ],
+  "feature_status_counts": {
+    "部分落地": 3,
+    "已落地": 4,
+    "阻塞": 1
+  },
+  "open_source_model_alignment": {
+    "reference_count": 6,
+    "implemented_reference_count": 3,
+    "design_reference_count": 3,
+    "coverage_counts": {
+      "1X2": 3,
+      "晋级路径": 1,
+      "模型分歧": 1,
+      "回测评价": 1,
+      "Monte Carlo": 1,
+      "Track record": 1,
+      "Over/Under": 2,
+      "BTTS": 1,
+      "xG反推": 1,
+      "评分规则": 1,
+      "Dispersion": 1,
+      "Extra time offset": 1,
+      "时间衰减": 1,
+      "攻防参数": 1,
+      "低比分校正": 1,
+      "Poisson比分矩阵": 1,
+      "Asian Handicap": 1,
+      "No-vig implied probability": 1,
+      "Poisson": 1,
+      "Bivariate Poisson": 1,
+      "Dixon-Coles": 1,
+      "Bayesian uncertainty": 1,
+      "Team ratings": 1,
+      "JSON workflow": 1,
+      "SPADL": 1,
+      "Atomic-SPADL": 1,
+      "xT": 1,
+      "VAEP": 1,
+      "Atomic-VAEP": 1,
+      "Event stream preprocessing": 1,
+      "Player action value": 1,
+      "Provider adapters": 1,
+      "World Cup 2026 schedule": 1,
+      "JSON fixture feed": 1,
+      "No API key": 1,
+      "Public domain data": 1,
+      "Source text files": 1,
+      "SQLite/CSV export path": 1
+    },
+    "rows": [
+      {
+        "name": "Hicruben 2026 WC",
+        "method_family": "Elo + Dixon-Coles + Monte Carlo",
+        "license": "MIT",
+        "adoption_status": "已转化为本地 proxy",
+        "usage": "用于48队强弱先验、低比分修正和比赛结果概率交叉验证；其walk-forward/reliability/track-record思路进入本地模型审计，Monte Carlo路径作为晋级/淘汰赛模拟接口。"
+      },
+      {
+        "name": "goalmodel",
+        "method_family": "Expected goals probability model",
+        "license": "GPL-3.0",
+        "adoption_status": "已转化为本地 proxy",
+        "usage": "用于市场隐含概率反推xG，并把同一xG分布转换为1X2、大小球、BTTS和评分规则敏感性检查。"
+      },
+      {
+        "name": "RyanSCodes DC",
+        "method_family": "Dixon-Coles weighted history",
+        "license": "No release license declared",
+        "adoption_status": "设计参考",
+        "usage": "作为后续回测/时间衰减权重设计参考；当前不复制其Python 2.7实现。"
+      },
+      {
+        "name": "penaltyblog",
+        "method_family": "Poisson + Dixon-Coles + bookmaker odds utilities",
+        "license": "MIT",
+        "adoption_status": "已转化为本地 proxy",
+        "usage": "用于强化本地 no-vig、EV、Edge、大小球/让球和模型不确定性口径；本地仍使用自有实现，不直接依赖外部包执行下注。"
+      },
+      {
+        "name": "socceraction",
+        "method_family": "SPADL + xT + VAEP action value",
+        "license": "MIT",
+        "adoption_status": "设计参考",
+        "usage": "用于未来把球员事件、战术和基本面转成 xT/VAEP 解释层；当前无事件流原始数据时只作设计参考和缺口提示。"
+      },
+      {
+        "name": "openfootball worldcup.json",
+        "method_family": "World Cup public schedule JSON",
+        "license": "Public Domain / CC0-style dedication",
+        "adoption_status": "设计参考",
+        "usage": "用于赛程、日期、阶段和本地数据库 seed 的公开交叉验证；不提供赔率，不替代 TAB 实时盘口 raw。"
+      }
+    ]
+  },
+  "timeline_health": {
+    "generated_at": "2026-06-13T14:43:03.924130+10:00",
+    "min_analyses_per_day": 4,
+    "target_slots": [
+      "00:00-05:00",
+      "05:00-10:00",
+      "10:00-15:00",
+      "15:00-20:00",
+      "20:00-24:00"
+    ],
+    "day_count": 9,
+    "complete_day_count": 1,
+    "missing_analysis_day_count": 5,
+    "missing_report_day_count": 8,
+    "backfill_queue_count": 8,
+    "backfill_last_status": "blocked_by_raw_refresh",
+    "slot_coverage": [
+      {
+        "slot": "00:00-05:00",
+        "label": "00-05",
+        "covered_day_count": 0,
+        "day_count": 8,
+        "coverage_ratio": 0.0
+      },
+      {
+        "slot": "05:00-10:00",
+        "label": "05-10",
+        "covered_day_count": 2,
+        "day_count": 8,
+        "coverage_ratio": 0.25
+      },
+      {
+        "slot": "10:00-15:00",
+        "label": "10-15",
+        "covered_day_count": 2,
+        "day_count": 8,
+        "coverage_ratio": 0.25
+      },
+      {
+        "slot": "15:00-20:00",
+        "label": "15-20",
+        "covered_day_count": 1,
+        "day_count": 8,
+        "coverage_ratio": 0.125
+      },
+      {
+        "slot": "20:00-24:00",
+        "label": "20-24",
+        "covered_day_count": 1,
+        "day_count": 8,
+        "coverage_ratio": 0.125
+      }
+    ],
+    "slot_heatmap": [
+      {
+        "date": "06/06/2026",
+        "effective_analysis_count": 7,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "Downloads 正式日报缺失",
+        "cells": [
+          {
+            "slot": "00:00-05:00",
+            "label": "00-05",
+            "status": "missing"
+          },
+          {
+            "slot": "05:00-10:00",
+            "label": "05-10",
+            "status": "covered"
+          },
+          {
+            "slot": "10:00-15:00",
+            "label": "10-15",
+            "status": "covered"
+          },
+          {
+            "slot": "15:00-20:00",
+            "label": "15-20",
+            "status": "missing"
+          },
+          {
+            "slot": "20:00-24:00",
+            "label": "20-24",
+            "status": "missing"
+          }
+        ]
+      },
+      {
+        "date": "07/06/2026",
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失",
+        "cells": [
+          {
+            "slot": "00:00-05:00",
+            "label": "00-05",
+            "status": "missing"
+          },
+          {
+            "slot": "05:00-10:00",
+            "label": "05-10",
+            "status": "missing"
+          },
+          {
+            "slot": "10:00-15:00",
+            "label": "10-15",
+            "status": "missing"
+          },
+          {
+            "slot": "15:00-20:00",
+            "label": "15-20",
+            "status": "missing"
+          },
+          {
+            "slot": "20:00-24:00",
+            "label": "20-24",
+            "status": "missing"
+          }
+        ]
+      },
+      {
+        "date": "08/06/2026",
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失",
+        "cells": [
+          {
+            "slot": "00:00-05:00",
+            "label": "00-05",
+            "status": "missing"
+          },
+          {
+            "slot": "05:00-10:00",
+            "label": "05-10",
+            "status": "missing"
+          },
+          {
+            "slot": "10:00-15:00",
+            "label": "10-15",
+            "status": "missing"
+          },
+          {
+            "slot": "15:00-20:00",
+            "label": "15-20",
+            "status": "missing"
+          },
+          {
+            "slot": "20:00-24:00",
+            "label": "20-24",
+            "status": "missing"
+          }
+        ]
+      },
+      {
+        "date": "09/06/2026",
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失",
+        "cells": [
+          {
+            "slot": "00:00-05:00",
+            "label": "00-05",
+            "status": "missing"
+          },
+          {
+            "slot": "05:00-10:00",
+            "label": "05-10",
+            "status": "missing"
+          },
+          {
+            "slot": "10:00-15:00",
+            "label": "10-15",
+            "status": "missing"
+          },
+          {
+            "slot": "15:00-20:00",
+            "label": "15-20",
+            "status": "missing"
+          },
+          {
+            "slot": "20:00-24:00",
+            "label": "20-24",
+            "status": "missing"
+          }
+        ]
+      },
+      {
+        "date": "10/06/2026",
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失",
+        "cells": [
+          {
+            "slot": "00:00-05:00",
+            "label": "00-05",
+            "status": "missing"
+          },
+          {
+            "slot": "05:00-10:00",
+            "label": "05-10",
+            "status": "missing"
+          },
+          {
+            "slot": "10:00-15:00",
+            "label": "10-15",
+            "status": "missing"
+          },
+          {
+            "slot": "15:00-20:00",
+            "label": "15-20",
+            "status": "missing"
+          },
+          {
+            "slot": "20:00-24:00",
+            "label": "20-24",
+            "status": "missing"
+          }
+        ]
+      },
+      {
+        "date": "11/06/2026",
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失",
+        "cells": [
+          {
+            "slot": "00:00-05:00",
+            "label": "00-05",
+            "status": "missing"
+          },
+          {
+            "slot": "05:00-10:00",
+            "label": "05-10",
+            "status": "missing"
+          },
+          {
+            "slot": "10:00-15:00",
+            "label": "10-15",
+            "status": "missing"
+          },
+          {
+            "slot": "15:00-20:00",
+            "label": "15-20",
+            "status": "missing"
+          },
+          {
+            "slot": "20:00-24:00",
+            "label": "20-24",
+            "status": "missing"
+          }
+        ]
+      },
+      {
+        "date": "12/06/2026",
+        "effective_analysis_count": 4,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "Downloads 正式日报缺失",
+        "cells": [
+          {
+            "slot": "00:00-05:00",
+            "label": "00-05",
+            "status": "missing"
+          },
+          {
+            "slot": "05:00-10:00",
+            "label": "05-10",
+            "status": "missing"
+          },
+          {
+            "slot": "10:00-15:00",
+            "label": "10-15",
+            "status": "missing"
+          },
+          {
+            "slot": "15:00-20:00",
+            "label": "15-20",
+            "status": "covered"
+          },
+          {
+            "slot": "20:00-24:00",
+            "label": "20-24",
+            "status": "covered"
+          }
+        ]
+      },
+      {
+        "date": "13/06/2026",
+        "effective_analysis_count": 8,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "Downloads 正式日报缺失",
+        "cells": [
+          {
+            "slot": "00:00-05:00",
+            "label": "00-05",
+            "status": "missing"
+          },
+          {
+            "slot": "05:00-10:00",
+            "label": "05-10",
+            "status": "covered"
+          },
+          {
+            "slot": "10:00-15:00",
+            "label": "10-15",
+            "status": "covered"
+          },
+          {
+            "slot": "15:00-20:00",
+            "label": "15-20",
+            "status": "missing"
+          },
+          {
+            "slot": "20:00-24:00",
+            "label": "20-24",
+            "status": "missing"
+          }
+        ]
+      }
+    ],
+    "audit_history_count": 12,
+    "audit_history": [
+      {
+        "audit_id": "active_timeline_20260612T190543_303056_1000_51335",
+        "generated_at": "2026-06-12T19:05:43.303056+10:00",
+        "label": "06-12 19:05",
+        "day_count": 8,
+        "complete_day_count": 1,
+        "complete_ratio": 0.125,
+        "missing_analysis_day_count": 6,
+        "missing_report_day_count": 7,
+        "gap_count": 13,
+        "backfill_queue_count": 7,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      },
+      {
+        "audit_id": "active_timeline_20260612T190723_668299_1000_52087",
+        "generated_at": "2026-06-12T19:07:23.668299+10:00",
+        "label": "06-12 19:07",
+        "day_count": 8,
+        "complete_day_count": 1,
+        "complete_ratio": 0.125,
+        "missing_analysis_day_count": 6,
+        "missing_report_day_count": 7,
+        "gap_count": 13,
+        "backfill_queue_count": 7,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      },
+      {
+        "audit_id": "active_timeline_20260612T190957_814559_1000_54523",
+        "generated_at": "2026-06-12T19:09:57.814559+10:00",
+        "label": "06-12 19:09",
+        "day_count": 8,
+        "complete_day_count": 1,
+        "complete_ratio": 0.125,
+        "missing_analysis_day_count": 6,
+        "missing_report_day_count": 7,
+        "gap_count": 13,
+        "backfill_queue_count": 7,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      },
+      {
+        "audit_id": "active_timeline_20260612T191141_123015_1000_54897",
+        "generated_at": "2026-06-12T19:11:41.123015+10:00",
+        "label": "06-12 19:11",
+        "day_count": 8,
+        "complete_day_count": 1,
+        "complete_ratio": 0.125,
+        "missing_analysis_day_count": 6,
+        "missing_report_day_count": 7,
+        "gap_count": 13,
+        "backfill_queue_count": 7,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      },
+      {
+        "audit_id": "active_timeline_20260612T193041_904821_1000_71254",
+        "generated_at": "2026-06-12T19:30:41.904821+10:00",
+        "label": "06-12 19:30",
+        "day_count": 8,
+        "complete_day_count": 1,
+        "complete_ratio": 0.125,
+        "missing_analysis_day_count": 6,
+        "missing_report_day_count": 7,
+        "gap_count": 13,
+        "backfill_queue_count": 7,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      },
+      {
+        "audit_id": "active_timeline_20260612T221529_485969_1000_45121",
+        "generated_at": "2026-06-12T22:15:29.485969+10:00",
+        "label": "06-12 22:15",
+        "day_count": 8,
+        "complete_day_count": 1,
+        "complete_ratio": 0.125,
+        "missing_analysis_day_count": 6,
+        "missing_report_day_count": 7,
+        "gap_count": 13,
+        "backfill_queue_count": 7,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      },
+      {
+        "audit_id": "active_timeline_20260612T222213_355976_1000_50541",
+        "generated_at": "2026-06-12T22:22:13.355976+10:00",
+        "label": "06-12 22:22",
+        "day_count": 8,
+        "complete_day_count": 1,
+        "complete_ratio": 0.125,
+        "missing_analysis_day_count": 6,
+        "missing_report_day_count": 7,
+        "gap_count": 13,
+        "backfill_queue_count": 7,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      },
+      {
+        "audit_id": "active_timeline_20260613T063827_079368_1000_11336",
+        "generated_at": "2026-06-13T06:38:27.079368+10:00",
+        "label": "06-13 06:38",
+        "day_count": 9,
+        "complete_day_count": 1,
+        "complete_ratio": 0.1111111111111111,
+        "missing_analysis_day_count": 6,
+        "missing_report_day_count": 8,
+        "gap_count": 14,
+        "backfill_queue_count": 8,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      },
+      {
+        "audit_id": "active_timeline_20260613T101643_853348_1000_77091",
+        "generated_at": "2026-06-13T10:16:43.853348+10:00",
+        "label": "06-13 10:16",
+        "day_count": 9,
+        "complete_day_count": 1,
+        "complete_ratio": 0.1111111111111111,
+        "missing_analysis_day_count": 6,
+        "missing_report_day_count": 8,
+        "gap_count": 14,
+        "backfill_queue_count": 8,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      },
+      {
+        "audit_id": "active_timeline_20260613T132005_690013_1000_29578",
+        "generated_at": "2026-06-13T13:20:05.690013+10:00",
+        "label": "06-13 13:20",
+        "day_count": 9,
+        "complete_day_count": 1,
+        "complete_ratio": 0.1111111111111111,
+        "missing_analysis_day_count": 5,
+        "missing_report_day_count": 8,
+        "gap_count": 13,
+        "backfill_queue_count": 8,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      },
+      {
+        "audit_id": "active_timeline_20260613T132025_885552_1000_29728",
+        "generated_at": "2026-06-13T13:20:25.885552+10:00",
+        "label": "06-13 13:20",
+        "day_count": 9,
+        "complete_day_count": 1,
+        "complete_ratio": 0.1111111111111111,
+        "missing_analysis_day_count": 5,
+        "missing_report_day_count": 8,
+        "gap_count": 13,
+        "backfill_queue_count": 8,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      },
+      {
+        "audit_id": "active_timeline_20260613T144303_924130_1000_37342",
+        "generated_at": "2026-06-13T14:43:03.924130+10:00",
+        "label": "06-13 14:43",
+        "day_count": 9,
+        "complete_day_count": 1,
+        "complete_ratio": 0.1111111111111111,
+        "missing_analysis_day_count": 5,
+        "missing_report_day_count": 8,
+        "gap_count": 13,
+        "backfill_queue_count": 8,
+        "raw_refresh_ready": false,
+        "raw_refresh_status": "blocked",
+        "backfill_status": "blocked_by_raw_refresh"
+      }
+    ],
+    "audit_trend_summary": {
+      "audit_count": 12,
+      "latest_complete_ratio": 0.1111111111111111,
+      "latest_gap_count": 13,
+      "raw_ready_audit_count": 0,
+      "trend_direction": "deteriorating"
+    },
+    "recent_days": [
+      {
+        "date": "06/06/2026",
+        "effective_analysis_count": 7,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "Downloads 正式日报缺失"
+      },
+      {
+        "date": "07/06/2026",
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失"
+      },
+      {
+        "date": "08/06/2026",
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失"
+      },
+      {
+        "date": "09/06/2026",
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失"
+      },
+      {
+        "date": "10/06/2026",
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失"
+      },
+      {
+        "date": "11/06/2026",
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失"
+      },
+      {
+        "date": "12/06/2026",
+        "effective_analysis_count": 4,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "Downloads 正式日报缺失"
+      },
+      {
+        "date": "13/06/2026",
+        "effective_analysis_count": 8,
+        "formal_report_exists": false,
+        "needs_backfill": true,
+        "reason": "Downloads 正式日报缺失"
+      }
+    ]
+  },
+  "automation_gates": {
+    "formal_report_publish_ready": false,
+    "recurring_automation_ready": false,
+    "raw_refresh_ready": false,
+    "public_safety_ready": true,
+    "technical_preflight_ready": false,
+    "private_position_ready": false,
+    "candidate_status": "review_required_not_installed",
+    "candidate_next_action": ""
+  },
+  "automation_dashboard": {
+    "title": "Automation Operations Dashboard",
+    "reading_path": "先看 raw 和发布门禁，再看主动测试缺口、补跑队列、私有持仓，最后看开源模型和新旧报告对比。",
+    "ready_count": 3,
+    "blocked_count": 4,
+    "watch_count": 1,
+    "average_score": 0.3263888888888889,
+    "rows": [
+      {
+        "label": "公开盘口 raw",
+        "ready": false,
+        "status": "阻塞",
+        "score": 0.0,
+        "score_pct": 0.0,
+        "evidence": "raw_refresh.ready=False；blockers=refresh_command_failed, route_mismatch, stale_raw。",
+        "next_action": "先恢复 5 个 TAB FIFA 板块 raw freshness，再允许补跑或发布。"
+      },
+      {
+        "label": "4-5小时分析节奏",
+        "ready": false,
+        "status": "部分",
+        "score": 0.1111111111111111,
+        "score_pct": 11.11,
+        "evidence": "1/9 天完整；待补队列 8。",
+        "next_action": "点击主动测试并按补跑优先队列修复缺口。"
+      },
+      {
+        "label": "每日PDF报告",
+        "ready": false,
+        "status": "阻塞",
+        "score": 0.0,
+        "score_pct": 0.0,
+        "evidence": "日报缺口日 8。",
+        "next_action": "raw ready 后安全补跑缺失日报；补跑不发布 latest。"
+      },
+      {
+        "label": "本地数据库",
+        "ready": true,
+        "status": "就绪",
+        "score": 1.0,
+        "score_pct": 100.0,
+        "evidence": "report_runs 20；automation_runs 9。",
+        "next_action": "继续把每次报告、审计、补跑和对比写入 SQLite。"
+      },
+      {
+        "label": "新旧报告对比",
+        "ready": true,
+        "status": "就绪",
+        "score": 1.0,
+        "score_pct": 100.0,
+        "evidence": "新增 0 / 移除 0 / 变化 0。",
+        "next_action": "每份新报告必须展示与上一可信报告的变化。"
+      },
+      {
+        "label": "开源模型参考",
+        "ready": true,
+        "status": "就绪",
+        "score": 0.5,
+        "score_pct": 50.0,
+        "evidence": "已转化 3/6 个 GitHub 参考；覆盖 38 类能力。",
+        "next_action": "下一步接入真实赛果 track record、校准曲线和淘汰赛 Monte Carlo。"
+      },
+      {
+        "label": "发布门禁",
+        "ready": false,
+        "status": "阻塞",
+        "score": 0.0,
+        "score_pct": 0.0,
+        "evidence": "formal_report_publish_ready=False。",
+        "next_action": "fresh raw + private snapshot + preflight + public safety 全部通过才发布。"
+      },
+      {
+        "label": "私有持仓快照",
+        "ready": false,
+        "status": "阻塞",
+        "score": 0.0,
+        "score_pct": 0.0,
+        "evidence": "status=raw_ready_import_needed；report_date=04062026。",
+        "next_action": "完成只读持仓读取 bootstrap，更新已下注金额和累计收益率。"
+      }
+    ],
+    "reference_feature_count": 8
+  },
+  "report_comparison": {
+    "run_id": "20260605T232012Z-bad22171",
+    "report_date": "06062026",
+    "run_status": "blocked_by_gate",
+    "added_count": 0,
+    "removed_count": 0,
+    "changed_count": 0,
+    "retained_count": 38,
+    "exposure_change_aud": 0.0,
+    "visual_chart_count": 10,
+    "recommendation_count": 38,
+    "report_index_run_count": 20,
+    "automation_run_count": 9,
+    "has_diff": true,
+    "artifact_pdf": ""
+  },
+  "report_history": {
+    "run_count": 20,
+    "success_run_count": 6,
+    "blocked_run_count": 12,
+    "automation_run_count": 9,
+    "recent_runs": [
+      {
+        "run_id": "20260605T232012Z-bad22171",
+        "date": "06062026",
+        "status": "blocked_by_gate",
+        "exposure_aud": 0.0,
+        "recommendation_count": 38
+      },
+      {
+        "run_id": "20260605T225259Z-be7638ce",
+        "date": "06062026",
+        "status": "blocked_by_gate",
+        "exposure_aud": 0.0,
+        "recommendation_count": 38
+      },
+      {
+        "run_id": "20260605T220116Z-ac437e5b",
+        "date": "06062026",
+        "status": "blocked_by_gate",
+        "exposure_aud": 0.0,
+        "recommendation_count": 38
+      },
+      {
+        "run_id": "20260605T213802Z-18810b47",
+        "date": "06062026",
+        "status": "blocked_by_gate",
+        "exposure_aud": 0.0,
+        "recommendation_count": 38
+      },
+      {
+        "run_id": "20260605T195704Z-d370cd95",
+        "date": "06062026",
+        "status": "blocked_by_gate",
+        "exposure_aud": 0.0,
+        "recommendation_count": 38
+      },
+      {
+        "run_id": "20260605T111049Z-428e2593",
+        "date": "05062026",
+        "status": "blocked_by_gate",
+        "exposure_aud": 0.0,
+        "recommendation_count": 38
+      },
+      {
+        "run_id": "20260605T084257Z-6cd72c59",
+        "date": "05062026",
+        "status": "blocked_by_gate",
+        "exposure_aud": 0.0,
+        "recommendation_count": 38
+      },
+      {
+        "run_id": "20260605T082615Z-d31a7543",
+        "date": "05062026",
+        "status": "blocked_by_gate",
+        "exposure_aud": 0.0,
+        "recommendation_count": 38
+      },
+      {
+        "run_id": "20260605T064819Z-e3602800",
+        "date": "05062026",
+        "status": "blocked_by_gate",
+        "exposure_aud": 0.0,
+        "recommendation_count": 38
+      },
+      {
+        "run_id": "20260605T055626Z-ba247362",
+        "date": "05062026",
+        "status": "blocked_by_gate",
+        "exposure_aud": 0.0,
+        "recommendation_count": 38
+      }
+    ]
+  },
+  "next_actions": [
+    {
+      "priority": "P0",
+      "title": "补齐主动测试发现的缺口",
+      "operation": "运行安全补跑后重新点击主动测试，目标是每日至少 4 次分析且 1 份报告。",
+      "expected_effect": "提升日报连续性；补跑报告仍标记为重建版本。"
+    },
+    {
+      "priority": "P0",
+      "title": "刷新实时公开盘口并重跑日报",
+      "operation": "先让 5 个 TAB FIFA 板块 raw snapshot 回到 freshness 门槛内，再运行日报。",
+      "expected_effect": "解决当前 attempted run 不能发布的问题之一。"
+    },
+    {
+      "priority": "P0",
+      "title": "完成私有持仓读取 bootstrap",
+      "operation": "使用本地只读浏览器 profile 完成一次授权，然后导入当日持仓快照。",
+      "expected_effect": "同步已下注金额、未结算暴露和累计收益率所必需。"
+    },
+    {
+      "priority": "P1",
+      "title": "等待用户授权后安装 recurring automation",
+      "operation": "保持当前手动触发；成熟后再接入每 4-5 小时一次的调度。",
+      "expected_effect": "避免在门禁未清前产生误导性自动日报。"
+    },
+    {
+      "priority": "P2",
+      "title": "接入赛果与结算结果",
+      "operation": "为每条历史建议增加结果、命中率、Brier/log-loss 和资金曲线字段。",
+      "expected_effect": "把现在的节奏回测升级为真实下注研究回测。"
+    }
+  ],
+  "public_artifacts": {
+    "database": "tab_fifa_reports.sqlite3",
+    "latest_commit": "latest_commit.json",
+    "report_index": "report_index_latest.json",
+    "active_timeline": "active_timeline_latest.json",
+    "model_comparison": "tab_fifa_model_comparison_v0_1.json"
+  },
+  "artifacts": {
+    "json": "report_intelligence_latest.json",
+    "markdown": "report_intelligence_latest.md",
+    "pdf": "report_intelligence_latest.pdf",
+    "pdf_summary": {
+      "path": "report_intelligence_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 11,
+      "detail_row_count": 12,
+      "extra_table_count": 6,
+      "extra_detail_row_count": 45
+    }
+  }
+}

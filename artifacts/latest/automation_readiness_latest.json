@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T05:26:24.540629+00:00",
+  "status": "research_only_daily_ready_formal_blocked",
+  "formal_report_publish_ready": false,
+  "recurring_automation_ready": false,
+  "research_only_daily_report_ready": true,
+  "research_only_recurring_candidate_ready": true,
+  "research_only_recurring_ready": false,
+  "command_status": {},
+  "latest_commit": {
+    "run_id": "20260604T135753Z-212e8e9a",
+    "report_date": "04062026",
+    "status": "ready_for_manual_report",
+    "technical_automation_ready": true,
+    "automation_entry_ready": false,
+    "public_artifact_safety_ready": true,
+    "ready_required_boards": "5/5",
+    "issues": []
+  },
+  "report_index": {
+    "path": "report_index_latest.json",
+    "ready": true,
+    "committed_latest_run_id": "20260604T135753Z-212e8e9a",
+    "latest_success_run_id": "20260604T135753Z-212e8e9a",
+    "run_count": 20,
+    "issues": []
+  },
+  "raw_refresh": {
+    "ready": false,
+    "status": "blocked",
+    "ready_required": "0/5",
+    "blocker_codes": [
+      "refresh_command_failed",
+      "route_mismatch",
+      "stale_raw"
+    ],
+    "blocking_reasons": [
+      "2026 World Cup Matches raw snapshot is stale.",
+      "2026 World Cup Futures raw snapshot is stale.",
+      "2026 World Cup Group Betting raw snapshot is stale.",
+      "2026 World Cup Australia Markets raw snapshot is stale.",
+      "2026 World Cup Team Futures Multi raw snapshot is stale."
+    ],
+    "recommended_next_action": "TAB 当前导航未列出该板块或深链路由到其他板块；先重新发现 Soccer live board list，若仍缺失则将该板块标记为 temporarily unavailable review queue，不用旧盘口生成建议。"
+  },
+  "public_safety": {
+    "output_safety_ready": true,
+    "output_blocking_reasons": [],
+    "artifact_safety_ready": true,
+    "artifact_issue_count": 0,
+    "artifact_blocking_reasons": [],
+    "partial_artifact_safety_ready": true,
+    "partial_artifact_issue_count": 0,
+    "partial_artifact_blocking_reasons": []
+  },
+  "research_only_daily_report": {
+    "ready": true,
+    "status": "ready_research_only",
+    "report_date": "13062026",
+    "generated_at": "2026-06-13T15:18:09.079651+10:00",
+    "execution_allowed": false,
+    "current_executable_new_stake_aud": 0,
+    "partial_successful_board_count": 4,
+    "partial_attempted_board_count": 5,
+    "unavailable_board_count": 1,
+    "freshness_status": "fresh_research_only",
+    "fresh_within_sla": true,
+    "board_scope_source": "current_discovery+partial_raw_success",
+    "partial_evidence_source": "raw_refresh_research_only_latest.json",
+    "pdf": "partial_daily_research_latest.pdf",
+    "dated_pdf": "13062026_partial_daily_research.pdf",
+    "artifact_safety_ready": true,
+    "artifact_issue_count": 0,
+    "policy": "可进入每4小时 research-only 报告生成；不发布正式下注日报，不解锁新增下注金额。",
+    "recommended_next_action": "每日 automation 可生成 research-only PDF；继续只读发现缺失板块，直到可恢复完整正式日报。"
+  },
+  "technical_preflight": {
+    "available": true,
+    "publication_clear": false,
+    "blocks_publication": true,
+    "run_id": "20260613T043303Z-593b5282",
+    "path": "automation_preflight_20260613T043303Z-593b5282.json",
+    "technical_preflight_ready": false,
+    "automation_entry_ready": false,
+    "newer_than_latest_success": true,
+    "blocking_reasons": [
+      "raw snapshot refresh failed; refusing to generate report: staged raw validation gate failed; refusing to publish raw snapshots: board refresh failures: australia_markets: australia_markets refresh failed after 1 attempt(s): {\n  \"error\": \"2026 World Cup Australia Markets route mismatch: landed on 2026 World Cup Matches; TAB live soccer nav may not list this board\"\n}; 2026 World Cup Australia Markets staged raw snapshot is missing.; Raw refresh batch manifest is missing: raw_refresh_batch_latest.json."
+    ],
+    "failed_checks": []
+  },
+  "private_position_bootstrap": {
+    "schema_version": 1,
+    "report_date": "04062026",
+    "status": "raw_ready_import_needed",
+    "ready": false,
+    "profile": {
+      "profile_name": "tab_chrome_profile",
+      "default_profile": true,
+      "exists": true,
+      "private_path_required": true
+    },
+    "files": {
+      "raw_text_ref": "private_raw_text_04062026.txt",
+      "raw_text_exists": true,
+      "snapshot_ref": "private_position_snapshot_04062026.json",
+      "snapshot_exists": true,
+      "diagnostics_ref": "private_capture_diagnostic_04062026.json",
+      "diagnostics_exists": false
+    },
+    "snapshot_validation": {
+      "valid": false,
+      "issue_count": 1,
+      "issues": [
+        "snapshot report_date does not match current report date"
+      ]
+    },
+    "capture_diagnostic": {
+      "report_date": "",
+      "ready": false,
+      "auth_status": "",
+      "auth_mode": "",
+      "reason": "",
+      "text_length": 0
+    },
+    "preflight": {
+      "schema_version": 1,
+      "status": "raw_ready_import_needed",
+      "report_date": "04062026",
+      "ready": false,
+      "blocking_reason": "只读文本已存在，但尚未导入当日私有持仓快照。",
+      "next_safe_action": "导入当日私有快照，然后重跑日报门禁。",
+      "can_start_bootstrap": true,
+      "can_import_snapshot": true,
+      "can_rerun_daily_gate": false,
+      "login_window_required": false,
+      "manual_step_required": false,
+      "wait_for_login_seconds": 600,
+      "capture_mode": "headed_read_only_authorized_profile",
+      "credential_policy": "不读取、不保存、不填写账号密码或OTP；只复用用户授权的本机 profile。",
+      "automation_boundary": "只读抓取、导入私有快照、重跑报告门禁；禁止赔率点击、下注单修改和自动下注。",
+      "privacy_boundary": "公开产物只展示状态、下一步和文件存在性；余额、逐笔下注、账号信息和私有路径不进入公开报告。",
+      "private_storage_ready": true,
+      "profile_ready": true,
+      "raw_text_ready": true,
+      "snapshot_ready": false,
+      "diagnostics_ready": false,
+      "diagnostic_auth_status": "not_checked",
+      "diagnostic_reason": "",
+      "step_statuses": [
+        {
+          "step": "private_storage",
+          "ready": true,
+          "label": "本机私有存储"
+        },
+        {
+          "step": "authorized_profile",
+          "ready": true,
+          "label": "TAB 授权 profile"
+        },
+        {
+          "step": "readonly_capture",
+          "ready": true,
+          "label": "只读持仓文本"
+        },
+        {
+          "step": "snapshot_import",
+          "ready": false,
+          "label": "私有持仓快照"
+        },
+        {
+          "step": "daily_gate",
+          "ready": false,
+          "label": "日报门禁可用"
+        }
+      ]
+    },
+    "next_action": "已读取私有持仓 raw text；下一步运行 `python3 import_my_bets_snapshot.py --source <private raw text for 04062026> --report-date 04062026`。"
+  },
+  "automation_candidate": {
+    "ready": true,
+    "status": "review_required_not_installed",
+    "installed": false,
+    "recommended_cadence": "4h",
+    "rrule": "FREQ=HOURLY;INTERVAL=4",
+    "entrypoint": "scripts/run_tab_fifa_daily_automation.sh --allow-research-only-success",
+    "activation_ready_after_authorization": false,
+    "blocking_reasons": [
+      "user has not authorized recurring automation"
+    ]
+  },
+  "blocking_reasons": [
+    "2026 World Cup Matches raw snapshot is stale.; 2026 World Cup Futures raw snapshot is stale.; 2026 World Cup Group Betting raw snapshot is stale.; 2026 World Cup Australia Markets raw snapshot is stale.; 2026 World Cup Team Futures Multi raw snapshot is stale.",
+    "raw snapshot refresh failed; refusing to generate report: staged raw validation gate failed; refusing to publish raw snapshots: board refresh failures: australia_markets: australia_markets refresh failed after 1 attempt(s): {\n  \"error\": \"2026 World Cup Australia Markets route mismatch: landed on 2026 World Cup Matches; TAB live soccer nav may not list this board\"\n}; 2026 World Cup Australia Markets staged raw snapshot is missing.; Raw refresh batch manifest is missing: raw_refresh_batch_latest.json.",
+    "user has not authorized recurring automation"
+  ],
+  "blockers": [
+    {
+      "code": "raw_refresh_blocked",
+      "severity": "blocker",
+      "message": "2026 World Cup Matches raw snapshot is stale.; 2026 World Cup Futures raw snapshot is stale.; 2026 World Cup Group Betting raw snapshot is stale.; 2026 World Cup Australia Markets raw snapshot is stale.; 2026 World Cup Team Futures Multi raw snapshot is stale."
+    },
+    {
+      "code": "current_preflight_blocked",
+      "severity": "blocker",
+      "message": "raw snapshot refresh failed; refusing to generate report: staged raw validation gate failed; refusing to publish raw snapshots: board refresh failures: australia_markets: australia_markets refresh failed after 1 attempt(s): {\n  \"error\": \"2026 World Cup Australia Markets route mismatch: landed on 2026 World Cup Matches; TAB live soccer nav may not list this board\"\n}; 2026 World Cup Australia Markets staged raw snapshot is missing.; Raw refresh batch manifest is missing: raw_refresh_batch_latest.json."
+    },
+    {
+      "code": "recurring_authorization_missing",
+      "severity": "authorization",
+      "message": "user has not authorized recurring automation"
+    }
+  ],
+  "next_actions": [
+    "TAB 当前导航未列出该板块或深链路由到其他板块；先重新发现 Soccer live board list，若仍缺失则将该板块标记为 temporarily unavailable review queue，不用旧盘口生成建议。",
+    "已读取私有持仓 raw text；下一步运行 `python3 import_my_bets_snapshot.py --source <private raw text for 04062026> --report-date 04062026`。",
+    "在用户明确授权前仅允许手动/一次性报告生成，不创建 recurring automation。"
+  ],
+  "artifacts_checked": [
+    "04062026_20260604T135753Z-212e8e9a.pdf",
+    "automation_safety_gate.json",
+    "daily_report_manifest_20260604T135753Z-212e8e9a.json",
+    "portfolio_automation_gate_v0_12.json",
+    "portfolio_daily_compare_v0_11.json",
+    "portfolio_report_baseline_v0_11.json",
+    "previous_report_baseline_v0_11.json",
+    "raw_refresh_batch_latest.json",
+    "raw_refresh_diagnostics_20260604T135753Z-212e8e9a.json",
+    "raw_refresh_health_latest.json",
+    "raw_refresh_manifest_latest.json",
+    "report_index_20260604T135753Z-212e8e9a.json",
+    "report_index_latest.json",
+    "tab_fifa_bankroll_plan_04062026_20260604T135753Z-212e8e9a.json",
+    "tab_fifa_dashboard_20260604T135753Z-212e8e9a.html",
+    "tab_fifa_dashboard_data_20260604T135753Z-212e8e9a.json",
+    "tab_fifa_model_comparison_v0_1.json",
+    "tab_fifa_model_comparison_v0_1.md",
+    "tab_fifa_portfolio_readiness_v0_12.md",
+    "tab_fifa_reports.sqlite3"
+  ]
+}

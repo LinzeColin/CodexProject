@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-06-13T15:18:09.079193+10:00",
+  "finished_at": "2026-06-13T15:18:09.079193+10:00",
+  "mode": "safe_no_latest_publish",
+  "status": "blocked_by_raw_refresh",
+  "requested_count": 0,
+  "completed_count": 0,
+  "blocked_queue_count": 3,
+  "total_backfill_queue_count": 8,
+  "max_backfill_runs": 3,
+  "blocker": {
+    "code": "raw_refresh_not_ready",
+    "raw_status": "blocked",
+    "ready_required_target_count": 0,
+    "blocker_codes": [
+      "refresh_command_failed",
+      "route_mismatch",
+      "stale_raw"
+    ],
+    "recommended_next_action": "TAB 当前导航未列出该板块或深链路由到其他板块；先重新发现 Soccer live board list，若仍缺失则将该板块标记为 temporarily unavailable review queue，不用旧盘口生成建议。"
+  },
+  "partial_daily_research": {
+    "ready": true,
+    "status": "ready_research_only",
+    "report_date": "13062026",
+    "generated_at": "2026-06-13T15:18:09.079651+10:00",
+    "execution_allowed": false,
+    "current_executable_new_stake_aud": 0,
+    "partial_successful_board_count": 4,
+    "partial_attempted_board_count": 5,
+    "unavailable_board_count": 1,
+    "board_scope_source": "current_discovery+partial_raw_success",
+    "board_scope_last_success_fallback_used": false,
+    "board_scope_last_success_fresh_within_sla": true,
+    "freshness_status": "fresh_research_only",
+    "fresh_within_sla": true,
+    "partial_evidence_source": "raw_refresh_research_only_latest.json",
+    "age_hours": 0.61,
+    "pdf": "partial_daily_research_latest.pdf",
+    "dated_pdf": "13062026_partial_daily_research.pdf",
+    "recommended_next_action": "每日 automation 可生成 research-only PDF；继续只读发现缺失板块，直到可恢复完整正式日报。",
+    "message": "已补写 research-only 研究诊断日报；正式补跑仍因 raw blocked 暂停。"
+  },
+  "results": [],
+  "truthfulness_note": "公开盘口 raw 未就绪时不执行历史补跑，避免用 stale/blocked 数据生成误导性报告。"
+}

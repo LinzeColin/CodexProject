@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T14:45:01.478416+10:00",
+  "monitor_id": "position_monitor_20260613T144501_478416_1000",
+  "mode": "position_monitor_dashboard",
+  "purpose": "持仓、余额与累计收益率监控 Dashboard：只输出公开安全的聚合状态和下一步，不泄露私有下注明细，不自动下注。",
+  "executive_status": {
+    "status": "blocked",
+    "decision": "持仓监控未就绪；余额、持仓金额和累计收益率保持 account-update-pending。",
+    "public_report_action": "公开报告只显示状态和下一步，不展示真实金额。",
+    "private_metrics_available": false,
+    "recommended_next_action": "并行处理两个门禁：建立或刷新 TAB 专用已登录 profile：`TAB_FIFA_HEADLESS=0 node scripts/capture_tab_my_bets_readonly.mjs --report-date 13062026 --wait-for-login-ms 600000`。 同时恢复公开盘口 raw；两者都 ready 后重跑日报门禁。"
+  },
+  "summary": {
+    "report_date": "13062026",
+    "snapshot_ready": false,
+    "snapshot_status": "missing",
+    "snapshot_issue_count": 1,
+    "raw_text_exists": false,
+    "snapshot_exists": false,
+    "diagnostics_exists": true,
+    "profile_exists": true,
+    "preflight_status": "profile_login_required",
+    "preflight_blocking_reason": "TAB 授权状态不可用（login_required），需要用户在本机窗口完成授权。",
+    "preflight_next_safe_action": "点击“启动只读持仓读取”，在打开的 TAB 窗口完成授权，系统只读取持仓页文本。",
+    "login_window_required": true,
+    "manual_step_required": true,
+    "wait_for_login_seconds": 600,
+    "capture_mode": "headed_read_only_authorized_profile",
+    "credential_policy": "不读取、不保存、不填写账号密码或OTP；只复用用户授权的本机 profile。",
+    "automation_boundary": "只读抓取、导入私有快照、重跑报告门禁；禁止赔率点击、下注单修改和自动下注。",
+    "public_visible_balance": "account-update-pending",
+    "public_visible_open_exposure": "account-update-pending",
+    "public_visible_realized_roi": "account-update-pending",
+    "raw_refresh_ready": false,
+    "active_backfill_queue_count": 8
+  },
+  "monitor_rows": [
+    {
+      "item_id": "position_snapshot",
+      "label": "持仓快照",
+      "status": "missing",
+      "ready": false,
+      "evidence": "当日私有快照必须存在并通过状态校验。",
+      "next_action": "导入或刷新当日只读快照。"
+    },
+    {
+      "item_id": "raw_text",
+      "label": "只读原文读取",
+      "status": "missing",
+      "ready": false,
+      "evidence": "只读文本用于生成私有快照，不进入公开报告。",
+      "next_action": "如果缺失，从 .app 启动只读持仓读取。"
+    },
+    {
+      "item_id": "profile",
+      "label": "TAB 专用 profile",
+      "status": "present",
+      "ready": true,
+      "evidence": "专用 profile 用于保留授权，不保存到公开产物。",
+      "next_action": "保持自动审计。"
+    },
+    {
+      "item_id": "private_preflight",
+      "label": "只读授权 Preflight",
+      "status": "profile_login_required",
+      "ready": false,
+      "evidence": "TAB 授权状态不可用（login_required），需要用户在本机窗口完成授权。",
+      "next_action": "点击“启动只读持仓读取”，在打开的 TAB 窗口完成授权，系统只读取持仓页文本。"
+    },
+    {
+      "item_id": "public_raw",
+      "label": "公开盘口 raw",
+      "status": "blocked",
+      "ready": false,
+      "evidence": "公开盘口必须先通过，持仓结果才进入日报门禁。",
+      "next_action": "点击刷新公开盘口。"
+    },
+    {
+      "item_id": "cadence",
+      "label": "主动测试缺口",
+      "status": "8",
+      "ready": false,
+      "evidence": "持仓变化会影响后续预算，缺口需先补齐。",
+      "next_action": "raw 恢复后执行 safe_no_latest_publish 补跑。"
+    },
+    {
+      "item_id": "roi",
+      "label": "余额/收益率显示",
+      "status": "account-update-pending",
+      "ready": false,
+      "evidence": "公开报告不展示账户余额；私有快照 ready 后可供日报门禁使用。",
+      "next_action": "快照 ready 后重跑日报。"
+    }
+  ],
+  "private_preflight": {
+    "schema_version": 1,
+    "status": "profile_login_required",
+    "report_date": "13062026",
+    "ready": false,
+    "blocking_reason": "TAB 授权状态不可用（login_required），需要用户在本机窗口完成授权。",
+    "next_safe_action": "点击“启动只读持仓读取”，在打开的 TAB 窗口完成授权，系统只读取持仓页文本。",
+    "can_start_bootstrap": true,
+    "can_import_snapshot": false,
+    "can_rerun_daily_gate": false,
+    "login_window_required": true,
+    "manual_step_required": true,
+    "wait_for_login_seconds": 600,
+    "capture_mode": "headed_read_only_authorized_profile",
+    "credential_policy": "不读取、不保存、不填写账号密码或OTP；只复用用户授权的本机 profile。",
+    "automation_boundary": "只读抓取、导入私有快照、重跑报告门禁；禁止赔率点击、下注单修改和自动下注。",
+    "privacy_boundary": "公开产物只展示状态、下一步和文件存在性；余额、逐笔下注、账号信息和私有路径不进入公开报告。",
+    "private_storage_ready": true,
+    "profile_ready": true,
+    "raw_text_ready": false,
+    "snapshot_ready": false,
+    "diagnostics_ready": true,
+    "diagnostic_auth_status": "login_required",
+    "diagnostic_reason": "TAB 私有持仓 page appears unauthenticated",
+    "step_statuses": [
+      {
+        "step": "private_storage",
+        "ready": true,
+        "label": "本机私有存储"
+      },
+      {
+        "step": "authorized_profile",
+        "ready": false,
+        "label": "TAB 授权 profile"
+      },
+      {
+        "step": "readonly_capture",
+        "ready": false,
+        "label": "只读持仓文本"
+      },
+      {
+        "step": "snapshot_import",
+        "ready": false,
+        "label": "私有持仓快照"
+      },
+      {
+        "step": "daily_gate",
+        "ready": false,
+        "label": "日报门禁可用"
+      }
+    ]
+  },
+  "private_metric_policy": {
+    "public_outputs": "只展示 ready/blocked、文件存在性、校验问题数量和下一步；不展示账户余额、逐笔下注或私有路径。",
+    "private_storage": "当日快照通过后，明细继续留在本机私有存储；公开报告只引用聚合状态。",
+    "amount_display_until_ready": "account-update-pending",
+    "credential_policy": "不读取、不保存、不填写账号密码或OTP；只复用用户授权的本机 profile。",
+    "automation_boundary": "只读抓取、导入私有快照、重跑报告门禁；禁止赔率点击、下注单修改和自动下注。"
+  },
+  "old_new_compare": {
+    "status": "compared_with_previous_snapshot",
+    "previous_generated_at": "2026-06-13T14:36:18.295641+10:00",
+    "previous_status": "blocked",
+    "current_status": "blocked",
+    "status_changed": false,
+    "snapshot_ready_delta": 0,
+    "summary": "持仓监控状态未改善。"
+  },
+  "source_artifacts": {
+    "automation_readiness": "automation_readiness_latest.json",
+    "automation_preflight": "automation_preflight_latest.json",
+    "latest_commit": "latest_commit.json",
+    "raw_refresh_health": "raw_refresh_health_latest.json",
+    "active_timeline": "active_timeline_latest.json"
+  },
+  "truthfulness_note": "持仓监控不会自动下注；当私有快照缺失、过期或校验失败时，余额、持仓金额和累计收益率保持 account-update-pending。",
+  "artifacts": {
+    "json": "position_monitor_latest.json",
+    "markdown": "position_monitor_latest.md",
+    "pdf": "position_monitor_latest.pdf",
+    "pdf_summary": {
+      "path": "position_monitor_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 4,
+      "detail_row_count": 7,
+      "extra_table_count": 3,
+      "extra_detail_row_count": 18
+    }
+  },
+  "storage": {
+    "status": "stored",
+    "database": "tab_fifa_reports.sqlite3",
+    "table": "position_monitor_snapshots"
+  }
+}

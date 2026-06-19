@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T04:41:49.602377+00:00",
+  "refresh_id": "20260613T043332Z-8ae221d0",
+  "status": "partial_ready_research_only",
+  "mode": "research_only_staged_raw_sidecar",
+  "manifest": "raw_refresh_research_only_latest.json",
+  "research_only_raw_dir": "research_only_raw",
+  "full_publish_allowed": false,
+  "executable_report_allowed": false,
+  "execution_allowed": false,
+  "current_executable_new_stake_aud": 0,
+  "official_raw_promoted": false,
+  "official_batch_manifest_written": false,
+  "staged_safety_ready": true,
+  "staged_raw_ready": false,
+  "required_target_count": 5,
+  "ready_required_target_count": 4,
+  "successful_board_count": 4,
+  "failed_board_count": 1,
+  "attempt_warning_count": 0,
+  "successful_boards": [
+    {
+      "board_id": "world_cup_matches",
+      "refresh_board_id": "matches",
+      "name": "2026 World Cup Matches",
+      "raw_snapshot": "tab_fifa_matches_main_markets_raw_v0_9.json",
+      "research_only_raw_snapshot": "research_only_raw/20260613T043332Z-8ae221d0_matches_tab_fifa_matches_main_markets_raw_v0_9.json",
+      "raw_timestamp": "2026-06-13T04:38:45.470319+00:00",
+      "refresh_id": "20260613T043332Z-8ae221d0",
+      "sha256": "acb06b247bfc24392af43f7186c3899d2df48845bcf3e81827c0a957d3e773fe",
+      "raw_fresh": true,
+      "raw_valid": true,
+      "refresh_ready": true
+    },
+    {
+      "board_id": "world_cup_futures",
+      "refresh_board_id": "futures",
+      "name": "2026 World Cup Futures",
+      "raw_snapshot": "tab_fifa_world_cup_futures_raw_v0_13.json",
+      "research_only_raw_snapshot": "research_only_raw/20260613T043332Z-8ae221d0_futures_tab_fifa_world_cup_futures_raw_v0_13.json",
+      "raw_timestamp": "2026-06-13T04:39:55.082Z",
+      "refresh_id": "20260613T043332Z-8ae221d0",
+      "sha256": "5eea40a336dd83004dfada94a5dc7b43d0517489c68fc9635458d7049f712a58",
+      "raw_fresh": true,
+      "raw_valid": true,
+      "refresh_ready": true
+    },
+    {
+      "board_id": "world_cup_group_betting",
+      "refresh_board_id": "group_betting",
+      "name": "2026 World Cup Group Betting",
+      "raw_snapshot": "tab_fifa_world_cup_group_betting_raw_v0_14.json",
+      "research_only_raw_snapshot": "research_only_raw/20260613T043332Z-8ae221d0_group_betting_tab_fifa_world_cup_group_betting_raw_v0_14.json",
+      "raw_timestamp": "2026-06-13T04:40:28.025Z",
+      "refresh_id": "20260613T043332Z-8ae221d0",
+      "sha256": "97bc9db9f4c7880e40e10ec7492fa5cd158c8867902a3b89adf3968b16199682",
+      "raw_fresh": true,
+      "raw_valid": true,
+      "refresh_ready": true
+    },
+    {
+      "board_id": "world_cup_team_futures_multi",
+      "refresh_board_id": "team_futures_multi",
+      "name": "2026 World Cup Team Futures Multi",
+      "raw_snapshot": "tab_fifa_world_cup_team_futures_multi_raw_v0_16.json",
+      "research_only_raw_snapshot": "research_only_raw/20260613T043332Z-8ae221d0_team_futures_multi_tab_fifa_world_cup_team_futures_multi_raw_v0_16.json",
+      "raw_timestamp": "2026-06-13T04:41:43.510Z",
+      "refresh_id": "20260613T043332Z-8ae221d0",
+      "sha256": "bcff1f6ad3f780b33a959b189f1972f6f949e600c49e55b309812960407416b7",
+      "raw_fresh": true,
+      "raw_valid": true,
+      "refresh_ready": true
+    }
+  ],
+  "failed_boards": [
+    {
+      "board_id": "world_cup_australia_markets",
+      "refresh_board_id": "australia_markets",
+      "name": "2026 World Cup Australia Markets",
+      "raw_snapshot": "tab_fifa_world_cup_australia_markets_expanded_raw_v0_17.json",
+      "raw_exists": false,
+      "raw_fresh": false,
+      "raw_valid": false,
+      "refresh_ready": false,
+      "raw_validation_errors": [
+        "raw snapshot missing"
+      ]
+    }
+  ],
+  "attempt_warnings": [],
+  "blocking_reasons": [
+    "2026 World Cup Australia Markets staged raw snapshot is missing.",
+    "Raw refresh batch manifest is missing: raw_refresh_batch_latest.json."
+  ],
+  "source_diagnostics": "raw_refresh_diagnostics_latest.json",
+  "truthfulness_note": "该 sidecar 只保存 staged gate 已验证成功的板块供当日研究诊断；它不是正式 latest raw，不允许解锁新增下注或正式日报发布。",
+  "public_artifact_safety_ready": true,
+  "public_artifact_issue_count": 0
+}

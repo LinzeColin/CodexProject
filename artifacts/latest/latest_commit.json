@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "committed_at": "2026-06-04T21:24:02.706427+00:00",
+  "run_id": "20260604T135753Z-212e8e9a",
+  "report_date": "04062026",
+  "status": "historical_last_success_not_current_execution",
+  "technical_automation_ready": true,
+  "automation_entry_ready": false,
+  "user_automation_authorized": false,
+  "automation_authorization": {
+    "authorized": false,
+    "allow_recurring": false,
+    "allow_auto_betting": false,
+    "cadence": "manual",
+    "approved_at": "",
+    "approved_by": "",
+    "scope": "report_generation_only",
+    "source": "config",
+    "config_file": "automation.toml",
+    "entry_authorized": false,
+    "blocking_reasons": [
+      "user has not authorized recurring automation"
+    ],
+    "warnings": []
+  },
+  "public_artifact_safety_ready": true,
+  "ready_required_boards": "0/5 current authorized raw; historical run retained only for audit",
+  "time_adjusted_new_exposure_aud": 0.0,
+  "artifacts": {
+    "pdf_run_copy": "04062026_20260604T135753Z-212e8e9a.pdf",
+    "bankroll_plan_run_copy": "tab_fifa_bankroll_plan_04062026_20260604T135753Z-212e8e9a.json",
+    "dashboard_run_copy": "tab_fifa_dashboard_20260604T135753Z-212e8e9a.html",
+    "dashboard_data_run_copy": "tab_fifa_dashboard_data_20260604T135753Z-212e8e9a.json",
+    "manifest": "daily_report_manifest_20260604T135753Z-212e8e9a.json",
+    "current_baseline": "previous_report_baseline_v0_11.json",
+    "portfolio_baseline": "portfolio_report_baseline_v0_11.json",
+    "portfolio_daily_compare": "portfolio_daily_compare_v0_11.json",
+    "portfolio_report": "tab_fifa_portfolio_readiness_v0_12.md",
+    "portfolio_gate": "portfolio_automation_gate_v0_12.json",
+    "model_comparison_json": "tab_fifa_model_comparison_v0_1.json",
+    "model_comparison_report": "tab_fifa_model_comparison_v0_1.md",
+    "raw_refresh_manifest": "raw_refresh_manifest_latest.json",
+    "raw_refresh_batch_manifest": "raw_refresh_batch_latest.json",
+    "raw_refresh_health": "raw_refresh_health_latest.json",
+    "raw_refresh_diagnostics": "raw_refresh_diagnostics_20260604T135753Z-212e8e9a.json",
+    "safety_gate": "automation_safety_gate.json",
+    "report_database": "tab_fifa_reports.sqlite3",
+    "report_index": "report_index_20260604T135753Z-212e8e9a.json",
+    "report_index_latest": "report_index_latest.json"
+  },
+  "run_artifacts": {
+    "pdf_run_copy": "04062026_20260604T135753Z-212e8e9a.pdf",
+    "bankroll_plan_run_copy": "tab_fifa_bankroll_plan_04062026_20260604T135753Z-212e8e9a.json",
+    "dashboard_run_copy": "tab_fifa_dashboard_20260604T135753Z-212e8e9a.html",
+    "dashboard_data_run_copy": "tab_fifa_dashboard_data_20260604T135753Z-212e8e9a.json",
+    "manifest": "daily_report_manifest_20260604T135753Z-212e8e9a.json"
+  },
+  "historical_last_success": true,
+  "current_execution_allowed": false,
+  "current_status": "research_only_daily_ready_formal_blocked",
+  "current_formal_report_publish_ready": false,
+  "current_raw_access_policy": {
+    "status": "blocked_by_access_policy",
+    "blocker_code": "ai_controlled_access_rejected",
+    "automated_public_raw_refresh_allowed": false,
+    "next_safe_action": "TAB 拒绝 AI controlled access；停止自动公开 raw 抓取。请接入官方/授权数据源，或导入用户导出的公开盘口快照。",
+    "forbidden_recovery": [
+      "headed_fallback",
+      "captcha_bypass",
+      "fingerprint_spoofing",
+      "stealth_browser"
+    ],
+    "allowed_recovery": [
+      "official_data_feed",
+      "user_authorized_manual_export_import",
+      "research_only_from_existing_fresh_partial_raw"
+    ]
+  },
+  "current_executable_new_exposure_aud": 0.0,
+  "current_truthfulness_note": "This pointer is retained as historical last successful formal report evidence only. Current executable stake remains AUD 0 until authorized raw, private position, preflight, and public safety all pass.",
+  "updated_for_fail_closed_at": "2026-06-13T08:32:42.237132+00:00"
+}

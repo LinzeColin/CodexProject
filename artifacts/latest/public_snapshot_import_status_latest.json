@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14T01:52:01.453077+10:00",
+  "mode": "public_snapshot_importer",
+  "status": "waiting_for_snapshot_import",
+  "scope": "matches",
+  "board_id": "world_cup_matches",
+  "source_mode": "user_public_snapshot_import",
+  "import_dir_relative_path": "manual_verification/public_raw_snapshots",
+  "snapshot_import_preview_ready": false,
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "current_executable_new_stake_aud": 0,
+  "truthfulness_note": "该入口只接收用户或第三方工具导出的公开 raw JSON 并生成研究预览；不能证明 TAB 页面真实性，不替代授权 API raw、TAB 人工最终校验、hash/signature gate。",
+  "selected_snapshot_file": "",
+  "selected_snapshot_sha256": "",
+  "match_count": 0,
+  "market_coverage": {},
+  "issues": [
+    {
+      "field": "import_dir",
+      "issue": "请把 JSON 快照放到 manual_verification/public_raw_snapshots/，文件名保持 .json。"
+    }
+  ],
+  "recommended_next_action": "把公开导出的 World Cup Matches raw JSON 放入 manual_verification/public_raw_snapshots/ 后重新生成 app；该入口只生成研究预览，不替代 TAB 最终人工校验。",
+  "preview_raw_snapshot": "public_snapshot_import_preview_raw_latest.json",
+  "preview_raw_sha256": "d980285c984bdcf4d4a5536f0dae9557f78ff4a29f695242b723f7de39794d46",
+  "publish_preflight_summary": {
+    "status": "waiting_for_snapshot_import",
+    "approval_relative_path": "manual_verification/public_snapshot_import_approval.json",
+    "approved_by_user": false,
+    "snapshot_publish_preflight_passed": false,
+    "issue_count": 2,
+    "formal_publish_allowed": false,
+    "current_executable_new_stake_aud": 0
+  },
+  "artifacts": {
+    "json": "public_snapshot_import_status_latest.json",
+    "markdown": "public_snapshot_import_status_latest.md",
+    "pdf": "public_snapshot_import_status_latest.pdf",
+    "template_json": "public_snapshot_import_manifest_template_latest.json",
+    "preview_raw": "public_snapshot_import_preview_raw_latest.json",
+    "approval_template": "public_snapshot_import_approval_template_latest.json",
+    "publish_preflight_json": "public_snapshot_import_publish_preflight_latest.json",
+    "publish_preflight_markdown": "public_snapshot_import_publish_preflight_latest.md",
+    "publish_preflight_pdf": "public_snapshot_import_publish_preflight_latest.pdf",
+    "pdf_summary": {
+      "path": "public_snapshot_import_status_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 1,
+      "detail_row_count": 1,
+      "extra_table_count": 0,
+      "extra_detail_row_count": 0
+    }
+  }
+}

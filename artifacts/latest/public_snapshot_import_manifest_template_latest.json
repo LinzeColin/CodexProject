@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "mode": "public_snapshot_import_manifest_template",
+  "save_dir": "manual_verification/public_raw_snapshots",
+  "preferred_snapshot_file": "world_cup_matches_public_snapshot.json",
+  "accepted_shapes": [
+    {
+      "matches": [
+        {
+          "match": "Mexico v South Africa",
+          "markets": {
+            "Result": "Result\\nMexico\\n2.00"
+          }
+        }
+      ]
+    },
+    {
+      "raw_snapshot": {
+        "matches": [
+          {
+            "match": "Mexico v South Africa",
+            "markets": {
+              "Result": "..."
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "required_fields": [
+    "matches[].match",
+    "matches[].markets"
+  ],
+  "recommended_market_families": [
+    "Result",
+    "Total Goals Over/Under",
+    "Team Total Goals Over/Under",
+    "Handicap",
+    "Double Chance",
+    "Both Teams to Score",
+    "Draw No Bet"
+  ],
+  "publish_policy": {
+    "formal_publish_allowed": false,
+    "full_automation_allowed": false,
+    "current_executable_new_stake_aud": 0,
+    "manual_tab_final_verification_required": true,
+    "approval_template": "public_snapshot_import_approval_template_latest.json",
+    "approval_save_as": "manual_verification/public_snapshot_import_approval.json",
+    "publish_preflight": "public_snapshot_import_publish_preflight_latest.json"
+  }
+}

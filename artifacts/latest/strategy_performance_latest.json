@@ -1,0 +1,592 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T14:45:03.207166+10:00",
+  "snapshot_id": "strategy-performance-2026-06-13T144503-207166-1000",
+  "mode": "strategy_performance_dashboard",
+  "purpose": "把历史推荐、EV/Edge、仓位、门禁状态、CLV/ROI 复盘准备度和新旧变化沉淀为策略表现 Dashboard；没有真实结算或收盘赔率时明确标记 outcome_pending，不伪造收益。",
+  "executive_status": {
+    "status": "tracking_ready_outcome_pending",
+    "realized_roi_status": "outcome_pending",
+    "clv_tracking_status": "clv_pending",
+    "current_action": "继续积累真实结算/收盘赔率，当前仅做 EV/Edge 研究样本回测准备。",
+    "primary_gap": "真实结算结果缺失",
+    "recommended_next_action": "先导入只读 私有持仓 结算快照；在此之前只展示 EV/Edge 样本，不计算真实 ROI。"
+  },
+  "summary": {
+    "latest_report_date": "04062026",
+    "run_count": 61,
+    "recommendation_count": 2318,
+    "buy_recommendation_count": 427,
+    "board_count": 5,
+    "research_stake_aud": 5210.0,
+    "expected_profit_aud": 671.31,
+    "stake_weighted_ev": 0.1289,
+    "average_ev": 0.1223,
+    "average_edge": 0.0305,
+    "positive_ev_buy_count": 427,
+    "settled_bet_count": 0,
+    "settled_stake_aud": 0.0,
+    "realized_profit_aud": 0.0,
+    "realized_roi": null,
+    "realized_roi_status": "outcome_pending",
+    "clv_coverage_count": 0,
+    "clv_coverage_rate": 0.0,
+    "clv_tracking_status": "clv_pending",
+    "snapshot_ready": false,
+    "top_board_by_research_stake": "2026 World Cup Matches",
+    "buy_distribution_by_board": {
+      "2026 World Cup Matches": 427
+    },
+    "ev_bucket_count": 5,
+    "clv_readiness_metric_count": 4,
+    "backtest_readiness_score": 0.75
+  },
+  "run_rows": [
+    {
+      "run_id": "20260605T195704Z-d370cd95",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 80.0,
+      "expected_profit_aud": 9.9,
+      "stake_weighted_ev": 0.1237,
+      "average_ev": 0.1263,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260605T213802Z-18810b47",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 80.0,
+      "expected_profit_aud": 9.9,
+      "stake_weighted_ev": 0.1237,
+      "average_ev": 0.1263,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260605T220116Z-ac437e5b",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 80.0,
+      "expected_profit_aud": 9.9,
+      "stake_weighted_ev": 0.1237,
+      "average_ev": 0.1263,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260605T225259Z-be7638ce",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260605T232012Z-bad22171",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260606T024653Z-69fb9511",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260612T045002Z-1866f370",
+      "report_date": "06062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260612T071418Z-351cc74d",
+      "report_date": "12062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260612T073419Z-4122a953",
+      "report_date": "12062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260612T121732Z-2323d929",
+      "report_date": "12062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260612T131829Z-d6ef19bc",
+      "report_date": "12062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260612T201040Z-5be949bd",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260612T213854Z-63a3b9ff",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260613T012612Z-60be1ce1",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260613T014702Z-e40094b3",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260613T015950Z-0f7dad26",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260613T022432Z-80387039",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260613T024632Z-3914a473",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260613T040114Z-51bf2e2a",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    },
+    {
+      "run_id": "20260613T043303Z-593b5282",
+      "report_date": "13062026",
+      "status": "blocked_by_gate",
+      "recommendation_count": 38,
+      "buy_count": 7,
+      "research_stake_aud": 70.0,
+      "expected_profit_aud": 8.77,
+      "stake_weighted_ev": 0.1253,
+      "average_ev": 0.1252,
+      "raw_refresh_ready": false,
+      "portfolio_ready": false,
+      "outcome_coverage": 0.0,
+      "clv_coverage": 0.0,
+      "status_note": "真实 ROI/CLV 待结算和收盘赔率；当前只做 EV/Edge 样本审计。"
+    }
+  ],
+  "board_rows": [
+    {
+      "board": "2026 World Cup Matches",
+      "recommendation_count": 427,
+      "buy_count": 427,
+      "research_stake_aud": 5210.0,
+      "expected_profit_aud": 671.31,
+      "stake_weighted_ev": 0.1289,
+      "average_ev": 0.1223,
+      "average_edge": 0.0305,
+      "positive_ev_count": 427,
+      "outcome_status": "outcome_pending"
+    },
+    {
+      "board": "2026 World Cup Australia Markets",
+      "recommendation_count": 854,
+      "buy_count": 0,
+      "research_stake_aud": 0,
+      "expected_profit_aud": 0,
+      "stake_weighted_ev": 0.0,
+      "average_ev": 0.0,
+      "average_edge": 0.0,
+      "positive_ev_count": 0,
+      "outcome_status": "outcome_pending"
+    },
+    {
+      "board": "2026 World Cup Futures",
+      "recommendation_count": 366,
+      "buy_count": 0,
+      "research_stake_aud": 0,
+      "expected_profit_aud": 0,
+      "stake_weighted_ev": 0.0,
+      "average_ev": 0.0,
+      "average_edge": 0.0,
+      "positive_ev_count": 0,
+      "outcome_status": "outcome_pending"
+    },
+    {
+      "board": "2026 World Cup Group Betting",
+      "recommendation_count": 366,
+      "buy_count": 0,
+      "research_stake_aud": 0,
+      "expected_profit_aud": 0,
+      "stake_weighted_ev": 0.0,
+      "average_ev": 0.0,
+      "average_edge": 0.0,
+      "positive_ev_count": 0,
+      "outcome_status": "outcome_pending"
+    },
+    {
+      "board": "2026 World Cup Team Futures Multi",
+      "recommendation_count": 305,
+      "buy_count": 0,
+      "research_stake_aud": 0,
+      "expected_profit_aud": 0,
+      "stake_weighted_ev": 0.0,
+      "average_ev": 0.0,
+      "average_edge": 0.0,
+      "positive_ev_count": 0,
+      "outcome_status": "outcome_pending"
+    }
+  ],
+  "ev_bucket_rows": [
+    {
+      "bucket": "EV < 0",
+      "buy_count": 0,
+      "research_stake_aud": 0,
+      "expected_profit_aud": 0,
+      "stake_weighted_ev": 0.0,
+      "settled_count": 0,
+      "settled_roi": null,
+      "status": "empty_bucket"
+    },
+    {
+      "bucket": "0% <= EV < 5%",
+      "buy_count": 100,
+      "research_stake_aud": 1025.0,
+      "expected_profit_aud": 40.61,
+      "stake_weighted_ev": 0.0396,
+      "settled_count": 0,
+      "settled_roi": null,
+      "status": "tracking_ready_outcome_pending"
+    },
+    {
+      "bucket": "5% <= EV < 10%",
+      "buy_count": 135,
+      "research_stake_aud": 1610.0,
+      "expected_profit_aud": 118.37,
+      "stake_weighted_ev": 0.0735,
+      "settled_count": 0,
+      "settled_roi": null,
+      "status": "tracking_ready_outcome_pending"
+    },
+    {
+      "bucket": "EV >= 10%",
+      "buy_count": 192,
+      "research_stake_aud": 2575.0,
+      "expected_profit_aud": 512.33,
+      "stake_weighted_ev": 0.199,
+      "settled_count": 0,
+      "settled_roi": null,
+      "status": "tracking_ready_outcome_pending"
+    },
+    {
+      "bucket": "EV missing",
+      "buy_count": 0,
+      "research_stake_aud": 0,
+      "expected_profit_aud": 0,
+      "stake_weighted_ev": 0.0,
+      "settled_count": 0,
+      "settled_roi": null,
+      "status": "empty_bucket"
+    }
+  ],
+  "clv_readiness_rows": [
+    {
+      "metric": "入场赔率",
+      "status": "ready",
+      "coverage_count": 427,
+      "coverage_rate": 1.0,
+      "evidence": "recommendations.odds",
+      "next_action": "保持每次推荐都记录入场赔率。"
+    },
+    {
+      "metric": "收盘赔率",
+      "status": "clv_pending",
+      "coverage_count": 0,
+      "coverage_rate": 0.0,
+      "evidence": "closing odds source missing",
+      "next_action": "后续 raw refresh 增加开赛前/收盘赔率快照，才能计算 CLV%。"
+    },
+    {
+      "metric": "结算结果",
+      "status": "private_snapshot_pending",
+      "coverage_count": 0,
+      "coverage_rate": 0.0,
+      "evidence": "position_monitor snapshot_ready=false",
+      "next_action": "只读导入已下注持仓和结算结果后，按 settled stake 计算 ROI。"
+    },
+    {
+      "metric": "复盘样本",
+      "status": "sample_ready",
+      "coverage_count": 427,
+      "coverage_rate": 1.0,
+      "evidence": "历史 buy-like recommendations",
+      "next_action": "样本先按 EV bucket 和板块分布观察，不用短期输赢改模型。"
+    }
+  ],
+  "old_new_compare": {
+    "status": "compared",
+    "previous_generated_at": "2026-06-13T14:37:24.990391+10:00",
+    "buy_count_delta": 7,
+    "stake_delta_aud": 70.0,
+    "stake_weighted_ev_delta": 0.0,
+    "new_boards": [],
+    "removed_boards": [],
+    "ev_bucket_deltas": [
+      {
+        "bucket": "EV < 0",
+        "buy_count_delta": 0
+      },
+      {
+        "bucket": "0% <= EV < 5%",
+        "buy_count_delta": 1
+      },
+      {
+        "bucket": "5% <= EV < 10%",
+        "buy_count_delta": 3
+      },
+      {
+        "bucket": "EV >= 10%",
+        "buy_count_delta": 3
+      },
+      {
+        "bucket": "EV missing",
+        "buy_count_delta": 0
+      }
+    ]
+  },
+  "calibration_policy": {
+    "source_template": "football_betting_analysis_ABC_template.xlsx / 下注日志",
+    "roi_formula": "ROI = settled_profit / settled_stake；未结算时显示 outcome_pending。",
+    "clv_formula": "CLV% = entry_odds / closing_odds - 1；未抓到收盘赔率时显示 clv_pending。",
+    "expected_profit_formula": "expected_profit_aud = stake_aud × expected_value。",
+    "weighted_ev_formula": "stake_weighted_ev = Σ(stake × EV) / Σ(stake)。",
+    "interpretation": "当前阶段先用 EV/Edge/仓位和门禁状态做研究样本审计；真实 ROI/CLV 只在有私有结算和收盘赔率证据时计算。"
+  },
+  "evidence_layers": [
+    {
+      "layer": "FACT",
+      "text": "历史推荐来自 SQLite recommendations/report_runs。"
+    },
+    {
+      "layer": "FACT",
+      "text": "真实持仓和收益率只有在 position_monitor snapshot_ready=true 时可用。"
+    },
+    {
+      "layer": "INFERENCE",
+      "text": "预期收益、EV 分桶、样本覆盖和回测准备度由本地统计计算。"
+    },
+    {
+      "layer": "OBSERVATION",
+      "text": "当前缺少可公开展示的真实收盘赔率和结算结果，因此 ROI/CLV 不做确定性结论。"
+    }
+  ],
+  "truthfulness_note": "本报告不伪造赛果、收盘赔率、CLV 或 ROI；缺失时统一标记 outcome_pending / clv_pending。",
+  "safety_note": "该报告只用于自动化策略复盘和概率校准，不自动下注、不点击赔率、不添加 下注单。",
+  "artifacts": {
+    "json": "strategy_performance_latest.json",
+    "markdown": "strategy_performance_latest.md",
+    "pdf": "strategy_performance_latest.pdf",
+    "pdf_summary": {
+      "path": "strategy_performance_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 5,
+      "detail_row_count": 5,
+      "extra_table_count": 4,
+      "extra_detail_row_count": 33
+    }
+  },
+  "storage": {
+    "status": "stored",
+    "database": "tab_fifa_reports.sqlite3",
+    "table": "strategy_performance_snapshots",
+    "snapshot_id": "strategy-performance-2026-06-13T144503-207166-1000"
+  }
+}

@@ -1,0 +1,507 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T14:45:01.293704+10:00",
+  "snapshot_id": "automation-doctor-2026-06-13T144501-293704-1000",
+  "mode": "automation_doctor",
+  "purpose": "Automation Doctor Dashboard：进入每日自动化前的本地诊断、缺口修复计划和命令队列；只生成报告，不自动下注。",
+  "summary": {
+    "entry_decision": "暂不进入每日自动化",
+    "ready_to_enter_recurring_automation": false,
+    "automation_entry_status": "blocked",
+    "readiness_score": 0.25,
+    "required_gate_ready_count": 2,
+    "required_gate_count": 8,
+    "blocked_required_gate_count": 6,
+    "p0_blocker_count": 3,
+    "p1_blocker_count": 2,
+    "blocker_count": 5,
+    "p0_command_count": 3,
+    "p1_command_count": 3,
+    "command_count": 7,
+    "primary_blocker": "公开盘口 raw 不新鲜或不可用",
+    "next_best_action": "刷新公开盘口 raw",
+    "raw_refresh_ready": false,
+    "raw_refresh_status": "blocked",
+    "raw_refresh_blocker_codes": [
+      "refresh_command_failed",
+      "route_mismatch",
+      "stale_raw"
+    ],
+    "private_position_ready": false,
+    "private_position_status": "profile_login_required",
+    "private_position_report_date": "13062026",
+    "formal_report_publish_ready": false,
+    "recurring_automation_ready": false,
+    "trusted_report_date": "04062026",
+    "trusted_run_id": "20260604T135753Z-212e8e9a",
+    "missing_analysis_day_count": 5,
+    "missing_report_day_count": 8,
+    "backfill_queue_count": 8,
+    "automation_trend_direction": "deteriorating",
+    "repair_focus": "优先补齐日期：07/06/2026(5)、08/06/2026(5)、09/06/2026(5)；重点时段：00-05(8)、15-20(7)、20-24(7)。",
+    "repeated_missing_slot_count": 5,
+    "repeated_missing_date_count": 5,
+    "blocker_titles": [
+      "公开盘口 raw 不新鲜或不可用",
+      "私有持仓快照缺失",
+      "当前 attempted run 未过发布门禁",
+      "主动测试存在缺口",
+      "调度入口尚未进入 ready 状态"
+    ],
+    "command_titles": [
+      "刷新公开盘口 raw",
+      "建立私有持仓读取 profile",
+      "导入私有持仓快照",
+      "补齐主动测试缺口",
+      "重跑正式日报",
+      "复核 automation readiness"
+    ],
+    "decision_sentence": "暂不进入每日自动化：公开盘口 raw 不新鲜或不可用；下一步 刷新公开盘口 raw。",
+    "safety_boundary": "只生成研究报告、诊断和人工复核队列；不自动下注、不点击赔率、不添加投注单。"
+  },
+  "executive_status": {
+    "ready_to_enter_recurring_automation": false,
+    "formal_report_publish_ready": false,
+    "recurring_automation_ready": false,
+    "trusted_report_date": "04062026",
+    "trusted_run_id": "20260604T135753Z-212e8e9a",
+    "primary_blocker": "公开盘口 raw 不新鲜或不可用",
+    "recommended_sequence": [
+      "刷新公开盘口 raw",
+      "建立私有持仓读取 profile",
+      "导入私有持仓快照",
+      "补齐主动测试缺口"
+    ]
+  },
+  "gate_rows": [
+    {
+      "name": "可信最新报告",
+      "ready": true,
+      "status": "ready",
+      "evidence": "latest_commit.json 可用且公开安全",
+      "required_for_entry": true
+    },
+    {
+      "name": "公开盘口 freshness",
+      "ready": false,
+      "status": "blocked",
+      "evidence": "TAB 当前导航未列出该板块或深链路由到其他板块；先重新发现 Soccer live board list，若仍缺失则将该板块标记为 temporarily unavailable review queue，不用旧盘口生成建议。",
+      "required_for_entry": true
+    },
+    {
+      "name": "私有持仓快照",
+      "ready": false,
+      "status": "blocked",
+      "evidence": "建立或刷新 TAB 专用已登录 profile：`TAB_FIFA_HEADLESS=0 node scripts/capture_tab_my_bets_readonly.mjs --report-date 13062026 --wait-for-login-ms 600000`。",
+      "required_for_entry": true
+    },
+    {
+      "name": "当前日报发布门禁",
+      "ready": false,
+      "status": "blocked",
+      "evidence": "formal report publish gate",
+      "required_for_entry": true
+    },
+    {
+      "name": "主动测试节奏",
+      "ready": false,
+      "status": "blocked",
+      "evidence": "每日 4 次分析且 1 份日报",
+      "required_for_entry": true
+    },
+    {
+      "name": "公开产物安全",
+      "ready": true,
+      "status": "ready",
+      "evidence": "public-safety gate",
+      "required_for_entry": true
+    },
+    {
+      "name": "技术预检",
+      "ready": false,
+      "status": "blocked",
+      "evidence": "technical preflight publication_clear",
+      "required_for_entry": true
+    },
+    {
+      "name": "研究智能层",
+      "ready": true,
+      "status": "ready",
+      "evidence": "report intelligence latest bundle",
+      "required_for_entry": false
+    },
+    {
+      "name": "调度候选配置",
+      "ready": true,
+      "status": "ready",
+      "evidence": "review_required_not_installed",
+      "required_for_entry": false
+    },
+    {
+      "name": "用户调度授权",
+      "ready": false,
+      "status": "blocked",
+      "evidence": "未授权前保持手动报告生成",
+      "required_for_entry": true
+    }
+  ],
+  "blockers": [
+    {
+      "priority": "P0",
+      "title": "公开盘口 raw 不新鲜或不可用",
+      "impact": "先完成只读公开盘口刷新，再允许生成当日正式报告。"
+    },
+    {
+      "priority": "P0",
+      "title": "私有持仓快照缺失",
+      "impact": "完成本地只读私有持仓 capture/import，之后重跑日报。"
+    },
+    {
+      "priority": "P0",
+      "title": "当前 attempted run 未过发布门禁",
+      "impact": "修复 P0 阻塞后重跑日报，不推进 latest 成功指针。"
+    },
+    {
+      "priority": "P1",
+      "title": "主动测试存在缺口",
+      "impact": "优先补齐日期：07/06/2026(5)、08/06/2026(5)、09/06/2026(5)；重点时段：00-05(8)、15-20(7)、20-24(7)。 补跑不发布 latest。"
+    },
+    {
+      "priority": "P1",
+      "title": "调度入口尚未进入 ready 状态",
+      "impact": "在所有技术门禁通过后再等待用户授权 recurring automation。"
+    }
+  ],
+  "command_queue": [
+    {
+      "priority": "P0",
+      "title": "刷新公开盘口 raw",
+      "command": "TAB_FIFA_HEADLESS=0 python3 run_daily_report.py",
+      "expected_effect": "只读刷新公开盘口；若私有持仓仍缺失，日报会 fail-closed。",
+      "needs_user_presence": false,
+      "safety": "只读报告/诊断；不自动下注，不点击赔率，不提交投注单。"
+    },
+    {
+      "priority": "P0",
+      "title": "建立私有持仓读取 profile",
+      "command": "TAB_FIFA_HEADLESS=0 node scripts/capture_tab_my_bets_readonly.mjs --report-date 13062026 --wait-for-login-ms 600000",
+      "expected_effect": "打开本地只读 capture 窗口，用户完成 TAB 授权后保存私有 raw text；不保存密码、不下注。",
+      "needs_user_presence": true,
+      "safety": "只读报告/诊断；不自动下注，不点击赔率，不提交投注单。"
+    },
+    {
+      "priority": "P0",
+      "title": "导入私有持仓快照",
+      "command": "python3 import_my_bets_snapshot.py --source <private_raw_text_13062026.txt> --report-date 13062026",
+      "expected_effect": "把私有 raw text 转成 private snapshot，供 technical preflight 使用。",
+      "needs_user_presence": false,
+      "safety": "只读报告/诊断；不自动下注，不点击赔率，不提交投注单。"
+    },
+    {
+      "priority": "P1",
+      "title": "补齐主动测试缺口",
+      "command": "python3 scripts/app_backfill_worker.py --max-backfill-runs 3",
+      "expected_effect": "安全补跑缺失日报/分析并刷新 Downloads app；不会发布 latest。优先补齐日期：07/06/2026(5)、08/06/2026(5)、09/06/2026(5)；重点时段：00-05(8)、15-20(7)、20-24(7)。",
+      "needs_user_presence": false,
+      "safety": "只读报告/诊断；不自动下注，不点击赔率，不提交投注单。"
+    },
+    {
+      "priority": "P1",
+      "title": "重跑正式日报",
+      "command": "TAB_FIFA_REFRESH_RAW=reuse_fresh python3 run_daily_report.py",
+      "expected_effect": "在 raw 与私有持仓都就绪后生成正式中文 PDF、入库、对比旧报告并更新 latest。",
+      "needs_user_presence": false,
+      "safety": "只读报告/诊断；不自动下注，不点击赔率，不提交投注单。"
+    },
+    {
+      "priority": "P1",
+      "title": "复核 automation readiness",
+      "command": "scripts/run_tab_fifa_daily_automation.sh --verify-only",
+      "expected_effect": "跑 hermetic verifier 与 readiness sidecars，确认进入调度前的离线门禁。",
+      "needs_user_presence": false,
+      "safety": "只读报告/诊断；不自动下注，不点击赔率，不提交投注单。"
+    },
+    {
+      "priority": "P2",
+      "title": "刷新本地入口",
+      "command": "python3 scripts/build_downloads_app_entry.py",
+      "expected_effect": "复制最新公开资产到 Downloads app。",
+      "needs_user_presence": false,
+      "safety": "只读报告/诊断；不自动下注，不点击赔率，不提交投注单。"
+    }
+  ],
+  "automation_trend": {
+    "audit_count": 12,
+    "latest_complete_ratio": 0.1111111111111111,
+    "latest_gap_count": 13,
+    "raw_ready_audit_count": 0,
+    "trend_direction": "deteriorating",
+    "repeated_missing_slots": [
+      {
+        "slot": "00-05",
+        "missing_count": 8
+      },
+      {
+        "slot": "15-20",
+        "missing_count": 7
+      },
+      {
+        "slot": "20-24",
+        "missing_count": 7
+      },
+      {
+        "slot": "05-10",
+        "missing_count": 6
+      },
+      {
+        "slot": "10-15",
+        "missing_count": 6
+      }
+    ],
+    "repeated_missing_dates": [
+      {
+        "date": "07/06/2026",
+        "missing_slot_count": 5,
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失"
+      },
+      {
+        "date": "08/06/2026",
+        "missing_slot_count": 5,
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失"
+      },
+      {
+        "date": "09/06/2026",
+        "missing_slot_count": 5,
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失"
+      },
+      {
+        "date": "10/06/2026",
+        "missing_slot_count": 5,
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失"
+      },
+      {
+        "date": "11/06/2026",
+        "missing_slot_count": 5,
+        "effective_analysis_count": 0,
+        "formal_report_exists": false,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失"
+      }
+    ],
+    "backfill_queue_preview": [
+      {
+        "rank": 1,
+        "date": "07/06/2026",
+        "score": 160,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失",
+        "priority_reason": "缺失时段 5/5；有效分析 0/4；日报缺失；latest=missing"
+      },
+      {
+        "rank": 2,
+        "date": "08/06/2026",
+        "score": 160,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失",
+        "priority_reason": "缺失时段 5/5；有效分析 0/4；日报缺失；latest=missing"
+      },
+      {
+        "rank": 3,
+        "date": "09/06/2026",
+        "score": 160,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失",
+        "priority_reason": "缺失时段 5/5；有效分析 0/4；日报缺失；latest=missing"
+      },
+      {
+        "rank": 4,
+        "date": "10/06/2026",
+        "score": 160,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失",
+        "priority_reason": "缺失时段 5/5；有效分析 0/4；日报缺失；latest=missing"
+      },
+      {
+        "rank": 5,
+        "date": "11/06/2026",
+        "score": 160,
+        "reason": "有效分析 0/4；Downloads 正式日报缺失",
+        "priority_reason": "缺失时段 5/5；有效分析 0/4；日报缺失；latest=missing"
+      }
+    ],
+    "repair_focus": "优先补齐日期：07/06/2026(5)、08/06/2026(5)、09/06/2026(5)；重点时段：00-05(8)、15-20(7)、20-24(7)。"
+  },
+  "doctor_dashboard": {
+    "title": "Automation Doctor Dashboard",
+    "entry_decision": "暂不进入每日自动化",
+    "readiness_score": 0.25,
+    "required_gate_ready_count": 2,
+    "required_gate_count": 8,
+    "p0_blocker_count": 3,
+    "p1_blocker_count": 2,
+    "p0_command_count": 3,
+    "backfill_queue_count": 8,
+    "raw_status": "blocked",
+    "private_position_status": "profile_login_required",
+    "repair_focus": "优先补齐日期：07/06/2026(5)、08/06/2026(5)、09/06/2026(5)；重点时段：00-05(8)、15-20(7)、20-24(7)。",
+    "next_best_action": "刷新公开盘口 raw",
+    "reading_path": [
+      "先看 entry_decision 和 p0_blocker_count。",
+      "再看 next_best_action 执行哪个只读修复动作。",
+      "最后看 repeated missing slots/dates 判断 4 小时节奏缺口。"
+    ]
+  },
+  "timeline_summary": {
+    "day_count": 9,
+    "complete_day_count": 1,
+    "missing_analysis_day_count": 5,
+    "missing_report_day_count": 8,
+    "backfill_queue_count": 8
+  },
+  "raw_refresh": {
+    "ready": false,
+    "status": "blocked",
+    "ready_required": "0/5",
+    "blocker_codes": [
+      "refresh_command_failed",
+      "route_mismatch",
+      "stale_raw"
+    ],
+    "recommended_next_action": "TAB 当前导航未列出该板块或深链路由到其他板块；先重新发现 Soccer live board list，若仍缺失则将该板块标记为 temporarily unavailable review queue，不用旧盘口生成建议。"
+  },
+  "private_position_bootstrap": {
+    "ready": false,
+    "report_date": "13062026",
+    "status": "profile_login_required",
+    "profile_exists": true,
+    "snapshot_exists": false,
+    "raw_text_exists": false,
+    "diagnostics_exists": true
+  },
+  "source_artifacts": {
+    "automation_readiness": "automation_readiness_latest.json",
+    "report_intelligence": "report_intelligence_latest.json",
+    "active_timeline": "active_timeline_latest.json",
+    "latest_commit": "latest_commit.json",
+    "raw_refresh_health": "raw_refresh_health_latest.json",
+    "position_monitor": "position_monitor_latest.json"
+  },
+  "old_new_compare": {
+    "status": "compared_with_previous_artifact",
+    "previous_generated_at": "2026-06-13T14:36:16.169375+10:00",
+    "metric_count": 11,
+    "changed_count": 0,
+    "rows": [
+      {
+        "metric": "ready_to_enter_recurring_automation",
+        "path": "executive_status.ready_to_enter_recurring_automation",
+        "current": "false",
+        "previous": "false",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "formal_report_publish_ready",
+        "path": "executive_status.formal_report_publish_ready",
+        "current": "false",
+        "previous": "false",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "recurring_automation_ready",
+        "path": "executive_status.recurring_automation_ready",
+        "current": "false",
+        "previous": "false",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "primary_blocker",
+        "path": "executive_status.primary_blocker",
+        "current": "公开盘口 raw 不新鲜或不可用",
+        "previous": "公开盘口 raw 不新鲜或不可用",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "readiness_score",
+        "path": "doctor_dashboard.readiness_score",
+        "current": "0.25",
+        "previous": "0.25",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "required_gate_ready_count",
+        "path": "doctor_dashboard.required_gate_ready_count",
+        "current": "2",
+        "previous": "2",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "p0_blocker_count",
+        "path": "doctor_dashboard.p0_blocker_count",
+        "current": "3",
+        "previous": "3",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "p1_blocker_count",
+        "path": "doctor_dashboard.p1_blocker_count",
+        "current": "2",
+        "previous": "2",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "backfill_queue_count",
+        "path": "doctor_dashboard.backfill_queue_count",
+        "current": "8",
+        "previous": "8",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "raw_status",
+        "path": "doctor_dashboard.raw_status",
+        "current": "blocked",
+        "previous": "blocked",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "private_position_status",
+        "path": "doctor_dashboard.private_position_status",
+        "current": "profile_login_required",
+        "previous": "profile_login_required",
+        "delta": "0",
+        "changed": false
+      }
+    ],
+    "summary": "0/11 个关键指标发生变化。"
+  },
+  "artifacts": {
+    "json": "automation_doctor_latest.json",
+    "markdown": "automation_doctor_latest.md",
+    "pdf": "automation_doctor_latest.pdf",
+    "pdf_summary": {
+      "path": "automation_doctor_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 7,
+      "detail_row_count": 10,
+      "extra_table_count": 6,
+      "extra_detail_row_count": 39
+    }
+  },
+  "storage": {
+    "status": "stored",
+    "database": "tab_fifa_reports.sqlite3",
+    "table": "automation_doctor_snapshots"
+  }
+}

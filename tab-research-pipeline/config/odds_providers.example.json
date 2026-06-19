@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "purpose": "TAB FIFA authorized odds-provider raw refresh configuration example. Do not commit real API keys.",
+  "secret_policy": {
+    "github": "Commit only examples and loaders. Never commit real API keys.",
+    "local_file": "Use config/odds_providers.local.env, which is ignored by git.",
+    "current_default_scope": "matches",
+    "region_markets": "ignored by default"
+  },
+  "providers": {
+    "the_odds_api": {
+      "enabled": true,
+      "api_key_env": "THE_ODDS_API_KEY",
+      "scope_env": "TAB_FIFA_PROVIDER_SCOPE",
+      "default_scope": "matches",
+      "sports_env": "TAB_FIFA_THE_ODDS_API_SPORTS",
+      "sports_discovery_env": "TAB_FIFA_THE_ODDS_API_SPORT_DISCOVERY",
+      "default_sports": [
+        "soccer_fifa_world_cup"
+      ],
+      "default_futures_sports": [
+        "soccer_fifa_world_cup_winner"
+      ],
+      "markets_env": "TAB_FIFA_THE_ODDS_API_MATCH_MARKETS",
+      "legacy_markets_env": "TAB_FIFA_THE_ODDS_API_MARKETS",
+      "extra_markets_env": "TAB_FIFA_THE_ODDS_API_EXTRA_MATCH_MARKETS",
+      "default_match_markets": [
+        "h2h",
+        "totals",
+        "spreads"
+      ],
+      "optional_extra_match_markets": [
+        "team_totals",
+        "alternate_team_totals"
+      ],
+      "event_market_probe": {
+        "probe_limit_env": "TAB_FIFA_THE_ODDS_API_EVENT_MARKET_PROBE_LIMIT",
+        "default_probe_limit": 0,
+        "event_odds_limit_env": "TAB_FIFA_THE_ODDS_API_EVENT_ODDS_LIMIT",
+        "default_event_odds_limit": 3,
+        "event_odds_markets_env": "TAB_FIFA_THE_ODDS_API_EVENT_ODDS_MARKETS",
+        "default_event_odds_markets": [
+          "totals",
+          "alternate_totals",
+          "team_totals",
+          "alternate_team_totals"
+        ],
+        "credit_policy": "Probe a small candidate sample first. Do not scan all 68 matches by default."
+      },
+      "default_futures_markets": [
+        "outrights"
+      ],
+      "fixed_request_policy": {
+        "regions": "au",
+        "bookmakers": "tab",
+        "oddsFormat": "decimal"
+      }
+    },
+    "opticodds": {
+      "enabled": true,
+      "api_key_env": "OPTICODDS_API_KEY",
+      "endpoint_env": "TAB_FIFA_OPTICODDS_ENDPOINT",
+      "query_env": "TAB_FIFA_OPTICODDS_QUERY",
+      "default_endpoint": "/fixtures/odds",
+      "default_query": "sport=soccer&sportsbook=TAB",
+      "notes": [
+        "Use OpticOdds dashboard/docs to set the exact World Cup league, fixture, futures, sportsbook and market filters for your account.",
+        "The adapter accepts structured JSON and keeps unmatched markets in provider staging until coverage is validated."
+      ]
+    }
+  },
+  "manual_tab_final_verification": {
+    "required_for_formal_publish": true,
+    "example_file": "provider_tab_final_verification_latest.json",
+    "example": {
+      "schema_version": 1,
+      "refresh_id": "20260613T000000Z-provider-example",
+      "approvals": [
+        {
+          "board_id": "world_cup_matches",
+          "sha256": "raw-staged-file-sha256",
+          "approved_by_user": true,
+          "tab_checked_at": "2026-06-13T00:05:00Z",
+          "notes": "TAB page spot-check matched provider odds for recommended candidates."
+        }
+      ]
+    }
+  }
+}

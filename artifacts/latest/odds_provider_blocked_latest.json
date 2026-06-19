@@ -1,0 +1,17 @@
+{
+  "ok": false,
+  "mode": "provider_raw_blocked",
+  "provider": "the_odds_api",
+  "refresh_id": "20260613T170402Z-provider-05f31513",
+  "scope": "matches",
+  "target_board_ids": [
+    "world_cup_matches"
+  ],
+  "error": "the_odds_api sports discovery failed: URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)>",
+  "blocker_code": "provider_refresh_failed",
+  "last_good_coverage_preserved": true,
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "current_executable_new_stake_aud": 0,
+  "next_safe_action": "保留 last-good provider coverage；检查 provider endpoint/query、账户权限、rate limit 与返回 schema 后再重试。"
+}

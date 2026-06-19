@@ -1,0 +1,455 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14T05:52:49.722197+10:00",
+  "source_refresh_id": "20260613T194716Z-provider-2fec0bef",
+  "event_probe_evidence": {
+    "market_probe_count": 14,
+    "event_odds_count": 14,
+    "probed_event_ids": [
+      "05752bb341e197001387b64f3a06b9b2",
+      "26634922d3f78c146440816023e40de8",
+      "32ec06abda2398ac41501c86eb9aa376",
+      "4d4f2b9b78182b557d4fbf8dcf4f4af2",
+      "564084f52cc9f1abcc18187c168a7cdc",
+      "5ae41a06735c926eeb7f74006933adce",
+      "64b91c5f2db61c7358a4f05459e83c52",
+      "73a4fcd14cc9766b9b9bfd50b8ca153a",
+      "b55f9569de3f4d731bc5537ff5ff43e4",
+      "c54f00b11925751d2b62988775c6c239",
+      "d79edbd6aaeb578d33e313446b18d333",
+      "ec51b9c44ad5e34552f3ab53f7262813",
+      "f6c8748a16516e0998f95de14235432a",
+      "fbfb95c62003fd6d828b309f96ee1f9b"
+    ],
+    "event_odds_event_ids": [
+      "05752bb341e197001387b64f3a06b9b2",
+      "26634922d3f78c146440816023e40de8",
+      "32ec06abda2398ac41501c86eb9aa376",
+      "4d4f2b9b78182b557d4fbf8dcf4f4af2",
+      "564084f52cc9f1abcc18187c168a7cdc",
+      "5ae41a06735c926eeb7f74006933adce",
+      "64b91c5f2db61c7358a4f05459e83c52",
+      "73a4fcd14cc9766b9b9bfd50b8ca153a",
+      "b55f9569de3f4d731bc5537ff5ff43e4",
+      "c54f00b11925751d2b62988775c6c239",
+      "d79edbd6aaeb578d33e313446b18d333",
+      "ec51b9c44ad5e34552f3ab53f7262813",
+      "f6c8748a16516e0998f95de14235432a",
+      "fbfb95c62003fd6d828b309f96ee1f9b"
+    ],
+    "team_total_available_probe_count": 0,
+    "total_available_probe_count": 14,
+    "canonical_available_market_counts": {
+      "spreads": 14,
+      "totals": 14,
+      "btts": 14,
+      "double_chance": 11,
+      "draw_no_bet": 12,
+      "h2h": 14
+    },
+    "market_probes": [
+      {
+        "event_id": "26634922d3f78c146440816023e40de8",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "f6c8748a16516e0998f95de14235432a",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "5ae41a06735c926eeb7f74006933adce",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "564084f52cc9f1abcc18187c168a7cdc",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "d79edbd6aaeb578d33e313446b18d333",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_totals",
+          "btts",
+          "h2h",
+          "h2h_3_way",
+          "spreads"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "32ec06abda2398ac41501c86eb9aa376",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "05752bb341e197001387b64f3a06b9b2",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "b55f9569de3f4d731bc5537ff5ff43e4",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "c54f00b11925751d2b62988775c6c239",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_totals",
+          "btts",
+          "h2h",
+          "h2h_3_way",
+          "spreads"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "fbfb95c62003fd6d828b309f96ee1f9b",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "64b91c5f2db61c7358a4f05459e83c52",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "ec51b9c44ad5e34552f3ab53f7262813",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "73a4fcd14cc9766b9b9bfd50b8ca153a",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      },
+      {
+        "event_id": "4d4f2b9b78182b557d4fbf8dcf4f4af2",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "available_markets": [
+          "alternate_spreads",
+          "alternate_totals",
+          "btts",
+          "double_chance",
+          "draw_no_bet",
+          "h2h",
+          "h2h_3_way"
+        ],
+        "has_total_ou": true,
+        "has_team_total_ou": false,
+        "error": ""
+      }
+    ],
+    "event_odds_fetches": [
+      {
+        "event_id": "26634922d3f78c146440816023e40de8",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "alternate_spreads",
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "f6c8748a16516e0998f95de14235432a",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "alternate_spreads",
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "5ae41a06735c926eeb7f74006933adce",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "alternate_spreads",
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "564084f52cc9f1abcc18187c168a7cdc",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "d79edbd6aaeb578d33e313446b18d333",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "32ec06abda2398ac41501c86eb9aa376",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "05752bb341e197001387b64f3a06b9b2",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "b55f9569de3f4d731bc5537ff5ff43e4",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "c54f00b11925751d2b62988775c6c239",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "fbfb95c62003fd6d828b309f96ee1f9b",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "64b91c5f2db61c7358a4f05459e83c52",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "ec51b9c44ad5e34552f3ab53f7262813",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "73a4fcd14cc9766b9b9bfd50b8ca153a",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      },
+      {
+        "event_id": "4d4f2b9b78182b557d4fbf8dcf4f4af2",
+        "sport_key": "soccer_fifa_world_cup",
+        "ok": true,
+        "requested_markets": [
+          "btts",
+          "double_chance",
+          "draw_no_bet"
+        ],
+        "returned_event_count": 1,
+        "error": ""
+      }
+    ]
+  },
+  "truthfulness_note": "累计 event-level provider evidence；用于防止主盘口 refresh 抹掉 Team Total 低收益证据。"
+}

@@ -1,0 +1,912 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-06T02:35:36.194300+00:00",
+  "database": "tab_fifa_reports.sqlite3",
+  "output_dir": "outputs",
+  "run_count": 20,
+  "committed_latest_run_id": "20260604T135753Z-212e8e9a",
+  "latest_success_run_id": "20260604T135753Z-212e8e9a",
+  "latest_report_date": "04062026",
+  "latest_commit": {
+    "run_id": "20260604T135753Z-212e8e9a",
+    "report_date": "04062026",
+    "status": "ready_for_manual_report",
+    "technical_automation_ready": true,
+    "public_artifact_safety_ready": true,
+    "ready_required_boards": "5/5"
+  },
+  "runs": [
+    {
+      "run_id": "20260605T232012Z-bad22171",
+      "status": "blocked_by_gate",
+      "report_date": "06062026",
+      "started_at": "2026-06-05T23:20:12.731233+00:00",
+      "finished_at": "2026-06-05T23:21:10.110980+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 14,
+        "missing_data": 2,
+        "manual_review": 14
+      }
+    },
+    {
+      "run_id": "20260605T225259Z-be7638ce",
+      "status": "blocked_by_gate",
+      "report_date": "06062026",
+      "started_at": "2026-06-05T22:52:59.374003+00:00",
+      "finished_at": "2026-06-05T23:11:05.193282+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 14,
+        "missing_data": 2,
+        "manual_review": 14
+      }
+    },
+    {
+      "run_id": "20260605T220116Z-ac437e5b",
+      "status": "blocked_by_gate",
+      "report_date": "06062026",
+      "started_at": "2026-06-05T22:01:16.936003+00:00",
+      "finished_at": "2026-06-05T22:13:43.431241+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260605T213802Z-18810b47",
+      "status": "blocked_by_gate",
+      "report_date": "06062026",
+      "started_at": "2026-06-05T21:38:02.940831+00:00",
+      "finished_at": "2026-06-05T21:56:31.028692+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260605T195704Z-d370cd95",
+      "status": "blocked_by_gate",
+      "report_date": "06062026",
+      "started_at": "2026-06-05T19:57:04.997435+00:00",
+      "finished_at": "2026-06-05T19:58:21.376843+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260605T111049Z-428e2593",
+      "status": "blocked_by_gate",
+      "report_date": "05062026",
+      "started_at": "2026-06-05T11:10:49.910656+00:00",
+      "finished_at": "2026-06-05T11:12:53.188459+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260605T084257Z-6cd72c59",
+      "status": "blocked_by_gate",
+      "report_date": "05062026",
+      "started_at": "2026-06-05T08:42:57.884486+00:00",
+      "finished_at": "2026-06-05T08:53:50.093527+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260605T082615Z-d31a7543",
+      "status": "blocked_by_gate",
+      "report_date": "05062026",
+      "started_at": "2026-06-05T08:26:15.193962+00:00",
+      "finished_at": "2026-06-05T08:41:01.698102+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260605T064819Z-e3602800",
+      "status": "blocked_by_gate",
+      "report_date": "05062026",
+      "started_at": "2026-06-05T06:48:19.971698+00:00",
+      "finished_at": "2026-06-05T07:25:37.440404+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260605T055626Z-ba247362",
+      "status": "blocked_by_gate",
+      "report_date": "05062026",
+      "started_at": "2026-06-05T05:56:26.705135+00:00",
+      "finished_at": "2026-06-05T06:26:29.859283+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260605T053308Z-e1c56980",
+      "status": "blocked_by_gate",
+      "report_date": "05062026",
+      "started_at": "2026-06-05T05:33:08.686400+00:00",
+      "finished_at": "2026-06-05T05:39:10.010541+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260605T045508Z-1e503a13",
+      "status": "failed",
+      "report_date": "05062026",
+      "started_at": "2026-06-05T04:55:08.633918+00:00",
+      "finished_at": "2026-06-05T04:58:09.158048+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260604T213057Z-db1e3650",
+      "status": "failed",
+      "report_date": "04062026",
+      "started_at": "2026-06-04T21:30:57.670418+00:00",
+      "finished_at": "2026-06-04T21:53:49.207214+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260604T141232Z-d2eff3e0",
+      "status": "blocked_by_gate",
+      "report_date": "05062026",
+      "started_at": "2026-06-04T14:12:32.631229+00:00",
+      "finished_at": "2026-06-04T14:12:59.921225+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": false,
+      "safety_ready": false,
+      "portfolio_ready": false,
+      "time_adjusted_new_exposure_aud": 0.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "",
+        "dashboard": "",
+        "dashboard_data": "",
+        "manifest": ""
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 4,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260604T141023Z-817e2977",
+      "status": "ready_for_manual_report",
+      "report_date": "05062026",
+      "started_at": "2026-06-04T14:10:23.809248+00:00",
+      "finished_at": "2026-06-04T14:10:49.154952+00:00",
+      "technical_ready": false,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": true,
+      "safety_ready": true,
+      "portfolio_ready": true,
+      "time_adjusted_new_exposure_aud": 100.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "05062026_20260604T141023Z-817e2977.pdf",
+        "dashboard": "tab_fifa_dashboard_20260604T141023Z-817e2977.html",
+        "dashboard_data": "tab_fifa_dashboard_data_20260604T141023Z-817e2977.json",
+        "manifest": "daily_report_manifest_20260604T141023Z-817e2977.json"
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 14,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260604T135753Z-212e8e9a",
+      "status": "ready_for_manual_report",
+      "report_date": "04062026",
+      "started_at": "2026-06-04T13:57:53.641069+00:00",
+      "finished_at": "2026-06-04T13:58:16.691681+00:00",
+      "technical_ready": true,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": true,
+      "safety_ready": true,
+      "portfolio_ready": true,
+      "time_adjusted_new_exposure_aud": 100.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "04062026_20260604T135753Z-212e8e9a.pdf",
+        "dashboard": "tab_fifa_dashboard_20260604T135753Z-212e8e9a.html",
+        "dashboard_data": "tab_fifa_dashboard_data_20260604T135753Z-212e8e9a.json",
+        "manifest": "daily_report_manifest_20260604T135753Z-212e8e9a.json"
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 14,
+        "missing_data": 0,
+        "manual_review": 12
+      }
+    },
+    {
+      "run_id": "20260604T135315Z-871b092c",
+      "status": "ready_for_manual_report",
+      "report_date": "04062026",
+      "started_at": "2026-06-04T13:53:15.047331+00:00",
+      "finished_at": "2026-06-04T13:53:39.151877+00:00",
+      "technical_ready": true,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": true,
+      "safety_ready": true,
+      "portfolio_ready": true,
+      "time_adjusted_new_exposure_aud": 100.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "04062026_20260604T135315Z-871b092c.pdf",
+        "dashboard": "tab_fifa_dashboard_20260604T135315Z-871b092c.html",
+        "dashboard_data": "tab_fifa_dashboard_data_20260604T135315Z-871b092c.json",
+        "manifest": "daily_report_manifest_20260604T135315Z-871b092c.json"
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 14,
+        "missing_data": 0,
+        "manual_review": 12
+      }
+    },
+    {
+      "run_id": "20260604T134623Z-8f44df8b",
+      "status": "ready_for_manual_report",
+      "report_date": "04062026",
+      "started_at": "2026-06-04T13:46:23.107825+00:00",
+      "finished_at": "2026-06-04T13:46:55.884915+00:00",
+      "technical_ready": true,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": true,
+      "safety_ready": true,
+      "portfolio_ready": true,
+      "time_adjusted_new_exposure_aud": 100.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "04062026_20260604T134623Z-8f44df8b.pdf",
+        "dashboard": "tab_fifa_dashboard_20260604T134623Z-8f44df8b.html",
+        "dashboard_data": "tab_fifa_dashboard_data_20260604T134623Z-8f44df8b.json",
+        "manifest": "daily_report_manifest_20260604T134623Z-8f44df8b.json"
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 20,
+        "audits": 14,
+        "missing_data": 1,
+        "manual_review": 13
+      }
+    },
+    {
+      "run_id": "20260604T133257Z-8fc567ae",
+      "status": "ready_for_manual_report",
+      "report_date": "04062026",
+      "started_at": "2026-06-04T13:32:57.331473+00:00",
+      "finished_at": "2026-06-04T13:33:31.266696+00:00",
+      "technical_ready": true,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": true,
+      "safety_ready": true,
+      "portfolio_ready": true,
+      "time_adjusted_new_exposure_aud": 100.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "04062026_20260604T133257Z-8fc567ae.pdf",
+        "dashboard": "tab_fifa_dashboard_20260604T133257Z-8fc567ae.html",
+        "dashboard_data": "tab_fifa_dashboard_data_20260604T133257Z-8fc567ae.json",
+        "manifest": "daily_report_manifest_20260604T133257Z-8fc567ae.json"
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 0,
+        "audits": 0,
+        "missing_data": 0,
+        "manual_review": 0
+      }
+    },
+    {
+      "run_id": "20260604T132624Z-2a4e122e",
+      "status": "ready_for_manual_report",
+      "report_date": "04062026",
+      "started_at": "2026-06-04T13:26:24.230473+00:00",
+      "finished_at": "2026-06-04T13:27:07.103903+00:00",
+      "technical_ready": true,
+      "automation_entry_ready": false,
+      "raw_refresh_ready": true,
+      "safety_ready": true,
+      "portfolio_ready": true,
+      "time_adjusted_new_exposure_aud": 100.0,
+      "compare_summary": {
+        "added_count": 0,
+        "removed_count": 0,
+        "changed_count": 0,
+        "retained_count": 38,
+        "exposure_change_aud": 0.0
+      },
+      "artifact_refs": {
+        "pdf_report": "04062026_20260604T132624Z-2a4e122e.pdf",
+        "dashboard": "tab_fifa_dashboard_20260604T132624Z-2a4e122e.html",
+        "dashboard_data": "tab_fifa_dashboard_data_20260604T132624Z-2a4e122e.json",
+        "manifest": "daily_report_manifest_20260604T132624Z-2a4e122e.json"
+      },
+      "counts": {
+        "recommendations": 38,
+        "visual_charts": 10,
+        "model_comparisons": 26,
+        "sources": 0,
+        "audits": 0,
+        "missing_data": 0,
+        "manual_review": 0
+      }
+    }
+  ],
+  "automation_run_count": 9,
+  "automation_runs": [
+    {
+      "automation_run_id": "tab_fifa_daily_20260606T023417Z-50205",
+      "mode": "verify-only",
+      "verify_mode": "hermetic",
+      "status": "verified",
+      "exit_code": 0,
+      "started_at": "2026-06-06T02:34:17Z",
+      "finished_at": "2026-06-06T02:34:24Z",
+      "report_run_id": "20260604T135753Z-212e8e9a",
+      "latest_commit_run_id": "20260604T135753Z-212e8e9a",
+      "formal_report_publish_ready": false,
+      "recurring_automation_ready": false,
+      "raw_refresh_ready": true,
+      "my_bets_capture_enabled": false,
+      "my_bets_report_date": "",
+      "my_bets_capture_exit_code": 0,
+      "my_bets_import_exit_code": 0,
+      "my_bets_raw_text_seen": false,
+      "capture_log": "",
+      "import_log": ""
+    },
+    {
+      "automation_run_id": "tab_fifa_daily_20260606T022109Z-26855",
+      "mode": "verify-only",
+      "verify_mode": "hermetic",
+      "status": "verified",
+      "exit_code": 0,
+      "started_at": "2026-06-06T02:21:10Z",
+      "finished_at": "2026-06-06T02:21:35Z",
+      "report_run_id": "20260604T135753Z-212e8e9a",
+      "latest_commit_run_id": "20260604T135753Z-212e8e9a",
+      "formal_report_publish_ready": false,
+      "recurring_automation_ready": false,
+      "raw_refresh_ready": true,
+      "my_bets_capture_enabled": false,
+      "my_bets_report_date": "",
+      "my_bets_capture_exit_code": 0,
+      "my_bets_import_exit_code": 0,
+      "my_bets_raw_text_seen": false,
+      "capture_log": "",
+      "import_log": ""
+    },
+    {
+      "automation_run_id": "tab_fifa_daily_20260606T013504Z-41760",
+      "mode": "verify-only",
+      "verify_mode": "hermetic",
+      "status": "verified",
+      "exit_code": 0,
+      "started_at": "2026-06-06T01:35:04Z",
+      "finished_at": "2026-06-06T01:35:16Z",
+      "report_run_id": "20260604T135753Z-212e8e9a",
+      "latest_commit_run_id": "20260604T135753Z-212e8e9a",
+      "formal_report_publish_ready": false,
+      "recurring_automation_ready": false,
+      "raw_refresh_ready": true,
+      "my_bets_capture_enabled": false,
+      "my_bets_report_date": "",
+      "my_bets_capture_exit_code": 0,
+      "my_bets_import_exit_code": 0,
+      "my_bets_raw_text_seen": false,
+      "capture_log": "",
+      "import_log": ""
+    },
+    {
+      "automation_run_id": "tab_fifa_daily_20260606T013314Z-38471",
+      "mode": "verify-only",
+      "verify_mode": "hermetic",
+      "status": "verified",
+      "exit_code": 0,
+      "started_at": "2026-06-06T01:33:15Z",
+      "finished_at": "2026-06-06T01:33:29Z",
+      "report_run_id": "20260604T135753Z-212e8e9a",
+      "latest_commit_run_id": "20260604T135753Z-212e8e9a",
+      "formal_report_publish_ready": false,
+      "recurring_automation_ready": false,
+      "raw_refresh_ready": true,
+      "my_bets_capture_enabled": false,
+      "my_bets_report_date": "",
+      "my_bets_capture_exit_code": 0,
+      "my_bets_import_exit_code": 0,
+      "my_bets_raw_text_seen": false,
+      "capture_log": "",
+      "import_log": ""
+    },
+    {
+      "automation_run_id": "tab_fifa_daily_20260606T012700Z-33044",
+      "mode": "verify-only",
+      "verify_mode": "hermetic",
+      "status": "verified",
+      "exit_code": 0,
+      "started_at": "2026-06-06T01:27:00Z",
+      "finished_at": "2026-06-06T01:27:21Z",
+      "report_run_id": "20260604T135753Z-212e8e9a",
+      "latest_commit_run_id": "20260604T135753Z-212e8e9a",
+      "formal_report_publish_ready": false,
+      "recurring_automation_ready": false,
+      "raw_refresh_ready": true,
+      "my_bets_capture_enabled": false,
+      "my_bets_report_date": "",
+      "my_bets_capture_exit_code": 0,
+      "my_bets_import_exit_code": 0,
+      "my_bets_raw_text_seen": false,
+      "capture_log": "",
+      "import_log": ""
+    },
+    {
+      "automation_run_id": "tab_fifa_daily_20260606T012303Z-28376",
+      "mode": "verify-only",
+      "verify_mode": "hermetic",
+      "status": "failed",
+      "exit_code": 1,
+      "started_at": "2026-06-06T01:23:03Z",
+      "finished_at": "2026-06-06T01:23:27Z",
+      "report_run_id": "20260604T135753Z-212e8e9a",
+      "latest_commit_run_id": "20260604T135753Z-212e8e9a",
+      "formal_report_publish_ready": false,
+      "recurring_automation_ready": false,
+      "raw_refresh_ready": true,
+      "my_bets_capture_enabled": false,
+      "my_bets_report_date": "",
+      "my_bets_capture_exit_code": 0,
+      "my_bets_import_exit_code": 0,
+      "my_bets_raw_text_seen": false,
+      "capture_log": "",
+      "import_log": ""
+    },
+    {
+      "automation_run_id": "tab_fifa_daily_20260606T010345Z-8196",
+      "mode": "verify-only",
+      "verify_mode": "",
+      "status": "verified",
+      "exit_code": 0,
+      "started_at": "2026-06-06T01:03:45Z",
+      "finished_at": "2026-06-06T01:04:18Z",
+      "report_run_id": "20260604T135753Z-212e8e9a",
+      "latest_commit_run_id": "20260604T135753Z-212e8e9a",
+      "formal_report_publish_ready": false,
+      "recurring_automation_ready": false,
+      "raw_refresh_ready": true,
+      "my_bets_capture_enabled": false,
+      "my_bets_report_date": "",
+      "my_bets_capture_exit_code": 0,
+      "my_bets_import_exit_code": 0,
+      "my_bets_raw_text_seen": false,
+      "capture_log": "",
+      "import_log": ""
+    },
+    {
+      "automation_run_id": "tab_fifa_daily_20260606T005300Z-95768",
+      "mode": "verify-only",
+      "verify_mode": "",
+      "status": "failed",
+      "exit_code": 1,
+      "started_at": "2026-06-06T00:53:00Z",
+      "finished_at": "2026-06-06T00:53:14Z",
+      "report_run_id": "20260604T135753Z-212e8e9a",
+      "latest_commit_run_id": "20260604T135753Z-212e8e9a",
+      "formal_report_publish_ready": false,
+      "recurring_automation_ready": false,
+      "raw_refresh_ready": true,
+      "my_bets_capture_enabled": false,
+      "my_bets_report_date": "",
+      "my_bets_capture_exit_code": 0,
+      "my_bets_import_exit_code": 0,
+      "my_bets_raw_text_seen": false,
+      "capture_log": "",
+      "import_log": ""
+    },
+    {
+      "automation_run_id": "tab_fifa_daily_20260606T003809Z-77622",
+      "mode": "verify-only",
+      "verify_mode": "",
+      "status": "verified",
+      "exit_code": 0,
+      "started_at": "2026-06-06T00:38:09Z",
+      "finished_at": "2026-06-06T00:38:37Z",
+      "report_run_id": "20260604T135753Z-212e8e9a",
+      "latest_commit_run_id": "20260604T135753Z-212e8e9a",
+      "formal_report_publish_ready": false,
+      "recurring_automation_ready": false,
+      "raw_refresh_ready": true,
+      "my_bets_capture_enabled": false,
+      "my_bets_report_date": "",
+      "my_bets_capture_exit_code": 0,
+      "my_bets_import_exit_code": 0,
+      "my_bets_raw_text_seen": false,
+      "capture_log": "",
+      "import_log": ""
+    }
+  ]
+}

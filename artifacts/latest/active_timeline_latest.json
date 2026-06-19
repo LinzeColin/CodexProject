@@ -1,0 +1,572 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T15:17:52.215682+10:00",
+  "timezone": "Australia/Sydney",
+  "cadence_rule": {
+    "min_analyses_per_day": 4,
+    "target_slots": [
+      "00:00-05:00",
+      "05:00-10:00",
+      "10:00-15:00",
+      "15:00-20:00",
+      "20:00-24:00"
+    ],
+    "report_per_day": 1,
+    "safe_backfill_mode": "no_latest_publish_reconstruction"
+  },
+  "summary": {
+    "day_count": 9,
+    "complete_day_count": 1,
+    "missing_analysis_day_count": 5,
+    "missing_report_day_count": 8,
+    "backfill_queue_count": 8,
+    "formal_report_ready_for_all_days": false,
+    "cadence_ready_for_all_days": false
+  },
+  "days": [
+    {
+      "report_date": "05062026",
+      "display_date": "05/06/2026",
+      "run_count": 9,
+      "effective_analysis_count": 8,
+      "failed_count": 1,
+      "covered_slots": [
+        "00:00-05:00",
+        "15:00-20:00",
+        "20:00-24:00"
+      ],
+      "missing_slots": [
+        "05:00-10:00",
+        "10:00-15:00"
+      ],
+      "formal_report_exists": true,
+      "run_scoped_pdf_count": 4,
+      "needs_backfill": false,
+      "backfill_reasons": [],
+      "latest_status": "blocked_by_gate",
+      "latest_run_id": "20260605T111049Z-428e2593",
+      "runs": [
+        {
+          "run_id": "20260604T141232Z-d2eff3e0",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-05T00:12:32.631229+10:00",
+          "slot": "00:00-05:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260605T045508Z-1e503a13",
+          "status": "failed",
+          "started_local": "2026-06-05T14:55:08.633918+10:00",
+          "slot": "10:00-15:00",
+          "effective": false
+        },
+        {
+          "run_id": "20260605T053308Z-e1c56980",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-05T15:33:08.686400+10:00",
+          "slot": "15:00-20:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260605T055626Z-ba247362",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-05T15:56:26.705135+10:00",
+          "slot": "15:00-20:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260605T064819Z-e3602800",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-05T16:48:19.971698+10:00",
+          "slot": "15:00-20:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260605T082615Z-d31a7543",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-05T18:26:15.193962+10:00",
+          "slot": "15:00-20:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260605T084257Z-6cd72c59",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-05T18:42:57.884486+10:00",
+          "slot": "15:00-20:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260605T111049Z-428e2593",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-05T21:10:49.910656+10:00",
+          "slot": "20:00-24:00",
+          "effective": true
+        }
+      ]
+    },
+    {
+      "report_date": "06062026",
+      "display_date": "06/06/2026",
+      "run_count": 7,
+      "effective_analysis_count": 7,
+      "failed_count": 0,
+      "covered_slots": [
+        "05:00-10:00",
+        "10:00-15:00"
+      ],
+      "missing_slots": [
+        "00:00-05:00",
+        "15:00-20:00",
+        "20:00-24:00"
+      ],
+      "formal_report_exists": false,
+      "run_scoped_pdf_count": 3,
+      "needs_backfill": true,
+      "backfill_reasons": [
+        "Downloads 正式日报缺失"
+      ],
+      "latest_status": "blocked_by_gate",
+      "latest_run_id": "20260612T045002Z-1866f370",
+      "runs": [
+        {
+          "run_id": "20260605T195704Z-d370cd95",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-06T05:57:04.997435+10:00",
+          "slot": "05:00-10:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260605T213802Z-18810b47",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-06T07:38:02.940831+10:00",
+          "slot": "05:00-10:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260605T220116Z-ac437e5b",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-06T08:01:16.936003+10:00",
+          "slot": "05:00-10:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260605T225259Z-be7638ce",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-06T08:52:59.374003+10:00",
+          "slot": "05:00-10:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260605T232012Z-bad22171",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-06T09:20:12.731233+10:00",
+          "slot": "05:00-10:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260606T024653Z-69fb9511",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-06T12:46:53.281046+10:00",
+          "slot": "10:00-15:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260612T045002Z-1866f370",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-12T14:50:02.141885+10:00",
+          "slot": "10:00-15:00",
+          "effective": true
+        }
+      ]
+    },
+    {
+      "report_date": "07062026",
+      "display_date": "07/06/2026",
+      "run_count": 0,
+      "effective_analysis_count": 0,
+      "failed_count": 0,
+      "covered_slots": [],
+      "missing_slots": [
+        "00:00-05:00",
+        "05:00-10:00",
+        "10:00-15:00",
+        "15:00-20:00",
+        "20:00-24:00"
+      ],
+      "formal_report_exists": false,
+      "run_scoped_pdf_count": 0,
+      "needs_backfill": true,
+      "backfill_reasons": [
+        "有效分析 0/4",
+        "Downloads 正式日报缺失"
+      ],
+      "latest_status": "missing",
+      "latest_run_id": "",
+      "runs": []
+    },
+    {
+      "report_date": "08062026",
+      "display_date": "08/06/2026",
+      "run_count": 0,
+      "effective_analysis_count": 0,
+      "failed_count": 0,
+      "covered_slots": [],
+      "missing_slots": [
+        "00:00-05:00",
+        "05:00-10:00",
+        "10:00-15:00",
+        "15:00-20:00",
+        "20:00-24:00"
+      ],
+      "formal_report_exists": false,
+      "run_scoped_pdf_count": 0,
+      "needs_backfill": true,
+      "backfill_reasons": [
+        "有效分析 0/4",
+        "Downloads 正式日报缺失"
+      ],
+      "latest_status": "missing",
+      "latest_run_id": "",
+      "runs": []
+    },
+    {
+      "report_date": "09062026",
+      "display_date": "09/06/2026",
+      "run_count": 0,
+      "effective_analysis_count": 0,
+      "failed_count": 0,
+      "covered_slots": [],
+      "missing_slots": [
+        "00:00-05:00",
+        "05:00-10:00",
+        "10:00-15:00",
+        "15:00-20:00",
+        "20:00-24:00"
+      ],
+      "formal_report_exists": false,
+      "run_scoped_pdf_count": 0,
+      "needs_backfill": true,
+      "backfill_reasons": [
+        "有效分析 0/4",
+        "Downloads 正式日报缺失"
+      ],
+      "latest_status": "missing",
+      "latest_run_id": "",
+      "runs": []
+    },
+    {
+      "report_date": "10062026",
+      "display_date": "10/06/2026",
+      "run_count": 0,
+      "effective_analysis_count": 0,
+      "failed_count": 0,
+      "covered_slots": [],
+      "missing_slots": [
+        "00:00-05:00",
+        "05:00-10:00",
+        "10:00-15:00",
+        "15:00-20:00",
+        "20:00-24:00"
+      ],
+      "formal_report_exists": false,
+      "run_scoped_pdf_count": 0,
+      "needs_backfill": true,
+      "backfill_reasons": [
+        "有效分析 0/4",
+        "Downloads 正式日报缺失"
+      ],
+      "latest_status": "missing",
+      "latest_run_id": "",
+      "runs": []
+    },
+    {
+      "report_date": "11062026",
+      "display_date": "11/06/2026",
+      "run_count": 0,
+      "effective_analysis_count": 0,
+      "failed_count": 0,
+      "covered_slots": [],
+      "missing_slots": [
+        "00:00-05:00",
+        "05:00-10:00",
+        "10:00-15:00",
+        "15:00-20:00",
+        "20:00-24:00"
+      ],
+      "formal_report_exists": false,
+      "run_scoped_pdf_count": 0,
+      "needs_backfill": true,
+      "backfill_reasons": [
+        "有效分析 0/4",
+        "Downloads 正式日报缺失"
+      ],
+      "latest_status": "missing",
+      "latest_run_id": "",
+      "runs": []
+    },
+    {
+      "report_date": "12062026",
+      "display_date": "12/06/2026",
+      "run_count": 4,
+      "effective_analysis_count": 4,
+      "failed_count": 0,
+      "covered_slots": [
+        "15:00-20:00",
+        "20:00-24:00"
+      ],
+      "missing_slots": [
+        "00:00-05:00",
+        "05:00-10:00",
+        "10:00-15:00"
+      ],
+      "formal_report_exists": false,
+      "run_scoped_pdf_count": 0,
+      "needs_backfill": true,
+      "backfill_reasons": [
+        "Downloads 正式日报缺失"
+      ],
+      "latest_status": "blocked_by_gate",
+      "latest_run_id": "20260612T131829Z-d6ef19bc",
+      "runs": [
+        {
+          "run_id": "20260612T071418Z-351cc74d",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-12T17:14:18.329619+10:00",
+          "slot": "15:00-20:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260612T073419Z-4122a953",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-12T17:34:19.890648+10:00",
+          "slot": "15:00-20:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260612T121732Z-2323d929",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-12T22:17:32.097372+10:00",
+          "slot": "20:00-24:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260612T131829Z-d6ef19bc",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-12T23:18:29.659401+10:00",
+          "slot": "20:00-24:00",
+          "effective": true
+        }
+      ]
+    },
+    {
+      "report_date": "13062026",
+      "display_date": "13/06/2026",
+      "run_count": 9,
+      "effective_analysis_count": 9,
+      "failed_count": 0,
+      "covered_slots": [
+        "05:00-10:00",
+        "10:00-15:00"
+      ],
+      "missing_slots": [
+        "00:00-05:00",
+        "15:00-20:00",
+        "20:00-24:00"
+      ],
+      "formal_report_exists": false,
+      "run_scoped_pdf_count": 1,
+      "needs_backfill": true,
+      "backfill_reasons": [
+        "Downloads 正式日报缺失"
+      ],
+      "latest_status": "blocked_by_gate",
+      "latest_run_id": "20260613T043303Z-593b5282",
+      "runs": [
+        {
+          "run_id": "20260612T213854Z-63a3b9ff",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-13T07:38:54.585145+10:00",
+          "slot": "05:00-10:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260613T012612Z-60be1ce1",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-13T11:26:12.061061+10:00",
+          "slot": "10:00-15:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260613T014702Z-e40094b3",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-13T11:47:02.520900+10:00",
+          "slot": "10:00-15:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260613T015950Z-0f7dad26",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-13T11:59:50.579659+10:00",
+          "slot": "10:00-15:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260613T022432Z-80387039",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-13T12:24:32.453047+10:00",
+          "slot": "10:00-15:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260613T024632Z-3914a473",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-13T12:46:32.594742+10:00",
+          "slot": "10:00-15:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260613T040114Z-51bf2e2a",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-13T14:01:14.702542+10:00",
+          "slot": "10:00-15:00",
+          "effective": true
+        },
+        {
+          "run_id": "20260613T043303Z-593b5282",
+          "status": "blocked_by_gate",
+          "started_local": "2026-06-13T14:33:03.863285+10:00",
+          "slot": "10:00-15:00",
+          "effective": true
+        }
+      ]
+    }
+  ],
+  "backfill_queue": [
+    {
+      "report_date": "07062026",
+      "display_date": "07/06/2026",
+      "reason": "有效分析 0/4；Downloads 正式日报缺失",
+      "priority_score": 160,
+      "priority_reason": "缺失时段 5/5；有效分析 0/4；日报缺失；latest=missing",
+      "missing_slot_count": 5,
+      "effective_analysis_count": 0,
+      "formal_report_exists": false,
+      "latest_status": "missing",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish",
+      "truthfulness_note": "历史缺口只能用当前可用数据重建，不能冒充原时点盘口。",
+      "repair_rank": 1
+    },
+    {
+      "report_date": "08062026",
+      "display_date": "08/06/2026",
+      "reason": "有效分析 0/4；Downloads 正式日报缺失",
+      "priority_score": 160,
+      "priority_reason": "缺失时段 5/5；有效分析 0/4；日报缺失；latest=missing",
+      "missing_slot_count": 5,
+      "effective_analysis_count": 0,
+      "formal_report_exists": false,
+      "latest_status": "missing",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish",
+      "truthfulness_note": "历史缺口只能用当前可用数据重建，不能冒充原时点盘口。",
+      "repair_rank": 2
+    },
+    {
+      "report_date": "09062026",
+      "display_date": "09/06/2026",
+      "reason": "有效分析 0/4；Downloads 正式日报缺失",
+      "priority_score": 160,
+      "priority_reason": "缺失时段 5/5；有效分析 0/4；日报缺失；latest=missing",
+      "missing_slot_count": 5,
+      "effective_analysis_count": 0,
+      "formal_report_exists": false,
+      "latest_status": "missing",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish",
+      "truthfulness_note": "历史缺口只能用当前可用数据重建，不能冒充原时点盘口。",
+      "repair_rank": 3
+    },
+    {
+      "report_date": "10062026",
+      "display_date": "10/06/2026",
+      "reason": "有效分析 0/4；Downloads 正式日报缺失",
+      "priority_score": 160,
+      "priority_reason": "缺失时段 5/5；有效分析 0/4；日报缺失；latest=missing",
+      "missing_slot_count": 5,
+      "effective_analysis_count": 0,
+      "formal_report_exists": false,
+      "latest_status": "missing",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish",
+      "truthfulness_note": "历史缺口只能用当前可用数据重建，不能冒充原时点盘口。",
+      "repair_rank": 4
+    },
+    {
+      "report_date": "11062026",
+      "display_date": "11/06/2026",
+      "reason": "有效分析 0/4；Downloads 正式日报缺失",
+      "priority_score": 160,
+      "priority_reason": "缺失时段 5/5；有效分析 0/4；日报缺失；latest=missing",
+      "missing_slot_count": 5,
+      "effective_analysis_count": 0,
+      "formal_report_exists": false,
+      "latest_status": "missing",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish",
+      "truthfulness_note": "历史缺口只能用当前可用数据重建，不能冒充原时点盘口。",
+      "repair_rank": 5
+    },
+    {
+      "report_date": "06062026",
+      "display_date": "06/06/2026",
+      "reason": "Downloads 正式日报缺失",
+      "priority_score": 75,
+      "priority_reason": "缺失时段 3/5；有效分析 7/4；日报缺失；latest=blocked_by_gate",
+      "missing_slot_count": 3,
+      "effective_analysis_count": 7,
+      "formal_report_exists": false,
+      "latest_status": "blocked_by_gate",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish",
+      "truthfulness_note": "历史缺口只能用当前可用数据重建，不能冒充原时点盘口。",
+      "repair_rank": 6
+    },
+    {
+      "report_date": "12062026",
+      "display_date": "12/06/2026",
+      "reason": "Downloads 正式日报缺失",
+      "priority_score": 75,
+      "priority_reason": "缺失时段 3/5；有效分析 4/4；日报缺失；latest=blocked_by_gate",
+      "missing_slot_count": 3,
+      "effective_analysis_count": 4,
+      "formal_report_exists": false,
+      "latest_status": "blocked_by_gate",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish",
+      "truthfulness_note": "历史缺口只能用当前可用数据重建，不能冒充原时点盘口。",
+      "repair_rank": 7
+    },
+    {
+      "report_date": "13062026",
+      "display_date": "13/06/2026",
+      "reason": "Downloads 正式日报缺失",
+      "priority_score": 75,
+      "priority_reason": "缺失时段 3/5；有效分析 9/4；日报缺失；latest=blocked_by_gate",
+      "missing_slot_count": 3,
+      "effective_analysis_count": 9,
+      "formal_report_exists": false,
+      "latest_status": "blocked_by_gate",
+      "operation": "补跑一次分析并生成 run-scoped PDF",
+      "mode": "safe_no_latest_publish",
+      "truthfulness_note": "历史缺口只能用当前可用数据重建，不能冒充原时点盘口。",
+      "repair_rank": 8
+    }
+  ],
+  "history_persistence": {
+    "status": "stored",
+    "database": "tab_fifa_reports.sqlite3",
+    "table": "active_timeline_audits",
+    "audit_id": "active_timeline_20260613T151752_215682_1000_26480"
+  }
+}

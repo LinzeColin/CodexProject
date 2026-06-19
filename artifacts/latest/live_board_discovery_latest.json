@@ -1,0 +1,427 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T15:06:42.240986+10:00",
+  "mode": "live_board_discovery_dashboard",
+  "purpose": "TAB Soccer live board discovery：自动发现当前公开导航中实际列出的 FIFA/World Cup 板块，并把缺失板块放入 unavailable review queue；只读，不自动下注。",
+  "executive_status": {
+    "status": "blocked",
+    "primary_gap": "TAB live 导航缺失 2 个 expected board：Australia Markets、Team Futures Multi",
+    "route_mismatch_active": true,
+    "recommended_next_action": "先按 unavailable review queue 复核缺失板块；缺失期间只允许生成研究/诊断视图，不发布当前可执行下注日报。"
+  },
+  "summary": {
+    "discovery_raw_exists": true,
+    "discovery_ready": true,
+    "quality_status": "ready",
+    "quality_issue_count": 0,
+    "access_denied": false,
+    "discovery_failed": false,
+    "expected_board_count": 5,
+    "listed_expected_count": 3,
+    "missing_expected_count": 2,
+    "observed_world_cup_link_count": 30,
+    "route_mismatch_active": true,
+    "temporarily_unavailable_count": 2,
+    "retry_required_count": 0,
+    "full_expected_nav_ready": false
+  },
+  "expected_board_rows": [
+    {
+      "board_id": "world_cup_matches",
+      "refresh_board_id": "matches",
+      "name": "2026 World Cup Matches",
+      "priority": 1,
+      "required_for_full_automation": true,
+      "live_nav_status": "listed",
+      "matched_link_count": 20,
+      "matched_text_marker": true,
+      "automation_decision": "refresh_allowed",
+      "matched_links": [
+        {
+          "text": "Soccer",
+          "href": "https://www.tab.com.au/sports/results/Soccer/competitions/2026%20World%20Cup%20Matches"
+        },
+        {
+          "text": "Qatar v Switzerland",
+          "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Matches/matches/Qatar%20v%20Switzerland"
+        },
+        {
+          "text": "321 Markets",
+          "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Matches/matches/Qatar%20v%20Switzerland"
+        }
+      ],
+      "next_action": "允许进入只读 raw refresh。"
+    },
+    {
+      "board_id": "world_cup_futures",
+      "refresh_board_id": "futures",
+      "name": "2026 World Cup Futures",
+      "priority": 2,
+      "required_for_full_automation": true,
+      "live_nav_status": "listed",
+      "matched_link_count": 1,
+      "matched_text_marker": true,
+      "automation_decision": "refresh_allowed",
+      "matched_links": [
+        {
+          "text": "See All",
+          "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Futures"
+        }
+      ],
+      "next_action": "允许进入只读 raw refresh。"
+    },
+    {
+      "board_id": "world_cup_group_betting",
+      "refresh_board_id": "group_betting",
+      "name": "2026 World Cup Group Betting",
+      "priority": 3,
+      "required_for_full_automation": true,
+      "live_nav_status": "listed",
+      "matched_link_count": 19,
+      "matched_text_marker": true,
+      "automation_decision": "refresh_allowed",
+      "matched_links": [
+        {
+          "text": "World Cup Group B (SUI/BIH/CAN/QAT)",
+          "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20B%20(SUI~2FBIH~2FCAN~2FQAT)"
+        },
+        {
+          "text": "7 Markets",
+          "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20B%20(SUI~2FBIH~2FCAN~2FQAT)"
+        },
+        {
+          "text": "World Cup Group C (BRA/MAR/SCO/HAI)",
+          "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20C%20(BRA~2FMAR~2FSCO~2FHAI)"
+        }
+      ],
+      "next_action": "允许进入只读 raw refresh。"
+    },
+    {
+      "board_id": "world_cup_australia_markets",
+      "refresh_board_id": "australia_markets",
+      "name": "2026 World Cup Australia Markets",
+      "priority": 4,
+      "required_for_full_automation": true,
+      "live_nav_status": "missing_from_live_nav",
+      "matched_link_count": 0,
+      "matched_text_marker": false,
+      "automation_decision": "temporarily_unavailable_review",
+      "matched_links": [],
+      "next_action": "标记 unavailable；重新发现或等待 TAB 重新列出该板块。"
+    },
+    {
+      "board_id": "world_cup_team_futures_multi",
+      "refresh_board_id": "team_futures_multi",
+      "name": "2026 World Cup Team Futures Multi",
+      "priority": 5,
+      "required_for_full_automation": true,
+      "live_nav_status": "missing_from_live_nav",
+      "matched_link_count": 0,
+      "matched_text_marker": false,
+      "automation_decision": "temporarily_unavailable_review",
+      "matched_links": [],
+      "next_action": "标记 unavailable；重新发现或等待 TAB 重新列出该板块。"
+    }
+  ],
+  "observed_world_cup_links": [
+    {
+      "rank": 1,
+      "text": "World Cup Group B (SUI/BIH/CAN/QAT)",
+      "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20B%20(SUI~2FBIH~2FCAN~2FQAT)",
+      "mapped_expected_board": "2026 World Cup Group Betting"
+    },
+    {
+      "rank": 2,
+      "text": "World Cup Group C (BRA/MAR/SCO/HAI)",
+      "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20C%20(BRA~2FMAR~2FSCO~2FHAI)",
+      "mapped_expected_board": "2026 World Cup Group Betting"
+    },
+    {
+      "rank": 3,
+      "text": "World Cup Group D (USA/TUR/PAR/AUS)",
+      "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20D%20(USA~2FTUR~2FPAR~2FAUS)",
+      "mapped_expected_board": "2026 World Cup Group Betting"
+    },
+    {
+      "rank": 4,
+      "text": "World Cup Group E (GER/ECU/CIV/CUW)",
+      "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20E%20(GER~2FECU~2FCIV~2FCUW)",
+      "mapped_expected_board": "2026 World Cup Group Betting"
+    },
+    {
+      "rank": 5,
+      "text": "World Cup Group F (NED/JPN/SWE/TUN)",
+      "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20F%20(NED~2FJPN~2FSWE~2FTUN)",
+      "mapped_expected_board": "2026 World Cup Group Betting"
+    },
+    {
+      "rank": 6,
+      "text": "World Cup Group G (BEL/EGY/IRN/NZL)",
+      "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20G%20(BEL~2FEGY~2FIRN~2FNZL)",
+      "mapped_expected_board": "2026 World Cup Group Betting"
+    },
+    {
+      "rank": 7,
+      "text": "World Cup Group H (ESP/URU/KSA/CPV)",
+      "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20H%20(ESP~2FURU~2FKSA~2FCPV)",
+      "mapped_expected_board": "2026 World Cup Group Betting"
+    },
+    {
+      "rank": 8,
+      "text": "World Cup Group I (FRA/NOR/SEN/IRQ)",
+      "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20I%20(FRA~2FNOR~2FSEN~2FIRQ)",
+      "mapped_expected_board": "2026 World Cup Group Betting"
+    },
+    {
+      "rank": 9,
+      "text": "World Cup Group J (ARG/AUT/ALG/JOR)",
+      "href": "https://www.tab.com.au/sports/betting/Soccer/competitions/2026%20World%20Cup%20Group%20Betting/matches/World%20Cup%20Group%20J%20(ARG~2FAUT~2FALG~2FJOR)",
+      "mapped_expected_board": "2026 World Cup Group Betting"
+    },
+    {
+      "rank": 10,
+      "text": "2026 World Cup Matches",
+      "href": "",
+      "mapped_expected_board": "2026 World Cup Matches"
+    },
+    {
+      "rank": 11,
+      "text": "2026 World Cup Futures",
+      "href": "",
+      "mapped_expected_board": "2026 World Cup Futures"
+    },
+    {
+      "rank": 12,
+      "text": "2026 World Cup Group Betting",
+      "href": "",
+      "mapped_expected_board": "2026 World Cup Group Betting"
+    },
+    {
+      "rank": 13,
+      "text": "World Cup Group B (SUI/BIH/CAN/QAT)",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 14,
+      "text": "WC26 Group B WinnerSun 14 Jun 5:00",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 15,
+      "text": "World Cup Group C (BRA/MAR/SCO/HAI)",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 16,
+      "text": "WC26 Group C WinnerSun 14 Jun 8:00",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 17,
+      "text": "World Cup Group D (USA/TUR/PAR/AUS)",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 18,
+      "text": "WC26 Group D WinnerSun 14 Jun 14:00",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 19,
+      "text": "World Cup Group E (GER/ECU/CIV/CUW)",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 20,
+      "text": "WC26 Group E WinnerMon 15 Jun 3:00",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 21,
+      "text": "World Cup Group F (NED/JPN/SWE/TUN)",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 22,
+      "text": "WC26 Group F WinnerMon 15 Jun 6:00",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 23,
+      "text": "World Cup Group G (BEL/EGY/IRN/NZL)",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 24,
+      "text": "WC26 Group G WinnerTue 16 Jun 5:00",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 25,
+      "text": "World Cup Group H (ESP/URU/KSA/CPV)",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 26,
+      "text": "WC26 Group H WinnerTue 16 Jun 2:00",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 27,
+      "text": "World Cup Group I (FRA/NOR/SEN/IRQ)",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 28,
+      "text": "WC26 Group I WinnerWed 17 Jun 5:00",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 29,
+      "text": "World Cup Group J (ARG/AUT/ALG/JOR)",
+      "href": "",
+      "mapped_expected_board": ""
+    },
+    {
+      "rank": 30,
+      "text": "WC26 Group J WinnerWed 17 Jun 11:00",
+      "href": "",
+      "mapped_expected_board": ""
+    }
+  ],
+  "unavailable_review_queue": [
+    {
+      "rank": 1,
+      "board_id": "world_cup_australia_markets",
+      "name": "2026 World Cup Australia Markets",
+      "reason": "TAB Soccer live nav 未列出该 expected board",
+      "operation": "重新发现 TAB Soccer live board list；若仍缺失，保持 unavailable，不用旧盘口生成下注建议。",
+      "success_gate": "live nav 出现该板块，且 deep link resolves to expected board"
+    },
+    {
+      "rank": 2,
+      "board_id": "world_cup_team_futures_multi",
+      "name": "2026 World Cup Team Futures Multi",
+      "reason": "TAB Soccer live nav 未列出该 expected board",
+      "operation": "重新发现 TAB Soccer live board list；若仍缺失，保持 unavailable，不用旧盘口生成下注建议。",
+      "success_gate": "live nav 出现该板块，且 deep link resolves to expected board"
+    }
+  ],
+  "discovery_retry_queue": [],
+  "source_artifacts": {
+    "raw_discovery": "tab_fifa_live_board_discovery_raw_latest.json",
+    "raw_refresh_health": "raw_refresh_health_latest.json",
+    "raw_refresh_diagnostics": "raw_refresh_diagnostics_latest.json"
+  },
+  "truthfulness_note": "live 导航缺失的板块不得用旧 raw 或旧报告生成当前可执行下注建议；只能进入人工复核/重新发现队列。",
+  "old_new_compare": {
+    "status": "compared_with_previous_artifact",
+    "previous_generated_at": "2026-06-13T15:02:46.033373+10:00",
+    "metric_count": 9,
+    "changed_count": 0,
+    "rows": [
+      {
+        "metric": "status",
+        "path": "executive_status.status",
+        "current": "blocked",
+        "previous": "blocked",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "route_mismatch_active",
+        "path": "executive_status.route_mismatch_active",
+        "current": "true",
+        "previous": "true",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "discovery_ready",
+        "path": "summary.discovery_ready",
+        "current": "true",
+        "previous": "true",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "quality_status",
+        "path": "summary.quality_status",
+        "current": "ready",
+        "previous": "ready",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "access_denied",
+        "path": "summary.access_denied",
+        "current": "false",
+        "previous": "false",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "listed_expected_count",
+        "path": "summary.listed_expected_count",
+        "current": "3",
+        "previous": "3",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "missing_expected_count",
+        "path": "summary.missing_expected_count",
+        "current": "2",
+        "previous": "2",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "observed_world_cup_link_count",
+        "path": "summary.observed_world_cup_link_count",
+        "current": "30",
+        "previous": "30",
+        "delta": "0",
+        "changed": false
+      },
+      {
+        "metric": "retry_required_count",
+        "path": "summary.retry_required_count",
+        "current": "0",
+        "previous": "0",
+        "delta": "0",
+        "changed": false
+      }
+    ],
+    "summary": "0/9 个关键指标发生变化。"
+  },
+  "artifacts": {
+    "json": "live_board_discovery_latest.json",
+    "markdown": "live_board_discovery_latest.md",
+    "pdf": "live_board_discovery_latest.pdf",
+    "pdf_summary": {
+      "path": "live_board_discovery_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 4,
+      "detail_row_count": 5,
+      "extra_table_count": 3,
+      "extra_detail_row_count": 23
+    }
+  }
+}

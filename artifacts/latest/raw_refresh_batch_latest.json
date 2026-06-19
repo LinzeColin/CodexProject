@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-05T23:09:32.430595+00:00",
+  "refresh_id": "20260605T225259Z-9a5baa3e",
+  "artifact_count": 5,
+  "artifacts": [
+    {
+      "board_id": "world_cup_matches",
+      "name": "2026 World Cup Matches",
+      "raw_snapshot": "tab_fifa_matches_main_markets_raw_v0_9.json",
+      "refresh_id": "20260605T225259Z-9a5baa3e",
+      "raw_timestamp": "2026-06-05T23:06:40.155661+00:00",
+      "sha256": "e991af7ff43b028d9cd2be3831de9f15265b451d802ed7e2ac584c8dddd0604c"
+    },
+    {
+      "board_id": "world_cup_futures",
+      "name": "2026 World Cup Futures",
+      "raw_snapshot": "tab_fifa_world_cup_futures_raw_v0_13.json",
+      "refresh_id": "20260605T225259Z-9a5baa3e",
+      "raw_timestamp": "2026-06-05T23:07:21.536Z",
+      "sha256": "af7984f2125ddf5377446239ba63e0ad33b8ab7ffa4d07baf2c0840357250c2f"
+    },
+    {
+      "board_id": "world_cup_group_betting",
+      "name": "2026 World Cup Group Betting",
+      "raw_snapshot": "tab_fifa_world_cup_group_betting_raw_v0_14.json",
+      "refresh_id": "20260605T225259Z-9a5baa3e",
+      "raw_timestamp": "2026-06-05T23:08:01.572Z",
+      "sha256": "9f6adeae014fdc11467dca14bf9014c5ffb28a92e771d5e45b53f942f20cc191"
+    },
+    {
+      "board_id": "world_cup_australia_markets",
+      "name": "2026 World Cup Australia Markets",
+      "raw_snapshot": "tab_fifa_world_cup_australia_markets_expanded_raw_v0_17.json",
+      "refresh_id": "20260605T225259Z-9a5baa3e",
+      "raw_timestamp": "2026-06-05T23:08:49.576Z",
+      "sha256": "9e323d2b4469bd9bcc27532350a97b555b437a62ee62cc0133626bb51249d150"
+    },
+    {
+      "board_id": "world_cup_team_futures_multi",
+      "name": "2026 World Cup Team Futures Multi",
+      "raw_snapshot": "tab_fifa_world_cup_team_futures_multi_raw_v0_16.json",
+      "refresh_id": "20260605T225259Z-9a5baa3e",
+      "raw_timestamp": "2026-06-05T23:09:24.825Z",
+      "sha256": "afbc3ff92814bc3ef0e54c5df0293d952df0ad997b5a6534fd4dac9a4b773a1f"
+    }
+  ]
+}

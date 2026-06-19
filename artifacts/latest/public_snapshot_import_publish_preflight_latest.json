@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14T01:52:01.454319+10:00",
+  "mode": "public_snapshot_import_publish_preflight",
+  "status": "waiting_for_snapshot_import",
+  "scope": "matches",
+  "board_id": "world_cup_matches",
+  "approval_relative_path": "manual_verification/public_snapshot_import_approval.json",
+  "approval_file_sha256": "",
+  "selected_snapshot_file": "",
+  "selected_snapshot_sha256": "",
+  "preview_raw_snapshot": "public_snapshot_import_preview_raw_latest.json",
+  "preview_raw_sha256": "d980285c984bdcf4d4a5536f0dae9557f78ff4a29f695242b723f7de39794d46",
+  "match_count": 0,
+  "market_coverage": {},
+  "approved_by_user": false,
+  "operator_initials": "",
+  "signed_at_aest": "",
+  "snapshot_publish_preflight_passed": false,
+  "publish_compatible_with_snapshot_preview": false,
+  "issues": [
+    {
+      "field": "snapshot_import_preview_ready",
+      "issue": "public snapshot preview is not ready"
+    },
+    {
+      "field": "approval_file",
+      "issue": "missing manual_verification/public_snapshot_import_approval.json"
+    }
+  ],
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "current_executable_new_stake_aud": 0,
+  "next_safe_action": "先导入有效 public snapshot JSON，生成 preview raw 后再签名。",
+  "truthfulness_note": "该预检只确认 public snapshot preview 与人工签名文件匹配；不证明 TAB 页面真实性，不写正式 raw，不生成下注金额。",
+  "artifacts": {
+    "json": "public_snapshot_import_publish_preflight_latest.json",
+    "markdown": "public_snapshot_import_publish_preflight_latest.md",
+    "pdf": "public_snapshot_import_publish_preflight_latest.pdf",
+    "approval_template": "public_snapshot_import_approval_template_latest.json",
+    "pdf_summary": {
+      "path": "public_snapshot_import_publish_preflight_latest.pdf",
+      "page_size": "A4",
+      "chart_count": 1,
+      "detail_row_count": 2,
+      "extra_table_count": 0,
+      "extra_detail_row_count": 0
+    }
+  }
+}

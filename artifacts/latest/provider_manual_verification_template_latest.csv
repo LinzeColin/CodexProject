@@ -1,0 +1,65 @@
+event_id,rank,match,commence_time,priority_tier,missing_market,tab_match_name,team_scope,tab_market_name,selection_name,line,decimal_odds,observed_at_aest,operator_initials,evidence_note_or_screenshot_ref,verification_status
+26634922d3f78c146440816023e40de8,1,Qatar v Switzerland,2026-06-13T19:04:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+f6c8748a16516e0998f95de14235432a,2,Brazil v Morocco,2026-06-13T22:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+5ae41a06735c926eeb7f74006933adce,3,Haiti v Scotland,2026-06-14T01:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+564084f52cc9f1abcc18187c168a7cdc,4,Australia v Turkey,2026-06-14T04:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+d79edbd6aaeb578d33e313446b18d333,5,Germany v Curaçao,2026-06-14T17:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+32ec06abda2398ac41501c86eb9aa376,6,Netherlands v Japan,2026-06-14T20:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+05752bb341e197001387b64f3a06b9b2,7,Ivory Coast v Ecuador,2026-06-14T23:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+b55f9569de3f4d731bc5537ff5ff43e4,8,Sweden v Tunisia,2026-06-15T02:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+c54f00b11925751d2b62988775c6c239,9,Spain v Cape Verde,2026-06-15T16:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+fbfb95c62003fd6d828b309f96ee1f9b,10,Belgium v Egypt,2026-06-15T19:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+64b91c5f2db61c7358a4f05459e83c52,11,Saudi Arabia v Uruguay,2026-06-15T22:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+ec51b9c44ad5e34552f3ab53f7262813,12,Iran v New Zealand,2026-06-16T01:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+73a4fcd14cc9766b9b9bfd50b8ca153a,13,France v Senegal,2026-06-16T19:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+4d4f2b9b78182b557d4fbf8dcf4f4af2,14,Iraq v Norway,2026-06-16T22:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+f31b2ee9e1cc6f7e641467f8237eaa21,15,Argentina v Algeria,2026-06-17T01:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+25161cf6cf0cd9be17ae2e7e224a1f45,16,Austria v Jordan,2026-06-17T04:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+6cc871c121a1869b4612d3fb22fa9d55,17,Portugal v DR Congo,2026-06-17T17:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+689096c8cd7e2753b9fec95321943c5d,18,England v Croatia,2026-06-17T20:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+87afdb85c977b451e1c00f5e3e632601,19,Ghana v Panama,2026-06-17T23:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+22083e7a8e5362c711bc05c1e1319a1f,20,Uzbekistan v Colombia,2026-06-18T02:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+66ebb9e3f949caded535d97ce686ca09,21,Czech Republic v South Africa,2026-06-18T16:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+0f2aeae6ac8e77223848d23a4ca86b0d,22,Mexico v South Korea,2026-06-19T01:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+065b3573e875f8d23803357f73e5b99e,23,USA v Australia,2026-06-19T19:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+4cd769aa7bae0ad9762bd69b80ef2903,24,Scotland v Morocco,2026-06-19T22:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+ef0f74a991d3e35798ae5af77667bce1,25,Brazil v Haiti,2026-06-20T01:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+f955d4b3395ce6e3b5ac1031ca52ca4e,26,Turkey v Paraguay,2026-06-20T03:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+4f0c518545b0096c68326daf25bffc1e,27,Netherlands v Sweden,2026-06-20T17:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+f1ab0f69832972a329243522ceaa7804,28,Germany v Ivory Coast,2026-06-20T20:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+681895f294b670b4c7b14495dfb583bc,29,Ecuador v Curaçao,2026-06-21T00:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+dfc5202cf1b8ae002cf952cd04f235b9,30,Tunisia v Japan,2026-06-21T04:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+73529a242e319a86bf3d00ddb4accc37,31,Spain v Saudi Arabia,2026-06-21T16:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+5f92f257386ec5bf7c6e2498a21f3a61,32,Belgium v Iran,2026-06-21T19:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+852a3abe6d46820720febc0fedebff9a,33,Uruguay v Cape Verde,2026-06-21T22:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+c1ec9a65f4b4cf74477b368a7d6282de,34,New Zealand v Egypt,2026-06-22T01:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+be6c63f416c67bca1300a98f5b89c3af,35,Argentina v Austria,2026-06-22T17:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+7ad7a0ce2ef2618bb59b066da5642f70,36,France v Iraq,2026-06-22T21:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+3f48473742ca0fd2a85930554720c75e,37,Norway v Senegal,2026-06-23T00:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+fd8533b650e655030f6a7946f8795db2,38,Jordan v Algeria,2026-06-23T03:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+8ba93d190f1f934e33862a97a6353a6e,39,Portugal v Uzbekistan,2026-06-23T17:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+2f49dd8deae3079dc4eb2d634d18a99c,40,England v Ghana,2026-06-23T20:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+c1bc8c26480cd42b89a0de5329581314,41,Panama v Croatia,2026-06-23T23:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+68bfc965eb267508e04d8e8d75c1a0ae,42,Colombia v DR Congo,2026-06-24T02:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+d1279ce7f33136a33e99ad442fc855e8,43,Morocco v Haiti,2026-06-24T22:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+885ba95805db310a7bcc3fb1a7a6dd28,44,Scotland v Brazil,2026-06-24T22:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+5993bd5196ca09f83990f0c3261e442e,45,Czech Republic v Mexico,2026-06-25T01:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+c0355dfc6e26ec327e379b6ef5824a5f,46,South Africa v South Korea,2026-06-25T01:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+a5a0b544a984ab16e564264f3e859b43,47,Curaçao v Ivory Coast,2026-06-25T20:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+0ec28b84ec399bd4dffbe8d1bc72b3c4,48,Ecuador v Germany,2026-06-25T20:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+0ed0233bddc4eafc8507f86a9c17b998,49,Japan v Sweden,2026-06-25T23:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+f3c4657daa143a0c5bd62cb370d01ce4,50,Tunisia v Netherlands,2026-06-25T23:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+22f6ac06dfcc88a847920f62633e6459,51,Paraguay v Australia,2026-06-26T02:00:00Z,high,Team Total Goals Over/Under,,,,,,,,,,pending
+f41aeac9a8343a84b4950f15ea25fba2,52,Turkey v USA,2026-06-26T02:00:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+b86b4d60f773e9e3c46c00e9a6496e79,53,Norway v France,2026-06-26T19:00:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+7e6aee294ea1a4792c59558791084528,54,Senegal v Iraq,2026-06-26T19:00:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+e07b1926be5a4d515c7eb108dbcee9c5,55,Cape Verde v Saudi Arabia,2026-06-27T00:00:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+dcff2e31c0bce001a4db5caaf4fa8822,56,Uruguay v Spain,2026-06-27T00:00:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+3e3b5fa2b3c963e74cf044c60db0b573,57,Egypt v Iran,2026-06-27T03:00:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+581691da05dcd75b5c6d3be91ee9d2ab,58,New Zealand v Belgium,2026-06-27T03:00:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+537c0997cd899394f47f16545b7068b2,59,Croatia v Ghana,2026-06-27T21:00:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+4be17c8e1ccfecb0f2a5ef79e045c415,60,Panama v England,2026-06-27T21:00:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+67ae5751c401a98409b8566ae4897069,61,Colombia v Portugal,2026-06-27T23:30:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+13eab94a136b9c264ba974cf437a5f71,62,DR Congo v Uzbekistan,2026-06-27T23:30:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+8756200e539155e571557c4f2e0d7f05,63,Algeria v Austria,2026-06-28T02:00:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending
+54697f453437ab26276d773be1d72e9b,64,Jordan v Argentina,2026-06-28T02:00:00Z,medium,Team Total Goals Over/Under,,,,,,,,,,pending

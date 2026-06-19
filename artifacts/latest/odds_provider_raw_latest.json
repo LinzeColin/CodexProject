@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-13T19:47:19.388561+00:00",
+  "refresh_id": "20260613T194716Z-provider-2fec0bef",
+  "scope": "matches",
+  "source_mode": "third_party_tab_labeled_api",
+  "target_board_ids": [
+    "world_cup_matches"
+  ],
+  "ignored_board_ids": [
+    "world_cup_australia_markets"
+  ],
+  "region_markets_ignored": true,
+  "request_usage": {
+    "provider_payload_count": 3,
+    "provider_error_count": 0,
+    "request_kind_counts": {
+      "odds": 1,
+      "event_markets": 1,
+      "event_odds": 1
+    },
+    "estimated_credit_cost": 7,
+    "reported_last_request_cost": 7,
+    "reported_requests_used_max": 299,
+    "reported_requests_remaining_min": 201,
+    "sports": [
+      "soccer_fifa_world_cup"
+    ],
+    "markets": [
+      "btts",
+      "double_chance",
+      "draw_no_bet",
+      "h2h",
+      "spreads",
+      "totals"
+    ]
+  },
+  "formal_publish_allowed": false,
+  "full_automation_allowed": false,
+  "current_executable_new_stake_aud": 0,
+  "manual_tab_verification_required": true,
+  "artifact_count": 1,
+  "artifacts": [
+    {
+      "board_id": "world_cup_matches",
+      "name": "2026 World Cup Matches",
+      "raw_snapshot": "tab_fifa_matches_main_markets_raw_v0_9.json",
+      "provider_staged_path": "provider_raw/20260613T194716Z-provider-2fec0bef/tab_fifa_matches_main_markets_raw_v0_9.json",
+      "sha256": "1be18b77ee6efa62e32c2a3781898d64bbac329139657a85830bbfb5d2574364",
+      "event_count": 64,
+      "market_coverage": {
+        "Result": 64,
+        "Both Teams to Score": 14,
+        "Double Chance": 11,
+        "Draw No Bet": 12,
+        "Handicap": 46,
+        "Total Goals Over/Under": 51
+      }
+    }
+  ]
+}
