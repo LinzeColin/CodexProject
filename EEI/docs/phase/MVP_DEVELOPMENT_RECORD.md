@@ -1623,3 +1623,36 @@ Acceptance status:
 Residual risks:
 
 - T1215 closes A200 clean-room release verification only. A180, A181, A186 and A199 remain open and are not claimed by this run.
+
+## 2026-06-19 - Phase 1 / G5 T500 Entity dossier and human summary API
+
+Status: LOCAL STATIC PASS / REMOTE DB CI PENDING
+
+Completed:
+
+- Expanded `/v1/entities/{entityId}` from a thin entity summary into an entity dossier response with aliases, industry memberships, relationship-family counts, dossier layers, recent events, freshness, coverage and `human_summary`.
+- Added dossier layers for business, group, dependencies, capital, policy and signals without introducing new database tables or product dependencies.
+- Added explicit data-gap language for missing capital and policy records so unknown fixture coverage is not rendered as zero or false.
+- Updated `specs/api_contract.yaml` with `EntityDossier`, `EntityDossierLayer` and `EntityDossierHumanSummary` contract fields.
+- Added integration assertions that every 30-row fixture seed from `data/mock_entities.json` opens through `/v1/entities/{entityId}` and that NVIDIA's golden dossier covers business, group, dependencies, capital, policy, signals and data gaps.
+- Added A059 and A060 evidence artifacts under `artifacts/tests/a059/` and `artifacts/tests/a060/`.
+- Marked T500, A059 and A060 as `DONE`; FUN-EXP-03 is now `PARTIAL` because T501-T508 workspace/detail tasks remain open.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/validate_contracts.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_catalog_integrity.py`: PASS.
+- Local `.venv/bin/uv run ruff check apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/uv run pytest tests/unit -q`: PASS.
+- Local `.venv/bin/uv run python scripts/manage_development_status_artifacts.py validate`: PASS.
+- Local `.venv/bin/uv run pytest tests/integration -q`: SKIPPED because this host has no `.env` and no Docker-backed PostgreSQL.
+
+Acceptance status:
+
+- A059 is covered by `apps/api/app/domain_repository.py`, `tests/integration/test_database_migrations.py` and `artifacts/tests/a059/t500_entity_focus_dossier_api.json`.
+- A060 is covered by `apps/api/app/domain_repository.py`, `specs/api_contract.yaml`, `tests/integration/test_database_migrations.py` and `artifacts/tests/a060/t500_human_summary_dossier_api.json`.
+
+Residual risks:
+
+- T500 does not implement the full eight-layer workspace UI; T501-T508 still own group structure, supply-chain, capital/policy/technology layers, strategic signals, evidence drawer, timeline and export UX.
+- Local database integration could not run on this host; GitHub Actions PostgreSQL validation is required before marking remote status PASS.

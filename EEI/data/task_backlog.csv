@@ -35,7 +35,7 @@ T406,G4,P0,Implement bounded evidence-bearing path queries,T400,A056,DONE
 T407,G4,P0,Add inclusion/truncation explanations,T405,"A044,A057",DONE
 T408,G4,P0,Add critical three-reroot E2E,"T405,T407",A048,DONE
 T409,G4,P0,Add cross-industry reroot E2E,T405,A034,DONE
-T500,G5,P0,Implement entity dossier and human summary API,T408,"A059,A060",NOT STARTED
+T500,G5,P0,Implement entity dossier and human summary API,T408,"A059,A060",DONE
 T501,G5,P0,Implement corporate group/business/brand/product/facility view,T500,"A061,A062,A063",NOT STARTED
 T502,G5,P0,Implement supply-chain stage/upstream/downstream view,T500,"A064,A065,A066",NOT STARTED
 T503,G5,P0,Implement capital/M&A and policy/technology layers,T500,"A069,A070,A071",NOT STARTED

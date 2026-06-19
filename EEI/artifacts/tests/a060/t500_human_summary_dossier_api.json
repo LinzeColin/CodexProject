@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "task_id": "T500",
+  "acceptance_id": "A060",
+  "status": "DONE",
+  "evidence_type": "human_summary_dossier_api",
+  "golden_entity": {
+    "id": "00000000-0000-4000-8000-000000000006",
+    "canonical_name": "NVIDIA Corporation",
+    "ticker": "NVDA"
+  },
+  "required_summary_dimensions": [
+    "business",
+    "group",
+    "dependencies",
+    "capital",
+    "policy",
+    "signals",
+    "data_gaps"
+  ],
+  "validated_by": [
+    "apps/api/app/domain_repository.py",
+    "specs/api_contract.yaml",
+    "tests/integration/test_database_migrations.py::exercise_domain_api_and_repository_contracts",
+    "make verify-g2-db",
+    "GitHub Actions governance-validation"
+  ],
+  "assertions": [
+    "NVIDIA dossier includes all required human_summary dimensions.",
+    "Business, group, dependencies and signals use loaded fixture relationships or industry memberships.",
+    "Capital and policy gaps are explicitly expressed as unknown, not zero.",
+    "coverage.human_summary_dimensions_present marks every required summary dimension true."
+  ],
+  "remaining_scope": "T506 still owns the full eight-layer workspace UI/E2E surface; this evidence closes the T500 API and content contract."
+}

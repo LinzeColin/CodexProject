@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import json
 import os
 import subprocess
 import sys
 from datetime import UTC, datetime
+from pathlib import Path
 from uuid import UUID
 
 import pytest
@@ -30,6 +32,16 @@ FIXTURE_MATERIALS_ID = "00000000-0000-4000-8000-000000000023"
 FIXTURE_DATACENTER_ID = "00000000-0000-4000-8000-000000000024"
 COREWEAVE_NVIDIA_RELATIONSHIP_ID = "10000000-0000-4000-8000-000000000012"
 SUPERSESSION_RELATIONSHIP_ID = "20000000-0000-4000-8000-000000000001"
+DOSSIER_HUMAN_SUMMARY_KEYS = {
+    "headline",
+    "business",
+    "group",
+    "dependencies",
+    "capital",
+    "policy",
+    "signals",
+    "data_gaps",
+}
 
 
 def run_script(*args: str) -> None:
@@ -169,7 +181,44 @@ def exercise_domain_api_and_repository_contracts() -> None:
 
     entity_lookup = client.get(f"/v1/entities/{NVIDIA_ID}")
     assert entity_lookup.status_code == 200
-    assert entity_lookup.json()["primary_identifiers"]["TICKER"] == "NVDA"
+    nvidia_dossier = entity_lookup.json()
+    assert nvidia_dossier["primary_identifiers"]["TICKER"] == "NVDA"
+    assert nvidia_dossier["focus_route"] == f"/v1/entities/{NVIDIA_ID}"
+    assert nvidia_dossier["ui_route"] == f"/?focus=entity:{NVIDIA_ID}"
+    assert nvidia_dossier["coverage"]["entity_focus_page_openable"] is True
+    assert set(nvidia_dossier["human_summary"]) >= DOSSIER_HUMAN_SUMMARY_KEYS
+    assert nvidia_dossier["coverage"]["human_summary_dimensions_present"] == {
+        "business": True,
+        "group": True,
+        "dependencies": True,
+        "capital": True,
+        "policy": True,
+        "signals": True,
+        "data_gaps": True,
+    }
+    assert nvidia_dossier["dossier_layers"]["business"]["relationship_count"] >= 1
+    assert nvidia_dossier["dossier_layers"]["group"]["relationship_count"] >= 1
+    assert nvidia_dossier["dossier_layers"]["dependencies"]["relationship_count"] >= 1
+    assert nvidia_dossier["dossier_layers"]["signals"]["relationship_count"] >= 1
+    assert nvidia_dossier["relationships_summary"]["supply_chain_operations"] >= 3
+    gap_dimensions = {
+        gap["dimension"] for gap in nvidia_dossier["human_summary"]["data_gaps"]
+    }
+    assert {"capital", "policy"} <= gap_dimensions
+    gap_messages = " ".join(
+        gap["message"] for gap in nvidia_dossier["human_summary"]["data_gaps"]
+    )
+    assert "unknown, not zero" in gap_messages
+
+    seed_entities = json.loads(Path("data/mock_entities.json").read_text(encoding="utf-8"))
+    assert len(seed_entities) == 30
+    for seed_entity in seed_entities:
+        seed_response = client.get(f"/v1/entities/{seed_entity['id']}")
+        assert seed_response.status_code == 200
+        seed_dossier = seed_response.json()
+        assert seed_dossier["id"] == seed_entity["id"]
+        assert seed_dossier["coverage"]["entity_focus_page_openable"] is True
+        assert set(seed_dossier["human_summary"]) >= DOSSIER_HUMAN_SUMMARY_KEYS
 
     watchlist_response = client.post(
         "/v1/watchlists",
