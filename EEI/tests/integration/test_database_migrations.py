@@ -57,6 +57,17 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert profiles[0]["profile_key"] == "balanced-v2"
     assert profiles[0]["active"] is True
 
+    object_scope_response = client.get("/v1/system/object-scope")
+    assert object_scope_response.status_code == 200
+    object_scope = object_scope_response.json()
+    assert object_scope["coverage"]["relationship_types"] == 52
+    assert object_scope["coverage"]["companies"] == 140
+    assert object_scope["navigation_module"]["visible"] is True
+
+    relationship_catalog = client.get("/v1/catalogs/relationship").json()
+    assert relationship_catalog["actual_row_count"] == 52
+    assert relationship_catalog["records"][0]["definition"]
+
     watchlist_response = client.post(
         "/v1/watchlists",
         json={"name": "MVP semiconductor fixture"},

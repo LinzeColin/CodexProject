@@ -197,7 +197,7 @@ TR-FUN-DM-04-A092,FUN-DM-04,A092,T606,Schema/E2E,artifacts/tests/a092/,NOT_START
 TR-FUN-DM-04-A093,FUN-DM-04,A093,T606,Negative/integration,artifacts/tests/a093/,NOT_STARTED,derived_from_task,Codex implementation,docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
 TR-FUN-DM-04-A094,FUN-DM-04,A094,"T607,T608",E2E,artifacts/tests/a094/,NOT_STARTED,derived_from_task,Codex implementation,docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
 TR-FUN-DM-04-A095,FUN-DM-04,A095,"T606,T608",Failure injection,artifacts/tests/a095/,NOT_STARTED,derived_from_task,Codex implementation,docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md
-TR-FUN-SYS-01-A169,FUN-SYS-01,A169,"T1202,T1203",Catalog integrity test + manual review,artifacts/tests/a169/,NOT_STARTED,derived_from_task,Codex implementation,FUNCTION_CATALOG.md
+TR-FUN-SYS-01-A169,FUN-SYS-01,A169,"T1202,T1203",Catalog integrity test + manual review,tests/unit/test_api_health.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml,DONE,derived_from_task,Codex implementation,FUNCTION_CATALOG.md
 TR-FUN-SYS-01-A170,FUN-SYS-01,A170,"T1203,T1204",E2E + visual regression,artifacts/tests/a170/,NOT_STARTED,derived_from_task,Codex implementation,FUNCTION_CATALOG.md
 TR-FUN-SYS-01-A171,FUN-SYS-01,A171,"T1201,T1206",Schema validation + model center E2E,artifacts/tests/a171/,NOT_STARTED,derived_from_task,Codex implementation,FUNCTION_CATALOG.md
 TR-FUN-SYS-01-A172,FUN-SYS-01,A172,T1200,Catalog/API mapping test,artifacts/tests/a172/,NOT_STARTED,derived_from_task,Codex implementation,FUNCTION_CATALOG.md

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import csv
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal
+from pathlib import Path
 from typing import Any
 from uuid import UUID
 
@@ -35,6 +37,151 @@ def _jsonable(value: Any) -> Any:
 
 def _now() -> datetime:
     return datetime.now(tz=UTC)
+
+
+ROOT = Path(__file__).resolve().parents[3]
+
+
+def _read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8-sig", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def _catalog_key(path: str) -> str:
+    return Path(path).stem.replace("_catalog", "").replace("_taxonomy", "").replace("_", "-")
+
+
+@dataclass(frozen=True)
+class CatalogRepository:
+    root: Path = ROOT
+
+    object_scope_paths: tuple[str, ...] = (
+        "data/relationship_family_catalog.csv",
+        "data/relationship_taxonomy.csv",
+        "data/supply_chain_stage_taxonomy.csv",
+        "data/upstream_downstream_role_catalog.csv",
+        "data/industry_taxonomy.csv",
+        "data/sector_taxonomy.csv",
+        "data/business_segment_taxonomy.csv",
+        "data/capital_object_taxonomy.csv",
+        "data/domain_object_catalog.csv",
+        "data/company_catalog.csv",
+    )
+
+    def _content_inventory(self) -> list[dict[str, str]]:
+        return _read_csv(self.root / "data/content_inventory.csv")
+
+    def _manifest_by_path(self) -> dict[str, dict[str, str]]:
+        return {
+            row["catalog_path"]: row
+            for row in _read_csv(self.root / "data/data_catalog_manifest.csv")
+        }
+
+    def list_catalogs(self) -> dict[str, Any]:
+        manifest = self._manifest_by_path()
+        catalogs = [
+            self._catalog_summary(row, manifest.get(row["path"], {}))
+            for row in self._content_inventory()
+        ]
+        return {
+            "as_of": _now().isoformat(),
+            "catalog_version": "v4.2.0",
+            "catalog_count": len(catalogs),
+            "source_of_truth_count": sum(1 for row in catalogs if row["source_of_truth"]),
+            "total_declared_rows": sum(row["row_count"] for row in catalogs),
+            "catalogs": catalogs,
+        }
+
+    def get_catalog(self, catalog_key: str) -> dict[str, Any]:
+        manifest = self._manifest_by_path()
+        for row in self._content_inventory():
+            summary = self._catalog_summary(row, manifest.get(row["path"], {}))
+            if summary["catalog_key"] == catalog_key:
+                csv_path = self.root / row["path"]
+                records = _read_csv(csv_path)
+                return {
+                    **summary,
+                    "as_of": _now().isoformat(),
+                    "fields": list(records[0].keys()) if records else [],
+                    "records": records,
+                    "actual_row_count": len(records),
+                }
+        raise NotFoundError(f"Catalog not found: {catalog_key}")
+
+    def csv_path_for_key(self, catalog_key: str) -> Path:
+        for row in self._content_inventory():
+            if _catalog_key(row["path"]) == catalog_key:
+                path = (self.root / row["path"]).resolve()
+                if not path.is_relative_to(self.root):
+                    raise NotFoundError(f"Catalog not found: {catalog_key}")
+                return path
+        raise NotFoundError(f"Catalog not found: {catalog_key}")
+
+    def object_scope(self) -> dict[str, Any]:
+        catalog_map = {row["path"]: row for row in self._content_inventory()}
+        manifest = self._manifest_by_path()
+        catalogs = [
+            self._catalog_summary(catalog_map[path], manifest.get(path, {}))
+            for path in self.object_scope_paths
+        ]
+        counts = {row["catalog_key"]: row["row_count"] for row in catalogs}
+        return {
+            "as_of": _now().isoformat(),
+            "catalog_version": "v4.2.0",
+            "navigation_module": {
+                "name_zh": "对象与范围",
+                "name_en": "Objects and Scope",
+                "visible": True,
+                "route": "/objects-scope",
+                "api_paths": [
+                    "/v1/system/object-scope",
+                    "/v1/catalogs",
+                    "/v1/catalogs/{catalogKey}",
+                ],
+                "source_doc": "docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md",
+                "acceptance_ids": ["A169", "A170"],
+            },
+            "coverage": {
+                "required_catalogs_present": True,
+                "object_scope_catalog_count": len(catalogs),
+                "total_declared_rows": sum(row["row_count"] for row in catalogs),
+                "relationship_families": counts["relationship-family"],
+                "relationship_types": counts["relationship"],
+                "upstream_downstream_roles": counts["upstream-downstream-role"],
+                "supply_chain_stages": counts["supply-chain-stage"],
+                "industries": counts["industry"],
+                "sectors": counts["sector"],
+                "business_segments": counts["business-segment"],
+                "capital_objects": counts["capital-object"],
+                "domain_objects": counts["domain-object"],
+                "companies": counts["company"],
+            },
+            "catalogs": catalogs,
+        }
+
+    def _catalog_summary(self, row: dict[str, str], manifest: dict[str, str]) -> dict[str, Any]:
+        path = row["path"]
+        row_count = int(manifest.get("row_count") or row["row_count"])
+        catalog_key = _catalog_key(path)
+        return {
+            "catalog_id": row["catalog_id"],
+            "catalog_key": catalog_key,
+            "name_zh": row["name_zh"],
+            "path": path,
+            "primary_key": manifest.get("primary_key") or row["primary_key"],
+            "row_count": row_count,
+            "owner": manifest.get("owner") or row["owner"],
+            "ui_surfaces": row["ui_surfaces"],
+            "scope": row["scope"],
+            "status": row["status"],
+            "source_of_truth": (manifest.get("source_of_truth") or row["source_of_truth"]).lower()
+            in {"yes", "true"},
+            "export_links": {
+                "json": f"/v1/catalogs/{catalog_key}",
+                "csv": f"/v1/catalogs/{catalog_key}?format=csv",
+                "source": path,
+            },
+        }
 
 
 @dataclass(frozen=True)

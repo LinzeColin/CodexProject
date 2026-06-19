@@ -106,7 +106,7 @@ T1123,G9,P0,Package prototype screenshots specs and clean-room QA,T1119,"A129,A1
 T1200,G0,P0,Adopt function catalog and module navigation catalog as single source of truth,T1123,A172,NOT STARTED
 T1201,G0,P0,Adopt model registry formula registry parameter catalog and threshold registry as canonical model management inputs,T1200,A171,NOT STARTED
 T1202,G1,P0,Implement catalog integrity validator and GitHub CI workflow,"T1200,T1201","A169,A177",NOT STARTED
-T1203,G2,P0,Create taxonomy and object scope API from canonical catalogs,T1202,"A169,A170",NOT STARTED
+T1203,G2,P0,Create taxonomy and object scope API from canonical catalogs,T1202,"A169,A170",DONE
 T1204,G4,P0,Implement Objects and Scope navigation screen,T1203,A170,NOT STARTED
 T1205,G4,P0,Implement Development Status navigation screen linked to tasks risks controls and acceptance,T1202,"A173,A174",NOT STARTED
 T1206,G3,P0,Implement immutable model version and active snapshot consistency contract,T1201,"A171,A178",NOT STARTED

@@ -493,3 +493,36 @@ Residual risks:
 - The current visual workspace remains static fixture-driven and not yet bound to live API graph responses.
 - T1203 taxonomy/object-scope API remains not started.
 - G2 remains open until T1203 and any remaining G2 gate checks are complete.
+
+## 2026-06-19 - Phase 1 / G2 T1203 taxonomy and object-scope API pass
+
+Status: TAXONOMY AND OBJECT-SCOPE API LOCAL PASS; G2 IN PROGRESS
+
+Completed:
+
+- Added a CSV-backed canonical catalog repository for relationship families, relationship types, upstream/downstream roles, supply-chain stages, industries, sectors, business segments, capital objects, domain objects, and companies.
+- Added machine-readable API endpoints for `GET /v1/catalogs`, `GET /v1/catalogs/{catalogKey}`, CSV export via `format=csv`, and `GET /v1/system/object-scope`.
+- Exposed an Objects and Scope navigation contract with module label, route, source document, Acceptance IDs, coverage counts, catalog summaries, and export links without requiring `DATABASE_URL`.
+- Updated `specs/api_contract.yaml` for catalog inventory, catalog detail, CSV export, and object-scope responses.
+- Added unit and integration coverage proving A169 catalog availability, row counts, definitions, and CSV export.
+- Marked T1203 and A169 as `DONE`.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run pytest tests/unit/test_api_health.py -q`: PASS, 7 tests.
+- Local `.venv/bin/uv run python scripts/validate_contracts.py`: PASS.
+- Local `.venv/bin/uv run ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/unit/test_api_health.py tests/integration/test_database_migrations.py`: PASS.
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- Local `make verify-g2-db`: FAIL CLOSED because Docker is not installed on this host.
+
+Acceptance status:
+
+- A169 is covered by `tests/unit/test_api_health.py`, `tests/integration/test_database_migrations.py`, and `specs/api_contract.yaml`.
+- A170 is not closed by this run. The API now exposes the Objects and Scope module contract, counts, definitions, coverage, and export links, but T1204 still needs the visible navigation screen plus E2E/visual regression evidence.
+
+Residual risks:
+
+- Remote GitHub Actions still needs to prove the T1203 changes against PostgreSQL-backed CI.
+- T1204 / A170 remains open.
+- G2 remains open until remote CI and any remaining G2 gate checks are complete.

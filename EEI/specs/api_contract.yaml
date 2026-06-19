@@ -265,6 +265,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HomeResponse'
+  /v1/catalogs:
+    get:
+      operationId: listCatalogs
+      responses:
+        '200':
+          description: Canonical machine-readable catalog inventory with source-of-truth metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponse'
+  /v1/catalogs/{catalogKey}:
+    get:
+      operationId: getCatalog
+      parameters:
+      - name: catalogKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: format
+        in: query
+        schema:
+          type: string
+          enum:
+          - json
+          - csv
+          default: json
+      responses:
+        '200':
+          description: Canonical catalog detail or CSV export
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogDetailResponse'
+            text/csv:
+              schema:
+                type: string
+        '404':
+          description: Catalog not found
+  /v1/system/object-scope:
+    get:
+      operationId: getObjectScope
+      responses:
+        '200':
+          description: Objects and scope module contract with counts, definitions, coverage and export links
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectScopeResponse'
   /v1/industries:
     get:
       operationId: listIndustries
@@ -1111,6 +1160,161 @@ components:
           type: integer
         recent_change_count:
           type: integer
+    CatalogExportLinks:
+      type: object
+      required:
+      - json
+      - csv
+      - source
+      properties:
+        json:
+          type: string
+        csv:
+          type: string
+        source:
+          type: string
+    CatalogSummary:
+      type: object
+      required:
+      - catalog_id
+      - catalog_key
+      - name_zh
+      - path
+      - primary_key
+      - row_count
+      - owner
+      - ui_surfaces
+      - scope
+      - status
+      - source_of_truth
+      - export_links
+      properties:
+        catalog_id:
+          type: string
+        catalog_key:
+          type: string
+        name_zh:
+          type: string
+        path:
+          type: string
+        primary_key:
+          type: string
+        row_count:
+          type: integer
+        owner:
+          type: string
+        ui_surfaces:
+          type: string
+        scope:
+          type: string
+        status:
+          type: string
+        source_of_truth:
+          type: boolean
+        export_links:
+          $ref: '#/components/schemas/CatalogExportLinks'
+    CatalogListResponse:
+      type: object
+      required:
+      - as_of
+      - catalog_version
+      - catalog_count
+      - source_of_truth_count
+      - total_declared_rows
+      - catalogs
+      properties:
+        as_of:
+          type: string
+          format: date-time
+        catalog_version:
+          type: string
+        catalog_count:
+          type: integer
+        source_of_truth_count:
+          type: integer
+        total_declared_rows:
+          type: integer
+        catalogs:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogSummary'
+    CatalogDetailResponse:
+      allOf:
+      - $ref: '#/components/schemas/CatalogSummary'
+      - type: object
+        required:
+        - as_of
+        - fields
+        - records
+        - actual_row_count
+        properties:
+          as_of:
+            type: string
+            format: date-time
+          fields:
+            type: array
+            items:
+              type: string
+          records:
+            type: array
+            items:
+              type: object
+              additionalProperties: true
+          actual_row_count:
+            type: integer
+    ObjectScopeResponse:
+      type: object
+      required:
+      - as_of
+      - catalog_version
+      - navigation_module
+      - coverage
+      - catalogs
+      properties:
+        as_of:
+          type: string
+          format: date-time
+        catalog_version:
+          type: string
+        navigation_module:
+          type: object
+          required:
+          - name_zh
+          - name_en
+          - visible
+          - route
+          - api_paths
+          - source_doc
+          - acceptance_ids
+          properties:
+            name_zh:
+              type: string
+            name_en:
+              type: string
+            visible:
+              type: boolean
+            route:
+              type: string
+            api_paths:
+              type: array
+              items:
+                type: string
+            source_doc:
+              type: string
+            acceptance_ids:
+              type: array
+              items:
+                type: string
+        coverage:
+          type: object
+          additionalProperties:
+            oneOf:
+            - type: boolean
+            - type: integer
+        catalogs:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogSummary'
     HomeResponse:
       type: object
       required:

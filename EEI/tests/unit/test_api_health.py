@@ -42,6 +42,56 @@ def test_domain_api_fails_closed_without_database(monkeypatch) -> None:
     assert response.json()["detail"] == "DATABASE_URL is required for domain API endpoints"
 
 
+def test_catalog_api_exposes_machine_readable_object_scope_without_database(monkeypatch) -> None:
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    client = TestClient(app)
+
+    response = client.get("/v1/system/object-scope")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["navigation_module"]["name_zh"] == "对象与范围"
+    assert payload["navigation_module"]["visible"] is True
+    assert payload["coverage"] == {
+        "required_catalogs_present": True,
+        "object_scope_catalog_count": 10,
+        "total_declared_rows": 363,
+        "relationship_families": 10,
+        "relationship_types": 52,
+        "upstream_downstream_roles": 24,
+        "supply_chain_stages": 16,
+        "industries": 26,
+        "sectors": 13,
+        "business_segments": 20,
+        "capital_objects": 30,
+        "domain_objects": 32,
+        "companies": 140,
+    }
+    assert all(catalog["source_of_truth"] is True for catalog in payload["catalogs"])
+    assert payload["catalogs"][0]["export_links"]["json"].startswith("/v1/catalogs/")
+    assert payload["catalogs"][0]["export_links"]["csv"].endswith("?format=csv")
+
+
+def test_catalog_detail_exposes_definitions_and_csv_export(monkeypatch) -> None:
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    client = TestClient(app)
+
+    detail = client.get("/v1/catalogs/relationship")
+    csv_export = client.get("/v1/catalogs/relationship?format=csv")
+    missing = client.get("/v1/catalogs/not-a-catalog")
+
+    assert detail.status_code == 200
+    payload = detail.json()
+    assert payload["catalog_key"] == "relationship"
+    assert payload["row_count"] == 52
+    assert payload["actual_row_count"] == 52
+    assert {"relationship_type", "family", "direction", "definition"} <= set(payload["fields"])
+    assert payload["records"][0]["definition"]
+    assert csv_export.status_code == 200
+    assert csv_export.text.startswith("relationship_type,family,direction")
+    assert missing.status_code == 404
+
+
 def test_database_health_can_pass_with_select_one() -> None:
     class Cursor:
         def execute(self, query: str) -> None:
