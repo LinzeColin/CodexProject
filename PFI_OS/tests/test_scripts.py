@@ -590,7 +590,11 @@ def test_macos_app_installer_builds_standard_app_bundle():
     assert '/usr/bin/ditto --norsrc --noextattr --noacl "$SOURCE_APP" "$staging/PFI_OS.app"' in installer
     assert '/usr/bin/codesign --verify --deep --strict "$staging/PFI_OS.app"' in installer
     assert '/usr/bin/ditto --norsrc --noextattr --noacl "$staging/PFI_OS.app" "$target"' in installer
+    assert 'xattr -cr "$target"' in installer
     assert '/usr/bin/codesign --verify --deep --strict "$target"' in installer
+    assert 'install_required_app "$DOWNLOADS_APP"' in installer
+    assert 'install_required_app "$APPLICATIONS_APP"' in installer
+    assert 'install_optional_app "$DESKTOP_APP"' in installer
     assert 'PFI_OS_PROJECT_ROOT' in installer
     assert 'chmod +x "$target/Contents/MacOS/PFI_OS"' in installer
     assert 'xattr -cr "$staging/PFI_OS.app"' in installer

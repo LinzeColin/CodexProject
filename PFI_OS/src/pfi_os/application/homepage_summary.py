@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from typing import Any
 
@@ -7,15 +8,32 @@ from pfi_os.application.operational_store import OperationalStore
 from pfi_os.application.source_registry import SourceRegistry
 from pfi_os.application.workflow_runtime_read_model import build_workflow_runtime_read_model, empty_workflow_runtime_read_model
 
+RETIRED_PUBLIC_FRAGMENTS = (
+    "Token ROI",
+    "EVAToken",
+    "EVACommandCenter",
+    "EVA_OS",
+    "EVA OS",
+)
+SAFE_METADATA_KEYS = (
+    "source_adapter",
+    "schema",
+    "command_status",
+    "scorecard_count",
+    "risk_gate_count",
+    "action_count",
+    "artifact_uri",
+)
+
 
 def build_homepage_summary(store: OperationalStore | None = None, *, now: datetime | None = None) -> dict[str, Any]:
     operational_store = store or OperationalStore()
     source_registry = SourceRegistry(operational_store)
-    source_summary = source_registry.summary(now=now)
-    sources = operational_store.table_rows("source_records")
-    evidence = operational_store.table_rows("evidence_records")
-    jobs = operational_store.table_rows("job_records")
-    tasks = operational_store.table_rows("task_records")
+    source_summary = _without_retired_source_rows(source_registry.summary(now=now))
+    sources = _without_retired_rows(operational_store.table_rows("source_records"))
+    evidence = _without_retired_rows(operational_store.table_rows("evidence_records"))
+    jobs = _without_retired_rows(operational_store.table_rows("job_records"))
+    tasks = _without_retired_rows(operational_store.table_rows("task_records"))
     holdings = operational_store.table_rows("holding_snapshots")
 
     generated_at = (now or datetime.now(timezone.utc)).isoformat(timespec="seconds")
@@ -55,7 +73,7 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
         "metric_cards": cards,
         "decision_rows": decision_rows,
         "evidence_drawer": _evidence_drawer(evidence, sources),
-        "workflow_runtime": build_workflow_runtime_read_model(operational_store, now=now),
+        "workflow_runtime": _sanitize_public_payload(build_workflow_runtime_read_model(operational_store, now=now)),
         "read_model": "OperationalStore -> SourceRegistry -> PFIOSHomeSummaryV1",
         "cache_policy": "Web shell consumes this compact summary; it does not read provider JSON, ResearchBus tables, or private source files directly.",
         "safety_boundary": "Decision support only; no live automatic orders, broker submission, payments, betting, or unattended execution.",
@@ -101,37 +119,37 @@ def empty_homepage_summary() -> dict[str, Any]:
 
 def _decision_rows(tasks: list[dict[str, Any]], jobs: list[dict[str, Any]], evidence: list[dict[str, Any]]) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
-    for row in sorted(tasks, key=lambda item: (str(item.get("priority", "P9")), str(item.get("task_id", ""))))[:6]:
+    for row in sorted(_without_retired_rows(tasks), key=lambda item: (str(item.get("priority", "P9")), str(item.get("task_id", ""))))[:6]:
         rows.append(
             {
-                "priority": str(row.get("priority", "")),
-                "object": str(row.get("owner_workspace", "")),
-                "evidence": str(row.get("evidence_id", "")),
-                "action": str(row.get("action", "")),
-                "status": str(row.get("status", "")),
+                "priority": _safe_public_text(row.get("priority", "")),
+                "object": _safe_public_text(row.get("owner_workspace", "")),
+                "evidence": _safe_public_text(row.get("evidence_id", "")),
+                "action": _safe_public_text(row.get("action", "")),
+                "status": _safe_public_text(row.get("status", "")),
             }
         )
     if rows:
         return rows
-    for row in sorted(jobs, key=lambda item: str(item.get("updated_at", "")), reverse=True)[:3]:
+    for row in sorted(_without_retired_rows(jobs), key=lambda item: str(item.get("updated_at", "")), reverse=True)[:3]:
         rows.append(
             {
                 "priority": "P1",
-                "object": str(row.get("job_type", "")),
-                "evidence": str(row.get("source_id", "")),
-                "action": f"Review job phase: {row.get('phase', '')}",
-                "status": str(row.get("status", "")),
+                "object": _safe_public_text(row.get("job_type", "")),
+                "evidence": _safe_public_text(row.get("source_id", "")),
+                "action": _safe_public_text(f"Review job phase: {row.get('phase', '')}"),
+                "status": _safe_public_text(row.get("status", "")),
             }
         )
     if rows:
         return rows
-    for row in sorted(evidence, key=lambda item: str(item.get("created_at", "")), reverse=True)[:3]:
+    for row in sorted(_without_retired_rows(evidence), key=lambda item: str(item.get("created_at", "")), reverse=True)[:3]:
         rows.append(
             {
                 "priority": "P2",
-                "object": str(row.get("entity_id", "")),
-                "evidence": str(row.get("evidence_class", "")),
-                "action": str(row.get("summary", "")),
+                "object": _safe_public_text(row.get("entity_id", "")),
+                "evidence": _safe_public_text(row.get("evidence_class", "")),
+                "action": _safe_public_text(row.get("summary", "")),
                 "status": "ready",
             }
         )
@@ -139,19 +157,85 @@ def _decision_rows(tasks: list[dict[str, Any]], jobs: list[dict[str, Any]], evid
 
 
 def _evidence_drawer(evidence: list[dict[str, Any]], sources: list[dict[str, Any]]) -> dict[str, str]:
-    latest_evidence = sorted(evidence, key=lambda item: str(item.get("created_at", "")), reverse=True)
+    latest_evidence = sorted(_without_retired_rows(evidence), key=lambda item: str(item.get("created_at", "")), reverse=True)
     latest = latest_evidence[0] if latest_evidence else {}
-    source_by_id = {str(row.get("source_id", "")): row for row in sources}
+    source_by_id = {str(row.get("source_id", "")): row for row in _without_retired_rows(sources)}
     source = source_by_id.get(str(latest.get("source_id", "")), {})
     return {
-        "title": f"{latest.get('entity_id', 'PFI')} · Operational evidence",
-        "Evidence": str(latest.get("summary", "No operational evidence records are available.")),
-        "Source": f"{source.get('source_type', 'Missing')} · {source.get('title', '')}".strip(" ·"),
-        "Model": str(latest.get("model_version", "DisabledProvider") or "DisabledProvider"),
-        "Parameters": str(latest.get("metadata_json", "{}")),
-        "Data lineage": f"{source.get('source_id', 'source missing')} -> {latest.get('evidence_id', 'evidence missing')}",
-        "Raw document": str(latest.get("artifact_uri", "") or source.get("uri", "No source record.")),
+        "title": f"{_safe_public_text(latest.get('entity_id', 'PFI'))} · Operational evidence",
+        "Evidence": _safe_public_text(latest.get("summary", "No operational evidence records are available.")),
+        "Source": _safe_public_text(f"{source.get('source_type', 'Missing')} · {source.get('title', '')}".strip(" ·")),
+        "Model": _safe_public_text(latest.get("model_version", "DisabledProvider") or "DisabledProvider"),
+        "Parameters": _safe_metadata_parameters(latest.get("metadata_json", "{}")),
+        "Data lineage": _safe_public_text(f"{source.get('source_id', 'source missing')} -> {latest.get('evidence_id', 'evidence missing')}"),
+        "Raw document": _safe_public_text(latest.get("artifact_uri", "") or source.get("uri", "No source record.")),
     }
+
+
+def _without_retired_source_rows(summary: dict[str, Any]) -> dict[str, Any]:
+    rows = [row for row in summary.get("rows", []) if isinstance(row, dict) and not _contains_retired_public_reference(row)]
+    domain_counts: dict[str, int] = {}
+    freshness_counts: dict[str, int] = {}
+    for row in rows:
+        domain = str(row.get("domain", ""))
+        freshness = str(row.get("freshness", ""))
+        domain_counts[domain] = domain_counts.get(domain, 0) + 1
+        freshness_counts[freshness] = freshness_counts.get(freshness, 0) + 1
+    clean = dict(summary)
+    clean["source_count"] = len(rows)
+    clean["domain_counts"] = domain_counts
+    clean["freshness_counts"] = freshness_counts
+    clean["rows"] = [_sanitize_public_payload(row) for row in rows]
+    return clean
+
+
+def _without_retired_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [row for row in rows if not _contains_retired_public_reference(row)]
+
+
+def _safe_metadata_parameters(metadata_json: Any) -> str:
+    try:
+        metadata = json.loads(str(metadata_json or "{}"))
+    except json.JSONDecodeError:
+        metadata = {}
+    if not isinstance(metadata, dict):
+        metadata = {}
+    compact = {
+        key: _sanitize_public_payload(metadata[key])
+        for key in SAFE_METADATA_KEYS
+        if key in metadata and not _contains_retired_public_reference(metadata[key])
+    }
+    return json.dumps(compact, ensure_ascii=False, sort_keys=True)
+
+
+def _safe_public_text(value: Any) -> str:
+    if _contains_retired_public_reference(value):
+        return "[retired legacy reference hidden]"
+    return str(_sanitize_public_payload(value))
+
+
+def _sanitize_public_payload(value: Any) -> Any:
+    if isinstance(value, str):
+        if _contains_retired_public_reference(value):
+            return "[retired legacy reference hidden]"
+        if value.startswith("/Users/") or value.startswith("/private/") or value.startswith("~"):
+            return "[redacted-private-uri]"
+        return value
+    if isinstance(value, dict):
+        return {str(key): _sanitize_public_payload(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_sanitize_public_payload(item) for item in value]
+    return value
+
+
+def _contains_retired_public_reference(value: Any) -> bool:
+    if isinstance(value, str):
+        return any(fragment in value for fragment in RETIRED_PUBLIC_FRAGMENTS)
+    if isinstance(value, dict):
+        return any(_contains_retired_public_reference(item) for item in value.values())
+    if isinstance(value, list):
+        return any(_contains_retired_public_reference(item) for item in value)
+    return False
 
 
 def _count_market_sources(sources: list[dict[str, Any]], evidence: list[dict[str, Any]]) -> int:

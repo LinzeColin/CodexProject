@@ -40,14 +40,29 @@ install_app() {
   rm -rf "$target"
   /usr/bin/ditto --norsrc --noextattr --noacl "$staging/PFI_OS.app" "$target"
   chmod +x "$target/Contents/MacOS/PFI_OS"
+  xattr -cr "$target" >/dev/null 2>&1 || true
   /usr/bin/codesign --verify --deep --strict "$target"
   rm -rf "$staging"
   trap - RETURN
 }
 
-install_app "$DESKTOP_APP"
-install_app "$DOWNLOADS_APP"
-install_app "$APPLICATIONS_APP"
+install_required_app() {
+  local target="$1"
+  install_app "$target"
+}
+
+install_optional_app() {
+  local target="$1"
+  if install_app "$target"; then
+    echo "optional=$target status=installed"
+  else
+    echo "optional=$target status=warning codesign_or_metadata_cleanup_failed" >&2
+  fi
+}
+
+install_required_app "$DOWNLOADS_APP"
+install_required_app "$APPLICATIONS_APP"
+install_optional_app "$DESKTOP_APP"
 
 echo "PFI_OS_ENTRY_APPS: installed"
 echo "desktop=$DESKTOP_APP"

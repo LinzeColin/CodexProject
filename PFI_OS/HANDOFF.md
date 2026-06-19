@@ -34,6 +34,9 @@ Current sequence:
 14. Phase 5 package:
     engineering acceptance package complete; Phase 6 user materials remain
     external.
+15. v0.1.1 preparation:
+    P0/P1 findings baseline complete; runtime entry correction and legacy
+    command-center cache isolation complete.
 
 ## Current Local State
 
@@ -131,6 +134,20 @@ Current sequence:
 - Phase 5 acceptance package complete as a GitHub-safe manifest and handoff
   document for Phase 6 deployment preparation, with private/user-supplied
   materials explicitly kept outside public Git.
+- v0.1.1 findings baseline complete for the v0.2 handoff/iteration packs:
+  12 P0 findings, 18 P1 findings, 1 closed, 18 partial, and 11 open.
+- PFI Web Shell is now the default runtime path in `StartPFIOS.command`,
+  `scripts/startPFIOS.sh`, `streamlit_app.py`, `web/index.html`, and the Web
+  Shell contract; `PFI_UI_V2=0` remains the legacy opt-out.
+- Downloads and Applications `PFI_OS.app` entries were reinstalled and verified
+  against the current worktree. Desktop remains best-effort because macOS can
+  attach Finder/resource metadata there.
+- Homepage ingestion no longer falls back to retired
+  `EVACommandCenter_latest.json`; stale local SQLite rows containing retired
+  Token ROI/EVA command-center metadata are hidden from the active homepage
+  summary.
+- Cache cleanup was run through `scripts/cleanCache.sh --json`; only
+  disposable pycache, pytest cache, and root runtime log files were deleted.
 
 ## Start Here
 
@@ -156,7 +173,8 @@ Read in this order:
 18. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
 19. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
 20. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
-21. `docs/archive/legacy-migration.md`
+21. `docs/phase/V0_1_1_FINDINGS_BASELINE.md`
+22. `docs/archive/legacy-migration.md`
 
 ## Current Verification Evidence
 
@@ -184,12 +202,22 @@ python -m pytest tests/contract/test_phase5_acceptance_package.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
+python -m pytest tests/contract/test_pfi_web_shell_contract.py tests/contract/test_phase_a_homepage_ingestion.py tests/contract/test_v011_findings_baseline.py tests/test_scripts.py::test_macos_app_installer_builds_standard_app_bundle -q
 python -m compileall src/pfi_os/application src/pfi_os/app/streamlit_app.py
 git diff --check
 ```
 
 The focused suite passed locally before this handoff update. Re-run the target
 commands after any follow-up edits.
+
+Latest runtime smoke:
+
+- `PFI_UI_V2=1 scripts/startPFIOS.sh` launched `http://127.0.0.1:8501`.
+- Browser iframe text contained `PFI OS`, `首页`, `市场`, `研究`, `持仓`,
+  `策略实验室`, and `数据与系统`.
+- Browser iframe text did not contain `功能导航`, `Token ROI`,
+  `EVACommandCenter`, `EVAToken`, `EVA_OS`, or `EVA OS`.
+- `scripts/stopPFIOS.sh` stopped the local service after verification.
 
 ## Not Done
 
@@ -209,12 +237,19 @@ commands after any follow-up edits.
   backup, hardware/disk audit, sanitized holdings, representative symbols and
   policy documents, Fast Path target source list, workflow examples, and final
   subjective acceptance score.
+- Tracked legacy `data/commandCenter/EVA*` and `data/value/EVAToken*` artifacts
+  still exist as historical files. Active PFI homepage ingestion ignores them;
+  physical deletion should be handled by a dedicated legacy-data migration run.
+- `st.components.v1.html` currently emits a Streamlit deprecation warning in
+  the app runtime. Replace the embedding mechanism in a focused UI-runtime
+  task before treating the Web Shell as a release-final surface.
 
 ## Next Step
 
-Continue from Phase 6 deployment preparation:
+Continue from v0.1.1 / PFI-001:
 
-1. Collect external user-supplied Phase 6 materials on the deployment Mac.
+1. Close PFI-001 reproducible environment, CI, dependency lock, and
+   secret-scan gates.
 2. Add controlled local deployment acceptance only if a release gate requires
    real service start/stop evidence.
 3. Replace remaining legacy Streamlit direct reads one vertical slice at a time

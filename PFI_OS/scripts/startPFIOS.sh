@@ -8,6 +8,7 @@ cd "$PROJECT_DIR"
 source "$PROJECT_DIR/scripts/pfiRuntime.sh"
 
 export PYTHONPATH="$PROJECT_DIR/src"
+export PFI_UI_V2="${PFI_UI_V2:-1}"
 PYTHON_BIN="$(pfi_os_ensure_app_python "$PROJECT_DIR")"
 
 for EXISTING_PORT in {8501..8510}; do
@@ -25,7 +26,7 @@ while lsof -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; do
 done
 
 URL="http://localhost:$PORT"
-echo "Starting PFIOS at $URL"
+echo "Starting PFI OS at $URL"
 echo "Research only. Live trading and real order submission are prohibited."
 echo "No browser opened. Copy the URL above if needed."
 "$PYTHON_BIN" -m streamlit run src/pfi_os/app/streamlit_app.py \

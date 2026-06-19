@@ -9,6 +9,13 @@ from pfi_os.application.operational_store import DataDomain, EvidenceRecord, Job
 
 
 SCHEMA = "PFIOSHomepageCacheIngestionV1"
+RETIRED_COMMAND_CENTER_FRAGMENTS = (
+    "Token ROI",
+    "EVAToken",
+    "EVACommandCenter",
+    "EVA_OS",
+    "EVA OS",
+)
 
 
 def ingest_command_center_cache(
@@ -94,8 +101,7 @@ def _resolve_cache_path(root: Path, cache_path: Path | str | None) -> Path | Non
     preferred = command_center / "PFICommandCenter_latest.json"
     if preferred.exists():
         return preferred.resolve(strict=False)
-    matches = sorted(command_center.glob("*CommandCenter_latest.json"))
-    return matches[-1].resolve(strict=False) if matches else None
+    return None
 
 
 def _relative_uri(root: Path, path: Path) -> str:
@@ -114,13 +120,16 @@ def _payload_as_of(payload: dict[str, Any]) -> str:
 
 
 def _cache_metadata(payload: dict[str, Any], relative_uri: str) -> dict[str, Any]:
+    scorecards = _sanitize_rows(payload.get("scorecards", []), limit=12)
+    risk_gates = _sanitize_rows(payload.get("risk_gates", []), limit=12)
+    action_queue = _sanitize_rows(payload.get("action_queue", []), limit=12)
     return {
         "source_adapter": "command_center_cache",
-        "schema": str(payload.get("schema", "")),
-        "command_status": str(payload.get("command_status", "")),
-        "scorecard_count": len(payload.get("scorecards", []) or []),
-        "risk_gate_count": len(payload.get("risk_gates", []) or []),
-        "action_count": len(payload.get("action_queue", []) or []),
+        "schema": str(_sanitize_value(payload.get("schema", ""))),
+        "command_status": str(_sanitize_value(payload.get("command_status", ""))),
+        "scorecard_count": len(scorecards),
+        "risk_gate_count": len(risk_gates),
+        "action_count": len(action_queue),
         "artifact_uri": relative_uri,
         "command_center_read_model": _sanitize_command_center_payload(payload, relative_uri),
     }
@@ -135,14 +144,14 @@ def _evidence_summary(payload: dict[str, Any]) -> str:
 def _sanitize_command_center_payload(payload: dict[str, Any], relative_uri: str) -> dict[str, Any]:
     return {
         "schema": "PFIOSCommandCenterReadModelV1",
-        "source_schema": str(payload.get("schema", "")),
-        "system": str(payload.get("system", "")),
-        "display_name": str(payload.get("display_name", "")),
-        "subsystem": str(payload.get("subsystem", "")),
-        "as_of": str(payload.get("as_of", "")),
-        "generated_at": str(payload.get("generated_at", "")),
-        "command_status": str(payload.get("command_status", "NeedsReview")),
-        "status_reason": str(payload.get("status_reason", "")),
+        "source_schema": str(_sanitize_value(payload.get("schema", ""))),
+        "system": str(_sanitize_value(payload.get("system", ""))),
+        "display_name": str(_sanitize_value(payload.get("display_name", ""))),
+        "subsystem": str(_sanitize_value(payload.get("subsystem", ""))),
+        "as_of": str(_sanitize_value(payload.get("as_of", ""))),
+        "generated_at": str(_sanitize_value(payload.get("generated_at", ""))),
+        "command_status": str(_sanitize_value(payload.get("command_status", "NeedsReview"))),
+        "status_reason": str(_sanitize_value(payload.get("status_reason", ""))),
         "scorecards": _sanitize_rows(payload.get("scorecards", []), limit=12),
         "risk_gates": _sanitize_rows(payload.get("risk_gates", []), limit=12),
         "action_queue": _sanitize_rows(payload.get("action_queue", []), limit=12),
@@ -158,7 +167,14 @@ def _sanitize_command_center_payload(payload: dict[str, Any], relative_uri: str)
 def _sanitize_rows(rows: Any, *, limit: int) -> list[dict[str, Any]]:
     if not isinstance(rows, list):
         return []
-    return [_sanitize_dict(row) for row in rows[:limit] if isinstance(row, dict)]
+    sanitized: list[dict[str, Any]] = []
+    for row in rows:
+        if not isinstance(row, dict) or _contains_retired_reference(row):
+            continue
+        sanitized.append(_sanitize_dict(row))
+        if len(sanitized) >= limit:
+            break
+    return sanitized
 
 
 def _sanitize_dict(row: dict[str, Any]) -> dict[str, Any]:
@@ -180,7 +196,19 @@ def _sanitize_value(value: Any) -> Any:
     if isinstance(value, str):
         if value.startswith("/Users/") or value.startswith("/private/") or value.startswith("~"):
             return "[redacted-private-uri]"
+        if _contains_retired_reference(value):
+            return "[retired-legacy-reference-hidden]"
     return value
+
+
+def _contains_retired_reference(value: Any) -> bool:
+    if isinstance(value, str):
+        return any(fragment in value for fragment in RETIRED_COMMAND_CENTER_FRAGMENTS)
+    if isinstance(value, dict):
+        return any(_contains_retired_reference(item) for item in value.values())
+    if isinstance(value, list):
+        return any(_contains_retired_reference(item) for item in value)
+    return False
 
 
 def _upsert_first_action_task(
@@ -191,7 +219,11 @@ def _upsert_first_action_task(
     evidence_id: str,
     as_of: str,
 ) -> str:
-    actions = [row for row in payload.get("action_queue", []) or [] if isinstance(row, dict)]
+    actions = [
+        row
+        for row in payload.get("action_queue", []) or []
+        if isinstance(row, dict) and not _contains_retired_reference(row)
+    ]
     if not actions:
         return ""
     first = actions[0]

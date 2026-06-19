@@ -30,6 +30,10 @@ from pfi_os.application.phase5_acceptance_package import (
     PHASE5_ACCEPTANCE_PACKAGE_SCHEMA,
     build_phase5_acceptance_package,
 )
+from pfi_os.application.v011_findings_baseline import (
+    V011_FINDINGS_BASELINE_SCHEMA,
+    build_v011_findings_baseline,
+)
 from pfi_os.application.command_center_read_model import (
     build_command_center_read_model,
     empty_command_center_read_model,
@@ -134,6 +138,7 @@ __all__ = [
     "build_phase_d_deployment_readiness_contract",
     "build_phase_d_backup_restore_contract",
     "build_phase5_acceptance_package",
+    "build_v011_findings_baseline",
     "build_command_center_read_model",
     "build_macos_runtime_acceptance_read_model",
     "build_phase_b_strategy_lab_contract",
@@ -185,4 +190,5 @@ __all__ = [
     "PHASE_D_DEPLOYMENT_READINESS_SCHEMA",
     "PHASE_D_BACKUP_RESTORE_ACCEPTANCE_SCHEMA",
     "PHASE5_ACCEPTANCE_PACKAGE_SCHEMA",
+    "V011_FINDINGS_BASELINE_SCHEMA",
 ]

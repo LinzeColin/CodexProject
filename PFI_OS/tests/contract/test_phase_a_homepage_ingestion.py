@@ -48,6 +48,24 @@ def test_ingest_command_center_cache_skips_when_no_cache_exists(tmp_path: Path):
     assert store.table_rows("evidence_records") == []
 
 
+def test_ingest_command_center_cache_ignores_retired_eva_latest_cache_by_default(tmp_path: Path):
+    project_root = tmp_path / "PFI_OS"
+    cache_dir = project_root / "data" / "commandCenter"
+    cache_dir.mkdir(parents=True)
+    (cache_dir / "EVACommandCenter_latest.json").write_text(
+        json.dumps(_retired_eva_command_center_payload(), ensure_ascii=False),
+        encoding="utf-8",
+    )
+    store = OperationalStore(tmp_path / "private" / "operational" / "pfi.sqlite")
+    store.initialize()
+
+    result = ingest_command_center_cache(store, project_root=project_root)
+
+    assert result["status"] == "Skipped"
+    assert store.table_rows("source_records") == []
+    assert store.table_rows("evidence_records") == []
+
+
 def test_ingest_command_center_cache_does_not_store_private_absolute_paths_in_metadata(tmp_path: Path):
     project_root = tmp_path / "PFI_OS"
     cache_dir = project_root / "data" / "commandCenter"
@@ -66,6 +84,40 @@ def test_ingest_command_center_cache_does_not_store_private_absolute_paths_in_me
     assert str(project_root) not in combined_metadata
     assert "private_reports" not in combined_metadata
     assert "data/commandCenter/PFICommandCenter_latest.json" in combined_metadata
+
+
+def test_homepage_summary_hides_retired_legacy_command_center_content(tmp_path: Path):
+    project_root = tmp_path / "PFI_OS"
+    cache_dir = project_root / "data" / "commandCenter"
+    cache_dir.mkdir(parents=True)
+    payload = _command_center_payload()
+    payload["scorecards"].append({"metric": "Token ROI Ledger", "value": "178", "status": "Pass"})
+    payload["action_queue"].append(
+        {
+            "priority": "P2",
+            "status": "Open",
+            "owner": "PFI",
+            "action": "补齐 Token ROI 台账。",
+            "source": "Token ROI Ledger",
+        }
+    )
+    payload["evidence_sources"] = [
+        {"source": "Token ROI Ledger", "artifact_uri": "data/value/EVATokenROILedger_latest.json"},
+        {"source": "PFI Runtime", "artifact_uri": "data/runtime/PFIRuntime_latest.json"},
+    ]
+    cache_path = cache_dir / "PFICommandCenter_latest.json"
+    cache_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    store = OperationalStore(tmp_path / "private" / "operational" / "pfi.sqlite")
+    store.initialize()
+
+    ingest_command_center_cache(store, project_root=project_root)
+    summary = build_homepage_summary(store, now=datetime(2026, 6, 19, 10, 0, tzinfo=timezone.utc))
+    serialized = json.dumps(summary, ensure_ascii=False)
+
+    assert summary["decision_rows"][0]["action"] == "Review provider readiness."
+    assert "Token ROI" not in serialized
+    assert "EVACommandCenter" not in serialized
+    assert "EVAToken" not in serialized
 
 
 def _command_center_payload() -> dict:
@@ -92,3 +144,13 @@ def _command_center_payload() -> dict:
             }
         ],
     }
+
+
+def _retired_eva_command_center_payload() -> dict:
+    payload = _command_center_payload()
+    payload["schema"] = "EVACommandCenterV1"
+    payload["system"] = "EVA_OS"
+    payload["display_name"] = "EVA OS"
+    payload["latest_report"] = {"name": "EVACommandCenter_latest.json"}
+    payload["scorecards"].append({"metric": "Token ROI Ledger", "value": "178", "status": "Pass"})
+    return payload

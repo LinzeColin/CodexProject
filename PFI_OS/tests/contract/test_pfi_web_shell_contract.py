@@ -30,7 +30,7 @@ def test_web_shell_contract_exposes_pfi_first_six_workspace_shape():
 
     assert contract.schema == "PFIOSWebShellContractV1"
     assert contract.feature_flag == "PFI_UI_V2"
-    assert contract.fallback_value == "0"
+    assert contract.fallback_value == "1"
     assert workspace_labels == ["首页", "市场", "研究", "持仓", "策略实验室", "数据与系统"]
     assert workspace_ids == ["home", "market", "research", "portfolio", "strategy", "data"]
     assert nav_ids == workspace_ids
@@ -79,9 +79,21 @@ def test_streamlit_launcher_exposes_pfi_ui_v2_feature_flag_with_fallback():
     source = _text(PROJECT_ROOT / "src" / "pfi_os" / "app" / "streamlit_app.py")
 
     assert "def _pfi_ui_v2_enabled" in source
-    assert 'os.environ.get("PFI_UI_V2", "0") == "1"' in source
+    assert 'os.environ.get("PFI_UI_V2", "1") != "0"' in source
     assert "render_pfi_ui_v2_shell()" in source
     assert "return" in source.split("render_pfi_ui_v2_shell()", maxsplit=1)[1]
+
+
+def test_launch_scripts_default_to_pfi_web_shell_with_legacy_opt_out():
+    app_launcher = _text(PROJECT_ROOT / "StartPFIOS.command")
+    cli_launcher = _text(PROJECT_ROOT / "scripts" / "startPFIOS.sh")
+    shell_html = _text(PROJECT_ROOT / "web" / "index.html")
+
+    for source in (app_launcher, cli_launcher):
+        assert 'export PFI_UI_V2="${PFI_UI_V2:-1}"' in source
+        assert "Starting PFI OS at" in source
+        assert "streamlit run src/pfi_os/app/streamlit_app.py" in source
+    assert 'data-fallback-flag-value="1"' in shell_html
 
 
 def test_streamlit_launcher_can_inline_web_shell_assets():

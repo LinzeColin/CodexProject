@@ -82,7 +82,7 @@ def build_web_shell_contract() -> WebShellContract:
     return WebShellContract(
         schema="PFIOSWebShellContractV1",
         feature_flag="PFI_UI_V2",
-        fallback_value="0",
+        fallback_value="1",
         primary_workspaces=PRIMARY_WORKSPACES,
         global_context_fields=GLOBAL_CONTEXT_FIELDS,
         evidence_drawer_sections=EVIDENCE_DRAWER_SECTIONS,

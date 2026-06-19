@@ -96,6 +96,7 @@ trap 'rm -rf "$LOCK_DIR" >/dev/null 2>&1 || true' EXIT
 source "$PROJECT_DIR/scripts/pfiRuntime.sh"
 
 export PYTHONPATH="$PROJECT_DIR/src"
+export PFI_UI_V2="${PFI_UI_V2:-1}"
 PYTHON_BIN="$(pfi_os_ensure_app_python "$PROJECT_DIR")"
 
 if open_existing_service; then
@@ -116,7 +117,7 @@ done
 URL="http://localhost:$PORT"
 HEARTBEAT_TIMEOUT="${PFI_HEARTBEAT_TIMEOUT:-120}"
 export PFI_HEARTBEAT_URL="http://127.0.0.1:$HEARTBEAT_PORT/heartbeat"
-echo "Starting PFIOS at $URL"
+echo "Starting PFI OS at $URL"
 echo "Research only. Live trading and real order submission are prohibited."
 "$PYTHON_BIN" -m streamlit run src/pfi_os/app/streamlit_app.py \
   --server.port "$PORT" \
