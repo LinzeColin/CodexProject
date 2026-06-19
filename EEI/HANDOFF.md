@@ -52,6 +52,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: `make verify-g2-db` added; local run fails closed because Docker is not installed.
 - 2026-06-19 update: GitHub Actions run `27821808812` passed; `make verify-g2-db` proved PostgreSQL migration, seed idempotency, rollback, and E2E.
 - 2026-06-19 update: T205 synthetic fixture loader added locally; remote PostgreSQL CI still needs to prove it.
+- 2026-06-19 update: GitHub Actions run `27822341025` passed; backend fixture load/idempotency/live-separation/stage checks are proven.
 
 Remote verification:
 
@@ -60,12 +61,14 @@ Remote verification:
 - GitHub Actions job `82333085277`: PASS.
 - GitHub Actions run `27821808812`: PASS.
 - GitHub Actions job `82336483266`: PASS.
+- GitHub Actions run `27822341025`: PASS.
+- GitHub Actions job `82338210943`: PASS.
 
 ## Not Completed
 
 - Docker is not installed on the current host, so local `make verify-g1` still fails closed.
 - G2 database foundation subset passed remote PostgreSQL CI.
-- T205 synthetic recursive supply-chain fixtures are in progress and need remote PostgreSQL CI proof.
+- T205 backend fixture loading is proven, but UI/API fixture marking and recursive scenario E2E are still open.
 - T203 exploration/Watchlist/scoring/audit/calibration repository and API behavior remains in progress.
 - T206 supersession/conflict repository behavior remains in progress.
 - T1103-T1109 visual company workspace tasks are not started.
@@ -75,7 +78,7 @@ Remote verification:
 
 Start G2 with a bounded database-first run:
 
-1. Push T205 fixture loader and inspect `make verify-g2-db`.
-2. If CI passes, mark T205/A016/A025/A067 as proven.
-3. Implement T203/T206 repository/API behavior on top of the proven schema.
+1. Implement T203/T206 repository/API behavior on top of the proven schema.
+2. Add API responses that expose fixture notices so A025 can be tested.
+3. Add recursive supply-chain scenario E2E for A067.
 4. Add T1203 taxonomy/object-scope API from canonical catalogs.

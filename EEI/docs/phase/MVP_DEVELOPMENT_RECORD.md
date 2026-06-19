@@ -297,3 +297,30 @@ Residual risks:
 
 - Actual fixture loading has not been proven on PostgreSQL yet because local Docker is unavailable.
 - GitHub Actions must run `make verify-g2-db` to prove fixture migration, load, idempotency, and rollback.
+
+## 2026-06-19 - Phase 1 / G2 T205 backend fixture CI pass
+
+Status: BACKEND FIXTURE SUBSET PASS; T205 IN PROGRESS
+
+Completed:
+
+- GitHub Actions run `27822341025` completed with conclusion `success`.
+- Step 8 `Verify G2 PostgreSQL migrations and E2E` passed after adding fixture loading.
+- The integration test now proves migration upgrade, seed loading, fixture loading twice, fixture/live separation checks, NVIDIA stage coverage checks, and rollback.
+
+Verification evidence:
+
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27822341025`.
+- GitHub Actions job: `82338210943`.
+- `make verify-g2-db`: PASS in GitHub Actions.
+
+Acceptance status:
+
+- A016 backend data check is covered by fixture family validation.
+- A025 is not fully accepted yet because visible UI/API content tests are not implemented.
+- A067 is not fully accepted yet because scenario-level recursive exploration E2E is not implemented.
+
+Residual risks:
+
+- T205 remains `IN PROGRESS` until UI/API fixture marking and recursive scenario E2E exist.
+- T203/T206 repository/API behavior is still needed before those acceptance IDs can close.
