@@ -36,6 +36,7 @@ Run from `work/EEI`:
 - `make verify`: PASS
 - `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS
 - `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS
+- 2026-06-19 update: `make health` now correctly fails closed without `DATABASE_URL`; `make verify-g1` correctly fails because `docker` is not installed.
 
 Remote verification:
 
@@ -45,6 +46,7 @@ Remote verification:
 
 - Docker is not installed on the current host.
 - `docker compose up -d postgres` and PostgreSQL container health checks have not been run.
+- `/health/ready` now requires a real PostgreSQL readiness check; no database means `not_ready`.
 - G1 is not PASS yet.
 - G2 domain schema/migration/data model work has not started.
 - MVP is not complete.
@@ -55,7 +57,6 @@ Resolve G1 database service verification:
 
 1. Install/start Docker Desktop or approve another local PostgreSQL service path.
 2. Run `docker compose up -d postgres`.
-3. Add/verify `make health` includes PostgreSQL readiness.
+3. Export/copy a valid `DATABASE_URL` into `.env` and run `make health`.
 4. Re-run `make verify` and E2E.
-5. Only then consider G1 PASS and proceed to G2.
-
+5. Run `make verify-g1`; only then consider G1 PASS and proceed to G2.
