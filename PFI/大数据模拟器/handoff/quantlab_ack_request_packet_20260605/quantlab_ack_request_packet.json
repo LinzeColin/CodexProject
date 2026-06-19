@@ -1,0 +1,62 @@
+{
+  "schema_version": "qbvs-quantlab-ack-request-packet-v1",
+  "created_at": "2026-06-05",
+  "purpose": "Minimal packet for QuantLab thread to complete ACK and read QBVS evidence without duplicating QBVS validation work.",
+  "source_system": "quant_behavior_validation_system",
+  "target_system": "quantlab",
+  "current_status": "quantlab_ack_received_valid_ready_for_qbvs_resume",
+  "active_goal": "Validate behavior-rule trading strategies, not portfolio allocation, against user floors; QBVS owns validation and external evidence bundles, QuantLab owns ACK, approval, display, and ResearchBus main schema.",
+  "quantlab_must_read": [
+    "HANDOFF.md",
+    "HANDSHAKE_PROTOCOL.json",
+    "QUANTLAB_INTEGRATION_CONTRACT.json",
+    "handoff/qbvs_handshake_request.json",
+    "handoff/quantlab_handshake_ack_template.json",
+    "handoff/ack_readiness_20260605/qbvs_quantlab_ack_readiness.json",
+    "handoff/researchbus_schema_mapping_20260605/qbvs_to_quantlab_researchbus_mapping.json",
+    "handoff/researchbus_schema_mapping_20260605/sample_independent_validation_run_reviewonly.json"
+  ],
+  "quantlab_should_write": {
+    "path": "handoff/quantlab_handshake_ack.json",
+    "required_values": {
+      "protocol_version": "qbvs-quantlab-handshake-v1",
+      "message_type": "handshake_ack",
+      "source_system": "quantlab",
+      "target_system": "quant_behavior_validation_system",
+      "accepted": true,
+      "consume_mode": "external_artifact_read",
+      "quantlab_entrypoint": "non-empty QuantLab module/page/command that reads QBVS evidence"
+    },
+    "status": "completed",
+    "actual_path": "handoff/quantlab_handshake_ack.json"
+  },
+  "read_only_evidence_priority": [
+    "handoff/quantlab_bundle_moomoo_batch100_top20_finalist_3windows",
+    "handoff/quantlab_bundle_yahoo_public_top20_finalist_200symbols_5windows",
+    "handoff/quantlab_bundle_yahoo_public_200x200_full_40000",
+    "handoff/quantlab_readonly_adapter_pack",
+    "handoff/researchbus_schema_mapping_20260605"
+  ],
+  "hard_boundaries": [
+    "Do not write QuantLab database from QBVS evidence.",
+    "Do not write QuantLab source from QBVS evidence.",
+    "Do not promote any strategy to approved strategy library without QuantLab exact review and user approval.",
+    "Do not rerun QBVS long validation or OpenD batch fetch from QuantLab just to complete ACK.",
+    "Treat QBVS evidence as ReviewOnly external evidence until closed-loop ACK passes."
+  ],
+  "current_blockers": [
+    "OpenD historical K-line quota constrained: 39 quota failures remain in batch81-140 retry plan; avoid batch OpenD history refetch until quota recovers."
+  ],
+  "qbvs_side_next_after_ack": [
+    "Run: PYTHONPATH=. python3 -m qbvs.cli verify-handshake --ack handoff/quantlab_handshake_ack.json.",
+    "Run goal-readiness audit with --handshake-ack handoff/quantlab_handshake_ack.json.",
+    "Resume only the smallest verification needed for the active QBVS pursuing goal.",
+    "Do not trigger OpenD batch refetch until historical K-line quota recovers.",
+    "Use public-history or replacement-to-200 resumable campaign only if it directly closes the remaining readiness partial item."
+  ],
+  "last_refreshed_at": "2026-06-05T16:47:43+10:00",
+  "resolved_items": [
+    "QuantLab ACK is present and verify-handshake returned valid=true with errors=[].",
+    "BRK-B provider alias has been snapshot-confirmed as US.BRK.B; historical K-line confirmation should wait for OpenD quota recovery."
+  ]
+}

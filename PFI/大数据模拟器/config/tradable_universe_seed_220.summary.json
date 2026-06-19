@@ -1,0 +1,27 @@
+{
+  "schema_version": "qbvs-tradable-universe-seed-v1",
+  "valid": true,
+  "errors": [],
+  "warnings": [],
+  "checked_at": "2026-06-05T00:08:22",
+  "path": "config/tradable_universe_seed_220.csv",
+  "symbols": 220,
+  "markets": 4,
+  "asset_classes": 5,
+  "source_counts": {
+    "moomoo_opend": 220
+  },
+  "market_counts": {
+    "US_ETF": 82,
+    "US_STOCK": 69,
+    "CN_ETF": 39,
+    "HK": 30
+  },
+  "asset_class_counts": {
+    "STOCK": 97,
+    "ETF": 95,
+    "BOND": 14,
+    "COMMODITY": 11,
+    "FX": 3
+  }
+}

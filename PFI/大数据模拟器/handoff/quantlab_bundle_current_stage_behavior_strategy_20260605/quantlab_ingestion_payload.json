@@ -1,0 +1,197 @@
+{
+  "schema_version": "qbvs-quantlab-evidence-bundle-v1",
+  "created_at": "2026-06-05T19:08:31",
+  "source_system": "quant_behavior_validation_system",
+  "target_system": "quantlab",
+  "ingestion_mode": "external_evidence_only",
+  "source_run_dir": "reports/current_stage_20260605",
+  "bundle_dir": "handoff/quantlab_bundle_current_stage_behavior_strategy_20260605",
+  "engine": "current_stage_proxy_review",
+  "user_acceptance_floor": {
+    "total_return_gap_vs_buy_hold_min": -0.08,
+    "annualized_return_gap_vs_buy_hold_min": -0.03,
+    "drawdown_improvement_min": -0.005,
+    "pass_rate_min": 0.6
+  },
+  "current_stage_conclusion": {
+    "primary_candidate": "bw99_boll_or_rsi_none_ma_trend_full_none",
+    "plain_language_rule": "99% base exposure; RSI/BOLL only refill dips; MA20 > MA60 restores/full exposure; no automatic rally selling.",
+    "behavioral_diagnosis": "The user behavior is not pure chase-dip/sell-rally. Evidence indicates frequent small buys during rising trends and larger concentrated sells after gains, weakening upside participation.",
+    "not_claimed": [
+      "Not live trading advice.",
+      "Not QuantLab strategy-library approval.",
+      "Not full-account real NAV validation.",
+      "Not million-scale production completion."
+    ]
+  },
+  "required_quantlab_actions": [
+    "read_bundle_manifest",
+    "read_candidate_strategy_table",
+    "display_external_evidence",
+    "show_current_stage_limitations",
+    "rerun_exact_validation_before_approval",
+    "run_alipay_fund_nav_validation_when_nav_is_available",
+    "require_user_approval_before_database_write",
+    "display_proxy_completion_limitations",
+    "display_proxy_sensitivity_results"
+  ],
+  "reports": [
+    {
+      "path": "reports/Current_Stage_Strategy_Report.pdf",
+      "kind": "pdf_report"
+    },
+    {
+      "path": "reports/current_stage_strategy_report.md",
+      "kind": "markdown_report"
+    },
+    {
+      "path": "reports/candidate_summary.csv",
+      "kind": "summary_table"
+    },
+    {
+      "path": "reports/proxy_completion_plan.csv",
+      "kind": "proxy_completion_plan_table"
+    },
+    {
+      "path": "reports/proxy_completion_plan.json",
+      "kind": "proxy_completion_plan_summary"
+    },
+    {
+      "path": "reports/proxy_sensitivity_results.csv",
+      "kind": "proxy_sensitivity_results_table"
+    },
+    {
+      "path": "reports/proxy_sensitivity_results.json",
+      "kind": "proxy_sensitivity_results_summary"
+    }
+  ],
+  "candidates": [
+    {
+      "strategy_id": "bw99_boll_or_rsi_none_ma_trend_full_none",
+      "candidate_role": "primary_current_stage_candidate",
+      "samples": 11,
+      "pass_rate": 1.0,
+      "avg_total_gap": -0.00165,
+      "median_total_gap": "",
+      "avg_annualized_gap": -0.00177,
+      "avg_drawdown_improvement": 0.00016,
+      "avg_strategy_return": "",
+      "avg_buy_hold_return": "",
+      "avg_var_5": "",
+      "avg_cvar_5": "",
+      "avg_turnover": 1.129,
+      "avg_trades": "",
+      "evidence_scope": "recent_year_representative_proxy_11_symbols",
+      "engine": "current_stage_proxy_review",
+      "approval_state": "external_evidence_only",
+      "requires_exact_validation": true,
+      "requires_fund_rule_review": true,
+      "requires_user_approval_before_quantlab_write": true,
+      "not_live_trading_signal": true,
+      "notes": "Primary behavior-correction candidate: 99% base weight, RSI/BOLL dip refill, MA trend full, no automatic rally selling."
+    },
+    {
+      "strategy_id": "bw99_none_none_ma_trend_full_none",
+      "candidate_role": "control_candidate",
+      "samples": 11,
+      "pass_rate": 1.0,
+      "avg_total_gap": -0.0015,
+      "median_total_gap": "",
+      "avg_annualized_gap": -0.00161,
+      "avg_drawdown_improvement": 0.00073,
+      "avg_strategy_return": "",
+      "avg_buy_hold_return": "",
+      "avg_var_5": "",
+      "avg_cvar_5": "",
+      "avg_turnover": 1.051,
+      "avg_trades": "",
+      "evidence_scope": "recent_year_representative_proxy_11_symbols",
+      "engine": "current_stage_proxy_review",
+      "approval_state": "external_evidence_only",
+      "requires_exact_validation": true,
+      "requires_fund_rule_review": true,
+      "requires_user_approval_before_quantlab_write": true,
+      "not_live_trading_signal": true,
+      "notes": "Control candidate to test whether RSI/BOLL adds value; slightly better in proxy but weaker behavioral interpretation."
+    },
+    {
+      "strategy_id": "bw98_boll_or_rsi_none_ma_trend_full_none",
+      "candidate_role": "conservative_candidate",
+      "samples": 11,
+      "pass_rate": 1.0,
+      "avg_total_gap": -0.0033,
+      "median_total_gap": "",
+      "avg_annualized_gap": -0.00353,
+      "avg_drawdown_improvement": 0.00031,
+      "avg_strategy_return": "",
+      "avg_buy_hold_return": "",
+      "avg_var_5": "",
+      "avg_cvar_5": "",
+      "avg_turnover": 1.256,
+      "avg_trades": "",
+      "evidence_scope": "recent_year_representative_proxy_11_symbols",
+      "engine": "current_stage_proxy_review",
+      "approval_state": "external_evidence_only",
+      "requires_exact_validation": true,
+      "requires_fund_rule_review": true,
+      "requires_user_approval_before_quantlab_write": true,
+      "not_live_trading_signal": true,
+      "notes": "More cash buffer than 99% version; still passes current-stage proxy floor."
+    }
+  ],
+  "updated_at": "2026-06-05T19:24:42",
+  "proxy_completion": {
+    "schema_version": "qbvs-current-stage-proxy-completion-plan-v1",
+    "created_at": "2026-06-05T19:16:03",
+    "writes_quantlab_database": false,
+    "writes_quantlab_source": false,
+    "coverage_strict_confirmed_cached_only": {
+      "holding_coverage": 0.4514,
+      "trade_coverage": 0.2727
+    },
+    "coverage_with_candidate_substitutes": {
+      "holding_coverage": 0.6605,
+      "trade_coverage": 0.5046
+    },
+    "candidate_substitute_count": 4,
+    "boundary": "Candidate substitutes improve current-stage sensitivity coverage only; they are not final real NAV validation and must not be written into QuantLab approved strategy records."
+  },
+  "proxy_sensitivity": {
+    "schema_version": "qbvs-current-stage-proxy-sensitivity-results-v1",
+    "created_at": "2026-06-05T19:21:15",
+    "writes_quantlab_database": false,
+    "writes_quantlab_source": false,
+    "input": {
+      "strict_symbols": [
+        "159995.SZ",
+        "510500.SS",
+        "512800.SS",
+        "518880.SS",
+        "588000.SS",
+        "QQQ",
+        "SPY",
+        "XLE"
+      ],
+      "candidate_substitute_symbols": [
+        "SMH",
+        "513330.SS",
+        "159869.SZ",
+        "510880.SS"
+      ],
+      "window": "2025-06-05 to 2026-06-05",
+      "acceptance_floor": {
+        "avg_total_gap_min": -0.08,
+        "avg_annualized_gap_min": -0.03
+      }
+    },
+    "result": {
+      "primary_candidate": "bw99_boll_or_rsi_none_ma_trend_full_none",
+      "strict_trade_weight_gap": -0.00291,
+      "with_substitutes_trade_weight_gap": -0.00196,
+      "with_substitutes_trade_weight_pass_rate": 1.0,
+      "alipay_like_with_substitutes_trade_weight_gap": -0.06022,
+      "interpretation": "Candidate substitutes do not weaken the main conclusion; the 99% no-rally-sell candidate remains far above the user floor while the original Alipay-like behavior still underperforms materially."
+    },
+    "boundary": "Candidate substitutes are sensitivity analysis only, not final real fund NAV validation or approved QuantLab strategy evidence."
+  }
+}

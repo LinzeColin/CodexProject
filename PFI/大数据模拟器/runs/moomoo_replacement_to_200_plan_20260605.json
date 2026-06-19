@@ -1,0 +1,118 @@
+{
+  "created_at": "2026-06-05",
+  "purpose": "Build a replacement candidate universe to expand Moomoo/OpenD real-tradable QBVS coverage from 100 toward 200 symbols without blind quota retries.",
+  "inputs": {
+    "seed_universe": "outputs/quant_behavior_validation_system/config/tradable_universe_seed_220.csv",
+    "batch100_cache_index": "outputs/quant_behavior_validation_system/config/moomoo_batch100_cache_index.csv",
+    "batch81_140_retry_plan": "outputs/quant_behavior_validation_system/runs/moomoo_batch81_140_retry_plan_20260605.csv"
+  },
+  "boundary": {
+    "writes_quantlab_database": false,
+    "writes_quantlab_source": false,
+    "starts_background_processes": false,
+    "does_not_refetch_opend_now": true
+  },
+  "current_cached_symbols": 100,
+  "target_symbols": 200,
+  "additional_needed": 100,
+  "uncached_candidates_total": 120,
+  "selected_candidates": 100,
+  "reserve_candidates": 19,
+  "blocked_symbol_mapping": 1,
+  "selected_distribution": [
+    {
+      "market": "CN_ETF",
+      "asset_class": "BOND",
+      "count": 2
+    },
+    {
+      "market": "CN_ETF",
+      "asset_class": "COMMODITY",
+      "count": 1
+    },
+    {
+      "market": "CN_ETF",
+      "asset_class": "ETF",
+      "count": 36
+    },
+    {
+      "market": "HK",
+      "asset_class": "ETF",
+      "count": 2
+    },
+    {
+      "market": "HK",
+      "asset_class": "STOCK",
+      "count": 28
+    },
+    {
+      "market": "US_STOCK",
+      "asset_class": "STOCK",
+      "count": 31
+    }
+  ],
+  "full_status_distribution": [
+    {
+      "recommended_status": "blocked_symbol_mapping",
+      "market": "US_STOCK",
+      "asset_class": "STOCK",
+      "count": 1
+    },
+    {
+      "recommended_status": "reserve",
+      "market": "US_STOCK",
+      "asset_class": "STOCK",
+      "count": 19
+    },
+    {
+      "recommended_status": "selected_to_reach_200",
+      "market": "CN_ETF",
+      "asset_class": "BOND",
+      "count": 2
+    },
+    {
+      "recommended_status": "selected_to_reach_200",
+      "market": "CN_ETF",
+      "asset_class": "COMMODITY",
+      "count": 1
+    },
+    {
+      "recommended_status": "selected_to_reach_200",
+      "market": "CN_ETF",
+      "asset_class": "ETF",
+      "count": 36
+    },
+    {
+      "recommended_status": "selected_to_reach_200",
+      "market": "HK",
+      "asset_class": "ETF",
+      "count": 2
+    },
+    {
+      "recommended_status": "selected_to_reach_200",
+      "market": "HK",
+      "asset_class": "STOCK",
+      "count": 28
+    },
+    {
+      "recommended_status": "selected_to_reach_200",
+      "market": "US_STOCK",
+      "asset_class": "STOCK",
+      "count": 31
+    }
+  ],
+  "selection_policy": [
+    "Exclude already cached batch100 symbols.",
+    "Exclude known symbol mapping problems such as BRK-B until source_symbol mapping is fixed and one-symbol probe passes.",
+    "Prioritize HK and CN ETF candidates to reduce US-only sample bias.",
+    "Then add US_STOCK candidates to improve single-stock behavior-rule coverage.",
+    "Run in 5 manual shards of 20 candidates after OpenD K-line quota is available.",
+    "Do not promote new symbols into exact validation until cache index and quality gate pass."
+  ],
+  "outputs": {
+    "replacement_universe_csv": "outputs/quant_behavior_validation_system/config/moomoo_replacement_universe_to_200_20260605.csv",
+    "replacement_plan_csv": "outputs/quant_behavior_validation_system/runs/moomoo_replacement_to_200_plan_20260605.csv",
+    "replacement_plan_json": "outputs/quant_behavior_validation_system/runs/moomoo_replacement_to_200_plan_20260605.json",
+    "manual_cache_commands": "outputs/quant_behavior_validation_system/campaigns/moomoo_replacement_to_200_20260605/cache_commands.sh"
+  }
+}

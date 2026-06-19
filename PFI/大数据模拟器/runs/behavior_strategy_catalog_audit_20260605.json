@@ -1,0 +1,345 @@
+{
+  "created_at": "2026-06-05",
+  "purpose": "Anti-waste audit of QBVS behavior-strategy catalog against current public and real-data validation evidence.",
+  "boundary": {
+    "writes_quantlab_database": false,
+    "writes_quantlab_source": false,
+    "starts_background_processes": false
+  },
+  "inputs": {
+    "strategy_catalog": "runs/strategy_catalog.csv",
+    "public_full_40000_summary": "runs/yahoo_public_200x200_pair_full_40000_exact/strategy_summary.csv",
+    "public_top20_deep_summary": "runs/yahoo_public_top20_finalist_200symbols_5windows_exact/strategy_summary.csv",
+    "moomoo_batch100_summary": "runs/moomoo_batch100_top20_finalist_3windows_exact/strategy_summary.csv"
+  },
+  "catalog_rows": 240,
+  "public_full_validated_strategies": 200,
+  "public_deep_validated_strategies": 20,
+  "moomoo_real_validated_strategies": 20,
+  "catalog_only_not_yet_validated": 40,
+  "behavior_family_counts": [
+    {
+      "behavior_family": "buy_dip",
+      "count": 4
+    },
+    {
+      "behavior_family": "buy_dip+risk_overlay",
+      "count": 12
+    },
+    {
+      "behavior_family": "buy_dip+sell_strength_or_weakness",
+      "count": 10
+    },
+    {
+      "behavior_family": "buy_dip+sell_strength_or_weakness+risk_overlay",
+      "count": 30
+    },
+    {
+      "behavior_family": "buy_dip+sell_strength_or_weakness+trend_participation",
+      "count": 30
+    },
+    {
+      "behavior_family": "buy_dip+sell_strength_or_weakness+trend_participation+risk_overlay",
+      "count": 90
+    },
+    {
+      "behavior_family": "buy_dip+trend_participation",
+      "count": 12
+    },
+    {
+      "behavior_family": "buy_dip+trend_participation+risk_overlay",
+      "count": 36
+    },
+    {
+      "behavior_family": "control_baseline",
+      "count": 1
+    },
+    {
+      "behavior_family": "risk_overlay",
+      "count": 3
+    },
+    {
+      "behavior_family": "trend_participation",
+      "count": 3
+    },
+    {
+      "behavior_family": "trend_participation+risk_overlay",
+      "count": 9
+    }
+  ],
+  "indicator_stack_counts": [
+    {
+      "indicator_stack": "ATR",
+      "count": 2
+    },
+    {
+      "indicator_stack": "BOLL",
+      "count": 6
+    },
+    {
+      "indicator_stack": "BOLL+ATR",
+      "count": 6
+    },
+    {
+      "indicator_stack": "BOLL+Drawdown",
+      "count": 6
+    },
+    {
+      "indicator_stack": "BOLL+MA",
+      "count": 12
+    },
+    {
+      "indicator_stack": "BOLL+MA+ATR",
+      "count": 3
+    },
+    {
+      "indicator_stack": "BOLL+MA+Drawdown",
+      "count": 3
+    },
+    {
+      "indicator_stack": "BOLL+MA+MACD",
+      "count": 6
+    },
+    {
+      "indicator_stack": "BOLL+MA+MACD+ATR",
+      "count": 3
+    },
+    {
+      "indicator_stack": "BOLL+MA+MACD+Drawdown",
+      "count": 3
+    },
+    {
+      "indicator_stack": "BOLL+RSI",
+      "count": 12
+    },
+    {
+      "indicator_stack": "BOLL+RSI+ATR",
+      "count": 12
+    },
+    {
+      "indicator_stack": "BOLL+RSI+Drawdown",
+      "count": 12
+    },
+    {
+      "indicator_stack": "BOLL+RSI+MA",
+      "count": 24
+    },
+    {
+      "indicator_stack": "BOLL+RSI+MA+ATR",
+      "count": 6
+    },
+    {
+      "indicator_stack": "BOLL+RSI+MA+Drawdown",
+      "count": 6
+    },
+    {
+      "indicator_stack": "BOLL+RSI+MA+MACD",
+      "count": 12
+    },
+    {
+      "indicator_stack": "BOLL+RSI+MA+MACD+ATR",
+      "count": 6
+    },
+    {
+      "indicator_stack": "BOLL+RSI+MA+MACD+Drawdown",
+      "count": 6
+    },
+    {
+      "indicator_stack": "Drawdown",
+      "count": 2
+    },
+    {
+      "indicator_stack": "MA",
+      "count": 10
+    },
+    {
+      "indicator_stack": "MA+ATR",
+      "count": 4
+    },
+    {
+      "indicator_stack": "MA+Drawdown",
+      "count": 4
+    },
+    {
+      "indicator_stack": "MA+MACD",
+      "count": 4
+    },
+    {
+      "indicator_stack": "MA+MACD+ATR",
+      "count": 2
+    },
+    {
+      "indicator_stack": "MA+MACD+Drawdown",
+      "count": 2
+    },
+    {
+      "indicator_stack": "RSI",
+      "count": 6
+    },
+    {
+      "indicator_stack": "RSI+ATR",
+      "count": 6
+    },
+    {
+      "indicator_stack": "RSI+Drawdown",
+      "count": 6
+    },
+    {
+      "indicator_stack": "RSI+MA",
+      "count": 18
+    },
+    {
+      "indicator_stack": "RSI+MA+ATR",
+      "count": 6
+    },
+    {
+      "indicator_stack": "RSI+MA+Drawdown",
+      "count": 6
+    },
+    {
+      "indicator_stack": "RSI+MA+MACD",
+      "count": 8
+    },
+    {
+      "indicator_stack": "RSI+MA+MACD+ATR",
+      "count": 4
+    },
+    {
+      "indicator_stack": "RSI+MA+MACD+Drawdown",
+      "count": 4
+    },
+    {
+      "indicator_stack": "none",
+      "count": 2
+    }
+  ],
+  "evidence_level_counts": [
+    {
+      "evidence_level": "catalog_only_not_yet_validated",
+      "count": 40
+    },
+    {
+      "evidence_level": "moomoo_batch100_real_validated",
+      "count": 20
+    },
+    {
+      "evidence_level": "public_200x200_full_validated",
+      "count": 180
+    }
+  ],
+  "promotion_tier_counts": [
+    {
+      "promotion_tier": "needs_initial_validation",
+      "count": 40
+    },
+    {
+      "promotion_tier": "tier_1_real_data_promotion_candidate",
+      "count": 7
+    },
+    {
+      "promotion_tier": "tier_2_real_data_watchlist",
+      "count": 13
+    },
+    {
+      "promotion_tier": "tier_4_public_pool_needs_deep_validation",
+      "count": 180
+    }
+  ],
+  "anti_waste_status_counts": [
+    {
+      "anti_waste_status": "control_group_keep_one",
+      "count": 1
+    },
+    {
+      "anti_waste_status": "meaningful_behavior_with_evidence",
+      "count": 199
+    },
+    {
+      "anti_waste_status": "not_waste_but_unproven_requires_manifest",
+      "count": 40
+    }
+  ],
+  "top_moomoo_candidates": [
+    {
+      "strategy_id": "bw92_rsi_35_none_ma_trend_full_atr_96",
+      "moomoo_pass_rate": 0.93,
+      "moomoo_avg_total_gap": -0.0217192413858947,
+      "moomoo_avg_annualized_gap": -0.0077862936823474,
+      "moomoo_avg_drawdown_improvement": 0.0091080811884249,
+      "indicator_stack": "RSI+MA+ATR",
+      "behavior_logic": "RSI oversold buy-upweight; no explicit sell trim; MA trend full participation; ATR risk throttle"
+    },
+    {
+      "strategy_id": "bw92_boll_or_rsi_none_ma_trend_full_atr_96",
+      "moomoo_pass_rate": 0.93,
+      "moomoo_avg_total_gap": -0.0217695572215818,
+      "moomoo_avg_annualized_gap": -0.0077624201447112,
+      "moomoo_avg_drawdown_improvement": 0.008905982578798,
+      "indicator_stack": "BOLL+RSI+MA+ATR",
+      "behavior_logic": "BOLL lower-band or RSI oversold buy-upweight; no explicit sell trim; MA trend full participation; ATR risk throttle"
+    },
+    {
+      "strategy_id": "bw92_boll_or_rsi_none_ma_trend_full_none",
+      "moomoo_pass_rate": 0.9266666666666666,
+      "moomoo_avg_total_gap": -0.0200126775739779,
+      "moomoo_avg_annualized_gap": -0.0095994819402326,
+      "moomoo_avg_drawdown_improvement": 0.005808369932209,
+      "indicator_stack": "BOLL+RSI+MA",
+      "behavior_logic": "BOLL lower-band or RSI oversold buy-upweight; no explicit sell trim; MA trend full participation; no risk overlay"
+    },
+    {
+      "strategy_id": "bw92_rsi_35_none_ma_trend_full_none",
+      "moomoo_pass_rate": 0.9133333333333332,
+      "moomoo_avg_total_gap": -0.0197093133674224,
+      "moomoo_avg_annualized_gap": -0.0095737070207108,
+      "moomoo_avg_drawdown_improvement": 0.0061619021914411,
+      "indicator_stack": "RSI+MA",
+      "behavior_logic": "RSI oversold buy-upweight; no explicit sell trim; MA trend full participation; no risk overlay"
+    },
+    {
+      "strategy_id": "bw92_none_none_ma_trend_full_none",
+      "moomoo_pass_rate": 0.9133333333333332,
+      "moomoo_avg_total_gap": -0.0221730541672318,
+      "moomoo_avg_annualized_gap": -0.0077624745127479,
+      "moomoo_avg_drawdown_improvement": 0.0109272353646435,
+      "indicator_stack": "MA",
+      "behavior_logic": "no dip upweight; no explicit sell trim; MA trend full participation; no risk overlay"
+    },
+    {
+      "strategy_id": "bw92_none_none_ma_trend_full_atr_96",
+      "moomoo_pass_rate": 0.9133333333333332,
+      "moomoo_avg_total_gap": -0.0225000182918418,
+      "moomoo_avg_annualized_gap": -0.006655053671922,
+      "moomoo_avg_drawdown_improvement": 0.0122442486299087,
+      "indicator_stack": "MA+ATR",
+      "behavior_logic": "no dip upweight; no explicit sell trim; MA trend full participation; ATR risk throttle"
+    },
+    {
+      "strategy_id": "bw92_boll_lower_none_ma_trend_full_atr_96",
+      "moomoo_pass_rate": 0.9133333333333332,
+      "moomoo_avg_total_gap": -0.0238107991829434,
+      "moomoo_avg_annualized_gap": -0.0081521402339145,
+      "moomoo_avg_drawdown_improvement": 0.0108500253005101,
+      "indicator_stack": "BOLL+MA+ATR",
+      "behavior_logic": "BOLL lower-band buy-upweight; no explicit sell trim; MA trend full participation; ATR risk throttle"
+    }
+  ],
+  "requirements_check": {
+    "at_least_200_behavior_strategies_in_catalog": true,
+    "not_all_strategies_are_meaningless_duplicates": true,
+    "has_current_real_data_evidence_layer": true,
+    "has_unvalidated_catalog_items_flagged": true,
+    "quantlab_db_write": false
+  },
+  "decision_rules": [
+    "Use catalog_only strategies only as future exploration candidates, not as validated conclusions.",
+    "Use public_full_validated strategies as broad-screen evidence only.",
+    "Use public_top20_deep strategies as stronger public-history evidence but still require real tradable verification.",
+    "Use moomoo_batch100 tier_1 candidates as current real-data promotion candidates, still requiring QuantLab ACK and final user approval before strategy library write.",
+    "Do not prioritize strategies that fail the -8% total-return and -3% annualized-return floor unless they materially improve drawdown and are being studied as defensive controls."
+  ],
+  "outputs": {
+    "audit_csv": "outputs/quant_behavior_validation_system/runs/behavior_strategy_catalog_audit_20260605.csv",
+    "audit_json": "outputs/quant_behavior_validation_system/runs/behavior_strategy_catalog_audit_20260605.json"
+  }
+}
