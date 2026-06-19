@@ -51,6 +51,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Added A012-A014 data quality and amount/unknown regression checks locally; A026/A027 remain open because real gold precision evaluation is not implemented.
 - Completed A012-A014 data contract checks by GitHub Actions run `27828738097`; job `82359769929` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - Closed G2 as `PASS` with `DEFER-003`; A026/A027 remain open for T904/G9 gold precision evaluation rather than synthetic self-grading.
+- Proved G2 gate-close commit by GitHub Actions run `27829131193`; job `82361095081` passed.
 
 ## Verification Evidence
 
@@ -117,6 +118,8 @@ Remote verification:
 - GitHub Actions job `82357916025`: PASS.
 - GitHub Actions run `27828738097`: PASS.
 - GitHub Actions job `82359769929`: PASS.
+- GitHub Actions run `27829131193`: PASS.
+- GitHub Actions job `82361095081`: PASS.
 
 ## Not Completed
 

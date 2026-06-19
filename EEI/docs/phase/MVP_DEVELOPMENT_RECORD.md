@@ -647,6 +647,8 @@ Verification evidence:
 
 - GitHub Actions run `27828738097`: PASS for strengthened A012-A014 PostgreSQL data contracts.
 - GitHub Actions run `27828895082`: PASS for the final documentation commit after A012-A014 evidence recording.
+- GitHub Actions run `27829131193`: PASS for the G2 gate-close commit with `DEFER-003`.
+- GitHub Actions job `82361095081`: PASS.
 
 Residual risks:
 
