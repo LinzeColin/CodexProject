@@ -1500,7 +1500,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G0 T1212 GitHub governance consistency workflow
 
-Status: LOCAL PASS
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1517,6 +1517,8 @@ Verification evidence:
 - Local `sha256sum -c CHECKSUMS.sha256`: PASS.
 - Local `make verify`: PASS.
 - Local `git diff --check`: PASS.
+- GitHub Actions run `27847728171`: PASS.
+- GitHub Actions job `82420393869`: PASS.
 
 Acceptance status:
 
