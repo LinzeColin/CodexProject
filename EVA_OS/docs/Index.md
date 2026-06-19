@@ -42,7 +42,6 @@
 | --- | --- |
 | `QuickStart.md` | 快速使用说明：启动、持仓、回测、报告、跨系统同步和常见问题。 |
 | `EVA_OS.md` | EVA_OS 主系统架构、子系统边界、共享底座和入口说明。 |
-| `ExecutiveCommandCenter.md` | 总控驾驶舱：聚合就绪检查、总集成审计、Token ROI、最新报告和行动队列。 |
 | `MarketEventLayer.md` | 事件驱动行情层：把 OHLCV bar 转成可排序、可去重、可落盘的 `BarClosed` 事件。 |
 | `ReproducibleDataLake.md` | 可复现数据湖：登记本地不可变数据资产、checksum、partition 和 replay cursor。 |
 | `EventReplay.md` | 事件回放：按 replay cursor 读取不可变 market event JSONL，生成确定性 replay batch。 |
@@ -55,7 +54,6 @@
 | `ReportEvidenceGapTasks.md` | 报告补证据任务：把 `NeedsMoreEvidence` / `DoNotUse` 报告的缺口追加到验证任务队列。 |
 | `ValidationPriorityPlan.md` | 验证任务优先级计划：按证据价值、阻塞项和可执行性排序待验证任务。 |
 | `ValidationTaskExecution.md` | 验证任务执行记录：运行一个只读验证任务并输出 Pass/Review/Blocked/Error 证据。 |
-| `TokenROI.md` | Token ROI Ledger：登记审计、报告和元数据产物，形成 Value Layer 台账。 |
 | `FeatureSpecification.md` / `FeatureSpecification.pdf` | 功能说明书和增删修补功能账本。Feature specification and change ledger. |
 | `Handbook.md` | 深入使用手册、公式、策略解释和专业术语。 |
 | `ReportGuide.md` | Word 报告、报告中心和运行判读说明。Word report, report center, and run interpretation guide. |
@@ -109,7 +107,6 @@ macOS 公开验收摘要：`$EVA_OS_HOME/scripts/macosPublicAcceptanceSummary.sh
 
 日常就绪正式产物：`$EVA_OS_HOME/scripts/dailyCheck.sh --output-dir data/systemAudit`。
 
-Token ROI 台账：`$EVA_OS_HOME/scripts/tokenRoiLedger.sh --output-dir data/value`。
 
 公司现金流快照：`$EVA_OS_HOME/scripts/cashFlowCommand.sh --output-dir data/cashflow`。
 

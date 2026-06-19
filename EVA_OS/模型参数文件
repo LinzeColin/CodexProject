@@ -4,6 +4,8 @@
 
 ## 默认模型与执行模式
 
+- PFI target product：`PFI OS`。
+- PFI active issue：`PFI-001`，只建立文档与合同测试。
 - 默认模式：local-first research, validation, backtesting, reporting。
 - 默认实盘：disabled。
 - 默认结论等级：ContinueResearch、WatchOnly、NeedsMoreEvidence、DoNotUse。
@@ -13,9 +15,13 @@
 
 | 参数域 | 当前原则 |
 | --- | --- |
+| PFI 一级入口 | 首页、市场、研究、持仓、策略实验室、数据与系统 |
+| PFI 数据根 | `$PFI_OS_DATA_HOME`，仓库只保存代码、schema、配置模板和脱敏 fixture |
+| LLM provider | 默认 `DisabledProvider`；本地 LLM 不是核心流程前置条件 |
 | 市场范围 | A 股、港股、美股 |
 | 时间粒度 | 1min 到 yearly，统一 bar model |
 | backtest 记录 | 数据范围、provider、调整模式、策略版本、参数、成本模型、运行时间 |
+| market-feel training | 保留为策略实验室训练模式；必须隐藏未来答案区间并记录复盘结果 |
 | Decision Quality Score | 用于判断研究结论完整性和可用性 |
 | ResearchBus | SQLite: `data/researchBus/ResearchBus.sqlite`; schema: `docs/ResearchBusSchema.json` |
 | heavy gate | 默认不跑；需明确 release intent 和允许变量 |
@@ -23,6 +29,8 @@
 ## 模型与数据要求
 
 - 回测输出必须包含收益、风险、回撤、交易次数、换手、成本和曲线类指标。
+- PFI 策略回测必须可复现：同一数据、成本、参数、策略版本和代码版本应得到一致结果。
+- PFI 参数扫描必须展示稳定性、样本外验证或 walk-forward 状态，避免单点过拟合。
 - 行研或政策系统引用 QuantLab 结果时必须同时引用数据质量、多源交叉校验、成本假设和风险闸门状态。
 - 如果引入 LLM，默认用于摘要、报告解释、证据缺口拆解和任务排序，不用于自动交易执行。
 

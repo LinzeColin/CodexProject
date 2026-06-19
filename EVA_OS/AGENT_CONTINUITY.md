@@ -81,13 +81,11 @@ The system already has these productized layers or MVPs:
 | macOS Runtime Acceptance | `EVAOSMacOSRuntimeAcceptanceV1`, `scripts/macosRuntimeAcceptance.sh`, `docs/MacOSRuntimeAcceptance.md` |
 | macOS Acceptance Hub | `EVAOSMacOSAcceptanceHubV1`, `scripts/macosAcceptance.sh`, `docs/MacOSAcceptanceHub.md` |
 | Report Validation Hub | `EVAOSReportValidationHubV1`, `scripts/reportValidation.sh`, `docs/ReportValidationHub.md` |
-| Token ROI Ledger | `EVATokenROIRuntimeSummaryV1`, `EVATokenROIReviewedValueEvidenceRefreshV1`, `docs/TokenROI.md`, public-safe reviewed value example in `data/value` |
 | Company CashFlow Command | `EVAOSCompanyCashFlowRuntimeSummaryV1`, `EVAOSCompanyCashFlowReviewedInputRefreshV1`, `docs/CompanyCashFlowCommand.md`, public-safe runtime summaries and reviewed-input example in `data/cashflow` |
 | Policy Intelligence Radar | `EVAOSPolicyIntelligenceRuntimeSummaryV1`, `EVAOSPolicyReviewedInputRefreshV1`, `docs/PolicyIntelligenceRadar.md`, public-safe reviewed-input example in `data/policy` |
 | Consumption Guard | `EVAOSConsumptionGuardRuntimeSummaryV1`, `EVAOSConsumptionGuardReviewedInputRefreshV1`, `docs/ConsumptionGuard.md`, public-safe reviewed-input example in `data/consumption` |
 | Executive Command Center | `runtime_summary_sources`, `src/quantlab/executive/command_center.py`, `scripts/commandCenter.sh`, `docs/ExecutiveCommandCenter.md` |
 | Runtime Summary Refresh | `EVAOSRuntimeSummaryRefreshV1`, `scripts/refreshRuntimeSummaries.sh`, `src/quantlab/executive/runtime_summary_refresh.py` |
-| Token ROI reviewed value evidence refresh | `scripts/tokenRoiReviewedValueRefresh.sh`, `data/private/value/TokenROIReviewedValueEvidence.json`, `shared/schema/token_roi_reviewed_value_evidence.schema.json` |
 | CashFlow reviewed input refresh | `scripts/cashFlowReviewedInputRefresh.sh`, `data/private/cashflow/CompanyCashFlowReviewedInput.json`, `shared/schema/company_cashflow_reviewed_input.schema.json` |
 | Policy reviewed input refresh | `scripts/policyReviewedInputRefresh.sh`, `data/private/policy/PolicyReviewedInput.json`, `shared/schema/policy_reviewed_input.schema.json` |
 | Consumption reviewed input refresh | `scripts/consumptionReviewedInputRefresh.sh`, `data/private/consumption/ConsumptionGuardReviewedInput.json`, `shared/schema/consumption_guard_reviewed_input.schema.json` |
@@ -319,16 +317,8 @@ curl http://localhost:8501 returned 200 OK and /_stcore/health returned ok
 scripts/cleanCache.sh --json removed 18 paths, 88 files, 1511.43 KB
 ```
 
-Latest Token ROI reviewed value evidence:
 
 ```text
-py_compile passed for src/quantlab/value/token_roi.py, src/quantlab/value/reviewed_input.py, src/quantlab/examples/token_roi_ledger.py, src/quantlab/examples/token_roi_reviewed_value_refresh.py, src/quantlab/executive/runtime_summary_refresh.py, src/quantlab/examples/refresh_runtime_summaries.py, src/quantlab/value/__init__.py
-zsh -n passed for scripts/tokenRoiReviewedValueRefresh.sh, scripts/tokenRoiLedger.sh, scripts/refreshRuntimeSummaries.sh, scripts/finalAcceptanceCheck.sh
-tests/test_token_roi_reviewed_value_refresh.py tests/test_token_roi_ledger.py tests/test_runtime_summary_refresh.py tests/test_scripts.py: 31 passed
-scripts/tokenRoiReviewedValueRefresh.sh --as-of 2026-06-16 --json returned Blocked MissingReviewedInput external_report_root and no /Users leak
-scripts/tokenRoiReviewedValueRefresh.sh public example returned status=Pass roi_status=Quantified records=184 quantified=2 benefit=1420.0 cost=95.5
-scripts/refreshRuntimeSummaries.sh --token-roi-entry-path public example wrote compact latest runtime summary with Token ROI runtime_status=Pass and no records
-scripts/commandCenter.sh temp smoke loaded Token ROI from runtime_summary schema=EVATokenROIRuntimeSummaryV1 and generated PDF magic %PDF-1.4
 ```
 
 Latest Company CashFlow runtime summary evidence:
@@ -375,7 +365,6 @@ Latest Executive Command Center runtime summary aggregation evidence:
 py_compile passed for src/quantlab/executive/command_center.py and src/quantlab/examples/command_center.py
 tests/test_command_center.py tests/test_scripts.py tests/test_app_dashboard.py: 74 passed
 scripts/commandCenter.sh default repo smoke returned status=NeedsReview with PDF output verified; earlier repo data fell back to full_snapshot where standalone runtime latest files were absent
-runtime-first temp project smoke loaded all four systems from runtime_summary schemas: EVATokenROIRuntimeSummaryV1, EVAOSCompanyCashFlowRuntimeSummaryV1, EVAOSPolicyIntelligenceRuntimeSummaryV1, EVAOSConsumptionGuardRuntimeSummaryV1
 scripts/finalAcceptanceCheck.sh completed with PASS: 186, FAIL: 0
 full pytest inside final acceptance: 382 passed, 2 skipped, 3 subtests passed in 103.38s
 curl http://localhost:8501 returned 200 OK and /_stcore/health returned ok
@@ -386,7 +375,6 @@ Latest Runtime Summary Refresh evidence:
 
 ```text
 scripts/refreshRuntimeSummaries.sh --as-of 2026-06-16 --monthly-investable-budget 1000 returned EVAOSRuntimeSummaryRefreshV1 status=Pass summaries=4
-generated latest artifacts: data/value/EVATokenROIRuntimeSummary_latest.json, data/cashflow/CompanyCashFlowRuntimeSummary_latest.json, data/policy/PolicyIntelligenceRuntimeSummary_latest.json, data/consumption/ConsumptionGuardRuntimeSummary_latest.json
 runtime summary safety check showed no full records/entries/opportunities/events keys and no local absolute project path in the four latest JSON files
 scripts/commandCenter.sh real repo smoke loaded all four sources with mode=runtime_summary and produced a valid PDF
 tests/test_runtime_summary_refresh.py tests/test_command_center.py tests/test_scripts.py: 28 passed
@@ -468,7 +456,6 @@ Validated evidence from the implementation run:
 ```text
 EVA_OS app plist/icon check: passed for Desktop, Downloads, and Applications
 legacy-name scan: no deprecated product-name text or filename residue in scoped project
-target report regeneration: Token ROI, Policy Radar, Consumption Guard, Report Decision Support, and Command Center regenerated
 deleted old legacy PDFs: 3 historical 2026-06-07 PDFs
 py_compile: passed for renamed app/report/data/integration modules
 target pytest: 28 passed in 31.48s
@@ -494,7 +481,6 @@ The old historical `.venv` was deleted during slimming. The current checkout can
 
 Next subsystem options:
 
-1. Unified UI Shell / macOS acceptance pass, now that 52ETF, Token ROI, CashFlow, Policy, and Consumption have compact/productized paths.
 2. Expand persisted hotspot cache with manual invalidation and cache metrics if repeated large-object runs still feel slow.
 3. Add private-data import helpers around Consumption Guard only after the reviewed-input contract is stable.
 

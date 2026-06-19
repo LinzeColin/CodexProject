@@ -125,8 +125,6 @@ def test_shell_scripts_have_valid_zsh_syntax():
         "scripts/watchResearchSystems.sh",
         "scripts/installResearchBusLaunchAgent.sh",
         "scripts/researchBusWebhook.sh",
-        "scripts/tokenRoiLedger.sh",
-        "scripts/tokenRoiReviewedValueRefresh.sh",
         "scripts/cashFlowReviewedInputRefresh.sh",
         "scripts/policyReviewedInputRefresh.sh",
         "scripts/consumptionReviewedInputRefresh.sh",
@@ -341,12 +339,7 @@ def test_final_acceptance_check_covers_product_artifacts_without_opening_browser
     assert "external_systems.py" in script
     assert "holdings_book.py" in script
     assert "sentiment.py" in script
-    assert "value/token_roi.py" in script
-    assert "tokenRoiLedger.sh" in script
-    assert "EVATokenROIRuntimeSummaryV1" in script
-    assert "does not include full records" in script
     assert "summary-json" in script
-    assert "运行摘要与证据闸门" in script
     assert "EVAOSCompanyCashFlowRuntimeSummaryV1" in script
     assert "does not include full entries" in script
     assert "build_cashflow_runtime_summary" in script
@@ -357,7 +350,6 @@ def test_final_acceptance_check_covers_product_artifacts_without_opening_browser
     assert "does not include full events" in script
     assert "build_consumption_runtime_summary" in script
     assert "runtime_summary_sources" in script
-    assert "EVATokenROIRuntimeSummary_latest.json" in script
     assert "CompanyCashFlowRuntimeSummary_latest.json" in script
     assert "PolicyIntelligenceRuntimeSummary_latest.json" in script
     assert "ConsumptionGuardRuntimeSummary_latest.json" in script
@@ -434,41 +426,10 @@ def test_dev_ready_check_is_default_light_gate_without_heavy_release_steps():
         assert forbidden not in script
 
 
-def test_token_roi_ledger_script_is_value_layer_entrypoint():
-    script = (PROJECT_ROOT / "scripts" / "tokenRoiLedger.sh").read_text(encoding="utf-8")
-    reviewed_script = (PROJECT_ROOT / "scripts" / "tokenRoiReviewedValueRefresh.sh").read_text(encoding="utf-8")
-    example = (PROJECT_ROOT / "src" / "quantlab" / "examples" / "token_roi_ledger.py").read_text(encoding="utf-8")
-    reviewed_example = (PROJECT_ROOT / "src" / "quantlab" / "examples" / "token_roi_reviewed_value_refresh.py").read_text(
-        encoding="utf-8"
-    )
-    token_roi = (PROJECT_ROOT / "src" / "quantlab" / "value" / "token_roi.py").read_text(encoding="utf-8")
-    reviewed = (PROJECT_ROOT / "src" / "quantlab" / "value" / "reviewed_input.py").read_text(encoding="utf-8")
-    streamlit_app = (PROJECT_ROOT / "src" / "quantlab" / "app" / "streamlit_app.py").read_text(encoding="utf-8")
-    schema = (PROJECT_ROOT / "shared" / "schema" / "token_roi_reviewed_value_evidence.schema.json").read_text(
-        encoding="utf-8"
-    )
-
-    assert "quantlab.examples.token_roi_ledger" in script
-    assert "quantlab.examples.token_roi_reviewed_value_refresh" in reviewed_script
-    assert "PYTHONPYCACHEPREFIX" in script
-    assert "summary-json" in example
-    assert "manual-entry-path" in example
-    assert "EVATokenROIReviewedValueEvidenceRefreshV1" in reviewed_example
-    assert "data/private/value/TokenROIReviewedValueEvidence.json" in reviewed
-    assert "TokenROIReviewedValueEvidence.example.json" in reviewed
-    assert "Local reviewed JSON input only" in reviewed
-    assert "EVA_OS Token ROI Reviewed Value Evidence" in schema
-    assert "EVATokenROIRuntimeSummaryV1" in token_roi
-    assert "build_token_roi_runtime_summary" in token_roi
-    assert "does not include full records" in token_roi
-    assert "运行摘要与证据闸门" in streamlit_app
-
-
 def test_command_center_prefers_compact_runtime_summary_sources():
     command_center = (PROJECT_ROOT / "src" / "quantlab" / "executive" / "command_center.py").read_text(encoding="utf-8")
 
     assert "runtime_summary_sources" in command_center
-    assert "EVATokenROIRuntimeSummary_latest.json" in command_center
     assert "CompanyCashFlowRuntimeSummary_latest.json" in command_center
     assert "PolicyIntelligenceRuntimeSummary_latest.json" in command_center
     assert "ConsumptionGuardRuntimeSummary_latest.json" in command_center

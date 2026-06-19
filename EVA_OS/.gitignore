@@ -23,7 +23,6 @@ data/systemAudit/MacOSRuntimeAcceptance*.json
 data/systemAudit/UIVisualAcceptance*.json
 data/systemAudit/UIVisualAcceptance*.png
 data/systemAudit/UIVisualAcceptance*.log
-data/value/TokenROIManualEntries.json
 data/integrations/site52etf/*
 !data/integrations/site52etf/.gitkeep
 data/researchBus/chatInbox/**

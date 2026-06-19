@@ -77,7 +77,7 @@ class AppDashboardTests(unittest.TestCase):
     def test_navigation_order_matches_daily_research_workflow(self):
         self.assertEqual(
             list(VIEW_OPTIONS.values()),
-            ["总控驾驶舱", "Token ROI", "现金流", "政策雷达", "消费守卫", "单标的回测", "情绪分析", "热点分析", "盘感训练", "持仓", "报告中心", "行研报告", "研究总线", "大数据模拟", "个人画像", "参数扫描", "组合轮动", "数据中心", "策略库"],
+            ["总控驾驶舱", "现金流", "政策雷达", "消费守卫", "单标的回测", "情绪分析", "热点分析", "盘感训练", "持仓", "报告中心", "行研报告", "研究总线", "大数据模拟", "个人画像", "参数扫描", "组合轮动", "数据中心", "策略库"],
         )
         self.assertNotIn("策略审批", VIEW_OPTIONS.values())
         self.assertNotIn("使用指导", VIEW_OPTIONS.values())

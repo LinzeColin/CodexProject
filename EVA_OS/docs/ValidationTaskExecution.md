@@ -111,7 +111,6 @@ scripts/runValidationTask.sh --start 2024-01-01 --end 2024-01-31 --output-dir da
 2. 原始 `ValidationTasks.json` 不被修改。
 3. 数据源不足时输出 `Blocked`，而不是伪造通过。
 4. 执行成功时保存底层 `CrossValidation_*.json`。
-5. 所有执行记录进入 Token ROI Ledger。
 6. `scripts/verifyQuantLab.sh` 和 `scripts/finalAcceptanceCheck.sh` 均通过。
 
 ## 已知限制

@@ -13,7 +13,7 @@ def main() -> None:
     parser.add_argument("--project-root", default=str(PROJECT_ROOT), help="EVA_OS / QuantLab project root.")
     parser.add_argument("--report-root", default=str(REPORT_ROOT_DIR), help="Formal report root.")
     parser.add_argument("--output-dir", default=None, help="Optional output directory. Defaults to data/commandCenter.")
-    parser.add_argument("--artifact-limit", type=int, default=300, help="Maximum artifact count considered by Token ROI fallback.")
+    parser.add_argument("--artifact-limit", type=int, default=300, help="Reserved compatibility limit for local fallback builders.")
     parser.add_argument("--json-only", action="store_true", help="Build and print status without writing files.")
     args = parser.parse_args()
 

@@ -1,5 +1,31 @@
 # EVA_OS｜证值智能中台
 
+## PFI-First Transition Notice
+
+`PFI OS` is the target product direction. This `EVA_OS/` directory is currently
+the legacy working directory and reusable asset source until the later
+PFI-003 directory and namespace migration.
+
+Read the PFI-001 contracts before new development:
+
+| Contract | Path |
+| --- | --- |
+| Product constitution | `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md` |
+| Six-workspace information architecture | `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md` |
+| Feature disposition | `docs/product/PFI_FEATURE_DISPOSITION.md` |
+| Data boundaries | `docs/data/PFI_DATA_BOUNDARIES.md` |
+| Source of truth | `docs/data/PFI_SOURCE_OF_TRUTH.md` |
+| UX contract | `docs/ux/PFI_UX_CONTRACT.md` |
+| Target architecture | `docs/architecture/PFI_TARGET_ARCHITECTURE.md` |
+| Legacy migration record | `docs/archive/legacy-migration.md` |
+
+PFI-002 has retired the old value-ledger product surface from active code,
+scripts, tests, navigation, command center output, and formal docs. New work
+must follow PFI-first constraints: one PFI OS
+entry, six primary workspaces, strategy backtesting as a core workflow, market
+feel training retained as a Strategy Lab training mode, no autonomous live
+trading, and no private runtime data in public Git.
+
 `EVA_OS` 是主系统总入口，macOS 应用显示为 `EVA_OS`。QuantLab 是其中的量化研究与回测主入口，并继续承接研究总线、持仓、报告、独立验证和跨系统证据流。
 
 QuantLab 是个人自用的量化研究、分析、回测和实验记录平台。
@@ -59,7 +85,6 @@ UPLOAD_MANIFEST.md
 | 政策雷达 | `docs/PolicyIntelligenceRadar.md` |
 | 消费守卫 | `docs/ConsumptionGuard.md` |
 | 报告验证工作台 | `docs/ReportValidationHub.md` |
-| Token ROI 台账 | `docs/TokenROI.md` |
 | 报告目录 | `~/Downloads/量化回测分析` |
 | 共享研究总线 | `data/researchBus/ResearchBus.sqlite` |
 | 正式持仓簿 | `data/holdings/HoldingsBook.json` |
@@ -345,23 +370,7 @@ Daily check with network validation.
 $EVA_OS_HOME/scripts/dailyCheck.sh --network
 ```
 
-生成 Token ROI 台账。
 
-Generate the Token ROI Ledger.
-
-```bash
-$EVA_OS_HOME/scripts/tokenRoiLedger.sh --output-dir data/value
-```
-
-低 token 检查可只输出 compact 运行摘要。
-
-For low-token checks, print only the compact runtime summary.
-
-```bash
-$EVA_OS_HOME/scripts/tokenRoiLedger.sh --summary-json
-```
-
-Token ROI 工作台支持人工录入真实价值证据，保存到 `data/value/TokenROIManualEntries.json`。只有 `Reviewed` 且有真实金额字段的记录会进入已量化汇总；`PendingReview` 只保留为待复核证据。
 
 联网日常检查会展示单个数据源失败，但会继续执行后续诊断。
 

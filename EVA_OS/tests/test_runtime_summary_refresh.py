@@ -18,12 +18,11 @@ def test_refresh_runtime_summary_latest_writes_only_compact_public_safe_files(tm
 
     assert payload["schema"] == "EVAOSRuntimeSummaryRefreshV1"
     assert payload["status"] == "Pass"
-    assert payload["summary_count"] == 4
+    assert payload["summary_count"] == 3
     assert payload["runtime_summary_only"] is True
-    assert "no full records" in payload["public_upload_safety"]
+    assert "no full entries" in payload["public_upload_safety"]
 
     expected = {
-        "data/value/EVATokenROIRuntimeSummary_latest.json": ("EVATokenROIRuntimeSummaryV1", "records"),
         "data/cashflow/CompanyCashFlowRuntimeSummary_latest.json": ("EVAOSCompanyCashFlowRuntimeSummaryV1", "entries"),
         "data/policy/PolicyIntelligenceRuntimeSummary_latest.json": ("EVAOSPolicyIntelligenceRuntimeSummaryV1", "opportunities"),
         "data/consumption/ConsumptionGuardRuntimeSummary_latest.json": ("EVAOSConsumptionGuardRuntimeSummaryV1", "events"),
@@ -72,7 +71,6 @@ def test_refreshed_runtime_summaries_are_command_center_default_sources(tmp_path
     assert {row["mode"] for row in payload["runtime_summary_sources"]} == {"runtime_summary"}
     schemas = {row["subsystem"]: row["schema"] for row in payload["runtime_summary_sources"]}
     assert schemas == {
-        "Token ROI": "EVATokenROIRuntimeSummaryV1",
         "Company CashFlow Command": "EVAOSCompanyCashFlowRuntimeSummaryV1",
         "Policy Intelligence Radar": "EVAOSPolicyIntelligenceRuntimeSummaryV1",
         "Consumption Guard": "EVAOSConsumptionGuardRuntimeSummaryV1",

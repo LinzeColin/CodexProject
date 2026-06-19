@@ -95,7 +95,6 @@ Completed local engineering layers:
 2. Reproducible Data Lake MVP
 3. Event Replay MVP
 4. Executive Command Center draft
-5. Token ROI, policy, cashflow, consumption report surfaces in partial productized form
 6. EVA_OS macOS entry app template and local entry points
 
 Current stopping point:
@@ -110,7 +109,6 @@ Current stopping point:
 - Moomoo-like realtime research flow is not complete.
 - 52ETF integration is not complete.
 - Hotspot analysis still needs runtime optimization beyond the prior stability fixes.
-- Token ROI, cashflow, policy, and consumption subsystems still need complete product-grade inputs, refresh workflows, and UI integration.
 - Local `.venv` was deleted during earlier slimming; tests require recreating dependencies.
 
 ## Acceptance Criteria for Next Agent
