@@ -27,7 +27,10 @@ def _jsonable(value: Any) -> Any:
     if isinstance(value, UUID):
         return str(value)
     if isinstance(value, datetime):
-        return value.isoformat()
+        serialized = value.isoformat()
+        if value.utcoffset() == timedelta(0) and serialized.endswith("+00:00"):
+            return f"{serialized[:-6]}Z"
+        return serialized
     if isinstance(value, Decimal):
         return float(value)
     if isinstance(value, dict):
