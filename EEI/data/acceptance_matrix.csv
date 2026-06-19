@@ -182,7 +182,7 @@ A180,P0,github,仓库包含功能、模型、数据范围和缺陷的结构化 I
 A181,P0,github,PR 模板要求变更范围、文档同步、测试、风险、回滚和验收证据,file review,NOT STARTED
 A182,P0,github,GitHub Actions 在目录、模型、任务或验收变更时运行治理一致性校验,workflow test,DONE
 A183,P0,traceability,每个 P0 功能至少映射一个任务、验收和测试证据路径,traceability validation,DONE
-A184,P0,status,开发状态明确区分规格完成、原型完成、产品实现和验证状态，并列出已解决/未解决,ledger review,NOT STARTED
+A184,P0,status,开发状态明确区分规格完成、原型完成、产品实现和验证状态，并列出已解决/未解决,ledger review,DONE
 A185,P0,risk,每项高风险具有控制、触发器、责任、关联功能、任务和验收,risk traceability validation,NOT STARTED
 A186,P0,data,公司目录覆盖 140 个研究对象并明确层级、范围与事实核验状态,catalog validation,NOT STARTED
 A187,P0,data,关系目录包含 10 个关系家族和不少于 52 种关系类型,catalog validation,NOT STARTED

@@ -352,6 +352,7 @@ Remote verification:
 - T1210 / A177 is DONE and remote CI passed; GitHub branch protection/release checklist contracts, CODEOWNERS scope, governance validator and registry coverage are wired into `make verify`. Run `27845697888` failed on a brittle transient loading overlay E2E assertion; `2535e84` fixed it and run `27846173368` / job `82415726115` passed.
 - T1211 / A175 is DONE and remote CI passed; release artifact generation and validation now cover `manifest.txt`, `DIRECTORY_TREE.txt`, `CHECKSUMS.sha256`, `artifacts/release_evidence_t1211.json`, `artifacts/release_operation_log_t1211.jsonl` and `scripts/manage_release_artifacts.py`. GitHub Actions run `27846828768` / job `82417667186` passed.
 - T1212 / A182-A183 is DONE and remote CI passed; `scripts/validate_governance_consistency.py` now checks governance workflow triggers, required commands, `make verify` wiring, P0 traceability and A200 release preflight prerequisites. GitHub Actions run `27847728171` / job `82420393869` passed. A200 remains open for T1215 clean-room verification.
+- T1213 / A184 is locally implemented and `make verify` passed; `scripts/manage_development_status_artifacts.py` now generates the development status summary, requirement-function-task-test traceability matrix, A183 evidence and A184 evidence. A183 remains DONE with added T1213 evidence.
 - G4/G5 remain open because saved-view API persistence, visual regression/performance suites and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -359,7 +360,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Start T1213 development status and requirement-function-task-test traceability generation as the next bounded slice.
+1. Commit/push T1213 and wait for remote CI proof.
 2. Keep T1118/T1119 visual regression and performance suites separate in G5.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.

@@ -18,6 +18,7 @@
 - `.github/release_checklist.md` 发布检查清单；
 - `.github/workflows/governance-validation.yml` 自动校验；
 - `scripts/validate_governance_consistency.py` 校验目录、模型、任务、验收、P0 traceability 和 clean-room 前置文件一致性；
+- `scripts/manage_development_status_artifacts.py` 生成并校验开发状态摘要、功能-任务-验收-测试证据矩阵和 A184 状态证据；
 - `CHECKSUMS.sha256` 发布包完整性校验。
 
 ## 变更规则

@@ -1529,3 +1529,33 @@ Acceptance status:
 Residual risks:
 
 - T1212 validates that the clean-room prerequisites exist and are checksummed; it does not run the final Markdown/CSV/JSON/GitHub/prototype/PDF/ZIP clean-room package validation.
+
+## 2026-06-19 - Phase 1 / G0 T1213 Development status and traceability artifacts
+
+Status: LOCAL PASS
+
+Completed:
+
+- Added `scripts/manage_development_status_artifacts.py` to generate and validate `artifacts/development_status_summary_t1213.json`, `artifacts/requirement_function_task_test_traceability_t1213.csv`, A183 evidence and A184 evidence.
+- Wired `validate-development-status-artifacts` into `make verify` and `.github/workflows/governance-validation.yml`.
+- Marked T1213 and A184 as `DONE`; A183 remains `DONE` with added T1213 matrix evidence.
+- Updated stale traceability count documentation to the canonical 221 rows in `data/acceptance_traceability.csv`.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/manage_development_status_artifacts.py generate`: PASS.
+- Local `.venv/bin/uv run python scripts/manage_development_status_artifacts.py validate`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_governance_consistency.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_github_governance.py`: PASS.
+- Local `.venv/bin/uv run ruff check scripts/manage_development_status_artifacts.py scripts/validate_governance_consistency.py scripts/validate_github_governance.py`: PASS.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A183 is additionally covered by `artifacts/requirement_function_task_test_traceability_t1213.csv` and `artifacts/tests/a183/t1213_requirement_function_task_test_traceability.json`.
+- A184 is covered by `scripts/manage_development_status_artifacts.py`, `data/development_status_ledger.csv`, `data/resolved_unresolved_register.csv`, `artifacts/development_status_summary_t1213.json` and `artifacts/tests/a184/t1213_development_status_ledger.json`.
+
+Residual risks:
+
+- T1213 does not close risk-control traceability for high-risk items; that remains T1214 / A185.
