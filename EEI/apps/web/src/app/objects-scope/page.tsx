@@ -10,6 +10,7 @@ import {
   Download,
   FileJson,
   GitBranch,
+  ListChecks,
   Network,
   PackageSearch,
   Rows3,
@@ -244,6 +245,15 @@ export default function ObjectsScopePage() {
           >
             <Database size={18} strokeWidth={1.8} aria-hidden="true" />
             <span>对象与范围</span>
+          </a>
+          <a
+            className="navItem"
+            data-testid="development-status-nav-link"
+            href="/development-status"
+            title="开发状态"
+          >
+            <ListChecks size={18} strokeWidth={1.8} aria-hidden="true" />
+            <span>开发状态</span>
           </a>
         </div>
       </aside>

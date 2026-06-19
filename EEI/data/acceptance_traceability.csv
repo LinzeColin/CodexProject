@@ -105,7 +105,7 @@ TR-FUN-EXP-06-A140,FUN-EXP-06,A140,T1104,DOM/SVG assertion,artifacts/tests/a140/
 TR-FUN-EXP-07-A072,FUN-EXP-07,A072,T504,Unit/E2E,artifacts/tests/a072/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 TR-FUN-EXP-07-A112,FUN-EXP-07,A112,"T803,T805",Content scan/review,artifacts/tests/a112/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 TR-FUN-EXP-07-A160,FUN-EXP-07,A160,T1113,E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
-TR-FUN-EXP-07-A174,FUN-EXP-07,A174,T1205,E2E + link integrity,artifacts/tests/a174/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
+TR-FUN-EXP-07-A174,FUN-EXP-07,A174,T1205,E2E + link integrity,apps/web/src/app/development-status/page.tsx;tests/e2e/development-status.spec.ts,DONE,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 TR-FUN-EXP-08-A019,FUN-EXP-08,A019,T202,Migration/API test,scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
 TR-FUN-EXP-08-A031,FUN-EXP-08,A031,T302,API/UI test,apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
 TR-FUN-EXP-08-A032,FUN-EXP-08,A032,"T302,T305",E2E,apps/web/src/app/industries/page.tsx;tests/e2e/industry.spec.ts,DONE,derived_from_task,Codex implementation,docs/12_RESEARCH_UNIVERSE_SOURCE_METRICS_SCREENING.md
@@ -182,8 +182,8 @@ TR-FUN-DM-02-A086,FUN-DM-02,A086,T602,API/E2E,artifacts/tests/a086/,NOT_STARTED,
 TR-FUN-DM-02-A087,FUN-DM-02,A087,"T604,T608",DB/API/E2E,artifacts/tests/a087/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
 TR-FUN-DM-02-A088,FUN-DM-02,A088,T604,Negative/security test,artifacts/tests/a088/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
 TR-FUN-DM-02-A089,FUN-DM-02,A089,T604,Integration,artifacts/tests/a089/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
-TR-FUN-DM-02-A173,FUN-DM-02,A173,T1205,Status catalog review,artifacts/tests/a173/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
-TR-FUN-DM-02-A174,FUN-DM-02,A174,T1205,E2E + link integrity,artifacts/tests/a174/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
+TR-FUN-DM-02-A173,FUN-DM-02,A173,T1205,Status catalog review,apps/web/src/app/development-status/page.tsx;tests/e2e/development-status.spec.ts,DONE,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
+TR-FUN-DM-02-A174,FUN-DM-02,A174,T1205,E2E + link integrity,apps/web/src/app/development-status/page.tsx;tests/e2e/development-status.spec.ts,DONE,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
 TR-FUN-DM-02-A175,FUN-DM-02,A175,"T1210,T1211",GitHub workflow + audit contract test,artifacts/tests/a175/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
 TR-FUN-DM-02-A176,FUN-DM-02,A176,T1209,Hash/content smoke test + browser screenshots,artifacts/tests/a176/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md
 TR-FUN-DM-02-A177,FUN-DM-02,A177,"T1202,T1210,T1211",Repository structure check,artifacts/tests/a177/,NOT_STARTED,derived_from_task,Codex implementation,MODEL_MANAGEMENT.md

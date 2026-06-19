@@ -918,3 +918,35 @@ Residual risks:
 - Timeline uses synthetic fixture snapshots; real snapshot comparison and change_events API remain future work.
 - Model online edit, preview, activation, rollback, score recomputation, and operation-log UI remain future work.
 - G4 remains open for recursive exploration, live context, model preview propagation, governance/status screens, accessibility/list equivalents, and visual regression/performance checks.
+
+## 2026-06-19 - Phase 1 / G4 T1205 Development Status navigation
+
+Status: LOCAL PASS; remote CI pending
+
+Completed:
+
+- Added `/development-status` as a visible development governance screen.
+- Added status lanes for resolved, prototyped, specified, not started, blocked, and out-of-scope work.
+- Linked tasks, risks, controls, and acceptance evidence to their canonical CSV sources.
+- Added function status, recent task evidence, acceptance evidence, and risk-control panels.
+- Added system navigation entry from the main workspace and Objects and Scope page.
+- Marked T1205 as `DONE`; marked A173 and A174 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 21 tests.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS, static route `/development-status`.
+- Local `make verify`: PASS.
+
+Acceptance status:
+
+- A173 is covered by `apps/web/src/app/development-status/page.tsx` and `tests/e2e/development-status.spec.ts`.
+- A174 is covered by visible system navigation, evidence links, and E2E link assertions in `tests/e2e/development-status.spec.ts`.
+
+Residual risks:
+
+- The page is server-rendered from local CSV files; live `/v1/governance/status` and `/v1/governance/traceability` APIs remain future work.
+- GitHub issue forms, PR template enforcement, branch rules, release checklist, and clean-room governance validation remain future work.
+- Remote CI still needs to prove this T1205 batch.

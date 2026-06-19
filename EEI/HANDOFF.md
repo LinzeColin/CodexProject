@@ -67,6 +67,8 @@ Updated: 2026-06-19 Australia/Sydney
 - Marked A154, A155, A156, A157, A158, A159, A160, A171, and A178 as `DONE` with local E2E/model-validation evidence.
 - Completed the remaining G3 state/history/saved-view/timeline/model-context batch by GitHub Actions run `27835479352`; job `82382357217` passed.
 - Closed G3 as `PASS` and started G4 as `IN PROGRESS`.
+- Added T1205 `/development-status` navigation screen with six delivery status lanes, tasks/risks/controls/acceptance evidence links, function status, task evidence, acceptance evidence, and risk-control panels.
+- Marked T1205, A173, and A174 as `DONE` locally; remote CI is pending for this G4 batch.
 
 ## Verification Evidence
 
@@ -144,6 +146,9 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27835479352` passed; job `82382357217` proved the G3 state/history/saved-view/timeline/model-context batch remotely.
 - 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
 - 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 21 tests after T1205.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed with static `/development-status`.
+- 2026-06-19 update: local `make verify` passed after T1205.
 
 Remote verification:
 
@@ -218,7 +223,8 @@ Remote verification:
 - T306 home/industry/watchlist E2E is DONE and remote CI passed; A037 is DONE.
 - T1110/T1111/T1112/T1113/T1201/T1206 are DONE and remote CI passed.
 - G3 is `PASS`.
-- G4 remains open because T1205 and T1208 are not complete.
+- T1205 / A173 / A174 are locally DONE; remote CI pending.
+- G4 remains open because recursive exploration, live context, accessible list/table equivalents, model preview propagation, and remaining governance tasks are not complete.
 - MVP is not complete.
 
 ## Recommended Next Step

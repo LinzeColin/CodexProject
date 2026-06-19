@@ -171,8 +171,8 @@ A169,P0,catalog,"Relationship families, relationship types, upstream/downstream 
 A170,P0,navigation,"Objects and scope is a visible navigation module and exposes counts, definitions, coverage and export links",E2E + visual regression,DONE
 A171,P0,model-governance,"Model management has one canonical registry for formulas, parameters, thresholds, files, versions, online edit, preview, activation and rollback",Schema validation + model center E2E,DONE
 A172,P0,architecture,"Function structure screen maps every module to route, data assets, API, status and acceptance criteria",Catalog/API mapping test,NOT STARTED
-A173,P0,delivery-governance,"Development status explicitly separates resolved, prototyped, specified, not started, blocked and out-of-scope items",Status catalog review,NOT STARTED
-A174,P0,delivery-governance,"Development status is visible in navigation and links tasks, risks, controls and acceptance evidence",E2E + link integrity,NOT STARTED
+A173,P0,delivery-governance,"Development status explicitly separates resolved, prototyped, specified, not started, blocked and out-of-scope items",Status catalog review,DONE
+A174,P0,delivery-governance,"Development status is visible in navigation and links tasks, risks, controls and acceptance evidence",E2E + link integrity,DONE
 A175,P0,audit,"Any catalog, model, threshold or scope change is captured by PR template, operation log and immutable release artifact",GitHub workflow + audit contract test,NOT STARTED
 A176,P0,prototype,index.html and standalone.html render the same canonical prototype and do not reference incompatible stale JS/CSS,Hash/content smoke test + browser screenshots,NOT STARTED
 A177,P0,github,"GitHub repository includes issue forms, PR template, code owners, catalog integrity workflow, release checklist and backup policy",Repository structure check,NOT STARTED
