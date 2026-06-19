@@ -9,16 +9,19 @@ Updated: 2026-06-19 Australia/Sydney
 ## Current Status
 
 - GitHub target: `LinzeColin/CodexProject/EEI`
-- Current gate: Phase 1 / G1 - Repository foundation
+- Current gate: Phase 1 / G2 - Domain and data model
 - Gate status: IN PROGRESS
+- Previous gate: Phase 1 / G1 - Repository foundation
+- G1 status: PASS by GitHub Actions run `27820777762`
 - Local EEI repo commits:
   - `1f4a813` baseline Task Pack import
   - `d53e72d` Phase 0 governance freeze
   - `8329592` G1 repository foundation batch 1
   - `3e04747` PostgreSQL readiness contract
   - `53ece4b` G1 environment doctor
+  - `baa5dbd` PostgreSQL startup wait contract
 - GitHub `CodexProject` commit pushed:
-  - `c5838bc` added EEI root validation workflow
+  - `5de38fd` wait for EEI PostgreSQL readiness
 
 ## Completed
 
@@ -44,27 +47,26 @@ Run from `work/EEI`:
 - 2026-06-19 update: first root GitHub Actions run reached `Verify G1 PostgreSQL readiness and E2E` and failed there after prior verification steps passed.
 - 2026-06-19 update: `scripts/wait_for_database.py` and `make wait-db` added to prevent immediate post-startup database readiness races.
 - 2026-06-19 update: `make verify` passes after the wait-contract change; local `make verify-g1` still fails closed because Docker is not installed.
+- 2026-06-19 update: GitHub Actions run `27820777762` passed; step 8 `Verify G1 PostgreSQL readiness and E2E` passed.
 
 Remote verification:
 
 - GitHub connector fetched `EEI/README.md` from `LinzeColin/CodexProject` on `main`.
+- GitHub Actions run `27820777762`: PASS.
+- GitHub Actions job `82333085277`: PASS.
 
 ## Not Completed
 
-- Docker is not installed on the current host.
-- `docker compose up -d postgres` and PostgreSQL container health checks have not been run.
-- `/health/ready` now requires a real PostgreSQL readiness check; no database means `not_ready`.
-- G1 is not PASS yet.
-- Remote GitHub Actions needs to be re-run after the PostgreSQL wait contract is pushed.
-- G2 domain schema/migration/data model work has not started.
+- Docker is not installed on the current host, so local `make verify-g1` still fails closed.
+- G2 domain schema/migration/data model implementation has not started.
 - MVP is not complete.
 
 ## Recommended Next Step
 
-Resolve G1 database service verification:
+Start G2 with a bounded database-first run:
 
-1. Install/start Docker Desktop or approve another local PostgreSQL service path.
-2. Copy `.env.example` to `.env`.
-3. Run `make verify-g1`; this now starts Docker PostgreSQL, waits for `select 1`, runs `make health`, then static/unit/E2E verification.
-4. Inspect GitHub Actions for `.github/workflows/eei-validation.yml` after the wait-contract push.
-5. Only consider G1 PASS after either local Docker/PostgreSQL or GitHub Actions proves `make verify-g1`.
+1. Add reversible PostgreSQL migrations for `specs/domain_schema.sql` core tables.
+2. Add a migration runner and schema validation tests.
+3. Add seed-loader scaffolding for 30 P0 seeds and the 140-node research universe.
+4. Keep fixture records marked as fixture/synthetic and separated from live evidence.
+5. Run `make verify`; rely on GitHub Actions for Docker-backed `make verify-g1` until local Docker is available.

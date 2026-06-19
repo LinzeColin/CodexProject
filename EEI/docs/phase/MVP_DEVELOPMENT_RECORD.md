@@ -128,3 +128,45 @@ Residual risks:
 
 - The current host still has no Docker runtime, so local `make verify-g1` remains an expected fail-closed check until Docker/PostgreSQL is available.
 - Remote GitHub Actions must be re-run after this change to determine whether the failure was solely a PostgreSQL startup race.
+
+## 2026-06-19 - Phase 1 / G1 close and G2 start
+
+Status: G1 PASS; G2 IN PROGRESS
+
+Completed:
+
+- Pushed `LinzeColin/CodexProject` commit `5de38fd` with the PostgreSQL wait contract.
+- Confirmed GitHub Actions run `27820777762` completed with conclusion `success`.
+- Confirmed the `verify` job and all steps passed, including `Verify G1 PostgreSQL readiness and E2E`.
+- Advanced `data/release_gate_catalog.csv` to `G1=PASS` and `G2=IN PROGRESS`.
+
+Verification results:
+
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27820777762`.
+- GitHub Actions job: `https://github.com/LinzeColin/CodexProject/actions/runs/27820777762/job/82333085277`.
+- Step 8 `Verify G1 PostgreSQL readiness and E2E`: PASS.
+
+G2 scope and Acceptance IDs:
+
+- T200: A011, A012, A013, A014, A015, A022.
+- T201: A016, A020, A021.
+- T202: A019.
+- T203: A011, A090.
+- T204: A017, A018, A028.
+- T205: A016, A025, A067.
+- T206: A023.
+- T207: A024, A028.
+- T208: A011, A026, A027.
+- T1103: A136, A137.
+- T1104: A138, A139, A140.
+- T1105: A141, A142.
+- T1106: A143, A144, A145.
+- T1107: A146, A147.
+- T1108: A148, A149, A150.
+- T1109: A151, A152.
+- T1203: A169, A170.
+
+Residual risks:
+
+- Local host still cannot run Docker-based `make verify-g1`; G1 PASS is based on GitHub Actions evidence.
+- G2 has a wide acceptance surface; implementation should split database migrations/data checks from visual canvas work to keep diffs reviewable.
