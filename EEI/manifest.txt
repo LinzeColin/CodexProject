@@ -73,6 +73,9 @@ artifacts/model_config_import_preview.json
 artifacts/pdf_contact_sheet.png
 artifacts/release_evidence_t1211.json
 artifacts/release_operation_log_t1211.jsonl
+artifacts/tests/a182/t1212_governance_consistency_workflow.json
+artifacts/tests/a183/t1212_p0_traceability_validator.json
+artifacts/tests/a200/t1212_clean_room_preflight.json
 config/model_profiles/balanced-v2.json
 config/model_runtime_defaults.yaml
 config/thresholds/default-v2.json
@@ -236,6 +239,7 @@ scripts/validate_catalog_integrity.py
 scripts/validate_contracts.py
 scripts/validate_github_governance.py
 scripts/validate_governance.py
+scripts/validate_governance_consistency.py
 scripts/validate_model_config.py
 scripts/validate_prototype_parity.py
 scripts/validate_task_pack.py

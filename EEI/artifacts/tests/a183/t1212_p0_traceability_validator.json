@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "T1212",
+  "acceptance_id": "A183",
+  "status": "DONE",
+  "evidence_type": "traceability_validation",
+  "validated_by": [
+    "scripts/validate_governance_consistency.py",
+    "make validate-governance-consistency",
+    "make verify"
+  ],
+  "contract": "Every P0 function must have at least one valid task, acceptance criterion, test type and evidence path through data/acceptance_traceability.csv.",
+  "rollback": "Revert the T1212 validator/status commit and restore the previous acceptance traceability rows."
+}

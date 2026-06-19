@@ -115,7 +115,7 @@ T1208,G5,P0,Add end-to-end test for global model/data version consistency,T1207,
 T1209,G5,P0,Add canonical prototype parity smoke test for index and standalone,T1202,A176,DONE
 T1210,G8,P0,Configure GitHub branch rules CODEOWNERS and required catalog checks,T1202,"A175,A177",DONE
 T1211,G9,P0,Publish reproducible release with manifest checksums status and acceptance evidence,"T1208,T1209,T1210","A175,A177",DONE
-T1212,G0,P0,Install GitHub governance consistency workflow,T1211,"A182,A183,A200",NOT STARTED
+T1212,G0,P0,Install GitHub governance consistency workflow,T1211,"A182,A183,A200",DONE
 T1213,G0,P0,Generate development status and requirement-function-task-test traceability,T1200,"A183,A184",NOT STARTED
 T1214,G0,P0,"Map risk controls to functions, tasks, acceptance and release gates",T1213,A185,NOT STARTED
 T1215,G9,P0,"Run clean-room governance, prototype, PDF and ZIP validation","T1210,T1212,T1214",A200,NOT STARTED

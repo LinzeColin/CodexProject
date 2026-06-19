@@ -37,6 +37,7 @@ jobs:
           python scripts/validate_catalog_integrity.py
           python scripts/validate_governance.py
           python scripts/validate_task_pack.py
+          python scripts/validate_governance_consistency.py
       - name: Verify shell syntax
         run: bash -n scripts/preflight.sh scripts/run_codex_autonomous.sh
       - name: Verify checksums when present
@@ -55,4 +56,3 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Validate visual coverage at required viewports
         run: python scripts/validate_visual_coverage.py
-

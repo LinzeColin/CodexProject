@@ -54,6 +54,13 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── __init__.py
 │   └── __init__.py
 ├── artifacts
+│   ├── tests
+│   │   ├── a182
+│   │   │   └── t1212_governance_consistency_workflow.json
+│   │   ├── a183
+│   │   │   └── t1212_p0_traceability_validator.json
+│   │   └── a200
+│   │       └── t1212_clean_room_preflight.json
 │   ├── README.md
 │   ├── governance_blueprint_v42_source.html
 │   ├── model_config_import_preview.json
@@ -244,6 +251,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_contracts.py
 │   ├── validate_github_governance.py
 │   ├── validate_governance.py
+│   ├── validate_governance_consistency.py
 │   ├── validate_model_config.py
 │   ├── validate_prototype_parity.py
 │   ├── validate_task_pack.py
