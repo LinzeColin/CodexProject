@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import {
   Activity,
   ArrowDown,
@@ -8,6 +8,7 @@ import {
   Bell,
   Boxes,
   Building2,
+  ChevronLeft,
   CircleDollarSign,
   Clock3,
   Crosshair,
@@ -15,15 +16,25 @@ import {
   FileSearch,
   GitBranch,
   Landmark,
+  ListChecks,
   Network,
   PackageSearch,
   Route,
   Scale,
+  Search,
   Settings2,
   ShieldCheck,
+  RotateCcw,
+  Save,
   Star
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import {
+  ACTIVE_ANALYSIS_CONTEXT,
+  ANALYSIS_PREVIEW_STORAGE_KEY,
+  type AnalysisContext
+} from "./analysis-contract";
+import { useAnalysisContext } from "./use-analysis-context";
 
 type NavItem = {
   name: string;
@@ -58,6 +69,39 @@ type RelationshipLens = Exclude<LensKey, "all">;
 type SemanticZoom = "L0" | "L1" | "L2" | "L3";
 
 type TransitionState = "ready" | "loading" | "fallback";
+
+type TimelineKey = "2026-06-01" | "2026-06-12" | "2026-06-19";
+
+type WorkspaceState = {
+  focusKey: FocusKey;
+  selectedKey: NodeKey;
+  path: FocusKey[];
+  activeLens: LensKey;
+  semanticZoom: SemanticZoom;
+  asOf: TimelineKey;
+};
+
+type SavedViewRecord = WorkspaceState & {
+  id: string;
+  version: "saved-view-v1";
+  filters: string;
+  layout: string;
+  modelVersion: string;
+  profileVersion: string;
+  dataSnapshot: string;
+  scoreSnapshot: string;
+  notes: string;
+  updatedAt: string;
+};
+
+type WorkspaceStateInput = {
+  focusKey?: unknown;
+  selectedKey?: unknown;
+  path?: unknown;
+  activeLens?: unknown;
+  semanticZoom?: unknown;
+  asOf?: unknown;
+};
 
 type Zone =
   | "upstream"
@@ -98,6 +142,47 @@ type FocusScenario = {
   nodes: MapNode[];
   edges: MapEdge[];
   nextCenters: FocusKey[];
+};
+
+type HomeSearchResult = {
+  key: string;
+  label: string;
+  description: string;
+  aliases: string[];
+  target: FocusKey;
+  objectType: "entity" | "industry" | "theme" | "facility";
+};
+
+type HomeIndustryEntry = {
+  key: string;
+  name: string;
+  taxonomy: string;
+  entityCount: number;
+  recentChangeCount: number;
+  target: FocusKey;
+};
+
+type HomeWatchItem = {
+  key: FocusKey;
+  label: string;
+  unread: number;
+  state: string;
+  savedLens: LensKey;
+  savedZoom: SemanticZoom;
+  profile: string;
+};
+
+type HomeRecentEntry = {
+  key: FocusKey;
+  label: string;
+  path: string;
+};
+
+type HomeChangeEntry = {
+  key: string;
+  label: string;
+  severity: string;
+  target: FocusKey;
 };
 
 const navItems: NavItem[] = [
@@ -164,6 +249,38 @@ const semanticZoomItems: { key: SemanticZoom; label: string; title: string }[] =
   { key: "L3", label: "L3", title: "Detailed node role labels" }
 ];
 
+const timelineItems: {
+  key: TimelineKey;
+  label: string;
+  change: string;
+  overlay: string;
+}[] = [
+  {
+    key: "2026-06-01",
+    label: "Baseline",
+    change: "Baseline supplier and customer graph",
+    overlay: "No material-change overlay in this fixture snapshot"
+  },
+  {
+    key: "2026-06-12",
+    label: "Comparison",
+    change: "Packaging queue and customer-demand path changed",
+    overlay: "Change overlay highlights packaging and demand pressure"
+  },
+  {
+    key: "2026-06-19",
+    label: "Active",
+    change: "Current fixture snapshot for MVP validation",
+    overlay: "Active snapshot, not real-time market data"
+  }
+];
+
+const WORKSPACE_STATE_STORAGE_KEY = "eei.workspaceState.v1";
+const SAVED_VIEW_STORAGE_KEY = "eei.savedView.current.v1";
+const SAVED_VIEW_VERSION = "saved-view-v1";
+const WORKSPACE_LAYOUT_GRAMMAR =
+  "upstream-left focus-center downstream-right capital-top policy-bottom";
+
 const systemMakersGroupMembers = [
   "Synthetic Systems Integrator",
   "Synthetic Rack Manufacturer",
@@ -185,6 +302,156 @@ const stageRows = [
   { id: "SC-10", name: "Data center / Energy", side: "downstream" },
   { id: "SC-12", name: "Customer", side: "downstream" }
 ] as const;
+
+const focusIndustryByKey: Record<FocusKey, { key: string; label: string }> = {
+  materials: { key: "semiconductors", label: "Semiconductors" },
+  equipment: { key: "semiconductors", label: "Semiconductors" },
+  foundry: { key: "semiconductors", label: "Semiconductors" },
+  nvidia: { key: "semiconductors", label: "Semiconductors" },
+  business: { key: "semiconductors", label: "Semiconductors" },
+  capital: { key: "semiconductors", label: "Semiconductors" },
+  policy: { key: "semiconductors", label: "Semiconductors" },
+  systems: { key: "ai-cloud", label: "AI cloud infrastructure" },
+  cloud: { key: "ai-cloud", label: "AI cloud infrastructure" },
+  datacenter: { key: "energy", label: "Power and data-center energy" },
+  energy: { key: "energy", label: "Power and data-center energy" }
+};
+
+const homeSearchResults: HomeSearchResult[] = [
+  {
+    key: "nvidia",
+    label: "NVIDIA Corporation",
+    description: "legal_entity / AI infrastructure focus",
+    aliases: ["nvda", "nvidia", "gpu", "accelerated computing"],
+    target: "nvidia",
+    objectType: "entity"
+  },
+  {
+    key: "tsmc",
+    label: "TSMC representative foundry",
+    description: "entity / semiconductor manufacturing",
+    aliases: ["tsmc", "taiwan semiconductor", "foundry", "晶圆制造"],
+    target: "foundry",
+    objectType: "entity"
+  },
+  {
+    key: "semiconductors",
+    label: "Semiconductors",
+    description: "industry / taxonomy v4.2",
+    aliases: ["semiconductor", "semiconductors", "半导体", "industry"],
+    target: "nvidia",
+    objectType: "industry"
+  },
+  {
+    key: "ai-cloud",
+    label: "AI cloud demand",
+    description: "theme / customer and infrastructure demand",
+    aliases: ["ai cloud", "cloud", "demand", "customer"],
+    target: "cloud",
+    objectType: "theme"
+  }
+];
+
+const homeIndustries: HomeIndustryEntry[] = [
+  {
+    key: "semiconductors",
+    name: "Semiconductors",
+    taxonomy: "taxonomy-v4.2",
+    entityCount: 8,
+    recentChangeCount: 2,
+    target: "nvidia"
+  },
+  {
+    key: "ai-cloud",
+    name: "AI cloud infrastructure",
+    taxonomy: "taxonomy-v4.2",
+    entityCount: 6,
+    recentChangeCount: 1,
+    target: "cloud"
+  },
+  {
+    key: "energy",
+    name: "Power and data-center energy",
+    taxonomy: "taxonomy-v4.2",
+    entityCount: 3,
+    recentChangeCount: 1,
+    target: "energy"
+  }
+];
+
+const homeWatchItems: HomeWatchItem[] = [
+  {
+    key: "nvidia",
+    label: "NVIDIA",
+    unread: 3,
+    state: "last viewed",
+    savedLens: "supply_chain",
+    savedZoom: "L2",
+    profile: "Balanced v2"
+  },
+  {
+    key: "foundry",
+    label: "Advanced Foundry",
+    unread: 2,
+    state: "upstream",
+    savedLens: "supply_chain",
+    savedZoom: "L2",
+    profile: "Balanced v2"
+  },
+  {
+    key: "equipment",
+    label: "Lithography Equipment",
+    unread: 1,
+    state: "supplier",
+    savedLens: "supply_chain",
+    savedZoom: "L1",
+    profile: "Balanced v2"
+  },
+  {
+    key: "materials",
+    label: "Specialty Materials",
+    unread: 1,
+    state: "materials",
+    savedLens: "supply_chain",
+    savedZoom: "L1",
+    profile: "Balanced v2"
+  },
+  {
+    key: "cloud",
+    label: "Cloud Customer",
+    unread: 2,
+    state: "downstream",
+    savedLens: "supply_chain",
+    savedZoom: "L2",
+    profile: "Balanced v2"
+  }
+];
+
+const homeRecentExplorations: HomeRecentEntry[] = [
+  { key: "nvidia", label: "NVIDIA", path: "NVIDIA" },
+  { key: "foundry", label: "Advanced Foundry", path: "NVIDIA -> Foundry" },
+  { key: "equipment", label: "Lithography Equipment", path: "NVIDIA -> Foundry -> Equipment" }
+];
+
+const homeChanges: HomeChangeEntry[] = [
+  { key: "capital", label: "Capital/control signal refreshed", severity: "material", target: "capital" },
+  { key: "policy", label: "Policy-risk context updated", severity: "watch", target: "policy" },
+  { key: "cloud", label: "Customer-demand path changed", severity: "watch", target: "cloud" }
+];
+
+const homeFreshness = {
+  status: "synthetic_fixture",
+  latestRelationshipObservedAt: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf,
+  sourceDocumentCount: 3,
+  coverage: ACTIVE_ANALYSIS_CONTEXT.dataSnapshot
+};
+
+const homeModelStatus = {
+  profile: ACTIVE_ANALYSIS_CONTEXT.profileLabel,
+  latestCalibration: "scheduled",
+  cadenceDays: 14,
+  nextScheduledFor: "2026-07-03"
+};
 
 const baseEdges: MapEdge[] = [
   {
@@ -328,7 +595,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   business: {
     focus: "business",
     heading: "Synthetic Accelerated Computing Segment",
-    subtitle: "Rerooted business-segment view with focus company and customer demand retained",
+    subtitle: "Centered business-segment view with company and customer demand retained",
     nodes: [
       node("nvidia", 150, 246, "upstream", "SC-05 Design / IP", "parent platform"),
       node("business", 360, 238, "focus", "Business segment", "current focus"),
@@ -341,7 +608,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   capital: {
     focus: "capital",
     heading: "Synthetic Capital Commitment",
-    subtitle: "Rerooted capital/control view with focus-company exposure retained",
+    subtitle: "Centered capital/control view with company exposure retained",
     nodes: [
       node("capital", 350, 210, "focus", "Capital / control", "current focus"),
       node("nvidia", 560, 244, "downstream", "SC-05 Design / IP", "company exposure"),
@@ -353,7 +620,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   policy: {
     focus: "policy",
     heading: "Synthetic Export Control Context",
-    subtitle: "Rerooted policy/risk view with constrained company and downstream demand retained",
+    subtitle: "Centered policy/risk view with constrained company and downstream demand retained",
     nodes: [
       node("policy", 340, 252, "focus", "Policy / risk", "current focus"),
       node("nvidia", 540, 238, "downstream", "SC-05 Design / IP", "constrained company"),
@@ -365,7 +632,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   foundry: {
     focus: "foundry",
     heading: "Synthetic Advanced Foundry",
-    subtitle: "Rerooted manufacturing view with inherited supply-chain lens",
+    subtitle: "Centered manufacturing view with inherited supply-chain lens",
     nodes: [
       node("materials", 92, 318, "upstream", "SC-02 Materials", "specialty materials"),
       node("equipment", 104, 142, "upstream", "SC-04 Equipment", "lithography equipment"),
@@ -379,7 +646,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   equipment: {
     focus: "equipment",
     heading: "Synthetic Lithography Equipment Co.",
-    subtitle: "Rerooted equipment view with manufacturing dependency retained",
+    subtitle: "Centered equipment view with manufacturing dependency retained",
     nodes: [
       node("materials", 118, 314, "upstream", "SC-02 Materials", "material dependency"),
       node("equipment", 332, 210, "focus", "SC-04 Equipment", "current focus"),
@@ -392,7 +659,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   materials: {
     focus: "materials",
     heading: "Synthetic Specialty Materials Co.",
-    subtitle: "Rerooted materials view with downstream manufacturing chain",
+    subtitle: "Centered materials view with downstream manufacturing chain",
     nodes: [
       node("materials", 328, 240, "focus", "SC-02 Materials", "current focus"),
       node("equipment", 158, 150, "upstream", "SC-04 Equipment", "adjacent equipment"),
@@ -405,7 +672,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   systems: {
     focus: "systems",
     heading: "Synthetic Systems Integrator",
-    subtitle: "Rerooted system view across customer and infrastructure stages",
+    subtitle: "Centered system view across customer and infrastructure stages",
     nodes: [
       node("nvidia", 138, 240, "upstream", "SC-05 Design / IP", "upstream IP"),
       node("systems", 356, 236, "focus", "SC-09 System", "current focus"),
@@ -419,7 +686,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   cloud: {
     focus: "cloud",
     heading: "Synthetic Cloud Customer",
-    subtitle: "Rerooted customer view with system and data-center dependencies",
+    subtitle: "Centered customer view with system and data-center dependencies",
     nodes: [
       node("nvidia", 112, 236, "upstream", "SC-08 Packaging", "upstream platform"),
       node("systems", 260, 204, "upstream", "SC-09 System", "system integrator"),
@@ -433,7 +700,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   datacenter: {
     focus: "datacenter",
     heading: "Synthetic AI Data Center Campus",
-    subtitle: "Rerooted infrastructure view",
+    subtitle: "Centered infrastructure view",
     nodes: [
       node("energy", 132, 310, "upstream", "SC-10 Energy", "grid utility"),
       node("datacenter", 360, 240, "focus", "SC-10 Data center", "current focus"),
@@ -445,7 +712,7 @@ const scenarios: Record<FocusKey, FocusScenario> = {
   energy: {
     focus: "energy",
     heading: "Synthetic Grid Utility",
-    subtitle: "Rerooted energy view",
+    subtitle: "Centered energy view",
     nodes: [
       node("energy", 340, 244, "focus", "SC-10 Energy", "current focus"),
       node("datacenter", 548, 244, "downstream", "SC-10 Data center", "AI data center"),
@@ -480,15 +747,175 @@ function node(
   };
 }
 
+const focusKeySet = new Set<FocusKey>(Object.keys(scenarios) as FocusKey[]);
+const nodeKeySet = new Set<NodeKey>(Object.keys(entityLabels) as NodeKey[]);
+const lensKeySet = new Set<LensKey>(lensItems.map((item) => item.key));
+const semanticZoomSet = new Set<SemanticZoom>(semanticZoomItems.map((item) => item.key));
+const timelineKeySet = new Set<TimelineKey>(timelineItems.map((item) => item.key));
+
+const defaultWorkspaceState: WorkspaceState = {
+  focusKey: "nvidia",
+  selectedKey: "nvidia",
+  path: ["nvidia"],
+  activeLens: "all",
+  semanticZoom: "L1",
+  asOf: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf
+};
+
+function isFocusKey(value: string | null | undefined): value is FocusKey {
+  return Boolean(value && focusKeySet.has(value as FocusKey));
+}
+
+function isNodeKey(value: string | null | undefined): value is NodeKey {
+  return Boolean(value && nodeKeySet.has(value as NodeKey));
+}
+
+function isLensKey(value: string | null | undefined): value is LensKey {
+  return Boolean(value && lensKeySet.has(value as LensKey));
+}
+
+function isSemanticZoom(value: string | null | undefined): value is SemanticZoom {
+  return Boolean(value && semanticZoomSet.has(value as SemanticZoom));
+}
+
+function isTimelineKey(value: string | null | undefined): value is TimelineKey {
+  return Boolean(value && timelineKeySet.has(value as TimelineKey));
+}
+
+function stringField(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+function normalizeWorkspaceState(input: WorkspaceStateInput): WorkspaceState {
+  const focusKeyValue = stringField(input.focusKey);
+  const selectedKeyValue = stringField(input.selectedKey);
+  const activeLensValue = stringField(input.activeLens);
+  const semanticZoomValue = stringField(input.semanticZoom);
+  const asOfValue = stringField(input.asOf);
+  const parsedPath = Array.isArray(input.path)
+    ? input.path.filter((item): item is string => typeof item === "string").filter(isFocusKey)
+    : [];
+  const focusKey = isFocusKey(focusKeyValue) ? focusKeyValue : defaultWorkspaceState.focusKey;
+  const selectedCandidate = isNodeKey(selectedKeyValue) ? selectedKeyValue : focusKey;
+  const selectedKey = scenarios[focusKey].nodes.some((item) => item.key === selectedCandidate)
+    ? selectedCandidate
+    : focusKey;
+  const path = parsedPath.length ? parsedPath : defaultWorkspaceState.path;
+  const normalizedPath = path[path.length - 1] === focusKey ? path : [...path, focusKey];
+
+  return {
+    focusKey,
+    selectedKey,
+    path: normalizedPath,
+    activeLens: isLensKey(activeLensValue) ? activeLensValue : defaultWorkspaceState.activeLens,
+    semanticZoom: isSemanticZoom(semanticZoomValue)
+      ? semanticZoomValue
+      : defaultWorkspaceState.semanticZoom,
+    asOf: isTimelineKey(asOfValue) ? asOfValue : defaultWorkspaceState.asOf
+  };
+}
+
+function readWorkspaceStateFromParams(params: URLSearchParams): WorkspaceState | null {
+  const hasState = ["subject", "selected", "lens", "zoom", "asOf", "path"].some((key) =>
+    params.has(key)
+  );
+  if (!hasState) return null;
+
+  return normalizeWorkspaceState({
+    focusKey: params.get("subject") ?? undefined,
+    selectedKey: params.get("selected") ?? undefined,
+    path: (params.get("path") ?? "").split("."),
+    activeLens: params.get("lens") ?? undefined,
+    semanticZoom: params.get("zoom") ?? undefined,
+    asOf: params.get("asOf") ?? undefined
+  });
+}
+
+function readWorkspaceStatePayload(rawValue: string | null): WorkspaceState | null {
+  if (!rawValue) return null;
+  try {
+    const parsed = JSON.parse(rawValue) as Partial<WorkspaceState>;
+    return normalizeWorkspaceState(parsed);
+  } catch {
+    return null;
+  }
+}
+
+function writeWorkspaceStateParams(params: URLSearchParams, state: WorkspaceState) {
+  params.set("subject", state.focusKey);
+  params.set("selected", state.selectedKey);
+  params.set("lens", state.activeLens);
+  params.set("zoom", state.semanticZoom);
+  params.set("asOf", state.asOf);
+  params.set("filters", state.activeLens);
+  params.set("path", state.path.join("."));
+}
+
+function createSavedView(
+  state: WorkspaceState,
+  analysisContext: AnalysisContext = ACTIVE_ANALYSIS_CONTEXT
+): SavedViewRecord {
+  const normalized = normalizeWorkspaceState(state);
+  return {
+    ...normalized,
+    id: `sv-${normalized.focusKey}-${normalized.activeLens}-${normalized.semanticZoom}-${normalized.asOf}`,
+    version: SAVED_VIEW_VERSION,
+    filters: normalized.activeLens,
+    layout: WORKSPACE_LAYOUT_GRAMMAR,
+    modelVersion: analysisContext.modelVersion,
+    profileVersion: analysisContext.profileVersion,
+    dataSnapshot: analysisContext.dataSnapshot,
+    scoreSnapshot: analysisContext.scoreSnapshot,
+    notes: `${entityLabels[normalized.focusKey]} / ${normalized.activeLens} / ${normalized.asOf}`,
+    updatedAt: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf
+  };
+}
+
+function readSavedViewPayload(rawValue: string | null): SavedViewRecord | null {
+  if (!rawValue) return null;
+  try {
+    const parsed = JSON.parse(rawValue) as Partial<SavedViewRecord>;
+    if (parsed.version !== SAVED_VIEW_VERSION) return null;
+    return {
+      ...createSavedView(normalizeWorkspaceState(parsed)),
+      id: parsed.id ?? createSavedView(normalizeWorkspaceState(parsed)).id,
+      notes: parsed.notes ?? createSavedView(normalizeWorkspaceState(parsed)).notes,
+      updatedAt: parsed.updatedAt ?? ACTIVE_ANALYSIS_CONTEXT.defaultAsOf
+    };
+  } catch {
+    return null;
+  }
+}
+
 export default function Home() {
+  const { analysisContext, applyPreview, clearPreview, isPreviewActive } = useAnalysisContext();
   const [focusKey, setFocusKey] = useState<FocusKey>("nvidia");
   const [selectedKey, setSelectedKey] = useState<NodeKey>("nvidia");
   const [path, setPath] = useState<FocusKey[]>(["nvidia"]);
   const [activeLens, setActiveLens] = useState<LensKey>("all");
   const [semanticZoom, setSemanticZoom] = useState<SemanticZoom>("L1");
+  const [asOf, setAsOf] = useState<TimelineKey>(ACTIVE_ANALYSIS_CONTEXT.defaultAsOf);
   const [transitionState, setTransitionState] = useState<TransitionState>("ready");
   const [groupListOpen, setGroupListOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [savedView, setSavedView] = useState<SavedViewRecord>(() =>
+    createSavedView(defaultWorkspaceState)
+  );
+  const [savedViewStatus, setSavedViewStatus] = useState("ready");
+  const [pinnedNodeKeys, setPinnedNodeKeys] = useState<NodeKey[]>([]);
+  const [comparisonNodeKeys, setComparisonNodeKeys] = useState<NodeKey[]>([]);
+  const [watchlistNodeKeys, setWatchlistNodeKeys] = useState<NodeKey[]>([]);
+  const [tableLensFilter, setTableLensFilter] = useState<LensKey>("all");
+  const [nodeActionStatus, setNodeActionStatus] = useState("ready");
+  const [stateReady, setStateReady] = useState(false);
+  const restoringHistoryState = useRef(false);
+  const hasWrittenHistoryState = useRef(false);
   const scenario = scenarios[focusKey];
+  const workspaceState = useMemo<WorkspaceState>(
+    () => ({ focusKey, selectedKey, path, activeLens, semanticZoom, asOf }),
+    [activeLens, asOf, focusKey, path, selectedKey, semanticZoom]
+  );
+  const currentTimeline = timelineItems.find((item) => item.key === asOf) ?? timelineItems[2];
   const nodeByKey = useMemo(
     () => new Map(scenario.nodes.map((item) => [item.key, item])),
     [scenario.nodes]
@@ -515,6 +942,13 @@ export default function Home() {
       ...overviewAggregateEdges
     ];
   }, [focusKey, scenario.edges, semanticZoom]);
+  const tableEdges = useMemo(
+    () =>
+      tableLensFilter === "all"
+        ? displayEdges
+        : displayEdges.filter((edge) => edge.lens === tableLensFilter),
+    [displayEdges, tableLensFilter]
+  );
   const activeEdgeKeys = useMemo(() => {
     const keys = new Set<NodeKey>([focusKey]);
     for (const edge of displayEdges) {
@@ -527,6 +961,18 @@ export default function Home() {
   }, [activeLens, displayEdges, focusKey]);
   const selectedNode =
     nodeByKey.get(selectedKey) ?? nodeByKey.get(scenario.focus) ?? scenario.nodes[0];
+  const industryPath = useMemo(() => {
+    const ordered: { key: string; label: string }[] = [];
+    for (const key of path) {
+      const industry = focusIndustryByKey[key];
+      if (ordered[ordered.length - 1]?.key !== industry.key) {
+        ordered.push(industry);
+      }
+    }
+    return ordered;
+  }, [path]);
+  const industryPathLabel = industryPath.map((item) => item.label).join(" -> ");
+  const isCrossIndustryPath = industryPath.length > 1;
   const upstreamCandidate = useMemo(
     () => scenario.edges.find((edge) => edge.to === selectedNode.key && nodeByKey.has(edge.from))?.from,
     [nodeByKey, scenario.edges, selectedNode.key]
@@ -537,7 +983,61 @@ export default function Home() {
     [nodeByKey, scenario.edges, selectedNode.key]
   );
 
+  function applyWorkspaceState(nextState: WorkspaceStateInput) {
+    const normalized = normalizeWorkspaceState(nextState);
+    setFocusKey(normalized.focusKey);
+    setSelectedKey(normalized.selectedKey);
+    setPath(normalized.path);
+    setActiveLens(normalized.activeLens);
+    setSemanticZoom(normalized.semanticZoom);
+    setAsOf(normalized.asOf);
+    setGroupListOpen(false);
+    setTransitionState("ready");
+  }
+
+  function applyPathSubject(pathIndex: number) {
+    const nextFocus = path[pathIndex];
+    if (!nextFocus) return;
+    applyWorkspaceState({
+      ...workspaceState,
+      focusKey: nextFocus,
+      selectedKey: nextFocus,
+      path: path.slice(0, pathIndex + 1)
+    });
+  }
+
+  function browserBack() {
+    window.history.back();
+  }
+
+  function saveCurrentView() {
+    const nextSavedView = createSavedView(workspaceState, analysisContext);
+    window.localStorage.setItem(SAVED_VIEW_STORAGE_KEY, JSON.stringify(nextSavedView));
+    setSavedView(nextSavedView);
+    setSavedViewStatus("saved");
+  }
+
+  function restoreSavedView() {
+    const storedSavedView = readSavedViewPayload(window.localStorage.getItem(SAVED_VIEW_STORAGE_KEY));
+    const nextSavedView = storedSavedView ?? savedView;
+    setSavedView(nextSavedView);
+    restoringHistoryState.current = true;
+    applyWorkspaceState(nextSavedView);
+    setSavedViewStatus("restored");
+  }
+
   const viewportAnchor = `${focusKey}:${selectedNode.key}:${semanticZoom}`;
+  const visibleSearchResults = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+    if (!normalizedQuery) {
+      return homeSearchResults.slice(0, 3);
+    }
+    return homeSearchResults.filter((result) =>
+      [result.label, result.description, ...result.aliases].some((value) =>
+        value.toLowerCase().includes(normalizedQuery)
+      )
+    );
+  }, [searchQuery]);
 
   function requestCenter(nextFocus: string) {
     setTransitionState("loading");
@@ -554,7 +1054,7 @@ export default function Home() {
       );
       setGroupListOpen(false);
       setTransitionState("ready");
-    }, 160);
+    }, 360);
   }
 
   function setCenter(nextFocus: FocusKey) {
@@ -564,6 +1064,33 @@ export default function Home() {
   function inspectNode(nextSelected: NodeKey) {
     setSelectedKey(nextSelected);
     setGroupListOpen(false);
+  }
+
+  function addUniqueNode(current: NodeKey[], key: NodeKey) {
+    return current.includes(key) ? current : [...current, key];
+  }
+
+  function pinSelectedNode() {
+    setPinnedNodeKeys((current) => addUniqueNode(current, selectedNode.key));
+    setNodeActionStatus(`pinned:${selectedNode.key}`);
+  }
+
+  function compareSelectedNode() {
+    setComparisonNodeKeys((current) => addUniqueNode(current, selectedNode.key).slice(-4));
+    setNodeActionStatus(`compare:${selectedNode.key}`);
+  }
+
+  function addSelectedNodeToWatchlist() {
+    setWatchlistNodeKeys((current) => addUniqueNode(current, selectedNode.key));
+    setNodeActionStatus(`watchlist:${selectedNode.key}`);
+  }
+
+  function openSelectedPath() {
+    setNodeActionStatus(`path:${selectedNode.key}`);
+  }
+
+  function openSelectedEvidence() {
+    setNodeActionStatus(`evidence:${selectedNode.key}`);
   }
 
   function handleNodeKeyDown(event: KeyboardEvent<SVGGElement>, nextSelected: NodeKey) {
@@ -581,6 +1108,70 @@ export default function Home() {
     setTransitionState("ready");
   }
 
+  function restoreWatchItem(item: HomeWatchItem) {
+    setActiveLens(item.savedLens);
+    setSemanticZoom(item.savedZoom);
+    setCenter(item.key);
+  }
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const firstResult = visibleSearchResults[0] ?? homeSearchResults[0];
+    setCenter(firstResult.target);
+  }
+
+  useEffect(() => {
+    const urlState = readWorkspaceStateFromParams(new URLSearchParams(window.location.search));
+    const sessionState = readWorkspaceStatePayload(
+      window.sessionStorage.getItem(WORKSPACE_STATE_STORAGE_KEY)
+    );
+    const storedSavedView = readSavedViewPayload(window.localStorage.getItem(SAVED_VIEW_STORAGE_KEY));
+
+    if (storedSavedView) {
+      setSavedView(storedSavedView);
+    }
+    if (urlState ?? sessionState) {
+      restoringHistoryState.current = true;
+      applyWorkspaceState((urlState ?? sessionState)!);
+    }
+
+    function handlePopState(event: PopStateEvent) {
+      const eventState = event.state as { eeiWorkspaceState?: WorkspaceStateInput } | null;
+      const nextState =
+        readWorkspaceStateFromParams(new URLSearchParams(window.location.search)) ??
+        (eventState?.eeiWorkspaceState
+          ? normalizeWorkspaceState(eventState.eeiWorkspaceState)
+          : null);
+      if (!nextState) return;
+      restoringHistoryState.current = true;
+      applyWorkspaceState(nextState);
+    }
+
+    window.addEventListener("popstate", handlePopState);
+    setStateReady(true);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  useEffect(() => {
+    if (!stateReady) return;
+    const normalized = normalizeWorkspaceState(workspaceState);
+    const payload = JSON.stringify(normalized);
+    window.sessionStorage.setItem(WORKSPACE_STATE_STORAGE_KEY, payload);
+    window.localStorage.setItem(WORKSPACE_STATE_STORAGE_KEY, payload);
+
+    const nextUrl = new URL(window.location.href);
+    writeWorkspaceStateParams(nextUrl.searchParams, normalized);
+    const historyState = { eeiWorkspaceState: normalized };
+    const shouldReplace = restoringHistoryState.current || !hasWrittenHistoryState.current;
+    if (shouldReplace) {
+      window.history.replaceState(historyState, "", nextUrl);
+      restoringHistoryState.current = false;
+      hasWrittenHistoryState.current = true;
+      return;
+    }
+    window.history.pushState(historyState, "", nextUrl);
+  }, [stateReady, workspaceState]);
+
   useEffect(() => {
     function handleExternalCenterRequest(event: Event) {
       const detail = (event as CustomEvent<string | { focus?: string }>).detail;
@@ -597,8 +1188,16 @@ export default function Home() {
   return (
     <main
       className="workspace"
+      data-active-data-snapshot={analysisContext.dataSnapshot}
       data-active-lens={activeLens}
-      data-layout-grammar="upstream-left focus-center downstream-right capital-top policy-bottom"
+      data-active-model-version={analysisContext.modelVersion}
+      data-active-profile-version={analysisContext.profileVersion}
+      data-active-score-snapshot={analysisContext.scoreSnapshot}
+      data-active-time={asOf}
+      data-analysis-contract={analysisContext.contractVersion}
+      data-focus-key={focusKey}
+      data-layout-grammar={WORKSPACE_LAYOUT_GRAMMAR}
+      data-path={path.join(".")}
       data-path-length={path.length}
       data-reroot-state={transitionState}
       data-selected-node={selectedNode.key}
@@ -643,6 +1242,15 @@ export default function Home() {
             <Database size={18} strokeWidth={1.8} aria-hidden="true" />
             <span>对象与范围</span>
           </a>
+          <a
+            className="navItem"
+            data-testid="development-status-nav-link"
+            href="/development-status"
+            title="开发状态"
+          >
+            <ListChecks size={18} strokeWidth={1.8} aria-hidden="true" />
+            <span>开发状态</span>
+          </a>
         </div>
       </aside>
 
@@ -655,14 +1263,14 @@ export default function Home() {
           </div>
           <span className="snapshotTag">Synthetic fixture</span>
         </div>
-        <dl className="subjectStats">
+        <dl className="subjectStats" data-testid="home-model-status">
           <div>
             <dt>Snapshot</dt>
-            <dd>fixture-v1</dd>
+            <dd>{analysisContext.dataSnapshot}</dd>
           </div>
           <div>
             <dt>Model</dt>
-            <dd>Balanced v2</dd>
+            <dd>{analysisContext.profileLabel}</dd>
           </div>
           <div>
             <dt>Budget</dt>
@@ -670,23 +1278,181 @@ export default function Home() {
               {displayNodes.length} / {displayEdges.length}
             </dd>
           </div>
+          <div>
+            <dt>Model review</dt>
+            <dd>
+              {homeModelStatus.latestCalibration} / {homeModelStatus.cadenceDays}d /{" "}
+              {homeModelStatus.nextScheduledFor}
+            </dd>
+          </div>
         </dl>
-        <div className="fixtureDisclosure" data-testid="fixture-disclosure">
+        <section
+          className="modelPreviewPanel"
+          data-preview-scope="workspace,graph-table,saved-view,industry-landscape"
+          data-preview-state={isPreviewActive ? "preview" : "active"}
+          data-preview-storage={ANALYSIS_PREVIEW_STORAGE_KEY}
+          data-testid="model-preview-panel"
+        >
+          <div>
+            <strong>Model preview</strong>
+            <span data-testid="model-preview-status">
+              {analysisContext.profileLabel} / {analysisContext.scoreSnapshot}
+            </span>
+          </div>
+          <div className="modelPreviewActions">
+            <button data-testid="preview-model-edit" onClick={applyPreview} type="button">
+              Preview supply-chain emphasis
+            </button>
+            <button data-testid="clear-model-preview" onClick={clearPreview} type="button">
+              Clear preview
+            </button>
+          </div>
+        </section>
+        <div
+          className="fixtureDisclosure"
+          data-testid="fixture-disclosure"
+          data-freshness-status={homeFreshness.status}
+        >
           <strong>Fixture-only data</strong>
           <span>Visible synthetic notices are required; no live fact claim is shown.</span>
         </div>
-        <div className="watchlistStack" aria-label="关注主体">
-          {(["nvidia", "foundry", "equipment", "materials", "cloud"] as FocusKey[]).map((key) => (
+
+        <form
+          aria-label="全局搜索"
+          className="homeSearch"
+          data-endpoint="/v1/entities"
+          data-primary-actions-to-focus="2"
+          data-supported-types="legal_entity,industry,theme,facility"
+          data-testid="home-global-search"
+          onSubmit={submitSearch}
+          role="search"
+        >
+          <label htmlFor="global-search-input">全局搜索</label>
+          <div className="searchInputRow">
+            <Search size={16} aria-hidden="true" />
+            <input
+              autoComplete="off"
+              data-testid="global-search-input"
+              id="global-search-input"
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="NVIDIA, TSMC, 半导体"
+              type="search"
+              value={searchQuery}
+            />
+            <button data-testid="global-search-submit" type="submit">
+              打开
+            </button>
+          </div>
+          <div className="searchResults" data-testid="global-search-results">
+            {visibleSearchResults.map((result) => (
+              <button
+                data-object-type={result.objectType}
+                data-testid={`search-result-${result.key}`}
+                key={result.key}
+                onClick={() => setCenter(result.target)}
+                type="button"
+              >
+                <span>{result.label}</span>
+                <small>{result.description}</small>
+              </button>
+            ))}
+          </div>
+        </form>
+
+        <section className="homeSection" aria-label="行业入口" data-testid="home-industries">
+          <header>
+            <span>行业</span>
+            <a data-testid="home-industry-map-link" href="/industries">
+              地图
+            </a>
+          </header>
+          <div className="compactList">
+            {homeIndustries.map((industry) => (
+              <button
+                data-testid={`home-industry-${industry.key}`}
+                key={industry.key}
+                onClick={() => setCenter(industry.target)}
+                type="button"
+              >
+                <span>{industry.name}</span>
+                <small>
+                  {industry.entityCount} entities / {industry.recentChangeCount} changes
+                </small>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="homeSection" aria-label="关注主体" data-testid="home-watchlist">
+          <header>
+            <span>我的关注</span>
+            <small>{homeWatchItems.reduce((total, item) => total + item.unread, 0)} unread</small>
+          </header>
+          <div className="watchlistStack">
+            {homeWatchItems.map((item) => (
             <button
-              className={key === focusKey ? "watchItem current" : "watchItem"}
-              key={key}
-              onClick={() => setCenter(key)}
+              className={item.key === focusKey ? "watchItem current" : "watchItem"}
+              data-testid={`home-watchlist-${item.key}`}
+              key={item.key}
+              onClick={() => restoreWatchItem(item)}
               type="button"
             >
-              <span>{key === "nvidia" ? "NVIDIA" : entityLabels[key].replace("Synthetic ", "")}</span>
+              <span>{item.label}</span>
+              <small data-testid={`watchlist-saved-state-${item.key}`}>
+                {item.unread} unread / {item.state} / {item.savedLens} / {item.savedZoom} /{" "}
+                {item.profile}
+              </small>
               <Route size={16} aria-hidden="true" />
             </button>
           ))}
+          </div>
+        </section>
+
+        <section className="homeSection" aria-label="最近探索" data-testid="home-recent-explorations">
+          <header>
+            <span>探索记录</span>
+            <small>{homeRecentExplorations.length}</small>
+          </header>
+          <div className="compactList">
+            {homeRecentExplorations.map((entry) => (
+              <button
+                data-testid={`home-recent-${entry.key}`}
+                key={entry.key}
+                onClick={() => setCenter(entry.key)}
+                type="button"
+              >
+                <span>{entry.label}</span>
+                <small>{entry.path}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="homeSection" aria-label="重要变化" data-testid="home-changes">
+          <header>
+            <span>重要变化</span>
+            <small>{homeChanges.length}</small>
+          </header>
+          <div className="compactList">
+            {homeChanges.map((change) => (
+              <button
+                data-testid={`home-change-${change.key}`}
+                key={change.key}
+                onClick={() => setCenter(change.target)}
+                type="button"
+              >
+                <span>{change.label}</span>
+                <small>{change.severity}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <div className="freshnessGrid" data-testid="home-freshness">
+          <span>{homeFreshness.status}</span>
+          <span>{homeFreshness.latestRelationshipObservedAt}</span>
+          <span>{homeFreshness.sourceDocumentCount} sources</span>
+          <span>{analysisContext.dataSnapshot}</span>
         </div>
       </section>
 
@@ -711,7 +1477,6 @@ export default function Home() {
             ))}
           </div>
         </div>
-
         <div
           className="zoomBar"
           aria-label="语义缩放"
@@ -729,6 +1494,27 @@ export default function Home() {
               type="button"
             >
               {item.label}
+            </button>
+          ))}
+        </div>
+
+        <div
+          className="timelineBar"
+          aria-label="时间演变"
+          data-active-as-of={asOf}
+          data-testid="timeline-controls"
+        >
+          {timelineItems.map((item) => (
+            <button
+              aria-pressed={asOf === item.key}
+              className={asOf === item.key ? "timelineControl active" : "timelineControl"}
+              data-testid={`timeline-${item.key}`}
+              key={item.key}
+              onClick={() => setAsOf(item.key)}
+              type="button"
+            >
+              <span>{item.label}</span>
+              <small>{item.key}</small>
             </button>
           ))}
         </div>
@@ -752,6 +1538,16 @@ export default function Home() {
               Canvas preserved
             </div>
           ) : null}
+          <div
+            className="changeOverlay"
+            data-as-of={asOf}
+            data-testid="change-overlay"
+            data-timeline-mode="as-of-snapshot"
+          >
+            <strong>As of {asOf}</strong>
+            <span>{currentTimeline.change}</span>
+            <small>{currentTimeline.overlay}; not real-time.</small>
+          </div>
           <svg
             className={`ecosystemMap zoom-${semanticZoom}`}
             data-semantic-zoom={semanticZoom}
@@ -850,11 +1646,42 @@ export default function Home() {
           </svg>
         </div>
 
+        <div className="historyControls" aria-label="历史恢复">
+          <button data-testid="app-back" onClick={browserBack} type="button">
+            <ChevronLeft size={16} aria-hidden="true" />
+            <span>返回</span>
+          </button>
+        </div>
+
         <ol className="breadcrumb" aria-label="探索路径" data-testid="reroot-breadcrumb">
           {path.map((key, index) => (
-            <li key={`${key}-${index}`}>{key === "nvidia" ? "NVIDIA" : entityLabels[key]}</li>
+            <li key={`${key}-${index}`}>
+              <button
+                aria-current={index === path.length - 1 ? "page" : undefined}
+                data-testid={`breadcrumb-subject-${key}-${index}`}
+                onClick={() => applyPathSubject(index)}
+                type="button"
+              >
+                {key === "nvidia" ? "NVIDIA" : entityLabels[key]}
+              </button>
+            </li>
           ))}
         </ol>
+
+        <section
+          className="crossIndustryReroot"
+          data-cross-industry={isCrossIndustryPath}
+          data-industry-path={industryPath.map((item) => item.key).join(">")}
+          data-testid="cross-industry-reroot-notice"
+        >
+          <strong>Cross-industry path</strong>
+          <span>{industryPathLabel}</span>
+          <small>
+            {isCrossIndustryPath
+              ? `已从 ${industryPath[0]?.label} 进入 ${industryPath[industryPath.length - 1]?.label}`
+              : "当前路径仍在单一行业内"}
+          </small>
+        </section>
       </section>
 
       <aside className="inspector" aria-label="证据与状态">
@@ -882,6 +1709,56 @@ export default function Home() {
           </dl>
         </section>
 
+        <section
+          className="savedViewPanel"
+          data-data-snapshot={savedView.dataSnapshot}
+          data-model-version={savedView.modelVersion}
+          data-profile-version={savedView.profileVersion}
+          data-saved-view-id={savedView.id}
+          data-saved-view-version={savedView.version}
+          data-score-snapshot={savedView.scoreSnapshot}
+          data-testid="saved-view-panel"
+        >
+          <header>
+            <p className="eyebrow">Saved View</p>
+            <strong data-testid="saved-view-status">{savedViewStatus}</strong>
+          </header>
+          <dl data-testid="saved-view-contract">
+            <div>
+              <dt>Subject</dt>
+              <dd>{entityLabels[savedView.focusKey]}</dd>
+            </div>
+            <div>
+              <dt>Lens / Time</dt>
+              <dd>
+                {savedView.activeLens} / {savedView.asOf}
+              </dd>
+            </div>
+            <div>
+              <dt>Filters</dt>
+              <dd>{savedView.filters}</dd>
+            </div>
+            <div>
+              <dt>Layout</dt>
+              <dd>{savedView.layout}</dd>
+            </div>
+            <div>
+              <dt>Notes</dt>
+              <dd>{savedView.notes}</dd>
+            </div>
+          </dl>
+          <div className="savedViewActions">
+            <button data-testid="save-current-view" onClick={saveCurrentView} type="button">
+              <Save size={16} aria-hidden="true" />
+              <span>保存</span>
+            </button>
+            <button data-testid="restore-saved-view" onClick={restoreSavedView} type="button">
+              <RotateCcw size={16} aria-hidden="true" />
+              <span>恢复</span>
+            </button>
+          </div>
+        </section>
+
         <ol className="pathList">
           {scenario.edges.slice(0, 4).map((edge) => (
             <li key={`${edge.from}-${edge.to}`}>
@@ -895,6 +1772,110 @@ export default function Home() {
           ))}
         </ol>
 
+        <section
+          className="graphPolicyPanel"
+          data-continuation-endpoint="/v1/explore/expand"
+          data-sort-keys="active-lens,evidence,confidence,observed_at,id"
+          data-testid="inclusion-truncation-explanation"
+          data-truncation-contract="edge_budget,node_budget,returned_counts,continuation"
+        >
+          <header>
+            <p className="eyebrow">Inclusion policy</p>
+            <strong>Bounded relationship set</strong>
+          </header>
+          <dl>
+            <div>
+              <dt>Included first</dt>
+              <dd>Active lens, evidence-bearing edges, confidence, observed time, stable id</dd>
+            </div>
+            <div>
+              <dt>Truncation</dt>
+              <dd>edge_budget and node_budget return reasons, counts and continuation metadata</dd>
+            </div>
+            <div>
+              <dt>Continuation</dt>
+              <dd>/v1/explore/expand preserves the current focus and loads a bounded increment</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section
+          className="graphTablePanel"
+          data-accessibility-equivalent="graph-relationships"
+          data-color-independent-encoding="labels,arrows,stages,roles,evidence"
+          data-equivalent-fields="direction,type,evidence_status,observed_at"
+          data-testid="graph-table-alternative"
+        >
+          <header>
+            <p className="eyebrow">Graph Table</p>
+            <label htmlFor="graph-table-lens-filter">Lens</label>
+            <select
+              data-testid="graph-table-filter"
+              id="graph-table-lens-filter"
+              onChange={(event) => setTableLensFilter(event.target.value as LensKey)}
+              value={tableLensFilter}
+            >
+              {lensItems.map((lens) => (
+                <option key={lens.key} value={lens.key}>
+                  {lens.label}
+                </option>
+              ))}
+            </select>
+          </header>
+          <p
+            className="visualSemanticsNotice"
+            data-color-independent-encoding="labels,arrows,stages,roles,evidence"
+            data-control-semantics="layout-position-not-control"
+            data-testid="visual-semantics-notice"
+          >
+            Layout position is visual focus only; relationship labels, arrows, stages, roles and
+            evidence carry semantics.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Direction</th>
+                <th scope="col">Type</th>
+                <th scope="col">Relationship</th>
+                <th scope="col">Stage</th>
+                <th scope="col">Evidence</th>
+                <th scope="col">Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableEdges.map((edge) => (
+                <tr
+                  data-direction={`${edge.from}->${edge.to}`}
+                  data-evidence-status="fixture-evidence"
+                  data-lens={edge.lens}
+                  data-observed-at={asOf}
+                  data-relationship-type={edge.lens}
+                  data-testid={`graph-table-row-${edge.from}-${edge.to}`}
+                  key={`${edge.from}-${edge.to}`}
+                >
+                  <td>{nodeByKey.get(edge.from)?.shortLabel ?? edge.from}</td>
+                  <td>{nodeByKey.get(edge.to)?.shortLabel ?? edge.to}</td>
+                  <td>{`${nodeByKey.get(edge.from)?.shortLabel ?? edge.from} -> ${
+                    nodeByKey.get(edge.to)?.shortLabel ?? edge.to
+                  }`}</td>
+                  <td>{edge.lens.replaceAll("_", " ")}</td>
+                  <td>
+                    <span>{edge.label}</span>
+                    <small>{edge.fixtureNotice}</small>
+                  </td>
+                  <td>{edge.stage}</td>
+                  <td>
+                    <span className="evidencePill">fixture evidence</span>
+                  </td>
+                  <td>{asOf}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+
         <div className="actionStack" aria-label="主体操作">
           <button
             className="primaryAction"
@@ -907,6 +1888,7 @@ export default function Home() {
             <span>以 {selectedNode.label} 为中心</span>
           </button>
           <button
+            data-testid="node-action-upstream"
             disabled={!upstreamCandidate}
             onClick={() => upstreamCandidate && inspectNode(upstreamCandidate)}
             type="button"
@@ -915,6 +1897,7 @@ export default function Home() {
             <span>展开上游</span>
           </button>
           <button
+            data-testid="node-action-downstream"
             disabled={!downstreamCandidate}
             onClick={() => downstreamCandidate && inspectNode(downstreamCandidate)}
             type="button"
@@ -922,15 +1905,23 @@ export default function Home() {
             <ArrowDown size={16} aria-hidden="true" />
             <span>展开下游</span>
           </button>
-          <button onClick={() => inspectNode(selectedNode.key)} type="button">
+          <button data-testid="node-action-pin" onClick={pinSelectedNode} type="button">
+            <Star size={16} aria-hidden="true" />
+            <span>固定节点</span>
+          </button>
+          <button data-testid="node-action-compare" onClick={compareSelectedNode} type="button">
+            <GitBranch size={16} aria-hidden="true" />
+            <span>加入比较</span>
+          </button>
+          <button data-testid="node-action-watchlist" onClick={addSelectedNodeToWatchlist} type="button">
             <Star size={16} aria-hidden="true" />
             <span>加入关注</span>
           </button>
-          <button onClick={() => inspectNode(focusKey)} type="button">
+          <button data-testid="node-action-path" onClick={openSelectedPath} type="button">
             <Route size={16} aria-hidden="true" />
             <span>查看路径</span>
           </button>
-          <button onClick={() => inspectNode(selectedNode.key)} type="button">
+          <button data-testid="node-action-evidence" onClick={openSelectedEvidence} type="button">
             <FileSearch size={16} aria-hidden="true" />
             <span>打开证据</span>
           </button>
@@ -952,6 +1943,34 @@ export default function Home() {
           </button>
         </div>
 
+        <section
+          className="nodeActionState"
+          data-compare-count={comparisonNodeKeys.length}
+          data-pinned-count={pinnedNodeKeys.length}
+          data-testid="node-action-state"
+          data-watchlist-count={watchlistNodeKeys.length}
+        >
+          <div>
+            <strong>Pinned</strong>
+            <span data-testid="pinned-node-list">
+              {pinnedNodeKeys.map((key) => entityLabels[key]).join(" / ") || "none"}
+            </span>
+          </div>
+          <div>
+            <strong>Compare</strong>
+            <span data-testid="comparison-node-list">
+              {comparisonNodeKeys.map((key) => entityLabels[key]).join(" / ") || "none"}
+            </span>
+          </div>
+          <div>
+            <strong>Watchlist</strong>
+            <span data-testid="watchlist-node-list">
+              {watchlistNodeKeys.map((key) => entityLabels[key]).join(" / ") || "none"}
+            </span>
+          </div>
+          <small data-testid="node-action-status">{nodeActionStatus}</small>
+        </section>
+
         {selectedNode.groupMembers && groupListOpen ? (
           <ol className="groupList" data-testid="group-list">
             {selectedNode.groupMembers.map((member) => (
@@ -964,6 +1983,16 @@ export default function Home() {
           <span>Data: synthetic fixture</span>
           <span>Live facts: disabled</span>
           <span>DB fixture notice: visible</span>
+          <span data-testid="model-contract-state">
+            Model: {analysisContext.modelVersion} / Preference: {analysisContext.profileVersion} /
+            Formula: {analysisContext.formulaRegistryVersion} / Parameters:{" "}
+            {analysisContext.parameterCatalogVersion} / Thresholds:{" "}
+            {analysisContext.thresholdRegistryVersion}
+          </span>
+          <span data-testid="active-context-state">
+            Data: {analysisContext.dataSnapshot} / Score: {analysisContext.scoreSnapshot} / As of:{" "}
+            {asOf}
+          </span>
           <span data-testid="lens-state">Lens: {activeLens}</span>
           <span data-testid="zoom-state">Zoom: {semanticZoom}</span>
           <span data-testid="reroot-state">Canvas state: {transitionState}</span>

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import csv
+import json
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlencode
 from uuid import UUID
 
 import psycopg
@@ -25,7 +27,10 @@ def _jsonable(value: Any) -> Any:
     if isinstance(value, UUID):
         return str(value)
     if isinstance(value, datetime):
-        return value.isoformat()
+        serialized = value.isoformat()
+        if value.utcoffset() == timedelta(0) and serialized.endswith("+00:00"):
+            return f"{serialized[:-6]}Z"
+        return serialized
     if isinstance(value, Decimal):
         return float(value)
     if isinstance(value, dict):
@@ -44,6 +49,45 @@ def _escape_like(value: str) -> str:
 
 
 ROOT = Path(__file__).resolve().parents[3]
+EXPLORATION_STATE_VERSION = "exploration-state-v1"
+DEFAULT_GRAPH_BUDGET = {"max_nodes": 42, "max_edges": 64, "expand_nodes": 12}
+GRAPH_HARD_LIMITS = {"max_hops": 2, "max_nodes": 500, "max_edges": 2000, "max_path_length": 8}
+PATH_RESULT_LIMIT = 8
+RELATIONSHIP_FAMILIES = {
+    "corporate_structure",
+    "ownership_control",
+    "supply_chain_operations",
+    "capital_financing",
+    "mergers_acquisitions",
+    "governance_people",
+    "commercial_dependency",
+    "technology_data_ip",
+    "government_policy",
+    "strategic_signal",
+}
+LAYER_RELATIONSHIP_FAMILY_MAP = {
+    "all": RELATIONSHIP_FAMILIES,
+    "business_segments": {"corporate_structure", "commercial_dependency"},
+    "capital_control": {"ownership_control", "capital_financing", "mergers_acquisitions"},
+    "capital_transactions": {"capital_financing", "mergers_acquisitions"},
+    "commercial_dependency": {"commercial_dependency"},
+    "corporate_structure": {"corporate_structure"},
+    "governance_people": {"governance_people"},
+    "ownership_control": {"ownership_control"},
+    "policy_regulatory": {"government_policy"},
+    "strategic_signal": {"strategic_signal"},
+    "supply_chain_operations": {"supply_chain_operations"},
+    "technology_data_ip": {"technology_data_ip"},
+}
+PATH_TYPE_RELATIONSHIP_FAMILY_MAP = {
+    "shortest": RELATIONSHIP_FAMILIES,
+    "upstream": {"supply_chain_operations"},
+    "downstream": {"supply_chain_operations"},
+    "control": {"ownership_control"},
+    "capital": {"capital_financing", "mergers_acquisitions"},
+    "policy": {"government_policy"},
+    "bottleneck": {"supply_chain_operations"},
+}
 ENTITY_TYPES = (
     "legal_entity",
     "brand",
@@ -60,6 +104,23 @@ ENTITY_TYPES = (
     "standard",
     "asset",
 )
+
+
+def _relationship_families_for_layers(layers: list[str]) -> list[str]:
+    families: set[str] = set()
+    for layer in layers:
+        families.update(LAYER_RELATIONSHIP_FAMILY_MAP.get(layer, {layer}))
+    return sorted(family for family in families if family in RELATIONSHIP_FAMILIES)
+
+
+def _relationship_family_filter(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list | tuple | set):
+        return [str(item) for item in value]
+    return [str(value)]
 
 
 def _read_csv(path: Path) -> list[dict[str, str]]:
@@ -952,14 +1013,17 @@ class DomainRepository:
         return self.get_watchlist(row["id"])
 
     def get_watchlist(self, watchlist_id: UUID) -> dict[str, Any]:
-        return next(
+        watchlist = next(
             (
                 watchlist
                 for watchlist in self.list_watchlists()
                 if watchlist["id"] == str(watchlist_id)
             ),
-            {},
+            None,
         )
+        if watchlist is None:
+            raise NotFoundError(f"Watchlist not found: {watchlist_id}")
+        return watchlist
 
     def add_watchlist_item(
         self,
@@ -973,6 +1037,7 @@ class DomainRepository:
     ) -> dict[str, Any]:
         with self.connect() as connection:
             self.ensure_watchlist_exists(connection, watchlist_id)
+            self.ensure_watchlist_object_exists(connection, object_type, object_id)
             old_row = connection.execute(
                 """
                 SELECT object_type, object_id, labels, note, saved_state, removed_at
@@ -1013,6 +1078,32 @@ class DomainRepository:
                 reason="API add watchlist item",
             )
         return _jsonable(row)
+
+    def ensure_watchlist_object_exists(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        object_type: str,
+        object_id: UUID,
+    ) -> None:
+        if object_type == "industry":
+            row = connection.execute(
+                "SELECT id FROM industries WHERE id = %s AND active = true",
+                (object_id,),
+            ).fetchone()
+        elif object_type == "entity":
+            row = connection.execute(
+                "SELECT id FROM entities WHERE id = %s",
+                (object_id,),
+            ).fetchone()
+        elif object_type in {"theme", "facility"}:
+            row = connection.execute(
+                "SELECT id FROM entities WHERE id = %s AND entity_type = %s",
+                (object_id, object_type),
+            ).fetchone()
+        else:
+            raise RepositoryError(f"Unsupported watchlist object type: {object_type}")
+        if row is None:
+            raise NotFoundError(f"Watchlist object not found: {object_type}:{object_id}")
 
     def remove_watchlist_item(
         self,
@@ -1088,7 +1179,8 @@ class DomainRepository:
                 """
                 SELECT
                   es.id, es.title, es.current_focus_entity_id, e.canonical_name, es.updated_at,
-                  es.active_layers, es.filters
+                  es.active_layers, es.direction, es.hops, es.budget, es.as_of,
+                  es.scoring_profile_version_id, es.filters, es.state_version
                 FROM exploration_sessions es
                 LEFT JOIN entities e ON e.id = es.current_focus_entity_id
                 ORDER BY es.updated_at DESC
@@ -1218,12 +1310,96 @@ class DomainRepository:
             }
         )
 
+    def normalize_graph_budget(self, budget: dict[str, Any] | None) -> dict[str, int]:
+        raw_budget = budget or {}
+        return {
+            "max_nodes": min(
+                int(raw_budget.get("max_nodes", DEFAULT_GRAPH_BUDGET["max_nodes"])),
+                500,
+            ),
+            "max_edges": min(
+                int(raw_budget.get("max_edges", DEFAULT_GRAPH_BUDGET["max_edges"])),
+                2000,
+            ),
+            "expand_nodes": min(
+                int(raw_budget.get("expand_nodes", DEFAULT_GRAPH_BUDGET["expand_nodes"])),
+                100,
+            ),
+        }
+
+    def normalize_exploration_state(
+        self,
+        *,
+        session_id: UUID,
+        request: dict[str, Any],
+    ) -> dict[str, Any]:
+        focus = request.get("focus") or {}
+        return {
+            "version": EXPLORATION_STATE_VERSION,
+            "session_id": str(session_id),
+            "focus": {
+                "object_type": focus.get("object_type", "entity"),
+                "object_id": str(focus.get("object_id")),
+            },
+            "active_layers": request.get("active_layers") or ["supply_chain_operations"],
+            "direction": request.get("direction") or "both",
+            "hops": min(int(request.get("hops") or 1), GRAPH_HARD_LIMITS["max_hops"]),
+            "as_of": _jsonable(request.get("as_of")),
+            "scoring_profile_version_id": (
+                str(request["scoring_profile_version_id"])
+                if request.get("scoring_profile_version_id")
+                else None
+            ),
+            "filters": request.get("filters") or {},
+            "budget": self.normalize_graph_budget(request.get("budget")),
+        }
+
+    def exploration_url_state(self, state: dict[str, Any]) -> dict[str, Any]:
+        filters_json = json.dumps(
+            _jsonable(state["filters"]),
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        query: dict[str, str] = {
+            "session": state["session_id"],
+            "focus": f"{state['focus']['object_type']}:{state['focus']['object_id']}",
+            "layers": ",".join(state["active_layers"]),
+            "direction": state["direction"],
+            "hops": str(state["hops"]),
+            "filters": filters_json,
+        }
+        if state.get("as_of"):
+            query["as_of"] = str(state["as_of"])
+        if state.get("scoring_profile_version_id"):
+            query["profile"] = str(state["scoring_profile_version_id"])
+        restore_payload = {
+            "session_id": state["session_id"],
+            "focus": state["focus"],
+            "active_layers": state["active_layers"],
+            "direction": state["direction"],
+            "hops": state["hops"],
+            "as_of": state["as_of"],
+            "scoring_profile_version_id": state["scoring_profile_version_id"],
+            "filters": state["filters"],
+            "budget": state["budget"],
+        }
+        return {
+            "version": "exploration-url-state-v1",
+            "route": "/",
+            "query": query,
+            "query_string": urlencode(query),
+            "restore_payload": restore_payload,
+        }
+
     def start_exploration(self, request: dict[str, Any]) -> dict[str, Any]:
         focus = request["focus"]
         if focus["object_type"] != "entity":
             raise RepositoryError("Only entity focus is supported in the G2 API anchor")
         focus_entity_id = UUID(str(focus["object_id"]))
         as_of = request.get("as_of")
+        direction = request.get("direction") or "both"
+        hops = min(int(request.get("hops") or 1), GRAPH_HARD_LIMITS["max_hops"])
+        budget = self.normalize_graph_budget(request.get("budget"))
         with self.connect() as connection:
             self.entity_summary(connection, focus_entity_id)
             session_id = request.get("session_id")
@@ -1233,6 +1409,9 @@ class DomainRepository:
                     UPDATE exploration_sessions
                     SET current_focus_entity_id = %s,
                         active_layers = %s,
+                        direction = %s,
+                        hops = %s,
+                        budget = %s,
                         as_of = %s,
                         scoring_profile_version_id = %s,
                         filters = %s,
@@ -1243,6 +1422,9 @@ class DomainRepository:
                     (
                         focus_entity_id,
                         request["active_layers"],
+                        direction,
+                        hops,
+                        Jsonb(budget),
                         as_of,
                         request.get("scoring_profile_version_id"),
                         Jsonb(request.get("filters") or {}),
@@ -1256,16 +1438,19 @@ class DomainRepository:
                 row = connection.execute(
                     """
                     INSERT INTO exploration_sessions(
-                      title, current_focus_entity_id, active_layers, as_of,
-                      scoring_profile_version_id, filters
+                      title, current_focus_entity_id, active_layers, direction, hops, budget,
+                      as_of, scoring_profile_version_id, filters
                     )
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING id
                     """,
                     (
                         f"Exploration: {focus_entity_id}",
                         focus_entity_id,
                         request["active_layers"],
+                        direction,
+                        hops,
+                        Jsonb(budget),
                         as_of,
                         request.get("scoring_profile_version_id"),
                         Jsonb(request.get("filters") or {}),
@@ -1278,7 +1463,7 @@ class DomainRepository:
                 from_entity_id=None,
                 to_entity_id=focus_entity_id,
                 action="start",
-                inherited_state={"direction": request["direction"], "budget": request["budget"]},
+                inherited_state={"direction": direction, "hops": hops, "budget": budget},
             )
             return self.exploration_response_for_connection(connection, session_uuid, request)
 
@@ -1290,7 +1475,7 @@ class DomainRepository:
             session = connection.execute(
                 """
                 SELECT id, current_focus_entity_id, active_layers, as_of,
-                       scoring_profile_version_id, filters
+                       scoring_profile_version_id, filters, direction, hops, budget
                 FROM exploration_sessions
                 WHERE id = %s
                 """,
@@ -1298,24 +1483,48 @@ class DomainRepository:
             ).fetchone()
             if session is None:
                 raise NotFoundError(f"Exploration session not found: {session_id}")
+            inherit_state = bool(request.get("inherit_state", True))
+            if inherit_state:
+                next_state = {
+                    "active_layers": session["active_layers"],
+                    "direction": session["direction"],
+                    "hops": session["hops"],
+                    "as_of": session["as_of"],
+                    "scoring_profile_version_id": session["scoring_profile_version_id"],
+                    "filters": session["filters"],
+                    "budget": self.normalize_graph_budget(session["budget"]),
+                }
+            else:
+                next_state = {
+                    "active_layers": ["supply_chain_operations"],
+                    "direction": "both",
+                    "hops": 1,
+                    "as_of": None,
+                    "scoring_profile_version_id": None,
+                    "filters": {},
+                    "budget": DEFAULT_GRAPH_BUDGET,
+                }
             target_session_id = session_id
             if request.get("open_in_new_workspace"):
                 row = connection.execute(
                     """
                     INSERT INTO exploration_sessions(
-                      title, current_focus_entity_id, active_layers, as_of,
-                      scoring_profile_version_id, filters
+                      title, current_focus_entity_id, active_layers, direction, hops, budget,
+                      as_of, scoring_profile_version_id, filters
                     )
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING id
                     """,
                     (
                         f"Reroot: {new_focus}",
                         new_focus,
-                        session["active_layers"],
-                        session["as_of"],
-                        session["scoring_profile_version_id"],
-                        Jsonb(session["filters"] if request["inherit_state"] else {}),
+                        next_state["active_layers"],
+                        next_state["direction"],
+                        next_state["hops"],
+                        Jsonb(next_state["budget"]),
+                        next_state["as_of"],
+                        next_state["scoring_profile_version_id"],
+                        Jsonb(next_state["filters"]),
                     ),
                 ).fetchone()
                 target_session_id = row["id"]
@@ -1324,11 +1533,27 @@ class DomainRepository:
                     """
                     UPDATE exploration_sessions
                     SET current_focus_entity_id = %s,
-                        updated_at = now(),
-                        filters = CASE WHEN %s THEN filters ELSE '{}'::jsonb END
+                        active_layers = %s,
+                        direction = %s,
+                        hops = %s,
+                        budget = %s,
+                        as_of = %s,
+                        scoring_profile_version_id = %s,
+                        filters = %s,
+                        updated_at = now()
                     WHERE id = %s
                     """,
-                    (new_focus, request["inherit_state"], session_id),
+                    (
+                        new_focus,
+                        next_state["active_layers"],
+                        next_state["direction"],
+                        next_state["hops"],
+                        Jsonb(next_state["budget"]),
+                        next_state["as_of"],
+                        next_state["scoring_profile_version_id"],
+                        Jsonb(next_state["filters"]),
+                        session_id,
+                    ),
                 )
             self.append_exploration_step(
                 connection,
@@ -1336,22 +1561,56 @@ class DomainRepository:
                 from_entity_id=session["current_focus_entity_id"],
                 to_entity_id=new_focus,
                 action="reroot",
-                inherited_state={"inherit_state": request["inherit_state"]},
+                inherited_state={
+                    "inherit_state": inherit_state,
+                    "active_layers": next_state["active_layers"],
+                    "direction": next_state["direction"],
+                    "hops": next_state["hops"],
+                    "budget": next_state["budget"],
+                },
             )
             session_request = {
                 "focus": {"object_type": "entity", "object_id": str(new_focus)},
-                "active_layers": session["active_layers"],
-                "direction": "both",
-                "hops": 1,
-                "as_of": session["as_of"],
-                "scoring_profile_version_id": session["scoring_profile_version_id"],
-                "filters": session["filters"] if request["inherit_state"] else {},
-                "budget": {"max_nodes": 80, "max_edges": 300, "expand_nodes": 40},
+                **next_state,
             }
             return self.exploration_response_for_connection(
                 connection,
                 target_session_id,
                 session_request,
+            )
+
+    def expand_exploration(self, request: dict[str, Any]) -> dict[str, Any]:
+        session_id = UUID(str(request["session_id"]))
+        anchor_entity_id = UUID(str(request["anchor_entity_id"]))
+        with self.connect() as connection:
+            self.entity_summary(connection, anchor_entity_id)
+            session = connection.execute(
+                """
+                SELECT id, current_focus_entity_id, active_layers, as_of,
+                       scoring_profile_version_id, filters, direction, hops, budget
+                FROM exploration_sessions
+                WHERE id = %s
+                """,
+                (session_id,),
+            ).fetchone()
+            if session is None:
+                raise NotFoundError(f"Exploration session not found: {session_id}")
+            expand_request = {
+                "session_id": str(session_id),
+                "focus": {"object_type": "entity", "object_id": str(anchor_entity_id)},
+                "active_layers": request.get("layers") or session["active_layers"],
+                "direction": request.get("direction") or session["direction"],
+                "hops": 1,
+                "as_of": session["as_of"],
+                "scoring_profile_version_id": session["scoring_profile_version_id"],
+                "filters": session["filters"] or {},
+                "budget": self.normalize_graph_budget(request.get("budget")),
+                "expand_mode": True,
+            }
+            return self.exploration_response_for_connection(
+                connection,
+                session_id,
+                expand_request,
             )
 
     def append_exploration_step(
@@ -1398,6 +1657,8 @@ class DomainRepository:
         focus_entity_id = UUID(str(request["focus"]["object_id"]))
         focus = self.entity_summary(connection, focus_entity_id)
         graph = self.graph_for_focus(connection, focus_entity_id, request)
+        state = self.normalize_exploration_state(session_id=session_id, request=request)
+        url_state = self.exploration_url_state(state)
         history = connection.execute(
             """
             SELECT sequence_no, from_entity_id, to_entity_id, action, inherited_state, created_at
@@ -1412,6 +1673,7 @@ class DomainRepository:
                 **graph,
                 "session_id": session_id,
                 "focus": focus,
+                "state": {**state, "url_state": url_state},
                 "history": history,
                 "active_profile": self.active_scoring_profile(connection) or {},
                 "coverage": graph["coverage"],
@@ -1429,11 +1691,25 @@ class DomainRepository:
         focus_entity_id: UUID,
         request: dict[str, Any],
     ) -> dict[str, Any]:
-        budget = request["budget"]
-        max_nodes = min(int(budget["max_nodes"]), 500)
-        max_edges = min(int(budget["max_edges"]), 2000)
-        direction = request["direction"]
+        budget = self.normalize_graph_budget(request.get("budget"))
+        max_nodes = budget["max_nodes"]
+        max_edges = budget["max_edges"]
+        expand_nodes = budget["expand_nodes"]
+        if request.get("expand_mode"):
+            max_nodes = min(max_nodes, expand_nodes + 1)
+            max_edges = min(max_edges, expand_nodes)
+        direction = request.get("direction") or "both"
+        hops = min(int(request.get("hops") or 1), GRAPH_HARD_LIMITS["max_hops"])
         as_of = request.get("as_of")
+        active_layers = request.get("active_layers") or ["supply_chain_operations"]
+        filters = request.get("filters") or {}
+        relationship_families = _relationship_families_for_layers(active_layers)
+        requested_families = _relationship_family_filter(filters.get("relationship_family"))
+        if requested_families:
+            relationship_families = [
+                family for family in relationship_families if family in requested_families
+            ]
+        truncation_reasons: list[str] = []
         if direction in {"upstream", "in"}:
             direction_clause = "r.object_entity_id = %(focus)s"
         elif direction in {"downstream", "out"}:
@@ -1453,6 +1729,7 @@ class DomainRepository:
             LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
             WHERE {direction_clause}
               AND r.status NOT IN ('superseded', 'revoked')
+              AND r.relationship_family = ANY(%(relationship_families)s::text[])
               AND (
                 %(as_of)s::timestamptz IS NULL
                 OR (
@@ -1464,9 +1741,17 @@ class DomainRepository:
             ORDER BY r.confidence DESC NULLS LAST, r.observed_at DESC, r.id
             LIMIT %(limit)s
             """,
-            {"focus": focus_entity_id, "as_of": as_of, "limit": max_edges + 1},
+            {
+                "focus": focus_entity_id,
+                "as_of": as_of,
+                "relationship_families": relationship_families,
+                "limit": max_edges + 1,
+            },
         ).fetchall()
-        truncated = len(rows) > max_edges
+        fetched_edge_count = len(rows)
+        truncated = fetched_edge_count > max_edges
+        if truncated:
+            truncation_reasons.append("edge_budget")
         rows = rows[:max_edges]
         ordered_node_ids: list[UUID] = [focus_entity_id]
         for row in rows:
@@ -1475,6 +1760,7 @@ class DomainRepository:
                     ordered_node_ids.append(row[key])
         if len(ordered_node_ids) > max_nodes:
             truncated = True
+            truncation_reasons.append("node_budget")
             ordered_node_ids = ordered_node_ids[:max_nodes]
         node_set = set(ordered_node_ids)
         rows = [
@@ -1533,10 +1819,48 @@ class DomainRepository:
         return _jsonable(
             {
                 "as_of": as_of or _now(),
+                "query": {
+                    "focus": request.get(
+                        "focus",
+                        {"object_type": "entity", "object_id": str(focus_entity_id)},
+                    ),
+                    "focus_entity_id": focus_entity_id,
+                    "direction": direction,
+                    "hops": hops,
+                    "as_of": as_of,
+                    "scoring_profile_version_id": request.get("scoring_profile_version_id"),
+                    "active_layers": active_layers,
+                    "filters": filters,
+                    "budget": budget,
+                    "hard_limits": GRAPH_HARD_LIMITS,
+                },
                 "nodes": nodes,
                 "edges": edges,
                 "truncated": truncated,
-                "warnings": ["bounded_graph_budget_applied"] if truncated else [],
+                "truncation": {
+                    "applied": truncated,
+                    "reasons": truncation_reasons,
+                    "message": (
+                        "Graph response was truncated by the bounded graph budget."
+                        if truncated
+                        else "Graph response is within the bounded graph budget."
+                    ),
+                    "fetched_edge_count": fetched_edge_count,
+                    "returned_edge_count": len(edges),
+                    "returned_node_count": len(nodes),
+                },
+                "continuation": {
+                    "available": truncated,
+                    "expand_endpoint": "/v1/explore/expand" if truncated else None,
+                    "anchor_entity_id": focus_entity_id if truncated else None,
+                    "direction": direction if truncated else None,
+                    "expand_nodes": expand_nodes if truncated else None,
+                },
+                "warnings": (
+                    [f"bounded_graph_budget_applied:{reason}" for reason in truncation_reasons]
+                    if truncated
+                    else []
+                ),
                 "coverage": {
                     "visible_nodes": len(nodes),
                     "visible_edges": len(edges),
@@ -1548,6 +1872,349 @@ class DomainRepository:
                 },
             }
         )
+
+    def find_relationship_paths(
+        self,
+        *,
+        from_entity_id: UUID,
+        to_entity_id: UUID,
+        path_type: str,
+        max_length: int,
+        as_of: datetime | None = None,
+    ) -> dict[str, Any]:
+        if path_type not in PATH_TYPE_RELATIONSHIP_FAMILY_MAP:
+            raise RepositoryError(f"Unsupported path_type: {path_type}")
+        bounded_length = min(max_length, GRAPH_HARD_LIMITS["max_path_length"])
+        relationship_families = sorted(PATH_TYPE_RELATIONSHIP_FAMILY_MAP[path_type])
+        bottleneck_only = path_type == "bottleneck"
+        with self.connect() as connection:
+            from_entity = self.entity_summary(connection, from_entity_id)
+            to_entity = self.entity_summary(connection, to_entity_id)
+            if from_entity_id == to_entity_id:
+                return _jsonable(
+                    {
+                        "as_of": as_of or _now(),
+                        "query": {
+                            "from": from_entity_id,
+                            "to": to_entity_id,
+                            "path_type": path_type,
+                            "max_length": bounded_length,
+                            "relationship_families": relationship_families,
+                            "hard_limits": GRAPH_HARD_LIMITS,
+                            "max_paths": PATH_RESULT_LIMIT,
+                        },
+                        "from": from_entity,
+                        "to": to_entity,
+                        "paths": [
+                            {
+                                "path_index": 0,
+                                "length": 0,
+                                "node_ids": [from_entity_id],
+                                "relationship_ids": [],
+                                "edges": [],
+                                "evidence": [],
+                            }
+                        ],
+                        "truncated": False,
+                        "coverage": {
+                            "path_count": 1,
+                            "edge_count": 0,
+                            "source_count": 0,
+                            "all_edges_have_evidence": True,
+                        },
+                    }
+                )
+            path_rows = connection.execute(
+                """
+                WITH RECURSIVE candidate_edges AS (
+                  SELECT
+                    r.id, r.subject_entity_id, r.object_entity_id, r.confidence,
+                    r.observed_at, sca.materiality,
+                    count(re.source_document_id)::int AS evidence_count
+                  FROM relationships r
+                  JOIN relationship_evidence re ON re.relationship_id = r.id
+                  LEFT JOIN supply_chain_relationship_attributes sca
+                    ON sca.relationship_id = r.id
+                  WHERE r.status NOT IN ('superseded', 'revoked')
+                    AND r.relationship_family = ANY(%(relationship_families)s::text[])
+                    AND (
+                      %(as_of)s::timestamptz IS NULL
+                      OR (
+                        (r.valid_from IS NULL OR r.valid_from <= %(as_of)s::timestamptz)
+                        AND (r.valid_to IS NULL OR r.valid_to >= %(as_of)s::timestamptz)
+                      )
+                    )
+                    AND (
+                      %(bottleneck_only)s = false
+                      OR sca.materiality IN ('critical', 'high')
+                    )
+                  GROUP BY r.id, sca.materiality
+                ),
+                walk AS (
+                  SELECT
+                    ARRAY[%(from_entity_id)s::uuid, step.next_node]::uuid[] AS node_ids,
+                    ARRAY[ce.id]::uuid[] AS relationship_ids,
+                    ARRAY[step.traversal_direction]::text[] AS traversal_directions,
+                    step.next_node AS current_node,
+                    1 AS path_length,
+                    COALESCE(ce.confidence, 0) AS min_confidence
+                  FROM candidate_edges ce
+                  JOIN LATERAL (
+                    SELECT
+                      CASE
+                        WHEN ce.subject_entity_id = %(from_entity_id)s::uuid
+                        THEN ce.object_entity_id
+                        ELSE ce.subject_entity_id
+                      END AS next_node,
+                      CASE
+                        WHEN ce.subject_entity_id = %(from_entity_id)s::uuid
+                        THEN 'forward'
+                        ELSE 'reverse'
+                      END AS traversal_direction
+                  ) step ON true
+                  WHERE %(from_entity_id)s::uuid IN (ce.subject_entity_id, ce.object_entity_id)
+                  UNION ALL
+                  SELECT
+                    w.node_ids || step.next_node,
+                    w.relationship_ids || ce.id,
+                    w.traversal_directions || step.traversal_direction,
+                    step.next_node,
+                    w.path_length + 1,
+                    LEAST(w.min_confidence, COALESCE(ce.confidence, 0))
+                  FROM walk w
+                  JOIN candidate_edges ce
+                    ON w.current_node IN (ce.subject_entity_id, ce.object_entity_id)
+                  JOIN LATERAL (
+                    SELECT
+                      CASE
+                        WHEN ce.subject_entity_id = w.current_node
+                        THEN ce.object_entity_id
+                        ELSE ce.subject_entity_id
+                      END AS next_node,
+                      CASE
+                        WHEN ce.subject_entity_id = w.current_node
+                        THEN 'forward'
+                        ELSE 'reverse'
+                      END AS traversal_direction
+                  ) step ON true
+                  WHERE w.path_length < %(max_length)s
+                    AND NOT step.next_node = ANY(w.node_ids)
+                )
+                SELECT node_ids, relationship_ids, traversal_directions, path_length
+                FROM walk
+                WHERE current_node = %(to_entity_id)s::uuid
+                ORDER BY path_length, min_confidence DESC, relationship_ids::text
+                LIMIT %(path_limit)s
+                """,
+                {
+                    "from_entity_id": from_entity_id,
+                    "to_entity_id": to_entity_id,
+                    "relationship_families": relationship_families,
+                    "as_of": as_of,
+                    "bottleneck_only": bottleneck_only,
+                    "max_length": bounded_length,
+                    "path_limit": PATH_RESULT_LIMIT + 1,
+                },
+            ).fetchall()
+            truncated = len(path_rows) > PATH_RESULT_LIMIT
+            path_rows = path_rows[:PATH_RESULT_LIMIT]
+            relationship_ids = list(
+                dict.fromkeys(
+                    relationship_id
+                    for row in path_rows
+                    for relationship_id in row["relationship_ids"]
+                )
+            )
+            node_ids = list(
+                dict.fromkeys(node_id for row in path_rows for node_id in row["node_ids"])
+            )
+            relationship_map = self.relationship_detail_map(connection, relationship_ids)
+            evidence_map = self.relationship_evidence_map(connection, relationship_ids)
+            node_map = self.entity_detail_map(connection, node_ids)
+            paths = []
+            for index, row in enumerate(path_rows):
+                path_node_ids = row["node_ids"]
+                path_relationship_ids = row["relationship_ids"]
+                traversal_directions = row["traversal_directions"]
+                edges = []
+                path_evidence = []
+                for edge_index, relationship_id in enumerate(path_relationship_ids):
+                    relationship = relationship_map[relationship_id]
+                    edge_evidence = evidence_map.get(relationship_id, [])
+                    path_evidence.extend(edge_evidence)
+                    edges.append(
+                        {
+                            **relationship,
+                            "edge_index": edge_index,
+                            "evidence_count": len(edge_evidence),
+                            "traversal_direction": traversal_directions[edge_index],
+                            "traversal_from_id": path_node_ids[edge_index],
+                            "traversal_to_id": path_node_ids[edge_index + 1],
+                            "evidence": edge_evidence,
+                        }
+                    )
+                paths.append(
+                    _jsonable(
+                        {
+                            "path_index": index,
+                            "length": row["path_length"],
+                            "node_ids": path_node_ids,
+                            "nodes": [node_map[node_id] for node_id in path_node_ids],
+                            "relationship_ids": path_relationship_ids,
+                            "edges": edges,
+                            "evidence": path_evidence,
+                        }
+                    )
+                )
+        source_ids = {
+            evidence["source_document_id"]
+            for path in paths
+            for evidence in path["evidence"]
+        }
+        all_edges_have_evidence = all(
+            bool(edge["evidence"]) for path in paths for edge in path["edges"]
+        )
+        return _jsonable(
+            {
+                "as_of": as_of or _now(),
+                "query": {
+                    "from": from_entity_id,
+                    "to": to_entity_id,
+                    "path_type": path_type,
+                    "max_length": bounded_length,
+                    "relationship_families": relationship_families,
+                    "bottleneck_only": bottleneck_only,
+                    "hard_limits": GRAPH_HARD_LIMITS,
+                    "max_paths": PATH_RESULT_LIMIT,
+                },
+                "from": from_entity,
+                "to": to_entity,
+                "paths": paths,
+                "truncated": truncated,
+                "coverage": {
+                    "path_count": len(paths),
+                    "edge_count": len(relationship_ids),
+                    "source_count": len(source_ids),
+                    "all_edges_have_evidence": all_edges_have_evidence,
+                },
+                "warnings": (
+                    ["bounded_path_result_limit_applied"] if truncated else []
+                ),
+            }
+        )
+
+    def entity_detail_map(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_ids: list[UUID],
+    ) -> dict[UUID, dict[str, Any]]:
+        if not entity_ids:
+            return {}
+        rows = connection.execute(
+            """
+            SELECT e.id, e.canonical_name, e.entity_type, fen.fixture_notice, fen.synthetic
+            FROM entities e
+            LEFT JOIN fixture_entity_notices fen ON fen.entity_id = e.id
+            WHERE e.id = ANY(%s)
+            """,
+            (entity_ids,),
+        ).fetchall()
+        return {row["id"]: _jsonable(row) for row in rows}
+
+    def relationship_detail_map(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        relationship_ids: list[UUID],
+    ) -> dict[UUID, dict[str, Any]]:
+        if not relationship_ids:
+            return {}
+        rows = connection.execute(
+            """
+            SELECT
+              r.id, r.subject_entity_id, r.object_entity_id, r.relationship_type,
+              r.relationship_family, r.status, r.confidence, r.valid_from, r.valid_to,
+              r.amount, r.currency, r.amount_kind, r.qualifiers, sca.materiality,
+              frn.fixture_notice, COALESCE(frn.synthetic, false) AS synthetic
+            FROM relationships r
+            LEFT JOIN supply_chain_relationship_attributes sca ON sca.relationship_id = r.id
+            LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+            WHERE r.id = ANY(%s)
+            """,
+            (relationship_ids,),
+        ).fetchall()
+        return {
+            row["id"]: _jsonable(
+                {
+                    "id": row["id"],
+                    "subject_id": row["subject_entity_id"],
+                    "object_id": row["object_entity_id"],
+                    "relationship_type": row["relationship_type"],
+                    "relationship_family": row["relationship_family"],
+                    "status": row["status"],
+                    "confidence": row["confidence"],
+                    "valid_from": row["valid_from"],
+                    "valid_to": row["valid_to"],
+                    "amount": row["amount"],
+                    "currency": row["currency"],
+                    "amount_kind": row["amount_kind"],
+                    "qualifiers": row["qualifiers"],
+                    "materiality": row["materiality"],
+                    "synthetic": row["synthetic"],
+                    "fixture_notice": row["fixture_notice"],
+                }
+            )
+            for row in rows
+        }
+
+    def relationship_evidence_map(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        relationship_ids: list[UUID],
+    ) -> dict[UUID, list[dict[str, Any]]]:
+        if not relationship_ids:
+            return {}
+        rows = connection.execute(
+            """
+            SELECT
+              re.relationship_id, re.source_document_id, re.role, re.locator,
+              re.support_excerpt, re.structured_fact,
+              s.source_tier,
+              sd.url, sd.title, sd.publisher, sd.document_date, sd.observed_at,
+              sd.retrieved_at, sd.media_type
+            FROM relationship_evidence re
+            JOIN source_documents sd ON sd.id = re.source_document_id
+            JOIN sources s ON s.id = sd.source_id
+            WHERE re.relationship_id = ANY(%s)
+            ORDER BY
+              re.relationship_id,
+              CASE re.role WHEN 'supports' THEN 0 WHEN 'context' THEN 1 ELSE 2 END,
+              sd.observed_at DESC,
+              re.source_document_id
+            """,
+            (relationship_ids,),
+        ).fetchall()
+        evidence: dict[UUID, list[dict[str, Any]]] = {}
+        for row in rows:
+            evidence.setdefault(row["relationship_id"], []).append(
+                _jsonable(
+                    {
+                        "source_document_id": row["source_document_id"],
+                        "role": row["role"],
+                        "source_tier": row["source_tier"],
+                        "locator": row["locator"],
+                        "support_excerpt": row["support_excerpt"],
+                        "structured_fact": row["structured_fact"],
+                        "url": row["url"],
+                        "title": row["title"],
+                        "publisher": row["publisher"],
+                        "document_date": row["document_date"],
+                        "observed_at": row["observed_at"],
+                        "retrieved_at": row["retrieved_at"],
+                        "media_type": row["media_type"],
+                    }
+                )
+            )
+        return evidence
 
     def list_changes(
         self,

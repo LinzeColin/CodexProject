@@ -9,8 +9,10 @@ Updated: 2026-06-19 Australia/Sydney
 ## Current Status
 
 - GitHub target: `LinzeColin/CodexProject/EEI`
-- Current gate: Phase 1 / G3 - Entry and management
+- Current gate: Phase 1 / G4 - Recursive exploration and live context
 - Gate status: IN PROGRESS
+- Previous gate: Phase 1 / G3 - Entry and management
+- G3 status: PASS by GitHub Actions run `27835479352`
 - Previous gate: Phase 1 / G2 - Domain and data model
 - G2 status: PASS by GitHub Actions run `27828738097` plus `DEFER-003` for A026/A027 gold evaluation
 - Previous gate: Phase 1 / G1 - Repository foundation
@@ -22,8 +24,8 @@ Updated: 2026-06-19 Australia/Sydney
   - `3e04747` PostgreSQL readiness contract
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
-- GitHub `CodexProject` commit pushed:
-  - `8ff658f` feat: add EEI fixture reroot workspace
+- Latest GitHub implementation commit proven by CI:
+  - `b5a9f5b` test: add EEI prototype parity validator
 
 ## Completed
 
@@ -52,6 +54,32 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed A012-A014 data contract checks by GitHub Actions run `27828738097`; job `82359769929` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - Closed G2 as `PASS` with `DEFER-003`; A026/A027 remain open for T904/G9 gold precision evaluation rather than synthetic self-grading.
 - Proved G2 gate-close commit by GitHub Actions run `27829131193`; job `82361095081` passed.
+- Added T303 Watchlist persistence breadth: `/v1/watchlists/{watchlistId}` detail, item remove/restore, entity/industry/theme/facility item validation, saved state persistence, and operation-log checks.
+- Completed T303 with A035/A036 by GitHub Actions run `27832504683`; A037 remains open for T306 UI/E2E unread-change and saved-view evidence.
+- Added T304 user-oriented home entry controls on the existing Watchlist-first graph workspace: global search, industries, Watchlist, recent explorations, important changes, freshness, active model status, calibration status, and keyboard entry coverage.
+- Completed T304 with A029/A030/A039/A040 by GitHub Actions run `27833468626`; job `82375686964` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
+- Added T305 `/industries` landscape page with chain stages, subindustries, entities, bottlenecks, capital, policy, changes, and visible cross-industry navigation path.
+- Completed T305 with A032/A034 by GitHub Actions run `27834152257`; job `82377987783` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
+- Added T306 Watchlist unread-change and saved-view/profile E2E restore behavior on the home workspace.
+- Completed T306 with A037 by GitHub Actions run `27834549643`; job `82379303157` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
+- Added URL/session/localStorage workspace state, browser/app back, clickable breadcrumb restore, versioned local saved views, as-of timeline overlays, and shared active model/profile/data/score snapshot reporting.
+- Added model config validation to Task Pack validation and closed T1110, T1111, T1112, T1113, T1201, and T1206 locally.
+- Marked A154, A155, A156, A157, A158, A159, A160, A171, and A178 as `DONE` with local E2E/model-validation evidence.
+- Completed the remaining G3 state/history/saved-view/timeline/model-context batch by GitHub Actions run `27835479352`; job `82382357217` passed.
+- Closed G3 as `PASS` and started G4 as `IN PROGRESS`.
+- Added T1205 `/development-status` navigation screen with six delivery status lanes, tasks/risks/controls/acceptance evidence links, function status, task evidence, acceptance evidence, and risk-control panels.
+- Completed T1205 with A173/A174 by GitHub Actions run `27836121209`; job `82384436376` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
+- Added T400 bounded `/v1/explore` query defaults, hard limits, truncation metadata, continuation metadata, OpenAPI contract updates, and integration assertions for A041-A044.
+- Completed T400 with A041-A044 by GitHub Actions run `27836910412`; job `82386959577` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
+- Fixed a saved-view restore hydration race exposed by GitHub Actions run `27836653255`: `restoreSavedView()` now reads the latest persisted saved-view payload from `localStorage` before applying workspace state.
+- Added T401 exploration session and URL state contract with migration `0002_exploration_state`, persisted direction/hops/budget, response `state.url_state`, restore payload, and A051 integration assertions.
+- Completed T401 with A051 by GitHub Actions run `27837609322`; job `82389170752` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
+- Added T402 reroot inherited/reset state contract: default reroot preserves layers/time/profile/filters/direction/hops/budget, while `inherit_state=false` resets to canonical defaults.
+- Completed T402 with A045-A047 by GitHub Actions run `27838436423`; job `82391789245` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
+- Added T403 incremental directional expand contract locally: `/v1/explore/expand` expands from a selected anchor without changing session root, filters by selected direction/layers, and bounds returned graph size by `expand_nodes`.
+- Completed T403 with A052 by GitHub Actions run `27839023906`; job `82393647163` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
+- Added T404 breadcrumb/browser-history synchronization contract locally: full path breadcrumb is visible and clickable, browser back/forward and app back restore identical focus/path state.
+- Completed T404 with A049-A050 by GitHub Actions run `27839493483`; job `82395103164` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
 
 ## Verification Evidence
 
@@ -102,6 +130,94 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T301.
 - 2026-06-19 update: GitHub Actions run `27830933960` failed because the integration test asserted non-empty home changes before any change records existed.
 - 2026-06-19 update: GitHub Actions run `27831147683` passed; job `82367964670` proved T301 home aggregation under PostgreSQL after aligning the changes-feed test lifecycle.
+- 2026-06-19 update: GitHub Actions run `27831351290` passed; job `82368640839` proved the final T301 evidence commit.
+- 2026-06-19 update: local `make verify` passed after T302 `/v1/industries` and `/v1/industries/{industryId}/landscape`.
+- 2026-06-19 update: GitHub Actions run `27831861052` passed; job `82370353436` proved T302 industry landscape API, fixture memberships, and A031/A033 checks under PostgreSQL.
+- 2026-06-19 update: local `make verify` passed after T303 Watchlist persistence breadth and explicit DELETE 204 response fix.
+- 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T303.
+- 2026-06-19 update: GitHub Actions run `27832285368` failed because `DELETE /v1/watchlists/{watchlistId}/items` returned a response object with no status code.
+- 2026-06-19 update: GitHub Actions run `27832504683` passed; job `82372497975` proved T303 Watchlist CRUD/restore/item-type persistence under PostgreSQL after returning an explicit 204 response.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 12 tests after T304 home page entry controls.
+- 2026-06-19 update: local `make verify` passed after T304; governance trace count is now 215 after adding missing A039/A040 traceability rows.
+- 2026-06-19 update: GitHub Actions run `27833468626` passed; job `82375686964` proved T304 user-oriented home entry and updated governance count on remote CI.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/industry.spec.ts` passed 14 tests after T305.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed with static `/industries`.
+- 2026-06-19 update: local `make verify` passed after T305.
+- 2026-06-19 update: GitHub Actions run `27834152257` passed; job `82377987783` proved T305 industry landscape page remotely.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 15 tests after T306 Watchlist saved-view restore.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed after T306 with static `/`, `/industries`, and `/objects-scope`.
+- 2026-06-19 update: local `make verify` passed after T306.
+- 2026-06-19 update: GitHub Actions run `27834549643` passed; job `82379303157` proved T306 remotely.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck` passed after T1110/T1111/T1112/T1113/T1201/T1206.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 19 tests after state/history/saved-view/timeline/active-context implementation.
+- 2026-06-19 update: local `.venv/bin/uv run python scripts/validate_task_pack.py` passed and now includes model config validation.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed after the state/context batch.
+- 2026-06-19 update: local `make verify` passed after the state/context batch.
+- 2026-06-19 update: local `git diff --check` passed after the state/context batch.
+- 2026-06-19 update: GitHub Actions run `27835479352` passed; job `82382357217` proved the G3 state/history/saved-view/timeline/model-context batch remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 21 tests after T1205.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web build` passed with static `/development-status`.
+- 2026-06-19 update: local `make verify` passed after T1205.
+- 2026-06-19 update: GitHub Actions run `27836121209` passed; job `82384436376` proved T1205 remotely.
+- 2026-06-19 update: local `.venv/bin/uv run python scripts/validate_task_pack.py` passed after T400 bounded graph query service.
+- 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T400 because this host has no configured PostgreSQL.
+- 2026-06-19 update: local `make verify` passed after T400.
+- 2026-06-19 update: local `git diff --check` passed after T400.
+- 2026-06-19 update: GitHub Actions run `27836653255` failed after T400 because Step 8 E2E hit a saved-view restore hydration race; PostgreSQL integration itself passed in that run.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts` passed 21 tests after the saved-view restore hardening.
+- 2026-06-19 update: local `make verify` passed after the saved-view restore hardening.
+- 2026-06-19 update: local `git diff --check` passed after the saved-view restore hardening.
+- 2026-06-19 update: GitHub Actions run `27836910412` passed; job `82386959577` proved T400 and the saved-view restore hardening remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `make verify` passed after T401 session/url state.
+- 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T401 because this host has no configured PostgreSQL.
+- 2026-06-19 update: local `git diff --check` passed after T401.
+- 2026-06-19 update: GitHub Actions run `27837609322` passed; job `82389170752` proved T401 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `make verify` passed after T402 reroot inherited/reset state.
+- 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T402 because this host has no configured PostgreSQL.
+- 2026-06-19 update: local `git diff --check` passed after T402.
+- 2026-06-19 update: GitHub Actions run `27838042448` failed on T402 because inherited PostgreSQL `datetime` state serialized as `+00:00` instead of canonical `Z`; fixed by canonical UTC API serialization.
+- 2026-06-19 update: GitHub Actions run `27838285776` failed on T402 because the reset-reroot test expected a stale theme display name; fixed by aligning the assertion with `data/mock_entities.json`.
+- 2026-06-19 update: GitHub Actions run `27838436423` passed; job `82391789245` proved T402 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `make verify` passed after T403 incremental directional expand.
+- 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T403 because this host has no configured PostgreSQL.
+- 2026-06-19 update: local `git diff --check` passed after T403.
+- 2026-06-19 update: GitHub Actions run `27839023906` passed; job `82393647163` proved T403 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck` passed after T404.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts` passed 21 tests after T404.
+- 2026-06-19 update: local `make verify` passed after T404.
+- 2026-06-19 update: local `git diff --check` passed after T404.
+- 2026-06-19 update: GitHub Actions run `27839493483` passed; job `82395103164` proved T404 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts` passed 26 tests after T1207 model preview propagation.
+- 2026-06-19 update: local `make verify` passed after T1207.
+- 2026-06-19 update: local `git diff --check` passed after T1207.
+- 2026-06-19 update: GitHub Actions run `27843659754` passed; job `82408058091` proved T1207 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `./node_modules/.bin/playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep "reports one active model profile" --workers=1` passed 1 test after T1208.
+- 2026-06-19 update: local `./node_modules/.bin/playwright test --config=../../playwright.config.ts --workers=1` passed 26 tests after T1208; a prior parallel local run hit host timeout/residual-server noise, then passed serially after cleanup.
+- 2026-06-19 update: local `make verify` passed after T1208.
+- 2026-06-19 update: local `git diff --check` passed after T1208.
+- 2026-06-19 update: GitHub Actions run `27844479321` passed; job `82410608346` proved T1208 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `.venv/bin/uv run python scripts/validate_prototype_parity.py` passed after T1209 with canonical hash `7f06f96c917ff14fc42c94de09b0e5f89f622a22a44a0dd64da3941429486719`.
+- 2026-06-19 update: local `make verify` passed after T1209.
+- 2026-06-19 update: local `git diff --check` passed after T1209.
+- 2026-06-19 update: GitHub Actions run `27844984873` passed; job `82412132613` proved T1209 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 
 Remote verification:
 
@@ -140,6 +256,64 @@ Remote verification:
 - GitHub Actions job `82367238904`: FAIL.
 - GitHub Actions run `27831147683`: PASS.
 - GitHub Actions job `82367964670`: PASS.
+- GitHub Actions run `27831351290`: PASS.
+- GitHub Actions job `82368640839`: PASS.
+- GitHub Actions run `27831861052`: PASS.
+- GitHub Actions job `82370353436`: PASS.
+- GitHub Actions run `27832285368`: FAIL, fixed by returning an explicit `Response(status_code=204)` from the Watchlist item delete route.
+- GitHub Actions job `82371769481`: FAIL.
+- GitHub Actions run `27832504683`: PASS.
+- GitHub Actions job `82372497975`: PASS.
+- GitHub Actions run `27833468626`: PASS.
+- GitHub Actions job `82375686964`: PASS.
+- GitHub Actions run `27834152257`: PASS.
+- GitHub Actions job `82377987783`: PASS.
+- GitHub Actions run `27834549643`: PASS.
+- GitHub Actions job `82379303157`: PASS.
+- GitHub Actions run `27835479352`: PASS.
+- GitHub Actions job `82382357217`: PASS.
+- GitHub Actions run `27835657493`: PASS.
+- GitHub Actions job `82382936095`: PASS.
+- GitHub Actions run `27836121209`: PASS.
+- GitHub Actions job `82384436376`: PASS.
+- GitHub Actions run `27836653255`: FAIL, fixed by reading persisted saved-view state during restore instead of relying only on hydration-populated React state.
+- GitHub Actions job `82386126081`: FAIL.
+- GitHub Actions run `27836910412`: PASS.
+- GitHub Actions job `82386959577`: PASS.
+- GitHub Actions run `27837609322`: PASS.
+- GitHub Actions job `82389170752`: PASS.
+- GitHub Actions run `27838042448`: FAIL, fixed by canonical UTC API serialization for PostgreSQL-inherited exploration state.
+- GitHub Actions job `82390539693`: FAIL.
+- GitHub Actions run `27838285776`: FAIL, fixed by aligning reset-reroot fixture display name with `data/mock_entities.json`.
+- GitHub Actions job `82391319828`: FAIL.
+- GitHub Actions run `27838436423`: PASS.
+- GitHub Actions job `82391789245`: PASS.
+- GitHub Actions run `27838623184`: PASS.
+- GitHub Actions job `82392383667`: PASS.
+- GitHub Actions run `27839023906`: PASS.
+- GitHub Actions job `82393647163`: PASS.
+- GitHub Actions run `27839173843`: PASS.
+- GitHub Actions job `82394120613`: PASS.
+- GitHub Actions run `27839493483`: PASS.
+- GitHub Actions job `82395103164`: PASS.
+- GitHub Actions run `27840198892`: PASS.
+- GitHub Actions job `82397301394`: PASS.
+- GitHub Actions run `27840744734`: PASS.
+- GitHub Actions job `82399027153`: PASS.
+- GitHub Actions run `27841131928`: PASS.
+- GitHub Actions job `82400216009`: PASS.
+- GitHub Actions run `27841663304`: PASS.
+- GitHub Actions job `82401845967`: PASS.
+- GitHub Actions run `27842200422`: PASS.
+- GitHub Actions job `82403504484`: PASS.
+- GitHub Actions run `27842880134`: PASS.
+- GitHub Actions job `82405633120`: PASS.
+- GitHub Actions run `27843659754`: PASS.
+- GitHub Actions job `82408058091`: PASS.
+- GitHub Actions run `27844479321`: PASS.
+- GitHub Actions job `82410608346`: PASS.
+- GitHub Actions run `27844984873`: PASS.
+- GitHub Actions job `82412132613`: PASS.
 
 ## Not Completed
 
@@ -153,13 +327,38 @@ Remote verification:
 - T1204 / A170 Objects and Scope navigation screen is DONE and remote CI passed.
 - T300 / A038 typed entity search is DONE and remote CI passed.
 - T301 home aggregation API is DONE and remote CI passed.
-- G4 remains open because T1205 and T1208 are not complete.
+- T302 industry list and landscape API is DONE and remote CI passed; A031/A033 are DONE.
+- T303 Watchlist CRUD and persistence API is DONE and remote CI passed; A035/A036 are DONE.
+- T304 user-oriented home page is DONE and remote CI passed; A029/A030/A039/A040 are DONE.
+- T305 industry landscape page is DONE and remote CI passed; A032/A034 are DONE.
+- T306 home/industry/watchlist E2E is DONE and remote CI passed; A037 is DONE.
+- T1110/T1111/T1112/T1113/T1201/T1206 are DONE and remote CI passed.
+- G3 is `PASS`.
+- T1205 / A173 / A174 are DONE and remote CI passed.
+- T400 / A041-A044 are DONE and remote CI passed.
+- T401 / A051 are DONE and remote CI passed.
+- T402 / A045-A047 are DONE and remote CI passed.
+- T403 / A052 is DONE and remote CI passed.
+- T404 / A049-A050 is DONE and remote CI passed.
+- T405 / A053-A055/A058 is DONE and remote CI passed; `tests/e2e/home.spec.ts` passed with 22 tests after adding graph table alternative, node actions, pin/compare/Watchlist state, and explicit non-color visual semantics.
+- T406 / A056 is DONE and remote CI passed; `/v1/paths` now supports bounded evidence-bearing shortest/upstream/downstream/control/capital/policy/bottleneck path queries.
+- T407 / A057 is DONE and remote CI passed; the graph inspector now explains inclusion sorting, truncation reasons and `/v1/explore/expand` continuation metadata.
+- T408 / A048 is DONE and remote CI passed; `tests/e2e/state-contract.spec.ts` now has a dedicated critical three-reroot E2E ending at `nvidia.foundry.equipment.materials`, and local E2E plus `make verify` passed.
+- T409 / A034 is DONE and remote CI passed; the workspace now visibly marks cross-industry reroot paths, and `tests/e2e/state-contract.spec.ts` covers `nvidia.cloud.datacenter.energy` with 24 passing local E2E tests plus `make verify`.
+- T1114-T1117 / A161-A166 are DONE and remote CI passed; accessible graph-equivalent table fields, keyboard/focus/target assertions, non-color evidence labels, and UI copy lint passed local E2E plus `make verify`.
+- T1207 / A157-A158/A178 is DONE and remote CI passed; model preview context now propagates across the home workspace, saved-view metadata, and `/industries`, with local E2E 26/26 plus `make verify`.
+- T1208 / A178 is DONE and remote CI passed; the active model/profile/data/score snapshot E2E now covers `/`, `/industries`, `/objects-scope` and `/development-status`, with serial local E2E 26/26 plus `make verify`.
+- T1209 / A176 is DONE and remote CI passed; prototype parity validation now checks index/standalone byte identity, canonical hash, required views, DOM anchors and stale JS/CSS references.
+- T1210 / A177 is locally complete pending remote CI; GitHub branch protection/release checklist contracts, CODEOWNERS scope, governance validator and registry coverage are wired into `make verify`.
+- G4/G5 remain open because saved-view API persistence, visual regression/performance suites and remaining governance tasks are not complete.
 - MVP is not complete.
 
 ## Recommended Next Step
 
-Continue G3 with bounded entry/management implementation:
+Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Start T302/T303 industry and Watchlist entry-management implementation.
-2. Keep A026/A027 open until T904/G9 real gold precision evaluation.
-3. Continue G4/T1205 only after the next G3 slice is bounded.
+1. Push T1210 and wait for GitHub Actions to confirm remote PostgreSQL/E2E CI.
+2. Start T1211 reproducible release manifest/checksum/status evidence as the next bounded slice.
+3. Keep T1118/T1119 visual regression and performance suites separate in G5.
+4. Keep A026/A027 open until T904/G9 real gold precision evaluation.
+5. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.

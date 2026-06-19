@@ -27,36 +27,36 @@ A025,P0,data,Synthetic fixtures are visibly marked and never presented as live f
 A026,P0,data,Entity resolution precision is >=95% on at least 50 cases,Gold evaluation,NOT STARTED
 A027,P0,data,Relationship precision is >=90% on at least 100 cases,Gold evaluation,NOT STARTED
 A028,P0,data,Research/source/metric/parameter registries load without malformed rows,Static validation,DONE
-A029,P0,home,"Home shows global search, industries, Watchlist, recent explorations, changes and freshness",E2E,NOT STARTED
-A030,P0,home,Home shows active scoring profile and last/next calibration status,E2E,NOT STARTED
+A029,P0,home,"Home shows global search, industries, Watchlist, recent explorations, changes and freshness",E2E,DONE
+A030,P0,home,Home shows active scoring profile and last/next calibration status,E2E,DONE
 A031,P0,industry,Industry list is human-readable and versioned,API/UI test,DONE
-A032,P0,industry,"Industry page shows chain stages, subindustries, entities, bottlenecks, capital, policy and changes",E2E,NOT STARTED
+A032,P0,industry,"Industry page shows chain stages, subindustries, entities, bottlenecks, capital, policy and changes",E2E,DONE
 A033,P0,industry,Entities may have primary and secondary industries,API/data test,DONE
-A034,P0,industry,Cross-industry navigation is allowed and visibly indicated,E2E,NOT STARTED
-A035,P0,watchlist,"Local-user Watchlist can create, add, remove, restore and persist items",Integration/E2E,NOT STARTED
-A036,P0,watchlist,"Watchlist supports entity, industry, theme and facility items",API test,NOT STARTED
-A037,P0,watchlist,Watchlist shows unread changes and saved view/profile state,E2E,NOT STARTED
+A034,P0,industry,Cross-industry navigation is allowed and visibly indicated,E2E,DONE
+A035,P0,watchlist,"Local-user Watchlist can create, add, remove, restore and persist items",Integration/E2E,DONE
+A036,P0,watchlist,"Watchlist supports entity, industry, theme and facility items",API test,DONE
+A037,P0,watchlist,Watchlist shows unread changes and saved view/profile state,E2E,DONE
 A038,P0,search,Search distinguishes aliases and entity types,Search integration,DONE
-A039,P0,home,New user reaches a company focus page within three primary actions,E2E,NOT STARTED
-A040,P0,accessibility,Home and industry core controls are keyboard reachable,Playwright/a11y,NOT STARTED
-A041,P0,explore,"Explore API accepts focus, layers, direction, hops, as-of, profile, filters and budget",Contract/integration,NOT STARTED
-A042,P0,explore,Default query is one hop and bounded to configured initial budget,Boundary test,NOT STARTED
-A043,P0,explore,"Hard limits enforce hops<=2, nodes<=500, edges<=2000 and path length<=8",Boundary/negative tests,NOT STARTED
-A044,P0,explore,Over-budget response is truncated with reason and continuation information,API/UI test,NOT STARTED
-A045,P0,reroot,Any focusable entity can become a new root,Integration/E2E,NOT STARTED
-A046,P0,reroot,"Reroot preserves time, layers, filters and scoring profile by default",E2E,NOT STARTED
-A047,P0,reroot,User can reroot with reset/default state,E2E,NOT STARTED
-A048,P0,reroot,Three consecutive reroots complete in semiconductor fixture,Critical E2E,NOT STARTED
-A049,P0,reroot,Breadcrumb contains full focus path and is clickable,E2E,NOT STARTED
-A050,P0,reroot,Browser back/forward restore the correct focus and state,E2E,NOT STARTED
-A051,P0,reroot,"URL serializes/restores focus, layers, direction, time, profile and filters",E2E,NOT STARTED
-A052,P0,explore,Incremental expand loads only selected direction/layers within expand budget,Integration/E2E,NOT STARTED
-A053,P0,explore,"Node actions include reroot, upstream, downstream, path, compare, pin, Watchlist and evidence",UI test,NOT STARTED
-A054,P0,explore,Pinned nodes and comparisons survive layout changes,E2E,NOT STARTED
-A055,P0,explore,Graph has filterable table/list alternative,E2E/a11y,NOT STARTED
-A056,P0,paths,Shortest/upstream/downstream/control/capital/policy/bottleneck paths are bounded and evidence-bearing,Integration,NOT STARTED
-A057,P0,explore,Truncation and inclusion sorting are explained to the user,UI/content test,NOT STARTED
-A058,P0,explore,Visual centrality is not presented as control and color is not the only encoding,Design/a11y review,NOT STARTED
+A039,P0,home,New user reaches a company focus page within three primary actions,E2E,DONE
+A040,P0,accessibility,Home and industry core controls are keyboard reachable,Playwright/a11y,DONE
+A041,P0,explore,"Explore API accepts focus, layers, direction, hops, as-of, profile, filters and budget",Contract/integration,DONE
+A042,P0,explore,Default query is one hop and bounded to configured initial budget,Boundary test,DONE
+A043,P0,explore,"Hard limits enforce hops<=2, nodes<=500, edges<=2000 and path length<=8",Boundary/negative tests,DONE
+A044,P0,explore,Over-budget response is truncated with reason and continuation information,API/UI test,DONE
+A045,P0,reroot,Any focusable entity can become a new root,Integration/E2E,DONE
+A046,P0,reroot,"Reroot preserves time, layers, filters and scoring profile by default",E2E,DONE
+A047,P0,reroot,User can reroot with reset/default state,E2E,DONE
+A048,P0,reroot,Three consecutive reroots complete in semiconductor fixture,Critical E2E,DONE
+A049,P0,reroot,Breadcrumb contains full focus path and is clickable,E2E,DONE
+A050,P0,reroot,Browser back/forward restore the correct focus and state,E2E,DONE
+A051,P0,reroot,"URL serializes/restores focus, layers, direction, time, profile and filters",E2E,DONE
+A052,P0,explore,Incremental expand loads only selected direction/layers within expand budget,Integration/E2E,DONE
+A053,P0,explore,"Node actions include reroot, upstream, downstream, path, compare, pin, Watchlist and evidence",UI test,DONE
+A054,P0,explore,Pinned nodes and comparisons survive layout changes,E2E,DONE
+A055,P0,explore,Graph has filterable table/list alternative,E2E/a11y,DONE
+A056,P0,paths,Shortest/upstream/downstream/control/capital/policy/bottleneck paths are bounded and evidence-bearing,Integration,DONE
+A057,P0,explore,Truncation and inclusion sorting are explained to the user,UI/content test,DONE
+A058,P0,explore,Visual centrality is not presented as control and color is not the only encoding,Design/a11y review,DONE
 A059,P0,dossier,Every P0 seed opens a company/entity focus page,API/E2E,NOT STARTED
 A060,P0,dossier,"Human summary covers business, group, dependencies, capital, policy, signals and data gaps",Content/E2E,NOT STARTED
 A061,P0,dossier,Company workspace exposes eight required layers,E2E,NOT STARTED
@@ -152,31 +152,31 @@ A150,P0,pivot,Three consecutive subject changes use the same workspace model,E2E
 A151,P0,mental-map,Subject changes preserve directional grammar and positions of retained nodes where feasible,Visual regression,DONE
 A152,P0,mental-map,Subject transition indicates loading and never leaves blank canvas on failure,Failure E2E,DONE
 A153,P0,responsive,Core workspace works at 1440x900 1280x800 and 1024x768,Visual regression,NOT STARTED
-A154,P0,navigation,Breadcrumb browser back and app back restore identical subject state,E2E,NOT STARTED
-A155,P0,navigation,User can return to any prior subject in exploration path,E2E,NOT STARTED
-A156,P0,persistence,URL/session stores subject selected object lens time filters and semantic zoom,Contract/E2E,NOT STARTED
-A157,P0,persistence,Reload restores viewport panels and exploration path,Reload E2E,NOT STARTED
-A158,P0,saved-view,Saved view includes subject lens time filters layout and notes,Integration,NOT STARTED
-A159,P0,saved-view,Saved view restore is deterministic and versioned,Integration,NOT STARTED
-A160,P0,time,Timeline changes graph state with explicit as-of label and no false real-time claim,E2E,NOT STARTED
-A161,P0,accessibility,Every graph relationship is available in equivalent list/table view,A11y E2E,NOT STARTED
-A162,P0,accessibility,Graph-equivalent list retains direction type evidence status and time,Contract test,NOT STARTED
-A163,P0,accessibility,All primary operations are keyboard reachable with visible unobscured focus,Keyboard E2E,NOT STARTED
-A164,P0,accessibility,Pointer targets normally meet 24x24 and dense graph has equivalent controls,Axe/manual,NOT STARTED
-A165,P0,accessibility,Color is not the only encoding for relation family or evidence status,Visual/a11y review,NOT STARTED
-A166,P0,content,End-user UI contains no forbidden agent or graph-database jargon,Static copy lint,NOT STARTED
+A154,P0,navigation,Breadcrumb browser back and app back restore identical subject state,E2E,DONE
+A155,P0,navigation,User can return to any prior subject in exploration path,E2E,DONE
+A156,P0,persistence,URL/session stores subject selected object lens time filters and semantic zoom,Contract/E2E,DONE
+A157,P0,persistence,Reload restores viewport panels and exploration path,Reload E2E,DONE
+A158,P0,saved-view,Saved view includes subject lens time filters layout and notes,Integration,DONE
+A159,P0,saved-view,Saved view restore is deterministic and versioned,Integration,DONE
+A160,P0,time,Timeline changes graph state with explicit as-of label and no false real-time claim,E2E,DONE
+A161,P0,accessibility,Every graph relationship is available in equivalent list/table view,A11y E2E,DONE
+A162,P0,accessibility,Graph-equivalent list retains direction type evidence status and time,Contract test,DONE
+A163,P0,accessibility,All primary operations are keyboard reachable with visible unobscured focus,Keyboard E2E,DONE
+A164,P0,accessibility,Pointer targets normally meet 24x24 and dense graph has equivalent controls,Axe/manual,DONE
+A165,P0,accessibility,Color is not the only encoding for relation family or evidence status,Visual/a11y review,DONE
+A166,P0,content,End-user UI contains no forbidden agent or graph-database jargon,Static copy lint,DONE
 A167,P0,visual-regression,Approved default lens pivot list empty loading error states have screenshots,Visual regression suite,NOT STARTED
 A168,P0,performance,Fixture first interactive graph P75 is under 2.5 seconds and metrics are recorded,Performance test,NOT STARTED
 A169,P0,catalog,"Relationship families, relationship types, upstream/downstream scope, supply-chain stages, industries, sectors, business segments, capital objects and companies have machine-readable catalogs",Catalog integrity test + manual review,DONE
 A170,P0,navigation,"Objects and scope is a visible navigation module and exposes counts, definitions, coverage and export links",E2E + visual regression,DONE
-A171,P0,model-governance,"Model management has one canonical registry for formulas, parameters, thresholds, files, versions, online edit, preview, activation and rollback",Schema validation + model center E2E,NOT STARTED
+A171,P0,model-governance,"Model management has one canonical registry for formulas, parameters, thresholds, files, versions, online edit, preview, activation and rollback",Schema validation + model center E2E,DONE
 A172,P0,architecture,"Function structure screen maps every module to route, data assets, API, status and acceptance criteria",Catalog/API mapping test,NOT STARTED
-A173,P0,delivery-governance,"Development status explicitly separates resolved, prototyped, specified, not started, blocked and out-of-scope items",Status catalog review,NOT STARTED
-A174,P0,delivery-governance,"Development status is visible in navigation and links tasks, risks, controls and acceptance evidence",E2E + link integrity,NOT STARTED
+A173,P0,delivery-governance,"Development status explicitly separates resolved, prototyped, specified, not started, blocked and out-of-scope items",Status catalog review,DONE
+A174,P0,delivery-governance,"Development status is visible in navigation and links tasks, risks, controls and acceptance evidence",E2E + link integrity,DONE
 A175,P0,audit,"Any catalog, model, threshold or scope change is captured by PR template, operation log and immutable release artifact",GitHub workflow + audit contract test,NOT STARTED
-A176,P0,prototype,index.html and standalone.html render the same canonical prototype and do not reference incompatible stale JS/CSS,Hash/content smoke test + browser screenshots,NOT STARTED
-A177,P0,github,"GitHub repository includes issue forms, PR template, code owners, catalog integrity workflow, release checklist and backup policy",Repository structure check,NOT STARTED
-A178,P0,live-refresh,All visible modules report the same active model version and data snapshot before a global refresh is declared complete,E2E consistency test,NOT STARTED
+A176,P0,prototype,index.html and standalone.html render the same canonical prototype and do not reference incompatible stale JS/CSS,Hash/content smoke test + browser screenshots,DONE
+A177,P0,github,"GitHub repository includes issue forms, PR template, code owners, catalog integrity workflow, release checklist and backup policy",Repository structure check,DONE
+A178,P0,live-refresh,All visible modules report the same active model version and data snapshot before a global refresh is declared complete,E2E consistency test,DONE
 A179,P0,model,保存、激活、回滚、恢复默认和导入均生成不可变版本和操作日志,DB/API/E2E,NOT STARTED
 A180,P0,github,仓库包含功能、模型、数据范围和缺陷的结构化 Issue 表单,file/schema review,NOT STARTED
 A181,P0,github,PR 模板要求变更范围、文档同步、测试、风险、回滚和验收证据,file review,NOT STARTED

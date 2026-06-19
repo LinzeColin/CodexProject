@@ -29,6 +29,15 @@ def generated_or_external(path: Path) -> bool:
 def main() -> int:
     run([sys.executable, str(ROOT / "scripts/validate_governance.py")], "governance validation")
     run([sys.executable, str(ROOT / "scripts/validate_catalog_integrity.py")], "catalog integrity")
+    run(
+        [
+            sys.executable,
+            str(ROOT / "scripts/validate_model_config.py"),
+            str(ROOT / "config/model_profiles/balanced-v2.json"),
+            str(ROOT / "config/thresholds/default-v2.json"),
+        ],
+        "model config validation",
+    )
 
     required = [
         "README.md",

@@ -20,6 +20,14 @@ pytestmark = pytest.mark.skipif(
 )
 
 NVIDIA_ID = "00000000-0000-4000-8000-000000000006"
+MICROSOFT_ID = "00000000-0000-4000-8000-000000000003"
+OPENAI_GROUP_ID = "00000000-0000-4000-8000-000000000012"
+OPENAI_FOUNDATION_ID = "00000000-0000-4000-8000-000000000013"
+PALANTIR_ID = "00000000-0000-4000-8000-000000000009"
+GOVERNMENT_BODY_ID = "00000000-0000-4000-8000-000000000019"
+THEME_AI_INFRA_ID = "00000000-0000-4000-8000-000000000020"
+FIXTURE_MATERIALS_ID = "00000000-0000-4000-8000-000000000023"
+FIXTURE_DATACENTER_ID = "00000000-0000-4000-8000-000000000024"
 COREWEAVE_NVIDIA_RELATIONSHIP_ID = "10000000-0000-4000-8000-000000000012"
 SUPERSESSION_RELATIONSHIP_ID = "20000000-0000-4000-8000-000000000001"
 
@@ -31,6 +39,29 @@ def run_script(*args: str) -> None:
         cwd=os.getcwd(),
         text=True,
     )
+
+
+def assert_evidence_bearing_paths(payload: dict[str, object], *, max_length: int) -> None:
+    paths = payload["paths"]
+    assert isinstance(paths, list)
+    assert 1 <= len(paths) <= 8
+    assert payload["coverage"]["path_count"] == len(paths)
+    assert payload["coverage"]["all_edges_have_evidence"] is True
+    assert payload["coverage"]["source_count"] >= 1
+    for path in paths:
+        assert path["length"] <= max_length
+        assert len(path["relationship_ids"]) == path["length"]
+        assert len(path["node_ids"]) == path["length"] + 1
+        assert path["evidence"]
+        for edge in path["edges"]:
+            assert edge["evidence_count"] >= 1
+            assert edge["evidence"]
+            assert edge["traversal_direction"] in {"forward", "reverse"}
+            for evidence in edge["evidence"]:
+                assert evidence["source_document_id"]
+                assert evidence["source_tier"] >= 1
+                assert evidence["support_excerpt"]
+                assert evidence["url"].startswith("fixture://relationship/")
 
 
 def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
@@ -176,6 +207,319 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert exploration["coverage"]["synthetic_fixture_edges"] >= 1
     assert any(edge["synthetic"] is True for edge in exploration["edges"])
     assert all(edge["fixture_notice"] for edge in exploration["edges"] if edge["synthetic"])
+    assert exploration["query"]["focus"]["object_id"] == NVIDIA_ID
+    assert exploration["query"]["active_layers"] == [
+        "supply_chain_operations",
+        "technology_data_ip",
+    ]
+    assert exploration["query"]["direction"] == "both"
+    assert exploration["query"]["hops"] == 1
+    assert exploration["query"]["budget"] == {
+        "max_nodes": 42,
+        "max_edges": 64,
+        "expand_nodes": 12,
+    }
+    assert exploration["query"]["hard_limits"] == {
+        "max_hops": 2,
+        "max_nodes": 500,
+        "max_edges": 2000,
+        "max_path_length": 8,
+    }
+
+    default_explore_response = client.post(
+        "/v1/explore",
+        json={"focus": {"object_type": "entity", "object_id": NVIDIA_ID}},
+    )
+    assert default_explore_response.status_code == 200
+    default_exploration = default_explore_response.json()
+    assert default_exploration["query"]["active_layers"] == ["supply_chain_operations"]
+    assert default_exploration["query"]["direction"] == "both"
+    assert default_exploration["query"]["hops"] == 1
+    assert default_exploration["query"]["budget"] == {
+        "max_nodes": 42,
+        "max_edges": 64,
+        "expand_nodes": 12,
+    }
+    assert len(default_exploration["nodes"]) <= 42
+    assert len(default_exploration["edges"]) <= 64
+
+    profile_id = profiles[0]["id"]
+    explicit_explore_response = client.post(
+        "/v1/explore",
+        json={
+            "focus": {"object_type": "entity", "object_id": NVIDIA_ID},
+            "active_layers": ["capital_control", "policy_regulatory"],
+            "direction": "upstream",
+            "hops": 2,
+            "as_of": "2026-06-19T00:00:00Z",
+            "scoring_profile_version_id": profile_id,
+            "filters": {"relationship_family": ["capital_financing"]},
+            "budget": {"max_nodes": 7, "max_edges": 8, "expand_nodes": 3},
+        },
+    )
+    assert explicit_explore_response.status_code == 200
+    explicit_exploration = explicit_explore_response.json()
+    assert explicit_exploration["query"]["direction"] == "upstream"
+    assert explicit_exploration["query"]["hops"] == 2
+    assert explicit_exploration["query"]["as_of"] == "2026-06-19T00:00:00Z"
+    assert explicit_exploration["query"]["scoring_profile_version_id"] == profile_id
+    assert explicit_exploration["query"]["filters"] == {
+        "relationship_family": ["capital_financing"]
+    }
+    assert explicit_exploration["query"]["budget"] == {
+        "max_nodes": 7,
+        "max_edges": 8,
+        "expand_nodes": 3,
+    }
+    explicit_state = explicit_exploration["state"]
+    assert explicit_state["version"] == "exploration-state-v1"
+    assert explicit_state["session_id"] == explicit_exploration["session_id"]
+    assert explicit_state["focus"] == {"object_type": "entity", "object_id": NVIDIA_ID}
+    assert explicit_state["active_layers"] == ["capital_control", "policy_regulatory"]
+    assert explicit_state["direction"] == "upstream"
+    assert explicit_state["hops"] == 2
+    assert explicit_state["as_of"] == "2026-06-19T00:00:00Z"
+    assert explicit_state["scoring_profile_version_id"] == profile_id
+    assert explicit_state["filters"] == {"relationship_family": ["capital_financing"]}
+    assert explicit_state["budget"] == {"max_nodes": 7, "max_edges": 8, "expand_nodes": 3}
+    url_state = explicit_state["url_state"]
+    assert url_state["version"] == "exploration-url-state-v1"
+    assert url_state["route"] == "/"
+    assert url_state["query"]["session"] == explicit_exploration["session_id"]
+    assert url_state["query"]["focus"] == f"entity:{NVIDIA_ID}"
+    assert url_state["query"]["layers"] == "capital_control,policy_regulatory"
+    assert url_state["query"]["direction"] == "upstream"
+    assert url_state["query"]["hops"] == "2"
+    assert url_state["query"]["as_of"] == "2026-06-19T00:00:00Z"
+    assert url_state["query"]["profile"] == profile_id
+    assert url_state["query"]["filters"] == '{"relationship_family":["capital_financing"]}'
+    assert "direction=upstream" in url_state["query_string"]
+    assert "hops=2" in url_state["query_string"]
+
+    restored_explore_response = client.post(
+        "/v1/explore",
+        json=url_state["restore_payload"],
+    )
+    assert restored_explore_response.status_code == 200
+    restored_exploration = restored_explore_response.json()
+    assert restored_exploration["session_id"] == explicit_exploration["session_id"]
+    assert restored_exploration["state"]["url_state"]["query"] == url_state["query"]
+    assert restored_exploration["state"]["url_state"]["restore_payload"] == url_state[
+        "restore_payload"
+    ]
+    with connect_database() as connection:
+        session_row = connection.execute(
+            """
+            SELECT active_layers, direction, hops, budget, filters, state_version
+            FROM exploration_sessions
+            WHERE id = %s
+            """,
+            (explicit_exploration["session_id"],),
+        ).fetchone()
+    assert session_row[0] == ["capital_control", "policy_regulatory"]
+    assert session_row[1] == "upstream"
+    assert session_row[2] == 2
+    assert session_row[3] == {"max_nodes": 7, "max_edges": 8, "expand_nodes": 3}
+    assert session_row[4] == {"relationship_family": ["capital_financing"]}
+    assert session_row[5] == "exploration-state-v1"
+
+    inherited_reroot_response = client.post(
+        "/v1/explore/reroot",
+        json={
+            "session_id": explicit_exploration["session_id"],
+            "new_focus_entity_id": FIXTURE_DATACENTER_ID,
+        },
+    )
+    assert inherited_reroot_response.status_code == 200
+    inherited_reroot = inherited_reroot_response.json()
+    assert inherited_reroot["focus"]["canonical_name"] == "Synthetic AI Data Center Campus"
+    assert inherited_reroot["state"]["focus"] == {
+        "object_type": "entity",
+        "object_id": FIXTURE_DATACENTER_ID,
+    }
+    assert inherited_reroot["state"]["active_layers"] == [
+        "capital_control",
+        "policy_regulatory",
+    ]
+    assert inherited_reroot["state"]["direction"] == "upstream"
+    assert inherited_reroot["state"]["hops"] == 2
+    assert inherited_reroot["state"]["as_of"] == "2026-06-19T00:00:00Z"
+    assert inherited_reroot["state"]["scoring_profile_version_id"] == profile_id
+    assert inherited_reroot["state"]["filters"] == {
+        "relationship_family": ["capital_financing"]
+    }
+    assert inherited_reroot["state"]["budget"] == {
+        "max_nodes": 7,
+        "max_edges": 8,
+        "expand_nodes": 3,
+    }
+    assert inherited_reroot["history"][-1]["action"] == "reroot"
+    assert inherited_reroot["history"][-1]["inherited_state"]["inherit_state"] is True
+
+    reset_reroot_response = client.post(
+        "/v1/explore/reroot",
+        json={
+            "session_id": explicit_exploration["session_id"],
+            "new_focus_entity_id": THEME_AI_INFRA_ID,
+            "inherit_state": False,
+        },
+    )
+    assert reset_reroot_response.status_code == 200
+    reset_reroot = reset_reroot_response.json()
+    assert reset_reroot["focus"]["canonical_name"] == "AI Infrastructure"
+    assert reset_reroot["state"]["focus"] == {
+        "object_type": "entity",
+        "object_id": THEME_AI_INFRA_ID,
+    }
+    assert reset_reroot["state"]["active_layers"] == ["supply_chain_operations"]
+    assert reset_reroot["state"]["direction"] == "both"
+    assert reset_reroot["state"]["hops"] == 1
+    assert reset_reroot["state"]["as_of"] is None
+    assert reset_reroot["state"]["scoring_profile_version_id"] is None
+    assert reset_reroot["state"]["filters"] == {}
+    assert reset_reroot["state"]["budget"] == {
+        "max_nodes": 42,
+        "max_edges": 64,
+        "expand_nodes": 12,
+    }
+    assert reset_reroot["history"][-1]["inherited_state"]["inherit_state"] is False
+    with connect_database() as connection:
+        reset_session_row = connection.execute(
+            """
+            SELECT current_focus_entity_id, active_layers, direction, hops, budget,
+                   as_of, scoring_profile_version_id, filters
+            FROM exploration_sessions
+            WHERE id = %s
+            """,
+            (explicit_exploration["session_id"],),
+        ).fetchone()
+    assert str(reset_session_row[0]) == THEME_AI_INFRA_ID
+    assert reset_session_row[1] == ["supply_chain_operations"]
+    assert reset_session_row[2] == "both"
+    assert reset_session_row[3] == 1
+    assert reset_session_row[4] == {"max_nodes": 42, "max_edges": 64, "expand_nodes": 12}
+    assert reset_session_row[5] is None
+    assert reset_session_row[6] is None
+    assert reset_session_row[7] == {}
+
+    for invalid_payload in (
+        {
+            "focus": {"object_type": "entity", "object_id": NVIDIA_ID},
+            "hops": 3,
+        },
+        {
+            "focus": {"object_type": "entity", "object_id": NVIDIA_ID},
+            "budget": {"max_nodes": 501, "max_edges": 64, "expand_nodes": 12},
+        },
+        {
+            "focus": {"object_type": "entity", "object_id": NVIDIA_ID},
+            "budget": {"max_nodes": 42, "max_edges": 2001, "expand_nodes": 12},
+        },
+    ):
+        invalid_explore_response = client.post("/v1/explore", json=invalid_payload)
+        assert invalid_explore_response.status_code == 422
+
+    over_budget_response = client.post(
+        "/v1/explore",
+        json={
+            "focus": {"object_type": "entity", "object_id": NVIDIA_ID},
+            "budget": {"max_nodes": 2, "max_edges": 1, "expand_nodes": 1},
+        },
+    )
+    assert over_budget_response.status_code == 200
+    over_budget = over_budget_response.json()
+    assert over_budget["truncated"] is True
+    assert over_budget["truncation"]["applied"] is True
+    assert set(over_budget["truncation"]["reasons"]) & {"edge_budget", "node_budget"}
+    assert over_budget["truncation"]["returned_edge_count"] <= 1
+    assert over_budget["truncation"]["returned_node_count"] <= 2
+    assert len(over_budget["edges"]) <= 1
+    assert len(over_budget["nodes"]) <= 2
+    assert over_budget["continuation"]["available"] is True
+    assert over_budget["continuation"]["expand_endpoint"] == "/v1/explore/expand"
+    assert over_budget["continuation"]["anchor_entity_id"] == NVIDIA_ID
+    assert any(
+        warning.startswith("bounded_graph_budget_applied:")
+        for warning in over_budget["warnings"]
+    )
+    expand_response = client.post(
+        "/v1/explore/expand",
+        json={
+            "session_id": over_budget["session_id"],
+            "anchor_entity_id": NVIDIA_ID,
+            "direction": "upstream",
+            "layers": ["supply_chain_operations"],
+            "budget": {"max_nodes": 42, "max_edges": 64, "expand_nodes": 2},
+        },
+    )
+    assert expand_response.status_code == 200
+    expanded = expand_response.json()
+    assert expanded["session_id"] == over_budget["session_id"]
+    assert expanded["focus"]["canonical_name"] == "NVIDIA Corporation"
+    assert expanded["query"]["direction"] == "upstream"
+    assert expanded["query"]["active_layers"] == ["supply_chain_operations"]
+    assert expanded["query"]["budget"]["expand_nodes"] == 2
+    assert 1 <= len(expanded["edges"]) <= 2
+    assert len(expanded["nodes"]) <= 3
+    assert all(edge["object_id"] == NVIDIA_ID for edge in expanded["edges"])
+    assert all(
+        edge["relationship_family"] == "supply_chain_operations"
+        for edge in expanded["edges"]
+    )
+
+    path_cases = [
+        ("shortest", FIXTURE_MATERIALS_ID, NVIDIA_ID, 3, "supply_chain_operations"),
+        ("upstream", FIXTURE_MATERIALS_ID, NVIDIA_ID, 3, "supply_chain_operations"),
+        ("downstream", NVIDIA_ID, FIXTURE_MATERIALS_ID, 3, "supply_chain_operations"),
+        ("control", OPENAI_FOUNDATION_ID, OPENAI_GROUP_ID, 1, "ownership_control"),
+        ("capital", MICROSOFT_ID, OPENAI_GROUP_ID, 1, "capital_financing"),
+        ("policy", GOVERNMENT_BODY_ID, PALANTIR_ID, 1, "government_policy"),
+        ("bottleneck", FIXTURE_MATERIALS_ID, NVIDIA_ID, 3, "supply_chain_operations"),
+    ]
+    for path_type, source_id, target_id, max_length, expected_family in path_cases:
+        path_response = client.get(
+            "/v1/paths",
+            params={
+                "from": source_id,
+                "to": target_id,
+                "path_type": path_type,
+                "max_length": max_length,
+                "as_of": "2026-06-19T00:00:00Z",
+            },
+        )
+        assert path_response.status_code == 200
+        path_payload = path_response.json()
+        assert path_payload["query"]["path_type"] == path_type
+        assert path_payload["query"]["max_length"] == max_length
+        assert path_payload["query"]["hard_limits"]["max_path_length"] == 8
+        assert path_payload["query"]["max_paths"] == 8
+        assert path_payload["query"]["from"] == source_id
+        assert path_payload["query"]["to"] == target_id
+        assert path_payload["paths"][0]["node_ids"][0] == source_id
+        assert path_payload["paths"][0]["node_ids"][-1] == target_id
+        assert_evidence_bearing_paths(path_payload, max_length=max_length)
+        assert all(
+            edge["relationship_family"] == expected_family
+            for path in path_payload["paths"]
+            for edge in path["edges"]
+        )
+        if path_type == "bottleneck":
+            assert path_payload["query"]["bottleneck_only"] is True
+            assert all(
+                edge["materiality"] in {"critical", "high"}
+                for path in path_payload["paths"]
+                for edge in path["edges"]
+            )
+    too_long_path_response = client.get(
+        "/v1/paths",
+        params={
+            "from": FIXTURE_MATERIALS_ID,
+            "to": NVIDIA_ID,
+            "path_type": "shortest",
+            "max_length": 9,
+        },
+    )
+    assert too_long_path_response.status_code == 422
 
     home_response = client.get("/v1/home")
     assert home_response.status_code == 200
@@ -206,9 +550,86 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert calibration_list.status_code == 200
     assert calibration_list.json()[0]["status"] == "scheduled"
 
+    watchlist_detail = client.get(f"/v1/watchlists/{watchlist_id}")
+    assert watchlist_detail.status_code == 200
+    assert watchlist_detail.json()["items"][0]["saved_state"] == {"lens": "supply_chain"}
+
+    remove_response = client.delete(
+        f"/v1/watchlists/{watchlist_id}/items",
+        params={"object_type": "entity", "object_id": NVIDIA_ID},
+    )
+    assert remove_response.status_code == 204
+    removed_detail = client.get(f"/v1/watchlists/{watchlist_id}").json()
+    assert all(item["object_id"] != NVIDIA_ID for item in removed_detail["items"])
+
+    restored_entity_response = client.post(
+        f"/v1/watchlists/{watchlist_id}/items",
+        json={
+            "object_type": "entity",
+            "object_id": NVIDIA_ID,
+            "labels": ["restored", "capital"],
+            "note": "restored item",
+            "saved_state": {"lens": "capital_control", "profile": "balanced-v2"},
+        },
+    )
+    assert restored_entity_response.status_code == 201
+    industry_item_response = client.post(
+        f"/v1/watchlists/{watchlist_id}/items",
+        json={
+            "object_type": "industry",
+            "object_id": semiconductor["id"],
+            "labels": ["industry"],
+            "saved_state": {"view": "landscape"},
+        },
+    )
+    assert industry_item_response.status_code == 201
+    theme_item_response = client.post(
+        f"/v1/watchlists/{watchlist_id}/items",
+        json={
+            "object_type": "theme",
+            "object_id": THEME_AI_INFRA_ID,
+            "labels": ["theme"],
+            "saved_state": {"lens": "strategy"},
+        },
+    )
+    assert theme_item_response.status_code == 201
+    facility_item_response = client.post(
+        f"/v1/watchlists/{watchlist_id}/items",
+        json={
+            "object_type": "facility",
+            "object_id": FIXTURE_DATACENTER_ID,
+            "labels": ["facility"],
+            "saved_state": {"lens": "supply_chain"},
+        },
+    )
+    assert facility_item_response.status_code == 201
+    invalid_facility_response = client.post(
+        f"/v1/watchlists/{watchlist_id}/items",
+        json={
+            "object_type": "facility",
+            "object_id": NVIDIA_ID,
+            "saved_state": {},
+        },
+    )
+    assert invalid_facility_response.status_code == 404
+    restored_detail = client.get(f"/v1/watchlists/{watchlist_id}").json()
+    item_types = {item["object_type"] for item in restored_detail["items"]}
+    assert {"entity", "industry", "theme", "facility"} <= item_types
+    restored_entity = next(
+        item
+        for item in restored_detail["items"]
+        if item["object_type"] == "entity" and item["object_id"] == NVIDIA_ID
+    )
+    assert restored_entity["saved_state"]["lens"] == "capital_control"
+
     audit_logs = client.get("/v1/audit-logs").json()
     action_types = {row["action_type"] for row in audit_logs}
-    assert {"create_watchlist", "add_watchlist_item", "queue_calibration"} <= action_types
+    assert {
+        "create_watchlist",
+        "add_watchlist_item",
+        "remove_watchlist_item",
+        "queue_calibration",
+    } <= action_types
 
     repository = DomainRepository(database_url())
     superseded = repository.record_relationship_supersession(

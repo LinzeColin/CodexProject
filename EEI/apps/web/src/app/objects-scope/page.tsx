@@ -10,12 +10,14 @@ import {
   Download,
   FileJson,
   GitBranch,
+  ListChecks,
   Network,
   PackageSearch,
   Rows3,
   ShieldCheck
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { ACTIVE_ANALYSIS_CONTEXT } from "../analysis-contract";
 
 type CsvRow = Record<string, string>;
 
@@ -209,6 +211,12 @@ export default function ObjectsScopePage() {
   return (
     <main
       className="catalogWorkspace"
+      data-active-data-snapshot={ACTIVE_ANALYSIS_CONTEXT.dataSnapshot}
+      data-active-model-version={ACTIVE_ANALYSIS_CONTEXT.modelVersion}
+      data-active-profile-version={ACTIVE_ANALYSIS_CONTEXT.profileVersion}
+      data-active-score-snapshot={ACTIVE_ANALYSIS_CONTEXT.scoreSnapshot}
+      data-active-time={ACTIVE_ANALYSIS_CONTEXT.defaultAsOf}
+      data-analysis-contract={ACTIVE_ANALYSIS_CONTEXT.contractVersion}
       data-catalog-version="v4.2.0"
       data-testid="objects-scope-screen"
     >
@@ -237,6 +245,15 @@ export default function ObjectsScopePage() {
           >
             <Database size={18} strokeWidth={1.8} aria-hidden="true" />
             <span>对象与范围</span>
+          </a>
+          <a
+            className="navItem"
+            data-testid="development-status-nav-link"
+            href="/development-status"
+            title="开发状态"
+          >
+            <ListChecks size={18} strokeWidth={1.8} aria-hidden="true" />
+            <span>开发状态</span>
           </a>
         </div>
       </aside>

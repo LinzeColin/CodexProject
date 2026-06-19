@@ -462,6 +462,10 @@ paths:
       responses:
         '200':
           description: Evidence-bearing bounded paths
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PathResponse'
   /v1/entities/{entityId}/empire:
     get:
       operationId: getEntityEmpire
@@ -630,6 +634,25 @@ paths:
       responses:
         '201':
           description: Created
+  /v1/watchlists/{watchlistId}:
+    get:
+      operationId: getWatchlist
+      parameters:
+      - name: watchlistId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Watchlist with persisted items, saved state and unread count
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Watchlist'
+        '404':
+          description: Watchlist not found
   /v1/watchlists/{watchlistId}/items:
     post:
       operationId: addWatchlistItem
@@ -1046,10 +1069,74 @@ components:
       - nodes
       - edges
       - truncated
+      - query
+      - truncation
+      - continuation
       properties:
         as_of:
           type: string
           format: date-time
+        query:
+          type: object
+          required:
+          - focus
+          - direction
+          - hops
+          - active_layers
+          - budget
+          - hard_limits
+          properties:
+            focus:
+              type: object
+              additionalProperties: true
+            focus_entity_id:
+              type: string
+              format: uuid
+            direction:
+              type: string
+            hops:
+              type: integer
+              minimum: 1
+              maximum: 2
+            as_of:
+              type:
+              - string
+              - 'null'
+              format: date-time
+            scoring_profile_version_id:
+              type:
+              - string
+              - 'null'
+              format: uuid
+            active_layers:
+              type: array
+              items:
+                type: string
+            filters:
+              type: object
+              additionalProperties: true
+            budget:
+              $ref: '#/components/schemas/GraphBudget'
+            hard_limits:
+              type: object
+              required:
+              - max_hops
+              - max_nodes
+              - max_edges
+              - max_path_length
+              properties:
+                max_hops:
+                  type: integer
+                  maximum: 2
+                max_nodes:
+                  type: integer
+                  maximum: 500
+                max_edges:
+                  type: integer
+                  maximum: 2000
+                max_path_length:
+                  type: integer
+                  maximum: 8
         nodes:
           type: array
           maxItems: 500
@@ -1062,6 +1149,64 @@ components:
             $ref: '#/components/schemas/GraphEdge'
         truncated:
           type: boolean
+        truncation:
+          type: object
+          required:
+          - applied
+          - reasons
+          - message
+          - fetched_edge_count
+          - returned_edge_count
+          - returned_node_count
+          properties:
+            applied:
+              type: boolean
+            reasons:
+              type: array
+              items:
+                type: string
+                enum:
+                - edge_budget
+                - node_budget
+            message:
+              type: string
+            fetched_edge_count:
+              type: integer
+              minimum: 0
+            returned_edge_count:
+              type: integer
+              minimum: 0
+              maximum: 2000
+            returned_node_count:
+              type: integer
+              minimum: 0
+              maximum: 500
+        continuation:
+          type: object
+          required:
+          - available
+          properties:
+            available:
+              type: boolean
+            expand_endpoint:
+              type:
+              - string
+              - 'null'
+            anchor_entity_id:
+              type:
+              - string
+              - 'null'
+              format: uuid
+            direction:
+              type:
+              - string
+              - 'null'
+            expand_nodes:
+              type:
+              - integer
+              - 'null'
+              minimum: 1
+              maximum: 100
         warnings:
           type: array
           items:
@@ -1081,6 +1226,166 @@ components:
             minItems: 1
             items:
               $ref: '#/components/schemas/EvidenceSummary'
+    PathEdge:
+      allOf:
+      - $ref: '#/components/schemas/RelationshipDetail'
+      - type: object
+        required:
+        - edge_index
+        - traversal_direction
+        - traversal_from_id
+        - traversal_to_id
+        properties:
+          edge_index:
+            type: integer
+            minimum: 0
+          traversal_direction:
+            type: string
+            enum:
+            - forward
+            - reverse
+          traversal_from_id:
+            type: string
+            format: uuid
+          traversal_to_id:
+            type: string
+            format: uuid
+          materiality:
+            type:
+            - string
+            - 'null'
+    PathResult:
+      type: object
+      required:
+      - path_index
+      - length
+      - node_ids
+      - nodes
+      - relationship_ids
+      - edges
+      - evidence
+      properties:
+        path_index:
+          type: integer
+          minimum: 0
+        length:
+          type: integer
+          minimum: 0
+          maximum: 8
+        node_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntitySummary'
+        relationship_ids:
+          type: array
+          maxItems: 8
+          items:
+            type: string
+            format: uuid
+        edges:
+          type: array
+          maxItems: 8
+          items:
+            $ref: '#/components/schemas/PathEdge'
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvidenceSummary'
+    PathResponse:
+      type: object
+      required:
+      - as_of
+      - query
+      - from
+      - to
+      - paths
+      - truncated
+      - coverage
+      properties:
+        as_of:
+          type: string
+          format: date-time
+        query:
+          type: object
+          required:
+          - from
+          - to
+          - path_type
+          - max_length
+          - hard_limits
+          - max_paths
+          properties:
+            from:
+              type: string
+              format: uuid
+            to:
+              type: string
+              format: uuid
+            path_type:
+              type: string
+              enum:
+              - shortest
+              - upstream
+              - downstream
+              - control
+              - capital
+              - policy
+              - bottleneck
+            max_length:
+              type: integer
+              minimum: 1
+              maximum: 8
+            relationship_families:
+              type: array
+              items:
+                type: string
+            bottleneck_only:
+              type: boolean
+            hard_limits:
+              type: object
+              additionalProperties: true
+            max_paths:
+              type: integer
+              maximum: 8
+        from:
+          $ref: '#/components/schemas/EntitySummary'
+        to:
+          $ref: '#/components/schemas/EntitySummary'
+        paths:
+          type: array
+          maxItems: 8
+          items:
+            $ref: '#/components/schemas/PathResult'
+        truncated:
+          type: boolean
+        coverage:
+          type: object
+          required:
+          - path_count
+          - edge_count
+          - source_count
+          - all_edges_have_evidence
+          properties:
+            path_count:
+              type: integer
+              minimum: 0
+            edge_count:
+              type: integer
+              minimum: 0
+            source_count:
+              type: integer
+              minimum: 0
+            all_edges_have_evidence:
+              type: boolean
+        warnings:
+          type: array
+          items:
+            type: string
     Event:
       type: object
       required:
@@ -1468,10 +1773,6 @@ components:
       type: object
       required:
       - focus
-      - active_layers
-      - direction
-      - hops
-      - budget
       properties:
         session_id:
           type:
@@ -1496,10 +1797,13 @@ components:
               format: uuid
         active_layers:
           type: array
+          default:
+          - supply_chain_operations
           items:
             type: string
         direction:
           type: string
+          default: both
           enum:
           - both
           - upstream
@@ -1510,6 +1814,7 @@ components:
           type: integer
           minimum: 1
           maximum: 2
+          default: 1
         as_of:
           type:
           - string
@@ -1530,7 +1835,6 @@ components:
       required:
       - session_id
       - new_focus_entity_id
-      - inherit_state
       properties:
         session_id:
           type: string
@@ -1575,26 +1879,22 @@ components:
           $ref: '#/components/schemas/GraphBudget'
     GraphBudget:
       type: object
-      required:
-      - max_nodes
-      - max_edges
-      - expand_nodes
       properties:
         max_nodes:
           type: integer
           minimum: 1
           maximum: 500
-          default: 80
+          default: 42
         max_edges:
           type: integer
           minimum: 1
           maximum: 2000
-          default: 300
+          default: 64
         expand_nodes:
           type: integer
           minimum: 1
           maximum: 100
-          default: 40
+          default: 12
     ExploreResponse:
       allOf:
       - $ref: '#/components/schemas/GraphResponse'
@@ -1602,6 +1902,7 @@ components:
         required:
         - session_id
         - focus
+        - state
         - history
         - active_profile
         properties:
@@ -1610,6 +1911,91 @@ components:
             format: uuid
           focus:
             $ref: '#/components/schemas/EntitySummary'
+          state:
+            type: object
+            required:
+            - version
+            - session_id
+            - focus
+            - active_layers
+            - direction
+            - hops
+            - filters
+            - budget
+            - url_state
+            properties:
+              version:
+                type: string
+                enum:
+                - exploration-state-v1
+              session_id:
+                type: string
+                format: uuid
+              focus:
+                type: object
+                required:
+                - object_type
+                - object_id
+                properties:
+                  object_type:
+                    type: string
+                  object_id:
+                    type: string
+                    format: uuid
+              active_layers:
+                type: array
+                items:
+                  type: string
+              direction:
+                type: string
+                enum:
+                - both
+                - upstream
+                - downstream
+                - in
+                - out
+              hops:
+                type: integer
+                minimum: 1
+                maximum: 2
+              as_of:
+                type:
+                - string
+                - 'null'
+                format: date-time
+              scoring_profile_version_id:
+                type:
+                - string
+                - 'null'
+                format: uuid
+              filters:
+                type: object
+                additionalProperties: true
+              budget:
+                $ref: '#/components/schemas/GraphBudget'
+              url_state:
+                type: object
+                required:
+                - version
+                - route
+                - query
+                - query_string
+                - restore_payload
+                properties:
+                  version:
+                    type: string
+                    enum:
+                    - exploration-url-state-v1
+                  route:
+                    type: string
+                  query:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  query_string:
+                    type: string
+                  restore_payload:
+                    $ref: '#/components/schemas/ExploreRequest'
           history:
             type: array
             items:

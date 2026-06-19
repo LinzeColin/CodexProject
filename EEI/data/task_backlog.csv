@@ -21,20 +21,20 @@ T208,G2,P0,Run migration round-trip and gold quality scaffolding,T207,"A011,A026
 T300,G3,P0,Implement global typed search and aliases,T208,A038,DONE
 T301,G3,P0,Implement home aggregation API,T300,"A029,A030",DONE
 T302,G3,P0,Implement industry list and landscape API,T300,"A031,A032,A033,A034",DONE
-T303,G3,P0,Implement Watchlist CRUD and persistence,T300,"A035,A036,A037",NOT STARTED
-T304,G3,P0,Build user-oriented home page,"T301,T302,T303","A029,A039,A040",NOT STARTED
-T305,G3,P0,Build industry landscape page,T302,"A032,A034",NOT STARTED
-T306,G3,P0,Add home/industry/watchlist E2E,"T304,T305","A029,A035,A039,A040",NOT STARTED
-T400,G4,P0,Implement bounded graph query service,T208,"A041,A042,A043,A044",NOT STARTED
-T401,G4,P0,Implement exploration session and URL state,T400,"A041,A051",NOT STARTED
-T402,G4,P0,Implement reroot with inherited/reset state,T401,"A045,A046,A047",NOT STARTED
-T403,G4,P0,Implement incremental directional expand,T400,A052,NOT STARTED
-T404,G4,P0,Implement breadcrumb and browser history synchronization,T402,"A049,A050,A051",NOT STARTED
-T405,G4,P0,Build graph/table explorer and node actions,"T403,T404","A053,A054,A055,A058",NOT STARTED
-T406,G4,P0,Implement bounded evidence-bearing path queries,T400,A056,NOT STARTED
-T407,G4,P0,Add inclusion/truncation explanations,T405,"A044,A057",NOT STARTED
-T408,G4,P0,Add critical three-reroot E2E,"T405,T407",A048,NOT STARTED
-T409,G4,P0,Add cross-industry reroot E2E,T405,A034,NOT STARTED
+T303,G3,P0,Implement Watchlist CRUD and persistence,T300,"A035,A036,A037",DONE
+T304,G3,P0,Build user-oriented home page,"T301,T302,T303","A029,A030,A039,A040",DONE
+T305,G3,P0,Build industry landscape page,T302,"A032,A034",DONE
+T306,G3,P0,Add home/industry/watchlist E2E,"T304,T305","A029,A035,A037,A039,A040",DONE
+T400,G4,P0,Implement bounded graph query service,T208,"A041,A042,A043,A044",DONE
+T401,G4,P0,Implement exploration session and URL state,T400,"A041,A051",DONE
+T402,G4,P0,Implement reroot with inherited/reset state,T401,"A045,A046,A047",DONE
+T403,G4,P0,Implement incremental directional expand,T400,A052,DONE
+T404,G4,P0,Implement breadcrumb and browser history synchronization,T402,"A049,A050,A051",DONE
+T405,G4,P0,Build graph/table explorer and node actions,"T403,T404","A053,A054,A055,A058",DONE
+T406,G4,P0,Implement bounded evidence-bearing path queries,T400,A056,DONE
+T407,G4,P0,Add inclusion/truncation explanations,T405,"A044,A057",DONE
+T408,G4,P0,Add critical three-reroot E2E,"T405,T407",A048,DONE
+T409,G4,P0,Add cross-industry reroot E2E,T405,A034,DONE
 T500,G5,P0,Implement entity dossier and human summary API,T408,"A059,A060",NOT STARTED
 T501,G5,P0,Implement corporate group/business/brand/product/facility view,T500,"A061,A062,A063",NOT STARTED
 T502,G5,P0,Implement supply-chain stage/upstream/downstream view,T500,"A064,A065,A066",NOT STARTED
@@ -89,14 +89,14 @@ T1106,G2,P0,Implement semantic zoom and node grouping,T1104,"A143,A144,A145",DON
 T1107,G2,P0,Implement contextual node inspector,T1104,"A146,A147",DONE
 T1108,G2,P0,Implement explicit set-as-center interaction,T1107,"A148,A149,A150",DONE
 T1109,G2,P0,Preserve mental map during center changes,T1108,"A151,A152",DONE
-T1110,G3,P0,Implement breadcrumb browser history and undo,T1108,"A154,A155",NOT STARTED
-T1111,G3,P0,Persist viewport lens timeline and selected object,T1110,"A156,A157",NOT STARTED
-T1112,G3,P0,Implement saved views and restore after reload,T1111,"A158,A159",NOT STARTED
-T1113,G3,P0,Implement timeline and change overlays,T1105,A160,NOT STARTED
-T1114,G4,P0,Implement graph-equivalent accessible list view,T1104,"A161,A162",NOT STARTED
-T1115,G4,P0,Implement complete keyboard interaction and visible focus,T1114,"A163,A164",NOT STARTED
-T1116,G4,P0,Add non-color visual encodings and evidence labels,T1104,A165,NOT STARTED
-T1117,G4,P0,Add UI copy lexicon and forbidden-term lint,T1107,A166,NOT STARTED
+T1110,G3,P0,Implement breadcrumb browser history and undo,T1108,"A154,A155",DONE
+T1111,G3,P0,Persist viewport lens timeline and selected object,T1110,"A156,A157",DONE
+T1112,G3,P0,Implement saved views and restore after reload,T1111,"A158,A159",DONE
+T1113,G3,P0,Implement timeline and change overlays,T1105,A160,DONE
+T1114,G4,P0,Implement graph-equivalent accessible list view,T1104,"A161,A162",DONE
+T1115,G4,P0,Implement complete keyboard interaction and visible focus,T1114,"A163,A164",DONE
+T1116,G4,P0,Add non-color visual encodings and evidence labels,T1104,A165,DONE
+T1117,G4,P0,Add UI copy lexicon and forbidden-term lint,T1107,A166,DONE
 T1118,G5,P0,Add visual regression tests for approved workspace states,T1117,A167,NOT STARTED
 T1119,G5,P0,Add performance tests for first interactive graph,T1106,A168,NOT STARTED
 T1120,G6,P1,Add guided empty Watchlist industry overlay,T1102,A135,NOT STARTED
@@ -104,16 +104,16 @@ T1121,G6,P1,Add compare mode while preserving primary subject,T1107,A147,NOT STA
 T1122,G7,P1,Run five-user task-based usability study,T1118,"A148,A161",NOT STARTED
 T1123,G9,P0,Package prototype screenshots specs and clean-room QA,T1119,"A129,A167,A168",NOT STARTED
 T1200,G0,P0,Adopt function catalog and module navigation catalog as single source of truth,T1123,A172,NOT STARTED
-T1201,G0,P0,Adopt model registry formula registry parameter catalog and threshold registry as canonical model management inputs,T1200,A171,NOT STARTED
+T1201,G0,P0,Adopt model registry formula registry parameter catalog and threshold registry as canonical model management inputs,T1200,A171,DONE
 T1202,G1,P0,Implement catalog integrity validator and GitHub CI workflow,"T1200,T1201","A169,A177",NOT STARTED
 T1203,G2,P0,Create taxonomy and object scope API from canonical catalogs,T1202,"A169,A170",DONE
 T1204,G4,P0,Implement Objects and Scope navigation screen,T1203,A170,DONE
-T1205,G4,P0,Implement Development Status navigation screen linked to tasks risks controls and acceptance,T1202,"A173,A174",NOT STARTED
-T1206,G3,P0,Implement immutable model version and active snapshot consistency contract,T1201,"A171,A178",NOT STARTED
-T1207,G4,P0,Wire online model edits to preview all loaded visual modules,T1206,"A157,A158,A178",NOT STARTED
-T1208,G5,P0,Add end-to-end test for global model/data version consistency,T1207,A178,NOT STARTED
-T1209,G5,P0,Add canonical prototype parity smoke test for index and standalone,T1202,A176,NOT STARTED
-T1210,G8,P0,Configure GitHub branch rules CODEOWNERS and required catalog checks,T1202,"A175,A177",NOT STARTED
+T1205,G4,P0,Implement Development Status navigation screen linked to tasks risks controls and acceptance,T1202,"A173,A174",DONE
+T1206,G3,P0,Implement immutable model version and active snapshot consistency contract,T1201,"A171,A178",DONE
+T1207,G4,P0,Wire online model edits to preview all loaded visual modules,T1206,"A157,A158,A178",DONE
+T1208,G5,P0,Add end-to-end test for global model/data version consistency,T1207,A178,DONE
+T1209,G5,P0,Add canonical prototype parity smoke test for index and standalone,T1202,A176,DONE
+T1210,G8,P0,Configure GitHub branch rules CODEOWNERS and required catalog checks,T1202,"A175,A177",DONE
 T1211,G9,P0,Publish reproducible release with manifest checksums status and acceptance evidence,"T1208,T1209,T1210","A175,A177",NOT STARTED
 T1212,G0,P0,Install GitHub governance consistency workflow,T1211,"A182,A183,A200",NOT STARTED
 T1213,G0,P0,Generate development status and requirement-function-task-test traceability,T1200,"A183,A184",NOT STARTED

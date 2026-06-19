@@ -29,6 +29,15 @@ EntityType = Literal[
     "standard",
     "asset",
 ]
+PathType = Literal[
+    "shortest",
+    "upstream",
+    "downstream",
+    "control",
+    "capital",
+    "policy",
+    "bottleneck",
+]
 
 
 class FocusRef(BaseModel):
@@ -37,21 +46,21 @@ class FocusRef(BaseModel):
 
 
 class GraphBudget(BaseModel):
-    max_nodes: int = Field(default=80, ge=1, le=500)
-    max_edges: int = Field(default=300, ge=1, le=2000)
-    expand_nodes: int = Field(default=40, ge=1, le=100)
+    max_nodes: int = Field(default=42, ge=1, le=500)
+    max_edges: int = Field(default=64, ge=1, le=2000)
+    expand_nodes: int = Field(default=12, ge=1, le=100)
 
 
 class ExploreRequest(BaseModel):
     session_id: UUID | None = None
     focus: FocusRef
-    active_layers: list[str]
-    direction: Literal["both", "upstream", "downstream", "in", "out"]
-    hops: int = Field(ge=1, le=2)
+    active_layers: list[str] = Field(default_factory=lambda: ["supply_chain_operations"])
+    direction: Literal["both", "upstream", "downstream", "in", "out"] = "both"
+    hops: int = Field(default=1, ge=1, le=2)
     as_of: datetime | None = None
     scoring_profile_version_id: UUID | None = None
     filters: dict[str, Any] = Field(default_factory=dict)
-    budget: GraphBudget
+    budget: GraphBudget = Field(default_factory=GraphBudget)
 
 
 class RerootRequest(BaseModel):
@@ -59,6 +68,14 @@ class RerootRequest(BaseModel):
     new_focus_entity_id: UUID
     inherit_state: bool = True
     open_in_new_workspace: bool = False
+
+
+class ExpandRequest(BaseModel):
+    session_id: UUID
+    anchor_entity_id: UUID
+    direction: Literal["both", "upstream", "downstream", "in", "out"]
+    layers: list[str]
+    budget: GraphBudget
 
 
 class WatchlistCreate(BaseModel):
@@ -200,6 +217,38 @@ def reroot_exploration(
         raise translate_repository_error(exc) from exc
 
 
+@router.post("/explore/expand")
+def expand_exploration(
+    payload: ExpandRequest,
+    repository: RepositoryDependency,
+) -> dict[str, Any]:
+    try:
+        return repository.expand_exploration(payload.model_dump(mode="json"))
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.get("/paths")
+def find_relationship_paths(
+    repository: RepositoryDependency,
+    from_entity_id: Annotated[UUID, Query(alias="from")],
+    to_entity_id: Annotated[UUID, Query(alias="to")],
+    path_type: Annotated[PathType, Query()] = "shortest",
+    max_length: Annotated[int, Query(ge=1, le=8)] = 4,
+    as_of: Annotated[datetime | None, Query()] = None,
+) -> dict[str, Any]:
+    try:
+        return repository.find_relationship_paths(
+            from_entity_id=from_entity_id,
+            to_entity_id=to_entity_id,
+            path_type=path_type,
+            max_length=max_length,
+            as_of=as_of,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
 @router.get("/watchlists")
 def list_watchlists(repository: RepositoryDependency) -> list[dict[str, Any]]:
     return repository.list_watchlists()
@@ -216,6 +265,14 @@ def create_watchlist(
             description=payload.description,
             default_scoring_profile_version_id=payload.default_scoring_profile_version_id,
         )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.get("/watchlists/{watchlistId}")
+def get_watchlist(watchlistId: UUID, repository: RepositoryDependency) -> dict[str, Any]:
+    try:
+        return repository.get_watchlist(watchlistId)
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc
 
@@ -242,7 +299,6 @@ def add_watchlist_item(
 @router.delete("/watchlists/{watchlistId}/items", status_code=status.HTTP_204_NO_CONTENT)
 def remove_watchlist_item(
     watchlistId: UUID,
-    response: Response,
     object_type: Literal["entity", "industry", "theme", "facility"],
     object_id: UUID,
     repository: RepositoryDependency,
@@ -255,7 +311,7 @@ def remove_watchlist_item(
         )
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc
-    return response
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get("/changes")

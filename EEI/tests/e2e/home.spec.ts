@@ -29,6 +29,94 @@ test("renders the watchlist-first EEI workspace", async ({ page }) => {
   await expect(page.getByText("Live facts: disabled")).toBeVisible();
 });
 
+test("shows user-oriented home contract entry points and model freshness", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByTestId("home-global-search")).toHaveAttribute(
+    "data-endpoint",
+    "/v1/entities"
+  );
+  await expect(page.getByTestId("home-global-search")).toHaveAttribute(
+    "data-supported-types",
+    "legal_entity,industry,theme,facility"
+  );
+  await expect(page.getByTestId("global-search-input")).toBeVisible();
+  await expect(page.getByTestId("global-search-results")).toContainText("NVIDIA Corporation");
+  await expect(page.getByTestId("home-industries")).toContainText("Semiconductors");
+  await expect(page.getByTestId("home-industries")).toContainText("AI cloud infrastructure");
+  await expect(page.getByTestId("home-watchlist")).toContainText("NVIDIA");
+  await expect(page.getByTestId("home-watchlist")).toContainText("unread");
+  await expect(page.getByTestId("home-recent-explorations")).toContainText(
+    "NVIDIA -> Foundry"
+  );
+  await expect(page.getByTestId("home-changes")).toContainText("Capital/control signal refreshed");
+  await expect(page.getByTestId("home-freshness")).toContainText("synthetic_fixture");
+  await expect(page.getByTestId("home-freshness")).toContainText("3 sources");
+  await expect(page.getByTestId("home-model-status")).toContainText("Balanced v2");
+  await expect(page.getByTestId("home-model-status")).toContainText("scheduled / 14d");
+  await expect(page.getByTestId("home-model-status")).toContainText("2026-07-03");
+});
+
+test("reaches company focus within three actions and keeps home controls keyboard reachable", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  await expect(page.getByTestId("home-global-search")).toHaveAttribute(
+    "data-primary-actions-to-focus",
+    "2"
+  );
+  await page.getByTestId("global-search-input").focus();
+  await page.getByTestId("global-search-input").fill("tsmc");
+  await page.getByTestId("global-search-input").press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
+
+  await page.getByTestId("home-industry-semiconductors").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText("NVIDIA");
+
+  await page.getByTestId("home-watchlist-cloud").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Cloud Customer");
+
+  await page.getByTestId("home-recent-equipment").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText(
+    "Synthetic Lithography Equipment Co."
+  );
+
+  await page.getByTestId("home-change-policy").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText(
+    "Synthetic Export Control Context"
+  );
+});
+
+test("shows watchlist unread changes and restores saved view profile state", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByTestId("watchlist-saved-state-cloud")).toContainText("2 unread");
+  await expect(page.getByTestId("watchlist-saved-state-cloud")).toContainText("supply_chain");
+  await expect(page.getByTestId("watchlist-saved-state-cloud")).toContainText("L2");
+  await expect(page.getByTestId("watchlist-saved-state-cloud")).toContainText("Balanced v2");
+
+  await page.getByTestId("lens-capital_transactions").click();
+  await page.getByTestId("zoom-L0").click();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-lens",
+    "capital_transactions"
+  );
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-semantic-zoom", "L0");
+
+  await page.getByTestId("home-watchlist-cloud").click();
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Cloud Customer");
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-lens",
+    "supply_chain"
+  );
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-semantic-zoom", "L2");
+});
+
 test("exposes the Objects and Scope navigation screen with counts definitions and exports", async ({
   page
 }) => {
@@ -114,9 +202,31 @@ test("selects node context without changing subject and supports primary inspect
   await expect(actions.getByTestId("primary-set-center")).toContainText(
     "以 Synthetic Advanced Foundry 为中心"
   );
-  for (const action of ["展开上游", "展开下游", "加入关注", "查看路径", "打开证据"]) {
+  for (const action of [
+    "展开上游",
+    "展开下游",
+    "固定节点",
+    "加入比较",
+    "加入关注",
+    "查看路径",
+    "打开证据"
+  ]) {
     await expect(actions.getByRole("button", { name: action })).toBeVisible();
   }
+  await actions.getByTestId("node-action-pin").click();
+  await expect(page.getByTestId("pinned-node-list")).toContainText("Synthetic Advanced Foundry");
+  await actions.getByTestId("node-action-compare").click();
+  await expect(page.getByTestId("comparison-node-list")).toContainText(
+    "Synthetic Advanced Foundry"
+  );
+  await actions.getByTestId("node-action-watchlist").click();
+  await expect(page.getByTestId("watchlist-node-list")).toContainText(
+    "Synthetic Advanced Foundry"
+  );
+  await actions.getByTestId("node-action-path").click();
+  await expect(page.getByTestId("node-action-status")).toHaveText("path:foundry");
+  await actions.getByTestId("node-action-evidence").click();
+  await expect(page.getByTestId("node-action-status")).toHaveText("evidence:foundry");
 
   await actions.getByTestId("primary-set-center").click();
   await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
@@ -128,15 +238,16 @@ test("switches lenses on the persistent canvas while preserving exploration stat
   await page.goto("/");
 
   await page.getByTestId("graph-node-foundry").click();
+  await page.getByTestId("node-action-pin").click();
+  await page.getByTestId("node-action-compare").click();
   await page.getByTestId("zoom-L2").click();
 
-  const beforeUrl = page.url();
   const beforeViewport = await page.getByTestId("workspace-shell").getAttribute("data-viewport-anchor");
   const beforePathLength = await page.getByTestId("workspace-shell").getAttribute("data-path-length");
 
   await page.getByTestId("lens-capital_transactions").click();
 
-  await expect(page).toHaveURL(beforeUrl);
+  await expect(page).toHaveURL(/lens=capital_transactions/);
   await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
     "data-workspace-model",
     "recursive-enterprise-map"
@@ -164,6 +275,98 @@ test("switches lenses on the persistent canvas while preserving exploration stat
     "data-lens-state",
     "faded"
   );
+  await page.getByTestId("zoom-L3").click();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-semantic-zoom", "L3");
+  await expect(page.getByTestId("selected-node-title")).toHaveText("Synthetic Advanced Foundry");
+  await expect(page.getByTestId("pinned-node-list")).toContainText("Synthetic Advanced Foundry");
+  await expect(page.getByTestId("comparison-node-list")).toContainText(
+    "Synthetic Advanced Foundry"
+  );
+});
+
+test("offers a filterable graph table alternative and explicit visual semantics", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  await expect(page.getByTestId("visual-semantics-notice")).toHaveAttribute(
+    "data-control-semantics",
+    "layout-position-not-control"
+  );
+  await expect(page.getByTestId("visual-semantics-notice")).toHaveAttribute(
+    "data-color-independent-encoding",
+    "labels,arrows,stages,roles,evidence"
+  );
+  await expect(page.locator(".edge[marker-end='url(#arrow)']").first()).toBeVisible();
+  await expect(page.getByTestId("edge-label-materials-foundry")).toContainText(
+    "material provider to"
+  );
+
+  const table = page.getByTestId("graph-table-alternative");
+  await expect(table).toBeVisible();
+  await expect(table).toHaveAttribute("data-accessibility-equivalent", "graph-relationships");
+  await expect(table).toHaveAttribute(
+    "data-equivalent-fields",
+    "direction,type,evidence_status,observed_at"
+  );
+  await expect(table).toHaveAttribute(
+    "data-color-independent-encoding",
+    "labels,arrows,stages,roles,evidence"
+  );
+  await expect(page.getByTestId("graph-table-row-materials-foundry")).toHaveAttribute(
+    "data-direction",
+    "materials->foundry"
+  );
+  await expect(page.getByTestId("graph-table-row-materials-foundry")).toHaveAttribute(
+    "data-relationship-type",
+    "supply_chain"
+  );
+  await expect(page.getByTestId("graph-table-row-materials-foundry")).toHaveAttribute(
+    "data-evidence-status",
+    "fixture-evidence"
+  );
+  await expect(page.getByTestId("graph-table-row-materials-foundry")).toHaveAttribute(
+    "data-observed-at",
+    "2026-06-19"
+  );
+  await expect(page.getByTestId("graph-table-row-materials-foundry")).toContainText(
+    "fixture evidence"
+  );
+  await page.getByTestId("graph-table-filter").selectOption("supply_chain");
+  await expect(table.locator("tbody tr").first()).toHaveAttribute("data-lens", "supply_chain");
+  expect(await table.locator("tbody tr:not([data-lens='supply_chain'])").count()).toBe(0);
+  await expect(table).toContainText("wafer foundry for");
+});
+
+test("keeps graph-equivalent controls keyboard reachable with visible focus and target size", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  const foundryNode = page.getByTestId("graph-node-foundry");
+  await foundryNode.focus();
+  await expect(foundryNode).toBeFocused();
+  const foundryBox = await boxFor(foundryNode);
+  expect(foundryBox.width).toBeGreaterThanOrEqual(24);
+  expect(foundryBox.height).toBeGreaterThanOrEqual(24);
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("selected-node-title")).toHaveText("Synthetic Advanced Foundry");
+
+  const primaryAction = page.getByTestId("primary-set-center");
+  await primaryAction.focus();
+  await expect(primaryAction).toBeFocused();
+  const primaryBox = await boxFor(primaryAction);
+  expect(primaryBox.width).toBeGreaterThanOrEqual(24);
+  expect(primaryBox.height).toBeGreaterThanOrEqual(24);
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
+
+  const tableFilter = page.getByTestId("graph-table-filter");
+  await tableFilter.focus();
+  await expect(tableFilter).toBeFocused();
+  const filterBox = await boxFor(tableFilter);
+  expect(filterBox.width).toBeGreaterThanOrEqual(24);
+  expect(filterBox.height).toBeGreaterThanOrEqual(24);
 });
 
 test("implements semantic zoom levels and grouped dense-node list view", async ({ page }) => {
@@ -207,6 +410,25 @@ test("keeps the default graph bounded below the first-screen hairball budget", a
   expect(renderedNodeCount).toBeLessThanOrEqual(42);
   expect(renderedEdgeCount).toBeLessThanOrEqual(40);
   await expect(page.getByTestId("budget-state")).toContainText("max 40 first-screen edges");
+  const inclusionPolicy = page.getByTestId("inclusion-truncation-explanation");
+  await expect(inclusionPolicy).toBeVisible();
+  await expect(inclusionPolicy).toHaveAttribute(
+    "data-sort-keys",
+    "active-lens,evidence,confidence,observed_at,id"
+  );
+  await expect(inclusionPolicy).toHaveAttribute(
+    "data-truncation-contract",
+    "edge_budget,node_budget,returned_counts,continuation"
+  );
+  await expect(inclusionPolicy).toHaveAttribute(
+    "data-continuation-endpoint",
+    "/v1/explore/expand"
+  );
+  await expect(inclusionPolicy).toContainText(
+    "Active lens, evidence-bearing edges, confidence, observed time, stable id"
+  );
+  await expect(inclusionPolicy).toContainText("edge_budget and node_budget");
+  await expect(inclusionPolicy).toContainText("/v1/explore/expand");
 });
 
 test("preserves directional grammar during reroot and keeps a nonblank fallback state", async ({

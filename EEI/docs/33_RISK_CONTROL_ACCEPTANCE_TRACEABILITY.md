@@ -8,7 +8,7 @@
 |---|---:|---|
 | 风险 | 53 | `data/risk_register.csv` |
 | 验收标准 | 200 | `data/acceptance_matrix.csv` |
-| 验收追踪 | 212 | `data/acceptance_traceability.csv` |
+| 验收追踪 | 215 | `data/acceptance_traceability.csv` |
 | 风险控制追踪 | 53 | `data/risk_control_traceability.csv` |
 | 发布门禁 | 10 | `data/release_gate_catalog.csv` |
 

@@ -592,12 +592,12 @@ Verification evidence:
 Acceptance status:
 
 - A170 is covered by `tests/e2e/home.spec.ts` and `apps/web/src/app/objects-scope/page.tsx`.
-- G4 remains open because T1205 and T1208 are not complete.
+- At this checkpoint, G4 remained open because T1205 and T1208 were not complete.
 
 Residual risks:
 
 - The remaining G2-linked open IDs after A170 closure are A012, A013, A014, A026, and A027.
-- G4 remains open because T1205 and T1208 are not complete.
+- At this checkpoint, G4 remained open because T1205 and T1208 were not complete.
 
 ## 2026-06-19 - Phase 1 / G2 data contract audit pass 2
 
@@ -687,3 +687,776 @@ Residual risks:
 
 - Home UI still needs to consume the new aggregation fields.
 - Industry API/page and Watchlist item-type breadth remain open in T302/T303/T305/T306.
+
+## 2026-06-19 - Phase 1 / G3 T302 Industry list and landscape API
+
+Status: T302 PASS; G3 IN PROGRESS
+
+Completed:
+
+- Added `/v1/industries` with human-readable, versioned taxonomy rows and optional parent filtering.
+- Added `/v1/industries/{industryId}/landscape` with industry summary, subindustries, chain stages, entities, bottlenecks, capital relationships, policy relationships, changes, cross-industry links, coverage, and explicit fixture/data mode.
+- Added synthetic fixture industry memberships for primary, secondary, and supply-chain roles across semiconductor, AI cloud, software, energy, telecom, real-estate and industrial nodes.
+- Updated OpenAPI with `IndustryLandscapeResponse`.
+- Added PostgreSQL-backed integration assertions for A031 and A033, plus API-level coverage for chain stages, bottlenecks, capital, policy, and cross-industry navigation payloads.
+- Marked T302 as `DONE`, A031 as `DONE`, and A033 as `DONE`; A032/A034 remain open because their declared evidence type is UI/E2E.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run ruff check apps/api/app/domain.py apps/api/app/domain_repository.py scripts/load_synthetic_fixtures.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_contracts.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- GitHub Actions run `27831861052`: PASS.
+- GitHub Actions job `82370353436`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A031 is covered by `/v1/industries`, `specs/api_contract.yaml`, and `tests/integration/test_database_migrations.py`.
+- A033 is covered by `entity_industry_memberships`, `scripts/load_synthetic_fixtures.py`, `/v1/industries/{industryId}/landscape`, and PostgreSQL integration assertions.
+- A032 and A034 remain `NOT STARTED` until T305/T306 provide user-facing industry landscape and visible cross-industry E2E evidence.
+
+Residual risks:
+
+- Industry landscape UI is still not implemented.
+- Landscape aggregation currently uses synthetic fixture memberships and relationship rows; live ingestion still belongs to later data-ingestion tasks.
+
+## 2026-06-19 - Phase 1 / G3 T303 Watchlist CRUD and persistence API
+
+Status: T303 PASS; G3 IN PROGRESS
+
+Completed:
+
+- Added `/v1/watchlists/{watchlistId}` detail retrieval.
+- Added PostgreSQL-backed Watchlist item remove/restore assertions.
+- Enforced Watchlist item object validation for `entity`, `industry`, `theme`, and `facility`.
+- Preserved `saved_state` for restored Watchlist items.
+- Added operation-log assertions for Watchlist item removal.
+- Marked T303 as `DONE`, A035 as `DONE`, and A036 as `DONE`; A037 remains open because its declared evidence type is E2E.
+- Fixed a CI-only DELETE response bug by returning an explicit `Response(status_code=204)` from `/v1/watchlists/{watchlistId}/items`.
+
+Verification evidence:
+
+- Local `git diff --check`: PASS.
+- Local `.venv/bin/uv run ruff check apps/api/app/domain.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_contracts.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- GitHub Actions run `27832285368`: FAIL in step 8 because the DELETE Watchlist item route returned a response object with status code `None`.
+- GitHub Actions job `82371769481`: FAIL.
+- GitHub Actions run `27832504683`: PASS after the explicit 204 response fix.
+- GitHub Actions job `82372497975`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A035 is covered by `/v1/watchlists/{watchlistId}`, item remove/restore integration assertions, and PostgreSQL persistence checks.
+- A036 is covered by item-type validation for `entity`, `industry`, `theme`, and `facility`.
+- A037 remains `NOT STARTED` until T306 provides user-facing unread-change and saved-view/profile E2E evidence.
+
+Residual risks:
+
+- Watchlist UI still needs to consume detail, saved state, unread changes, and restore flows.
+- Current Watchlist API is proven on synthetic fixtures; live ingestion and alert freshness remain later MVP tasks.
+
+## 2026-06-19 - Phase 1 / G3 T304 User-oriented home page
+
+Status: T304 PASS; G3 IN PROGRESS
+
+Completed:
+
+- Added user-oriented home entry controls to the existing Watchlist-first graph workspace without reverting to an industry-card dashboard.
+- Added global search projection for `/v1/entities`, with legal-entity, industry, theme, and facility supported-type metadata.
+- Added visible industries, Watchlist, recent explorations, important changes, freshness, active scoring profile, and calibration cadence/status.
+- Added keyboard-reachable home controls for search, industry, Watchlist, recent exploration, and change-feed entry points.
+- Added a new-user path from search query `tsmc` to a company focus within two primary actions.
+- Marked T304 as `DONE`; marked A029, A030, A039, and A040 as `DONE`.
+- Added missing A039/A040 acceptance traceability rows and updated the canonical trace count from 213 to 215.
+- Adjusted the reroot loading state to 360ms so the existing transition test observes the loading state and the interaction remains within the documented 320-420ms animation threshold.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 12 tests.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27833468626`: PASS.
+- GitHub Actions job `82375686964`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A029 is covered by `apps/web/src/app/page.tsx` and `tests/e2e/home.spec.ts` for global search, industries, Watchlist, recent explorations, changes, and freshness.
+- A030 is covered by the model status E2E assertions for active profile, calibration status, cadence, and next scheduled date.
+- A039 is covered by the search-to-company-focus E2E path with `data-primary-actions-to-focus="2"`.
+- A040 is covered by keyboard E2E assertions across home search, industry, Watchlist, recent exploration, and change-feed controls.
+
+Residual risks:
+
+- Homepage data is still a synthetic UI projection of the already-proven `/v1/home` contract; live frontend API hydration is not implemented in T304.
+- Industry landscape UI remains open in T305, and Watchlist unread/saved-view E2E remains open in T306/A037.
+
+## 2026-06-19 - Phase 1 / G3 T305 Industry landscape page
+
+Status: T305 PASS; G3 IN PROGRESS
+
+Completed:
+
+- Added `/industries` as a user-facing industry landscape page.
+- Added visible industry chain stages, subindustries, top entities, bottlenecks, capital items, policy items, and changes.
+- Added cross-industry navigation between semiconductors, AI cloud infrastructure, and power/data-center energy.
+- Added a visible cross-industry path indicator so industry jumps are preserved and inspectable.
+- Added homepage link to the industry map from the industry entry section.
+- Marked T305 as `DONE`; marked A032 and A034 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/industry.spec.ts`: PASS, 14 tests ran and passed.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS, static route `/industries`.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27834152257`: PASS.
+- GitHub Actions job `82377987783`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A032 is covered by `apps/web/src/app/industries/page.tsx` and `tests/e2e/industry.spec.ts`.
+- A034 is covered by cross-industry navigation controls and visible path assertions in `tests/e2e/industry.spec.ts`.
+
+Residual risks:
+
+- Industry page still uses synthetic UI projection; live frontend API hydration remains future work.
+- T306 remains open for consolidated home/industry/watchlist E2E and A037 Watchlist unread/saved-view evidence.
+
+## 2026-06-19 - Phase 1 / G3 T306 Home, industry and Watchlist E2E
+
+Status: T306 PASS; G3 IN PROGRESS
+
+Completed:
+
+- Added Watchlist unread-change and saved-view/profile state display to the home workspace.
+- Added Watchlist restore behavior so selecting a Watchlist item restores saved lens, semantic zoom, profile context, and focus subject.
+- Added Playwright coverage for A037 saved view/profile state restoration.
+- Updated T306 to include A037 alongside A029/A035/A039/A040.
+- Marked T306 as `DONE`; marked A037 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 15 tests.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS, static routes `/`, `/industries`, and `/objects-scope`.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27834549643`: PASS.
+- GitHub Actions job `82379303157`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A037 is covered by `apps/web/src/app/page.tsx` and `tests/e2e/home.spec.ts`.
+- A035 now has both PostgreSQL persistence coverage and frontend Watchlist restore E2E coverage.
+
+Residual risks:
+
+- The MVP still lacks full create/remove Watchlist controls in the browser UI; API persistence for those actions is proven in T303.
+- G3 still remains open for model registry/config import tasks listed in the gate, unless explicitly deferred.
+
+## 2026-06-19 - Phase 1 / G3 State history, saved views, timeline and active context
+
+Status: T1110/T1111/T1112/T1113/T1201/T1206 PASS; G3 PASS; G4 IN PROGRESS
+
+Completed:
+
+- Added a shared active analysis context for model/profile/data/score snapshot versions.
+- Added URL/session/localStorage workspace state for subject, selected node, lens, as-of time, filters, path, and semantic zoom.
+- Added browser back, app back, and clickable breadcrumb restoration.
+- Added versioned local saved views with subject, lens, time, filters, layout, notes, model version, and data snapshot.
+- Added as-of timeline controls and change overlay with explicit non-real-time fixture language.
+- Added cross-page active model/profile/data/score snapshot reporting on `/`, `/industries`, and `/objects-scope`.
+- Added model configuration validation to `scripts/validate_task_pack.py`.
+- Marked T1110, T1111, T1112, T1113, T1201, and T1206 as `DONE`.
+- Marked A154, A155, A156, A157, A158, A159, A160, A171, and A178 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 19 tests.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS, including `validate_model_config.py`.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27835479352`: PASS.
+- GitHub Actions job `82382357217`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A154/A155 are covered by `tests/e2e/state-contract.spec.ts` browser back, app back, and breadcrumb assertions.
+- A156/A157 are covered by URL/session/reload assertions in `tests/e2e/state-contract.spec.ts`.
+- A158/A159 are covered by versioned saved-view save/restore assertions in `tests/e2e/state-contract.spec.ts`.
+- A160 is covered by timeline/as-of overlay assertions in `tests/e2e/state-contract.spec.ts`.
+- A171 is covered by canonical model registry files plus `scripts/validate_model_config.py` through `scripts/validate_task_pack.py`.
+- A178 is covered by cross-page active context assertions in `tests/e2e/state-contract.spec.ts`.
+
+Residual risks:
+
+- Saved views are local browser persistence only; production `/v1/saved-views` create/share/export remains future work.
+- Timeline uses synthetic fixture snapshots; real snapshot comparison and change_events API remain future work.
+- Model online edit, preview, activation, rollback, score recomputation, and operation-log UI remain future work.
+- G4 remains open for recursive exploration, live context, model preview propagation, governance/status screens, accessibility/list equivalents, and visual regression/performance checks.
+
+## 2026-06-19 - Phase 1 / G4 T1205 Development Status navigation
+
+Status: PASS
+
+Completed:
+
+- Added `/development-status` as a visible development governance screen.
+- Added status lanes for resolved, prototyped, specified, not started, blocked, and out-of-scope work.
+- Linked tasks, risks, controls, and acceptance evidence to their canonical CSV sources.
+- Added function status, recent task evidence, acceptance evidence, and risk-control panels.
+- Added system navigation entry from the main workspace and Objects and Scope page.
+- Marked T1205 as `DONE`; marked A173 and A174 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 21 tests.
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS, static route `/development-status`.
+- Local `make verify`: PASS.
+- GitHub Actions run `27836121209`: PASS.
+- GitHub Actions job `82384436376`: PASS.
+
+Acceptance status:
+
+- A173 is covered by `apps/web/src/app/development-status/page.tsx` and `tests/e2e/development-status.spec.ts`.
+- A174 is covered by visible system navigation, evidence links, and E2E link assertions in `tests/e2e/development-status.spec.ts`.
+
+Residual risks:
+
+- The page is server-rendered from local CSV files; live `/v1/governance/status` and `/v1/governance/traceability` APIs remain future work.
+- GitHub issue forms, PR template enforcement, branch rules, release checklist, and clean-room governance validation remain future work.
+
+## 2026-06-19 - Phase 1 / G4 T400 Bounded graph query service
+
+Status: PASS
+
+Completed:
+
+- Added server-side defaults for `/v1/explore`: one hop, both directions, `supply_chain_operations`, and initial budget `max_nodes=42`, `max_edges=64`, `expand_nodes=12`.
+- Enforced request hard limits through the API model: `hops<=2`, `max_nodes<=500`, `max_edges<=2000`, and `expand_nodes<=100`.
+- Added bounded graph response metadata: query echo, hard limits, truncation reasons, returned counts, warnings, and continuation pointer.
+- Aligned reroot-generated exploration requests with the same initial graph budget defaults.
+- Updated the OpenAPI contract for default request fields, graph budget defaults, and truncation/continuation response shape.
+- Added PostgreSQL-backed integration assertions for A041-A044 in `tests/integration/test_database_migrations.py`.
+- Marked T400 as `DONE`; marked A041, A042, A043, and A044 as `DONE`.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured database.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27836910412`: PASS.
+- GitHub Actions job `82386959577`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A041 is covered by explicit `/v1/explore` request fields and query echo assertions for focus, layers, direction, hops, as-of, profile, filters, and budget.
+- A042 is covered by default `/v1/explore` assertions for one-hop, both-direction, `supply_chain_operations`, and 42/64/12 initial budget.
+- A043 is covered by negative 422 assertions for `hops=3`, `max_nodes=501`, and `max_edges=2001`, plus response hard-limit metadata.
+- A044 is covered by over-budget assertions for truncated graph responses, reasons, bounded returned counts, warnings, and `/v1/explore/expand` continuation metadata.
+
+Residual risks:
+
+- Local PostgreSQL execution is still unavailable on this host; GitHub Actions run `27836910412` proved the new integration assertions against the real migration/seed/fixture path.
+- `/v1/explore/expand` is referenced only as continuation metadata; the actual incremental expand endpoint remains T403.
+- Two-hop traversal accepts and records `hops=2`, but bounded multi-hop traversal semantics remain future work outside T400.
+
+## 2026-06-19 - Phase 1 / G4 Saved-view restore CI hardening
+
+Status: PASS
+
+Completed:
+
+- Investigated GitHub Actions run `27836653255`, where Step 8 passed PostgreSQL integration but failed one E2E state restoration assertion.
+- Identified the failure as a hydration/storage race: after reload, `restoreSavedView()` could use the default React state before `useEffect` had reloaded the saved view from `localStorage`.
+- Changed `restoreSavedView()` to synchronously read the latest `localStorage` saved-view payload before applying workspace state.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 21 tests.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27836910412`: PASS.
+- GitHub Actions job `82386959577`: PASS.
+
+Residual risks:
+
+- Saved-view persistence is still browser-local; production shared saved-view APIs remain future work.
+
+## 2026-06-19 - Phase 1 / G4 T401 Exploration session and URL state
+
+Status: PASS
+
+Completed:
+
+- Added migration `0002_exploration_state` to persist exploration `state_version`, `direction`, `hops`, and `budget` on `exploration_sessions`.
+- Updated the logical PostgreSQL schema and schema checker so exploration session state columns are required.
+- Added canonical `state` and `state.url_state` to `/v1/explore` responses, including URL query fields and a full `restore_payload`.
+- Updated `/v1/explore` create/update paths to persist direction, hops, budget, active layers, as-of time, scoring profile, and filters.
+- Updated recent exploration rows returned by `/v1/home` to include persisted session state fields.
+- Added integration assertions that serialize focus/layers/direction/time/profile/filters into URL state, POST the restore payload, and verify the same session state is persisted.
+- Marked T401 and A051 as `DONE`.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27837609322`: PASS.
+- GitHub Actions job `82389170752`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A051 is covered by `state.url_state.query`, `state.url_state.query_string`, and `state.url_state.restore_payload` assertions in `tests/integration/test_database_migrations.py`.
+- Existing G3 URL/session browser coverage in `tests/e2e/state-contract.spec.ts` remains part of the traceability evidence for A051.
+
+Residual risks:
+
+- GitHub Actions run `27837609322` proved the new migration and integration assertions against PostgreSQL.
+- T404 still owns breadcrumb/browser-history synchronization for reroot flows; T401 only closes canonical session and URL state serialization/restoration.
+
+## 2026-06-19 - Phase 1 / G4 T402 Reroot inherited and reset state
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Updated `/v1/explore/reroot` so default reroot preserves active layers, direction, hops, as-of time, scoring profile, filters, and graph budget.
+- Updated `inherit_state=false` reroot to reset to default exploration state: `supply_chain_operations`, `both`, one hop, default 42/64/12 budget, no as-of time, no scoring profile, and empty filters.
+- Added integration assertions that reroot from NVIDIA to a facility entity preserves state by default.
+- Added integration assertions that reroot from the same session to a theme entity resets state and persists the reset values in `exploration_sessions`.
+- Updated the OpenAPI contract so `inherit_state` is optional with default `true`.
+- Canonicalized UTC `datetime` API serialization to `Z` so inherited reroot state matches URL/session restore contracts after PostgreSQL round-trips.
+- Aligned the reset-reroot fixture assertion with `data/mock_entities.json` for the `AI Infrastructure` theme entity.
+- Marked T402, A045, A046, and A047 as `DONE`.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27838042448`: FAIL in step 8 on inherited `as_of` timestamp serialization (`+00:00` vs `Z`); fixed by canonical UTC serialization.
+- GitHub Actions run `27838285776`: FAIL in step 8 on reset-reroot fixture display name (`AI Infrastructure` vs stale expected label); fixed by aligning the test with the fixture catalog.
+- GitHub Actions run `27838436423`: PASS.
+- GitHub Actions job `82391789245`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A045 is covered by rerooting to non-legal-entity focusable entities in `tests/integration/test_database_migrations.py`.
+- A046 is covered by inherited state assertions for layers, time, profile, filters, direction, hops, and budget.
+- A047 is covered by reset/default state assertions plus direct persisted-session checks.
+
+Residual risks:
+
+- At T402 closeout, T404 still owned breadcrumb/browser-history synchronization and T408 still owned critical three-reroot E2E; both are now completed below.
+
+## 2026-06-19 - Phase 1 / G4 T403 Incremental directional expand
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Added the FastAPI `/v1/explore/expand` route with an explicit `ExpandRequest` model.
+- Added repository support for incremental expansion from a selected `anchor_entity_id` without changing the session root.
+- Added layer-to-relationship-family filtering so graph queries and expansions only return selected relationship families.
+- Added expand-mode graph bounds so incremental expansion returns at most `expand_nodes` edges and `expand_nodes + 1` nodes including the anchor.
+- Added integration assertions that upstream supply-chain expansion from NVIDIA returns only selected direction/layer edges within the expand budget.
+- Marked T403 and A052 as `DONE`.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27839023906`: PASS.
+- GitHub Actions job `82393647163`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A052 is covered by `/v1/explore/expand` integration assertions for upstream direction, `supply_chain_operations` layer filtering, and `expand_nodes=2` node/edge bounds.
+
+Residual risks:
+
+- At T403 closeout, T405 still owned full graph/table explorer node actions and T406 still owned bounded evidence-bearing path queries; both are now completed below, with T406 awaiting remote PostgreSQL CI evidence.
+
+## 2026-06-19 - Phase 1 / G4 T404 Breadcrumb and browser history synchronization
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Added stable workspace attributes for current focus key and serialized focus path so browser/history assertions can compare UI state and URL state.
+- Strengthened the state-contract E2E to cover reroot browser back, browser forward, app back, full breadcrumb visibility, and clickable intermediate breadcrumb restoration.
+- Marked T404, A049, and A050 as `DONE`; A051 was already done by T401 and remains covered by state-contract URL assertions.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 21 tests.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27839493483`: PASS.
+- GitHub Actions job `82395103164`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A049 is covered by full path breadcrumb assertions for `nvidia.foundry.equipment.materials` and clickable restoration to `nvidia.foundry`.
+- A050 is covered by browser `goBack`, browser `goForward`, and in-app back assertions restoring identical focus/path state.
+- A051 remains covered by URL/session path and state assertions in `tests/e2e/state-contract.spec.ts` plus the T401 API state contract.
+
+Residual risks:
+
+- At T404 closeout, T408 still owned the critical three-reroot E2E acceptance A048; T408 is now completed below.
+
+## 2026-06-19 - Phase 1 / G4 T405 Graph table explorer and node actions
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Added selected-node actions for reroot, upstream, downstream, path, compare, pin, Watchlist and evidence entry points.
+- Added pinned, comparison and Watchlist state summaries that persist while the user changes semantic zoom/layout level.
+- Added a filterable graph table alternative backed by the same visible relationship edges as the graph.
+- Added explicit visual semantics metadata and copy stating that layout position is not control semantics and color is not the only encoding; labels, arrows, stages, roles and evidence carry semantics.
+- Strengthened the home E2E suite for node actions, layout-preserved pinned/comparison state, table filtering and non-color encoding semantics.
+- Marked T405, A053, A054, A055 and A058 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/home.spec.ts`: PASS, 22 tests.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27840198892`: PASS.
+- GitHub Actions job `82397301394`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A053 is covered by visible action buttons and action-state assertions in `tests/e2e/home.spec.ts`.
+- A054 is covered by pin/compare persistence after semantic zoom/layout changes.
+- A055 is covered by the `graph-table-alternative` table and `graph-table-filter` lens assertions.
+- A058 is covered by explicit semantic metadata plus visible arrow and edge-label assertions.
+
+Residual risks:
+
+- T406 is completed below and awaits remote PostgreSQL CI evidence.
+- T407 is completed below and awaits remote CI evidence.
+- T408 is completed below and awaits remote CI evidence.
+
+## 2026-06-19 - Phase 1 / G4 T406 Bounded evidence-bearing path queries
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Added `GET /v1/paths` with `from`, `to`, `path_type`, `max_length` and `as_of` query parameters.
+- Implemented bounded recursive path search with `max_length <= 8`, `max_paths <= 8`, no repeated nodes, active/supersession filtering and as-of filtering.
+- Supported `shortest`, `upstream`, `downstream`, `control`, `capital`, `policy` and `bottleneck` path types with explicit relationship-family filters.
+- Required every returned path edge to have at least one `relationship_evidence` row and expanded source document evidence into the response.
+- Added OpenAPI `PathResponse`, `PathResult` and `PathEdge` contracts for evidence-bearing bounded paths.
+- Added PostgreSQL integration assertions for all seven A056 path types, evidence/source payloads, path bounds, hard limit metadata and `max_length=9` rejection.
+- Marked T406 and A056 as `DONE`.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27840744734`: PASS.
+- GitHub Actions job `82399027153`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A056 is covered by `tests/integration/test_database_migrations.py` assertions over `/v1/paths` for shortest/upstream/downstream/control/capital/policy/bottleneck path types.
+
+Residual risks:
+
+- T407 is completed below and awaits remote CI evidence.
+- T408 is completed below and awaits remote CI evidence.
+
+## 2026-06-19 - Phase 1 / G4 T407 Inclusion and truncation explanations
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Added a visible inclusion/truncation explanation panel to the graph inspector.
+- Exposed machine-readable UI contract attributes for inclusion sorting keys, truncation reasons and continuation endpoint.
+- Documented the inclusion order as active lens, evidence-bearing edges, confidence, observed time and stable id.
+- Documented truncation reasons as `edge_budget` and `node_budget`, with returned counts and `/v1/explore/expand` continuation metadata.
+- Strengthened home E2E coverage to assert the visible explanation and contract attributes.
+- Marked T407 and A057 as `DONE`; A044 remains `DONE` with additional UI evidence.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/home.spec.ts`: PASS, 22 tests.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27841131928`: PASS.
+- GitHub Actions job `82400216009`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A057 is covered by `tests/e2e/home.spec.ts` assertions for `inclusion-truncation-explanation`.
+- A044 retains API coverage from T400 and now has UI coverage for visible truncation reasons and continuation metadata.
+
+Residual risks:
+
+- T408 is completed below and awaits remote CI evidence.
+
+## 2026-06-19 - Phase 1 / G4 T408 Critical three-reroot E2E
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Added a dedicated A048 state-contract E2E named `A048 completes three consecutive semiconductor reroots without fallback`.
+- The test reroots from NVIDIA to `Synthetic Advanced Foundry`, then `Synthetic Lithography Equipment Co.`, then `Synthetic Specialty Materials Co.`.
+- The test asserts canonical path state, URL path serialization, `data-reroot-state=ready`, final `data-path-length=4`, full breadcrumb visibility, the materials graph node, and no transition fallback.
+- Marked T408 and A048 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 23 tests.
+- Local `make verify`: PASS.
+- GitHub Actions run `27841663304`: PASS.
+- GitHub Actions job `82401845967`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A048 is covered by `tests/e2e/state-contract.spec.ts` with three consecutive semiconductor-fixture reroots ending at `nvidia.foundry.equipment.materials`.
+
+Residual risks:
+
+- T409 is completed below and awaits remote CI evidence.
+
+## 2026-06-19 - Phase 1 / G4 T409 Cross-industry reroot E2E
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Added a visible cross-industry reroot notice to the commercial-map workspace.
+- Added a deterministic focus-to-industry mapping for the synthetic fixture path.
+- The workspace now exposes `data-cross-industry` and `data-industry-path` attributes for the current reroot path.
+- Added an A034 state-contract E2E named `A034 visibly marks cross-industry reroot path from chips to energy`.
+- The test reroots from NVIDIA to cloud, data center and grid utility, then verifies visible industry path, breadcrumb and ready reroot state.
+- Marked T409 as `DONE`; A034 remains `DONE` with additional workspace reroot evidence.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 24 tests.
+- Local `make verify`: PASS.
+- GitHub Actions run `27842200422`: PASS.
+- GitHub Actions job `82403504484`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A034 is covered by `/industries` cross-industry navigation and now by `tests/e2e/state-contract.spec.ts` workspace reroot assertions for `nvidia.cloud.datacenter.energy`.
+
+Residual risks:
+
+- T1114/T1115/T1116/T1117 are completed below and await remote CI evidence.
+
+## 2026-06-19 - Phase 1 / G4 T1114-T1117 Accessibility and UI copy contract
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Strengthened the graph table alternative into a graph-equivalent accessible list with `direction`, `type`, `evidence_status` and `observed_at` fields.
+- Added visible evidence labels and retained non-color encodings through labels, arrows, stages, roles and evidence pills.
+- Added global visible focus styling and E2E assertions for keyboard-reachable graph node, primary center action and table filter.
+- Added target-size assertions for dense graph nodes and equivalent controls.
+- Added `scripts/validate_ui_copy.py` and wired `copy-lint` into `make verify`.
+- Replaced visible internal copy such as `Rerooted`, `Profile`, `Calibration` and `Gate` with user-facing wording.
+- Marked T1114, T1115, T1116, T1117 and A161-A166 as `DONE`.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/validate_ui_copy.py`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/home.spec.ts`: PASS, 25 tests.
+- Local `make verify`: PASS.
+- GitHub Actions run `27842880134`: PASS.
+- GitHub Actions job `82405633120`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A161/A162 are covered by `graph-table-alternative` contract attributes and table row assertions in `tests/e2e/home.spec.ts`.
+- A163/A164 are covered by keyboard focus and 24px target-size assertions in `tests/e2e/home.spec.ts`.
+- A165 is covered by non-color encoding metadata and evidence labels in `apps/web/src/app/page.tsx`.
+- A166 is covered by `scripts/validate_ui_copy.py` and the `copy-lint` Makefile target.
+
+Residual risks:
+
+- T1207 is completed below and awaits remote CI evidence.
+
+## 2026-06-19 - Phase 1 / G4 T1207 Model preview context propagation
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Added a typed shared analysis context hook with active and preview model/profile/data/score snapshots.
+- Added a visible model preview panel on the commercial-map workspace with explicit preview scope and storage contract metadata.
+- Persisted preview profile and score snapshot metadata into versioned saved-view records.
+- Propagated preview context from the home workspace to the industry landscape page through session localStorage.
+- Added an E2E contract that previews a supply-chain-emphasis model edit, saves the previewed view, navigates to `/industries`, returns to `/`, and clears the preview.
+- Marked T1207 as `DONE`; A157/A158/A178 remain `DONE` with added preview propagation evidence.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 26 tests.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27843659754`: PASS.
+- GitHub Actions job `82408058091`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A157 is covered by reload/session context assertions in `tests/e2e/state-contract.spec.ts`.
+- A158 is covered by saved-view preview profile and score snapshot persistence assertions.
+- A178 is covered by cross-page active/preview context assertions on `/` and `/industries`.
+
+Residual risks:
+
+- T1207 is a local session preview contract, not a real online model editor. Real edit, activation, rollback, score recompute and model-center UI remain in T600-T604.
+
+## 2026-06-19 - Phase 1 / G5 T1208 Global model/data version consistency E2E
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Extended the global active context E2E to include `/development-status` in addition to `/`, `/industries` and `/objects-scope`.
+- Confirmed the development governance screen participates in the same active model/profile/data/score snapshot contract through `data-active-*` attributes.
+- Marked T1208 as `DONE`; A178 remains `DONE` with added all-current-navigation-page consistency evidence.
+
+Verification evidence:
+
+- Local `./node_modules/.bin/playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep "reports one active model profile" --workers=1`: PASS, 1 test.
+- Local `./node_modules/.bin/playwright test --config=../../playwright.config.ts --workers=1`: PASS, 26 tests.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27844479321`: PASS.
+- GitHub Actions job `82410608346`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A178 is covered by cross-page active context assertions on `/`, `/industries`, `/objects-scope` and `/development-status`.
+
+Residual risks:
+
+- T1208 only verifies the active context contract across current navigation pages; real model editing, activation, rollback and recalculation remain in T600-T604.
+
+## 2026-06-19 - Phase 1 / G5 T1209 Prototype parity smoke test
+
+Status: REMOTE CI PASS
+
+Completed:
+
+- Added `scripts/validate_prototype_parity.py` to compare `prototype/index.html` and `prototype/standalone.html` by bytes and SHA-256 hash.
+- The parity validator rejects external script and stylesheet references so the canonical prototype cannot silently point at stale JS/CSS.
+- The validator asserts required prototype views and graph/model DOM anchors are present in the canonical HTML.
+- Wired `validate-prototype-parity` into `make verify` and registered the script in the repository document registry.
+- Marked T1209 and A176 as `DONE`.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/validate_prototype_parity.py`: PASS; canonical hash `7f06f96c917ff14fc42c94de09b0e5f89f622a22a44a0dd64da3941429486719`.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27844984873`: PASS.
+- GitHub Actions job `82412132613`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A176 is covered by `scripts/validate_prototype_parity.py`, `prototype/index.html`, `prototype/standalone.html` and the `validate-prototype-parity` Makefile target.
+
+Residual risks:
+
+- T1209 validates static parity and stale asset references; it does not replace later visual-regression screenshots or clean-room release packaging in T1118/T1119/T1123/T1215.
+
+## 2026-06-19 - Phase 1 / G8 T1210 GitHub governance contract and required checks
+
+Status: LOCAL PASS, REMOTE CI PENDING
+
+Completed:
+
+- Added `.github/branch_protection.md` as the versioned source contract for required `main` branch protection.
+- Added `.github/release_checklist.md` for release gate commands, required checks, manifest/checksum refresh and rollback evidence.
+- Expanded `.github/CODEOWNERS` to cover `.github/` and `scripts/`.
+- Added `scripts/validate_github_governance.py` to validate issue forms, PR template, CODEOWNERS, governance workflow, release categories, branch protection contract, release checklist and backup registry coverage.
+- Wired `validate-github-governance` into `make verify` and `ruff`.
+- Registered the new governance files and validator in `data/github_document_registry.csv`.
+- Marked T1210 and A177 as `DONE`; A175 remains `NOT STARTED` until T1211 adds immutable release artifact and operation-log evidence.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/validate_github_governance.py`: PASS.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A177 is covered by `.github/CODEOWNERS`, `.github/branch_protection.md`, `.github/release_checklist.md`, `.github/workflows/governance-validation.yml`, `scripts/validate_github_governance.py` and `data/github_document_registry.csv`.
+
+Residual risks:
+
+- Actual GitHub branch protection must still be applied in repository settings or through the GitHub API; T1210 versions and validates the required contract.
+- A175 still depends on T1211 reproducible release evidence and immutable operation-log/release artifacts.
