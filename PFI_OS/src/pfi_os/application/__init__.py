@@ -17,6 +17,7 @@ from pfi_os.application.data_home_audit import (
     build_data_home_boundary_contract,
 )
 from pfi_os.application.homepage_summary import build_homepage_summary, empty_homepage_summary
+from pfi_os.application.homepage_ingestion import ingest_command_center_cache
 from pfi_os.application.repositories import HoldingSnapshot, HoldingSnapshotRepository, TaskQueueItem, TaskRepository
 from pfi_os.application.source_registry import SourceRegistry, SourceRegistryRow
 
@@ -41,6 +42,7 @@ __all__ = [
     "default_data_home",
     "default_operational_db_path",
     "empty_homepage_summary",
+    "ingest_command_center_cache",
     "SourceRegistry",
     "SourceRegistryRow",
 ]

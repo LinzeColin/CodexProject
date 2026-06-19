@@ -1,0 +1,94 @@
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+
+from pfi_os.application import OperationalStore, build_homepage_summary, ingest_command_center_cache
+
+
+def test_ingest_command_center_cache_writes_homepage_operational_records(tmp_path: Path):
+    project_root = tmp_path / "PFI_OS"
+    cache_dir = project_root / "data" / "commandCenter"
+    cache_dir.mkdir(parents=True)
+    cache_path = cache_dir / "PFICommandCenter_latest.json"
+    cache_path.write_text(json.dumps(_command_center_payload(), ensure_ascii=False), encoding="utf-8")
+    store = OperationalStore(tmp_path / "private" / "operational" / "pfi.sqlite")
+    store.initialize()
+
+    result = ingest_command_center_cache(store, project_root=project_root)
+    summary = build_homepage_summary(store, now=datetime(2026, 6, 19, 10, 0, tzinfo=timezone.utc))
+    source = store.table_rows("source_records")[0]
+    evidence = store.table_rows("evidence_records")[0]
+    task = store.table_rows("task_records")[0]
+
+    assert result["schema"] == "PFIOSHomepageCacheIngestionV1"
+    assert result["status"] == "Ingested"
+    assert source["source_type"] == "command_center_cache"
+    assert source["uri"] == "data/commandCenter/PFICommandCenter_latest.json"
+    assert source["domain"] == "PUBLIC_SHARED_CANONICAL"
+    assert evidence["evidence_class"] == "command_center_summary"
+    assert "NeedsReview" in evidence["summary"]
+    assert task["owner_workspace"] == "home"
+    assert task["human_review_required"] == 1
+    assert summary["schema"] == "PFIOSHomeSummaryV1"
+    assert summary["metric_cards"][0]["value"] == "1"
+    assert summary["decision_rows"][0]["action"] == "Review provider readiness."
+    assert summary["evidence_drawer"]["Raw document"] == "data/commandCenter/PFICommandCenter_latest.json"
+
+
+def test_ingest_command_center_cache_skips_when_no_cache_exists(tmp_path: Path):
+    project_root = tmp_path / "PFI_OS"
+    project_root.mkdir()
+    store = OperationalStore(tmp_path / "private" / "operational" / "pfi.sqlite")
+    store.initialize()
+
+    result = ingest_command_center_cache(store, project_root=project_root)
+
+    assert result["status"] == "Skipped"
+    assert store.table_rows("source_records") == []
+    assert store.table_rows("evidence_records") == []
+
+
+def test_ingest_command_center_cache_does_not_store_private_absolute_paths_in_metadata(tmp_path: Path):
+    project_root = tmp_path / "PFI_OS"
+    cache_dir = project_root / "data" / "commandCenter"
+    cache_dir.mkdir(parents=True)
+    payload = _command_center_payload()
+    payload["project_root"] = str(project_root)
+    payload["report_root"] = str(tmp_path / "private_reports")
+    cache_path = cache_dir / "PFICommandCenter_latest.json"
+    cache_path.write_text(json.dumps(payload), encoding="utf-8")
+    store = OperationalStore(tmp_path / "private" / "operational" / "pfi.sqlite")
+    store.initialize()
+
+    ingest_command_center_cache(store, project_root=project_root)
+    combined_metadata = "\n".join(row["metadata_json"] for row in [*store.table_rows("source_records"), *store.table_rows("evidence_records"), *store.table_rows("job_records")])
+
+    assert str(project_root) not in combined_metadata
+    assert "private_reports" not in combined_metadata
+    assert "data/commandCenter/PFICommandCenter_latest.json" in combined_metadata
+
+
+def _command_center_payload() -> dict:
+    return {
+        "schema": "PFICommandCenterV1",
+        "system": "PFI_OS",
+        "display_name": "PFI_OS",
+        "subsystem": "Executive Command Center",
+        "as_of": "2026-06-19",
+        "generated_at": "2026-06-19T09:30:00+00:00",
+        "project_root": "/private/example",
+        "report_root": "/private/reports",
+        "command_status": "NeedsReview",
+        "status_reason": "Provider readiness needs review.",
+        "scorecards": [{"metric": "Daily Readiness", "value": "NeedsReview", "status": "Review", "evidence": "fixture"}],
+        "risk_gates": [{"gate": "DataTrust", "status": "Pass", "evidence": "fixture", "next_action": "Keep clean."}],
+        "action_queue": [
+            {
+                "priority": "P0",
+                "status": "Open",
+                "owner": "PFI",
+                "action": "Review provider readiness.",
+                "source": "Daily Readiness",
+            }
+        ],
+    }

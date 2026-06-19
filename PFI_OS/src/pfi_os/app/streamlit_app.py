@@ -57,7 +57,7 @@ if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
 from pfi_os.approvals import StrategyApprovalRegistry
-from pfi_os.application import OperationalStore, build_homepage_summary, empty_homepage_summary
+from pfi_os.application import OperationalStore, build_homepage_summary, empty_homepage_summary, ingest_command_center_cache
 from pfi_os.analysis import (
     HOTSPOT_REFRESH_TTL_SECONDS,
     HOTSPOT_RUNTIME_SUMMARY_SCHEMA,
@@ -883,6 +883,7 @@ def render_pfi_ui_v2_shell() -> None:
     store = OperationalStore()
     try:
         store.initialize()
+        ingest_command_center_cache(store, project_root=ROOT)
         home_summary = build_homepage_summary(store)
     except Exception:
         home_summary = empty_homepage_summary()

@@ -33,6 +33,10 @@ moving UI pages or vertical workflows onto it.
 - Data-home boundary audit now checks that `$PFI_OS_DATA_HOME` and Operational
   SQLite stay outside public Git and that private/runtime/secret path fixtures
   fail closed before migration work adds new data surfaces.
+- Homepage ingestion now migrates the command-center latest cache into
+  Operational Store source, evidence, job, and task records before building
+  `PFIOSHomeSummaryV1`; the Web Shell still consumes only the compact read
+  model.
 
 ## Not Done
 
@@ -44,8 +48,6 @@ moving UI pages or vertical workflows onto it.
 
 ## Next Phase A Iterations
 
-1. Migrate one real cached homepage slice into Operational Store records.
-2. Add private-path and Git fixture scans for the new data-home layout.
-3. Replace legacy Streamlit direct reads one vertical slice at a time.
-4. Add repository adapters for entities, evidence search, and job execution.
-5. Add source ingestion adapters with checksum and provenance enforcement.
+1. Replace legacy Streamlit direct reads one vertical slice at a time.
+2. Add repository adapters for entities, evidence search, and job execution.
+3. Add source ingestion adapters with checksum and provenance enforcement.
