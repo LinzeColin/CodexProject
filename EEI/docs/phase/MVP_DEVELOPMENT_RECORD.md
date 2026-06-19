@@ -1596,7 +1596,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G9 T1215 Clean-room release validation
 
-Status: LOCAL VALIDATION IN PROGRESS
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1609,8 +1609,12 @@ Verification evidence:
 
 - Local `.venv/bin/uv run python scripts/manage_clean_room_release.py generate`: PASS.
 - Local `.venv/bin/uv run python scripts/manage_clean_room_release.py validate`: PASS.
-- Local `make verify`: PENDING.
-- GitHub Actions run: PENDING.
+- Local `make verify`: PASS.
+- Local `sha256sum --quiet -c CHECKSUMS.sha256`: PASS.
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27849578583`.
+- GitHub Actions job: `82425860903`.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 

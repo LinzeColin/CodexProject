@@ -25,7 +25,7 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - Latest GitHub implementation commit proven by CI:
-  - `dbf0608` chore: map EEI risk control traceability
+  - `bebf0c3` chore: add EEI clean-room release validation
 
 ## Completed
 
@@ -354,6 +354,7 @@ Remote verification:
 - T1212 / A182-A183 is DONE and remote CI passed; `scripts/validate_governance_consistency.py` now checks governance workflow triggers, required commands, `make verify` wiring, P0 traceability and A200 release preflight prerequisites. GitHub Actions run `27847728171` / job `82420393869` passed. A200 remains open for T1215 clean-room verification.
 - T1213 / A184 is DONE and remote CI passed; `scripts/manage_development_status_artifacts.py` now generates the development status summary, requirement-function-task-test traceability matrix, A183 evidence and A184 evidence. GitHub Actions run `27848308523` / job `82422115246` passed. A183 remains DONE with added T1213 evidence.
 - T1214 / A185 is DONE and remote CI passed; `scripts/manage_risk_control_artifacts.py` now validates 53 risk rows and 39 high/critical risk rows with concrete function/task/acceptance/owner/trigger/control/release-gate mappings. GitHub Actions run `27848881308` / job `82423801118` passed.
+- T1215 / A200 is DONE and remote CI passed; `scripts/manage_clean_room_release.py` now validates Markdown/CSV/JSON/GitHub/prototype/PDF consistency and the clean-room ZIP package. GitHub Actions run `27849578583` / job `82425860903` passed.
 - G4/G5 remain open because saved-view API persistence, visual regression/performance suites and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -361,7 +362,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Run T1215 / A200 clean-room verification across Markdown, CSV, JSON, GitHub workflow contracts, prototype parity, PDF and ZIP release evidence.
+1. Continue the remaining MVP work with G4/G5 scoped batches; do not reopen A200 unless release package files change.
 2. Keep T1118/T1119 visual regression and performance suites separate in G5.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.
