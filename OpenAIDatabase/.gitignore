@@ -1,0 +1,33 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Local secrets and raw exports
+.env
+.env.*
+.local_keys/
+*.key
+*.pem
+*.p12
+*.pfx
+cookies.json
+auth.json
+session.json
+browser-profile/
+
+# Never commit raw unencrypted OpenAI exports.
+*.zip
+!tests/fixtures/*.zip
+
+# Local run logs / temporary work
+logs/
+tmp/
+work/
+
+# Large encrypted raw archives are local by default. Commit only if explicitly intended.
+data/raw_encrypted/

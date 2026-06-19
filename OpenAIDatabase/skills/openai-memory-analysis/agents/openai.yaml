@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenAI Memory Analysis"
+  short_description: "Build human-readable long-term memory packs"
+  default_prompt: "Use $openai-memory-analysis to ingest my ChatGPT/Codex export, update the GitHub-backed memory database, compare with the previous run, output the human review in chat, and avoid local delivery packages unless explicitly requested."

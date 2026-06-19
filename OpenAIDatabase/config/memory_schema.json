@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OpenAIMemoryCandidate",
+  "type": "object",
+  "required": [
+    "id",
+    "action",
+    "date",
+    "source",
+    "category",
+    "statement",
+    "importance",
+    "validity",
+    "confidence",
+    "reason",
+    "sensitivity",
+    "memory_tier",
+    "backup_status",
+    "review_status",
+    "evidence"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "action": { "type": "string", "enum": ["backup", "add", "update", "deprecate", "ignore"] },
+    "date": { "type": "string" },
+    "source": { "type": "string" },
+    "source_kind": { "type": "string" },
+    "conversation_id": { "type": "string" },
+    "title": { "type": "string" },
+    "category": {
+      "type": "string",
+      "enum": [
+        "answering_rule",
+        "preference",
+        "decision",
+        "project_context",
+        "workflow",
+        "security_boundary",
+        "deprecated_info",
+        "temporary_or_sensitive",
+        "fact"
+      ]
+    },
+    "statement": { "type": "string" },
+    "importance": { "type": "string", "enum": ["高", "中", "低"] },
+    "validity": { "type": "string", "enum": ["长期", "半年", "项目结束前", "临时"] },
+    "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+    "reason": { "type": "string" },
+    "sensitivity": { "type": "string", "enum": ["public", "private", "sensitive", "secret"] },
+    "secret_ref": { "type": "string" },
+    "credential_policy": {
+      "type": "object",
+      "properties": {
+        "plaintext_in_git": { "type": "boolean" },
+        "agent_access": { "type": "string" },
+        "requires_user_authorization": { "type": "boolean" },
+        "local_resolver_required": { "type": "boolean" },
+        "trading_boundary": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "memory_tier": { "type": "string", "enum": ["核心画像", "一般", "临时"] },
+    "backup_status": { "type": "string" },
+    "review_status": { "type": "string", "enum": ["pending", "accepted", "edited", "rejected"] },
+    "evidence_count": { "type": "integer" },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "conversation_id", "timestamp", "summary"],
+        "properties": {
+          "source": { "type": "string" },
+          "conversation_id": { "type": "string" },
+          "timestamp": { "type": "string" },
+          "summary": { "type": "string" }
+        }
+      }
+    },
+    "security_findings": { "type": "array" }
+  },
+  "additionalProperties": true
+}
