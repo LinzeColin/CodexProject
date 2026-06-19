@@ -83,6 +83,14 @@ from pfi_os.application.workflow_runtime_read_model import (
     empty_workflow_runtime_read_model,
     record_workflow_runtime_read_model,
 )
+from pfi_os.application.workflow_runtime_scheduler import (
+    WORKFLOW_RUNTIME_REFRESH_JOB_TYPE,
+    WORKFLOW_RUNTIME_SCHEDULER_SCHEMA,
+    build_phase_c_workflow_runtime_scheduler_contract,
+    execute_workflow_runtime_refresh_job,
+    refresh_workflow_runtime_cache,
+    schedule_workflow_runtime_refresh,
+)
 
 __all__ = [
     "DataDomain",
@@ -120,6 +128,7 @@ __all__ = [
     "build_phase_b_portfolio_contract",
     "build_phase_b_research_policy_contract",
     "build_phase_c_workflow_runtime_contract",
+    "build_phase_c_workflow_runtime_scheduler_contract",
     "build_workflow_runtime_read_model",
     "default_data_home",
     "default_operational_db_path",
@@ -140,6 +149,9 @@ __all__ = [
     "record_research_policy_workflow",
     "record_strategy_lab_workflow",
     "record_workflow_runtime_read_model",
+    "refresh_workflow_runtime_cache",
+    "schedule_workflow_runtime_refresh",
+    "execute_workflow_runtime_refresh_job",
     "build_portfolio_workflow",
     "build_research_policy_workflow",
     "SourceRegistry",
@@ -149,4 +161,6 @@ __all__ = [
     "RESEARCH_POLICY_WORKFLOW_SCHEMA",
     "STRATEGY_LAB_WORKFLOW_SCHEMA",
     "WORKFLOW_RUNTIME_READ_MODEL_SCHEMA",
+    "WORKFLOW_RUNTIME_REFRESH_JOB_TYPE",
+    "WORKFLOW_RUNTIME_SCHEDULER_SCHEMA",
 ]

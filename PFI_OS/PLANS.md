@@ -5,10 +5,10 @@
 Current approved direction: controlled migration from legacy `PFI_OS` /
 `PFIOS` to `PFI OS`.
 
-PFI-001 through PFI-004 are complete. Phase A data foundation is now active:
-the first official Operational Store, Source Registry, Web Shell homepage read
-model, task repository, holding snapshot repository, and source versioning
-contract slices are implemented and covered by focused tests.
+PFI-001 through PFI-004 are complete. Phase A data foundation and the first
+Phase B vertical workflows are complete. Phase C now has the cached workflow
+runtime read model plus the local scheduler/retry/60-second acceptance slice
+implemented and covered by focused tests.
 
 Execution order:
 
@@ -16,7 +16,9 @@ Execution order:
 2. `PFI-002`: remove retired value-ledger and non-core active entrances without deleting user runtime data. Complete.
 3. `PFI-003`: migrate identity, directory, namespace, env vars, scripts, app names, and artifact prefixes to PFI. Complete.
 4. `PFI-004`: create the new PFI Web Shell with six workspaces, global context, task center, evidence drawer, and consistent feedback. Complete.
-5. `Phase A`: establish the local operational store and migrate read models slice by slice. Active.
+5. `Phase A`: establish the local operational store and migrate read models slice by slice. Complete for the data-boundary gate.
+6. `Phase B`: promote Strategy Lab, Markets, Research + Policy, and Portfolio into Operational Store-backed vertical workflow contracts. Complete for the first four vertical slices.
+7. `Phase C`: promote Phase B workflows into cached runtime cards, scheduler jobs, retry/backoff, and 60-second local cache acceptance. Active.
 
 Current PFI decisions:
 
@@ -60,7 +62,9 @@ Current PFI decisions:
 - Report Evidence Gap Task Generator now converts `NeedsMoreEvidence` and `DoNotUse` report gaps into deduped tasks in `data/validationQueue/ValidationTasks.json`, while preserving existing tasks and not running validation.
 - Validation Priority Plan now ranks the validation queue into `RunFirst`, `PrepareInputs`, `BatchValidate`, and `ManualReview` buckets, writes JSON/CSV/Markdown/PDF outputs, and does not mutate task status or queue data.
 - Validation Task Execution now attempts the highest-priority `CrossSourceValidation` task, writes traceable execution artifacts, and records `Blocked` instead of fabricating a pass when fewer than two real providers are available.
-- Next product target is deeper report decision support and real-data refresh reliability while keeping research-only boundaries.
+- Phase C workflow runtime now promotes the four Phase B workflow records into cached cards, task-center rows, background-job rows, Fast Path metadata, and private-safe Operational Store runtime evidence.
+- Phase C scheduler now writes idempotent local cache-refresh jobs, executes cached runtime refreshes, records 60-second acceptance metadata, retries with bounded `[1, 5, 15]` backoff, and fails closed after exhausted attempts without provider, broker, LLM, network, order-execution, or holding-mutation dependencies.
+- Next product target is Web Shell workflow-card rendering and Phase D deployment/backup/restore readiness while keeping research-only boundaries.
 
 ## Execution Rules
 

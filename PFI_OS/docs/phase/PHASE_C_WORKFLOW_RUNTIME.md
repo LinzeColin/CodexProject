@@ -2,7 +2,7 @@
 
 Schema: `PFIOSPhaseCWorkflowRuntimeContractV1`
 
-Status: first Phase C workflow runtime slice complete.
+Status: first two Phase C workflow runtime slices complete.
 
 As of: 2026-06-20 Australia/Sydney
 
@@ -12,7 +12,7 @@ Promote the four Phase B workflow contracts into a cached runtime read model
 that the Web Shell can consume before full worker scheduling, retry workers,
 SSE/WebSocket progress, and deployment readiness are implemented.
 
-## Current Slice
+## Current Slices
 
 - Adds `pfi_os.application.workflow_runtime_read_model`.
 - Declares read model schema `PFIOSPhaseCWorkflowRuntimeReadModelV1`.
@@ -33,10 +33,24 @@ SSE/WebSocket progress, and deployment readiness are implemented.
   task center/background job label from cached JSON.
 - Keeps private portfolio holdings out of the read model; only aggregate card
   metadata and holding snapshot counts are exposed.
+- Adds `pfi_os.application.workflow_runtime_scheduler`.
+- Declares scheduler schema `PFIOSPhaseCWorkflowRuntimeSchedulerV1` and run
+  schema `PFIOSPhaseCWorkflowRuntimeSchedulerRunV1`.
+- Schedules idempotent local cache-refresh jobs in Operational Store using
+  existing `source_records` and `job_records`; no new tables are introduced.
+- Executes cached runtime refreshes into
+  `PFIOSPhaseCWorkflowRuntimeReadModelV1`, records runtime evidence/tasks via
+  the existing read-model recorder, and reports 60-second acceptance metadata.
+- Implements bounded retry/backoff with max attempts 3 and `[1, 5, 15]`
+  second policy metadata. Exhausted retries fail closed with human review
+  required.
+- Confirms the scheduler has no provider fetch, broker, LLM, network,
+  live-trading, order-execution, or holdings-mutation dependency.
 
 ## Contract Tests
 
 - `tests/contract/test_phase_c_workflow_runtime_read_model.py`
+- `tests/contract/test_phase_c_workflow_runtime_scheduler.py`
 
 The tests verify:
 
@@ -52,11 +66,12 @@ The tests verify:
    source, evidence, job, and human-review task records.
 7. Static Web Shell assets accept the Phase C runtime summary without direct
    provider/private file reads.
+8. Scheduler contract fields, local-only dependency boundary, idempotent
+   scheduling, 60-second cache-refresh acceptance, runtime evidence writes,
+   retry scheduling, and fail-closed exhausted retries.
 
 ## Out Of Scope
 
-- Real scheduler loop.
-- Retry/backoff executor implementation.
 - SSE/WebSocket progress stream.
 - Provider fetch, broker integration, order routing, account mutation, payment,
   betting, or real-money execution.
@@ -65,10 +80,9 @@ The tests verify:
 
 ## Next Iterations
 
-1. Implement the Phase C worker scheduler around this read model with bounded
-   retry/backoff and idempotent job writes.
-2. Add 60-second acceptance around a local cached refresh path.
-3. Add Web Shell read-model rendering for workflow cards beyond the task
+1. Add Web Shell read-model rendering for workflow cards beyond the task
    center.
-4. Continue toward Phase D deployment, backup/restore, local model readiness,
+2. Add SSE/WebSocket-style progress only if it materially improves local
+   workflow observability.
+3. Continue toward Phase D deployment, backup/restore, local model readiness,
    and final Phase 5 acceptance package.
