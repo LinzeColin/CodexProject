@@ -49,7 +49,7 @@ TR-FUN-EXP-02-A021,FUN-EXP-02,A021,T201,Schema/unit test,artifacts/tests/a021/,N
 TR-FUN-EXP-02-A064,FUN-EXP-02,A064,T502,E2E,artifacts/tests/a064/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
 TR-FUN-EXP-02-A065,FUN-EXP-02,A065,T502,E2E/API,artifacts/tests/a065/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
 TR-FUN-EXP-02-A066,FUN-EXP-02,A066,T502,Data/UI test,artifacts/tests/a066/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
-TR-FUN-EXP-02-A067,FUN-EXP-02,A067,"T205,T507",Fixture/E2E,artifacts/tests/a067/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
+TR-FUN-EXP-02-A067,FUN-EXP-02,A067,"T205,T507",Fixture/E2E,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
 TR-FUN-EXP-02-A068,FUN-EXP-02,A068,T507,Critical E2E,artifacts/tests/a068/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
 TR-FUN-EXP-02-A137,FUN-EXP-02,A137,T1103,Fixture E2E,artifacts/tests/a137/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
 TR-FUN-EXP-02-A138,FUN-EXP-02,A138,T1104,Screenshot assertion,artifacts/tests/a138/,NOT_STARTED,derived_from_task,Codex implementation,docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md
@@ -148,7 +148,7 @@ TR-FUN-DM-01-A021,FUN-DM-01,A021,T201,Schema/unit test,artifacts/tests/a021/,NOT
 TR-FUN-DM-01-A022,FUN-DM-01,A022,T200,Schema/golden test,artifacts/tests/a022/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A023,FUN-DM-01,A023,T206,Repository integration test,tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A024,FUN-DM-01,A024,T207,Run twice and compare,artifacts/tests/a024/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
-TR-FUN-DM-01-A025,FUN-DM-01,A025,T205,UI/API content test,artifacts/tests/a025/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
+TR-FUN-DM-01-A025,FUN-DM-01,A025,T205,UI/API content test,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A026,FUN-DM-01,A026,"T208,T904",Gold evaluation,artifacts/tests/a026/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A027,FUN-DM-01,A027,"T208,T904",Gold evaluation,artifacts/tests/a027/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md
 TR-FUN-DM-01-A028,FUN-DM-01,A028,"T204,T207",Static validation,artifacts/tests/a028/,NOT_STARTED,derived_from_task,Codex implementation,docs/26_DATABASE_FIRST_DATA_WORKBENCH.md

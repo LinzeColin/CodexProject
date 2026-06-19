@@ -1,13 +1,14 @@
 :root {
   --bg: #f6f7f9;
   --panel: #ffffff;
-  --panel-strong: #f0f4f2;
+  --panel-strong: #f2f5f3;
   --ink: #18201d;
   --muted: #64706b;
   --line: #d7dfda;
   --blue: #1f6feb;
   --green: #1f8a5b;
   --amber: #b7791f;
+  --violet: #5b55b7;
   --red: #b42318;
   --shadow: 0 12px 30px rgba(24, 32, 29, 0.08);
 }
@@ -33,7 +34,7 @@ button {
 
 .workspace {
   display: grid;
-  grid-template-columns: 232px minmax(220px, 300px) minmax(520px, 1fr) minmax(260px, 340px);
+  grid-template-columns: 210px minmax(220px, 260px) minmax(680px, 1fr) minmax(250px, 300px);
   gap: 1px;
   min-height: 100vh;
   background: var(--line);
@@ -51,7 +52,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  padding: 18px 14px;
+  padding: 18px 12px;
 }
 
 .brandMark {
@@ -85,14 +86,16 @@ button {
 }
 
 .navRail nav,
-.watchlistStack {
+.watchlistStack,
+.actionStack {
   display: grid;
   gap: 6px;
 }
 
 .navItem,
 .watchItem,
-.lens {
+.lens,
+.actionStack button {
   display: flex;
   align-items: center;
   gap: 9px;
@@ -106,8 +109,8 @@ button {
 }
 
 .navItem {
-  padding: 0 10px;
   justify-content: flex-start;
+  padding: 0 10px;
 }
 
 .navItem span {
@@ -126,16 +129,20 @@ button {
 
 .focusPanel,
 .inspector {
-  padding: 22px;
+  padding: 20px;
 }
 
 .subjectHeader,
 .canvasTopbar,
 .inspectorHeader {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
-  align-items: flex-start;
+}
+
+.subjectHeader {
+  display: grid;
 }
 
 .eyebrow {
@@ -151,14 +158,24 @@ h2 {
 }
 
 h1 {
-  font-size: 34px;
+  font-size: 28px;
 }
 
 h2 {
   font-size: 20px;
 }
 
-.snapshotTag {
+.subjectSubtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.snapshotTag,
+.stagePill,
+.pathList em {
+  width: fit-content;
   white-space: nowrap;
   border-radius: 999px;
   border: 1px solid #f0c36d;
@@ -166,12 +183,13 @@ h2 {
   color: #8a580c;
   padding: 5px 9px;
   font-size: 12px;
+  font-style: normal;
 }
 
 .subjectStats {
   display: grid;
   gap: 10px;
-  margin: 26px 0;
+  margin: 22px 0;
 }
 
 .subjectStats div {
@@ -189,18 +207,39 @@ dd {
   font-weight: 650;
 }
 
-.watchItem {
+.fixtureDisclosure {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 18px;
+  border-left: 4px solid var(--amber);
+  background: #fff8eb;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.fixtureDisclosure span {
+  color: var(--muted);
+}
+
+.watchItem,
+.actionStack button {
   justify-content: space-between;
-  padding: 0 12px;
   border-color: var(--line);
   background: #fbfcfc;
+  padding: 0 12px;
+}
+
+.watchItem span,
+.actionStack button {
+  overflow-wrap: anywhere;
 }
 
 .canvas {
   display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 18px;
-  padding: 22px;
+  grid-template-rows: auto auto minmax(520px, 1fr) auto;
+  gap: 14px;
+  padding: 20px;
 }
 
 .canvasTopbar {
@@ -209,8 +248,9 @@ dd {
 
 .lensBar {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  min-width: 260px;
+  min-width: 270px;
 }
 
 .lens {
@@ -221,13 +261,45 @@ dd {
   background: #fbfcfc;
 }
 
+.stageRail {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(76px, 1fr));
+  gap: 6px;
+}
+
+.stagePill {
+  display: grid;
+  place-items: center;
+  min-height: 36px;
+  border-color: var(--line);
+  background: #fbfcfc;
+  color: var(--ink);
+  text-align: center;
+  white-space: normal;
+}
+
+.stagePill.upstream {
+  border-color: #b9dbc8;
+  background: #edf8f1;
+}
+
+.stagePill.focus {
+  border-color: #b9c9f5;
+  background: #eef4ff;
+}
+
+.stagePill.downstream {
+  border-color: #cbc7ed;
+  background: #f2f0ff;
+}
+
 .mapSurface {
   min-height: 520px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background:
-    linear-gradient(#eef2ef 1px, transparent 1px),
-    linear-gradient(90deg, #eef2ef 1px, transparent 1px),
+    linear-gradient(#e8eeeb 1px, transparent 1px),
+    linear-gradient(90deg, #e8eeeb 1px, transparent 1px),
     var(--panel-strong);
   background-size: 28px 28px;
   box-shadow: var(--shadow);
@@ -240,10 +312,23 @@ dd {
   min-height: 520px;
 }
 
+.ecosystemMap marker path {
+  fill: #6f7d76;
+}
+
 .edge {
   stroke: #7f8d86;
   stroke-width: 2.8;
   stroke-linecap: round;
+}
+
+.edgeLabel {
+  fill: #39443f;
+  paint-order: stroke;
+  stroke: #f2f5f3;
+  stroke-width: 5px;
+  font-size: 11px;
+  font-weight: 650;
 }
 
 .node circle {
@@ -253,35 +338,92 @@ dd {
 
 .node text {
   fill: #ffffff;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 720;
   pointer-events: none;
+}
+
+.nodeStage {
+  fill: var(--ink) !important;
+  font-size: 11px !important;
+  font-weight: 650 !important;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: 4px;
 }
 
 .node.focus circle {
   fill: var(--blue);
 }
 
-.node.supply circle {
+.node.upstream circle {
   fill: var(--green);
 }
 
-.node.market circle {
-  fill: #5750b3;
+.node.downstream circle {
+  fill: var(--violet);
 }
 
-.node.policy circle {
+.node.infrastructure circle {
   fill: var(--amber);
 }
 
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.breadcrumb li {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fbfcfc;
+  padding: 6px 10px;
+  color: #39443f;
+  font-size: 12px;
+}
+
 .pathList {
+  display: grid;
+  gap: 12px;
   margin: 22px 0;
-  padding-left: 22px;
+  padding: 0;
+  list-style: none;
 }
 
 .pathList li {
-  margin-bottom: 12px;
-  font-weight: 620;
+  display: grid;
+  gap: 6px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.pathList strong {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.pathList span,
+.pathList small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.actionStack {
+  margin: 18px 0;
+}
+
+.actionStack button {
+  justify-content: center;
+  min-height: 38px;
+  border-color: #b9c9f5;
+  background: #eef4ff;
+  color: #134aa1;
+  text-align: center;
 }
 
 .statusStrip {
@@ -298,9 +440,9 @@ dd {
   font-size: 13px;
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1240px) {
   .workspace {
-    grid-template-columns: 86px minmax(220px, 280px) minmax(420px, 1fr);
+    grid-template-columns: 78px minmax(210px, 250px) minmax(500px, 1fr);
   }
 
   .navItem span,
@@ -310,7 +452,7 @@ dd {
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 900px) {
   .workspace {
     grid-template-columns: 1fr;
   }
@@ -319,9 +461,9 @@ dd {
     position: sticky;
     top: 0;
     z-index: 1;
-    overflow-x: auto;
     flex-direction: row;
     align-items: center;
+    overflow-x: auto;
     border-bottom: 1px solid var(--line);
   }
 
@@ -350,9 +492,12 @@ dd {
     width: 100%;
   }
 
+  .stageRail {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+
   .mapSurface,
   .ecosystemMap {
     min-height: 390px;
   }
 }
-

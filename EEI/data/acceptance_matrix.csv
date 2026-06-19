@@ -23,7 +23,7 @@ A021,P0,data,"Supply-chain attributes preserve tier, materiality, substitutabili
 A022,P0,data,"Temporal fields preserve validity, announcement, filing, report, observation and ingestion times",Schema/golden test,NOT STARTED
 A023,P0,data,Supersession and conflict preserve history,Repository integration test,DONE
 A024,P0,data,Seed and fixture load are idempotent,Run twice and compare,NOT STARTED
-A025,P0,data,Synthetic fixtures are visibly marked and never presented as live facts,UI/API content test,NOT STARTED
+A025,P0,data,Synthetic fixtures are visibly marked and never presented as live facts,UI/API content test,DONE
 A026,P0,data,Entity resolution precision is >=95% on at least 50 cases,Gold evaluation,NOT STARTED
 A027,P0,data,Relationship precision is >=90% on at least 100 cases,Gold evaluation,NOT STARTED
 A028,P0,data,Research/source/metric/parameter registries load without malformed rows,Static validation,NOT STARTED
@@ -65,7 +65,7 @@ A063,P0,structure,Commercial empire label does not imply legal control,Content r
 A064,P0,supply_chain,Supply chain supports upstream/downstream and ordered stage view,E2E,NOT STARTED
 A065,P0,supply_chain,"Supply-chain edge shows stage, tier, materiality, substitutability, geography, time and evidence",E2E/API,NOT STARTED
 A066,P0,supply_chain,"Unknown supplier, amount, tier or capacity remains explicitly unknown",Data/UI test,NOT STARTED
-A067,P0,supply_chain,NVIDIA synthetic scenario spans design/manufacturing/equipment/materials/system/data-center/energy/customer stages,Fixture/E2E,NOT STARTED
+A067,P0,supply_chain,NVIDIA synthetic scenario spans design/manufacturing/equipment/materials/system/data-center/energy/customer stages,Fixture/E2E,DONE
 A068,P0,supply_chain,User can reroot from NVIDIA fixture to foundry/equipment/material nodes,Critical E2E,NOT STARTED
 A069,P0,capital,"Capital and M&A layers distinguish investment, debt, acquisition, commitment, capex, buyback and dividend semantics",Unit/UI,NOT STARTED
 A070,P0,policy,"Policy layer distinguishes awards, obligations, ceilings, regulation, lobbying and trade restrictions",Unit/UI,NOT STARTED
