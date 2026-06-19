@@ -30,6 +30,8 @@ Current sequence:
 12. Phase C Web Shell workflow-card rendering and optional progress stream:
     workflow-card rendering complete; optional progress stream deferred.
 13. Phase D local deployment, backup/restore, and model readiness:
+    first read-only readiness slice complete.
+14. Phase D backup/restore acceptance and Phase 5 package:
     next.
 
 ## Current Local State
@@ -119,6 +121,9 @@ Current sequence:
 - Phase C Web Shell workflow-card rendering for `workflow_cards`, including
   Fast Path badge updates, workflow evidence buttons, responsive card grid,
   private-safe evidence drawer population, and a rendered Chrome smoke check.
+- Phase D local deployment readiness contract for required repo surfaces,
+  data-home/Operational SQLite boundaries, backup/restore target paths,
+  DisabledProvider/local-model optionality, and read-only safety constraints.
 
 ## Start Here
 
@@ -142,7 +147,8 @@ Read in this order:
 16. `docs/phase/PHASE_B_STRATEGY_LAB.md`
 17. `docs/phase/PHASE_B_PORTFOLIO.md`
 18. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
-19. `docs/archive/legacy-migration.md`
+19. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
+20. `docs/archive/legacy-migration.md`
 
 ## Current Verification Evidence
 
@@ -164,6 +170,7 @@ python -m pytest tests/contract/test_phase_b_strategy_lab_workflow.py -q
 python -m pytest tests/contract/test_phase_b_portfolio_workflow.py -q
 python -m pytest tests/contract/test_phase_c_workflow_runtime_read_model.py -q
 python -m pytest tests/contract/test_phase_c_workflow_runtime_scheduler.py -q
+python -m pytest tests/contract/test_phase_d_deployment_readiness.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
@@ -186,8 +193,8 @@ commands after any follow-up edits.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
 - Phase C SSE/WebSocket progress is not complete and should only be added if
   it materially improves local observability.
-- Phase D local deployment, backup/restore, local model readiness, and final
-  Phase 5 packaging are not complete.
+- Phase D backup/restore acceptance, controlled local deployment acceptance,
+  and final Phase 5 packaging are not complete.
 
 ## Next Step
 
@@ -195,7 +202,7 @@ Continue from the Phase C Web Shell card baseline:
 
 1. Add progress streaming only if it materially improves local workflow
    observability.
-2. Start Phase D local deployment, backup/restore, and DisabledProvider/local
-   model readiness contracts.
+2. Add Phase D backup/restore acceptance evidence without committing private
+   runtime data.
 3. Replace remaining legacy Streamlit direct reads one vertical slice at a
    time when those workflows enter scope.

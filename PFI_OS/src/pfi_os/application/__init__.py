@@ -16,6 +16,11 @@ from pfi_os.application.data_home_audit import (
     audit_data_home_boundary,
     build_data_home_boundary_contract,
 )
+from pfi_os.application.deployment_readiness import (
+    PHASE_D_DEPLOYMENT_READINESS_SCHEMA,
+    build_phase_d_deployment_readiness,
+    build_phase_d_deployment_readiness_contract,
+)
 from pfi_os.application.command_center_read_model import (
     build_command_center_read_model,
     empty_command_center_read_model,
@@ -116,6 +121,8 @@ __all__ = [
     "append_private_reviewed_input_entry",
     "audit_data_home_boundary",
     "build_data_home_boundary_contract",
+    "build_phase_d_deployment_readiness",
+    "build_phase_d_deployment_readiness_contract",
     "build_command_center_read_model",
     "build_macos_runtime_acceptance_read_model",
     "build_phase_b_strategy_lab_contract",
@@ -163,4 +170,5 @@ __all__ = [
     "WORKFLOW_RUNTIME_READ_MODEL_SCHEMA",
     "WORKFLOW_RUNTIME_REFRESH_JOB_TYPE",
     "WORKFLOW_RUNTIME_SCHEDULER_SCHEMA",
+    "PHASE_D_DEPLOYMENT_READINESS_SCHEMA",
 ]
