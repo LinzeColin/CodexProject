@@ -6,17 +6,18 @@
     "A184"
   ],
   "ledger": {
-    "rows": 36,
+    "rows": 46,
     "spec_status": {
-      "DONE": 36
+      "DONE": 46
     },
     "prototype_status": {
       "DONE": 21,
-      "PARTIAL": 15
+      "NOT_STARTED": 9,
+      "PARTIAL": 16
     },
     "implementation_status": {
       "N/A": 8,
-      "NOT_STARTED": 15,
+      "NOT_STARTED": 25,
       "PARTIAL": 13
     },
     "validation_status": {
@@ -24,14 +25,14 @@
       "CI_VALIDATED": 4,
       "LOCAL_E2E_VALIDATED": 6,
       "LOCAL_VALIDATED": 3,
-      "SPEC_VALIDATED": 4,
+      "SPEC_VALIDATED": 14,
       "VALIDATED": 8
     },
     "lane_counts": {
       "resolved": 21,
       "prototyped": 21,
-      "specified": 15,
-      "not_started_tasks": 63,
+      "specified": 25,
+      "not_started_tasks": 73,
       "blocked_tasks": 0,
       "out_of_scope_tasks": 8
     },
@@ -39,13 +40,13 @@
     "unresolved_fields_present": true
   },
   "catalogs": {
-    "task_rows": 120,
-    "acceptance_rows": 200,
+    "task_rows": 130,
+    "acceptance_rows": 211,
     "resolved_unresolved_rows": 17
   },
   "traceability": {
     "function_rows": 17,
-    "traceability_rows": 221,
+    "traceability_rows": 232,
     "p0_functions_checked": 15,
     "p0_functions_with_trace": 15
   },
@@ -60,12 +61,12 @@
       "function_id": "FUN-EXP-01",
       "name_zh": "商业版图",
       "priority": "P0",
-      "task_ids": "T400;T401;T402;T403;T404;T405;T406;T407;T408;T1103;T1104;T1105;T1106;T1107;T1108;T1109;T1110;T1111",
-      "acceptance_ids": "A041;A042;A043;A044;A045;A046;A047;A048;A049;A050;A051;A052;A053;A054;A055;A056;A057;A058;A133;A134;A135;A136;A137;A138;A139;A140;A141;A142;A143;A144;A145;A146;A147;A148;A149;A150;A151;A152;A153;A154;A155;A156;A157;A193",
-      "traceability_rows": "50",
+      "task_ids": "T400;T401;T402;T403;T404;T405;T406;T407;T408;T1103;T1104;T1105;T1106;T1107;T1108;T1109;T1110;T1111;T1302;T1308",
+      "acceptance_ids": "A041;A042;A043;A044;A045;A046;A047;A048;A049;A050;A051;A052;A053;A054;A055;A056;A057;A058;A133;A134;A135;A136;A137;A138;A139;A140;A141;A142;A143;A144;A145;A146;A147;A148;A149;A150;A151;A152;A153;A154;A155;A156;A157;A193;A203;A211",
+      "traceability_rows": "51",
       "done_traceability_rows": "45",
-      "test_types": "A11y E2E;API/UI test;Axe/manual;Boundary test;Boundary/negative tests;Budget test;Contract test;Contract/E2E;Contract/integration;Critical E2E;DOM/SVG assertion;Design/a11y review;E2E;E2E + contract;E2E reload;E2E screenshot;E2E/a11y;Failure E2E;Fixture E2E;Integration;Integration/E2E;Keyboard E2E;Keyboard/touch E2E;Reload E2E;Screenshot assertion;State test;Static copy lint;UI test;UI/content test;Usability/E2E;Visual measurement;Visual regression;Visual/a11y review;visual coverage measurement",
-      "evidence_paths": "Makefile;apps/api/app/domain.py;apps/api/app/domain_repository.py;apps/web/src/app/globals.css;apps/web/src/app/page.tsx;apps/web/src/app/use-analysis-context.ts;artifacts/tests/a133/;artifacts/tests/a134/;artifacts/tests/a135/;artifacts/tests/a153/;artifacts/tests/a193/;data/ui_copy_lexicon.csv;infra/db/migrations/0002_exploration_state/up.sql;scripts/validate_ui_copy.py;specs/api_contract.yaml;tests/e2e/home.spec.ts;tests/e2e/state-contract.spec.ts;tests/integration/test_database_migrations.py",
+      "test_types": "A11y E2E;API/UI test;Axe/manual;Boundary test;Boundary/negative tests;Budget test;Contract test;Contract/E2E;Contract/integration;Critical E2E;DOM/SVG assertion;Design/a11y review;E2E;E2E + contract;E2E reload;E2E screenshot;E2E/a11y;Failure E2E;Fixture E2E;Integration;Integration/E2E;Keyboard E2E;Keyboard/touch E2E;Reload E2E;Screenshot assertion;State test;Static copy lint;UI test;UI/content test;Usability/E2E;Visual measurement;Visual regression;Visual/a11y review;contract + integration test;visual coverage measurement",
+      "evidence_paths": "Makefile;apps/api/app/domain.py;apps/api/app/domain_repository.py;apps/web/src/app/globals.css;apps/web/src/app/page.tsx;apps/web/src/app/use-analysis-context.ts;artifacts/tests/a133/;artifacts/tests/a134/;artifacts/tests/a135/;artifacts/tests/a153/;artifacts/tests/a193/;artifacts/tests/a203/;data/ui_copy_lexicon.csv;infra/db/migrations/0002_exploration_state/up.sql;scripts/validate_ui_copy.py;specs/api_contract.yaml;tests/e2e/home.spec.ts;tests/e2e/state-contract.spec.ts;tests/integration/test_database_migrations.py",
       "missing_task_ids": "",
       "missing_acceptance_ids": "",
       "source_doc": "docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md"
@@ -74,8 +75,8 @@
       "function_id": "FUN-EXP-02",
       "name_zh": "全链供应链",
       "priority": "P0",
-      "task_ids": "T201;T205;T502;T507;T1105",
-      "acceptance_ids": "A016;A020;A021;A064;A065;A066;A067;A068;A137;A138;A139;A140;A141;A142;A143;A144;A145;A188;A192",
+      "task_ids": "T201;T205;T502;T507;T1105;T1301;T1306",
+      "acceptance_ids": "A016;A020;A021;A064;A065;A066;A067;A068;A137;A138;A139;A140;A141;A142;A143;A144;A145;A188;A192;A202;A208",
       "traceability_rows": "19",
       "done_traceability_rows": "4",
       "test_types": "Budget test;CSV/data check;Critical E2E;DOM/SVG assertion;Data check;Data/UI test;E2E;E2E + contract;E2E/API;Fixture E2E;Fixture/E2E;Schema/unit test;Screenshot assertion;State test;catalog validation",
@@ -88,8 +89,8 @@
       "function_id": "FUN-EXP-03",
       "name_zh": "集团业务与子板块",
       "priority": "P0",
-      "task_ids": "T200;T204;T500;T501;T506",
-      "acceptance_ids": "A011;A012;A013;A014;A015;A017;A018;A059;A060;A061;A062;A063;A190",
+      "task_ids": "T200;T204;T500;T501;T506;T1301;T1308",
+      "acceptance_ids": "A011;A012;A013;A014;A015;A017;A018;A059;A060;A061;A062;A063;A190;A202;A211",
       "traceability_rows": "13",
       "done_traceability_rows": "12",
       "test_types": "API integration;API/UI assertions;CSV/data check;Constraint + unit tests;Content review;Content/API integration;Deferred data-quality test;E2E;Migration round-trip;Schema/API assertions;Unit/data tests;catalog validation",

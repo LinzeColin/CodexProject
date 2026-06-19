@@ -4,7 +4,7 @@ data/navigation_catalog.csv,17,function_id,产品,Issue+PR+validation,yes
 data/product_navigation_catalog.csv,16,nav_id,产品,Issue+PR+validation,yes
 data/model_registry.csv,11,model_id,模型,Issue+PR+validation,yes
 data/formula_registry.csv,11,formula_id,模型,Issue+PR+validation,yes
-data/parameter_catalog.csv,60,parameter_key,模型,Issue+PR+validation,yes
+data/parameter_catalog.csv,75,parameter_key,模型,Issue+PR+validation,yes
 data/threshold_registry.csv,17,threshold_id,模型,Issue+PR+validation,yes
 data/relationship_family_catalog.csv,10,family_id,研究数据,Issue+PR+validation,yes
 data/relationship_taxonomy.csv,52,relationship_type,研究数据,Issue+PR+validation,yes
@@ -16,11 +16,14 @@ data/company_catalog.csv,140,company_id,研究数据,Issue+PR+validation,yes
 data/business_segment_taxonomy.csv,20,segment_id,研究数据,Issue+PR+validation,yes
 data/capital_object_taxonomy.csv,30,capital_object_id,研究数据,Issue+PR+validation,yes
 data/domain_object_catalog.csv,32,object_type_id,数据模型,Issue+PR+validation,yes
-data/task_backlog.csv,120,task_id,工程治理,Issue+PR+validation,yes
-data/development_status_ledger.csv,36,item_id,工程治理,Issue+PR+validation,yes
-data/resolved_unresolved_register.csv,16,item_id,产品治理,Issue+PR+validation,yes
+data/task_backlog.csv,130,task_id,工程治理,Issue+PR+validation,yes
+data/development_status_ledger.csv,46,item_id,工程治理,Issue+PR+validation,yes
+data/resolved_unresolved_register.csv,17,item_id,产品治理,Issue+PR+validation,yes
 data/risk_register.csv,53,risk_id,风险治理,Issue+PR+validation,yes
-data/acceptance_matrix.csv,200,acceptance_id,质量治理,Issue+PR+validation,yes
+data/acceptance_matrix.csv,211,acceptance_id,质量治理,Issue+PR+validation,yes
 data/release_gate_catalog.csv,10,gate_id,发布治理,Issue+PR+validation,yes
 data/source_registry_extended.csv,34,source_id,研究数据,Issue+PR+validation,yes
 data/metric_catalog.csv,54,metric_id,研究模型,Issue+PR+validation,yes
+data/review_issue_register.csv,40,issue_id,审查治理,Issue+PR+validation,yes
+data/brand_name_conflict_register.csv,7,id,品牌治理,Issue+PR+validation,yes
+data/competitive_product_landscape.csv,49,product,市场研究,Issue+PR+validation,yes

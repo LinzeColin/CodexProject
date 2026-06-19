@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Atlas Refresh Event",
+  "title": "Enterprise Ecosystem Intelligence Refresh Event",
   "type": "object",
   "required": [
     "event_id",

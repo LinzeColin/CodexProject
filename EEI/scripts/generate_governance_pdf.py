@@ -113,10 +113,10 @@ h1{font-size:24pt;line-height:1.12;margin:1.5mm 0 1mm;letter-spacing:-.025em} h2
 '''
 
 pages=[]
-def page(n,title,subtitle,body,kicker='ATLAS GOVERNANCE BLUEPRINT'):
+def page(n,title,subtitle,body,kicker='EEI GOVERNANCE BLUEPRINT'):
     pages.append(f'''<section class="page"><div class="header"><div><div class="kicker">{kicker}</div><h1>{title}</h1><div class="subtitle">{subtitle}</div></div><div class="page-no"><b>{n:02d}</b>v4.2.0 · 2026-06-19</div></div>{body}<div class="footer"><span>美国企业商业版图与供应链递归探索器</span><span>Task Pack / GitHub Governance Baseline</span></div></section>''')
 
-pages.append(f'''<section class="page cover"><div class="brand"><div class="logo">A</div><div><b>ATLAS</b><small style="display:block;color:#b6c3d8">商业版图、数据与模型治理系统</small></div></div><h1>美国企业商业版图与供应链递归探索器</h1><div class="subtitle">系统功能架构、可递归商业版图、数据库与数据血缘、模型/公式/参数/阈值管理、GitHub 开发治理与 Codex MVP 执行蓝图</div><div class="cover-grid">{''.join(f'<div class="kpi"><strong>{v}</strong><span>{l}</span><small>{d}</small></div>' for v,l,d in [('17','功能板块','导航、输入输出、表/API'),('11','分析模型','公式、解释、版本与回滚'),('52','关系类型','10 个关系家族'),('16','供应链阶段','可递归上下游全链'),('120','开发任务','依赖、Gate 与验收'),('200','验收标准','P0 阻断发布')])}</div><div class="callout amber" style="margin-top:10mm;background:rgba(255,255,255,.09);border-color:#f0b95a;color:#fff"><b>交付真实性</b>本 PDF 与交互原型是规格/治理基线。原型中的公司关系与数值为 fixture；生产数据库、真实采集、关系核验、后端、评分引擎和生产前端尚未实现。</div><div class="footer"><span>Codex MVP Task Pack v4.2.0</span><span>2026-06-19</span></div></section>''')
+pages.append(f'''<section class="page cover"><div class="brand"><div class="logo">E</div><div><b>EEI</b><small style="display:block;color:#b6c3d8">商域图谱 / Enterprise Ecosystem Intelligence</small></div></div><h1>商域图谱：企业商业版图与供应链递归探索系统</h1><div class="subtitle">系统功能架构、可递归商业版图、数据库与数据血缘、模型/公式/参数/阈值管理、GitHub 开发治理与 Codex MVP 执行蓝图</div><div class="cover-grid">{''.join(f'<div class="kpi"><strong>{v}</strong><span>{l}</span><small>{d}</small></div>' for v,l,d in [('17','功能板块','导航、输入输出、表/API'),('11','分析模型','公式、解释、版本与回滚'),('52','关系类型','10 个关系家族'),('16','供应链阶段','可递归上下游全链'),('130','开发任务','依赖、Gate 与验收'),('211','验收标准','P0 阻断发布')])}</div><div class="callout amber" style="margin-top:10mm;background:rgba(255,255,255,.09);border-color:#f0b95a;color:#fff"><b>交付真实性</b>本 PDF 与交互原型是规格/治理基线。原型中的公司关系与数值为 fixture；生产数据库、真实采集、关系核验、后端、评分引擎和生产前端尚未实现。</div><div class="footer"><span>Codex MVP Task Pack v4.2.0 + v5.0 sync</span><span>2026-06-20</span></div></section>''')
 
 body=f'''<div class="grid g5">{''.join(f'<div class="card kpi"><strong>{v}</strong><span>{l}</span><small>{d}</small></div>' for v,l,d in [('140','研究对象','P0/P1/P2 与外部节点'),('60','可调参数','范围、步长、控件、刷新'),('17','阈值','证据、显示、告警、动效'),('53','风险项','控制、触发器、责任人'),('10','发布门禁','G0-G9 逐级放行')])}</div><div class="grid g2" style="margin-top:4mm"><div class="card"><h3>当前真实状态</h3><table class="status-table"><tr><th>层级</th><th>状态</th></tr><tr><td>需求、架构、目录、模型与验收</td><td><span class="badge green">已完成规格</span></td></tr><tr><td>高保真交互原型</td><td><span class="badge green">已完成 fixture 演示</span></td></tr><tr><td>GitHub 模板与自动校验</td><td><span class="badge green">已包含，待仓库启用</span></td></tr><tr><td>生产代码与真实数据库</td><td><span class="badge red">NOT STARTED</span></td></tr><tr><td>真实数据接入与事实核验</td><td><span class="badge red">NOT STARTED</span></td></tr></table></div><div class="card"><h3>统一治理链</h3><div class="trace"><div class="box"><b>需求/功能</b><small>Function ID + 用户问题</small></div><div class="arrow">→</div><div class="box"><b>任务</b><small>Task + 文件 + 依赖</small></div><div class="arrow">→</div><div class="box"><b>验收</b><small>Acceptance + 测试证据</small></div><div class="arrow">→</div><div class="box"><b>风险</b><small>Control + Trigger + Owner</small></div><div class="arrow">→</div><div class="box"><b>Gate</b><small>停止条件 + 回滚</small></div></div><div class="callout" style="margin-top:4mm"><b>三层一致性</b>人类可读 Markdown、机器可读 CSV/JSON/YAML、GitHub Actions 自动校验必须同步；任一层漂移则 PR 失败。</div></div></div>'''
 page(2,'交付基线与真实状态','先明确“已定义/已原型”和“已生产实现”的边界，避免把可视化演示误报为实时投资系统。',body)
@@ -140,7 +140,7 @@ body=f'''<div class="sector-grid">{sector_cards}</div><div class="grid g4" style
 page(8,'行业、板块、公司、业务与资本范围','默认入口使用 13 个用户可理解板块；底层保留 26 个行业分类，并允许跨行业递归探索。',body,'RESEARCH UNIVERSE')
 
 body=f'''<div class="screen-wrap"><img class="screen" src="{screens['models']}"></div><div class="grid g3" style="margin-top:3mm"><div class="callout"><b>模型透明</b>公式、输入、权重、阈值、时间半衰期、缺失值策略和默认值都可查看，不使用不可解释黑箱评分。</div><div class="callout green"><b>在线修改 + 文件修改</b>页面控件和 YAML/JSON 配置使用同一 schema；先 dry-run 和影响预览，再保存不可变版本并激活。</div><div class="callout amber"><b>即时刷新不是部分覆盖</b>大范围重算期间继续显示上一个成功快照；完成后原子切换并向全部视图推送同一版本。</div></div>'''
-page(9,'模型、公式、参数与阈值控制中心','11 个模型、11 个公式、60 个参数和 17 个阈值全部有机器可读目录、在线控件、版本、日志和回滚边界。',body,'MODEL CONTROL CENTER')
+page(9,'模型、公式、参数与阈值控制中心','11 个模型、11 个公式、75 个参数和 17 个阈值全部有机器可读目录、在线控件、版本、日志和回滚边界。',body,'MODEL CONTROL CENTER')
 
 body=f'''<div class="grid g2"><div class="card"><h3>模型目录</h3><table class="compact-table"><tr><th>ID</th><th>模型</th><th>公式</th><th>评分对象</th><th>状态</th></tr>{model_rows}</table></div><div class="card"><h3>参数生命周期</h3><div class="lifecycle"><div class="life"><b>草稿输入</b><small>范围/步长/schema 校验</small></div><div class="life-arrow">→</div><div class="life"><b>即时预览</b><small>P95 &lt;250ms，影响 diff</small></div><div class="life-arrow">→</div><div class="life"><b>保存版本</b><small>不可变配置 + 变更说明</small></div><div class="life-arrow">→</div><div class="life"><b>激活快照</b><small>原子切换 + 缓存失效</small></div><div class="life-arrow">→</div><div class="life"><b>回滚/校准</b><small>日志 + 14 天复核</small></div></div><div class="grid g3" style="margin-top:4mm"><div class="card kpi"><strong>1.0</strong><span>顶层权重总和</span><small>容差 ±0.0001</small></div><div class="card kpi"><strong>0.70</strong><span>单项权重上限</span><small>防止单维度支配</small></div><div class="card kpi"><strong>2</strong><span>推断关系来源</span><small>至少两个独立来源</small></div></div><div class="callout red" style="margin-top:4mm"><b>评分边界</b>模型用于研究排序、可视化聚焦和变化告警，不等同于投资收益预测或“真实隐藏资金”的确定性识别。</div></div></div>'''
 page(10,'模型清单与参数生命周期','默认值可用，但用户必须能看到公式并修改权重、战略评分、时间重要性和门槛；每次修改可解释、可预览、可撤销。',body,'MODEL GOVERNANCE')
@@ -152,10 +152,10 @@ body=f'''<div class="grid g2"><div class="card"><h3>热刷新流水线</h3><div 
 page(12,'即时重算、操作日志与双周校准','参数修改要“立即看到影响”，但必须通过版本化、增量计算、原子快照和失败补偿确保全体呈现一致。',body,'LIVE RECALCULATION')
 
 body=f'''<div class="screen-wrap"><img class="screen" src="{screens['delivery']}"></div><div class="grid g3" style="margin-top:3mm"><div class="callout green"><b>已解决（7）</b>首页、递归主体、数据底座、模型流程、14 天校准、视觉覆盖和文档治理方式已冻结。</div><div class="callout amber"><b>未解决（7）</b>部署预算、认证、商业数据许可、生产规模、图引擎基准、模型有效性和真实关系接入。</div><div class="callout"><b>四轴状态</b>规格、原型、生产实现、验证分别记录；`PROTOTYPED` 不得写成 `DONE`。</div></div>'''
-page(13,'开发任务、已解决/未解决与交付状态','120 个任务不是粗粒度待办：每项都有依赖、文件范围、Gate、Acceptance ID、风险、测试和回滚。',body,'DELIVERY STATUS')
+page(13,'开发任务、已解决/未解决与交付状态','130 个任务不是粗粒度待办：每项都有依赖、文件范围、Gate、Acceptance ID、风险、测试和回滚。',body,'DELIVERY STATUS')
 
 body=f'''<div class="grid g2"><div class="card"><h3>高优先风险与管控</h3><table class="compact-table"><tr><th>ID</th><th>级别</th><th>风险</th><th>控制</th><th>Owner</th></tr>{risk_rows}</table></div><div class="card"><h3>G0-G9 发布门禁</h3><div class="gate-grid">{gate_cards}</div><div class="callout red" style="margin-top:4mm"><b>停止条件</b>任一 P0 验收无任务/测试、任一高风险无控制/触发/责任人、配置不可解释/回滚、同屏混用快照、fixture 标为真实、视觉/可访问性未达标，均不得发布。</div></div></div>'''
-page(14,'风险、控制、验收与发布门禁','53 项风险、200 条验收、212 条追踪关系和 10 个 Gate 形成可判定的发布闭环。',body,'RISK & ACCEPTANCE')
+page(14,'风险、控制、验收与发布门禁','53 项风险、211 条验收、232 条追踪关系和 10 个 Gate 形成可判定的发布闭环。',body,'RISK & ACCEPTANCE')
 
 body=f'''<div class="screen-wrap"><img class="screen" src="{screens['governance']}"></div><div class="grid g3" style="margin-top:3mm"><div class="callout"><b>结构化变更入口</b>Feature、Model Change、Data/Relationship Scope、Risk/Control 和 Bug 使用 Issue Forms 收集固定字段。</div><div class="callout green"><b>PR 强制同步</b>PR 模板要求功能/模型/领域/状态/风险/验收/迁移/回滚同步；CODEOWNERS 指定审查责任。</div><div class="callout amber"><b>自动防漂移</b>Actions 校验目录数量、ID 唯一性、交叉引用、YAML/JSON、原型导航、PDF、shell 语法和 checksums。</div></div>'''
 page(15,'GitHub 开发文档备份与防漂移','压缩包解压后可直接初始化为 GitHub 仓库；文档、机器目录、代码契约和交付状态由同一 PR 历史长期保存。',body,'GITHUB GOVERNANCE')
@@ -165,7 +165,7 @@ cd US_Corporate_Power_Map_Codex_MVP_Task_Pack_v4.2_2026-06-19
 
 git init
 git add .
-git commit -m "chore: add Atlas v4.2 governance baseline"
+git commit -m "chore: add EEI v4.2 governance baseline"
 
 python scripts/validate_task_pack.py
 bash scripts/preflight.sh
@@ -175,7 +175,7 @@ codex exec --sandbox read-only - \
   | tee artifacts/01_plan_output.txt</pre><div class="callout"><b>先计划，后写入</b>G0 输出必须列出将读取/修改的文件、测试命令、数据/模型迁移、风险、回滚和验收映射；未审查不得进入 workspace-write。</div></div><div class="card"><h3>最终交付清单</h3><table class="compact-table"><tr><th>类型</th><th>入口</th><th>用途</th></tr><tr><td>交互原型</td><td>prototype/standalone.html</td><td>审阅首页、数据、模型、治理和递归交互</td></tr><tr><td>治理索引</td><td>GOVERNANCE_INDEX.md</td><td>统一入口与机器 SSOT</td></tr><tr><td>功能/模型/领域</td><td>根目录 3 份清单 + data/</td><td>开发范围与参数修改</td></tr><tr><td>状态/风险/验收</td><td>DEVELOPMENT_STATUS.md + RISK_AND_ACCEPTANCE.md</td><td>进度、控制和发布判定</td></tr><tr><td>GitHub 治理</td><td>.github/ + scripts/</td><td>Issue/PR/CODEOWNERS/Actions</td></tr><tr><td>Codex 输入</td><td>AGENTS.md + prompts/ + CODEX_MASTER_TASK.md</td><td>Plan/Build/QA 自主推进</td></tr></table><div class="grid g3" style="margin-top:4mm"><div class="card kpi"><strong>PASS</strong><span>目录完整性</span><small>数量、ID 与交叉引用</small></div><div class="card kpi"><strong>PASS</strong><span>浏览器原型</span><small>无 console/page error</small></div><div class="card kpi"><strong>PASS</strong><span>PDF/ZIP</span><small>渲染、解压与 checksums</small></div></div></div></div>'''
 page(16,'Codex 执行与最终交付','从此版本开始，需求、数据、模型、代码、风险和验收不再散落在聊天记录中，而是进入可审计、可版本化、可验证的仓库基线。',body,'HANDOFF & EXECUTION')
 
-full=f'''<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>Atlas Governance Blueprint v4.2</title><style>{css}</style></head><body>{''.join(pages)}</body></html>'''
+full=f'''<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>EEI Governance Blueprint v4.2</title><style>{css}</style></head><body>{''.join(pages)}</body></html>'''
 HTML_PATH.write_text(full,encoding='utf-8')
 
 with sync_playwright() as p:

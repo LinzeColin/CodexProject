@@ -4,8 +4,8 @@
 
 原始任务包语境：美国企业商业版图与供应链递归探索器。
 
-**版本**：v4.2.0  
-**产品版本**：v0.1  
+**规格基线**：v4.2.0 + v5.0 production-blocker sync
+**目标产品版本**：v0.1（当前 pursuing goal 完成后才可发布为 v0.1）
 **基线日期**：2026-06-19  
 **目标仓库**：LinzeColin/CodexProject/EEI
 
@@ -20,10 +20,13 @@
 | `GITHUB_REPOSITORY_BACKUP_INDEX.md` | GitHub 文档/代码备份与防漂移 |
 | `FUNCTION_CATALOG.md` | 17 个功能和导航架构 |
 | `data/product_navigation_catalog.csv` | 16 个用户侧导航模块冻结源 |
-| `MODEL_MANAGEMENT.md` | 11 个模型、11 个公式、60 个参数、17 个阈值 |
+| `MODEL_MANAGEMENT.md` | 11 个模型、11 个公式、75 个参数、17 个阈值 |
 | `DOMAIN_DATA_CATALOG.md` | 关系、上下游、供应链、行业、板块、业务、资本和公司范围 |
-| `DEVELOPMENT_STATUS.md` | 已解决/未解决、120 个任务和四轴状态 |
-| `RISK_AND_ACCEPTANCE.md` | 53 项风险、200 条验收和 Gate |
+| `DEVELOPMENT_STATUS.md` | 已解决/未解决、130 个任务和四轴状态 |
+| `RISK_AND_ACCEPTANCE.md` | 53 项风险、211 条验收和 Gate |
+| `REVIEW_AND_ITERATION_INDEX.md` | v5 审查、品牌、测试和迭代入口 |
+| `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md` | v5 生产阻塞项到 EEI 任务/验收/参数的同步映射 |
+| `TEST_STRATEGY.md` | 静态、单元、契约、集成、E2E、规模和 soak 测试策略 |
 | `US_Corporate_Power_Map_Governance_Blueprint_v4.2.pdf` | 可审阅 PDF 总蓝图 |
 
 ## 数据与模型规模
@@ -42,4 +45,4 @@ bash scripts/preflight.sh
 codex exec --sandbox read-only - < prompts/01_PLAN_ONLY.md | tee artifacts/01_plan_output.txt
 ```
 
-先审查 G0 只读计划，再允许 workspace-write。原型使用 fixture；真实采集、数据库、生产 API 和生产前端尚未实现。
+先审查 G0 只读计划，再允许 workspace-write。原型使用 fixture；PostgreSQL 生产迁移、真实采集、实体解析、证据链、生产 API、递归图查询、评分服务、模型事务激活、原子刷新、调度、保存视图、规模压测、soak、生产组件化前端和正式品牌清权仍是 v0.1 阻断项。

@@ -7,8 +7,8 @@
 | 项目 | 数量 | 机器文件 |
 |---|---:|---|
 | 风险 | 53 | `data/risk_register.csv` |
-| 验收标准 | 200 | `data/acceptance_matrix.csv` |
-| 验收追踪 | 221 | `data/acceptance_traceability.csv` |
+| 验收标准 | 211 | `data/acceptance_matrix.csv` |
+| 验收追踪 | 232 | `data/acceptance_traceability.csv` |
 | 风险控制追踪 | 53 | `data/risk_control_traceability.csv` |
 | 发布门禁 | 10 | `data/release_gate_catalog.csv` |
 
@@ -20,6 +20,7 @@
 4. 参数激活与快照切换造成跨视图版本不一致。
 5. 文档、目录、代码和 GitHub Issue 发生漂移。
 6. 战略信号被误读为投资收益预测。
+7. v5 `OPEN_PRODUCTION` 项被误认为已完成，包括 PostgreSQL、真实采集、API、调度、保存视图、规模压测、soak、生产前端和品牌清权。
 
 ## 发布停止条件
 
@@ -28,5 +29,6 @@
 - 权重、阈值或公式不能解释/回滚；
 - 同屏混用不同数据/分数快照；
 - fixture 被标为真实数据；
+- v5 `OPEN_PRODUCTION` 或用户明确列出的生产阻塞项没有 A201-A211 证据；
 - 首页视觉覆盖低于 90 或核心页平均低于 80；
 - reduced motion、键盘或等价列表缺失。

@@ -64,3 +64,27 @@ motion:
 calibration:
   cadence_days: 14
   auto_activate: false
+
+v5_production_gates:
+  database:
+    migration_lock_timeout_seconds: 30
+    rollback_required: true
+  ingestion:
+    entity_resolution_min_confidence: 0.72
+    evidence_independent_source_min: 2
+  scheduler:
+    lease_ttl_seconds: 900
+    heartbeat_interval_seconds: 30
+    max_retry_attempts: 5
+    dead_letter_after_attempts: 5
+  saved_view:
+    conflict_retry_limit: 3
+  benchmark:
+    scale_10k_p95_ms: 1000
+    scale_100k_p95_ms: 3000
+    scale_1m_p95_ms: 10000
+  soak:
+    short_duration_hours: 4
+    long_duration_hours: 24
+  brand:
+    clearance_required: true

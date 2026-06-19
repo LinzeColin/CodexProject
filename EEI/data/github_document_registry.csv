@@ -211,3 +211,17 @@ wireframes/recursive_focus_explorer.svg,wireframe-source,false,information archi
 wireframes/visual_first_workspace.png,wireframe-render,false,wireframe source change,design owner,git-lfs-or-release-zip,GENERATED
 wireframes/visual_first_workspace.svg,wireframe-source,false,information architecture or workspace change,design owner,git+release-zip,ACTIVE
 wireframes/visual_first_workspace_screenshot.png,wireframe-render,false,wireframe source change,design owner,git-lfs-or-release-zip,GENERATED
+REVIEW_AND_ITERATION_INDEX.md,v5-review-index,true,v5 review or production blocker sync,repository owner,git+release-zip,ACTIVE
+TEST_STRATEGY.md,test-strategy,true,test gate or release readiness change,qa owner,git+release-zip,ACTIVE
+CONTINUITY_PLAN.md,continuity-plan,true,phase or handoff continuity change,repository owner,git+release-zip,ACTIVE
+docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md,v5-sync,true,v5 review or MVP blocker mapping change,repository owner,git+release-zip,ACTIVE
+brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md,brand-research,true,brand or competitive landscape change,repository owner,git+release-zip,ACTIVE
+config/brand_policy.yaml,brand-policy,true,brand clearance policy change,repository owner,git+release-zip,ACTIVE
+reviews/00_CONSOLIDATED_REVIEW.md,review-source,false,v5 source review import,repository owner,git+release-zip,ACTIVE
+reviews/01_SECURITY_CODE_QUALITY_REVIEW.md,review-source,false,v5 source review import,repository owner,git+release-zip,ACTIVE
+reviews/02_STRESS_LIFECYCLE_INTERACTION_REVIEW.md,review-source,false,v5 source review import,repository owner,git+release-zip,ACTIVE
+reviews/03_UIUX_ARCHITECTURE_REVIEW.md,review-source,false,v5 source review import,repository owner,git+release-zip,ACTIVE
+data/review_issue_register.csv,review-catalog,true,v5 review issue sync,repository owner,git+release-zip,ACTIVE
+data/brand_name_conflict_register.csv,brand-catalog,true,brand clearance policy change,repository owner,git+release-zip,ACTIVE
+data/competitive_product_landscape.csv,competitive-catalog,true,competitive landscape update,research owner,git+release-zip,ACTIVE
+scripts/validate_v5_production_readiness_sync.py,validator,true,v5 review or MVP blocker mapping change,engineering owner,git+release-zip,ACTIVE

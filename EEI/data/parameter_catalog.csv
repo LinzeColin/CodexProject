@@ -59,3 +59,18 @@ UI 门槛,visual.minimum_pointer_target_px,最小点击目标,threshold,24,24,44
 动画参数,motion.full_relayout_max,全布局最大时长,ui,480,260,700,10,ms,slider+number,motion,True,all_visuals,,schema range,统一动画持续时间
 治理,calibration.cadence_days,校准周期,threshold,14,14,14,0,days,read-only,threshold,False,scheduler,,const 14,每两周一次
 治理,calibration.auto_activate,校准建议自动激活,threshold,False,False,False,0,boolean,toggle,threshold,False,calibration,,must be false,建议必须人工确认
+生产数据库,database.migration_lock_timeout_seconds,迁移锁等待上限,production,30,5,300,5,seconds,number,environment,False,migration,,schema range,T1300 迁移执行不得无界等待
+生产数据库,database.rollback_required,迁移必须可回滚,production,True,True,True,0,boolean,read-only,release_gate,False,migration,,must be true,T1300 每个生产迁移必须有回滚或恢复证据
+真实采集,ingestion.entity_resolution_min_confidence,实体解析最低置信度,production,0.72,0.50,0.95,0.01,ratio,slider+number,profile,False,ingestion,,schema range,T1301 自动接受实体解析的最低置信度
+真实采集,ingestion.evidence_independent_source_min,独立来源最低数量,production,2,1,5,1,count,number,threshold,False,ingestion,,schema range,T1301 推断事实默认独立来源数量
+后台调度,scheduler.lease_ttl_seconds,任务租约 TTL,production,900,60,7200,60,seconds,number,environment,False,scheduler,,schema range,T1304 worker 租约过期恢复窗口
+后台调度,scheduler.heartbeat_interval_seconds,任务心跳间隔,production,30,5,300,5,seconds,number,environment,False,scheduler,,schema range,T1304 worker 心跳间隔
+后台调度,scheduler.max_retry_attempts,最大重试次数,production,5,0,12,1,count,number,environment,False,scheduler,,schema range,T1304 进入 dead-letter 前的重试次数上限
+后台调度,scheduler.dead_letter_after_attempts,Dead-letter 次数阈值,production,5,1,12,1,count,number,environment,False,scheduler,,schema range,T1304 失败任务进入 dead-letter 的尝试次数
+保存视图,saved_view.conflict_retry_limit,保存视图冲突重试上限,production,3,0,10,1,count,number,environment,False,saved_view,,schema range,T1305 optimistic concurrency 冲突重试上限
+规模测试,benchmark.scale_10k_p95_ms,1 万关系 P95 预算,production,1000,250,5000,50,ms,number,threshold,False,benchmark,,schema range,T1306 10k 关系 API/布局/渲染预算
+规模测试,benchmark.scale_100k_p95_ms,10 万关系 P95 预算,production,3000,500,15000,100,ms,number,threshold,False,benchmark,,schema range,T1306 100k 关系分层查询预算
+规模测试,benchmark.scale_1m_p95_ms,100 万关系 P95 预算,production,10000,1000,60000,500,ms,number,threshold,False,benchmark,,schema range,T1306 1m 关系聚合/子图预算
+Soak 测试,soak.short_duration_hours,短期 soak 时长,production,4,1,8,1,hours,number,release_gate,False,soak,,schema range,T1307 短期稳定性测试时长
+Soak 测试,soak.long_duration_hours,长期 soak 时长,production,24,8,72,1,hours,number,release_gate,False,soak,,schema range,T1307 长期稳定性测试时长
+品牌清权,brand.clearance_required,公开发布前品牌清权,production,True,True,True,0,boolean,read-only,release_gate,False,brand,,must be true,T1309 EEI 公开发布前必须完成法律与市场清权或风险豁免

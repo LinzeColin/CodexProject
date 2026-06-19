@@ -199,3 +199,14 @@ A197,P0,database,用户能够从任意界面查看当前数据快照、模型版
 A198,P0,refresh,模型参数修改后商业版图、供应链、资本、控制、政策、信号、排序与告警同步刷新,cross-view E2E,NOT STARTED
 A199,P0,navigation,功能结构、模型与参数、数据库与来源、开发治理均为正式导航板块,E2E,NOT STARTED
 A200,P0,release,clean-room 校验通过 Markdown/CSV/JSON/GitHub/原型/PDF/ZIP 一致性,release verification,DONE
+A201,P0,database,"PostgreSQL production migrations are reversible and preserve separate fact, evidence, time validity and version layers",migration rollback + integrity test,NOT STARTED
+A202,P0,data,"Golden Vertical real ingestion preserves raw snapshot, entity resolution confidence, evidence chain, parser version, review status and counter-evidence",ingestion integration test,NOT STARTED
+A203,P0,api,"Production API, recursive graph query and scoring responses are snapshot-scoped, evidence-bearing and budget-bounded",contract + integration test,NOT STARTED
+A204,P0,model,"Model config versions activate transactionally with operation log and failed activation leaves previous active version unchanged",transaction/rollback test,NOT STARTED
+A205,P0,refresh,"Global model/data refresh atomically switches all visible modules and stale clients receive conflict or refresh semantics",cross-view E2E + cache invalidation test,NOT STARTED
+A206,P0,scheduler,"Background jobs support lease, auto wake, idempotency key, heartbeat, retry cap, dead-letter and graceful shutdown",worker crash/retry integration test,NOT STARTED
+A207,P0,saved-view,"Server saved views support optimistic conflict control, version history, recovery and schema migration",multi-session conflict + restore test,NOT STARTED
+A208,P0,scale,"10k, 100k and 1m relationship benchmarks record API, layout, render, memory, frame and long-task budgets with pass/fail output",performance benchmark,NOT STARTED
+A209,P0,soak,"4h and 24h browser and worker soak tests record heap, DOM, listener, timer, CPU, retry and recovery stability",soak suite,NOT STARTED
+A210,P0,brand,"EEI formal brand legal and market clearance is complete for public launch or a signed risk waiver blocks/permits release explicitly",brand clearance evidence review,NOT STARTED
+A211,P0,frontend,"Production frontend is componentized with real routes, WorkspaceContext, real controls, disabled unfinished entries and persisted state/query wiring",component + route + E2E test,NOT STARTED

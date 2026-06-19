@@ -119,3 +119,13 @@ T1212,G0,P0,Install GitHub governance consistency workflow,T1211,"A182,A183,A200
 T1213,G0,P0,Generate development status and requirement-function-task-test traceability,T1200,"A183,A184",DONE
 T1214,G0,P0,"Map risk controls to functions, tasks, acceptance and release gates",T1213,A185,DONE
 T1215,G9,P0,"Run clean-room governance, prototype, PDF and ZIP validation","T1210,T1212,T1214",A200,DONE
+T1300,G2,P0,"Harden PostgreSQL production migrations, reversibility and fact/evidence/time/version layers",T1215,A201,NOT STARTED
+T1301,G3,P0,"Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical",T1300,A202,NOT STARTED
+T1302,G4,P0,"Complete production API, recursive graph query and scoring service contracts",T1301,A203,NOT STARTED
+T1303,G5,P0,"Implement transactional model config activation and atomic global refresh",T1302,"A204,A205",NOT STARTED
+T1304,G7,P0,"Implement scheduler auto wake, idempotency, retry, heartbeat, graceful shutdown and dead-letter",T1301,A206,NOT STARTED
+T1305,G4,P0,"Implement server-side saved views, optimistic conflict control and recovery",T1302,A207,NOT STARTED
+T1306,G8,P0,"Run 10k, 100k and 1m relationship scale benchmarks for API, layout and render budgets",T1302,A208,NOT STARTED
+T1307,G8,P0,"Run 4h and 24h browser and worker soak tests for memory, timer, listener and retry stability",T1304,A209,NOT STARTED
+T1308,G6,P0,"Componentize production frontend routes and wire real controls to API, state and persistence",T1302,A211,NOT STARTED
+T1309,G0,P0,"Complete EEI formal brand legal and market clearance or signed risk waiver before public launch",T1215,A210,NOT STARTED

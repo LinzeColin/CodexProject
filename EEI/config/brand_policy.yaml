@@ -1,0 +1,40 @@
+version: v5.0-eei-sync
+status: internal-product-identity-pending-formal-clearance
+system_name_zh: 商域图谱
+system_name_en: Enterprise Ecosystem Intelligence
+system_abbreviation: EEI
+subtitle_zh: 企业商业版图与供应链递归探索系统
+repository: LinzeColin/CodexProject/EEI
+public_disclosure_status: not_cleared_for_public_brand_launch
+forbidden_active_names:
+  - 商脉
+  - NexAtlas
+  - Nexus Atlas
+  - Orbiscope
+  - 产业星图
+  - Atlas
+  - Business Atlas
+  - Corporate Atlas
+  - Supply Atlas
+source_evidence:
+  task_pack_zip: /Users/linzezhang/Downloads/US_Corporate_Power_Map_Codex_MVP_Task_Pack_v5.0_2026-06-19.zip
+  review_issue_register: data/review_issue_register.csv
+  conflict_register: data/brand_name_conflict_register.csv
+  competitive_landscape: data/competitive_product_landscape.csv
+release_gate:
+  id: BRAND-G1
+  required_before:
+    - public domain registration
+    - app store publication
+    - public SaaS launch
+    - trademark filing
+    - paid public marketing campaign
+  checks:
+    - CN/US/EU/UK/AU trademark knockout
+    - company-name search
+    - domain and social handles
+    - app stores
+    - GitHub/npm/PyPI
+    - phonetic and semantic review in Chinese and English
+    - same-category and adjacent-category competitor review
+    - legal counsel sign-off or explicit risk waiver

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.local/schemas/model_config_schema.json",
-  "title": "Business Atlas Model Profile v2",
+  "title": "Enterprise Ecosystem Intelligence Model Profile v2",
   "type": "object",
   "required": [
     "schema_version",
