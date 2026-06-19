@@ -39,6 +39,10 @@ def _now() -> datetime:
     return datetime.now(tz=UTC)
 
 
+def _escape_like(value: str) -> str:
+    return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
 ROOT = Path(__file__).resolve().parents[3]
 
 
@@ -198,7 +202,7 @@ class DomainRepository:
         limit: int,
     ) -> list[dict[str, Any]]:
         search_term = (query or "").strip()
-        pattern = f"%{search_term}%"
+        pattern = f"%{_escape_like(search_term)}%"
         with self.connect() as connection:
             rows = connection.execute(
                 """
@@ -218,7 +222,10 @@ class DomainRepository:
                     %(entity_type)s::entity_type IS NULL
                     OR e.entity_type = %(entity_type)s::entity_type
                   )
-                    AND (%(query)s = '' OR e.canonical_name ILIKE %(pattern)s)
+                    AND (
+                      %(query)s = ''
+                      OR e.canonical_name ILIKE %(pattern)s ESCAPE '\\'
+                    )
                   UNION ALL
                   SELECT
                     e.id,
@@ -236,7 +243,7 @@ class DomainRepository:
                     %(entity_type)s::entity_type IS NULL
                     OR e.entity_type = %(entity_type)s::entity_type
                   )
-                    AND (%(query)s = '' OR ei.value ILIKE %(pattern)s)
+                    AND (%(query)s = '' OR ei.value ILIKE %(pattern)s ESCAPE '\\')
                   UNION ALL
                   SELECT
                     e.id,
@@ -254,7 +261,7 @@ class DomainRepository:
                     %(entity_type)s::entity_type IS NULL
                     OR e.entity_type = %(entity_type)s::entity_type
                   )
-                    AND (%(query)s = '' OR ea.alias ILIKE %(pattern)s)
+                    AND (%(query)s = '' OR ea.alias ILIKE %(pattern)s ESCAPE '\\')
                 ),
                 ranked AS (
                   SELECT DISTINCT ON (id)
