@@ -112,7 +112,7 @@ T1205,G4,P0,Implement Development Status navigation screen linked to tasks risks
 T1206,G3,P0,Implement immutable model version and active snapshot consistency contract,T1201,"A171,A178",DONE
 T1207,G4,P0,Wire online model edits to preview all loaded visual modules,T1206,"A157,A158,A178",DONE
 T1208,G5,P0,Add end-to-end test for global model/data version consistency,T1207,A178,DONE
-T1209,G5,P0,Add canonical prototype parity smoke test for index and standalone,T1202,A176,NOT STARTED
+T1209,G5,P0,Add canonical prototype parity smoke test for index and standalone,T1202,A176,DONE
 T1210,G8,P0,Configure GitHub branch rules CODEOWNERS and required catalog checks,T1202,"A175,A177",NOT STARTED
 T1211,G9,P0,Publish reproducible release with manifest checksums status and acceptance evidence,"T1208,T1209,T1210","A175,A177",NOT STARTED
 T1212,G0,P0,Install GitHub governance consistency workflow,T1211,"A182,A183,A200",NOT STARTED

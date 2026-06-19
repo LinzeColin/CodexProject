@@ -1401,3 +1401,30 @@ Acceptance status:
 Residual risks:
 
 - T1208 only verifies the active context contract across current navigation pages; real model editing, activation, rollback and recalculation remain in T600-T604.
+
+## 2026-06-19 - Phase 1 / G5 T1209 Prototype parity smoke test
+
+Status: LOCAL PASS / REMOTE CI PENDING
+
+Completed:
+
+- Added `scripts/validate_prototype_parity.py` to compare `prototype/index.html` and `prototype/standalone.html` by bytes and SHA-256 hash.
+- The parity validator rejects external script and stylesheet references so the canonical prototype cannot silently point at stale JS/CSS.
+- The validator asserts required prototype views and graph/model DOM anchors are present in the canonical HTML.
+- Wired `validate-prototype-parity` into `make verify` and registered the script in the repository document registry.
+- Marked T1209 and A176 as `DONE`.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/validate_prototype_parity.py`: PASS; canonical hash `7f06f96c917ff14fc42c94de09b0e5f89f622a22a44a0dd64da3941429486719`.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions: PENDING.
+
+Acceptance status:
+
+- A176 is covered by `scripts/validate_prototype_parity.py`, `prototype/index.html`, `prototype/standalone.html` and the `validate-prototype-parity` Makefile target.
+
+Residual risks:
+
+- T1209 validates static parity and stale asset references; it does not replace later visual-regression screenshots or clean-room release packaging in T1118/T1119/T1123/T1215.

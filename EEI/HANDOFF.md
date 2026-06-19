@@ -340,14 +340,15 @@ Remote verification:
 - T1114-T1117 / A161-A166 are DONE and remote CI passed; accessible graph-equivalent table fields, keyboard/focus/target assertions, non-color evidence labels, and UI copy lint passed local E2E plus `make verify`.
 - T1207 / A157-A158/A178 is DONE and remote CI passed; model preview context now propagates across the home workspace, saved-view metadata, and `/industries`, with local E2E 26/26 plus `make verify`.
 - T1208 / A178 is DONE and remote CI passed; the active model/profile/data/score snapshot E2E now covers `/`, `/industries`, `/objects-scope` and `/development-status`, with serial local E2E 26/26 plus `make verify`.
-- G4/G5 remain open because saved-view API persistence, visual regression/performance suites, prototype parity and remaining governance tasks are not complete.
+- T1209 / A176 is DONE locally and awaits verification; prototype parity validation now checks index/standalone byte identity, canonical hash, required views, DOM anchors and stale JS/CSS references.
+- G4/G5 remain open because saved-view API persistence, visual regression/performance suites and remaining governance tasks are not complete.
 - MVP is not complete.
 
 ## Recommended Next Step
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Start T1209 canonical prototype parity smoke test as the next bounded G5 slice.
+1. Finish T1209 validation, commit, remote CI, and evidence recording.
 2. Keep T1118/T1119 visual regression and performance suites separate in G5.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.

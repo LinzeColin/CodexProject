@@ -165,6 +165,7 @@ scripts/generate_governance_pdf.py,automation-and-validation,false,validation/bu
 scripts/preflight.sh,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/run_codex_autonomous.sh,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/smoke_test_prototype.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/validate_prototype_parity.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_catalog_integrity.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_governance.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_model_config.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
