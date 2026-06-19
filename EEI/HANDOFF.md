@@ -43,6 +43,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Added the T1203 CSV-backed taxonomy and object-scope API with catalog inventory, catalog detail, CSV export, object-scope coverage counts, and A169 local verification.
 - Completed T1203 and A169 by GitHub Actions run `27826870509`; G2 task list is complete, but G2 remains `IN PROGRESS` pending acceptance audit for unresolved G2-linked IDs.
 - Completed G2 acceptance audit pass 1 locally: A015-A022, A024, and A028 now have explicit validator/integration evidence; A012-A014, A026-A027, and A170 remain open.
+- Completed G2 acceptance audit pass 1 remote CI by GitHub Actions run `27827498238`; job `82355514060` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 
 ## Verification Evidence
 
@@ -76,6 +77,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `make verify-g2-db` still fails closed because Docker is not installed.
 - 2026-06-19 update: GitHub Actions run `27826870509` passed; job `82353421402` proved T1203 through static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - 2026-06-19 update: local `make verify` passed after strengthening G2 schema checks and acceptance traceability.
+- 2026-06-19 update: GitHub Actions run `27827498238` passed; job `82355514060` proved strengthened G2 schema checks under PostgreSQL.
 
 Remote verification:
 
@@ -96,6 +98,8 @@ Remote verification:
 - GitHub Actions job `82350766117`: PASS.
 - GitHub Actions run `27826870509`: PASS.
 - GitHub Actions job `82353421402`: PASS.
+- GitHub Actions run `27827498238`: PASS.
+- GitHub Actions job `82355514060`: PASS.
 
 ## Not Completed
 

@@ -547,6 +547,10 @@ Verification evidence:
 - Local `make verify`: PASS.
 - Local `.venv/bin/uv run ruff check scripts/check_database_schema.py`: PASS.
 - Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27827498238`.
+- GitHub Actions job: `82355514060`.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -560,4 +564,4 @@ Acceptance status:
 Residual risks:
 
 - `data/release_gate_catalog.csv` remains `G2=IN PROGRESS`.
-- Remote GitHub Actions still needs to prove the strengthened schema checker under PostgreSQL.
+- Remaining G2-linked open IDs are A012, A013, A014, A026, A027, and A170.
