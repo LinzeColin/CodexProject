@@ -1112,7 +1112,7 @@ Acceptance status:
 
 Residual risks:
 
-- T405 still owns full graph/table explorer node actions; T406 still owns bounded evidence-bearing path queries.
+- At T403 closeout, T405 still owned full graph/table explorer node actions; T405 is now completed below. T406 still owns bounded evidence-bearing path queries.
 
 ## 2026-06-19 - Phase 1 / G4 T404 Breadcrumb and browser history synchronization
 
@@ -1143,4 +1143,35 @@ Acceptance status:
 
 Residual risks:
 
+- T408 still owns the critical three-reroot E2E acceptance A048.
+
+## 2026-06-19 - Phase 1 / G4 T405 Graph table explorer and node actions
+
+Status: LOCAL E2E PASS / REMOTE CI PENDING
+
+Completed:
+
+- Added selected-node actions for reroot, upstream, downstream, path, compare, pin, Watchlist and evidence entry points.
+- Added pinned, comparison and Watchlist state summaries that persist while the user changes semantic zoom/layout level.
+- Added a filterable graph table alternative backed by the same visible relationship edges as the graph.
+- Added explicit visual semantics metadata and copy stating that layout position is not control semantics and color is not the only encoding; labels, arrows, stages, roles and evidence carry semantics.
+- Strengthened the home E2E suite for node actions, layout-preserved pinned/comparison state, table filtering and non-color encoding semantics.
+- Marked T405, A053, A054, A055 and A058 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/home.spec.ts`: PASS, 22 tests.
+
+Acceptance status:
+
+- A053 is covered by visible action buttons and action-state assertions in `tests/e2e/home.spec.ts`.
+- A054 is covered by pin/compare persistence after semantic zoom/layout changes.
+- A055 is covered by the `graph-table-alternative` table and `graph-table-filter` lens assertions.
+- A058 is covered by explicit semantic metadata plus visible arrow and edge-label assertions.
+
+Residual risks:
+
+- Remote CI is pending for T405.
+- T406 still owns bounded evidence-bearing path queries.
+- T407 still owns visible truncation and inclusion sorting explanations.
 - T408 still owns the critical three-reroot E2E acceptance A048.

@@ -875,6 +875,11 @@ export default function Home() {
     createSavedView(defaultWorkspaceState)
   );
   const [savedViewStatus, setSavedViewStatus] = useState("ready");
+  const [pinnedNodeKeys, setPinnedNodeKeys] = useState<NodeKey[]>([]);
+  const [comparisonNodeKeys, setComparisonNodeKeys] = useState<NodeKey[]>([]);
+  const [watchlistNodeKeys, setWatchlistNodeKeys] = useState<NodeKey[]>([]);
+  const [tableLensFilter, setTableLensFilter] = useState<LensKey>("all");
+  const [nodeActionStatus, setNodeActionStatus] = useState("ready");
   const [stateReady, setStateReady] = useState(false);
   const restoringHistoryState = useRef(false);
   const hasWrittenHistoryState = useRef(false);
@@ -910,6 +915,13 @@ export default function Home() {
       ...overviewAggregateEdges
     ];
   }, [focusKey, scenario.edges, semanticZoom]);
+  const tableEdges = useMemo(
+    () =>
+      tableLensFilter === "all"
+        ? displayEdges
+        : displayEdges.filter((edge) => edge.lens === tableLensFilter),
+    [displayEdges, tableLensFilter]
+  );
   const activeEdgeKeys = useMemo(() => {
     const keys = new Set<NodeKey>([focusKey]);
     for (const edge of displayEdges) {
@@ -1013,6 +1025,33 @@ export default function Home() {
   function inspectNode(nextSelected: NodeKey) {
     setSelectedKey(nextSelected);
     setGroupListOpen(false);
+  }
+
+  function addUniqueNode(current: NodeKey[], key: NodeKey) {
+    return current.includes(key) ? current : [...current, key];
+  }
+
+  function pinSelectedNode() {
+    setPinnedNodeKeys((current) => addUniqueNode(current, selectedNode.key));
+    setNodeActionStatus(`pinned:${selectedNode.key}`);
+  }
+
+  function compareSelectedNode() {
+    setComparisonNodeKeys((current) => addUniqueNode(current, selectedNode.key).slice(-4));
+    setNodeActionStatus(`compare:${selectedNode.key}`);
+  }
+
+  function addSelectedNodeToWatchlist() {
+    setWatchlistNodeKeys((current) => addUniqueNode(current, selectedNode.key));
+    setNodeActionStatus(`watchlist:${selectedNode.key}`);
+  }
+
+  function openSelectedPath() {
+    setNodeActionStatus(`path:${selectedNode.key}`);
+  }
+
+  function openSelectedEvidence() {
+    setNodeActionStatus(`evidence:${selectedNode.key}`);
   }
 
   function handleNodeKeyDown(event: KeyboardEvent<SVGGElement>, nextSelected: NodeKey) {
@@ -1377,7 +1416,6 @@ export default function Home() {
             ))}
           </div>
         </div>
-
         <div
           className="zoomBar"
           aria-label="语义缩放"
@@ -1656,6 +1694,65 @@ export default function Home() {
           ))}
         </ol>
 
+        <section
+          className="graphTablePanel"
+          data-color-independent-encoding="labels,arrows,stages,roles,evidence"
+          data-testid="graph-table-alternative"
+        >
+          <header>
+            <p className="eyebrow">Graph Table</p>
+            <label htmlFor="graph-table-lens-filter">Lens</label>
+            <select
+              data-testid="graph-table-filter"
+              id="graph-table-lens-filter"
+              onChange={(event) => setTableLensFilter(event.target.value as LensKey)}
+              value={tableLensFilter}
+            >
+              {lensItems.map((lens) => (
+                <option key={lens.key} value={lens.key}>
+                  {lens.label}
+                </option>
+              ))}
+            </select>
+          </header>
+          <p
+            className="visualSemanticsNotice"
+            data-color-independent-encoding="labels,arrows,stages,roles,evidence"
+            data-control-semantics="layout-position-not-control"
+            data-testid="visual-semantics-notice"
+          >
+            Layout position is visual focus only; relationship labels, arrows, stages, roles and
+            evidence carry semantics.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Relationship</th>
+                <th scope="col">Stage</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableEdges.map((edge) => (
+                <tr
+                  data-lens={edge.lens}
+                  data-testid={`graph-table-row-${edge.from}-${edge.to}`}
+                  key={`${edge.from}-${edge.to}`}
+                >
+                  <td>{nodeByKey.get(edge.from)?.shortLabel ?? edge.from}</td>
+                  <td>{nodeByKey.get(edge.to)?.shortLabel ?? edge.to}</td>
+                  <td>
+                    <span>{edge.label}</span>
+                    <small>{edge.fixtureNotice}</small>
+                  </td>
+                  <td>{edge.stage}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+
         <div className="actionStack" aria-label="主体操作">
           <button
             className="primaryAction"
@@ -1668,6 +1765,7 @@ export default function Home() {
             <span>以 {selectedNode.label} 为中心</span>
           </button>
           <button
+            data-testid="node-action-upstream"
             disabled={!upstreamCandidate}
             onClick={() => upstreamCandidate && inspectNode(upstreamCandidate)}
             type="button"
@@ -1676,6 +1774,7 @@ export default function Home() {
             <span>展开上游</span>
           </button>
           <button
+            data-testid="node-action-downstream"
             disabled={!downstreamCandidate}
             onClick={() => downstreamCandidate && inspectNode(downstreamCandidate)}
             type="button"
@@ -1683,15 +1782,23 @@ export default function Home() {
             <ArrowDown size={16} aria-hidden="true" />
             <span>展开下游</span>
           </button>
-          <button onClick={() => inspectNode(selectedNode.key)} type="button">
+          <button data-testid="node-action-pin" onClick={pinSelectedNode} type="button">
+            <Star size={16} aria-hidden="true" />
+            <span>固定节点</span>
+          </button>
+          <button data-testid="node-action-compare" onClick={compareSelectedNode} type="button">
+            <GitBranch size={16} aria-hidden="true" />
+            <span>加入比较</span>
+          </button>
+          <button data-testid="node-action-watchlist" onClick={addSelectedNodeToWatchlist} type="button">
             <Star size={16} aria-hidden="true" />
             <span>加入关注</span>
           </button>
-          <button onClick={() => inspectNode(focusKey)} type="button">
+          <button data-testid="node-action-path" onClick={openSelectedPath} type="button">
             <Route size={16} aria-hidden="true" />
             <span>查看路径</span>
           </button>
-          <button onClick={() => inspectNode(selectedNode.key)} type="button">
+          <button data-testid="node-action-evidence" onClick={openSelectedEvidence} type="button">
             <FileSearch size={16} aria-hidden="true" />
             <span>打开证据</span>
           </button>
@@ -1712,6 +1819,34 @@ export default function Home() {
             <span>回到 NVIDIA</span>
           </button>
         </div>
+
+        <section
+          className="nodeActionState"
+          data-compare-count={comparisonNodeKeys.length}
+          data-pinned-count={pinnedNodeKeys.length}
+          data-testid="node-action-state"
+          data-watchlist-count={watchlistNodeKeys.length}
+        >
+          <div>
+            <strong>Pinned</strong>
+            <span data-testid="pinned-node-list">
+              {pinnedNodeKeys.map((key) => entityLabels[key]).join(" / ") || "none"}
+            </span>
+          </div>
+          <div>
+            <strong>Compare</strong>
+            <span data-testid="comparison-node-list">
+              {comparisonNodeKeys.map((key) => entityLabels[key]).join(" / ") || "none"}
+            </span>
+          </div>
+          <div>
+            <strong>Watchlist</strong>
+            <span data-testid="watchlist-node-list">
+              {watchlistNodeKeys.map((key) => entityLabels[key]).join(" / ") || "none"}
+            </span>
+          </div>
+          <small data-testid="node-action-status">{nodeActionStatus}</small>
+        </section>
 
         {selectedNode.groupMembers && groupListOpen ? (
           <ol className="groupList" data-testid="group-list">

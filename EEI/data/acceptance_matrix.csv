@@ -51,12 +51,12 @@ A049,P0,reroot,Breadcrumb contains full focus path and is clickable,E2E,DONE
 A050,P0,reroot,Browser back/forward restore the correct focus and state,E2E,DONE
 A051,P0,reroot,"URL serializes/restores focus, layers, direction, time, profile and filters",E2E,DONE
 A052,P0,explore,Incremental expand loads only selected direction/layers within expand budget,Integration/E2E,DONE
-A053,P0,explore,"Node actions include reroot, upstream, downstream, path, compare, pin, Watchlist and evidence",UI test,NOT STARTED
-A054,P0,explore,Pinned nodes and comparisons survive layout changes,E2E,NOT STARTED
-A055,P0,explore,Graph has filterable table/list alternative,E2E/a11y,NOT STARTED
+A053,P0,explore,"Node actions include reroot, upstream, downstream, path, compare, pin, Watchlist and evidence",UI test,DONE
+A054,P0,explore,Pinned nodes and comparisons survive layout changes,E2E,DONE
+A055,P0,explore,Graph has filterable table/list alternative,E2E/a11y,DONE
 A056,P0,paths,Shortest/upstream/downstream/control/capital/policy/bottleneck paths are bounded and evidence-bearing,Integration,NOT STARTED
 A057,P0,explore,Truncation and inclusion sorting are explained to the user,UI/content test,NOT STARTED
-A058,P0,explore,Visual centrality is not presented as control and color is not the only encoding,Design/a11y review,NOT STARTED
+A058,P0,explore,Visual centrality is not presented as control and color is not the only encoding,Design/a11y review,DONE
 A059,P0,dossier,Every P0 seed opens a company/entity focus page,API/E2E,NOT STARTED
 A060,P0,dossier,"Human summary covers business, group, dependencies, capital, policy, signals and data gaps",Content/E2E,NOT STARTED
 A061,P0,dossier,Company workspace exposes eight required layers,E2E,NOT STARTED

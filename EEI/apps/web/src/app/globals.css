@@ -535,6 +535,16 @@ dd {
   overflow: hidden;
 }
 
+.visualSemanticsNotice {
+  margin: 0;
+  border-left: 4px solid var(--teal);
+  background: #edf8f1;
+  color: #184c35;
+  padding: 9px 11px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .ecosystemMap {
   width: 100%;
   height: 100%;
@@ -763,6 +773,60 @@ dd {
   line-height: 1.35;
 }
 
+.graphTablePanel {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfc;
+  padding: 12px;
+  overflow-x: auto;
+}
+
+.graphTablePanel header {
+  display: grid;
+  grid-template-columns: 1fr auto minmax(118px, 150px);
+  align-items: center;
+  gap: 8px;
+}
+
+.graphTablePanel label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.graphTablePanel select {
+  min-height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #ffffff;
+  color: var(--ink);
+  padding: 0 8px;
+}
+
+.graphTablePanel table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.graphTablePanel th,
+.graphTablePanel td {
+  border-top: 1px solid var(--line);
+  padding: 8px 6px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.graphTablePanel td small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
 .selectedNodeCard {
   display: grid;
   gap: 10px;
@@ -914,6 +978,40 @@ dd {
 
 .actionStack button span {
   overflow-wrap: anywhere;
+}
+
+.nodeActionState {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfc;
+  padding: 12px;
+}
+
+.nodeActionState div {
+  display: grid;
+  gap: 4px;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+
+.nodeActionState div:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.nodeActionState strong {
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.nodeActionState span,
+.nodeActionState small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .statusStrip {

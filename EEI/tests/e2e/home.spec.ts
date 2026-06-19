@@ -202,9 +202,31 @@ test("selects node context without changing subject and supports primary inspect
   await expect(actions.getByTestId("primary-set-center")).toContainText(
     "以 Synthetic Advanced Foundry 为中心"
   );
-  for (const action of ["展开上游", "展开下游", "加入关注", "查看路径", "打开证据"]) {
+  for (const action of [
+    "展开上游",
+    "展开下游",
+    "固定节点",
+    "加入比较",
+    "加入关注",
+    "查看路径",
+    "打开证据"
+  ]) {
     await expect(actions.getByRole("button", { name: action })).toBeVisible();
   }
+  await actions.getByTestId("node-action-pin").click();
+  await expect(page.getByTestId("pinned-node-list")).toContainText("Synthetic Advanced Foundry");
+  await actions.getByTestId("node-action-compare").click();
+  await expect(page.getByTestId("comparison-node-list")).toContainText(
+    "Synthetic Advanced Foundry"
+  );
+  await actions.getByTestId("node-action-watchlist").click();
+  await expect(page.getByTestId("watchlist-node-list")).toContainText(
+    "Synthetic Advanced Foundry"
+  );
+  await actions.getByTestId("node-action-path").click();
+  await expect(page.getByTestId("node-action-status")).toHaveText("path:foundry");
+  await actions.getByTestId("node-action-evidence").click();
+  await expect(page.getByTestId("node-action-status")).toHaveText("evidence:foundry");
 
   await actions.getByTestId("primary-set-center").click();
   await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
@@ -216,6 +238,8 @@ test("switches lenses on the persistent canvas while preserving exploration stat
   await page.goto("/");
 
   await page.getByTestId("graph-node-foundry").click();
+  await page.getByTestId("node-action-pin").click();
+  await page.getByTestId("node-action-compare").click();
   await page.getByTestId("zoom-L2").click();
 
   const beforeViewport = await page.getByTestId("workspace-shell").getAttribute("data-viewport-anchor");
@@ -251,6 +275,43 @@ test("switches lenses on the persistent canvas while preserving exploration stat
     "data-lens-state",
     "faded"
   );
+  await page.getByTestId("zoom-L3").click();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-semantic-zoom", "L3");
+  await expect(page.getByTestId("selected-node-title")).toHaveText("Synthetic Advanced Foundry");
+  await expect(page.getByTestId("pinned-node-list")).toContainText("Synthetic Advanced Foundry");
+  await expect(page.getByTestId("comparison-node-list")).toContainText(
+    "Synthetic Advanced Foundry"
+  );
+});
+
+test("offers a filterable graph table alternative and explicit visual semantics", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  await expect(page.getByTestId("visual-semantics-notice")).toHaveAttribute(
+    "data-control-semantics",
+    "layout-position-not-control"
+  );
+  await expect(page.getByTestId("visual-semantics-notice")).toHaveAttribute(
+    "data-color-independent-encoding",
+    "labels,arrows,stages,roles,evidence"
+  );
+  await expect(page.locator(".edge[marker-end='url(#arrow)']").first()).toBeVisible();
+  await expect(page.getByTestId("edge-label-materials-foundry")).toContainText(
+    "material provider to"
+  );
+
+  const table = page.getByTestId("graph-table-alternative");
+  await expect(table).toBeVisible();
+  await expect(table).toHaveAttribute(
+    "data-color-independent-encoding",
+    "labels,arrows,stages,roles,evidence"
+  );
+  await page.getByTestId("graph-table-filter").selectOption("supply_chain");
+  await expect(table.locator("tbody tr").first()).toHaveAttribute("data-lens", "supply_chain");
+  expect(await table.locator("tbody tr:not([data-lens='supply_chain'])").count()).toBe(0);
+  await expect(table).toContainText("wafer foundry for");
 });
 
 test("implements semantic zoom levels and grouped dense-node list view", async ({ page }) => {
