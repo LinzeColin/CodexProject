@@ -277,6 +277,8 @@ Remote verification:
 - GitHub Actions job `82394120613`: PASS.
 - GitHub Actions run `27839493483`: PASS.
 - GitHub Actions job `82395103164`: PASS.
+- GitHub Actions run `27840198892`: PASS.
+- GitHub Actions job `82397301394`: PASS.
 
 ## Not Completed
 
@@ -303,7 +305,7 @@ Remote verification:
 - T402 / A045-A047 are DONE and remote CI passed.
 - T403 / A052 is DONE and remote CI passed.
 - T404 / A049-A050 is DONE and remote CI passed.
-- T405 / A053-A055/A058 is DONE locally; `tests/e2e/home.spec.ts` passed with 22 tests after adding graph table alternative, node actions, pin/compare/Watchlist state, and explicit non-color visual semantics. Remote CI is pending.
+- T405 / A053-A055/A058 is DONE and remote CI passed; `tests/e2e/home.spec.ts` passed with 22 tests after adding graph table alternative, node actions, pin/compare/Watchlist state, and explicit non-color visual semantics.
 - G4 remains open because recursive exploration, live context, accessible list/table equivalents, model preview propagation, and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -311,7 +313,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Push T405 and confirm GitHub Actions before starting the next implementation slice.
-2. Start T406 path queries for A056 after T405 remote CI passes; keep T408 three-reroot critical E2E as a separate bounded slice.
+1. Start T406 path queries for A056 as the next bounded G4 slice.
+2. Keep T408 three-reroot critical E2E as a separate bounded slice after T407/T406 dependencies are settled.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3 state/history contracts while adding recursive exploration and governance views.

@@ -1147,7 +1147,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G4 T405 Graph table explorer and node actions
 
-Status: LOCAL E2E PASS / REMOTE CI PENDING
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1161,6 +1161,13 @@ Completed:
 Verification evidence:
 
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/home.spec.ts`: PASS, 22 tests.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27840198892`: PASS.
+- GitHub Actions job `82397301394`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -1171,7 +1178,6 @@ Acceptance status:
 
 Residual risks:
 
-- Remote CI is pending for T405.
 - T406 still owns bounded evidence-bearing path queries.
 - T407 still owns visible truncation and inclusion sorting explanations.
 - T408 still owns the critical three-reroot E2E acceptance A048.
