@@ -117,6 +117,7 @@ function applyHomeSummary(summary) {
 
   applyDecisionRows(summary.decision_rows || []);
   applyEvidenceDrawer(summary.evidence_drawer || {});
+  applyWorkflowRuntime(summary.workflow_runtime || {});
 }
 
 function applyDecisionRows(rows) {
@@ -155,6 +156,30 @@ function applyEvidenceDrawer(drawer) {
     if (!Object.prototype.hasOwnProperty.call(drawer, key)) return;
     node.textContent = drawer[key] || "";
   });
+}
+
+function applyWorkflowRuntime(runtime) {
+  if (!runtime || runtime.schema !== "PFIOSPhaseCWorkflowRuntimeReadModelV1") return;
+  const rows = runtime.task_center_rows || [];
+  const list = document.querySelector(".task-list");
+  if (list && rows.length > 0) {
+    list.replaceChildren();
+    rows.slice(0, 6).forEach((row) => {
+      const item = document.createElement("li");
+      item.dataset.taskState = String(row.status || "review").toLowerCase();
+      const title = document.createElement("strong");
+      title.textContent = `${row.priority || "P1"} · ${row.object || row.workspace || "Workflow"}`;
+      const detail = document.createElement("span");
+      detail.textContent = `${row.status || "Review"} · ${row.action || ""}`;
+      item.appendChild(title);
+      item.appendChild(detail);
+      list.appendChild(item);
+    });
+  }
+  const jobLabel = document.querySelector("#background-job-label");
+  if (jobLabel && runtime.fast_path) {
+    jobLabel.textContent = `Fast Path ${runtime.fast_path.status || "Review"} · target ${runtime.fast_path.target_seconds || 60}s · estimated ${runtime.fast_path.estimated_seconds || 0}s`;
+  }
 }
 
 function setPressedFeedback(element) {

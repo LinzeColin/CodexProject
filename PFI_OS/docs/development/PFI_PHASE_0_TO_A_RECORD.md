@@ -40,6 +40,7 @@ on chat history.
 | Phase B Markets vertical slice | Complete | `src/pfi_os/application/markets_workflow.py`, market event/hotspot/sentiment cards, freshness metadata, Operational Store evidence/task records |
 | Phase B Research + Policy vertical slice | Complete | `src/pfi_os/application/research_policy_workflow.py`, policy authority cards, report evidence-gap tasks, Operational Store evidence/task records |
 | Phase B Portfolio vertical slice | Complete | `src/pfi_os/application/portfolio_workflow.py`, private-derived holding snapshots, quality/exposure/concentration/risk cards, Operational Store evidence/task/snapshot records |
+| Phase C workflow runtime read model | Complete first slice | `src/pfi_os/application/workflow_runtime_read_model.py`, `PFIOSPhaseCWorkflowRuntimeReadModelV1`, Fast Path metadata, retry policy, task-center rows, Web Shell cached runtime summary |
 
 ## Open Backlog
 
@@ -47,21 +48,22 @@ on chat history.
    the superseded backup-only PR #1.
 2. Move remaining legacy Streamlit direct reads onto Operational Store
    repositories one vertical slice at a time when those workflows enter scope.
-3. Promote the completed Phase B workflow set into Web Shell read models.
-4. Start Phase C worker/reliability from the completed Phase B evidence
-   contracts.
+3. Implement the Phase C worker scheduler and retry/backoff executor around
+   `PFIOSPhaseCWorkflowRuntimeReadModelV1`.
+4. Add 60-second cached refresh acceptance and Web Shell workflow-card
+   rendering.
 
 ## Key File Map
 
 | Area | Files |
 | --- | --- |
 | Product contracts | `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`, `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`, `docs/product/PFI_FEATURE_DISPOSITION.md` |
-| Data contracts | `docs/data/PFI_DATA_BOUNDARIES.md`, `docs/data/PFI_SOURCE_OF_TRUTH.md`, `docs/phase/PHASE_A_DATA_FOUNDATION.md`, `docs/phase/PHASE_A_COMPLETION_AUDIT.md`, `docs/phase/PHASE_B_MARKETS.md`, `docs/phase/PHASE_B_RESEARCH_POLICY.md`, `docs/phase/PHASE_B_STRATEGY_LAB.md`, `docs/phase/PHASE_B_PORTFOLIO.md` |
+| Data contracts | `docs/data/PFI_DATA_BOUNDARIES.md`, `docs/data/PFI_SOURCE_OF_TRUTH.md`, `docs/phase/PHASE_A_DATA_FOUNDATION.md`, `docs/phase/PHASE_A_COMPLETION_AUDIT.md`, `docs/phase/PHASE_B_MARKETS.md`, `docs/phase/PHASE_B_RESEARCH_POLICY.md`, `docs/phase/PHASE_B_STRATEGY_LAB.md`, `docs/phase/PHASE_B_PORTFOLIO.md`, `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md` |
 | UX and shell contracts | `docs/ux/PFI_UX_CONTRACT.md`, `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`, `web/index.html`, `web/app/shell.js`, `web/styles/tokens.css` |
 | Target architecture | `docs/architecture/PFI_TARGET_ARCHITECTURE.md` |
-| Operational store | `src/pfi_os/application/operational_store.py`, `src/pfi_os/application/source_registry.py`, `src/pfi_os/application/source_ingestion.py`, `src/pfi_os/application/homepage_summary.py`, `src/pfi_os/application/homepage_ingestion.py`, `src/pfi_os/application/command_center_read_model.py`, `src/pfi_os/application/vectorized_read_model.py`, `src/pfi_os/application/macos_runtime_read_model.py`, `src/pfi_os/application/private_reviewed_inputs.py`, `src/pfi_os/application/strategy_lab_workflow.py`, `src/pfi_os/application/markets_workflow.py`, `src/pfi_os/application/research_policy_workflow.py`, `src/pfi_os/application/portfolio_workflow.py`, `src/pfi_os/application/repositories.py`, `src/pfi_os/application/data_home_audit.py` |
+| Operational store | `src/pfi_os/application/operational_store.py`, `src/pfi_os/application/source_registry.py`, `src/pfi_os/application/source_ingestion.py`, `src/pfi_os/application/homepage_summary.py`, `src/pfi_os/application/homepage_ingestion.py`, `src/pfi_os/application/command_center_read_model.py`, `src/pfi_os/application/vectorized_read_model.py`, `src/pfi_os/application/macos_runtime_read_model.py`, `src/pfi_os/application/private_reviewed_inputs.py`, `src/pfi_os/application/strategy_lab_workflow.py`, `src/pfi_os/application/markets_workflow.py`, `src/pfi_os/application/research_policy_workflow.py`, `src/pfi_os/application/portfolio_workflow.py`, `src/pfi_os/application/workflow_runtime_read_model.py`, `src/pfi_os/application/repositories.py`, `src/pfi_os/application/data_home_audit.py` |
 | Streamlit bridge | `src/pfi_os/app/streamlit_app.py` |
-| Contract tests | `tests/test_pfi_product_contracts.py`, `tests/contract/test_pfi_web_shell_contract.py`, `tests/contract/test_phase_a_operational_store.py`, `tests/contract/test_phase_a_source_registry_homepage.py`, `tests/contract/test_phase_a_repositories.py`, `tests/contract/test_phase_a_data_home_audit.py`, `tests/contract/test_phase_a_homepage_ingestion.py`, `tests/contract/test_phase_a_source_ingestion.py`, `tests/contract/test_phase_a_command_center_read_model.py`, `tests/contract/test_phase_a_vectorized_read_model.py`, `tests/contract/test_phase_a_macos_runtime_read_model.py`, `tests/contract/test_phase_a_private_reviewed_inputs.py`, `tests/contract/test_phase_a_streamlit_data_boundary.py`, `tests/contract/test_phase_a_completion_audit.py`, `tests/contract/test_phase_b_strategy_lab_workflow.py`, `tests/contract/test_phase_b_markets_workflow.py`, `tests/contract/test_phase_b_research_policy_workflow.py`, `tests/contract/test_phase_b_portfolio_workflow.py` |
+| Contract tests | `tests/test_pfi_product_contracts.py`, `tests/contract/test_pfi_web_shell_contract.py`, `tests/contract/test_phase_a_operational_store.py`, `tests/contract/test_phase_a_source_registry_homepage.py`, `tests/contract/test_phase_a_repositories.py`, `tests/contract/test_phase_a_data_home_audit.py`, `tests/contract/test_phase_a_homepage_ingestion.py`, `tests/contract/test_phase_a_source_ingestion.py`, `tests/contract/test_phase_a_command_center_read_model.py`, `tests/contract/test_phase_a_vectorized_read_model.py`, `tests/contract/test_phase_a_macos_runtime_read_model.py`, `tests/contract/test_phase_a_private_reviewed_inputs.py`, `tests/contract/test_phase_a_streamlit_data_boundary.py`, `tests/contract/test_phase_a_completion_audit.py`, `tests/contract/test_phase_b_strategy_lab_workflow.py`, `tests/contract/test_phase_b_markets_workflow.py`, `tests/contract/test_phase_b_research_policy_workflow.py`, `tests/contract/test_phase_b_portfolio_workflow.py`, `tests/contract/test_phase_c_workflow_runtime_read_model.py` |
 | E2E and visual tests | `tests/e2e/test_pfi_web_shell_static_flow.py`, `tests/visual/test_pfi_web_shell_visual_baseline.py`, `web/tests/visual-baseline.json` |
 
 ## Model And Parameter Contracts
@@ -111,6 +113,7 @@ python -m pytest tests/contract/test_phase_b_markets_workflow.py -q
 python -m pytest tests/contract/test_phase_b_research_policy_workflow.py -q
 python -m pytest tests/contract/test_phase_b_strategy_lab_workflow.py -q
 python -m pytest tests/contract/test_phase_b_portfolio_workflow.py -q
+python -m pytest tests/contract/test_phase_c_workflow_runtime_read_model.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q

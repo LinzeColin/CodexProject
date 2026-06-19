@@ -76,6 +76,13 @@ from pfi_os.application.vectorized_read_model import (
     empty_vectorized_research_read_model,
     ingest_vectorized_research_cache,
 )
+from pfi_os.application.workflow_runtime_read_model import (
+    WORKFLOW_RUNTIME_READ_MODEL_SCHEMA,
+    build_phase_c_workflow_runtime_contract,
+    build_workflow_runtime_read_model,
+    empty_workflow_runtime_read_model,
+    record_workflow_runtime_read_model,
+)
 
 __all__ = [
     "DataDomain",
@@ -112,12 +119,15 @@ __all__ = [
     "build_phase_b_markets_contract",
     "build_phase_b_portfolio_contract",
     "build_phase_b_research_policy_contract",
+    "build_phase_c_workflow_runtime_contract",
+    "build_workflow_runtime_read_model",
     "default_data_home",
     "default_operational_db_path",
     "empty_homepage_summary",
     "empty_command_center_read_model",
     "empty_macos_runtime_acceptance_read_model",
     "empty_vectorized_research_read_model",
+    "empty_workflow_runtime_read_model",
     "ingest_command_center_cache",
     "ingest_file_source",
     "ingest_macos_runtime_acceptance_cache",
@@ -129,6 +139,7 @@ __all__ = [
     "record_portfolio_workflow",
     "record_research_policy_workflow",
     "record_strategy_lab_workflow",
+    "record_workflow_runtime_read_model",
     "build_portfolio_workflow",
     "build_research_policy_workflow",
     "SourceRegistry",
@@ -137,4 +148,5 @@ __all__ = [
     "PORTFOLIO_WORKFLOW_SCHEMA",
     "RESEARCH_POLICY_WORKFLOW_SCHEMA",
     "STRATEGY_LAB_WORKFLOW_SCHEMA",
+    "WORKFLOW_RUNTIME_READ_MODEL_SCHEMA",
 ]

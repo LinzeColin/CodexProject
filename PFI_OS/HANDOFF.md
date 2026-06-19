@@ -24,7 +24,9 @@ Current sequence:
 7. Phase B Markets vertical slice: complete.
 8. Phase B Research + Policy vertical slice: complete.
 9. Phase B Portfolio vertical slice: complete.
-10. Phase C worker/reliability and Web Shell read-model promotion: next.
+10. Phase C workflow runtime read model: first slice complete.
+11. Phase C worker scheduler, retry/backoff executor, and 60-second acceptance:
+    next.
 
 ## Current Local State
 
@@ -102,6 +104,10 @@ Current sequence:
   private-derived holding snapshots, quality/exposure/concentration/risk cards,
   decision-support fields, and Operational Store source/evidence/job/task plus
   holding snapshot recording.
+- Phase C workflow runtime read model for promoting the four Phase B workflow
+  records into cached Web Shell runtime cards, Fast Path metadata, retry
+  policy, background jobs, task-center rows, and Operational Store runtime
+  evidence records without leaking private holdings.
 
 ## Start Here
 
@@ -124,7 +130,8 @@ Read in this order:
 15. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
 16. `docs/phase/PHASE_B_STRATEGY_LAB.md`
 17. `docs/phase/PHASE_B_PORTFOLIO.md`
-18. `docs/archive/legacy-migration.md`
+18. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
+19. `docs/archive/legacy-migration.md`
 
 ## Current Verification Evidence
 
@@ -144,6 +151,7 @@ python -m pytest tests/contract/test_phase_b_markets_workflow.py -q
 python -m pytest tests/contract/test_phase_b_research_policy_workflow.py -q
 python -m pytest tests/contract/test_phase_b_strategy_lab_workflow.py -q
 python -m pytest tests/contract/test_phase_b_portfolio_workflow.py -q
+python -m pytest tests/contract/test_phase_c_workflow_runtime_read_model.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
@@ -164,17 +172,16 @@ commands after any follow-up edits.
 - Existing legacy holdings sync and ResearchBus workflows are not fully moved
   onto Operational Store repositories.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
-- Full Web Shell read-model promotion for the Phase B workflow set is not
-  complete.
-- Phase C worker/reliability, scheduler, retry/backoff, and 60-second Fast
-  Path acceptance are not complete.
+- Full Web Shell visual rendering for Phase B workflow cards is not complete.
+- Phase C worker/reliability scheduler, retry/backoff executor, SSE/WebSocket
+  progress, and 60-second Fast Path acceptance are not complete.
 
 ## Next Step
 
 Continue from the Phase A completion baseline:
 
-1. Promote the Phase B workflow contracts into Web Shell read models.
-2. Start Phase C worker/reliability from the completed Phase B evidence
-   contracts.
+1. Implement the Phase C worker scheduler and retry/backoff executor around
+   `PFIOSPhaseCWorkflowRuntimeReadModelV1`.
+2. Add 60-second cached refresh acceptance.
 3. Replace remaining legacy Streamlit direct reads one vertical slice at a
    time when those workflows enter scope.

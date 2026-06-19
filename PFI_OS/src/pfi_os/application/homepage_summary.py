@@ -5,6 +5,7 @@ from typing import Any
 
 from pfi_os.application.operational_store import OperationalStore
 from pfi_os.application.source_registry import SourceRegistry
+from pfi_os.application.workflow_runtime_read_model import build_workflow_runtime_read_model, empty_workflow_runtime_read_model
 
 
 def build_homepage_summary(store: OperationalStore | None = None, *, now: datetime | None = None) -> dict[str, Any]:
@@ -54,6 +55,7 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
         "metric_cards": cards,
         "decision_rows": decision_rows,
         "evidence_drawer": _evidence_drawer(evidence, sources),
+        "workflow_runtime": build_workflow_runtime_read_model(operational_store, now=now),
         "read_model": "OperationalStore -> SourceRegistry -> PFIOSHomeSummaryV1",
         "cache_policy": "Web shell consumes this compact summary; it does not read provider JSON, ResearchBus tables, or private source files directly.",
         "safety_boundary": "Decision support only; no live automatic orders, broker submission, payments, betting, or unattended execution.",
@@ -90,6 +92,7 @@ def empty_homepage_summary() -> dict[str, Any]:
             "Data lineage": "No lineage yet.",
             "Raw document": "No source record.",
         },
+        "workflow_runtime": empty_workflow_runtime_read_model(),
         "read_model": "OperationalStore -> SourceRegistry -> PFIOSHomeSummaryV1",
         "cache_policy": "Web shell consumes this compact summary; it does not read provider JSON, ResearchBus tables, or private source files directly.",
         "safety_boundary": "Decision support only; no live automatic orders, broker submission, payments, betting, or unattended execution.",
