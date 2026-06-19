@@ -134,21 +134,21 @@ A132,P0,app-shell,Responsive states collapse inspector then context sidebar with
 A133,P0,home,Existing session restores last subject lens time and path,E2E reload,NOT STARTED
 A134,P0,home,Watchlist user opens directly into highest-priority or last-viewed company map,E2E,NOT STARTED
 A135,P0,home,Empty Watchlist shows lightweight industry/demo overlay on canvas not separate dashboard,E2E screenshot,NOT STARTED
-A136,P0,visual-first,Central relationship visualization occupies at least 60 percent of usable first screen,Visual measurement,NOT STARTED
-A137,P0,visual-first,Critical upstream downstream business capital and policy relationships are visually represented,Fixture E2E,NOT STARTED
-A138,P0,layout,Upstream is left focus is center and downstream is right in default layout,Screenshot assertion,NOT STARTED
-A139,P0,layout,Capital/control is above and policy/risk is below when those layers are active,Screenshot assertion,NOT STARTED
-A140,P0,layout,Edges show direction and human-language relationship labels,DOM/SVG assertion,NOT STARTED
+A136,P0,visual-first,Central relationship visualization occupies at least 60 percent of usable first screen,Visual measurement,DONE
+A137,P0,visual-first,Critical upstream downstream business capital and policy relationships are visually represented,Fixture E2E,DONE
+A138,P0,layout,Upstream is left focus is center and downstream is right in default layout,Screenshot assertion,DONE
+A139,P0,layout,Capital/control is above and policy/risk is below when those layers are active,Screenshot assertion,DONE
+A140,P0,layout,Edges show direction and human-language relationship labels,DOM/SVG assertion,DONE
 A141,P0,lenses,Lens switch filters or fades relationships without navigating to a new page,E2E,NOT STARTED
 A142,P0,lenses,Lens change preserves subject selected node timeline and viewport,State test,NOT STARTED
 A143,P0,semantic-zoom,L0 to L3 semantic zoom levels are implemented and documented,E2E + contract,NOT STARTED
 A144,P0,semantic-zoom,Dense same-type nodes group with count and can be opened in list view,E2E,NOT STARTED
 A145,P0,semantic-zoom,Default first screen never renders an unbounded global hairball,Budget test,NOT STARTED
-A146,P0,inspector,Selecting a node opens readable context detail without changing subject,E2E,NOT STARTED
-A147,P0,inspector,Inspector offers set-as-center upstream downstream watch path and evidence actions,E2E,NOT STARTED
-A148,P0,pivot,Set-as-center is a visible primary action and succeeds in no more than two actions,Usability/E2E,NOT STARTED
-A149,P0,pivot,Double-click right-click hover and drag are not required for primary navigation,Keyboard/touch E2E,NOT STARTED
-A150,P0,pivot,Three consecutive subject changes use the same workspace model,E2E,NOT STARTED
+A146,P0,inspector,Selecting a node opens readable context detail without changing subject,E2E,DONE
+A147,P0,inspector,Inspector offers set-as-center upstream downstream watch path and evidence actions,E2E,DONE
+A148,P0,pivot,Set-as-center is a visible primary action and succeeds in no more than two actions,Usability/E2E,DONE
+A149,P0,pivot,Double-click right-click hover and drag are not required for primary navigation,Keyboard/touch E2E,DONE
+A150,P0,pivot,Three consecutive subject changes use the same workspace model,E2E,DONE
 A151,P0,mental-map,Subject changes preserve directional grammar and positions of retained nodes where feasible,Visual regression,NOT STARTED
 A152,P0,mental-map,Subject transition indicates loading and never leaves blank canvas on failure,Failure E2E,NOT STARTED
 A153,P0,responsive,Core workspace works at 1440x900 1280x800 and 1024x768,Visual regression,NOT STARTED

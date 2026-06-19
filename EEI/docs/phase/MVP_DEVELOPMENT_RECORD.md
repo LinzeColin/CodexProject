@@ -401,3 +401,47 @@ Residual risks:
 - The current workspace is still static fixture-driven and not bound to live API graph responses.
 - T1105/T1106/T1109 remain not started.
 - T1203 taxonomy/object-scope API remains not started.
+
+## 2026-06-19 - Phase 1 / G2 T1103/T1104/T1107/T1108 visual workspace acceptance pass
+
+Status: VISUAL WORKSPACE ACCEPTANCE SUBSET PASS; G2 IN PROGRESS
+
+Completed:
+
+- Added business, capital/control, and policy/risk synthetic relationship layers to the default NVIDIA commercial map without claiming live facts.
+- Added deterministic reroot scenarios for business segment, capital commitment, and policy context nodes so every selectable node offered by the workspace has a bounded center contract.
+- Split node selection from subject rerooting: clicking or keyboard-selecting a node updates the inspector while preserving the current subject until the explicit primary set-as-center action is used.
+- Added inspector detail for selected node stage, role, and current subject plus set-as-center, upstream, downstream, watch, path, and evidence actions.
+- Added keyboard-reachable SVG node controls and Playwright coverage proving primary navigation does not require double-click, right-click, hover, or drag.
+- Added visual measurement and DOM/SVG assertions for central canvas coverage, upstream-left/focus-center/downstream-right layout, capital-above/policy-below layout, directed edges, and human-language relationship labels.
+- Marked T1103, T1104, T1107, and T1108 as `DONE`.
+- Marked A136, A137, A138, A139, A140, A146, A147, A148, A149, and A150 as `DONE` with evidence in `tests/e2e/home.spec.ts`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 5 tests.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS.
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- Local `make verify-g2-db`: FAIL CLOSED because Docker is not installed on this host.
+- Remote GitHub Actions: PENDING.
+
+Acceptance status:
+
+- A136 is covered by Playwright visual coverage measurement of `ecosystem-map-surface` within `visual-canvas`.
+- A137 is covered by visible upstream, downstream, business, capital/control, and policy/risk fixture nodes and labels.
+- A138 is covered by SVG bounding-box assertions for upstream-left, focus-center, and downstream-right positions.
+- A139 is covered by SVG bounding-box assertions for capital/control above and policy/risk below the focus node.
+- A140 is covered by directed SVG edge assertions and human-language relationship-label assertions.
+- A146 is covered by selecting a node into the inspector without changing `current-focus-title`.
+- A147 is covered by inspector action assertions for set-as-center, upstream, downstream, watch, path, and evidence actions.
+- A148 is covered by the visible primary set-as-center action completing reroot in one action after node selection.
+- A149 is covered by keyboard node selection plus single primary action navigation.
+- A150 is covered by the three-step reroot path preserving the same `recursive-enterprise-map` workspace model.
+
+Residual risks:
+
+- The current visual workspace remains static fixture-driven and not yet bound to live API graph responses.
+- T1105/T1106/T1109 remain not started, so lens filtering, semantic zoom/grouping, and retained-node mental-map behavior are still open.
+- T1203 taxonomy/object-scope API remains not started.

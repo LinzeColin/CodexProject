@@ -1,13 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type KeyboardEvent } from "react";
 import {
   Activity,
+  ArrowDown,
+  ArrowUp,
   Bell,
   Boxes,
   Building2,
   CircleDollarSign,
   Clock3,
+  Crosshair,
   Database,
   FileSearch,
   GitBranch,
@@ -17,7 +20,8 @@ import {
   Route,
   Scale,
   Settings2,
-  ShieldCheck
+  ShieldCheck,
+  Star
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -32,12 +36,22 @@ type NodeKey =
   | "equipment"
   | "foundry"
   | "nvidia"
+  | "business"
+  | "capital"
+  | "policy"
   | "systems"
   | "cloud"
   | "datacenter"
   | "energy";
 
-type Zone = "upstream" | "focus" | "downstream" | "infrastructure";
+type Zone =
+  | "upstream"
+  | "focus"
+  | "downstream"
+  | "infrastructure"
+  | "business"
+  | "capital"
+  | "policy";
 
 type MapNode = {
   key: NodeKey;
@@ -91,10 +105,27 @@ const entityLabels: Record<NodeKey, string> = {
   equipment: "Synthetic Lithography Equipment Co.",
   foundry: "Synthetic Advanced Foundry",
   nvidia: "NVIDIA Corporation",
+  business: "Synthetic Accelerated Computing Segment",
+  capital: "Synthetic Capital Commitment",
+  policy: "Synthetic Export Control Context",
   systems: "Synthetic Systems Integrator",
   cloud: "Synthetic Cloud Customer",
   datacenter: "Synthetic AI Data Center Campus",
   energy: "Synthetic Grid Utility"
+};
+
+const shortLabels: Record<NodeKey, string> = {
+  materials: "Materials",
+  equipment: "Equipment",
+  foundry: "Foundry",
+  nvidia: "NVIDIA",
+  business: "Accel Compute",
+  capital: "Capital",
+  policy: "Policy Risk",
+  systems: "Systems",
+  cloud: "Cloud",
+  datacenter: "Data Center",
+  energy: "Energy"
 };
 
 const stageRows = [
@@ -167,6 +198,30 @@ const baseEdges: MapEdge[] = [
   }
 ];
 
+const nvidiaContextEdges: MapEdge[] = [
+  {
+    from: "nvidia",
+    to: "business",
+    label: "operates business segment",
+    stage: "Business -> Focus",
+    fixtureNotice: "Synthetic fixture for business-segment visual coverage."
+  },
+  {
+    from: "capital",
+    to: "nvidia",
+    label: "capital and control signal for",
+    stage: "Capital/control -> Focus",
+    fixtureNotice: "Synthetic fixture for capital/control visual coverage."
+  },
+  {
+    from: "policy",
+    to: "nvidia",
+    label: "policy risk constrains",
+    stage: "Policy/risk -> Focus",
+    fixtureNotice: "Synthetic fixture for policy/risk visual coverage."
+  }
+];
+
 const scenarios: Record<NodeKey, FocusScenario> = {
   nvidia: {
     focus: "nvidia",
@@ -177,13 +232,53 @@ const scenarios: Record<NodeKey, FocusScenario> = {
       node("equipment", 92, 122, "upstream", "SC-04 Equipment", "lithography equipment"),
       node("foundry", 252, 224, "upstream", "SC-06 Manufacturing", "advanced foundry"),
       node("nvidia", 394, 246, "focus", "SC-05 Design / IP", "current focus"),
-      node("systems", 536, 164, "downstream", "SC-09 System", "system integration"),
+      node("business", 610, 76, "business", "Business segment", "accelerated computing segment"),
+      node("capital", 390, 72, "capital", "Capital / control", "capital and control signal"),
+      node("policy", 396, 418, "policy", "Policy / risk", "export-control context"),
+      node("systems", 536, 176, "downstream", "SC-09 System", "system integration"),
       node("cloud", 650, 244, "downstream", "SC-12 Customer", "cloud customer"),
       node("datacenter", 562, 358, "infrastructure", "SC-10 Data center", "AI data center"),
       node("energy", 666, 390, "infrastructure", "SC-10 Energy", "grid utility")
     ],
-    edges: baseEdges,
+    edges: [...baseEdges, ...nvidiaContextEdges],
     nextCenters: ["foundry", "systems", "cloud"]
+  },
+  business: {
+    focus: "business",
+    heading: "Synthetic Accelerated Computing Segment",
+    subtitle: "Rerooted business-segment view with focus company and customer demand retained",
+    nodes: [
+      node("nvidia", 150, 246, "upstream", "SC-05 Design / IP", "parent platform"),
+      node("business", 360, 238, "focus", "Business segment", "current focus"),
+      node("systems", 540, 180, "downstream", "SC-09 System", "system route to market"),
+      node("cloud", 650, 250, "downstream", "SC-12 Customer", "cloud demand")
+    ],
+    edges: [nvidiaContextEdges[0], baseEdges[3], baseEdges[4]],
+    nextCenters: ["nvidia", "systems", "cloud"]
+  },
+  capital: {
+    focus: "capital",
+    heading: "Synthetic Capital Commitment",
+    subtitle: "Rerooted capital/control view with focus-company exposure retained",
+    nodes: [
+      node("capital", 350, 210, "focus", "Capital / control", "current focus"),
+      node("nvidia", 560, 244, "downstream", "SC-05 Design / IP", "company exposure"),
+      node("business", 660, 154, "downstream", "Business segment", "capital allocation target")
+    ],
+    edges: [nvidiaContextEdges[1], nvidiaContextEdges[0]],
+    nextCenters: ["nvidia", "business"]
+  },
+  policy: {
+    focus: "policy",
+    heading: "Synthetic Export Control Context",
+    subtitle: "Rerooted policy/risk view with constrained company and downstream demand retained",
+    nodes: [
+      node("policy", 340, 252, "focus", "Policy / risk", "current focus"),
+      node("nvidia", 540, 238, "downstream", "SC-05 Design / IP", "constrained company"),
+      node("cloud", 660, 300, "downstream", "SC-12 Customer", "demand exposure")
+    ],
+    edges: [nvidiaContextEdges[2], baseEdges[5]],
+    nextCenters: ["nvidia", "cloud"]
   },
   foundry: {
     focus: "foundry",
@@ -290,10 +385,7 @@ function node(
   return {
     key,
     label: entityLabels[key],
-    shortLabel:
-      key === "nvidia"
-        ? "NVIDIA"
-        : entityLabels[key].replace("Synthetic ", "").replace(" Co.", ""),
+    shortLabel: shortLabels[key],
     stage,
     role,
     x,
@@ -304,25 +396,50 @@ function node(
 
 export default function Home() {
   const [focusKey, setFocusKey] = useState<NodeKey>("nvidia");
+  const [selectedKey, setSelectedKey] = useState<NodeKey>("nvidia");
   const [path, setPath] = useState<NodeKey[]>(["nvidia"]);
   const scenario = scenarios[focusKey];
   const nodeByKey = useMemo(
     () => new Map(scenario.nodes.map((item) => [item.key, item])),
     [scenario.nodes]
   );
+  const selectedNode =
+    nodeByKey.get(selectedKey) ?? nodeByKey.get(scenario.focus) ?? scenario.nodes[0];
+  const upstreamCandidate = useMemo(
+    () => scenario.edges.find((edge) => edge.to === selectedNode.key && nodeByKey.has(edge.from))?.from,
+    [nodeByKey, scenario.edges, selectedNode.key]
+  );
+  const downstreamCandidate = useMemo(
+    () =>
+      scenario.edges.find((edge) => edge.from === selectedNode.key && nodeByKey.has(edge.to))?.to,
+    [nodeByKey, scenario.edges, selectedNode.key]
+  );
 
   function setCenter(nextFocus: NodeKey) {
     setFocusKey(nextFocus);
-    setPath((current) => [...current, nextFocus]);
+    setSelectedKey(nextFocus);
+    setPath((current) => (current[current.length - 1] === nextFocus ? current : [...current, nextFocus]));
+  }
+
+  function inspectNode(nextSelected: NodeKey) {
+    setSelectedKey(nextSelected);
+  }
+
+  function handleNodeKeyDown(event: KeyboardEvent<SVGGElement>, nextSelected: NodeKey) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      inspectNode(nextSelected);
+    }
   }
 
   function resetToNvidia() {
     setFocusKey("nvidia");
+    setSelectedKey("nvidia");
     setPath(["nvidia"]);
   }
 
   return (
-    <main className="workspace">
+    <main className="workspace" data-testid="workspace-shell" data-workspace-model="recursive-enterprise-map">
       <aside className="navRail" aria-label="主导航">
         <div className="brandMark" aria-label="商域图谱">
           <span className="brandGlyph">E</span>
@@ -354,7 +471,7 @@ export default function Home() {
         <div className="subjectHeader">
           <div>
             <p className="eyebrow">Watchlist current focus</p>
-            <h1>{scenario.heading}</h1>
+            <h1 data-testid="current-focus-title">{scenario.heading}</h1>
             <p className="subjectSubtitle">{scenario.subtitle}</p>
           </div>
           <span className="snapshotTag">Synthetic fixture</span>
@@ -392,7 +509,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="canvas" aria-label="商业版图">
+      <section className="canvas" aria-label="商业版图" data-testid="visual-canvas">
         <div className="canvasTopbar">
           <div>
             <p className="eyebrow">Golden Vertical</p>
@@ -445,13 +562,20 @@ export default function Home() {
                 <g key={`${edge.from}-${edge.to}`}>
                   <line
                     className="edge"
+                    data-testid={`edge-${edge.from}-${edge.to}`}
                     markerEnd="url(#arrow)"
                     x1={source.x}
                     y1={source.y}
                     x2={target.x}
                     y2={target.y}
                   />
-                  <text className="edgeLabel" textAnchor="middle" x={midX} y={midY}>
+                  <text
+                    className="edgeLabel"
+                    data-testid={`edge-label-${edge.from}-${edge.to}`}
+                    textAnchor="middle"
+                    x={midX}
+                    y={midY}
+                  >
                     {edge.label}
                   </text>
                 </g>
@@ -459,9 +583,15 @@ export default function Home() {
             })}
             {scenario.nodes.map((mapNode) => (
               <g
-                className={`node ${mapNode.zone}`}
+                aria-label={`Inspect ${mapNode.label}`}
+                aria-pressed={mapNode.key === selectedNode.key}
+                className={`node ${mapNode.zone}${mapNode.key === selectedNode.key ? " selected" : ""}`}
                 data-testid={`graph-node-${mapNode.key}`}
                 key={mapNode.key}
+                onClick={() => inspectNode(mapNode.key)}
+                onKeyDown={(event) => handleNodeKeyDown(event, mapNode.key)}
+                role="button"
+                tabIndex={0}
                 transform={`translate(${mapNode.x} ${mapNode.y})`}
               >
                 <circle r={mapNode.key === focusKey ? 40 : 31} />
@@ -488,6 +618,26 @@ export default function Home() {
           <p className="eyebrow">Evidence Center</p>
           <h2>Relationship path</h2>
         </div>
+
+        <section className="selectedNodeCard" aria-label="当前选择节点" data-testid="selected-node-card">
+          <span className={`nodeToken ${selectedNode.zone}`}>{selectedNode.zone}</span>
+          <h3 data-testid="selected-node-title">{selectedNode.label}</h3>
+          <dl>
+            <div>
+              <dt>Stage</dt>
+              <dd>{selectedNode.stage}</dd>
+            </div>
+            <div>
+              <dt>Role</dt>
+              <dd>{selectedNode.role}</dd>
+            </div>
+            <div>
+              <dt>Current subject</dt>
+              <dd>{scenario.heading}</dd>
+            </div>
+          </dl>
+        </section>
+
         <ol className="pathList">
           {scenario.edges.slice(0, 4).map((edge) => (
             <li key={`${edge.from}-${edge.to}`}>
@@ -502,13 +652,53 @@ export default function Home() {
         </ol>
 
         <div className="actionStack" aria-label="主体操作">
+          <button
+            className="primaryAction"
+            data-testid="primary-set-center"
+            disabled={selectedNode.key === focusKey}
+            onClick={() => setCenter(selectedNode.key)}
+            type="button"
+          >
+            <Crosshair size={16} aria-hidden="true" />
+            <span>以 {selectedNode.label} 为中心</span>
+          </button>
+          <button
+            disabled={!upstreamCandidate}
+            onClick={() => upstreamCandidate && inspectNode(upstreamCandidate)}
+            type="button"
+          >
+            <ArrowUp size={16} aria-hidden="true" />
+            <span>展开上游</span>
+          </button>
+          <button
+            disabled={!downstreamCandidate}
+            onClick={() => downstreamCandidate && inspectNode(downstreamCandidate)}
+            type="button"
+          >
+            <ArrowDown size={16} aria-hidden="true" />
+            <span>展开下游</span>
+          </button>
+          <button onClick={() => inspectNode(selectedNode.key)} type="button">
+            <Star size={16} aria-hidden="true" />
+            <span>加入关注</span>
+          </button>
+          <button onClick={() => inspectNode(focusKey)} type="button">
+            <Route size={16} aria-hidden="true" />
+            <span>查看路径</span>
+          </button>
+          <button onClick={() => inspectNode(selectedNode.key)} type="button">
+            <FileSearch size={16} aria-hidden="true" />
+            <span>打开证据</span>
+          </button>
           {scenario.nextCenters.map((key) => (
             <button key={key} onClick={() => setCenter(key)} type="button">
-              以 {entityLabels[key]} 为中心
+              <Network size={16} aria-hidden="true" />
+              <span>以 {entityLabels[key]} 为中心</span>
             </button>
           ))}
           <button onClick={resetToNvidia} type="button">
-            回到 NVIDIA
+            <Route size={16} aria-hidden="true" />
+            <span>回到 NVIDIA</span>
           </button>
         </div>
 
