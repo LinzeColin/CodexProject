@@ -462,6 +462,10 @@ paths:
       responses:
         '200':
           description: Evidence-bearing bounded paths
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PathResponse'
   /v1/entities/{entityId}/empire:
     get:
       operationId: getEntityEmpire
@@ -1222,6 +1226,166 @@ components:
             minItems: 1
             items:
               $ref: '#/components/schemas/EvidenceSummary'
+    PathEdge:
+      allOf:
+      - $ref: '#/components/schemas/RelationshipDetail'
+      - type: object
+        required:
+        - edge_index
+        - traversal_direction
+        - traversal_from_id
+        - traversal_to_id
+        properties:
+          edge_index:
+            type: integer
+            minimum: 0
+          traversal_direction:
+            type: string
+            enum:
+            - forward
+            - reverse
+          traversal_from_id:
+            type: string
+            format: uuid
+          traversal_to_id:
+            type: string
+            format: uuid
+          materiality:
+            type:
+            - string
+            - 'null'
+    PathResult:
+      type: object
+      required:
+      - path_index
+      - length
+      - node_ids
+      - nodes
+      - relationship_ids
+      - edges
+      - evidence
+      properties:
+        path_index:
+          type: integer
+          minimum: 0
+        length:
+          type: integer
+          minimum: 0
+          maximum: 8
+        node_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntitySummary'
+        relationship_ids:
+          type: array
+          maxItems: 8
+          items:
+            type: string
+            format: uuid
+        edges:
+          type: array
+          maxItems: 8
+          items:
+            $ref: '#/components/schemas/PathEdge'
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvidenceSummary'
+    PathResponse:
+      type: object
+      required:
+      - as_of
+      - query
+      - from
+      - to
+      - paths
+      - truncated
+      - coverage
+      properties:
+        as_of:
+          type: string
+          format: date-time
+        query:
+          type: object
+          required:
+          - from
+          - to
+          - path_type
+          - max_length
+          - hard_limits
+          - max_paths
+          properties:
+            from:
+              type: string
+              format: uuid
+            to:
+              type: string
+              format: uuid
+            path_type:
+              type: string
+              enum:
+              - shortest
+              - upstream
+              - downstream
+              - control
+              - capital
+              - policy
+              - bottleneck
+            max_length:
+              type: integer
+              minimum: 1
+              maximum: 8
+            relationship_families:
+              type: array
+              items:
+                type: string
+            bottleneck_only:
+              type: boolean
+            hard_limits:
+              type: object
+              additionalProperties: true
+            max_paths:
+              type: integer
+              maximum: 8
+        from:
+          $ref: '#/components/schemas/EntitySummary'
+        to:
+          $ref: '#/components/schemas/EntitySummary'
+        paths:
+          type: array
+          maxItems: 8
+          items:
+            $ref: '#/components/schemas/PathResult'
+        truncated:
+          type: boolean
+        coverage:
+          type: object
+          required:
+          - path_count
+          - edge_count
+          - source_count
+          - all_edges_have_evidence
+          properties:
+            path_count:
+              type: integer
+              minimum: 0
+            edge_count:
+              type: integer
+              minimum: 0
+            source_count:
+              type: integer
+              minimum: 0
+            all_edges_have_evidence:
+              type: boolean
+        warnings:
+          type: array
+          items:
+            type: string
     Event:
       type: object
       required:

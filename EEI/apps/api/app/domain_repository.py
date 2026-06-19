@@ -52,6 +52,7 @@ ROOT = Path(__file__).resolve().parents[3]
 EXPLORATION_STATE_VERSION = "exploration-state-v1"
 DEFAULT_GRAPH_BUDGET = {"max_nodes": 42, "max_edges": 64, "expand_nodes": 12}
 GRAPH_HARD_LIMITS = {"max_hops": 2, "max_nodes": 500, "max_edges": 2000, "max_path_length": 8}
+PATH_RESULT_LIMIT = 8
 RELATIONSHIP_FAMILIES = {
     "corporate_structure",
     "ownership_control",
@@ -77,6 +78,15 @@ LAYER_RELATIONSHIP_FAMILY_MAP = {
     "strategic_signal": {"strategic_signal"},
     "supply_chain_operations": {"supply_chain_operations"},
     "technology_data_ip": {"technology_data_ip"},
+}
+PATH_TYPE_RELATIONSHIP_FAMILY_MAP = {
+    "shortest": RELATIONSHIP_FAMILIES,
+    "upstream": {"supply_chain_operations"},
+    "downstream": {"supply_chain_operations"},
+    "control": {"ownership_control"},
+    "capital": {"capital_financing", "mergers_acquisitions"},
+    "policy": {"government_policy"},
+    "bottleneck": {"supply_chain_operations"},
 }
 ENTITY_TYPES = (
     "legal_entity",
@@ -1862,6 +1872,349 @@ class DomainRepository:
                 },
             }
         )
+
+    def find_relationship_paths(
+        self,
+        *,
+        from_entity_id: UUID,
+        to_entity_id: UUID,
+        path_type: str,
+        max_length: int,
+        as_of: datetime | None = None,
+    ) -> dict[str, Any]:
+        if path_type not in PATH_TYPE_RELATIONSHIP_FAMILY_MAP:
+            raise RepositoryError(f"Unsupported path_type: {path_type}")
+        bounded_length = min(max_length, GRAPH_HARD_LIMITS["max_path_length"])
+        relationship_families = sorted(PATH_TYPE_RELATIONSHIP_FAMILY_MAP[path_type])
+        bottleneck_only = path_type == "bottleneck"
+        with self.connect() as connection:
+            from_entity = self.entity_summary(connection, from_entity_id)
+            to_entity = self.entity_summary(connection, to_entity_id)
+            if from_entity_id == to_entity_id:
+                return _jsonable(
+                    {
+                        "as_of": as_of or _now(),
+                        "query": {
+                            "from": from_entity_id,
+                            "to": to_entity_id,
+                            "path_type": path_type,
+                            "max_length": bounded_length,
+                            "relationship_families": relationship_families,
+                            "hard_limits": GRAPH_HARD_LIMITS,
+                            "max_paths": PATH_RESULT_LIMIT,
+                        },
+                        "from": from_entity,
+                        "to": to_entity,
+                        "paths": [
+                            {
+                                "path_index": 0,
+                                "length": 0,
+                                "node_ids": [from_entity_id],
+                                "relationship_ids": [],
+                                "edges": [],
+                                "evidence": [],
+                            }
+                        ],
+                        "truncated": False,
+                        "coverage": {
+                            "path_count": 1,
+                            "edge_count": 0,
+                            "source_count": 0,
+                            "all_edges_have_evidence": True,
+                        },
+                    }
+                )
+            path_rows = connection.execute(
+                """
+                WITH RECURSIVE candidate_edges AS (
+                  SELECT
+                    r.id, r.subject_entity_id, r.object_entity_id, r.confidence,
+                    r.observed_at, sca.materiality,
+                    count(re.source_document_id)::int AS evidence_count
+                  FROM relationships r
+                  JOIN relationship_evidence re ON re.relationship_id = r.id
+                  LEFT JOIN supply_chain_relationship_attributes sca
+                    ON sca.relationship_id = r.id
+                  WHERE r.status NOT IN ('superseded', 'revoked')
+                    AND r.relationship_family = ANY(%(relationship_families)s::text[])
+                    AND (
+                      %(as_of)s::timestamptz IS NULL
+                      OR (
+                        (r.valid_from IS NULL OR r.valid_from <= %(as_of)s::timestamptz)
+                        AND (r.valid_to IS NULL OR r.valid_to >= %(as_of)s::timestamptz)
+                      )
+                    )
+                    AND (
+                      %(bottleneck_only)s = false
+                      OR sca.materiality IN ('critical', 'high')
+                    )
+                  GROUP BY r.id, sca.materiality
+                ),
+                walk AS (
+                  SELECT
+                    ARRAY[%(from_entity_id)s::uuid, step.next_node]::uuid[] AS node_ids,
+                    ARRAY[ce.id]::uuid[] AS relationship_ids,
+                    ARRAY[step.traversal_direction]::text[] AS traversal_directions,
+                    step.next_node AS current_node,
+                    1 AS path_length,
+                    COALESCE(ce.confidence, 0) AS min_confidence
+                  FROM candidate_edges ce
+                  JOIN LATERAL (
+                    SELECT
+                      CASE
+                        WHEN ce.subject_entity_id = %(from_entity_id)s::uuid
+                        THEN ce.object_entity_id
+                        ELSE ce.subject_entity_id
+                      END AS next_node,
+                      CASE
+                        WHEN ce.subject_entity_id = %(from_entity_id)s::uuid
+                        THEN 'forward'
+                        ELSE 'reverse'
+                      END AS traversal_direction
+                  ) step ON true
+                  WHERE %(from_entity_id)s::uuid IN (ce.subject_entity_id, ce.object_entity_id)
+                  UNION ALL
+                  SELECT
+                    w.node_ids || step.next_node,
+                    w.relationship_ids || ce.id,
+                    w.traversal_directions || step.traversal_direction,
+                    step.next_node,
+                    w.path_length + 1,
+                    LEAST(w.min_confidence, COALESCE(ce.confidence, 0))
+                  FROM walk w
+                  JOIN candidate_edges ce
+                    ON w.current_node IN (ce.subject_entity_id, ce.object_entity_id)
+                  JOIN LATERAL (
+                    SELECT
+                      CASE
+                        WHEN ce.subject_entity_id = w.current_node
+                        THEN ce.object_entity_id
+                        ELSE ce.subject_entity_id
+                      END AS next_node,
+                      CASE
+                        WHEN ce.subject_entity_id = w.current_node
+                        THEN 'forward'
+                        ELSE 'reverse'
+                      END AS traversal_direction
+                  ) step ON true
+                  WHERE w.path_length < %(max_length)s
+                    AND NOT step.next_node = ANY(w.node_ids)
+                )
+                SELECT node_ids, relationship_ids, traversal_directions, path_length
+                FROM walk
+                WHERE current_node = %(to_entity_id)s::uuid
+                ORDER BY path_length, min_confidence DESC, relationship_ids::text
+                LIMIT %(path_limit)s
+                """,
+                {
+                    "from_entity_id": from_entity_id,
+                    "to_entity_id": to_entity_id,
+                    "relationship_families": relationship_families,
+                    "as_of": as_of,
+                    "bottleneck_only": bottleneck_only,
+                    "max_length": bounded_length,
+                    "path_limit": PATH_RESULT_LIMIT + 1,
+                },
+            ).fetchall()
+            truncated = len(path_rows) > PATH_RESULT_LIMIT
+            path_rows = path_rows[:PATH_RESULT_LIMIT]
+            relationship_ids = list(
+                dict.fromkeys(
+                    relationship_id
+                    for row in path_rows
+                    for relationship_id in row["relationship_ids"]
+                )
+            )
+            node_ids = list(
+                dict.fromkeys(node_id for row in path_rows for node_id in row["node_ids"])
+            )
+            relationship_map = self.relationship_detail_map(connection, relationship_ids)
+            evidence_map = self.relationship_evidence_map(connection, relationship_ids)
+            node_map = self.entity_detail_map(connection, node_ids)
+            paths = []
+            for index, row in enumerate(path_rows):
+                path_node_ids = row["node_ids"]
+                path_relationship_ids = row["relationship_ids"]
+                traversal_directions = row["traversal_directions"]
+                edges = []
+                path_evidence = []
+                for edge_index, relationship_id in enumerate(path_relationship_ids):
+                    relationship = relationship_map[relationship_id]
+                    edge_evidence = evidence_map.get(relationship_id, [])
+                    path_evidence.extend(edge_evidence)
+                    edges.append(
+                        {
+                            **relationship,
+                            "edge_index": edge_index,
+                            "evidence_count": len(edge_evidence),
+                            "traversal_direction": traversal_directions[edge_index],
+                            "traversal_from_id": path_node_ids[edge_index],
+                            "traversal_to_id": path_node_ids[edge_index + 1],
+                            "evidence": edge_evidence,
+                        }
+                    )
+                paths.append(
+                    _jsonable(
+                        {
+                            "path_index": index,
+                            "length": row["path_length"],
+                            "node_ids": path_node_ids,
+                            "nodes": [node_map[node_id] for node_id in path_node_ids],
+                            "relationship_ids": path_relationship_ids,
+                            "edges": edges,
+                            "evidence": path_evidence,
+                        }
+                    )
+                )
+        source_ids = {
+            evidence["source_document_id"]
+            for path in paths
+            for evidence in path["evidence"]
+        }
+        all_edges_have_evidence = all(
+            bool(edge["evidence"]) for path in paths for edge in path["edges"]
+        )
+        return _jsonable(
+            {
+                "as_of": as_of or _now(),
+                "query": {
+                    "from": from_entity_id,
+                    "to": to_entity_id,
+                    "path_type": path_type,
+                    "max_length": bounded_length,
+                    "relationship_families": relationship_families,
+                    "bottleneck_only": bottleneck_only,
+                    "hard_limits": GRAPH_HARD_LIMITS,
+                    "max_paths": PATH_RESULT_LIMIT,
+                },
+                "from": from_entity,
+                "to": to_entity,
+                "paths": paths,
+                "truncated": truncated,
+                "coverage": {
+                    "path_count": len(paths),
+                    "edge_count": len(relationship_ids),
+                    "source_count": len(source_ids),
+                    "all_edges_have_evidence": all_edges_have_evidence,
+                },
+                "warnings": (
+                    ["bounded_path_result_limit_applied"] if truncated else []
+                ),
+            }
+        )
+
+    def entity_detail_map(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_ids: list[UUID],
+    ) -> dict[UUID, dict[str, Any]]:
+        if not entity_ids:
+            return {}
+        rows = connection.execute(
+            """
+            SELECT e.id, e.canonical_name, e.entity_type, fen.fixture_notice, fen.synthetic
+            FROM entities e
+            LEFT JOIN fixture_entity_notices fen ON fen.entity_id = e.id
+            WHERE e.id = ANY(%s)
+            """,
+            (entity_ids,),
+        ).fetchall()
+        return {row["id"]: _jsonable(row) for row in rows}
+
+    def relationship_detail_map(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        relationship_ids: list[UUID],
+    ) -> dict[UUID, dict[str, Any]]:
+        if not relationship_ids:
+            return {}
+        rows = connection.execute(
+            """
+            SELECT
+              r.id, r.subject_entity_id, r.object_entity_id, r.relationship_type,
+              r.relationship_family, r.status, r.confidence, r.valid_from, r.valid_to,
+              r.amount, r.currency, r.amount_kind, r.qualifiers, sca.materiality,
+              frn.fixture_notice, COALESCE(frn.synthetic, false) AS synthetic
+            FROM relationships r
+            LEFT JOIN supply_chain_relationship_attributes sca ON sca.relationship_id = r.id
+            LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+            WHERE r.id = ANY(%s)
+            """,
+            (relationship_ids,),
+        ).fetchall()
+        return {
+            row["id"]: _jsonable(
+                {
+                    "id": row["id"],
+                    "subject_id": row["subject_entity_id"],
+                    "object_id": row["object_entity_id"],
+                    "relationship_type": row["relationship_type"],
+                    "relationship_family": row["relationship_family"],
+                    "status": row["status"],
+                    "confidence": row["confidence"],
+                    "valid_from": row["valid_from"],
+                    "valid_to": row["valid_to"],
+                    "amount": row["amount"],
+                    "currency": row["currency"],
+                    "amount_kind": row["amount_kind"],
+                    "qualifiers": row["qualifiers"],
+                    "materiality": row["materiality"],
+                    "synthetic": row["synthetic"],
+                    "fixture_notice": row["fixture_notice"],
+                }
+            )
+            for row in rows
+        }
+
+    def relationship_evidence_map(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        relationship_ids: list[UUID],
+    ) -> dict[UUID, list[dict[str, Any]]]:
+        if not relationship_ids:
+            return {}
+        rows = connection.execute(
+            """
+            SELECT
+              re.relationship_id, re.source_document_id, re.role, re.locator,
+              re.support_excerpt, re.structured_fact,
+              s.source_tier,
+              sd.url, sd.title, sd.publisher, sd.document_date, sd.observed_at,
+              sd.retrieved_at, sd.media_type
+            FROM relationship_evidence re
+            JOIN source_documents sd ON sd.id = re.source_document_id
+            JOIN sources s ON s.id = sd.source_id
+            WHERE re.relationship_id = ANY(%s)
+            ORDER BY
+              re.relationship_id,
+              CASE re.role WHEN 'supports' THEN 0 WHEN 'context' THEN 1 ELSE 2 END,
+              sd.observed_at DESC,
+              re.source_document_id
+            """,
+            (relationship_ids,),
+        ).fetchall()
+        evidence: dict[UUID, list[dict[str, Any]]] = {}
+        for row in rows:
+            evidence.setdefault(row["relationship_id"], []).append(
+                _jsonable(
+                    {
+                        "source_document_id": row["source_document_id"],
+                        "role": row["role"],
+                        "source_tier": row["source_tier"],
+                        "locator": row["locator"],
+                        "support_excerpt": row["support_excerpt"],
+                        "structured_fact": row["structured_fact"],
+                        "url": row["url"],
+                        "title": row["title"],
+                        "publisher": row["publisher"],
+                        "document_date": row["document_date"],
+                        "observed_at": row["observed_at"],
+                        "retrieved_at": row["retrieved_at"],
+                        "media_type": row["media_type"],
+                    }
+                )
+            )
+        return evidence
 
     def list_changes(
         self,

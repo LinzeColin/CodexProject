@@ -1112,7 +1112,7 @@ Acceptance status:
 
 Residual risks:
 
-- At T403 closeout, T405 still owned full graph/table explorer node actions; T405 is now completed below. T406 still owns bounded evidence-bearing path queries.
+- At T403 closeout, T405 still owned full graph/table explorer node actions and T406 still owned bounded evidence-bearing path queries; both are now completed below, with T406 awaiting remote PostgreSQL CI evidence.
 
 ## 2026-06-19 - Phase 1 / G4 T404 Breadcrumb and browser history synchronization
 
@@ -1178,6 +1178,36 @@ Acceptance status:
 
 Residual risks:
 
-- T406 still owns bounded evidence-bearing path queries.
+- T406 is completed below and awaits remote PostgreSQL CI evidence.
+- T407 still owns visible truncation and inclusion sorting explanations.
+- T408 still owns the critical three-reroot E2E acceptance A048.
+
+## 2026-06-19 - Phase 1 / G4 T406 Bounded evidence-bearing path queries
+
+Status: LOCAL STATIC PASS / REMOTE POSTGRESQL CI PENDING
+
+Completed:
+
+- Added `GET /v1/paths` with `from`, `to`, `path_type`, `max_length` and `as_of` query parameters.
+- Implemented bounded recursive path search with `max_length <= 8`, `max_paths <= 8`, no repeated nodes, active/supersession filtering and as-of filtering.
+- Supported `shortest`, `upstream`, `downstream`, `control`, `capital`, `policy` and `bottleneck` path types with explicit relationship-family filters.
+- Required every returned path edge to have at least one `relationship_evidence` row and expanded source document evidence into the response.
+- Added OpenAPI `PathResponse`, `PathResult` and `PathEdge` contracts for evidence-bearing bounded paths.
+- Added PostgreSQL integration assertions for all seven A056 path types, evidence/source payloads, path bounds, hard limit metadata and `max_length=9` rejection.
+- Marked T406 and A056 as `DONE`.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A056 is covered by `tests/integration/test_database_migrations.py` assertions over `/v1/paths` for shortest/upstream/downstream/control/capital/policy/bottleneck path types.
+
+Residual risks:
+
+- Remote PostgreSQL CI is pending for the new recursive CTE.
 - T407 still owns visible truncation and inclusion sorting explanations.
 - T408 still owns the critical three-reroot E2E acceptance A048.

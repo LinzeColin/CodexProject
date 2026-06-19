@@ -54,7 +54,7 @@ A052,P0,explore,Incremental expand loads only selected direction/layers within e
 A053,P0,explore,"Node actions include reroot, upstream, downstream, path, compare, pin, Watchlist and evidence",UI test,DONE
 A054,P0,explore,Pinned nodes and comparisons survive layout changes,E2E,DONE
 A055,P0,explore,Graph has filterable table/list alternative,E2E/a11y,DONE
-A056,P0,paths,Shortest/upstream/downstream/control/capital/policy/bottleneck paths are bounded and evidence-bearing,Integration,NOT STARTED
+A056,P0,paths,Shortest/upstream/downstream/control/capital/policy/bottleneck paths are bounded and evidence-bearing,Integration,DONE
 A057,P0,explore,Truncation and inclusion sorting are explained to the user,UI/content test,NOT STARTED
 A058,P0,explore,Visual centrality is not presented as control and color is not the only encoding,Design/a11y review,DONE
 A059,P0,dossier,Every P0 seed opens a company/entity focus page,API/E2E,NOT STARTED

@@ -29,6 +29,15 @@ EntityType = Literal[
     "standard",
     "asset",
 ]
+PathType = Literal[
+    "shortest",
+    "upstream",
+    "downstream",
+    "control",
+    "capital",
+    "policy",
+    "bottleneck",
+]
 
 
 class FocusRef(BaseModel):
@@ -215,6 +224,27 @@ def expand_exploration(
 ) -> dict[str, Any]:
     try:
         return repository.expand_exploration(payload.model_dump(mode="json"))
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.get("/paths")
+def find_relationship_paths(
+    repository: RepositoryDependency,
+    from_entity_id: Annotated[UUID, Query(alias="from")],
+    to_entity_id: Annotated[UUID, Query(alias="to")],
+    path_type: Annotated[PathType, Query()] = "shortest",
+    max_length: Annotated[int, Query(ge=1, le=8)] = 4,
+    as_of: Annotated[datetime | None, Query()] = None,
+) -> dict[str, Any]:
+    try:
+        return repository.find_relationship_paths(
+            from_entity_id=from_entity_id,
+            to_entity_id=to_entity_id,
+            path_type=path_type,
+            max_length=max_length,
+            as_of=as_of,
+        )
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc
 

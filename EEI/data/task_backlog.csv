@@ -31,7 +31,7 @@ T402,G4,P0,Implement reroot with inherited/reset state,T401,"A045,A046,A047",DON
 T403,G4,P0,Implement incremental directional expand,T400,A052,DONE
 T404,G4,P0,Implement breadcrumb and browser history synchronization,T402,"A049,A050,A051",DONE
 T405,G4,P0,Build graph/table explorer and node actions,"T403,T404","A053,A054,A055,A058",DONE
-T406,G4,P0,Implement bounded evidence-bearing path queries,T400,A056,NOT STARTED
+T406,G4,P0,Implement bounded evidence-bearing path queries,T400,A056,DONE
 T407,G4,P0,Add inclusion/truncation explanations,T405,"A044,A057",NOT STARTED
 T408,G4,P0,Add critical three-reroot E2E,"T405,T407",A048,NOT STARTED
 T409,G4,P0,Add cross-industry reroot E2E,T405,A034,NOT STARTED

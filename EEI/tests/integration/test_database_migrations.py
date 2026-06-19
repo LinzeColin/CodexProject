@@ -20,7 +20,13 @@ pytestmark = pytest.mark.skipif(
 )
 
 NVIDIA_ID = "00000000-0000-4000-8000-000000000006"
+MICROSOFT_ID = "00000000-0000-4000-8000-000000000003"
+OPENAI_GROUP_ID = "00000000-0000-4000-8000-000000000012"
+OPENAI_FOUNDATION_ID = "00000000-0000-4000-8000-000000000013"
+PALANTIR_ID = "00000000-0000-4000-8000-000000000009"
+GOVERNMENT_BODY_ID = "00000000-0000-4000-8000-000000000019"
 THEME_AI_INFRA_ID = "00000000-0000-4000-8000-000000000020"
+FIXTURE_MATERIALS_ID = "00000000-0000-4000-8000-000000000023"
 FIXTURE_DATACENTER_ID = "00000000-0000-4000-8000-000000000024"
 COREWEAVE_NVIDIA_RELATIONSHIP_ID = "10000000-0000-4000-8000-000000000012"
 SUPERSESSION_RELATIONSHIP_ID = "20000000-0000-4000-8000-000000000001"
@@ -33,6 +39,29 @@ def run_script(*args: str) -> None:
         cwd=os.getcwd(),
         text=True,
     )
+
+
+def assert_evidence_bearing_paths(payload: dict[str, object], *, max_length: int) -> None:
+    paths = payload["paths"]
+    assert isinstance(paths, list)
+    assert 1 <= len(paths) <= 8
+    assert payload["coverage"]["path_count"] == len(paths)
+    assert payload["coverage"]["all_edges_have_evidence"] is True
+    assert payload["coverage"]["source_count"] >= 1
+    for path in paths:
+        assert path["length"] <= max_length
+        assert len(path["relationship_ids"]) == path["length"]
+        assert len(path["node_ids"]) == path["length"] + 1
+        assert path["evidence"]
+        for edge in path["edges"]:
+            assert edge["evidence_count"] >= 1
+            assert edge["evidence"]
+            assert edge["traversal_direction"] in {"forward", "reverse"}
+            for evidence in edge["evidence"]:
+                assert evidence["source_document_id"]
+                assert evidence["source_tier"] >= 1
+                assert evidence["support_excerpt"]
+                assert evidence["url"].startswith("fixture://relationship/")
 
 
 def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
@@ -437,6 +466,60 @@ def exercise_domain_api_and_repository_contracts() -> None:
         edge["relationship_family"] == "supply_chain_operations"
         for edge in expanded["edges"]
     )
+
+    path_cases = [
+        ("shortest", FIXTURE_MATERIALS_ID, NVIDIA_ID, 3, "supply_chain_operations"),
+        ("upstream", FIXTURE_MATERIALS_ID, NVIDIA_ID, 3, "supply_chain_operations"),
+        ("downstream", NVIDIA_ID, FIXTURE_MATERIALS_ID, 3, "supply_chain_operations"),
+        ("control", OPENAI_FOUNDATION_ID, OPENAI_GROUP_ID, 1, "ownership_control"),
+        ("capital", MICROSOFT_ID, OPENAI_GROUP_ID, 1, "capital_financing"),
+        ("policy", GOVERNMENT_BODY_ID, PALANTIR_ID, 1, "government_policy"),
+        ("bottleneck", FIXTURE_MATERIALS_ID, NVIDIA_ID, 3, "supply_chain_operations"),
+    ]
+    for path_type, source_id, target_id, max_length, expected_family in path_cases:
+        path_response = client.get(
+            "/v1/paths",
+            params={
+                "from": source_id,
+                "to": target_id,
+                "path_type": path_type,
+                "max_length": max_length,
+                "as_of": "2026-06-19T00:00:00Z",
+            },
+        )
+        assert path_response.status_code == 200
+        path_payload = path_response.json()
+        assert path_payload["query"]["path_type"] == path_type
+        assert path_payload["query"]["max_length"] == max_length
+        assert path_payload["query"]["hard_limits"]["max_path_length"] == 8
+        assert path_payload["query"]["max_paths"] == 8
+        assert path_payload["query"]["from"] == source_id
+        assert path_payload["query"]["to"] == target_id
+        assert path_payload["paths"][0]["node_ids"][0] == source_id
+        assert path_payload["paths"][0]["node_ids"][-1] == target_id
+        assert_evidence_bearing_paths(path_payload, max_length=max_length)
+        assert all(
+            edge["relationship_family"] == expected_family
+            for path in path_payload["paths"]
+            for edge in path["edges"]
+        )
+        if path_type == "bottleneck":
+            assert path_payload["query"]["bottleneck_only"] is True
+            assert all(
+                edge["materiality"] in {"critical", "high"}
+                for path in path_payload["paths"]
+                for edge in path["edges"]
+            )
+    too_long_path_response = client.get(
+        "/v1/paths",
+        params={
+            "from": FIXTURE_MATERIALS_ID,
+            "to": NVIDIA_ID,
+            "path_type": "shortest",
+            "max_length": 9,
+        },
+    )
+    assert too_long_path_response.status_code == 422
 
     home_response = client.get("/v1/home")
     assert home_response.status_code == 200
