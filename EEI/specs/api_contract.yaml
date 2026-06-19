@@ -900,6 +900,22 @@ components:
           type: object
           additionalProperties:
             type: string
+        match_type:
+          type:
+          - string
+          - 'null'
+        matched_value:
+          type:
+          - string
+          - 'null'
+        fixture_notice:
+          type:
+          - string
+          - 'null'
+        synthetic:
+          type:
+          - boolean
+          - 'null'
     EvidenceSummary:
       type: object
       required:

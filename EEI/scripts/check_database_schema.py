@@ -16,6 +16,8 @@ REQUIRED_TABLES = {
     "event_evidence",
     "industries",
     "entity_industry_memberships",
+    "entity_aliases",
+    "entity_identifiers",
     "supply_chain_relationship_attributes",
     "exploration_sessions",
     "watchlists",
@@ -146,6 +148,19 @@ def main() -> int:
         if missing:
             raise RuntimeError(f"Missing required tables: {', '.join(missing)}")
 
+        extension_rows = rows(
+            connection,
+            """
+            SELECT extname
+            FROM pg_extension
+            WHERE extname IN ('pgcrypto', 'pg_trgm')
+            """,
+        )
+        extensions = {str(row[0]) for row in extension_rows}
+        missing_extensions = sorted({"pgcrypto", "pg_trgm"} - extensions)
+        if missing_extensions:
+            raise RuntimeError(f"Missing required PostgreSQL extensions: {missing_extensions}")
+
         column_rows = rows(
             connection,
             """
@@ -193,6 +208,7 @@ def main() -> int:
         payload: dict[str, object] = {
             "required_tables": len(REQUIRED_TABLES),
             "missing_tables": missing,
+            "required_extensions": sorted(extensions),
             "required_entity_types": sorted(REQUIRED_ENTITY_TYPES),
             "supply_chain_attribute_columns": sorted(REQUIRED_SUPPLY_CHAIN_ATTRIBUTE_COLUMNS),
             "temporal_tables_checked": sorted(REQUIRED_TEMPORAL_COLUMNS),

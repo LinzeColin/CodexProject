@@ -127,10 +127,18 @@ def main() -> int:
         online_editable = item["online_edit"].lower() == "true"
         fixed_governance_value = item["min_value"] == item["max_value"] == item["default_value"]
         if not online_editable and not fixed_governance_value:
-            raise AssertionError(f"non-fixed threshold must support online editing: {item['threshold_id']}")
+            raise AssertionError(
+                f"non-fixed threshold must support online editing: {item['threshold_id']}"
+            )
 
-    runtime = yaml.safe_load((ROOT / "config/model_runtime_defaults.yaml").read_text(encoding="utf-8"))
-    if not math.isclose(sum(float(value) for value in runtime["weights"].values()), 1.0, abs_tol=1e-4):
+    runtime = yaml.safe_load(
+        (ROOT / "config/model_runtime_defaults.yaml").read_text(encoding="utf-8")
+    )
+    if not math.isclose(
+        sum(float(value) for value in runtime["weights"].values()),
+        1.0,
+        abs_tol=1e-4,
+    ):
         raise AssertionError("runtime weights do not sum to 1.0")
 
     families = rows("data/relationship_family_catalog.csv")
@@ -169,16 +177,28 @@ def main() -> int:
     unique(risks, "risk_id", "risks")
     unique(trace, "trace_id", "acceptance trace")
     unique(gates, "gate_id", "release gates")
-    if len(tasks) != 120 or len(acceptance) != 200 or len(risks) != 53 or len(trace) != 212 or len(gates) != 10:
+    if (
+        len(tasks) != 120
+        or len(acceptance) != 200
+        or len(risks) != 53
+        or len(trace) != 213
+        or len(gates) != 10
+    ):
         raise AssertionError("task/acceptance/risk/trace/gate canonical counts invalid")
 
     task_ids = {item["task_id"] for item in tasks}
     acceptance_ids = {item["acceptance_id"] for item in acceptance}
     for task in tasks:
-        for dependency in filter(None, (value.strip() for value in task["depends_on"].split(","))):
+        for dependency in filter(
+            None,
+            (value.strip() for value in task["depends_on"].split(",")),
+        ):
             if dependency not in task_ids:
                 raise AssertionError(f"{task['task_id']} missing dependency {dependency}")
-        for acceptance_id in filter(None, (value.strip() for value in task["acceptance_ids"].split(","))):
+        for acceptance_id in filter(
+            None,
+            (value.strip() for value in task["acceptance_ids"].split(",")),
+        ):
             if acceptance_id not in acceptance_ids:
                 raise AssertionError(f"{task['task_id']} missing acceptance {acceptance_id}")
 
@@ -196,12 +216,23 @@ def main() -> int:
         raise AssertionError(f"tasks reference missing release gates: {sorted(orphan_gate_values)}")
 
     traced_functions = {item["requirement_or_function_id"] for item in trace}
-    if any(item["priority"] == "P0" and item["function_id"] not in traced_functions for item in functions):
+    if any(
+        item["priority"] == "P0" and item["function_id"] not in traced_functions
+        for item in functions
+    ):
         raise AssertionError("P0 function missing acceptance trace")
 
     risk_trace = rows("data/risk_control_traceability.csv")
-    high_or_critical = [item for item in risk_trace if item["severity"].lower() in {"high", "critical"}]
-    if any(not item["control"] or not item["trigger"] or not item["owner"] or not item["release_gate"] for item in high_or_critical):
+    high_or_critical = [
+        item for item in risk_trace if item["severity"].lower() in {"high", "critical"}
+    ]
+    if any(
+        not item["control"]
+        or not item["trigger"]
+        or not item["owner"]
+        or not item["release_gate"]
+        for item in high_or_critical
+    ):
         raise AssertionError("high/critical risk missing control, trigger, owner or release gate")
 
     html = (ROOT / "prototype/standalone.html").read_text(encoding="utf-8")
@@ -217,7 +248,10 @@ def main() -> int:
     ]:
         if phrase not in html:
             raise AssertionError(f"prototype missing {phrase}")
-    if (ROOT / "prototype/index.html").read_bytes() != (ROOT / "prototype/standalone.html").read_bytes():
+    if (
+        (ROOT / "prototype/index.html").read_bytes()
+        != (ROOT / "prototype/standalone.html").read_bytes()
+    ):
         raise AssertionError("index and standalone must be identical")
     if html.count('data-view="governance"') != 1:
         raise AssertionError("duplicate/missing governance navigation")
@@ -259,7 +293,8 @@ def main() -> int:
     )
     print(
         f"  industries/sectors/segments/capital/domain/companies: "
-        f"{len(industries)}/{len(sectors)}/{len(segments)}/{len(capital_objects)}/{len(domain_objects)}/{len(companies)}"
+        f"{len(industries)}/{len(sectors)}/{len(segments)}/"
+        f"{len(capital_objects)}/{len(domain_objects)}/{len(companies)}"
     )
     print(
         f"  tasks/acceptance/risks/trace/gates: "
@@ -273,4 +308,4 @@ if __name__ == "__main__":
         raise SystemExit(main())
     except (AssertionError, KeyError, ValueError, yaml.YAMLError, json.JSONDecodeError) as exc:
         print(f"Governance validation: FAIL - {exc}", file=sys.stderr)
-        raise SystemExit(1)
+        raise SystemExit(1) from exc

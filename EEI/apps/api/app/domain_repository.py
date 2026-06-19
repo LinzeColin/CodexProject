@@ -191,6 +191,93 @@ class DomainRepository:
     def connect(self) -> psycopg.Connection[dict[str, Any]]:
         return psycopg.connect(self.database_url, connect_timeout=5, row_factory=dict_row)
 
+    def search_entities(
+        self,
+        query: str | None,
+        entity_type: str | None,
+        limit: int,
+    ) -> list[dict[str, Any]]:
+        search_term = (query or "").strip()
+        pattern = f"%{search_term}%"
+        with self.connect() as connection:
+            rows = connection.execute(
+                """
+                WITH matches AS (
+                  SELECT
+                    e.id,
+                    e.canonical_name,
+                    e.entity_type,
+                    fen.fixture_notice,
+                    COALESCE(fen.synthetic, false) AS synthetic,
+                    'canonical' AS match_type,
+                    e.canonical_name AS matched_value,
+                    1 AS rank
+                  FROM entities e
+                  LEFT JOIN fixture_entity_notices fen ON fen.entity_id = e.id
+                  WHERE (
+                    %(entity_type)s::entity_type IS NULL
+                    OR e.entity_type = %(entity_type)s::entity_type
+                  )
+                    AND (%(query)s = '' OR e.canonical_name ILIKE %(pattern)s)
+                  UNION ALL
+                  SELECT
+                    e.id,
+                    e.canonical_name,
+                    e.entity_type,
+                    fen.fixture_notice,
+                    COALESCE(fen.synthetic, false) AS synthetic,
+                    lower(ei.scheme) AS match_type,
+                    ei.value AS matched_value,
+                    2 AS rank
+                  FROM entities e
+                  JOIN entity_identifiers ei ON ei.entity_id = e.id
+                  LEFT JOIN fixture_entity_notices fen ON fen.entity_id = e.id
+                  WHERE (
+                    %(entity_type)s::entity_type IS NULL
+                    OR e.entity_type = %(entity_type)s::entity_type
+                  )
+                    AND (%(query)s = '' OR ei.value ILIKE %(pattern)s)
+                  UNION ALL
+                  SELECT
+                    e.id,
+                    e.canonical_name,
+                    e.entity_type,
+                    fen.fixture_notice,
+                    COALESCE(fen.synthetic, false) AS synthetic,
+                    'alias:' || ea.alias_type AS match_type,
+                    ea.alias AS matched_value,
+                    3 AS rank
+                  FROM entities e
+                  JOIN entity_aliases ea ON ea.entity_id = e.id
+                  LEFT JOIN fixture_entity_notices fen ON fen.entity_id = e.id
+                  WHERE (
+                    %(entity_type)s::entity_type IS NULL
+                    OR e.entity_type = %(entity_type)s::entity_type
+                  )
+                    AND (%(query)s = '' OR ea.alias ILIKE %(pattern)s)
+                ),
+                ranked AS (
+                  SELECT DISTINCT ON (id)
+                    id, canonical_name, entity_type, fixture_notice, synthetic,
+                    match_type, matched_value, rank
+                  FROM matches
+                  ORDER BY id, rank, length(matched_value), matched_value
+                )
+                SELECT id, canonical_name, entity_type, fixture_notice, synthetic,
+                       match_type, matched_value
+                FROM ranked
+                ORDER BY rank, canonical_name
+                LIMIT %(limit)s
+                """,
+                {
+                    "query": search_term,
+                    "pattern": pattern,
+                    "entity_type": entity_type,
+                    "limit": limit,
+                },
+            ).fetchall()
+            return self._with_primary_identifiers(connection, rows)
+
     def entity_summary(
         self,
         connection: psycopg.Connection[dict[str, Any]],
@@ -221,6 +308,40 @@ class DomainRepository:
             item["scheme"]: item["value"] for item in identifier_rows
         }
         return _jsonable(payload)
+
+    def get_entity(self, entity_id: UUID) -> dict[str, Any]:
+        with self.connect() as connection:
+            return self.entity_summary(connection, entity_id)
+
+    def _with_primary_identifiers(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_rows: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        if not entity_rows:
+            return []
+        entity_ids = [row["id"] for row in entity_rows]
+        identifier_rows = connection.execute(
+            """
+            SELECT entity_id, scheme, value
+            FROM entity_identifiers
+            WHERE entity_id = ANY(%s)
+            ORDER BY scheme
+            """,
+            (entity_ids,),
+        ).fetchall()
+        identifiers: dict[UUID, dict[str, str]] = {}
+        for row in identifier_rows:
+            identifiers.setdefault(row["entity_id"], {})[row["scheme"]] = row["value"]
+        return [
+            _jsonable(
+                {
+                    **dict(row),
+                    "primary_identifiers": identifiers.get(row["id"], {}),
+                }
+            )
+            for row in entity_rows
+        ]
 
     def active_scoring_profile(
         self,

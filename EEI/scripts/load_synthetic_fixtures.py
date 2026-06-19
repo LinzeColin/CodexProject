@@ -102,6 +102,28 @@ def load_entities(connection: object, entities: list[dict[str, object]]) -> None
                 """,
                 (entity["id"], identifier["scheme"], identifier["value"]),
             )
+        alias_values: set[tuple[str, str]] = {
+            (str(entity["entity_key"]), "fixture_key"),
+            (str(entity["entity_key"]).replace("_", " "), "fixture_key_words"),
+        }
+        canonical_name = str(entity["canonical_name"])
+        short_name = canonical_name.replace(" Corporation", "").replace(", Inc.", "")
+        alias_values.add((short_name.replace(" (Synthetic)", ""), "short_name"))
+        for identifier in entity.get("identifiers", []):
+            if identifier["scheme"] == "TICKER":
+                for ticker in str(identifier["value"]).split("/"):
+                    alias_values.add((ticker, "ticker"))
+        for alias, alias_type in sorted(alias_values):
+            if not alias.strip():
+                continue
+            connection.execute(
+                """
+                INSERT INTO entity_aliases(entity_id, alias, alias_type)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (entity_id, alias, alias_type) DO NOTHING
+                """,
+                (entity["id"], alias, alias_type),
+            )
         connection.execute(
             """
             INSERT INTO fixture_entity_notices(entity_id, dataset_key, fixture_notice, synthetic)

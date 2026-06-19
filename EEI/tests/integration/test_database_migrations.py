@@ -69,6 +69,33 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert relationship_catalog["actual_row_count"] == 52
     assert relationship_catalog["records"][0]["definition"]
 
+    entity_search = client.get("/v1/entities?q=NVDA&type=legal_entity&limit=5")
+    assert entity_search.status_code == 200
+    entity_results = entity_search.json()
+    assert entity_results[0]["canonical_name"] == "NVIDIA Corporation"
+    assert entity_results[0]["entity_type"] == "legal_entity"
+    assert entity_results[0]["match_type"] in {"ticker", "alias:ticker"}
+    assert entity_results[0]["matched_value"] == "NVDA"
+    assert entity_results[0]["primary_identifiers"]["TICKER"] == "NVDA"
+
+    facility_alias_search = client.get("/v1/entities?q=fixture_datacenter&type=facility")
+    assert facility_alias_search.status_code == 200
+    facility_results = facility_alias_search.json()
+    assert facility_results[0]["canonical_name"] == "Synthetic AI Data Center Campus"
+    assert facility_results[0]["entity_type"] == "facility"
+    assert facility_results[0]["match_type"] == "alias:fixture_key"
+    assert facility_results[0]["matched_value"] == "fixture_datacenter"
+    assert facility_results[0]["synthetic"] is True
+    assert facility_results[0]["fixture_notice"]
+
+    wrong_type_search = client.get("/v1/entities?q=fixture_datacenter&type=legal_entity")
+    assert wrong_type_search.status_code == 200
+    assert wrong_type_search.json() == []
+
+    entity_lookup = client.get(f"/v1/entities/{NVIDIA_ID}")
+    assert entity_lookup.status_code == 200
+    assert entity_lookup.json()["primary_identifiers"]["TICKER"] == "NVDA"
+
     watchlist_response = client.post(
         "/v1/watchlists",
         json={"name": "MVP semiconductor fixture"},

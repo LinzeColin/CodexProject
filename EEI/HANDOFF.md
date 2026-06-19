@@ -92,6 +92,9 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27828194718` passed; job `82357916025` proved T1204 remotely.
 - 2026-06-19 update: local `make verify` passed after A012-A014 data contract checks.
 - 2026-06-19 update: GitHub Actions run `27828738097` passed; job `82359769929` proved A012-A014 data contract checks under PostgreSQL.
+- 2026-06-19 update: local `make verify` passed after T300/A038 typed entity search, alias seeding, `pg_trgm` schema support, and governance trace count repair.
+- 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip.
+- 2026-06-19 update: local `make verify-g2-db` still fails closed because Docker is not installed.
 
 Remote verification:
 
@@ -131,6 +134,7 @@ Remote verification:
 - T1203 taxonomy/object-scope API is DONE and remote CI passed.
 - G2 is `PASS`; A026 and A027 remain open for T904/G9 gold precision evaluation under `DEFER-003`.
 - T1204 / A170 Objects and Scope navigation screen is DONE and remote CI passed.
+- T300 / A038 typed entity search is DONE locally; remote PostgreSQL CI still needs to prove it.
 - G4 remains open because T1205 and T1208 are not complete.
 - MVP is not complete.
 
@@ -138,6 +142,7 @@ Remote verification:
 
 Continue G3 with bounded entry/management implementation:
 
-1. Start T300/T301 search and entity lookup contracts or T1206 model snapshot consistency, depending on dependency readiness.
-2. Keep A026/A027 open until T904/G9 real gold precision evaluation.
-3. Continue G4/T1205 only after the next G3 slice is bounded.
+1. Sync T300 to GitHub and wait for remote PostgreSQL CI.
+2. Start T301/T302/T303 home, industry and Watchlist entry-management implementation after T300 CI passes.
+3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
+4. Continue G4/T1205 only after the next G3 slice is bounded.

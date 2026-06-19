@@ -36,7 +36,7 @@ A034,P0,industry,Cross-industry navigation is allowed and visibly indicated,E2E,
 A035,P0,watchlist,"Local-user Watchlist can create, add, remove, restore and persist items",Integration/E2E,NOT STARTED
 A036,P0,watchlist,"Watchlist supports entity, industry, theme and facility items",API test,NOT STARTED
 A037,P0,watchlist,Watchlist shows unread changes and saved view/profile state,E2E,NOT STARTED
-A038,P0,search,Search distinguishes aliases and entity types,Search integration,NOT STARTED
+A038,P0,search,Search distinguishes aliases and entity types,Search integration,DONE
 A039,P0,home,New user reaches a company focus page within three primary actions,E2E,NOT STARTED
 A040,P0,accessibility,Home and industry core controls are keyboard reachable,Playwright/a11y,NOT STARTED
 A041,P0,explore,"Explore API accepts focus, layers, direction, hops, as-of, profile, filters and budget",Contract/integration,NOT STARTED

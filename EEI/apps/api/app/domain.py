@@ -13,6 +13,23 @@ from .settings import get_settings
 
 router = APIRouter(prefix="/v1", tags=["domain"])
 
+EntityType = Literal[
+    "legal_entity",
+    "brand",
+    "security",
+    "fund",
+    "government_body",
+    "person",
+    "theme",
+    "facility",
+    "product",
+    "business_segment",
+    "industry",
+    "contract",
+    "standard",
+    "asset",
+]
+
 
 class FocusRef(BaseModel):
     object_type: Literal["entity", "industry", "theme", "facility"]
@@ -113,6 +130,27 @@ def get_catalog(
 @router.get("/system/object-scope")
 def get_object_scope(repository: CatalogRepositoryDependency) -> dict[str, Any]:
     return repository.object_scope()
+
+
+@router.get("/entities")
+def search_entities(
+    repository: RepositoryDependency,
+    q: Annotated[str | None, Query()] = None,
+    type: Annotated[EntityType | None, Query()] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+) -> list[dict[str, Any]]:
+    try:
+        return repository.search_entities(query=q, entity_type=type, limit=limit)
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.get("/entities/{entityId}")
+def get_entity(entityId: UUID, repository: RepositoryDependency) -> dict[str, Any]:
+    try:
+        return repository.get_entity(entityId)
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
 
 
 @router.post("/explore")
