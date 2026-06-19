@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "task_id": "T1214",
+  "acceptance_ids": [
+    "A185"
+  ],
+  "risk_control": {
+    "risk_rows": 53,
+    "traceability_rows": 53,
+    "high_or_critical_risks": 39,
+    "severity_counts": {
+      "critical": 4,
+      "high": 35,
+      "medium": 14
+    }
+  },
+  "artifacts": {
+    "summary": "artifacts/risk_control_summary_t1214.json",
+    "mapping": "artifacts/risk_control_mapping_t1214.csv",
+    "a185_evidence": "artifacts/tests/a185/t1214_high_risk_traceability.json"
+  },
+  "mapping_preview": [
+    {
+      "risk_id": "R001",
+      "severity": "critical",
+      "likelihood": "high",
+      "risk": "Public evidence mistaken for complete hidden truth",
+      "related_function_ids": "FUN-EXP-03;FUN-DM-01",
+      "control": "Show provenance, unknown, coverage and disclosure lag",
+      "trigger": "UI/claim uses true hidden current without evidence",
+      "owner": "product+data",
+      "task_ids": "T1214",
+      "acceptance_ids": "A185",
+      "release_gates": "G0;G9",
+      "status": "OPEN"
+    },
+    {
+      "risk_id": "R002",
+      "severity": "critical",
+      "likelihood": "high",
+      "risk": "13F or filing data presented as real-time money flow",
+      "related_function_ids": "FUN-EXP-02;FUN-DM-01",
+      "control": "Separate report period, filed, observed and amount kind",
+      "trigger": "UI drops period or calls snapshot flow",
+      "owner": "data+ux",
+      "task_ids": "T1214",
+      "acceptance_ids": "A185",
+      "release_gates": "G0;G9",
+      "status": "OPEN"
+    },
+    {
+      "risk_id": "R003",
+      "severity": "critical",
+      "likelihood": "medium",
+      "risk": "Commercial empire view interpreted as legal control",
+      "related_function_ids": "FUN-EXP-03;FUN-EXP-05",
+      "control": "Separate structure, dependency and influence layers",
+      "trigger": "Business partner shown as parent/controller",
+      "owner": "product+ux",
+      "task_ids": "T1214",
+      "acceptance_ids": "A185",
+      "release_gates": "G0;G9",
+      "status": "OPEN"
+    },
+    {
+      "risk_id": "R004",
+      "severity": "high",
+      "likelihood": "high",
+      "risk": "Recursive exploration produces graph explosion and unusable hairball",
+      "related_function_ids": "FUN-EXP-01",
+      "control": "Hard budgets, lazy expand, grouping and truncation explanation",
+      "trigger": "nodes/edges exceed limits or browser freezes",
+      "owner": "engineering+ux",
+      "task_ids": "T1214",
+      "acceptance_ids": "A185",
+      "release_gates": "G0;G9",
+      "status": "OPEN"
+    },
+    {
+      "risk_id": "R005",
+      "severity": "high",
+      "likelihood": "medium",
+      "risk": "Supply-chain Tier-2/Tier-3 relationships are speculative",
+      "related_function_ids": "FUN-EXP-02;FUN-EXP-06",
+      "control": "Evidence thresholds, derived labels, coverage and review",
+      "trigger": "low-source edge published as reported",
+      "owner": "research+data",
+      "task_ids": "T1214",
+      "acceptance_ids": "A185",
+      "release_gates": "G0;G9",
+      "status": "OPEN"
+    }
+  ]
+}

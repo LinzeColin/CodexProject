@@ -1,42 +1,42 @@
 ﻿risk_id,severity,likelihood,related_function_ids,control,trigger,owner,task_ids,acceptance_ids,release_gate,status
-R001,critical,high,"FUN-EXP-03,FUN-DM-01","Show provenance, unknown, coverage and disclosure lag",UI/claim uses true hidden current without evidence,product+data,T1214,,G0/G9,OPEN
-R002,critical,high,"FUN-EXP-02,FUN-DM-01","Separate report period, filed, observed and amount kind",UI drops period or calls snapshot flow,data+ux,T1214,,G0/G9,OPEN
-R003,critical,medium,"FUN-EXP-03,FUN-EXP-05","Separate structure, dependency and influence layers",Business partner shown as parent/controller,product+ux,T1214,,G0/G9,OPEN
-R004,high,high,FUN-EXP-01,"Hard budgets, lazy expand, grouping and truncation explanation",nodes/edges exceed limits or browser freezes,engineering+ux,T1214,,G0/G9,OPEN
-R005,high,medium,"FUN-EXP-02,FUN-EXP-06","Evidence thresholds, derived labels, coverage and review",low-source edge published as reported,research+data,T1214,,G0/G9,OPEN
-R006,high,medium,"FUN-EXP-01,FUN-EXP-08",Typed entities and resolution tests,contract or ownership attached to brand only,data,T1214,,G0/G9,OPEN
-R007,high,medium,FUN-EXP-04,amount_kind buckets and unit tests,commitment/ceiling/outlay combined,data+ux,T1214,,G0/G9,OPEN
-R008,high,high,FUN-EXP-05,"Observed date, reverify queue and no current hardcode",freshness threshold exceeded,research,T1214,,G0/G9,OPEN
-R009,high,medium,FUN-EXP-01,Raw/quality/adjusted/coverage and language guardrails,UI says probability or guaranteed outcome,product+model,T1214,,G0/G9,OPEN
-R010,high,high,FUN-EXP-02,"Frozen default, preview, counter-evidence, audit and reset",custom profile hides contradictory evidence,model+ux,T1214,,G0/G9,OPEN
-R011,high,medium,FUN-EXP-04,"No price optimization, 14-day cadence, proposal review, rollback",proposal auto-activates or uses short-term price target,model,T1214,,G0/G9,OPEN
-R012,high,medium,FUN-EXP-06,Transactional runs and last-known-good profile,failed run becomes active,engineering+model,T1214,,G0/G9,OPEN
-R013,high,medium,FUN-EXP-07,Structured diff allowlist and secret scan,credential or full auth header in log,security,T1214,,G0/G9,OPEN
-R014,high,low,FUN-EXP-07,Append-only DB policy and no public update/delete API,historical log changed,security+data,T1214,,G0/G9,OPEN
-R015,high,medium,FUN-RM-01,"Source registry, allowlist, no bypass and manual stop condition",scrape requires login bypass or forbidden use,compliance,T1214,,G0/G9,OPEN
-R016,high,medium,FUN-RM-02,"Transactional batch, run IDs, idempotency and rollback",mixed run IDs or partial counts,engineering,T1214,,G0/G9,OPEN
+R001,critical,high,"FUN-EXP-03,FUN-DM-01","Show provenance, unknown, coverage and disclosure lag",UI/claim uses true hidden current without evidence,product+data,T1214,A185,G0/G9,OPEN
+R002,critical,high,"FUN-EXP-02,FUN-DM-01","Separate report period, filed, observed and amount kind",UI drops period or calls snapshot flow,data+ux,T1214,A185,G0/G9,OPEN
+R003,critical,medium,"FUN-EXP-03,FUN-EXP-05","Separate structure, dependency and influence layers",Business partner shown as parent/controller,product+ux,T1214,A185,G0/G9,OPEN
+R004,high,high,FUN-EXP-01,"Hard budgets, lazy expand, grouping and truncation explanation",nodes/edges exceed limits or browser freezes,engineering+ux,T1214,A185,G0/G9,OPEN
+R005,high,medium,"FUN-EXP-02,FUN-EXP-06","Evidence thresholds, derived labels, coverage and review",low-source edge published as reported,research+data,T1214,A185,G0/G9,OPEN
+R006,high,medium,"FUN-EXP-01,FUN-EXP-08",Typed entities and resolution tests,contract or ownership attached to brand only,data,T1214,A185,G0/G9,OPEN
+R007,high,medium,FUN-EXP-04,amount_kind buckets and unit tests,commitment/ceiling/outlay combined,data+ux,T1214,A185,G0/G9,OPEN
+R008,high,high,FUN-EXP-05,"Observed date, reverify queue and no current hardcode",freshness threshold exceeded,research,T1214,A185,G0/G9,OPEN
+R009,high,medium,FUN-EXP-01,Raw/quality/adjusted/coverage and language guardrails,UI says probability or guaranteed outcome,product+model,T1214,A185,G0/G9,OPEN
+R010,high,high,FUN-EXP-02,"Frozen default, preview, counter-evidence, audit and reset",custom profile hides contradictory evidence,model+ux,T1214,A185,G0/G9,OPEN
+R011,high,medium,FUN-EXP-04,"No price optimization, 14-day cadence, proposal review, rollback",proposal auto-activates or uses short-term price target,model,T1214,A185,G0/G9,OPEN
+R012,high,medium,FUN-EXP-06,Transactional runs and last-known-good profile,failed run becomes active,engineering+model,T1214,A185,G0/G9,OPEN
+R013,high,medium,FUN-EXP-07,Structured diff allowlist and secret scan,credential or full auth header in log,security,T1214,A185,G0/G9,OPEN
+R014,high,low,FUN-EXP-07,Append-only DB policy and no public update/delete API,historical log changed,security+data,T1214,A185,G0/G9,OPEN
+R015,high,medium,FUN-RM-01,"Source registry, allowlist, no bypass and manual stop condition",scrape requires login bypass or forbidden use,compliance,T1214,A185,G0/G9,OPEN
+R016,high,medium,FUN-RM-02,"Transactional batch, run IDs, idempotency and rollback",mixed run IDs or partial counts,engineering,T1214,A185,G0/G9,OPEN
 R017,medium,medium,FUN-RM-03,Versioned multi-label classification and cross-industry navigation,entity forced into one industry only,product+data,T1214,,G0/G9,OPEN
 R018,medium,medium,FUN-DM-01,Versioned exploration schema and E2E back/forward tests,reroot loses filters/profile/time,engineering+ux,T1214,,G0/G9,OPEN
 R019,medium,medium,FUN-DM-02,Gate/file scope and Git baseline,changes outside current Gate,engineering,T1214,,G0/G9,OPEN
-R020,critical,low,FUN-DM-02,"Sandbox, network-off, approvals and secret scan",unsafe mode or secret diff,security,T1214,,G0/G9,OPEN
+R020,critical,low,FUN-DM-02,"Sandbox, network-off, approvals and secret scan",unsafe mode or secret diff,security,T1214,A185,G0/G9,OPEN
 R021,medium,medium,FUN-DM-03,Recorded environment and separate API/render metrics,numbers reported without hardware/data size,engineering,T1214,,G0/G9,OPEN
-R022,high,medium,FUN-DM-04,Conflict/supersession records and evidence drawer,older fact disappears without history,data,T1214,,G0/G9,OPEN
+R022,high,medium,FUN-DM-04,Conflict/supersession records and evidence drawer,older fact disappears without history,data,T1214,A185,G0/G9,OPEN
 R023,medium,medium,cross-cutting,"Configurable sizing, text explanation and table alternative",node size defaults to degree without label,ux,T1214,,G0/G9,OPEN
-R024,high,low,cross-cutting,Upgrade/downgrade test and backup runbook,migration lacks downgrade,engineering,T1214,,G0/G9,OPEN
-R25,high,high,cross-cutting,Directional grammar labels evidence inspector and task testing,Users cannot explain upstream/downstream after 30 seconds,product+ux,,,G0/G9,OPEN
-R26,high,high,cross-cutting,Budgets grouping semantic zoom progressive expand and list alternative,First screen exceeds 40 edges or labels overlap,ux+engineering,,,G0/G9,OPEN
-R27,high,medium,cross-cutting,Canvas empty-state industry overlay and demo,Empty account shows blank workspace,product+ux,,,G0/G9,OPEN
+R024,high,low,"FUN-DM-01,FUN-SYS-02",Upgrade/downgrade test and backup runbook,migration lacks downgrade,engineering,T1214,A185,G0/G9,OPEN
+R25,high,high,"FUN-EXP-01,FUN-EXP-02",Directional grammar labels evidence inspector and task testing,Users cannot explain upstream/downstream after 30 seconds,product+ux,T1214,A185,G0/G9,OPEN
+R26,high,high,"FUN-EXP-01,FUN-SYS-02",Budgets grouping semantic zoom progressive expand and list alternative,First screen exceeds 40 edges or labels overlap,ux+engineering,T1214,A185,G0/G9,OPEN
+R27,high,medium,"FUN-RM-01,FUN-EXP-01",Canvas empty-state industry overlay and demo,Empty account shows blank workspace,product+ux,T1214,A185,G0/G9,OPEN
 R28,medium,medium,cross-cutting,Responsive drawer states and visual regression,Canvas falls below 60 percent or controls overlap,ux+frontend,,,G0/G9,OPEN
-R29,high,medium,cross-cutting,Stable directional grammar retained positions breadcrumb and transition,Users lose prior context after pivot,ux+graph,,,G0/G9,OPEN
-R30,high,medium,cross-cutting,Plain labels plus expandable machine type source and time,User cannot distinguish fact inference and conflict,content+data,,,G0/G9,OPEN
-R31,high,medium,cross-cutting,Shape line style icons labels table and contrast tests,Relation meaning disappears in grayscale,a11y+ux,,,G0/G9,OPEN
+R29,high,medium,"FUN-EXP-01,FUN-RM-03",Stable directional grammar retained positions breadcrumb and transition,Users lose prior context after pivot,ux+graph,T1214,A185,G0/G9,OPEN
+R30,high,medium,"FUN-EXP-01,FUN-DM-01",Plain labels plus expandable machine type source and time,User cannot distinguish fact inference and conflict,content+data,T1214,A185,G0/G9,OPEN
+R31,high,medium,"FUN-EXP-01,FUN-SYS-02",Shape line style icons labels table and contrast tests,Relation meaning disappears in grayscale,a11y+ux,T1214,A185,G0/G9,OPEN
 R32,medium,medium,cross-cutting,Versioned state schema migration and safe fallback,Reload produces blank/error canvas,frontend+backend,,,G0/G9,OPEN
 R33,medium,medium,cross-cutting,Lexicon forbidden-term lint and copy review,reroot/hop/profile/gate visible in UI,content+qa,,,G0/G9,OPEN
-R34,high,medium,cross-cutting,Demo watermark fixtures evidence boundary and implementation gates,Prototype screenshot presented as live verified data,product+research,,,G0/G9,OPEN
-R35,high,medium,cross-cutting,单一机器可读目录+CI引用完整性检查+PR模板强制更新,catalog validation fails or docs counts differ,product+devex,,,G0/G9,OPEN
-R36,high,medium,cross-cutting,不可变配置版本+原子active snapshot+SSE版本号+失败回滚,two visible components report different model/snapshot versions,backend+frontend+model,,,G0/G9,OPEN
+R34,high,medium,"FUN-EXP-01,FUN-DM-01,FUN-SYS-02",Demo watermark fixtures evidence boundary and implementation gates,Prototype screenshot presented as live verified data,product+research,T1214,A185,G0/G9,OPEN
+R35,high,medium,"FUN-SYS-01,FUN-SYS-02,FUN-DM-02",单一机器可读目录+CI引用完整性检查+PR模板强制更新,catalog validation fails or docs counts differ,product+devex,T1214,A185,G0/G9,OPEN
+R36,high,medium,"FUN-DM-02,FUN-SYS-02,FUN-EXP-01",不可变配置版本+原子active snapshot+SSE版本号+失败回滚,two visible components report different model/snapshot versions,backend+frontend+model,T1214,A185,G0/G9,OPEN
 R37,medium,medium,cross-cutting,manifest/checksum/release checklist/catalog integrity workflow,release artifact cannot reproduce documented version,devex,,,G0/G9,OPEN
-R38,high,medium,cross-cutting,定义、方向、排除项、证据门槛和人工复核队列,same fact maps to conflicting families without review,research+data,,,G0/G9,OPEN
+R38,high,medium,"FUN-EXP-02,FUN-EXP-08,FUN-DM-01",定义、方向、排除项、证据门槛和人工复核队列,same fact maps to conflicting families without review,research+data,T1214,A185,G0/G9,OPEN
 R035,HIGH,MEDIUM,"FUN-EXP-01,FUN-DM-02,FUN-SYS-01,FUN-SYS-02",以机器目录为源；PR 同步清单；CI 交叉校验,目录或公式变更但追踪矩阵未更新,tech lead,T1214,A185,G0/G9,OPEN
 R036,HIGH,HIGH,"FUN-EXP-03,FUN-EXP-05",事实/推断分离；有效期；多源核验；冲突状态,关键控制关系只有单一二手来源,research lead,T1214,A185,G0/G9,OPEN
 R037,HIGH,HIGH,FUN-EXP-02,阶段模型；证据门槛；图预算；按需展开,默认视图超过预算或推断关系无双源,product+data,T1214,A185,G0/G9,OPEN

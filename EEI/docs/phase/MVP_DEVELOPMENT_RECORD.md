@@ -1561,3 +1561,30 @@ Acceptance status:
 Residual risks:
 
 - T1213 does not close risk-control traceability for high-risk items; that remains T1214 / A185.
+
+## 2026-06-19 - Phase 1 / G0 T1214 Risk-control traceability artifacts
+
+Status: LOCAL VALIDATION IN PROGRESS
+
+Completed:
+
+- Added `scripts/manage_risk_control_artifacts.py` to generate and validate `artifacts/risk_control_summary_t1214.json`, `artifacts/risk_control_mapping_t1214.csv` and `artifacts/tests/a185/t1214_high_risk_traceability.json`.
+- Wired `validate-risk-control-artifacts` into `make verify` and `.github/workflows/governance-validation.yml`.
+- Filled missing T1214/A185 mappings for high/critical risk rows and replaced high-risk `cross-cutting` placeholders with concrete function IDs.
+- Marked T1214 and A185 as `DONE`.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/manage_risk_control_artifacts.py generate`: PASS.
+- Local `.venv/bin/uv run python scripts/manage_risk_control_artifacts.py validate`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_governance_consistency.py`: PASS.
+- Local `.venv/bin/uv run python scripts/validate_github_governance.py`: PASS.
+- Local `.venv/bin/uv run ruff check scripts/manage_risk_control_artifacts.py scripts/validate_governance_consistency.py scripts/validate_github_governance.py`: PASS.
+
+Acceptance status:
+
+- A185 is covered by `scripts/manage_risk_control_artifacts.py`, `data/risk_register.csv`, `data/risk_control_traceability.csv`, `artifacts/risk_control_summary_t1214.json`, `artifacts/risk_control_mapping_t1214.csv` and `artifacts/tests/a185/t1214_high_risk_traceability.json`.
+
+Residual risks:
+
+- T1214 validates risk-control traceability; final clean-room Markdown/CSV/JSON/GitHub/prototype/PDF/ZIP verification remains T1215 / A200.

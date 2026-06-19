@@ -1,0 +1,54 @@
+risk_id,severity,likelihood,risk,related_function_ids,control,trigger,owner,task_ids,acceptance_ids,release_gates,status
+R001,critical,high,Public evidence mistaken for complete hidden truth,FUN-EXP-03;FUN-DM-01,"Show provenance, unknown, coverage and disclosure lag",UI/claim uses true hidden current without evidence,product+data,T1214,A185,G0;G9,OPEN
+R002,critical,high,13F or filing data presented as real-time money flow,FUN-EXP-02;FUN-DM-01,"Separate report period, filed, observed and amount kind",UI drops period or calls snapshot flow,data+ux,T1214,A185,G0;G9,OPEN
+R003,critical,medium,Commercial empire view interpreted as legal control,FUN-EXP-03;FUN-EXP-05,"Separate structure, dependency and influence layers",Business partner shown as parent/controller,product+ux,T1214,A185,G0;G9,OPEN
+R004,high,high,Recursive exploration produces graph explosion and unusable hairball,FUN-EXP-01,"Hard budgets, lazy expand, grouping and truncation explanation",nodes/edges exceed limits or browser freezes,engineering+ux,T1214,A185,G0;G9,OPEN
+R005,high,medium,Supply-chain Tier-2/Tier-3 relationships are speculative,FUN-EXP-02;FUN-EXP-06,"Evidence thresholds, derived labels, coverage and review",low-source edge published as reported,research+data,T1214,A185,G0;G9,OPEN
+R006,high,medium,Product/brand/facility/legal entity are merged,FUN-EXP-01;FUN-EXP-08,Typed entities and resolution tests,contract or ownership attached to brand only,data,T1214,A185,G0;G9,OPEN
+R007,high,medium,Different amount semantics are summed,FUN-EXP-04,amount_kind buckets and unit tests,commitment/ceiling/outlay combined,data+ux,T1214,A185,G0;G9,OPEN
+R008,high,high,Private-company facts rapidly stale,FUN-EXP-05,"Observed date, reverify queue and no current hardcode",freshness threshold exceeded,research,T1214,A185,G0;G9,OPEN
+R009,high,medium,Scoring creates false precision or is read as return probability,FUN-EXP-01,Raw/quality/adjusted/coverage and language guardrails,UI says probability or guaranteed outcome,product+model,T1214,A185,G0;G9,OPEN
+R010,high,high,User custom weights reinforce confirmation bias,FUN-EXP-02,"Frozen default, preview, counter-evidence, audit and reset",custom profile hides contradictory evidence,model+ux,T1214,A185,G0;G9,OPEN
+R011,high,medium,Calibration overfits recent noise,FUN-EXP-04,"No price optimization, 14-day cadence, proposal review, rollback",proposal auto-activates or uses short-term price target,model,T1214,A185,G0;G9,OPEN
+R012,high,medium,Calibration or scoring failure changes active results,FUN-EXP-06,Transactional runs and last-known-good profile,failed run becomes active,engineering+model,T1214,A185,G0;G9,OPEN
+R013,high,medium,Operation logs leak secrets or sensitive payloads,FUN-EXP-07,Structured diff allowlist and secret scan,credential or full auth header in log,security,T1214,A185,G0;G9,OPEN
+R014,high,low,Audit log is mutable or deletable,FUN-EXP-07,Append-only DB policy and no public update/delete API,historical log changed,security+data,T1214,A185,G0;G9,OPEN
+R015,high,medium,Source terms or access controls are violated,FUN-RM-01,"Source registry, allowlist, no bypass and manual stop condition",scrape requires login bypass or forbidden use,compliance,T1214,A185,G0;G9,OPEN
+R016,high,medium,Daily ingestion partially publishes inconsistent facts/scores,FUN-RM-02,"Transactional batch, run IDs, idempotency and rollback",mixed run IDs or partial counts,engineering,T1214,A185,G0;G9,OPEN
+R017,medium,medium,Industry taxonomy becomes rigid or misleading,FUN-RM-03,Versioned multi-label classification and cross-industry navigation,entity forced into one industry only,product+data,T1214,,G0;G9,OPEN
+R018,medium,medium,URL/exploration history cannot reproduce state,FUN-DM-01,Versioned exploration schema and E2E back/forward tests,reroot loses filters/profile/time,engineering+ux,T1214,,G0;G9,OPEN
+R019,medium,medium,Codex expands scope or refactors unrelated code,FUN-DM-02,Gate/file scope and Git baseline,changes outside current Gate,engineering,T1214,,G0;G9,OPEN
+R020,critical,low,"Unsafe permission, network or secret leakage during Codex run",FUN-DM-02,"Sandbox, network-off, approvals and secret scan",unsafe mode or secret diff,security,T1214,A185,G0;G9,OPEN
+R021,medium,medium,Performance benchmark hides environment or layout cost,FUN-DM-03,Recorded environment and separate API/render metrics,numbers reported without hardware/data size,engineering,T1214,,G0;G9,OPEN
+R022,high,medium,Source conflicts are overwritten by latest fetch,FUN-DM-04,Conflict/supersession records and evidence drawer,older fact disappears without history,data,T1214,A185,G0;G9,OPEN
+R023,medium,medium,Graph visual centrality is mistaken for causal power,cross-cutting,"Configurable sizing, text explanation and table alternative",node size defaults to degree without label,ux,T1214,,G0;G9,OPEN
+R024,high,low,Irreversible migration or no rollback,FUN-DM-01;FUN-SYS-02,Upgrade/downgrade test and backup runbook,migration lacks downgrade,engineering,T1214,A185,G0;G9,OPEN
+R035,HIGH,MEDIUM,功能、任务、模型和文档发生漂移,FUN-EXP-01;FUN-DM-02;FUN-SYS-01;FUN-SYS-02,以机器目录为源；PR 同步清单；CI 交叉校验,目录或公式变更但追踪矩阵未更新,tech lead,T1214,A185,G0;G9,OPEN
+R036,HIGH,HIGH,私营、复杂治理或集团实体结构不透明,FUN-EXP-03;FUN-EXP-05,事实/推断分离；有效期；多源核验；冲突状态,关键控制关系只有单一二手来源,research lead,T1214,A185,G0;G9,OPEN
+R037,HIGH,HIGH,供应链深度扩展形成误判或关系毛线团,FUN-EXP-02,阶段模型；证据门槛；图预算；按需展开,默认视图超过预算或推断关系无双源,product+data,T1214,A185,G0;G9,OPEN
+R038,MEDIUM,HIGH,可视化强调掩盖不确定性或缺失值,FUN-EXP-01,证据状态、coverage、unknown 和冲突视觉编码,未知金额被画成 0 或边宽,design+data,T1214,,G0;G9,OPEN
+R039,HIGH,MEDIUM,不同资本金额语义被错误求和或比较,FUN-EXP-04,amount_kind；币种/期间；同语义才聚合,Sankey 混合承诺上限与实际支付,data lead,T1214,A185,G0;G9,OPEN
+R040,HIGH,MEDIUM,政策和政府数据地域口径不一致,FUN-EXP-06,司法辖区、有效期和来源分层,跨国政策被当作全局统一适用,research lead,T1214,A185,G0;G9,OPEN
+R041,HIGH,HIGH,战略信号被误读为股价预测或投资建议,FUN-EXP-07,语言护栏；反证；置信度；研究假设标签,UI 出现收益概率或买卖指令,product lead,T1214,A185,G0;G9,OPEN
+R042,MEDIUM,MEDIUM,行业和业务板块分类漂移,FUN-EXP-08,版本化 taxonomy；多标签；迁移映射,同一对象跨版本分类不可复现,data lead,T1214,,G0;G9,OPEN
+R043,HIGH,MEDIUM,快照切换导致同屏数据和分数版本不一致,FUN-RM-02,原子快照；响应携带版本；前端一致性检查,同屏出现不同 score_snapshot_id,backend lead,T1214,A185,G0;G9,OPEN
+R044,HIGH,MEDIUM,数据库界面展示模拟规模而被误认为真实生产数据,FUN-DM-01,原型/fixture 标签；生产连接状态；真实行数来源,未接数据库时显示无来源的大规模数字,product+data,T1214,A185,G0;G9,OPEN
+R045,HIGH,MEDIUM,用户参数产生极端排序、隐藏关键关系或计算爆炸,FUN-DM-02,范围、权重和图预算门槛；dry-run；影响预览,参数越界或可见边数超过 240,model lead,T1214,A185,G0;G9,OPEN
+R046,HIGH,LOW,模型发布部分成功或操作日志缺失,FUN-DM-02;FUN-DM-03,单事务版本+日志+outbox；失败不切换,配置已生效但无 operation_log,backend lead,T1214,A185,G0;G9,OPEN
+R047,MEDIUM,MEDIUM,双周校准自动覆盖用户判断,FUN-DM-04,只生成 proposal；人工接受；可回滚,校准任务直接激活配置,model owner,T1214,,G0;G9,OPEN
+R048,MEDIUM,MEDIUM,GitHub 文档备份存在但无人维护,FUN-SYS-01;FUN-SYS-02,CODEOWNERS；PR 模板；CI；状态页,连续两次发布未更新治理目录,repository owner,T1214,,G0;G9,OPEN
+R049,MEDIUM,MEDIUM,动画、触觉或大图渲染影响性能和可访问性,FUN-SYS-02,motion token；reduced motion；性能预算；渐进渲染,P75 首次交互 >2.5s 或 motion 偏好无效,frontend lead,T1214,,G0;G9,OPEN
+R25,high,high,Visual-first design becomes decorative graph with low analytical value,FUN-EXP-01;FUN-EXP-02,Directional grammar labels evidence inspector and task testing,Users cannot explain upstream/downstream after 30 seconds,product+ux,T1214,A185,G0;G9,OPEN
+R26,high,high,Dense business networks become hairballs,FUN-EXP-01;FUN-SYS-02,Budgets grouping semantic zoom progressive expand and list alternative,First screen exceeds 40 edges or labels overlap,ux+engineering,T1214,A185,G0;G9,OPEN
+R27,high,medium,Watchlist default traps new users with no entry,FUN-RM-01;FUN-EXP-01,Canvas empty-state industry overlay and demo,Empty account shows blank workspace,product+ux,T1214,A185,G0;G9,OPEN
+R28,medium,medium,Right inspector crowds smaller screens,cross-cutting,Responsive drawer states and visual regression,Canvas falls below 60 percent or controls overlap,ux+frontend,,,G0;G9,OPEN
+R29,high,medium,Subject pivot causes spatial disorientation,FUN-EXP-01;FUN-RM-03,Stable directional grammar retained positions breadcrumb and transition,Users lose prior context after pivot,ux+graph,T1214,A185,G0;G9,OPEN
+R30,high,medium,Human-friendly labels hide evidence semantics,FUN-EXP-01;FUN-DM-01,Plain labels plus expandable machine type source and time,User cannot distinguish fact inference and conflict,content+data,T1214,A185,G0;G9,OPEN
+R31,high,medium,Color-only graph excludes users or creates ambiguity,FUN-EXP-01;FUN-SYS-02,Shape line style icons labels table and contrast tests,Relation meaning disappears in grayscale,a11y+ux,T1214,A185,G0;G9,OPEN
+R32,medium,medium,Saved view restores stale or incompatible state,cross-cutting,Versioned state schema migration and safe fallback,Reload produces blank/error canvas,frontend+backend,,,G0;G9,OPEN
+R33,medium,medium,Agent jargon leaks into user interface,cross-cutting,Lexicon forbidden-term lint and copy review,reroot/hop/profile/gate visible in UI,content+qa,,,G0;G9,OPEN
+R34,high,medium,Beautiful mock prototype is mistaken for validated data product,FUN-EXP-01;FUN-DM-01;FUN-SYS-02,Demo watermark fixtures evidence boundary and implementation gates,Prototype screenshot presented as live verified data,product+research,T1214,A185,G0;G9,OPEN
+R35,high,medium,功能、模型和数据目录在文档与代码之间漂移,FUN-SYS-01;FUN-SYS-02;FUN-DM-02,单一机器可读目录+CI引用完整性检查+PR模板强制更新,catalog validation fails or docs counts differ,product+devex,T1214,A185,G0;G9,OPEN
+R36,high,medium,在线参数修改导致全局视图部分刷新或旧新版本混合,FUN-DM-02;FUN-SYS-02;FUN-EXP-01,不可变配置版本+原子active snapshot+SSE版本号+失败回滚,two visible components report different model/snapshot versions,backend+frontend+model,T1214,A185,G0;G9,OPEN
+R37,medium,medium,GitHub备份缺少关键规格或发布不可复现,cross-cutting,manifest/checksum/release checklist/catalog integrity workflow,release artifact cannot reproduce documented version,devex,,,G0;G9,OPEN
+R38,high,medium,分类范围过宽造成供应链和资本关系误分类,FUN-EXP-02;FUN-EXP-08;FUN-DM-01,定义、方向、排除项、证据门槛和人工复核队列,same fact maps to conflicting families without review,research+data,T1214,A185,G0;G9,OPEN
