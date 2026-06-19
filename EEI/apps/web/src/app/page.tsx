@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
 import {
   Activity,
   ArrowDown,
@@ -31,7 +31,7 @@ type NavItem = {
   active?: boolean;
 };
 
-type NodeKey =
+type FocusKey =
   | "materials"
   | "equipment"
   | "foundry"
@@ -43,6 +43,21 @@ type NodeKey =
   | "cloud"
   | "datacenter"
   | "energy";
+
+type NodeKey = FocusKey | "systemMakersGroup";
+
+type LensKey =
+  | "all"
+  | "supply_chain"
+  | "business_segments"
+  | "capital_transactions"
+  | "policy_risk";
+
+type RelationshipLens = Exclude<LensKey, "all">;
+
+type SemanticZoom = "L0" | "L1" | "L2" | "L3";
+
+type TransitionState = "ready" | "loading" | "fallback";
 
 type Zone =
   | "upstream"
@@ -62,6 +77,9 @@ type MapNode = {
   x: number;
   y: number;
   zone: Zone;
+  centerable: boolean;
+  aggregateCount?: number;
+  groupMembers?: string[];
 };
 
 type MapEdge = {
@@ -69,16 +87,17 @@ type MapEdge = {
   to: NodeKey;
   label: string;
   stage: string;
+  lens: RelationshipLens;
   fixtureNotice: string;
 };
 
 type FocusScenario = {
-  focus: NodeKey;
+  focus: FocusKey;
   heading: string;
   subtitle: string;
   nodes: MapNode[];
   edges: MapEdge[];
-  nextCenters: NodeKey[];
+  nextCenters: FocusKey[];
 };
 
 const navItems: NavItem[] = [
@@ -111,7 +130,8 @@ const entityLabels: Record<NodeKey, string> = {
   systems: "Synthetic Systems Integrator",
   cloud: "Synthetic Cloud Customer",
   datacenter: "Synthetic AI Data Center Campus",
-  energy: "Synthetic Grid Utility"
+  energy: "Synthetic Grid Utility",
+  systemMakersGroup: "Synthetic System Makers Group"
 };
 
 const shortLabels: Record<NodeKey, string> = {
@@ -125,8 +145,35 @@ const shortLabels: Record<NodeKey, string> = {
   systems: "Systems",
   cloud: "Cloud",
   datacenter: "Data Center",
-  energy: "Energy"
+  energy: "Energy",
+  systemMakersGroup: "System Makers"
 };
+
+const lensItems: { key: LensKey; label: string }[] = [
+  { key: "all", label: "综合" },
+  { key: "supply_chain", label: "供应链" },
+  { key: "business_segments", label: "业务" },
+  { key: "capital_transactions", label: "资本" },
+  { key: "policy_risk", label: "政策" }
+];
+
+const semanticZoomItems: { key: SemanticZoom; label: string; title: string }[] = [
+  { key: "L0", label: "L0", title: "Overview with grouped dense nodes" },
+  { key: "L1", label: "L1", title: "Relationship labels" },
+  { key: "L2", label: "L2", title: "Evidence and fixture state" },
+  { key: "L3", label: "L3", title: "Detailed node role labels" }
+];
+
+const systemMakersGroupMembers = [
+  "Synthetic Systems Integrator",
+  "Synthetic Rack Manufacturer",
+  "Synthetic ODM Partner",
+  "Synthetic Thermal Platform Co.",
+  "Synthetic Network Appliance Co.",
+  "Synthetic Storage Platform Co.",
+  "Synthetic Regional Integrator",
+  "Synthetic AI Factory Builder"
+];
 
 const stageRows = [
   { id: "SC-02", name: "Materials", side: "upstream" },
@@ -145,6 +192,7 @@ const baseEdges: MapEdge[] = [
     to: "foundry",
     label: "material provider to",
     stage: "SC-02 -> SC-06",
+    lens: "supply_chain",
     fixtureNotice: "Synthetic fixture for interaction and data-model tests."
   },
   {
@@ -152,6 +200,7 @@ const baseEdges: MapEdge[] = [
     to: "foundry",
     label: "equipment provider to",
     stage: "SC-04 -> SC-06",
+    lens: "supply_chain",
     fixtureNotice: "Synthetic fixture for interaction and data-model tests."
   },
   {
@@ -159,6 +208,7 @@ const baseEdges: MapEdge[] = [
     to: "nvidia",
     label: "wafer foundry for",
     stage: "SC-06 -> SC-08",
+    lens: "supply_chain",
     fixtureNotice: "Synthetic fixture for interaction and data-model tests."
   },
   {
@@ -166,6 +216,7 @@ const baseEdges: MapEdge[] = [
     to: "systems",
     label: "licenses IP to",
     stage: "SC-05 -> SC-09",
+    lens: "supply_chain",
     fixtureNotice: "Synthetic fixture for interaction and data-model tests."
   },
   {
@@ -173,6 +224,7 @@ const baseEdges: MapEdge[] = [
     to: "cloud",
     label: "system integrator for",
     stage: "SC-09 -> SC-12",
+    lens: "supply_chain",
     fixtureNotice: "Synthetic fixture for interaction and data-model tests."
   },
   {
@@ -180,6 +232,7 @@ const baseEdges: MapEdge[] = [
     to: "nvidia",
     label: "customer of",
     stage: "SC-12 -> SC-08",
+    lens: "supply_chain",
     fixtureNotice: "Synthetic fixture for interaction and data-model tests."
   },
   {
@@ -187,6 +240,7 @@ const baseEdges: MapEdge[] = [
     to: "datacenter",
     label: "energy provider to",
     stage: "SC-10 -> SC-10",
+    lens: "supply_chain",
     fixtureNotice: "Synthetic fixture for interaction and data-model tests."
   },
   {
@@ -194,6 +248,7 @@ const baseEdges: MapEdge[] = [
     to: "cloud",
     label: "infrastructure supports",
     stage: "SC-10 -> SC-12",
+    lens: "supply_chain",
     fixtureNotice: "Synthetic fixture for interaction and data-model tests."
   }
 ];
@@ -204,6 +259,7 @@ const nvidiaContextEdges: MapEdge[] = [
     to: "business",
     label: "operates business segment",
     stage: "Business -> Focus",
+    lens: "business_segments",
     fixtureNotice: "Synthetic fixture for business-segment visual coverage."
   },
   {
@@ -211,6 +267,7 @@ const nvidiaContextEdges: MapEdge[] = [
     to: "nvidia",
     label: "capital and control signal for",
     stage: "Capital/control -> Focus",
+    lens: "capital_transactions",
     fixtureNotice: "Synthetic fixture for capital/control visual coverage."
   },
   {
@@ -218,11 +275,31 @@ const nvidiaContextEdges: MapEdge[] = [
     to: "nvidia",
     label: "policy risk constrains",
     stage: "Policy/risk -> Focus",
+    lens: "policy_risk",
     fixtureNotice: "Synthetic fixture for policy/risk visual coverage."
   }
 ];
 
-const scenarios: Record<NodeKey, FocusScenario> = {
+const overviewAggregateEdges: MapEdge[] = [
+  {
+    from: "nvidia",
+    to: "systemMakersGroup",
+    label: "aggregates system makers",
+    stage: "SC-05 -> SC-09",
+    lens: "supply_chain",
+    fixtureNotice: "Synthetic grouped node for anti-hairball semantic zoom."
+  },
+  {
+    from: "systemMakersGroup",
+    to: "cloud",
+    label: "group supplies systems to",
+    stage: "SC-09 -> SC-12",
+    lens: "supply_chain",
+    fixtureNotice: "Synthetic grouped node for anti-hairball semantic zoom."
+  }
+];
+
+const scenarios: Record<FocusKey, FocusScenario> = {
   nvidia: {
     focus: "nvidia",
     heading: "NVIDIA",
@@ -236,6 +313,11 @@ const scenarios: Record<NodeKey, FocusScenario> = {
       node("capital", 390, 72, "capital", "Capital / control", "capital and control signal"),
       node("policy", 396, 418, "policy", "Policy / risk", "export-control context"),
       node("systems", 536, 176, "downstream", "SC-09 System", "system integration"),
+      node("systemMakersGroup", 548, 180, "downstream", "SC-09 System", "aggregated system makers", {
+        aggregateCount: systemMakersGroupMembers.length,
+        centerable: false,
+        groupMembers: systemMakersGroupMembers
+      }),
       node("cloud", 650, 244, "downstream", "SC-12 Customer", "cloud customer"),
       node("datacenter", 562, 358, "infrastructure", "SC-10 Data center", "AI data center"),
       node("energy", 666, 390, "infrastructure", "SC-10 Energy", "grid utility")
@@ -380,7 +462,8 @@ function node(
   y: number,
   zone: Zone,
   stage: string,
-  role: string
+  role: string,
+  options: Partial<Pick<MapNode, "aggregateCount" | "centerable" | "groupMembers">> = {}
 ): MapNode {
   return {
     key,
@@ -390,19 +473,58 @@ function node(
     role,
     x,
     y,
-    zone
+    zone,
+    centerable: options.centerable ?? key !== "systemMakersGroup",
+    aggregateCount: options.aggregateCount,
+    groupMembers: options.groupMembers
   };
 }
 
 export default function Home() {
-  const [focusKey, setFocusKey] = useState<NodeKey>("nvidia");
+  const [focusKey, setFocusKey] = useState<FocusKey>("nvidia");
   const [selectedKey, setSelectedKey] = useState<NodeKey>("nvidia");
-  const [path, setPath] = useState<NodeKey[]>(["nvidia"]);
+  const [path, setPath] = useState<FocusKey[]>(["nvidia"]);
+  const [activeLens, setActiveLens] = useState<LensKey>("all");
+  const [semanticZoom, setSemanticZoom] = useState<SemanticZoom>("L1");
+  const [transitionState, setTransitionState] = useState<TransitionState>("ready");
+  const [groupListOpen, setGroupListOpen] = useState(false);
   const scenario = scenarios[focusKey];
   const nodeByKey = useMemo(
     () => new Map(scenario.nodes.map((item) => [item.key, item])),
     [scenario.nodes]
   );
+  const displayNodes = useMemo(() => {
+    if (focusKey !== "nvidia" || semanticZoom !== "L0") {
+      return scenario.nodes.filter((item) => item.key !== "systemMakersGroup");
+    }
+    return scenario.nodes.filter(
+      (item) => !["systems", "datacenter", "energy"].includes(item.key)
+    );
+  }, [focusKey, scenario.nodes, semanticZoom]);
+  const displayNodeByKey = useMemo(
+    () => new Map(displayNodes.map((item) => [item.key, item])),
+    [displayNodes]
+  );
+  const displayEdges = useMemo(() => {
+    if (focusKey !== "nvidia" || semanticZoom !== "L0") {
+      return scenario.edges;
+    }
+    const groupedKeys = new Set<NodeKey>(["systems", "datacenter", "energy"]);
+    return [
+      ...scenario.edges.filter((edge) => !groupedKeys.has(edge.from) && !groupedKeys.has(edge.to)),
+      ...overviewAggregateEdges
+    ];
+  }, [focusKey, scenario.edges, semanticZoom]);
+  const activeEdgeKeys = useMemo(() => {
+    const keys = new Set<NodeKey>([focusKey]);
+    for (const edge of displayEdges) {
+      if (activeLens === "all" || edge.lens === activeLens) {
+        keys.add(edge.from);
+        keys.add(edge.to);
+      }
+    }
+    return keys;
+  }, [activeLens, displayEdges, focusKey]);
   const selectedNode =
     nodeByKey.get(selectedKey) ?? nodeByKey.get(scenario.focus) ?? scenario.nodes[0];
   const upstreamCandidate = useMemo(
@@ -415,14 +537,33 @@ export default function Home() {
     [nodeByKey, scenario.edges, selectedNode.key]
   );
 
-  function setCenter(nextFocus: NodeKey) {
-    setFocusKey(nextFocus);
-    setSelectedKey(nextFocus);
-    setPath((current) => (current[current.length - 1] === nextFocus ? current : [...current, nextFocus]));
+  const viewportAnchor = `${focusKey}:${selectedNode.key}:${semanticZoom}`;
+
+  function requestCenter(nextFocus: string) {
+    setTransitionState("loading");
+    window.setTimeout(() => {
+      if (!(nextFocus in scenarios)) {
+        setTransitionState("fallback");
+        return;
+      }
+      const validFocus = nextFocus as FocusKey;
+      setFocusKey(validFocus);
+      setSelectedKey(validFocus);
+      setPath((current) =>
+        current[current.length - 1] === validFocus ? current : [...current, validFocus]
+      );
+      setGroupListOpen(false);
+      setTransitionState("ready");
+    }, 160);
+  }
+
+  function setCenter(nextFocus: FocusKey) {
+    requestCenter(nextFocus);
   }
 
   function inspectNode(nextSelected: NodeKey) {
     setSelectedKey(nextSelected);
+    setGroupListOpen(false);
   }
 
   function handleNodeKeyDown(event: KeyboardEvent<SVGGElement>, nextSelected: NodeKey) {
@@ -436,10 +577,36 @@ export default function Home() {
     setFocusKey("nvidia");
     setSelectedKey("nvidia");
     setPath(["nvidia"]);
+    setGroupListOpen(false);
+    setTransitionState("ready");
   }
 
+  useEffect(() => {
+    function handleExternalCenterRequest(event: Event) {
+      const detail = (event as CustomEvent<string | { focus?: string }>).detail;
+      const nextFocus = typeof detail === "string" ? detail : detail?.focus;
+      if (nextFocus) {
+        requestCenter(nextFocus);
+      }
+    }
+
+    window.addEventListener("eei:request-center", handleExternalCenterRequest);
+    return () => window.removeEventListener("eei:request-center", handleExternalCenterRequest);
+  });
+
   return (
-    <main className="workspace" data-testid="workspace-shell" data-workspace-model="recursive-enterprise-map">
+    <main
+      className="workspace"
+      data-active-lens={activeLens}
+      data-layout-grammar="upstream-left focus-center downstream-right capital-top policy-bottom"
+      data-path-length={path.length}
+      data-reroot-state={transitionState}
+      data-selected-node={selectedNode.key}
+      data-semantic-zoom={semanticZoom}
+      data-testid="workspace-shell"
+      data-viewport-anchor={viewportAnchor}
+      data-workspace-model="recursive-enterprise-map"
+    >
       <aside className="navRail" aria-label="主导航">
         <div className="brandMark" aria-label="商域图谱">
           <span className="brandGlyph">E</span>
@@ -487,7 +654,9 @@ export default function Home() {
           </div>
           <div>
             <dt>Budget</dt>
-            <dd>{scenario.nodes.length} / {scenario.edges.length}</dd>
+            <dd data-testid="graph-budget">
+              {displayNodes.length} / {displayEdges.length}
+            </dd>
           </div>
         </dl>
         <div className="fixtureDisclosure" data-testid="fixture-disclosure">
@@ -495,7 +664,7 @@ export default function Home() {
           <span>Visible synthetic notices are required; no live fact claim is shown.</span>
         </div>
         <div className="watchlistStack" aria-label="关注主体">
-          {(["nvidia", "foundry", "equipment", "materials", "cloud"] as NodeKey[]).map((key) => (
+          {(["nvidia", "foundry", "equipment", "materials", "cloud"] as FocusKey[]).map((key) => (
             <button
               className={key === focusKey ? "watchItem current" : "watchItem"}
               key={key}
@@ -516,12 +685,40 @@ export default function Home() {
             <h2>Semiconductor and AI infrastructure ecosystem</h2>
           </div>
           <div className="lensBar" aria-label="分析视角">
-            {["商业", "供应链", "资本", "政策"].map((lens, index) => (
-              <button className={index === 1 ? "lens active" : "lens"} key={lens} type="button">
-                {lens}
+            {lensItems.map((lens) => (
+              <button
+                aria-pressed={activeLens === lens.key}
+                className={activeLens === lens.key ? "lens active" : "lens"}
+                data-testid={`lens-${lens.key}`}
+                key={lens.key}
+                onClick={() => setActiveLens(lens.key)}
+                type="button"
+              >
+                {lens.label}
               </button>
             ))}
           </div>
+        </div>
+
+        <div
+          className="zoomBar"
+          aria-label="语义缩放"
+          data-testid="semantic-zoom-controls"
+          data-zoom-contract="L0,L1,L2,L3"
+        >
+          {semanticZoomItems.map((item) => (
+            <button
+              aria-pressed={semanticZoom === item.key}
+              className={semanticZoom === item.key ? "zoomControl active" : "zoomControl"}
+              data-testid={`zoom-${item.key}`}
+              key={item.key}
+              onClick={() => setSemanticZoom(item.key)}
+              title={item.title}
+              type="button"
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
 
         <div className="stageRail" aria-label="供应链阶段覆盖">
@@ -533,8 +730,20 @@ export default function Home() {
         </div>
 
         <div className="mapSurface" data-testid="ecosystem-map-surface">
+          {transitionState === "loading" ? (
+            <div className="canvasOverlay" data-testid="transition-loading">
+              Loading relationship map
+            </div>
+          ) : null}
+          {transitionState === "fallback" ? (
+            <div className="canvasOverlay warning" data-testid="transition-fallback">
+              Canvas preserved
+            </div>
+          ) : null}
           <svg
-            className="ecosystemMap"
+            className={`ecosystemMap zoom-${semanticZoom}`}
+            data-semantic-zoom={semanticZoom}
+            data-testid="ecosystem-map-svg"
             viewBox="0 0 760 480"
             role="img"
             aria-label="NVIDIA synthetic recursive supply-chain graph"
@@ -552,14 +761,20 @@ export default function Home() {
                 <path d="M0,0 L8,4 L0,8 z" />
               </marker>
             </defs>
-            {scenario.edges.map((edge) => {
-              const source = nodeByKey.get(edge.from);
-              const target = nodeByKey.get(edge.to);
+            {displayEdges.map((edge) => {
+              const source = displayNodeByKey.get(edge.from);
+              const target = displayNodeByKey.get(edge.to);
               if (!source || !target) return null;
               const midX = (source.x + target.x) / 2;
               const midY = (source.y + target.y) / 2 - 10;
+              const lensState = activeLens === "all" || edge.lens === activeLens ? "active" : "faded";
               return (
-                <g key={`${edge.from}-${edge.to}`}>
+                <g
+                  className={`edgeGroup ${lensState}`}
+                  data-lens-state={lensState}
+                  data-testid={`edge-group-${edge.from}-${edge.to}`}
+                  key={`${edge.from}-${edge.to}`}
+                >
                   <line
                     className="edge"
                     data-testid={`edge-${edge.from}-${edge.to}`}
@@ -578,14 +793,25 @@ export default function Home() {
                   >
                     {edge.label}
                   </text>
+                  {semanticZoom === "L2" || semanticZoom === "L3" ? (
+                    <text className="edgeEvidence" textAnchor="middle" x={midX} y={midY + 16}>
+                      fixture evidence
+                    </text>
+                  ) : null}
                 </g>
               );
             })}
-            {scenario.nodes.map((mapNode) => (
+            {displayNodes.map((mapNode) => {
+              const lensState =
+                activeLens === "all" || activeEdgeKeys.has(mapNode.key) ? "active" : "faded";
+              return (
               <g
                 aria-label={`Inspect ${mapNode.label}`}
                 aria-pressed={mapNode.key === selectedNode.key}
-                className={`node ${mapNode.zone}${mapNode.key === selectedNode.key ? " selected" : ""}`}
+                className={`node ${mapNode.zone} ${lensState}${mapNode.key === selectedNode.key ? " selected" : ""}`}
+                data-aggregate-count={mapNode.aggregateCount}
+                data-lens-state={lensState}
+                data-node-kind={mapNode.aggregateCount ? "aggregate" : "entity"}
                 data-testid={`graph-node-${mapNode.key}`}
                 key={mapNode.key}
                 onClick={() => inspectNode(mapNode.key)}
@@ -596,13 +822,19 @@ export default function Home() {
               >
                 <circle r={mapNode.key === focusKey ? 40 : 31} />
                 <text textAnchor="middle" dominantBaseline="middle">
-                  {mapNode.shortLabel}
+                  {mapNode.aggregateCount ? `${mapNode.shortLabel} ${mapNode.aggregateCount}` : mapNode.shortLabel}
                 </text>
                 <text className="nodeStage" textAnchor="middle" y={52}>
                   {mapNode.stage}
                 </text>
+                {semanticZoom === "L3" ? (
+                  <text className="nodeRole" textAnchor="middle" y={68}>
+                    {mapNode.role}
+                  </text>
+                ) : null}
               </g>
-            ))}
+              );
+            })}
           </svg>
         </div>
 
@@ -655,8 +887,8 @@ export default function Home() {
           <button
             className="primaryAction"
             data-testid="primary-set-center"
-            disabled={selectedNode.key === focusKey}
-            onClick={() => setCenter(selectedNode.key)}
+            disabled={!selectedNode.centerable || selectedNode.key === focusKey}
+            onClick={() => selectedNode.centerable && setCenter(selectedNode.key as FocusKey)}
             type="button"
           >
             <Crosshair size={16} aria-hidden="true" />
@@ -690,6 +922,12 @@ export default function Home() {
             <FileSearch size={16} aria-hidden="true" />
             <span>打开证据</span>
           </button>
+          {selectedNode.groupMembers ? (
+            <button data-testid="open-group-list" onClick={() => setGroupListOpen((open) => !open)} type="button">
+              <Boxes size={16} aria-hidden="true" />
+              <span>查看组列表</span>
+            </button>
+          ) : null}
           {scenario.nextCenters.map((key) => (
             <button key={key} onClick={() => setCenter(key)} type="button">
               <Network size={16} aria-hidden="true" />
@@ -702,10 +940,24 @@ export default function Home() {
           </button>
         </div>
 
+        {selectedNode.groupMembers && groupListOpen ? (
+          <ol className="groupList" data-testid="group-list">
+            {selectedNode.groupMembers.map((member) => (
+              <li key={member}>{member}</li>
+            ))}
+          </ol>
+        ) : null}
+
         <div className="statusStrip">
           <span>Data: synthetic fixture</span>
           <span>Live facts: disabled</span>
           <span>DB fixture notice: visible</span>
+          <span data-testid="lens-state">Lens: {activeLens}</span>
+          <span data-testid="zoom-state">Zoom: {semanticZoom}</span>
+          <span data-testid="reroot-state">Canvas state: {transitionState}</span>
+          <span data-testid="budget-state">
+            Budget: {displayNodes.length} nodes / {displayEdges.length} edges / max 40 first-screen edges
+          </span>
         </div>
       </aside>
     </main>

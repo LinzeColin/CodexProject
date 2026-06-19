@@ -38,6 +38,8 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed T205, A025, and A067 by GitHub Actions run `27824233483`.
 - Added business, capital/control, and policy/risk layers to the visual workspace; split node selection from rerooting; added inspector actions and keyboard-reachable node selection.
 - Completed T1103, T1104, T1107, and T1108 with A136-A140 and A146-A150 by GitHub Actions run `27825230977`.
+- Added persistent analysis lenses, semantic zoom L0-L3, grouped synthetic system-maker list expansion, bounded first-screen graph budget checks, directional grammar assertions, and nonblank reroot fallback behavior.
+- Locally completed T1105, T1106, and T1109 with A141-A145 and A151-A152 covered by Playwright E2E. Remote CI is pending.
 
 ## Verification Evidence
 
@@ -63,6 +65,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27824233483` passed; A025 visible fixture marking and A067 NVIDIA recursive supply-chain E2E are proven.
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 5 tests for A136-A140 and A146-A150.
 - 2026-06-19 update: GitHub Actions run `27825230977` passed; A136-A140 and A146-A150 visual workspace acceptance checks are proven.
+- 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 9 tests for A141-A145 and A151-A152.
 
 Remote verification:
 
@@ -86,7 +89,7 @@ Remote verification:
 - G2 database foundation subset passed remote PostgreSQL CI.
 - T205 is DONE, including backend fixture load, visible fixture marking, and recursive NVIDIA scenario E2E.
 - T1103/T1104/T1107/T1108 visual company workspace tasks are DONE and remote CI passed.
-- T1105/T1106/T1109 visual company workspace tasks are not started.
+- T1105/T1106/T1109 visual company workspace tasks are DONE locally; remote CI is pending.
 - T1203 taxonomy/object-scope API is not started.
 - MVP is not complete.
 
@@ -94,6 +97,6 @@ Remote verification:
 
 Continue G2 with a bounded company-workspace/API run:
 
-1. Start T1105/T1106/T1109 for lenses, semantic zoom, grouping, budget, and mental-map behavior.
+1. Push the T1105/T1106/T1109 lens/zoom/mental-map pass and wait for GitHub Actions.
 2. Add T1203 taxonomy/object-scope API from canonical catalogs.
 3. Keep fixture/live separation visible until live ingestion gates exist.

@@ -25,18 +25,18 @@ TR-FUN-EXP-01-A137,FUN-EXP-01,A137,T1103,Fixture E2E,tests/e2e/home.spec.ts,DONE
 TR-FUN-EXP-01-A138,FUN-EXP-01,A138,T1104,Screenshot assertion,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A139,FUN-EXP-01,A139,T1104,Screenshot assertion,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A140,FUN-EXP-01,A140,T1104,DOM/SVG assertion,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A141,FUN-EXP-01,A141,T1105,E2E,artifacts/tests/a141/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A142,FUN-EXP-01,A142,T1105,State test,artifacts/tests/a142/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A143,FUN-EXP-01,A143,T1106,E2E + contract,artifacts/tests/a143/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A144,FUN-EXP-01,A144,T1106,E2E,artifacts/tests/a144/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A145,FUN-EXP-01,A145,T1106,Budget test,artifacts/tests/a145/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A141,FUN-EXP-01,A141,T1105,E2E,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A142,FUN-EXP-01,A142,T1105,State test,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A143,FUN-EXP-01,A143,T1106,E2E + contract,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A144,FUN-EXP-01,A144,T1106,E2E,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A145,FUN-EXP-01,A145,T1106,Budget test,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A146,FUN-EXP-01,A146,T1107,E2E,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A147,FUN-EXP-01,A147,"T1107,T1121",E2E,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A148,FUN-EXP-01,A148,"T1108,T1122",Usability/E2E,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A149,FUN-EXP-01,A149,T1108,Keyboard/touch E2E,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A150,FUN-EXP-01,A150,T1108,E2E,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A151,FUN-EXP-01,A151,T1109,Visual regression,artifacts/tests/a151/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A152,FUN-EXP-01,A152,T1109,Failure E2E,artifacts/tests/a152/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A151,FUN-EXP-01,A151,T1109,Visual regression,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A152,FUN-EXP-01,A152,T1109,Failure E2E,tests/e2e/home.spec.ts,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A153,FUN-EXP-01,A153,T1101,Visual regression,artifacts/tests/a153/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A154,FUN-EXP-01,A154,T1110,E2E,artifacts/tests/a154/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A155,FUN-EXP-01,A155,T1110,E2E,artifacts/tests/a155/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md

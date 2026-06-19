@@ -88,7 +88,8 @@ button {
 
 .navRail nav,
 .watchlistStack,
-.actionStack {
+.actionStack,
+.zoomBar {
   display: grid;
   gap: 6px;
 }
@@ -96,6 +97,7 @@ button {
 .navItem,
 .watchItem,
 .lens,
+.zoomControl,
 .actionStack button {
   display: flex;
   align-items: center;
@@ -122,7 +124,8 @@ button {
 
 .navItem.active,
 .watchItem.current,
-.lens.active {
+.lens.active,
+.zoomControl.active {
   border-color: #b9c9f5;
   background: #eef4ff;
   color: #134aa1;
@@ -244,7 +247,7 @@ dd {
 
 .canvas {
   display: grid;
-  grid-template-rows: auto auto minmax(620px, 1fr) auto;
+  grid-template-rows: auto auto auto minmax(620px, 1fr) auto;
   gap: 14px;
   padding: 20px;
 }
@@ -266,6 +269,18 @@ dd {
   padding: 0 12px;
   border-color: var(--line);
   background: #fbfcfc;
+}
+
+.zoomBar {
+  grid-template-columns: repeat(4, minmax(48px, 1fr));
+}
+
+.zoomControl {
+  justify-content: center;
+  min-height: 32px;
+  border-color: var(--line);
+  background: #fbfcfc;
+  cursor: pointer;
 }
 
 .stageRail {
@@ -301,6 +316,7 @@ dd {
 }
 
 .mapSurface {
+  position: relative;
   min-height: 620px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -323,6 +339,35 @@ dd {
   fill: #6f7d76;
 }
 
+.canvasOverlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  border: 1px solid #b9c9f5;
+  border-radius: 7px;
+  background: #eef4ff;
+  color: #134aa1;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.canvasOverlay.warning {
+  border-color: #f0c36d;
+  background: #fff7e8;
+  color: #8a580c;
+}
+
+.edgeGroup {
+  transition: opacity 180ms ease;
+}
+
+.edgeGroup.faded,
+.node.faded {
+  opacity: 0.22;
+}
+
 .edge {
   stroke: #7f8d86;
   stroke-width: 2.8;
@@ -336,6 +381,15 @@ dd {
   stroke-width: 5px;
   font-size: 11px;
   font-weight: 650;
+}
+
+.edgeEvidence {
+  fill: #8a580c;
+  paint-order: stroke;
+  stroke: #fff7e8;
+  stroke-width: 5px;
+  font-size: 10px;
+  font-weight: 720;
 }
 
 .node circle {
@@ -373,6 +427,15 @@ dd {
   stroke-width: 4px;
 }
 
+.nodeRole {
+  fill: #39443f !important;
+  font-size: 10px !important;
+  font-weight: 650 !important;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: 4px;
+}
+
 .node.focus circle {
   fill: var(--blue);
 }
@@ -383,6 +446,11 @@ dd {
 
 .node.downstream circle {
   fill: var(--violet);
+}
+
+.node[data-node-kind="aggregate"] circle {
+  stroke-dasharray: 5 4;
+  stroke-width: 5;
 }
 
 .node.infrastructure circle {
@@ -503,6 +571,19 @@ dd {
 
 .nodeToken.policy {
   background: var(--red);
+}
+
+.groupList {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 18px;
+  padding: 10px 10px 10px 28px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfc;
+  color: #39443f;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .actionStack {

@@ -84,11 +84,11 @@ T1101,G1,P0,Create design tokens and responsive application shell,T1100,"A131,A1
 T1102,G1,P0,Implement Watchlist-first default state resolution,T1101,"A133,A134,A135",NOT STARTED
 T1103,G2,P0,Implement visual-first company workspace route,T1102,"A136,A137",DONE
 T1104,G2,P0,Implement left-to-right business map layout,T1103,"A138,A139,A140",DONE
-T1105,G2,P0,Implement analysis lenses on one persistent canvas,T1104,"A141,A142",NOT STARTED
-T1106,G2,P0,Implement semantic zoom and node grouping,T1104,"A143,A144,A145",NOT STARTED
+T1105,G2,P0,Implement analysis lenses on one persistent canvas,T1104,"A141,A142",DONE
+T1106,G2,P0,Implement semantic zoom and node grouping,T1104,"A143,A144,A145",DONE
 T1107,G2,P0,Implement contextual node inspector,T1104,"A146,A147",DONE
 T1108,G2,P0,Implement explicit set-as-center interaction,T1107,"A148,A149,A150",DONE
-T1109,G2,P0,Preserve mental map during center changes,T1108,"A151,A152",NOT STARTED
+T1109,G2,P0,Preserve mental map during center changes,T1108,"A151,A152",DONE
 T1110,G3,P0,Implement breadcrumb browser history and undo,T1108,"A154,A155",NOT STARTED
 T1111,G3,P0,Persist viewport lens timeline and selected object,T1110,"A156,A157",NOT STARTED
 T1112,G3,P0,Implement saved views and restore after reload,T1111,"A158,A159",NOT STARTED

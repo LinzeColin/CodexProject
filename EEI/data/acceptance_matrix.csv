@@ -139,18 +139,18 @@ A137,P0,visual-first,Critical upstream downstream business capital and policy re
 A138,P0,layout,Upstream is left focus is center and downstream is right in default layout,Screenshot assertion,DONE
 A139,P0,layout,Capital/control is above and policy/risk is below when those layers are active,Screenshot assertion,DONE
 A140,P0,layout,Edges show direction and human-language relationship labels,DOM/SVG assertion,DONE
-A141,P0,lenses,Lens switch filters or fades relationships without navigating to a new page,E2E,NOT STARTED
-A142,P0,lenses,Lens change preserves subject selected node timeline and viewport,State test,NOT STARTED
-A143,P0,semantic-zoom,L0 to L3 semantic zoom levels are implemented and documented,E2E + contract,NOT STARTED
-A144,P0,semantic-zoom,Dense same-type nodes group with count and can be opened in list view,E2E,NOT STARTED
-A145,P0,semantic-zoom,Default first screen never renders an unbounded global hairball,Budget test,NOT STARTED
+A141,P0,lenses,Lens switch filters or fades relationships without navigating to a new page,E2E,DONE
+A142,P0,lenses,Lens change preserves subject selected node timeline and viewport,State test,DONE
+A143,P0,semantic-zoom,L0 to L3 semantic zoom levels are implemented and documented,E2E + contract,DONE
+A144,P0,semantic-zoom,Dense same-type nodes group with count and can be opened in list view,E2E,DONE
+A145,P0,semantic-zoom,Default first screen never renders an unbounded global hairball,Budget test,DONE
 A146,P0,inspector,Selecting a node opens readable context detail without changing subject,E2E,DONE
 A147,P0,inspector,Inspector offers set-as-center upstream downstream watch path and evidence actions,E2E,DONE
 A148,P0,pivot,Set-as-center is a visible primary action and succeeds in no more than two actions,Usability/E2E,DONE
 A149,P0,pivot,Double-click right-click hover and drag are not required for primary navigation,Keyboard/touch E2E,DONE
 A150,P0,pivot,Three consecutive subject changes use the same workspace model,E2E,DONE
-A151,P0,mental-map,Subject changes preserve directional grammar and positions of retained nodes where feasible,Visual regression,NOT STARTED
-A152,P0,mental-map,Subject transition indicates loading and never leaves blank canvas on failure,Failure E2E,NOT STARTED
+A151,P0,mental-map,Subject changes preserve directional grammar and positions of retained nodes where feasible,Visual regression,DONE
+A152,P0,mental-map,Subject transition indicates loading and never leaves blank canvas on failure,Failure E2E,DONE
 A153,P0,responsive,Core workspace works at 1440x900 1280x800 and 1024x768,Visual regression,NOT STARTED
 A154,P0,navigation,Breadcrumb browser back and app back restore identical subject state,E2E,NOT STARTED
 A155,P0,navigation,User can return to any prior subject in exploration path,E2E,NOT STARTED

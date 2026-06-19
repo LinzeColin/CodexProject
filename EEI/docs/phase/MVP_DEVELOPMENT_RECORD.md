@@ -448,3 +448,45 @@ Residual risks:
 - The current visual workspace remains static fixture-driven and not yet bound to live API graph responses.
 - T1105/T1106/T1109 remain not started, so lens filtering, semantic zoom/grouping, and retained-node mental-map behavior are still open.
 - T1203 taxonomy/object-scope API remains not started.
+
+## 2026-06-19 - Phase 1 / G2 T1105/T1106/T1109 lens zoom mental-map pass
+
+Status: VISUAL LENS, SEMANTIC ZOOM, AND MENTAL-MAP SUBSET PASS; G2 IN PROGRESS
+
+Completed:
+
+- Implemented persistent canvas lenses for all, supply-chain, business-segment, capital/transaction, and policy/risk views.
+- Lens switching now fades nonmatching relationship layers without navigating away from the current workspace and preserves current subject, selected node, path length, semantic zoom, and viewport anchor.
+- Implemented semantic zoom levels `L0`, `L1`, `L2`, and `L3` with an explicit UI contract and machine-testable `data-semantic-zoom` state.
+- Added L0 anti-hairball grouping for dense synthetic system-maker nodes with an aggregate count and a list-view expansion path.
+- Added L2 evidence-state edge annotations and L3 node-role labels without relying on hover-only discovery.
+- Added transition loading and fallback states for reroot requests so subject changes indicate progress and failed center requests preserve the existing nonblank canvas.
+- Added directional grammar assertions for retained nodes after rerooting.
+- Marked T1105, T1106, and T1109 as `DONE`.
+- Marked A141, A142, A143, A144, A145, A151, and A152 as `DONE` with evidence in `tests/e2e/home.spec.ts`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e`: PASS, 9 tests.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web build`: PASS.
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- Local `make verify-g2-db`: FAIL CLOSED because Docker is not installed on this host.
+- Remote GitHub Actions: PENDING.
+
+Acceptance status:
+
+- A141 is covered by Playwright lens switching assertions for faded nonmatching edges on the same workspace URL.
+- A142 is covered by state assertions preserving subject, selected node, path length, semantic zoom, and viewport anchor across lens changes.
+- A143 is covered by `L0-L3` zoom controls and semantic-zoom state assertions.
+- A144 is covered by the synthetic grouped system-maker node with count `8` and an inspector list-view expansion.
+- A145 is covered by default node/edge budget assertions below the 40-edge first-screen anti-hairball threshold.
+- A151 is covered by directional grammar assertions after reroot from NVIDIA to Synthetic Advanced Foundry.
+- A152 is covered by transition-loading and invalid-center fallback assertions that keep the canvas populated.
+
+Residual risks:
+
+- The current visual workspace remains static fixture-driven and not yet bound to live API graph responses.
+- T1203 taxonomy/object-scope API remains not started.
+- G2 remains open until T1203 and any remaining G2 gate checks are complete.
