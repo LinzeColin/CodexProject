@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "task_id": "T1213",
+  "acceptance_id": "A184",
+  "status": "DONE",
+  "evidence_type": "development_status_ledger_review",
+  "status_columns": [
+    "spec_status",
+    "prototype_status",
+    "implementation_status",
+    "validation_status"
+  ],
+  "ledger": {
+    "rows": 36,
+    "spec_status": {
+      "DONE": 36
+    },
+    "prototype_status": {
+      "DONE": 21,
+      "PARTIAL": 15
+    },
+    "implementation_status": {
+      "N/A": 8,
+      "NOT_STARTED": 16,
+      "PARTIAL": 12
+    },
+    "validation_status": {
+      "CATALOG_VALIDATED": 11,
+      "CI_VALIDATED": 3,
+      "LOCAL_E2E_VALIDATED": 6,
+      "LOCAL_VALIDATED": 3,
+      "SPEC_VALIDATED": 5,
+      "VALIDATED": 8
+    },
+    "lane_counts": {
+      "resolved": 20,
+      "prototyped": 21,
+      "specified": 16,
+      "not_started_tasks": 67,
+      "blocked_tasks": 0,
+      "out_of_scope_tasks": 8
+    },
+    "resolved_fields_present": true,
+    "unresolved_fields_present": true
+  },
+  "validated_by": [
+    "scripts/manage_development_status_artifacts.py validate",
+    "make validate-development-status-artifacts",
+    "make verify"
+  ]
+}

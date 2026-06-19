@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "task_id": "T1213",
+  "acceptance_id": "A183",
+  "status": "DONE",
+  "evidence_type": "requirement_function_task_test_traceability",
+  "p0_functions_checked": 15,
+  "p0_functions_with_trace": 15,
+  "artifact": "artifacts/requirement_function_task_test_traceability_t1213.csv",
+  "validated_by": [
+    "scripts/manage_development_status_artifacts.py validate",
+    "make validate-development-status-artifacts",
+    "make verify"
+  ]
+}

@@ -39,6 +39,7 @@ US_Corporate_Power_Map_UIUX_Redesign_v4.2.md,root-governance,false,semantic or r
 VALIDATION_REPORT.md,root-governance,false,semantic or release change,repository owner,git+release-zip,ACTIVE
 VERSION,release-metadata,true,release version change,release owner,git+release-zip,ACTIVE
 artifacts/README.md,reproducible-report-source,false,PDF blueprint change,documentation owner,git+release-zip,ACTIVE
+artifacts/development_status_summary_t1213.json,qa-and-generation-evidence,true,development status artifact change,QA owner,git+release-zip,GENERATED
 artifacts/governance_blueprint_v42_source.html,reproducible-report-source,false,PDF blueprint change,documentation owner,git+release-zip,ACTIVE
 artifacts/model_config_import_preview.json,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
 artifacts/pdf_contact_sheet.png,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
@@ -47,8 +48,11 @@ artifacts/preflight_output.txt,qa-and-generation-evidence,false,validation or ge
 artifacts/prototype_smoke_test.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
 artifacts/release_evidence_t1211.json,qa-and-generation-evidence,true,release evidence or checksum change,release owner,git+release-zip,GENERATED
 artifacts/release_operation_log_t1211.jsonl,qa-and-generation-evidence,true,release evidence or checksum change,release owner,git+release-zip,GENERATED
+artifacts/requirement_function_task_test_traceability_t1213.csv,qa-and-generation-evidence,true,traceability matrix artifact change,QA owner,git+release-zip,GENERATED
 artifacts/tests/a182/t1212_governance_consistency_workflow.json,qa-and-generation-evidence,true,governance consistency workflow evidence change,QA owner,git+release-zip,GENERATED
 artifacts/tests/a183/t1212_p0_traceability_validator.json,qa-and-generation-evidence,true,P0 traceability validation evidence change,QA owner,git+release-zip,GENERATED
+artifacts/tests/a183/t1213_requirement_function_task_test_traceability.json,qa-and-generation-evidence,true,traceability matrix evidence change,QA owner,git+release-zip,GENERATED
+artifacts/tests/a184/t1213_development_status_ledger.json,qa-and-generation-evidence,true,development status ledger evidence change,QA owner,git+release-zip,GENERATED
 artifacts/tests/a200/t1212_clean_room_preflight.json,qa-and-generation-evidence,true,clean-room preflight evidence change,QA owner,git+release-zip,GENERATED
 artifacts/static_validation.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
 artifacts/visual_coverage_validation.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
@@ -176,6 +180,7 @@ scripts/validate_prototype_parity.py,automation-and-validation,false,validation/
 scripts/validate_github_governance.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_governance_consistency.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/manage_release_artifacts.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/manage_development_status_artifacts.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_catalog_integrity.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_governance.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_model_config.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE

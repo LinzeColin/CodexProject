@@ -32,6 +32,7 @@ REQUIRED_WORKFLOW_COMMANDS = {
     "python scripts/validate_governance.py",
     "python scripts/validate_task_pack.py",
     "python scripts/validate_governance_consistency.py",
+    "python scripts/manage_development_status_artifacts.py validate",
     "sha256sum -c CHECKSUMS.sha256",
 }
 
@@ -157,13 +158,27 @@ def validate_makefile_target() -> dict[str, Any]:
     required_phrases = [
         "validate-governance-consistency:",
         "scripts/validate_governance_consistency.py",
-        "verify: validate-governance validate-contracts validate-prototype-parity "
-        "validate-github-governance validate-governance-consistency "
-        "validate-release-artifacts",
     ]
     missing = [phrase for phrase in required_phrases if phrase not in makefile]
     if missing:
         raise AssertionError(f"Makefile missing governance consistency phrases: {missing}")
+    verify_line = next(
+        (line for line in makefile.splitlines() if line.startswith("verify: ")),
+        "",
+    )
+    required_verify_targets = {
+        "validate-governance",
+        "validate-contracts",
+        "validate-prototype-parity",
+        "validate-github-governance",
+        "validate-governance-consistency",
+        "validate-release-artifacts",
+    }
+    missing_targets = sorted(
+        target for target in required_verify_targets if target not in verify_line
+    )
+    if missing_targets:
+        raise AssertionError(f"Makefile verify target missing: {missing_targets}")
     return {"target": "validate-governance-consistency", "wired_into": "make verify"}
 
 

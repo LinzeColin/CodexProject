@@ -68,13 +68,17 @@ apps/worker/__init__.py
 apps/worker/app/__init__.py
 apps/worker/app/main.py
 artifacts/README.md
+artifacts/development_status_summary_t1213.json
 artifacts/governance_blueprint_v42_source.html
 artifacts/model_config_import_preview.json
 artifacts/pdf_contact_sheet.png
 artifacts/release_evidence_t1211.json
 artifacts/release_operation_log_t1211.jsonl
+artifacts/requirement_function_task_test_traceability_t1213.csv
 artifacts/tests/a182/t1212_governance_consistency_workflow.json
 artifacts/tests/a183/t1212_p0_traceability_validator.json
+artifacts/tests/a183/t1213_requirement_function_task_test_traceability.json
+artifacts/tests/a184/t1213_development_status_ledger.json
 artifacts/tests/a200/t1212_clean_room_preflight.json
 config/model_profiles/balanced-v2.json
 config/model_runtime_defaults.yaml
@@ -229,6 +233,7 @@ scripts/env_doctor.py
 scripts/generate_governance_pdf.py
 scripts/load_seed_catalogs.py
 scripts/load_synthetic_fixtures.py
+scripts/manage_development_status_artifacts.py
 scripts/manage_release_artifacts.py
 scripts/migrate.py
 scripts/preflight.sh

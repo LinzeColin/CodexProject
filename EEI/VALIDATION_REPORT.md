@@ -20,7 +20,7 @@
 | 来源类别 / 指标 | 34 / 54 | `docs/05_DATA_SOURCES_AND_PROVENANCE.md` | `data/source_registry_extended.csv`、`data/metric_catalog.csv` |
 | 开发任务 / 验收标准 | 120 / 200 | `DEVELOPMENT_STATUS.md` | `data/task_backlog.csv`、`data/acceptance_matrix.csv` |
 | 风险 / 发布 Gate | 53 / 10 | `RISK_AND_ACCEPTANCE.md` | `data/risk_register.csv`、`data/release_gate_catalog.csv` |
-| 验收追踪关系 | 212 | `docs/33_RISK_CONTROL_ACCEPTANCE_TRACEABILITY.md` | `data/acceptance_traceability.csv` |
+| 验收追踪关系 | 221 | `docs/33_RISK_CONTROL_ACCEPTANCE_TRACEABILITY.md` | `data/acceptance_traceability.csv` |
 
 `GOVERNANCE_INDEX.md` 提供用户要求到 Markdown、CSV/JSON/YAML 与 GitHub 变更入口的完整映射。
 

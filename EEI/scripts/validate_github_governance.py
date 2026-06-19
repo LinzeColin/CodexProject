@@ -119,6 +119,7 @@ def validate_workflow() -> None:
             "python scripts/validate_governance.py",
             "python scripts/validate_task_pack.py",
             "python scripts/validate_governance_consistency.py",
+            "python scripts/manage_development_status_artifacts.py validate",
             "python scripts/validate_visual_coverage.py",
             "sha256sum -c CHECKSUMS.sha256",
         ],
