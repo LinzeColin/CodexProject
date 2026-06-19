@@ -22,7 +22,8 @@
     "apps/api/app/domain.py::get_entity_empire",
     "tests/integration/test_database_migrations.py::exercise_domain_api_and_repository_contracts",
     "tests/e2e/home.spec.ts::exposes eight company layers and separates structure object types",
-    "specs/api_contract.yaml#/components/schemas/EntityEmpireResponse"
+    "specs/api_contract.yaml#/components/schemas/EntityEmpireResponse",
+    "GitHub Actions EEI validation run 27851485026 job 82431234525"
   ],
   "assertions": [
     "The empire API separates legal group, business segment, brand, product and facility sections.",

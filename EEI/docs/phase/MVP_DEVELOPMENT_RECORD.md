@@ -1663,7 +1663,7 @@ Residual risks:
 
 ## 2026-06-20 - Phase 1 / G5 T501 Group, business and structure workspace
 
-Status: LOCAL E2E PASS, REMOTE CI PENDING
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1683,6 +1683,10 @@ Verification evidence:
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts --grep "eight company layers"`: PASS.
 - Local `git diff --check`: PASS.
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27851485026`.
+- GitHub Actions job: `82431234525`.
+- GitHub Actions step `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 

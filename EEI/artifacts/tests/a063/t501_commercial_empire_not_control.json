@@ -9,7 +9,8 @@
     "apps/api/app/domain_repository.py::get_entity_empire",
     "tests/integration/test_database_migrations.py::exercise_domain_api_and_repository_contracts",
     "apps/web/src/app/page.tsx data-commercial-empire-control-claim=false",
-    "tests/e2e/home.spec.ts::exposes eight company layers and separates structure object types"
+    "tests/e2e/home.spec.ts::exposes eight company layers and separates structure object types",
+    "GitHub Actions EEI validation run 27851485026 job 82431234525"
   ],
   "assertions": [
     "The API returns coverage.commercial_empire_control_claim=false.",
