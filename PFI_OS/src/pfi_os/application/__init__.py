@@ -30,6 +30,7 @@ from pfi_os.application.repositories import (
     TaskQueueItem,
     TaskRepository,
 )
+from pfi_os.application.source_ingestion import SourceIngestionResult, ingest_file_source
 from pfi_os.application.source_registry import SourceRegistry, SourceRegistryRow
 
 __all__ = [
@@ -46,6 +47,7 @@ __all__ = [
     "JobRunItem",
     "OperationalStore",
     "SourceRecord",
+    "SourceIngestionResult",
     "SourceVersion",
     "TaskRecord",
     "HoldingSnapshot",
@@ -60,6 +62,7 @@ __all__ = [
     "default_operational_db_path",
     "empty_homepage_summary",
     "ingest_command_center_cache",
+    "ingest_file_source",
     "SourceRegistry",
     "SourceRegistryRow",
 ]

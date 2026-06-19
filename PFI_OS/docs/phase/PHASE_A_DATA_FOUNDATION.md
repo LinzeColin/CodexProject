@@ -37,6 +37,9 @@ moving UI pages or vertical workflows onto it.
   Operational Store source, evidence, job, and task records before building
   `PFIOSHomeSummaryV1`; the Web Shell still consumes only the compact read
   model.
+- File source ingestion now enforces checksum/provenance metadata, public
+  project-relative URIs, private-source-outside-Git boundaries, and rejects
+  ephemeral runtime files as fact sources.
 
 ## Not Done
 
@@ -49,4 +52,3 @@ moving UI pages or vertical workflows onto it.
 ## Next Phase A Iterations
 
 1. Replace legacy Streamlit direct reads one vertical slice at a time.
-2. Add source ingestion adapters with checksum and provenance enforcement.
