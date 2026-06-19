@@ -1671,7 +1671,6 @@ components:
       required:
       - session_id
       - new_focus_entity_id
-      - inherit_state
       properties:
         session_id:
           type: string

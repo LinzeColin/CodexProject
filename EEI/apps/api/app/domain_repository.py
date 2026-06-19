@@ -1427,6 +1427,27 @@ class DomainRepository:
             ).fetchone()
             if session is None:
                 raise NotFoundError(f"Exploration session not found: {session_id}")
+            inherit_state = bool(request.get("inherit_state", True))
+            if inherit_state:
+                next_state = {
+                    "active_layers": session["active_layers"],
+                    "direction": session["direction"],
+                    "hops": session["hops"],
+                    "as_of": session["as_of"],
+                    "scoring_profile_version_id": session["scoring_profile_version_id"],
+                    "filters": session["filters"],
+                    "budget": self.normalize_graph_budget(session["budget"]),
+                }
+            else:
+                next_state = {
+                    "active_layers": ["supply_chain_operations"],
+                    "direction": "both",
+                    "hops": 1,
+                    "as_of": None,
+                    "scoring_profile_version_id": None,
+                    "filters": {},
+                    "budget": DEFAULT_GRAPH_BUDGET,
+                }
             target_session_id = session_id
             if request.get("open_in_new_workspace"):
                 row = connection.execute(
@@ -1441,13 +1462,13 @@ class DomainRepository:
                     (
                         f"Reroot: {new_focus}",
                         new_focus,
-                        session["active_layers"],
-                        session["direction"],
-                        session["hops"],
-                        Jsonb(session["budget"]),
-                        session["as_of"],
-                        session["scoring_profile_version_id"],
-                        Jsonb(session["filters"] if request["inherit_state"] else {}),
+                        next_state["active_layers"],
+                        next_state["direction"],
+                        next_state["hops"],
+                        Jsonb(next_state["budget"]),
+                        next_state["as_of"],
+                        next_state["scoring_profile_version_id"],
+                        Jsonb(next_state["filters"]),
                     ),
                 ).fetchone()
                 target_session_id = row["id"]
@@ -1456,11 +1477,27 @@ class DomainRepository:
                     """
                     UPDATE exploration_sessions
                     SET current_focus_entity_id = %s,
-                        updated_at = now(),
-                        filters = CASE WHEN %s THEN filters ELSE '{}'::jsonb END
+                        active_layers = %s,
+                        direction = %s,
+                        hops = %s,
+                        budget = %s,
+                        as_of = %s,
+                        scoring_profile_version_id = %s,
+                        filters = %s,
+                        updated_at = now()
                     WHERE id = %s
                     """,
-                    (new_focus, request["inherit_state"], session_id),
+                    (
+                        new_focus,
+                        next_state["active_layers"],
+                        next_state["direction"],
+                        next_state["hops"],
+                        Jsonb(next_state["budget"]),
+                        next_state["as_of"],
+                        next_state["scoring_profile_version_id"],
+                        Jsonb(next_state["filters"]),
+                        session_id,
+                    ),
                 )
             self.append_exploration_step(
                 connection,
@@ -1468,17 +1505,17 @@ class DomainRepository:
                 from_entity_id=session["current_focus_entity_id"],
                 to_entity_id=new_focus,
                 action="reroot",
-                inherited_state={"inherit_state": request["inherit_state"]},
+                inherited_state={
+                    "inherit_state": inherit_state,
+                    "active_layers": next_state["active_layers"],
+                    "direction": next_state["direction"],
+                    "hops": next_state["hops"],
+                    "budget": next_state["budget"],
+                },
             )
             session_request = {
                 "focus": {"object_type": "entity", "object_id": str(new_focus)},
-                "active_layers": session["active_layers"],
-                "direction": session["direction"],
-                "hops": session["hops"],
-                "as_of": session["as_of"],
-                "scoring_profile_version_id": session["scoring_profile_version_id"],
-                "filters": session["filters"] if request["inherit_state"] else {},
-                "budget": session["budget"],
+                **next_state,
             }
             return self.exploration_response_for_connection(
                 connection,

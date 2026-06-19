@@ -294,6 +294,85 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert session_row[4] == {"relationship_family": ["capital_financing"]}
     assert session_row[5] == "exploration-state-v1"
 
+    inherited_reroot_response = client.post(
+        "/v1/explore/reroot",
+        json={
+            "session_id": explicit_exploration["session_id"],
+            "new_focus_entity_id": FIXTURE_DATACENTER_ID,
+        },
+    )
+    assert inherited_reroot_response.status_code == 200
+    inherited_reroot = inherited_reroot_response.json()
+    assert inherited_reroot["focus"]["canonical_name"] == "Synthetic AI Data Center Campus"
+    assert inherited_reroot["state"]["focus"] == {
+        "object_type": "entity",
+        "object_id": FIXTURE_DATACENTER_ID,
+    }
+    assert inherited_reroot["state"]["active_layers"] == [
+        "capital_control",
+        "policy_regulatory",
+    ]
+    assert inherited_reroot["state"]["direction"] == "upstream"
+    assert inherited_reroot["state"]["hops"] == 2
+    assert inherited_reroot["state"]["as_of"] == "2026-06-19T00:00:00Z"
+    assert inherited_reroot["state"]["scoring_profile_version_id"] == profile_id
+    assert inherited_reroot["state"]["filters"] == {
+        "relationship_family": ["capital_financing"]
+    }
+    assert inherited_reroot["state"]["budget"] == {
+        "max_nodes": 7,
+        "max_edges": 8,
+        "expand_nodes": 3,
+    }
+    assert inherited_reroot["history"][-1]["action"] == "reroot"
+    assert inherited_reroot["history"][-1]["inherited_state"]["inherit_state"] is True
+
+    reset_reroot_response = client.post(
+        "/v1/explore/reroot",
+        json={
+            "session_id": explicit_exploration["session_id"],
+            "new_focus_entity_id": THEME_AI_INFRA_ID,
+            "inherit_state": False,
+        },
+    )
+    assert reset_reroot_response.status_code == 200
+    reset_reroot = reset_reroot_response.json()
+    assert reset_reroot["focus"]["canonical_name"] == "AI Infrastructure Buildout Theme"
+    assert reset_reroot["state"]["focus"] == {
+        "object_type": "entity",
+        "object_id": THEME_AI_INFRA_ID,
+    }
+    assert reset_reroot["state"]["active_layers"] == ["supply_chain_operations"]
+    assert reset_reroot["state"]["direction"] == "both"
+    assert reset_reroot["state"]["hops"] == 1
+    assert reset_reroot["state"]["as_of"] is None
+    assert reset_reroot["state"]["scoring_profile_version_id"] is None
+    assert reset_reroot["state"]["filters"] == {}
+    assert reset_reroot["state"]["budget"] == {
+        "max_nodes": 42,
+        "max_edges": 64,
+        "expand_nodes": 12,
+    }
+    assert reset_reroot["history"][-1]["inherited_state"]["inherit_state"] is False
+    with connect_database() as connection:
+        reset_session_row = connection.execute(
+            """
+            SELECT current_focus_entity_id, active_layers, direction, hops, budget,
+                   as_of, scoring_profile_version_id, filters
+            FROM exploration_sessions
+            WHERE id = %s
+            """,
+            (explicit_exploration["session_id"],),
+        ).fetchone()
+    assert str(reset_session_row[0]) == THEME_AI_INFRA_ID
+    assert reset_session_row[1] == ["supply_chain_operations"]
+    assert reset_session_row[2] == "both"
+    assert reset_session_row[3] == 1
+    assert reset_session_row[4] == {"max_nodes": 42, "max_edges": 64, "expand_nodes": 12}
+    assert reset_session_row[5] is None
+    assert reset_session_row[6] is None
+    assert reset_session_row[7] == {}
+
     for invalid_payload in (
         {
             "focus": {"object_type": "entity", "object_id": NVIDIA_ID},

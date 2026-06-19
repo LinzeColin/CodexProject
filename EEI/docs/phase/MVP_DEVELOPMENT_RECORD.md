@@ -1045,3 +1045,33 @@ Residual risks:
 
 - GitHub Actions run `27837609322` proved the new migration and integration assertions against PostgreSQL.
 - T404 still owns breadcrumb/browser-history synchronization for reroot flows; T401 only closes canonical session and URL state serialization/restoration.
+
+## 2026-06-19 - Phase 1 / G4 T402 Reroot inherited and reset state
+
+Status: LOCAL CONTRACT PASS; remote PostgreSQL CI pending
+
+Completed:
+
+- Updated `/v1/explore/reroot` so default reroot preserves active layers, direction, hops, as-of time, scoring profile, filters, and graph budget.
+- Updated `inherit_state=false` reroot to reset to default exploration state: `supply_chain_operations`, `both`, one hop, default 42/64/12 budget, no as-of time, no scoring profile, and empty filters.
+- Added integration assertions that reroot from NVIDIA to a facility entity preserves state by default.
+- Added integration assertions that reroot from the same session to a theme entity resets state and persists the reset values in `exploration_sessions`.
+- Updated the OpenAPI contract so `inherit_state` is optional with default `true`.
+- Marked T402, A045, A046, and A047 as `DONE`.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A045 is covered by rerooting to non-legal-entity focusable entities in `tests/integration/test_database_migrations.py`.
+- A046 is covered by inherited state assertions for layers, time, profile, filters, direction, hops, and budget.
+- A047 is covered by reset/default state assertions plus direct persisted-session checks.
+
+Residual risks:
+
+- Remote CI must still prove the reroot integration assertions against PostgreSQL.
+- T404 still owns breadcrumb/browser-history synchronization for reroot flows; T408 still owns critical three-reroot E2E.

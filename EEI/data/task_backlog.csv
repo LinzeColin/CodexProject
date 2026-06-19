@@ -27,7 +27,7 @@ T305,G3,P0,Build industry landscape page,T302,"A032,A034",DONE
 T306,G3,P0,Add home/industry/watchlist E2E,"T304,T305","A029,A035,A037,A039,A040",DONE
 T400,G4,P0,Implement bounded graph query service,T208,"A041,A042,A043,A044",DONE
 T401,G4,P0,Implement exploration session and URL state,T400,"A041,A051",DONE
-T402,G4,P0,Implement reroot with inherited/reset state,T401,"A045,A046,A047",NOT STARTED
+T402,G4,P0,Implement reroot with inherited/reset state,T401,"A045,A046,A047",DONE
 T403,G4,P0,Implement incremental directional expand,T400,A052,NOT STARTED
 T404,G4,P0,Implement breadcrumb and browser history synchronization,T402,"A049,A050,A051",NOT STARTED
 T405,G4,P0,Build graph/table explorer and node actions,"T403,T404","A053,A054,A055,A058",NOT STARTED
