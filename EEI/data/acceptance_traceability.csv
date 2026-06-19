@@ -10,7 +10,7 @@ TR-FUN-EXP-01-A048,FUN-EXP-01,A048,T408,Critical E2E,artifacts/tests/a048/,NOT_S
 TR-FUN-EXP-01-A049,FUN-EXP-01,A049,T404,E2E,artifacts/tests/a049/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A050,FUN-EXP-01,A050,T404,E2E,artifacts/tests/a050/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A051,FUN-EXP-01,A051,"T401,T404",E2E,apps/api/app/domain_repository.py;infra/db/migrations/0002_exploration_state/up.sql;tests/integration/test_database_migrations.py;tests/e2e/state-contract.spec.ts;specs/api_contract.yaml,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
-TR-FUN-EXP-01-A052,FUN-EXP-01,A052,T403,Integration/E2E,artifacts/tests/a052/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
+TR-FUN-EXP-01-A052,FUN-EXP-01,A052,T403,Integration/E2E,apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py,DONE,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A053,FUN-EXP-01,A053,T405,UI test,artifacts/tests/a053/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A054,FUN-EXP-01,A054,T405,E2E,artifacts/tests/a054/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md
 TR-FUN-EXP-01-A055,FUN-EXP-01,A055,T405,E2E/a11y,artifacts/tests/a055/,NOT_STARTED,derived_from_task,Codex implementation,docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md

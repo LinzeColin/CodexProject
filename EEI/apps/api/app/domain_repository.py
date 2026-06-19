@@ -52,6 +52,32 @@ ROOT = Path(__file__).resolve().parents[3]
 EXPLORATION_STATE_VERSION = "exploration-state-v1"
 DEFAULT_GRAPH_BUDGET = {"max_nodes": 42, "max_edges": 64, "expand_nodes": 12}
 GRAPH_HARD_LIMITS = {"max_hops": 2, "max_nodes": 500, "max_edges": 2000, "max_path_length": 8}
+RELATIONSHIP_FAMILIES = {
+    "corporate_structure",
+    "ownership_control",
+    "supply_chain_operations",
+    "capital_financing",
+    "mergers_acquisitions",
+    "governance_people",
+    "commercial_dependency",
+    "technology_data_ip",
+    "government_policy",
+    "strategic_signal",
+}
+LAYER_RELATIONSHIP_FAMILY_MAP = {
+    "all": RELATIONSHIP_FAMILIES,
+    "business_segments": {"corporate_structure", "commercial_dependency"},
+    "capital_control": {"ownership_control", "capital_financing", "mergers_acquisitions"},
+    "capital_transactions": {"capital_financing", "mergers_acquisitions"},
+    "commercial_dependency": {"commercial_dependency"},
+    "corporate_structure": {"corporate_structure"},
+    "governance_people": {"governance_people"},
+    "ownership_control": {"ownership_control"},
+    "policy_regulatory": {"government_policy"},
+    "strategic_signal": {"strategic_signal"},
+    "supply_chain_operations": {"supply_chain_operations"},
+    "technology_data_ip": {"technology_data_ip"},
+}
 ENTITY_TYPES = (
     "legal_entity",
     "brand",
@@ -68,6 +94,23 @@ ENTITY_TYPES = (
     "standard",
     "asset",
 )
+
+
+def _relationship_families_for_layers(layers: list[str]) -> list[str]:
+    families: set[str] = set()
+    for layer in layers:
+        families.update(LAYER_RELATIONSHIP_FAMILY_MAP.get(layer, {layer}))
+    return sorted(family for family in families if family in RELATIONSHIP_FAMILIES)
+
+
+def _relationship_family_filter(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list | tuple | set):
+        return [str(item) for item in value]
+    return [str(value)]
 
 
 def _read_csv(path: Path) -> list[dict[str, str]]:
@@ -1526,6 +1569,40 @@ class DomainRepository:
                 session_request,
             )
 
+    def expand_exploration(self, request: dict[str, Any]) -> dict[str, Any]:
+        session_id = UUID(str(request["session_id"]))
+        anchor_entity_id = UUID(str(request["anchor_entity_id"]))
+        with self.connect() as connection:
+            self.entity_summary(connection, anchor_entity_id)
+            session = connection.execute(
+                """
+                SELECT id, current_focus_entity_id, active_layers, as_of,
+                       scoring_profile_version_id, filters, direction, hops, budget
+                FROM exploration_sessions
+                WHERE id = %s
+                """,
+                (session_id,),
+            ).fetchone()
+            if session is None:
+                raise NotFoundError(f"Exploration session not found: {session_id}")
+            expand_request = {
+                "session_id": str(session_id),
+                "focus": {"object_type": "entity", "object_id": str(anchor_entity_id)},
+                "active_layers": request.get("layers") or session["active_layers"],
+                "direction": request.get("direction") or session["direction"],
+                "hops": 1,
+                "as_of": session["as_of"],
+                "scoring_profile_version_id": session["scoring_profile_version_id"],
+                "filters": session["filters"] or {},
+                "budget": self.normalize_graph_budget(request.get("budget")),
+                "expand_mode": True,
+            }
+            return self.exploration_response_for_connection(
+                connection,
+                session_id,
+                expand_request,
+            )
+
     def append_exploration_step(
         self,
         connection: psycopg.Connection[dict[str, Any]],
@@ -1608,9 +1685,20 @@ class DomainRepository:
         max_nodes = budget["max_nodes"]
         max_edges = budget["max_edges"]
         expand_nodes = budget["expand_nodes"]
+        if request.get("expand_mode"):
+            max_nodes = min(max_nodes, expand_nodes + 1)
+            max_edges = min(max_edges, expand_nodes)
         direction = request.get("direction") or "both"
         hops = min(int(request.get("hops") or 1), GRAPH_HARD_LIMITS["max_hops"])
         as_of = request.get("as_of")
+        active_layers = request.get("active_layers") or ["supply_chain_operations"]
+        filters = request.get("filters") or {}
+        relationship_families = _relationship_families_for_layers(active_layers)
+        requested_families = _relationship_family_filter(filters.get("relationship_family"))
+        if requested_families:
+            relationship_families = [
+                family for family in relationship_families if family in requested_families
+            ]
         truncation_reasons: list[str] = []
         if direction in {"upstream", "in"}:
             direction_clause = "r.object_entity_id = %(focus)s"
@@ -1631,6 +1719,7 @@ class DomainRepository:
             LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
             WHERE {direction_clause}
               AND r.status NOT IN ('superseded', 'revoked')
+              AND r.relationship_family = ANY(%(relationship_families)s::text[])
               AND (
                 %(as_of)s::timestamptz IS NULL
                 OR (
@@ -1642,7 +1731,12 @@ class DomainRepository:
             ORDER BY r.confidence DESC NULLS LAST, r.observed_at DESC, r.id
             LIMIT %(limit)s
             """,
-            {"focus": focus_entity_id, "as_of": as_of, "limit": max_edges + 1},
+            {
+                "focus": focus_entity_id,
+                "as_of": as_of,
+                "relationship_families": relationship_families,
+                "limit": max_edges + 1,
+            },
         ).fetchall()
         fetched_edge_count = len(rows)
         truncated = fetched_edge_count > max_edges
@@ -1725,8 +1819,8 @@ class DomainRepository:
                     "hops": hops,
                     "as_of": as_of,
                     "scoring_profile_version_id": request.get("scoring_profile_version_id"),
-                    "active_layers": request.get("active_layers") or ["supply_chain_operations"],
-                    "filters": request.get("filters") or {},
+                    "active_layers": active_layers,
+                    "filters": filters,
                     "budget": budget,
                     "hard_limits": GRAPH_HARD_LIMITS,
                 },

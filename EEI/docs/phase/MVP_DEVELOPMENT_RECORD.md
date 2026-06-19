@@ -1082,3 +1082,30 @@ Acceptance status:
 Residual risks:
 
 - T404 still owns breadcrumb/browser-history synchronization for reroot flows; T408 still owns critical three-reroot E2E.
+
+## 2026-06-19 - Phase 1 / G4 T403 Incremental directional expand
+
+Status: LOCAL CONTRACT PASS; remote PostgreSQL CI pending
+
+Completed:
+
+- Added the FastAPI `/v1/explore/expand` route with an explicit `ExpandRequest` model.
+- Added repository support for incremental expansion from a selected `anchor_entity_id` without changing the session root.
+- Added layer-to-relationship-family filtering so graph queries and expansions only return selected relationship families.
+- Added expand-mode graph bounds so incremental expansion returns at most `expand_nodes` edges and `expand_nodes + 1` nodes including the anchor.
+- Added integration assertions that upstream supply-chain expansion from NVIDIA returns only selected direction/layer edges within the expand budget.
+- Marked T403 and A052 as `DONE`.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
+
+Acceptance status:
+
+- A052 is covered by `/v1/explore/expand` integration assertions for upstream direction, `supply_chain_operations` layer filtering, and `expand_nodes=2` node/edge bounds.
+
+Residual risks:
+
+- Remote CI must still prove the expand integration assertion against PostgreSQL.
+- T405 still owns full graph/table explorer node actions; T406 still owns bounded evidence-bearing path queries.

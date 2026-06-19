@@ -50,7 +50,7 @@ A048,P0,reroot,Three consecutive reroots complete in semiconductor fixture,Criti
 A049,P0,reroot,Breadcrumb contains full focus path and is clickable,E2E,NOT STARTED
 A050,P0,reroot,Browser back/forward restore the correct focus and state,E2E,NOT STARTED
 A051,P0,reroot,"URL serializes/restores focus, layers, direction, time, profile and filters",E2E,DONE
-A052,P0,explore,Incremental expand loads only selected direction/layers within expand budget,Integration/E2E,NOT STARTED
+A052,P0,explore,Incremental expand loads only selected direction/layers within expand budget,Integration/E2E,DONE
 A053,P0,explore,"Node actions include reroot, upstream, downstream, path, compare, pin, Watchlist and evidence",UI test,NOT STARTED
 A054,P0,explore,Pinned nodes and comparisons survive layout changes,E2E,NOT STARTED
 A055,P0,explore,Graph has filterable table/list alternative,E2E/a11y,NOT STARTED

@@ -413,6 +413,30 @@ def exercise_domain_api_and_repository_contracts() -> None:
         warning.startswith("bounded_graph_budget_applied:")
         for warning in over_budget["warnings"]
     )
+    expand_response = client.post(
+        "/v1/explore/expand",
+        json={
+            "session_id": over_budget["session_id"],
+            "anchor_entity_id": NVIDIA_ID,
+            "direction": "upstream",
+            "layers": ["supply_chain_operations"],
+            "budget": {"max_nodes": 42, "max_edges": 64, "expand_nodes": 2},
+        },
+    )
+    assert expand_response.status_code == 200
+    expanded = expand_response.json()
+    assert expanded["session_id"] == over_budget["session_id"]
+    assert expanded["focus"]["canonical_name"] == "NVIDIA Corporation"
+    assert expanded["query"]["direction"] == "upstream"
+    assert expanded["query"]["active_layers"] == ["supply_chain_operations"]
+    assert expanded["query"]["budget"]["expand_nodes"] == 2
+    assert 1 <= len(expanded["edges"]) <= 2
+    assert len(expanded["nodes"]) <= 3
+    assert all(edge["object_id"] == NVIDIA_ID for edge in expanded["edges"])
+    assert all(
+        edge["relationship_family"] == "supply_chain_operations"
+        for edge in expanded["edges"]
+    )
 
     home_response = client.get("/v1/home")
     assert home_response.status_code == 200

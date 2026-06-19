@@ -61,6 +61,14 @@ class RerootRequest(BaseModel):
     open_in_new_workspace: bool = False
 
 
+class ExpandRequest(BaseModel):
+    session_id: UUID
+    anchor_entity_id: UUID
+    direction: Literal["both", "upstream", "downstream", "in", "out"]
+    layers: list[str]
+    budget: GraphBudget
+
+
 class WatchlistCreate(BaseModel):
     name: str = Field(min_length=1)
     description: str | None = None
@@ -196,6 +204,17 @@ def reroot_exploration(
 ) -> dict[str, Any]:
     try:
         return repository.reroot_exploration(payload.model_dump(mode="json"))
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.post("/explore/expand")
+def expand_exploration(
+    payload: ExpandRequest,
+    repository: RepositoryDependency,
+) -> dict[str, Any]:
+    try:
+        return repository.expand_exploration(payload.model_dump(mode="json"))
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc
 
