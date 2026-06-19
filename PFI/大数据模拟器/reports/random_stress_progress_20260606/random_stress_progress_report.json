@@ -1,0 +1,61 @@
+{
+  "schema_version": "qbvs-random-stress-progress-report-v1",
+  "created_at": "2026-06-06T12:54:28",
+  "run_dir": "runs/current_stage_bw99_random_stress_20260606",
+  "target_paths_per_strategy": 100000,
+  "current_paths_per_strategy": {
+    "bw98_boll_or_rsi_none_ma_trend_full_none": 50000,
+    "bw99_boll_or_rsi_none_ma_trend_full_none": 50000,
+    "bw99_none_none_ma_trend_full_none": 50000
+  },
+  "progress_percent_of_random_target": {
+    "bw98_boll_or_rsi_none_ma_trend_full_none": 0.5,
+    "bw99_boll_or_rsi_none_ma_trend_full_none": 0.5,
+    "bw99_none_none_ma_trend_full_none": 0.5
+  },
+  "complete": false,
+  "strategy_summary": [
+    {
+      "strategy_id": "bw99_none_none_ma_trend_full_none",
+      "samples": 50000,
+      "pass_rate": "100.0000%",
+      "avg_total_gap": "-0.0069%",
+      "avg_annualized_gap": "-0.0072%",
+      "avg_drawdown_improvement": "0.1400%",
+      "avg_var_5": "-2.8629%",
+      "avg_cvar_5": "-3.6868%",
+      "avg_turnover": 1.056181653211124,
+      "avg_trades": 152.35916
+    },
+    {
+      "strategy_id": "bw99_boll_or_rsi_none_ma_trend_full_none",
+      "samples": 50000,
+      "pass_rate": "100.0000%",
+      "avg_total_gap": "-0.0263%",
+      "avg_annualized_gap": "-0.0266%",
+      "avg_drawdown_improvement": "0.0954%",
+      "avg_var_5": "-2.8672%",
+      "avg_cvar_5": "-3.6923%",
+      "avg_turnover": 1.162861412519765,
+      "avg_trades": 132.7546
+    },
+    {
+      "strategy_id": "bw98_boll_or_rsi_none_ma_trend_full_none",
+      "samples": 50000,
+      "pass_rate": "99.9720%",
+      "avg_total_gap": "-0.0525%",
+      "avg_annualized_gap": "-0.0531%",
+      "avg_drawdown_improvement": "0.1905%",
+      "avg_var_5": "-2.8549%",
+      "avg_cvar_5": "-3.6768%",
+      "avg_turnover": 1.3246156603270198,
+      "avg_trades": 132.7546
+    }
+  ],
+  "boundaries": {
+    "writes_quantlab_database": false,
+    "writes_quantlab_source": false,
+    "live_trading": false,
+    "uses_opend": false
+  }
+}

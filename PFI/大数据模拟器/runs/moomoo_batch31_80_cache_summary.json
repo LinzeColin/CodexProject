@@ -1,0 +1,15 @@
+{
+  "universe": "config/tradable_universe_seed_220.csv",
+  "cache_dir": "data_cache_moomoo_batch31_80",
+  "attempts_output": "runs/moomoo_batch31_80_cache_attempts.csv",
+  "cache_index": "data_cache_moomoo_batch31_80/cache_index.csv",
+  "offset": 30,
+  "limit": 50,
+  "requested_rows": 50,
+  "success": 50,
+  "failed": 0,
+  "cached_rows": 50,
+  "starts_background_processes": false,
+  "writes_quantlab_database": false,
+  "writes_quantlab_source": false
+}

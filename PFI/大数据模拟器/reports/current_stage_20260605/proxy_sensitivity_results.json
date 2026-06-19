@@ -1,0 +1,38 @@
+{
+  "schema_version": "qbvs-current-stage-proxy-sensitivity-results-v1",
+  "created_at": "2026-06-05T19:21:15",
+  "writes_quantlab_database": false,
+  "writes_quantlab_source": false,
+  "input": {
+    "strict_symbols": [
+      "159995.SZ",
+      "510500.SS",
+      "512800.SS",
+      "518880.SS",
+      "588000.SS",
+      "QQQ",
+      "SPY",
+      "XLE"
+    ],
+    "candidate_substitute_symbols": [
+      "SMH",
+      "513330.SS",
+      "159869.SZ",
+      "510880.SS"
+    ],
+    "window": "2025-06-05 to 2026-06-05",
+    "acceptance_floor": {
+      "avg_total_gap_min": -0.08,
+      "avg_annualized_gap_min": -0.03
+    }
+  },
+  "result": {
+    "primary_candidate": "bw99_boll_or_rsi_none_ma_trend_full_none",
+    "strict_trade_weight_gap": -0.00291,
+    "with_substitutes_trade_weight_gap": -0.00196,
+    "with_substitutes_trade_weight_pass_rate": 1.0,
+    "alipay_like_with_substitutes_trade_weight_gap": -0.06022,
+    "interpretation": "Candidate substitutes do not weaken the main conclusion; the 99% no-rally-sell candidate remains far above the user floor while the original Alipay-like behavior still underperforms materially."
+  },
+  "boundary": "Candidate substitutes are sensitivity analysis only, not final real fund NAV validation or approved QuantLab strategy evidence."
+}

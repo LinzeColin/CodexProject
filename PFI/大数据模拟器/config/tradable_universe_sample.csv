@@ -1,0 +1,11 @@
+symbol,market,name,tradability_note
+510300.SS,CN_ETF,沪深300ETF,Yahoo可读样例；真实交易需按支付宝/Moomoo校验
+510500.SS,CN_ETF,中证500ETF,Yahoo可读样例；真实交易需按支付宝/Moomoo校验
+159915.SZ,CN_ETF,创业板ETF,Yahoo可读样例；真实交易需按支付宝/Moomoo校验
+512100.SS,CN_ETF,中证1000ETF,Yahoo可读样例；真实交易需按支付宝/Moomoo校验
+518880.SS,CN_ETF,黄金ETF,Yahoo可读样例；需单独评估黄金适配性
+SPY,US_ETF,S&P 500 ETF,Moomoo可交易性需按账户确认
+QQQ,US_ETF,Nasdaq 100 ETF,Moomoo可交易性需按账户确认
+GLD,US_ETF,Gold ETF,Moomoo可交易性需按账户确认
+TLT,US_ETF,US Treasury ETF,Moomoo可交易性需按账户确认
+0700.HK,HK_STOCK,Tencent,Moomoo可交易性需按账户确认

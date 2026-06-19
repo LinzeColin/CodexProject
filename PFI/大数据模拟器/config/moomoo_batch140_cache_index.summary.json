@@ -1,0 +1,21 @@
+{
+  "rows": 100,
+  "symbols": 100,
+  "markets": {
+    "US_ETF": 82,
+    "US_STOCK": 18
+  },
+  "asset_classes": {
+    "ETF": 57,
+    "STOCK": 18,
+    "BOND": 12,
+    "COMMODITY": 10,
+    "FX": 3
+  },
+  "quality_grades": {
+    "A": 98,
+    "B": 2
+  },
+  "min_quality_score": 85.0,
+  "max_quality_score": 100.0
+}

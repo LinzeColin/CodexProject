@@ -1,0 +1,15 @@
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.pyc
+*.sqlite
+*.db
+*.pdf
+*.zip
+data_cache*/
+campaigns/
+warehouse/
+warehouse_smoke/
+runs/*/
+runs/manifests/
