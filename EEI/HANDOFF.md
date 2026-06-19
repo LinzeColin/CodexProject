@@ -25,7 +25,7 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - Latest GitHub implementation commit proven by CI:
-  - `73035d8` feat: mark EEI cross-industry reroot paths
+  - `b7a3ad0` feat: add EEI accessibility and copy lint contracts
 
 ## Completed
 
@@ -287,6 +287,8 @@ Remote verification:
 - GitHub Actions job `82401845967`: PASS.
 - GitHub Actions run `27842200422`: PASS.
 - GitHub Actions job `82403504484`: PASS.
+- GitHub Actions run `27842880134`: PASS.
+- GitHub Actions job `82405633120`: PASS.
 
 ## Not Completed
 
@@ -318,7 +320,7 @@ Remote verification:
 - T407 / A057 is DONE and remote CI passed; the graph inspector now explains inclusion sorting, truncation reasons and `/v1/explore/expand` continuation metadata.
 - T408 / A048 is DONE and remote CI passed; `tests/e2e/state-contract.spec.ts` now has a dedicated critical three-reroot E2E ending at `nvidia.foundry.equipment.materials`, and local E2E plus `make verify` passed.
 - T409 / A034 is DONE and remote CI passed; the workspace now visibly marks cross-industry reroot paths, and `tests/e2e/state-contract.spec.ts` covers `nvidia.cloud.datacenter.energy` with 24 passing local E2E tests plus `make verify`.
-- T1114-T1117 / A161-A166 are DONE locally; accessible graph-equivalent table fields, keyboard/focus/target assertions, non-color evidence labels, and UI copy lint passed local E2E plus `make verify`.
+- T1114-T1117 / A161-A166 are DONE and remote CI passed; accessible graph-equivalent table fields, keyboard/focus/target assertions, non-color evidence labels, and UI copy lint passed local E2E plus `make verify`.
 - G4 remains open because model preview propagation, saved-view API persistence, and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -326,7 +328,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Push T1114-T1117 and wait for GitHub Actions PostgreSQL/E2E evidence.
-2. Start T1207 model-preview and saved-view persistence only after T1114-T1117 CI is recorded.
+1. Start T1207 model-preview and saved-view persistence as the next bounded G4 slice.
+2. Keep T1118/T1119 visual regression and performance suites separate in G5.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.

@@ -1307,7 +1307,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G4 T1114-T1117 Accessibility and UI copy contract
 
-Status: LOCAL VALIDATION PASS - REMOTE CI PENDING
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1324,6 +1324,10 @@ Verification evidence:
 - Local `.venv/bin/uv run python scripts/validate_ui_copy.py`: PASS.
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/home.spec.ts`: PASS, 25 tests.
 - Local `make verify`: PASS.
+- GitHub Actions run `27842880134`: PASS.
+- GitHub Actions job `82405633120`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -1334,4 +1338,4 @@ Acceptance status:
 
 Residual risks:
 
-- Remote PostgreSQL/E2E CI evidence is pending for the T1114-T1117 implementation commit.
+- T1207 still owns model-preview and saved-view persistence follow-up work in G4.
