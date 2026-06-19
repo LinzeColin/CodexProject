@@ -1,0 +1,32 @@
+# FIFA 模型参数文件
+
+更新时间：2026-06-19
+
+## 默认模型与执行模式
+
+- 默认模式：research-only。
+- 当前 executable new stake：`AUD 0`。
+- 当前 public raw / Live discovery：`ai_controlled_access_rejected`。
+- 默认数据恢复路径：官方/授权 feed、用户导出导入、已有 fresh partial raw 的 research-only diagnostics。
+
+## 关键参数域
+
+| 参数域 | 当前原则 |
+| --- | --- |
+| public raw access | AI controlled access rejected 时 fail-closed |
+| private My Bets | 只读，必须用户授权本地登录 |
+| reports | candidate 与 formal status 必须分开 |
+| artifacts | `artifacts/latest/` 只保留 public-safe 产物 |
+| automation | blocked 状态不得伪装为成功 |
+
+## 模型与数据要求
+
+- 赔率、市场快照、盘口状态必须有来源和时间戳。
+- 研究报告必须暴露缺失数据、blocked access、模型假设和不可执行边界。
+- 若使用模型摘要，默认低创造性，优先结构化证据和风险解释。
+
+## 不允许保存或提交
+
+- TAB credentials、OTP、cookies、Chrome profiles。
+- private stake details 和未脱敏 My Bets raw text。
+- 自动下注、Bet Slip mutation 或 platform bypass 代码。

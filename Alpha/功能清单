@@ -1,0 +1,33 @@
+# Alpha 功能清单
+
+更新时间：2026-06-19
+
+## 核心功能
+
+- 本地量化研究工作台：研究、回测、实验记录、策略比较。
+- 自动纸交易：启动 dashboard 后自动运行 paper agent cycle。
+- 策略锦标赛：通过 `/strategy/tournament/run` 触发策略比较。
+- 纸交易组合：通过 `/paper/portfolio` 查看 paper portfolio。
+- 订单审批：通过 `/orders/approval-queue` 管理 owner review 之前的候选订单。
+- Agent loop 状态：通过 `/agent/loop/status` 观察运行状态。
+- macOS 双击入口：本地 app launcher 支持快速打开。
+
+## 用户价值
+
+- 把交易想法从聊天和临时脚本升级为可复现研究流程。
+- 在真实资金之前用 paper trading、policy gate 和风险检查过滤低质量动作。
+- 通过 dashboard 和审批队列减少“研究结论”和“执行动作”之间的混乱。
+
+## 必须保留的行为
+
+- 真实交易默认禁用。
+- 任何 live 候选必须进入人工确认和 broker 侧最终执行。
+- 外部 API 不能触发真实下单。
+- 所有研究结果必须能追溯数据来源、参数、成本假设和运行时间。
+
+## 后续可扩展功能
+
+- 纸交易绩效归因和错误画像。
+- 多策略组合风险视图。
+- OrderIntent 生命周期审计。
+- 与 EVA_OS / ResearchBus 的研究结果互通。

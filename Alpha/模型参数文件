@@ -1,0 +1,32 @@
+# Alpha 模型参数文件
+
+更新时间：2026-06-19
+
+## 默认模型与执行模式
+
+- 默认执行模式：local-first、research / backtest / paper-only。
+- 默认真实交易：disabled。
+- 默认 broker 行为：不提交真实订单，只生成 owner review 需要的票据或队列项。
+- 默认 agent 输出：必须包含证据、参数、风险、验证状态和下一步。
+
+## 关键参数域
+
+| 参数域 | 当前原则 |
+| --- | --- |
+| `live_trading.enabled` | 提交态必须为 `false` |
+| paper loop interval | README 记录为 300 秒刷新 |
+| order object | 使用 `OrderIntent` 和 `BrokerReadyOrderTicket` |
+| risk gate | policy、risk、audit、kill-switch、idempotency、freshness 必须 fail-closed |
+| credentials | 不提交 broker credentials、API keys、账户标识或 `.env` |
+
+## 模型与数据要求
+
+- 回测必须记录数据范围、数据 provider、复权/调整方式、策略版本、参数、成本模型和 run timestamp。
+- 指标至少覆盖 total return、annualized return、volatility、Sharpe、Sortino、Calmar、maximum drawdown、win rate、trade count、turnover、average gain/loss、equity curve、drawdown curve、transaction cost summary。
+- 如果引入 LLM/agent 模型，默认 temperature 应偏低，输出以审计、解释和结构化决策支持为主，不输出公开 buy/sell signal。
+
+## 不允许保存或提交
+
+- broker password、token、session、cookie。
+- 真实账户标识和敏感持仓原文。
+- 自动实盘下单所需的完整凭证链。

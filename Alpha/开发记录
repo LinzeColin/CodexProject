@@ -1,0 +1,58 @@
+# Alpha 开发记录
+
+更新时间：2026-06-19
+
+## 项目定位
+
+Alpha 是本地优先的个人量化 agent 工作台，用于研究、回测、自动纸交易、风险检查、审批队列、broker-ready order ticket 和 dashboard 可视化。默认目标是提高研究与决策质量，不做无人值守真实下单。
+
+## 当前已形成的开发状态
+
+- 已有本地运行入口：`scripts/start_alpha_dashboard.sh`、`scripts/stop_alpha_dashboard.sh`。
+- 已有 FastAPI dashboard 健康检查与状态页：`/health`、`/dashboard`、`/dashboard/state`。
+- 已有 paper trading loop，dashboard 启动后会立即跑一次纸交易周期，并按 300 秒刷新。
+- 已有策略锦标赛、paper portfolio、agent loop status、orders approval queue 等 API。
+- 已有 macOS app 入口：`Downloads/Alpha.app`、`Applications/Alpha.app`、`/Applications/Alpha.app`。
+
+## 最新 personalization 对本项目的要求
+
+- 输出必须准确、可验证、可维护、能支持真实决策，优先给阶段状态和明确下一步。
+- 所有金融相关能力默认 research / paper / review-only；真实交易必须 owner 侧确认。
+- 涉及行情、broker、API、模型版本、风险规则等当前事实时，优先查官方或当前本地配置，不得凭印象下结论。
+- 不提交 secrets、broker credentials、账户标识、`.env` 或运行时数据库。
+
+## 安全与执行边界
+
+- `live_trading.enabled` 在默认提交配置中必须保持 `false`。
+- 不能提交直接调用真实 broker `place_order` 的无人值守路径。
+- 真实订单候选只能进入 `OrderIntent` / `BrokerReadyOrderTicket` / 审批队列。
+- policy、risk、audit、kill-switch、idempotency、freshness 任一 gate 失败时必须 reject 或 pause。
+
+## 重要验证记录
+
+常规最小验证：
+
+```bash
+python -m pytest tests -q
+python -m backend.app.services.paper_trading_loop --once
+```
+
+涉及 API 或 dashboard 时：
+
+```bash
+uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
+```
+
+然后检查：
+
+```text
+http://127.0.0.1:8000/dashboard
+http://127.0.0.1:8000/health
+```
+
+## 下一步开发优先级
+
+1. 强化 paper trading 与策略回测结果之间的证据链。
+2. 把审批队列、OrderIntent、BrokerReadyOrderTicket 的状态转移做成可审计流程。
+3. 增加 dashboard 对 policy gate、风险暴露、纸交易偏差的可解释视图。
+4. 所有新 broker 相关能力先做 read-only / paper-only / owner-confirmed ticket。

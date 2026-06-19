@@ -1,0 +1,49 @@
+# FIFA 开发记录
+
+更新时间：2026-06-19
+
+## 项目定位
+
+FIFA 是本地 TAB FIFA betting-research 系统连续性仓库，用于授权/公开安全市场快照读取、中文专业研究报告、研究节奏监控、缺失报告追踪、模型/市场诊断和用户授权后的 private My Bets 只读监控。
+
+## 当前已形成的开发状态
+
+- 本地 app 入口：`http://127.0.0.1:8767/`。
+- 本地 app bundle：`/Users/linzezhang/Downloads/TAB FIFA盘口研究系统.app`。
+- 主代码目录：`tab-research-pipeline/`。
+- 最新公开 artifacts：`artifacts/latest/`。
+- 接手优先读：`docs/HANDOFF.md`、`docs/HANDOFF_DETAILED.md`、`docs/DEVELOPMENT_STATUS.md`。
+- 当前正式 automation 状态：blocked；research-only daily report 可作为 candidate。
+
+## 最新 personalization 对本项目的要求
+
+- 输出要区分“研究可用”和“执行不可用”，不要把 blocked 包装成成功。
+- 当前事实、赔率、市场状态和平台行为必须来自授权/公开/可验证来源。
+- 若 wrapper 没 stdout，要看 artifacts/logs/health 文件，不要假设成功。
+- 默认中文总结，保留 TAB、My Bets、Bet Slip、ai_controlled_access_rejected 等关键英文标识。
+
+## 安全与执行边界
+
+- 禁止下注自动化。
+- 禁止点击 odds、加入 Bet Slip、提交或修改 wagering ticket。
+- 禁止绕过 TAB access controls。
+- TAB public raw / Live discovery 当前视为 `ai_controlled_access_rejected`，必须 fail-closed。
+- `TAB_FIFA_HEADLESS=0` 只允许用于用户授权 private My Bets read-only bootstrap。
+
+## 重要验证记录
+
+```bash
+cd tab-research-pipeline
+python3 -m py_compile run_daily_report.py scripts/tab_fifa_app_server.py tests/test_pipeline.py
+bash -n scripts/run_tab_fifa_daily_automation.sh scripts/tab_real_refresh_smoke.sh
+node --check scripts/refresh_tab_readonly.mjs
+node --check scripts/discover_tab_live_boards.mjs
+python3 -m unittest tests.test_pipeline
+```
+
+## 下一步开发优先级
+
+1. 明确 public raw / Live discovery 的合规恢复路径。
+2. 强化 research-only candidate report 的证据标注和缺失项提示。
+3. 继续保持 private My Bets 只读边界，避免任何 Bet Slip mutation。
+4. 在 `docs/HANDOFF.md` 和 `docs/DEVELOPMENT_STATUS.md` 记录 blocker 变化。

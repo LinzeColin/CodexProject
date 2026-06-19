@@ -1,0 +1,30 @@
+# FIFA 功能清单
+
+更新时间：2026-06-19
+
+## 核心功能
+
+- 授权/公开安全市场快照读取与标准化。
+- 中文专业 FIFA betting-research 报告生成。
+- 研究节奏、缺失报告、模型/市场诊断追踪。
+- 本地 Web app 和 macOS app 入口。
+- private My Bets read-only bootstrap，只在用户授权本地登录后使用。
+- public artifacts 输出到 `artifacts/latest/`。
+
+## 用户价值
+
+- 用研究报告和诊断辅助赛前/盘前判断，而不是自动下注。
+- 将平台访问阻塞、数据缺失和研究候选状态明确暴露，避免误用。
+- 为未来 agent 接手保留清晰 handoff 和安全边界。
+
+## 必须保留的行为
+
+- `ai_controlled_access_rejected` 必须 fail-closed。
+- 不使用 headed fallback、CAPTCHA bypass、fingerprint spoofing、stealth browser。
+- 不上传 private My Bets raw text、Chrome profiles、cookies、credentials、OTP、account identifiers 或 private stake details。
+
+## 后续可扩展功能
+
+- 官方/授权 feed 接入。
+- 用户导出 raw snapshot 导入。
+- 报告质量评分、盘口异常检测、研究候选与正式报告分层。

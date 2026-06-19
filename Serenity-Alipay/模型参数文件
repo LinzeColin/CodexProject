@@ -1,0 +1,34 @@
+# Serenity-Alipay 模型参数文件
+
+更新时间：2026-06-19
+
+## 默认模型与执行模式
+
+- 默认模式：investment research automation，非交易执行。
+- scoring：deterministic rules。
+- hard gates：MDD >= 40.00%，recovery time >= 365 days。
+- benchmark：Shanghai Composite、S&P 500。
+- production 状态：blockers 未解除时 `completion-audit --require-complete` 应 non-zero。
+
+## 关键参数域
+
+| 参数域 | 当前原则 |
+| --- | --- |
+| Top candidates | Top5 target weights |
+| comparison windows | 1m、3m、10 trading days |
+| intake promotion | dry-run validation pass 后才允许 apply |
+| package | 默认排除 private evidence |
+| history integrity | baseline 后旧历史不可改写 |
+| execution window | 普通国内开放式基金参考 15:00 北京时间 cutoff，具体基金需单独验证 |
+
+## 模型与数据要求
+
+- 所有 candidates、fund rules、benchmark、positions 必须带 source evidence。
+- 缺少生产证据时进入 blocker/review queue，不输出可执行结论。
+- 若使用 LLM，只能用于报告摘要、解释和人工复核辅助，不能生成自动交易动作。
+
+## 不允许保存或提交
+
+- Alipay credentials、broker credentials、cookies、sessions。
+- private evidence unless explicitly packaged with approval。
+- 自动买卖、平台绕过或静默失败逻辑。
