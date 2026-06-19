@@ -25,7 +25,7 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - Latest GitHub implementation commit proven by CI:
-  - `f89d0b5` test: align EEI reroot fixture name
+  - `714503c` feat: add EEI incremental expand API
 
 ## Completed
 
@@ -77,7 +77,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Added T402 reroot inherited/reset state contract: default reroot preserves layers/time/profile/filters/direction/hops/budget, while `inherit_state=false` resets to canonical defaults.
 - Completed T402 with A045-A047 by GitHub Actions run `27838436423`; job `82391789245` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
 - Added T403 incremental directional expand contract locally: `/v1/explore/expand` expands from a selected anchor without changing session root, filters by selected direction/layers, and bounds returned graph size by `expand_nodes`.
-- Marked T403 and A052 as `DONE` locally; remote PostgreSQL CI is pending for this G4 batch.
+- Completed T403 with A052 by GitHub Actions run `27839023906`; job `82393647163` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
 
 ## Verification Evidence
 
@@ -186,6 +186,10 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 - 2026-06-19 update: local `make verify` passed after T403 incremental directional expand.
 - 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T403 because this host has no configured PostgreSQL.
+- 2026-06-19 update: local `git diff --check` passed after T403.
+- 2026-06-19 update: GitHub Actions run `27839023906` passed; job `82393647163` proved T403 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 
 Remote verification:
 
@@ -256,6 +260,10 @@ Remote verification:
 - GitHub Actions job `82391319828`: FAIL.
 - GitHub Actions run `27838436423`: PASS.
 - GitHub Actions job `82391789245`: PASS.
+- GitHub Actions run `27838623184`: PASS.
+- GitHub Actions job `82392383667`: PASS.
+- GitHub Actions run `27839023906`: PASS.
+- GitHub Actions job `82393647163`: PASS.
 
 ## Not Completed
 
@@ -280,7 +288,7 @@ Remote verification:
 - T400 / A041-A044 are DONE and remote CI passed.
 - T401 / A051 are DONE and remote CI passed.
 - T402 / A045-A047 are DONE and remote CI passed.
-- T403 / A052 is locally DONE; remote PostgreSQL CI pending.
+- T403 / A052 is DONE and remote CI passed.
 - G4 remains open because recursive exploration, live context, accessible list/table equivalents, model preview propagation, and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -288,7 +296,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Push T403 and prove it in GitHub Actions PostgreSQL CI.
-2. Start T404 breadcrumb/browser-history after T403 remote pass.
+1. Start T404 breadcrumb/browser-history synchronization for A049/A050/A051.
+2. Keep T405 graph/table explorer node actions and T408 three-reroot critical E2E as separate bounded slices.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3 state/history contracts while adding recursive exploration and governance views.

@@ -1085,7 +1085,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G4 T403 Incremental directional expand
 
-Status: LOCAL CONTRACT PASS; remote PostgreSQL CI pending
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1100,6 +1100,11 @@ Verification evidence:
 
 - Local `make verify`: PASS.
 - Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip because the current host has no configured PostgreSQL.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27839023906`: PASS.
+- GitHub Actions job `82393647163`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -1107,5 +1112,4 @@ Acceptance status:
 
 Residual risks:
 
-- Remote CI must still prove the expand integration assertion against PostgreSQL.
 - T405 still owns full graph/table explorer node actions; T406 still owns bounded evidence-bearing path queries.
