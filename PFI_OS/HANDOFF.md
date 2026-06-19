@@ -30,8 +30,8 @@ Current sequence:
 12. Phase C Web Shell workflow-card rendering and optional progress stream:
     workflow-card rendering complete; optional progress stream deferred.
 13. Phase D local deployment, backup/restore, and model readiness:
-    first read-only readiness slice complete.
-14. Phase D backup/restore acceptance and Phase 5 package:
+    readiness and backup/restore acceptance complete.
+14. Phase 5 package:
     next.
 
 ## Current Local State
@@ -124,6 +124,9 @@ Current sequence:
 - Phase D local deployment readiness contract for required repo surfaces,
   data-home/Operational SQLite boundaries, backup/restore target paths,
   DisabledProvider/local-model optionality, and read-only safety constraints.
+- Phase D backup/restore acceptance complete with private runtime SQLite
+  backup, private restore staging, checksum/row-count validation,
+  GitHub-safe sanitized public summary, and no Operational SQLite mutation.
 
 ## Start Here
 
@@ -171,6 +174,7 @@ python -m pytest tests/contract/test_phase_b_portfolio_workflow.py -q
 python -m pytest tests/contract/test_phase_c_workflow_runtime_read_model.py -q
 python -m pytest tests/contract/test_phase_c_workflow_runtime_scheduler.py -q
 python -m pytest tests/contract/test_phase_d_deployment_readiness.py -q
+python -m pytest tests/contract/test_phase_d_backup_restore_acceptance.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
@@ -193,16 +197,16 @@ commands after any follow-up edits.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
 - Phase C SSE/WebSocket progress is not complete and should only be added if
   it materially improves local observability.
-- Phase D backup/restore acceptance, controlled local deployment acceptance,
-  and final Phase 5 packaging are not complete.
+- Controlled local deployment acceptance is deferred unless the release gate
+  requires a real service start/stop check.
+- Final Phase 5 packaging is not complete.
 
 ## Next Step
 
-Continue from the Phase C Web Shell card baseline:
+Continue from Phase 5 packaging:
 
-1. Add progress streaming only if it materially improves local workflow
-   observability.
-2. Add Phase D backup/restore acceptance evidence without committing private
-   runtime data.
-3. Replace remaining legacy Streamlit direct reads one vertical slice at a
-   time when those workflows enter scope.
+1. Build the Phase 5 acceptance package for Phase 6 deployment preparation.
+2. Add controlled local deployment acceptance only if a release gate requires
+   real service start/stop evidence.
+3. Replace remaining legacy Streamlit direct reads one vertical slice at a time
+   when those workflows enter scope.

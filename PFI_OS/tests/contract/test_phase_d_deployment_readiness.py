@@ -112,7 +112,7 @@ def test_phase_d_docs_and_handoff_reference_deployment_readiness_gate():
 
     assert "PFIOSPhaseDDeploymentReadinessContractV1" in phase_doc
     assert "PFIOSPhaseDLocalDeploymentReadinessV1" in phase_doc
-    assert "first read-only readiness slice complete" in handoff
+    assert "readiness and backup/restore acceptance complete" in handoff
     assert "docs/phase/PHASE_D_DEPLOYMENT_READINESS.md" in handoff
     assert "Phase D local deployment readiness" in dev_record
     assert "tests/contract/test_phase_d_deployment_readiness.py" in dev_record

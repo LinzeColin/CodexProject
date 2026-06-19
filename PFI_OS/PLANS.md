@@ -9,7 +9,8 @@ PFI-001 through PFI-004 are complete. Phase A data foundation and the first
 Phase B vertical workflows are complete. Phase C now has the cached workflow
 runtime read model, local scheduler/retry/60-second acceptance slice, and
 Web Shell workflow-card rendering implemented and covered by focused tests.
-Phase D local deployment readiness now has its first read-only contract slice.
+Phase D local deployment readiness and backup/restore acceptance are now
+implemented as private-runtime-only local gates.
 
 Execution order:
 
@@ -19,8 +20,8 @@ Execution order:
 4. `PFI-004`: create the new PFI Web Shell with six workspaces, global context, task center, evidence drawer, and consistent feedback. Complete.
 5. `Phase A`: establish the local operational store and migrate read models slice by slice. Complete for the data-boundary gate.
 6. `Phase B`: promote Strategy Lab, Markets, Research + Policy, and Portfolio into Operational Store-backed vertical workflow contracts. Complete for the first four vertical slices.
-7. `Phase C`: promote Phase B workflows into cached runtime cards, scheduler jobs, retry/backoff, 60-second local cache acceptance, and Web Shell workflow-card rendering. Active.
-8. `Phase D`: establish local deployment, backup/restore, and local-model readiness contracts. Active.
+7. `Phase C`: promote Phase B workflows into cached runtime cards, scheduler jobs, retry/backoff, 60-second local cache acceptance, and Web Shell workflow-card rendering. Complete for current scope.
+8. `Phase D`: establish local deployment, backup/restore, and local-model readiness contracts. Complete for readiness and backup/restore acceptance.
 
 Current PFI decisions:
 
@@ -68,7 +69,12 @@ Current PFI decisions:
 - Phase C scheduler now writes idempotent local cache-refresh jobs, executes cached runtime refreshes, records 60-second acceptance metadata, retries with bounded `[1, 5, 15]` backoff, and fails closed after exhausted attempts without provider, broker, LLM, network, order-execution, or holding-mutation dependencies.
 - Phase C Web Shell now renders workflow cards from cached runtime JSON, updates the Fast Path badge, opens private-safe evidence drawer payloads, and keeps loading/error states hidden until user action.
 - Phase D deployment readiness now checks required repo surfaces, data-home/Operational SQLite boundaries, backup/restore path plans, and DisabledProvider/local-model optionality without creating directories, starting services, or probing networks.
-- Next product target is Phase D backup/restore acceptance and Phase 5 packaging while keeping research-only boundaries.
+- Phase D backup/restore acceptance now writes private runtime SQLite backups,
+  restores them into private staging, verifies SQLite integrity and official
+  table row-count parity, and exposes only sanitized public summaries for
+  GitHub documentation.
+- Next product target is Phase 5 packaging while keeping research-only
+  boundaries.
 
 ## Execution Rules
 

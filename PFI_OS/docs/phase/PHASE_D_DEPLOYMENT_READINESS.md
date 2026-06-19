@@ -2,16 +2,17 @@
 
 Schema: `PFIOSPhaseDDeploymentReadinessContractV1`
 
-Status: first Phase D local-readiness slice complete.
+Status: deployment readiness and backup/restore acceptance complete.
 
 As of: 2026-06-20 Australia/Sydney
 
 ## Goal
 
-Establish a read-only deployment readiness contract before real backup,
-restore, service-launch, local-model, or Phase 5 packaging work begins.
+Establish a local deployment readiness contract, then prove backup/restore
+acceptance without committing private SQLite, runtime manifests, local logs, or
+absolute local paths to public Git.
 
-## Current Slice
+## Deployment Readiness Slice
 
 - Adds `pfi_os.application.deployment_readiness`.
 - Declares read model schema `PFIOSPhaseDLocalDeploymentReadinessV1`.
@@ -31,9 +32,29 @@ restore, service-launch, local-model, or Phase 5 packaging work begins.
   `OllamaProvider` configuration enters `Review` and does not block core
   workflows.
 
+## Backup/Restore Acceptance Slice
+
+- Adds `pfi_os.application.deployment_backup_restore`.
+- Declares contract schema `PFIOSPhaseDBackupRestoreContractV1`.
+- Declares acceptance schema `PFIOSPhaseDBackupRestoreAcceptanceV1`.
+- Requires existing Operational SQLite at
+  `$PFI_OS_DATA_HOME/private/operational/pfi.sqlite`.
+- Writes backup SQLite only under `$PFI_OS_DATA_HOME/runtime/backups`.
+- Restores into staging only under
+  `$PFI_OS_DATA_HOME/runtime/restore_staging`.
+- Writes a private manifest outside Git with checksums, byte sizes, official
+  Operational Store table counts, and `commit_to_git: false`.
+- Exposes only a sanitized public summary with `$PFI_OS_DATA_HOME` scoped paths,
+  no absolute local paths, no private holdings, and no raw SQLite content.
+- Verifies SQLite `PRAGMA integrity_check` and official table row-count parity
+  between source, backup, and restore.
+- Does not mutate Operational SQLite, holdings, providers, brokers, orders,
+  services, or model endpoints.
+
 ## Contract Tests
 
 - `tests/contract/test_phase_d_deployment_readiness.py`
+- `tests/contract/test_phase_d_backup_restore_acceptance.py`
 
 The tests verify:
 
@@ -45,11 +66,15 @@ The tests verify:
    `Blocked`.
 4. Optional local model settings remain non-blocking and perform no network
    probe.
+5. Backup/restore acceptance creates private runtime artifacts only under
+   `$PFI_OS_DATA_HOME`.
+6. Public summaries and private manifests are sanitized for GitHub-safe
+   reporting.
+7. Missing Operational SQLite and repo-local data homes fail closed without
+   creating backup/restore artifacts.
 
 ## Out Of Scope
 
-- Creating backups.
-- Restoring from backups.
 - Starting or stopping local services.
 - Installing or codesigning macOS apps.
 - Probing Ollama or any model endpoint.
@@ -58,8 +83,6 @@ The tests verify:
 
 ## Next Iterations
 
-1. Add real backup and restore acceptance evidence using private/runtime
-   paths outside Git.
-2. Add local macOS deployment acceptance only when the release gate requires a
+1. Add local macOS deployment acceptance only when the release gate requires a
    controlled service start.
-3. Build the Phase 5 acceptance package for Phase 6 deployment preparation.
+2. Build the Phase 5 acceptance package for Phase 6 deployment preparation.
