@@ -19,7 +19,7 @@ Current sequence:
 3. PFI-003 identity, directory, namespace, app, script, and env migration:
    complete.
 4. PFI-004 new PFI Web Shell skeleton: complete.
-5. Phase A data foundation: in progress, first contract slices complete.
+5. Phase A data foundation: complete for the data-boundary gate.
 
 ## Current Local State
 
@@ -80,6 +80,9 @@ Current sequence:
 - Streamlit data-boundary contract for remaining public `ROOT / "data"`
   top-level paths, plus private runtime storage for uploaded market CSV files
   under `$PFI_OS_DATA_HOME/runtime/uploads`.
+- Phase A completion audit for the data-foundation boundary, including the
+  evidence map, product non-regression constraints, and out-of-scope follow-up
+  list.
 
 ## Start Here
 
@@ -97,7 +100,8 @@ Read in this order:
 10. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
 11. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
 12. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
-13. `docs/archive/legacy-migration.md`
+13. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
+14. `docs/archive/legacy-migration.md`
 
 ## Current Verification Evidence
 
@@ -112,6 +116,7 @@ python -m pytest tests/contract/test_phase_a_vectorized_read_model.py -q
 python -m pytest tests/contract/test_phase_a_macos_runtime_read_model.py -q
 python -m pytest tests/contract/test_phase_a_private_reviewed_inputs.py -q
 python -m pytest tests/contract/test_phase_a_streamlit_data_boundary.py -q
+python -m pytest tests/contract/test_phase_a_completion_audit.py -q
 python -m pytest tests/contract/test_phase_a_data_home_audit.py tests/contract/test_phase_a_homepage_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_source_ingestion.py -q
 python -m pytest tests/contract/test_phase_a_operational_store.py tests/contract/test_phase_a_source_registry_homepage.py tests/contract/test_phase_a_repositories.py -q
@@ -132,14 +137,13 @@ commands after any follow-up edits.
 - Existing legacy holdings sync and ResearchBus workflows are not fully moved
   onto Operational Store repositories.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
-- Full source ingestion, checksum enforcement, and vertical workflow migration
-  are not complete.
+- Full vertical workflow migration is not complete.
 
 ## Next Step
 
-Continue Phase A:
+Continue from the Phase A completion baseline:
 
-1. Replace remaining legacy Streamlit direct reads one vertical slice at a
-   time.
-2. Prepare Phase B vertical workflow slices after the next direct-read
-   migration checkpoint.
+1. Prepare Phase B vertical workflow slices or Phase 5 packaging from
+   `docs/phase/PHASE_A_COMPLETION_AUDIT.md`.
+2. Replace remaining legacy Streamlit direct reads one vertical slice at a
+   time when those workflows enter scope.

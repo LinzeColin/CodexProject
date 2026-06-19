@@ -1,6 +1,6 @@
 # Phase A Data Foundation
 
-Status: first contract slice
+Status: completed data-boundary gate
 
 ## Goal
 
@@ -61,6 +61,9 @@ moving UI pages or vertical workflows onto it.
   top-level paths are contract-tested as explicit public artifact/runtime
   categories: `cache`, `commandCenter`, `reportDecision`, `strategyLibrary`,
   and `validationQueue`.
+- `docs/phase/PHASE_A_COMPLETION_AUDIT.md` records the Phase A completion
+  decision, evidence map, non-regression constraints, and out-of-scope
+  follow-up work.
 
 ## Not Done
 
@@ -72,7 +75,9 @@ moving UI pages or vertical workflows onto it.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
 - Full source ingestion and vertical workflow migration are not complete.
 
-## Next Phase A Iterations
+## Next Iterations
 
-1. Replace remaining legacy Streamlit direct reads one vertical slice at a
-   time.
+1. Use the Phase A completion audit as the baseline for Phase B or Phase 5
+   packaging.
+2. Replace remaining legacy Streamlit direct reads one vertical slice at a
+   time when those workflows enter scope.
