@@ -473,6 +473,10 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "runtime_is_stale" in installer_source
         and "refresh_latest_snapshot" in installer_source
         and "copy_latest_snapshot_to_runtime" in installer_source
+        and "open_app_url" in installer_source
+        and "memory_atlas_server_ready" in installer_source
+        and "start_runtime_server" in installer_source
+        and "Opened Memory Atlas immediately; refreshing latest snapshot in the same launch." in installer_source
         and "scripts/sync_codex_memory_data.py" in installer_source
         and "--build-atlas" in installer_source
         and "snapshot_generated_at" in installer_source
@@ -491,7 +495,7 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and '"-m http.server"' in installer_source
         and "last_seen_at = time.time() - max" not in installer_source,
         "local_app_launcher_contract",
-        "installer creates Downloads/Applications launchers, custom icon, an Application Support source workspace for every-launch snapshot refresh, runtime cache manifest/stale checks, cleanup guard, release audit gate, and immediate tab-close shutdown",
+        "installer creates Downloads/Applications launchers, custom icon, an Application Support source workspace, fast existing-runtime open, every-launch snapshot refresh, runtime cache manifest/stale checks, cleanup guard, release audit gate, and immediate tab-close shutdown",
         "local app launcher contract missing required pieces",
     )
 
@@ -523,7 +527,13 @@ def audit_local_apps(repo_root: Path, checks: list[dict[str, str]]) -> None:
         launcher_ok = executable.exists() and executable.stat().st_mode & 0o111
         if launcher_ok:
             launcher_text = read_text(executable)
-            launcher_ok = "记忆星图启动中" in launcher_text and "scripts/audit_memory_atlas_release.py" in launcher_text
+            launcher_ok = (
+                "记忆星图启动中" in launcher_text
+                and "scripts/audit_memory_atlas_release.py" in launcher_text
+                and "open_app_url" in launcher_text
+                and "memory_atlas_server_ready" in launcher_text
+                and "Opened Memory Atlas immediately; refreshing latest snapshot in the same launch." in launcher_text
+            )
         plist_ok = False
         if info_plist.exists():
             with info_plist.open("rb") as handle:

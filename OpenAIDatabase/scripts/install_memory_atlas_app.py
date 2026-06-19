@@ -505,6 +505,17 @@ open_status_page() {{
   fi
 }}
 
+open_app_url() {{
+  if [[ "${{MEMORY_ATLAS_NO_OPEN:-0}}" != "1" ]]; then
+    open "$URL/?opened=$(date +%s)"
+  fi
+}}
+
+memory_atlas_server_ready() {{
+  curl -fsS "$URL/memory_atlas.json?snapshot=$(date +%s)" >/dev/null 2>&1 &&
+    curl -fsS "$URL/__memory_atlas_runtime_state" >/dev/null 2>&1
+}}
+
 stop_watchdog() {{
   if [[ -f "$WATCHDOG_PID_FILE" ]]; then
     local watchdog_pid
@@ -936,60 +947,80 @@ prepare_runtime() {{
   fi
 }}
 
+start_runtime_server() {{
+  if memory_atlas_server_ready; then
+    echo "Memory Atlas is already running at $URL"
+    remember_existing_server
+    return 0
+  fi
+
+  if curl -fsS "$URL/memory_atlas.json?snapshot=$(date +%s)" >/dev/null 2>&1; then
+    if curl -fsS "$URL/__memory_atlas_runtime_state" >/dev/null 2>&1; then
+      echo "Memory Atlas is already running at $URL"
+      remember_existing_server
+      return 0
+    fi
+    stop_port_managed_server
+  fi
+
+  echo "Starting Memory Atlas on $URL"
+  write_runtime_server
+  nohup python3 "$SERVER_SCRIPT" "$RUNTIME_DIR" "$PORT" "$TTL_SECONDS" "$IDLE_SECONDS" >> "$LOG_FILE" 2>&1 &
+  SERVER_PID=$!
+  echo "$SERVER_PID" > "$PID_FILE"
+
+  for _ in {{1..80}}; do
+    if memory_atlas_server_ready; then
+      echo "Memory Atlas ready at $URL"
+      return 0
+    fi
+    if ! kill -0 "$SERVER_PID" >/dev/null 2>&1; then
+      notify_error "Memory Atlas 启动失败，请查看日志：$LOG_FILE。"
+      exit 1
+    fi
+    sleep 0.5
+  done
+
+  notify_error "Memory Atlas 在 40 秒内未准备好，请查看日志：$LOG_FILE。"
+  exit 1
+}}
+
 echo "=== $(date -u '+%Y-%m-%dT%H:%M:%SZ') Memory Atlas launch ==="
 notify_status "正在启动 Memory Atlas..."
-open_status_page
 
 if ! command -v python3 >/dev/null 2>&1; then
   notify_error "需要 python3 才能在本地运行 Memory Atlas。"
   exit 1
 fi
 
-if runtime_is_stale || [[ "${{MEMORY_ATLAS_REFRESH:-0}}" == "1" ]]; then
+if memory_atlas_server_ready; then
+  echo "Memory Atlas is already running at $URL"
+  remember_existing_server
+  open_app_url
+  notify_status "Memory Atlas 已打开。"
+  exit 0
+fi
+
+if runtime_is_stale || [[ "${{MEMORY_ATLAS_REFRESH:-0}}" == "1" || ! -f "$RUNTIME_DIR/index.html" || ! -f "$RUNTIME_DIR/memory_atlas.json" ]]; then
+  open_status_page
   prepare_runtime
-else
-  if ! copy_latest_snapshot_to_runtime; then
-    prepare_runtime
-  fi
+  start_runtime_server
+  open_app_url
+  echo "Opened the ready app."
+  notify_status "Memory Atlas 已准备好。"
+  exit 0
 fi
 
-if [[ ! -f "$RUNTIME_DIR/memory_atlas.json" ]]; then
-  notify_error "Memory Atlas 本地运行快照缺失。请从终端重新运行 scripts/install_memory_atlas_app.py 重建本地运行环境。"
-  exit 1
-fi
+start_runtime_server
+open_app_url
+echo "Opened Memory Atlas immediately; refreshing latest snapshot in the same launch."
+notify_status "Memory Atlas 已打开，正在同步最新快照。"
 
-if curl -fsS "$URL/memory_atlas.json?snapshot=$(date +%s)" >/dev/null 2>&1; then
-  if curl -fsS "$URL/__memory_atlas_runtime_state" >/dev/null 2>&1; then
-    echo "Memory Atlas is already running at $URL"
-    remember_existing_server
-    echo "Status page will redirect to the running app."
-    exit 0
-  fi
-  stop_port_managed_server
-fi
-
-echo "Starting Memory Atlas on $URL"
-write_runtime_server
-nohup python3 "$SERVER_SCRIPT" "$RUNTIME_DIR" "$PORT" "$TTL_SECONDS" "$IDLE_SECONDS" >> "$LOG_FILE" 2>&1 &
-SERVER_PID=$!
-echo "$SERVER_PID" > "$PID_FILE"
-
-for _ in {{1..80}}; do
-  if curl -fsS "$URL/memory_atlas.json?snapshot=$(date +%s)" >/dev/null 2>&1; then
-    echo "Memory Atlas ready at $URL"
-    echo "Status page will redirect to the ready app."
-    notify_status "Memory Atlas 已准备好。"
-    exit 0
-  fi
-  if ! kill -0 "$SERVER_PID" >/dev/null 2>&1; then
-    notify_error "Memory Atlas 启动失败，请查看日志：$LOG_FILE。"
-    exit 1
-  fi
-  sleep 0.5
-done
-
-notify_error "Memory Atlas 在 40 秒内未准备好，请查看日志：$LOG_FILE。"
-exit 1
+copy_latest_snapshot_to_runtime
+echo "Latest Memory Atlas snapshot refreshed."
+open_app_url
+notify_status "Memory Atlas 最新快照已同步。"
+exit 0
 """
 
 
