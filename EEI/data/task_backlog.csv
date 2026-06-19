@@ -33,7 +33,7 @@ T404,G4,P0,Implement breadcrumb and browser history synchronization,T402,"A049,A
 T405,G4,P0,Build graph/table explorer and node actions,"T403,T404","A053,A054,A055,A058",DONE
 T406,G4,P0,Implement bounded evidence-bearing path queries,T400,A056,DONE
 T407,G4,P0,Add inclusion/truncation explanations,T405,"A044,A057",DONE
-T408,G4,P0,Add critical three-reroot E2E,"T405,T407",A048,NOT STARTED
+T408,G4,P0,Add critical three-reroot E2E,"T405,T407",A048,DONE
 T409,G4,P0,Add cross-industry reroot E2E,T405,A034,NOT STARTED
 T500,G5,P0,Implement entity dossier and human summary API,T408,"A059,A060",NOT STARTED
 T501,G5,P0,Implement corporate group/business/brand/product/facility view,T500,"A061,A062,A063",NOT STARTED

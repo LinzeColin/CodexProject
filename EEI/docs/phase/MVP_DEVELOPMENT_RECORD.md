@@ -1081,7 +1081,7 @@ Acceptance status:
 
 Residual risks:
 
-- T404 still owns breadcrumb/browser-history synchronization for reroot flows; T408 still owns critical three-reroot E2E.
+- At T402 closeout, T404 still owned breadcrumb/browser-history synchronization and T408 still owned critical three-reroot E2E; both are now completed below.
 
 ## 2026-06-19 - Phase 1 / G4 T403 Incremental directional expand
 
@@ -1143,7 +1143,7 @@ Acceptance status:
 
 Residual risks:
 
-- T408 still owns the critical three-reroot E2E acceptance A048.
+- At T404 closeout, T408 still owned the critical three-reroot E2E acceptance A048; T408 is now completed below.
 
 ## 2026-06-19 - Phase 1 / G4 T405 Graph table explorer and node actions
 
@@ -1180,7 +1180,7 @@ Residual risks:
 
 - T406 is completed below and awaits remote PostgreSQL CI evidence.
 - T407 is completed below and awaits remote CI evidence.
-- T408 still owns the critical three-reroot E2E acceptance A048.
+- T408 is completed below and awaits remote CI evidence.
 
 ## 2026-06-19 - Phase 1 / G4 T406 Bounded evidence-bearing path queries
 
@@ -1213,7 +1213,7 @@ Acceptance status:
 Residual risks:
 
 - T407 is completed below and awaits remote CI evidence.
-- T408 still owns the critical three-reroot E2E acceptance A048.
+- T408 is completed below and awaits remote CI evidence.
 
 ## 2026-06-19 - Phase 1 / G4 T407 Inclusion and truncation explanations
 
@@ -1245,4 +1245,28 @@ Acceptance status:
 
 Residual risks:
 
-- T408 still owns the critical three-reroot E2E acceptance A048.
+- T408 is completed below and awaits remote CI evidence.
+
+## 2026-06-19 - Phase 1 / G4 T408 Critical three-reroot E2E
+
+Status: LOCAL VALIDATION PASS - REMOTE CI PENDING
+
+Completed:
+
+- Added a dedicated A048 state-contract E2E named `A048 completes three consecutive semiconductor reroots without fallback`.
+- The test reroots from NVIDIA to `Synthetic Advanced Foundry`, then `Synthetic Lithography Equipment Co.`, then `Synthetic Specialty Materials Co.`.
+- The test asserts canonical path state, URL path serialization, `data-reroot-state=ready`, final `data-path-length=4`, full breadcrumb visibility, the materials graph node, and no transition fallback.
+- Marked T408 and A048 as `DONE`.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 23 tests.
+- Local `make verify`: PASS.
+
+Acceptance status:
+
+- A048 is covered by `tests/e2e/state-contract.spec.ts` with three consecutive semiconductor-fixture reroots ending at `nvidia.foundry.equipment.materials`.
+
+Residual risks:
+
+- Remote PostgreSQL/E2E CI evidence is pending for the T408 implementation commit.

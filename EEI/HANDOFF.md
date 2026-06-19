@@ -312,6 +312,7 @@ Remote verification:
 - T405 / A053-A055/A058 is DONE and remote CI passed; `tests/e2e/home.spec.ts` passed with 22 tests after adding graph table alternative, node actions, pin/compare/Watchlist state, and explicit non-color visual semantics.
 - T406 / A056 is DONE and remote CI passed; `/v1/paths` now supports bounded evidence-bearing shortest/upstream/downstream/control/capital/policy/bottleneck path queries.
 - T407 / A057 is DONE and remote CI passed; the graph inspector now explains inclusion sorting, truncation reasons and `/v1/explore/expand` continuation metadata.
+- T408 / A048 is DONE locally; `tests/e2e/state-contract.spec.ts` now has a dedicated critical three-reroot E2E ending at `nvidia.foundry.equipment.materials`, and local E2E plus `make verify` passed.
 - G4 remains open because recursive exploration, live context, accessible list/table equivalents, model preview propagation, and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -319,7 +320,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Start T408 critical three-reroot E2E for A048 as the next bounded G4 slice.
-2. Keep T409 cross-industry reroot E2E separate after T408.
+1. Push T408 and wait for GitHub Actions PostgreSQL/E2E evidence.
+2. Start T409 cross-industry reroot E2E after T408 CI is recorded.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
-4. Preserve the existing G3 state/history contracts while adding recursive exploration and governance views.
+4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.

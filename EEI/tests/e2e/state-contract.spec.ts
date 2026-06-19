@@ -109,6 +109,38 @@ test("restores identical subject state through browser back app back and breadcr
   await expectWorkspacePath(page, "foundry", "nvidia.foundry");
 });
 
+test("A048 completes three consecutive semiconductor reroots without fallback", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "以 Synthetic Advanced Foundry 为中心" }).click();
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
+  await expectWorkspacePath(page, "foundry", "nvidia.foundry");
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-reroot-state", "ready");
+
+  await page.getByRole("button", { name: "以 Synthetic Lithography Equipment Co. 为中心" }).click();
+  await expect(page.getByTestId("current-focus-title")).toHaveText(
+    "Synthetic Lithography Equipment Co."
+  );
+  await expectWorkspacePath(page, "equipment", "nvidia.foundry.equipment");
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-reroot-state", "ready");
+
+  await page.getByRole("button", { name: "以 Synthetic Specialty Materials Co. 为中心" }).click();
+  await expect(page.getByTestId("current-focus-title")).toHaveText(
+    "Synthetic Specialty Materials Co."
+  );
+  await expectWorkspacePath(page, "materials", "nvidia.foundry.equipment.materials");
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-path-length", "4");
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-reroot-state", "ready");
+  await expect(page.getByTestId("breadcrumb-subject-nvidia-0")).toBeVisible();
+  await expect(page.getByTestId("breadcrumb-subject-foundry-1")).toBeVisible();
+  await expect(page.getByTestId("breadcrumb-subject-equipment-2")).toBeVisible();
+  await expect(page.getByTestId("breadcrumb-subject-materials-3")).toBeVisible();
+  await expect(page.getByTestId("graph-node-materials")).toBeVisible();
+  await expect(page.getByTestId("transition-fallback")).not.toBeVisible();
+});
+
 test("saves versioned views restores deterministically and shows as-of change overlays", async ({
   page
 }) => {
