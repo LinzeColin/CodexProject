@@ -47,6 +47,12 @@ from pfi_os.application.repositories import (
 )
 from pfi_os.application.source_ingestion import SourceIngestionResult, ingest_file_source
 from pfi_os.application.source_registry import SourceRegistry, SourceRegistryRow
+from pfi_os.application.strategy_lab_workflow import (
+    STRATEGY_LAB_WORKFLOW_SCHEMA,
+    build_phase_b_strategy_lab_contract,
+    build_strategy_lab_workflow,
+    record_strategy_lab_workflow,
+)
 from pfi_os.application.vectorized_read_model import (
     build_vectorized_research_read_model,
     empty_vectorized_research_read_model,
@@ -79,7 +85,9 @@ __all__ = [
     "build_data_home_boundary_contract",
     "build_command_center_read_model",
     "build_macos_runtime_acceptance_read_model",
+    "build_phase_b_strategy_lab_contract",
     "build_phase_a_data_foundation_contract",
+    "build_strategy_lab_workflow",
     "build_vectorized_research_read_model",
     "build_homepage_summary",
     "default_data_home",
@@ -95,6 +103,8 @@ __all__ = [
     "load_private_reviewed_input_entries",
     "private_reviewed_input_contract",
     "private_reviewed_input_output_dir",
+    "record_strategy_lab_workflow",
     "SourceRegistry",
     "SourceRegistryRow",
+    "STRATEGY_LAB_WORKFLOW_SCHEMA",
 ]
