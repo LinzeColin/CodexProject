@@ -1469,7 +1469,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G9 T1211 Reproducible release evidence
 
-Status: LOCAL PASS, REMOTE CI PENDING
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1486,6 +1486,8 @@ Verification evidence:
 - Local `.venv/bin/uv run python scripts/manage_release_artifacts.py validate`: PASS.
 - Local `sha256sum -c CHECKSUMS.sha256`: PASS.
 - Local `make verify`: PASS.
+- GitHub Actions run `27846828768`: PASS.
+- GitHub Actions job `82417667186`: PASS.
 
 Acceptance status:
 
@@ -1494,5 +1496,4 @@ Acceptance status:
 
 Residual risks:
 
-- Remote CI evidence is pending for the implementation commit and must be written back into `artifacts/release_evidence_t1211.json`.
 - T1211 does not replace T1215 clean-room Markdown/CSV/JSON/GitHub/prototype/PDF/ZIP validation.
