@@ -141,6 +141,58 @@ test("A048 completes three consecutive semiconductor reroots without fallback", 
   await expect(page.getByTestId("transition-fallback")).not.toBeVisible();
 });
 
+test("A034 visibly marks cross-industry reroot path from chips to energy", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  await expect(page.getByTestId("cross-industry-reroot-notice")).toHaveAttribute(
+    "data-cross-industry",
+    "false"
+  );
+  await expect(page.getByTestId("cross-industry-reroot-notice")).toContainText("Semiconductors");
+
+  await page.getByRole("button", { name: "以 Synthetic Cloud Customer 为中心" }).click();
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Cloud Customer");
+  await expectWorkspacePath(page, "cloud", "nvidia.cloud");
+  await expect(page.getByTestId("cross-industry-reroot-notice")).toHaveAttribute(
+    "data-cross-industry",
+    "true"
+  );
+  await expect(page.getByTestId("cross-industry-reroot-notice")).toHaveAttribute(
+    "data-industry-path",
+    "semiconductors>ai-cloud"
+  );
+  await expect(page.getByTestId("cross-industry-reroot-notice")).toContainText(
+    "Semiconductors -> AI cloud infrastructure"
+  );
+
+  await page.getByRole("button", { name: "以 Synthetic AI Data Center Campus 为中心" }).click();
+  await expect(page.getByTestId("current-focus-title")).toHaveText(
+    "Synthetic AI Data Center Campus"
+  );
+  await expectWorkspacePath(page, "datacenter", "nvidia.cloud.datacenter");
+
+  await page.getByRole("button", { name: "以 Synthetic Grid Utility 为中心" }).click();
+  await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Grid Utility");
+  await expectWorkspacePath(page, "energy", "nvidia.cloud.datacenter.energy");
+  await expect(page.getByTestId("cross-industry-reroot-notice")).toHaveAttribute(
+    "data-industry-path",
+    "semiconductors>ai-cloud>energy"
+  );
+  await expect(page.getByTestId("cross-industry-reroot-notice")).toContainText(
+    "Semiconductors -> AI cloud infrastructure -> Power and data-center energy"
+  );
+  await expect(page.getByTestId("cross-industry-reroot-notice")).toContainText(
+    "已从 Semiconductors 进入 Power and data-center energy"
+  );
+  await expect(page.getByTestId("breadcrumb-subject-nvidia-0")).toBeVisible();
+  await expect(page.getByTestId("breadcrumb-subject-cloud-1")).toBeVisible();
+  await expect(page.getByTestId("breadcrumb-subject-datacenter-2")).toBeVisible();
+  await expect(page.getByTestId("breadcrumb-subject-energy-3")).toBeVisible();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-reroot-state", "ready");
+});
+
 test("saves versioned views restores deterministically and shows as-of change overlays", async ({
   page
 }) => {

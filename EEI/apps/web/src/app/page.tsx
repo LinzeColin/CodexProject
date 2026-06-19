@@ -296,6 +296,20 @@ const stageRows = [
   { id: "SC-12", name: "Customer", side: "downstream" }
 ] as const;
 
+const focusIndustryByKey: Record<FocusKey, { key: string; label: string }> = {
+  materials: { key: "semiconductors", label: "Semiconductors" },
+  equipment: { key: "semiconductors", label: "Semiconductors" },
+  foundry: { key: "semiconductors", label: "Semiconductors" },
+  nvidia: { key: "semiconductors", label: "Semiconductors" },
+  business: { key: "semiconductors", label: "Semiconductors" },
+  capital: { key: "semiconductors", label: "Semiconductors" },
+  policy: { key: "semiconductors", label: "Semiconductors" },
+  systems: { key: "ai-cloud", label: "AI cloud infrastructure" },
+  cloud: { key: "ai-cloud", label: "AI cloud infrastructure" },
+  datacenter: { key: "energy", label: "Power and data-center energy" },
+  energy: { key: "energy", label: "Power and data-center energy" }
+};
+
 const homeSearchResults: HomeSearchResult[] = [
   {
     key: "nvidia",
@@ -934,6 +948,18 @@ export default function Home() {
   }, [activeLens, displayEdges, focusKey]);
   const selectedNode =
     nodeByKey.get(selectedKey) ?? nodeByKey.get(scenario.focus) ?? scenario.nodes[0];
+  const industryPath = useMemo(() => {
+    const ordered: { key: string; label: string }[] = [];
+    for (const key of path) {
+      const industry = focusIndustryByKey[key];
+      if (ordered[ordered.length - 1]?.key !== industry.key) {
+        ordered.push(industry);
+      }
+    }
+    return ordered;
+  }, [path]);
+  const industryPathLabel = industryPath.map((item) => item.label).join(" -> ");
+  const isCrossIndustryPath = industryPath.length > 1;
   const upstreamCandidate = useMemo(
     () => scenario.edges.find((edge) => edge.to === selectedNode.key && nodeByKey.has(edge.from))?.from,
     [nodeByKey, scenario.edges, selectedNode.key]
@@ -1606,6 +1632,21 @@ export default function Home() {
             </li>
           ))}
         </ol>
+
+        <section
+          className="crossIndustryReroot"
+          data-cross-industry={isCrossIndustryPath}
+          data-industry-path={industryPath.map((item) => item.key).join(">")}
+          data-testid="cross-industry-reroot-notice"
+        >
+          <strong>Cross-industry path</strong>
+          <span>{industryPathLabel}</span>
+          <small>
+            {isCrossIndustryPath
+              ? `已从 ${industryPath[0]?.label} 进入 ${industryPath[industryPath.length - 1]?.label}`
+              : "当前路径仍在单一行业内"}
+          </small>
+        </section>
       </section>
 
       <aside className="inspector" aria-label="证据与状态">

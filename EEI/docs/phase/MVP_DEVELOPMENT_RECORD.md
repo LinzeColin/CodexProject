@@ -1273,4 +1273,30 @@ Acceptance status:
 
 Residual risks:
 
-- T409 still owns the cross-industry reroot E2E acceptance A034.
+- T409 is completed below and awaits remote CI evidence.
+
+## 2026-06-19 - Phase 1 / G4 T409 Cross-industry reroot E2E
+
+Status: LOCAL VALIDATION PASS - REMOTE CI PENDING
+
+Completed:
+
+- Added a visible cross-industry reroot notice to the commercial-map workspace.
+- Added a deterministic focus-to-industry mapping for the synthetic fixture path.
+- The workspace now exposes `data-cross-industry` and `data-industry-path` attributes for the current reroot path.
+- Added an A034 state-contract E2E named `A034 visibly marks cross-industry reroot path from chips to energy`.
+- The test reroots from NVIDIA to cloud, data center and grid utility, then verifies visible industry path, breadcrumb and ready reroot state.
+- Marked T409 as `DONE`; A034 remains `DONE` with additional workspace reroot evidence.
+
+Verification evidence:
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 24 tests.
+- Local `make verify`: PASS.
+
+Acceptance status:
+
+- A034 is covered by `/industries` cross-industry navigation and now by `tests/e2e/state-contract.spec.ts` workspace reroot assertions for `nvidia.cloud.datacenter.energy`.
+
+Residual risks:
+
+- Remote PostgreSQL/E2E CI evidence is pending for the T409 implementation commit.

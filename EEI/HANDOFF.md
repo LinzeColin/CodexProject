@@ -315,6 +315,7 @@ Remote verification:
 - T406 / A056 is DONE and remote CI passed; `/v1/paths` now supports bounded evidence-bearing shortest/upstream/downstream/control/capital/policy/bottleneck path queries.
 - T407 / A057 is DONE and remote CI passed; the graph inspector now explains inclusion sorting, truncation reasons and `/v1/explore/expand` continuation metadata.
 - T408 / A048 is DONE and remote CI passed; `tests/e2e/state-contract.spec.ts` now has a dedicated critical three-reroot E2E ending at `nvidia.foundry.equipment.materials`, and local E2E plus `make verify` passed.
+- T409 / A034 is DONE locally; the workspace now visibly marks cross-industry reroot paths, and `tests/e2e/state-contract.spec.ts` covers `nvidia.cloud.datacenter.energy` with 24 passing local E2E tests plus `make verify`.
 - G4 remains open because recursive exploration, live context, accessible list/table equivalents, model preview propagation, and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -322,7 +323,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Start T409 cross-industry reroot E2E for A034 as the next bounded G4 slice.
-2. Keep T1114/T1115/T1116/T1117 as separate responsive/accessibility/model-preview slices after T409.
+1. Push T409 and wait for GitHub Actions PostgreSQL/E2E evidence.
+2. Keep T1114/T1115/T1116/T1117 as separate responsive/accessibility/model-preview slices after T409 CI is recorded.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.

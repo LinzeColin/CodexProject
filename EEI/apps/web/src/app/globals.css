@@ -746,6 +746,32 @@ dd {
   color: #134aa1;
 }
 
+.crossIndustryReroot {
+  display: grid;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-left: 4px solid #1f8a70;
+  border-radius: 8px;
+  background: #fbfcfc;
+  padding: 10px 12px;
+}
+
+.crossIndustryReroot strong {
+  color: #22302a;
+  font-size: 12px;
+}
+
+.crossIndustryReroot span {
+  color: #134aa1;
+  font-size: 13px;
+  font-weight: 680;
+}
+
+.crossIndustryReroot small {
+  color: var(--muted);
+  line-height: 1.35;
+}
+
 .pathList {
   display: grid;
   gap: 12px;
