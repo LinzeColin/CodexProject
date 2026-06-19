@@ -65,7 +65,9 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── a185
 │   │   │   └── t1214_high_risk_traceability.json
 │   │   └── a200
-│   │       └── t1212_clean_room_preflight.json
+│   │       ├── Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip
+│   │       ├── t1212_clean_room_preflight.json
+│   │       └── t1215_clean_room_release.json
 │   ├── README.md
 │   ├── development_status_summary_t1213.json
 │   ├── governance_blueprint_v42_source.html
@@ -250,6 +252,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── generate_governance_pdf.py
 │   ├── load_seed_catalogs.py
 │   ├── load_synthetic_fixtures.py
+│   ├── manage_clean_room_release.py
 │   ├── manage_development_status_artifacts.py
 │   ├── manage_release_artifacts.py
 │   ├── manage_risk_control_artifacts.py

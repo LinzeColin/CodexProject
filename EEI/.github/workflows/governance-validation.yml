@@ -40,6 +40,7 @@ jobs:
           python scripts/validate_governance_consistency.py
           python scripts/manage_development_status_artifacts.py validate
           python scripts/manage_risk_control_artifacts.py validate
+          python scripts/manage_clean_room_release.py validate
       - name: Verify shell syntax
         run: bash -n scripts/preflight.sh scripts/run_codex_autonomous.sh
       - name: Verify checksums when present

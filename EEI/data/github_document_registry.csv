@@ -57,6 +57,8 @@ artifacts/tests/a183/t1213_requirement_function_task_test_traceability.json,qa-a
 artifacts/tests/a184/t1213_development_status_ledger.json,qa-and-generation-evidence,true,development status ledger evidence change,QA owner,git+release-zip,GENERATED
 artifacts/tests/a185/t1214_high_risk_traceability.json,qa-and-generation-evidence,true,high-risk traceability evidence change,QA owner,git+release-zip,GENERATED
 artifacts/tests/a200/t1212_clean_room_preflight.json,qa-and-generation-evidence,true,clean-room preflight evidence change,QA owner,git+release-zip,GENERATED
+artifacts/tests/a200/t1215_clean_room_release.json,qa-and-generation-evidence,true,clean-room release evidence change,release owner,git+release-zip,GENERATED
+artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip,release-package,true,clean-room release package change,release owner,git+release-zip,GENERATED
 artifacts/static_validation.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
 artifacts/visual_coverage_validation.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
 config/model_profiles/balanced-v2.json,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
@@ -185,6 +187,7 @@ scripts/validate_governance_consistency.py,automation-and-validation,false,valid
 scripts/manage_release_artifacts.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/manage_development_status_artifacts.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/manage_risk_control_artifacts.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
+scripts/manage_clean_room_release.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_catalog_integrity.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_governance.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE
 scripts/validate_model_config.py,automation-and-validation,false,validation/build/release automation change,engineering owner,git+release-zip,ACTIVE

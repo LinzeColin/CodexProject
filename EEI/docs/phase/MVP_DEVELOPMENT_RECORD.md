@@ -1593,3 +1593,29 @@ Acceptance status:
 Residual risks:
 
 - T1214 validates risk-control traceability; final clean-room Markdown/CSV/JSON/GitHub/prototype/PDF/ZIP verification remains T1215 / A200.
+
+## 2026-06-19 - Phase 1 / G9 T1215 Clean-room release validation
+
+Status: LOCAL VALIDATION IN PROGRESS
+
+Completed:
+
+- Added `scripts/manage_clean_room_release.py` to generate and validate `artifacts/tests/a200/t1215_clean_room_release.json` and `artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip`.
+- The clean-room ZIP includes an internal `PACKAGE_MANIFEST.json` and `PACKAGE_CHECKSUMS.sha256`, excludes its own package/evidence files, and validates Markdown, CSV, JSON, GitHub workflow, prototype and PDF categories.
+- Wired `validate-clean-room-release` into `make verify` and `.github/workflows/governance-validation.yml`.
+- Marked T1215 and A200 as `DONE`.
+
+Verification evidence:
+
+- Local `.venv/bin/uv run python scripts/manage_clean_room_release.py generate`: PASS.
+- Local `.venv/bin/uv run python scripts/manage_clean_room_release.py validate`: PASS.
+- Local `make verify`: PENDING.
+- GitHub Actions run: PENDING.
+
+Acceptance status:
+
+- A200 is covered by `scripts/manage_clean_room_release.py`, `scripts/validate_governance_consistency.py`, `scripts/manage_release_artifacts.py`, `artifacts/tests/a200/t1215_clean_room_release.json` and `artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip`.
+
+Residual risks:
+
+- T1215 closes A200 clean-room release verification only. A180, A181, A186 and A199 remain open and are not claimed by this run.
