@@ -42,6 +42,7 @@ on chat history.
 | Phase B Portfolio vertical slice | Complete | `src/pfi_os/application/portfolio_workflow.py`, private-derived holding snapshots, quality/exposure/concentration/risk cards, Operational Store evidence/task/snapshot records |
 | Phase C workflow runtime read model | Complete first slice | `src/pfi_os/application/workflow_runtime_read_model.py`, `PFIOSPhaseCWorkflowRuntimeReadModelV1`, Fast Path metadata, retry policy, task-center rows, Web Shell cached runtime summary |
 | Phase C workflow runtime scheduler | Complete second slice | `src/pfi_os/application/workflow_runtime_scheduler.py`, `PFIOSPhaseCWorkflowRuntimeSchedulerV1`, idempotent cache-refresh jobs, bounded retry/backoff, 60-second acceptance metadata, fail-closed exhausted retries |
+| Phase C Web Shell workflow cards | Complete third slice | `web/index.html`, `web/app/shell.js`, `web/styles/tokens.css`, responsive `workflow_cards` rendering, Fast Path badge, private-safe evidence drawer updates, hidden-state visual guard |
 
 ## Open Backlog
 
@@ -49,9 +50,10 @@ on chat history.
    the superseded backup-only PR #1.
 2. Move remaining legacy Streamlit direct reads onto Operational Store
    repositories one vertical slice at a time when those workflows enter scope.
-3. Add Web Shell workflow-card rendering for Phase C `workflow_cards`.
-4. Add SSE/WebSocket-style progress only if it improves local workflow
+3. Add SSE/WebSocket-style progress only if it improves local workflow
    observability enough to justify the added complexity.
+4. Start Phase D local deployment, backup/restore, local model readiness, and
+   final Phase 5 acceptance package.
 
 ## Key File Map
 

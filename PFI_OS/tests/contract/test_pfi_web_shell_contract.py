@@ -56,6 +56,25 @@ def test_web_shell_preserves_global_context_and_cached_home_contract():
     assert "PFIOSHomeSummaryV1" in html
 
 
+def test_web_shell_renders_phase_c_workflow_runtime_cards():
+    html = _text(WEB_ROOT / "index.html")
+    js = _text(WEB_ROOT / "app" / "shell.js")
+    css = _text(WEB_ROOT / "styles" / "tokens.css")
+
+    assert "data-workflow-cards" in html
+    assert 'data-workflow-card="strategy"' in html
+    assert 'data-workflow-card="market"' in html
+    assert 'data-workflow-card="research"' in html
+    assert 'data-workflow-card="portfolio"' in html
+    assert "workflow_cards" in html
+    assert "applyWorkflowCards" in js
+    assert "workflowFreshnessLabel" in js
+    assert "showWorkflowEvidence" in js
+    assert "data-runtime-target" in html
+    assert ".workflow-grid" in css
+    assert ".workflow-card" in css
+
+
 def test_streamlit_launcher_exposes_pfi_ui_v2_feature_flag_with_fallback():
     source = _text(PROJECT_ROOT / "src" / "pfi_os" / "app" / "streamlit_app.py")
 

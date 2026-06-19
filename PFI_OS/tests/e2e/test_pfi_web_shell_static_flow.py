@@ -37,6 +37,21 @@ def test_homepage_summary_read_model_updates_cards_table_and_evidence_drawer():
     assert "PFIOSHomeSummaryV1" in html
 
 
+def test_phase_c_workflow_cards_update_from_cached_runtime_summary():
+    html = _text(WEB_ROOT / "index.html")
+    js = _text(WEB_ROOT / "app" / "shell.js")
+
+    assert "data-workflow-cards" in html
+    assert "data-workflow-evidence" in html
+    assert "applyWorkflowRuntime(summary.workflow_runtime || {})" in js
+    assert "applyWorkflowCards(runtime.workflow_cards || [])" in js
+    assert "applyFastPathBadge(runtime.fast_path || {})" in js
+    assert "showWorkflowEvidence(card)" in js
+    assert "setEvidenceDrawer(true)" in js
+    assert "holdings_json" not in js
+    assert "private holding" not in js.lower()
+
+
 def test_response_feedback_acceptance_states_are_wired():
     html = _text(WEB_ROOT / "index.html")
     js = _text(WEB_ROOT / "app" / "shell.js")

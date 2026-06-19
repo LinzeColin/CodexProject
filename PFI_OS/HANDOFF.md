@@ -28,6 +28,8 @@ Current sequence:
 11. Phase C worker scheduler, retry/backoff executor, and 60-second acceptance:
     second slice complete.
 12. Phase C Web Shell workflow-card rendering and optional progress stream:
+    workflow-card rendering complete; optional progress stream deferred.
+13. Phase D local deployment, backup/restore, and model readiness:
     next.
 
 ## Current Local State
@@ -114,6 +116,9 @@ Current sequence:
   bounded retry/backoff, 60-second cached acceptance metadata, runtime
   evidence recording, and fail-closed exhausted retries without provider,
   broker, LLM, network, order-execution, or holding-mutation dependencies.
+- Phase C Web Shell workflow-card rendering for `workflow_cards`, including
+  Fast Path badge updates, workflow evidence buttons, responsive card grid,
+  private-safe evidence drawer population, and a rendered Chrome smoke check.
 
 ## Start Here
 
@@ -179,17 +184,18 @@ commands after any follow-up edits.
 - Existing legacy holdings sync and ResearchBus workflows are not fully moved
   onto Operational Store repositories.
 - DuckDB/Parquet query surfaces remain in the existing `DataStore`.
-- Full Web Shell visual rendering for Phase B workflow cards is not complete.
-- Phase C SSE/WebSocket progress and richer workflow-card rendering are not
-  complete.
+- Phase C SSE/WebSocket progress is not complete and should only be added if
+  it materially improves local observability.
+- Phase D local deployment, backup/restore, local model readiness, and final
+  Phase 5 packaging are not complete.
 
 ## Next Step
 
-Continue from the Phase C scheduler baseline:
+Continue from the Phase C Web Shell card baseline:
 
-1. Add Web Shell rendering for the Phase C `workflow_cards` beyond the task
-   center.
-2. Add progress streaming only if it materially improves local workflow
+1. Add progress streaming only if it materially improves local workflow
    observability.
+2. Start Phase D local deployment, backup/restore, and DisabledProvider/local
+   model readiness contracts.
 3. Replace remaining legacy Streamlit direct reads one vertical slice at a
    time when those workflows enter scope.

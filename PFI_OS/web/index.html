@@ -114,6 +114,66 @@
           </article>
         </section>
 
+        <section class="workflow-runtime" aria-labelledby="workflow-runtime-title">
+          <div class="section-heading">
+            <div>
+              <p class="panel-kicker">Runtime</p>
+              <h2 id="workflow-runtime-title">Workflow cards</h2>
+            </div>
+            <span class="runtime-target" data-runtime-target>Fast Path Review · target 60s</span>
+          </div>
+          <div class="workflow-grid" data-workflow-cards aria-live="polite">
+            <article class="workflow-card" data-workflow-card="strategy">
+              <div class="workflow-card-head">
+                <strong>Strategy Lab</strong>
+                <span class="status-pill status-review">Review</span>
+              </div>
+              <dl class="workflow-meta">
+                <div><dt>Evidence</dt><dd>replay_backtest_result</dd></div>
+                <div><dt>Freshness</dt><dd>Missing</dd></div>
+                <div><dt>Tasks</dt><dd>0 open / 0 total</dd></div>
+              </dl>
+              <button type="button" data-workflow-evidence="strategy">Evidence</button>
+            </article>
+            <article class="workflow-card" data-workflow-card="market">
+              <div class="workflow-card-head">
+                <strong>Markets</strong>
+                <span class="status-pill status-review">Review</span>
+              </div>
+              <dl class="workflow-meta">
+                <div><dt>Evidence</dt><dd>market_observation</dd></div>
+                <div><dt>Freshness</dt><dd>Missing</dd></div>
+                <div><dt>Tasks</dt><dd>0 open / 0 total</dd></div>
+              </dl>
+              <button type="button" data-workflow-evidence="market">Evidence</button>
+            </article>
+            <article class="workflow-card" data-workflow-card="research">
+              <div class="workflow-card-head">
+                <strong>Research + Policy</strong>
+                <span class="status-pill status-review">Review</span>
+              </div>
+              <dl class="workflow-meta">
+                <div><dt>Evidence</dt><dd>research_policy_evidence</dd></div>
+                <div><dt>Freshness</dt><dd>Missing</dd></div>
+                <div><dt>Tasks</dt><dd>0 open / 0 total</dd></div>
+              </dl>
+              <button type="button" data-workflow-evidence="research">Evidence</button>
+            </article>
+            <article class="workflow-card" data-workflow-card="portfolio">
+              <div class="workflow-card-head">
+                <strong>Portfolio</strong>
+                <span class="status-pill status-review">Review</span>
+              </div>
+              <dl class="workflow-meta">
+                <div><dt>Evidence</dt><dd>private_portfolio_review</dd></div>
+                <div><dt>Freshness</dt><dd>Missing</dd></div>
+                <div><dt>Tasks</dt><dd>0 open / 0 total</dd></div>
+              </dl>
+              <button type="button" data-workflow-evidence="portfolio">Evidence</button>
+            </article>
+          </div>
+        </section>
+
         <section class="content-grid">
           <article class="panel main-panel" aria-labelledby="main-panel-title">
             <div class="panel-toolbar">
@@ -261,6 +321,7 @@
             "target_seconds": 60,
             "estimated_seconds": 0
           },
+          "workflow_cards": [],
           "task_center_rows": []
         }
       }

@@ -2,7 +2,7 @@
 
 Schema: `PFIOSPhaseCWorkflowRuntimeContractV1`
 
-Status: first two Phase C workflow runtime slices complete.
+Status: first three Phase C workflow runtime slices complete.
 
 As of: 2026-06-20 Australia/Sydney
 
@@ -46,11 +46,23 @@ SSE/WebSocket progress, and deployment readiness are implemented.
   required.
 - Confirms the scheduler has no provider fetch, broker, LLM, network,
   live-trading, order-execution, or holdings-mutation dependency.
+- Adds Web Shell workflow-card rendering for `workflow_runtime.workflow_cards`.
+- Renders Fast Path target/status metadata, per-workflow status, evidence id,
+  freshness, task counts, source type, and private-safe evidence drawer
+  payloads.
+- Keeps the default error banner hidden with an explicit `[hidden]` visual
+  contract so loading/error states do not display before user action.
+- Verifies the static Web Shell in real headless Google Chrome with injected
+  Phase C runtime payload: four cards render, Fast Path badge updates,
+  Portfolio evidence opens the drawer, and console errors remain empty.
 
 ## Contract Tests
 
 - `tests/contract/test_phase_c_workflow_runtime_read_model.py`
 - `tests/contract/test_phase_c_workflow_runtime_scheduler.py`
+- `tests/contract/test_pfi_web_shell_contract.py`
+- `tests/e2e/test_pfi_web_shell_static_flow.py`
+- `tests/visual/test_pfi_web_shell_visual_baseline.py`
 
 The tests verify:
 
@@ -69,6 +81,9 @@ The tests verify:
 8. Scheduler contract fields, local-only dependency boundary, idempotent
    scheduling, 60-second cache-refresh acceptance, runtime evidence writes,
    retry scheduling, and fail-closed exhausted retries.
+9. Web Shell workflow-card DOM anchors, JS rendering path, responsive visual
+   grid, hidden loading/error states, private-safe evidence drawer updates,
+   and Fast Path badge updates.
 
 ## Out Of Scope
 
@@ -80,9 +95,7 @@ The tests verify:
 
 ## Next Iterations
 
-1. Add Web Shell read-model rendering for workflow cards beyond the task
-   center.
-2. Add SSE/WebSocket-style progress only if it materially improves local
+1. Add SSE/WebSocket-style progress only if it materially improves local
    workflow observability.
-3. Continue toward Phase D deployment, backup/restore, local model readiness,
+2. Continue toward Phase D deployment, backup/restore, local model readiness,
    and final Phase 5 acceptance package.

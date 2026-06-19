@@ -62,6 +62,23 @@ def test_visual_state_styles_cover_loading_error_drawer_and_compact_table():
     assert ".evidence-drawer" in css
     assert ".compact-table" in css
     assert ".status-pill" in css
+    assert "[hidden]" in css
+    assert "display: none !important;" in css
     assert "data-skeleton" in html
     assert "data-error-banner" in html
     assert "data-toast" in html
+
+
+def test_visual_workflow_cards_have_stable_responsive_grid():
+    html = _text(WEB_ROOT / "index.html")
+    css = _text(WEB_ROOT / "styles" / "tokens.css")
+
+    assert "workflow-runtime" in html
+    assert "workflow-grid" in html
+    assert "workflow-card" in html
+    assert ".workflow-grid" in css
+    assert "grid-template-columns: repeat(4, minmax(0, 1fr));" in css
+    assert "grid-template-columns: repeat(2, minmax(0, 1fr));" in css
+    assert "grid-template-columns: 1fr;" in css
+    assert "min-height: 184px;" in css
+    assert ".workflow-meta dd" in css

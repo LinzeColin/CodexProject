@@ -160,6 +160,8 @@ function applyEvidenceDrawer(drawer) {
 
 function applyWorkflowRuntime(runtime) {
   if (!runtime || runtime.schema !== "PFIOSPhaseCWorkflowRuntimeReadModelV1") return;
+  applyWorkflowCards(runtime.workflow_cards || []);
+  applyFastPathBadge(runtime.fast_path || {});
   const rows = runtime.task_center_rows || [];
   const list = document.querySelector(".task-list");
   if (list && rows.length > 0) {
@@ -178,8 +180,91 @@ function applyWorkflowRuntime(runtime) {
   }
   const jobLabel = document.querySelector("#background-job-label");
   if (jobLabel && runtime.fast_path) {
-    jobLabel.textContent = `Fast Path ${runtime.fast_path.status || "Review"} · target ${runtime.fast_path.target_seconds || 60}s · estimated ${runtime.fast_path.estimated_seconds || 0}s`;
+    jobLabel.textContent = fastPathLabel(runtime.fast_path);
   }
+}
+
+function applyFastPathBadge(fastPath) {
+  const badge = document.querySelector("[data-runtime-target]");
+  if (!badge) return;
+  badge.textContent = fastPathLabel(fastPath);
+}
+
+function fastPathLabel(fastPath) {
+  return [
+    `Fast Path ${fastPath.status || "Review"}`,
+    `target ${fastPath.target_seconds || 60}s`,
+    `estimated ${fastPath.estimated_seconds || 0}s`,
+  ].join(" · ");
+}
+
+function applyWorkflowCards(cards) {
+  const grid = document.querySelector("[data-workflow-cards]");
+  if (!grid || cards.length === 0) return;
+  grid.replaceChildren();
+  cards.slice(0, 6).forEach((card) => {
+    const item = document.createElement("article");
+    item.className = "workflow-card";
+    item.dataset.workflowCard = card.workspace || "";
+
+    const head = document.createElement("div");
+    head.className = "workflow-card-head";
+    const title = document.createElement("strong");
+    title.textContent = card.title || card.workspace || "Workflow";
+    const status = document.createElement("span");
+    status.className = `status-pill ${statusClass(card.status)}`;
+    status.textContent = card.status || "Review";
+    head.appendChild(title);
+    head.appendChild(status);
+
+    const meta = document.createElement("dl");
+    meta.className = "workflow-meta";
+    [
+      ["Evidence", card.evidence_id || card.evidence_class || ""],
+      ["Freshness", workflowFreshnessLabel(card.freshness)],
+      ["Tasks", `${card.open_task_count || 0} open / ${card.task_count || 0} total`],
+      ["Source", card.source_type || ""],
+    ].forEach(([label, value]) => {
+      const row = document.createElement("div");
+      const dt = document.createElement("dt");
+      const dd = document.createElement("dd");
+      dt.textContent = label;
+      dd.textContent = value || "Missing";
+      row.appendChild(dt);
+      row.appendChild(dd);
+      meta.appendChild(row);
+    });
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.workflowEvidence = card.workspace || "";
+    button.textContent = "Evidence";
+    button.addEventListener("click", () => showWorkflowEvidence(card));
+
+    item.appendChild(head);
+    item.appendChild(meta);
+    item.appendChild(button);
+    grid.appendChild(item);
+  });
+}
+
+function workflowFreshnessLabel(freshness) {
+  if (!freshness) return "Missing";
+  const age = freshness.age_hours === null || freshness.age_hours === undefined ? "" : ` · ${freshness.age_hours}h`;
+  return `${freshness.status || "Review"}${age}`;
+}
+
+function showWorkflowEvidence(card) {
+  applyEvidenceDrawer({
+    title: `${card.title || card.workspace || "Workflow"} evidence`,
+    Evidence: card.evidence_id || card.evidence_class || "Missing",
+    Source: card.source_id || card.source_type || "Missing",
+    Model: "DisabledProvider",
+    Parameters: `workspace=${card.workspace || "unknown"} · data_domain=${card.data_domain || "unknown"}`,
+    "Data lineage": card.summary || "Operational Store workflow card.",
+    "Raw document": card.source_id || "No source record.",
+  });
+  setEvidenceDrawer(true);
 }
 
 function setPressedFeedback(element) {

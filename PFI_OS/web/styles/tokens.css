@@ -81,6 +81,10 @@ button:active {
   transform: translateY(1px);
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .sr-only,
 .skip-link {
   position: absolute;
@@ -323,6 +327,91 @@ button:active {
 
 .metric-tile small {
   color: var(--pfi-muted);
+}
+
+.workflow-runtime {
+  margin-bottom: 12px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 10px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.runtime-target {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+  padding: 0 10px;
+  background: var(--pfi-surface);
+  color: var(--pfi-muted);
+  font-weight: 720;
+}
+
+.workflow-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.workflow-card {
+  min-height: 184px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+  background: var(--pfi-surface);
+  box-shadow: var(--pfi-shadow);
+  padding: 12px;
+}
+
+.workflow-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: start;
+}
+
+.workflow-card-head strong {
+  line-height: 1.2;
+}
+
+.workflow-meta {
+  margin: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.workflow-meta div {
+  min-width: 0;
+}
+
+.workflow-meta dt {
+  color: var(--pfi-blue);
+  font-size: 0.72rem;
+  font-weight: 780;
+  text-transform: uppercase;
+}
+
+.workflow-meta dd {
+  margin: 2px 0 0;
+  color: var(--pfi-muted);
+  overflow-wrap: anywhere;
+}
+
+.workflow-card button {
+  width: 100%;
 }
 
 .content-grid {
@@ -568,6 +657,10 @@ button:active {
   .evidence-drawer.is-open {
     transform: translateX(0);
   }
+
+  .workflow-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 780px) {
@@ -598,5 +691,14 @@ button:active {
 
   .metric-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .section-heading {
+    align-items: start;
+    display: grid;
+  }
+
+  .workflow-grid {
+    grid-template-columns: 1fr;
   }
 }
