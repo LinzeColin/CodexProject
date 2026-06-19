@@ -1116,7 +1116,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G4 T404 Breadcrumb and browser history synchronization
 
-Status: LOCAL E2E PASS; remote CI pending
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1128,6 +1128,12 @@ Verification evidence:
 
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts`: PASS, 21 tests.
+- Local `make verify`: PASS.
+- Local `git diff --check`: PASS.
+- GitHub Actions run `27839493483`: PASS.
+- GitHub Actions job `82395103164`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -1137,5 +1143,4 @@ Acceptance status:
 
 Residual risks:
 
-- Remote CI must still prove the browser-history E2E under the GitHub runner.
 - T408 still owns the critical three-reroot E2E acceptance A048.
