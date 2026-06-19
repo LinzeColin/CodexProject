@@ -2,9 +2,8 @@
 
 Active Codex-related project hub for LinzeColin.
 
-This repository is a parent index that keeps active project repositories together
-as git submodules. The original repositories remain independent and keep their
-own history, issues, settings, and release flow.
+This repository keeps active project code together as real directories.
+It is no longer a submodule-only index.
 
 ## Projects
 
@@ -21,27 +20,19 @@ own history, issues, settings, and release flow.
 ## Clone
 
 ```bash
-git clone --recurse-submodules git@github.com:LinzeColin/CodexProject.git
+git clone git@github.com:LinzeColin/CodexProject.git
 ```
 
-If already cloned:
+## Update
 
 ```bash
-git submodule update --init --recursive
-```
-
-## Update submodule pointers
-
-```bash
-git submodule update --remote --merge
 git status
-git add .gitmodules Alpha EVA_OS OpenAIDatabase FIFA Serenity-Alipay OpMe_System whkmSalary
-git commit -m "Update project submodule pointers"
+git add .
+git commit -m "Update CodexProject"
 git push
 ```
 
 ## Rule
 
-Do not move project source code into this parent repository unless a future
-monorepo migration is explicitly approved. This parent repository should remain
-a clean navigation and orchestration layer.
+Treat this repository as the source-level project hub for active Codex projects.
+Each project directory should remain internally coherent and runnable.
