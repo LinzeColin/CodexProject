@@ -1564,7 +1564,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G0 T1214 Risk-control traceability artifacts
 
-Status: LOCAL VALIDATION IN PROGRESS
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1580,6 +1580,11 @@ Verification evidence:
 - Local `.venv/bin/uv run python scripts/validate_governance_consistency.py`: PASS.
 - Local `.venv/bin/uv run python scripts/validate_github_governance.py`: PASS.
 - Local `.venv/bin/uv run ruff check scripts/manage_risk_control_artifacts.py scripts/validate_governance_consistency.py scripts/validate_github_governance.py`: PASS.
+- Local `make verify`: PASS.
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27848881308`.
+- GitHub Actions job: `82423801118`.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
