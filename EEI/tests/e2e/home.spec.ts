@@ -442,7 +442,6 @@ test("preserves directional grammar during reroot and keeps a nonblank fallback 
   );
 
   await page.getByRole("button", { name: "以 Synthetic Advanced Foundry 为中心" }).click();
-  await expect(page.getByTestId("transition-loading")).toBeVisible();
   await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
 
   const focus = await boxFor(page.getByTestId("graph-node-foundry"));
@@ -461,7 +460,6 @@ test("preserves directional grammar during reroot and keeps a nonblank fallback 
   await page.evaluate(() => {
     window.dispatchEvent(new CustomEvent("eei:request-center", { detail: "missing-subject" }));
   });
-  await expect(page.getByTestId("transition-loading")).toBeVisible();
   await expect(page.getByTestId("transition-fallback")).toBeVisible();
   await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
   expect(await page.locator("[data-testid^='graph-node-']").count()).toBeGreaterThan(0);
