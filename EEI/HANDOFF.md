@@ -41,6 +41,7 @@ Updated: 2026-06-19 Australia/Sydney
 - Added persistent analysis lenses, semantic zoom L0-L3, grouped synthetic system-maker list expansion, bounded first-screen graph budget checks, directional grammar assertions, and nonblank reroot fallback behavior.
 - Completed T1105, T1106, and T1109 with A141-A145 and A151-A152 by GitHub Actions run `27826081868`.
 - Added the T1203 CSV-backed taxonomy and object-scope API with catalog inventory, catalog detail, CSV export, object-scope coverage counts, and A169 local verification.
+- Completed T1203 and A169 by GitHub Actions run `27826870509`; G2 task list is complete, but G2 remains `IN PROGRESS` pending acceptance audit for unresolved G2-linked IDs.
 
 ## Verification Evidence
 
@@ -72,6 +73,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `make verify` passed after the T1203 catalog API change.
 - 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip.
 - 2026-06-19 update: local `make verify-g2-db` still fails closed because Docker is not installed.
+- 2026-06-19 update: GitHub Actions run `27826870509` passed; job `82353421402` proved T1203 through static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 
 Remote verification:
 
@@ -90,6 +92,8 @@ Remote verification:
 - GitHub Actions job `82347837228`: PASS.
 - GitHub Actions run `27826081868`: PASS.
 - GitHub Actions job `82350766117`: PASS.
+- GitHub Actions run `27826870509`: PASS.
+- GitHub Actions job `82353421402`: PASS.
 
 ## Not Completed
 
@@ -98,14 +102,15 @@ Remote verification:
 - T205 is DONE, including backend fixture load, visible fixture marking, and recursive NVIDIA scenario E2E.
 - T1103/T1104/T1107/T1108 visual company workspace tasks are DONE and remote CI passed.
 - T1105/T1106/T1109 visual company workspace tasks are DONE and remote CI passed.
-- T1203 taxonomy/object-scope API is locally implemented; remote CI is pending.
+- T1203 taxonomy/object-scope API is DONE and remote CI passed.
+- G2 task list is complete, but release gate status remains `IN PROGRESS` because G2-linked acceptance IDs still need a separate audit before the gate is closed.
 - A170 / T1204 Objects and Scope navigation screen is not started.
 - MVP is not complete.
 
 ## Recommended Next Step
 
-Complete the bounded T1203 verification loop, then continue G4 with the visible Objects and Scope screen:
+Close the G2 acceptance audit, then continue G4 with the visible Objects and Scope screen:
 
-1. Push T1203 to `LinzeColin/CodexProject/EEI` and wait for GitHub Actions.
-2. If remote CI passes, record run/job evidence and keep G2 status conservative until gate audit.
+1. Audit unresolved G2-linked Acceptance IDs against existing migration, catalog, integration, and visual evidence.
+2. Update only evidence-backed acceptance statuses, then decide whether G2 can become `PASS`.
 3. Start T1204 for A170 visible navigation screen and visual regression.

@@ -515,6 +515,10 @@ Verification evidence:
 - Local `make verify`: PASS.
 - Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
 - Local `make verify-g2-db`: FAIL CLOSED because Docker is not installed on this host.
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27826870509`.
+- GitHub Actions job: `82353421402`.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -523,6 +527,6 @@ Acceptance status:
 
 Residual risks:
 
-- Remote GitHub Actions still needs to prove the T1203 changes against PostgreSQL-backed CI.
+- The G2 task list is complete, but `data/release_gate_catalog.csv` remains `IN PROGRESS` until a separate acceptance audit resolves G2-linked IDs that are still `NOT STARTED`.
 - T1204 / A170 remains open.
-- G2 remains open until remote CI and any remaining G2 gate checks are complete.
+- MVP is not complete.
