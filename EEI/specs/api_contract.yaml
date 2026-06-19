@@ -630,6 +630,25 @@ paths:
       responses:
         '201':
           description: Created
+  /v1/watchlists/{watchlistId}:
+    get:
+      operationId: getWatchlist
+      parameters:
+      - name: watchlistId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Watchlist with persisted items, saved state and unread count
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Watchlist'
+        '404':
+          description: Watchlist not found
   /v1/watchlists/{watchlistId}/items:
     post:
       operationId: addWatchlistItem

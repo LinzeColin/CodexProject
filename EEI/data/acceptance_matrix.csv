@@ -33,8 +33,8 @@ A031,P0,industry,Industry list is human-readable and versioned,API/UI test,DONE
 A032,P0,industry,"Industry page shows chain stages, subindustries, entities, bottlenecks, capital, policy and changes",E2E,NOT STARTED
 A033,P0,industry,Entities may have primary and secondary industries,API/data test,DONE
 A034,P0,industry,Cross-industry navigation is allowed and visibly indicated,E2E,NOT STARTED
-A035,P0,watchlist,"Local-user Watchlist can create, add, remove, restore and persist items",Integration/E2E,NOT STARTED
-A036,P0,watchlist,"Watchlist supports entity, industry, theme and facility items",API test,NOT STARTED
+A035,P0,watchlist,"Local-user Watchlist can create, add, remove, restore and persist items",Integration/E2E,DONE
+A036,P0,watchlist,"Watchlist supports entity, industry, theme and facility items",API test,DONE
 A037,P0,watchlist,Watchlist shows unread changes and saved view/profile state,E2E,NOT STARTED
 A038,P0,search,Search distinguishes aliases and entity types,Search integration,DONE
 A039,P0,home,New user reaches a company focus page within three primary actions,E2E,NOT STARTED

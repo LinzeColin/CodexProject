@@ -20,6 +20,8 @@ pytestmark = pytest.mark.skipif(
 )
 
 NVIDIA_ID = "00000000-0000-4000-8000-000000000006"
+THEME_AI_INFRA_ID = "00000000-0000-4000-8000-000000000020"
+FIXTURE_DATACENTER_ID = "00000000-0000-4000-8000-000000000024"
 COREWEAVE_NVIDIA_RELATIONSHIP_ID = "10000000-0000-4000-8000-000000000012"
 SUPERSESSION_RELATIONSHIP_ID = "20000000-0000-4000-8000-000000000001"
 
@@ -206,9 +208,86 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert calibration_list.status_code == 200
     assert calibration_list.json()[0]["status"] == "scheduled"
 
+    watchlist_detail = client.get(f"/v1/watchlists/{watchlist_id}")
+    assert watchlist_detail.status_code == 200
+    assert watchlist_detail.json()["items"][0]["saved_state"] == {"lens": "supply_chain"}
+
+    remove_response = client.delete(
+        f"/v1/watchlists/{watchlist_id}/items",
+        params={"object_type": "entity", "object_id": NVIDIA_ID},
+    )
+    assert remove_response.status_code == 204
+    removed_detail = client.get(f"/v1/watchlists/{watchlist_id}").json()
+    assert all(item["object_id"] != NVIDIA_ID for item in removed_detail["items"])
+
+    restored_entity_response = client.post(
+        f"/v1/watchlists/{watchlist_id}/items",
+        json={
+            "object_type": "entity",
+            "object_id": NVIDIA_ID,
+            "labels": ["restored", "capital"],
+            "note": "restored item",
+            "saved_state": {"lens": "capital_control", "profile": "balanced-v2"},
+        },
+    )
+    assert restored_entity_response.status_code == 201
+    industry_item_response = client.post(
+        f"/v1/watchlists/{watchlist_id}/items",
+        json={
+            "object_type": "industry",
+            "object_id": semiconductor["id"],
+            "labels": ["industry"],
+            "saved_state": {"view": "landscape"},
+        },
+    )
+    assert industry_item_response.status_code == 201
+    theme_item_response = client.post(
+        f"/v1/watchlists/{watchlist_id}/items",
+        json={
+            "object_type": "theme",
+            "object_id": THEME_AI_INFRA_ID,
+            "labels": ["theme"],
+            "saved_state": {"lens": "strategy"},
+        },
+    )
+    assert theme_item_response.status_code == 201
+    facility_item_response = client.post(
+        f"/v1/watchlists/{watchlist_id}/items",
+        json={
+            "object_type": "facility",
+            "object_id": FIXTURE_DATACENTER_ID,
+            "labels": ["facility"],
+            "saved_state": {"lens": "supply_chain"},
+        },
+    )
+    assert facility_item_response.status_code == 201
+    invalid_facility_response = client.post(
+        f"/v1/watchlists/{watchlist_id}/items",
+        json={
+            "object_type": "facility",
+            "object_id": NVIDIA_ID,
+            "saved_state": {},
+        },
+    )
+    assert invalid_facility_response.status_code == 404
+    restored_detail = client.get(f"/v1/watchlists/{watchlist_id}").json()
+    item_types = {item["object_type"] for item in restored_detail["items"]}
+    assert {"entity", "industry", "theme", "facility"} <= item_types
+    restored_entity = next(
+        item
+        for item in restored_detail["items"]
+        if item["object_type"] == "entity" and item["object_id"] == NVIDIA_ID
+    )
+    assert restored_entity["saved_state"]["lens"] == "capital_control"
+
     audit_logs = client.get("/v1/audit-logs").json()
     action_types = {row["action_type"] for row in audit_logs}
-    assert {"create_watchlist", "add_watchlist_item", "queue_calibration"} <= action_types
+    assert {
+        "create_watchlist",
+        "add_watchlist_item",
+        "remove_watchlist_item",
+        "queue_calibration",
+    } <= action_types
 
     repository = DomainRepository(database_url())
     superseded = repository.record_relationship_supersession(

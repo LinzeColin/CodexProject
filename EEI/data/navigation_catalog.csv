@@ -7,7 +7,7 @@ FUN-EXP-05,探索,50,所有权与控制,Ownership and Control,P0,DONE,PARTIAL,NO
 FUN-EXP-06,探索,60,政策与政府,Policy and Government,P0,DONE,PARTIAL,NOT_STARTED
 FUN-EXP-07,探索,70,战略信号,Strategic Signals,P0,DONE,PARTIAL,NOT_STARTED
 FUN-EXP-08,探索,80,行业地图,Industry Landscape,P1,DONE,PARTIAL,PARTIAL
-FUN-RM-01,研究管理,90,Watchlist,Watchlist,P0,DONE,DONE,NOT_STARTED
+FUN-RM-01,研究管理,90,Watchlist,Watchlist,P0,DONE,DONE,PARTIAL
 FUN-RM-02,研究管理,100,重要变化,Material Changes,P0,DONE,PARTIAL,NOT_STARTED
 FUN-RM-03,研究管理,110,已保存视图,Saved Views,P0,DONE,DONE,NOT_STARTED
 FUN-DM-01,数据与模型,120,数据库与来源,Data Assets and Provenance,P0,DONE,DONE,NOT_STARTED

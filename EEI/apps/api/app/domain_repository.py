@@ -952,14 +952,17 @@ class DomainRepository:
         return self.get_watchlist(row["id"])
 
     def get_watchlist(self, watchlist_id: UUID) -> dict[str, Any]:
-        return next(
+        watchlist = next(
             (
                 watchlist
                 for watchlist in self.list_watchlists()
                 if watchlist["id"] == str(watchlist_id)
             ),
-            {},
+            None,
         )
+        if watchlist is None:
+            raise NotFoundError(f"Watchlist not found: {watchlist_id}")
+        return watchlist
 
     def add_watchlist_item(
         self,
@@ -973,6 +976,7 @@ class DomainRepository:
     ) -> dict[str, Any]:
         with self.connect() as connection:
             self.ensure_watchlist_exists(connection, watchlist_id)
+            self.ensure_watchlist_object_exists(connection, object_type, object_id)
             old_row = connection.execute(
                 """
                 SELECT object_type, object_id, labels, note, saved_state, removed_at
@@ -1013,6 +1017,32 @@ class DomainRepository:
                 reason="API add watchlist item",
             )
         return _jsonable(row)
+
+    def ensure_watchlist_object_exists(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        object_type: str,
+        object_id: UUID,
+    ) -> None:
+        if object_type == "industry":
+            row = connection.execute(
+                "SELECT id FROM industries WHERE id = %s AND active = true",
+                (object_id,),
+            ).fetchone()
+        elif object_type == "entity":
+            row = connection.execute(
+                "SELECT id FROM entities WHERE id = %s",
+                (object_id,),
+            ).fetchone()
+        elif object_type in {"theme", "facility"}:
+            row = connection.execute(
+                "SELECT id FROM entities WHERE id = %s AND entity_type = %s",
+                (object_id, object_type),
+            ).fetchone()
+        else:
+            raise RepositoryError(f"Unsupported watchlist object type: {object_type}")
+        if row is None:
+            raise NotFoundError(f"Watchlist object not found: {object_type}:{object_id}")
 
     def remove_watchlist_item(
         self,

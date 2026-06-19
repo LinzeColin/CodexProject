@@ -220,6 +220,14 @@ def create_watchlist(
         raise translate_repository_error(exc) from exc
 
 
+@router.get("/watchlists/{watchlistId}")
+def get_watchlist(watchlistId: UUID, repository: RepositoryDependency) -> dict[str, Any]:
+    try:
+        return repository.get_watchlist(watchlistId)
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
 @router.post("/watchlists/{watchlistId}/items", status_code=status.HTTP_201_CREATED)
 def add_watchlist_item(
     watchlistId: UUID,
