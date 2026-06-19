@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-06-13T06:50:52+08:00",
+  "audit_run_id": "source_evidence_20260613_065052_0800",
+  "status": "pass",
+  "row_count": 17,
+  "valid_count": 17,
+  "invalid_count": 0,
+  "local_hashed_count": 3,
+  "url_count": 14,
+  "db_rows_written": 17,
+  "status_counts": {
+    "valid_url": 14,
+    "hashed_local_file": 3
+  },
+  "area_counts": {
+    "fund_rules": 8,
+    "candidate_universe": 7,
+    "benchmark_history": 2
+  },
+  "pack_dir": null,
+  "files": {
+    "markdown": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/source_evidence_audit_latest.md",
+    "csv": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/source_evidence_audit_latest.csv",
+    "json": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/source_evidence_audit_latest.json"
+  }
+}

@@ -1,0 +1,1 @@
+display notification "# [Serenity AUTO][INFO] Discipline Review | moomoo_collect_20260612T130021Z_3e03c0c0  - 运行时间：2026-06-12T21:00:21+08:00 / 2026-06-12T23:00:21+10:00 - 触发类型：Info - Top5：none - 对比摘要：No comparison base yet - 偏离最大标的：none - 触发原" with title "[Serenity AUTO][INFO] Discipline Review | moomoo_collect_20260612T130021Z_3e03c0c0"

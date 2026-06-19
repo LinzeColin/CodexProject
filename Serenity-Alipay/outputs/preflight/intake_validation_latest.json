@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-06-13T08:03:29+08:00",
+  "production_ready": true,
+  "status": "pass",
+  "block_count": 0,
+  "warn_count": 6,
+  "sections": {
+    "alipay_positions": {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/imports/alipay_positions.csv",
+      "rows": 4,
+      "as_of_values": [
+        "2026-06-12"
+      ],
+      "status": "optional_checked",
+      "production_dependency": false
+    },
+    "fund_rules": {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/manual/fund_rules.csv",
+      "rows": 8,
+      "status": "checked"
+    },
+    "candidate_universe": {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/manual/candidates.csv",
+      "rows": 8,
+      "status": "checked"
+    },
+    "benchmark_history": {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/manual/benchmark_price_history.csv",
+      "rows": 143,
+      "status": "checked"
+    }
+  },
+  "gaps": [
+    {
+      "area": "alipay_positions",
+      "severity": "warn",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/imports/alipay_positions.csv",
+      "row_id": "FUND001",
+      "field": "source_note",
+      "message": "optional source_note contains sample/demo marker",
+      "action": "Replace only if you want optional real-holding overlay"
+    },
+    {
+      "area": "alipay_positions",
+      "severity": "warn",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/imports/alipay_positions.csv",
+      "row_id": "FUND003",
+      "field": "source_note",
+      "message": "optional source_note contains sample/demo marker",
+      "action": "Replace only if you want optional real-holding overlay"
+    },
+    {
+      "area": "alipay_positions",
+      "severity": "warn",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/imports/alipay_positions.csv",
+      "row_id": "FUND004",
+      "field": "source_note",
+      "message": "optional source_note contains sample/demo marker",
+      "action": "Replace only if you want optional real-holding overlay"
+    },
+    {
+      "area": "alipay_positions",
+      "severity": "warn",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/imports/alipay_positions.csv",
+      "row_id": "FUND005",
+      "field": "source_note",
+      "message": "optional source_note contains sample/demo marker",
+      "action": "Replace only if you want optional real-holding overlay"
+    },
+    {
+      "area": "benchmark_history",
+      "severity": "warn",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/manual/benchmark_price_history.csv",
+      "row_id": "000001.SH",
+      "field": "source_type",
+      "message": "Shanghai Composite uses public aggregation fallback",
+      "action": "Prefer moomoo or official source when available"
+    },
+    {
+      "area": "benchmark_history",
+      "severity": "warn",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/manual/benchmark_price_history.csv",
+      "row_id": "SPX",
+      "field": "source_type",
+      "message": "S&P 500 uses public aggregation fallback",
+      "action": "Prefer moomoo or official source when available"
+    }
+  ],
+  "candidate_files_found": []
+}

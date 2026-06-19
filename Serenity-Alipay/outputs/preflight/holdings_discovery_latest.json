@@ -1,0 +1,230 @@
+{
+  "generated_at": "2026-06-13T05:08:50+08:00",
+  "production_ready_candidate_found": false,
+  "files": [
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/templates/alipay_positions_template.csv",
+      "kind": "csv_candidate",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/imports/alipay_positions.csv",
+      "kind": "csv_candidate",
+      "rows": 4,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/01_alipay_positions_to_fill.csv",
+      "kind": "csv_candidate",
+      "rows": 4,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/06_alipay_positions_review_prefill.csv",
+      "kind": "csv_candidate",
+      "rows": 28,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/alipay_holdings_review_matrix.csv",
+      "kind": "csv_candidate",
+      "rows": 28,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/alipay_positions_candidate_from_quantlab.csv",
+      "kind": "csv_candidate",
+      "rows": 28,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/alipay_fund_execution_window_evidence.json",
+      "kind": "candidate_file",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "non-csv or unsupported candidate"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/holdings_discovery_latest.json",
+      "kind": "candidate_file",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "non-csv or unsupported candidate"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/holdings/HoldingsImportHistory.json",
+      "kind": "candidate_file",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "non-csv or unsupported candidate"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/holdings/HoldingsBook.json",
+      "kind": "candidate_file",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "non-csv or unsupported candidate"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/holdings/HoldingsBook.csv",
+      "kind": "quantlab_holdings_book",
+      "rows": 28,
+      "production_eligible": false,
+      "reason": "manual_review_required: newest=2026-06-05, stale_days=8, quality=['carried_forward_unverified', 'video_visible', 'video_visible_lowres']"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance/data/holdings/imports/confirmed_holding_candidates.csv",
+      "kind": "csv_candidate",
+      "rows": 9,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-01/data/sample/alipay_sample.csv",
+      "kind": "csv_candidate",
+      "rows": 12,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-01/data/raw/支付宝交易明细(20250604-20260603).csv",
+      "kind": "csv_candidate",
+      "rows": 4148,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-codex/outputs/AI-Research-System/data/sample/holdings.csv",
+      "kind": "csv_candidate",
+      "rows": 15,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-codex/outputs/AI-Research-System/data/report_artifacts/research_bus_bridge/HoldingSymbolMappingsFromBus.json",
+      "kind": "candidate_file",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "non-csv or unsupported candidate"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-codex/outputs/AI-Research-System/data/report_artifacts/research_bus_bridge/HoldingUpdateCandidatesFromBus.json",
+      "kind": "candidate_file",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "non-csv or unsupported candidate"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-codex/outputs/AI-Research-System/data/report_artifacts/research_bus_bridge/HoldingsMasterFromBus.json",
+      "kind": "candidate_file",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "non-csv or unsupported candidate"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-20250604/data/finance_ledger/sources/支付宝交易明细_4bee7bfd0421/alipay_20220605-20230605_24779d7bb0f9.csv",
+      "kind": "csv_candidate",
+      "rows": 1592,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-20250604/data/finance_ledger/sources/支付宝交易明细_4bee7bfd0421/alipay_20250604-20260603_eaff20de65cc.csv",
+      "kind": "csv_candidate",
+      "rows": 4148,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-20250604/data/finance_ledger/sources/支付宝交易明细_4bee7bfd0421/alipay_20240605-20250605_c592e6a224da.csv",
+      "kind": "csv_candidate",
+      "rows": 1607,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-20250604/data/finance_ledger/sources/支付宝交易明细_4bee7bfd0421/alipay_20230605-20240605_c16e278e987c.csv",
+      "kind": "csv_candidate",
+      "rows": 1552,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-02/curl-fssl-https-chatgpt-com-codex/outputs/codex_user_work_run_records_20260605_084844/quantlab_updates/holdings/HoldingsImportHistory.json",
+      "kind": "candidate_file",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "non-csv or unsupported candidate"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-02/curl-fssl-https-chatgpt-com-codex/outputs/codex_user_work_run_records_20260605_084844/quantlab_updates/holdings/HoldingsBook.json",
+      "kind": "candidate_file",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "non-csv or unsupported candidate"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-02/curl-fssl-https-chatgpt-com-codex/outputs/codex_user_work_run_records_20260605_084844/quantlab_updates/holdings/HoldingsBook.csv",
+      "kind": "csv_candidate",
+      "rows": 28,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-02/curl-fssl-https-chatgpt-com-codex/outputs/codex_user_work_run_records_20260605_084844/quantlab_updates/holdings/imports/confirmed_holding_candidates.csv",
+      "kind": "csv_candidate",
+      "rows": 7,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/config/alipay_fund_rule_template.json",
+      "kind": "candidate_file",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "non-csv or unsupported candidate"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/data_cache_datasource_smoke/ALIPAY_FUND/ALIPAY_SMOKE_FUND.metadata.json",
+      "kind": "candidate_file",
+      "rows": 0,
+      "production_eligible": false,
+      "reason": "non-csv or unsupported candidate"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/data_cache_datasource_smoke/ALIPAY_FUND/ALIPAY_SMOKE_FUND.csv",
+      "kind": "csv_candidate",
+      "rows": 40,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    },
+    {
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/runs/datasource_smoke/alipay_nav.csv",
+      "kind": "csv_candidate",
+      "rows": 40,
+      "production_eligible": false,
+      "reason": "schema does not match holdings intake"
+    }
+  ],
+  "converted_candidate_csv": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/alipay_positions_candidate_from_quantlab.csv",
+  "review_matrix_csv": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/alipay_holdings_review_matrix.csv",
+  "review_summary": {
+    "rows": 28,
+    "quality_counts": {
+      "video_visible": 23,
+      "video_visible_lowres": 1,
+      "carried_forward_unverified": 4
+    },
+    "special_fund_rule_check_required_count": 12,
+    "stale_or_missing_date_count": 28,
+    "row_production_candidate_count": 0,
+    "review_matrix_csv": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/alipay_holdings_review_matrix.csv"
+  }
+}

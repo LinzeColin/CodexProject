@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Serenity 每日分析正式报告 sda_20260612T122902Z_r7_e791c6e9</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; color: #111827; background: #f7f7f4; }
+    main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 56px; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #ffffff; border: 1px solid #d8d8d0; border-radius: 8px; padding: 20px; line-height: 1.45; }
+  </style>
+</head>
+<body>
+  <main>
+    <pre># Serenity 每日分析正式报告：sda_20260612T122902Z_r7_e791c6e9
+
+## 运行状态
+
+- 最新运行时间：20260612 - 14:00 CST
+- 北京时间：20260612 - 14:00 CST
+- 澳洲时间：20260612 - 16:00 AEST
+- 运行状态：降级
+- 数据质量：人工复核
+- MooMoo/OpenD：不可用
+- 交易边界：仅输出研究结论、纪律标签和通知；不自动下单，不提交申购或赎回。
+- 执行锁：ON
+- 当前禁止动作：禁止新增（No-New-Order）
+- 建议金额：0.00
+- 建议份额：0
+- 基准目标：目标与沪指、标普500进行 1个月、3个月、最近10交易日收益对比；不承诺未来一定跑赢。
+- 纪律基准：首个合格运行从 0.00% 参考权重开始；后续运行相对上一轮 Serenity 基准调整，不把真实支付宝仓位当作 baseline。
+
+## Top5 候选池
+
+| 排名 | 代码 | 名称 | 等级 | 得分 | 目标权重 | 基准权重 | 偏离 | 研究动作 | 执行状态 | 建议金额 | 建议份额 | 触发原因 |
+|---:|---|---|---|---:|---:|---:|---:|---|---|---:|---:|---|
+| 1 | FUND001 | AI Infrastructure Growth Fund | 可执行 | 100.00 | 20.32% | 32.00% | -11.68% | 减配/卖出候选 | 禁止新增（No-New-Order） | 0.00 | 0 | 目标权重与基准权重偏离超过阈值 |
+| 2 | FUND003 | US AI Leaders QDII Fund | 可执行 | 100.00 | 20.32% | 28.00% | -7.68% | 减配/卖出候选 | 禁止新增（No-New-Order） | 0.00 | 0 | 目标权重与基准权重偏离超过阈值 |
+| 3 | FUND005 | Biotech Innovation Growth Fund | 可执行 | 100.00 | 20.32% | 18.00% | 2.32% | 维持 | 禁止新增（No-New-Order） | 0.00 | 0 | 评分和证据支持候选 |
+| 4 | FUND002 | China Semiconductor Equipment Fund | 可执行 | 99.91 | 20.30% | 0.00% | 20.30% | 增配/买入候选 | 禁止新增（No-New-Order） | 0.00 | 0 | 目标权重与基准权重偏离超过阈值 |
+| 5 | FUND004 | Robotics Advanced Manufacturing Fund | 观察 | 92.32 | 18.76% | 22.00% | -3.24% | 人工复核 | 禁止新增（No-New-Order） | 0.00 | 0 | 官方级证据不足 |
+
+## 基准收益对比
+
+| 基准 | 1个月 | 3个月 | 最近10交易日 |
+|---|---:|---:|---:|
+| 沪指 | -4.34% | -2.47% | -0.91% |
+| 标普500 | 0.41% | 9.68% | -1.96% |
+
+## 当日与历史对比
+
+| 对比口径 | 对比运行 | 上轮 Top5 | 本轮 Top5 | 变动率 | 新增 | 替换 | 最大 Sigma |
+|---|---|---|---|---:|---:|---:|---:|
+| 当日上一轮 | sda_20260612T122902Z_r6_4cdf476d | FUND001, FUND003, FUND005, FUND002, FUND004 | FUND001, FUND003, FUND005, FUND002, FUND004 | 0.00% | 0 | 0 | 0.00 |
+| 前一交易日 | 无 | 无 | FUND001, FUND003, FUND005, FUND002, FUND004 | 0.00% | 0 | 0 | 0.00 |
+| 前一周 | 无 | 无 | FUND001, FUND003, FUND005, FUND002, FUND004 | 0.00% | 0 | 0 | 0.00 |
+| 前一月 | 无 | 无 | FUND001, FUND003, FUND005, FUND002, FUND004 | 0.00% | 0 | 0 | 0.00 |
+
+## 调仓触发矩阵
+
+- 目标权重与基准权重偏离超过阈值
+- 目标权重与基准权重偏离超过阈值
+- 目标权重与基准权重偏离超过阈值
+- 策略触发条件命中
+- 策略触发条件命中
+
+## 证据与降级说明
+
+- 聚合来源只能补齐视图，不能单独把候选标记为可执行。
+- 官方级来源少于 2 个时，不能进入可执行等级。
+- 申购费、赎回费或赎回状态缺失时，禁止新增订单。
+- MDD &gt;= 40.00% 或回撤修复时间 &gt;= 365 天时，触发硬降级。
+- 支付宝当前持仓只作为可选参考；纪律基准由 Serenity 生成的目标权重驱动。
+- 数据质量不是通过时，执行锁强制 No-New-Order，建议金额 0.00，建议份额 0。
+
+## 通知预览
+
+- 标题：[Serenity自动化][复核] 历史通知归档
+- 通道：生成 Apple Mail 可发送 Markdown 和本地离线报告；真实发送需要非 dry-run 命令与发送开关。
+</pre>
+  </main>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-06-13T04:46:40+08:00",
+  "status": "pass",
+  "workflow_ready": true,
+  "production_send_ready_now": false,
+  "mail_send_enabled_now": false,
+  "recipient_email": "linzezhang35@gmail.com",
+  "mail_smoke_status": "pass",
+  "mail_smoke_json_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/apple_mail_smoke_latest.json",
+  "production_plist_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/com.serenity.daily-analysis.production-mail.plist",
+  "production_plist_generated": true,
+  "production_plist_message": "production-mail plist template generated; not installed",
+  "real_send_smoke_command": "SERENITY_MAIL_SEND_ENABLED=true python -m app.cli mail-smoke --send --confirm-real-send SEND --require-send-ready --json",
+  "install_production_plist_command": "cp outputs/implementation/com.serenity.daily-analysis.production-mail.plist ~/Library/LaunchAgents/com.serenity.daily-analysis.plist && plutil -lint ~/Library/LaunchAgents/com.serenity.daily-analysis.plist && launchctl kickstart -k \"gui/$(id -u)/com.serenity.daily-analysis\"",
+  "rollback_command": "cp outputs/implementation/com.serenity.daily-analysis.plist ~/Library/LaunchAgents/com.serenity.daily-analysis.plist && launchctl kickstart -k \"gui/$(id -u)/com.serenity.daily-analysis\"",
+  "mail_sent": false,
+  "launchd_modified": false,
+  "trades_placed": false,
+  "json_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/mail_unlock_check_latest.json",
+  "markdown_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/mail_unlock_check_latest.md"
+}

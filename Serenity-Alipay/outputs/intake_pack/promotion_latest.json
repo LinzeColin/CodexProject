@@ -1,0 +1,246 @@
+{
+  "generated_at": "2026-06-13T06:47:09+08:00",
+  "pack_dir": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack",
+  "apply_requested": false,
+  "applied": false,
+  "placeholder_blocked": true,
+  "issues": [
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 2 field `source_name` still contains placeholder `REPLACE_ALIPAY_OR_FUND_COMPANY_OFFICIAL_RULE_PAGE`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 2 field `url_or_path` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 3 field `source_name` still contains placeholder `REPLACE_ALIPAY_OR_FUND_COMPANY_OFFICIAL_RULE_PAGE`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 3 field `url_or_path` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 4 field `source_name` still contains placeholder `REPLACE_ALIPAY_OR_FUND_COMPANY_OFFICIAL_RULE_PAGE`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 4 field `url_or_path` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 5 field `source_name` still contains placeholder `REPLACE_ALIPAY_OR_FUND_COMPANY_OFFICIAL_RULE_PAGE`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 5 field `url_or_path` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 6 field `source_name` still contains placeholder `REPLACE_ALIPAY_OR_FUND_COMPANY_OFFICIAL_RULE_PAGE`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 6 field `url_or_path` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 7 field `redemption_status` still contains placeholder `REPLACE_REDEMPTION_STATUS`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 7 field `redemption_fee` still contains placeholder `REPLACE_REDEMPTION_FEE`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 7 field `source_name` still contains placeholder `REPLACE_ALIPAY_OR_FUND_COMPANY_OFFICIAL_RULE_PAGE`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 7 field `url_or_path` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 8 field `source_name` still contains placeholder `REPLACE_ALIPAY_OR_FUND_COMPANY_OFFICIAL_RULE_PAGE`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 8 field `url_or_path` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 9 field `source_name` still contains placeholder `REPLACE_ALIPAY_OR_FUND_COMPANY_OFFICIAL_RULE_PAGE`"
+    },
+    {
+      "file_key": "fund_rules",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/02_fund_rules_to_fill.csv",
+      "severity": "block",
+      "message": "Line 9 field `url_or_path` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 2 field `source_name` still contains placeholder `REPLACE_MOOMOO_ALIPAY_FUND_COMPANY_OR_OFFICIAL_SOURCE`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 2 field `source_url` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 2 field `as_of` still contains placeholder `YYYY-MM-DD`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 3 field `source_name` still contains placeholder `REPLACE_MOOMOO_ALIPAY_FUND_COMPANY_OR_OFFICIAL_SOURCE`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 3 field `source_url` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 3 field `as_of` still contains placeholder `YYYY-MM-DD`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 4 field `source_name` still contains placeholder `REPLACE_MOOMOO_ALIPAY_FUND_COMPANY_OR_OFFICIAL_SOURCE`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 4 field `source_url` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 4 field `as_of` still contains placeholder `YYYY-MM-DD`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 5 field `source_name` still contains placeholder `REPLACE_MOOMOO_ALIPAY_FUND_COMPANY_OR_OFFICIAL_SOURCE`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 5 field `source_url` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 5 field `as_of` still contains placeholder `YYYY-MM-DD`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 6 field `source_name` still contains placeholder `REPLACE_MOOMOO_ALIPAY_FUND_COMPANY_OR_OFFICIAL_SOURCE`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 6 field `source_url` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 6 field `as_of` still contains placeholder `YYYY-MM-DD`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 7 field `source_name` still contains placeholder `REPLACE_MOOMOO_ALIPAY_FUND_COMPANY_OR_OFFICIAL_SOURCE`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 7 field `source_url` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 7 field `as_of` still contains placeholder `YYYY-MM-DD`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 8 field `source_name` still contains placeholder `REPLACE_MOOMOO_ALIPAY_FUND_COMPANY_OR_OFFICIAL_SOURCE`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 8 field `source_url` still contains placeholder `REPLACE_URL_OR_LOCAL_EVIDENCE_PATH`"
+    },
+    {
+      "file_key": "candidates",
+      "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/03_candidates_to_fill.csv",
+      "severity": "block",
+      "message": "Line 8 field `as_of` still contains placeholder `YYYY-MM-DD`"
+    }
+  ],
+  "validation": null,
+  "copy_result": null,
+  "production_ready": false
+}

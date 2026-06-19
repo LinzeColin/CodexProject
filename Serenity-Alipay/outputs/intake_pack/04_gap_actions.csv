@@ -1,0 +1,36 @@
+area,severity,row_id,field,message,action,path
+alipay_positions,block,FUND001,source_note,source_note contains sample/demo marker,Replace with real source note such as Alipay export date or verified manual snapshot,data/imports/alipay_positions.csv
+alipay_positions,block,FUND003,source_note,source_note contains sample/demo marker,Replace with real source note such as Alipay export date or verified manual snapshot,data/imports/alipay_positions.csv
+alipay_positions,block,FUND004,source_note,source_note contains sample/demo marker,Replace with real source note such as Alipay export date or verified manual snapshot,data/imports/alipay_positions.csv
+alipay_positions,block,FUND005,source_note,source_note contains sample/demo marker,Replace with real source note such as Alipay export date or verified manual snapshot,data/imports/alipay_positions.csv
+fund_rules,block,FUND001,source,Fund rule source is sample/manual-local,Replace with Alipay path or fund-company official evidence,data/manual/fund_rules.csv
+fund_rules,block,FUND002,source,Fund rule source is sample/manual-local,Replace with Alipay path or fund-company official evidence,data/manual/fund_rules.csv
+fund_rules,block,FUND003,source,Fund rule source is sample/manual-local,Replace with Alipay path or fund-company official evidence,data/manual/fund_rules.csv
+fund_rules,block,FUND004,source,Fund rule source is sample/manual-local,Replace with Alipay path or fund-company official evidence,data/manual/fund_rules.csv
+fund_rules,block,FUND004,source_type,Source type is not production-grade: aggregated,"Use moomoo, alipay, or official",data/manual/fund_rules.csv
+fund_rules,block,FUND004,source_priority,Source priority 5 is below production threshold,Use source priority 1-3,data/manual/fund_rules.csv
+fund_rules,block,FUND004,fallback_aggregated,Aggregated fallback cannot unlock execution rules,Replace with official or Alipay evidence,data/manual/fund_rules.csv
+fund_rules,block,FUND005,source,Fund rule source is sample/manual-local,Replace with Alipay path or fund-company official evidence,data/manual/fund_rules.csv
+fund_rules,block,FUND006,source,Fund rule source is sample/manual-local,Replace with Alipay path or fund-company official evidence,data/manual/fund_rules.csv
+fund_rules,block,FUND006,source_type,Source type is not production-grade: aggregated,"Use moomoo, alipay, or official",data/manual/fund_rules.csv
+fund_rules,block,FUND006,source_priority,Source priority 5 is below production threshold,Use source priority 1-3,data/manual/fund_rules.csv
+fund_rules,block,FUND006,fallback_aggregated,Aggregated fallback cannot unlock execution rules,Replace with official or Alipay evidence,data/manual/fund_rules.csv
+fund_rules,block,FUND006,redemption_status,Missing execution-critical field: redemption_status,Fill from Alipay/fund official rule page,data/manual/fund_rules.csv
+fund_rules,block,FUND006,redemption_fee,Missing execution-critical field: redemption_fee,Fill from Alipay/fund official rule page,data/manual/fund_rules.csv
+fund_rules,block,FUND007,source,Fund rule source is sample/manual-local,Replace with Alipay path or fund-company official evidence,data/manual/fund_rules.csv
+fund_rules,block,BOND001,source,Fund rule source is sample/manual-local,Replace with Alipay path or fund-company official evidence,data/manual/fund_rules.csv
+candidate_universe,block,FUND001,source,Candidate source is sample/manual-local,"Replace with moomoo, Alipay, fund-company, or official source",data/manual/candidates.csv
+candidate_universe,block,FUND002,source,Candidate source is sample/manual-local,"Replace with moomoo, Alipay, fund-company, or official source",data/manual/candidates.csv
+candidate_universe,block,FUND003,source,Candidate source is sample/manual-local,"Replace with moomoo, Alipay, fund-company, or official source",data/manual/candidates.csv
+candidate_universe,block,FUND004,source,Candidate source is sample/manual-local,"Replace with moomoo, Alipay, fund-company, or official source",data/manual/candidates.csv
+candidate_universe,block,FUND004,source_type,Source type is not production-grade: aggregated,"Use moomoo, alipay, or official",data/manual/candidates.csv
+candidate_universe,block,FUND004,official_source_count,Official source count 1 < 2,Add at least two official-grade sources,data/manual/candidates.csv
+candidate_universe,block,FUND004,fallback_aggregated,Aggregated fallback cannot unlock production candidate,Replace with production-grade sources,data/manual/candidates.csv
+candidate_universe,block,FUND005,source,Candidate source is sample/manual-local,"Replace with moomoo, Alipay, fund-company, or official source",data/manual/candidates.csv
+candidate_universe,block,FUND006,source,Candidate source is sample/manual-local,"Replace with moomoo, Alipay, fund-company, or official source",data/manual/candidates.csv
+candidate_universe,block,FUND006,source_type,Source type is not production-grade: aggregated,"Use moomoo, alipay, or official",data/manual/candidates.csv
+candidate_universe,block,FUND006,official_source_count,Official source count 0 < 2,Add at least two official-grade sources,data/manual/candidates.csv
+candidate_universe,block,FUND006,fallback_aggregated,Aggregated fallback cannot unlock production candidate,Replace with production-grade sources,data/manual/candidates.csv
+candidate_universe,block,FUND007,source,Candidate source is sample/manual-local,"Replace with moomoo, Alipay, fund-company, or official source",data/manual/candidates.csv
+benchmark_history,warn,000001.SH,source_type,Shanghai Composite uses public aggregation fallback,Prefer moomoo or official source when available,data/manual/benchmark_price_history.csv
+benchmark_history,warn,SPX,source_type,S&P 500 uses public aggregation fallback,Prefer moomoo or official source when available,data/manual/benchmark_price_history.csv

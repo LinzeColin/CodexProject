@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Serenity 每日分析报告归档</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f5f7f4;
+      --surface: #ffffff;
+      --surface-2: #eef3ef;
+      --ink: #132027;
+      --muted: #64717b;
+      --line: #d9e0da;
+      --accent: #0b6f7b;
+      --good: #1f7a4d;
+      --warn: #946200;
+      --bad: #a33b3b;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; color: var(--ink); background: var(--page); }
+    main { max-width: 1220px; margin: 0 auto; padding: 24px 18px 56px; }
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: start;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+    }
+    h1 { margin: 0; font-size: 30px; line-height: 1.15; letter-spacing: 0; }
+    .meta { color: var(--muted); margin-top: 8px; line-height: 1.5; }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .metric { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; min-height: 82px; }
+    .metric span { color: var(--muted); display: block; font-size: 13px; }
+    .metric strong { display: block; font-size: 22px; margin-top: 8px; }
+    .tools {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    input {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 8px 10px;
+      font: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+    input:focus-visible, button:focus-visible, a.action:focus-visible {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(11, 111, 123, 0.14);
+    }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+    button, a.action {
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font: inherit;
+      font-weight: 700;
+      padding: 8px 10px;
+      text-decoration: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background 160ms ease;
+    }
+    button:hover, a.action:hover { border-color: var(--accent); }
+    button:active, a.action:active { transform: translateY(1px); }
+    button[aria-pressed="true"], .primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+    table { width: 100%; min-width: 860px; border-collapse: collapse; }
+    th, td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; font-size: 14px; vertical-align: top; }
+    th { background: var(--surface-2); color: #26323a; }
+    tr:last-child td { border-bottom: 0; }
+    .run-id { display: block; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; margin-bottom: 8px; }
+    .links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    .badge.good { background: #e8f5ed; border-color: #c9e3d3; color: var(--good); }
+    .badge.warn { background: #fff4d8; border-color: #ead59d; color: var(--warn); }
+    .badge.bad { background: #fae9e9; border-color: #ebc6c6; color: var(--bad); }
+    .empty { display: none; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; margin-top: 12px; }
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: #14242a;
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 180ms ease, transform 180ms ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    @media (max-width: 860px) {
+      header, .tools { grid-template-columns: 1fr; }
+      .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 540px) {
+      main { padding: 18px 12px 42px; }
+      h1 { font-size: 24px; }
+      .summary { grid-template-columns: 1fr; }
+      .filters, .links { display: grid; }
+      button, a.action { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Serenity 每日分析报告归档</h1>
+        <div class="meta">搜索、筛选、打开报告，并复制本地归档运行 ID。</div>
+      </div>
+      <a class="action primary" href="../../outputs/application/index.html">返回首页</a>
+    </header>
+
+    <section class="summary" aria-label="报告归档摘要">
+      <div class="metric"><span>总运行数</span><strong>26</strong></div>
+      <div class="metric"><span>成功且通过</span><strong>9</strong></div>
+      <div class="metric"><span>人工复核</span><strong>17</strong></div>
+      <div class="metric"><span>降级运行</span><strong>9</strong></div>
+    </section>
+
+    <section class="tools" aria-label="报告筛选">
+      <input id="search" type="search" placeholder="搜索运行 ID、运行时间、状态或数据质量" autocomplete="off">
+      <div class="filters">
+        <button type="button" data-filter="all" aria-pressed="true">全部</button>
+        <button type="button" data-filter="pass" aria-pressed="false">通过</button>
+        <button type="button" data-filter="manual_review" aria-pressed="false">人工复核</button>
+        <button type="button" data-filter="degraded" aria-pressed="false">降级</button>
+      </div>
+    </section>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>运行</th><th>运行时间</th><th>状态</th><th>数据质量</th><th>打开</th></tr></thead>
+        <tbody><tr data-status="success" data-quality="pass" data-slot="r7" data-run="sda_20260613t094539z_r7_31fb1cc3"><td><span class="run-id">sda_20260613T094539Z_r7_31fb1cc3</span><button type="button" class="copy-run" data-copy-value="sda_20260613t094539z_r7_31fb1cc3">复制</button></td><td><strong>20260615 - 14:30 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge good">通过</span></td><td class="links"><a class="action primary" href="sda_20260613T094539Z_r7_31fb1cc3_report.html">HTML</a><a class="action" href="sda_20260613T094539Z_r7_31fb1cc3_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="pass" data-slot="r7" data-run="sda_20260613t093809z_r7_e7c5fc7d"><td><span class="run-id">sda_20260613T093809Z_r7_e7c5fc7d</span><button type="button" class="copy-run" data-copy-value="sda_20260613t093809z_r7_e7c5fc7d">复制</button></td><td><strong>20260615 - 14:30 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge good">通过</span></td><td class="links"><a class="action primary" href="sda_20260613T093809Z_r7_e7c5fc7d_report.html">HTML</a><a class="action" href="sda_20260613T093809Z_r7_e7c5fc7d_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="pass" data-slot="r8" data-run="sda_20260613t053528z_r8_2579b9f4"><td><span class="run-id">sda_20260613T053528Z_r8_2579b9f4</span><button type="button" class="copy-run" data-copy-value="sda_20260613t053528z_r8_2579b9f4">复制</button></td><td><strong>20260615 - 14:30 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge good">通过</span></td><td class="links"><a class="action primary" href="sda_20260613T053528Z_r8_2579b9f4_report.html">HTML</a><a class="action" href="sda_20260613T053528Z_r8_2579b9f4_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="pass" data-slot="r7" data-run="sda_20260613t052544z_r7_90f65668"><td><span class="run-id">sda_20260613T052544Z_r7_90f65668</span><button type="button" class="copy-run" data-copy-value="sda_20260613t052544z_r7_90f65668">复制</button></td><td><strong>20260615 - 14:00 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge good">通过</span></td><td class="links"><a class="action primary" href="sda_20260613T052544Z_r7_90f65668_report.html">HTML</a><a class="action" href="sda_20260613T052544Z_r7_90f65668_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="pass" data-slot="r7" data-run="sda_20260612t232914z_r7_3376fbc9"><td><span class="run-id">sda_20260612T232914Z_r7_3376fbc9</span><button type="button" class="copy-run" data-copy-value="sda_20260612t232914z_r7_3376fbc9">复制</button></td><td><strong>20260615 - 14:00 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge good">通过</span></td><td class="links"><a class="action primary" href="sda_20260612T232914Z_r7_3376fbc9_report.html">HTML</a><a class="action" href="sda_20260612T232914Z_r7_3376fbc9_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="pass" data-slot="r7" data-run="sda_20260612t232600z_r7_db885ff0"><td><span class="run-id">sda_20260612T232600Z_r7_db885ff0</span><button type="button" class="copy-run" data-copy-value="sda_20260612t232600z_r7_db885ff0">复制</button></td><td><strong>20260615 - 14:00 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge good">通过</span></td><td class="links"><a class="action primary" href="sda_20260612T232600Z_r7_db885ff0_report.html">HTML</a><a class="action" href="sda_20260612T232600Z_r7_db885ff0_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="pass" data-slot="r7" data-run="sda_20260612t232320z_r7_225b44c5"><td><span class="run-id">sda_20260612T232320Z_r7_225b44c5</span><button type="button" class="copy-run" data-copy-value="sda_20260612t232320z_r7_225b44c5">复制</button></td><td><strong>20260613 - 14:00 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge good">通过</span></td><td class="links"><a class="action primary" href="sda_20260612T232320Z_r7_225b44c5_report.html">HTML</a><a class="action" href="sda_20260612T232320Z_r7_225b44c5_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="pass" data-slot="r2" data-run="sda_20260612t223455z_r2_5818c189"><td><span class="run-id">sda_20260612T223455Z_r2_5818c189</span><button type="button" class="copy-run" data-copy-value="sda_20260612t223455z_r2_5818c189">复制</button></td><td><strong>20260613 - 08:00 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge good">通过</span></td><td class="links"><a class="action primary" href="sda_20260612T223455Z_r2_5818c189_report.html">HTML</a><a class="action" href="sda_20260612T223455Z_r2_5818c189_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="pass" data-slot="r1" data-run="sda_20260612t223410z_r1_b30227f6"><td><span class="run-id">sda_20260612T223410Z_r1_b30227f6</span><button type="button" class="copy-run" data-copy-value="sda_20260612t223410z_r1_b30227f6">复制</button></td><td><strong>20260613 - 06:00 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge good">通过</span></td><td class="links"><a class="action primary" href="sda_20260612T223410Z_r1_b30227f6_report.html">HTML</a><a class="action" href="sda_20260612T223410Z_r1_b30227f6_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="manual_review" data-slot="r10" data-run="sda_20260612t155119z_r10_b8ed3e38"><td><span class="run-id">sda_20260612T155119Z_r10_b8ed3e38</span><button type="button" class="copy-run" data-copy-value="sda_20260612t155119z_r10_b8ed3e38">复制</button></td><td><strong>20260612 - 15:30 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T155119Z_r10_b8ed3e38_report.html">HTML</a><a class="action" href="sda_20260612T155119Z_r10_b8ed3e38_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="manual_review" data-slot="r10" data-run="sda_20260612t154921z_r10_d1c71c5c"><td><span class="run-id">sda_20260612T154921Z_r10_d1c71c5c</span><button type="button" class="copy-run" data-copy-value="sda_20260612t154921z_r10_d1c71c5c">复制</button></td><td><strong>20260612 - 15:30 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T154921Z_r10_d1c71c5c_report.html">HTML</a><a class="action" href="sda_20260612T154921Z_r10_d1c71c5c_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="manual_review" data-slot="r10" data-run="sda_20260612t135355z_r10_1ed0cc9a"><td><span class="run-id">sda_20260612T135355Z_r10_1ed0cc9a</span><button type="button" class="copy-run" data-copy-value="sda_20260612t135355z_r10_1ed0cc9a">复制</button></td><td><strong>20260612 - 15:30 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T135355Z_r10_1ed0cc9a_report.html">HTML</a><a class="action" href="sda_20260612T135355Z_r10_1ed0cc9a_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="manual_review" data-slot="r9" data-run="sda_20260612t134953z_r9_3617c744"><td><span class="run-id">sda_20260612T134953Z_r9_3617c744</span><button type="button" class="copy-run" data-copy-value="sda_20260612t134953z_r9_3617c744">复制</button></td><td><strong>20260612 - 15:00 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T134953Z_r9_3617c744_report.html">HTML</a><a class="action" href="sda_20260612T134953Z_r9_3617c744_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="manual_review" data-slot="r8" data-run="sda_20260612t134751z_r8_156c2209"><td><span class="run-id">sda_20260612T134751Z_r8_156c2209</span><button type="button" class="copy-run" data-copy-value="sda_20260612t134751z_r8_156c2209">复制</button></td><td><strong>20260612 - 14:30 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T134751Z_r8_156c2209_report.html">HTML</a><a class="action" href="sda_20260612T134751Z_r8_156c2209_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="manual_review" data-slot="r7" data-run="sda_20260612t133640z_r7_ebac0009"><td><span class="run-id">sda_20260612T133640Z_r7_ebac0009</span><button type="button" class="copy-run" data-copy-value="sda_20260612t133640z_r7_ebac0009">复制</button></td><td><strong>20260612 - 14:00 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T133640Z_r7_ebac0009_report.html">HTML</a><a class="action" href="sda_20260612T133640Z_r7_ebac0009_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="manual_review" data-slot="r7" data-run="sda_20260612t131641z_r7_198b8991"><td><span class="run-id">sda_20260612T131641Z_r7_198b8991</span><button type="button" class="copy-run" data-copy-value="sda_20260612t131641z_r7_198b8991">复制</button></td><td><strong>20260612 - 14:00 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T131641Z_r7_198b8991_report.html">HTML</a><a class="action" href="sda_20260612T131641Z_r7_198b8991_report.md">Markdown</a></td></tr>
+<tr data-status="success" data-quality="manual_review" data-slot="r7" data-run="sda_20260612t130416z_r7_eae1cc9a"><td><span class="run-id">sda_20260612T130416Z_r7_eae1cc9a</span><button type="button" class="copy-run" data-copy-value="sda_20260612t130416z_r7_eae1cc9a">复制</button></td><td><strong>20260612 - 14:00 CST</strong></td><td><span class="badge good">成功</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T130416Z_r7_eae1cc9a_report.html">HTML</a><a class="action" href="sda_20260612T130416Z_r7_eae1cc9a_report.md">Markdown</a></td></tr>
+<tr data-status="degraded" data-quality="manual_review" data-slot="r7" data-run="sda_20260612t124553z_r7_24a16c28"><td><span class="run-id">sda_20260612T124553Z_r7_24a16c28</span><button type="button" class="copy-run" data-copy-value="sda_20260612t124553z_r7_24a16c28">复制</button></td><td><strong>20260612 - 14:00 CST</strong></td><td><span class="badge warn">降级</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T124553Z_r7_24a16c28_report.html">HTML</a><a class="action" href="sda_20260612T124553Z_r7_24a16c28_report.md">Markdown</a></td></tr>
+<tr data-status="degraded" data-quality="manual_review" data-slot="r7" data-run="sda_20260612t124341z_r7_8f30c216"><td><span class="run-id">sda_20260612T124341Z_r7_8f30c216</span><button type="button" class="copy-run" data-copy-value="sda_20260612t124341z_r7_8f30c216">复制</button></td><td><strong>20260612 - 14:00 CST</strong></td><td><span class="badge warn">降级</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T124341Z_r7_8f30c216_report.html">HTML</a><a class="action" href="sda_20260612T124341Z_r7_8f30c216_report.md">Markdown</a></td></tr>
+<tr data-status="degraded" data-quality="manual_review" data-slot="r7" data-run="sda_20260612t123134z_r7_f90ff0b7"><td><span class="run-id">sda_20260612T123134Z_r7_f90ff0b7</span><button type="button" class="copy-run" data-copy-value="sda_20260612t123134z_r7_f90ff0b7">复制</button></td><td><strong>20260612 - 14:00 CST</strong></td><td><span class="badge warn">降级</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T123134Z_r7_f90ff0b7_report.html">HTML</a><a class="action" href="sda_20260612T123134Z_r7_f90ff0b7_report.md">Markdown</a></td></tr>
+<tr data-status="degraded" data-quality="manual_review" data-slot="r7" data-run="sda_20260612t122919z_r7_add1687e"><td><span class="run-id">sda_20260612T122919Z_r7_add1687e</span><button type="button" class="copy-run" data-copy-value="sda_20260612t122919z_r7_add1687e">复制</button></td><td><strong>20260612 - 14:00 CST</strong></td><td><span class="badge warn">降级</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T122919Z_r7_add1687e_report.html">HTML</a><a class="action" href="sda_20260612T122919Z_r7_add1687e_report.md">Markdown</a></td></tr>
+<tr data-status="degraded" data-quality="manual_review" data-slot="r7" data-run="sda_20260612t122902z_r7_e791c6e9"><td><span class="run-id">sda_20260612T122902Z_r7_e791c6e9</span><button type="button" class="copy-run" data-copy-value="sda_20260612t122902z_r7_e791c6e9">复制</button></td><td><strong>20260612 - 14:00 CST</strong></td><td><span class="badge warn">降级</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T122902Z_r7_e791c6e9_report.html">HTML</a><a class="action" href="sda_20260612T122902Z_r7_e791c6e9_report.md">Markdown</a></td></tr>
+<tr data-status="degraded" data-quality="manual_review" data-slot="r11" data-run="sda_20260612t122902z_r11_ca0de309"><td><span class="run-id">sda_20260612T122902Z_r11_ca0de309</span><button type="button" class="copy-run" data-copy-value="sda_20260612t122902z_r11_ca0de309">复制</button></td><td><strong>20260612 - 17:00 CST</strong></td><td><span class="badge warn">降级</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T122902Z_r11_ca0de309_report.html">HTML</a><a class="action" href="sda_20260612T122902Z_r11_ca0de309_report.md">Markdown</a></td></tr>
+<tr data-status="degraded" data-quality="manual_review" data-slot="r6" data-run="sda_20260612t122902z_r6_4cdf476d"><td><span class="run-id">sda_20260612T122902Z_r6_4cdf476d</span><button type="button" class="copy-run" data-copy-value="sda_20260612t122902z_r6_4cdf476d">复制</button></td><td><strong>20260612 - 13:30 CST</strong></td><td><span class="badge warn">降级</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T122902Z_r6_4cdf476d_report.html">HTML</a><a class="action" href="sda_20260612T122902Z_r6_4cdf476d_report.md">Markdown</a></td></tr>
+<tr data-status="degraded" data-quality="manual_review" data-slot="r7" data-run="sda_20260612t121246z_r7_5492880d"><td><span class="run-id">sda_20260612T121246Z_r7_5492880d</span><button type="button" class="copy-run" data-copy-value="sda_20260612t121246z_r7_5492880d">复制</button></td><td><strong>20260612 - 14:00 CST</strong></td><td><span class="badge warn">降级</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T121246Z_r7_5492880d_report.html">HTML</a><a class="action" href="sda_20260612T121246Z_r7_5492880d_report.md">Markdown</a></td></tr>
+<tr data-status="degraded" data-quality="manual_review" data-slot="r7" data-run="sda_20260612t121124z_r7_5dacbac6"><td><span class="run-id">sda_20260612T121124Z_r7_5dacbac6</span><button type="button" class="copy-run" data-copy-value="sda_20260612t121124z_r7_5dacbac6">复制</button></td><td><strong>20260612 - 14:00 CST</strong></td><td><span class="badge warn">降级</span></td><td><span class="badge warn">人工复核</span></td><td class="links"><a class="action primary" href="sda_20260612T121124Z_r7_5dacbac6_report.html">HTML</a><a class="action" href="sda_20260612T121124Z_r7_5dacbac6_report.md">Markdown</a></td></tr></tbody>
+      </table>
+    </div>
+    <div class="empty" id="empty">当前筛选条件下没有匹配报告。</div>
+  </main>
+  <div class="toast" role="status" aria-live="polite" id="toast">完成</div>
+  <script>
+    const rows = Array.from(document.querySelectorAll("tbody tr"));
+    const search = document.getElementById("search");
+    const empty = document.getElementById("empty");
+    const toast = document.getElementById("toast");
+    let activeFilter = "all";
+
+    const showToast = (message) => {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 1800);
+    };
+
+    const matchesFilter = (row) => {
+      if (activeFilter === "all") return true;
+      if (activeFilter === "pass") return row.dataset.status === "success" && row.dataset.quality === "pass";
+      if (activeFilter === "manual_review") return row.dataset.quality === "manual_review";
+      if (activeFilter === "degraded") return row.dataset.status === "degraded";
+      return true;
+    };
+
+    const updateRows = () => {
+      const query = search.value.trim().toLowerCase();
+      let shown = 0;
+      rows.forEach((row) => {
+        const textMatch = !query || row.textContent.toLowerCase().includes(query);
+        const visible = textMatch && matchesFilter(row);
+        row.style.display = visible ? "" : "none";
+        if (visible) shown += 1;
+      });
+      empty.style.display = shown ? "none" : "block";
+    };
+
+    search.addEventListener("input", updateRows);
+    document.querySelectorAll("[data-filter]").forEach((button) => {
+      button.addEventListener("click", () => {
+        activeFilter = button.dataset.filter;
+        document.querySelectorAll("[data-filter]").forEach((item) => item.setAttribute("aria-pressed", "false"));
+        button.setAttribute("aria-pressed", "true");
+        updateRows();
+        showToast(`已应用筛选：${button.textContent.trim()}`);
+      });
+    });
+
+    document.querySelectorAll("[data-copy-value]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const value = button.dataset.copyValue;
+        const original = button.textContent;
+        try {
+          await navigator.clipboard.writeText(value);
+        } catch {
+          const holder = document.createElement("textarea");
+          holder.value = value;
+          holder.setAttribute("readonly", "");
+          holder.style.position = "fixed";
+          holder.style.opacity = "0";
+          document.body.appendChild(holder);
+          holder.select();
+          document.execCommand("copy");
+          holder.remove();
+        }
+        button.textContent = "已复制";
+        showToast("运行 ID 已复制");
+        window.setTimeout(() => { button.textContent = original; }, 1400);
+      });
+    });
+  </script>
+</body>
+</html>

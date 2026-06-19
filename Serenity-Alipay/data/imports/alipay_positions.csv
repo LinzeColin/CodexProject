@@ -1,0 +1,5 @@
+asset_code,asset_name,platform,current_amount,current_weight,cost_basis,unrealized_pnl,as_of,source_note
+FUND001,AI Infrastructure Growth Fund,Alipay,32000,32%,30000,2000,2026-06-12,manual sample import
+FUND003,US AI Leaders QDII Fund,Alipay,28000,28%,26000,2000,2026-06-12,manual sample import
+FUND004,Robotics Advanced Manufacturing Fund,Alipay,22000,22%,21500,500,2026-06-12,manual sample import
+FUND005,Biotech Innovation Growth Fund,Alipay,18000,18%,19000,-1000,2026-06-12,manual sample import

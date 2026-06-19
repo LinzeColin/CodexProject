@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Serenity自动化][复核] 信号变化，保持当前持仓</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,'PingFang SC','Microsoft YaHei',sans-serif;color:#0f172a;">
+  <div style="max-width:760px;margin:0 auto;padding:22px;">
+    <div style="background-color:#ffffff;border:1px solid #dbe4ee;border-radius:10px;overflow:hidden;">
+      <div style="background-color:#102033;color:#ffffff;padding:20px 22px;">
+        <h1 style="margin:0 0 8px 0;font-size:22px;line-height:1.35;">[Serenity自动化][复核] 信号变化，保持当前持仓</h1>
+        <p style="margin:0;color:#cbd5e1;">Serenity Daily Analysis · 生产通知</p>
+      </div>
+      <div style="padding:20px 22px;">
+        <h2 style="margin:0 0 10px 0;font-size:18px;color:#102033;border-bottom:2px solid #dbeafe;padding-bottom:8px;">一、结论</h2>
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin:0 0 16px 0;">
+          <tr>
+            <td style="padding:8px 0;color:#64748b;width:120px;">本轮运行</td>
+            <td style="padding:8px 0;"><strong>20260615 - 14:30 CST</strong> / 20260615 - 16:30 AEST</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;color:#64748b;">当前结论</td>
+            <td style="padding:8px 0;"><span style="display:inline-block;padding:5px 10px;border-radius:999px;font-weight:700;color:#1d4ed8;background-color:#e8f4ff;border:1px solid #1d4ed8;">维持</span></td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;color:#64748b;">处理截止</td>
+            <td style="padding:8px 0;"><strong style="color:#1d4ed8;text-decoration:underline;">无需处理；下一运行点自动复核。</strong></td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;color:#64748b;">执行边界</td>
+            <td style="padding:8px 0;"><strong>系统不自动交易、不提交申购或赎回；真实操作必须人工确认。</strong></td>
+          </tr>
+        </table>
+
+        <h2 style="margin:20px 0 10px 0;font-size:18px;color:#102033;border-bottom:2px solid #dbeafe;padding-bottom:8px;">二、需变化的行为</h2>
+        <h3 style="margin:0 0 8px 0;font-size:15px;color:#1d4ed8;">本轮动作重点</h3>
+        <p style="margin:0 0 10px 0;padding:12px 14px;background-color:#e8f4ff;border-left:4px solid #1d4ed8;line-height:1.65;">
+          <strong>保持当前持仓，等待下一轮自动复核。</strong>
+        </p>
+        <p style="margin:0 0 16px 0;color:#475569;line-height:1.65;">
+          <em>原因：</em>同日对比关键字段波动超过阈值。操作前先核对支付宝或官方平台费率、限额、15:00 截止和确认到账时间。
+        </p>
+
+        <h2 style="margin:20px 0 10px 0;font-size:18px;color:#102033;border-bottom:2px solid #dbeafe;padding-bottom:8px;">三、当前持仓建议</h2>
+        <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:1px solid #dbe4ee;font-size:13px;">
+          <thead>
+            <tr style="background-color:#eff6ff;color:#102033;">
+              <th style="padding:9px 8px;border-bottom:1px solid #dbe4ee;text-align:center;">排名</th>
+              <th style="padding:9px 8px;border-bottom:1px solid #dbe4ee;text-align:left;">持仓/基金</th>
+              <th style="padding:9px 8px;border-bottom:1px solid #dbe4ee;text-align:center;">需操作行为</th>
+              <th style="padding:9px 8px;border-bottom:1px solid #dbe4ee;text-align:right;">目标权重</th>
+              <th style="padding:9px 8px;border-bottom:1px solid #dbe4ee;text-align:right;">当前/基准权重</th>
+              <th style="padding:9px 8px;border-bottom:1px solid #dbe4ee;text-align:right;">偏离</th>
+              <th style="padding:9px 8px;border-bottom:1px solid #dbe4ee;text-align:center;">等级</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">1</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;"><strong>华夏国证半导体芯片ETF联接A</strong><br><span style="color:#64748b;">008887</span></td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="display:inline-block;padding:5px 10px;border-radius:999px;font-weight:700;color:#1d4ed8;background-color:#e8f4ff;border:1px solid #1d4ed8;">维持</span></td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:700;">28.70%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;">28.70%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;color:#1d4ed8;font-weight:700;">+0.00%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">可执行</td></tr>
+<tr><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">2</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;"><strong>天弘中证人工智能A</strong><br><span style="color:#64748b;">011839</span></td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="display:inline-block;padding:5px 10px;border-radius:999px;font-weight:700;color:#1d4ed8;background-color:#e8f4ff;border:1px solid #1d4ed8;">维持</span></td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:700;">23.40%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;">23.40%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;color:#1d4ed8;font-weight:700;">+0.00%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">可执行</td></tr>
+<tr><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">3</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;"><strong>易方达创业板ETF联接A</strong><br><span style="color:#64748b;">110026</span></td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="display:inline-block;padding:5px 10px;border-radius:999px;font-weight:700;color:#1d4ed8;background-color:#e8f4ff;border:1px solid #1d4ed8;">维持</span></td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:700;">19.28%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;">19.28%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;color:#1d4ed8;font-weight:700;">+0.00%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">可执行</td></tr>
+<tr><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">4</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;"><strong>国联安中证半导体ETF联接A</strong><br><span style="color:#64748b;">007300</span></td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="display:inline-block;padding:5px 10px;border-radius:999px;font-weight:700;color:#1d4ed8;background-color:#e8f4ff;border:1px solid #1d4ed8;">维持</span></td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:700;">15.83%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;">15.83%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;color:#1d4ed8;font-weight:700;">+0.00%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">可执行</td></tr>
+<tr><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">5</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;"><strong>华夏恒生互联网科技业ETF联接(QDII)A</strong><br><span style="color:#64748b;">013171</span></td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="display:inline-block;padding:5px 10px;border-radius:999px;font-weight:700;color:#1d4ed8;background-color:#e8f4ff;border:1px solid #1d4ed8;">维持</span></td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:700;">12.78%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;">12.78%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:right;color:#1d4ed8;font-weight:700;">+0.00%</td><td style="padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">观察</td></tr>
+          </tbody>
+        </table>
+
+        <h2 style="margin:20px 0 10px 0;font-size:18px;color:#102033;border-bottom:2px solid #dbeafe;padding-bottom:8px;">四、人工复核与风控兜底</h2>
+        <h3 style="margin:0 0 8px 0;font-size:15px;color:#92400e;">复核项</h3>
+        <ul style="margin:0 0 12px 18px;padding:0;line-height:1.6;">
+          <li style="margin:6px 0;">广发纳指100ETF联接(QDII)人民币A：申赎或费率状态不足</li><li style="margin:6px 0;">天弘纳斯达克100指数发起(QDII)A：申赎或费率状态不足</li>
+        </ul>
+        <p style="margin:0;padding:12px 14px;background-color:#f8fafc;border:1px solid #e2e8f0;line-height:1.65;">
+          <strong>降级规则：</strong>数据缺失、来源冲突、申赎/费率异常、MDD 硬门槛或执行状态异常时，一律暂停新增并等待下一轮复核。
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
