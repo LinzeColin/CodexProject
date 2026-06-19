@@ -324,3 +324,41 @@ Residual risks:
 
 - T205 remains `IN PROGRESS` until UI/API fixture marking and recursive scenario E2E exist.
 - T203/T206 repository/API behavior is still needed before those acceptance IDs can close.
+
+## 2026-06-19 - Phase 1 / G2 T203/T206 domain API repository pass
+
+Status: DOMAIN API SUBSET PASS; G2 IN PROGRESS
+
+Completed:
+
+- Added database-backed FastAPI routes for `/v1/home`, `/v1/explore`, `/v1/explore/reroot`, `/v1/watchlists`, `/v1/changes`, `/v1/audit-logs`, `/v1/scoring/profiles`, and `/v1/calibrations`.
+- Added `DomainRepository` methods for Watchlist persistence, exploration session history, bounded one-hop graph response, audit logging, calibration queueing, scoring profile reads, and relationship supersession/conflict recording.
+- Seeded the default `balanced-v2` scoring model/profile/version from `config/model_profiles/balanced-v2.json` and `config/thresholds/default-v2.json`.
+- Extended database checks to require the exploration/watchlist/scoring/change/audit/calibration tables, one active scoring profile, weight sum `1.0`, and fixed 14-day calibration cadence.
+- Extended PostgreSQL integration coverage to exercise Watchlist add/list, home aggregation, exploration graph fixture disclosure, audit logs, manual calibration queueing, relationship supersession, conflict change feed, and rollback.
+- Marked T203 and T206 as `DONE`.
+- Marked A011, A023, and A090 as `DONE` with evidence in `tests/integration/test_database_migrations.py`.
+
+Verification evidence:
+
+- Local `make verify`: PASS.
+- Local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+- Local `make verify-g2-db`: FAIL CLOSED because Docker is not installed on this host.
+- GitHub Actions run: `https://github.com/LinzeColin/CodexProject/actions/runs/27823282804`.
+- GitHub Actions job: `82341300203`.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+Acceptance status:
+
+- A011 is covered by migration upgrade/downgrade and schema checks in PostgreSQL CI.
+- A023 is covered by repository integration tests that preserve superseded relationship history and emit conflict changes without deleting the source relationship.
+- A090 is covered by seed/check/API tests that preserve a fixed 14-day calibration cadence and queue manual calibration without auto-activating model changes.
+- A025 is partially covered at API level because graph edges expose `synthetic` and `fixture_notice`, but visible frontend content tests are still open.
+- A067 remains open because scenario-level recursive exploration E2E is not implemented.
+
+Residual risks:
+
+- T205 remains `IN PROGRESS` until UI fixture marking and recursive scenario E2E exist.
+- T1103-T1109 visual company workspace tasks remain not started.
+- T1203 taxonomy/object-scope API remains not started.
