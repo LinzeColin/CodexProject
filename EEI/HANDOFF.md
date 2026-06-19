@@ -25,7 +25,7 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - Latest GitHub implementation commit proven by CI:
-  - `2493ce2` feat: add EEI model preview context
+  - `f4f5eb9` test: add EEI global context consistency E2E
 
 ## Completed
 
@@ -205,6 +205,13 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27843659754` passed; job `82408058091` proved T1207 remotely.
 - 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
 - 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
+- 2026-06-19 update: local `./node_modules/.bin/playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep "reports one active model profile" --workers=1` passed 1 test after T1208.
+- 2026-06-19 update: local `./node_modules/.bin/playwright test --config=../../playwright.config.ts --workers=1` passed 26 tests after T1208; a prior parallel local run hit host timeout/residual-server noise, then passed serially after cleanup.
+- 2026-06-19 update: local `make verify` passed after T1208.
+- 2026-06-19 update: local `git diff --check` passed after T1208.
+- 2026-06-19 update: GitHub Actions run `27844479321` passed; job `82410608346` proved T1208 remotely.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 
 Remote verification:
 
@@ -297,6 +304,8 @@ Remote verification:
 - GitHub Actions job `82405633120`: PASS.
 - GitHub Actions run `27843659754`: PASS.
 - GitHub Actions job `82408058091`: PASS.
+- GitHub Actions run `27844479321`: PASS.
+- GitHub Actions job `82410608346`: PASS.
 
 ## Not Completed
 
@@ -330,7 +339,7 @@ Remote verification:
 - T409 / A034 is DONE and remote CI passed; the workspace now visibly marks cross-industry reroot paths, and `tests/e2e/state-contract.spec.ts` covers `nvidia.cloud.datacenter.energy` with 24 passing local E2E tests plus `make verify`.
 - T1114-T1117 / A161-A166 are DONE and remote CI passed; accessible graph-equivalent table fields, keyboard/focus/target assertions, non-color evidence labels, and UI copy lint passed local E2E plus `make verify`.
 - T1207 / A157-A158/A178 is DONE and remote CI passed; model preview context now propagates across the home workspace, saved-view metadata, and `/industries`, with local E2E 26/26 plus `make verify`.
-- T1208 / A178 is DONE locally and awaits remote CI; the active model/profile/data/score snapshot E2E now covers `/`, `/industries`, `/objects-scope` and `/development-status`, with serial local E2E 26/26 plus `make verify`.
+- T1208 / A178 is DONE and remote CI passed; the active model/profile/data/score snapshot E2E now covers `/`, `/industries`, `/objects-scope` and `/development-status`, with serial local E2E 26/26 plus `make verify`.
 - G4/G5 remain open because saved-view API persistence, visual regression/performance suites, prototype parity and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -338,7 +347,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Commit T1208, run remote CI, and record evidence.
+1. Start T1209 canonical prototype parity smoke test as the next bounded G5 slice.
 2. Keep T1118/T1119 visual regression and performance suites separate in G5.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.

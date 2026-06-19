@@ -1375,7 +1375,7 @@ Residual risks:
 
 ## 2026-06-19 - Phase 1 / G5 T1208 Global model/data version consistency E2E
 
-Status: LOCAL PASS / REMOTE CI PENDING
+Status: REMOTE CI PASS
 
 Completed:
 
@@ -1389,7 +1389,10 @@ Verification evidence:
 - Local `./node_modules/.bin/playwright test --config=../../playwright.config.ts --workers=1`: PASS, 26 tests.
 - Local `make verify`: PASS.
 - Local `git diff --check`: PASS.
-- GitHub Actions: PENDING.
+- GitHub Actions run `27844479321`: PASS.
+- GitHub Actions job `82410608346`: PASS.
+- GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
