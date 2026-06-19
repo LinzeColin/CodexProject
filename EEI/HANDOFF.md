@@ -353,6 +353,7 @@ Remote verification:
 - T1211 / A175 is DONE and remote CI passed; release artifact generation and validation now cover `manifest.txt`, `DIRECTORY_TREE.txt`, `CHECKSUMS.sha256`, `artifacts/release_evidence_t1211.json`, `artifacts/release_operation_log_t1211.jsonl` and `scripts/manage_release_artifacts.py`. GitHub Actions run `27846828768` / job `82417667186` passed.
 - T1212 / A182-A183 is DONE and remote CI passed; `scripts/validate_governance_consistency.py` now checks governance workflow triggers, required commands, `make verify` wiring, P0 traceability and A200 release preflight prerequisites. GitHub Actions run `27847728171` / job `82420393869` passed. A200 remains open for T1215 clean-room verification.
 - T1213 / A184 is DONE and remote CI passed; `scripts/manage_development_status_artifacts.py` now generates the development status summary, requirement-function-task-test traceability matrix, A183 evidence and A184 evidence. GitHub Actions run `27848308523` / job `82422115246` passed. A183 remains DONE with added T1213 evidence.
+- T1214 / A185 is locally implemented; `scripts/manage_risk_control_artifacts.py` now validates 53 risk rows and 39 high/critical risk rows with concrete function/task/acceptance/owner/trigger/control/release-gate mappings.
 - G4/G5 remain open because saved-view API persistence, visual regression/performance suites and remaining governance tasks are not complete.
 - MVP is not complete.
 
@@ -360,7 +361,7 @@ Remote verification:
 
 Continue G4 with a bounded recursive-exploration/live-context batch:
 
-1. Start T1214 risk-control mapping as the next bounded slice.
+1. Finish T1214 local verification, manifest/checksum regeneration and remote CI proof.
 2. Keep T1118/T1119 visual regression and performance suites separate in G5.
 3. Keep A026/A027 open until T904/G9 real gold precision evaluation.
 4. Preserve the existing G3/G4 state/history/path contracts while adding recursive exploration and governance views.

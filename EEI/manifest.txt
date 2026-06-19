@@ -75,10 +75,13 @@ artifacts/pdf_contact_sheet.png
 artifacts/release_evidence_t1211.json
 artifacts/release_operation_log_t1211.jsonl
 artifacts/requirement_function_task_test_traceability_t1213.csv
+artifacts/risk_control_mapping_t1214.csv
+artifacts/risk_control_summary_t1214.json
 artifacts/tests/a182/t1212_governance_consistency_workflow.json
 artifacts/tests/a183/t1212_p0_traceability_validator.json
 artifacts/tests/a183/t1213_requirement_function_task_test_traceability.json
 artifacts/tests/a184/t1213_development_status_ledger.json
+artifacts/tests/a185/t1214_high_risk_traceability.json
 artifacts/tests/a200/t1212_clean_room_preflight.json
 config/model_profiles/balanced-v2.json
 config/model_runtime_defaults.yaml
@@ -235,6 +238,7 @@ scripts/load_seed_catalogs.py
 scripts/load_synthetic_fixtures.py
 scripts/manage_development_status_artifacts.py
 scripts/manage_release_artifacts.py
+scripts/manage_risk_control_artifacts.py
 scripts/migrate.py
 scripts/preflight.sh
 scripts/run_codex_autonomous.sh

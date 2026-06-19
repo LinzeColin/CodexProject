@@ -33,6 +33,7 @@ REQUIRED_WORKFLOW_COMMANDS = {
     "python scripts/validate_task_pack.py",
     "python scripts/validate_governance_consistency.py",
     "python scripts/manage_development_status_artifacts.py validate",
+    "python scripts/manage_risk_control_artifacts.py validate",
     "sha256sum -c CHECKSUMS.sha256",
 }
 

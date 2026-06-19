@@ -62,6 +62,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t1213_requirement_function_task_test_traceability.json
 │   │   ├── a184
 │   │   │   └── t1213_development_status_ledger.json
+│   │   ├── a185
+│   │   │   └── t1214_high_risk_traceability.json
 │   │   └── a200
 │   │       └── t1212_clean_room_preflight.json
 │   ├── README.md
@@ -71,7 +73,9 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── pdf_contact_sheet.png
 │   ├── release_evidence_t1211.json
 │   ├── release_operation_log_t1211.jsonl
-│   └── requirement_function_task_test_traceability_t1213.csv
+│   ├── requirement_function_task_test_traceability_t1213.csv
+│   ├── risk_control_mapping_t1214.csv
+│   └── risk_control_summary_t1214.json
 ├── config
 │   ├── model_profiles
 │   │   └── balanced-v2.json
@@ -248,6 +252,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── load_synthetic_fixtures.py
 │   ├── manage_development_status_artifacts.py
 │   ├── manage_release_artifacts.py
+│   ├── manage_risk_control_artifacts.py
 │   ├── migrate.py
 │   ├── preflight.sh
 │   ├── run_codex_autonomous.sh

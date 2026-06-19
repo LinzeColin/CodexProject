@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "T1214",
+  "acceptance_id": "A185",
+  "status": "DONE",
+  "evidence_type": "high_risk_control_traceability",
+  "high_or_critical_risks": 39,
+  "artifact": "artifacts/risk_control_mapping_t1214.csv",
+  "validated_by": [
+    "scripts/manage_risk_control_artifacts.py validate",
+    "make validate-risk-control-artifacts",
+    "make verify"
+  ]
+}
