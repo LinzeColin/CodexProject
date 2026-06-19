@@ -51,6 +51,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: GitHub Actions run `27820777762` passed; step 8 `Verify G1 PostgreSQL readiness and E2E` passed.
 - 2026-06-19 update: `make verify-g2-db` added; local run fails closed because Docker is not installed.
 - 2026-06-19 update: GitHub Actions run `27821808812` passed; `make verify-g2-db` proved PostgreSQL migration, seed idempotency, rollback, and E2E.
+- 2026-06-19 update: T205 synthetic fixture loader added locally; remote PostgreSQL CI still needs to prove it.
 
 Remote verification:
 
@@ -64,7 +65,7 @@ Remote verification:
 
 - Docker is not installed on the current host, so local `make verify-g1` still fails closed.
 - G2 database foundation subset passed remote PostgreSQL CI.
-- T205 synthetic recursive supply-chain fixtures are not started.
+- T205 synthetic recursive supply-chain fixtures are in progress and need remote PostgreSQL CI proof.
 - T203 exploration/Watchlist/scoring/audit/calibration repository and API behavior remains in progress.
 - T206 supersession/conflict repository behavior remains in progress.
 - T1103-T1109 visual company workspace tasks are not started.
@@ -74,7 +75,7 @@ Remote verification:
 
 Start G2 with a bounded database-first run:
 
-1. Add T205 synthetic recursive supply-chain fixtures.
-2. Implement T203/T206 repository/API behavior on top of the proven schema.
-3. Add T1203 taxonomy/object-scope API from canonical catalogs.
-4. Keep `make verify-g2-db` green after each database/API batch.
+1. Push T205 fixture loader and inspect `make verify-g2-db`.
+2. If CI passes, mark T205/A016/A025/A067 as proven.
+3. Implement T203/T206 repository/API behavior on top of the proven schema.
+4. Add T1203 taxonomy/object-scope API from canonical catalogs.

@@ -270,3 +270,30 @@ Still open in G2:
 - T205 remains `NOT STARTED` because synthetic recursive supply-chain fixtures are not loaded yet.
 - T206 remains `IN PROGRESS` because supersession/conflict repository behavior is not implemented beyond schema fields.
 - T1103-T1109 and T1203 remain not started or only indirectly scaffolded.
+
+## 2026-06-19 - Phase 1 / G2 T205 synthetic fixture loader
+
+Status: IN PROGRESS
+
+Completed:
+
+- Added fixture dataset, fixture entity notice, and fixture relationship notice tables to the core migration.
+- Added `scripts/load_synthetic_fixtures.py` to load `data/mock_entities.json` and `data/mock_relationships.json` idempotently.
+- Added fixture checks for A016, A025, and A067 into `scripts/check_database_schema.py`.
+- Updated integration test flow to load fixtures twice and verify relationship families, fixture notices, and NVIDIA recursive supply-chain stage coverage.
+- Marked T205 as `IN PROGRESS`.
+
+Verification results:
+
+- `make lint`: PASS.
+- `make verify`: PASS.
+- `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q`: PASS with 1 expected skip.
+
+Acceptance IDs touched:
+
+- A016, A025, A067.
+
+Residual risks:
+
+- Actual fixture loading has not been proven on PostgreSQL yet because local Docker is unavailable.
+- GitHub Actions must run `make verify-g2-db` to prove fixture migration, load, idempotency, and rollback.

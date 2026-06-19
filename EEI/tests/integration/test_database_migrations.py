@@ -28,5 +28,8 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     run_script("scripts/load_seed_catalogs.py")
     run_script("scripts/load_seed_catalogs.py")
     run_script("scripts/check_database_schema.py", "--expect-seeds")
+    run_script("scripts/load_synthetic_fixtures.py")
+    run_script("scripts/load_synthetic_fixtures.py")
+    run_script("scripts/check_database_schema.py", "--expect-seeds", "--expect-fixtures")
     run_script("scripts/migrate.py", "downgrade", "--all")
     run_script("scripts/migrate.py", "status", "--json")

@@ -35,6 +35,28 @@ SEED_EXPECTATIONS = {
     "company_research_universe": 140,
 }
 
+FIXTURE_EXPECTATIONS = {
+    "entities": 30,
+    "relationships": 26,
+    "fixture_entity_notices": 30,
+    "fixture_relationship_notices": 26,
+}
+
+REQUIRED_FIXTURE_FAMILIES = {
+    "capital_financing",
+    "commercial_dependency",
+    "corporate_structure",
+    "governance_people",
+    "government_policy",
+    "mergers_acquisitions",
+    "ownership_control",
+    "strategic_signal",
+    "supply_chain_operations",
+    "technology_data_ip",
+}
+
+REQUIRED_NVIDIA_STAGES = {"SC-02", "SC-04", "SC-05", "SC-06", "SC-08", "SC-09", "SC-10", "SC-12"}
+
 
 def scalar(connection: object, query: str, params: tuple[object, ...] = ()) -> object:
     return connection.execute(query, params).fetchone()[0]
@@ -46,6 +68,11 @@ def parse_args() -> argparse.Namespace:
         "--expect-seeds",
         action="store_true",
         help="Check deterministic seed counts.",
+    )
+    parser.add_argument(
+        "--expect-fixtures",
+        action="store_true",
+        help="Check synthetic fixture invariants.",
     )
     return parser.parse_args()
 
@@ -85,14 +112,75 @@ def main() -> int:
                 connection,
                 "SELECT count(*) FROM company_research_universe WHERE tier = 'P0'",
             ))
-            live_entity_count = int(scalar(connection, "SELECT count(*) FROM entities"))
+            live_entity_count = int(
+                scalar(connection, "SELECT count(*) FROM entities WHERE status <> 'fixture'")
+            )
             if p0_count != 30:
                 raise RuntimeError(f"P0 research universe expected 30 rows, found {p0_count}")
             if live_entity_count != 0:
-                raise RuntimeError("Seeded research universe must not create live entity facts")
+                raise RuntimeError(
+                    "Seeded research universe/fixtures must not create live entity facts"
+                )
             payload["seed_counts"] = seed_counts | {
                 "p0_research_universe": p0_count,
                 "live_entities": live_entity_count,
+            }
+
+        if args.expect_fixtures:
+            fixture_counts: dict[str, int] = {}
+            for table, expected in FIXTURE_EXPECTATIONS.items():
+                count = int(scalar(connection, f"SELECT count(*) FROM {table}"))
+                fixture_counts[table] = count
+                if count != expected:
+                    raise RuntimeError(f"{table} expected {expected} rows, found {count}")
+
+            non_fixture_entities = int(
+                scalar(connection, "SELECT count(*) FROM entities WHERE status <> 'fixture'")
+            )
+            unmarked_relationships = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM relationships r
+                    LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+                    WHERE frn.synthetic IS DISTINCT FROM true
+                    """,
+                )
+            )
+            family_rows = connection.execute(
+                "SELECT DISTINCT relationship_family FROM relationships"
+            ).fetchall()
+            fixture_families = {row[0] for row in family_rows}
+            missing_families = sorted(REQUIRED_FIXTURE_FAMILIES - fixture_families)
+            stage_rows = connection.execute(
+                """
+                SELECT DISTINCT stage
+                FROM (
+                  SELECT stage_from AS stage FROM supply_chain_relationship_attributes
+                  UNION
+                  SELECT stage_to AS stage FROM supply_chain_relationship_attributes
+                ) stages
+                WHERE stage IS NOT NULL
+                """
+            ).fetchall()
+            fixture_stages = {row[0] for row in stage_rows}
+            missing_stages = sorted(REQUIRED_NVIDIA_STAGES - fixture_stages)
+            if non_fixture_entities:
+                raise RuntimeError("Synthetic fixture load created non-fixture entities")
+            if unmarked_relationships:
+                raise RuntimeError("Synthetic fixture relationships must have fixture notices")
+            if missing_families:
+                raise RuntimeError(f"Missing fixture relationship families: {missing_families}")
+            if missing_stages:
+                raise RuntimeError(
+                    f"Missing NVIDIA synthetic supply-chain stages: {missing_stages}"
+                )
+            payload["fixture_counts"] = fixture_counts | {
+                "non_fixture_entities": non_fixture_entities,
+                "unmarked_relationships": unmarked_relationships,
+                "relationship_families": len(fixture_families),
+                "nvidia_supply_chain_stages": len(fixture_stages),
             }
 
     print(json.dumps(payload, indent=2))

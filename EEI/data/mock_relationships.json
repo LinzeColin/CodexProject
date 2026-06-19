@@ -602,7 +602,11 @@
     "currency": null,
     "amount_kind": null,
     "qualifiers": {
-      "scope": "synthetic platform software"
+      "scope": "synthetic platform software",
+      "stage_from": "SC-05",
+      "stage_to": "SC-09",
+      "tier": "direct",
+      "materiality": "high"
     },
     "evidence": [
       {

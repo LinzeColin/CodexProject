@@ -14,7 +14,7 @@ T201,G2,P0,Implement ten relationship families and supply-chain attributes,T200,
 T202,G2,P0,Implement industry taxonomy and multi-label memberships,T200,A019,DONE
 T203,G2,P0,"Implement exploration, Watchlist, scoring, audit and calibration tables",T200,"A011,A090",IN PROGRESS
 T204,G2,P0,Load 30 P0 seeds and 140-node research universe,"T201,T202","A017,A018,A028",DONE
-T205,G2,P0,Load synthetic recursive supply-chain fixtures,T204,"A016,A025,A067",NOT STARTED
+T205,G2,P0,Load synthetic recursive supply-chain fixtures,T204,"A016,A025,A067",IN PROGRESS
 T206,G2,P0,Implement supersession/conflict repositories,T200,A023,IN PROGRESS
 T207,G2,P0,Implement idempotent seed loader and data checks,"T205,T206","A024,A028",DONE
 T208,G2,P0,Run migration round-trip and gold quality scaffolding,T207,"A011,A026,A027",DONE

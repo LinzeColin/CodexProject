@@ -7,7 +7,7 @@ UV := $(VENV)/bin/uv
 PNPM_VERSION := 11.8.0
 PNPM := npx --yes pnpm@$(PNPM_VERSION)
 
-.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs check-db-schema health validate-governance validate-catalogs validate-contracts secret-scan lint typecheck test test-unit test-integration test-e2e verify verify-g1 verify-g2-db dev-api dev-web clean-local
+.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health validate-governance validate-catalogs validate-contracts secret-scan lint typecheck test test-unit test-integration test-e2e verify verify-g1 verify-g2-db dev-api dev-web clean-local
 
 $(UV):
 	$(PYTHON) -m venv $(VENV)
@@ -50,8 +50,11 @@ migrate-down:
 seed-catalogs:
 	if [[ -f .env ]]; then set -a; source .env; set +a; fi; $(UV) run python scripts/load_seed_catalogs.py
 
+load-fixtures:
+	if [[ -f .env ]]; then set -a; source .env; set +a; fi; $(UV) run python scripts/load_synthetic_fixtures.py
+
 check-db-schema:
-	if [[ -f .env ]]; then set -a; source .env; set +a; fi; $(UV) run python scripts/check_database_schema.py --expect-seeds
+	if [[ -f .env ]]; then set -a; source .env; set +a; fi; $(UV) run python scripts/check_database_schema.py --expect-seeds --expect-fixtures
 
 health:
 	if [[ -f .env ]]; then set -a; source .env; set +a; fi; $(UV) run python -m apps.api.app.healthcheck
@@ -69,7 +72,7 @@ secret-scan:
 	$(UV) run python scripts/secret_scan.py
 
 lint:
-	$(UV) run ruff check apps tests scripts/db_tools.py scripts/env_doctor.py scripts/migrate.py scripts/load_seed_catalogs.py scripts/check_database_schema.py scripts/wait_for_database.py scripts/validate_contracts.py scripts/secret_scan.py
+	$(UV) run ruff check apps tests scripts/db_tools.py scripts/env_doctor.py scripts/migrate.py scripts/load_seed_catalogs.py scripts/load_synthetic_fixtures.py scripts/check_database_schema.py scripts/wait_for_database.py scripts/validate_contracts.py scripts/secret_scan.py
 
 typecheck:
 	$(PNPM) --filter @eei/web typecheck

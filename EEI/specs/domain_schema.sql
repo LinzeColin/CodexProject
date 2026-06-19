@@ -456,12 +456,37 @@ CREATE TABLE seed_runs (
   UNIQUE(source_path, source_hash)
 );
 
+CREATE TABLE fixture_datasets (
+  dataset_key text PRIMARY KEY,
+  description text NOT NULL,
+  source_hash text NOT NULL,
+  synthetic boolean NOT NULL DEFAULT true,
+  loaded_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE fixture_entity_notices (
+  entity_id uuid PRIMARY KEY REFERENCES entities(id) ON DELETE CASCADE,
+  dataset_key text NOT NULL REFERENCES fixture_datasets(dataset_key),
+  fixture_notice text NOT NULL,
+  synthetic boolean NOT NULL DEFAULT true,
+  loaded_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE fixture_relationship_notices (
+  relationship_id uuid PRIMARY KEY REFERENCES relationships(id) ON DELETE CASCADE,
+  dataset_key text NOT NULL REFERENCES fixture_datasets(dataset_key),
+  fixture_notice text NOT NULL,
+  synthetic boolean NOT NULL DEFAULT true,
+  loaded_at timestamptz NOT NULL DEFAULT now()
+);
+
 CREATE INDEX exploration_steps_session_idx ON exploration_steps(session_id, sequence_no);
 CREATE INDEX operation_logs_object_idx ON operation_logs(object_type, object_id, occurred_at DESC);
 CREATE INDEX calibration_runs_time_idx ON calibration_runs(scheduled_for DESC, status);
 CREATE INDEX score_results_object_idx ON score_results(object_type, object_id, adjusted_score DESC);
 CREATE INDEX company_research_universe_tier_idx ON company_research_universe(tier, canonical_name);
 CREATE INDEX relationship_type_family_idx ON relationship_type_catalog(family_key, relationship_type);
+CREATE INDEX fixture_relationship_dataset_idx ON fixture_relationship_notices(dataset_key, relationship_id);
 
 CREATE INDEX relationships_subject_idx
   ON relationships(subject_entity_id, relationship_family, valid_from, valid_to);

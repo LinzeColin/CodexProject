@@ -2,6 +2,9 @@
 -- Keep schema_migrations so the migration runner can record the rollback transaction.
 
 DROP TABLE IF EXISTS seed_runs;
+DROP TABLE IF EXISTS fixture_relationship_notices;
+DROP TABLE IF EXISTS fixture_entity_notices;
+DROP TABLE IF EXISTS fixture_datasets;
 DROP TABLE IF EXISTS company_research_universe;
 DROP TABLE IF EXISTS supply_chain_stages;
 DROP TABLE IF EXISTS calibration_runs;
