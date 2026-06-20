@@ -51,7 +51,7 @@ def connect_job_database() -> psycopg.Connection:
 
 
 def utc_now() -> datetime:
-    return datetime.now(UTC).replace(microsecond=0)
+    return datetime.now(UTC)
 
 
 def jsonable(value: Any) -> Any:
