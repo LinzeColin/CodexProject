@@ -203,7 +203,7 @@ Residual risks:
 - GitHub Actions must be updated to run `make verify-g2-db` and prove migration/seed/rollback on PostgreSQL.
 - T205 synthetic recursive supply-chain fixtures and T1103-T1109 visual canvas tasks are not started.
 
-## 2026-06-20 - Phase 1 / T1306 A208 scale benchmark smoke harness
+## 2026-06-20 - Phase 1 / T1306 A208 scale benchmark contracts
 
 Status: IN PROGRESS
 
@@ -215,15 +215,13 @@ Completed:
 - Added `make validate-scale-benchmark-operator` for the manual 10k/100k/1m operator contract.
 - Advanced T1306/A208 governance from `NOT_STARTED` to `IN PROGRESS` without closing A208.
 
-Verification plan:
+Verification results:
 
-- `.venv/bin/python -m compileall scripts/run_scale_benchmarks.py tests/unit/test_scale_benchmarks.py scripts/validate_v5_production_readiness_sync.py`
-- `.venv/bin/python scripts/run_scale_benchmarks.py --scales 1000 --iterations 2 --mode ci_smoke --output artifacts/tests/a208/t1306_scale_benchmark_smoke.json --fail-on-budget`
-- `.venv/bin/python scripts/run_scale_benchmarks.py --scales 10000,100000,1000000 --iterations 1 --mode operator_full --output artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json --fail-on-budget`
-- `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`
-- `.venv/bin/python scripts/validate_task_pack.py`
-- `.venv/bin/python scripts/validate_contracts.py`
-- `make verify` or CI equivalent after artifact regeneration.
+- `.venv/bin/python -m compileall scripts/run_scale_benchmarks.py tests/unit/test_scale_benchmarks.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `.venv/bin/python scripts/run_scale_benchmarks.py --scales 1000 --iterations 2 --mode ci_smoke --output artifacts/tests/a208/t1306_scale_benchmark_smoke.json --fail-on-budget --quiet`: PASS; output status remains `PARTIAL`.
+- `.venv/bin/python scripts/run_scale_benchmarks.py --scales 10000,100000,1000000 --iterations 1 --mode operator_full --output artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json --fail-on-budget --quiet`: PASS; 10k, 100k and 1m measured scales pass configured budgets while output status remains `PARTIAL`.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make verify`: PASS.
+- GitHub Actions `EEI validation` run `27860058794`, job `82454428663`: PASS, including `Verify static, contract, lint, typecheck and unit tests` and `Verify G2 PostgreSQL migrations and E2E`.
 
 Residual risks:
 
