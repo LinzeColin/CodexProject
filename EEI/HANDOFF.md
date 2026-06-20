@@ -25,8 +25,8 @@ Updated: 2026-06-21 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - Latest GitHub implementation commit proven by CI:
-  - `0db3578` feat: add EEI relationship score explanations
-  - GitHub Actions run `27877809195`, job `82500155600`: PASS; Steps 7-13 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
+  - `d2f35db` fix: publish EEI entity score status
+  - GitHub Actions run `27878398112`, job `82501662399`: PASS; Steps 7-13 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 
 ## Completed
 
@@ -128,6 +128,8 @@ Run from `work/EEI`:
 - 2026-06-21 update: elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify` passed after the A203 relationship scoring slice; unit tests now pass 25/25.
 - 2026-06-21 update: local A203 entity scoring checks passed: `.venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py`, `.venv/bin/python -m pytest -q tests/unit/test_scoring.py` with 6/6, `python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`, and `.venv/bin/python scripts/validate_contracts.py`.
 - 2026-06-21 update: elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify` passed after the A203 entity scoring slice; unit tests now pass 27/27 and release checksum validation passes.
+- 2026-06-21 update: GitHub Actions run `27878302123` / job `82501418538` failed on Step 10 because `publication_status` exposed fixture record mode for an entity score explanation; commit `d2f35db` corrected entity publication semantics without hiding fixture `record_mode`.
+- 2026-06-21 update: GitHub Actions run `27878398112` / job `82501662399` passed for commit `d2f35dbba2c508a6d39debf6a9c2431a1f694066`; Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E all passed for the A203 entity scoring slice.
 - 2026-06-19 update: GitHub Actions run `27826870509` passed; job `82353421402` proved T1203 through static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - 2026-06-19 update: local `make verify` passed after strengthening G2 schema checks and acceptance traceability.
 - 2026-06-19 update: GitHub Actions run `27827498238` passed; job `82355514060` proved strengthened G2 schema checks under PostgreSQL.

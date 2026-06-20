@@ -21,11 +21,10 @@
       "Frontend Evidence Center now hydrates /v1/evidence/relationship_fact_candidate/{objectId}, exposes evidence/source-document counts, endpoint state and source snippets, and refreshes the production evidence detail when the user clicks 打开证据."
     ],
     "explicitly_not_closed": [
-      "Full production scoring engine for event, industry and remaining non-relationship object families remains in T600-T608 and T1303.",
-      "Production-approved live relationship facts remain dependent on T1301/A202 live/full-text ingestion, second-source verification or production owner sign-off.",
-      "Candidate approval, publication into relationships and atomic global refresh remain dependent on the T1301/T1303 production gate.",
-      "4h and 24h soak tests remain in T1307/A209.",
-      "Remote GitHub Actions proof for the entity scoring slice remains pending until this commit is pushed."
+        "Full production scoring engine for event, industry and remaining non-relationship object families remains in T600-T608 and T1303.",
+        "Production-approved live relationship facts remain dependent on T1301/A202 live/full-text ingestion, second-source verification or production owner sign-off.",
+        "Candidate approval, publication into relationships and atomic global refresh remain dependent on the T1301/T1303 production gate.",
+        "4h and 24h soak tests remain in T1307/A209."
     ]
   },
   "api_contracts": [
@@ -97,10 +96,11 @@
     "pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts --workers=1",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/manage_clean_room_release.py validate",
     "python3 scripts/manage_release_artifacts.py validate",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-clean-room-release",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-release-artifacts",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify: PASS after the entity scoring slice, including unit tests 27/27 and release checksum validation",
-    "GitHub Actions run 27867365117 job 82473570232: PASS, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E"
+        "UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-clean-room-release",
+        "UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-release-artifacts",
+        "UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify: PASS after the entity scoring slice, including unit tests 27/27 and release checksum validation",
+        "GitHub Actions run 27867365117 job 82473570232: PASS, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E",
+        "GitHub Actions run 27878398112 job 82501662399: PASS for commit d2f35dbba2c508a6d39debf6a9c2431a1f694066, including Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E after fixing entity publication_status semantics"
   ],
   "rollback": [
     "Revert the T1302 API/repository/contract/test/status commit.",
