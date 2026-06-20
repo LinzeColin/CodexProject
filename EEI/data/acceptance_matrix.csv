@@ -207,6 +207,6 @@ A205,P0,refresh,"Global model/data refresh atomically switches all visible modul
 A206,P0,scheduler,"Background jobs support lease, auto wake, idempotency key, heartbeat, retry cap, dead-letter and graceful shutdown",worker crash/retry integration test,IN PROGRESS
 A207,P0,saved-view,"Server saved views support optimistic conflict control, version history, recovery and schema migration",multi-session conflict + restore test,IN PROGRESS
 A208,P0,scale,"10k, 100k and 1m relationship benchmarks record API, layout, render, memory, frame and long-task budgets with pass/fail output",performance benchmark,DONE
-A209,P0,soak,"4h and 24h browser and worker soak tests record heap, DOM, listener, timer, CPU, retry and recovery stability",soak suite,NOT STARTED
+A209,P0,soak,"4h and 24h browser and worker soak tests record heap, DOM, listener, timer, CPU, retry and recovery stability",soak suite,IN PROGRESS
 A210,P0,brand,"EEI formal brand legal and market clearance is complete for public launch or a signed risk waiver blocks/permits release explicitly",brand clearance evidence review,NOT STARTED
 A211,P0,frontend,"Production frontend is componentized with real routes, WorkspaceContext, real controls, disabled unfinished entries and persisted state/query wiring",component + route + E2E test,NOT STARTED

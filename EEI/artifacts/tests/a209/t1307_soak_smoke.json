@@ -1,0 +1,93 @@
+{
+  "schema_version": "eei-soak-benchmark-v1",
+  "system_name": "EEI",
+  "task_id": "T1307",
+  "acceptance_ids": [
+    "A209"
+  ],
+  "status": "PARTIAL",
+  "mode": "ci_smoke",
+  "generated_at": "2026-06-20T04:52:32Z",
+  "environment": {
+    "node": "v25.7.0",
+    "platform": "darwin-25.5.0-arm64",
+    "cpu_count": 8,
+    "browser": "chromium"
+  },
+  "configured_targets": {
+    "short_duration_hours": 4,
+    "long_duration_hours": 24
+  },
+  "measured_duration_seconds": 3,
+  "coverage": {
+    "browser_soak_measured": true,
+    "worker_soak_measured": true,
+    "full_4h_24h_measured": false,
+    "required_metric_groups": [
+      "heap",
+      "dom",
+      "listener",
+      "timer",
+      "cpu",
+      "retry",
+      "recovery"
+    ]
+  },
+  "budgets": {
+    "max_heap_growth_bytes": 8388608,
+    "max_dom_growth_nodes": 12,
+    "max_timer_leaks": 0,
+    "max_listener_leaks": 0,
+    "max_event_loop_lag_ms": 250
+  },
+  "browser": {
+    "heap_sample_available": true,
+    "heap_growth_bytes": 258219,
+    "heap_samples": {
+      "min": 876740,
+      "p50": 922536,
+      "p95": 983599.2,
+      "p99": 988025.76,
+      "max": 989168
+    },
+    "dom_node_growth": 0,
+    "dom_node_samples": {
+      "min": 86,
+      "p50": 86,
+      "p95": 86,
+      "p99": 86,
+      "max": 86
+    },
+    "frame_delta_ms": {
+      "min": 14.6,
+      "p50": 16.7,
+      "p95": 18.02,
+      "p99": 18.48,
+      "max": 18.7
+    },
+    "listener_balance": 0,
+    "timer_balance": 0,
+    "long_task_count": 0,
+    "max_long_task_ms": 0
+  },
+  "worker": {
+    "jobs_total": 12,
+    "jobs_completed": 12,
+    "retries_observed": 3,
+    "recoveries_observed": 3,
+    "dead_letters_observed": 0,
+    "event_loop_lag_ms": {
+      "min": 0.1032,
+      "p50": 2.0636,
+      "p95": 2.3683,
+      "p99": 2.8082,
+      "max": 2.8938
+    },
+    "cpu_user_ms": 11.716,
+    "cpu_system_ms": 1.621
+  },
+  "remaining_to_close_a209": [
+    "Run operator soak for 4 hours and 24 hours using this harness.",
+    "Attach release evidence for both durations before marking A209 DONE."
+  ]
+}

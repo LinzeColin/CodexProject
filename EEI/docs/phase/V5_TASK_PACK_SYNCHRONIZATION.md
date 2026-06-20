@@ -38,7 +38,7 @@ EEI identity is unchanged:
 | Scheduler, auto wake, idempotency, retry and dead-letter | STRESS-007 | T1304 | A206 | IN_PROGRESS |
 | Server-side saved views, conflict control and recovery | STRESS-011 | T1305 | A207 | IN_PROGRESS |
 | 10k, 100k and 1m relationship scale tests | STRESS-008 | T1306 | A208 | DONE |
-| 4h and 24h soak tests | STRESS-012 | T1307 | A209 | NOT_STARTED |
+| 4h and 24h soak tests | STRESS-012 | T1307 | A209 | IN_PROGRESS |
 | Production componentized frontend, real routes and real controls | UX-003, UX-009, UX-012 | T1308 | A211 | NOT_STARTED |
 | Formal brand legal and market clearance | BRAND-001 and EEI user constraint | T1309 | A210 | NOT_STARTED |
 

@@ -231,6 +231,27 @@ Residual risks:
 - Browser runtime benchmark uses a bounded SVG runtime contract with 500 visible nodes and 2000 visible edges; production componentized frontend remains T1308/A211.
 - Long-duration memory/timer/listener stability remains T1307/A209 soak scope.
 
+## 2026-06-20 - Phase 1 / T1307 A209 soak smoke harness
+
+Status: IN PROGRESS
+
+Completed:
+
+- Added `scripts/run_soak_smoke.mjs` as a browser+worker soak harness.
+- Added `make validate-soak-smoke` and wired it into `make verify`.
+- Generated `artifacts/tests/a209/t1307_soak_smoke.json` with heap, DOM, listener, timer, frame, long-task, CPU, retry and recovery metrics.
+- Advanced T1307/A209 governance from `NOT_STARTED` to `IN PROGRESS`.
+
+Verification results:
+
+- `node --check scripts/run_soak_smoke.mjs`: PASS.
+- `node scripts/run_soak_smoke.mjs --mode ci_smoke --duration-seconds 3 --output artifacts/tests/a209/t1307_soak_smoke.json --fail-on-budget --quiet`: PASS; output status remains `PARTIAL` because 4h/24h durations are not measured.
+
+Residual risks:
+
+- A209 is not complete until the same harness runs and records 4h and 24h operator soak evidence.
+- Smoke validates the measurement contract and budget checks only; it does not prove long-duration memory, timer, listener or retry stability.
+
 ## 2026-06-19 - Phase 1 / G2 database CI repair loop 1
 
 Status: IN PROGRESS

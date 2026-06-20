@@ -102,6 +102,7 @@ artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json
 artifacts/tests/a208/t1306_browser_runtime_benchmark.json
 artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json
 artifacts/tests/a208/t1306_scale_benchmark_smoke.json
+artifacts/tests/a209/t1307_soak_smoke.json
 brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
 config/brand_policy.yaml
 config/model_profiles/balanced-v2.json
@@ -290,6 +291,7 @@ scripts/preflight.sh
 scripts/run_browser_scale_benchmarks.mjs
 scripts/run_codex_autonomous.sh
 scripts/run_scale_benchmarks.py
+scripts/run_soak_smoke.mjs
 scripts/secret_scan.py
 scripts/smoke_test_prototype.py
 scripts/validate_catalog_integrity.py
