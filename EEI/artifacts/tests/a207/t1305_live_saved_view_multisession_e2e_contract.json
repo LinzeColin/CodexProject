@@ -53,13 +53,16 @@
     "latest_ci_result": {
       "provider": "GitHub Actions",
       "workflow": "EEI validation",
-      "run_id": "27862471613",
-      "job_id": "82460665725",
-      "commit_sha": "b5c76f3ede3eebe76a5979c59263111dc52c6255",
+      "run_id": "27875473970",
+      "job_id": "82494131119",
+      "commit_sha": "6e95b450250a447a50061fb926b80e164bdbf9c5",
       "verify_static_contract_lint_typecheck_unit_step": "PASS",
-      "verify_g2_postgresql_migrations_and_e2e_step": "PASS",
+      "verify_g2_static_contract_lint_typecheck_unit_step": "PASS",
+      "verify_g2_postgresql_integration_step": "PASS",
+      "verify_g2_browser_e2e_step": "PASS",
+      "verify_g2_live_fastapi_postgresql_e2e_step": "PASS",
       "command": "make verify-g2-db",
-      "validated_contract": "live FastAPI/PostgreSQL multisession saved-view E2E with stale-version conflict and recovery"
+      "validated_contract": "trusted gateway saved-view identity plus live FastAPI/PostgreSQL multisession saved-view E2E with stale-version conflict and recovery"
     }
   },
   "remaining_to_close_a207": []

@@ -3,7 +3,7 @@
   "system_name": "EEI",
   "task_id": "T1305",
   "acceptance_ids": ["A207"],
-  "status": "TRUSTED_GATEWAY_LOCAL_VALIDATED",
+  "status": "TRUSTED_GATEWAY_CI_VALIDATED",
   "generated_at": "2026-06-21T00:00:00Z",
   "implemented_contracts": [
     "Production saved-view identity mode defaults to trusted_gateway when EEI_ENV is prod or production",
@@ -60,6 +60,18 @@
       "ruff_targeted": "PASS",
       "unit": "PASS_17_OF_17",
       "contract_validation": "PASS"
+    },
+    "latest_ci_result": {
+      "provider": "GitHub Actions",
+      "workflow": "EEI validation",
+      "run_id": "27875473970",
+      "job_id": "82494131119",
+      "commit_sha": "6e95b450250a447a50061fb926b80e164bdbf9c5",
+      "verify_static_contract_lint_typecheck_unit_step": "PASS",
+      "verify_g2_static_contract_lint_typecheck_unit_step": "PASS",
+      "verify_g2_postgresql_integration_step": "PASS",
+      "verify_g2_browser_e2e_step": "PASS",
+      "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
     }
   },
   "remaining_to_close_a207": []
