@@ -2546,10 +2546,11 @@ Residual risks:
 - Local `/usr/local/bin/npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g "A204 and A205"` with non-sandbox network/browser after sandbox DNS failure: PASS, 1/1.
 - Local `make verify`: PASS.
 - Local `make verify-g2-db`: BLOCKED before tests because Docker is not installed in this environment; GitHub Actions remains the PostgreSQL/live E2E evidence source for this run.
+- GitHub Actions `EEI validation` on `2b5b31ba2ed85b83d5526299cfed2e6e47073bb9`: PASS, run `27868806332`, job `82477214953`; Steps 7-12 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 
 ### Remaining gaps
 
 - Model-center online profile editing remains open.
 - Dedicated score recompute controls remain open.
 - Worker-driven data snapshot refresh and transactional outbox remain open.
-- CI validation for this commit is pending until pushed.
+- Online model editing, dedicated score recompute controls and worker-driven data refresh/outbox still keep T1303/A204-A205 open despite this CI-validated rollback endpoint slice.
