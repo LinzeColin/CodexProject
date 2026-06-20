@@ -703,6 +703,21 @@ paths:
     get:
       operationId: listSavedViews
       parameters:
+      - name: X-EEI-User-Namespace
+        in: header
+        required: false
+        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        schema:
+          type: string
+          default: local_user
+          maxLength: 120
+      - name: X-EEI-Actor
+        in: header
+        required: false
+        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        schema:
+          type: string
+          maxLength: 120
       - name: workspace_key
         in: query
         schema:
@@ -724,6 +739,22 @@ paths:
                   $ref: '#/components/schemas/SavedView'
     post:
       operationId: createSavedView
+      parameters:
+      - name: X-EEI-User-Namespace
+        in: header
+        required: false
+        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        schema:
+          type: string
+          default: local_user
+          maxLength: 120
+      - name: X-EEI-Actor
+        in: header
+        required: false
+        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        schema:
+          type: string
+          maxLength: 120
       requestBody:
         required: true
         content:
@@ -743,6 +774,21 @@ paths:
     get:
       operationId: getSavedView
       parameters:
+      - name: X-EEI-User-Namespace
+        in: header
+        required: false
+        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        schema:
+          type: string
+          default: local_user
+          maxLength: 120
+      - name: X-EEI-Actor
+        in: header
+        required: false
+        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        schema:
+          type: string
+          maxLength: 120
       - name: savedViewId
         in: path
         required: true
@@ -761,6 +807,21 @@ paths:
     put:
       operationId: updateSavedView
       parameters:
+      - name: X-EEI-User-Namespace
+        in: header
+        required: false
+        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        schema:
+          type: string
+          default: local_user
+          maxLength: 120
+      - name: X-EEI-Actor
+        in: header
+        required: false
+        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        schema:
+          type: string
+          maxLength: 120
       - name: savedViewId
         in: path
         required: true
@@ -786,6 +847,21 @@ paths:
     get:
       operationId: listSavedViewVersions
       parameters:
+      - name: X-EEI-User-Namespace
+        in: header
+        required: false
+        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        schema:
+          type: string
+          default: local_user
+          maxLength: 120
+      - name: X-EEI-Actor
+        in: header
+        required: false
+        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        schema:
+          type: string
+          maxLength: 120
       - name: savedViewId
         in: path
         required: true
@@ -807,6 +883,21 @@ paths:
     post:
       operationId: restoreSavedView
       parameters:
+      - name: X-EEI-User-Namespace
+        in: header
+        required: false
+        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        schema:
+          type: string
+          default: local_user
+          maxLength: 120
+      - name: X-EEI-Actor
+        in: header
+        required: false
+        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        schema:
+          type: string
+          maxLength: 120
       - name: savedViewId
         in: path
         required: true

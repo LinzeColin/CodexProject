@@ -2841,9 +2841,19 @@ class DomainRepository:
             ).fetchall()
         return [self.saved_view_payload(row) for row in rows]
 
-    def get_saved_view(self, saved_view_id: UUID) -> dict[str, Any]:
+    def get_saved_view(
+        self,
+        saved_view_id: UUID,
+        *,
+        namespace: str = "local_user",
+    ) -> dict[str, Any]:
         with self.connect() as connection:
-            row = self._saved_view_row(connection, saved_view_id, for_update=False)
+            row = self._saved_view_row(
+                connection,
+                saved_view_id,
+                namespace=namespace,
+                for_update=False,
+            )
             versions = self._saved_view_versions(connection, saved_view_id)
         return self.saved_view_payload(row, versions=versions)
 
@@ -2853,6 +2863,7 @@ class DomainRepository:
         name: str,
         state: dict[str, Any],
         description: str | None = None,
+        namespace: str = "local_user",
         workspace_key: str = "default",
         schema_version: str = SAVED_VIEW_SCHEMA_VERSION,
         change_note: str | None = None,
@@ -2868,7 +2879,7 @@ class DomainRepository:
                 FROM saved_views
                 WHERE namespace = %s AND workspace_key = %s AND name = %s
                 """,
-                (actor, workspace_key, name),
+                (namespace, workspace_key, name),
             ).fetchone()
             if existing is not None:
                 conflict_detail = {
@@ -2904,7 +2915,7 @@ class DomainRepository:
                     RETURNING *
                     """,
                     (
-                        actor,
+                        namespace,
                         workspace_key,
                         name,
                         description,
@@ -2949,7 +2960,7 @@ class DomainRepository:
             raise ConflictError(conflict_detail)
         if saved_view_id is None:
             raise RepositoryError("Saved view create did not return an id")
-        return self.get_saved_view(saved_view_id)
+        return self.get_saved_view(saved_view_id, namespace=namespace)
 
     def update_saved_view(
         self,
@@ -2957,6 +2968,7 @@ class DomainRepository:
         *,
         expected_version: int,
         state: dict[str, Any],
+        namespace: str = "local_user",
         name: str | None = None,
         description: str | None = None,
         schema_version: str = SAVED_VIEW_SCHEMA_VERSION,
@@ -2966,7 +2978,12 @@ class DomainRepository:
     ) -> dict[str, Any]:
         conflict_detail: dict[str, Any] | None = None
         with self.connect() as connection:
-            current = self._saved_view_row(connection, saved_view_id, for_update=True)
+            current = self._saved_view_row(
+                connection,
+                saved_view_id,
+                namespace=namespace,
+                for_update=True,
+            )
             actual_version = int(current["current_version"])
             if actual_version != expected_version:
                 conflict_detail = self._saved_view_conflict_detail(
@@ -3046,7 +3063,7 @@ class DomainRepository:
                 )
         if conflict_detail is not None:
             raise ConflictError(conflict_detail)
-        return self.get_saved_view(saved_view_id)
+        return self.get_saved_view(saved_view_id, namespace=namespace)
 
     def restore_saved_view(
         self,
@@ -3055,11 +3072,17 @@ class DomainRepository:
         target_version: int,
         expected_version: int,
         change_note: str | None = None,
+        namespace: str = "local_user",
         actor: str = "local_user",
     ) -> dict[str, Any]:
         conflict_detail: dict[str, Any] | None = None
         with self.connect() as connection:
-            current = self._saved_view_row(connection, saved_view_id, for_update=True)
+            current = self._saved_view_row(
+                connection,
+                saved_view_id,
+                namespace=namespace,
+                for_update=True,
+            )
             target = connection.execute(
                 """
                 SELECT *
@@ -3157,11 +3180,21 @@ class DomainRepository:
                 )
         if conflict_detail is not None:
             raise ConflictError(conflict_detail)
-        return self.get_saved_view(saved_view_id)
+        return self.get_saved_view(saved_view_id, namespace=namespace)
 
-    def list_saved_view_versions(self, saved_view_id: UUID) -> list[dict[str, Any]]:
+    def list_saved_view_versions(
+        self,
+        saved_view_id: UUID,
+        *,
+        namespace: str = "local_user",
+    ) -> list[dict[str, Any]]:
         with self.connect() as connection:
-            self._saved_view_row(connection, saved_view_id, for_update=False)
+            self._saved_view_row(
+                connection,
+                saved_view_id,
+                namespace=namespace,
+                for_update=False,
+            )
             return self._saved_view_versions(connection, saved_view_id)
 
     def _saved_view_row(
@@ -3169,6 +3202,7 @@ class DomainRepository:
         connection: psycopg.Connection[dict[str, Any]],
         saved_view_id: UUID,
         *,
+        namespace: str,
         for_update: bool,
     ) -> dict[str, Any]:
         lock_clause = "FOR UPDATE" if for_update else ""
@@ -3182,9 +3216,10 @@ class DomainRepository:
                    ) AS version_count
             FROM saved_views sv
             WHERE sv.id = %s
+              AND sv.namespace = %s
             {lock_clause}
             """,
-            (saved_view_id,),
+            (saved_view_id, namespace),
         ).fetchone()
         if row is None:
             raise NotFoundError(f"Saved view not found: {saved_view_id}")
