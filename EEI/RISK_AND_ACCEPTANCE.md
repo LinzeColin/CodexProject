@@ -20,7 +20,7 @@
 4. 参数激活与快照切换造成跨视图版本不一致。
 5. 文档、目录、代码和 GitHub Issue 发生漂移。
 6. 战略信号被误读为投资收益预测。
-7. v5 `OPEN_PRODUCTION` 项被误认为已完成；T1300/A201 已关闭，T1301/A202 仅进行到 curated official ingestion 基础层，真实采集闭环、API、模型激活/刷新、调度、保存视图、规模压测、soak、生产前端和品牌清权仍需证据。
+7. v5 `OPEN_PRODUCTION` 项被误认为已完成；T1300/A201 已关闭，T1301/A202 仅进行到 curated official ingestion、candidate facts 和 review queue 基础层，真实采集闭环、API、模型激活/刷新、调度、保存视图、规模压测、soak、生产前端和品牌清权仍需证据。
 
 ## 发布停止条件
 

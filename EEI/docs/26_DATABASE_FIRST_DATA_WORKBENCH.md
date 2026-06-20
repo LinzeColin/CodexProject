@@ -55,6 +55,7 @@
 - `relationships` / `relationship_evidence`；
 - `events` / `event_evidence`；
 - `source_documents` / `raw_source_snapshots` / `entity_resolution_candidates` / `ingestion_evidence_chain`；
+- `relationship_fact_candidates` / `relationship_fact_candidate_evidence` / `manual_review_queue`；
 - `model_versions` / `model_profile_versions` / `parameter_values`；
 - `score_runs` / `score_results` / `score_snapshots`；
 - `data_snapshots` / `active_snapshots`；

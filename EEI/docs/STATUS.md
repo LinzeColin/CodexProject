@@ -9,5 +9,5 @@
 | 高保真原型 | DONE / fixture-only |
 | GitHub 治理文件 | DONE / 待推送仓库启用 |
 | 生产实现 | T1300 DONE; T1301 IN PROGRESS; v0.1 BLOCKED |
-| 真实数据库和数据接入 | PostgreSQL version layers DONE; curated official ingestion audit layer IN PROGRESS |
+| 真实数据库和数据接入 | PostgreSQL version layers DONE; curated official ingestion + candidate facts IN PROGRESS |
 | 发布 | BLOCKED UNTIL G0-G9 PASS |

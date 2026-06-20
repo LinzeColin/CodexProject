@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "parser_version": "nvidia-public-anchor-v1",
+  "record_mode": "curated_official_fixture",
+  "source_threshold_min": 2,
+  "source_snapshots": [
+    {
+      "anchor_id": "GV-SNAPSHOT-001",
+      "source_date": "2026-01-25",
+      "official_publisher": "SEC EDGAR / NVIDIA Form 10-K",
+      "title": "NVIDIA Form 10-K FY2026 - Manufacturing disclosure",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm",
+      "evidence_scope": "NVIDIA foundry and manufacturing supplier disclosure",
+      "expected_entities_or_stages": "NVIDIA Corporation; TSMC; Samsung; SK hynix; Micron; Hon Hai/Foxconn; Wistron; Fabrinet; foundry; wafer; CoWoS; assembly; testing; packaging",
+      "validation_status": "verified_official",
+      "notes": "SEC-hosted NVIDIA filing. Use to create candidate supplier/manufacturing facts only; one source is insufficient for automatic publication."
+    },
+    {
+      "anchor_id": "GV-SNAPSHOT-002",
+      "source_date": "2022-05-04",
+      "official_publisher": "ASML Stories",
+      "title": "Busting ASML myths",
+      "url": "https://www.asml.com/news/stories/2022/busting-asml-myths",
+      "evidence_scope": "ASML lithography systems used by named chipmakers",
+      "expected_entities_or_stages": "ASML; TSMC; Intel; Samsung; DUV; EUV; lithography; equipment",
+      "validation_status": "verified_official",
+      "notes": "ASML official story identifies TSMC among customers using ASML DUV and EUV lithography systems; use as equipment-provider candidate evidence."
+    }
+  ],
+  "relationship_candidates": [
+    {
+      "candidate_key": "GV-FACT-001",
+      "source_anchor_id": "GV-SNAPSHOT-001",
+      "subject_candidate_name": "TSMC",
+      "object_candidate_name": "NVIDIA Corporation",
+      "relationship_type": "wafer_foundry_for",
+      "relationship_family": "supply_chain_operations",
+      "confidence": 0.88,
+      "independent_source_count": 1,
+      "review_status": "machine_verified",
+      "publication_status": "candidate",
+      "locator": "SEC NVIDIA Form 10-K FY2026, Manufacturing section",
+      "support_excerpt": "NVIDIA says it utilizes foundries such as TSMC to produce semiconductor wafers.",
+      "counter_evidence": [],
+      "structured_fact": {
+        "path_role": "NVIDIA_TO_TSMC_GOLDEN_VERTICAL",
+        "direction_note": "The source states TSMC is a foundry used by NVIDIA; graph traversal may show NVIDIA -> TSMC as a reverse edge.",
+        "publication_blocker": "requires independent source count >= 2 or human review override"
+      }
+    },
+    {
+      "candidate_key": "GV-FACT-002",
+      "source_anchor_id": "GV-SNAPSHOT-002",
+      "subject_candidate_name": "ASML",
+      "object_candidate_name": "TSMC",
+      "relationship_type": "equipment_provider_to",
+      "relationship_family": "supply_chain_operations",
+      "confidence": 0.84,
+      "independent_source_count": 1,
+      "review_status": "machine_verified",
+      "publication_status": "candidate",
+      "locator": "ASML official story, Busting ASML myths",
+      "support_excerpt": "ASML says customers such as TSMC use its DUV and EUV lithography systems.",
+      "counter_evidence": [],
+      "structured_fact": {
+        "path_role": "TSMC_TO_ASML_GOLDEN_VERTICAL",
+        "direction_note": "The source supports ASML equipment use by TSMC; graph traversal may show TSMC -> ASML as a reverse edge.",
+        "publication_blocker": "requires independent source count >= 2 or human review override"
+      }
+    }
+  ]
+}

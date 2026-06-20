@@ -12,18 +12,24 @@ from db_tools import ROOT, connect_database
 from psycopg.types.json import Jsonb
 
 ANCHOR_PATH = ROOT / "data/nvidia_public_source_anchors.csv"
+FACT_CANDIDATE_PATH = ROOT / "data/golden_vertical_fact_candidates.json"
 PARSER_VERSION = "nvidia-public-anchor-v1"
 RECORD_MODE = "curated_official_fixture"
 ENTITY_RESOLUTION_MIN_CONFIDENCE = 0.72
+INDEPENDENT_SOURCE_MIN = 2
 ANCHOR_SUBJECT = "NVIDIA Corporation"
 
 STAGE_TERMS = {
     "AI factories",
     "CoWoS",
+    "DUV",
+    "EUV",
     "Omniverse",
     "assembly",
     "chip",
+    "equipment",
     "foundry",
+    "lithography",
     "manufacturing",
     "memory",
     "packaging",
@@ -66,6 +72,10 @@ def read_csv(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def read_json(path: Path) -> dict[str, object]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def canonical_json(payload: object) -> str:
     return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
@@ -76,6 +86,14 @@ def sha256_text(payload: str) -> str:
 
 def file_hash(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def combined_hash(paths: list[Path]) -> str:
+    digest = hashlib.sha256()
+    for path in paths:
+        digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
 
 
 def parse_source_date(value: str) -> datetime:
@@ -90,8 +108,8 @@ def normalize_name(value: str) -> str:
     return " ".join(value.strip().lower().replace("/", " / ").split())
 
 
-def expected_tokens(row: dict[str, str]) -> list[str]:
-    tokens = [ANCHOR_SUBJECT]
+def expected_tokens(row: dict[str, str], *, include_anchor_subject: bool = True) -> list[str]:
+    tokens = [ANCHOR_SUBJECT] if include_anchor_subject else []
     tokens.extend(
         token.strip()
         for token in row["expected_entities_or_stages"].split(";")
@@ -104,6 +122,21 @@ def expected_tokens(row: dict[str, str]) -> list[str]:
             unique_tokens.append(token)
             seen.add(token)
     return unique_tokens
+
+
+def snapshot_to_row(snapshot: dict[str, object]) -> dict[str, str]:
+    return {
+        "_source_path": FACT_CANDIDATE_PATH.relative_to(ROOT).as_posix(),
+        "anchor_id": str(snapshot["anchor_id"]),
+        "source_date": str(snapshot["source_date"]),
+        "official_publisher": str(snapshot["official_publisher"]),
+        "title": str(snapshot["title"]),
+        "url": str(snapshot["url"]),
+        "evidence_scope": str(snapshot["evidence_scope"]),
+        "expected_entities_or_stages": str(snapshot["expected_entities_or_stages"]),
+        "validation_status": str(snapshot["validation_status"]),
+        "notes": str(snapshot["notes"]),
+    }
 
 
 def ensure_company_official_source(connection: object) -> str:
@@ -245,7 +278,7 @@ def upsert_source_document(
     content_hash: str,
 ) -> str:
     source_date = parse_source_date(row["source_date"])
-    source_path = ANCHOR_PATH.relative_to(ROOT).as_posix()
+    source_path = row.get("_source_path", ANCHOR_PATH.relative_to(ROOT).as_posix())
     result = connection.execute(
         """
         INSERT INTO source_documents(
@@ -417,7 +450,8 @@ def upsert_evidence_chain(
             raw_snapshot_id,
             source_document_id,
             subject_resolution_id,
-            f"{ANCHOR_PATH.relative_to(ROOT).as_posix()}#{row['anchor_id']}",
+            f"{row.get('_source_path', ANCHOR_PATH.relative_to(ROOT).as_posix())}"
+            f"#{row['anchor_id']}",
             row["notes"],
             Jsonb(structured_fact),
             Jsonb([]),
@@ -426,51 +460,325 @@ def upsert_evidence_chain(
     )
 
 
+def resolution_id(
+    connection: object,
+    raw_snapshot_id: str,
+    candidate_name: str,
+) -> str:
+    row = connection.execute(
+        """
+        SELECT id
+        FROM entity_resolution_candidates
+        WHERE raw_snapshot_id = %s AND candidate_name = %s
+        """,
+        (raw_snapshot_id, candidate_name),
+    ).fetchone()
+    if row is None:
+        raise RuntimeError(f"Missing resolution candidate {candidate_name}")
+    return str(row[0])
+
+
+def upsert_candidate_evidence_chain(
+    connection: object,
+    raw_snapshot_id: str,
+    source_document_id: str,
+    subject_resolution_id: str,
+    object_resolution_id: str,
+    candidate: dict[str, object],
+) -> str:
+    structured_fact = dict(candidate["structured_fact"])
+    structured_fact.update(
+        {
+            "candidate_key": candidate["candidate_key"],
+            "record_mode": RECORD_MODE,
+            "source_threshold_min": INDEPENDENT_SOURCE_MIN,
+            "independent_source_count": candidate["independent_source_count"],
+        }
+    )
+    result = connection.execute(
+        """
+        INSERT INTO ingestion_evidence_chain(
+          raw_snapshot_id, source_document_id, subject_resolution_id, object_resolution_id,
+          relationship_type, relationship_family, evidence_role, locator, support_excerpt,
+          structured_fact, counter_evidence, parser_version, confidence, review_status
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, 'supports', %s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (
+          raw_snapshot_id, source_document_id, evidence_role, locator, parser_version
+        ) DO UPDATE SET
+          subject_resolution_id = EXCLUDED.subject_resolution_id,
+          object_resolution_id = EXCLUDED.object_resolution_id,
+          relationship_type = EXCLUDED.relationship_type,
+          relationship_family = EXCLUDED.relationship_family,
+          support_excerpt = EXCLUDED.support_excerpt,
+          structured_fact = EXCLUDED.structured_fact,
+          counter_evidence = EXCLUDED.counter_evidence,
+          confidence = EXCLUDED.confidence,
+          review_status = EXCLUDED.review_status
+        RETURNING id
+        """,
+        (
+            raw_snapshot_id,
+            source_document_id,
+            subject_resolution_id,
+            object_resolution_id,
+            candidate["relationship_type"],
+            candidate["relationship_family"],
+            candidate["locator"],
+            candidate["support_excerpt"],
+            Jsonb(structured_fact),
+            Jsonb(candidate["counter_evidence"]),
+            PARSER_VERSION,
+            candidate["confidence"],
+            candidate["review_status"],
+        ),
+    ).fetchone()
+    return str(result[0])
+
+
+def upsert_relationship_fact_candidate(
+    connection: object,
+    subject_resolution_id: str,
+    object_resolution_id: str,
+    candidate: dict[str, object],
+) -> str:
+    source_count = int(candidate["independent_source_count"])
+    source_threshold_met = source_count >= INDEPENDENT_SOURCE_MIN
+    structured_fact = dict(candidate["structured_fact"])
+    structured_fact.update(
+        {
+            "candidate_key": candidate["candidate_key"],
+            "record_mode": RECORD_MODE,
+            "source_threshold_min": INDEPENDENT_SOURCE_MIN,
+        }
+    )
+    result = connection.execute(
+        """
+        INSERT INTO relationship_fact_candidates(
+          candidate_key, subject_resolution_id, object_resolution_id, relationship_type,
+          relationship_family, record_mode, fact_status, publication_status, confidence,
+          independent_source_count, source_threshold_met, review_status, parser_version,
+          structured_fact, counter_evidence
+        )
+        VALUES (
+          %s, %s, %s, %s, %s, %s, 'reported', %s, %s, %s, %s, %s, %s, %s, %s
+        )
+        ON CONFLICT (candidate_key) DO UPDATE SET
+          subject_resolution_id = EXCLUDED.subject_resolution_id,
+          object_resolution_id = EXCLUDED.object_resolution_id,
+          relationship_type = EXCLUDED.relationship_type,
+          relationship_family = EXCLUDED.relationship_family,
+          record_mode = EXCLUDED.record_mode,
+          fact_status = EXCLUDED.fact_status,
+          publication_status = EXCLUDED.publication_status,
+          confidence = EXCLUDED.confidence,
+          independent_source_count = EXCLUDED.independent_source_count,
+          source_threshold_met = EXCLUDED.source_threshold_met,
+          review_status = EXCLUDED.review_status,
+          parser_version = EXCLUDED.parser_version,
+          structured_fact = EXCLUDED.structured_fact,
+          counter_evidence = EXCLUDED.counter_evidence,
+          updated_at = now()
+        RETURNING id
+        """,
+        (
+            candidate["candidate_key"],
+            subject_resolution_id,
+            object_resolution_id,
+            candidate["relationship_type"],
+            candidate["relationship_family"],
+            RECORD_MODE,
+            candidate["publication_status"],
+            candidate["confidence"],
+            source_count,
+            source_threshold_met,
+            candidate["review_status"],
+            PARSER_VERSION,
+            Jsonb(structured_fact),
+            Jsonb(candidate["counter_evidence"]),
+        ),
+    ).fetchone()
+    return str(result[0])
+
+
+def upsert_relationship_fact_candidate_evidence(
+    connection: object,
+    candidate_id: str,
+    evidence_chain_id: str,
+    source_document_id: str,
+    candidate: dict[str, object],
+) -> None:
+    connection.execute(
+        """
+        INSERT INTO relationship_fact_candidate_evidence(
+          candidate_id, ingestion_evidence_chain_id, source_document_id, role, locator,
+          support_excerpt
+        )
+        VALUES (%s, %s, %s, 'supports', %s, %s)
+        ON CONFLICT (candidate_id, ingestion_evidence_chain_id, role) DO UPDATE SET
+          source_document_id = EXCLUDED.source_document_id,
+          locator = EXCLUDED.locator,
+          support_excerpt = EXCLUDED.support_excerpt
+        """,
+        (
+            candidate_id,
+            evidence_chain_id,
+            source_document_id,
+            candidate["locator"],
+            candidate["support_excerpt"],
+        ),
+    )
+
+
+def upsert_manual_review_queue(
+    connection: object,
+    candidate_id: str,
+    candidate: dict[str, object],
+) -> None:
+    connection.execute(
+        """
+        INSERT INTO manual_review_queue(
+          queue_key, object_type, object_id, reason, priority, status, requested_by
+        )
+        VALUES (%s, 'relationship_fact_candidate', %s, %s, 'P0', 'open', 'system')
+        ON CONFLICT (queue_key) DO UPDATE SET
+          object_id = EXCLUDED.object_id,
+          reason = EXCLUDED.reason,
+          priority = EXCLUDED.priority,
+          status = 'open',
+          resolved_at = NULL
+        """,
+        (
+            f"review:{candidate['candidate_key']}",
+            candidate_id,
+            "Publication requires independent-source threshold or human review approval.",
+        ),
+    )
+
+
+def load_source_snapshot(
+    connection: object,
+    ingestion_run_id: str,
+    source_id: str,
+    row: dict[str, str],
+    source_kind: str,
+    include_anchor_subject: bool,
+) -> tuple[str, str]:
+    tokens = expected_tokens(row, include_anchor_subject=include_anchor_subject)
+    raw_payload = {
+        "source_row": row,
+        "tokens": tokens,
+        "parser_version": PARSER_VERSION,
+        "record_mode": RECORD_MODE,
+        "source_kind": source_kind,
+    }
+    content_hash = sha256_text(canonical_json(raw_payload))
+    source_document_id = upsert_source_document(connection, source_id, row, content_hash)
+    raw_snapshot_id = upsert_raw_snapshot(
+        connection,
+        ingestion_run_id,
+        source_document_id,
+        row,
+        raw_payload,
+        content_hash,
+    )
+    subject_resolution_id = ""
+    for token in tokens:
+        candidate_id = upsert_resolution_candidate(connection, raw_snapshot_id, token)
+        if token == ANCHOR_SUBJECT:
+            subject_resolution_id = candidate_id
+    if subject_resolution_id:
+        upsert_evidence_chain(
+            connection,
+            raw_snapshot_id,
+            source_document_id,
+            subject_resolution_id,
+            row,
+            tokens,
+        )
+    return raw_snapshot_id, source_document_id
+
+
 def load_anchors() -> dict[str, int]:
     rows = read_csv(ANCHOR_PATH)
-    source_hash = file_hash(ANCHOR_PATH)
+    fact_config = read_json(FACT_CANDIDATE_PATH)
+    fact_snapshot_rows = [
+        snapshot_to_row(snapshot)
+        for snapshot in fact_config["source_snapshots"]
+    ]
+    source_hash = combined_hash([ANCHOR_PATH, FACT_CANDIDATE_PATH])
     with connect_database() as connection:
         source_id = ensure_company_official_source(connection)
         ingestion_run_id = start_ingestion_run(connection, source_id, source_hash)
         candidate_total = 0
+        raw_snapshots: dict[str, tuple[str, str]] = {}
         for row in rows:
-            tokens = expected_tokens(row)
-            raw_payload = {
-                "source_row": row,
-                "tokens": tokens,
-                "parser_version": PARSER_VERSION,
-                "record_mode": RECORD_MODE,
-            }
-            content_hash = sha256_text(canonical_json(raw_payload))
-            source_document_id = upsert_source_document(connection, source_id, row, content_hash)
-            raw_snapshot_id = upsert_raw_snapshot(
+            raw_snapshot_id, source_document_id = load_source_snapshot(
                 connection,
                 ingestion_run_id,
-                source_document_id,
+                source_id,
                 row,
-                raw_payload,
-                content_hash,
+                "discovery_anchor",
+                True,
             )
-            subject_resolution_id = ""
-            for token in tokens:
-                candidate_id = upsert_resolution_candidate(connection, raw_snapshot_id, token)
-                candidate_total += 1
-                if token == ANCHOR_SUBJECT:
-                    subject_resolution_id = candidate_id
-            if not subject_resolution_id:
-                raise RuntimeError(f"{row['anchor_id']} missing NVIDIA subject candidate")
-            upsert_evidence_chain(
+            raw_snapshots[row["anchor_id"]] = (raw_snapshot_id, source_document_id)
+            candidate_total += len(expected_tokens(row, include_anchor_subject=True))
+
+        for row in fact_snapshot_rows:
+            raw_snapshot_id, source_document_id = load_source_snapshot(
+                connection,
+                ingestion_run_id,
+                source_id,
+                row,
+                "golden_vertical_fact_candidate_source",
+                False,
+            )
+            raw_snapshots[row["anchor_id"]] = (raw_snapshot_id, source_document_id)
+            candidate_total += len(expected_tokens(row, include_anchor_subject=False))
+
+        fact_candidate_count = 0
+        for candidate in fact_config["relationship_candidates"]:
+            raw_snapshot_id, source_document_id = raw_snapshots[str(candidate["source_anchor_id"])]
+            subject_resolution_id = resolution_id(
+                connection,
+                raw_snapshot_id,
+                str(candidate["subject_candidate_name"]),
+            )
+            object_resolution_id = resolution_id(
+                connection,
+                raw_snapshot_id,
+                str(candidate["object_candidate_name"]),
+            )
+            evidence_chain_id = upsert_candidate_evidence_chain(
                 connection,
                 raw_snapshot_id,
                 source_document_id,
                 subject_resolution_id,
-                row,
-                tokens,
+                object_resolution_id,
+                candidate,
             )
+            fact_candidate_id = upsert_relationship_fact_candidate(
+                connection,
+                subject_resolution_id,
+                object_resolution_id,
+                candidate,
+            )
+            upsert_relationship_fact_candidate_evidence(
+                connection,
+                fact_candidate_id,
+                evidence_chain_id,
+                source_document_id,
+                candidate,
+            )
+            upsert_manual_review_queue(connection, fact_candidate_id, candidate)
+            fact_candidate_count += 1
+
         counts = {
             "anchors": len(rows),
+            "fact_source_snapshots": len(fact_snapshot_rows),
             "entity_resolution_candidates": candidate_total,
-            "evidence_chain_rows": len(rows),
+            "evidence_chain_rows": len(rows) + fact_candidate_count,
+            "relationship_fact_candidates": fact_candidate_count,
         }
         finish_ingestion_run(connection, ingestion_run_id, counts)
     return counts
