@@ -699,6 +699,135 @@ paths:
       responses:
         '204':
           description: Soft removed and operation logged
+  /v1/saved-views:
+    get:
+      operationId: listSavedViews
+      parameters:
+      - name: workspace_key
+        in: query
+        schema:
+          type: string
+          default: default
+      - name: include_inactive
+        in: query
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Server-side saved views for the workspace.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SavedView'
+    post:
+      operationId: createSavedView
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SavedViewCreate'
+      responses:
+        '201':
+          description: Created with version 1.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SavedView'
+        '409':
+          description: Saved view name already exists.
+  /v1/saved-views/{savedViewId}:
+    get:
+      operationId: getSavedView
+      parameters:
+      - name: savedViewId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Saved view with version history.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SavedView'
+        '404':
+          description: Saved view not found.
+    put:
+      operationId: updateSavedView
+      parameters:
+      - name: savedViewId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SavedViewUpdate'
+      responses:
+        '200':
+          description: Updated and appended as a new saved-view version.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SavedView'
+        '409':
+          description: Optimistic version conflict. Fetch latest view or restore from versions.
+  /v1/saved-views/{savedViewId}/versions:
+    get:
+      operationId: listSavedViewVersions
+      parameters:
+      - name: savedViewId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Saved-view immutable version chain, newest first.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SavedViewVersion'
+        '404':
+          description: Saved view not found.
+  /v1/saved-views/{savedViewId}/restore:
+    post:
+      operationId: restoreSavedView
+      parameters:
+      - name: savedViewId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SavedViewRestore'
+      responses:
+        '200':
+          description: Restored target version into a new current version.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SavedView'
+        '409':
+          description: Optimistic version conflict during restore.
   /v1/scoring/models:
     get:
       operationId: listScoringModels
@@ -2473,6 +2602,202 @@ components:
         saved_state:
           type: object
           additionalProperties: true
+    SavedView:
+      type: object
+      required:
+      - id
+      - namespace
+      - workspace_key
+      - name
+      - state
+      - schema_version
+      - current_version
+      - active
+      properties:
+        id:
+          type: string
+          format: uuid
+        namespace:
+          type: string
+        workspace_key:
+          type: string
+        name:
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+        state:
+          type: object
+          additionalProperties: true
+        schema_version:
+          type: string
+          enum:
+          - saved-view-v1
+        current_version:
+          type: integer
+          minimum: 1
+        active:
+          type: boolean
+        created_by:
+          type: string
+        updated_by:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        last_restored_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties: true
+        version_count:
+          type: integer
+          minimum: 1
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SavedViewVersion'
+    SavedViewVersion:
+      type: object
+      required:
+      - id
+      - saved_view_id
+      - version_no
+      - state
+      - schema_version
+      - action_type
+      properties:
+        id:
+          type: string
+          format: uuid
+        saved_view_id:
+          type: string
+          format: uuid
+        version_no:
+          type: integer
+          minimum: 1
+        state:
+          type: object
+          additionalProperties: true
+        schema_version:
+          type: string
+          enum:
+          - saved-view-v1
+        action_type:
+          type: string
+          enum:
+          - create
+          - update
+          - restore
+        restored_from_version_no:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+        change_note:
+          type:
+          - string
+          - 'null'
+        created_by:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties: true
+    SavedViewCreate:
+      type: object
+      required:
+      - name
+      - state
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type:
+          - string
+          - 'null'
+        workspace_key:
+          type: string
+          default: default
+        state:
+          type: object
+          additionalProperties: true
+        schema_version:
+          type: string
+          enum:
+          - saved-view-v1
+          default: saved-view-v1
+        change_note:
+          type:
+          - string
+          - 'null'
+          maxLength: 500
+        metadata:
+          type: object
+          additionalProperties: true
+    SavedViewUpdate:
+      type: object
+      required:
+      - expected_version
+      - state
+      properties:
+        expected_version:
+          type: integer
+          minimum: 1
+        state:
+          type: object
+          additionalProperties: true
+        name:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          maxLength: 200
+        description:
+          type:
+          - string
+          - 'null'
+        schema_version:
+          type: string
+          enum:
+          - saved-view-v1
+          default: saved-view-v1
+        change_note:
+          type:
+          - string
+          - 'null'
+          maxLength: 500
+        metadata:
+          type: object
+          additionalProperties: true
+    SavedViewRestore:
+      type: object
+      required:
+      - target_version
+      - expected_version
+      properties:
+        target_version:
+          type: integer
+          minimum: 1
+        expected_version:
+          type: integer
+          minimum: 1
+        change_note:
+          type:
+          - string
+          - 'null'
+          maxLength: 500
     ScoringProfile:
       type: object
       required:

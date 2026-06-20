@@ -98,6 +98,32 @@ class WatchlistItem(BaseModel):
     saved_state: dict[str, Any] = Field(default_factory=dict)
 
 
+class SavedViewCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=200)
+    description: str | None = None
+    workspace_key: str = Field(default="default", min_length=1, max_length=120)
+    state: dict[str, Any]
+    schema_version: Literal["saved-view-v1"] = "saved-view-v1"
+    change_note: str | None = Field(default=None, max_length=500)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class SavedViewUpdate(BaseModel):
+    expected_version: int = Field(ge=1)
+    state: dict[str, Any]
+    name: str | None = Field(default=None, min_length=1, max_length=200)
+    description: str | None = None
+    schema_version: Literal["saved-view-v1"] = "saved-view-v1"
+    change_note: str | None = Field(default=None, max_length=500)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class SavedViewRestore(BaseModel):
+    target_version: int = Field(ge=1)
+    expected_version: int = Field(ge=1)
+    change_note: str | None = Field(default=None, max_length=500)
+
+
 class ScoringActivationRequest(BaseModel):
     expected_active_profile_version_id: UUID | None = None
     client_refresh_token: str | None = None
@@ -347,6 +373,97 @@ def remove_watchlist_item(
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get("/saved-views")
+def list_saved_views(
+    repository: RepositoryDependency,
+    workspace_key: Annotated[str, Query(min_length=1, max_length=120)] = "default",
+    include_inactive: bool = False,
+) -> list[dict[str, Any]]:
+    try:
+        return repository.list_saved_views(
+            workspace_key=workspace_key,
+            include_inactive=include_inactive,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.post("/saved-views", status_code=status.HTTP_201_CREATED)
+def create_saved_view(
+    payload: SavedViewCreate,
+    repository: RepositoryDependency,
+) -> dict[str, Any]:
+    try:
+        return repository.create_saved_view(
+            name=payload.name,
+            description=payload.description,
+            workspace_key=payload.workspace_key,
+            state=payload.state,
+            schema_version=payload.schema_version,
+            change_note=payload.change_note,
+            metadata=payload.metadata,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.get("/saved-views/{savedViewId}")
+def get_saved_view(savedViewId: UUID, repository: RepositoryDependency) -> dict[str, Any]:
+    try:
+        return repository.get_saved_view(savedViewId)
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.put("/saved-views/{savedViewId}")
+def update_saved_view(
+    savedViewId: UUID,
+    payload: SavedViewUpdate,
+    repository: RepositoryDependency,
+) -> dict[str, Any]:
+    try:
+        return repository.update_saved_view(
+            savedViewId,
+            expected_version=payload.expected_version,
+            name=payload.name,
+            description=payload.description,
+            state=payload.state,
+            schema_version=payload.schema_version,
+            change_note=payload.change_note,
+            metadata=payload.metadata,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.get("/saved-views/{savedViewId}/versions")
+def list_saved_view_versions(
+    savedViewId: UUID,
+    repository: RepositoryDependency,
+) -> list[dict[str, Any]]:
+    try:
+        return repository.list_saved_view_versions(savedViewId)
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.post("/saved-views/{savedViewId}/restore")
+def restore_saved_view(
+    savedViewId: UUID,
+    payload: SavedViewRestore,
+    repository: RepositoryDependency,
+) -> dict[str, Any]:
+    try:
+        return repository.restore_saved_view(
+            savedViewId,
+            target_version=payload.target_version,
+            expected_version=payload.expected_version,
+            change_note=payload.change_note,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
 
 
 @router.get("/changes")

@@ -294,6 +294,40 @@ CREATE TABLE watchlist_items (
   PRIMARY KEY (watchlist_id, object_type, object_id)
 );
 
+CREATE TABLE saved_views (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  namespace text NOT NULL DEFAULT 'local_user',
+  workspace_key text NOT NULL DEFAULT 'default',
+  name text NOT NULL,
+  description text,
+  state jsonb NOT NULL,
+  schema_version text NOT NULL DEFAULT 'saved-view-v1',
+  current_version integer NOT NULL DEFAULT 1 CHECK (current_version >= 1),
+  active boolean NOT NULL DEFAULT true,
+  created_by text NOT NULL DEFAULT 'local_user',
+  updated_by text NOT NULL DEFAULT 'local_user',
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  last_restored_at timestamptz,
+  metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+  UNIQUE (namespace, workspace_key, name)
+);
+
+CREATE TABLE saved_view_versions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  saved_view_id uuid NOT NULL REFERENCES saved_views(id) ON DELETE CASCADE,
+  version_no integer NOT NULL CHECK (version_no >= 1),
+  state jsonb NOT NULL,
+  schema_version text NOT NULL DEFAULT 'saved-view-v1',
+  action_type text NOT NULL CHECK (action_type IN ('create','update','restore')),
+  restored_from_version_no integer CHECK (restored_from_version_no IS NULL OR restored_from_version_no >= 1),
+  change_note text,
+  created_by text NOT NULL DEFAULT 'local_user',
+  created_at timestamptz NOT NULL DEFAULT now(),
+  metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+  UNIQUE (saved_view_id, version_no)
+);
+
 CREATE TABLE scoring_models (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   model_key text NOT NULL,

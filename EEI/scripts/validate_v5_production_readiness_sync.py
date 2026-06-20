@@ -36,9 +36,15 @@ EXPECTED_TASKS = {
 
 IMPLEMENTED_TASKS = {"T1300": "A201"}
 
-PARTIAL_TASKS = {"T1301": "A202", "T1302": "A203", "T1303": "A204", "T1304": "A206"}
+PARTIAL_TASKS = {
+    "T1301": "A202",
+    "T1302": "A203",
+    "T1303": "A204",
+    "T1304": "A206",
+    "T1305": "A207",
+}
 
-PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206"}
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A207"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -87,6 +93,16 @@ PARTIAL_EVIDENCE = {
         "scripts/check_database_schema.py",
         "tests/integration/test_database_migrations.py",
         "artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json",
+    },
+    "T1305": {
+        "infra/db/migrations/0008_server_saved_views/up.sql",
+        "infra/db/migrations/0008_server_saved_views/down.sql",
+        "apps/api/app/domain.py",
+        "apps/api/app/domain_repository.py",
+        "scripts/check_database_schema.py",
+        "specs/api_contract.yaml",
+        "tests/integration/test_database_migrations.py",
+        "artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json",
     },
 }
 

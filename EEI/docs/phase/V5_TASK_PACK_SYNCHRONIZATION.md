@@ -36,7 +36,7 @@ EEI identity is unchanged:
 | Production API, recursive graph query and scoring service | ARCH-002, UX-008, UX-011 | T1302 | A203 | IN_PROGRESS |
 | Model config versioning, transactional activation and atomic global refresh | STRESS-010 | T1303 | A204, A205 | IN_PROGRESS |
 | Scheduler, auto wake, idempotency, retry and dead-letter | STRESS-007 | T1304 | A206 | IN_PROGRESS |
-| Server-side saved views, conflict control and recovery | STRESS-011 | T1305 | A207 | NOT_STARTED |
+| Server-side saved views, conflict control and recovery | STRESS-011 | T1305 | A207 | IN_PROGRESS |
 | 10k, 100k and 1m relationship scale tests | STRESS-008 | T1306 | A208 | NOT_STARTED |
 | 4h and 24h soak tests | STRESS-012 | T1307 | A209 | NOT_STARTED |
 | Production componentized frontend, real routes and real controls | UX-003, UX-009, UX-012 | T1308 | A211 | NOT_STARTED |

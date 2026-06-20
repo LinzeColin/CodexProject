@@ -29,6 +29,8 @@ REQUIRED_TABLES = {
     "seed_runs",
     "exploration_steps",
     "watchlist_items",
+    "saved_views",
+    "saved_view_versions",
     "scoring_profiles",
     "scoring_profile_versions",
     "scoring_runs",
@@ -104,6 +106,14 @@ REQUIRED_TEMPORAL_COLUMNS = {
     },
     "background_job_attempts": {"started_at", "heartbeat_at", "finished_at"},
     "dead_letter_jobs": {"dead_lettered_at"},
+    "saved_views": {
+        "created_at",
+        "updated_at",
+        "last_restored_at",
+    },
+    "saved_view_versions": {
+        "created_at",
+    },
 }
 
 REQUIRED_PRODUCTION_VERSION_COLUMNS = {
@@ -295,6 +305,39 @@ REQUIRED_SCHEDULER_INDEXES = {
     "dead_letter_jobs_time_idx",
 }
 
+REQUIRED_SAVED_VIEW_COLUMNS = {
+    "saved_views": {
+        "namespace",
+        "workspace_key",
+        "name",
+        "description",
+        "state",
+        "schema_version",
+        "current_version",
+        "active",
+        "created_by",
+        "updated_by",
+        "metadata",
+    },
+    "saved_view_versions": {
+        "saved_view_id",
+        "version_no",
+        "state",
+        "schema_version",
+        "action_type",
+        "restored_from_version_no",
+        "change_note",
+        "created_by",
+        "metadata",
+    },
+}
+
+REQUIRED_SAVED_VIEW_INDEXES = {
+    "saved_views_namespace_updated_idx",
+    "saved_views_active_idx",
+    "saved_view_versions_view_idx",
+}
+
 CURATED_ANCHOR_PARSER_VERSION = "nvidia-public-anchor-v1"
 
 SEED_EXPECTATIONS = {
@@ -480,6 +523,15 @@ def main() -> int:
                     f"{table_name} missing scheduler columns: {missing_scheduler_columns}"
                 )
 
+        for table_name, required_columns in REQUIRED_SAVED_VIEW_COLUMNS.items():
+            missing_saved_view_columns = sorted(
+                required_columns - columns_by_table.get(table_name, set())
+            )
+            if missing_saved_view_columns:
+                raise RuntimeError(
+                    f"{table_name} missing saved-view columns: {missing_saved_view_columns}"
+                )
+
         production_index_rows = rows(
             connection,
             """
@@ -539,6 +591,21 @@ def main() -> int:
         if missing_scheduler_indexes:
             raise RuntimeError(f"Missing scheduler indexes: {missing_scheduler_indexes}")
 
+        saved_view_index_rows = rows(
+            connection,
+            """
+            SELECT indexname
+            FROM pg_indexes
+            WHERE schemaname = 'public'
+              AND indexname = ANY(%s)
+            """,
+            (list(REQUIRED_SAVED_VIEW_INDEXES),),
+        )
+        saved_view_indexes = {str(row[0]) for row in saved_view_index_rows}
+        missing_saved_view_indexes = sorted(REQUIRED_SAVED_VIEW_INDEXES - saved_view_indexes)
+        if missing_saved_view_indexes:
+            raise RuntimeError(f"Missing saved-view indexes: {missing_saved_view_indexes}")
+
         payload: dict[str, object] = {
             "required_tables": len(REQUIRED_TABLES),
             "missing_tables": missing,
@@ -553,6 +620,8 @@ def main() -> int:
             "curated_ingestion_indexes": sorted(curated_indexes),
             "scheduler_tables_checked": sorted(REQUIRED_SCHEDULER_COLUMNS),
             "scheduler_indexes": sorted(scheduler_indexes),
+            "saved_view_tables_checked": sorted(REQUIRED_SAVED_VIEW_COLUMNS),
+            "saved_view_indexes": sorted(saved_view_indexes),
             "seed_counts": {},
         }
 

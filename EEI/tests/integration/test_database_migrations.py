@@ -540,6 +540,7 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert score_context["publication_policy"]["minimum_independent_sources"] == 2
 
     exercise_transactional_model_activation_contract(client, profiles[0])
+    exercise_server_saved_view_contracts(client, profiles[0])
 
     object_scope_response = client.get("/v1/system/object-scope")
     assert object_scope_response.status_code == 200
@@ -1241,6 +1242,178 @@ def exercise_domain_api_and_repository_contracts() -> None:
             connection.rollback()
         else:  # pragma: no cover - should be unreachable with the migration constraint.
             raise AssertionError("amount without currency and amount_kind must be rejected")
+
+
+def exercise_server_saved_view_contracts(
+    client: TestClient,
+    active_profile: dict[str, object],
+) -> None:
+    state_v1 = {
+        "focus": {"object_type": "entity", "object_id": NVIDIA_ID},
+        "active_layers": ["supply_chain_operations", "technology_data_ip"],
+        "direction": "both",
+        "hops": 1,
+        "budget": {"max_nodes": 42, "max_edges": 64, "expand_nodes": 12},
+        "filters": {"relationship_family": ["supply_chain_operations"]},
+        "visual_lens": "supply_chain",
+        "workspace_mode": "split",
+        "notes": "A207 server-side saved view baseline",
+        "scoring_profile_version_id": active_profile["id"],
+    }
+    create_response = client.post(
+        "/v1/saved-views",
+        json={
+            "name": "A207 Golden Vertical saved view",
+            "description": "server contract baseline",
+            "workspace_key": "mvp",
+            "state": state_v1,
+            "change_note": "A207 create version 1",
+            "metadata": {"acceptance_id": "A207", "task_id": "T1305"},
+        },
+    )
+    assert create_response.status_code == 201
+    created = create_response.json()
+    saved_view_id = created["id"]
+    assert created["schema_version"] == "saved-view-v1"
+    assert created["current_version"] == 1
+    assert created["version_count"] == 1
+    assert created["versions"][0]["version_no"] == 1
+    assert created["versions"][0]["action_type"] == "create"
+    assert created["state"]["visual_lens"] == "supply_chain"
+
+    duplicate_response = client.post(
+        "/v1/saved-views",
+        json={
+            "name": "A207 Golden Vertical saved view",
+            "workspace_key": "mvp",
+            "state": state_v1,
+        },
+    )
+    assert duplicate_response.status_code == 409
+    duplicate_detail = duplicate_response.json()["detail"]
+    assert duplicate_detail["reason"] == "saved_view_name_exists"
+    assert duplicate_detail["actual_version"] == 1
+
+    list_response = client.get("/v1/saved-views", params={"workspace_key": "mvp"})
+    assert list_response.status_code == 200
+    listed = list_response.json()
+    assert any(row["id"] == saved_view_id for row in listed)
+
+    state_v2 = {
+        **state_v1,
+        "visual_lens": "capital_transactions",
+        "notes": "A207 updated view from second client",
+        "filters": {"relationship_family": ["capital_financing"]},
+    }
+    update_response = client.put(
+        f"/v1/saved-views/{saved_view_id}",
+        json={
+            "expected_version": 1,
+            "description": "updated with optimistic lock",
+            "state": state_v2,
+            "change_note": "A207 update version 2",
+            "metadata": {"acceptance_id": "A207", "phase": "server-contract"},
+        },
+    )
+    assert update_response.status_code == 200
+    updated = update_response.json()
+    assert updated["current_version"] == 2
+    assert updated["state"]["visual_lens"] == "capital_transactions"
+    assert updated["versions"][0]["action_type"] == "update"
+
+    stale_update_response = client.put(
+        f"/v1/saved-views/{saved_view_id}",
+        json={
+            "expected_version": 1,
+            "state": {**state_v2, "visual_lens": "policy_risk"},
+            "change_note": "stale client should fail",
+        },
+    )
+    assert stale_update_response.status_code == 409
+    stale_detail = stale_update_response.json()["detail"]
+    assert stale_detail["schema_version"] == "saved-view-conflict-v1"
+    assert stale_detail["reason"] == "stale_saved_view_version"
+    assert stale_detail["expected_version"] == 1
+    assert stale_detail["actual_version"] == 2
+    assert stale_detail["recovery"] == "fetch_latest_saved_view_or_restore_from_versions"
+
+    version_response = client.get(f"/v1/saved-views/{saved_view_id}/versions")
+    assert version_response.status_code == 200
+    versions = version_response.json()
+    assert [row["version_no"] for row in versions] == [2, 1]
+    assert [row["action_type"] for row in versions] == ["update", "create"]
+
+    restore_response = client.post(
+        f"/v1/saved-views/{saved_view_id}/restore",
+        json={
+            "target_version": 1,
+            "expected_version": 2,
+            "change_note": "A207 recover original supply-chain view",
+        },
+    )
+    assert restore_response.status_code == 200
+    restored = restore_response.json()
+    assert restored["current_version"] == 3
+    assert restored["state"]["visual_lens"] == "supply_chain"
+    assert restored["versions"][0]["action_type"] == "restore"
+    assert restored["versions"][0]["restored_from_version_no"] == 1
+    assert restored["last_restored_at"]
+
+    stale_restore_response = client.post(
+        f"/v1/saved-views/{saved_view_id}/restore",
+        json={
+            "target_version": 2,
+            "expected_version": 2,
+            "change_note": "stale restore should fail after version 3",
+        },
+    )
+    assert stale_restore_response.status_code == 409
+    assert stale_restore_response.json()["detail"]["actual_version"] == 3
+
+    detail_response = client.get(f"/v1/saved-views/{saved_view_id}")
+    assert detail_response.status_code == 200
+    detail = detail_response.json()
+    assert detail["version_count"] == 3
+    assert [row["version_no"] for row in detail["versions"]] == [3, 2, 1]
+
+    with connect_database() as connection:
+        saved_view_row = connection.execute(
+            """
+            SELECT current_version, state->>'visual_lens', last_restored_at IS NOT NULL
+            FROM saved_views
+            WHERE id = %s
+            """,
+            (saved_view_id,),
+        ).fetchone()
+        assert saved_view_row == (3, "supply_chain", True)
+
+        version_row = connection.execute(
+            """
+            SELECT count(*)::int, array_agg(action_type ORDER BY version_no)
+            FROM saved_view_versions
+            WHERE saved_view_id = %s
+            """,
+            (saved_view_id,),
+        ).fetchone()
+        assert version_row[0] == 3
+        assert version_row[1] == ["create", "update", "restore"]
+
+        log_row = connection.execute(
+            """
+            SELECT count(*) FILTER (WHERE result_status = 'success')::int,
+                   count(*) FILTER (WHERE result_status = 'conflict')::int
+            FROM operation_logs
+            WHERE object_type = 'saved_view'
+              AND object_id = %s
+              AND action_type IN (
+                'create_saved_view',
+                'update_saved_view',
+                'restore_saved_view'
+              )
+            """,
+            (saved_view_id,),
+        ).fetchone()
+        assert log_row == (3, 3)
 
 
 def exercise_transactional_model_activation_contract(

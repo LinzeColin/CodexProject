@@ -1923,3 +1923,47 @@ Residual risks:
 - Deployment-level wake/supervision is not yet packaged.
 - T1307 4h/24h soak remains required before scheduler stability can be called production-ready.
 - Local Docker/PostgreSQL is not available on this host, so database proof requires GitHub Actions.
+
+## 2026-06-20 - T1305/A207 server-side saved-view conflict and recovery slice
+
+### Scope
+
+- Added PostgreSQL saved-view state tables: `saved_views` and `saved_view_versions`.
+- Added `/v1/saved-views` list/create/get/update/version-list/restore routes.
+- Added repository-level `FOR UPDATE` optimistic conflict control using `expected_version`.
+- Added 409 `saved-view-conflict-v1` responses for duplicate names, stale updates and stale restores.
+- Added recovery semantics where restoring a historical version appends a new current version instead of rewriting history.
+- Extended schema validation, OpenAPI and PostgreSQL integration coverage for A207.
+
+### Files changed
+
+- `infra/db/migrations/0008_server_saved_views/up.sql`
+- `infra/db/migrations/0008_server_saved_views/down.sql`
+- `specs/domain_schema.sql`
+- `apps/api/app/domain.py`
+- `apps/api/app/domain_repository.py`
+- `specs/api_contract.yaml`
+- `scripts/check_database_schema.py`
+- `tests/integration/test_database_migrations.py`
+- `artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json`
+- `data/task_backlog.csv`
+- `data/acceptance_matrix.csv`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+
+### Acceptance mapping
+
+- T1305 -> A207.
+- A207 is now `IN PROGRESS`, not `DONE`.
+
+### Validation
+
+- Local static and governance validation pending in this run.
+- PostgreSQL integration proof is required from GitHub Actions `make verify-g2-db` because this host has no local Docker/PostgreSQL.
+
+### Remaining gaps
+
+- The production frontend still uses local saved-view behavior and must be wired to `/v1/saved-views`.
+- A real multi-session browser E2E with two contexts against the API-backed saved-view contract is still required.
+- Authn/authz user/workspace scoping remains required before public multi-user use.
