@@ -8,14 +8,20 @@
     "Activation advances active_analysis_contexts.refresh_token and refresh_generation atomically with the active scoring profile switch.",
     "Activation responses include cache_invalidation.previous_refresh_token, cache_invalidation.refresh_token and affected modules.",
     "Production graph/path context and home model_status now expose active_analysis_context for server-side refresh semantics.",
-    "Integration tests assert old refresh tokens are stale and matching refresh tokens are current."
+    "Integration tests assert old refresh tokens are stale and matching refresh tokens are current.",
+    "Frontend model-center hydration reads /v1/scoring/active-context and maps server profile/data/score context into visible workspace module state.",
+    "Frontend stale-client refresh checks refetch /v1/scoring/active-context with the previous refresh token and surface stale_client_refetched semantics."
   ],
   "evidence_files": [
     "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
     "specs/api_contract.yaml",
-    "tests/integration/test_database_migrations.py"
+    "tests/integration/test_database_migrations.py",
+    "apps/web/src/app/model-activation-client.ts",
+    "apps/web/src/app/use-analysis-context.ts",
+    "apps/web/src/app/page.tsx",
+    "tests/e2e/state-contract.spec.ts"
   ],
   "validation_commands": [
     "PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py scripts/check_database_schema.py scripts/load_seed_catalogs.py",
@@ -23,8 +29,8 @@
     "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py"
   ],
   "not_closed_scope": [
-    "Frontend visible modules still read the static analysis contract and are not yet wired to the server active context.",
-    "A true cross-view E2E refresh after activation is still required before A205 can be DONE.",
+    "Frontend visible modules now have API-first active-context hydration and mock-server activation/rollback/stale refresh E2E coverage.",
+    "A true cross-route E2E refresh after activation against live FastAPI/PostgreSQL is still required before A205 can be DONE.",
     "Worker-driven data snapshot activation and transactional outbox are still covered by T1304 and later refresh slices.",
     "Scale and soak refresh stability remain T1306-T1307."
   ],

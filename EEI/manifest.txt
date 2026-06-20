@@ -62,6 +62,7 @@ apps/web/src/app/development-status/page.tsx
 apps/web/src/app/globals.css
 apps/web/src/app/industries/page.tsx
 apps/web/src/app/layout.tsx
+apps/web/src/app/model-activation-client.ts
 apps/web/src/app/objects-scope/page.tsx
 apps/web/src/app/page.tsx
 apps/web/src/app/saved-view-client.ts

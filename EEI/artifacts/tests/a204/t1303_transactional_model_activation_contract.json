@@ -8,7 +8,9 @@
     "Added active_analysis_contexts to persist the active profile, data snapshot, score snapshot, refresh token, generation and affected modules.",
     "Added POST /v1/scoring/profiles/{profileVersionId}/activate with expected active profile conflict detection.",
     "Activation locks the current and target profile rows, creates a completed scoring_run snapshot, switches the active profile, updates active_analysis_contexts and writes operation_logs in one transaction.",
-    "Stale expected active profile requests return 409 and keep the previous active profile unchanged while logging a conflict result."
+    "Stale expected active profile requests return 409 and keep the previous active profile unchanged while logging a conflict result.",
+    "Added a frontend API-first model-center activation adapter and controls that send expected_active_profile_version_id plus client_refresh_token to the transaction endpoint.",
+    "Added a model-center rollback control that reactivates the previous profile through the same transactional activation endpoint."
   ],
   "evidence_files": [
     "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
@@ -18,7 +20,11 @@
     "scripts/check_database_schema.py",
     "scripts/load_seed_catalogs.py",
     "specs/api_contract.yaml",
-    "tests/integration/test_database_migrations.py"
+    "tests/integration/test_database_migrations.py",
+    "apps/web/src/app/model-activation-client.ts",
+    "apps/web/src/app/use-analysis-context.ts",
+    "apps/web/src/app/page.tsx",
+    "tests/e2e/state-contract.spec.ts"
   ],
   "validation_commands": [
     "PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py scripts/check_database_schema.py scripts/load_seed_catalogs.py",
@@ -27,10 +33,10 @@
     "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py"
   ],
   "not_closed_scope": [
-    "Model-center UI for editing, activating and rolling back profile versions is not complete.",
-    "Rollback endpoint remains a later T600-T608/T1303 slice.",
-    "Full cross-view browser E2E for production API-driven refresh remains open under A205.",
-    "CI evidence is required before this slice can be treated as remotely validated."
+    "Model-center online profile editing and score recompute UI are not complete.",
+    "A dedicated rollback endpoint remains a later T600-T608/T1303 slice; current rollback control uses the activation endpoint with the previous profile id.",
+    "Full cross-view browser E2E against live FastAPI/PostgreSQL remains open under A205.",
+    "CI evidence is required before this frontend activation slice can be treated as remotely validated."
   ],
   "rollback": [
     "Revert the T1303 API/repository/migration/test/governance commit.",

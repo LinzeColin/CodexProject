@@ -2181,3 +2181,48 @@ Residual risks:
 ### Remaining gaps
 
 - User/workspace authn/authz remains required before public multi-user saved-view deployment.
+
+## 2026-06-20 - T1303/A204-A205 model-center API-first transaction controls
+
+### Scope
+
+- Added a frontend `model-activation-client.ts` adapter for `/v1/scoring/active-context`, `/v1/scoring/profiles` and `/v1/scoring/profiles/{profileVersionId}/activate`.
+- Added model-center API-first hydration with explicit local fallback when no API base is configured.
+- Added model-center transaction activation controls that send `expected_active_profile_version_id` and `client_refresh_token`.
+- Added rollback control by reactivating the previous profile through the same transaction endpoint.
+- Added stale-client refresh detection by refetching active context with the previous refresh token and surfacing `stale_client_refetched`.
+- Mapped server active context into the shared frontend `AnalysisContext`, so workspace shell, saved views and visible modules receive the active model/profile/data/score snapshot.
+- Added Playwright mock-server E2E coverage for hydration, activation, stale refresh and rollback.
+
+### Files changed
+
+- `apps/web/src/app/model-activation-client.ts`
+- `apps/web/src/app/use-analysis-context.ts`
+- `apps/web/src/app/page.tsx`
+- `tests/e2e/state-contract.spec.ts`
+- `artifacts/tests/a204/t1303_transactional_model_activation_contract.json`
+- `artifacts/tests/a205/t1303_atomic_refresh_context_contract.json`
+- `artifacts/tests/a211/t1308_frontend_workspace_context_contract.json`
+- `scripts/validate_v5_production_readiness_sync.py`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `DEVELOPMENT_STATUS.md`
+- `README.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+
+### Acceptance mapping
+
+- T1303 -> A204/A205.
+- T1308 -> A211.
+- A204/A205/A211 remain `IN PROGRESS`, not `DONE`.
+
+### Validation
+
+- Local `PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck`: PASS.
+- Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 1/1 for `A204 and A205 hydrate activate refresh and rollback model context through the server API`.
+
+### Remaining gaps
+
+- Live FastAPI/PostgreSQL cross-route E2E for model activation and stale refresh is still required.
+- Model-center online editing, dedicated rollback endpoint and score recompute UI remain open.
+- CI evidence is still required for this frontend transaction-control slice.

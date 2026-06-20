@@ -41,6 +41,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │       ├── analysis-contract.ts
 │   │   │       ├── globals.css
 │   │   │       ├── layout.tsx
+│   │   │       ├── model-activation-client.ts
 │   │   │       ├── page.tsx
 │   │   │       ├── saved-view-client.ts
 │   │   │       ├── use-analysis-context.ts

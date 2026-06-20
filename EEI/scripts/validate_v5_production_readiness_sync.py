@@ -93,6 +93,10 @@ PARTIAL_EVIDENCE = {
         "scripts/load_seed_catalogs.py",
         "specs/api_contract.yaml",
         "tests/integration/test_database_migrations.py",
+        "apps/web/src/app/model-activation-client.ts",
+        "apps/web/src/app/use-analysis-context.ts",
+        "apps/web/src/app/page.tsx",
+        "tests/e2e/state-contract.spec.ts",
         "artifacts/tests/a204/t1303_transactional_model_activation_contract.json",
         "artifacts/tests/a205/t1303_atomic_refresh_context_contract.json",
     },
@@ -133,7 +137,10 @@ PARTIAL_EVIDENCE = {
     "T1308": {
         "apps/web/src/app/workspace-context.tsx",
         "apps/web/src/app/workspace-navigation.tsx",
+        "apps/web/src/app/model-activation-client.ts",
+        "apps/web/src/app/page.tsx",
         "tests/e2e/home.spec.ts",
+        "tests/e2e/state-contract.spec.ts",
         "artifacts/tests/a211/t1308_frontend_workspace_context_contract.json",
     },
 }

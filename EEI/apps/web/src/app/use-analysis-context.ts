@@ -31,9 +31,15 @@ export function useAnalysisContext() {
     setAnalysisContext(ACTIVE_ANALYSIS_CONTEXT);
   }
 
+  function applyServerContext(nextContext: AnalysisContext) {
+    window.localStorage.removeItem(ANALYSIS_PREVIEW_STORAGE_KEY);
+    setAnalysisContext(nextContext);
+  }
+
   return {
     analysisContext,
     applyPreview,
+    applyServerContext,
     clearPreview,
     isPreviewActive: analysisContext.profileVersion === PREVIEW_ANALYSIS_CONTEXT.profileVersion
   };
