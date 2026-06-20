@@ -3357,7 +3357,7 @@ Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A206 STILL IN PROGRE
 - The connector validates source URL agreement, capture status, minimum text length, and 100% expected-token coverage before writing database rows.
 - The connector writes `raw_source_snapshots`, `source_documents`, `entity_resolution_candidates`, and context-only `ingestion_evidence_chain` rows under parser version `nvidia-official-fulltext-dry-run-v1`.
 - Dry-run payloads preserve `source_health`, `retry_policy`, `attempts`, `live_retrieval=false`, and `release_clearance=false`.
-- PostgreSQL integration now runs the dry-run connector twice and asserts idempotency, 4 raw snapshots, 4 evidence rows, 53 resolution candidates, healthy coverage, and zero `relationship_fact_candidates` for the dry-run parser.
+- PostgreSQL integration now runs the dry-run connector twice and asserts idempotency, 4 raw snapshots, 4 evidence rows, 52 resolution candidates, healthy coverage, and zero `relationship_fact_candidates` for the dry-run parser.
 
 ### Files changed
 
