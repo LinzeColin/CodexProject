@@ -25,47 +25,77 @@
       "expected_entities_or_stages": "ASML; TSMC; Intel; Samsung; DUV; EUV; lithography; equipment",
       "validation_status": "verified_official",
       "notes": "ASML official story identifies TSMC among customers using ASML DUV and EUV lithography systems; use as equipment-provider candidate evidence."
+    },
+    {
+      "anchor_id": "GV-SNAPSHOT-003",
+      "source_date": "2006-10-24",
+      "official_publisher": "TSMC Press Center",
+      "title": "NVIDIA and TSMC Celebrate New Milestone: 500 Million Processors",
+      "url": "https://pr.tsmc.com/english/news/1408",
+      "evidence_scope": "TSMC-reported NVIDIA manufacturing partnership history",
+      "expected_entities_or_stages": "TSMC; NVIDIA Corporation; wafer; processor; manufacturing; foundry",
+      "validation_status": "verified_official",
+      "notes": "TSMC official news release independently supports the NVIDIA-TSMC manufacturing relationship; use as secondary official support and preserve historical date semantics."
+    },
+    {
+      "anchor_id": "GV-SNAPSHOT-004",
+      "source_date": "2012-08-05",
+      "official_publisher": "TSMC Press Center",
+      "title": "TSMC and ASML Reach Agreement to Develop Next Generation Lithography Technologies as an Extension of Long-Term Partnership",
+      "url": "https://pr.tsmc.com/english/news/1734",
+      "evidence_scope": "TSMC-reported ASML lithography technology partnership",
+      "expected_entities_or_stages": "TSMC; ASML; EUV; lithography; equipment; technology",
+      "validation_status": "verified_official",
+      "notes": "TSMC official news release independently supports the ASML-TSMC lithography equipment and technology relationship; use as secondary official support and preserve historical date semantics."
     }
   ],
   "relationship_candidates": [
     {
       "candidate_key": "GV-FACT-001",
       "source_anchor_id": "GV-SNAPSHOT-001",
+      "supporting_source_anchor_ids": [
+        "GV-SNAPSHOT-003"
+      ],
       "subject_candidate_name": "TSMC",
       "object_candidate_name": "NVIDIA Corporation",
       "relationship_type": "wafer_foundry_for",
       "relationship_family": "supply_chain_operations",
       "confidence": 0.88,
-      "independent_source_count": 1,
-      "review_status": "machine_verified",
-      "publication_status": "candidate",
+      "independent_source_count": 2,
+      "review_status": "ready_for_review",
+      "publication_status": "ready_for_review",
       "locator": "SEC NVIDIA Form 10-K FY2026, Manufacturing section",
       "support_excerpt": "NVIDIA says it utilizes foundries such as TSMC to produce semiconductor wafers.",
       "counter_evidence": [],
       "structured_fact": {
         "path_role": "NVIDIA_TO_TSMC_GOLDEN_VERTICAL",
         "direction_note": "The source states TSMC is a foundry used by NVIDIA; graph traversal may show NVIDIA -> TSMC as a reverse edge.",
-        "publication_blocker": "requires independent source count >= 2 or human review override"
+        "source_threshold_status": "met_by_two_official_sources",
+        "publication_blocker": "requires human review or production owner approval before publication"
       }
     },
     {
       "candidate_key": "GV-FACT-002",
       "source_anchor_id": "GV-SNAPSHOT-002",
+      "supporting_source_anchor_ids": [
+        "GV-SNAPSHOT-004"
+      ],
       "subject_candidate_name": "ASML",
       "object_candidate_name": "TSMC",
       "relationship_type": "equipment_provider_to",
       "relationship_family": "supply_chain_operations",
       "confidence": 0.84,
-      "independent_source_count": 1,
-      "review_status": "machine_verified",
-      "publication_status": "candidate",
+      "independent_source_count": 2,
+      "review_status": "ready_for_review",
+      "publication_status": "ready_for_review",
       "locator": "ASML official story, Busting ASML myths",
       "support_excerpt": "ASML says customers such as TSMC use its DUV and EUV lithography systems.",
       "counter_evidence": [],
       "structured_fact": {
         "path_role": "TSMC_TO_ASML_GOLDEN_VERTICAL",
         "direction_note": "The source supports ASML equipment use by TSMC; graph traversal may show TSMC -> ASML as a reverse edge.",
-        "publication_blocker": "requires independent source count >= 2 or human review override"
+        "source_threshold_status": "met_by_two_official_sources",
+        "publication_blocker": "requires human review or production owner approval before publication"
       }
     }
   ]

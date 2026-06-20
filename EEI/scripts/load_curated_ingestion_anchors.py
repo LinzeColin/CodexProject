@@ -645,7 +645,22 @@ def upsert_relationship_fact_candidate_evidence(
             candidate["locator"],
             candidate["support_excerpt"],
         ),
-    )
+        )
+
+
+def candidate_source_anchor_ids(candidate: dict[str, object]) -> list[str]:
+    anchor_ids = [str(candidate["source_anchor_id"])]
+    for anchor_id in candidate.get("supporting_source_anchor_ids", []):
+        value = str(anchor_id)
+        if value not in anchor_ids:
+            anchor_ids.append(value)
+    configured_count = int(candidate.get("independent_source_count", len(anchor_ids)))
+    if configured_count != len(anchor_ids):
+        raise ValueError(
+            f"{candidate['candidate_key']} independent_source_count "
+            f"{configured_count} does not match source anchors {len(anchor_ids)}"
+        )
+    return anchor_ids
 
 
 def upsert_manual_review_queue(
@@ -653,6 +668,12 @@ def upsert_manual_review_queue(
     candidate_id: str,
     candidate: dict[str, object],
 ) -> None:
+    source_count = int(candidate.get("independent_source_count", 0))
+    reason = "Publication requires human review approval."
+    if source_count < INDEPENDENT_SOURCE_MIN:
+        reason = (
+            "Publication requires independent-source threshold or human review approval."
+        )
     connection.execute(
         """
         INSERT INTO manual_review_queue(
@@ -686,7 +707,7 @@ def upsert_manual_review_queue(
         (
             f"review:{candidate['candidate_key']}",
             candidate_id,
-            "Publication requires independent-source threshold or human review approval.",
+            reason,
         ),
     )
 
@@ -773,46 +794,69 @@ def load_anchors() -> dict[str, object]:
 
         fact_candidate_count = 0
         for candidate in fact_config["relationship_candidates"]:
-            raw_snapshot_id, source_document_id = raw_snapshots[str(candidate["source_anchor_id"])]
+            source_anchor_ids = candidate_source_anchor_ids(candidate)
+            candidate_payload = {
+                **candidate,
+                "independent_source_count": len(source_anchor_ids),
+            }
+            primary_raw_snapshot_id, _primary_source_document_id = raw_snapshots[
+                source_anchor_ids[0]
+            ]
             subject_resolution_id = resolution_id(
                 connection,
-                raw_snapshot_id,
-                str(candidate["subject_candidate_name"]),
+                primary_raw_snapshot_id,
+                str(candidate_payload["subject_candidate_name"]),
             )
             object_resolution_id = resolution_id(
                 connection,
-                raw_snapshot_id,
-                str(candidate["object_candidate_name"]),
-            )
-            evidence_chain_id = upsert_candidate_evidence_chain(
-                connection,
-                raw_snapshot_id,
-                source_document_id,
-                subject_resolution_id,
-                object_resolution_id,
-                candidate,
+                primary_raw_snapshot_id,
+                str(candidate_payload["object_candidate_name"]),
             )
             fact_candidate_id = upsert_relationship_fact_candidate(
                 connection,
                 subject_resolution_id,
                 object_resolution_id,
-                candidate,
+                candidate_payload,
             )
-            upsert_relationship_fact_candidate_evidence(
-                connection,
-                fact_candidate_id,
-                evidence_chain_id,
-                source_document_id,
-                candidate,
-            )
-            upsert_manual_review_queue(connection, fact_candidate_id, candidate)
+            for source_anchor_id in source_anchor_ids:
+                raw_snapshot_id, source_document_id = raw_snapshots[source_anchor_id]
+                evidence_subject_resolution_id = resolution_id(
+                    connection,
+                    raw_snapshot_id,
+                    str(candidate_payload["subject_candidate_name"]),
+                )
+                evidence_object_resolution_id = resolution_id(
+                    connection,
+                    raw_snapshot_id,
+                    str(candidate_payload["object_candidate_name"]),
+                )
+                evidence_chain_id = upsert_candidate_evidence_chain(
+                    connection,
+                    raw_snapshot_id,
+                    source_document_id,
+                    evidence_subject_resolution_id,
+                    evidence_object_resolution_id,
+                    candidate_payload,
+                )
+                upsert_relationship_fact_candidate_evidence(
+                    connection,
+                    fact_candidate_id,
+                    evidence_chain_id,
+                    source_document_id,
+                    candidate_payload,
+                )
+            upsert_manual_review_queue(connection, fact_candidate_id, candidate_payload)
             fact_candidate_count += 1
 
         counts = {
             "anchors": len(rows),
             "fact_source_snapshots": len(fact_snapshot_rows),
             "entity_resolution_candidates": candidate_total,
-            "evidence_chain_rows": len(rows) + fact_candidate_count,
+            "evidence_chain_rows": len(rows)
+            + sum(
+                len(candidate_source_anchor_ids(candidate))
+                for candidate in fact_config["relationship_candidates"]
+            ),
             "relationship_fact_candidates": fact_candidate_count,
             "source_hash": source_hash,
             "parser_version": PARSER_VERSION,

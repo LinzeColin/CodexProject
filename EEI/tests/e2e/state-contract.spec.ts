@@ -169,7 +169,7 @@ function createExploreGraphResponse(payload: Record<string, unknown>) {
         total: 2,
         published: 0,
         excluded_unpublished: 2,
-        source_threshold_open: 2,
+        source_threshold_open: 0,
         review_open: 2,
         excluded_from_graph_edges: 2,
         reason:
@@ -204,7 +204,7 @@ function createExploreGraphResponse(payload: Record<string, unknown>) {
         total: 2,
         published: 0,
         unpublished: 2,
-        source_threshold_open: 2,
+        source_threshold_open: 0,
         review_open: 2,
         sample_candidates: [
           {
@@ -212,10 +212,10 @@ function createExploreGraphResponse(payload: Record<string, unknown>) {
             candidate_key: "GV-FACT-001",
             relationship_type: "wafer_foundry_for",
             relationship_family: "supply_chain_operations",
-            publication_status: "candidate",
-            review_status: "machine_verified",
-            independent_source_count: 1,
-            source_threshold_met: false
+            publication_status: "ready_for_review",
+            review_status: "ready_for_review",
+            independent_source_count: 2,
+            source_threshold_met: true
           }
         ]
       },

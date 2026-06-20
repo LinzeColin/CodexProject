@@ -3768,3 +3768,60 @@ Status: LOCAL AND REMOTE CI VALIDATED; A209 STILL IN PROGRESS
 - 4h and 24h operator soak runs are still not executed.
 - A209 cannot close until both long-duration JSON and checkpoint JSONL artifacts are committed, release evidence is regenerated and CI validates the committed evidence.
 - Local host still lacks Docker, so this slice proves runner readiness and child harness behavior, not a full Docker Compose operator soak.
+
+## 2026-06-21 - T1301/A202 second independent official-source closure
+
+Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A202 STILL IN PROGRESS
+
+### Scope
+
+- Added two secondary official-source anchors to `data/golden_vertical_fact_candidates.json`:
+  - `GV-SNAPSHOT-003`: TSMC Press Center official NVIDIA/TSMC manufacturing relationship support.
+  - `GV-SNAPSHOT-004`: TSMC Press Center official ASML/TSMC lithography technology relationship support.
+- Extended `scripts/load_curated_ingestion_anchors.py` so each relationship candidate may carry `supporting_source_anchor_ids`.
+- The loader now validates that `independent_source_count` equals the de-duplicated source-anchor count and writes one `relationship_fact_candidate_evidence` row per official source.
+- Updated `GV-FACT-001` and `GV-FACT-002` to `independent_source_count=2`, `source_threshold_met=true`, `publication_status=ready_for_review` and `review_status=ready_for_review`.
+- Updated fixture and owner-signoff decision files so source-threshold override is no longer used for these two candidates.
+
+### Acceptance mapping
+
+- T1301 -> A202 for real-data evidence-chain strengthening, entity-resolution path preservation and second-source threshold closure.
+- T1302 -> A203 indirectly through score explanation semantics for relationship_fact_candidate evidence quality.
+- A202 remains `IN_PROGRESS`: this slice does not prove live network retrieval, real operator production-owner decision, legal clearance or full production approval.
+
+### Model, formulas and thresholds
+
+- No scoring formula changed.
+- Existing candidate threshold remains `minimum_independent_sources=2`.
+- Candidate evidence quality now reaches 100 for the two Golden Vertical candidates because `independent_source_count=2` meets the threshold.
+- Missing inputs remain `human_review_verification` and `published_relationship_version` until explicit review/publication occurs.
+
+### Local validation
+
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/check_database_schema.py tests/integration/test_database_migrations.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit`: PASS; 37 passed, 1 Starlette/httpx deprecation warning.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- Sandboxed `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: BLOCKED by DNS access to npm registry.
+- Elevated `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: BLOCKED by Codex usage-limit escalation rejection, not by project code.
+- `NEXT_TELEMETRY_DISABLED=1 ./node_modules/.bin/next typegen` in `apps/web`: PASS.
+- `./node_modules/.bin/tsc --noEmit` in `apps/web`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `.env`/`DATABASE_URL`; remote CI remains required for PostgreSQL proof.
+- Local `make verify` subset through governance, contracts, release artifacts, secret scan, copy lint, ruff and unit tests: PASS for runnable non-browser targets.
+- Local browser scale/soak targets: BLOCKED by macOS Playwright MachPort sandbox permission; elevated reruns were blocked by Codex usage-limit escalation rejection. Remote CI remains required for browser-scale and soak smoke proof.
+
+### Source notes
+
+- The secondary sources are official publisher pages and are used as structured metadata and short support summaries only.
+- This slice avoids copying long source text into the repo.
+
+### Remaining gaps
+
+- Remote PostgreSQL CI has not yet validated the new multi-source candidate loader.
+- Live official retrieval is still not implemented as a production network connector.
+- Real operator-supplied owner decision and formal legal/market clearance remain outside this slice.
+
+### Rollback
+
+- Revert `data/golden_vertical_fact_candidates.json`, `scripts/load_curated_ingestion_anchors.py`, the updated fixtures and test assertions.
+- Regenerate clean-room/release artifacts.
+- Rerun `make verify` and remote CI.
