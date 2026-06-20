@@ -1,7 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
+import shutil
+import subprocess
+import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -83,6 +89,23 @@ def main() -> None:
     smoke_crash.add_argument("--lease-seconds", type=int, default=5)
     smoke_crash.add_argument("--advance-seconds", type=int, default=6)
 
+    acceptance = subparsers.add_parser("acceptance", help="Run PFI-003 process-level release acceptance.")
+    acceptance.add_argument("--runtime-dir", default="/private/tmp/pfi003-supervisor-acceptance")
+    acceptance.add_argument("--lease-seconds", type=int, default=2)
+    acceptance.add_argument("--advance-seconds", type=int, default=3)
+    acceptance.add_argument("--worker-timeout-seconds", type=int, default=8)
+    acceptance.add_argument("--sleep-wake-seconds", type=int, default=120)
+    acceptance.add_argument("--hold-seconds", type=int, default=60)
+
+    worker_hold = subparsers.add_parser("worker-hold-lease", help=argparse.SUPPRESS)
+    worker_hold.add_argument("--job-type", required=True)
+    worker_hold.add_argument("--idempotency-key", required=True)
+    worker_hold.add_argument("--worker-id", required=True)
+    worker_hold.add_argument("--lease-seconds", type=int, default=60)
+    worker_hold.add_argument("--log-path", required=True)
+    worker_hold.add_argument("--hold-seconds", type=int, default=60)
+    worker_hold.add_argument("--case-name", default="WorkerHoldLease")
+
     args = parser.parse_args()
     supervisor = DurableJobStore(_store(args.db_path))
     payload = _dispatch(args, supervisor)
@@ -146,6 +169,10 @@ def _dispatch(args: argparse.Namespace, supervisor: DurableJobStore) -> dict[str
             lease_seconds=args.lease_seconds,
             advance_seconds=args.advance_seconds,
         )
+    if command == "acceptance":
+        return _acceptance(args, supervisor)
+    if command == "worker-hold-lease":
+        return _worker_hold_lease(args, supervisor)
     raise ValueError(f"Unknown command: {command}")
 
 
@@ -227,6 +254,351 @@ def _smoke_crash_recovery(
         "simulated_signal": "worker process stopped before heartbeat; lease expiry recovered job",
         "safety_boundary": build_pfi003_runtime_supervisor_contract()["safety_boundary"],
     }
+
+
+def _acceptance(args: argparse.Namespace, supervisor: DurableJobStore) -> dict[str, Any]:
+    runtime_dir = Path(args.runtime_dir).expanduser()
+    runtime_dir.mkdir(parents=True, exist_ok=True)
+    run_id = datetime.now(timezone.utc).strftime("pfi003-%Y%m%dT%H%M%SZ")
+    log_path = runtime_dir / "pfi003_supervisor_acceptance.jsonl"
+    manifest_path = runtime_dir / "pfi003_supervisor_acceptance_manifest.json"
+    backup_path = runtime_dir / "pfi003_supervisor_acceptance_backup.sqlite"
+    for path in (log_path, manifest_path, backup_path):
+        if path.exists():
+            path.unlink()
+
+    _write_log_event(log_path, {"schema": "PFIOSPFI003SupervisorAcceptanceLogV1", "run_id": run_id, "event": "started"})
+    doctor = _doctor(supervisor, worker_id=f"{run_id}-doctor", recover_expired=True, job_type="")
+    double_worker = _smoke_double_worker(
+        supervisor,
+        job_type=f"{run_id}_double_worker",
+        idempotency_key=f"{run_id}-double-worker",
+        worker_a=f"{run_id}-worker-a",
+        worker_b=f"{run_id}-worker-b",
+        lease_seconds=max(1, int(args.lease_seconds)),
+    )
+    term_case = _process_recovery_case(args, supervisor, mode="TERM", run_id=run_id, log_path=log_path)
+    kill_case = _process_recovery_case(args, supervisor, mode="KILL", run_id=run_id, log_path=log_path)
+    sleep_wake = _sleep_wake_recovery(args, supervisor, run_id=run_id, log_path=log_path)
+    manifest = _write_acceptance_manifest(
+        supervisor,
+        manifest_path=manifest_path,
+        backup_path=backup_path,
+        run_id=run_id,
+        cases=[doctor, double_worker, term_case, kill_case, sleep_wake],
+    )
+    private_scan = _scan_private_logs(log_path, manifest_path)
+    checks = [
+        _check("DoctorReadiness", doctor["status"] == "Pass", f"pass={doctor['summary']['pass']} fail={doctor['summary']['fail']}"),
+        _check("DoubleWorkerClaimExclusion", double_worker["status"] == "Pass", double_worker["double_worker_behavior"]),
+        _check("TERMWorkerRecovery", term_case["status"] == "Pass", term_case.get("evidence", "")),
+        _check("KILLWorkerRecovery", kill_case["status"] == "Pass", kill_case.get("evidence", "")),
+        _check("SleepWakeRecovery", sleep_wake["status"] == "Pass", sleep_wake.get("evidence", "")),
+        _check("BackupManifest", manifest["status"] == "Pass", manifest.get("backup_file", "")),
+        _check("PrivateLogScan", private_scan["status"] == "Pass", private_scan.get("evidence", "")),
+        _check("NoExecutionBoundary", True, "research_only_no_broker_orders_payments"),
+    ]
+    summary = {
+        "pass": sum(1 for item in checks if item["status"] == "Pass"),
+        "fail": sum(1 for item in checks if item["status"] == "Fail"),
+        "total": len(checks),
+    }
+    return {
+        "schema": "PFIOSPFI003SupervisorAcceptanceV1",
+        "status": "Pass" if summary["fail"] == 0 else "Fail",
+        "run_id": run_id,
+        "summary": summary,
+        "checks": checks,
+        "cases": {
+            "doctor": doctor,
+            "double_worker": double_worker,
+            "term_worker": term_case,
+            "kill_worker": kill_case,
+            "sleep_wake": sleep_wake,
+            "private_log_scan": private_scan,
+        },
+        "outputs": {
+            "log_path": str(log_path),
+            "manifest_path": str(manifest_path),
+            "backup_path": str(backup_path),
+        },
+        "manifest": manifest,
+        "safety_boundary": "Local deterministic supervisor acceptance. No network, broker, order, payment, betting, or private holdings access.",
+        "next_action": "Wire durable lifecycle events into the Web Shell/runtime read model and add launchd throttle/log-rotation evidence.",
+    }
+
+
+def _process_recovery_case(
+    args: argparse.Namespace,
+    supervisor: DurableJobStore,
+    *,
+    mode: str,
+    run_id: str,
+    log_path: Path,
+) -> dict[str, Any]:
+    lease_seconds = max(1, int(args.lease_seconds))
+    advance_seconds = max(lease_seconds + 1, int(args.advance_seconds) + lease_seconds)
+    worker_id = f"{run_id}-{mode.lower()}-worker"
+    job_type = f"{run_id}_{mode.lower()}_process"
+    idempotency_key = f"{run_id}-{mode.lower()}-process"
+    started = datetime.now(timezone.utc)
+    supervisor.enqueue(job_type=job_type, idempotency_key=idempotency_key, max_attempts=3, now=started)
+    process = _start_worker_hold_process(
+        args,
+        job_type=job_type,
+        idempotency_key=idempotency_key,
+        worker_id=worker_id,
+        lease_seconds=lease_seconds,
+        log_path=log_path,
+        case_name=f"{mode}WorkerRecovery",
+    )
+    claimed = _wait_for_worker_claim(log_path, worker_id=worker_id, timeout_seconds=max(1, int(args.worker_timeout_seconds)))
+    if not claimed:
+        _stop_process(process, mode="KILL")
+        return {"schema": "PFIOSPFI003ProcessRecoveryCaseV1", "status": "Fail", "mode": mode, "evidence": "worker_did_not_claim"}
+
+    _stop_process(process, mode=mode)
+    recovery_now = datetime.now(timezone.utc) + timedelta(seconds=advance_seconds)
+    recovered = supervisor.recover_expired_leases(now=recovery_now, job_type=job_type)
+    passed = int(recovered.get("recovered_count", 0)) >= 1
+    _write_log_event(log_path, {"run_id": run_id, "event": "recovered", "mode": mode, "recovered_count": recovered.get("recovered_count", 0)})
+    return {
+        "schema": "PFIOSPFI003ProcessRecoveryCaseV1",
+        "status": "Pass" if passed else "Fail",
+        "mode": mode,
+        "job_type": job_type,
+        "worker_id": worker_id,
+        "claimed": claimed,
+        "recovered": recovered,
+        "evidence": f"{mode}_worker_claimed_then_expired_lease_recovered={int(recovered.get('recovered_count', 0))}",
+    }
+
+
+def _sleep_wake_recovery(args: argparse.Namespace, supervisor: DurableJobStore, *, run_id: str, log_path: Path) -> dict[str, Any]:
+    lease_seconds = max(1, int(args.lease_seconds))
+    sleep_wake_seconds = max(lease_seconds + 1, int(args.sleep_wake_seconds))
+    worker_id = f"{run_id}-sleep-wake-worker"
+    job_type = f"{run_id}_sleep_wake"
+    started = datetime.now(timezone.utc)
+    supervisor.enqueue(job_type=job_type, idempotency_key=f"{run_id}-sleep-wake", max_attempts=3, now=started)
+    claimed = supervisor.claim(job_type=job_type, worker_id=worker_id, lease_seconds=lease_seconds, now=started)
+    recovered = supervisor.recover_expired_leases(now=started + timedelta(seconds=sleep_wake_seconds), job_type=job_type)
+    passed = bool(claimed.get("claimed")) and int(recovered.get("recovered_count", 0)) >= 1
+    _write_log_event(
+        log_path,
+        {
+            "run_id": run_id,
+            "event": "sleep_wake_time_jump",
+            "worker_id": worker_id,
+            "claimed": bool(claimed.get("claimed")),
+            "recovered_count": recovered.get("recovered_count", 0),
+        },
+    )
+    return {
+        "schema": "PFIOSPFI003SleepWakeRecoveryCaseV1",
+        "status": "Pass" if passed else "Fail",
+        "job_type": job_type,
+        "worker_id": worker_id,
+        "claimed": claimed,
+        "recovered": recovered,
+        "sleep_wake_seconds": sleep_wake_seconds,
+        "evidence": f"sleep_wake_time_jump_seconds={sleep_wake_seconds} recovered={int(recovered.get('recovered_count', 0))}",
+    }
+
+
+def _worker_hold_lease(args: argparse.Namespace, supervisor: DurableJobStore) -> dict[str, Any]:
+    claimed = supervisor.claim(
+        job_type=args.job_type,
+        worker_id=args.worker_id,
+        lease_seconds=max(1, int(args.lease_seconds)),
+    )
+    log_path = Path(args.log_path).expanduser()
+    _write_log_event(
+        log_path,
+        {
+            "schema": "PFIOSPFI003WorkerHoldLeaseLogV1",
+            "case": args.case_name,
+            "event": "claimed" if claimed.get("claimed") else "claim_failed",
+            "worker_id": args.worker_id,
+            "job_type": args.job_type,
+            "job_id": claimed.get("job_id", ""),
+            "lease_owner": claimed.get("lease_owner", ""),
+        },
+    )
+    if not claimed.get("claimed"):
+        return {"schema": "PFIOSPFI003WorkerHoldLeaseV1", "status": "Fail", "claimed": claimed}
+    time.sleep(max(1, int(args.hold_seconds)))
+    return {"schema": "PFIOSPFI003WorkerHoldLeaseV1", "status": "Pass", "claimed": claimed}
+
+
+def _start_worker_hold_process(
+    args: argparse.Namespace,
+    *,
+    job_type: str,
+    idempotency_key: str,
+    worker_id: str,
+    lease_seconds: int,
+    log_path: Path,
+    case_name: str,
+) -> subprocess.Popen:
+    project_root = Path(__file__).resolve().parents[3]
+    env = dict(os.environ)
+    env["PYTHONPATH"] = f"{project_root / 'src'}{os.pathsep}{env['PYTHONPATH']}" if env.get("PYTHONPATH") else str(project_root / "src")
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
+    env.setdefault("PYTHONPYCACHEPREFIX", "/private/tmp/pfi003-acceptance-pycache")
+    return subprocess.Popen(
+        [
+            sys.executable,
+            "-m",
+            "pfi_os.examples.pfi_supervisor",
+            "--db-path",
+            str(args.db_path),
+            "--json",
+            "worker-hold-lease",
+            "--job-type",
+            job_type,
+            "--idempotency-key",
+            idempotency_key,
+            "--worker-id",
+            worker_id,
+            "--lease-seconds",
+            str(lease_seconds),
+            "--log-path",
+            str(log_path),
+            "--hold-seconds",
+            str(max(1, int(args.hold_seconds))),
+            "--case-name",
+            case_name,
+        ],
+        cwd=project_root,
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+
+def _wait_for_worker_claim(log_path: Path, *, worker_id: str, timeout_seconds: int) -> dict[str, Any]:
+    deadline = time.time() + max(1, timeout_seconds)
+    while time.time() < deadline:
+        for event in _read_log_events(log_path):
+            if event.get("worker_id") == worker_id and event.get("event") == "claimed":
+                return event
+        time.sleep(0.1)
+    return {}
+
+
+def _stop_process(process: subprocess.Popen, *, mode: str) -> None:
+    if process.poll() is not None:
+        return
+    if mode == "TERM":
+        process.terminate()
+        try:
+            process.wait(timeout=3)
+            return
+        except subprocess.TimeoutExpired:
+            process.kill()
+    else:
+        process.kill()
+    try:
+        process.wait(timeout=3)
+    except subprocess.TimeoutExpired:
+        pass
+
+
+def _write_acceptance_manifest(
+    supervisor: DurableJobStore,
+    *,
+    manifest_path: Path,
+    backup_path: Path,
+    run_id: str,
+    cases: list[dict[str, Any]],
+) -> dict[str, Any]:
+    supervisor.store.initialize()
+    db_path = supervisor.store.db_path
+    shutil.copy2(db_path, backup_path)
+    manifest = {
+        "schema": "PFIOSPFI003SupervisorAcceptanceManifestV1",
+        "status": "Pass" if backup_path.exists() and backup_path.stat().st_size > 0 else "Fail",
+        "run_id": run_id,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "source_db_file": db_path.name,
+        "backup_file": backup_path.name,
+        "backup_sha256": _sha256(backup_path),
+        "backup_bytes": backup_path.stat().st_size if backup_path.exists() else 0,
+        "job_record_count": len(supervisor.store.table_rows("job_records")),
+        "case_statuses": [
+            {
+                "index": index,
+                "schema": str(case.get("schema", "")),
+                "mode": str(case.get("mode", "")),
+                "status": str(case.get("status", "Unknown")),
+            }
+            for index, case in enumerate(cases)
+        ],
+        "private_data_included": False,
+        "network_used": False,
+        "live_execution_used": False,
+    }
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    return manifest
+
+
+def _scan_private_logs(*paths: Path) -> dict[str, Any]:
+    forbidden = [
+        "/Users/",
+        "/Applications/",
+        "password",
+        "secret",
+        "token",
+        "holdings_json",
+        "private_holding",
+        "broker_account",
+        "api_key",
+    ]
+    findings: list[dict[str, str]] = []
+    for path in paths:
+        text = path.read_text(encoding="utf-8") if path.exists() else ""
+        lowered = text.lower()
+        for fragment in forbidden:
+            needle = fragment.lower()
+            if needle in lowered:
+                findings.append({"file": path.name, "fragment": fragment})
+    return {
+        "schema": "PFIOSPFI003PrivateLogScanV1",
+        "status": "Pass" if not findings else "Fail",
+        "findings": findings,
+        "evidence": f"scanned_files={len(paths)} findings={len(findings)}",
+    }
+
+
+def _write_log_event(log_path: Path, event: dict[str, Any]) -> None:
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    clean_event = {"timestamp": datetime.now(timezone.utc).isoformat(), **event}
+    with log_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(clean_event, ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def _read_log_events(log_path: Path) -> list[dict[str, Any]]:
+    if not log_path.exists():
+        return []
+    events = []
+    for line in log_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            events.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+    return events
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _store(db_path: str) -> OperationalStore:

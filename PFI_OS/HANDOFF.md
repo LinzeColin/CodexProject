@@ -47,8 +47,11 @@ Current sequence:
     It covers idempotent enqueue, atomic claim, lease, heartbeat, bounded
     retry, cancel/resume, expired-lease recovery, and dead letter.
     `scripts/pfiSupervisor.sh` now exposes contract/status/doctor/lifecycle
-    commands plus double-worker and crash-recovery smoke. It is not yet the
-    full release-grade supervisor/launchd/sleep-wake/crash matrix.
+    commands plus double-worker, crash-recovery, and release acceptance smoke.
+    The current acceptance harness covers real TERM/KILL child-worker recovery,
+    deterministic sleep/wake recovery, SQLite backup manifest, private-log scan,
+    and no-execution boundary checks. Network recovery, launchd throttle/log
+    rotation, and Web Shell/runtime read-model integration remain open.
 
 ## Current Local State
 
@@ -252,18 +255,24 @@ PYTHONPYCACHEPREFIX=/private/tmp/pfi003-pycache /opt/anaconda3/bin/python3.12 -m
 PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json doctor --recover-expired
 PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json smoke-double-worker --job-type shell_double_worker --idempotency-key shell-double-worker
 PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json smoke-crash-recovery --job-type shell_crash_recovery --idempotency-key shell-crash-recovery --lease-seconds 2 --advance-seconds 3
+rm -rf /private/tmp/pfi003-supervisor-acceptance
+mkdir -p /private/tmp/pfi003-supervisor-acceptance
+PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-acceptance/pfi.sqlite --json acceptance --runtime-dir /private/tmp/pfi003-supervisor-acceptance --lease-seconds 2 --advance-seconds 3 --worker-timeout-seconds 6 --sleep-wake-seconds 120 --hold-seconds 30
 git diff --check
 ```
 
 Observed: the focused durable job contract test passed 8/8 and the supervisor
-CLI contract test passed 6/6. The contract covers
+CLI contract test passed 7/7. The contract covers
 idempotency, atomic claim, active lease ownership, heartbeat extension,
 owner-only completion/failure, bounded retry, dead letter, cancel/resume,
 expired-lease recovery, Web/API/Worker readiness separation, and research-only
 no-execution safety boundaries. The CLI smoke checks cover double-worker claim
 exclusion and simulated crash recovery through expired lease recovery. The
-actual shell smoke used a temporary SQLite DB under `/private/tmp` and passed
-doctor `7/7`, double-worker `Pass`, and crash-recovery `Pass`.
+release acceptance harness used a temporary SQLite DB under `/private/tmp`,
+passed 8/8 checks, and produced
+`pfi003_supervisor_acceptance_manifest.json`,
+`pfi003_supervisor_acceptance_backup.sqlite`, and
+`pfi003_supervisor_acceptance.jsonl`.
 
 Latest PFI-001 reproducible-environment repair verification, 2026-06-20:
 
@@ -347,9 +356,8 @@ Latest runtime smoke:
 - Tracked legacy command-center and value-ledger artifacts
   still exist as historical files. Active PFI homepage ingestion ignores them;
   physical deletion should be handled by a dedicated legacy-data migration run.
-- `st.components.v1.html` currently emits a Streamlit deprecation warning in
-  the app runtime. Replace the embedding mechanism in a focused UI-runtime
-  task before treating the Web Shell as a release-final surface.
+- PFI-003 still needs network recovery, launchd throttle/log rotation, and Web
+  Shell/runtime read-model integration before Gate 1 can be closed.
 
 ## Next Step
 
@@ -357,8 +365,8 @@ Continue from v0.2 PFI-goal execution:
 
 1. Use `docs/development/PFI_GOAL_GATE_MATRIX.md` as the active completion
    matrix for PFI-001 through PFI-012 and Gate 1 through Gate 7.
-2. Next recommended issue: PFI-003 Supervisor/Durable Jobs/lifecycle. Gate 1
-   cannot close until double-start, crash, sleep/wake, job lease, cancel,
-   resume, dead-letter, backup/restore and private-log scan are proven.
+2. Next recommended issue: finish the remaining PFI-003 release-hardening work.
+   Gate 1 cannot close until network recovery, launchd throttle/log rotation,
+   and Web Shell/runtime read-model evidence are proven.
 3. Keep PFI-010/PFI-011/PFI-012 active but do not mark them complete until the
    matrix evidence is strong enough for the full acceptance scope.

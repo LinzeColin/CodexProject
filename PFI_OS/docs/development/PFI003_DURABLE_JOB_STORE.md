@@ -4,7 +4,7 @@ Last updated: 2026-06-20 Australia/Sydney
 
 ## Scope
 
-This document records the first executable PFI-003 runtime supervisor slice.
+This document records the executable PFI-003 runtime supervisor slice.
 It adds a durable job lifecycle contract on top of the existing
 `job_records` table without introducing a new database table or a destructive
 schema migration.
@@ -31,6 +31,19 @@ schema migration.
 - Double-worker smoke proves only one worker receives the active lease.
 - Crash-recovery smoke simulates a worker that stops before heartbeat and then
   recovers the expired lease.
+- `scripts/pfiSupervisor.sh --json acceptance` runs a release-oriented local
+  acceptance harness with doctor, double-worker claim exclusion, TERM worker
+  recovery, KILL worker recovery, sleep/wake time-jump recovery, SQLite backup
+  manifest, and private-log scan checks.
+- TERM/KILL recovery uses a real child worker process that claims a lease, is
+  terminated, and is recovered through expired lease handling.
+- Sleep/wake recovery uses deterministic time-jump evidence so the check is
+  fast, repeatable, and does not require putting the Mac to sleep.
+- Acceptance writes a temporary SQLite backup plus a manifest containing
+  checksum, byte size, row count, case statuses, and no-network/no-live-exec
+  flags.
+- Private-log scan checks acceptance log and manifest for forbidden local path,
+  credential, account, and private-holding fragments.
 - Safety boundary remains research-only: no broker calls, no order execution,
   no payments, no betting, no private-data commit path.
 
@@ -50,6 +63,7 @@ schema migration.
 - `scripts/pfiSupervisor.sh --json doctor --recover-expired`
 - `scripts/pfiSupervisor.sh --json smoke-double-worker`
 - `scripts/pfiSupervisor.sh --json smoke-crash-recovery`
+- `scripts/pfiSupervisor.sh --json acceptance`
 
 ## Verification
 
@@ -59,15 +73,21 @@ PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /opt/anaconda3/bi
 PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json doctor --recover-expired
 PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json smoke-double-worker --job-type shell_double_worker --idempotency-key shell-double-worker
 PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json smoke-crash-recovery --job-type shell_crash_recovery --idempotency-key shell-crash-recovery --lease-seconds 2 --advance-seconds 3
+rm -rf /private/tmp/pfi003-supervisor-acceptance
+mkdir -p /private/tmp/pfi003-supervisor-acceptance
+PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-acceptance/pfi.sqlite --json acceptance --runtime-dir /private/tmp/pfi003-supervisor-acceptance --lease-seconds 2 --advance-seconds 3 --worker-timeout-seconds 6 --sleep-wake-seconds 120 --hold-seconds 30
 ```
 
 Observed: Durable Job Store tests passed `8/8`; supervisor CLI tests passed
-`6/6`; shell smoke passed `doctor`, `smoke-double-worker`, and
-`smoke-crash-recovery` against `/private/tmp/pfi003-supervisor-smoke/pfi.sqlite`.
+`7/7`; shell smoke passed `doctor`, `smoke-double-worker`,
+`smoke-crash-recovery`, and `acceptance` against temporary SQLite databases
+under `/private/tmp`. The acceptance summary passed `8/8` checks and produced
+`pfi003_supervisor_acceptance_manifest.json`,
+`pfi003_supervisor_acceptance_backup.sqlite`, and
+`pfi003_supervisor_acceptance.jsonl`.
 
 ## Remaining PFI-003 Work
 
-- Add sleep/wake, TERM/KILL, network recovery, backup/restore manifest, and
-  private-log scan evidence.
+- Add network recovery evidence.
 - Integrate durable lifecycle events into the Web Shell/runtime read model.
 - Add launchd throttle/log-rotation proof for release Gate 1.
