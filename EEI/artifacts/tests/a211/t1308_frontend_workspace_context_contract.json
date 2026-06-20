@@ -3,7 +3,7 @@
   "generated_at": "2026-06-20T00:00:00+10:00",
   "task_id": "T1308",
   "acceptance_id": "A211",
-  "status": "PARTIAL",
+  "status": "LIVE_CROSS_ROUTE_CI_PENDING",
   "implemented_scope": [
     "WorkspaceContext contract with 16 EEI modules",
     "route, lens, section and planned-disabled navigation control states",
@@ -17,6 +17,8 @@
     "production data client and UI panel hydrate /v1/catalogs plus relationship_fact_candidate score explanations from the production API, using /v1/explore sample_candidates to avoid hard-coded live database IDs",
     "production data client and Evidence Center hydrate /v1/evidence/relationship_fact_candidate/{objectId}, expose evidence/source-document counts, endpoint state and source snippets, and refresh evidence when the user clicks 打开证据",
     "live E2E setup explicitly configures saved-view, production-data and model API base keys for live FastAPI/PostgreSQL cross-route runs",
+    "live E2E API reset now loads curated official ingestion anchors before FastAPI starts, allowing production data panels to hydrate real Golden Vertical candidate evidence from PostgreSQL",
+    "live A211 route/control coverage now exercises production graph hydration, catalog inventory, relationship_fact_candidate score explanation, evidence snippets, supply-chain lens, evidence center refresh, Objects and Scope, Industries and System Status routes against FastAPI/PostgreSQL",
     "server graph hydration preserves the restored local selected node unless the user explicitly selects a server-rendered graph node",
     "Playwright coverage for WorkspaceContext, real controls and disabled unfinished entries"
   ],
@@ -31,7 +33,8 @@
     "specs/api_contract.yaml",
     "tests/e2e/home.spec.ts",
     "tests/e2e/saved-view-live.spec.ts",
-    "tests/e2e/state-contract.spec.ts"
+    "tests/e2e/state-contract.spec.ts",
+    "scripts/run_live_e2e_api.sh"
   ],
   "verified_commands": [
     "PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck",
@@ -45,13 +48,18 @@
     "npx --yes pnpm@11.8.0 --filter @eei/web typecheck",
     "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A204 and A205\"",
     "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.live.config.ts",
+    "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.live.config.ts --list",
+    "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/home.spec.ts",
     "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1",
     "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts --workers=1"
   ],
   "verified_result": {
     "typecheck": "PASS",
     "playwright_e2e": "PASS",
-    "playwright_tests_passed": 32
+    "playwright_tests_passed": 32,
+    "live_playwright_discovery": "PASS",
+    "live_playwright_tests_discovered": 3,
+    "live_fastapi_postgresql_a211": "PENDING_REMOTE_CI"
   },
   "latest_ci_result": {
     "provider": "GitHub Actions",
@@ -66,7 +74,7 @@
     "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
   },
   "remaining_to_close_a211": [
-    "broaden live FastAPI/PostgreSQL cross-route proof across the remaining production modules and deployment/auth boundaries"
+    "GitHub Actions verify-g2-db must pass the new A211 live FastAPI/PostgreSQL cross-route test before A211 can be marked DONE"
   ],
-  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter, model-center transaction/recompute controls, live model activation/stale-refresh/rollback, commercial-map /v1/explore context hydration, server graph node/edge rendering, catalog inventory hydration, relationship_fact_candidate score explanation hydration and evidence detail/source-snippet hydration. It does not close the remaining full-module live backend, authn/authz, transactional outbox, deployment proof or long soak proof."
+  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter, model-center transaction/recompute controls, live model activation/stale-refresh/rollback, commercial-map /v1/explore context hydration, server graph node/edge rendering, catalog inventory hydration, relationship_fact_candidate score explanation hydration and evidence detail/source-snippet hydration. The new live cross-route FastAPI/PostgreSQL A211 proof is implemented and pending GitHub Actions verification before A211 is closed."
 }

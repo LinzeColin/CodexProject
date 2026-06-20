@@ -179,3 +179,77 @@ test("A204 and A205 live model activation refreshes and rolls back through FastA
 
   await context.close();
 });
+
+test("A211 live production routes and data controls hydrate from FastAPI PostgreSQL", async ({
+  browser
+}) => {
+  const context = await browser.newContext();
+  await configureApiBase(context);
+  const page = await context.newPage();
+
+  await page.goto("/");
+
+  const graphPanel = page.getByTestId("production-graph-context");
+  const dataPanel = page.getByTestId("production-data-context");
+
+  await expect(page.getByTestId("workspace-context-contract")).toHaveAttribute(
+    "data-context-version",
+    "workspace-context-v1"
+  );
+  await expect(page.getByTestId("production-graph-status")).toHaveText(
+    "server-hydrated",
+    { timeout: 20_000 }
+  );
+  await expect(graphPanel).toHaveAttribute("data-graph-sync-mode", "server");
+  await expect(graphPanel).toHaveAttribute("data-graph-endpoint", /\/v1\/explore$/);
+  await expect(graphPanel).toHaveAttribute("data-server-node-count", /^[1-9]\d*$/);
+  await expect(graphPanel).toHaveAttribute("data-server-edge-count", /^[1-9]\d*$/);
+  await expect(graphPanel).toHaveAttribute("data-candidate-total-count", /^[1-9]\d*$/);
+  await expect(graphPanel).toHaveAttribute("data-relationship-candidates-in-graph", "false");
+  await expect(graphPanel).toHaveAttribute("data-min-independent-sources", "2");
+  await expect(page.getByTestId("production-graph-publication-gate")).toContainText(
+    "candidates-in-graph=false"
+  );
+
+  await expect(page.getByTestId("production-data-status")).toHaveText(
+    "server-hydrated / server-hydrated / server-hydrated",
+    { timeout: 20_000 }
+  );
+  await expect(dataPanel).toHaveAttribute("data-catalog-sync-mode", "server");
+  await expect(dataPanel).toHaveAttribute("data-score-sync-mode", "server");
+  await expect(dataPanel).toHaveAttribute("data-evidence-sync-mode", "server");
+  await expect(dataPanel).toHaveAttribute("data-catalog-count", /^[1-9]\d*$/);
+  await expect(dataPanel).toHaveAttribute("data-score-evidence-count", /^[1-9]\d*$/);
+  await expect(dataPanel).toHaveAttribute("data-evidence-detail-count", /^[1-9]\d*$/);
+  await expect(page.getByTestId("production-score-candidate")).toContainText("GV-FACT-001");
+  await expect(page.getByTestId("production-score-candidate")).toContainText("candidate");
+  await expect(page.getByTestId("production-evidence-snippets")).toContainText("SEC EDGAR");
+
+  await page.getByTestId("main-nav-supply_chain").click();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-lens",
+    "supply_chain"
+  );
+  await page.getByTestId("main-nav-evidence_center").click();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-last-nav-action",
+    "section:evidence_center:evidence-center"
+  );
+  await page.getByTestId("hydrate-production-data").click();
+  await expect(dataPanel).toHaveAttribute("data-score-sync-reason", "manual_refresh");
+  await expect(dataPanel).toHaveAttribute("data-evidence-sync-reason", "manual_refresh");
+
+  await page.getByTestId("objects-scope-nav-link").click();
+  await expect(page).toHaveURL(/\/objects-scope$/);
+  await expect(page.getByTestId("objects-scope-screen")).toBeVisible();
+
+  await page.goto("/industries");
+  await expect(page.getByTestId("industry-landscape-page")).toBeVisible();
+
+  await page.goto("/");
+  await page.getByTestId("main-nav-system_status").click();
+  await expect(page).toHaveURL(/\/development-status$/);
+  await expect(page.getByTestId("development-status-screen")).toBeVisible();
+
+  await context.close();
+});
