@@ -62,6 +62,45 @@ export type ScoreExplanationRecord = {
   scoring_service_version: string;
 };
 
+export type EvidenceDetailItem = {
+  evidence_id: string;
+  source_document_id: string;
+  ingestion_evidence_chain_id: string | null;
+  role: string;
+  source_tier: number;
+  publisher: string | null;
+  title: string | null;
+  url: string | null;
+  locator: string | null;
+  support_excerpt: string | null;
+  snippet: {
+    text: string | null;
+    locator: string | null;
+    redaction_status: string;
+  };
+  structured_fact: Record<string, unknown>;
+  counter_evidence: unknown[];
+  parser_version: string | null;
+  confidence: number | null;
+  review_status: string | null;
+  source_document: Record<string, unknown>;
+};
+
+export type EvidenceDetailRecord = {
+  schema_version: "evidence-detail-v1";
+  object_type: "relationship_fact_candidate" | "relationship";
+  object_id: string;
+  object_summary: Record<string, unknown>;
+  evidence_count: number;
+  returned_evidence_count: number;
+  source_document_count: number;
+  limit: number;
+  truncated: boolean;
+  source_documents: Record<string, unknown>[];
+  evidence: EvidenceDetailItem[];
+  production_context: Record<string, unknown>;
+};
+
 export type CatalogInventorySyncResult =
   | {
       mode: "server";
@@ -100,6 +139,26 @@ export type ScoreExplanationSyncResult =
       mode: "local_fallback";
       status: "fixture";
       reason: "api_base_missing" | "candidate_id_missing";
+    };
+
+export type EvidenceDetailSyncResult =
+  | {
+      mode: "server";
+      status: "hydrated";
+      endpoint: string;
+      record: EvidenceDetailRecord;
+    }
+  | {
+      mode: "server";
+      status: "error";
+      endpoint: string;
+      reason: string;
+      detail?: unknown;
+    }
+  | {
+      mode: "local_fallback";
+      status: "fixture";
+      reason: "api_base_missing" | "object_id_missing";
     };
 
 export function readProductionDataApiBaseUrl() {
@@ -167,6 +226,41 @@ export async function loadScoreExplanation(input: {
   }
 }
 
+export async function loadEvidenceDetail(input: {
+  objectType: "relationship_fact_candidate" | "relationship";
+  objectId?: string | null;
+  limit?: number;
+}): Promise<EvidenceDetailSyncResult> {
+  if (!input.objectId) {
+    return { mode: "local_fallback", status: "fixture", reason: "object_id_missing" };
+  }
+  const apiBaseUrl = readProductionDataApiBaseUrl();
+  if (!apiBaseUrl) {
+    return { mode: "local_fallback", status: "fixture", reason: "api_base_missing" };
+  }
+
+  const limit = input.limit ?? 20;
+  const endpoint = `${apiBaseUrl}/v1/evidence/${input.objectType}/${input.objectId}?limit=${encodeURIComponent(
+    String(limit)
+  )}`;
+  try {
+    const response = await window.fetch(endpoint);
+    const payload = (await response.json().catch(() => null)) as unknown;
+    if (!response.ok || !isEvidenceDetailRecord(payload)) {
+      return {
+        mode: "server",
+        status: "error",
+        endpoint,
+        reason: `http_${response.status}`,
+        detail: payload
+      };
+    }
+    return { mode: "server", status: "hydrated", endpoint, record: payload };
+  } catch (error) {
+    return fetchEvidenceErrorResult(endpoint, error);
+  }
+}
+
 function isCatalogInventoryRecord(value: unknown): value is CatalogInventoryRecord {
   if (!isRecord(value)) return false;
   return (
@@ -225,6 +319,41 @@ function isScoreExplanationRecord(value: unknown): value is ScoreExplanationReco
   );
 }
 
+function isEvidenceDetailRecord(value: unknown): value is EvidenceDetailRecord {
+  if (!isRecord(value)) return false;
+  return (
+    value.schema_version === "evidence-detail-v1" &&
+    (value.object_type === "relationship_fact_candidate" || value.object_type === "relationship") &&
+    typeof value.object_id === "string" &&
+    isRecord(value.object_summary) &&
+    typeof value.evidence_count === "number" &&
+    typeof value.returned_evidence_count === "number" &&
+    typeof value.source_document_count === "number" &&
+    typeof value.limit === "number" &&
+    typeof value.truncated === "boolean" &&
+    Array.isArray(value.source_documents) &&
+    Array.isArray(value.evidence) &&
+    value.evidence.every(isEvidenceDetailItem) &&
+    isRecord(value.production_context)
+  );
+}
+
+function isEvidenceDetailItem(value: unknown): value is EvidenceDetailItem {
+  if (!isRecord(value) || !isRecord(value.snippet)) return false;
+  return (
+    typeof value.evidence_id === "string" &&
+    typeof value.source_document_id === "string" &&
+    typeof value.role === "string" &&
+    typeof value.source_tier === "number" &&
+    (typeof value.snippet.text === "string" || value.snippet.text === null) &&
+    (typeof value.snippet.locator === "string" || value.snippet.locator === null) &&
+    typeof value.snippet.redaction_status === "string" &&
+    isRecord(value.structured_fact) &&
+    Array.isArray(value.counter_evidence) &&
+    isRecord(value.source_document)
+  );
+}
+
 function fetchCatalogErrorResult(endpoint: string, error: unknown): CatalogInventorySyncResult {
   return {
     mode: "server",
@@ -236,6 +365,16 @@ function fetchCatalogErrorResult(endpoint: string, error: unknown): CatalogInven
 }
 
 function fetchScoreErrorResult(endpoint: string, error: unknown): ScoreExplanationSyncResult {
+  return {
+    mode: "server",
+    status: "error",
+    endpoint,
+    reason: error instanceof Error ? error.name : "fetch_failed",
+    detail: error instanceof Error ? error.message : String(error)
+  };
+}
+
+function fetchEvidenceErrorResult(endpoint: string, error: unknown): EvidenceDetailSyncResult {
   return {
     mode: "server",
     status: "error",

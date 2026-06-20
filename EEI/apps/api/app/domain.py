@@ -537,6 +537,23 @@ def explain_score(
         raise translate_repository_error(exc) from exc
 
 
+@router.get("/evidence/{objectType}/{objectId}")
+def get_evidence_detail(
+    objectType: str,
+    objectId: UUID,
+    repository: RepositoryDependency,
+    limit: Annotated[int, Query(ge=1, le=50)] = 20,
+) -> dict[str, Any]:
+    try:
+        return repository.evidence_detail(
+            object_type=objectType,
+            object_id=objectId,
+            limit=limit,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
 @router.get("/calibrations")
 def list_calibrations(repository: RepositoryDependency) -> list[dict[str, Any]]:
     return repository.list_calibrations()

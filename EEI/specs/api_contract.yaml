@@ -954,6 +954,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ScoreExplanation'
+  /v1/evidence/{objectType}/{objectId}:
+    get:
+      operationId: getEvidenceDetail
+      parameters:
+      - name: objectType
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - relationship_fact_candidate
+          - relationship
+      - name: objectId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 20
+      responses:
+        '200':
+          description: Evidence chain detail, source snippets, document summaries and production context
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvidenceDetailResponse'
+        '404':
+          description: Object not found
   /v1/audit-logs:
     get:
       operationId: listAuditLogs
@@ -1137,6 +1171,231 @@ components:
           type:
           - string
           - 'null'
+    EvidenceDetailSourceDocument:
+      type: object
+      required:
+      - id
+      - source_tier
+      - url
+      - observed_at
+      - retrieved_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        source_code:
+          type:
+          - string
+          - 'null'
+        source_name:
+          type:
+          - string
+          - 'null'
+        source_tier:
+          type: integer
+          minimum: 1
+          maximum: 5
+        publisher:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        url:
+          type: string
+        document_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        observed_at:
+          type: string
+          format: date-time
+        retrieved_at:
+          type: string
+          format: date-time
+        media_type:
+          type:
+          - string
+          - 'null'
+        content_hash:
+          type:
+          - string
+          - 'null'
+    EvidenceSnippet:
+      type: object
+      required:
+      - text
+      - redaction_status
+      properties:
+        text:
+          type:
+          - string
+          - 'null'
+        locator:
+          type:
+          - string
+          - 'null'
+        redaction_status:
+          type: string
+          enum:
+          - none
+          - redacted
+    EvidenceDetailItem:
+      type: object
+      required:
+      - evidence_id
+      - source_document_id
+      - role
+      - source_tier
+      - snippet
+      properties:
+        evidence_id:
+          type: string
+        source_document_id:
+          type: string
+          format: uuid
+        ingestion_evidence_chain_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        role:
+          type: string
+          enum:
+          - supports
+          - contradicts
+          - context
+        source_tier:
+          type: integer
+          minimum: 1
+          maximum: 5
+        publisher:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        url:
+          type:
+          - string
+          - 'null'
+        document_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        observed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        retrieved_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        media_type:
+          type:
+          - string
+          - 'null'
+        content_hash:
+          type:
+          - string
+          - 'null'
+        locator:
+          type:
+          - string
+          - 'null'
+        support_excerpt:
+          type:
+          - string
+          - 'null'
+        snippet:
+          $ref: '#/components/schemas/EvidenceSnippet'
+        structured_fact:
+          type: object
+          additionalProperties: true
+        counter_evidence:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        parser_version:
+          type:
+          - string
+          - 'null'
+        confidence:
+          type:
+          - number
+          - 'null'
+          minimum: 0
+          maximum: 1
+        review_status:
+          type:
+          - string
+          - 'null'
+        source_document:
+          $ref: '#/components/schemas/EvidenceDetailSourceDocument'
+    EvidenceDetailResponse:
+      type: object
+      required:
+      - schema_version
+      - object_type
+      - object_id
+      - evidence_count
+      - returned_evidence_count
+      - source_document_count
+      - limit
+      - truncated
+      - source_documents
+      - evidence
+      - production_context
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - evidence-detail-v1
+        object_type:
+          type: string
+          enum:
+          - relationship_fact_candidate
+          - relationship
+        object_id:
+          type: string
+          format: uuid
+        object_summary:
+          type: object
+          additionalProperties: true
+        evidence_count:
+          type: integer
+          minimum: 0
+        returned_evidence_count:
+          type: integer
+          minimum: 0
+        source_document_count:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 50
+        truncated:
+          type: boolean
+        source_documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvidenceDetailSourceDocument'
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvidenceDetailItem'
+        production_context:
+          $ref: '#/components/schemas/ProductionContext'
     GraphNode:
       allOf:
       - $ref: '#/components/schemas/EntitySummary'

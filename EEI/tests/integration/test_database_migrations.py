@@ -539,6 +539,26 @@ def exercise_domain_api_and_repository_contracts() -> None:
     ] is False
     assert score_context["publication_policy"]["minimum_independent_sources"] == 2
 
+    evidence_detail_response = client.get(
+        f"/v1/evidence/relationship_fact_candidate/{candidate_row[0]}"
+    )
+    assert evidence_detail_response.status_code == 200
+    evidence_detail = evidence_detail_response.json()
+    assert evidence_detail["schema_version"] == "evidence-detail-v1"
+    assert evidence_detail["object_type"] == "relationship_fact_candidate"
+    assert evidence_detail["object_id"] == str(candidate_row[0])
+    assert evidence_detail["object_summary"]["candidate_key"] == candidate_row[1]
+    assert evidence_detail["evidence_count"] == 1
+    assert evidence_detail["returned_evidence_count"] == 1
+    assert evidence_detail["source_document_count"] == 1
+    assert evidence_detail["truncated"] is False
+    assert evidence_detail["evidence"][0]["source_document_id"] == score_explanation["evidence"][0][
+        "source_document_id"
+    ]
+    assert evidence_detail["evidence"][0]["snippet"]["text"]
+    assert evidence_detail["evidence"][0]["source_document"]["url"].startswith("https://")
+    assert evidence_detail["production_context"]["schema_version"] == "production-context-v1"
+
     exercise_transactional_model_activation_contract(client, profiles[0])
     exercise_server_saved_view_contracts(client, profiles[0])
 
