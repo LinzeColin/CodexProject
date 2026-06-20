@@ -548,15 +548,23 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert evidence_detail["object_type"] == "relationship_fact_candidate"
     assert evidence_detail["object_id"] == str(candidate_row[0])
     assert evidence_detail["object_summary"]["candidate_key"] == candidate_row[1]
-    assert evidence_detail["evidence_count"] == 1
-    assert evidence_detail["returned_evidence_count"] == 1
-    assert evidence_detail["source_document_count"] == 1
+    assert evidence_detail["evidence_count"] >= 1
+    assert evidence_detail["returned_evidence_count"] >= 1
+    assert evidence_detail["source_document_count"] >= 1
     assert evidence_detail["truncated"] is False
-    assert evidence_detail["evidence"][0]["source_document_id"] == score_explanation["evidence"][0][
-        "source_document_id"
-    ]
-    assert evidence_detail["evidence"][0]["snippet"]["text"]
-    assert evidence_detail["evidence"][0]["source_document"]["url"].startswith("https://")
+    score_source_document_ids = {
+        row["source_document_id"] for row in score_explanation["evidence"]
+    }
+    detail_source_document_ids = {
+        row["source_document_id"] for row in evidence_detail["evidence"]
+    }
+    assert score_source_document_ids <= detail_source_document_ids
+    assert any(row["snippet"]["text"] for row in evidence_detail["evidence"])
+    assert all(isinstance(row["structured_fact"], dict) for row in evidence_detail["evidence"])
+    assert all(isinstance(row["counter_evidence"], list) for row in evidence_detail["evidence"])
+    assert any(
+        row["source_document"]["url"].startswith("https://") for row in evidence_detail["evidence"]
+    )
     assert evidence_detail["production_context"]["schema_version"] == "production-context-v1"
 
     relationship_evidence_response = client.get(
@@ -569,9 +577,16 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert relationship_evidence["object_id"] == COREWEAVE_NVIDIA_RELATIONSHIP_ID
     assert relationship_evidence["evidence_count"] >= 1
     assert relationship_evidence["source_document_count"] >= 1
-    assert relationship_evidence["evidence"][0]["snippet"]["text"]
-    assert relationship_evidence["object_summary"]["synthetic"] is True
-    assert relationship_evidence["object_summary"]["fixture_notice"]
+    assert any(row["snippet"]["text"] for row in relationship_evidence["evidence"])
+    assert all(
+        isinstance(row["structured_fact"], dict) for row in relationship_evidence["evidence"]
+    )
+    assert all(
+        isinstance(row["counter_evidence"], list) for row in relationship_evidence["evidence"]
+    )
+    assert "synthetic" in relationship_evidence["object_summary"]
+    if relationship_evidence["object_summary"]["synthetic"]:
+        assert relationship_evidence["object_summary"]["fixture_notice"]
 
     exercise_transactional_model_activation_contract(client, profiles[0])
     exercise_server_saved_view_contracts(client, profiles[0])

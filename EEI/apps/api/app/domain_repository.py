@@ -3447,8 +3447,8 @@ class DomainRepository:
               rfce.support_excerpt,
               rfce.created_at,
               iec.evidence_role,
-              iec.structured_fact,
-              iec.counter_evidence,
+              COALESCE(iec.structured_fact, '{}'::jsonb) AS structured_fact,
+              COALESCE(iec.counter_evidence, '[]'::jsonb) AS counter_evidence,
               iec.parser_version,
               iec.confidence,
               iec.review_status AS chain_review_status,
@@ -3529,7 +3529,7 @@ class DomainRepository:
               re.support_excerpt,
               re.created_at,
               re.role AS evidence_role,
-              re.structured_fact,
+              COALESCE(re.structured_fact, '{}'::jsonb) AS structured_fact,
               '[]'::jsonb AS counter_evidence,
               sd.parser_version,
               r.confidence,
@@ -3584,6 +3584,9 @@ class DomainRepository:
         evidence: list[dict[str, Any]] = []
         for row in evidence_rows:
             source_document_id = row["source_document_id"]
+            support_excerpt = row["support_excerpt"] or ""
+            structured_fact = row["structured_fact"] or {}
+            counter_evidence = row["counter_evidence"] or []
             source_document = {
                 "id": source_document_id,
                 "source_code": row["source_code"],
@@ -3621,14 +3624,14 @@ class DomainRepository:
                     "media_type": row["media_type"],
                     "content_hash": row["content_hash"],
                     "locator": row["locator"],
-                    "support_excerpt": row["support_excerpt"],
+                    "support_excerpt": support_excerpt,
                     "snippet": {
-                        "text": row["support_excerpt"],
+                        "text": support_excerpt,
                         "locator": row["locator"],
                         "redaction_status": "none",
                     },
-                    "structured_fact": row["structured_fact"],
-                    "counter_evidence": row["counter_evidence"],
+                    "structured_fact": structured_fact,
+                    "counter_evidence": counter_evidence,
                     "parser_version": row["parser_version"],
                     "confidence": row["confidence"],
                     "review_status": row["chain_review_status"],
