@@ -2,45 +2,35 @@
 
 import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import {
-  Activity,
   ArrowDown,
   ArrowUp,
-  Bell,
   Boxes,
-  Building2,
   ChevronLeft,
-  CircleDollarSign,
-  Clock3,
   Crosshair,
-  Database,
   FileSearch,
   GitBranch,
-  Landmark,
-  ListChecks,
   Network,
-  PackageSearch,
   Route,
-  Scale,
   Search,
-  Settings2,
-  ShieldCheck,
   RotateCcw,
   Save,
   Star
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 import {
   ACTIVE_ANALYSIS_CONTEXT,
   ANALYSIS_PREVIEW_STORAGE_KEY,
   type AnalysisContext
 } from "./analysis-contract";
 import { useAnalysisContext } from "./use-analysis-context";
-
-type NavItem = {
-  name: string;
-  icon: LucideIcon;
-  active?: boolean;
-};
+import {
+  createWorkspaceContextValue,
+  SAVED_VIEW_STORAGE_KEY,
+  WORKSPACE_STATE_STORAGE_KEY,
+  WorkspaceContextContractMarker,
+  WorkspaceContextProvider,
+  type WorkspaceModuleId
+} from "./workspace-context";
+import { WorkspaceNavigationRail } from "./workspace-navigation";
 
 type FocusKey =
   | "materials"
@@ -197,25 +187,6 @@ type HomeChangeEntry = {
   target: FocusKey;
 };
 
-const navItems: NavItem[] = [
-  { name: "商业版图", icon: Network, active: true },
-  { name: "集团结构", icon: Building2 },
-  { name: "业务板块", icon: Boxes },
-  { name: "供应链", icon: PackageSearch },
-  { name: "资本网络", icon: CircleDollarSign },
-  { name: "并购交易", icon: GitBranch },
-  { name: "控制关系", icon: ShieldCheck },
-  { name: "政策环境", icon: Landmark },
-  { name: "战略信号", icon: Activity },
-  { name: "时间演变", icon: Clock3 },
-  { name: "证据中心", icon: FileSearch },
-  { name: "模型中心", icon: Settings2 },
-  { name: "数据中心", icon: Database },
-  { name: "我的关注", icon: Bell },
-  { name: "探索记录", icon: Route },
-  { name: "系统状态", icon: Scale }
-];
-
 const entityLabels: Record<NodeKey, string> = {
   materials: "Synthetic Specialty Materials Co.",
   equipment: "Synthetic Lithography Equipment Co.",
@@ -352,8 +323,6 @@ const timelineItems: {
   }
 ];
 
-const WORKSPACE_STATE_STORAGE_KEY = "eei.workspaceState.v1";
-const SAVED_VIEW_STORAGE_KEY = "eei.savedView.current.v1";
 const SAVED_VIEW_VERSION = "saved-view-v1";
 const WORKSPACE_LAYOUT_GRAMMAR =
   "upstream-left focus-center downstream-right capital-top policy-bottom";
@@ -984,6 +953,7 @@ export default function Home() {
   const [watchlistNodeKeys, setWatchlistNodeKeys] = useState<NodeKey[]>([]);
   const [tableLensFilter, setTableLensFilter] = useState<LensKey>("all");
   const [nodeActionStatus, setNodeActionStatus] = useState("ready");
+  const [navActionStatus, setNavActionStatus] = useState("ready");
   const [stateReady, setStateReady] = useState(false);
   const restoringHistoryState = useRef(false);
   const hasWrittenHistoryState = useRef(false);
@@ -991,6 +961,14 @@ export default function Home() {
   const workspaceState = useMemo<WorkspaceState>(
     () => ({ focusKey, selectedKey, path, activeLens, semanticZoom, asOf }),
     [activeLens, asOf, focusKey, path, selectedKey, semanticZoom]
+  );
+  const workspaceContextValue = useMemo(
+    () =>
+      createWorkspaceContextValue({
+        ...workspaceState,
+        analysisContext
+      }),
+    [analysisContext, workspaceState]
   );
   const currentTimeline = timelineItems.find((item) => item.key === asOf) ?? timelineItems[2];
   const nodeByKey = useMemo(
@@ -1162,6 +1140,19 @@ export default function Home() {
     setNodeActionStatus(`watchlist:${selectedNode.key}`);
   }
 
+  function applyWorkspaceNavigationLens(lens: string, moduleId: WorkspaceModuleId) {
+    if (!isLensKey(lens)) return;
+    setActiveLens(lens);
+    setNavActionStatus(`lens:${moduleId}:${lens}`);
+  }
+
+  function applyWorkspaceNavigationSection(sectionTestId: string, moduleId: WorkspaceModuleId) {
+    const section = document.querySelector<HTMLElement>(`[data-testid="${sectionTestId}"]`);
+    section?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    section?.focus?.({ preventScroll: true });
+    setNavActionStatus(`section:${moduleId}:${sectionTestId}`);
+  }
+
   function openSelectedPath() {
     setNodeActionStatus(`path:${selectedNode.key}`);
   }
@@ -1263,6 +1254,7 @@ export default function Home() {
   });
 
   return (
+    <WorkspaceContextProvider value={workspaceContextValue}>
     <main
       className="workspace"
       data-active-data-snapshot={analysisContext.dataSnapshot}
@@ -1274,6 +1266,7 @@ export default function Home() {
       data-analysis-contract={analysisContext.contractVersion}
       data-focus-key={focusKey}
       data-layout-grammar={WORKSPACE_LAYOUT_GRAMMAR}
+      data-last-nav-action={navActionStatus}
       data-path={path.join(".")}
       data-path-length={path.length}
       data-reroot-state={transitionState}
@@ -1283,53 +1276,13 @@ export default function Home() {
       data-viewport-anchor={viewportAnchor}
       data-workspace-model="recursive-enterprise-map"
     >
-      <aside className="navRail" aria-label="主导航">
-        <div className="brandMark" aria-label="商域图谱">
-          <span className="brandGlyph">E</span>
-          <span>
-            <strong>商域图谱</strong>
-            <small>EEI</small>
-          </span>
-        </div>
-        <nav aria-label="主导航">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                className={item.active ? "navItem active" : "navItem"}
-                key={item.name}
-                type="button"
-                aria-current={item.active ? "page" : undefined}
-                title={item.name}
-              >
-                <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
-                <span>{item.name}</span>
-              </button>
-            );
-          })}
-        </nav>
-        <div className="systemNav" aria-label="系统模块">
-          <span className="navGroupLabel">系统模块</span>
-          <a
-            className="navItem"
-            data-testid="objects-scope-nav-link"
-            href="/objects-scope"
-            title="对象与范围"
-          >
-            <Database size={18} strokeWidth={1.8} aria-hidden="true" />
-            <span>对象与范围</span>
-          </a>
-          <a
-            className="navItem"
-            data-testid="development-status-nav-link"
-            href="/development-status"
-            title="开发状态"
-          >
-            <ListChecks size={18} strokeWidth={1.8} aria-hidden="true" />
-            <span>开发状态</span>
-          </a>
-        </div>
-      </aside>
+      <WorkspaceContextContractMarker />
+      <WorkspaceNavigationRail
+        activeLens={activeLens}
+        activeModuleId="business_map"
+        onLensTarget={applyWorkspaceNavigationLens}
+        onSectionTarget={applyWorkspaceNavigationSection}
+      />
 
       <section className="focusPanel" aria-label="当前主体">
         <div className="subjectHeader">
@@ -1839,7 +1792,7 @@ export default function Home() {
         </section>
       </section>
 
-      <aside className="inspector" aria-label="证据与状态">
+      <aside className="inspector" aria-label="证据与状态" data-testid="evidence-center">
         <div className="inspectorHeader">
           <p className="eyebrow">Evidence Center</p>
           <h2>Relationship path</h2>
@@ -2157,5 +2110,6 @@ export default function Home() {
         </div>
       </aside>
     </main>
+    </WorkspaceContextProvider>
   );
 }

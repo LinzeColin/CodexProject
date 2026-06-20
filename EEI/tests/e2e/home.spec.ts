@@ -57,6 +57,72 @@ test("shows user-oriented home contract entry points and model freshness", async
   await expect(page.getByTestId("home-model-status")).toContainText("2026-07-03");
 });
 
+test("A211 exposes WorkspaceContext routes controls disabled entries and persisted query wiring", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  const context = page.getByTestId("workspace-context-contract");
+  await expect(context).toHaveAttribute("data-context-version", "workspace-context-v1");
+  await expect(context).toHaveAttribute("data-module-count", "16");
+  await expect(context).toHaveAttribute(
+    "data-query-keys",
+    "subject,selected,lens,zoom,asOf,path"
+  );
+  await expect(context).toHaveAttribute("data-state-persistence", "url,sessionStorage,localStorage");
+  await expect(context).toHaveAttribute("data-workspace-state-storage-key", "eei.workspaceState.v1");
+  await expect(context).toHaveAttribute("data-saved-view-storage-key", "eei.savedView.current.v1");
+  await expect(context).toHaveAttribute(
+    "data-disabled-unfinished",
+    "ma_transactions,control_relationships,strategic_signals"
+  );
+  const serverEndpoints = await context.getAttribute("data-server-endpoints");
+  expect(serverEndpoints).toContain("/v1/saved-views");
+  expect(serverEndpoints).toContain("/v1/model/active-context");
+
+  await expect(page.getByTestId("main-nav-business_map")).toHaveAttribute("href", "/");
+  await expect(page.getByTestId("main-nav-business_map")).toHaveAttribute(
+    "data-control-kind",
+    "route"
+  );
+  await page.getByTestId("main-nav-supply_chain").click();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-lens",
+    "supply_chain"
+  );
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-last-nav-action",
+    "lens:supply_chain:supply_chain"
+  );
+  await expect(page).toHaveURL(/lens=supply_chain/);
+
+  await page.getByTestId("main-nav-time_evolution").click();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-last-nav-action",
+    "section:time_evolution:timeline-controls"
+  );
+  await page.getByTestId("main-nav-evidence_center").click();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-last-nav-action",
+    "section:evidence_center:evidence-center"
+  );
+
+  await expect(page.getByTestId("main-nav-ma_transactions")).toBeDisabled();
+  await expect(page.getByTestId("main-nav-ma_transactions")).toHaveAttribute(
+    "data-route-state",
+    "planned"
+  );
+  await expect(page.getByTestId("main-nav-ma_transactions")).toHaveAttribute(
+    "data-disabled-reason",
+    /Requires reviewed M&A transaction facts/
+  );
+  await expect(page.getByTestId("main-nav-control_relationships")).toBeDisabled();
+  await expect(page.getByTestId("main-nav-strategic_signals")).toBeDisabled();
+
+  await page.getByTestId("main-nav-system_status").click();
+  await expect(page).toHaveURL(/\/development-status$/);
+});
+
 test("exposes eight company layers and separates structure object types", async ({ page }) => {
   await page.goto("/");
 

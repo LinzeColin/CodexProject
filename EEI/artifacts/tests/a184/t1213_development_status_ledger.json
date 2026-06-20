@@ -24,22 +24,22 @@
     "implementation_status": {
       "DONE": 2,
       "N/A": 8,
-      "NOT_STARTED": 17,
-      "PARTIAL": 19
+      "NOT_STARTED": 16,
+      "PARTIAL": 20
     },
     "validation_status": {
       "CATALOG_VALIDATED": 11,
       "CI_VALIDATED": 4,
-      "LOCAL_E2E_VALIDATED": 6,
+      "LOCAL_E2E_VALIDATED": 7,
       "LOCAL_VALIDATED": 11,
-      "SPEC_VALIDATED": 6,
+      "SPEC_VALIDATED": 5,
       "VALIDATED": 8
     },
     "lane_counts": {
-      "resolved": 29,
+      "resolved": 30,
       "prototyped": 21,
-      "specified": 17,
-      "not_started_tasks": 65,
+      "specified": 16,
+      "not_started_tasks": 64,
       "blocked_tasks": 0,
       "out_of_scope_tasks": 8
     },

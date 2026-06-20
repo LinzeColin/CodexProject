@@ -2018,3 +2018,49 @@ Residual risks:
 - The production frontend still uses local saved-view behavior and must be wired to `/v1/saved-views`.
 - A real multi-session browser E2E with two contexts against the API-backed saved-view contract is still required.
 - Authn/authz user/workspace scoping remains required before public multi-user use.
+
+## 2026-06-20 - T1308/A211 WorkspaceContext and production navigation slice
+
+### Scope
+
+- Added a `WorkspaceContext` contract for the 16 EEI navigation modules without changing the EEI system name.
+- Added a componentized workspace navigation rail with route, lens, section and planned-disabled control states.
+- Wired real lens controls to workspace state, section controls to existing work surfaces, and route controls to `/`, `/objects-scope`, and `/development-status`.
+- Added disabled states and explicit reasons for unfinished M&A, control-path and strategic-signal modules.
+- Exposed URL, sessionStorage and localStorage persistence keys plus server endpoint mappings for saved views, model context, exploration and catalogs.
+- Added Playwright coverage for A211.
+
+### Files changed
+
+- `apps/web/src/app/workspace-context.tsx`
+- `apps/web/src/app/workspace-navigation.tsx`
+- `apps/web/src/app/page.tsx`
+- `apps/web/src/app/globals.css`
+- `tests/e2e/home.spec.ts`
+- `artifacts/tests/a211/t1308_frontend_workspace_context_contract.json`
+- `data/task_backlog.csv`
+- `data/acceptance_matrix.csv`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `data/release_gate_catalog.csv`
+- `scripts/validate_v5_production_readiness_sync.py`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `DEVELOPMENT_STATUS.md`
+- `README.md`
+
+### Acceptance mapping
+
+- T1308 -> A211.
+- A211 is now `IN PROGRESS`, not `DONE`.
+
+### Validation
+
+- Local `PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck`: PASS.
+- Local Playwright E2E command ran the full E2E set and passed: 28/28.
+
+### Remaining gaps
+
+- Frontend data loading still needs production API hydration against a configured FastAPI base URL.
+- Saved-view UI still needs multi-session server-backed create/update/restore flows using `/v1/saved-views`.
+- Model-center controls still need transactional activation, rollback and stale-client refresh semantics.
+- A live FastAPI/PostgreSQL cross-route E2E is still required before closing A211.
