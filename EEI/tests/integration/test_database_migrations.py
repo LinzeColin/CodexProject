@@ -19,6 +19,7 @@ from apps.worker.app.main import run_worker_cycle, supervise_worker, worker_heal
 from scripts.db_tools import connect_database, database_url
 from scripts.job_scheduler import (
     complete_job,
+    connect_job_database,
     dispatch_outbox_once,
     enqueue_job,
     fail_job,
@@ -3117,7 +3118,7 @@ def exercise_worker_supervisor_cli_contracts() -> None:
             "contract": "worker-supervisor-cli-v1",
         },
     )
-    with connect_database() as connection:
+    with connect_job_database() as connection:
         cli_event = write_outbox_event(
             connection,
             event_type="a206.worker.cli.wake",
