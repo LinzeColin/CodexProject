@@ -39,6 +39,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │       ├── objects-scope
 │   │   │       │   └── page.tsx
 │   │   │       ├── analysis-contract.ts
+│   │   │       ├── explore-api-client.ts
 │   │   │       ├── globals.css
 │   │   │       ├── layout.tsx
 │   │   │       ├── model-activation-client.ts

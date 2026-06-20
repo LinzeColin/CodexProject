@@ -12,6 +12,7 @@
     "server endpoint mapping for saved views, active model context, exploration and catalogs",
     "saved-view API-first adapter with explicit local fallback and server mock E2E coverage",
     "model-center API-first active-context hydration, transaction activation, stale refresh and rollback controls with server mock E2E coverage",
+    "commercial-map /v1/explore API-first hydration with production_context, graph budget, coverage and publication-gate metadata surfaced in the UI",
     "Playwright coverage for WorkspaceContext, real controls and disabled unfinished entries"
   ],
   "evidence_files": [
@@ -19,23 +20,25 @@
     "apps/web/src/app/workspace-navigation.tsx",
     "apps/web/src/app/saved-view-client.ts",
     "apps/web/src/app/model-activation-client.ts",
+    "apps/web/src/app/explore-api-client.ts",
     "apps/web/src/app/page.tsx",
     "tests/e2e/home.spec.ts",
     "tests/e2e/state-contract.spec.ts"
   ],
   "verified_commands": [
     "PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck",
+    "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1",
     "PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web test:e2e"
   ],
   "verified_result": {
     "typecheck": "PASS",
     "playwright_e2e": "PASS",
-    "playwright_tests_passed": 29
+    "playwright_tests_passed": 31
   },
   "remaining_to_close_a211": [
-    "wire frontend data loading to configured production API base URL instead of fixture projections",
+    "replace fixture graph rendering with server graph node/edge data once live backend hydration is accepted",
     "run cross-route E2E with live FastAPI/PostgreSQL backend and stale-client refresh semantics",
-    "connect remaining production API hydration for graph, evidence, catalogs and score explanations"
+    "connect remaining production API hydration for evidence, catalogs and score explanations"
   ],
-  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter and model-center transaction controls. It does not close T1302 production API hydration or live backend cross-route proof."
+  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter, model-center transaction controls and commercial-map /v1/explore context hydration. It does not close full live backend cross-route proof or replacement of all fixture projections with production API data."
 }

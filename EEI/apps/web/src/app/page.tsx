@@ -22,6 +22,12 @@ import {
   type AnalysisContext
 } from "./analysis-contract";
 import {
+  EXPLORE_API_BASE_STORAGE_KEY,
+  loadExploreGraph,
+  type ExploreGraphRecord,
+  type ExploreGraphRequest
+} from "./explore-api-client";
+import {
   MODEL_CONTEXT_API_BASE_STORAGE_KEY,
   activateModelProfile,
   listModelProfiles,
@@ -130,6 +136,12 @@ type ModelContextStatus =
   | "server-conflict"
   | "server-error"
   | "server-no-target";
+
+type ProductionGraphStatus =
+  | "local-fixture"
+  | "loading-production-graph"
+  | "server-hydrated"
+  | "server-error";
 
 type WorkspaceStateInput = {
   focusKey?: unknown;
@@ -361,6 +373,21 @@ const timelineItems: {
 const SAVED_VIEW_VERSION = "saved-view-v1";
 const WORKSPACE_LAYOUT_GRAMMAR =
   "upstream-left focus-center downstream-right capital-top policy-bottom";
+const DEFAULT_GRAPH_BUDGET = { max_nodes: 42, max_edges: 64, expand_nodes: 12 } as const;
+
+const focusEntityIds: Record<FocusKey, string> = {
+  materials: "00000000-0000-4000-8000-000000000023",
+  equipment: "00000000-0000-4000-8000-000000000022",
+  foundry: "00000000-0000-4000-8000-000000000021",
+  nvidia: "00000000-0000-4000-8000-000000000006",
+  business: "00000000-0000-4000-8000-000000000026",
+  capital: "00000000-0000-4000-8000-000000000006",
+  policy: "00000000-0000-4000-8000-000000000019",
+  systems: "00000000-0000-4000-8000-000000000029",
+  cloud: "00000000-0000-4000-8000-000000000030",
+  datacenter: "00000000-0000-4000-8000-000000000024",
+  energy: "00000000-0000-4000-8000-000000000025"
+};
 
 const systemMakersGroupMembers = [
   "Synthetic Systems Integrator",
@@ -932,6 +959,55 @@ function writeWorkspaceStateParams(params: URLSearchParams, state: WorkspaceStat
   params.set("path", state.path.join("."));
 }
 
+function createExploreGraphRequest(
+  state: WorkspaceState,
+  scoringProfileVersionId?: string | null
+): ExploreGraphRequest {
+  return {
+    focus: {
+      object_type: "entity",
+      object_id: focusEntityIds[state.focusKey]
+    },
+    active_layers: activeLayersForLens(state.activeLens),
+    direction: directionForLens(state.activeLens),
+    hops: hopsForSemanticZoom(state.semanticZoom),
+    as_of: `${state.asOf}T00:00:00Z`,
+    scoring_profile_version_id: scoringProfileVersionId ?? null,
+    filters: {
+      visual_lens: state.activeLens,
+      semantic_zoom: state.semanticZoom,
+      ui_path: state.path,
+      selected_key: state.selectedKey
+    },
+    budget: { ...DEFAULT_GRAPH_BUDGET }
+  };
+}
+
+function activeLayersForLens(lens: LensKey) {
+  switch (lens) {
+    case "supply_chain":
+      return ["supply_chain_operations", "technology_data_ip"];
+    case "business_segments":
+      return ["business_segments", "commercial_dependency", "technology_data_ip"];
+    case "capital_transactions":
+      return ["capital_control"];
+    case "policy_risk":
+      return ["policy_regulatory"];
+    case "all":
+    default:
+      return ["all"];
+  }
+}
+
+function directionForLens(lens: LensKey): ExploreGraphRequest["direction"] {
+  if (lens === "capital_transactions" || lens === "policy_risk") return "upstream";
+  return "both";
+}
+
+function hopsForSemanticZoom(zoom: SemanticZoom) {
+  return zoom === "L2" || zoom === "L3" ? 2 : 1;
+}
+
 function createSavedView(
   state: WorkspaceState,
   analysisContext: AnalysisContext = ACTIVE_ANALYSIS_CONTEXT
@@ -1107,6 +1183,14 @@ export default function Home() {
   const [savedViewStatus, setSavedViewStatus] = useState("ready");
   const [modelContextStatus, setModelContextStatus] =
     useState<ModelContextStatus>("local-active");
+  const [productionGraphStatus, setProductionGraphStatus] =
+    useState<ProductionGraphStatus>("local-fixture");
+  const [productionGraphSyncMode, setProductionGraphSyncMode] = useState<
+    "server" | "local_fallback"
+  >("local_fallback");
+  const [productionGraphSyncReason, setProductionGraphSyncReason] = useState("not_synced");
+  const [productionGraphEndpoint, setProductionGraphEndpoint] = useState("");
+  const [productionGraph, setProductionGraph] = useState<ExploreGraphRecord | null>(null);
   const [modelContextSyncMode, setModelContextSyncMode] = useState<"server" | "local_fallback">(
     "local_fallback"
   );
@@ -1131,6 +1215,14 @@ export default function Home() {
   const workspaceState = useMemo<WorkspaceState>(
     () => ({ focusKey, selectedKey, path, activeLens, semanticZoom, asOf }),
     [activeLens, asOf, focusKey, path, selectedKey, semanticZoom]
+  );
+  const productionGraphRequest = useMemo(
+    () =>
+      createExploreGraphRequest(
+        workspaceState,
+        serverModelContext?.active_scoring_profile_version_id
+      ),
+    [serverModelContext?.active_scoring_profile_version_id, workspaceState]
   );
   const workspaceContextValue = useMemo(
     () =>
@@ -1167,6 +1259,13 @@ export default function Home() {
       ...overviewAggregateEdges
     ];
   }, [focusKey, scenario.edges, semanticZoom]);
+  const productionContext = productionGraph?.production_context;
+  const productionCoverage = productionGraph?.coverage;
+  const productionCandidateCoverage = productionCoverage?.relationship_fact_candidates;
+  const productionCandidateSummary = productionContext?.candidate_fact_summary;
+  const productionPublishedRelationships =
+    productionContext?.record_modes?.published_relationships;
+  const productionGraphBudget = productionGraph?.query.budget ?? productionGraphRequest.budget;
   const tableEdges = useMemo(
     () =>
       tableLensFilter === "all"
@@ -1367,6 +1466,30 @@ export default function Home() {
       serverEndpoint: syncResult.endpoint
     });
     setSavedViewStatus(syncResult.status === "conflict" ? "server-conflict" : "server-error");
+  }
+
+  async function hydrateProductionGraph(reason = "manual_refresh") {
+    setProductionGraphStatus("loading-production-graph");
+    const graphResult = await loadExploreGraph(productionGraphRequest);
+    if (graphResult.mode === "local_fallback") {
+      setProductionGraphSyncMode("local_fallback");
+      setProductionGraphSyncReason(graphResult.reason);
+      setProductionGraphEndpoint("");
+      setProductionGraphStatus("local-fixture");
+      return;
+    }
+    if (graphResult.status === "error") {
+      setProductionGraphSyncMode("server");
+      setProductionGraphSyncReason(graphResult.reason);
+      setProductionGraphEndpoint(graphResult.endpoint);
+      setProductionGraphStatus("server-error");
+      return;
+    }
+    setProductionGraph(graphResult.record);
+    setProductionGraphSyncMode("server");
+    setProductionGraphSyncReason(reason);
+    setProductionGraphEndpoint(graphResult.endpoint);
+    setProductionGraphStatus("server-hydrated");
   }
 
   async function hydrateModelContext(clientRefreshToken?: string, reason = "manual_refresh") {
@@ -1613,6 +1736,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    void hydrateProductionGraph("initial_hydration");
+  }, []);
+
+  useEffect(() => {
     if (!stateReady) return;
     const normalized = normalizeWorkspaceState(workspaceState);
     const payload = JSON.stringify(normalized);
@@ -1784,6 +1911,109 @@ export default function Home() {
               type="button"
             >
               Rollback
+            </button>
+          </div>
+        </section>
+        <section
+          className="modelPreviewPanel productionGraphPanel"
+          data-api-base-storage-key={EXPLORE_API_BASE_STORAGE_KEY}
+          data-candidate-total-count={
+            productionCandidateSummary?.total ?? productionCandidateCoverage?.total ?? 0
+          }
+          data-graph-endpoint={productionGraphEndpoint || "local"}
+          data-graph-query-version={productionContext?.graph_query_version ?? "local"}
+          data-graph-sync-mode={productionGraphSyncMode}
+          data-graph-sync-reason={productionGraphSyncReason}
+          data-min-independent-sources={
+            productionContext?.publication_policy?.minimum_independent_sources ?? 0
+          }
+          data-published-relationship-count={productionPublishedRelationships?.total ?? 0}
+          data-query-as-of={productionGraphRequest.as_of ?? "none"}
+          data-query-budget={`${productionGraphBudget.max_nodes}/${productionGraphBudget.max_edges}/${productionGraphBudget.expand_nodes}`}
+          data-query-direction={productionGraphRequest.direction}
+          data-query-focus-id={productionGraphRequest.focus.object_id}
+          data-query-hops={productionGraphRequest.hops}
+          data-query-layers={productionGraphRequest.active_layers.join(",")}
+          data-relationship-candidate-excluded-count={
+            productionCandidateCoverage?.excluded_from_graph_edges ?? 0
+          }
+          data-relationship-candidates-in-graph={String(
+            productionContext?.publication_policy?.relationship_fact_candidates_in_graph_edges ??
+              false
+          )}
+          data-scoring-service-version={productionContext?.scoring_service_version ?? "local"}
+          data-server-edge-count={productionGraph?.edges.length ?? 0}
+          data-server-node-count={productionGraph?.nodes.length ?? 0}
+          data-server-session-id={productionGraph?.session_id ?? "none"}
+          data-synthetic-fixture-edge-count={
+            productionCoverage?.synthetic_fixture_edges ?? displayEdges.length
+          }
+          data-testid="production-graph-context"
+          data-visible-edge-count={productionCoverage?.visible_edges ?? displayEdges.length}
+          data-visible-node-count={productionCoverage?.visible_nodes ?? displayNodes.length}
+        >
+          <div>
+            <strong>Production graph</strong>
+            <span data-testid="production-graph-status">{productionGraphStatus}</span>
+          </div>
+          <div>
+            <strong>Query contract</strong>
+            <span data-testid="production-graph-query">
+              {productionGraphRequest.focus.object_id} /{" "}
+              {productionGraphRequest.active_layers.join(",")} /{" "}
+              {productionGraphRequest.direction} / {productionGraphRequest.hops} hop
+            </span>
+          </div>
+          <div>
+            <strong>Server coverage</strong>
+            <span data-testid="production-graph-coverage">
+              {productionCoverage?.visible_nodes ?? displayNodes.length} nodes /{" "}
+              {productionCoverage?.visible_edges ?? displayEdges.length} edges /{" "}
+              {productionCoverage?.source_count ?? 0} sources
+            </span>
+          </div>
+          <dl data-testid="production-graph-contract">
+            <div>
+              <dt>Budget</dt>
+              <dd data-testid="production-graph-budget">
+                {productionGraphBudget.max_nodes} / {productionGraphBudget.max_edges} /{" "}
+                {productionGraphBudget.expand_nodes}
+              </dd>
+            </div>
+            <div>
+              <dt>Context</dt>
+              <dd>
+                {productionContext?.graph_query_version ?? "local-fixture"} /{" "}
+                {productionContext?.scoring_service_version ?? "local-score"}
+              </dd>
+            </div>
+            <div>
+              <dt>Publication state</dt>
+              <dd data-testid="production-graph-publication-gate">
+                candidates-in-graph=
+                {String(
+                  productionContext?.publication_policy
+                    ?.relationship_fact_candidates_in_graph_edges ?? false
+                )}{" "}
+                / min-sources=
+                {productionContext?.publication_policy?.minimum_independent_sources ?? 0}
+              </dd>
+            </div>
+            <div>
+              <dt>Candidate facts</dt>
+              <dd data-testid="production-graph-candidates">
+                excluded={productionCandidateCoverage?.excluded_from_graph_edges ?? 0} / total=
+                {productionCandidateSummary?.total ?? productionCandidateCoverage?.total ?? 0}
+              </dd>
+            </div>
+          </dl>
+          <div className="modelPreviewActions">
+            <button
+              data-testid="hydrate-production-graph"
+              onClick={() => void hydrateProductionGraph("manual_refresh")}
+              type="button"
+            >
+              Load production graph
             </button>
           </div>
         </section>

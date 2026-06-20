@@ -80,8 +80,11 @@ PARTIAL_EVIDENCE = {
     "T1302": {
         "apps/api/app/domain.py",
         "apps/api/app/domain_repository.py",
+        "apps/web/src/app/explore-api-client.ts",
+        "apps/web/src/app/page.tsx",
         "specs/api_contract.yaml",
         "tests/integration/test_database_migrations.py",
+        "tests/e2e/state-contract.spec.ts",
         "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
     },
     "T1303": {
@@ -138,6 +141,7 @@ PARTIAL_EVIDENCE = {
         "apps/web/src/app/workspace-context.tsx",
         "apps/web/src/app/workspace-navigation.tsx",
         "apps/web/src/app/model-activation-client.ts",
+        "apps/web/src/app/explore-api-client.ts",
         "apps/web/src/app/page.tsx",
         "tests/e2e/home.spec.ts",
         "tests/e2e/state-contract.spec.ts",

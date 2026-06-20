@@ -16,9 +16,11 @@ const expectedPreviewContext = {
 
 const savedViewApiBaseStorageKey = "eei.apiBaseUrl.v1";
 const modelApiBaseStorageKey = "eei.modelApiBaseUrl.v1";
+const exploreApiBaseStorageKey = "eei.exploreApiBaseUrl.v1";
 const savedViewWorkspaceKey = "mvp";
 const savedViewLayout =
   "upstream-left focus-center downstream-right capital-top policy-bottom";
+const nvidiaEntityId = "00000000-0000-4000-8000-000000000006";
 
 async function expectActiveContext(target: Locator) {
   await expect(target).toHaveAttribute("data-active-model-version", expectedContext.modelVersion);
@@ -58,6 +60,138 @@ async function expectWorkspacePath(page: Page, focusKey: string, path: string) {
   await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-focus-key", focusKey);
   await expect(page.getByTestId("workspace-shell")).toHaveAttribute("data-path", path);
   await expect(page).toHaveURL(new RegExp(`path=${path.replaceAll(".", "\\.")}`));
+}
+
+function createExploreGraphResponse(payload: Record<string, unknown>) {
+  const request = payload as {
+    focus?: { object_id?: string };
+    active_layers?: string[];
+    direction?: string;
+    hops?: number;
+    as_of?: string | null;
+    scoring_profile_version_id?: string | null;
+    filters?: Record<string, unknown>;
+    budget?: { max_nodes: number; max_edges: number; expand_nodes: number };
+  };
+  const budget = request.budget ?? { max_nodes: 42, max_edges: 64, expand_nodes: 12 };
+  return {
+    session_id: "33333333-3333-4333-8333-333333333333",
+    focus: {
+      id: request.focus?.object_id ?? nvidiaEntityId,
+      canonical_name: "NVIDIA Corporation",
+      entity_type: "legal_entity"
+    },
+    query: {
+      focus: request.focus,
+      focus_entity_id: request.focus?.object_id ?? nvidiaEntityId,
+      direction: request.direction,
+      hops: request.hops,
+      as_of: request.as_of,
+      scoring_profile_version_id: request.scoring_profile_version_id,
+      active_layers: request.active_layers,
+      filters: request.filters,
+      budget,
+      hard_limits: {
+        max_hops: 2,
+        max_nodes: 500,
+        max_edges: 2000,
+        max_path_length: 8
+      }
+    },
+    nodes: [
+      { id: request.focus?.object_id ?? nvidiaEntityId, canonical_name: "NVIDIA Corporation" },
+      {
+        id: "00000000-0000-4000-8000-000000000021",
+        canonical_name: "Synthetic Advanced Foundry"
+      }
+    ],
+    edges: [
+      {
+        id: "10000000-0000-4000-8000-000000000001",
+        subject_id: "00000000-0000-4000-8000-000000000021",
+        object_id: request.focus?.object_id ?? nvidiaEntityId,
+        relationship_type: "wafer_foundry_for",
+        relationship_family: "supply_chain_operations",
+        status: "reported",
+        confidence: 0.82,
+        evidence_count: 2,
+        synthetic: true,
+        fixture_notice: "Synthetic fixture for API hydration contract."
+      }
+    ],
+    truncated: false,
+    truncation: {
+      applied: false,
+      reasons: [],
+      message: "Graph response is within the bounded graph budget.",
+      fetched_edge_count: 1,
+      returned_edge_count: 1,
+      returned_node_count: 2
+    },
+    continuation: {
+      available: false,
+      expand_endpoint: null,
+      anchor_entity_id: null,
+      direction: null,
+      expand_nodes: null
+    },
+    warnings: [],
+    coverage: {
+      visible_nodes: 2,
+      visible_edges: 1,
+      source_count: 2,
+      relationship_family_count: 1,
+      synthetic_fixture_edges: 1,
+      relationship_fact_candidates: {
+        total: 2,
+        published: 0,
+        excluded_unpublished: 2,
+        source_threshold_open: 2,
+        review_open: 2,
+        excluded_from_graph_edges: 2,
+        reason:
+          "Relationship fact candidates remain outside graph edges until publication gates pass."
+      }
+    },
+    production_context: {
+      schema_version: "production-context-v1",
+      request_as_of: request.as_of,
+      active_scoring_profile_version_id: "profile-balanced",
+      active_scoring_profile: {
+        profile_key: "balanced-v2",
+        version: 2,
+        model_key: "business-empire-model"
+      },
+      active_analysis_context: {
+        schema_version: "active-analysis-context-v1"
+      },
+      graph_query_version: "bounded-recursive-graph-v1",
+      scoring_service_version: "candidate-score-explanation-v1",
+      record_modes: {
+        published_relationships: {
+          database: 4,
+          fixture: 1,
+          total: 5
+        },
+        relationship_fact_candidates: {
+          curated_official_fixture: 2
+        }
+      },
+      candidate_fact_summary: {
+        total: 2,
+        published: 0,
+        unpublished: 2,
+        source_threshold_open: 2,
+        review_open: 2
+      },
+      publication_policy: {
+        relationship_fact_candidates_in_graph_edges: false,
+        minimum_independent_sources: 2,
+        publish_requires_source_threshold: true,
+        publish_requires_human_review: true
+      }
+    }
+  };
 }
 
 test("stores subject selected node lens time filters and zoom in URL session and reload state", async ({
@@ -470,6 +604,105 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
     expected_active_profile_version_id: targetProfile.id,
     client_refresh_token: "refresh-token-2"
   });
+});
+
+test("A203 and A211 hydrate production graph context through the explore API", async ({
+  page
+}) => {
+  const payloads: Record<string, unknown>[] = [];
+  await page.route("https://graph.eei.test/v1/explore", async (route) => {
+    expect(route.request().method()).toBe("POST");
+    const payload = route.request().postDataJSON() as Record<string, unknown>;
+    payloads.push(payload);
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify(createExploreGraphResponse(payload))
+    });
+  });
+  await page.addInitScript(
+    ({ storageKey, apiBase }: { storageKey: string; apiBase: string }) =>
+      window.localStorage.setItem(storageKey, apiBase),
+    { storageKey: exploreApiBaseStorageKey, apiBase: "https://graph.eei.test" }
+  );
+
+  await page.goto("/");
+  await expect(page.getByTestId("production-graph-status")).toHaveText("server-hydrated");
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-graph-sync-mode",
+    "server"
+  );
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-api-base-storage-key",
+    exploreApiBaseStorageKey
+  );
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-graph-endpoint",
+    "https://graph.eei.test/v1/explore"
+  );
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-graph-query-version",
+    "bounded-recursive-graph-v1"
+  );
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-scoring-service-version",
+    "candidate-score-explanation-v1"
+  );
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-relationship-candidates-in-graph",
+    "false"
+  );
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-server-node-count",
+    "2"
+  );
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-server-edge-count",
+    "1"
+  );
+  await expect(page.getByTestId("production-graph-budget")).toHaveText("42 / 64 / 12");
+  await expect(page.getByTestId("production-graph-publication-gate")).toContainText(
+    "min-sources=2"
+  );
+  await expect(page.getByTestId("production-graph-candidates")).toHaveText(
+    "excluded=2 / total=2"
+  );
+
+  expect(payloads[0]).toMatchObject({
+    focus: { object_type: "entity", object_id: nvidiaEntityId },
+    active_layers: ["all"],
+    direction: "both",
+    hops: 1,
+    as_of: "2026-06-19T00:00:00Z",
+    scoring_profile_version_id: null,
+    filters: {
+      visual_lens: "all",
+      semantic_zoom: "L1",
+      ui_path: ["nvidia"],
+      selected_key: "nvidia"
+    },
+    budget: { max_nodes: 42, max_edges: 64, expand_nodes: 12 }
+  });
+
+  await page.getByTestId("lens-supply_chain").click();
+  await page.getByTestId("hydrate-production-graph").click();
+  await expect(page.getByTestId("production-graph-status")).toHaveText("server-hydrated");
+  expect(payloads.at(-1)).toMatchObject({
+    focus: { object_type: "entity", object_id: nvidiaEntityId },
+    active_layers: ["supply_chain_operations", "technology_data_ip"],
+    direction: "both",
+    hops: 1,
+    filters: {
+      visual_lens: "supply_chain",
+      semantic_zoom: "L1",
+      ui_path: ["nvidia"],
+      selected_key: "nvidia"
+    }
+  });
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-query-layers",
+    "supply_chain_operations,technology_data_ip"
+  );
 });
 
 test("saves versioned views restores deterministically and shows as-of change overlays", async ({

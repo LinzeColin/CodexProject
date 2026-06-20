@@ -45,7 +45,7 @@ python scripts/apply_model_config.py --dry-run --profile config/model_profiles/b
 
 在线修改分五步：草稿输入 -> 即时预览 -> 会话应用 -> 保存不可变版本 -> 激活全局快照。失败不得部分发布。
 
-当前 T1303/A204-A205 生产切片已开始：PostgreSQL 通过 `active_analysis_contexts` 保存全局 active profile、data snapshot、score snapshot、`refresh_token` 和 `refresh_generation`；`POST /v1/scoring/profiles/{profileVersionId}/activate` 在单事务内切换 active profile、创建 score snapshot、写入 operation log 并推进 refresh token。带过期 `expected_active_profile_version_id` 的请求返回 409，旧 active profile 保持不变。前端模型中心编辑/回滚 UI 和跨页面真实 refresh E2E 仍未完成。
+当前 T1303/A204-A205 生产切片已开始：PostgreSQL 通过 `active_analysis_contexts` 保存全局 active profile、data snapshot、score snapshot、`refresh_token` 和 `refresh_generation`；`POST /v1/scoring/profiles/{profileVersionId}/activate` 在单事务内切换 active profile、创建 score snapshot、写入 operation log 并推进 refresh token。带过期 `expected_active_profile_version_id` 的请求返回 409，旧 active profile 保持不变。前端模型中心已具备 API-first active-context hydration、事务激活、rollback 控件和 stale refresh mock E2E；首页商业版图 `/v1/explore` 请求也会携带当前 scoring profile id。在线编辑、score recompute UI 和 live FastAPI/PostgreSQL 跨页面真实 refresh E2E 仍未完成。
 
 ## 关键门槛
 

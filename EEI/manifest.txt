@@ -59,6 +59,7 @@ apps/web/next.config.ts
 apps/web/package.json
 apps/web/src/app/analysis-contract.ts
 apps/web/src/app/development-status/page.tsx
+apps/web/src/app/explore-api-client.ts
 apps/web/src/app/globals.css
 apps/web/src/app/industries/page.tsx
 apps/web/src/app/layout.tsx
