@@ -1,6 +1,7 @@
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 
 const savedViewApiBaseStorageKey = "eei.apiBaseUrl.v1";
+const productionDataApiBaseStorageKey = "eei.productionDataApiBaseUrl.v1";
 const savedViewStorageKey = "eei.savedView.current.v1";
 const liveApiBaseUrl = process.env.EEI_LIVE_API_BASE_URL ?? "http://127.0.0.1:8000";
 
@@ -9,6 +10,11 @@ async function configureApiBase(context: BrowserContext) {
     ({ storageKey, apiBaseUrl }: { storageKey: string; apiBaseUrl: string }) =>
       window.localStorage.setItem(storageKey, apiBaseUrl),
     { storageKey: savedViewApiBaseStorageKey, apiBaseUrl: liveApiBaseUrl }
+  );
+  await context.addInitScript(
+    ({ storageKey, apiBaseUrl }: { storageKey: string; apiBaseUrl: string }) =>
+      window.localStorage.setItem(storageKey, apiBaseUrl),
+    { storageKey: productionDataApiBaseStorageKey, apiBaseUrl: liveApiBaseUrl }
   );
 }
 

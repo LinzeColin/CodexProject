@@ -13,7 +13,7 @@
       "Frontend commercial-map API-first hydration now posts the current focus, lens-derived layers, as-of date, scoring profile id and 42/64/12 budget to /v1/explore, exposes production_context, coverage and publication-gate metadata with explicit fixture fallback, and renders server-returned nodes/edges in the SVG canvas and graph table when the API response is available.",
       "Production_context now exposes bounded sample relationship_fact_candidates so the frontend can discover a score explanation target without hard-coding database UUIDs.",
       "Frontend production data hydration now loads /v1/catalogs and /v1/scoring/explain/relationship_fact_candidate/{objectId}, surfaces catalog inventory counts, source-of-truth counts, adjusted score, evidence count, missing-input count and publication status, and retains explicit local fallback/error states.",
-      "GET /v1/evidence/{objectType}/{objectId} exposes bounded evidence detail and source snippets for relationship_fact_candidate and published relationship objects using existing source_documents, sources, ingestion_evidence_chain and relationship_evidence tables.",
+      "GET /v1/evidence/{objectType}/{objectId} exposes bounded evidence detail and source snippets for relationship_fact_candidate and published relationship objects using existing source_documents, sources, ingestion_evidence_chain, relationship_evidence and fixture_relationship_notices tables.",
       "Frontend Evidence Center now hydrates /v1/evidence/relationship_fact_candidate/{objectId}, exposes evidence/source-document counts, endpoint state and source snippets, and refreshes the production evidence detail when the user clicks 打开证据."
     ],
     "explicitly_not_closed": [
@@ -67,6 +67,7 @@
     "apps/web/src/app/page.tsx",
     "specs/api_contract.yaml",
     "tests/integration/test_database_migrations.py",
+    "tests/e2e/saved-view-live.spec.ts",
     "tests/e2e/state-contract.spec.ts",
     "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json"
   ],
@@ -79,6 +80,7 @@
     "npm run typecheck",
     "python3 -m py_compile apps/api/app/domain_repository.py",
     "python3 -m py_compile apps/api/app/domain_repository.py apps/api/app/domain.py tests/integration/test_database_migrations.py",
+    "python3 -m py_compile apps/api/app/domain_repository.py tests/integration/test_database_migrations.py",
     ".venv/bin/python -m pytest -q tests/unit/test_api_health.py",
     ".venv/bin/python -m pytest -q tests/integration/test_database_migrations.py",
     "pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1",
