@@ -38,3 +38,29 @@ def test_scale_benchmark_records_budget_and_pass_fail_per_measured_scale() -> No
     assert result["last_counts"]["returned_edges"] <= 2_000
     assert result["last_counts"]["returned_nodes"] <= 500
     assert result["status"] in {"PASS", "FAIL"}
+
+
+def test_scale_benchmark_merges_browser_runtime_artifact() -> None:
+    budgets = read_budget_ms(Path("data/parameter_catalog.csv"))
+    payload = build_payload(
+        mode="operator_full",
+        scales=[1_000],
+        iterations=1,
+        budgets=budgets,
+        browser_runtime_by_scale={
+            1_000: {
+                "status": "PASS",
+                "browser_render_ms": {"p95": 20.0},
+                "browser_frame_delta_ms": {"p95": 32.0},
+                "browser_dom_payload_bytes": {"p95": 12000.0},
+                "browser_heap_delta_bytes": None,
+                "browser_long_task_count": 0,
+                "browser_max_long_task_ms": 0,
+                "last_counts": {"rendered_nodes": 64, "rendered_edges": 200},
+            }
+        },
+    )
+    result = payload["results"][0]
+    assert result["metric_groups"]["browser_runtime"] is True
+    assert result["browser_runtime"]["status"] == "PASS"
+    assert payload["coverage"]["browser_runtime_measured"] is True

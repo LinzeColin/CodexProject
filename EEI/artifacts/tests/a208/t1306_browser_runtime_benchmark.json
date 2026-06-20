@@ -1,0 +1,198 @@
+{
+  "schema_version": "eei-browser-scale-benchmark-v1",
+  "system_name": "EEI",
+  "task_id": "T1306",
+  "acceptance_ids": [
+    "A208"
+  ],
+  "status": "PASS",
+  "mode": "browser_runtime",
+  "generated_at": "2026-06-20T04:34:58Z",
+  "environment": {
+    "node": "v25.7.0",
+    "platform": "darwin-25.5.0-arm64",
+    "cpu_count": 8,
+    "browser": "chromium"
+  },
+  "target_scales": [
+    10000,
+    100000,
+    1000000
+  ],
+  "measured_scales": [
+    10000,
+    100000,
+    1000000
+  ],
+  "iterations": 1,
+  "results": [
+    {
+      "scale_relationships": 10000,
+      "iterations": 1,
+      "status": "PASS",
+      "budget_ms": 1000,
+      "browser_budget_profile": {
+        "render_p95_ms": 1000,
+        "frame_p95_ms": 250,
+        "long_task_max_count": 10
+      },
+      "browser_render_ms": {
+        "min": 20.5,
+        "p50": 20.5,
+        "p95": 20.5,
+        "p99": 20.5,
+        "max": 20.5
+      },
+      "browser_frame_delta_ms": {
+        "min": 83.3,
+        "p50": 83.3,
+        "p95": 83.3,
+        "p99": 83.3,
+        "max": 83.3
+      },
+      "browser_heap_delta_bytes": {
+        "min": 934752,
+        "p50": 934752,
+        "p95": 934752,
+        "p99": 934752,
+        "max": 934752
+      },
+      "browser_dom_payload_bytes": {
+        "min": 505193,
+        "p50": 505193,
+        "p95": 505193,
+        "p99": 505193,
+        "max": 505193
+      },
+      "browser_long_task_count": 1,
+      "browser_max_long_task_ms": 89,
+      "last_counts": {
+        "rendered_nodes": 200,
+        "rendered_edges": 2000,
+        "heap_sample_available": true
+      },
+      "metric_groups": {
+        "browser_runtime": true,
+        "memory": true,
+        "frame": true,
+        "long_task": true
+      }
+    },
+    {
+      "scale_relationships": 100000,
+      "iterations": 1,
+      "status": "PASS",
+      "budget_ms": 3000,
+      "browser_budget_profile": {
+        "render_p95_ms": 1000,
+        "frame_p95_ms": 250,
+        "long_task_max_count": 10
+      },
+      "browser_render_ms": {
+        "min": 17.2,
+        "p50": 17.2,
+        "p95": 17.2,
+        "p99": 17.2,
+        "max": 17.2
+      },
+      "browser_frame_delta_ms": {
+        "min": 49.9,
+        "p50": 49.9,
+        "p95": 49.9,
+        "p99": 49.9,
+        "max": 49.9
+      },
+      "browser_heap_delta_bytes": {
+        "min": 147271,
+        "p50": 147271,
+        "p95": 147271,
+        "p99": 147271,
+        "max": 147271
+      },
+      "browser_dom_payload_bytes": {
+        "min": 567398,
+        "p50": 567398,
+        "p95": 567398,
+        "p99": 567398,
+        "max": 567398
+      },
+      "browser_long_task_count": 1,
+      "browser_max_long_task_ms": 51,
+      "last_counts": {
+        "rendered_nodes": 500,
+        "rendered_edges": 2000,
+        "heap_sample_available": true
+      },
+      "metric_groups": {
+        "browser_runtime": true,
+        "memory": true,
+        "frame": true,
+        "long_task": true
+      }
+    },
+    {
+      "scale_relationships": 1000000,
+      "iterations": 1,
+      "status": "PASS",
+      "budget_ms": 10000,
+      "browser_budget_profile": {
+        "render_p95_ms": 1000,
+        "frame_p95_ms": 250,
+        "long_task_max_count": 10
+      },
+      "browser_render_ms": {
+        "min": 14.2,
+        "p50": 14.2,
+        "p95": 14.2,
+        "p99": 14.2,
+        "max": 14.2
+      },
+      "browser_frame_delta_ms": {
+        "min": 50,
+        "p50": 50,
+        "p95": 50,
+        "p99": 50,
+        "max": 50
+      },
+      "browser_heap_delta_bytes": {
+        "min": 986794,
+        "p50": 986794,
+        "p95": 986794,
+        "p99": 986794,
+        "max": 986794
+      },
+      "browser_dom_payload_bytes": {
+        "min": 567399,
+        "p50": 567399,
+        "p95": 567399,
+        "p99": 567399,
+        "max": 567399
+      },
+      "browser_long_task_count": 1,
+      "browser_max_long_task_ms": 51,
+      "last_counts": {
+        "rendered_nodes": 500,
+        "rendered_edges": 2000,
+        "heap_sample_available": true
+      },
+      "metric_groups": {
+        "browser_runtime": true,
+        "memory": true,
+        "frame": true,
+        "long_task": true
+      }
+    }
+  ],
+  "coverage": {
+    "target_scales_measured": true,
+    "browser_runtime_measured": true,
+    "required_metric_groups": [
+      "browser_runtime",
+      "memory",
+      "frame",
+      "long_task"
+    ],
+    "full_browser_runtime_pass": true
+  },
+  "remaining_to_close_a208": []
+}

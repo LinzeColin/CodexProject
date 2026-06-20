@@ -17,15 +17,15 @@
     },
     "prototype_status": {
       "DONE": 21,
-      "N/A": 2,
+      "N/A": 3,
       "NOT_STARTED": 2,
-      "PARTIAL": 21
+      "PARTIAL": 20
     },
     "implementation_status": {
-      "DONE": 1,
+      "DONE": 2,
       "N/A": 8,
       "NOT_STARTED": 18,
-      "PARTIAL": 19
+      "PARTIAL": 18
     },
     "validation_status": {
       "CATALOG_VALIDATED": 11,
