@@ -11,7 +11,15 @@ import yaml
 from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parents[1]
-SKIP_PARTS = {".git", ".next", ".venv", "__pycache__", "node_modules", "playwright-report", "test-results"}
+SKIP_PARTS = {
+    ".git",
+    ".next",
+    ".venv",
+    "__pycache__",
+    "node_modules",
+    "playwright-report",
+    "test-results",
+}
 
 
 def run(command: list[str], label: str) -> None:
@@ -29,15 +37,19 @@ def generated_or_external(path: Path) -> bool:
 def main() -> int:
     run([sys.executable, str(ROOT / "scripts/validate_governance.py")], "governance validation")
     run([sys.executable, str(ROOT / "scripts/validate_catalog_integrity.py")], "catalog integrity")
-    run(
-        [
-            sys.executable,
-            str(ROOT / "scripts/validate_model_config.py"),
-            str(ROOT / "config/model_profiles/balanced-v2.json"),
-            str(ROOT / "config/thresholds/default-v2.json"),
-        ],
-        "model config validation",
-    )
+    for profile_path in [
+        ROOT / "config/model_profiles/balanced-v2.json",
+        ROOT / "config/model_profiles/supply-chain-v3.json",
+    ]:
+        run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/validate_model_config.py"),
+                str(profile_path),
+                str(ROOT / "config/thresholds/default-v2.json"),
+            ],
+            f"model config validation {profile_path.name}",
+        )
 
     required = [
         "README.md",
@@ -75,7 +87,9 @@ def main() -> int:
     pdf_path = ROOT / "US_Corporate_Power_Map_Governance_Blueprint_v4.2.pdf"
     reader = PdfReader(str(pdf_path))
     if reader.is_encrypted or len(reader.pages) != 16:
-        raise AssertionError(f"governance PDF expected 16 unencrypted pages, got {len(reader.pages)}")
+        raise AssertionError(
+            f"governance PDF expected 16 unencrypted pages, got {len(reader.pages)}"
+        )
 
     for shell in ["scripts/preflight.sh", "scripts/run_codex_autonomous.sh"]:
         result = subprocess.run(["bash", "-n", str(ROOT / shell)], capture_output=True, text=True)
@@ -91,7 +105,9 @@ def main() -> int:
             continue
         yaml.safe_load(path.read_text(encoding="utf-8"))
 
-    if (ROOT / "prototype/index.html").read_bytes() != (ROOT / "prototype/standalone.html").read_bytes():
+    if (ROOT / "prototype/index.html").read_bytes() != (
+        ROOT / "prototype/standalone.html"
+    ).read_bytes():
         raise AssertionError("prototype/index.html and standalone.html diverged")
 
     node = shutil.which("node")
@@ -111,4 +127,4 @@ if __name__ == "__main__":
         raise SystemExit(main())
     except (AssertionError, ValueError, json.JSONDecodeError, yaml.YAMLError) as exc:
         print(f"Task Pack validation: FAIL - {exc}", file=sys.stderr)
-        raise SystemExit(1)
+        raise SystemExit(1) from exc

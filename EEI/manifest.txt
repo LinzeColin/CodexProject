@@ -114,6 +114,7 @@ artifacts/tests/a211/t1308_frontend_workspace_context_contract.json
 brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
 config/brand_policy.yaml
 config/model_profiles/balanced-v2.json
+config/model_profiles/supply-chain-v3.json
 config/model_runtime_defaults.yaml
 config/thresholds/default-v2.json
 config/ui/motion-tokens.json

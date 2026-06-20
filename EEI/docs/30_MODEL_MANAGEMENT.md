@@ -31,6 +31,7 @@
 | `data/threshold_registry.csv` | 17 个核心发布/显示/视觉/性能门槛及其机器参数映射 |
 | `config/model_runtime_defaults.yaml` | 人类可编辑导入模板 |
 | `config/model_profiles/balanced-v2.json` | 默认机器配置 |
+| `config/model_profiles/supply-chain-v3.json` | 供应链递归探索候选配置，用于事务激活/回滚验证 |
 | `config/thresholds/default-v2.json` | 默认阈值 |
 | `specs/model_config_schema.json` | 配置契约 |
 | `scripts/compile_model_runtime_defaults.py` | YAML 校验/编译 |
@@ -40,6 +41,7 @@
 ```bash
 python scripts/compile_model_runtime_defaults.py --dry-run
 python scripts/validate_model_config.py config/model_profiles/balanced-v2.json config/thresholds/default-v2.json
+python scripts/validate_model_config.py config/model_profiles/supply-chain-v3.json config/thresholds/default-v2.json
 python scripts/apply_model_config.py --dry-run --profile config/model_profiles/balanced-v2.json --thresholds config/thresholds/default-v2.json
 ```
 

@@ -2234,6 +2234,67 @@ Residual risks:
 - Live FastAPI/PostgreSQL cross-route E2E for model activation and stale refresh is still required.
 - Model-center online editing, dedicated rollback endpoint and score recompute UI remain open.
 
+## 2026-06-20 - T1303/A204-A205 live model activation harness
+
+### Scope
+
+- Added `config/model_profiles/supply-chain-v3.json` as an inactive immutable profile for supply-chain recursive exploration.
+- Updated seed loading to create two model/profile versions while keeping exactly one active global profile.
+- Ordered `/v1/scoring/profiles` with the active profile first so clients can reliably identify the current version and inactive activation candidate.
+- Extended the live FastAPI/PostgreSQL Playwright harness to configure `eei.modelApiBaseUrl.v1`.
+- Added a live E2E path that activates `supply-chain-v3`, observes a transaction-created scoring run snapshot, checks stale refresh semantics and rolls back to `balanced-v2`.
+- Synchronized A204/A205/A211 evidence, acceptance traceability, development status and model-management docs.
+
+### Files changed
+
+- `config/model_profiles/supply-chain-v3.json`
+- `scripts/load_seed_catalogs.py`
+- `scripts/check_database_schema.py`
+- `scripts/validate_governance.py`
+- `scripts/validate_task_pack.py`
+- `apps/api/app/domain_repository.py`
+- `tests/integration/test_database_migrations.py`
+- `tests/e2e/saved-view-live.spec.ts`
+- `artifacts/tests/a204/t1303_transactional_model_activation_contract.json`
+- `artifacts/tests/a205/t1303_atomic_refresh_context_contract.json`
+- `artifacts/tests/a211/t1308_frontend_workspace_context_contract.json`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `data/github_document_registry.csv`
+- `DEVELOPMENT_STATUS.md`
+- `docs/30_MODEL_MANAGEMENT.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+
+### Acceptance mapping
+
+- T1303 -> A204/A205.
+- T1308 -> A211.
+- A204/A205/A211 remain `IN PROGRESS`, not `DONE`.
+
+### Validation so far
+
+- Local `python3 -m py_compile scripts/load_seed_catalogs.py scripts/check_database_schema.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/python scripts/validate_model_config.py config/model_profiles/supply-chain-v3.json config/thresholds/default-v2.json`: PASS.
+- Local `.venv/bin/python -m ruff check apps/api/app/domain_repository.py scripts/check_database_schema.py scripts/load_seed_catalogs.py tests/integration/test_database_migrations.py`: PASS.
+- Local escalated `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- Local `.venv/bin/python scripts/validate_governance.py`: PASS.
+- Local `.venv/bin/python scripts/validate_catalog_integrity.py`: PASS.
+- Local `.venv/bin/python scripts/validate_task_pack.py`: PASS.
+- Local `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- Local `.venv/bin/python -m pytest -q tests/unit/test_api_health.py`: PASS, 9/9.
+- Local `.venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED, 1/1 because local `.env`/`DATABASE_URL` is absent.
+- Local escalated `npx --yes pnpm@11.8.0 --filter @eei/web exec playwright install chromium`: PASS; installed Chromium/Headless Shell for the current Playwright version.
+- Local escalated `npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g "A204 and A205"`: PASS, 1/1.
+- Local escalated `npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.live.config.ts`: FAIL CLOSED before test execution because `DATABASE_URL` is not configured on this host.
+- Local escalated `make verify`: PASS, including Task Pack validation, contract validation, prototype parity, GitHub governance, governance consistency, v5 sync, development/risk/release artifact validation, scale benchmark smoke, browser scale benchmark, soak smoke, secret scan, UI copy lint, ruff, web typecheck and unit tests 13/13.
+- Regenerated clean-room release package; authoritative package SHA256 is recorded in `artifacts/tests/a200/t1215_clean_room_release.json`.
+- Regenerated release artifacts with `remote_status=PENDING`.
+
+### Remaining gaps
+
+- GitHub Actions `verify-g2-db` evidence is still pending for the new live model harness.
+- Model-center online editing, dedicated rollback endpoint, worker-driven data snapshot refresh/outbox and dedicated score recompute controls remain open.
+
 ## 2026-06-20 - T1302/A203 and T1308/A211 commercial-map graph API context hydration
 
 ### Scope
