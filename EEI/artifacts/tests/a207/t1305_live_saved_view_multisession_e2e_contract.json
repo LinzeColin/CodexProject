@@ -3,25 +3,30 @@
   "system_name": "EEI",
   "task_id": "T1305",
   "acceptance_ids": ["A207"],
-  "status": "PARTIAL_LIVE_E2E_CONTRACT_CI_VALIDATED_AUTH_PENDING",
-  "generated_at": "2026-06-20T06:16:26Z",
+  "status": "LIVE_E2E_CI_VALIDATED_PLUS_TRUSTED_GATEWAY_LOCAL_VALIDATED",
+  "generated_at": "2026-06-21T00:00:00Z",
   "implemented_contracts": [
     "FastAPI exposes configured CORS origins for browser saved-view requests",
     "Dedicated live Playwright config starts FastAPI and Next.js with NEXT_PUBLIC_EEI_API_BASE_URL",
     "Live E2E API bootstrap resets the local E2E PostgreSQL database, runs migrations, seeds catalogs and loads synthetic fixtures before starting uvicorn",
     "Live browser E2E uses two independent browser contexts against the same FastAPI/PostgreSQL saved-view record",
     "Session one creates server saved-view version 1, session two updates the same saved view to version 2, and session one receives a stale-version 409 when saving from version 1",
-    "Frontend conflict recovery UI fetches the latest server saved view and reports server-conflict-resolved"
+    "Frontend conflict recovery UI fetches the latest server saved view and reports server-conflict-resolved",
+    "Trusted gateway identity binding is covered by targeted FastAPI unit tests and OpenAPI header contract"
   ],
   "files": [
     "apps/api/app/main.py",
     "apps/api/app/settings.py",
+    ".env.example",
+    "apps/api/app/domain.py",
     "apps/web/src/app/page.tsx",
     "playwright.config.ts",
     "playwright.live.config.ts",
     "scripts/run_live_e2e_api.sh",
     "tests/e2e/saved-view-live.spec.ts",
     "tests/unit/test_api_health.py",
+    "specs/api_contract.yaml",
+    "artifacts/tests/a207/t1305_saved_view_trusted_gateway_contract.json",
     "Makefile"
   ],
   "test_contract": {
@@ -39,6 +44,12 @@
       "unit": "PASS_13_OF_13",
       "playwright_default_e2e": "PASS_29_OF_29"
     },
+    "latest_local_gateway_result": {
+      "py_compile": "PASS",
+      "ruff_targeted": "PASS",
+      "unit": "PASS_17_OF_17",
+      "contract_validation": "PASS"
+    },
     "latest_ci_result": {
       "provider": "GitHub Actions",
       "workflow": "EEI validation",
@@ -51,7 +62,5 @@
       "validated_contract": "live FastAPI/PostgreSQL multisession saved-view E2E with stale-version conflict and recovery"
     }
   },
-  "remaining_to_close_a207": [
-    "Add user/workspace authn/authz boundary before public multi-user deployment"
-  ]
+  "remaining_to_close_a207": []
 }

@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import hashlib
+import hmac
 import re
+import time
 from datetime import datetime
 from typing import Annotated, Any, Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Query, Response, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request, Response, status
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
@@ -20,6 +23,7 @@ from .settings import get_settings
 
 router = APIRouter(prefix="/v1", tags=["domain"])
 SAVED_VIEW_PRINCIPAL_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$")
+SAVED_VIEW_GATEWAY_SIGNATURE_VERSION = "eei-saved-view-gateway-v1"
 
 EntityType = Literal[
     "legal_entity",
@@ -212,10 +216,149 @@ def _normalize_saved_view_header(value: str | None, *, default: str) -> str:
     return normalized
 
 
+def _saved_view_gateway_signature_payload(
+    *,
+    method: str,
+    path: str,
+    namespace: str,
+    actor: str,
+    timestamp: str,
+) -> str:
+    return "\n".join(
+        [
+            SAVED_VIEW_GATEWAY_SIGNATURE_VERSION,
+            method.upper(),
+            path,
+            namespace,
+            actor,
+            timestamp,
+        ]
+    )
+
+
+def saved_view_gateway_signature(
+    *,
+    secret: str,
+    method: str,
+    path: str,
+    namespace: str,
+    actor: str,
+    timestamp: str,
+) -> str:
+    payload = _saved_view_gateway_signature_payload(
+        method=method,
+        path=path,
+        namespace=namespace,
+        actor=actor,
+        timestamp=timestamp,
+    )
+    return hmac.new(
+        secret.encode("utf-8"),
+        payload.encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+
+
+def _require_saved_view_gateway_principal(
+    *,
+    request: Request,
+    namespace: str | None,
+    actor: str | None,
+    timestamp: str | None,
+    signature: str | None,
+) -> SavedViewPrincipal:
+    settings = get_settings()
+    if not settings.saved_view_gateway_secret:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={
+                "reason": "saved_view_identity_gateway_not_configured",
+                "message": (
+                    "EEI_SAVED_VIEW_GATEWAY_SECRET is required when saved-view "
+                    "identity mode is trusted_gateway."
+                ),
+            },
+        )
+
+    missing = [
+        header
+        for header, value in (
+            ("X-EEI-User-Namespace", namespace),
+            ("X-EEI-Actor", actor),
+            ("X-EEI-Auth-Timestamp", timestamp),
+            ("X-EEI-Auth-Signature", signature),
+        )
+        if value is None or not value.strip()
+    ]
+    if missing:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "reason": "missing_saved_view_gateway_identity",
+                "message": "Saved-view requests require trusted gateway identity headers.",
+                "missing_headers": missing,
+            },
+        )
+
+    resolved_namespace = _normalize_saved_view_header(namespace, default="")
+    resolved_actor = _normalize_saved_view_header(actor, default="")
+    assert timestamp is not None
+    assert signature is not None
+    try:
+        issued_at = int(timestamp)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "reason": "invalid_saved_view_gateway_timestamp",
+                "message": "Saved-view gateway timestamp must be Unix epoch seconds.",
+            },
+        ) from exc
+
+    now = int(time.time())
+    if abs(now - issued_at) > settings.saved_view_signature_ttl_seconds:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "reason": "expired_saved_view_gateway_signature",
+                "message": "Saved-view gateway signature timestamp is outside the allowed window.",
+            },
+        )
+
+    expected = saved_view_gateway_signature(
+        secret=settings.saved_view_gateway_secret,
+        method=request.method,
+        path=request.url.path,
+        namespace=resolved_namespace,
+        actor=resolved_actor,
+        timestamp=timestamp,
+    )
+    if not hmac.compare_digest(expected, signature):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "reason": "invalid_saved_view_gateway_signature",
+                "message": "Saved-view gateway signature verification failed.",
+            },
+        )
+    return SavedViewPrincipal(namespace=resolved_namespace, actor=resolved_actor)
+
+
 def get_saved_view_principal(
+    request: Request,
     namespace: Annotated[str | None, Header(alias="X-EEI-User-Namespace")] = None,
     actor: Annotated[str | None, Header(alias="X-EEI-Actor")] = None,
+    auth_timestamp: Annotated[str | None, Header(alias="X-EEI-Auth-Timestamp")] = None,
+    auth_signature: Annotated[str | None, Header(alias="X-EEI-Auth-Signature")] = None,
 ) -> SavedViewPrincipal:
+    if get_settings().saved_view_identity_mode == "trusted_gateway":
+        return _require_saved_view_gateway_principal(
+            request=request,
+            namespace=namespace,
+            actor=actor,
+            timestamp=auth_timestamp,
+            signature=auth_signature,
+        )
     resolved_namespace = _normalize_saved_view_header(namespace, default="local_user")
     resolved_actor = _normalize_saved_view_header(actor, default=resolved_namespace)
     return SavedViewPrincipal(namespace=resolved_namespace, actor=resolved_actor)

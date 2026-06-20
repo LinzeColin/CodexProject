@@ -20,7 +20,13 @@ def create_app() -> FastAPI:
             CORSMiddleware,
             allow_origins=list(settings.cors_allow_origins),
             allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            allow_headers=["content-type"],
+            allow_headers=[
+                "content-type",
+                "x-eei-actor",
+                "x-eei-auth-signature",
+                "x-eei-auth-timestamp",
+                "x-eei-user-namespace",
+            ],
         )
     app.include_router(health_router)
     app.include_router(domain_router)

@@ -68,6 +68,9 @@ UI 门槛,visual.minimum_pointer_target_px,最小点击目标,threshold,24,24,44
 后台调度,scheduler.max_retry_attempts,最大重试次数,production,5,0,12,1,count,number,environment,False,scheduler,,schema range,T1304 进入 dead-letter 前的重试次数上限
 后台调度,scheduler.dead_letter_after_attempts,Dead-letter 次数阈值,production,5,1,12,1,count,number,environment,False,scheduler,,schema range,T1304 失败任务进入 dead-letter 的尝试次数
 保存视图,saved_view.conflict_retry_limit,保存视图冲突重试上限,production,3,0,10,1,count,number,environment,False,saved_view,,schema range,T1305 optimistic concurrency 冲突重试上限
+保存视图,saved_view.identity_mode,保存视图身份模式,production,trusted_gateway,local,trusted_gateway,0,enum,enum,environment,False,saved_view,,enum local|trusted_gateway,T1305 production defaults to trusted_gateway; local mode is limited to local development and explicit override
+保存视图,saved_view.signature_ttl_seconds,可信网关签名 TTL,production,300,30,3600,30,seconds,number,environment,False,saved_view,,schema range,T1305 HMAC gateway signatures expire outside this clock-skew window
+保存视图,saved_view.gateway_secret_required,可信网关 HMAC secret 必填,production,True,True,True,0,boolean,secret-environment,environment,False,saved_view,,must be configured when identity mode is trusted_gateway,T1305 stores only the requirement; real EEI_SAVED_VIEW_GATEWAY_SECRET values must never be committed
 规模测试,benchmark.scale_10k_p95_ms,1 万关系 P95 预算,production,1000,250,5000,50,ms,number,threshold,False,benchmark,,schema range,T1306 10k 关系 API/布局/渲染预算
 规模测试,benchmark.scale_100k_p95_ms,10 万关系 P95 预算,production,3000,500,15000,100,ms,number,threshold,False,benchmark,,schema range,T1306 100k 关系分层查询预算
 规模测试,benchmark.scale_1m_p95_ms,100 万关系 P95 预算,production,10000,1000,60000,500,ms,number,threshold,False,benchmark,,schema range,T1306 1m 关系聚合/子图预算

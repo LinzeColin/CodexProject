@@ -3,15 +3,16 @@
   "system_name": "EEI",
   "task_id": "T1305",
   "acceptance_ids": ["A207"],
-  "status": "PARTIAL_FRONTEND_API_ADAPTER",
-  "generated_at": "2026-06-20T00:00:00Z",
+  "status": "FRONTEND_API_ADAPTER_TRUSTED_GATEWAY_COMPATIBLE",
+  "generated_at": "2026-06-21T00:00:00Z",
   "implemented_contracts": [
     "Browser saved-view controls attempt configured /v1/saved-views server persistence before local fallback",
     "API base URL is controlled by NEXT_PUBLIC_EEI_API_BASE_URL or localStorage key eei.apiBaseUrl.v1",
     "Saved-view create payload publishes workspace_key=mvp, saved-view-v1 schema, focus, selected node, path, lens, zoom, as-of, layout and analysis-context snapshots",
     "Saved-view restore reads the server record when a server id is available and only reports local restore when API base/server id is missing",
     "DOM contract exposes sync mode, sync reason, server id, server version, server endpoint, workspace key and API-base storage key",
-    "Server conflict and server error states are surfaced as server-conflict/server-error instead of being reported as a successful save or restore"
+    "Server conflict and server error states are surfaced as server-conflict/server-error instead of being reported as a successful save or restore",
+    "Frontend does not store or compute EEI_SAVED_VIEW_GATEWAY_SECRET; production identity headers and signatures are injected by a trusted upstream gateway"
   ],
   "files": [
     "apps/web/src/app/saved-view-client.ts",
@@ -34,8 +35,5 @@
       "playwright_e2e": "PASS_29_OF_29"
     }
   },
-  "remaining_to_close_a207": [
-    "Live multisession E2E CI evidence is recorded in artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json",
-    "Add user/workspace authn/authz boundary before public multi-user deployment"
-  ]
+  "remaining_to_close_a207": []
 }

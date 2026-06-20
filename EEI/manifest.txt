@@ -107,6 +107,7 @@ artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json
 artifacts/tests/a206/t1304_worker_deployment_binding_contract.json
 artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json
 artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json
+artifacts/tests/a207/t1305_saved_view_trusted_gateway_contract.json
 artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json
 artifacts/tests/a208/t1306_browser_runtime_benchmark.json
 artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json

@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+import time
+
+import pytest
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
+from starlette.requests import Request
 
 from apps.api.app.db_health import check_database
+from apps.api.app.domain import get_saved_view_principal, saved_view_gateway_signature
 from apps.api.app.main import app
 from apps.api.app.settings import get_settings
 
@@ -46,6 +52,22 @@ def test_settings_reads_cors_origins_at_call_time(monkeypatch) -> None:
     )
 
 
+def test_settings_defaults_saved_view_identity_to_trusted_gateway_in_production(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("EEI_ENV", "production")
+    monkeypatch.delenv("EEI_SAVED_VIEW_IDENTITY_MODE", raising=False)
+
+    assert get_settings().saved_view_identity_mode == "trusted_gateway"
+
+
+def test_settings_allows_local_saved_view_identity_override_in_production(monkeypatch) -> None:
+    monkeypatch.setenv("EEI_ENV", "production")
+    monkeypatch.setenv("EEI_SAVED_VIEW_IDENTITY_MODE", "local")
+
+    assert get_settings().saved_view_identity_mode == "local"
+
+
 def test_api_allows_configured_browser_origin_for_saved_view_requests() -> None:
     response = TestClient(app).options(
         "/v1/saved-views",
@@ -57,6 +79,138 @@ def test_api_allows_configured_browser_origin_for_saved_view_requests() -> None:
 
     assert response.status_code == 200
     assert response.headers["access-control-allow-origin"] == "http://127.0.0.1:3000"
+    allowed_headers = response.headers["access-control-allow-headers"].lower()
+    assert "x-eei-user-namespace" in allowed_headers
+    assert "x-eei-auth-signature" in allowed_headers
+
+
+def request_for_saved_views(method: str = "GET", path: str = "/v1/saved-views") -> Request:
+    return Request(
+        {
+            "type": "http",
+            "method": method,
+            "path": path,
+            "headers": [],
+        }
+    )
+
+
+def test_saved_view_principal_local_mode_keeps_local_default(monkeypatch) -> None:
+    monkeypatch.setenv("EEI_ENV", "local")
+    monkeypatch.delenv("EEI_SAVED_VIEW_IDENTITY_MODE", raising=False)
+
+    principal = get_saved_view_principal(request_for_saved_views())
+
+    assert principal.namespace == "local_user"
+    assert principal.actor == "local_user"
+
+
+def test_saved_view_principal_production_requires_gateway_secret(monkeypatch) -> None:
+    monkeypatch.setenv("EEI_ENV", "production")
+    monkeypatch.delenv("EEI_SAVED_VIEW_IDENTITY_MODE", raising=False)
+    monkeypatch.delenv("EEI_SAVED_VIEW_GATEWAY_SECRET", raising=False)
+
+    with pytest.raises(HTTPException) as exc_info:
+        get_saved_view_principal(
+            request_for_saved_views(),
+            namespace="tenant-prod",
+            actor="tenant-prod-analyst",
+        )
+
+    assert exc_info.value.status_code == 503
+    assert exc_info.value.detail["reason"] == "saved_view_identity_gateway_not_configured"
+
+
+def test_saved_view_principal_trusted_gateway_rejects_unsigned_headers(monkeypatch) -> None:
+    monkeypatch.setenv("EEI_ENV", "production")
+    monkeypatch.setenv("EEI_SAVED_VIEW_GATEWAY_SECRET", "test-hmac-fixture-key")
+
+    with pytest.raises(HTTPException) as exc_info:
+        get_saved_view_principal(
+            request_for_saved_views(),
+            namespace="tenant-prod",
+            actor="tenant-prod-analyst",
+        )
+
+    assert exc_info.value.status_code == 401
+    assert exc_info.value.detail["reason"] == "missing_saved_view_gateway_identity"
+
+
+def test_saved_view_principal_trusted_gateway_rejects_invalid_signature(monkeypatch) -> None:
+    monkeypatch.setenv("EEI_ENV", "production")
+    monkeypatch.setenv("EEI_SAVED_VIEW_GATEWAY_SECRET", "test-hmac-fixture-key")
+
+    with pytest.raises(HTTPException) as exc_info:
+        get_saved_view_principal(
+            request_for_saved_views(method="POST"),
+            namespace="tenant-prod",
+            actor="tenant-prod-analyst",
+            auth_timestamp=str(int(time.time())),
+            auth_signature="not-a-valid-signature",
+        )
+
+    assert exc_info.value.status_code == 401
+    assert exc_info.value.detail["reason"] == "invalid_saved_view_gateway_signature"
+
+
+def test_saved_view_principal_trusted_gateway_accepts_valid_signature(monkeypatch) -> None:
+    gateway_hmac_fixture_key = "test-hmac-fixture-key"
+    namespace = "tenant-prod"
+    actor = "tenant-prod-analyst"
+    timestamp = str(int(time.time()))
+    request = request_for_saved_views(method="POST")
+    monkeypatch.setenv("EEI_ENV", "production")
+    monkeypatch.setenv("EEI_SAVED_VIEW_GATEWAY_SECRET", gateway_hmac_fixture_key)
+    signature = saved_view_gateway_signature(
+        secret=gateway_hmac_fixture_key,
+        method=request.method,
+        path=request.url.path,
+        namespace=namespace,
+        actor=actor,
+        timestamp=timestamp,
+    )
+
+    principal = get_saved_view_principal(
+        request,
+        namespace=namespace,
+        actor=actor,
+        auth_timestamp=timestamp,
+        auth_signature=signature,
+    )
+
+    assert principal.namespace == namespace
+    assert principal.actor == actor
+
+
+def test_saved_view_principal_trusted_gateway_rejects_expired_signature(monkeypatch) -> None:
+    gateway_hmac_fixture_key = "test-hmac-fixture-key"
+    namespace = "tenant-prod"
+    actor = "tenant-prod-analyst"
+    timestamp = str(int(time.time()) - 999)
+    request = request_for_saved_views(method="POST")
+    monkeypatch.setenv("EEI_ENV", "production")
+    monkeypatch.setenv("EEI_SAVED_VIEW_GATEWAY_SECRET", gateway_hmac_fixture_key)
+    monkeypatch.setenv("EEI_SAVED_VIEW_SIGNATURE_TTL_SECONDS", "300")
+    signature = saved_view_gateway_signature(
+        secret=gateway_hmac_fixture_key,
+        method=request.method,
+        path=request.url.path,
+        namespace=namespace,
+        actor=actor,
+        timestamp=timestamp,
+    )
+
+    with pytest.raises(HTTPException) as exc_info:
+        get_saved_view_principal(
+            request,
+            namespace=namespace,
+            actor=actor,
+            auth_timestamp=timestamp,
+            auth_signature=signature,
+        )
+
+    assert exc_info.value.status_code == 401
+    assert exc_info.value.detail["reason"] == "expired_saved_view_gateway_signature"
 
 
 def test_domain_api_fails_closed_without_database(monkeypatch) -> None:

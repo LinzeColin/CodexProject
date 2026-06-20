@@ -27,7 +27,7 @@
 |---|---|
 | `data/model_registry.csv` | 模型目录、公式、对象、输出和状态 |
 | `data/formula_registry.csv` | 完整公式、范围、缺失值和默认阈值 |
-| `data/parameter_catalog.csv` | 75 个可调/治理参数、范围、步长、在线控件与刷新范围 |
+| `data/parameter_catalog.csv` | 78 个可调/治理参数、范围、步长、在线控件与刷新范围 |
 | `data/threshold_registry.csv` | 17 个核心发布/显示/视觉/性能门槛及其机器参数映射 |
 | `config/model_runtime_defaults.yaml` | 人类可编辑导入模板 |
 | `config/model_profiles/balanced-v2.json` | 默认机器配置 |
@@ -59,6 +59,6 @@ python scripts/apply_model_config.py --dry-run --profile config/model_profiles/b
 
 ## v5 生产运行参数
 
-新增参数覆盖 T1300-T1309：迁移锁与回滚要求、实体解析置信度、独立来源数量、scheduler lease/heartbeat/retry/dead-letter、保存视图冲突重试、10k/100k/1m 关系规模预算、4h/24h soak 时长和品牌清权开关。这些参数记录在 `data/parameter_catalog.csv`，当前只是 MVP 运行合同，不能替代尚未实现的生产服务。
+新增参数覆盖 T1300-T1309：迁移锁与回滚要求、实体解析置信度、独立来源数量、scheduler lease/heartbeat/retry/dead-letter、保存视图冲突重试、可信网关身份模式、HMAC 签名 TTL、secret 必填边界、10k/100k/1m 关系规模预算、4h/24h soak 时长和品牌清权开关。这些参数记录在 `data/parameter_catalog.csv`，当前只是 MVP 运行合同，不能替代尚未实现的生产服务。
 
 详细文档：`docs/24_MODEL_FORMULA_PARAMETER_THRESHOLD_CENTER.md`、`docs/25_LIVE_RECALCULATION_REFRESH_ARCHITECTURE.md`。
