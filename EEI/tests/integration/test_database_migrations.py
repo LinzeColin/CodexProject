@@ -1567,6 +1567,40 @@ def exercise_transactional_model_activation_contract(
     assert conflict["reason"] == "stale_active_profile_version"
     assert conflict["actual_active_profile_version_id"] == str(target_profile_id)
 
+    rollback_response = client.post(
+        f"/v1/scoring/profiles/{active_profile['id']}/rollback",
+        json={
+            "expected_active_profile_version_id": str(target_profile_id),
+            "client_refresh_token": next_refresh_token,
+            "reason": "T1303/A204 dedicated rollback endpoint success path",
+        },
+    )
+    assert rollback_response.status_code == 200
+    rollback = rollback_response.json()
+    assert rollback["schema_version"] == "model-activation-v1"
+    assert rollback["status"] == "activated"
+    assert rollback["previous_profile"]["id"] == str(target_profile_id)
+    assert rollback["activated_profile"]["id"] == active_profile["id"]
+    assert rollback["activated_profile"]["active"] is True
+    assert rollback["cache_invalidation"]["previous_refresh_token"] == next_refresh_token
+    assert rollback["cache_invalidation"]["refresh_token"] != next_refresh_token
+    assert rollback["active_context"]["active_scoring_profile_version_id"] == active_profile["id"]
+    rollback_refresh_token = rollback["cache_invalidation"]["refresh_token"]
+
+    stale_rollback_response = client.post(
+        f"/v1/scoring/profiles/{target_profile_id}/rollback",
+        json={
+            "expected_active_profile_version_id": str(target_profile_id),
+            "client_refresh_token": next_refresh_token,
+            "reason": "T1303/A204 stale rollback endpoint negative path",
+        },
+    )
+    assert stale_rollback_response.status_code == 409
+    rollback_conflict = stale_rollback_response.json()["detail"]
+    assert rollback_conflict["status"] == "conflict"
+    assert rollback_conflict["reason"] == "stale_active_profile_version"
+    assert rollback_conflict["actual_active_profile_version_id"] == active_profile["id"]
+
     with connect_database() as connection:
         active_rows = connection.execute(
             """
@@ -1575,7 +1609,7 @@ def exercise_transactional_model_activation_contract(
             WHERE active = true
             """
         ).fetchall()
-        assert [row[0] for row in active_rows] == [target_profile_id]
+        assert [row[0] for row in active_rows] == [UUID(str(active_profile["id"]))]
         context_row = connection.execute(
             """
             SELECT active_scoring_profile_version_id, active_scoring_run_id,
@@ -1591,9 +1625,9 @@ def exercise_transactional_model_activation_contract(
             _context_refresh_generation,
             context_status,
         ) = context_row
-        assert context_profile_version_id == target_profile_id
+        assert context_profile_version_id == UUID(str(active_profile["id"]))
         assert context_scoring_run_id is not None
-        assert context_refresh_token == next_refresh_token
+        assert context_refresh_token == rollback_refresh_token
         assert context_status == "active"
         score_run_count = connection.execute(
             """
@@ -1603,25 +1637,29 @@ def exercise_transactional_model_activation_contract(
               AND profile_version_id = %s
               AND status = 'completed'
             """,
-            (context_scoring_run_id, target_profile_id),
+            (context_scoring_run_id, UUID(str(active_profile["id"]))),
         ).fetchone()[0]
         assert score_run_count == 1
-        log_counts = connection.execute(
-            """
-            SELECT
-              count(*) FILTER (WHERE result_status = 'success')::int AS success,
-              count(*) FILTER (WHERE result_status = 'conflict')::int AS conflict
-            FROM operation_logs
-            WHERE action_type = 'activate_scoring_profile'
-              AND object_type = 'scoring_profile_version'
-            """
-        ).fetchone()
-        assert log_counts[0] == 1
-        assert log_counts[1] == 1
+        log_counts = {
+            (row[0], row[1]): row[2]
+            for row in connection.execute(
+                """
+                SELECT action_type, result_status, count(*)::int
+                FROM operation_logs
+                WHERE action_type IN ('activate_scoring_profile', 'rollback_scoring_profile')
+                  AND object_type = 'scoring_profile_version'
+                GROUP BY action_type, result_status
+                """
+            ).fetchall()
+        }
+        assert log_counts[("activate_scoring_profile", "success")] == 1
+        assert log_counts[("activate_scoring_profile", "conflict")] == 1
+        assert log_counts[("rollback_scoring_profile", "success")] == 1
+        assert log_counts[("rollback_scoring_profile", "conflict")] == 1
         try:
             connection.execute(
                 "UPDATE scoring_profile_versions SET active = true WHERE id = %s",
-                (active_profile["id"],),
+                (target_profile_id,),
             )
         except errors.UniqueViolation:
             connection.rollback()

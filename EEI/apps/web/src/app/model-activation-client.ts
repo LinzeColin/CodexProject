@@ -106,6 +106,13 @@ export type ModelActivationResult =
       reason: "api_base_missing" | "target_profile_missing";
     };
 
+type ModelProfileTransitionPayload = {
+  targetProfileVersionId?: string;
+  expectedActiveProfileVersionId?: string;
+  clientRefreshToken?: string;
+  reason: string;
+};
+
 export function readModelContextApiBaseUrl() {
   const override = window.localStorage.getItem(MODEL_CONTEXT_API_BASE_STORAGE_KEY)?.trim();
   const configured = process.env.NEXT_PUBLIC_EEI_API_BASE_URL?.trim();
@@ -178,6 +185,19 @@ export async function activateModelProfile(payload: {
   clientRefreshToken?: string;
   reason: string;
 }): Promise<ModelActivationResult> {
+  return postModelProfileTransition(payload, "activate");
+}
+
+export async function rollbackModelProfile(
+  payload: ModelProfileTransitionPayload
+): Promise<ModelActivationResult> {
+  return postModelProfileTransition(payload, "rollback");
+}
+
+async function postModelProfileTransition(
+  payload: ModelProfileTransitionPayload,
+  action: "activate" | "rollback"
+): Promise<ModelActivationResult> {
   const apiBaseUrl = readModelContextApiBaseUrl();
   if (!apiBaseUrl) {
     return { mode: "local_fallback", status: "error", reason: "api_base_missing" };
@@ -185,7 +205,7 @@ export async function activateModelProfile(payload: {
   if (!payload.targetProfileVersionId) {
     return { mode: "local_fallback", status: "error", reason: "target_profile_missing" };
   }
-  const endpoint = `${apiBaseUrl}/v1/scoring/profiles/${payload.targetProfileVersionId}/activate`;
+  const endpoint = `${apiBaseUrl}/v1/scoring/profiles/${payload.targetProfileVersionId}/${action}`;
   try {
     const response = await window.fetch(endpoint, {
       method: "POST",

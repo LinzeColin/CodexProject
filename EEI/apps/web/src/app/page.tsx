@@ -32,6 +32,7 @@ import {
   activateModelProfile,
   listModelProfiles,
   loadActiveModelContext,
+  rollbackModelProfile,
   type ActiveModelContextRecord,
   type ModelActivationResult,
   type ScoringProfileRecord
@@ -1905,16 +1906,25 @@ export default function Home() {
   }
 
   async function activateCandidateModelProfile() {
-    await activateModelProfileTransaction(candidateProfile, "EEI model-center transaction activation");
+    await activateModelProfileTransaction(
+      candidateProfile,
+      "EEI model-center transaction activation",
+      "activate"
+    );
   }
 
   async function rollbackLatestModelActivation() {
-    await activateModelProfileTransaction(rollbackProfile, "EEI model-center rollback activation");
+    await activateModelProfileTransaction(
+      rollbackProfile,
+      "EEI model-center rollback activation",
+      "rollback"
+    );
   }
 
   async function activateModelProfileTransaction(
     targetProfile: ScoringProfileRecord | null,
-    reason: string
+    reason: string,
+    action: "activate" | "rollback"
   ) {
     if (!targetProfile) {
       setModelContextSyncReason("target_profile_missing");
@@ -1922,7 +1932,8 @@ export default function Home() {
       return;
     }
     setModelContextStatus("activating");
-    const activationResult = await activateModelProfile({
+    const transition = action === "rollback" ? rollbackModelProfile : activateModelProfile;
+    const activationResult = await transition({
       targetProfileVersionId: targetProfile.id,
       expectedActiveProfileVersionId: serverModelContext?.active_scoring_profile_version_id,
       clientRefreshToken: serverModelContext?.refresh_token,
@@ -1953,7 +1964,11 @@ export default function Home() {
     setCandidateProfile(activationResult.response.previous_profile);
     setRollbackProfile(activationResult.response.previous_profile);
     setModelContextSyncMode("server");
-    setModelContextSyncReason("activation_transaction_committed");
+    setModelContextSyncReason(
+      action === "rollback"
+        ? "rollback_transaction_committed"
+        : "activation_transaction_committed"
+    );
     setModelContextEndpoint(activationResult.endpoint);
     setModelContextStatus("server-activated");
   }

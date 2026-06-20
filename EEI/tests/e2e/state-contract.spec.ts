@@ -770,28 +770,31 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
   await page.route("https://model.eei.test/v1/scoring/profiles/*/activate", async (route) => {
     const requestUrl = new URL(route.request().url());
     const profileId = requestUrl.pathname.split("/").at(-2);
-    if (profileId === targetProfile.id) {
-      activatePayload = route.request().postDataJSON() as Record<string, unknown>;
-      currentContext = activatedContext;
-      await route.fulfill({
-        contentType: "application/json",
-        status: 200,
-        body: JSON.stringify({
-          schema_version: "model-activation-v1",
-          status: "activated",
-          previous_profile: activeProfile,
-          activated_profile: { ...targetProfile, active: true },
-          active_context: activatedContext,
-          cache_invalidation: {
-            previous_refresh_token: "refresh-token-1",
-            refresh_token: "refresh-token-2",
-            refresh_generation: 2,
-            stale_client_semantics: "clients refetch"
-          }
-        })
-      });
-      return;
-    }
+    expect(profileId).toBe(targetProfile.id);
+    activatePayload = route.request().postDataJSON() as Record<string, unknown>;
+    currentContext = activatedContext;
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify({
+        schema_version: "model-activation-v1",
+        status: "activated",
+        previous_profile: activeProfile,
+        activated_profile: { ...targetProfile, active: true },
+        active_context: activatedContext,
+        cache_invalidation: {
+          previous_refresh_token: "refresh-token-1",
+          refresh_token: "refresh-token-2",
+          refresh_generation: 2,
+          stale_client_semantics: "clients refetch"
+        }
+      })
+    });
+  });
+  await page.route("https://model.eei.test/v1/scoring/profiles/*/rollback", async (route) => {
+    const requestUrl = new URL(route.request().url());
+    const profileId = requestUrl.pathname.split("/").at(-2);
+    expect(profileId).toBe(activeProfile.id);
     rollbackPayload = route.request().postDataJSON() as Record<string, unknown>;
     currentContext = rollbackContext;
     await route.fulfill({

@@ -1838,6 +1838,7 @@ class DomainRepository:
         client_refresh_token: str | None,
         reason: str,
         actor: str = "local_user",
+        action_type: str = "activate_scoring_profile",
     ) -> dict[str, Any]:
         conflict_detail: dict[str, Any] | None = None
         activation_payload: dict[str, Any] | None = None
@@ -1864,7 +1865,7 @@ class DomainRepository:
                 self.log_operation(
                     connection,
                     actor=actor,
-                    action_type="activate_scoring_profile",
+                    action_type=action_type,
                     object_type="scoring_profile_version",
                     object_id=profile_version_id,
                     old_value=previous_profile,
@@ -1920,6 +1921,7 @@ class DomainRepository:
                         Jsonb(
                             {
                                 "activation_reason": reason,
+                                "activation_action_type": action_type,
                                 "refresh_generation": next_generation,
                                 "refresh_policy": "atomic-global-switch",
                             }
@@ -1999,7 +2001,7 @@ class DomainRepository:
                 self.log_operation(
                     connection,
                     actor=actor,
-                    action_type="activate_scoring_profile",
+                    action_type=action_type,
                     object_type="scoring_profile_version",
                     object_id=profile_version_id,
                     old_value=previous_profile,
@@ -2036,6 +2038,24 @@ class DomainRepository:
         if activation_payload is None:  # pragma: no cover - defensive invariant.
             raise RepositoryError("Scoring profile activation produced no payload")
         return activation_payload
+
+    def rollback_scoring_profile_version(
+        self,
+        *,
+        profile_version_id: UUID,
+        expected_active_profile_version_id: UUID | None,
+        client_refresh_token: str | None,
+        reason: str,
+        actor: str = "local_user",
+    ) -> dict[str, Any]:
+        return self.activate_scoring_profile_version(
+            profile_version_id=profile_version_id,
+            expected_active_profile_version_id=expected_active_profile_version_id,
+            client_refresh_token=client_refresh_token,
+            reason=reason,
+            actor=actor,
+            action_type="rollback_scoring_profile",
+        )
 
     def list_scoring_profiles(self) -> list[dict[str, Any]]:
         with self.connect() as connection:

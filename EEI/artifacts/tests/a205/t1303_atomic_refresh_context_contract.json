@@ -11,6 +11,7 @@
     "Integration tests assert old refresh tokens are stale and matching refresh tokens are current.",
     "Frontend model-center hydration reads /v1/scoring/active-context and maps server profile/data/score context into visible workspace module state.",
     "Frontend stale-client refresh checks refetch /v1/scoring/active-context with the previous refresh token and surface stale_client_refetched semantics.",
+    "Frontend rollback now calls POST /v1/scoring/profiles/{profileVersionId}/rollback instead of reusing the activation endpoint.",
     "Live Playwright coverage now configures eei.modelApiBaseUrl.v1 and exercises activation, stale refresh and rollback against FastAPI/PostgreSQL."
   ],
   "evidence_files": [
@@ -30,7 +31,9 @@
     ".venv/bin/python scripts/validate_model_config.py config/model_profiles/supply-chain-v3.json config/thresholds/default-v2.json",
     "PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py scripts/check_database_schema.py scripts/load_seed_catalogs.py",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_contracts.py",
+    ".venv/bin/python scripts/validate_contracts.py",
     "npx --yes pnpm@11.8.0 --filter @eei/web typecheck",
+    "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A204 and A205\"",
     "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.live.config.ts",
     "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py"
   ],
@@ -42,14 +45,7 @@
   "latest_ci_result": {
     "provider": "GitHub Actions",
     "workflow": "EEI validation",
-    "run_id": "27868141438",
-    "job_id": "82475530819",
-    "commit_sha": "00b37d8100a91a94d0db76150bfacb0c9bfba790",
-    "verify_static_contract_lint_typecheck_unit_step": "PASS",
-    "verify_g2_postgresql_integration_step": "PASS",
-    "verify_g2_browser_e2e_step": "PASS",
-    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS",
-    "verify_g2_postgresql_migrations_and_e2e_step": "PASS"
+    "status": "PENDING_REMOTE_VALIDATION_FOR_THIS_CHANGE"
   },
   "rollback": [
     "Revert the T1303 API/repository/migration/test/governance commit.",
