@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "task_id": "T1301",
+  "acceptance_id": "A202",
+  "status": "IN_PROGRESS",
+  "evidence_type": "curated_official_ingestion_contract",
+  "generated_at": "2026-06-20T00:00:00+10:00",
+  "parser_version": "nvidia-public-anchor-v1",
+  "record_mode": "curated_official_fixture",
+  "source_anchor_file": "data/nvidia_public_source_anchors.csv",
+  "implemented_scope": [
+    "raw_source_snapshots preserve official anchor URL, source date, hash, parser version, record mode, raw payload and review status",
+    "entity_resolution_candidates preserve candidate name, matched research/entity IDs when available, confidence, method and review status",
+    "ingestion_evidence_chain preserves anchor-level evidence context, parser version, review status and counter_evidence array",
+    "curated discovery anchors are not published as relationship edges"
+  ],
+  "evidence_paths": [
+    "infra/db/migrations/0004_curated_ingestion_audit_layers/up.sql",
+    "infra/db/migrations/0004_curated_ingestion_audit_layers/down.sql",
+    "scripts/load_curated_ingestion_anchors.py",
+    "scripts/check_database_schema.py",
+    "tests/integration/test_database_migrations.py"
+  ],
+  "validation_commands": [
+    "python3 scripts/validate_catalog_integrity.py",
+    "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_governance.py",
+    "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_task_pack.py",
+    "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_v5_production_readiness_sync.py",
+    "PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check scripts/load_curated_ingestion_anchors.py scripts/check_database_schema.py tests/integration/test_database_migrations.py",
+    "PYTHONPATH=scripts:. .venv/bin/python -c 'from migrate import discover_migrations; print([(m.version, m.name) for m in discover_migrations()])'"
+  ],
+  "remaining_blockers_before_a202_done": [
+    "live or dry-run full-text connector for official sources is not implemented",
+    "NVIDIA -> TSMC -> ASML relationship facts are not published from reviewed evidence",
+    "independent source cross-check and manual review workflow are not implemented",
+    "source health, retry and dead-letter behavior remain owned by T1304/A206"
+  ],
+  "rollback": [
+    "Run scripts/migrate.py downgrade --steps 1 to remove 0004_curated_ingestion_audit_layers.",
+    "Re-run scripts/check_database_schema.py without --expect-curated-ingestion to confirm the prior schema contract.",
+    "Revert T1301 governance status to NOT STARTED if the migration or loader is reverted."
+  ]
+}

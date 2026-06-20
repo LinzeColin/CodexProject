@@ -32,7 +32,7 @@ EEI identity is unchanged:
 | Blocker | Source issue(s) | EEI task(s) | Acceptance ID(s) | Default status |
 |---|---|---|---|---|
 | PostgreSQL database and reversible migrations | ARCH-001 | T1300 | A201 | DONE |
-| Real data ingestion, entity resolution and evidence chain | ARCH-003, UX-010 | T1301 | A202 | NOT_STARTED |
+| Real data ingestion, entity resolution and evidence chain | ARCH-003, UX-010 | T1301 | A202 | IN_PROGRESS |
 | Production API, recursive graph query and scoring service | ARCH-002, UX-008, UX-011 | T1302 | A203 | NOT_STARTED |
 | Model config versioning, transactional activation and atomic global refresh | STRESS-010 | T1303 | A204, A205 | NOT_STARTED |
 | Scheduler, auto wake, idempotency, retry and dead-letter | STRESS-007 | T1304 | A206 | NOT_STARTED |
@@ -44,7 +44,7 @@ EEI identity is unchanged:
 
 ## Implementation Boundaries
 
-T1301-T1309 remain MVP production blockers. T1300/A201 is implemented by the `0003_production_fact_version_layers` migration and its schema/integration checks. Each remaining task must close in a separate bounded implementation run with:
+T1301-T1309 remain MVP production blockers. T1300/A201 is implemented by the `0003_production_fact_version_layers` migration and its schema/integration checks. T1301/A202 is in progress through the `0004_curated_ingestion_audit_layers` migration and `scripts/load_curated_ingestion_anchors.py`, but it is not release-ready until live/full-text ingestion, reviewed Golden Vertical facts and review workflow evidence are complete. Each remaining task must close in a separate bounded implementation run with:
 
 - explicit files and services changed;
 - migration or rollback path where applicable;

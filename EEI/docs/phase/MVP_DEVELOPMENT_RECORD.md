@@ -1726,7 +1726,7 @@ Residual risks:
 
 ## 2026-06-20 - T1300/A201 PostgreSQL production fact-version migration
 
-Status: LOCAL STATIC PASS; REMOTE CI PENDING
+Status: LOCAL STATIC PASS; REMOTE CI PASS
 
 Completed:
 
@@ -1745,6 +1745,10 @@ Verification evidence:
 - Local `PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check scripts/check_database_schema.py tests/integration/test_database_migrations.py`: PASS.
 - Local `PYTHONPATH=scripts:. .venv/bin/python -c 'from migrate import discover_migrations; print([(m.version, m.name) for m in discover_migrations()])'`: PASS and includes `0003 production_fact_version_layers`.
 - Local `git diff --check`: PASS.
+- GitHub Actions run `27853994985`: PASS.
+- GitHub Actions job `82437995756`.
+- GitHub Actions step `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 Acceptance status:
 
@@ -1754,3 +1758,31 @@ Residual risks:
 
 - Local Docker/PostgreSQL is not available on this host, so migration upgrade/downgrade and integration execution still require GitHub Actions for database proof.
 - T1300 closes the database version-layer blocker only. T1301-T1309 remain required before v0.1: real ingestion, production API/query/scoring, model activation/refresh, scheduler, saved views, scale, soak, production frontend and brand clearance.
+
+## 2026-06-20 - T1301/A202 curated official ingestion audit layer
+
+Status: LOCAL STATIC PASS; REMOTE CI PENDING
+
+Completed:
+
+- Added `infra/db/migrations/0004_curated_ingestion_audit_layers/up.sql` and `down.sql`.
+- Added `raw_source_snapshots` to preserve official anchor URL, source date, publisher, title, scope, record mode, validation status, parser version, content hash, raw payload and review status.
+- Added `entity_resolution_candidates` to preserve candidate name, normalized name, matched entity/research IDs when available, match method, confidence, decision reason, review status and parser version.
+- Added `ingestion_evidence_chain` to preserve anchor-level evidence context, relationship family, locator, support excerpt, structured fact payload, counter_evidence array, parser version, confidence and review status.
+- Added `scripts/load_curated_ingestion_anchors.py` for deterministic ingestion of `data/nvidia_public_source_anchors.csv` in `curated_official_fixture` mode.
+- Updated `scripts/check_database_schema.py` with `--expect-curated-ingestion`.
+- Updated `tests/integration/test_database_migrations.py` to run the curated loader twice and assert raw snapshot, source document, entity resolution, evidence chain and non-publication invariants.
+- Marked T1301/A202 as `IN PROGRESS` in task, acceptance, traceability and development status files.
+
+Acceptance status:
+
+- A202 is in progress, not done.
+- Current evidence covers curated official NVIDIA source anchors and ingestion audit layers.
+- The loader intentionally does not publish relationship edges from discovery anchors.
+
+Residual risks:
+
+- live/full-text official connector is not implemented.
+- reviewed NVIDIA -> TSMC -> ASML relationship facts are not published.
+- independent source cross-check and human review workflow are not implemented.
+- source health, retry, dead-letter and scheduler semantics remain owned by T1304/A206.

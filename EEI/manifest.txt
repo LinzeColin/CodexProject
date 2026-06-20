@@ -93,6 +93,7 @@ artifacts/tests/a185/t1214_high_risk_traceability.json
 artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip
 artifacts/tests/a200/t1212_clean_room_preflight.json
 artifacts/tests/a200/t1215_clean_room_release.json
+artifacts/tests/a202/t1301_curated_official_ingestion_contract.json
 brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
 config/brand_policy.yaml
 config/model_profiles/balanced-v2.json
@@ -212,6 +213,8 @@ infra/db/migrations/0002_exploration_state/down.sql
 infra/db/migrations/0002_exploration_state/up.sql
 infra/db/migrations/0003_production_fact_version_layers/down.sql
 infra/db/migrations/0003_production_fact_version_layers/up.sql
+infra/db/migrations/0004_curated_ingestion_audit_layers/down.sql
+infra/db/migrations/0004_curated_ingestion_audit_layers/up.sql
 infra/db/migrations/README.md
 infra/db/seeds/README.md
 infra/docker/README.md
@@ -257,6 +260,7 @@ scripts/compile_model_runtime_defaults.py
 scripts/db_tools.py
 scripts/env_doctor.py
 scripts/generate_governance_pdf.py
+scripts/load_curated_ingestion_anchors.py
 scripts/load_seed_catalogs.py
 scripts/load_synthetic_fixtures.py
 scripts/manage_clean_room_release.py

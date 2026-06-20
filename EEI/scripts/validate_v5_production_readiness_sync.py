@@ -36,12 +36,25 @@ EXPECTED_TASKS = {
 
 IMPLEMENTED_TASKS = {"T1300": "A201"}
 
+PARTIAL_TASKS = {"T1301": "A202"}
+
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
         "infra/db/migrations/0003_production_fact_version_layers/up.sql",
         "infra/db/migrations/0003_production_fact_version_layers/down.sql",
         "scripts/check_database_schema.py",
         "tests/integration/test_database_migrations.py",
+    }
+}
+
+PARTIAL_EVIDENCE = {
+    "T1301": {
+        "infra/db/migrations/0004_curated_ingestion_audit_layers/up.sql",
+        "infra/db/migrations/0004_curated_ingestion_audit_layers/down.sql",
+        "scripts/load_curated_ingestion_anchors.py",
+        "scripts/check_database_schema.py",
+        "tests/integration/test_database_migrations.py",
+        "artifacts/tests/a202/t1301_curated_official_ingestion_contract.json",
     }
 }
 
@@ -131,6 +144,13 @@ def validate_task_acceptance_status() -> dict[str, Any]:
             require(task["status"] == "DONE", f"{task_id} must be DONE once implemented")
             for evidence_path in IMPLEMENTED_EVIDENCE[task_id]:
                 require((ROOT / evidence_path).is_file(), f"{task_id} missing {evidence_path}")
+        elif task_id in PARTIAL_TASKS:
+            require(
+                task["status"] == "IN PROGRESS",
+                f"{task_id} must be IN PROGRESS while partially implemented",
+            )
+            for evidence_path in PARTIAL_EVIDENCE[task_id]:
+                require((ROOT / evidence_path).is_file(), f"{task_id} missing {evidence_path}")
         else:
             require(task["status"] == "NOT STARTED", f"{task_id} must remain NOT STARTED")
 
@@ -139,13 +159,20 @@ def validate_task_acceptance_status() -> dict[str, Any]:
         require(row is not None, f"missing acceptance {acceptance_id}")
         if acceptance_id in IMPLEMENTED_TASKS.values():
             require(row["status"] == "DONE", f"{acceptance_id} must be DONE once implemented")
+        elif acceptance_id in PARTIAL_TASKS.values():
+            require(
+                row["status"] == "IN PROGRESS",
+                f"{acceptance_id} must be IN PROGRESS while partially implemented",
+            )
         else:
             require(row["status"] == "NOT STARTED", f"{acceptance_id} must remain NOT STARTED")
     return {
         "tasks": len(EXPECTED_TASKS),
         "acceptance": 11,
         "implemented_tasks": len(IMPLEMENTED_TASKS),
-        "remaining_tasks": len(EXPECTED_TASKS) - len(IMPLEMENTED_TASKS),
+        "partial_tasks": len(PARTIAL_TASKS),
+        "not_done_tasks": len(EXPECTED_TASKS) - len(IMPLEMENTED_TASKS),
+        "not_started_tasks": len(EXPECTED_TASKS) - len(IMPLEMENTED_TASKS) - len(PARTIAL_TASKS),
     }
 
 

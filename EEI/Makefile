@@ -111,7 +111,7 @@ copy-lint:
 	$(UV) run python scripts/validate_ui_copy.py
 
 lint:
-	$(UV) run ruff check apps tests scripts/db_tools.py scripts/env_doctor.py scripts/migrate.py scripts/load_seed_catalogs.py scripts/load_synthetic_fixtures.py scripts/check_database_schema.py scripts/wait_for_database.py scripts/validate_contracts.py scripts/secret_scan.py scripts/validate_ui_copy.py scripts/validate_prototype_parity.py scripts/validate_github_governance.py scripts/validate_governance_consistency.py scripts/validate_v5_production_readiness_sync.py scripts/manage_development_status_artifacts.py scripts/manage_risk_control_artifacts.py scripts/manage_clean_room_release.py scripts/manage_release_artifacts.py
+	$(UV) run ruff check apps tests scripts/db_tools.py scripts/env_doctor.py scripts/migrate.py scripts/load_seed_catalogs.py scripts/load_synthetic_fixtures.py scripts/load_curated_ingestion_anchors.py scripts/check_database_schema.py scripts/wait_for_database.py scripts/validate_contracts.py scripts/secret_scan.py scripts/validate_ui_copy.py scripts/validate_prototype_parity.py scripts/validate_github_governance.py scripts/validate_governance_consistency.py scripts/validate_v5_production_readiness_sync.py scripts/manage_development_status_artifacts.py scripts/manage_risk_control_artifacts.py scripts/manage_clean_room_release.py scripts/manage_release_artifacts.py
 
 typecheck:
 	$(PNPM) --filter @eei/web typecheck

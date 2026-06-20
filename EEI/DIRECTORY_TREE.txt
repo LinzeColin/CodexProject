@@ -74,10 +74,12 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t1213_development_status_ledger.json
 │   │   ├── a185
 │   │   │   └── t1214_high_risk_traceability.json
-│   │   └── a200
-│   │       ├── Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip
-│   │       ├── t1212_clean_room_preflight.json
-│   │       └── t1215_clean_room_release.json
+│   │   ├── a200
+│   │   │   ├── Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip
+│   │   │   ├── t1212_clean_room_preflight.json
+│   │   │   └── t1215_clean_room_release.json
+│   │   └── a202
+│   │       └── t1301_curated_official_ingestion_contract.json
 │   ├── README.md
 │   ├── development_status_summary_t1213.json
 │   ├── governance_blueprint_v42_source.html
@@ -222,6 +224,9 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── 0003_production_fact_version_layers
 │   │   │   │   ├── down.sql
 │   │   │   │   └── up.sql
+│   │   │   ├── 0004_curated_ingestion_audit_layers
+│   │   │   │   ├── down.sql
+│   │   │   │   └── up.sql
 │   │   │   └── README.md
 │   │   └── seeds
 │   │       └── README.md
@@ -276,6 +281,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── db_tools.py
 │   ├── env_doctor.py
 │   ├── generate_governance_pdf.py
+│   ├── load_curated_ingestion_anchors.py
 │   ├── load_seed_catalogs.py
 │   ├── load_synthetic_fixtures.py
 │   ├── manage_clean_room_release.py
