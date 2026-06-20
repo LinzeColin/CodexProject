@@ -15,6 +15,7 @@ const expectedPreviewContext = {
 };
 
 const savedViewApiBaseStorageKey = "eei.apiBaseUrl.v1";
+const modelApiBaseStorageKey = "eei.modelApiBaseUrl.v1";
 const savedViewWorkspaceKey = "mvp";
 const savedViewLayout =
   "upstream-left focus-center downstream-right capital-top policy-bottom";
@@ -271,6 +272,204 @@ test("previews model edits across loaded visual modules before global refresh", 
     "data-preview-state",
     "active"
   );
+});
+
+test("A204 and A205 hydrate activate refresh and rollback model context through the server API", async ({
+  page
+}) => {
+  const activeProfile = {
+    id: "profile-balanced-v2",
+    profile_key: "balanced-v2",
+    name: "Balanced v2",
+    version: 2,
+    model_key: expectedContext.modelVersion,
+    active: true,
+    reason: "Current active profile"
+  };
+  const targetProfile = {
+    id: "profile-supply-v3",
+    profile_key: "supply-chain-v3",
+    name: "Supply Chain v3",
+    version: 3,
+    model_key: "business-empire-model-v3",
+    active: false,
+    reason: "A204/A205 frontend activation candidate"
+  };
+  const activeContext = {
+    schema_version: "active-analysis-context-v1",
+    context_key: "global",
+    active_scoring_profile_version_id: activeProfile.id,
+    active_data_snapshot_id: null,
+    active_data_snapshot_key: expectedContext.dataSnapshot,
+    active_scoring_run_id: expectedContext.scoreSnapshot,
+    refresh_token: "refresh-token-1",
+    refresh_generation: 1,
+    status: "active",
+    activated_at: "2026-06-20T00:00:00Z",
+    activated_by: "system",
+    affected_modules: ["business_empire", "supply_chain", "model_center"],
+    model_version: expectedContext.modelVersion,
+    profile_version: expectedContext.profileVersion,
+    client_state: "current",
+    stale_client_semantics: "clients compare refresh_token and refresh_generation",
+    metadata: { source: "test" }
+  };
+  const activatedContext = {
+    ...activeContext,
+    active_scoring_profile_version_id: targetProfile.id,
+    active_data_snapshot_key: "fixture-v2",
+    active_scoring_run_id: "score-live-v2",
+    refresh_token: "refresh-token-2",
+    refresh_generation: 2,
+    model_version: "business-empire-model-v3",
+    profile_version: "supply-chain-v3@3",
+    client_state: "stale"
+  };
+  const rollbackContext = {
+    ...activeContext,
+    refresh_token: "refresh-token-3",
+    refresh_generation: 3,
+    client_state: "stale"
+  };
+  let currentContext = activeContext;
+  let activatePayload: Record<string, unknown> | undefined;
+  let rollbackPayload: Record<string, unknown> | undefined;
+
+  await page.route("https://model.eei.test/v1/scoring/active-context**", async (route) => {
+    const requestUrl = new URL(route.request().url());
+    const clientToken = requestUrl.searchParams.get("client_refresh_token");
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify({
+        ...currentContext,
+        client_state:
+          clientToken && clientToken !== currentContext.refresh_token ? "stale" : "current"
+      })
+    });
+  });
+  await page.route("https://model.eei.test/v1/scoring/profiles", async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify([activeProfile, targetProfile])
+    });
+  });
+  await page.route("https://model.eei.test/v1/scoring/profiles/*/activate", async (route) => {
+    const requestUrl = new URL(route.request().url());
+    const profileId = requestUrl.pathname.split("/").at(-2);
+    if (profileId === targetProfile.id) {
+      activatePayload = route.request().postDataJSON() as Record<string, unknown>;
+      currentContext = activatedContext;
+      await route.fulfill({
+        contentType: "application/json",
+        status: 200,
+        body: JSON.stringify({
+          schema_version: "model-activation-v1",
+          status: "activated",
+          previous_profile: activeProfile,
+          activated_profile: { ...targetProfile, active: true },
+          active_context: activatedContext,
+          cache_invalidation: {
+            previous_refresh_token: "refresh-token-1",
+            refresh_token: "refresh-token-2",
+            refresh_generation: 2,
+            stale_client_semantics: "clients refetch"
+          }
+        })
+      });
+      return;
+    }
+    rollbackPayload = route.request().postDataJSON() as Record<string, unknown>;
+    currentContext = rollbackContext;
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify({
+        schema_version: "model-activation-v1",
+        status: "activated",
+        previous_profile: { ...targetProfile, active: true },
+        activated_profile: activeProfile,
+        active_context: rollbackContext,
+        cache_invalidation: {
+          previous_refresh_token: "refresh-token-2",
+          refresh_token: "refresh-token-3",
+          refresh_generation: 3,
+          stale_client_semantics: "clients refetch"
+        }
+      })
+    });
+  });
+  await page.addInitScript(
+    ({ storageKey, apiBase }: { storageKey: string; apiBase: string }) =>
+      window.localStorage.setItem(storageKey, apiBase),
+    { storageKey: modelApiBaseStorageKey, apiBase: "https://model.eei.test" }
+  );
+
+  await page.goto("/");
+  await expect(page.getByTestId("model-activation-status")).toHaveText("server-current");
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-model-sync-mode",
+    "server"
+  );
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-active-profile-id",
+    activeProfile.id
+  );
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-target-profile-id",
+    targetProfile.id
+  );
+
+  await page.getByTestId("activate-model-profile").click();
+  await expect(page.getByTestId("model-activation-status")).toHaveText("server-activated");
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-model-version",
+    "business-empire-model-v3"
+  );
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-profile-version",
+    "supply-chain-v3@3"
+  );
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-score-snapshot",
+    "score-live-v2"
+  );
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-model-refresh-generation",
+    "2"
+  );
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-rollback-profile-id",
+    activeProfile.id
+  );
+  expect(activatePayload).toMatchObject({
+    expected_active_profile_version_id: activeProfile.id,
+    client_refresh_token: "refresh-token-1"
+  });
+
+  await page.getByTestId("check-model-refresh").click();
+  await expect(page.getByTestId("model-activation-status")).toHaveText("server-refreshed");
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute("data-client-state", "stale");
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-model-sync-reason",
+    "stale_client_refetched"
+  );
+
+  await page.getByTestId("rollback-model-activation").click();
+  await expect(page.getByTestId("model-activation-status")).toHaveText("server-activated");
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-profile-version",
+    expectedContext.profileVersion
+  );
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-active-score-snapshot",
+    expectedContext.scoreSnapshot
+  );
+  expect(rollbackPayload).toMatchObject({
+    expected_active_profile_version_id: targetProfile.id,
+    client_refresh_token: "refresh-token-2"
+  });
 });
 
 test("saves versioned views restores deterministically and shows as-of change overlays", async ({

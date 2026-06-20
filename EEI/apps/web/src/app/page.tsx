@@ -21,6 +21,15 @@ import {
   ANALYSIS_PREVIEW_STORAGE_KEY,
   type AnalysisContext
 } from "./analysis-contract";
+import {
+  MODEL_CONTEXT_API_BASE_STORAGE_KEY,
+  activateModelProfile,
+  listModelProfiles,
+  loadActiveModelContext,
+  type ActiveModelContextRecord,
+  type ModelActivationResult,
+  type ScoringProfileRecord
+} from "./model-activation-client";
 import { useAnalysisContext } from "./use-analysis-context";
 import {
   SAVED_VIEW_API_BASE_STORAGE_KEY,
@@ -109,6 +118,18 @@ type SavedViewRecord = WorkspaceState & {
   syncReason: string;
   serverEndpoint?: string;
 };
+
+type ModelContextStatus =
+  | "local-active"
+  | "loading-server-context"
+  | "server-current"
+  | "server-stale"
+  | "activating"
+  | "server-activated"
+  | "server-refreshed"
+  | "server-conflict"
+  | "server-error"
+  | "server-no-target";
 
 type WorkspaceStateInput = {
   focusKey?: unknown;
@@ -1042,14 +1063,35 @@ function savedViewFromServerRecord(
   };
 }
 
+function analysisContextFromActiveModelContext(
+  record: ActiveModelContextRecord,
+  fallback: AnalysisContext
+): AnalysisContext {
+  return {
+    ...fallback,
+    modelVersion: record.model_version,
+    profileVersion: record.profile_version,
+    profileLabel: record.profile_version,
+    dataSnapshot: record.active_data_snapshot_key ?? fallback.dataSnapshot,
+    scoreSnapshot: record.active_scoring_run_id ?? fallback.scoreSnapshot
+  };
+}
+
 function isFailedServerSyncResult(
   result: SavedViewSyncResult
 ): result is Extract<SavedViewSyncResult, { mode: "server"; status: "conflict" | "error" }> {
   return result.mode === "server" && (result.status === "conflict" || result.status === "error");
 }
 
+function isFailedModelActivationResult(
+  result: ModelActivationResult
+): result is Extract<ModelActivationResult, { mode: "server"; status: "conflict" | "error" }> {
+  return result.mode === "server" && (result.status === "conflict" || result.status === "error");
+}
+
 export default function Home() {
-  const { analysisContext, applyPreview, clearPreview, isPreviewActive } = useAnalysisContext();
+  const { analysisContext, applyPreview, applyServerContext, clearPreview, isPreviewActive } =
+    useAnalysisContext();
   const [focusKey, setFocusKey] = useState<FocusKey>("nvidia");
   const [selectedKey, setSelectedKey] = useState<NodeKey>("nvidia");
   const [path, setPath] = useState<FocusKey[]>(["nvidia"]);
@@ -1063,6 +1105,19 @@ export default function Home() {
     createSavedView(defaultWorkspaceState)
   );
   const [savedViewStatus, setSavedViewStatus] = useState("ready");
+  const [modelContextStatus, setModelContextStatus] =
+    useState<ModelContextStatus>("local-active");
+  const [modelContextSyncMode, setModelContextSyncMode] = useState<"server" | "local_fallback">(
+    "local_fallback"
+  );
+  const [modelContextSyncReason, setModelContextSyncReason] = useState("not_synced");
+  const [serverModelContext, setServerModelContext] = useState<ActiveModelContextRecord | null>(
+    null
+  );
+  const [modelContextEndpoint, setModelContextEndpoint] = useState("");
+  const [candidateProfile, setCandidateProfile] = useState<ScoringProfileRecord | null>(null);
+  const [rollbackProfile, setRollbackProfile] = useState<ScoringProfileRecord | null>(null);
+  const [previousModelRefreshToken, setPreviousModelRefreshToken] = useState("");
   const [pinnedNodeKeys, setPinnedNodeKeys] = useState<NodeKey[]>([]);
   const [comparisonNodeKeys, setComparisonNodeKeys] = useState<NodeKey[]>([]);
   const [watchlistNodeKeys, setWatchlistNodeKeys] = useState<NodeKey[]>([]);
@@ -1314,6 +1369,106 @@ export default function Home() {
     setSavedViewStatus(syncResult.status === "conflict" ? "server-conflict" : "server-error");
   }
 
+  async function hydrateModelContext(clientRefreshToken?: string, reason = "manual_refresh") {
+    setModelContextStatus("loading-server-context");
+    const contextResult = await loadActiveModelContext(clientRefreshToken);
+    if (contextResult.mode === "local_fallback") {
+      setModelContextSyncMode("local_fallback");
+      setModelContextSyncReason(contextResult.reason);
+      setModelContextStatus("local-active");
+      return;
+    }
+    if (contextResult.status === "error") {
+      setModelContextSyncMode("server");
+      setModelContextSyncReason(contextResult.reason);
+      setModelContextEndpoint(contextResult.endpoint);
+      setModelContextStatus("server-error");
+      return;
+    }
+
+    applyServerContext(
+      analysisContextFromActiveModelContext(contextResult.record, ACTIVE_ANALYSIS_CONTEXT)
+    );
+    setServerModelContext(contextResult.record);
+    setModelContextSyncMode("server");
+    setModelContextSyncReason(
+      contextResult.status === "stale" ? "stale_client_refetched" : reason
+    );
+    setModelContextEndpoint(contextResult.endpoint);
+    setModelContextStatus(
+      contextResult.status === "stale" && clientRefreshToken
+        ? "server-refreshed"
+        : contextResult.status === "stale"
+          ? "server-stale"
+          : "server-current"
+    );
+
+    const profileResult = await listModelProfiles();
+    if (profileResult.mode === "server" && profileResult.status === "listed") {
+      const nextCandidate =
+        profileResult.profiles.find((profile) => !profile.active) ??
+        profileResult.profiles.find(
+          (profile) => profile.id !== contextResult.record.active_scoring_profile_version_id
+        ) ??
+        null;
+      setCandidateProfile(nextCandidate);
+    }
+  }
+
+  async function activateCandidateModelProfile() {
+    await activateModelProfileTransaction(candidateProfile, "EEI model-center transaction activation");
+  }
+
+  async function rollbackLatestModelActivation() {
+    await activateModelProfileTransaction(rollbackProfile, "EEI model-center rollback activation");
+  }
+
+  async function activateModelProfileTransaction(
+    targetProfile: ScoringProfileRecord | null,
+    reason: string
+  ) {
+    if (!targetProfile) {
+      setModelContextSyncReason("target_profile_missing");
+      setModelContextStatus("server-no-target");
+      return;
+    }
+    setModelContextStatus("activating");
+    const activationResult = await activateModelProfile({
+      targetProfileVersionId: targetProfile.id,
+      expectedActiveProfileVersionId: serverModelContext?.active_scoring_profile_version_id,
+      clientRefreshToken: serverModelContext?.refresh_token,
+      reason
+    });
+    if (activationResult.mode === "local_fallback") {
+      setModelContextSyncMode("local_fallback");
+      setModelContextSyncReason(activationResult.reason);
+      setModelContextStatus("server-error");
+      return;
+    }
+    if (isFailedModelActivationResult(activationResult)) {
+      setModelContextSyncMode("server");
+      setModelContextSyncReason(activationResult.reason);
+      setModelContextEndpoint(activationResult.endpoint);
+      setModelContextStatus(
+        activationResult.status === "conflict" ? "server-conflict" : "server-error"
+      );
+      return;
+    }
+
+    const nextContext = activationResult.response.active_context;
+    applyServerContext(analysisContextFromActiveModelContext(nextContext, ACTIVE_ANALYSIS_CONTEXT));
+    setPreviousModelRefreshToken(
+      activationResult.response.cache_invalidation.previous_refresh_token ?? ""
+    );
+    setServerModelContext(nextContext);
+    setCandidateProfile(activationResult.response.previous_profile);
+    setRollbackProfile(activationResult.response.previous_profile);
+    setModelContextSyncMode("server");
+    setModelContextSyncReason("activation_transaction_committed");
+    setModelContextEndpoint(activationResult.endpoint);
+    setModelContextStatus("server-activated");
+  }
+
   const viewportAnchor = `${focusKey}:${selectedNode.key}:${semanticZoom}`;
   const visibleSearchResults = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -1454,6 +1609,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    void hydrateModelContext(undefined, "initial_hydration");
+  }, []);
+
+  useEffect(() => {
     if (!stateReady) return;
     const normalized = normalizeWorkspaceState(workspaceState);
     const payload = JSON.stringify(normalized);
@@ -1551,9 +1710,19 @@ export default function Home() {
         </dl>
         <section
           className="modelPreviewPanel"
+          data-active-profile-id={serverModelContext?.active_scoring_profile_version_id ?? "local"}
+          data-api-base-storage-key={MODEL_CONTEXT_API_BASE_STORAGE_KEY}
+          data-client-state={serverModelContext?.client_state ?? "local"}
+          data-model-endpoint={modelContextEndpoint || "local"}
+          data-model-refresh-generation={serverModelContext?.refresh_generation ?? 0}
+          data-model-refresh-token={serverModelContext?.refresh_token ?? "local"}
+          data-model-sync-mode={modelContextSyncMode}
+          data-model-sync-reason={modelContextSyncReason}
           data-preview-scope="workspace,graph-table,saved-view,industry-landscape"
           data-preview-state={isPreviewActive ? "preview" : "active"}
           data-preview-storage={ANALYSIS_PREVIEW_STORAGE_KEY}
+          data-rollback-profile-id={rollbackProfile?.id ?? "none"}
+          data-target-profile-id={candidateProfile?.id ?? "none"}
           data-testid="model-preview-panel"
         >
           <div>
@@ -1562,12 +1731,59 @@ export default function Home() {
               {analysisContext.profileLabel} / {analysisContext.scoreSnapshot}
             </span>
           </div>
+          <div>
+            <strong>Model activation</strong>
+            <span data-testid="model-activation-status">{modelContextStatus}</span>
+          </div>
+          <div>
+            <strong>Refresh context</strong>
+            <span data-testid="model-server-context-state">
+              {modelContextSyncMode} / {serverModelContext?.refresh_generation ?? 0} /{" "}
+              {serverModelContext?.client_state ?? "local"} / {modelContextSyncReason}
+            </span>
+          </div>
           <div className="modelPreviewActions">
             <button data-testid="preview-model-edit" onClick={applyPreview} type="button">
               Preview supply-chain emphasis
             </button>
             <button data-testid="clear-model-preview" onClick={clearPreview} type="button">
               Clear preview
+            </button>
+            <button
+              data-testid="hydrate-model-context"
+              onClick={() => void hydrateModelContext(undefined, "manual_refresh")}
+              type="button"
+            >
+              Load server context
+            </button>
+            <button
+              data-testid="activate-model-profile"
+              disabled={!candidateProfile || modelContextStatus === "activating"}
+              onClick={() => void activateCandidateModelProfile()}
+              type="button"
+            >
+              Activate profile
+            </button>
+            <button
+              data-testid="check-model-refresh"
+              disabled={!previousModelRefreshToken && !serverModelContext}
+              onClick={() =>
+                void hydrateModelContext(
+                  previousModelRefreshToken || serverModelContext?.refresh_token,
+                  "manual_refresh"
+                )
+              }
+              type="button"
+            >
+              Check refresh
+            </button>
+            <button
+              data-testid="rollback-model-activation"
+              disabled={!rollbackProfile || modelContextStatus === "activating"}
+              onClick={() => void rollbackLatestModelActivation()}
+              type="button"
+            >
+              Rollback
             </button>
           </div>
         </section>

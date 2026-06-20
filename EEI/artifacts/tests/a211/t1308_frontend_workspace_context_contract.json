@@ -11,12 +11,14 @@
     "URL, sessionStorage and localStorage workspace state keys",
     "server endpoint mapping for saved views, active model context, exploration and catalogs",
     "saved-view API-first adapter with explicit local fallback and server mock E2E coverage",
+    "model-center API-first active-context hydration, transaction activation, stale refresh and rollback controls with server mock E2E coverage",
     "Playwright coverage for WorkspaceContext, real controls and disabled unfinished entries"
   ],
   "evidence_files": [
     "apps/web/src/app/workspace-context.tsx",
     "apps/web/src/app/workspace-navigation.tsx",
     "apps/web/src/app/saved-view-client.ts",
+    "apps/web/src/app/model-activation-client.ts",
     "apps/web/src/app/page.tsx",
     "tests/e2e/home.spec.ts",
     "tests/e2e/state-contract.spec.ts"
@@ -32,9 +34,8 @@
   },
   "remaining_to_close_a211": [
     "wire frontend data loading to configured production API base URL instead of fixture projections",
-    "record GitHub Actions verify-g2-db PASS for live FastAPI/PostgreSQL multi-session saved-view E2E",
-    "connect model-center activation and rollback controls to transactional activation APIs",
-    "run cross-route E2E with live FastAPI/PostgreSQL backend and stale-client refresh semantics"
+    "run cross-route E2E with live FastAPI/PostgreSQL backend and stale-client refresh semantics",
+    "connect remaining production API hydration for graph, evidence, catalogs and score explanations"
   ],
-  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state and persistence contract. It does not close T1302/T1303/T1305 server-hydration gaps."
+  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter and model-center transaction controls. It does not close T1302 production API hydration or live backend cross-route proof."
 }
