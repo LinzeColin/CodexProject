@@ -2286,8 +2286,10 @@ Residual risks:
 - Added runtime API guards for server node and edge records so malformed graph payloads fall back to the local fixture path instead of partially rendering invalid data.
 - Added deterministic server-node layout, relationship-family lens mapping, server edge labels, server source-count metadata and server render count attributes for E2E assertions.
 - Added server selected-node support in the inspection card. Unknown server-only objects can be selected and inspected, while local-only actions such as set-center, pin, compare and watchlist are disabled unless the server entity maps to an existing local object key.
+- Preserved restored local selected-node state during server graph hydration, so saved-view/URL restores such as `subject=cloud&selected=datacenter` keep the local inspection card until the user explicitly selects a server-rendered graph node.
+- Delayed initial production graph hydration until workspace state is ready, preventing default NVIDIA graph requests from racing ahead of URL/session saved-view restoration.
 - Retained fixture rendering as the explicit fallback when the API is unavailable or returns no usable graph edges.
-- Extended the A203/A211 Playwright mock server with a server-only packaging supplier node and two server-returned relationship edges, then asserted SVG, table and selected-card rendering from the server graph.
+- Extended the A203/A211 Playwright mock server with a server-only packaging supplier node and two server-returned relationship edges, then asserted SVG, table, selected-card rendering from the server graph and restored local selected-node preservation.
 
 ### Files changed
 
@@ -2313,8 +2315,9 @@ Residual risks:
 ### Validation
 
 - Local `PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck`: PASS.
-- Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 1/1 for `A203 and A211 hydrate production graph context through the explore API`.
-- Local default Playwright E2E with non-sandbox browser/server access: PASS, 31/31.
+- Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 2/2 for A203/A211 production graph context and restored local selected-node preservation.
+- Local default Playwright E2E with non-sandbox browser/server access: PASS, 32/32.
+- Local live PostgreSQL G2 E2E was not runnable on this Mac because `docker` is not installed; GitHub Actions remains the live G2 evidence source.
 
 ### Remaining gaps
 
