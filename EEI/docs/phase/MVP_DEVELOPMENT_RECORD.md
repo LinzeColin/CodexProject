@@ -2365,6 +2365,7 @@ Residual risks:
 - Local `.venv/bin/python -m pytest -q tests/unit/test_api_health.py`: PASS, 9/9.
 - Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 2/2 for A203/A211 production graph, catalog and score hydration.
 - Local default Playwright E2E with non-sandbox browser/server access: PASS, 32/32.
+- GitHub Actions `EEI validation` on `c2ce25603ed12e4dabfb02517af3821f70b631f3`: PASS, run `27865890074`, job `82469817036`; Step 7 static/contract/lint/typecheck/unit and Step 8 G2 PostgreSQL migrations/E2E both succeeded.
 
 ### Remaining gaps
 
