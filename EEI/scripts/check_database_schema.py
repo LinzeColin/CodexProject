@@ -40,6 +40,9 @@ REQUIRED_TABLES = {
     "raw_source_snapshots",
     "entity_resolution_candidates",
     "ingestion_evidence_chain",
+    "relationship_fact_candidates",
+    "relationship_fact_candidate_evidence",
+    "manual_review_queue",
 }
 
 REQUIRED_ENTITY_TYPES = {
@@ -83,6 +86,9 @@ REQUIRED_TEMPORAL_COLUMNS = {
     "raw_source_snapshots": {"source_date", "retrieved_at", "created_at"},
     "entity_resolution_candidates": {"created_at"},
     "ingestion_evidence_chain": {"created_at"},
+    "relationship_fact_candidates": {"created_at", "updated_at"},
+    "relationship_fact_candidate_evidence": {"created_at"},
+    "manual_review_queue": {"created_at", "resolved_at"},
 }
 
 REQUIRED_PRODUCTION_VERSION_COLUMNS = {
@@ -163,6 +169,42 @@ REQUIRED_CURATED_INGESTION_COLUMNS = {
         "confidence",
         "review_status",
     },
+    "relationship_fact_candidates": {
+        "candidate_key",
+        "subject_resolution_id",
+        "object_resolution_id",
+        "relationship_type",
+        "relationship_family",
+        "record_mode",
+        "fact_status",
+        "publication_status",
+        "confidence",
+        "independent_source_count",
+        "source_threshold_met",
+        "review_status",
+        "parser_version",
+        "structured_fact",
+        "counter_evidence",
+    },
+    "relationship_fact_candidate_evidence": {
+        "candidate_id",
+        "ingestion_evidence_chain_id",
+        "source_document_id",
+        "role",
+        "locator",
+        "support_excerpt",
+    },
+    "manual_review_queue": {
+        "queue_key",
+        "object_type",
+        "object_id",
+        "reason",
+        "priority",
+        "status",
+        "requested_by",
+        "reviewer",
+        "decision",
+    },
 }
 
 REQUIRED_CURATED_INGESTION_INDEXES = {
@@ -173,6 +215,10 @@ REQUIRED_CURATED_INGESTION_INDEXES = {
     "entity_resolution_candidates_research_idx",
     "ingestion_evidence_chain_snapshot_idx",
     "ingestion_evidence_chain_source_document_idx",
+    "relationship_fact_candidates_type_idx",
+    "relationship_fact_candidates_review_idx",
+    "relationship_fact_candidate_evidence_source_idx",
+    "manual_review_queue_status_idx",
 }
 
 CURATED_ANCHOR_PARSER_VERSION = "nvidia-public-anchor-v1"
@@ -699,7 +745,10 @@ def main() -> int:
                     JOIN source_documents sd ON sd.id = rss.source_document_id
                     WHERE rss.parser_version = %s
                       AND sd.parser_version = %s
-                      AND sd.raw_storage_uri LIKE 'data/nvidia_public_source_anchors.csv#%%'
+                      AND (
+                        sd.raw_storage_uri LIKE 'data/nvidia_public_source_anchors.csv#%%'
+                        OR sd.raw_storage_uri LIKE 'data/golden_vertical_fact_candidates.json#%%'
+                      )
                     """,
                     (parser_version, parser_version),
                 )
@@ -758,19 +807,19 @@ def main() -> int:
                     (parser_version,),
                 )
             )
-            if raw_snapshot_count != 4:
+            if raw_snapshot_count != 6:
                 raise RuntimeError(
-                    f"Expected 4 NVIDIA curated official raw snapshots, found {raw_snapshot_count}"
+                    f"Expected 6 curated official raw snapshots, found {raw_snapshot_count}"
                 )
             if raw_snapshot_field_violations:
                 raise RuntimeError(
                     "Curated raw snapshots must preserve hash, payload and review state"
                 )
-            if source_document_count != 4:
+            if source_document_count != 6:
                 raise RuntimeError(
                     "Curated source documents must preserve parser version and raw storage URI"
                 )
-            if int(candidate_row[0]) < 40:
+            if int(candidate_row[0]) < 55:
                 raise RuntimeError("Curated ingestion must create entity/stage candidates")
             if int(candidate_row[1]) < 10:
                 raise RuntimeError("Curated entity resolution must record confidence values")
@@ -778,20 +827,93 @@ def main() -> int:
                 raise RuntimeError("Curated entity resolution must record review status")
             if int(candidate_row[3]) < 6:
                 raise RuntimeError("Curated entity resolution must map known catalog entities")
-            if int(evidence_row[0]) != 4:
+            if int(evidence_row[0]) != 6:
                 raise RuntimeError(
-                    "Curated ingestion evidence chain must include one row per anchor"
+                    "Curated ingestion evidence chain must include discovery and fact evidence rows"
                 )
             if int(evidence_row[1]) != int(evidence_row[0]):
                 raise RuntimeError("Curated evidence chain counter_evidence must be an array")
             if int(evidence_row[2]) != int(evidence_row[0]):
                 raise RuntimeError("Curated evidence chain must preserve review status")
-            if int(evidence_row[3]) != 0:
-                raise RuntimeError("Curated discovery anchors must not publish relationship edges")
+            if int(evidence_row[3]) != 2:
+                raise RuntimeError("Curated Golden Vertical must include typed candidate evidence")
             if nvidia_subject_count != 4:
                 raise RuntimeError("Every curated anchor must resolve the NVIDIA subject")
             if tsmc_candidate_count < 2:
                 raise RuntimeError("Golden Vertical TSMC candidate resolution is missing")
+            fact_candidate_row = rows(
+                connection,
+                """
+                SELECT
+                  count(*) AS total,
+                  count(*) FILTER (WHERE publication_status = 'candidate') AS candidates,
+                  count(*) FILTER (WHERE source_threshold_met = false) AS below_threshold,
+                  count(*) FILTER (WHERE review_status = 'machine_verified') AS verified,
+                  count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array') AS counters
+                FROM relationship_fact_candidates
+                WHERE parser_version = %s
+                """,
+                (parser_version,),
+            )[0]
+            fact_evidence_count = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM relationship_fact_candidate_evidence rfce
+                    JOIN relationship_fact_candidates rfc ON rfc.id = rfce.candidate_id
+                    WHERE rfc.parser_version = %s
+                    """,
+                    (parser_version,),
+                )
+            )
+            review_queue_count = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM manual_review_queue mrq
+                    JOIN relationship_fact_candidates rfc ON rfc.id = mrq.object_id
+                    WHERE mrq.object_type = 'relationship_fact_candidate'
+                      AND mrq.status = 'open'
+                      AND rfc.parser_version = %s
+                    """,
+                    (parser_version,),
+                )
+            )
+            golden_path_candidate_count = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM relationship_fact_candidates rfc
+                    WHERE rfc.parser_version = %s
+                      AND rfc.structured_fact->>'path_role' IN (
+                        'NVIDIA_TO_TSMC_GOLDEN_VERTICAL',
+                        'TSMC_TO_ASML_GOLDEN_VERTICAL'
+                      )
+                    """,
+                    (parser_version,),
+                )
+            )
+            if int(fact_candidate_row[0]) != 2:
+                raise RuntimeError("Golden Vertical must load two relationship fact candidates")
+            if int(fact_candidate_row[1]) != 2:
+                raise RuntimeError("Golden Vertical fact candidates must remain candidate status")
+            if int(fact_candidate_row[2]) != 2:
+                raise RuntimeError(
+                    "Single-source fact candidates must remain below source threshold"
+                )
+            if int(fact_candidate_row[3]) != 2:
+                raise RuntimeError("Fact candidates must preserve machine review status")
+            if int(fact_candidate_row[4]) != 2:
+                raise RuntimeError("Fact candidates must preserve counter_evidence arrays")
+            if fact_evidence_count != 2:
+                raise RuntimeError("Fact candidates must link to evidence chain rows")
+            if review_queue_count != 2:
+                raise RuntimeError("Fact candidates must create open review queue items")
+            if golden_path_candidate_count != 2:
+                raise RuntimeError("Golden Vertical NVIDIA-TSMC-ASML candidate path is missing")
             payload["curated_ingestion_counts"] = {
                 "parser_version": parser_version,
                 "raw_source_snapshots": raw_snapshot_count,
@@ -804,9 +926,13 @@ def main() -> int:
                 "ingestion_evidence_chain": int(evidence_row[0]),
                 "counter_evidence_arrays": int(evidence_row[1]),
                 "evidence_chain_machine_verified": int(evidence_row[2]),
-                "published_relationship_edges": int(evidence_row[3]),
+                "typed_candidate_evidence_rows": int(evidence_row[3]),
                 "nvidia_subject_candidates": nvidia_subject_count,
                 "tsmc_candidates": tsmc_candidate_count,
+                "relationship_fact_candidates": int(fact_candidate_row[0]),
+                "fact_candidate_evidence_rows": fact_evidence_count,
+                "open_review_queue_items": review_queue_count,
+                "golden_path_candidate_rows": golden_path_candidate_count,
             }
 
     print(json.dumps(payload, indent=2))

@@ -51,6 +51,9 @@ PARTIAL_EVIDENCE = {
     "T1301": {
         "infra/db/migrations/0004_curated_ingestion_audit_layers/up.sql",
         "infra/db/migrations/0004_curated_ingestion_audit_layers/down.sql",
+        "infra/db/migrations/0005_relationship_fact_candidates/up.sql",
+        "infra/db/migrations/0005_relationship_fact_candidates/down.sql",
+        "data/golden_vertical_fact_candidates.json",
         "scripts/load_curated_ingestion_anchors.py",
         "scripts/check_database_schema.py",
         "tests/integration/test_database_migrations.py",

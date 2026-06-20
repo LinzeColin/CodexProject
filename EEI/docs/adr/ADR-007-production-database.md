@@ -26,3 +26,8 @@ The T1301 in-progress migration adds `raw_source_snapshots`,
 preserve curated official source anchors, parser version, review status,
 entity-resolution confidence, evidence chain and counter-evidence before any
 relationship/event fact is published.
+
+The follow-on T1301 candidate migration adds `relationship_fact_candidates`,
+`relationship_fact_candidate_evidence`, and `manual_review_queue`. A candidate
+can express the Golden Vertical path before publication, but publication remains
+blocked until source thresholds and human review semantics are satisfied.

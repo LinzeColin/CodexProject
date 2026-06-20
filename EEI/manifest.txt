@@ -118,6 +118,7 @@ data/exploration_acceptance_scenarios.json
 data/formula_registry.csv
 data/function_catalog.csv
 data/github_document_registry.csv
+data/golden_vertical_fact_candidates.json
 data/governance_benchmark_sources.csv
 data/industry_taxonomy.csv
 data/metric_catalog.csv
@@ -215,6 +216,8 @@ infra/db/migrations/0003_production_fact_version_layers/down.sql
 infra/db/migrations/0003_production_fact_version_layers/up.sql
 infra/db/migrations/0004_curated_ingestion_audit_layers/down.sql
 infra/db/migrations/0004_curated_ingestion_audit_layers/up.sql
+infra/db/migrations/0005_relationship_fact_candidates/down.sql
+infra/db/migrations/0005_relationship_fact_candidates/up.sql
 infra/db/migrations/README.md
 infra/db/seeds/README.md
 infra/docker/README.md

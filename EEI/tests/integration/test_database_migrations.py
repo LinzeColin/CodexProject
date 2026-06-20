@@ -127,11 +127,12 @@ def exercise_curated_official_ingestion_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert raw_row == (4, 4, 4, 4)
+        assert raw_row == (6, 6, 6, 6)
 
         latest_run = connection.execute(
             """
-            SELECT status, counts->>'anchors', counts->>'entity_resolution_candidates'
+            SELECT status, counts->>'anchors', counts->>'fact_source_snapshots',
+                   counts->>'relationship_fact_candidates'
             FROM ingestion_runs
             WHERE connector_version = %s AND mode = 'curated_official_fixture'
             ORDER BY started_at DESC
@@ -141,7 +142,8 @@ def exercise_curated_official_ingestion_contracts() -> None:
         ).fetchone()
         assert latest_run[0] == "succeeded"
         assert latest_run[1] == "4"
-        assert int(latest_run[2]) >= 40
+        assert latest_run[2] == "2"
+        assert latest_run[3] == "2"
 
         source_documents = connection.execute(
             """
@@ -150,12 +152,15 @@ def exercise_curated_official_ingestion_contracts() -> None:
             JOIN raw_source_snapshots rss ON rss.source_document_id = sd.id
             WHERE rss.parser_version = %s
               AND sd.parser_version = %s
-              AND sd.raw_storage_uri LIKE 'data/nvidia_public_source_anchors.csv#%%'
+              AND (
+                sd.raw_storage_uri LIKE 'data/nvidia_public_source_anchors.csv#%%'
+                OR sd.raw_storage_uri LIKE 'data/golden_vertical_fact_candidates.json#%%'
+              )
               AND sd.content_hash = rss.content_hash
             """,
             (parser_version, parser_version),
         ).fetchone()[0]
-        assert source_documents == 4
+        assert source_documents == 6
 
         candidate_row = connection.execute(
             """
@@ -168,7 +173,7 @@ def exercise_curated_official_ingestion_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert candidate_row[0] >= 40
+        assert candidate_row[0] >= 55
         assert candidate_row[1] >= 10
         assert candidate_row[2] >= 6
         assert candidate_row[3] >= 1
@@ -204,6 +209,7 @@ def exercise_curated_official_ingestion_contracts() -> None:
             """
             SELECT count(*),
                    count(*) FILTER (WHERE evidence_role = 'context'),
+                   count(*) FILTER (WHERE evidence_role = 'supports'),
                    count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array'),
                    count(*) FILTER (WHERE review_status = 'machine_verified'),
                    count(*) FILTER (WHERE relationship_type IS NOT NULL)
@@ -212,7 +218,7 @@ def exercise_curated_official_ingestion_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert evidence_row == (4, 4, 4, 4, 0)
+        assert evidence_row == (6, 4, 2, 6, 6, 2)
 
         evidence_sample = connection.execute(
             """
@@ -231,6 +237,60 @@ def exercise_curated_official_ingestion_contracts() -> None:
         assert evidence_sample[1] == "curated_official_fixture"
         assert evidence_sample[2] == []
         assert evidence_sample[3]
+
+        fact_candidate_row = connection.execute(
+            """
+            SELECT count(*),
+                   count(*) FILTER (WHERE publication_status = 'candidate'),
+                   count(*) FILTER (WHERE source_threshold_met = false),
+                   count(*) FILTER (WHERE review_status = 'machine_verified'),
+                   count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array')
+            FROM relationship_fact_candidates
+            WHERE parser_version = %s
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert fact_candidate_row == (2, 2, 2, 2, 2)
+
+        golden_path_roles = {
+            row[0]
+            for row in connection.execute(
+                """
+                SELECT structured_fact->>'path_role'
+                FROM relationship_fact_candidates
+                WHERE parser_version = %s
+                """,
+                (parser_version,),
+            ).fetchall()
+        }
+        assert golden_path_roles == {
+            "NVIDIA_TO_TSMC_GOLDEN_VERTICAL",
+            "TSMC_TO_ASML_GOLDEN_VERTICAL",
+        }
+
+        fact_evidence_count = connection.execute(
+            """
+            SELECT count(*)
+            FROM relationship_fact_candidate_evidence rfce
+            JOIN relationship_fact_candidates rfc ON rfc.id = rfce.candidate_id
+            WHERE rfc.parser_version = %s
+            """,
+            (parser_version,),
+        ).fetchone()[0]
+        assert fact_evidence_count == 2
+
+        review_queue_count = connection.execute(
+            """
+            SELECT count(*)
+            FROM manual_review_queue mrq
+            JOIN relationship_fact_candidates rfc ON rfc.id = mrq.object_id
+            WHERE mrq.object_type = 'relationship_fact_candidate'
+              AND mrq.status = 'open'
+              AND rfc.parser_version = %s
+            """,
+            (parser_version,),
+        ).fetchone()[0]
+        assert review_queue_count == 2
 
         relationship_count = connection.execute("SELECT count(*) FROM relationships").fetchone()[0]
         assert relationship_count == 26

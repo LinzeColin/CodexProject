@@ -120,6 +120,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── formula_registry.csv
 │   ├── function_catalog.csv
 │   ├── github_document_registry.csv
+│   ├── golden_vertical_fact_candidates.json
 │   ├── governance_benchmark_sources.csv
 │   ├── industry_taxonomy.csv
 │   ├── metric_catalog.csv
@@ -225,6 +226,9 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   │   ├── down.sql
 │   │   │   │   └── up.sql
 │   │   │   ├── 0004_curated_ingestion_audit_layers
+│   │   │   │   ├── down.sql
+│   │   │   │   └── up.sql
+│   │   │   ├── 0005_relationship_fact_candidates
 │   │   │   │   ├── down.sql
 │   │   │   │   └── up.sql
 │   │   │   └── README.md

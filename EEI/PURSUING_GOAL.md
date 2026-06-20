@@ -47,8 +47,8 @@ Closed in this pursuing-goal run:
 
 In progress in this pursuing-goal run:
 
-- T1301/A202 curated official NVIDIA source-anchor ingestion now has PostgreSQL audit tables, a deterministic loader, raw snapshot preservation, entity-resolution candidates, parser version, review status, evidence chain and counter-evidence contract.
-- A202 is not closed yet: live/full-text official connector, reviewed NVIDIA -> TSMC -> ASML relationship facts, independent source cross-check and review workflow remain required.
+- T1301/A202 curated official NVIDIA/ASML ingestion now has PostgreSQL audit tables, a deterministic loader, raw snapshot preservation, entity-resolution candidates, Golden Vertical relationship fact candidates, parser version, review status, review queue, evidence chain and counter-evidence contract.
+- A202 is not closed yet: live/full-text official connector, published reviewed NVIDIA -> TSMC -> ASML relationship facts, independent source cross-check and human review approval remain required.
 
 ## Golden Vertical
 

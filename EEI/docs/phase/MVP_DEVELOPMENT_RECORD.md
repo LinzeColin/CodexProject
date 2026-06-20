@@ -1761,7 +1761,7 @@ Residual risks:
 
 ## 2026-06-20 - T1301/A202 curated official ingestion audit layer
 
-Status: LOCAL STATIC PASS; REMOTE CI PENDING
+Status: LOCAL STATIC PASS; REMOTE CI PASS
 
 Completed:
 
@@ -1786,3 +1786,39 @@ Residual risks:
 - reviewed NVIDIA -> TSMC -> ASML relationship facts are not published.
 - independent source cross-check and human review workflow are not implemented.
 - source health, retry, dead-letter and scheduler semantics remain owned by T1304/A206.
+
+Verification evidence:
+
+- GitHub Actions run `27854549380`: PASS.
+- GitHub Actions job `82439458056`.
+- GitHub Actions step `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+## 2026-06-20 - T1301/A202 Golden Vertical relationship fact candidates
+
+Status: LOCAL STATIC IN PROGRESS
+
+Completed:
+
+- Added `infra/db/migrations/0005_relationship_fact_candidates/up.sql` and `down.sql`.
+- Added `relationship_fact_candidates` to preserve candidate Golden Vertical facts with relationship type/family, record mode, fact status, publication status, confidence, independent source count, review status, parser version, structured fact and counter_evidence.
+- Added `relationship_fact_candidate_evidence` to link candidate facts back to `ingestion_evidence_chain` and `source_documents`.
+- Added `manual_review_queue` so single-source candidate facts remain open for review instead of being published.
+- Added `data/golden_vertical_fact_candidates.json` with deterministic official source snapshots from SEC-hosted NVIDIA Form 10-K and ASML official source material.
+- Extended `scripts/load_curated_ingestion_anchors.py` so it loads the candidate NVIDIA/TSMC/ASML chain without inserting production `relationships` rows.
+- Extended `scripts/check_database_schema.py` and `tests/integration/test_database_migrations.py` to validate two candidate facts, two evidence links, two open review items and no relationship publication side effect.
+
+Acceptance status:
+
+- A202 remains `IN PROGRESS`.
+- The Golden Vertical path exists as candidate fact evidence only:
+  - TSMC `wafer_foundry_for` NVIDIA.
+  - ASML `equipment_provider_to` TSMC.
+- Both candidates are below the independent-source threshold and require review before publication.
+
+Residual risks:
+
+- live/full-text connector is still not implemented.
+- independent-source threshold is not satisfied for the two candidate facts.
+- no human review approval has been recorded.
+- production API and graph query do not yet consume these candidate tables.
