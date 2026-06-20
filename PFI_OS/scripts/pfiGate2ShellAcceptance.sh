@@ -477,32 +477,23 @@ async function verifyPrimaryActionNavigation(page, baseUrl, route, checks) {
     route.panelTitle,
     { timeout: 10000 },
   );
-  const [targetPage] = await Promise.all([
-    page.context().waitForEvent('page', { timeout: 15000 }),
-    shellFrame.locator('[data-function-action]').click({ timeout: 10000 }),
-  ]);
-  await targetPage.waitForLoadState('domcontentloaded', { timeout: 60000 });
-  await targetPage.waitForFunction(
-    (expectedView) => {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('pfi_shell') === '0' && params.get('view') === expectedView;
+  const beforePages = page.context().pages().length;
+  await shellFrame.locator('[data-function-action]').click({ timeout: 10000 });
+  await shellFrame.waitForFunction(
+    (expectedTitle) => {
+      const runner = document.querySelector('[data-function-runner]');
+      const title = document.querySelector('[data-function-run-title]');
+      return runner && !runner.hidden && title && title.textContent.includes(expectedTitle);
     },
-    route.expectedView,
-    { timeout: 15000 },
+    route.panelTitle,
+    { timeout: 10000 },
   );
-  await targetPage.waitForFunction(
-    (expectedTitle) => document.body && document.body.innerText.includes(expectedTitle),
-    route.expectedTitle,
-    { timeout: 25000 },
-  ).catch(() => {});
-  const targetUrl = targetPage.url();
-  const pageText = await targetPage.locator('body').innerText({ timeout: 10000 }).catch((error) => String(error && error.message || error));
-  const retiredText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI', 'PFI_OS', 'PFIOS'];
-  checks.push(check(`PrimaryActionNavigation:${route.view}:TargetUrl`, targetUrl.includes(`view=${route.expectedView}`) ? 'Pass' : 'Fail', targetUrl));
-  checks.push(check(`PrimaryActionNavigation:${route.view}:TargetTitle`, pageText.includes(route.expectedTitle) ? 'Pass' : 'Fail', route.expectedTitle));
-  checks.push(check(`PrimaryActionNavigation:${route.view}:NoTraceback`, pageText.includes('Traceback') || pageText.includes('ModuleNotFoundError') || pageText.includes('ImportError:') ? 'Fail' : 'Pass', route.view));
-  checks.push(check(`PrimaryActionNavigation:${route.view}:NoRetiredIdentity`, retiredText.some((fragment) => pageText.includes(fragment)) ? 'Fail' : 'Pass', route.view));
-  await targetPage.close().catch(() => {});
+  const runnerText = await shellFrame.locator('[data-function-runner]').innerText({ timeout: 5000 });
+  const afterPages = page.context().pages().length;
+  checks.push(check(`PrimaryActionNavigation:${route.view}:SameShellRunner`, runnerText.includes('操作面板') ? 'Pass' : 'Fail', runnerText.slice(0, 220)));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:NoNewLegacyPage`, afterPages === beforePages ? 'Pass' : 'Fail', `before=${beforePages} after=${afterPages}`));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:NoLegacyQuery`, page.url().includes('pfi_shell=0') || page.url().includes('pfi_legacy=1') ? 'Fail' : 'Pass', page.url()));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:SafetyBoundary`, runnerText.includes('不连接券商') && runnerText.includes('不提交订单') ? 'Pass' : 'Fail', runnerText.slice(0, 220)));
 }
 
 async function runJourney(frame, journey, checks) {
@@ -618,7 +609,7 @@ async function noLegacyAndNoGibberish(frame, page, checks) {
     return { featureAnchors, legacyVisible };
   });
   checks.push(check('NoLegacyPageImport:FeatureControlsAreNotAnchors', shellOnly.featureAnchors.length === 0 ? 'Pass' : 'Fail', shellOnly.featureAnchors.join(' | ') || 'all feature controls are buttons'));
-  checks.push(check('NoLegacyPageImport:DetailLinkNotPrimary', shellOnly.legacyVisible ? 'Pass' : 'Pass', '详细功能页链接只作为次级入口；核心 UAT 先验证同壳面板'));
+  checks.push(check('NoLegacyPageImport:DetailLinkNotPrimary', shellOnly.legacyVisible ? 'Fail' : 'Pass', shellOnly.legacyVisible ? '兼容详情入口不应在默认用户路径可见' : '核心 UAT 只暴露同壳操作面板'));
   checks.push(check('NoLegacyPageImport:ParentUrlStaysShell', page.url().includes('pfi_shell=0') ? 'Fail' : 'Pass', page.url()));
   checks.push(check('ChineseFirstSurface:BodyHasCJK', /[\u3400-\u9fff]/.test(bodyText) ? 'Pass' : 'Fail', `length=${bodyText.length}`));
   checks.push(check('ChineseFirstSurface:BodyLength', bodyText.length > 800 ? 'Pass' : 'Fail', `length=${bodyText.length}`));

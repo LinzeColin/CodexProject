@@ -515,6 +515,73 @@ button:active {
   font-size: 0.86rem;
 }
 
+.function-runner {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 12px;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+  background: var(--pfi-surface);
+  padding: 12px;
+}
+
+.function-runner-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.function-runner h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.function-run-steps {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.function-run-steps li {
+  padding-left: 4px;
+}
+
+.function-run-steps strong {
+  display: block;
+  color: var(--pfi-blue);
+}
+
+.function-run-steps span {
+  display: block;
+  color: var(--pfi-muted);
+}
+
+.function-run-output {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 8px;
+}
+
+.function-run-output article {
+  min-width: 0;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+  background: var(--pfi-bg);
+  padding: 10px;
+}
+
+.function-run-output strong,
+.function-run-output span {
+  display: block;
+}
+
+.function-run-output span {
+  margin-top: 4px;
+  color: var(--pfi-muted);
+}
+
 .function-actions {
   display: flex;
   flex-wrap: wrap;
@@ -535,6 +602,7 @@ button:active {
   border-color: var(--pfi-blue);
   background: var(--pfi-blue);
   color: #ffffff;
+  cursor: pointer;
 }
 
 .secondary-link {
@@ -833,6 +901,7 @@ button:active {
   }
 
   .function-detail-head,
+  .function-runner-head,
   .function-meta {
     grid-template-columns: 1fr;
     display: grid;

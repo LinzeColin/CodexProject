@@ -927,7 +927,7 @@ def _pfi_ui_v2_enabled() -> bool:
     if not env_enabled:
         return False
     try:
-        return st.query_params.get("pfi_shell", "1") != "0"
+        return st.query_params.get("pfi_legacy", "0") not in {"1", "true", "yes"}
     except Exception:
         return True
 

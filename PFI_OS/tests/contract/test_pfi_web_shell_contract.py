@@ -84,7 +84,7 @@ def test_streamlit_launcher_exposes_pfi_ui_v2_feature_flag_with_fallback():
 
     assert "def _pfi_ui_v2_enabled" in source
     assert 'os.environ.get("PFI_UI_V2", "1") != "0"' in source
-    assert 'st.query_params.get("pfi_shell", "1") != "0"' in source
+    assert 'st.query_params.get("pfi_legacy", "0") not in {"1", "true", "yes"}' in source
     assert "render_pfi_ui_v2_shell()" in source
     assert "return" in source.split("render_pfi_ui_v2_shell()", maxsplit=1)[1]
     assert '[data-testid="stToolbar"]' in source
@@ -183,11 +183,13 @@ def test_web_shell_home_keeps_core_direct_function_entries():
     assert "FUNCTION_VIEWS" in js
     assert "openFunctionView" in js
     assert "runFunctionAction" in js
-    assert "navigateToFunctionPage" in js
-    assert 'target = "_blank"' in js
-    assert "anchor.click()" in js
-    assert 'data-function-action>打开功能</a>' in html
+    assert "renderFunctionRunner" in js
+    assert "data-function-runner" in html
+    assert "操作区" in html
+    assert 'data-function-action>进入操作面板</button>' in html
     assert "打开旧版详细页" not in html
+    assert "pfi_legacy=1" in html
+    assert 'data-function-legacy-link hidden' in html
     for view in ["single", "scan", "market_feel", "hotspots", "reports", "holdings", "policy", "tools"]:
         assert f'view: "{view}"' in js
     for mapped_view in ['legacyView: "hotspots"', 'legacyView: "holdings"', 'legacyView: "tools"', 'legacyView: "policy"', 'legacyView: "reports"']:
@@ -197,4 +199,5 @@ def test_web_shell_home_keeps_core_direct_function_entries():
     assert "WORKSPACES.home.features" not in runtime_block
     assert "repeat(auto-fit, minmax(190px, 1fr))" in css
     assert ".function-detail" in css
+    assert ".function-runner" in css
     assert "white-space: nowrap" in css

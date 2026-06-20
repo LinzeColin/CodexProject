@@ -165,6 +165,20 @@ Current sequence:
     `status=Pass`, `pass=134`, `fail=0`, screenshot
     `data/systemAudit/UIVisualAcceptance_20260620_063836.png`. Gate 5 is
     closed for the current local evidence scope and must be re-run in Gate 7.
+28. Gate 6 / PFI-012 MVP Release Gate:
+    Local release-candidate evidence is implemented.
+    `scripts/pfi012MVPReleaseGate.sh` emits
+    `PFI012MVPReleaseGateAcceptanceV1` evidence for PFI-001..012 and
+    Gate1..7 matrix coverage, P0 open count zero, P1 release dispositions,
+    latest UAT/vertical/gate artifacts, privacy audit, active legacy freeze,
+    signed checksum manifest, Operational Store records, and external
+    CI/rollback fail-closed state. Latest local run returned `status=Pass`,
+    `local_release_candidate_status=Pass`, `pass=11`, `fail=0`,
+    `issue_count=12`, `gate_count=7`, `p0_open_count=0`,
+    `p1_without_disposition_count=0`, and `external_status=PendingExternal`.
+    Gate 6 is closed for the current local release-candidate scope. Gate 7
+    still requires verified GitHub CI URL and rollback ref before the full
+    pursuing goal can be marked complete.
 
 ## Current Local State
 
@@ -365,6 +379,15 @@ Current sequence:
   citation/schema QA, timeout fallback, cancel, resource budget,
   prompt-injection guard, Operational Store records, and Web Shell runtime
   dashboard exposure.
+- PFI-012 MVP Release Gate complete for local release-candidate evidence:
+  `src/pfi_os/application/pfi012_mvp_release_gate.py`,
+  `scripts/pfi012MVPReleaseGate.sh`,
+  `tests/contract/test_pfi012_mvp_release_gate.py`, and
+  `docs/development/PFI012_MVP_RELEASE_GATE.md`. Latest local release gate
+  passed 11/11 with PFI-001..012 and Gate1..7 matrix coverage, P0=0, P1
+  dispositions, UAT/latest artifact checks, privacy audit, active legacy
+  freeze, signed checksum manifest, and external CI/rollback state recorded as
+  `PendingExternal`.
 
 ## Start Here
 
@@ -382,12 +405,13 @@ Read in this order:
 10. `docs/development/PFI007_RESEARCH_POLICY_VERTICAL_ACCEPTANCE.md`
 11. `docs/development/PFI010_MINUTE_FAST_PATH.md`
 12. `docs/development/PFI011_LOCAL_LLM_DEEP_PATH.md`
-13. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
-14. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
-15. `docs/data/PFI_DATA_BOUNDARIES.md`
-16. `docs/data/PFI_SOURCE_OF_TRUTH.md`
-17. `docs/ux/PFI_UX_CONTRACT.md`
-18. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
+13. `docs/development/PFI012_MVP_RELEASE_GATE.md`
+14. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
+15. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
+16. `docs/data/PFI_DATA_BOUNDARIES.md`
+17. `docs/data/PFI_SOURCE_OF_TRUTH.md`
+18. `docs/ux/PFI_UX_CONTRACT.md`
+19. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
 19. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
 20. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
 21. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
@@ -602,9 +626,9 @@ Continue from v0.2 PFI-goal execution:
 
 1. Use `docs/development/PFI_GOAL_GATE_MATRIX.md` as the active completion
    matrix for PFI-001 through PFI-012 and Gate 1 through Gate 7.
-2. Next recommended issue: PFI-012 MVP Release Gate.
-3. Keep PFI-012 active and re-run Gate 1 through Gate 5 evidence during
-   final Gate 7 packaging.
+2. Next recommended issue: external Gate 7 evidence.
+3. Attach GitHub CI pass URL and rollback ref, then rerun
+   `scripts/pfi012MVPReleaseGate.sh --require-external-release-evidence`.
 
 ## Latest User Rejection Repair, 2026-06-20
 
@@ -655,9 +679,11 @@ Additional Command Center display repair:
 - `tests/test_command_center.py`: updated to enforce Chinese Markdown headings
   and no literal `????` in generated PDF bytes.
 
-Next recommended issue after committing the PFI-011 repair: continue Gate 6 /
-PFI-012 MVP Release Gate. Do not mark the long-running PFI-001..PFI-012 goal
-complete; PFI-012 and Gates 6 through 7 remain open.
+Next recommended issue after committing the PFI-012 local release gate:
+attach verified GitHub CI pass URL and rollback ref, then rerun
+`scripts/pfi012MVPReleaseGate.sh --require-external-release-evidence`. Do not
+mark the long-running PFI-001..PFI-012 goal complete while Gate 7 external
+evidence remains `PendingExternal`.
 
 Follow-up rejection repair, 2026-06-20:
 
@@ -683,3 +709,37 @@ Follow-up rejection repair, 2026-06-20:
   `scripts/uiVisualAcceptance.sh --summary-json` =>
   `PFIOSUIVisualAcceptanceV1`, `status=Pass`, 134 pass / 0 fail,
   screenshot bytes 145960.
+
+Second user-facing rejection repair, 2026-06-20:
+
+- User rejected the delivery again because the product still exposed
+  English/noisy surfaces and function blocks did not behave as usable
+  navigation.
+- `web/index.html` and `web/app/shell.js`: primary feature actions now stay
+  inside PFI Web Shell and reveal `data-function-runner`, a same-shell Chinese
+  operation panel with steps, status, output fields, and explicit
+  no-broker/no-order boundaries.
+- `src/pfi_os/app/streamlit_app.py`: default entry no longer falls through to
+  legacy Streamlit detail pages via `pfi_shell=0`; legacy detail pages require
+  explicit `pfi_legacy=1` and are outside the default user path.
+- `web/app/shell.js`: feature cards are no longer truncated after eight cards,
+  so Strategy Lab exposes 模拟实验; Portfolio also exposes a direct 持仓 card.
+- `scripts/pfiGate2ShellAcceptance.sh` and `scripts/uiVisualAcceptance.sh`:
+  browser acceptance now fails if primary actions open a new legacy page instead
+  of the same-shell operation panel.
+- Verification:
+  - Focused Web Shell/Gate2 contracts:
+    `tests/contract/test_pfi_web_shell_contract.py`,
+    `tests/e2e/test_pfi_web_shell_static_flow.py`, and
+    `tests/contract/test_pfi005_gate2_shell_acceptance.py` => 30 passed.
+  - Gate2 browser UAT:
+    `PFIGate2ShellAcceptanceV1 status=Pass`, 228 pass / 0 fail / 2 info,
+    screenshot
+    `data/systemAudit/PFIGate2ShellAcceptance_20260620_071550.png`.
+  - UI visual browser acceptance:
+    `PFIOSUIVisualAcceptanceV1 status=Pass`, 146 pass / 0 fail / 0 info,
+    screenshot `data/systemAudit/UIVisualAcceptance_20260620_071622.png`.
+  - Target gate:
+    `scripts/pfiGate.sh target` => 93 passed, secret scan passed.
+  - `zsh -n`, `git diff --check`, and post-run service status all passed;
+    no PFI OS service remained running on ports 8501-8510.

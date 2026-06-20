@@ -53,6 +53,7 @@ on chat history.
 | PFI-009 Strategy vertical acceptance | Complete local Gate 3 Strategy evidence | `src/pfi_os/application/pfi009_strategy_acceptance.py`, `scripts/pfi009StrategyAcceptance.sh`, `tests/contract/test_pfi009_strategy_vertical_acceptance.py`, `docs/development/PFI009_STRATEGY_VERTICAL_ACCEPTANCE.md`, PIT bars, corporate-action/delisted fixture, train/test validation, walk-forward validation, no-future-data proof, market-feel retention, review-only strategy registry, cancel/resume runtime proof, same-shell Strategy UI controls, rollback proof |
 | PFI-010 Minute Fast Path | Complete local deterministic Gate 4 evidence | `src/pfi_os/application/pfi010_minute_fast_path.py`, `scripts/pfi010MinuteFastPathAcceptance.sh`, `tests/contract/test_pfi010_minute_fast_path.py`, `docs/development/PFI010_MINUTE_FAST_PATH.md`, three legal local sources, durable incremental worker, p95=44.0s, page-closed update proof, failure injection recovery, logical 1h/24h soak, Web Shell runtime dashboard |
 | PFI-011 Local LLM Deep Path | Complete local Gate 5 evidence | `src/pfi_os/application/pfi011_local_llm_deep_path.py`, `scripts/pfi011LocalLLMDeepPathAcceptance.sh`, `tests/contract/test_pfi011_local_llm_deep_path.py`, `docs/development/PFI011_LOCAL_LLM_DEEP_PATH.md`, hardware audit, provider interface, DisabledProvider fallback, citation/schema QA, timeout fallback, cancel, resource budget, prompt-injection guard, Web Shell runtime dashboard |
+| PFI-012 MVP Release Gate | Complete local release-candidate gate | `src/pfi_os/application/pfi012_mvp_release_gate.py`, `scripts/pfi012MVPReleaseGate.sh`, `tests/contract/test_pfi012_mvp_release_gate.py`, `docs/development/PFI012_MVP_RELEASE_GATE.md`, PFI-001..012 and Gate1..7 matrix, P0=0, P1 dispositions, UAT/latest artifact checks, privacy audit, active legacy freeze, signed checksum manifest, external CI/rollback fail-closed evidence |
 
 ## Open Backlog
 
@@ -66,13 +67,15 @@ on chat history.
    repository backup, hardware/disk audit, sanitized holdings, representative
    symbols/policy documents, Fast Path source list, workflow examples, and
    final subjective acceptance score.
+5. Attach final Gate 7 external evidence: GitHub CI pass URL and rollback ref,
+   then rerun `scripts/pfi012MVPReleaseGate.sh --require-external-release-evidence`.
 
 ## Key File Map
 
 | Area | Files |
 | --- | --- |
 | Product contracts | `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`, `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`, `docs/product/PFI_FEATURE_DISPOSITION.md` |
-| Data contracts | `docs/data/PFI_DATA_BOUNDARIES.md`, `docs/data/PFI_SOURCE_OF_TRUTH.md`, `docs/phase/PHASE_A_DATA_FOUNDATION.md`, `docs/phase/PHASE_A_COMPLETION_AUDIT.md`, `docs/phase/PHASE_B_MARKETS.md`, `docs/phase/PHASE_B_RESEARCH_POLICY.md`, `docs/phase/PHASE_B_STRATEGY_LAB.md`, `docs/phase/PHASE_B_PORTFOLIO.md`, `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`, `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`, `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md` |
+| Data contracts | `docs/data/PFI_DATA_BOUNDARIES.md`, `docs/data/PFI_SOURCE_OF_TRUTH.md`, `docs/phase/PHASE_A_DATA_FOUNDATION.md`, `docs/phase/PHASE_A_COMPLETION_AUDIT.md`, `docs/phase/PHASE_B_MARKETS.md`, `docs/phase/PHASE_B_RESEARCH_POLICY.md`, `docs/phase/PHASE_B_STRATEGY_LAB.md`, `docs/phase/PHASE_B_PORTFOLIO.md`, `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`, `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`, `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`, `docs/development/PFI012_MVP_RELEASE_GATE.md` |
 | UX and shell contracts | `docs/ux/PFI_UX_CONTRACT.md`, `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`, `docs/development/PFI005_GATE2_SHELL_ACCEPTANCE.md`, `docs/development/PFI006_MARKETS_VERTICAL_ACCEPTANCE.md`, `docs/development/PFI007_RESEARCH_POLICY_VERTICAL_ACCEPTANCE.md`, `docs/development/PFI008_PORTFOLIO_VERTICAL_ACCEPTANCE.md`, `docs/development/PFI009_STRATEGY_VERTICAL_ACCEPTANCE.md`, `web/index.html`, `web/app/shell.js`, `web/styles/tokens.css` |
 | Target architecture | `docs/architecture/PFI_TARGET_ARCHITECTURE.md` |
 | Operational store | `src/pfi_os/application/operational_store.py`, `src/pfi_os/application/source_registry.py`, `src/pfi_os/application/source_ingestion.py`, `src/pfi_os/application/homepage_summary.py`, `src/pfi_os/application/homepage_ingestion.py`, `src/pfi_os/application/command_center_read_model.py`, `src/pfi_os/application/vectorized_read_model.py`, `src/pfi_os/application/macos_runtime_read_model.py`, `src/pfi_os/application/private_reviewed_inputs.py`, `src/pfi_os/application/strategy_lab_workflow.py`, `src/pfi_os/application/pfi009_strategy_acceptance.py`, `src/pfi_os/application/markets_workflow.py`, `src/pfi_os/application/pfi006_markets_acceptance.py`, `src/pfi_os/application/research_policy_workflow.py`, `src/pfi_os/application/pfi007_research_policy_acceptance.py`, `src/pfi_os/application/portfolio_workflow.py`, `src/pfi_os/application/pfi008_portfolio_acceptance.py`, `src/pfi_os/application/workflow_runtime_read_model.py`, `src/pfi_os/application/workflow_runtime_scheduler.py`, `src/pfi_os/application/deployment_readiness.py`, `src/pfi_os/application/deployment_backup_restore.py`, `src/pfi_os/application/phase5_acceptance_package.py`, `src/pfi_os/application/repositories.py`, `src/pfi_os/application/data_home_audit.py` |
@@ -204,6 +207,53 @@ Observed:
   0 fail / 0 info.
 - Target gate: 73 passed, 2 existing protobuf deprecation warnings; secret
   scan passed; diff check passed.
+
+## User-Facing Rework After Second Rejection, 2026-06-20
+
+Scope: repair the rejected PFI user path where feature blocks still depended on
+legacy Streamlit detail pages and did not produce a visible Chinese operation
+state inside PFI Web Shell.
+
+Changes:
+
+- Primary feature actions now open `data-function-runner`, a same-shell
+  Chinese operation panel with steps, status, output fields, and explicit
+  no-broker/no-order safety boundaries.
+- Direct `?view=<feature>` entry points now remain on PFI Web Shell by default
+  and auto-open the requested feature panel.
+- Legacy Streamlit detail pages are no longer the default target for function
+  navigation; they are only reachable through explicit `pfi_legacy=1`.
+- Gate2 and visual browser acceptance now fail if primary feature actions open
+  a new legacy page instead of same-shell operation panels.
+- Strategy Lab feature rendering no longer truncates after eight cards; the
+  required 模拟实验 card is visible and usable.
+- Portfolio now includes a direct 持仓 card in addition to deeper reconciliation
+  and risk panels.
+
+Verification:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /private/tmp/pfi_os_ci_repro/bin/python -m pytest tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py tests/contract/test_pfi005_gate2_shell_acceptance.py -q
+PFI_PYTHON=/private/tmp/pfi_os_ci_repro/bin/python PYTHONDONTWRITEBYTECODE=1 scripts/pfiGate2ShellAcceptance.sh --summary-json --start-timeout 120
+PFI_PYTHON=/private/tmp/pfi_os_ci_repro/bin/python PYTHONDONTWRITEBYTECODE=1 scripts/uiVisualAcceptance.sh --summary-json --start-timeout 120
+PFI_PYTHON=/private/tmp/pfi_os_ci_repro/bin/python PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' scripts/pfiGate.sh target
+zsh -n scripts/uiVisualAcceptance.sh scripts/pfiGate2ShellAcceptance.sh scripts/startPFIOS.sh
+git diff --check
+```
+
+Observed:
+
+- Focused Web Shell/Gate2 contracts: 30 passed, 2 existing protobuf
+  deprecation warnings.
+- Gate2 browser acceptance: `PFIGate2ShellAcceptanceV1 status=Pass`, 228 pass /
+  0 fail / 2 info, screenshot
+  `data/systemAudit/PFIGate2ShellAcceptance_20260620_071550.png`.
+- Browser UI acceptance: `PFIOSUIVisualAcceptanceV1 status=Pass`, 146 pass /
+  0 fail / 0 info, screenshot
+  `data/systemAudit/UIVisualAcceptance_20260620_071622.png`.
+- Target gate: 93 passed, 2 existing protobuf deprecation warnings; secret
+  scan passed.
+- `zsh -n` and `git diff --check`: passed.
 
 ## Command Center Chinese Delivery Patch, 2026-06-20
 

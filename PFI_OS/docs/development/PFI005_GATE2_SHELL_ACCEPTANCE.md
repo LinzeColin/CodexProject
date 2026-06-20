@@ -29,9 +29,10 @@ when the browser, Streamlit health check, or shell iframe is unavailable.
 The script verifies:
 
 - Six workspace switches render Chinese business panels without page reload.
-- Four named UAT journeys open same-shell function detail panels.
+- Four named UAT journeys open same-shell function detail panels and same-shell
+  Chinese operation panels.
 - Core function controls are buttons, not feature anchors to legacy pages.
-- Parent URL never moves to `pfi_shell=0` during primary UAT.
+- Parent URL never moves to `pfi_shell=0` or `pfi_legacy=1` during primary UAT.
 - Visible surface has no retired identity terms, legacy placeholders, Python
   tracebacks, or English placeholder UI.
 - WCAG structural proof covers named regions, live regions, labelled controls,
@@ -66,12 +67,31 @@ scripts/pfiGate.sh target
 git diff --check
 ```
 
-Current local evidence from 2026-06-20:
+Previous local evidence from 2026-06-20 before the rejected-delivery repair:
 
 - Focused Web Shell/Gate2 contracts: 63 passed.
 - Gate2 browser acceptance: `status=Pass`, `pass=126`, `fail=0`, `info=2`.
 - Target gate with clean env Python: 46 passed, secret scan passed.
 - Legacy identity regression: 2 passed.
+- `git diff --check`: passed.
+
+Current rejected-delivery repair evidence:
+
+- Primary feature actions must keep the user inside PFI Web Shell and reveal
+  `data-function-runner` with Chinese steps, status, and safety boundary.
+- Direct links such as `?view=single` must render the PFI Shell and open the
+  requested feature panel by default.
+- Legacy Streamlit detail pages remain reachable only through explicit
+  `pfi_legacy=1`, which is outside the default user acceptance path.
+- Focused Web Shell/Gate2 contracts: 30 passed.
+- Gate2 browser acceptance: `status=Pass`, `pass=228`, `fail=0`, `info=2`,
+  screenshot
+  `data/systemAudit/PFIGate2ShellAcceptance_20260620_071550.png`.
+- UI visual browser acceptance: `status=Pass`, `pass=146`, `fail=0`, `info=0`,
+  screenshot `data/systemAudit/UIVisualAcceptance_20260620_071622.png`.
+- Target gate: 93 passed, secret scan passed.
+- `zsh -n scripts/uiVisualAcceptance.sh scripts/pfiGate2ShellAcceptance.sh
+  scripts/startPFIOS.sh`: passed.
 - `git diff --check`: passed.
 
 ## Stop Condition

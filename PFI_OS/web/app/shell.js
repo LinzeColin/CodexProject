@@ -435,6 +435,7 @@ const DEFAULT_WORKSPACES = {
       ["纪律任务", "1", "人工复核"],
     ],
     features: [
+      feature("持仓", "可用", "持仓复核", "查看正式持仓、候选持仓、暴露和质量检查。"),
       feature("持仓垂直切片", "可用", "合成导入账本", "从合成券商导入、持仓快照、对账、风险约束到人工决策提案。"),
       feature("导入对账", "可用", "账本到快照", "核对公司行动、汇率换算、现金固定样本和值差。"),
       feature("风险约束", "复核", "集中度和现金", "检查单一持仓、前三集中度、现金缓冲和自动再平衡关闭状态。"),
@@ -534,6 +535,8 @@ function feature(title, status, evidence, description, target = null) {
 }
 
 function functionView(view, title, workspace, primaryAction, purpose, checks, options = {}) {
+  const runSteps = options.runSteps || defaultRunSteps(title, workspace);
+  const runFields = options.runFields || defaultRunFields(title, workspace);
   return {
     view,
     title,
@@ -542,9 +545,31 @@ function functionView(view, title, workspace, primaryAction, purpose, checks, op
     primaryAction,
     purpose,
     checks,
+    runSummary: options.runSummary || `${title}已在 PFI Shell 内进入操作状态；请先核对数据、参数、证据和安全边界。`,
+    runSteps,
+    runFields,
     status: "可用",
     boundary: "只做研究、回测、训练、复核和报告；禁止实盘自动下单、券商提交、支付或无人值守执行。",
   };
+}
+
+function defaultRunSteps(title, workspace) {
+  const workspaceName = WORKSPACE_LABELS[workspace] || "当前工作区";
+  return [
+    `确认${workspaceName}上下文、标的、日期和组合范围。`,
+    `检查${title}所需数据、参数、证据来源和缺口。`,
+    "生成只读研究结果，并把需要人工判断的事项写入任务中心。",
+  ];
+}
+
+function defaultRunFields(title, workspace) {
+  const workspaceName = WORKSPACE_LABELS[workspace] || "当前工作区";
+  return [
+    ["当前功能", title],
+    ["所属入口", workspaceName],
+    ["执行方式", "本地只读 · 人工复核"],
+    ["安全边界", "不连接券商 · 不提交订单"],
+  ];
 }
 
 function row(priority, object, evidence, action, status) {
@@ -823,7 +848,7 @@ function renderFeatureCards(cards) {
   const grid = document.querySelector("[data-workflow-cards]");
   if (!grid) return;
   grid.replaceChildren();
-  cards.slice(0, 8).forEach((card, index) => {
+  cards.forEach((card, index) => {
     const item = document.createElement("article");
     item.className = "workflow-card";
     item.dataset.workflowCard = String(index);
@@ -939,15 +964,12 @@ function renderFunctionDetail(detail) {
   if (actionButton) {
     actionButton.textContent = detail.primaryAction;
     actionButton.dataset.functionActionView = detail.view;
-    actionButton.href = legacyViewUrl(detail.legacyView || detail.view);
-    actionButton.target = "_blank";
-    actionButton.rel = "noreferrer";
   }
   if (legacyLink) {
     legacyLink.href = legacyViewUrl(detail.legacyView || detail.view);
     legacyLink.target = "_blank";
     legacyLink.rel = "noreferrer";
-    legacyLink.textContent = `进入${detail.title}功能页`;
+    legacyLink.textContent = `打开${detail.title}兼容详情`;
   }
   if (checks) {
     checks.replaceChildren();
@@ -962,12 +984,19 @@ function renderFunctionDetail(detail) {
       checks.appendChild(article);
     });
   }
+  hideFunctionRunner();
   panel.scrollIntoView({ block: "nearest" });
 }
 
 function hideFunctionDetail() {
   const panel = document.querySelector("[data-function-detail]");
   if (panel) panel.hidden = true;
+  hideFunctionRunner();
+}
+
+function hideFunctionRunner() {
+  const runner = document.querySelector("[data-function-runner]");
+  if (runner) runner.hidden = true;
 }
 
 function runFunctionAction(view, trigger = null) {
@@ -975,25 +1004,55 @@ function runFunctionAction(view, trigger = null) {
   const taskPhase = document.querySelector("#task-phase");
   const jobLabel = document.querySelector("#background-job-label");
   if (taskPhase) taskPhase.textContent = `${detail.title} · 已准备`;
-  if (jobLabel) jobLabel.textContent = `${detail.primaryAction} · 正在进入功能页`;
-  showToast(`正在进入${detail.title}功能页`);
-  if (!trigger || !trigger.href) navigateToFunctionPage(detail.legacyView || detail.view);
+  if (jobLabel) jobLabel.textContent = `${detail.primaryAction} · 已进入同屏操作面板`;
+  renderFunctionRunner(detail);
+  showToast(`已进入${detail.title}操作面板`);
 }
 
-function navigateToFunctionPage(view) {
-  const anchor = document.createElement("a");
-  anchor.href = legacyViewUrl(view);
-  anchor.target = "_blank";
-  anchor.rel = "noreferrer";
-  anchor.hidden = true;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
+function renderFunctionRunner(detail) {
+  const runner = document.querySelector("[data-function-runner]");
+  if (!runner) return;
+  runner.hidden = false;
+  runner.dataset.activeFunction = detail.view;
+  runner.querySelector("[data-function-run-title]").textContent = `${detail.title} · 操作面板`;
+  runner.querySelector("[data-function-run-summary]").textContent = detail.runSummary;
+  runner.querySelector("[data-function-run-state]").textContent = "已进入";
+
+  const steps = runner.querySelector("[data-function-run-steps]");
+  if (steps) {
+    steps.replaceChildren();
+    detail.runSteps.forEach((item, index) => {
+      const li = document.createElement("li");
+      const strong = document.createElement("strong");
+      const span = document.createElement("span");
+      strong.textContent = `步骤 ${index + 1}`;
+      span.textContent = item;
+      li.appendChild(strong);
+      li.appendChild(span);
+      steps.appendChild(li);
+    });
+  }
+
+  const output = runner.querySelector("[data-function-run-output]");
+  if (output) {
+    output.replaceChildren();
+    detail.runFields.forEach(([label, value]) => {
+      const item = document.createElement("article");
+      const strong = document.createElement("strong");
+      const span = document.createElement("span");
+      strong.textContent = label;
+      span.textContent = value;
+      item.appendChild(strong);
+      item.appendChild(span);
+      output.appendChild(item);
+    });
+  }
+  runner.scrollIntoView({ block: "nearest" });
 }
 
 function legacyViewUrl(view) {
   const appUrl = currentAppUrl();
-  appUrl.searchParams.set("pfi_shell", "0");
+  appUrl.searchParams.set("pfi_legacy", "1");
   appUrl.searchParams.set("view", view);
   appUrl.hash = "";
   return appUrl.toString();
@@ -1421,7 +1480,7 @@ document.addEventListener("DOMContentLoaded", () => {
   restoreContext();
   bindEvents();
   applyHomeSummary(readHomeSummary());
-  const params = new URLSearchParams(window.location.search || "");
+  const params = initialSearchParams();
   const requestedFeature = params.get("view") || readContext().feature_view || "";
   if (Object.prototype.hasOwnProperty.call(FUNCTION_VIEWS, requestedFeature)) {
     openFunctionView(requestedFeature, { silent: true });
@@ -1430,3 +1489,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const requestedWorkspace = readContext().workspace || "home";
   renderWorkspace(WORKSPACES[requestedWorkspace] ? requestedWorkspace : "home", { silent: true, preserveFocus: true });
 });
+
+function initialSearchParams() {
+  const localParams = new URLSearchParams(window.location.search || "");
+  if (localParams.has("view")) return localParams;
+  try {
+    const appUrl = currentAppUrl();
+    return new URLSearchParams(appUrl.search || "");
+  } catch (_error) {
+    return localParams;
+  }
+}

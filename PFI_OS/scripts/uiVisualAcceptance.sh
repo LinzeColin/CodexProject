@@ -323,32 +323,23 @@ async function verifyPrimaryActionNavigation(page, baseUrl, route, checks) {
     route.panelTitle,
     { timeout: 10000 }
   );
-  const [targetPage] = await Promise.all([
-    page.context().waitForEvent('page', { timeout: 15000 }),
-    shellFrame.locator('[data-function-action]').click({ timeout: 10000 }),
-  ]);
-  await targetPage.waitForLoadState('domcontentloaded', { timeout: 60000 });
-  await targetPage.waitForFunction(
-    (expectedView) => {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('pfi_shell') === '0' && params.get('view') === expectedView;
+  const beforePages = page.context().pages().length;
+  await shellFrame.locator('[data-function-action]').click({ timeout: 10000 });
+  await shellFrame.waitForFunction(
+    (expectedTitle) => {
+      const runner = document.querySelector('[data-function-runner]');
+      const title = document.querySelector('[data-function-run-title]');
+      return runner && !runner.hidden && title && title.textContent.includes(expectedTitle);
     },
-    route.expectedView,
-    { timeout: 15000 }
+    route.panelTitle,
+    { timeout: 10000 }
   );
-  await targetPage.waitForFunction(
-    (expectedTitle) => document.body && document.body.innerText.includes(expectedTitle),
-    route.expectedTitle,
-    { timeout: 25000 }
-  ).catch(() => {});
-  const targetUrl = targetPage.url();
-  const pageText = await targetPage.locator('body').innerText({ timeout: 10000 }).catch((error) => String(error && error.message || error));
-  const retiredIdentityText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI', 'PFI_OS', 'PFIOS', 'DisabledProvider', 'Deep Path', 'Provider ', 'QA '];
-  checks.push(check(`PrimaryActionNavigation:${route.view}:TargetUrl`, targetUrl.includes(`view=${route.expectedView}`) ? 'Pass' : 'Fail', targetUrl));
-  checks.push(check(`PrimaryActionNavigation:${route.view}:TargetTitle`, pageText.includes(route.expectedTitle) ? 'Pass' : 'Fail', route.expectedTitle));
-  checks.push(check(`PrimaryActionNavigation:${route.view}:NoTraceback`, pageText.includes('Traceback') || pageText.includes('ModuleNotFoundError') || pageText.includes('ImportError:') ? 'Fail' : 'Pass', route.view));
-  checks.push(check(`PrimaryActionNavigation:${route.view}:NoRetiredIdentity`, retiredIdentityText.some((fragment) => pageText.includes(fragment)) ? 'Fail' : 'Pass', route.view));
-  await targetPage.close().catch(() => {});
+  const runnerText = await shellFrame.locator('[data-function-runner]').innerText({ timeout: 5000 });
+  const afterPages = page.context().pages().length;
+  checks.push(check(`PrimaryActionNavigation:${route.view}:SameShellRunner`, runnerText.includes('操作面板') ? 'Pass' : 'Fail', runnerText.slice(0, 220)));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:NoNewLegacyPage`, afterPages === beforePages ? 'Pass' : 'Fail', `before=${beforePages} after=${afterPages}`));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:NoLegacyQuery`, page.url().includes('pfi_shell=0') || page.url().includes('pfi_legacy=1') ? 'Fail' : 'Pass', page.url()));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:SafetyBoundary`, runnerText.includes('不连接券商') && runnerText.includes('不提交订单') ? 'Pass' : 'Fail', runnerText.slice(0, 220)));
 }
 
 (async () => {
@@ -480,20 +471,29 @@ async function verifyPrimaryActionNavigation(page, baseUrl, route, checks) {
     ];
     for (const [view, title, actionText] of functionPages) {
       const targetUrl = new URL(url);
-      targetUrl.searchParams.set('pfi_shell', '0');
+      targetUrl.searchParams.delete('pfi_shell');
+      targetUrl.searchParams.delete('pfi_legacy');
       targetUrl.searchParams.set('view', view);
       await page.goto(targetUrl.toString(), { waitUntil: 'domcontentloaded', timeout: 60000 });
-      await page.waitForFunction(
+      const directShellFrame = await findShellFrame(page);
+      checks.push(check(`FunctionPage:${view}:ShellFrame`, directShellFrame ? 'Pass' : 'Fail', title));
+      if (!directShellFrame) continue;
+      await directShellFrame.waitForFunction(
         ([expectedTitle, expectedAction]) => {
-          const text = document.body ? document.body.innerText : '';
-          return text.includes(expectedTitle) && text.includes(expectedAction);
+          const panel = document.querySelector('[data-function-detail]');
+          const titleNode = document.querySelector('[data-function-title]');
+          const actionNode = document.querySelector('[data-function-action]');
+          return panel && !panel.hidden && titleNode && actionNode
+            && titleNode.textContent.includes(expectedTitle)
+            && actionNode.textContent.includes(expectedAction);
         },
         [title, actionText],
         { timeout: 25000 }
       ).catch(() => {});
-      const pageText = await page.locator('body').innerText({ timeout: 10000 }).catch((error) => String(error && error.message || error));
+      const pageText = await frameText(directShellFrame);
       checks.push(check(`FunctionPage:${view}:Title`, pageText.includes(title) ? 'Pass' : 'Fail', title));
       checks.push(check(`FunctionPage:${view}:Action`, pageText.includes(actionText) ? 'Pass' : 'Fail', actionText));
+      checks.push(check(`FunctionPage:${view}:NoLegacyQuery`, page.url().includes('pfi_shell=0') || page.url().includes('pfi_legacy=1') ? 'Fail' : 'Pass', page.url()));
       checks.push(check(`FunctionPage:${view}:NoTraceback`, pageText.includes('Traceback') || pageText.includes('ModuleNotFoundError') || pageText.includes('ImportError:') ? 'Fail' : 'Pass', view));
       checks.push(check(`FunctionPage:${view}:NoRetiredIdentity`, retiredIdentityText.some((fragment) => pageText.includes(fragment)) ? 'Fail' : 'Pass', view));
       checks.push(check(`FunctionPage:${view}:NoStreamlitChrome`, pageText.includes('Deploy') || pageText.includes('Stop') ? 'Fail' : 'Pass', view));

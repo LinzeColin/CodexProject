@@ -179,29 +179,35 @@ def test_feature_cards_have_working_open_actions_for_real_function_pages():
     css = _text(WEB_ROOT / "styles" / "tokens.css")
 
     assert "data-function-detail" in html
+    assert "data-function-runner" in html
     assert "FUNCTION_VIEWS" in js
     assert "openFunctionView" in js
     assert "renderFunctionDetail" in js
     assert "runFunctionAction" in js
-    assert "navigateToFunctionPage" in js
-    assert 'target = "_blank"' in js
-    assert "anchor.click()" in js
-    assert 'data-function-action>打开功能</a>' in html
-    assert "进入${detail.title}功能页" in js
+    assert "renderFunctionRunner" in js
+    assert "hideFunctionRunner" in js
+    assert 'data-function-action>进入操作面板</button>' in html
+    assert "已进入同屏操作面板" in js
+    assert "已进入${detail.title}操作面板" in js
+    assert "pfi_legacy=1" in html
+    assert "打开${detail.title}兼容详情" in js
     assert "打开旧版详细页" not in html
     for view in ["single", "hotspots", "reports", "holdings"]:
         assert f'data-feature-view="{view}"' in html
     for view in ["single", "scan", "market_feel", "big_data", "hotspots", "reports", "holdings", "policy", "tools"]:
         assert f'view: "{view}"' in js
+    assert "cards.forEach((card, index)" in js
+    assert "cards.slice(0, 8)" not in js
     assert "featureOpenControl" in js
     assert "legacyViewUrl" in js
     for mapped_view in ['legacyView: "hotspots"', 'legacyView: "holdings"', 'legacyView: "tools"', 'legacyView: "policy"', 'legacyView: "reports"']:
         assert mapped_view in js
     assert 'button.dataset.featureView = target.view' in js
     assert 'featureControl.dataset.featureView' in js
-    assert 'appUrl.searchParams.set("pfi_shell", "0")' in js
+    assert 'appUrl.searchParams.set("pfi_legacy", "1")' in js
     assert 'appUrl.searchParams.set("view", view)' in js
     assert "currentAppUrl()" in js
+    assert "initialSearchParams()" in js
     assert "document.referrer" in js
     assert 'url.protocol === "about:"' in js
     assert 'url.pathname.includes("/component/")' in js
@@ -210,6 +216,7 @@ def test_feature_cards_have_working_open_actions_for_real_function_pages():
     assert ".workflow-actions" in css
     assert ".workflow-open" in css
     assert ".function-detail" in css
+    assert ".function-runner" in css
     assert "white-space: nowrap" in css
 
 
