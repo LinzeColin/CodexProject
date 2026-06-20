@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -14,6 +17,169 @@ from pfi_os.policy import build_policy_radar
 from pfi_os.reports.catalog import latest_report_artifact, report_artifacts_frame
 from pfi_os.storage import atomic_write_json, atomic_write_text
 from pfi_os.system import MASTER_DISPLAY_NAME, MASTER_SYSTEM_ID, build_daily_readiness, build_pfi_os_integration_audit
+
+COMMAND_CENTER_COLUMN_LABELS = {
+    "metric": "指标",
+    "value": "数值",
+    "status": "状态",
+    "evidence": "证据",
+    "gate": "闸门",
+    "next_action": "下一步",
+    "priority": "优先级",
+    "owner": "负责人",
+    "action": "行动",
+    "source": "来源",
+    "path": "路径",
+    "schema": "契约",
+    "subsystem": "子系统",
+    "mode": "模式",
+}
+
+COMMAND_CENTER_DISPLAY_VALUES = {
+    "Action Queue": "行动队列",
+    "Blocked": "阻断",
+    "CashFlow": "现金流",
+    "Company CashFlow Command": "现金流指挥台",
+    "Consumption Guard": "消费守卫",
+    "Daily Readiness": "日常就绪",
+    "Data Trust Audit": "数据边界审计",
+    "DataTrust": "数据边界",
+    "EntityRegistry": "标的注册表",
+    "Evidence Sources": "证据来源",
+    "Executive Command Center": "总控驾驶舱",
+    "Fail": "失败",
+    "Integration Audit": "集成审计",
+    "IntegrationAudit": "集成审计",
+    "Latest Report": "最新报告",
+    "LatestReport": "最新报告",
+    "LatestWordReport": "最新 Word 报告",
+    "Missing": "缺失",
+    "MissingBalance": "缺少余额",
+    "MissingConsumptionEvidence": "缺少消费证据",
+    "MissingPolicyEvidence": "缺少政策证据",
+    "NeedsReview": "需复核",
+    "NoLiveTradingBoundary": "禁止实盘边界",
+    "Open": "待处理",
+    "PFI_OS": "PFI OS",
+    "PFIOS": "PFI OS",
+    "Pass": "通过",
+    "Policy Intelligence Radar": "政策雷达",
+    "Present": "存在",
+    "ReadyForResearch": "可用于研究",
+    "Report Evidence": "报告证据",
+    "ReportEvidence": "报告证据",
+    "ResearchBusInterop": "研究总线互通",
+    "Review": "需复核",
+    "Risk Gates": "风控闸门",
+    "Runtime": "运行摘要",
+    "Runtime Summary Sources": "运行摘要来源",
+    "Stable": "稳定",
+    "Watch": "观察",
+    "WorkflowInputs": "工作流输入",
+    "runtime_summary": "运行摘要",
+}
+
+COMMAND_CENTER_TEXT_REPLACEMENTS = (
+    ("Company CashFlow Command", "现金流指挥台"),
+    ("Policy Intelligence Radar", "政策雷达"),
+    ("Consumption Guard", "消费守卫"),
+    ("Data Trust Audit", "数据边界审计"),
+    ("Daily Readiness", "日常就绪"),
+    ("Integration Audit", "集成审计"),
+    ("Report Evidence", "报告证据"),
+    ("DataTrust", "数据边界"),
+    ("EntityRegistry", "标的注册表"),
+    ("IntegrationAudit", "集成审计"),
+    ("ReportEvidence", "报告证据"),
+    ("LatestWordReport", "最新 Word 报告"),
+    ("LatestReport", "最新报告"),
+    ("NoLiveTradingBoundary", "禁止实盘边界"),
+    ("ResearchBusInterop", "研究总线互通"),
+    ("WorkflowInputs", "工作流输入"),
+    ("ReadyForResearch", "可用于研究"),
+    ("NeedsReview", "需复核"),
+    ("Blocked", "阻断"),
+    ("MissingBalance", "缺少余额"),
+    ("MissingPolicyEvidence", "缺少政策证据"),
+    ("MissingConsumptionEvidence", "缺少消费证据"),
+    ("PFI_OS", "PFI OS"),
+    ("PFIOS", "PFI OS"),
+    ("Present", "存在"),
+    ("Review/Fail", "复核或失败"),
+    ("Keep evidence audit clean before using research outputs.", "使用研究输出前，先保持证据审计干净。"),
+    ("Run scripts/auditPFIIntegration.sh --no-write if not Pass.", "如未通过，运行 scripts/auditPFIIntegration.sh --no-write。"),
+    ("Run scripts/auditPFIIntegration.sh --no-write if not Pass", "如未通过，运行 scripts/auditPFIIntegration.sh --no-write"),
+    ("Generate a report with RunMetadata before using results.", "使用结果前，先生成带 RunMetadata 的报告。"),
+    ("Generate at least one Word report with current evidence metadata.", "至少生成一份带当前证据元数据的 Word 报告。"),
+    ("Generate at least one Word report for the current research session.", "为当前研究会话至少生成一份 Word 报告。"),
+    ("Open the latest report from Report Center and check data quality, cross-source validation, and risk gates before using it.", "在报告中心打开最新报告，先复核数据质量、多源校验和风控闸门。"),
+    ("Remove or fail closed any real-order code path.", "发现真实下单路径时必须删除，或进入 fail-closed。"),
+    ("Configure provider API keys only for the data sources you actually use; do not store keys in source code.", "只为实际使用的数据源配置 API key；不要把 key 写进源码。"),
+    ("No live order path must remain enforced.", "禁止实盘下单边界必须持续生效。"),
+    ("No workflow inputs have been recorded.", "尚未记录可追溯的工作流输入。"),
+    ("ResearchBus interoperability status=Warn.", "研究总线互通状态为需关注。"),
+    ("Policy Evidence", "政策证据"),
+    ("Consumption Evidence", "消费证据"),
+    ("BalanceSnapshot", "余额快照"),
+    ("RunMetadata", "运行元数据"),
+    ("Data Trust", "数据边界"),
+    ("2/8 Pass", "2/8 通过"),
+    ("=Review", "=需复核"),
+    ("=Pass", "=通过"),
+    ("=Fail", "=失败"),
+    ("Warn/Fail", "需关注/失败"),
+    ("Warn", "需关注"),
+    ("Fail 项", "失败项"),
+    ("audit_status=Review", "审计状态=需复核"),
+    ("report_evidence_layer=Review", "报告证据层=需复核"),
+    ("audit_status", "审计状态"),
+    ("report_evidence_layer", "报告证据层"),
+    ("run_metadata", "运行元数据"),
+    ("review=", "需复核数="),
+    ("rejected=", "拒绝数="),
+    ("runtime_summary", "运行摘要"),
+    ("cashflow_status", "现金流状态"),
+    ("policy_status", "政策状态"),
+    ("guard_status", "消费守卫状态"),
+    ("balance=", "余额="),
+    ("net=", "净现金流="),
+    ("runway_days=", "Runway天数="),
+    ("pending=", "待复核="),
+    ("missing_evidence=", "缺证据="),
+    ("opportunities=", "机会数="),
+    ("actionable=", "可行动="),
+    ("watch=", "观察="),
+    ("spend=", "支出="),
+    ("impulse=", "冲动支出="),
+    ("fixed=", "固定成本="),
+    ("pressure=", "现金流压力="),
+    ("None", "缺失"),
+    ("summary=", "摘要="),
+    ("PFIOSEntityRegistryV1", "内部契约"),
+    ("Entity Registry schema=", "标的注册表契约="),
+    ("records=", "记录数="),
+    ("'pass'", "'通过'"),
+    ("'review'", "'复核'"),
+    ("'fail'", "'失败'"),
+    ("item_count", "检查项数"),
+    ("CashFlow", "现金流"),
+    ("Policy", "政策"),
+    ("Consumption", "消费"),
+    ("ResearchBus", "研究总线"),
+    ("Research-only boundary remains active: no live trading, no real orders, no payments, no betting execution.", "研究专用边界持续生效：禁止实盘交易、真实订单、付款和自动下注。"),
+    ("API key", "API 密钥"),
+    ("fail-closed fallback", "失败即停止兜底"),
+    ("fail-closed", "失败即停止"),
+    ("fallback 到", "兜底读取"),
+    ("compact runtime summary latest", "精简运行摘要 latest"),
+    ("full latest", "完整 latest"),
+)
+
+COMMAND_CENTER_PDF_FONT_CANDIDATES = (
+    "/System/Library/Fonts/Hiragino Sans GB.ttc",
+    "/System/Library/Fonts/STHeiti Medium.ttc",
+    "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+)
 
 
 def build_command_center(
@@ -157,34 +323,34 @@ def write_command_center(
 
 def command_center_markdown(payload: dict[str, Any]) -> str:
     lines = [
-        f"# PFI_OS Command Center {payload.get('as_of', '')}",
+        f"# PFI OS 总控报告 {payload.get('as_of', '')}",
         "",
-        "## Summary",
-        f"- System: `{payload.get('system', '')}`",
-        f"- Status: `{payload.get('command_status', '')}`",
-        f"- Reason: {payload.get('status_reason', '')}",
-        f"- Generated At: `{payload.get('generated_at', '')}`",
+        "## 总览",
+        f"- 系统：`{payload.get('display_name', MASTER_DISPLAY_NAME)}`",
+        f"- 状态：`{_display_text(payload.get('command_status', ''))}`",
+        f"- 原因：{_display_text(payload.get('status_reason', ''))}",
+        f"- 生成时间：`{payload.get('generated_at', '')}`",
         "",
-        "## Scorecards",
+        "## 核心状态",
         _markdown_table(payload.get("scorecards", []), ["metric", "value", "status", "evidence"]),
         "",
-        "## Risk Gates",
+        "## 风控闸门",
         _markdown_table(payload.get("risk_gates", []), ["gate", "status", "evidence", "next_action"]),
         "",
-        "## Action Queue",
+        "## 行动队列",
         _markdown_table(payload.get("action_queue", []), ["priority", "status", "owner", "action", "source"]),
         "",
-        "## Evidence Sources",
+        "## 证据来源",
         _markdown_table(payload.get("evidence_sources", []), ["source", "status", "path", "schema"]),
         "",
-        "## Runtime Summary Sources",
+        "## 运行摘要来源",
         _markdown_table(payload.get("runtime_summary_sources", []), ["subsystem", "mode", "schema", "path"]),
         "",
-        "## Business Systems Summary",
+        "## 业务子系统",
         _markdown_table(payload.get("business_system_summary", []), ["subsystem", "status", "metric", "value", "evidence"]),
         "",
-        "## Assumptions",
-        *[f"- {item}" for item in payload.get("assumptions", [])],
+        "## 约束与假设",
+        *[f"- {_display_text(item)}" for item in payload.get("assumptions", [])],
     ]
     return "\n".join(lines) + "\n"
 
@@ -648,24 +814,160 @@ def _dedupe_actions(rows: list[dict[str, str]]) -> list[dict[str, str]]:
 
 
 def _markdown_table(rows: list[dict[str, Any]], columns: list[str]) -> str:
+    labels = [_column_label(column) for column in columns]
     if not rows:
-        return "| " + " | ".join(columns) + " |\n| " + " | ".join("---" for _ in columns) + " |"
-    header = "| " + " | ".join(columns) + " |"
+        return "| " + " | ".join(labels) + " |\n| " + " | ".join("---" for _ in columns) + " |"
+    header = "| " + " | ".join(labels) + " |"
     separator = "| " + " | ".join("---" for _ in columns) + " |"
     body = []
     for row in rows:
-        body.append("| " + " | ".join(_cell(row.get(column, "")) for column in columns) + " |")
+        body.append("| " + " | ".join(_cell(row.get(column, ""), column) for column in columns) + " |")
     return "\n".join([header, separator, *body])
 
 
-def _cell(value: Any) -> str:
-    return str(value).replace("\n", " ").replace("|", "/")
+def _cell(value: Any, column: str = "") -> str:
+    text = str(value) if column == "path" else _display_text(value)
+    return text.replace("\n", " ").replace("|", "/")
+
+
+def _column_label(column: str) -> str:
+    return COMMAND_CENTER_COLUMN_LABELS.get(column, column)
+
+
+def _display_text(value: Any) -> str:
+    text = str(value)
+    if text.startswith(("PFIOS", "PFICommandCenter")) and text.endswith("V1"):
+        return "内部契约"
+    text = text.replace("PFIOSEntityRegistryV1", "内部契约")
+    text = COMMAND_CENTER_DISPLAY_VALUES.get(text, text)
+    for source, replacement in COMMAND_CENTER_TEXT_REPLACEMENTS:
+        text = text.replace(source, replacement)
+    return text
 
 
 def _write_command_center_pdf(path: Path, payload: dict[str, Any]) -> None:
+    if _write_command_center_image_pdf(path, payload):
+        return
+    markdown = command_center_markdown(payload)
+    if _write_command_center_pdf_with_textutil(path, markdown):
+        return
+    _write_command_center_ascii_pdf(path, payload)
+
+
+def _write_command_center_image_pdf(path: Path, payload: dict[str, Any]) -> bool:
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+    except Exception:
+        return False
+    font_path = next((Path(candidate) for candidate in COMMAND_CENTER_PDF_FONT_CANDIDATES if Path(candidate).exists()), None)
+    if font_path is None:
+        return False
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        width, height = 1240, 1754
+        margin = 72
+        line_gap = 12
+        title_font = ImageFont.truetype(str(font_path), 34)
+        body_font = ImageFont.truetype(str(font_path), 24)
+        small_font = ImageFont.truetype(str(font_path), 20)
+        pages: list[Any] = []
+        image = Image.new("RGB", (width, height), "white")
+        draw = ImageDraw.Draw(image)
+        y = margin
+
+        def new_page() -> None:
+            nonlocal image, draw, y
+            pages.append(image)
+            image = Image.new("RGB", (width, height), "white")
+            draw = ImageDraw.Draw(image)
+            y = margin
+
+        for line, role in _command_center_pdf_lines(payload):
+            font = title_font if role == "title" else small_font if role == "small" else body_font
+            max_width = width - margin * 2
+            wrapped = _wrap_pdf_line(draw, line, font, max_width) or [""]
+            for wrapped_line in wrapped:
+                line_height = int(font.getbbox(wrapped_line or "国")[3] - font.getbbox(wrapped_line or "国")[1]) + line_gap
+                if y + line_height > height - margin:
+                    new_page()
+                draw.text((margin, y), wrapped_line, fill=(22, 28, 36), font=font)
+                y += line_height
+        pages.append(image)
+        pages[0].save(path, "PDF", save_all=True, append_images=pages[1:], resolution=150.0)
+        return path.exists() and path.stat().st_size > 1000
+    except Exception:
+        return False
+
+
+def _wrap_pdf_line(draw: Any, line: str, font: Any, max_width: int) -> list[str]:
+    if not line:
+        return [""]
+    chunks: list[str] = []
+    current = ""
+    for char in line:
+        candidate = f"{current}{char}"
+        if current and draw.textlength(candidate, font=font) > max_width:
+            chunks.append(current)
+            current = char
+        else:
+            current = candidate
+    if current:
+        chunks.append(current)
+    return chunks
+
+
+def _command_center_pdf_lines(payload: dict[str, Any]) -> list[tuple[str, str]]:
+    lines: list[tuple[str, str]] = [
+        (f"PFI OS 总控报告 {payload.get('as_of', '')}", "title"),
+        (f"系统：{payload.get('display_name', MASTER_DISPLAY_NAME)}", "body"),
+        (f"状态：{_display_text(payload.get('command_status', ''))}", "body"),
+        (f"原因：{_display_text(payload.get('status_reason', ''))}", "body"),
+        (f"生成时间：{payload.get('generated_at', '')}", "small"),
+        ("", "body"),
+        ("核心状态", "body"),
+    ]
+    for row in payload.get("scorecards", [])[:8]:
+        lines.append((f"- {_display_text(row.get('metric', ''))}：{_display_text(row.get('value', ''))}｜{_display_text(row.get('status', ''))}", "small"))
+    lines.extend([("", "body"), ("业务子系统", "body")])
+    for row in payload.get("business_system_summary", [])[:6]:
+        lines.append((f"- {_display_text(row.get('subsystem', ''))}：{_display_text(row.get('value', ''))}｜{_display_text(row.get('status', ''))}", "small"))
+    lines.extend([("", "body"), ("行动队列", "body")])
+    for row in payload.get("action_queue", [])[:12]:
+        lines.append((f"- {_display_text(row.get('priority', ''))} {_display_text(row.get('action', ''))} [{_display_text(row.get('source', ''))}]", "small"))
+    lines.extend([("", "body"), ("研究管理专用。禁止实盘自动下单、禁止真实订单、禁止付款、禁止自动下注。", "small")])
+    return lines
+
+
+def _write_command_center_pdf_with_textutil(path: Path, markdown: str) -> bool:
+    textutil = shutil.which("textutil")
+    if not textutil:
+        return False
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with tempfile.TemporaryDirectory(prefix="pfi_command_center_pdf_") as tmp:
+            source = Path(tmp) / "PFICommandCenter.md"
+            source.write_text(markdown, encoding="utf-8")
+            result = subprocess.run(
+                [textutil, "-convert", "pdf", "-output", str(path), str(source)],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+                timeout=30,
+            )
+        if result.returncode != 0 or not path.exists() or path.stat().st_size <= 1000:
+            return False
+        if b"????" in path.read_bytes():
+            path.unlink(missing_ok=True)
+            return False
+        return True
+    except Exception:
+        return False
+
+
+def _write_command_center_ascii_pdf(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
-        f"PFI_OS Command Center {payload.get('as_of', '')}",
+        f"PFI OS Command Center {payload.get('as_of', '')}",
         f"System: {payload.get('system', '')}",
         f"Status: {payload.get('command_status', '')}",
         f"Reason: {payload.get('status_reason', '')}",
@@ -731,7 +1033,13 @@ def _date_stamp(as_of: str) -> str:
 
 
 def _pdf_ascii(text: str) -> str:
-    return text.encode("latin-1", errors="replace").decode("latin-1")
+    normalized = (
+        text.replace("需要复核：", "Needs review: ")
+        .replace("已写入", "Written ")
+        .replace("正式持仓", "canonical holdings")
+        .replace("源文件", "source files")
+    )
+    return normalized.encode("latin-1", errors="ignore").decode("latin-1")
 
 
 def _pdf_escape(text: str) -> str:

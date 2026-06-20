@@ -99,7 +99,7 @@ def default_holding_source_specs() -> list[HoldingSourceSpec]:
         HoldingSourceSpec(
             source_system="量化回测系统导入",
             paths=tuple(_configured_paths("PFI_HOLDINGS_DIR", (HOLDINGS_IMPORT_DIR, *DEFAULT_PFI_HOLDINGS_DIRS))),
-            description="PFIOS 本地导入目录中的持仓文件。",
+            description="PFI OS 本地导入目录中的持仓文件。",
         ),
     ]
 

@@ -195,13 +195,53 @@ def test_feature_cards_have_working_open_actions_for_real_function_pages():
         assert mapped_view in js
     assert 'button.dataset.featureView = target.view' in js
     assert 'featureControl.dataset.featureView' in js
-    assert 'params.set("pfi_shell", "0")' in js
-    assert 'params.set("view", view)' in js
+    assert 'appUrl.searchParams.set("pfi_shell", "0")' in js
+    assert 'appUrl.searchParams.set("view", view)' in js
+    assert "currentAppUrl()" in js
+    assert "document.referrer" in js
+    assert 'url.protocol === "about:"' in js
+    assert 'url.pathname.includes("/component/")' in js
+    assert "return appUrl.toString()" in js
     assert "dataset.featureWorkspace" in js
     assert ".workflow-actions" in css
     assert ".workflow-open" in css
     assert ".function-detail" in css
     assert "white-space: nowrap" in css
+
+
+def test_streamlit_legacy_detail_nav_is_pfi_six_entry_surface():
+    source = _text(PROJECT_ROOT / "src" / "pfi_os" / "app" / "streamlit_app.py")
+    nav_block = source.split("ACTIVE_PFI_VIEW_OPTIONS = {", maxsplit=1)[1].split("PFI_PRIMARY_NAV_LABELS", maxsplit=1)[0]
+    navigation_source = source.split("def navigation_view", maxsplit=1)[1].split("def _view_key_from_target", maxsplit=1)[0]
+
+    assert '("首页", "市场", "研究", "持仓", "策略实验室", "数据与系统")' in source
+    for label in [
+        "首页｜总控驾驶舱",
+        "市场｜热点分析",
+        "研究｜报告中心",
+        "持仓｜持仓复核",
+        "策略实验室｜单标的回测",
+        "策略实验室｜盘感训练",
+        "数据与系统｜数据中心",
+    ]:
+        assert label in nav_block
+    for retired_nav in ["现金流", "消费守卫", "行研报告", "研究总线", "组合轮动"]:
+        assert retired_nav not in nav_block
+    assert "ACTIVE_PFI_VIEW_OPTIONS" in navigation_source
+    assert "### PFI 六入口" in navigation_source
+    assert "只保留当前 PFI 核心功能" in navigation_source
+
+
+def test_streamlit_detail_pages_keep_runtime_compatible_controls():
+    source = _text(PROJECT_ROOT / "src" / "pfi_os" / "app" / "streamlit_app.py")
+
+    assert "def install_streamlit_runtime_compat" in source
+    assert 'kwargs.get("width") == "stretch"' in source
+    assert 'kwargs.setdefault("use_container_width", True)' in source
+    assert "def _pfi_segmented_control" in source
+    assert "return st.radio(label, options, index=index, key=key, horizontal=True)" in source
+    assert "st.segmented_control(" not in source
+    assert 'if selected_view in {"command", "tools"}:' in source
 
 
 def test_runtime_summary_cannot_replace_core_home_feature_matrix():

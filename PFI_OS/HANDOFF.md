@@ -556,3 +556,56 @@ Continue from v0.2 PFI-goal execution:
    PFI-004 Golden/PIT and PFI-001 PR/CI injected-failure evidence are proven.
 3. Keep PFI-010/PFI-011/PFI-012 active but do not mark them complete until the
    matrix evidence is strong enough for the full acceptance scope.
+
+## Latest User Rejection Repair, 2026-06-20
+
+User rejected the previous delivery because the running surface still looked
+legacy, had too much English/raw technical text, and feature jumps/detail pages
+were unusable. The repair run changed the user-visible PFI surface, not the
+underlying research/business logic.
+
+Changed:
+
+- `web/app/shell.js`: feature jump URLs now resolve against the top-level PFI
+  app URL or `document.referrer`, so Streamlit iframe links no longer resolve
+  to the component iframe itself.
+- `src/pfi_os/app/streamlit_app.py`: visible detail-page sidebar now uses the
+  active PFI six-entry navigation; detail pages install compatibility wrappers
+  for older Streamlit `dataframe`/`plotly_chart` width behavior and a
+  `segmented_control` fallback; system self-check only appears on 总控驾驶舱
+  and 数据中心.
+- `src/pfi_os/integrations/holdings_book.py` and
+  `src/pfi_os/integrations/external_systems.py`: user-facing holdings text now
+  says `PFI OS` instead of `PFIOS`.
+- `data/commandCenter/EVACommandCenter_*`: removed from the tracked working
+  tree; `PFICommandCenter_20062026.*` and `PFICommandCenter_latest.*` were
+  regenerated.
+- Tests updated in `tests/e2e/test_pfi_web_shell_static_flow.py` and
+  `tests/test_app_dashboard.py`.
+
+Verification:
+
+- UI/static/dashboard: 76 passed, 2 existing protobuf warnings.
+- Holdings/Web focused: 30 passed, 4 existing pandas future warnings.
+- Browser UI acceptance:
+  `scripts/uiVisualAcceptance.sh --summary-json --start-timeout 120` =>
+  `status=Pass`, 130 pass / 0 fail / 0 info.
+- Target gate:
+  `PFI_PYTHON=/private/tmp/pfi_os_ci_repro/bin/python PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' scripts/pfiGate.sh target`
+  => 73 passed, secret scan passed, diff check passed.
+- `git diff --check`: pass.
+
+Additional Command Center display repair:
+
+- `src/pfi_os/executive/command_center.py`: Markdown/PDF display layer now uses
+  Chinese titles, sections, table headers, statuses, and action guidance while
+  leaving JSON contract fields intact.
+- PDF output now prefers a system-font visual PDF path so Chinese text renders
+  without `????`; latest regenerated Markdown/PDF byte checks show no `????`,
+  no `EVA`, no `PFIOS`, and no `PFI_OS`.
+- `tests/test_command_center.py`: updated to enforce Chinese Markdown headings
+  and no literal `????` in generated PDF bytes.
+
+Next recommended issue after committing this repair: resume Gate 4 / PFI-010
+Minute Fast Path. Do not mark the long-running PFI-001..PFI-012 goal complete;
+PFI-010 through PFI-012 and Gates 4 through 7 remain open.

@@ -407,7 +407,7 @@ def _profile_habits(runs: pd.DataFrame, reviews: pd.DataFrame, validation_tasks:
 def _profile_risks(summary: dict[str, Any], runs: pd.DataFrame, reviews: pd.DataFrame, validation_tasks: pd.DataFrame) -> list[dict[str, str]]:
     risks = []
     if summary["holding_count"] <= 0:
-        risks.append({"风险": "持仓数据缺失", "说明": "未读取到消费行为分析系统或 PFIOS 持仓数据，无法判断真实组合集中度。"})
+        risks.append({"风险": "持仓数据缺失", "说明": "未读取到消费行为分析系统或 PFI OS 持仓数据，无法判断真实组合集中度。"})
     if summary["top1_weight"] >= 0.35:
         risks.append({"风险": "单一标的集中", "说明": f"最大单一标的权重约 {summary['top1_weight']:.2%}。"})
     if summary["top3_weight"] >= 0.65:
@@ -428,7 +428,7 @@ def _profile_risks(summary: dict[str, Any], runs: pd.DataFrame, reviews: pd.Data
 def _profile_suggestions(summary: dict[str, Any], runs: pd.DataFrame, reviews: pd.DataFrame, validation_tasks: pd.DataFrame) -> list[dict[str, str]]:
     suggestions = []
     if summary["holding_count"] <= 0:
-        suggestions.append({"建议": "配置持仓数据", "行动": "把消费行为分析系统或 PFIOS 持仓 CSV/XLSX/JSON 放入 data/external/consumerHoldings 或 data/holdings。"})
+        suggestions.append({"建议": "配置持仓数据", "行动": "把消费行为分析系统或 PFI OS 持仓 CSV/XLSX/JSON 放入 data/external/consumerHoldings 或 data/holdings。"})
     if summary["top1_weight"] >= 0.35 or summary["top3_weight"] >= 0.65:
         suggestions.append({"建议": "降低集中度风险", "行动": "先用组合风险视图观察单一标的和前三持仓冲击，不直接生成实盘调仓指令。"})
     if not runs.empty and "research_status" in runs.columns and (runs["research_status"].astype(str) == "NeedsMoreEvidence").sum() > 0:

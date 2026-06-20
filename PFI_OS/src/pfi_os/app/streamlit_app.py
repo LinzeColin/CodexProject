@@ -382,6 +382,24 @@ VIEW_OPTIONS = {
     "library": "策略库",
 }
 
+ACTIVE_PFI_VIEW_OPTIONS = {
+    "command": "首页｜总控驾驶舱",
+    "hotspots": "市场｜热点分析",
+    "sentiment": "市场｜情绪分析",
+    "policy": "研究｜政策雷达",
+    "reports": "研究｜报告中心",
+    "holdings": "持仓｜持仓复核",
+    "profile": "持仓｜个人画像",
+    "single": "策略实验室｜单标的回测",
+    "scan": "策略实验室｜参数扫描",
+    "market_feel": "策略实验室｜盘感训练",
+    "library": "策略实验室｜策略库",
+    "big_data": "数据与系统｜模拟实验",
+    "tools": "数据与系统｜数据中心",
+}
+
+PFI_PRIMARY_NAV_LABELS = ("首页", "市场", "研究", "持仓", "策略实验室", "数据与系统")
+
 TERM_HELP = {
     "数据源": "行情数据来源。真实研究优先使用已配置并可验证的数据源；Sample 只用于演示和功能检查。",
     "市场": "研究对象所属市场。CN 表示 A 股/中国内地相关标的，US 表示美股，HK 表示港股。",
@@ -938,6 +956,41 @@ def _render_html_frame(markup: str, *, height: int, width: object = None, scroll
     components.html(markup, height=height, width=width, scrolling=scrolling)
 
 
+def install_streamlit_runtime_compat() -> None:
+    marker = "_pfi_runtime_compat_installed"
+    if getattr(st, "__dict__", {}).get(marker):
+        return
+    try:
+        original_dataframe = st.dataframe
+        original_plotly_chart = st.plotly_chart
+    except Exception:
+        return
+
+    def dataframe_compat(*args, **kwargs):
+        if kwargs.get("width") == "stretch":
+            kwargs.pop("width")
+            kwargs.setdefault("use_container_width", True)
+        return original_dataframe(*args, **kwargs)
+
+    def plotly_chart_compat(*args, **kwargs):
+        if kwargs.get("width") == "stretch":
+            kwargs.pop("width")
+            kwargs.setdefault("use_container_width", True)
+        return original_plotly_chart(*args, **kwargs)
+
+    st.dataframe = dataframe_compat
+    st.plotly_chart = plotly_chart_compat
+    setattr(st, marker, True)
+
+
+def _pfi_segmented_control(label: str, options: list[str], *, default: str, key: str) -> str:
+    control = getattr(st, "segmented_control", None)
+    if callable(control):
+        return control(label, options, default=default, key=key)
+    index = options.index(default) if default in options else 0
+    return st.radio(label, options, index=index, key=key, horizontal=True)
+
+
 def render_pfi_ui_v2_shell() -> None:
     st.markdown(
         """
@@ -970,6 +1023,7 @@ def render_pfi_ui_v2_shell() -> None:
 
 def main() -> None:
     st.set_page_config(page_title=MASTER_DISPLAY_NAME, page_icon="PFI", layout="wide", initial_sidebar_state="expanded")
+    install_streamlit_runtime_compat()
     if _pfi_ui_v2_enabled():
         render_pfi_ui_v2_shell()
         return
@@ -1016,7 +1070,8 @@ def main() -> None:
         data_tools_view()
     elif selected_view == "library":
         strategy_library_view()
-    system_status_panel()
+    if selected_view in {"command", "tools"}:
+        system_status_panel()
 
 
 def install_shutdown_heartbeat() -> None:
@@ -1138,20 +1193,20 @@ def _countdown_component_html(component_key: str, started_at: float, time_limit_
 
 def navigation_view() -> str:
     requested = st.query_params.get("view", "command")
-    if requested not in VIEW_OPTIONS:
+    if requested not in ACTIVE_PFI_VIEW_OPTIONS:
         requested = "command"
-    keys = list(VIEW_OPTIONS)
+    keys = list(ACTIVE_PFI_VIEW_OPTIONS)
     with st.sidebar:
-        st.markdown("### 功能导航")
-        st.caption("从这里切换功能区；下方使用指导会跟随当前页面。")
+        st.markdown("### PFI 六入口")
+        st.caption("首页 / 市场 / 研究 / 持仓 / 策略实验室 / 数据与系统；只保留当前 PFI 核心功能。")
         selected_label = st.radio(
             "功能区",
-            options=[VIEW_OPTIONS[key] for key in keys],
+            options=[ACTIVE_PFI_VIEW_OPTIONS[key] for key in keys],
             index=keys.index(requested),
             key="workspace_view",
             label_visibility="collapsed",
         )
-    selected = next((key for key, label in VIEW_OPTIONS.items() if label == selected_label), requested)
+    selected = next((key for key, label in ACTIVE_PFI_VIEW_OPTIONS.items() if label == selected_label), requested)
     st.query_params["view"] = selected
     return selected
 
@@ -1662,7 +1717,7 @@ def consumption_guard_view() -> None:
 
 
 def sidebar_usage_guide(selected_view: str) -> None:
-    sections = usage_guide_sections()
+    sections = [section for section in usage_guide_sections() if section.target_key in ACTIVE_PFI_VIEW_OPTIONS]
     section_by_key = {section.target_key: section for section in sections}
     current = section_by_key.get(selected_view) or sections[0]
     with st.sidebar:
@@ -1971,7 +2026,7 @@ def single_backtest_view() -> None:
         end = date_input_with_today("结束日期", key="single_end", default=pd.Timestamp("2024-12-31"))
         csv_file = st.file_uploader("CSV 行情", type=["csv"], key="single_csv") if data_mode == "CSV" else None
         st.markdown("#### 2. 运行模式")
-        run_mode = st.segmented_control("运行模式", ["单策略回测", "双策略对比"], default="单策略回测", key="single_run_mode")
+        run_mode = _pfi_segmented_control("运行模式", ["单策略回测", "双策略对比"], default="单策略回测", key="single_run_mode")
         strategy_options = single_strategy_options()
         params: dict = {}
         params_a: dict = {}
@@ -2777,8 +2832,8 @@ def holdings_view() -> None:
         if holdings.empty:
             st.warning("当前没有正式持仓。可点击“同步持仓”，或把 CSV/XLSX/JSON 放入持仓导入目录。")
             st.code(
-                f"{ROOT / 'data' / 'holdings' / 'imports'}\n"
-                f"{ROOT / 'data' / 'external' / 'consumerHoldings'}\n"
+                "data/holdings/imports\n"
+                "data/external/consumerHoldings\n"
                 "~/Downloads/行研报告，或通过 PFI_INDUSTRY_REPORT_DIR 指定",
                 language="text",
             )

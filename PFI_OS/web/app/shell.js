@@ -953,21 +953,44 @@ function navigateToFunctionPage(view) {
 }
 
 function legacyViewUrl(view) {
-  let search = window.location.search || "";
-  let pathname = window.location.pathname || "/";
+  const appUrl = currentAppUrl();
+  appUrl.searchParams.set("pfi_shell", "0");
+  appUrl.searchParams.set("view", view);
+  appUrl.hash = "";
+  return appUrl.toString();
+}
+
+function currentAppUrl() {
+  const candidates = [];
   try {
     if (window.parent && window.parent !== window) {
-      search = window.parent.location.search || search;
-      pathname = window.parent.location.pathname || pathname;
+      candidates.push(window.parent.location.href);
     }
   } catch (_error) {
-    search = window.location.search || "";
-    pathname = window.location.pathname || "/";
+    // Streamlit component iframes can block parent access; document.referrer
+    // still points at the top-level PFI app URL in that case.
   }
-  const params = new URLSearchParams(search);
-  params.set("pfi_shell", "0");
-  params.set("view", view);
-  return `${pathname}?${params.toString()}`;
+  candidates.push(document.referrer || "");
+  candidates.push(String(window.location || ""));
+
+  for (const candidate of candidates) {
+    const resolved = normalizedAppUrl(candidate);
+    if (resolved) return resolved;
+  }
+  return new URL("/", window.location.origin || "http://127.0.0.1:8501");
+}
+
+function normalizedAppUrl(candidate) {
+  const clean = String(candidate || "").trim();
+  if (!clean) return null;
+  try {
+    const url = new URL(clean, String(window.location || ""));
+    if (url.protocol === "about:" || url.pathname.includes("/component/")) return null;
+    if (url.protocol === "http:" || url.protocol === "https:" || url.protocol === "file:") return url;
+  } catch (_error) {
+    return null;
+  }
+  return null;
 }
 
 function renderDecisionRows(rows) {

@@ -152,3 +152,79 @@ Broader regression used in this phase:
 ```bash
 python -m pytest tests/test_config.py tests/test_data.py tests/test_data_lake_manifest.py tests/test_holdings_book.py tests/test_research_bus.py tests/test_app_dashboard.py tests/test_workspace_shell.py tests/test_scripts.py -q
 ```
+
+## User-Facing Rework After Rejection, 2026-06-20
+
+Scope: repair the rejected PFI user surface where the app still looked like a
+legacy EVA/PFIOS system, feature blocks did not reliably jump to usable pages,
+and Streamlit detail pages showed runtime tracebacks.
+
+Changes:
+
+- Web Shell feature links now resolve the top-level PFI app URL from
+  `window.parent.location`, `document.referrer`, or a safe current-location
+  fallback, instead of assuming iframe-relative query strings.
+- Streamlit legacy/detail sidebar now exposes the active PFI six-entry user
+  surface: 首页, 市场, 研究, 持仓, 策略实验室, 数据与系统. Legacy capabilities remain
+  in code but are no longer primary navigation entries.
+- Detail pages install a runtime compatibility shim so older Streamlit builds
+  accept tables/charts that were authored with `width="stretch"`, and
+  `segmented_control` falls back to a horizontal radio control.
+- Detail pages no longer append the full system self-check to every function;
+  that panel is limited to 总控驾驶舱 and 数据中心.
+- 持仓空状态 now shows relative import directories rather than full local paths
+  containing `PFI_OS`.
+- Tracked legacy `data/commandCenter/EVACommandCenter_*` artifacts were removed
+  from the working tree, and `scripts/commandCenter.sh --output-dir
+  data/commandCenter` regenerated `PFICommandCenter_20062026.*` and latest
+  pointers.
+
+Verification:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /private/tmp/pfi_os_ci_repro/bin/python -m pytest tests/e2e/test_pfi_web_shell_static_flow.py tests/contract/test_pfi_web_shell_contract.py tests/test_app_dashboard.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /private/tmp/pfi_os_ci_repro/bin/python -m pytest tests/test_holdings_book.py tests/test_external_integrations.py tests/e2e/test_pfi_web_shell_static_flow.py -q
+PFI_PYTHON=/private/tmp/pfi_os_ci_repro/bin/python PYTHONDONTWRITEBYTECODE=1 scripts/uiVisualAcceptance.sh --summary-json --start-timeout 120
+PFI_PYTHON=/private/tmp/pfi_os_ci_repro/bin/python PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' scripts/pfiGate.sh target
+git diff --check
+```
+
+Observed:
+
+- UI/static/dashboard suite: 76 passed, 2 existing protobuf deprecation
+  warnings.
+- Holdings/Web focused suite: 30 passed, 4 existing pandas future warnings.
+- Browser UI acceptance: `PFIOSUIVisualAcceptanceV1 status=Pass`, 130 pass /
+  0 fail / 0 info.
+- Target gate: 73 passed, 2 existing protobuf deprecation warnings; secret
+  scan passed; diff check passed.
+
+## Command Center Chinese Delivery Patch, 2026-06-20
+
+Scope: close the remaining user-facing gap where regenerated Command Center
+Markdown/PDF artifacts were valid but still read like an English engineering
+panel.
+
+Changes:
+
+- `command_center_markdown()` now renders Chinese section titles, table
+  headers, status values, action guidance, and safety constraints.
+- JSON payload fields remain unchanged for downstream contracts; only the
+  Markdown/PDF display layer is localized.
+- PDF generation now prefers a system-font image PDF path so Chinese glyphs
+  render visually instead of falling back to `????` or ASCII-only output.
+- Latest `data/commandCenter/PFICommandCenter_20062026.*` and
+  `PFICommandCenter_latest.*` were regenerated.
+
+Verification:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /private/tmp/pfi_os_ci_repro/bin/python -m pytest tests/test_command_center.py -q
+scripts/commandCenter.sh --output-dir data/commandCenter
+```
+
+Observed:
+
+- Command Center tests: 6 passed.
+- Latest Markdown/PDF byte checks: no `????`, no `EVA`, no `PFIOS`, no
+  `PFI_OS`.

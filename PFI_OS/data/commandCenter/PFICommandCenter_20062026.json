@@ -1,44 +1,38 @@
 {
   "schema": "PFICommandCenterV1",
   "system": "PFI_OS",
-  "display_name": "PFI_OS",
+  "display_name": "PFI OS",
   "subsystem": "Executive Command Center",
-  "as_of": "2026-06-13",
-  "generated_at": "2026-06-13T16:33:21",
-  "project_root": "/Users/linzezhang/Documents/Codex/2026-06-13/files-mentioned-by-the-user-eva/outputs/CodexFinance",
+  "as_of": "2026-06-20",
+  "generated_at": "2026-06-20T15:58:58",
+  "project_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/PFI_OS",
   "report_root": "/Users/linzezhang/Downloads/量化回测分析",
   "command_status": "NeedsReview",
-  "status_reason": "需要复核：Company CashFlow Command, Policy Intelligence Radar, Consumption Guard",
+  "status_reason": "需要复核：DataTrust, IntegrationAudit, ReportEvidence, LatestWordReport, WorkflowInputs, ResearchBusInterop, LatestReport, Company CashFlow Command, Policy Intelligence Radar, Consumption Guard",
   "scorecards": [
     {
       "metric": "Daily Readiness",
-      "value": "ReadyForResearch",
-      "status": "Pass",
+      "value": "NeedsReview",
+      "status": "Review",
       "evidence": "gates=5"
     },
     {
       "metric": "Integration Audit",
-      "value": "Pass",
-      "status": "Pass",
-      "evidence": "summary={'pass': 6, 'review': 0, 'fail': 0, 'item_count': 6}"
+      "value": "Review",
+      "status": "Review",
+      "evidence": "summary={'pass': 2, 'review': 4, 'fail': 0, 'item_count': 6}"
     },
     {
       "metric": "Risk Gates",
-      "value": "8/8 Pass",
-      "status": "Pass",
-      "evidence": "DataTrust=Pass, IntegrationAudit=Pass, NoLiveTradingBoundary=Pass, ReportEvidence=Pass, LatestWordReport=Pass, EntityRegistry=Pass, WorkflowInputs=Pass, ResearchBusInterop=Pass"
-    },
-    {
-      "metric": "Token ROI Ledger",
-      "value": "178",
-      "status": "Pass",
-      "evidence": "quantified=0; unquantified=178"
+      "value": "2/8 Pass",
+      "status": "Review",
+      "evidence": "DataTrust=Review, IntegrationAudit=Review, NoLiveTradingBoundary=Pass, ReportEvidence=Review, LatestWordReport=Review, EntityRegistry=Pass, WorkflowInputs=Review, ResearchBusInterop=Review"
     },
     {
       "metric": "Latest Report",
-      "value": "SampleBacktestReport_07062026.docx",
-      "status": "Pass",
-      "evidence": "/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx"
+      "value": "Missing",
+      "status": "Review",
+      "evidence": ""
     },
     {
       "metric": "Company CashFlow Command",
@@ -56,20 +50,20 @@
       "metric": "Consumption Guard",
       "value": "MissingConsumptionEvidence",
       "status": "Review",
-      "evidence": "spend=0.0; impulse=0.0; fixed=0.0; pressure=None; pending=0; missing_evidence=0"
+      "evidence": "spend=0.0; impulse=0.0; fixed=0.0; pressure=0.0; pending=0; missing_evidence=0"
     }
   ],
   "risk_gates": [
     {
       "gate": "DataTrust",
-      "status": "Pass",
-      "evidence": "audit_status=Pass; review=0; rejected=0",
+      "status": "Review",
+      "evidence": "audit_status=Review; review=6; rejected=0",
       "next_action": "Keep evidence audit clean before using research outputs."
     },
     {
       "gate": "IntegrationAudit",
-      "status": "Pass",
-      "evidence": "summary={'pass': 6, 'review': 0, 'fail': 0, 'item_count': 6}",
+      "status": "Review",
+      "evidence": "summary={'pass': 2, 'review': 4, 'fail': 0, 'item_count': 6}",
       "next_action": "Run scripts/auditPFIIntegration.sh --no-write if not Pass."
     },
     {
@@ -80,14 +74,14 @@
     },
     {
       "gate": "ReportEvidence",
-      "status": "Pass",
-      "evidence": "run_metadata=31; report_evidence_layer=Pass",
+      "status": "Review",
+      "evidence": "run_metadata=0; report_evidence_layer=Review",
       "next_action": "Generate a report with RunMetadata before using results."
     },
     {
       "gate": "LatestWordReport",
-      "status": "Pass",
-      "evidence": "/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx",
+      "status": "Review",
+      "evidence": "",
       "next_action": "Generate at least one Word report for the current research session."
     },
     {
@@ -98,18 +92,53 @@
     },
     {
       "gate": "WorkflowInputs",
-      "status": "Pass",
-      "evidence": "Workflow inputs are queryable; rows=3.",
-      "next_action": "新报告应引用 workflow_input_id 或明确标注 ManualOrLocalOnly。"
+      "status": "Review",
+      "evidence": "No workflow inputs have been recorded.",
+      "next_action": "通过 submit-chat、dropbox 或 API request 记录一次可追溯输入。"
     },
     {
       "gate": "ResearchBusInterop",
-      "status": "Pass",
-      "evidence": "ResearchBus interoperability status=Pass.",
-      "next_action": "继续保持跨系统同步审计。"
+      "status": "Review",
+      "evidence": "ResearchBus interoperability status=Warn.",
+      "next_action": "处理 ResearchBus 互通审计 Warn/Fail 项。"
     }
   ],
   "action_queue": [
+    {
+      "priority": "P0",
+      "status": "Open",
+      "owner": "PFI_OS",
+      "action": "复跑总集成审计并处理 Review/Fail 项。",
+      "source": "Integration Audit"
+    },
+    {
+      "priority": "P1",
+      "status": "Open",
+      "owner": "PFIOS",
+      "action": "DataTrust: Keep evidence audit clean before using research outputs.",
+      "source": "Daily Readiness"
+    },
+    {
+      "priority": "P1",
+      "status": "Open",
+      "owner": "PFIOS",
+      "action": "IntegrationAudit: Run scripts/auditPFIIntegration.sh --no-write if not Pass.",
+      "source": "Daily Readiness"
+    },
+    {
+      "priority": "P1",
+      "status": "Open",
+      "owner": "PFIOS",
+      "action": "ReportEvidence: Generate a report with RunMetadata before using results.",
+      "source": "Daily Readiness"
+    },
+    {
+      "priority": "P1",
+      "status": "Open",
+      "owner": "PFIOS",
+      "action": "LatestWordReport: Generate at least one Word report for the current research session.",
+      "source": "Daily Readiness"
+    },
     {
       "priority": "P1",
       "status": "Open",
@@ -121,15 +150,8 @@
       "priority": "P1",
       "status": "Open",
       "owner": "PFIOS",
-      "action": "Open the latest report from Report Center and check data quality, cross-source validation, and risk gates before using it.",
-      "source": "Daily Readiness"
-    },
-    {
-      "priority": "P2",
-      "status": "Open",
-      "owner": "Value Layer",
-      "action": "为高价值产物补充真实节省时间、避免损失、复用价值或成本数据；未量化前 ROI 保持空值。",
-      "source": "Token ROI Ledger"
+      "action": "生成一份带 RunMetadata、数据质量和风险闸门的正式 Word 研究报告。",
+      "source": "Report Evidence"
     },
     {
       "priority": "P0",
@@ -153,69 +175,71 @@
       "source": "Consumption Guard: Consumption Evidence"
     }
   ],
-  "latest_report": {
-    "name": "SampleBacktestReport_07062026.docx",
-    "artifact_type": "Backtest Word Report",
-    "date_folder": "2026-06-07",
-    "size_kb": 742.96,
-    "path": "/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx"
-  },
+  "latest_report": {},
   "evidence_sources": [
     {
       "source": "Daily Readiness",
-      "status": "Present",
-      "path": "/Users/linzezhang/Documents/Codex/2026-06-13/files-mentioned-by-the-user-eva/outputs/CodexFinance/data/systemAudit/PFIOSDailyReadiness_07062026.json",
+      "status": "Missing",
+      "path": "",
       "schema": "PFIOSDailyReadinessV1"
     },
     {
       "source": "Integration Audit",
-      "status": "Present",
-      "path": "/Users/linzezhang/Documents/Codex/2026-06-13/files-mentioned-by-the-user-eva/outputs/CodexFinance/data/systemAudit/PFIOSIntegrationAudit_07062026.json",
+      "status": "Missing",
+      "path": "",
       "schema": "PFIOSIntegrationAuditV1"
     },
     {
       "source": "Data Trust Audit",
-      "status": "Present",
-      "path": "/Users/linzezhang/Documents/Codex/2026-06-13/files-mentioned-by-the-user-eva/outputs/CodexFinance/data/systemAudit/PFIOSDataTrustAudit_07062026.json",
+      "status": "Missing",
+      "path": "",
       "schema": "PFIOSDataTrustAuditV1"
     },
     {
-      "source": "Token ROI Ledger",
-      "status": "Present",
-      "path": "data/value/EVATokenROILedger_latest.json",
-      "schema": "EVATokenROILedgerV1"
-    },
-    {
       "source": "Latest Report",
-      "status": "Present",
-      "path": "/Users/linzezhang/Downloads/量化回测分析/2026-06-07/SampleBacktestReport_07062026.docx",
-      "schema": "Backtest Word Report"
+      "status": "Missing",
+      "path": "",
+      "schema": ""
     },
     {
       "source": "Company CashFlow Command",
-      "status": "Missing",
-      "path": "/Users/linzezhang/Documents/Codex/2026-06-13/files-mentioned-by-the-user-eva/outputs/CodexFinance/data/cashflow/CompanyCashFlowCommand_latest.json",
-      "schema": "PFIOSCompanyCashFlowCommandV1"
+      "status": "Present",
+      "path": "data/cashflow/CompanyCashFlowRuntimeSummary_latest.json",
+      "schema": "PFIOSCompanyCashFlowRuntimeSummaryV1"
     },
     {
       "source": "Policy Intelligence Radar",
       "status": "Present",
-      "path": "data/policy/PolicyIntelligenceRadar_latest.json",
-      "schema": "PFIOSPolicyIntelligenceRadarV1"
+      "path": "data/policy/PolicyIntelligenceRuntimeSummary_latest.json",
+      "schema": "PFIOSPolicyIntelligenceRuntimeSummaryV1"
     },
     {
       "source": "Consumption Guard",
       "status": "Present",
-      "path": "data/consumption/ConsumptionGuard_latest.json",
-      "schema": "PFIOSConsumptionGuardV1"
+      "path": "data/consumption/ConsumptionGuardRuntimeSummary_latest.json",
+      "schema": "PFIOSConsumptionGuardRuntimeSummaryV1"
     }
   ],
-  "token_roi_summary": {
-    "record_count": 178,
-    "quantified_records": 0,
-    "unquantified_records": 178,
-    "roi_status": "Unquantified"
-  },
+  "runtime_summary_sources": [
+    {
+      "subsystem": "Company CashFlow Command",
+      "mode": "runtime_summary",
+      "schema": "PFIOSCompanyCashFlowRuntimeSummaryV1",
+      "path": "data/cashflow/CompanyCashFlowRuntimeSummary_latest.json"
+    },
+    {
+      "subsystem": "Policy Intelligence Radar",
+      "mode": "runtime_summary",
+      "schema": "PFIOSPolicyIntelligenceRuntimeSummaryV1",
+      "path": "data/policy/PolicyIntelligenceRuntimeSummary_latest.json"
+    },
+    {
+      "subsystem": "Consumption Guard",
+      "mode": "runtime_summary",
+      "schema": "PFIOSConsumptionGuardRuntimeSummaryV1",
+      "path": "data/consumption/ConsumptionGuardRuntimeSummary_latest.json"
+    }
+  ],
   "business_system_summary": [
     {
       "subsystem": "Company CashFlow Command",
@@ -236,7 +260,7 @@
       "status": "Review",
       "metric": "guard_status",
       "value": "MissingConsumptionEvidence",
-      "evidence": "spend=0.0; impulse=0.0; fixed=0.0; pressure=None; pending=0; missing_evidence=0"
+      "evidence": "spend=0.0; impulse=0.0; fixed=0.0; pressure=0.0; pending=0; missing_evidence=0"
     }
   ],
   "cashflow_summary": {
@@ -260,7 +284,7 @@
     "counted_spend": 0.0,
     "impulse_spend": 0.0,
     "fixed_cost": 0.0,
-    "investable_cashflow_pressure": null,
+    "investable_cashflow_pressure": 0.0,
     "pending_review_records": 0,
     "reviewed_missing_evidence_records": 0
   },
@@ -268,14 +292,14 @@
     "总控驾驶舱只聚合本地证据，不刷新行情、不启动 Moomoo OpenD、不修改持仓、不连接实盘。",
     "所有输入必须进入证据层；没有证据的结论降级为观察或待复核。",
     "所有结论必须经过风控层；Blocked 或 NeedsReview 不应作为交易前参考。",
-    "所有产出必须进入 Token ROI 台账；没有真实金额输入时不伪造收益、节省成本或 ROI。",
     "CashFlow、Policy、Consumption 只读取本地 latest 快照或 fail-closed fallback，不连接银行、支付、政府平台、支付宝、税务、工资或券商系统。",
+    "总控优先读取 CashFlow、Policy、Consumption 的 compact runtime summary latest；缺失时才 fallback 到 full latest 或本地 fail-closed 构建。",
     "Research-only boundary remains active: no live trading, no real orders, no payments, no betting execution."
   ],
   "outputs": {
-    "json": "data/commandCenter/PFICommandCenter_13062026.json",
-    "markdown": "data/commandCenter/PFICommandCenter_13062026.md",
-    "pdf": "data/commandCenter/PFICommandCenter_13062026.pdf",
+    "json": "data/commandCenter/PFICommandCenter_20062026.json",
+    "markdown": "data/commandCenter/PFICommandCenter_20062026.md",
+    "pdf": "data/commandCenter/PFICommandCenter_20062026.pdf",
     "latest_json": "data/commandCenter/PFICommandCenter_latest.json",
     "latest_markdown": "data/commandCenter/PFICommandCenter_latest.md",
     "latest_pdf": "data/commandCenter/PFICommandCenter_latest.pdf"

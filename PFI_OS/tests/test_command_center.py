@@ -114,8 +114,13 @@ def test_write_command_center_outputs_json_markdown_pdf_and_latest(tmp_path: Pat
     saved = json.loads(json_path.read_text(encoding="utf-8"))
     assert json_path.name == "PFICommandCenter_07062026.json"
     assert saved["schema"] == "PFICommandCenterV1"
-    assert markdown_path.read_text(encoding="utf-8").startswith("# PFI_OS Command Center")
-    assert pdf_path.read_bytes().startswith(b"%PDF-1.4")
+    markdown = markdown_path.read_text(encoding="utf-8")
+    assert markdown.startswith("# PFI OS 总控报告")
+    assert "## 总览" in markdown
+    assert "## Scorecards" not in markdown
+    assert "System:" not in markdown
+    assert pdf_path.read_bytes().startswith(b"%PDF-")
+    assert b"????" not in pdf_path.read_bytes()
     assert latest_json.exists()
     assert latest_markdown.exists()
     assert latest_pdf.exists()
@@ -145,11 +150,13 @@ def test_command_center_markdown_contains_key_tables(tmp_path: Path) -> None:
     )
 
     markdown = command_center_markdown(payload)
-    assert "## Scorecards" in markdown
-    assert "## Risk Gates" in markdown
-    assert "## Action Queue" in markdown
-    assert "## Runtime Summary Sources" in markdown
-    assert "## Business Systems Summary" in markdown
+    assert "## 核心状态" in markdown
+    assert "## 风控闸门" in markdown
+    assert "## 行动队列" in markdown
+    assert "## 运行摘要来源" in markdown
+    assert "## 业务子系统" in markdown
+    assert "| 指标 | 数值 | 状态 | 证据 |" in markdown
+    assert "可用于研究" in markdown
 
 
 def test_command_center_prefers_compact_runtime_summaries_over_full_latest(tmp_path: Path) -> None:

@@ -23,6 +23,8 @@ from pfi_os.app.streamlit_app import (
     INTERVAL_OPTIONS,
     STRATEGY_OPTIONS,
     TERM_HELP,
+    ACTIVE_PFI_VIEW_OPTIONS,
+    PFI_PRIMARY_NAV_LABELS,
     VIEW_OPTIONS,
     apply_research_chart_ux,
     _auto_refresh_component_html,
@@ -81,6 +83,32 @@ class AppDashboardTests(unittest.TestCase):
         )
         self.assertNotIn("策略审批", VIEW_OPTIONS.values())
         self.assertNotIn("使用指导", VIEW_OPTIONS.values())
+
+    def test_active_pfi_navigation_is_six_entry_user_surface(self):
+        self.assertEqual(
+            list(PFI_PRIMARY_NAV_LABELS),
+            ["首页", "市场", "研究", "持仓", "策略实验室", "数据与系统"],
+        )
+        self.assertEqual(
+            list(ACTIVE_PFI_VIEW_OPTIONS.values()),
+            [
+                "首页｜总控驾驶舱",
+                "市场｜热点分析",
+                "市场｜情绪分析",
+                "研究｜政策雷达",
+                "研究｜报告中心",
+                "持仓｜持仓复核",
+                "持仓｜个人画像",
+                "策略实验室｜单标的回测",
+                "策略实验室｜参数扫描",
+                "策略实验室｜盘感训练",
+                "策略实验室｜策略库",
+                "数据与系统｜模拟实验",
+                "数据与系统｜数据中心",
+            ],
+        )
+        self.assertNotIn("现金流", ACTIVE_PFI_VIEW_OPTIONS.values())
+        self.assertNotIn("消费守卫", ACTIVE_PFI_VIEW_OPTIONS.values())
 
     def test_market_feel_training_feedback_scores_three_levels(self):
         row = {"actual_direction": "上涨", "actual_return_interval": "2.00%至5.00%", "actual_return": 0.031}
