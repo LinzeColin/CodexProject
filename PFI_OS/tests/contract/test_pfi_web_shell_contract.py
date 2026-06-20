@@ -46,7 +46,7 @@ def test_web_shell_preserves_global_context_and_cached_home_contract():
     assert contract.cached_home_target_seconds == 2
     assert 'data-cached-home-target-seconds="2"' in html
     assert "CONTEXT_STORAGE_KEY" in js
-    assert "pfi-context-v1" in js
+    assert "pfi-context-v2" in js
     for field in GLOBAL_CONTEXT_FIELDS:
         assert f'data-context-field="{field}"' in html
     assert 'data-card-source="operational_store:task_records"' in html
@@ -90,7 +90,9 @@ def test_streamlit_launcher_exposes_pfi_ui_v2_feature_flag_with_fallback():
     assert '[data-testid="stToolbar"]' in source
     assert "padding-top: 0" in source
     assert "def _render_html_frame" in source
-    assert 'getattr(st, "iframe")' in source
+    assert "components.html(markup" in source
+    assert 'getattr(st, "iframe")' not in source
+    assert "st.iframe" not in source
     assert "_render_html_frame(_pfi_web_shell_html(home_summary), height=980" in source
     assert "PFI OS 是主入口" in source
     assert "PFI_OS 是主入口" not in source

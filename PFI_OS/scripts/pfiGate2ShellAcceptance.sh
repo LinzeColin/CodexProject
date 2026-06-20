@@ -251,6 +251,30 @@ const UAT_JOURNEYS = [
     requiredText: ['读图训练', '限时判断', '复盘记录', '不输出实盘信号'],
   },
   {
+    name: 'JOURNEY_STRATEGY_PARAMETER_SCAN',
+    workspace: 'strategy',
+    view: 'scan',
+    title: '参数扫描',
+    action: '运行参数扫描',
+    requiredText: ['参数网格', '样本内外表现', '稳定性', '过拟合风险'],
+  },
+  {
+    name: 'JOURNEY_STRATEGY_SIMULATION',
+    workspace: 'strategy',
+    view: 'big_data',
+    title: '模拟实验',
+    action: '打开模拟实验',
+    requiredText: ['组合策略', '情景压力', '假设实验', '不连接券商'],
+  },
+  {
+    name: 'JOURNEY_MARKET_HOTSPOTS',
+    workspace: 'market',
+    view: 'hotspots',
+    title: '热点分析',
+    action: '生成热点分析',
+    requiredText: ['指数', 'ETF', '主题', '热点不是交易信号'],
+  },
+  {
     name: 'JOURNEY_RESEARCH_REPORT_POLICY',
     workspace: 'research',
     view: 'reports',
@@ -263,6 +287,14 @@ const UAT_JOURNEYS = [
       action: '打开政策雷达',
       requiredText: ['政策来源', '官方', '监管来源', '政策线索'],
     },
+  },
+  {
+    name: 'JOURNEY_PORTFOLIO_HOLDINGS_REVIEW',
+    workspace: 'portfolio',
+    view: 'holdings',
+    title: '持仓复核',
+    action: '同步持仓',
+    requiredText: ['正式持仓', '候选持仓', '暴露', '不提交券商'],
   },
   {
     name: 'JOURNEY_DATA_SYSTEM_DIAGNOSTICS',
@@ -429,7 +461,7 @@ async function verifyPrimaryActionNavigation(page, baseUrl, route, checks) {
   const shellFrame = await findShellFrame(page);
   checks.push(check(`PrimaryActionNavigation:${route.view}:ShellFrame`, shellFrame ? 'Pass' : 'Fail', route.view));
   if (!shellFrame) return;
-  await shellFrame.evaluate(() => localStorage.removeItem('pfi-context-v1')).catch(() => {});
+  await shellFrame.evaluate(() => localStorage.removeItem('pfi-context-v2')).catch(() => {});
   await switchWorkspace(shellFrame, route.workspace, route.workspaceLabel, checks);
   const control = shellFrame.locator(`[data-feature-view="${route.view}"]`).first();
   const visible = await control.isVisible({ timeout: 10000 }).catch(() => false);
@@ -614,7 +646,7 @@ async function noLegacyAndNoGibberish(frame, page, checks) {
       throw new Error('PFI Web Shell iframe did not render expected Chinese workspace text.');
     }
 
-    await shellFrame.evaluate(() => localStorage.removeItem('pfi-context-v1'));
+    await shellFrame.evaluate(() => localStorage.removeItem('pfi-context-v2'));
     await switchWorkspace(shellFrame, 'home', '首页', checks);
 
     for (const [workspaceId, label] of REQUIRED_WORKSPACES) {

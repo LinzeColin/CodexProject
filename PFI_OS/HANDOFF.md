@@ -441,25 +441,35 @@ Latest runtime smoke:
   text.
 - `scripts/stopPFIOS.sh` stopped the local service after verification.
 
-Latest user-facing PFI repair after rejection:
+Latest user-facing PFI rejection rework, 2026-06-20:
 
-- Web Shell feature cards now open same-shell Chinese function panels first.
-- Detailed Streamlit function pages open in a new tab because Streamlit
+- Root cause repaired: Streamlit now renders the inline PFI Web Shell only via
+  `components.html`; the prior `st.iframe(markup, ...)` path could treat full
+  HTML as a URL/text surface on compatible Streamlit versions.
+- Browser state key moved from `pfi-context-v1` to `pfi-context-v2`, so stale
+  pre-repair localStorage cannot keep users on old feature/detail state.
+- Market workspace now exposes a direct `热点分析` feature button in addition
+  to market slice, overlay, saved view, ETF, theme, watchlist, and source
+  status controls.
+- Web Shell feature cards open same-shell Chinese function panels first.
+  Detailed Streamlit function pages open in a new tab because Streamlit
   component iframe sandboxing allows popups but blocks top-window navigation.
-- `scripts/uiVisualAcceptance.sh --summary-json`: `Pass`, 130 pass / 0 fail.
-- `scripts/pfiGate2ShellAcceptance.sh --summary-json`: `Pass`, 168 pass /
-  0 fail / 2 info.
-- `scripts/installPFIOSEntryApps.sh` refreshed Desktop, Downloads, and
-  Applications app entries. Each installed app has `CFBundleDisplayName` and
-  `CFBundleName` set to `PFI OS`, executable `PFI_OS`, and
-  `PFI_OS_PROJECT_ROOT` bound to this checkout.
+- `scripts/pfiGate2ShellAcceptance.sh --summary-json`: `Pass`, 228 pass /
+  0 fail / 2 info. The real browser UAT covers six primary workspaces plus
+  backtest, market-feel training, parameter scan, simulation, hotspots,
+  reports/policy, portfolio holdings review, and data diagnostics.
+- `scripts/uiVisualAcceptance.sh --summary-json`: `Pass`, 130 pass / 0 fail;
+  screenshot:
+  `data/systemAudit/UIVisualAcceptance_20260620_042620.png`.
 - `scripts/macosAppAcceptanceLite.sh --summary-json`: `Pass`, 29 pass /
-  0 fail / 2 info.
-- `scripts/cleanCache.sh --dry-run --json` previewed 25 disposable cache
-  paths; `scripts/cleanCache.sh --json` removed 25 paths, 151 files,
-  26 directories, about 2625.49 KB, with 0 failures. Reports, holdings,
-  imports, SQLite databases, source samples, and market bar caches were not
-  deleted.
+  0 fail / 2 info. Desktop, Downloads, and Applications app entries have
+  `CFBundleDisplayName` and `CFBundleName` set to `PFI OS`, executable
+  `PFI_OS`, and `PFI_OS_PROJECT_ROOT` bound to this checkout.
+- `python -m pytest tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py -q`:
+  22 passed.
+- `PFI_PYTHON=/private/tmp/pfi_os_ci_repro/bin/python PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' scripts/pfiGate.sh target`:
+  58 passed, 2 warnings; Secret scan passed.
+- `scripts/statusPFIOS.sh` after acceptance: `PFI OS 未在端口 8501-8510 运行。`
 
 ## Not Done
 

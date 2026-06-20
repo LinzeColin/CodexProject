@@ -935,13 +935,6 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
 
 
 def _render_html_frame(markup: str, *, height: int, width: object = None, scrolling: bool = False) -> None:
-    try:
-        iframe = getattr(st, "iframe")
-    except Exception:
-        iframe = None
-    if callable(iframe):
-        iframe(markup, height=height, width="stretch")
-        return
     components.html(markup, height=height, width=width, scrolling=scrolling)
 
 

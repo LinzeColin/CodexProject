@@ -299,7 +299,7 @@ async function verifyPrimaryActionNavigation(page, baseUrl, route, checks) {
   const shellFrame = await findShellFrame(page);
   checks.push(check(`PrimaryActionNavigation:${route.view}:ShellFrame`, shellFrame ? 'Pass' : 'Fail', route.view));
   if (!shellFrame) return;
-  await shellFrame.evaluate(() => localStorage.removeItem('pfi-context-v1')).catch(() => {});
+  await shellFrame.evaluate(() => localStorage.removeItem('pfi-context-v2')).catch(() => {});
   await shellFrame.locator(`[data-workspace="${route.workspace}"]`).click({ timeout: 10000 });
   await shellFrame.waitForFunction(
     (expectedWorkspace) => {

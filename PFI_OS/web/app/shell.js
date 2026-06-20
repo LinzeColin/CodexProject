@@ -1,4 +1,4 @@
-const CONTEXT_STORAGE_KEY = "pfi-context-v1";
+const CONTEXT_STORAGE_KEY = "pfi-context-v2";
 const FEEDBACK_SLA_MS = {
   instant: 100,
   skeleton: 300,
@@ -277,6 +277,7 @@ const DEFAULT_WORKSPACES = {
     ],
     features: [
       feature("市场垂直切片", "可用", "事件/热点/情绪", "从本地已观察行情生成市场证据、任务和复核队列。"),
+      feature("热点分析", "可用", "市场热度", "查看指数、ETF、主题和自选对象的强弱扩散。"),
       feature("组合影响覆盖", "复核", "组合复核输入", "把市场观察降级为组合复核输入，不读取私有持仓。"),
       feature("提醒与保存视图", "可用", "人工任务", "保存市场复核视图并创建人工复核提醒。"),
       feature("指数与 ETF", "可用", "市场事件", "查看 SPY、QQQ、行业 ETF 的缓存摘要。"),
