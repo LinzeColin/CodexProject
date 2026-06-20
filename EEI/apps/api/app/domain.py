@@ -153,6 +153,30 @@ class ScoringRollbackRequest(ScoringActivationRequest):
     )
 
 
+class ScoringProfileDraftCreate(BaseModel):
+    base_profile_version_id: UUID | None = None
+    profile_key: str = Field(
+        default="balanced-v2-online-draft",
+        min_length=3,
+        max_length=80,
+        pattern=r"^[a-z0-9][a-z0-9-]{1,78}[a-z0-9]$",
+    )
+    name: str = Field(default="Balanced v2 Online Draft", min_length=1, max_length=160)
+    weights: dict[str, float]
+    thresholds: dict[str, Any] = Field(default_factory=dict)
+    half_lives_days: dict[str, int] = Field(default_factory=dict)
+    missing_value_policy: Literal[
+        "renormalize_available",
+        "mark_unscored",
+        "conservative_penalty",
+    ] = "renormalize_available"
+    reason: str = Field(
+        default="Manual model-center online edit draft",
+        min_length=1,
+        max_length=500,
+    )
+
+
 class ScoringRecomputeRequest(BaseModel):
     expected_active_profile_version_id: UUID | None = None
     client_refresh_token: str | None = None
@@ -726,6 +750,26 @@ def list_audit_logs(
 @router.get("/scoring/profiles")
 def list_scoring_profiles(repository: RepositoryDependency) -> list[dict[str, Any]]:
     return repository.list_scoring_profiles()
+
+
+@router.post("/scoring/profiles", status_code=status.HTTP_201_CREATED)
+def create_scoring_profile_version(
+    payload: ScoringProfileDraftCreate,
+    repository: RepositoryDependency,
+) -> dict[str, Any]:
+    try:
+        return repository.create_scoring_profile_version(
+            base_profile_version_id=payload.base_profile_version_id,
+            profile_key=payload.profile_key,
+            name=payload.name,
+            weights=payload.weights,
+            thresholds=payload.thresholds or None,
+            half_lives_days=payload.half_lives_days or None,
+            missing_value_policy=payload.missing_value_policy,
+            reason=payload.reason,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
 
 
 @router.get("/scoring/active-context")

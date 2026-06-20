@@ -27,6 +27,13 @@ BENCHMARK_PARAMETER_KEYS = {
     100_000: "benchmark.scale_100k_p95_ms",
     1_000_000: "benchmark.scale_1m_p95_ms",
 }
+RELATIONSHIP_FAMILY_CYCLE = (
+    "supply_chain_operations",
+    "technology_data_ip",
+    "commercial_dependency",
+    "ownership_control",
+)
+VISIBLE_RELATIONSHIP_FAMILY_INDEXES = {0, 1}
 
 
 @dataclass(frozen=True)
@@ -146,39 +153,34 @@ def budget_for_scale(scale: int, budgets: dict[int, float]) -> float:
 def synthetic_edge(index: int, scale: int) -> SyntheticEdge:
     object_id = (index % max(32, scale // 8)) + 2
     confidence = 0.5 + ((index * 37) % 5000) / 10000
-    families = (
-        "supply_chain_operations",
-        "technology_data_ip",
-        "commercial_dependency",
-        "ownership_control",
-    )
     return SyntheticEdge(
         edge_id=index + 1,
         subject_id=1 if index % 2 == 0 else object_id,
         object_id=object_id if index % 2 == 0 else 1,
         confidence=confidence,
         observed_rank=scale - index,
-        family=families[index % len(families)],
+        family=RELATIONSHIP_FAMILY_CYCLE[index % len(RELATIONSHIP_FAMILY_CYCLE)],
     )
 
 
 def measure_api_projection(scale: int) -> tuple[dict[str, Any], list[SyntheticEdge]]:
     start = perf_counter()
     candidate_count = 0
-    top_edges: list[tuple[tuple[float, int, int], SyntheticEdge]] = []
+    top_edges: list[tuple[tuple[float, int, int], int]] = []
     for index in range(scale):
-        edge = synthetic_edge(index, scale)
-        if edge.family not in {"supply_chain_operations", "technology_data_ip"}:
+        if index % len(RELATIONSHIP_FAMILY_CYCLE) not in VISIBLE_RELATIONSHIP_FAMILY_INDEXES:
             continue
         candidate_count += 1
-        rank_key = (edge.confidence, edge.observed_rank, -edge.edge_id)
+        edge_id = index + 1
+        confidence = 0.5 + ((index * 37) % 5000) / 10000
+        rank_key = (confidence, scale - index, -edge_id)
         if len(top_edges) < MAX_VISIBLE_EDGES + 1:
-            heapq.heappush(top_edges, (rank_key, edge))
+            heapq.heappush(top_edges, (rank_key, index))
         elif rank_key > top_edges[0][0]:
-            heapq.heapreplace(top_edges, (rank_key, edge))
+            heapq.heapreplace(top_edges, (rank_key, index))
     selected_edges = [
-        edge
-        for _, edge in sorted(
+        synthetic_edge(index, scale)
+        for _, index in sorted(
             top_edges,
             key=lambda item: item[0],
             reverse=True,

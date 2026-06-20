@@ -7,7 +7,7 @@
   ],
   "status": "PASS",
   "mode": "browser_runtime",
-  "generated_at": "2026-06-20T04:34:58Z",
+  "generated_at": "2026-06-20T21:50:26Z",
   "environment": {
     "node": "v25.7.0",
     "platform": "darwin-25.5.0-arm64",
@@ -37,18 +37,18 @@
         "long_task_max_count": 10
       },
       "browser_render_ms": {
-        "min": 20.5,
-        "p50": 20.5,
-        "p95": 20.5,
-        "p99": 20.5,
-        "max": 20.5
+        "min": 20.9,
+        "p50": 20.9,
+        "p95": 20.9,
+        "p99": 20.9,
+        "max": 20.9
       },
       "browser_frame_delta_ms": {
-        "min": 83.3,
-        "p50": 83.3,
-        "p95": 83.3,
-        "p99": 83.3,
-        "max": 83.3
+        "min": 100,
+        "p50": 100,
+        "p95": 100,
+        "p99": 100,
+        "max": 100
       },
       "browser_heap_delta_bytes": {
         "min": 934752,
@@ -65,7 +65,7 @@
         "max": 505193
       },
       "browser_long_task_count": 1,
-      "browser_max_long_task_ms": 89,
+      "browser_max_long_task_ms": 95,
       "last_counts": {
         "rendered_nodes": 200,
         "rendered_edges": 2000,
@@ -89,25 +89,25 @@
         "long_task_max_count": 10
       },
       "browser_render_ms": {
-        "min": 17.2,
-        "p50": 17.2,
-        "p95": 17.2,
-        "p99": 17.2,
-        "max": 17.2
+        "min": 20.1,
+        "p50": 20.1,
+        "p95": 20.1,
+        "p99": 20.1,
+        "max": 20.1
       },
       "browser_frame_delta_ms": {
-        "min": 49.9,
-        "p50": 49.9,
-        "p95": 49.9,
-        "p99": 49.9,
-        "max": 49.9
+        "min": 50,
+        "p50": 50,
+        "p95": 50,
+        "p99": 50,
+        "max": 50
       },
       "browser_heap_delta_bytes": {
-        "min": 147271,
-        "p50": 147271,
-        "p95": 147271,
-        "p99": 147271,
-        "max": 147271
+        "min": 148639,
+        "p50": 148639,
+        "p95": 148639,
+        "p99": 148639,
+        "max": 148639
       },
       "browser_dom_payload_bytes": {
         "min": 567398,
@@ -117,7 +117,7 @@
         "max": 567398
       },
       "browser_long_task_count": 1,
-      "browser_max_long_task_ms": 51,
+      "browser_max_long_task_ms": 53,
       "last_counts": {
         "rendered_nodes": 500,
         "rendered_edges": 2000,
@@ -141,25 +141,25 @@
         "long_task_max_count": 10
       },
       "browser_render_ms": {
-        "min": 14.2,
-        "p50": 14.2,
-        "p95": 14.2,
-        "p99": 14.2,
-        "max": 14.2
+        "min": 14.4,
+        "p50": 14.4,
+        "p95": 14.4,
+        "p99": 14.4,
+        "max": 14.4
       },
       "browser_frame_delta_ms": {
-        "min": 50,
-        "p50": 50,
-        "p95": 50,
-        "p99": 50,
-        "max": 50
+        "min": 50.1,
+        "p50": 50.1,
+        "p95": 50.1,
+        "p99": 50.1,
+        "max": 50.1
       },
       "browser_heap_delta_bytes": {
-        "min": 986794,
-        "p50": 986794,
-        "p95": 986794,
-        "p99": 986794,
-        "max": 986794
+        "min": 986566,
+        "p50": 986566,
+        "p95": 986566,
+        "p99": 986566,
+        "max": 986566
       },
       "browser_dom_payload_bytes": {
         "min": 567399,
@@ -168,8 +168,8 @@
         "p99": 567399,
         "max": 567399
       },
-      "browser_long_task_count": 1,
-      "browser_max_long_task_ms": 51,
+      "browser_long_task_count": 0,
+      "browser_max_long_task_ms": 0,
       "last_counts": {
         "rendered_nodes": 500,
         "rendered_edges": 2000,

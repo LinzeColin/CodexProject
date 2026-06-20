@@ -1052,10 +1052,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ScoringProfile'
+              $ref: '#/components/schemas/ScoringProfileDraftCreate'
       responses:
         '201':
           description: Version created and logged
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoringProfileDraftResponse'
         '422':
           description: Weights or parameters invalid
   /v1/scoring/active-context:
@@ -3382,6 +3386,96 @@ components:
           minLength: 1
         active:
           type: boolean
+    ScoringProfileDraftCreate:
+      type: object
+      required:
+      - profile_key
+      - name
+      - weights
+      - reason
+      properties:
+        base_profile_version_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        profile_key:
+          type: string
+          pattern: ^[a-z0-9][a-z0-9-]{1,78}[a-z0-9]$
+        name:
+          type: string
+          minLength: 1
+          maxLength: 160
+        weights:
+          type: object
+          additionalProperties:
+            type: number
+            minimum: 0
+            maximum: 0.7
+        thresholds:
+          type: object
+          additionalProperties: true
+        half_lives_days:
+          type: object
+          additionalProperties:
+            type: integer
+            minimum: 30
+            maximum: 1825
+        missing_value_policy:
+          type: string
+          enum:
+          - renormalize_available
+          - mark_unscored
+          - conservative_penalty
+          default: renormalize_available
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+    ScoringProfileDraftResponse:
+      type: object
+      required:
+      - schema_version
+      - status
+      - profile
+      - base_profile
+      - active_context
+      - validation
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - scoring-profile-draft-v1
+        status:
+          type: string
+          enum:
+          - created
+        profile:
+          $ref: '#/components/schemas/ScoringProfile'
+        base_profile:
+          $ref: '#/components/schemas/ScoringProfile'
+        active_context:
+          $ref: '#/components/schemas/ActiveAnalysisContext'
+        validation:
+          type: object
+          required:
+          - weight_sum
+          - changed_weights
+          - active_context_unchanged
+          - activation_required
+          properties:
+            weight_sum:
+              type: number
+              minimum: 0.999
+              maximum: 1.001
+            changed_weights:
+              type: array
+              items:
+                type: string
+            active_context_unchanged:
+              type: boolean
+            activation_required:
+              type: boolean
     ActiveAnalysisContext:
       type: object
       required:

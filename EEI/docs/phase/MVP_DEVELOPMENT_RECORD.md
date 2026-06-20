@@ -3587,5 +3587,75 @@ Status: LOCAL AND REMOTE CI VALIDATED; A203/A204-A206 STILL IN PROGRESS
 ### Remaining gaps
 
 - A203 still depends on production-approved relationship edges and current downstream release gates.
-- A204/A205 still need online model editing and long-duration refresh stability.
+- At this score-result recompute slice point, A204/A205 still needed online model editing and long-duration refresh stability. The follow-on online draft editing slice below addresses the online-editing portion.
 - A206/A209 still need 4h and 24h operator soak evidence for worker wake, retry, recovery and dead-letter stability.
+
+## 2026-06-21 - T1303/A204-A205 model-center online draft editing slice
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A204-A205 STILL IN PROGRESS
+
+### Scope
+
+- Implemented `POST /v1/scoring/profiles` as the API-first model-center online editing path.
+- The endpoint creates an inactive draft `scoring_profile_versions` row from a base profile, validates exact weight keys, per-weight range `0..0.7`, total weight `1.0 +/- 0.001`, optional half-life key coverage and allowed missing-value policy.
+- The draft creation transaction preserves the current active analysis context and writes `create_scoring_profile_version` into `operation_logs`.
+- Updated the frontend model-center preview button so it creates a server-side draft and sets that draft as the activation target; when no API base exists it keeps the explicit local preview fallback.
+- Extended the A204/A205 mock E2E to cover draft creation -> activation -> stale refresh -> score recompute enqueue -> rollback.
+- Extended the PostgreSQL integration flow so the activation target is created through the public API instead of by direct SQL insertion, and invalid draft weights fail closed with HTTP 422.
+- Added unit regressions that keep draft `weights` required at the API schema boundary and reject boolean `half_lives_days` values before they can masquerade as integers.
+
+### Acceptance mapping
+
+- T1303 -> A204 for model config version creation, operation log and transactional activation target handoff.
+- T1303 -> A205 for preserving active context until explicit activation and then refreshing global visible state after activation.
+- A204/A205 remain `IN_PROGRESS`, not `DONE`, until remote PostgreSQL CI and long-duration refresh stability evidence are current.
+
+### Local validation
+
+- `python3 -m py_compile apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS after rerun with network access because sandbox DNS blocked npx registry resolution.
+- `.venv/bin/python -m pytest -q tests/unit/test_api_health.py tests/unit/test_scale_benchmarks.py tests/unit/test_scoring.py`: PASS with 37/37.
+- `.venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `.env`/`DATABASE_URL`; remote GitHub Actions must provide PostgreSQL proof.
+- `npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g "A204 and A205" --workers=1`: PASS with 1/1.
+
+### Remaining gaps
+
+- Remote G2 PostgreSQL CI must prove the public draft-creation API against migrations/seeds.
+- A204/A205 still need process-manager wake and 4h/24h refresh stability evidence before closure.
+- A206/A209 still need 4h and 24h operator soak evidence for worker wake, retry, recovery and dead-letter stability.
+
+## 2026-06-21 - T1306/A208 scale benchmark projection hardening slice
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A208 REMAINS CLOSED AFTER REVALIDATION
+
+### Scope
+
+- Optimized `scripts/run_scale_benchmarks.py` API projection so the benchmark keeps scalar rank fields in the bounded top-k heap and only instantiates `SyntheticEdge` objects for returned visible edges.
+- Preserved the existing deterministic family filter, rank key, visible edge limit, node counting, layout, render, memory, frame and long-task output contracts.
+- Regenerated the formal A208 benchmark artifacts:
+  - `artifacts/tests/a208/t1306_scale_benchmark_smoke.json`
+  - `artifacts/tests/a208/t1306_browser_runtime_benchmark.json`
+  - `artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json`
+- The regenerated operator artifact reports 10k, 100k and 1m relationship measurements with full A208 coverage and zero remaining A208 items.
+
+### Acceptance mapping
+
+- T1306 -> A208.
+- This is a performance hardening and evidence refresh for an already closed A208 scope; it does not close A209 soak or any v0.1 production blocker outside T1306.
+
+### Local validation
+
+- `python3 -m py_compile scripts/run_scale_benchmarks.py tests/unit/test_scale_benchmarks.py`: PASS.
+- `.venv/bin/ruff check scripts/run_scale_benchmarks.py tests/unit/test_scale_benchmarks.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_scale_benchmarks.py`: PASS with 4/4.
+- `.venv/bin/python scripts/run_scale_benchmarks.py --scales 1000000 --iterations 1 --mode operator_full --output /tmp/eei-scale-benchmark-1m-after-opt.json --fail-on-budget --quiet`: PASS; 1m total p95 about 703 ms versus the 10000 ms budget in this local run.
+- `node scripts/run_browser_scale_benchmarks.mjs --scales 10000,100000,1000000 --iterations 1 --output artifacts/tests/a208/t1306_browser_runtime_benchmark.json --fail-on-budget --quiet`: PASS.
+- `.venv/bin/python scripts/run_scale_benchmarks.py --scales 1000 --iterations 2 --mode ci_smoke --output artifacts/tests/a208/t1306_scale_benchmark_smoke.json --fail-on-budget --quiet`: PASS.
+- `.venv/bin/python scripts/run_scale_benchmarks.py --scales 10000,100000,1000000 --iterations 1 --mode operator_full --output artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json --browser-runtime-artifact artifacts/tests/a208/t1306_browser_runtime_benchmark.json --fail-on-budget --require-full-targets --quiet`: PASS.
+
+### Remaining gaps
+
+- Remote CI must revalidate the updated benchmark script and regenerated A208 artifacts.
+- A209 4h/24h soak remains open and is intentionally not affected by this A208 hardening slice.

@@ -32,6 +32,20 @@ export type ScoringProfileRecord = {
   reason?: string;
 };
 
+export type ScoringProfileDraftResponse = {
+  schema_version: "scoring-profile-draft-v1";
+  status: "created";
+  profile: ScoringProfileRecord;
+  base_profile: ScoringProfileRecord;
+  active_context: ActiveModelContextRecord;
+  validation: {
+    weight_sum: number;
+    changed_weights: string[];
+    active_context_unchanged: boolean;
+    activation_required: boolean;
+  };
+};
+
 export type ModelActivationServerResponse = {
   schema_version: "model-activation-v1";
   status: "activated";
@@ -105,6 +119,26 @@ export type ModelProfileListResult =
   | {
       mode: "local_fallback";
       status: "listed";
+      reason: "api_base_missing";
+    };
+
+export type ModelProfileDraftResult =
+  | {
+      mode: "server";
+      status: "created";
+      endpoint: string;
+      response: ScoringProfileDraftResponse;
+    }
+  | {
+      mode: "server";
+      status: "error";
+      endpoint: string;
+      reason: string;
+      detail?: unknown;
+    }
+  | {
+      mode: "local_fallback";
+      status: "error";
       reason: "api_base_missing";
     };
 
@@ -218,6 +252,53 @@ export async function listModelProfiles(): Promise<ModelProfileListResult> {
     };
   } catch (error) {
     return fetchProfileErrorResult(endpoint, error);
+  }
+}
+
+export async function createModelProfileDraft(payload: {
+  baseProfileVersionId?: string;
+  profileKey: string;
+  name: string;
+  weights: Record<string, number>;
+  missingValuePolicy?: "renormalize_available" | "mark_unscored" | "conservative_penalty";
+  reason: string;
+}): Promise<ModelProfileDraftResult> {
+  const apiBaseUrl = readModelContextApiBaseUrl();
+  if (!apiBaseUrl) {
+    return { mode: "local_fallback", status: "error", reason: "api_base_missing" };
+  }
+  const endpoint = `${apiBaseUrl}/v1/scoring/profiles`;
+  try {
+    const response = await window.fetch(endpoint, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        base_profile_version_id: payload.baseProfileVersionId ?? null,
+        profile_key: payload.profileKey,
+        name: payload.name,
+        weights: payload.weights,
+        missing_value_policy: payload.missingValuePolicy ?? "renormalize_available",
+        reason: payload.reason
+      })
+    });
+    const responsePayload = (await response.json().catch(() => null)) as unknown;
+    if (!response.ok || !isScoringProfileDraftResponse(responsePayload)) {
+      return {
+        mode: "server",
+        status: "error",
+        endpoint,
+        reason: `http_${response.status}`,
+        detail: responsePayload
+      };
+    }
+    return {
+      mode: "server",
+      status: "created",
+      endpoint,
+      response: responsePayload
+    };
+  } catch (error) {
+    return fetchDraftErrorResult(endpoint, error);
   }
 }
 
@@ -402,6 +483,26 @@ function isModelActivationServerResponse(value: unknown): value is ModelActivati
   );
 }
 
+function isScoringProfileDraftResponse(value: unknown): value is ScoringProfileDraftResponse {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "schema_version" in value &&
+    value.schema_version === "scoring-profile-draft-v1" &&
+    "status" in value &&
+    value.status === "created" &&
+    "profile" in value &&
+    isScoringProfileRecord(value.profile) &&
+    "base_profile" in value &&
+    isScoringProfileRecord(value.base_profile) &&
+    "active_context" in value &&
+    isActiveModelContextRecord(value.active_context) &&
+    "validation" in value &&
+    typeof value.validation === "object" &&
+    value.validation !== null
+  );
+}
+
 function isScoreRecomputeJobRecord(value: unknown): value is ScoreRecomputeJobRecord {
   return (
     typeof value === "object" &&
@@ -462,6 +563,16 @@ function fetchErrorResult(endpoint: string, error: unknown): ModelContextSyncRes
 }
 
 function fetchProfileErrorResult(endpoint: string, error: unknown): ModelProfileListResult {
+  return {
+    mode: "server",
+    status: "error",
+    endpoint,
+    reason: error instanceof Error ? error.name : "fetch_failed",
+    detail: error instanceof Error ? error.message : String(error)
+  };
+}
+
+function fetchDraftErrorResult(endpoint: string, error: unknown): ModelProfileDraftResult {
   return {
     mode: "server",
     status: "error",
