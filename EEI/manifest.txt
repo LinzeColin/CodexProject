@@ -245,6 +245,8 @@ infra/db/migrations/0008_server_saved_views/down.sql
 infra/db/migrations/0008_server_saved_views/up.sql
 infra/db/migrations/0009_transactional_outbox/down.sql
 infra/db/migrations/0009_transactional_outbox/up.sql
+infra/db/migrations/0010_operation_log_actor_principal/down.sql
+infra/db/migrations/0010_operation_log_actor_principal/up.sql
 infra/db/migrations/README.md
 infra/db/seeds/README.md
 infra/docker/README.md

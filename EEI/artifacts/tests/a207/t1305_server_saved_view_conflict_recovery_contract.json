@@ -10,6 +10,7 @@
     "PostgreSQL saved_view_versions immutable version chain with create/update/restore action_type",
     "FastAPI /v1/saved-views create/list/get/update/version-list/restore endpoints",
     "Saved-view X-EEI-User-Namespace and X-EEI-Actor header contract with local_user default for MVP local mode",
+    "operation_logs.actor principal constraint expanded to the same 1-120 character pattern used by saved-view headers",
     "Repository get/update/version-list/restore lookups constrained by saved_views.namespace so cross-namespace access fails closed as 404",
     "Same saved-view name can exist in different namespaces while duplicate names conflict inside one namespace/workspace",
     "Optimistic expected_version conflict response through HTTP 409 and saved-view-conflict-v1 detail",
@@ -19,6 +20,8 @@
   "files": [
     "infra/db/migrations/0008_server_saved_views/up.sql",
     "infra/db/migrations/0008_server_saved_views/down.sql",
+    "infra/db/migrations/0010_operation_log_actor_principal/up.sql",
+    "infra/db/migrations/0010_operation_log_actor_principal/down.sql",
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
     "scripts/check_database_schema.py",
