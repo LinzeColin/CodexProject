@@ -3411,7 +3411,7 @@ Status: LOCAL AND REMOTE CI VALIDATED; A202/A206 STILL IN PROGRESS
 
 ## 2026-06-21 - T1301/A202 operator-provided official source capture contract
 
-Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A202 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A202 STILL IN PROGRESS
 
 ### Scope
 
@@ -3464,6 +3464,14 @@ These are recorded in `artifacts/tests/a202/t1301_operator_source_capture_contra
 - `python3 -m py_compile scripts/load_operator_source_captures.py tests/integration/test_database_migrations.py`: PASS.
 - `.venv/bin/ruff check scripts/load_operator_source_captures.py tests/integration/test_database_migrations.py scripts/validate_v5_production_readiness_sync.py`: PASS.
 - `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS locally after non-sandbox Chromium permission rerun; 31 unit tests passed, typecheck passed and browser/scale/soak smoke passed.
+
+### Remote validation
+
+- GitHub Actions run `27882366565` / job `82512011341` on commit `bea28f893fd73af4c4e78c6c701365f6e95d9b51`: PASS.
+- Step 10 `Verify G2 PostgreSQL integration`: PASS, proving `0011_operator_source_capture_constraints` accepts `operator_source_capture` and `operator_verified` rows.
+- Step 11 `Verify G2 browser E2E`: PASS.
+- Step 12 `Verify G2 live FastAPI PostgreSQL E2E`: PASS.
 
 ### Remaining gaps
 
