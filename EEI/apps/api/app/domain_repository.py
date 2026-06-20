@@ -55,6 +55,9 @@ EXPLORATION_STATE_VERSION = "exploration-state-v1"
 DEFAULT_GRAPH_BUDGET = {"max_nodes": 42, "max_edges": 64, "expand_nodes": 12}
 GRAPH_HARD_LIMITS = {"max_hops": 2, "max_nodes": 500, "max_edges": 2000, "max_path_length": 8}
 PATH_RESULT_LIMIT = 8
+GRAPH_QUERY_VERSION = "bounded-recursive-graph-v1"
+SCORING_SERVICE_VERSION = "candidate-score-explanation-v1"
+CANDIDATE_SOURCE_THRESHOLD_MIN = 2
 RELATIONSHIP_FAMILIES = {
     "corporate_structure",
     "ownership_control",
@@ -1604,6 +1607,41 @@ class DomainRepository:
         ).fetchone()
         if row is None:
             return None
+        return self.scoring_profile_payload(row)
+
+    def scoring_profile_by_id(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        profile_id: UUID,
+    ) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              spv.id,
+              sp.profile_key,
+              sp.name,
+              spv.version,
+              sm.model_key,
+              sm.formula,
+              spv.weights,
+              spv.thresholds,
+              spv.half_lives,
+              spv.missing_value_policy,
+              spv.reason,
+              spv.active
+            FROM scoring_profile_versions spv
+            JOIN scoring_profiles sp ON sp.id = spv.profile_id
+            JOIN scoring_models sm ON sm.id = spv.model_id
+            WHERE spv.id = %s
+            """,
+            (profile_id,),
+        ).fetchone()
+        if row is None:
+            raise NotFoundError(f"Scoring profile version not found: {profile_id}")
+        return self.scoring_profile_payload(row)
+
+    @staticmethod
+    def scoring_profile_payload(row: dict[str, Any]) -> dict[str, Any]:
         formula = row.get("formula") or {}
         return _jsonable(
             {
@@ -1647,25 +1685,7 @@ class DomainRepository:
             ).fetchall()
         profiles: list[dict[str, Any]] = []
         for row in rows:
-            formula = row.get("formula") or {}
-            profiles.append(
-                _jsonable(
-                    {
-                        "id": row["id"],
-                        "profile_key": row["profile_key"],
-                        "name": row["name"],
-                        "version": row["version"],
-                        "model_key": row["model_key"],
-                        "weights": row["weights"],
-                        "quality_factor": formula.get("quality_adjustment", {}),
-                        "half_lives_days": row["half_lives"],
-                        "thresholds": row["thresholds"],
-                        "missing_value_policy": row["missing_value_policy"],
-                        "reason": row["reason"],
-                        "active": row["active"],
-                    }
-                )
-            )
+            profiles.append(self.scoring_profile_payload(row))
         return profiles
 
     def list_watchlists(self) -> list[dict[str, Any]]:
@@ -2137,6 +2157,366 @@ class DomainRepository:
             "restore_payload": restore_payload,
         }
 
+    def production_context_for_connection(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        *,
+        as_of: datetime | str | None,
+        active_profile: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        snapshot = connection.execute(
+            """
+            SELECT id, snapshot_key, scope, record_mode, status, as_of, activated_at, metadata
+            FROM data_snapshots
+            WHERE status = 'active'
+            ORDER BY activated_at DESC NULLS LAST, created_at DESC
+            LIMIT 1
+            """
+        ).fetchone()
+        relationship_modes = connection.execute(
+            """
+            SELECT
+              count(r.id)::int AS total,
+              count(r.id) FILTER (WHERE frn.synthetic = true)::int AS synthetic_fixture,
+              count(r.id) FILTER (WHERE frn.synthetic IS DISTINCT FROM true)::int AS database
+            FROM relationships r
+            LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+            WHERE r.status NOT IN ('superseded', 'revoked')
+            """
+        ).fetchone()
+        candidate_modes = connection.execute(
+            """
+            SELECT
+              COALESCE(
+                jsonb_object_agg(record_mode, row_count ORDER BY record_mode),
+                '{}'::jsonb
+              ) AS record_modes
+            FROM (
+              SELECT record_mode, count(*)::int AS row_count
+              FROM relationship_fact_candidates
+              GROUP BY record_mode
+            ) counts
+            """
+        ).fetchone()
+        candidate_status = connection.execute(
+            """
+            SELECT
+              count(*)::int AS total,
+              count(*) FILTER (WHERE publication_status = 'published')::int AS published,
+              count(*) FILTER (WHERE publication_status <> 'published')::int AS unpublished,
+              count(*) FILTER (WHERE source_threshold_met = false)::int
+                AS source_threshold_open,
+              count(*) FILTER (WHERE review_status <> 'human_verified')::int
+                AS review_open
+            FROM relationship_fact_candidates
+            """
+        ).fetchone()
+        profile = (
+            active_profile
+            if active_profile is not None
+            else self.active_scoring_profile(connection)
+        )
+        return _jsonable(
+            {
+                "schema_version": "production-context-v1",
+                "request_as_of": as_of,
+                "data_snapshot": dict(snapshot) if snapshot else None,
+                "active_scoring_profile_version_id": (
+                    profile["id"] if profile else None
+                ),
+                "active_scoring_profile": {
+                    "profile_key": profile["profile_key"],
+                    "version": profile["version"],
+                    "model_key": profile["model_key"],
+                }
+                if profile
+                else None,
+                "graph_query_version": GRAPH_QUERY_VERSION,
+                "scoring_service_version": SCORING_SERVICE_VERSION,
+                "record_modes": {
+                    "published_relationships": {
+                        "database": relationship_modes["database"],
+                        "fixture": relationship_modes["synthetic_fixture"],
+                        "total": relationship_modes["total"],
+                    },
+                    "relationship_fact_candidates": candidate_modes["record_modes"],
+                },
+                "candidate_fact_summary": dict(candidate_status),
+                "publication_policy": {
+                    "published_relationship_table": "relationships",
+                    "candidate_fact_table": "relationship_fact_candidates",
+                    "relationship_fact_candidates_in_graph_edges": False,
+                    "publish_requires_source_threshold": True,
+                    "publish_requires_human_review": True,
+                    "minimum_independent_sources": CANDIDATE_SOURCE_THRESHOLD_MIN,
+                },
+            }
+        )
+
+    def candidate_fact_summary_for_focus(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        *,
+        focus_entity_id: UUID,
+        relationship_families: list[str],
+    ) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              count(*)::int AS total,
+              count(*) FILTER (WHERE rfc.publication_status = 'published')::int AS published,
+              count(*) FILTER (WHERE rfc.publication_status <> 'published')::int
+                AS excluded_unpublished,
+              count(*) FILTER (WHERE rfc.source_threshold_met = false)::int
+                AS source_threshold_open,
+              count(*) FILTER (WHERE rfc.review_status <> 'human_verified')::int
+                AS review_open
+            FROM relationship_fact_candidates rfc
+            JOIN entity_resolution_candidates subject
+              ON subject.id = rfc.subject_resolution_id
+            JOIN entity_resolution_candidates object
+              ON object.id = rfc.object_resolution_id
+            WHERE rfc.relationship_family = ANY(%(relationship_families)s::text[])
+              AND (
+                subject.matched_entity_id = %(focus_entity_id)s
+                OR object.matched_entity_id = %(focus_entity_id)s
+              )
+            """,
+            {
+                "focus_entity_id": focus_entity_id,
+                "relationship_families": relationship_families,
+            },
+        ).fetchone()
+        return _jsonable(
+            {
+                **dict(row),
+                "excluded_from_graph_edges": row["excluded_unpublished"],
+                "reason": (
+                    "Relationship fact candidates remain outside graph edges until "
+                    "source threshold and human review publication gates pass."
+                ),
+            }
+        )
+
+    def explain_score(
+        self,
+        *,
+        object_type: str,
+        object_id: UUID,
+        profile_id: UUID | None = None,
+    ) -> dict[str, Any]:
+        if object_type != "relationship_fact_candidate":
+            raise RepositoryError(
+                "Only relationship_fact_candidate score explanations are implemented "
+                "in the T1302/A203 API contract slice"
+            )
+        with self.connect() as connection:
+            profile = (
+                self.scoring_profile_by_id(connection, profile_id)
+                if profile_id
+                else self.active_scoring_profile(connection)
+            )
+            if profile is None:
+                raise RepositoryError("No active scoring profile is available")
+            row = connection.execute(
+                """
+                SELECT
+                  rfc.id,
+                  rfc.candidate_key,
+                  rfc.relationship_type,
+                  rfc.relationship_family,
+                  rfc.record_mode,
+                  rfc.fact_status,
+                  rfc.publication_status,
+                  rfc.confidence,
+                  rfc.independent_source_count,
+                  rfc.source_threshold_met,
+                  rfc.review_status,
+                  rfc.parser_version,
+                  rfc.structured_fact,
+                  rfc.counter_evidence,
+                  subject.id AS subject_resolution_id,
+                  subject.candidate_name AS subject_candidate_name,
+                  subject.matched_entity_id AS subject_entity_id,
+                  subject.matched_research_id AS subject_research_id,
+                  subject.confidence AS subject_resolution_confidence,
+                  object.id AS object_resolution_id,
+                  object.candidate_name AS object_candidate_name,
+                  object.matched_entity_id AS object_entity_id,
+                  object.matched_research_id AS object_research_id,
+                  object.confidence AS object_resolution_confidence,
+                  COALESCE(
+                    (
+                      SELECT jsonb_agg(
+                        jsonb_build_object(
+                          'source_document_id', sd.id,
+                          'source_tier', s.source_tier,
+                          'publisher', sd.publisher,
+                          'title', sd.title,
+                          'url', sd.url,
+                          'document_date', sd.document_date,
+                          'observed_at', sd.observed_at,
+                          'retrieved_at', sd.retrieved_at,
+                          'content_hash', sd.content_hash,
+                          'role', rfce.role,
+                          'locator', rfce.locator,
+                          'support_excerpt', rfce.support_excerpt
+                        )
+                        ORDER BY rfce.role, sd.publisher, sd.url
+                      )
+                      FROM relationship_fact_candidate_evidence rfce
+                      JOIN source_documents sd ON sd.id = rfce.source_document_id
+                      JOIN sources s ON s.id = sd.source_id
+                      WHERE rfce.candidate_id = rfc.id
+                    ),
+                    '[]'::jsonb
+                  ) AS evidence,
+                  COALESCE(
+                    (
+                      SELECT jsonb_agg(
+                        jsonb_build_object(
+                          'queue_key', mrq.queue_key,
+                          'priority', mrq.priority,
+                          'status', mrq.status,
+                          'reason', mrq.reason,
+                          'requested_by', mrq.requested_by,
+                          'created_at', mrq.created_at
+                        )
+                        ORDER BY mrq.priority, mrq.created_at
+                      )
+                      FROM manual_review_queue mrq
+                      WHERE mrq.object_type = 'relationship_fact_candidate'
+                        AND mrq.object_id = rfc.id
+                    ),
+                    '[]'::jsonb
+                  ) AS review_queue
+                FROM relationship_fact_candidates rfc
+                JOIN entity_resolution_candidates subject
+                  ON subject.id = rfc.subject_resolution_id
+                JOIN entity_resolution_candidates object
+                  ON object.id = rfc.object_resolution_id
+                WHERE rfc.id = %s
+                """,
+                (object_id,),
+            ).fetchone()
+            if row is None:
+                raise NotFoundError(f"Relationship fact candidate not found: {object_id}")
+            return self.score_explanation_payload(
+                row=row,
+                profile=profile,
+                production_context=self.production_context_for_connection(
+                    connection,
+                    as_of=None,
+                    active_profile=profile,
+                ),
+            )
+
+    @staticmethod
+    def score_explanation_payload(
+        *,
+        row: dict[str, Any],
+        profile: dict[str, Any],
+        production_context: dict[str, Any],
+    ) -> dict[str, Any]:
+        confidence = float(row["confidence"])
+        source_count = int(row["independent_source_count"])
+        evidence = row["evidence"] or []
+        source_threshold_ratio = min(
+            source_count / CANDIDATE_SOURCE_THRESHOLD_MIN,
+            1,
+        )
+        raw_score = round(confidence * 100, 2)
+        evidence_quality = round(source_threshold_ratio * 100, 2)
+        adjusted_score = round(raw_score * (evidence_quality / 100), 2)
+        present_inputs = [
+            row["confidence"] is not None,
+            row["independent_source_count"] is not None,
+            row["parser_version"] is not None,
+            row["review_status"] is not None,
+            bool(evidence),
+        ]
+        coverage = round((sum(1 for item in present_inputs if item) / len(present_inputs)) * 100, 2)
+        missing_inputs: list[str] = []
+        if not row["source_threshold_met"]:
+            missing_inputs.append(
+                f"independent_source_threshold>={CANDIDATE_SOURCE_THRESHOLD_MIN}"
+            )
+        if row["review_status"] != "human_verified":
+            missing_inputs.append("human_review_verification")
+        if row["publication_status"] != "published":
+            missing_inputs.append("published_relationship_version")
+        if not evidence:
+            missing_inputs.append("evidence_chain")
+        return _jsonable(
+            {
+                "object_type": "relationship_fact_candidate",
+                "object_id": row["id"],
+                "candidate_key": row["candidate_key"],
+                "relationship_type": row["relationship_type"],
+                "relationship_family": row["relationship_family"],
+                "record_mode": row["record_mode"],
+                "fact_status": row["fact_status"],
+                "publication_status": row["publication_status"],
+                "source_threshold": {
+                    "minimum_independent_sources": CANDIDATE_SOURCE_THRESHOLD_MIN,
+                    "independent_source_count": source_count,
+                    "met": row["source_threshold_met"],
+                },
+                "review_status": row["review_status"],
+                "parser_version": row["parser_version"],
+                "raw_score": raw_score,
+                "evidence_quality": evidence_quality,
+                "adjusted_score": adjusted_score,
+                "coverage": coverage,
+                "contributions": [
+                    {
+                        "input": "candidate_confidence",
+                        "value": confidence,
+                        "score_points": raw_score,
+                    },
+                    {
+                        "input": "independent_source_count",
+                        "value": source_count,
+                        "score_multiplier": source_threshold_ratio,
+                    },
+                    {
+                        "input": "review_status",
+                        "value": row["review_status"],
+                        "publication_gate_passed": row["review_status"] == "human_verified",
+                    },
+                    {
+                        "input": "publication_status",
+                        "value": row["publication_status"],
+                        "included_in_graph_edges": row["publication_status"] == "published",
+                    },
+                ],
+                "missing_inputs": missing_inputs,
+                "model_version": f"{profile['model_key']}@{profile['version']}",
+                "profile_version": f"{profile['profile_key']}@{profile['version']}",
+                "profile_version_id": profile["id"],
+                "structured_fact": row["structured_fact"],
+                "counter_evidence": row["counter_evidence"],
+                "subject": {
+                    "resolution_id": row["subject_resolution_id"],
+                    "candidate_name": row["subject_candidate_name"],
+                    "entity_id": row["subject_entity_id"],
+                    "research_id": row["subject_research_id"],
+                    "resolution_confidence": row["subject_resolution_confidence"],
+                },
+                "object": {
+                    "resolution_id": row["object_resolution_id"],
+                    "candidate_name": row["object_candidate_name"],
+                    "entity_id": row["object_entity_id"],
+                    "research_id": row["object_research_id"],
+                    "resolution_confidence": row["object_resolution_confidence"],
+                },
+                "evidence": evidence,
+                "review_queue": row["review_queue"] or [],
+                "production_context": production_context,
+                "scoring_service_version": SCORING_SERVICE_VERSION,
+            }
+        )
+
     def start_exploration(self, request: dict[str, Any]) -> dict[str, Any]:
         focus = request["focus"]
         if focus["object_type"] != "entity":
@@ -2405,6 +2785,7 @@ class DomainRepository:
         graph = self.graph_for_focus(connection, focus_entity_id, request)
         state = self.normalize_exploration_state(session_id=session_id, request=request)
         url_state = self.exploration_url_state(state)
+        active_profile = self.active_scoring_profile(connection) or {}
         history = connection.execute(
             """
             SELECT sequence_no, from_entity_id, to_entity_id, action, inherited_state, created_at
@@ -2421,7 +2802,7 @@ class DomainRepository:
                 "focus": focus,
                 "state": {**state, "url_state": url_state},
                 "history": history,
-                "active_profile": self.active_scoring_profile(connection) or {},
+                "active_profile": active_profile,
                 "coverage": graph["coverage"],
                 "human_summary": {
                     "fixture_disclosure": "Synthetic fixture records are explicitly marked.",
@@ -2539,6 +2920,15 @@ class DomainRepository:
                 """,
                 ([row["id"] for row in rows],),
             ).fetchone()["count"]
+        candidate_fact_summary = self.candidate_fact_summary_for_focus(
+            connection,
+            focus_entity_id=focus_entity_id,
+            relationship_families=relationship_families,
+        )
+        production_context = self.production_context_for_connection(
+            connection,
+            as_of=as_of,
+        )
         edges = [
             _jsonable(
                 {
@@ -2615,7 +3005,9 @@ class DomainRepository:
                         {edge["relationship_family"] for edge in edges}
                     ),
                     "synthetic_fixture_edges": sum(1 for edge in edges if edge["synthetic"]),
+                    "relationship_fact_candidates": candidate_fact_summary,
                 },
+                "production_context": production_context,
             }
         )
 
@@ -2668,6 +3060,10 @@ class DomainRepository:
                             "source_count": 0,
                             "all_edges_have_evidence": True,
                         },
+                        "production_context": self.production_context_for_connection(
+                            connection,
+                            as_of=as_of,
+                        ),
                     }
                 )
             path_rows = connection.execute(
@@ -2812,6 +3208,10 @@ class DomainRepository:
                         }
                     )
                 )
+            production_context = self.production_context_for_connection(
+                connection,
+                as_of=as_of,
+            )
         source_ids = {
             evidence["source_document_id"]
             for path in paths
@@ -2846,6 +3246,7 @@ class DomainRepository:
                 "warnings": (
                     ["bounded_path_result_limit_applied"] if truncated else []
                 ),
+                "production_context": production_context,
             }
         )
 

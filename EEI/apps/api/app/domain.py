@@ -355,6 +355,23 @@ def list_scoring_profiles(repository: RepositoryDependency) -> list[dict[str, An
     return repository.list_scoring_profiles()
 
 
+@router.get("/scoring/explain/{objectType}/{objectId}")
+def explain_score(
+    objectType: str,
+    objectId: UUID,
+    repository: RepositoryDependency,
+    profile: Annotated[UUID | None, Query()] = None,
+) -> dict[str, Any]:
+    try:
+        return repository.explain_score(
+            object_type=objectType,
+            object_id=objectId,
+            profile_id=profile,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
 @router.get("/calibrations")
 def list_calibrations(repository: RepositoryDependency) -> list[dict[str, Any]]:
     return repository.list_calibrations()

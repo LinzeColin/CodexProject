@@ -485,6 +485,49 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert len(profiles) == 1
     assert profiles[0]["profile_key"] == "balanced-v2"
     assert profiles[0]["active"] is True
+    with connect_database() as connection:
+        candidate_row = connection.execute(
+            """
+            SELECT id, candidate_key
+            FROM relationship_fact_candidates
+            WHERE parser_version = %s
+              AND structured_fact->>'path_role' = 'NVIDIA_TO_TSMC_GOLDEN_VERTICAL'
+            """,
+            (CURATED_ANCHOR_PARSER_VERSION,),
+        ).fetchone()
+    assert candidate_row is not None
+
+    score_explanation_response = client.get(
+        f"/v1/scoring/explain/relationship_fact_candidate/{candidate_row[0]}"
+    )
+    assert score_explanation_response.status_code == 200
+    score_explanation = score_explanation_response.json()
+    assert score_explanation["object_type"] == "relationship_fact_candidate"
+    assert score_explanation["object_id"] == str(candidate_row[0])
+    assert score_explanation["candidate_key"] == candidate_row[1]
+    assert score_explanation["record_mode"] == "curated_official_fixture"
+    assert score_explanation["publication_status"] == "candidate"
+    assert score_explanation["source_threshold"] == {
+        "minimum_independent_sources": 2,
+        "independent_source_count": 1,
+        "met": False,
+    }
+    assert score_explanation["raw_score"] > score_explanation["adjusted_score"] > 0
+    assert score_explanation["evidence_quality"] == 50
+    assert "human_review_verification" in score_explanation["missing_inputs"]
+    assert "published_relationship_version" in score_explanation["missing_inputs"]
+    assert score_explanation["profile_version"].startswith("balanced-v2@")
+    assert score_explanation["model_version"]
+    assert len(score_explanation["evidence"]) == 1
+    assert score_explanation["evidence"][0]["url"].startswith("https://")
+    assert score_explanation["review_queue"][0]["status"] == "open"
+    score_context = score_explanation["production_context"]
+    assert score_context["schema_version"] == "production-context-v1"
+    assert score_context["scoring_service_version"] == "candidate-score-explanation-v1"
+    assert score_context["publication_policy"][
+        "relationship_fact_candidates_in_graph_edges"
+    ] is False
+    assert score_context["publication_policy"]["minimum_independent_sources"] == 2
 
     object_scope_response = client.get("/v1/system/object-scope")
     assert object_scope_response.status_code == 200
@@ -703,6 +746,22 @@ def exercise_domain_api_and_repository_contracts() -> None:
         "max_edges": 2000,
         "max_path_length": 8,
     }
+    production_context = exploration["production_context"]
+    assert production_context["schema_version"] == "production-context-v1"
+    assert production_context["graph_query_version"] == "bounded-recursive-graph-v1"
+    assert production_context["active_scoring_profile"]["profile_key"] == "balanced-v2"
+    assert production_context["publication_policy"][
+        "relationship_fact_candidates_in_graph_edges"
+    ] is False
+    assert production_context["record_modes"]["relationship_fact_candidates"][
+        "curated_official_fixture"
+    ] == 2
+    assert exploration["coverage"]["relationship_fact_candidates"][
+        "excluded_from_graph_edges"
+    ] >= 1
+    assert all(
+        edge["id"] != score_explanation["object_id"] for edge in exploration["edges"]
+    )
 
     default_explore_response = client.post(
         "/v1/explore",
@@ -973,6 +1032,12 @@ def exercise_domain_api_and_repository_contracts() -> None:
         assert path_payload["query"]["max_paths"] == 8
         assert path_payload["query"]["from"] == source_id
         assert path_payload["query"]["to"] == target_id
+        assert path_payload["production_context"]["graph_query_version"] == (
+            "bounded-recursive-graph-v1"
+        )
+        assert path_payload["production_context"]["publication_policy"][
+            "relationship_fact_candidates_in_graph_edges"
+        ] is False
         assert path_payload["paths"][0]["node_ids"][0] == source_id
         assert path_payload["paths"][0]["node_ids"][-1] == target_id
         assert_evidence_bearing_paths(path_payload, max_length=max_length)
