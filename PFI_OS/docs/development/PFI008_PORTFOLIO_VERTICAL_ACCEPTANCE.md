@@ -82,5 +82,6 @@ git diff --check
 
 PFI-008 is locally closed when the PFI-008 contract tests pass, the acceptance
 script returns `status=Pass`, target gate remains green, and GitHub CI passes.
-Gate 3 remains partially open until PFI-009 Strategy has the same
-vertical-slice evidence level.
+With PFI-006 through PFI-009 now covered by local vertical acceptances, Gate 3
+is closed for the current evidence scope and must be re-run in the final Gate 7
+release package.

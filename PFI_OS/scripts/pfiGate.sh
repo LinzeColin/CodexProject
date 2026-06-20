@@ -32,6 +32,7 @@ case "$MODE" in
       tests/contract/test_pfi006_markets_vertical_acceptance.py \
       tests/contract/test_pfi007_research_policy_vertical_acceptance.py \
       tests/contract/test_pfi008_portfolio_vertical_acceptance.py \
+      tests/contract/test_pfi009_strategy_vertical_acceptance.py \
       tests/e2e/test_pfi_web_shell_static_flow.py \
       -q
     scripts/secretScan.sh

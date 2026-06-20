@@ -2,7 +2,7 @@
 
 Schema: `PFIOSPhaseBStrategyLabContractV1`
 
-Status: first Strategy Lab vertical slice complete.
+Status: Strategy Lab vertical slice complete with PFI-009 Gate 3 evidence.
 
 As of: 2026-06-19 Australia/Sydney
 
@@ -31,9 +31,27 @@ turning either output into a live order path.
 - Writes Strategy Lab source, evidence, job, and review-task records into the
   Operational Store.
 
+## PFI-009 Promotion
+
+PFI-009 promotes this Phase B workflow into a Gate 3 Strategy acceptance
+contract:
+
+- `src/pfi_os/application/pfi009_strategy_acceptance.py`
+- `tests/contract/test_pfi009_strategy_vertical_acceptance.py`
+- `scripts/pfi009StrategyAcceptance.sh`
+- `docs/development/PFI009_STRATEGY_VERTICAL_ACCEPTANCE.md`
+
+The promotion adds deterministic PIT bars, corporate-action adjustment,
+delisted-symbol exclusion, train/test validation, walk-forward validation,
+model registry, Durable Job Store cancel/resume proof, same-shell Chinese Web
+Shell controls, and rollback proof. The acceptance remains research-only: it
+does not connect to brokers, mutate holdings, create live signals, or submit
+orders.
+
 ## Contract Tests
 
 - `tests/contract/test_phase_b_strategy_lab_workflow.py`
+- `tests/contract/test_pfi009_strategy_vertical_acceptance.py`
 
 The tests verify:
 
@@ -45,17 +63,19 @@ The tests verify:
 5. Operational Store receives source, evidence, job, and human-review task
    records.
 6. No live trading, broker call, or order execution path is exposed.
+7. PFI-009 PIT backtest, train/test, walk-forward, no-future-data, model
+   registry, cancel/resume, same-shell UI, script, target-gate, and rollback
+   contracts are wired.
 
 ## Out Of Scope
 
 - Migrating every legacy Strategy Lab UI panel into the Web Shell.
-- The other three Phase B vertical slices are covered by their workflow docs.
 - Building Phase C worker/SSE reliability.
 - Building Phase D deployment, backup/restore, local LLM, and final MVP
   acceptance.
 
 ## Next Iterations
 
-1. Connect Strategy Lab workflow read models to the Web Shell when the Phase B
-   workflow set is stable.
-2. Start Phase C worker/SSE reliability from the completed Phase B contracts.
+1. Continue Gate 4 with PFI-010 Minute Fast Path evidence.
+2. Re-run all four Gate 3 vertical slices during the final Gate 7 release
+   package.

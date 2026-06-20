@@ -93,7 +93,7 @@ Current sequence:
     run returned `status=Pass`, `pass=13`, `fail=0`, event_count=90,
     alerts=2, saved_views=2, rollback=Pass. Target gate passed 52 tests plus
     secret scan; UI visual acceptance passed 98/98 after market shell changes.
-    Gate 3 still needs equivalent closure for PFI-009.
+    Gate 3 current evidence scope is now closed after PFI-009.
 23. Gate 3 / PFI-007 Research + Policy:
     Research + Policy vertical acceptance is implemented.
     `scripts/pfi007ResearchPolicyAcceptance.sh` emits
@@ -105,7 +105,7 @@ Current sequence:
     policy_record_count=2, official_citation_count=1, report_gap_count=3,
     report_manifest_count=1, rollback=Pass. Target gate passed 58 tests plus
     secret scan; UI visual acceptance passed 98/98 after research shell
-    changes. Gate 3 still needs equivalent closure for PFI-009.
+    changes. Gate 3 current evidence scope is now closed after PFI-009.
 24. Gate 3 / PFI-008 Portfolio:
     Portfolio vertical acceptance is implemented.
     `scripts/pfi008PortfolioAcceptance.sh` emits
@@ -118,8 +118,22 @@ Current sequence:
     holding_count=5, import_record_count=5, broker_count=3,
     constraint_violation_count=2, reconciliation=Pass, rollback=Pass. Focused
     PFI-008 contract passed 6/6; related Web Shell/script tests passed 58/58;
-    target gate passed 64 tests plus secret scan and diff check. Gate 3 still
-    needs equivalent closure for PFI-009.
+    target gate passed 64 tests plus secret scan and diff check. Gate 3
+    current evidence scope is now closed after PFI-009.
+25. Gate 3 / PFI-009 Strategy:
+    Strategy vertical acceptance is implemented.
+    `scripts/pfi009StrategyAcceptance.sh` emits
+    `PFI009StrategyVerticalAcceptanceV1` evidence for deterministic PIT bars
+    -> reproducible backtest -> train/test no-future-data validation ->
+    walk-forward validation -> market-feel future hiding -> review-only
+    strategy registry -> Durable Job Store cancel/resume -> same-shell Chinese
+    Strategy controls -> task/evidence records -> rollback proof. Latest local
+    run returned `status=Pass`, `pass=18`, `fail=0`, bar_count=360,
+    trade_count=53, train_test=Pass, walk_forward=Pass, windows=2,
+    registered_model_count=1, runtime_resume_count=1, rollback=Pass. Focused
+    PFI-009 contract passed 7/7; related Web Shell/script tests passed 63/63;
+    target gate passed 71 tests plus secret scan and diff check. Gate 3 is
+    closed for the current local evidence scope and must be re-run in Gate 7.
 
 ## Current Local State
 
@@ -291,6 +305,18 @@ Current sequence:
   snapshot records, and rollback proof. Focused PFI-008 contract passed 6/6;
   related Web Shell/script tests passed 58/58; target gate passed 64 tests plus
   secret scan and diff check.
+- PFI-009 Strategy vertical acceptance complete for local Gate 3 evidence:
+  `src/pfi_os/application/pfi009_strategy_acceptance.py`,
+  `scripts/pfi009StrategyAcceptance.sh`,
+  `tests/contract/test_pfi009_strategy_vertical_acceptance.py`, and
+  `docs/development/PFI009_STRATEGY_VERTICAL_ACCEPTANCE.md`. Latest
+  acceptance passed 18/18 with PIT bars, corporate-action/delisted fixture,
+  train/test validation, walk-forward validation, no-future-data proof,
+  market-feel future hiding, review-only strategy registry, cancel/resume
+  runtime proof, same-shell Strategy controls, task/evidence records, and
+  rollback proof. Focused PFI-009 contract passed 7/7; related Web
+  Shell/script tests passed 63/63; target gate passed 71 tests plus secret
+  scan and diff check.
 
 ## Start Here
 
