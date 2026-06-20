@@ -42,9 +42,10 @@ PARTIAL_TASKS = {
     "T1303": "A204",
     "T1304": "A206",
     "T1305": "A207",
+    "T1307": "A209",
 }
 
-PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A207"}
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A207", "A209"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -111,6 +112,10 @@ PARTIAL_EVIDENCE = {
         "specs/api_contract.yaml",
         "tests/integration/test_database_migrations.py",
         "artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json",
+    },
+    "T1307": {
+        "scripts/run_soak_smoke.mjs",
+        "artifacts/tests/a209/t1307_soak_smoke.json",
     },
 }
 
