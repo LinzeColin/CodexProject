@@ -3008,3 +3008,63 @@ Residual risks:
 - T1307 4h and 24h operator soak runs remain required before A206/A209 can be called production-ready.
 - Docker Compose is the default MVP local process manager; non-Compose deployment bindings remain out of scope unless a target hosting runtime is selected.
 - LISTEN/NOTIFY or an equivalent low-latency wake path remains optional for v0.1 but would reduce polling latency.
+
+## 2026-06-21 - T1305/A207 saved-view trusted gateway identity binding
+
+### Scope
+
+- Added production saved-view identity mode `trusted_gateway`.
+- Kept `local` identity mode as the explicit local-development path.
+- Defaulted `EEI_ENV=prod|production` to `trusted_gateway`.
+- Added fail-closed gateway checks for missing `EEI_SAVED_VIEW_GATEWAY_SECRET`, missing identity headers, invalid signatures and expired timestamps.
+- Added HMAC-SHA256 signature verification over signature version, HTTP method, request path, namespace, actor and timestamp.
+- Added `X-EEI-Auth-Timestamp` and `X-EEI-Auth-Signature` to CORS and OpenAPI saved-view operations.
+- Added saved-view identity runtime parameters to `data/parameter_catalog.csv` and `config/model_runtime_defaults.yaml`.
+- Updated A207 evidence, traceability, task backlog, status ledger, v5 sync and README records.
+
+### Files changed
+
+- `.env.example`
+- `apps/api/app/domain.py`
+- `apps/api/app/main.py`
+- `apps/api/app/settings.py`
+- `specs/api_contract.yaml`
+- `tests/unit/test_api_health.py`
+- `data/parameter_catalog.csv`
+- `config/model_runtime_defaults.yaml`
+- `data/task_backlog.csv`
+- `data/acceptance_matrix.csv`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json`
+- `artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json`
+- `artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json`
+- `artifacts/tests/a207/t1305_saved_view_trusted_gateway_contract.json`
+- `README.md`
+- `DEVELOPMENT_STATUS.md`
+- `MODEL_MANAGEMENT.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `docs/STATUS.md`
+- `docs/30_MODEL_MANAGEMENT.md`
+- `scripts/validate_catalog_integrity.py`
+- `scripts/validate_governance.py`
+- `scripts/generate_governance_pdf.py`
+
+### Acceptance mapping
+
+- T1305 -> A207.
+- A207 is now `DONE` locally for the saved-view server conflict, version history, recovery, schema migration, namespace isolation and trusted gateway identity boundary.
+- Share links, export and cross-user publication strategy remain future FUN-RM-03 enhancements and do not block A207.
+
+### Validation
+
+- Local `python3 -m py_compile apps/api/app/domain.py apps/api/app/settings.py tests/unit/test_api_health.py`: PASS.
+- Local `.venv/bin/ruff check apps/api/app/domain.py apps/api/app/settings.py tests/unit/test_api_health.py`: PASS.
+- Local `.venv/bin/python -m pytest -q tests/unit/test_api_health.py`: PASS, 17 tests with one existing Starlette/httpx deprecation warning.
+- Local `.venv/bin/python scripts/validate_contracts.py`: PASS.
+
+### Remaining gaps
+
+- This closes T1305/A207 locally; GitHub Actions evidence still needs to be attached after this commit is pushed.
+- T1301/A202, T1302/A203, T1303/A204-A205, T1304/A206, T1307/A209, T1308/A211 and T1309/A210 remain v0.1 blockers.
+- T1307 4h and 24h operator soak still cannot be closed on the current host because Docker is not installed and the required duration has not been run.

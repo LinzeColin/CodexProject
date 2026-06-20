@@ -27,7 +27,7 @@
 |---|---|
 | `data/model_registry.csv` | 模型目录、公式、对象、输出和状态 |
 | `data/formula_registry.csv` | 完整公式、范围、缺失值和默认阈值 |
-| `data/parameter_catalog.csv` | 60 个可调参数、范围、步长、在线控件与刷新范围 |
+| `data/parameter_catalog.csv` | 78 个可调参数、范围、步长、在线控件与刷新范围 |
 | `data/threshold_registry.csv` | 17 个核心发布/显示/视觉/性能门槛及其机器参数映射 |
 | `config/model_runtime_defaults.yaml` | 人类可编辑导入模板 |
 | `config/model_profiles/balanced-v2.json` | 默认机器配置 |

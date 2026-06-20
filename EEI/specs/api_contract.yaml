@@ -706,7 +706,7 @@ paths:
       - name: X-EEI-User-Namespace
         in: header
         required: false
-        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        description: Saved-view tenant/user namespace injected by a trusted gateway. In local mode it defaults to local_user; in trusted_gateway or production mode it must be signed with X-EEI-Auth-Timestamp and X-EEI-Auth-Signature.
         schema:
           type: string
           default: local_user
@@ -715,11 +715,27 @@ paths:
       - name: X-EEI-Actor
         in: header
         required: false
-        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        description: Saved-view actor identifier for audit logs. In trusted_gateway mode the actor must be gateway-signed with the namespace.
         schema:
           type: string
           maxLength: 120
           pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
+      - name: X-EEI-Auth-Timestamp
+        in: header
+        required: false
+        description: Unix epoch seconds signed by the trusted gateway for saved-view identity requests.
+        schema:
+          type: string
+          pattern: ^[0-9]{10}$
+      - name: X-EEI-Auth-Signature
+        in: header
+        required: false
+        description: HMAC-SHA256 signature over method, path, namespace, actor and timestamp using EEI_SAVED_VIEW_GATEWAY_SECRET.
+        schema:
+          type: string
+          minLength: 64
+          maxLength: 64
+          pattern: ^[a-f0-9]{64}$
       - name: workspace_key
         in: query
         schema:
@@ -745,7 +761,7 @@ paths:
       - name: X-EEI-User-Namespace
         in: header
         required: false
-        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        description: Saved-view tenant/user namespace injected by a trusted gateway. In local mode it defaults to local_user; in trusted_gateway or production mode it must be signed with X-EEI-Auth-Timestamp and X-EEI-Auth-Signature.
         schema:
           type: string
           default: local_user
@@ -754,11 +770,27 @@ paths:
       - name: X-EEI-Actor
         in: header
         required: false
-        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        description: Saved-view actor identifier for audit logs. In trusted_gateway mode the actor must be gateway-signed with the namespace.
         schema:
           type: string
           maxLength: 120
           pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
+      - name: X-EEI-Auth-Timestamp
+        in: header
+        required: false
+        description: Unix epoch seconds signed by the trusted gateway for saved-view identity requests.
+        schema:
+          type: string
+          pattern: ^[0-9]{10}$
+      - name: X-EEI-Auth-Signature
+        in: header
+        required: false
+        description: HMAC-SHA256 signature over method, path, namespace, actor and timestamp using EEI_SAVED_VIEW_GATEWAY_SECRET.
+        schema:
+          type: string
+          minLength: 64
+          maxLength: 64
+          pattern: ^[a-f0-9]{64}$
       requestBody:
         required: true
         content:
@@ -781,7 +813,7 @@ paths:
       - name: X-EEI-User-Namespace
         in: header
         required: false
-        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        description: Saved-view tenant/user namespace injected by a trusted gateway. In local mode it defaults to local_user; in trusted_gateway or production mode it must be signed with X-EEI-Auth-Timestamp and X-EEI-Auth-Signature.
         schema:
           type: string
           default: local_user
@@ -790,11 +822,27 @@ paths:
       - name: X-EEI-Actor
         in: header
         required: false
-        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        description: Saved-view actor identifier for audit logs. In trusted_gateway mode the actor must be gateway-signed with the namespace.
         schema:
           type: string
           maxLength: 120
           pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
+      - name: X-EEI-Auth-Timestamp
+        in: header
+        required: false
+        description: Unix epoch seconds signed by the trusted gateway for saved-view identity requests.
+        schema:
+          type: string
+          pattern: ^[0-9]{10}$
+      - name: X-EEI-Auth-Signature
+        in: header
+        required: false
+        description: HMAC-SHA256 signature over method, path, namespace, actor and timestamp using EEI_SAVED_VIEW_GATEWAY_SECRET.
+        schema:
+          type: string
+          minLength: 64
+          maxLength: 64
+          pattern: ^[a-f0-9]{64}$
       - name: savedViewId
         in: path
         required: true
@@ -816,7 +864,7 @@ paths:
       - name: X-EEI-User-Namespace
         in: header
         required: false
-        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        description: Saved-view tenant/user namespace injected by a trusted gateway. In local mode it defaults to local_user; in trusted_gateway or production mode it must be signed with X-EEI-Auth-Timestamp and X-EEI-Auth-Signature.
         schema:
           type: string
           default: local_user
@@ -825,11 +873,27 @@ paths:
       - name: X-EEI-Actor
         in: header
         required: false
-        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        description: Saved-view actor identifier for audit logs. In trusted_gateway mode the actor must be gateway-signed with the namespace.
         schema:
           type: string
           maxLength: 120
           pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
+      - name: X-EEI-Auth-Timestamp
+        in: header
+        required: false
+        description: Unix epoch seconds signed by the trusted gateway for saved-view identity requests.
+        schema:
+          type: string
+          pattern: ^[0-9]{10}$
+      - name: X-EEI-Auth-Signature
+        in: header
+        required: false
+        description: HMAC-SHA256 signature over method, path, namespace, actor and timestamp using EEI_SAVED_VIEW_GATEWAY_SECRET.
+        schema:
+          type: string
+          minLength: 64
+          maxLength: 64
+          pattern: ^[a-f0-9]{64}$
       - name: savedViewId
         in: path
         required: true
@@ -858,7 +922,7 @@ paths:
       - name: X-EEI-User-Namespace
         in: header
         required: false
-        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        description: Saved-view tenant/user namespace injected by a trusted gateway. In local mode it defaults to local_user; in trusted_gateway or production mode it must be signed with X-EEI-Auth-Timestamp and X-EEI-Auth-Signature.
         schema:
           type: string
           default: local_user
@@ -867,11 +931,27 @@ paths:
       - name: X-EEI-Actor
         in: header
         required: false
-        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        description: Saved-view actor identifier for audit logs. In trusted_gateway mode the actor must be gateway-signed with the namespace.
         schema:
           type: string
           maxLength: 120
           pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
+      - name: X-EEI-Auth-Timestamp
+        in: header
+        required: false
+        description: Unix epoch seconds signed by the trusted gateway for saved-view identity requests.
+        schema:
+          type: string
+          pattern: ^[0-9]{10}$
+      - name: X-EEI-Auth-Signature
+        in: header
+        required: false
+        description: HMAC-SHA256 signature over method, path, namespace, actor and timestamp using EEI_SAVED_VIEW_GATEWAY_SECRET.
+        schema:
+          type: string
+          minLength: 64
+          maxLength: 64
+          pattern: ^[a-f0-9]{64}$
       - name: savedViewId
         in: path
         required: true
@@ -896,7 +976,7 @@ paths:
       - name: X-EEI-User-Namespace
         in: header
         required: false
-        description: Saved-view tenant/user namespace injected by the auth gateway; defaults to local_user for local MVP mode.
+        description: Saved-view tenant/user namespace injected by a trusted gateway. In local mode it defaults to local_user; in trusted_gateway or production mode it must be signed with X-EEI-Auth-Timestamp and X-EEI-Auth-Signature.
         schema:
           type: string
           default: local_user
@@ -905,11 +985,27 @@ paths:
       - name: X-EEI-Actor
         in: header
         required: false
-        description: Saved-view actor identifier for audit logs; defaults to the resolved namespace.
+        description: Saved-view actor identifier for audit logs. In trusted_gateway mode the actor must be gateway-signed with the namespace.
         schema:
           type: string
           maxLength: 120
           pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
+      - name: X-EEI-Auth-Timestamp
+        in: header
+        required: false
+        description: Unix epoch seconds signed by the trusted gateway for saved-view identity requests.
+        schema:
+          type: string
+          pattern: ^[0-9]{10}$
+      - name: X-EEI-Auth-Signature
+        in: header
+        required: false
+        description: HMAC-SHA256 signature over method, path, namespace, actor and timestamp using EEI_SAVED_VIEW_GATEWAY_SECRET.
+        schema:
+          type: string
+          minLength: 64
+          maxLength: 64
+          pattern: ^[a-f0-9]{64}$
       - name: savedViewId
         in: path
         required: true

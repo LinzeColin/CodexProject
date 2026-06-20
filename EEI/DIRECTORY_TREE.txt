@@ -98,6 +98,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── a207
 │   │   │   ├── t1305_frontend_saved_view_api_adapter_contract.json
 │   │   │   ├── t1305_live_saved_view_multisession_e2e_contract.json
+│   │   │   ├── t1305_saved_view_trusted_gateway_contract.json
 │   │   │   └── t1305_server_saved_view_conflict_recovery_contract.json
 │   │   ├── a208
 │   │   │   ├── t1306_browser_runtime_benchmark.json

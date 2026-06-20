@@ -116,7 +116,7 @@ def main() -> int:
     unique(thresholds, "threshold_id", "thresholds")
     formula_ids = {item["formula_id"] for item in formulas}
     parameter_keys = {item["parameter_key"] for item in parameters}
-    if len(models) != 11 or len(formulas) != 11 or len(parameters) != 75 or len(thresholds) != 17:
+    if len(models) != 11 or len(formulas) != 11 or len(parameters) != 78 or len(thresholds) != 17:
         raise AssertionError("model/formula/parameter/threshold canonical counts invalid")
     if any(item["formula_id"] not in formula_ids for item in models):
         raise AssertionError("model references unknown formula")

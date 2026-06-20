@@ -1,0 +1,66 @@
+{
+  "schema_version": "eei-acceptance-evidence-v1",
+  "system_name": "EEI",
+  "task_id": "T1305",
+  "acceptance_ids": ["A207"],
+  "status": "TRUSTED_GATEWAY_LOCAL_VALIDATED",
+  "generated_at": "2026-06-21T00:00:00Z",
+  "implemented_contracts": [
+    "Production saved-view identity mode defaults to trusted_gateway when EEI_ENV is prod or production",
+    "Local development mode retains local_user default identity unless EEI_SAVED_VIEW_IDENTITY_MODE overrides it",
+    "trusted_gateway mode requires EEI_SAVED_VIEW_GATEWAY_SECRET and returns 503 when the gateway secret is not configured",
+    "trusted_gateway mode requires X-EEI-User-Namespace, X-EEI-Actor, X-EEI-Auth-Timestamp and X-EEI-Auth-Signature",
+    "X-EEI-Auth-Signature is an HMAC-SHA256 hex signature over signature version, HTTP method, request path, namespace, actor and timestamp",
+    "Gateway signatures expire outside EEI_SAVED_VIEW_SIGNATURE_TTL_SECONDS",
+    "Invalid, missing or expired gateway signatures fail closed with 401",
+    "OpenAPI and CORS expose the saved-view identity and signature headers without exposing or storing gateway secrets"
+  ],
+  "files": [
+    ".env.example",
+    "apps/api/app/domain.py",
+    "apps/api/app/main.py",
+    "apps/api/app/settings.py",
+    "specs/api_contract.yaml",
+    "tests/unit/test_api_health.py",
+    "data/parameter_catalog.csv",
+    "config/model_runtime_defaults.yaml"
+  ],
+  "runtime_parameters": {
+    "EEI_SAVED_VIEW_IDENTITY_MODE": "local|trusted_gateway; production default is trusted_gateway",
+    "EEI_SAVED_VIEW_GATEWAY_SECRET": "required when identity mode is trusted_gateway; never committed",
+    "EEI_SAVED_VIEW_SIGNATURE_TTL_SECONDS": "default 300"
+  },
+  "signature_payload": [
+    "eei-saved-view-gateway-v1",
+    "HTTP_METHOD",
+    "REQUEST_PATH",
+    "X-EEI-User-Namespace",
+    "X-EEI-Actor",
+    "X-EEI-Auth-Timestamp"
+  ],
+  "test_contract": {
+    "commands": [
+      "python3 -m py_compile apps/api/app/domain.py apps/api/app/settings.py tests/unit/test_api_health.py",
+      ".venv/bin/ruff check apps/api/app/domain.py apps/api/app/settings.py tests/unit/test_api_health.py",
+      ".venv/bin/python -m pytest -q tests/unit/test_api_health.py",
+      ".venv/bin/python scripts/validate_contracts.py"
+    ],
+    "checks": [
+      "production environment defaults to trusted_gateway identity mode",
+      "explicit local identity mode override remains available for local development",
+      "missing gateway secret fails closed with 503",
+      "unsigned gateway headers fail closed with 401",
+      "invalid signatures fail closed with 401",
+      "valid signatures resolve the expected saved-view principal",
+      "expired signatures fail closed with 401",
+      "CORS and OpenAPI include gateway identity headers"
+    ],
+    "latest_local_result": {
+      "py_compile": "PASS",
+      "ruff_targeted": "PASS",
+      "unit": "PASS_17_OF_17",
+      "contract_validation": "PASS"
+    }
+  },
+  "remaining_to_close_a207": []
+}

@@ -79,6 +79,9 @@ v5_production_gates:
     dead_letter_after_attempts: 5
   saved_view:
     conflict_retry_limit: 3
+    identity_mode: trusted_gateway
+    signature_ttl_seconds: 300
+    gateway_secret_required: true
   benchmark:
     scale_10k_p95_ms: 1000
     scale_100k_p95_ms: 3000

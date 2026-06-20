@@ -3,8 +3,8 @@
   "system_name": "EEI",
   "task_id": "T1305",
   "acceptance_ids": ["A207"],
-  "status": "PARTIAL_SERVER_AUTHZ_CONTRACT",
-  "generated_at": "2026-06-20T00:00:00Z",
+  "status": "SERVER_CONFLICT_RECOVERY_TRUSTED_GATEWAY_LOCAL_VALIDATED",
+  "generated_at": "2026-06-21T00:00:00Z",
   "implemented_contracts": [
     "PostgreSQL saved_views table with workspace namespace, state payload, current_version and reversible migration",
     "PostgreSQL saved_view_versions immutable version chain with create/update/restore action_type",
@@ -15,18 +15,28 @@
     "Same saved-view name can exist in different namespaces while duplicate names conflict inside one namespace/workspace",
     "Optimistic expected_version conflict response through HTTP 409 and saved-view-conflict-v1 detail",
     "Recovery by restoring a historical version into a new current version",
-    "operation_logs success/conflict audit rows for create/update/restore"
+    "operation_logs success/conflict audit rows for create/update/restore",
+    "EEI_ENV=production defaults saved-view identity mode to trusted_gateway unless explicitly overridden",
+    "trusted_gateway mode requires EEI_SAVED_VIEW_GATEWAY_SECRET and rejects unsigned saved-view identity headers",
+    "Saved-view identity gateway signs method, path, namespace, actor and timestamp with HMAC-SHA256",
+    "Saved-view gateway signatures expire outside EEI_SAVED_VIEW_SIGNATURE_TTL_SECONDS",
+    "FastAPI CORS allows X-EEI-User-Namespace, X-EEI-Actor, X-EEI-Auth-Timestamp and X-EEI-Auth-Signature for browser saved-view calls"
   ],
   "files": [
     "infra/db/migrations/0008_server_saved_views/up.sql",
     "infra/db/migrations/0008_server_saved_views/down.sql",
     "infra/db/migrations/0010_operation_log_actor_principal/up.sql",
     "infra/db/migrations/0010_operation_log_actor_principal/down.sql",
+    ".env.example",
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
+    "apps/api/app/main.py",
+    "apps/api/app/settings.py",
     "scripts/check_database_schema.py",
     "specs/api_contract.yaml",
-    "tests/integration/test_database_migrations.py"
+    "tests/integration/test_database_migrations.py",
+    "tests/unit/test_api_health.py",
+    "artifacts/tests/a207/t1305_saved_view_trusted_gateway_contract.json"
   ],
   "test_contract": {
     "integration_helper": "exercise_server_saved_view_contracts",
@@ -41,12 +51,21 @@
       "restore target_version 1 from expected_version 2 into current_version 3",
       "reject stale restore after current_version advances to 3",
       "assert saved_view_versions action sequence create/update/restore",
-      "assert operation_logs records three success and three conflict rows for the local_user saved-view chain"
+      "assert operation_logs records three success and three conflict rows for the local_user saved-view chain",
+      "production defaults to trusted_gateway identity mode",
+      "trusted_gateway mode fails closed when gateway secret is missing",
+      "trusted_gateway mode rejects missing signed identity headers",
+      "trusted_gateway mode rejects invalid signatures",
+      "trusted_gateway mode accepts a valid HMAC-SHA256 signature",
+      "trusted_gateway mode rejects expired signatures",
+      "CORS preflight exposes saved-view identity and signature headers"
     ]
   },
-  "remaining_to_close_a207": [
-    "Frontend API-first adapter is covered by artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json",
-    "Live multisession E2E harness, conflict recovery UI and CI PASS evidence are covered by artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json",
-    "Bind X-EEI-User-Namespace and X-EEI-Actor to a trusted production identity provider or gateway before public multi-user deployment"
-  ]
+  "latest_local_result": {
+    "py_compile": "PASS",
+    "ruff_targeted": "PASS",
+    "unit": "PASS_17_OF_17",
+    "contract_validation": "PASS"
+  },
+  "remaining_to_close_a207": []
 }

@@ -34,19 +34,18 @@ EXPECTED_TASKS = {
     "T1309": "A210",
 }
 
-IMPLEMENTED_TASKS = {"T1300": "A201", "T1306": "A208"}
+IMPLEMENTED_TASKS = {"T1300": "A201", "T1305": "A207", "T1306": "A208"}
 
 PARTIAL_TASKS = {
     "T1301": "A202",
     "T1302": "A203",
     "T1303": "A204",
     "T1304": "A206",
-    "T1305": "A207",
     "T1307": "A209",
     "T1308": "A211",
 }
 
-PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A207", "A209", "A211"}
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A209", "A211"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -62,6 +61,30 @@ IMPLEMENTED_EVIDENCE = {
         "artifacts/tests/a208/t1306_scale_benchmark_smoke.json",
         "artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json",
         "artifacts/tests/a208/t1306_browser_runtime_benchmark.json",
+    },
+    "T1305": {
+        "infra/db/migrations/0008_server_saved_views/up.sql",
+        "infra/db/migrations/0008_server_saved_views/down.sql",
+        ".env.example",
+        "apps/api/app/domain.py",
+        "apps/api/app/domain_repository.py",
+        "apps/api/app/main.py",
+        "apps/api/app/settings.py",
+        "apps/web/src/app/page.tsx",
+        "apps/web/src/app/saved-view-client.ts",
+        "Makefile",
+        "playwright.live.config.ts",
+        "scripts/run_live_e2e_api.sh",
+        "scripts/check_database_schema.py",
+        "specs/api_contract.yaml",
+        "tests/integration/test_database_migrations.py",
+        "tests/e2e/state-contract.spec.ts",
+        "tests/e2e/saved-view-live.spec.ts",
+        "tests/unit/test_api_health.py",
+        "artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json",
+        "artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json",
+        "artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json",
+        "artifacts/tests/a207/t1305_saved_view_trusted_gateway_contract.json",
     },
 }
 
@@ -115,28 +138,6 @@ PARTIAL_EVIDENCE = {
         "tests/integration/test_database_migrations.py",
         "artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json",
     },
-    "T1305": {
-        "infra/db/migrations/0008_server_saved_views/up.sql",
-        "infra/db/migrations/0008_server_saved_views/down.sql",
-        "apps/api/app/domain.py",
-        "apps/api/app/domain_repository.py",
-        "apps/api/app/main.py",
-        "apps/api/app/settings.py",
-        "apps/web/src/app/page.tsx",
-        "apps/web/src/app/saved-view-client.ts",
-        "Makefile",
-        "playwright.live.config.ts",
-        "scripts/run_live_e2e_api.sh",
-        "scripts/check_database_schema.py",
-        "specs/api_contract.yaml",
-        "tests/integration/test_database_migrations.py",
-        "tests/e2e/state-contract.spec.ts",
-        "tests/e2e/saved-view-live.spec.ts",
-        "tests/unit/test_api_health.py",
-        "artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json",
-        "artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json",
-        "artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json",
-    },
     "T1307": {
         "scripts/run_soak_smoke.mjs",
         "artifacts/tests/a209/t1307_soak_smoke.json",
@@ -163,6 +164,9 @@ EXPECTED_PARAMETERS = {
     "scheduler.max_retry_attempts",
     "scheduler.dead_letter_after_attempts",
     "saved_view.conflict_retry_limit",
+    "saved_view.gateway_secret_required",
+    "saved_view.identity_mode",
+    "saved_view.signature_ttl_seconds",
     "benchmark.scale_10k_p95_ms",
     "benchmark.scale_100k_p95_ms",
     "benchmark.scale_1m_p95_ms",
