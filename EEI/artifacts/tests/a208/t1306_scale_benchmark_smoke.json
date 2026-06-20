@@ -1,0 +1,115 @@
+{
+  "schema_version": "eei-scale-benchmark-v1",
+  "system_name": "EEI",
+  "task_id": "T1306",
+  "acceptance_ids": [
+    "A208"
+  ],
+  "status": "PARTIAL",
+  "mode": "ci_smoke",
+  "generated_at": "2026-06-20T04:14:28+00:00",
+  "environment": {
+    "python": "3.12.12",
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "arm",
+    "cpu_count": 8
+  },
+  "target_scales": [
+    10000,
+    100000,
+    1000000
+  ],
+  "measured_scales": [
+    1000
+  ],
+  "iterations": 2,
+  "budgets_ms": {
+    "10000": 1000.0,
+    "100000": 3000.0,
+    "1000000": 10000.0
+  },
+  "results": [
+    {
+      "scale_relationships": 1000,
+      "iterations": 2,
+      "budget_ms": 1000.0,
+      "status": "PASS",
+      "api_projection_ms": {
+        "min": 9.6627,
+        "p50": 19.7451,
+        "p95": 28.8191,
+        "p99": 29.6257,
+        "max": 29.8274
+      },
+      "layout_ms": {
+        "min": 1.2781,
+        "p50": 6.6129,
+        "p95": 11.4142,
+        "p99": 11.8409,
+        "max": 11.9476
+      },
+      "render_contract_ms": {
+        "min": 1.1458,
+        "p50": 8.3851,
+        "p95": 14.9004,
+        "p99": 15.4796,
+        "max": 15.6244
+      },
+      "estimated_frame_ms": {
+        "min": 1.1458,
+        "p50": 8.3851,
+        "p95": 14.9004,
+        "p99": 15.4796,
+        "max": 15.6244
+      },
+      "total_ms": {
+        "min": 12.3145,
+        "p50": 45.3558,
+        "p95": 75.093,
+        "p99": 77.7363,
+        "max": 78.3971
+      },
+      "memory_payload_bytes": {
+        "max": 42285,
+        "p95": 42285.0
+      },
+      "synthetic_long_task_count": 0,
+      "last_counts": {
+        "candidate_edges": 500,
+        "returned_edges": 500,
+        "returned_nodes": 126,
+        "positioned_nodes": 126,
+        "rendered_edges": 500,
+        "truncated": false
+      },
+      "metric_groups": {
+        "api": true,
+        "layout": true,
+        "render_contract": true,
+        "memory_payload": true,
+        "estimated_frame": true,
+        "synthetic_long_task": true,
+        "browser_runtime": false
+      }
+    }
+  ],
+  "coverage": {
+    "target_scales_measured": false,
+    "browser_runtime_measured": false,
+    "full_a208_pass": false,
+    "required_metric_groups": [
+      "api",
+      "layout",
+      "render",
+      "memory",
+      "frame",
+      "long_task"
+    ]
+  },
+  "remaining_to_close_a208": [
+    "Run operator_full mode for 10k, 100k and 1m relationship scales.",
+    "Attach browser runtime frame, memory and long-task measurements.",
+    "Record pass/fail release evidence after full benchmark completes."
+  ]
+}

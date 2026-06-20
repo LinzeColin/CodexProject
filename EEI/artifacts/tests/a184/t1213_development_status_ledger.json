@@ -18,28 +18,28 @@
     "prototype_status": {
       "DONE": 21,
       "N/A": 2,
-      "NOT_STARTED": 3,
-      "PARTIAL": 20
+      "NOT_STARTED": 2,
+      "PARTIAL": 21
     },
     "implementation_status": {
       "DONE": 1,
       "N/A": 8,
-      "NOT_STARTED": 19,
-      "PARTIAL": 18
+      "NOT_STARTED": 18,
+      "PARTIAL": 19
     },
     "validation_status": {
       "CATALOG_VALIDATED": 11,
       "CI_VALIDATED": 4,
       "LOCAL_E2E_VALIDATED": 6,
-      "LOCAL_VALIDATED": 9,
-      "SPEC_VALIDATED": 8,
+      "LOCAL_VALIDATED": 10,
+      "SPEC_VALIDATED": 7,
       "VALIDATED": 8
     },
     "lane_counts": {
-      "resolved": 27,
+      "resolved": 28,
       "prototyped": 21,
-      "specified": 19,
-      "not_started_tasks": 67,
+      "specified": 18,
+      "not_started_tasks": 66,
       "blocked_tasks": 0,
       "out_of_scope_tasks": 8
     },
