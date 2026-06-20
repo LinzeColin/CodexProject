@@ -1256,6 +1256,15 @@ def exercise_transactional_model_activation_contract(
             """,
             (active_profile["id"],),
         ).fetchone()
+        (
+            _source_profile_version_id,
+            source_profile_id,
+            source_model_id,
+            source_weights,
+            source_thresholds,
+            source_half_lives,
+            source_missing_value_policy,
+        ) = source_profile
         target_profile_id = connection.execute(
             """
             INSERT INTO scoring_profile_versions(
@@ -1266,12 +1275,12 @@ def exercise_transactional_model_activation_contract(
             RETURNING id
             """,
             (
-                source_profile["profile_id"],
-                source_profile["model_id"],
-                Jsonb(source_profile["weights"]),
-                Jsonb(source_profile["thresholds"]),
-                Jsonb(source_profile["half_lives"]),
-                source_profile["missing_value_policy"],
+                source_profile_id,
+                source_model_id,
+                Jsonb(source_weights),
+                Jsonb(source_thresholds),
+                Jsonb(source_half_lives),
+                source_missing_value_policy,
                 "T1303/A204 transactional activation test profile.",
             ),
         ).fetchone()[0]
@@ -1340,10 +1349,17 @@ def exercise_transactional_model_activation_contract(
             WHERE context_key = 'global'
             """
         ).fetchone()
-        assert context_row["active_scoring_profile_version_id"] == target_profile_id
-        assert context_row["active_scoring_run_id"] is not None
-        assert context_row["refresh_token"] == next_refresh_token
-        assert context_row["status"] == "active"
+        (
+            context_profile_version_id,
+            context_scoring_run_id,
+            context_refresh_token,
+            _context_refresh_generation,
+            context_status,
+        ) = context_row
+        assert context_profile_version_id == target_profile_id
+        assert context_scoring_run_id is not None
+        assert context_refresh_token == next_refresh_token
+        assert context_status == "active"
         score_run_count = connection.execute(
             """
             SELECT count(*)::int
@@ -1352,7 +1368,7 @@ def exercise_transactional_model_activation_contract(
               AND profile_version_id = %s
               AND status = 'completed'
             """,
-            (context_row["active_scoring_run_id"], target_profile_id),
+            (context_scoring_run_id, target_profile_id),
         ).fetchone()[0]
         assert score_run_count == 1
         log_counts = connection.execute(
@@ -1365,8 +1381,8 @@ def exercise_transactional_model_activation_contract(
               AND object_type = 'scoring_profile_version'
             """
         ).fetchone()
-        assert log_counts["success"] == 1
-        assert log_counts["conflict"] == 1
+        assert log_counts[0] == 1
+        assert log_counts[1] == 1
         try:
             connection.execute(
                 "UPDATE scoring_profile_versions SET active = true WHERE id = %s",
