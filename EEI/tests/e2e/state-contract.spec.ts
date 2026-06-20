@@ -21,6 +21,7 @@ const savedViewWorkspaceKey = "mvp";
 const savedViewLayout =
   "upstream-left focus-center downstream-right capital-top policy-bottom";
 const nvidiaEntityId = "00000000-0000-4000-8000-000000000006";
+const cloudEntityId = "00000000-0000-4000-8000-000000000030";
 const serverFoundryEntityId = "00000000-0000-4000-8000-000000000021";
 const serverPackagingEntityId = "90000000-0000-4000-8000-000000000111";
 
@@ -763,6 +764,48 @@ test("A203 and A211 hydrate production graph context through the explore API", a
     "Verified Advanced Packaging Supplier"
   );
   await expect(page.getByTestId("primary-set-center")).toBeDisabled();
+});
+
+test("A203 and A211 preserve restored local selected node during server graph hydration", async ({
+  page
+}) => {
+  const payloads: Record<string, unknown>[] = [];
+  await page.route("https://graph.eei.test/v1/explore", async (route) => {
+    const payload = route.request().postDataJSON() as Record<string, unknown>;
+    payloads.push(payload);
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify(createExploreGraphResponse(payload))
+    });
+  });
+  await page.addInitScript(
+    ({ storageKey, apiBase }: { storageKey: string; apiBase: string }) =>
+      window.localStorage.setItem(storageKey, apiBase),
+    { storageKey: exploreApiBaseStorageKey, apiBase: "https://graph.eei.test" }
+  );
+
+  await page.goto(
+    "/?subject=cloud&selected=datacenter&lens=supply_chain&zoom=L2&asOf=2026-06-12&path=nvidia.cloud"
+  );
+
+  await expect(page.getByTestId("production-graph-status")).toHaveText("server-hydrated");
+  await expect(page.getByTestId("selected-node-card")).toHaveAttribute(
+    "data-render-source",
+    "fixture"
+  );
+  await expect(page.getByTestId("selected-node-title")).toHaveText(
+    "Synthetic AI Data Center Campus"
+  );
+  expect(payloads[0]).toMatchObject({
+    focus: { object_type: "entity", object_id: cloudEntityId },
+    filters: {
+      visual_lens: "supply_chain",
+      semantic_zoom: "L2",
+      ui_path: ["nvidia", "cloud"],
+      selected_key: "datacenter"
+    }
+  });
 });
 
 test("saves versioned views restores deterministically and shows as-of change overlays", async ({

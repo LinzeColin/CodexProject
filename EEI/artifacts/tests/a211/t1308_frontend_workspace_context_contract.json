@@ -14,6 +14,7 @@
     "model-center API-first active-context hydration, transaction activation, stale refresh and rollback controls with server mock E2E coverage",
     "commercial-map /v1/explore API-first hydration with production_context, graph budget, coverage and publication-gate metadata surfaced in the UI",
     "commercial-map server node/edge rendering in the SVG canvas and graph table when /v1/explore returns a usable server graph",
+    "server graph hydration preserves the restored local selected node unless the user explicitly selects a server-rendered graph node",
     "Playwright coverage for WorkspaceContext, real controls and disabled unfinished entries"
   ],
   "evidence_files": [
@@ -34,7 +35,7 @@
   "verified_result": {
     "typecheck": "PASS",
     "playwright_e2e": "PASS",
-    "playwright_tests_passed": 31
+    "playwright_tests_passed": 32
   },
   "remaining_to_close_a211": [
     "run cross-route E2E with live FastAPI/PostgreSQL backend and stale-client refresh semantics",

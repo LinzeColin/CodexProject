@@ -1397,6 +1397,7 @@ export default function Home() {
   const [stateReady, setStateReady] = useState(false);
   const restoringHistoryState = useRef(false);
   const hasWrittenHistoryState = useRef(false);
+  const hydratedProductionGraphKey = useRef("");
   const scenario = scenarios[focusKey];
   const workspaceState = useMemo<WorkspaceState>(
     () => ({ focusKey, selectedKey, path, activeLens, semanticZoom, asOf }),
@@ -1409,6 +1410,20 @@ export default function Home() {
         serverModelContext?.active_scoring_profile_version_id
       ),
     [serverModelContext?.active_scoring_profile_version_id, workspaceState]
+  );
+  const productionGraphRequestKey = useMemo(
+    () =>
+      JSON.stringify({
+        focus: productionGraphRequest.focus.object_id,
+        layers: productionGraphRequest.active_layers,
+        as_of: productionGraphRequest.as_of,
+        scoring_profile_version_id: productionGraphRequest.scoring_profile_version_id,
+        visual_lens: productionGraphRequest.filters.visual_lens,
+        semantic_zoom: productionGraphRequest.filters.semantic_zoom,
+        selected_key: productionGraphRequest.filters.selected_key,
+        budget: productionGraphRequest.budget
+      }),
+    [productionGraphRequest]
   );
   const workspaceContextValue = useMemo(
     () =>
@@ -1495,11 +1510,14 @@ export default function Home() {
   }, [activeLens, focusKey, graphViewEdges, isServerGraphRendered, productionGraphRequest.focus.object_id]);
   const selectedNode =
     nodeByKey.get(selectedKey) ?? nodeByKey.get(scenario.focus) ?? scenario.nodes[0];
+  const selectedServerGraphNode = selectedProductionNodeKey
+    ? graphViewNodeByKey.get(selectedProductionNodeKey)
+    : undefined;
   const selectedGraphNode =
     graphViewMode === "server"
-      ? graphViewNodeByKey.get(selectedProductionNodeKey) ??
-        graphViewNodeByKey.get(productionGraphRequest.focus.object_id) ??
-        graphViewNodes[0]
+      ? selectedServerGraphNode ??
+        graphViewNodeByKey.get(selectedNode.key) ??
+        fixtureRenderNode(selectedNode)
       : graphViewNodeByKey.get(selectedNode.key) ?? fixtureRenderNode(selectedNode);
   const industryPath = useMemo(() => {
     const ordered: { key: string; label: string }[] = [];
@@ -1527,6 +1545,7 @@ export default function Home() {
     const normalized = normalizeWorkspaceState(nextState);
     setFocusKey(normalized.focusKey);
     setSelectedKey(normalized.selectedKey);
+    setSelectedProductionNodeKey("");
     setPath(normalized.path);
     setActiveLens(normalized.activeLens);
     setSemanticZoom(normalized.semanticZoom);
@@ -1702,7 +1721,6 @@ export default function Home() {
       return;
     }
     setProductionGraph(graphResult.record);
-    setSelectedProductionNodeKey(graphResult.record.query.focus.object_id);
     setProductionGraphSyncMode("server");
     setProductionGraphSyncReason(reason);
     setProductionGraphEndpoint(graphResult.endpoint);
@@ -1832,6 +1850,7 @@ export default function Home() {
       const validFocus = nextFocus as FocusKey;
       setFocusKey(validFocus);
       setSelectedKey(validFocus);
+      setSelectedProductionNodeKey("");
       setPath((current) =>
         current[current.length - 1] === validFocus ? current : [...current, validFocus]
       );
@@ -1844,7 +1863,10 @@ export default function Home() {
     requestCenter(nextFocus);
   }
 
-  function inspectNode(nextSelected: NodeKey) {
+  function inspectNode(nextSelected: NodeKey, options: { preserveProductionSelection?: boolean } = {}) {
+    if (!options.preserveProductionSelection) {
+      setSelectedProductionNodeKey("");
+    }
     setSelectedKey(nextSelected);
     setGroupListOpen(false);
   }
@@ -1854,7 +1876,7 @@ export default function Home() {
       setSelectedProductionNodeKey(nextSelected.key);
     }
     if (nextSelected.localKey) {
-      inspectNode(nextSelected.localKey);
+      inspectNode(nextSelected.localKey, { preserveProductionSelection: true });
       return;
     }
     setSelectedProductionNodeKey(nextSelected.key);
@@ -1912,6 +1934,7 @@ export default function Home() {
   function resetToNvidia() {
     setFocusKey("nvidia");
     setSelectedKey("nvidia");
+    setSelectedProductionNodeKey("");
     setPath(["nvidia"]);
     setGroupListOpen(false);
     setTransitionState("ready");
@@ -1966,8 +1989,11 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (!stateReady) return;
+    if (hydratedProductionGraphKey.current === productionGraphRequestKey) return;
+    hydratedProductionGraphKey.current = productionGraphRequestKey;
     void hydrateProductionGraph("initial_hydration");
-  }, []);
+  }, [productionGraphRequestKey, stateReady]);
 
   useEffect(() => {
     if (!stateReady) return;
