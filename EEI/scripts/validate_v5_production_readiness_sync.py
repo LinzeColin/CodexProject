@@ -34,7 +34,12 @@ EXPECTED_TASKS = {
     "T1309": "A210",
 }
 
-IMPLEMENTED_TASKS = {"T1300": "A201", "T1305": "A207", "T1306": "A208"}
+IMPLEMENTED_TASKS = {
+    "T1300": "A201",
+    "T1305": "A207",
+    "T1306": "A208",
+    "T1308": "A211",
+}
 
 PARTIAL_TASKS = {
     "T1301": "A202",
@@ -42,10 +47,9 @@ PARTIAL_TASKS = {
     "T1303": "A204",
     "T1304": "A206",
     "T1307": "A209",
-    "T1308": "A211",
 }
 
-PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A209", "A211"}
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A209"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -85,6 +89,19 @@ IMPLEMENTED_EVIDENCE = {
         "artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json",
         "artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json",
         "artifacts/tests/a207/t1305_saved_view_trusted_gateway_contract.json",
+    },
+    "T1308": {
+        "apps/web/src/app/workspace-context.tsx",
+        "apps/web/src/app/workspace-navigation.tsx",
+        "apps/web/src/app/model-activation-client.ts",
+        "apps/web/src/app/explore-api-client.ts",
+        "apps/web/src/app/production-data-client.ts",
+        "apps/web/src/app/page.tsx",
+        "scripts/run_live_e2e_api.sh",
+        "tests/e2e/home.spec.ts",
+        "tests/e2e/saved-view-live.spec.ts",
+        "tests/e2e/state-contract.spec.ts",
+        "artifacts/tests/a211/t1308_frontend_workspace_context_contract.json",
     },
 }
 
@@ -141,16 +158,6 @@ PARTIAL_EVIDENCE = {
     "T1307": {
         "scripts/run_soak_smoke.mjs",
         "artifacts/tests/a209/t1307_soak_smoke.json",
-    },
-    "T1308": {
-        "apps/web/src/app/workspace-context.tsx",
-        "apps/web/src/app/workspace-navigation.tsx",
-        "apps/web/src/app/model-activation-client.ts",
-        "apps/web/src/app/explore-api-client.ts",
-        "apps/web/src/app/page.tsx",
-        "tests/e2e/home.spec.ts",
-        "tests/e2e/state-contract.spec.ts",
-        "artifacts/tests/a211/t1308_frontend_workspace_context_contract.json",
     },
 }
 

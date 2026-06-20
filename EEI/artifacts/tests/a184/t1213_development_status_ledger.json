@@ -16,21 +16,21 @@
       "DONE": 46
     },
     "prototype_status": {
-      "DONE": 21,
+      "DONE": 22,
       "N/A": 4,
       "NOT_STARTED": 1,
-      "PARTIAL": 20
+      "PARTIAL": 19
     },
     "implementation_status": {
-      "DONE": 3,
+      "DONE": 4,
       "N/A": 8,
       "NOT_STARTED": 15,
-      "PARTIAL": 20
+      "PARTIAL": 19
     },
     "validation_status": {
       "CATALOG_VALIDATED": 11,
-      "CI_VALIDATED": 8,
-      "LOCAL_E2E_VALIDATED": 5,
+      "CI_VALIDATED": 9,
+      "LOCAL_E2E_VALIDATED": 4,
       "LOCAL_VALIDATED": 10,
       "SPEC_VALIDATED": 4,
       "VALIDATED": 8

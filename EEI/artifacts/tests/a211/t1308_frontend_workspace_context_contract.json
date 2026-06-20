@@ -3,7 +3,7 @@
   "generated_at": "2026-06-20T00:00:00+10:00",
   "task_id": "T1308",
   "acceptance_id": "A211",
-  "status": "LIVE_CROSS_ROUTE_CI_PENDING",
+  "status": "DONE_CI_VALIDATED",
   "implemented_scope": [
     "WorkspaceContext contract with 16 EEI modules",
     "route, lens, section and planned-disabled navigation control states",
@@ -59,22 +59,20 @@
     "playwright_tests_passed": 32,
     "live_playwright_discovery": "PASS",
     "live_playwright_tests_discovered": 3,
-    "live_fastapi_postgresql_a211": "PENDING_REMOTE_CI"
+    "live_fastapi_postgresql_a211": "PASS"
   },
   "latest_ci_result": {
     "provider": "GitHub Actions",
     "workflow": "EEI validation",
-    "run_id": "27869583493",
-    "job_id": "82479246130",
-    "commit_sha": "f3ed3cfca557b8cef8e6ed07a5d0a8fdcc421aef",
+    "run_id": "27876091338",
+    "job_id": "82495713946",
+    "commit_sha": "a57d1108a3c30da79ef3e35b1d3617f2efd4293a",
     "verify_static_contract_lint_typecheck_unit_step": "PASS",
     "verify_g2_static_contract_lint_typecheck_unit_step": "PASS",
     "verify_g2_postgresql_integration_step": "PASS",
     "verify_g2_browser_e2e_step": "PASS",
     "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
   },
-  "remaining_to_close_a211": [
-    "GitHub Actions verify-g2-db must pass the new A211 live FastAPI/PostgreSQL cross-route test before A211 can be marked DONE"
-  ],
-  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter, model-center transaction/recompute controls, live model activation/stale-refresh/rollback, commercial-map /v1/explore context hydration, server graph node/edge rendering, catalog inventory hydration, relationship_fact_candidate score explanation hydration and evidence detail/source-snippet hydration. The new live cross-route FastAPI/PostgreSQL A211 proof is implemented and pending GitHub Actions verification before A211 is closed."
+  "remaining_to_close_a211": [],
+  "mvp_boundary_note": "This artifact closes A211 for the production frontend shell, route/control state, persistence contract, saved-view API adapter, model-center transaction/recompute controls, live model activation/stale-refresh/rollback, commercial-map /v1/explore context hydration, server graph node/edge rendering, catalog inventory hydration, relationship_fact_candidate score explanation hydration, evidence detail/source-snippet hydration and live cross-route FastAPI/PostgreSQL proof. T1301/A202, T1302/A203, T1303/A204-A205, T1304/A206, T1307/A209 and T1309/A210 remain separate v0.1 blockers."
 }
