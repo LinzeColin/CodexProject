@@ -2413,6 +2413,7 @@ class DomainRepository:
                     "workspace_key": workspace_key,
                     "name": name,
                 }
+                conflict_detail = _jsonable(conflict_detail)
                 self.log_operation(
                     connection,
                     actor=actor,
@@ -2758,7 +2759,7 @@ class DomainRepository:
         }
         if target_version is not None:
             detail["target_version"] = target_version
-        return detail
+        return _jsonable(detail)
 
     def list_home(self) -> dict[str, Any]:
         with self.connect() as connection:
