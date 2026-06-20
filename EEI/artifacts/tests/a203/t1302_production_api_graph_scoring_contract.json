@@ -16,6 +16,7 @@
       "GET /v1/scoring/explain/source_document/{objectId} supports source-document provenance explanations backed by sources, source_documents, raw_source_snapshots, downstream evidence references, optional source_document fact_versions and production_context.",
       "GET /v1/scoring/explain/score_result/{objectId} supports score-result health explanations backed by score_results, scoring_runs, model/profile versions, active_analysis_contexts and production_context.",
       "Integration assertions bind A203 entity, event, industry, source_document, score_result, candidate and relationship scoring to FastAPI, repository queries, OpenAPI contract and curated fixture evidence.",
+      "score_recompute worker persists score_results for the MVP object families relationship_fact_candidate, relationship, entity, event, industry and source_document in one active scoring run, with object-type counts recorded in scoring_run parameters, active context metadata, outbox payload and operation log.",
       "Frontend commercial-map API-first hydration now posts the current focus, lens-derived layers, as-of date, scoring profile id and 42/64/12 budget to /v1/explore, exposes production_context, coverage and publication-gate metadata with explicit fixture fallback, and renders server-returned nodes/edges in the SVG canvas and graph table when the API response is available.",
       "Production_context now exposes bounded sample relationship_fact_candidates so the frontend can discover a score explanation target without hard-coding database UUIDs.",
       "Frontend production data hydration now loads /v1/catalogs and /v1/scoring/explain/relationship_fact_candidate/{objectId}, surfaces catalog inventory counts, source-of-truth counts, adjusted score, evidence count, missing-input count and publication status, and retains explicit local fallback/error states.",
@@ -25,7 +26,6 @@
       "Frontend Evidence Center now hydrates /v1/evidence/relationship_fact_candidate/{objectId}, exposes evidence/source-document counts, endpoint state and source snippets, and refreshes the production evidence detail when the user clicks 打开证据."
     ],
     "explicitly_not_closed": [
-      "The scoring explain API now covers the MVP object_type enum, but score recompute still only persists relationship_fact_candidate score_results until the broader production scoring engine lands in T600-T608 and T1303.",
       "Production-approved live relationship facts remain dependent on T1301/A202 live/full-text ingestion, second-source verification or production owner sign-off.",
       "Candidate approval, publication into relationships and atomic global refresh remain dependent on the T1301/T1303 production gate.",
       "4h and 24h soak tests remain in T1307/A209."
@@ -106,6 +106,7 @@
     "apps/web/src/app/production-data-client.ts",
     "apps/web/src/app/page.tsx",
     "data/mock_events.json",
+    "scripts/job_scheduler.py",
     "scripts/load_synthetic_fixtures.py",
     "specs/api_contract.yaml",
     "tests/unit/test_scoring.py",
@@ -130,6 +131,8 @@
     "python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py: PASS after source_document and score_result scoring explain slice",
     ".venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py: PASS after source_document and score_result scoring explain slice",
     ".venv/bin/python -m pytest -q tests/unit/test_scoring.py: PASS with 14/14 after source_document and score_result scoring explain slice",
+    "python3 -m py_compile scripts/job_scheduler.py tests/integration/test_database_migrations.py: PASS after MVP object-family score_results recompute slice",
+    ".venv/bin/ruff check scripts/job_scheduler.py tests/integration/test_database_migrations.py: PASS after MVP object-family score_results recompute slice",
     ".venv/bin/python scripts/validate_contracts.py: PASS after OpenAPI objectType enum expanded to seven score explanation object types",
     ".venv/bin/python scripts/validate_v5_production_readiness_sync.py: PASS after source_document and score_result scoring explain slice",
     ".venv/bin/python -m pytest -q tests/integration/test_database_migrations.py: SKIPPED locally because this host has no DATABASE_URL or .env; GitHub Actions run 27883167817 provides the remote PostgreSQL proof below",

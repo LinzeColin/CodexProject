@@ -2438,10 +2438,36 @@ def exercise_transactional_model_activation_contract(
     assert recompute_result["previous_refresh_generation"] == next_refresh_generation
     assert recompute_result["refresh_generation"] == next_refresh_generation + 1
     assert recompute_result["scored_objects"] >= 1
+    expected_mvp_score_types = {
+        "relationship_fact_candidate",
+        "relationship",
+        "entity",
+        "event",
+        "industry",
+        "source_document",
+    }
+    assert recompute_result["score_result_object_type"] == "mvp_object_family"
+    assert set(recompute_result["score_result_object_types"]) == expected_mvp_score_types
+    assert set(recompute_result["score_result_object_counts"]) == expected_mvp_score_types
+    assert all(
+        recompute_result["score_result_object_counts"][object_type] >= 1
+        for object_type in expected_mvp_score_types
+    )
+    assert (
+        sum(recompute_result["score_result_object_counts"].values())
+        == recompute_result["scored_objects"]
+    )
     assert recompute_result["acceptance_ids"] == ["A204", "A205", "A206"]
     assert recompute_result["outbox_event"]["event_type"] == "score.snapshot.activated"
     assert recompute_result["outbox_event"]["aggregate_id"] == recompute_result["scoring_run_id"]
     assert recompute_result["outbox_event"]["status"] == "pending"
+    assert (
+        set(recompute_result["outbox_event"]["payload"]["score_result_object_types"])
+        == expected_mvp_score_types
+    )
+    assert recompute_result["outbox_event"]["payload"]["score_result_object_counts"] == (
+        recompute_result["score_result_object_counts"]
+    )
     recompute_refresh_token = recompute_result["refresh_token"]
     recompute_scoring_run_id = recompute_result["scoring_run_id"]
 
@@ -2488,17 +2514,38 @@ def exercise_transactional_model_activation_contract(
         assert recompute_context[2] == recompute_refresh_token
         assert recompute_context[3] == next_refresh_generation + 1
         assert recompute_context[4] == "active"
-        score_result_count = connection.execute(
+        score_result_type_rows = connection.execute(
+            """
+            SELECT object_type, count(*)::int
+            FROM score_results
+            WHERE scoring_run_id = %s
+              AND adjusted_score IS NOT NULL
+            GROUP BY object_type
+            ORDER BY object_type
+            """,
+            (UUID(recompute_scoring_run_id),),
+        ).fetchall()
+        score_result_type_counts = {
+            object_type: count for object_type, count in score_result_type_rows
+        }
+        assert set(score_result_type_counts) == expected_mvp_score_types
+        assert score_result_type_counts == recompute_result["score_result_object_counts"]
+        assert sum(score_result_type_counts.values()) == recompute_result["scored_objects"]
+        missing_metric_count = connection.execute(
             """
             SELECT count(*)::int
             FROM score_results
             WHERE scoring_run_id = %s
-              AND object_type = 'relationship_fact_candidate'
-              AND adjusted_score IS NOT NULL
+              AND (
+                raw_score IS NULL
+                OR evidence_quality IS NULL
+                OR adjusted_score IS NULL
+                OR coverage IS NULL
+              )
             """,
             (UUID(recompute_scoring_run_id),),
         ).fetchone()[0]
-        assert score_result_count == recompute_result["scored_objects"]
+        assert missing_metric_count == 0
         score_result_object_id = connection.execute(
             """
             SELECT object_id
