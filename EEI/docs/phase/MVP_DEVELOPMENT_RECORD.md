@@ -3482,7 +3482,7 @@ These are recorded in `artifacts/tests/a202/t1301_operator_source_capture_contra
 
 ## 2026-06-21 - T1302/A203 source-document and score-result scoring explain slice
 
-Status: LOCAL VALIDATED; A203 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A203 STILL IN PROGRESS
 
 ### Scope
 
@@ -3533,9 +3533,16 @@ Status: LOCAL VALIDATED; A203 STILL IN PROGRESS
 - `.venv/bin/python scripts/validate_contracts.py`: PASS.
 - `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
 - `.venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `.env` or `DATABASE_URL`.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS after non-sandbox Chromium permission rerun; 35 unit tests passed, typecheck passed, release checksum validation passed, browser scale smoke passed and soak smoke passed.
+
+### Remote CI validation
+
+- GitHub Actions run `27883167817` / job `82514084247` on commit `f83389577d79c10b8c5184f858d318d52ffac9ae`: PASS.
+- Step 10 `Verify G2 PostgreSQL integration`: PASS, proving source_document and score_result scoring explanation SQL against the real migration/seed path.
+- Step 11 `Verify G2 browser E2E`: PASS.
+- Step 12 `Verify G2 live FastAPI PostgreSQL E2E`: PASS.
 
 ### Remaining gaps
 
-- Remote GitHub Actions PostgreSQL/browser/live FastAPI evidence is still required for this slice before it can be treated as CI validated.
 - `score_recompute` still persists `score_results` only for `relationship_fact_candidate` objects. Full recompute persistence for all MVP object families remains part of the broader production scoring engine and T1303/T600-T608 work.
 - A203 still depends on A202 for production-approved live relationship facts and on A209 for 4h/24h soak evidence.
