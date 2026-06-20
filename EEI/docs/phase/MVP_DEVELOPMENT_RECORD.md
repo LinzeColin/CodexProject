@@ -246,6 +246,8 @@ Verification results:
 
 - `node --check scripts/run_soak_smoke.mjs`: PASS.
 - `node scripts/run_soak_smoke.mjs --mode ci_smoke --duration-seconds 3 --output artifacts/tests/a209/t1307_soak_smoke.json --fail-on-budget --quiet`: PASS; output status remains `PARTIAL` because 4h/24h durations are not measured.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make verify`: PASS; includes T1307 soak smoke, A208 benchmark contracts, governance validators, lint, typecheck and 11 unit tests.
+- GitHub Actions `EEI validation` run `27860819378`, job `82456417742`: PASS, including static/contract/lint/typecheck/unit and G2 PostgreSQL/E2E.
 
 Residual risks:
 
