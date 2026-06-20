@@ -1,45 +1,18 @@
 # OpenAIDatabase 功能清单
 
-更新时间：2026-06-19
+更新时间：2026-06-20
 
-## 核心功能
+本文件是兼容入口，不再作为功能、模型、任务或验收的可编辑事实源。
 
-- OpenAI export ZIP ingest。
-- conversations.json 解析、增量去重、候选记忆生成。
-- 三层记忆分类：核心画像、一般、临时。
-- weekly / monthly human-facing memory packs。
-- chat report backup。
-- SQLite search/fetch index。
-- Memory Atlas 可视化平台。
-- ChatGPT / Codex personalization 与 Agents.md 建议板块。
+Canonical 文件：
 
-## Memory Atlas 功能
+- 功能与模型边界：`docs/governance/MODEL_SPEC.md`
+- 模型注册表：`docs/governance/model_registry.yaml`
+- 公式注册表：`docs/governance/formula_registry.yaml`
+- 参数台账：`docs/governance/parameter_registry.csv`
+- 交付任务：`docs/governance/DELIVERY_PLAN.md`
+- 任务机器源：`docs/governance/delivery_tasks.yaml`
+- 追踪矩阵：`docs/governance/TRACEABILITY_MATRIX.csv`
 
-- Galaxy：Three.js 银河星云主视图。
-- Notion Map：项目/文档/主题关系地图。
-- ROI Dashboard：按 leverage score、staleness、action 展示记忆。
-- Obsidian Graph：动态图谱、全局/局部图、深度、过滤、分组、显示和力参数。
-- Timeline：真实事件日期时间轴。
-- Contribution Grid：日/周/月/年交互强度和增量分析。
-- Word Cloud：Heatmap、Bubble Chart、Word Cloud 三层语义视图。
-- Search/Review：Memory 与 Meta Data 两类建议。
-
-## 用户价值
-
-- 让任意新 agent 能把此仓库当成长期记忆数据库和 RAG 来源。
-- 让用户通过记忆分析发现行动、机会、低 ROI 循环和能力成长方向。
-- 让 ChatGPT/Codex personalization 不依赖短 settings summary。
-
-## 必须保留的行为
-
-- 不直接提交原始敏感数据。
-- 所有 memory candidates 默认 pending。
-- 用户聊天框输出是主交付，GitHub 文件是备份/RAG/审计面。
-- 每轮处理必须和上一轮对比。
-
-## 后续可扩展功能
-
-- 版本化 writeback proposal。
-- 多数据源行为分析。
-- Cloudflare Pages + Access 发布。
-- MCP search/fetch 只读服务。
+历史摘要仍可从 Git 历史读取；新增功能、验收、模型或参数事实必须写入
+`docs/governance/` 下的 canonical 文件。

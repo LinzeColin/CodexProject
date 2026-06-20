@@ -1,0 +1,13 @@
+product_version: "0.0.0"
+product_version_status: "provisional"
+governance_spec_version: "1.0.0"
+schema_version: "1.0.0"
+model_versions: {}
+parameter_profile_versions: {}
+data_snapshot_version: "UNKNOWN"
+current_iteration: "UNKNOWN"
+current_phase: "A"
+current_gate: "GOVERNANCE_BASELINE_PENDING"
+version_file_value: "0.0.0"
+changelog_ref: "CHANGELOG.md"
+ledger_ref: "docs/governance/DEVELOPMENT_LEDGER.md"

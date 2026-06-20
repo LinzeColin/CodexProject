@@ -1,0 +1,71 @@
+name: Project Governance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: "Governance validation scope"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - changed-only
+          - project
+      project:
+        description: "Project id or path when scope=project"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: project-governance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run governance validator tests
+        run: |
+          if python3 -c "import pytest" >/dev/null 2>&1; then
+            python3 -m pytest tests/governance -q
+          else
+            python3 -m unittest discover -s tests/governance -p 'test_*.py' -q
+          fi
+      - name: Validate changed governance scope
+        if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
+        run: python3 scripts/validate_project_governance.py --changed-only
+      - name: Validate all registered scopes
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')
+        run: python3 scripts/validate_project_governance.py --all
+      - name: Validate selected project
+        if: github.event_name == 'workflow_dispatch' && inputs.scope == 'project'
+        run: |
+          if [ -z "${{ inputs.project }}" ]; then
+            echo "project input is required when scope=project"
+            exit 1
+          fi
+          python3 scripts/validate_project_governance.py --project "${{ inputs.project }}"
+      - name: Write governance summary
+        if: always()
+        run: |
+          {
+            echo "## Project Governance"
+            echo "- event: ${{ github.event_name }}"
+            echo "- scope: ${{ inputs.scope || 'auto' }}"
+            echo "- project: ${{ inputs.project || 'not_applicable' }}"
+            echo "- required failures are not masked by continue-on-error"
+          } >> "$GITHUB_STEP_SUMMARY"

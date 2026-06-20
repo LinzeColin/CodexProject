@@ -1,0 +1,3311 @@
+governance_spec_version: "1.0.0"
+project_id: "EEI"
+tasks:
+  - task_id: "TASK-T000"
+    legacy_task_id: "T000"
+    phase: "A"
+    objective: "Inventory repository and confirm v2.0 canonical inputs"
+    scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies: []
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A001"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T001"
+    legacy_task_id: "T001"
+    phase: "A"
+    objective: "Pin runtime/dependency versions and lockfiles"
+    scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T000"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A004"
+      - "ACC-A008"
+      - "ACC-A009"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T002"
+    legacy_task_id: "T002"
+    phase: "A"
+    objective: "Write ADRs for recursion, URL state, scoring, logs and calibration"
+    scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T001"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A002"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T003"
+    legacy_task_id: "T003"
+    phase: "A"
+    objective: "Map every P0 acceptance to tasks and tests"
+    scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T002"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A001"
+      - "ACC-A003"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T004"
+    legacy_task_id: "T004"
+    phase: "A"
+    objective: "Record exact file scope, commands, risks and rollback"
+    scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T003"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A001"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T100"
+    legacy_task_id: "T100"
+    phase: "G1"
+    objective: "Create pnpm/uv monorepo skeleton"
+    scope: "Legacy EEI gate G1 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T004"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A004"
+      - "ACC-A010"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T101"
+    legacy_task_id: "T101"
+    phase: "G1"
+    objective: "Add Docker Compose PostgreSQL and health checks"
+    scope: "Legacy EEI gate G1 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T100"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A005"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T102"
+    legacy_task_id: "T102"
+    phase: "G1"
+    objective: "Add Makefile and deterministic make verify"
+    scope: "Legacy EEI gate G1 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T100"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A006"
+      - "ACC-A007"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T103"
+    legacy_task_id: "T103"
+    phase: "G1"
+    objective: "Create FastAPI and Next.js health shells"
+    scope: "Legacy EEI gate G1 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T101"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A005"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T104"
+    legacy_task_id: "T104"
+    phase: "G1"
+    objective: "Add contract/static validation and secret scan"
+    scope: "Legacy EEI gate G1 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T102"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A008"
+      - "ACC-A009"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T200"
+    legacy_task_id: "T200"
+    phase: "G2"
+    objective: "Implement core migrations and entity/time/evidence invariants"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T104"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A011"
+      - "ACC-A012"
+      - "ACC-A013"
+      - "ACC-A014"
+      - "ACC-A015"
+      - "ACC-A022"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "python scripts/validate_task_pack.py"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A011"
+      - "PASS: acceptance_traceability.csv status DONE for A012"
+      - "PASS: acceptance_traceability.csv status DONE for A013"
+      - "PASS: acceptance_traceability.csv status DONE for A014"
+      - "PASS: acceptance_traceability.csv status DONE for A015"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:71:TR-FUN-EXP-03-A011:tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:72:TR-FUN-EXP-03-A012:scripts/check_database_schema.py;tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:73:TR-FUN-EXP-03-A013:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/mock_relationships.json"
+      - "EEI/data/acceptance_traceability.csv:74:TR-FUN-EXP-03-A014:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;specs/domain_schema.sql"
+      - "EEI/data/acceptance_traceability.csv:75:TR-FUN-EXP-03-A015:scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:93:TR-FUN-EXP-05-A022:scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:146:TR-FUN-DM-01-A011:tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:147:TR-FUN-DM-01-A012:scripts/check_database_schema.py;tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:148:TR-FUN-DM-01-A013:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/mock_relationships.json"
+      - "EEI/data/acceptance_traceability.csv:149:TR-FUN-DM-01-A014:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;specs/domain_schema.sql"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T201"
+    legacy_task_id: "T201"
+    phase: "G2"
+    objective: "Implement ten relationship families and supply-chain attributes"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T200"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A016"
+      - "ACC-A020"
+      - "ACC-A021"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "python scripts/validate_task_pack.py"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A016"
+      - "PASS: acceptance_traceability.csv status DONE for A020"
+      - "PASS: acceptance_traceability.csv status DONE for A021"
+      - "PASS: acceptance_traceability.csv status DONE for A020"
+      - "PASS: acceptance_traceability.csv status DONE for A021"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:52:TR-FUN-EXP-02-A016:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/relationship_family_catalog.csv"
+      - "EEI/data/acceptance_traceability.csv:53:TR-FUN-EXP-02-A020:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/supply_chain_stage_taxonomy.csv"
+      - "EEI/data/acceptance_traceability.csv:54:TR-FUN-EXP-02-A021:scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:91:TR-FUN-EXP-05-A020:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/supply_chain_stage_taxonomy.csv"
+      - "EEI/data/acceptance_traceability.csv:92:TR-FUN-EXP-05-A021:scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:151:TR-FUN-DM-01-A016:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/relationship_family_catalog.csv"
+      - "EEI/data/acceptance_traceability.csv:155:TR-FUN-DM-01-A020:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/supply_chain_stage_taxonomy.csv"
+      - "EEI/data/acceptance_traceability.csv:156:TR-FUN-DM-01-A021:scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T202"
+    legacy_task_id: "T202"
+    phase: "G2"
+    objective: "Implement industry taxonomy and multi-label memberships"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T200"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A019"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A019"
+      - "PASS: acceptance_traceability.csv status DONE for A019"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:115:TR-FUN-EXP-08-A019:scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:154:TR-FUN-DM-01-A019:scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T203"
+    legacy_task_id: "T203"
+    phase: "G2"
+    objective: "Implement exploration, Watchlist, scoring, audit and calibration tables"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T200"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A011"
+      - "ACC-A090"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A011"
+      - "PASS: acceptance_traceability.csv status DONE for A011"
+      - "PASS: acceptance_traceability.csv status DONE for A090"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:71:TR-FUN-EXP-03-A011:tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:146:TR-FUN-DM-01-A011:tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:203:TR-FUN-DM-04-A090:tests/integration/test_database_migrations.py"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T204"
+    legacy_task_id: "T204"
+    phase: "G2"
+    objective: "Load 30 P0 seeds and 140-node research universe"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T201"
+      - "TASK-T202"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A017"
+      - "ACC-A018"
+      - "ACC-A028"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "python scripts/validate_task_pack.py"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A017"
+      - "PASS: acceptance_traceability.csv status DONE for A018"
+      - "PASS: acceptance_traceability.csv status DONE for A017"
+      - "PASS: acceptance_traceability.csv status DONE for A018"
+      - "PASS: acceptance_traceability.csv status DONE for A028"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:76:TR-FUN-EXP-03-A017:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/seed_universe.csv"
+      - "EEI/data/acceptance_traceability.csv:77:TR-FUN-EXP-03-A018:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/research_universe.csv"
+      - "EEI/data/acceptance_traceability.csv:152:TR-FUN-DM-01-A017:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/seed_universe.csv"
+      - "EEI/data/acceptance_traceability.csv:153:TR-FUN-DM-01-A018:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/research_universe.csv"
+      - "EEI/data/acceptance_traceability.csv:163:TR-FUN-DM-01-A028:scripts/validate_task_pack.py;scripts/validate_governance.py;scripts/validate_catalog_integrity.py"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T205"
+    legacy_task_id: "T205"
+    phase: "G2"
+    objective: "Load synthetic recursive supply-chain fixtures"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T204"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A016"
+      - "ACC-A025"
+      - "ACC-A067"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+      - "python scripts/validate_task_pack.py"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A016"
+      - "PASS: acceptance_traceability.csv status DONE for A067"
+      - "PASS: acceptance_traceability.csv status DONE for A016"
+      - "PASS: acceptance_traceability.csv status DONE for A025"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:52:TR-FUN-EXP-02-A016:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/relationship_family_catalog.csv"
+      - "EEI/data/acceptance_traceability.csv:58:TR-FUN-EXP-02-A067:tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:151:TR-FUN-DM-01-A016:scripts/check_database_schema.py;tests/integration/test_database_migrations.py;data/relationship_family_catalog.csv"
+      - "EEI/data/acceptance_traceability.csv:160:TR-FUN-DM-01-A025:tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T206"
+    legacy_task_id: "T206"
+    phase: "G2"
+    objective: "Implement supersession/conflict repositories"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T200"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A023"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A023"
+      - "PASS: acceptance_traceability.csv status DONE for A023"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:94:TR-FUN-EXP-05-A023:tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:158:TR-FUN-DM-01-A023:tests/integration/test_database_migrations.py"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T207"
+    legacy_task_id: "T207"
+    phase: "G2"
+    objective: "Implement idempotent seed loader and data checks"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T205"
+      - "TASK-T206"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A024"
+      - "ACC-A028"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "python scripts/validate_task_pack.py"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A024"
+      - "PASS: acceptance_traceability.csv status DONE for A028"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:159:TR-FUN-DM-01-A024:tests/integration/test_database_migrations.py;scripts/load_seed_catalogs.py;scripts/load_synthetic_fixtures.py"
+      - "EEI/data/acceptance_traceability.csv:163:TR-FUN-DM-01-A028:scripts/validate_task_pack.py;scripts/validate_governance.py;scripts/validate_catalog_integrity.py"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T208"
+    legacy_task_id: "T208"
+    phase: "G2"
+    objective: "Run migration round-trip and gold quality scaffolding"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T207"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A011"
+      - "ACC-A026"
+      - "ACC-A027"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A011"
+      - "PASS: acceptance_traceability.csv status DONE for A011"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:71:TR-FUN-EXP-03-A011:tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:146:TR-FUN-DM-01-A011:tests/integration/test_database_migrations.py"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T300"
+    legacy_task_id: "T300"
+    phase: "G3"
+    objective: "Implement global typed search and aliases"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T208"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A038"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A038"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:129:TR-FUN-RM-01-A038:tests/integration/test_database_migrations.py;apps/api/app/domain.py;apps/api/app/domain_repository.py;specs/domain_schema.sql"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T301"
+    legacy_task_id: "T301"
+    phase: "G3"
+    objective: "Implement home aggregation API"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T300"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A029"
+      - "ACC-A030"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A029"
+      - "PASS: acceptance_traceability.csv status DONE for A030"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:122:TR-FUN-RM-01-A029:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:123:TR-FUN-RM-01-A030:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T302"
+    legacy_task_id: "T302"
+    phase: "G3"
+    objective: "Implement industry list and landscape API"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T300"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A031"
+      - "ACC-A032"
+      - "ACC-A033"
+      - "ACC-A034"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A031"
+      - "PASS: acceptance_traceability.csv status DONE for A032"
+      - "PASS: acceptance_traceability.csv status DONE for A033"
+      - "PASS: acceptance_traceability.csv status DONE for A034"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:116:TR-FUN-EXP-08-A031:apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:117:TR-FUN-EXP-08-A032:apps/web/src/app/industries/page.tsx;tests/e2e/industry.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:118:TR-FUN-EXP-08-A033:scripts/load_synthetic_fixtures.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:119:TR-FUN-EXP-08-A034:apps/web/src/app/industries/page.tsx;apps/web/src/app/page.tsx;tests/e2e/industry.spec.ts;tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T303"
+    legacy_task_id: "T303"
+    phase: "G3"
+    objective: "Implement Watchlist CRUD and persistence"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T300"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A035"
+      - "ACC-A036"
+      - "ACC-A037"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A035"
+      - "PASS: acceptance_traceability.csv status DONE for A036"
+      - "PASS: acceptance_traceability.csv status DONE for A037"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:126:TR-FUN-RM-01-A035:apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:127:TR-FUN-RM-01-A036:apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py"
+      - "EEI/data/acceptance_traceability.csv:128:TR-FUN-RM-01-A037:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T304"
+    legacy_task_id: "T304"
+    phase: "G3"
+    objective: "Build user-oriented home page"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T301"
+      - "TASK-T302"
+      - "TASK-T303"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A029"
+      - "ACC-A030"
+      - "ACC-A039"
+      - "ACC-A040"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A029"
+      - "PASS: acceptance_traceability.csv status DONE for A030"
+      - "PASS: acceptance_traceability.csv status DONE for A039"
+      - "PASS: acceptance_traceability.csv status DONE for A040"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:122:TR-FUN-RM-01-A029:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:123:TR-FUN-RM-01-A030:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:124:TR-FUN-RM-01-A039:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:125:TR-FUN-RM-01-A040:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T305"
+    legacy_task_id: "T305"
+    phase: "G3"
+    objective: "Build industry landscape page"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T302"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A032"
+      - "ACC-A034"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A032"
+      - "PASS: acceptance_traceability.csv status DONE for A034"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:117:TR-FUN-EXP-08-A032:apps/web/src/app/industries/page.tsx;tests/e2e/industry.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:119:TR-FUN-EXP-08-A034:apps/web/src/app/industries/page.tsx;apps/web/src/app/page.tsx;tests/e2e/industry.spec.ts;tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T306"
+    legacy_task_id: "T306"
+    phase: "G3"
+    objective: "Add home/industry/watchlist E2E"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T304"
+      - "TASK-T305"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A029"
+      - "ACC-A035"
+      - "ACC-A037"
+      - "ACC-A039"
+      - "ACC-A040"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A029"
+      - "PASS: acceptance_traceability.csv status DONE for A039"
+      - "PASS: acceptance_traceability.csv status DONE for A040"
+      - "PASS: acceptance_traceability.csv status DONE for A035"
+      - "PASS: acceptance_traceability.csv status DONE for A037"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:122:TR-FUN-RM-01-A029:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:124:TR-FUN-RM-01-A039:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:125:TR-FUN-RM-01-A040:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:126:TR-FUN-RM-01-A035:apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:128:TR-FUN-RM-01-A037:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T400"
+    legacy_task_id: "T400"
+    phase: "G4"
+    objective: "Implement bounded graph query service"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T208"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A041"
+      - "ACC-A042"
+      - "ACC-A043"
+      - "ACC-A044"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A041"
+      - "PASS: acceptance_traceability.csv status DONE for A042"
+      - "PASS: acceptance_traceability.csv status DONE for A043"
+      - "PASS: acceptance_traceability.csv status DONE for A044"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:2:TR-FUN-EXP-01-A041:apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml"
+      - "EEI/data/acceptance_traceability.csv:3:TR-FUN-EXP-01-A042:apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml"
+      - "EEI/data/acceptance_traceability.csv:4:TR-FUN-EXP-01-A043:apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml"
+      - "EEI/data/acceptance_traceability.csv:5:TR-FUN-EXP-01-A044:apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml;apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T401"
+    legacy_task_id: "T401"
+    phase: "G4"
+    objective: "Implement exploration session and URL state"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T400"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A041"
+      - "ACC-A051"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A041"
+      - "PASS: acceptance_traceability.csv status DONE for A051"
+      - "PASS: acceptance_traceability.csv status DONE for A051"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:2:TR-FUN-EXP-01-A041:apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml"
+      - "EEI/data/acceptance_traceability.csv:12:TR-FUN-EXP-01-A051:apps/api/app/domain_repository.py;infra/db/migrations/0002_exploration_state/up.sql;tests/integration/test_database_migrations.py;tests/e2e/state-contract.spec.ts;specs/api_contract.yaml"
+      - "EEI/data/acceptance_traceability.csv:139:TR-FUN-RM-03-A051:apps/api/app/domain_repository.py;infra/db/migrations/0002_exploration_state/up.sql;tests/integration/test_database_migrations.py;tests/e2e/state-contract.spec.ts;specs/api_contract.yaml"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T402"
+    legacy_task_id: "T402"
+    phase: "G4"
+    objective: "Implement reroot with inherited/reset state"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T401"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A045"
+      - "ACC-A046"
+      - "ACC-A047"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A045"
+      - "PASS: acceptance_traceability.csv status DONE for A046"
+      - "PASS: acceptance_traceability.csv status DONE for A047"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:6:TR-FUN-EXP-01-A045:apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml"
+      - "EEI/data/acceptance_traceability.csv:7:TR-FUN-EXP-01-A046:apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml"
+      - "EEI/data/acceptance_traceability.csv:8:TR-FUN-EXP-01-A047:apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T403"
+    legacy_task_id: "T403"
+    phase: "G4"
+    objective: "Implement incremental directional expand"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T400"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A052"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A052"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:13:TR-FUN-EXP-01-A052:apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T404"
+    legacy_task_id: "T404"
+    phase: "G4"
+    objective: "Implement breadcrumb and browser history synchronization"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T402"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A049"
+      - "ACC-A050"
+      - "ACC-A051"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A049"
+      - "PASS: acceptance_traceability.csv status DONE for A050"
+      - "PASS: acceptance_traceability.csv status DONE for A051"
+      - "PASS: acceptance_traceability.csv status DONE for A051"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:10:TR-FUN-EXP-01-A049:apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:11:TR-FUN-EXP-01-A050:apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:12:TR-FUN-EXP-01-A051:apps/api/app/domain_repository.py;infra/db/migrations/0002_exploration_state/up.sql;tests/integration/test_database_migrations.py;tests/e2e/state-contract.spec.ts;specs/api_contract.yaml"
+      - "EEI/data/acceptance_traceability.csv:139:TR-FUN-RM-03-A051:apps/api/app/domain_repository.py;infra/db/migrations/0002_exploration_state/up.sql;tests/integration/test_database_migrations.py;tests/e2e/state-contract.spec.ts;specs/api_contract.yaml"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T405"
+    legacy_task_id: "T405"
+    phase: "G4"
+    objective: "Build graph/table explorer and node actions"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T403"
+      - "TASK-T404"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A053"
+      - "ACC-A054"
+      - "ACC-A055"
+      - "ACC-A058"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A053"
+      - "PASS: acceptance_traceability.csv status DONE for A054"
+      - "PASS: acceptance_traceability.csv status DONE for A055"
+      - "PASS: acceptance_traceability.csv status DONE for A058"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:14:TR-FUN-EXP-01-A053:apps/web/src/app/page.tsx;apps/web/src/app/globals.css;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:15:TR-FUN-EXP-01-A054:apps/web/src/app/page.tsx;apps/web/src/app/globals.css;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:16:TR-FUN-EXP-01-A055:apps/web/src/app/page.tsx;apps/web/src/app/globals.css;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:19:TR-FUN-EXP-01-A058:apps/web/src/app/page.tsx;apps/web/src/app/globals.css;tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T406"
+    legacy_task_id: "T406"
+    phase: "G4"
+    objective: "Implement bounded evidence-bearing path queries"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T400"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A056"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A056"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:17:TR-FUN-EXP-01-A056:apps/api/app/domain.py;apps/api/app/domain_repository.py;specs/api_contract.yaml;tests/integration/test_database_migrations.py"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T407"
+    legacy_task_id: "T407"
+    phase: "G4"
+    objective: "Add inclusion/truncation explanations"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T405"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A044"
+      - "ACC-A057"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A044"
+      - "PASS: acceptance_traceability.csv status DONE for A057"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:5:TR-FUN-EXP-01-A044:apps/api/app/domain.py;apps/api/app/domain_repository.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml;apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:18:TR-FUN-EXP-01-A057:apps/web/src/app/page.tsx;apps/web/src/app/globals.css;tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T408"
+    legacy_task_id: "T408"
+    phase: "G4"
+    objective: "Add critical three-reroot E2E"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T405"
+      - "TASK-T407"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A048"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A048"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:9:TR-FUN-EXP-01-A048:tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T409"
+    legacy_task_id: "T409"
+    phase: "G4"
+    objective: "Add cross-industry reroot E2E"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T405"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A034"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A034"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:119:TR-FUN-EXP-08-A034:apps/web/src/app/industries/page.tsx;apps/web/src/app/page.tsx;tests/e2e/industry.spec.ts;tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T500"
+    legacy_task_id: "T500"
+    phase: "G5"
+    objective: "Implement entity dossier and human summary API"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T408"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A059"
+      - "ACC-A060"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T501"
+    legacy_task_id: "T501"
+    phase: "G5"
+    objective: "Implement corporate group/business/brand/product/facility view"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T500"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A061"
+      - "ACC-A062"
+      - "ACC-A063"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T502"
+    legacy_task_id: "T502"
+    phase: "G5"
+    objective: "Implement supply-chain stage/upstream/downstream view"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T500"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A064"
+      - "ACC-A065"
+      - "ACC-A066"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T503"
+    legacy_task_id: "T503"
+    phase: "G5"
+    objective: "Implement capital/M&A and policy/technology layers"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T500"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A069"
+      - "ACC-A070"
+      - "ACC-A071"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T504"
+    legacy_task_id: "T504"
+    phase: "G5"
+    objective: "Implement strategic signals, contradictions and time decay"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T500"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A072"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T505"
+    legacy_task_id: "T505"
+    phase: "G5"
+    objective: "Implement evidence drawer and as-of timeline"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T501"
+      - "TASK-T502"
+      - "TASK-T503"
+      - "TASK-T504"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A073"
+      - "ACC-A074"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T506"
+    legacy_task_id: "T506"
+    phase: "G5"
+    objective: "Build eight-layer company focus workspace"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T505"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A060"
+      - "ACC-A061"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T507"
+    legacy_task_id: "T507"
+    phase: "G5"
+    objective: "Add NVIDIA synthetic full-chain and reroot E2E"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T506"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A067"
+      - "ACC-A068"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T508"
+    legacy_task_id: "T508"
+    phase: "G5"
+    objective: "Implement research-path export with provenance"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T506"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A075"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T600"
+    legacy_task_id: "T600"
+    phase: "A"
+    objective: "Implement scoring model engine and default profiles"
+    scope: "Legacy EEI gate G6 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T208"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A076"
+      - "ACC-A078"
+      - "ACC-A080"
+      - "ACC-A081"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T601"
+    legacy_task_id: "T601"
+    phase: "A"
+    objective: "Implement profile validation and immutable versions"
+    scope: "Legacy EEI gate G6 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T600"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A079"
+      - "ACC-A084"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T602"
+    legacy_task_id: "T602"
+    phase: "A"
+    objective: "Implement preview and score explanation"
+    scope: "Legacy EEI gate G6 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T601"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A077"
+      - "ACC-A083"
+      - "ACC-A086"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T603"
+    legacy_task_id: "T603"
+    phase: "A"
+    objective: "Build model UI for clone/edit/save/activate/rollback/reset"
+    scope: "Legacy EEI gate G6 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T602"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A082"
+      - "ACC-A085"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T604"
+    legacy_task_id: "T604"
+    phase: "A"
+    objective: "Implement append-only operation log"
+    scope: "Legacy EEI gate G6 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T601"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A087"
+      - "ACC-A088"
+      - "ACC-A089"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T605"
+    legacy_task_id: "T605"
+    phase: "A"
+    objective: "Implement 14-day scheduler and manual calibration"
+    scope: "Legacy EEI gate G6 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T604"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A090"
+      - "ACC-A091"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T606"
+    legacy_task_id: "T606"
+    phase: "A"
+    objective: "Implement calibration coverage/drift/quality/proposal"
+    scope: "Legacy EEI gate G6 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T605"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A092"
+      - "ACC-A093"
+      - "ACC-A095"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T607"
+    legacy_task_id: "T607"
+    phase: "A"
+    objective: "Implement calibration accept/reject and rollback linkage"
+    scope: "Legacy EEI gate G6 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T606"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A094"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T608"
+    legacy_task_id: "T608"
+    phase: "A"
+    objective: "Add custom-profile/audit/two-calibration E2E"
+    scope: "Legacy EEI gate G6 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T603"
+      - "TASK-T607"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A082"
+      - "ACC-A087"
+      - "ACC-A091"
+      - "ACC-A094"
+      - "ACC-A095"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T700"
+    legacy_task_id: "T700"
+    phase: "A"
+    objective: "Implement SEC client User-Agent allowlist and limiter"
+    scope: "Legacy EEI gate G7 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T208"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A096"
+      - "ACC-A097"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T701"
+    legacy_task_id: "T701"
+    phase: "A"
+    objective: "Implement timeout retry jitter cache and hash"
+    scope: "Legacy EEI gate G7 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T700"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A098"
+      - "ACC-A099"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T702"
+    legacy_task_id: "T702"
+    phase: "A"
+    objective: "Normalize submissions and Company Facts"
+    scope: "Legacy EEI gate G7 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T701"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A100"
+      - "ACC-A101"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T703"
+    legacy_task_id: "T703"
+    phase: "A"
+    objective: "Implement dry-run fixture idempotent upsert and report"
+    scope: "Legacy EEI gate G7 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T702"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A102"
+      - "ACC-A103"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T704"
+    legacy_task_id: "T704"
+    phase: "A"
+    objective: "Implement freshness and failure status"
+    scope: "Legacy EEI gate G7 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T703"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A104"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T705"
+    legacy_task_id: "T705"
+    phase: "A"
+    objective: "Implement transactional derive/score/change pipeline"
+    scope: "Legacy EEI gate G7 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T703"
+      - "TASK-T600"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A105"
+      - "ACC-A106"
+      - "ACC-A107"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T706"
+    legacy_task_id: "T706"
+    phase: "A"
+    objective: "Add fixture tests and optional live smoke"
+    scope: "Legacy EEI gate G7 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T705"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A096"
+      - "ACC-A098"
+      - "ACC-A102"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T800"
+    legacy_task_id: "T800"
+    phase: "A"
+    objective: "Implement event and amount semantic services"
+    scope: "Legacy EEI gate G8 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T705"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A108"
+      - "ACC-A109"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T801"
+    legacy_task_id: "T801"
+    phase: "A"
+    objective: "Build Capital River and event evidence"
+    scope: "Legacy EEI gate G8 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T800"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A110"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T802"
+    legacy_task_id: "T802"
+    phase: "A"
+    objective: "Build policy/government views"
+    scope: "Legacy EEI gate G8 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T800"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A111"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T803"
+    legacy_task_id: "T803"
+    phase: "A"
+    objective: "Build Strategic Radar and language guardrails"
+    scope: "Legacy EEI gate G8 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T800"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A112"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T804"
+    legacy_task_id: "T804"
+    phase: "A"
+    objective: "Build Change Feed and conflict display"
+    scope: "Legacy EEI gate G8 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T705"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A106"
+      - "ACC-A107"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T805"
+    legacy_task_id: "T805"
+    phase: "A"
+    objective: "Add cross-view consistency and export tests"
+    scope: "Legacy EEI gate G8 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T801"
+      - "TASK-T802"
+      - "TASK-T803"
+      - "TASK-T804"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A075"
+      - "ACC-A108"
+      - "ACC-A109"
+      - "ACC-A110"
+      - "ACC-A111"
+      - "ACC-A112"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T900"
+    legacy_task_id: "T900"
+    phase: "A"
+    objective: "Run graph/reroot/score performance benchmarks"
+    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T805"
+      - "TASK-T608"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A113"
+      - "ACC-A114"
+      - "ACC-A115"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T901"
+    legacy_task_id: "T901"
+    phase: "A"
+    objective: "Run accessibility and keyboard/table audit"
+    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T805"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A116"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T902"
+    legacy_task_id: "T902"
+    phase: "A"
+    objective: "Run security, dependency and sanitization tests"
+    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T805"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A117"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T903"
+    legacy_task_id: "T903"
+    phase: "A"
+    objective: "Run failure injection across ingest/scoring/calibration"
+    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T805"
+      - "TASK-T608"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A118"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T904"
+    legacy_task_id: "T904"
+    phase: "A"
+    objective: "Run quality evaluation and risk review"
+    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T903"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A026"
+      - "ACC-A027"
+      - "ACC-A123"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T905"
+    legacy_task_id: "T905"
+    phase: "A"
+    objective: "Rehearse migrations, rollback and clean-start"
+    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T904"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A119"
+      - "ACC-A120"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T906"
+    legacy_task_id: "T906"
+    phase: "A"
+    objective: "Write exact release report and demo evidence"
+    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T905"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A121"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T907"
+    legacy_task_id: "T907"
+    phase: "A"
+    objective: "Run final make verify"
+    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T906"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A007"
+      - "ACC-A122"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1000"
+    legacy_task_id: "T1000"
+    phase: "A"
+    objective: "Add USAspending and GLEIF adapters"
+    scope: "Legacy EEI gate Phase2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T907"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A124"
+      - "ACC-A125"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1001"
+    legacy_task_id: "T1001"
+    phase: "A"
+    objective: "Add LDA USPTO energy and enforcement adapters"
+    scope: "Legacy EEI gate Phase2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1000"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A125"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1002"
+    legacy_task_id: "T1002"
+    phase: "A"
+    objective: "Add candidate review workflow"
+    scope: "Legacy EEI gate Phase2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1000"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A126"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1003"
+    legacy_task_id: "T1003"
+    phase: "A"
+    objective: "Evaluate shared workspaces"
+    scope: "Legacy EEI gate Phase2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1002"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A127"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1004"
+    legacy_task_id: "T1004"
+    phase: "A"
+    objective: "Benchmark PostgreSQL vs graph database before any migration"
+    scope: "Legacy EEI gate Phase2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T907"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A128"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1100"
+    legacy_task_id: "T1100"
+    phase: "A"
+    objective: "Record UI benchmark decisions and v3 ADR"
+    scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T004"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A129"
+      - "ACC-A130"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1101"
+    legacy_task_id: "T1101"
+    phase: "G1"
+    objective: "Create design tokens and responsive application shell"
+    scope: "Legacy EEI gate G1 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1100"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A131"
+      - "ACC-A132"
+      - "ACC-A153"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1102"
+    legacy_task_id: "T1102"
+    phase: "G1"
+    objective: "Implement Watchlist-first default state resolution"
+    scope: "Legacy EEI gate G1 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1101"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A133"
+      - "ACC-A134"
+      - "ACC-A135"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1103"
+    legacy_task_id: "T1103"
+    phase: "G2"
+    objective: "Implement visual-first company workspace route"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1102"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A136"
+      - "ACC-A137"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A136"
+      - "PASS: acceptance_traceability.csv status DONE for A137"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:23:TR-FUN-EXP-01-A136:tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:24:TR-FUN-EXP-01-A137:tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1104"
+    legacy_task_id: "T1104"
+    phase: "G2"
+    objective: "Implement left-to-right business map layout"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1103"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A138"
+      - "ACC-A139"
+      - "ACC-A140"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A138"
+      - "PASS: acceptance_traceability.csv status DONE for A139"
+      - "PASS: acceptance_traceability.csv status DONE for A140"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:25:TR-FUN-EXP-01-A138:tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:26:TR-FUN-EXP-01-A139:tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:27:TR-FUN-EXP-01-A140:tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1105"
+    legacy_task_id: "T1105"
+    phase: "G2"
+    objective: "Implement analysis lenses on one persistent canvas"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1104"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A141"
+      - "ACC-A142"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A141"
+      - "PASS: acceptance_traceability.csv status DONE for A142"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:28:TR-FUN-EXP-01-A141:tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:29:TR-FUN-EXP-01-A142:tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1106"
+    legacy_task_id: "T1106"
+    phase: "G2"
+    objective: "Implement semantic zoom and node grouping"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1104"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A143"
+      - "ACC-A144"
+      - "ACC-A145"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A143"
+      - "PASS: acceptance_traceability.csv status DONE for A144"
+      - "PASS: acceptance_traceability.csv status DONE for A145"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:30:TR-FUN-EXP-01-A143:tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:31:TR-FUN-EXP-01-A144:tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:32:TR-FUN-EXP-01-A145:tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1107"
+    legacy_task_id: "T1107"
+    phase: "G2"
+    objective: "Implement contextual node inspector"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1104"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A146"
+      - "ACC-A147"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A146"
+      - "PASS: acceptance_traceability.csv status DONE for A147"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:33:TR-FUN-EXP-01-A146:tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:34:TR-FUN-EXP-01-A147:tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1108"
+    legacy_task_id: "T1108"
+    phase: "G2"
+    objective: "Implement explicit set-as-center interaction"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1107"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A148"
+      - "ACC-A149"
+      - "ACC-A150"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A148"
+      - "PASS: acceptance_traceability.csv status DONE for A149"
+      - "PASS: acceptance_traceability.csv status DONE for A150"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:35:TR-FUN-EXP-01-A148:tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:36:TR-FUN-EXP-01-A149:tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:37:TR-FUN-EXP-01-A150:tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1109"
+    legacy_task_id: "T1109"
+    phase: "G2"
+    objective: "Preserve mental map during center changes"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1108"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A151"
+      - "ACC-A152"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A151"
+      - "PASS: acceptance_traceability.csv status DONE for A152"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:38:TR-FUN-EXP-01-A151:tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:39:TR-FUN-EXP-01-A152:tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1110"
+    legacy_task_id: "T1110"
+    phase: "G3"
+    objective: "Implement breadcrumb browser history and undo"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1108"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A154"
+      - "ACC-A155"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A154"
+      - "PASS: acceptance_traceability.csv status DONE for A155"
+      - "PASS: acceptance_traceability.csv status DONE for A154"
+      - "PASS: acceptance_traceability.csv status DONE for A155"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:41:TR-FUN-EXP-01-A154:apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:42:TR-FUN-EXP-01-A155:apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:140:TR-FUN-RM-03-A154:apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:141:TR-FUN-RM-03-A155:apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1111"
+    legacy_task_id: "T1111"
+    phase: "G3"
+    objective: "Persist viewport lens timeline and selected object"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1110"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A156"
+      - "ACC-A157"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A156"
+      - "PASS: acceptance_traceability.csv status DONE for A157"
+      - "PASS: acceptance_traceability.csv status DONE for A156"
+      - "PASS: acceptance_traceability.csv status DONE for A157"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:43:TR-FUN-EXP-01-A156:apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:44:TR-FUN-EXP-01-A157:apps/web/src/app/page.tsx;apps/web/src/app/use-analysis-context.ts;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:142:TR-FUN-RM-03-A156:apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:143:TR-FUN-RM-03-A157:apps/web/src/app/page.tsx;apps/web/src/app/use-analysis-context.ts;tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1112"
+    legacy_task_id: "T1112"
+    phase: "G3"
+    objective: "Implement saved views and restore after reload"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1111"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A158"
+      - "ACC-A159"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A158"
+      - "PASS: acceptance_traceability.csv status DONE for A159"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:144:TR-FUN-RM-03-A158:apps/web/src/app/page.tsx;apps/web/src/app/use-analysis-context.ts;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:145:TR-FUN-RM-03-A159:apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1113"
+    legacy_task_id: "T1113"
+    phase: "G3"
+    objective: "Implement timeline and change overlays"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1105"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A160"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A160"
+      - "PASS: acceptance_traceability.csv status DONE for A160"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:113:TR-FUN-EXP-07-A160:apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:136:TR-FUN-RM-02-A160:apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1114"
+    legacy_task_id: "T1114"
+    phase: "G4"
+    objective: "Implement graph-equivalent accessible list view"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1104"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A161"
+      - "ACC-A162"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A161"
+      - "PASS: acceptance_traceability.csv status DONE for A162"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:45:TR-FUN-EXP-01-A161:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:46:TR-FUN-EXP-01-A162:apps/web/src/app/page.tsx;tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1115"
+    legacy_task_id: "T1115"
+    phase: "G4"
+    objective: "Implement complete keyboard interaction and visible focus"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1114"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A163"
+      - "ACC-A164"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A163"
+      - "PASS: acceptance_traceability.csv status DONE for A164"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:47:TR-FUN-EXP-01-A163:apps/web/src/app/globals.css;tests/e2e/home.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:48:TR-FUN-EXP-01-A164:apps/web/src/app/globals.css;tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1116"
+    legacy_task_id: "T1116"
+    phase: "G4"
+    objective: "Add non-color visual encodings and evidence labels"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1104"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A165"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A165"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:49:TR-FUN-EXP-01-A165:apps/web/src/app/page.tsx;apps/web/src/app/globals.css;tests/e2e/home.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1117"
+    legacy_task_id: "T1117"
+    phase: "G4"
+    objective: "Add UI copy lexicon and forbidden-term lint"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1107"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A166"
+    test_commands:
+      - "python scripts/validate_task_pack.py"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A166"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:50:TR-FUN-EXP-01-A166:data/ui_copy_lexicon.csv;scripts/validate_ui_copy.py;Makefile"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1118"
+    legacy_task_id: "T1118"
+    phase: "G5"
+    objective: "Add visual regression tests for approved workspace states"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1117"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A167"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1119"
+    legacy_task_id: "T1119"
+    phase: "G5"
+    objective: "Add performance tests for first interactive graph"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1106"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A168"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1120"
+    legacy_task_id: "T1120"
+    phase: "A"
+    objective: "Add guided empty Watchlist industry overlay"
+    scope: "Legacy EEI gate G6 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1102"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A135"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1121"
+    legacy_task_id: "T1121"
+    phase: "A"
+    objective: "Add compare mode while preserving primary subject"
+    scope: "Legacy EEI gate G6 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1107"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A147"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1122"
+    legacy_task_id: "T1122"
+    phase: "A"
+    objective: "Run five-user task-based usability study"
+    scope: "Legacy EEI gate G7 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1118"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A148"
+      - "ACC-A161"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1123"
+    legacy_task_id: "T1123"
+    phase: "A"
+    objective: "Package prototype screenshots specs and clean-room QA"
+    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1119"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A129"
+      - "ACC-A167"
+      - "ACC-A168"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1200"
+    legacy_task_id: "T1200"
+    phase: "A"
+    objective: "Adopt function catalog and module navigation catalog as single source of truth"
+    scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1123"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A172"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1201"
+    legacy_task_id: "T1201"
+    phase: "A"
+    objective: "Adopt model registry formula registry parameter catalog and threshold registry as canonical model management inputs"
+    scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1200"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A171"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+      - "python scripts/validate_model_config.py config/model_profiles/balanced-v2.json config/thresholds/default-v2.json"
+      - "python scripts/validate_task_pack.py"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A171"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:211:TR-FUN-SYS-01-A171:data/model_registry.csv;data/formula_registry.csv;data/parameter_catalog.csv;data/threshold_registry.csv;scripts/validate_model_config.py;scripts/validate_task_pack.py;tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1202"
+    legacy_task_id: "T1202"
+    phase: "G1"
+    objective: "Implement catalog integrity validator and GitHub CI workflow"
+    scope: "Legacy EEI gate G1 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1200"
+      - "TASK-T1201"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A169"
+      - "ACC-A177"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1203"
+    legacy_task_id: "T1203"
+    phase: "G2"
+    objective: "Create taxonomy and object scope API from canonical catalogs"
+    scope: "Legacy EEI gate G2 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1202"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A169"
+      - "ACC-A170"
+    test_commands:
+      - "env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q"
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A169"
+      - "PASS: acceptance_traceability.csv status DONE for A170"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:209:TR-FUN-SYS-01-A169:tests/unit/test_api_health.py;tests/integration/test_database_migrations.py;specs/api_contract.yaml"
+      - "EEI/data/acceptance_traceability.csv:210:TR-FUN-SYS-01-A170:tests/e2e/home.spec.ts;apps/web/src/app/objects-scope/page.tsx"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1204"
+    legacy_task_id: "T1204"
+    phase: "G4"
+    objective: "Implement Objects and Scope navigation screen"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1203"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A170"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A170"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:210:TR-FUN-SYS-01-A170:tests/e2e/home.spec.ts;apps/web/src/app/objects-scope/page.tsx"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1205"
+    legacy_task_id: "T1205"
+    phase: "G4"
+    objective: "Implement Development Status navigation screen linked to tasks risks controls and acceptance"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1202"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A173"
+      - "ACC-A174"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A174"
+      - "PASS: acceptance_traceability.csv status DONE for A173"
+      - "PASS: acceptance_traceability.csv status DONE for A174"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:114:TR-FUN-EXP-07-A174:apps/web/src/app/development-status/page.tsx;tests/e2e/development-status.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:191:TR-FUN-DM-02-A173:apps/web/src/app/development-status/page.tsx;tests/e2e/development-status.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:192:TR-FUN-DM-02-A174:apps/web/src/app/development-status/page.tsx;tests/e2e/development-status.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1206"
+    legacy_task_id: "T1206"
+    phase: "G3"
+    objective: "Implement immutable model version and active snapshot consistency contract"
+    scope: "Legacy EEI gate G3 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1201"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A171"
+      - "ACC-A178"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+      - "python scripts/validate_model_config.py config/model_profiles/balanced-v2.json config/thresholds/default-v2.json"
+      - "python scripts/validate_task_pack.py"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A178"
+      - "PASS: acceptance_traceability.csv status DONE for A171"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:196:TR-FUN-DM-02-A178:apps/web/src/app/analysis-contract.ts;apps/web/src/app/use-analysis-context.ts;apps/web/src/app/page.tsx;apps/web/src/app/industries/page.tsx;apps/web/src/app/objects-scope/page.tsx;apps/web/src/app/development-status/page.tsx;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:211:TR-FUN-SYS-01-A171:data/model_registry.csv;data/formula_registry.csv;data/parameter_catalog.csv;data/threshold_registry.csv;scripts/validate_model_config.py;scripts/validate_task_pack.py;tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1207"
+    legacy_task_id: "T1207"
+    phase: "G4"
+    objective: "Wire online model edits to preview all loaded visual modules"
+    scope: "Legacy EEI gate G4 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1206"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A157"
+      - "ACC-A158"
+      - "ACC-A178"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A157"
+      - "PASS: acceptance_traceability.csv status DONE for A157"
+      - "PASS: acceptance_traceability.csv status DONE for A158"
+      - "PASS: acceptance_traceability.csv status DONE for A178"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:44:TR-FUN-EXP-01-A157:apps/web/src/app/page.tsx;apps/web/src/app/use-analysis-context.ts;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:143:TR-FUN-RM-03-A157:apps/web/src/app/page.tsx;apps/web/src/app/use-analysis-context.ts;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:144:TR-FUN-RM-03-A158:apps/web/src/app/page.tsx;apps/web/src/app/use-analysis-context.ts;tests/e2e/state-contract.spec.ts"
+      - "EEI/data/acceptance_traceability.csv:196:TR-FUN-DM-02-A178:apps/web/src/app/analysis-contract.ts;apps/web/src/app/use-analysis-context.ts;apps/web/src/app/page.tsx;apps/web/src/app/industries/page.tsx;apps/web/src/app/objects-scope/page.tsx;apps/web/src/app/development-status/page.tsx;tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1208"
+    legacy_task_id: "T1208"
+    phase: "G5"
+    objective: "Add end-to-end test for global model/data version consistency"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1207"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A178"
+    test_commands:
+      - "npx --yes pnpm@11.8.0 --filter @eei/web test:e2e"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A178"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:196:TR-FUN-DM-02-A178:apps/web/src/app/analysis-contract.ts;apps/web/src/app/use-analysis-context.ts;apps/web/src/app/page.tsx;apps/web/src/app/industries/page.tsx;apps/web/src/app/objects-scope/page.tsx;apps/web/src/app/development-status/page.tsx;tests/e2e/state-contract.spec.ts"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1209"
+    legacy_task_id: "T1209"
+    phase: "G5"
+    objective: "Add canonical prototype parity smoke test for index and standalone"
+    scope: "Legacy EEI gate G5 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1202"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A176"
+    test_commands:
+      - "make verify"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A176"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:194:TR-FUN-DM-02-A176:scripts/validate_prototype_parity.py;prototype/index.html;prototype/standalone.html;Makefile"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1210"
+    legacy_task_id: "T1210"
+    phase: "A"
+    objective: "Configure GitHub branch rules CODEOWNERS and required catalog checks"
+    scope: "Legacy EEI gate G8 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "completed"
+    dependencies:
+      - "TASK-T1202"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A175"
+      - "ACC-A177"
+    test_commands:
+      - "python scripts/validate_task_pack.py"
+    test_results:
+      - "PASS: acceptance_traceability.csv status DONE for A177"
+    evidence_refs:
+      - "EEI/data/acceptance_traceability.csv:195:TR-FUN-DM-02-A177:.github/CODEOWNERS;.github/branch_protection.md;.github/release_checklist.md;.github/workflows/governance-validation.yml;scripts/validate_github_governance.py;data/github_document_registry.csv"
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "RECONSTRUCTED"
+    unknown_task_ids: []
+  - task_id: "TASK-T1211"
+    legacy_task_id: "T1211"
+    phase: "A"
+    objective: "Publish reproducible release with manifest checksums status and acceptance evidence"
+    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1208"
+      - "TASK-T1209"
+      - "TASK-T1210"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A175"
+      - "ACC-A177"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1212"
+    legacy_task_id: "T1212"
+    phase: "A"
+    objective: "Install GitHub governance consistency workflow"
+    scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1211"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A182"
+      - "ACC-A183"
+      - "ACC-A200"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1213"
+    legacy_task_id: "T1213"
+    phase: "A"
+    objective: "Generate development status and requirement-function-task-test traceability"
+    scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1200"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A183"
+      - "ACC-A184"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1214"
+    legacy_task_id: "T1214"
+    phase: "A"
+    objective: "Map risk controls to functions, tasks, acceptance and release gates"
+    scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1213"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A185"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - task_id: "TASK-T1215"
+    legacy_task_id: "T1215"
+    phase: "A"
+    objective: "Run clean-room governance, prototype, PDF and ZIP validation"
+    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
+    non_scope: "No business behavior changes in governance migration."
+    status: "planned"
+    dependencies:
+      - "TASK-T1210"
+      - "TASK-T1212"
+      - "TASK-T1214"
+    required_files:
+      - "EEI/data/task_backlog.csv"
+      - "EEI/data/acceptance_traceability.csv"
+    acceptance_ids:
+      - "ACC-A200"
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
+    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+      - "TASK-T1206"

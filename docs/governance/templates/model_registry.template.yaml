@@ -1,0 +1,28 @@
+governance_spec_version: "1.0.0"
+project_id: "<project_id>"
+assumptions:
+  - assumption_id: "ASM-001"
+    statement: "<assumption statement>"
+    fact_level: "UNKNOWN"
+    status: "active"
+    evidence_refs: []
+    unknown_task_ids: ["<TASK-ID>"]
+models:
+  - model_id: "MOD-001"
+    name: "<model name>"
+    kind: "<model kind>"
+    purpose: "<business purpose>"
+    owner: "<owner>"
+    status: "active"
+    fact_level: "UNKNOWN"
+    model_version: "0.0.0"
+    assumptions: []
+    assumption_ids: ["ASM-001"]
+    formula_ids: ["FORM-001"]
+    parameter_ids: ["PARAM-001"]
+    inputs: []
+    outputs: []
+    code_refs: []
+    test_refs: []
+    evidence_refs: []
+    unknown_task_ids: ["<TASK-ID>"]

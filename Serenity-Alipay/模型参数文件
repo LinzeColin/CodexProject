@@ -1,34 +1,22 @@
 # Serenity-Alipay 模型参数文件
 
-更新时间：2026-06-19
+本文件保留为历史兼容入口，不再作为独立可编辑事实源。
 
-## 默认模型与执行模式
+Canonical governance sources:
 
-- 默认模式：investment research automation，非交易执行。
-- scoring：deterministic rules。
-- hard gates：MDD >= 40.00%，recovery time >= 365 days。
-- benchmark：Shanghai Composite、S&P 500。
-- production 状态：blockers 未解除时 `completion-audit --require-complete` 应 non-zero。
+- `docs/governance/MODEL_SPEC.md`
+- `docs/governance/model_registry.yaml`
+- `docs/governance/formula_registry.yaml`
+- `docs/governance/parameter_registry.csv`
+- `docs/governance/TRACEABILITY_MATRIX.csv`
 
-## 关键参数域
+仍然有效的历史说明：
 
-| 参数域 | 当前原则 |
-| --- | --- |
-| Top candidates | Top5 target weights |
-| comparison windows | 1m、3m、10 trading days |
-| intake promotion | dry-run validation pass 后才允许 apply |
-| package | 默认排除 private evidence |
-| history integrity | baseline 后旧历史不可改写 |
-| execution window | 普通国内开放式基金参考 15:00 北京时间 cutoff，具体基金需单独验证 |
+- 默认模式是 investment research automation，非交易执行。
+- 当前 scoring 为 deterministic rules。
+- 当前 hard gates 包含 MDD `>= 40.00%` 和 recovery time `>= 365 days`。
+- 当前 comparison windows 包含 `1m`, `3m`, and `10d`。
+- 当前 Top candidates 输出 Top5 target weights。
+- 缺少生产证据时进入 blocker、review queue、Pause New、Manual Review 或 draft 行为，不输出自动交易动作。
 
-## 模型与数据要求
-
-- 所有 candidates、fund rules、benchmark、positions 必须带 source evidence。
-- 缺少生产证据时进入 blocker/review queue，不输出可执行结论。
-- 若使用 LLM，只能用于报告摘要、解释和人工复核辅助，不能生成自动交易动作。
-
-## 不允许保存或提交
-
-- Alipay credentials、broker credentials、cookies、sessions。
-- private evidence unless explicitly packaged with approval。
-- 自动买卖、平台绕过或静默失败逻辑。
+后续模型、公式、参数、阈值或门禁变化必须同步更新 canonical governance files。

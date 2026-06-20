@@ -1,13 +1,20 @@
 # Serenity-Alipay 功能清单
 
-更新时间：2026-06-19
+本文件保留为历史兼容入口，不再作为独立可编辑事实源。
 
-## 核心功能
+Canonical governance sources:
+
+- `docs/governance/DELIVERY_PLAN.md`
+- `docs/governance/delivery_tasks.yaml`
+- `docs/governance/TRACEABILITY_MATRIX.csv`
+- `docs/governance/MODEL_SPEC.md`
+
+仍然有效的功能摘要：
 
 - Alipay positions CSV 导入。
 - fund rules / candidates / benchmark price history intake。
 - source evidence audit、production unblock matrix、production intake pack。
-- fund-first candidate deterministic scoring。
+- fund-first deterministic scoring。
 - MDD 和 recovery hard gates。
 - benchmark 对比：Shanghai Composite、S&P 500。
 - Top5 target weights 和 current-vs-target deviation。
@@ -15,21 +22,4 @@
 - Markdown / offline HTML report / offline index / Mail draft。
 - scheduler-tick 支持 Codex Automation 或 launchd。
 
-## 用户价值
-
-- 把基金候选筛选从手工判断升级为可审计、可复盘、可阻断的研究流程。
-- 通过 hard gates 和 blocker 防止不完整数据进入行动建议。
-- 为后续 finance/trading agent 提供非执行型研究依据。
-
-## 必须保留的行为
-
-- 不自动交易。
-- production unlock 前必须通过 pack evidence 和 dry-run validation。
-- 历史数据 append-only。
-- package 默认排除 private evidence。
-
-## 后续可扩展功能
-
-- 当前持仓 overlay。
-- Mail real-send smoke 和 launchd 配置验证。
-- 更细的收益归因、风险分层和候选淘汰解释。
+后续功能状态、任务、验收和证据必须进入 canonical governance files。

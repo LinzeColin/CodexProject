@@ -1,0 +1,166 @@
+governance_spec_version: "1.0.0"
+project_id: "Alpha"
+assumptions:
+  - assumption_id: "ASM-001"
+    statement: "Alpha operates as research, backtest, paper trading, order-intent review, and dashboard tooling; committed defaults do not enable unattended real-money order submission."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["Alpha/AGENTS.md:5", "Alpha/README.md:31", "Alpha/configs/trading_governor_policy.yaml:4"]
+  - assumption_id: "ASM-002"
+    statement: "The current strategy and paper-trading evidence uses fixture price data from Alpha/data/sample_prices.csv."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["Alpha/backend/app/services/backtest.py:9", "Alpha/backend/app/services/paper_trading_loop.py:138"]
+  - assumption_id: "ASM-003"
+    statement: "Live broker submission remains fail-closed; policy-allowed candidates still return rejected in the committed adapter."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["Alpha/backend/app/services/live_broker.py:16", "Alpha/tests/test_live_broker_fail_closed.py:6"]
+  - assumption_id: "ASM-004"
+    statement: "Production market data, broker paper integration, live execution policy, multi-year validation, slippage model, and cost-model calibration are not evidenced in this repository snapshot."
+    fact_level: "UNKNOWN"
+    unknown_task_ids: ["TASK-ALPHA-B-001"]
+    evidence_refs: ["Alpha/HANDOFF.md:83"]
+models:
+  - model_id: "MOD-001"
+    name: "Momentum strategy tournament ranking"
+    kind: "ranking_model"
+    purpose: "Rank fixture momentum candidates by risk decision and deterministic score."
+    owner: "Alpha"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "strategy-tournament-v0"
+    assumptions: ["ASM-001", "ASM-002"]
+    formula_ids: ["FORM-001"]
+    parameter_ids: ["PARAM-001", "PARAM-002", "PARAM-003", "PARAM-004", "PARAM-005", "PARAM-006", "PARAM-007", "PARAM-008"]
+    inputs: ["price fixture rows with date, symbol, close", "lookback tuple"]
+    outputs: ["ranked candidates", "winner", "validation summary"]
+    code_refs: ["Alpha/backend/app/services/strategy_iteration.py:28"]
+    test_refs: ["Alpha/tests/test_strategy_iteration.py:4"]
+    evidence_refs: ["Alpha/docs/decision_log.md:45"]
+  - model_id: "MOD-002"
+    name: "Research risk score"
+    kind: "risk_model"
+    purpose: "Map backtest metrics to promote_to_paper, hold_research, or reject."
+    owner: "Alpha"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "risk-score-v0"
+    assumptions: ["ASM-001", "ASM-002"]
+    formula_ids: ["FORM-002"]
+    parameter_ids: ["PARAM-009", "PARAM-010", "PARAM-011", "PARAM-012", "PARAM-013", "PARAM-014", "PARAM-015", "PARAM-016"]
+    inputs: ["max_drawdown", "trade_count", "turnover"]
+    outputs: ["risk_score", "warnings", "decision"]
+    code_refs: ["Alpha/backend/app/services/risk.py:22"]
+    test_refs: ["Alpha/tests/test_strategy_iteration.py:4"]
+    evidence_refs: ["Alpha/backend/app/services/strategy_iteration.py:41"]
+  - model_id: "MOD-003"
+    name: "Pre-trade owner-review gate"
+    kind: "deterministic_rule_engine"
+    purpose: "Reject unsafe order intents before owner approval queue entry."
+    owner: "Alpha"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "pre-trade-gate-v0"
+    assumptions: ["ASM-001"]
+    formula_ids: ["FORM-003"]
+    parameter_ids: ["PARAM-017", "PARAM-018", "PARAM-019", "PARAM-020", "PARAM-021", "PARAM-022"]
+    inputs: ["OrderIntent dict", "GovernorPolicy", "kill_switch_active"]
+    outputs: ["allowed", "status", "reason"]
+    code_refs: ["Alpha/backend/app/services/risk.py:40"]
+    test_refs: ["Alpha/tests/test_paper_trading_loop.py:8"]
+    evidence_refs: ["Alpha/configs/trading_governor_policy.yaml:32"]
+  - model_id: "MOD-004"
+    name: "Live order policy and fail-closed broker"
+    kind: "risk_model"
+    purpose: "Prevent unattended real-money order submission in committed defaults."
+    owner: "Alpha"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "live-policy-fail-closed-v0"
+    assumptions: ["ASM-001", "ASM-003"]
+    formula_ids: ["FORM-004"]
+    parameter_ids: ["PARAM-023", "PARAM-024", "PARAM-025", "PARAM-026", "PARAM-027", "PARAM-028", "PARAM-029", "PARAM-030"]
+    inputs: ["LiveOrderIntent", "GovernorPolicy", "environment flag", "audit/broker health booleans"]
+    outputs: ["PolicyDecision", "broker adapter rejection"]
+    code_refs: ["Alpha/backend/app/services/policy.py:38", "Alpha/backend/app/services/live_broker.py:19"]
+    test_refs: ["Alpha/tests/test_policy.py:5", "Alpha/tests/test_live_broker_fail_closed.py:6"]
+    evidence_refs: ["Alpha/AGENTS.md:12", "Alpha/configs/trading_governor_policy.yaml:4"]
+  - model_id: "MOD-005"
+    name: "Paper trading loop"
+    kind: "deterministic_workflow_model"
+    purpose: "Generate paper order intents, risk-check them, enqueue broker-ready tickets, fill paper orders, and emit audit payloads."
+    owner: "Alpha"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "paper-loop-v0"
+    assumptions: ["ASM-001", "ASM-002"]
+    formula_ids: ["FORM-005"]
+    parameter_ids: ["PARAM-031", "PARAM-032", "PARAM-033", "PARAM-034", "PARAM-035", "PARAM-036", "PARAM-037"]
+    inputs: ["GovernorPolicy", "price fixture", "approval queue", "paper broker state"]
+    outputs: ["run result", "OrderIntent", "risk check", "approval queue result", "paper portfolio", "audit events"]
+    code_refs: ["Alpha/backend/app/services/paper_trading_loop.py:42"]
+    test_refs: ["Alpha/tests/test_paper_trading_loop.py:8", "Alpha/tests/test_dashboard_state.py:8"]
+    evidence_refs: ["Alpha/configs/agent_loop.yaml:1"]
+  - model_id: "MOD-006"
+    name: "Paper broker accounting"
+    kind: "business_calculation_model"
+    purpose: "Maintain deterministic paper cash, positions, idempotency, trade log, and portfolio equity."
+    owner: "Alpha"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "paper-broker-v0"
+    assumptions: ["ASM-001"]
+    formula_ids: ["FORM-006"]
+    parameter_ids: ["PARAM-038", "PARAM-039", "PARAM-040", "PARAM-041"]
+    inputs: ["PaperOrder", "mark prices", "previous paper state"]
+    outputs: ["filled or rejected result", "portfolio snapshot"]
+    code_refs: ["Alpha/backend/app/services/paper_broker.py:43", "Alpha/backend/app/services/paper_broker.py:83"]
+    test_refs: ["Alpha/tests/test_paper_broker_persistence.py:4", "Alpha/tests/test_paper_trading_loop.py:49"]
+    evidence_refs: ["Alpha/backend/app/services/paper_broker.py:20"]
+  - model_id: "MOD-007"
+    name: "Approval queue freshness"
+    kind: "deterministic_rule_engine"
+    purpose: "Classify owner-review tickets as fresh, expired, blocked, or unknown for dashboard actionability."
+    owner: "Alpha"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "approval-freshness-v0"
+    assumptions: ["ASM-001"]
+    formula_ids: ["FORM-007"]
+    parameter_ids: ["PARAM-042", "PARAM-043", "PARAM-044"]
+    inputs: ["ticket status", "expires_at", "current UTC time"]
+    outputs: ["freshness", "actionability", "queue summary counts"]
+    unknown_task_ids: ["TASK-ALPHA-B-001"]
+    code_refs: ["Alpha/backend/app/services/approval_queue.py:34", "Alpha/backend/app/services/approval_queue.py:59"]
+    test_refs: ["Alpha/tests/test_approval_queue.py:17", "Alpha/tests/test_dashboard_state.py:45"]
+    evidence_refs: ["Alpha/docs/decision_log.md:31"]
+  - model_id: "MOD-008"
+    name: "Strategy DSL safety validation"
+    kind: "deterministic_rule_engine"
+    purpose: "Validate strategy payload boundaries and reject prohibited MVP trading categories."
+    owner: "Alpha"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "strategy-dsl-v0"
+    assumptions: ["ASM-001"]
+    formula_ids: ["FORM-008"]
+    parameter_ids: ["PARAM-045", "PARAM-046", "PARAM-047", "PARAM-048", "PARAM-049", "PARAM-050", "PARAM-051"]
+    inputs: ["strategy payload"]
+    outputs: ["StrategyDSL object or validation error"]
+    code_refs: ["Alpha/backend/app/schemas/strategy_dsl.py:22", "Alpha/backend/app/schemas/strategy_dsl.py:40"]
+    test_refs: ["Alpha/tests/test_strategy_dsl.py:16", "Alpha/tests/test_strategy_dsl.py:22"]
+    evidence_refs: ["Alpha/backend/app/schemas/strategy_dsl.py:53"]
+  - model_id: "MOD-009"
+    name: "Equal-weight buy-and-hold fixture benchmark"
+    kind: "backtest_strategy"
+    purpose: "Compute deterministic fixture benchmark return, drawdown, volatility, turnover, trade count, and ending equity."
+    owner: "Alpha"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "buy-hold-fixture-v0"
+    assumptions: ["ASM-002"]
+    formula_ids: ["FORM-009"]
+    parameter_ids: ["PARAM-052", "PARAM-053", "PARAM-054", "PARAM-055"]
+    inputs: ["price fixture", "initial capital", "cost bps", "slippage bps"]
+    outputs: ["benchmark metrics"]
+    code_refs: ["Alpha/backend/app/services/backtest.py:14"]
+    test_refs: ["Alpha/tests/test_backtest_fixture.py:4"]
+    evidence_refs: ["Alpha/backend/app/services/backtest.py:15"]

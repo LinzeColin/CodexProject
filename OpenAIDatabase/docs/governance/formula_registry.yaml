@@ -1,0 +1,251 @@
+governance_spec_version: "1.0.0"
+project_id: "OpenAIDatabase"
+formulas:
+  - formula_id: "FORM-001"
+    model_id: "MOD-001"
+    assumption_ids: ["ASM-001", "ASM-002"]
+    status: "active"
+    expression: "candidate = None if no trigger match or normalized statement length < 8. Else classify_chunk uses priority temporary_or_sensitive unless temp_is_rule, deprecated_info, security_boundary, decision, answering_rule, workflow, project_context, preference, else fact. Importance maps security_boundary/decision/answering_rule to 高, workflow/project_context/preference/deprecated_info to 中, else 低. Validity maps temporary_or_sensitive to 临时, project_context to 项目结束前, workflow/preference to 半年, else 长期. Confidence is high if trigger_count >= 3 or importance == 高, medium if trigger_count >= 1, else low. assign_memory_tier returns 临时 for sensitive/secret or 临时 validity, 核心画像 for preference/answering_rule/core profile regex, 一般 for decision/project_context/workflow/security_boundary or long/project/half-year validity, else 临时. merge key is category + normalized statement; evidence is capped at 10; medium confidence promotes to high after evidence_count >= 3."
+    variables:
+      - name: "categories"
+        data_type: "list[string]"
+        unit: "matched trigger names"
+        input_domain: "subset of TRIGGER_PATTERNS keys"
+      - name: "trigger_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: ">=0"
+      - name: "statement"
+        data_type: "string"
+        unit: "redacted text"
+        input_domain: "normalized length >= 8 after filters"
+      - name: "evidence_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: ">=1 for emitted candidates"
+    constraints: ["All generated candidates start review_status pending.", "Temporary or sensitive candidates are redacted into hash summaries before output.", "Code-like/config snippets are demoted to temporary_or_sensitive."]
+    missing_policy: "Chunks without trigger matches return None; missing timestamp uses current UTC date; missing title becomes empty after truncation."
+    output_range: "category enum in memory_schema; importance in 高/中/低; validity in 长期/半年/项目结束前/临时; confidence in high/medium/low; memory_tier in 核心画像/一般/临时."
+    code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:512", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:637", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:724", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:735"]
+    test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:17", "OpenAIDatabase/tests/test_openai_memory_analysis.py:68"]
+    evidence_refs: ["OpenAIDatabase/config/memory_schema.json:1"]
+  - formula_id: "FORM-002"
+    model_id: "MOD-002"
+    assumption_ids: ["ASM-001", "ASM-002"]
+    status: "active"
+    expression: "redact_text replaces SECRET_PATTERNS and PII_PATTERNS findings before candidate persistence. In make_candidate, secret_types excluding email/phone produce secret_ref = stable_id('secretref', source + conversation_id + normalized redacted text + secret types) and sensitivity secret. Non-secret defaults to private. temporary_or_sensitive becomes sensitive unless already secret and statement is replaced with a redacted_source_hash prefix of sha256(redacted)[:16]. OpenAI-export decision/project/workflow/deprecated candidates without meta_context become sensitive. security_boundary becomes sensitive unless secret. secret_ref candidates receive credential_policy plaintext_in_git=false, agent_access authorized_local_secret_resolver_only, requires_user_authorization=true, local_resolver_required=true, trading boundary fail closed."
+    variables:
+      - name: "findings"
+        data_type: "list[object]"
+        unit: "pattern matches"
+        input_domain: "SECRET_PATTERNS plus PII_PATTERNS"
+      - name: "secret_types"
+        data_type: "list[string]"
+        unit: "secret type labels"
+        input_domain: "findings except email and phone"
+      - name: "sensitivity"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "public/private/sensitive/secret"
+    constraints: ["Plaintext secret values are never emitted as candidate fields.", "Secret sensitivity is excluded from normal search/fetch and public snapshot paths."]
+    missing_policy: "If no secret findings exist, secret_ref is empty and sensitivity starts as private before category rules."
+    output_range: "secret_ref empty or stable id; credential_policy exists only when secret_ref exists."
+    code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:51", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:63", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:661", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:712"]
+    test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:17"]
+    evidence_refs: ["OpenAIDatabase/skills/openai-memory-analysis/references/security-policy.md:1"]
+  - formula_id: "FORM-003"
+    model_id: "MOD-003"
+    assumption_ids: ["ASM-001", "ASM-002"]
+    status: "active"
+    expression: "normalized_memory_tier first demotes code/config noise to 临时, then applies aliases 重要中长期->一般 and 一般短期->临时, else uses stored tier if valid, else assign_memory_tier. retrieval_weight maps 核心画像 to high, 一般 to medium, all other tiers to low. build_active_memory_rows copies each candidate, normalizes tier, applies curation override fields, sets status active, review_status active_auto_promoted_from_full_flow, activation_mode user_authorized_full_flow, and derives use_when/do_not_use_for from tier and secret status."
+    variables:
+      - name: "memory_tier"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "核心画像/一般/临时 or alias"
+      - name: "retrieval_weight"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "high/medium/low"
+      - name: "curation_overrides"
+        data_type: "object"
+        unit: "review override map"
+        input_domain: "optional data/memory/curation/core_profile_review.json overrides"
+    constraints: ["Curation override may replace statement/category/importance/validity/confidence/reason/memory_tier/sensitivity/backup_status.", "Secret rows receive strict do_not_use_for text."]
+    missing_policy: "Missing curation file returns empty overrides; unrecognized tier falls back to assign_memory_tier."
+    output_range: "active row list sorted by retrieval weight, date, id."
+    code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1672", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1701", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1710", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1741"]
+    test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:46", "OpenAIDatabase/tests/test_openai_memory_analysis.py:87"]
+    evidence_refs: ["OpenAIDatabase/AGENTS.md:24"]
+  - formula_id: "FORM-004"
+    model_id: "MOD-004"
+    assumption_ids: ["ASM-001", "ASM-002"]
+    status: "active"
+    expression: "build_sqlite_index creates memory table and inserts active/candidate records except rows where sensitivity == secret. query_index builds WHERE sensitivity != secret plus AND over query terms where each term matches statement OR category OR source via LIKE. SQL order is date DESC, importance ASC and LIMIT limit*5. Post-filter keeps rows with SENSITIVITY_RANK <= rank(sensitivity_max) until limit. fetch_index returns not_found when absent, redacted_secret when record sensitivity is secret, otherwise the redacted record JSON."
+    variables:
+      - name: "query"
+        data_type: "string"
+        unit: "search text"
+        input_domain: "split on whitespace"
+      - name: "limit"
+        data_type: "integer"
+        unit: "rows"
+        input_domain: ">=0; parser default 10"
+      - name: "sensitivity_max"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "public/private/sensitive"
+    constraints: ["No write/update/delete/search shell tools are exposed.", "Secret records are excluded from index and fetch output."]
+    missing_policy: "If SQLite index is missing, it is rebuilt from JSONL records before search/fetch."
+    output_range: "0..limit compact rows; fetch returns record or error object."
+    code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1993", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2055", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2083"]
+    test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:112"]
+    evidence_refs: ["OpenAIDatabase/skills/openai-memory-analysis/references/retrieval.md:1"]
+  - formula_id: "FORM-005"
+    model_id: "MOD-005"
+    assumption_ids: ["ASM-002", "ASM-003", "ASM-006"]
+    status: "active"
+    expression: "tier_score = TIER_WEIGHT.get(normalize_tier(memory_tier), 0.25); importance_score = IMPORTANCE_WEIGHT.get(importance, 0.35); confidence_score = CONFIDENCE_WEIGHT.get(confidence, 0.6); weight_score = round(tier_score*0.5 + importance_score*0.3 + confidence_score*0.2, 4). Memory node visual size = round(4 + weight_score*8, 3); brightness = confidence score rounded to 3; orbit_radius = round(30 + (1 - weight_score)*76, 3); theme/tier edges use round(weight_score, 4)."
+    variables:
+      - name: "memory_tier"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "核心画像/一般/临时"
+      - name: "importance"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "高/中/低"
+      - name: "confidence"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "high/medium/low"
+      - name: "weight_score"
+        data_type: "float"
+        unit: "dimensionless"
+        input_domain: "usually 0..1; fallback allows lower values"
+    constraints: ["Coefficient weight group must sum to 1.0 +/- 0.0001.", "Fallback scores are used for unrecognized labels rather than failing."]
+    missing_policy: "Unrecognized tier/importance/confidence uses fallback scores 0.25/0.35/0.6."
+    output_range: "weight_score rounded float; visual.size >= 4; orbit_radius grows when weight is lower."
+    code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:46", "OpenAIDatabase/scripts/build_memory_atlas_data.py:380", "OpenAIDatabase/scripts/build_memory_atlas_data.py:669"]
+    test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25"]
+    evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:20"]
+  - formula_id: "FORM-006"
+    model_id: "MOD-006"
+    assumption_ids: ["ASM-002", "ASM-003", "ASM-006"]
+    status: "active"
+    expression: "recency_days = today - date when date exists. sensitivity_penalty = 0.35 for sensitive or secret else 0.1. staleness_status = stale_short_term when validity == 临时 and recency_days > 30; needs_review when recency_days > 180; current otherwise when date exists; missing-date branch when date is absent. decision_impact = 1 for category decision else 0. leverage_score = round(max(0.0, memory_weight(row) + decision_impact*0.15 - sensitivity_penalty), 4). Recommended action maps 核心画像 to keep_high_weight, 一般 to review_for_project_linkage, stale or needs_review to keep_low_weight_or_refresh, else keep_as_context."
+    variables:
+      - name: "recency_days"
+        data_type: "integer"
+        unit: "days"
+        input_domain: ">=0 when date exists"
+      - name: "sensitivity"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "public/private/sensitive/secret/derived"
+      - name: "leverage_score"
+        data_type: "float"
+        unit: "dimensionless"
+        input_domain: ">=0"
+    constraints: ["Sensitive and secret information are penalized in public ROI leverage.", "No real execution ROI data is used."]
+    missing_policy: "Missing or unparsable date yields the implementation's missing-date status branch."
+    output_range: "leverage_score >= 0 rounded to 4 decimals; staleness_status in missing-date/stale_short_term/needs_review/current where missing-date is the code path for no parsed date."
+    code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:387"]
+    test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25"]
+    evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:56"]
+  - formula_id: "FORM-007"
+    model_id: "MOD-007"
+    assumption_ids: ["ASM-002", "ASM-003"]
+    status: "active"
+    expression: "activity_score = conversation_count*5 + message_count + memory_count*3 + candidate_count + decision_count*4 + tool_call_count*2 + error_event_count + abort_count*2. activity_level = 0 if score <= 0 or max_score <= 0 else ceil(score/max_score*5) bounded 1..5. Quantile p = sorted_scores[min(n-1, max(0, ceil(p*n)-1))]. Daily range is filled from min to max date and then aggregated to week/month/year."
+    variables:
+      - name: "activity_score"
+        data_type: "integer"
+        unit: "points"
+        input_domain: ">=0"
+      - name: "max_score"
+        data_type: "integer"
+        unit: "points"
+        input_domain: ">=0"
+      - name: "activity_level"
+        data_type: "integer"
+        unit: "level"
+        input_domain: "0..5"
+    constraints: ["Activity is an interaction and memory increment proxy, not token usage or active screen time.", "Missing days inside the observed range are filled with zero activity."]
+    missing_policy: "No daily rows returns empty contribution arrays and zero quantiles."
+    output_range: "daily/weekly/monthly/yearly buckets; activity_level 0..5."
+    code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:462", "OpenAIDatabase/scripts/build_memory_atlas_data.py:475", "OpenAIDatabase/scripts/build_memory_atlas_data.py:481", "OpenAIDatabase/scripts/build_memory_atlas_data.py:530"]
+    test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25"]
+    evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:87"]
+  - formula_id: "FORM-008"
+    model_id: "MOD-008"
+    assumption_ids: ["ASM-001", "ASM-004"]
+    status: "active"
+    expression: "For each Codex session, topic_labels are topic rules with matched counts; signal_labels are signal rules with matched counts. activity_score = message_count + user_message_count*2 + tool_call_count*3 + len(topic_labels)*4 + error_event_count*2. Daily buckets sum session activity_score and derive activity_level = 0 if score <= 0 or max_score <= 0 else max(1, min(5, ceil(score*5/max_score))). Session output stores redacted thread/cwd/model metadata, topic labels, preference signals, top tool counts, and backup_policy redacted_summary_only_no_raw_transcript_no_plaintext_secret."
+    variables:
+      - name: "message_count"
+        data_type: "integer"
+        unit: "messages"
+        input_domain: ">=0"
+      - name: "tool_call_count"
+        data_type: "integer"
+        unit: "calls"
+        input_domain: ">=0"
+      - name: "topic_labels"
+        data_type: "list[object]"
+        unit: "matched topic labels"
+        input_domain: "subset of TOPIC_RULES"
+    constraints: ["Raw transcript, absolute local paths, plaintext secrets, cookies, and session files are not committed.", "Preference recommendations are derived from redacted summaries."]
+    missing_policy: "Unreadable JSONL rows are skipped; missing date/session metadata becomes empty or hashed labels."
+    output_range: "session activity_score >= 0; activity_level 0..5."
+    code_refs: ["OpenAIDatabase/scripts/sync_codex_memory_data.py:43", "OpenAIDatabase/scripts/sync_codex_memory_data.py:54", "OpenAIDatabase/scripts/sync_codex_memory_data.py:279", "OpenAIDatabase/scripts/sync_codex_memory_data.py:334"]
+    test_refs: ["OpenAIDatabase/tests/test_codex_memory_sync.py:20"]
+    evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:119"]
+  - formula_id: "FORM-009"
+    model_id: "MOD-009"
+    assumption_ids: ["ASM-003", "ASM-005"]
+    status: "active"
+    expression: "load_data_source_registry returns {} unless schema_version == memory_atlas_data_source_registry.v1 and sources is a list. registry_source_map keeps sources with non-empty id. Acceptance requires sources memory_atlas and codex active; wechat, xiaohongshu, douyin planned; canonical required fields include source_id, record_id, occurred_at, record_type, summary, sensitivity, dedupe_key; homepage data_sources exactly all, memory_atlas, codex with labels 总数据源, ChatGPT, Codex; planned sources must remain registry-only and ingestion_status planned_no_real_data. Static summaries redact private/sensitive/source details before public snapshot."
+    variables:
+      - name: "sources"
+        data_type: "list[object]"
+        unit: "registered data sources"
+        input_domain: "objects with non-empty id"
+      - name: "visible_source_ids"
+        data_type: "list[string]"
+        unit: "homepage selector ids"
+        input_domain: "exact all/memory_atlas/codex"
+      - name: "canonical_required_fields"
+        data_type: "list[string]"
+        unit: "event fields"
+        input_domain: "registry required_fields"
+    constraints: ["Planned platform sources must not generate fake nodes/activity.", "Public snapshot excludes raw source references and sensitive fields."]
+    missing_policy: "Invalid registry schema or sources list returns empty registry summary and acceptance fails."
+    output_range: "data source summary list; acceptance pass or failure reason."
+    code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:156", "OpenAIDatabase/scripts/build_memory_atlas_data.py:1208", "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py:86", "OpenAIDatabase/scripts/build_memory_atlas_data.py:271"]
+    test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25", "OpenAIDatabase/tests/test_memory_atlas_acceptance_audit.py"]
+    evidence_refs: ["OpenAIDatabase/config/data_sources/source_registry.json:1"]
+  - formula_id: "FORM-010"
+    model_id: "MOD-010"
+    assumption_ids: ["ASM-001", "ASM-003"]
+    status: "active"
+    expression: "saveProposal requires editable and non-empty draft text. proposal_id = atlas_<compactTimestamp(now)>_<stableHash(node.id:text:nodeProposalCount+1)>; status = draft_pending_agent_apply; revision = latest.revision + 1 or 1; parent_proposal_id = latest proposal id or null; rollback_unit = policy.rollback_unit or per_memory_version; safety direct_frontend_mutation_of_active_memory=false, requires_conflict_check=true, requires_agent_or_human_apply=true, forbidden_payload from policy or plaintext secrets/raw conversation text/record hashes/local absolute paths. createRollbackProposal uses latest and previous/target, action rollback_to_version, revision latest+1, parent latest, supersedes latest, rollback_to_proposal_id target, and rollback_to_revision target revision."
+    variables:
+      - name: "revision"
+        data_type: "integer"
+        unit: "proposal version"
+        input_domain: ">=1"
+      - name: "changed_segments"
+        data_type: "integer"
+        unit: "diff segments"
+        input_domain: ">=0"
+      - name: "status"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "draft_pending_agent_apply"
+    constraints: ["Frontend proposals are local drafts and require controlled agent/human apply.", "Direct frontend mutation of active memory is false."]
+    missing_policy: "No localStorage proposal payload returns empty proposal list; invalid payload entries are filtered out."
+    output_range: "WritebackProposal array in localStorage; downloadable JSON; rollback proposal metadata."
+    code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:1227", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2308", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2328", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2374", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:4477"]
+    test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25", "OpenAIDatabase/tests/test_memory_atlas_release_audit.py:24"]
+    evidence_refs: ["OpenAIDatabase/README.md:121"]

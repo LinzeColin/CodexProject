@@ -1,31 +1,12 @@
 # whkmSalary 模型参数文件
 
-更新时间：2026-06-19
+更新时间：2026-06-20
 
-## 默认模型与执行模式
+本文件是兼容入口。当前模型、公式、参数、来源、默认值、激活值和 UNKNOWN 任务以 canonical files 为准：
 
-- 默认模式：待外部验证。
-- 当前可确认部署：Railway health endpoint。
-- 当前不可确认：具体模型、公式、参数、数据 schema、权限模型。
+- `docs/governance/MODEL_SPEC.md`
+- `docs/governance/model_registry.yaml`
+- `docs/governance/formula_registry.yaml`
+- `docs/governance/parameter_registry.csv`
 
-## 关键参数域
-
-| 参数域 | 当前原则 |
-| --- | --- |
-| deployment | Railway |
-| health endpoint | `/_stcore/health` 路径由 README 提供，实际 URL 需当前验证 |
-| data sensitivity | 工资/销售/员工数据默认高敏感 |
-| calculation | 待补薪资/提成公式、参数和版本 |
-| audit | 待补规则变更和输出报表审计 |
-
-## 模型与数据要求
-
-- 若存在薪资计算模型，必须记录公式版本、参数、输入数据范围、异常处理和审核人。
-- 若引入 LLM，只能用于解释、校验和生成报告草稿，不能自动修改薪资结果。
-- 所有真实数据处理必须最小化、脱敏、权限隔离。
-
-## 不允许保存或提交
-
-- 员工工资明细、身份证、银行卡、手机号。
-- Railway token、数据库密码、`.env`。
-- 未脱敏销售流水或客户隐私。
+政策来源、jurisdiction、effective date、税务依据和部分边界行为仍为 UNKNOWN，并关联 `TASK-WHKM-B-001`。不得根据常识猜测税率、扣除项或法定规则。

@@ -1,0 +1,83 @@
+governance_spec_version: "1.0.0"
+project_id: "OpMe_System"
+tasks:
+  - task_id: "TASK-OPME-A-001"
+    phase: "A"
+    objective: "Complete P10 audit for OpMe_System."
+    scope: ["analysis rules", "model router", "schemas", "tests"]
+    non_scope: ["business code changes", "API key inspection", "provider calls"]
+    status: "completed"
+    dependencies: []
+    required_files: ["OpMe_System/docs/governance/MODEL_SPEC.md"]
+    acceptance_ids: ["ACC-OPME-A-001"]
+    test_commands: ["targeted rg model/risk/fallback keywords", "git log --max-count=50 -- OpMe_System"]
+    test_results: ["Audit identified 7 active models/rules and LLM fallback strategy."]
+    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+    risk: "Engineering recommendations must remain advisory and require human review."
+    rollback: "No changes during P10 audit."
+    target_version: "1.0.0"
+    completed_version: "1.0.0"
+  - task_id: "TASK-OPME-A-002"
+    phase: "A"
+    objective: "Complete P11 governance migration."
+    scope: ["standard governance files", "legacy indexes", "VERSION", "CHANGELOG"]
+    non_scope: ["backend", "frontend", "provider config values", "runtime behavior"]
+    status: "completed"
+    dependencies: ["TASK-OPME-A-001"]
+    required_files: ["OpMe_System/docs/governance/*"]
+    acceptance_ids: ["ACC-OPME-A-002"]
+    test_commands: ["python scripts/validate_project_governance.py --project OpMe_System", "python -m pytest tests/test_analysis.py -q"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0; 2 passed"]
+    evidence_refs: ["OpMe_System/docs/governance/MODEL_SPEC.md", "OpMe_System/docs/governance/parameter_registry.csv"]
+    risk: "Do not store API keys or full sensitive prompts."
+    rollback: "Remove docs/governance and restore legacy indexes."
+    target_version: "1.0.0"
+    completed_version: "1.0.0"
+  - task_id: "TASK-OPME-A-003"
+    phase: "A"
+    objective: "Complete P12 verification."
+    scope: ["validator", "backend focused tests", "diff checks"]
+    non_scope: ["fix during verify", "business code changes"]
+    status: "completed"
+    dependencies: ["TASK-OPME-A-002"]
+    required_files: ["OpMe_System/docs/governance/*"]
+    acceptance_ids: ["ACC-OPME-A-003"]
+    test_commands: ["python scripts/validate_project_governance.py --project OpMe_System", "python -m pytest tests/test_analysis.py -q", "python -m pytest tests/test_api.py -q", "git diff --check"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0; 2 passed", "exit 2; blocked by missing fastapi dependency in current environment", "exit 0"]
+    evidence_refs: ["OpMe_System/docs/governance/DEVELOPMENT_LEDGER.md", "OpMe_System/backend/tests/test_analysis.py"]
+    risk: "Tests may require local Python dependencies already present."
+    rollback: "Return to P11 repair."
+    target_version: "1.0.0"
+    completed_version: "1.0.0"
+  - task_id: "TASK-OPME-A-004"
+    phase: "A"
+    objective: "Promote OpMe_System to required."
+    scope: ["governance/projects.yaml OpMe_System ci_mode"]
+    non_scope: ["project files", "business code", "other project enforcement"]
+    status: "completed"
+    dependencies: ["TASK-OPME-A-003"]
+    required_files: ["governance/projects.yaml"]
+    acceptance_ids: ["ACC-OPME-A-004"]
+    test_commands: ["python scripts/validate_project_governance.py --project OpMe_System", "python scripts/validate_project_governance.py --all", "git diff --check"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0; advisory warnings only outside required projects", "exit 0"]
+    evidence_refs: ["governance/projects.yaml", "OpMe_System/docs/governance/VERSION_MATRIX.yaml"]
+    risk: "Required mode blocks CI on governance drift."
+    rollback: "Set OpMe_System ci_mode back to advisory."
+    target_version: "1.0.0"
+    completed_version: "1.0.0"
+  - task_id: "TASK-OPME-B-001"
+    phase: "B"
+    objective: "Resolve engineering calibration, prompt version, provider policy, and signoff evidence gaps."
+    scope: ["threshold calibration", "input validation", "prompt version", "provider operation policy", "human signoff criteria"]
+    non_scope: ["enabling provider calls", "changing rule outputs"]
+    status: "blocked"
+    dependencies: ["TASK-OPME-A-004"]
+    required_files: ["OpMe_System/docs/governance/MODEL_SPEC.md"]
+    acceptance_ids: ["ACC-OPME-B-001"]
+    test_commands: []
+    test_results: []
+    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+    risk: "Uncalibrated rules may be unsuitable for safety-critical field decisions."
+    rollback: "Keep offline rules advisory and require engineer review."
+    target_version: "UNKNOWN (TASK-OPME-B-001)"
+    completed_version: ""

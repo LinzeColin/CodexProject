@@ -1,0 +1,285 @@
+governance_spec_version: "1.0.0"
+project_id: "FIFA"
+tasks:
+  - task_id: "TASK-FIFA-A-001"
+    phase: "A"
+    objective: "Create the first auditable FIFA governance baseline and promote FIFA governance CI mode to required."
+    scope:
+      - "FIFA governance documents and registries"
+      - "FIFA README and legacy governance index files"
+      - "governance/projects.yaml FIFA ci_mode"
+    non_scope:
+      - "Runtime scoring logic"
+      - "TAB/provider refresh behavior"
+      - "Business feature changes"
+      - "Other projects"
+    status: "completed"
+    dependencies: []
+    required_files:
+      - "docs/governance/MODEL_SPEC.md"
+      - "docs/governance/model_registry.yaml"
+      - "docs/governance/formula_registry.yaml"
+      - "docs/governance/parameter_registry.csv"
+      - "docs/governance/DEVELOPMENT_LEDGER.md"
+      - "docs/governance/development_events.jsonl"
+      - "docs/governance/DELIVERY_PLAN.md"
+      - "docs/governance/delivery_tasks.yaml"
+      - "docs/governance/VERSION_MATRIX.yaml"
+      - "docs/governance/TRACEABILITY_MATRIX.csv"
+      - "VERSION"
+      - "CHANGELOG.md"
+    acceptance_ids:
+      - "ACC-FIFA-001"
+      - "ACC-FIFA-002"
+      - "ACC-FIFA-003"
+      - "ACC-FIFA-004"
+      - "ACC-FIFA-005"
+    test_commands:
+      - "python scripts/validate_project_governance.py --project FIFA"
+      - "python3 -m py_compile run_daily_report.py scripts/tab_fifa_app_server.py tests/test_pipeline.py"
+      - "bash -n scripts/run_tab_fifa_daily_automation.sh scripts/tab_real_refresh_smoke.sh"
+      - "node --check scripts/refresh_tab_readonly.mjs"
+      - "node --check scripts/discover_tab_live_boards.mjs"
+      - "python3 -m unittest tests.test_pipeline -q"
+      - "python scripts/validate_project_governance.py --all"
+      - "git diff --check"
+    test_results:
+      - "python scripts/validate_project_governance.py --project FIFA -> exit 127 because python is not on PATH"
+      - "python3 scripts/validate_project_governance.py --project FIFA -> exit 0 with 0 errors and 0 warnings"
+      - "python3 -m py_compile run_daily_report.py scripts/tab_fifa_app_server.py tests/test_pipeline.py -> exit 0"
+      - "bash -n scripts/run_tab_fifa_daily_automation.sh scripts/tab_real_refresh_smoke.sh -> exit 0"
+      - "node --check scripts/refresh_tab_readonly.mjs -> exit 0"
+      - "node --check scripts/discover_tab_live_boards.mjs -> exit 0"
+      - "python3 -m unittest tests.test_pipeline -q -> exit 1 on real HOME because /Users/linzezhang/Downloads/FIFA Report/TAB FIFA盘口研究系统.html is missing"
+      - "PYTHONPATH=/Users/linzezhang/Library/Python/3.13/lib/python/site-packages HOME=<temp fixture home> python3 -m unittest tests.test_pipeline -q -> exit 0; Ran 206 tests OK"
+    evidence_refs:
+      - "FIFA/docs/governance/model_registry.yaml"
+      - "FIFA/docs/governance/formula_registry.yaml"
+      - "FIFA/docs/governance/parameter_registry.csv"
+      - "FIFA/docs/governance/TRACEABILITY_MATRIX.csv"
+      - "governance/projects.yaml"
+    risk: "Large heuristic surface can be over-documented as calibrated; this baseline separates extracted values from calibration gaps."
+    rollback: "Revert FIFA governance files and restore FIFA ci_mode to advisory."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+  - task_id: "TASK-FIFA-B-001"
+    phase: "B"
+    objective: "Collect calibration evidence for heuristic thresholds, stake gates, coverage ratios, and credit gates."
+    scope:
+      - "Evidence gathering and model documentation"
+      - "Backtest or fixture evidence references"
+    non_scope:
+      - "Changing active thresholds"
+      - "Changing runtime behavior"
+    status: "planned"
+    dependencies:
+      - "TASK-FIFA-A-001"
+    required_files:
+      - "docs/governance/parameter_registry.csv"
+      - "docs/governance/MODEL_SPEC.md"
+    acceptance_ids:
+      - "ACC-FIFA-006"
+    test_commands:
+      - "python scripts/validate_project_governance.py --project FIFA"
+    test_results:
+      - "Not completed"
+    evidence_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    risk: "Thresholds may remain heuristic if no historical calibration dataset is available."
+    rollback: "Keep current extracted thresholds and leave calibration fields linked to this task."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-FIFA-B-002"
+    phase: "B"
+    objective: "Audit curation maps, marker lists, expected artifact lists, and manual required fields for source rationale completeness."
+    scope:
+      - "Documentation and source rationale"
+      - "Governance-only evidence links"
+    non_scope:
+      - "Adding or removing safety markers"
+      - "Changing candidate support maps"
+    status: "planned"
+    dependencies:
+      - "TASK-FIFA-A-001"
+    required_files:
+      - "docs/governance/parameter_registry.csv"
+      - "docs/governance/MODEL_SPEC.md"
+    acceptance_ids:
+      - "ACC-FIFA-007"
+    test_commands:
+      - "python scripts/validate_project_governance.py --project FIFA"
+    test_results:
+      - "Not completed"
+    evidence_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    risk: "Marker/source lists may be incomplete relative to private runtime artifacts."
+    rollback: "Keep current extracted lists unchanged and document missing rationale."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-FIFA-C-001"
+    phase: "C"
+    objective: "Recover authorized raw data path without violating TAB access-policy boundaries."
+    scope:
+      - "Official or authorized odds feed"
+      - "User-authorized export/import"
+      - "Research-only partial raw evidence"
+    non_scope:
+      - "Headed fallback for public raw"
+      - "CAPTCHA bypass"
+      - "Fingerprint spoofing"
+      - "Stealth browser"
+    status: "blocked"
+    dependencies:
+      - "TASK-FIFA-A-001"
+    required_files:
+      - "FIFA/tab-research-pipeline/README.md"
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py"
+    acceptance_ids:
+      - "ACC-FIFA-008"
+    test_commands:
+      - "python3 -m unittest tests.test_pipeline -q"
+    test_results:
+      - "Not completed"
+    evidence_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:379"
+    risk: "Public raw remains blocked by ai_controlled_access_rejected."
+    rollback: "Keep raw refresh fail-closed and current executable new stake AUD 0."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-FIFA-C-002"
+    phase: "C"
+    objective: "Complete TT-001 Team Total manual verification rows from read-only TAB evidence."
+    scope:
+      - "Manual verification CSV"
+      - "Manual hash gate evidence"
+    non_scope:
+      - "Automatic TAB scraping"
+      - "Bet Slip interaction"
+      - "Provider batch expansion below reserve"
+    status: "blocked"
+    dependencies:
+      - "TASK-FIFA-C-001"
+    required_files:
+      - "outputs/manual_verification/provider_team_total_manual_verification.csv"
+      - "outputs/provider_manual_hash_gate_latest.json"
+    acceptance_ids:
+      - "ACC-FIFA-009"
+    test_commands:
+      - "python3 -m unittest tests.test_pipeline -q"
+    test_results:
+      - "Not completed"
+    evidence_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:998"
+    risk: "Manual rows require real operator evidence and cannot be fabricated."
+    rollback: "Leave manual gate waiting and formal publish blocked."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-FIFA-D-001"
+    phase: "D"
+    objective: "Obtain read-only private My Bets snapshot for current position gate."
+    scope:
+      - "User-authorized private profile capture"
+      - "Private-output storage"
+    non_scope:
+      - "Public exposure of private My Bets data"
+      - "Changing account state"
+    status: "blocked"
+    dependencies:
+      - "TASK-FIFA-C-001"
+    required_files:
+      - "work/private/tab_fifa"
+      - "outputs/position_monitor_latest.json"
+    acceptance_ids:
+      - "ACC-FIFA-010"
+    test_commands:
+      - "scripts/run_tab_fifa_daily_automation.sh --capture-my-bets --wait-for-login-ms 600000"
+    test_results:
+      - "Not completed"
+    evidence_refs:
+      - "FIFA/docs/HANDOFF.md"
+    risk: "Requires explicit user authorization and private storage hygiene."
+    rollback: "Keep position gate blocked and do not publish formal executable exposure."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-FIFA-D-002"
+    phase: "D"
+    objective: "Pass manual signature and formal publish preflight without unlocking automated wagering."
+    scope:
+      - "Overlay approval JSON"
+      - "Manual hash match"
+      - "Formal publish gate"
+    non_scope:
+      - "Auto wagering"
+      - "Bet Slip changes"
+    status: "blocked"
+    dependencies:
+      - "TASK-FIFA-C-002"
+      - "TASK-FIFA-D-001"
+    required_files:
+      - "outputs/manual_verification/provider_team_total_overlay_approval.json"
+      - "outputs/provider_manual_overlay_publish_preflight_latest.json"
+    acceptance_ids:
+      - "ACC-FIFA-011"
+    test_commands:
+      - "python3 -m unittest tests.test_pipeline -q"
+    test_results:
+      - "Not completed"
+    evidence_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:826"
+    risk: "A hash match proves import consistency only; it does not prove TAB truth without manual evidence."
+    rollback: "Keep formal_publish_allowed false and full_automation_allowed false."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-FIFA-E-001"
+    phase: "E"
+    objective: "Authorize recurring report generation only after all gates are ready."
+    scope:
+      - "Automation authorization"
+      - "Report-generation-only recurring candidate"
+    non_scope:
+      - "Creating scheduler without authorization"
+      - "Auto wagering"
+    status: "blocked"
+    dependencies:
+      - "TASK-FIFA-D-002"
+    required_files:
+      - "config/automation.toml"
+      - "outputs/automation_readiness_latest.json"
+    acceptance_ids:
+      - "ACC-FIFA-012"
+    test_commands:
+      - "scripts/verify_fifa_automation_readiness.sh"
+    test_results:
+      - "Not completed"
+    evidence_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_candidate.py:19"
+    risk: "Recurring automation without explicit authorization violates project safety rules."
+    rollback: "Do not install recurring automation; keep candidate review-only."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-FIFA-E-002"
+    phase: "E"
+    objective: "Decide whether to retain, migrate, or retire the legacy rules-v1.0.0 softmax MVP."
+    scope:
+      - "Legacy model governance decision"
+      - "Documentation-only status update"
+    non_scope:
+      - "Using legacy model as active TAB execution logic without a migration plan"
+    status: "planned"
+    dependencies:
+      - "TASK-FIFA-A-001"
+    required_files:
+      - "FIFA/legacy/fifa-analysis-system/README.md"
+      - "docs/governance/model_registry.yaml"
+    acceptance_ids:
+      - "ACC-FIFA-013"
+    test_commands:
+      - "python scripts/validate_project_governance.py --project FIFA"
+    test_results:
+      - "Not completed"
+    evidence_refs:
+      - "FIFA/legacy/fifa-analysis-system/app/config.py:9"
+    risk: "Legacy model may be misunderstood as the active TAB pipeline model."
+    rollback: "Keep MOD-011 deprecated and excluded from active execution claims."
+    target_version: "0.1.0"
+    completed_version: ""
