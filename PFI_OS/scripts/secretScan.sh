@@ -9,12 +9,13 @@ PYTHON_BIN="${PFI_PYTHON:-$(command -v python3)}"
 "$PYTHON_BIN" - <<'PY'
 from __future__ import annotations
 
+import os
 import pathlib
 import re
 import subprocess
 import sys
 
-ROOT = pathlib.Path.cwd()
+ROOT = pathlib.Path(os.environ.get("PFI_SECRET_SCAN_ROOT", pathlib.Path.cwd())).expanduser().resolve()
 PATTERNS = {
     "openai_key": re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b"),
     "github_pat": re.compile(r"\bghp_[A-Za-z0-9_]{20,}\b"),
@@ -43,7 +44,7 @@ TEXT_SUFFIXES = {
     ".yml",
 }
 
-result = subprocess.run(["git", "ls-files"], check=True, capture_output=True, text=True)
+result = subprocess.run(["git", "-C", str(ROOT), "ls-files"], check=True, capture_output=True, text=True)
 violations: list[str] = []
 for relative in result.stdout.splitlines():
     if relative in ALLOWLIST:

@@ -734,6 +734,20 @@ def test_ui_visual_acceptance_uses_browser_without_heavy_smoke():
     assert "PFI_OS_ALLOW_HEAVY_SMOKE" not in script
 
 
+def test_pfi_ci_injected_failure_proof_is_wired_to_root_workflow():
+    script = (PROJECT_ROOT / "scripts" / "pfiCiInjectedFailureProof.sh").read_text(encoding="utf-8")
+    root_workflow = (PROJECT_ROOT.parent / ".github" / "workflows" / "pfi-os-smoke.yml").read_text(encoding="utf-8")
+
+    assert "PFI_SECRET_SCAN_ROOT" in script
+    assert "injected_secret.txt:openai_key" in script
+    assert "PFI CI injected-failure proof passed" in script
+    assert "working-directory: PFI_OS" in root_workflow
+    assert "./scripts/pfiGate.sh target" in root_workflow
+    assert "./scripts/pfiCiInjectedFailureProof.sh" in root_workflow
+    assert 'PFI_PYTHON: python' in root_workflow
+    assert "\n  push:" not in root_workflow
+
+
 def test_macos_public_acceptance_summary_is_sanitized_and_lightweight():
     script = (PROJECT_ROOT / "scripts" / "macosPublicAcceptanceSummary.sh").read_text(encoding="utf-8")
     module = (PROJECT_ROOT / "src" / "pfi_os" / "system" / "macos_public_acceptance.py").read_text(encoding="utf-8")

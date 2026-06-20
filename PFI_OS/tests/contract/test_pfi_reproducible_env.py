@@ -2,10 +2,15 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = PROJECT_ROOT.parent
 
 
 def _text(relative: str) -> str:
     return (PROJECT_ROOT / relative).read_text(encoding="utf-8")
+
+
+def _repo_text(relative: str) -> str:
+    return (REPO_ROOT / relative).read_text(encoding="utf-8")
 
 
 def test_pfi_001_has_python_version_lock_and_install_contract():
@@ -57,7 +62,9 @@ def test_explicit_pfi_python_overrides_stale_project_venv_marker():
 def test_pfi_001_gate_interface_and_secret_scan_are_wired_to_ci():
     gate = _text("scripts/pfiGate.sh")
     secret_scan = _text("scripts/secretScan.sh")
+    injected_failure = _text("scripts/pfiCiInjectedFailureProof.sh")
     workflow = _text(".github/workflows/smoke.yml")
+    root_workflow = _repo_text(".github/workflows/pfi-os-smoke.yml")
 
     for mode in ["fast)", "target)", "full)", "release)"]:
         assert mode in gate
@@ -67,9 +74,17 @@ def test_pfi_001_gate_interface_and_secret_scan_are_wired_to_ci():
     assert "sk-[A-Za-z0-9_-]" in secret_scan
     assert "ghp_[A-Za-z0-9_]" in secret_scan
     assert "AKIA[0-9A-Z]" in secret_scan
+    assert "PFI_SECRET_SCAN_ROOT" in secret_scan
+    assert "PFI CI injected-failure proof passed" in injected_failure
+    assert "injected_secret.txt:openai_key" in injected_failure
     assert "python -m pip install -r requirements.lock" in workflow
     assert "python -m pip install --no-deps -e ." in workflow
     assert "./scripts/secretScan.sh" in workflow
+    assert "working-directory: PFI_OS" in root_workflow
+    assert "./scripts/pfiGate.sh target" in root_workflow
+    assert "./scripts/pfiCiInjectedFailureProof.sh" in root_workflow
+    assert 'PFI_PYTHON: python' in root_workflow
+    assert "\n  push:" not in root_workflow
 
 
 def test_clean_machine_and_artifact_policy_are_documented():

@@ -57,6 +57,25 @@ scripts/pfiGate.sh release
 - `full`: full local test script plus secret scan.
 - `release`: explicit heavy release gate plus secret scan.
 
+## PR/CI Evidence
+
+PFI_OS is stored as a subdirectory of `LinzeColin/CodexProject`, so the
+GitHub Actions workflow that actually runs on pull requests must live at the
+repository root:
+
+```text
+.github/workflows/pfi-os-smoke.yml
+```
+
+The root workflow uses `working-directory: PFI_OS`, installs
+`PFI_OS/requirements.lock`, runs `scripts/pfiGate.sh target`, and then runs
+`scripts/pfiCiInjectedFailureProof.sh`.
+
+The injected-failure proof creates a temporary Git repository with a tracked
+fake API key and asserts that `scripts/secretScan.sh` fails with
+`injected_secret.txt:openai_key`. If the secret scan ever accepts the injected
+secret, CI fails.
+
 ## Artifact Policy
 
 Test artifacts must not contain secrets, private holdings, account screenshots,
