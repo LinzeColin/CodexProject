@@ -106,6 +106,16 @@ export type ExploreGraphRecord = {
       unpublished: number;
       source_threshold_open: number;
       review_open: number;
+      sample_candidates?: {
+        id: string;
+        candidate_key: string;
+        relationship_type: string;
+        relationship_family: string;
+        publication_status: string;
+        review_status: string;
+        independent_source_count: number;
+        source_threshold_met: boolean;
+      }[];
     };
     publication_policy?: {
       relationship_fact_candidates_in_graph_edges: boolean;
