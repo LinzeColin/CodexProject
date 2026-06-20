@@ -44,6 +44,18 @@
   "remote_validation_required": [
     "GitHub Actions make verify-g2-db must run migrations, schema checks and PostgreSQL integration tests."
   ],
+  "latest_ci_result": {
+    "provider": "GitHub Actions",
+    "workflow": "EEI validation",
+    "run_id": "27869583493",
+    "job_id": "82479246130",
+    "commit_sha": "f3ed3cfca557b8cef8e6ed07a5d0a8fdcc421aef",
+    "verify_static_contract_lint_typecheck_unit_step": "PASS",
+    "verify_g2_static_contract_lint_typecheck_unit_step": "PASS",
+    "verify_g2_postgresql_integration_step": "PASS",
+    "verify_g2_browser_e2e_step": "PASS",
+    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
+  },
   "remaining_gaps_before_done": [
     "Register real score_recompute, curated ingestion and calibration handlers on the scheduler instead of only queueing score_recompute and exercising the noop verification handler.",
     "Add deployment-level wake/supervision contract for continuous worker operation.",

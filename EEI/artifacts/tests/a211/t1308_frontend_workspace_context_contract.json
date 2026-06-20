@@ -53,6 +53,18 @@
     "playwright_e2e": "PASS",
     "playwright_tests_passed": 32
   },
+  "latest_ci_result": {
+    "provider": "GitHub Actions",
+    "workflow": "EEI validation",
+    "run_id": "27869583493",
+    "job_id": "82479246130",
+    "commit_sha": "f3ed3cfca557b8cef8e6ed07a5d0a8fdcc421aef",
+    "verify_static_contract_lint_typecheck_unit_step": "PASS",
+    "verify_g2_static_contract_lint_typecheck_unit_step": "PASS",
+    "verify_g2_postgresql_integration_step": "PASS",
+    "verify_g2_browser_e2e_step": "PASS",
+    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
+  },
   "remaining_to_close_a211": [
     "broaden live FastAPI/PostgreSQL cross-route proof across the remaining production modules and deployment/auth boundaries"
   ],

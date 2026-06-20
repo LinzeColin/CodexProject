@@ -2551,9 +2551,9 @@ Residual risks:
 ### Remaining gaps
 
 - Model-center online profile editing remains open.
-- Dedicated score recompute controls remain open.
+- At this rollback-endpoint slice point, dedicated score recompute controls were still open; they are addressed by the follow-on enqueue slice below, while the worker handler remains open.
 - Worker-driven data snapshot refresh and transactional outbox remain open.
-- Online model editing, dedicated score recompute controls and worker-driven data refresh/outbox still keep T1303/A204-A205 open despite this CI-validated rollback endpoint slice.
+- Online model editing, the worker-driven score recompute handler and worker-driven data refresh/outbox still keep T1303/A204-A205 open despite this CI-validated rollback endpoint slice.
 
 ## 2026-06-20 - T1303/T1304/A204-A206 score recompute enqueue control
 
@@ -2611,6 +2611,7 @@ Residual risks:
 - Local `npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/home.spec.ts -g "A211 exposes WorkspaceContext"` with non-sandbox browser/network: PASS, 1/1.
 - Local `make verify`: PASS.
 - Local `make verify-g2-db`: BLOCKED before tests because Docker is not installed in this environment; GitHub Actions remains the PostgreSQL/live E2E evidence source for this DB-backed slice.
+- GitHub Actions `EEI validation` on `f3ed3cfca557b8cef8e6ed07a5d0a8fdcc421aef`: PASS, run `27869583493`, job `82479246130`; Steps 7-12 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 
 ### Remaining gaps
 
