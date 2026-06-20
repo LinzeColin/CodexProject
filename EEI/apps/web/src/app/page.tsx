@@ -32,9 +32,12 @@ import {
   activateModelProfile,
   listModelProfiles,
   loadActiveModelContext,
+  requestScoreRecompute,
   rollbackModelProfile,
   type ActiveModelContextRecord,
   type ModelActivationResult,
+  type ScoreRecomputeJobRecord,
+  type ScoreRecomputeResult,
   type ScoringProfileRecord
 } from "./model-activation-client";
 import {
@@ -1366,6 +1369,12 @@ function isFailedModelActivationResult(
   return result.mode === "server" && (result.status === "conflict" || result.status === "error");
 }
 
+function isFailedScoreRecomputeResult(
+  result: ScoreRecomputeResult
+): result is Extract<ScoreRecomputeResult, { mode: "server"; status: "conflict" | "error" }> {
+  return result.mode === "server" && (result.status === "conflict" || result.status === "error");
+}
+
 export default function Home() {
   const { analysisContext, applyPreview, applyServerContext, clearPreview, isPreviewActive } =
     useAnalysisContext();
@@ -1433,6 +1442,12 @@ export default function Home() {
   const [candidateProfile, setCandidateProfile] = useState<ScoringProfileRecord | null>(null);
   const [rollbackProfile, setRollbackProfile] = useState<ScoringProfileRecord | null>(null);
   const [previousModelRefreshToken, setPreviousModelRefreshToken] = useState("");
+  const [scoreRecomputeStatus, setScoreRecomputeStatus] = useState<
+    "idle" | "enqueueing" | "server-conflict" | "server-error" | ScoreRecomputeJobRecord["status"]
+  >("idle");
+  const [scoreRecomputeReason, setScoreRecomputeReason] = useState("not_requested");
+  const [scoreRecomputeEndpoint, setScoreRecomputeEndpoint] = useState("");
+  const [scoreRecomputeJob, setScoreRecomputeJob] = useState<ScoreRecomputeJobRecord | null>(null);
   const [pinnedNodeKeys, setPinnedNodeKeys] = useState<NodeKey[]>([]);
   const [comparisonNodeKeys, setComparisonNodeKeys] = useState<NodeKey[]>([]);
   const [watchlistNodeKeys, setWatchlistNodeKeys] = useState<NodeKey[]>([]);
@@ -1921,6 +1936,42 @@ export default function Home() {
     );
   }
 
+  async function enqueueCurrentScoreRecompute() {
+    if (!serverModelContext) {
+      setScoreRecomputeStatus("server-error");
+      setScoreRecomputeReason("active_context_missing");
+      return;
+    }
+    setScoreRecomputeStatus("enqueueing");
+    setScoreRecomputeReason("requesting");
+    const recomputeResult = await requestScoreRecompute({
+      expectedActiveProfileVersionId: serverModelContext.active_scoring_profile_version_id,
+      clientRefreshToken: serverModelContext.refresh_token,
+      scope: "global",
+      reason: "EEI model-center score recompute request"
+    });
+    if (recomputeResult.mode === "local_fallback") {
+      setScoreRecomputeStatus("server-error");
+      setScoreRecomputeReason(recomputeResult.reason);
+      return;
+    }
+    setScoreRecomputeEndpoint(recomputeResult.endpoint);
+    if (isFailedScoreRecomputeResult(recomputeResult)) {
+      setScoreRecomputeStatus(
+        recomputeResult.status === "conflict" ? "server-conflict" : "server-error"
+      );
+      setScoreRecomputeReason(recomputeResult.reason);
+      return;
+    }
+
+    const nextContext = recomputeResult.response.active_context;
+    applyServerContext(analysisContextFromActiveModelContext(nextContext, ACTIVE_ANALYSIS_CONTEXT));
+    setServerModelContext(nextContext);
+    setScoreRecomputeJob(recomputeResult.response.job);
+    setScoreRecomputeStatus(recomputeResult.response.job.status);
+    setScoreRecomputeReason(`score_recompute_${recomputeResult.response.job.status}`);
+  }
+
   async function activateModelProfileTransaction(
     targetProfile: ScoringProfileRecord | null,
     reason: string,
@@ -2255,6 +2306,11 @@ export default function Home() {
           data-preview-state={isPreviewActive ? "preview" : "active"}
           data-preview-storage={ANALYSIS_PREVIEW_STORAGE_KEY}
           data-rollback-profile-id={rollbackProfile?.id ?? "none"}
+          data-score-recompute-endpoint={scoreRecomputeEndpoint || "local"}
+          data-score-recompute-job-id={scoreRecomputeJob?.id ?? "none"}
+          data-score-recompute-job-status={scoreRecomputeJob?.status ?? "none"}
+          data-score-recompute-reason={scoreRecomputeReason}
+          data-score-recompute-status={scoreRecomputeStatus}
           data-target-profile-id={candidateProfile?.id ?? "none"}
           data-testid="model-preview-panel"
         >
@@ -2274,6 +2330,10 @@ export default function Home() {
               {modelContextSyncMode} / {serverModelContext?.refresh_generation ?? 0} /{" "}
               {serverModelContext?.client_state ?? "local"} / {modelContextSyncReason}
             </span>
+          </div>
+          <div>
+            <strong>Score recompute</strong>
+            <span data-testid="score-recompute-status">{scoreRecomputeStatus}</span>
           </div>
           <div className="modelPreviewActions">
             <button data-testid="preview-model-edit" onClick={applyPreview} type="button">
@@ -2317,6 +2377,18 @@ export default function Home() {
               type="button"
             >
               Rollback
+            </button>
+            <button
+              data-testid="request-score-recompute"
+              disabled={
+                !serverModelContext ||
+                modelContextStatus === "activating" ||
+                scoreRecomputeStatus === "enqueueing"
+              }
+              onClick={() => void enqueueCurrentScoreRecompute()}
+              type="button"
+            >
+              Recompute scores
             </button>
           </div>
         </section>

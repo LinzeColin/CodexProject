@@ -2554,3 +2554,66 @@ Residual risks:
 - Dedicated score recompute controls remain open.
 - Worker-driven data snapshot refresh and transactional outbox remain open.
 - Online model editing, dedicated score recompute controls and worker-driven data refresh/outbox still keep T1303/A204-A205 open despite this CI-validated rollback endpoint slice.
+
+## 2026-06-20 - T1303/T1304/A204-A206 score recompute enqueue control
+
+### Scope
+
+- Added FastAPI route `POST /v1/scoring/recompute`.
+- Implemented `DomainRepository.enqueue_score_recompute()` as a transaction-scoped active-context guard:
+  - locks `active_analysis_contexts.context_key='global'`;
+  - checks `expected_active_profile_version_id`;
+  - checks `client_refresh_token`;
+  - returns 409 with `score-recompute-conflict-v1` for stale active profile or stale refresh token;
+  - inserts idempotent `background_jobs.job_type='score_recompute'` with active profile, active data snapshot, active scoring run and refresh generation in payload;
+  - writes `operation_logs.action_type='enqueue_score_recompute'` for success and conflict.
+- Added frontend `requestScoreRecompute()` client and a model-center `Recompute scores` control.
+- Exposed recompute status through `data-score-recompute-*` DOM attributes for E2E and future operator checks.
+- Corrected WorkspaceContext model-center server endpoints from the obsolete `/v1/model/active-context` to `/v1/scoring/active-context` and added `/v1/scoring/recompute`.
+- Extended integration and Playwright contracts for activate -> stale refresh -> recompute enqueue -> rollback.
+
+### Files changed
+
+- `apps/api/app/domain.py`
+- `apps/api/app/domain_repository.py`
+- `apps/web/src/app/model-activation-client.ts`
+- `apps/web/src/app/page.tsx`
+- `apps/web/src/app/workspace-context.tsx`
+- `specs/api_contract.yaml`
+- `tests/e2e/home.spec.ts`
+- `tests/e2e/state-contract.spec.ts`
+- `tests/integration/test_database_migrations.py`
+- `artifacts/tests/a204/t1303_transactional_model_activation_contract.json`
+- `artifacts/tests/a205/t1303_atomic_refresh_context_contract.json`
+- `artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json`
+- `DEVELOPMENT_STATUS.md`
+- `README.md`
+- `MODEL_MANAGEMENT.md`
+- `data/development_status_ledger.csv`
+- `data/function_catalog.csv`
+- `data/acceptance_traceability.csv`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `docs/phase/MVP_DEVELOPMENT_RECORD.md`
+
+### Acceptance mapping
+
+- T1303 -> A204, A205.
+- T1304 -> A206.
+- A204/A205/A206 remain `IN_PROGRESS`, not `DONE`, because online model editing, the actual `score_recompute` worker handler, worker-driven data refresh/outbox, deployment wake and soak evidence remain open.
+
+### Validation
+
+- Local `python3 -m py_compile apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- Local `.venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck` with non-sandbox network after sandbox DNS failure: PASS.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g "A204 and A205"` with non-sandbox browser/network: PASS, 1/1.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/home.spec.ts -g "A211 exposes WorkspaceContext"` with non-sandbox browser/network: PASS, 1/1.
+- Local `make verify`: PASS.
+- Local `make verify-g2-db`: BLOCKED before tests because Docker is not installed in this environment; GitHub Actions remains the PostgreSQL/live E2E evidence source for this DB-backed slice.
+
+### Remaining gaps
+
+- `score_recompute` jobs are enqueued but no worker handler executes score recomputation yet.
+- Transactional outbox and worker-driven data snapshot refresh remain open.
+- 4h/24h soak, authn/authz, formal fact publication, multi-object scoring and brand clearance remain v0.1 blockers.

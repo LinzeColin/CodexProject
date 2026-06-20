@@ -9,9 +9,9 @@
     "route, lens, section and planned-disabled navigation control states",
     "persisted query contract for subject, selected node, lens, zoom, asOf and path",
     "URL, sessionStorage and localStorage workspace state keys",
-    "server endpoint mapping for saved views, active model context, exploration and catalogs",
+    "server endpoint mapping for saved views, active model context, score recompute, exploration and catalogs",
     "saved-view API-first adapter with explicit local fallback and server mock E2E coverage",
-    "model-center API-first active-context hydration, transaction activation, stale refresh and rollback controls with server mock and live FastAPI/PostgreSQL E2E coverage",
+    "model-center API-first active-context hydration, transaction activation, stale refresh, rollback and score recompute enqueue controls with server mock and live FastAPI/PostgreSQL E2E coverage",
     "commercial-map /v1/explore API-first hydration with production_context, graph budget, coverage and publication-gate metadata surfaced in the UI",
     "commercial-map server node/edge rendering in the SVG canvas and graph table when /v1/explore returns a usable server graph",
     "production data client and UI panel hydrate /v1/catalogs plus relationship_fact_candidate score explanations from the production API, using /v1/explore sample_candidates to avoid hard-coded live database IDs",
@@ -43,6 +43,7 @@
     "./node_modules/.bin/playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A203 and A211\"",
     "./node_modules/.bin/playwright test --config=../../playwright.config.ts",
     "npx --yes pnpm@11.8.0 --filter @eei/web typecheck",
+    "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A204 and A205\"",
     "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.live.config.ts",
     "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1",
     "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts --workers=1"
@@ -55,5 +56,5 @@
   "remaining_to_close_a211": [
     "broaden live FastAPI/PostgreSQL cross-route proof across the remaining production modules and deployment/auth boundaries"
   ],
-  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter, model-center transaction controls, live model activation/stale-refresh/rollback, commercial-map /v1/explore context hydration, server graph node/edge rendering, catalog inventory hydration, relationship_fact_candidate score explanation hydration and evidence detail/source-snippet hydration. It does not close the remaining full-module live backend, authn/authz or deployment proof."
+  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter, model-center transaction/recompute controls, live model activation/stale-refresh/rollback, commercial-map /v1/explore context hydration, server graph node/edge rendering, catalog inventory hydration, relationship_fact_candidate score explanation hydration and evidence detail/source-snippet hydration. It does not close the remaining full-module live backend, authn/authz, score_recompute worker handler or deployment proof."
 }

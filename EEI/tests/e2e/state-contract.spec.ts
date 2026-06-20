@@ -746,6 +746,7 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
   let currentContext = activeContext;
   let activatePayload: Record<string, unknown> | undefined;
   let rollbackPayload: Record<string, unknown> | undefined;
+  let recomputePayload: Record<string, unknown> | undefined;
 
   await page.route("https://model.eei.test/v1/scoring/active-context**", async (route) => {
     const requestUrl = new URL(route.request().url());
@@ -815,6 +816,39 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
       })
     });
   });
+  await page.route("https://model.eei.test/v1/scoring/recompute", async (route) => {
+    expect(route.request().method()).toBe("POST");
+    recomputePayload = route.request().postDataJSON() as Record<string, unknown>;
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify({
+        schema_version: "score-recompute-request-v1",
+        status: "queued",
+        idempotency_key: "score-recompute:global:profile-supply-v3:fixture-v2:score-live-v2:2",
+        job: {
+          id: "job-score-recompute-1",
+          job_type: "score_recompute",
+          idempotency_key: "score-recompute:global:profile-supply-v3:fixture-v2:score-live-v2:2",
+          status: "queued",
+          payload: {
+            schema_version: "score-recompute-job-v1",
+            active_scoring_profile_version_id: targetProfile.id,
+            refresh_token: "refresh-token-2"
+          },
+          metadata: {
+            acceptance_ids: ["A204", "A205", "A206"]
+          }
+        },
+        active_context: { ...activatedContext, client_state: "current" },
+        cache_policy: {
+          refresh_token: "refresh-token-2",
+          refresh_generation: 2,
+          stale_client_semantics: "clients refetch before recompute"
+        }
+      })
+    });
+  });
   await page.addInitScript(
     ({ storageKey, apiBase }: { storageKey: string; apiBase: string }) =>
       window.localStorage.setItem(storageKey, apiBase),
@@ -870,6 +904,26 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
     "data-model-sync-reason",
     "stale_client_refetched"
   );
+
+  await page.getByTestId("request-score-recompute").click();
+  await expect(page.getByTestId("score-recompute-status")).toHaveText("queued");
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-score-recompute-status",
+    "queued"
+  );
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-score-recompute-job-id",
+    "job-score-recompute-1"
+  );
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-score-recompute-reason",
+    "score_recompute_queued"
+  );
+  expect(recomputePayload).toMatchObject({
+    expected_active_profile_version_id: targetProfile.id,
+    client_refresh_token: "refresh-token-2",
+    scope: "global"
+  });
 
   await page.getByTestId("rollback-model-activation").click();
   await expect(page.getByTestId("model-activation-status")).toHaveText("server-activated");

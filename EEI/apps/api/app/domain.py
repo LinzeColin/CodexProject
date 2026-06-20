@@ -142,6 +142,17 @@ class ScoringRollbackRequest(ScoringActivationRequest):
     )
 
 
+class ScoringRecomputeRequest(BaseModel):
+    expected_active_profile_version_id: UUID | None = None
+    client_refresh_token: str | None = None
+    scope: Literal["global", "active_workspace"] = "global"
+    reason: str = Field(
+        default="Manual score recompute request",
+        min_length=1,
+        max_length=500,
+    )
+
+
 def get_repository() -> DomainRepository:
     settings = get_settings()
     if not settings.database_url:
@@ -539,6 +550,22 @@ def rollback_scoring_profile(
             profile_version_id=profileVersionId,
             expected_active_profile_version_id=payload.expected_active_profile_version_id,
             client_refresh_token=payload.client_refresh_token,
+            reason=payload.reason,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.post("/scoring/recompute")
+def enqueue_score_recompute(
+    payload: ScoringRecomputeRequest,
+    repository: RepositoryDependency,
+) -> dict[str, Any]:
+    try:
+        return repository.enqueue_score_recompute(
+            expected_active_profile_version_id=payload.expected_active_profile_version_id,
+            client_refresh_token=payload.client_refresh_token,
+            scope=payload.scope,
             reason=payload.reason,
         )
     except RepositoryError as exc:

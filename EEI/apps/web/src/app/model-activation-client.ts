@@ -46,6 +46,28 @@ export type ModelActivationServerResponse = {
   };
 };
 
+export type ScoreRecomputeJobRecord = {
+  id: string;
+  job_type: "score_recompute";
+  idempotency_key: string;
+  status: "queued" | "running" | "succeeded" | "dead_letter" | "cancelled";
+  payload?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
+};
+
+export type ScoreRecomputeServerResponse = {
+  schema_version: "score-recompute-request-v1";
+  status: ScoreRecomputeJobRecord["status"];
+  job: ScoreRecomputeJobRecord;
+  idempotency_key: string;
+  active_context: ActiveModelContextRecord;
+  cache_policy: {
+    refresh_token: string;
+    refresh_generation: number;
+    stale_client_semantics?: string;
+  };
+};
+
 export type ModelContextSyncResult =
   | {
       mode: "server";
@@ -104,6 +126,26 @@ export type ModelActivationResult =
       mode: "local_fallback";
       status: "error";
       reason: "api_base_missing" | "target_profile_missing";
+    };
+
+export type ScoreRecomputeResult =
+  | {
+      mode: "server";
+      status: ScoreRecomputeJobRecord["status"];
+      endpoint: string;
+      response: ScoreRecomputeServerResponse;
+    }
+  | {
+      mode: "server";
+      status: "conflict" | "error";
+      endpoint: string;
+      reason: string;
+      detail?: unknown;
+    }
+  | {
+      mode: "local_fallback";
+      status: "error";
+      reason: "api_base_missing";
     };
 
 type ModelProfileTransitionPayload = {
@@ -192,6 +234,58 @@ export async function rollbackModelProfile(
   payload: ModelProfileTransitionPayload
 ): Promise<ModelActivationResult> {
   return postModelProfileTransition(payload, "rollback");
+}
+
+export async function requestScoreRecompute(payload: {
+  expectedActiveProfileVersionId?: string;
+  clientRefreshToken?: string;
+  scope?: "global" | "active_workspace";
+  reason: string;
+}): Promise<ScoreRecomputeResult> {
+  const apiBaseUrl = readModelContextApiBaseUrl();
+  if (!apiBaseUrl) {
+    return { mode: "local_fallback", status: "error", reason: "api_base_missing" };
+  }
+  const endpoint = `${apiBaseUrl}/v1/scoring/recompute`;
+  try {
+    const response = await window.fetch(endpoint, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        expected_active_profile_version_id: payload.expectedActiveProfileVersionId ?? null,
+        client_refresh_token: payload.clientRefreshToken ?? null,
+        scope: payload.scope ?? "global",
+        reason: payload.reason
+      })
+    });
+    const responsePayload = (await response.json().catch(() => null)) as unknown;
+    if (response.status === 409) {
+      return {
+        mode: "server",
+        status: "conflict",
+        endpoint,
+        reason: conflictReason(responsePayload),
+        detail: responsePayload
+      };
+    }
+    if (!response.ok || !isScoreRecomputeServerResponse(responsePayload)) {
+      return {
+        mode: "server",
+        status: "error",
+        endpoint,
+        reason: `http_${response.status}`,
+        detail: responsePayload
+      };
+    }
+    return {
+      mode: "server",
+      status: responsePayload.status,
+      endpoint,
+      response: responsePayload
+    };
+  } catch (error) {
+    return fetchRecomputeErrorResult(endpoint, error);
+  }
 }
 
 async function postModelProfileTransition(
@@ -308,6 +402,40 @@ function isModelActivationServerResponse(value: unknown): value is ModelActivati
   );
 }
 
+function isScoreRecomputeJobRecord(value: unknown): value is ScoreRecomputeJobRecord {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    typeof value.id === "string" &&
+    "job_type" in value &&
+    value.job_type === "score_recompute" &&
+    "idempotency_key" in value &&
+    typeof value.idempotency_key === "string" &&
+    "status" in value &&
+    typeof value.status === "string"
+  );
+}
+
+function isScoreRecomputeServerResponse(
+  value: unknown
+): value is ScoreRecomputeServerResponse {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "schema_version" in value &&
+    value.schema_version === "score-recompute-request-v1" &&
+    "status" in value &&
+    typeof value.status === "string" &&
+    "job" in value &&
+    isScoreRecomputeJobRecord(value.job) &&
+    "idempotency_key" in value &&
+    typeof value.idempotency_key === "string" &&
+    "active_context" in value &&
+    isActiveModelContextRecord(value.active_context)
+  );
+}
+
 function conflictReason(payload: unknown) {
   if (
     typeof payload === "object" &&
@@ -344,6 +472,16 @@ function fetchProfileErrorResult(endpoint: string, error: unknown): ModelProfile
 }
 
 function fetchActivationErrorResult(endpoint: string, error: unknown): ModelActivationResult {
+  return {
+    mode: "server",
+    status: "error",
+    endpoint,
+    reason: error instanceof Error ? error.name : "fetch_failed",
+    detail: error instanceof Error ? error.message : String(error)
+  };
+}
+
+function fetchRecomputeErrorResult(endpoint: string, error: unknown): ScoreRecomputeResult {
   return {
     mode: "server",
     status: "error",

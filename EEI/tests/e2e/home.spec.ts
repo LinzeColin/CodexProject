@@ -78,7 +78,8 @@ test("A211 exposes WorkspaceContext routes controls disabled entries and persist
   );
   const serverEndpoints = await context.getAttribute("data-server-endpoints");
   expect(serverEndpoints).toContain("/v1/saved-views");
-  expect(serverEndpoints).toContain("/v1/model/active-context");
+  expect(serverEndpoints).toContain("/v1/scoring/active-context");
+  expect(serverEndpoints).toContain("/v1/scoring/recompute");
 
   await expect(page.getByTestId("main-nav-business_map")).toHaveAttribute("href", "/");
   await expect(page.getByTestId("main-nav-business_map")).toHaveAttribute(

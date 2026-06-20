@@ -16,7 +16,8 @@
     "background_job_attempts table records each lease attempt, heartbeat, release, failure, expiry and success.",
     "dead_letter_jobs table captures terminal failure payload and final attempt metadata.",
     "scripts/job_scheduler.py supports enqueue, lease, heartbeat, graceful release, retry, expired lease recovery, completion and dead-letter transitions.",
-    "tests/integration/test_database_migrations.py exercises idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue and success completion."
+    "POST /v1/scoring/recompute enqueues score_recompute jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
+    "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion and score_recompute enqueue idempotency."
   ],
   "parameters": {
     "scheduler.lease_ttl_seconds": 900,
@@ -28,9 +29,14 @@
     "infra/db/migrations/0007_scheduler_job_queue/up.sql",
     "infra/db/migrations/0007_scheduler_job_queue/down.sql",
     "specs/domain_schema.sql",
+    "apps/api/app/domain.py",
+    "apps/api/app/domain_repository.py",
+    "apps/web/src/app/model-activation-client.ts",
+    "apps/web/src/app/page.tsx",
     "scripts/job_scheduler.py",
     "scripts/check_database_schema.py",
-    "tests/integration/test_database_migrations.py"
+    "tests/integration/test_database_migrations.py",
+    "tests/e2e/state-contract.spec.ts"
   ],
   "local_validation": [
     "PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check scripts/job_scheduler.py scripts/check_database_schema.py tests/integration/test_database_migrations.py"
@@ -39,7 +45,7 @@
     "GitHub Actions make verify-g2-db must run migrations, schema checks and PostgreSQL integration tests."
   ],
   "remaining_gaps_before_done": [
-    "Register real curated ingestion and calibration handlers on the scheduler instead of only the noop verification handler.",
+    "Register real score_recompute, curated ingestion and calibration handlers on the scheduler instead of only queueing score_recompute and exercising the noop verification handler.",
     "Add deployment-level wake/supervision contract for continuous worker operation.",
     "Run T1307 4h/24h soak tests for timer, retry and recovery stability."
   ],

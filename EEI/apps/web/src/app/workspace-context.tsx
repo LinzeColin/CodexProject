@@ -186,7 +186,11 @@ export const WORKSPACE_MODULES: readonly WorkspaceModuleDefinition[] = [
     controlKind: "section",
     sectionTestId: "model-preview-panel",
     routeState: "partial",
-    apiEndpoints: ["/v1/model/active-context", "/v1/scoring/profiles"],
+    apiEndpoints: [
+      "/v1/scoring/active-context",
+      "/v1/scoring/profiles",
+      "/v1/scoring/recompute"
+    ],
     acceptanceIds: ["A204", "A205", "A211"]
   },
   {
@@ -245,7 +249,8 @@ export function createWorkspaceContextValue(
     serverEndpoints: sortedUnique(
       WORKSPACE_MODULES.flatMap((module) => module.apiEndpoints ?? []).concat([
         "/v1/saved-views",
-        "/v1/model/active-context"
+        "/v1/scoring/active-context",
+        "/v1/scoring/recompute"
       ])
     ),
     implementedRouteIds: WORKSPACE_MODULES.filter((module) => module.controlKind === "route").map(

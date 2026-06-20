@@ -12,11 +12,14 @@
     "Frontend model-center hydration reads /v1/scoring/active-context and maps server profile/data/score context into visible workspace module state.",
     "Frontend stale-client refresh checks refetch /v1/scoring/active-context with the previous refresh token and surface stale_client_refetched semantics.",
     "Frontend rollback now calls POST /v1/scoring/profiles/{profileVersionId}/rollback instead of reusing the activation endpoint.",
+    "Frontend score recompute now calls POST /v1/scoring/recompute with the current active profile and refresh token before enqueueing a background job.",
+    "Score recompute enqueue returns the current active context and rejects stale refresh tokens with a 409 conflict, preserving atomic refresh semantics.",
     "Live Playwright coverage now configures eei.modelApiBaseUrl.v1 and exercises activation, stale refresh and rollback against FastAPI/PostgreSQL."
   ],
   "evidence_files": [
     "config/model_profiles/supply-chain-v3.json",
     "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
+    "infra/db/migrations/0007_scheduler_job_queue/up.sql",
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
     "specs/api_contract.yaml",
@@ -39,7 +42,8 @@
   ],
   "not_closed_scope": [
     "Frontend visible modules now have API-first active-context hydration plus mock and live activation/rollback/stale refresh E2E coverage.",
-    "Worker-driven data snapshot activation and transactional outbox are still covered by T1304 and later refresh slices.",
+    "Score recompute has an API/job enqueue contract and frontend control, but the worker handler and transactional outbox are still open.",
+    "Worker-driven data snapshot activation is still covered by T1304 and later refresh slices.",
     "Scale and soak refresh stability remain T1306-T1307."
   ],
   "latest_ci_result": {
