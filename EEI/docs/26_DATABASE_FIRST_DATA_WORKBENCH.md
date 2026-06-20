@@ -54,7 +54,7 @@
 - `entities` / `entity_aliases` / `entity_identifiers`；
 - `relationships` / `relationship_evidence`；
 - `events` / `event_evidence`；
-- `source_documents` / `source_snapshots`；
+- `source_documents` / `raw_source_snapshots` / `entity_resolution_candidates` / `ingestion_evidence_chain`；
 - `model_versions` / `model_profile_versions` / `parameter_values`；
 - `score_runs` / `score_results` / `score_snapshots`；
 - `data_snapshots` / `active_snapshots`；

@@ -37,6 +37,9 @@ REQUIRED_TABLES = {
     "data_snapshots",
     "fact_versions",
     "fact_version_evidence",
+    "raw_source_snapshots",
+    "entity_resolution_candidates",
+    "ingestion_evidence_chain",
 }
 
 REQUIRED_ENTITY_TYPES = {
@@ -77,6 +80,9 @@ REQUIRED_TEMPORAL_COLUMNS = {
     "ingestion_runs": {"started_at", "finished_at"},
     "data_snapshots": {"as_of", "activated_at", "created_at"},
     "fact_versions": {"valid_from", "valid_to", "observed_at", "created_at"},
+    "raw_source_snapshots": {"source_date", "retrieved_at", "created_at"},
+    "entity_resolution_candidates": {"created_at"},
+    "ingestion_evidence_chain": {"created_at"},
 }
 
 REQUIRED_PRODUCTION_VERSION_COLUMNS = {
@@ -112,6 +118,64 @@ REQUIRED_PRODUCTION_VERSION_COLUMNS = {
         "structured_fact",
     },
 }
+
+REQUIRED_CURATED_INGESTION_COLUMNS = {
+    "raw_source_snapshots": {
+        "ingestion_run_id",
+        "source_document_id",
+        "anchor_id",
+        "source_url",
+        "publisher",
+        "title",
+        "evidence_scope",
+        "record_mode",
+        "validation_status",
+        "parser_version",
+        "content_hash",
+        "raw_payload",
+        "review_status",
+    },
+    "entity_resolution_candidates": {
+        "raw_snapshot_id",
+        "candidate_name",
+        "normalized_name",
+        "matched_entity_id",
+        "matched_research_id",
+        "match_method",
+        "confidence",
+        "decision_reason",
+        "review_status",
+        "parser_version",
+    },
+    "ingestion_evidence_chain": {
+        "raw_snapshot_id",
+        "source_document_id",
+        "subject_resolution_id",
+        "object_resolution_id",
+        "relationship_type",
+        "relationship_family",
+        "evidence_role",
+        "locator",
+        "support_excerpt",
+        "structured_fact",
+        "counter_evidence",
+        "parser_version",
+        "confidence",
+        "review_status",
+    },
+}
+
+REQUIRED_CURATED_INGESTION_INDEXES = {
+    "raw_source_snapshots_mode_time_idx",
+    "raw_source_snapshots_document_idx",
+    "entity_resolution_candidates_snapshot_idx",
+    "entity_resolution_candidates_entity_idx",
+    "entity_resolution_candidates_research_idx",
+    "ingestion_evidence_chain_snapshot_idx",
+    "ingestion_evidence_chain_source_document_idx",
+}
+
+CURATED_ANCHOR_PARSER_VERSION = "nvidia-public-anchor-v1"
 
 SEED_EXPECTATIONS = {
     "relationship_families": 10,
@@ -177,6 +241,11 @@ def parse_args() -> argparse.Namespace:
         "--expect-fixtures",
         action="store_true",
         help="Check synthetic fixture invariants.",
+    )
+    parser.add_argument(
+        "--expect-curated-ingestion",
+        action="store_true",
+        help="Check curated official ingestion anchor invariants.",
     )
     return parser.parse_args()
 
@@ -273,6 +342,15 @@ def main() -> int:
                     f"{table_name} missing production version columns: {missing_version_columns}"
                 )
 
+        for table_name, required_columns in REQUIRED_CURATED_INGESTION_COLUMNS.items():
+            missing_curated_columns = sorted(
+                required_columns - columns_by_table.get(table_name, set())
+            )
+            if missing_curated_columns:
+                raise RuntimeError(
+                    f"{table_name} missing curated ingestion columns: {missing_curated_columns}"
+                )
+
         production_index_rows = rows(
             connection,
             """
@@ -302,6 +380,21 @@ def main() -> int:
                 f"Missing production version indexes: {missing_production_indexes}"
             )
 
+        curated_index_rows = rows(
+            connection,
+            """
+            SELECT indexname
+            FROM pg_indexes
+            WHERE schemaname = 'public'
+              AND indexname = ANY(%s)
+            """,
+            (list(REQUIRED_CURATED_INGESTION_INDEXES),),
+        )
+        curated_indexes = {str(row[0]) for row in curated_index_rows}
+        missing_curated_indexes = sorted(REQUIRED_CURATED_INGESTION_INDEXES - curated_indexes)
+        if missing_curated_indexes:
+            raise RuntimeError(f"Missing curated ingestion indexes: {missing_curated_indexes}")
+
         payload: dict[str, object] = {
             "required_tables": len(REQUIRED_TABLES),
             "missing_tables": missing,
@@ -312,6 +405,8 @@ def main() -> int:
             "temporal_tables_checked": sorted(REQUIRED_TEMPORAL_COLUMNS),
             "production_version_tables_checked": sorted(REQUIRED_PRODUCTION_VERSION_COLUMNS),
             "production_version_indexes": sorted(production_indexes),
+            "curated_ingestion_tables_checked": sorted(REQUIRED_CURATED_INGESTION_COLUMNS),
+            "curated_ingestion_indexes": sorted(curated_indexes),
             "seed_counts": {},
         }
 
@@ -559,6 +654,159 @@ def main() -> int:
                     {"amount_kind": row[0], "currency": row[1], "row_count": int(row[2])}
                     for row in amount_buckets
                 ],
+            }
+
+        if args.expect_curated_ingestion:
+            parser_version = CURATED_ANCHOR_PARSER_VERSION
+            raw_snapshot_count = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM raw_source_snapshots
+                    WHERE parser_version = %s
+                      AND record_mode = 'curated_official_fixture'
+                    """,
+                    (parser_version,),
+                )
+            )
+            raw_snapshot_field_violations = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM raw_source_snapshots
+                    WHERE parser_version = %s
+                      AND (
+                        anchor_id = ''
+                        OR source_url = ''
+                        OR content_hash = ''
+                        OR jsonb_typeof(raw_payload) <> 'object'
+                        OR review_status NOT IN (
+                          'unreviewed','machine_verified','human_verified','disputed'
+                        )
+                      )
+                    """,
+                    (parser_version,),
+                )
+            )
+            source_document_count = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(DISTINCT sd.id)
+                    FROM raw_source_snapshots rss
+                    JOIN source_documents sd ON sd.id = rss.source_document_id
+                    WHERE rss.parser_version = %s
+                      AND sd.parser_version = %s
+                      AND sd.raw_storage_uri LIKE 'data/nvidia_public_source_anchors.csv#%%'
+                    """,
+                    (parser_version, parser_version),
+                )
+            )
+            candidate_row = rows(
+                connection,
+                """
+                SELECT
+                  count(*) AS total,
+                  count(*) FILTER (WHERE confidence >= 0.72) AS above_min_confidence,
+                  count(*) FILTER (WHERE review_status = 'machine_verified') AS verified,
+                  count(*) FILTER (WHERE matched_research_id IS NOT NULL) AS matched_research
+                FROM entity_resolution_candidates
+                WHERE parser_version = %s
+                """,
+                (parser_version,),
+            )[0]
+            evidence_row = rows(
+                connection,
+                """
+                SELECT
+                  count(*) AS total,
+                  count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array') AS counters,
+                  count(*) FILTER (WHERE review_status = 'machine_verified') AS verified,
+                  count(*) FILTER (WHERE relationship_type IS NOT NULL) AS published_edges
+                FROM ingestion_evidence_chain
+                WHERE parser_version = %s
+                """,
+                (parser_version,),
+            )[0]
+            nvidia_subject_count = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM entity_resolution_candidates
+                    WHERE parser_version = %s
+                      AND candidate_name = 'NVIDIA Corporation'
+                      AND matched_research_id = 'P0-006'
+                      AND match_method = 'anchor_subject'
+                    """,
+                    (parser_version,),
+                )
+            )
+            tsmc_candidate_count = int(
+                scalar(
+                    connection,
+                    """
+                    SELECT count(*)
+                    FROM entity_resolution_candidates
+                    WHERE parser_version = %s
+                      AND candidate_name = 'TSMC'
+                      AND matched_research_id = 'X-001'
+                      AND confidence >= 0.72
+                    """,
+                    (parser_version,),
+                )
+            )
+            if raw_snapshot_count != 4:
+                raise RuntimeError(
+                    f"Expected 4 NVIDIA curated official raw snapshots, found {raw_snapshot_count}"
+                )
+            if raw_snapshot_field_violations:
+                raise RuntimeError(
+                    "Curated raw snapshots must preserve hash, payload and review state"
+                )
+            if source_document_count != 4:
+                raise RuntimeError(
+                    "Curated source documents must preserve parser version and raw storage URI"
+                )
+            if int(candidate_row[0]) < 40:
+                raise RuntimeError("Curated ingestion must create entity/stage candidates")
+            if int(candidate_row[1]) < 10:
+                raise RuntimeError("Curated entity resolution must record confidence values")
+            if int(candidate_row[2]) < 4:
+                raise RuntimeError("Curated entity resolution must record review status")
+            if int(candidate_row[3]) < 6:
+                raise RuntimeError("Curated entity resolution must map known catalog entities")
+            if int(evidence_row[0]) != 4:
+                raise RuntimeError(
+                    "Curated ingestion evidence chain must include one row per anchor"
+                )
+            if int(evidence_row[1]) != int(evidence_row[0]):
+                raise RuntimeError("Curated evidence chain counter_evidence must be an array")
+            if int(evidence_row[2]) != int(evidence_row[0]):
+                raise RuntimeError("Curated evidence chain must preserve review status")
+            if int(evidence_row[3]) != 0:
+                raise RuntimeError("Curated discovery anchors must not publish relationship edges")
+            if nvidia_subject_count != 4:
+                raise RuntimeError("Every curated anchor must resolve the NVIDIA subject")
+            if tsmc_candidate_count < 2:
+                raise RuntimeError("Golden Vertical TSMC candidate resolution is missing")
+            payload["curated_ingestion_counts"] = {
+                "parser_version": parser_version,
+                "raw_source_snapshots": raw_snapshot_count,
+                "raw_snapshot_field_violations": raw_snapshot_field_violations,
+                "source_documents": source_document_count,
+                "entity_resolution_candidates": int(candidate_row[0]),
+                "entity_candidates_above_min_confidence": int(candidate_row[1]),
+                "entity_candidates_machine_verified": int(candidate_row[2]),
+                "entity_candidates_matched_research": int(candidate_row[3]),
+                "ingestion_evidence_chain": int(evidence_row[0]),
+                "counter_evidence_arrays": int(evidence_row[1]),
+                "evidence_chain_machine_verified": int(evidence_row[2]),
+                "published_relationship_edges": int(evidence_row[3]),
+                "nvidia_subject_candidates": nvidia_subject_count,
+                "tsmc_candidates": tsmc_candidate_count,
             }
 
     print(json.dumps(payload, indent=2))

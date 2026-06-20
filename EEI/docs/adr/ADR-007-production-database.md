@@ -9,7 +9,7 @@ PostgreSQL 16 is the MVP production system of record. Domain tables, source/evid
 
 ## Acceptance IDs
 
-A005, A011, A012, A013, A014, A015, A016, A017, A018, A019, A020, A021, A022, A023, A024, A025, A026, A027, A028, A169, A170, A201
+A005, A011, A012, A013, A014, A015, A016, A017, A018, A019, A020, A021, A022, A023, A024, A025, A026, A027, A028, A169, A170, A201, A202
 
 ## Consequences
 
@@ -20,3 +20,9 @@ The T1300 production migration adds `data_snapshots`, `fact_versions`, and
 source evidence, time-validity windows, record mode, parser version, and
 snapshot activation state so a failed publication can roll back without
 mutating the previous active snapshot.
+
+The T1301 in-progress migration adds `raw_source_snapshots`,
+`entity_resolution_candidates`, and `ingestion_evidence_chain`. These tables
+preserve curated official source anchors, parser version, review status,
+entity-resolution confidence, evidence chain and counter-evidence before any
+relationship/event fact is published.

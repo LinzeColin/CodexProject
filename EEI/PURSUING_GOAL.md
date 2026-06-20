@@ -45,6 +45,11 @@ Closed in this pursuing-goal run:
 
 - T1300/A201 PostgreSQL production database migration, reversible rollback path, and separate fact/evidence/time/version layers.
 
+In progress in this pursuing-goal run:
+
+- T1301/A202 curated official NVIDIA source-anchor ingestion now has PostgreSQL audit tables, a deterministic loader, raw snapshot preservation, entity-resolution candidates, parser version, review status, evidence chain and counter-evidence contract.
+- A202 is not closed yet: live/full-text official connector, reviewed NVIDIA -> TSMC -> ASML relationship facts, independent source cross-check and review workflow remain required.
+
 ## Golden Vertical
 
 Frozen Golden Vertical:

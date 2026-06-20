@@ -33,6 +33,7 @@ FIXTURE_MATERIALS_ID = "00000000-0000-4000-8000-000000000023"
 FIXTURE_DATACENTER_ID = "00000000-0000-4000-8000-000000000024"
 COREWEAVE_NVIDIA_RELATIONSHIP_ID = "10000000-0000-4000-8000-000000000012"
 SUPERSESSION_RELATIONSHIP_ID = "20000000-0000-4000-8000-000000000001"
+CURATED_ANCHOR_PARSER_VERSION = "nvidia-public-anchor-v1"
 DOSSIER_HUMAN_SUMMARY_KEYS = {
     "headline",
     "business",
@@ -97,10 +98,142 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     run_script("scripts/load_synthetic_fixtures.py")
     run_script("scripts/load_synthetic_fixtures.py")
     run_script("scripts/check_database_schema.py", "--expect-seeds", "--expect-fixtures")
+    run_script("scripts/load_curated_ingestion_anchors.py")
+    run_script("scripts/load_curated_ingestion_anchors.py")
+    run_script(
+        "scripts/check_database_schema.py",
+        "--expect-seeds",
+        "--expect-fixtures",
+        "--expect-curated-ingestion",
+    )
+    exercise_curated_official_ingestion_contracts()
     exercise_production_fact_version_contracts()
     exercise_domain_api_and_repository_contracts()
     run_script("scripts/migrate.py", "downgrade", "--all")
     run_script("scripts/migrate.py", "status", "--json")
+
+
+def exercise_curated_official_ingestion_contracts() -> None:
+    with connect_database() as connection:
+        parser_version = CURATED_ANCHOR_PARSER_VERSION
+        raw_row = connection.execute(
+            """
+            SELECT count(*),
+                   count(*) FILTER (WHERE record_mode = 'curated_official_fixture'),
+                   count(*) FILTER (WHERE review_status = 'machine_verified'),
+                   count(DISTINCT source_document_id)
+            FROM raw_source_snapshots
+            WHERE parser_version = %s
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert raw_row == (4, 4, 4, 4)
+
+        latest_run = connection.execute(
+            """
+            SELECT status, counts->>'anchors', counts->>'entity_resolution_candidates'
+            FROM ingestion_runs
+            WHERE connector_version = %s AND mode = 'curated_official_fixture'
+            ORDER BY started_at DESC
+            LIMIT 1
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert latest_run[0] == "succeeded"
+        assert latest_run[1] == "4"
+        assert int(latest_run[2]) >= 40
+
+        source_documents = connection.execute(
+            """
+            SELECT count(*)
+            FROM source_documents sd
+            JOIN raw_source_snapshots rss ON rss.source_document_id = sd.id
+            WHERE rss.parser_version = %s
+              AND sd.parser_version = %s
+              AND sd.raw_storage_uri LIKE 'data/nvidia_public_source_anchors.csv#%%'
+              AND sd.content_hash = rss.content_hash
+            """,
+            (parser_version, parser_version),
+        ).fetchone()[0]
+        assert source_documents == 4
+
+        candidate_row = connection.execute(
+            """
+            SELECT count(*),
+                   count(*) FILTER (WHERE confidence >= 0.72),
+                   count(*) FILTER (WHERE matched_research_id IS NOT NULL),
+                   count(*) FILTER (WHERE review_status = 'unreviewed')
+            FROM entity_resolution_candidates
+            WHERE parser_version = %s
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert candidate_row[0] >= 40
+        assert candidate_row[1] >= 10
+        assert candidate_row[2] >= 6
+        assert candidate_row[3] >= 1
+
+        nvidia_subjects = connection.execute(
+            """
+            SELECT count(*)
+            FROM entity_resolution_candidates
+            WHERE parser_version = %s
+              AND candidate_name = 'NVIDIA Corporation'
+              AND matched_research_id = 'P0-006'
+              AND matched_entity_id = %s
+              AND match_method = 'anchor_subject'
+            """,
+            (parser_version, NVIDIA_ID),
+        ).fetchone()[0]
+        assert nvidia_subjects == 4
+
+        tsmc_candidates = connection.execute(
+            """
+            SELECT count(*), min(confidence)
+            FROM entity_resolution_candidates
+            WHERE parser_version = %s
+              AND candidate_name = 'TSMC'
+              AND matched_research_id = 'X-001'
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert tsmc_candidates[0] >= 2
+        assert float(tsmc_candidates[1]) >= 0.72
+
+        evidence_row = connection.execute(
+            """
+            SELECT count(*),
+                   count(*) FILTER (WHERE evidence_role = 'context'),
+                   count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array'),
+                   count(*) FILTER (WHERE review_status = 'machine_verified'),
+                   count(*) FILTER (WHERE relationship_type IS NOT NULL)
+            FROM ingestion_evidence_chain
+            WHERE parser_version = %s
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert evidence_row == (4, 4, 4, 4, 0)
+
+        evidence_sample = connection.execute(
+            """
+            SELECT structured_fact->>'edge_publication',
+                   structured_fact->>'record_mode',
+                   counter_evidence,
+                   support_excerpt
+            FROM ingestion_evidence_chain
+            WHERE parser_version = %s
+            ORDER BY locator
+            LIMIT 1
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert evidence_sample[0] == "candidate_context_only_not_published_relationship"
+        assert evidence_sample[1] == "curated_official_fixture"
+        assert evidence_sample[2] == []
+        assert evidence_sample[3]
+
+        relationship_count = connection.execute("SELECT count(*) FROM relationships").fetchone()[0]
+        assert relationship_count == 26
 
 
 def exercise_production_fact_version_contracts() -> None:
