@@ -19,6 +19,11 @@ except ModuleNotFoundError:  # pragma: no cover - used when imported as scripts.
     from scripts.db_tools import database_url
 
 try:
+    from load_curated_ingestion_anchors import load_anchors
+except ModuleNotFoundError:  # pragma: no cover - used when imported as scripts.job_scheduler
+    from scripts.load_curated_ingestion_anchors import load_anchors
+
+try:
     from apps.api.app.scoring import candidate_score_metrics
 except ModuleNotFoundError:  # pragma: no cover - used when imported from packaged contexts.
     from ..apps.api.app.scoring import candidate_score_metrics
@@ -836,6 +841,78 @@ def log_data_snapshot_refresh_operation(
     )
 
 
+def log_curated_ingestion_refresh_operation(
+    connection: psycopg.Connection,
+    *,
+    object_id: UUID | str | None,
+    old_value: dict[str, Any] | None,
+    new_value: dict[str, Any] | None,
+    diff: dict[str, Any],
+    reason: str,
+    result_status: str,
+    error: str | None = None,
+) -> None:
+    connection.execute(
+        """
+        INSERT INTO operation_logs(
+          actor, action_type, object_type, object_id, old_value, new_value, diff,
+          reason, result_status, error
+        )
+        VALUES (
+          'system', 'execute_curated_ingestion_refresh', 'ingestion_run', %s,
+          %s, %s, %s, %s, %s, %s
+        )
+        """,
+        (
+            object_id,
+            Jsonb(jsonable(old_value or {})),
+            Jsonb(jsonable(new_value or {})),
+            Jsonb(jsonable(diff)),
+            reason,
+            result_status,
+            error,
+        ),
+    )
+
+
+def log_calibration_run_operation(
+    connection: psycopg.Connection,
+    *,
+    object_id: UUID | str | None,
+    old_value: dict[str, Any] | None,
+    new_value: dict[str, Any] | None,
+    diff: dict[str, Any],
+    reason: str,
+    model_version: str | None,
+    profile_version: str | None,
+    result_status: str,
+    error: str | None = None,
+) -> None:
+    connection.execute(
+        """
+        INSERT INTO operation_logs(
+          actor, action_type, object_type, object_id, old_value, new_value, diff,
+          reason, model_version, profile_version, result_status, error
+        )
+        VALUES (
+          'system', 'execute_calibration_run', 'calibration_run', %s,
+          %s, %s, %s, %s, %s, %s, %s, %s
+        )
+        """,
+        (
+            object_id,
+            Jsonb(jsonable(old_value or {})),
+            Jsonb(jsonable(new_value or {})),
+            Jsonb(jsonable(diff)),
+            reason,
+            model_version,
+            profile_version,
+            result_status,
+            error,
+        ),
+    )
+
+
 def current_data_snapshot_source_stats(connection: psycopg.Connection) -> dict[str, Any]:
     row = connection.execute(
         """
@@ -906,6 +983,323 @@ def data_snapshot_source_hash(
         separators=(",", ":"),
     )
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def handle_curated_ingestion_refresh_job(job: dict[str, Any]) -> dict[str, Any]:
+    payload = job.get("payload") or {}
+    if payload.get("schema_version") != "curated-ingestion-refresh-job-v1":
+        raise SchedulerError(
+            "curated_ingestion_refresh payload schema_version must be "
+            "curated-ingestion-refresh-job-v1"
+        )
+    record_mode = str(payload.get("record_mode") or "curated_official_fixture")
+    if record_mode != "curated_official_fixture":
+        raise SchedulerError("curated_ingestion_refresh only supports curated_official_fixture")
+    reason = str(payload.get("reason") or "curated official ingestion refresh worker execution")
+    counts = load_anchors()
+    with connect_job_database() as connection:
+        source_stats = current_data_snapshot_source_stats(connection)
+        latest_ingestion_run_id = source_stats.get("latest_ingestion_run_id")
+        result = {
+            "handler": "curated_ingestion_refresh",
+            "handler_contract": "curated-ingestion-refresh-worker-v1",
+            "status": "completed",
+            "job_id": job["id"],
+            "record_mode": record_mode,
+            "counts": counts,
+            "source_stats": source_stats,
+            "latest_ingestion_run_id": latest_ingestion_run_id,
+            "fixture_policy": "curated_official_fixture is not live/full-text ingestion",
+            "acceptance_ids": ["A202", "A206"],
+        }
+        outbox_event = write_outbox_event(
+            connection,
+            event_type="data.ingestion.completed",
+            aggregate_type="ingestion_run",
+            aggregate_id=latest_ingestion_run_id,
+            idempotency_key=f"curated-ingestion-completed:{job['id']}",
+            payload={
+                "schema_version": "data-ingestion-event-v1",
+                "job_id": job["id"],
+                "record_mode": record_mode,
+                "counts": counts,
+                "source_stats": source_stats,
+                "latest_ingestion_run_id": latest_ingestion_run_id,
+                "fixture_policy": "curated_official_fixture is not live/full-text ingestion",
+            },
+            metadata={
+                "task_ids": ["T1301", "T1304"],
+                "acceptance_ids": ["A202", "A206"],
+                "contract": "transactional-outbox-event-v1",
+            },
+        )
+        result["outbox_event"] = outbox_event
+        log_curated_ingestion_refresh_operation(
+            connection,
+            object_id=latest_ingestion_run_id,
+            old_value=payload,
+            new_value=result,
+            diff={
+                "record_mode": record_mode,
+                "source_hash": counts.get("source_hash"),
+                "relationship_fact_candidates": counts.get("relationship_fact_candidates"),
+                "raw_snapshot_count": source_stats.get("raw_snapshot_count"),
+            },
+            reason=reason,
+            result_status="success",
+        )
+        return jsonable(result)
+
+
+def calibration_metrics(
+    connection: psycopg.Connection,
+    active_scoring_run_id: UUID | None,
+) -> dict[str, Any]:
+    fact_counts = connection.execute(
+        """
+        SELECT
+          count(*)::int AS total,
+          count(*) FILTER (WHERE source_threshold_met)::int AS source_threshold_met,
+          count(*) FILTER (WHERE NOT source_threshold_met)::int AS source_threshold_open,
+          count(*) FILTER (WHERE review_status = 'human_verified')::int AS human_verified,
+          count(*) FILTER (WHERE publication_status = 'published')::int AS published
+        FROM relationship_fact_candidates
+        """
+    ).fetchone()
+    score_counts = connection.execute(
+        """
+        SELECT
+          count(*)::int AS scored_objects,
+          COALESCE(avg(coverage), 0)::float AS average_coverage,
+          COALESCE(min(coverage), 0)::float AS minimum_coverage,
+          COALESCE(avg(adjusted_score), 0)::float AS average_adjusted_score,
+          count(*) FILTER (
+            WHERE jsonb_array_length(
+              CASE
+                WHEN jsonb_typeof(missing_inputs) = 'array' THEN missing_inputs
+                ELSE '[]'::jsonb
+              END
+            ) > 0
+          )::int AS objects_with_missing_inputs
+        FROM score_results
+        WHERE (%s::uuid IS NULL OR scoring_run_id = %s)
+        """,
+        (active_scoring_run_id, active_scoring_run_id),
+    ).fetchone()
+    data_stats = current_data_snapshot_source_stats(connection)
+    total = int(fact_counts["total"] or 0)
+    return jsonable(
+        {
+            "relationship_fact_candidates": {
+                "total": total,
+                "source_threshold_met": int(fact_counts["source_threshold_met"] or 0),
+                "source_threshold_open": int(fact_counts["source_threshold_open"] or 0),
+                "human_verified": int(fact_counts["human_verified"] or 0),
+                "published": int(fact_counts["published"] or 0),
+            },
+            "score_results": {
+                "active_scoring_run_id": active_scoring_run_id,
+                "scored_objects": int(score_counts["scored_objects"] or 0),
+                "average_coverage": float(score_counts["average_coverage"] or 0),
+                "minimum_coverage": float(score_counts["minimum_coverage"] or 0),
+                "average_adjusted_score": float(score_counts["average_adjusted_score"] or 0),
+                "objects_with_missing_inputs": int(
+                    score_counts["objects_with_missing_inputs"] or 0
+                ),
+            },
+            "data_coverage": {
+                "source_document_count": data_stats.get("source_document_count", 0),
+                "raw_snapshot_count": data_stats.get("raw_snapshot_count", 0),
+                "evidence_chain_count": data_stats.get("evidence_chain_count", 0),
+                "latest_ingestion_run_id": data_stats.get("latest_ingestion_run_id"),
+            },
+            "calibration_policy": {
+                "cadence_days": 14,
+                "coverage_warning_threshold": 80.0,
+                "auto_activation_enabled": False,
+            },
+        }
+    )
+
+
+def handle_calibration_run_job(job: dict[str, Any]) -> dict[str, Any]:
+    payload = job.get("payload") or {}
+    if payload.get("schema_version") != "calibration-run-job-v1":
+        raise SchedulerError(
+            "calibration_run payload schema_version must be calibration-run-job-v1"
+        )
+    calibration_run_id = UUID(str(payload["calibration_run_id"]))
+    expected_profile_id = UUID(str(payload["active_scoring_profile_version_id"]))
+    reason = str(payload.get("reason") or "calibration run worker execution")
+    with connect_job_database() as connection:
+        calibration_run = connection.execute(
+            """
+            SELECT *
+            FROM calibration_runs
+            WHERE id = %s
+            FOR UPDATE
+            """,
+            (calibration_run_id,),
+        ).fetchone()
+        if calibration_run is None:
+            raise SchedulerError(f"Calibration run not found: {calibration_run_id}")
+        if calibration_run["status"] in {"passed", "warning", "failed", "cancelled"}:
+            return jsonable(
+                {
+                    "handler": "calibration_run",
+                    "handler_contract": "calibration-run-worker-v1",
+                    "status": "already_finished",
+                    "calibration_run_id": calibration_run_id,
+                    "calibration_status": calibration_run["status"],
+                    "acceptance_ids": ["A206"],
+                }
+            )
+        context = connection.execute(
+            """
+            SELECT
+              aac.active_scoring_profile_version_id,
+              aac.active_data_snapshot_id,
+              aac.active_scoring_run_id,
+              aac.refresh_generation,
+              sp.profile_key,
+              spv.version AS profile_version_number,
+              sm.model_key,
+              sm.version AS model_version_number
+            FROM active_analysis_contexts aac
+            JOIN scoring_profile_versions spv
+              ON spv.id = aac.active_scoring_profile_version_id
+            JOIN scoring_profiles sp ON sp.id = spv.profile_id
+            JOIN scoring_models sm ON sm.id = spv.model_id
+            WHERE aac.context_key = 'global'
+            """
+        ).fetchone()
+        if context is None:
+            raise SchedulerError("No active analysis context is available")
+        if calibration_run["status"] == "scheduled":
+            connection.execute(
+                """
+                UPDATE calibration_runs
+                SET status = 'running', started_at = COALESCE(started_at, now())
+                WHERE id = %s
+                """,
+                (calibration_run_id,),
+            )
+        active_scoring_run_id = context["active_scoring_run_id"]
+        metrics = calibration_metrics(connection, active_scoring_run_id)
+        profile_changed = context["active_scoring_profile_version_id"] != expected_profile_id
+        scored_objects = int(metrics["score_results"]["scored_objects"])
+        average_coverage = float(metrics["score_results"]["average_coverage"])
+        source_threshold_open = int(
+            metrics["relationship_fact_candidates"]["source_threshold_open"]
+        )
+        warnings = []
+        if profile_changed:
+            warnings.append("active_profile_changed_since_queue")
+        if scored_objects == 0:
+            warnings.append("no_active_score_results")
+        if average_coverage < 80.0:
+            warnings.append("average_coverage_below_threshold")
+        if source_threshold_open > 0:
+            warnings.append("source_threshold_open")
+        calibration_status = "warning" if warnings else "passed"
+        model_version = f"{context['model_key']}@{context['model_version_number']}"
+        profile_version = f"{context['profile_key']}@{context['profile_version_number']}"
+        drift_report = {
+            "schema_version": "calibration-drift-report-v1",
+            "warnings": warnings,
+            "active_profile_changed_since_queue": profile_changed,
+            "queued_active_scoring_profile_version_id": expected_profile_id,
+            "current_active_scoring_profile_version_id": context[
+                "active_scoring_profile_version_id"
+            ],
+            "active_data_snapshot_id": context["active_data_snapshot_id"],
+            "active_scoring_run_id": active_scoring_run_id,
+            "refresh_generation": context["refresh_generation"],
+            "auto_activation_enabled": False,
+        }
+        proposal = {
+            "schema_version": "calibration-proposal-v1",
+            "proposal_status": "none",
+            "proposed_changes": [],
+            "reason": "MVP calibration reports drift only; parameter activation remains manual.",
+        }
+        updated_run = connection.execute(
+            """
+            UPDATE calibration_runs
+            SET status = %s,
+                metrics = %s,
+                drift_report = %s,
+                proposal = %s,
+                proposal_status = 'none',
+                started_at = COALESCE(started_at, now()),
+                finished_at = now(),
+                error = NULL
+            WHERE id = %s
+            RETURNING id, scheduled_for, cadence_days, data_snapshot_at,
+                      profile_version_id, status, metrics, drift_report,
+                      proposal, proposal_status, started_at, finished_at, error
+            """,
+            (
+                calibration_status,
+                Jsonb(jsonable(metrics)),
+                Jsonb(jsonable(drift_report)),
+                Jsonb(jsonable(proposal)),
+                calibration_run_id,
+            ),
+        ).fetchone()
+        result = {
+            "handler": "calibration_run",
+            "handler_contract": "calibration-run-worker-v1",
+            "status": "completed",
+            "job_id": job["id"],
+            "calibration_run_id": calibration_run_id,
+            "calibration_status": calibration_status,
+            "metrics": metrics,
+            "drift_report": drift_report,
+            "proposal_status": "none",
+            "model_version": model_version,
+            "profile_version": profile_version,
+            "acceptance_ids": ["A206"],
+        }
+        outbox_event = write_outbox_event(
+            connection,
+            event_type="calibration.run.completed",
+            aggregate_type="calibration_run",
+            aggregate_id=calibration_run_id,
+            idempotency_key=f"calibration-run-completed:{calibration_run_id}",
+            payload={
+                "schema_version": "calibration-event-v1",
+                "job_id": job["id"],
+                "calibration_run_id": calibration_run_id,
+                "calibration_status": calibration_status,
+                "warnings": warnings,
+                "proposal_status": "none",
+                "auto_activation_enabled": False,
+            },
+            metadata={
+                "task_ids": ["T1304", "T605", "T606"],
+                "acceptance_ids": ["A090", "A091", "A092", "A206"],
+                "contract": "transactional-outbox-event-v1",
+            },
+        )
+        result["outbox_event"] = outbox_event
+        log_calibration_run_operation(
+            connection,
+            object_id=calibration_run_id,
+            old_value=dict(calibration_run),
+            new_value=dict(updated_run),
+            diff={
+                "calibration_status": calibration_status,
+                "warnings": warnings,
+                "proposal_status": "none",
+                "auto_activation_enabled": False,
+            },
+            reason=reason,
+            model_version=model_version,
+            profile_version=profile_version,
+            result_status="success",
+        )
+        return jsonable(result)
 
 
 def handle_data_snapshot_refresh_job(job: dict[str, Any]) -> dict[str, Any]:
@@ -1456,6 +1850,36 @@ def run_once(*, worker_id: str, job_type: str | None = None) -> dict[str, Any] |
     if job["job_type"] == "data_snapshot_refresh":
         try:
             result = handle_data_snapshot_refresh_job(job)
+        except Exception as exc:
+            return fail_job(
+                job_id=job["id"],
+                lease_token=job["lease_token"],
+                error_class=exc.__class__.__name__,
+                error_message=str(exc),
+            )
+        return complete_job(
+            job_id=job["id"],
+            lease_token=job["lease_token"],
+            result=result,
+        )
+    if job["job_type"] == "curated_ingestion_refresh":
+        try:
+            result = handle_curated_ingestion_refresh_job(job)
+        except Exception as exc:
+            return fail_job(
+                job_id=job["id"],
+                lease_token=job["lease_token"],
+                error_class=exc.__class__.__name__,
+                error_message=str(exc),
+            )
+        return complete_job(
+            job_id=job["id"],
+            lease_token=job["lease_token"],
+            result=result,
+        )
+    if job["job_type"] == "calibration_run":
+        try:
+            result = handle_calibration_run_job(job)
         except Exception as exc:
             return fail_job(
                 job_id=job["id"],

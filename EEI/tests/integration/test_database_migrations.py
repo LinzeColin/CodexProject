@@ -1153,14 +1153,39 @@ def exercise_domain_api_and_repository_contracts() -> None:
 
     calibration_response = client.post("/v1/calibrations/run")
     assert calibration_response.status_code == 202
-    assert calibration_response.json()["cadence_days"] == 14
+    calibration_payload = calibration_response.json()
+    assert calibration_payload["cadence_days"] == 14
+    assert calibration_payload["schema_version"] == "calibration-run-request-v1"
+    assert calibration_payload["job"]["job_type"] == "calibration_run"
+    assert calibration_payload["job"]["payload"]["schema_version"] == "calibration-run-job-v1"
+    assert calibration_payload["job"]["payload"]["calibration_run_id"] == calibration_payload["id"]
+    assert calibration_payload["outbox_event"]["event_type"] == "calibration.run.requested"
+    assert calibration_payload["activation_policy"]["auto_activation_enabled"] is False
     home_after_calibration = client.get("/v1/home").json()
     calibration_status = home_after_calibration["model_status"]["calibration"]
     assert calibration_status["latest_status"] == "scheduled"
     assert calibration_status["next_scheduled_for"]
+
+    executed_calibration = run_once(
+        worker_id="a206-calibration-worker",
+        job_type="calibration_run",
+    )
+    assert executed_calibration is not None
+    assert executed_calibration["id"] == calibration_payload["job"]["id"]
+    assert executed_calibration["status"] == "succeeded"
+    calibration_result = executed_calibration["metadata"]["result"]
+    assert calibration_result["handler"] == "calibration_run"
+    assert calibration_result["handler_contract"] == "calibration-run-worker-v1"
+    assert calibration_result["calibration_run_id"] == calibration_payload["id"]
+    assert calibration_result["calibration_status"] in {"passed", "warning"}
+    assert calibration_result["proposal_status"] == "none"
+    assert calibration_result["drift_report"]["auto_activation_enabled"] is False
+    assert calibration_result["metrics"]["relationship_fact_candidates"]["total"] >= 2
+    assert calibration_result["outbox_event"]["event_type"] == "calibration.run.completed"
     calibration_list = client.get("/v1/calibrations")
     assert calibration_list.status_code == 200
-    assert calibration_list.json()[0]["status"] == "scheduled"
+    assert calibration_list.json()[0]["status"] in {"passed", "warning"}
+    assert calibration_list.json()[0]["proposal_status"] == "none"
 
     watchlist_detail = client.get(f"/v1/watchlists/{watchlist_id}")
     assert watchlist_detail.status_code == 200
@@ -2180,3 +2205,34 @@ def exercise_background_scheduler_contracts() -> None:
             """
         ).fetchone()
         assert job_counts == (1, 1, 0)
+
+    ingestion_job = enqueue_job(
+        job_type="curated_ingestion_refresh",
+        idempotency_key="a206-curated-ingestion-refresh-contract",
+        payload={
+            "schema_version": "curated-ingestion-refresh-job-v1",
+            "record_mode": "curated_official_fixture",
+            "reason": "T1304/A206 curated ingestion handler contract",
+        },
+        max_attempts=3,
+        dead_letter_after_attempts=3,
+        metadata={"task_ids": ["T1301", "T1304"], "acceptance_ids": ["A202", "A206"]},
+    )
+    executed_ingestion = run_once(
+        worker_id="a206-curated-ingestion-worker",
+        job_type="curated_ingestion_refresh",
+    )
+    assert executed_ingestion is not None
+    assert executed_ingestion["id"] == ingestion_job["id"]
+    assert executed_ingestion["status"] == "succeeded"
+    ingestion_result = executed_ingestion["metadata"]["result"]
+    assert ingestion_result["handler"] == "curated_ingestion_refresh"
+    assert ingestion_result["handler_contract"] == "curated-ingestion-refresh-worker-v1"
+    assert ingestion_result["record_mode"] == "curated_official_fixture"
+    assert ingestion_result["counts"]["parser_version"] == CURATED_ANCHOR_PARSER_VERSION
+    assert ingestion_result["counts"]["relationship_fact_candidates"] >= 2
+    assert ingestion_result["source_stats"]["raw_snapshot_count"] >= 6
+    assert ingestion_result["fixture_policy"] == (
+        "curated_official_fixture is not live/full-text ingestion"
+    )
+    assert ingestion_result["outbox_event"]["event_type"] == "data.ingestion.completed"

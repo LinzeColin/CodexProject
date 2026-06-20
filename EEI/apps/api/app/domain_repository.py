@@ -5036,8 +5036,43 @@ class DomainRepository:
 
     def queue_calibration(self) -> dict[str, Any]:
         with self.connect() as connection:
-            active_profile = self.active_scoring_profile(connection)
-            profile_version_id = UUID(active_profile["id"]) if active_profile else None
+            active_context_row = connection.execute(
+                """
+                SELECT
+                  aac.active_scoring_profile_version_id,
+                  aac.active_data_snapshot_id,
+                  aac.active_scoring_run_id,
+                  aac.refresh_token::text AS refresh_token,
+                  aac.refresh_generation,
+                  sp.profile_key,
+                  spv.version AS profile_version_number,
+                  sm.model_key,
+                  sm.version AS model_version_number
+                FROM active_analysis_contexts aac
+                JOIN scoring_profile_versions spv
+                  ON spv.id = aac.active_scoring_profile_version_id
+                JOIN scoring_profiles sp ON sp.id = spv.profile_id
+                JOIN scoring_models sm ON sm.id = spv.model_id
+                WHERE aac.context_key = 'global'
+                FOR UPDATE OF aac
+                """
+            ).fetchone()
+            if active_context_row is None:
+                raise RepositoryError("No active analysis context is available")
+            active_context = _jsonable(
+                {
+                    **dict(active_context_row),
+                    "model_version": (
+                        f"{active_context_row['model_key']}@"
+                        f"{active_context_row['model_version_number']}"
+                    ),
+                    "profile_version": (
+                        f"{active_context_row['profile_key']}@"
+                        f"{active_context_row['profile_version_number']}"
+                    ),
+                }
+            )
+            profile_version_id = active_context_row["active_scoring_profile_version_id"]
             row = connection.execute(
                 """
                 INSERT INTO calibration_runs(
@@ -5050,6 +5085,87 @@ class DomainRepository:
                 """,
                 (profile_version_id,),
             ).fetchone()
+            idempotency_key = f"calibration-run:{row['id']}"
+            job_payload = {
+                "schema_version": "calibration-run-job-v1",
+                "calibration_run_id": row["id"],
+                "active_scoring_profile_version_id": profile_version_id,
+                "active_data_snapshot_id": active_context_row["active_data_snapshot_id"],
+                "active_scoring_run_id": active_context_row["active_scoring_run_id"],
+                "refresh_token": active_context_row["refresh_token"],
+                "refresh_generation": active_context_row["refresh_generation"],
+                "cadence_days": row["cadence_days"],
+                "reason": "Manual API calibration queue; auto activation disabled",
+                "requested_by": "local_user",
+                "requested_at": _now(),
+            }
+            job_metadata = {
+                "task_ids": ["T1304", "T605", "T606"],
+                "acceptance_ids": ["A090", "A091", "A092", "A206"],
+                "contract": "calibration-run-enqueue-v1",
+                "handler_status": "queued_handler_registered",
+            }
+            job_row = connection.execute(
+                """
+                INSERT INTO background_jobs(
+                  job_type, idempotency_key, payload, priority, status,
+                  max_attempts, dead_letter_after_attempts, metadata
+                )
+                VALUES (
+                  'calibration_run', %s, %s, 45, 'queued', 5, 5, %s
+                )
+                ON CONFLICT (job_type, idempotency_key) DO UPDATE SET
+                  idempotency_key = EXCLUDED.idempotency_key
+                RETURNING
+                  id, job_type, idempotency_key, payload, priority, status,
+                  scheduled_for, attempt_count, max_attempts,
+                  dead_letter_after_attempts, created_at, updated_at, metadata
+                """,
+                (
+                    idempotency_key,
+                    Jsonb(_jsonable(job_payload)),
+                    Jsonb(job_metadata),
+                ),
+            ).fetchone()
+            job_payload_json = _jsonable(dict(job_row))
+            outbox_event = self.write_outbox_event(
+                connection,
+                event_type="calibration.run.requested",
+                aggregate_type="background_job",
+                aggregate_id=job_row["id"],
+                idempotency_key=f"calibration-run-requested:{job_row['id']}",
+                payload={
+                    "schema_version": "calibration-event-v1",
+                    "job_id": job_row["id"],
+                    "job_type": "calibration_run",
+                    "calibration_run_id": row["id"],
+                    "idempotency_key": idempotency_key,
+                    "active_scoring_profile_version_id": profile_version_id,
+                    "active_data_snapshot_id": active_context_row["active_data_snapshot_id"],
+                    "active_scoring_run_id": active_context_row["active_scoring_run_id"],
+                    "refresh_generation": active_context_row["refresh_generation"],
+                    "auto_activation_enabled": False,
+                },
+                metadata={
+                    "task_ids": ["T1304", "T605", "T606"],
+                    "acceptance_ids": ["A090", "A091", "A092", "A206"],
+                    "contract": "transactional-outbox-event-v1",
+                },
+            )
+            response_payload = _jsonable(
+                {
+                    **dict(row),
+                    "schema_version": "calibration-run-request-v1",
+                    "job": job_payload_json,
+                    "idempotency_key": idempotency_key,
+                    "active_context": active_context,
+                    "outbox_event": outbox_event,
+                    "activation_policy": {
+                        "auto_activation_enabled": False,
+                        "proposal_status": "none",
+                    },
+                }
+            )
             self.log_operation(
                 connection,
                 actor="local_user",
@@ -5057,10 +5173,19 @@ class DomainRepository:
                 object_type="calibration_run",
                 object_id=row["id"],
                 old_value=None,
-                new_value=dict(row),
+                new_value=response_payload,
+                diff={
+                    "idempotency_key": idempotency_key,
+                    "background_job_id": job_row["id"],
+                    "active_scoring_profile_version_id": profile_version_id,
+                    "active_scoring_run_id": active_context_row["active_scoring_run_id"],
+                    "auto_activation_enabled": False,
+                },
                 reason="Manual API calibration queue; auto activation disabled",
+                model_version=active_context["model_version"],
+                profile_version=active_context["profile_version"],
             )
-        return _jsonable(row)
+        return response_payload
 
     def log_operation(
         self,

@@ -2828,3 +2828,61 @@ Residual risks:
 
 - `X-EEI-User-Namespace` and `X-EEI-Actor` must be set by trusted middleware/gateway or an identity provider before public use; direct client-provided identity headers are not production authn.
 - Sharing links, export and final cross-user collaboration policy remain open.
+
+## 2026-06-20 - T1304/A206 ingestion and calibration scheduler handlers
+
+### Scope
+
+- Registered `curated_ingestion_refresh` in `scripts/job_scheduler.py`, reusing the curated official NVIDIA/ASML loader idempotently and emitting `data.ingestion.completed`.
+- Registered `calibration_run` in `scripts/job_scheduler.py`, writing calibration coverage metrics, drift warnings, `proposal_status=none`, `execute_calibration_run` operation logs and `calibration.run.completed`.
+- Changed `POST /v1/calibrations/run` from a calibration row-only API into a transactional calibration row + `background_jobs` + `calibration.run.requested` outbox enqueue contract.
+- Preserved the MVP no-auto-activation rule for calibration proposals.
+- Updated A206 evidence, README, model/calibration docs, v5 sync docs, function catalog, development ledger and acceptance traceability.
+
+### Files changed
+
+- `apps/api/app/domain_repository.py`
+- `scripts/job_scheduler.py`
+- `scripts/load_curated_ingestion_anchors.py`
+- `tests/integration/test_database_migrations.py`
+- `artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `data/function_catalog.csv`
+- `README.md`
+- `DEVELOPMENT_STATUS.md`
+- `MODEL_MANAGEMENT.md`
+- `docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- generated release/status artifacts
+
+### Acceptance mapping
+
+- T1301 -> A202 for curated official ingestion evidence; still `IN_PROGRESS` because live/full-text ingestion, independent-source approval and formal publication remain open.
+- T1304 -> A206 for scheduler lease/retry/dead-letter plus `score_recompute`, `data_snapshot_refresh`, `curated_ingestion_refresh` and `calibration_run` execution contracts.
+- T605/T606 -> A090-A093 partial coverage through 14-day queue, metrics/drift report and no-auto-activation; accept/reject and failure-injection coverage remain open.
+- A206 remains `IN_PROGRESS`, not `DONE`, because deployment wake/supervision and 4h/24h soak are still open.
+
+### Validation
+
+- Local `python3 -m py_compile scripts/job_scheduler.py scripts/load_curated_ingestion_anchors.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/ruff check scripts/job_scheduler.py scripts/load_curated_ingestion_anchors.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- Local `.venv/bin/python scripts/validate_catalog_integrity.py`: PASS.
+- Local `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- Local `.venv/bin/python scripts/manage_development_status_artifacts.py generate`: PASS.
+- Local `.venv/bin/python scripts/manage_development_status_artifacts.py validate`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-clean-room-release`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-release-artifacts`: PASS after sequential rerun; one earlier parallel generation attempt failed due clean-room ZIP checksum race.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make validate-clean-room-release`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make validate-release-artifacts`: PASS.
+- Local `shasum -a 256 -c CHECKSUMS.sha256`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS after installing project-local Playwright Chromium; unit tests 15/15 with one existing Starlette/httpx deprecation warning.
+- PostgreSQL integration proof still requires GitHub Actions G2 because this local host does not provide Docker/PostgreSQL.
+
+### Remaining gaps
+
+- `curated_ingestion_refresh` is still curated official fixture/current-anchor ingestion, not live/full-text ingestion.
+- Calibration accept/reject proposal API/UI and failure-injection coverage remain open.
+- Deployment-level worker wake/supervision, LISTEN/NOTIFY or equivalent scheduler automation and 4h/24h soak remain open.
+- Formal fact publication, multi-object scoring, trusted saved-view identity boundary and brand clearance remain v0.1 blockers.

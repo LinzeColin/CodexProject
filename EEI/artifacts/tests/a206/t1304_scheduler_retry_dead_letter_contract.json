@@ -22,7 +22,10 @@
     "scripts/job_scheduler.py registers a score_recompute handler that validates active-context freshness, writes scoring_runs and score_results, advances refresh_token and completes stale jobs as skipped_stale_context instead of retrying forever.",
     "POST /v1/data/snapshots/refresh enqueues data_snapshot_refresh jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
     "scripts/job_scheduler.py registers a data_snapshot_refresh handler that validates active-context freshness, writes active data_snapshots, advances refresh_token, emits data.snapshot.activated and completes stale jobs as skipped_stale_context instead of retrying forever.",
-    "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion, score_recompute enqueue/execution idempotency and data_snapshot_refresh enqueue/execution idempotency."
+    "scripts/job_scheduler.py registers a curated_ingestion_refresh handler that reuses the curated official NVIDIA/ASML loader idempotently, records execute_curated_ingestion_refresh and emits data.ingestion.completed.",
+    "POST /v1/calibrations/run creates a calibration_run background job and calibration.run.requested outbox event while preserving the 14-day cadence and no-auto-activation policy.",
+    "scripts/job_scheduler.py registers a calibration_run handler that computes relationship-fact coverage, score-result coverage and drift warnings, writes calibration_runs metrics/drift_report/proposal_status=none, records execute_calibration_run and emits calibration.run.completed.",
+    "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion, score_recompute enqueue/execution idempotency, data_snapshot_refresh enqueue/execution idempotency, curated_ingestion_refresh execution and calibration_run execution."
   ],
   "parameters": {
     "scheduler.lease_ttl_seconds": 900,
@@ -50,6 +53,8 @@
   "local_validation": [
     "python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py",
     ".venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py tests/unit/test_scoring.py",
+    ".venv/bin/python scripts/validate_contracts.py",
+    ".venv/bin/python scripts/validate_catalog_integrity.py",
     ".venv/bin/python -m pytest -q tests/unit/test_scoring.py"
   ],
   "remote_validation_required": [
@@ -68,7 +73,6 @@
     "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
   },
   "remaining_gaps_before_done": [
-    "Register curated ingestion and calibration handlers on the scheduler; score_recompute now has a real handler but is not yet deployment-woken.",
     "Add deployment-level wake/supervision contract for continuous worker operation.",
     "Run T1307 4h/24h soak tests for timer, retry and recovery stability."
   ],
