@@ -4,7 +4,7 @@ Append-only development ledger for 商域图谱 / Enterprise Ecosystem Intellige
 
 ## 2026-06-19 - Phase 1 / G1 start
 
-Status: IN PROGRESS
+Status: DONE
 
 Completed:
 
@@ -213,21 +213,22 @@ Completed:
 - Added `tests/unit/test_scale_benchmarks.py` to lock the A208 payload schema, target scale coverage semantics and per-scale pass/fail budget output.
 - Added `make validate-scale-benchmark-smoke` and wired it into `make verify`.
 - Added `make validate-scale-benchmark-operator` for the manual 10k/100k/1m operator contract.
-- Advanced T1306/A208 governance from `NOT_STARTED` to `IN PROGRESS` without closing A208.
+- Added `scripts/run_browser_scale_benchmarks.mjs` for Chromium browser runtime frame, memory and long-task measurement.
+- Advanced T1306/A208 governance from `NOT_STARTED` to `DONE`.
 
 Verification results:
 
 - `.venv/bin/python -m compileall scripts/run_scale_benchmarks.py tests/unit/test_scale_benchmarks.py scripts/validate_v5_production_readiness_sync.py`: PASS.
 - `.venv/bin/python scripts/run_scale_benchmarks.py --scales 1000 --iterations 2 --mode ci_smoke --output artifacts/tests/a208/t1306_scale_benchmark_smoke.json --fail-on-budget --quiet`: PASS; output status remains `PARTIAL`.
-- `.venv/bin/python scripts/run_scale_benchmarks.py --scales 10000,100000,1000000 --iterations 1 --mode operator_full --output artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json --fail-on-budget --quiet`: PASS; 10k, 100k and 1m measured scales pass configured budgets while output status remains `PARTIAL`.
-- `UV_CACHE_DIR=/private/tmp/eei-uv-cache PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make verify`: PASS.
-- GitHub Actions `EEI validation` run `27860058794`, job `82454428663`: PASS, including `Verify static, contract, lint, typecheck and unit tests` and `Verify G2 PostgreSQL migrations and E2E`.
+- `node scripts/run_browser_scale_benchmarks.mjs --scales 10000,100000,1000000 --iterations 1 --output artifacts/tests/a208/t1306_browser_runtime_benchmark.json --fail-on-budget --quiet`: PASS; Chromium browser runtime status is `PASS`.
+- `.venv/bin/python scripts/run_scale_benchmarks.py --scales 10000,100000,1000000 --iterations 1 --mode operator_full --output artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json --browser-runtime-artifact artifacts/tests/a208/t1306_browser_runtime_benchmark.json --fail-on-budget --require-full-targets --quiet`: PASS; full A208 coverage status is `PASS`.
+- `make validate-scale-benchmark-operator`: PASS with Chromium browser runtime and merged operator contract.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make verify`: PASS; includes A208 browser benchmark, merged operator contract, governance validators, lint, typecheck and 11 unit tests.
 
 Residual risks:
 
-- A208 is not complete until operator_full mode records 10k, 100k and 1m relationship scale results.
-- Browser runtime frame, heap/memory and long-task measurements are not yet attached to the benchmark output.
-- This slice proves the benchmark contract and CI smoke only; it does not prove production graph rendering at full scale.
+- Browser runtime benchmark uses a bounded SVG runtime contract with 500 visible nodes and 2000 visible edges; production componentized frontend remains T1308/A211.
+- Long-duration memory/timer/listener stability remains T1307/A209 soak scope.
 
 ## 2026-06-19 - Phase 1 / G2 database CI repair loop 1
 

@@ -70,6 +70,11 @@ def parse_args() -> argparse.Namespace:
         help="Exit non-zero unless 10k, 100k and 1m target scales are all measured.",
     )
     parser.add_argument(
+        "--browser-runtime-artifact",
+        type=Path,
+        help="Optional browser runtime benchmark JSON to merge into A208 full pass coverage.",
+    )
+    parser.add_argument(
         "--quiet",
         action="store_true",
         help="Write the benchmark payload without printing the full JSON to stdout.",
@@ -345,14 +350,46 @@ def environment_payload() -> dict[str, Any]:
     }
 
 
+def read_browser_runtime_artifact(path: Path | None) -> dict[int, dict[str, Any]]:
+    if path is None:
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("schema_version") != "eei-browser-scale-benchmark-v1":
+        raise ValueError("browser runtime artifact schema mismatch")
+    if payload.get("task_id") != "T1306" or "A208" not in payload.get("acceptance_ids", []):
+        raise ValueError("browser runtime artifact must cite T1306/A208")
+    return {
+        int(result["scale_relationships"]): result
+        for result in payload.get("results", [])
+        if result.get("status") == "PASS"
+    }
+
+
 def build_payload(
     *,
     mode: str,
     scales: list[int],
     iterations: int,
     budgets: dict[int, float],
+    browser_runtime_by_scale: dict[int, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     results = [measure_scale(scale, iterations, budgets) for scale in scales]
+    browser_runtime_by_scale = browser_runtime_by_scale or {}
+    for result in results:
+        scale = int(result["scale_relationships"])
+        browser_runtime = browser_runtime_by_scale.get(scale)
+        if browser_runtime:
+            result["metric_groups"]["browser_runtime"] = True
+            result["browser_runtime"] = {
+                "status": browser_runtime["status"],
+                "browser_render_ms": browser_runtime["browser_render_ms"],
+                "browser_frame_delta_ms": browser_runtime["browser_frame_delta_ms"],
+                "browser_dom_payload_bytes": browser_runtime["browser_dom_payload_bytes"],
+                "browser_heap_delta_bytes": browser_runtime.get("browser_heap_delta_bytes"),
+                "browser_long_task_count": browser_runtime["browser_long_task_count"],
+                "browser_max_long_task_ms": browser_runtime["browser_max_long_task_ms"],
+                "last_counts": browser_runtime["last_counts"],
+            }
     measured_scales = {result["scale_relationships"] for result in results}
     all_target_scales_measured = set(TARGET_SCALES).issubset(measured_scales)
     all_measured_pass = all(result["status"] == "PASS" for result in results)
@@ -421,6 +458,7 @@ def main() -> int:
         scales=scales,
         iterations=args.iterations,
         budgets=budgets,
+        browser_runtime_by_scale=read_browser_runtime_artifact(args.browser_runtime_artifact),
     )
     write_payload(args.output, payload)
     if not args.quiet:

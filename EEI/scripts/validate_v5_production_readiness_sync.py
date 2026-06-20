@@ -34,7 +34,7 @@ EXPECTED_TASKS = {
     "T1309": "A210",
 }
 
-IMPLEMENTED_TASKS = {"T1300": "A201"}
+IMPLEMENTED_TASKS = {"T1300": "A201", "T1306": "A208"}
 
 PARTIAL_TASKS = {
     "T1301": "A202",
@@ -42,10 +42,9 @@ PARTIAL_TASKS = {
     "T1303": "A204",
     "T1304": "A206",
     "T1305": "A207",
-    "T1306": "A208",
 }
 
-PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A207", "A208"}
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A207"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -53,7 +52,15 @@ IMPLEMENTED_EVIDENCE = {
         "infra/db/migrations/0003_production_fact_version_layers/down.sql",
         "scripts/check_database_schema.py",
         "tests/integration/test_database_migrations.py",
-    }
+    },
+    "T1306": {
+        "scripts/run_scale_benchmarks.py",
+        "scripts/run_browser_scale_benchmarks.mjs",
+        "tests/unit/test_scale_benchmarks.py",
+        "artifacts/tests/a208/t1306_scale_benchmark_smoke.json",
+        "artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json",
+        "artifacts/tests/a208/t1306_browser_runtime_benchmark.json",
+    },
 }
 
 PARTIAL_EVIDENCE = {
@@ -104,12 +111,6 @@ PARTIAL_EVIDENCE = {
         "specs/api_contract.yaml",
         "tests/integration/test_database_migrations.py",
         "artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json",
-    },
-    "T1306": {
-        "scripts/run_scale_benchmarks.py",
-        "tests/unit/test_scale_benchmarks.py",
-        "artifacts/tests/a208/t1306_scale_benchmark_smoke.json",
-        "artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json",
     },
 }
 

@@ -91,6 +91,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── a207
 │   │   │   └── t1305_server_saved_view_conflict_recovery_contract.json
 │   │   └── a208
+│   │       ├── t1306_browser_runtime_benchmark.json
 │   │       ├── t1306_scale_benchmark_operator_contract.json
 │   │       └── t1306_scale_benchmark_smoke.json
 │   ├── README.md
@@ -317,6 +318,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── manage_risk_control_artifacts.py
 │   ├── migrate.py
 │   ├── preflight.sh
+│   ├── run_browser_scale_benchmarks.mjs
 │   ├── run_codex_autonomous.sh
 │   ├── run_scale_benchmarks.py
 │   ├── secret_scan.py

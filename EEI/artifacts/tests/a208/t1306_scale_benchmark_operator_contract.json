@@ -5,9 +5,9 @@
   "acceptance_ids": [
     "A208"
   ],
-  "status": "PARTIAL",
+  "status": "PASS",
   "mode": "operator_full",
-  "generated_at": "2026-06-20T04:14:37+00:00",
+  "generated_at": "2026-06-20T04:35:08+00:00",
   "environment": {
     "python": "3.12.12",
     "platform": "macOS-26.5.1-arm64-arm-64bit",
@@ -38,39 +38,39 @@
       "budget_ms": 1000.0,
       "status": "PASS",
       "api_projection_ms": {
-        "min": 213.4612,
-        "p50": 213.4612,
-        "p95": 213.4612,
-        "p99": 213.4612,
-        "max": 213.4612
+        "min": 30.8933,
+        "p50": 30.8933,
+        "p95": 30.8933,
+        "p99": 30.8933,
+        "max": 30.8933
       },
       "layout_ms": {
-        "min": 2.9879,
-        "p50": 2.9879,
-        "p95": 2.9879,
-        "p99": 2.9879,
-        "max": 2.9879
+        "min": 1.7123,
+        "p50": 1.7123,
+        "p95": 1.7123,
+        "p99": 1.7123,
+        "max": 1.7123
       },
       "render_contract_ms": {
-        "min": 6.0685,
-        "p50": 6.0685,
-        "p95": 6.0685,
-        "p99": 6.0685,
-        "max": 6.0685
+        "min": 2.7993,
+        "p50": 2.7993,
+        "p95": 2.7993,
+        "p99": 2.7993,
+        "max": 2.7993
       },
       "estimated_frame_ms": {
-        "min": 6.0685,
-        "p50": 6.0685,
-        "p95": 6.0685,
-        "p99": 6.0685,
-        "max": 6.0685
+        "min": 2.7993,
+        "p50": 2.7993,
+        "p95": 2.7993,
+        "p99": 2.7993,
+        "max": 2.7993
       },
       "total_ms": {
-        "min": 226.0649,
-        "p50": 226.0649,
-        "p95": 226.0649,
-        "p99": 226.0649,
-        "max": 226.0649
+        "min": 35.8084,
+        "p50": 35.8084,
+        "p95": 35.8084,
+        "p99": 35.8084,
+        "max": 35.8084
       },
       "memory_payload_bytes": {
         "max": 95894,
@@ -92,7 +92,45 @@
         "memory_payload": true,
         "estimated_frame": true,
         "synthetic_long_task": true,
-        "browser_runtime": false
+        "browser_runtime": true
+      },
+      "browser_runtime": {
+        "status": "PASS",
+        "browser_render_ms": {
+          "min": 20.5,
+          "p50": 20.5,
+          "p95": 20.5,
+          "p99": 20.5,
+          "max": 20.5
+        },
+        "browser_frame_delta_ms": {
+          "min": 83.3,
+          "p50": 83.3,
+          "p95": 83.3,
+          "p99": 83.3,
+          "max": 83.3
+        },
+        "browser_dom_payload_bytes": {
+          "min": 505193,
+          "p50": 505193,
+          "p95": 505193,
+          "p99": 505193,
+          "max": 505193
+        },
+        "browser_heap_delta_bytes": {
+          "min": 934752,
+          "p50": 934752,
+          "p95": 934752,
+          "p99": 934752,
+          "max": 934752
+        },
+        "browser_long_task_count": 1,
+        "browser_max_long_task_ms": 89,
+        "last_counts": {
+          "rendered_nodes": 200,
+          "rendered_edges": 2000,
+          "heap_sample_available": true
+        }
       }
     },
     {
@@ -101,39 +139,39 @@
       "budget_ms": 3000.0,
       "status": "PASS",
       "api_projection_ms": {
-        "min": 2188.4472,
-        "p50": 2188.4472,
-        "p95": 2188.4472,
-        "p99": 2188.4472,
-        "max": 2188.4472
+        "min": 290.287,
+        "p50": 290.287,
+        "p95": 290.287,
+        "p99": 290.287,
+        "max": 290.287
       },
       "layout_ms": {
-        "min": 9.1236,
-        "p50": 9.1236,
-        "p95": 9.1236,
-        "p99": 9.1236,
-        "max": 9.1236
+        "min": 1.7986,
+        "p50": 1.7986,
+        "p95": 1.7986,
+        "p99": 1.7986,
+        "max": 1.7986
       },
       "render_contract_ms": {
-        "min": 14.0406,
-        "p50": 14.0406,
-        "p95": 14.0406,
-        "p99": 14.0406,
-        "max": 14.0406
+        "min": 3.4497,
+        "p50": 3.4497,
+        "p95": 3.4497,
+        "p99": 3.4497,
+        "max": 3.4497
       },
       "estimated_frame_ms": {
-        "min": 14.0406,
-        "p50": 14.0406,
-        "p95": 14.0406,
-        "p99": 14.0406,
-        "max": 14.0406
+        "min": 3.4497,
+        "p50": 3.4497,
+        "p95": 3.4497,
+        "p99": 3.4497,
+        "max": 3.4497
       },
       "total_ms": {
-        "min": 2212.687,
-        "p50": 2212.687,
-        "p95": 2212.687,
-        "p99": 2212.687,
-        "max": 2212.687
+        "min": 296.1112,
+        "p50": 296.1112,
+        "p95": 296.1112,
+        "p99": 296.1112,
+        "max": 296.1112
       },
       "memory_payload_bytes": {
         "max": 177717,
@@ -155,7 +193,45 @@
         "memory_payload": true,
         "estimated_frame": true,
         "synthetic_long_task": true,
-        "browser_runtime": false
+        "browser_runtime": true
+      },
+      "browser_runtime": {
+        "status": "PASS",
+        "browser_render_ms": {
+          "min": 17.2,
+          "p50": 17.2,
+          "p95": 17.2,
+          "p99": 17.2,
+          "max": 17.2
+        },
+        "browser_frame_delta_ms": {
+          "min": 49.9,
+          "p50": 49.9,
+          "p95": 49.9,
+          "p99": 49.9,
+          "max": 49.9
+        },
+        "browser_dom_payload_bytes": {
+          "min": 567398,
+          "p50": 567398,
+          "p95": 567398,
+          "p99": 567398,
+          "max": 567398
+        },
+        "browser_heap_delta_bytes": {
+          "min": 147271,
+          "p50": 147271,
+          "p95": 147271,
+          "p99": 147271,
+          "max": 147271
+        },
+        "browser_long_task_count": 1,
+        "browser_max_long_task_ms": 51,
+        "last_counts": {
+          "rendered_nodes": 500,
+          "rendered_edges": 2000,
+          "heap_sample_available": true
+        }
       }
     },
     {
@@ -164,39 +240,39 @@
       "budget_ms": 10000.0,
       "status": "PASS",
       "api_projection_ms": {
-        "min": 6188.0694,
-        "p50": 6188.0694,
-        "p95": 6188.0694,
-        "p99": 6188.0694,
-        "max": 6188.0694
+        "min": 4170.9361,
+        "p50": 4170.9361,
+        "p95": 4170.9361,
+        "p99": 4170.9361,
+        "max": 4170.9361
       },
       "layout_ms": {
-        "min": 2.5356,
-        "p50": 2.5356,
-        "p95": 2.5356,
-        "p99": 2.5356,
-        "max": 2.5356
+        "min": 2.5613,
+        "p50": 2.5613,
+        "p95": 2.5613,
+        "p99": 2.5613,
+        "max": 2.5613
       },
       "render_contract_ms": {
-        "min": 5.3852,
-        "p50": 5.3852,
-        "p95": 5.3852,
-        "p99": 5.3852,
-        "max": 5.3852
+        "min": 4.515,
+        "p50": 4.515,
+        "p95": 4.515,
+        "p99": 4.515,
+        "max": 4.515
       },
       "estimated_frame_ms": {
-        "min": 5.3852,
-        "p50": 5.3852,
-        "p95": 5.3852,
-        "p99": 5.3852,
-        "max": 5.3852
+        "min": 4.515,
+        "p50": 4.515,
+        "p95": 4.515,
+        "p99": 4.515,
+        "max": 4.515
       },
       "total_ms": {
-        "min": 6197.1814,
-        "p50": 6197.1814,
-        "p95": 6197.1814,
-        "p99": 6197.1814,
-        "max": 6197.1814
+        "min": 4179.498,
+        "p50": 4179.498,
+        "p95": 4179.498,
+        "p99": 4179.498,
+        "max": 4179.498
       },
       "memory_payload_bytes": {
         "max": 172767,
@@ -218,14 +294,52 @@
         "memory_payload": true,
         "estimated_frame": true,
         "synthetic_long_task": true,
-        "browser_runtime": false
+        "browser_runtime": true
+      },
+      "browser_runtime": {
+        "status": "PASS",
+        "browser_render_ms": {
+          "min": 14.2,
+          "p50": 14.2,
+          "p95": 14.2,
+          "p99": 14.2,
+          "max": 14.2
+        },
+        "browser_frame_delta_ms": {
+          "min": 50,
+          "p50": 50,
+          "p95": 50,
+          "p99": 50,
+          "max": 50
+        },
+        "browser_dom_payload_bytes": {
+          "min": 567399,
+          "p50": 567399,
+          "p95": 567399,
+          "p99": 567399,
+          "max": 567399
+        },
+        "browser_heap_delta_bytes": {
+          "min": 986794,
+          "p50": 986794,
+          "p95": 986794,
+          "p99": 986794,
+          "max": 986794
+        },
+        "browser_long_task_count": 1,
+        "browser_max_long_task_ms": 51,
+        "last_counts": {
+          "rendered_nodes": 500,
+          "rendered_edges": 2000,
+          "heap_sample_available": true
+        }
       }
     }
   ],
   "coverage": {
     "target_scales_measured": true,
-    "browser_runtime_measured": false,
-    "full_a208_pass": false,
+    "browser_runtime_measured": true,
+    "full_a208_pass": true,
     "required_metric_groups": [
       "api",
       "layout",
@@ -235,8 +349,5 @@
       "long_task"
     ]
   },
-  "remaining_to_close_a208": [
-    "Attach browser runtime frame, memory and long-task measurements.",
-    "Record pass/fail release evidence after full benchmark completes."
-  ]
+  "remaining_to_close_a208": []
 }

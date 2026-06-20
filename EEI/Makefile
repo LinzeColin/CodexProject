@@ -7,7 +7,7 @@ UV := $(VENV)/bin/uv
 PNPM_VERSION := 11.8.0
 PNPM ?= npx --yes pnpm@$(PNPM_VERSION)
 
-.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e verify verify-g1 verify-g2-db dev-api dev-web clean-local
+.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-scale-browser-benchmark secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e verify verify-g1 verify-g2-db dev-api dev-web clean-local
 
 $(UV):
 	$(PYTHON) -m venv $(VENV)
@@ -107,8 +107,11 @@ validate-release-artifacts:
 validate-scale-benchmark-smoke:
 	$(VENV)/bin/python scripts/run_scale_benchmarks.py --scales 1000 --iterations 2 --mode ci_smoke --output /tmp/eei-scale-benchmark-smoke.json --fail-on-budget --quiet
 
-validate-scale-benchmark-operator:
-	$(VENV)/bin/python scripts/run_scale_benchmarks.py --scales 10000,100000,1000000 --iterations 1 --mode operator_full --output /tmp/eei-scale-benchmark-operator.json --fail-on-budget --quiet
+validate-scale-browser-benchmark:
+	node scripts/run_browser_scale_benchmarks.mjs --scales 10000,100000,1000000 --iterations 1 --output /tmp/eei-browser-scale-benchmark.json --fail-on-budget --quiet
+
+validate-scale-benchmark-operator: validate-scale-browser-benchmark
+	$(VENV)/bin/python scripts/run_scale_benchmarks.py --scales 10000,100000,1000000 --iterations 1 --mode operator_full --output /tmp/eei-scale-benchmark-operator.json --browser-runtime-artifact /tmp/eei-browser-scale-benchmark.json --fail-on-budget --require-full-targets --quiet
 
 secret-scan:
 	$(UV) run python scripts/secret_scan.py
@@ -133,7 +136,7 @@ test-e2e:
 
 test: test-unit
 
-verify: validate-governance validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-development-status-artifacts validate-risk-control-artifacts validate-clean-room-release validate-release-artifacts validate-scale-benchmark-smoke secret-scan copy-lint lint typecheck test
+verify: validate-governance validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-development-status-artifacts validate-risk-control-artifacts validate-clean-room-release validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator secret-scan copy-lint lint typecheck test
 
 verify-g1: db-up health verify test-e2e
 

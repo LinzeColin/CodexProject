@@ -125,7 +125,7 @@ T1302,G4,P0,"Complete production API, recursive graph query and scoring service 
 T1303,G6,P0,"Implement transactional model config activation and atomic global refresh",T1302,"A204,A205",IN PROGRESS
 T1304,G7,P0,"Implement scheduler auto wake, idempotency, retry, heartbeat, graceful shutdown and dead-letter",T1301,A206,IN PROGRESS
 T1305,G4,P0,"Implement server-side saved views, optimistic conflict control and recovery",T1302,A207,IN PROGRESS
-T1306,G9,P0,"Run 10k, 100k and 1m relationship scale benchmarks for API, layout and render budgets",T1302,A208,IN PROGRESS
+T1306,G9,P0,"Run 10k, 100k and 1m relationship scale benchmarks for API, layout and render budgets",T1302,A208,DONE
 T1307,G9,P0,"Run 4h and 24h browser and worker soak tests for memory, timer, listener and retry stability",T1304,A209,NOT STARTED
 T1308,G5,P0,"Componentize production frontend routes and wire real controls to API, state and persistence",T1302,A211,NOT STARTED
 T1309,G0,P0,"Complete EEI formal brand legal and market clearance or signed risk waiver before public launch",T1215,A210,NOT STARTED
