@@ -243,6 +243,8 @@ infra/db/migrations/0007_scheduler_job_queue/down.sql
 infra/db/migrations/0007_scheduler_job_queue/up.sql
 infra/db/migrations/0008_server_saved_views/down.sql
 infra/db/migrations/0008_server_saved_views/up.sql
+infra/db/migrations/0009_transactional_outbox/down.sql
+infra/db/migrations/0009_transactional_outbox/up.sql
 infra/db/migrations/README.md
 infra/db/seeds/README.md
 infra/docker/README.md

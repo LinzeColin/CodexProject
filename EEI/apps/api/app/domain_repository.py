@@ -2015,6 +2015,32 @@ class DomainRepository:
                         f"{target_row['profile_key']}@{target_row['version']}"
                     ),
                 )
+                outbox_event = self.write_outbox_event(
+                    connection,
+                    event_type="model.profile.activated",
+                    aggregate_type="scoring_profile_version",
+                    aggregate_id=profile_version_id,
+                    idempotency_key=(
+                        f"{action_type}:{profile_version_id}:{next_generation}"
+                    ),
+                    payload={
+                        "schema_version": "analysis-refresh-event-v1",
+                        "action_type": action_type,
+                        "profile_version_id": profile_version_id,
+                        "previous_profile_version_id": previous_profile_id,
+                        "scoring_run_id": scoring_run["id"],
+                        "data_snapshot_id": data_snapshot_id,
+                        "previous_refresh_token": previous_refresh_token,
+                        "refresh_token": context["refresh_token"],
+                        "refresh_generation": next_generation,
+                        "affected_modules": ACTIVE_REFRESH_MODULES,
+                    },
+                    metadata={
+                        "task_ids": ["T1303"],
+                        "acceptance_ids": ["A204", "A205"],
+                        "contract": "transactional-outbox-event-v1",
+                    },
+                )
                 activation_payload = _jsonable(
                     {
                         "schema_version": "model-activation-v1",
@@ -2032,6 +2058,7 @@ class DomainRepository:
                                 "fresh results"
                             ),
                         },
+                        "outbox_event": outbox_event,
                     }
                 )
         if conflict_detail is not None:
@@ -2214,6 +2241,31 @@ class DomainRepository:
                     model_version=active_context["model_version"],
                     profile_version=active_context["profile_version"],
                 )
+                outbox_event = self.write_outbox_event(
+                    connection,
+                    event_type="score.recompute.requested",
+                    aggregate_type="background_job",
+                    aggregate_id=job_row["id"],
+                    idempotency_key=f"score-recompute-requested:{job_row['id']}",
+                    payload={
+                        "schema_version": "analysis-refresh-event-v1",
+                        "job_id": job_row["id"],
+                        "job_type": "score_recompute",
+                        "idempotency_key": idempotency_key,
+                        "active_scoring_profile_version_id": active_profile_id,
+                        "active_data_snapshot_id": data_snapshot_id,
+                        "active_scoring_run_id": scoring_run_id,
+                        "refresh_token": actual_refresh_token,
+                        "refresh_generation": refresh_generation,
+                        "scope": scope,
+                        "affected_modules": ACTIVE_REFRESH_MODULES,
+                    },
+                    metadata={
+                        "task_ids": ["T1303", "T1304"],
+                        "acceptance_ids": ["A204", "A205", "A206"],
+                        "contract": "transactional-outbox-event-v1",
+                    },
+                )
                 response_payload = _jsonable(
                     {
                         "schema_version": "score-recompute-request-v1",
@@ -2222,6 +2274,7 @@ class DomainRepository:
                         "idempotency_key": idempotency_key,
                         "active_profile": active_profile,
                         "active_context": active_context,
+                        "outbox_event": outbox_event,
                         "cache_policy": {
                             "refresh_token": actual_refresh_token,
                             "refresh_generation": refresh_generation,
@@ -4803,6 +4856,44 @@ class DomainRepository:
                 result_status,
             ),
         )
+
+    def write_outbox_event(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        *,
+        event_type: str,
+        aggregate_type: str,
+        aggregate_id: UUID | None,
+        idempotency_key: str,
+        payload: dict[str, Any],
+        metadata: dict[str, Any] | None = None,
+        priority: int = 100,
+    ) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            INSERT INTO transactional_outbox(
+              event_type, aggregate_type, aggregate_id, idempotency_key,
+              payload, priority, status, metadata
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, 'pending', %s)
+            ON CONFLICT (idempotency_key) DO UPDATE SET
+              updated_at = transactional_outbox.updated_at
+            RETURNING
+              id, event_type, aggregate_type, aggregate_id, idempotency_key,
+              payload, priority, status, scheduled_for, attempt_count,
+              max_attempts, created_at, updated_at, metadata
+            """,
+            (
+                event_type,
+                aggregate_type,
+                aggregate_id,
+                idempotency_key,
+                Jsonb(_jsonable(payload)),
+                priority,
+                Jsonb(_jsonable(metadata or {})),
+            ),
+        ).fetchone()
+        return _jsonable(dict(row))
 
     def record_relationship_supersession(
         self,

@@ -14,6 +14,7 @@
     "Added a model-center rollback control that reactivates the previous profile through the dedicated transactional rollback endpoint.",
     "Added POST /v1/scoring/recompute to validate the active profile and refresh token before enqueueing a score_recompute job.",
     "Score recompute requests reuse the existing background_jobs idempotency key contract and log success/conflict results through operation_logs.",
+    "Added migration 0009_transactional_outbox and transactional outbox events for model.profile.activated, score.recompute.requested and score.snapshot.activated.",
     "Added a model-center Recompute scores control that calls /v1/scoring/recompute with expected_active_profile_version_id and client_refresh_token.",
     "Added a score_recompute worker handler that validates active context freshness, creates a completed scoring_run, writes relationship_fact_candidate score_results, advances active_analysis_contexts.refresh_token and logs execute_score_recompute.",
     "Added config/model_profiles/supply-chain-v3.json as an inactive immutable candidate profile loaded by the PostgreSQL seed path.",
@@ -25,6 +26,8 @@
     "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
     "infra/db/migrations/0006_model_activation_refresh_state/down.sql",
     "infra/db/migrations/0007_scheduler_job_queue/up.sql",
+    "infra/db/migrations/0009_transactional_outbox/up.sql",
+    "infra/db/migrations/0009_transactional_outbox/down.sql",
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
     "apps/api/app/scoring.py",
@@ -53,7 +56,7 @@
   ],
   "not_closed_scope": [
     "Model-center online profile editing is not complete.",
-    "Worker-driven data snapshot refresh, transactional outbox, deployment wake and long soak proof remain open."
+    "Worker-driven data snapshot refresh, deployment wake and long soak proof remain open."
   ],
   "latest_ci_result": {
     "provider": "GitHub Actions",

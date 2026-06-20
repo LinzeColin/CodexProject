@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -59,6 +60,8 @@ def jsonable(value: Any) -> Any:
         return value.astimezone(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     if isinstance(value, UUID):
         return str(value)
+    if isinstance(value, Decimal):
+        return float(value)
     if isinstance(value, dict):
         return {str(key): jsonable(item) for key, item in value.items()}
     if isinstance(value, list):
@@ -499,6 +502,260 @@ def fail_job(
         return job_payload(row) or {}
 
 
+def write_outbox_event(
+    connection: psycopg.Connection,
+    *,
+    event_type: str,
+    aggregate_type: str,
+    aggregate_id: UUID | str | None,
+    idempotency_key: str,
+    payload: dict[str, Any],
+    metadata: dict[str, Any] | None = None,
+    priority: int = 100,
+) -> dict[str, Any]:
+    row = connection.execute(
+        """
+        INSERT INTO transactional_outbox(
+          event_type, aggregate_type, aggregate_id, idempotency_key,
+          payload, priority, status, metadata
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, 'pending', %s)
+        ON CONFLICT (idempotency_key) DO UPDATE SET
+          updated_at = transactional_outbox.updated_at
+        RETURNING *
+        """,
+        (
+            event_type,
+            aggregate_type,
+            aggregate_id,
+            idempotency_key,
+            Jsonb(jsonable(payload)),
+            priority,
+            Jsonb(jsonable(metadata or {})),
+        ),
+    ).fetchone()
+    return job_payload(row) or {}
+
+
+def log_outbox_operation(
+    connection: psycopg.Connection,
+    *,
+    event: dict[str, Any],
+    result_status: str,
+    reason: str,
+    error: str | None = None,
+) -> None:
+    connection.execute(
+        """
+        INSERT INTO operation_logs(
+          actor, action_type, object_type, object_id, old_value, new_value,
+          diff, reason, result_status, error
+        )
+        VALUES (
+          'system', 'dispatch_outbox_event', 'transactional_outbox',
+          %s, %s, %s, %s, %s, %s, %s
+        )
+        """,
+        (
+            event["id"],
+            Jsonb(jsonable(event)),
+            Jsonb(jsonable(event)),
+            Jsonb(
+                {
+                    "event_type": event["event_type"],
+                    "attempt_count": event["attempt_count"],
+                    "status": result_status,
+                }
+            ),
+            reason,
+            result_status,
+            error,
+        ),
+    )
+
+
+def lease_next_outbox_event(
+    *,
+    worker_id: str,
+    event_type: str | None = None,
+    lease_ttl_seconds: int = DEFAULT_LEASE_TTL_SECONDS,
+    now: datetime | None = None,
+) -> dict[str, Any] | None:
+    timestamp = now or utc_now()
+    lease_token = uuid4()
+    lease_expires_at = timestamp + timedelta(seconds=lease_ttl_seconds)
+    event_type_filter = "AND event_type = %s" if event_type else ""
+    params: list[Any] = [timestamp]
+    if event_type:
+        params.append(event_type)
+    with connect_job_database() as connection:
+        row = connection.execute(
+            f"""
+            WITH candidate AS (
+              SELECT id
+              FROM transactional_outbox
+              WHERE status IN ('pending','failed')
+                AND scheduled_for <= %s
+                {event_type_filter}
+              ORDER BY priority ASC, scheduled_for ASC, created_at ASC
+              LIMIT 1
+              FOR UPDATE SKIP LOCKED
+            )
+            UPDATE transactional_outbox
+            SET status = 'processing',
+                attempt_count = attempt_count + 1,
+                lease_owner = %s,
+                lease_token = %s,
+                lease_expires_at = %s,
+                heartbeat_at = %s,
+                updated_at = %s
+            WHERE id = (SELECT id FROM candidate)
+            RETURNING *
+            """,
+            (*params, worker_id, lease_token, lease_expires_at, timestamp, timestamp),
+        ).fetchone()
+        return job_payload(row)
+
+
+def complete_outbox_event(
+    *,
+    event_id: UUID | str,
+    lease_token: UUID | str,
+    result: dict[str, Any] | None = None,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    timestamp = now or utc_now()
+    with connect_job_database() as connection:
+        event = connection.execute(
+            """
+            SELECT *
+            FROM transactional_outbox
+            WHERE id = %s
+              AND lease_token = %s
+              AND status = 'processing'
+            FOR UPDATE
+            """,
+            (event_id, lease_token),
+        ).fetchone()
+        if event is None:
+            raise SchedulerError("No processing outbox event matches the lease token")
+        row = connection.execute(
+            """
+            UPDATE transactional_outbox
+            SET status = 'dispatched',
+                lease_owner = NULL,
+                lease_token = NULL,
+                lease_expires_at = NULL,
+                updated_at = %s,
+                dispatched_at = %s,
+                metadata = metadata || %s
+            WHERE id = %s
+            RETURNING *
+            """,
+            (timestamp, timestamp, Jsonb({"dispatch_result": result or {}}), event_id),
+        ).fetchone()
+        log_outbox_operation(
+            connection,
+            event=dict(row),
+            result_status="success",
+            reason="Transactional outbox event dispatched",
+        )
+        return job_payload(row) or {}
+
+
+def fail_outbox_event(
+    *,
+    event_id: UUID | str,
+    lease_token: UUID | str,
+    error_class: str,
+    error_message: str,
+    retry_backoff_seconds: int = DEFAULT_RETRY_BACKOFF_SECONDS,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    timestamp = now or utc_now()
+    with connect_job_database() as connection:
+        event = connection.execute(
+            """
+            SELECT *
+            FROM transactional_outbox
+            WHERE id = %s
+              AND lease_token = %s
+              AND status = 'processing'
+            FOR UPDATE
+            """,
+            (event_id, lease_token),
+        ).fetchone()
+        if event is None:
+            raise SchedulerError("No processing outbox event matches the lease token")
+        terminal = int(event["attempt_count"]) >= int(event["max_attempts"])
+        next_status = "dead_letter" if terminal else "failed"
+        next_scheduled_for = timestamp + timedelta(
+            seconds=0 if terminal else retry_backoff_seconds * int(event["attempt_count"])
+        )
+        row = connection.execute(
+            """
+            UPDATE transactional_outbox
+            SET status = %s,
+                lease_owner = NULL,
+                lease_token = NULL,
+                lease_expires_at = NULL,
+                scheduled_for = %s,
+                last_error_class = %s,
+                last_error_message = %s,
+                updated_at = %s
+            WHERE id = %s
+            RETURNING *
+            """,
+            (
+                next_status,
+                next_scheduled_for,
+                error_class,
+                error_message,
+                timestamp,
+                event_id,
+            ),
+        ).fetchone()
+        log_outbox_operation(
+            connection,
+            event=dict(row),
+            result_status="failed" if not terminal else "dead_letter",
+            reason="Transactional outbox event dispatch failed",
+            error=f"{error_class}: {error_message}",
+        )
+        return job_payload(row) or {}
+
+
+def dispatch_outbox_once(
+    *,
+    worker_id: str,
+    event_type: str | None = None,
+) -> dict[str, Any] | None:
+    event = lease_next_outbox_event(worker_id=worker_id, event_type=event_type)
+    if event is None:
+        return None
+    result = {
+        "handler": "transactional_outbox",
+        "handler_contract": "outbox-dispatch-v1",
+        "event_type": event["event_type"],
+        "aggregate_type": event["aggregate_type"],
+        "aggregate_id": event["aggregate_id"],
+        "acceptance_ids": event.get("metadata", {}).get("acceptance_ids", []),
+    }
+    try:
+        return complete_outbox_event(
+            event_id=event["id"],
+            lease_token=event["lease_token"],
+            result=result,
+        )
+    except Exception as exc:
+        return fail_outbox_event(
+            event_id=event["id"],
+            lease_token=event["lease_token"],
+            error_class=exc.__class__.__name__,
+            error_message=str(exc),
+        )
+
+
 def log_score_recompute_operation(
     connection: psycopg.Connection,
     *,
@@ -751,6 +1008,32 @@ def handle_score_recompute_job(job: dict[str, Any]) -> dict[str, Any]:
             "affected_modules": ACTIVE_REFRESH_MODULES,
             "acceptance_ids": ["A204", "A205", "A206"],
         }
+        outbox_event = write_outbox_event(
+            connection,
+            event_type="score.snapshot.activated",
+            aggregate_type="scoring_run",
+            aggregate_id=scoring_run["id"],
+            idempotency_key=f"score-snapshot-activated:{scoring_run['id']}",
+            payload={
+                "schema_version": "analysis-refresh-event-v1",
+                "job_id": job["id"],
+                "scoring_run_id": scoring_run["id"],
+                "active_scoring_profile_version_id": expected_profile_id,
+                "active_data_snapshot_id": context["active_data_snapshot_id"],
+                "previous_refresh_token": expected_refresh_token,
+                "refresh_token": updated_context["refresh_token"],
+                "previous_refresh_generation": requested_generation,
+                "refresh_generation": updated_context["refresh_generation"],
+                "scored_objects": scored_objects,
+                "affected_modules": ACTIVE_REFRESH_MODULES,
+            },
+            metadata={
+                "task_ids": ["T1303", "T1304"],
+                "acceptance_ids": ["A204", "A205", "A206"],
+                "contract": "transactional-outbox-event-v1",
+            },
+        )
+        result["outbox_event"] = outbox_event
         log_score_recompute_operation(
             connection,
             object_type="scoring_run",
@@ -837,6 +1120,10 @@ def main() -> int:
     run_once_parser.add_argument("--worker-id", required=True)
     run_once_parser.add_argument("--job-type")
 
+    dispatch_outbox_parser = subparsers.add_parser("dispatch-outbox-once")
+    dispatch_outbox_parser.add_argument("--worker-id", required=True)
+    dispatch_outbox_parser.add_argument("--event-type")
+
     recover_parser = subparsers.add_parser("recover-expired")
     recover_parser.set_defaults(_recover=True)
 
@@ -858,6 +1145,8 @@ def main() -> int:
         )
     elif args.command == "run-once":
         payload = run_once(worker_id=args.worker_id, job_type=args.job_type)
+    elif args.command == "dispatch-outbox-once":
+        payload = dispatch_outbox_once(worker_id=args.worker_id, event_type=args.event_type)
     else:
         payload = recover_expired_leases()
     print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))

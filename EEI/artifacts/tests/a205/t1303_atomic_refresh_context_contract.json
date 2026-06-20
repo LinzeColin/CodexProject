@@ -15,12 +15,14 @@
     "Frontend score recompute now calls POST /v1/scoring/recompute with the current active profile and refresh token before enqueueing a background job.",
     "Score recompute enqueue returns the current active context and rejects stale refresh tokens with a 409 conflict, preserving atomic refresh semantics.",
     "The score_recompute worker handler advances active_analysis_contexts.refresh_token after writing a new scoring_run and score_results, so clients with the enqueue-time refresh token become stale after worker completion.",
+    "Transactional outbox events are written in the same transaction for model activation, score recompute request and score snapshot activation, then dispatched through the scheduler outbox path.",
     "Live Playwright coverage now configures eei.modelApiBaseUrl.v1 and exercises activation, stale refresh and rollback against FastAPI/PostgreSQL."
   ],
   "evidence_files": [
     "config/model_profiles/supply-chain-v3.json",
     "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
     "infra/db/migrations/0007_scheduler_job_queue/up.sql",
+    "infra/db/migrations/0009_transactional_outbox/up.sql",
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
     "apps/api/app/scoring.py",
@@ -46,7 +48,7 @@
   ],
   "not_closed_scope": [
     "Frontend visible modules now have API-first active-context hydration plus mock and live activation/rollback/stale refresh E2E coverage.",
-    "Score recompute has an API/job enqueue contract, frontend control and worker execution handler, but transactional outbox is still open.",
+    "Score recompute has an API/job enqueue contract, frontend control, transactional outbox event and worker execution handler.",
     "Worker-driven data snapshot activation, deployment wake and long soak proof are still covered by T1304 and later refresh slices.",
     "Scale and soak refresh stability remain T1306-T1307."
   ],
