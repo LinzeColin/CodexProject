@@ -134,6 +134,14 @@ class ScoringActivationRequest(BaseModel):
     )
 
 
+class ScoringRollbackRequest(ScoringActivationRequest):
+    reason: str = Field(
+        default="Manual model rollback request",
+        min_length=1,
+        max_length=500,
+    )
+
+
 def get_repository() -> DomainRepository:
     settings = get_settings()
     if not settings.database_url:
@@ -511,6 +519,23 @@ def activate_scoring_profile(
 ) -> dict[str, Any]:
     try:
         return repository.activate_scoring_profile_version(
+            profile_version_id=profileVersionId,
+            expected_active_profile_version_id=payload.expected_active_profile_version_id,
+            client_refresh_token=payload.client_refresh_token,
+            reason=payload.reason,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.post("/scoring/profiles/{profileVersionId}/rollback")
+def rollback_scoring_profile(
+    profileVersionId: UUID,
+    payload: ScoringRollbackRequest,
+    repository: RepositoryDependency,
+) -> dict[str, Any]:
+    try:
+        return repository.rollback_scoring_profile_version(
             profile_version_id=profileVersionId,
             expected_active_profile_version_id=payload.expected_active_profile_version_id,
             client_refresh_token=payload.client_refresh_token,

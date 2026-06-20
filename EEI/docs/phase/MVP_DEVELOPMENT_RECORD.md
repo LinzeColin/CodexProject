@@ -2501,3 +2501,55 @@ Residual risks:
 - Live FastAPI/PostgreSQL cross-route E2E remains required before A211 can close.
 - Full multi-object scoring, formally published relationship edges and complete graph evidence drawer semantics remain required before A203 can close.
 - 4h/24h soak, saved-view authn/authz, real scheduler handlers/deployment wake and brand clearance remain v0.1 blockers.
+
+## 2026-06-20 - T1303/A204-A205 dedicated rollback endpoint
+
+### Scope
+
+- Added dedicated FastAPI route `POST /v1/scoring/profiles/{profileVersionId}/rollback`.
+- Reused the existing transaction-scoped activation kernel so rollback still locks the active profile, checks `expected_active_profile_version_id`, advances `active_analysis_contexts.refresh_token`, creates a completed `scoring_runs` row and preserves stale-client conflict semantics.
+- Split `operation_logs.action_type` between `activate_scoring_profile` and `rollback_scoring_profile` so rollback is auditable as its own operation.
+- Added `ScoringRollbackRequest` to the OpenAPI contract and connected rollback responses to the existing activation response schema.
+- Added frontend `rollbackModelProfile()` and changed the model-center rollback control to call `/rollback` instead of reusing `/activate`.
+- Extended PostgreSQL integration coverage to prove dedicated rollback success, rollback stale conflict, operation-log action types and the global active-profile uniqueness invariant.
+- Updated the A204/A205 mock E2E so activation and rollback are intercepted as separate API endpoints.
+
+### Files changed
+
+- `apps/api/app/domain.py`
+- `apps/api/app/domain_repository.py`
+- `apps/web/src/app/model-activation-client.ts`
+- `apps/web/src/app/page.tsx`
+- `specs/api_contract.yaml`
+- `tests/e2e/state-contract.spec.ts`
+- `tests/integration/test_database_migrations.py`
+- `artifacts/tests/a204/t1303_transactional_model_activation_contract.json`
+- `artifacts/tests/a205/t1303_atomic_refresh_context_contract.json`
+- `DEVELOPMENT_STATUS.md`
+- `README.md`
+- `data/development_status_ledger.csv`
+- `data/acceptance_traceability.csv`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `docs/phase/MVP_DEVELOPMENT_RECORD.md`
+
+### Acceptance mapping
+
+- T1303 -> A204, A205.
+- A204/A205 remain `IN_PROGRESS`, not `DONE`, because online model editing, dedicated score recompute controls and worker-driven data refresh/outbox are still open.
+
+### Validation
+
+- Local `python3 -m py_compile apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- Local `PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps .venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- Local `/usr/local/bin/npx --yes pnpm@11.8.0 --filter @eei/web typecheck` with non-sandbox network after sandbox DNS failure: PASS.
+- Local `/usr/local/bin/npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g "A204 and A205"` with non-sandbox network/browser after sandbox DNS failure: PASS, 1/1.
+- Local `make verify`: PASS.
+- Local `make verify-g2-db`: BLOCKED before tests because Docker is not installed in this environment; GitHub Actions remains the PostgreSQL/live E2E evidence source for this run.
+
+### Remaining gaps
+
+- Model-center online profile editing remains open.
+- Dedicated score recompute controls remain open.
+- Worker-driven data snapshot refresh and transactional outbox remain open.
+- CI validation for this commit is pending until pushed.

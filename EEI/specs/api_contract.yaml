@@ -922,9 +922,21 @@ paths:
         schema:
           type: string
           format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoringRollbackRequest'
       responses:
         '200':
-          description: New rollback version created and logged
+          description: Rollback target activated transactionally, logged, and refresh token advanced
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoringActivationResponse'
+        '409':
+          description: Stale expected active profile; previous active version remains unchanged
   /v1/scoring/explain/{objectType}/{objectId}:
     get:
       operationId: explainScore
@@ -3203,6 +3215,9 @@ components:
           type: string
           minLength: 1
           maxLength: 500
+    ScoringRollbackRequest:
+      allOf:
+      - $ref: '#/components/schemas/ScoringActivationRequest'
     ScoringActivationResponse:
       type: object
       required:
