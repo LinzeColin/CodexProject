@@ -1916,9 +1916,11 @@ def exercise_background_scheduler_contracts() -> None:
         assert dead_letter_row == (3, "fixture_terminal", "dead-letter after retry cap")
         attempt_statuses = connection.execute(
             """
-            SELECT status, count(*)::int
-            FROM background_job_attempts
-            GROUP BY status
+            SELECT bja.status, count(*)::int
+            FROM background_job_attempts bja
+            JOIN background_jobs bj ON bj.id = bja.job_id
+            WHERE bj.job_type = 'noop'
+            GROUP BY bja.status
             """
         ).fetchall()
         counts_by_status = {row[0]: row[1] for row in attempt_statuses}
