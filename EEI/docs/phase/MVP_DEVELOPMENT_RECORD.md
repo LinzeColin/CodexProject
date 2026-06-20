@@ -3672,3 +3672,39 @@ Status: LOCAL AND REMOTE CI VALIDATED; A208 REMAINS CLOSED AFTER REVALIDATION
 ### Remaining gaps
 
 - A209 4h/24h soak remains open and is intentionally not affected by this A208 hardening slice.
+
+## 2026-06-21 - T1304/T1307 A206/A209 worker supervisor CLI wake contract
+
+Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI REQUIRED; A206/A209 STILL IN PROGRESS
+
+### Scope
+
+- Extended the PostgreSQL integration contract to exercise the production worker CLI entry point:
+  - `python -m apps.worker.app.main supervise`
+  - `--max-cycles 2`
+  - `--stop-when-idle`
+  - `--job-type noop`
+  - `--event-type a206.worker.cli.wake`
+- The new contract enqueues a real `background_jobs` row and a real `transactional_outbox` event, then verifies the CLI supervisor wakes, processes one job, dispatches one outbox event, stops on an idle cycle and emits the `eei-worker-supervision-summary-v1` JSON contract.
+- The test also verifies final PostgreSQL state:
+  - the job is `succeeded`
+  - the noop handler result carries `A206`
+  - the outbox event is `dispatched`
+  - the dispatch result carries `outbox-dispatch-v1` and `A206/A209`
+
+### Acceptance mapping
+
+- T1304 -> A206 for production CLI wake, job execution, outbox dispatch and process entry point behavior.
+- T1307 -> A209 only for the worker-wake portion of soak readiness.
+- A206 and A209 remain `IN_PROGRESS`, not `DONE`, until 4h and 24h operator soak evidence is attached.
+
+### Local validation
+
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check tests/integration/test_database_migrations.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `.env`/`DATABASE_URL`; remote GitHub Actions must provide PostgreSQL proof.
+
+### Remaining gaps
+
+- This slice proves the real CLI entry path only when GitHub Actions runs G2 PostgreSQL integration.
+- 4h and 24h soak are still not executed.
+- Docker is still unavailable on the current host, so local Docker Compose worker soak cannot be completed here.
