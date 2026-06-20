@@ -111,6 +111,8 @@ PARTIAL_EVIDENCE = {
         "infra/db/migrations/0004_curated_ingestion_audit_layers/down.sql",
         "infra/db/migrations/0005_relationship_fact_candidates/up.sql",
         "infra/db/migrations/0005_relationship_fact_candidates/down.sql",
+        "infra/db/migrations/0011_operator_source_capture_constraints/up.sql",
+        "infra/db/migrations/0011_operator_source_capture_constraints/down.sql",
         "data/golden_vertical_fact_candidates.json",
         "scripts/load_curated_ingestion_anchors.py",
         "scripts/fetch_official_source_full_text.py",

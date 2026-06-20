@@ -25,6 +25,8 @@
   ],
   "evidence_paths": [
     "scripts/load_operator_source_captures.py",
+    "infra/db/migrations/0011_operator_source_capture_constraints/up.sql",
+    "infra/db/migrations/0011_operator_source_capture_constraints/down.sql",
     "tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json",
     "tests/integration/test_database_migrations.py",
     "Makefile",
@@ -73,6 +75,7 @@
   ],
   "rollback": [
     "Remove scripts/load_operator_source_captures.py and tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json.",
+    "Run scripts/migrate.py downgrade --steps 1 or remove infra/db/migrations/0011_operator_source_capture_constraints when rolling back before deployment.",
     "Remove the operator capture invocation and assertions from tests/integration/test_database_migrations.py.",
     "Remove the operator evidence paths from Makefile lint and scripts/validate_v5_production_readiness_sync.py.",
     "Delete artifacts/tests/a202/t1301_operator_source_capture_contract.json and rerun make verify."

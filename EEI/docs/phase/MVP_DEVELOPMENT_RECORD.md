@@ -3417,6 +3417,7 @@ Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A202 STILL IN PROG
 
 - Added `scripts/load_operator_source_captures.py` as an idempotent operator-provided official-source capture loader for the NVIDIA Golden Vertical official anchor registry.
 - Added `tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json` as the deterministic contract fixture for operator capture provenance and hash validation.
+- Added `infra/db/migrations/0011_operator_source_capture_constraints` to allow `operator_source_capture` raw snapshots and `operator_verified` review rows under an explicit rollback contract.
 - The loader validates source URL agreement, `captured_by`, `captured_at`, `capture_method`, `approval_scope`, `operator_signature`, `source_text_sha256`, required usage attestations, minimum text length and 100% expected-token coverage before writing database rows.
 - The loader writes `raw_source_snapshots`, `source_documents`, `entity_resolution_candidates` and context-only `ingestion_evidence_chain` rows under parser version `nvidia-operator-source-capture-v1`.
 - Operator capture payloads preserve `operator_supplied_capture=true`, `live_retrieval=false`, `release_clearance=false` and `relationship_publication=false`.
@@ -3437,6 +3438,8 @@ These are recorded in `artifacts/tests/a202/t1301_operator_source_capture_contra
 ### Files changed
 
 - `scripts/load_operator_source_captures.py`
+- `infra/db/migrations/0011_operator_source_capture_constraints/up.sql`
+- `infra/db/migrations/0011_operator_source_capture_constraints/down.sql`
 - `tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json`
 - `tests/integration/test_database_migrations.py`
 - `Makefile`
