@@ -3484,7 +3484,7 @@ class DomainRepository:
             evidence_rows=evidence_rows,
             total_count=total_count,
             limit=limit,
-            production_context=self.production_context_for_connection(connection),
+            production_context=self.production_context_for_connection(connection, as_of=None),
         )
 
     def relationship_evidence_detail(
@@ -3566,7 +3566,7 @@ class DomainRepository:
             evidence_rows=evidence_rows,
             total_count=total_count,
             limit=limit,
-            production_context=self.production_context_for_connection(connection),
+            production_context=self.production_context_for_connection(connection, as_of=None),
         )
 
     @staticmethod
