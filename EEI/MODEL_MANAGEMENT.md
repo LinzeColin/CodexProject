@@ -45,7 +45,7 @@ python scripts/apply_model_config.py --dry-run --profile config/model_profiles/b
 
 在线修改分五步：草稿输入 -> 即时预览 -> 会话应用 -> 保存不可变版本 -> 激活全局快照。失败不得部分发布。
 
-当前 T1303/A204-A205 生产切片已开始：PostgreSQL 通过 `active_analysis_contexts` 保存全局 active profile、data snapshot、score snapshot、`refresh_token` 和 `refresh_generation`；`POST /v1/scoring/profiles/{profileVersionId}/activate` 在单事务内切换 active profile、创建 score snapshot、写入 operation log 并推进 refresh token；`POST /v1/scoring/profiles/{profileVersionId}/rollback` 使用同一事务内核执行专用回滚；`POST /v1/scoring/recompute` 校验当前 active profile 和 refresh token 后，以 active context 生成幂等 `score_recompute` 后台任务。带过期 `expected_active_profile_version_id` 或 `client_refresh_token` 的请求返回 409，旧 active profile 保持不变。前端模型中心已具备 API-first active-context hydration、事务激活、rollback 控件、recompute 入队控件和 stale refresh mock E2E；首页商业版图 `/v1/explore` 请求也会携带当前 scoring profile id。在线编辑、score_recompute worker handler、worker 数据刷新/outbox 和 live FastAPI/PostgreSQL 跨页面真实 refresh E2E 仍未完成。
+当前 T1303/A204-A205 生产切片已开始：PostgreSQL 通过 `active_analysis_contexts` 保存全局 active profile、data snapshot、score snapshot、`refresh_token` 和 `refresh_generation`；`POST /v1/scoring/profiles/{profileVersionId}/activate` 在单事务内切换 active profile、创建 score snapshot、写入 operation log 并推进 refresh token；`POST /v1/scoring/profiles/{profileVersionId}/rollback` 使用同一事务内核执行专用回滚；`POST /v1/scoring/recompute` 校验当前 active profile 和 refresh token 后，以 active context 生成幂等 `score_recompute` 后台任务；`scripts/job_scheduler.py run-once --job-type score_recompute` 已能执行 worker handler，创建新的 `scoring_runs`、写入 `relationship_fact_candidate` 的 `score_results`、记录 `execute_score_recompute` operation log，并推进 active context refresh token。带过期 `expected_active_profile_version_id` 或 `client_refresh_token` 的请求返回 409，旧 active profile 保持不变；worker 发现 stale context 时以 `skipped_stale_context` 完成，避免过期 job 无限重试。前端模型中心已具备 API-first active-context hydration、事务激活、rollback 控件、recompute 入队控件和 stale refresh mock E2E；首页商业版图 `/v1/explore` 请求也会携带当前 scoring profile id。在线编辑、worker 数据刷新/outbox、部署唤醒和 live FastAPI/PostgreSQL 跨页面真实 refresh E2E 仍未完成。
 
 ## 关键门槛
 
@@ -55,7 +55,7 @@ python scripts/apply_model_config.py --dry-run --profile config/model_profiles/b
 - 推断关系默认需要至少 2 个相互独立来源。
 - 浏览器预览 P95 `<250ms`；会话应用 P95 `<700ms`。
 - 大范围重算继续显示上一个成功快照，完成后原子切换。
-- 当前 `score_recompute` 只完成 API/job 入队、幂等键、409 stale-client 防护和 UI 控件；真正 worker handler 完成前不得把入队状态解释为重算完成。
+- 当前 `score_recompute` 已具备 API/job 入队、幂等键、409 stale-client 防护、UI 控件和 worker 执行 handler；但在部署唤醒、transactional outbox 和 4h/24h soak 完成前，不得把该能力解释为无人值守生产刷新闭环。
 
 ## v5 生产运行参数
 

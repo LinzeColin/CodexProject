@@ -17,7 +17,8 @@
     "dead_letter_jobs table captures terminal failure payload and final attempt metadata.",
     "scripts/job_scheduler.py supports enqueue, lease, heartbeat, graceful release, retry, expired lease recovery, completion and dead-letter transitions.",
     "POST /v1/scoring/recompute enqueues score_recompute jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
-    "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion and score_recompute enqueue idempotency."
+    "scripts/job_scheduler.py registers a score_recompute handler that validates active-context freshness, writes scoring_runs and score_results, advances refresh_token and completes stale jobs as skipped_stale_context instead of retrying forever.",
+    "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion and score_recompute enqueue/execution idempotency."
   ],
   "parameters": {
     "scheduler.lease_ttl_seconds": 900,
@@ -31,15 +32,19 @@
     "specs/domain_schema.sql",
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
+    "apps/api/app/scoring.py",
     "apps/web/src/app/model-activation-client.ts",
     "apps/web/src/app/page.tsx",
     "scripts/job_scheduler.py",
     "scripts/check_database_schema.py",
     "tests/integration/test_database_migrations.py",
+    "tests/unit/test_scoring.py",
     "tests/e2e/state-contract.spec.ts"
   ],
   "local_validation": [
-    "PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check scripts/job_scheduler.py scripts/check_database_schema.py tests/integration/test_database_migrations.py"
+    "python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py",
+    ".venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py tests/unit/test_scoring.py",
+    ".venv/bin/python -m pytest -q tests/unit/test_scoring.py"
   ],
   "remote_validation_required": [
     "GitHub Actions make verify-g2-db must run migrations, schema checks and PostgreSQL integration tests."
@@ -57,7 +62,7 @@
     "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
   },
   "remaining_gaps_before_done": [
-    "Register real score_recompute, curated ingestion and calibration handlers on the scheduler instead of only queueing score_recompute and exercising the noop verification handler.",
+    "Register curated ingestion and calibration handlers on the scheduler; score_recompute now has a real handler but is not yet deployment-woken.",
     "Add deployment-level wake/supervision contract for continuous worker operation.",
     "Run T1307 4h/24h soak tests for timer, retry and recovery stability."
   ],

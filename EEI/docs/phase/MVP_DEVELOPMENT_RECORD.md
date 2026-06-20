@@ -2599,7 +2599,7 @@ Residual risks:
 
 - T1303 -> A204, A205.
 - T1304 -> A206.
-- A204/A205/A206 remain `IN_PROGRESS`, not `DONE`, because online model editing, the actual `score_recompute` worker handler, worker-driven data refresh/outbox, deployment wake and soak evidence remain open.
+- At this enqueue-control slice point, A204/A205/A206 remained `IN_PROGRESS`, not `DONE`, because online model editing, the actual `score_recompute` worker handler, worker-driven data refresh/outbox, deployment wake and soak evidence were still open. The follow-on worker execution slice below addresses the handler portion, while the other blockers remain open.
 
 ### Validation
 
@@ -2615,6 +2615,65 @@ Residual risks:
 
 ### Remaining gaps
 
-- `score_recompute` jobs are enqueued but no worker handler executes score recomputation yet.
+- At this enqueue-control slice point, `score_recompute` jobs were enqueued but no worker handler executed score recomputation yet; the follow-on worker execution slice below addresses that gap.
+- Transactional outbox and worker-driven data snapshot refresh remain open.
+- 4h/24h soak, authn/authz, formal fact publication, multi-object scoring and brand clearance remain v0.1 blockers.
+
+## 2026-06-20 - T1303/T1304/A204-A206 score recompute worker execution
+
+### Scope
+
+- Added `apps/api/app/scoring.py` as the shared relationship fact candidate scoring helper.
+- Updated API score explanation to reuse the shared helper instead of carrying a separate formula path.
+- Added a real `score_recompute` handler to `scripts/job_scheduler.py`:
+  - validates `score-recompute-job-v1` payloads and active-context freshness;
+  - treats stale active profile or stale refresh token as `skipped_stale_context` completion instead of an infinite retry loop;
+  - creates a completed `scoring_runs` row for the active profile and data snapshot;
+  - writes `score_results` for `relationship_fact_candidate` objects using the same confidence/evidence-quality formula as the explanation API;
+  - advances `active_analysis_contexts.refresh_token` and `refresh_generation`;
+  - logs `operation_logs.action_type='execute_score_recompute'`.
+- Extended the PostgreSQL integration contract so API enqueue -> scheduler `run_once` -> scoring run -> score_results -> refresh-token advance is verified in one flow.
+- Added unit coverage for the candidate scoring helper.
+
+### Files changed
+
+- `apps/api/app/scoring.py`
+- `apps/api/app/domain_repository.py`
+- `scripts/job_scheduler.py`
+- `tests/integration/test_database_migrations.py`
+- `tests/unit/test_scoring.py`
+- `README.md`
+- `DEVELOPMENT_STATUS.md`
+- `MODEL_MANAGEMENT.md`
+- `data/function_catalog.csv`
+- `data/development_status_ledger.csv`
+- `data/acceptance_traceability.csv`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `docs/phase/MVP_DEVELOPMENT_RECORD.md`
+- `artifacts/tests/a204/t1303_transactional_model_activation_contract.json`
+- `artifacts/tests/a205/t1303_atomic_refresh_context_contract.json`
+- `artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json`
+- `artifacts/tests/a211/t1308_frontend_workspace_context_contract.json`
+
+### Acceptance mapping
+
+- T1303 -> A204, A205.
+- T1304 -> A206.
+- A204/A205/A206 remain `IN_PROGRESS`, not `DONE`, because online model editing, transactional outbox, worker-driven data snapshot refresh, deployment wake/supervision, ingestion/calibration handlers and 4h/24h soak evidence remain open.
+
+### Validation
+
+- Local `python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py tests/unit/test_scoring.py`: PASS.
+- Local `.venv/bin/python -m pytest -q tests/unit/test_scoring.py`: PASS, 2/2.
+- Local `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify` with non-sandbox browser permission after sandbox Chromium Mach-port denial: PASS; unit tests 15/15.
+- Local `make verify-g2-db`: BLOCKED before tests because Docker is not installed in this environment.
+- PostgreSQL execution proof is expected from GitHub Actions G2 integration because this local environment does not provide Docker/PostgreSQL.
+
+### Remaining gaps
+
+- The scheduler still lacks real curated ingestion and calibration handlers.
+- Continuous deployment wake/supervision is not implemented.
 - Transactional outbox and worker-driven data snapshot refresh remain open.
 - 4h/24h soak, authn/authz, formal fact publication, multi-object scoring and brand clearance remain v0.1 blockers.

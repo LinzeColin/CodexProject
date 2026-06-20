@@ -15,6 +15,7 @@
     "Added POST /v1/scoring/recompute to validate the active profile and refresh token before enqueueing a score_recompute job.",
     "Score recompute requests reuse the existing background_jobs idempotency key contract and log success/conflict results through operation_logs.",
     "Added a model-center Recompute scores control that calls /v1/scoring/recompute with expected_active_profile_version_id and client_refresh_token.",
+    "Added a score_recompute worker handler that validates active context freshness, creates a completed scoring_run, writes relationship_fact_candidate score_results, advances active_analysis_contexts.refresh_token and logs execute_score_recompute.",
     "Added config/model_profiles/supply-chain-v3.json as an inactive immutable candidate profile loaded by the PostgreSQL seed path.",
     "Added live Playwright coverage that activates supply-chain-v3, observes a transaction-created scoring_run snapshot, checks stale refresh semantics and rolls back to balanced-v2 through FastAPI/PostgreSQL.",
     "Added mock Playwright coverage for activate -> stale refresh -> score recompute enqueue -> rollback."
@@ -26,6 +27,7 @@
     "infra/db/migrations/0007_scheduler_job_queue/up.sql",
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
+    "apps/api/app/scoring.py",
     "scripts/check_database_schema.py",
     "scripts/load_seed_catalogs.py",
     "specs/api_contract.yaml",
@@ -33,6 +35,7 @@
     "apps/web/src/app/model-activation-client.ts",
     "apps/web/src/app/use-analysis-context.ts",
     "apps/web/src/app/page.tsx",
+    "tests/unit/test_scoring.py",
     "tests/e2e/saved-view-live.spec.ts",
     "tests/e2e/state-contract.spec.ts"
   ],
@@ -45,11 +48,12 @@
     "npx --yes pnpm@11.8.0 --filter @eei/web typecheck",
     "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.live.config.ts",
     "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A204 and A205\"",
+    ".venv/bin/python -m pytest -q tests/unit/test_scoring.py",
     "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py"
   ],
   "not_closed_scope": [
     "Model-center online profile editing is not complete.",
-    "The score_recompute worker handler, worker-driven data snapshot refresh and transactional outbox remain open."
+    "Worker-driven data snapshot refresh, transactional outbox, deployment wake and long soak proof remain open."
   ],
   "latest_ci_result": {
     "provider": "GitHub Actions",

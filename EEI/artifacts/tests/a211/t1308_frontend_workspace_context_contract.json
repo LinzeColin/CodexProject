@@ -68,5 +68,5 @@
   "remaining_to_close_a211": [
     "broaden live FastAPI/PostgreSQL cross-route proof across the remaining production modules and deployment/auth boundaries"
   ],
-  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter, model-center transaction/recompute controls, live model activation/stale-refresh/rollback, commercial-map /v1/explore context hydration, server graph node/edge rendering, catalog inventory hydration, relationship_fact_candidate score explanation hydration and evidence detail/source-snippet hydration. It does not close the remaining full-module live backend, authn/authz, score_recompute worker handler or deployment proof."
+  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter, model-center transaction/recompute controls, live model activation/stale-refresh/rollback, commercial-map /v1/explore context hydration, server graph node/edge rendering, catalog inventory hydration, relationship_fact_candidate score explanation hydration and evidence detail/source-snippet hydration. It does not close the remaining full-module live backend, authn/authz, transactional outbox, deployment proof or long soak proof."
 }

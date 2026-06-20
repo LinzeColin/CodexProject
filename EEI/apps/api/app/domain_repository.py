@@ -14,6 +14,8 @@ import psycopg
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
+from .scoring import CANDIDATE_SOURCE_THRESHOLD_MIN, candidate_score_metrics
+
 
 class RepositoryError(RuntimeError):
     pass
@@ -64,7 +66,6 @@ GRAPH_HARD_LIMITS = {"max_hops": 2, "max_nodes": 500, "max_edges": 2000, "max_pa
 PATH_RESULT_LIMIT = 8
 GRAPH_QUERY_VERSION = "bounded-recursive-graph-v1"
 SCORING_SERVICE_VERSION = "candidate-score-explanation-v1"
-CANDIDATE_SOURCE_THRESHOLD_MIN = 2
 ACTIVE_REFRESH_MODULES = [
     "business_empire",
     "group_structure",
@@ -3485,35 +3486,16 @@ class DomainRepository:
         profile: dict[str, Any],
         production_context: dict[str, Any],
     ) -> dict[str, Any]:
-        confidence = float(row["confidence"])
-        source_count = int(row["independent_source_count"])
         evidence = row["evidence"] or []
-        source_threshold_ratio = min(
-            source_count / CANDIDATE_SOURCE_THRESHOLD_MIN,
-            1,
+        metrics = candidate_score_metrics(
+            confidence=float(row["confidence"]),
+            independent_source_count=int(row["independent_source_count"]),
+            source_threshold_met=bool(row["source_threshold_met"]),
+            review_status=row["review_status"],
+            publication_status=row["publication_status"],
+            parser_version_present=row["parser_version"] is not None,
+            evidence_present=bool(evidence),
         )
-        raw_score = round(confidence * 100, 2)
-        evidence_quality = round(source_threshold_ratio * 100, 2)
-        adjusted_score = round(raw_score * (evidence_quality / 100), 2)
-        present_inputs = [
-            row["confidence"] is not None,
-            row["independent_source_count"] is not None,
-            row["parser_version"] is not None,
-            row["review_status"] is not None,
-            bool(evidence),
-        ]
-        coverage = round((sum(1 for item in present_inputs if item) / len(present_inputs)) * 100, 2)
-        missing_inputs: list[str] = []
-        if not row["source_threshold_met"]:
-            missing_inputs.append(
-                f"independent_source_threshold>={CANDIDATE_SOURCE_THRESHOLD_MIN}"
-            )
-        if row["review_status"] != "human_verified":
-            missing_inputs.append("human_review_verification")
-        if row["publication_status"] != "published":
-            missing_inputs.append("published_relationship_version")
-        if not evidence:
-            missing_inputs.append("evidence_chain")
         return _jsonable(
             {
                 "object_type": "relationship_fact_candidate",
@@ -3524,40 +3506,15 @@ class DomainRepository:
                 "record_mode": row["record_mode"],
                 "fact_status": row["fact_status"],
                 "publication_status": row["publication_status"],
-                "source_threshold": {
-                    "minimum_independent_sources": CANDIDATE_SOURCE_THRESHOLD_MIN,
-                    "independent_source_count": source_count,
-                    "met": row["source_threshold_met"],
-                },
+                "source_threshold": metrics["source_threshold"],
                 "review_status": row["review_status"],
                 "parser_version": row["parser_version"],
-                "raw_score": raw_score,
-                "evidence_quality": evidence_quality,
-                "adjusted_score": adjusted_score,
-                "coverage": coverage,
-                "contributions": [
-                    {
-                        "input": "candidate_confidence",
-                        "value": confidence,
-                        "score_points": raw_score,
-                    },
-                    {
-                        "input": "independent_source_count",
-                        "value": source_count,
-                        "score_multiplier": source_threshold_ratio,
-                    },
-                    {
-                        "input": "review_status",
-                        "value": row["review_status"],
-                        "publication_gate_passed": row["review_status"] == "human_verified",
-                    },
-                    {
-                        "input": "publication_status",
-                        "value": row["publication_status"],
-                        "included_in_graph_edges": row["publication_status"] == "published",
-                    },
-                ],
-                "missing_inputs": missing_inputs,
+                "raw_score": metrics["raw_score"],
+                "evidence_quality": metrics["evidence_quality"],
+                "adjusted_score": metrics["adjusted_score"],
+                "coverage": metrics["coverage"],
+                "contributions": metrics["contributions"],
+                "missing_inputs": metrics["missing_inputs"],
                 "model_version": f"{profile['model_key']}@{profile['version']}",
                 "profile_version": f"{profile['profile_key']}@{profile['version']}",
                 "profile_version_id": profile["id"],

@@ -54,6 +54,7 @@ apps/api/app/domain_repository.py
 apps/api/app/health.py
 apps/api/app/healthcheck.py
 apps/api/app/main.py
+apps/api/app/scoring.py
 apps/api/app/settings.py
 apps/web/next.config.ts
 apps/web/package.json
@@ -337,6 +338,7 @@ tests/integration/README.md
 tests/integration/test_database_migrations.py
 tests/unit/test_api_health.py
 tests/unit/test_scale_benchmarks.py
+tests/unit/test_scoring.py
 uv.lock
 wireframes/README.md
 wireframes/dashboard_wireframe.png
