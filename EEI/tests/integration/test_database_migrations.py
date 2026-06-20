@@ -809,6 +809,24 @@ def exercise_domain_api_and_repository_contracts() -> None:
     )
     assert evidence_detail["production_context"]["schema_version"] == "production-context-v1"
 
+    source_document_id = next(iter(score_source_document_ids))
+    source_document_score_response = client.get(
+        f"/v1/scoring/explain/source_document/{source_document_id}"
+    )
+    assert source_document_score_response.status_code == 200
+    source_document_score = source_document_score_response.json()
+    assert source_document_score["object_type"] == "source_document"
+    assert source_document_score["object_id"] == source_document_id
+    assert source_document_score["publication_status"] == "evidence_source"
+    assert source_document_score["source_document"]["url"].startswith("https://")
+    assert source_document_score["source_threshold"]["minimum_independent_sources"] == 1
+    assert source_document_score["source_threshold"]["met"] is True
+    assert source_document_score["coverage_summary"]["downstream_evidence_count"] >= 1
+    assert source_document_score["coverage_summary"]["provenance_field_count"] >= 5
+    assert source_document_score["evidence"][0]["source_document_id"] == source_document_id
+    if source_document_score["fact_version"] is None:
+        assert "source_document_fact_version" in source_document_score["missing_inputs"]
+
     relationship_evidence_response = client.get(
         f"/v1/evidence/relationship/{COREWEAVE_NVIDIA_RELATIONSHIP_ID}"
     )
@@ -2481,6 +2499,36 @@ def exercise_transactional_model_activation_contract(
             (UUID(recompute_scoring_run_id),),
         ).fetchone()[0]
         assert score_result_count == recompute_result["scored_objects"]
+        score_result_object_id = connection.execute(
+            """
+            SELECT object_id
+            FROM score_results
+            WHERE scoring_run_id = %s
+              AND object_type = 'relationship_fact_candidate'
+            ORDER BY adjusted_score DESC, object_id
+            LIMIT 1
+            """,
+            (UUID(recompute_scoring_run_id),),
+        ).fetchone()[0]
+
+    score_result_response = client.get(
+        f"/v1/scoring/explain/score_result/{score_result_object_id}"
+    )
+    assert score_result_response.status_code == 200
+    score_result_score = score_result_response.json()
+    assert score_result_score["object_type"] == "score_result"
+    assert score_result_score["object_id"] == str(score_result_object_id)
+    assert score_result_score["scored_object_type"] == "relationship_fact_candidate"
+    assert score_result_score["publication_status"] == "active_score_result"
+    assert score_result_score["score_result"]["scoring_run_id"] == recompute_scoring_run_id
+    assert score_result_score["score_result"]["object_type"] == "relationship_fact_candidate"
+    assert score_result_score["active_context"]["active_scoring_run_id"] == (
+        recompute_scoring_run_id
+    )
+    assert score_result_score["source_threshold"]["met"] is True
+    assert score_result_score["coverage_summary"]["active_context_present"] is True
+    assert score_result_score["raw_score"] == 100
+    assert score_result_score["evidence"] == []
 
     data_refresh_response = client.post(
         "/v1/data/snapshots/refresh",

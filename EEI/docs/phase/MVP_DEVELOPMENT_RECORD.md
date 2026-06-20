@@ -3479,3 +3479,63 @@ These are recorded in `artifacts/tests/a202/t1301_operator_source_capture_contra
 - A202 still needs actual owner approval or second independent-source closure before any real Golden Vertical fact can be production-approved.
 - This loader intentionally does not create `relationship_fact_candidates` or production `relationships`.
 - A206/A209 still need 4h and 24h operator soak evidence for wake, retry, recovery and dead-letter stability.
+
+## 2026-06-21 - T1302/A203 source-document and score-result scoring explain slice
+
+Status: LOCAL VALIDATED; A203 STILL IN PROGRESS
+
+### Scope
+
+- Extended `/v1/scoring/explain/{objectType}/{objectId}` to support `source_document` and `score_result` in addition to `entity`, `event`, `industry`, `relationship_fact_candidate` and `relationship`.
+- Added `source_document_score_metrics` for source provenance health: source tier, provenance-field completeness, parser version, downstream evidence references, optional source-document fact version and active source state.
+- Added `score_result_score_metrics` for score-result health: stored score value fields, contribution rows, missing-input array contract, completed scoring run and active analysis context.
+- Added repository SQL that explains source documents from `sources`, `source_documents`, `raw_source_snapshots`, relationship/event/candidate/ingestion/fact-version evidence references, optional `fact_versions` and current production context.
+- Added repository SQL that explains score results from `score_results`, `scoring_runs`, model/profile versions and `active_analysis_contexts`.
+- Expanded the OpenAPI `objectType` path enum and `ScoreExplanation.object_type` schema enum to the seven supported MVP scoring explain object types.
+- Extended unit tests and the PostgreSQL integration contract assertions for source-document and score-result scoring explanations.
+
+### Parameters and formulas
+
+- `source_document.source_tier_max`: 5.
+- `source_document.minimum_downstream_evidence`: 1.
+- `source_document.provenance_field_count`: 6 fields: source_id, url, content_hash, observed_at, retrieved_at, publisher/title.
+- `source_document` formula: source tier 20 + provenance fields 20 + parser version 15 + downstream evidence 25 + source-document fact version 10 + active source 10; inactive sources apply a 0.75 adjusted-score multiplier.
+- `score_result.required_value_fields`: 4 fields: raw_score, evidence_quality, adjusted_score, coverage.
+- `score_result` formula: stored metric values 35 + contribution records 20 + missing-inputs array contract 10 + completed scoring run 25 + active analysis context 10; incomplete scoring runs apply a 0.70 adjusted-score multiplier.
+- These slice-specific thresholds are recorded in `artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json`. The canonical `data/parameter_catalog.csv`, `data/formula_registry.csv` and `data/threshold_registry.csv` remain at validator-locked row counts until the broader model-governance task explicitly expands the catalogs.
+
+### Files changed
+
+- `apps/api/app/scoring.py`
+- `apps/api/app/domain_repository.py`
+- `specs/api_contract.yaml`
+- `tests/unit/test_scoring.py`
+- `tests/integration/test_database_migrations.py`
+- `artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `README.md`
+- `DEVELOPMENT_STATUS.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `docs/phase/MVP_DEVELOPMENT_RECORD.md`
+
+### Acceptance mapping
+
+- T1302 -> A203.
+- A203 remains `IN_PROGRESS`, not `DONE`.
+- This slice closes the scoring-explain API enum coverage gap for `source_document` and `score_result`.
+
+### Local validation
+
+- `python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_scoring.py`: PASS, 14/14.
+- `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `.env` or `DATABASE_URL`.
+
+### Remaining gaps
+
+- Remote GitHub Actions PostgreSQL/browser/live FastAPI evidence is still required for this slice before it can be treated as CI validated.
+- `score_recompute` still persists `score_results` only for `relationship_fact_candidate` objects. Full recompute persistence for all MVP object families remains part of the broader production scoring engine and T1303/T600-T608 work.
+- A203 still depends on A202 for production-approved live relationship facts and on A209 for 4h/24h soak evidence.

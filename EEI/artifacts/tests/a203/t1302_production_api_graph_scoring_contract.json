@@ -13,7 +13,9 @@
       "GET /v1/scoring/explain/entity/{objectId} supports entity coverage explanations backed by entity identifiers, aliases, relationships, relationship evidence, industry memberships, optional entity fact_versions and production_context.",
       "GET /v1/scoring/explain/event/{objectId} supports event coverage explanations backed by event_participants, event_evidence, source_documents, optional event fact_versions and production_context.",
       "GET /v1/scoring/explain/industry/{objectId} supports industry coverage explanations backed by industry taxonomy hierarchy, entity_industry_memberships, relationship context/evidence, optional industry fact_versions and production_context.",
-      "Integration assertions bind A203 entity, event, industry, candidate and relationship scoring to FastAPI, repository queries, OpenAPI contract and curated fixture evidence.",
+      "GET /v1/scoring/explain/source_document/{objectId} supports source-document provenance explanations backed by sources, source_documents, raw_source_snapshots, downstream evidence references, optional source_document fact_versions and production_context.",
+      "GET /v1/scoring/explain/score_result/{objectId} supports score-result health explanations backed by score_results, scoring_runs, model/profile versions, active_analysis_contexts and production_context.",
+      "Integration assertions bind A203 entity, event, industry, source_document, score_result, candidate and relationship scoring to FastAPI, repository queries, OpenAPI contract and curated fixture evidence.",
       "Frontend commercial-map API-first hydration now posts the current focus, lens-derived layers, as-of date, scoring profile id and 42/64/12 budget to /v1/explore, exposes production_context, coverage and publication-gate metadata with explicit fixture fallback, and renders server-returned nodes/edges in the SVG canvas and graph table when the API response is available.",
       "Production_context now exposes bounded sample relationship_fact_candidates so the frontend can discover a score explanation target without hard-coding database UUIDs.",
       "Frontend production data hydration now loads /v1/catalogs and /v1/scoring/explain/relationship_fact_candidate/{objectId}, surfaces catalog inventory counts, source-of-truth counts, adjusted score, evidence count, missing-input count and publication status, and retains explicit local fallback/error states.",
@@ -23,10 +25,10 @@
       "Frontend Evidence Center now hydrates /v1/evidence/relationship_fact_candidate/{objectId}, exposes evidence/source-document counts, endpoint state and source snippets, and refreshes the production evidence detail when the user clicks 打开证据."
     ],
     "explicitly_not_closed": [
-      "Full production scoring engine for remaining non-relationship object families beyond entity, event and industry remains in T600-T608 and T1303.",
-        "Production-approved live relationship facts remain dependent on T1301/A202 live/full-text ingestion, second-source verification or production owner sign-off.",
-        "Candidate approval, publication into relationships and atomic global refresh remain dependent on the T1301/T1303 production gate.",
-        "4h and 24h soak tests remain in T1307/A209."
+      "The scoring explain API now covers the MVP object_type enum, but score recompute still only persists relationship_fact_candidate score_results until the broader production scoring engine lands in T600-T608 and T1303.",
+      "Production-approved live relationship facts remain dependent on T1301/A202 live/full-text ingestion, second-source verification or production owner sign-off.",
+      "Candidate approval, publication into relationships and atomic global refresh remain dependent on the T1301/T1303 production gate.",
+      "4h and 24h soak tests remain in T1307/A209."
     ]
   },
   "api_contracts": [
@@ -48,7 +50,7 @@
     {
       "path": "/v1/scoring/explain/{objectType}/{objectId}",
       "method": "GET",
-      "contract": "entity, event, industry, relationship_fact_candidate and published relationship score explanations include raw_score, evidence_quality, adjusted_score, coverage, missing_inputs, evidence, model/profile versions and production_context."
+      "contract": "entity, event, industry, source_document, score_result, relationship_fact_candidate and published relationship score explanations include raw_score, evidence_quality, adjusted_score, coverage, missing_inputs, evidence, model/profile versions and production_context."
     },
     {
       "path": "/v1/evidence/{objectType}/{objectId}",
@@ -82,6 +84,18 @@
       "minimum_relationship_context": 3,
       "minimum_relationship_family_context": 3,
       "formula_points": "entity context 20 + relationship context 20 + relationship family diversity 15 + source threshold 15 + taxonomy hierarchy 10 + active industry status 10 + fact version 10, multiplied by active industry status."
+    },
+    "source_document": {
+      "minimum_independent_sources": 1,
+      "minimum_downstream_evidence": 1,
+      "source_tier_max": 5,
+      "provenance_field_count": 6,
+      "formula_points": "source tier 20 + provenance fields 20 + parser version 15 + downstream evidence 25 + source_document fact version 10 + active source 10, multiplied by active source status."
+    },
+    "score_result": {
+      "required_value_fields": 4,
+      "minimum_independent_sources": 0,
+      "formula_points": "stored score values 35 + contribution records 20 + missing-inputs array contract 10 + completed scoring run 25 + active analysis context 10, multiplied by scoring-run completion status."
     }
   },
   "evidence_files": [
@@ -94,6 +108,7 @@
     "data/mock_events.json",
     "scripts/load_synthetic_fixtures.py",
     "specs/api_contract.yaml",
+    "tests/unit/test_scoring.py",
     "tests/integration/test_database_migrations.py",
     "tests/e2e/saved-view-live.spec.ts",
     "tests/e2e/state-contract.spec.ts",
@@ -112,6 +127,12 @@
     ".venv/bin/python -m ruff check apps/api/app/domain_repository.py tests/integration/test_database_migrations.py",
     ".venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py",
     ".venv/bin/python -m pytest -q tests/unit/test_scoring.py",
+    "python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py: PASS after source_document and score_result scoring explain slice",
+    ".venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py: PASS after source_document and score_result scoring explain slice",
+    ".venv/bin/python -m pytest -q tests/unit/test_scoring.py: PASS with 14/14 after source_document and score_result scoring explain slice",
+    ".venv/bin/python scripts/validate_contracts.py: PASS after OpenAPI objectType enum expanded to seven score explanation object types",
+    ".venv/bin/python scripts/validate_v5_production_readiness_sync.py: PASS after source_document and score_result scoring explain slice",
+    ".venv/bin/python -m pytest -q tests/integration/test_database_migrations.py: SKIPPED locally because this host has no DATABASE_URL or .env; remote PostgreSQL proof is required after push",
     "python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py",
     ".venv/bin/python scripts/validate_contracts.py",
     "python3 -m json.tool data/mock_events.json",

@@ -12,6 +12,9 @@ INDUSTRY_SOURCE_THRESHOLD_MIN = 1
 INDUSTRY_ENTITY_CONTEXT_MIN = 3
 INDUSTRY_RELATIONSHIP_CONTEXT_MIN = 3
 INDUSTRY_RELATIONSHIP_FAMILY_CONTEXT_MIN = 3
+SOURCE_DOCUMENT_SOURCE_TIER_MAX = 5
+SOURCE_DOCUMENT_DOWNSTREAM_EVIDENCE_MIN = 1
+SCORE_RESULT_VALUE_FIELD_COUNT = 4
 
 
 def candidate_score_metrics(
@@ -545,6 +548,208 @@ def industry_score_metrics(
                 "input": "industry_fact_version",
                 "value": fact_version_present,
                 "score_points": round(fact_version_ratio * 10, 2),
+            },
+        ],
+        "missing_inputs": missing_inputs,
+    }
+
+
+def source_document_score_metrics(
+    *,
+    source_tier: int,
+    provenance_field_count: int,
+    parser_version_present: bool,
+    downstream_evidence_count: int,
+    fact_version_present: bool,
+    source_active: bool,
+    minimum_downstream_evidence: int = SOURCE_DOCUMENT_DOWNSTREAM_EVIDENCE_MIN,
+) -> dict[str, Any]:
+    minimum_downstream_evidence = max(minimum_downstream_evidence, 1)
+    source_tier = min(max(source_tier, 1), SOURCE_DOCUMENT_SOURCE_TIER_MAX)
+    tier_ratio = (SOURCE_DOCUMENT_SOURCE_TIER_MAX + 1 - source_tier) / (
+        SOURCE_DOCUMENT_SOURCE_TIER_MAX
+    )
+    provenance_ratio = min(provenance_field_count / 6, 1)
+    parser_ratio = 1 if parser_version_present else 0
+    downstream_ratio = min(downstream_evidence_count / minimum_downstream_evidence, 1)
+    fact_version_ratio = 1 if fact_version_present else 0
+    active_ratio = 1 if source_active else 0
+    raw_score = round(
+        (tier_ratio * 20)
+        + (provenance_ratio * 20)
+        + (parser_ratio * 15)
+        + (downstream_ratio * 25)
+        + (fact_version_ratio * 10)
+        + (active_ratio * 10),
+        2,
+    )
+    evidence_quality = round(((tier_ratio * 0.4) + (downstream_ratio * 0.6)) * 100, 2)
+    adjusted_score = round(raw_score * (1.0 if source_active else 0.75), 2)
+    present_inputs = [
+        source_tier <= 2,
+        provenance_field_count >= 6,
+        parser_version_present,
+        downstream_evidence_count >= minimum_downstream_evidence,
+        fact_version_present,
+        source_active,
+    ]
+    coverage = round((sum(1 for item in present_inputs if item) / len(present_inputs)) * 100, 2)
+    missing_inputs: list[str] = []
+    if source_tier > 2:
+        missing_inputs.append("tier_1_or_2_source")
+    if provenance_field_count < 6:
+        missing_inputs.append("source_document_provenance_fields")
+    if not parser_version_present:
+        missing_inputs.append("source_document_parser_version")
+    if downstream_evidence_count < minimum_downstream_evidence:
+        missing_inputs.append(
+            f"source_document_downstream_evidence>={minimum_downstream_evidence}"
+        )
+    if not fact_version_present:
+        missing_inputs.append("source_document_fact_version")
+    if not source_active:
+        missing_inputs.append("active_source")
+    return {
+        "source_threshold": {
+            "minimum_independent_sources": 1,
+            "independent_source_count": 1 if downstream_evidence_count else 0,
+            "met": downstream_evidence_count >= minimum_downstream_evidence,
+        },
+        "raw_score": raw_score,
+        "evidence_quality": evidence_quality,
+        "adjusted_score": adjusted_score,
+        "coverage": coverage,
+        "contributions": [
+            {
+                "input": "source_tier",
+                "value": source_tier,
+                "score_points": round(tier_ratio * 20, 2),
+            },
+            {
+                "input": "provenance_field_count",
+                "value": provenance_field_count,
+                "minimum_context_count": 6,
+                "score_points": round(provenance_ratio * 20, 2),
+            },
+            {
+                "input": "parser_version",
+                "value": parser_version_present,
+                "score_points": round(parser_ratio * 15, 2),
+            },
+            {
+                "input": "downstream_evidence_count",
+                "value": downstream_evidence_count,
+                "minimum_context_count": minimum_downstream_evidence,
+                "score_points": round(downstream_ratio * 25, 2),
+            },
+            {
+                "input": "source_document_fact_version",
+                "value": fact_version_present,
+                "score_points": round(fact_version_ratio * 10, 2),
+            },
+            {
+                "input": "source_active",
+                "value": source_active,
+                "score_points": round(active_ratio * 10, 2),
+            },
+        ],
+        "missing_inputs": missing_inputs,
+    }
+
+
+def score_result_score_metrics(
+    *,
+    raw_score_present: bool,
+    evidence_quality_present: bool,
+    adjusted_score_present: bool,
+    coverage_present: bool,
+    contribution_count: int,
+    missing_inputs_is_array: bool,
+    scoring_run_status: str,
+    active_context_present: bool,
+) -> dict[str, Any]:
+    value_field_count = sum(
+        1
+        for item in [
+            raw_score_present,
+            evidence_quality_present,
+            adjusted_score_present,
+            coverage_present,
+        ]
+        if item
+    )
+    values_ratio = value_field_count / SCORE_RESULT_VALUE_FIELD_COUNT
+    contribution_ratio = 1 if contribution_count > 0 else 0
+    missing_inputs_ratio = 1 if missing_inputs_is_array else 0
+    completed_run = scoring_run_status == "completed"
+    run_ratio = 1 if completed_run else 0
+    active_ratio = 1 if active_context_present else 0
+    raw_score = round(
+        (values_ratio * 35)
+        + (contribution_ratio * 20)
+        + (missing_inputs_ratio * 10)
+        + (run_ratio * 25)
+        + (active_ratio * 10),
+        2,
+    )
+    evidence_quality = round(values_ratio * 100, 2)
+    adjusted_score = round(raw_score * (1.0 if completed_run else 0.7), 2)
+    present_inputs = [
+        value_field_count == SCORE_RESULT_VALUE_FIELD_COUNT,
+        contribution_count > 0,
+        missing_inputs_is_array,
+        bool(scoring_run_status),
+        completed_run,
+        active_context_present,
+    ]
+    coverage = round((sum(1 for item in present_inputs if item) / len(present_inputs)) * 100, 2)
+    missing_inputs: list[str] = []
+    if value_field_count < SCORE_RESULT_VALUE_FIELD_COUNT:
+        missing_inputs.append("score_result_metric_values")
+    if contribution_count <= 0:
+        missing_inputs.append("score_result_contributions")
+    if not missing_inputs_is_array:
+        missing_inputs.append("score_result_missing_inputs_array")
+    if not completed_run:
+        missing_inputs.append("completed_scoring_run")
+    if not active_context_present:
+        missing_inputs.append("active_scoring_context")
+    return {
+        "source_threshold": {
+            "minimum_independent_sources": 0,
+            "independent_source_count": 0,
+            "met": True,
+        },
+        "raw_score": raw_score,
+        "evidence_quality": evidence_quality,
+        "adjusted_score": adjusted_score,
+        "coverage": coverage,
+        "contributions": [
+            {
+                "input": "score_result_metric_values",
+                "value": value_field_count,
+                "required_value_count": SCORE_RESULT_VALUE_FIELD_COUNT,
+                "score_points": round(values_ratio * 35, 2),
+            },
+            {
+                "input": "score_result_contribution_count",
+                "value": contribution_count,
+                "score_points": round(contribution_ratio * 20, 2),
+            },
+            {
+                "input": "score_result_missing_inputs_array",
+                "value": missing_inputs_is_array,
+                "score_points": round(missing_inputs_ratio * 10, 2),
+            },
+            {
+                "input": "scoring_run_status",
+                "value": scoring_run_status,
+                "score_points": round(run_ratio * 25, 2),
+            },
+            {
+                "input": "active_scoring_context",
+                "value": active_context_present,
+                "score_points": round(active_ratio * 10, 2),
             },
         ],
         "missing_inputs": missing_inputs,
