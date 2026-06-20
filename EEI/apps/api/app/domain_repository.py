@@ -58,6 +58,7 @@ def _escape_like(value: str) -> str:
 
 ROOT = Path(__file__).resolve().parents[3]
 EXPLORATION_STATE_VERSION = "exploration-state-v1"
+SAVED_VIEW_SCHEMA_VERSION = "saved-view-v1"
 DEFAULT_GRAPH_BUDGET = {"max_nodes": 42, "max_edges": 64, "expand_nodes": 12}
 GRAPH_HARD_LIMITS = {"max_hops": 2, "max_nodes": 500, "max_edges": 2000, "max_path_length": 8}
 PATH_RESULT_LIMIT = 8
@@ -2300,6 +2301,464 @@ class DomainRepository:
         ).fetchone()
         if row is None:
             raise NotFoundError(f"Watchlist not found: {watchlist_id}")
+
+    def saved_view_payload(
+        self,
+        row: dict[str, Any],
+        *,
+        versions: list[dict[str, Any]] | None = None,
+    ) -> dict[str, Any]:
+        payload = {
+            "id": row["id"],
+            "namespace": row["namespace"],
+            "workspace_key": row["workspace_key"],
+            "name": row["name"],
+            "description": row["description"],
+            "state": row["state"],
+            "schema_version": row["schema_version"],
+            "current_version": row["current_version"],
+            "active": row["active"],
+            "created_by": row["created_by"],
+            "updated_by": row["updated_by"],
+            "created_at": row["created_at"],
+            "updated_at": row["updated_at"],
+            "last_restored_at": row["last_restored_at"],
+            "metadata": row["metadata"],
+            "version_count": row.get("version_count"),
+        }
+        if versions is not None:
+            payload["versions"] = versions
+            payload["version_count"] = len(versions)
+        return _jsonable(payload)
+
+    def saved_view_version_payload(self, row: dict[str, Any]) -> dict[str, Any]:
+        return _jsonable(
+            {
+                "id": row["id"],
+                "saved_view_id": row["saved_view_id"],
+                "version_no": row["version_no"],
+                "state": row["state"],
+                "schema_version": row["schema_version"],
+                "action_type": row["action_type"],
+                "restored_from_version_no": row["restored_from_version_no"],
+                "change_note": row["change_note"],
+                "created_by": row["created_by"],
+                "created_at": row["created_at"],
+                "metadata": row["metadata"],
+            }
+        )
+
+    def list_saved_views(
+        self,
+        *,
+        namespace: str = "local_user",
+        workspace_key: str = "default",
+        include_inactive: bool = False,
+    ) -> list[dict[str, Any]]:
+        with self.connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT sv.*,
+                       (
+                         SELECT count(*)::int
+                         FROM saved_view_versions svv
+                         WHERE svv.saved_view_id = sv.id
+                       ) AS version_count
+                FROM saved_views sv
+                WHERE sv.namespace = %s
+                  AND sv.workspace_key = %s
+                  AND (%s = true OR sv.active = true)
+                ORDER BY sv.updated_at DESC, sv.name
+                """,
+                (namespace, workspace_key, include_inactive),
+            ).fetchall()
+        return [self.saved_view_payload(row) for row in rows]
+
+    def get_saved_view(self, saved_view_id: UUID) -> dict[str, Any]:
+        with self.connect() as connection:
+            row = self._saved_view_row(connection, saved_view_id, for_update=False)
+            versions = self._saved_view_versions(connection, saved_view_id)
+        return self.saved_view_payload(row, versions=versions)
+
+    def create_saved_view(
+        self,
+        *,
+        name: str,
+        state: dict[str, Any],
+        description: str | None = None,
+        workspace_key: str = "default",
+        schema_version: str = SAVED_VIEW_SCHEMA_VERSION,
+        change_note: str | None = None,
+        metadata: dict[str, Any] | None = None,
+        actor: str = "local_user",
+    ) -> dict[str, Any]:
+        conflict_detail: dict[str, Any] | None = None
+        saved_view_id: UUID | None = None
+        with self.connect() as connection:
+            existing = connection.execute(
+                """
+                SELECT id, current_version
+                FROM saved_views
+                WHERE namespace = %s AND workspace_key = %s AND name = %s
+                """,
+                (actor, workspace_key, name),
+            ).fetchone()
+            if existing is not None:
+                conflict_detail = {
+                    "schema_version": "saved-view-conflict-v1",
+                    "status": "conflict",
+                    "reason": "saved_view_name_exists",
+                    "saved_view_id": existing["id"],
+                    "actual_version": existing["current_version"],
+                    "workspace_key": workspace_key,
+                    "name": name,
+                }
+                self.log_operation(
+                    connection,
+                    actor=actor,
+                    action_type="create_saved_view",
+                    object_type="saved_view",
+                    object_id=existing["id"],
+                    old_value=dict(existing),
+                    new_value=None,
+                    diff=conflict_detail,
+                    reason="Saved view create rejected because name already exists",
+                    result_status="conflict",
+                )
+            else:
+                row = connection.execute(
+                    """
+                    INSERT INTO saved_views(
+                      namespace, workspace_key, name, description, state, schema_version,
+                      current_version, created_by, updated_by, metadata
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, 1, %s, %s, %s)
+                    RETURNING *
+                    """,
+                    (
+                        actor,
+                        workspace_key,
+                        name,
+                        description,
+                        Jsonb(state),
+                        schema_version,
+                        actor,
+                        actor,
+                        Jsonb(metadata or {}),
+                    ),
+                ).fetchone()
+                saved_view_id = row["id"]
+                version_row = connection.execute(
+                    """
+                    INSERT INTO saved_view_versions(
+                      saved_view_id, version_no, state, schema_version, action_type,
+                      change_note, created_by, metadata
+                    )
+                    VALUES (%s, 1, %s, %s, 'create', %s, %s, %s)
+                    RETURNING *
+                    """,
+                    (
+                        saved_view_id,
+                        Jsonb(state),
+                        schema_version,
+                        change_note,
+                        actor,
+                        Jsonb(metadata or {}),
+                    ),
+                ).fetchone()
+                self.log_operation(
+                    connection,
+                    actor=actor,
+                    action_type="create_saved_view",
+                    object_type="saved_view",
+                    object_id=saved_view_id,
+                    old_value=None,
+                    new_value=self.saved_view_payload(row, versions=[version_row]),
+                    diff={"version_no": 1, "schema_version": schema_version},
+                    reason=change_note or "API create saved view",
+                )
+        if conflict_detail is not None:
+            raise ConflictError(conflict_detail)
+        if saved_view_id is None:
+            raise RepositoryError("Saved view create did not return an id")
+        return self.get_saved_view(saved_view_id)
+
+    def update_saved_view(
+        self,
+        saved_view_id: UUID,
+        *,
+        expected_version: int,
+        state: dict[str, Any],
+        name: str | None = None,
+        description: str | None = None,
+        schema_version: str = SAVED_VIEW_SCHEMA_VERSION,
+        change_note: str | None = None,
+        metadata: dict[str, Any] | None = None,
+        actor: str = "local_user",
+    ) -> dict[str, Any]:
+        conflict_detail: dict[str, Any] | None = None
+        with self.connect() as connection:
+            current = self._saved_view_row(connection, saved_view_id, for_update=True)
+            actual_version = int(current["current_version"])
+            if actual_version != expected_version:
+                conflict_detail = self._saved_view_conflict_detail(
+                    saved_view_id=saved_view_id,
+                    reason="stale_saved_view_version",
+                    expected_version=expected_version,
+                    actual_version=actual_version,
+                )
+                self.log_operation(
+                    connection,
+                    actor=actor,
+                    action_type="update_saved_view",
+                    object_type="saved_view",
+                    object_id=saved_view_id,
+                    old_value=dict(current),
+                    new_value={"state": state, "schema_version": schema_version},
+                    diff=conflict_detail,
+                    reason=change_note or "Saved view update rejected by optimistic lock",
+                    result_status="conflict",
+                )
+            else:
+                next_version = actual_version + 1
+                row = connection.execute(
+                    """
+                    UPDATE saved_views
+                    SET name = COALESCE(%s, name),
+                        description = COALESCE(%s, description),
+                        state = %s,
+                        schema_version = %s,
+                        current_version = %s,
+                        updated_by = %s,
+                        updated_at = now(),
+                        metadata = %s
+                    WHERE id = %s
+                    RETURNING *
+                    """,
+                    (
+                        name,
+                        description,
+                        Jsonb(state),
+                        schema_version,
+                        next_version,
+                        actor,
+                        Jsonb(metadata or current["metadata"] or {}),
+                        saved_view_id,
+                    ),
+                ).fetchone()
+                version_row = connection.execute(
+                    """
+                    INSERT INTO saved_view_versions(
+                      saved_view_id, version_no, state, schema_version, action_type,
+                      change_note, created_by, metadata
+                    )
+                    VALUES (%s, %s, %s, %s, 'update', %s, %s, %s)
+                    RETURNING *
+                    """,
+                    (
+                        saved_view_id,
+                        next_version,
+                        Jsonb(state),
+                        schema_version,
+                        change_note,
+                        actor,
+                        Jsonb(metadata or {}),
+                    ),
+                ).fetchone()
+                self.log_operation(
+                    connection,
+                    actor=actor,
+                    action_type="update_saved_view",
+                    object_type="saved_view",
+                    object_id=saved_view_id,
+                    old_value=dict(current),
+                    new_value=self.saved_view_payload(row, versions=[version_row]),
+                    diff={"expected_version": expected_version, "next_version": next_version},
+                    reason=change_note or "API update saved view",
+                )
+        if conflict_detail is not None:
+            raise ConflictError(conflict_detail)
+        return self.get_saved_view(saved_view_id)
+
+    def restore_saved_view(
+        self,
+        saved_view_id: UUID,
+        *,
+        target_version: int,
+        expected_version: int,
+        change_note: str | None = None,
+        actor: str = "local_user",
+    ) -> dict[str, Any]:
+        conflict_detail: dict[str, Any] | None = None
+        with self.connect() as connection:
+            current = self._saved_view_row(connection, saved_view_id, for_update=True)
+            target = connection.execute(
+                """
+                SELECT *
+                FROM saved_view_versions
+                WHERE saved_view_id = %s AND version_no = %s
+                """,
+                (saved_view_id, target_version),
+            ).fetchone()
+            if target is None:
+                raise NotFoundError(
+                    f"Saved view version not found: {saved_view_id}:{target_version}"
+                )
+            actual_version = int(current["current_version"])
+            if actual_version != expected_version:
+                conflict_detail = self._saved_view_conflict_detail(
+                    saved_view_id=saved_view_id,
+                    reason="stale_saved_view_version",
+                    expected_version=expected_version,
+                    actual_version=actual_version,
+                    target_version=target_version,
+                )
+                self.log_operation(
+                    connection,
+                    actor=actor,
+                    action_type="restore_saved_view",
+                    object_type="saved_view",
+                    object_id=saved_view_id,
+                    old_value=dict(current),
+                    new_value=dict(target),
+                    diff=conflict_detail,
+                    reason=change_note or "Saved view restore rejected by optimistic lock",
+                    result_status="conflict",
+                )
+            else:
+                next_version = actual_version + 1
+                row = connection.execute(
+                    """
+                    UPDATE saved_views
+                    SET state = %s,
+                        schema_version = %s,
+                        current_version = %s,
+                        updated_by = %s,
+                        updated_at = now(),
+                        last_restored_at = now()
+                    WHERE id = %s
+                    RETURNING *
+                    """,
+                    (
+                        Jsonb(target["state"]),
+                        target["schema_version"],
+                        next_version,
+                        actor,
+                        saved_view_id,
+                    ),
+                ).fetchone()
+                version_row = connection.execute(
+                    """
+                    INSERT INTO saved_view_versions(
+                      saved_view_id, version_no, state, schema_version, action_type,
+                      restored_from_version_no, change_note, created_by, metadata
+                    )
+                    VALUES (%s, %s, %s, %s, 'restore', %s, %s, %s, %s)
+                    RETURNING *
+                    """,
+                    (
+                        saved_view_id,
+                        next_version,
+                        Jsonb(target["state"]),
+                        target["schema_version"],
+                        target_version,
+                        change_note,
+                        actor,
+                        Jsonb(
+                            {
+                                "restored_from_version_id": str(target["id"]),
+                                "previous_version_no": actual_version,
+                            }
+                        ),
+                    ),
+                ).fetchone()
+                self.log_operation(
+                    connection,
+                    actor=actor,
+                    action_type="restore_saved_view",
+                    object_type="saved_view",
+                    object_id=saved_view_id,
+                    old_value=dict(current),
+                    new_value=self.saved_view_payload(row, versions=[version_row]),
+                    diff={
+                        "expected_version": expected_version,
+                        "target_version": target_version,
+                        "next_version": next_version,
+                    },
+                    reason=change_note or "API restore saved view version",
+                )
+        if conflict_detail is not None:
+            raise ConflictError(conflict_detail)
+        return self.get_saved_view(saved_view_id)
+
+    def list_saved_view_versions(self, saved_view_id: UUID) -> list[dict[str, Any]]:
+        with self.connect() as connection:
+            self._saved_view_row(connection, saved_view_id, for_update=False)
+            return self._saved_view_versions(connection, saved_view_id)
+
+    def _saved_view_row(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        saved_view_id: UUID,
+        *,
+        for_update: bool,
+    ) -> dict[str, Any]:
+        lock_clause = "FOR UPDATE" if for_update else ""
+        row = connection.execute(
+            f"""
+            SELECT sv.*,
+                   (
+                     SELECT count(*)::int
+                     FROM saved_view_versions svv
+                     WHERE svv.saved_view_id = sv.id
+                   ) AS version_count
+            FROM saved_views sv
+            WHERE sv.id = %s
+            {lock_clause}
+            """,
+            (saved_view_id,),
+        ).fetchone()
+        if row is None:
+            raise NotFoundError(f"Saved view not found: {saved_view_id}")
+        return dict(row)
+
+    def _saved_view_versions(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        saved_view_id: UUID,
+    ) -> list[dict[str, Any]]:
+        rows = connection.execute(
+            """
+            SELECT *
+            FROM saved_view_versions
+            WHERE saved_view_id = %s
+            ORDER BY version_no DESC
+            """,
+            (saved_view_id,),
+        ).fetchall()
+        return [self.saved_view_version_payload(row) for row in rows]
+
+    def _saved_view_conflict_detail(
+        self,
+        *,
+        saved_view_id: UUID,
+        reason: str,
+        expected_version: int,
+        actual_version: int,
+        target_version: int | None = None,
+    ) -> dict[str, Any]:
+        detail: dict[str, Any] = {
+            "schema_version": "saved-view-conflict-v1",
+            "status": "conflict",
+            "reason": reason,
+            "saved_view_id": saved_view_id,
+            "expected_version": expected_version,
+            "actual_version": actual_version,
+            "recovery": "fetch_latest_saved_view_or_restore_from_versions",
+        }
+        if target_version is not None:
+            detail["target_version"] = target_version
+        return detail
 
     def list_home(self) -> dict[str, Any]:
         with self.connect() as connection:

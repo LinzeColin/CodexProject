@@ -98,6 +98,7 @@ artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json
 artifacts/tests/a204/t1303_transactional_model_activation_contract.json
 artifacts/tests/a205/t1303_atomic_refresh_context_contract.json
 artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json
+artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json
 brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
 config/brand_policy.yaml
 config/model_profiles/balanced-v2.json
@@ -226,6 +227,8 @@ infra/db/migrations/0006_model_activation_refresh_state/down.sql
 infra/db/migrations/0006_model_activation_refresh_state/up.sql
 infra/db/migrations/0007_scheduler_job_queue/down.sql
 infra/db/migrations/0007_scheduler_job_queue/up.sql
+infra/db/migrations/0008_server_saved_views/down.sql
+infra/db/migrations/0008_server_saved_views/up.sql
 infra/db/migrations/README.md
 infra/db/seeds/README.md
 infra/docker/README.md

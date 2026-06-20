@@ -1,0 +1,44 @@
+{
+  "schema_version": "eei-acceptance-evidence-v1",
+  "system_name": "EEI",
+  "task_id": "T1305",
+  "acceptance_ids": ["A207"],
+  "status": "PARTIAL_SERVER_CONTRACT",
+  "generated_at": "2026-06-20T00:00:00Z",
+  "implemented_contracts": [
+    "PostgreSQL saved_views table with workspace namespace, state payload, current_version and reversible migration",
+    "PostgreSQL saved_view_versions immutable version chain with create/update/restore action_type",
+    "FastAPI /v1/saved-views create/list/get/update/version-list/restore endpoints",
+    "Optimistic expected_version conflict response through HTTP 409 and saved-view-conflict-v1 detail",
+    "Recovery by restoring a historical version into a new current version",
+    "operation_logs success/conflict audit rows for create/update/restore"
+  ],
+  "files": [
+    "infra/db/migrations/0008_server_saved_views/up.sql",
+    "infra/db/migrations/0008_server_saved_views/down.sql",
+    "apps/api/app/domain.py",
+    "apps/api/app/domain_repository.py",
+    "scripts/check_database_schema.py",
+    "specs/api_contract.yaml",
+    "tests/integration/test_database_migrations.py"
+  ],
+  "test_contract": {
+    "integration_helper": "exercise_server_saved_view_contracts",
+    "checks": [
+      "create saved view version 1",
+      "reject duplicate workspace/name with 409",
+      "update from expected_version 1 to current_version 2",
+      "reject stale update with expected_version 1 after current_version 2",
+      "list immutable versions newest first",
+      "restore target_version 1 from expected_version 2 into current_version 3",
+      "reject stale restore after current_version advances to 3",
+      "assert saved_view_versions action sequence create/update/restore",
+      "assert operation_logs records three success and three conflict rows"
+    ]
+  },
+  "remaining_to_close_a207": [
+    "Wire production frontend saved-view controls to /v1/saved-views instead of localStorage only",
+    "Add real multi-session browser E2E using two contexts against the API-backed saved-view contract",
+    "Add user/workspace authn/authz boundary before public multi-user deployment"
+  ]
+}
