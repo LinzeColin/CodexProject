@@ -13,6 +13,7 @@
     "saved-view API-first adapter with explicit local fallback and server mock E2E coverage",
     "model-center API-first active-context hydration, transaction activation, stale refresh and rollback controls with server mock E2E coverage",
     "commercial-map /v1/explore API-first hydration with production_context, graph budget, coverage and publication-gate metadata surfaced in the UI",
+    "commercial-map server node/edge rendering in the SVG canvas and graph table when /v1/explore returns a usable server graph",
     "Playwright coverage for WorkspaceContext, real controls and disabled unfinished entries"
   ],
   "evidence_files": [
@@ -28,7 +29,7 @@
   "verified_commands": [
     "PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck",
     "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1",
-    "PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web test:e2e"
+    "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts --workers=1"
   ],
   "verified_result": {
     "typecheck": "PASS",
@@ -36,9 +37,8 @@
     "playwright_tests_passed": 31
   },
   "remaining_to_close_a211": [
-    "replace fixture graph rendering with server graph node/edge data once live backend hydration is accepted",
     "run cross-route E2E with live FastAPI/PostgreSQL backend and stale-client refresh semantics",
     "connect remaining production API hydration for evidence, catalogs and score explanations"
   ],
-  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter, model-center transaction controls and commercial-map /v1/explore context hydration. It does not close full live backend cross-route proof or replacement of all fixture projections with production API data."
+  "mvp_boundary_note": "This artifact proves the production frontend shell, route/control state, persistence contract, saved-view API adapter, model-center transaction controls, commercial-map /v1/explore context hydration and server graph node/edge rendering. It does not close full live backend cross-route proof or replacement of evidence/catalog/score fixture projections with production API data."
 }

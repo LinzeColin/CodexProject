@@ -45,8 +45,8 @@ export type ExploreGraphRecord = {
     budget: ExploreGraphBudget;
     hard_limits?: Record<string, number>;
   };
-  nodes: unknown[];
-  edges: unknown[];
+  nodes: ExploreGraphNodeRecord[];
+  edges: ExploreGraphEdgeRecord[];
   truncated: boolean;
   truncation: {
     applied: boolean;
@@ -114,6 +114,29 @@ export type ExploreGraphRecord = {
       publish_requires_human_review: boolean;
     };
   };
+};
+
+export type ExploreGraphNodeRecord = {
+  id: string;
+  canonical_name: string;
+  entity_type?: string;
+  fixture_notice?: string | null;
+  synthetic?: boolean | null;
+};
+
+export type ExploreGraphEdgeRecord = {
+  id: string;
+  subject_id: string;
+  object_id: string;
+  relationship_type: string;
+  relationship_family: string;
+  status?: string;
+  confidence?: number | null;
+  valid_from?: string | null;
+  valid_to?: string | null;
+  evidence_count?: number;
+  synthetic?: boolean | null;
+  fixture_notice?: string | null;
 };
 
 export type ExploreGraphSyncResult =
@@ -195,12 +218,42 @@ function isExploreGraphRecord(value: unknown): value is ExploreGraphRecord {
     typeof record.query === "object" &&
     record.query !== null &&
     Array.isArray(record.nodes) &&
+    record.nodes.every(isExploreGraphNodeRecord) &&
     Array.isArray(record.edges) &&
+    record.edges.every(isExploreGraphEdgeRecord) &&
     typeof record.coverage === "object" &&
     record.coverage !== null &&
     typeof record.production_context === "object" &&
     record.production_context !== null &&
     record.production_context.schema_version === "production-context-v1"
+  );
+}
+
+function isExploreGraphNodeRecord(value: unknown): value is ExploreGraphNodeRecord {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    typeof value.id === "string" &&
+    "canonical_name" in value &&
+    typeof value.canonical_name === "string"
+  );
+}
+
+function isExploreGraphEdgeRecord(value: unknown): value is ExploreGraphEdgeRecord {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    typeof value.id === "string" &&
+    "subject_id" in value &&
+    typeof value.subject_id === "string" &&
+    "object_id" in value &&
+    typeof value.object_id === "string" &&
+    "relationship_type" in value &&
+    typeof value.relationship_type === "string" &&
+    "relationship_family" in value &&
+    typeof value.relationship_family === "string"
   );
 }
 

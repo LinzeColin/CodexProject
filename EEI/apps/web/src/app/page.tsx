@@ -184,6 +184,37 @@ type MapEdge = {
   fixtureNotice: string;
 };
 
+type GraphRenderNode = {
+  key: string;
+  label: string;
+  shortLabel: string;
+  stage: string;
+  role: string;
+  x: number;
+  y: number;
+  zone: Zone;
+  centerable: boolean;
+  source: "fixture" | "server";
+  localKey?: NodeKey;
+  entityType?: string;
+  fixtureNotice?: string | null;
+  aggregateCount?: number;
+  groupMembers?: string[];
+};
+
+type GraphRenderEdge = {
+  id: string;
+  from: string;
+  to: string;
+  label: string;
+  stage: string;
+  lens: RelationshipLens;
+  fixtureNotice: string;
+  evidenceCount: number;
+  observedAt: string;
+  source: "fixture" | "server";
+};
+
 type FocusScenario = {
   focus: FocusKey;
   heading: string;
@@ -855,6 +886,160 @@ function node(
   };
 }
 
+function fixtureRenderNode(mapNode: MapNode): GraphRenderNode {
+  return {
+    ...mapNode,
+    key: mapNode.key,
+    source: "fixture",
+    localKey: mapNode.key,
+    fixtureNotice: "Synthetic fixture visual projection."
+  };
+}
+
+function fixtureRenderEdge(edge: MapEdge, observedAt: string): GraphRenderEdge {
+  return {
+    id: `${edge.from}-${edge.to}`,
+    from: edge.from,
+    to: edge.to,
+    label: edge.label,
+    stage: edge.stage,
+    lens: edge.lens,
+    fixtureNotice: edge.fixtureNotice,
+    evidenceCount: 1,
+    observedAt,
+    source: "fixture"
+  };
+}
+
+function serverGraphRenderNodes(
+  graph: ExploreGraphRecord | null,
+  focusEntityId: string
+): GraphRenderNode[] | null {
+  if (!graph || graph.nodes.length === 0) return null;
+  const familyByNode = new Map<string, string>();
+  for (const edge of graph.edges) {
+    if (!familyByNode.has(edge.subject_id)) familyByNode.set(edge.subject_id, edge.relationship_family);
+    if (!familyByNode.has(edge.object_id)) familyByNode.set(edge.object_id, edge.relationship_family);
+  }
+  const nodesByLane = new Map<Zone, ExploreGraphRecord["nodes"]>();
+  for (const item of graph.nodes) {
+    const zone = serverNodeZone(item.id, focusEntityId, item.entity_type, familyByNode.get(item.id));
+    const next = nodesByLane.get(zone) ?? [];
+    next.push(item);
+    nodesByLane.set(zone, next);
+  }
+  return graph.nodes.map((item) => {
+    const zone = serverNodeZone(item.id, focusEntityId, item.entity_type, familyByNode.get(item.id));
+    const lane = nodesByLane.get(zone) ?? [item];
+    const laneIndex = lane.findIndex((candidate) => candidate.id === item.id);
+    const laneCount = lane.length;
+    const position = serverNodePosition(zone, Math.max(laneIndex, 0), Math.max(laneCount, 1));
+    const localKey = serverLocalKeyForEntityId(item.id);
+    return {
+      key: item.id,
+      label: item.canonical_name,
+      shortLabel: shortServerLabel(item.canonical_name),
+      stage: serverNodeStage(item.entity_type, familyByNode.get(item.id)),
+      role: item.id === focusEntityId ? "server focus entity" : "server returned entity",
+      x: position.x,
+      y: position.y,
+      zone,
+      centerable: Boolean(localKey),
+      source: "server",
+      localKey,
+      entityType: item.entity_type,
+      fixtureNotice: item.fixture_notice
+    };
+  });
+}
+
+function serverGraphRenderEdges(
+  graph: ExploreGraphRecord | null,
+  renderedNodes: GraphRenderNode[],
+  observedAt: string
+): GraphRenderEdge[] | null {
+  if (!graph) return null;
+  const nodeKeys = new Set(renderedNodes.map((item) => item.key));
+  const edges = graph.edges
+    .filter((edge) => nodeKeys.has(edge.subject_id) && nodeKeys.has(edge.object_id))
+    .map((edge) => ({
+      id: edge.id,
+      from: edge.subject_id,
+      to: edge.object_id,
+      label: relationshipLabel(edge.relationship_type),
+      stage: edge.relationship_family.replaceAll("_", " "),
+      lens: lensForRelationshipFamily(edge.relationship_family),
+      fixtureNotice: edge.fixture_notice ?? `${edge.status ?? "relationship"}; evidence=${edge.evidence_count ?? 0}`,
+      evidenceCount: edge.evidence_count ?? 0,
+      observedAt,
+      source: "server" as const
+    }));
+  return edges.length > 0 ? edges : null;
+}
+
+function serverNodeZone(
+  id: string,
+  focusEntityId: string,
+  entityType: string | undefined,
+  family: string | undefined
+): Zone {
+  if (id === focusEntityId) return "focus";
+  if (entityType === "facility" || entityType === "asset") return "infrastructure";
+  if (family === "capital_financing" || family === "ownership_control" || family === "mergers_acquisitions") {
+    return "capital";
+  }
+  if (family === "government_policy") return "policy";
+  if (family === "corporate_structure" || family === "commercial_dependency") return "business";
+  return "upstream";
+}
+
+function serverNodePosition(zone: Zone, index: number, count: number) {
+  const clampedCount = Math.max(count, 1);
+  const y = 126 + ((index + 1) * 228) / (clampedCount + 1);
+  const positions: Record<Zone, { x: number; y?: number }> = {
+    upstream: { x: 132 },
+    focus: { x: 380, y: 240 },
+    downstream: { x: 628 },
+    infrastructure: { x: 628 },
+    business: { x: 380, y: 92 + index * 56 },
+    capital: { x: 258, y: 78 + index * 54 },
+    policy: { x: 500, y: 382 - index * 52 }
+  };
+  const base = positions[zone];
+  return { x: base.x, y: base.y ?? y };
+}
+
+function serverNodeStage(entityType: string | undefined, family: string | undefined) {
+  const entity = entityType ? entityType.replaceAll("_", " ") : "entity";
+  const relationship = family ? family.replaceAll("_", " ") : "relationship";
+  return `${entity} / ${relationship}`;
+}
+
+function relationshipLabel(value: string) {
+  return value.replaceAll("_", " ");
+}
+
+function shortServerLabel(value: string) {
+  const words = value.split(/\s+/).filter(Boolean);
+  const compact = words.slice(0, 3).join(" ");
+  return compact.length > 22 ? `${compact.slice(0, 19)}...` : compact;
+}
+
+function lensForRelationshipFamily(family: string): RelationshipLens {
+  if (["capital_financing", "ownership_control", "mergers_acquisitions"].includes(family)) {
+    return "capital_transactions";
+  }
+  if (family === "government_policy") return "policy_risk";
+  if (["corporate_structure", "commercial_dependency"].includes(family)) {
+    return "business_segments";
+  }
+  return "supply_chain";
+}
+
+function serverLocalKeyForEntityId(entityId: string): FocusKey | undefined {
+  return (Object.entries(focusEntityIds) as [FocusKey, string][]).find(([, id]) => id === entityId)?.[0];
+}
+
 const focusKeySet = new Set<FocusKey>(Object.keys(scenarios) as FocusKey[]);
 const nodeKeySet = new Set<NodeKey>(Object.keys(entityLabels) as NodeKey[]);
 const lensKeySet = new Set<LensKey>(lensItems.map((item) => item.key));
@@ -1191,6 +1376,7 @@ export default function Home() {
   const [productionGraphSyncReason, setProductionGraphSyncReason] = useState("not_synced");
   const [productionGraphEndpoint, setProductionGraphEndpoint] = useState("");
   const [productionGraph, setProductionGraph] = useState<ExploreGraphRecord | null>(null);
+  const [selectedProductionNodeKey, setSelectedProductionNodeKey] = useState("");
   const [modelContextSyncMode, setModelContextSyncMode] = useState<"server" | "local_fallback">(
     "local_fallback"
   );
@@ -1259,6 +1445,30 @@ export default function Home() {
       ...overviewAggregateEdges
     ];
   }, [focusKey, scenario.edges, semanticZoom]);
+  const fixtureGraphNodes = useMemo(() => displayNodes.map(fixtureRenderNode), [displayNodes]);
+  const fixtureGraphEdges = useMemo(
+    () => displayEdges.map((edge) => fixtureRenderEdge(edge, asOf)),
+    [asOf, displayEdges]
+  );
+  const serverGraphNodes = useMemo(
+    () => serverGraphRenderNodes(productionGraph, productionGraphRequest.focus.object_id),
+    [productionGraph, productionGraphRequest.focus.object_id]
+  );
+  const serverGraphEdges = useMemo(
+    () => serverGraphRenderEdges(productionGraph, serverGraphNodes ?? [], asOf),
+    [asOf, productionGraph, serverGraphNodes]
+  );
+  const isServerGraphRendered =
+    productionGraphStatus === "server-hydrated" &&
+    Boolean(serverGraphNodes?.length) &&
+    Boolean(serverGraphEdges?.length);
+  const graphViewNodes = isServerGraphRendered ? serverGraphNodes! : fixtureGraphNodes;
+  const graphViewEdges = isServerGraphRendered ? serverGraphEdges! : fixtureGraphEdges;
+  const graphViewNodeByKey = useMemo(
+    () => new Map(graphViewNodes.map((item) => [item.key, item])),
+    [graphViewNodes]
+  );
+  const graphViewMode = isServerGraphRendered ? "server" : "fixture";
   const productionContext = productionGraph?.production_context;
   const productionCoverage = productionGraph?.coverage;
   const productionCandidateCoverage = productionCoverage?.relationship_fact_candidates;
@@ -1269,22 +1479,28 @@ export default function Home() {
   const tableEdges = useMemo(
     () =>
       tableLensFilter === "all"
-        ? displayEdges
-        : displayEdges.filter((edge) => edge.lens === tableLensFilter),
-    [displayEdges, tableLensFilter]
+        ? graphViewEdges
+        : graphViewEdges.filter((edge) => edge.lens === tableLensFilter),
+    [graphViewEdges, tableLensFilter]
   );
   const activeEdgeKeys = useMemo(() => {
-    const keys = new Set<NodeKey>([focusKey]);
-    for (const edge of displayEdges) {
+    const keys = new Set<string>([isServerGraphRendered ? productionGraphRequest.focus.object_id : focusKey]);
+    for (const edge of graphViewEdges) {
       if (activeLens === "all" || edge.lens === activeLens) {
         keys.add(edge.from);
         keys.add(edge.to);
       }
     }
     return keys;
-  }, [activeLens, displayEdges, focusKey]);
+  }, [activeLens, focusKey, graphViewEdges, isServerGraphRendered, productionGraphRequest.focus.object_id]);
   const selectedNode =
     nodeByKey.get(selectedKey) ?? nodeByKey.get(scenario.focus) ?? scenario.nodes[0];
+  const selectedGraphNode =
+    graphViewMode === "server"
+      ? graphViewNodeByKey.get(selectedProductionNodeKey) ??
+        graphViewNodeByKey.get(productionGraphRequest.focus.object_id) ??
+        graphViewNodes[0]
+      : graphViewNodeByKey.get(selectedNode.key) ?? fixtureRenderNode(selectedNode);
   const industryPath = useMemo(() => {
     const ordered: { key: string; label: string }[] = [];
     for (const key of path) {
@@ -1486,6 +1702,7 @@ export default function Home() {
       return;
     }
     setProductionGraph(graphResult.record);
+    setSelectedProductionNodeKey(graphResult.record.query.focus.object_id);
     setProductionGraphSyncMode("server");
     setProductionGraphSyncReason(reason);
     setProductionGraphEndpoint(graphResult.endpoint);
@@ -1632,6 +1849,19 @@ export default function Home() {
     setGroupListOpen(false);
   }
 
+  function inspectGraphNode(nextSelected: GraphRenderNode) {
+    if (nextSelected.source === "server") {
+      setSelectedProductionNodeKey(nextSelected.key);
+    }
+    if (nextSelected.localKey) {
+      inspectNode(nextSelected.localKey);
+      return;
+    }
+    setSelectedProductionNodeKey(nextSelected.key);
+    setNodeActionStatus(`server-inspect:${nextSelected.key}`);
+    setGroupListOpen(false);
+  }
+
   function addUniqueNode(current: NodeKey[], key: NodeKey) {
     return current.includes(key) ? current : [...current, key];
   }
@@ -1672,10 +1902,10 @@ export default function Home() {
     setNodeActionStatus(`evidence:${selectedNode.key}`);
   }
 
-  function handleNodeKeyDown(event: KeyboardEvent<SVGGElement>, nextSelected: NodeKey) {
+  function handleNodeKeyDown(event: KeyboardEvent<SVGGElement>, nextSelected: GraphRenderNode) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      inspectNode(nextSelected);
+      inspectGraphNode(nextSelected);
     }
   }
 
@@ -1824,7 +2054,7 @@ export default function Home() {
           <div>
             <dt>Budget</dt>
             <dd data-testid="graph-budget">
-              {displayNodes.length} / {displayEdges.length}
+              {graphViewNodes.length} / {graphViewEdges.length}
             </dd>
           </div>
           <div>
@@ -1941,6 +2171,7 @@ export default function Home() {
             productionContext?.publication_policy?.relationship_fact_candidates_in_graph_edges ??
               false
           )}
+          data-render-source={graphViewMode}
           data-scoring-service-version={productionContext?.scoring_service_version ?? "local"}
           data-server-edge-count={productionGraph?.edges.length ?? 0}
           data-server-node-count={productionGraph?.nodes.length ?? 0}
@@ -1951,6 +2182,8 @@ export default function Home() {
           data-testid="production-graph-context"
           data-visible-edge-count={productionCoverage?.visible_edges ?? displayEdges.length}
           data-visible-node-count={productionCoverage?.visible_nodes ?? displayNodes.length}
+          data-visual-edge-count={graphViewEdges.length}
+          data-visual-node-count={graphViewNodes.length}
         >
           <div>
             <strong>Production graph</strong>
@@ -2337,11 +2570,18 @@ export default function Home() {
           </div>
           <svg
             className={`ecosystemMap zoom-${semanticZoom}`}
+            data-render-source={graphViewMode}
             data-semantic-zoom={semanticZoom}
+            data-server-rendered-edge-count={graphViewMode === "server" ? graphViewEdges.length : 0}
+            data-server-rendered-node-count={graphViewMode === "server" ? graphViewNodes.length : 0}
             data-testid="ecosystem-map-svg"
             viewBox="0 0 760 480"
             role="img"
-            aria-label="NVIDIA synthetic recursive supply-chain graph"
+            aria-label={
+              graphViewMode === "server"
+                ? "EEI server recursive relationship map"
+                : "NVIDIA synthetic recursive supply-chain graph"
+            }
           >
             <defs>
               <marker
@@ -2356,9 +2596,9 @@ export default function Home() {
                 <path d="M0,0 L8,4 L0,8 z" />
               </marker>
             </defs>
-            {displayEdges.map((edge) => {
-              const source = displayNodeByKey.get(edge.from);
-              const target = displayNodeByKey.get(edge.to);
+            {graphViewEdges.map((edge) => {
+              const source = graphViewNodeByKey.get(edge.from);
+              const target = graphViewNodeByKey.get(edge.to);
               if (!source || !target) return null;
               const midX = (source.x + target.x) / 2;
               const midY = (source.y + target.y) / 2 - 10;
@@ -2367,8 +2607,9 @@ export default function Home() {
                 <g
                   className={`edgeGroup ${lensState}`}
                   data-lens-state={lensState}
+                  data-render-source={edge.source}
                   data-testid={`edge-group-${edge.from}-${edge.to}`}
-                  key={`${edge.from}-${edge.to}`}
+                  key={edge.id}
                 >
                   <line
                     className="edge"
@@ -2390,32 +2631,37 @@ export default function Home() {
                   </text>
                   {semanticZoom === "L2" || semanticZoom === "L3" ? (
                     <text className="edgeEvidence" textAnchor="middle" x={midX} y={midY + 16}>
-                      fixture evidence
+                      {edge.source === "server" ? `${edge.evidenceCount} sources` : "fixture evidence"}
                     </text>
                   ) : null}
                 </g>
               );
             })}
-            {displayNodes.map((mapNode) => {
+            {graphViewNodes.map((mapNode) => {
               const lensState =
                 activeLens === "all" || activeEdgeKeys.has(mapNode.key) ? "active" : "faded";
+              const isSelected = mapNode.key === selectedGraphNode.key;
+              const isFocus =
+                mapNode.key ===
+                (graphViewMode === "server" ? productionGraphRequest.focus.object_id : focusKey);
               return (
               <g
                 aria-label={`Inspect ${mapNode.label}`}
-                aria-pressed={mapNode.key === selectedNode.key}
-                className={`node ${mapNode.zone} ${lensState}${mapNode.key === selectedNode.key ? " selected" : ""}`}
+                aria-pressed={isSelected}
+                className={`node ${mapNode.zone} ${lensState}${isSelected ? " selected" : ""}`}
                 data-aggregate-count={mapNode.aggregateCount}
                 data-lens-state={lensState}
                 data-node-kind={mapNode.aggregateCount ? "aggregate" : "entity"}
+                data-render-source={mapNode.source}
                 data-testid={`graph-node-${mapNode.key}`}
                 key={mapNode.key}
-                onClick={() => inspectNode(mapNode.key)}
-                onKeyDown={(event) => handleNodeKeyDown(event, mapNode.key)}
+                onClick={() => inspectGraphNode(mapNode)}
+                onKeyDown={(event) => handleNodeKeyDown(event, mapNode)}
                 role="button"
                 tabIndex={0}
                 transform={`translate(${mapNode.x} ${mapNode.y})`}
               >
-                <circle r={mapNode.key === focusKey ? 40 : 31} />
+                <circle r={isFocus ? 40 : 31} />
                 <text textAnchor="middle" dominantBaseline="middle">
                   {mapNode.aggregateCount ? `${mapNode.shortLabel} ${mapNode.aggregateCount}` : mapNode.shortLabel}
                 </text>
@@ -2477,17 +2723,23 @@ export default function Home() {
           <h2>Relationship path</h2>
         </div>
 
-        <section className="selectedNodeCard" aria-label="当前选择节点" data-testid="selected-node-card">
-          <span className={`nodeToken ${selectedNode.zone}`}>{selectedNode.zone}</span>
-          <h3 data-testid="selected-node-title">{selectedNode.label}</h3>
+        <section
+          className="selectedNodeCard"
+          aria-label="当前选择节点"
+          data-render-source={selectedGraphNode.source}
+          data-selected-graph-node={selectedGraphNode.key}
+          data-testid="selected-node-card"
+        >
+          <span className={`nodeToken ${selectedGraphNode.zone}`}>{selectedGraphNode.zone}</span>
+          <h3 data-testid="selected-node-title">{selectedGraphNode.label}</h3>
           <dl>
             <div>
               <dt>Stage</dt>
-              <dd>{selectedNode.stage}</dd>
+              <dd>{selectedGraphNode.stage}</dd>
             </div>
             <div>
               <dt>Role</dt>
-              <dd>{selectedNode.role}</dd>
+              <dd>{selectedGraphNode.role}</dd>
             </div>
             <div>
               <dt>Current subject</dt>
@@ -2652,17 +2904,18 @@ export default function Home() {
               {tableEdges.map((edge) => (
                 <tr
                   data-direction={`${edge.from}->${edge.to}`}
-                  data-evidence-status="fixture-evidence"
+                  data-evidence-status={edge.source === "server" ? "server-evidence" : "fixture-evidence"}
                   data-lens={edge.lens}
-                  data-observed-at={asOf}
+                  data-observed-at={edge.observedAt}
+                  data-render-source={edge.source}
                   data-relationship-type={edge.lens}
                   data-testid={`graph-table-row-${edge.from}-${edge.to}`}
-                  key={`${edge.from}-${edge.to}`}
+                  key={edge.id}
                 >
-                  <td>{nodeByKey.get(edge.from)?.shortLabel ?? edge.from}</td>
-                  <td>{nodeByKey.get(edge.to)?.shortLabel ?? edge.to}</td>
-                  <td>{`${nodeByKey.get(edge.from)?.shortLabel ?? edge.from} -> ${
-                    nodeByKey.get(edge.to)?.shortLabel ?? edge.to
+                  <td>{graphViewNodeByKey.get(edge.from)?.shortLabel ?? edge.from}</td>
+                  <td>{graphViewNodeByKey.get(edge.to)?.shortLabel ?? edge.to}</td>
+                  <td>{`${graphViewNodeByKey.get(edge.from)?.shortLabel ?? edge.from} -> ${
+                    graphViewNodeByKey.get(edge.to)?.shortLabel ?? edge.to
                   }`}</td>
                   <td>{edge.lens.replaceAll("_", " ")}</td>
                   <td>
@@ -2671,9 +2924,11 @@ export default function Home() {
                   </td>
                   <td>{edge.stage}</td>
                   <td>
-                    <span className="evidencePill">fixture evidence</span>
+                    <span className="evidencePill">
+                      {edge.source === "server" ? `${edge.evidenceCount} sources` : "fixture evidence"}
+                    </span>
                   </td>
-                  <td>{asOf}</td>
+                  <td>{edge.observedAt}</td>
                 </tr>
               ))}
             </tbody>
@@ -2684,16 +2939,20 @@ export default function Home() {
           <button
             className="primaryAction"
             data-testid="primary-set-center"
-            disabled={!selectedNode.centerable || selectedNode.key === focusKey}
-            onClick={() => selectedNode.centerable && setCenter(selectedNode.key as FocusKey)}
+            disabled={!selectedGraphNode.localKey || !selectedGraphNode.centerable || selectedGraphNode.localKey === focusKey}
+            onClick={() =>
+              selectedGraphNode.localKey &&
+              selectedGraphNode.centerable &&
+              setCenter(selectedGraphNode.localKey as FocusKey)
+            }
             type="button"
           >
             <Crosshair size={16} aria-hidden="true" />
-            <span>以 {selectedNode.label} 为中心</span>
+            <span>以 {selectedGraphNode.label} 为中心</span>
           </button>
           <button
             data-testid="node-action-upstream"
-            disabled={!upstreamCandidate}
+            disabled={graphViewMode === "server" || !upstreamCandidate}
             onClick={() => upstreamCandidate && inspectNode(upstreamCandidate)}
             type="button"
           >
@@ -2702,22 +2961,37 @@ export default function Home() {
           </button>
           <button
             data-testid="node-action-downstream"
-            disabled={!downstreamCandidate}
+            disabled={graphViewMode === "server" || !downstreamCandidate}
             onClick={() => downstreamCandidate && inspectNode(downstreamCandidate)}
             type="button"
           >
             <ArrowDown size={16} aria-hidden="true" />
             <span>展开下游</span>
           </button>
-          <button data-testid="node-action-pin" onClick={pinSelectedNode} type="button">
+          <button
+            data-testid="node-action-pin"
+            disabled={!selectedGraphNode.localKey}
+            onClick={pinSelectedNode}
+            type="button"
+          >
             <Star size={16} aria-hidden="true" />
             <span>固定节点</span>
           </button>
-          <button data-testid="node-action-compare" onClick={compareSelectedNode} type="button">
+          <button
+            data-testid="node-action-compare"
+            disabled={!selectedGraphNode.localKey}
+            onClick={compareSelectedNode}
+            type="button"
+          >
             <GitBranch size={16} aria-hidden="true" />
             <span>加入比较</span>
           </button>
-          <button data-testid="node-action-watchlist" onClick={addSelectedNodeToWatchlist} type="button">
+          <button
+            data-testid="node-action-watchlist"
+            disabled={!selectedGraphNode.localKey}
+            onClick={addSelectedNodeToWatchlist}
+            type="button"
+          >
             <Star size={16} aria-hidden="true" />
             <span>加入关注</span>
           </button>
@@ -2801,7 +3075,7 @@ export default function Home() {
           <span data-testid="zoom-state">Zoom: {semanticZoom}</span>
           <span data-testid="reroot-state">Canvas state: {transitionState}</span>
           <span data-testid="budget-state">
-            Budget: {displayNodes.length} nodes / {displayEdges.length} edges / max 40 first-screen edges
+            Budget: {graphViewNodes.length} nodes / {graphViewEdges.length} edges / max 40 first-screen edges
           </span>
         </div>
       </aside>

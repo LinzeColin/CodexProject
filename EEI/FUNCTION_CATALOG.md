@@ -2,7 +2,7 @@
 
 系统共有 **17 个正式功能板块**。默认进入 Watchlist 当前公司的商业版图；模型、数据库、对象范围、功能结构和开发治理均为正式导航能力。
 
-v5 同步后，生产阻塞任务 T1300-T1309 已写入 `data/function_catalog.csv` 的相关功能映射。当前商业版图已有 `/v1/explore` production_context hydration、预算、coverage 和候选事实 publication gate 的前端合同，但 server graph node/edge 渲染替换仍未完成；数据中心需要真实采集和调度；模型中心需要 live backend 全局刷新；已保存视图需要 authn/authz；系统治理需要 soak 和品牌清权证据。
+v5 同步后，生产阻塞任务 T1300-T1309 已写入 `data/function_catalog.csv` 的相关功能映射。当前商业版图已有 `/v1/explore` production_context hydration、预算、coverage、候选事实 publication gate 和 server-returned graph rendering 的前端合同；数据中心需要真实采集和调度；模型中心需要 live backend 全局刷新；已保存视图需要 authn/authz；系统治理需要 soak 和品牌清权证据。
 
 | ID | 导航 | 功能 | 默认可视化 | 优先级 | 规格 | 原型 | 生产实现 |
 |---|---|---|---|---|---|---|---|
