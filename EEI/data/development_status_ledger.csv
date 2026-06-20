@@ -35,7 +35,7 @@ PKG-005,task_pack_artifact,Task Pack,UI 高保真交互原型,DONE,DONE,N/A,VALI
 PKG-006,task_pack_artifact,Task Pack,数据库工作台与数据血缘原型,DONE,DONE,N/A,VALIDATED,DONE,真实数据库连接未建立,commit to GitHub and run G0,repository owner,GOVERNANCE_INDEX.md
 PKG-007,task_pack_artifact,Task Pack,开发状态/风险/验收追踪,DONE,DONE,N/A,VALIDATED,DONE,任务证据需由 Build 阶段填充,commit to GitHub and run G0,repository owner,GOVERNANCE_INDEX.md
 PKG-008,task_pack_artifact,Task Pack,PDF 治理蓝图,DONE,DONE,N/A,VALIDATED,DONE,后续发布需持续再生成,commit to GitHub and run G0,repository owner,GOVERNANCE_INDEX.md
-V5-001,production_blocker,数据库,PostgreSQL 数据库和迁移,DONE,NOT_STARTED,NOT_STARTED,SPEC_VALIDATED,v5 缺口已映射到 T1300/A201,生产迁移与回滚尚未实现,T1300,database owner,docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md
+V5-001,production_blocker,数据库,PostgreSQL 数据库和迁移,DONE,N/A,DONE,LOCAL_VALIDATED,T1300/A201 已实现生产 snapshot/fact version/evidence/time 层迁移、schema validator 和 integration rollback 合约,后续真实采集和发布切换仍由 T1301/T1303/T1304 覆盖,T1301,database owner,infra/db/migrations/0003_production_fact_version_layers/up.sql
 V5-002,production_blocker,数据,真实数据采集实体解析和证据链,DONE,NOT_STARTED,NOT_STARTED,SPEC_VALIDATED,v5 缺口已映射到 T1301/A202,Golden Vertical 真实采集尚未实现,T1301,data owner,docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md
 V5-003,production_blocker,API,生产 API 递归图查询和评分服务,DONE,NOT_STARTED,NOT_STARTED,SPEC_VALIDATED,v5 缺口已映射到 T1302/A203,生产 API graph query scoring 尚未完成,T1302,api owner,docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md
 V5-004,production_blocker,模型,模型配置版本事务激活和原子全局刷新,DONE,NOT_STARTED,NOT_STARTED,SPEC_VALIDATED,v5 缺口已映射到 T1303/A204-A205,事务性激活与全局刷新尚未实现,T1303,model owner,docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md

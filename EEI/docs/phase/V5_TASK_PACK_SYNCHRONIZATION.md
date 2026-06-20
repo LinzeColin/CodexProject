@@ -31,7 +31,7 @@ EEI identity is unchanged:
 
 | Blocker | Source issue(s) | EEI task(s) | Acceptance ID(s) | Default status |
 |---|---|---|---|---|
-| PostgreSQL database and reversible migrations | ARCH-001 | T1300 | A201 | NOT_STARTED |
+| PostgreSQL database and reversible migrations | ARCH-001 | T1300 | A201 | DONE |
 | Real data ingestion, entity resolution and evidence chain | ARCH-003, UX-010 | T1301 | A202 | NOT_STARTED |
 | Production API, recursive graph query and scoring service | ARCH-002, UX-008, UX-011 | T1302 | A203 | NOT_STARTED |
 | Model config versioning, transactional activation and atomic global refresh | STRESS-010 | T1303 | A204, A205 | NOT_STARTED |
@@ -44,7 +44,7 @@ EEI identity is unchanged:
 
 ## Implementation Boundaries
 
-T1300-T1309 are new MVP production blockers. They are intentionally not marked done by this synchronization. Each task must close in a separate bounded implementation run with:
+T1301-T1309 remain MVP production blockers. T1300/A201 is implemented by the `0003_production_fact_version_layers` migration and its schema/integration checks. Each remaining task must close in a separate bounded implementation run with:
 
 - explicit files and services changed;
 - migration or rollback path where applicable;

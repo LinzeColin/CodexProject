@@ -219,6 +219,9 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── 0002_exploration_state
 │   │   │   │   ├── down.sql
 │   │   │   │   └── up.sql
+│   │   │   ├── 0003_production_fact_version_layers
+│   │   │   │   ├── down.sql
+│   │   │   │   └── up.sql
 │   │   │   └── README.md
 │   │   └── seeds
 │   │       └── README.md

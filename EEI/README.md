@@ -45,4 +45,4 @@ bash scripts/preflight.sh
 codex exec --sandbox read-only - < prompts/01_PLAN_ONLY.md | tee artifacts/01_plan_output.txt
 ```
 
-先审查 G0 只读计划，再允许 workspace-write。原型使用 fixture；PostgreSQL 生产迁移、真实采集、实体解析、证据链、生产 API、递归图查询、评分服务、模型事务激活、原子刷新、调度、保存视图、规模压测、soak、生产组件化前端和正式品牌清权仍是 v0.1 阻断项。
+先审查 G0 只读计划，再允许 workspace-write。原型使用 fixture；T1300 PostgreSQL 可回滚迁移与 fact/evidence/time/version 分层已实现。真实采集、实体解析、证据链、生产 API、递归图查询、评分服务、模型事务激活、原子刷新、调度、保存视图、规模压测、soak、生产组件化前端和正式品牌清权仍是 v0.1 阻断项。

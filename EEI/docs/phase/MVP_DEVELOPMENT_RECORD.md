@@ -1723,3 +1723,34 @@ Residual risks:
 - Formal EEI legal/market clearance is not complete.
 - Production-scale benchmarks and soak tests are not yet executable evidence.
 - Production PostgreSQL, ingestion, graph/API/scoring, scheduler, saved views and componentized frontend remain active MVP blockers.
+
+## 2026-06-20 - T1300/A201 PostgreSQL production fact-version migration
+
+Status: LOCAL STATIC PASS; REMOTE CI PENDING
+
+Completed:
+
+- Added `infra/db/migrations/0003_production_fact_version_layers/up.sql` and `down.sql`.
+- Added `data_snapshots` for snapshot-scoped publication with record mode, active-state, source hash, activation time and supersession metadata.
+- Added `fact_versions` for immutable object versions with fact status, record mode, time-validity windows, observed time, parser version, payload hash, previous version link and source/ingestion references.
+- Added `fact_version_evidence` so versioned facts keep evidence as a separate layer.
+- Updated `specs/domain_schema.sql`, `scripts/check_database_schema.py`, and `tests/integration/test_database_migrations.py` to validate A201.
+- Marked T1300 and A201 as `DONE` in `data/task_backlog.csv`, `data/acceptance_matrix.csv`, and `data/acceptance_traceability.csv`.
+
+Verification evidence:
+
+- Local `python3 scripts/validate_catalog_integrity.py`: PASS.
+- Local `PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_governance.py`: PASS.
+- Local `PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_task_pack.py`: PASS.
+- Local `PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check scripts/check_database_schema.py tests/integration/test_database_migrations.py`: PASS.
+- Local `PYTHONPATH=scripts:. .venv/bin/python -c 'from migrate import discover_migrations; print([(m.version, m.name) for m in discover_migrations()])'`: PASS and includes `0003 production_fact_version_layers`.
+- Local `git diff --check`: PASS.
+
+Acceptance status:
+
+- A201 is covered by `infra/db/migrations/0003_production_fact_version_layers/up.sql`, `infra/db/migrations/0003_production_fact_version_layers/down.sql`, `scripts/check_database_schema.py`, and `tests/integration/test_database_migrations.py`.
+
+Residual risks:
+
+- Local Docker/PostgreSQL is not available on this host, so migration upgrade/downgrade and integration execution still require GitHub Actions for database proof.
+- T1300 closes the database version-layer blocker only. T1301-T1309 remain required before v0.1: real ingestion, production API/query/scoring, model activation/refresh, scheduler, saved views, scale, soak, production frontend and brand clearance.

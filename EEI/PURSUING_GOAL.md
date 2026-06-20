@@ -31,7 +31,6 @@ Required MVP scope:
 
 v5 production blockers now included in the MVP boundary:
 
-- PostgreSQL production database and reversible migrations.
 - Real data ingestion, entity resolution and evidence chain.
 - Production API, recursive graph query and scoring service.
 - Model config versioning, transactional activation and atomic global refresh.
@@ -41,6 +40,10 @@ v5 production blockers now included in the MVP boundary:
 - 4h and 24h soak tests.
 - Production componentized frontend, real routes and real controls.
 - Formal EEI brand legal and market clearance before public brand launch.
+
+Closed in this pursuing-goal run:
+
+- T1300/A201 PostgreSQL production database migration, reversible rollback path, and separate fact/evidence/time/version layers.
 
 ## Golden Vertical
 

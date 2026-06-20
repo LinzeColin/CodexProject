@@ -210,6 +210,8 @@ infra/db/migrations/0001_core_domain/down.sql
 infra/db/migrations/0001_core_domain/up.sql
 infra/db/migrations/0002_exploration_state/down.sql
 infra/db/migrations/0002_exploration_state/up.sql
+infra/db/migrations/0003_production_fact_version_layers/down.sql
+infra/db/migrations/0003_production_fact_version_layers/up.sql
 infra/db/migrations/README.md
 infra/db/seeds/README.md
 infra/docker/README.md
