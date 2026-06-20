@@ -688,6 +688,9 @@ function applyWorkflowRuntime(runtime) {
   if (runtime.fast_path) {
     WORKSPACES.home.runtime = fastPathLabel(runtime.fast_path);
   }
+  if (runtime.minute_fast_path && runtime.minute_fast_path.web_shell_visible) {
+    WORKSPACES.home.runtime = minuteFastPathLabel(runtime.minute_fast_path);
+  }
   if (runtime.supervisor_runtime) {
     applySupervisorRuntime(runtime.supervisor_runtime);
   }
@@ -728,6 +731,15 @@ function fastPathLabel(fastPath) {
     `快速路径：${localizeStatus(fastPath.status || "review")}`,
     `目标 ${fastPath.target_seconds || 60} 秒`,
     `估算 ${fastPath.estimated_seconds || 0} 秒`,
+  ].join(" · ");
+}
+
+function minuteFastPathLabel(fastPath) {
+  return [
+    `分钟级快路径：${localizeStatus(fastPath.status || "review")}`,
+    `三源 ${fastPath.source_count || 0}/3`,
+    `p95 ${fastPath.p95_seconds || 0} 秒`,
+    fastPath.page_closed_updates ? "离页仍更新" : "离页待验证",
   ].join(" · ");
 }
 

@@ -51,6 +51,7 @@ on chat history.
 | PFI-007 Research + Policy vertical acceptance | Complete local Gate 3 Research/Policy evidence | `src/pfi_os/application/pfi007_research_policy_acceptance.py`, `scripts/pfi007ResearchPolicyAcceptance.sh`, `tests/contract/test_pfi007_research_policy_vertical_acceptance.py`, `docs/development/PFI007_RESEARCH_POLICY_VERTICAL_ACCEPTANCE.md`, citation locator, report manifest, UI read model, task/evidence records, rollback proof |
 | PFI-008 Portfolio vertical acceptance | Complete local Gate 3 Portfolio evidence | `src/pfi_os/application/pfi008_portfolio_acceptance.py`, `scripts/pfi008PortfolioAcceptance.sh`, `tests/contract/test_pfi008_portfolio_vertical_acceptance.py`, `docs/development/PFI008_PORTFOLIO_VERTICAL_ACCEPTANCE.md`, synthetic import ledger, corporate action/FX/cash Golden checks, broker-to-snapshot reconciliation, risk constraints, review-only decision proposal, same-shell Portfolio UI controls, holding snapshot rollback proof |
 | PFI-009 Strategy vertical acceptance | Complete local Gate 3 Strategy evidence | `src/pfi_os/application/pfi009_strategy_acceptance.py`, `scripts/pfi009StrategyAcceptance.sh`, `tests/contract/test_pfi009_strategy_vertical_acceptance.py`, `docs/development/PFI009_STRATEGY_VERTICAL_ACCEPTANCE.md`, PIT bars, corporate-action/delisted fixture, train/test validation, walk-forward validation, no-future-data proof, market-feel retention, review-only strategy registry, cancel/resume runtime proof, same-shell Strategy UI controls, rollback proof |
+| PFI-010 Minute Fast Path | Complete local deterministic Gate 4 evidence | `src/pfi_os/application/pfi010_minute_fast_path.py`, `scripts/pfi010MinuteFastPathAcceptance.sh`, `tests/contract/test_pfi010_minute_fast_path.py`, `docs/development/PFI010_MINUTE_FAST_PATH.md`, three legal local sources, durable incremental worker, p95=44.0s, page-closed update proof, failure injection recovery, logical 1h/24h soak, Web Shell runtime dashboard |
 
 ## Open Backlog
 
@@ -125,6 +126,8 @@ python -m pytest tests/contract/test_pfi008_portfolio_vertical_acceptance.py -q
 scripts/pfi008PortfolioAcceptance.sh --summary-json
 python -m pytest tests/contract/test_pfi009_strategy_vertical_acceptance.py -q
 scripts/pfi009StrategyAcceptance.sh --summary-json
+python -m pytest tests/contract/test_pfi010_minute_fast_path.py -q
+scripts/pfi010MinuteFastPathAcceptance.sh --summary-json
 python -m pytest tests/contract/test_phase_a_command_center_read_model.py -q
 python -m pytest tests/contract/test_phase_a_vectorized_read_model.py -q
 python -m pytest tests/contract/test_phase_a_macos_runtime_read_model.py -q

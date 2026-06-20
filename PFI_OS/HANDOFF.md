@@ -134,6 +134,18 @@ Current sequence:
     PFI-009 contract passed 7/7; related Web Shell/script tests passed 63/63;
     target gate passed 71 tests plus secret scan and diff check. Gate 3 is
     closed for the current local evidence scope and must be re-run in Gate 7.
+26. Gate 4 / PFI-010 Minute Fast Path:
+    Local deterministic evidence is implemented.
+    `scripts/pfi010MinuteFastPathAcceptance.sh` emits
+    `PFI010MinuteFastPathAcceptanceV1` evidence for three legal local sources,
+    durable incremental worker refresh, p95 <= 60s, page-closed update
+    completion, failure injection recovery, logical 1h/24h soak, Operational
+    Store records, and Web Shell runtime dashboard exposure through
+    `workflow_runtime.minute_fast_path`. Latest local run returned
+    `status=Pass`, `pass=11`, `fail=0`, `source_count=3`, `sample_count=15`,
+    `p95_seconds=44.0`, page_closed_updates=true, failure_injection=Pass,
+    logical_1h_soak=Pass, and logical_24h_soak=Pass. Gate 4 is closed for the
+    current deterministic local evidence scope and must be re-run in Gate 7.
 
 ## Current Local State
 
@@ -317,6 +329,14 @@ Current sequence:
   rollback proof. Focused PFI-009 contract passed 7/7; related Web
   Shell/script tests passed 63/63; target gate passed 71 tests plus secret
   scan and diff check.
+- PFI-010 Minute Fast Path complete for local deterministic Gate 4 evidence:
+  `src/pfi_os/application/pfi010_minute_fast_path.py`,
+  `scripts/pfi010MinuteFastPathAcceptance.sh`,
+  `tests/contract/test_pfi010_minute_fast_path.py`, and
+  `docs/development/PFI010_MINUTE_FAST_PATH.md`. Latest acceptance passed
+  11/11 with three legal local sources, durable incremental worker, p95=44.0s,
+  page-closed update proof, failure injection recovery, logical 1h/24h soak,
+  Operational Store records, and Web Shell runtime dashboard exposure.
 
 ## Start Here
 
@@ -332,7 +352,8 @@ Read in this order:
 8. `docs/development/PFI005_GATE2_SHELL_ACCEPTANCE.md`
 9. `docs/development/PFI006_MARKETS_VERTICAL_ACCEPTANCE.md`
 10. `docs/development/PFI007_RESEARCH_POLICY_VERTICAL_ACCEPTANCE.md`
-11. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
+11. `docs/development/PFI010_MINUTE_FAST_PATH.md`
+12. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
 12. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
 13. `docs/data/PFI_DATA_BOUNDARIES.md`
 14. `docs/data/PFI_SOURCE_OF_TRUTH.md`
@@ -552,10 +573,9 @@ Continue from v0.2 PFI-goal execution:
 
 1. Use `docs/development/PFI_GOAL_GATE_MATRIX.md` as the active completion
    matrix for PFI-001 through PFI-012 and Gate 1 through Gate 7.
-2. Next recommended issue: PFI-004 Golden/PIT proof. Gate 1 cannot close until
-   PFI-004 Golden/PIT and PFI-001 PR/CI injected-failure evidence are proven.
-3. Keep PFI-010/PFI-011/PFI-012 active but do not mark them complete until the
-   matrix evidence is strong enough for the full acceptance scope.
+2. Next recommended issue: PFI-011 Local LLM Deep Path.
+3. Keep PFI-011/PFI-012 active and re-run Gate 1 through Gate 4 evidence during
+   final Gate 7 packaging.
 
 ## Latest User Rejection Repair, 2026-06-20
 
@@ -606,6 +626,6 @@ Additional Command Center display repair:
 - `tests/test_command_center.py`: updated to enforce Chinese Markdown headings
   and no literal `????` in generated PDF bytes.
 
-Next recommended issue after committing this repair: resume Gate 4 / PFI-010
-Minute Fast Path. Do not mark the long-running PFI-001..PFI-012 goal complete;
-PFI-010 through PFI-012 and Gates 4 through 7 remain open.
+Next recommended issue after committing the PFI-010 repair: continue Gate 5 /
+PFI-011 Local LLM Deep Path. Do not mark the long-running PFI-001..PFI-012 goal
+complete; PFI-011, PFI-012, and Gates 5 through 7 remain open.

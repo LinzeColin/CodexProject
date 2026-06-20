@@ -16,6 +16,8 @@ WORKFLOW_RUNTIME_CONTRACT_SCHEMA = "PFIOSPhaseCWorkflowRuntimeContractV1"
 WORKFLOW_RUNTIME_EVIDENCE_CLASS = "workflow_runtime_read_model"
 PFI003_SUPERVISOR_RUNTIME_READ_MODEL_SCHEMA = "PFIOSPFI003SupervisorRuntimeReadModelV1"
 PFI003_DURABLE_JOB_STORE_SCHEMA = "PFIOSPFI003DurableJobStoreV1"
+PFI010_MINUTE_FAST_PATH_READ_MODEL_SCHEMA = "PFI010MinuteFastPathReadModelV1"
+PFI010_MINUTE_FAST_PATH_EVIDENCE_CLASS = "pfi010_minute_fast_path_acceptance"
 FAST_PATH_TARGET_SECONDS = 60
 
 WORKFLOW_TARGETS: tuple[dict[str, str], ...] = (
@@ -120,11 +122,13 @@ def build_workflow_runtime_read_model(
     ]
     fast_path = _fast_path_acceptance(cards, jobs=jobs, target_seconds=fast_path_target_seconds)
     supervisor_runtime = _supervisor_runtime(jobs)
+    minute_fast_path = _minute_fast_path_runtime(evidence)
     return {
         "schema": WORKFLOW_RUNTIME_READ_MODEL_SCHEMA,
         "phase": "Phase C",
         "generated_at": generated_at,
         "fast_path": fast_path,
+        "minute_fast_path": minute_fast_path,
         "workflow_cards": cards,
         "background_jobs": _background_jobs(jobs),
         "task_center_rows": _task_center_rows(cards, tasks, supervisor_runtime=supervisor_runtime),
@@ -243,6 +247,7 @@ def empty_workflow_runtime_read_model() -> dict[str, Any]:
             "broker_required": False,
             "llm_required": False,
         },
+        "minute_fast_path": _empty_minute_fast_path_runtime(),
         "workflow_cards": [],
         "background_jobs": [],
         "task_center_rows": [],
@@ -456,6 +461,56 @@ def _supervisor_runtime(jobs: list[dict[str, Any]]) -> dict[str, Any]:
         "web_shell_visible": True,
         "read_model": "OperationalStore.job_records -> workflow_runtime.supervisor_runtime",
         "safety_boundary": _supervisor_safety_boundary(),
+    }
+
+
+def _minute_fast_path_runtime(evidence: list[dict[str, Any]]) -> dict[str, Any]:
+    rows = [row for row in evidence if str(row.get("evidence_class", "")) == PFI010_MINUTE_FAST_PATH_EVIDENCE_CLASS]
+    latest = _latest(rows, key="created_at")
+    metadata = _metadata(latest)
+    payload = metadata.get("minute_fast_path", {})
+    if isinstance(payload, dict) and payload.get("schema") == PFI010_MINUTE_FAST_PATH_READ_MODEL_SCHEMA:
+        clean = _json_safe(payload)
+        clean["web_shell_visible"] = True
+        return clean
+    return _empty_minute_fast_path_runtime()
+
+
+def _empty_minute_fast_path_runtime() -> dict[str, Any]:
+    return {
+        "schema": PFI010_MINUTE_FAST_PATH_READ_MODEL_SCHEMA,
+        "issue": "PFI-010",
+        "gate": "Gate 4",
+        "status": "Review",
+        "target_seconds": FAST_PATH_TARGET_SECONDS,
+        "p95_seconds": 0.0,
+        "max_seconds": 0.0,
+        "source_count": 0,
+        "sample_count": 0,
+        "page_closed_updates": False,
+        "failure_injection_status": "Missing",
+        "logical_1h_soak_status": "Missing",
+        "logical_24h_soak_status": "Missing",
+        "web_shell_visible": True,
+        "ui_push": {
+            "mode": "cached_read_model_local_polling",
+            "runtime_field": "workflow_runtime.minute_fast_path",
+            "sse_required": False,
+            "push_after_page_closed": False,
+        },
+        "latency_dashboard": {"rows": []},
+        "safety_boundary": {
+            "research_only": True,
+            "provider_fetch_required": False,
+            "broker_required": False,
+            "llm_required": False,
+            "network_required": False,
+            "no_live_trading": True,
+            "no_broker_calls": True,
+            "no_order_execution": True,
+            "no_payment_or_betting": True,
+            "human_review_required": True,
+        },
     }
 
 

@@ -30,6 +30,7 @@ data/systemAudit/PFI006MarketsAcceptance*.json
 data/systemAudit/PFI007ResearchPolicyAcceptance*.json
 data/systemAudit/PFI008PortfolioAcceptance*.json
 data/systemAudit/PFI009StrategyAcceptance*.json
+data/systemAudit/PFI010MinuteFastPathAcceptance*.json
 data/integrations/site52etf/*
 !data/integrations/site52etf/.gitkeep
 data/researchBus/chatInbox/**
