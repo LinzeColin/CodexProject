@@ -15,7 +15,7 @@ not fall back to legacy page navigation for the primary workflows.
 - Core user workflows:
   - `JOURNEY_HOME_TO_BACKTEST`: 首页 -> 单标的回测.
   - `JOURNEY_STRATEGY_MARKET_FEEL`: 策略实验室 -> 盘感训练.
-  - `JOURNEY_RESEARCH_REPORT_POLICY`: 研究 -> 报告中心 -> 政策雷达.
+  - `JOURNEY_RESEARCH_REPORT_POLICY`: 研究 -> 报告清单 -> 政策雷达.
   - `JOURNEY_DATA_SYSTEM_DIAGNOSTICS`: 数据与系统 -> 数据中心.
 - Non-goals: no Streamlit business-page rewrite, no broker/order/payment
   connection, no market refresh, no full release gate.
@@ -29,8 +29,11 @@ when the browser, Streamlit health check, or shell iframe is unavailable.
 The script verifies:
 
 - Six workspace switches render Chinese business panels without page reload.
-- Four named UAT journeys open same-shell function detail panels and same-shell
+- Eight named UAT journeys open same-shell function detail panels and same-shell
   Chinese operation panels.
+- Exhaustive feature-card replay opens every visible function card across all
+  six primary entrances and fails if a card only switches workspace, opens a
+  legacy page, opens a new page, or lacks a Chinese operation panel.
 - Core function controls are buttons, not feature anchors to legacy pages.
 - Parent URL never moves to `pfi_shell=0` or `pfi_legacy=1` during primary UAT.
 - Visible surface has no retired identity terms, legacy placeholders, Python
@@ -93,6 +96,23 @@ Current rejected-delivery repair evidence:
 - `zsh -n scripts/uiVisualAcceptance.sh scripts/pfiGate2ShellAcceptance.sh
   scripts/startPFIOS.sh`: passed.
 - `git diff --check`: passed.
+
+Current user-rejected redo evidence:
+
+- All visible feature cards now resolve to same-shell function views, not
+  passive workspace switches. The browser acceptance opened 46/46 visible
+  function panels across 首页, 市场, 研究, 持仓, 策略实验室, 数据与系统.
+- Function panels were rewritten to use Chinese user-facing wording for
+  checks and boundaries; raw field names such as `bar_checksum`,
+  `source_url`, `RunMetadata`, and `NeedsMoreEvidence` are not visible in the
+  PFI Shell function-panel contract.
+- Focused user-facing contracts: 38 passed.
+- Gate2 browser acceptance: `status=Pass`, `pass=844`, `fail=0`, `info=2`,
+  `all_feature_control_panels_opened=46`, screenshot
+  `data/systemAudit/PFIGate2ShellAcceptance_20260620_073524.png`.
+- UI visual browser acceptance: `status=Pass`, `pass=146`, `fail=0`,
+  `info=0`, screenshot
+  `data/systemAudit/UIVisualAcceptance_20260620_073602.png`.
 
 ## Stop Condition
 

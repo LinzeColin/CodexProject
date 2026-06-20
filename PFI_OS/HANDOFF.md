@@ -743,3 +743,36 @@ Second user-facing rejection repair, 2026-06-20:
     `scripts/pfiGate.sh target` => 93 passed, secret scan passed.
   - `zsh -n`, `git diff --check`, and post-run service status all passed;
     no PFI OS service remained running on ports 8501-8510.
+
+Third user-facing rejection redo, 2026-06-20:
+
+- User rejected the delivery again because visible text still felt English/noisy
+  and feature blocks/jumps were not usable enough for a user-facing PFI product.
+- `web/app/shell.js`: every visible feature card now maps to a concrete
+  same-shell function panel instead of passive workspace-only jumps. This covers
+  公司研究, 基金研究, 指数与 ETF, 主题催化, 自选监控, 来源登记, 任务监控,
+  隐私边界, 备份恢复, 组合暴露, 集中度风险, 纪律检查, 订单意图, and the
+  existing core 回测/盘感/政策/数据 functions.
+- Function-panel checks and descriptions were rewritten to Chinese user
+  language; raw visible field names such as `bar_checksum`, `source_url`,
+  `RunMetadata`, `NeedsMoreEvidence`, and `target_weight_change=0` are now
+  blocked by contract tests for Web Shell function panels.
+- `scripts/pfiGate2ShellAcceptance.sh`: Gate2 browser acceptance now
+  exhaustively clicks every visible feature card across the six primary
+  entrances. Each control must be a button, open a same-shell Chinese panel,
+  reveal a same-shell operation panel, avoid new pages, and avoid
+  `pfi_legacy=1`/`pfi_shell=0`.
+- Verification:
+  - Focused user-facing contracts:
+    `tests/contract/test_pfi_web_shell_contract.py`,
+    `tests/e2e/test_pfi_web_shell_static_flow.py`,
+    `tests/contract/test_pfi005_gate2_shell_acceptance.py`, and
+    `tests/contract/test_pfi007_research_policy_vertical_acceptance.py`
+    => 38 passed.
+  - Gate2 browser UAT:
+    `PFIGate2ShellAcceptanceV1 status=Pass`, 844 pass / 0 fail / 2 info,
+    `all_feature_control_panels_opened=46`, screenshot
+    `data/systemAudit/PFIGate2ShellAcceptance_20260620_073524.png`.
+  - UI visual browser acceptance:
+    `PFIOSUIVisualAcceptanceV1 status=Pass`, 146 pass / 0 fail / 0 info,
+    screenshot `data/systemAudit/UIVisualAcceptance_20260620_073602.png`.

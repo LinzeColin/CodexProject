@@ -255,6 +255,47 @@ Observed:
   scan passed.
 - `zsh -n` and `git diff --check`: passed.
 
+## User-Facing Redo After Navigation Rejection, 2026-06-20
+
+Scope: close the rejected-delivery gap where some function cards still behaved
+like passive workspace jumps and several function-panel checks exposed raw
+English field names instead of Chinese user-facing guidance.
+
+Changes:
+
+- All visible feature cards now map to concrete same-shell function views.
+  Cards such as 公司研究, 基金研究, 指数与 ETF, 主题催化, 自选监控, 来源登记,
+  任务监控, 隐私边界, 备份恢复, 组合暴露, 集中度风险, 纪律检查, and
+  订单意图 no longer behave as silent workspace-only jumps.
+- Function-panel copy now uses Chinese user language for checks and boundaries;
+  raw field-name style text such as `bar_checksum`, `source_url`,
+  `RunMetadata`, `NeedsMoreEvidence`, and `target_weight_change=0` is removed
+  from the Web Shell function-panel contract.
+- Gate2 browser acceptance now performs exhaustive replay of all visible
+  feature controls across six entrances. Each control must be a button, open a
+  same-shell Chinese function panel, show a same-shell operation panel, avoid
+  opening new pages, and avoid `pfi_legacy=1`/`pfi_shell=0`.
+
+Verification:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /private/tmp/pfi_os_ci_repro/bin/python -m pytest tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py tests/contract/test_pfi005_gate2_shell_acceptance.py tests/contract/test_pfi007_research_policy_vertical_acceptance.py -q
+zsh -n scripts/pfiGate2ShellAcceptance.sh
+scripts/pfiGate2ShellAcceptance.sh --summary-json --start-timeout 120
+scripts/uiVisualAcceptance.sh --summary-json --start-timeout 120
+```
+
+Observed:
+
+- Focused user-facing contracts: 38 passed, 2 existing protobuf deprecation
+  warnings.
+- Gate2 browser acceptance: `PFIGate2ShellAcceptanceV1 status=Pass`, 844 pass /
+  0 fail / 2 info, `all_feature_control_panels_opened=46`, screenshot
+  `data/systemAudit/PFIGate2ShellAcceptance_20260620_073524.png`.
+- Browser UI acceptance: `PFIOSUIVisualAcceptanceV1 status=Pass`, 146 pass /
+  0 fail / 0 info, screenshot
+  `data/systemAudit/UIVisualAcceptance_20260620_073602.png`.
+
 ## Command Center Chinese Delivery Patch, 2026-06-20
 
 Scope: close the remaining user-facing gap where regenerated Command Center

@@ -153,7 +153,7 @@ def test_pfi007_web_shell_exposes_same_shell_research_policy_controls():
         assert f'view: "{view}"' in js
     for label in ["研究与政策垂直切片", "引用定位", "报告清单"]:
         assert label in js
-    for text in ["source_url、evidence_path", "OfficialEvidence", "EvidenceRepairRequired", "NeedsMoreEvidence", "不登录政府门户", "不修改报告、不刷新数据"]:
+    for text in ["官方链接、证据路径", "官方证据", "待补证据", "证据不足报告清单", "不登录政府门户", "不修改报告、不刷新数据"]:
         assert text in js
     assert '研究与政策切片: { view: "research_policy_slice"' in js
     assert '引用定位: { view: "citation_locator"' in js

@@ -201,3 +201,60 @@ def test_web_shell_home_keeps_core_direct_function_entries():
     assert ".function-detail" in css
     assert ".function-runner" in css
     assert "white-space: nowrap" in css
+
+
+def test_web_shell_all_feature_cards_resolve_to_same_shell_function_panels():
+    js = _text(WEB_ROOT / "app" / "shell.js")
+
+    function_views = set(re.findall(r'^\s+([a-z0-9_]+): functionView\(', js, flags=re.MULTILINE))
+    target_views = re.findall(r': \{ view: "([^"]+)", label: "打开[^"]*" \}', js)
+
+    assert len(target_views) >= 30
+    missing = sorted(set(target_views) - function_views)
+    assert missing == []
+    for workspace_only in [
+        '指数与ETF: { workspace:',
+        '公司研究: { workspace:',
+        '任务监控: { workspace:',
+        '隐私边界: { workspace:',
+        '备份恢复: { workspace:',
+    ]:
+        assert workspace_only not in js
+
+
+def test_function_panels_use_chinese_user_language_not_raw_field_names():
+    js = _text(WEB_ROOT / "app" / "shell.js")
+    raw_visible_fragments = [
+        "可用：bar_checksum",
+        "reproducibility_hash",
+        "next-bar",
+        "split_datetime",
+        "train_rows",
+        "test_rows",
+        "generalization_ratio",
+        "window_count",
+        "pass_count",
+        "average_generalization_ratio",
+        "model_id",
+        "strategy_version",
+        "train_test_status",
+        "walk_forward_status",
+        "target_weight_change=0",
+        "order_intent_created=false",
+        "no_private_holdings_used",
+        "source_url、evidence_path",
+        "OfficialEvidence",
+        "EvidenceRepairRequired",
+        "NeedsMoreEvidence 报告清单",
+        "gap task id",
+        "report manifest",
+        "validation task",
+        "filters 和 source_ids",
+        "max_single",
+        "top3",
+        "cash_buffer",
+        "RunMetadata",
+    ]
+
+    for fragment in raw_visible_fragments:
+        assert fragment not in js

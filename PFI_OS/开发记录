@@ -36,6 +36,14 @@ PFI_OS 是本地优先的个人研究中台入口，macOS 显示为 `PFI_OS`。P
 - 加严 `scripts/uiVisualAcceptance.sh`：从 `href` 静态检查升级为真实点击 6 个一级入口和 8 个功能入口，并检查中文标题、主操作、安全边界和无英文 schema 暴露。
 - 验证结果：UI visual acceptance `Pass 98/98`，目标 pytest `56 passed`，产品/入口相关 pytest `72 passed`，JS/zsh 语法检查和 `git diff --check` 通过。
 
+2026-06-20 用户导向退回重做记录：
+
+- 将所有可见功能卡从“可能只切换工作区”升级为“必须打开同屏中文功能面板”，覆盖 6 个一级入口下 46 个可见功能卡。
+- 新增/补齐公司研究、基金研究、指数与 ETF、主题催化、自选监控、来源登记、任务监控、隐私边界、备份恢复、组合暴露、集中度风险、纪律检查和订单意图等功能面板。
+- 清理功能面板中的原始英文技术字段展示，默认用户文案改为中文解释；代码、schema、证券代码仍可保留英文。
+- 加严 `scripts/pfiGate2ShellAcceptance.sh`：逐个点击全部可见功能卡，检查按钮属性、同屏面板、同屏操作区、安全边界、无新页面和无 legacy query。
+- 验证结果：用户导向合同测试 `38 passed`；Gate2 浏览器验收 `Pass 844/846`、`fail=0`、`all_feature_control_panels_opened=46`；UI visual acceptance `Pass 146/146`。
+
 2026-06-20 PFI-004 Golden/PIT 记录：
 
 - 增加 `src/pfi_os/application/pfi004_truth_golden.py`，形成 `PFI004TruthContractV1` 和 `PFI004GoldenPITAcceptanceV1`。

@@ -277,10 +277,10 @@ const UAT_JOURNEYS = [
   {
     name: 'JOURNEY_RESEARCH_REPORT_POLICY',
     workspace: 'research',
-    view: 'reports',
-    title: '报告中心',
-    action: '打开报告列表',
-    requiredText: ['回测', '扫描', '研究', '验证', '人工复核'],
+    view: 'report_manifest',
+    title: '报告清单',
+    action: '打开报告清单',
+    requiredText: ['运行元数据', '缺失证据', '验证任务', '不修改报告'],
     followUpView: {
       view: 'policy',
       title: '政策雷达',
@@ -514,6 +514,69 @@ async function runJourney(frame, journey, checks) {
   }
 }
 
+async function verifyAllVisibleFeatureControls(page, frame, checks) {
+  let total = 0;
+  for (const [workspaceId, label] of REQUIRED_WORKSPACES) {
+    await switchWorkspace(frame, workspaceId, label, checks);
+    const count = await frame.locator('.workflow-card .workflow-open').count();
+    checks.push(check(`AllFeatureControls:${workspaceId}:Count`, count > 0 ? 'Pass' : 'Fail', `count=${count}`));
+    for (let index = 0; index < count; index += 1) {
+      await switchWorkspace(frame, workspaceId, label, checks);
+      const info = await frame.locator('.workflow-card').nth(index).evaluate((card) => {
+        const title = (card.querySelector('.workflow-card-head strong')?.textContent || '').trim();
+        const control = card.querySelector('.workflow-open');
+        return {
+          title,
+          tagName: control ? control.tagName.toLowerCase() : '',
+          text: control ? control.textContent.trim() : '',
+          href: control ? control.getAttribute('href') || '' : '',
+          view: control ? control.getAttribute('data-feature-view') || '' : '',
+          workspace: control ? control.getAttribute('data-feature-workspace') || '' : '',
+        };
+      });
+      const prefix = `AllFeatureControls:${workspaceId}:${index}:${info.title || 'untitled'}`;
+      checks.push(check(`${prefix}:ControlExists`, info.tagName ? 'Pass' : 'Fail', JSON.stringify(info)));
+      checks.push(check(`${prefix}:ControlIsButton`, info.tagName === 'button' ? 'Pass' : 'Fail', `${info.tagName}; href=${info.href || 'none'}`));
+      checks.push(check(`${prefix}:HasFunctionView`, info.view ? 'Pass' : 'Fail', JSON.stringify(info)));
+      checks.push(check(`${prefix}:NoLegacyHref`, info.href === '' ? 'Pass' : 'Fail', info.href || 'none'));
+      if (!info.view) continue;
+      const beforePages = page.context().pages().length;
+      await timed(`${prefix}:OpenPanel`, PERFORMANCE_BUDGET.function_open_ms, checks, async () => {
+        await frame.locator('.workflow-card .workflow-open').nth(index).click({ timeout: 10000 });
+        await frame.waitForFunction(
+          (expectedTitle) => {
+            const panel = document.querySelector('[data-function-detail]');
+            const titleNode = document.querySelector('[data-function-title]');
+            const actionNode = document.querySelector('[data-function-action]');
+            if (!panel || panel.hidden || !titleNode || !actionNode) return false;
+            const titleText = titleNode.textContent || '';
+            return titleText.includes(expectedTitle) || expectedTitle.includes(titleText) || titleText.length > 1;
+          },
+          info.title,
+          { timeout: 10000 },
+        );
+      });
+      const detailText = await frame.locator('[data-function-detail]').innerText({ timeout: 5000 });
+      checks.push(check(`${prefix}:ChinesePanel`, /[\u3400-\u9fff]/.test(detailText) ? 'Pass' : 'Fail', detailText.slice(0, 180)));
+      checks.push(check(`${prefix}:SafetyBoundary`, detailText.includes('禁止实盘自动下单') ? 'Pass' : 'Fail', detailText.slice(0, 220)));
+      await frame.locator('[data-function-action]').click({ timeout: 10000 });
+      await frame.waitForFunction(() => {
+        const runner = document.querySelector('[data-function-runner]');
+        return runner && !runner.hidden && runner.textContent.includes('操作面板');
+      }, null, { timeout: 10000 });
+      const runnerText = await frame.locator('[data-function-runner]').innerText({ timeout: 5000 });
+      checks.push(check(`${prefix}:RunnerVisible`, runnerText.includes('操作面板') ? 'Pass' : 'Fail', runnerText.slice(0, 180)));
+      checks.push(check(`${prefix}:RunnerSafety`, runnerText.includes('不连接券商') && runnerText.includes('不提交订单') ? 'Pass' : 'Fail', runnerText.slice(0, 220)));
+      const afterPages = page.context().pages().length;
+      checks.push(check(`${prefix}:NoNewPage`, afterPages === beforePages ? 'Pass' : 'Fail', `before=${beforePages} after=${afterPages}`));
+      checks.push(check(`${prefix}:NoLegacyQuery`, page.url().includes('pfi_shell=0') || page.url().includes('pfi_legacy=1') ? 'Fail' : 'Pass', page.url()));
+      total += 1;
+    }
+  }
+  checks.push(check('AllFeatureControls:TotalPanelsOpened', total >= 40 ? 'Pass' : 'Fail', `opened=${total}`));
+  return total;
+}
+
 async function accessibilityProof(frame, checks) {
   const structural = await frame.evaluate(() => {
     const selectors = {
@@ -623,6 +686,7 @@ async function noLegacyAndNoGibberish(frame, page, checks) {
   let browser;
   let shellReadyMs = 0;
   let screenshotBytes = 0;
+  let allFeatureControlCount = 0;
   try {
     browser = await playwright.chromium.launch({ headless: true, executablePath: browserExecutable });
     const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -647,6 +711,8 @@ async function noLegacyAndNoGibberish(frame, page, checks) {
     for (const journey of UAT_JOURNEYS) {
       await runJourney(shellFrame, journey, checks);
     }
+
+    allFeatureControlCount = await verifyAllVisibleFeatureControls(page, shellFrame, checks);
 
     await timed('EvidenceDrawerToggle', PERFORMANCE_BUDGET.drawer_toggle_ms, checks, async () => {
       await shellFrame.locator('[data-evidence-toggle]').first().click({ timeout: 10000 });
@@ -692,6 +758,7 @@ async function noLegacyAndNoGibberish(frame, page, checks) {
           shell_ready_ms: shellReadyMs,
           screenshot_bytes: screenshotBytes,
           viewport: '1440x1000',
+          all_feature_control_panels_opened: allFeatureControlCount,
         },
       }),
       status === 'Pass' ? 0 : 2,

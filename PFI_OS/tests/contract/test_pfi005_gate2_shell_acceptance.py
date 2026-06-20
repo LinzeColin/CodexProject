@@ -54,11 +54,15 @@ def test_gate2_shell_acceptance_covers_a11y_performance_and_no_legacy_page_gate(
         "SameShellRunner",
         "ChineseFirstSurface",
         "NoVisibleLegacyOrError",
+        "AllFeatureControls",
+        "TotalPanelsOpened",
     ]:
         assert required in script
     assert "a[data-feature-view]" in script
     assert "pfi_legacy=1" in script
     assert "feature controls are buttons" in script
+    assert "verifyAllVisibleFeatureControls" in script
+    assert "all_feature_control_panels_opened" in script
 
 
 def test_gate2_shell_acceptance_is_lightweight_browser_only_and_fail_closed():
