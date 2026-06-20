@@ -806,13 +806,18 @@ def main() -> int:
                     connection,
                     """
                     SELECT count(*)
-                    FROM entity_resolution_candidates
-                    WHERE parser_version = %s
-                      AND candidate_name = 'NVIDIA Corporation'
-                      AND matched_research_id = 'P0-006'
-                      AND match_method = 'anchor_subject'
+                    FROM entity_resolution_candidates erc
+                    JOIN raw_source_snapshots rss ON rss.id = erc.raw_snapshot_id
+                    JOIN source_documents sd ON sd.id = rss.source_document_id
+                    WHERE erc.parser_version = %s
+                      AND rss.parser_version = %s
+                      AND sd.parser_version = %s
+                      AND sd.raw_storage_uri LIKE 'data/nvidia_public_source_anchors.csv#%%'
+                      AND erc.candidate_name = 'NVIDIA Corporation'
+                      AND erc.matched_research_id = 'P0-006'
+                      AND erc.match_method = 'anchor_subject'
                     """,
-                    (parser_version,),
+                    (parser_version, parser_version, parser_version),
                 )
             )
             tsmc_candidate_count = int(
