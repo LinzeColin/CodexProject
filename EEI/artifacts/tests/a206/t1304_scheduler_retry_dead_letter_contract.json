@@ -19,7 +19,7 @@
     "scripts/job_scheduler.py supports enqueue, lease, heartbeat, graceful release, retry, expired lease recovery, completion and dead-letter transitions.",
     "scripts/job_scheduler.py supports dispatch-outbox-once for pending outbox events and logs dispatch_outbox_event operations.",
     "POST /v1/scoring/recompute enqueues score_recompute jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
-    "scripts/job_scheduler.py registers a score_recompute handler that validates active-context freshness, writes scoring_runs and score_results, advances refresh_token and completes stale jobs as skipped_stale_context instead of retrying forever.",
+    "scripts/job_scheduler.py registers a score_recompute handler that validates active-context freshness, writes scoring_runs and score_results for relationship_fact_candidate, relationship, entity, event, industry and source_document object families, advances refresh_token and completes stale jobs as skipped_stale_context instead of retrying forever.",
     "POST /v1/data/snapshots/refresh enqueues data_snapshot_refresh jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
     "scripts/job_scheduler.py registers a data_snapshot_refresh handler that validates active-context freshness, writes active data_snapshots, advances refresh_token, emits data.snapshot.activated and completes stale jobs as skipped_stale_context instead of retrying forever.",
     "scripts/job_scheduler.py registers a curated_ingestion_refresh handler that reuses the curated official NVIDIA/ASML loader idempotently, records execute_curated_ingestion_refresh and emits data.ingestion.completed.",
@@ -97,6 +97,17 @@
     "commit_sha": "a7675452963ab7102f8edaa2af502cb2496b9924",
     "verify_static_contract_lint_typecheck_unit_step": "PASS",
     "verify_g2_static_contract_lint_typecheck_unit_step": "PASS",
+    "verify_g2_postgresql_integration_step": "PASS",
+    "verify_g2_browser_e2e_step": "PASS",
+    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
+  },
+  "latest_score_recompute_ci_result": {
+    "provider": "GitHub Actions",
+    "workflow": "EEI validation",
+    "run_id": "27883953630",
+    "job_id": "82516108840",
+    "commit_sha": "f2bf996c1ea57f652f6d4d5da517f1f4b501e6ad",
+    "verified_scope": "scheduler score_recompute execution persists all MVP object-family score_results and emits score.snapshot.activated",
     "verify_g2_postgresql_integration_step": "PASS",
     "verify_g2_browser_e2e_step": "PASS",
     "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"

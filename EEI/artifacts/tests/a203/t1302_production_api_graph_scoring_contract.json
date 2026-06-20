@@ -133,6 +133,7 @@
     ".venv/bin/python -m pytest -q tests/unit/test_scoring.py: PASS with 14/14 after source_document and score_result scoring explain slice",
     "python3 -m py_compile scripts/job_scheduler.py tests/integration/test_database_migrations.py: PASS after MVP object-family score_results recompute slice",
     ".venv/bin/ruff check scripts/job_scheduler.py tests/integration/test_database_migrations.py: PASS after MVP object-family score_results recompute slice",
+    "GitHub Actions run 27883953630 job 82516108840: PASS for commit f2bf996c1ea57f652f6d4d5da517f1f4b501e6ad, including Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E for full MVP object-family score_results recompute",
     ".venv/bin/python scripts/validate_contracts.py: PASS after OpenAPI objectType enum expanded to seven score explanation object types",
     ".venv/bin/python scripts/validate_v5_production_readiness_sync.py: PASS after source_document and score_result scoring explain slice",
     ".venv/bin/python -m pytest -q tests/integration/test_database_migrations.py: SKIPPED locally because this host has no DATABASE_URL or .env; GitHub Actions run 27883167817 provides the remote PostgreSQL proof below",

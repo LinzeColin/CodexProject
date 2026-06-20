@@ -3549,7 +3549,7 @@ Status: LOCAL AND REMOTE CI VALIDATED; A203 STILL IN PROGRESS
 
 ## 2026-06-21 - T1302/T1303/T1304 full MVP score-result recompute persistence slice
 
-Status: LOCAL VALIDATED; REMOTE CI PENDING; A203/A204-A206 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A203/A204-A206 STILL IN PROGRESS
 
 ### Scope
 
@@ -3570,16 +3570,22 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A203/A204-A206 STILL IN PROGRESS
 - T1302 -> A203 for production scoring service persistence.
 - T1303 -> A204/A205 for active scoring run activation, refresh token advance and atomic score snapshot context.
 - T1304 -> A206 for worker execution, outbox payload and idempotent background-job contract.
-- These IDs remain `IN_PROGRESS`, not `DONE`, until remote PostgreSQL CI and downstream production release gates are current.
+- These IDs remain `IN_PROGRESS`, not `DONE`, until downstream production release gates are current.
 
 ### Local validation
 
 - `python3 -m py_compile scripts/job_scheduler.py tests/integration/test_database_migrations.py`: PASS.
 - `.venv/bin/ruff check scripts/job_scheduler.py tests/integration/test_database_migrations.py`: PASS.
 
+### Remote CI validation
+
+- GitHub Actions run `27883953630` / job `82516108840` on commit `f2bf996c1ea57f652f6d4d5da517f1f4b501e6ad`: PASS.
+- Step 10 `Verify G2 PostgreSQL integration`: PASS, proving the recompute flow writes `score_results` for relationship_fact_candidate, relationship, entity, event, industry and source_document object families with non-null metric values.
+- Step 11 `Verify G2 browser E2E`: PASS.
+- Step 12 `Verify G2 live FastAPI PostgreSQL E2E`: PASS.
+
 ### Remaining gaps
 
-- Local host still lacks `.env`/`DATABASE_URL`, so PostgreSQL integration proof must come from GitHub Actions.
 - A203 still depends on production-approved relationship edges and current downstream release gates.
 - A204/A205 still need online model editing and long-duration refresh stability.
 - A206/A209 still need 4h and 24h operator soak evidence for worker wake, retry, recovery and dead-letter stability.
