@@ -2616,7 +2616,7 @@ Residual risks:
 ### Remaining gaps
 
 - At this enqueue-control slice point, `score_recompute` jobs were enqueued but no worker handler executed score recomputation yet; the follow-on worker execution slice below addresses that gap.
-- Transactional outbox and worker-driven data snapshot refresh remain open.
+- Worker-driven data snapshot refresh remains open; transactional outbox event sourcing was added in the following T1303/T1304 slice.
 - 4h/24h soak, authn/authz, formal fact publication, multi-object scoring and brand clearance remain v0.1 blockers.
 
 ## 2026-06-20 - T1303/T1304/A204-A206 score recompute worker execution
@@ -2724,6 +2724,8 @@ Residual risks:
 
 - Local `python3 -m py_compile apps/api/app/domain_repository.py scripts/job_scheduler.py scripts/check_database_schema.py tests/integration/test_database_migrations.py`: PASS.
 - Local `.venv/bin/ruff check apps/api/app/domain_repository.py scripts/job_scheduler.py scripts/check_database_schema.py tests/integration/test_database_migrations.py`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify` with non-sandbox browser permission: PASS; unit tests 15/15.
+- GitHub Actions `EEI validation` on `253bd76a8b8dfe3fbe187486adbd3d2063d27d28`: PASS, run `27871229983`, job `82483284402`; Steps 7-12 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 - PostgreSQL execution proof must come from GitHub Actions G2 integration because this local environment does not provide Docker/PostgreSQL.
 
 ### Remaining gaps
