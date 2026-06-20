@@ -3497,11 +3497,13 @@ class DomainRepository:
         relationship = connection.execute(
             """
             SELECT
-              id, subject_entity_id, object_entity_id, relationship_type,
-              relationship_family, status, confidence, valid_from, valid_to,
-              observed_at, qualifiers, synthetic, fixture_notice
-            FROM relationships
-            WHERE id = %s
+              r.id, r.subject_entity_id, r.object_entity_id, r.relationship_type,
+              r.relationship_family, r.status, r.confidence, r.valid_from, r.valid_to,
+              r.observed_at, r.qualifiers, COALESCE(frn.synthetic, false) AS synthetic,
+              frn.fixture_notice
+            FROM relationships r
+            LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+            WHERE r.id = %s
             """,
             (object_id,),
         ).fetchone()

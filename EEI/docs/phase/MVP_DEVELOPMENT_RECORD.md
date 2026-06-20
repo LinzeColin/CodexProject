@@ -2380,11 +2380,13 @@ Residual risks:
 
 - Added production API route `/v1/evidence/{objectType}/{objectId}` with bounded `limit` validation for `relationship_fact_candidate` and published `relationship` objects.
 - Added repository evidence detail payloads using existing PostgreSQL evidence tables: `relationship_fact_candidate_evidence`, `ingestion_evidence_chain`, `relationship_evidence`, `source_documents` and `sources`.
+- Hardened the published `relationship` evidence detail branch to read fixture disclosure from `fixture_relationship_notices`, matching the production schema instead of assuming fixture columns on `relationships`.
 - Extended `specs/api_contract.yaml` with `EvidenceDetailResponse`, `EvidenceDetailItem`, `EvidenceSnippet` and `EvidenceDetailSourceDocument`.
 - Extended the frontend production data client with guarded `loadEvidenceDetail` support and local fallback/error modes.
 - Wired the commercial-map homepage so successful `/v1/explore` hydration loads catalog, score explanation and evidence detail in parallel.
 - Added a production evidence panel in Evidence Center showing evidence count, source-document count, endpoint, truncation state and source snippets.
 - Wired the "打开证据" action to refresh production evidence detail instead of only changing a local status marker.
+- Extended live saved-view E2E setup to explicitly configure the production data API base key when exercising the live FastAPI/PostgreSQL stack.
 - Preserved the candidate-vs-published-fact boundary: candidate evidence is visible as evidence detail, but relationship_fact_candidates are still excluded from graph edges until publication gates pass.
 
 ### Files changed
@@ -2411,12 +2413,15 @@ Residual risks:
 ### Validation
 
 - Local `python3 -m py_compile apps/api/app/domain_repository.py apps/api/app/domain.py tests/integration/test_database_migrations.py`: PASS.
+- Local `python3 -m py_compile apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS after published relationship evidence hardening.
 - Local `git diff --check`: PASS.
 - Local `npm run typecheck` from `apps/web`: PASS.
+- Local `./node_modules/.bin/tsc --noEmit` from `apps/web`: PASS after live E2E setup hardening.
 - Local `.venv/bin/python -m pytest -q tests/unit/test_api_health.py`: PASS, 9/9.
 - Local `.venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED, 1/1 because local `.env`/`DATABASE_URL` is absent; CI remains the destructive PostgreSQL migration/reset evidence source.
 - Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 2/2 for A203/A211 production graph and evidence hydration.
 - Local default Playwright E2E with non-sandbox browser/server access: PASS, 32/32.
+- GitHub Actions run `27866692631` on commit `b996803f8ce442ed339ec89981cab755ea889092`: FAILED in Step 8 `Verify G2 PostgreSQL migrations and E2E`; Step 7 static/contract/lint/typecheck/unit succeeded. Follow-up fix added relationship evidence schema compatibility and live E2E production data API base setup for the next CI run.
 
 ### Remaining gaps
 

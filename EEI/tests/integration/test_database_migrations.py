@@ -559,6 +559,20 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert evidence_detail["evidence"][0]["source_document"]["url"].startswith("https://")
     assert evidence_detail["production_context"]["schema_version"] == "production-context-v1"
 
+    relationship_evidence_response = client.get(
+        f"/v1/evidence/relationship/{COREWEAVE_NVIDIA_RELATIONSHIP_ID}"
+    )
+    assert relationship_evidence_response.status_code == 200
+    relationship_evidence = relationship_evidence_response.json()
+    assert relationship_evidence["schema_version"] == "evidence-detail-v1"
+    assert relationship_evidence["object_type"] == "relationship"
+    assert relationship_evidence["object_id"] == COREWEAVE_NVIDIA_RELATIONSHIP_ID
+    assert relationship_evidence["evidence_count"] >= 1
+    assert relationship_evidence["source_document_count"] >= 1
+    assert relationship_evidence["evidence"][0]["snippet"]["text"]
+    assert relationship_evidence["object_summary"]["synthetic"] is True
+    assert relationship_evidence["object_summary"]["fixture_notice"]
+
     exercise_transactional_model_activation_contract(client, profiles[0])
     exercise_server_saved_view_contracts(client, profiles[0])
 

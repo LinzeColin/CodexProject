@@ -16,6 +16,7 @@
     "commercial-map server node/edge rendering in the SVG canvas and graph table when /v1/explore returns a usable server graph",
     "production data client and UI panel hydrate /v1/catalogs plus relationship_fact_candidate score explanations from the production API, using /v1/explore sample_candidates to avoid hard-coded live database IDs",
     "production data client and Evidence Center hydrate /v1/evidence/relationship_fact_candidate/{objectId}, expose evidence/source-document counts, endpoint state and source snippets, and refresh evidence when the user clicks 打开证据",
+    "live saved-view E2E setup explicitly configures the production data API base key for live FastAPI/PostgreSQL cross-route runs",
     "server graph hydration preserves the restored local selected node unless the user explicitly selects a server-rendered graph node",
     "Playwright coverage for WorkspaceContext, real controls and disabled unfinished entries"
   ],
@@ -29,6 +30,7 @@
     "apps/web/src/app/page.tsx",
     "specs/api_contract.yaml",
     "tests/e2e/home.spec.ts",
+    "tests/e2e/saved-view-live.spec.ts",
     "tests/e2e/state-contract.spec.ts"
   ],
   "verified_commands": [
@@ -37,6 +39,7 @@
     "python3 -m py_compile apps/api/app/domain_repository.py apps/api/app/domain.py tests/integration/test_database_migrations.py",
     ".venv/bin/python -m pytest -q tests/unit/test_api_health.py",
     ".venv/bin/python -m pytest -q tests/integration/test_database_migrations.py",
+    "./node_modules/.bin/tsc --noEmit",
     "./node_modules/.bin/playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A203 and A211\"",
     "./node_modules/.bin/playwright test --config=../../playwright.config.ts",
     "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1",
