@@ -54,7 +54,10 @@ test("links tasks risks controls and acceptance evidence from the status screen"
 
   await expect(page.getByTestId("status-ledger-panel")).toContainText("FUN-EXP-01");
   await expect(page.getByTestId("status-ledger-panel")).toContainText("LOCAL_E2E_VALIDATED");
-  await expect(page.getByTestId("status-task-panel")).toContainText("T1206");
+  await expect(page.getByTestId("status-task-T1302")).toContainText(
+    "Complete production API"
+  );
+  await expect(page.getByTestId("status-task-T1302")).toContainText("IN PROGRESS");
   await expect(page.getByTestId("status-acceptance-panel")).toContainText("DONE");
   await expect(page.getByTestId("status-risk-control-panel")).toContainText("R001");
   await expect(page.getByTestId("status-risk-control-panel")).toContainText("critical");
