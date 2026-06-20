@@ -204,7 +204,7 @@ A202,P0,data,"Golden Vertical real ingestion preserves raw snapshot, entity reso
 A203,P0,api,"Production API, recursive graph query and scoring responses are snapshot-scoped, evidence-bearing and budget-bounded",contract + integration test,IN PROGRESS
 A204,P0,model,"Model config versions activate transactionally with operation log and failed activation leaves previous active version unchanged",transaction/rollback test,IN PROGRESS
 A205,P0,refresh,"Global model/data refresh atomically switches all visible modules and stale clients receive conflict or refresh semantics",cross-view E2E + cache invalidation test,IN PROGRESS
-A206,P0,scheduler,"Background jobs support lease, auto wake, idempotency key, heartbeat, retry cap, dead-letter and graceful shutdown",worker crash/retry integration test,NOT STARTED
+A206,P0,scheduler,"Background jobs support lease, auto wake, idempotency key, heartbeat, retry cap, dead-letter and graceful shutdown",worker crash/retry integration test,IN PROGRESS
 A207,P0,saved-view,"Server saved views support optimistic conflict control, version history, recovery and schema migration",multi-session conflict + restore test,NOT STARTED
 A208,P0,scale,"10k, 100k and 1m relationship benchmarks record API, layout, render, memory, frame and long-task budgets with pass/fail output",performance benchmark,NOT STARTED
 A209,P0,soak,"4h and 24h browser and worker soak tests record heap, DOM, listener, timer, CPU, retry and recovery stability",soak suite,NOT STARTED

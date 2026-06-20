@@ -16,6 +16,15 @@ from psycopg.types.json import Jsonb
 from apps.api.app.domain_repository import DomainRepository
 from apps.api.app.main import app
 from scripts.db_tools import connect_database, database_url
+from scripts.job_scheduler import (
+    complete_job,
+    enqueue_job,
+    fail_job,
+    heartbeat_job,
+    lease_next_job,
+    recover_expired_leases,
+    release_job,
+)
 
 pytestmark = pytest.mark.skipif(
     not os.getenv("DATABASE_URL") and not os.path.exists(".env"),
@@ -109,6 +118,7 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     exercise_curated_official_ingestion_contracts()
     exercise_production_fact_version_contracts()
     exercise_domain_api_and_repository_contracts()
+    exercise_background_scheduler_contracts()
     run_script("scripts/migrate.py", "downgrade", "--all")
     run_script("scripts/migrate.py", "status", "--json")
 
@@ -1392,3 +1402,143 @@ def exercise_transactional_model_activation_contract(
             connection.rollback()
         else:  # pragma: no cover - should be unreachable with the global active index.
             raise AssertionError("Only one globally active scoring profile is allowed")
+
+
+def exercise_background_scheduler_contracts() -> None:
+    worker_id = "a206-integration-worker"
+    job = enqueue_job(
+        job_type="noop",
+        idempotency_key="a206-idempotent-retry-contract",
+        payload={"acceptance_id": "A206", "path": "retry-dead-letter"},
+        max_attempts=3,
+        dead_letter_after_attempts=3,
+        metadata={"task_id": "T1304"},
+    )
+    duplicate = enqueue_job(
+        job_type="noop",
+        idempotency_key="a206-idempotent-retry-contract",
+        payload={"acceptance_id": "A206", "duplicate": True},
+        max_attempts=3,
+        dead_letter_after_attempts=3,
+    )
+    assert duplicate["id"] == job["id"]
+    assert duplicate["payload"]["path"] == "retry-dead-letter"
+
+    first_lease = lease_next_job(worker_id=worker_id, job_type="noop", lease_ttl_seconds=60)
+    assert first_lease is not None
+    assert first_lease["id"] == job["id"]
+    assert first_lease["status"] == "running"
+    assert first_lease["attempt_count"] == 1
+    assert first_lease["lease_token"]
+
+    heartbeat = heartbeat_job(
+        job_id=first_lease["id"],
+        lease_token=first_lease["lease_token"],
+        worker_id=worker_id,
+        lease_ttl_seconds=120,
+    )
+    assert heartbeat["heartbeat_at"]
+    assert heartbeat["lease_expires_at"] > first_lease["lease_expires_at"]
+
+    released = release_job(
+        job_id=first_lease["id"],
+        lease_token=first_lease["lease_token"],
+        reason="graceful_shutdown",
+    )
+    assert released["status"] == "queued"
+    assert released["attempt_count"] == 1
+    assert released["lease_token"] is None
+    assert released["metadata"]["last_release_reason"] == "graceful_shutdown"
+
+    second_lease = lease_next_job(worker_id=worker_id, job_type="noop", lease_ttl_seconds=60)
+    assert second_lease is not None
+    assert second_lease["id"] == job["id"]
+    assert second_lease["attempt_count"] == 2
+    retry = fail_job(
+        job_id=second_lease["id"],
+        lease_token=second_lease["lease_token"],
+        error_class="fixture_retry",
+        error_message="retry path remains bounded",
+        retry_backoff_seconds=0,
+    )
+    assert retry["status"] == "queued"
+    assert retry["last_error_class"] == "fixture_retry"
+
+    third_lease = lease_next_job(worker_id=worker_id, job_type="noop", lease_ttl_seconds=60)
+    assert third_lease is not None
+    assert third_lease["attempt_count"] == 3
+    dead = fail_job(
+        job_id=third_lease["id"],
+        lease_token=third_lease["lease_token"],
+        error_class="fixture_terminal",
+        error_message="dead-letter after retry cap",
+        retry_backoff_seconds=0,
+    )
+    assert dead["status"] == "dead_letter"
+    assert dead["finished_at"]
+
+    expired_job = enqueue_job(
+        job_type="noop",
+        idempotency_key="a206-expired-lease-contract",
+        payload={"acceptance_id": "A206", "path": "expired-lease"},
+        max_attempts=3,
+        dead_letter_after_attempts=3,
+    )
+    expired_lease = lease_next_job(worker_id=worker_id, job_type="noop", lease_ttl_seconds=60)
+    assert expired_lease is not None
+    assert expired_lease["id"] == expired_job["id"]
+    with connect_database() as connection:
+        connection.execute(
+            """
+            UPDATE background_jobs
+            SET lease_expires_at = now() - interval '1 minute'
+            WHERE id = %s
+            """,
+            (expired_job["id"],),
+        )
+    recovery = recover_expired_leases()
+    assert recovery == {"recovered": 1, "dead_lettered": 0}
+
+    recovered_lease = lease_next_job(worker_id=worker_id, job_type="noop", lease_ttl_seconds=60)
+    assert recovered_lease is not None
+    assert recovered_lease["id"] == expired_job["id"]
+    completed = complete_job(
+        job_id=recovered_lease["id"],
+        lease_token=recovered_lease["lease_token"],
+        result={"handler": "noop", "acceptance_id": "A206"},
+    )
+    assert completed["status"] == "succeeded"
+    assert completed["metadata"]["result"]["acceptance_id"] == "A206"
+
+    with connect_database() as connection:
+        dead_letter_row = connection.execute(
+            """
+            SELECT final_attempt_no, error_class, error_message
+            FROM dead_letter_jobs
+            WHERE job_id = %s
+            """,
+            (job["id"],),
+        ).fetchone()
+        assert dead_letter_row == (3, "fixture_terminal", "dead-letter after retry cap")
+        attempt_statuses = connection.execute(
+            """
+            SELECT status, count(*)::int
+            FROM background_job_attempts
+            GROUP BY status
+            """
+        ).fetchall()
+        counts_by_status = {row[0]: row[1] for row in attempt_statuses}
+        assert counts_by_status["released"] == 1
+        assert counts_by_status["failed"] == 2
+        assert counts_by_status["expired"] == 1
+        assert counts_by_status["succeeded"] == 1
+        job_counts = connection.execute(
+            """
+            SELECT
+              count(*) FILTER (WHERE status = 'succeeded')::int,
+              count(*) FILTER (WHERE status = 'dead_letter')::int,
+              count(*) FILTER (WHERE status = 'running')::int
+            FROM background_jobs
+            """
+        ).fetchone()
+        assert job_counts == (1, 1, 0)

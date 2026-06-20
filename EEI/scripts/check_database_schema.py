@@ -44,6 +44,9 @@ REQUIRED_TABLES = {
     "relationship_fact_candidates",
     "relationship_fact_candidate_evidence",
     "manual_review_queue",
+    "background_jobs",
+    "background_job_attempts",
+    "dead_letter_jobs",
 }
 
 REQUIRED_ENTITY_TYPES = {
@@ -91,6 +94,16 @@ REQUIRED_TEMPORAL_COLUMNS = {
     "relationship_fact_candidate_evidence": {"created_at"},
     "manual_review_queue": {"created_at", "resolved_at"},
     "active_analysis_contexts": {"activated_at", "created_at", "updated_at"},
+    "background_jobs": {
+        "scheduled_for",
+        "lease_expires_at",
+        "heartbeat_at",
+        "created_at",
+        "updated_at",
+        "finished_at",
+    },
+    "background_job_attempts": {"started_at", "heartbeat_at", "finished_at"},
+    "dead_letter_jobs": {"dead_lettered_at"},
 }
 
 REQUIRED_PRODUCTION_VERSION_COLUMNS = {
@@ -233,6 +246,53 @@ REQUIRED_CURATED_INGESTION_INDEXES = {
     "relationship_fact_candidates_review_idx",
     "relationship_fact_candidate_evidence_source_idx",
     "manual_review_queue_status_idx",
+}
+
+REQUIRED_SCHEDULER_COLUMNS = {
+    "background_jobs": {
+        "job_type",
+        "idempotency_key",
+        "payload",
+        "priority",
+        "status",
+        "scheduled_for",
+        "attempt_count",
+        "max_attempts",
+        "dead_letter_after_attempts",
+        "lease_owner",
+        "lease_token",
+        "lease_expires_at",
+        "heartbeat_at",
+        "last_error_class",
+        "last_error_message",
+        "metadata",
+    },
+    "background_job_attempts": {
+        "job_id",
+        "attempt_no",
+        "worker_id",
+        "lease_token",
+        "status",
+        "error_class",
+        "error_message",
+        "metadata",
+    },
+    "dead_letter_jobs": {
+        "job_id",
+        "final_attempt_no",
+        "error_class",
+        "error_message",
+        "payload",
+        "metadata",
+    },
+}
+
+REQUIRED_SCHEDULER_INDEXES = {
+    "background_jobs_due_idx",
+    "background_jobs_lease_expiry_idx",
+    "background_jobs_type_status_idx",
+    "background_job_attempts_job_idx",
+    "dead_letter_jobs_time_idx",
 }
 
 CURATED_ANCHOR_PARSER_VERSION = "nvidia-public-anchor-v1"
@@ -411,6 +471,15 @@ def main() -> int:
                     f"{table_name} missing curated ingestion columns: {missing_curated_columns}"
                 )
 
+        for table_name, required_columns in REQUIRED_SCHEDULER_COLUMNS.items():
+            missing_scheduler_columns = sorted(
+                required_columns - columns_by_table.get(table_name, set())
+            )
+            if missing_scheduler_columns:
+                raise RuntimeError(
+                    f"{table_name} missing scheduler columns: {missing_scheduler_columns}"
+                )
+
         production_index_rows = rows(
             connection,
             """
@@ -455,6 +524,21 @@ def main() -> int:
         if missing_curated_indexes:
             raise RuntimeError(f"Missing curated ingestion indexes: {missing_curated_indexes}")
 
+        scheduler_index_rows = rows(
+            connection,
+            """
+            SELECT indexname
+            FROM pg_indexes
+            WHERE schemaname = 'public'
+              AND indexname = ANY(%s)
+            """,
+            (list(REQUIRED_SCHEDULER_INDEXES),),
+        )
+        scheduler_indexes = {str(row[0]) for row in scheduler_index_rows}
+        missing_scheduler_indexes = sorted(REQUIRED_SCHEDULER_INDEXES - scheduler_indexes)
+        if missing_scheduler_indexes:
+            raise RuntimeError(f"Missing scheduler indexes: {missing_scheduler_indexes}")
+
         payload: dict[str, object] = {
             "required_tables": len(REQUIRED_TABLES),
             "missing_tables": missing,
@@ -467,6 +551,8 @@ def main() -> int:
             "production_version_indexes": sorted(production_indexes),
             "curated_ingestion_tables_checked": sorted(REQUIRED_CURATED_INGESTION_COLUMNS),
             "curated_ingestion_indexes": sorted(curated_indexes),
+            "scheduler_tables_checked": sorted(REQUIRED_SCHEDULER_COLUMNS),
+            "scheduler_indexes": sorted(scheduler_indexes),
             "seed_counts": {},
         }
 
