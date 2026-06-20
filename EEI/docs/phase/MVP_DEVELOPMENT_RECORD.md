@@ -2241,7 +2241,7 @@ Residual risks:
 - Added `explore-api-client.ts` for API-first `POST /v1/explore` hydration with explicit local fixture fallback.
 - Mapped homepage subject, lens, semantic zoom, as-of time, scoring profile id and default 42/64/12 budget into the backend `ExploreRequest` contract.
 - Added a production graph context panel that surfaces `production_context`, graph query version, scoring service version, server coverage, publication gate and candidate-fact exclusion counts.
-- Kept the visible graph rendering as fixture projection; this slice hydrates server context and metadata but does not replace the rendered nodes/edges with live server graph data.
+- At that point, visible graph rendering still used the fixture projection. The follow-on server graph rendering slice below closes that specific rendering gap while leaving A203/A211 open.
 - Added Playwright mock-server E2E coverage for initial hydration and manual lens-driven refresh.
 - Recorded the current contract gap: the `capital` visual node still falls back to the NVIDIA entity id until a first-class capital object/entity contract is implemented.
 
@@ -2271,9 +2271,54 @@ Residual risks:
 - Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 1/1 for `A203 and A211 hydrate production graph context through the explore API`.
 - Local default Playwright E2E with non-sandbox browser/server access: PASS, 31/31.
 
-### Remaining gaps
+### Remaining gaps at that point
 
-- Server graph node/edge data must replace the fixture projection before closing the frontend production hydration claim.
+- The commercial-map render layer still had to consume server-returned graph records. This was addressed by the following bounded server graph rendering slice, but A203/A211 remain open.
 - Evidence center, catalog and score explanation API hydration remain open.
 - Live FastAPI/PostgreSQL cross-route E2E remains required before A211 can close.
 - Full multi-object scoring and formally published relationship edges remain required before A203 can close.
+
+## 2026-06-20 - T1302/A203 and T1308/A211 commercial-map server graph rendering
+
+### Scope
+
+- Connected typed `/v1/explore` response nodes and edges to the commercial-map SVG render layer and accessible relationship table.
+- Added runtime API guards for server node and edge records so malformed graph payloads fall back to the local fixture path instead of partially rendering invalid data.
+- Added deterministic server-node layout, relationship-family lens mapping, server edge labels, server source-count metadata and server render count attributes for E2E assertions.
+- Added server selected-node support in the inspection card. Unknown server-only objects can be selected and inspected, while local-only actions such as set-center, pin, compare and watchlist are disabled unless the server entity maps to an existing local object key.
+- Retained fixture rendering as the explicit fallback when the API is unavailable or returns no usable graph edges.
+- Extended the A203/A211 Playwright mock server with a server-only packaging supplier node and two server-returned relationship edges, then asserted SVG, table and selected-card rendering from the server graph.
+
+### Files changed
+
+- `apps/web/src/app/explore-api-client.ts`
+- `apps/web/src/app/page.tsx`
+- `tests/e2e/state-contract.spec.ts`
+- `artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json`
+- `artifacts/tests/a211/t1308_frontend_workspace_context_contract.json`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `DEVELOPMENT_STATUS.md`
+- `FUNCTION_CATALOG.md`
+- `README.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `docs/phase/MVP_DEVELOPMENT_RECORD.md`
+
+### Acceptance mapping
+
+- T1302 -> A203.
+- T1308 -> A211.
+- A203/A211 remain `IN_PROGRESS`, not `DONE`.
+
+### Validation
+
+- Local `PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck`: PASS.
+- Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 1/1 for `A203 and A211 hydrate production graph context through the explore API`.
+- Local default Playwright E2E with non-sandbox browser/server access: PASS, 31/31.
+
+### Remaining gaps
+
+- Evidence center, catalog and score explanation API hydration remain open.
+- Live FastAPI/PostgreSQL cross-route E2E remains required before A211 can close.
+- Full multi-object scoring and formally published relationship edges remain required before A203 can close.
+- Server graph rendering currently requires a usable edge set; node-only production graph payload behavior remains a future product contract decision.

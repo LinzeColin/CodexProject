@@ -21,6 +21,8 @@ const savedViewWorkspaceKey = "mvp";
 const savedViewLayout =
   "upstream-left focus-center downstream-right capital-top policy-bottom";
 const nvidiaEntityId = "00000000-0000-4000-8000-000000000006";
+const serverFoundryEntityId = "00000000-0000-4000-8000-000000000021";
+const serverPackagingEntityId = "90000000-0000-4000-8000-000000000111";
 
 async function expectActiveContext(target: Locator) {
   await expect(target).toHaveAttribute("data-active-model-version", expectedContext.modelVersion);
@@ -101,14 +103,20 @@ function createExploreGraphResponse(payload: Record<string, unknown>) {
     nodes: [
       { id: request.focus?.object_id ?? nvidiaEntityId, canonical_name: "NVIDIA Corporation" },
       {
-        id: "00000000-0000-4000-8000-000000000021",
-        canonical_name: "Synthetic Advanced Foundry"
+        id: serverFoundryEntityId,
+        canonical_name: "Synthetic Advanced Foundry",
+        entity_type: "legal_entity"
+      },
+      {
+        id: serverPackagingEntityId,
+        canonical_name: "Verified Advanced Packaging Supplier",
+        entity_type: "legal_entity"
       }
     ],
     edges: [
       {
         id: "10000000-0000-4000-8000-000000000001",
-        subject_id: "00000000-0000-4000-8000-000000000021",
+        subject_id: serverFoundryEntityId,
         object_id: request.focus?.object_id ?? nvidiaEntityId,
         relationship_type: "wafer_foundry_for",
         relationship_family: "supply_chain_operations",
@@ -117,6 +125,18 @@ function createExploreGraphResponse(payload: Record<string, unknown>) {
         evidence_count: 2,
         synthetic: true,
         fixture_notice: "Synthetic fixture for API hydration contract."
+      },
+      {
+        id: "10000000-0000-4000-8000-000000000099",
+        subject_id: serverPackagingEntityId,
+        object_id: request.focus?.object_id ?? nvidiaEntityId,
+        relationship_type: "packages_tests_for",
+        relationship_family: "supply_chain_operations",
+        status: "published",
+        confidence: 0.76,
+        evidence_count: 3,
+        synthetic: false,
+        fixture_notice: "Server-rendered relationship edge for frontend hydration contract."
       }
     ],
     truncated: false,
@@ -124,9 +144,9 @@ function createExploreGraphResponse(payload: Record<string, unknown>) {
       applied: false,
       reasons: [],
       message: "Graph response is within the bounded graph budget.",
-      fetched_edge_count: 1,
-      returned_edge_count: 1,
-      returned_node_count: 2
+      fetched_edge_count: 2,
+      returned_edge_count: 2,
+      returned_node_count: 3
     },
     continuation: {
       available: false,
@@ -137,9 +157,9 @@ function createExploreGraphResponse(payload: Record<string, unknown>) {
     },
     warnings: [],
     coverage: {
-      visible_nodes: 2,
-      visible_edges: 1,
-      source_count: 2,
+      visible_nodes: 3,
+      visible_edges: 2,
+      source_count: 5,
       relationship_family_count: 1,
       synthetic_fixture_edges: 1,
       relationship_fact_candidates: {
@@ -654,12 +674,43 @@ test("A203 and A211 hydrate production graph context through the explore API", a
   );
   await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
     "data-server-node-count",
-    "2"
+    "3"
   );
   await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
     "data-server-edge-count",
-    "1"
+    "2"
   );
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-render-source",
+    "server"
+  );
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-visual-node-count",
+    "3"
+  );
+  await expect(page.getByTestId("production-graph-context")).toHaveAttribute(
+    "data-visual-edge-count",
+    "2"
+  );
+  await expect(page.getByTestId("ecosystem-map-svg")).toHaveAttribute(
+    "data-render-source",
+    "server"
+  );
+  await expect(page.getByTestId("ecosystem-map-svg")).toHaveAttribute(
+    "data-server-rendered-node-count",
+    "3"
+  );
+  await expect(page.getByTestId("ecosystem-map-svg")).toHaveAttribute(
+    "data-server-rendered-edge-count",
+    "2"
+  );
+  await expect(page.getByTestId(`graph-node-${serverPackagingEntityId}`)).toBeVisible();
+  await expect(
+    page.getByTestId(`edge-label-${serverPackagingEntityId}-${nvidiaEntityId}`)
+  ).toHaveText("packages tests for");
+  await expect(
+    page.getByTestId(`graph-table-row-${serverPackagingEntityId}-${nvidiaEntityId}`)
+  ).toHaveAttribute("data-render-source", "server");
   await expect(page.getByTestId("production-graph-budget")).toHaveText("42 / 64 / 12");
   await expect(page.getByTestId("production-graph-publication-gate")).toContainText(
     "min-sources=2"
@@ -703,6 +754,15 @@ test("A203 and A211 hydrate production graph context through the explore API", a
     "data-query-layers",
     "supply_chain_operations,technology_data_ip"
   );
+  await page.getByTestId(`graph-node-${serverPackagingEntityId}`).click();
+  await expect(page.getByTestId("selected-node-card")).toHaveAttribute(
+    "data-render-source",
+    "server"
+  );
+  await expect(page.getByTestId("selected-node-title")).toHaveText(
+    "Verified Advanced Packaging Supplier"
+  );
+  await expect(page.getByTestId("primary-set-center")).toBeDisabled();
 });
 
 test("saves versioned views restores deterministically and shows as-of change overlays", async ({
