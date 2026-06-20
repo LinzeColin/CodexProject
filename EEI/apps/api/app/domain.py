@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Annotated, Any, Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, Response, status
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
@@ -124,6 +124,11 @@ class SavedViewRestore(BaseModel):
     change_note: str | None = Field(default=None, max_length=500)
 
 
+class SavedViewPrincipal(BaseModel):
+    namespace: str
+    actor: str
+
+
 class ScoringActivationRequest(BaseModel):
     expected_active_profile_version_id: UUID | None = None
     client_refresh_token: str | None = None
@@ -179,6 +184,42 @@ def get_repository() -> DomainRepository:
 
 RepositoryDependency = Annotated[DomainRepository, Depends(get_repository)]
 CatalogRepositoryDependency = Annotated[CatalogRepository, Depends(CatalogRepository)]
+
+
+def _normalize_saved_view_header(value: str | None, *, default: str) -> str:
+    normalized = (value or default).strip()
+    if not normalized:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "reason": "invalid_saved_view_principal",
+                "message": "Saved-view namespace and actor headers cannot be blank.",
+            },
+        )
+    if len(normalized) > 120 or any(character.isspace() for character in normalized):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "reason": "invalid_saved_view_principal",
+                "message": (
+                    "Saved-view namespace and actor headers must be "
+                    "1-120 non-space characters."
+                ),
+            },
+        )
+    return normalized
+
+
+def get_saved_view_principal(
+    namespace: Annotated[str | None, Header(alias="X-EEI-User-Namespace")] = None,
+    actor: Annotated[str | None, Header(alias="X-EEI-Actor")] = None,
+) -> SavedViewPrincipal:
+    resolved_namespace = _normalize_saved_view_header(namespace, default="local_user")
+    resolved_actor = _normalize_saved_view_header(actor, default=resolved_namespace)
+    return SavedViewPrincipal(namespace=resolved_namespace, actor=resolved_actor)
+
+
+SavedViewPrincipalDependency = Annotated[SavedViewPrincipal, Depends(get_saved_view_principal)]
 
 
 def translate_repository_error(error: RepositoryError) -> HTTPException:
@@ -411,11 +452,13 @@ def remove_watchlist_item(
 @router.get("/saved-views")
 def list_saved_views(
     repository: RepositoryDependency,
+    principal: SavedViewPrincipalDependency,
     workspace_key: Annotated[str, Query(min_length=1, max_length=120)] = "default",
     include_inactive: bool = False,
 ) -> list[dict[str, Any]]:
     try:
         return repository.list_saved_views(
+            namespace=principal.namespace,
             workspace_key=workspace_key,
             include_inactive=include_inactive,
         )
@@ -427,25 +470,32 @@ def list_saved_views(
 def create_saved_view(
     payload: SavedViewCreate,
     repository: RepositoryDependency,
+    principal: SavedViewPrincipalDependency,
 ) -> dict[str, Any]:
     try:
         return repository.create_saved_view(
             name=payload.name,
             description=payload.description,
+            namespace=principal.namespace,
             workspace_key=payload.workspace_key,
             state=payload.state,
             schema_version=payload.schema_version,
             change_note=payload.change_note,
             metadata=payload.metadata,
+            actor=principal.actor,
         )
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc
 
 
 @router.get("/saved-views/{savedViewId}")
-def get_saved_view(savedViewId: UUID, repository: RepositoryDependency) -> dict[str, Any]:
+def get_saved_view(
+    savedViewId: UUID,
+    repository: RepositoryDependency,
+    principal: SavedViewPrincipalDependency,
+) -> dict[str, Any]:
     try:
-        return repository.get_saved_view(savedViewId)
+        return repository.get_saved_view(savedViewId, namespace=principal.namespace)
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc
 
@@ -455,17 +505,20 @@ def update_saved_view(
     savedViewId: UUID,
     payload: SavedViewUpdate,
     repository: RepositoryDependency,
+    principal: SavedViewPrincipalDependency,
 ) -> dict[str, Any]:
     try:
         return repository.update_saved_view(
             savedViewId,
             expected_version=payload.expected_version,
+            namespace=principal.namespace,
             name=payload.name,
             description=payload.description,
             state=payload.state,
             schema_version=payload.schema_version,
             change_note=payload.change_note,
             metadata=payload.metadata,
+            actor=principal.actor,
         )
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc
@@ -475,9 +528,13 @@ def update_saved_view(
 def list_saved_view_versions(
     savedViewId: UUID,
     repository: RepositoryDependency,
+    principal: SavedViewPrincipalDependency,
 ) -> list[dict[str, Any]]:
     try:
-        return repository.list_saved_view_versions(savedViewId)
+        return repository.list_saved_view_versions(
+            savedViewId,
+            namespace=principal.namespace,
+        )
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc
 
@@ -487,6 +544,7 @@ def restore_saved_view(
     savedViewId: UUID,
     payload: SavedViewRestore,
     repository: RepositoryDependency,
+    principal: SavedViewPrincipalDependency,
 ) -> dict[str, Any]:
     try:
         return repository.restore_saved_view(
@@ -494,6 +552,8 @@ def restore_saved_view(
             target_version=payload.target_version,
             expected_version=payload.expected_version,
             change_note=payload.change_note,
+            namespace=principal.namespace,
+            actor=principal.actor,
         )
     except RepositoryError as exc:
         raise translate_repository_error(exc) from exc

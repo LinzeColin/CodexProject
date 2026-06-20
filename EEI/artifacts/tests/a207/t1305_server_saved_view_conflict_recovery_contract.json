@@ -3,12 +3,15 @@
   "system_name": "EEI",
   "task_id": "T1305",
   "acceptance_ids": ["A207"],
-  "status": "PARTIAL_SERVER_CONTRACT",
+  "status": "PARTIAL_SERVER_AUTHZ_CONTRACT",
   "generated_at": "2026-06-20T00:00:00Z",
   "implemented_contracts": [
     "PostgreSQL saved_views table with workspace namespace, state payload, current_version and reversible migration",
     "PostgreSQL saved_view_versions immutable version chain with create/update/restore action_type",
     "FastAPI /v1/saved-views create/list/get/update/version-list/restore endpoints",
+    "Saved-view X-EEI-User-Namespace and X-EEI-Actor header contract with local_user default for MVP local mode",
+    "Repository get/update/version-list/restore lookups constrained by saved_views.namespace so cross-namespace access fails closed as 404",
+    "Same saved-view name can exist in different namespaces while duplicate names conflict inside one namespace/workspace",
     "Optimistic expected_version conflict response through HTTP 409 and saved-view-conflict-v1 detail",
     "Recovery by restoring a historical version into a new current version",
     "operation_logs success/conflict audit rows for create/update/restore"
@@ -26,6 +29,8 @@
     "integration_helper": "exercise_server_saved_view_contracts",
     "checks": [
       "create saved view version 1",
+      "create same saved-view name in tenant-beta namespace with a distinct id and audit actor",
+      "reject cross-namespace get/version-list/update/restore with 404",
       "reject duplicate workspace/name with 409",
       "update from expected_version 1 to current_version 2",
       "reject stale update with expected_version 1 after current_version 2",
@@ -33,12 +38,12 @@
       "restore target_version 1 from expected_version 2 into current_version 3",
       "reject stale restore after current_version advances to 3",
       "assert saved_view_versions action sequence create/update/restore",
-      "assert operation_logs records three success and three conflict rows"
+      "assert operation_logs records three success and three conflict rows for the local_user saved-view chain"
     ]
   },
   "remaining_to_close_a207": [
     "Frontend API-first adapter is covered by artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json",
     "Live multisession E2E harness, conflict recovery UI and CI PASS evidence are covered by artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json",
-    "Add user/workspace authn/authz boundary before public multi-user deployment"
+    "Bind X-EEI-User-Namespace and X-EEI-Actor to a trusted production identity provider or gateway before public multi-user deployment"
   ]
 }

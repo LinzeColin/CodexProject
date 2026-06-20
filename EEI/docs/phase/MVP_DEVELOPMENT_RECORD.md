@@ -2786,3 +2786,41 @@ Residual risks:
 - SSE gateway, LISTEN/NOTIFY wake, deployment worker supervision and 4h/24h soak remain open.
 - Real curated ingestion and calibration handlers remain unregistered.
 - Authn/authz, formal fact publication, multi-object scoring and brand clearance remain v0.1 blockers.
+
+## 2026-06-20 - T1305/A207 saved-view namespace isolation boundary
+
+### Scope
+
+- Added saved-view principal resolution through `X-EEI-User-Namespace` and `X-EEI-Actor` headers, with `local_user` retained as the local MVP default.
+- Constrained `/v1/saved-views/{savedViewId}` get/update/version-list/restore repository lookups by `saved_views.namespace`.
+- Added cross-namespace fail-closed semantics: another namespace cannot read, update, list versions or restore a saved view id and receives 404.
+- Preserved same-name saved views across different namespaces while keeping duplicate-name conflict inside one namespace/workspace.
+- Updated the OpenAPI contract, A207 integration evidence and v5 production-readiness ledgers.
+
+### Files changed
+
+- `apps/api/app/domain.py`
+- `apps/api/app/domain_repository.py`
+- `specs/api_contract.yaml`
+- `tests/integration/test_database_migrations.py`
+- `artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json`
+- `README.md`
+- `DEVELOPMENT_STATUS.md`
+- `data/development_status_ledger.csv`
+- `data/acceptance_traceability.csv`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `docs/phase/MVP_DEVELOPMENT_RECORD.md`
+
+### Acceptance mapping
+
+- T1305 -> A207.
+- A207 remains `IN_PROGRESS`, not `DONE`, because public multi-user deployment still needs trusted production identity/gateway binding for the saved-view headers.
+
+### Validation
+
+- Pending in this run: py_compile, ruff, contract/catalog/status validators, targeted PostgreSQL integration and full `make verify`.
+
+### Remaining gaps
+
+- `X-EEI-User-Namespace` and `X-EEI-Actor` must be set by trusted middleware/gateway or an identity provider before public use; direct client-provided identity headers are not production authn.
+- Sharing links, export and final cross-user collaboration policy remain open.

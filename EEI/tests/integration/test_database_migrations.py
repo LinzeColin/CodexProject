@@ -1334,6 +1334,64 @@ def exercise_server_saved_view_contracts(
     assert created["versions"][0]["version_no"] == 1
     assert created["versions"][0]["action_type"] == "create"
     assert created["state"]["visual_lens"] == "supply_chain"
+    assert created["namespace"] == "local_user"
+    assert created["created_by"] == "local_user"
+
+    namespace_headers = {
+        "X-EEI-User-Namespace": "tenant-beta",
+        "X-EEI-Actor": "tenant-beta-analyst",
+    }
+    isolated_create_response = client.post(
+        "/v1/saved-views",
+        headers=namespace_headers,
+        json={
+            "name": "A207 Golden Vertical saved view",
+            "description": "same name in isolated namespace",
+            "workspace_key": "mvp",
+            "state": {**state_v1, "notes": "A207 isolated namespace"},
+            "change_note": "A207 create isolated namespace version 1",
+            "metadata": {"acceptance_id": "A207", "namespace": "tenant-beta"},
+        },
+    )
+    assert isolated_create_response.status_code == 201
+    isolated = isolated_create_response.json()
+    assert isolated["id"] != saved_view_id
+    assert isolated["namespace"] == "tenant-beta"
+    assert isolated["created_by"] == "tenant-beta-analyst"
+
+    foreign_detail_response = client.get(
+        f"/v1/saved-views/{saved_view_id}",
+        headers=namespace_headers,
+    )
+    assert foreign_detail_response.status_code == 404
+
+    foreign_version_response = client.get(
+        f"/v1/saved-views/{saved_view_id}/versions",
+        headers=namespace_headers,
+    )
+    assert foreign_version_response.status_code == 404
+
+    foreign_update_response = client.put(
+        f"/v1/saved-views/{saved_view_id}",
+        headers=namespace_headers,
+        json={
+            "expected_version": 1,
+            "state": {**state_v1, "visual_lens": "foreign_update_attempt"},
+            "change_note": "cross-namespace update should fail closed",
+        },
+    )
+    assert foreign_update_response.status_code == 404
+
+    foreign_restore_response = client.post(
+        f"/v1/saved-views/{saved_view_id}/restore",
+        headers=namespace_headers,
+        json={
+            "target_version": 1,
+            "expected_version": 1,
+            "change_note": "cross-namespace restore should fail closed",
+        },
+    )
+    assert foreign_restore_response.status_code == 404
 
     duplicate_response = client.post(
         "/v1/saved-views",
@@ -1352,6 +1410,16 @@ def exercise_server_saved_view_contracts(
     assert list_response.status_code == 200
     listed = list_response.json()
     assert any(row["id"] == saved_view_id for row in listed)
+    assert all(row["id"] != isolated["id"] for row in listed)
+
+    isolated_list_response = client.get(
+        "/v1/saved-views",
+        headers=namespace_headers,
+        params={"workspace_key": "mvp"},
+    )
+    assert isolated_list_response.status_code == 200
+    isolated_list = isolated_list_response.json()
+    assert [row["id"] for row in isolated_list] == [isolated["id"]]
 
     state_v2 = {
         **state_v1,
