@@ -44,6 +44,14 @@ PFI_OS 是本地优先的个人研究中台入口，macOS 显示为 `PFI_OS`。P
 - Golden fixture 使用合成公开行情：100、102、101、105，期望 `total_return_pct=5.00`、`max_drawdown_pct=-0.98`。
 - 验证结果：PFI-004 + Phase A 目标测试 `15 passed`，覆盖 Golden 指标、PIT replay、dual-read reconciliation、invalid-write rejection 和无实盘执行边界。
 
+2026-06-20 PFI-001 PR/CI 注入失败证明记录：
+
+- 新增仓库根 workflow `.github/workflows/pfi-os-smoke.yml`，因为 PFI_OS 是 `LinzeColin/CodexProject` 的子目录，子目录内 `.github/workflows` 不会触发 GitHub Actions。
+- 新增 `scripts/pfiCiInjectedFailureProof.sh`：在临时 Git 仓库注入假 secret，断言 `scripts/secretScan.sh` 必须失败并输出 `injected_secret.txt:openai_key`。
+- PR #2 首次 run `27856329389` 失败，暴露 Ubuntu runner 缺少 `zsh`；已在 root workflow 增加 shell runtime 安装。
+- PR #2 后续 run `27856494975` 在 commit `9ed86b6dc43e769242db18d6b7bd60c1a7a538a8` 上成功，`Run PFI target gate` 和 `Prove injected failure is blocked` 均为 success。
+- Gate1 当前证据范围已闭合；最终 release / Gate7 仍需整体重跑。
+
 默认 verifier：
 
 ```bash

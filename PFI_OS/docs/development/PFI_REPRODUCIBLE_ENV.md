@@ -76,6 +76,17 @@ fake API key and asserts that `scripts/secretScan.sh` fails with
 `injected_secret.txt:openai_key`. If the secret scan ever accepts the injected
 secret, CI fails.
 
+Observed PR/CI proof on PR #2:
+
+- Commit: `9ed86b6dc43e769242db18d6b7bd60c1a7a538a8`
+- Workflow: `PFI_OS Smoke`
+- Run id: `27856494975`
+- Run number: `2`
+- Conclusion: `success`
+- Successful proof steps:
+  - `Run PFI target gate`
+  - `Prove injected failure is blocked`
+
 ## Artifact Policy
 
 Test artifacts must not contain secrets, private holdings, account screenshots,

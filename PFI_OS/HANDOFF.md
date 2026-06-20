@@ -40,8 +40,10 @@ Current sequence:
 16. v0.2 PFI-goal execution:
     PFI-001 reproducible environment, lock, CI wiring, secret scan, explicit
     install/runtime separation, and clean-install/offline-start evidence are
-    complete for the local repair scope. PFI-001 still needs PR/CI injected
-    failure evidence before release Gate 1 is fully closed.
+    complete. Root GitHub Actions workflow `.github/workflows/pfi-os-smoke.yml`
+    is now the real PR CI entry for the `LinzeColin/CodexProject` monorepo and
+    runs from `working-directory: PFI_OS`. PR #2 run `27856494975` succeeded on
+    commit `9ed86b6`, including target gate and injected-failure proof.
 17. v0.2 PFI-003 runtime supervisor:
     Durable Job Store core lifecycle is implemented on top of `job_records`.
     It covers idempotent enqueue, atomic claim, lease, heartbeat, bounded
@@ -69,6 +71,11 @@ Current sequence:
     timestamps, and `PFI004GoldenPITAcceptanceV1` proves deterministic Golden
     financial metrics, point-in-time replay, dual-read reconciliation, active
     truth unchanged after invalid writes, and no-execution boundaries.
+20. Gate 1:
+    Closed for current evidence scope. PFI-001 PR CI, PFI-003 supervisor/
+    double-worker/recovery evidence, Phase D backup/restore, and PFI-004
+    Golden/PIT proof are all present. Gate 1 must still be re-run as part of
+    final Gate 7 release packaging.
 
 ## Current Local State
 
@@ -197,6 +204,12 @@ Current sequence:
   `docs/development/PFI004_GOLDEN_PIT.md`. Target tests passed 15/15 for
   Golden metrics, PIT replay, dual-read reconciliation, `PIT_INVALID_WRITE`,
   and no-execution boundaries.
+- PFI-001 PR/CI injected-failure proof complete:
+  root workflow `.github/workflows/pfi-os-smoke.yml`,
+  `scripts/pfiCiInjectedFailureProof.sh`, and PR #2 GitHub Actions run
+  `27856494975` on commit `9ed86b6dc43e769242db18d6b7bd60c1a7a538a8`.
+  Successful job steps include `Run PFI target gate` and
+  `Prove injected failure is blocked`.
 
 ## Start Here
 
