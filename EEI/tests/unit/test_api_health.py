@@ -5,10 +5,16 @@ import time
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
+from pydantic import ValidationError
 from starlette.requests import Request
 
 from apps.api.app.db_health import check_database
-from apps.api.app.domain import get_saved_view_principal, saved_view_gateway_signature
+from apps.api.app.domain import (
+    ScoringProfileDraftCreate,
+    get_saved_view_principal,
+    saved_view_gateway_signature,
+)
+from apps.api.app.domain_repository import DomainRepository, RepositoryError
 from apps.api.app.main import app
 from apps.api.app.settings import get_settings
 
@@ -219,6 +225,25 @@ def test_domain_api_fails_closed_without_database(monkeypatch) -> None:
 
     assert response.status_code == 503
     assert response.json()["detail"] == "DATABASE_URL is required for domain API endpoints"
+
+
+def test_scoring_profile_draft_requires_weights() -> None:
+    with pytest.raises(ValidationError):
+        ScoringProfileDraftCreate.model_validate(
+            {
+                "profile_key": "balanced-v2-online-draft",
+                "name": "Balanced v2 Online Draft",
+                "reason": "missing weights must fail before repository access",
+            }
+        )
+
+
+def test_scoring_profile_half_life_contract_rejects_bool() -> None:
+    with pytest.raises(RepositoryError, match="must be integer"):
+        DomainRepository._validate_profile_half_life_contract(
+            base_half_lives={"time_relevance": 365},
+            draft_half_lives={"time_relevance": True},
+        )
 
 
 def test_catalog_api_exposes_machine_readable_object_scope_without_database(monkeypatch) -> None:

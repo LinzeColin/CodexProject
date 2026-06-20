@@ -12,6 +12,7 @@
     "Stale expected active profile requests return 409 and keep the previous active profile unchanged while logging a conflict result for activation and rollback action types.",
     "Added a frontend API-first model-center activation adapter and controls that send expected_active_profile_version_id plus client_refresh_token to the transaction endpoint.",
     "Added a model-center rollback control that reactivates the previous profile through the dedicated transactional rollback endpoint.",
+    "Added POST /v1/scoring/profiles online draft creation that validates weight keys, per-weight limits and weight_sum=1.0, writes an inactive scoring_profile_versions row, preserves the active analysis context and logs create_scoring_profile_version.",
     "Added POST /v1/scoring/recompute to validate the active profile and refresh token before enqueueing a score_recompute job.",
     "Score recompute requests reuse the existing background_jobs idempotency key contract and log success/conflict results through operation_logs.",
     "Added POST /v1/data/snapshots/refresh to validate the active profile and refresh token before enqueueing a data_snapshot_refresh job.",
@@ -22,7 +23,7 @@
     "Added a data_snapshot_refresh worker handler that validates active context freshness, creates an active data_snapshot, supersedes the previous active snapshot for the same scope and record_mode, writes data.snapshot.activated and advances active_analysis_contexts.refresh_token.",
     "Added config/model_profiles/supply-chain-v3.json as an inactive immutable candidate profile loaded by the PostgreSQL seed path.",
     "Added live Playwright coverage that activates supply-chain-v3, observes a transaction-created scoring_run snapshot, checks stale refresh semantics and rolls back to balanced-v2 through FastAPI/PostgreSQL.",
-    "Added mock Playwright coverage for activate -> stale refresh -> score recompute enqueue -> rollback."
+    "Added mock Playwright coverage for online draft creation -> activate -> stale refresh -> score recompute enqueue -> rollback."
   ],
   "evidence_files": [
     "config/model_profiles/supply-chain-v3.json",
@@ -58,7 +59,6 @@
     "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py"
   ],
   "not_closed_scope": [
-    "Model-center online profile editing is not complete.",
     "Deployment wake and long soak proof remain open."
   ],
   "latest_ci_result": {
@@ -83,6 +83,18 @@
     "verify_g2_postgresql_integration_step": "PASS",
     "verify_g2_browser_e2e_step": "PASS",
     "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
+  },
+  "latest_online_edit_local_result": {
+    "status": "LOCAL_VALIDATED_REMOTE_CI_PENDING",
+    "commands": [
+      "python3 -m py_compile apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py: PASS",
+      ".venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py: PASS",
+      ".venv/bin/python scripts/validate_contracts.py: PASS",
+      "npx --yes pnpm@11.8.0 --filter @eei/web typecheck: PASS",
+      ".venv/bin/python -m pytest -q tests/unit/test_api_health.py tests/unit/test_scoring.py: PASS with 31/31",
+      "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A204 and A205\" --workers=1: PASS with 1/1"
+    ],
+    "verified_scope": "online draft profile creation, validation failure for invalid weights, frontend draft button binding and draft activation target handoff"
   },
   "rollback": [
     "Revert the T1303 API/repository/migration/test/governance commit.",

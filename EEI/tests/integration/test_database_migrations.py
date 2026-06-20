@@ -2298,44 +2298,55 @@ def exercise_transactional_model_activation_contract(
     assert active_context["refresh_generation"] >= 1
     previous_refresh_token = active_context["refresh_token"]
 
-    with connect_database() as connection:
-        source_profile = connection.execute(
-            """
-            SELECT id, profile_id, model_id, weights, thresholds, half_lives,
-                   missing_value_policy
-            FROM scoring_profile_versions
-            WHERE id = %s
-            """,
-            (active_profile["id"],),
-        ).fetchone()
-        (
-            _source_profile_version_id,
-            source_profile_id,
-            source_model_id,
-            source_weights,
-            source_thresholds,
-            source_half_lives,
-            source_missing_value_policy,
-        ) = source_profile
-        target_profile_id = connection.execute(
-            """
-            INSERT INTO scoring_profile_versions(
-              profile_id, model_id, version, weights, thresholds, half_lives,
-              missing_value_policy, reason, active
-            )
-            VALUES (%s, %s, 3, %s, %s, %s, %s, %s, false)
-            RETURNING id
-            """,
-            (
-                source_profile_id,
-                source_model_id,
-                Jsonb(source_weights),
-                Jsonb(source_thresholds),
-                Jsonb(source_half_lives),
-                source_missing_value_policy,
-                "T1303/A204 transactional activation test profile.",
-            ),
-        ).fetchone()[0]
+    draft_weights = dict(active_profile["weights"])
+    draft_weights["supply_chain_criticality"] = 0.3
+    draft_weights["capital_momentum"] = 0.08
+    create_draft_response = client.post(
+        "/v1/scoring/profiles",
+        json={
+            "base_profile_version_id": active_profile["id"],
+            "profile_key": "balanced-v2-online-draft",
+            "name": "Balanced v2 Online Draft",
+            "weights": draft_weights,
+            "missing_value_policy": active_profile["missing_value_policy"],
+            "reason": "T1303/A204 online model edit draft creation path",
+        },
+    )
+    assert create_draft_response.status_code == 201
+    draft = create_draft_response.json()
+    assert draft["schema_version"] == "scoring-profile-draft-v1"
+    assert draft["status"] == "created"
+    assert draft["base_profile"]["id"] == active_profile["id"]
+    assert draft["profile"]["profile_key"] == "balanced-v2-online-draft"
+    assert draft["profile"]["active"] is False
+    assert draft["profile"]["weights"]["supply_chain_criticality"] == 0.3
+    assert draft["profile"]["weights"]["capital_momentum"] == 0.08
+    assert draft["validation"]["weight_sum"] == 1.0
+    assert draft["validation"]["changed_weights"] == [
+        "capital_momentum",
+        "supply_chain_criticality",
+    ]
+    assert draft["validation"]["active_context_unchanged"] is True
+    assert draft["active_context"]["active_scoring_profile_version_id"] == active_profile["id"]
+    target_profile_id = draft["profile"]["id"]
+
+    invalid_draft_weights = dict(draft_weights)
+    invalid_draft_weights["time_relevance"] = 0.2
+    invalid_draft_response = client.post(
+        "/v1/scoring/profiles",
+        json={
+            "base_profile_version_id": active_profile["id"],
+            "profile_key": "invalid-weight-draft",
+            "name": "Invalid Weight Draft",
+            "weights": invalid_draft_weights,
+            "reason": "T1303/A204 invalid online edit draft path",
+        },
+    )
+    assert invalid_draft_response.status_code == 422
+    assert "sum to 1.0" in invalid_draft_response.json()["detail"]
+
+    listed_profiles = client.get("/v1/scoring/profiles").json()
+    assert any(profile["id"] == target_profile_id for profile in listed_profiles)
 
     activation_response = client.post(
         f"/v1/scoring/profiles/{target_profile_id}/activate",
@@ -2350,7 +2361,7 @@ def exercise_transactional_model_activation_contract(
     assert activation["schema_version"] == "model-activation-v1"
     assert activation["status"] == "activated"
     assert activation["previous_profile"]["id"] == active_profile["id"]
-    assert activation["activated_profile"]["id"] == str(target_profile_id)
+    assert activation["activated_profile"]["id"] == target_profile_id
     assert activation["activated_profile"]["active"] is True
     assert activation["cache_invalidation"]["previous_refresh_token"] == previous_refresh_token
     assert activation["cache_invalidation"]["refresh_token"] != previous_refresh_token
@@ -2358,7 +2369,7 @@ def exercise_transactional_model_activation_contract(
     assert "model_center" in activation["active_context"]["affected_modules"]
     assert activation["active_context"]["client_state"] == "stale"
     assert activation["outbox_event"]["event_type"] == "model.profile.activated"
-    assert activation["outbox_event"]["aggregate_id"] == str(target_profile_id)
+    assert activation["outbox_event"]["aggregate_id"] == target_profile_id
     assert activation["outbox_event"]["status"] == "pending"
     assert activation["outbox_event"]["metadata"]["acceptance_ids"] == ["A204", "A205"]
     next_refresh_token = activation["cache_invalidation"]["refresh_token"]

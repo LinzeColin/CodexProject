@@ -2099,6 +2099,252 @@ class DomainRepository:
             action_type="rollback_scoring_profile",
         )
 
+    @staticmethod
+    def _validate_profile_weight_contract(
+        *,
+        base_weights: dict[str, Any],
+        draft_weights: dict[str, Any],
+    ) -> dict[str, Any]:
+        base_keys = set(base_weights)
+        draft_keys = set(draft_weights)
+        if draft_keys != base_keys:
+            missing = sorted(base_keys - draft_keys)
+            unexpected = sorted(draft_keys - base_keys)
+            raise RepositoryError(
+                "Draft profile weights must use exactly the base profile keys; "
+                f"missing={missing}, unexpected={unexpected}"
+            )
+
+        normalized: dict[str, float] = {}
+        for key, value in draft_weights.items():
+            if isinstance(value, bool) or not isinstance(value, int | float):
+                raise RepositoryError(f"Draft profile weight must be numeric: {key}")
+            weight = float(value)
+            if weight < 0 or weight > 0.7:
+                raise RepositoryError(
+                    f"Draft profile weight out of allowed range 0..0.7: {key}={weight}"
+                )
+            normalized[key] = round(weight, 6)
+
+        weight_sum = round(sum(normalized.values()), 6)
+        if abs(weight_sum - 1.0) > 0.001:
+            raise RepositoryError(
+                f"Draft profile weights must sum to 1.0 within 0.001; got {weight_sum}"
+            )
+        changed_weights = sorted(
+            key
+            for key, value in normalized.items()
+            if round(float(base_weights[key]), 6) != value
+        )
+        return {
+            "weights": normalized,
+            "weight_sum": weight_sum,
+            "changed_weights": changed_weights,
+        }
+
+    @staticmethod
+    def _validate_profile_half_life_contract(
+        *,
+        base_half_lives: dict[str, Any],
+        draft_half_lives: dict[str, Any],
+    ) -> dict[str, int]:
+        base_keys = set(base_half_lives)
+        draft_keys = set(draft_half_lives)
+        if draft_keys != base_keys:
+            missing = sorted(base_keys - draft_keys)
+            unexpected = sorted(draft_keys - base_keys)
+            raise RepositoryError(
+                "Draft profile half_lives_days must use exactly the base profile keys; "
+                f"missing={missing}, unexpected={unexpected}"
+            )
+        normalized: dict[str, int] = {}
+        for key, value in draft_half_lives.items():
+            if isinstance(value, bool) or not isinstance(value, int):
+                raise RepositoryError(f"Draft profile half_lives_days must be integer: {key}")
+            if value < 30 or value > 1825:
+                raise RepositoryError(
+                    f"Draft profile half_lives_days out of allowed range 30..1825: "
+                    f"{key}={value}"
+                )
+            normalized[key] = value
+        return normalized
+
+    def create_scoring_profile_version(
+        self,
+        *,
+        base_profile_version_id: UUID | None,
+        profile_key: str,
+        name: str,
+        weights: dict[str, Any] | None,
+        thresholds: dict[str, Any] | None,
+        half_lives_days: dict[str, int] | None,
+        missing_value_policy: str,
+        reason: str,
+        actor: str = "local_user",
+    ) -> dict[str, Any]:
+        with self.connect() as connection:
+            if base_profile_version_id is None:
+                base_row = connection.execute(
+                    """
+                    SELECT
+                      spv.id,
+                      spv.profile_id,
+                      spv.model_id,
+                      sp.profile_key,
+                      sp.name,
+                      spv.version,
+                      sm.model_key,
+                      sm.version AS model_version_number,
+                      sm.formula,
+                      spv.weights,
+                      spv.thresholds,
+                      spv.half_lives,
+                      spv.missing_value_policy,
+                      spv.reason,
+                      spv.active
+                    FROM scoring_profile_versions spv
+                    JOIN scoring_profiles sp ON sp.id = spv.profile_id
+                    JOIN scoring_models sm ON sm.id = spv.model_id
+                    WHERE spv.active = true
+                    ORDER BY sp.is_system_default DESC, spv.created_at DESC
+                    LIMIT 1
+                    """
+                ).fetchone()
+            else:
+                base_row = connection.execute(
+                    """
+                    SELECT
+                      spv.id,
+                      spv.profile_id,
+                      spv.model_id,
+                      sp.profile_key,
+                      sp.name,
+                      spv.version,
+                      sm.model_key,
+                      sm.version AS model_version_number,
+                      sm.formula,
+                      spv.weights,
+                      spv.thresholds,
+                      spv.half_lives,
+                      spv.missing_value_policy,
+                      spv.reason,
+                      spv.active
+                    FROM scoring_profile_versions spv
+                    JOIN scoring_profiles sp ON sp.id = spv.profile_id
+                    JOIN scoring_models sm ON sm.id = spv.model_id
+                    WHERE spv.id = %s
+                    """,
+                    (base_profile_version_id,),
+                ).fetchone()
+            if base_row is None:
+                raise NotFoundError("Base scoring profile version not found")
+
+            base_profile = self.scoring_profile_payload(base_row)
+            base_weights = dict(base_row["weights"] or {})
+            base_half_lives = dict(base_row["half_lives"] or {})
+            weight_contract = self._validate_profile_weight_contract(
+                base_weights=base_weights,
+                draft_weights=weights or base_weights,
+            )
+            draft_half_lives = (
+                self._validate_profile_half_life_contract(
+                    base_half_lives=base_half_lives,
+                    draft_half_lives=half_lives_days,
+                )
+                if half_lives_days is not None
+                else base_half_lives
+            )
+            draft_thresholds = (
+                thresholds if thresholds is not None else dict(base_row["thresholds"] or {})
+            )
+
+            profile_row = connection.execute(
+                """
+                INSERT INTO scoring_profiles(namespace, profile_key, name, is_system_default)
+                VALUES ('local_user', %s, %s, false)
+                ON CONFLICT (namespace, profile_key) DO UPDATE SET
+                  name = EXCLUDED.name,
+                  is_system_default = false
+                RETURNING id
+                """,
+                (profile_key, name),
+            ).fetchone()
+            profile_id = profile_row["id"]
+            max_version_row = connection.execute(
+                """
+                SELECT max(version) AS max_version
+                FROM scoring_profile_versions
+                WHERE profile_id = %s
+                """,
+                (profile_id,),
+            ).fetchone()
+            next_version = int(
+                max_version_row["max_version"] or int(base_row["version"])
+            ) + 1
+            draft_row = connection.execute(
+                """
+                INSERT INTO scoring_profile_versions(
+                  profile_id, model_id, version, weights, thresholds, half_lives,
+                  missing_value_policy, reason, active
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, false)
+                RETURNING id
+                """,
+                (
+                    profile_id,
+                    base_row["model_id"],
+                    next_version,
+                    Jsonb(weight_contract["weights"]),
+                    Jsonb(draft_thresholds),
+                    Jsonb(draft_half_lives),
+                    missing_value_policy,
+                    reason,
+                ),
+            ).fetchone()
+            draft_profile = self.scoring_profile_by_id(connection, draft_row["id"])
+            active_context = self.active_analysis_context_payload(connection)
+            self.log_operation(
+                connection,
+                actor=actor,
+                action_type="create_scoring_profile_version",
+                object_type="scoring_profile_version",
+                object_id=draft_row["id"],
+                old_value=base_profile,
+                new_value=draft_profile,
+                diff={
+                    "schema_version": "scoring-profile-online-edit-diff-v1",
+                    "base_profile_version_id": base_row["id"],
+                    "created_profile_version_id": draft_row["id"],
+                    "profile_key": profile_key,
+                    "weight_sum": weight_contract["weight_sum"],
+                    "changed_weights": weight_contract["changed_weights"],
+                    "active_context_unchanged": True,
+                    "activation_required": True,
+                    "affected_acceptance_ids": ["A204", "A205"],
+                },
+                reason=reason,
+                result_status="success",
+                model_version=(
+                    f"{base_row['model_key']}@{base_row['model_version_number']}"
+                ),
+                profile_version=f"{draft_profile['profile_key']}@{draft_profile['version']}",
+            )
+            return _jsonable(
+                {
+                    "schema_version": "scoring-profile-draft-v1",
+                    "status": "created",
+                    "profile": draft_profile,
+                    "base_profile": base_profile,
+                    "active_context": active_context,
+                    "validation": {
+                        "weight_sum": weight_contract["weight_sum"],
+                        "changed_weights": weight_contract["changed_weights"],
+                        "active_context_unchanged": True,
+                        "activation_required": True,
+                    },
+                }
+            )
+
     def enqueue_score_recompute(
         self,
         *,

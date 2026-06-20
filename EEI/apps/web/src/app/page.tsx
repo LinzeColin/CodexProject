@@ -30,6 +30,7 @@ import {
 import {
   MODEL_CONTEXT_API_BASE_STORAGE_KEY,
   activateModelProfile,
+  createModelProfileDraft,
   listModelProfiles,
   loadActiveModelContext,
   requestScoreRecompute,
@@ -150,6 +151,8 @@ type ModelContextStatus =
   | "server-error"
   | "server-no-target";
 
+type ModelDraftStatus = "idle" | "creating" | "created" | "server-error" | "local-preview";
+
 type ProductionGraphStatus =
   | "local-fixture"
   | "loading-production-graph"
@@ -201,6 +204,17 @@ type MapEdge = {
   stage: string;
   lens: RelationshipLens;
   fixtureNotice: string;
+};
+
+const ONLINE_DRAFT_PROFILE_WEIGHTS = {
+  supply_chain_criticality: 0.3,
+  strategic_dependency: 0.18,
+  capital_momentum: 0.08,
+  control_influence: 0.12,
+  policy_exposure: 0.1,
+  technology_dependency: 0.08,
+  strategic_signal: 0.08,
+  time_relevance: 0.06
 };
 
 type GraphRenderNode = {
@@ -1440,6 +1454,11 @@ export default function Home() {
   );
   const [modelContextEndpoint, setModelContextEndpoint] = useState("");
   const [candidateProfile, setCandidateProfile] = useState<ScoringProfileRecord | null>(null);
+  const [draftProfile, setDraftProfile] = useState<ScoringProfileRecord | null>(null);
+  const [modelDraftStatus, setModelDraftStatus] = useState<ModelDraftStatus>("idle");
+  const [modelDraftReason, setModelDraftReason] = useState("not_created");
+  const [modelDraftEndpoint, setModelDraftEndpoint] = useState("");
+  const [modelDraftWeightSum, setModelDraftWeightSum] = useState(0);
   const [rollbackProfile, setRollbackProfile] = useState<ScoringProfileRecord | null>(null);
   const [previousModelRefreshToken, setPreviousModelRefreshToken] = useState("");
   const [scoreRecomputeStatus, setScoreRecomputeStatus] = useState<
@@ -1920,6 +1939,51 @@ export default function Home() {
     }
   }
 
+  async function createOnlineModelDraft() {
+    setModelDraftStatus("creating");
+    setModelDraftReason("creating");
+    if (!serverModelContext) {
+      applyPreview();
+      setModelDraftStatus("local-preview");
+      setModelDraftReason("active_context_missing");
+      return;
+    }
+
+    const draftResult = await createModelProfileDraft({
+      baseProfileVersionId: serverModelContext.active_scoring_profile_version_id,
+      profileKey: "balanced-v2-online-draft",
+      name: "Balanced v2 Online Draft",
+      weights: ONLINE_DRAFT_PROFILE_WEIGHTS,
+      reason: "EEI model-center online edit draft"
+    });
+    if (draftResult.mode === "local_fallback") {
+      applyPreview();
+      setModelDraftStatus("local-preview");
+      setModelDraftReason(draftResult.reason);
+      return;
+    }
+    setModelDraftEndpoint(draftResult.endpoint);
+    if (draftResult.status === "error") {
+      setModelDraftStatus("server-error");
+      setModelDraftReason(draftResult.reason);
+      return;
+    }
+
+    const nextContext = draftResult.response.active_context;
+    applyServerContext(analysisContextFromActiveModelContext(nextContext, ACTIVE_ANALYSIS_CONTEXT));
+    setServerModelContext(nextContext);
+    setCandidateProfile(draftResult.response.profile);
+    setDraftProfile(draftResult.response.profile);
+    setModelContextSyncMode("server");
+    setModelContextSyncReason("online_draft_created");
+    setModelContextStatus(nextContext.client_state === "stale" ? "server-stale" : "server-current");
+    setModelDraftWeightSum(draftResult.response.validation.weight_sum);
+    setModelDraftReason(
+      `changed_${draftResult.response.validation.changed_weights.length}_weights`
+    );
+    setModelDraftStatus("created");
+  }
+
   async function activateCandidateModelProfile() {
     await activateModelProfileTransaction(
       candidateProfile,
@@ -2298,6 +2362,11 @@ export default function Home() {
           data-api-base-storage-key={MODEL_CONTEXT_API_BASE_STORAGE_KEY}
           data-client-state={serverModelContext?.client_state ?? "local"}
           data-model-endpoint={modelContextEndpoint || "local"}
+          data-model-draft-endpoint={modelDraftEndpoint || "local"}
+          data-model-draft-profile-id={draftProfile?.id ?? "none"}
+          data-model-draft-reason={modelDraftReason}
+          data-model-draft-status={modelDraftStatus}
+          data-model-draft-weight-sum={modelDraftWeightSum}
           data-model-refresh-generation={serverModelContext?.refresh_generation ?? 0}
           data-model-refresh-token={serverModelContext?.refresh_token ?? "local"}
           data-model-sync-mode={modelContextSyncMode}
@@ -2325,6 +2394,10 @@ export default function Home() {
             <span data-testid="model-activation-status">{modelContextStatus}</span>
           </div>
           <div>
+            <strong>Model draft</strong>
+            <span data-testid="model-draft-status">{modelDraftStatus}</span>
+          </div>
+          <div>
             <strong>Refresh context</strong>
             <span data-testid="model-server-context-state">
               {modelContextSyncMode} / {serverModelContext?.refresh_generation ?? 0} /{" "}
@@ -2336,7 +2409,12 @@ export default function Home() {
             <span data-testid="score-recompute-status">{scoreRecomputeStatus}</span>
           </div>
           <div className="modelPreviewActions">
-            <button data-testid="preview-model-edit" onClick={applyPreview} type="button">
+            <button
+              data-testid="preview-model-edit"
+              disabled={modelDraftStatus === "creating"}
+              onClick={() => void createOnlineModelDraft()}
+              type="button"
+            >
               Preview supply-chain emphasis
             </button>
             <button data-testid="clear-model-preview" onClick={clearPreview} type="button">

@@ -707,6 +707,15 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
     active: false,
     reason: "A204/A205 frontend activation candidate"
   };
+  const draftProfile = {
+    id: "profile-balanced-online-draft-v3",
+    profile_key: "balanced-v2-online-draft",
+    name: "Balanced v2 Online Draft",
+    version: 3,
+    model_key: expectedContext.modelVersion,
+    active: false,
+    reason: "EEI model-center online edit draft"
+  };
   const activeContext = {
     schema_version: "active-analysis-context-v1",
     context_key: "global",
@@ -728,13 +737,13 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
   };
   const activatedContext = {
     ...activeContext,
-    active_scoring_profile_version_id: targetProfile.id,
+    active_scoring_profile_version_id: draftProfile.id,
     active_data_snapshot_key: "fixture-v2",
     active_scoring_run_id: "score-live-v2",
     refresh_token: "refresh-token-2",
     refresh_generation: 2,
-    model_version: "business-empire-model-v3",
-    profile_version: "supply-chain-v3@3",
+    model_version: expectedContext.modelVersion,
+    profile_version: "balanced-v2-online-draft@3",
     client_state: "stale"
   };
   const rollbackContext = {
@@ -745,6 +754,7 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
   };
   let currentContext = activeContext;
   let activatePayload: Record<string, unknown> | undefined;
+  let draftPayload: Record<string, unknown> | undefined;
   let rollbackPayload: Record<string, unknown> | undefined;
   let recomputePayload: Record<string, unknown> | undefined;
 
@@ -762,6 +772,27 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
     });
   });
   await page.route("https://model.eei.test/v1/scoring/profiles", async (route) => {
+    if (route.request().method() === "POST") {
+      draftPayload = route.request().postDataJSON() as Record<string, unknown>;
+      await route.fulfill({
+        contentType: "application/json",
+        status: 201,
+        body: JSON.stringify({
+          schema_version: "scoring-profile-draft-v1",
+          status: "created",
+          profile: draftProfile,
+          base_profile: activeProfile,
+          active_context: activeContext,
+          validation: {
+            weight_sum: 1,
+            changed_weights: ["capital_momentum", "supply_chain_criticality"],
+            active_context_unchanged: true,
+            activation_required: true
+          }
+        })
+      });
+      return;
+    }
     await route.fulfill({
       contentType: "application/json",
       status: 200,
@@ -771,7 +802,7 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
   await page.route("https://model.eei.test/v1/scoring/profiles/*/activate", async (route) => {
     const requestUrl = new URL(route.request().url());
     const profileId = requestUrl.pathname.split("/").at(-2);
-    expect(profileId).toBe(targetProfile.id);
+    expect(profileId).toBe(draftProfile.id);
     activatePayload = route.request().postDataJSON() as Record<string, unknown>;
     currentContext = activatedContext;
     await route.fulfill({
@@ -781,7 +812,7 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
         schema_version: "model-activation-v1",
         status: "activated",
         previous_profile: activeProfile,
-        activated_profile: { ...targetProfile, active: true },
+        activated_profile: { ...draftProfile, active: true },
         active_context: activatedContext,
         cache_invalidation: {
           previous_refresh_token: "refresh-token-1",
@@ -804,7 +835,7 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
       body: JSON.stringify({
         schema_version: "model-activation-v1",
         status: "activated",
-        previous_profile: { ...targetProfile, active: true },
+        previous_profile: { ...draftProfile, active: true },
         activated_profile: activeProfile,
         active_context: rollbackContext,
         cache_invalidation: {
@@ -825,15 +856,17 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
       body: JSON.stringify({
         schema_version: "score-recompute-request-v1",
         status: "queued",
-        idempotency_key: "score-recompute:global:profile-supply-v3:fixture-v2:score-live-v2:2",
+        idempotency_key:
+          "score-recompute:global:profile-balanced-online-draft-v3:fixture-v2:score-live-v2:2",
         job: {
           id: "job-score-recompute-1",
           job_type: "score_recompute",
-          idempotency_key: "score-recompute:global:profile-supply-v3:fixture-v2:score-live-v2:2",
+          idempotency_key:
+            "score-recompute:global:profile-balanced-online-draft-v3:fixture-v2:score-live-v2:2",
           status: "queued",
           payload: {
             schema_version: "score-recompute-job-v1",
-            active_scoring_profile_version_id: targetProfile.id,
+            active_scoring_profile_version_id: draftProfile.id,
             refresh_token: "refresh-token-2"
           },
           metadata: {
@@ -870,15 +903,38 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
     targetProfile.id
   );
 
+  await page.getByTestId("preview-model-edit").click();
+  await expect(page.getByTestId("model-draft-status")).toHaveText("created");
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-model-draft-profile-id",
+    draftProfile.id
+  );
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-model-draft-weight-sum",
+    "1"
+  );
+  await expect(page.getByTestId("model-preview-panel")).toHaveAttribute(
+    "data-target-profile-id",
+    draftProfile.id
+  );
+  expect(draftPayload).toMatchObject({
+    base_profile_version_id: activeProfile.id,
+    profile_key: "balanced-v2-online-draft",
+    weights: {
+      supply_chain_criticality: 0.3,
+      capital_momentum: 0.08
+    }
+  });
+
   await page.getByTestId("activate-model-profile").click();
   await expect(page.getByTestId("model-activation-status")).toHaveText("server-activated");
   await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
     "data-active-model-version",
-    "business-empire-model-v3"
+    expectedContext.modelVersion
   );
   await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
     "data-active-profile-version",
-    "supply-chain-v3@3"
+    "balanced-v2-online-draft@3"
   );
   await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
     "data-active-score-snapshot",
@@ -920,7 +976,7 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
     "score_recompute_queued"
   );
   expect(recomputePayload).toMatchObject({
-    expected_active_profile_version_id: targetProfile.id,
+    expected_active_profile_version_id: draftProfile.id,
     client_refresh_token: "refresh-token-2",
     scope: "global"
   });
@@ -936,7 +992,7 @@ test("A204 and A205 hydrate activate refresh and rollback model context through 
     expectedContext.scoreSnapshot
   );
   expect(rollbackPayload).toMatchObject({
-    expected_active_profile_version_id: targetProfile.id,
+    expected_active_profile_version_id: draftProfile.id,
     client_refresh_token: "refresh-token-2"
   });
 });
