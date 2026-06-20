@@ -742,6 +742,8 @@ def test_pfi_ci_injected_failure_proof_is_wired_to_root_workflow():
     assert "injected_secret.txt:openai_key" in script
     assert "PFI CI injected-failure proof passed" in script
     assert "working-directory: PFI_OS" in root_workflow
+    assert "Install shell runtime" in root_workflow
+    assert "sudo apt-get install -y zsh" in root_workflow
     assert "./scripts/pfiGate.sh target" in root_workflow
     assert "./scripts/pfiCiInjectedFailureProof.sh" in root_workflow
     assert 'PFI_PYTHON: python' in root_workflow

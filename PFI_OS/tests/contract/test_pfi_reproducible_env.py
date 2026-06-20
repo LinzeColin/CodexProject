@@ -81,6 +81,8 @@ def test_pfi_001_gate_interface_and_secret_scan_are_wired_to_ci():
     assert "python -m pip install --no-deps -e ." in workflow
     assert "./scripts/secretScan.sh" in workflow
     assert "working-directory: PFI_OS" in root_workflow
+    assert "Install shell runtime" in root_workflow
+    assert "sudo apt-get install -y zsh" in root_workflow
     assert "./scripts/pfiGate.sh target" in root_workflow
     assert "./scripts/pfiCiInjectedFailureProof.sh" in root_workflow
     assert 'PFI_PYTHON: python' in root_workflow
