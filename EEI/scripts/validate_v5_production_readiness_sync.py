@@ -34,6 +34,17 @@ EXPECTED_TASKS = {
     "T1309": "A210",
 }
 
+IMPLEMENTED_TASKS = {"T1300": "A201"}
+
+IMPLEMENTED_EVIDENCE = {
+    "T1300": {
+        "infra/db/migrations/0003_production_fact_version_layers/up.sql",
+        "infra/db/migrations/0003_production_fact_version_layers/down.sql",
+        "scripts/check_database_schema.py",
+        "tests/integration/test_database_migrations.py",
+    }
+}
+
 EXPECTED_PARAMETERS = {
     "database.migration_lock_timeout_seconds",
     "database.rollback_required",
@@ -115,14 +126,27 @@ def validate_task_acceptance_status() -> dict[str, Any]:
     for task_id, acceptance_id in EXPECTED_TASKS.items():
         task = tasks.get(task_id)
         require(task is not None, f"missing task {task_id}")
-        require(task["status"] == "NOT STARTED", f"{task_id} must remain NOT STARTED")
         require(acceptance_id in task["acceptance_ids"], f"{task_id} missing {acceptance_id}")
+        if task_id in IMPLEMENTED_TASKS:
+            require(task["status"] == "DONE", f"{task_id} must be DONE once implemented")
+            for evidence_path in IMPLEMENTED_EVIDENCE[task_id]:
+                require((ROOT / evidence_path).is_file(), f"{task_id} missing {evidence_path}")
+        else:
+            require(task["status"] == "NOT STARTED", f"{task_id} must remain NOT STARTED")
 
     for acceptance_id in [f"A{number}" for number in range(201, 212)]:
         row = acceptance.get(acceptance_id)
         require(row is not None, f"missing acceptance {acceptance_id}")
-        require(row["status"] == "NOT STARTED", f"{acceptance_id} must remain NOT STARTED")
-    return {"tasks": len(EXPECTED_TASKS), "acceptance": 11}
+        if acceptance_id in IMPLEMENTED_TASKS.values():
+            require(row["status"] == "DONE", f"{acceptance_id} must be DONE once implemented")
+        else:
+            require(row["status"] == "NOT STARTED", f"{acceptance_id} must remain NOT STARTED")
+    return {
+        "tasks": len(EXPECTED_TASKS),
+        "acceptance": 11,
+        "implemented_tasks": len(IMPLEMENTED_TASKS),
+        "remaining_tasks": len(EXPECTED_TASKS) - len(IMPLEMENTED_TASKS),
+    }
 
 
 def validate_parameters_and_docs() -> dict[str, Any]:

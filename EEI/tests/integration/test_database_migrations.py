@@ -11,6 +11,7 @@ from uuid import UUID
 import pytest
 from fastapi.testclient import TestClient
 from psycopg import errors
+from psycopg.types.json import Jsonb
 
 from apps.api.app.domain_repository import DomainRepository
 from apps.api.app.main import app
@@ -96,9 +97,169 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     run_script("scripts/load_synthetic_fixtures.py")
     run_script("scripts/load_synthetic_fixtures.py")
     run_script("scripts/check_database_schema.py", "--expect-seeds", "--expect-fixtures")
+    exercise_production_fact_version_contracts()
     exercise_domain_api_and_repository_contracts()
     run_script("scripts/migrate.py", "downgrade", "--all")
     run_script("scripts/migrate.py", "status", "--json")
+
+
+def exercise_production_fact_version_contracts() -> None:
+    with connect_database() as connection:
+        source_document_row = connection.execute(
+            """
+            SELECT source_document_id
+            FROM relationship_evidence
+            WHERE relationship_id = %s
+            ORDER BY source_document_id
+            LIMIT 1
+            """,
+            (COREWEAVE_NVIDIA_RELATIONSHIP_ID,),
+        ).fetchone()
+        assert source_document_row is not None
+        source_document_id = source_document_row[0]
+
+        snapshot_id = connection.execute(
+            """
+            INSERT INTO data_snapshots(
+              snapshot_key, scope, record_mode, status, source_hash, as_of, activated_at, metadata
+            )
+            VALUES (
+              'a201-fixture-snapshot',
+              'golden-vertical:nvidia',
+              'fixture',
+              'active',
+              'a201-source-hash',
+              '2026-06-19T00:00:00Z',
+              '2026-06-19T00:00:01Z',
+              %s
+            )
+            RETURNING id
+            """,
+            (Jsonb({"acceptance_id": "A201", "task_id": "T1300"}),),
+        ).fetchone()[0]
+        fact_version_id = connection.execute(
+            """
+            INSERT INTO fact_versions(
+              snapshot_id, object_type, object_id, version_no, fact_status, record_mode,
+              valid_from, valid_to, observed_at, source_document_id, parser_version,
+              payload_hash, payload
+            )
+            VALUES (
+              %s,
+              'relationship',
+              %s,
+              1,
+              'reported',
+              'fixture',
+              '2026-01-01T00:00:00Z',
+              NULL,
+              '2026-06-19T00:00:00Z',
+              %s,
+              'fixture-v1',
+              'a201-payload-hash',
+              %s
+            )
+            RETURNING id
+            """,
+            (
+                snapshot_id,
+                COREWEAVE_NVIDIA_RELATIONSHIP_ID,
+                source_document_id,
+                Jsonb(
+                    {
+                        "relationship_id": COREWEAVE_NVIDIA_RELATIONSHIP_ID,
+                        "relationship_family": "supply_chain_operations",
+                    }
+                ),
+            ),
+        ).fetchone()[0]
+        connection.execute(
+            """
+            INSERT INTO fact_version_evidence(
+              fact_version_id, source_document_id, role, locator, support_excerpt,
+              structured_fact
+            )
+            VALUES (%s, %s, 'supports', 'fixture:a201', 'A201 fact version evidence', %s)
+            """,
+            (
+                fact_version_id,
+                source_document_id,
+                Jsonb({"separate_evidence_layer": True}),
+            ),
+        )
+        layer_row = connection.execute(
+            """
+            SELECT ds.snapshot_key, fv.object_type, fv.version_no, fv.valid_from,
+                   fv.observed_at, fve.role, fv.payload->>'relationship_family'
+            FROM fact_versions fv
+            JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+            JOIN fact_version_evidence fve ON fve.fact_version_id = fv.id
+            WHERE fv.id = %s
+            """,
+            (fact_version_id,),
+        ).fetchone()
+        assert layer_row[0] == "a201-fixture-snapshot"
+        assert layer_row[1] == "relationship"
+        assert layer_row[2] == 1
+        assert layer_row[3] is not None
+        assert layer_row[4] is not None
+        assert layer_row[5] == "supports"
+        assert layer_row[6] == "supply_chain_operations"
+        connection.commit()
+
+        try:
+            connection.execute(
+                """
+                INSERT INTO data_snapshots(
+                  snapshot_key, scope, record_mode, status, source_hash, as_of, activated_at
+                )
+                VALUES (
+                  'a201-duplicate-active',
+                  'golden-vertical:nvidia',
+                  'fixture',
+                  'active',
+                  'a201-duplicate',
+                  '2026-06-20T00:00:00Z',
+                  '2026-06-20T00:00:01Z'
+                )
+                """
+            )
+        except errors.UniqueViolation:
+            connection.rollback()
+        else:  # pragma: no cover - should be unreachable with the partial unique index.
+            raise AssertionError("Only one active snapshot per scope and record_mode is allowed")
+
+        try:
+            connection.execute(
+                """
+                INSERT INTO fact_versions(
+                  snapshot_id, object_type, object_id, version_no, fact_status, record_mode,
+                  valid_from, valid_to, observed_at, payload_hash, payload
+                )
+                VALUES (
+                  %s,
+                  'relationship',
+                  %s,
+                  2,
+                  'reported',
+                  'fixture',
+                  '2026-06-20T00:00:00Z',
+                  '2026-06-19T00:00:00Z',
+                  '2026-06-20T00:00:00Z',
+                  'a201-invalid-window',
+                  %s
+                )
+                """,
+                (
+                    snapshot_id,
+                    COREWEAVE_NVIDIA_RELATIONSHIP_ID,
+                    Jsonb({"invalid": "valid_to_before_valid_from"}),
+                ),
+            )
+        except errors.CheckViolation:
+            connection.rollback()
+        else:  # pragma: no cover - should be unreachable with the time-validity check.
+            raise AssertionError("Fact versions must reject invalid valid_from/valid_to windows")
 
 
 def exercise_domain_api_and_repository_contracts() -> None:

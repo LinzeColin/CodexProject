@@ -34,6 +34,9 @@ REQUIRED_TABLES = {
     "scoring_runs",
     "score_results",
     "changes",
+    "data_snapshots",
+    "fact_versions",
+    "fact_version_evidence",
 }
 
 REQUIRED_ENTITY_TYPES = {
@@ -72,6 +75,42 @@ REQUIRED_TEMPORAL_COLUMNS = {
     "events": {"announced_at", "effective_at", "period_start", "period_end", "observed_at"},
     "source_documents": {"document_date", "observed_at", "retrieved_at"},
     "ingestion_runs": {"started_at", "finished_at"},
+    "data_snapshots": {"as_of", "activated_at", "created_at"},
+    "fact_versions": {"valid_from", "valid_to", "observed_at", "created_at"},
+}
+
+REQUIRED_PRODUCTION_VERSION_COLUMNS = {
+    "data_snapshots": {
+        "snapshot_key",
+        "scope",
+        "record_mode",
+        "status",
+        "source_hash",
+        "supersedes_snapshot_id",
+        "metadata",
+    },
+    "fact_versions": {
+        "snapshot_id",
+        "object_type",
+        "object_id",
+        "version_no",
+        "fact_status",
+        "record_mode",
+        "source_document_id",
+        "ingestion_run_id",
+        "parser_version",
+        "payload_hash",
+        "payload",
+        "previous_fact_version_id",
+    },
+    "fact_version_evidence": {
+        "fact_version_id",
+        "source_document_id",
+        "role",
+        "locator",
+        "support_excerpt",
+        "structured_fact",
+    },
 }
 
 SEED_EXPECTATIONS = {
@@ -225,6 +264,44 @@ def main() -> int:
                     f"{table_name} missing temporal columns: {missing_temporal_columns}"
                 )
 
+        for table_name, required_columns in REQUIRED_PRODUCTION_VERSION_COLUMNS.items():
+            missing_version_columns = sorted(
+                required_columns - columns_by_table.get(table_name, set())
+            )
+            if missing_version_columns:
+                raise RuntimeError(
+                    f"{table_name} missing production version columns: {missing_version_columns}"
+                )
+
+        production_index_rows = rows(
+            connection,
+            """
+            SELECT indexname
+            FROM pg_indexes
+            WHERE schemaname = 'public'
+              AND indexname IN (
+                'data_snapshots_one_active_per_scope_mode_idx',
+                'fact_versions_object_idx',
+                'fact_versions_snapshot_status_idx',
+                'fact_versions_time_idx'
+              )
+            """,
+        )
+        production_indexes = {str(row[0]) for row in production_index_rows}
+        missing_production_indexes = sorted(
+            {
+                "data_snapshots_one_active_per_scope_mode_idx",
+                "fact_versions_object_idx",
+                "fact_versions_snapshot_status_idx",
+                "fact_versions_time_idx",
+            }
+            - production_indexes
+        )
+        if missing_production_indexes:
+            raise RuntimeError(
+                f"Missing production version indexes: {missing_production_indexes}"
+            )
+
         payload: dict[str, object] = {
             "required_tables": len(REQUIRED_TABLES),
             "missing_tables": missing,
@@ -233,6 +310,8 @@ def main() -> int:
             "supply_chain_attribute_columns": sorted(REQUIRED_SUPPLY_CHAIN_ATTRIBUTE_COLUMNS),
             "exploration_session_columns": sorted(REQUIRED_EXPLORATION_SESSION_COLUMNS),
             "temporal_tables_checked": sorted(REQUIRED_TEMPORAL_COLUMNS),
+            "production_version_tables_checked": sorted(REQUIRED_PRODUCTION_VERSION_COLUMNS),
+            "production_version_indexes": sorted(production_indexes),
             "seed_counts": {},
         }
 
