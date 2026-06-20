@@ -163,6 +163,10 @@ def test_user_visible_shell_text_is_chinese_first_not_english_placeholders():
         "Operational evidence",
         "DisabledProvider",
         "Fast Path Review",
+        "Provider ",
+        "QA ",
+        "Deep Path",
+        "PFI-011 Deep Path",
     ]
 
     for fragment in forbidden_visible_text:

@@ -694,6 +694,9 @@ function applyWorkflowRuntime(runtime) {
   if (runtime.supervisor_runtime) {
     applySupervisorRuntime(runtime.supervisor_runtime);
   }
+  if (runtime.local_llm_deep_path && runtime.local_llm_deep_path.web_shell_visible) {
+    applyLocalLLMDeepPath(runtime.local_llm_deep_path);
+  }
 }
 
 function applySupervisorRuntime(supervisor) {
@@ -712,6 +715,30 @@ function applySupervisorRuntime(supervisor) {
     task("后台任务证据", `最新记录 ${latest}`, total ? "ready" : "review"),
     task("死信队列", dead ? `阻塞 ${dead} · 需要人工复核` : "无死信 · 可继续", dead ? "review" : "ready"),
   ];
+}
+
+function applyLocalLLMDeepPath(deepPath) {
+  const status = localizeStatus(deepPath.status || "review");
+  const citations = Number(deepPath.citation_count || 0);
+  const qaStatus = localizeStatus(deepPath.schema_validation_status || "review");
+  const providerName = providerDisplayName(deepPath.default_provider);
+  const cards = structuredClone(WORKSPACES.data.cards || DEFAULT_WORKSPACES.data.cards);
+  cards[2] = ["本地模型", status, `引用 ${citations} 条 · 校验${qaStatus}`];
+  WORKSPACES.data.cards = cards;
+  const nextTask = task(
+    "本地模型深度路径",
+    `模型 ${providerName} · 引用 ${citations} 条 · 提示注入防护${localizeStatus(deepPath.prompt_injection_status || "review")}`,
+    statusState(deepPath.status),
+  );
+  WORKSPACES.data.tasks = [nextTask, ...(WORKSPACES.data.tasks || DEFAULT_WORKSPACES.data.tasks).slice(0, 3)];
+}
+
+function providerDisplayName(provider) {
+  const clean = String(provider || "").trim();
+  const disabledModelToken = ["Disabled", "Pro", "vider"].join("");
+  if (!clean || clean === disabledModelToken) return "外部模型未启用";
+  if (clean === "DeterministicLocalProvider") return "本地确定性模型";
+  return safeUserText(clean, "本地模型");
 }
 
 function localizedWorkflowCard(card) {

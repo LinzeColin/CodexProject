@@ -18,6 +18,8 @@ PFI003_SUPERVISOR_RUNTIME_READ_MODEL_SCHEMA = "PFIOSPFI003SupervisorRuntimeReadM
 PFI003_DURABLE_JOB_STORE_SCHEMA = "PFIOSPFI003DurableJobStoreV1"
 PFI010_MINUTE_FAST_PATH_READ_MODEL_SCHEMA = "PFI010MinuteFastPathReadModelV1"
 PFI010_MINUTE_FAST_PATH_EVIDENCE_CLASS = "pfi010_minute_fast_path_acceptance"
+PFI011_LOCAL_LLM_DEEP_PATH_READ_MODEL_SCHEMA = "PFI011LocalLLMDeepPathReadModelV1"
+PFI011_LOCAL_LLM_DEEP_PATH_EVIDENCE_CLASS = "pfi011_local_llm_deep_path_acceptance"
 FAST_PATH_TARGET_SECONDS = 60
 
 WORKFLOW_TARGETS: tuple[dict[str, str], ...] = (
@@ -123,12 +125,14 @@ def build_workflow_runtime_read_model(
     fast_path = _fast_path_acceptance(cards, jobs=jobs, target_seconds=fast_path_target_seconds)
     supervisor_runtime = _supervisor_runtime(jobs)
     minute_fast_path = _minute_fast_path_runtime(evidence)
+    local_llm_deep_path = _local_llm_deep_path_runtime(evidence)
     return {
         "schema": WORKFLOW_RUNTIME_READ_MODEL_SCHEMA,
         "phase": "Phase C",
         "generated_at": generated_at,
         "fast_path": fast_path,
         "minute_fast_path": minute_fast_path,
+        "local_llm_deep_path": local_llm_deep_path,
         "workflow_cards": cards,
         "background_jobs": _background_jobs(jobs),
         "task_center_rows": _task_center_rows(cards, tasks, supervisor_runtime=supervisor_runtime),
@@ -248,6 +252,7 @@ def empty_workflow_runtime_read_model() -> dict[str, Any]:
             "llm_required": False,
         },
         "minute_fast_path": _empty_minute_fast_path_runtime(),
+        "local_llm_deep_path": _empty_local_llm_deep_path_runtime(),
         "workflow_cards": [],
         "background_jobs": [],
         "task_center_rows": [],
@@ -509,6 +514,51 @@ def _empty_minute_fast_path_runtime() -> dict[str, Any]:
             "no_broker_calls": True,
             "no_order_execution": True,
             "no_payment_or_betting": True,
+            "human_review_required": True,
+        },
+    }
+
+
+def _local_llm_deep_path_runtime(evidence: list[dict[str, Any]]) -> dict[str, Any]:
+    rows = [row for row in evidence if str(row.get("evidence_class", "")) == PFI011_LOCAL_LLM_DEEP_PATH_EVIDENCE_CLASS]
+    latest = _latest(rows, key="created_at")
+    metadata = _metadata(latest)
+    payload = metadata.get("local_llm_deep_path", {})
+    if isinstance(payload, dict) and payload.get("schema") == PFI011_LOCAL_LLM_DEEP_PATH_READ_MODEL_SCHEMA:
+        clean = _json_safe(payload)
+        clean["web_shell_visible"] = True
+        return clean
+    return _empty_local_llm_deep_path_runtime()
+
+
+def _empty_local_llm_deep_path_runtime() -> dict[str, Any]:
+    return {
+        "schema": PFI011_LOCAL_LLM_DEEP_PATH_READ_MODEL_SCHEMA,
+        "issue": "PFI-011",
+        "gate": "Gate 5",
+        "status": "Review",
+        "provider_interface_ready": False,
+        "default_provider": "DisabledProvider",
+        "local_provider": "",
+        "disabled_provider_available": True,
+        "fallback_used": True,
+        "citation_count": 0,
+        "schema_validation_status": "Missing",
+        "citation_validation_status": "Missing",
+        "timeout_fallback_status": "Missing",
+        "cancel_status": "Missing",
+        "resource_budget_status": "Missing",
+        "prompt_injection_status": "Missing",
+        "hardware_status": "Missing",
+        "web_shell_visible": True,
+        "safety_boundary": {
+            "research_only": True,
+            "provider_fetch_required": False,
+            "network_required": False,
+            "broker_required": False,
+            "order_execution": False,
+            "payment_or_betting": False,
+            "autonomous_advice": False,
             "human_review_required": True,
         },
     }

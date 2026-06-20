@@ -146,6 +146,25 @@ Current sequence:
     `p95_seconds=44.0`, page_closed_updates=true, failure_injection=Pass,
     logical_1h_soak=Pass, and logical_24h_soak=Pass. Gate 4 is closed for the
     current deterministic local evidence scope and must be re-run in Gate 7.
+27. Gate 5 / PFI-011 Local LLM Deep Path:
+    Local evidence is implemented.
+    `scripts/pfi011LocalLLMDeepPathAcceptance.sh` emits
+    `PFI011LocalLLMDeepPathAcceptanceV1` evidence for hardware audit,
+    provider interface, default DisabledProvider fallback, deterministic local
+    provider output, schema/citation QA, timeout fallback, cancel proof,
+    resource budget, prompt-injection blocking, Operational Store records, and
+    Web Shell runtime dashboard exposure through
+    `workflow_runtime.local_llm_deep_path`. Latest local run returned
+    `status=Pass`, `pass=12`, `fail=0`, `hardware_status=Pass`,
+    `citation_count=3`, timeout_fallback=Pass, cancel=Pass,
+    resource_budget=Pass, prompt_injection=Pass, and
+    disabled_provider_fallback=Pass. After user rejection, the Web Shell
+    runtime dashboard was reworked so this path no longer exposes
+    `PFI-011 Deep Path`, `Provider`, `QA`, or raw disabled-provider labels on
+    the user-facing surface. Latest browser UI acceptance returned
+    `status=Pass`, `pass=134`, `fail=0`, screenshot
+    `data/systemAudit/UIVisualAcceptance_20260620_063836.png`. Gate 5 is
+    closed for the current local evidence scope and must be re-run in Gate 7.
 
 ## Current Local State
 
@@ -337,6 +356,15 @@ Current sequence:
   11/11 with three legal local sources, durable incremental worker, p95=44.0s,
   page-closed update proof, failure injection recovery, logical 1h/24h soak,
   Operational Store records, and Web Shell runtime dashboard exposure.
+- PFI-011 Local LLM Deep Path complete for local Gate 5 evidence:
+  `src/pfi_os/application/pfi011_local_llm_deep_path.py`,
+  `scripts/pfi011LocalLLMDeepPathAcceptance.sh`,
+  `tests/contract/test_pfi011_local_llm_deep_path.py`, and
+  `docs/development/PFI011_LOCAL_LLM_DEEP_PATH.md`. Latest acceptance passed
+  12/12 with hardware audit, provider interface, DisabledProvider fallback,
+  citation/schema QA, timeout fallback, cancel, resource budget,
+  prompt-injection guard, Operational Store records, and Web Shell runtime
+  dashboard exposure.
 
 ## Start Here
 
@@ -353,24 +381,25 @@ Read in this order:
 9. `docs/development/PFI006_MARKETS_VERTICAL_ACCEPTANCE.md`
 10. `docs/development/PFI007_RESEARCH_POLICY_VERTICAL_ACCEPTANCE.md`
 11. `docs/development/PFI010_MINUTE_FAST_PATH.md`
-12. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
-12. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
-13. `docs/data/PFI_DATA_BOUNDARIES.md`
-14. `docs/data/PFI_SOURCE_OF_TRUTH.md`
-15. `docs/ux/PFI_UX_CONTRACT.md`
-16. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
-17. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
-18. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
-19. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
-20. `docs/phase/PHASE_B_MARKETS.md`
-21. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
-22. `docs/phase/PHASE_B_STRATEGY_LAB.md`
-23. `docs/phase/PHASE_B_PORTFOLIO.md`
-24. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
-25. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
-26. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
-24. `docs/phase/V0_1_1_FINDINGS_BASELINE.md`
-25. `docs/archive/legacy-migration.md`
+12. `docs/development/PFI011_LOCAL_LLM_DEEP_PATH.md`
+13. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
+14. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
+15. `docs/data/PFI_DATA_BOUNDARIES.md`
+16. `docs/data/PFI_SOURCE_OF_TRUTH.md`
+17. `docs/ux/PFI_UX_CONTRACT.md`
+18. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
+19. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
+20. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
+21. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
+22. `docs/phase/PHASE_B_MARKETS.md`
+23. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
+24. `docs/phase/PHASE_B_STRATEGY_LAB.md`
+25. `docs/phase/PHASE_B_PORTFOLIO.md`
+26. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
+27. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
+28. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
+29. `docs/phase/V0_1_1_FINDINGS_BASELINE.md`
+30. `docs/archive/legacy-migration.md`
 
 ## Current Verification Evidence
 
@@ -573,8 +602,8 @@ Continue from v0.2 PFI-goal execution:
 
 1. Use `docs/development/PFI_GOAL_GATE_MATRIX.md` as the active completion
    matrix for PFI-001 through PFI-012 and Gate 1 through Gate 7.
-2. Next recommended issue: PFI-011 Local LLM Deep Path.
-3. Keep PFI-011/PFI-012 active and re-run Gate 1 through Gate 4 evidence during
+2. Next recommended issue: PFI-012 MVP Release Gate.
+3. Keep PFI-012 active and re-run Gate 1 through Gate 5 evidence during
    final Gate 7 packaging.
 
 ## Latest User Rejection Repair, 2026-06-20
@@ -626,6 +655,31 @@ Additional Command Center display repair:
 - `tests/test_command_center.py`: updated to enforce Chinese Markdown headings
   and no literal `????` in generated PDF bytes.
 
-Next recommended issue after committing the PFI-010 repair: continue Gate 5 /
-PFI-011 Local LLM Deep Path. Do not mark the long-running PFI-001..PFI-012 goal
-complete; PFI-011, PFI-012, and Gates 5 through 7 remain open.
+Next recommended issue after committing the PFI-011 repair: continue Gate 6 /
+PFI-012 MVP Release Gate. Do not mark the long-running PFI-001..PFI-012 goal
+complete; PFI-012 and Gates 6 through 7 remain open.
+
+Follow-up rejection repair, 2026-06-20:
+
+- User rejected the running delivery again for English/noisy visible text and
+  unusable feature blocks.
+- Verified installed user entry points: `~/Downloads/PFI_OS.app` and
+  `/Applications/PFI_OS.app` both display `PFI OS` and bind
+  `PFI_OS_PROJECT_ROOT` to this checkout; no `EVA` app was found in Downloads
+  or Applications; no PFI service remained running on ports 8501-8510 before
+  the acceptance rerun.
+- `web/app/shell.js`: PFI-011 local-model runtime card now shows Chinese
+  labels only: `本地模型`, `本地模型深度路径`, `模型 外部模型未启用`,
+  `校验通过`, and `提示注入防护通过`.
+- `tests/e2e/test_pfi_web_shell_static_flow.py`,
+  `tests/contract/test_pfi011_local_llm_deep_path.py`, and
+  `scripts/uiVisualAcceptance.sh` now reject visible/user-surface remnants:
+  `DisabledProvider`, `Deep Path`, `Provider `, `QA `, and
+  `PFI-011 Deep Path`.
+- Verification:
+  `tests/contract/test_pfi011_local_llm_deep_path.py` plus
+  `tests/e2e/test_pfi_web_shell_static_flow.py` => 21 passed.
+- Real browser verification:
+  `scripts/uiVisualAcceptance.sh --summary-json` =>
+  `PFIOSUIVisualAcceptanceV1`, `status=Pass`, 134 pass / 0 fail,
+  screenshot bytes 145960.

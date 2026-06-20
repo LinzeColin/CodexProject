@@ -343,7 +343,7 @@ async function verifyPrimaryActionNavigation(page, baseUrl, route, checks) {
   ).catch(() => {});
   const targetUrl = targetPage.url();
   const pageText = await targetPage.locator('body').innerText({ timeout: 10000 }).catch((error) => String(error && error.message || error));
-  const retiredIdentityText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI', 'PFI_OS', 'PFIOS'];
+  const retiredIdentityText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI', 'PFI_OS', 'PFIOS', 'DisabledProvider', 'Deep Path', 'Provider ', 'QA '];
   checks.push(check(`PrimaryActionNavigation:${route.view}:TargetUrl`, targetUrl.includes(`view=${route.expectedView}`) ? 'Pass' : 'Fail', targetUrl));
   checks.push(check(`PrimaryActionNavigation:${route.view}:TargetTitle`, pageText.includes(route.expectedTitle) ? 'Pass' : 'Fail', route.expectedTitle));
   checks.push(check(`PrimaryActionNavigation:${route.view}:NoTraceback`, pageText.includes('Traceback') || pageText.includes('ModuleNotFoundError') || pageText.includes('ImportError:') ? 'Fail' : 'Pass', route.view));
@@ -460,7 +460,7 @@ async function verifyPrimaryActionNavigation(page, baseUrl, route, checks) {
       checks.push(check(`FeatureOpen:${view}:NoEnglishSchema`, /PFIOS[A-Za-z0-9]+V\\d/.test(detailText) ? 'Fail' : 'Pass', view));
     }
     bodyText = await frameText(shellFrame);
-    const retiredIdentityText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI', 'PFI_OS', 'PFIOS'];
+    const retiredIdentityText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI', 'PFI_OS', 'PFIOS', 'DisabledProvider', 'Deep Path', 'Provider ', 'QA '];
     const forbiddenText = ['Traceback', 'ModuleNotFoundError', 'ImportError:', 'Connection lost', ...retiredIdentityText, 'Global Search'];
     for (const text of forbiddenText) {
       checks.push(check(`NoVisibleError:${text}`, bodyText.includes(text) ? 'Fail' : 'Pass', text));

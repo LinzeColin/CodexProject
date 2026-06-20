@@ -88,6 +88,7 @@ def test_sensitive_holdings_paths_are_gitignored():
     assert "data/systemAudit/PFI008PortfolioAcceptance*.json" in patterns
     assert "data/systemAudit/PFI009StrategyAcceptance*.json" in patterns
     assert "data/systemAudit/PFI010MinuteFastPathAcceptance*.json" in patterns
+    assert "data/systemAudit/PFI011LocalLLMDeepPathAcceptance*.json" in patterns
     assert "!data/holdings/.gitkeep" in patterns
 
 
@@ -117,6 +118,7 @@ def test_shell_scripts_have_valid_zsh_syntax():
         "scripts/pfi008PortfolioAcceptance.sh",
         "scripts/pfi009StrategyAcceptance.sh",
         "scripts/pfi010MinuteFastPathAcceptance.sh",
+        "scripts/pfi011LocalLLMDeepPathAcceptance.sh",
         "scripts/macosAcceptance.sh",
         "scripts/macosAppAcceptanceLite.sh",
         "scripts/macosLifecycleReadiness.sh",
