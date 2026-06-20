@@ -161,6 +161,12 @@ class OperationalStore:
         now = _now()
         observed_at = record.observed_at or now
         with self.connect() as conn:
+            existing = conn.execute("SELECT as_of FROM source_records WHERE source_id = ?", (record.source_id,)).fetchone()
+            if existing is not None and _compare_as_of(record.as_of, str(existing["as_of"])) < 0:
+                raise ValueError(
+                    "PIT_INVALID_WRITE: source_records cannot be moved backwards in as_of; "
+                    "write historical facts through source_versions/backfill flow."
+                )
             conn.execute(
                 """
                 INSERT INTO source_records(
@@ -414,27 +420,16 @@ class OperationalStore:
     def point_in_time_sources(self, as_of: str) -> list[dict[str, Any]]:
         self._require_record(as_of, "as_of")
         with self.connect() as conn:
-            rows = conn.execute(
-                """
-                SELECT sv.*
-                FROM source_versions sv
-                INNER JOIN (
-                    SELECT source_id, MAX(as_of) AS latest_as_of
-                    FROM source_versions
-                    WHERE as_of <= ?
-                    GROUP BY source_id
-                ) latest
-                    ON sv.source_id = latest.source_id
-                   AND sv.as_of = latest.latest_as_of
-                ORDER BY sv.source_type, sv.source_id, sv.version_id
-                """,
-                (as_of,),
-            ).fetchall()
+            rows = conn.execute("SELECT * FROM source_versions").fetchall()
         deduped: dict[str, dict[str, Any]] = {}
         for row in rows:
             payload = dict(row)
-            deduped[payload["source_id"]] = payload
-        return list(deduped.values())
+            if _compare_as_of(str(payload["as_of"]), as_of) > 0:
+                continue
+            current = deduped.get(str(payload["source_id"]))
+            if current is None or _compare_as_of(str(payload["as_of"]), str(current["as_of"])) > 0:
+                deduped[str(payload["source_id"])] = payload
+        return sorted(deduped.values(), key=lambda item: (str(item["source_type"]), str(item["source_id"]), str(item["version_id"])))
 
     @staticmethod
     def _require_record(value: str, field_name: str) -> None:
@@ -569,6 +564,32 @@ def _json_default(value: Any) -> Any:
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _parse_as_of(value: str) -> datetime | None:
+    clean = str(value or "").strip()
+    if not clean:
+        return None
+    if clean.endswith("Z"):
+        clean = f"{clean[:-1]}+00:00"
+    try:
+        parsed = datetime.fromisoformat(clean)
+    except ValueError:
+        try:
+            parsed = datetime.fromisoformat(f"{clean}T00:00:00+00:00")
+        except ValueError:
+            return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _compare_as_of(left: str, right: str) -> int:
+    left_dt = _parse_as_of(left)
+    right_dt = _parse_as_of(right)
+    if left_dt is not None and right_dt is not None:
+        return (left_dt > right_dt) - (left_dt < right_dt)
+    return (str(left) > str(right)) - (str(left) < str(right))
 
 
 def _stable_version_id(source_id: str, as_of: str, checksum: str, uri: str) -> str:

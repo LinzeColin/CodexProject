@@ -36,6 +36,14 @@ PFI_OS 是本地优先的个人研究中台入口，macOS 显示为 `PFI_OS`。P
 - 加严 `scripts/uiVisualAcceptance.sh`：从 `href` 静态检查升级为真实点击 6 个一级入口和 8 个功能入口，并检查中文标题、主操作、安全边界和无英文 schema 暴露。
 - 验证结果：UI visual acceptance `Pass 98/98`，目标 pytest `56 passed`，产品/入口相关 pytest `72 passed`，JS/zsh 语法检查和 `git diff --check` 通过。
 
+2026-06-20 PFI-004 Golden/PIT 记录：
+
+- 增加 `src/pfi_os/application/pfi004_truth_golden.py`，形成 `PFI004TruthContractV1` 和 `PFI004GoldenPITAcceptanceV1`。
+- `OperationalStore` 增加 active truth 逆时间写入拒绝：同一 `source_id` 的更早 `as_of` 会触发 `PIT_INVALID_WRITE`。
+- `point_in_time_sources(as_of)` 使用解析后的时间比较，返回不晚于指定时间的最新 source version。
+- Golden fixture 使用合成公开行情：100、102、101、105，期望 `total_return_pct=5.00`、`max_drawdown_pct=-0.98`。
+- 验证结果：PFI-004 + Phase A 目标测试 `15 passed`，覆盖 Golden 指标、PIT replay、dual-read reconciliation、invalid-write rejection 和无实盘执行边界。
+
 默认 verifier：
 
 ```bash

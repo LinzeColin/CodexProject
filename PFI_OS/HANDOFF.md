@@ -63,6 +63,12 @@ Current sequence:
     simulation, hotspots, reports, holdings, policy, data center, and strategy
     library. `scripts/uiVisualAcceptance.sh` now performs real click-through
     checks instead of href-only checks.
+19. v0.2 PFI-004 Golden/PIT:
+    Local proof is complete. Operational Store now rejects retrograde active
+    source writes with `PIT_INVALID_WRITE`, PIT replay compares parsed `as_of`
+    timestamps, and `PFI004GoldenPITAcceptanceV1` proves deterministic Golden
+    financial metrics, point-in-time replay, dual-read reconciliation, active
+    truth unchanged after invalid writes, and no-execution boundaries.
 
 ## Current Local State
 
@@ -185,6 +191,12 @@ Current sequence:
   `status=Pass`, `pass=98`, `fail=0`, and `started_by_acceptance=false` for
   the manually started local service path. Screenshot:
   `data/systemAudit/UIVisualAcceptance_20260620_011640.png`.
+- PFI-004 local Golden/PIT proof complete:
+  `src/pfi_os/application/pfi004_truth_golden.py`,
+  `tests/contract/test_pfi004_truth_golden.py`, and
+  `docs/development/PFI004_GOLDEN_PIT.md`. Target tests passed 15/15 for
+  Golden metrics, PIT replay, dual-read reconciliation, `PIT_INVALID_WRITE`,
+  and no-execution boundaries.
 
 ## Start Here
 
@@ -196,24 +208,25 @@ Read in this order:
 4. `docs/development/PFI_PHASE_0_TO_A_RECORD.md`
 5. `docs/development/PFI_GOAL_GATE_MATRIX.md`
 6. `docs/development/PFI_REPRODUCIBLE_ENV.md`
-7. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
-8. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
-9. `docs/data/PFI_DATA_BOUNDARIES.md`
-10. `docs/data/PFI_SOURCE_OF_TRUTH.md`
-11. `docs/ux/PFI_UX_CONTRACT.md`
-12. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
-13. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
-14. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
-15. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
-16. `docs/phase/PHASE_B_MARKETS.md`
-17. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
-18. `docs/phase/PHASE_B_STRATEGY_LAB.md`
-19. `docs/phase/PHASE_B_PORTFOLIO.md`
-20. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
-21. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
-22. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
-23. `docs/phase/V0_1_1_FINDINGS_BASELINE.md`
-24. `docs/archive/legacy-migration.md`
+7. `docs/development/PFI004_GOLDEN_PIT.md`
+8. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
+9. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
+10. `docs/data/PFI_DATA_BOUNDARIES.md`
+11. `docs/data/PFI_SOURCE_OF_TRUTH.md`
+12. `docs/ux/PFI_UX_CONTRACT.md`
+13. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
+14. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
+15. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
+16. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
+17. `docs/phase/PHASE_B_MARKETS.md`
+18. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
+19. `docs/phase/PHASE_B_STRATEGY_LAB.md`
+20. `docs/phase/PHASE_B_PORTFOLIO.md`
+21. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
+22. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
+23. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
+24. `docs/phase/V0_1_1_FINDINGS_BASELINE.md`
+25. `docs/archive/legacy-migration.md`
 
 ## Current Verification Evidence
 

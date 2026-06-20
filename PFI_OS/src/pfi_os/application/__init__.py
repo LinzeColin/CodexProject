@@ -37,6 +37,16 @@ from pfi_os.application.phase5_acceptance_package import (
     PHASE5_ACCEPTANCE_PACKAGE_SCHEMA,
     build_phase5_acceptance_package,
 )
+from pfi_os.application.pfi004_truth_golden import (
+    PFI004_GOLDEN_PIT_ACCEPTANCE_SCHEMA,
+    PFI004_TRUTH_CONTRACT_SCHEMA,
+    build_pfi004_golden_fixture,
+    build_pfi004_truth_contract,
+    compute_pfi004_golden_metrics,
+    reconcile_pfi004_truth,
+    record_pfi004_golden_fixture,
+    run_pfi004_truth_golden_acceptance,
+)
 from pfi_os.application.v011_findings_baseline import (
     V011_FINDINGS_BASELINE_SCHEMA,
     build_v011_findings_baseline,
@@ -147,6 +157,8 @@ __all__ = [
     "build_phase_d_deployment_readiness_contract",
     "build_phase_d_backup_restore_contract",
     "build_pfi003_runtime_supervisor_contract",
+    "build_pfi004_golden_fixture",
+    "build_pfi004_truth_contract",
     "build_phase5_acceptance_package",
     "build_v011_findings_baseline",
     "build_command_center_read_model",
@@ -163,6 +175,7 @@ __all__ = [
     "build_phase_c_workflow_runtime_contract",
     "build_phase_c_workflow_runtime_scheduler_contract",
     "build_workflow_runtime_read_model",
+    "compute_pfi004_golden_metrics",
     "default_data_home",
     "default_operational_db_path",
     "empty_homepage_summary",
@@ -182,8 +195,11 @@ __all__ = [
     "record_research_policy_workflow",
     "record_strategy_lab_workflow",
     "record_workflow_runtime_read_model",
+    "record_pfi004_golden_fixture",
+    "reconcile_pfi004_truth",
     "refresh_workflow_runtime_cache",
     "run_phase_d_backup_restore_acceptance",
+    "run_pfi004_truth_golden_acceptance",
     "schedule_workflow_runtime_refresh",
     "execute_workflow_runtime_refresh_job",
     "build_portfolio_workflow",
@@ -204,5 +220,7 @@ __all__ = [
     "V011_FINDINGS_BASELINE_SCHEMA",
     "PFI003_DURABLE_JOB_STORE_SCHEMA",
     "PFI003_RUNTIME_SUPERVISOR_SCHEMA",
+    "PFI004_GOLDEN_PIT_ACCEPTANCE_SCHEMA",
+    "PFI004_TRUTH_CONTRACT_SCHEMA",
     "durable_job_id",
 ]

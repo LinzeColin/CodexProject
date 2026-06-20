@@ -10,6 +10,7 @@
 - ResearchBus：跨 PFIOS、行研、FIFA/TAB、消费、政策、独立验证系统同步证据。
 - 报告验证：缺失证据拆解、验证任务队列、优先级计划、执行记录。
 - 数据湖与事件层：行情事件、可复现数据湖、事件回放、实体注册。
+- 数据真相与 Golden/PIT：Operational Store active truth、source version PIT replay、Golden 金融指标 fixture、dual-read reconciliation 和逆时间写入拒绝。
 - 公司现金流、政策雷达、消费守卫等辅助研究模块。
 - PFI Web Shell 中文功能面板：从首页和各工作区直接打开单标的回测、参数扫描、盘感训练、模拟实验、热点分析、报告中心、持仓复核、政策雷达、数据中心和策略库；旧 Streamlit 详细页只作为辅助入口。
 
@@ -25,6 +26,7 @@
 - PFI 一级入口固定为：首页、市场、研究、持仓、策略实验室、数据与系统。
 - 策略回测是核心流程；盘感训练必须保留为策略实验室训练模式。
 - 功能入口必须用户可见、中文优先、可点击并在 PFI Shell 内给出操作面板、证据边界和下一步。
+- 同一来源的 active truth 不能被更早 `as_of` 覆盖；历史回放必须走 PIT source version。
 - 默认只做研究、验证、回测和报告，不做实盘执行。
 - 验证不足时不能升级为实盘交易建议。
 - 共享 schema 变更必须先对齐 `docs/ResearchBusSchema.json`。
