@@ -43,9 +43,10 @@ PARTIAL_TASKS = {
     "T1304": "A206",
     "T1305": "A207",
     "T1307": "A209",
+    "T1308": "A211",
 }
 
-PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A207", "A209"}
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A207", "A209", "A211"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -116,6 +117,12 @@ PARTIAL_EVIDENCE = {
     "T1307": {
         "scripts/run_soak_smoke.mjs",
         "artifacts/tests/a209/t1307_soak_smoke.json",
+    },
+    "T1308": {
+        "apps/web/src/app/workspace-context.tsx",
+        "apps/web/src/app/workspace-navigation.tsx",
+        "tests/e2e/home.spec.ts",
+        "artifacts/tests/a211/t1308_frontend_workspace_context_contract.json",
     },
 }
 
