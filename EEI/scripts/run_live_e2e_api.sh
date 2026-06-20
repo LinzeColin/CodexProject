@@ -23,5 +23,6 @@ fi
 .venv/bin/python scripts/migrate.py upgrade
 .venv/bin/python scripts/load_seed_catalogs.py
 .venv/bin/python scripts/load_synthetic_fixtures.py
+.venv/bin/python scripts/load_curated_ingestion_anchors.py
 
 exec .venv/bin/python -m uvicorn apps.api.app.main:app --host 127.0.0.1 --port 8000
