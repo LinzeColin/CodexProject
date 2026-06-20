@@ -26,6 +26,10 @@ Gate 3 / PFI-006 now has strong local Markets vertical evidence: deterministic
 Golden market bars, market event/hotspot/sentiment cards, same-shell market UI
 controls, portfolio overlay, alerts/saved views, Operational Store
 task/evidence records, and rollback proof.
+Gate 3 / PFI-007 now has strong local Research + Policy evidence: reviewed
+policy opportunities, report gap tasks, citation locator, report manifest,
+same-shell research UI controls, Operational Store task/evidence records, and
+rollback proof.
 
 Execution order:
 
@@ -100,6 +104,11 @@ Current PFI decisions:
 - PFI-006 Markets acceptance now uses `scripts/pfi006MarketsAcceptance.sh` to
   prove the local market vertical chain with `PFI006MarketsVerticalAcceptanceV1`
   evidence and no provider, broker, LLM, order, or private-holdings dependency.
+- PFI-007 Research + Policy acceptance now uses
+  `scripts/pfi007ResearchPolicyAcceptance.sh` to prove the citation/report
+  vertical chain with `PFI007ResearchPolicyVerticalAcceptanceV1` evidence and
+  no live policy scraping, government portal action, legal advice, broker,
+  LLM, order, or private-holdings dependency.
 - Next product target is Phase 6 deployment preparation on the target Mac while
   keeping research-only boundaries.
 

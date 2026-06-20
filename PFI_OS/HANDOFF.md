@@ -94,6 +94,18 @@ Current sequence:
     alerts=2, saved_views=2, rollback=Pass. Target gate passed 52 tests plus
     secret scan; UI visual acceptance passed 98/98 after market shell changes.
     Gate 3 still needs equivalent closure for PFI-007, PFI-008, and PFI-009.
+23. Gate 3 / PFI-007 Research + Policy:
+    Research + Policy vertical acceptance is implemented.
+    `scripts/pfi007ResearchPolicyAcceptance.sh` emits
+    `PFI007ResearchPolicyVerticalAcceptanceV1` evidence for reviewed policy
+    opportunities and report decision payloads -> policy radar/report gaps ->
+    UI read model -> same-shell Chinese research controls -> citation locator
+    -> report manifest -> task/evidence records -> Golden metrics -> rollback
+    proof. Latest local run returned `status=Pass`, `pass=14`, `fail=0`,
+    policy_record_count=2, official_citation_count=1, report_gap_count=3,
+    report_manifest_count=1, rollback=Pass. Target gate passed 58 tests plus
+    secret scan; UI visual acceptance passed 98/98 after research shell
+    changes. Gate 3 still needs equivalent closure for PFI-008 and PFI-009.
 
 ## Current Local State
 
@@ -245,6 +257,15 @@ Current sequence:
   passed 13/13 with deterministic Golden metrics and rollback proof. Focused
   tests passed 62/62, target gate passed 52 tests plus secret scan, and UI
   visual acceptance passed 98/98.
+- PFI-007 Research + Policy vertical acceptance complete for local Gate 3
+  evidence:
+  `src/pfi_os/application/pfi007_research_policy_acceptance.py`,
+  `scripts/pfi007ResearchPolicyAcceptance.sh`,
+  `tests/contract/test_pfi007_research_policy_vertical_acceptance.py`, and
+  `docs/development/PFI007_RESEARCH_POLICY_VERTICAL_ACCEPTANCE.md`. Latest
+  acceptance passed 14/14 with citation locator, report manifest, deterministic
+  Golden metrics, and rollback proof. Focused tests passed 62/62, target gate
+  passed 58 tests plus secret scan, and UI visual acceptance passed 98/98.
 
 ## Start Here
 
@@ -259,22 +280,23 @@ Read in this order:
 7. `docs/development/PFI004_GOLDEN_PIT.md`
 8. `docs/development/PFI005_GATE2_SHELL_ACCEPTANCE.md`
 9. `docs/development/PFI006_MARKETS_VERTICAL_ACCEPTANCE.md`
-10. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
-11. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
-12. `docs/data/PFI_DATA_BOUNDARIES.md`
-13. `docs/data/PFI_SOURCE_OF_TRUTH.md`
-14. `docs/ux/PFI_UX_CONTRACT.md`
-15. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
-16. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
-17. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
-18. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
-19. `docs/phase/PHASE_B_MARKETS.md`
-20. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
-21. `docs/phase/PHASE_B_STRATEGY_LAB.md`
-22. `docs/phase/PHASE_B_PORTFOLIO.md`
-23. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
-24. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
-25. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
+10. `docs/development/PFI007_RESEARCH_POLICY_VERTICAL_ACCEPTANCE.md`
+11. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
+12. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
+13. `docs/data/PFI_DATA_BOUNDARIES.md`
+14. `docs/data/PFI_SOURCE_OF_TRUTH.md`
+15. `docs/ux/PFI_UX_CONTRACT.md`
+16. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
+17. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
+18. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
+19. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
+20. `docs/phase/PHASE_B_MARKETS.md`
+21. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
+22. `docs/phase/PHASE_B_STRATEGY_LAB.md`
+23. `docs/phase/PHASE_B_PORTFOLIO.md`
+24. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
+25. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
+26. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
 24. `docs/phase/V0_1_1_FINDINGS_BASELINE.md`
 25. `docs/archive/legacy-migration.md`
 
