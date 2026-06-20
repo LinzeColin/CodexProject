@@ -1685,11 +1685,121 @@ def exercise_transactional_model_activation_contract(
         ).fetchone()[0]
         assert score_result_count == recompute_result["scored_objects"]
 
+    data_refresh_response = client.post(
+        "/v1/data/snapshots/refresh",
+        json={
+            "expected_active_profile_version_id": str(target_profile_id),
+            "client_refresh_token": recompute_refresh_token,
+            "scope": "golden-vertical:nvidia",
+            "record_mode": "curated_official_fixture",
+            "reason": "T1303/T1304 data snapshot refresh enqueue success path",
+        },
+    )
+    assert data_refresh_response.status_code == 200
+    data_refresh = data_refresh_response.json()
+    assert data_refresh["schema_version"] == "data-snapshot-refresh-request-v1"
+    assert data_refresh["status"] == "queued"
+    assert data_refresh["job"]["job_type"] == "data_snapshot_refresh"
+    assert data_refresh["job"]["payload"]["schema_version"] == (
+        "data-snapshot-refresh-job-v1"
+    )
+    assert data_refresh["job"]["payload"]["refresh_token"] == recompute_refresh_token
+    assert data_refresh["job"]["payload"]["record_mode"] == "curated_official_fixture"
+    assert data_refresh["outbox_event"]["event_type"] == "data.snapshot.refresh.requested"
+    assert data_refresh["outbox_event"]["aggregate_id"] == data_refresh["job"]["id"]
+    assert data_refresh["outbox_event"]["status"] == "pending"
+
+    duplicate_data_refresh_response = client.post(
+        "/v1/data/snapshots/refresh",
+        json={
+            "expected_active_profile_version_id": str(target_profile_id),
+            "client_refresh_token": recompute_refresh_token,
+            "scope": "golden-vertical:nvidia",
+            "record_mode": "curated_official_fixture",
+            "reason": "T1303/T1304 data snapshot refresh idempotency path",
+        },
+    )
+    assert duplicate_data_refresh_response.status_code == 200
+    duplicate_data_refresh = duplicate_data_refresh_response.json()
+    assert duplicate_data_refresh["job"]["id"] == data_refresh["job"]["id"]
+    assert duplicate_data_refresh["idempotency_key"] == data_refresh["idempotency_key"]
+    assert duplicate_data_refresh["outbox_event"]["id"] == data_refresh["outbox_event"]["id"]
+
+    executed_data_refresh = run_once(
+        worker_id="a206-data-snapshot-refresh-worker",
+        job_type="data_snapshot_refresh",
+    )
+    assert executed_data_refresh is not None
+    assert executed_data_refresh["id"] == data_refresh["job"]["id"]
+    assert executed_data_refresh["status"] == "succeeded"
+    data_refresh_result = executed_data_refresh["metadata"]["result"]
+    assert data_refresh_result["handler"] == "data_snapshot_refresh"
+    assert data_refresh_result["handler_contract"] == "data-snapshot-refresh-worker-v1"
+    assert data_refresh_result["status"] == "completed"
+    assert data_refresh_result["scope"] == "golden-vertical:nvidia"
+    assert data_refresh_result["record_mode"] == "curated_official_fixture"
+    assert data_refresh_result["previous_refresh_token"] == recompute_refresh_token
+    assert data_refresh_result["refresh_token"] != recompute_refresh_token
+    assert data_refresh_result["refresh_generation"] == next_refresh_generation + 2
+    assert data_refresh_result["data_snapshot_id"]
+    assert data_refresh_result["data_snapshot_key"]
+    assert data_refresh_result["source_hash"]
+    assert data_refresh_result["source_stats"]["fact_candidate_count"] >= 2
+    assert data_refresh_result["outbox_event"]["event_type"] == "data.snapshot.activated"
+    assert data_refresh_result["outbox_event"]["aggregate_id"] == (
+        data_refresh_result["data_snapshot_id"]
+    )
+    assert data_refresh_result["outbox_event"]["status"] == "pending"
+    data_refresh_token = data_refresh_result["refresh_token"]
+    data_snapshot_id = data_refresh_result["data_snapshot_id"]
+
+    dispatched_data_refresh_request = dispatch_outbox_once(
+        worker_id="a206-outbox-dispatcher",
+        event_type="data.snapshot.refresh.requested",
+    )
+    assert dispatched_data_refresh_request is not None
+    assert dispatched_data_refresh_request["status"] == "dispatched"
+    dispatched_data_snapshot = dispatch_outbox_once(
+        worker_id="a206-outbox-dispatcher",
+        event_type="data.snapshot.activated",
+    )
+    assert dispatched_data_snapshot is not None
+    assert dispatched_data_snapshot["status"] == "dispatched"
+
+    with connect_database() as connection:
+        data_refresh_context = connection.execute(
+            """
+            SELECT active_scoring_profile_version_id, active_data_snapshot_id,
+                   refresh_token::text, refresh_generation, status
+            FROM active_analysis_contexts
+            WHERE context_key = 'global'
+            """
+        ).fetchone()
+        assert data_refresh_context[0] == target_profile_id
+        assert str(data_refresh_context[1]) == data_snapshot_id
+        assert data_refresh_context[2] == data_refresh_token
+        assert data_refresh_context[3] == next_refresh_generation + 2
+        assert data_refresh_context[4] == "active"
+        snapshot_row = connection.execute(
+            """
+            SELECT snapshot_key, scope, record_mode, status, supersedes_snapshot_id,
+                   metadata->>'handler_contract'
+            FROM data_snapshots
+            WHERE id = %s
+            """,
+            (UUID(data_snapshot_id),),
+        ).fetchone()
+        assert snapshot_row[0] == data_refresh_result["data_snapshot_key"]
+        assert snapshot_row[1] == "golden-vertical:nvidia"
+        assert snapshot_row[2] == "curated_official_fixture"
+        assert snapshot_row[3] == "active"
+        assert snapshot_row[5] == "data-snapshot-refresh-worker-v1"
+
     stale_recompute_response = client.post(
         "/v1/scoring/recompute",
         json={
             "expected_active_profile_version_id": str(target_profile_id),
-            "client_refresh_token": previous_refresh_token,
+            "client_refresh_token": recompute_refresh_token,
             "scope": "global",
             "reason": "T1303/T1304 stale recompute negative path",
         },
@@ -1719,7 +1829,7 @@ def exercise_transactional_model_activation_contract(
         f"/v1/scoring/profiles/{active_profile['id']}/rollback",
         json={
             "expected_active_profile_version_id": str(target_profile_id),
-            "client_refresh_token": recompute_refresh_token,
+            "client_refresh_token": data_refresh_token,
             "reason": "T1303/A204 dedicated rollback endpoint success path",
         },
     )
@@ -1730,8 +1840,8 @@ def exercise_transactional_model_activation_contract(
     assert rollback["previous_profile"]["id"] == str(target_profile_id)
     assert rollback["activated_profile"]["id"] == active_profile["id"]
     assert rollback["activated_profile"]["active"] is True
-    assert rollback["cache_invalidation"]["previous_refresh_token"] == recompute_refresh_token
-    assert rollback["cache_invalidation"]["refresh_token"] != recompute_refresh_token
+    assert rollback["cache_invalidation"]["previous_refresh_token"] == data_refresh_token
+    assert rollback["cache_invalidation"]["refresh_token"] != data_refresh_token
     assert rollback["active_context"]["active_scoring_profile_version_id"] == active_profile["id"]
     rollback_refresh_token = rollback["cache_invalidation"]["refresh_token"]
 
@@ -1816,6 +1926,8 @@ def exercise_transactional_model_activation_contract(
                   'rollback_scoring_profile',
                   'enqueue_score_recompute',
                   'execute_score_recompute',
+                  'enqueue_data_snapshot_refresh',
+                  'execute_data_snapshot_refresh',
                   'dispatch_outbox_event'
                 )
                 GROUP BY action_type, result_status
@@ -1829,7 +1941,9 @@ def exercise_transactional_model_activation_contract(
         assert log_counts[("enqueue_score_recompute", "success")] == 2
         assert log_counts[("enqueue_score_recompute", "conflict")] == 1
         assert log_counts[("execute_score_recompute", "success")] == 1
-        assert log_counts[("dispatch_outbox_event", "success")] == 3
+        assert log_counts[("enqueue_data_snapshot_refresh", "success")] == 2
+        assert log_counts[("execute_data_snapshot_refresh", "success")] == 1
+        assert log_counts[("dispatch_outbox_event", "success")] == 5
         outbox_counts = {
             (row[0], row[1]): row[2]
             for row in connection.execute(
@@ -1844,6 +1958,8 @@ def exercise_transactional_model_activation_contract(
         assert outbox_counts[("model.profile.activated", "pending")] == 1
         assert outbox_counts[("score.recompute.requested", "dispatched")] == 1
         assert outbox_counts[("score.snapshot.activated", "dispatched")] == 1
+        assert outbox_counts[("data.snapshot.refresh.requested", "dispatched")] == 1
+        assert outbox_counts[("data.snapshot.activated", "dispatched")] == 1
         try:
             connection.execute(
                 "UPDATE scoring_profile_versions SET active = true WHERE id = %s",
