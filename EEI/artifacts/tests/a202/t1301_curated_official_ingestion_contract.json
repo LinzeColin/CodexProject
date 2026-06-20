@@ -57,11 +57,12 @@
     "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/pytest tests/integration/test_database_migrations.py -q: SKIPPED locally because this host has no .env/DATABASE_URL and no docker binary"
   ],
   "remote_ci_validation": [
-    "GitHub Actions EEI validation run 27877209505 / job 82498609174: PASS for static/contract/lint/typecheck/unit, G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E on commit 5e98141f756c1fc55211b23636f9af7cc14fbbdf"
+    "GitHub Actions EEI validation run 27877209505 / job 82498609174: PASS for static/contract/lint/typecheck/unit, G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E on commit 5e98141f756c1fc55211b23636f9af7cc14fbbdf",
+    "GitHub Actions EEI validation run 27880295243 / job 82506543351: PASS for owner sign-off publication contract under Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E on commit 6c6df28c48fbd7be4bdca9afecaef0c68f3b7aa9"
   ],
   "remaining_blockers_before_a202_done": [
     "live or dry-run full-text connector for official sources is not implemented",
-    "the production owner sign-off contract is implemented but still needs remote PostgreSQL CI proof and an actual operator-supplied owner decision before release use",
+    "the production owner sign-off contract has remote PostgreSQL CI proof but still needs an actual operator-supplied owner decision before release use",
     "independent source cross-check remains an alternative closure path but is not complete",
     "source health, retry and dead-letter behavior remain owned by T1304/A206"
   ],

@@ -3297,6 +3297,8 @@ Residual risks:
 
 ## 2026-06-21 - T1301/A202 production owner sign-off contract slice
 
+Status: CI VALIDATED; A202 STILL IN PROGRESS
+
 ### Scope
 
 - Extended `scripts/publish_reviewed_relationship_facts.py` so fixture review and production owner sign-off are mutually exclusive clearance modes.
@@ -3333,9 +3335,10 @@ Residual risks:
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `.env`, `DATABASE_URL` or Docker runtime.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS after non-sandbox rerun; first sandbox attempt failed only at the Chromium browser benchmark with macOS MachPort permission denied.
 
-### Pending validation
+### Remote CI validation
 
-- GitHub Actions must prove the owner sign-off assertions under Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E before this slice can be considered CI validated.
+- GitHub Actions run `27880295243` / job `82506543351`: PASS for commit `6c6df28c48fbd7be4bdca9afecaef0c68f3b7aa9`.
+- Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E all passed for the owner sign-off publication contract slice.
 
 ### Remaining gaps
 
