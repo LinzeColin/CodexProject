@@ -751,6 +751,10 @@ test("saves versioned views restores deterministically and shows as-of change ov
   await page.getByTestId("lens-policy_risk").click();
   await page.getByRole("button", { name: "回到 NVIDIA" }).click();
   await page.reload();
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute(
+    "data-saved-view-id",
+    "sv-cloud-supply_chain-L2-2026-06-12"
+  );
 
   await page.getByTestId("restore-saved-view").click();
   await expectCloudState(page);
