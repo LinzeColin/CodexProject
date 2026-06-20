@@ -699,7 +699,7 @@ def load_source_snapshot(
     return raw_snapshot_id, source_document_id
 
 
-def load_anchors() -> dict[str, int]:
+def load_anchors() -> dict[str, object]:
     rows = read_csv(ANCHOR_PATH)
     fact_config = read_json(FACT_CANDIDATE_PATH)
     fact_snapshot_rows = [
@@ -779,6 +779,9 @@ def load_anchors() -> dict[str, int]:
             "entity_resolution_candidates": candidate_total,
             "evidence_chain_rows": len(rows) + fact_candidate_count,
             "relationship_fact_candidates": fact_candidate_count,
+            "source_hash": source_hash,
+            "parser_version": PARSER_VERSION,
+            "record_mode": RECORD_MODE,
         }
         finish_ingestion_run(connection, ingestion_run_id, counts)
     return counts
