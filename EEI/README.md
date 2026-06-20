@@ -13,7 +13,7 @@
 
 本包是一套可直接进入 GitHub 和 Codex G0 的产品、模型、数据、研发与验收基线。默认首页从 Watchlist 当前公司进入可视化商业版图，并允许点击任意对象后递归切换研究中心。
 
-当前生产实现进度：T1300/A201 已关闭；T1301/A202、T1302/A203、T1303/A204-A205 处于进行中。T1303 已具备服务端事务激活、operation log、active analysis context 和 refresh token 合同，但模型中心真实控件、前端全模块刷新、规模测试、soak、scheduler、保存视图和品牌清权仍阻断 v0.1。
+当前生产实现进度：T1300/A201 已关闭；T1301/A202、T1302/A203、T1303/A204-A205、T1304/A206 处于进行中。T1303 已具备服务端事务激活、operation log、active analysis context 和 refresh token 合同；T1304 已具备 scheduler job queue、lease、heartbeat、retry、dead-letter 和 graceful release 状态机合同。但模型中心真实控件、前端全模块刷新、真实 scheduler handler/部署唤醒、规模测试、soak、保存视图和品牌清权仍阻断 v0.1。
 
 | 入口 | 用途 |
 |---|---|
@@ -47,4 +47,4 @@ bash scripts/preflight.sh
 codex exec --sandbox read-only - < prompts/01_PLAN_ONLY.md | tee artifacts/01_plan_output.txt
 ```
 
-先审查 G0 只读计划，再允许 workspace-write。原型使用 fixture；T1300 PostgreSQL 可回滚迁移与 fact/evidence/time/version 分层已实现。T1301 已开始：NVIDIA/ASML 官方来源快照可写入 raw snapshot、实体解析候选、Golden Vertical 关系事实候选、复核队列和证据链，但 A202 仍未关闭。T1302 已开始：生产上下文、递归图/路径 publication policy 和 relationship_fact_candidate 评分解释合同已接入，但 A203 仍未关闭。live/full-text 采集、独立来源交叉验证、正式关系事实发布、完整多对象评分服务、模型事务激活、原子刷新、调度、保存视图、规模压测、soak、生产组件化前端和正式品牌清权仍是 v0.1 阻断项。
+先审查 G0 只读计划，再允许 workspace-write。原型使用 fixture；T1300 PostgreSQL 可回滚迁移与 fact/evidence/time/version 分层已实现。T1301 已开始：NVIDIA/ASML 官方来源快照可写入 raw snapshot、实体解析候选、Golden Vertical 关系事实候选、复核队列和证据链，但 A202 仍未关闭。T1302 已开始：生产上下文、递归图/路径 publication policy 和 relationship_fact_candidate 评分解释合同已接入，但 A203 仍未关闭。T1304 已开始：后台 job queue、lease、heartbeat、retry、dead-letter 和 graceful release 已具备数据库与 CLI 合同，但真实业务 handler、部署唤醒和 soak 未关闭。live/full-text 采集、独立来源交叉验证、正式关系事实发布、完整多对象评分服务、模型事务激活、原子刷新、保存视图、规模压测、soak、生产组件化前端和正式品牌清权仍是 v0.1 阻断项。

@@ -84,8 +84,10 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t1302_production_api_graph_scoring_contract.json
 │   │   ├── a204
 │   │   │   └── t1303_transactional_model_activation_contract.json
-│   │   └── a205
-│   │       └── t1303_atomic_refresh_context_contract.json
+│   │   ├── a205
+│   │   │   └── t1303_atomic_refresh_context_contract.json
+│   │   └── a206
+│   │       └── t1304_scheduler_retry_dead_letter_contract.json
 │   ├── README.md
 │   ├── development_status_summary_t1213.json
 │   ├── governance_blueprint_v42_source.html
@@ -240,6 +242,9 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── 0006_model_activation_refresh_state
 │   │   │   │   ├── down.sql
 │   │   │   │   └── up.sql
+│   │   │   ├── 0007_scheduler_job_queue
+│   │   │   │   ├── down.sql
+│   │   │   │   └── up.sql
 │   │   │   └── README.md
 │   │   └── seeds
 │   │       └── README.md
@@ -294,6 +299,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── db_tools.py
 │   ├── env_doctor.py
 │   ├── generate_governance_pdf.py
+│   ├── job_scheduler.py
 │   ├── load_curated_ingestion_anchors.py
 │   ├── load_seed_catalogs.py
 │   ├── load_synthetic_fixtures.py

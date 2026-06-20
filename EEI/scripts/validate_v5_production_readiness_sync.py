@@ -36,9 +36,9 @@ EXPECTED_TASKS = {
 
 IMPLEMENTED_TASKS = {"T1300": "A201"}
 
-PARTIAL_TASKS = {"T1301": "A202", "T1302": "A203", "T1303": "A204"}
+PARTIAL_TASKS = {"T1301": "A202", "T1302": "A203", "T1303": "A204", "T1304": "A206"}
 
-PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205"}
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -79,6 +79,14 @@ PARTIAL_EVIDENCE = {
         "tests/integration/test_database_migrations.py",
         "artifacts/tests/a204/t1303_transactional_model_activation_contract.json",
         "artifacts/tests/a205/t1303_atomic_refresh_context_contract.json",
+    },
+    "T1304": {
+        "infra/db/migrations/0007_scheduler_job_queue/up.sql",
+        "infra/db/migrations/0007_scheduler_job_queue/down.sql",
+        "scripts/job_scheduler.py",
+        "scripts/check_database_schema.py",
+        "tests/integration/test_database_migrations.py",
+        "artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json",
     },
 }
 

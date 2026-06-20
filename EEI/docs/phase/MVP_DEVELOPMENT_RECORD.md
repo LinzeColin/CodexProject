@@ -1882,4 +1882,44 @@ Residual risks:
 - Frontend modules still use the static analysis context and are not yet wired to `/v1/scoring/active-context`.
 - Model-center edit/activate/rollback controls are not complete.
 - Worker-driven data snapshot activation, transactional outbox, scheduler and dead-letter remain T1304 and later tasks.
+
+## 2026-06-20 - T1304/A206 scheduler retry and dead-letter core slice
+
+### Scope
+
+- Added PostgreSQL scheduler state tables: `background_jobs`, `background_job_attempts`, and `dead_letter_jobs`.
+- Added `scripts/job_scheduler.py` with idempotent enqueue, due-job lease, heartbeat, graceful release, bounded retry, expired lease recovery, completion and dead-letter transitions.
+- Extended schema validation and integration coverage for A206.
+
+### Files changed
+
+- `infra/db/migrations/0007_scheduler_job_queue/up.sql`
+- `infra/db/migrations/0007_scheduler_job_queue/down.sql`
+- `specs/domain_schema.sql`
+- `scripts/job_scheduler.py`
+- `scripts/check_database_schema.py`
+- `tests/integration/test_database_migrations.py`
+- `artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json`
+- `data/task_backlog.csv`
+- `data/acceptance_matrix.csv`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `data/release_gate_catalog.csv`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+
+### Acceptance mapping
+
+- T1304 -> A206.
+- A206 is now `IN PROGRESS`, not `DONE`.
+
+### Validation
+
+- Local ruff target: PASS for `scripts/job_scheduler.py`, `scripts/check_database_schema.py`, and `tests/integration/test_database_migrations.py`.
+- PostgreSQL integration proof is required from GitHub Actions `make verify-g2-db` because this host has no local Docker/PostgreSQL.
+
+### Remaining gaps
+
+- Real curated ingestion and calibration handlers are not yet registered on the scheduler.
+- Deployment-level wake/supervision is not yet packaged.
+- T1307 4h/24h soak remains required before scheduler stability can be called production-ready.
 - Local Docker/PostgreSQL is not available on this host, so database proof requires GitHub Actions.

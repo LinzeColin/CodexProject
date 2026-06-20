@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "artifact_id": "t1304-scheduler-retry-dead-letter-contract",
+  "task_id": "T1304",
+  "acceptance_ids": [
+    "A206"
+  ],
+  "status": "IN_PROGRESS",
+  "system": {
+    "zh_name": "商域图谱",
+    "en_name": "Enterprise Ecosystem Intelligence",
+    "subtitle": "企业商业版图与供应链递归探索系统"
+  },
+  "implemented_scope": [
+    "PostgreSQL background_jobs table with job_type + idempotency_key uniqueness.",
+    "background_job_attempts table records each lease attempt, heartbeat, release, failure, expiry and success.",
+    "dead_letter_jobs table captures terminal failure payload and final attempt metadata.",
+    "scripts/job_scheduler.py supports enqueue, lease, heartbeat, graceful release, retry, expired lease recovery, completion and dead-letter transitions.",
+    "tests/integration/test_database_migrations.py exercises idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue and success completion."
+  ],
+  "parameters": {
+    "scheduler.lease_ttl_seconds": 900,
+    "scheduler.heartbeat_interval_seconds": 30,
+    "scheduler.max_retry_attempts": 5,
+    "scheduler.dead_letter_after_attempts": 5
+  },
+  "evidence_paths": [
+    "infra/db/migrations/0007_scheduler_job_queue/up.sql",
+    "infra/db/migrations/0007_scheduler_job_queue/down.sql",
+    "specs/domain_schema.sql",
+    "scripts/job_scheduler.py",
+    "scripts/check_database_schema.py",
+    "tests/integration/test_database_migrations.py"
+  ],
+  "local_validation": [
+    "PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check scripts/job_scheduler.py scripts/check_database_schema.py tests/integration/test_database_migrations.py"
+  ],
+  "remote_validation_required": [
+    "GitHub Actions make verify-g2-db must run migrations, schema checks and PostgreSQL integration tests."
+  ],
+  "remaining_gaps_before_done": [
+    "Register real curated ingestion and calibration handlers on the scheduler instead of only the noop verification handler.",
+    "Add deployment-level wake/supervision contract for continuous worker operation.",
+    "Run T1307 4h/24h soak tests for timer, retry and recovery stability."
+  ],
+  "rollback": [
+    "Run scripts/migrate.py downgrade --steps 1 to drop dead_letter_jobs, background_job_attempts and background_jobs.",
+    "Remove scripts/job_scheduler.py and A206 traceability/evidence rows.",
+    "Regenerate release artifacts and rerun make verify-g2-db."
+  ]
+}
