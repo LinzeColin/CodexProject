@@ -34,6 +34,15 @@
     "Worker-driven data snapshot activation and transactional outbox are still covered by T1304 and later refresh slices.",
     "Scale and soak refresh stability remain T1306-T1307."
   ],
+  "latest_ci_result": {
+    "provider": "GitHub Actions",
+    "workflow": "EEI validation",
+    "run_id": "27863334141",
+    "job_id": "82463054603",
+    "commit_sha": "097a72c20aaa89cbb2a68af5d25928fb88b16090",
+    "verify_static_contract_lint_typecheck_unit_step": "PASS",
+    "verify_g2_postgresql_migrations_and_e2e_step": "PASS"
+  },
   "rollback": [
     "Revert the T1303 API/repository/migration/test/governance commit.",
     "Run scripts/migrate.py downgrade --steps 1 in environments where migration 0006 was applied.",

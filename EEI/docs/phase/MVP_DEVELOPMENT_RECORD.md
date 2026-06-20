@@ -2220,9 +2220,16 @@ Residual risks:
 
 - Local `PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck`: PASS.
 - Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 1/1 for `A204 and A205 hydrate activate refresh and rollback model context through the server API`.
+- Local default Playwright E2E with non-sandbox browser/server access: PASS, 30/30.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make lint test-unit`: PASS; unit tests 13/13 with existing Starlette `httpx` deprecation warning.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make secret-scan copy-lint`: PASS.
+- Local v5/development/release validation: PASS.
+- GitHub Actions run `27863334141`: PASS.
+- GitHub Actions job `82463054603`: PASS.
+- GitHub Actions step `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step `Verify G2 PostgreSQL migrations and E2E`: PASS.
 
 ### Remaining gaps
 
 - Live FastAPI/PostgreSQL cross-route E2E for model activation and stale refresh is still required.
 - Model-center online editing, dedicated rollback endpoint and score recompute UI remain open.
-- CI evidence is still required for this frontend transaction-control slice.
