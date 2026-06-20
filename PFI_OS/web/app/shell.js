@@ -52,9 +52,9 @@ const CARD_SOURCES = {
 };
 
 const FEATURE_TARGETS = {
-  市场快照: { workspace: "market", label: "打开市场" },
-  研究队列: { workspace: "research", label: "打开研究" },
-  持仓复核: { workspace: "portfolio", label: "打开持仓" },
+  市场快照: { view: "hotspots", label: "打开热点" },
+  研究队列: { view: "reports", label: "打开报告" },
+  持仓复核: { view: "holdings", label: "打开持仓" },
   策略实验室: { workspace: "strategy", label: "打开策略" },
   指数与ETF: { workspace: "market", label: "打开市场" },
   主题催化: { workspace: "market", label: "打开市场" },
@@ -72,6 +72,12 @@ const FEATURE_TARGETS = {
   参数扫描: { view: "scan", label: "打开扫描" },
   盘感训练: { view: "market_feel", label: "打开训练" },
   模拟实验: { view: "big_data", label: "打开模拟" },
+  热点分析: { view: "hotspots", label: "打开热点" },
+  报告中心: { view: "reports", label: "打开报告" },
+  政策雷达: { view: "policy", label: "打开政策" },
+  持仓: { view: "holdings", label: "打开持仓" },
+  数据中心: { view: "tools", label: "打开数据" },
+  策略库: { view: "library", label: "打开策略库" },
   来源登记: { workspace: "data", label: "打开数据" },
   任务监控: { workspace: "data", label: "打开任务" },
   隐私边界: { workspace: "data", label: "打开系统" },
@@ -92,10 +98,14 @@ const DEFAULT_WORKSPACES = {
       ["策略运行", "0", "来源：证据记录 · 状态待补"],
     ],
     features: [
-      feature("市场快照", "复核", "市场事件摘要", "查看今日行情、宽度、主题和催化。"),
-      feature("研究队列", "观察", "证据任务", "进入公司、基金、政策和报告证据。"),
-      feature("持仓复核", "复核", "持仓风险", "检查暴露、集中度和人工复核事项。"),
-      feature("策略实验室", "复核", "回测与盘感", "进入回测、参数扫描和盘感训练。"),
+      feature("单标的回测", "可用", "回测证据", "运行单标的策略回测，查看收益、回撤、交易和报告。"),
+      feature("参数扫描", "可用", "参数稳定性", "比较参数网格、Train-Test 和 Walk-Forward 结果。"),
+      feature("盘感训练", "可用", "训练记录", "保留读图训练和限时判断，不输出实盘信号。"),
+      feature("热点分析", "可用", "市场热度", "查看指数、ETF、主题和自选对象的强弱扩散。"),
+      feature("报告中心", "可用", "研究档案", "查看、筛选、下载和复核研究产物。"),
+      feature("持仓", "复核", "持仓边界", "查看正式持仓、候选持仓、暴露和质量检查。"),
+      feature("政策雷达", "复核", "权威来源", "登记政策来源、影响路径和人工行动队列。"),
+      feature("数据中心", "复核", "系统诊断", "检查来源、任务、隐私边界和备份状态。"),
     ],
     rows: [
       row("P0", "数据新鲜度", "来源时间", "复核缓存兜底是否仍可用。", "复核"),
@@ -324,6 +334,15 @@ function restoreContext() {
       field.textContent = values[key];
     }
   });
+  if (!Object.prototype.hasOwnProperty.call(values, "as_of")) {
+    const asOf = document.querySelector('[data-context-field="as_of"]');
+    if (asOf && "value" in asOf) asOf.value = localDateValue(new Date());
+  }
+}
+
+function localDateValue(date) {
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
 }
 
 function showToast(message) {
@@ -390,10 +409,6 @@ function localizedCardDetail(key, card, fallback) {
 
 function applyWorkflowRuntime(runtime) {
   if (!runtime || runtime.schema !== "PFIOSPhaseCWorkflowRuntimeReadModelV1") return;
-  const cards = (runtime.workflow_cards || []).map(localizedWorkflowCard).filter(Boolean);
-  const usefulCards = cards.filter((card) => card.evidence !== "运行证据" || card.description !== GENERIC_WORKFLOW_DESCRIPTION);
-  if (usefulCards.length >= 4) WORKSPACES.home.features = usefulCards.slice(0, 4);
-
   const rows = (runtime.task_center_rows || []).slice(0, 6).map((item, index) => {
     const fallback = DEFAULT_WORKSPACES.home.tasks[index] || DEFAULT_WORKSPACES.home.tasks[0];
     const priority = safeUserText(item.priority || "P1", "P1");
@@ -481,7 +496,7 @@ function renderFeatureCards(cards) {
   const grid = document.querySelector("[data-workflow-cards]");
   if (!grid) return;
   grid.replaceChildren();
-  cards.slice(0, 4).forEach((card, index) => {
+  cards.slice(0, 8).forEach((card, index) => {
     const item = document.createElement("article");
     item.className = "workflow-card";
     item.dataset.workflowCard = String(index);
@@ -906,6 +921,13 @@ function bindEvents() {
     button.addEventListener("click", () => {
       setActiveWorkspace(button.dataset.commandWorkspace);
       closeCommandPalette();
+    });
+  });
+
+  document.querySelectorAll("[data-settings-open]").forEach((button) => {
+    button.addEventListener("click", () => {
+      setPressedFeedback(button);
+      setActiveWorkspace("data");
     });
   });
 

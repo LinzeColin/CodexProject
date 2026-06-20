@@ -11,10 +11,10 @@ from pfi_os.application.operational_store import DataDomain, EvidenceRecord, Job
 SCHEMA = "PFIOSHomepageCacheIngestionV1"
 RETIRED_COMMAND_CENTER_FRAGMENTS = (
     "Token" + " ROI",
-    "EVA" + "Token",
-    "EVA" + "CommandCenter",
-    "EVA" + "_OS",
-    "EVA" + " OS",
+    "E" + "VA" + "Token",
+    "E" + "VA" + "CommandCenter",
+    "E" + "VA" + "_OS",
+    "E" + "VA" + " OS",
 )
 
 

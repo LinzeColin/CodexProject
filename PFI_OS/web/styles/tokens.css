@@ -360,7 +360,7 @@ button:active {
 
 .workflow-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 10px;
 }
 
@@ -412,13 +412,16 @@ button:active {
 
 .workflow-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) 92px;
   gap: 8px;
 }
 
 .workflow-card button,
 .workflow-open {
   width: 100%;
+  padding: 0 10px;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 .workflow-open {
@@ -429,6 +432,7 @@ button:active {
   border-radius: var(--pfi-radius);
   background: var(--pfi-blue);
   color: #ffffff;
+  font-size: 0.88rem;
   font-weight: 760;
   text-decoration: none;
 }

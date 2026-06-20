@@ -16,10 +16,10 @@ stop_pid_if_pfi_os() {
   command="$(ps -p "$pid" -o command= 2>/dev/null || true)"
   cwd_path="$(process_cwd "$pid")"
   if [[ "$command" == *"src/pfi_os/app/streamlit_app.py"* && ( "$command" == *"$PROJECT_DIR"* || "$cwd_path" == "$PROJECT_DIR" ) ]]; then
-    echo "Stopping PFIOS service pid $pid"
+    echo "正在停止 PFI OS 服务 pid $pid"
     kill "$pid" >/dev/null 2>&1 || true
   else
-    echo "Skipping non-PFIOS process on monitored port: pid $pid"
+    echo "已跳过监控端口上的非 PFI OS 进程：pid $pid"
   fi
 }
 
@@ -36,10 +36,10 @@ done
 LAUNCHER_PIDS="$(pgrep -f "$PROJECT_DIR/StartPFIOS.command" 2>/dev/null || true)"
 for PID in ${(f)LAUNCHER_PIDS}; do
   if [[ -n "$PID" && "$PID" != "$$" ]]; then
-    echo "Stopping PFIOS launcher pid $PID"
+    echo "正在停止 PFI OS 启动器 pid $PID"
     kill "$PID" >/dev/null 2>&1 || true
   fi
 done
 
 rm -rf "$LOCK_DIR" >/dev/null 2>&1 || true
-echo "PFIOS stop command completed."
+echo "PFI OS 停止命令已完成。"

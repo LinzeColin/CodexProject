@@ -171,7 +171,7 @@ def test_feature_cards_have_working_open_actions_for_real_function_pages():
 
     for view in ["single", "hotspots", "reports", "holdings"]:
         assert f'data-feature-view="{view}"' in html
-    for view in ["single", "scan", "market_feel", "big_data"]:
+    for view in ["single", "scan", "market_feel", "big_data", "hotspots", "reports", "holdings", "policy", "tools"]:
         assert f'view: "{view}"' in js
     assert "featureOpenControl" in js
     assert "legacyViewUrl" in js
@@ -180,3 +180,20 @@ def test_feature_cards_have_working_open_actions_for_real_function_pages():
     assert "dataset.featureWorkspace" in js
     assert ".workflow-actions" in css
     assert ".workflow-open" in css
+    assert "white-space: nowrap" in css
+
+
+def test_runtime_summary_cannot_replace_core_home_feature_matrix():
+    js = _text(WEB_ROOT / "app" / "shell.js")
+    runtime_block = js.split("function applyWorkflowRuntime", maxsplit=1)[1].split("function localizedWorkflowCard", maxsplit=1)[0]
+
+    for core_feature in ["单标的回测", "参数扫描", "盘感训练", "热点分析", "报告中心", "持仓", "政策雷达", "数据中心"]:
+        assert core_feature in js
+    assert "WORKSPACES.home.features" not in runtime_block
+
+
+def test_date_context_defaults_to_browser_local_today_not_stale_hardcoded_value():
+    js = _text(WEB_ROOT / "app" / "shell.js")
+
+    assert "localDateValue(new Date())" in js
+    assert "getTimezoneOffset" in js

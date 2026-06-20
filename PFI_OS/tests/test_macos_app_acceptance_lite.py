@@ -69,7 +69,7 @@ def _fixture_apps(root: Path) -> dict[str, Path]:
     os.chmod(root / "StartPFIOS.command", 0o755)
     scripts = root / "scripts"
     scripts.mkdir()
-    (scripts / "statusPFIOS.sh").write_text("#!/usr/bin/env zsh\necho 'PFIOS is not running on ports 8501-8510.'\n", encoding="utf-8")
+    (scripts / "statusPFIOS.sh").write_text("#!/usr/bin/env zsh\necho 'PFI OS 未在端口 8501-8510 运行。'\n", encoding="utf-8")
     os.chmod(scripts / "statusPFIOS.sh", 0o755)
     app_paths = {
         "Source Template": root / "macos" / "PFI_OS.app",

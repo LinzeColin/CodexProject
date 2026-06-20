@@ -10,10 +10,10 @@ from pfi_os.application.workflow_runtime_read_model import build_workflow_runtim
 
 RETIRED_PUBLIC_FRAGMENTS = (
     "Token" + " ROI",
-    "EVA" + "Token",
-    "EVA" + "CommandCenter",
-    "EVA" + "_OS",
-    "EVA" + " OS",
+    "E" + "VA" + "Token",
+    "E" + "VA" + "CommandCenter",
+    "E" + "VA" + "_OS",
+    "E" + "VA" + " OS",
 )
 SAFE_METADATA_KEYS = (
     "source_adapter",

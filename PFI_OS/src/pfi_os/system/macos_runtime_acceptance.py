@@ -64,7 +64,7 @@ def run_macos_runtime_acceptance(
         checks.append(_check("Start", "HealthAfterStart", "Pass" if healthy_after_start else "Fail", f"healthy_ports={healthy_after_start}"))
         if not healthy_after_start:
             stop_after_failed_start = _run_script(root, ["scripts/stopPFIOS.sh"], timeout_seconds=max(10, stop_timeout_seconds))
-            checks.append(_script_check("Stop", "StopAfterFailedStart", stop_after_failed_start, expected_text="PFIOS stop command completed."))
+            checks.append(_script_check("Stop", "StopAfterFailedStart", stop_after_failed_start, expected_text="PFI OS 停止命令已完成。"))
             return _payload(
                 root,
                 checks,
@@ -79,7 +79,7 @@ def run_macos_runtime_acceptance(
         cache_preview_timeout = _cache_preview_timeout(stop_timeout_seconds)
 
         running_status = _run_script(root, ["scripts/statusPFIOS.sh"], timeout_seconds=support_timeout)
-        checks.append(_script_check("Runtime", "StatusSeesRunning", running_status, expected_text="PFIOS running:"))
+        checks.append(_script_check("Runtime", "StatusSeesRunning", running_status, expected_text="PFI OS 正在运行"))
 
         cache_guard = _run_script(root, ["scripts/cleanCache.sh", "--json"], timeout_seconds=support_timeout)
         cache_guard_output = f"{cache_guard['stdout']} {cache_guard['stderr']}".strip()
@@ -94,13 +94,13 @@ def run_macos_runtime_acceptance(
         )
 
         stop_result = _run_script(root, ["scripts/stopPFIOS.sh"], timeout_seconds=max(10, stop_timeout_seconds))
-        checks.append(_script_check("Stop", "StopScriptRuns", stop_result, expected_text="PFIOS stop command completed."))
+        checks.append(_script_check("Stop", "StopScriptRuns", stop_result, expected_text="PFI OS 停止命令已完成。"))
 
         stopped_ports = _wait_for_stopped(stop_timeout_seconds)
         checks.append(_check("Stop", "HealthAfterStop", "Pass" if not stopped_ports else "Fail", f"healthy_ports={stopped_ports}"))
 
         stopped_status = _run_script(root, ["scripts/statusPFIOS.sh"], timeout_seconds=support_timeout)
-        checks.append(_script_check("Stop", "StatusSeesStopped", stopped_status, expected_text="not running"))
+        checks.append(_script_check("Stop", "StatusSeesStopped", stopped_status, expected_text="未在端口"))
 
         cache_preview = _run_script(root, ["scripts/cleanCache.sh", "--dry-run", "--json"], timeout_seconds=cache_preview_timeout)
         cache_preview_ok = cache_preview["returncode"] == 0 and "PFICacheCleanupReportV1" in cache_preview["stdout"]

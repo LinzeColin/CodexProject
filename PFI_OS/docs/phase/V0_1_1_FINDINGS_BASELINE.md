@@ -39,8 +39,8 @@ closed by this baseline.
 - PFI Web Shell is now the default runtime path.
 - Downloads and Applications app launchers bind to the current `PFI_OS`
   worktree and use `StartPFIOS.command`.
-- Homepage cache ingestion no longer falls back to retired
-  `EVACommandCenter_latest.json` files.
+- Homepage cache ingestion no longer falls back to retired command-center
+  latest cache files.
 - Retired value-ledger and command-center metadata are hidden from the active
   homepage read model when stale local SQLite rows exist.
 

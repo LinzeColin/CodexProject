@@ -155,13 +155,14 @@ def test_shell_scripts_have_valid_zsh_syntax():
 def test_double_click_launcher_refreshes_existing_streamlit_service():
     script = (PROJECT_ROOT / "StartPFIOS.command").read_text(encoding="utf-8")
 
-    assert "Reusing the existing service" in script
+    assert "复用现有服务" in script
     assert "_stcore/health" in script
     assert "pfi_os_launch.lockdir" in script
     assert "LOCK_PID_FILE" in script
-    assert "Removing stale PFIOS launch lock" in script
-    assert "Another PFIOS launch is already starting" in script
+    assert "正在清理过期 PFI OS 启动锁" in script
+    assert "另一个 PFI OS 启动流程正在进行" in script
     assert "PFI_HEARTBEAT_TIMEOUT:-120" in script
+    assert "setopt NO_BG_NICE" in script
     assert "--server.address 127.0.0.1" in script
     assert "--server.fileWatcherType none" in script
     assert "--browser.gatherUsageStats false" in script
@@ -185,6 +186,7 @@ def test_quiet_start_uses_stable_local_streamlit_settings():
     assert "PFI OS 已就绪" in script
     assert "pfi_os_streamlit.log" in script
     assert "PFI_START_FOREGROUND" in script
+    assert "setopt NO_BG_NICE" in script
     assert "No browser opened" not in script
     assert "service_url_if_current_project" in script
     assert 'cwd_path" == "$PROJECT_DIR"' in script
@@ -201,7 +203,8 @@ def test_quiet_start_uses_stable_local_streamlit_settings():
     assert "src/pfi_os/app/streamlit_app.py" in stop_script
     assert "pfi_os_launch.lockdir" in stop_script
     assert 'pgrep -f "$PROJECT_DIR/StartPFIOS.command"' in stop_script
-    assert "Stopping PFIOS launcher pid" in stop_script
+    assert "正在停止 PFI OS 启动器 pid" in stop_script
+    assert "PFI OS 停止命令已完成" in stop_script
     assert 'rm -rf "$LOCK_DIR"' in stop_script
 
 

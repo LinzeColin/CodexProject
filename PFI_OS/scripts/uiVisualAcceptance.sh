@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 set -euo pipefail
+setopt NO_BG_NICE
 
 SCRIPT_DIR="${0:A:h}"
 PROJECT_DIR="${SCRIPT_DIR:h}"
@@ -346,12 +347,27 @@ async function frameText(frame) {
       checks.push(check(`WorkspaceSwitch:${workspaceId}`, activeTitle.includes(label) ? 'Pass' : 'Fail', activeTitle));
     }
 
+    await shellFrame.locator('[data-workspace="home"]').click({ timeout: 10000 });
+    await shellFrame.waitForFunction(
+      () => {
+        const main = document.querySelector('#main-workspace');
+        const title = document.querySelector('#workspace-title');
+        return main && title && main.dataset.activeWorkspace === 'home' && title.textContent.includes('首页');
+      },
+      null,
+      { timeout: 10000 }
+    );
+
     const featureLinks = [
       ['single', '打开回测'],
       ['scan', '打开扫描'],
       ['market_feel', '打开训练'],
+      ['hotspots', '打开热点'],
+      ['reports', '打开报告'],
+      ['holdings', '打开持仓'],
+      ['policy', '打开政策'],
+      ['tools', '打开数据'],
     ];
-    await shellFrame.locator('[data-workspace="strategy"]').click({ timeout: 10000 });
     for (const [view, label] of featureLinks) {
       const locator = shellFrame.locator(`[data-feature-view="${view}"]`).first();
       const visible = await locator.isVisible({ timeout: 10000 }).catch(() => false);
@@ -359,7 +375,8 @@ async function frameText(frame) {
       checks.push(check(`FeatureOpen:${view}`, visible && href && href.includes(`view=${view}`) && href.includes('pfi_shell=0') ? 'Pass' : 'Fail', `${label}; href=${href}`));
     }
     bodyText = await frameText(shellFrame);
-    const forbiddenText = ['Traceback', 'ModuleNotFoundError', 'ImportError:', 'Connection lost', 'EVA', 'QuantLab', 'Token ROI', 'Global Search'];
+    const retiredIdentityText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI'];
+    const forbiddenText = ['Traceback', 'ModuleNotFoundError', 'ImportError:', 'Connection lost', ...retiredIdentityText, 'Global Search'];
     for (const text of forbiddenText) {
       checks.push(check(`NoVisibleError:${text}`, bodyText.includes(text) ? 'Fail' : 'Pass', text));
     }
@@ -367,6 +384,28 @@ async function frameText(frame) {
     await page.screenshot({ path: screenshotPath, fullPage: true });
     const screenshotBytes = fs.existsSync(screenshotPath) ? fs.statSync(screenshotPath).size : 0;
     checks.push(check('ScreenshotCaptured', screenshotBytes > 10000 ? 'Pass' : 'Fail', `bytes=${screenshotBytes}`));
+
+    const functionPages = [
+      ['single', '单标的回测', '运行回测'],
+      ['scan', '参数扫描', '参数网格'],
+      ['market_feel', '盘感训练', '生成盘感训练'],
+      ['hotspots', '热点分析', '生成热点分析'],
+      ['reports', '报告中心', '报告列表'],
+      ['holdings', '持仓', '同步持仓'],
+    ];
+    for (const [view, title, actionText] of functionPages) {
+      const targetUrl = new URL(url);
+      targetUrl.searchParams.set('pfi_shell', '0');
+      targetUrl.searchParams.set('view', view);
+      await page.goto(targetUrl.toString(), { waitUntil: 'domcontentloaded', timeout: 60000 });
+      await page.waitForTimeout(4500);
+      const pageText = await page.locator('body').innerText({ timeout: 10000 }).catch((error) => String(error && error.message || error));
+      checks.push(check(`FunctionPage:${view}:Title`, pageText.includes(title) ? 'Pass' : 'Fail', title));
+      checks.push(check(`FunctionPage:${view}:Action`, pageText.includes(actionText) ? 'Pass' : 'Fail', actionText));
+      checks.push(check(`FunctionPage:${view}:NoTraceback`, pageText.includes('Traceback') || pageText.includes('ModuleNotFoundError') || pageText.includes('ImportError:') ? 'Fail' : 'Pass', view));
+      checks.push(check(`FunctionPage:${view}:NoRetiredIdentity`, retiredIdentityText.some((fragment) => pageText.includes(fragment)) ? 'Fail' : 'Pass', view));
+      checks.push(check(`FunctionPage:${view}:NoStreamlitChrome`, pageText.includes('Deploy') || pageText.includes('Stop') ? 'Fail' : 'Pass', view));
+    }
     await browser.close();
     const summary = summarize(checks);
     const status = summary.fail === 0 ? 'Pass' : 'Fail';

@@ -196,7 +196,7 @@ def _runtime_status(root: Path, *, run_status_script: bool) -> dict[str, Any]:
     completed = subprocess.run([str(script)], cwd=root, capture_output=True, text=True, timeout=8, check=False)
     stdout = completed.stdout.strip()
     stderr = completed.stderr.strip()
-    status = "Running" if "PFIOS running:" in stdout else "Stopped"
+    status = "Running" if ("PFI OS 正在运行" in stdout or "PFIOS running:" in stdout) else "Stopped"
     if completed.returncode != 0:
         status = "Error"
     return {

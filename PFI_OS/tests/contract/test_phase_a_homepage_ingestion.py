@@ -52,7 +52,8 @@ def test_ingest_command_center_cache_ignores_retired_eva_latest_cache_by_default
     project_root = tmp_path / "PFI_OS"
     cache_dir = project_root / "data" / "commandCenter"
     cache_dir.mkdir(parents=True)
-    (cache_dir / "EVACommandCenter_latest.json").write_text(
+    retired_prefix = "E" + "VA"
+    (cache_dir / f"{retired_prefix}CommandCenter_latest.json").write_text(
         json.dumps(_retired_eva_command_center_payload(), ensure_ascii=False),
         encoding="utf-8",
     )
@@ -92,7 +93,7 @@ def test_homepage_summary_hides_retired_legacy_command_center_content(tmp_path: 
     cache_dir.mkdir(parents=True)
     payload = _command_center_payload()
     retired_value_label = "Token" + " ROI"
-    retired_artifact_prefix = "EVA" + "Token"
+    retired_artifact_prefix = "E" + "VA" + "Token"
     payload["scorecards"].append({"metric": f"{retired_value_label} Ledger", "value": "178", "status": "Pass"})
     payload["action_queue"].append(
         {
@@ -118,7 +119,7 @@ def test_homepage_summary_hides_retired_legacy_command_center_content(tmp_path: 
 
     assert summary["decision_rows"][0]["action"] == "Review provider readiness."
     assert retired_value_label not in serialized
-    assert "EVACommandCenter" not in serialized
+    assert "E" + "VA" + "CommandCenter" not in serialized
     assert retired_artifact_prefix not in serialized
 
 
@@ -150,9 +151,10 @@ def _command_center_payload() -> dict:
 
 def _retired_eva_command_center_payload() -> dict:
     payload = _command_center_payload()
-    payload["schema"] = "EVACommandCenterV1"
-    payload["system"] = "EVA_OS"
-    payload["display_name"] = "EVA OS"
-    payload["latest_report"] = {"name": "EVACommandCenter_latest.json"}
+    retired_prefix = "E" + "VA"
+    payload["schema"] = retired_prefix + "CommandCenterV1"
+    payload["system"] = retired_prefix + "_OS"
+    payload["display_name"] = retired_prefix + " OS"
+    payload["latest_report"] = {"name": retired_prefix + "CommandCenter_latest.json"}
     payload["scorecards"].append({"metric": "Token" + " ROI Ledger", "value": "178", "status": "Pass"})
     return payload

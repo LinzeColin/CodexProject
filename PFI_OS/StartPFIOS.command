@@ -1,5 +1,6 @@
 #!/bin/zsh
 set -euo pipefail
+setopt NO_BG_NICE
 
 PROJECT_DIR="${0:A:h}"
 cd "$PROJECT_DIR"
@@ -23,12 +24,12 @@ open_existing_service() {
         cwd_path="$(process_cwd "$pid")"
         if [[ "$command" == *"src/pfi_os/app/streamlit_app.py"* && ( "$command" == *"$PROJECT_DIR"* || "$cwd_path" == "$PROJECT_DIR" ) ]]; then
           EXISTING_URL="http://localhost:$EXISTING_PORT"
-          echo "PFI OS current project service is already running at $EXISTING_URL. Reusing the existing service."
+          echo "PFI OS 当前项目服务已在运行：$EXISTING_URL。复用现有服务。"
           open "$EXISTING_URL" >/dev/null 2>&1
           return 0
         fi
       done
-      echo "Healthy Streamlit found on port $EXISTING_PORT, but it is not this PFI_OS project. Ignoring it."
+      echo "端口 $EXISTING_PORT 上有其他健康服务，但不是当前 PFI_OS 项目。已忽略。"
     fi
   done
   return 1
@@ -84,22 +85,22 @@ LOCK_PID_FILE="$LOCK_DIR/pid"
 if ! mkdir "$LOCK_DIR" 2>/dev/null; then
   EXISTING_LOCK_PID="$(cat "$LOCK_PID_FILE" 2>/dev/null || true)"
   if [[ -n "$EXISTING_LOCK_PID" ]] && ! kill -0 "$EXISTING_LOCK_PID" >/dev/null 2>&1; then
-    echo "Removing stale PFIOS launch lock for pid $EXISTING_LOCK_PID."
+    echo "正在清理过期 PFI OS 启动锁：pid $EXISTING_LOCK_PID。"
     rm -rf "$LOCK_DIR" >/dev/null 2>&1 || true
   elif [[ -z "$EXISTING_LOCK_PID" ]]; then
-    echo "Removing stale PFIOS launch lock without pid metadata."
+    echo "正在清理缺少 pid 的过期 PFI OS 启动锁。"
     rm -rf "$LOCK_DIR" >/dev/null 2>&1 || true
   fi
 fi
 if ! mkdir "$LOCK_DIR" 2>/dev/null; then
-  echo "Another PFIOS launch is already starting. Waiting for the existing startup to finish."
+  echo "另一个 PFI OS 启动流程正在进行，正在等待其完成。"
   if wait_for_existing_service; then
     close_launcher_terminal
     exit 0
   fi
   rm -rf "$LOCK_DIR" >/dev/null 2>&1 || true
   if ! mkdir "$LOCK_DIR" 2>/dev/null; then
-    echo "PFIOS launch lock is still active. Please wait a moment and try again."
+    echo "PFI OS 启动锁仍在占用。请稍等后重试。"
     close_launcher_terminal
     exit 1
   fi
@@ -131,8 +132,8 @@ done
 URL="http://localhost:$PORT"
 HEARTBEAT_TIMEOUT="${PFI_HEARTBEAT_TIMEOUT:-120}"
 export PFI_HEARTBEAT_URL="http://127.0.0.1:$HEARTBEAT_PORT/heartbeat"
-echo "Starting PFI OS at $URL"
-echo "Research only. Live trading and real order submission are prohibited."
+echo "正在启动 PFI OS：$URL"
+echo "研究和回测专用；禁止实盘自动下单、券商提交、支付或无人值守执行。"
 "$PYTHON_BIN" -m streamlit run src/pfi_os/app/streamlit_app.py \
   --server.port "$PORT" \
   --server.address 127.0.0.1 \
@@ -147,11 +148,11 @@ fi
 "$PYTHON_BIN" -m pfi_os.system.shutdown_monitor --port "$HEARTBEAT_PORT" --streamlit-pid "$STREAMLIT_PID" --terminal-tty "$CURRENT_TTY" --timeout "$HEARTBEAT_TIMEOUT" &
 MONITOR_PID=$!
 
-echo "Waiting for PFIOS to become ready..."
+echo "正在等待 PFI OS 就绪..."
 READY=0
 for _ in {1..60}; do
   if ! kill -0 "$STREAMLIT_PID" >/dev/null 2>&1; then
-    echo "PFIOS failed to start. Check the messages above."
+    echo "PFI OS 启动失败。请查看运行日志。"
     close_launcher_terminal
     exit 1
   fi
@@ -163,7 +164,7 @@ for _ in {1..60}; do
 done
 
 if [ "$READY" != "1" ]; then
-  echo "PFIOS did not become ready within 60 seconds. Stopping service."
+  echo "PFI OS 在 60 秒内未就绪，正在停止本次启动。"
   kill "$STREAMLIT_PID" >/dev/null 2>&1 || true
   kill "$MONITOR_PID" >/dev/null 2>&1 || true
   wait "$STREAMLIT_PID" >/dev/null 2>&1 || true
@@ -171,7 +172,7 @@ if [ "$READY" != "1" ]; then
   exit 1
 fi
 
-echo "PFIOS is ready. Opening $URL"
+echo "PFI OS 已就绪，正在打开：$URL"
 open "$URL" >/dev/null 2>&1
 
 wait "$STREAMLIT_PID" >/dev/null 2>&1 || true

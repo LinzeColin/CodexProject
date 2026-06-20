@@ -58,7 +58,7 @@ def test_dev_ready_check_passes_minimal_fixture_without_heavy_gates(tmp_path: Pa
         if first == "git":
             return subprocess.CompletedProcess(cmd, 0, stdout=" M work-in-progress.py\n", stderr="")
         if first.endswith("statusPFIOS.sh"):
-            return subprocess.CompletedProcess(cmd, 0, stdout="PFIOS is not running on ports 8501-8510.\n", stderr="")
+            return subprocess.CompletedProcess(cmd, 0, stdout="PFI OS 未在端口 8501-8510 运行。\n", stderr="")
         return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
 
     monkeypatch.setattr("pfi_os.system.dev_readiness.subprocess.run", fake_run)

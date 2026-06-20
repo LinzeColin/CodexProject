@@ -24,7 +24,7 @@ def test_runtime_acceptance_runs_controlled_start_stop_flow(monkeypatch, tmp_pat
         if command == "scripts/statusPFIOS.sh":
             return {
                 "returncode": 0,
-                "stdout": "PFIOS running: http://localhost:8501" if state["running"] else "PFIOS is not running on ports 8501-8510.",
+                "stdout": "PFI OS 正在运行：http://localhost:8501" if state["running"] else "PFI OS 未在端口 8501-8510 运行。",
                 "stderr": "",
             }
         if command == "scripts/cleanCache.sh" and "--dry-run" not in args:
@@ -42,7 +42,7 @@ def test_runtime_acceptance_runs_controlled_start_stop_flow(monkeypatch, tmp_pat
         if command == "scripts/stopPFIOS.sh":
             state["running"] = False
             state["stopped"] = True
-            return {"returncode": 0, "stdout": "PFIOS stop command completed.", "stderr": ""}
+            return {"returncode": 0, "stdout": "PFI OS 停止命令已完成。", "stderr": ""}
         raise AssertionError(args)
 
     monkeypatch.setattr(runtime, "_start_process", fake_start_process)
@@ -92,7 +92,7 @@ def test_runtime_acceptance_supports_app_open_launch_method(monkeypatch, tmp_pat
     def fake_run_script(_root: Path, args: list[str], *, timeout_seconds: int):
         command = args[0]
         if command == "scripts/statusPFIOS.sh":
-            stdout = "PFIOS running: http://localhost:8501" if state["running"] else "PFIOS is not running on ports 8501-8510."
+            stdout = "PFI OS 正在运行：http://localhost:8501" if state["running"] else "PFI OS 未在端口 8501-8510 运行。"
             return {"returncode": 0, "stdout": stdout, "stderr": ""}
         if command == "scripts/cleanCache.sh" and "--dry-run" not in args:
             return {"returncode": 2, "stdout": "PFIOS appears to be running. Stop it before cleaning cache.", "stderr": ""}
@@ -100,7 +100,7 @@ def test_runtime_acceptance_supports_app_open_launch_method(monkeypatch, tmp_pat
             return {"returncode": 0, "stdout": '{"schema":"PFICacheCleanupReportV1","candidate_count":0}', "stderr": ""}
         if command == "scripts/stopPFIOS.sh":
             state["running"] = False
-            return {"returncode": 0, "stdout": "PFIOS stop command completed.", "stderr": ""}
+            return {"returncode": 0, "stdout": "PFI OS 停止命令已完成。", "stderr": ""}
         raise AssertionError(args)
 
     monkeypatch.setattr(runtime, "_launch_app", fake_launch_app)

@@ -934,6 +934,17 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     return shell_html
 
 
+def _render_html_frame(markup: str, *, height: int, width: object = None, scrolling: bool = False) -> None:
+    try:
+        iframe = getattr(st, "iframe")
+    except Exception:
+        iframe = None
+    if callable(iframe):
+        iframe(markup, height=height, width="stretch")
+        return
+    components.html(markup, height=height, width=width, scrolling=scrolling)
+
+
 def render_pfi_ui_v2_shell() -> None:
     st.markdown(
         """
@@ -961,7 +972,7 @@ def render_pfi_ui_v2_shell() -> None:
         home_summary = build_homepage_summary(store)
     except Exception:
         home_summary = empty_homepage_summary()
-    components.html(_pfi_web_shell_html(home_summary), height=980, scrolling=True)
+    _render_html_frame(_pfi_web_shell_html(home_summary), height=980, scrolling=True)
 
 
 def main() -> None:
@@ -1019,7 +1030,7 @@ def install_shutdown_heartbeat() -> None:
     heartbeat_url = _safe_heartbeat_url(os.getenv("PFI_HEARTBEAT_URL", "").strip())
     if not heartbeat_url:
         return
-    components.html(
+    _render_html_frame(
         f"""
         <script>
         const heartbeatUrl = {json.dumps(heartbeat_url)};
@@ -1050,7 +1061,7 @@ def _safe_heartbeat_url(value: str) -> str:
 
 
 def render_auto_refresh_component(ttl_seconds: int) -> None:
-    components.html(_auto_refresh_component_html(ttl_seconds), height=46, width=None)
+    _render_html_frame(_auto_refresh_component_html(ttl_seconds), height=46, width=None)
 
 
 def _auto_refresh_component_html(ttl_seconds: int) -> str:
@@ -1083,7 +1094,7 @@ def _auto_refresh_component_html(ttl_seconds: int) -> str:
 
 
 def render_countdown_component(component_key: str, started_at: float, time_limit_seconds: int) -> None:
-    components.html(_countdown_component_html(component_key, started_at, time_limit_seconds), height=86, width=None)
+    _render_html_frame(_countdown_component_html(component_key, started_at, time_limit_seconds), height=86, width=None)
 
 
 def _countdown_component_html(component_key: str, started_at: float, time_limit_seconds: int) -> str:
@@ -1717,7 +1728,7 @@ def workspace_header() -> None:
           <div>
             <div class="ql-eyebrow">本地优先 / 证据驱动 / 价值转化</div>
             <h1>{_escape_html(MASTER_SHORT_TITLE)}</h1>
-            <p class="ql-hero-cn">PFIOS 是主入口，统一承接量化研究、行研验证、消费持仓、独立验证和多系统证据流。</p>
+            <p class="ql-hero-cn">PFI_OS 是主入口；PFIOS 作为内置量化研究、策略回测和盘感训练能力，继续承接研究总线、持仓复核和跨系统证据流。</p>
           </div>
         </div>
         """,
@@ -1847,7 +1858,7 @@ def _macos_runtime_operational_payload() -> dict:
 
 def render_macos_lifecycle_panel() -> None:
     runtime = _run_lifecycle_script("scripts/statusPFIOS.sh")
-    is_running = "PFIOS running:" in runtime["stdout"]
+    is_running = "PFI OS 正在运行" in runtime["stdout"] or "PFIOS running:" in runtime["stdout"]
     lifecycle = macos_lifecycle_summary(is_running=is_running)
     st.markdown("#### macOS 生命周期")
     st.caption(lifecycle["safety_policy"])
@@ -7834,6 +7845,19 @@ def apply_theme() -> None:
           background: #fbfcfd;
           color: var(--ql-ink);
         }
+        [data-testid="stToolbar"],
+        [data-testid="stDecoration"],
+        [data-testid="stStatusWidget"],
+        header[data-testid="stHeader"],
+        #MainMenu,
+        footer {
+          display: none !important;
+          visibility: hidden !important;
+        }
+        .block-container {
+          padding-top: 1rem;
+          padding-bottom: 4rem;
+        }
         [data-testid="stSidebar"] {
           background: #ffffff;
           border-right: 1px solid var(--ql-border);
@@ -7850,10 +7874,6 @@ def apply_theme() -> None:
         [data-testid="stSidebar"] [role="radiogroup"] label:hover {
           background: #f6f8fb;
           border-color: var(--ql-border);
-        }
-        .block-container {
-          padding-top: 2.2rem;
-          padding-bottom: 4rem;
         }
         h1 {
           font-size: 2.9rem !important;

@@ -77,6 +77,7 @@ def test_web_shell_renders_phase_c_workflow_runtime_cards():
 
 def test_streamlit_launcher_exposes_pfi_ui_v2_feature_flag_with_fallback():
     source = _text(PROJECT_ROOT / "src" / "pfi_os" / "app" / "streamlit_app.py")
+    theme_block = source.split("def apply_theme", maxsplit=1)[1]
 
     assert "def _pfi_ui_v2_enabled" in source
     assert 'os.environ.get("PFI_UI_V2", "1") != "0"' in source
@@ -85,6 +86,14 @@ def test_streamlit_launcher_exposes_pfi_ui_v2_feature_flag_with_fallback():
     assert "return" in source.split("render_pfi_ui_v2_shell()", maxsplit=1)[1]
     assert '[data-testid="stToolbar"]' in source
     assert "padding-top: 0" in source
+    assert "def _render_html_frame" in source
+    assert 'getattr(st, "iframe")' in source
+    assert "_render_html_frame(_pfi_web_shell_html(home_summary), height=980" in source
+    assert "PFI_OS 是主入口" in source
+    assert "PFIOS 是主入口" not in source
+    assert '[data-testid="stToolbar"]' in theme_block
+    assert "#MainMenu" in theme_block
+    assert "footer" in theme_block
 
 
 def test_launch_scripts_default_to_pfi_web_shell_with_legacy_opt_out():
@@ -152,3 +161,17 @@ def test_web_shell_active_user_surface_has_no_retired_identity_or_value_text():
 
     for fragment in _retired_fragments():
         assert fragment not in active_text
+
+
+def test_web_shell_home_keeps_core_direct_function_entries():
+    js = _text(WEB_ROOT / "app" / "shell.js")
+    css = _text(WEB_ROOT / "styles" / "tokens.css")
+    runtime_block = js.split("function applyWorkflowRuntime", maxsplit=1)[1].split("function localizedWorkflowCard", maxsplit=1)[0]
+
+    for view in ["single", "scan", "market_feel", "hotspots", "reports", "holdings", "policy", "tools"]:
+        assert f'view: "{view}"' in js
+    for label in ["单标的回测", "参数扫描", "盘感训练", "热点分析", "报告中心", "持仓", "政策雷达", "数据中心"]:
+        assert label in js
+    assert "WORKSPACES.home.features" not in runtime_block
+    assert "repeat(auto-fit, minmax(190px, 1fr))" in css
+    assert "white-space: nowrap" in css

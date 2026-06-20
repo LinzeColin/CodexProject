@@ -160,10 +160,9 @@ Current sequence:
 - Downloads and Applications `PFI_OS.app` entries were reinstalled and verified
   against the current worktree. Desktop remains best-effort because macOS can
   attach Finder/resource metadata there.
-- Homepage ingestion no longer falls back to retired
-  `EVACommandCenter_latest.json`; stale local SQLite rows containing retired
-  value-ledger and command-center metadata are hidden from the active homepage
-  summary.
+- Homepage ingestion no longer falls back to retired command-center latest
+  cache files; stale local SQLite rows containing retired value-ledger and
+  command-center metadata are hidden from the active homepage summary.
 - Cache cleanup was run through `scripts/cleanCache.sh --json`; only
   disposable pycache, pytest cache, and root runtime log files were deleted.
 
@@ -201,40 +200,48 @@ Read in this order:
 Latest user-orientation repair verification, 2026-06-20:
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /opt/anaconda3/bin/python3.12 -m pytest tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py tests/test_scripts.py -q
-zsh -n scripts/uiVisualAcceptance.sh scripts/startPFIOS.sh StartPFIOS.command
+PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /opt/anaconda3/bin/python3.12 -m pytest tests/test_pfi_legacy_terms.py tests/test_pfi_product_contracts.py tests/contract/test_phase_a_homepage_ingestion.py tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py tests/test_scripts.py tests/test_macos_runtime_acceptance.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /opt/anaconda3/bin/python3.12 -m pytest tests/test_app_dashboard.py tests/test_pfi_identity.py tests/test_macos_lifecycle_readiness.py tests/test_macos_app_acceptance_lite.py tests/test_macos_public_acceptance.py tests/test_pfi_legacy_terms.py tests/test_pfi_product_contracts.py -q
 scripts/uiVisualAcceptance.sh --summary-json
-scripts/installPFIOSEntryApps.sh
-PFI_CLEANUP_PYTHON=/opt/anaconda3/bin/python3.12 scripts/cleanCache.sh --json
+scripts/macosAppAcceptanceLite.sh --summary-json
+PYTHONDONTWRITEBYTECODE=1 /opt/anaconda3/bin/python3.12 -m py_compile src/pfi_os/app/streamlit_app.py src/pfi_os/system/macos_runtime_acceptance.py src/pfi_os/system/dev_readiness.py src/pfi_os/application/homepage_ingestion.py src/pfi_os/application/homepage_summary.py
+zsh -o nobgnice -n StartPFIOS.command scripts/startPFIOS.sh scripts/stopPFIOS.sh scripts/uiVisualAcceptance.sh
 git diff --check
+scripts/statusPFIOS.sh --summary-json
 ```
 
 Observed:
 
-- Target Web Shell/script tests passed: 48 passed.
-- `git diff --check` passed.
-- `scripts/uiVisualAcceptance.sh --summary-json` passed 31/31 checks against
+- Target Web Shell, product, legacy-term, homepage-ingestion, script, and macOS
+  runtime tests passed: 72 passed.
+- Related dashboard, identity, lifecycle, app-acceptance, public-acceptance,
+  legacy-term, and product-contract tests passed: 72 passed.
+- `scripts/uiVisualAcceptance.sh --summary-json` passed 66/66 checks against
   the actual Streamlit runtime at `http://127.0.0.1:8501`, including rendered
   PFI Web Shell iframe, Chinese primary surface, all six workspace switches,
-  strategy feature links for `single`, `scan`, and `market_feel`, no visible
-  `EVA`, `QuantLab`, `Token ROI`, `Global Search`, and screenshot capture
-  (`screenshot_bytes=197759`).
-- `scripts/startPFIOS.sh` now defaults to quiet background startup: user-facing
-  output is Chinese and Streamlit ANSI/English runtime logs are redirected to
-  `data/cache/pfi_os_streamlit.log`. `PFI_START_FOREGROUND=1` remains available
-  for debugging.
-- `StartPFIOS.command` and `scripts/startPFIOS.sh` only reuse a healthy service
-  when the listening process belongs to the current PFI_OS project; unrelated
-  Streamlit/EVA-era ports are ignored.
-- `~/Downloads/PFI_OS.app` and `/Applications/PFI_OS.app` were reinstalled,
-  bound to this checkout, and passed `codesign --verify --deep --strict`.
-  Desktop remains an optional convenience copy; macOS Desktop/File Provider can
-  attach Finder metadata that blocks strict signature verification there.
-- No `EVA*.app` / `EVA_OS*.app` was found in Desktop, Downloads, or
-  Applications.
-- Cache cleanup removed 31 disposable cache items, 339 files, about 5.2 MB;
-  reports, holdings, SQLite, market caches, source samples, and private data
-  were outside the deletion policy.
+  eight homepage feature links, six real function-page opens, no retired
+  identity/value/search labels, no Streamlit chrome text, and screenshot capture
+  (`data/systemAudit/UIVisualAcceptance_20260620_000915.png`,
+  `screenshot_bytes=209512`).
+- Homepage now keeps a stable direct function matrix for single-symbol
+  backtest, parameter scan, market-feel training, hotspot analysis, reports,
+  holdings, policy, and data center; runtime cache summaries cannot replace the
+  core function matrix.
+- The Web Shell date context now defaults to the browser-local current date on
+  first open while preserving an existing user selection.
+- Function pages hide Streamlit toolbar/menu/status chrome and use PFI_OS-first
+  visible identity; the embedded shell, heartbeat, refresh, and countdown HTML
+  now use the current iframe API rather than the deprecated component call.
+- `StartPFIOS.command`, `scripts/startPFIOS.sh`, `scripts/stopPFIOS.sh`, and
+  `scripts/statusPFIOS.sh` use Chinese-facing startup/status/stop output;
+  startup and visual-acceptance scripts disable zsh background nice noise for
+  real execution.
+- `scripts/macosAppAcceptanceLite.sh --summary-json` passed with 29 pass, 0
+  fail, and 2 info checks; Downloads/Applications app entries remain bound to
+  the current project and runtime status reported stopped in Chinese.
+- `py_compile`, low-noise `zsh -o nobgnice -n`, `git diff --check`, and final
+  service-status checks passed; no PFI_OS service remained running on ports
+  8501-8510.
 
 Latest PFI-003 Durable Job Store verification, 2026-06-20:
 
