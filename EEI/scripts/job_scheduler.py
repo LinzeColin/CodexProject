@@ -24,9 +24,35 @@ except ModuleNotFoundError:  # pragma: no cover - used when imported as scripts.
     from scripts.load_curated_ingestion_anchors import load_anchors
 
 try:
-    from apps.api.app.scoring import candidate_score_metrics
+    from apps.api.app.scoring import (
+        CANDIDATE_SOURCE_THRESHOLD_MIN,
+        ENTITY_SOURCE_THRESHOLD_MIN,
+        EVENT_SOURCE_THRESHOLD_MIN,
+        INDUSTRY_ENTITY_CONTEXT_MIN,
+        INDUSTRY_RELATIONSHIP_CONTEXT_MIN,
+        INDUSTRY_SOURCE_THRESHOLD_MIN,
+        candidate_score_metrics,
+        entity_score_metrics,
+        event_score_metrics,
+        industry_score_metrics,
+        relationship_score_metrics,
+        source_document_score_metrics,
+    )
 except ModuleNotFoundError:  # pragma: no cover - used when imported from packaged contexts.
-    from ..apps.api.app.scoring import candidate_score_metrics
+    from ..apps.api.app.scoring import (
+        CANDIDATE_SOURCE_THRESHOLD_MIN,
+        ENTITY_SOURCE_THRESHOLD_MIN,
+        EVENT_SOURCE_THRESHOLD_MIN,
+        INDUSTRY_ENTITY_CONTEXT_MIN,
+        INDUSTRY_RELATIONSHIP_CONTEXT_MIN,
+        INDUSTRY_SOURCE_THRESHOLD_MIN,
+        candidate_score_metrics,
+        entity_score_metrics,
+        event_score_metrics,
+        industry_score_metrics,
+        relationship_score_metrics,
+        source_document_score_metrics,
+    )
 
 DEFAULT_LEASE_TTL_SECONDS = 900
 DEFAULT_MAX_ATTEMPTS = 5
@@ -46,6 +72,14 @@ ACTIVE_REFRESH_MODULES = [
     "evidence_center",
     "model_center",
     "data_center",
+]
+MVP_SCORE_RESULT_OBJECT_TYPES = [
+    "relationship_fact_candidate",
+    "relationship",
+    "entity",
+    "event",
+    "industry",
+    "source_document",
 ]
 
 
@@ -1562,6 +1596,549 @@ def handle_data_snapshot_refresh_job(job: dict[str, Any]) -> dict[str, Any]:
         return jsonable(result)
 
 
+def score_result_rows_for_candidates(
+    connection: psycopg.Connection,
+) -> list[dict[str, Any]]:
+    candidates = connection.execute(
+        """
+        SELECT
+          rfc.id,
+          rfc.candidate_key,
+          rfc.confidence,
+          rfc.independent_source_count,
+          rfc.source_threshold_met,
+          rfc.review_status,
+          rfc.publication_status,
+          rfc.parser_version,
+          EXISTS (
+            SELECT 1
+            FROM relationship_fact_candidate_evidence rfce
+            WHERE rfce.candidate_id = rfc.id
+          ) AS evidence_present
+        FROM relationship_fact_candidates rfc
+        ORDER BY rfc.candidate_key
+        """
+    ).fetchall()
+    rows: list[dict[str, Any]] = []
+    for candidate in candidates:
+        rows.append(
+            {
+                "object_type": "relationship_fact_candidate",
+                "object_id": candidate["id"],
+                "metrics": candidate_score_metrics(
+                    confidence=float(candidate["confidence"]),
+                    independent_source_count=int(candidate["independent_source_count"]),
+                    source_threshold_met=bool(candidate["source_threshold_met"]),
+                    review_status=candidate["review_status"],
+                    publication_status=candidate["publication_status"],
+                    parser_version_present=candidate["parser_version"] is not None,
+                    evidence_present=bool(candidate["evidence_present"]),
+                ),
+            }
+        )
+    return rows
+
+
+def score_result_rows_for_relationships(
+    connection: psycopg.Connection,
+) -> list[dict[str, Any]]:
+    relationships = connection.execute(
+        """
+        SELECT
+          r.id,
+          r.status::text AS status,
+          r.confidence,
+          COALESCE(r.qualifiers, '{}'::jsonb) AS qualifiers,
+          COALESCE(evidence_counts.source_document_count, 0)::int
+            AS source_document_count,
+          COALESCE(evidence_counts.evidence_present, false) AS evidence_present,
+          latest_fact.id AS fact_version_id,
+          latest_fact.payload AS fact_payload
+        FROM relationships r
+        LEFT JOIN LATERAL (
+          SELECT
+            count(DISTINCT re.source_document_id)::int AS source_document_count,
+            count(*) > 0 AS evidence_present
+          FROM relationship_evidence re
+          WHERE re.relationship_id = r.id
+        ) evidence_counts ON true
+        LEFT JOIN LATERAL (
+          SELECT fv.*
+          FROM fact_versions fv
+          JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+          WHERE fv.object_type = 'relationship'
+            AND fv.object_id = r.id
+          ORDER BY
+            CASE ds.status WHEN 'active' THEN 0 ELSE 1 END,
+            fv.version_no DESC,
+            fv.created_at DESC
+          LIMIT 1
+        ) latest_fact ON true
+        ORDER BY r.id
+        """
+    ).fetchall()
+    rows: list[dict[str, Any]] = []
+    for relationship in relationships:
+        qualifiers = relationship["qualifiers"] or {}
+        fact_payload = relationship["fact_payload"] or {}
+        source_policy = qualifiers.get("source_threshold_policy") or {}
+        minimum_sources = max(
+            int(
+                source_policy.get(
+                    "minimum_independent_sources",
+                    CANDIDATE_SOURCE_THRESHOLD_MIN,
+                )
+            ),
+            1,
+        )
+        independent_source_count = int(
+            source_policy.get(
+                "independent_source_count",
+                relationship["source_document_count"] or 0,
+            )
+        )
+        source_threshold_met = (
+            independent_source_count >= minimum_sources
+            or bool(source_policy.get("met_by_review_override"))
+        )
+        publication_status = fact_payload.get("publication_status") or (
+            "published"
+            if relationship["status"] in {"reported", "derived"}
+            else relationship["status"]
+        )
+        review_status = fact_payload.get("review_status") or (
+            "human_verified" if qualifiers.get("decision_set_key") else "unreviewed"
+        )
+        rows.append(
+            {
+                "object_type": "relationship",
+                "object_id": relationship["id"],
+                "metrics": relationship_score_metrics(
+                    confidence=float(relationship["confidence"] or 0),
+                    independent_source_count=independent_source_count,
+                    source_threshold_met=source_threshold_met,
+                    review_status=review_status,
+                    publication_status=publication_status,
+                    fact_version_present=relationship["fact_version_id"] is not None,
+                    evidence_present=bool(relationship["evidence_present"]),
+                    minimum_independent_sources=minimum_sources,
+                ),
+            }
+        )
+    return rows
+
+
+def score_result_rows_for_entities(
+    connection: psycopg.Connection,
+) -> list[dict[str, Any]]:
+    entities = connection.execute(
+        """
+        SELECT
+          e.id,
+          e.status,
+          COALESCE(identifier_counts.identifier_count, 0)::int AS identifier_count,
+          COALESCE(alias_counts.alias_count, 0)::int AS alias_count,
+          COALESCE(relationship_counts.relationship_count, 0)::int
+            AS relationship_count,
+          COALESCE(relationship_counts.relationship_family_count, 0)::int
+            AS relationship_family_count,
+          COALESCE(relationship_counts.source_document_count, 0)::int
+            AS source_document_count,
+          COALESCE(industry_counts.industry_membership_count, 0)::int
+            AS industry_membership_count,
+          latest_fact.id AS fact_version_id
+        FROM entities e
+        LEFT JOIN LATERAL (
+          SELECT count(*)::int AS identifier_count
+          FROM entity_identifiers ei
+          WHERE ei.entity_id = e.id
+        ) identifier_counts ON true
+        LEFT JOIN LATERAL (
+          SELECT count(*)::int AS alias_count
+          FROM entity_aliases ea
+          WHERE ea.entity_id = e.id
+        ) alias_counts ON true
+        LEFT JOIN LATERAL (
+          SELECT
+            count(DISTINCT r.id)::int AS relationship_count,
+            count(DISTINCT r.relationship_family)::int AS relationship_family_count,
+            count(DISTINCT re.source_document_id)::int AS source_document_count
+          FROM relationships r
+          LEFT JOIN relationship_evidence re ON re.relationship_id = r.id
+          WHERE (r.subject_entity_id = e.id OR r.object_entity_id = e.id)
+            AND r.status NOT IN ('superseded', 'revoked')
+        ) relationship_counts ON true
+        LEFT JOIN LATERAL (
+          SELECT count(*)::int AS industry_membership_count
+          FROM entity_industry_memberships eim
+          WHERE eim.entity_id = e.id
+        ) industry_counts ON true
+        LEFT JOIN LATERAL (
+          SELECT fv.*
+          FROM fact_versions fv
+          JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+          WHERE fv.object_type = 'entity'
+            AND fv.object_id = e.id
+          ORDER BY
+            CASE ds.status WHEN 'active' THEN 0 ELSE 1 END,
+            fv.version_no DESC,
+            fv.created_at DESC
+          LIMIT 1
+        ) latest_fact ON true
+        ORDER BY e.canonical_name, e.id
+        """
+    ).fetchall()
+    rows: list[dict[str, Any]] = []
+    for entity in entities:
+        rows.append(
+            {
+                "object_type": "entity",
+                "object_id": entity["id"],
+                "metrics": entity_score_metrics(
+                    identifier_count=int(entity["identifier_count"] or 0),
+                    alias_count=int(entity["alias_count"] or 0),
+                    relationship_count=int(entity["relationship_count"] or 0),
+                    relationship_family_count=int(
+                        entity["relationship_family_count"] or 0
+                    ),
+                    independent_source_count=int(entity["source_document_count"] or 0),
+                    industry_membership_count=int(
+                        entity["industry_membership_count"] or 0
+                    ),
+                    status=entity["status"],
+                    fact_version_present=entity["fact_version_id"] is not None,
+                    minimum_independent_sources=ENTITY_SOURCE_THRESHOLD_MIN,
+                ),
+            }
+        )
+    return rows
+
+
+def score_result_rows_for_events(
+    connection: psycopg.Connection,
+) -> list[dict[str, Any]]:
+    events = connection.execute(
+        """
+        SELECT
+          ev.id,
+          ev.status::text AS status,
+          ev.announced_at,
+          ev.effective_at,
+          ev.period_start,
+          ev.period_end,
+          ev.observed_at,
+          ev.amount,
+          ev.currency,
+          ev.amount_kind,
+          COALESCE(participant_counts.participant_count, 0)::int
+            AS participant_count,
+          COALESCE(evidence_counts.source_document_count, 0)::int
+            AS source_document_count,
+          COALESCE(evidence_counts.evidence_present, false) AS evidence_present,
+          latest_fact.id AS fact_version_id
+        FROM events ev
+        LEFT JOIN LATERAL (
+          SELECT count(DISTINCT ep.entity_id)::int AS participant_count
+          FROM event_participants ep
+          WHERE ep.event_id = ev.id
+        ) participant_counts ON true
+        LEFT JOIN LATERAL (
+          SELECT
+            count(DISTINCT ee.source_document_id)::int AS source_document_count,
+            count(*) > 0 AS evidence_present
+          FROM event_evidence ee
+          WHERE ee.event_id = ev.id
+        ) evidence_counts ON true
+        LEFT JOIN LATERAL (
+          SELECT fv.*
+          FROM fact_versions fv
+          JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+          WHERE fv.object_type = 'event'
+            AND fv.object_id = ev.id
+          ORDER BY
+            CASE ds.status WHEN 'active' THEN 0 ELSE 1 END,
+            fv.version_no DESC,
+            fv.created_at DESC
+          LIMIT 1
+        ) latest_fact ON true
+        ORDER BY ev.observed_at DESC, ev.id
+        """
+    ).fetchall()
+    rows: list[dict[str, Any]] = []
+    for event in events:
+        timing_context_present = bool(
+            event["observed_at"]
+            and (
+                event["announced_at"]
+                or event["effective_at"]
+                or event["period_start"]
+                or event["period_end"]
+            )
+        )
+        amount_semantics_present = event["amount"] is None or (
+            event["currency"] is not None and event["amount_kind"] is not None
+        )
+        rows.append(
+            {
+                "object_type": "event",
+                "object_id": event["id"],
+                "metrics": event_score_metrics(
+                    participant_count=int(event["participant_count"] or 0),
+                    independent_source_count=int(event["source_document_count"] or 0),
+                    status=event["status"],
+                    timing_context_present=timing_context_present,
+                    amount_semantics_present=amount_semantics_present,
+                    fact_version_present=event["fact_version_id"] is not None,
+                    evidence_present=bool(event["evidence_present"]),
+                    minimum_independent_sources=EVENT_SOURCE_THRESHOLD_MIN,
+                ),
+            }
+        )
+    return rows
+
+
+def score_result_rows_for_industries(
+    connection: psycopg.Connection,
+) -> list[dict[str, Any]]:
+    industries = connection.execute(
+        """
+        SELECT
+          i.id,
+          i.active,
+          i.parent_id,
+          COALESCE(child_counts.child_industry_count, 0)::int
+            AS child_industry_count,
+          COALESCE(member_counts.entity_count, 0)::int AS entity_count,
+          COALESCE(relationship_counts.relationship_count, 0)::int
+            AS relationship_count,
+          COALESCE(relationship_counts.relationship_family_count, 0)::int
+            AS relationship_family_count,
+          COALESCE(relationship_counts.source_document_count, 0)::int
+            AS source_document_count,
+          latest_fact.id AS fact_version_id
+        FROM industries i
+        LEFT JOIN LATERAL (
+          SELECT count(*)::int AS child_industry_count
+          FROM industries child
+          WHERE child.parent_id = i.id
+        ) child_counts ON true
+        LEFT JOIN LATERAL (
+          SELECT count(DISTINCT eim.entity_id)::int AS entity_count
+          FROM entity_industry_memberships eim
+          WHERE eim.industry_id = i.id
+        ) member_counts ON true
+        LEFT JOIN LATERAL (
+          SELECT
+            count(DISTINCT r.id)::int AS relationship_count,
+            count(DISTINCT r.relationship_family)::int AS relationship_family_count,
+            count(DISTINCT re.source_document_id)::int AS source_document_count
+          FROM relationships r
+          LEFT JOIN relationship_evidence re ON re.relationship_id = r.id
+          WHERE r.status NOT IN ('superseded', 'revoked')
+            AND EXISTS (
+              SELECT 1
+              FROM entity_industry_memberships eim
+              WHERE eim.industry_id = i.id
+                AND (
+                  eim.entity_id = r.subject_entity_id
+                  OR eim.entity_id = r.object_entity_id
+                )
+            )
+        ) relationship_counts ON true
+        LEFT JOIN LATERAL (
+          SELECT fv.*
+          FROM fact_versions fv
+          JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+          WHERE fv.object_type = 'industry'
+            AND fv.object_id = i.id
+          ORDER BY
+            CASE ds.status WHEN 'active' THEN 0 ELSE 1 END,
+            fv.version_no DESC,
+            fv.created_at DESC
+          LIMIT 1
+        ) latest_fact ON true
+        ORDER BY i.slug, i.id
+        """
+    ).fetchall()
+    rows: list[dict[str, Any]] = []
+    for industry in industries:
+        rows.append(
+            {
+                "object_type": "industry",
+                "object_id": industry["id"],
+                "metrics": industry_score_metrics(
+                    entity_count=int(industry["entity_count"] or 0),
+                    relationship_count=int(industry["relationship_count"] or 0),
+                    relationship_family_count=int(
+                        industry["relationship_family_count"] or 0
+                    ),
+                    independent_source_count=int(
+                        industry["source_document_count"] or 0
+                    ),
+                    taxonomy_context_present=bool(
+                        industry["parent_id"]
+                        or industry["child_industry_count"]
+                    ),
+                    active=bool(industry["active"]),
+                    fact_version_present=industry["fact_version_id"] is not None,
+                    minimum_independent_sources=INDUSTRY_SOURCE_THRESHOLD_MIN,
+                    minimum_entity_context=INDUSTRY_ENTITY_CONTEXT_MIN,
+                    minimum_relationship_context=INDUSTRY_RELATIONSHIP_CONTEXT_MIN,
+                ),
+            }
+        )
+    return rows
+
+
+def score_result_rows_for_source_documents(
+    connection: psycopg.Connection,
+) -> list[dict[str, Any]]:
+    source_documents = connection.execute(
+        """
+        SELECT
+          sd.id,
+          sd.source_id,
+          sd.url,
+          sd.title,
+          sd.publisher,
+          sd.observed_at,
+          sd.retrieved_at,
+          sd.content_hash,
+          sd.parser_version,
+          s.source_tier,
+          s.active AS source_active,
+          latest_raw.parser_version AS raw_parser_version,
+          COALESCE(evidence_counts.downstream_evidence_count, 0)::int
+            AS downstream_evidence_count,
+          latest_fact.id AS fact_version_id,
+          latest_fact.parser_version AS fact_parser_version
+        FROM source_documents sd
+        JOIN sources s ON s.id = sd.source_id
+        LEFT JOIN LATERAL (
+          SELECT rss.parser_version
+          FROM raw_source_snapshots rss
+          WHERE rss.source_document_id = sd.id
+          ORDER BY rss.retrieved_at DESC, rss.created_at DESC
+          LIMIT 1
+        ) latest_raw ON true
+        LEFT JOIN LATERAL (
+          SELECT count(*)::int AS downstream_evidence_count
+          FROM (
+            SELECT re.relationship_id::text AS downstream_id
+            FROM relationship_evidence re
+            WHERE re.source_document_id = sd.id
+            UNION ALL
+            SELECT ee.event_id::text AS downstream_id
+            FROM event_evidence ee
+            WHERE ee.source_document_id = sd.id
+            UNION ALL
+            SELECT rfce.candidate_id::text AS downstream_id
+            FROM relationship_fact_candidate_evidence rfce
+            WHERE rfce.source_document_id = sd.id
+            UNION ALL
+            SELECT iec.id::text AS downstream_id
+            FROM ingestion_evidence_chain iec
+            WHERE iec.source_document_id = sd.id
+            UNION ALL
+            SELECT fve.fact_version_id::text AS downstream_id
+            FROM fact_version_evidence fve
+            WHERE fve.source_document_id = sd.id
+          ) downstream
+        ) evidence_counts ON true
+        LEFT JOIN LATERAL (
+          SELECT fv.*
+          FROM fact_versions fv
+          JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+          WHERE fv.object_type = 'source_document'
+            AND fv.object_id = sd.id
+          ORDER BY
+            CASE ds.status WHEN 'active' THEN 0 ELSE 1 END,
+            fv.version_no DESC,
+            fv.created_at DESC
+          LIMIT 1
+        ) latest_fact ON true
+        ORDER BY sd.observed_at DESC, sd.id
+        """
+    ).fetchall()
+    rows: list[dict[str, Any]] = []
+    for source_document in source_documents:
+        provenance_fields = [
+            source_document["source_id"],
+            source_document["url"],
+            source_document["content_hash"],
+            source_document["observed_at"],
+            source_document["retrieved_at"],
+            source_document["publisher"] or source_document["title"],
+        ]
+        parser_version = (
+            source_document["parser_version"]
+            or source_document["raw_parser_version"]
+            or source_document["fact_parser_version"]
+        )
+        rows.append(
+            {
+                "object_type": "source_document",
+                "object_id": source_document["id"],
+                "metrics": source_document_score_metrics(
+                    source_tier=int(source_document["source_tier"]),
+                    provenance_field_count=sum(
+                        1 for item in provenance_fields if item
+                    ),
+                    parser_version_present=parser_version is not None,
+                    downstream_evidence_count=int(
+                        source_document["downstream_evidence_count"] or 0
+                    ),
+                    fact_version_present=source_document["fact_version_id"] is not None,
+                    source_active=bool(source_document["source_active"]),
+                ),
+            }
+        )
+    return rows
+
+
+def score_result_rows_for_mvp_objects(
+    connection: psycopg.Connection,
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    rows.extend(score_result_rows_for_candidates(connection))
+    rows.extend(score_result_rows_for_relationships(connection))
+    rows.extend(score_result_rows_for_entities(connection))
+    rows.extend(score_result_rows_for_events(connection))
+    rows.extend(score_result_rows_for_industries(connection))
+    rows.extend(score_result_rows_for_source_documents(connection))
+    return rows
+
+
+def write_score_result(
+    connection: psycopg.Connection,
+    *,
+    scoring_run_id: UUID,
+    object_type: str,
+    object_id: UUID,
+    metrics: dict[str, Any],
+) -> None:
+    connection.execute(
+        """
+        INSERT INTO score_results(
+          scoring_run_id, object_type, object_id, raw_score, evidence_quality,
+          adjusted_score, coverage, contributions, missing_inputs
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """,
+        (
+            scoring_run_id,
+            object_type,
+            object_id,
+            metrics["raw_score"],
+            metrics["evidence_quality"],
+            metrics["adjusted_score"],
+            metrics["coverage"],
+            Jsonb(jsonable(metrics["contributions"])),
+            Jsonb(jsonable(metrics["missing_inputs"])),
+        ),
+    )
+
+
 def handle_score_recompute_job(job: dict[str, Any]) -> dict[str, Any]:
     payload = job.get("payload") or {}
     if payload.get("schema_version") != "score-recompute-job-v1":
@@ -1642,26 +2219,14 @@ def handle_score_recompute_job(job: dict[str, Any]) -> dict[str, Any]:
             )
             return jsonable(stale_result)
 
-        candidates = connection.execute(
-            """
-            SELECT
-              rfc.id,
-              rfc.candidate_key,
-              rfc.confidence,
-              rfc.independent_source_count,
-              rfc.source_threshold_met,
-              rfc.review_status,
-              rfc.publication_status,
-              rfc.parser_version,
-              EXISTS (
-                SELECT 1
-                FROM relationship_fact_candidate_evidence rfce
-                WHERE rfce.candidate_id = rfc.id
-              ) AS evidence_present
-            FROM relationship_fact_candidates rfc
-            ORDER BY rfc.candidate_key
-            """
-        ).fetchall()
+        score_rows = score_result_rows_for_mvp_objects(connection)
+        object_counts = {
+            object_type: 0 for object_type in MVP_SCORE_RESULT_OBJECT_TYPES
+        }
+        for score_row in score_rows:
+            object_counts[score_row["object_type"]] = (
+                object_counts.get(score_row["object_type"], 0) + 1
+            )
         data_snapshot_at = context["data_snapshot_at"] or utc_now()
         scoring_run = connection.execute(
             """
@@ -1688,6 +2253,8 @@ def handle_score_recompute_job(job: dict[str, Any]) -> dict[str, Any]:
                             "thresholds": context["thresholds"],
                             "half_lives": context["half_lives"],
                             "missing_value_policy": context["missing_value_policy"],
+                            "score_result_object_types": MVP_SCORE_RESULT_OBJECT_TYPES,
+                            "score_result_object_counts": object_counts,
                         }
                     )
                 ),
@@ -1695,36 +2262,13 @@ def handle_score_recompute_job(job: dict[str, Any]) -> dict[str, Any]:
             ),
         ).fetchone()
         scored_objects = 0
-        for candidate in candidates:
-            metrics = candidate_score_metrics(
-                confidence=float(candidate["confidence"]),
-                independent_source_count=int(candidate["independent_source_count"]),
-                source_threshold_met=bool(candidate["source_threshold_met"]),
-                review_status=candidate["review_status"],
-                publication_status=candidate["publication_status"],
-                parser_version_present=candidate["parser_version"] is not None,
-                evidence_present=bool(candidate["evidence_present"]),
-            )
-            connection.execute(
-                """
-                INSERT INTO score_results(
-                  scoring_run_id, object_type, object_id, raw_score, evidence_quality,
-                  adjusted_score, coverage, contributions, missing_inputs
-                )
-                VALUES (
-                  %s, 'relationship_fact_candidate', %s, %s, %s, %s, %s, %s, %s
-                )
-                """,
-                (
-                    scoring_run["id"],
-                    candidate["id"],
-                    metrics["raw_score"],
-                    metrics["evidence_quality"],
-                    metrics["adjusted_score"],
-                    metrics["coverage"],
-                    Jsonb(jsonable(metrics["contributions"])),
-                    Jsonb(jsonable(metrics["missing_inputs"])),
-                ),
+        for score_row in score_rows:
+            write_score_result(
+                connection,
+                scoring_run_id=scoring_run["id"],
+                object_type=score_row["object_type"],
+                object_id=score_row["object_id"],
+                metrics=score_row["metrics"],
             )
             scored_objects += 1
         updated_context = connection.execute(
@@ -1751,6 +2295,10 @@ def handle_score_recompute_job(job: dict[str, Any]) -> dict[str, Any]:
                             "last_score_recompute_job_id": job["id"],
                             "last_score_recompute_scoring_run_id": scoring_run["id"],
                             "last_score_recompute_scored_objects": scored_objects,
+                            "last_score_recompute_object_types": (
+                                MVP_SCORE_RESULT_OBJECT_TYPES
+                            ),
+                            "last_score_recompute_object_counts": object_counts,
                             "last_score_recompute_contract": "score-recompute-worker-v1",
                         }
                     )
@@ -1771,7 +2319,9 @@ def handle_score_recompute_job(job: dict[str, Any]) -> dict[str, Any]:
             "previous_refresh_generation": requested_generation,
             "refresh_generation": updated_context["refresh_generation"],
             "scored_objects": scored_objects,
-            "score_result_object_type": "relationship_fact_candidate",
+            "score_result_object_type": "mvp_object_family",
+            "score_result_object_types": MVP_SCORE_RESULT_OBJECT_TYPES,
+            "score_result_object_counts": object_counts,
             "affected_modules": ACTIVE_REFRESH_MODULES,
             "acceptance_ids": ["A204", "A205", "A206"],
         }
@@ -1792,6 +2342,8 @@ def handle_score_recompute_job(job: dict[str, Any]) -> dict[str, Any]:
                 "previous_refresh_generation": requested_generation,
                 "refresh_generation": updated_context["refresh_generation"],
                 "scored_objects": scored_objects,
+                "score_result_object_types": MVP_SCORE_RESULT_OBJECT_TYPES,
+                "score_result_object_counts": object_counts,
                 "affected_modules": ACTIVE_REFRESH_MODULES,
             },
             metadata={
@@ -1813,6 +2365,8 @@ def handle_score_recompute_job(job: dict[str, Any]) -> dict[str, Any]:
                 "previous_refresh_generation": requested_generation,
                 "refresh_generation": updated_context["refresh_generation"],
                 "scored_objects": scored_objects,
+                "score_result_object_types": MVP_SCORE_RESULT_OBJECT_TYPES,
+                "score_result_object_counts": object_counts,
             },
             reason=reason,
             model_version=model_version,

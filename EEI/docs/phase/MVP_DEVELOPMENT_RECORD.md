@@ -3544,5 +3544,42 @@ Status: LOCAL AND REMOTE CI VALIDATED; A203 STILL IN PROGRESS
 
 ### Remaining gaps
 
-- `score_recompute` still persists `score_results` only for `relationship_fact_candidate` objects. Full recompute persistence for all MVP object families remains part of the broader production scoring engine and T1303/T600-T608 work.
+- At this point, `score_recompute` still persisted `score_results` only for `relationship_fact_candidate` objects. The follow-on slice below addresses MVP object-family recompute persistence.
 - A203 still depends on A202 for production-approved live relationship facts and on A209 for 4h/24h soak evidence.
+
+## 2026-06-21 - T1302/T1303/T1304 full MVP score-result recompute persistence slice
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A203/A204-A206 STILL IN PROGRESS
+
+### Scope
+
+- Extended `scripts/job_scheduler.py` so `score_recompute` writes one active scoring run covering the MVP object families:
+  - `relationship_fact_candidate`
+  - `relationship`
+  - `entity`
+  - `event`
+  - `industry`
+  - `source_document`
+- Reused existing scoring formulas from `apps/api/app/scoring.py` rather than introducing a parallel worker-only formula.
+- Added object-family collectors for the minimum fields needed to persist `raw_score`, `evidence_quality`, `adjusted_score`, `coverage`, `contributions` and `missing_inputs`.
+- Added `score_result_object_types` and `score_result_object_counts` to scoring-run parameters, active-analysis-context metadata, outbox payload, operation-log diff and worker result.
+- Extended the PostgreSQL integration contract so the recompute flow verifies all six object families have non-null metric values in `score_results`.
+
+### Acceptance mapping
+
+- T1302 -> A203 for production scoring service persistence.
+- T1303 -> A204/A205 for active scoring run activation, refresh token advance and atomic score snapshot context.
+- T1304 -> A206 for worker execution, outbox payload and idempotent background-job contract.
+- These IDs remain `IN_PROGRESS`, not `DONE`, until remote PostgreSQL CI and downstream production release gates are current.
+
+### Local validation
+
+- `python3 -m py_compile scripts/job_scheduler.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/ruff check scripts/job_scheduler.py tests/integration/test_database_migrations.py`: PASS.
+
+### Remaining gaps
+
+- Local host still lacks `.env`/`DATABASE_URL`, so PostgreSQL integration proof must come from GitHub Actions.
+- A203 still depends on production-approved relationship edges and current downstream release gates.
+- A204/A205 still need online model editing and long-duration refresh stability.
+- A206/A209 still need 4h and 24h operator soak evidence for worker wake, retry, recovery and dead-letter stability.

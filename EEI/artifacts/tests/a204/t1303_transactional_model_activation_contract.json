@@ -18,7 +18,7 @@
     "Data snapshot refresh requests reuse the active-context idempotency key contract and log success/conflict results through operation_logs.",
     "Added migration 0009_transactional_outbox and transactional outbox events for model.profile.activated, score.recompute.requested, score.snapshot.activated, data.snapshot.refresh.requested and data.snapshot.activated.",
     "Added a model-center Recompute scores control that calls /v1/scoring/recompute with expected_active_profile_version_id and client_refresh_token.",
-    "Added a score_recompute worker handler that validates active context freshness, creates a completed scoring_run, writes relationship_fact_candidate score_results, advances active_analysis_contexts.refresh_token and logs execute_score_recompute.",
+    "Added a score_recompute worker handler that validates active context freshness, creates a completed scoring_run, writes score_results for relationship_fact_candidate, relationship, entity, event, industry and source_document objects, advances active_analysis_contexts.refresh_token and logs execute_score_recompute.",
     "Added a data_snapshot_refresh worker handler that validates active context freshness, creates an active data_snapshot, supersedes the previous active snapshot for the same scope and record_mode, writes data.snapshot.activated and advances active_analysis_contexts.refresh_token.",
     "Added config/model_profiles/supply-chain-v3.json as an inactive immutable candidate profile loaded by the PostgreSQL seed path.",
     "Added live Playwright coverage that activates supply-chain-v3, observes a transaction-created scoring_run snapshot, checks stale refresh semantics and rolls back to balanced-v2 through FastAPI/PostgreSQL.",
