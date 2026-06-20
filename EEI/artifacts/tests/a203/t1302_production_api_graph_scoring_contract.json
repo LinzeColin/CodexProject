@@ -90,7 +90,7 @@
     "pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts --workers=1",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/manage_clean_room_release.py validate",
     "python3 scripts/manage_release_artifacts.py validate",
-    "GitHub Actions: split G2 validation isolates PostgreSQL integration from browser/live E2E before the next push"
+    "GitHub Actions run 27867365117 job 82473570232: PASS, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E"
   ],
   "rollback": [
     "Revert the T1302 API/repository/contract/test/status commit.",
