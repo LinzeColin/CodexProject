@@ -529,6 +529,8 @@ def exercise_domain_api_and_repository_contracts() -> None:
     ] is False
     assert score_context["publication_policy"]["minimum_independent_sources"] == 2
 
+    exercise_transactional_model_activation_contract(client, profiles[0])
+
     object_scope_response = client.get("/v1/system/object-scope")
     assert object_scope_response.status_code == 200
     object_scope = object_scope_response.json()
@@ -538,6 +540,8 @@ def exercise_domain_api_and_repository_contracts() -> None:
 
     relationship_catalog = client.get("/v1/catalogs/relationship").json()
     assert relationship_catalog["actual_row_count"] == 52
+
+
     assert relationship_catalog["records"][0]["definition"]
 
     industries_response = client.get("/v1/industries")
@@ -1227,3 +1231,148 @@ def exercise_domain_api_and_repository_contracts() -> None:
             connection.rollback()
         else:  # pragma: no cover - should be unreachable with the migration constraint.
             raise AssertionError("amount without currency and amount_kind must be rejected")
+
+
+def exercise_transactional_model_activation_contract(
+    client: TestClient,
+    active_profile: dict[str, object],
+) -> None:
+    context_response = client.get("/v1/scoring/active-context")
+    assert context_response.status_code == 200
+    active_context = context_response.json()
+    assert active_context["schema_version"] == "active-analysis-context-v1"
+    assert active_context["active_scoring_profile_version_id"] == active_profile["id"]
+    assert active_context["client_state"] == "current"
+    assert active_context["refresh_generation"] >= 1
+    previous_refresh_token = active_context["refresh_token"]
+
+    with connect_database() as connection:
+        source_profile = connection.execute(
+            """
+            SELECT id, profile_id, model_id, weights, thresholds, half_lives,
+                   missing_value_policy
+            FROM scoring_profile_versions
+            WHERE id = %s
+            """,
+            (active_profile["id"],),
+        ).fetchone()
+        target_profile_id = connection.execute(
+            """
+            INSERT INTO scoring_profile_versions(
+              profile_id, model_id, version, weights, thresholds, half_lives,
+              missing_value_policy, reason, active
+            )
+            VALUES (%s, %s, 3, %s, %s, %s, %s, %s, false)
+            RETURNING id
+            """,
+            (
+                source_profile["profile_id"],
+                source_profile["model_id"],
+                Jsonb(source_profile["weights"]),
+                Jsonb(source_profile["thresholds"]),
+                Jsonb(source_profile["half_lives"]),
+                source_profile["missing_value_policy"],
+                "T1303/A204 transactional activation test profile.",
+            ),
+        ).fetchone()[0]
+
+    activation_response = client.post(
+        f"/v1/scoring/profiles/{target_profile_id}/activate",
+        json={
+            "expected_active_profile_version_id": active_profile["id"],
+            "client_refresh_token": previous_refresh_token,
+            "reason": "T1303/A204 integration activation success path",
+        },
+    )
+    assert activation_response.status_code == 200
+    activation = activation_response.json()
+    assert activation["schema_version"] == "model-activation-v1"
+    assert activation["status"] == "activated"
+    assert activation["previous_profile"]["id"] == active_profile["id"]
+    assert activation["activated_profile"]["id"] == str(target_profile_id)
+    assert activation["activated_profile"]["active"] is True
+    assert activation["cache_invalidation"]["previous_refresh_token"] == previous_refresh_token
+    assert activation["cache_invalidation"]["refresh_token"] != previous_refresh_token
+    assert "supply_chain" in activation["active_context"]["affected_modules"]
+    assert "model_center" in activation["active_context"]["affected_modules"]
+    assert activation["active_context"]["client_state"] == "stale"
+    next_refresh_token = activation["cache_invalidation"]["refresh_token"]
+
+    stale_context_response = client.get(
+        f"/v1/scoring/active-context?client_refresh_token={previous_refresh_token}"
+    )
+    assert stale_context_response.status_code == 200
+    assert stale_context_response.json()["client_state"] == "stale"
+    current_context_response = client.get(
+        f"/v1/scoring/active-context?client_refresh_token={next_refresh_token}"
+    )
+    assert current_context_response.status_code == 200
+    assert current_context_response.json()["client_state"] == "current"
+
+    stale_activation_response = client.post(
+        f"/v1/scoring/profiles/{active_profile['id']}/activate",
+        json={
+            "expected_active_profile_version_id": active_profile["id"],
+            "client_refresh_token": previous_refresh_token,
+            "reason": "T1303/A204 stale expected active version negative path",
+        },
+    )
+    assert stale_activation_response.status_code == 409
+    conflict = stale_activation_response.json()["detail"]
+    assert conflict["status"] == "conflict"
+    assert conflict["reason"] == "stale_active_profile_version"
+    assert conflict["actual_active_profile_version_id"] == str(target_profile_id)
+
+    with connect_database() as connection:
+        active_rows = connection.execute(
+            """
+            SELECT id
+            FROM scoring_profile_versions
+            WHERE active = true
+            """
+        ).fetchall()
+        assert [row[0] for row in active_rows] == [target_profile_id]
+        context_row = connection.execute(
+            """
+            SELECT active_scoring_profile_version_id, active_scoring_run_id,
+                   refresh_token::text, refresh_generation, status
+            FROM active_analysis_contexts
+            WHERE context_key = 'global'
+            """
+        ).fetchone()
+        assert context_row["active_scoring_profile_version_id"] == target_profile_id
+        assert context_row["active_scoring_run_id"] is not None
+        assert context_row["refresh_token"] == next_refresh_token
+        assert context_row["status"] == "active"
+        score_run_count = connection.execute(
+            """
+            SELECT count(*)::int
+            FROM scoring_runs
+            WHERE id = %s
+              AND profile_version_id = %s
+              AND status = 'completed'
+            """,
+            (context_row["active_scoring_run_id"], target_profile_id),
+        ).fetchone()[0]
+        assert score_run_count == 1
+        log_counts = connection.execute(
+            """
+            SELECT
+              count(*) FILTER (WHERE result_status = 'success')::int AS success,
+              count(*) FILTER (WHERE result_status = 'conflict')::int AS conflict
+            FROM operation_logs
+            WHERE action_type = 'activate_scoring_profile'
+              AND object_type = 'scoring_profile_version'
+            """
+        ).fetchone()
+        assert log_counts["success"] == 1
+        assert log_counts["conflict"] == 1
+        try:
+            connection.execute(
+                "UPDATE scoring_profile_versions SET active = true WHERE id = %s",
+                (active_profile["id"],),
+            )
+        except errors.UniqueViolation:
+            connection.rollback()
+        else:  # pragma: no cover - should be unreachable with the global active index.
+            raise AssertionError("Only one globally active scoring profile is allowed")

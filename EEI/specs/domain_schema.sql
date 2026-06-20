@@ -364,6 +364,23 @@ CREATE TABLE score_results (
   PRIMARY KEY (scoring_run_id, object_type, object_id)
 );
 
+CREATE TABLE active_analysis_contexts (
+  context_key text PRIMARY KEY CHECK (context_key = 'global'),
+  active_scoring_profile_version_id uuid NOT NULL
+    REFERENCES scoring_profile_versions(id),
+  active_data_snapshot_id uuid REFERENCES data_snapshots(id),
+  active_scoring_run_id uuid REFERENCES scoring_runs(id),
+  refresh_token uuid NOT NULL DEFAULT gen_random_uuid(),
+  refresh_generation integer NOT NULL DEFAULT 1 CHECK (refresh_generation > 0),
+  status text NOT NULL CHECK (status IN ('active','refreshing','failed')),
+  activated_at timestamptz NOT NULL DEFAULT now(),
+  activated_by text NOT NULL CHECK (activated_by IN ('local_user','system','codex')),
+  affected_modules jsonb NOT NULL DEFAULT '[]'::jsonb,
+  metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
 CREATE TABLE operation_logs (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   occurred_at timestamptz NOT NULL DEFAULT now(),
@@ -738,6 +755,11 @@ CREATE TABLE manual_review_queue (
 CREATE INDEX manual_review_queue_status_idx
   ON manual_review_queue(status, priority, created_at);
 
+CREATE UNIQUE INDEX scoring_profile_versions_one_global_active_idx
+  ON scoring_profile_versions(active)
+  WHERE active = true;
+CREATE INDEX active_analysis_context_profile_idx
+  ON active_analysis_contexts(active_scoring_profile_version_id, refresh_generation DESC);
 CREATE INDEX exploration_steps_session_idx ON exploration_steps(session_id, sequence_no);
 CREATE INDEX operation_logs_object_idx ON operation_logs(object_type, object_id, occurred_at DESC);
 CREATE INDEX calibration_runs_time_idx ON calibration_runs(scheduled_for DESC, status);

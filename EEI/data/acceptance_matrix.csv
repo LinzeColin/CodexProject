@@ -202,8 +202,8 @@ A200,P0,release,clean-room 校验通过 Markdown/CSV/JSON/GitHub/原型/PDF/ZIP 
 A201,P0,database,"PostgreSQL production migrations are reversible and preserve separate fact, evidence, time validity and version layers",migration rollback + integrity test,DONE
 A202,P0,data,"Golden Vertical real ingestion preserves raw snapshot, entity resolution confidence, evidence chain, parser version, review status and counter-evidence",ingestion integration test,IN PROGRESS
 A203,P0,api,"Production API, recursive graph query and scoring responses are snapshot-scoped, evidence-bearing and budget-bounded",contract + integration test,IN PROGRESS
-A204,P0,model,"Model config versions activate transactionally with operation log and failed activation leaves previous active version unchanged",transaction/rollback test,NOT STARTED
-A205,P0,refresh,"Global model/data refresh atomically switches all visible modules and stale clients receive conflict or refresh semantics",cross-view E2E + cache invalidation test,NOT STARTED
+A204,P0,model,"Model config versions activate transactionally with operation log and failed activation leaves previous active version unchanged",transaction/rollback test,IN PROGRESS
+A205,P0,refresh,"Global model/data refresh atomically switches all visible modules and stale clients receive conflict or refresh semantics",cross-view E2E + cache invalidation test,IN PROGRESS
 A206,P0,scheduler,"Background jobs support lease, auto wake, idempotency key, heartbeat, retry cap, dead-letter and graceful shutdown",worker crash/retry integration test,NOT STARTED
 A207,P0,saved-view,"Server saved views support optimistic conflict control, version history, recovery and schema migration",multi-session conflict + restore test,NOT STARTED
 A208,P0,scale,"10k, 100k and 1m relationship benchmarks record API, layout, render, memory, frame and long-task budgets with pass/fail output",performance benchmark,NOT STARTED

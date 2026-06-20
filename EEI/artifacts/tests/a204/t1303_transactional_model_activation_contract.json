@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "task_id": "T1303",
+  "acceptance_id": "A204",
+  "status": "IN_PROGRESS",
+  "implemented_slice": [
+    "Added migration 0006_model_activation_refresh_state with a global active scoring profile unique index.",
+    "Added active_analysis_contexts to persist the active profile, data snapshot, score snapshot, refresh token, generation and affected modules.",
+    "Added POST /v1/scoring/profiles/{profileVersionId}/activate with expected active profile conflict detection.",
+    "Activation locks the current and target profile rows, creates a completed scoring_run snapshot, switches the active profile, updates active_analysis_contexts and writes operation_logs in one transaction.",
+    "Stale expected active profile requests return 409 and keep the previous active profile unchanged while logging a conflict result."
+  ],
+  "evidence_files": [
+    "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
+    "infra/db/migrations/0006_model_activation_refresh_state/down.sql",
+    "apps/api/app/domain.py",
+    "apps/api/app/domain_repository.py",
+    "scripts/check_database_schema.py",
+    "scripts/load_seed_catalogs.py",
+    "specs/api_contract.yaml",
+    "tests/integration/test_database_migrations.py"
+  ],
+  "validation_commands": [
+    "PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py scripts/check_database_schema.py scripts/load_seed_catalogs.py",
+    "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_contracts.py",
+    "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_v5_production_readiness_sync.py",
+    "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py"
+  ],
+  "not_closed_scope": [
+    "Model-center UI for editing, activating and rolling back profile versions is not complete.",
+    "Rollback endpoint remains a later T600-T608/T1303 slice.",
+    "Full cross-view browser E2E for production API-driven refresh remains open under A205.",
+    "CI evidence is required before this slice can be treated as remotely validated."
+  ],
+  "rollback": [
+    "Revert the T1303 API/repository/migration/test/governance commit.",
+    "Run scripts/migrate.py downgrade --steps 1 to remove active_analysis_contexts and the global active profile index in affected environments.",
+    "Confirm data/task_backlog.csv returns T1303/A204-A205 to NOT STARTED if the contract slice is removed.",
+    "Regenerate release artifacts and rerun make verify plus make verify-g2-db."
+  ]
+}

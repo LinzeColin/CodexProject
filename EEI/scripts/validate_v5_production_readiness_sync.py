@@ -36,7 +36,9 @@ EXPECTED_TASKS = {
 
 IMPLEMENTED_TASKS = {"T1300": "A201"}
 
-PARTIAL_TASKS = {"T1301": "A202", "T1302": "A203"}
+PARTIAL_TASKS = {"T1301": "A202", "T1302": "A203", "T1303": "A204"}
+
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -65,6 +67,18 @@ PARTIAL_EVIDENCE = {
         "specs/api_contract.yaml",
         "tests/integration/test_database_migrations.py",
         "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
+    },
+    "T1303": {
+        "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
+        "infra/db/migrations/0006_model_activation_refresh_state/down.sql",
+        "apps/api/app/domain.py",
+        "apps/api/app/domain_repository.py",
+        "scripts/check_database_schema.py",
+        "scripts/load_seed_catalogs.py",
+        "specs/api_contract.yaml",
+        "tests/integration/test_database_migrations.py",
+        "artifacts/tests/a204/t1303_transactional_model_activation_contract.json",
+        "artifacts/tests/a205/t1303_atomic_refresh_context_contract.json",
     },
 }
 
@@ -169,7 +183,7 @@ def validate_task_acceptance_status() -> dict[str, Any]:
         require(row is not None, f"missing acceptance {acceptance_id}")
         if acceptance_id in IMPLEMENTED_TASKS.values():
             require(row["status"] == "DONE", f"{acceptance_id} must be DONE once implemented")
-        elif acceptance_id in PARTIAL_TASKS.values():
+        elif acceptance_id in PARTIAL_ACCEPTANCE_IDS:
             require(
                 row["status"] == "IN PROGRESS",
                 f"{acceptance_id} must be IN PROGRESS while partially implemented",

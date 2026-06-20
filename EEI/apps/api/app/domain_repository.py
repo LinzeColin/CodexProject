@@ -23,6 +23,12 @@ class NotFoundError(RepositoryError):
     pass
 
 
+class ConflictError(RepositoryError):
+    def __init__(self, detail: dict[str, Any]) -> None:
+        super().__init__(str(detail))
+        self.detail = detail
+
+
 def _jsonable(value: Any) -> Any:
     if isinstance(value, UUID):
         return str(value)
@@ -58,6 +64,21 @@ PATH_RESULT_LIMIT = 8
 GRAPH_QUERY_VERSION = "bounded-recursive-graph-v1"
 SCORING_SERVICE_VERSION = "candidate-score-explanation-v1"
 CANDIDATE_SOURCE_THRESHOLD_MIN = 2
+ACTIVE_REFRESH_MODULES = [
+    "business_empire",
+    "group_structure",
+    "business_segments",
+    "supply_chain",
+    "capital_network",
+    "ma_transactions",
+    "control_relationships",
+    "policy_environment",
+    "strategic_signals",
+    "watchlist",
+    "evidence_center",
+    "model_center",
+    "data_center",
+]
 RELATIONSHIP_FAMILIES = {
     "corporate_structure",
     "ownership_control",
@@ -1660,6 +1681,361 @@ class DomainRepository:
             }
         )
 
+    def active_analysis_context_payload(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        *,
+        client_refresh_token: str | None = None,
+    ) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              aac.context_key,
+              aac.active_scoring_profile_version_id,
+              aac.active_data_snapshot_id,
+              ds.snapshot_key AS active_data_snapshot_key,
+              aac.active_scoring_run_id,
+              aac.refresh_token,
+              aac.refresh_generation,
+              aac.status,
+              aac.activated_at,
+              aac.activated_by,
+              aac.affected_modules,
+              aac.metadata,
+              sp.profile_key,
+              spv.version AS profile_version_number,
+              sm.model_key,
+              sm.version AS model_version_number
+            FROM active_analysis_contexts aac
+            JOIN scoring_profile_versions spv
+              ON spv.id = aac.active_scoring_profile_version_id
+            JOIN scoring_profiles sp ON sp.id = spv.profile_id
+            JOIN scoring_models sm ON sm.id = spv.model_id
+            LEFT JOIN data_snapshots ds ON ds.id = aac.active_data_snapshot_id
+            WHERE aac.context_key = 'global'
+            """
+        ).fetchone()
+        if row is None:
+            raise RepositoryError("No active analysis context is available")
+
+        refresh_token = str(row["refresh_token"])
+        client_state = "current"
+        if client_refresh_token is not None and client_refresh_token != refresh_token:
+            client_state = "stale"
+        return _jsonable(
+            {
+                "schema_version": "active-analysis-context-v1",
+                "context_key": row["context_key"],
+                "active_scoring_profile_version_id": row[
+                    "active_scoring_profile_version_id"
+                ],
+                "active_data_snapshot_id": row["active_data_snapshot_id"],
+                "active_data_snapshot_key": row["active_data_snapshot_key"],
+                "active_scoring_run_id": row["active_scoring_run_id"],
+                "refresh_token": row["refresh_token"],
+                "refresh_generation": row["refresh_generation"],
+                "status": row["status"],
+                "activated_at": row["activated_at"],
+                "activated_by": row["activated_by"],
+                "affected_modules": row["affected_modules"],
+                "model_version": f"{row['model_key']}@{row['model_version_number']}",
+                "profile_version": (
+                    f"{row['profile_key']}@{row['profile_version_number']}"
+                ),
+                "client_state": client_state,
+                "stale_client_semantics": (
+                    "Clients with a different refresh_token must discard cached "
+                    "graph, score, model and module state and refetch the active context."
+                ),
+                "metadata": row["metadata"],
+            }
+        )
+
+    def get_active_analysis_context(
+        self,
+        *,
+        client_refresh_token: str | None = None,
+    ) -> dict[str, Any]:
+        with self.connect() as connection:
+            return self.active_analysis_context_payload(
+                connection,
+                client_refresh_token=client_refresh_token,
+            )
+
+    def _active_scoring_profile_for_update(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+    ) -> dict[str, Any] | None:
+        row = connection.execute(
+            """
+            SELECT
+              spv.id,
+              sp.profile_key,
+              sp.name,
+              spv.version,
+              sm.model_key,
+              sm.formula,
+              spv.weights,
+              spv.thresholds,
+              spv.half_lives,
+              spv.missing_value_policy,
+              spv.reason,
+              spv.active
+            FROM scoring_profile_versions spv
+            JOIN scoring_profiles sp ON sp.id = spv.profile_id
+            JOIN scoring_models sm ON sm.id = spv.model_id
+            WHERE spv.active = true
+            ORDER BY sp.is_system_default DESC, spv.created_at DESC
+            LIMIT 1
+            FOR UPDATE OF spv
+            """
+        ).fetchone()
+        if row is None:
+            return None
+        return self.scoring_profile_payload(row)
+
+    def _scoring_profile_activation_target(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        profile_version_id: UUID,
+    ) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              spv.id,
+              spv.profile_id,
+              spv.model_id,
+              sp.profile_key,
+              sp.name,
+              spv.version,
+              sm.model_key,
+              sm.version AS model_version_number,
+              sm.formula,
+              spv.weights,
+              spv.thresholds,
+              spv.half_lives,
+              spv.missing_value_policy,
+              spv.reason,
+              spv.active
+            FROM scoring_profile_versions spv
+            JOIN scoring_profiles sp ON sp.id = spv.profile_id
+            JOIN scoring_models sm ON sm.id = spv.model_id
+            WHERE spv.id = %s
+            FOR UPDATE OF spv
+            """,
+            (profile_version_id,),
+        ).fetchone()
+        if row is None:
+            raise NotFoundError(f"Scoring profile version not found: {profile_version_id}")
+        return dict(row)
+
+    def activate_scoring_profile_version(
+        self,
+        *,
+        profile_version_id: UUID,
+        expected_active_profile_version_id: UUID | None,
+        client_refresh_token: str | None,
+        reason: str,
+        actor: str = "local_user",
+    ) -> dict[str, Any]:
+        conflict_detail: dict[str, Any] | None = None
+        activation_payload: dict[str, Any] | None = None
+        with self.connect() as connection:
+            previous_profile = self._active_scoring_profile_for_update(connection)
+            target_row = self._scoring_profile_activation_target(connection, profile_version_id)
+            target_profile_before = self.scoring_profile_payload(target_row)
+            previous_profile_id = (
+                UUID(previous_profile["id"]) if previous_profile is not None else None
+            )
+            if (
+                expected_active_profile_version_id is not None
+                and previous_profile_id != expected_active_profile_version_id
+            ):
+                conflict_detail = {
+                    "schema_version": "model-activation-conflict-v1",
+                    "status": "conflict",
+                    "reason": "stale_active_profile_version",
+                    "expected_active_profile_version_id": expected_active_profile_version_id,
+                    "actual_active_profile_version_id": previous_profile_id,
+                    "target_profile_version_id": profile_version_id,
+                    "client_refresh_token": client_refresh_token,
+                }
+                self.log_operation(
+                    connection,
+                    actor=actor,
+                    action_type="activate_scoring_profile",
+                    object_type="scoring_profile_version",
+                    object_id=profile_version_id,
+                    old_value=previous_profile,
+                    new_value=target_profile_before,
+                    diff=conflict_detail,
+                    reason=reason,
+                    result_status="conflict",
+                    model_version=target_row["model_key"],
+                    profile_version=(
+                        f"{target_row['profile_key']}@{target_row['version']}"
+                    ),
+                )
+            else:
+                context_row = connection.execute(
+                    """
+                    SELECT refresh_token, refresh_generation
+                    FROM active_analysis_contexts
+                    WHERE context_key = 'global'
+                    FOR UPDATE
+                    """
+                ).fetchone()
+                previous_refresh_token = (
+                    str(context_row["refresh_token"]) if context_row is not None else None
+                )
+                previous_generation = (
+                    int(context_row["refresh_generation"]) if context_row is not None else 0
+                )
+                next_generation = previous_generation + 1
+                active_snapshot = connection.execute(
+                    """
+                    SELECT id, as_of
+                    FROM data_snapshots
+                    WHERE status = 'active'
+                    ORDER BY activated_at DESC, created_at DESC
+                    LIMIT 1
+                    """
+                ).fetchone()
+                data_snapshot_id = active_snapshot["id"] if active_snapshot else None
+                data_snapshot_at = active_snapshot["as_of"] if active_snapshot else _now()
+                scoring_run = connection.execute(
+                    """
+                    INSERT INTO scoring_runs(
+                      model_id, profile_version_id, data_snapshot_at, parameters,
+                      status, started_at, finished_at, content_hash
+                    )
+                    VALUES (%s, %s, %s, %s, 'completed', now(), now(), %s)
+                    RETURNING id
+                    """,
+                    (
+                        target_row["model_id"],
+                        profile_version_id,
+                        data_snapshot_at,
+                        Jsonb(
+                            {
+                                "activation_reason": reason,
+                                "refresh_generation": next_generation,
+                                "refresh_policy": "atomic-global-switch",
+                            }
+                        ),
+                        f"model-activation:{profile_version_id}:{next_generation}",
+                    ),
+                ).fetchone()
+                connection.execute("UPDATE scoring_profile_versions SET active = false")
+                connection.execute(
+                    "UPDATE scoring_profile_versions SET active = true WHERE id = %s",
+                    (profile_version_id,),
+                )
+                context = connection.execute(
+                    """
+                    INSERT INTO active_analysis_contexts(
+                      context_key, active_scoring_profile_version_id,
+                      active_data_snapshot_id, active_scoring_run_id,
+                      refresh_generation, status, activated_at, activated_by,
+                      affected_modules, metadata, updated_at
+                    )
+                    VALUES (
+                      'global', %s, %s, %s, %s, 'active', now(), %s, %s, %s, now()
+                    )
+                    ON CONFLICT (context_key) DO UPDATE SET
+                      active_scoring_profile_version_id =
+                        EXCLUDED.active_scoring_profile_version_id,
+                      active_data_snapshot_id = EXCLUDED.active_data_snapshot_id,
+                      active_scoring_run_id = EXCLUDED.active_scoring_run_id,
+                      refresh_token = gen_random_uuid(),
+                      refresh_generation = EXCLUDED.refresh_generation,
+                      status = 'active',
+                      activated_at = EXCLUDED.activated_at,
+                      activated_by = EXCLUDED.activated_by,
+                      affected_modules = EXCLUDED.affected_modules,
+                      metadata = EXCLUDED.metadata,
+                      updated_at = now()
+                    RETURNING refresh_token
+                    """,
+                    (
+                        profile_version_id,
+                        data_snapshot_id,
+                        scoring_run["id"],
+                        next_generation,
+                        actor,
+                        Jsonb(ACTIVE_REFRESH_MODULES),
+                        Jsonb(
+                            {
+                                "activation_reason": reason,
+                                "previous_scoring_profile_version_id": (
+                                    str(previous_profile_id)
+                                    if previous_profile_id is not None
+                                    else None
+                                ),
+                                "cache_policy": (
+                                    "clients compare refresh_token and refresh_generation"
+                                ),
+                            }
+                        ),
+                    ),
+                ).fetchone()
+                target_profile_after = self.scoring_profile_by_id(
+                    connection,
+                    profile_version_id,
+                )
+                active_context = self.active_analysis_context_payload(
+                    connection,
+                    client_refresh_token=client_refresh_token,
+                )
+                diff = {
+                    "previous_active_profile_version_id": previous_profile_id,
+                    "new_active_profile_version_id": profile_version_id,
+                    "previous_refresh_token": previous_refresh_token,
+                    "refresh_token": str(context["refresh_token"]),
+                    "refresh_generation": next_generation,
+                    "affected_modules": ACTIVE_REFRESH_MODULES,
+                }
+                self.log_operation(
+                    connection,
+                    actor=actor,
+                    action_type="activate_scoring_profile",
+                    object_type="scoring_profile_version",
+                    object_id=profile_version_id,
+                    old_value=previous_profile,
+                    new_value=target_profile_after,
+                    diff=diff,
+                    reason=reason,
+                    result_status="success",
+                    model_version=target_row["model_key"],
+                    profile_version=(
+                        f"{target_row['profile_key']}@{target_row['version']}"
+                    ),
+                )
+                activation_payload = _jsonable(
+                    {
+                        "schema_version": "model-activation-v1",
+                        "status": "activated",
+                        "previous_profile": previous_profile,
+                        "activated_profile": target_profile_after,
+                        "active_context": active_context,
+                        "cache_invalidation": {
+                            "previous_refresh_token": previous_refresh_token,
+                            "refresh_token": context["refresh_token"],
+                            "refresh_generation": next_generation,
+                            "stale_client_semantics": (
+                                "clients with the previous refresh_token must refetch all "
+                                "graph, score, model and module state before presenting "
+                                "fresh results"
+                            ),
+                        },
+                    }
+                )
+        if conflict_detail is not None:
+            raise ConflictError(_jsonable(conflict_detail))
+        if activation_payload is None:  # pragma: no cover - defensive invariant.
+            raise RepositoryError("Scoring profile activation produced no payload")
+        return activation_payload
+
     def list_scoring_profiles(self) -> list[dict[str, Any]]:
         with self.connect() as connection:
             rows = connection.execute(
@@ -1971,6 +2347,7 @@ class DomainRepository:
                 "SELECT count(*)::int AS count FROM relationships"
             ).fetchone()
             freshness = self.home_freshness(connection)
+            active_context = self.active_analysis_context_payload(connection)
         return _jsonable(
             {
                 "as_of": _now(),
@@ -1989,6 +2366,7 @@ class DomainRepository:
                 "freshness": freshness,
                 "model_status": {
                     "active_profile": active_profile,
+                    "active_context": active_context,
                     "latest_calibration": calibration,
                     "calibration": self.home_calibration_status(calibration),
                     "fixture_policy": (
@@ -2216,6 +2594,7 @@ class DomainRepository:
             if active_profile is not None
             else self.active_scoring_profile(connection)
         )
+        active_context = self.active_analysis_context_payload(connection)
         return _jsonable(
             {
                 "schema_version": "production-context-v1",
@@ -2231,6 +2610,7 @@ class DomainRepository:
                 }
                 if profile
                 else None,
+                "active_analysis_context": active_context,
                 "graph_query_version": GRAPH_QUERY_VERSION,
                 "scoring_service_version": SCORING_SERVICE_VERSION,
                 "record_modes": {
@@ -3477,14 +3857,16 @@ class DomainRepository:
         reason: str,
         diff: dict[str, Any] | None = None,
         result_status: str = "success",
+        model_version: str | None = None,
+        profile_version: str | None = None,
     ) -> None:
         connection.execute(
             """
             INSERT INTO operation_logs(
               actor, action_type, object_type, object_id, old_value, new_value,
-              diff, reason, result_status
+              diff, reason, model_version, profile_version, result_status
             )
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
             (
                 actor,
@@ -3495,6 +3877,8 @@ class DomainRepository:
                 Jsonb(_jsonable(new_value)) if new_value is not None else None,
                 Jsonb(_jsonable(diff or {})),
                 reason,
+                model_version,
+                profile_version,
                 result_status,
             ),
         )

@@ -33,6 +33,7 @@ REQUIRED_TABLES = {
     "scoring_profile_versions",
     "scoring_runs",
     "score_results",
+    "active_analysis_contexts",
     "changes",
     "data_snapshots",
     "fact_versions",
@@ -89,6 +90,7 @@ REQUIRED_TEMPORAL_COLUMNS = {
     "relationship_fact_candidates": {"created_at", "updated_at"},
     "relationship_fact_candidate_evidence": {"created_at"},
     "manual_review_queue": {"created_at", "resolved_at"},
+    "active_analysis_contexts": {"activated_at", "created_at", "updated_at"},
 }
 
 REQUIRED_PRODUCTION_VERSION_COLUMNS = {
@@ -122,6 +124,18 @@ REQUIRED_PRODUCTION_VERSION_COLUMNS = {
         "locator",
         "support_excerpt",
         "structured_fact",
+    },
+    "active_analysis_contexts": {
+        "context_key",
+        "active_scoring_profile_version_id",
+        "active_data_snapshot_id",
+        "active_scoring_run_id",
+        "refresh_token",
+        "refresh_generation",
+        "status",
+        "activated_by",
+        "affected_modules",
+        "metadata",
     },
 }
 
@@ -533,6 +547,20 @@ def main() -> int:
             calibration_cadence_violations = int(
                 scalar(connection, "SELECT count(*) FROM calibration_runs WHERE cadence_days <> 14")
             )
+            active_context_row = connection.execute(
+                """
+                SELECT count(*)::int,
+                       count(*) FILTER (
+                         WHERE context_key = 'global'
+                           AND status = 'active'
+                           AND active_scoring_profile_version_id IN (
+                             SELECT id FROM scoring_profile_versions WHERE active = true
+                           )
+                           AND refresh_generation >= 1
+                       )::int
+                FROM active_analysis_contexts
+                """
+            ).fetchone()
             if active_profile_count != 1:
                 raise RuntimeError(
                     f"Expected exactly one active scoring profile, found {active_profile_count}"
@@ -543,6 +571,10 @@ def main() -> int:
                 )
             if calibration_cadence_violations:
                 raise RuntimeError("Calibration cadence must remain fixed at 14 days")
+            if tuple(active_context_row) != (1, 1):
+                raise RuntimeError(
+                    "Expected exactly one active global analysis context aligned to active profile"
+                )
             payload["seed_counts"] = seed_counts | {
                 "p0_research_universe": p0_count,
                 "research_tiers": tier_counts,
@@ -550,6 +582,7 @@ def main() -> int:
                 "industry_membership_tables": industry_membership_table_count,
                 "live_entities": live_entity_count,
                 "active_scoring_profiles": active_profile_count,
+                "active_analysis_contexts": active_context_row[0],
                 "active_profile_weight_sum": round(weight_sum, 4),
                 "calibration_cadence_violations": calibration_cadence_violations,
             }

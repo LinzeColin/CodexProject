@@ -280,7 +280,7 @@ def load_default_scoring_profile(connection: object) -> int:
         """,
         (profile_row[0],),
     )
-    connection.execute(
+    profile_version_row = connection.execute(
         """
         INSERT INTO scoring_profile_versions(
           profile_id, model_id, version, weights, thresholds, half_lives,
@@ -295,6 +295,7 @@ def load_default_scoring_profile(connection: object) -> int:
           missing_value_policy = EXCLUDED.missing_value_policy,
           reason = EXCLUDED.reason,
           active = true
+        RETURNING id
         """,
         (
             profile_row[0],
@@ -305,6 +306,51 @@ def load_default_scoring_profile(connection: object) -> int:
             Jsonb(profile["half_life_days"]),
             profile["missing_value_policy"],
             "Seeded from config/model_profiles/balanced-v2.json for MVP default profile.",
+        ),
+    ).fetchone()
+    connection.execute(
+        """
+        INSERT INTO active_analysis_contexts(
+          context_key, active_scoring_profile_version_id, status, activated_by,
+          affected_modules, metadata
+        )
+        VALUES ('global', %s, 'active', 'system', %s, %s)
+        ON CONFLICT (context_key) DO UPDATE SET
+          active_scoring_profile_version_id = EXCLUDED.active_scoring_profile_version_id,
+          status = 'active',
+          activated_by = 'system',
+          affected_modules = EXCLUDED.affected_modules,
+          metadata = active_analysis_contexts.metadata || EXCLUDED.metadata,
+          updated_at = now()
+        """,
+        (
+            profile_version_row[0],
+            Jsonb(
+                [
+                    "business_empire",
+                    "group_structure",
+                    "business_segments",
+                    "supply_chain",
+                    "capital_network",
+                    "ma_transactions",
+                    "control_relationships",
+                    "policy_environment",
+                    "strategic_signals",
+                    "watchlist",
+                    "evidence_center",
+                    "model_center",
+                    "data_center",
+                ]
+            ),
+            Jsonb(
+                {
+                    "source": "seed_default_scoring_profile",
+                    "profile_key": profile["profile_key"],
+                    "profile_version": version,
+                    "model_version": model_key,
+                    "cache_policy": "clients compare refresh_token and refresh_generation",
+                }
+            ),
         ),
     )
     record_seed_run(connection, "default_scoring_profile", profile_path, 1)
