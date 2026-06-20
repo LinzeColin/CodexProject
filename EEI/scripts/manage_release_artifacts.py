@@ -27,6 +27,10 @@ REQUIRED_RELEASE_PATHS = {
     "scripts/manage_release_artifacts.py",
 }
 
+TRACKED_PATH_EXCLUDES = {
+    "apps/web/next-env.d.ts",
+}
+
 CHECKSUM_EXCLUDES = {str(CHECKSUMS)}
 
 
@@ -44,6 +48,7 @@ def run_git(*args: str) -> str:
 def tracked_paths() -> list[str]:
     paths = run_git("ls-files").splitlines()
     combined = set(paths) | REQUIRED_RELEASE_PATHS
+    combined -= TRACKED_PATH_EXCLUDES
     return sorted(path for path in combined if path and not path.endswith("/"))
 
 
