@@ -381,6 +381,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── state-contract.spec.ts
 │   ├── fixtures
 │   │   ├── README.md
+│   │   ├── golden_vertical_owner_signoff_decisions.json
 │   │   └── golden_vertical_review_decisions.json
 │   ├── integration
 │   │   ├── README.md
