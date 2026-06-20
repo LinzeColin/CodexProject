@@ -45,7 +45,6 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │       ├── use-analysis-context.ts
 │   │   │       ├── workspace-context.tsx
 │   │   │       └── workspace-navigation.tsx
-│   │   ├── next-env.d.ts
 │   │   ├── next.config.ts
 │   │   ├── package.json
 │   │   └── tsconfig.json

@@ -2064,3 +2064,31 @@ Residual risks:
 - Saved-view UI still needs multi-session server-backed create/update/restore flows using `/v1/saved-views`.
 - Model-center controls still need transactional activation, rollback and stale-client refresh semantics.
 - A live FastAPI/PostgreSQL cross-route E2E is still required before closing A211.
+
+## 2026-06-20 - T1215/T1211 release package generated-file exclusion
+
+### Scope
+
+- Excluded `apps/web/next-env.d.ts` from clean-room ZIP, release manifest and release checksums.
+- Reason: Next.js rewrites this generated type-reference file during CI bootstrap/type generation, making strict package checks fail even when source and artifacts are otherwise synchronized.
+- Regenerated clean-room release and release manifest/checksum artifacts after the exclusion.
+
+### Files changed
+
+- `scripts/manage_clean_room_release.py`
+- `scripts/manage_release_artifacts.py`
+- `artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip`
+- `artifacts/tests/a200/t1215_clean_room_release.json`
+- `artifacts/release_evidence_t1211.json`
+- `manifest.txt`
+- `DIRECTORY_TREE.txt`
+- `CHECKSUMS.sha256`
+
+### Validation
+
+- Local `make generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts`: PASS.
+- Local `make verify`: PASS.
+
+### Remaining gaps
+
+- This only fixes release packaging determinism for generated Next type files; it does not close A211 or v0.1 production blockers.

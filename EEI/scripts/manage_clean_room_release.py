@@ -99,6 +99,7 @@ REQUIRED_PACKAGE_PATHS = (
 EXCLUDED_FROM_PACKAGE = {
     "CHECKSUMS.sha256",
     "DIRECTORY_TREE.txt",
+    "apps/web/next-env.d.ts",
     "manifest.txt",
     "artifacts/release_evidence_t1211.json",
     "artifacts/release_operation_log_t1211.jsonl",
