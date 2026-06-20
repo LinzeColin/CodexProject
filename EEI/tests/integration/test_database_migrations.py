@@ -3180,13 +3180,15 @@ def exercise_worker_supervisor_cli_contracts() -> None:
     with connect_database() as connection:
         cli_job_row = connection.execute(
             """
-            SELECT status, metadata->'result'->>'handler', metadata->'result'->>'acceptance_id'
+            SELECT status, metadata->'result'->>'handler', payload->>'acceptance_id',
+                   metadata->'acceptance_ids'
             FROM background_jobs
             WHERE id = %s
             """,
             (UUID(cli_job["id"]),),
         ).fetchone()
-        assert cli_job_row == ("succeeded", "noop", "A206")
+        assert cli_job_row[0:3] == ("succeeded", "noop", "A206")
+        assert cli_job_row[3] == ["A206", "A209"]
         cli_event_row = connection.execute(
             """
             SELECT status, metadata->'dispatch_result'->>'handler_contract',
