@@ -42,10 +42,13 @@
   "latest_ci_result": {
     "provider": "GitHub Actions",
     "workflow": "EEI validation",
-    "run_id": "27863334141",
-    "job_id": "82463054603",
-    "commit_sha": "097a72c20aaa89cbb2a68af5d25928fb88b16090",
+    "run_id": "27868141438",
+    "job_id": "82475530819",
+    "commit_sha": "00b37d8100a91a94d0db76150bfacb0c9bfba790",
     "verify_static_contract_lint_typecheck_unit_step": "PASS",
+    "verify_g2_postgresql_integration_step": "PASS",
+    "verify_g2_browser_e2e_step": "PASS",
+    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS",
     "verify_g2_postgresql_migrations_and_e2e_step": "PASS"
   },
   "rollback": [

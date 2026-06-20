@@ -2290,9 +2290,13 @@ Residual risks:
 - Regenerated clean-room release package; authoritative package SHA256 is recorded in `artifacts/tests/a200/t1215_clean_room_release.json`.
 - Regenerated release artifacts with `remote_status=PENDING`.
 
+### CI evidence
+
+- GitHub Actions run `27868141438`, job `82475530819`: PASS.
+- Steps 7-12 all succeeded, including `Verify G2 PostgreSQL integration`, `Verify G2 browser E2E` and `Verify G2 live FastAPI PostgreSQL E2E`.
+
 ### Remaining gaps
 
-- GitHub Actions `verify-g2-db` evidence is still pending for the new live model harness.
 - Model-center online editing, dedicated rollback endpoint, worker-driven data snapshot refresh/outbox and dedicated score recompute controls remain open.
 
 ## 2026-06-20 - T1302/A203 and T1308/A211 commercial-map graph API context hydration
