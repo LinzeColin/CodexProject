@@ -2938,6 +2938,7 @@ Residual risks:
 - Local `shasum -a 256 -c CHECKSUMS.sha256`: PASS.
 - Local sandboxed `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: expected FAIL at Chromium launch with macOS `bootstrap_check_in ... Permission denied`; rerun with approved elevated browser permission.
 - Local elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes governance, contract, prototype parity, GitHub governance, v5 sync, development/risk/release validation, scale benchmark, Chromium browser benchmark, soak smoke, secret scan, UI copy lint, ruff, web typecheck and unit tests 15/15.
+- GitHub Actions `EEI validation` on `741a1968e7b4633fa4e7d693c638841c8143f9c1`: PASS, run `27873931210`, job `82490200774`; Steps 7-12 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 
 ### Remaining gaps
 
