@@ -7,7 +7,7 @@ UV := $(VENV)/bin/uv
 PNPM_VERSION := 11.8.0
 PNPM ?= npx --yes pnpm@$(PNPM_VERSION)
 
-.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health worker-health worker-once worker-supervise validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-worker-deployment generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-scale-browser-benchmark validate-soak-smoke secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e test-e2e-live verify verify-g1 verify-g2-db dev-api dev-web clean-local
+.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health worker-health worker-once worker-supervise validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-worker-deployment generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-scale-browser-benchmark validate-soak-smoke validate-operator-soak-runner secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e test-e2e-live verify verify-g1 verify-g2-db dev-api dev-web clean-local
 
 $(UV):
 	$(PYTHON) -m venv $(VENV)
@@ -128,6 +128,9 @@ validate-scale-benchmark-operator: validate-scale-browser-benchmark
 validate-soak-smoke:
 	node scripts/run_soak_smoke.mjs --mode ci_smoke --duration-seconds 3 --output /tmp/eei-soak-smoke.json --fail-on-budget --quiet
 
+validate-operator-soak-runner:
+	node scripts/run_operator_soak.mjs --mode ci_smoke --duration-seconds 3 --window-seconds 3 --output /tmp/eei-operator-soak.json --checkpoint /tmp/eei-operator-soak.checkpoints.jsonl --fail-on-budget --quiet
+
 secret-scan:
 	$(UV) run python scripts/secret_scan.py
 
@@ -154,7 +157,7 @@ test-e2e-live:
 
 test: test-unit
 
-verify: validate-governance validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-worker-deployment validate-development-status-artifacts validate-risk-control-artifacts validate-clean-room-release validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-soak-smoke secret-scan copy-lint lint typecheck test
+verify: validate-governance validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-worker-deployment validate-development-status-artifacts validate-risk-control-artifacts validate-clean-room-release validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-soak-smoke validate-operator-soak-runner secret-scan copy-lint lint typecheck test
 
 verify-g1: db-up health verify test-e2e
 

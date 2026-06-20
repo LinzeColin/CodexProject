@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 60
+- parameter_count: 61
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
@@ -224,19 +224,19 @@ The counts above are generated from the canonical machine registries in this dir
 ### `MOD-012` - 运行、视觉与校准阈值控制
 
 - Kind: `deterministic_configuration_rule`
-- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, and calibration controls.
+- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, and soak runner execution windows.
 - Owner: model owner
 - Status: `active`
 - Model version: `operational-controls-v1`
-- Implementation reference: EEI/data/parameter_catalog.csv:43-61, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml
+- Implementation reference: EEI/data/parameter_catalog.csv:43-79, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/run_operator_soak.mjs
 - Inputs: parameter_key; configured_value; default_value; min_value; max_value
 - Outputs: validated operational parameter value
 - Use cases: research prioritization, explainable visual focus, governance validation, and bounded exploration support.
 - Non-use cases: investment return prediction, live trading signal generation, hidden-truth inference, or production factual claims without evidence.
 - Formula IDs: FORM-012
-- Parameter IDs: PARAM-042, PARAM-043, PARAM-044, PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051, PARAM-052, PARAM-053, PARAM-054, PARAM-055, PARAM-056, PARAM-057, PARAM-058, PARAM-059, PARAM-060
-- Test references: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121
-- Evidence references: EEI/data/parameter_catalog.csv:43-61, EEI/config/thresholds/default-v2.json:1, EEI/config/model_runtime_defaults.yaml:1
+- Parameter IDs: PARAM-042, PARAM-043, PARAM-044, PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051, PARAM-052, PARAM-053, PARAM-054, PARAM-055, PARAM-056, PARAM-057, PARAM-058, PARAM-059, PARAM-060, PARAM-061
+- Test references: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_v5_production_readiness_sync.py
+- Evidence references: EEI/data/parameter_catalog.csv:43-79, EEI/config/thresholds/default-v2.json:1, EEI/config/model_runtime_defaults.yaml:1, EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json
 - Failure modes: missing runtime motion config; threshold out of schema range; auto activation enabled
 
 ## B. Assumptions

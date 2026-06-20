@@ -12,10 +12,10 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version status: `provisional`
 - Current phase: `A`
 - Current gate: `GOV-G2-EEI-BASELINE`
-- Confirmed iteration count: 1
+- Confirmed iteration count: 2
 - Reconstructed development event count: 2
-- Current task: `GOV-G2-EEI-REPAIR-001`
-- Blockers: none for governance file generation; remaining UNKNOWN items are task-linked.
+- Current task: `TASK-T1307`
+- Blockers: A209 remains open until committed 4h and 24h operator soak evidence exists.
 
 ## Phase Matrix
 
@@ -54,6 +54,30 @@ Do not infer iteration count from Git commit count.
 - Remaining risks: motion active values and empirical model calibration remain UNKNOWN and task-linked.
 - Rollback: remove `EEI/docs/governance` and restore edited EEI index files, VERSION, and CHANGELOG.
 - Next step: GOV-G2-EEI-VERIFY-001 after validation passes.
+
+### `ITER-20260621-001`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `b3370a4`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`
+- Goal: add a resumable operator soak runner for T1307/A209 without claiming 4h/24h soak completion.
+- Assumptions: the 3-second runner readiness artifact proves command and checkpoint behavior only; long-duration soak remains a release blocker.
+- Files read: EEI soak harness, worker deployment validator, legacy v5 sync/status files, and canonical governance files.
+- Files changed: `EEI/scripts/run_operator_soak.mjs`, A209 readiness artifacts, legacy trace/status files, and canonical governance files.
+- Model changes: no scoring model behavior change; MOD-012 operational controls now include `PARAM-061`.
+- Parameter changes: added `soak.operator_window_seconds=300` / `PARAM-061`.
+- Commands run: `node scripts/run_operator_soak.mjs ...`, `make validate-operator-soak-runner`, `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`.
+- Test results: local elevated runner readiness PASS; local elevated `make verify` PASS with unit tests 37/37.
+- Successes: checkpoint JSONL, `--resume`, operator 4h/24h command surface and CI-safe readiness target are now governed.
+- Failures: governance PDF binary was not regenerated because Python `playwright.sync_api` is missing in the current environment.
+- Decisions: A209 remains `IN_PROGRESS`; CI smoke and 3-second readiness are not long-duration soak substitutes.
+- Remaining risks: 4h and 24h operator soak, live Docker Compose duration proof, and release evidence are still pending.
+- Rollback: revert the runner commit, remove A209 readiness artifacts, regenerate clean-room/release artifacts, and rerun validation.
+- Next step: execute and attach 4h operator soak, then 24h operator soak.
 
 ## Reconstructed Development Events
 

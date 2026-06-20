@@ -114,6 +114,8 @@ artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json
 artifacts/tests/a208/t1306_browser_runtime_benchmark.json
 artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json
 artifacts/tests/a208/t1306_scale_benchmark_smoke.json
+artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl
+artifacts/tests/a209/t1307_operator_soak_readiness.json
 artifacts/tests/a209/t1307_soak_smoke.json
 artifacts/tests/a211/t1308_frontend_workspace_context_contract.json
 brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
@@ -326,6 +328,7 @@ scripts/publish_reviewed_relationship_facts.py
 scripts/run_browser_scale_benchmarks.mjs
 scripts/run_codex_autonomous.sh
 scripts/run_live_e2e_api.sh
+scripts/run_operator_soak.mjs
 scripts/run_scale_benchmarks.py
 scripts/run_soak_smoke.mjs
 scripts/secret_scan.py

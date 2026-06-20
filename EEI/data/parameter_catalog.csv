@@ -76,4 +76,5 @@ UI 门槛,visual.minimum_pointer_target_px,最小点击目标,threshold,24,24,44
 规模测试,benchmark.scale_1m_p95_ms,100 万关系 P95 预算,production,10000,1000,60000,500,ms,number,threshold,False,benchmark,,schema range,T1306 1m 关系聚合/子图预算
 Soak 测试,soak.short_duration_hours,短期 soak 时长,production,4,1,8,1,hours,number,release_gate,False,soak,,schema range,T1307 短期稳定性测试时长
 Soak 测试,soak.long_duration_hours,长期 soak 时长,production,24,8,72,1,hours,number,release_gate,False,soak,,schema range,T1307 长期稳定性测试时长
+Soak 测试,soak.operator_window_seconds,Operator soak 窗口时长,production,300,30,1800,30,seconds,number,release_gate,False,soak,,schema range,T1307 operator runner 每个 checkpoint 窗口时长
 品牌清权,brand.clearance_required,公开发布前品牌清权,production,True,True,True,0,boolean,read-only,release_gate,False,brand,,must be true,T1309 EEI 公开发布前必须完成法律与市场清权或风险豁免
