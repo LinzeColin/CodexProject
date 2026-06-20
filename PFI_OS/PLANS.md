@@ -18,6 +18,10 @@ Gate 7 in `docs/development/PFI_GOAL_GATE_MATRIX.md`. The v0.2 PFI-001
 reproducible-environment slice has a lock file, explicit installer,
 runtime-no-install contract, secret scan, CI lock install, gate commands, and
 local clean-install/offline-start evidence.
+Gate 2 / PFI-005 now has a formal browser UAT acceptance contract for the PFI
+Web Shell: four named Chinese user journeys, same-shell function panels,
+WCAG structural proof, performance budgets, and no legacy-page primary
+navigation.
 
 Execution order:
 
@@ -85,6 +89,10 @@ Current PFI decisions:
 - Phase 5 packaging now builds `PFIOSPhase5AcceptancePackageV1`, verifies the
   required GitHub-safe handoff file inventory, records validation evidence, and
   keeps user-supplied Phase 6 materials outside public Git.
+- Gate 2 shell acceptance now uses `scripts/pfiGate2ShellAcceptance.sh` to
+  execute real browser clicks through 首页, 策略实验室, 研究, 政策雷达, and
+  数据与系统 journeys, with fail-closed JSON evidence and performance/a11y
+  budgets.
 - Next product target is Phase 6 deployment preparation on the target Mac while
   keeping research-only boundaries.
 

@@ -76,6 +76,14 @@ Current sequence:
     double-worker/recovery evidence, Phase D backup/restore, and PFI-004
     Golden/PIT proof are all present. Gate 1 must still be re-run as part of
     final Gate 7 release packaging.
+21. Gate 2 / PFI-005:
+    Formal shell UAT acceptance is implemented. `scripts/pfiGate2ShellAcceptance.sh`
+    emits `PFIGate2ShellAcceptanceV1` browser evidence for four named Chinese
+    user journeys, same-shell function panels, WCAG structural proof, optional
+    local axe scan, performance budgets, and no legacy-page primary navigation.
+    Latest local browser run returned `status=Pass`, `pass=126`, `fail=0`,
+    `info=2`.
+    Gate 2 must still be re-run as part of final Gate 7 release packaging.
 
 ## Current Local State
 
@@ -210,6 +218,15 @@ Current sequence:
   `27856494975` on commit `9ed86b6dc43e769242db18d6b7bd60c1a7a538a8`.
   Successful job steps include `Run PFI target gate` and
   `Prove injected failure is blocked`.
+- PFI-005 Gate 2 shell acceptance contract complete:
+  `scripts/pfiGate2ShellAcceptance.sh`,
+  `tests/contract/test_pfi005_gate2_shell_acceptance.py`, and
+  `docs/development/PFI005_GATE2_SHELL_ACCEPTANCE.md`. It verifies four named
+  browser UAT journeys, same-shell function panels, Chinese-first/no-legacy
+  visible surface, WCAG structural proof, optional local axe scan, and
+  interaction performance budgets. Latest local evidence: focused contracts
+  63 passed; browser acceptance 126 pass / 0 fail; target gate 46 passed plus
+  secret scan; legacy identity regression 2 passed; `git diff --check` passed.
 
 ## Start Here
 
@@ -222,22 +239,23 @@ Read in this order:
 5. `docs/development/PFI_GOAL_GATE_MATRIX.md`
 6. `docs/development/PFI_REPRODUCIBLE_ENV.md`
 7. `docs/development/PFI004_GOLDEN_PIT.md`
-8. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
-9. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
-10. `docs/data/PFI_DATA_BOUNDARIES.md`
-11. `docs/data/PFI_SOURCE_OF_TRUTH.md`
-12. `docs/ux/PFI_UX_CONTRACT.md`
-13. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
-14. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
-15. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
-16. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
-17. `docs/phase/PHASE_B_MARKETS.md`
-18. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
-19. `docs/phase/PHASE_B_STRATEGY_LAB.md`
-20. `docs/phase/PHASE_B_PORTFOLIO.md`
-21. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
-22. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
-23. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
+8. `docs/development/PFI005_GATE2_SHELL_ACCEPTANCE.md`
+9. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
+10. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
+11. `docs/data/PFI_DATA_BOUNDARIES.md`
+12. `docs/data/PFI_SOURCE_OF_TRUTH.md`
+13. `docs/ux/PFI_UX_CONTRACT.md`
+14. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
+15. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
+16. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
+17. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
+18. `docs/phase/PHASE_B_MARKETS.md`
+19. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
+20. `docs/phase/PHASE_B_STRATEGY_LAB.md`
+21. `docs/phase/PHASE_B_PORTFOLIO.md`
+22. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
+23. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
+24. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
 24. `docs/phase/V0_1_1_FINDINGS_BASELINE.md`
 25. `docs/archive/legacy-migration.md`
 

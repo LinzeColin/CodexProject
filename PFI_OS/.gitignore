@@ -23,6 +23,9 @@ data/systemAudit/MacOSRuntimeAcceptance*.json
 data/systemAudit/UIVisualAcceptance*.json
 data/systemAudit/UIVisualAcceptance*.png
 data/systemAudit/UIVisualAcceptance*.log
+data/systemAudit/PFIGate2ShellAcceptance*.json
+data/systemAudit/PFIGate2ShellAcceptance*.png
+data/systemAudit/PFIGate2ShellAcceptance*.log
 data/integrations/site52etf/*
 !data/integrations/site52etf/.gitkeep
 data/researchBus/chatInbox/**
