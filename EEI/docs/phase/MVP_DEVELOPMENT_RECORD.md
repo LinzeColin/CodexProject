@@ -3282,9 +3282,15 @@ Residual risks:
 - `.venv/bin/python scripts/validate_contracts.py`: PASS.
 - `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `DATABASE_URL` or `.env`.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS after the event/industry scoring slice and fixture query fix; unit tests 31/31.
+
+### Remote CI validation
+
+- GitHub Actions run `27879315501` / job `82504009018`: FAIL at Step 10 because SQL `LIKE 'fixture://%'` in the new fixture evidence checks used an unescaped `%` in psycopg query text.
+- Commit `fe1d34fb216a4a09cbb0bc897dfaeac91d808f5c` fixed the query text by escaping the literal wildcard as `LIKE 'fixture://%%'`.
+- GitHub Actions run `27879503435` / job `82504489377`: PASS for commit `fe1d34fb216a4a09cbb0bc897dfaeac91d808f5c`; Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E all succeeded for the event/industry scoring slice.
 
 ### Remaining gaps
 
-- Remote GitHub Actions must still prove the new event/industry assertions against PostgreSQL.
 - A203 still needs remaining non-relationship object family scoring coverage beyond entity/event/industry.
 - A203 still depends on A202 for production-approved live relationship facts and on A209 for 4h/24h soak evidence.
