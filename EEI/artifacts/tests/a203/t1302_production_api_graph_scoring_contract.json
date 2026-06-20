@@ -15,6 +15,7 @@
       "Frontend production data hydration now loads /v1/catalogs and /v1/scoring/explain/relationship_fact_candidate/{objectId}, surfaces catalog inventory counts, source-of-truth counts, adjusted score, evidence count, missing-input count and publication status, and retains explicit local fallback/error states.",
       "GET /v1/evidence/{objectType}/{objectId} exposes bounded evidence detail and source snippets for relationship_fact_candidate and published relationship objects using existing source_documents, sources, ingestion_evidence_chain, relationship_evidence and fixture_relationship_notices tables.",
       "Evidence detail payload generation normalizes nullable PostgreSQL evidence fields into contract-safe structured_fact objects, counter_evidence arrays and string snippets.",
+      "Evidence detail production_context hydration calls the shared production_context_for_connection contract with as_of=None for current active context.",
       "Frontend Evidence Center now hydrates /v1/evidence/relationship_fact_candidate/{objectId}, exposes evidence/source-document counts, endpoint state and source snippets, and refreshes the production evidence detail when the user clicks 打开证据."
     ],
     "explicitly_not_closed": [
