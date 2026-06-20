@@ -1502,13 +1502,14 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
         ).fetchone()
         assert fact_version_payload_row == (2, 2, 2, 2)
 
-        candidate_id = connection.execute(
+        candidate_id, relationship_id = connection.execute(
             """
-            SELECT id
+            SELECT id, structured_fact->>'published_relationship_id'
             FROM relationship_fact_candidates
             WHERE candidate_key = 'GV-FACT-001'
             """
-        ).fetchone()[0]
+        ).fetchone()
+        assert relationship_id is not None
 
     client = TestClient(app)
     score_response = client.get(f"/v1/scoring/explain/relationship_fact_candidate/{candidate_id}")
@@ -1524,6 +1525,33 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
     assert "human_review_verification" not in score["missing_inputs"]
     assert "published_relationship_version" not in score["missing_inputs"]
     assert score["review_queue"][0]["status"] == "resolved"
+
+    relationship_score_response = client.get(f"/v1/scoring/explain/relationship/{relationship_id}")
+    assert relationship_score_response.status_code == 200
+    relationship_score = relationship_score_response.json()
+    assert relationship_score["object_type"] == "relationship"
+    assert relationship_score["object_id"] == relationship_id
+    assert relationship_score["relationship_status"] == "reported"
+    assert relationship_score["publication_status"] == "published"
+    assert relationship_score["review_status"] == "human_verified"
+    assert relationship_score["source_threshold"] == {
+        "minimum_independent_sources": 2,
+        "independent_source_count": 1,
+        "met": True,
+    }
+    assert relationship_score["fact_version"]["snapshot_key"] == REVIEWED_RELATIONSHIP_SNAPSHOT_KEY
+    assert relationship_score["fact_version"]["parser_version"] == "a202-reviewed-publication-v1"
+    assert relationship_score["production_context"]["schema_version"] == "production-context-v1"
+    assert relationship_score["production_context"]["publication_policy"][
+        "relationship_fact_candidates_in_graph_edges"
+    ] is False
+    assert relationship_score["evidence"][0]["url"].startswith("https://")
+    assert relationship_score["evidence"][0]["structured_fact"]["publisher_version"] == (
+        "a202-reviewed-publication-v1"
+    )
+    assert "human_review_verification" not in relationship_score["missing_inputs"]
+    assert "published_relationship_version" not in relationship_score["missing_inputs"]
+    assert "relationship_fact_version" not in relationship_score["missing_inputs"]
 
     before_counts = reviewed_publication_counts()
     run_script(

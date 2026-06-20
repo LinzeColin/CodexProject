@@ -14,7 +14,11 @@ import psycopg
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
-from .scoring import CANDIDATE_SOURCE_THRESHOLD_MIN, candidate_score_metrics
+from .scoring import (
+    CANDIDATE_SOURCE_THRESHOLD_MIN,
+    candidate_score_metrics,
+    relationship_score_metrics,
+)
 
 
 class RepositoryError(RuntimeError):
@@ -3670,11 +3674,6 @@ class DomainRepository:
         object_id: UUID,
         profile_id: UUID | None = None,
     ) -> dict[str, Any]:
-        if object_type != "relationship_fact_candidate":
-            raise RepositoryError(
-                "Only relationship_fact_candidate score explanations are implemented "
-                "in the T1302/A203 API contract slice"
-            )
         with self.connect() as connection:
             profile = (
                 self.scoring_profile_by_id(connection, profile_id)
@@ -3683,6 +3682,17 @@ class DomainRepository:
             )
             if profile is None:
                 raise RepositoryError("No active scoring profile is available")
+            if object_type == "relationship":
+                return self.relationship_score_explanation(
+                    connection=connection,
+                    object_id=object_id,
+                    profile=profile,
+                )
+            if object_type != "relationship_fact_candidate":
+                raise RepositoryError(
+                    "Only relationship_fact_candidate and relationship score explanations "
+                    "are implemented in the T1302/A203 API contract slice"
+                )
             row = connection.execute(
                 """
                 SELECT
@@ -3776,6 +3786,109 @@ class DomainRepository:
                 ),
             )
 
+    def relationship_score_explanation(
+        self,
+        *,
+        connection: psycopg.Connection[dict[str, Any]],
+        object_id: UUID,
+        profile: dict[str, Any],
+    ) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              r.id,
+              r.subject_entity_id,
+              subject.canonical_name AS subject_canonical_name,
+              r.object_entity_id,
+              object.canonical_name AS object_canonical_name,
+              r.relationship_type,
+              r.relationship_family,
+              r.status,
+              r.confidence,
+              r.valid_from,
+              r.valid_to,
+              r.observed_at,
+              COALESCE(r.qualifiers, '{}'::jsonb) AS qualifiers,
+              r.derivation_rule,
+              r.derivation_version,
+              latest_fact.id AS fact_version_id,
+              latest_fact.version_no AS fact_version_no,
+              latest_fact.fact_status::text AS fact_status,
+              latest_fact.record_mode AS fact_record_mode,
+              latest_fact.parser_version AS fact_parser_version,
+              latest_fact.payload AS fact_payload,
+              latest_snapshot.snapshot_key AS snapshot_key,
+              latest_snapshot.scope AS snapshot_scope,
+              latest_snapshot.status AS snapshot_status,
+              latest_snapshot.record_mode AS snapshot_record_mode,
+              COALESCE(
+                (
+                  SELECT count(DISTINCT re.source_document_id)::int
+                  FROM relationship_evidence re
+                  WHERE re.relationship_id = r.id
+                ),
+                0
+              ) AS source_document_count,
+              COALESCE(
+                (
+                  SELECT jsonb_agg(
+                    jsonb_build_object(
+                      'source_document_id', sd.id,
+                      'source_tier', s.source_tier,
+                      'publisher', sd.publisher,
+                      'title', sd.title,
+                      'url', sd.url,
+                      'document_date', sd.document_date,
+                      'observed_at', sd.observed_at,
+                      'retrieved_at', sd.retrieved_at,
+                      'content_hash', sd.content_hash,
+                      'role', re.role,
+                      'locator', re.locator,
+                      'support_excerpt', re.support_excerpt,
+                      'structured_fact', COALESCE(re.structured_fact, '{}'::jsonb)
+                    )
+                    ORDER BY re.role, sd.publisher, sd.url
+                  )
+                  FROM relationship_evidence re
+                  JOIN source_documents sd ON sd.id = re.source_document_id
+                  JOIN sources s ON s.id = sd.source_id
+                  WHERE re.relationship_id = r.id
+                ),
+                '[]'::jsonb
+              ) AS evidence
+            FROM relationships r
+            JOIN entities subject ON subject.id = r.subject_entity_id
+            JOIN entities object ON object.id = r.object_entity_id
+            LEFT JOIN LATERAL (
+              SELECT fv.*
+              FROM fact_versions fv
+              JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+              WHERE fv.object_type = 'relationship'
+                AND fv.object_id = r.id
+              ORDER BY
+                CASE ds.status WHEN 'active' THEN 0 ELSE 1 END,
+                fv.version_no DESC,
+                fv.created_at DESC
+              LIMIT 1
+            ) latest_fact ON true
+            LEFT JOIN data_snapshots latest_snapshot
+              ON latest_snapshot.id = latest_fact.snapshot_id
+            WHERE r.id = %s
+            """,
+            (object_id,),
+        ).fetchone()
+        if row is None:
+            raise NotFoundError(f"Relationship not found: {object_id}")
+        return self.relationship_score_explanation_payload(
+            row=row,
+            profile=profile,
+            production_context=self.production_context_for_connection(
+                connection,
+                as_of=None,
+                active_profile=profile,
+            ),
+        )
+
     @staticmethod
     def score_explanation_payload(
         *,
@@ -3833,6 +3946,99 @@ class DomainRepository:
                 },
                 "evidence": evidence,
                 "review_queue": row["review_queue"] or [],
+                "production_context": production_context,
+                "scoring_service_version": SCORING_SERVICE_VERSION,
+            }
+        )
+
+    @staticmethod
+    def relationship_score_explanation_payload(
+        *,
+        row: dict[str, Any],
+        profile: dict[str, Any],
+        production_context: dict[str, Any],
+    ) -> dict[str, Any]:
+        evidence = row["evidence"] or []
+        qualifiers = row["qualifiers"] or {}
+        fact_payload = row["fact_payload"] or {}
+        source_threshold_policy = qualifiers.get("source_threshold_policy") or {}
+        minimum_sources = int(
+            source_threshold_policy.get(
+                "minimum_independent_sources",
+                CANDIDATE_SOURCE_THRESHOLD_MIN,
+            )
+        )
+        minimum_sources = max(minimum_sources, 1)
+        independent_source_count = int(
+            source_threshold_policy.get(
+                "independent_source_count",
+                row["source_document_count"] or 0,
+            )
+        )
+        source_threshold_met = (
+            independent_source_count >= minimum_sources
+            or bool(source_threshold_policy.get("met_by_review_override"))
+        )
+        publication_status = fact_payload.get("publication_status") or (
+            "published" if row["status"] in {"reported", "derived"} else row["status"]
+        )
+        review_status = fact_payload.get("review_status") or (
+            "human_verified" if qualifiers.get("decision_set_key") else "unreviewed"
+        )
+        metrics = relationship_score_metrics(
+            confidence=float(row["confidence"]),
+            independent_source_count=independent_source_count,
+            source_threshold_met=source_threshold_met,
+            review_status=review_status,
+            publication_status=publication_status,
+            fact_version_present=row["fact_version_id"] is not None,
+            evidence_present=bool(evidence),
+            minimum_independent_sources=minimum_sources,
+        )
+        return _jsonable(
+            {
+                "object_type": "relationship",
+                "object_id": row["id"],
+                "relationship_type": row["relationship_type"],
+                "relationship_family": row["relationship_family"],
+                "record_mode": row["fact_record_mode"] or row["snapshot_record_mode"],
+                "fact_status": row["fact_status"] or row["status"],
+                "publication_status": publication_status,
+                "relationship_status": row["status"],
+                "source_threshold": metrics["source_threshold"],
+                "review_status": review_status,
+                "parser_version": row["fact_parser_version"] or row["derivation_version"],
+                "raw_score": metrics["raw_score"],
+                "evidence_quality": metrics["evidence_quality"],
+                "adjusted_score": metrics["adjusted_score"],
+                "coverage": metrics["coverage"],
+                "contributions": metrics["contributions"],
+                "missing_inputs": metrics["missing_inputs"],
+                "model_version": f"{profile['model_key']}@{profile['version']}",
+                "profile_version": f"{profile['profile_key']}@{profile['version']}",
+                "profile_version_id": profile["id"],
+                "structured_fact": fact_payload,
+                "counter_evidence": [],
+                "qualifiers": qualifiers,
+                "fact_version": {
+                    "id": row["fact_version_id"],
+                    "version_no": row["fact_version_no"],
+                    "snapshot_key": row["snapshot_key"],
+                    "snapshot_scope": row["snapshot_scope"],
+                    "snapshot_status": row["snapshot_status"],
+                    "record_mode": row["fact_record_mode"] or row["snapshot_record_mode"],
+                    "parser_version": row["fact_parser_version"],
+                },
+                "subject": {
+                    "entity_id": row["subject_entity_id"],
+                    "canonical_name": row["subject_canonical_name"],
+                },
+                "object": {
+                    "entity_id": row["object_entity_id"],
+                    "canonical_name": row["object_canonical_name"],
+                },
+                "evidence": evidence,
+                "review_queue": [],
                 "production_context": production_context,
                 "scoring_service_version": SCORING_SERVICE_VERSION,
             }
