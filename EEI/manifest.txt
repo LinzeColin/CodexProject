@@ -251,6 +251,8 @@ infra/db/migrations/0009_transactional_outbox/down.sql
 infra/db/migrations/0009_transactional_outbox/up.sql
 infra/db/migrations/0010_operation_log_actor_principal/down.sql
 infra/db/migrations/0010_operation_log_actor_principal/up.sql
+infra/db/migrations/0011_operator_source_capture_constraints/down.sql
+infra/db/migrations/0011_operator_source_capture_constraints/up.sql
 infra/db/migrations/README.md
 infra/db/seeds/README.md
 infra/docker/README.md

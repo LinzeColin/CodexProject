@@ -685,14 +685,26 @@ CREATE TABLE raw_source_snapshots (
   title text NOT NULL,
   evidence_scope text NOT NULL,
   record_mode text NOT NULL
-    CHECK (record_mode IN ('fixture','curated_official_fixture','dry_run','live')),
+    CHECK (record_mode IN (
+      'fixture',
+      'curated_official_fixture',
+      'dry_run',
+      'operator_source_capture',
+      'live'
+    )),
   validation_status text NOT NULL,
   parser_version text NOT NULL,
   content_hash text NOT NULL,
   raw_payload jsonb NOT NULL,
   retrieved_at timestamptz NOT NULL DEFAULT now(),
   review_status text NOT NULL
-    CHECK (review_status IN ('unreviewed','machine_verified','human_verified','disputed')),
+    CHECK (review_status IN (
+      'unreviewed',
+      'machine_verified',
+      'operator_verified',
+      'human_verified',
+      'disputed'
+    )),
   created_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE(anchor_id, content_hash)
 );
@@ -723,7 +735,13 @@ CREATE TABLE entity_resolution_candidates (
   confidence numeric(4,3) NOT NULL CHECK (confidence BETWEEN 0 AND 1),
   decision_reason text NOT NULL,
   review_status text NOT NULL
-    CHECK (review_status IN ('unreviewed','machine_verified','human_verified','disputed')),
+    CHECK (review_status IN (
+      'unreviewed',
+      'machine_verified',
+      'operator_verified',
+      'human_verified',
+      'disputed'
+    )),
   parser_version text NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE(raw_snapshot_id, candidate_name)
@@ -754,7 +772,13 @@ CREATE TABLE ingestion_evidence_chain (
   parser_version text NOT NULL,
   confidence numeric(4,3) NOT NULL CHECK (confidence BETWEEN 0 AND 1),
   review_status text NOT NULL
-    CHECK (review_status IN ('unreviewed','machine_verified','human_verified','disputed')),
+    CHECK (review_status IN (
+      'unreviewed',
+      'machine_verified',
+      'operator_verified',
+      'human_verified',
+      'disputed'
+    )),
   created_at timestamptz NOT NULL DEFAULT now(),
   CHECK (jsonb_typeof(counter_evidence) = 'array'),
   UNIQUE(raw_snapshot_id, source_document_id, evidence_role, locator, parser_version)
