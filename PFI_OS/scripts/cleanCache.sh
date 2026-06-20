@@ -46,7 +46,7 @@ for ARG in "$@"; do
 done
 
 if [[ "$DRY_RUN" == "0" ]] && pfi_os_is_running; then
-  echo "PFIOS appears to be running. Stop it before cleaning cache."
+  echo "PFI OS appears to be running. Stop it before cleaning cache."
   exit 2
 fi
 

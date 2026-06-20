@@ -231,8 +231,8 @@ def macos_lifecycle_summary(
             "Status Check",
             "scripts/statusPFIOS.sh",
             True,
-            "只读检查当前 8501-8510 端口和本地 PFIOS 进程。",
-            "Read-only port and local PFIOS process check.",
+            "只读检查当前 8501-8510 端口和本地 PFI OS 进程。",
+            "Read-only port and local PFI OS process check.",
         ),
         _lifecycle_action(
             "开发检查",
@@ -247,8 +247,8 @@ def macos_lifecycle_summary(
             "Start Workbench",
             "scripts/startPFIOS.sh",
             not is_running,
-            "从终端或 PFI_OS.app 启动；当前页面内不自启动新服务，避免重复进程。",
-            "Start from Terminal or PFI_OS.app; the running page does not start another service.",
+            "从终端或 PFI OS app 启动；当前页面内不自启动新服务，避免重复进程。",
+            "Start from Terminal or PFI OS app; the running page does not start another service.",
             disabled_reason="服务已在运行" if is_running else "",
         ),
         _lifecycle_action(
@@ -299,8 +299,8 @@ def macos_lifecycle_summary(
             "App Open Acceptance",
             "scripts/macosRuntimeAcceptance.sh --launch-method app --app-path ~/Downloads/PFI_OS.app --summary-json",
             not is_running,
-            "真实打开 Downloads 的 PFI_OS.app，验证 health、缓存保护和停止闭环；可能打开默认浏览器，必须在 Terminal 运行。",
-            "Opens the Downloads PFI_OS.app, then verifies health, cache guard, and stop loop; may open the default browser, run from Terminal.",
+            "真实打开 Downloads 的 PFI OS app，验证 health、缓存保护和停止闭环；可能打开默认浏览器，必须在 Terminal 运行。",
+            "Opens the Downloads PFI OS app, then verifies health, cache guard, and stop loop; may open the default browser, run from Terminal.",
             disabled_reason="服务已在运行，避免误停当前会话" if is_running else "",
         ),
         _lifecycle_action(
@@ -323,7 +323,7 @@ def macos_lifecycle_summary(
         ],
         "app_paths": list(app_paths),
         "actions": actions,
-        "safety_policy": "Lifecycle controls only manage the local PFI_OS/PFIOS app process and caches; they do not refresh market data, place orders, or send broker instructions.",
+        "safety_policy": "Lifecycle controls only manage the local PFI OS app process and caches; they do not refresh market data, place orders, or send broker instructions.",
     }
 
 
@@ -438,8 +438,8 @@ def quick_actions() -> list[QuickAction]:
         QuickAction(
             "查看总控驾驶舱",
             "Executive Command Center",
-            "先看 PFI_OS 是否可继续研究：就绪检查、集成审计、业务子系统、最新报告和行动队列。",
-            "Check whether PFI_OS is ready for research: readiness, integration audit, business subsystems, latest report, and action queue.",
+            "先看 PFI OS 是否可继续研究：就绪检查、集成审计、业务子系统、最新报告和行动队列。",
+            "Check whether PFI OS is ready for research: readiness, integration audit, business subsystems, latest report, and action queue.",
             "总控驾驶舱",
             "Executive Command Center",
             "command",
@@ -510,8 +510,8 @@ def quick_actions() -> list[QuickAction]:
         QuickAction(
             "同步当前持仓",
             "Sync Holdings",
-            "读取行研、消费分析、支付宝账本和 PFIOS 导入文件，形成正式持仓簿。",
-            "Read industry research, consumer analytics, Alipay ledger, and PFIOS import files into a canonical holdings book.",
+            "读取行研、消费分析、支付宝账本和 PFI OS 导入文件，形成正式持仓簿。",
+            "Read industry research, consumer analytics, Alipay ledger, and PFI OS import files into a canonical holdings book.",
             "持仓",
             "Holdings",
             "holdings",
@@ -673,7 +673,7 @@ def usage_guide_sections() -> list[UsageGuideSection]:
         UsageGuideSection(
             title="总控驾驶舱",
             target_key="command",
-            purpose="作为 PFI_OS 日常入口，集中判断当前系统能否继续研究，哪些证据缺失，哪些事项必须先处理。",
+            purpose="作为 PFI OS 日常入口，集中判断当前系统能否继续研究，哪些证据缺失，哪些事项必须先处理。",
             best_for="每天第一次打开系统、准备生成报告、准备使用回测结论前，先做一次总控复核。",
             steps=(
                 "先看总控状态。可继续研究表示核心证据闭合；需要复核表示存在缺失证据；阻断表示不应继续使用下游结论。",
@@ -735,7 +735,7 @@ def usage_guide_sections() -> list[UsageGuideSection]:
             title="政策雷达",
             target_key="policy",
             purpose="把政策来源、影响行业、机会类型、权威证据、影响评分和下一步行动整理成可复核机会台账。",
-            best_for="政策报告、政府公告、监管变化、产业支持、税务优惠、合规风险和项目申报机会进入 PFIOS 前的第一层证据整理。",
+            best_for="政策报告、政府公告、监管变化、产业支持、税务优惠、合规风险和项目申报机会进入 PFI OS 前的第一层证据整理。",
             steps=(
                 "先看政策状态、机会数量、Actionable、Watch 和缺证据数量，判断当前政策机会是否可进入人工复核。",
                 "录入政策标题、来源名称、来源类型和发布日期；来源类型优先选择 Official、Regulator、Government 或 Exchange。",
@@ -933,13 +933,13 @@ def usage_guide_sections() -> list[UsageGuideSection]:
             title="持仓",
             target_key="holdings",
             purpose="统一读取、保存、同步和维护个人持仓，区分正式持仓、截图候选持仓和待确认订单。",
-            best_for="把行研报告系统、消费行为分析系统、支付宝账本和 PFIOS 本地导入的持仓放到同一持仓簿。",
+            best_for="把行研报告系统、消费行为分析系统、支付宝账本和 PFI OS 本地导入的持仓放到同一持仓簿。",
             steps=(
                 "进入持仓页面后先点击同步持仓，系统会扫描已配置的持仓来源。",
                 "查看顶部卡片，确认持仓总市值、正式持仓数量、最大单一权重、前三权重和待确认订单数量。",
                 "在当前持仓页检查正式持仓表，确认代码、名称、市场、市值、权重和来源文件。",
                 "查看暴露拆解，检查市场暴露和来源暴露是否符合真实账户情况。",
-                "打开同步来源，确认支付宝账本、行研上传、消费分析系统和 PFIOS 导入目录是否 Ready。",
+                "打开同步来源，确认支付宝账本、行研上传、消费分析系统和 PFI OS 导入目录是否 Ready。",
                 "打开待确认订单，核对付款成功但未确认份额或净值的记录；这些记录不会计入正式持仓。",
                 "需要补录时到手动维护页填写代码、名称、市场、数量、市值、成本和浮动盈亏。",
                 "到质量检查页查看缺失市值、缺失市场、更新时间和集中度检查。",
@@ -995,7 +995,7 @@ def usage_guide_sections() -> list[UsageGuideSection]:
         UsageGuideSection(
             title="行研报告",
             target_key="industry",
-            purpose="按日期检索本地行研报告，并把报告、验证任务、PFIOS 研究产物和回测元数据放到同一视图。",
+            purpose="按日期检索本地行研报告，并把报告、验证任务、PFI OS 研究产物和回测元数据放到同一视图。",
             best_for="从盘前、盘中、盘后、K 线分析或行业研究报告出发，形成待验证问题并联动量化验证。",
             steps=(
                 "确认行研报告目录。默认目录是当前用户 `~/Downloads/行研报告`，也可用 `PFI_INDUSTRY_REPORT_DIR` 覆盖。",
@@ -1003,19 +1003,19 @@ def usage_guide_sections() -> list[UsageGuideSection]:
                 "输入关键词，按报告名称、类型、目录或路径搜索。",
                 "在报告表格中查看报告日期、类型、区间目录、大小和路径。",
                 "选择报告后可以打开报告或打开所在目录。",
-                "查看最近 PFIOS Word 报告，把行研结论与回测验证报告对应起来。",
+                "查看最近 PFI OS Word 报告，把行研结论与回测验证报告对应起来。",
                 "查看验证任务队列，把行研中的假设拆成待验证信号。",
             ),
             checks=(
                 "报告日期是否与研究日期一致。",
                 "报告类型是否符合本次研究目的，例如盘前、盘中、盘后或 K 线。",
-                "是否已有对应 PFIOS 验证报告。",
+                "是否已有对应 PFI OS 验证报告。",
                 "验证任务是否记录了样本区间、成本假设和基准。",
             ),
             outputs=(
                 "按日期筛选后的行研报告列表。",
                 "行研报告路径和打开入口。",
-                "最近 PFIOS 报告和验证任务联动表。",
+                "最近 PFI OS 报告和验证任务联动表。",
             ),
             risks=(
                 "PDF 内容当前主要按文件名和日期索引，正文深度解析需要后续接入 OCR 或 PDF 文本提取。",
@@ -1025,14 +1025,14 @@ def usage_guide_sections() -> list[UsageGuideSection]:
         UsageGuideSection(
             title="研究总线",
             target_key="research_bus",
-            purpose="统一监控 PFIOS、行研系统、消费行为系统、持仓主数据和独立验证系统的输入、输出、请求、心跳和同步状态。",
+            purpose="统一监控 PFI OS、行研系统、消费行为系统、持仓主数据和独立验证系统的输入、输出、请求、心跳和同步状态。",
             best_for="当你通过任意聊天框、投递箱、Webhook 或行研系统更新信息后，检查这些信息是否进入共享数据库并被对应系统处理。",
             steps=(
                 "进入研究总线页面，先看顶部五个状态卡片：总线状态、待处理请求、失败请求、心跳过期和投递箱文件。",
                 "如果投递箱文件大于 0，点击处理投递箱，把 `.txt`、`.md` 或 `.json` 对话输入写入 ResearchBus。",
                 "如果待处理请求大于 0，点击处理请求，让 ResearchBus 执行同步、验证任务、独立验证或系统优化登记。",
-                "点击同步一次，串行同步行研报告、PFIOS 回测结果、持仓主数据和消费行为系统状态。",
-                "打开系统状态页，确认 PFIOS、AI-Research-System、ConsumptionAnalysisSystem、HoldingsMaster 和 ResearchBus 都是 Ready。",
+                "点击同步一次，串行同步行研报告、PFI OS 回测结果、持仓主数据和消费行为系统状态。",
+                "打开系统状态页，确认 PFI OS、AI-Research-System、ConsumptionAnalysisSystem、HoldingsMaster 和 ResearchBus 都是 Ready。",
                 "打开请求页，检查 `Pending`、`Completed`、`Failed` 的请求类型和响应内容。",
                 "打开对话输入页，确认输入来源、分类、关联请求和创建时间。",
                 "打开心跳页，检查各系统最后同步时间和能力声明是否过期。",
@@ -1058,7 +1058,7 @@ def usage_guide_sections() -> list[UsageGuideSection]:
         UsageGuideSection(
             title="大数据模拟",
             target_key="big_data",
-            purpose="调用独立验证系统生成大规模数据测试计划、分片记录和 checksum 校验摘要，确认 PFIOS、行研系统和自动化入口能共享同一验证结果。",
+            purpose="调用独立验证系统生成大规模数据测试计划、分片记录和 checksum 校验摘要，确认 PFI OS、行研系统和自动化入口能共享同一验证结果。",
             best_for="验证百万、千万、亿级到十亿级数据任务的调度能力、分片口径、审计输出和跨系统可见性。",
             steps=(
                 "进入大数据模拟页面，先看共享库状态、运行次数、最新状态、最新规模和最新分片。",
@@ -1080,7 +1080,7 @@ def usage_guide_sections() -> list[UsageGuideSection]:
                 "independent_validation_runs 运行记录。",
                 "independent_validation_shards 分片记录。",
                 "data/independentValidation 下的 IndependentValidationRun JSON 输出文件。",
-                "可被 PFIOS、AI-Research-System、automation 和其他 agent 读取的 ResearchBus 共享状态。",
+                "可被 PFI OS、AI-Research-System、automation 和其他 agent 读取的 ResearchBus 共享状态。",
             ),
             risks=(
                 "dry_run 证明调度和审计链路可用，不证明真实源文件内容已经被逐行校验。",
@@ -1091,11 +1091,11 @@ def usage_guide_sections() -> list[UsageGuideSection]:
         UsageGuideSection(
             title="个人画像",
             target_key="profile",
-            purpose="综合消费行为分析系统持仓、PFIOS 持仓、回测记录、复盘记录和验证任务，形成行为习惯、风险和优化方向。",
+            purpose="综合消费行为分析系统持仓、PFI OS 持仓、回测记录、复盘记录和验证任务，形成行为习惯、风险和优化方向。",
             best_for="日常复盘自己的研究纪律、风险暴露、证据习惯、情绪偏差和待验证积压。",
             steps=(
                 "先看顶部持仓总市值、持仓数量、最大单一权重、前三权重和 HHI。",
-                "打开数据连接状态，确认消费行为分析系统和 PFIOS 持仓数据是否 Ready。",
+                "打开数据连接状态，确认消费行为分析系统和 PFI OS 持仓数据是否 Ready。",
                 "如果持仓数据缺失，把 CSV、XLSX 或 JSON 放入 `data/external/consumerHoldings` 或 `data/holdings`。",
                 "查看持仓数据和来源/市场暴露，确认数据是否来自正确系统。",
                 "查看行为习惯，理解研究频率、证据习惯、复盘纪律和验证队列。",

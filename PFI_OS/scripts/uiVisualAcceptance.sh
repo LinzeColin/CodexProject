@@ -294,6 +294,63 @@ async function frameText(frame) {
   return frame.locator('body').innerText({ timeout: 10000 }).catch(() => '');
 }
 
+async function verifyPrimaryActionNavigation(page, baseUrl, route, checks) {
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  const shellFrame = await findShellFrame(page);
+  checks.push(check(`PrimaryActionNavigation:${route.view}:ShellFrame`, shellFrame ? 'Pass' : 'Fail', route.view));
+  if (!shellFrame) return;
+  await shellFrame.evaluate(() => localStorage.removeItem('pfi-context-v1')).catch(() => {});
+  await shellFrame.locator(`[data-workspace="${route.workspace}"]`).click({ timeout: 10000 });
+  await shellFrame.waitForFunction(
+    (expectedWorkspace) => {
+      const main = document.querySelector('#main-workspace');
+      return main && main.dataset.activeWorkspace === expectedWorkspace;
+    },
+    route.workspace,
+    { timeout: 10000 }
+  );
+  const control = shellFrame.locator(`[data-feature-view="${route.view}"]`).first();
+  const visible = await control.isVisible({ timeout: 10000 }).catch(() => false);
+  checks.push(check(`PrimaryActionNavigation:${route.view}:ControlVisible`, visible ? 'Pass' : 'Fail', route.view));
+  if (!visible) return;
+  await control.click({ timeout: 10000 });
+  await shellFrame.waitForFunction(
+    (expectedTitle) => {
+      const panel = document.querySelector('[data-function-detail]');
+      const title = document.querySelector('[data-function-title]');
+      return panel && !panel.hidden && title && title.textContent.includes(expectedTitle);
+    },
+    route.panelTitle,
+    { timeout: 10000 }
+  );
+  const [targetPage] = await Promise.all([
+    page.context().waitForEvent('page', { timeout: 15000 }),
+    shellFrame.locator('[data-function-action]').click({ timeout: 10000 }),
+  ]);
+  await targetPage.waitForLoadState('domcontentloaded', { timeout: 60000 });
+  await targetPage.waitForFunction(
+    (expectedView) => {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('pfi_shell') === '0' && params.get('view') === expectedView;
+    },
+    route.expectedView,
+    { timeout: 15000 }
+  );
+  await targetPage.waitForFunction(
+    (expectedTitle) => document.body && document.body.innerText.includes(expectedTitle),
+    route.expectedTitle,
+    { timeout: 25000 }
+  ).catch(() => {});
+  const targetUrl = targetPage.url();
+  const pageText = await targetPage.locator('body').innerText({ timeout: 10000 }).catch((error) => String(error && error.message || error));
+  const retiredIdentityText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI', 'PFI_OS', 'PFIOS'];
+  checks.push(check(`PrimaryActionNavigation:${route.view}:TargetUrl`, targetUrl.includes(`view=${route.expectedView}`) ? 'Pass' : 'Fail', targetUrl));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:TargetTitle`, pageText.includes(route.expectedTitle) ? 'Pass' : 'Fail', route.expectedTitle));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:NoTraceback`, pageText.includes('Traceback') || pageText.includes('ModuleNotFoundError') || pageText.includes('ImportError:') ? 'Fail' : 'Pass', route.view));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:NoRetiredIdentity`, retiredIdentityText.some((fragment) => pageText.includes(fragment)) ? 'Fail' : 'Pass', route.view));
+  await targetPage.close().catch(() => {});
+}
+
 (async () => {
   const checks = [check('BrowserExecutable', 'Pass', browserExecutable)];
   let browser;
@@ -403,7 +460,7 @@ async function frameText(frame) {
       checks.push(check(`FeatureOpen:${view}:NoEnglishSchema`, /PFIOS[A-Za-z0-9]+V\\d/.test(detailText) ? 'Fail' : 'Pass', view));
     }
     bodyText = await frameText(shellFrame);
-    const retiredIdentityText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI'];
+    const retiredIdentityText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI', 'PFI_OS', 'PFIOS'];
     const forbiddenText = ['Traceback', 'ModuleNotFoundError', 'ImportError:', 'Connection lost', ...retiredIdentityText, 'Global Search'];
     for (const text of forbiddenText) {
       checks.push(check(`NoVisibleError:${text}`, bodyText.includes(text) ? 'Fail' : 'Pass', text));
@@ -426,13 +483,30 @@ async function frameText(frame) {
       targetUrl.searchParams.set('pfi_shell', '0');
       targetUrl.searchParams.set('view', view);
       await page.goto(targetUrl.toString(), { waitUntil: 'domcontentloaded', timeout: 60000 });
-      await page.waitForTimeout(4500);
+      await page.waitForFunction(
+        ([expectedTitle, expectedAction]) => {
+          const text = document.body ? document.body.innerText : '';
+          return text.includes(expectedTitle) && text.includes(expectedAction);
+        },
+        [title, actionText],
+        { timeout: 25000 }
+      ).catch(() => {});
       const pageText = await page.locator('body').innerText({ timeout: 10000 }).catch((error) => String(error && error.message || error));
       checks.push(check(`FunctionPage:${view}:Title`, pageText.includes(title) ? 'Pass' : 'Fail', title));
       checks.push(check(`FunctionPage:${view}:Action`, pageText.includes(actionText) ? 'Pass' : 'Fail', actionText));
       checks.push(check(`FunctionPage:${view}:NoTraceback`, pageText.includes('Traceback') || pageText.includes('ModuleNotFoundError') || pageText.includes('ImportError:') ? 'Fail' : 'Pass', view));
       checks.push(check(`FunctionPage:${view}:NoRetiredIdentity`, retiredIdentityText.some((fragment) => pageText.includes(fragment)) ? 'Fail' : 'Pass', view));
       checks.push(check(`FunctionPage:${view}:NoStreamlitChrome`, pageText.includes('Deploy') || pageText.includes('Stop') ? 'Fail' : 'Pass', view));
+    }
+    const primaryActionRoutes = [
+      { workspace: 'home', view: 'single', panelTitle: '单标的回测', expectedView: 'single', expectedTitle: '单标的回测' },
+      { workspace: 'home', view: 'market_feel', panelTitle: '盘感训练', expectedView: 'market_feel', expectedTitle: '盘感训练' },
+      { workspace: 'market', view: 'market_slice', panelTitle: '市场垂直切片', expectedView: 'hotspots', expectedTitle: '热点分析' },
+      { workspace: 'research', view: 'research_policy_slice', panelTitle: '研究与政策垂直切片', expectedView: 'policy', expectedTitle: '政策雷达' },
+      { workspace: 'research', view: 'report_manifest', panelTitle: '报告清单', expectedView: 'reports', expectedTitle: '报告中心' },
+    ];
+    for (const route of primaryActionRoutes) {
+      await verifyPrimaryActionNavigation(page, url, route, checks);
     }
     await browser.close();
     const summary = summarize(checks);

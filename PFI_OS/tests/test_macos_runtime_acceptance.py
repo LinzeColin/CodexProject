@@ -30,7 +30,7 @@ def test_runtime_acceptance_runs_controlled_start_stop_flow(monkeypatch, tmp_pat
         if command == "scripts/cleanCache.sh" and "--dry-run" not in args:
             return {
                 "returncode": 2 if state["running"] else 0,
-                "stdout": "PFIOS appears to be running. Stop it before cleaning cache." if state["running"] else "{}",
+                "stdout": "PFI OS appears to be running. Stop it before cleaning cache." if state["running"] else "{}",
                 "stderr": "",
             }
         if command == "scripts/cleanCache.sh" and "--dry-run" in args:
@@ -95,7 +95,7 @@ def test_runtime_acceptance_supports_app_open_launch_method(monkeypatch, tmp_pat
             stdout = "PFI OS 正在运行：http://localhost:8501" if state["running"] else "PFI OS 未在端口 8501-8510 运行。"
             return {"returncode": 0, "stdout": stdout, "stderr": ""}
         if command == "scripts/cleanCache.sh" and "--dry-run" not in args:
-            return {"returncode": 2, "stdout": "PFIOS appears to be running. Stop it before cleaning cache.", "stderr": ""}
+            return {"returncode": 2, "stdout": "PFI OS appears to be running. Stop it before cleaning cache.", "stderr": ""}
         if command == "scripts/cleanCache.sh" and "--dry-run" in args:
             return {"returncode": 0, "stdout": '{"schema":"PFICacheCleanupReportV1","candidate_count":0}', "stderr": ""}
         if command == "scripts/stopPFIOS.sh":

@@ -441,6 +441,26 @@ Latest runtime smoke:
   text.
 - `scripts/stopPFIOS.sh` stopped the local service after verification.
 
+Latest user-facing PFI repair after rejection:
+
+- Web Shell feature cards now open same-shell Chinese function panels first.
+- Detailed Streamlit function pages open in a new tab because Streamlit
+  component iframe sandboxing allows popups but blocks top-window navigation.
+- `scripts/uiVisualAcceptance.sh --summary-json`: `Pass`, 130 pass / 0 fail.
+- `scripts/pfiGate2ShellAcceptance.sh --summary-json`: `Pass`, 168 pass /
+  0 fail / 2 info.
+- `scripts/installPFIOSEntryApps.sh` refreshed Desktop, Downloads, and
+  Applications app entries. Each installed app has `CFBundleDisplayName` and
+  `CFBundleName` set to `PFI OS`, executable `PFI_OS`, and
+  `PFI_OS_PROJECT_ROOT` bound to this checkout.
+- `scripts/macosAppAcceptanceLite.sh --summary-json`: `Pass`, 29 pass /
+  0 fail / 2 info.
+- `scripts/cleanCache.sh --dry-run --json` previewed 25 disposable cache
+  paths; `scripts/cleanCache.sh --json` removed 25 paths, 151 files,
+  26 directories, about 2625.49 KB, with 0 failures. Reports, holdings,
+  imports, SQLite databases, source samples, and market bar caches were not
+  deleted.
+
 ## Not Done
 
 - GitHub draft PR #2 is the current mergeable integration path for this work.

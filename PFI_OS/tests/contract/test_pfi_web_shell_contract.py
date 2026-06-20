@@ -92,7 +92,8 @@ def test_streamlit_launcher_exposes_pfi_ui_v2_feature_flag_with_fallback():
     assert "def _render_html_frame" in source
     assert 'getattr(st, "iframe")' in source
     assert "_render_html_frame(_pfi_web_shell_html(home_summary), height=980" in source
-    assert "PFI_OS 是主入口" in source
+    assert "PFI OS 是主入口" in source
+    assert "PFI_OS 是主入口" not in source
     assert "PFIOS 是主入口" not in source
     assert '[data-testid="stToolbar"]' in theme_block
     assert "#MainMenu" in theme_block
@@ -180,8 +181,15 @@ def test_web_shell_home_keeps_core_direct_function_entries():
     assert "FUNCTION_VIEWS" in js
     assert "openFunctionView" in js
     assert "runFunctionAction" in js
+    assert "navigateToFunctionPage" in js
+    assert 'target = "_blank"' in js
+    assert "anchor.click()" in js
+    assert 'data-function-action>打开功能</a>' in html
+    assert "打开旧版详细页" not in html
     for view in ["single", "scan", "market_feel", "hotspots", "reports", "holdings", "policy", "tools"]:
         assert f'view: "{view}"' in js
+    for mapped_view in ['legacyView: "hotspots"', 'legacyView: "holdings"', 'legacyView: "tools"', 'legacyView: "policy"', 'legacyView: "reports"']:
+        assert mapped_view in js
     for label in ["单标的回测", "参数扫描", "盘感训练", "热点分析", "报告中心", "持仓", "政策雷达", "数据中心"]:
         assert label in js
     assert "WORKSPACES.home.features" not in runtime_block

@@ -20,8 +20,9 @@ runtime-no-install contract, secret scan, CI lock install, gate commands, and
 local clean-install/offline-start evidence.
 Gate 2 / PFI-005 now has a formal browser UAT acceptance contract for the PFI
 Web Shell: four named Chinese user journeys, same-shell function panels,
-WCAG structural proof, performance budgets, and no legacy-page primary
-navigation.
+complete function pages opened in new tabs where Streamlit iframe sandboxing
+blocks same-window top navigation, WCAG structural proof, performance budgets,
+and no legacy identity in the user-visible surface.
 Gate 3 / PFI-006 now has strong local Markets vertical evidence: deterministic
 Golden market bars, market event/hotspot/sentiment cards, same-shell market UI
 controls, portfolio overlay, alerts/saved views, Operational Store
@@ -109,6 +110,13 @@ Current PFI decisions:
   vertical chain with `PFI007ResearchPolicyVerticalAcceptanceV1` evidence and
   no live policy scraping, government portal action, legal advice, broker,
   LLM, order, or private-holdings dependency.
+- Gate 2 repair evidence after user rejection: Web Shell feature cards now open
+  same-shell Chinese panels first and full detailed function pages in new tabs;
+  `scripts/uiVisualAcceptance.sh --summary-json` passed 130/130 and
+  `scripts/pfiGate2ShellAcceptance.sh --summary-json` passed 168/168 with 2
+  informational axe-dependency checks. macOS app entries in Desktop, Downloads,
+  and Applications now display `PFI OS` while retaining executable
+  `PFI_OS`, and app lite acceptance passed 29/29 with 2 info.
 - Next product target is Phase 6 deployment preparation on the target Mac while
   keeping research-only boundaries.
 

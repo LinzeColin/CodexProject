@@ -119,7 +119,7 @@ pfi_os_is_running() {
   fi
 }
 if pfi_os_is_running; then
-  echo "PFIOS appears to be running. Stop it before cleaning cache."
+  echo "PFI OS appears to be running. Stop it before cleaning cache."
 fi
 PYTHONPATH="$PROJECT_DIR/src" python3 -m pfi_os.system.cache_cleanup --dry-run
 """,

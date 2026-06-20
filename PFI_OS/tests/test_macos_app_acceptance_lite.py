@@ -94,7 +94,7 @@ def _write_app(app: Path, root: Path, *, write_binding: bool) -> None:
     with (app / "Contents" / "Info.plist").open("wb") as handle:
         plistlib.dump(
             {
-                "CFBundleDisplayName": "PFI_OS",
+                "CFBundleDisplayName": "PFI OS",
                 "CFBundleExecutable": "PFI_OS",
                 "CFBundleIdentifier": "com.linze.pfi-os",
             },

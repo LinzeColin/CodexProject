@@ -138,6 +138,7 @@ const FUNCTION_VIEWS = {
     "生成市场复核",
     "从本地已观察行情生成市场事件、热点扩散、市场情绪、证据任务和人工复核队列。",
     ["可用：市场事件、热点扩散和市场情绪三张证据卡", "验收：source_id、as_of、evidence_class、freshness 和 checksum 必须可追溯", "边界：市场观察不是交易信号，不自动调仓"],
+    { legacyView: "hotspots" },
   ),
   market_overlay: functionView(
     "market_overlay",
@@ -146,6 +147,7 @@ const FUNCTION_VIEWS = {
     "查看组合覆盖",
     "把市场观察降级为组合复核输入；不读取私有持仓，不计算自动调仓，不生成实盘订单。",
     ["可用：目标权重变化固定为 0", "验收：必须显示 no_private_holdings_used 和 human_review_required", "边界：需要持仓切片复核后才能形成仓位影响判断"],
+    { legacyView: "holdings" },
   ),
   market_alerts: functionView(
     "market_alerts",
@@ -154,6 +156,7 @@ const FUNCTION_VIEWS = {
     "保存观察视图",
     "保存市场每日复核和热点观察视图，并在新鲜度、覆盖率或热点分歧异常时进入人工复核。",
     ["可用：新鲜度复核提醒和热点分歧复核提醒", "验收：保存视图只读、带 filters 和 source_ids", "边界：提醒只创建人工任务，不触发交易"],
+    { legacyView: "tools" },
   ),
   reports: functionView(
     "reports",
@@ -186,6 +189,7 @@ const FUNCTION_VIEWS = {
     "生成研究复核",
     "统一展示政策权威来源、研究证据缺口、引用定位和报告清单，所有结论进入人工复核队列。",
     ["可用：政策权威、政策机会和研究证据缺口三张证据卡", "验收：source_url、evidence_path、report manifest 和 validation task 必须可追溯", "边界：不登录政府门户，不给法律税务结论，不生成投资建议"],
+    { legacyView: "policy" },
   ),
   citation_locator: functionView(
     "citation_locator",
@@ -194,6 +198,7 @@ const FUNCTION_VIEWS = {
     "定位官方引用",
     "把政策来源、官方链接、证据路径和报告缺口任务定位到可复核引用，区分官方证据和待补证据。",
     ["可用：OfficialEvidence 与 EvidenceRepairRequired 两类引用", "验收：每条引用必须带 source_type、source_url 或 evidence_path", "边界：引用只证明来源位置，不代表政策、法律或投资结论"],
+    { legacyView: "policy" },
   ),
   report_manifest: functionView(
     "report_manifest",
@@ -202,6 +207,7 @@ const FUNCTION_VIEWS = {
     "打开报告清单",
     "把报告、RunMetadata、缺失证据、验证任务和只读状态整理成 manifest，用于后续补证据。",
     ["可用：NeedsMoreEvidence 报告清单和 gap task id", "验收：数据质量、多源校验和 walk-forward 缺口必须显示", "边界：清单只创建复核任务，不修改报告、不刷新数据"],
+    { legacyView: "reports" },
   ),
   tools: functionView(
     "tools",
@@ -427,11 +433,12 @@ function feature(title, status, evidence, description, target = null) {
   return { title, status, evidence, description, target: target || featureTarget(title) };
 }
 
-function functionView(view, title, workspace, primaryAction, purpose, checks) {
+function functionView(view, title, workspace, primaryAction, purpose, checks, options = {}) {
   return {
     view,
     title,
     workspace,
+    legacyView: options.legacyView || view,
     primaryAction,
     purpose,
     checks,
@@ -793,10 +800,15 @@ function renderFunctionDetail(detail) {
   if (actionButton) {
     actionButton.textContent = detail.primaryAction;
     actionButton.dataset.functionActionView = detail.view;
+    actionButton.href = legacyViewUrl(detail.legacyView || detail.view);
+    actionButton.target = "_blank";
+    actionButton.rel = "noreferrer";
   }
   if (legacyLink) {
-    legacyLink.href = legacyViewUrl(detail.view);
-    legacyLink.textContent = `进入${detail.title}详细页`;
+    legacyLink.href = legacyViewUrl(detail.legacyView || detail.view);
+    legacyLink.target = "_blank";
+    legacyLink.rel = "noreferrer";
+    legacyLink.textContent = `进入${detail.title}功能页`;
   }
   if (checks) {
     checks.replaceChildren();
@@ -819,13 +831,25 @@ function hideFunctionDetail() {
   if (panel) panel.hidden = true;
 }
 
-function runFunctionAction(view) {
+function runFunctionAction(view, trigger = null) {
   const detail = FUNCTION_VIEWS[view] || FUNCTION_VIEWS.single;
   const taskPhase = document.querySelector("#task-phase");
   const jobLabel = document.querySelector("#background-job-label");
   if (taskPhase) taskPhase.textContent = `${detail.title} · 已准备`;
-  if (jobLabel) jobLabel.textContent = `${detail.primaryAction} · 使用详细页完成真实运行`;
-  showToast(`${detail.title}面板已准备；需要真实运行时进入详细页`);
+  if (jobLabel) jobLabel.textContent = `${detail.primaryAction} · 正在进入功能页`;
+  showToast(`正在进入${detail.title}功能页`);
+  if (!trigger || !trigger.href) navigateToFunctionPage(detail.legacyView || detail.view);
+}
+
+function navigateToFunctionPage(view) {
+  const anchor = document.createElement("a");
+  anchor.href = legacyViewUrl(view);
+  anchor.target = "_blank";
+  anchor.rel = "noreferrer";
+  anchor.hidden = true;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
 }
 
 function legacyViewUrl(view) {
@@ -1161,7 +1185,7 @@ function bindEvents() {
     const functionAction = event.target.closest("[data-function-action]");
     if (functionAction) {
       setPressedFeedback(functionAction);
-      runFunctionAction(functionAction.dataset.functionActionView);
+      runFunctionAction(functionAction.dataset.functionActionView, functionAction);
       return;
     }
     if (event.target.closest("[data-function-close]")) {

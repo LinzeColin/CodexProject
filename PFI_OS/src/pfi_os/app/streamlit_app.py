@@ -31,7 +31,7 @@ except (ModuleNotFoundError, ImportError, TypeError):  # pragma: no cover - enab
 
         def __getattr__(self, name):
             raise ModuleNotFoundError(
-                "streamlit is required for the PFI_OS UI runtime. "
+                "streamlit is required for the PFI OS UI runtime. "
                 "Install optional app dependencies with `pip install -e .[app]`."
             )
 
@@ -430,7 +430,7 @@ TERM_HELP = {
     "热点工作台模式": "控制热点分析默认计算规模。快速预览限制对象和切片数量，标准分析适合盘中复核，完整复盘适合报告前使用。",
     "热点运行摘要": "热点按钮生成后的 compact 运行摘要，用于确认对象覆盖、切片数量、缓存 TTL 和证据状态，不重复保存原始行情明细。",
     "52ETF公开参考": "读取 52ETF 大盘云图公开页面的板块和交互提示，只作为市场云图参考，不作为行情、回测或交易证据。",
-    "52ETF热点对照": "把 52ETF 公开 A 股云图板块与 PFI_OS 当前热点对象做只读覆盖对照，用于检查 UI 和对象池，不作为交易信号。",
+    "52ETF热点对照": "把 52ETF 公开 A 股云图板块与 PFI OS 当前热点对象做只读覆盖对照，用于检查 UI 和对象池，不作为交易信号。",
     "自定义时间查看": "输入日期、时间片段或完整时间戳，系统会自动定位到最接近的可用时间切片。",
     "热点扩散": "平均热度上升且偏强对象增加，代表横向强势从少数对象向更多对象扩散。",
     "强弱分化": "同一时间切片内偏强和偏弱对象同时存在，代表市场内部差异较大，需要分板块复核。",
@@ -1728,7 +1728,7 @@ def workspace_header() -> None:
           <div>
             <div class="ql-eyebrow">本地优先 / 证据驱动 / 价值转化</div>
             <h1>{_escape_html(MASTER_SHORT_TITLE)}</h1>
-            <p class="ql-hero-cn">PFI_OS 是主入口；PFIOS 作为内置量化研究、策略回测和盘感训练能力，继续承接研究总线、持仓复核和跨系统证据流。</p>
+            <p class="ql-hero-cn">PFI OS 是主入口；内置量化研究、策略回测和盘感训练能力，继续承接研究总线、持仓复核和跨系统证据流。</p>
           </div>
         </div>
         """,
@@ -1903,7 +1903,7 @@ def render_macos_lifecycle_panel() -> None:
     if control_cols[1].button("停止服务", key="macos_lifecycle_stop", disabled=not (is_running and confirm_stop)):
         result = _run_lifecycle_script("scripts/stopPFIOS.sh")
         st.code(_command_output(result), language="text")
-        st.warning("如果当前页面断开，说明本地 Streamlit 服务已停止。重新打开 PFI_OS.app 即可启动。")
+        st.warning("如果当前页面断开，说明本地 Streamlit 服务已停止。重新打开 PFI OS app 即可启动。")
     confirm_clean = control_cols[2].checkbox("确认清理", value=False, key="macos_lifecycle_confirm_clean", disabled=is_running)
     if control_cols[2].button("清理缓存", key="macos_lifecycle_clean", disabled=is_running or not confirm_clean):
         result = _run_lifecycle_script("scripts/cleanCache.sh")
@@ -2418,7 +2418,7 @@ def industry_research_view() -> None:
                 "status": "success",
                 "text": (
                     f"同步完成：行研报告 {result.reports} 份，验证任务 {result.validation_tasks} 条，"
-                    f"PFIOS 结果 {result.pfi_os_results} 条，持仓 {result.holdings} 条。"
+                    f"PFI OS 结果 {result.pfi_os_results} 条，持仓 {result.holdings} 条。"
                 ),
                 "snapshot": result.snapshot_path,
                 "warnings": list(result.warnings),
@@ -2501,10 +2501,10 @@ def industry_research_view() -> None:
     tasks = validation_task_frame()
     linked_col1, linked_col2 = st.columns(2)
     with linked_col1:
-        st.write("最近 PFIOS 报告")
+        st.write("最近 PFI OS 报告")
         latest_reports = artifacts[artifacts["artifact_type"].isin(WORD_REPORT_TYPES)].head(10) if not artifacts.empty else pd.DataFrame()
         if latest_reports.empty:
-            st.info("暂无 PFIOS Word 报告。")
+            st.info("暂无 PFI OS Word 报告。")
         else:
             st.dataframe(_display_artifacts_frame(latest_reports), width="stretch", hide_index=True)
     with linked_col2:
@@ -2522,7 +2522,7 @@ def industry_research_view() -> None:
 
 def research_bus_monitor_view() -> None:
     st.subheader("研究总线")
-    st.caption("集中查看 PFIOS、行研系统、消费行为系统、持仓主数据和独立验证系统的互通状态。")
+    st.caption("集中查看 PFI OS、行研系统、消费行为系统、持仓主数据和独立验证系统的互通状态。")
     health = research_bus_health_summary()
     counts = health.get("request_counts", {})
     cols = st.columns(5)
@@ -2741,7 +2741,7 @@ def _format_big_number(value: object) -> str:
 
 def holdings_view() -> None:
     st.subheader("持仓")
-    st.caption("读取、保存并同步 PFIOS、行研报告系统、消费行为分析系统和支付宝账本中的持仓数据；待确认订单不会计入正式持仓。")
+    st.caption("读取、保存并同步 PFI OS、行研报告系统、消费行为分析系统和支付宝账本中的持仓数据；待确认订单不会计入正式持仓。")
     sources = scan_holding_sources()
     holdings = load_current_holdings()
     pending_orders = load_pending_orders_frame()
@@ -3367,7 +3367,7 @@ def render_site52etf_public_reference() -> dict[str, object]:
     if snapshot.get("snapshot_source") == "local_latest":
         st.caption("当前使用本地 52ETF latest snapshot；可运行 `scripts/site52etfSnapshot.sh --output-dir data/integrations/site52etf` 刷新。")
     if snapshot.get("status") == "Unavailable":
-        st.warning("52ETF 公开参考暂不可用；PFI_OS 本地热点分析仍可继续运行。")
+        st.warning("52ETF 公开参考暂不可用；PFI OS 本地热点分析仍可继续运行。")
     else:
         st.caption("该参考源只用于学习市场云图表达和对照对象池，不写入回测、不触发交易、不替代本地数据质量闸门。")
     return snapshot
@@ -3376,10 +3376,10 @@ def render_site52etf_public_reference() -> dict[str, object]:
 def render_site52etf_hotspot_comparison(snapshot: dict[str, object], history: pd.DataFrame, market: str, snapshot_time: str) -> None:
     comparison = build_site52etf_hotspot_comparison(snapshot, history, market=market, snapshot_time=snapshot_time)
     st.markdown(f'<h4 title="{_escape_html(TERM_HELP["52ETF热点对照"])}">52ETF 与 PFI 热点对照</h4>', unsafe_allow_html=True)
-    st.caption("只读对照公开 A 股云图板块和 PFI_OS 当前热点对象池；用于检查覆盖与交互口径，不进入回测、不触发交易。")
+    st.caption("只读对照公开 A 股云图板块和 PFI OS 当前热点对象池；用于检查覆盖与交互口径，不进入回测、不触发交易。")
     st.dataframe(pd.DataFrame(site52etf_comparison_rows(comparison)), width="stretch", hide_index=True)
     if comparison.get("status") != "Pass":
-        st.caption("当前对照为 Review：可能是 52ETF 不可用、市场不是 CN，或 PFI_OS 对象池与公开云图板块映射不足。")
+        st.caption("当前对照为 Review：可能是 52ETF 不可用、市场不是 CN，或 PFI OS 对象池与公开云图板块映射不足。")
 
 
 def _sentiment_payloads(instruments: list[SentimentInstrument]) -> tuple[tuple[str, str, str, str], ...]:
@@ -4914,7 +4914,7 @@ def personal_profile_view() -> None:
         st.caption("持仓文件支持 CSV、XLSX、JSON。字段建议包含 symbol/代码、name/名称、market/市场、quantity/持仓数量、position_value/市值、weight/权重。")
 
     if holdings.empty:
-        st.warning("未读取到消费行为分析系统或 PFIOS 持仓数据。页面会先基于回测、复盘和验证任务生成画像；持仓集中度需要配置后才准确。")
+        st.warning("未读取到消费行为分析系统或 PFI OS 持仓数据。页面会先基于回测、复盘和验证任务生成画像；持仓集中度需要配置后才准确。")
     else:
         st.markdown("#### 持仓数据")
         display_holdings = holdings.copy()
@@ -5221,7 +5221,7 @@ def show_decision_quality_dashboard(runs: pd.DataFrame) -> None:
 
 def show_validation_queue_panel(artifacts: pd.DataFrame) -> None:
     st.markdown("#### 验证任务队列")
-    st.caption("这里承接行研、政策、新闻或手工研究问题。任务只用于安排 PFIOS 验证，不代表实盘操作。默认先看“证据索引”页的报告验证工作台，再决定是否执行高级动作。")
+    st.caption("这里承接行研、政策、新闻或手工研究问题。任务只用于安排 PFI OS 验证，不代表实盘操作。默认先看“证据索引”页的报告验证工作台，再决定是否执行高级动作。")
     frame = validation_task_frame()
     card_cols = st.columns(4)
     for col, card in zip(card_cols, validation_queue_cards(frame)):

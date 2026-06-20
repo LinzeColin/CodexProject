@@ -9,9 +9,9 @@
   <key>CFBundleIdentifier</key>
   <string>com.linze.pfi-os.launcher</string>
   <key>CFBundleName</key>
-  <string>PFI_OS</string>
+  <string>PFI OS</string>
   <key>CFBundleDisplayName</key>
-  <string>PFI_OS</string>
+  <string>PFI OS</string>
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>

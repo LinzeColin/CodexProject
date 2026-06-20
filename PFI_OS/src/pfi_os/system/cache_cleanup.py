@@ -107,7 +107,7 @@ def iter_disposable_paths(root: Path) -> Iterable[DisposablePath]:
 def format_cache_cleanup_report(report: dict) -> str:
     action = "would remove" if report["mode"] == "dry_run" else "removed"
     lines = [
-        "PFIOS cache cleanup",
+        "PFI OS cache cleanup",
         f"Mode: {report['mode']}",
         f"Candidates: {report['candidate_count']} paths, {report['candidate_file_count']} files, "
         f"{report['candidate_dir_count']} directories, {report['candidate_kb']} KB",

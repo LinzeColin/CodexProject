@@ -179,13 +179,20 @@ def test_feature_cards_have_working_open_actions_for_real_function_pages():
     assert "openFunctionView" in js
     assert "renderFunctionDetail" in js
     assert "runFunctionAction" in js
-    assert "进入${detail.title}详细页" in js
+    assert "navigateToFunctionPage" in js
+    assert 'target = "_blank"' in js
+    assert "anchor.click()" in js
+    assert 'data-function-action>打开功能</a>' in html
+    assert "进入${detail.title}功能页" in js
+    assert "打开旧版详细页" not in html
     for view in ["single", "hotspots", "reports", "holdings"]:
         assert f'data-feature-view="{view}"' in html
     for view in ["single", "scan", "market_feel", "big_data", "hotspots", "reports", "holdings", "policy", "tools"]:
         assert f'view: "{view}"' in js
     assert "featureOpenControl" in js
     assert "legacyViewUrl" in js
+    for mapped_view in ['legacyView: "hotspots"', 'legacyView: "holdings"', 'legacyView: "tools"', 'legacyView: "policy"', 'legacyView: "reports"']:
+        assert mapped_view in js
     assert 'button.dataset.featureView = target.view' in js
     assert 'featureControl.dataset.featureView' in js
     assert 'params.set("pfi_shell", "0")' in js

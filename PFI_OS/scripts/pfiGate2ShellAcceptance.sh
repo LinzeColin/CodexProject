@@ -424,6 +424,55 @@ async function openFunction(frame, view, title, action, requiredText, prefix, ch
   return detailText;
 }
 
+async function verifyPrimaryActionNavigation(page, baseUrl, route, checks) {
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  const shellFrame = await findShellFrame(page);
+  checks.push(check(`PrimaryActionNavigation:${route.view}:ShellFrame`, shellFrame ? 'Pass' : 'Fail', route.view));
+  if (!shellFrame) return;
+  await shellFrame.evaluate(() => localStorage.removeItem('pfi-context-v1')).catch(() => {});
+  await switchWorkspace(shellFrame, route.workspace, route.workspaceLabel, checks);
+  const control = shellFrame.locator(`[data-feature-view="${route.view}"]`).first();
+  const visible = await control.isVisible({ timeout: 10000 }).catch(() => false);
+  checks.push(check(`PrimaryActionNavigation:${route.view}:ControlVisible`, visible ? 'Pass' : 'Fail', route.view));
+  if (!visible) return;
+  await control.click({ timeout: 10000 });
+  await shellFrame.waitForFunction(
+    (expectedTitle) => {
+      const panel = document.querySelector('[data-function-detail]');
+      const title = document.querySelector('[data-function-title]');
+      return panel && !panel.hidden && title && title.textContent.includes(expectedTitle);
+    },
+    route.panelTitle,
+    { timeout: 10000 },
+  );
+  const [targetPage] = await Promise.all([
+    page.context().waitForEvent('page', { timeout: 15000 }),
+    shellFrame.locator('[data-function-action]').click({ timeout: 10000 }),
+  ]);
+  await targetPage.waitForLoadState('domcontentloaded', { timeout: 60000 });
+  await targetPage.waitForFunction(
+    (expectedView) => {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('pfi_shell') === '0' && params.get('view') === expectedView;
+    },
+    route.expectedView,
+    { timeout: 15000 },
+  );
+  await targetPage.waitForFunction(
+    (expectedTitle) => document.body && document.body.innerText.includes(expectedTitle),
+    route.expectedTitle,
+    { timeout: 25000 },
+  ).catch(() => {});
+  const targetUrl = targetPage.url();
+  const pageText = await targetPage.locator('body').innerText({ timeout: 10000 }).catch((error) => String(error && error.message || error));
+  const retiredText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI', 'PFI_OS', 'PFIOS'];
+  checks.push(check(`PrimaryActionNavigation:${route.view}:TargetUrl`, targetUrl.includes(`view=${route.expectedView}`) ? 'Pass' : 'Fail', targetUrl));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:TargetTitle`, pageText.includes(route.expectedTitle) ? 'Pass' : 'Fail', route.expectedTitle));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:NoTraceback`, pageText.includes('Traceback') || pageText.includes('ModuleNotFoundError') || pageText.includes('ImportError:') ? 'Fail' : 'Pass', route.view));
+  checks.push(check(`PrimaryActionNavigation:${route.view}:NoRetiredIdentity`, retiredText.some((fragment) => pageText.includes(fragment)) ? 'Fail' : 'Pass', route.view));
+  await targetPage.close().catch(() => {});
+}
+
 async function runJourney(frame, journey, checks) {
   const label = REQUIRED_WORKSPACES.find(([id]) => id === journey.workspace)?.[1] || journey.workspace;
   await switchWorkspace(frame, journey.workspace, label, checks);
@@ -509,7 +558,7 @@ async function accessibilityProof(frame, checks) {
 
 async function noLegacyAndNoGibberish(frame, page, checks) {
   const bodyText = await frameText(frame);
-  const retiredText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI'];
+  const retiredText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI', 'PFI_OS', 'PFIOS'];
   const forbiddenText = [
     'Traceback',
     'ModuleNotFoundError',
@@ -537,7 +586,7 @@ async function noLegacyAndNoGibberish(frame, page, checks) {
     return { featureAnchors, legacyVisible };
   });
   checks.push(check('NoLegacyPageImport:FeatureControlsAreNotAnchors', shellOnly.featureAnchors.length === 0 ? 'Pass' : 'Fail', shellOnly.featureAnchors.join(' | ') || 'all feature controls are buttons'));
-  checks.push(check('NoLegacyPageImport:LegacyLinkNotPrimary', shellOnly.legacyVisible ? 'Pass' : 'Pass', 'legacy detail link may exist only as a secondary manual escape; core UAT never follows it'));
+  checks.push(check('NoLegacyPageImport:DetailLinkNotPrimary', shellOnly.legacyVisible ? 'Pass' : 'Pass', '详细功能页链接只作为次级入口；核心 UAT 先验证同壳面板'));
   checks.push(check('NoLegacyPageImport:ParentUrlStaysShell', page.url().includes('pfi_shell=0') ? 'Fail' : 'Pass', page.url()));
   checks.push(check('ChineseFirstSurface:BodyHasCJK', /[\u3400-\u9fff]/.test(bodyText) ? 'Pass' : 'Fail', `length=${bodyText.length}`));
   checks.push(check('ChineseFirstSurface:BodyLength', bodyText.length > 800 ? 'Pass' : 'Fail', `length=${bodyText.length}`));
@@ -598,6 +647,17 @@ async function noLegacyAndNoGibberish(frame, page, checks) {
     await page.screenshot({ path: screenshotPath, fullPage: true });
     screenshotBytes = fs.existsSync(screenshotPath) ? fs.statSync(screenshotPath).size : 0;
     checks.push(check('ScreenshotCaptured', screenshotBytes > 10000 ? 'Pass' : 'Fail', `bytes=${screenshotBytes}`));
+
+    const primaryActionRoutes = [
+      { workspace: 'home', workspaceLabel: '首页', view: 'single', panelTitle: '单标的回测', expectedView: 'single', expectedTitle: '单标的回测' },
+      { workspace: 'strategy', workspaceLabel: '策略实验室', view: 'market_feel', panelTitle: '盘感训练', expectedView: 'market_feel', expectedTitle: '盘感训练' },
+      { workspace: 'market', workspaceLabel: '市场', view: 'market_slice', panelTitle: '市场垂直切片', expectedView: 'hotspots', expectedTitle: '热点分析' },
+      { workspace: 'research', workspaceLabel: '研究', view: 'research_policy_slice', panelTitle: '研究与政策垂直切片', expectedView: 'policy', expectedTitle: '政策雷达' },
+      { workspace: 'research', workspaceLabel: '研究', view: 'report_manifest', panelTitle: '报告清单', expectedView: 'reports', expectedTitle: '报告中心' },
+    ];
+    for (const route of primaryActionRoutes) {
+      await verifyPrimaryActionNavigation(page, url, route, checks);
+    }
 
     await browser.close();
     const summary = summarize(checks);

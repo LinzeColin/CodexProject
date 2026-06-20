@@ -50,6 +50,7 @@ def test_gate2_shell_acceptance_covers_a11y_performance_and_no_legacy_page_gate(
         "FocusVisible",
         "NoLegacyPageImport",
         "NoLegacyPageNavigation",
+        "PrimaryActionNavigation",
         "ChineseFirstSurface",
         "NoVisibleLegacyOrError",
     ]:
@@ -94,6 +95,7 @@ def test_web_shell_assets_support_gate2_same_shell_feature_journeys():
     assert "openFunctionView" in js
     assert "renderFunctionDetail" in js
     assert "runFunctionAction" in js
+    assert "navigateToFunctionPage" in js
     assert "window.open" not in js
     assert "location.reload" not in js
     assert "window.location.href" not in js

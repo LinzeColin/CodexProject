@@ -196,7 +196,7 @@ def _plist_check(label: str, plist_path: Path) -> dict[str, Any]:
         return _check(label, "InfoPlist", "Fail", f"{type(exc).__name__}: {exc}")
     display = payload.get("CFBundleDisplayName") or payload.get("CFBundleName")
     executable = payload.get("CFBundleExecutable")
-    status = "Pass" if display == "PFI_OS" and executable == APP_EXECUTABLE_NAME else "Fail"
+    status = "Pass" if display == "PFI OS" and executable == APP_EXECUTABLE_NAME else "Fail"
     return _check(label, "InfoPlist", status, f"display={display}; executable={executable}")
 
 
