@@ -2429,6 +2429,7 @@ Residual risks:
 - GitHub Actions run `27866865460` on commit `5822f15a13e999692786cf64bccba7016e596b83`: FAILED in the same aggregated Step 8 after the first follow-up fix.
 - GitHub Actions run `27866974650` on commit `aefe932a7b3272895ef2c26ba48a8cd4746a510a`: FAILED after workflow split, now isolated to Step 10 `Verify G2 PostgreSQL integration`; Steps 7, 8 and 9 succeeded. This confirmed the remaining failure was in PostgreSQL migration/integration contract, not static/unit/browser setup.
 - GitHub Actions run `27867248690` on commit `e3c77499064a2c33e48a2430e4419a10f5dbaa63`: FAILED in Step 10 with `TypeError: DomainRepository.production_context_for_connection() missing 1 required keyword-only argument: 'as_of'`. Follow-up fix passes `as_of=None` from both evidence detail branches before the next CI run.
+- GitHub Actions run `27867365117` on commit `b3750ca0285a6ae05a1d7c7c33246aa9f1d0f5cd`, job `82473570232`: PASS. Steps 7-12 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 
 ### Remaining gaps
 

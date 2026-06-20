@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "artifact_id": "release-t1211-manifest-checksum-evidence",
-  "generated_at": "2026-06-20T09:42:00+00:00",
-  "source_commit": "e3c7749",
+  "generated_at": "2026-06-20T09:47:24+00:00",
+  "source_commit": "b3750ca",
   "system": {
     "zh_name": "商域图谱",
     "en_name": "Enterprise Ecosystem Intelligence",
@@ -42,8 +42,8 @@
     "owner": "repository owner"
   },
   "remote_verification": {
-    "status": "PENDING",
-    "run_id": "",
-    "job_id": ""
+    "status": "PASS",
+    "run_id": "27867365117",
+    "job_id": "82473570232"
   }
 }
