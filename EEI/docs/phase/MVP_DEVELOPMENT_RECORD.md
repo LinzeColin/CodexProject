@@ -2878,7 +2878,8 @@ Residual risks:
 - Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make validate-release-artifacts`: PASS.
 - Local `shasum -a 256 -c CHECKSUMS.sha256`: PASS.
 - Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS after installing project-local Playwright Chromium; unit tests 15/15 with one existing Starlette/httpx deprecation warning.
-- PostgreSQL integration proof still requires GitHub Actions G2 because this local host does not provide Docker/PostgreSQL.
+- GitHub Actions `EEI validation` on `c67c1d7cab139f56555c57c31645fdf982da72c9`: PASS, run `27873417595`, job `82488885381`; Steps 7-12 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
+- PostgreSQL execution proof comes from GitHub Actions G2 because this local host does not provide Docker/PostgreSQL.
 
 ### Remaining gaps
 
