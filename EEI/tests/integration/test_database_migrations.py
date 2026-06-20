@@ -409,7 +409,7 @@ def exercise_official_full_text_dry_run_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert candidate_row == (52, 10, 10, 4, 3)
+        assert candidate_row == (52, 13, 13, 4, 3)
 
         evidence_row = connection.execute(
             """

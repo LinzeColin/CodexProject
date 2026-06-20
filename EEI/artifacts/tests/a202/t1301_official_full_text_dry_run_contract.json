@@ -22,7 +22,7 @@
     "Dry-run source_documents use a distinct external_id suffix and raw_storage_uri under tests/fixtures/official_source_full_text/.",
     "Dry-run entity_resolution_candidates are stored under parser_version nvidia-official-fulltext-dry-run-v1 and keep confidence, matched research/entity IDs, match method and review status.",
     "Dry-run ingestion_evidence_chain rows are context-only, carry source_health and retry_policy in structured_fact, and explicitly mark dry_run_context_only_not_published_relationship.",
-    "The integration test runs the connector twice to prove idempotent upsert behavior and asserts 4 raw snapshots, 4 evidence rows, 52 resolution candidates, healthy source coverage and zero relationship_fact_candidates for the dry-run parser."
+    "The integration test runs the connector twice to prove idempotent upsert behavior and asserts 4 raw snapshots, 4 evidence rows, 52 resolution candidates, 13 high-confidence/matched-research candidates, healthy source coverage and zero relationship_fact_candidates for the dry-run parser."
   ],
   "evidence_paths": [
     "scripts/fetch_official_source_full_text.py",
@@ -36,6 +36,9 @@
   "parameters": {
     "ingestion.full_text_dry_run_min_text_chars": 240,
     "ingestion.full_text_dry_run_min_token_coverage_ratio": 1.0,
+    "ingestion.full_text_dry_run_resolution_candidates": 52,
+    "ingestion.full_text_dry_run_high_confidence_candidates": 13,
+    "ingestion.full_text_dry_run_matched_research_candidates": 13,
     "scheduler.max_retry_attempts": 3,
     "scheduler.dead_letter_after_attempts": 3,
     "ingestion.live_retrieval": false,

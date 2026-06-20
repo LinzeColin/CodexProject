@@ -3357,7 +3357,7 @@ Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A206 STILL IN PROGRE
 - The connector validates source URL agreement, capture status, minimum text length, and 100% expected-token coverage before writing database rows.
 - The connector writes `raw_source_snapshots`, `source_documents`, `entity_resolution_candidates`, and context-only `ingestion_evidence_chain` rows under parser version `nvidia-official-fulltext-dry-run-v1`.
 - Dry-run payloads preserve `source_health`, `retry_policy`, `attempts`, `live_retrieval=false`, and `release_clearance=false`.
-- PostgreSQL integration now runs the dry-run connector twice and asserts idempotency, 4 raw snapshots, 4 evidence rows, 52 resolution candidates, healthy coverage, and zero `relationship_fact_candidates` for the dry-run parser.
+- PostgreSQL integration now runs the dry-run connector twice and asserts idempotency, 4 raw snapshots, 4 evidence rows, 52 resolution candidates, 13 high-confidence/matched-research candidates, healthy coverage, and zero `relationship_fact_candidates` for the dry-run parser.
 
 ### Files changed
 
@@ -3400,6 +3400,7 @@ Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A206 STILL IN PROGRE
 
 ### Remote CI validation
 
+- GitHub Actions run `27881176915` / job `82508895982` for commit `58eba46676c8d09af57e6a15d884144a6af1b47f`: FAIL in Step 10 `Verify G2 PostgreSQL integration`; PostgreSQL output was `(52, 13, 13, 4, 3)` for dry-run candidates while the test still expected `(52, 10, 10, 4, 3)`. The follow-up fix aligns the assertion and evidence artifact to the real database output.
 - Pending GitHub Actions `make verify-g2-db` proof for the dry-run connector inside PostgreSQL integration.
 
 ### Remaining gaps
