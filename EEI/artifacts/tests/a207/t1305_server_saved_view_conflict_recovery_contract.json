@@ -37,8 +37,8 @@
     ]
   },
   "remaining_to_close_a207": [
-    "Wire production frontend saved-view controls to /v1/saved-views instead of localStorage only",
-    "Add real multi-session browser E2E using two contexts against the API-backed saved-view contract",
+    "Frontend API-first adapter is covered by artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json; run a real multi-session browser E2E using two contexts against live FastAPI/PostgreSQL before closure",
+    "Add explicit frontend conflict recovery UI for 409 stale_saved_view_version including fetch-latest or restore-from-versions action",
     "Add user/workspace authn/authz boundary before public multi-user deployment"
   ]
 }

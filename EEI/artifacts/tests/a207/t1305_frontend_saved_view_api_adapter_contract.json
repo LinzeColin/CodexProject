@@ -1,0 +1,42 @@
+{
+  "schema_version": "eei-acceptance-evidence-v1",
+  "system_name": "EEI",
+  "task_id": "T1305",
+  "acceptance_ids": ["A207"],
+  "status": "PARTIAL_FRONTEND_API_ADAPTER",
+  "generated_at": "2026-06-20T00:00:00Z",
+  "implemented_contracts": [
+    "Browser saved-view controls attempt configured /v1/saved-views server persistence before local fallback",
+    "API base URL is controlled by NEXT_PUBLIC_EEI_API_BASE_URL or localStorage key eei.apiBaseUrl.v1",
+    "Saved-view create payload publishes workspace_key=mvp, saved-view-v1 schema, focus, selected node, path, lens, zoom, as-of, layout and analysis-context snapshots",
+    "Saved-view restore reads the server record when a server id is available and only reports local restore when API base/server id is missing",
+    "DOM contract exposes sync mode, sync reason, server id, server version, server endpoint, workspace key and API-base storage key",
+    "Server conflict and server error states are surfaced as server-conflict/server-error instead of being reported as a successful save or restore"
+  ],
+  "files": [
+    "apps/web/src/app/saved-view-client.ts",
+    "apps/web/src/app/page.tsx",
+    "tests/e2e/state-contract.spec.ts"
+  ],
+  "test_contract": {
+    "commands": [
+      "PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck",
+      "PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web test:e2e"
+    ],
+    "checks": [
+      "local fallback path reports local-saved/local-restored with reason api_base_missing",
+      "mock server create path reports server-saved and persists server id/version/endpoint",
+      "mock server restore path reports server-restored and reapplies focus, selected node, lens, zoom and as-of state",
+      "saved view API payload carries focus_key, selected_key, visual_lens, semantic_zoom, as_of, model_version and profile_version"
+    ],
+    "latest_local_result": {
+      "typecheck": "PASS",
+      "playwright_e2e": "PASS_29_OF_29"
+    }
+  },
+  "remaining_to_close_a207": [
+    "Run a real multi-session browser E2E using two browser contexts against live FastAPI and PostgreSQL, not only a mocked /v1/saved-views route",
+    "Add explicit frontend conflict recovery UI for 409 stale_saved_view_version including fetch-latest or restore-from-versions action",
+    "Add user/workspace authn/authz boundary before public multi-user deployment"
+  ]
+}

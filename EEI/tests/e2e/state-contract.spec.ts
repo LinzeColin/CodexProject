@@ -14,6 +14,11 @@ const expectedPreviewContext = {
   scoreSnapshot: "score-preview-session-v1"
 };
 
+const savedViewApiBaseStorageKey = "eei.apiBaseUrl.v1";
+const savedViewWorkspaceKey = "mvp";
+const savedViewLayout =
+  "upstream-left focus-center downstream-right capital-top policy-bottom";
+
 async function expectActiveContext(target: Locator) {
   await expect(target).toHaveAttribute("data-active-model-version", expectedContext.modelVersion);
   await expect(target).toHaveAttribute("data-active-profile-version", expectedContext.profileVersion);
@@ -284,10 +289,26 @@ test("saves versioned views restores deterministically and shows as-of change ov
   await expect(page.getByTestId("change-overlay")).toContainText("not real-time");
 
   await page.getByTestId("save-current-view").click();
-  await expect(page.getByTestId("saved-view-status")).toHaveText("saved");
+  await expect(page.getByTestId("saved-view-status")).toHaveText("local-saved");
   await expect(page.getByTestId("saved-view-panel")).toHaveAttribute(
     "data-saved-view-version",
     "saved-view-v1"
+  );
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute(
+    "data-api-base-storage-key",
+    savedViewApiBaseStorageKey
+  );
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute(
+    "data-workspace-key",
+    savedViewWorkspaceKey
+  );
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute(
+    "data-sync-mode",
+    "local_fallback"
+  );
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute(
+    "data-sync-reason",
+    "api_base_missing"
   );
   await expect(page.getByTestId("saved-view-panel")).toHaveAttribute(
     "data-saved-view-id",
@@ -301,12 +322,115 @@ test("saves versioned views restores deterministically and shows as-of change ov
 
   await page.getByTestId("restore-saved-view").click();
   await expectCloudState(page);
-  await expect(page.getByTestId("saved-view-status")).toHaveText("restored");
+  await expect(page.getByTestId("saved-view-status")).toHaveText("local-restored");
   await expect(page.getByTestId("saved-view-contract")).toContainText("Synthetic Cloud Customer");
   await expect(page.getByTestId("saved-view-contract")).toContainText("supply_chain / 2026-06-12");
   await expect(page.getByTestId("saved-view-contract")).toContainText(
-    "upstream-left focus-center downstream-right capital-top policy-bottom"
+    savedViewLayout
   );
+  await expect(page.getByTestId("saved-view-contract")).toContainText(
+    "Synthetic Cloud Customer / supply_chain / 2026-06-12"
+  );
+});
+
+test("A207 saves and restores saved views through the configured server API", async ({
+  page
+}) => {
+  const serverRecord = {
+    id: "server-sv-cloud",
+    name: "Synthetic Cloud Customer / supply_chain / 2026-06-12",
+    workspace_key: savedViewWorkspaceKey,
+    state: {
+      local_id: "sv-cloud-supply_chain-L2-2026-06-12",
+      focus_key: "cloud",
+      selected_key: "datacenter",
+      path: ["nvidia", "cloud"],
+      visual_lens: "supply_chain",
+      semantic_zoom: "L2",
+      as_of: "2026-06-12",
+      filters: "supply_chain",
+      layout: savedViewLayout,
+      model_version: expectedContext.modelVersion,
+      profile_version: expectedContext.profileVersion,
+      data_snapshot: expectedContext.dataSnapshot,
+      score_snapshot: expectedContext.scoreSnapshot,
+      notes: "Synthetic Cloud Customer / supply_chain / 2026-06-12"
+    },
+    schema_version: "saved-view-v1",
+    current_version: 1,
+    version_count: 1,
+    updated_at: "2026-06-20T00:00:00Z",
+    metadata: {
+      source: "eei-web",
+      workspace_key: savedViewWorkspaceKey
+    }
+  };
+
+  let savePayload: Record<string, unknown> | undefined;
+  await page.route("https://eei.test/v1/saved-views", async (route) => {
+    expect(route.request().method()).toBe("POST");
+    savePayload = route.request().postDataJSON() as Record<string, unknown>;
+    await route.fulfill({
+      contentType: "application/json",
+      status: 201,
+      body: JSON.stringify(serverRecord)
+    });
+  });
+  await page.route("https://eei.test/v1/saved-views/server-sv-cloud", async (route) => {
+    expect(route.request().method()).toBe("GET");
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify(serverRecord)
+    });
+  });
+  await page.addInitScript(
+    ({ storageKey, apiBase }: { storageKey: string; apiBase: string }) =>
+      window.localStorage.setItem(storageKey, apiBase),
+    { storageKey: savedViewApiBaseStorageKey, apiBase: "https://eei.test" }
+  );
+
+  await page.goto(
+    "/?subject=cloud&selected=datacenter&lens=supply_chain&zoom=L2&asOf=2026-06-12&path=nvidia.cloud"
+  );
+  await expectCloudState(page);
+
+  await page.getByTestId("save-current-view").click();
+  await expect(page.getByTestId("saved-view-status")).toHaveText("server-saved");
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute("data-sync-mode", "server");
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute("data-sync-reason", "ok");
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute(
+    "data-server-id",
+    "server-sv-cloud"
+  );
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute("data-server-version", "1");
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute(
+    "data-server-endpoint",
+    "https://eei.test/v1/saved-views"
+  );
+
+  expect(savePayload).toMatchObject({
+    workspace_key: savedViewWorkspaceKey,
+    schema_version: "saved-view-v1"
+  });
+  expect(savePayload?.state).toMatchObject({
+    focus_key: "cloud",
+    selected_key: "datacenter",
+    visual_lens: "supply_chain",
+    semantic_zoom: "L2",
+    as_of: "2026-06-12",
+    model_version: expectedContext.modelVersion,
+    profile_version: expectedContext.profileVersion
+  });
+
+  await page.getByTestId("timeline-2026-06-01").click();
+  await page.getByTestId("lens-policy_risk").click();
+  await page.getByRole("button", { name: "回到 NVIDIA" }).click();
+  await page.getByTestId("restore-saved-view").click();
+
+  await expectCloudState(page);
+  await expect(page.getByTestId("saved-view-status")).toHaveText("server-restored");
+  await expect(page.getByTestId("saved-view-panel")).toHaveAttribute("data-sync-mode", "server");
   await expect(page.getByTestId("saved-view-contract")).toContainText(
     "Synthetic Cloud Customer / supply_chain / 2026-06-12"
   );

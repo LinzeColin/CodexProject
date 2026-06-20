@@ -64,6 +64,7 @@ apps/web/src/app/industries/page.tsx
 apps/web/src/app/layout.tsx
 apps/web/src/app/objects-scope/page.tsx
 apps/web/src/app/page.tsx
+apps/web/src/app/saved-view-client.ts
 apps/web/src/app/use-analysis-context.ts
 apps/web/src/app/workspace-context.tsx
 apps/web/src/app/workspace-navigation.tsx
@@ -99,6 +100,7 @@ artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json
 artifacts/tests/a204/t1303_transactional_model_activation_contract.json
 artifacts/tests/a205/t1303_atomic_refresh_context_contract.json
 artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json
+artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json
 artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json
 artifacts/tests/a208/t1306_browser_runtime_benchmark.json
 artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json
