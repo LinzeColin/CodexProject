@@ -2985,11 +2985,23 @@ Residual risks:
 
 ### Validation
 
-- Pending in this run: `python3 -m py_compile scripts/validate_worker_deployment.py`.
-- Pending in this run: `.venv/bin/ruff check scripts/validate_worker_deployment.py scripts/run_soak_smoke.mjs apps/worker/app/main.py tests/integration/test_database_migrations.py`.
-- Pending in this run: `.venv/bin/python scripts/validate_worker_deployment.py`.
-- Pending in this run: `node scripts/run_soak_smoke.mjs --mode ci_smoke --duration-seconds 3 --output artifacts/tests/a209/t1307_soak_smoke.json --fail-on-budget --quiet`.
-- Pending in this run: governance, release artifact and full `make verify`.
+- Local `python3 -m py_compile scripts/validate_worker_deployment.py`: PASS.
+- Local `.venv/bin/ruff check scripts/validate_worker_deployment.py apps/worker/app/main.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/python scripts/validate_worker_deployment.py`: PASS and generated `artifacts/tests/a206/t1304_worker_deployment_binding_contract.json`.
+- Local sandboxed `node scripts/run_soak_smoke.mjs --mode ci_smoke --duration-seconds 3 --output artifacts/tests/a209/t1307_soak_smoke.json --fail-on-budget --quiet`: expected FAIL at Chromium launch with macOS `bootstrap_check_in ... Permission denied`; rerun with approved elevated browser permission.
+- Local elevated `node scripts/run_soak_smoke.mjs --mode ci_smoke --duration-seconds 3 --output artifacts/tests/a209/t1307_soak_smoke.json --fail-on-budget --quiet`: PASS; A209 remains `PARTIAL` and includes `worker_supervisor_binding_available=true`.
+- Local `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- Local `.venv/bin/python scripts/validate_catalog_integrity.py`: PASS.
+- Local `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- Local `.venv/bin/python scripts/manage_development_status_artifacts.py generate`: PASS.
+- Local `.venv/bin/python scripts/manage_development_status_artifacts.py validate`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-clean-room-release`: PASS; clean-room ZIP now includes 352 paths.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-release-artifacts`: PASS; manifest now includes 359 paths.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make validate-clean-room-release`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make validate-release-artifacts`: PASS.
+- Local `shasum -a 256 -c CHECKSUMS.sha256`: PASS.
+- Local elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes governance, contract, prototype parity, GitHub governance, v5 sync, worker deployment validator, development/risk/release validation, scale benchmark, Chromium browser benchmark, soak smoke, secret scan, UI copy lint, ruff, web typecheck and unit tests 15/15.
+- GitHub Actions `EEI validation` on `a7675452963ab7102f8edaa2af502cb2496b9924`: PASS, run `27874568202`, job `82491806968`; Steps 7-12 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 
 ### Remaining gaps
 
