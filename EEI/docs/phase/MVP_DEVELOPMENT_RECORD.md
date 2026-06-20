@@ -224,6 +224,7 @@ Verification results:
 - `.venv/bin/python scripts/run_scale_benchmarks.py --scales 10000,100000,1000000 --iterations 1 --mode operator_full --output artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json --browser-runtime-artifact artifacts/tests/a208/t1306_browser_runtime_benchmark.json --fail-on-budget --require-full-targets --quiet`: PASS; full A208 coverage status is `PASS`.
 - `make validate-scale-benchmark-operator`: PASS with Chromium browser runtime and merged operator contract.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make verify`: PASS; includes A208 browser benchmark, merged operator contract, governance validators, lint, typecheck and 11 unit tests.
+- GitHub Actions `EEI validation` run `27860478421`, job `82455538742`: PASS, including static/contract/lint/typecheck/unit and G2 PostgreSQL/E2E.
 
 Residual risks:
 
