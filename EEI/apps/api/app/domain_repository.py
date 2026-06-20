@@ -4155,7 +4155,7 @@ class DomainRepository:
                 count(DISTINCT ee.source_document_id)::int AS source_document_count,
                 count(*) FILTER (WHERE ee.role = 'supports')::int
                   AS support_evidence_count,
-                bool_or(sd.url LIKE 'fixture://%') AS fixture_evidence_present,
+                bool_or(sd.url LIKE 'fixture://%%') AS fixture_evidence_present,
                 max(sd.observed_at) AS latest_evidence_observed_at,
                 max(sd.parser_version) AS evidence_parser_version
               FROM event_evidence ee
@@ -4299,7 +4299,7 @@ class DomainRepository:
                 count(DISTINCT r.id)::int AS relationship_count,
                 count(DISTINCT r.relationship_family)::int AS relationship_family_count,
                 count(DISTINCT re.source_document_id)::int AS source_document_count,
-                bool_or(sd.url LIKE 'fixture://%') AS fixture_evidence_present,
+                bool_or(sd.url LIKE 'fixture://%%') AS fixture_evidence_present,
                 max(r.observed_at) AS latest_relationship_observed_at
               FROM relationships r
               LEFT JOIN relationship_evidence re ON re.relationship_id = r.id
