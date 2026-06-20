@@ -77,5 +77,5 @@ git diff --check
 
 PFI-006 is locally closed when the PFI-006 contract tests pass, the acceptance
 script returns `status=Pass`, target gate remains green, and GitHub CI passes.
-Gate 3 remains partially open until PFI-007, PFI-008, and PFI-009 have the same
-vertical-slice evidence level.
+Gate 3 remains partially open until PFI-009 has the same vertical-slice
+evidence level.

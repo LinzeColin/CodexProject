@@ -93,7 +93,7 @@ Current sequence:
     run returned `status=Pass`, `pass=13`, `fail=0`, event_count=90,
     alerts=2, saved_views=2, rollback=Pass. Target gate passed 52 tests plus
     secret scan; UI visual acceptance passed 98/98 after market shell changes.
-    Gate 3 still needs equivalent closure for PFI-007, PFI-008, and PFI-009.
+    Gate 3 still needs equivalent closure for PFI-009.
 23. Gate 3 / PFI-007 Research + Policy:
     Research + Policy vertical acceptance is implemented.
     `scripts/pfi007ResearchPolicyAcceptance.sh` emits
@@ -105,7 +105,21 @@ Current sequence:
     policy_record_count=2, official_citation_count=1, report_gap_count=3,
     report_manifest_count=1, rollback=Pass. Target gate passed 58 tests plus
     secret scan; UI visual acceptance passed 98/98 after research shell
-    changes. Gate 3 still needs equivalent closure for PFI-008 and PFI-009.
+    changes. Gate 3 still needs equivalent closure for PFI-009.
+24. Gate 3 / PFI-008 Portfolio:
+    Portfolio vertical acceptance is implemented.
+    `scripts/pfi008PortfolioAcceptance.sh` emits
+    `PFI008PortfolioVerticalAcceptanceV1` evidence for deterministic synthetic
+    import ledger -> reviewed holdings -> private-derived holding snapshot ->
+    broker-to-snapshot reconciliation -> corporate-action/FX/cash Golden
+    checks -> risk constraints -> review-only decision proposal -> same-shell
+    Chinese Portfolio controls -> task/evidence/snapshot records -> rollback
+    proof. Latest local run returned `status=Pass`, `pass=16`, `fail=0`,
+    holding_count=5, import_record_count=5, broker_count=3,
+    constraint_violation_count=2, reconciliation=Pass, rollback=Pass. Focused
+    PFI-008 contract passed 6/6; related Web Shell/script tests passed 58/58;
+    target gate passed 64 tests plus secret scan and diff check. Gate 3 still
+    needs equivalent closure for PFI-009.
 
 ## Current Local State
 
@@ -266,6 +280,17 @@ Current sequence:
   acceptance passed 14/14 with citation locator, report manifest, deterministic
   Golden metrics, and rollback proof. Focused tests passed 62/62, target gate
   passed 58 tests plus secret scan, and UI visual acceptance passed 98/98.
+- PFI-008 Portfolio vertical acceptance complete for local Gate 3 evidence:
+  `src/pfi_os/application/pfi008_portfolio_acceptance.py`,
+  `scripts/pfi008PortfolioAcceptance.sh`,
+  `tests/contract/test_pfi008_portfolio_vertical_acceptance.py`, and
+  `docs/development/PFI008_PORTFOLIO_VERTICAL_ACCEPTANCE.md`. Latest
+  acceptance passed 16/16 with synthetic import ledger, corporate-action/FX/
+  cash Golden checks, broker-to-snapshot reconciliation, risk constraints,
+  review-only decision proposal, same-shell Portfolio controls, holding
+  snapshot records, and rollback proof. Focused PFI-008 contract passed 6/6;
+  related Web Shell/script tests passed 58/58; target gate passed 64 tests plus
+  secret scan and diff check.
 
 ## Start Here
 
