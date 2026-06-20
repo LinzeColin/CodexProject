@@ -1,33 +1,14 @@
-# EVA_OS 模型参数文件
+# EVA_OS 模型参数索引
 
-更新时间：2026-06-19
+本文件保留为兼容入口。EVA_OS 的 canonical 治理事实源已经迁移到：
 
-## 默认模型与执行模式
+- `docs/governance/MODEL_SPEC.md`
+- `docs/governance/model_registry.yaml`
+- `docs/governance/formula_registry.yaml`
+- `docs/governance/parameter_registry.csv`
+- `docs/governance/DEVELOPMENT_LEDGER.md`
+- `docs/governance/delivery_tasks.yaml`
+- `docs/governance/VERSION_MATRIX.yaml`
+- `docs/governance/TRACEABILITY_MATRIX.csv`
 
-- 默认模式：local-first research, validation, backtesting, reporting。
-- 默认实盘：disabled。
-- 默认结论等级：ContinueResearch、WatchOnly、NeedsMoreEvidence、DoNotUse。
-- 默认验证策略：证据不足时输出 Blocked / NeedsMoreEvidence，不伪造通过。
-
-## 关键参数域
-
-| 参数域 | 当前原则 |
-| --- | --- |
-| 市场范围 | A 股、港股、美股 |
-| 时间粒度 | 1min 到 yearly，统一 bar model |
-| backtest 记录 | 数据范围、provider、调整模式、策略版本、参数、成本模型、运行时间 |
-| Decision Quality Score | 用于判断研究结论完整性和可用性 |
-| ResearchBus | SQLite: `data/researchBus/ResearchBus.sqlite`; schema: `docs/ResearchBusSchema.json` |
-| heavy gate | 默认不跑；需明确 release intent 和允许变量 |
-
-## 模型与数据要求
-
-- 回测输出必须包含收益、风险、回撤、交易次数、换手、成本和曲线类指标。
-- 行研或政策系统引用 QuantLab 结果时必须同时引用数据质量、多源交叉校验、成本假设和风险闸门状态。
-- 如果引入 LLM，默认用于摘要、报告解释、证据缺口拆解和任务排序，不用于自动交易执行。
-
-## 不允许保存或提交
-
-- 交易账户密码、broker token、session、cookie。
-- 真实下单自动化凭证。
-- 未脱敏的敏感账户、持仓或私有数据。
+旧文件中的项目简介、当前状态和原则性描述仅作为历史入口；模型、公式、参数、任务、Acceptance、版本和追踪闭环以 `docs/governance/` 为准。

@@ -7,6 +7,23 @@ Any AI agent should be able to use it to understand the user's preferences,
 standards, memory history, project context, safety boundaries, and accepted
 long-term memories.
 
+## Governance Entry
+
+Canonical governance files live under `docs/governance/`.
+
+- Model specification: `docs/governance/MODEL_SPEC.md`
+- Model registry: `docs/governance/model_registry.yaml`
+- Formula registry: `docs/governance/formula_registry.yaml`
+- Parameter registry: `docs/governance/parameter_registry.csv`
+- Development ledger: `docs/governance/DEVELOPMENT_LEDGER.md`
+- Delivery plan: `docs/governance/DELIVERY_PLAN.md`
+- Version matrix: `docs/governance/VERSION_MATRIX.yaml`
+- Traceability matrix: `docs/governance/TRACEABILITY_MATRIX.csv`
+
+Legacy files `功能清单`, `开发记录`, and `模型参数文件` are compatibility
+indexes only. Do not add new editable model, parameter, task, acceptance, or
+version facts there.
+
 It contains the `openai-memory-analysis` skill and a minimal vault layout. It
 ingests manually downloaded OpenAI export ZIPs, generates redacted pending
 memory candidates, creates human-readable weekly/monthly memory packs, and

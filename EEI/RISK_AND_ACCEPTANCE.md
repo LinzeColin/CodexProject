@@ -1,34 +1,21 @@
-# 风险、控制、验收与发布门禁
+# EEI Governance Compatibility Entry
 
-## 结论
+This file is retained as a compatibility entry for historical EEI workflows.
+The canonical CodexProject governance sources are now under `docs/governance/`:
 
-风险、验收与任务必须形成闭环：`需求/功能 -> 任务 -> Acceptance -> 测试证据 -> 风险控制 -> Release Gate`。
+- `docs/governance/MODEL_SPEC.md`
+- `docs/governance/model_registry.yaml`
+- `docs/governance/formula_registry.yaml`
+- `docs/governance/parameter_registry.csv`
+- `docs/governance/DEVELOPMENT_LEDGER.md`
+- `docs/governance/development_events.jsonl`
+- `docs/governance/DELIVERY_PLAN.md`
+- `docs/governance/delivery_tasks.yaml`
+- `docs/governance/VERSION_MATRIX.yaml`
+- `docs/governance/TRACEABILITY_MATRIX.csv`
 
-| 项目 | 数量 | 机器文件 |
-|---|---:|---|
-| 风险 | 53 | `data/risk_register.csv` |
-| 验收标准 | 211 | `data/acceptance_matrix.csv` |
-| 验收追踪 | 232 | `data/acceptance_traceability.csv` |
-| 风险控制追踪 | 53 | `data/risk_control_traceability.csv` |
-| 发布门禁 | 10 | `data/release_gate_catalog.csv` |
+Legacy EEI `data/*.csv` files are preserved as evidence and compatibility inputs
+for existing validators. Do not edit this Markdown file as an independent source
+of model, formula, parameter, task, acceptance, risk, or version counts.
 
-## 最高优先风险
-
-1. 公开资料缺口和私营集团结构不透明。
-2. 供应链递归扩展造成误判与不可读关系毛线团。
-3. 金额、承诺和估值语义被错误求和。
-4. 参数激活与快照切换造成跨视图版本不一致。
-5. 文档、目录、代码和 GitHub Issue 发生漂移。
-6. 战略信号被误读为投资收益预测。
-7. v5 `OPEN_PRODUCTION` 项被误认为已完成；T1300/A201 已关闭，T1301/A202 仅进行到 curated official ingestion、candidate facts 和 review queue 基础层，真实采集闭环、API、模型激活/刷新、调度、保存视图、规模压测、soak、生产前端和品牌清权仍需证据。
-
-## 发布停止条件
-
-- 任一 P0 验收未映射任务或测试；
-- 任一高风险无 owner/control/trigger；
-- 权重、阈值或公式不能解释/回滚；
-- 同屏混用不同数据/分数快照；
-- fixture 被标为真实数据；
-- v5 `OPEN_PRODUCTION` 或用户明确列出的剩余生产阻塞项没有 A202-A211 完整证据；A202 当前 `IN PROGRESS` 不等于 release-ready；
-- 首页视觉覆盖低于 90 或核心页平均低于 80；
-- reduced motion、键盘或等价列表缺失。
+Canonical current task, phase, and gate are maintained in `docs/governance/VERSION_MATRIX.yaml` and `docs/governance/DEVELOPMENT_LEDGER.md`.

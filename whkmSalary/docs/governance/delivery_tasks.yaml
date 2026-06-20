@@ -1,0 +1,83 @@
+governance_spec_version: "1.0.0"
+project_id: "whkmSalary"
+tasks:
+  - task_id: "TASK-WHKM-A-001"
+    phase: "A"
+    objective: "Complete P10 read-only governance audit for whkmSalary."
+    scope: ["salary_logic.py", "streamlit_app.py", "legacy governance notes"]
+    non_scope: ["business behavior changes", "real payroll data", "policy guessing"]
+    status: "completed"
+    dependencies: []
+    required_files: ["whkmSalary/docs/governance/MODEL_SPEC.md"]
+    acceptance_ids: ["ACC-WHKM-A-001"]
+    test_commands: ["targeted rg salary/tax/formula keywords", "git log --max-count=50 -- whkmSalary"]
+    test_results: ["Audit found 2 models, 10 formulas, and extracted salary constants/weights from code."]
+    evidence_refs: ["whkmSalary/salary_logic.py", "whkmSalary/streamlit_app.py"]
+    risk: "Policy and jurisdiction facts are not evidenced."
+    rollback: "No changes during P10 audit."
+    target_version: "0.0.0"
+    completed_version: "0.0.0"
+  - task_id: "TASK-WHKM-A-002"
+    phase: "A"
+    objective: "Complete P11 governance migration for whkmSalary."
+    scope: ["standard governance files", "legacy governance indexes", "VERSION", "CHANGELOG"]
+    non_scope: ["salary_logic.py", "streamlit_app.py", "requirements.txt", "deployment"]
+    status: "completed"
+    dependencies: ["TASK-WHKM-A-001"]
+    required_files: ["whkmSalary/docs/governance/*"]
+    acceptance_ids: ["ACC-WHKM-A-002"]
+    test_commands: ["python scripts/validate_project_governance.py --project whkmSalary", "python -m compileall salary_logic.py streamlit_app.py", "salary_logic.calculate fixture"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0", "exit 0; total_score 13.875; total_salary 22995.0; after_tax_salary 22305.15"]
+    evidence_refs: ["whkmSalary/docs/governance/MODEL_SPEC.md", "whkmSalary/docs/governance/parameter_registry.csv"]
+    risk: "Do not present unknown policy values as active legal rules."
+    rollback: "Remove whkmSalary/docs/governance and restore legacy indexes."
+    target_version: "0.0.0"
+    completed_version: "0.0.0"
+  - task_id: "TASK-WHKM-A-003"
+    phase: "A"
+    objective: "Complete P12 verification."
+    scope: ["validator", "compileall", "fixture calculation", "diff checks"]
+    non_scope: ["fix during verify", "business code changes"]
+    status: "completed"
+    dependencies: ["TASK-WHKM-A-002"]
+    required_files: ["whkmSalary/docs/governance/*"]
+    acceptance_ids: ["ACC-WHKM-A-003"]
+    test_commands: ["python scripts/validate_project_governance.py --project whkmSalary", "git diff --check"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0"]
+    evidence_refs: ["whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md", "whkmSalary/docs/governance/TRACEABILITY_MATRIX.csv"]
+    risk: "Fixture calculation proves code path only, not legal correctness."
+    rollback: "Return to P11 repair."
+    target_version: "0.0.0"
+    completed_version: "0.0.0"
+  - task_id: "TASK-WHKM-A-004"
+    phase: "A"
+    objective: "Promote whkmSalary from advisory to required."
+    scope: ["governance/projects.yaml whkmSalary ci_mode"]
+    non_scope: ["project files", "business code", "other project enforcement"]
+    status: "completed"
+    dependencies: ["TASK-WHKM-A-003"]
+    required_files: ["governance/projects.yaml"]
+    acceptance_ids: ["ACC-WHKM-A-004"]
+    test_commands: ["python scripts/validate_project_governance.py --project whkmSalary", "python scripts/validate_project_governance.py --all", "git diff --check"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0; advisory warnings only outside required projects", "exit 0"]
+    evidence_refs: ["governance/projects.yaml", "whkmSalary/docs/governance/VERSION_MATRIX.yaml"]
+    risk: "Required mode will block governance CI on whkmSalary drift."
+    rollback: "Set whkmSalary ci_mode back to advisory."
+    target_version: "0.0.0"
+    completed_version: "0.0.0"
+  - task_id: "TASK-WHKM-B-001"
+    phase: "B"
+    objective: "Resolve salary policy source, jurisdiction, effective date, tax basis, boundary behavior, and rounding policy evidence."
+    scope: ["policy/source reference", "jurisdiction", "effective date", "rounding", "day=0 behavior", "negative direct-call behavior"]
+    non_scope: ["changing formulas without approval"]
+    status: "blocked"
+    dependencies: ["TASK-WHKM-A-004"]
+    required_files: ["whkmSalary/docs/governance/MODEL_SPEC.md", "whkmSalary/docs/governance/parameter_registry.csv"]
+    acceptance_ids: ["ACC-WHKM-B-001"]
+    test_commands: []
+    test_results: []
+    evidence_refs: ["whkmSalary/salary_logic.py", "whkmSalary/streamlit_app.py"]
+    risk: "Payroll calculations are high sensitivity and may be legally incorrect without policy evidence."
+    rollback: "Keep current behavior unchanged and mark as not release-ready for payroll compliance."
+    target_version: "UNKNOWN (TASK-WHKM-B-001)"
+    completed_version: ""

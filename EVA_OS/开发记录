@@ -1,53 +1,14 @@
-# EVA_OS 开发记录
+# EVA_OS 开发记录索引
 
-更新时间：2026-06-19
+本文件保留为兼容入口。EVA_OS 的 canonical 治理事实源已经迁移到：
 
-## 项目定位
+- `docs/governance/MODEL_SPEC.md`
+- `docs/governance/model_registry.yaml`
+- `docs/governance/formula_registry.yaml`
+- `docs/governance/parameter_registry.csv`
+- `docs/governance/DEVELOPMENT_LEDGER.md`
+- `docs/governance/delivery_tasks.yaml`
+- `docs/governance/VERSION_MATRIX.yaml`
+- `docs/governance/TRACEABILITY_MATRIX.csv`
 
-EVA_OS 是本地优先的个人研究中台入口，macOS 显示为 `EVA_OS`。QuantLab 是其中的量化研究、分析、回测、实验记录和报告验证主入口，并负责跨系统证据流。
-
-## 当前已形成的开发状态
-
-- 已形成总控驾驶舱、QuantLab、研究总线、持仓、报告、独立验证和跨系统证据流。
-- 常用入口包括 `docs/QuickStart.md`、`AGENT_CONTINUITY.md`、`HANDOFF.md`、`15_OPEN_QUESTIONS.md`、`UPLOAD_MANIFEST.md`。
-- 研究数据总线连接 QuantLab、行研系统、消费行为系统、独立验证系统、FIFA/TAB 研究系统和政府政策解读系统。
-- 已有 `Decision Quality Score`、报告验证队列、验证优先级计划、数据可信审计、实体注册摘要等能力。
-
-## 最新 personalization 对本项目的要求
-
-- 复杂系统任务必须先给状态表、边界、验收标准和最小下一步。
-- 任何研究结论必须尽可能准确、可验证、可追溯，不足时降级为观察或待验证线索。
-- 涉及当前行情、政策、API、价格、模型版本时必须用权威来源或当前本地数据验证。
-- 默认中文输出，保留 API、模型、代码名英文。
-
-## 安全与执行边界
-
-- 禁止接入实盘交易。
-- 禁止真实下单。
-- 禁止保存交易账户密码。
-- QuantLab 只承担验证层职责：输出回测对象、样本区间、成本假设、参数稳定性、样本外验证、walk-forward、风险闸门、失效环境和停用条件。
-
-## 重要验证记录
-
-默认 verifier：
-
-```bash
-scripts/devReadyCheck.sh --summary-json
-```
-
-常用状态检查：
-
-```bash
-scripts/statusQuantLab.sh
-scripts/stopQuantLab.sh
-scripts/auditResearchBusInterop.sh --json
-```
-
-例行 agent 工作中不要默认跑 heavy gates，例如 `scripts/finalAcceptanceCheck.sh`、`scripts/ciSmoke.sh`、full pytest 或 git hooks。
-
-## 下一步开发优先级
-
-1. 强化 ResearchBus schema 变更流程和跨系统字段兼容。
-2. 把报告验证队列与 Decision Quality Score 更紧密联动。
-3. 为总控驾驶舱增加更清晰的“统一下一步”和 blocker 解释。
-4. 继续把候选研究结论分为 ContinueResearch、WatchOnly、NeedsMoreEvidence、DoNotUse。
+旧文件中的项目简介、当前状态和原则性描述仅作为历史入口；模型、公式、参数、任务、Acceptance、版本和追踪闭环以 `docs/governance/` 为准。

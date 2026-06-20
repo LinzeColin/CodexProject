@@ -1,27 +1,21 @@
-# 系统功能清单与导航架构
+# EEI Governance Compatibility Entry
 
-系统共有 **17 个正式功能板块**。默认进入 Watchlist 当前公司的商业版图；模型、数据库、对象范围、功能结构和开发治理均为正式导航能力。
+This file is retained as a compatibility entry for historical EEI workflows.
+The canonical CodexProject governance sources are now under `docs/governance/`:
 
-v5 同步后，生产阻塞任务 T1300-T1309 已写入 `data/function_catalog.csv` 的相关功能映射。当前商业版图已有 `/v1/explore` production_context hydration、预算、coverage、候选事实 publication gate 和 server-returned graph rendering 的前端合同；数据中心需要真实采集和调度；模型中心需要 live backend 全局刷新；已保存视图需要 authn/authz；系统治理需要 soak 和品牌清权证据。
+- `docs/governance/MODEL_SPEC.md`
+- `docs/governance/model_registry.yaml`
+- `docs/governance/formula_registry.yaml`
+- `docs/governance/parameter_registry.csv`
+- `docs/governance/DEVELOPMENT_LEDGER.md`
+- `docs/governance/development_events.jsonl`
+- `docs/governance/DELIVERY_PLAN.md`
+- `docs/governance/delivery_tasks.yaml`
+- `docs/governance/VERSION_MATRIX.yaml`
+- `docs/governance/TRACEABILITY_MATRIX.csv`
 
-| ID | 导航 | 功能 | 默认可视化 | 优先级 | 规格 | 原型 | 生产实现 |
-|---|---|---|---|---|---|---|---|
-| FUN-EXP-01 | 探索 | 商业版图 | 多层关系网络 + 语义缩放 + 时间变化 | P0 | DONE | DONE | PARTIAL |
-| FUN-EXP-02 | 探索 | 全链供应链 | 分阶段流图 + Sankey + 关键路径 | P0 | DONE | DONE | PARTIAL |
-| FUN-EXP-03 | 探索 | 集团业务与子板块 | 分层树图 + 组合矩阵 + 地域分布 | P0 | DONE | PARTIAL | PARTIAL |
-| FUN-EXP-04 | 探索 | 资金与并购 | 资金流 Sankey + 交易网络 + 时间轴 | P0 | DONE | PARTIAL | NOT_STARTED |
-| FUN-EXP-05 | 探索 | 所有权与控制 | 控制树 + 经济/投票双轴 + 穿透路径 | P0 | DONE | PARTIAL | PARTIAL |
-| FUN-EXP-06 | 探索 | 政策与政府 | 政策雷达 + 地域热图 + 合同/补贴流 | P0 | DONE | PARTIAL | NOT_STARTED |
-| FUN-EXP-07 | 探索 | 战略信号 | 信号轨迹 + 主题动量 + 反证面板 | P0 | DONE | PARTIAL | NOT_STARTED |
-| FUN-EXP-08 | 探索 | 行业地图 | 行业价值链地图 + 集中度矩阵 | P1 | DONE | PARTIAL | PARTIAL |
-| FUN-RM-01 | 研究管理 | Watchlist | 对象列表 + 变化气泡 + 优先级条 | P0 | DONE | DONE | PARTIAL |
-| FUN-RM-02 | 研究管理 | 重要变化 | 变化时间轴 + 前后差异图 | P0 | DONE | PARTIAL | PARTIAL |
-| FUN-RM-03 | 研究管理 | 已保存视图 | 场景缩略图 + 探索路径 | P0 | DONE | DONE | PARTIAL |
-| FUN-DM-01 | 数据与模型 | 数据库与来源 | ERD + 数据血缘 + 来源健康矩阵 + 表详情 | P0 | DONE | DONE | PARTIAL |
-| FUN-DM-02 | 数据与模型 | 模型与参数 | 公式图 + 权重图 + 阈值仪表 + 影响预览 | P0 | DONE | DONE | PARTIAL |
-| FUN-DM-03 | 数据与模型 | 操作日志 | 审计时间轴 + 前后 diff + 影响范围 | P0 | DONE | DONE | NOT_STARTED |
-| FUN-DM-04 | 数据与模型 | 双周校准 | 漂移雷达 + Top-N 稳定矩阵 + 建议 diff | P1 | DONE | PARTIAL | PARTIAL |
-| FUN-SYS-01 | 系统治理 | 功能结构 | 四层架构图 + 功能矩阵 + 依赖流 | P0 | DONE | DONE | PARTIAL |
-| FUN-SYS-02 | 系统治理 | 开发治理 | 状态看板 + 追踪链 + 风险矩阵 + 门禁进度 | P0 | DONE | DONE | PARTIAL |
+Legacy EEI `data/*.csv` files are preserved as evidence and compatibility inputs
+for existing validators. Do not edit this Markdown file as an independent source
+of model, formula, parameter, task, acceptance, risk, or version counts.
 
-完整输入输出、对象、表/API、任务、验收和风险见 `data/function_catalog.csv`。
+Canonical current task, phase, and gate are maintained in `docs/governance/VERSION_MATRIX.yaml` and `docs/governance/DEVELOPMENT_LEDGER.md`.

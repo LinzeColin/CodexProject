@@ -4,6 +4,20 @@ Local-first, auditable investment research automation for aggressive but control
 
 This tool produces research, ranking, discipline labels, and notification drafts. It does not place trades. Future outperformance versus Shanghai Composite or S&P 500 cannot be guaranteed.
 
+## Governance Entry
+
+The canonical CodexProject governance baseline is maintained in `docs/governance/`:
+
+- `MODEL_SPEC.md` for model, assumption, formula, methodology, strategy, and validation narrative.
+- `model_registry.yaml`, `formula_registry.yaml`, and `parameter_registry.csv` for machine-readable model facts.
+- `DEVELOPMENT_LEDGER.md` and `development_events.jsonl` for iteration and event evidence.
+- `DELIVERY_PLAN.md` and `delivery_tasks.yaml` for phase tasks and acceptance evidence.
+- `VERSION_MATRIX.yaml` for product, model, parameter, data, schema, and governance version separation.
+- `TRACEABILITY_MATRIX.csv` for requirement-to-evidence closure.
+
+Legacy files `模型参数文件`, `开发记录`, and `功能清单` are compatibility indexes.
+They are not independent editable governance sources.
+
 ## What It Does
 
 - Imports Alipay fund positions from CSV.

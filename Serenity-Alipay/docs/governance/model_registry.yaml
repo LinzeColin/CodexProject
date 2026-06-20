@@ -1,0 +1,119 @@
+governance_spec_version: "1.0.0"
+project_id: "Serenity-Alipay"
+assumptions:
+  - assumption_id: "ASM-001"
+    statement: "Serenity-Alipay outputs research, ranking, discipline labels, reports, and notification drafts; it does not place trades."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["Serenity-Alipay/README.md:5", "Serenity-Alipay/README.md:20"]
+    status: "active"
+  - assumption_id: "ASM-002"
+    statement: "Manual candidate file order encodes primary Serenity priority before confidence score tie-breaks."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["Serenity-Alipay/app/core/pipeline.py:182", "Serenity-Alipay/app/core/pipeline.py:191", "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62"]
+    status: "active"
+  - assumption_id: "ASM-003"
+    statement: "Price history is daily close data sorted by date and is sufficient for return window, drawdown, and recovery calculations."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["Serenity-Alipay/app/adapters/manual_sources.py:151", "Serenity-Alipay/app/core/metrics.py:39"]
+    status: "active"
+  - assumption_id: "ASM-004"
+    statement: "Official source count, conflict flags, fallback flags, and missing field counts are the current evidence-confidence proxies."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["Serenity-Alipay/app/core/scoring.py:81", "Serenity-Alipay/app/core/scoring.py:110", "Serenity-Alipay/app/core/scoring.py:183"]
+    status: "active"
+  - assumption_id: "ASM-005"
+    statement: "Beijing business-day time slots define automation eligibility; non-business days do not create due slots by default."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["Serenity-Alipay/app/scheduler.py:8", "Serenity-Alipay/app/scheduler.py:71", "Serenity-Alipay/tests/test_scheduler.py:17"]
+    status: "active"
+  - assumption_id: "ASM-006"
+    statement: "Incomplete production evidence must fail closed into blocker, warning, manual review, Pause New, or draft behavior rather than executable trade action."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["Serenity-Alipay/app/core/scoring.py:177", "Serenity-Alipay/app/core/preflight.py:185", "Serenity-Alipay/tests/test_automation_tick.py:8"]
+    status: "active"
+models:
+  - model_id: "MOD-001"
+    name: "Candidate scoring and action rule engine"
+    kind: "deterministic scoring and hard-gate rule engine"
+    purpose: "Score fund candidates, assign grades, apply risk/data gates, and derive research action labels."
+    owner: "Serenity-Alipay"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "serenity-scoring-v1"
+    assumption_ids: ["ASM-001", "ASM-004", "ASM-006"]
+    formula_ids: ["FORM-003", "FORM-004", "FORM-005", "FORM-006"]
+    parameter_ids: ["PARAM-005", "PARAM-006", "PARAM-007", "PARAM-008", "PARAM-009", "PARAM-010", "PARAM-011", "PARAM-012", "PARAM-013", "PARAM-014", "PARAM-015", "PARAM-016", "PARAM-017", "PARAM-018", "PARAM-019", "PARAM-020", "PARAM-021", "PARAM-022", "PARAM-023", "PARAM-024", "PARAM-025"]
+    inputs: ["Candidate", "FundRule or None", "AssetMetrics", "Shanghai Composite returns", "S&P 500 returns", "Settings"]
+    outputs: ["ScoreResult.total_score", "grade", "hard_block_reason", "action_label", "trigger_reason", "manual_review_required", "missing_fields"]
+    code_refs: ["Serenity-Alipay/app/core/scoring.py:73"]
+    config_refs: ["Serenity-Alipay/app/config.py:33"]
+    test_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_risk_gate_regression.py:8"]
+    evidence_refs: ["Serenity-Alipay/README.md:336", "Serenity-Alipay/模型参数文件:8"]
+  - model_id: "MOD-002"
+    name: "Recommendation ranking and Top5 allocation"
+    kind: "deterministic ranking and allocation heuristic"
+    purpose: "Filter blocked candidates, rank eligible funds, select Top5, and compute target weights."
+    owner: "Serenity-Alipay"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "serenity-ranking-v1"
+    assumption_ids: ["ASM-001", "ASM-002", "ASM-006"]
+    formula_ids: ["FORM-007", "FORM-008", "FORM-009"]
+    parameter_ids: ["PARAM-026", "PARAM-027", "PARAM-028", "PARAM-029", "PARAM-030", "PARAM-031", "PARAM-032", "PARAM-033"]
+    inputs: ["scored candidate rows", "candidate_index", "ScoreResult", "current or baseline weights", "Settings"]
+    outputs: ["ranked rows", "target_weight", "deviation", "action_label", "trigger_reason"]
+    code_refs: ["Serenity-Alipay/app/core/pipeline.py:191", "Serenity-Alipay/app/core/pipeline.py:204", "Serenity-Alipay/app/core/pipeline.py:220"]
+    config_refs: ["Serenity-Alipay/app/config.py:35"]
+    test_refs: ["Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62", "Serenity-Alipay/tests/test_discipline.py:5"]
+    evidence_refs: ["Serenity-Alipay/README.md:13", "Serenity-Alipay/功能清单:13"]
+  - model_id: "MOD-003"
+    name: "Metrics and time-window calculation"
+    kind: "mathematical return and drawdown calculation"
+    purpose: "Calculate 1m, 3m, 10d returns, max drawdown, recovery time, and recent drawdown from daily close history."
+    owner: "Serenity-Alipay"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "serenity-metrics-v1"
+    assumption_ids: ["ASM-003"]
+    formula_ids: ["FORM-001", "FORM-002"]
+    parameter_ids: ["PARAM-001", "PARAM-002", "PARAM-003", "PARAM-004"]
+    inputs: ["list of PricePoint ordered by date"]
+    outputs: ["AssetMetrics.returns", "max_drawdown", "recovery_time_days", "recovered", "drawdown_7d"]
+    code_refs: ["Serenity-Alipay/app/core/metrics.py:39", "Serenity-Alipay/app/core/metrics.py:52", "Serenity-Alipay/app/core/metrics.py:90"]
+    config_refs: ["NOT_APPLICABLE - constants are in metrics.py"]
+    test_refs: ["Serenity-Alipay/tests/test_metrics.py:14", "Serenity-Alipay/tests/test_scoring.py:70"]
+    evidence_refs: ["Serenity-Alipay/README.md:13", "Serenity-Alipay/模型参数文件:18"]
+  - model_id: "MOD-004"
+    name: "Comparison and discipline gate engine"
+    kind: "deterministic review-trigger rule engine"
+    purpose: "Detect Top5 drift, new/replaced assets, score sigma shifts, target deviation, and overexpansion events."
+    owner: "Serenity-Alipay"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "serenity-discipline-v1"
+    assumption_ids: ["ASM-001", "ASM-006"]
+    formula_ids: ["FORM-010", "FORM-011"]
+    parameter_ids: ["PARAM-034", "PARAM-035", "PARAM-036", "PARAM-037", "PARAM-038", "PARAM-039", "PARAM-040", "PARAM-041", "PARAM-042"]
+    inputs: ["recommendation_snapshot", "score_snapshot", "run_log", "Settings"]
+    outputs: ["ComparisonSummary", "DisciplineEvent", "rebalance_event_log"]
+    code_refs: ["Serenity-Alipay/app/core/comparison.py:128", "Serenity-Alipay/app/core/discipline.py:15", "Serenity-Alipay/app/core/discipline.py:32"]
+    config_refs: ["Serenity-Alipay/app/config.py:35", "Serenity-Alipay/app/config.py:36"]
+    test_refs: ["Serenity-Alipay/tests/test_comparison.py:44", "Serenity-Alipay/tests/test_discipline.py:5"]
+    evidence_refs: ["Serenity-Alipay/HANDOFF.md:15"]
+  - model_id: "MOD-005"
+    name: "Automation time-slot and dry-run safety gate"
+    kind: "deterministic schedule and safety gate"
+    purpose: "Select due Beijing business-day slots, prevent weekend execution, and default automation to dry-run/mail-disabled safety."
+    owner: "Serenity-Alipay"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "serenity-scheduler-v1"
+    assumption_ids: ["ASM-001", "ASM-005", "ASM-006"]
+    formula_ids: ["FORM-012"]
+    parameter_ids: ["PARAM-043", "PARAM-044", "PARAM-045", "PARAM-046", "PARAM-047", "PARAM-048", "PARAM-049"]
+    inputs: ["current datetime", "slot ID", "Settings", "preflight status"]
+    outputs: ["due slot", "non_business_day", "no_due_slot", "effective_dry_run", "send/draft behavior"]
+    code_refs: ["Serenity-Alipay/app/scheduler.py:8", "Serenity-Alipay/app/core/scheduler_runner.py:28", "Serenity-Alipay/app/core/automation_tick.py:26"]
+    config_refs: ["Serenity-Alipay/app/config.py:25", "Serenity-Alipay/app/config.py:29"]
+    test_refs: ["Serenity-Alipay/tests/test_timezones.py:6", "Serenity-Alipay/tests/test_scheduler.py:12", "Serenity-Alipay/tests/test_automation_tick.py:8"]
+    evidence_refs: ["Serenity-Alipay/HANDOFF.md:22"]

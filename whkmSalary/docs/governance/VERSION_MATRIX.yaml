@@ -1,0 +1,21 @@
+governance_spec_version: "1.0.0"
+project_id: "whkmSalary"
+product_version: "0.0.0"
+product_version_status: "provisional"
+version_file_value: "0.0.0"
+schema_version: "1.0.0"
+model_versions:
+  MOD-001: "salary-logic-v0"
+  MOD-002: "streamlit-input-v0"
+parameter_profile_versions:
+  salary_logic_constants: "salary-logic-v0"
+  province_weights: "salary-logic-v0"
+  streamlit_defaults: "streamlit-input-v0"
+data_snapshot_version: "NOT_APPLICABLE - no committed salary data snapshot"
+current_iteration: "ITER-20260620-WHKM-001"
+current_phase: "E"
+current_gate: "GOV-G4-WHKM-REQUIRED"
+legacy_version_labels:
+  - source: "README.md"
+    value: "whkmSalesSalary deployment health link only"
+    fact_level: "EXTRACTED"

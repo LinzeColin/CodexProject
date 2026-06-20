@@ -1,5 +1,10 @@
 # 大数据模拟器（原 QBVS / Quant Behavior Validation System）
 
+## Governance Baseline
+
+Canonical governance entry: [`docs/governance/MODEL_SPEC.md`](docs/governance/MODEL_SPEC.md). Machine-readable sources are under `docs/governance/`; `VERSION` and `CHANGELOG.md` record the provisional product version and governance-only changes.
+
+
 GitHub 备份路径：`LinzeColin/CodexProject/PFI/大数据模拟器`
 
 本目录是原 QBVS 的可继续开发备份。产品显示名改为“大数据模拟器”，历史模块名

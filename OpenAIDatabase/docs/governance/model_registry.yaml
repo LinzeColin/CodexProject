@@ -1,0 +1,189 @@
+governance_spec_version: "1.0.0"
+project_id: "OpenAIDatabase"
+assumptions:
+  - assumption_id: "ASM-001"
+    statement: "OpenAIDatabase is local-first and review-gated; raw exports, plaintext secrets, cookies, sessions, browser profiles, and saved-memory writes are outside allowed repository behavior."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["OpenAIDatabase/AGENTS.md:5", "OpenAIDatabase/AGENTS.md:9", "OpenAIDatabase/README.md:13"]
+  - assumption_id: "ASM-002"
+    statement: "Current memory extraction, scoring, retrieval, activity, and writeback behavior is deterministic Python or TypeScript logic; no repository evidence shows trained ML weights or experimental calibration."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:512", "OpenAIDatabase/scripts/build_memory_atlas_data.py:380", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2328"]
+  - assumption_id: "ASM-003"
+    statement: "The public Memory Atlas snapshot is a redacted read-only visualization contract; the frontend cannot mutate active memory directly."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["OpenAIDatabase/README.md:118", "OpenAIDatabase/scripts/build_memory_atlas_data.py:1227", "OpenAIDatabase/scripts/audit_memory_atlas_release.py:132"]
+  - assumption_id: "ASM-004"
+    statement: "Codex local data sync may read real local session logs only to emit redacted summaries without raw transcript text, local absolute paths, or plaintext secrets."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["OpenAIDatabase/AGENTS.md:38", "OpenAIDatabase/scripts/sync_codex_memory_data.py:2", "OpenAIDatabase/tests/test_codex_memory_sync.py:43"]
+  - assumption_id: "ASM-005"
+    statement: "Future data sources must be registry-first and must not create fake nodes or activity while planned-only."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["OpenAIDatabase/config/data_sources/source_registry.json:1", "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py:86", "OpenAIDatabase/AGENTS.md:35"]
+  - assumption_id: "ASM-006"
+    statement: "The repository does not provide evidence that heuristic weights and thresholds were calibrated against labeled datasets or out-of-sample experiments."
+    fact_level: "UNKNOWN"
+    unknown_task_ids: ["TASK-OAI-B-001"]
+    evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:20", "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:56"]
+models:
+  - model_id: "MOD-001"
+    name: "Memory candidate classification and tiering"
+    kind: "deterministic_rule_engine"
+    purpose: "Convert redacted source chunks into pending memory candidates with category, importance, validity, confidence, sensitivity, tier, evidence, and dedupe behavior."
+    owner: "OpenAIDatabase"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "memory-candidate-v0"
+    assumptions: ["ASM-001", "ASM-002"]
+    formula_ids: ["FORM-001"]
+    parameter_ids: ["PARAM-001", "PARAM-002", "PARAM-003", "PARAM-004", "PARAM-005", "PARAM-006", "PARAM-007", "PARAM-008", "PARAM-009", "PARAM-010"]
+    inputs: ["redacted chunk text", "source", "source_kind", "conversation_id", "title", "timestamp"]
+    outputs: ["pending candidate row", "memory_tier", "category", "importance", "validity", "confidence", "evidence"]
+    code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:512", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:637", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:724"]
+    test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:17"]
+    evidence_refs: ["OpenAIDatabase/config/memory_schema.json:1"]
+  - model_id: "MOD-002"
+    name: "Secret redaction and sensitivity policy"
+    kind: "risk_model"
+    purpose: "Detect secrets and PII, redact unsafe text, assign sensitivity, and emit secret_ref metadata instead of plaintext credentials."
+    owner: "OpenAIDatabase"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "redaction-policy-v0"
+    assumptions: ["ASM-001", "ASM-002"]
+    formula_ids: ["FORM-002"]
+    parameter_ids: ["PARAM-011", "PARAM-012", "PARAM-013", "PARAM-014", "PARAM-015", "PARAM-016", "PARAM-017"]
+    inputs: ["source text", "matched secret or PII patterns", "candidate category", "source_kind"]
+    outputs: ["redacted statement", "security_findings", "sensitivity", "secret_ref", "credential_policy"]
+    code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:51", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:271", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:661"]
+    test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:17"]
+    evidence_refs: ["OpenAIDatabase/skills/openai-memory-analysis/references/security-policy.md:1"]
+  - model_id: "MOD-003"
+    name: "Active memory promotion and retrieval weight"
+    kind: "deterministic_rule_engine"
+    purpose: "Build active memory rows from candidates or review overrides and map tiers to retrieval weights and use constraints."
+    owner: "OpenAIDatabase"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "active-memory-v0"
+    assumptions: ["ASM-001", "ASM-002"]
+    formula_ids: ["FORM-003"]
+    parameter_ids: ["PARAM-018", "PARAM-019", "PARAM-020", "PARAM-021", "PARAM-022", "PARAM-023"]
+    inputs: ["candidate rows", "core_profile_review overrides", "run_id"]
+    outputs: ["active memory rows", "retrieval_weight", "use_when", "do_not_use_for", "activation metadata"]
+    code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1672", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1701", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1741"]
+    test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:46", "OpenAIDatabase/tests/test_openai_memory_analysis.py:87"]
+    evidence_refs: ["OpenAIDatabase/AGENTS.md:24"]
+  - model_id: "MOD-004"
+    name: "Read-only SQLite search and fetch"
+    kind: "retrieval_model"
+    purpose: "Index redacted active and pending memory records and provide read-only search/fetch with secret filtering."
+    owner: "OpenAIDatabase"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "read-only-retrieval-v0"
+    assumptions: ["ASM-001", "ASM-002"]
+    formula_ids: ["FORM-004"]
+    parameter_ids: ["PARAM-024", "PARAM-025", "PARAM-026", "PARAM-027", "PARAM-028", "PARAM-029", "PARAM-030"]
+    inputs: ["active_memory.jsonl", "candidate snapshots", "query terms", "sensitivity_max", "limit"]
+    outputs: ["compact search results", "full redacted fetch result", "redacted_secret or not_found error"]
+    code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1993", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2055", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2083"]
+    test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:112"]
+    evidence_refs: ["OpenAIDatabase/skills/openai-memory-analysis/references/retrieval.md:1"]
+  - model_id: "MOD-005"
+    name: "Memory Atlas weight score"
+    kind: "scoring_model"
+    purpose: "Compute memory node weight from tier, importance, and confidence and map it into visual node size, brightness, orbit, and graph edge weights."
+    owner: "OpenAIDatabase"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "atlas-weight-v0"
+    assumptions: ["ASM-002", "ASM-003", "ASM-006"]
+    formula_ids: ["FORM-005"]
+    parameter_ids: ["PARAM-031", "PARAM-032", "PARAM-033", "PARAM-034", "PARAM-035", "PARAM-036", "PARAM-037", "PARAM-038", "PARAM-039", "PARAM-040", "PARAM-041", "PARAM-042", "PARAM-043", "PARAM-044"]
+    inputs: ["memory_tier", "importance", "confidence", "memory_id"]
+    outputs: ["metrics.weight_score", "visual.size", "visual.brightness", "visual.orbit_radius", "edge weights"]
+    code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:46", "OpenAIDatabase/scripts/build_memory_atlas_data.py:380", "OpenAIDatabase/scripts/build_memory_atlas_data.py:648"]
+    test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25"]
+    evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:20"]
+  - model_id: "MOD-006"
+    name: "ROI leverage and staleness score"
+    kind: "scoring_model"
+    purpose: "Compute leverage score, staleness status, and recommended action for memory nodes."
+    owner: "OpenAIDatabase"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "roi-leverage-v0"
+    assumptions: ["ASM-002", "ASM-003", "ASM-006"]
+    formula_ids: ["FORM-006"]
+    parameter_ids: ["PARAM-045", "PARAM-046", "PARAM-047", "PARAM-048", "PARAM-049", "PARAM-050", "PARAM-051"]
+    inputs: ["weight_score", "category", "sensitivity", "validity", "date"]
+    outputs: ["metrics.roi.leverage_score", "staleness_status", "recommended_action"]
+    code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:387"]
+    test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25"]
+    evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:56"]
+  - model_id: "MOD-007"
+    name: "Contribution activity score"
+    kind: "business_calculation_model"
+    purpose: "Aggregate conversations, messages, memory increments, decisions, tool calls, errors, and aborts into daily, weekly, monthly, and yearly activity levels."
+    owner: "OpenAIDatabase"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "activity-score-v2"
+    assumptions: ["ASM-002", "ASM-003"]
+    formula_ids: ["FORM-007"]
+    parameter_ids: ["PARAM-052", "PARAM-053", "PARAM-054", "PARAM-055", "PARAM-056"]
+    inputs: ["conversation manifest", "active memory rows", "candidate rows", "Codex daily rows"]
+    outputs: ["contribution.daily", "contribution.weekly", "contribution.monthly", "contribution.yearly", "quantiles"]
+    code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:462", "OpenAIDatabase/scripts/build_memory_atlas_data.py:530"]
+    test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25"]
+    evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:87"]
+  - model_id: "MOD-008"
+    name: "Codex local behavior summary"
+    kind: "heuristic_algorithm"
+    purpose: "Summarize local Codex sessions into redacted manifests, daily activity, and personalization recommendations."
+    owner: "OpenAIDatabase"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "codex-sync-v0"
+    assumptions: ["ASM-001", "ASM-004"]
+    formula_ids: ["FORM-008"]
+    parameter_ids: ["PARAM-057", "PARAM-058", "PARAM-059", "PARAM-060", "PARAM-061", "PARAM-062", "PARAM-063"]
+    inputs: ["Codex session jsonl", "session index", "topic rules", "signal rules"]
+    outputs: ["codex_session_manifest.jsonl", "codex_daily_activity.jsonl", "codex_activity_snapshot.json", "codex_agent_recommendations.json"]
+    code_refs: ["OpenAIDatabase/scripts/sync_codex_memory_data.py:43", "OpenAIDatabase/scripts/sync_codex_memory_data.py:279", "OpenAIDatabase/scripts/sync_codex_memory_data.py:334"]
+    test_refs: ["OpenAIDatabase/tests/test_codex_memory_sync.py:20"]
+    evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:119"]
+  - model_id: "MOD-009"
+    name: "Data source registry and public snapshot gate"
+    kind: "deterministic_rule_engine"
+    purpose: "Register active and planned data sources, enforce canonical event fields, and keep planned sources out of homepage selector and fake activity."
+    owner: "OpenAIDatabase"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "source-registry-v0"
+    assumptions: ["ASM-003", "ASM-005"]
+    formula_ids: ["FORM-009"]
+    parameter_ids: ["PARAM-064", "PARAM-065", "PARAM-066", "PARAM-067", "PARAM-068", "PARAM-069", "PARAM-070", "PARAM-071", "PARAM-072"]
+    inputs: ["config/data_sources/source_registry.json", "atlas source_contract", "homepage source selector"]
+    outputs: ["data_sources array", "source_contract.data_source_registry", "acceptance pass/fail"]
+    code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:156", "OpenAIDatabase/scripts/build_memory_atlas_data.py:1208", "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py:86"]
+    test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25", "OpenAIDatabase/tests/test_memory_atlas_acceptance_audit.py"]
+    evidence_refs: ["OpenAIDatabase/config/data_sources/source_registry.json:1"]
+  - model_id: "MOD-010"
+    name: "Writeback proposal version chain"
+    kind: "deterministic_workflow_model"
+    purpose: "Create local draft memory change proposals with diff, revision, parent, rollback, safety metadata, and agent-apply gate."
+    owner: "OpenAIDatabase"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "writeback-proposal-v0"
+    assumptions: ["ASM-001", "ASM-003"]
+    formula_ids: ["FORM-010"]
+    parameter_ids: ["PARAM-073", "PARAM-074", "PARAM-075", "PARAM-076", "PARAM-077", "PARAM-078", "PARAM-079", "PARAM-080", "PARAM-081", "PARAM-082"]
+    inputs: ["selected Atlas node", "draftText", "reason", "proposal history", "writeback policy"]
+    outputs: ["WritebackProposal JSON", "version chain", "rollback proposal", "downloaded JSON"]
+    code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:1227", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2328", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2374"]
+    test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25", "OpenAIDatabase/tests/test_memory_atlas_release_audit.py:24"]
+    evidence_refs: ["OpenAIDatabase/README.md:121"]
