@@ -773,7 +773,9 @@ def main() -> int:
                   count(*) AS total,
                   count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array') AS counters,
                   count(*) FILTER (WHERE review_status = 'machine_verified') AS verified,
-                  count(*) FILTER (WHERE relationship_type IS NOT NULL) AS published_edges
+                  count(*) FILTER (WHERE evidence_role = 'context') AS context_rows,
+                  count(*) FILTER (WHERE evidence_role = 'supports') AS support_rows,
+                  count(*) FILTER (WHERE relationship_type IS NOT NULL) AS typed_candidate_rows
                 FROM ingestion_evidence_chain
                 WHERE parser_version = %s
                 """,
@@ -829,13 +831,19 @@ def main() -> int:
                 raise RuntimeError("Curated entity resolution must map known catalog entities")
             if int(evidence_row[0]) != 6:
                 raise RuntimeError(
-                    "Curated ingestion evidence chain must include discovery and fact evidence rows"
+                    "Curated ingestion evidence chain must contain six rows"
                 )
             if int(evidence_row[1]) != int(evidence_row[0]):
                 raise RuntimeError("Curated evidence chain counter_evidence must be an array")
             if int(evidence_row[2]) != int(evidence_row[0]):
                 raise RuntimeError("Curated evidence chain must preserve review status")
-            if int(evidence_row[3]) != 2:
+            if int(evidence_row[3]) != 4:
+                raise RuntimeError(
+                    "Curated ingestion evidence chain must include four context rows"
+                )
+            if int(evidence_row[4]) != 2:
+                raise RuntimeError("Curated ingestion evidence chain must include two support rows")
+            if int(evidence_row[5]) != 2:
                 raise RuntimeError("Curated Golden Vertical must include typed candidate evidence")
             if nvidia_subject_count != 4:
                 raise RuntimeError("Every curated anchor must resolve the NVIDIA subject")
@@ -926,7 +934,9 @@ def main() -> int:
                 "ingestion_evidence_chain": int(evidence_row[0]),
                 "counter_evidence_arrays": int(evidence_row[1]),
                 "evidence_chain_machine_verified": int(evidence_row[2]),
-                "typed_candidate_evidence_rows": int(evidence_row[3]),
+                "context_evidence_rows": int(evidence_row[3]),
+                "support_evidence_rows": int(evidence_row[4]),
+                "typed_candidate_evidence_rows": int(evidence_row[5]),
                 "nvidia_subject_candidates": nvidia_subject_count,
                 "tsmc_candidates": tsmc_candidate_count,
                 "relationship_fact_candidates": int(fact_candidate_row[0]),
