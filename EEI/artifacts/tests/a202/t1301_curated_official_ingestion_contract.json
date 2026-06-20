@@ -17,6 +17,7 @@
     "curated discovery anchors are not published as relationship edges",
     "publish_reviewed_relationship_facts.py requires an explicit review decision file before any relationship_fact_candidate can publish",
     "reviewed publication uses deterministic relationship IDs, a transaction, source-threshold override attestation, relationship_evidence copying, data_snapshots, fact_versions, fact_version_evidence and manual_review_queue resolution",
+    "reviewed publication can materialize matched research universe endpoints as research_target legal_entity rows and backfill entity_resolution_candidates, while unresolved endpoints still fail closed",
     "tests/fixtures/golden_vertical_review_decisions.json is fixture-only and explicitly not production legal or data clearance",
     "subsequent curated_ingestion_refresh runs preserve published candidates and resolved review queues instead of demoting them back to candidate/open"
   ],

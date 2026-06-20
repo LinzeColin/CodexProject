@@ -88,8 +88,12 @@ def candidate_row(connection: object, candidate_key: str) -> dict[str, Any]:
           rfc.structured_fact,
           rfc.counter_evidence,
           rfc.subject_resolution_id,
+          subject.candidate_name AS subject_candidate_name,
+          subject.matched_research_id AS subject_research_id,
           subject.matched_entity_id AS subject_entity_id,
           rfc.object_resolution_id,
+          object.candidate_name AS object_candidate_name,
+          object.matched_research_id AS object_research_id,
           object.matched_entity_id AS object_entity_id
         FROM relationship_fact_candidates rfc
         JOIN entity_resolution_candidates subject ON subject.id = rfc.subject_resolution_id
@@ -116,9 +120,13 @@ def candidate_row(connection: object, candidate_key: str) -> dict[str, Any]:
         "structured_fact": row[12] or {},
         "counter_evidence": row[13] or [],
         "subject_resolution_id": str(row[14]),
-        "subject_entity_id": str(row[15]) if row[15] else None,
-        "object_resolution_id": str(row[16]),
-        "object_entity_id": str(row[17]) if row[17] else None,
+        "subject_candidate_name": row[15],
+        "subject_research_id": row[16],
+        "subject_entity_id": str(row[17]) if row[17] else None,
+        "object_resolution_id": str(row[18]),
+        "object_candidate_name": row[19],
+        "object_research_id": row[20],
+        "object_entity_id": str(row[21]) if row[21] else None,
     }
 
 
@@ -185,6 +193,101 @@ def validate_publishable(
         if decision.get("source_threshold_override") is not True:
             raise RuntimeError(f"{candidate['candidate_key']} requires source threshold override")
         require_text(decision, "source_threshold_override_reason")
+
+
+def deterministic_research_entity_id(research_id: str) -> str:
+    return str(uuid5(NAMESPACE_URL, f"https://eei.local/a202/research-entity/{research_id}"))
+
+
+def ensure_research_entity(
+    connection: object,
+    *,
+    resolution_id: str,
+    candidate_name: str,
+    research_id: str | None,
+    existing_entity_id: str | None,
+) -> str | None:
+    if existing_entity_id:
+        return existing_entity_id
+    if not research_id:
+        return None
+    research = connection.execute(
+        """
+        SELECT canonical_name, tier, power_system, research_focus, verification_status,
+               entity_id
+        FROM company_research_universe
+        WHERE research_id = %s
+        """,
+        (research_id,),
+    ).fetchone()
+    if research is None:
+        return None
+    if research[5]:
+        entity_id = str(research[5])
+    else:
+        entity_id = deterministic_research_entity_id(research_id)
+        connection.execute(
+            """
+            INSERT INTO entities(id, canonical_name, entity_type, status, description)
+            VALUES (%s, %s, 'legal_entity', 'research_target', %s)
+            ON CONFLICT (id) DO UPDATE SET
+              canonical_name = EXCLUDED.canonical_name,
+              entity_type = EXCLUDED.entity_type,
+              status = EXCLUDED.status,
+              description = EXCLUDED.description,
+              updated_at = now()
+            """,
+            (
+                entity_id,
+                research[0],
+                (
+                    "Research-universe entity materialized for reviewed A202 publication; "
+                    "live facts still require production source approval."
+                ),
+            ),
+        )
+        connection.execute(
+            """
+            UPDATE company_research_universe
+            SET entity_id = %s
+            WHERE research_id = %s
+            """,
+            (entity_id, research_id),
+        )
+    connection.execute(
+        """
+        INSERT INTO entity_aliases(entity_id, alias, alias_type)
+        VALUES (%s, %s, 'curated_candidate_name')
+        ON CONFLICT (entity_id, alias, alias_type) DO NOTHING
+        """,
+        (entity_id, candidate_name),
+    )
+    connection.execute(
+        """
+        UPDATE entity_resolution_candidates
+        SET matched_entity_id = %s
+        WHERE id = %s
+        """,
+        (entity_id, resolution_id),
+    )
+    return entity_id
+
+
+def ensure_candidate_endpoint_entities(connection: object, candidate: dict[str, Any]) -> None:
+    candidate["subject_entity_id"] = ensure_research_entity(
+        connection,
+        resolution_id=candidate["subject_resolution_id"],
+        candidate_name=candidate["subject_candidate_name"],
+        research_id=candidate["subject_research_id"],
+        existing_entity_id=candidate["subject_entity_id"],
+    )
+    candidate["object_entity_id"] = ensure_research_entity(
+        connection,
+        resolution_id=candidate["object_resolution_id"],
+        candidate_name=candidate["object_candidate_name"],
+        research_id=candidate["object_research_id"],
+        existing_entity_id=candidate["object_entity_id"],
+    )
 
 
 def activate_snapshot(
@@ -268,6 +371,7 @@ def publish_candidate(
     decision: dict[str, Any],
 ) -> dict[str, Any]:
     candidate = candidate_row(connection, decision["candidate_key"])
+    ensure_candidate_endpoint_entities(connection, candidate)
     evidence = candidate_evidence(connection, candidate["id"])
     validate_publishable(candidate, evidence, decision)
     reviewed_at = parse_dt(decision["reviewed_at"])
