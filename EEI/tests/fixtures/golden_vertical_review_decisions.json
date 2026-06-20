@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "decision_set_key": "a202-integration-reviewed-golden-vertical-v1",
+  "record_mode": "curated_official_fixture",
+  "review_context": "integration_contract_fixture",
+  "fixture_review_only_not_production_clearance": true,
+  "decisions": [
+    {
+      "candidate_key": "GV-FACT-001",
+      "decision": "approved_for_publication",
+      "reviewer": "integration-test-reviewer",
+      "reviewed_at": "2026-06-21T00:00:00+10:00",
+      "source_threshold_override": true,
+      "source_threshold_override_reason": "A202 integration proof exercises the human review override path for a single official source; production publication still requires owner sign-off or an independent second source.",
+      "attestation": "Reviewed endpoint resolution, official source locator, evidence excerpt, empty counter-evidence array, and explicit fixture-only non-production clearance."
+    },
+    {
+      "candidate_key": "GV-FACT-002",
+      "decision": "approved_for_publication",
+      "reviewer": "integration-test-reviewer",
+      "reviewed_at": "2026-06-21T00:00:00+10:00",
+      "source_threshold_override": true,
+      "source_threshold_override_reason": "A202 integration proof exercises the human review override path for a single official source; production publication still requires owner sign-off or an independent second source.",
+      "attestation": "Reviewed endpoint resolution, official source locator, evidence excerpt, empty counter-evidence array, and explicit fixture-only non-production clearance."
+    }
+  ]
+}

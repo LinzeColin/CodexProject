@@ -46,6 +46,9 @@ FIXTURE_DATACENTER_ID = "00000000-0000-4000-8000-000000000024"
 COREWEAVE_NVIDIA_RELATIONSHIP_ID = "10000000-0000-4000-8000-000000000012"
 SUPERSESSION_RELATIONSHIP_ID = "20000000-0000-4000-8000-000000000001"
 CURATED_ANCHOR_PARSER_VERSION = "nvidia-public-anchor-v1"
+REVIEWED_DECISION_SET_KEY = "a202-integration-reviewed-golden-vertical-v1"
+REVIEWED_RELATIONSHIP_SNAPSHOT_KEY = "a202-reviewed-golden-vertical"
+REVIEW_DECISION_FIXTURE_PATH = "tests/fixtures/golden_vertical_review_decisions.json"
 DOSSIER_HUMAN_SUMMARY_KEYS = {
     "headline",
     "business",
@@ -121,6 +124,7 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     exercise_curated_official_ingestion_contracts()
     exercise_production_fact_version_contracts()
     exercise_domain_api_and_repository_contracts()
+    exercise_reviewed_relationship_publication_contracts()
     exercise_background_scheduler_contracts()
     run_script("scripts/migrate.py", "downgrade", "--all")
     run_script("scripts/migrate.py", "status", "--json")
@@ -1324,6 +1328,203 @@ def exercise_domain_api_and_repository_contracts() -> None:
             raise AssertionError("amount without currency and amount_kind must be rejected")
 
 
+def reviewed_publication_counts() -> tuple[int, int, int, int]:
+    with connect_database() as connection:
+        return connection.execute(
+            """
+            SELECT
+              (
+                SELECT count(*)::int
+                FROM relationships
+                WHERE qualifiers->>'decision_set_key' = %s
+              ) AS relationship_count,
+              (
+                SELECT count(*)::int
+                FROM relationship_evidence re
+                JOIN relationships r ON r.id = re.relationship_id
+                WHERE r.qualifiers->>'decision_set_key' = %s
+              ) AS relationship_evidence_count,
+              (
+                SELECT count(*)::int
+                FROM fact_versions fv
+                JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+                WHERE ds.snapshot_key = %s
+              ) AS fact_version_count,
+              (
+                SELECT count(*)::int
+                FROM fact_version_evidence fve
+                JOIN fact_versions fv ON fv.id = fve.fact_version_id
+                JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+                WHERE ds.snapshot_key = %s
+              ) AS fact_version_evidence_count
+            """,
+            (
+                REVIEWED_DECISION_SET_KEY,
+                REVIEWED_DECISION_SET_KEY,
+                REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,
+                REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,
+            ),
+        ).fetchone()
+
+
+def exercise_reviewed_relationship_publication_contracts() -> None:
+    run_script(
+        "scripts/publish_reviewed_relationship_facts.py",
+        "--review-decisions",
+        REVIEW_DECISION_FIXTURE_PATH,
+        "--snapshot-key",
+        REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,
+        "--allow-fixture-review",
+    )
+    with connect_database() as connection:
+        candidate_gate_row = connection.execute(
+            """
+            SELECT count(*)::int,
+                   count(*) FILTER (WHERE publication_status = 'published')::int,
+                   count(*) FILTER (WHERE source_threshold_met = true)::int,
+                   count(*) FILTER (WHERE review_status = 'human_verified')::int,
+                   count(*) FILTER (
+                     WHERE structured_fact->>'published_relationship_id' IS NOT NULL
+                   )::int
+            FROM relationship_fact_candidates
+            WHERE candidate_key IN ('GV-FACT-001', 'GV-FACT-002')
+            """
+        ).fetchone()
+        assert candidate_gate_row == (2, 2, 2, 2, 2)
+
+        review_queue_row = connection.execute(
+            """
+            SELECT count(*)::int,
+                   count(*) FILTER (WHERE mrq.status = 'resolved')::int,
+                   count(*) FILTER (WHERE mrq.reviewer = 'integration-test-reviewer')::int,
+                   count(*) FILTER (WHERE mrq.decision = 'approved_for_publication')::int
+            FROM manual_review_queue mrq
+            JOIN relationship_fact_candidates rfc ON rfc.id = mrq.object_id
+            WHERE rfc.candidate_key IN ('GV-FACT-001', 'GV-FACT-002')
+            """
+        ).fetchone()
+        assert review_queue_row == (2, 2, 2, 2)
+
+        relationship_rows = connection.execute(
+            """
+            SELECT r.id, r.relationship_type, r.relationship_family, r.qualifiers,
+                   count(re.source_document_id)::int
+            FROM relationships r
+            JOIN relationship_evidence re ON re.relationship_id = r.id
+            WHERE r.qualifiers->>'decision_set_key' = %s
+            GROUP BY r.id, r.relationship_type, r.relationship_family, r.qualifiers
+            ORDER BY r.relationship_type
+            """,
+            (REVIEWED_DECISION_SET_KEY,),
+        ).fetchall()
+        assert len(relationship_rows) == 2
+        assert {row[1] for row in relationship_rows} == {
+            "equipment_provider_to",
+            "wafer_foundry_for",
+        }
+        for row in relationship_rows:
+            qualifiers = row[3]
+            assert row[4] == 1
+            assert qualifiers["record_mode"] == "curated_official_fixture"
+            assert qualifiers["fixture_review_only_not_production_clearance"] is True
+            assert qualifiers["source_threshold_policy"]["independent_source_count"] == 1
+            assert qualifiers["source_threshold_policy"]["met_by_review_override"] is True
+
+        relationship_evidence_row = connection.execute(
+            """
+            SELECT count(*)::int,
+                   count(*) FILTER (
+                     WHERE re.structured_fact->>'publisher_version'
+                       = 'a202-reviewed-publication-v1'
+                   )::int,
+                   count(*) FILTER (
+                     WHERE re.structured_fact->>'fixture_review_only_not_production_clearance'
+                       = 'true'
+                   )::int,
+                   count(*) FILTER (WHERE sd.url LIKE 'https://%%')::int
+            FROM relationship_evidence re
+            JOIN relationships r ON r.id = re.relationship_id
+            JOIN source_documents sd ON sd.id = re.source_document_id
+            WHERE r.qualifiers->>'decision_set_key' = %s
+            """,
+            (REVIEWED_DECISION_SET_KEY,),
+        ).fetchone()
+        assert relationship_evidence_row == (2, 2, 2, 2)
+
+        snapshot_row = connection.execute(
+            """
+            SELECT ds.snapshot_key, ds.scope, ds.record_mode, ds.status,
+                   ds.metadata->>'acceptance_id',
+                   ds.metadata->>'fixture_review_only_not_production_clearance',
+                   count(DISTINCT fv.id)::int,
+                   count(fve.*)::int
+            FROM data_snapshots ds
+            JOIN fact_versions fv ON fv.snapshot_id = ds.id
+            JOIN fact_version_evidence fve ON fve.fact_version_id = fv.id
+            WHERE ds.snapshot_key = %s
+            GROUP BY ds.id
+            """,
+            (REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,),
+        ).fetchone()
+        assert snapshot_row[:6] == (
+            REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,
+            "golden-vertical:nvidia",
+            "curated_official_fixture",
+            "active",
+            "A202",
+            "true",
+        )
+        assert snapshot_row[6:] == (2, 2)
+
+        fact_version_payload_row = connection.execute(
+            """
+            SELECT count(*)::int,
+                   count(*) FILTER (WHERE fv.payload->>'publication_status' = 'published')::int,
+                   count(*) FILTER (WHERE fv.payload->>'review_status' = 'human_verified')::int,
+                   count(*) FILTER (WHERE fv.parser_version = 'a202-reviewed-publication-v1')::int
+            FROM fact_versions fv
+            JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+            WHERE ds.snapshot_key = %s
+            """,
+            (REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,),
+        ).fetchone()
+        assert fact_version_payload_row == (2, 2, 2, 2)
+
+        candidate_id = connection.execute(
+            """
+            SELECT id
+            FROM relationship_fact_candidates
+            WHERE candidate_key = 'GV-FACT-001'
+            """
+        ).fetchone()[0]
+
+    client = TestClient(app)
+    score_response = client.get(f"/v1/scoring/explain/relationship_fact_candidate/{candidate_id}")
+    assert score_response.status_code == 200
+    score = score_response.json()
+    assert score["publication_status"] == "published"
+    assert score["source_threshold"] == {
+        "minimum_independent_sources": 2,
+        "independent_source_count": 1,
+        "met": True,
+    }
+    assert score["review_status"] == "human_verified"
+    assert "human_review_verification" not in score["missing_inputs"]
+    assert "published_relationship_version" not in score["missing_inputs"]
+    assert score["review_queue"][0]["status"] == "resolved"
+
+    before_counts = reviewed_publication_counts()
+    run_script(
+        "scripts/publish_reviewed_relationship_facts.py",
+        "--review-decisions",
+        REVIEW_DECISION_FIXTURE_PATH,
+        "--snapshot-key",
+        REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,
+        "--allow-fixture-review",
+    )
+    assert reviewed_publication_counts() == before_counts
+
+
 def exercise_server_saved_view_contracts(
     client: TestClient,
     active_profile: dict[str, object],
@@ -2233,6 +2434,9 @@ def exercise_background_scheduler_contracts() -> None:
     assert ingestion_result["counts"]["parser_version"] == CURATED_ANCHOR_PARSER_VERSION
     assert ingestion_result["counts"]["relationship_fact_candidates"] >= 2
     assert ingestion_result["source_stats"]["raw_snapshot_count"] >= 6
+    assert ingestion_result["source_stats"]["published_fact_candidate_count"] >= 2
+    assert ingestion_result["source_stats"]["source_threshold_open_count"] == 0
+    assert ingestion_result["source_stats"]["review_open_count"] == 0
     assert ingestion_result["fixture_policy"] == (
         "curated_official_fixture is not live/full-text ingestion"
     )

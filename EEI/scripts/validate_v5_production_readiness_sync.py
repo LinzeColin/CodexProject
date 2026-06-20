@@ -113,6 +113,8 @@ PARTIAL_EVIDENCE = {
         "infra/db/migrations/0005_relationship_fact_candidates/down.sql",
         "data/golden_vertical_fact_candidates.json",
         "scripts/load_curated_ingestion_anchors.py",
+        "scripts/publish_reviewed_relationship_facts.py",
+        "tests/fixtures/golden_vertical_review_decisions.json",
         "scripts/check_database_schema.py",
         "tests/integration/test_database_migrations.py",
         "artifacts/tests/a202/t1301_curated_official_ingestion_contract.json",

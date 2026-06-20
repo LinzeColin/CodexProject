@@ -340,6 +340,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── manage_risk_control_artifacts.py
 │   ├── migrate.py
 │   ├── preflight.sh
+│   ├── publish_reviewed_relationship_facts.py
 │   ├── run_browser_scale_benchmarks.mjs
 │   ├── run_codex_autonomous.sh
 │   ├── run_live_e2e_api.sh
@@ -379,7 +380,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── saved-view-live.spec.ts
 │   │   └── state-contract.spec.ts
 │   ├── fixtures
-│   │   └── README.md
+│   │   ├── README.md
+│   │   └── golden_vertical_review_decisions.json
 │   ├── integration
 │   │   ├── README.md
 │   │   └── test_database_migrations.py
