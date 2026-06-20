@@ -37,8 +37,8 @@
     ]
   },
   "remaining_to_close_a207": [
-    "Frontend API-first adapter is covered by artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json; run a real multi-session browser E2E using two contexts against live FastAPI/PostgreSQL before closure",
-    "Add explicit frontend conflict recovery UI for 409 stale_saved_view_version including fetch-latest or restore-from-versions action",
+    "Frontend API-first adapter is covered by artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json",
+    "Live multisession E2E harness and conflict recovery UI are covered by artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json but still require CI PASS evidence",
     "Add user/workspace authn/authz boundary before public multi-user deployment"
   ]
 }

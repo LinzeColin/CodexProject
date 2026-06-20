@@ -101,6 +101,7 @@ artifacts/tests/a204/t1303_transactional_model_activation_contract.json
 artifacts/tests/a205/t1303_atomic_refresh_context_contract.json
 artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json
 artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json
+artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json
 artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json
 artifacts/tests/a208/t1306_browser_runtime_benchmark.json
 artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json
@@ -253,6 +254,7 @@ packages/ingestion/README.md
 packages/scoring/README.md
 packages/ui/README.md
 playwright.config.ts
+playwright.live.config.ts
 pnpm-lock.yaml
 pnpm-workspace.yaml
 prompts/01_PLAN_ONLY.md
@@ -294,6 +296,7 @@ scripts/migrate.py
 scripts/preflight.sh
 scripts/run_browser_scale_benchmarks.mjs
 scripts/run_codex_autonomous.sh
+scripts/run_live_e2e_api.sh
 scripts/run_scale_benchmarks.py
 scripts/run_soak_smoke.mjs
 scripts/secret_scan.py
@@ -323,6 +326,7 @@ tests/e2e/README.md
 tests/e2e/development-status.spec.ts
 tests/e2e/home.spec.ts
 tests/e2e/industry.spec.ts
+tests/e2e/saved-view-live.spec.ts
 tests/e2e/state-contract.spec.ts
 tests/fixtures/README.md
 tests/integration/README.md

@@ -35,8 +35,7 @@
     }
   },
   "remaining_to_close_a207": [
-    "Run a real multi-session browser E2E using two browser contexts against live FastAPI and PostgreSQL, not only a mocked /v1/saved-views route",
-    "Add explicit frontend conflict recovery UI for 409 stale_saved_view_version including fetch-latest or restore-from-versions action",
+    "Record GitHub Actions verify-g2-db PASS for the live multisession E2E in artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json",
     "Add user/workspace authn/authz boundary before public multi-user deployment"
   ]
 }

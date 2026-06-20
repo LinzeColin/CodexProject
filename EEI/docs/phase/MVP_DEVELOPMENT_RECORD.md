@@ -2128,6 +2128,53 @@ Residual risks:
 
 ### Remaining gaps
 
-- A207 still requires a real multi-session browser E2E with two contexts against live FastAPI and PostgreSQL, not only a mocked `/v1/saved-views` route.
-- Frontend 409 stale-version recovery UI still needs fetch-latest or restore-from-versions actions.
+- Superseded by the later live multisession E2E harness slice: live two-context harness and 409 fetch-latest conflict recovery UI now exist, but still require GitHub Actions `verify-g2-db` PASS evidence.
+- User/workspace authn/authz remains required before public multi-user saved-view deployment.
+
+## 2026-06-20 - T1305/A207 live multisession saved-view E2E harness and conflict recovery UI
+
+### Scope
+
+- Added configured FastAPI CORS support for browser saved-view requests from the local EEI web origin.
+- Added a dedicated live Playwright config that starts FastAPI and Next.js with `NEXT_PUBLIC_EEI_API_BASE_URL`.
+- Added `scripts/run_live_e2e_api.sh` to reset the local E2E PostgreSQL database, run migrations, seed catalogs, load synthetic fixtures and start uvicorn.
+- Added a live two-browser-context E2E that creates server saved-view version 1, updates it to version 2 in another context, triggers stale-version 409 from the first context and resolves via the new conflict recovery UI.
+- Added a visible `server-conflict` recovery button that fetches the latest saved view and reports `server-conflict-resolved`.
+- Added CORS unit coverage and wired `test-e2e-live` into `verify-g2-db`.
+
+### Files changed
+
+- `Makefile`
+- `apps/api/app/main.py`
+- `apps/api/app/settings.py`
+- `apps/web/src/app/page.tsx`
+- `playwright.config.ts`
+- `playwright.live.config.ts`
+- `scripts/run_live_e2e_api.sh`
+- `tests/e2e/saved-view-live.spec.ts`
+- `tests/unit/test_api_health.py`
+- `artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json`
+- `scripts/validate_v5_production_readiness_sync.py`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `DEVELOPMENT_STATUS.md`
+- `README.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+
+### Acceptance mapping
+
+- T1305 -> A207.
+- A207 remains `IN PROGRESS`, not `DONE`, until live `verify-g2-db` CI evidence and authn/authz are present.
+
+### Validation
+
+- Local `PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make lint`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make test-unit`: PASS, 13/13 with existing Starlette `httpx` deprecation warning.
+- Local default Playwright E2E: PASS, 29/29.
+- Local live Playwright E2E: NOT RUN; this host does not have `docker`.
+
+### Remaining gaps
+
+- GitHub Actions `make verify-g2-db` must pass to prove the live FastAPI/PostgreSQL multisession E2E.
 - User/workspace authn/authz remains required before public multi-user saved-view deployment.

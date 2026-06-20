@@ -32,7 +32,7 @@
   },
   "remaining_to_close_a211": [
     "wire frontend data loading to configured production API base URL instead of fixture projections",
-    "run live FastAPI/PostgreSQL multi-session saved-view E2E and add 409 conflict-recovery UI",
+    "record GitHub Actions verify-g2-db PASS for live FastAPI/PostgreSQL multi-session saved-view E2E",
     "connect model-center activation and rollback controls to transactional activation APIs",
     "run cross-route E2E with live FastAPI/PostgreSQL backend and stale-client refresh semantics"
   ],

@@ -34,6 +34,31 @@ def test_settings_reads_database_url_at_call_time(monkeypatch) -> None:
     assert get_settings().database_url == "postgresql://eei:test@localhost:5432/eei"
 
 
+def test_settings_reads_cors_origins_at_call_time(monkeypatch) -> None:
+    monkeypatch.setenv(
+        "EEI_CORS_ALLOW_ORIGINS",
+        "http://127.0.0.1:3000, http://localhost:3000",
+    )
+
+    assert get_settings().cors_allow_origins == (
+        "http://127.0.0.1:3000",
+        "http://localhost:3000",
+    )
+
+
+def test_api_allows_configured_browser_origin_for_saved_view_requests() -> None:
+    response = TestClient(app).options(
+        "/v1/saved-views",
+        headers={
+            "Origin": "http://127.0.0.1:3000",
+            "Access-Control-Request-Method": "POST",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://127.0.0.1:3000"
+
+
 def test_domain_api_fails_closed_without_database(monkeypatch) -> None:
     monkeypatch.delenv("DATABASE_URL", raising=False)
     response = TestClient(app).get("/v1/home")
