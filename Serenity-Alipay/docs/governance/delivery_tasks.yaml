@@ -1,0 +1,115 @@
+governance_spec_version: "1.0.0"
+project_id: "Serenity-Alipay"
+tasks:
+  - task_id: "TASK-A-001"
+    phase: "A"
+    objective: "Create the first CodexProject-auditable Serenity-Alipay governance baseline."
+    scope: "Governance files, version files, README entry, and legacy governance indexes only."
+    non_scope: "No scoring result, ranking result, gate logic, parameter value, data, or business-code change."
+    status: "in_progress"
+    dependencies: []
+    required_files: ["docs/governance/MODEL_SPEC.md", "docs/governance/model_registry.yaml", "docs/governance/formula_registry.yaml", "docs/governance/parameter_registry.csv", "docs/governance/DEVELOPMENT_LEDGER.md", "docs/governance/development_events.jsonl", "docs/governance/DELIVERY_PLAN.md", "docs/governance/delivery_tasks.yaml", "docs/governance/VERSION_MATRIX.yaml", "docs/governance/TRACEABILITY_MATRIX.csv", "VERSION", "CHANGELOG.md", "README.md"]
+    acceptance_ids: ["ACC-A-001", "ACC-A-002", "ACC-A-003"]
+    test_commands: ["python scripts/validate_project_governance.py --project Serenity-Alipay", "python scripts/validate_project_governance.py --all", "git diff --check"]
+    test_results: ["PENDING validation in GOV-G3-SERENITY-MIGRATE-001"]
+    evidence_refs: ["Serenity-Alipay/docs/governance/development_events.jsonl:1"]
+    risk: "Validator or environment can still fail; no runtime behavior change is allowed as a repair."
+    rollback: "Remove Serenity-Alipay/docs/governance and restore README, VERSION, CHANGELOG, 模型参数文件, 开发记录, 功能清单 from pre-run state."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-A-002"
+    phase: "A"
+    objective: "Verify the baseline with an independent read-only pass."
+    scope: "Read canonical governance files, legacy indexes, validator output, and git diff."
+    non_scope: "No edits."
+    status: "planned"
+    dependencies: ["TASK-A-001"]
+    required_files: ["docs/governance/*", "VERSION", "CHANGELOG.md"]
+    acceptance_ids: ["ACC-A-004"]
+    test_commands: ["python scripts/validate_project_governance.py --project Serenity-Alipay", "git diff --name-only"]
+    test_results: ["NOT_RUN - planned verification task"]
+    evidence_refs: ["PROPOSED - future GOV-G3-SERENITY-VERIFY-001"]
+    risk: "Pre-existing cross-project diffs can obscure scope verification."
+    rollback: "No write operations in verification."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-B-001"
+    phase: "B"
+    objective: "Close empirical calibration UNKNOWNs for score weights, grade thresholds, and Top5 allocation constants."
+    scope: "Calibration evidence, sensitivity notes, and model validation records."
+    non_scope: "Do not change active parameters without a separate parameter-profile version."
+    status: "planned"
+    dependencies: ["TASK-A-002"]
+    required_files: ["docs/governance/MODEL_SPEC.md", "docs/governance/parameter_registry.csv"]
+    acceptance_ids: ["ACC-B-001"]
+    test_commands: ["python -m pytest -q Serenity-Alipay/tests/test_scoring.py Serenity-Alipay/tests/test_pipeline_serenity_priority.py"]
+    test_results: ["NOT_RUN - planned calibration evidence task"]
+    evidence_refs: ["Serenity-Alipay/docs/governance/MODEL_SPEC.md"]
+    risk: "Current constants are extracted from code, not empirically calibrated."
+    rollback: "Revert documentation-only calibration notes; do not alter runtime constants."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-B-002"
+    phase: "B"
+    objective: "Add focused governance evidence for any parameter sensitivity or test coverage gaps."
+    scope: "Governance evidence and optional tests directly validating documented constants."
+    non_scope: "No behavior changes unless a new implementation task is separately approved."
+    status: "planned"
+    dependencies: ["TASK-A-002"]
+    required_files: ["docs/governance/parameter_registry.csv", "tests/"]
+    acceptance_ids: ["ACC-B-002"]
+    test_commands: ["python -m pytest -q Serenity-Alipay/tests/test_scoring.py Serenity-Alipay/tests/test_discipline.py Serenity-Alipay/tests/test_timezones.py"]
+    test_results: ["NOT_RUN - planned evidence hardening task"]
+    evidence_refs: ["Serenity-Alipay/docs/governance/parameter_registry.csv"]
+    risk: "Documentation can overstate test coverage if constants are only indirectly tested."
+    rollback: "Remove added tests or docs from the focused task only."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-C-001"
+    phase: "C"
+    objective: "Keep future scoring or gate implementation changes synchronized with governance registries."
+    scope: "Any future code/config change touching scoring, ranking, gates, windows, or safety behavior."
+    non_scope: "No current implementation change in GOV-G3-SERENITY-MIGRATE-001."
+    status: "planned"
+    dependencies: ["TASK-B-001"]
+    required_files: ["app/core/scoring.py", "app/core/pipeline.py", "docs/governance/*"]
+    acceptance_ids: ["ACC-C-001"]
+    test_commands: ["python -m pytest -q Serenity-Alipay/tests/test_scoring.py Serenity-Alipay/tests/test_pipeline_serenity_priority.py"]
+    test_results: ["NOT_RUN - future implementation-governance synchronization task"]
+    evidence_refs: ["Serenity-Alipay/docs/governance/TRACEABILITY_MATRIX.csv"]
+    risk: "Runtime changes without registry updates can break auditability."
+    rollback: "Revert the future behavior change or governance update together."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-D-001"
+    phase: "D"
+    objective: "Run focused Serenity governance and model tests after baseline creation."
+    scope: "Validator, diff checks, and focused pytest covering scoring, ranking, risk gates, metrics, discipline, and scheduler."
+    non_scope: "No dependency installation."
+    status: "ready"
+    dependencies: ["TASK-A-001"]
+    required_files: ["scripts/validate_project_governance.py", "tests/test_scoring.py", "tests/test_pipeline_serenity_priority.py", "tests/test_risk_gate_regression.py", "tests/test_metrics.py", "tests/test_discipline.py", "tests/test_timezones.py", "tests/test_scheduler.py"]
+    acceptance_ids: ["ACC-D-001"]
+    test_commands: ["python scripts/validate_project_governance.py --project Serenity-Alipay", "python -m pytest -q Serenity-Alipay/tests/test_scoring.py Serenity-Alipay/tests/test_pipeline_serenity_priority.py Serenity-Alipay/tests/test_risk_gate_regression.py Serenity-Alipay/tests/test_metrics.py Serenity-Alipay/tests/test_discipline.py Serenity-Alipay/tests/test_timezones.py Serenity-Alipay/tests/test_scheduler.py"]
+    test_results: ["PENDING validation in current run"]
+    evidence_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62"]
+    risk: "The local shell may lack python or pytest."
+    rollback: "No rollback needed for failed tests unless docs contain incorrect extracted facts."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-E-001"
+    phase: "E"
+    objective: "Promote Serenity-Alipay governance from advisory to required after read-only verification passes."
+    scope: "governance/projects.yaml ci_mode only, plus validator CI behavior if needed."
+    non_scope: "No project business or governance-content migration."
+    status: "planned"
+    dependencies: ["TASK-A-002", "TASK-D-001"]
+    required_files: ["governance/projects.yaml", ".github/workflows/project-governance.yml"]
+    acceptance_ids: ["ACC-E-001"]
+    test_commands: ["python scripts/validate_project_governance.py --project Serenity-Alipay", "python scripts/validate_project_governance.py --all"]
+    test_results: ["NOT_RUN - future promotion task"]
+    evidence_refs: ["Serenity-Alipay/docs/governance/DELIVERY_PLAN.md"]
+    risk: "Promotion before required-mode clean validation would block CI."
+    rollback: "Set Serenity-Alipay ci_mode back to advisory."
+    target_version: "0.1.0"
+    completed_version: ""

@@ -1,0 +1,131 @@
+governance_spec_version: "1.0.0"
+project_id: "OpenAIDatabase"
+tasks:
+  - task_id: "TASK-OAI-A-001"
+    phase: "A"
+    objective: "Complete P10 read-only audit for OpenAIDatabase."
+    scope: ["README", "AGENTS", "legacy governance files", "config", "model scripts", "focused tests", "scoped git log"]
+    non_scope: ["raw data", "generated outputs", "business code edits", "dependency installation"]
+    status: "completed"
+    dependencies: []
+    required_files: ["OpenAIDatabase/docs/governance/MODEL_SPEC.md", "OpenAIDatabase/docs/governance/model_registry.yaml", "OpenAIDatabase/docs/governance/parameter_registry.csv"]
+    acceptance_ids: ["ACC-OAI-A-001"]
+    test_commands: ["git log --max-count=50 --date=short --pretty=format:%h%x09%ad%x09%s -- OpenAIDatabase", "targeted rg for model formula scoring ranking rule parameter strategy search keywords under OpenAIDatabase"]
+    test_results: ["Scoped audit identified 10 active deterministic models and 82 active parameters from code config and tests."]
+    evidence_refs: ["OpenAIDatabase/docs/governance/MODEL_SPEC.md", "OpenAIDatabase/docs/governance/model_registry.yaml", "OpenAIDatabase/docs/governance/parameter_registry.csv"]
+    risk: "Raw memory data and generated outputs were intentionally not read."
+    rollback: "No file changes were made during the read-only audit portion."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+  - task_id: "TASK-OAI-A-002"
+    phase: "A"
+    objective: "Complete P11 migration to canonical OpenAIDatabase governance files."
+    scope: ["OpenAIDatabase/docs/governance", "VERSION", "CHANGELOG", "legacy index files", "README governance entry"]
+    non_scope: ["runtime scripts", "frontend source", "raw data", "generated outputs"]
+    status: "completed"
+    dependencies: ["TASK-OAI-A-001"]
+    required_files: ["OpenAIDatabase/docs/governance/model_registry.yaml", "OpenAIDatabase/docs/governance/formula_registry.yaml", "OpenAIDatabase/docs/governance/parameter_registry.csv", "OpenAIDatabase/docs/governance/delivery_tasks.yaml", "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml", "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv"]
+    acceptance_ids: ["ACC-OAI-A-002"]
+    test_commands: ["python scripts/validate_project_governance.py --project OpenAIDatabase", "python3 -m py_compile skills/openai-memory-analysis/scripts/openai_memory_analysis.py scripts/build_memory_atlas_data.py scripts/sync_codex_memory_data.py scripts/audit_memory_atlas_release.py", "python3 -m unittest tests.test_openai_memory_analysis tests.test_memory_atlas_data tests.test_codex_memory_sync tests.test_memory_atlas_release_audit -q"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0", "exit 0; 11 tests OK"]
+    evidence_refs: ["OpenAIDatabase/docs/governance/MODEL_SPEC.md", "OpenAIDatabase/docs/governance/model_registry.yaml", "OpenAIDatabase/docs/governance/formula_registry.yaml", "OpenAIDatabase/docs/governance/parameter_registry.csv"]
+    risk: "Do not claim calibrated heuristic weights without evidence."
+    rollback: "Remove OpenAIDatabase/docs/governance and restore legacy governance entry files."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+  - task_id: "TASK-OAI-A-003"
+    phase: "A"
+    objective: "Complete P12 verification for OpenAIDatabase governance."
+    scope: ["validator", "focused governance and model tests", "diff checks"]
+    non_scope: ["business behavior fixes", "dependency installation"]
+    status: "completed"
+    dependencies: ["TASK-OAI-A-002"]
+    required_files: ["OpenAIDatabase/docs/governance/*"]
+    acceptance_ids: ["ACC-OAI-A-003"]
+    test_commands: ["python scripts/validate_project_governance.py --project OpenAIDatabase", "python3 -m unittest tests.test_openai_memory_analysis tests.test_memory_atlas_data tests.test_codex_memory_sync tests.test_memory_atlas_release_audit -q", "git diff --check"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0; 11 tests OK", "exit 0"]
+    evidence_refs: ["OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md", "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv"]
+    risk: "Focused tests are not full release readiness."
+    rollback: "Return to TASK-OAI-A-002 for smallest repair."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+  - task_id: "TASK-OAI-A-004"
+    phase: "A"
+    objective: "Complete P13 promotion from advisory to required after verification passes."
+    scope: ["governance/projects.yaml OpenAIDatabase ci_mode only"]
+    non_scope: ["other projects", "business logic"]
+    status: "completed"
+    dependencies: ["TASK-OAI-A-003"]
+    required_files: ["governance/projects.yaml"]
+    acceptance_ids: ["ACC-OAI-A-004"]
+    test_commands: ["python scripts/validate_project_governance.py --project OpenAIDatabase", "python scripts/validate_project_governance.py --all"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0; all required projects pass; advisory warnings only for unmigrated projects"]
+    evidence_refs: ["governance/projects.yaml", "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml"]
+    risk: "Required mode will block CI on governance drift."
+    rollback: "Set OpenAIDatabase ci_mode back to advisory."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+  - task_id: "TASK-OAI-B-001"
+    phase: "B"
+    objective: "Resolve UNKNOWN calibration evidence for heuristic weights and thresholds."
+    scope: ["memory weight constants", "ROI constants", "activity weights", "Codex topic and signal rules"]
+    non_scope: ["changing constants without evidence"]
+    status: "blocked"
+    dependencies: ["TASK-OAI-A-004"]
+    required_files: ["OpenAIDatabase/docs/governance/parameter_registry.csv", "OpenAIDatabase/docs/governance/formula_registry.yaml"]
+    acceptance_ids: ["ACC-OAI-B-001"]
+    test_commands: []
+    test_results: []
+    evidence_refs: ["OpenAIDatabase/docs/governance/parameter_registry.csv"]
+    risk: "Heuristic constants may be mistaken for calibrated values."
+    rollback: "Keep current constants documented as heuristic and provisional."
+    target_version: "UNKNOWN (TASK-OAI-B-001)"
+    completed_version: ""
+  - task_id: "TASK-OAI-C-001"
+    phase: "C"
+    objective: "Future controlled apply layer for writeback proposals."
+    scope: ["proposal history", "conflict checks", "rollback point", "controlled active memory mutation"]
+    non_scope: ["direct frontend mutation"]
+    status: "planned"
+    dependencies: ["TASK-OAI-B-001"]
+    required_files: []
+    acceptance_ids: ["ACC-OAI-C-001"]
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "Uncontrolled writeback can corrupt active memory."
+    rollback: "Keep proposal-only frontend contract."
+    target_version: "UNKNOWN (TASK-OAI-B-001)"
+    completed_version: ""
+  - task_id: "TASK-OAI-D-001"
+    phase: "D"
+    objective: "Run full Memory Atlas acceptance gates beyond focused governance tests."
+    scope: ["build", "release audit", "visual acceptance", "local launcher", "Cloudflare preflight"]
+    non_scope: ["installing dependencies in baseline run"]
+    status: "planned"
+    dependencies: ["TASK-OAI-A-004"]
+    required_files: []
+    acceptance_ids: ["ACC-OAI-D-001"]
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "Governance pass is not full visual release readiness."
+    rollback: "Keep governance required and full release gate planned."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-OAI-E-001"
+    phase: "E"
+    objective: "Maintain OpenAIDatabase governance drift checks in required mode."
+    scope: ["governance validator", "model behavior globs", "CI required gate"]
+    non_scope: ["unrelated project migration"]
+    status: "planned"
+    dependencies: ["TASK-OAI-A-004"]
+    required_files: ["governance/projects.yaml", ".github/workflows/project-governance.yml"]
+    acceptance_ids: ["ACC-OAI-E-001"]
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "Model behavior changes must update registries in the same run."
+    rollback: "Downgrade to advisory only with explicit governance decision."
+    target_version: "0.1.0"
+    completed_version: ""

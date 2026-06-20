@@ -229,6 +229,16 @@ docs/adr/ADR-012-search.md
 docs/adr/ADR-013-frontend-visualization.md
 docs/adr/ADR-014-data-ingestion.md
 docs/adr/ADR-015-fixture-and-live-data-separation.md
+docs/governance/DELIVERY_PLAN.md
+docs/governance/DEVELOPMENT_LEDGER.md
+docs/governance/MODEL_SPEC.md
+docs/governance/TRACEABILITY_MATRIX.csv
+docs/governance/VERSION_MATRIX.yaml
+docs/governance/delivery_tasks.yaml
+docs/governance/development_events.jsonl
+docs/governance/formula_registry.yaml
+docs/governance/model_registry.yaml
+docs/governance/parameter_registry.csv
 docs/phase/MVP_DEVELOPMENT_RECORD.md
 docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md
 infra/db/migrations/0001_core_domain/down.sql

@@ -1,46 +1,13 @@
 # whkmSalary 开发记录
 
-更新时间：2026-06-19
+更新时间：2026-06-20
 
-## 项目定位
+本文件是兼容入口。当前开发状态、迭代、事件、版本和验收以以下文件为准：
 
-whkmSalary 当前 README 标识为 `whkmSalesSalary`，已部署到 Railway health endpoint。基于项目名称和仓库上下文，本项目应视为武汉开明销售/薪资相关系统或 Streamlit 应用的连续性仓库；当前本地 README 信息很少，后续变更必须先补证据再扩展。
+- `docs/governance/DEVELOPMENT_LEDGER.md`
+- `docs/governance/development_events.jsonl`
+- `docs/governance/delivery_tasks.yaml`
+- `docs/governance/VERSION_MATRIX.yaml`
+- `CHANGELOG.md`
 
-## 当前已形成的开发状态
-
-- 已有 Railway 健康检查地址：`https://whkmsalessalary-production.up.railway.app/_stcore/health`。
-- 当前仓库公开说明不足，缺少详细架构、运行方式、数据 schema、权限边界和测试命令。
-
-## 最新 personalization 对本项目的要求
-
-- 证据不足时必须标注“待外部验证”，不要把猜测写成事实。
-- 涉及工资、销售、个人信息、财务数据时默认高敏感，必须最小化展示和提交。
-- 交付文件要先补项目连续性、边界、验证命令和数据保护规则。
-
-## 安全与执行边界
-
-- 不提交员工工资明细、身份证、银行卡、手机号、客户隐私、Railway secrets 或 `.env`。
-- 任何薪资/财务输出都必须能追溯输入数据版本和计算规则。
-- 外部部署状态必须通过 Railway 或 health endpoint 当前验证，不能只看旧 README。
-
-## 重要验证记录
-
-当前 README 仅给出 health endpoint。建议后续最小验证：
-
-```bash
-curl -fsS https://whkmsalessalary-production.up.railway.app/_stcore/health
-```
-
-如本地代码包含 Streamlit，应补：
-
-```bash
-python -m compileall .
-streamlit run <entrypoint>
-```
-
-## 下一步开发优先级
-
-1. 补 README：项目目的、用户、数据 schema、启动方式、部署方式、测试方式。
-2. 补敏感数据处理规则和权限边界。
-3. 增加 health/check 脚本和最小回归测试。
-4. 明确薪资计算公式、参数、异常处理和审计日志。
+Git 历史只作为 `RECONSTRUCTED` evidence；不得从 commit 数量推断迭代数量。

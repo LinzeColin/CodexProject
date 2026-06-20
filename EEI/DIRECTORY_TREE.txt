@@ -203,6 +203,17 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── ADR-013-frontend-visualization.md
 │   │   ├── ADR-014-data-ingestion.md
 │   │   └── ADR-015-fixture-and-live-data-separation.md
+│   ├── governance
+│   │   ├── DELIVERY_PLAN.md
+│   │   ├── DEVELOPMENT_LEDGER.md
+│   │   ├── MODEL_SPEC.md
+│   │   ├── TRACEABILITY_MATRIX.csv
+│   │   ├── VERSION_MATRIX.yaml
+│   │   ├── delivery_tasks.yaml
+│   │   ├── development_events.jsonl
+│   │   ├── formula_registry.yaml
+│   │   ├── model_registry.yaml
+│   │   └── parameter_registry.csv
 │   ├── phase
 │   │   ├── MVP_DEVELOPMENT_RECORD.md
 │   │   └── V5_TASK_PACK_SYNCHRONIZATION.md

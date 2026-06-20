@@ -1,5 +1,12 @@
 # 开发任务、已解决/未解决与执行状态
 
+## CodexProject Governance Entry
+
+Canonical model, formula, parameter, development ledger, delivery task, version
+and traceability records are maintained under `docs/governance/`. This legacy
+status file is retained as an EEI Task Pack status narrative and compatibility
+entry; do not edit it as an independent machine source for governance counts.
+
 ## 当前结论
 
 | 层级 | 当前状态 |
