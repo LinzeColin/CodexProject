@@ -3592,7 +3592,7 @@ Status: LOCAL AND REMOTE CI VALIDATED; A203/A204-A206 STILL IN PROGRESS
 
 ## 2026-06-21 - T1303/A204-A205 model-center online draft editing slice
 
-Status: LOCAL VALIDATED; REMOTE CI PENDING; A204-A205 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A204-A205 STILL IN PROGRESS
 
 ### Scope
 
@@ -3608,7 +3608,7 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A204-A205 STILL IN PROGRESS
 
 - T1303 -> A204 for model config version creation, operation log and transactional activation target handoff.
 - T1303 -> A205 for preserving active context until explicit activation and then refreshing global visible state after activation.
-- A204/A205 remain `IN_PROGRESS`, not `DONE`, until remote PostgreSQL CI and long-duration refresh stability evidence are current.
+- A204/A205 remain `IN_PROGRESS`, not `DONE`, until process-manager wake and long-duration refresh stability evidence are current.
 
 ### Local validation
 
@@ -3620,15 +3620,21 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A204-A205 STILL IN PROGRESS
 - `.venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `.env`/`DATABASE_URL`; remote GitHub Actions must provide PostgreSQL proof.
 - `npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g "A204 and A205" --workers=1`: PASS with 1/1.
 
+### Remote CI validation
+
+- GitHub Actions run `27885349105` / job `82519730263` on commit `0e5fe53e`: PASS.
+- Step 10 `Verify G2 PostgreSQL integration`: PASS, proving public `POST /v1/scoring/profiles` draft creation, invalid-weight fail-closed behavior, transactional activation, stale refresh, recompute enqueue and rollback against migrations/seeds.
+- Step 11 `Verify G2 browser E2E`: PASS.
+- Step 12 `Verify G2 live FastAPI PostgreSQL E2E`: PASS.
+
 ### Remaining gaps
 
-- Remote G2 PostgreSQL CI must prove the public draft-creation API against migrations/seeds.
 - A204/A205 still need process-manager wake and 4h/24h refresh stability evidence before closure.
 - A206/A209 still need 4h and 24h operator soak evidence for worker wake, retry, recovery and dead-letter stability.
 
 ## 2026-06-21 - T1306/A208 scale benchmark projection hardening slice
 
-Status: LOCAL VALIDATED; REMOTE CI PENDING; A208 REMAINS CLOSED AFTER REVALIDATION
+Status: LOCAL AND REMOTE CI VALIDATED; A208 REMAINS CLOSED AFTER REVALIDATION
 
 ### Scope
 
@@ -3655,7 +3661,14 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A208 REMAINS CLOSED AFTER REVALIDATI
 - `.venv/bin/python scripts/run_scale_benchmarks.py --scales 1000 --iterations 2 --mode ci_smoke --output artifacts/tests/a208/t1306_scale_benchmark_smoke.json --fail-on-budget --quiet`: PASS.
 - `.venv/bin/python scripts/run_scale_benchmarks.py --scales 10000,100000,1000000 --iterations 1 --mode operator_full --output artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json --browser-runtime-artifact artifacts/tests/a208/t1306_browser_runtime_benchmark.json --fail-on-budget --require-full-targets --quiet`: PASS.
 
+### Remote CI validation
+
+- GitHub Actions run `27885349105` / job `82519730263` on commit `0e5fe53e`: PASS.
+- The `make verify` workflow includes A208 scale benchmark smoke, Chromium browser runtime and merged 10k/100k/1m operator_full benchmark.
+- Step 10 `Verify G2 PostgreSQL integration`: PASS.
+- Step 11 `Verify G2 browser E2E`: PASS.
+- Step 12 `Verify G2 live FastAPI PostgreSQL E2E`: PASS.
+
 ### Remaining gaps
 
-- Remote CI must revalidate the updated benchmark script and regenerated A208 artifacts.
 - A209 4h/24h soak remains open and is intentionally not affected by this A208 hardening slice.

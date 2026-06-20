@@ -84,18 +84,29 @@
     "verify_g2_browser_e2e_step": "PASS",
     "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
   },
-  "latest_online_edit_local_result": {
-    "status": "LOCAL_VALIDATED_REMOTE_CI_PENDING",
-    "commands": [
-      "python3 -m py_compile apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py: PASS",
-      ".venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py: PASS",
-      ".venv/bin/python scripts/validate_contracts.py: PASS",
-      "npx --yes pnpm@11.8.0 --filter @eei/web typecheck: PASS",
-      ".venv/bin/python -m pytest -q tests/unit/test_api_health.py tests/unit/test_scoring.py: PASS with 31/31",
-      "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A204 and A205\" --workers=1: PASS with 1/1"
-    ],
-    "verified_scope": "online draft profile creation, validation failure for invalid weights, frontend draft button binding and draft activation target handoff"
-  },
+    "latest_online_edit_local_result": {
+        "status": "LOCAL_AND_REMOTE_CI_VALIDATED",
+        "commands": [
+            "python3 -m py_compile apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py: PASS",
+            ".venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py: PASS",
+            ".venv/bin/python scripts/validate_contracts.py: PASS",
+            "npx --yes pnpm@11.8.0 --filter @eei/web typecheck: PASS",
+            ".venv/bin/python -m pytest -q tests/unit/test_api_health.py tests/unit/test_scale_benchmarks.py tests/unit/test_scoring.py: PASS with 37/37",
+            "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A204 and A205\" --workers=1: PASS with 1/1"
+        ],
+        "verified_scope": "online draft profile creation, validation failure for invalid weights, frontend draft button binding and draft activation target handoff"
+    },
+    "latest_online_edit_ci_result": {
+        "provider": "GitHub Actions",
+        "workflow": "EEI validation",
+        "run_id": "27885349105",
+        "job_id": "82519730263",
+        "commit_sha": "0e5fe53e",
+        "verified_scope": "POST /v1/scoring/profiles creates an inactive draft through the public API, preserves active context before explicit activation, rejects invalid weights, activates the draft, enqueues score recompute and rolls back through PostgreSQL-backed integration plus browser/live FastAPI coverage.",
+        "verify_g2_postgresql_integration_step": "PASS",
+        "verify_g2_browser_e2e_step": "PASS",
+        "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
+    },
   "rollback": [
     "Revert the T1303 API/repository/migration/test/governance commit.",
     "Run scripts/migrate.py downgrade --steps 1 to remove active_analysis_contexts and the global active profile index in affected environments.",

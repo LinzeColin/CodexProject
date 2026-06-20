@@ -12,6 +12,8 @@
 
 当前共有 **130 个产品开发任务**、**211 条验收标准**、**53 项风险**。新增 T1300-T1309/A201-A211 来自 v5 审查和用户当前待开发清单；T1300/A201、T1305/A207、T1306/A208 和 T1308/A211 已关闭，T1301/A202、T1302/A203、T1303/A204-A205、T1304/A206、T1307/A209 进行中但未关闭，T1309/A210 仍未完成，避免把规格/原型或部分生产合同误报为生产 MVP 完成。
 
+最新本轮验证：GitHub Actions run `27885349105` / job `82519730263` PASS，Step 10 G2 PostgreSQL integration、Step 11 browser E2E 和 Step 12 live FastAPI PostgreSQL E2E 均通过；该 run 验证 `POST /v1/scoring/profiles` 在线 draft 创建、invalid-weight fail-closed、draft activation target handoff、active-context preservation、A204/A205 mock/live 路径和 T1306/A208 benchmark hardening。A204/A205 仍保持 IN PROGRESS，因为 process-manager wake 和 4h/24h refresh stability 尚未完成。
+
 ## 已解决的关键决策（7）
 
 - 默认首页、递归主体探索、数据底座、模型修改流程、14 天校准、视觉覆盖目标、文档治理方式均已冻结。
