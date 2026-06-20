@@ -12,13 +12,18 @@
     "Stale expected active profile requests return 409 and keep the previous active profile unchanged while logging a conflict result for activation and rollback action types.",
     "Added a frontend API-first model-center activation adapter and controls that send expected_active_profile_version_id plus client_refresh_token to the transaction endpoint.",
     "Added a model-center rollback control that reactivates the previous profile through the dedicated transactional rollback endpoint.",
+    "Added POST /v1/scoring/recompute to validate the active profile and refresh token before enqueueing a score_recompute job.",
+    "Score recompute requests reuse the existing background_jobs idempotency key contract and log success/conflict results through operation_logs.",
+    "Added a model-center Recompute scores control that calls /v1/scoring/recompute with expected_active_profile_version_id and client_refresh_token.",
     "Added config/model_profiles/supply-chain-v3.json as an inactive immutable candidate profile loaded by the PostgreSQL seed path.",
-    "Added live Playwright coverage that activates supply-chain-v3, observes a transaction-created scoring_run snapshot, checks stale refresh semantics and rolls back to balanced-v2 through FastAPI/PostgreSQL."
+    "Added live Playwright coverage that activates supply-chain-v3, observes a transaction-created scoring_run snapshot, checks stale refresh semantics and rolls back to balanced-v2 through FastAPI/PostgreSQL.",
+    "Added mock Playwright coverage for activate -> stale refresh -> score recompute enqueue -> rollback."
   ],
   "evidence_files": [
     "config/model_profiles/supply-chain-v3.json",
     "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
     "infra/db/migrations/0006_model_activation_refresh_state/down.sql",
+    "infra/db/migrations/0007_scheduler_job_queue/up.sql",
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
     "scripts/check_database_schema.py",
@@ -43,8 +48,8 @@
     "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py"
   ],
   "not_closed_scope": [
-    "Model-center online profile editing and dedicated score recompute controls are not complete.",
-    "Worker-driven data snapshot refresh and transactional outbox remain open."
+    "Model-center online profile editing is not complete.",
+    "The score_recompute worker handler, worker-driven data snapshot refresh and transactional outbox remain open."
   ],
   "latest_ci_result": {
     "provider": "GitHub Actions",

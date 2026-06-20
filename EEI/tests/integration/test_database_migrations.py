@@ -1541,6 +1541,7 @@ def exercise_transactional_model_activation_contract(
     assert "model_center" in activation["active_context"]["affected_modules"]
     assert activation["active_context"]["client_state"] == "stale"
     next_refresh_token = activation["cache_invalidation"]["refresh_token"]
+    next_refresh_generation = activation["cache_invalidation"]["refresh_generation"]
 
     stale_context_response = client.get(
         f"/v1/scoring/active-context?client_refresh_token={previous_refresh_token}"
@@ -1552,6 +1553,64 @@ def exercise_transactional_model_activation_contract(
     )
     assert current_context_response.status_code == 200
     assert current_context_response.json()["client_state"] == "current"
+
+    recompute_response = client.post(
+        "/v1/scoring/recompute",
+        json={
+            "expected_active_profile_version_id": str(target_profile_id),
+            "client_refresh_token": next_refresh_token,
+            "scope": "global",
+            "reason": "T1303/T1304 score recompute enqueue success path",
+        },
+    )
+    assert recompute_response.status_code == 200
+    recompute = recompute_response.json()
+    assert recompute["schema_version"] == "score-recompute-request-v1"
+    assert recompute["status"] == "queued"
+    assert recompute["active_context"]["active_scoring_profile_version_id"] == str(
+        target_profile_id
+    )
+    assert recompute["active_context"]["client_state"] == "current"
+    assert recompute["job"]["job_type"] == "score_recompute"
+    assert recompute["job"]["status"] == "queued"
+    assert recompute["job"]["payload"]["schema_version"] == "score-recompute-job-v1"
+    assert recompute["job"]["payload"]["refresh_token"] == next_refresh_token
+    assert recompute["job"]["payload"]["refresh_generation"] == next_refresh_generation
+    assert recompute["job"]["payload"]["active_scoring_profile_version_id"] == str(
+        target_profile_id
+    )
+    assert recompute["job"]["metadata"]["acceptance_ids"] == ["A204", "A205", "A206"]
+    assert recompute["cache_policy"]["refresh_token"] == next_refresh_token
+
+    duplicate_recompute_response = client.post(
+        "/v1/scoring/recompute",
+        json={
+            "expected_active_profile_version_id": str(target_profile_id),
+            "client_refresh_token": next_refresh_token,
+            "scope": "global",
+            "reason": "T1303/T1304 score recompute idempotency path",
+        },
+    )
+    assert duplicate_recompute_response.status_code == 200
+    duplicate_recompute = duplicate_recompute_response.json()
+    assert duplicate_recompute["job"]["id"] == recompute["job"]["id"]
+    assert duplicate_recompute["idempotency_key"] == recompute["idempotency_key"]
+
+    stale_recompute_response = client.post(
+        "/v1/scoring/recompute",
+        json={
+            "expected_active_profile_version_id": str(target_profile_id),
+            "client_refresh_token": previous_refresh_token,
+            "scope": "global",
+            "reason": "T1303/T1304 stale recompute negative path",
+        },
+    )
+    assert stale_recompute_response.status_code == 409
+    recompute_conflict = stale_recompute_response.json()["detail"]
+    assert recompute_conflict["schema_version"] == "score-recompute-conflict-v1"
+    assert recompute_conflict["status"] == "conflict"
+    assert recompute_conflict["reason"] == "stale_client_refresh_token"
+    assert recompute_conflict["actual_active_profile_version_id"] == str(target_profile_id)
 
     stale_activation_response = client.post(
         f"/v1/scoring/profiles/{active_profile['id']}/activate",
@@ -1640,14 +1699,34 @@ def exercise_transactional_model_activation_contract(
             (context_scoring_run_id, UUID(str(active_profile["id"]))),
         ).fetchone()[0]
         assert score_run_count == 1
+        recompute_job_count = connection.execute(
+            """
+            SELECT count(*)::int
+            FROM background_jobs
+            WHERE job_type = 'score_recompute'
+              AND id = %s
+              AND idempotency_key = %s
+              AND status = 'queued'
+              AND payload->>'refresh_token' = %s
+            """,
+            (
+                UUID(recompute["job"]["id"]),
+                recompute["idempotency_key"],
+                next_refresh_token,
+            ),
+        ).fetchone()[0]
+        assert recompute_job_count == 1
         log_counts = {
             (row[0], row[1]): row[2]
             for row in connection.execute(
                 """
                 SELECT action_type, result_status, count(*)::int
                 FROM operation_logs
-                WHERE action_type IN ('activate_scoring_profile', 'rollback_scoring_profile')
-                  AND object_type = 'scoring_profile_version'
+                WHERE action_type IN (
+                  'activate_scoring_profile',
+                  'rollback_scoring_profile',
+                  'enqueue_score_recompute'
+                )
                 GROUP BY action_type, result_status
                 """
             ).fetchall()
@@ -1656,6 +1735,8 @@ def exercise_transactional_model_activation_contract(
         assert log_counts[("activate_scoring_profile", "conflict")] == 1
         assert log_counts[("rollback_scoring_profile", "success")] == 1
         assert log_counts[("rollback_scoring_profile", "conflict")] == 1
+        assert log_counts[("enqueue_score_recompute", "success")] == 2
+        assert log_counts[("enqueue_score_recompute", "conflict")] == 1
         try:
             connection.execute(
                 "UPDATE scoring_profile_versions SET active = true WHERE id = %s",
@@ -1802,6 +1883,7 @@ def exercise_background_scheduler_contracts() -> None:
               count(*) FILTER (WHERE status = 'dead_letter')::int,
               count(*) FILTER (WHERE status = 'running')::int
             FROM background_jobs
+            WHERE job_type = 'noop'
             """
         ).fetchone()
         assert job_counts == (1, 1, 0)

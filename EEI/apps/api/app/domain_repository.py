@@ -2057,6 +2057,186 @@ class DomainRepository:
             action_type="rollback_scoring_profile",
         )
 
+    def enqueue_score_recompute(
+        self,
+        *,
+        expected_active_profile_version_id: UUID | None,
+        client_refresh_token: str | None,
+        scope: str,
+        reason: str,
+        actor: str = "local_user",
+    ) -> dict[str, Any]:
+        conflict_detail: dict[str, Any] | None = None
+        response_payload: dict[str, Any] | None = None
+        with self.connect() as connection:
+            context_row = connection.execute(
+                """
+                SELECT
+                  aac.active_scoring_profile_version_id,
+                  aac.active_data_snapshot_id,
+                  aac.active_scoring_run_id,
+                  aac.refresh_token::text AS refresh_token,
+                  aac.refresh_generation,
+                  aac.status,
+                  sp.profile_key,
+                  spv.version AS profile_version_number,
+                  sm.model_key,
+                  sm.version AS model_version_number
+                FROM active_analysis_contexts aac
+                JOIN scoring_profile_versions spv
+                  ON spv.id = aac.active_scoring_profile_version_id
+                JOIN scoring_profiles sp ON sp.id = spv.profile_id
+                JOIN scoring_models sm ON sm.id = spv.model_id
+                WHERE aac.context_key = 'global'
+                FOR UPDATE OF aac
+                """
+            ).fetchone()
+            if context_row is None:
+                raise RepositoryError("No active analysis context is available")
+
+            active_profile_id = context_row["active_scoring_profile_version_id"]
+            active_context = self.active_analysis_context_payload(
+                connection,
+                client_refresh_token=client_refresh_token,
+            )
+            active_profile = self.scoring_profile_by_id(connection, active_profile_id)
+            actual_refresh_token = str(context_row["refresh_token"])
+            conflict_reason: str | None = None
+            if (
+                expected_active_profile_version_id is not None
+                and expected_active_profile_version_id != active_profile_id
+            ):
+                conflict_reason = "stale_active_profile_version"
+            elif client_refresh_token is not None and client_refresh_token != actual_refresh_token:
+                conflict_reason = "stale_client_refresh_token"
+
+            if conflict_reason is not None:
+                conflict_detail = {
+                    "schema_version": "score-recompute-conflict-v1",
+                    "status": "conflict",
+                    "reason": conflict_reason,
+                    "expected_active_profile_version_id": expected_active_profile_version_id,
+                    "actual_active_profile_version_id": active_profile_id,
+                    "client_refresh_token": client_refresh_token,
+                    "actual_refresh_token": actual_refresh_token,
+                    "scope": scope,
+                    "active_context": active_context,
+                }
+                self.log_operation(
+                    connection,
+                    actor=actor,
+                    action_type="enqueue_score_recompute",
+                    object_type="active_analysis_context",
+                    object_id=active_profile_id,
+                    old_value=active_context,
+                    new_value=None,
+                    diff=conflict_detail,
+                    reason=reason,
+                    result_status="conflict",
+                    model_version=active_context["model_version"],
+                    profile_version=active_context["profile_version"],
+                )
+            else:
+                data_snapshot_id = context_row["active_data_snapshot_id"]
+                scoring_run_id = context_row["active_scoring_run_id"]
+                refresh_generation = int(context_row["refresh_generation"])
+                idempotency_key = ":".join(
+                    [
+                        "score-recompute",
+                        scope,
+                        str(active_profile_id),
+                        str(data_snapshot_id or "no-data-snapshot"),
+                        str(scoring_run_id or "no-scoring-run"),
+                        str(refresh_generation),
+                    ]
+                )
+                job_payload = {
+                    "schema_version": "score-recompute-job-v1",
+                    "scope": scope,
+                    "reason": reason,
+                    "active_scoring_profile_version_id": active_profile_id,
+                    "active_data_snapshot_id": data_snapshot_id,
+                    "active_scoring_run_id": scoring_run_id,
+                    "refresh_token": actual_refresh_token,
+                    "refresh_generation": refresh_generation,
+                    "affected_modules": ACTIVE_REFRESH_MODULES,
+                    "model_version": active_context["model_version"],
+                    "profile_version": active_context["profile_version"],
+                    "requested_by": actor,
+                    "requested_at": _now(),
+                }
+                job_metadata = {
+                    "task_ids": ["T1303", "T1304"],
+                    "acceptance_ids": ["A204", "A205", "A206"],
+                    "contract": "transactional-score-recompute-enqueue-v1",
+                    "handler_status": "queued_handler_not_closed",
+                }
+                job_row = connection.execute(
+                    """
+                    INSERT INTO background_jobs(
+                      job_type, idempotency_key, payload, priority, status,
+                      max_attempts, dead_letter_after_attempts, metadata
+                    )
+                    VALUES (
+                      'score_recompute', %s, %s, 40, 'queued', 5, 5, %s
+                    )
+                    ON CONFLICT (job_type, idempotency_key) DO UPDATE SET
+                      idempotency_key = EXCLUDED.idempotency_key
+                    RETURNING
+                      id, job_type, idempotency_key, payload, priority, status,
+                      scheduled_for, attempt_count, max_attempts,
+                      dead_letter_after_attempts, created_at, updated_at, metadata
+                    """,
+                    (
+                        idempotency_key,
+                        Jsonb(_jsonable(job_payload)),
+                        Jsonb(job_metadata),
+                    ),
+                ).fetchone()
+                job_payload_json = _jsonable(dict(job_row))
+                self.log_operation(
+                    connection,
+                    actor=actor,
+                    action_type="enqueue_score_recompute",
+                    object_type="background_job",
+                    object_id=job_row["id"],
+                    old_value=active_context,
+                    new_value=job_payload_json,
+                    diff={
+                        "idempotency_key": idempotency_key,
+                        "active_scoring_profile_version_id": active_profile_id,
+                        "refresh_generation": refresh_generation,
+                        "scope": scope,
+                    },
+                    reason=reason,
+                    result_status="success",
+                    model_version=active_context["model_version"],
+                    profile_version=active_context["profile_version"],
+                )
+                response_payload = _jsonable(
+                    {
+                        "schema_version": "score-recompute-request-v1",
+                        "status": job_row["status"],
+                        "job": job_payload_json,
+                        "idempotency_key": idempotency_key,
+                        "active_profile": active_profile,
+                        "active_context": active_context,
+                        "cache_policy": {
+                            "refresh_token": actual_refresh_token,
+                            "refresh_generation": refresh_generation,
+                            "stale_client_semantics": (
+                                "clients must include the latest refresh_token before "
+                                "requesting a global score recompute"
+                            ),
+                        },
+                    }
+                )
+        if conflict_detail is not None:
+            raise ConflictError(_jsonable(conflict_detail))
+        if response_payload is None:  # pragma: no cover - defensive invariant.
+            raise RepositoryError("Score recompute enqueue produced no payload")
+        return response_payload
+
     def list_scoring_profiles(self) -> list[dict[str, Any]]:
         with self.connect() as connection:
             rows = connection.execute(

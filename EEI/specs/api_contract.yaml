@@ -937,6 +937,24 @@ paths:
                 $ref: '#/components/schemas/ScoringActivationResponse'
         '409':
           description: Stale expected active profile; previous active version remains unchanged
+  /v1/scoring/recompute:
+    post:
+      operationId: enqueueScoreRecompute
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreRecomputeRequest'
+      responses:
+        '200':
+          description: Score recompute job accepted idempotently for the current active context
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreRecomputeResponse'
+        '409':
+          description: Stale active profile or refresh token; no recompute job is created
   /v1/scoring/explain/{objectType}/{objectId}:
     get:
       operationId: explainScore
@@ -3218,6 +3236,101 @@ components:
     ScoringRollbackRequest:
       allOf:
       - $ref: '#/components/schemas/ScoringActivationRequest'
+    ScoreRecomputeRequest:
+      type: object
+      properties:
+        expected_active_profile_version_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        client_refresh_token:
+          type:
+          - string
+          - 'null'
+        scope:
+          type: string
+          enum:
+          - global
+          - active_workspace
+          default: global
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+    BackgroundJob:
+      type: object
+      required:
+      - id
+      - job_type
+      - idempotency_key
+      - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        job_type:
+          type: string
+        idempotency_key:
+          type: string
+        payload:
+          type: object
+          additionalProperties: true
+        priority:
+          type: integer
+        status:
+          type: string
+          enum:
+          - queued
+          - running
+          - succeeded
+          - dead_letter
+          - cancelled
+        scheduled_for:
+          type: string
+          format: date-time
+        attempt_count:
+          type: integer
+        max_attempts:
+          type: integer
+        dead_letter_after_attempts:
+          type: integer
+        metadata:
+          type: object
+          additionalProperties: true
+    ScoreRecomputeResponse:
+      type: object
+      required:
+      - schema_version
+      - status
+      - job
+      - idempotency_key
+      - active_context
+      - cache_policy
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - score-recompute-request-v1
+        status:
+          type: string
+          enum:
+          - queued
+          - running
+          - succeeded
+          - dead_letter
+          - cancelled
+        job:
+          $ref: '#/components/schemas/BackgroundJob'
+        idempotency_key:
+          type: string
+        active_profile:
+          $ref: '#/components/schemas/ScoringProfile'
+        active_context:
+          $ref: '#/components/schemas/ActiveAnalysisContext'
+        cache_policy:
+          type: object
+          additionalProperties: true
     ScoringActivationResponse:
       type: object
       required:
