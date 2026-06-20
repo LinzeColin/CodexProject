@@ -1876,14 +1876,15 @@ Residual risks:
 
 ## 2026-06-21 - T1301/A202 reviewed publication mechanism
 
-Status: LOCAL STATIC VALIDATED; DATABASE INTEGRATION PENDING
+Status: CI VALIDATED; A202 STILL IN PROGRESS
 
 Completed:
 
 - Added `scripts/publish_reviewed_relationship_facts.py` for explicit review-decision driven publication of `relationship_fact_candidates`.
 - Added `tests/fixtures/golden_vertical_review_decisions.json` as fixture-only review decisions; it is explicitly not production legal or data clearance.
-- The publication script fails closed unless a review decision file is supplied, fixture review is explicitly allowed, endpoints are resolved, evidence exists, counter-evidence is reviewed, and single-source candidates carry a source-threshold override reason and attestation.
+- The publication script fails closed unless a review decision file is supplied, fixture review is explicitly allowed, endpoints are resolved or materialized from matched research-universe entities, evidence exists, counter-evidence is reviewed, and single-source candidates carry a source-threshold override reason and attestation.
 - The script writes deterministic reviewed `relationships`, copies `relationship_evidence`, activates a `data_snapshots` row, writes `fact_versions` and `fact_version_evidence`, marks candidates `published`/`human_verified`, and resolves `manual_review_queue` in one transaction.
+- The script can materialize matched research-universe endpoints as `research_target` legal entities and backfill `entity_resolution_candidates`; fully unresolved endpoints still fail closed.
 - Extended `tests/integration/test_database_migrations.py` with the A202 reviewed-publication contract after the existing candidate-state/API assertions, preserving the candidate-vs-published boundary.
 - Added the new script to `make lint` and A202 traceability/evidence artifacts.
 
@@ -1892,18 +1893,19 @@ Acceptance status:
 - A202 remains `IN PROGRESS`.
 - This closes the missing mechanism for reviewed publication in code, but not the production data approval requirement.
 - The local host has no `.env`, `DATABASE_URL` or `docker` binary, so the new PostgreSQL integration assertions were not executed locally.
+- GitHub Actions run `27877209505` / job `82498609174` validated the A202 reviewed-publication database path remotely under G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E on commit `5e98141f756c1fc55211b23636f9af7cc14fbbdf`.
 
 Verification evidence:
 
 - `.venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py`: PASS.
 - `python3 -m json.tool tests/fixtures/golden_vertical_review_decisions.json`: PASS.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/pytest tests/integration/test_database_migrations.py -q`: SKIPPED locally because PostgreSQL is not configured on this host.
+- GitHub Actions `EEI validation` run `27877209505`, job `82498609174`: PASS.
 
 Residual risks:
 
 - live/full-text connector is still not implemented.
 - second independent source or production owner review signature is still required before any real Golden Vertical fact can be considered production-approved.
-- remote PostgreSQL CI must validate the new migration/test path before A202 can be advanced toward closure.
 - source health, retry, dead-letter and scheduler semantics remain owned by T1304/A206.
 
 ## 2026-06-20 - T1302/A203 production graph and scoring contract slice

@@ -86,7 +86,7 @@ Updated: 2026-06-21 Australia/Sydney
 - Completed T1308/A211 production frontend live cross-route coverage: live FastAPI/PostgreSQL E2E now loads curated ingestion anchors and verifies production graph hydration, catalog inventory, relationship_fact_candidate score explanation, evidence snippets, supply-chain lens, evidence center refresh, Objects and Scope, Industries and System Status routes.
 - Completed T1308/A211 by GitHub Actions run `27876091338`; job `82495713946` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 - Advanced T1301/A202 with an explicit reviewed-publication mechanism: `scripts/publish_reviewed_relationship_facts.py` consumes a review decision file, enforces fixture-review opt-in, writes deterministic reviewed `relationships`, copies `relationship_evidence`, activates a `data_snapshots` row, writes `fact_versions`/`fact_version_evidence`, resolves `manual_review_queue`, and remains idempotent by contract.
-- Added `tests/fixtures/golden_vertical_review_decisions.json` as fixture-only review evidence; A202 is still `IN PROGRESS` because this is not production owner approval, second-source verification, live/full-text ingestion, or remote PostgreSQL CI proof.
+- Added `tests/fixtures/golden_vertical_review_decisions.json` as fixture-only review evidence; A202 is still `IN PROGRESS` because this is not production owner approval, second-source verification, live/full-text ingestion, or source health/retry/dead-letter proof.
 
 ## Verification Evidence
 
@@ -120,7 +120,8 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `make verify-g2-db` still fails closed because Docker is not installed.
 - 2026-06-21 update: `.venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py` passed.
 - 2026-06-21 update: `python3 -m json.tool tests/fixtures/golden_vertical_review_decisions.json` passed.
-- 2026-06-21 update: `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/pytest tests/integration/test_database_migrations.py -q` skipped locally because this host has no `.env`, `DATABASE_URL` or `docker` binary; remote PostgreSQL CI is still required for the new A202 database assertions.
+- 2026-06-21 update: `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/pytest tests/integration/test_database_migrations.py -q` skipped locally because this host has no `.env`, `DATABASE_URL` or `docker` binary.
+- 2026-06-21 update: GitHub Actions run `27877209505` / job `82498609174` passed for commit `5e98141f756c1fc55211b23636f9af7cc14fbbdf`; step 10 G2 PostgreSQL integration, step 11 browser E2E and step 12 live FastAPI PostgreSQL E2E all passed for the A202 reviewed-publication path.
 - 2026-06-19 update: GitHub Actions run `27826870509` passed; job `82353421402` proved T1203 through static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - 2026-06-19 update: local `make verify` passed after strengthening G2 schema checks and acceptance traceability.
 - 2026-06-19 update: GitHub Actions run `27827498238` passed; job `82355514060` proved strengthened G2 schema checks under PostgreSQL.
