@@ -3718,7 +3718,7 @@ Status: LOCAL AND REMOTE CI VALIDATED; A206/A209 STILL IN PROGRESS
 
 ## 2026-06-21 - T1307/A209 resumable operator soak runner readiness
 
-Status: LOCAL READINESS VALIDATED; A209 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A209 STILL IN PROGRESS
 
 ### Scope
 
@@ -3748,6 +3748,14 @@ Status: LOCAL READINESS VALIDATED; A209 STILL IN PROGRESS
 - Local elevated rerun of the same command: PASS; output status `PASS`, `a209_release_gate.status=PARTIAL_UNTIL_4H_24H_OPERATOR_EVIDENCE`, `checkpoint_resume_supported=true`, `worker_supervisor_binding_available=true`, one successful 3-second window.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/generate_governance_pdf.py`: BLOCKED in the current environment because Python `playwright.sync_api` is not installed; `scripts/generate_governance_pdf.py` now says 79 parameters, but the existing PDF binary was not regenerated in this slice.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes governance count 17/11/11/79/17, v5 sync, clean-room/release validation, scale/browser/soak smoke, operator soak runner, secret scan, UI copy lint, ruff, web typecheck and unit tests 37/37.
+
+### Remote CI validation
+
+- GitHub Actions run `27886864382` / job `82523564731` on commit `954b534`: PASS.
+- Step 10 `Verify G2 PostgreSQL integration`: PASS.
+- Step 11 `Verify G2 browser E2E`: PASS.
+- Step 12 `Verify G2 live FastAPI PostgreSQL E2E`: PASS.
+- This validates the committed runner readiness and CI-safe operator soak command surface only; it does not close the 4h/24h soak requirement.
 
 ### Operator commands
 

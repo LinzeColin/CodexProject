@@ -62,7 +62,7 @@ Do not infer iteration count from Git commit count.
 - Version before: `0.1.0`
 - Version after: `0.1.0`
 - Base commit: `b3370a4`
-- Result commit: `PENDING`
+- Result commit: `954b534`
 - Task IDs: `TASK-T1307`
 - Goal: add a resumable operator soak runner for T1307/A209 without claiming 4h/24h soak completion.
 - Assumptions: the 3-second runner readiness artifact proves command and checkpoint behavior only; long-duration soak remains a release blocker.
@@ -71,11 +71,11 @@ Do not infer iteration count from Git commit count.
 - Model changes: no scoring model behavior change; MOD-012 operational controls now include `PARAM-061`.
 - Parameter changes: added `soak.operator_window_seconds=300` / `PARAM-061`.
 - Commands run: `node scripts/run_operator_soak.mjs ...`, `make validate-operator-soak-runner`, `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`.
-- Test results: local elevated runner readiness PASS; local elevated `make verify` PASS with unit tests 37/37.
+- Test results: local elevated runner readiness PASS; local elevated `make verify` PASS with unit tests 37/37; GitHub Actions run `27886864382` / job `82523564731` PASS, including G2 PostgreSQL integration, browser E2E and live FastAPI PostgreSQL E2E.
 - Successes: checkpoint JSONL, `--resume`, operator 4h/24h command surface and CI-safe readiness target are now governed.
 - Failures: governance PDF binary was not regenerated because Python `playwright.sync_api` is missing in the current environment.
 - Decisions: A209 remains `IN_PROGRESS`; CI smoke and 3-second readiness are not long-duration soak substitutes.
-- Remaining risks: 4h and 24h operator soak, live Docker Compose duration proof, and release evidence are still pending.
+- Remaining risks: 4h and 24h operator soak and live Docker Compose duration proof are still pending.
 - Rollback: revert the runner commit, remove A209 readiness artifacts, regenerate clean-room/release artifacts, and rerun validation.
 - Next step: execute and attach 4h operator soak, then 24h operator soak.
 
@@ -83,6 +83,7 @@ Do not infer iteration count from Git commit count.
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
 - `EVENT-RECON-20260620-001`: recent T1207-T1209 evidence reconstructed from Git log and HANDOFF.
+- `EVENT-20260621-002`: remote CI validation for TASK-T1307 operator soak runner readiness.
 
 ## Unknown Historical Periods
 
