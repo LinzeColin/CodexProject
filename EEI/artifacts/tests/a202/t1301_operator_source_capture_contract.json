@@ -8,7 +8,7 @@
   "status": "IN_PROGRESS",
   "record_mode": "operator_source_capture",
   "parser_version": "nvidia-operator-source-capture-v1",
-  "generated_at": "2026-06-21T03:00:00+10:00",
+  "generated_at": "2026-06-21T06:07:31+10:00",
   "system": {
     "zh_name": "商域图谱",
     "en_name": "Enterprise Ecosystem Intelligence",
@@ -62,10 +62,10 @@
   "remote_validation": {
     "provider": "GitHub Actions",
     "workflow": "EEI validation",
-    "run_id": null,
-    "job_id": null,
-    "commit": null,
-    "status": "PENDING"
+    "run_id": 27882366565,
+    "job_id": 82512011341,
+    "commit": "bea28f893fd73af4c4e78c6c701365f6e95d9b51",
+    "status": "PASS"
   },
   "remaining_gaps_before_done": [
     "This is an operator capture contract and deterministic fixture, not live official-source retrieval.",
