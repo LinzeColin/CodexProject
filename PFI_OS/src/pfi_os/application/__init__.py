@@ -102,6 +102,7 @@ from pfi_os.application.vectorized_read_model import (
     ingest_vectorized_research_cache,
 )
 from pfi_os.application.workflow_runtime_read_model import (
+    PFI003_SUPERVISOR_RUNTIME_READ_MODEL_SCHEMA,
     WORKFLOW_RUNTIME_READ_MODEL_SCHEMA,
     build_phase_c_workflow_runtime_contract,
     build_workflow_runtime_read_model,
@@ -194,6 +195,7 @@ __all__ = [
     "RESEARCH_POLICY_WORKFLOW_SCHEMA",
     "STRATEGY_LAB_WORKFLOW_SCHEMA",
     "WORKFLOW_RUNTIME_READ_MODEL_SCHEMA",
+    "PFI003_SUPERVISOR_RUNTIME_READ_MODEL_SCHEMA",
     "WORKFLOW_RUNTIME_REFRESH_JOB_TYPE",
     "WORKFLOW_RUNTIME_SCHEDULER_SCHEMA",
     "PHASE_D_DEPLOYMENT_READINESS_SCHEMA",

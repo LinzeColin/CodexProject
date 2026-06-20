@@ -14,6 +14,8 @@ from pfi_os.application.operational_store import DataDomain, EvidenceRecord, Job
 WORKFLOW_RUNTIME_READ_MODEL_SCHEMA = "PFIOSPhaseCWorkflowRuntimeReadModelV1"
 WORKFLOW_RUNTIME_CONTRACT_SCHEMA = "PFIOSPhaseCWorkflowRuntimeContractV1"
 WORKFLOW_RUNTIME_EVIDENCE_CLASS = "workflow_runtime_read_model"
+PFI003_SUPERVISOR_RUNTIME_READ_MODEL_SCHEMA = "PFIOSPFI003SupervisorRuntimeReadModelV1"
+PFI003_DURABLE_JOB_STORE_SCHEMA = "PFIOSPFI003DurableJobStoreV1"
 FAST_PATH_TARGET_SECONDS = 60
 
 WORKFLOW_TARGETS: tuple[dict[str, str], ...] = (
@@ -59,6 +61,7 @@ def build_phase_c_workflow_runtime_contract() -> dict[str, Any]:
         "phase": "Phase C",
         "required_workflows": [target["workspace"] for target in WORKFLOW_TARGETS],
         "required_operational_tables": ["source_records", "evidence_records", "job_records", "task_records", "holding_snapshots"],
+        "required_runtime_sections": ["workflow_cards", "background_jobs", "task_center_rows", "supervisor_runtime"],
         "required_card_fields": [
             "workspace",
             "title",
@@ -88,6 +91,7 @@ def build_phase_c_workflow_runtime_contract() -> dict[str, Any]:
             "web_shell_cached_read_model": True,
             "sixty_second_fast_path_contract": True,
             "retry_backoff_visible": True,
+            "pfi003_supervisor_runtime_visible": True,
             "private_holdings_not_exposed": True,
             "no_live_trading": True,
             "no_broker_calls": True,
@@ -115,6 +119,7 @@ def build_workflow_runtime_read_model(
         for target in WORKFLOW_TARGETS
     ]
     fast_path = _fast_path_acceptance(cards, jobs=jobs, target_seconds=fast_path_target_seconds)
+    supervisor_runtime = _supervisor_runtime(jobs)
     return {
         "schema": WORKFLOW_RUNTIME_READ_MODEL_SCHEMA,
         "phase": "Phase C",
@@ -122,7 +127,8 @@ def build_workflow_runtime_read_model(
         "fast_path": fast_path,
         "workflow_cards": cards,
         "background_jobs": _background_jobs(jobs),
-        "task_center_rows": _task_center_rows(cards, tasks),
+        "task_center_rows": _task_center_rows(cards, tasks, supervisor_runtime=supervisor_runtime),
+        "supervisor_runtime": supervisor_runtime,
         "retry_policy": _retry_policy(),
         "read_model": "OperationalStore -> Phase B workflow records -> PFIOSPhaseCWorkflowRuntimeReadModelV1",
         "cache_policy": "Web Shell consumes this compact runtime model; it does not call providers, brokers, LLMs, or private files directly.",
@@ -240,6 +246,22 @@ def empty_workflow_runtime_read_model() -> dict[str, Any]:
         "workflow_cards": [],
         "background_jobs": [],
         "task_center_rows": [],
+        "supervisor_runtime": {
+            "schema": PFI003_SUPERVISOR_RUNTIME_READ_MODEL_SCHEMA,
+            "status": "Review",
+            "total_job_count": 0,
+            "active_job_count": 0,
+            "queued_job_count": 0,
+            "running_job_count": 0,
+            "retrying_job_count": 0,
+            "dead_letter_count": 0,
+            "latest_job_id": "",
+            "latest_phase": "",
+            "latest_event": {},
+            "web_shell_visible": True,
+            "read_model": "OperationalStore.job_records -> workflow_runtime.supervisor_runtime",
+            "safety_boundary": _supervisor_safety_boundary(),
+        },
         "retry_policy": _retry_policy(),
         "read_model": "OperationalStore -> Phase B workflow records -> PFIOSPhaseCWorkflowRuntimeReadModelV1",
         "cache_policy": "Web Shell consumes this compact runtime model; it does not call providers, brokers, LLMs, or private files directly.",
@@ -339,7 +361,7 @@ def _fast_path_acceptance(cards: list[dict[str, Any]], *, jobs: list[dict[str, A
 
 def _background_jobs(jobs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    for row in sorted([item for item in jobs if _is_phase_b_job(item)], key=lambda item: str(item.get("updated_at", "")), reverse=True)[:8]:
+    for row in sorted([item for item in jobs if _is_phase_b_job(item) or _is_pfi003_supervisor_job(item)], key=lambda item: str(item.get("updated_at", "")), reverse=True)[:8]:
         rows.append(
             {
                 "job_id": str(row.get("job_id", "")),
@@ -350,13 +372,29 @@ def _background_jobs(jobs: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "progress": float(row.get("progress", 0.0) or 0.0),
                 "retry_count": int(row.get("retry_count", 0) or 0),
                 "leave_page_safe": True,
+                "supervisor_managed": _is_pfi003_supervisor_job(row),
             }
         )
     return rows
 
 
-def _task_center_rows(cards: list[dict[str, Any]], tasks: list[dict[str, Any]]) -> list[dict[str, str]]:
+def _task_center_rows(cards: list[dict[str, Any]], tasks: list[dict[str, Any]], *, supervisor_runtime: dict[str, Any] | None = None) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
+    if supervisor_runtime:
+        supervisor_status = str(supervisor_runtime.get("status", "Review"))
+        rows.append(
+            {
+                "priority": "P0" if supervisor_runtime.get("dead_letter_count", 0) else "P1",
+                "workspace": "data",
+                "object": "PFI-003 监督器",
+                "action": (
+                    f"复核后台任务：活跃 {supervisor_runtime.get('active_job_count', 0)}，"
+                    f"死信 {supervisor_runtime.get('dead_letter_count', 0)}。"
+                ),
+                "status": supervisor_status,
+                "evidence": str(supervisor_runtime.get("latest_job_id", "") or "job_records"),
+            }
+        )
     for card in cards:
         priority = "P0" if card["status"] in {"Missing", "Blocked"} else "P1"
         rows.append(
@@ -381,6 +419,44 @@ def _task_center_rows(cards: list[dict[str, Any]], tasks: list[dict[str, Any]]) 
             }
         )
     return rows[:8]
+
+
+def _supervisor_runtime(jobs: list[dict[str, Any]]) -> dict[str, Any]:
+    supervisor_jobs = [row for row in jobs if _is_pfi003_supervisor_job(row)]
+    status_counts: dict[str, int] = {}
+    for row in supervisor_jobs:
+        status = str(row.get("status", "")).lower()
+        status_counts[status] = status_counts.get(status, 0) + 1
+    latest = _latest(supervisor_jobs, key="updated_at")
+    latest_metadata = _metadata(latest)
+    latest_events = latest_metadata.get("event_log", [])
+    latest_event = latest_events[-1] if isinstance(latest_events, list) and latest_events else {}
+    active_count = sum(status_counts.get(status, 0) for status in ["queued", "retrying", "resumed", "running"])
+    dead_letter_count = status_counts.get("dead_letter", 0)
+    if dead_letter_count:
+        status = "Blocked"
+    elif active_count:
+        status = "Running"
+    elif supervisor_jobs:
+        status = "Ready"
+    else:
+        status = "Review"
+    return {
+        "schema": PFI003_SUPERVISOR_RUNTIME_READ_MODEL_SCHEMA,
+        "status": status,
+        "total_job_count": len(supervisor_jobs),
+        "active_job_count": active_count,
+        "queued_job_count": status_counts.get("queued", 0),
+        "running_job_count": status_counts.get("running", 0),
+        "retrying_job_count": status_counts.get("retrying", 0),
+        "dead_letter_count": dead_letter_count,
+        "latest_job_id": str(latest.get("job_id", "")),
+        "latest_phase": str(latest.get("phase", "")),
+        "latest_event": _json_safe(latest_event),
+        "web_shell_visible": True,
+        "read_model": "OperationalStore.job_records -> workflow_runtime.supervisor_runtime",
+        "safety_boundary": _supervisor_safety_boundary(),
+    }
 
 
 def _missing_data_log(cards: list[dict[str, Any]], jobs: list[dict[str, Any]]) -> list[dict[str, str]]:
@@ -442,6 +518,40 @@ def _retry_policy() -> dict[str, Any]:
 
 def _is_phase_b_job(row: dict[str, Any]) -> bool:
     return str(row.get("job_type", "")) in {target["job_type"] for target in WORKFLOW_TARGETS}
+
+
+def _is_pfi003_supervisor_job(row: dict[str, Any]) -> bool:
+    metadata = _metadata(row)
+    job_type = str(row.get("job_type", ""))
+    return (
+        metadata.get("schema") == PFI003_DURABLE_JOB_STORE_SCHEMA
+        or str(row.get("source_id", "")) == "src-pfi003-durable-job-store"
+        or job_type.startswith("pfi003")
+        or "_pfi003_" in job_type
+    )
+
+
+def _metadata(row: dict[str, Any]) -> dict[str, Any]:
+    value = row.get("metadata_json", "{}")
+    if isinstance(value, dict):
+        return dict(value)
+    try:
+        parsed = json.loads(str(value or "{}"))
+    except json.JSONDecodeError:
+        return {}
+    return parsed if isinstance(parsed, dict) else {}
+
+
+def _supervisor_safety_boundary() -> dict[str, bool]:
+    return {
+        "research_only": True,
+        "no_live_trading": True,
+        "no_broker_calls": True,
+        "no_order_execution": True,
+        "no_payment_or_betting": True,
+        "human_review_required": True,
+        "private_data_commit_path": False,
+    }
 
 
 def _owner_workspace_alias(workspace: str) -> str:

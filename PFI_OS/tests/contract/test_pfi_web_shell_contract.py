@@ -67,7 +67,10 @@ def test_web_shell_renders_phase_c_workflow_runtime_cards():
     assert 'data-workflow-card="research"' in html
     assert 'data-workflow-card="portfolio"' in html
     assert "workflow_cards" in html
+    assert "supervisor_runtime" in html
     assert "applyWorkflowCards" in js
+    assert "applySupervisorRuntime" in js
+    assert "PFI-003 监督器" in js
     assert "workflowFreshnessLabel" in js
     assert "showWorkflowEvidence" in js
     assert "data-runtime-target" in html

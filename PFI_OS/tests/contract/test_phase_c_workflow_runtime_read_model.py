@@ -4,9 +4,11 @@ from pathlib import Path
 
 from pfi_os.application import (
     DataDomain,
+    DurableJobStore,
     EvidenceRecord,
     JobRecord,
     OperationalStore,
+    PFI003_SUPERVISOR_RUNTIME_READ_MODEL_SCHEMA,
     SourceRecord,
     TaskRecord,
     WORKFLOW_RUNTIME_READ_MODEL_SCHEMA,
@@ -51,12 +53,14 @@ def test_phase_c_workflow_runtime_contract_declares_fast_path_retry_and_safety_c
     assert contract["fast_path"]["llm_required"] is False
     assert contract["fast_path"]["retry_policy"]["max_attempts"] == 3
     assert contract["fast_path"]["retry_policy"]["backoff_seconds"] == [1, 5, 15]
+    assert "supervisor_runtime" in contract["required_runtime_sections"]
     assert set(contract["required_card_fields"]) == CARD_FIELDS
     assert contract["non_regression_constraints"] == {
         "phase_b_workflows_promoted": True,
         "web_shell_cached_read_model": True,
         "sixty_second_fast_path_contract": True,
         "retry_backoff_visible": True,
+        "pfi003_supervisor_runtime_visible": True,
         "private_holdings_not_exposed": True,
         "no_live_trading": True,
         "no_broker_calls": True,
@@ -93,12 +97,53 @@ def test_workflow_runtime_read_model_promotes_phase_b_records_without_private_ho
     assert portfolio["holding_snapshot_count"] == 1
     assert len(payload["background_jobs"]) == 4
     assert len(payload["task_center_rows"]) >= 4
+    assert payload["supervisor_runtime"]["schema"] == PFI003_SUPERVISOR_RUNTIME_READ_MODEL_SCHEMA
+    assert payload["supervisor_runtime"]["web_shell_visible"] is True
     assert payload["retry_policy"]["fail_closed"] is True
     assert payload["safety_boundary"]["no_order_execution"] is True
     assert payload["safety_boundary"]["private_holdings_not_exposed"] is True
     serialized = json.dumps(payload, ensure_ascii=False)
     assert "holdings_json" not in serialized
     assert "super-secret-position" not in serialized
+
+
+def test_workflow_runtime_read_model_surfaces_pfi003_supervisor_jobs(tmp_path: Path):
+    store = _store_with_phase_b_workflows(tmp_path)
+    supervisor = DurableJobStore(store)
+    queued = supervisor.enqueue(
+        job_type="pfi003_supervisor_network_recovery",
+        idempotency_key="network-recovery-1",
+        max_attempts=3,
+        now=datetime(2026, 6, 20, 10, 0, tzinfo=timezone.utc),
+    )
+    claimed = supervisor.claim(
+        job_type="pfi003_supervisor_network_recovery",
+        worker_id="worker-a",
+        lease_seconds=30,
+        now=datetime(2026, 6, 20, 10, 0, 1, tzinfo=timezone.utc),
+    )
+    supervisor.fail_or_retry(
+        claimed["job_id"],
+        worker_id="worker-a",
+        error_message="simulated network source unavailable",
+        now=datetime(2026, 6, 20, 10, 0, 2, tzinfo=timezone.utc),
+    )
+
+    payload = build_workflow_runtime_read_model(store, now=datetime(2026, 6, 20, 10, 0, 3, tzinfo=timezone.utc))
+    supervisor_runtime = payload["supervisor_runtime"]
+    task_rows = payload["task_center_rows"]
+
+    assert queued["status"] == "queued"
+    assert supervisor_runtime["schema"] == PFI003_SUPERVISOR_RUNTIME_READ_MODEL_SCHEMA
+    assert supervisor_runtime["status"] == "Running"
+    assert supervisor_runtime["total_job_count"] == 1
+    assert supervisor_runtime["active_job_count"] == 1
+    assert supervisor_runtime["retrying_job_count"] == 1
+    assert supervisor_runtime["latest_job_id"] == claimed["job_id"]
+    assert supervisor_runtime["latest_event"]["action"] == "fail_or_retry"
+    assert any(row["object"] == "PFI-003 监督器" for row in task_rows)
+    assert any(row["job_type"] == "pfi003_supervisor_network_recovery" and row["supervisor_managed"] for row in payload["background_jobs"])
+    assert supervisor_runtime["safety_boundary"]["no_order_execution"] is True
 
 
 def test_workflow_runtime_missing_phase_b_records_review_fails_closed(tmp_path: Path):
@@ -164,7 +209,7 @@ def test_web_shell_static_assets_accept_phase_c_workflow_runtime_summary():
     assert "PFIOSPhaseCWorkflowRuntimeReadModelV1" in html
     assert "workflow_runtime" in html
     assert "applyWorkflowRuntime" in js
-    assert "Fast Path" in js
+    assert "快速路径" in js
     assert "target_seconds" in js
     assert "estimated_seconds" in js
 

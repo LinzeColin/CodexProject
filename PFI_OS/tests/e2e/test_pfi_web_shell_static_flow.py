@@ -45,6 +45,9 @@ def test_phase_c_workflow_cards_update_from_cached_runtime_summary():
     assert "data-workflow-cards" in html
     assert "data-workflow-evidence" in html
     assert "applyWorkflowRuntime(summary.workflow_runtime || {})" in js
+    assert "supervisor_runtime" in html
+    assert "applySupervisorRuntime(runtime.supervisor_runtime)" in js
+    assert "PFI-003 监督器" in js
     assert "localizedWorkflowCard" in js
     assert "fastPathLabel(runtime.fast_path)" in js
     assert "showWorkflowEvidence(card)" in js

@@ -424,6 +424,27 @@ function applyWorkflowRuntime(runtime) {
   if (runtime.fast_path) {
     WORKSPACES.home.runtime = fastPathLabel(runtime.fast_path);
   }
+  if (runtime.supervisor_runtime) {
+    applySupervisorRuntime(runtime.supervisor_runtime);
+  }
+}
+
+function applySupervisorRuntime(supervisor) {
+  const total = Number(supervisor.total_job_count || 0);
+  const active = Number(supervisor.active_job_count || 0);
+  const running = Number(supervisor.running_job_count || 0);
+  const retrying = Number(supervisor.retrying_job_count || 0);
+  const dead = Number(supervisor.dead_letter_count || 0);
+  const status = localizeStatus(supervisor.status || "review");
+  const latest = safeEvidenceText(supervisor.latest_job_id || "job_records", "任务记录");
+  const cards = structuredClone(DEFAULT_WORKSPACES.data.cards);
+  cards[1] = ["任务运行", String(total), `PFI-003 · ${status} · 活跃 ${active} · 死信 ${dead}`];
+  WORKSPACES.data.cards = cards;
+  WORKSPACES.data.tasks = [
+    task("PFI-003 监督器", `状态${status} · 活跃 ${active} · 运行 ${running} · 重试 ${retrying}`, statusState(supervisor.status)),
+    task("后台任务证据", `最新记录 ${latest}`, total ? "ready" : "review"),
+    task("死信队列", dead ? `阻塞 ${dead} · 需要人工复核` : "无死信 · 可继续", dead ? "review" : "ready"),
+  ];
 }
 
 function localizedWorkflowCard(card) {

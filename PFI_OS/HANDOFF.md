@@ -50,8 +50,10 @@ Current sequence:
     commands plus double-worker, crash-recovery, and release acceptance smoke.
     The current acceptance harness covers real TERM/KILL child-worker recovery,
     deterministic sleep/wake recovery, SQLite backup manifest, private-log scan,
-    and no-execution boundary checks. Network recovery, launchd throttle/log
-    rotation, and Web Shell/runtime read-model integration remain open.
+    simulated network recovery, sanitized launchd throttle/log-rotation
+    artifacts, Web Shell/runtime `supervisor_runtime`, and no-execution
+    boundary checks. No local PFI-003 implementation gap remains; release/CI
+    replay is still required before final Gate 7 closure.
 
 ## Current Local State
 
@@ -251,28 +253,32 @@ Latest PFI-003 Durable Job Store verification, 2026-06-20:
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /opt/anaconda3/bin/python3.12 -m pytest tests/contract/test_pfi003_durable_jobs.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /opt/anaconda3/bin/python3.12 -m pytest tests/contract/test_pfi003_supervisor_cli.py -q
-PYTHONPYCACHEPREFIX=/private/tmp/pfi003-pycache /opt/anaconda3/bin/python3.12 -m py_compile src/pfi_os/application/durable_jobs.py src/pfi_os/examples/pfi_supervisor.py
+PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /opt/anaconda3/bin/python3.12 -m pytest tests/contract/test_pfi003_durable_jobs.py tests/contract/test_pfi003_supervisor_cli.py tests/contract/test_phase_c_workflow_runtime_read_model.py tests/contract/test_pfi_web_shell_contract.py tests/e2e/test_pfi_web_shell_static_flow.py tests/test_scripts.py -q
+PYTHONPYCACHEPREFIX=/private/tmp/pfi003-pycache /opt/anaconda3/bin/python3.12 -m py_compile src/pfi_os/application/durable_jobs.py src/pfi_os/examples/pfi_supervisor.py src/pfi_os/application/workflow_runtime_read_model.py src/pfi_os/application/__init__.py
 PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json doctor --recover-expired
 PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json smoke-double-worker --job-type shell_double_worker --idempotency-key shell-double-worker
 PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-smoke/pfi.sqlite --json smoke-crash-recovery --job-type shell_crash_recovery --idempotency-key shell-crash-recovery --lease-seconds 2 --advance-seconds 3
 rm -rf /private/tmp/pfi003-supervisor-acceptance
 mkdir -p /private/tmp/pfi003-supervisor-acceptance
-PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-acceptance/pfi.sqlite --json acceptance --runtime-dir /private/tmp/pfi003-supervisor-acceptance --lease-seconds 2 --advance-seconds 3 --worker-timeout-seconds 6 --sleep-wake-seconds 120 --hold-seconds 30
+PFI_PYTHON=/opt/anaconda3/bin/python3.12 scripts/pfiSupervisor.sh --db-path /private/tmp/pfi003-supervisor-acceptance/pfi.sqlite --json acceptance --runtime-dir /private/tmp/pfi003-supervisor-acceptance --lease-seconds 2 --advance-seconds 3 --worker-timeout-seconds 15 --sleep-wake-seconds 120 --hold-seconds 30
 git diff --check
 ```
 
 Observed: the focused durable job contract test passed 8/8 and the supervisor
-CLI contract test passed 7/7. The contract covers
+CLI contract test passed 7/7. The related runtime/Web Shell target group passed
+73/73. The contract covers
 idempotency, atomic claim, active lease ownership, heartbeat extension,
 owner-only completion/failure, bounded retry, dead letter, cancel/resume,
 expired-lease recovery, Web/API/Worker readiness separation, and research-only
 no-execution safety boundaries. The CLI smoke checks cover double-worker claim
 exclusion and simulated crash recovery through expired lease recovery. The
 release acceptance harness used a temporary SQLite DB under `/private/tmp`,
-passed 8/8 checks, and produced
+passed 10/10 checks, and produced
 `pfi003_supervisor_acceptance_manifest.json`,
 `pfi003_supervisor_acceptance_backup.sqlite`, and
-`pfi003_supervisor_acceptance.jsonl`.
+`pfi003_supervisor_acceptance.jsonl`, plus sanitized launchd/log-rotation
+artifacts. Phase C runtime read model now exposes PFI-003 durable jobs through
+`supervisor_runtime`, and Web Shell consumes it in the Data/System workspace.
 
 Latest PFI-001 reproducible-environment repair verification, 2026-06-20:
 
@@ -356,8 +362,8 @@ Latest runtime smoke:
 - Tracked legacy command-center and value-ledger artifacts
   still exist as historical files. Active PFI homepage ingestion ignores them;
   physical deletion should be handled by a dedicated legacy-data migration run.
-- PFI-003 still needs network recovery, launchd throttle/log rotation, and Web
-  Shell/runtime read-model integration before Gate 1 can be closed.
+- PFI-003 still needs CI/release replay before Gate 7, but no local
+  implementation gap remains for Gate 1.
 
 ## Next Step
 
@@ -365,8 +371,7 @@ Continue from v0.2 PFI-goal execution:
 
 1. Use `docs/development/PFI_GOAL_GATE_MATRIX.md` as the active completion
    matrix for PFI-001 through PFI-012 and Gate 1 through Gate 7.
-2. Next recommended issue: finish the remaining PFI-003 release-hardening work.
-   Gate 1 cannot close until network recovery, launchd throttle/log rotation,
-   and Web Shell/runtime read-model evidence are proven.
+2. Next recommended issue: PFI-004 Golden/PIT proof. Gate 1 cannot close until
+   PFI-004 Golden/PIT and PFI-001 PR/CI injected-failure evidence are proven.
 3. Keep PFI-010/PFI-011/PFI-012 active but do not mark them complete until the
    matrix evidence is strong enough for the full acceptance scope.

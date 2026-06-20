@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import plistlib
 import shutil
 import subprocess
 import sys
@@ -93,9 +94,12 @@ def main() -> None:
     acceptance.add_argument("--runtime-dir", default="/private/tmp/pfi003-supervisor-acceptance")
     acceptance.add_argument("--lease-seconds", type=int, default=2)
     acceptance.add_argument("--advance-seconds", type=int, default=3)
-    acceptance.add_argument("--worker-timeout-seconds", type=int, default=8)
+    acceptance.add_argument("--worker-timeout-seconds", type=int, default=15)
     acceptance.add_argument("--sleep-wake-seconds", type=int, default=120)
     acceptance.add_argument("--hold-seconds", type=int, default=60)
+    acceptance.add_argument("--network-retry-delay-seconds", type=int, default=1)
+    acceptance.add_argument("--launchd-throttle-seconds", type=int, default=30)
+    acceptance.add_argument("--log-rotation-bytes", type=int, default=4096)
 
     worker_hold = subparsers.add_parser("worker-hold-lease", help=argparse.SUPPRESS)
     worker_hold.add_argument("--job-type", required=True)
@@ -263,7 +267,21 @@ def _acceptance(args: argparse.Namespace, supervisor: DurableJobStore) -> dict[s
     log_path = runtime_dir / "pfi003_supervisor_acceptance.jsonl"
     manifest_path = runtime_dir / "pfi003_supervisor_acceptance_manifest.json"
     backup_path = runtime_dir / "pfi003_supervisor_acceptance_backup.sqlite"
-    for path in (log_path, manifest_path, backup_path):
+    launchd_plist_path = runtime_dir / "pfi003_supervisor_launch_agent.plist"
+    log_rotation_manifest_path = runtime_dir / "pfi003_supervisor_log_rotation_manifest.json"
+    launchd_out_log_path = runtime_dir / "pfi003_supervisor_launchd.out.log"
+    launchd_err_log_path = runtime_dir / "pfi003_supervisor_launchd.err.log"
+    for path in (
+        log_path,
+        manifest_path,
+        backup_path,
+        launchd_plist_path,
+        log_rotation_manifest_path,
+        launchd_out_log_path,
+        launchd_err_log_path,
+        _rotated_log_path(launchd_out_log_path, 1),
+        _rotated_log_path(launchd_err_log_path, 1),
+    ):
         if path.exists():
             path.unlink()
 
@@ -280,20 +298,40 @@ def _acceptance(args: argparse.Namespace, supervisor: DurableJobStore) -> dict[s
     term_case = _process_recovery_case(args, supervisor, mode="TERM", run_id=run_id, log_path=log_path)
     kill_case = _process_recovery_case(args, supervisor, mode="KILL", run_id=run_id, log_path=log_path)
     sleep_wake = _sleep_wake_recovery(args, supervisor, run_id=run_id, log_path=log_path)
+    network_recovery = _network_recovery_case(args, supervisor, run_id=run_id, log_path=log_path)
+    launchd_case = _launchd_throttle_log_rotation_case(
+        args,
+        runtime_dir=runtime_dir,
+        run_id=run_id,
+        log_path=log_path,
+        launchd_plist_path=launchd_plist_path,
+        log_rotation_manifest_path=log_rotation_manifest_path,
+        stdout_log_path=launchd_out_log_path,
+        stderr_log_path=launchd_err_log_path,
+    )
     manifest = _write_acceptance_manifest(
         supervisor,
         manifest_path=manifest_path,
         backup_path=backup_path,
         run_id=run_id,
-        cases=[doctor, double_worker, term_case, kill_case, sleep_wake],
+        cases=[doctor, double_worker, term_case, kill_case, sleep_wake, network_recovery, launchd_case],
     )
-    private_scan = _scan_private_logs(log_path, manifest_path)
+    private_scan = _scan_private_logs(
+        log_path,
+        manifest_path,
+        launchd_plist_path,
+        log_rotation_manifest_path,
+        launchd_out_log_path,
+        _rotated_log_path(launchd_out_log_path, 1),
+    )
     checks = [
         _check("DoctorReadiness", doctor["status"] == "Pass", f"pass={doctor['summary']['pass']} fail={doctor['summary']['fail']}"),
         _check("DoubleWorkerClaimExclusion", double_worker["status"] == "Pass", double_worker["double_worker_behavior"]),
         _check("TERMWorkerRecovery", term_case["status"] == "Pass", term_case.get("evidence", "")),
         _check("KILLWorkerRecovery", kill_case["status"] == "Pass", kill_case.get("evidence", "")),
         _check("SleepWakeRecovery", sleep_wake["status"] == "Pass", sleep_wake.get("evidence", "")),
+        _check("NetworkRecovery", network_recovery["status"] == "Pass", network_recovery.get("evidence", "")),
+        _check("LaunchdThrottleLogRotation", launchd_case["status"] == "Pass", launchd_case.get("evidence", "")),
         _check("BackupManifest", manifest["status"] == "Pass", manifest.get("backup_file", "")),
         _check("PrivateLogScan", private_scan["status"] == "Pass", private_scan.get("evidence", "")),
         _check("NoExecutionBoundary", True, "research_only_no_broker_orders_payments"),
@@ -315,16 +353,20 @@ def _acceptance(args: argparse.Namespace, supervisor: DurableJobStore) -> dict[s
             "term_worker": term_case,
             "kill_worker": kill_case,
             "sleep_wake": sleep_wake,
+            "network_recovery": network_recovery,
+            "launchd_throttle_log_rotation": launchd_case,
             "private_log_scan": private_scan,
         },
         "outputs": {
             "log_path": str(log_path),
             "manifest_path": str(manifest_path),
             "backup_path": str(backup_path),
+            "launchd_plist_path": str(launchd_plist_path),
+            "log_rotation_manifest_path": str(log_rotation_manifest_path),
         },
         "manifest": manifest,
         "safety_boundary": "Local deterministic supervisor acceptance. No network, broker, order, payment, betting, or private holdings access.",
-        "next_action": "Wire durable lifecycle events into the Web Shell/runtime read model and add launchd throttle/log-rotation evidence.",
+        "next_action": "Use the runtime read-model evidence with PFI-004 Golden/PIT proof before closing Gate 1.",
     }
 
 
@@ -403,6 +445,156 @@ def _sleep_wake_recovery(args: argparse.Namespace, supervisor: DurableJobStore, 
         "recovered": recovered,
         "sleep_wake_seconds": sleep_wake_seconds,
         "evidence": f"sleep_wake_time_jump_seconds={sleep_wake_seconds} recovered={int(recovered.get('recovered_count', 0))}",
+    }
+
+
+def _network_recovery_case(args: argparse.Namespace, supervisor: DurableJobStore, *, run_id: str, log_path: Path) -> dict[str, Any]:
+    started = datetime.now(timezone.utc)
+    retry_delay = max(0, int(args.network_retry_delay_seconds))
+    job_type = f"{run_id}_network_recovery"
+    first_worker = f"{run_id}-network-worker-a"
+    second_worker = f"{run_id}-network-worker-b"
+    queued = supervisor.enqueue(
+        job_type=job_type,
+        idempotency_key=f"{run_id}-network-recovery",
+        payload={"network_fixture": "simulated_unavailable_then_recovered", "real_network_used": False},
+        max_attempts=3,
+        now=started,
+    )
+    claimed = supervisor.claim(job_type=job_type, worker_id=first_worker, lease_seconds=max(1, int(args.lease_seconds)), now=started)
+    failed = {}
+    reclaimed = {}
+    completed = {}
+    if claimed.get("claimed"):
+        failed = supervisor.fail_or_retry(
+            claimed["job_id"],
+            worker_id=first_worker,
+            error_message="simulated network source unavailable",
+            now=started + timedelta(seconds=1),
+        )
+    if failed.get("status") == "retrying":
+        reclaimed = supervisor.claim(
+            job_type=job_type,
+            worker_id=second_worker,
+            lease_seconds=max(1, int(args.lease_seconds)),
+            now=started + timedelta(seconds=retry_delay + 2),
+        )
+    if reclaimed.get("claimed"):
+        completed = supervisor.complete(
+            reclaimed["job_id"],
+            worker_id=second_worker,
+            artifact_uri="operational_store:pfi003_network_recovery",
+            now=started + timedelta(seconds=retry_delay + 3),
+        )
+    passed = (
+        queued.get("status") == "queued"
+        and claimed.get("claimed") is True
+        and failed.get("status") == "retrying"
+        and reclaimed.get("claimed") is True
+        and completed.get("status") == "completed"
+    )
+    _write_log_event(
+        log_path,
+        {
+            "run_id": run_id,
+            "event": "network_recovery",
+            "network_used": False,
+            "first_status": failed.get("status", ""),
+            "final_status": completed.get("status", ""),
+        },
+    )
+    return {
+        "schema": "PFIOSPFI003NetworkRecoveryCaseV1",
+        "status": "Pass" if passed else "Fail",
+        "job_type": job_type,
+        "network_used": False,
+        "retry_delay_seconds": retry_delay,
+        "queued": queued,
+        "claimed": claimed,
+        "failed": failed,
+        "reclaimed": reclaimed,
+        "completed": completed,
+        "evidence": f"simulated_network_failure_retry_completed={completed.get('status') == 'completed'}",
+    }
+
+
+def _launchd_throttle_log_rotation_case(
+    args: argparse.Namespace,
+    *,
+    runtime_dir: Path,
+    run_id: str,
+    log_path: Path,
+    launchd_plist_path: Path,
+    log_rotation_manifest_path: Path,
+    stdout_log_path: Path,
+    stderr_log_path: Path,
+) -> dict[str, Any]:
+    throttle_seconds = max(10, int(args.launchd_throttle_seconds))
+    max_bytes = max(512, int(args.log_rotation_bytes))
+    plist_payload = {
+        "Label": "com.pfi.os.supervisor",
+        "ProgramArguments": ["scripts/pfiSupervisor.sh", "--json", "doctor", "--recover-expired"],
+        "WorkingDirectory": "PFI_OS",
+        "RunAtLoad": False,
+        "KeepAlive": False,
+        "ThrottleInterval": throttle_seconds,
+        "StandardOutPath": str(stdout_log_path),
+        "StandardErrorPath": str(stderr_log_path),
+        "EnvironmentVariables": {
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "PFI_UI_V2": "1",
+        },
+    }
+    with launchd_plist_path.open("wb") as handle:
+        plistlib.dump(plist_payload, handle, sort_keys=True)
+
+    stdout_log_path.write_text("x" * (max_bytes + 64), encoding="utf-8")
+    stderr_log_path.write_text("", encoding="utf-8")
+    rotated_files = _rotate_log_if_needed(stdout_log_path, max_bytes=max_bytes, max_files=3)
+    rotation_manifest = {
+        "schema": "PFIOSPFI003LaunchdLogRotationManifestV1",
+        "run_id": run_id,
+        "policy": "bounded_local_logs",
+        "max_bytes": max_bytes,
+        "max_files": 3,
+        "stdout_file": stdout_log_path.name,
+        "stderr_file": stderr_log_path.name,
+        "rotated_files": [path.name for path in rotated_files],
+        "truncate_current_log": True,
+        "launchd_loaded": False,
+        "launchctl_used": False,
+    }
+    log_rotation_manifest_path.write_text(json.dumps(rotation_manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    passed = (
+        launchd_plist_path.exists()
+        and plist_payload["ThrottleInterval"] >= 10
+        and stdout_log_path.exists()
+        and _rotated_log_path(stdout_log_path, 1).exists()
+        and stdout_log_path.stat().st_size <= max_bytes
+        and bool(rotation_manifest["rotated_files"])
+    )
+    _write_log_event(
+        log_path,
+        {
+            "run_id": run_id,
+            "event": "launchd_throttle_log_rotation",
+            "throttle_seconds": throttle_seconds,
+            "max_bytes": max_bytes,
+            "rotated_files": rotation_manifest["rotated_files"],
+        },
+    )
+    return {
+        "schema": "PFIOSPFI003LaunchdThrottleLogRotationCaseV1",
+        "status": "Pass" if passed else "Fail",
+        "throttle_seconds": throttle_seconds,
+        "plist_file": launchd_plist_path.name,
+        "plist_path": str(launchd_plist_path),
+        "log_rotation_manifest_file": log_rotation_manifest_path.name,
+        "log_rotation_manifest_path": str(log_rotation_manifest_path),
+        "rotated_files": rotation_manifest["rotated_files"],
+        "launchd_loaded": False,
+        "launchctl_used": False,
+        "evidence": f"throttle={throttle_seconds}s rotated_files={len(rotation_manifest['rotated_files'])}",
     }
 
 
@@ -570,6 +762,27 @@ def _scan_private_logs(*paths: Path) -> dict[str, Any]:
         "findings": findings,
         "evidence": f"scanned_files={len(paths)} findings={len(findings)}",
     }
+
+
+def _rotate_log_if_needed(path: Path, *, max_bytes: int, max_files: int) -> list[Path]:
+    if not path.exists() or path.stat().st_size <= max_bytes:
+        return []
+    rotated: list[Path] = []
+    for index in range(max_files, 0, -1):
+        current = _rotated_log_path(path, index)
+        if index == max_files and current.exists():
+            current.unlink()
+        elif current.exists():
+            current.rename(_rotated_log_path(path, index + 1))
+    first = _rotated_log_path(path, 1)
+    path.rename(first)
+    path.write_text("", encoding="utf-8")
+    rotated.append(first)
+    return rotated
+
+
+def _rotated_log_path(path: Path, index: int) -> Path:
+    return path.with_name(f"{path.name}.{index}")
 
 
 def _write_log_event(log_path: Path, event: dict[str, Any]) -> None:

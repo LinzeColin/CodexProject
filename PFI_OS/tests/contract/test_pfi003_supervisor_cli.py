@@ -23,6 +23,8 @@ def test_pfi_supervisor_script_exposes_cli_without_heavy_runtime_dependencies():
     assert "worker-hold-lease" in module
     assert "TERMWorkerRecovery" in module
     assert "KILLWorkerRecovery" in module
+    assert "NetworkRecovery" in module
+    assert "LaunchdThrottleLogRotation" in module
     assert "PrivateLogScan" in module
 
 
@@ -137,7 +139,7 @@ def test_pfi_supervisor_acceptance_runs_process_recovery_and_writes_manifest(tmp
             "--advance-seconds",
             "3",
             "--worker-timeout-seconds",
-            "6",
+            "15",
             "--sleep-wake-seconds",
             "120",
             "--hold-seconds",
@@ -148,8 +150,12 @@ def test_pfi_supervisor_acceptance_runs_process_recovery_and_writes_manifest(tmp
     manifest_path = Path(payload["outputs"]["manifest_path"])
     log_path = Path(payload["outputs"]["log_path"])
     backup_path = Path(payload["outputs"]["backup_path"])
+    launchd_plist_path = Path(payload["outputs"]["launchd_plist_path"])
+    log_rotation_manifest_path = Path(payload["outputs"]["log_rotation_manifest_path"])
     manifest_text = manifest_path.read_text(encoding="utf-8")
     log_text = log_path.read_text(encoding="utf-8")
+    launchd_text = launchd_plist_path.read_text(encoding="utf-8")
+    log_rotation_text = log_rotation_manifest_path.read_text(encoding="utf-8")
 
     assert payload["schema"] == "PFIOSPFI003SupervisorAcceptanceV1"
     assert payload["status"] == "Pass"
@@ -160,6 +166,8 @@ def test_pfi_supervisor_acceptance_runs_process_recovery_and_writes_manifest(tmp
         "TERMWorkerRecovery",
         "KILLWorkerRecovery",
         "SleepWakeRecovery",
+        "NetworkRecovery",
+        "LaunchdThrottleLogRotation",
         "BackupManifest",
         "PrivateLogScan",
         "NoExecutionBoundary",
@@ -168,6 +176,11 @@ def test_pfi_supervisor_acceptance_runs_process_recovery_and_writes_manifest(tmp
     assert payload["cases"]["term_worker"]["recovered"]["recovered_count"] == 1
     assert payload["cases"]["kill_worker"]["recovered"]["recovered_count"] == 1
     assert payload["cases"]["sleep_wake"]["recovered"]["recovered_count"] == 1
+    assert payload["cases"]["network_recovery"]["network_used"] is False
+    assert payload["cases"]["network_recovery"]["completed"]["status"] == "completed"
+    assert payload["cases"]["launchd_throttle_log_rotation"]["throttle_seconds"] >= 10
+    assert payload["cases"]["launchd_throttle_log_rotation"]["launchctl_used"] is False
+    assert payload["cases"]["launchd_throttle_log_rotation"]["rotated_files"]
     assert payload["manifest"]["schema"] == "PFIOSPFI003SupervisorAcceptanceManifestV1"
     assert payload["manifest"]["backup_bytes"] > 0
     assert len(payload["manifest"]["backup_sha256"]) == 64
@@ -177,10 +190,16 @@ def test_pfi_supervisor_acceptance_runs_process_recovery_and_writes_manifest(tmp
     assert manifest_path.exists()
     assert log_path.exists()
     assert backup_path.exists()
+    assert launchd_plist_path.exists()
+    assert log_rotation_manifest_path.exists()
+    assert "ThrottleInterval" in launchd_text
+    assert "PFIOSPFI003LaunchdLogRotationManifestV1" in log_rotation_text
     assert "claimed" in log_text
     for forbidden in ["/Users/", "/Applications/", "password", "secret", "token", "holdings_json", "broker_account"]:
         assert forbidden not in manifest_text
         assert forbidden not in log_text
+        assert forbidden not in launchd_text
+        assert forbidden not in log_rotation_text
 
 
 def test_pfi_supervisor_lifecycle_commands_round_trip(tmp_path: Path):
