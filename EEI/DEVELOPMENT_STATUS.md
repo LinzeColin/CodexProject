@@ -19,7 +19,7 @@ entry; do not edit it as an independent machine source for governance counts.
 
 当前共有 **130 个产品开发任务**、**211 条验收标准**、**53 项风险**。新增 T1300-T1309/A201-A211 来自 v5 审查和用户当前待开发清单；T1300/A201、T1305/A207、T1306/A208 和 T1308/A211 已关闭，T1301/A202、T1302/A203、T1303/A204-A205、T1304/A206、T1307/A209 进行中但未关闭，T1309/A210 仍未完成，避免把规格/原型或部分生产合同误报为生产 MVP 完成。
 
-最新本轮验证：GitHub Actions run `27886021414` / job `82521454825` PASS，Step 10 G2 PostgreSQL integration、Step 11 browser E2E 和 Step 12 live FastAPI PostgreSQL E2E 均通过；该 run 验证 worker supervisor CLI wake 集成合同，覆盖 `python -m apps.worker.app.main supervise` 在真实 PostgreSQL 上处理 `background_jobs` 与 `transactional_outbox` 的入口路径。当前本地新增 `scripts/run_operator_soak.mjs` 和 `artifacts/tests/a209/t1307_operator_soak_readiness.json`，证明 3 秒窗口化 operator runner、checkpoint 和 resume 合同可执行；A204/A205/A206/A209 仍保持 IN PROGRESS，因为 4h/24h refresh/worker soak stability 尚未完成。
+最新本轮验证：GitHub Actions run `27886864382` / job `82523564731` PASS，Step 10 G2 PostgreSQL integration、Step 11 browser E2E 和 Step 12 live FastAPI PostgreSQL E2E 均通过；该 run 验证 `scripts/run_operator_soak.mjs`、`make validate-operator-soak-runner`、3 秒窗口化 operator runner、checkpoint 和 resume 合同已纳入远端 CI。A204/A205/A206/A209 仍保持 IN PROGRESS，因为 4h/24h refresh/worker soak stability 尚未完成。
 
 ## 已解决的关键决策（7）
 
