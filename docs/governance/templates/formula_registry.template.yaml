@@ -1,0 +1,20 @@
+governance_spec_version: "1.0.0"
+project_id: "<project_id>"
+formulas:
+  - formula_id: "FORM-001"
+    model_id: "MOD-001"
+    assumption_ids: ["ASM-001"]
+    status: "active"
+    expression: "<math formula, decision table, or exact pseudocode>"
+    variables:
+      - name: "<variable>"
+        data_type: "<type>"
+        unit: "<unit>"
+        input_domain: "<domain>"
+    constraints: []
+    missing_policy: "<missing value behavior>"
+    output_range: "<range>"
+    code_refs: []
+    test_refs: []
+    evidence_refs: []
+    unknown_task_ids: ["<TASK-ID>"]

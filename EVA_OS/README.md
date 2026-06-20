@@ -18,6 +18,11 @@ This system must not connect to live trading, must not place real orders, and mu
 
 Reports and results produced by the system may support your real trading decisions, so each output must be as accurate, verifiable, and traceable as possible.
 
+
+## Governance Baseline
+
+Canonical governance entry: `docs/governance/MODEL_SPEC.md`. Machine sources of truth live under `docs/governance/` for model, formula, parameter, delivery, development, version and traceability records. Legacy files `功能清单`, `开发记录` and `模型参数文件` are compatibility indexes only.
+
 ## Start Here
 
 日常使用先读：

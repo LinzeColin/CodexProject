@@ -1,0 +1,2 @@
+requirement_id,model_id,assumption_id,formula_id,parameter_id,task_id,acceptance_id,code_ref,config_ref,test_ref,evidence_ref,status
+REQ-001,MOD-001,ASM-001,FORM-001,PARAM-001,<TASK-ID>,<ACC-ID>,UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN,planned

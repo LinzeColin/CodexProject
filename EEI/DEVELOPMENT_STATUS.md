@@ -1,30 +1,21 @@
-# 开发任务、已解决/未解决与执行状态
+# EEI Governance Compatibility Entry
 
-## 当前结论
+This file is retained as a compatibility entry for historical EEI workflows.
+The canonical CodexProject governance sources are now under `docs/governance/`:
 
-| 层级 | 当前状态 |
-|---|---|
-| 需求、架构、目录、模型与验收 | 已完成 Task Pack 规格 |
-| 高保真交互原型 | 已完成，用 fixture 演示 |
-| 生产代码与真实数据库 | 未开始，交给 Codex 从 G0 推进 |
-| 真实数据接入与企业事实 | 未开始，不得把原型数据当事实 |
-| GitHub 治理模板与校验 | 已包含，推送仓库后启用 |
+- `docs/governance/MODEL_SPEC.md`
+- `docs/governance/model_registry.yaml`
+- `docs/governance/formula_registry.yaml`
+- `docs/governance/parameter_registry.csv`
+- `docs/governance/DEVELOPMENT_LEDGER.md`
+- `docs/governance/development_events.jsonl`
+- `docs/governance/DELIVERY_PLAN.md`
+- `docs/governance/delivery_tasks.yaml`
+- `docs/governance/VERSION_MATRIX.yaml`
+- `docs/governance/TRACEABILITY_MATRIX.csv`
 
-当前共有 **120 个产品开发任务**、**200 条验收标准**、**53 项风险**。产品实现状态保持 `NOT STARTED`，避免把规格/原型完成误报为生产 MVP 完成。
+Legacy EEI `data/*.csv` files are preserved as evidence and compatibility inputs
+for existing validators. Do not edit this Markdown file as an independent source
+of model, formula, parameter, task, acceptance, risk, or version counts.
 
-## 已解决的关键决策（7）
-
-- 默认首页、递归主体探索、数据底座、模型修改流程、14 天校准、视觉覆盖目标、文档治理方式均已冻结。
-
-## 仍未解决（7）
-
-- 部署与预算、身份认证、商业数据许可、生产数据规模、图渲染库最终基准、战略模型有效性、140 个对象的真实关系接入。
-
-## 状态文件
-
-- `data/task_backlog.csv`：Codex 开发任务、依赖、Gate、Acceptance ID。
-- `data/development_status_ledger.csv`：规格/原型/实现/验证四种状态。
-- `data/resolved_unresolved_register.csv`：决策、Open issue、Deferred。
-- `data/release_gate_catalog.csv`：G0-G9 进入/退出和停止条件。
-
-Codex 每完成一个任务，必须同步状态、测试证据、风险和验收，不得只在聊天中说明。
+Canonical current task, phase, and gate are maintained in `docs/governance/VERSION_MATRIX.yaml` and `docs/governance/DEVELOPMENT_LEDGER.md`.

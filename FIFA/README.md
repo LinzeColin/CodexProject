@@ -20,9 +20,27 @@ Build and maintain a research-only FIFA World Cup betting market analysis system
 - Primary code: `tab-research-pipeline/`
 - Latest public artifacts: `artifacts/latest/`
 - Handoff: `docs/HANDOFF.md` and `docs/HANDOFF_DETAILED.md`
+- Governance entry: `docs/governance/MODEL_SPEC.md`
 - Current formal automation status: blocked.
 - Research-only daily report status: available as candidate.
 - Current executable new stake: `AUD 0`.
+
+## Governance Baseline
+
+FIFA now maintains canonical governance files under `docs/governance/`:
+
+- `MODEL_SPEC.md`
+- `model_registry.yaml`
+- `formula_registry.yaml`
+- `parameter_registry.csv`
+- `DEVELOPMENT_LEDGER.md`
+- `development_events.jsonl`
+- `DELIVERY_PLAN.md`
+- `delivery_tasks.yaml`
+- `VERSION_MATRIX.yaml`
+- `TRACEABILITY_MATRIX.csv`
+
+Legacy Chinese entry files (`功能清单`, `开发记录`, `模型参数文件`) are compatibility indexes. The machine source of truth for models, formulas, parameters, tasks, versions, and traceability is under `docs/governance/`.
 
 ## Hard Boundary
 

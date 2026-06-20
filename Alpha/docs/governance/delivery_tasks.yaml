@@ -1,0 +1,131 @@
+governance_spec_version: "1.0.0"
+project_id: "Alpha"
+tasks:
+  - task_id: "TASK-ALPHA-A-001"
+    phase: "A"
+    objective: "Complete P10 read-only governance audit for Alpha."
+    scope: ["Alpha documentation", "Alpha configs", "Alpha model and safety code", "targeted tests"]
+    non_scope: ["business behavior changes", "live broker execution", "credential inspection"]
+    status: "completed"
+    dependencies: []
+    required_files: ["Alpha/docs/governance/MODEL_SPEC.md", "Alpha/docs/governance/model_registry.yaml"]
+    acceptance_ids: ["ACC-ALPHA-A-001"]
+    test_commands: ["git log --max-count=50 -- Alpha", "targeted rg over Alpha model and safety keywords"]
+    test_results: ["Read-only audit identified 9 active models/rules and 55 extracted parameters."]
+    evidence_refs: ["Alpha/docs/governance/MODEL_SPEC.md", "Alpha/docs/governance/model_registry.yaml", "Alpha/docs/governance/parameter_registry.csv"]
+    risk: "Financial execution policy conflicts must block release readiness."
+    rollback: "No file changes were made during P10 audit."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+  - task_id: "TASK-ALPHA-A-002"
+    phase: "A"
+    objective: "Complete P11 governance migration for Alpha."
+    scope: ["standard governance files", "legacy governance index files", "VERSION", "CHANGELOG"]
+    non_scope: ["Alpha/backend", "Alpha/configs", "Alpha/tests", "runtime behavior"]
+    status: "completed"
+    dependencies: ["TASK-ALPHA-A-001"]
+    required_files: ["Alpha/docs/governance/model_registry.yaml", "Alpha/docs/governance/formula_registry.yaml", "Alpha/docs/governance/parameter_registry.csv", "Alpha/docs/governance/delivery_tasks.yaml", "Alpha/docs/governance/VERSION_MATRIX.yaml", "Alpha/docs/governance/TRACEABILITY_MATRIX.csv"]
+    acceptance_ids: ["ACC-ALPHA-A-002"]
+    test_commands: ["python scripts/validate_project_governance.py --project Alpha", "python -m pytest tests/test_policy.py tests/test_live_broker_fail_closed.py tests/test_strategy_iteration.py tests/test_paper_trading_loop.py -q"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0; 8 passed"]
+    evidence_refs: ["Alpha/docs/governance/MODEL_SPEC.md", "Alpha/docs/governance/model_registry.yaml", "Alpha/docs/governance/formula_registry.yaml", "Alpha/docs/governance/parameter_registry.csv"]
+    risk: "Incorrectly documenting paper-trading rules as live execution capability would violate Alpha safety constraints."
+    rollback: "Remove Alpha/docs/governance and restore Alpha legacy index files plus VERSION and CHANGELOG."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+  - task_id: "TASK-ALPHA-A-003"
+    phase: "A"
+    objective: "Complete P12 read-only migration verification for Alpha."
+    scope: ["governance validator", "focused Alpha safety and model tests", "diff scope checks"]
+    non_scope: ["fixing during verify", "business code changes"]
+    status: "completed"
+    dependencies: ["TASK-ALPHA-A-002"]
+    required_files: ["Alpha/docs/governance/*"]
+    acceptance_ids: ["ACC-ALPHA-A-003"]
+    test_commands: ["python scripts/validate_project_governance.py --project Alpha", "git diff --check"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0"]
+    evidence_refs: ["Alpha/docs/governance/DEVELOPMENT_LEDGER.md", "Alpha/docs/governance/TRACEABILITY_MATRIX.csv"]
+    risk: "Verification must fail if any governance fact is unsupported."
+    rollback: "Return to TASK-ALPHA-A-002 for the smallest repair."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+  - task_id: "TASK-ALPHA-A-004"
+    phase: "A"
+    objective: "Complete P13 promotion of Alpha from advisory to required after verification passes."
+    scope: ["governance/projects.yaml Alpha ci_mode only"]
+    non_scope: ["project files", "business code", "other project enforcement"]
+    status: "completed"
+    dependencies: ["TASK-ALPHA-A-003"]
+    required_files: ["governance/projects.yaml"]
+    acceptance_ids: ["ACC-ALPHA-A-004"]
+    test_commands: ["python scripts/validate_project_governance.py --project Alpha", "python scripts/validate_project_governance.py --all", "git diff --check"]
+    test_results: ["exit 0; errors 0 warnings 0", "exit 0; advisory warnings only outside Alpha", "exit 0"]
+    evidence_refs: ["governance/projects.yaml", "Alpha/docs/governance/VERSION_MATRIX.yaml"]
+    risk: "Required mode will block CI if Alpha governance regresses."
+    rollback: "Set Alpha ci_mode back to advisory."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+  - task_id: "TASK-ALPHA-B-001"
+    phase: "B"
+    objective: "Resolve production validation and execution-policy UNKNOWN items before release readiness."
+    scope: ["production data evidence", "broker paper integration design", "live execution policy decision", "cost/slippage calibration"]
+    non_scope: ["enabling live trading in committed defaults"]
+    status: "blocked"
+    dependencies: ["TASK-ALPHA-A-004"]
+    required_files: ["Alpha/docs/governance/MODEL_SPEC.md", "Alpha/docs/governance/parameter_registry.csv"]
+    acceptance_ids: ["ACC-ALPHA-B-001"]
+    test_commands: []
+    test_results: []
+    evidence_refs: ["Alpha/HANDOFF.md:83"]
+    risk: "Without explicit owner decision and validation evidence Alpha must not be called release-ready for live execution."
+    rollback: "Keep live trading disabled and fail-closed."
+    target_version: "0.1.0"
+    completed_version: ""
+  - task_id: "TASK-ALPHA-C-001"
+    phase: "C"
+    objective: "Future implementation task placeholder for approved broker paper integration."
+    scope: ["paper broker integration only after B evidence"]
+    non_scope: ["real-money unattended order submission"]
+    status: "planned"
+    dependencies: ["TASK-ALPHA-B-001"]
+    required_files: []
+    acceptance_ids: ["ACC-ALPHA-C-001"]
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "External broker tests may have network or account side effects."
+    rollback: "Disable integration and retain fixture paper loop."
+    target_version: "UNKNOWN (TASK-ALPHA-B-001)"
+    completed_version: ""
+  - task_id: "TASK-ALPHA-D-001"
+    phase: "D"
+    objective: "Future validation hardening for multi-year and out-of-sample strategy evidence."
+    scope: ["walk-forward validation", "cost model", "slippage model", "regression tests"]
+    non_scope: ["live execution activation"]
+    status: "planned"
+    dependencies: ["TASK-ALPHA-B-001"]
+    required_files: []
+    acceptance_ids: ["ACC-ALPHA-D-001"]
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "Fixture tests are insufficient for live-readiness claims."
+    rollback: "Keep strategy decisions research/paper-only."
+    target_version: "UNKNOWN (TASK-ALPHA-B-001)"
+    completed_version: ""
+  - task_id: "TASK-ALPHA-E-001"
+    phase: "E"
+    objective: "Future release gate for Alpha daily governance mode after required promotion."
+    scope: ["governance drift monitoring", "release readiness checks"]
+    non_scope: ["feature development"]
+    status: "planned"
+    dependencies: ["TASK-ALPHA-A-004"]
+    required_files: ["Alpha/docs/governance/*"]
+    acceptance_ids: ["ACC-ALPHA-E-001"]
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "Required CI is necessary but not proof of live trading readiness."
+    rollback: "Keep governance required and block release until gates pass."
+    target_version: "0.1.0"
+    completed_version: ""

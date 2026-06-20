@@ -1,0 +1,287 @@
+governance_spec_version: "1.0.0"
+project_id: "Serenity-Alipay"
+formulas:
+  - formula_id: "FORM-001"
+    model_id: "MOD-003"
+    assumption_ids: ["ASM-003"]
+    status: "active"
+    expression: "For window w, return_w = close_last / close_start(w) - 1.0. 1m uses latest date minus 31 calendar days, 3m uses latest date minus 93 calendar days, and 10d uses the point at len(points)-11. If the start point is missing or start close is 0, output None."
+    variables:
+      - name: "points"
+        data_type: "list[PricePoint]"
+        unit: "daily close rows"
+        input_domain: "length >= 0 sorted by date"
+      - name: "close_last"
+        data_type: "float"
+        unit: "price"
+        input_domain: "latest close; nonzero not required"
+      - name: "close_start"
+        data_type: "float"
+        unit: "price"
+        input_domain: "window start close; must be nonzero"
+    constraints: "Boundary is inclusive for point.date <= target in calendar windows; 10d requires at least 11 points. Missing or zero start returns None."
+    missing_policy: "Return None for uncovered windows, empty points, or zero start close."
+    output_range: "float return ratio or None"
+    code_refs: ["Serenity-Alipay/app/core/metrics.py:21", "Serenity-Alipay/app/core/metrics.py:31", "Serenity-Alipay/app/core/metrics.py:39"]
+    test_refs: ["Serenity-Alipay/tests/test_metrics.py:14", "Serenity-Alipay/tests/test_metrics.py:22"]
+    evidence_refs: ["Serenity-Alipay/README.md:13"]
+  - formula_id: "FORM-002"
+    model_id: "MOD-003"
+    assumption_ids: ["ASM-003"]
+    status: "active"
+    expression: "Iterate daily closes, track running peak, compute drawdown = (peak.close - point.close) / peak.close. Max drawdown is the largest drawdown. Recovery time is days from worst trough until a later close >= worst peak, else days from trough to latest point. Recent drawdown uses last 7 points as (max_recent_close - latest_close) / max_recent_close."
+    variables:
+      - name: "peak"
+        data_type: "PricePoint"
+        unit: "daily close row"
+        input_domain: "highest close observed so far"
+      - name: "drawdown"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "0..unbounded by code, practically >=0"
+      - name: "recovery_time_days"
+        data_type: "int"
+        unit: "days"
+        input_domain: "0..unbounded"
+    constraints: "At least 2 points are required. Recovery requires point.date > trough.date and point.close >= worst_peak.close."
+    missing_policy: "If fewer than 2 points, return max_drawdown None, recovery None, recovered False."
+    output_range: "max_drawdown ratio or None; recovery_time_days integer or None; recovered bool"
+    code_refs: ["Serenity-Alipay/app/core/metrics.py:52", "Serenity-Alipay/app/core/metrics.py:79", "Serenity-Alipay/app/core/metrics.py:90"]
+    test_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_risk_gate_regression.py:8"]
+    evidence_refs: ["Serenity-Alipay/README.md:12"]
+  - formula_id: "FORM-003"
+    model_id: "MOD-001"
+    assumption_ids: ["ASM-004", "ASM-006"]
+    status: "active"
+    expression: "total_score = data_score + timeliness_score + source_score + return_score + risk_score + executable_score. data_score = max(0,25 - 8*missing_count). timeliness_score = 15 if max(missing_nav_days,missing_holding_days) <= 2 else 0. source_score = 15 if official_source_count >= 2 and no conflict, 7.5 if official_source_count >= 1 and no conflict, else 0. return_score = 15*(benchmark_wins/6). risk_score starts 0, becomes max(0,20 - 20*max_drawdown) when max_drawdown < 0.40, and is capped to min(risk_score,5) when recovery_time_days >= 365. executable_score = 10 unless rule missing or subscription/redemption/fee schedule fields are unavailable or closed."
+    variables:
+      - name: "missing_count"
+        data_type: "int"
+        unit: "fields"
+        input_domain: "0..unbounded"
+      - name: "official_source_count"
+        data_type: "int"
+        unit: "sources"
+        input_domain: "0..unbounded"
+      - name: "benchmark_wins"
+        data_type: "int"
+        unit: "wins"
+        input_domain: "0..6"
+      - name: "max_drawdown"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "0..unbounded or None"
+    constraints: "Score components are deterministic point allocations; output is rounded to 4 decimals."
+    missing_policy: "Missing returns, max_drawdown, fund rule, subscription, redemption, cutoff, lag, fee, and schedule fields reduce scores and may force manual review or Pause New."
+    output_range: "0..100 nominal score; code does not enforce upper bound beyond component constants"
+    code_refs: ["Serenity-Alipay/app/core/scoring.py:81", "Serenity-Alipay/app/core/scoring.py:105", "Serenity-Alipay/app/core/scoring.py:141"]
+    test_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_quality.py:15"]
+    evidence_refs: ["Serenity-Alipay/README.md:338"]
+  - formula_id: "FORM-004"
+    model_id: "MOD-001"
+    assumption_ids: ["ASM-004"]
+    status: "active"
+    expression: "Grade decision table: if score >= 85 then Action-Ready; else if score >= 70 then Watch; else if score >= 55 then Manual Review; else Block."
+    variables:
+      - name: "score"
+        data_type: "float"
+        unit: "points"
+        input_domain: "0..100 nominal"
+    constraints: "Threshold comparisons are inclusive at lower bound."
+    missing_policy: "Missing evidence affects score before grade mapping."
+    output_range: "Action-Ready, Watch, Manual Review, or Block"
+    code_refs: ["Serenity-Alipay/app/core/scoring.py:44"]
+    test_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:34"]
+    evidence_refs: ["Serenity-Alipay/README.md:347"]
+  - formula_id: "FORM-005"
+    model_id: "MOD-001"
+    assumption_ids: ["ASM-004", "ASM-006"]
+    status: "active"
+    expression: "Precise gate order: excluded or conservative -> Block/Block. max_drawdown >= 0.40 -> Block/Clear/manual_review. recovery_time_days >= 365 -> Block if return_score < 7.5 or any missing else Manual Review, action Manual Review. stale_days > 2 -> Manual Review. conflict_flag -> Manual Review. official_source_count < 2 -> cap Action-Ready to Watch and action Pause New. fallback_aggregated -> cap Action-Ready to Watch and action Pause New. executable_score == 0 -> cap Action-Ready to Watch and action Pause New. return_score == 0 -> Reduce. Action-Ready -> Increase. Watch -> Maintain."
+    variables:
+      - name: "max_drawdown"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "0..unbounded or None"
+      - name: "recovery_time_days"
+        data_type: "int"
+        unit: "days"
+        input_domain: "0..unbounded or None"
+      - name: "stale_days"
+        data_type: "int"
+        unit: "days"
+        input_domain: "0..unbounded"
+      - name: "return_score"
+        data_type: "float"
+        unit: "points"
+        input_domain: "0..15"
+    constraints: "MDD and recovery thresholds are inclusive with >=. Stale threshold uses > 2. Official source threshold uses < 2 for cap."
+    missing_policy: "Missing values are represented in missing_fields and drive lower data_score, manual review, or Pause New gates."
+    output_range: "grade/action_label/trigger_reason/manual_review_required"
+    code_refs: ["Serenity-Alipay/app/core/scoring.py:148"]
+    test_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_risk_gate_regression.py:8"]
+    evidence_refs: ["Serenity-Alipay/模型参数文件:9"]
+  - formula_id: "FORM-006"
+    model_id: "MOD-001"
+    assumption_ids: ["ASM-004"]
+    status: "active"
+    expression: "benchmark_wins counts, for each window in 1m,3m,10d, one win if candidate return > Shanghai Composite return when Shanghai value exists, and one win if candidate return > S&P 500 return when S&P value exists. Equal values are not wins. Missing candidate return skips the window. return_score = 15 * benchmark_wins / 6."
+    variables:
+      - name: "candidate_return"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "any float or None"
+      - name: "benchmark_return"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "any float or None"
+      - name: "benchmark_wins"
+        data_type: "int"
+        unit: "wins"
+        input_domain: "0..6"
+    constraints: "Comparison operator is strictly greater than. Denominator remains 6 even if benchmark values are missing."
+    missing_policy: "Missing candidate return skips; missing benchmark return cannot add a win."
+    output_range: "0..15 points"
+    code_refs: ["Serenity-Alipay/app/core/scoring.py:54", "Serenity-Alipay/app/core/scoring.py:117"]
+    test_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_metrics.py:22"]
+    evidence_refs: ["Serenity-Alipay/README.md:13"]
+  - formula_id: "FORM-007"
+    model_id: "MOD-002"
+    assumption_ids: ["ASM-002", "ASM-006"]
+    status: "active"
+    expression: "Eligible rows are rows where score.grade != Block. Sort key is (int(score.manual_review_required), candidate_index default 1000000, -score.total_score, candidate.asset_code). Return first limit rows, default limit 5."
+    variables:
+      - name: "manual_review_required"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "False or True"
+      - name: "candidate_index"
+        data_type: "int"
+        unit: "ordinal"
+        input_domain: "0..unbounded; default 1000000"
+      - name: "total_score"
+        data_type: "float"
+        unit: "points"
+        input_domain: "0..100 nominal"
+    constraints: "Manual review rows sort after executable rows. Lower candidate_index is better. Higher score breaks same-priority ties. Asset code breaks remaining ties lexicographically."
+    missing_policy: "Missing candidate_index falls back to 1000000."
+    output_range: "ordered list length 0..5"
+    code_refs: ["Serenity-Alipay/app/core/pipeline.py:182", "Serenity-Alipay/app/core/pipeline.py:191"]
+    test_refs: ["Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62", "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:100"]
+    evidence_refs: ["Serenity-Alipay/README.md:14"]
+  - formula_id: "FORM-008"
+    model_id: "MOD-002"
+    assumption_ids: ["ASM-002"]
+    status: "active"
+    expression: "For each ranked Top5 item at zero-based index i, serenity_base = 0.82^i. confidence = clamp(score.total_score/100,0,1). confidence_multiplier = 0.85 + 0.15*confidence. raw_weight = serenity_base*confidence_multiplier. Normalize raw weights to sum 1. Cap each normalized weight at 0.30. Normalize capped weights again to sum 1."
+    variables:
+      - name: "index"
+        data_type: "int"
+        unit: "rank offset"
+        input_domain: "0..4"
+      - name: "score.total_score"
+        data_type: "float"
+        unit: "points"
+        input_domain: "any float clamped through confidence"
+      - name: "raw_weight"
+        data_type: "float"
+        unit: "portfolio weight"
+        input_domain: ">=0"
+    constraints: "No Top5 or non-positive raw total returns empty weights. Cap is applied before final renormalization."
+    missing_policy: "No eligible Top5 rows returns empty mapping."
+    output_range: "asset_id -> weight, sum 1 when nonempty"
+    code_refs: ["Serenity-Alipay/app/core/pipeline.py:186", "Serenity-Alipay/app/core/pipeline.py:204"]
+    test_refs: ["Serenity-Alipay/tests/test_pipeline_serenity_priority.py:85"]
+    evidence_refs: ["Serenity-Alipay/模型参数文件:17"]
+  - formula_id: "FORM-009"
+    model_id: "MOD-002"
+    assumption_ids: ["ASM-006"]
+    status: "active"
+    expression: "deviation = target_weight - current_weight. If grade is Block, return score action/trigger. If manual_review_required, return Manual Review. If abs(deviation) <= 0.01, return Maintain. If deviation > 0, return Increase for Action-Ready else Pause New. If deviation < -0.01, return Reduce."
+    variables:
+      - name: "target_weight"
+        data_type: "float"
+        unit: "portfolio weight"
+        input_domain: "0..1 nominal"
+      - name: "current_weight"
+        data_type: "float"
+        unit: "portfolio weight"
+        input_domain: "0..1 nominal"
+      - name: "deviation"
+        data_type: "float"
+        unit: "portfolio weight"
+        input_domain: "-1..1 nominal"
+    constraints: "Maintain boundary is inclusive for abs(deviation) <= 0.01."
+    missing_policy: "Current weight defaults to 0.0 when not present in baseline reference."
+    output_range: "Maintain, Increase, Pause New, Reduce, Manual Review, or score-provided hard-block action"
+    code_refs: ["Serenity-Alipay/app/core/pipeline.py:220", "Serenity-Alipay/app/core/pipeline.py:536"]
+    test_refs: ["Serenity-Alipay/tests/test_discipline.py:5", "Serenity-Alipay/tests/test_integration.py:34"]
+    evidence_refs: ["Serenity-Alipay/README.md:14"]
+  - formula_id: "FORM-010"
+    model_id: "MOD-004"
+    assumption_ids: ["ASM-006"]
+    status: "active"
+    expression: "For each compare_type in same_day_previous, previous_day, previous_week, previous_month, choose the latest eligible success/pass business-day base run. change_rate = len(new_assets union removed_assets)/max(len(current_top5),1). Alert if change_rate > 0.20, new_assets count >= 1, replacement_count >= 2, or max_key_field_sigma > 1.0."
+    variables:
+      - name: "change_rate"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "0..1 nominal"
+      - name: "replacement_count"
+        data_type: "int"
+        unit: "assets"
+        input_domain: "0..5"
+      - name: "max_key_field_sigma"
+        data_type: "float"
+        unit: "standard deviations"
+        input_domain: "0..unbounded"
+    constraints: "Top5 SQL limits to 5. Change rate threshold uses > 0.20; replacement uses >= 2; new assets uses >= 1; sigma uses > 1.0."
+    missing_policy: "No eligible base run creates comparison summary with no alert events."
+    output_range: "ComparisonSummary list and zero or more Alert events"
+    code_refs: ["Serenity-Alipay/app/core/comparison.py:13", "Serenity-Alipay/app/core/comparison.py:128", "Serenity-Alipay/app/core/comparison.py:201"]
+    test_refs: ["Serenity-Alipay/tests/test_comparison.py:44", "Serenity-Alipay/tests/test_comparison.py:58"]
+    evidence_refs: ["Serenity-Alipay/HANDOFF.md:15"]
+  - formula_id: "FORM-011"
+    model_id: "MOD-004"
+    assumption_ids: ["ASM-006"]
+    status: "active"
+    expression: "Deviation event triggers when abs(deviation) > 0.01. Single-position overexpansion checks last 5 R-slot runs and increments consecutive count while current_weight - target_weight > 0.01; alert when consecutive > 2."
+    variables:
+      - name: "deviation"
+        data_type: "float"
+        unit: "portfolio weight"
+        input_domain: "-1..1 nominal"
+      - name: "consecutive"
+        data_type: "int"
+        unit: "runs"
+        input_domain: "0..5"
+    constraints: "Deviation boundary is strict greater than. Overexpansion default threshold triggers only above 2 consecutive runs."
+    missing_policy: "No current assets or no run rows returns no events."
+    output_range: "zero or more Alert discipline events"
+    code_refs: ["Serenity-Alipay/app/core/discipline.py:15", "Serenity-Alipay/app/core/discipline.py:32"]
+    test_refs: ["Serenity-Alipay/tests/test_discipline.py:5", "Serenity-Alipay/tests/test_discipline.py:21"]
+    evidence_refs: ["Serenity-Alipay/HANDOFF.md:15"]
+  - formula_id: "FORM-012"
+    model_id: "MOD-005"
+    assumption_ids: ["ASM-005", "ASM-006"]
+    status: "active"
+    expression: "A due slot exists only on Beijing business days by default and when abs(current Beijing time - scheduled slot time) <= tolerance_minutes, default 3. Slots are R1 08:30 through R10 17:30 Beijing. scheduler_tick skips duplicate slot/date unless allow_duplicate is true. automation_tick forces dry-run when preflight blocks."
+    variables:
+      - name: "current"
+        data_type: "datetime"
+        unit: "timestamp"
+        input_domain: "timezone-aware or parsed with Asia/Shanghai default"
+      - name: "tolerance_minutes"
+        data_type: "int"
+        unit: "minutes"
+        input_domain: ">=0"
+      - name: "weekday"
+        data_type: "int"
+        unit: "day index"
+        input_domain: "0..6"
+    constraints: "Business day is weekday < 5. Due slot boundary is inclusive for absolute delta <= tolerance."
+    missing_policy: "No due slot or weekend returns no run. Preflight blockers force dry-run and draft notification."
+    output_range: "slot ID or None; ran, skipped_duplicate, no_due_slot, or non_business_day"
+    code_refs: ["Serenity-Alipay/app/scheduler.py:8", "Serenity-Alipay/app/scheduler.py:76", "Serenity-Alipay/app/core/scheduler_runner.py:28", "Serenity-Alipay/app/core/automation_tick.py:26"]
+    test_refs: ["Serenity-Alipay/tests/test_timezones.py:6", "Serenity-Alipay/tests/test_scheduler.py:12", "Serenity-Alipay/tests/test_automation_tick.py:8"]
+    evidence_refs: ["Serenity-Alipay/README.md:300"]

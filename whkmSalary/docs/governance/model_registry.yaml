@@ -1,0 +1,49 @@
+governance_spec_version: "1.0.0"
+project_id: "whkmSalary"
+assumptions:
+  - assumption_id: "ASM-001"
+    statement: "The local code implements a Streamlit quarterly sales performance salary calculator."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["whkmSalary/salary_logic.py:3", "whkmSalary/streamlit_app.py:11"]
+  - assumption_id: "ASM-002"
+    statement: "Currency labels in the UI use yuan text, but jurisdiction, statutory source, and legal effective date are not evidenced."
+    fact_level: "UNKNOWN"
+    unknown_task_ids: ["TASK-WHKM-B-001"]
+    evidence_refs: ["whkmSalary/streamlit_app.py:32", "whkmSalary/streamlit_app.py:78"]
+  - assumption_id: "ASM-003"
+    statement: "No real employee payroll records, personal identifiers, bank details, or source policy documents are present in this repository snapshot."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["whkmSalary/开发记录:22", "whkmSalary/模型参数文件:29"]
+models:
+  - model_id: "MOD-001"
+    name: "Quarterly performance salary calculation"
+    kind: "business_calculation_model"
+    purpose: "Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and province weights."
+    owner: "whkmSalary"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "salary-logic-v0"
+    assumptions: ["ASM-001", "ASM-002", "ASM-003"]
+    formula_ids: ["FORM-001", "FORM-002", "FORM-003", "FORM-004", "FORM-005", "FORM-006", "FORM-007", "FORM-008", "FORM-009"]
+    parameter_ids: ["PARAM-001", "PARAM-002", "PARAM-003", "PARAM-004", "PARAM-005", "PARAM-006", "PARAM-007", "PARAM-008", "PARAM-009", "PARAM-010", "PARAM-011", "PARAM-012", "PARAM-013", "PARAM-014", "PARAM-015", "PARAM-016", "PARAM-017", "PARAM-018", "PARAM-019", "PARAM-020", "PARAM-021", "PARAM-022", "PARAM-023", "PARAM-024", "PARAM-025", "PARAM-026", "PARAM-027", "PARAM-028", "PARAM-029", "PARAM-030", "PARAM-031", "PARAM-032", "PARAM-033", "PARAM-034", "PARAM-035", "PARAM-036", "PARAM-037", "PARAM-038", "PARAM-039", "PARAM-040", "PARAM-041", "PARAM-042", "PARAM-043", "PARAM-044", "PARAM-045", "PARAM-046", "PARAM-047", "PARAM-048", "PARAM-049", "PARAM-050", "PARAM-051", "PARAM-052", "PARAM-053", "PARAM-054", "PARAM-055", "PARAM-056", "PARAM-057", "PARAM-058", "PARAM-059", "PARAM-060", "PARAM-061", "PARAM-062", "PARAM-063", "PARAM-064", "PARAM-065", "PARAM-066", "PARAM-067", "PARAM-068", "PARAM-069", "PARAM-070", "PARAM-071", "PARAM-072"]
+    inputs: ["year_target", "quarter_actual", "margin", "settlement_days", "invoice_days", "payback_days", "audit_bias", "customer_rate", "province weights", "tax_keep_rate"]
+    outputs: ["performance_rate", "breakdown", "total_score", "perf_money", "total_salary", "after_tax_salary"]
+    code_refs: ["whkmSalary/salary_logic.py:134"]
+    test_refs: ["FOCUSED: python -m compileall salary_logic.py streamlit_app.py", "FOCUSED: salary_logic.calculate fixture"]
+    evidence_refs: ["whkmSalary/salary_logic.py:123"]
+  - model_id: "MOD-002"
+    name: "Streamlit input constraints"
+    kind: "deterministic_rule_engine"
+    purpose: "Constrain UI inputs before invoking salary calculation."
+    owner: "whkmSalary"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "streamlit-input-v0"
+    assumptions: ["ASM-001", "ASM-002"]
+    formula_ids: ["FORM-010"]
+    parameter_ids: ["PARAM-072", "PARAM-073", "PARAM-074", "PARAM-075", "PARAM-076", "PARAM-077", "PARAM-078", "PARAM-079", "PARAM-080"]
+    inputs: ["Streamlit number_input and selectbox values"]
+    outputs: ["validated inputs passed to calculate or displayed exception"]
+    code_refs: ["whkmSalary/streamlit_app.py:26", "whkmSalary/streamlit_app.py:32"]
+    test_refs: ["FOCUSED: python -m compileall salary_logic.py streamlit_app.py"]
+    evidence_refs: ["whkmSalary/streamlit_app.py:57"]
