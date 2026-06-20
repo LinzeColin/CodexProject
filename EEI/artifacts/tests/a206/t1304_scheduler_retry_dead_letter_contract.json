@@ -15,7 +15,9 @@
     "PostgreSQL background_jobs table with job_type + idempotency_key uniqueness.",
     "background_job_attempts table records each lease attempt, heartbeat, release, failure, expiry and success.",
     "dead_letter_jobs table captures terminal failure payload and final attempt metadata.",
+    "transactional_outbox table captures durable refresh events with idempotency, lease, retry and dispatch state.",
     "scripts/job_scheduler.py supports enqueue, lease, heartbeat, graceful release, retry, expired lease recovery, completion and dead-letter transitions.",
+    "scripts/job_scheduler.py supports dispatch-outbox-once for pending outbox events and logs dispatch_outbox_event operations.",
     "POST /v1/scoring/recompute enqueues score_recompute jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
     "scripts/job_scheduler.py registers a score_recompute handler that validates active-context freshness, writes scoring_runs and score_results, advances refresh_token and completes stale jobs as skipped_stale_context instead of retrying forever.",
     "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion and score_recompute enqueue/execution idempotency."
@@ -29,6 +31,8 @@
   "evidence_paths": [
     "infra/db/migrations/0007_scheduler_job_queue/up.sql",
     "infra/db/migrations/0007_scheduler_job_queue/down.sql",
+    "infra/db/migrations/0009_transactional_outbox/up.sql",
+    "infra/db/migrations/0009_transactional_outbox/down.sql",
     "specs/domain_schema.sql",
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",

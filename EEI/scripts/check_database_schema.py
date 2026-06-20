@@ -49,6 +49,7 @@ REQUIRED_TABLES = {
     "background_jobs",
     "background_job_attempts",
     "dead_letter_jobs",
+    "transactional_outbox",
 }
 
 REQUIRED_ENTITY_TYPES = {
@@ -113,6 +114,14 @@ REQUIRED_TEMPORAL_COLUMNS = {
     },
     "saved_view_versions": {
         "created_at",
+    },
+    "transactional_outbox": {
+        "scheduled_for",
+        "lease_expires_at",
+        "heartbeat_at",
+        "created_at",
+        "updated_at",
+        "dispatched_at",
     },
 }
 
@@ -338,6 +347,35 @@ REQUIRED_SAVED_VIEW_INDEXES = {
     "saved_view_versions_view_idx",
 }
 
+REQUIRED_OUTBOX_COLUMNS = {
+    "transactional_outbox": {
+        "event_type",
+        "aggregate_type",
+        "aggregate_id",
+        "idempotency_key",
+        "payload",
+        "priority",
+        "status",
+        "scheduled_for",
+        "attempt_count",
+        "max_attempts",
+        "lease_owner",
+        "lease_token",
+        "lease_expires_at",
+        "heartbeat_at",
+        "last_error_class",
+        "last_error_message",
+        "dispatched_at",
+        "metadata",
+    },
+}
+
+REQUIRED_OUTBOX_INDEXES = {
+    "transactional_outbox_pending_idx",
+    "transactional_outbox_event_status_idx",
+    "transactional_outbox_lease_expiry_idx",
+}
+
 CURATED_ANCHOR_PARSER_VERSION = "nvidia-public-anchor-v1"
 
 SEED_EXPECTATIONS = {
@@ -532,6 +570,15 @@ def main() -> int:
                     f"{table_name} missing saved-view columns: {missing_saved_view_columns}"
                 )
 
+        for table_name, required_columns in REQUIRED_OUTBOX_COLUMNS.items():
+            missing_outbox_columns = sorted(
+                required_columns - columns_by_table.get(table_name, set())
+            )
+            if missing_outbox_columns:
+                raise RuntimeError(
+                    f"{table_name} missing outbox columns: {missing_outbox_columns}"
+                )
+
         production_index_rows = rows(
             connection,
             """
@@ -606,6 +653,21 @@ def main() -> int:
         if missing_saved_view_indexes:
             raise RuntimeError(f"Missing saved-view indexes: {missing_saved_view_indexes}")
 
+        outbox_index_rows = rows(
+            connection,
+            """
+            SELECT indexname
+            FROM pg_indexes
+            WHERE schemaname = 'public'
+              AND indexname = ANY(%s)
+            """,
+            (list(REQUIRED_OUTBOX_INDEXES),),
+        )
+        outbox_indexes = {str(row[0]) for row in outbox_index_rows}
+        missing_outbox_indexes = sorted(REQUIRED_OUTBOX_INDEXES - outbox_indexes)
+        if missing_outbox_indexes:
+            raise RuntimeError(f"Missing outbox indexes: {missing_outbox_indexes}")
+
         payload: dict[str, object] = {
             "required_tables": len(REQUIRED_TABLES),
             "missing_tables": missing,
@@ -622,6 +684,8 @@ def main() -> int:
             "scheduler_indexes": sorted(scheduler_indexes),
             "saved_view_tables_checked": sorted(REQUIRED_SAVED_VIEW_COLUMNS),
             "saved_view_indexes": sorted(saved_view_indexes),
+            "outbox_tables_checked": sorted(REQUIRED_OUTBOX_COLUMNS),
+            "outbox_indexes": sorted(outbox_indexes),
             "seed_counts": {},
         }
 

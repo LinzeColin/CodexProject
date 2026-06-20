@@ -90,6 +90,8 @@ PARTIAL_EVIDENCE = {
     "T1303": {
         "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
         "infra/db/migrations/0006_model_activation_refresh_state/down.sql",
+        "infra/db/migrations/0009_transactional_outbox/up.sql",
+        "infra/db/migrations/0009_transactional_outbox/down.sql",
         "apps/api/app/domain.py",
         "apps/api/app/domain_repository.py",
         "scripts/check_database_schema.py",
@@ -106,6 +108,8 @@ PARTIAL_EVIDENCE = {
     "T1304": {
         "infra/db/migrations/0007_scheduler_job_queue/up.sql",
         "infra/db/migrations/0007_scheduler_job_queue/down.sql",
+        "infra/db/migrations/0009_transactional_outbox/up.sql",
+        "infra/db/migrations/0009_transactional_outbox/down.sql",
         "scripts/job_scheduler.py",
         "scripts/check_database_schema.py",
         "tests/integration/test_database_migrations.py",

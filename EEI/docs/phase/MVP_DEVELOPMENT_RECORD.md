@@ -2680,3 +2680,55 @@ Residual risks:
 - Continuous deployment wake/supervision is not implemented.
 - Transactional outbox and worker-driven data snapshot refresh remain open.
 - 4h/24h soak, authn/authz, formal fact publication, multi-object scoring and brand clearance remain v0.1 blockers.
+
+## 2026-06-20 - T1303/T1304/A204-A206 transactional outbox refresh events
+
+### Scope
+
+- Added migration `0009_transactional_outbox` as the durable refresh event source required by the v5 live recalculation architecture.
+- Added `transactional_outbox` schema validation for required columns, temporal fields and indexes.
+- Model activation and rollback now write `model.profile.activated` outbox events in the same transaction that switches the active profile and refresh token.
+- `POST /v1/scoring/recompute` now writes a `score.recompute.requested` outbox event using the same idempotent active-context key as the background job.
+- The `score_recompute` worker now writes `score.snapshot.activated` after it creates the scoring run, score results and new active-context refresh token.
+- Added scheduler outbox dispatch support through `dispatch_outbox_once()` and CLI `dispatch-outbox-once`, with dispatched/failed/dead-letter state and `dispatch_outbox_event` operation logs.
+- Extended the PostgreSQL integration contract to assert outbox idempotency, dispatch status and operation-log evidence.
+
+### Files changed
+
+- `infra/db/migrations/0009_transactional_outbox/up.sql`
+- `infra/db/migrations/0009_transactional_outbox/down.sql`
+- `apps/api/app/domain_repository.py`
+- `scripts/job_scheduler.py`
+- `scripts/check_database_schema.py`
+- `scripts/validate_v5_production_readiness_sync.py`
+- `tests/integration/test_database_migrations.py`
+- `README.md`
+- `DEVELOPMENT_STATUS.md`
+- `MODEL_MANAGEMENT.md`
+- `data/function_catalog.csv`
+- `data/development_status_ledger.csv`
+- `data/acceptance_traceability.csv`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `docs/phase/MVP_DEVELOPMENT_RECORD.md`
+- `artifacts/tests/a204/t1303_transactional_model_activation_contract.json`
+- `artifacts/tests/a205/t1303_atomic_refresh_context_contract.json`
+- `artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json`
+
+### Acceptance mapping
+
+- T1303 -> A204, A205.
+- T1304 -> A206.
+- A204/A205/A206 remain `IN_PROGRESS`, not `DONE`, because online model editing, worker-driven data snapshot refresh, deployment wake/supervision, ingestion/calibration handlers and 4h/24h soak evidence remain open.
+
+### Validation
+
+- Local `python3 -m py_compile apps/api/app/domain_repository.py scripts/job_scheduler.py scripts/check_database_schema.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/ruff check apps/api/app/domain_repository.py scripts/job_scheduler.py scripts/check_database_schema.py tests/integration/test_database_migrations.py`: PASS.
+- PostgreSQL execution proof must come from GitHub Actions G2 integration because this local environment does not provide Docker/PostgreSQL.
+
+### Remaining gaps
+
+- Outbox dispatch currently marks durable events as dispatched; SSE gateway, deployment wake and worker supervision remain open.
+- Worker-driven data snapshot activation is not implemented.
+- Real curated ingestion and calibration handlers remain unregistered.
+- 4h/24h soak, authn/authz, formal fact publication, multi-object scoring and brand clearance remain v0.1 blockers.

@@ -267,6 +267,9 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── 0008_server_saved_views
 │   │   │   │   ├── down.sql
 │   │   │   │   └── up.sql
+│   │   │   ├── 0009_transactional_outbox
+│   │   │   │   ├── down.sql
+│   │   │   │   └── up.sql
 │   │   │   └── README.md
 │   │   └── seeds
 │   │       └── README.md

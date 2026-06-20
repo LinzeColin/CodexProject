@@ -18,6 +18,7 @@ from apps.api.app.main import app
 from scripts.db_tools import connect_database, database_url
 from scripts.job_scheduler import (
     complete_job,
+    dispatch_outbox_once,
     enqueue_job,
     fail_job,
     heartbeat_job,
@@ -1541,6 +1542,10 @@ def exercise_transactional_model_activation_contract(
     assert "supply_chain" in activation["active_context"]["affected_modules"]
     assert "model_center" in activation["active_context"]["affected_modules"]
     assert activation["active_context"]["client_state"] == "stale"
+    assert activation["outbox_event"]["event_type"] == "model.profile.activated"
+    assert activation["outbox_event"]["aggregate_id"] == str(target_profile_id)
+    assert activation["outbox_event"]["status"] == "pending"
+    assert activation["outbox_event"]["metadata"]["acceptance_ids"] == ["A204", "A205"]
     next_refresh_token = activation["cache_invalidation"]["refresh_token"]
     next_refresh_generation = activation["cache_invalidation"]["refresh_generation"]
 
@@ -1581,6 +1586,9 @@ def exercise_transactional_model_activation_contract(
         target_profile_id
     )
     assert recompute["job"]["metadata"]["acceptance_ids"] == ["A204", "A205", "A206"]
+    assert recompute["outbox_event"]["event_type"] == "score.recompute.requested"
+    assert recompute["outbox_event"]["aggregate_id"] == recompute["job"]["id"]
+    assert recompute["outbox_event"]["status"] == "pending"
     assert recompute["cache_policy"]["refresh_token"] == next_refresh_token
 
     duplicate_recompute_response = client.post(
@@ -1596,6 +1604,7 @@ def exercise_transactional_model_activation_contract(
     duplicate_recompute = duplicate_recompute_response.json()
     assert duplicate_recompute["job"]["id"] == recompute["job"]["id"]
     assert duplicate_recompute["idempotency_key"] == recompute["idempotency_key"]
+    assert duplicate_recompute["outbox_event"]["id"] == recompute["outbox_event"]["id"]
 
     executed_recompute = run_once(
         worker_id="a206-score-recompute-worker",
@@ -1615,8 +1624,40 @@ def exercise_transactional_model_activation_contract(
     assert recompute_result["refresh_generation"] == next_refresh_generation + 1
     assert recompute_result["scored_objects"] >= 1
     assert recompute_result["acceptance_ids"] == ["A204", "A205", "A206"]
+    assert recompute_result["outbox_event"]["event_type"] == "score.snapshot.activated"
+    assert recompute_result["outbox_event"]["aggregate_id"] == recompute_result["scoring_run_id"]
+    assert recompute_result["outbox_event"]["status"] == "pending"
     recompute_refresh_token = recompute_result["refresh_token"]
     recompute_scoring_run_id = recompute_result["scoring_run_id"]
+
+    dispatched_activation = dispatch_outbox_once(
+        worker_id="a206-outbox-dispatcher",
+        event_type="model.profile.activated",
+    )
+    assert dispatched_activation is not None
+    assert dispatched_activation["status"] == "dispatched"
+    assert dispatched_activation["metadata"]["dispatch_result"]["handler_contract"] == (
+        "outbox-dispatch-v1"
+    )
+    dispatched_recompute_request = dispatch_outbox_once(
+        worker_id="a206-outbox-dispatcher",
+        event_type="score.recompute.requested",
+    )
+    assert dispatched_recompute_request is not None
+    assert dispatched_recompute_request["status"] == "dispatched"
+    dispatched_score_snapshot = dispatch_outbox_once(
+        worker_id="a206-outbox-dispatcher",
+        event_type="score.snapshot.activated",
+    )
+    assert dispatched_score_snapshot is not None
+    assert dispatched_score_snapshot["status"] == "dispatched"
+    assert (
+        dispatch_outbox_once(
+            worker_id="a206-outbox-dispatcher",
+            event_type="score.snapshot.activated",
+        )
+        is None
+    )
 
     with connect_database() as connection:
         recompute_context = connection.execute(
@@ -1774,7 +1815,8 @@ def exercise_transactional_model_activation_contract(
                   'activate_scoring_profile',
                   'rollback_scoring_profile',
                   'enqueue_score_recompute',
-                  'execute_score_recompute'
+                  'execute_score_recompute',
+                  'dispatch_outbox_event'
                 )
                 GROUP BY action_type, result_status
                 """
@@ -1787,6 +1829,21 @@ def exercise_transactional_model_activation_contract(
         assert log_counts[("enqueue_score_recompute", "success")] == 2
         assert log_counts[("enqueue_score_recompute", "conflict")] == 1
         assert log_counts[("execute_score_recompute", "success")] == 1
+        assert log_counts[("dispatch_outbox_event", "success")] == 3
+        outbox_counts = {
+            (row[0], row[1]): row[2]
+            for row in connection.execute(
+                """
+                SELECT event_type, status, count(*)::int
+                FROM transactional_outbox
+                GROUP BY event_type, status
+                """
+            ).fetchall()
+        }
+        assert outbox_counts[("model.profile.activated", "dispatched")] == 1
+        assert outbox_counts[("model.profile.activated", "pending")] == 1
+        assert outbox_counts[("score.recompute.requested", "dispatched")] == 1
+        assert outbox_counts[("score.snapshot.activated", "dispatched")] == 1
         try:
             connection.execute(
                 "UPDATE scoring_profile_versions SET active = true WHERE id = %s",
