@@ -32,10 +32,19 @@ jobs:
         run: npx --yes pnpm@11.8.0 --filter @eei/web exec playwright install --with-deps chromium
       - name: Verify static, contract, lint, typecheck and unit tests
         run: make verify
-      - name: Verify G2 PostgreSQL migrations and E2E
+      - name: Prepare G2 PostgreSQL database
         run: |
           cp .env.example .env
-          make verify-g2-db
+          make db-up
+          make health
+      - name: Verify G2 static, contract, lint, typecheck and unit tests
+        run: make verify
+      - name: Verify G2 PostgreSQL integration
+        run: make test-integration
+      - name: Verify G2 browser E2E
+        run: make test-e2e
+      - name: Verify G2 live FastAPI PostgreSQL E2E
+        run: make test-e2e-live
       - name: Stop PostgreSQL
         if: always()
         run: make db-down
