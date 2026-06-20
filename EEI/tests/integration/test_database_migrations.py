@@ -712,6 +712,32 @@ def exercise_domain_api_and_repository_contracts() -> None:
     )
     assert "unknown, not zero" in gap_messages
 
+    entity_score_response = client.get(f"/v1/scoring/explain/entity/{NVIDIA_ID}")
+    assert entity_score_response.status_code == 200
+    entity_score = entity_score_response.json()
+    assert entity_score["object_type"] == "entity"
+    assert entity_score["object_id"] == NVIDIA_ID
+    assert entity_score["publication_status"] == "published"
+    assert entity_score["entity"]["canonical_name"] == "NVIDIA Corporation"
+    assert entity_score["entity"]["entity_type"] == "legal_entity"
+    assert entity_score["source_threshold"]["minimum_independent_sources"] == 1
+    assert entity_score["source_threshold"]["independent_source_count"] >= 1
+    assert entity_score["source_threshold"]["met"] is True
+    assert entity_score["coverage_summary"]["relationship_count"] >= 1
+    assert entity_score["coverage_summary"]["relationship_family_count"] >= 1
+    assert entity_score["coverage_summary"]["industry_membership_count"] >= 1
+    assert entity_score["evidence"]
+    assert entity_score["evidence"][0]["url"].startswith("fixture://relationship/")
+    assert "entity_identifier" not in entity_score["missing_inputs"]
+    assert "relationship_context" not in entity_score["missing_inputs"]
+    if entity_score["fact_version"] is None:
+        assert "entity_fact_version" in entity_score["missing_inputs"]
+    assert entity_score["production_context"]["schema_version"] == "production-context-v1"
+    assert (
+        entity_score["scoring_service_version"]
+        == "candidate-score-explanation-v1"
+    )
+
     seed_entities = json.loads(Path("data/mock_entities.json").read_text(encoding="utf-8"))
     assert len(seed_entities) == 30
     for seed_entity in seed_entities:

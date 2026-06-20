@@ -16,7 +16,9 @@ from psycopg.types.json import Jsonb
 
 from .scoring import (
     CANDIDATE_SOURCE_THRESHOLD_MIN,
+    ENTITY_SOURCE_THRESHOLD_MIN,
     candidate_score_metrics,
+    entity_score_metrics,
     relationship_score_metrics,
 )
 
@@ -3682,6 +3684,12 @@ class DomainRepository:
             )
             if profile is None:
                 raise RepositoryError("No active scoring profile is available")
+            if object_type == "entity":
+                return self.entity_score_explanation(
+                    connection=connection,
+                    object_id=object_id,
+                    profile=profile,
+                )
             if object_type == "relationship":
                 return self.relationship_score_explanation(
                     connection=connection,
@@ -3690,7 +3698,7 @@ class DomainRepository:
                 )
             if object_type != "relationship_fact_candidate":
                 raise RepositoryError(
-                    "Only relationship_fact_candidate and relationship score explanations "
+                    "Only entity, relationship_fact_candidate and relationship score explanations "
                     "are implemented in the T1302/A203 API contract slice"
                 )
             row = connection.execute(
@@ -3889,6 +3897,172 @@ class DomainRepository:
             ),
         )
 
+    def entity_score_explanation(
+        self,
+        *,
+        connection: psycopg.Connection[dict[str, Any]],
+        object_id: UUID,
+        profile: dict[str, Any],
+    ) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              e.id,
+              e.canonical_name,
+              e.entity_type,
+              e.jurisdiction,
+              e.status,
+              e.description,
+              e.created_at,
+              e.updated_at,
+              COALESCE(fen.synthetic, false) AS synthetic,
+              fen.fixture_notice,
+              COALESCE(identifier_counts.identifier_count, 0)::int AS identifier_count,
+              COALESCE(alias_counts.alias_count, 0)::int AS alias_count,
+              COALESCE(relationship_counts.relationship_count, 0)::int
+                AS relationship_count,
+              COALESCE(relationship_counts.relationship_family_count, 0)::int
+                AS relationship_family_count,
+              COALESCE(relationship_counts.source_document_count, 0)::int
+                AS source_document_count,
+              COALESCE(relationship_counts.synthetic_relationship_count, 0)::int
+                AS synthetic_relationship_count,
+              relationship_counts.latest_relationship_observed_at,
+              COALESCE(industry_counts.industry_membership_count, 0)::int
+                AS industry_membership_count,
+              COALESCE(event_counts.recent_event_count, 0)::int AS recent_event_count,
+              COALESCE(industry_memberships.industries, '[]'::jsonb) AS industries,
+              COALESCE(entity_evidence.evidence, '[]'::jsonb) AS evidence,
+              latest_fact.id AS fact_version_id,
+              latest_fact.version_no AS fact_version_no,
+              latest_fact.fact_status::text AS fact_status,
+              latest_fact.record_mode AS fact_record_mode,
+              latest_fact.parser_version AS fact_parser_version,
+              latest_fact.payload AS fact_payload,
+              latest_snapshot.snapshot_key AS snapshot_key,
+              latest_snapshot.scope AS snapshot_scope,
+              latest_snapshot.status AS snapshot_status,
+              latest_snapshot.record_mode AS snapshot_record_mode
+            FROM entities e
+            LEFT JOIN fixture_entity_notices fen ON fen.entity_id = e.id
+            LEFT JOIN LATERAL (
+              SELECT count(*)::int AS identifier_count
+              FROM entity_identifiers ei
+              WHERE ei.entity_id = e.id
+            ) identifier_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT count(*)::int AS alias_count
+              FROM entity_aliases ea
+              WHERE ea.entity_id = e.id
+            ) alias_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT
+                count(DISTINCT r.id)::int AS relationship_count,
+                count(DISTINCT r.relationship_family)::int AS relationship_family_count,
+                count(DISTINCT re.source_document_id)::int AS source_document_count,
+                (count(DISTINCT r.id) FILTER (WHERE COALESCE(frn.synthetic, false)))::int
+                  AS synthetic_relationship_count,
+                max(r.observed_at) AS latest_relationship_observed_at
+              FROM relationships r
+              LEFT JOIN relationship_evidence re ON re.relationship_id = r.id
+              LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+              WHERE (r.subject_entity_id = e.id OR r.object_entity_id = e.id)
+                AND r.status NOT IN ('superseded', 'revoked')
+            ) relationship_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT count(*)::int AS industry_membership_count
+              FROM entity_industry_memberships eim
+              WHERE eim.entity_id = e.id
+            ) industry_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT count(DISTINCT ep.event_id)::int AS recent_event_count
+              FROM event_participants ep
+              JOIN events ev ON ev.id = ep.event_id
+              WHERE ep.entity_id = e.id
+                AND ev.status NOT IN ('superseded', 'revoked')
+            ) event_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT jsonb_agg(
+                jsonb_build_object(
+                  'industry_id', i.id,
+                  'slug', i.slug,
+                  'name_zh', i.name_zh,
+                  'name_en', i.name_en,
+                  'role', eim.role,
+                  'confidence', eim.confidence,
+                  'taxonomy_version', i.taxonomy_version
+                )
+                ORDER BY eim.role, i.slug
+              ) AS industries
+              FROM entity_industry_memberships eim
+              JOIN industries i ON i.id = eim.industry_id
+              WHERE eim.entity_id = e.id
+            ) industry_memberships ON true
+            LEFT JOIN LATERAL (
+              SELECT jsonb_agg(evidence_item) AS evidence
+              FROM (
+                SELECT jsonb_build_object(
+                  'relationship_id', r.id,
+                  'relationship_type', r.relationship_type,
+                  'relationship_family', r.relationship_family,
+                  'relationship_status', r.status,
+                  'relationship_confidence', r.confidence,
+                  'subject_entity_id', r.subject_entity_id,
+                  'object_entity_id', r.object_entity_id,
+                  'source_document_id', sd.id,
+                  'source_tier', s.source_tier,
+                  'publisher', sd.publisher,
+                  'title', sd.title,
+                  'url', sd.url,
+                  'document_date', sd.document_date,
+                  'observed_at', sd.observed_at,
+                  'retrieved_at', sd.retrieved_at,
+                  'content_hash', sd.content_hash,
+                  'role', re.role,
+                  'locator', re.locator,
+                  'support_excerpt', re.support_excerpt,
+                  'structured_fact', COALESCE(re.structured_fact, '{}'::jsonb)
+                ) AS evidence_item
+                FROM relationships r
+                JOIN relationship_evidence re ON re.relationship_id = r.id
+                JOIN source_documents sd ON sd.id = re.source_document_id
+                JOIN sources s ON s.id = sd.source_id
+                WHERE (r.subject_entity_id = e.id OR r.object_entity_id = e.id)
+                  AND r.status NOT IN ('superseded', 'revoked')
+                ORDER BY sd.observed_at DESC NULLS LAST, sd.retrieved_at DESC, r.id
+                LIMIT 10
+              ) entity_evidence_items
+            ) entity_evidence ON true
+            LEFT JOIN LATERAL (
+              SELECT fv.*
+              FROM fact_versions fv
+              JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+              WHERE fv.object_type = 'entity'
+                AND fv.object_id = e.id
+              ORDER BY
+                CASE ds.status WHEN 'active' THEN 0 ELSE 1 END,
+                fv.version_no DESC,
+                fv.created_at DESC
+              LIMIT 1
+            ) latest_fact ON true
+            LEFT JOIN data_snapshots latest_snapshot
+              ON latest_snapshot.id = latest_fact.snapshot_id
+            WHERE e.id = %s
+            """,
+            (object_id,),
+        ).fetchone()
+        if row is None:
+            raise NotFoundError(f"Entity not found: {object_id}")
+        return self.entity_score_explanation_payload(
+            row=row,
+            profile=profile,
+            production_context=self.production_context_for_connection(
+                connection,
+                as_of=None,
+                active_profile=profile,
+            ),
+        )
+
     @staticmethod
     def score_explanation_payload(
         *,
@@ -3946,6 +4120,100 @@ class DomainRepository:
                 },
                 "evidence": evidence,
                 "review_queue": row["review_queue"] or [],
+                "production_context": production_context,
+                "scoring_service_version": SCORING_SERVICE_VERSION,
+            }
+        )
+
+    @staticmethod
+    def entity_score_explanation_payload(
+        *,
+        row: dict[str, Any],
+        profile: dict[str, Any],
+        production_context: dict[str, Any],
+    ) -> dict[str, Any]:
+        evidence = row["evidence"] or []
+        fact_payload = row["fact_payload"] or {}
+        publication_status = fact_payload.get("publication_status") or (
+            "published" if row["status"] == "active" else row["status"]
+        )
+        review_status = fact_payload.get("review_status") or "not_applicable"
+        metrics = entity_score_metrics(
+            identifier_count=int(row["identifier_count"] or 0),
+            alias_count=int(row["alias_count"] or 0),
+            relationship_count=int(row["relationship_count"] or 0),
+            relationship_family_count=int(row["relationship_family_count"] or 0),
+            independent_source_count=int(row["source_document_count"] or 0),
+            industry_membership_count=int(row["industry_membership_count"] or 0),
+            status=row["status"],
+            fact_version_present=row["fact_version_id"] is not None,
+            minimum_independent_sources=ENTITY_SOURCE_THRESHOLD_MIN,
+        )
+        coverage_summary = {
+            "identifier_count": row["identifier_count"],
+            "alias_count": row["alias_count"],
+            "relationship_count": row["relationship_count"],
+            "relationship_family_count": row["relationship_family_count"],
+            "source_document_count": row["source_document_count"],
+            "industry_membership_count": row["industry_membership_count"],
+            "recent_event_count": row["recent_event_count"],
+            "synthetic_relationship_count": row["synthetic_relationship_count"],
+            "latest_relationship_observed_at": row["latest_relationship_observed_at"],
+        }
+        return _jsonable(
+            {
+                "object_type": "entity",
+                "object_id": row["id"],
+                "canonical_name": row["canonical_name"],
+                "entity_type": row["entity_type"],
+                "jurisdiction": row["jurisdiction"],
+                "entity_status": row["status"],
+                "record_mode": row["fact_record_mode"]
+                or row["snapshot_record_mode"]
+                or ("fixture" if row["synthetic"] else "database"),
+                "fact_status": row["fact_status"] or row["status"],
+                "publication_status": publication_status,
+                "source_threshold": metrics["source_threshold"],
+                "review_status": review_status,
+                "parser_version": row["fact_parser_version"],
+                "raw_score": metrics["raw_score"],
+                "evidence_quality": metrics["evidence_quality"],
+                "adjusted_score": metrics["adjusted_score"],
+                "coverage": metrics["coverage"],
+                "coverage_summary": coverage_summary,
+                "contributions": metrics["contributions"],
+                "missing_inputs": metrics["missing_inputs"],
+                "model_version": f"{profile['model_key']}@{profile['version']}",
+                "profile_version": f"{profile['profile_key']}@{profile['version']}",
+                "profile_version_id": profile["id"],
+                "structured_fact": fact_payload,
+                "counter_evidence": [],
+                "fact_version": (
+                    {
+                        "id": row["fact_version_id"],
+                        "version_no": row["fact_version_no"],
+                        "snapshot_key": row["snapshot_key"],
+                        "snapshot_scope": row["snapshot_scope"],
+                        "snapshot_status": row["snapshot_status"],
+                        "record_mode": row["fact_record_mode"]
+                        or row["snapshot_record_mode"],
+                        "parser_version": row["fact_parser_version"],
+                    }
+                    if row["fact_version_id"] is not None
+                    else None
+                ),
+                "entity": {
+                    "entity_id": row["id"],
+                    "canonical_name": row["canonical_name"],
+                    "entity_type": row["entity_type"],
+                    "jurisdiction": row["jurisdiction"],
+                    "status": row["status"],
+                    "synthetic": row["synthetic"],
+                    "fixture_notice": row["fixture_notice"],
+                },
+                "industries": row["industries"] or [],
+                "evidence": evidence,
+                "review_queue": [],
                 "production_context": production_context,
                 "scoring_service_version": SCORING_SERVICE_VERSION,
             }

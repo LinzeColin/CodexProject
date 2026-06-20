@@ -1182,6 +1182,7 @@ paths:
         schema:
           type: string
           enum:
+          - entity
           - relationship_fact_candidate
           - relationship
       - name: objectId
@@ -1214,6 +1215,7 @@ paths:
         schema:
           type: string
           enum:
+          - entity
           - relationship_fact_candidate
           - relationship
       - name: objectId

@@ -1,4 +1,8 @@
-from apps.api.app.scoring import candidate_score_metrics, relationship_score_metrics
+from apps.api.app.scoring import (
+    candidate_score_metrics,
+    entity_score_metrics,
+    relationship_score_metrics,
+)
 
 
 def test_candidate_score_metrics_penalize_missing_publication_inputs() -> None:
@@ -85,4 +89,55 @@ def test_relationship_score_metrics_penalize_unversioned_unreviewed_edges() -> N
         "published_relationship_version",
         "relationship_fact_version",
         "evidence_chain",
+    ]
+
+
+def test_entity_score_metrics_full_quality_when_context_is_versioned() -> None:
+    metrics = entity_score_metrics(
+        identifier_count=1,
+        alias_count=2,
+        relationship_count=6,
+        relationship_family_count=4,
+        independent_source_count=3,
+        industry_membership_count=1,
+        status="active",
+        fact_version_present=True,
+    )
+
+    assert metrics["raw_score"] == 100
+    assert metrics["evidence_quality"] == 100
+    assert metrics["adjusted_score"] == 100
+    assert metrics["coverage"] == 100
+    assert metrics["source_threshold"] == {
+        "minimum_independent_sources": 1,
+        "independent_source_count": 3,
+        "met": True,
+    }
+    assert metrics["missing_inputs"] == []
+
+
+def test_entity_score_metrics_surfaces_missing_entity_context() -> None:
+    metrics = entity_score_metrics(
+        identifier_count=0,
+        alias_count=0,
+        relationship_count=1,
+        relationship_family_count=1,
+        independent_source_count=0,
+        industry_membership_count=0,
+        status="inactive",
+        fact_version_present=False,
+    )
+
+    assert metrics["raw_score"] == 11.67
+    assert metrics["evidence_quality"] == 0
+    assert metrics["adjusted_score"] == 9.34
+    assert metrics["coverage"] == 37.5
+    assert metrics["missing_inputs"] == [
+        "entity_identifier",
+        "entity_alias",
+        "relationship_family_context>=3",
+        "entity_independent_source_threshold>=1",
+        "industry_membership",
+        "active_entity_status",
+        "entity_fact_version",
     ]
