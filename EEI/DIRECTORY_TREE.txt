@@ -27,6 +27,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── health.py
 │   │   │   ├── healthcheck.py
 │   │   │   ├── main.py
+│   │   │   ├── scoring.py
 │   │   │   └── settings.py
 │   │   └── __init__.py
 │   ├── web
@@ -374,7 +375,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── test_database_migrations.py
 │   └── unit
 │       ├── test_api_health.py
-│       └── test_scale_benchmarks.py
+│       ├── test_scale_benchmarks.py
+│       └── test_scoring.py
 ├── wireframes
 │   ├── README.md
 │   ├── dashboard_wireframe.png

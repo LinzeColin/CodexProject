@@ -16,10 +16,30 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - used when imported as scripts.job_scheduler
     from scripts.db_tools import database_url
 
+try:
+    from apps.api.app.scoring import candidate_score_metrics
+except ModuleNotFoundError:  # pragma: no cover - used when imported from packaged contexts.
+    from ..apps.api.app.scoring import candidate_score_metrics
+
 DEFAULT_LEASE_TTL_SECONDS = 900
 DEFAULT_MAX_ATTEMPTS = 5
 DEFAULT_DEAD_LETTER_AFTER_ATTEMPTS = 5
 DEFAULT_RETRY_BACKOFF_SECONDS = 30
+ACTIVE_REFRESH_MODULES = [
+    "business_empire",
+    "group_structure",
+    "business_segments",
+    "supply_chain",
+    "capital_network",
+    "ma_transactions",
+    "control_relationships",
+    "policy_environment",
+    "strategic_signals",
+    "watchlist",
+    "evidence_center",
+    "model_center",
+    "data_center",
+]
 
 
 class SchedulerError(RuntimeError):
@@ -479,6 +499,279 @@ def fail_job(
         return job_payload(row) or {}
 
 
+def log_score_recompute_operation(
+    connection: psycopg.Connection,
+    *,
+    object_type: str,
+    object_id: UUID | str | None,
+    old_value: dict[str, Any] | None,
+    new_value: dict[str, Any] | None,
+    diff: dict[str, Any],
+    reason: str,
+    model_version: str | None,
+    profile_version: str | None,
+    result_status: str,
+    error: str | None = None,
+) -> None:
+    connection.execute(
+        """
+        INSERT INTO operation_logs(
+          actor, action_type, object_type, object_id, old_value, new_value, diff,
+          reason, model_version, profile_version, result_status, error
+        )
+        VALUES (
+          'system', 'execute_score_recompute', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+        )
+        """,
+        (
+            object_type,
+            object_id,
+            Jsonb(jsonable(old_value or {})),
+            Jsonb(jsonable(new_value or {})),
+            Jsonb(jsonable(diff)),
+            reason,
+            model_version,
+            profile_version,
+            result_status,
+            error,
+        ),
+    )
+
+
+def handle_score_recompute_job(job: dict[str, Any]) -> dict[str, Any]:
+    payload = job.get("payload") or {}
+    if payload.get("schema_version") != "score-recompute-job-v1":
+        raise SchedulerError(
+            "score_recompute payload schema_version must be score-recompute-job-v1"
+        )
+    expected_profile_id = UUID(str(payload["active_scoring_profile_version_id"]))
+    expected_refresh_token = str(payload["refresh_token"])
+    requested_generation = int(payload["refresh_generation"])
+    reason = str(payload.get("reason") or "score recompute worker execution")
+    with connect_job_database() as connection:
+        context = connection.execute(
+            """
+            SELECT
+              aac.active_scoring_profile_version_id,
+              aac.active_data_snapshot_id,
+              aac.active_scoring_run_id,
+              aac.refresh_token::text AS refresh_token,
+              aac.refresh_generation,
+              aac.status,
+              sp.profile_key,
+              spv.version AS profile_version_number,
+              spv.id AS profile_version_id,
+              spv.model_id,
+              spv.weights,
+              spv.thresholds,
+              spv.half_lives,
+              spv.missing_value_policy,
+              sm.model_key,
+              sm.version AS model_version_number,
+              ds.as_of AS data_snapshot_at
+            FROM active_analysis_contexts aac
+            JOIN scoring_profile_versions spv
+              ON spv.id = aac.active_scoring_profile_version_id
+            JOIN scoring_profiles sp ON sp.id = spv.profile_id
+            JOIN scoring_models sm ON sm.id = spv.model_id
+            LEFT JOIN data_snapshots ds ON ds.id = aac.active_data_snapshot_id
+            WHERE aac.context_key = 'global'
+            FOR UPDATE OF aac
+            """
+        ).fetchone()
+        if context is None:
+            raise SchedulerError("No active analysis context is available")
+        model_version = f"{context['model_key']}@{context['model_version_number']}"
+        profile_version = f"{context['profile_key']}@{context['profile_version_number']}"
+        actual_profile_id = context["active_scoring_profile_version_id"]
+        actual_refresh_token = str(context["refresh_token"])
+        if (
+            actual_profile_id != expected_profile_id
+            or actual_refresh_token != expected_refresh_token
+        ):
+            stale_result = {
+                "handler": "score_recompute",
+                "handler_contract": "score-recompute-worker-v1",
+                "status": "skipped_stale_context",
+                "reason": (
+                    "active profile or refresh token changed before the worker executed"
+                ),
+                "requested_active_scoring_profile_version_id": expected_profile_id,
+                "actual_active_scoring_profile_version_id": actual_profile_id,
+                "requested_refresh_token": expected_refresh_token,
+                "actual_refresh_token": actual_refresh_token,
+                "requested_refresh_generation": requested_generation,
+                "actual_refresh_generation": context["refresh_generation"],
+                "acceptance_ids": ["A204", "A205", "A206"],
+            }
+            log_score_recompute_operation(
+                connection,
+                object_type="active_analysis_context",
+                object_id=actual_profile_id,
+                old_value=payload,
+                new_value=dict(context),
+                diff=stale_result,
+                reason=reason,
+                model_version=model_version,
+                profile_version=profile_version,
+                result_status="skipped",
+            )
+            return jsonable(stale_result)
+
+        candidates = connection.execute(
+            """
+            SELECT
+              rfc.id,
+              rfc.candidate_key,
+              rfc.confidence,
+              rfc.independent_source_count,
+              rfc.source_threshold_met,
+              rfc.review_status,
+              rfc.publication_status,
+              rfc.parser_version,
+              EXISTS (
+                SELECT 1
+                FROM relationship_fact_candidate_evidence rfce
+                WHERE rfce.candidate_id = rfc.id
+              ) AS evidence_present
+            FROM relationship_fact_candidates rfc
+            ORDER BY rfc.candidate_key
+            """
+        ).fetchall()
+        data_snapshot_at = context["data_snapshot_at"] or utc_now()
+        scoring_run = connection.execute(
+            """
+            INSERT INTO scoring_runs(
+              model_id, profile_version_id, data_snapshot_at, parameters,
+              status, started_at, finished_at, content_hash
+            )
+            VALUES (%s, %s, %s, %s, 'completed', now(), now(), %s)
+            RETURNING id
+            """,
+            (
+                context["model_id"],
+                expected_profile_id,
+                data_snapshot_at,
+                Jsonb(
+                    jsonable(
+                        {
+                            "handler": "score_recompute",
+                            "handler_contract": "score-recompute-worker-v1",
+                            "job_id": job["id"],
+                            "source_refresh_generation": requested_generation,
+                            "scope": payload.get("scope", "global"),
+                            "weights": context["weights"],
+                            "thresholds": context["thresholds"],
+                            "half_lives": context["half_lives"],
+                            "missing_value_policy": context["missing_value_policy"],
+                        }
+                    )
+                ),
+                f"score-recompute:{job['id']}:{expected_profile_id}:{requested_generation}",
+            ),
+        ).fetchone()
+        scored_objects = 0
+        for candidate in candidates:
+            metrics = candidate_score_metrics(
+                confidence=float(candidate["confidence"]),
+                independent_source_count=int(candidate["independent_source_count"]),
+                source_threshold_met=bool(candidate["source_threshold_met"]),
+                review_status=candidate["review_status"],
+                publication_status=candidate["publication_status"],
+                parser_version_present=candidate["parser_version"] is not None,
+                evidence_present=bool(candidate["evidence_present"]),
+            )
+            connection.execute(
+                """
+                INSERT INTO score_results(
+                  scoring_run_id, object_type, object_id, raw_score, evidence_quality,
+                  adjusted_score, coverage, contributions, missing_inputs
+                )
+                VALUES (
+                  %s, 'relationship_fact_candidate', %s, %s, %s, %s, %s, %s, %s
+                )
+                """,
+                (
+                    scoring_run["id"],
+                    candidate["id"],
+                    metrics["raw_score"],
+                    metrics["evidence_quality"],
+                    metrics["adjusted_score"],
+                    metrics["coverage"],
+                    Jsonb(jsonable(metrics["contributions"])),
+                    Jsonb(jsonable(metrics["missing_inputs"])),
+                ),
+            )
+            scored_objects += 1
+        updated_context = connection.execute(
+            """
+            UPDATE active_analysis_contexts
+            SET active_scoring_run_id = %s,
+                refresh_token = gen_random_uuid(),
+                refresh_generation = refresh_generation + 1,
+                status = 'active',
+                activated_at = now(),
+                activated_by = 'system',
+                affected_modules = %s,
+                metadata = metadata || %s,
+                updated_at = now()
+            WHERE context_key = 'global'
+            RETURNING refresh_token::text AS refresh_token, refresh_generation
+            """,
+            (
+                scoring_run["id"],
+                Jsonb(ACTIVE_REFRESH_MODULES),
+                Jsonb(
+                    jsonable(
+                        {
+                            "last_score_recompute_job_id": job["id"],
+                            "last_score_recompute_scoring_run_id": scoring_run["id"],
+                            "last_score_recompute_scored_objects": scored_objects,
+                            "last_score_recompute_contract": "score-recompute-worker-v1",
+                        }
+                    )
+                ),
+            ),
+        ).fetchone()
+        result = {
+            "handler": "score_recompute",
+            "handler_contract": "score-recompute-worker-v1",
+            "status": "completed",
+            "job_id": job["id"],
+            "scoring_run_id": scoring_run["id"],
+            "previous_scoring_run_id": context["active_scoring_run_id"],
+            "active_scoring_profile_version_id": expected_profile_id,
+            "active_data_snapshot_id": context["active_data_snapshot_id"],
+            "previous_refresh_token": expected_refresh_token,
+            "refresh_token": updated_context["refresh_token"],
+            "previous_refresh_generation": requested_generation,
+            "refresh_generation": updated_context["refresh_generation"],
+            "scored_objects": scored_objects,
+            "score_result_object_type": "relationship_fact_candidate",
+            "affected_modules": ACTIVE_REFRESH_MODULES,
+            "acceptance_ids": ["A204", "A205", "A206"],
+        }
+        log_score_recompute_operation(
+            connection,
+            object_type="scoring_run",
+            object_id=scoring_run["id"],
+            old_value=dict(context),
+            new_value=result,
+            diff={
+                "previous_refresh_token": expected_refresh_token,
+                "refresh_token": updated_context["refresh_token"],
+                "previous_refresh_generation": requested_generation,
+                "refresh_generation": updated_context["refresh_generation"],
+                "scored_objects": scored_objects,
+            },
+            reason=reason,
+            model_version=model_version,
+            profile_version=profile_version,
+            result_status="success",
+        )
+        return jsonable(result)
+
+
 def run_once(*, worker_id: str, job_type: str | None = None) -> dict[str, Any] | None:
     job = lease_next_job(worker_id=worker_id, job_type=job_type)
     if job is None:
@@ -488,6 +781,21 @@ def run_once(*, worker_id: str, job_type: str | None = None) -> dict[str, Any] |
             job_id=job["id"],
             lease_token=job["lease_token"],
             result={"handler": "noop"},
+        )
+    if job["job_type"] == "score_recompute":
+        try:
+            result = handle_score_recompute_job(job)
+        except Exception as exc:
+            return fail_job(
+                job_id=job["id"],
+                lease_token=job["lease_token"],
+                error_class=exc.__class__.__name__,
+                error_message=str(exc),
+            )
+        return complete_job(
+            job_id=job["id"],
+            lease_token=job["lease_token"],
+            result=result,
         )
     return fail_job(
         job_id=job["id"],

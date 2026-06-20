@@ -24,6 +24,7 @@ from scripts.job_scheduler import (
     lease_next_job,
     recover_expired_leases,
     release_job,
+    run_once,
 )
 
 pytestmark = pytest.mark.skipif(
@@ -1596,6 +1597,53 @@ def exercise_transactional_model_activation_contract(
     assert duplicate_recompute["job"]["id"] == recompute["job"]["id"]
     assert duplicate_recompute["idempotency_key"] == recompute["idempotency_key"]
 
+    executed_recompute = run_once(
+        worker_id="a206-score-recompute-worker",
+        job_type="score_recompute",
+    )
+    assert executed_recompute is not None
+    assert executed_recompute["id"] == recompute["job"]["id"]
+    assert executed_recompute["status"] == "succeeded"
+    recompute_result = executed_recompute["metadata"]["result"]
+    assert recompute_result["handler"] == "score_recompute"
+    assert recompute_result["handler_contract"] == "score-recompute-worker-v1"
+    assert recompute_result["status"] == "completed"
+    assert recompute_result["active_scoring_profile_version_id"] == str(target_profile_id)
+    assert recompute_result["previous_refresh_token"] == next_refresh_token
+    assert recompute_result["refresh_token"] != next_refresh_token
+    assert recompute_result["previous_refresh_generation"] == next_refresh_generation
+    assert recompute_result["refresh_generation"] == next_refresh_generation + 1
+    assert recompute_result["scored_objects"] >= 1
+    assert recompute_result["acceptance_ids"] == ["A204", "A205", "A206"]
+    recompute_refresh_token = recompute_result["refresh_token"]
+    recompute_scoring_run_id = recompute_result["scoring_run_id"]
+
+    with connect_database() as connection:
+        recompute_context = connection.execute(
+            """
+            SELECT active_scoring_profile_version_id, active_scoring_run_id,
+                   refresh_token::text, refresh_generation, status
+            FROM active_analysis_contexts
+            WHERE context_key = 'global'
+            """
+        ).fetchone()
+        assert recompute_context[0] == target_profile_id
+        assert str(recompute_context[1]) == recompute_scoring_run_id
+        assert recompute_context[2] == recompute_refresh_token
+        assert recompute_context[3] == next_refresh_generation + 1
+        assert recompute_context[4] == "active"
+        score_result_count = connection.execute(
+            """
+            SELECT count(*)::int
+            FROM score_results
+            WHERE scoring_run_id = %s
+              AND object_type = 'relationship_fact_candidate'
+              AND adjusted_score IS NOT NULL
+            """,
+            (UUID(recompute_scoring_run_id),),
+        ).fetchone()[0]
+        assert score_result_count == recompute_result["scored_objects"]
+
     stale_recompute_response = client.post(
         "/v1/scoring/recompute",
         json={
@@ -1630,7 +1678,7 @@ def exercise_transactional_model_activation_contract(
         f"/v1/scoring/profiles/{active_profile['id']}/rollback",
         json={
             "expected_active_profile_version_id": str(target_profile_id),
-            "client_refresh_token": next_refresh_token,
+            "client_refresh_token": recompute_refresh_token,
             "reason": "T1303/A204 dedicated rollback endpoint success path",
         },
     )
@@ -1641,8 +1689,8 @@ def exercise_transactional_model_activation_contract(
     assert rollback["previous_profile"]["id"] == str(target_profile_id)
     assert rollback["activated_profile"]["id"] == active_profile["id"]
     assert rollback["activated_profile"]["active"] is True
-    assert rollback["cache_invalidation"]["previous_refresh_token"] == next_refresh_token
-    assert rollback["cache_invalidation"]["refresh_token"] != next_refresh_token
+    assert rollback["cache_invalidation"]["previous_refresh_token"] == recompute_refresh_token
+    assert rollback["cache_invalidation"]["refresh_token"] != recompute_refresh_token
     assert rollback["active_context"]["active_scoring_profile_version_id"] == active_profile["id"]
     rollback_refresh_token = rollback["cache_invalidation"]["refresh_token"]
 
@@ -1706,7 +1754,7 @@ def exercise_transactional_model_activation_contract(
             WHERE job_type = 'score_recompute'
               AND id = %s
               AND idempotency_key = %s
-              AND status = 'queued'
+              AND status = 'succeeded'
               AND payload->>'refresh_token' = %s
             """,
             (
@@ -1725,7 +1773,8 @@ def exercise_transactional_model_activation_contract(
                 WHERE action_type IN (
                   'activate_scoring_profile',
                   'rollback_scoring_profile',
-                  'enqueue_score_recompute'
+                  'enqueue_score_recompute',
+                  'execute_score_recompute'
                 )
                 GROUP BY action_type, result_status
                 """
@@ -1737,6 +1786,7 @@ def exercise_transactional_model_activation_contract(
         assert log_counts[("rollback_scoring_profile", "conflict")] == 1
         assert log_counts[("enqueue_score_recompute", "success")] == 2
         assert log_counts[("enqueue_score_recompute", "conflict")] == 1
+        assert log_counts[("execute_score_recompute", "success")] == 1
         try:
             connection.execute(
                 "UPDATE scoring_profile_versions SET active = true WHERE id = %s",
