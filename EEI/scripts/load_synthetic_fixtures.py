@@ -211,6 +211,44 @@ def ensure_source_document(
     )
 
 
+def ensure_event_source_document(
+    connection: object,
+    source_id: str,
+    document_id: str,
+    event_id: str,
+    evidence: dict[str, object],
+) -> None:
+    content_hash = hashlib.sha256(json.dumps(evidence, sort_keys=True).encode("utf-8")).hexdigest()
+    connection.execute(
+        """
+        INSERT INTO source_documents(
+          id, source_id, external_id, url, title, publisher, observed_at, content_hash,
+          media_type, parser_version
+        )
+        VALUES (%s, %s, %s, %s, %s, 'EEI', %s, %s, 'application/json', 'fixture-v1')
+        ON CONFLICT (id) DO UPDATE SET
+          source_id = EXCLUDED.source_id,
+          external_id = EXCLUDED.external_id,
+          url = EXCLUDED.url,
+          title = EXCLUDED.title,
+          publisher = EXCLUDED.publisher,
+          observed_at = EXCLUDED.observed_at,
+          content_hash = EXCLUDED.content_hash,
+          media_type = EXCLUDED.media_type,
+          parser_version = EXCLUDED.parser_version
+        """,
+        (
+            document_id,
+            source_id,
+            f"{event_id}:{document_id}",
+            f"fixture://event/{event_id}/{document_id}",
+            "Synthetic fixture event evidence",
+            OBSERVED_AT,
+            content_hash,
+        ),
+    )
+
+
 def load_relationships(
     connection: object,
     source_id: str,
@@ -318,19 +356,117 @@ def load_relationships(
             )
 
 
+def load_events(
+    connection: object,
+    source_id: str,
+    events: list[dict[str, object]],
+) -> None:
+    for event in events:
+        qualifiers = event.get("qualifiers") or {}
+        connection.execute(
+            """
+            INSERT INTO events(
+              id, event_type, title, status, announced_at, effective_at, period_start,
+              period_end, observed_at, amount, currency, amount_kind, description,
+              qualifiers
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (id) DO UPDATE SET
+              event_type = EXCLUDED.event_type,
+              title = EXCLUDED.title,
+              status = EXCLUDED.status,
+              announced_at = EXCLUDED.announced_at,
+              effective_at = EXCLUDED.effective_at,
+              period_start = EXCLUDED.period_start,
+              period_end = EXCLUDED.period_end,
+              observed_at = EXCLUDED.observed_at,
+              amount = EXCLUDED.amount,
+              currency = EXCLUDED.currency,
+              amount_kind = EXCLUDED.amount_kind,
+              description = EXCLUDED.description,
+              qualifiers = EXCLUDED.qualifiers
+            """,
+            (
+                event["id"],
+                event["event_type"],
+                event["title"],
+                event["status"],
+                event.get("announced_at"),
+                event.get("effective_at"),
+                event.get("period_start"),
+                event.get("period_end"),
+                event["observed_at"],
+                event.get("amount"),
+                event.get("currency"),
+                event.get("amount_kind"),
+                event.get("fixture_notice"),
+                Jsonb(qualifiers),
+            ),
+        )
+        for participant in event.get("participants", []):
+            connection.execute(
+                """
+                INSERT INTO event_participants(event_id, entity_id, role, direction)
+                VALUES (%s, %s, %s, %s)
+                ON CONFLICT (event_id, entity_id, role) DO UPDATE SET
+                  direction = EXCLUDED.direction
+                """,
+                (
+                    event["id"],
+                    participant["entity_id"],
+                    participant["role"],
+                    participant.get("direction"),
+                ),
+            )
+        for theme_id in event.get("themes", []):
+            connection.execute(
+                """
+                INSERT INTO event_participants(event_id, entity_id, role, direction)
+                VALUES (%s, %s, 'theme', NULL)
+                ON CONFLICT (event_id, entity_id, role) DO NOTHING
+                """,
+                (event["id"], theme_id),
+            )
+        for evidence in event.get("evidence", []):
+            document_id = evidence["source_document_id"]
+            ensure_event_source_document(connection, source_id, document_id, event["id"], evidence)
+            connection.execute(
+                """
+                INSERT INTO event_evidence(
+                  event_id, source_document_id, role, locator, support_excerpt
+                )
+                VALUES (%s, %s, %s, %s, %s)
+                ON CONFLICT (event_id, source_document_id, role) DO UPDATE SET
+                  locator = EXCLUDED.locator,
+                  support_excerpt = EXCLUDED.support_excerpt
+                """,
+                (
+                    event["id"],
+                    document_id,
+                    evidence["role"],
+                    evidence["locator"],
+                    event.get("fixture_notice"),
+                ),
+            )
+
+
 def main() -> int:
     entity_path = ROOT / "data/mock_entities.json"
     relationship_path = ROOT / "data/mock_relationships.json"
+    event_path = ROOT / "data/mock_events.json"
     entities = read_json(entity_path)
     relationships = read_json(relationship_path)
+    events = read_json(event_path)
     with connect_database() as connection:
-        ensure_dataset(connection, [entity_path, relationship_path])
+        ensure_dataset(connection, [entity_path, relationship_path, event_path])
         source_id = ensure_fixture_source(connection)
         load_entities(connection, entities)
         load_relationships(connection, source_id, relationships)
+        load_events(connection, source_id, events)
     print("Synthetic fixtures loaded:")
     print(f"  entities: {len(entities)}")
     print(f"  relationships: {len(relationships)}")
+    print(f"  events: {len(events)}")
     return 0
 
 

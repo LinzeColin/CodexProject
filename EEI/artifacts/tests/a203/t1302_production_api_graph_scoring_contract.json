@@ -11,7 +11,9 @@
       "GET /v1/scoring/explain/{objectType}/{objectId} supports relationship_fact_candidate explanations backed by existing Golden Vertical candidate/evidence/review tables.",
       "GET /v1/scoring/explain/relationship/{objectId} supports published relationship explanations backed by relationship_evidence, fact_versions, data_snapshots, publication qualifiers and production_context.",
       "GET /v1/scoring/explain/entity/{objectId} supports entity coverage explanations backed by entity identifiers, aliases, relationships, relationship evidence, industry memberships, optional entity fact_versions and production_context.",
-      "Integration assertions bind A203 entity, candidate and relationship scoring to FastAPI, repository queries, OpenAPI contract and curated fixture evidence.",
+      "GET /v1/scoring/explain/event/{objectId} supports event coverage explanations backed by event_participants, event_evidence, source_documents, optional event fact_versions and production_context.",
+      "GET /v1/scoring/explain/industry/{objectId} supports industry coverage explanations backed by industry taxonomy hierarchy, entity_industry_memberships, relationship context/evidence, optional industry fact_versions and production_context.",
+      "Integration assertions bind A203 entity, event, industry, candidate and relationship scoring to FastAPI, repository queries, OpenAPI contract and curated fixture evidence.",
       "Frontend commercial-map API-first hydration now posts the current focus, lens-derived layers, as-of date, scoring profile id and 42/64/12 budget to /v1/explore, exposes production_context, coverage and publication-gate metadata with explicit fixture fallback, and renders server-returned nodes/edges in the SVG canvas and graph table when the API response is available.",
       "Production_context now exposes bounded sample relationship_fact_candidates so the frontend can discover a score explanation target without hard-coding database UUIDs.",
       "Frontend production data hydration now loads /v1/catalogs and /v1/scoring/explain/relationship_fact_candidate/{objectId}, surfaces catalog inventory counts, source-of-truth counts, adjusted score, evidence count, missing-input count and publication status, and retains explicit local fallback/error states.",
@@ -21,7 +23,7 @@
       "Frontend Evidence Center now hydrates /v1/evidence/relationship_fact_candidate/{objectId}, exposes evidence/source-document counts, endpoint state and source snippets, and refreshes the production evidence detail when the user clicks 打开证据."
     ],
     "explicitly_not_closed": [
-        "Full production scoring engine for event, industry and remaining non-relationship object families remains in T600-T608 and T1303.",
+      "Full production scoring engine for remaining non-relationship object families beyond entity, event and industry remains in T600-T608 and T1303.",
         "Production-approved live relationship facts remain dependent on T1301/A202 live/full-text ingestion, second-source verification or production owner sign-off.",
         "Candidate approval, publication into relationships and atomic global refresh remain dependent on the T1301/T1303 production gate.",
         "4h and 24h soak tests remain in T1307/A209."
@@ -46,7 +48,7 @@
     {
       "path": "/v1/scoring/explain/{objectType}/{objectId}",
       "method": "GET",
-      "contract": "entity, relationship_fact_candidate and published relationship score explanations include raw_score, evidence_quality, adjusted_score, coverage, missing_inputs, evidence, model/profile versions and production_context."
+      "contract": "entity, event, industry, relationship_fact_candidate and published relationship score explanations include raw_score, evidence_quality, adjusted_score, coverage, missing_inputs, evidence, model/profile versions and production_context."
     },
     {
       "path": "/v1/evidence/{objectType}/{objectId}",
@@ -62,6 +64,26 @@
     "publish_requires_source_threshold": true,
     "publish_requires_human_review": true
   },
+  "scoring_thresholds": {
+    "entity": {
+      "minimum_independent_sources": 1,
+      "minimum_relationship_context": 3,
+      "minimum_relationship_family_context": 3,
+      "formula_points": "identifier 20 + alias 10 + relationship context 20 + relationship family diversity 15 + source threshold 15 + industry membership 10 + fact version 10, multiplied by active status."
+    },
+    "event": {
+      "minimum_independent_sources": 1,
+      "minimum_participant_context": 1,
+      "formula_points": "participant context 20 + source threshold 20 + timing context 15 + amount semantics 10 + active event status 10 + evidence chain 15 + fact version 10, multiplied by active event status."
+    },
+    "industry": {
+      "minimum_independent_sources": 1,
+      "minimum_entity_context": 3,
+      "minimum_relationship_context": 3,
+      "minimum_relationship_family_context": 3,
+      "formula_points": "entity context 20 + relationship context 20 + relationship family diversity 15 + source threshold 15 + taxonomy hierarchy 10 + active industry status 10 + fact version 10, multiplied by active industry status."
+    }
+  },
   "evidence_files": [
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
@@ -69,6 +91,8 @@
     "apps/web/src/app/explore-api-client.ts",
     "apps/web/src/app/production-data-client.ts",
     "apps/web/src/app/page.tsx",
+    "data/mock_events.json",
+    "scripts/load_synthetic_fixtures.py",
     "specs/api_contract.yaml",
     "tests/integration/test_database_migrations.py",
     "tests/e2e/saved-view-live.spec.ts",
@@ -90,6 +114,11 @@
     ".venv/bin/python -m pytest -q tests/unit/test_scoring.py",
     "python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py",
     ".venv/bin/python scripts/validate_contracts.py",
+    "python3 -m json.tool data/mock_events.json",
+    "python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/load_synthetic_fixtures.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py",
+    ".venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/load_synthetic_fixtures.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py",
+    ".venv/bin/python -m pytest -q tests/unit/test_scoring.py: PASS with 10/10 after the event and industry scoring slice",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py: SKIPPED locally because this host has no DATABASE_URL or .env; remote PostgreSQL CI must prove the integration assertions",
     ".venv/bin/python -m pytest -q tests/unit/test_api_health.py",
     ".venv/bin/python -m pytest -q tests/integration/test_database_migrations.py",
     "pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1",

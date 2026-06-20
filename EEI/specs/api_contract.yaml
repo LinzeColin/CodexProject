@@ -1183,6 +1183,8 @@ paths:
           type: string
           enum:
           - entity
+          - event
+          - industry
           - relationship_fact_candidate
           - relationship
       - name: objectId
@@ -1615,6 +1617,9 @@ components:
         object_type:
           type: string
           enum:
+          - entity
+          - event
+          - industry
           - relationship_fact_candidate
           - relationship
         object_id:

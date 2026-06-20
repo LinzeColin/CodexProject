@@ -17,8 +17,14 @@ from psycopg.types.json import Jsonb
 from .scoring import (
     CANDIDATE_SOURCE_THRESHOLD_MIN,
     ENTITY_SOURCE_THRESHOLD_MIN,
+    EVENT_SOURCE_THRESHOLD_MIN,
+    INDUSTRY_ENTITY_CONTEXT_MIN,
+    INDUSTRY_RELATIONSHIP_CONTEXT_MIN,
+    INDUSTRY_SOURCE_THRESHOLD_MIN,
     candidate_score_metrics,
     entity_score_metrics,
+    event_score_metrics,
+    industry_score_metrics,
     relationship_score_metrics,
 )
 
@@ -3696,10 +3702,22 @@ class DomainRepository:
                     object_id=object_id,
                     profile=profile,
                 )
+            if object_type == "event":
+                return self.event_score_explanation(
+                    connection=connection,
+                    object_id=object_id,
+                    profile=profile,
+                )
+            if object_type == "industry":
+                return self.industry_score_explanation(
+                    connection=connection,
+                    object_id=object_id,
+                    profile=profile,
+                )
             if object_type != "relationship_fact_candidate":
                 raise RepositoryError(
-                    "Only entity, relationship_fact_candidate and relationship score explanations "
-                    "are implemented in the T1302/A203 API contract slice"
+                    "Only entity, event, industry, relationship_fact_candidate and relationship "
+                    "score explanations are implemented in the T1302/A203 API contract slice"
                 )
             row = connection.execute(
                 """
@@ -4063,6 +4081,313 @@ class DomainRepository:
             ),
         )
 
+    def event_score_explanation(
+        self,
+        *,
+        connection: psycopg.Connection[dict[str, Any]],
+        object_id: UUID,
+        profile: dict[str, Any],
+    ) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              ev.id,
+              ev.event_type,
+              ev.title,
+              ev.status,
+              ev.announced_at,
+              ev.effective_at,
+              ev.period_start,
+              ev.period_end,
+              ev.observed_at,
+              ev.amount,
+              ev.currency,
+              ev.amount_kind,
+              ev.description,
+              COALESCE(ev.qualifiers, '{}'::jsonb) AS qualifiers,
+              ev.derivation_rule,
+              ev.derivation_version,
+              COALESCE(participant_counts.participant_count, 0)::int
+                AS participant_count,
+              COALESCE(participants.participants, '[]'::jsonb) AS participants,
+              COALESCE(evidence_counts.source_document_count, 0)::int
+                AS source_document_count,
+              COALESCE(evidence_counts.support_evidence_count, 0)::int
+                AS support_evidence_count,
+              COALESCE(evidence_counts.fixture_evidence_present, false)
+                AS fixture_evidence_present,
+              evidence_counts.latest_evidence_observed_at,
+              evidence_counts.evidence_parser_version,
+              COALESCE(event_evidence.evidence, '[]'::jsonb) AS evidence,
+              latest_fact.id AS fact_version_id,
+              latest_fact.version_no AS fact_version_no,
+              latest_fact.fact_status::text AS fact_status,
+              latest_fact.record_mode AS fact_record_mode,
+              latest_fact.parser_version AS fact_parser_version,
+              latest_fact.payload AS fact_payload,
+              latest_snapshot.snapshot_key AS snapshot_key,
+              latest_snapshot.scope AS snapshot_scope,
+              latest_snapshot.status AS snapshot_status,
+              latest_snapshot.record_mode AS snapshot_record_mode
+            FROM events ev
+            LEFT JOIN LATERAL (
+              SELECT count(DISTINCT ep.entity_id)::int AS participant_count
+              FROM event_participants ep
+              WHERE ep.event_id = ev.id
+            ) participant_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT jsonb_agg(
+                jsonb_build_object(
+                  'entity_id', e.id,
+                  'canonical_name', e.canonical_name,
+                  'entity_type', e.entity_type,
+                  'role', ep.role,
+                  'direction', ep.direction
+                )
+                ORDER BY ep.role, e.canonical_name
+              ) AS participants
+              FROM event_participants ep
+              JOIN entities e ON e.id = ep.entity_id
+              WHERE ep.event_id = ev.id
+            ) participants ON true
+            LEFT JOIN LATERAL (
+              SELECT
+                count(DISTINCT ee.source_document_id)::int AS source_document_count,
+                count(*) FILTER (WHERE ee.role = 'supports')::int
+                  AS support_evidence_count,
+                bool_or(sd.url LIKE 'fixture://%') AS fixture_evidence_present,
+                max(sd.observed_at) AS latest_evidence_observed_at,
+                max(sd.parser_version) AS evidence_parser_version
+              FROM event_evidence ee
+              JOIN source_documents sd ON sd.id = ee.source_document_id
+              WHERE ee.event_id = ev.id
+            ) evidence_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT jsonb_agg(evidence_item) AS evidence
+              FROM (
+                SELECT jsonb_build_object(
+                  'source_document_id', sd.id,
+                  'source_tier', s.source_tier,
+                  'publisher', sd.publisher,
+                  'title', sd.title,
+                  'url', sd.url,
+                  'document_date', sd.document_date,
+                  'observed_at', sd.observed_at,
+                  'retrieved_at', sd.retrieved_at,
+                  'content_hash', sd.content_hash,
+                  'role', ee.role,
+                  'locator', ee.locator,
+                  'support_excerpt', ee.support_excerpt,
+                  'structured_fact', COALESCE(ee.structured_fact, '{}'::jsonb)
+                ) AS evidence_item
+                FROM event_evidence ee
+                JOIN source_documents sd ON sd.id = ee.source_document_id
+                JOIN sources s ON s.id = sd.source_id
+                WHERE ee.event_id = ev.id
+                ORDER BY
+                  CASE ee.role WHEN 'supports' THEN 0 WHEN 'context' THEN 1 ELSE 2 END,
+                  sd.observed_at DESC NULLS LAST,
+                  sd.retrieved_at DESC
+                LIMIT 10
+              ) event_evidence_items
+            ) event_evidence ON true
+            LEFT JOIN LATERAL (
+              SELECT fv.*
+              FROM fact_versions fv
+              JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+              WHERE fv.object_type = 'event'
+                AND fv.object_id = ev.id
+              ORDER BY
+                CASE ds.status WHEN 'active' THEN 0 ELSE 1 END,
+                fv.version_no DESC,
+                fv.created_at DESC
+              LIMIT 1
+            ) latest_fact ON true
+            LEFT JOIN data_snapshots latest_snapshot
+              ON latest_snapshot.id = latest_fact.snapshot_id
+            WHERE ev.id = %s
+            """,
+            (object_id,),
+        ).fetchone()
+        if row is None:
+            raise NotFoundError(f"Event not found: {object_id}")
+        return self.event_score_explanation_payload(
+            row=row,
+            profile=profile,
+            production_context=self.production_context_for_connection(
+                connection,
+                as_of=None,
+                active_profile=profile,
+            ),
+        )
+
+    def industry_score_explanation(
+        self,
+        *,
+        connection: psycopg.Connection[dict[str, Any]],
+        object_id: UUID,
+        profile: dict[str, Any],
+    ) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              i.id,
+              i.external_id,
+              i.slug,
+              i.name_zh,
+              i.name_en,
+              i.kind,
+              i.taxonomy_version,
+              i.parent_id,
+              parent.slug AS parent_slug,
+              parent.name_en AS parent_name_en,
+              i.active,
+              i.created_at,
+              COALESCE(child_counts.child_industry_count, 0)::int
+                AS child_industry_count,
+              COALESCE(member_counts.entity_count, 0)::int AS entity_count,
+              COALESCE(members.member_entities, '[]'::jsonb) AS member_entities,
+              COALESCE(relationship_counts.relationship_count, 0)::int
+                AS relationship_count,
+              COALESCE(relationship_counts.relationship_family_count, 0)::int
+                AS relationship_family_count,
+              COALESCE(relationship_counts.source_document_count, 0)::int
+                AS source_document_count,
+              COALESCE(relationship_counts.fixture_evidence_present, false)
+                AS fixture_evidence_present,
+              relationship_counts.latest_relationship_observed_at,
+              COALESCE(industry_evidence.evidence, '[]'::jsonb) AS evidence,
+              latest_fact.id AS fact_version_id,
+              latest_fact.version_no AS fact_version_no,
+              latest_fact.fact_status::text AS fact_status,
+              latest_fact.record_mode AS fact_record_mode,
+              latest_fact.parser_version AS fact_parser_version,
+              latest_fact.payload AS fact_payload,
+              latest_snapshot.snapshot_key AS snapshot_key,
+              latest_snapshot.scope AS snapshot_scope,
+              latest_snapshot.status AS snapshot_status,
+              latest_snapshot.record_mode AS snapshot_record_mode
+            FROM industries i
+            LEFT JOIN industries parent ON parent.id = i.parent_id
+            LEFT JOIN LATERAL (
+              SELECT count(*)::int AS child_industry_count
+              FROM industries child
+              WHERE child.parent_id = i.id
+            ) child_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT count(DISTINCT eim.entity_id)::int AS entity_count
+              FROM entity_industry_memberships eim
+              WHERE eim.industry_id = i.id
+            ) member_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT jsonb_agg(
+                jsonb_build_object(
+                  'entity_id', e.id,
+                  'canonical_name', e.canonical_name,
+                  'entity_type', e.entity_type,
+                  'role', eim.role,
+                  'confidence', eim.confidence
+                )
+                ORDER BY eim.role, e.canonical_name
+              ) AS member_entities
+              FROM entity_industry_memberships eim
+              JOIN entities e ON e.id = eim.entity_id
+              WHERE eim.industry_id = i.id
+            ) members ON true
+            LEFT JOIN LATERAL (
+              SELECT
+                count(DISTINCT r.id)::int AS relationship_count,
+                count(DISTINCT r.relationship_family)::int AS relationship_family_count,
+                count(DISTINCT re.source_document_id)::int AS source_document_count,
+                bool_or(sd.url LIKE 'fixture://%') AS fixture_evidence_present,
+                max(r.observed_at) AS latest_relationship_observed_at
+              FROM relationships r
+              LEFT JOIN relationship_evidence re ON re.relationship_id = r.id
+              LEFT JOIN source_documents sd ON sd.id = re.source_document_id
+              WHERE r.status NOT IN ('superseded', 'revoked')
+                AND EXISTS (
+                  SELECT 1
+                  FROM entity_industry_memberships eim
+                  WHERE eim.industry_id = i.id
+                    AND (
+                      eim.entity_id = r.subject_entity_id
+                      OR eim.entity_id = r.object_entity_id
+                    )
+                )
+            ) relationship_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT jsonb_agg(evidence_item) AS evidence
+              FROM (
+                SELECT jsonb_build_object(
+                  'relationship_id', r.id,
+                  'relationship_type', r.relationship_type,
+                  'relationship_family', r.relationship_family,
+                  'relationship_status', r.status,
+                  'relationship_confidence', r.confidence,
+                  'subject_entity_id', r.subject_entity_id,
+                  'object_entity_id', r.object_entity_id,
+                  'source_document_id', sd.id,
+                  'source_tier', s.source_tier,
+                  'publisher', sd.publisher,
+                  'title', sd.title,
+                  'url', sd.url,
+                  'document_date', sd.document_date,
+                  'observed_at', sd.observed_at,
+                  'retrieved_at', sd.retrieved_at,
+                  'content_hash', sd.content_hash,
+                  'role', re.role,
+                  'locator', re.locator,
+                  'support_excerpt', re.support_excerpt,
+                  'structured_fact', COALESCE(re.structured_fact, '{}'::jsonb)
+                ) AS evidence_item
+                FROM relationships r
+                JOIN relationship_evidence re ON re.relationship_id = r.id
+                JOIN source_documents sd ON sd.id = re.source_document_id
+                JOIN sources s ON s.id = sd.source_id
+                WHERE r.status NOT IN ('superseded', 'revoked')
+                  AND EXISTS (
+                    SELECT 1
+                    FROM entity_industry_memberships eim
+                    WHERE eim.industry_id = i.id
+                      AND (
+                        eim.entity_id = r.subject_entity_id
+                        OR eim.entity_id = r.object_entity_id
+                      )
+                  )
+                ORDER BY sd.observed_at DESC NULLS LAST, sd.retrieved_at DESC, r.id
+                LIMIT 10
+              ) industry_evidence_items
+            ) industry_evidence ON true
+            LEFT JOIN LATERAL (
+              SELECT fv.*
+              FROM fact_versions fv
+              JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+              WHERE fv.object_type = 'industry'
+                AND fv.object_id = i.id
+              ORDER BY
+                CASE ds.status WHEN 'active' THEN 0 ELSE 1 END,
+                fv.version_no DESC,
+                fv.created_at DESC
+              LIMIT 1
+            ) latest_fact ON true
+            LEFT JOIN data_snapshots latest_snapshot
+              ON latest_snapshot.id = latest_fact.snapshot_id
+            WHERE i.id = %s
+            """,
+            (object_id,),
+        ).fetchone()
+        if row is None:
+            raise NotFoundError(f"Industry not found: {object_id}")
+        return self.industry_score_explanation_payload(
+            row=row,
+            profile=profile,
+            production_context=self.production_context_for_connection(
+                connection,
+                as_of=None,
+                active_profile=profile,
+            ),
+        )
+
     @staticmethod
     def score_explanation_payload(
         *,
@@ -4212,6 +4537,220 @@ class DomainRepository:
                     "fixture_notice": row["fixture_notice"],
                 },
                 "industries": row["industries"] or [],
+                "evidence": evidence,
+                "review_queue": [],
+                "production_context": production_context,
+                "scoring_service_version": SCORING_SERVICE_VERSION,
+            }
+        )
+
+    @staticmethod
+    def event_score_explanation_payload(
+        *,
+        row: dict[str, Any],
+        profile: dict[str, Any],
+        production_context: dict[str, Any],
+    ) -> dict[str, Any]:
+        evidence = row["evidence"] or []
+        fact_payload = row["fact_payload"] or {}
+        timing_context_present = bool(
+            row["observed_at"]
+            and (
+                row["announced_at"]
+                or row["effective_at"]
+                or row["period_start"]
+                or row["period_end"]
+            )
+        )
+        amount_semantics_present = row["amount"] is None or (
+            row["currency"] is not None and row["amount_kind"] is not None
+        )
+        publication_status = fact_payload.get("publication_status") or (
+            "published" if row["status"] not in {"superseded", "revoked"} else row["status"]
+        )
+        review_status = fact_payload.get("review_status") or "not_applicable"
+        metrics = event_score_metrics(
+            participant_count=int(row["participant_count"] or 0),
+            independent_source_count=int(row["source_document_count"] or 0),
+            status=row["status"],
+            timing_context_present=timing_context_present,
+            amount_semantics_present=amount_semantics_present,
+            fact_version_present=row["fact_version_id"] is not None,
+            evidence_present=bool(evidence),
+            minimum_independent_sources=EVENT_SOURCE_THRESHOLD_MIN,
+        )
+        coverage_summary = {
+            "participant_count": row["participant_count"],
+            "source_document_count": row["source_document_count"],
+            "support_evidence_count": row["support_evidence_count"],
+            "timing_context_present": timing_context_present,
+            "amount_semantics_present": amount_semantics_present,
+            "fixture_evidence_present": row["fixture_evidence_present"],
+            "latest_evidence_observed_at": row["latest_evidence_observed_at"],
+        }
+        return _jsonable(
+            {
+                "object_type": "event",
+                "object_id": row["id"],
+                "event_type": row["event_type"],
+                "title": row["title"],
+                "event_status": row["status"],
+                "record_mode": row["fact_record_mode"]
+                or row["snapshot_record_mode"]
+                or ("fixture" if row["fixture_evidence_present"] else "database"),
+                "fact_status": row["fact_status"] or row["status"],
+                "publication_status": publication_status,
+                "source_threshold": metrics["source_threshold"],
+                "review_status": review_status,
+                "parser_version": row["fact_parser_version"]
+                or row["evidence_parser_version"]
+                or row["derivation_version"],
+                "raw_score": metrics["raw_score"],
+                "evidence_quality": metrics["evidence_quality"],
+                "adjusted_score": metrics["adjusted_score"],
+                "coverage": metrics["coverage"],
+                "coverage_summary": coverage_summary,
+                "contributions": metrics["contributions"],
+                "missing_inputs": metrics["missing_inputs"],
+                "model_version": f"{profile['model_key']}@{profile['version']}",
+                "profile_version": f"{profile['profile_key']}@{profile['version']}",
+                "profile_version_id": profile["id"],
+                "structured_fact": fact_payload,
+                "counter_evidence": [],
+                "fact_version": (
+                    {
+                        "id": row["fact_version_id"],
+                        "version_no": row["fact_version_no"],
+                        "snapshot_key": row["snapshot_key"],
+                        "snapshot_scope": row["snapshot_scope"],
+                        "snapshot_status": row["snapshot_status"],
+                        "record_mode": row["fact_record_mode"]
+                        or row["snapshot_record_mode"],
+                        "parser_version": row["fact_parser_version"],
+                    }
+                    if row["fact_version_id"] is not None
+                    else None
+                ),
+                "event": {
+                    "event_id": row["id"],
+                    "event_type": row["event_type"],
+                    "title": row["title"],
+                    "status": row["status"],
+                    "announced_at": row["announced_at"],
+                    "effective_at": row["effective_at"],
+                    "period_start": row["period_start"],
+                    "period_end": row["period_end"],
+                    "observed_at": row["observed_at"],
+                    "amount": row["amount"],
+                    "currency": row["currency"],
+                    "amount_kind": row["amount_kind"],
+                    "description": row["description"],
+                    "qualifiers": row["qualifiers"] or {},
+                },
+                "participants": row["participants"] or [],
+                "evidence": evidence,
+                "review_queue": [],
+                "production_context": production_context,
+                "scoring_service_version": SCORING_SERVICE_VERSION,
+            }
+        )
+
+    @staticmethod
+    def industry_score_explanation_payload(
+        *,
+        row: dict[str, Any],
+        profile: dict[str, Any],
+        production_context: dict[str, Any],
+    ) -> dict[str, Any]:
+        evidence = row["evidence"] or []
+        fact_payload = row["fact_payload"] or {}
+        taxonomy_context_present = bool(row["parent_id"] or row["child_industry_count"])
+        publication_status = fact_payload.get("publication_status") or (
+            "published" if row["active"] else "inactive"
+        )
+        review_status = fact_payload.get("review_status") or "not_applicable"
+        metrics = industry_score_metrics(
+            entity_count=int(row["entity_count"] or 0),
+            relationship_count=int(row["relationship_count"] or 0),
+            relationship_family_count=int(row["relationship_family_count"] or 0),
+            independent_source_count=int(row["source_document_count"] or 0),
+            taxonomy_context_present=taxonomy_context_present,
+            active=bool(row["active"]),
+            fact_version_present=row["fact_version_id"] is not None,
+            minimum_independent_sources=INDUSTRY_SOURCE_THRESHOLD_MIN,
+            minimum_entity_context=INDUSTRY_ENTITY_CONTEXT_MIN,
+            minimum_relationship_context=INDUSTRY_RELATIONSHIP_CONTEXT_MIN,
+        )
+        coverage_summary = {
+            "entity_count": row["entity_count"],
+            "child_industry_count": row["child_industry_count"],
+            "relationship_count": row["relationship_count"],
+            "relationship_family_count": row["relationship_family_count"],
+            "source_document_count": row["source_document_count"],
+            "taxonomy_context_present": taxonomy_context_present,
+            "active": row["active"],
+            "fixture_evidence_present": row["fixture_evidence_present"],
+            "latest_relationship_observed_at": row["latest_relationship_observed_at"],
+        }
+        return _jsonable(
+            {
+                "object_type": "industry",
+                "object_id": row["id"],
+                "slug": row["slug"],
+                "name_zh": row["name_zh"],
+                "name_en": row["name_en"],
+                "kind": row["kind"],
+                "industry_status": "active" if row["active"] else "inactive",
+                "record_mode": row["fact_record_mode"]
+                or row["snapshot_record_mode"]
+                or ("fixture" if row["fixture_evidence_present"] else "taxonomy"),
+                "fact_status": row["fact_status"] or (
+                    "active" if row["active"] else "inactive"
+                ),
+                "publication_status": publication_status,
+                "source_threshold": metrics["source_threshold"],
+                "review_status": review_status,
+                "parser_version": row["fact_parser_version"],
+                "raw_score": metrics["raw_score"],
+                "evidence_quality": metrics["evidence_quality"],
+                "adjusted_score": metrics["adjusted_score"],
+                "coverage": metrics["coverage"],
+                "coverage_summary": coverage_summary,
+                "contributions": metrics["contributions"],
+                "missing_inputs": metrics["missing_inputs"],
+                "model_version": f"{profile['model_key']}@{profile['version']}",
+                "profile_version": f"{profile['profile_key']}@{profile['version']}",
+                "profile_version_id": profile["id"],
+                "structured_fact": fact_payload,
+                "counter_evidence": [],
+                "fact_version": (
+                    {
+                        "id": row["fact_version_id"],
+                        "version_no": row["fact_version_no"],
+                        "snapshot_key": row["snapshot_key"],
+                        "snapshot_scope": row["snapshot_scope"],
+                        "snapshot_status": row["snapshot_status"],
+                        "record_mode": row["fact_record_mode"]
+                        or row["snapshot_record_mode"],
+                        "parser_version": row["fact_parser_version"],
+                    }
+                    if row["fact_version_id"] is not None
+                    else None
+                ),
+                "industry": {
+                    "industry_id": row["id"],
+                    "external_id": row["external_id"],
+                    "slug": row["slug"],
+                    "name_zh": row["name_zh"],
+                    "name_en": row["name_en"],
+                    "kind": row["kind"],
+                    "taxonomy_version": row["taxonomy_version"],
+                    "parent_id": row["parent_id"],
+                    "parent_slug": row["parent_slug"],
+                    "parent_name_en": row["parent_name_en"],
+                    "active": row["active"],
+                },
+                "member_entities": row["member_entities"] or [],
                 "evidence": evidence,
                 "review_queue": [],
                 "production_context": production_context,
