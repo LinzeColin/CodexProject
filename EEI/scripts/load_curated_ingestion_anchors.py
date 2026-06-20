@@ -8,8 +8,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import NamedTuple
 
-from db_tools import ROOT, connect_database
 from psycopg.types.json import Jsonb
+
+try:
+    from db_tools import ROOT, connect_database
+except ModuleNotFoundError:  # pragma: no cover - used when imported as scripts package.
+    from scripts.db_tools import ROOT, connect_database
 
 ANCHOR_PATH = ROOT / "data/nvidia_public_source_anchors.csv"
 FACT_CANDIDATE_PATH = ROOT / "data/golden_vertical_fact_candidates.json"
