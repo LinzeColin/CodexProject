@@ -53,6 +53,20 @@
     "UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify",
     "GitHub Actions make verify-g2-db must prove the dry-run connector inside PostgreSQL integration because this host has no local Docker/PostgreSQL."
   ],
+  "remote_validation": {
+    "provider": "GitHub Actions",
+    "workflow": "EEI validation",
+    "run_id": "27881361500",
+    "job_id": "82509391127",
+    "commit": "660465e9d5041c20ec667781e8d1b399c1ef638e",
+    "status": "PASS",
+    "passed_steps": [
+      "Step 7 static/contract/lint/typecheck/unit",
+      "Step 10 G2 PostgreSQL integration",
+      "Step 11 browser E2E",
+      "Step 12 live FastAPI/PostgreSQL E2E"
+    ]
+  },
   "remaining_gaps_before_done": [
     "This is a dry-run fixture connector only; live official-source retrieval is still required before A202 can be closed.",
     "The committed fixture is a parser contract, not a reproduction of official full text and not legal or market clearance.",

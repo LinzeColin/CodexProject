@@ -3348,7 +3348,7 @@ Status: CI VALIDATED; A202 STILL IN PROGRESS
 
 ## 2026-06-21 - T1301/A202 official-source full-text dry-run and source-health slice
 
-Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A206 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A202/A206 STILL IN PROGRESS
 
 ### Scope
 
@@ -3401,7 +3401,7 @@ Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A206 STILL IN PROGRE
 ### Remote CI validation
 
 - GitHub Actions run `27881176915` / job `82508895982` for commit `58eba46676c8d09af57e6a15d884144a6af1b47f`: FAIL in Step 10 `Verify G2 PostgreSQL integration`; PostgreSQL output was `(52, 13, 13, 4, 3)` for dry-run candidates while the test still expected `(52, 10, 10, 4, 3)`. The follow-up fix aligns the assertion and evidence artifact to the real database output.
-- Pending GitHub Actions `make verify-g2-db` proof for the dry-run connector inside PostgreSQL integration.
+- GitHub Actions run `27881361500` / job `82509391127` for commit `660465e9d5041c20ec667781e8d1b399c1ef638e`: PASS; Steps 7-12 all succeeded, including Step 10 `Verify G2 PostgreSQL integration`, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E for the dry-run official-source full-text connector.
 
 ### Remaining gaps
 
