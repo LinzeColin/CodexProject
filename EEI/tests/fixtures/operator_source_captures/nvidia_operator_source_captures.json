@@ -1,0 +1,53 @@
+{
+  "schema_version": "nvidia-operator-source-capture-fixture-v1",
+  "fixture_policy": {
+    "record_mode": "operator_source_capture",
+    "scope": "A202 operator-provided official-source capture contract",
+    "not_release_clearance": true,
+    "notes": "Deterministic fixture for the operator capture contract. It validates provenance, hash attestation, expected-token coverage and context evidence persistence without granting production fact approval or legal clearance."
+  },
+  "captures": [
+    {
+      "capture_id": "OPCAP-NVDA-001",
+      "anchor_id": "NVDA-ANCHOR-001",
+      "source_url": "https://blogs.nvidia.com/blog/taiwan-ecosystem-ai-infrastructure/",
+      "captured_by": "fixture.operator@example.invalid",
+      "captured_at": "2026-06-21T02:30:00Z",
+      "capture_method": "operator_normalized_excerpt",
+      "capture_status": "operator_verified",
+      "content_type": "text/html",
+      "approval_scope": "A202_official_source_capture_contract_only",
+      "operator_signature": "fixture-operator-capture-nvda-001",
+      "source_text_sha256": "7630abafbd4f027582345840b9cbff8a017ab95a767298e9cdd75eb3af2e9432",
+      "usage_attestation": {
+        "official_source_observed": true,
+        "source_url_matches_anchor": true,
+        "no_paywall_or_login_bypass": true,
+        "copyright_excerpt_only_for_evidence": true,
+        "not_production_fact_approval": true
+      },
+      "source_text": "Operator-provided normalized official-source capture for NVIDIA Corporation anchor NVDA-ANCHOR-001. Capture scope is the official NVIDIA Blog Taiwan ecosystem anchor and records only the evidence-chain contract, not publication approval. The captured text includes NVIDIA Corporation, TSMC, SPIL, Kinsus, KYEC, UMTC, Foxconn, Pegatron, QCT, Wistron, Inventec, wafer, chip, packaging test, manufacturing, and systems so the parser can verify expected token coverage, source provenance, operator attestation, and non-publication boundaries."
+    },
+    {
+      "capture_id": "OPCAP-NVDA-002",
+      "anchor_id": "NVDA-ANCHOR-002",
+      "source_url": "https://investor.nvidia.com/files/doc_financials/2026/q4/10K-NVDA.pdf",
+      "captured_by": "fixture.operator@example.invalid",
+      "captured_at": "2026-06-21T02:35:00Z",
+      "capture_method": "operator_normalized_excerpt",
+      "capture_status": "operator_verified",
+      "content_type": "application/pdf",
+      "approval_scope": "A202_official_source_capture_contract_only",
+      "operator_signature": "fixture-operator-capture-nvda-002",
+      "source_text_sha256": "2d093f44284cd0be0f2e5e39e457b172b29726c2bd7c6bc14355731c57bac81c",
+      "usage_attestation": {
+        "official_source_observed": true,
+        "source_url_matches_anchor": true,
+        "no_paywall_or_login_bypass": true,
+        "copyright_excerpt_only_for_evidence": true,
+        "not_production_fact_approval": true
+      },
+      "source_text": "Operator-provided normalized official-source capture for NVIDIA Corporation anchor NVDA-ANCHOR-002. Capture scope is the official NVIDIA Investor Relations Form 10-K anchor and records the evidence-chain contract without approving production relationships. The captured text includes NVIDIA Corporation, TSMC, Samsung, SK hynix, Micron, Hon Hai Foxconn, Wistron, Fabrinet, foundry, memory, CoWoS, assembly, testing, and packaging so the parser can verify official URL matching, hash attestation, source health, and review boundaries."
+    }
+  ]
+}

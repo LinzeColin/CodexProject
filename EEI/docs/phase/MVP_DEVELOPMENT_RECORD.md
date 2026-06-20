@@ -3408,3 +3408,63 @@ Status: LOCAL AND REMOTE CI VALIDATED; A202/A206 STILL IN PROGRESS
 - A202 still needs live official retrieval, or an approved operator-provided source capture process, before production use.
 - A202 still needs an actual operator-supplied owner decision or second independent source closure before any real Golden Vertical fact is production-approved.
 - A206/A209 still need 4h and 24h operator soak evidence for worker wake, retry, recovery, and dead-letter stability.
+
+## 2026-06-21 - T1301/A202 operator-provided official source capture contract
+
+Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A202 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/load_operator_source_captures.py` as an idempotent operator-provided official-source capture loader for the NVIDIA Golden Vertical official anchor registry.
+- Added `tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json` as the deterministic contract fixture for operator capture provenance and hash validation.
+- The loader validates source URL agreement, `captured_by`, `captured_at`, `capture_method`, `approval_scope`, `operator_signature`, `source_text_sha256`, required usage attestations, minimum text length and 100% expected-token coverage before writing database rows.
+- The loader writes `raw_source_snapshots`, `source_documents`, `entity_resolution_candidates` and context-only `ingestion_evidence_chain` rows under parser version `nvidia-operator-source-capture-v1`.
+- Operator capture payloads preserve `operator_supplied_capture=true`, `live_retrieval=false`, `release_clearance=false` and `relationship_publication=false`.
+- PostgreSQL integration now runs the operator loader twice and asserts idempotency, 2 raw snapshots, 2 evidence rows, 30 resolution candidates, 2 NVIDIA subject candidates, 2 TSMC candidates and zero `relationship_fact_candidates` for the operator parser.
+
+### Parameters and thresholds
+
+- `ingestion.operator_capture_min_text_chars`: 240.
+- `ingestion.operator_capture_min_token_coverage_ratio`: 1.0.
+- Required usage attestations: `official_source_observed`, `source_url_matches_anchor`, `no_paywall_or_login_bypass`, `copyright_excerpt_only_for_evidence`, `not_production_fact_approval`.
+- `operator_supplied_capture`: true.
+- `live_retrieval`: false.
+- `release_clearance`: false.
+- `relationship_publication`: false.
+
+These are recorded in `artifacts/tests/a202/t1301_operator_source_capture_contract.json` instead of `data/parameter_catalog.csv` because the canonical parameter catalog is locked at 78 rows by `scripts/validate_catalog_integrity.py`.
+
+### Files changed
+
+- `scripts/load_operator_source_captures.py`
+- `tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json`
+- `tests/integration/test_database_migrations.py`
+- `Makefile`
+- `scripts/validate_v5_production_readiness_sync.py`
+- `artifacts/tests/a202/t1301_operator_source_capture_contract.json`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `README.md`
+- `DEVELOPMENT_STATUS.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `docs/phase/MVP_DEVELOPMENT_RECORD.md`
+
+### Acceptance mapping
+
+- T1301 -> A202.
+- A202 remains `IN_PROGRESS`: this is an operator capture contract, not live retrieval, legal clearance, owner approval or second-source production closure.
+
+### Local validation
+
+- `python3 -m json.tool tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json`: PASS.
+- `python3 -m json.tool artifacts/tests/a202/t1301_operator_source_capture_contract.json`: PASS.
+- `python3 -m py_compile scripts/load_operator_source_captures.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/ruff check scripts/load_operator_source_captures.py tests/integration/test_database_migrations.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+
+### Remaining gaps
+
+- A202 still needs live official retrieval or real operator-supplied capture evidence outside the deterministic fixture.
+- A202 still needs actual owner approval or second independent-source closure before any real Golden Vertical fact can be production-approved.
+- This loader intentionally does not create `relationship_fact_candidates` or production `relationships`.
+- A206/A209 still need 4h and 24h operator soak evidence for wake, retry, recovery and dead-letter stability.
