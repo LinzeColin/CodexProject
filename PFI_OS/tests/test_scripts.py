@@ -186,6 +186,8 @@ def test_quiet_start_uses_stable_local_streamlit_settings():
     assert "PFI OS 已就绪" in script
     assert "pfi_os_streamlit.log" in script
     assert "PFI_START_FOREGROUND" in script
+    assert "subprocess.Popen" in script
+    assert "start_new_session=True" in script
     assert "setopt NO_BG_NICE" in script
     assert "No browser opened" not in script
     assert "service_url_if_current_project" in script

@@ -435,6 +435,113 @@ button:active {
   font-size: 0.88rem;
   font-weight: 760;
   text-decoration: none;
+  cursor: pointer;
+}
+
+.function-detail {
+  margin-bottom: 12px;
+  border: 1px solid var(--pfi-blue);
+  border-radius: var(--pfi-radius);
+  background: color-mix(in srgb, var(--pfi-blue) 4%, var(--pfi-surface));
+  box-shadow: var(--pfi-shadow);
+  padding: 14px;
+}
+
+.function-detail[hidden] {
+  display: none;
+}
+
+.function-detail-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+}
+
+.function-detail h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.function-detail p {
+  margin: 6px 0 0;
+  color: var(--pfi-muted);
+}
+
+.function-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.function-meta div,
+.function-checks article {
+  min-width: 0;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+  background: var(--pfi-surface);
+  padding: 10px;
+}
+
+.function-meta dt {
+  color: var(--pfi-blue);
+  font-size: 0.72rem;
+  font-weight: 780;
+  text-transform: uppercase;
+}
+
+.function-meta dd {
+  margin: 4px 0 0;
+  color: var(--pfi-muted);
+}
+
+.function-checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.function-checks strong {
+  display: block;
+  line-height: 1.25;
+}
+
+.function-checks span {
+  display: block;
+  margin-top: 4px;
+  color: var(--pfi-muted);
+  font-size: 0.86rem;
+}
+
+.function-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.primary-action,
+.secondary-link {
+  min-height: var(--pfi-target);
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--pfi-radius);
+  padding: 0 12px;
+  font-weight: 760;
+}
+
+.primary-action {
+  border-color: var(--pfi-blue);
+  background: var(--pfi-blue);
+  color: #ffffff;
+}
+
+.secondary-link {
+  border: 1px solid var(--pfi-border);
+  background: var(--pfi-surface);
+  color: var(--pfi-ink);
+  text-decoration: none;
 }
 
 .content-grid {
@@ -723,5 +830,11 @@ button:active {
 
   .workflow-grid {
     grid-template-columns: 1fr;
+  }
+
+  .function-detail-head,
+  .function-meta {
+    grid-template-columns: 1fr;
+    display: grid;
   }
 }

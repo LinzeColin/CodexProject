@@ -14,7 +14,9 @@ def test_workspace_switching_is_local_state_without_full_page_reload():
     js = _text(WEB_ROOT / "app" / "shell.js")
 
     assert "setActiveWorkspace" in js
-    assert "writeContext({ ...currentContext(), workspace: workspaceId })" in js
+    assert "const nextContext = { ...currentContext(), workspace: workspaceId }" in js
+    assert "delete nextContext.feature_view" in js
+    assert "writeContext(nextContext)" in js
     assert "main.dataset.activeWorkspace = workspaceId" in js
     assert "location.reload" not in js
     assert "window.location.href" not in js
@@ -172,17 +174,26 @@ def test_feature_cards_have_working_open_actions_for_real_function_pages():
     js = _text(WEB_ROOT / "app" / "shell.js")
     css = _text(WEB_ROOT / "styles" / "tokens.css")
 
+    assert "data-function-detail" in html
+    assert "FUNCTION_VIEWS" in js
+    assert "openFunctionView" in js
+    assert "renderFunctionDetail" in js
+    assert "runFunctionAction" in js
+    assert "进入${detail.title}详细页" in js
     for view in ["single", "hotspots", "reports", "holdings"]:
         assert f'data-feature-view="{view}"' in html
     for view in ["single", "scan", "market_feel", "big_data", "hotspots", "reports", "holdings", "policy", "tools"]:
         assert f'view: "{view}"' in js
     assert "featureOpenControl" in js
     assert "legacyViewUrl" in js
+    assert 'button.dataset.featureView = target.view' in js
+    assert 'featureControl.dataset.featureView' in js
     assert 'params.set("pfi_shell", "0")' in js
     assert 'params.set("view", view)' in js
     assert "dataset.featureWorkspace" in js
     assert ".workflow-actions" in css
     assert ".workflow-open" in css
+    assert ".function-detail" in css
     assert "white-space: nowrap" in css
 
 

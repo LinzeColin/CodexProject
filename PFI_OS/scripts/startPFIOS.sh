@@ -69,8 +69,26 @@ if [[ "${PFI_START_FOREGROUND:-0}" == "1" ]]; then
   exit $?
 fi
 
-"$PYTHON_BIN" "${STREAMLIT_ARGS[@]}" > "$LOG_FILE" 2>&1 &
-STREAMLIT_PID=$!
+STREAMLIT_PID="$("$PYTHON_BIN" - "$LOG_FILE" "${STREAMLIT_ARGS[@]}" <<'PY'
+import os
+import subprocess
+import sys
+
+log_path = sys.argv[1]
+args = [sys.executable, *sys.argv[2:]]
+log_file = open(log_path, "ab", buffering=0)
+process = subprocess.Popen(
+    args,
+    cwd=os.getcwd(),
+    stdin=subprocess.DEVNULL,
+    stdout=log_file,
+    stderr=subprocess.STDOUT,
+    start_new_session=True,
+    close_fds=True,
+)
+print(process.pid)
+PY
+)"
 
 READY=0
 for _ in {1..60}; do

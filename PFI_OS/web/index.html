@@ -134,7 +134,7 @@
                 <div><dt>任务</dt><dd>0 个待处理</dd></div>
               </dl>
               <div class="workflow-actions">
-                <a class="workflow-open" href="?pfi_shell=0&amp;view=single" target="_top" data-feature-view="single">打开回测</a>
+                <button class="workflow-open" type="button" data-feature-view="single">打开回测</button>
                 <button type="button" data-workflow-evidence="strategy">查看证据</button>
               </div>
             </article>
@@ -149,7 +149,7 @@
                 <div><dt>任务</dt><dd>0 个待处理</dd></div>
               </dl>
               <div class="workflow-actions">
-                <a class="workflow-open" href="?pfi_shell=0&amp;view=hotspots" target="_top" data-feature-view="hotspots">打开热点</a>
+                <button class="workflow-open" type="button" data-feature-view="hotspots">打开热点</button>
                 <button type="button" data-workflow-evidence="market">查看证据</button>
               </div>
             </article>
@@ -164,7 +164,7 @@
                 <div><dt>任务</dt><dd>0 个待处理</dd></div>
               </dl>
               <div class="workflow-actions">
-                <a class="workflow-open" href="?pfi_shell=0&amp;view=reports" target="_top" data-feature-view="reports">打开报告</a>
+                <button class="workflow-open" type="button" data-feature-view="reports">打开报告</button>
                 <button type="button" data-workflow-evidence="research">查看证据</button>
               </div>
             </article>
@@ -179,10 +179,41 @@
                 <div><dt>任务</dt><dd>0 个待处理</dd></div>
               </dl>
               <div class="workflow-actions">
-                <a class="workflow-open" href="?pfi_shell=0&amp;view=holdings" target="_top" data-feature-view="holdings">打开持仓</a>
+                <button class="workflow-open" type="button" data-feature-view="holdings">打开持仓</button>
                 <button type="button" data-workflow-evidence="portfolio">查看证据</button>
               </div>
             </article>
+          </div>
+        </section>
+
+        <section class="function-detail" data-function-detail hidden aria-labelledby="function-detail-title">
+          <div class="function-detail-head">
+            <div>
+              <p class="panel-kicker">功能面板</p>
+              <h2 id="function-detail-title" data-function-title>PFI 功能入口</h2>
+              <p data-function-purpose>选择一个功能板块后，这里会显示中文操作面板、证据边界和下一步。</p>
+            </div>
+            <span class="status-pill status-ready" data-function-status>可用</span>
+          </div>
+          <dl class="function-meta" data-function-meta>
+            <div>
+              <dt>核心操作</dt>
+              <dd data-function-primary-action>打开功能</dd>
+            </div>
+            <div>
+              <dt>工作区</dt>
+              <dd data-function-workspace>首页</dd>
+            </div>
+            <div>
+              <dt>边界</dt>
+              <dd data-function-boundary>只做研究、回测、训练、复核和报告，不做实盘自动下单。</dd>
+            </div>
+          </dl>
+          <div class="function-checks" data-function-checks></div>
+          <div class="function-actions">
+            <button type="button" class="primary-action" data-function-action>打开功能</button>
+            <a class="secondary-link" href="?pfi_shell=0&amp;view=single" target="_top" data-function-legacy-link>打开旧版详细页</a>
+            <button type="button" class="secondary-action" data-function-close>返回工作区</button>
           </div>
         </section>
 

@@ -54,6 +54,15 @@ Current sequence:
     artifacts, Web Shell/runtime `supervisor_runtime`, and no-execution
     boundary checks. No local PFI-003 implementation gap remains; release/CI
     replay is still required before final Gate 7 closure.
+18. UI return/rework after user rejection:
+    runtime entry stability and user-facing PFI Web Shell navigation were
+    repaired. `scripts/startPFIOS.sh` now launches Streamlit through a
+    detached Python subprocess so the service remains alive after the script
+    returns. Core Web Shell function cards now open same-shell Chinese
+    function panels for backtest, parameter scan, market-feel training,
+    simulation, hotspots, reports, holdings, policy, data center, and strategy
+    library. `scripts/uiVisualAcceptance.sh` now performs real click-through
+    checks instead of href-only checks.
 
 ## Current Local State
 
@@ -170,6 +179,12 @@ Current sequence:
   command-center metadata are hidden from the active homepage summary.
 - Cache cleanup was run through `scripts/cleanCache.sh --json`; only
   disposable pycache, pytest cache, and root runtime log files were deleted.
+- User-facing UI return/rework complete after rejection: the PFI Web Shell no
+  longer depends on direct old-page jumps for core feature cards. The current
+  visual evidence is `data/systemAudit/UIVisualAcceptance_latest.json` with
+  `status=Pass`, `pass=98`, `fail=0`, and `started_by_acceptance=false` for
+  the manually started local service path. Screenshot:
+  `data/systemAudit/UIVisualAcceptance_20260620_011640.png`.
 
 ## Start Here
 

@@ -359,20 +359,48 @@ async function frameText(frame) {
     );
 
     const featureLinks = [
-      ['single', '打开回测'],
-      ['scan', '打开扫描'],
-      ['market_feel', '打开训练'],
-      ['hotspots', '打开热点'],
-      ['reports', '打开报告'],
-      ['holdings', '打开持仓'],
-      ['policy', '打开政策'],
-      ['tools', '打开数据'],
+      ['single', '单标的回测', '运行回测'],
+      ['scan', '参数扫描', '运行参数扫描'],
+      ['market_feel', '盘感训练', '生成盘感训练'],
+      ['hotspots', '热点分析', '生成热点分析'],
+      ['reports', '报告中心', '打开报告列表'],
+      ['holdings', '持仓复核', '同步持仓'],
+      ['policy', '政策雷达', '打开政策雷达'],
+      ['tools', '数据中心', '检查数据源'],
     ];
-    for (const [view, label] of featureLinks) {
+    for (const [view, title, actionLabel] of featureLinks) {
+      await shellFrame.locator('[data-workspace="home"]').click({ timeout: 10000 });
+      await shellFrame.waitForFunction(
+        () => {
+          const main = document.querySelector('#main-workspace');
+          const titleNode = document.querySelector('#workspace-title');
+          return main && titleNode && main.dataset.activeWorkspace === 'home' && titleNode.textContent.includes('首页');
+        },
+        null,
+        { timeout: 10000 }
+      );
       const locator = shellFrame.locator(`[data-feature-view="${view}"]`).first();
       const visible = await locator.isVisible({ timeout: 10000 }).catch(() => false);
-      const href = visible ? await locator.getAttribute('href') : '';
-      checks.push(check(`FeatureOpen:${view}`, visible && href && href.includes(`view=${view}`) && href.includes('pfi_shell=0') ? 'Pass' : 'Fail', `${label}; href=${href}`));
+      checks.push(check(`FeatureOpen:${view}:ControlVisible`, visible ? 'Pass' : 'Fail', `${title}; ${actionLabel}`));
+      if (!visible) continue;
+      await locator.click({ timeout: 10000 });
+      await shellFrame.waitForFunction(
+        ([expectedTitle, expectedAction]) => {
+          const panel = document.querySelector('[data-function-detail]');
+          const titleNode = document.querySelector('[data-function-title]');
+          const actionNode = document.querySelector('[data-function-action]');
+          return panel && !panel.hidden && titleNode && actionNode
+            && titleNode.textContent.includes(expectedTitle)
+            && actionNode.textContent.includes(expectedAction);
+        },
+        [title, actionLabel],
+        { timeout: 10000 }
+      );
+      const detailText = await shellFrame.locator('[data-function-detail]').innerText({ timeout: 5000 });
+      checks.push(check(`FeatureOpen:${view}:PanelTitle`, detailText.includes(title) ? 'Pass' : 'Fail', title));
+      checks.push(check(`FeatureOpen:${view}:PrimaryAction`, detailText.includes(actionLabel) ? 'Pass' : 'Fail', actionLabel));
+      checks.push(check(`FeatureOpen:${view}:SafetyBoundary`, detailText.includes('禁止实盘自动下单') ? 'Pass' : 'Fail', detailText.slice(0, 180)));
+      checks.push(check(`FeatureOpen:${view}:NoEnglishSchema`, /PFIOS[A-Za-z0-9]+V\\d/.test(detailText) ? 'Fail' : 'Pass', view));
     }
     bodyText = await frameText(shellFrame);
     const retiredIdentityText = ['E' + 'VA', 'Quant' + 'Lab', 'Token' + ' ROI'];

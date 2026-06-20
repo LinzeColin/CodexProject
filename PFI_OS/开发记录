@@ -1,6 +1,6 @@
 # PFI_OS 开发记录
 
-更新时间：2026-06-19
+更新时间：2026-06-20
 
 ## 项目定位
 
@@ -28,6 +28,13 @@ PFI_OS 是本地优先的个人研究中台入口，macOS 显示为 `PFI_OS`。P
 - PFIOS 只承担验证层职责：输出回测对象、样本区间、成本假设、参数稳定性、样本外验证、walk-forward、风险闸门、失效环境和停用条件。
 
 ## 重要验证记录
+
+2026-06-20 返工记录：
+
+- 修复 `scripts/startPFIOS.sh`：后台启动改为 Python detached launcher，避免脚本返回后 Streamlit 服务被父 shell 回收。
+- 重做 PFI Web Shell 功能入口：核心功能卡从旧页面直接跳转改为同屏中文功能面板，覆盖单标的回测、参数扫描、盘感训练、模拟实验、热点分析、报告中心、持仓复核、政策雷达、数据中心和策略库。
+- 加严 `scripts/uiVisualAcceptance.sh`：从 `href` 静态检查升级为真实点击 6 个一级入口和 8 个功能入口，并检查中文标题、主操作、安全边界和无英文 schema 暴露。
+- 验证结果：UI visual acceptance `Pass 98/98`，目标 pytest `56 passed`，产品/入口相关 pytest `72 passed`，JS/zsh 语法检查和 `git diff --check` 通过。
 
 默认 verifier：
 

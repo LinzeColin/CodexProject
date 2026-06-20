@@ -84,6 +84,89 @@ const FEATURE_TARGETS = {
   备份恢复: { workspace: "data", label: "打开系统" },
 };
 
+const FUNCTION_VIEWS = {
+  single: functionView(
+    "single",
+    "单标的回测",
+    "strategy",
+    "运行回测",
+    "选择标的、数据源、周期、策略和成本假设，输出收益、回撤、交易、风险闸门和报告证据。",
+    ["可用：单策略回测和双策略对比", "验收：费用、时间区间、数据质量和策略版本必须显示", "边界：只生成研究结果，不生成实盘订单"],
+  ),
+  scan: functionView(
+    "scan",
+    "参数扫描",
+    "strategy",
+    "运行参数扫描",
+    "比较参数网格、样本内外表现、稳定性和过拟合风险，用于判断策略是否值得继续研究。",
+    ["可用：参数网格和稳定性摘要", "验收：记录样本区间、参数范围和评分口径", "边界：扫描结果不能直接转成交易指令"],
+  ),
+  market_feel: functionView(
+    "market_feel",
+    "盘感训练",
+    "strategy",
+    "生成盘感训练",
+    "保留读图训练、限时判断、隐藏答案和复盘记录，训练人工判断，不输出实盘信号。",
+    ["可用：大盘对象、持仓对象和自选代码训练", "验收：训练窗口、答案窗口、超时和复盘必须记录", "边界：训练结果不得作为自动买卖依据"],
+  ),
+  big_data: functionView(
+    "big_data",
+    "模拟实验",
+    "strategy",
+    "打开模拟实验",
+    "组合策略、情景压力和假设实验，用于研究策略在不同市场状态下的表现。",
+    ["可用：模拟和压力情景入口", "验收：假设、参数和输出路径必须可追溯", "边界：仅研究模拟，不连接券商"],
+  ),
+  hotspots: functionView(
+    "hotspots",
+    "热点分析",
+    "market",
+    "生成热点分析",
+    "查看指数、ETF、主题和自选对象的强弱扩散，并把结果降级为观察线索。",
+    ["可用：热点缓存和公开参照", "验收：来源状态、失败对象和更新时间必须显示", "边界：热点不是交易信号"],
+  ),
+  reports: functionView(
+    "reports",
+    "报告中心",
+    "research",
+    "打开报告列表",
+    "检索回测、扫描、研究、验证和复盘产物，查看证据缺口和待验证任务。",
+    ["可用：报告列表、运行判读和验证任务", "验收：报告路径、生成时间和缺口状态必须显示", "边界：报告结论需人工复核"],
+  ),
+  holdings: functionView(
+    "holdings",
+    "持仓复核",
+    "portfolio",
+    "同步持仓",
+    "查看正式持仓、候选持仓、暴露、集中度和订单意图草案，私有数据留在本机。",
+    ["可用：持仓、候选、暴露和质量检查", "验收：私有数据不得进入公共 Git", "边界：只生成待确认意图，不提交券商"],
+  ),
+  policy: functionView(
+    "policy",
+    "政策雷达",
+    "research",
+    "打开政策雷达",
+    "登记政策来源、影响路径、机会状态和人工行动队列，优先使用官方或监管来源。",
+    ["可用：政策机会和权威来源复核", "验收：官方来源或证据路径必须可追溯", "边界：政策线索不等同投资建议"],
+  ),
+  tools: functionView(
+    "tools",
+    "数据中心",
+    "data",
+    "检查数据源",
+    "查看数据源、代码格式、质量报告、缓存、隐私边界和系统诊断。",
+    ["可用：数据源状态和代码助手", "验收：来源、新鲜度、失败原因必须显示", "边界：不提交 secrets 或私有数据"],
+  ),
+  library: functionView(
+    "library",
+    "策略库",
+    "strategy",
+    "打开策略库",
+    "管理候选策略、确认状态、风险说明和版本证据，避免未确认策略进入正式研究。",
+    ["可用：策略模板和候选策略审查", "验收：策略版本、参数和风险说明必须保留", "边界：未确认策略不能进入正式回测"],
+  ),
+};
+
 const DEFAULT_WORKSPACES = {
   home: {
     label: "首页",
@@ -281,6 +364,19 @@ const WORKSPACES = structuredClone(DEFAULT_WORKSPACES);
 
 function feature(title, status, evidence, description, target = null) {
   return { title, status, evidence, description, target: target || featureTarget(title) };
+}
+
+function functionView(view, title, workspace, primaryAction, purpose, checks) {
+  return {
+    view,
+    title,
+    workspace,
+    primaryAction,
+    purpose,
+    checks,
+    status: "可用",
+    boundary: "只做研究、回测、训练、复核和报告；禁止实盘自动下单、券商提交、支付或无人值守执行。",
+  };
 }
 
 function row(priority, object, evidence, action, status) {
@@ -497,7 +593,10 @@ function renderWorkspace(workspaceId, options = {}) {
   renderTasks(workspace.tasks);
   applyEvidenceDrawer(workspace.evidence);
   drawSparkline(workspace.chart);
-  writeContext({ ...currentContext(), workspace: workspaceId });
+  if (!options.keepFunctionDetail) hideFunctionDetail();
+  const nextContext = { ...currentContext(), workspace: workspaceId };
+  if (!options.keepFunctionDetail) delete nextContext.feature_view;
+  writeContext(nextContext);
 
   if (!options.silent) showToast(`已切换到${workspace.label}`);
   if (!options.preserveFocus) main.focus({ preventScroll: true });
@@ -583,13 +682,12 @@ function featureTarget(title) {
 function featureOpenControl(card) {
   const target = card.target || featureTarget(card.title);
   if (target.view) {
-    const link = document.createElement("a");
-    link.className = "workflow-open";
-    link.href = legacyViewUrl(target.view);
-    link.target = "_top";
-    link.dataset.featureView = target.view;
-    link.textContent = target.label || "打开功能";
-    return link;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "workflow-open";
+    button.dataset.featureView = target.view;
+    button.textContent = target.label || "打开功能";
+    return button;
   }
   const button = document.createElement("button");
   button.type = "button";
@@ -598,6 +696,75 @@ function featureOpenControl(card) {
   button.textContent = target.label || "打开入口";
   button.addEventListener("click", () => setActiveWorkspace(target.workspace || "home"));
   return button;
+}
+
+function openFunctionView(view, options = {}) {
+  const detail = FUNCTION_VIEWS[view] || FUNCTION_VIEWS.single;
+  renderWorkspace(detail.workspace, { silent: true, preserveFocus: true, keepFunctionDetail: true });
+  renderFunctionDetail(detail);
+  writeContext({ ...currentContext(), workspace: detail.workspace, feature_view: detail.view });
+  if (!options.silent) showToast(`已打开${detail.title}`);
+}
+
+function renderFunctionDetail(detail) {
+  const panel = document.querySelector("[data-function-detail]");
+  if (!panel) return;
+  panel.hidden = false;
+  const title = panel.querySelector("[data-function-title]");
+  const purpose = panel.querySelector("[data-function-purpose]");
+  const status = panel.querySelector("[data-function-status]");
+  const action = panel.querySelector("[data-function-primary-action]");
+  const workspace = panel.querySelector("[data-function-workspace]");
+  const boundary = panel.querySelector("[data-function-boundary]");
+  const checks = panel.querySelector("[data-function-checks]");
+  const actionButton = panel.querySelector("[data-function-action]");
+  const legacyLink = panel.querySelector("[data-function-legacy-link]");
+
+  if (title) title.textContent = detail.title;
+  if (purpose) purpose.textContent = detail.purpose;
+  if (status) {
+    status.textContent = detail.status;
+    status.className = `status-pill ${statusClass(detail.status)}`;
+  }
+  if (action) action.textContent = detail.primaryAction;
+  if (workspace) workspace.textContent = WORKSPACE_LABELS[detail.workspace] || detail.workspace;
+  if (boundary) boundary.textContent = detail.boundary;
+  if (actionButton) {
+    actionButton.textContent = detail.primaryAction;
+    actionButton.dataset.functionActionView = detail.view;
+  }
+  if (legacyLink) {
+    legacyLink.href = legacyViewUrl(detail.view);
+    legacyLink.textContent = `进入${detail.title}详细页`;
+  }
+  if (checks) {
+    checks.replaceChildren();
+    detail.checks.forEach((item, index) => {
+      const article = document.createElement("article");
+      const strong = document.createElement("strong");
+      const span = document.createElement("span");
+      strong.textContent = `检查 ${index + 1}`;
+      span.textContent = item;
+      article.appendChild(strong);
+      article.appendChild(span);
+      checks.appendChild(article);
+    });
+  }
+  panel.scrollIntoView({ block: "nearest" });
+}
+
+function hideFunctionDetail() {
+  const panel = document.querySelector("[data-function-detail]");
+  if (panel) panel.hidden = true;
+}
+
+function runFunctionAction(view) {
+  const detail = FUNCTION_VIEWS[view] || FUNCTION_VIEWS.single;
+  const taskPhase = document.querySelector("#task-phase");
+  const jobLabel = document.querySelector("#background-job-label");
+  if (taskPhase) taskPhase.textContent = `${detail.title} · 已准备`;
+  if (jobLabel) jobLabel.textContent = `${detail.primaryAction} · 使用详细页完成真实运行`;
+  showToast(`${detail.title}面板已准备；需要真实运行时进入详细页`);
 }
 
 function legacyViewUrl(view) {
@@ -922,6 +1089,26 @@ function bindEvents() {
     });
   });
 
+  document.addEventListener("click", (event) => {
+    const featureControl = event.target.closest("[data-feature-view]");
+    if (featureControl) {
+      event.preventDefault();
+      setPressedFeedback(featureControl);
+      openFunctionView(featureControl.dataset.featureView);
+      return;
+    }
+    const functionAction = event.target.closest("[data-function-action]");
+    if (functionAction) {
+      setPressedFeedback(functionAction);
+      runFunctionAction(functionAction.dataset.functionActionView);
+      return;
+    }
+    if (event.target.closest("[data-function-close]")) {
+      hideFunctionDetail();
+      showToast("已返回工作区");
+    }
+  });
+
   document.querySelectorAll("[data-context-field]").forEach((field) => {
     field.addEventListener("change", () => writeContext(currentContext()));
     field.addEventListener("input", () => writeContext(currentContext()));
@@ -987,6 +1174,12 @@ document.addEventListener("DOMContentLoaded", () => {
   restoreContext();
   bindEvents();
   applyHomeSummary(readHomeSummary());
+  const params = new URLSearchParams(window.location.search || "");
+  const requestedFeature = params.get("view") || readContext().feature_view || "";
+  if (Object.prototype.hasOwnProperty.call(FUNCTION_VIEWS, requestedFeature)) {
+    openFunctionView(requestedFeature, { silent: true });
+    return;
+  }
   const requestedWorkspace = readContext().workspace || "home";
   renderWorkspace(WORKSPACES[requestedWorkspace] ? requestedWorkspace : "home", { silent: true, preserveFocus: true });
 });

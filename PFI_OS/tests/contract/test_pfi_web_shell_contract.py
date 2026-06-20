@@ -112,6 +112,8 @@ def test_launch_scripts_default_to_pfi_web_shell_with_legacy_opt_out():
         assert 'cwd_path" == "$PROJECT_DIR"' in source
     assert "正在启动 PFI OS" in cli_launcher
     assert "pfi_os_streamlit.log" in cli_launcher
+    assert "subprocess.Popen" in cli_launcher
+    assert "start_new_session=True" in cli_launcher
     assert "PFI_START_FOREGROUND" in cli_launcher
     assert "No browser opened" not in cli_launcher
     assert 'data-fallback-flag-value="1"' in shell_html
@@ -167,14 +169,22 @@ def test_web_shell_active_user_surface_has_no_retired_identity_or_value_text():
 
 
 def test_web_shell_home_keeps_core_direct_function_entries():
+    html = _text(WEB_ROOT / "index.html")
     js = _text(WEB_ROOT / "app" / "shell.js")
     css = _text(WEB_ROOT / "styles" / "tokens.css")
     runtime_block = js.split("function applyWorkflowRuntime", maxsplit=1)[1].split("function localizedWorkflowCard", maxsplit=1)[0]
 
+    assert "data-function-detail" in html
+    assert "功能面板" in html
+    assert "只做研究、回测、训练、复核和报告" in html
+    assert "FUNCTION_VIEWS" in js
+    assert "openFunctionView" in js
+    assert "runFunctionAction" in js
     for view in ["single", "scan", "market_feel", "hotspots", "reports", "holdings", "policy", "tools"]:
         assert f'view: "{view}"' in js
     for label in ["单标的回测", "参数扫描", "盘感训练", "热点分析", "报告中心", "持仓", "政策雷达", "数据中心"]:
         assert label in js
     assert "WORKSPACES.home.features" not in runtime_block
     assert "repeat(auto-fit, minmax(190px, 1fr))" in css
+    assert ".function-detail" in css
     assert "white-space: nowrap" in css
