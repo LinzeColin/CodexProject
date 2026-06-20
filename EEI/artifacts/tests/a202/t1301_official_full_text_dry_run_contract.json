@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "artifact_id": "t1301-official-full-text-dry-run-contract",
+  "task_id": "T1301",
+  "acceptance_ids": [
+    "A202",
+    "A206"
+  ],
+  "status": "IN_PROGRESS",
+  "record_mode": "dry_run",
+  "parser_version": "nvidia-official-fulltext-dry-run-v1",
+  "generated_at": "2026-06-21T00:00:00+10:00",
+  "system": {
+    "zh_name": "商域图谱",
+    "en_name": "Enterprise Ecosystem Intelligence",
+    "subtitle": "企业商业版图与供应链递归探索系统"
+  },
+  "implemented_scope": [
+    "scripts/fetch_official_source_full_text.py reads the official NVIDIA anchor registry and committed dry-run text fixture.",
+    "The connector validates source URL agreement, capture status, minimum text length and 100% expected-token coverage before writing any database rows.",
+    "Dry-run raw_source_snapshots preserve source text, token list, parser version, record_mode=dry_run, source_health, retry_policy, attempts, live_retrieval=false and release_clearance=false.",
+    "Dry-run source_documents use a distinct external_id suffix and raw_storage_uri under tests/fixtures/official_source_full_text/.",
+    "Dry-run entity_resolution_candidates are stored under parser_version nvidia-official-fulltext-dry-run-v1 and keep confidence, matched research/entity IDs, match method and review status.",
+    "Dry-run ingestion_evidence_chain rows are context-only, carry source_health and retry_policy in structured_fact, and explicitly mark dry_run_context_only_not_published_relationship.",
+    "The integration test runs the connector twice to prove idempotent upsert behavior and asserts 4 raw snapshots, 4 evidence rows, 53 resolution candidates, healthy source coverage and zero relationship_fact_candidates for the dry-run parser."
+  ],
+  "evidence_paths": [
+    "scripts/fetch_official_source_full_text.py",
+    "tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json",
+    "tests/integration/test_database_migrations.py",
+    "Makefile",
+    "scripts/validate_v5_production_readiness_sync.py",
+    "artifacts/tests/a202/t1301_curated_official_ingestion_contract.json",
+    "artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json"
+  ],
+  "parameters": {
+    "ingestion.full_text_dry_run_min_text_chars": 240,
+    "ingestion.full_text_dry_run_min_token_coverage_ratio": 1.0,
+    "scheduler.max_retry_attempts": 3,
+    "scheduler.dead_letter_after_attempts": 3,
+    "ingestion.live_retrieval": false,
+    "ingestion.release_clearance": false
+  },
+  "validation_commands": [
+    "python3 -m json.tool tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json",
+    "python3 -m json.tool artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json",
+    "python3 -m py_compile scripts/fetch_official_source_full_text.py tests/integration/test_database_migrations.py",
+    ".venv/bin/ruff check scripts/fetch_official_source_full_text.py tests/integration/test_database_migrations.py",
+    ".venv/bin/python scripts/validate_v5_production_readiness_sync.py",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify",
+    "GitHub Actions make verify-g2-db must prove the dry-run connector inside PostgreSQL integration because this host has no local Docker/PostgreSQL."
+  ],
+  "remaining_gaps_before_done": [
+    "This is a dry-run fixture connector only; live official-source retrieval is still required before A202 can be closed.",
+    "The committed fixture is a parser contract, not a reproduction of official full text and not legal or market clearance.",
+    "A production owner-supplied decision or a second independent-source closure path is still required before Golden Vertical facts can be release-approved.",
+    "A206 remains open until source health, retry and dead-letter behavior are proven in the 4h/24h operator soak path."
+  ],
+  "rollback": [
+    "Remove scripts/fetch_official_source_full_text.py and the official_source_full_text fixture directory.",
+    "Remove the dry-run invocation and assertions from tests/integration/test_database_migrations.py.",
+    "Remove the dry-run evidence paths from scripts/validate_v5_production_readiness_sync.py, acceptance_traceability.csv and development_status_ledger.csv.",
+    "Rerun make verify and GitHub Actions make verify-g2-db."
+  ]
+}

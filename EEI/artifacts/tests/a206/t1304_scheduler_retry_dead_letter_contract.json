@@ -23,6 +23,7 @@
     "POST /v1/data/snapshots/refresh enqueues data_snapshot_refresh jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
     "scripts/job_scheduler.py registers a data_snapshot_refresh handler that validates active-context freshness, writes active data_snapshots, advances refresh_token, emits data.snapshot.activated and completes stale jobs as skipped_stale_context instead of retrying forever.",
     "scripts/job_scheduler.py registers a curated_ingestion_refresh handler that reuses the curated official NVIDIA/ASML loader idempotently, records execute_curated_ingestion_refresh and emits data.ingestion.completed.",
+    "scripts/fetch_official_source_full_text.py records dry-run source_health, retry_policy, attempt metadata and dead_letter_after_attempts=3 for official-source parser plumbing without live retrieval.",
     "POST /v1/calibrations/run creates a calibration_run background job and calibration.run.requested outbox event while preserving the 14-day cadence and no-auto-activation policy.",
     "scripts/job_scheduler.py registers a calibration_run handler that computes relationship-fact coverage, score-result coverage and drift warnings, writes calibration_runs metrics/drift_report/proposal_status=none, records execute_calibration_run and emits calibration.run.completed.",
     "apps/worker/app/main.py exposes the supervised worker CLI with health, once and supervise commands, covering expired lease recovery, bounded job execution, transactional outbox dispatch, idle stop and SIGTERM/SIGINT graceful stop.",
@@ -58,8 +59,10 @@
     "infra/docker/README.md",
     "infra/docker/worker.Dockerfile",
     "scripts/job_scheduler.py",
+    "scripts/fetch_official_source_full_text.py",
     "scripts/validate_worker_deployment.py",
     "scripts/check_database_schema.py",
+    "tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json",
     "tests/integration/test_database_migrations.py",
     "tests/unit/test_scoring.py",
     "tests/e2e/state-contract.spec.ts",
@@ -100,6 +103,7 @@
   },
   "remaining_gaps_before_done": [
     "Run T1307 4h/24h operator soak using the Docker Compose worker binding for timer, retry and recovery stability.",
+    "Promote dry-run source health into the live official-source connector after live retrieval is approved.",
     "Attach completed operator soak evidence before marking A206/A209 DONE."
   ],
   "rollback": [

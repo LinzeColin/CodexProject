@@ -21,7 +21,8 @@
     "tests/fixtures/golden_vertical_review_decisions.json is fixture-only and explicitly not production legal or data clearance",
     "publish_reviewed_relationship_facts.py now separates fixture review from production owner sign-off: fixture review requires --allow-fixture-review, production owner sign-off requires --allow-production-owner-signoff, and unsigned owner decisions fail closed",
     "production owner sign-off decisions persist review_context, owner_actor, owner_role, authority_scope and owner_signature_hash into data_snapshots metadata, relationship qualifiers, relationship_evidence and fact_version payloads",
-    "subsequent curated_ingestion_refresh runs preserve published candidates and resolved review queues instead of demoting them back to candidate/open"
+    "subsequent curated_ingestion_refresh runs preserve published candidates and resolved review queues instead of demoting them back to candidate/open",
+    "scripts/fetch_official_source_full_text.py adds a dry-run official-source full-text parser path that validates source URL agreement, capture status, minimum text length, 100% expected-token coverage, source_health, retry_policy and context-only evidence without publishing relationship facts"
   ],
   "evidence_paths": [
     "infra/db/migrations/0004_curated_ingestion_audit_layers/up.sql",
@@ -30,23 +31,38 @@
     "infra/db/migrations/0005_relationship_fact_candidates/down.sql",
     "data/golden_vertical_fact_candidates.json",
     "scripts/load_curated_ingestion_anchors.py",
+    "scripts/fetch_official_source_full_text.py",
     "scripts/publish_reviewed_relationship_facts.py",
+    "tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json",
     "tests/fixtures/golden_vertical_review_decisions.json",
     "tests/fixtures/golden_vertical_owner_signoff_decisions.json",
     "scripts/check_database_schema.py",
-    "tests/integration/test_database_migrations.py"
+    "tests/integration/test_database_migrations.py",
+    "artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json"
   ],
   "validation_commands": [
     "python3 scripts/validate_catalog_integrity.py",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_governance.py",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_task_pack.py",
     ".venv/bin/python scripts/validate_v5_production_readiness_sync.py",
-    ".venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/publish_reviewed_relationship_facts.py scripts/check_database_schema.py tests/integration/test_database_migrations.py",
+    ".venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/fetch_official_source_full_text.py scripts/publish_reviewed_relationship_facts.py scripts/check_database_schema.py tests/integration/test_database_migrations.py",
+    "python3 -m json.tool tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json",
     "python3 -m json.tool tests/fixtures/golden_vertical_owner_signoff_decisions.json",
-    "python3 -m py_compile scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py",
+    "python3 -m py_compile scripts/fetch_official_source_full_text.py scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py",
     "PYTHONPATH=scripts:. .venv/bin/python -c 'from migrate import discover_migrations; print([(m.version, m.name) for m in discover_migrations()])'"
   ],
   "last_local_validation": [
+    "python3 -m json.tool tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json: PASS",
+    "python3 -m json.tool artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json: PASS",
+    "python3 -m json.tool artifacts/tests/a202/t1301_curated_official_ingestion_contract.json: PASS",
+    "python3 -m py_compile scripts/fetch_official_source_full_text.py tests/integration/test_database_migrations.py: PASS",
+    ".venv/bin/ruff check scripts/fetch_official_source_full_text.py scripts/validate_v5_production_readiness_sync.py tests/integration/test_database_migrations.py: PASS",
+    ".venv/bin/python scripts/validate_v5_production_readiness_sync.py: PASS",
+    ".venv/bin/python scripts/validate_catalog_integrity.py: PASS",
+    ".venv/bin/python scripts/validate_contracts.py: PASS",
+    ".venv/bin/python -m pytest -q tests/unit/test_api_health.py tests/unit/test_scoring.py: PASS with 27/27",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py: SKIPPED locally because this host has no .env/DATABASE_URL",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify: PASS after non-sandbox rerun; first sandbox run failed only at Chromium browser benchmark with macOS MachPort permission denied; unit tests 31/31",
     ".venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py: PASS",
     "python3 -m json.tool tests/fixtures/golden_vertical_review_decisions.json: PASS",
     "python3 -m json.tool tests/fixtures/golden_vertical_owner_signoff_decisions.json: PASS",
@@ -61,10 +77,10 @@
     "GitHub Actions EEI validation run 27880295243 / job 82506543351: PASS for owner sign-off publication contract under Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E on commit 6c6df28c48fbd7be4bdca9afecaef0c68f3b7aa9"
   ],
   "remaining_blockers_before_a202_done": [
-    "live or dry-run full-text connector for official sources is not implemented",
+    "dry-run official-source full-text connector is implemented; live official retrieval is still not implemented",
     "the production owner sign-off contract has remote PostgreSQL CI proof but still needs an actual operator-supplied owner decision before release use",
     "independent source cross-check remains an alternative closure path but is not complete",
-    "source health, retry and dead-letter behavior remain owned by T1304/A206"
+    "source health and retry metadata are recorded for dry-run ingestion, but dead-letter behavior still needs T1304/A206 operator soak proof"
   ],
   "rollback": [
     "Run scripts/migrate.py downgrade --steps 1 to remove 0004_curated_ingestion_audit_layers.",
