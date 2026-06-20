@@ -2128,7 +2128,7 @@ Residual risks:
 
 ### Remaining gaps
 
-- Superseded by the later live multisession E2E harness slice: live two-context harness and 409 fetch-latest conflict recovery UI now exist, but still require GitHub Actions `verify-g2-db` PASS evidence.
+- Superseded by the later live multisession E2E harness slice: live two-context harness and 409 fetch-latest conflict recovery UI now exist and have GitHub Actions `verify-g2-db` PASS evidence in run `27862471613`, job `82460665725`.
 - User/workspace authn/authz remains required before public multi-user saved-view deployment.
 
 ## 2026-06-20 - T1305/A207 live multisession saved-view E2E harness and conflict recovery UI
@@ -2164,7 +2164,7 @@ Residual risks:
 ### Acceptance mapping
 
 - T1305 -> A207.
-- A207 remains `IN PROGRESS`, not `DONE`, until live `verify-g2-db` CI evidence and authn/authz are present.
+- A207 remains `IN PROGRESS`, not `DONE`, until user/workspace authn/authz is present.
 
 ### Validation
 
@@ -2173,8 +2173,11 @@ Residual risks:
 - Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make test-unit`: PASS, 13/13 with existing Starlette `httpx` deprecation warning.
 - Local default Playwright E2E: PASS, 29/29.
 - Local live Playwright E2E: NOT RUN; this host does not have `docker`.
+- GitHub Actions run `27862471613`: PASS.
+- GitHub Actions job `82460665725`: PASS.
+- GitHub Actions step `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step `Verify G2 PostgreSQL migrations and E2E`: PASS, including the live FastAPI/PostgreSQL multisession saved-view E2E harness.
 
 ### Remaining gaps
 
-- GitHub Actions `make verify-g2-db` must pass to prove the live FastAPI/PostgreSQL multisession E2E.
 - User/workspace authn/authz remains required before public multi-user saved-view deployment.

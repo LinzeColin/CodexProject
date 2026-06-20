@@ -35,7 +35,7 @@
     }
   },
   "remaining_to_close_a207": [
-    "Record GitHub Actions verify-g2-db PASS for the live multisession E2E in artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json",
+    "Live multisession E2E CI evidence is recorded in artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json",
     "Add user/workspace authn/authz boundary before public multi-user deployment"
   ]
 }
