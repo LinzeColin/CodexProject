@@ -3151,3 +3151,44 @@ Residual risks:
 - This closes T1308/A211 with local and GitHub Actions evidence.
 - T1301/A202, T1302/A203, T1303/A204-A205, T1304/A206, T1307/A209 and T1309/A210 remain v0.1 blockers.
 - T1307 4h and 24h operator soak still cannot be closed on the current host because Docker is not installed and the required duration has not been run.
+
+## 2026-06-21 - T1302/A203 published relationship scoring explain slice
+
+### Scope
+
+- Extended `/v1/scoring/explain/{objectType}/{objectId}` from candidate-only scoring to support `objectType=relationship`.
+- Added `relationship_score_metrics()` for versioned published relationships, using confidence, source-threshold policy, review status, publication status, fact-version presence and evidence presence.
+- Added repository support for relationship scoring payloads backed by `relationships`, `relationship_evidence`, `fact_versions`, `data_snapshots`, publication qualifiers and production context.
+- Extended A202 reviewed-publication integration assertions so a published relationship can be scored after fixture review publication.
+
+### Files changed
+
+- `apps/api/app/scoring.py`
+- `apps/api/app/domain_repository.py`
+- `specs/api_contract.yaml`
+- `tests/unit/test_scoring.py`
+- `tests/integration/test_database_migrations.py`
+- `artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json`
+- `data/development_status_ledger.csv`
+- `DEVELOPMENT_STATUS.md`
+- `README.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+
+### Acceptance mapping
+
+- T1302 -> A203.
+- A203 remains `IN_PROGRESS`, not `DONE`.
+- This closes the relationship-object scoring explanation gap for published relationship records, but not scoring for entity/event/industry object families or production-approved live data.
+
+### Local validation
+
+- `.venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_scoring.py`: PASS, 4/4.
+- `python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no database runtime.
+- Elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes governance, contract validation, v5 sync, release validation, scale/browser/soak smoke, secret scan, UI copy lint, ruff, web typecheck and unit tests 25/25.
+
+### Remaining gaps
+
+- A203 still needs full scoring service coverage for entity/event/industry and other non-relationship object families.
+- A203 still depends on A202 for production-approved live relationship facts and on A208/A209 for release-scale and soak evidence.

@@ -1181,6 +1181,9 @@ paths:
         required: true
         schema:
           type: string
+          enum:
+          - relationship_fact_candidate
+          - relationship
       - name: objectId
         in: path
         required: true
@@ -3090,6 +3093,9 @@ components:
         object_type:
           type: string
           enum:
+          - relationship_fact_candidate
+          - relationship
+          enum:
           - entity
           - industry
           - theme
@@ -3675,6 +3681,9 @@ components:
       properties:
         object_type:
           type: string
+          enum:
+          - relationship_fact_candidate
+          - relationship
         object_id:
           type: string
           format: uuid
