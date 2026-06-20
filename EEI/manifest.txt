@@ -306,6 +306,7 @@ scripts/manage_release_artifacts.py
 scripts/manage_risk_control_artifacts.py
 scripts/migrate.py
 scripts/preflight.sh
+scripts/publish_reviewed_relationship_facts.py
 scripts/run_browser_scale_benchmarks.mjs
 scripts/run_codex_autonomous.sh
 scripts/run_live_e2e_api.sh
@@ -342,6 +343,7 @@ tests/e2e/industry.spec.ts
 tests/e2e/saved-view-live.spec.ts
 tests/e2e/state-contract.spec.ts
 tests/fixtures/README.md
+tests/fixtures/golden_vertical_review_decisions.json
 tests/integration/README.md
 tests/integration/test_database_migrations.py
 tests/unit/test_api_health.py

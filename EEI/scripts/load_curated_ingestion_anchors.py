@@ -574,13 +574,27 @@ def upsert_relationship_fact_candidate(
           relationship_family = EXCLUDED.relationship_family,
           record_mode = EXCLUDED.record_mode,
           fact_status = EXCLUDED.fact_status,
-          publication_status = EXCLUDED.publication_status,
+          publication_status = CASE
+            WHEN relationship_fact_candidates.publication_status = 'published'
+              THEN relationship_fact_candidates.publication_status
+            ELSE EXCLUDED.publication_status
+          END,
           confidence = EXCLUDED.confidence,
           independent_source_count = EXCLUDED.independent_source_count,
-          source_threshold_met = EXCLUDED.source_threshold_met,
-          review_status = EXCLUDED.review_status,
+          source_threshold_met = CASE
+            WHEN relationship_fact_candidates.publication_status = 'published'
+              THEN relationship_fact_candidates.source_threshold_met
+            ELSE EXCLUDED.source_threshold_met
+          END,
+          review_status = CASE
+            WHEN relationship_fact_candidates.publication_status = 'published'
+              THEN relationship_fact_candidates.review_status
+            ELSE EXCLUDED.review_status
+          END,
           parser_version = EXCLUDED.parser_version,
-          structured_fact = EXCLUDED.structured_fact,
+          structured_fact = (
+            EXCLUDED.structured_fact || relationship_fact_candidates.structured_fact
+          ),
           counter_evidence = EXCLUDED.counter_evidence,
           updated_at = now()
         RETURNING id
@@ -647,10 +661,27 @@ def upsert_manual_review_queue(
         VALUES (%s, 'relationship_fact_candidate', %s, %s, 'P0', 'open', 'system')
         ON CONFLICT (queue_key) DO UPDATE SET
           object_id = EXCLUDED.object_id,
-          reason = EXCLUDED.reason,
+          reason = CASE
+            WHEN manual_review_queue.status = 'resolved' THEN manual_review_queue.reason
+            ELSE EXCLUDED.reason
+          END,
           priority = EXCLUDED.priority,
-          status = 'open',
-          resolved_at = NULL
+          status = CASE
+            WHEN manual_review_queue.status = 'resolved' THEN manual_review_queue.status
+            ELSE 'open'
+          END,
+          reviewer = CASE
+            WHEN manual_review_queue.status = 'resolved' THEN manual_review_queue.reviewer
+            ELSE NULL
+          END,
+          decision = CASE
+            WHEN manual_review_queue.status = 'resolved' THEN manual_review_queue.decision
+            ELSE NULL
+          END,
+          resolved_at = CASE
+            WHEN manual_review_queue.status = 'resolved' THEN manual_review_queue.resolved_at
+            ELSE NULL
+          END
         """,
         (
             f"review:{candidate['candidate_key']}",

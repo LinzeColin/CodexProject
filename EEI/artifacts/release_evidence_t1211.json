@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "artifact_id": "release-t1211-manifest-checksum-evidence",
-  "generated_at": "2026-06-20T15:57:34+00:00",
-  "source_commit": "a57d110",
+  "generated_at": "2026-06-20T16:21:41+00:00",
+  "source_commit": "c4feca2",
   "system": {
     "zh_name": "商域图谱",
     "en_name": "Enterprise Ecosystem Intelligence",
