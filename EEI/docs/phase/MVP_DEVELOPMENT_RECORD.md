@@ -2381,6 +2381,8 @@ Residual risks:
 - Added production API route `/v1/evidence/{objectType}/{objectId}` with bounded `limit` validation for `relationship_fact_candidate` and published `relationship` objects.
 - Added repository evidence detail payloads using existing PostgreSQL evidence tables: `relationship_fact_candidate_evidence`, `ingestion_evidence_chain`, `relationship_evidence`, `source_documents` and `sources`.
 - Hardened the published `relationship` evidence detail branch to read fixture disclosure from `fixture_relationship_notices`, matching the production schema instead of assuming fixture columns on `relationships`.
+- Hardened evidence detail payload generation so nullable PostgreSQL evidence fields still return contract-safe `structured_fact` objects, `counter_evidence` arrays and string snippets.
+- Rebased the PostgreSQL integration assertions on the evidence detail contract instead of fixture-specific row counts or a single sample relationship notice.
 - Extended `specs/api_contract.yaml` with `EvidenceDetailResponse`, `EvidenceDetailItem`, `EvidenceSnippet` and `EvidenceDetailSourceDocument`.
 - Extended the frontend production data client with guarded `loadEvidenceDetail` support and local fallback/error modes.
 - Wired the commercial-map homepage so successful `/v1/explore` hydration loads catalog, score explanation and evidence detail in parallel.
@@ -2419,9 +2421,12 @@ Residual risks:
 - Local `./node_modules/.bin/tsc --noEmit` from `apps/web`: PASS after live E2E setup hardening.
 - Local `.venv/bin/python -m pytest -q tests/unit/test_api_health.py`: PASS, 9/9.
 - Local `.venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED, 1/1 because local `.env`/`DATABASE_URL` is absent; CI remains the destructive PostgreSQL migration/reset evidence source.
+- Local `.venv/bin/python -m ruff check apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS after evidence detail contract hardening.
 - Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 2/2 for A203/A211 production graph and evidence hydration.
 - Local default Playwright E2E with non-sandbox browser/server access: PASS, 32/32.
 - GitHub Actions run `27866692631` on commit `b996803f8ce442ed339ec89981cab755ea889092`: FAILED in Step 8 `Verify G2 PostgreSQL migrations and E2E`; Step 7 static/contract/lint/typecheck/unit succeeded. Follow-up fix added relationship evidence schema compatibility and live E2E production data API base setup for the next CI run.
+- GitHub Actions run `27866865460` on commit `5822f15a13e999692786cf64bccba7016e596b83`: FAILED in the same aggregated Step 8 after the first follow-up fix.
+- GitHub Actions run `27866974650` on commit `aefe932a7b3272895ef2c26ba48a8cd4746a510a`: FAILED after workflow split, now isolated to Step 10 `Verify G2 PostgreSQL integration`; Steps 7, 8 and 9 succeeded. This confirmed the remaining failure was in PostgreSQL migration/integration contract, not static/unit/browser setup.
 
 ### Remaining gaps
 

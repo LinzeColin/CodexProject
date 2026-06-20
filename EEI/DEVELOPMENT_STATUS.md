@@ -19,7 +19,7 @@
 ## v5 同步后仍阻断 v0.1 的生产项（8 个未关闭；T1301/T1302/T1303/T1304/T1305/T1307/T1308 进行中）
 
 1. 真实数据采集、实体解析和证据链：官方锚点与 Golden Vertical 候选事实层已开始，live/full-text、正式事实发布和人工复核批准未完成。
-2. 生产 API、递归图查询和评分服务：生产上下文、候选事实隔离、relationship_fact_candidate 评分解释、`/v1/evidence/{objectType}/{objectId}` 证据 detail/source snippets、`sample_candidates` 发现合同、首页 `/v1/explore` context hydration/server node-edge rendering、catalog inventory、score explanation 与 evidence detail 前端 hydration 已开始，多对象评分服务、完整发布边、live backend cross-route 和规模/soak 发布证据未完成。
+2. 生产 API、递归图查询和评分服务：生产上下文、候选事实隔离、relationship_fact_candidate 评分解释、`/v1/evidence/{objectType}/{objectId}` 证据 detail/source snippets、nullable evidence 字段标准化、`sample_candidates` 发现合同、首页 `/v1/explore` context hydration/server node-edge rendering、catalog inventory、score explanation 与 evidence detail 前端 hydration 已开始，多对象评分服务、完整发布边、live backend cross-route 和规模/soak 发布证据未完成。
 3. 模型配置版本、事务性激活和原子全局刷新：active_analysis_contexts、全局 active profile 唯一约束、事务激活 API、operation log、refresh token、前端 API-first active-context hydration、事务激活、rollback 控件和 stale refresh mock E2E 已开始，live FastAPI/PostgreSQL cross-route 刷新、在线编辑和 score recompute UI 未完成。
 4. 后台调度、自动唤醒、幂等、重试和 dead-letter：scheduler job queue、lease、heartbeat、retry、dead-letter 和 graceful release 状态机已开始，真实业务 handler、部署唤醒和 soak 未完成。
 5. 服务端保存视图、冲突控制和恢复：PostgreSQL saved_views/saved_view_versions、/v1/saved-views、expected_version 409、版本恢复、前端 API-first adapter、409 冲突恢复 UI 和 live 多会话 FastAPI/PostgreSQL E2E 已通过 GitHub Actions `verify-g2-db`，用户/工作区 authn/authz 未完成。

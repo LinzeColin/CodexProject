@@ -14,6 +14,7 @@
       "Production_context now exposes bounded sample relationship_fact_candidates so the frontend can discover a score explanation target without hard-coding database UUIDs.",
       "Frontend production data hydration now loads /v1/catalogs and /v1/scoring/explain/relationship_fact_candidate/{objectId}, surfaces catalog inventory counts, source-of-truth counts, adjusted score, evidence count, missing-input count and publication status, and retains explicit local fallback/error states.",
       "GET /v1/evidence/{objectType}/{objectId} exposes bounded evidence detail and source snippets for relationship_fact_candidate and published relationship objects using existing source_documents, sources, ingestion_evidence_chain, relationship_evidence and fixture_relationship_notices tables.",
+      "Evidence detail payload generation normalizes nullable PostgreSQL evidence fields into contract-safe structured_fact objects, counter_evidence arrays and string snippets.",
       "Frontend Evidence Center now hydrates /v1/evidence/relationship_fact_candidate/{objectId}, exposes evidence/source-document counts, endpoint state and source snippets, and refreshes the production evidence detail when the user clicks 打开证据."
     ],
     "explicitly_not_closed": [
@@ -81,13 +82,14 @@
     "python3 -m py_compile apps/api/app/domain_repository.py",
     "python3 -m py_compile apps/api/app/domain_repository.py apps/api/app/domain.py tests/integration/test_database_migrations.py",
     "python3 -m py_compile apps/api/app/domain_repository.py tests/integration/test_database_migrations.py",
+    ".venv/bin/python -m ruff check apps/api/app/domain_repository.py tests/integration/test_database_migrations.py",
     ".venv/bin/python -m pytest -q tests/unit/test_api_health.py",
     ".venv/bin/python -m pytest -q tests/integration/test_database_migrations.py",
     "pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1",
     "pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts --workers=1",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/manage_clean_room_release.py validate",
     "python3 scripts/manage_release_artifacts.py validate",
-    "GitHub Actions: Verify G2 PostgreSQL migrations and E2E"
+    "GitHub Actions: split G2 validation isolates PostgreSQL integration from browser/live E2E before the next push"
   ],
   "rollback": [
     "Revert the T1302 API/repository/contract/test/status commit.",
