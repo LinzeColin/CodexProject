@@ -15,6 +15,7 @@ from psycopg.types.json import Jsonb
 
 from apps.api.app.domain_repository import DomainRepository
 from apps.api.app.main import app
+from apps.worker.app.main import run_worker_cycle, supervise_worker, worker_health_snapshot
 from scripts.db_tools import connect_database, database_url
 from scripts.job_scheduler import (
     complete_job,
@@ -2236,3 +2237,48 @@ def exercise_background_scheduler_contracts() -> None:
         "curated_official_fixture is not live/full-text ingestion"
     )
     assert ingestion_result["outbox_event"]["event_type"] == "data.ingestion.completed"
+
+    supervised_job = enqueue_job(
+        job_type="noop",
+        idempotency_key="a206-supervised-worker-cycle-contract",
+        payload={"acceptance_id": "A206", "path": "worker-supervision"},
+        max_attempts=3,
+        dead_letter_after_attempts=3,
+        metadata={"task_id": "T1304", "contract": "worker-supervisor-v1"},
+    )
+    supervised_cycle = run_worker_cycle(
+        worker_id="a206-supervised-worker",
+        job_type="noop",
+        max_jobs=1,
+        max_outbox=3,
+    )
+    assert supervised_cycle["handler_contract"] == "worker-supervisor-v1"
+    assert supervised_cycle["lease_recovery"] == {"recovered": 0, "dead_lettered": 0}
+    assert supervised_cycle["jobs_processed"] == 1
+    assert supervised_cycle["outbox_events_dispatched"] >= 1
+    assert supervised_cycle["jobs"][0]["id"] == supervised_job["id"]
+    assert supervised_cycle["jobs"][0]["status"] == "succeeded"
+    assert supervised_cycle["health"]["schema_version"] == "eei-worker-health-v1"
+    assert supervised_cycle["health"]["supervision"]["recover_expired_leases"] is True
+    assert supervised_cycle["health"]["supervision"]["run_background_jobs"] is True
+    assert supervised_cycle["health"]["supervision"]["dispatch_transactional_outbox"] is True
+
+    idle_summary = supervise_worker(
+        worker_id="a206-idle-supervisor",
+        job_type="a206-idle-probe",
+        event_type="a206.idle.probe",
+        poll_interval_seconds=0,
+        max_cycles=1,
+        stop_when_idle=True,
+    )
+    assert idle_summary["handler_contract"] == "worker-supervisor-v1"
+    assert idle_summary["status"] == "stopped"
+    assert idle_summary["stop_reason"] == "idle"
+    assert idle_summary["cycles"] == 1
+    assert idle_summary["last_cycle"]["idle"] is True
+
+    health = worker_health_snapshot()
+    assert health["handler_contract"] == "worker-supervisor-v1"
+    assert health["background_jobs"]["counts"]["succeeded"] >= 3
+    assert health["transactional_outbox"]["counts"]["dispatched"] >= 1
+    assert health["dead_letter_job_count"] >= 1

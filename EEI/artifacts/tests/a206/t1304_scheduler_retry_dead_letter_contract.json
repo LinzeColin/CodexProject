@@ -25,13 +25,18 @@
     "scripts/job_scheduler.py registers a curated_ingestion_refresh handler that reuses the curated official NVIDIA/ASML loader idempotently, records execute_curated_ingestion_refresh and emits data.ingestion.completed.",
     "POST /v1/calibrations/run creates a calibration_run background job and calibration.run.requested outbox event while preserving the 14-day cadence and no-auto-activation policy.",
     "scripts/job_scheduler.py registers a calibration_run handler that computes relationship-fact coverage, score-result coverage and drift warnings, writes calibration_runs metrics/drift_report/proposal_status=none, records execute_calibration_run and emits calibration.run.completed.",
-    "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion, score_recompute enqueue/execution idempotency, data_snapshot_refresh enqueue/execution idempotency, curated_ingestion_refresh execution and calibration_run execution."
+    "apps/worker/app/main.py exposes the supervised worker CLI with health, once and supervise commands, covering expired lease recovery, bounded job execution, transactional outbox dispatch, idle stop and SIGTERM/SIGINT graceful stop.",
+    "Makefile exposes worker-health, worker-once and worker-supervise operator commands for deployment wiring.",
+    "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion, score_recompute enqueue/execution idempotency, data_snapshot_refresh enqueue/execution idempotency, curated_ingestion_refresh execution and worker supervisor health/once/idle-stop contracts."
   ],
   "parameters": {
     "scheduler.lease_ttl_seconds": 900,
     "scheduler.heartbeat_interval_seconds": 30,
     "scheduler.max_retry_attempts": 5,
-    "scheduler.dead_letter_after_attempts": 5
+    "scheduler.dead_letter_after_attempts": 5,
+    "worker.poll_interval_seconds": 5,
+    "worker.max_jobs_per_cycle": 1,
+    "worker.max_outbox_per_cycle": 5
   },
   "evidence_paths": [
     "infra/db/migrations/0007_scheduler_job_queue/up.sql",
@@ -44,6 +49,8 @@
     "apps/api/app/scoring.py",
     "apps/web/src/app/model-activation-client.ts",
     "apps/web/src/app/page.tsx",
+    "apps/worker/app/main.py",
+    "Makefile",
     "scripts/job_scheduler.py",
     "scripts/check_database_schema.py",
     "tests/integration/test_database_migrations.py",
@@ -52,7 +59,8 @@
   ],
   "local_validation": [
     "python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py",
-    ".venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py tests/unit/test_scoring.py",
+    "python3 -m py_compile apps/worker/app/main.py tests/integration/test_database_migrations.py",
+    ".venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py apps/worker/app/main.py scripts/job_scheduler.py tests/integration/test_database_migrations.py tests/unit/test_scoring.py",
     ".venv/bin/python scripts/validate_contracts.py",
     ".venv/bin/python scripts/validate_catalog_integrity.py",
     ".venv/bin/python -m pytest -q tests/unit/test_scoring.py"
@@ -73,7 +81,7 @@
     "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
   },
   "remaining_gaps_before_done": [
-    "Add deployment-level wake/supervision contract for continuous worker operation.",
+    "Bind worker-supervise to the chosen deployment process manager or scheduler in the target runtime.",
     "Run T1307 4h/24h soak tests for timer, retry and recovery stability."
   ],
   "rollback": [

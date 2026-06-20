@@ -17,14 +17,14 @@
     "make verify",
     "sha256sum -c CHECKSUMS.sha256"
   ],
-  "generated_at": "2026-06-20T14:06:22+00:00",
+  "generated_at": "2026-06-20T14:22:00+00:00",
   "package": {
-    "bytes": 12513094,
+    "bytes": 12517540,
     "entry_count": 351,
     "internal_checksums": "PACKAGE_CHECKSUMS.sha256",
     "internal_manifest": "PACKAGE_MANIFEST.json",
     "path": "artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
-    "sha256": "b1d9296ee13f57cf7aaefbd651b379047ba12cc3b845bab18adbda406842d8fe"
+    "sha256": "cf1efa1a0e79b3c2be2e966b267d1b9a14ffafa449936e9715231fcc667580c4"
   },
   "rollback": [
     "Revert the T1215 clean-room release evidence commit.",
@@ -37,7 +37,7 @@
     "prototype_bytes": 173467,
     "prototype_hash": "7f06f96c917ff14fc42c94de09b0e5f89f622a22a44a0dd64da3941429486719"
   },
-  "source_commit": "c67c1d7",
+  "source_commit": "cd22ddd",
   "status": "LOCAL_PASS",
   "task_id": "T1215"
 }

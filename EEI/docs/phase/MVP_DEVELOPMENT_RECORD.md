@@ -2887,3 +2887,60 @@ Residual risks:
 - Calibration accept/reject proposal API/UI and failure-injection coverage remain open.
 - Deployment-level worker wake/supervision, LISTEN/NOTIFY or equivalent scheduler automation and 4h/24h soak remain open.
 - Formal fact publication, multi-object scoring, trusted saved-view identity boundary and brand clearance remain v0.1 blockers.
+
+## 2026-06-21 - T1304/A206 worker supervisor CLI
+
+### Scope
+
+- Replaced the placeholder worker shell with `apps.worker` health, once and supervise commands.
+- `health` emits `eei-worker-health-v1` JSON with background job counts, outbox counts, expired leases, latest heartbeats and dead-letter count.
+- `once` runs one bounded recover -> job execution -> outbox dispatch cycle and emits `eei-worker-cycle-v1`.
+- `supervise` loops bounded cycles, supports idle stop for operator probes, and handles SIGTERM/SIGINT for graceful stop.
+- Added Makefile operator commands: `worker-health`, `worker-once` and `worker-supervise`.
+- Extended PostgreSQL integration coverage so the supervisor executes a real queued job, dispatches outbox events and proves idle-stop behavior.
+
+### Files changed
+
+- `apps/worker/app/main.py`
+- `Makefile`
+- `tests/integration/test_database_migrations.py`
+- `artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `DEVELOPMENT_STATUS.md`
+- `README.md`
+- `MODEL_MANAGEMENT.md`
+- `docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- generated development-status artifacts
+
+### Acceptance mapping
+
+- T1304 -> A206 for worker supervision, scheduler recovery and outbox dispatch execution.
+- T1307 -> A209 remains partial because this CLI produces soak-observable worker metrics but does not replace 4h/24h operator soak evidence.
+- A206 remains `IN_PROGRESS`, not `DONE`, until the target deployment runtime binds `worker-supervise` to a process manager and long-duration soak evidence is attached.
+
+### Validation
+
+- Local `python3 -m py_compile apps/worker/app/main.py tests/integration/test_database_migrations.py`: PASS.
+- Local `.venv/bin/ruff check apps/worker/app/main.py tests/integration/test_database_migrations.py`: PASS after import sorting.
+- Local `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- Local `.venv/bin/python scripts/validate_catalog_integrity.py`: PASS.
+- Local `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- Local `.venv/bin/python scripts/manage_development_status_artifacts.py generate`: PASS.
+- Local `.venv/bin/python scripts/manage_development_status_artifacts.py validate`: PASS.
+- Local `.venv/bin/python -m pytest -q tests/unit/test_scoring.py tests/unit/test_api_health.py`: PASS, 11 tests with one existing Starlette/httpx deprecation warning.
+- Local `env -u DATABASE_URL .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: expected SKIP on this host because no local PostgreSQL is configured.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-clean-room-release`: PASS; clean-room ZIP regenerated.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-release-artifacts`: PASS; remote status remains `PENDING` until this commit has GitHub Actions evidence.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make validate-clean-room-release`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make validate-release-artifacts`: PASS.
+- Local `shasum -a 256 -c CHECKSUMS.sha256`: PASS.
+- Local sandboxed `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: expected FAIL at Chromium launch with macOS `bootstrap_check_in ... Permission denied`; rerun with approved elevated browser permission.
+- Local elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes governance, contract, prototype parity, GitHub governance, v5 sync, development/risk/release validation, scale benchmark, Chromium browser benchmark, soak smoke, secret scan, UI copy lint, ruff, web typecheck and unit tests 15/15.
+
+### Remaining gaps
+
+- Target deployment runtime still needs a concrete process manager binding for `make worker-supervise`.
+- T1307 4h and 24h soak runs remain required before A209 or scheduler stability can be called production-ready.
+- LISTEN/NOTIFY or an equivalent low-latency wake path remains optional for v0.1 but would reduce polling latency.

@@ -7,7 +7,7 @@ UV := $(VENV)/bin/uv
 PNPM_VERSION := 11.8.0
 PNPM ?= npx --yes pnpm@$(PNPM_VERSION)
 
-.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-scale-browser-benchmark validate-soak-smoke secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e test-e2e-live verify verify-g1 verify-g2-db dev-api dev-web clean-local
+.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health worker-health worker-once worker-supervise validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-scale-browser-benchmark validate-soak-smoke secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e test-e2e-live verify verify-g1 verify-g2-db dev-api dev-web clean-local
 
 $(UV):
 	$(PYTHON) -m venv $(VENV)
@@ -58,6 +58,15 @@ check-db-schema:
 
 health:
 	if [[ -f .env ]]; then set -a; source .env; set +a; fi; $(UV) run python -m apps.api.app.healthcheck
+
+worker-health:
+	if [[ -f .env ]]; then set -a; source .env; set +a; fi; $(UV) run python -m apps.worker.app.main health
+
+worker-once:
+	if [[ -f .env ]]; then set -a; source .env; set +a; fi; $(UV) run python -m apps.worker.app.main once --worker-id eei-local-worker --max-jobs 1 --max-outbox 5
+
+worker-supervise:
+	if [[ -f .env ]]; then set -a; source .env; set +a; fi; $(UV) run python -m apps.worker.app.main supervise --worker-id eei-local-worker --max-jobs-per-cycle 1 --max-outbox-per-cycle 5 --poll-interval-seconds 5
 
 validate-governance:
 	$(UV) run python scripts/validate_task_pack.py
