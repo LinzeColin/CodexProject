@@ -1,0 +1,150 @@
+governance_spec_version: "1.0.0"
+project_id: "OpMe_System"
+formulas:
+  - formula_id: "FORM-001"
+    model_id: "MOD-001"
+    assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
+    status: "active"
+    expression: "risk_score=min(100,int(centerline/5*35 + ovality/0.04*25 + temperature/520*25 + runout/3*15)); suggestions trigger at centerline>3, ovality>0.02, temperature>400, eccentricity>0.015."
+    variables:
+      - name: "input_data"
+        data_type: "dict"
+        unit: "module payload"
+        input_domain: "schema-constrained dict or defaults to 0 where code uses get"
+      - name: "risk_score"
+        data_type: "integer"
+        unit: "score"
+        input_domain: "0..100"
+    constraints: ["Outputs are advisory and require engineer review.", "Calibration source is UNKNOWN and task-linked."]
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["OpMe_System/backend/app/services/analysis.py:60"]
+    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
+    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+  - formula_id: "FORM-002"
+    model_id: "MOD-002"
+    assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
+    status: "active"
+    expression: "Symptoms derive from description/vibration/temperature/speed/noise; risk_score=min(100,int(vibration/4*35 + temperature/550*35 + symptom_count*10))."
+    variables:
+      - name: "input_data"
+        data_type: "dict"
+        unit: "module payload"
+        input_domain: "schema-constrained dict or defaults to 0 where code uses get"
+      - name: "risk_score"
+        data_type: "integer"
+        unit: "score"
+        input_domain: "0..100"
+    constraints: ["Outputs are advisory and require engineer review.", "Calibration source is UNKNOWN and task-linked."]
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["OpMe_System/backend/app/services/analysis.py:137"]
+    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
+    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+  - formula_id: "FORM-003"
+    model_id: "MOD-003"
+    assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
+    status: "active"
+    expression: "risk_score=min(100,int(wear_depth/3*45 + crack_length/80*35 + temperature/180*20)); material and repair suggestions trigger on wear_depth>1.0, crack_length>0, temperature>120."
+    variables:
+      - name: "input_data"
+        data_type: "dict"
+        unit: "module payload"
+        input_domain: "schema-constrained dict or defaults to 0 where code uses get"
+      - name: "risk_score"
+        data_type: "integer"
+        unit: "score"
+        input_domain: "0..100"
+    constraints: ["Outputs are advisory and require engineer review.", "Calibration source is UNKNOWN and task-linked."]
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["OpMe_System/backend/app/services/analysis.py:205"]
+    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
+    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+  - formula_id: "FORM-004"
+    model_id: "MOD-004"
+    assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
+    status: "active"
+    expression: "precision_risk=35 if tolerance<0.05 else 15 if tolerance<0.12 else 5; size_risk=min(35,int((diameter+length)/10000*35)); material_risk=20 for 42CrMo/Inconel/high-temperature alloys else 10; risk_score=min(100,sum)."
+    variables:
+      - name: "input_data"
+        data_type: "dict"
+        unit: "module payload"
+        input_domain: "schema-constrained dict or defaults to 0 where code uses get"
+      - name: "risk_score"
+        data_type: "integer"
+        unit: "score"
+        input_domain: "0..100"
+    constraints: ["Outputs are advisory and require engineer review.", "Calibration source is UNKNOWN and task-linked."]
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["OpMe_System/backend/app/services/analysis.py:262"]
+    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
+    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+  - formula_id: "FORM-005"
+    model_id: "MOD-005"
+    assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
+    status: "active"
+    expression: "risk_score=25 and generic engineering review suggestions for other consulting topics."
+    variables:
+      - name: "input_data"
+        data_type: "dict"
+        unit: "module payload"
+        input_domain: "schema-constrained dict or defaults to 0 where code uses get"
+      - name: "risk_score"
+        data_type: "integer"
+        unit: "score"
+        input_domain: "0..100"
+    constraints: ["Outputs are advisory and require engineer review.", "Calibration source is UNKNOWN and task-linked."]
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["OpMe_System/backend/app/services/analysis.py:333"]
+    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
+    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+  - formula_id: "FORM-006"
+    model_id: "MOD-006"
+    assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
+    status: "active"
+    expression: "risk_level is critical when score>=75, warning when score>=40, otherwise normal."
+    variables:
+      - name: "input_data"
+        data_type: "dict"
+        unit: "module payload"
+        input_domain: "schema-constrained dict or defaults to 0 where code uses get"
+      - name: "risk_score"
+        data_type: "integer"
+        unit: "score"
+        input_domain: "0..100"
+    constraints: ["Outputs are advisory and require engineer review.", "Calibration source is UNKNOWN and task-linked."]
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["OpMe_System/backend/app/services/analysis.py:16"]
+    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
+    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+  - formula_id: "FORM-007"
+    model_id: "MOD-007"
+    assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
+    status: "active"
+    expression: "Filter enabled provider configs with api_key, base_url, and model; call providers in priority order using OpenAI-compatible /chat/completions, temperature 0.2 and timeout 20; log success/failure; if no config or all calls fail return offline_rules."
+    variables:
+      - name: "input_data"
+        data_type: "dict"
+        unit: "module payload"
+        input_domain: "schema-constrained dict or defaults to 0 where code uses get"
+      - name: "risk_score"
+        data_type: "integer"
+        unit: "score"
+        input_domain: "0..100"
+    constraints: ["Outputs are advisory and require engineer review.", "Calibration source is UNKNOWN and task-linked."]
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["OpMe_System/backend/app/services/model_router.py:15"]
+    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
+    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]

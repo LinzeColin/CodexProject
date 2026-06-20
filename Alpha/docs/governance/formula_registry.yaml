@@ -1,0 +1,220 @@
+governance_spec_version: "1.0.0"
+project_id: "Alpha"
+formulas:
+  - formula_id: "FORM-001"
+    model_id: "MOD-001"
+    assumption_ids: ["ASM-001", "ASM-002"]
+    status: "active"
+    expression: "For each symbol and lookback in (5,10,20): total_return=end/start-1; drawdown=min(close/running_max-1); oos_return and hit_rate come from positive momentum one-step-forward windows; score=total_return+0.5*oos_return+0.01*hit_rate-abs(drawdown); rank desc by (decision=='promote_to_paper', score)."
+    variables:
+      - name: "close"
+        data_type: "float"
+        unit: "fixture price"
+        input_domain: ">0"
+      - name: "lookback"
+        data_type: "integer"
+        unit: "trading rows"
+        input_domain: "5,10,20"
+      - name: "score"
+        data_type: "float"
+        unit: "dimensionless"
+        input_domain: "unbounded"
+    constraints: ["Skip symbol/lookback when close row count <= lookback.", "Ranking uses risk_score decision before score."]
+    missing_policy: "Missing or insufficient rows are skipped by len(closes) <= lookback."
+    output_range: "candidate_count >= 0; score unbounded float rounded to 6 decimals."
+    code_refs: ["Alpha/backend/app/services/strategy_iteration.py:28", "Alpha/backend/app/services/strategy_iteration.py:82"]
+    test_refs: ["Alpha/tests/test_strategy_iteration.py:4"]
+    evidence_refs: ["Alpha/backend/app/services/strategy_iteration.py:43"]
+  - formula_id: "FORM-002"
+    model_id: "MOD-002"
+    assumption_ids: ["ASM-001", "ASM-002"]
+    status: "active"
+    expression: "risk_score=max(100 - 30*I(abs(max_drawdown)>0.10) - 20*I(trade_count<10) - 20*I(turnover>3), 0); decision='promote_to_paper' if score>=70 else 'hold_research'; if score<50 decision='reject'."
+    variables:
+      - name: "max_drawdown"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "any numeric; absolute value compared to 0.10"
+      - name: "trade_count"
+        data_type: "integer"
+        unit: "trades"
+        input_domain: ">=0"
+      - name: "turnover"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: ">=0"
+    constraints: ["Missing metrics default to 0 in dict lookups.", "Score floor is 0."]
+    missing_policy: "metrics.get defaults missing max_drawdown, trade_count, and turnover to 0."
+    output_range: "risk_score >= 0; decision in promote_to_paper, hold_research, reject."
+    code_refs: ["Alpha/backend/app/services/risk.py:22"]
+    test_refs: ["Alpha/tests/test_strategy_iteration.py:4"]
+    evidence_refs: ["Alpha/backend/app/services/risk.py:34"]
+  - formula_id: "FORM-003"
+    model_id: "MOD-003"
+    assumption_ids: ["ASM-001"]
+    status: "active"
+    expression: "Reject in order: kill_switch_active; missing idempotency_key; side not buy/sell; quantity<=0 or price<=0 or notional<=0; max_notional<=0; notional>max_notional. Otherwise allowed=True and status=approved_for_owner_review."
+    variables:
+      - name: "notional"
+        data_type: "float"
+        unit: "AUD"
+        input_domain: ">0"
+      - name: "quantity"
+        data_type: "float"
+        unit: "shares/contracts"
+        input_domain: ">0"
+      - name: "side"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "buy or sell"
+    constraints: ["max_notional must be configured >0.", "idempotency key is required."]
+    missing_policy: "Missing numeric values coerce through intent.get defaults to 0 and reject."
+    output_range: "allowed boolean; status rejected or approved_for_owner_review."
+    code_refs: ["Alpha/backend/app/services/risk.py:40"]
+    test_refs: ["Alpha/tests/test_paper_trading_loop.py:8"]
+    evidence_refs: ["Alpha/tests/test_paper_trading_loop.py:45"]
+  - formula_id: "FORM-004"
+    model_id: "MOD-004"
+    assumption_ids: ["ASM-001", "ASM-003"]
+    status: "active"
+    expression: "If live_trading.enabled is false reject; else require LIVE_TRADING_ENABLED=true when configured, kill switch clear, audit sink OK, broker health OK, idempotency key present, and notional<=max_order_value_aud. FailClosedLiveBroker returns rejected even if policy allows."
+    variables:
+      - name: "live_trading.enabled"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "true or false"
+      - name: "notional_aud"
+        data_type: "float"
+        unit: "AUD"
+        input_domain: ">0"
+      - name: "broker_health_ok"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "true or false"
+    constraints: ["Committed default live_trading.enabled is false.", "Adapter never places real broker orders."]
+    missing_policy: "Missing policy file raises FileNotFoundError; missing idempotency rejects when required."
+    output_range: "PolicyDecision allowed boolean; broker result status rejected."
+    code_refs: ["Alpha/backend/app/services/policy.py:38", "Alpha/backend/app/services/live_broker.py:19"]
+    test_refs: ["Alpha/tests/test_policy.py:5", "Alpha/tests/test_live_broker_fail_closed.py:6"]
+    evidence_refs: ["Alpha/configs/trading_governor_policy.yaml:4"]
+  - formula_id: "FORM-005"
+    model_id: "MOD-005"
+    assumption_ids: ["ASM-001", "ASM-002"]
+    status: "active"
+    expression: "Paper cycle: tournament=run_strategy_tournament(price_path); intent=OrderIntent(quantity=1, side='buy', ttl=refresh_interval); risk=pre_trade_risk_check(intent); ticket=BrokerReadyOrderTicket.from_intent(intent,risk); enqueue ticket; if risk.allowed submit PaperOrder; return run result and audit payload."
+    variables:
+      - name: "refresh_interval_seconds"
+        data_type: "integer"
+        unit: "seconds"
+        input_domain: ">0"
+      - name: "quantity"
+        data_type: "float"
+        unit: "shares/contracts"
+        input_domain: "1 in current generator"
+      - name: "estimated_price"
+        data_type: "float"
+        unit: "fixture price"
+        input_domain: ">0"
+    constraints: ["Generated intent selects tradable winner whose latest close <= max_notional when available.", "Paper order only submits when risk.allowed is true."]
+    missing_policy: "If no tradable tournament winner exists, fallback uses the highest-priced eligible fixture candidate or latest sorted price."
+    output_range: "status completed; paper_order filled or skipped/rejected."
+    code_refs: ["Alpha/backend/app/services/paper_trading_loop.py:42", "Alpha/backend/app/services/paper_trading_loop.py:104"]
+    test_refs: ["Alpha/tests/test_paper_trading_loop.py:8"]
+    evidence_refs: ["Alpha/configs/agent_loop.yaml:1"]
+  - formula_id: "FORM-006"
+    model_id: "MOD-006"
+    assumption_ids: ["ASM-001"]
+    status: "active"
+    expression: "Reject duplicate idempotency, quantity<=0, price<=0, invalid side, insufficient cash/position. Buy: cash-=quantity*price and position+=quantity. Sell: position-=quantity and cash+=quantity*price. Portfolio total_equity=cash+sum(quantity*mark_price)."
+    variables:
+      - name: "cash"
+        data_type: "float"
+        unit: "AUD"
+        input_domain: ">=0 under normal buy constraints"
+      - name: "quantity"
+        data_type: "float"
+        unit: "shares/contracts"
+        input_domain: ">0"
+      - name: "mark_price"
+        data_type: "float"
+        unit: "fixture price"
+        input_domain: ">=0; missing mark defaults 0"
+    constraints: ["Idempotency keys cannot repeat.", "Buy cannot exceed paper cash.", "Sell cannot exceed paper position."]
+    missing_policy: "Missing mark price defaults to 0.0 in portfolio snapshot."
+    output_range: "filled or rejected; total_equity rounded to 2 decimals."
+    code_refs: ["Alpha/backend/app/services/paper_broker.py:43", "Alpha/backend/app/services/paper_broker.py:83"]
+    test_refs: ["Alpha/tests/test_paper_broker_persistence.py:4"]
+    evidence_refs: ["Alpha/backend/app/services/paper_broker.py:74"]
+  - formula_id: "FORM-007"
+    model_id: "MOD-007"
+    assumption_ids: ["ASM-001"]
+    status: "active"
+    expression: "seconds_until_expiry=int(expires_at-now); freshness='fresh' if seconds_until_expiry>0 else 'expired'; pending tickets map to fresh_pending_owner_approval or expired_owner_approval; blocked tickets map to blocked_by_risk."
+    variables:
+      - name: "expires_at"
+        data_type: "datetime"
+        unit: "UTC timestamp"
+        input_domain: "ISO datetime or missing"
+      - name: "now"
+        data_type: "datetime"
+        unit: "UTC timestamp"
+        input_domain: "ISO datetime"
+      - name: "status"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "pending_owner_approval, blocked_by_risk, other"
+    constraints: ["Naive datetimes are treated as UTC.", "Invalid datetime returns freshness status invalid."]
+    missing_policy: "Missing expires_at returns freshness status unknown and seconds_until_expiry None."
+    output_range: "freshness status in unknown, invalid, fresh, expired; actionability string."
+    unknown_task_ids: ["TASK-ALPHA-B-001"]
+    code_refs: ["Alpha/backend/app/services/approval_queue.py:59"]
+    test_refs: ["Alpha/tests/test_approval_queue.py:17"]
+    evidence_refs: ["Alpha/backend/app/services/approval_queue.py:74"]
+  - formula_id: "FORM-008"
+    model_id: "MOD-008"
+    assumption_ids: ["ASM-001"]
+    status: "active"
+    expression: "Pydantic validates strategy payload. Universe symbols are stripped/upcased and duplicates reject. MVP rejects no_leverage=false, no_short=false, no_options=false, no_crypto_withdrawal=false."
+    variables:
+      - name: "lookback_days"
+        data_type: "integer"
+        unit: "days"
+        input_domain: "2..756 or None"
+      - name: "max_positions"
+        data_type: "integer"
+        unit: "positions"
+        input_domain: "1..50"
+      - name: "max_weight_per_asset"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "(0,1]"
+    constraints: ["name min length 3.", "universe min length 1.", "signals min length 1."]
+    missing_policy: "Pydantic field defaults apply where defined; required missing fields fail validation."
+    output_range: "StrategyDSL object or validation error."
+    code_refs: ["Alpha/backend/app/schemas/strategy_dsl.py:22", "Alpha/backend/app/schemas/strategy_dsl.py:53"]
+    test_refs: ["Alpha/tests/test_strategy_dsl.py:16"]
+    evidence_refs: ["Alpha/tests/test_strategy_dsl.py:22"]
+  - formula_id: "FORM-009"
+    model_id: "MOD-009"
+    assumption_ids: ["ASM-002"]
+    status: "active"
+    expression: "Load fixture prices; pivot close by date/symbol; daily returns=pct_change; equal-weight portfolio return=mean(symbol returns); one_time_cost=(cost_bps+slippage_bps)/10000; equity=initial_capital*(1-one_time_cost)*cumprod(1+portfolio_returns)."
+    variables:
+      - name: "initial_capital"
+        data_type: "float"
+        unit: "AUD"
+        input_domain: ">0"
+      - name: "cost_bps"
+        data_type: "float"
+        unit: "basis points"
+        input_domain: ">=0"
+      - name: "slippage_bps"
+        data_type: "float"
+        unit: "basis points"
+        input_domain: ">=0"
+    constraints: ["Rows with missing pivot values are dropped.", "Benchmark is equal-weight fixture only."]
+    missing_policy: "dropna removes dates with missing symbol close after pivot."
+    output_range: "metric dict with rounded total_return, max_drawdown, volatility, turnover, trade_count, ending_equity."
+    code_refs: ["Alpha/backend/app/services/backtest.py:14"]
+    test_refs: ["Alpha/tests/test_backtest_fixture.py:4"]
+    evidence_refs: ["Alpha/backend/app/services/backtest.py:19"]

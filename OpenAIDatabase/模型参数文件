@@ -1,35 +1,16 @@
 # OpenAIDatabase 模型参数文件
 
-更新时间：2026-06-19
+更新时间：2026-06-20
 
-## 默认模型与执行模式
+本文件是兼容入口，不再作为模型、公式或参数的可编辑事实源。
 
-- 默认执行模式：local-first、review-gated、redacted derived output。
-- 默认记忆状态：candidate 保持 pending，用户确认后进入长期记忆。
-- 默认输出语言：中文为主，专业术语保留英文。
-- 默认可视化数据：`public_redacted_read_only_visualization`。
+Canonical 文件：
 
-## 关键参数域
+- 模型规范：`docs/governance/MODEL_SPEC.md`
+- 模型机器源：`docs/governance/model_registry.yaml`
+- 公式机器源：`docs/governance/formula_registry.yaml`
+- 参数机器源：`docs/governance/parameter_registry.csv`
+- 追踪矩阵：`docs/governance/TRACEABILITY_MATRIX.csv`
 
-| 参数域 | 当前原则 |
-| --- | --- |
-| memory tier | 核心画像 / 一般 / 临时 |
-| writeback | frontend 只能生成 proposal，不能直接 mutate active memory |
-| data sources | all / memory_atlas(ChatGPT) / codex；未来 sources 先 registry 后实现 |
-| secrets | GitHub 只存 `secret_ref` metadata，不存明文高风险 secrets |
-| reports | 聊天框输出 + `data/derived/chat_reports/*.chat_report.md` 备份 |
-| visualization snapshot | `data/derived/visualization/memory_atlas.json` |
-
-## 模型与数据要求
-
-- 记忆提取必须包含日期、来源、分类、重要性、有效期、置信度、原因。
-- human review 必须覆盖 ROI、个人成长、机会、行动清单和冲突。
-- 处理结果必须和上一轮 snapshot 对比。
-- 高风险、当前事实或需要外部验证的信息必须标注来源/时效/不确定性。
-
-## 不允许保存或提交
-
-- raw OpenAI export ZIP。
-- 未脱敏 full messages。
-- `.local_keys`、tokens、cookies、sessions、private keys、`.env`。
-- source refs、record hashes、local absolute paths、conversation refs 或 client-side conflict tokens 进入 public visualization JSON。
+不要在本文件新增权重、阈值、默认值、激活值、公式或校准结论。所有新增
+模型和参数事实必须写入 canonical registry，并通过根治理 validator。

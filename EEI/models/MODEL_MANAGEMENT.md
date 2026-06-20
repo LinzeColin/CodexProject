@@ -1,42 +1,21 @@
-# 模型管理单一事实来源（v4.2）
+# EEI Governance Compatibility Entry
 
-## 1. 文件体系
+This file is retained as a compatibility entry for historical EEI workflows.
+The canonical CodexProject governance sources are now under `docs/governance/`:
 
-| 层级 | 文件 | 用途 |
-|---|---|---|
-| 模型目录 | `data/model_registry.csv` | 模型、公式、版本、状态、修改入口和刷新范围 |
-| 公式目录 | `data/formula_registry.csv` | 11 个公式的方程、输入、输出和门槛 |
-| 参数目录 | `data/parameter_catalog.csv` | 60 个可调参数及范围、单位、控件、刷新行为 |
-| 阈值目录 | `data/threshold_registry.csv` | 17 个核心门槛阈值 |
-| 聚合 JSON | `models/model_registry.json` | 程序、API和导入导出使用 |
-| 执行配置 | `config/model_profiles/balanced-v2.json` | 综合权重和半衰期等默认配置 |
-| 门槛配置 | `config/thresholds/default-v2.json` | 图谱、证据、告警和刷新门槛 |
-| JSON Schema | `specs/model_config_schema.json` | 配置验证 |
+- `docs/governance/MODEL_SPEC.md`
+- `docs/governance/model_registry.yaml`
+- `docs/governance/formula_registry.yaml`
+- `docs/governance/parameter_registry.csv`
+- `docs/governance/DEVELOPMENT_LEDGER.md`
+- `docs/governance/development_events.jsonl`
+- `docs/governance/DELIVERY_PLAN.md`
+- `docs/governance/delivery_tasks.yaml`
+- `docs/governance/VERSION_MATRIX.yaml`
+- `docs/governance/TRACEABILITY_MATRIX.csv`
 
-## 2. 修改方式
+Legacy EEI `data/*.csv` files are preserved as evidence and compatibility inputs
+for existing validators. Do not edit this Markdown file as an independent source
+of model, formula, parameter, task, acceptance, risk, or version counts.
 
-### 文档/文件修改
-
-编辑 JSON 配置 -> 运行校验 -> dry-run 影响预览 -> PR -> 保存不可变版本 -> 激活 -> 增量重算 -> 原子切换快照 -> SSE 通知所有界面。
-
-### 系统在线修改
-
-导航 `模型与参数` -> 公式/权重/门槛/时间 -> 即时预览 -> 填写原因 -> 保存草稿或应用 -> 显示刷新进度和版本 -> 可回滚。
-
-## 3. 全局刷新一致性
-
-“立即刷新”分两层：
-
-1. 当前浏览器已加载的全部可视化：本地/服务端预览，P95 目标 <250ms；
-2. 持久化全库：增量重算并生成新 score snapshot，成功后原子激活；未完成前继续显示旧快照。
-
-同一页面的所有模块必须同时报告相同的 `model_version` 与 `data_snapshot_id`。任何一处不一致，刷新状态不得显示完成。
-
-## 4. 模型治理
-
-- 权重和参数变更不得覆盖历史版本。
-- 非法配置不得产生半成功版本。
-- 公式结构改变必须提升模型版本。
-- 每次激活记录原因、旧值、新值、操作者、时间和影响范围。
-- 每14天校准一次；建议默认不自动生效。
-- 分数是研究排序与解释工具，不是保证收益或股价预测。
+Canonical current task, phase, and gate are maintained in `docs/governance/VERSION_MATRIX.yaml` and `docs/governance/DEVELOPMENT_LEDGER.md`.

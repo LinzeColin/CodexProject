@@ -1,0 +1,687 @@
+governance_spec_version: "1.0.0"
+project_id: "EEI"
+source_policy: "Canonical CodexProject governance source generated from EEI data/config evidence. Legacy EEI/data CSV files remain compatibility evidence, not independent editable governance sources."
+assumptions:
+  - assumption_id: "ASM-001"
+    statement: "Scores are research prioritization and explanation aids, not investment return probabilities."
+    fact_level: "EXTRACTED"
+    status: "active"
+    evidence_refs:
+      - "EEI/AGENTS.md:24-26"
+      - "EEI/config/model_profiles/balanced-v2.json:5"
+    unknown_task_ids: []
+  - assumption_id: "ASM-002"
+    statement: "Missing or unobserved inputs are not coerced to zero; formula missing_policy controls renormalization or disclosure."
+    fact_level: "EXTRACTED"
+    status: "active"
+    evidence_refs:
+      - "EEI/AGENTS.md:24"
+      - "EEI/data/formula_registry.csv:2-12"
+      - "EEI/config/model_runtime_defaults.yaml:6"
+    unknown_task_ids: []
+  - assumption_id: "ASM-003"
+    statement: "Model and parameter changes require dry-run validation, immutable versioning, preview, and rollback before activation."
+    fact_level: "EXTRACTED"
+    status: "active"
+    evidence_refs:
+      - "EEI/config/model_runtime_defaults.yaml:4-7"
+      - "EEI/config/model_profiles/balanced-v2.json; EEI/config/thresholds/default-v2.json"
+    unknown_task_ids: []
+  - assumption_id: "ASM-004"
+    statement: "Production scoring engine, live data calibration, and real benchmark quality are not fully evidenced in current governance inputs."
+    fact_level: "EXTRACTED"
+    status: "active"
+    evidence_refs:
+      - "EEI/data/development_status_ledger.csv:19-29"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+models:
+  - model_id: "MOD-001"
+    name: "综合研究优先级"
+    kind: "ranking_or_scoring_model"
+    purpose: "节点大小、排序、路径、Watchlist"
+    owner: "model owner"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "business-empire-model-v2"
+    legacy_formula_id: "F-NP-001"
+    assumptions: []
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-001"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+    inputs:
+      - "scoring_object=node"
+      - "formula=F-NP-001"
+    outputs:
+      - "节点大小、排序、路径、Watchlist"
+    methodology: "Weighted deterministic scoring/catalog formula extracted from EEI/data/formula_registry.csv; production scoring engine evidence remains bounded by existing tests and docs."
+    code_refs:
+      - "EEI/data/model_registry.csv:2"
+      - "EEI/config/model_profiles/balanced-v2.json"
+      - "EEI/scripts/validate_governance.py:108-121"
+    test_refs:
+      - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/state-contract.spec.ts:5"
+    fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
+    risk_controls:
+      - "Immutable versioning"
+      - "dry-run before activation"
+      - "manual calibration approval"
+      - "coverage disclosure"
+    failure_modes:
+      - "missing evidence inputs"
+      - "coverage below threshold"
+      - "configuration validation failure"
+      - "production scoring engine not confirmed"
+    evidence_refs:
+      - "EEI/data/model_registry.csv:2"
+      - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - model_id: "MOD-002"
+    name: "证据质量"
+    kind: "ranking_or_scoring_model"
+    purpose: "证据等级、发布门槛、解释"
+    owner: "model owner"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "business-empire-model-v2"
+    legacy_formula_id: "F-EQ-001"
+    assumptions: []
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-002"
+    parameter_ids:
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+    inputs:
+      - "scoring_object=evidence"
+      - "formula=F-EQ-001"
+    outputs:
+      - "证据等级、发布门槛、解释"
+    methodology: "Weighted deterministic scoring/catalog formula extracted from EEI/data/formula_registry.csv; production scoring engine evidence remains bounded by existing tests and docs."
+    code_refs:
+      - "EEI/data/model_registry.csv:3"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    test_refs:
+      - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/state-contract.spec.ts:5"
+    fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
+    risk_controls:
+      - "Immutable versioning"
+      - "dry-run before activation"
+      - "manual calibration approval"
+      - "coverage disclosure"
+    failure_modes:
+      - "missing evidence inputs"
+      - "coverage below threshold"
+      - "configuration validation failure"
+      - "production scoring engine not confirmed"
+    evidence_refs:
+      - "EEI/data/model_registry.csv:3"
+      - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - model_id: "MOD-003"
+    name: "时间相关性"
+    kind: "ranking_or_scoring_model"
+    purpose: "所有时间衰减"
+    owner: "model owner"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "business-empire-model-v2"
+    legacy_formula_id: "F-RF-001"
+    assumptions: []
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-003"
+    parameter_ids:
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+    inputs:
+      - "scoring_object=fact_event"
+      - "formula=F-RF-001"
+    outputs:
+      - "所有时间衰减"
+    methodology: "Weighted deterministic scoring/catalog formula extracted from EEI/data/formula_registry.csv; production scoring engine evidence remains bounded by existing tests and docs."
+    code_refs:
+      - "EEI/data/model_registry.csv:4"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    test_refs:
+      - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/state-contract.spec.ts:5"
+    fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
+    risk_controls:
+      - "Immutable versioning"
+      - "dry-run before activation"
+      - "manual calibration approval"
+      - "coverage disclosure"
+    failure_modes:
+      - "missing evidence inputs"
+      - "coverage below threshold"
+      - "configuration validation failure"
+      - "production scoring engine not confirmed"
+    evidence_refs:
+      - "EEI/data/model_registry.csv:4"
+      - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - model_id: "MOD-004"
+    name: "关系重要性"
+    kind: "ranking_or_scoring_model"
+    purpose: "边显示、宽度、Top-N"
+    owner: "model owner"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "business-empire-model-v2"
+    legacy_formula_id: "F-EM-001"
+    assumptions: []
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-004"
+    parameter_ids:
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+    inputs:
+      - "scoring_object=relationship"
+      - "formula=F-EM-001"
+    outputs:
+      - "边显示、宽度、Top-N"
+    methodology: "Weighted deterministic scoring/catalog formula extracted from EEI/data/formula_registry.csv; production scoring engine evidence remains bounded by existing tests and docs."
+    code_refs:
+      - "EEI/data/model_registry.csv:5"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    test_refs:
+      - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/state-contract.spec.ts:5"
+    fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
+    risk_controls:
+      - "Immutable versioning"
+      - "dry-run before activation"
+      - "manual calibration approval"
+      - "coverage disclosure"
+    failure_modes:
+      - "missing evidence inputs"
+      - "coverage below threshold"
+      - "configuration validation failure"
+      - "production scoring engine not confirmed"
+    evidence_refs:
+      - "EEI/data/model_registry.csv:5"
+      - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - model_id: "MOD-005"
+    name: "供应链关键性"
+    kind: "ranking_or_scoring_model"
+    purpose: "瓶颈、替代性、关键路径"
+    owner: "model owner"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "business-empire-model-v2"
+    legacy_formula_id: "F-SC-001"
+    assumptions: []
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-005"
+    parameter_ids: []
+    inputs:
+      - "scoring_object=relationship_path"
+      - "formula=F-SC-001"
+    outputs:
+      - "瓶颈、替代性、关键路径"
+    methodology: "Weighted deterministic scoring/catalog formula extracted from EEI/data/formula_registry.csv; production scoring engine evidence remains bounded by existing tests and docs."
+    code_refs:
+      - "EEI/data/model_registry.csv:6"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    test_refs:
+      - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/state-contract.spec.ts:5"
+    fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
+    risk_controls:
+      - "Immutable versioning"
+      - "dry-run before activation"
+      - "manual calibration approval"
+      - "coverage disclosure"
+    failure_modes:
+      - "missing evidence inputs"
+      - "coverage below threshold"
+      - "configuration validation failure"
+      - "production scoring engine not confirmed"
+    evidence_refs:
+      - "EEI/data/model_registry.csv:6"
+      - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - model_id: "MOD-006"
+    name: "控制影响"
+    kind: "ranking_or_scoring_model"
+    purpose: "所有权与控制视图"
+    owner: "model owner"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "business-empire-model-v2"
+    legacy_formula_id: "F-CI-001"
+    assumptions: []
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-006"
+    parameter_ids: []
+    inputs:
+      - "scoring_object=entity_relationship"
+      - "formula=F-CI-001"
+    outputs:
+      - "所有权与控制视图"
+    methodology: "Weighted deterministic scoring/catalog formula extracted from EEI/data/formula_registry.csv; production scoring engine evidence remains bounded by existing tests and docs."
+    code_refs:
+      - "EEI/data/model_registry.csv:7"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    test_refs:
+      - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/state-contract.spec.ts:5"
+    fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
+    risk_controls:
+      - "Immutable versioning"
+      - "dry-run before activation"
+      - "manual calibration approval"
+      - "coverage disclosure"
+    failure_modes:
+      - "missing evidence inputs"
+      - "coverage below threshold"
+      - "configuration validation failure"
+      - "production scoring engine not confirmed"
+    evidence_refs:
+      - "EEI/data/model_registry.csv:7"
+      - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - model_id: "MOD-007"
+    name: "资本动量"
+    kind: "ranking_or_scoring_model"
+    purpose: "资金与并购视图"
+    owner: "model owner"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "business-empire-model-v2"
+    legacy_formula_id: "F-CM-001"
+    assumptions: []
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-007"
+    parameter_ids: []
+    inputs:
+      - "scoring_object=entity_period"
+      - "formula=F-CM-001"
+    outputs:
+      - "资金与并购视图"
+    methodology: "Weighted deterministic scoring/catalog formula extracted from EEI/data/formula_registry.csv; production scoring engine evidence remains bounded by existing tests and docs."
+    code_refs:
+      - "EEI/data/model_registry.csv:8"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    test_refs:
+      - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/state-contract.spec.ts:5"
+    fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
+    risk_controls:
+      - "Immutable versioning"
+      - "dry-run before activation"
+      - "manual calibration approval"
+      - "coverage disclosure"
+    failure_modes:
+      - "missing evidence inputs"
+      - "coverage below threshold"
+      - "configuration validation failure"
+      - "production scoring engine not confirmed"
+    evidence_refs:
+      - "EEI/data/model_registry.csv:8"
+      - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - model_id: "MOD-008"
+    name: "政策暴露"
+    kind: "ranking_or_scoring_model"
+    purpose: "政策雷达和风险"
+    owner: "model owner"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "business-empire-model-v2"
+    legacy_formula_id: "F-PE-001"
+    assumptions: []
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-008"
+    parameter_ids: []
+    inputs:
+      - "scoring_object=entity_jurisdiction"
+      - "formula=F-PE-001"
+    outputs:
+      - "政策雷达和风险"
+    methodology: "Weighted deterministic scoring/catalog formula extracted from EEI/data/formula_registry.csv; production scoring engine evidence remains bounded by existing tests and docs."
+    code_refs:
+      - "EEI/data/model_registry.csv:9"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    test_refs:
+      - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/state-contract.spec.ts:5"
+    fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
+    risk_controls:
+      - "Immutable versioning"
+      - "dry-run before activation"
+      - "manual calibration approval"
+      - "coverage disclosure"
+    failure_modes:
+      - "missing evidence inputs"
+      - "coverage below threshold"
+      - "configuration validation failure"
+      - "production scoring engine not confirmed"
+    evidence_refs:
+      - "EEI/data/model_registry.csv:9"
+      - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - model_id: "MOD-009"
+    name: "战略信号"
+    kind: "ranking_or_scoring_model"
+    purpose: "战略主题和反证"
+    owner: "model owner"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "business-empire-model-v2"
+    legacy_formula_id: "F-SS-001"
+    assumptions: []
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-009"
+    parameter_ids: []
+    inputs:
+      - "scoring_object=entity_theme_period"
+      - "formula=F-SS-001"
+    outputs:
+      - "战略主题和反证"
+    methodology: "Weighted deterministic scoring/catalog formula extracted from EEI/data/formula_registry.csv; production scoring engine evidence remains bounded by existing tests and docs."
+    code_refs:
+      - "EEI/data/model_registry.csv:10"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    test_refs:
+      - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/state-contract.spec.ts:5"
+    fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
+    risk_controls:
+      - "Immutable versioning"
+      - "dry-run before activation"
+      - "manual calibration approval"
+      - "coverage disclosure"
+    failure_modes:
+      - "missing evidence inputs"
+      - "coverage below threshold"
+      - "configuration validation failure"
+      - "production scoring engine not confirmed"
+    evidence_refs:
+      - "EEI/data/model_registry.csv:10"
+      - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - model_id: "MOD-010"
+    name: "变化告警"
+    kind: "ranking_or_scoring_model"
+    purpose: "变化优先级和 Watchlist 告警"
+    owner: "model owner"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "business-empire-model-v2"
+    legacy_formula_id: "F-AS-001"
+    assumptions: []
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-010"
+    parameter_ids:
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+    inputs:
+      - "scoring_object=change_event"
+      - "formula=F-AS-001"
+    outputs:
+      - "变化优先级和 Watchlist 告警"
+    methodology: "Weighted deterministic scoring/catalog formula extracted from EEI/data/formula_registry.csv; production scoring engine evidence remains bounded by existing tests and docs."
+    code_refs:
+      - "EEI/data/model_registry.csv:11"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    test_refs:
+      - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/state-contract.spec.ts:5"
+    fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
+    risk_controls:
+      - "Immutable versioning"
+      - "dry-run before activation"
+      - "manual calibration approval"
+      - "coverage disclosure"
+    failure_modes:
+      - "missing evidence inputs"
+      - "coverage below threshold"
+      - "configuration validation failure"
+      - "production scoring engine not confirmed"
+    evidence_refs:
+      - "EEI/data/model_registry.csv:11"
+      - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - model_id: "MOD-011"
+    name: "依赖风险"
+    kind: "planned_risk_model"
+    purpose: "跨关系族依赖风险"
+    owner: "model owner"
+    status: "planned"
+    fact_level: "EXTRACTED"
+    model_version: "business-empire-model-v2"
+    legacy_formula_id: "F-DR-001"
+    assumptions: []
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-011"
+    parameter_ids: []
+    inputs:
+      - "scoring_object=entity_path"
+      - "formula=F-DR-001"
+    outputs:
+      - "跨关系族依赖风险"
+    methodology: "Weighted deterministic scoring/catalog formula extracted from EEI/data/formula_registry.csv; production scoring engine evidence remains bounded by existing tests and docs."
+    code_refs:
+      - "EEI/data/model_registry.csv:12"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    test_refs:
+      - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/state-contract.spec.ts:5"
+    fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
+    risk_controls:
+      - "Immutable versioning"
+      - "dry-run before activation"
+      - "manual calibration approval"
+      - "coverage disclosure"
+    failure_modes:
+      - "missing evidence inputs"
+      - "coverage below threshold"
+      - "configuration validation failure"
+      - "production scoring engine not confirmed"
+    evidence_refs:
+      - "EEI/data/model_registry.csv:12"
+      - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
+      - "EEI/data/development_status_ledger.csv:19-29"
+    unknown_task_ids:
+      - "TASK-T1206"
+  - model_id: "MOD-012"
+    name: "运行、视觉与校准阈值控制"
+    kind: "deterministic_configuration_rule"
+    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, and calibration controls."
+    owner: "model owner"
+    status: "active"
+    fact_level: "RECONSTRUCTED"
+    model_version: "operational-controls-v1"
+    legacy_formula_id: "NOT_APPLICABLE"
+    assumptions: []
+    assumption_ids:
+      - "ASM-002"
+      - "ASM-003"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-012"
+    parameter_ids:
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+    inputs:
+      - "parameter_key"
+      - "configured_value"
+      - "default_value"
+      - "min_value"
+      - "max_value"
+    outputs:
+      - "validated operational parameter value"
+    methodology: "Deterministic lookup and range validation reconstructed from parameter_catalog rows without legacy formula_id."
+    code_refs:
+      - "EEI/data/parameter_catalog.csv:43-61"
+      - "EEI/config/thresholds/default-v2.json"
+      - "EEI/config/model_runtime_defaults.yaml"
+    test_refs:
+      - "EEI/scripts/validate_model_config.py:49-71"
+      - "EEI/scripts/validate_governance.py:108-121"
+    fallback_policy: "Use catalog default when no separate active runtime value is evidenced; keep UNKNOWN with task for motion activation gaps."
+    risk_controls:
+      - "range validation"
+      - "manual calibration approval"
+      - "reduced-motion respect"
+      - "visual coverage gates"
+    failure_modes:
+      - "missing runtime motion config"
+      - "threshold out of schema range"
+      - "auto activation enabled"
+    evidence_refs:
+      - "EEI/data/parameter_catalog.csv:43-61"
+      - "EEI/config/thresholds/default-v2.json:1"
+      - "EEI/config/model_runtime_defaults.yaml:1"
+    unknown_task_ids:
+      - "TASK-T1206"

@@ -1,33 +1,24 @@
 # Alpha 功能清单
 
-更新时间：2026-06-19
+更新时间：2026-06-20
 
-## 核心功能
+本文件是兼容入口，不再维护当前功能、模型、公式、参数或任务的机器事实。
 
-- 本地量化研究工作台：研究、回测、实验记录、策略比较。
-- 自动纸交易：启动 dashboard 后自动运行 paper agent cycle。
-- 策略锦标赛：通过 `/strategy/tournament/run` 触发策略比较。
-- 纸交易组合：通过 `/paper/portfolio` 查看 paper portfolio。
-- 订单审批：通过 `/orders/approval-queue` 管理 owner review 之前的候选订单。
-- Agent loop 状态：通过 `/agent/loop/status` 观察运行状态。
-- macOS 双击入口：本地 app launcher 支持快速打开。
+Canonical files:
 
-## 用户价值
+- `docs/governance/MODEL_SPEC.md`
+- `docs/governance/model_registry.yaml`
+- `docs/governance/formula_registry.yaml`
+- `docs/governance/parameter_registry.csv`
+- `docs/governance/DELIVERY_PLAN.md`
+- `docs/governance/delivery_tasks.yaml`
+- `docs/governance/TRACEABILITY_MATRIX.csv`
 
-- 把交易想法从聊天和临时脚本升级为可复现研究流程。
-- 在真实资金之前用 paper trading、policy gate 和风险检查过滤低质量动作。
-- 通过 dashboard 和审批队列减少“研究结论”和“执行动作”之间的混乱。
+仍然有效的历史摘要：
 
-## 必须保留的行为
-
+- Alpha 是本地优先个人量化工作台，覆盖研究、回测、paper trading、策略比较、订单审批、broker-ready ticket 和 dashboard。
 - 真实交易默认禁用。
-- 任何 live 候选必须进入人工确认和 broker 侧最终执行。
-- 外部 API 不能触发真实下单。
-- 所有研究结果必须能追溯数据来源、参数、成本假设和运行时间。
+- 外部 API 不得触发真实下单。
+- live 候选必须进入 owner review，并且 committed live broker adapter fail-closed。
 
-## 后续可扩展功能
-
-- 纸交易绩效归因和错误画像。
-- 多策略组合风险视图。
-- OrderIntent 生命周期审计。
-- 与 EVA_OS / ResearchBus 的研究结果互通。
+当前可审计功能清单以 `docs/governance/DELIVERY_PLAN.md` 和 `docs/governance/TRACEABILITY_MATRIX.csv` 为准。

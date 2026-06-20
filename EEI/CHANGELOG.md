@@ -1,11 +1,14 @@
 # Changelog
 
-## v4.2.0 - 2026-06-19
+## 0.1.0 - 2026-06-20
 
-- 统一所有统计口径为机器目录实际行数，清除旧草稿冲突。
-- 建立 GitHub 开发文档与备份总索引、文档索引和内容数据清单。
-- 固化 17 功能、11 模型、11 公式、60 参数和 17 阈值。
-- 固化关系、上下游、供应链、行业/板块、业务、资本和 140 个研究对象目录。
-- 固化 120 个任务、四轴开发状态、已解决/未解决、53 风险与 200 验收。
-- 清理重复导航和旧版本治理文档；原型、PDF、README、校验脚本统一至 v4.2.0。
-- 明确原型 fixture、生产实现和真实数据之间的边界。
+- Established CodexProject canonical governance baseline under `docs/governance/`.
+- Separated product version `0.1.0` from legacy Task Pack label `v4.2.0`.
+- Mapped legacy model, formula, parameter, task, acceptance, risk, and release-gate evidence into validator-readable governance files.
+- Converted legacy governance Markdown entrypoints into compatibility indexes to prevent duplicate editable fact sources.
+- No model runtime logic, business behavior, data generation, or product feature code changed.
+
+## Legacy Task Pack v4.2.0 - 2026-06-19
+
+- Historical EEI Task Pack and prototype governance snapshot preserved in Git history and legacy `data/*.csv` evidence inputs.
+- Current counts and active governance facts must be read from `docs/governance/*`, not this changelog.

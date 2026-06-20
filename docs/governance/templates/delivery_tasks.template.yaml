@@ -1,0 +1,20 @@
+governance_spec_version: "1.0.0"
+project_id: "<project_id>"
+tasks:
+  - task_id: "<TASK-ID>"
+    phase: "A"
+    objective: "<objective>"
+    scope: "<scope>"
+    non_scope: "<non-scope>"
+    status: "planned"
+    dependencies: []
+    required_files: []
+    acceptance_ids: ["<ACC-ID>"]
+    test_commands: []
+    test_results: []
+    evidence_refs: []
+    risk: "<risk>"
+    rollback: "<rollback>"
+    target_version: "0.0.0"
+    completed_version: ""
+    unknown_task_ids: []

@@ -9,6 +9,16 @@
 **基线日期**：2026-06-19  
 **目标仓库**：LinzeColin/CodexProject/EEI
 
+## CodexProject Governance Entry
+
+Canonical CodexProject governance sources are maintained under `docs/governance/`:
+`MODEL_SPEC.md`, `model_registry.yaml`, `formula_registry.yaml`,
+`parameter_registry.csv`, `DEVELOPMENT_LEDGER.md`, `development_events.jsonl`,
+`DELIVERY_PLAN.md`, `delivery_tasks.yaml`, `VERSION_MATRIX.yaml` and
+`TRACEABILITY_MATRIX.csv`. Legacy Task Pack files and `data/*.csv` catalogs are
+retained as evidence and compatibility inputs; they must not be edited as an
+independent source of governance counts.
+
 ## 结论
 
 本包是一套可直接进入 GitHub 和 Codex G0 的产品、模型、数据、研发与验收基线。默认首页从 Watchlist 当前公司进入可视化商业版图，并允许点击任意对象后递归切换研究中心。

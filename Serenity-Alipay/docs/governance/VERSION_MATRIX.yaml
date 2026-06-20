@@ -1,0 +1,22 @@
+product_version: "0.1.0"
+product_version_status: "provisional"
+governance_spec_version: "1.0.0"
+schema_version: "1.0.0"
+model_versions:
+  MOD-001: "serenity-scoring-v1"
+  MOD-002: "serenity-ranking-v1"
+  MOD-003: "serenity-metrics-v1"
+  MOD-004: "serenity-discipline-v1"
+  MOD-005: "serenity-scheduler-v1"
+parameter_profile_versions:
+  serenity-parameters: "serenity-parameters-v1"
+data_snapshot_version: "manual-csv-2026-06-12"
+current_iteration: "ITER-20260621-001"
+current_phase: "A"
+current_gate: "GOV-G3-SERENITY-BASELINE"
+version_file_value: "0.1.0"
+legacy_version_labels:
+  - "pyproject.toml 0.1.0"
+  - "HANDOFF delivery state dated 20260614"
+changelog_ref: "CHANGELOG.md"
+ledger_ref: "docs/governance/DEVELOPMENT_LEDGER.md"

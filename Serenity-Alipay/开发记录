@@ -1,51 +1,21 @@
 # Serenity-Alipay 开发记录
 
-更新时间：2026-06-19
+本文件保留为历史兼容入口，不再作为独立可编辑事实源。
 
-## 项目定位
+Canonical governance sources:
 
-Serenity-Alipay 是本地优先、可审计的投资研究自动化，用于 aggressive but controlled 的场外基金候选筛选、评分、排序、纪律标签、报告和通知草稿。它不下单，不保证未来跑赢上证综指或 S&P 500。
+- `docs/governance/DEVELOPMENT_LEDGER.md`
+- `docs/governance/development_events.jsonl`
+- `docs/governance/DELIVERY_PLAN.md`
+- `docs/governance/delivery_tasks.yaml`
+- `docs/governance/VERSION_MATRIX.yaml`
 
-## 当前已形成的开发状态
+仍然有效的历史说明：
 
-- 可导入 Alipay fund positions CSV。
-- 可加载 candidate universe、fund rules、price history snapshots。
-- deterministic rules 生成 fund-first candidates score。
-- hard gates：MDD >= 40.00%，recovery time >= 365 days。
-- 与 Shanghai Composite、S&P 500 比较 1m、3m、10 trading day returns。
-- 输出 Top5 target weights、current-vs-target deviation、action labels。
-- SQLite 持久化 runs、sources、scores、recommendations、comparisons、review queues、notifications。
-- 生成 Markdown reports、offline HTML reports、offline report index、Mail-ready notification drafts。
+- Serenity-Alipay 是本地优先、可审计的投资研究自动化。
+- 它用于场外基金候选筛选、评分、排序、纪律标签、报告和通知草稿。
+- 它不下单，不承诺未来跑赢上证综指或 S&P 500。
+- 历史数据 append-only，不重写过去 snapshot、report、notification 或 raw data。
+- blocker 不能被描述为成功；moomoo/OpenD failure 不能静默当作健康数据。
 
-## 最新 personalization 对本项目的要求
-
-- 金融研究必须 evidence-rich、fail-closed、可追溯，不能把 blocker 说成成功。
-- 涉及当前基金、价格、平台、执行窗口、benchmark 或 API 时必须用当前数据或权威来源验证。
-- 输出应服务 ROI 最大化，但必须明确风险、假设、不可执行边界。
-- 默认中文总结，保留 MDD、Top5、benchmark、production-unlock 等关键英文标识。
-
-## 安全与执行边界
-
-- 不自动买卖。
-- 不绕过 Alipay、基金公司、moomoo 或 broker 平台控制。
-- 不承诺未来 benchmark outperformance。
-- moomoo/OpenD failure 不能静默当作健康数据。
-- historical data append-only，不重写过去 snapshot/report/notification/raw data。
-
-## 重要验证记录
-
-```bash
-python -m app.cli doctor
-python -m app.cli init-db
-pytest -q
-python -m app.cli completion-audit --json
-python -m app.cli completion-audit --require-complete --json
-python -m app.cli history-integrity --require-pass --json
-```
-
-## 下一步开发优先级
-
-1. 完成真实 Alipay holdings、fund rules、candidate source chain、benchmark evidence 的 production blocker 解除。
-2. 强化 source-evidence-audit 和 promotion dry-run。
-3. 保持历史完整性基线，所有新产物 forward-only append。
-4. 把 action labels 和 notification drafts 明确标注为 research/review，不是交易指令。
+后续有意义的开发运行必须 append `docs/governance/development_events.jsonl`，不能覆盖历史。

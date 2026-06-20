@@ -57,3 +57,22 @@ GET  /orders/approval-queue
 - External API must never trigger live trading.
 - Alpha can generate broker-ready order tickets for owner review, but must not
   autonomously submit real-money broker orders.
+
+## Governance
+
+Canonical governance files live in `docs/governance/`:
+
+- `MODEL_SPEC.md`
+- `model_registry.yaml`
+- `formula_registry.yaml`
+- `parameter_registry.csv`
+- `DEVELOPMENT_LEDGER.md`
+- `development_events.jsonl`
+- `DELIVERY_PLAN.md`
+- `delivery_tasks.yaml`
+- `VERSION_MATRIX.yaml`
+- `TRACEABILITY_MATRIX.csv`
+
+Legacy files `功能清单`, `开发记录`, and `模型参数文件` are compatibility
+indexes only. They are not machine facts for current models, formulas,
+parameters, tasks, versions, or acceptance evidence.
