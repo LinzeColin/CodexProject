@@ -10,26 +10,29 @@
     "persisted query contract for subject, selected node, lens, zoom, asOf and path",
     "URL, sessionStorage and localStorage workspace state keys",
     "server endpoint mapping for saved views, active model context, exploration and catalogs",
+    "saved-view API-first adapter with explicit local fallback and server mock E2E coverage",
     "Playwright coverage for WorkspaceContext, real controls and disabled unfinished entries"
   ],
   "evidence_files": [
     "apps/web/src/app/workspace-context.tsx",
     "apps/web/src/app/workspace-navigation.tsx",
+    "apps/web/src/app/saved-view-client.ts",
     "apps/web/src/app/page.tsx",
-    "tests/e2e/home.spec.ts"
+    "tests/e2e/home.spec.ts",
+    "tests/e2e/state-contract.spec.ts"
   ],
   "verified_commands": [
     "PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck",
-    "PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web test:e2e -- --grep A211"
+    "PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web test:e2e"
   ],
   "verified_result": {
     "typecheck": "PASS",
     "playwright_e2e": "PASS",
-    "playwright_tests_passed": 28
+    "playwright_tests_passed": 29
   },
   "remaining_to_close_a211": [
     "wire frontend data loading to configured production API base URL instead of fixture projections",
-    "replace local saved-view behavior with multi-session server saved-view create/update/restore UI",
+    "run live FastAPI/PostgreSQL multi-session saved-view E2E and add 409 conflict-recovery UI",
     "connect model-center activation and rollback controls to transactional activation APIs",
     "run cross-route E2E with live FastAPI/PostgreSQL backend and stale-client refresh semantics"
   ],

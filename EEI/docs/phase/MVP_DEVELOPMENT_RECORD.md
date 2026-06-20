@@ -2015,8 +2015,8 @@ Residual risks:
 
 ### Remaining gaps
 
-- The production frontend still uses local saved-view behavior and must be wired to `/v1/saved-views`.
-- A real multi-session browser E2E with two contexts against the API-backed saved-view contract is still required.
+- Superseded by the later frontend API-first adapter slice: saved-view controls now attempt `/v1/saved-views` and explicitly fall back locally when the API base/server id is missing.
+- A real multi-session browser E2E with two contexts against live FastAPI/PostgreSQL is still required.
 - Authn/authz user/workspace scoping remains required before public multi-user use.
 
 ## 2026-06-20 - T1308/A211 WorkspaceContext and production navigation slice
@@ -2061,7 +2061,7 @@ Residual risks:
 ### Remaining gaps
 
 - Frontend data loading still needs production API hydration against a configured FastAPI base URL.
-- Saved-view UI still needs multi-session server-backed create/update/restore flows using `/v1/saved-views`.
+- Saved-view UI now has an API-first adapter and mock server E2E; live FastAPI/PostgreSQL multi-session E2E and 409 conflict-recovery UI remain open.
 - Model-center controls still need transactional activation, rollback and stale-client refresh semantics.
 - A live FastAPI/PostgreSQL cross-route E2E is still required before closing A211.
 
@@ -2092,3 +2092,42 @@ Residual risks:
 ### Remaining gaps
 
 - This only fixes release packaging determinism for generated Next type files; it does not close A211 or v0.1 production blockers.
+
+## 2026-06-20 - T1305/A207 frontend saved-view API-first adapter slice
+
+### Scope
+
+- Added a browser saved-view API adapter that targets `/v1/saved-views` through `NEXT_PUBLIC_EEI_API_BASE_URL` or localStorage key `eei.apiBaseUrl.v1`.
+- Changed saved-view save/restore controls from local-only behavior to API-first behavior with explicit local fallback when the API base URL or server id is missing.
+- Added DOM contract fields for sync mode, sync reason, server id, server version, server endpoint, workspace key and API-base storage key.
+- Added Playwright coverage for local fallback (`local-saved`/`local-restored`) and mock server API create/restore (`server-saved`/`server-restored`).
+- Added A207 frontend adapter evidence while keeping A207 `IN PROGRESS`.
+
+### Files changed
+
+- `apps/web/src/app/saved-view-client.ts`
+- `apps/web/src/app/page.tsx`
+- `tests/e2e/state-contract.spec.ts`
+- `artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json`
+- `artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json`
+- `scripts/validate_v5_production_readiness_sync.py`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `DEVELOPMENT_STATUS.md`
+- `README.md`
+
+### Acceptance mapping
+
+- T1305 -> A207.
+- A207 remains `IN PROGRESS`, not `DONE`.
+
+### Validation
+
+- Local `PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck`: PASS.
+- Local `PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web test:e2e`: PASS, 29/29.
+
+### Remaining gaps
+
+- A207 still requires a real multi-session browser E2E with two contexts against live FastAPI and PostgreSQL, not only a mocked `/v1/saved-views` route.
+- Frontend 409 stale-version recovery UI still needs fetch-latest or restore-from-versions actions.
+- User/workspace authn/authz remains required before public multi-user saved-view deployment.

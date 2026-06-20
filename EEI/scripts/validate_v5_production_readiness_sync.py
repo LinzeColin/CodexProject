@@ -109,9 +109,13 @@ PARTIAL_EVIDENCE = {
         "infra/db/migrations/0008_server_saved_views/down.sql",
         "apps/api/app/domain.py",
         "apps/api/app/domain_repository.py",
+        "apps/web/src/app/page.tsx",
+        "apps/web/src/app/saved-view-client.ts",
         "scripts/check_database_schema.py",
         "specs/api_contract.yaml",
         "tests/integration/test_database_migrations.py",
+        "tests/e2e/state-contract.spec.ts",
+        "artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json",
         "artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json",
     },
     "T1307": {

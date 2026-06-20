@@ -23,6 +23,14 @@ import {
 } from "./analysis-contract";
 import { useAnalysisContext } from "./use-analysis-context";
 import {
+  SAVED_VIEW_API_BASE_STORAGE_KEY,
+  SAVED_VIEW_WORKSPACE_KEY,
+  restoreViewFromServer,
+  saveViewToServer,
+  type SavedViewServerRecord,
+  type SavedViewSyncResult
+} from "./saved-view-client";
+import {
   createWorkspaceContextValue,
   SAVED_VIEW_STORAGE_KEY,
   WORKSPACE_STATE_STORAGE_KEY,
@@ -86,6 +94,7 @@ type WorkspaceState = {
 type SavedViewRecord = WorkspaceState & {
   id: string;
   version: "saved-view-v1";
+  workspaceKey: string;
   filters: string;
   layout: string;
   modelVersion: string;
@@ -94,6 +103,11 @@ type SavedViewRecord = WorkspaceState & {
   scoreSnapshot: string;
   notes: string;
   updatedAt: string;
+  serverId?: string;
+  serverVersion?: number;
+  syncMode: "server" | "local_fallback";
+  syncReason: string;
+  serverEndpoint?: string;
 };
 
 type WorkspaceStateInput = {
@@ -906,6 +920,7 @@ function createSavedView(
     ...normalized,
     id: `sv-${normalized.focusKey}-${normalized.activeLens}-${normalized.semanticZoom}-${normalized.asOf}`,
     version: SAVED_VIEW_VERSION,
+    workspaceKey: SAVED_VIEW_WORKSPACE_KEY,
     filters: normalized.activeLens,
     layout: WORKSPACE_LAYOUT_GRAMMAR,
     modelVersion: analysisContext.modelVersion,
@@ -913,7 +928,9 @@ function createSavedView(
     dataSnapshot: analysisContext.dataSnapshot,
     scoreSnapshot: analysisContext.scoreSnapshot,
     notes: `${entityLabels[normalized.focusKey]} / ${normalized.activeLens} / ${normalized.asOf}`,
-    updatedAt: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf
+    updatedAt: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf,
+    syncMode: "local_fallback",
+    syncReason: "not_synced"
   };
 }
 
@@ -922,15 +939,113 @@ function readSavedViewPayload(rawValue: string | null): SavedViewRecord | null {
   try {
     const parsed = JSON.parse(rawValue) as Partial<SavedViewRecord>;
     if (parsed.version !== SAVED_VIEW_VERSION) return null;
+    const base = createSavedView(normalizeWorkspaceState(parsed));
     return {
-      ...createSavedView(normalizeWorkspaceState(parsed)),
-      id: parsed.id ?? createSavedView(normalizeWorkspaceState(parsed)).id,
-      notes: parsed.notes ?? createSavedView(normalizeWorkspaceState(parsed)).notes,
-      updatedAt: parsed.updatedAt ?? ACTIVE_ANALYSIS_CONTEXT.defaultAsOf
+      ...base,
+      id: parsed.id ?? base.id,
+      workspaceKey: parsed.workspaceKey ?? SAVED_VIEW_WORKSPACE_KEY,
+      filters: parsed.filters ?? base.filters,
+      layout: parsed.layout ?? base.layout,
+      modelVersion: parsed.modelVersion ?? base.modelVersion,
+      profileVersion: parsed.profileVersion ?? base.profileVersion,
+      dataSnapshot: parsed.dataSnapshot ?? base.dataSnapshot,
+      scoreSnapshot: parsed.scoreSnapshot ?? base.scoreSnapshot,
+      notes: parsed.notes ?? base.notes,
+      updatedAt: parsed.updatedAt ?? ACTIVE_ANALYSIS_CONTEXT.defaultAsOf,
+      serverId: stringField(parsed.serverId),
+      serverVersion:
+        typeof parsed.serverVersion === "number" && Number.isFinite(parsed.serverVersion)
+          ? parsed.serverVersion
+          : undefined,
+      syncMode: parsed.syncMode === "server" ? "server" : "local_fallback",
+      syncReason: parsed.syncReason ?? "local_record",
+      serverEndpoint: stringField(parsed.serverEndpoint)
     };
   } catch {
     return null;
   }
+}
+
+function createSavedViewServerState(savedViewRecord: SavedViewRecord): Record<string, unknown> {
+  return {
+    local_id: savedViewRecord.id,
+    focus_key: savedViewRecord.focusKey,
+    selected_key: savedViewRecord.selectedKey,
+    path: savedViewRecord.path,
+    visual_lens: savedViewRecord.activeLens,
+    semantic_zoom: savedViewRecord.semanticZoom,
+    as_of: savedViewRecord.asOf,
+    filters: savedViewRecord.filters,
+    layout: savedViewRecord.layout,
+    model_version: savedViewRecord.modelVersion,
+    profile_version: savedViewRecord.profileVersion,
+    data_snapshot: savedViewRecord.dataSnapshot,
+    score_snapshot: savedViewRecord.scoreSnapshot,
+    notes: savedViewRecord.notes
+  };
+}
+
+function createSavedViewMetadata(savedViewRecord: SavedViewRecord): Record<string, unknown> {
+  return {
+    source: "eei-web",
+    workspace_key: savedViewRecord.workspaceKey,
+    local_id: savedViewRecord.id,
+    model_version: savedViewRecord.modelVersion,
+    profile_version: savedViewRecord.profileVersion,
+    data_snapshot: savedViewRecord.dataSnapshot,
+    score_snapshot: savedViewRecord.scoreSnapshot
+  };
+}
+
+function workspaceStateFromServerState(state: Record<string, unknown>): WorkspaceState {
+  const rawPath = state.path;
+  const path =
+    Array.isArray(rawPath) || typeof rawPath === "string"
+      ? Array.isArray(rawPath)
+        ? rawPath
+        : rawPath.split(".")
+      : undefined;
+  return normalizeWorkspaceState({
+    focusKey: state.focus_key ?? state.focusKey,
+    selectedKey: state.selected_key ?? state.selectedKey,
+    path,
+    activeLens: state.visual_lens ?? state.activeLens,
+    semanticZoom: state.semantic_zoom ?? state.semanticZoom,
+    asOf: state.as_of ?? state.asOf
+  });
+}
+
+function savedViewFromServerRecord(
+  record: SavedViewServerRecord,
+  endpoint: string,
+  analysisContext: AnalysisContext
+): SavedViewRecord {
+  const serverState = record.state;
+  const base = createSavedView(workspaceStateFromServerState(serverState), analysisContext);
+  return {
+    ...base,
+    id: stringField(serverState.local_id) ?? base.id,
+    workspaceKey: record.workspace_key,
+    filters: stringField(serverState.filters) ?? base.filters,
+    layout: stringField(serverState.layout) ?? base.layout,
+    modelVersion: stringField(serverState.model_version) ?? base.modelVersion,
+    profileVersion: stringField(serverState.profile_version) ?? base.profileVersion,
+    dataSnapshot: stringField(serverState.data_snapshot) ?? base.dataSnapshot,
+    scoreSnapshot: stringField(serverState.score_snapshot) ?? base.scoreSnapshot,
+    notes: stringField(serverState.notes) ?? record.name ?? base.notes,
+    updatedAt: record.updated_at ?? base.updatedAt,
+    serverId: record.id,
+    serverVersion: record.current_version,
+    syncMode: "server",
+    syncReason: "ok",
+    serverEndpoint: endpoint
+  };
+}
+
+function isFailedServerSyncResult(
+  result: SavedViewSyncResult
+): result is Extract<SavedViewSyncResult, { mode: "server"; status: "conflict" | "error" }> {
+  return result.mode === "server" && (result.status === "conflict" || result.status === "error");
 }
 
 export default function Home() {
@@ -1065,20 +1180,109 @@ export default function Home() {
     window.history.back();
   }
 
-  function saveCurrentView() {
+  async function saveCurrentView() {
+    setSavedViewStatus("saving");
     const nextSavedView = createSavedView(workspaceState, analysisContext);
-    window.localStorage.setItem(SAVED_VIEW_STORAGE_KEY, JSON.stringify(nextSavedView));
-    setSavedView(nextSavedView);
-    setSavedViewStatus("saved");
+    const syncResult = await saveViewToServer({
+      name: nextSavedView.notes,
+      description: "EEI workspace saved view",
+      state: createSavedViewServerState(nextSavedView),
+      metadata: createSavedViewMetadata(nextSavedView),
+      serverId: savedView.serverId,
+      expectedVersion: savedView.serverVersion
+    });
+    let syncedSavedView: SavedViewRecord;
+    if (syncResult.mode === "server" && syncResult.status === "saved") {
+      syncedSavedView = savedViewFromServerRecord(
+        syncResult.record,
+        syncResult.endpoint,
+        analysisContext
+      );
+    } else if (isFailedServerSyncResult(syncResult)) {
+      syncedSavedView = {
+        ...nextSavedView,
+        serverId: savedView.serverId,
+        serverVersion: savedView.serverVersion,
+        syncMode: "server",
+        syncReason: syncResult.reason,
+        serverEndpoint: syncResult.endpoint
+      };
+    } else if (syncResult.mode === "local_fallback") {
+      syncedSavedView = {
+        ...nextSavedView,
+        serverId: savedView.serverId,
+        serverVersion: savedView.serverVersion,
+        syncMode: "local_fallback",
+        syncReason: syncResult.reason
+      };
+    } else {
+      syncedSavedView = {
+        ...nextSavedView,
+        serverId: savedView.serverId,
+        serverVersion: savedView.serverVersion,
+        syncMode: "server",
+        syncReason: "unexpected_saved_view_sync_status",
+        serverEndpoint: syncResult.endpoint
+      };
+    }
+
+    window.localStorage.setItem(SAVED_VIEW_STORAGE_KEY, JSON.stringify(syncedSavedView));
+    setSavedView(syncedSavedView);
+    setSavedViewStatus(
+      syncResult.mode === "server"
+        ? syncResult.status === "saved"
+          ? "server-saved"
+          : syncResult.status === "conflict"
+            ? "server-conflict"
+            : "server-error"
+        : "local-saved"
+    );
   }
 
-  function restoreSavedView() {
+  async function restoreSavedView() {
+    setSavedViewStatus("restoring");
     const storedSavedView = readSavedViewPayload(window.localStorage.getItem(SAVED_VIEW_STORAGE_KEY));
     const nextSavedView = storedSavedView ?? savedView;
-    setSavedView(nextSavedView);
-    restoringHistoryState.current = true;
-    applyWorkspaceState(nextSavedView);
-    setSavedViewStatus("restored");
+    const syncResult = await restoreViewFromServer(nextSavedView.serverId);
+    if (syncResult.mode === "server" && syncResult.status === "restored") {
+      const serverSavedView = savedViewFromServerRecord(
+        syncResult.record,
+        syncResult.endpoint,
+        analysisContext
+      );
+      window.localStorage.setItem(SAVED_VIEW_STORAGE_KEY, JSON.stringify(serverSavedView));
+      setSavedView(serverSavedView);
+      restoringHistoryState.current = true;
+      applyWorkspaceState(serverSavedView);
+      setSavedViewStatus("server-restored");
+      return;
+    }
+
+    if (syncResult.mode === "local_fallback") {
+      const localSavedView: SavedViewRecord = {
+        ...nextSavedView,
+        syncMode: "local_fallback",
+        syncReason: syncResult.reason
+      };
+      window.localStorage.setItem(SAVED_VIEW_STORAGE_KEY, JSON.stringify(localSavedView));
+      setSavedView(localSavedView);
+      restoringHistoryState.current = true;
+      applyWorkspaceState(localSavedView);
+      setSavedViewStatus("local-restored");
+      return;
+    }
+
+    if (!isFailedServerSyncResult(syncResult)) return;
+
+    const failedSavedView: SavedViewRecord = {
+      ...nextSavedView,
+      syncMode: "server",
+      syncReason: syncResult.reason,
+      serverEndpoint: syncResult.endpoint
+    };
+    window.localStorage.setItem(SAVED_VIEW_STORAGE_KEY, JSON.stringify(failedSavedView));
+    setSavedView(failedSavedView);
+    setSavedViewStatus(syncResult.status === "conflict" ? "server-conflict" : "server-error");
   }
 
   const viewportAnchor = `${focusKey}:${selectedNode.key}:${semanticZoom}`;
@@ -1819,13 +2023,20 @@ export default function Home() {
 
         <section
           className="savedViewPanel"
+          data-api-base-storage-key={SAVED_VIEW_API_BASE_STORAGE_KEY}
           data-data-snapshot={savedView.dataSnapshot}
           data-model-version={savedView.modelVersion}
           data-profile-version={savedView.profileVersion}
           data-saved-view-id={savedView.id}
+          data-server-endpoint={savedView.serverEndpoint ?? ""}
+          data-server-id={savedView.serverId ?? ""}
+          data-server-version={savedView.serverVersion ?? ""}
           data-saved-view-version={savedView.version}
           data-score-snapshot={savedView.scoreSnapshot}
+          data-sync-mode={savedView.syncMode}
+          data-sync-reason={savedView.syncReason}
           data-testid="saved-view-panel"
+          data-workspace-key={savedView.workspaceKey}
         >
           <header>
             <p className="eyebrow">Saved View</p>

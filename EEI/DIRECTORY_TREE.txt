@@ -42,6 +42,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │       ├── globals.css
 │   │   │       ├── layout.tsx
 │   │   │       ├── page.tsx
+│   │   │       ├── saved-view-client.ts
 │   │   │       ├── use-analysis-context.ts
 │   │   │       ├── workspace-context.tsx
 │   │   │       └── workspace-navigation.tsx
@@ -90,6 +91,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── a206
 │   │   │   └── t1304_scheduler_retry_dead_letter_contract.json
 │   │   ├── a207
+│   │   │   ├── t1305_frontend_saved_view_api_adapter_contract.json
 │   │   │   └── t1305_server_saved_view_conflict_recovery_contract.json
 │   │   ├── a208
 │   │   │   ├── t1306_browser_runtime_benchmark.json
