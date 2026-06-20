@@ -153,6 +153,20 @@ class ScoringRecomputeRequest(BaseModel):
     )
 
 
+class DataSnapshotRefreshRequest(BaseModel):
+    expected_active_profile_version_id: UUID | None = None
+    client_refresh_token: str | None = None
+    scope: Literal["golden-vertical:nvidia", "global"] = "golden-vertical:nvidia"
+    record_mode: Literal["fixture", "curated_official_fixture", "dry_run", "live"] = (
+        "curated_official_fixture"
+    )
+    reason: str = Field(
+        default="Manual data snapshot refresh request",
+        min_length=1,
+        max_length=500,
+    )
+
+
 def get_repository() -> DomainRepository:
     settings = get_settings()
     if not settings.database_url:
@@ -566,6 +580,23 @@ def enqueue_score_recompute(
             expected_active_profile_version_id=payload.expected_active_profile_version_id,
             client_refresh_token=payload.client_refresh_token,
             scope=payload.scope,
+            reason=payload.reason,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.post("/data/snapshots/refresh")
+def enqueue_data_snapshot_refresh(
+    payload: DataSnapshotRefreshRequest,
+    repository: RepositoryDependency,
+) -> dict[str, Any]:
+    try:
+        return repository.enqueue_data_snapshot_refresh(
+            expected_active_profile_version_id=payload.expected_active_profile_version_id,
+            client_refresh_token=payload.client_refresh_token,
+            scope=payload.scope,
+            record_mode=payload.record_mode,
             reason=payload.reason,
         )
     except RepositoryError as exc:

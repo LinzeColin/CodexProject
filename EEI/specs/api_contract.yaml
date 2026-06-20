@@ -955,6 +955,24 @@ paths:
                 $ref: '#/components/schemas/ScoreRecomputeResponse'
         '409':
           description: Stale active profile or refresh token; no recompute job is created
+  /v1/data/snapshots/refresh:
+    post:
+      operationId: enqueueDataSnapshotRefresh
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataSnapshotRefreshRequest'
+      responses:
+        '200':
+          description: Data snapshot refresh job accepted idempotently for the current active context
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSnapshotRefreshResponse'
+        '409':
+          description: Stale active profile or refresh token; no data snapshot refresh job is created
   /v1/scoring/explain/{objectType}/{objectId}:
     get:
       operationId: explainScore
@@ -3258,6 +3276,36 @@ components:
           type: string
           minLength: 1
           maxLength: 500
+    DataSnapshotRefreshRequest:
+      type: object
+      properties:
+        expected_active_profile_version_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        client_refresh_token:
+          type:
+          - string
+          - 'null'
+        scope:
+          type: string
+          enum:
+          - golden-vertical:nvidia
+          - global
+          default: golden-vertical:nvidia
+        record_mode:
+          type: string
+          enum:
+          - fixture
+          - curated_official_fixture
+          - dry_run
+          - live
+          default: curated_official_fixture
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
     BackgroundJob:
       type: object
       required:
@@ -3328,6 +3376,40 @@ components:
           $ref: '#/components/schemas/ScoringProfile'
         active_context:
           $ref: '#/components/schemas/ActiveAnalysisContext'
+        cache_policy:
+          type: object
+          additionalProperties: true
+    DataSnapshotRefreshResponse:
+      type: object
+      required:
+      - schema_version
+      - status
+      - job
+      - idempotency_key
+      - active_context
+      - cache_policy
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - data-snapshot-refresh-request-v1
+        status:
+          type: string
+          enum:
+          - queued
+          - running
+          - succeeded
+          - dead_letter
+          - cancelled
+        job:
+          $ref: '#/components/schemas/BackgroundJob'
+        idempotency_key:
+          type: string
+        active_context:
+          $ref: '#/components/schemas/ActiveAnalysisContext'
+        outbox_event:
+          type: object
+          additionalProperties: true
         cache_policy:
           type: object
           additionalProperties: true

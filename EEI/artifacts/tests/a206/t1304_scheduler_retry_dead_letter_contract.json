@@ -20,7 +20,9 @@
     "scripts/job_scheduler.py supports dispatch-outbox-once for pending outbox events and logs dispatch_outbox_event operations.",
     "POST /v1/scoring/recompute enqueues score_recompute jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
     "scripts/job_scheduler.py registers a score_recompute handler that validates active-context freshness, writes scoring_runs and score_results, advances refresh_token and completes stale jobs as skipped_stale_context instead of retrying forever.",
-    "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion and score_recompute enqueue/execution idempotency."
+    "POST /v1/data/snapshots/refresh enqueues data_snapshot_refresh jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
+    "scripts/job_scheduler.py registers a data_snapshot_refresh handler that validates active-context freshness, writes active data_snapshots, advances refresh_token, emits data.snapshot.activated and completes stale jobs as skipped_stale_context instead of retrying forever.",
+    "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion, score_recompute enqueue/execution idempotency and data_snapshot_refresh enqueue/execution idempotency."
   ],
   "parameters": {
     "scheduler.lease_ttl_seconds": 900,

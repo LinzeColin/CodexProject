@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
@@ -795,6 +796,378 @@ def log_score_recompute_operation(
     )
 
 
+def log_data_snapshot_refresh_operation(
+    connection: psycopg.Connection,
+    *,
+    object_type: str,
+    object_id: UUID | str | None,
+    old_value: dict[str, Any] | None,
+    new_value: dict[str, Any] | None,
+    diff: dict[str, Any],
+    reason: str,
+    model_version: str | None,
+    profile_version: str | None,
+    result_status: str,
+    error: str | None = None,
+) -> None:
+    connection.execute(
+        """
+        INSERT INTO operation_logs(
+          actor, action_type, object_type, object_id, old_value, new_value, diff,
+          reason, model_version, profile_version, result_status, error
+        )
+        VALUES (
+          'system', 'execute_data_snapshot_refresh', %s, %s, %s, %s, %s,
+          %s, %s, %s, %s, %s
+        )
+        """,
+        (
+            object_type,
+            object_id,
+            Jsonb(jsonable(old_value or {})),
+            Jsonb(jsonable(new_value or {})),
+            Jsonb(jsonable(diff)),
+            reason,
+            model_version,
+            profile_version,
+            result_status,
+            error,
+        ),
+    )
+
+
+def current_data_snapshot_source_stats(connection: psycopg.Connection) -> dict[str, Any]:
+    row = connection.execute(
+        """
+        SELECT
+          (SELECT count(*)::int FROM source_documents) AS source_document_count,
+          (SELECT count(*)::int FROM raw_source_snapshots) AS raw_snapshot_count,
+          (SELECT count(*)::int FROM ingestion_evidence_chain) AS evidence_chain_count,
+          (SELECT count(*)::int FROM relationship_fact_candidates) AS fact_candidate_count,
+          (
+            SELECT count(*)::int
+            FROM relationship_fact_candidates
+            WHERE publication_status = 'published'
+          ) AS published_fact_candidate_count,
+          (
+            SELECT count(*)::int
+            FROM relationship_fact_candidates
+            WHERE source_threshold_met = false
+          ) AS source_threshold_open_count,
+          (
+            SELECT count(*)::int
+            FROM relationship_fact_candidates
+            WHERE review_status <> 'human_verified'
+          ) AS review_open_count,
+          (
+            SELECT count(*)::int
+            FROM relationships
+            WHERE status NOT IN ('superseded', 'revoked')
+          ) AS relationship_count,
+          (
+            SELECT count(*)::int
+            FROM events
+            WHERE status NOT IN ('superseded', 'revoked')
+          ) AS event_count,
+          (SELECT max(retrieved_at) FROM source_documents) AS latest_source_retrieved_at,
+          (SELECT max(observed_at) FROM source_documents) AS latest_source_observed_at,
+          (
+            SELECT max(observed_at)
+            FROM relationships
+            WHERE status NOT IN ('superseded', 'revoked')
+          ) AS latest_relationship_observed_at,
+          (
+            SELECT id
+            FROM ingestion_runs
+            WHERE status = 'succeeded'
+            ORDER BY finished_at DESC NULLS LAST, started_at DESC
+            LIMIT 1
+          ) AS latest_ingestion_run_id
+        """
+    ).fetchone()
+    return jsonable(dict(row))
+
+
+def data_snapshot_source_hash(
+    *,
+    scope: str,
+    record_mode: str,
+    source_stats: dict[str, Any],
+) -> str:
+    payload = json.dumps(
+        jsonable(
+            {
+                "scope": scope,
+                "record_mode": record_mode,
+                "source_stats": source_stats,
+            }
+        ),
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def handle_data_snapshot_refresh_job(job: dict[str, Any]) -> dict[str, Any]:
+    payload = job.get("payload") or {}
+    if payload.get("schema_version") != "data-snapshot-refresh-job-v1":
+        raise SchedulerError(
+            "data_snapshot_refresh payload schema_version must be "
+            "data-snapshot-refresh-job-v1"
+        )
+    expected_profile_id = UUID(str(payload["active_scoring_profile_version_id"]))
+    expected_refresh_token = str(payload["refresh_token"])
+    requested_generation = int(payload["refresh_generation"])
+    scope = str(payload.get("scope") or "golden-vertical:nvidia")
+    record_mode = str(payload.get("record_mode") or "curated_official_fixture")
+    reason = str(payload.get("reason") or "data snapshot refresh worker execution")
+    with connect_job_database() as connection:
+        context = connection.execute(
+            """
+            SELECT
+              aac.active_scoring_profile_version_id,
+              aac.active_data_snapshot_id,
+              aac.active_scoring_run_id,
+              aac.refresh_token::text AS refresh_token,
+              aac.refresh_generation,
+              aac.status,
+              sp.profile_key,
+              spv.version AS profile_version_number,
+              sm.model_key,
+              sm.version AS model_version_number
+            FROM active_analysis_contexts aac
+            JOIN scoring_profile_versions spv
+              ON spv.id = aac.active_scoring_profile_version_id
+            JOIN scoring_profiles sp ON sp.id = spv.profile_id
+            JOIN scoring_models sm ON sm.id = spv.model_id
+            WHERE aac.context_key = 'global'
+            FOR UPDATE OF aac
+            """
+        ).fetchone()
+        if context is None:
+            raise SchedulerError("No active analysis context is available")
+        model_version = f"{context['model_key']}@{context['model_version_number']}"
+        profile_version = f"{context['profile_key']}@{context['profile_version_number']}"
+        actual_profile_id = context["active_scoring_profile_version_id"]
+        actual_refresh_token = str(context["refresh_token"])
+        if (
+            actual_profile_id != expected_profile_id
+            or actual_refresh_token != expected_refresh_token
+        ):
+            stale_result = {
+                "handler": "data_snapshot_refresh",
+                "handler_contract": "data-snapshot-refresh-worker-v1",
+                "status": "skipped_stale_context",
+                "reason": (
+                    "active profile or refresh token changed before the worker executed"
+                ),
+                "requested_active_scoring_profile_version_id": expected_profile_id,
+                "actual_active_scoring_profile_version_id": actual_profile_id,
+                "requested_refresh_token": expected_refresh_token,
+                "actual_refresh_token": actual_refresh_token,
+                "requested_refresh_generation": requested_generation,
+                "actual_refresh_generation": context["refresh_generation"],
+                "scope": scope,
+                "record_mode": record_mode,
+                "acceptance_ids": ["A204", "A205", "A206"],
+            }
+            log_data_snapshot_refresh_operation(
+                connection,
+                object_type="active_analysis_context",
+                object_id=actual_profile_id,
+                old_value=payload,
+                new_value=dict(context),
+                diff=stale_result,
+                reason=reason,
+                model_version=model_version,
+                profile_version=profile_version,
+                result_status="skipped",
+            )
+            return jsonable(stale_result)
+
+        timestamp = utc_now()
+        source_stats = current_data_snapshot_source_stats(connection)
+        source_hash = data_snapshot_source_hash(
+            scope=scope,
+            record_mode=record_mode,
+            source_stats=source_stats,
+        )
+        as_of = (
+            source_stats.get("latest_source_retrieved_at")
+            or source_stats.get("latest_relationship_observed_at")
+            or source_stats.get("latest_source_observed_at")
+            or timestamp
+        )
+        previous_scope_snapshot = connection.execute(
+            """
+            UPDATE data_snapshots
+            SET status = 'superseded',
+                metadata = metadata || %s
+            WHERE scope = %s
+              AND record_mode = %s
+              AND status = 'active'
+            RETURNING id, snapshot_key
+            """,
+            (
+                Jsonb(
+                    jsonable(
+                        {
+                            "superseded_by_job_id": job["id"],
+                            "superseded_reason": reason,
+                        }
+                    )
+                ),
+                scope,
+                record_mode,
+            ),
+        ).fetchone()
+        snapshot_key = f"{scope}:{record_mode}:job:{str(job['id'])[:8]}"
+        new_snapshot = connection.execute(
+            """
+            INSERT INTO data_snapshots(
+              snapshot_key, scope, record_mode, status, built_from_ingestion_run_id,
+              source_hash, as_of, activated_at, supersedes_snapshot_id, metadata
+            )
+            VALUES (%s, %s, %s, 'active', %s, %s, %s, %s, %s, %s)
+            RETURNING id, snapshot_key, scope, record_mode, status, source_hash,
+                      as_of, activated_at, supersedes_snapshot_id, metadata
+            """,
+            (
+                snapshot_key,
+                scope,
+                record_mode,
+                source_stats.get("latest_ingestion_run_id"),
+                source_hash,
+                as_of,
+                timestamp,
+                previous_scope_snapshot["id"] if previous_scope_snapshot else None,
+                Jsonb(
+                    jsonable(
+                        {
+                            "handler": "data_snapshot_refresh",
+                            "handler_contract": "data-snapshot-refresh-worker-v1",
+                            "job_id": job["id"],
+                            "source_stats": source_stats,
+                            "source_hash_contract": "source-stats-sha256-v1",
+                            "fixture_policy": (
+                                "curated_official_fixture is not live/full-text ingestion"
+                            ),
+                        }
+                    )
+                ),
+            ),
+        ).fetchone()
+        updated_context = connection.execute(
+            """
+            UPDATE active_analysis_contexts
+            SET active_data_snapshot_id = %s,
+                refresh_token = gen_random_uuid(),
+                refresh_generation = refresh_generation + 1,
+                status = 'active',
+                activated_at = %s,
+                activated_by = 'system',
+                affected_modules = %s,
+                metadata = metadata || %s,
+                updated_at = %s
+            WHERE context_key = 'global'
+            RETURNING refresh_token::text AS refresh_token, refresh_generation
+            """,
+            (
+                new_snapshot["id"],
+                timestamp,
+                Jsonb(ACTIVE_REFRESH_MODULES),
+                Jsonb(
+                    jsonable(
+                        {
+                            "last_data_snapshot_refresh_job_id": job["id"],
+                            "last_data_snapshot_id": new_snapshot["id"],
+                            "last_data_snapshot_key": new_snapshot["snapshot_key"],
+                            "last_data_snapshot_contract": (
+                                "data-snapshot-refresh-worker-v1"
+                            ),
+                        }
+                    )
+                ),
+                timestamp,
+            ),
+        ).fetchone()
+        result = {
+            "handler": "data_snapshot_refresh",
+            "handler_contract": "data-snapshot-refresh-worker-v1",
+            "status": "completed",
+            "job_id": job["id"],
+            "data_snapshot_id": new_snapshot["id"],
+            "data_snapshot_key": new_snapshot["snapshot_key"],
+            "previous_active_data_snapshot_id": context["active_data_snapshot_id"],
+            "superseded_snapshot_id": (
+                previous_scope_snapshot["id"] if previous_scope_snapshot else None
+            ),
+            "scope": scope,
+            "record_mode": record_mode,
+            "source_hash": source_hash,
+            "source_stats": source_stats,
+            "active_scoring_profile_version_id": expected_profile_id,
+            "active_scoring_run_id": context["active_scoring_run_id"],
+            "previous_refresh_token": expected_refresh_token,
+            "refresh_token": updated_context["refresh_token"],
+            "previous_refresh_generation": requested_generation,
+            "refresh_generation": updated_context["refresh_generation"],
+            "affected_modules": ACTIVE_REFRESH_MODULES,
+            "acceptance_ids": ["A204", "A205", "A206"],
+        }
+        outbox_event = write_outbox_event(
+            connection,
+            event_type="data.snapshot.activated",
+            aggregate_type="data_snapshot",
+            aggregate_id=new_snapshot["id"],
+            idempotency_key=f"data-snapshot-activated:{new_snapshot['id']}",
+            payload={
+                "schema_version": "analysis-refresh-event-v1",
+                "job_id": job["id"],
+                "data_snapshot_id": new_snapshot["id"],
+                "data_snapshot_key": new_snapshot["snapshot_key"],
+                "active_scoring_profile_version_id": expected_profile_id,
+                "active_scoring_run_id": context["active_scoring_run_id"],
+                "previous_refresh_token": expected_refresh_token,
+                "refresh_token": updated_context["refresh_token"],
+                "previous_refresh_generation": requested_generation,
+                "refresh_generation": updated_context["refresh_generation"],
+                "scope": scope,
+                "record_mode": record_mode,
+                "source_hash": source_hash,
+                "source_stats": source_stats,
+                "affected_modules": ACTIVE_REFRESH_MODULES,
+            },
+            metadata={
+                "task_ids": ["T1303", "T1304"],
+                "acceptance_ids": ["A204", "A205", "A206"],
+                "contract": "transactional-outbox-event-v1",
+            },
+        )
+        result["outbox_event"] = outbox_event
+        log_data_snapshot_refresh_operation(
+            connection,
+            object_type="data_snapshot",
+            object_id=new_snapshot["id"],
+            old_value=dict(context),
+            new_value=result,
+            diff={
+                "previous_refresh_token": expected_refresh_token,
+                "refresh_token": updated_context["refresh_token"],
+                "previous_refresh_generation": requested_generation,
+                "refresh_generation": updated_context["refresh_generation"],
+                "previous_active_data_snapshot_id": context["active_data_snapshot_id"],
+                "data_snapshot_id": new_snapshot["id"],
+                "source_hash": source_hash,
+            },
+            reason=reason,
+            model_version=model_version,
+            profile_version=profile_version,
+            result_status="success",
+        )
+        return jsonable(result)
+
+
 def handle_score_recompute_job(job: dict[str, Any]) -> dict[str, Any]:
     payload = job.get("payload") or {}
     if payload.get("schema_version") != "score-recompute-job-v1":
@@ -1068,6 +1441,21 @@ def run_once(*, worker_id: str, job_type: str | None = None) -> dict[str, Any] |
     if job["job_type"] == "score_recompute":
         try:
             result = handle_score_recompute_job(job)
+        except Exception as exc:
+            return fail_job(
+                job_id=job["id"],
+                lease_token=job["lease_token"],
+                error_class=exc.__class__.__name__,
+                error_message=str(exc),
+            )
+        return complete_job(
+            job_id=job["id"],
+            lease_token=job["lease_token"],
+            result=result,
+        )
+    if job["job_type"] == "data_snapshot_refresh":
+        try:
+            result = handle_data_snapshot_refresh_job(job)
         except Exception as exc:
             return fail_job(
                 job_id=job["id"],
