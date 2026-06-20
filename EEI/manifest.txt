@@ -104,6 +104,7 @@ artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json
 artifacts/tests/a204/t1303_transactional_model_activation_contract.json
 artifacts/tests/a205/t1303_atomic_refresh_context_contract.json
 artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json
+artifacts/tests/a206/t1304_worker_deployment_binding_contract.json
 artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json
 artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json
 artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json
@@ -250,6 +251,7 @@ infra/db/migrations/0010_operation_log_actor_principal/up.sql
 infra/db/migrations/README.md
 infra/db/seeds/README.md
 infra/docker/README.md
+infra/docker/worker.Dockerfile
 manifest.txt
 models/FORMULA_REGISTRY.md
 models/MODEL_MANAGEMENT.md
@@ -321,6 +323,7 @@ scripts/validate_task_pack.py
 scripts/validate_ui_copy.py
 scripts/validate_v5_production_readiness_sync.py
 scripts/validate_visual_coverage.py
+scripts/validate_worker_deployment.py
 scripts/wait_for_database.py
 specs/api_contract.yaml
 specs/calibration_report_schema.json

@@ -16,6 +16,60 @@ services:
     volumes:
       - eei-postgres-data:/var/lib/postgresql/data
 
+  migrate:
+    profiles: ["worker"]
+    build:
+      context: .
+      dockerfile: infra/docker/worker.Dockerfile
+    container_name: eei-migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${EEI_DOCKER_DATABASE_URL:-postgresql://eei:change-me-local-only@postgres:5432/eei}
+    command: [".venv/bin/python", "scripts/migrate.py", "upgrade"]
+    restart: "no"
+
+  worker:
+    profiles: ["worker"]
+    build:
+      context: .
+      dockerfile: infra/docker/worker.Dockerfile
+    container_name: eei-worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: ${EEI_DOCKER_DATABASE_URL:-postgresql://eei:change-me-local-only@postgres:5432/eei}
+    command:
+      [
+        ".venv/bin/python",
+        "-m",
+        "apps.worker.app.main",
+        "supervise",
+        "--worker-id",
+        "${EEI_WORKER_ID:-eei-compose-worker}",
+        "--max-jobs-per-cycle",
+        "${EEI_WORKER_MAX_JOBS_PER_CYCLE:-1}",
+        "--max-outbox-per-cycle",
+        "${EEI_WORKER_MAX_OUTBOX_PER_CYCLE:-5}",
+        "--poll-interval-seconds",
+        "${EEI_WORKER_POLL_INTERVAL_SECONDS:-5}",
+      ]
+    restart: unless-stopped
+    stop_grace_period: 30s
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          ".venv/bin/python -m apps.worker.app.main health >/tmp/eei-worker-health.json",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
 volumes:
   eei-postgres-data:
-

@@ -1,0 +1,55 @@
+{
+  "schema_version": "eei-worker-deployment-binding-v1",
+  "status": "PASS",
+  "task_id": "T1304",
+  "acceptance_ids": [
+    "A206",
+    "A209"
+  ],
+  "runtime": {
+    "process_manager": "docker_compose",
+    "compose_file": "docker-compose.yml",
+    "worker_profile": "worker",
+    "start_command": "docker compose --profile worker up -d worker",
+    "stop_command": "docker compose --profile worker stop worker",
+    "logs_command": "docker compose logs --tail=200 worker"
+  },
+  "services": {
+    "postgres": {
+      "healthcheck": true
+    },
+    "migrate": {
+      "waits_for_postgres": true,
+      "command": ".venv/bin/python scripts/migrate.py upgrade"
+    },
+    "worker": {
+      "dockerfile": "infra/docker/worker.Dockerfile",
+      "command": ".venv/bin/python -m apps.worker.app.main supervise --worker-id ${EEI_WORKER_ID:-eei-compose-worker} --max-jobs-per-cycle ${EEI_WORKER_MAX_JOBS_PER_CYCLE:-1} --max-outbox-per-cycle ${EEI_WORKER_MAX_OUTBOX_PER_CYCLE:-5} --poll-interval-seconds ${EEI_WORKER_POLL_INTERVAL_SECONDS:-5}",
+      "restart": "unless-stopped",
+      "stop_grace_period": "30s",
+      "healthcheck": "CMD-SHELL .venv/bin/python -m apps.worker.app.main health >/tmp/eei-worker-health.json",
+      "waits_for_postgres": true,
+      "waits_for_migration": true
+    }
+  },
+  "operator_controls": {
+    "health": "make worker-health",
+    "once": "make worker-once",
+    "supervise": "make worker-supervise"
+  },
+  "soak_readiness": {
+    "worker_supervisor_bound": true,
+    "short_duration_hours": 4,
+    "long_duration_hours": 24,
+    "a209_status": "PARTIAL_UNTIL_OPERATOR_RUNS_COMPLETE"
+  },
+  "remaining_gaps_before_done": [
+    "Run T1307 4h and 24h operator soak using the Docker Compose worker binding.",
+    "Attach completed operator evidence before marking A209 DONE."
+  ],
+  "rollback": [
+    "Run docker compose --profile worker stop worker.",
+    "Revert docker-compose.yml worker/migrate services and infra/docker/worker.Dockerfile.",
+    "Regenerate release artifacts and rerun make verify."
+  ]
+}

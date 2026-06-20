@@ -2942,6 +2942,57 @@ Residual risks:
 
 ### Remaining gaps
 
-- Target deployment runtime still needs a concrete process manager binding for `make worker-supervise`.
+- Target deployment runtime process-manager binding was superseded by the 2026-06-21 Docker Compose worker binding entry below.
 - T1307 4h and 24h soak runs remain required before A209 or scheduler stability can be called production-ready.
+- LISTEN/NOTIFY or an equivalent low-latency wake path remains optional for v0.1 but would reduce polling latency.
+
+## 2026-06-21 - T1304/A206 Docker Compose worker process binding
+
+### Scope
+
+- Added `migrate` and `worker` services to `docker-compose.yml` under the `worker` profile.
+- Added `infra/docker/worker.Dockerfile` for the worker/migration runtime.
+- Added `scripts/validate_worker_deployment.py` to validate the process-manager contract without starting containers.
+- Wired `make validate-worker-deployment` into `make verify`.
+- Extended `scripts/run_soak_smoke.mjs` so A209 smoke output references the A206 Docker Compose worker binding.
+- Updated A206/A209 traceability, status ledger, Docker docs and v5 synchronization records.
+
+### Files changed
+
+- `docker-compose.yml`
+- `infra/docker/README.md`
+- `infra/docker/worker.Dockerfile`
+- `scripts/validate_worker_deployment.py`
+- `scripts/run_soak_smoke.mjs`
+- `Makefile`
+- `artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json`
+- `artifacts/tests/a206/t1304_worker_deployment_binding_contract.json`
+- `artifacts/tests/a209/t1307_soak_smoke.json`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `README.md`
+- `DEVELOPMENT_STATUS.md`
+- `MODEL_MANAGEMENT.md`
+- `docs/16_OPERATION_LOG_AND_BIWEEKLY_CALIBRATION.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- generated release/status artifacts
+
+### Acceptance mapping
+
+- T1304 -> A206 for Docker Compose worker process-manager binding.
+- T1307 -> A209 remains partial; the smoke harness now points operator soak to the Compose binding but does not replace 4h/24h runs.
+- A206 remains `IN_PROGRESS`, not `DONE`, until the 4h/24h operator soak is attached.
+
+### Validation
+
+- Pending in this run: `python3 -m py_compile scripts/validate_worker_deployment.py`.
+- Pending in this run: `.venv/bin/ruff check scripts/validate_worker_deployment.py scripts/run_soak_smoke.mjs apps/worker/app/main.py tests/integration/test_database_migrations.py`.
+- Pending in this run: `.venv/bin/python scripts/validate_worker_deployment.py`.
+- Pending in this run: `node scripts/run_soak_smoke.mjs --mode ci_smoke --duration-seconds 3 --output artifacts/tests/a209/t1307_soak_smoke.json --fail-on-budget --quiet`.
+- Pending in this run: governance, release artifact and full `make verify`.
+
+### Remaining gaps
+
+- T1307 4h and 24h operator soak runs remain required before A206/A209 can be called production-ready.
+- Docker Compose is the default MVP local process manager; non-Compose deployment bindings remain out of scope unless a target hosting runtime is selected.
 - LISTEN/NOTIFY or an equivalent low-latency wake path remains optional for v0.1 but would reduce polling latency.

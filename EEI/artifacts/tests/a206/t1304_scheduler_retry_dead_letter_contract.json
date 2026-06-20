@@ -27,6 +27,9 @@
     "scripts/job_scheduler.py registers a calibration_run handler that computes relationship-fact coverage, score-result coverage and drift warnings, writes calibration_runs metrics/drift_report/proposal_status=none, records execute_calibration_run and emits calibration.run.completed.",
     "apps/worker/app/main.py exposes the supervised worker CLI with health, once and supervise commands, covering expired lease recovery, bounded job execution, transactional outbox dispatch, idle stop and SIGTERM/SIGINT graceful stop.",
     "Makefile exposes worker-health, worker-once and worker-supervise operator commands for deployment wiring.",
+    "docker-compose.yml binds postgres, migrate and worker services under the worker profile so the default MVP worker process manager can start after healthy PostgreSQL and successful migrations.",
+    "infra/docker/worker.Dockerfile builds the worker/migration runtime and runs apps.worker.app.main supervise by default.",
+    "scripts/validate_worker_deployment.py validates the Docker Compose worker process binding and writes a release evidence artifact.",
     "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion, score_recompute enqueue/execution idempotency, data_snapshot_refresh enqueue/execution idempotency, curated_ingestion_refresh execution and worker supervisor health/once/idle-stop contracts."
   ],
   "parameters": {
@@ -51,16 +54,31 @@
     "apps/web/src/app/page.tsx",
     "apps/worker/app/main.py",
     "Makefile",
+    "docker-compose.yml",
+    "infra/docker/README.md",
+    "infra/docker/worker.Dockerfile",
     "scripts/job_scheduler.py",
+    "scripts/validate_worker_deployment.py",
     "scripts/check_database_schema.py",
     "tests/integration/test_database_migrations.py",
     "tests/unit/test_scoring.py",
-    "tests/e2e/state-contract.spec.ts"
+    "tests/e2e/state-contract.spec.ts",
+    "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json"
   ],
+  "deployment_binding": {
+    "process_manager": "docker_compose",
+    "compose_profile": "worker",
+    "start_command": "docker compose --profile worker up -d worker",
+    "stop_command": "docker compose --profile worker stop worker",
+    "logs_command": "docker compose logs --tail=200 worker",
+    "healthcheck": "python -m apps.worker.app.main health"
+  },
   "local_validation": [
     "python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py",
     "python3 -m py_compile apps/worker/app/main.py tests/integration/test_database_migrations.py",
-    ".venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py apps/worker/app/main.py scripts/job_scheduler.py tests/integration/test_database_migrations.py tests/unit/test_scoring.py",
+    "python3 -m py_compile scripts/validate_worker_deployment.py",
+    ".venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py apps/worker/app/main.py scripts/job_scheduler.py scripts/validate_worker_deployment.py tests/integration/test_database_migrations.py tests/unit/test_scoring.py",
+    ".venv/bin/python scripts/validate_worker_deployment.py",
     ".venv/bin/python scripts/validate_contracts.py",
     ".venv/bin/python scripts/validate_catalog_integrity.py",
     ".venv/bin/python -m pytest -q tests/unit/test_scoring.py"
@@ -81,10 +99,12 @@
     "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
   },
   "remaining_gaps_before_done": [
-    "Bind worker-supervise to the chosen deployment process manager or scheduler in the target runtime.",
-    "Run T1307 4h/24h soak tests for timer, retry and recovery stability."
+    "Run T1307 4h/24h operator soak using the Docker Compose worker binding for timer, retry and recovery stability.",
+    "Attach completed operator soak evidence before marking A206/A209 DONE."
   ],
   "rollback": [
+    "Run docker compose --profile worker stop worker.",
+    "Revert docker-compose.yml worker/migrate services and infra/docker/worker.Dockerfile.",
     "Run scripts/migrate.py downgrade --steps 1 to drop dead_letter_jobs, background_job_attempts and background_jobs.",
     "Remove scripts/job_scheduler.py and A206 traceability/evidence rows.",
     "Regenerate release artifacts and rerun make verify-g2-db."

@@ -16,6 +16,10 @@ const MAX_DOM_GROWTH_NODES = 12;
 const MAX_TIMER_LEAKS = 0;
 const MAX_LISTENER_LEAKS = 0;
 const MAX_EVENT_LOOP_LAG_MS = 250;
+const WORKER_BINDING_ARTIFACT = path.join(
+  ROOT,
+  "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json"
+);
 
 function parseArgs(argv) {
   const args = {
@@ -90,6 +94,17 @@ async function readSoakParameters() {
     throw new Error("Missing soak duration parameters");
   }
   return values;
+}
+
+async function readWorkerDeploymentBinding() {
+  try {
+    return JSON.parse(await readFile(WORKER_BINDING_ARTIFACT, "utf8"));
+  } catch (error) {
+    if (error && error.code === "ENOENT") {
+      return null;
+    }
+    throw error;
+  }
 }
 
 function percentile(values, percentileValue) {
@@ -305,6 +320,7 @@ function evaluate(browserResult, workerResult) {
 async function main() {
   const args = parseArgs(process.argv);
   const parameters = await readSoakParameters();
+  const workerDeploymentBinding = await readWorkerDeploymentBinding();
   const browserResult = await runBrowserSoak(args.durationSeconds);
   const workerResult = await runWorkerSoak(args.durationSeconds);
   const evaluation = evaluate(browserResult, workerResult);
@@ -338,6 +354,9 @@ async function main() {
       browser_soak_measured: true,
       worker_soak_measured: true,
       full_4h_24h_measured: fullDurationMeasured,
+      worker_supervisor_binding_available:
+        workerDeploymentBinding?.status === "PASS" &&
+        workerDeploymentBinding?.runtime?.process_manager === "docker_compose",
       required_metric_groups: [
         "heap",
         "dom",
@@ -349,6 +368,21 @@ async function main() {
       ]
     },
     budgets: evaluation.budgets,
+    worker_supervisor_binding: workerDeploymentBinding
+      ? {
+          artifact_path: "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json",
+          schema_version: workerDeploymentBinding.schema_version,
+          status: workerDeploymentBinding.status,
+          process_manager: workerDeploymentBinding.runtime?.process_manager,
+          start_command: workerDeploymentBinding.runtime?.start_command,
+          stop_command: workerDeploymentBinding.runtime?.stop_command,
+          logs_command: workerDeploymentBinding.runtime?.logs_command
+        }
+      : {
+          artifact_path: "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json",
+          status: "MISSING",
+          process_manager: null
+        },
     browser: {
       heap_sample_available: browserResult.heap_sample_available,
       heap_growth_bytes: browserResult.heap_growth_bytes,
@@ -365,7 +399,7 @@ async function main() {
     remaining_to_close_a209: fullDurationMeasured
       ? []
       : [
-          "Run operator soak for 4 hours and 24 hours using this harness.",
+          "Run operator soak for 4 hours and 24 hours using the Docker Compose worker binding plus this harness.",
           "Attach release evidence for both durations before marking A209 DONE."
         ]
   };

@@ -7,7 +7,7 @@
   ],
   "status": "PARTIAL",
   "mode": "ci_smoke",
-  "generated_at": "2026-06-20T04:52:32Z",
+  "generated_at": "2026-06-20T14:45:11Z",
   "environment": {
     "node": "v25.7.0",
     "platform": "darwin-25.5.0-arm64",
@@ -23,6 +23,7 @@
     "browser_soak_measured": true,
     "worker_soak_measured": true,
     "full_4h_24h_measured": false,
+    "worker_supervisor_binding_available": true,
     "required_metric_groups": [
       "heap",
       "dom",
@@ -40,15 +41,24 @@
     "max_listener_leaks": 0,
     "max_event_loop_lag_ms": 250
   },
+  "worker_supervisor_binding": {
+    "artifact_path": "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json",
+    "schema_version": "eei-worker-deployment-binding-v1",
+    "status": "PASS",
+    "process_manager": "docker_compose",
+    "start_command": "docker compose --profile worker up -d worker",
+    "stop_command": "docker compose --profile worker stop worker",
+    "logs_command": "docker compose logs --tail=200 worker"
+  },
   "browser": {
     "heap_sample_available": true,
-    "heap_growth_bytes": 258219,
+    "heap_growth_bytes": 258647,
     "heap_samples": {
       "min": 876740,
-      "p50": 922536,
-      "p95": 983599.2,
-      "p99": 988025.76,
-      "max": 989168
+      "p50": 922692,
+      "p95": 984000.8,
+      "p99": 988448.48,
+      "max": 989596
     },
     "dom_node_growth": 0,
     "dom_node_samples": {
@@ -61,9 +71,9 @@
     "frame_delta_ms": {
       "min": 14.6,
       "p50": 16.7,
-      "p95": 18.02,
-      "p99": 18.48,
-      "max": 18.7
+      "p95": 18.64,
+      "p99": 26.932,
+      "max": 33.4
     },
     "listener_balance": 0,
     "timer_balance": 0,
@@ -77,17 +87,17 @@
     "recoveries_observed": 3,
     "dead_letters_observed": 0,
     "event_loop_lag_ms": {
-      "min": 0.1032,
-      "p50": 2.0636,
-      "p95": 2.3683,
-      "p99": 2.8082,
-      "max": 2.8938
+      "min": 0.1288,
+      "p50": 2.0574,
+      "p95": 2.1654,
+      "p99": 2.2258,
+      "max": 2.3101
     },
-    "cpu_user_ms": 11.716,
-    "cpu_system_ms": 1.621
+    "cpu_user_ms": 6.542,
+    "cpu_system_ms": 1.548
   },
   "remaining_to_close_a209": [
-    "Run operator soak for 4 hours and 24 hours using this harness.",
+    "Run operator soak for 4 hours and 24 hours using the Docker Compose worker binding plus this harness.",
     "Attach release evidence for both durations before marking A209 DONE."
   ]
 }
