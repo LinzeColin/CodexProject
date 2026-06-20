@@ -73,6 +73,17 @@
     "verify_g2_browser_e2e_step": "PASS",
     "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
   },
+  "latest_score_recompute_ci_result": {
+    "provider": "GitHub Actions",
+    "workflow": "EEI validation",
+    "run_id": "27883953630",
+    "job_id": "82516108840",
+    "commit_sha": "f2bf996c1ea57f652f6d4d5da517f1f4b501e6ad",
+    "verified_scope": "score_recompute writes score_results for relationship_fact_candidate, relationship, entity, event, industry and source_document in one active scoring run",
+    "verify_g2_postgresql_integration_step": "PASS",
+    "verify_g2_browser_e2e_step": "PASS",
+    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
+  },
   "rollback": [
     "Revert the T1303 API/repository/migration/test/governance commit.",
     "Run scripts/migrate.py downgrade --steps 1 to remove active_analysis_contexts and the global active profile index in affected environments.",
