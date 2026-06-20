@@ -1822,3 +1822,64 @@ Residual risks:
 - independent-source threshold is not satisfied for the two candidate facts.
 - no human review approval has been recorded.
 - production API and graph query do not yet consume these candidate tables.
+
+## 2026-06-20 - T1302/A203 production graph and scoring contract slice
+
+Status: LOCAL VALIDATED; REMOTE CI PASS
+
+Completed:
+
+- Added production context to graph/path responses with active data snapshot, active scoring profile, graph query version, scoring service version, record modes and publication policy.
+- Added `GET /v1/scoring/explain/{objectType}/{objectId}` for `relationship_fact_candidate` explanations.
+- Added candidate-fact coverage so Golden Vertical candidates remain excluded from graph edges until source threshold and human review gates pass.
+- Updated `specs/api_contract.yaml` and `tests/integration/test_database_migrations.py` for the A203 contract.
+- Added `artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json`.
+- Marked T1302/A203 as `IN PROGRESS`, not DONE.
+
+Acceptance status:
+
+- A203 is in progress.
+- Current evidence covers candidate fact scoring explanations and graph/path publication context.
+
+Residual risks:
+
+- Full multi-object production scoring service is not complete.
+- Candidate review approval and publication into relationship facts remain open.
+- Scale, soak and downstream frontend production wiring remain separate blockers.
+
+Verification evidence:
+
+- GitHub Actions run `27856517135`: PASS.
+- GitHub Actions job `82444936213`.
+- GitHub Actions step `Verify static, contract, lint, typecheck and unit tests`: PASS.
+- GitHub Actions step `Verify G2 PostgreSQL migrations and E2E`: PASS.
+
+## 2026-06-20 - T1303/A204-A205 transactional activation and refresh context slice
+
+Status: LOCAL STATIC IN PROGRESS
+
+Completed:
+
+- Added `infra/db/migrations/0006_model_activation_refresh_state/up.sql` and `down.sql`.
+- Added a database-level global active scoring profile unique index.
+- Added `active_analysis_contexts` for active profile, data snapshot, score snapshot, refresh token, refresh generation, affected modules and metadata.
+- Extended `scripts/load_seed_catalogs.py` to initialize the global active context idempotently.
+- Added `GET /v1/scoring/active-context` so clients can detect stale refresh tokens.
+- Added `POST /v1/scoring/profiles/{profileVersionId}/activate` for transaction-scoped activation.
+- Activation now locks current/target profile versions, creates a completed `scoring_runs` score snapshot, switches active profile, updates active context and writes operation logs in one transaction.
+- Stale expected active profile requests return 409 and leave the active profile unchanged while logging a conflict operation.
+- Extended `tests/integration/test_database_migrations.py` to assert success, conflict and database uniqueness semantics.
+- Added A204/A205 evidence files under `artifacts/tests/a204/` and `artifacts/tests/a205/`.
+
+Acceptance status:
+
+- A204 and A205 are `IN PROGRESS`, not DONE.
+- A204 has service/database transaction evidence pending CI database execution.
+- A205 has server-side refresh token semantics, but not production frontend cross-view E2E completion.
+
+Residual risks:
+
+- Frontend modules still use the static analysis context and are not yet wired to `/v1/scoring/active-context`.
+- Model-center edit/activate/rollback controls are not complete.
+- Worker-driven data snapshot activation, transactional outbox, scheduler and dead-letter remain T1304 and later tasks.
+- Local Docker/PostgreSQL is not available on this host, so database proof requires GitHub Actions.

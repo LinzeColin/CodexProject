@@ -8,7 +8,13 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-from .domain_repository import CatalogRepository, DomainRepository, NotFoundError, RepositoryError
+from .domain_repository import (
+    CatalogRepository,
+    ConflictError,
+    DomainRepository,
+    NotFoundError,
+    RepositoryError,
+)
 from .settings import get_settings
 
 router = APIRouter(prefix="/v1", tags=["domain"])
@@ -92,6 +98,16 @@ class WatchlistItem(BaseModel):
     saved_state: dict[str, Any] = Field(default_factory=dict)
 
 
+class ScoringActivationRequest(BaseModel):
+    expected_active_profile_version_id: UUID | None = None
+    client_refresh_token: str | None = None
+    reason: str = Field(
+        default="Manual model activation request",
+        min_length=1,
+        max_length=500,
+    )
+
+
 def get_repository() -> DomainRepository:
     settings = get_settings()
     if not settings.database_url:
@@ -109,6 +125,8 @@ CatalogRepositoryDependency = Annotated[CatalogRepository, Depends(CatalogReposi
 def translate_repository_error(error: RepositoryError) -> HTTPException:
     if isinstance(error, NotFoundError):
         return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error))
+    if isinstance(error, ConflictError):
+        return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=error.detail)
     return HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(error))
 
 
@@ -353,6 +371,36 @@ def list_audit_logs(
 @router.get("/scoring/profiles")
 def list_scoring_profiles(repository: RepositoryDependency) -> list[dict[str, Any]]:
     return repository.list_scoring_profiles()
+
+
+@router.get("/scoring/active-context")
+def get_active_scoring_context(
+    repository: RepositoryDependency,
+    client_refresh_token: Annotated[str | None, Query()] = None,
+) -> dict[str, Any]:
+    try:
+        return repository.get_active_analysis_context(
+            client_refresh_token=client_refresh_token,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
+@router.post("/scoring/profiles/{profileVersionId}/activate")
+def activate_scoring_profile(
+    profileVersionId: UUID,
+    payload: ScoringActivationRequest,
+    repository: RepositoryDependency,
+) -> dict[str, Any]:
+    try:
+        return repository.activate_scoring_profile_version(
+            profile_version_id=profileVersionId,
+            expected_active_profile_version_id=payload.expected_active_profile_version_id,
+            client_refresh_token=payload.client_refresh_token,
+            reason=payload.reason,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
 
 
 @router.get("/scoring/explain/{objectType}/{objectId}")

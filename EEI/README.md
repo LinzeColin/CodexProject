@@ -13,6 +13,8 @@
 
 本包是一套可直接进入 GitHub 和 Codex G0 的产品、模型、数据、研发与验收基线。默认首页从 Watchlist 当前公司进入可视化商业版图，并允许点击任意对象后递归切换研究中心。
 
+当前生产实现进度：T1300/A201 已关闭；T1301/A202、T1302/A203、T1303/A204-A205 处于进行中。T1303 已具备服务端事务激活、operation log、active analysis context 和 refresh token 合同，但模型中心真实控件、前端全模块刷新、规模测试、soak、scheduler、保存视图和品牌清权仍阻断 v0.1。
+
 | 入口 | 用途 |
 |---|---|
 | `prototype/standalone.html` | 离线可交互高保真原型 |

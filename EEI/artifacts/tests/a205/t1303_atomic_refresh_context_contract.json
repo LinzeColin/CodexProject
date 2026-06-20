@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "task_id": "T1303",
+  "acceptance_id": "A205",
+  "status": "IN_PROGRESS",
+  "implemented_slice": [
+    "Added GET /v1/scoring/active-context so clients can compare refresh_token and refresh_generation before reusing graph, score, model or module state.",
+    "Activation advances active_analysis_contexts.refresh_token and refresh_generation atomically with the active scoring profile switch.",
+    "Activation responses include cache_invalidation.previous_refresh_token, cache_invalidation.refresh_token and affected modules.",
+    "Production graph/path context and home model_status now expose active_analysis_context for server-side refresh semantics.",
+    "Integration tests assert old refresh tokens are stale and matching refresh tokens are current."
+  ],
+  "evidence_files": [
+    "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
+    "apps/api/app/domain.py",
+    "apps/api/app/domain_repository.py",
+    "specs/api_contract.yaml",
+    "tests/integration/test_database_migrations.py"
+  ],
+  "validation_commands": [
+    "PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py scripts/check_database_schema.py scripts/load_seed_catalogs.py",
+    "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_contracts.py",
+    "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py"
+  ],
+  "not_closed_scope": [
+    "Frontend visible modules still read the static analysis contract and are not yet wired to the server active context.",
+    "A true cross-view E2E refresh after activation is still required before A205 can be DONE.",
+    "Worker-driven data snapshot activation and transactional outbox are still covered by T1304 and later refresh slices.",
+    "Scale and soak refresh stability remain T1306-T1307."
+  ],
+  "rollback": [
+    "Revert the T1303 API/repository/migration/test/governance commit.",
+    "Run scripts/migrate.py downgrade --steps 1 in environments where migration 0006 was applied.",
+    "Remove A205 evidence paths from data/acceptance_traceability.csv if this slice is reverted.",
+    "Regenerate release artifacts and rerun make verify plus make verify-g2-db."
+  ]
+}
