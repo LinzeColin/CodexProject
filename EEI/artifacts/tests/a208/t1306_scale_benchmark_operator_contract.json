@@ -1,0 +1,242 @@
+{
+  "schema_version": "eei-scale-benchmark-v1",
+  "system_name": "EEI",
+  "task_id": "T1306",
+  "acceptance_ids": [
+    "A208"
+  ],
+  "status": "PARTIAL",
+  "mode": "operator_full",
+  "generated_at": "2026-06-20T04:14:37+00:00",
+  "environment": {
+    "python": "3.12.12",
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "arm",
+    "cpu_count": 8
+  },
+  "target_scales": [
+    10000,
+    100000,
+    1000000
+  ],
+  "measured_scales": [
+    10000,
+    100000,
+    1000000
+  ],
+  "iterations": 1,
+  "budgets_ms": {
+    "10000": 1000.0,
+    "100000": 3000.0,
+    "1000000": 10000.0
+  },
+  "results": [
+    {
+      "scale_relationships": 10000,
+      "iterations": 1,
+      "budget_ms": 1000.0,
+      "status": "PASS",
+      "api_projection_ms": {
+        "min": 213.4612,
+        "p50": 213.4612,
+        "p95": 213.4612,
+        "p99": 213.4612,
+        "max": 213.4612
+      },
+      "layout_ms": {
+        "min": 2.9879,
+        "p50": 2.9879,
+        "p95": 2.9879,
+        "p99": 2.9879,
+        "max": 2.9879
+      },
+      "render_contract_ms": {
+        "min": 6.0685,
+        "p50": 6.0685,
+        "p95": 6.0685,
+        "p99": 6.0685,
+        "max": 6.0685
+      },
+      "estimated_frame_ms": {
+        "min": 6.0685,
+        "p50": 6.0685,
+        "p95": 6.0685,
+        "p99": 6.0685,
+        "max": 6.0685
+      },
+      "total_ms": {
+        "min": 226.0649,
+        "p50": 226.0649,
+        "p95": 226.0649,
+        "p99": 226.0649,
+        "max": 226.0649
+      },
+      "memory_payload_bytes": {
+        "max": 95894,
+        "p95": 95894.0
+      },
+      "synthetic_long_task_count": 0,
+      "last_counts": {
+        "candidate_edges": 5000,
+        "returned_edges": 2000,
+        "returned_nodes": 500,
+        "positioned_nodes": 500,
+        "rendered_edges": 998,
+        "truncated": true
+      },
+      "metric_groups": {
+        "api": true,
+        "layout": true,
+        "render_contract": true,
+        "memory_payload": true,
+        "estimated_frame": true,
+        "synthetic_long_task": true,
+        "browser_runtime": false
+      }
+    },
+    {
+      "scale_relationships": 100000,
+      "iterations": 1,
+      "budget_ms": 3000.0,
+      "status": "PASS",
+      "api_projection_ms": {
+        "min": 2188.4472,
+        "p50": 2188.4472,
+        "p95": 2188.4472,
+        "p99": 2188.4472,
+        "max": 2188.4472
+      },
+      "layout_ms": {
+        "min": 9.1236,
+        "p50": 9.1236,
+        "p95": 9.1236,
+        "p99": 9.1236,
+        "max": 9.1236
+      },
+      "render_contract_ms": {
+        "min": 14.0406,
+        "p50": 14.0406,
+        "p95": 14.0406,
+        "p99": 14.0406,
+        "max": 14.0406
+      },
+      "estimated_frame_ms": {
+        "min": 14.0406,
+        "p50": 14.0406,
+        "p95": 14.0406,
+        "p99": 14.0406,
+        "max": 14.0406
+      },
+      "total_ms": {
+        "min": 2212.687,
+        "p50": 2212.687,
+        "p95": 2212.687,
+        "p99": 2212.687,
+        "max": 2212.687
+      },
+      "memory_payload_bytes": {
+        "max": 177717,
+        "p95": 177717.0
+      },
+      "synthetic_long_task_count": 0,
+      "last_counts": {
+        "candidate_edges": 50000,
+        "returned_edges": 2000,
+        "returned_nodes": 500,
+        "positioned_nodes": 500,
+        "rendered_edges": 1996,
+        "truncated": true
+      },
+      "metric_groups": {
+        "api": true,
+        "layout": true,
+        "render_contract": true,
+        "memory_payload": true,
+        "estimated_frame": true,
+        "synthetic_long_task": true,
+        "browser_runtime": false
+      }
+    },
+    {
+      "scale_relationships": 1000000,
+      "iterations": 1,
+      "budget_ms": 10000.0,
+      "status": "PASS",
+      "api_projection_ms": {
+        "min": 6188.0694,
+        "p50": 6188.0694,
+        "p95": 6188.0694,
+        "p99": 6188.0694,
+        "max": 6188.0694
+      },
+      "layout_ms": {
+        "min": 2.5356,
+        "p50": 2.5356,
+        "p95": 2.5356,
+        "p99": 2.5356,
+        "max": 2.5356
+      },
+      "render_contract_ms": {
+        "min": 5.3852,
+        "p50": 5.3852,
+        "p95": 5.3852,
+        "p99": 5.3852,
+        "max": 5.3852
+      },
+      "estimated_frame_ms": {
+        "min": 5.3852,
+        "p50": 5.3852,
+        "p95": 5.3852,
+        "p99": 5.3852,
+        "max": 5.3852
+      },
+      "total_ms": {
+        "min": 6197.1814,
+        "p50": 6197.1814,
+        "p95": 6197.1814,
+        "p99": 6197.1814,
+        "max": 6197.1814
+      },
+      "memory_payload_bytes": {
+        "max": 172767,
+        "p95": 172767.0
+      },
+      "synthetic_long_task_count": 0,
+      "last_counts": {
+        "candidate_edges": 500000,
+        "returned_edges": 2000,
+        "returned_nodes": 251,
+        "positioned_nodes": 251,
+        "rendered_edges": 2000,
+        "truncated": true
+      },
+      "metric_groups": {
+        "api": true,
+        "layout": true,
+        "render_contract": true,
+        "memory_payload": true,
+        "estimated_frame": true,
+        "synthetic_long_task": true,
+        "browser_runtime": false
+      }
+    }
+  ],
+  "coverage": {
+    "target_scales_measured": true,
+    "browser_runtime_measured": false,
+    "full_a208_pass": false,
+    "required_metric_groups": [
+      "api",
+      "layout",
+      "render",
+      "memory",
+      "frame",
+      "long_task"
+    ]
+  },
+  "remaining_to_close_a208": [
+    "Attach browser runtime frame, memory and long-task measurements.",
+    "Record pass/fail release evidence after full benchmark completes."
+  ]
+}

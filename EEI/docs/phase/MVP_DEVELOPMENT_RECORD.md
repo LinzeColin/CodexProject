@@ -203,6 +203,34 @@ Residual risks:
 - GitHub Actions must be updated to run `make verify-g2-db` and prove migration/seed/rollback on PostgreSQL.
 - T205 synthetic recursive supply-chain fixtures and T1103-T1109 visual canvas tasks are not started.
 
+## 2026-06-20 - Phase 1 / T1306 A208 scale benchmark smoke harness
+
+Status: IN PROGRESS
+
+Completed:
+
+- Added `scripts/run_scale_benchmarks.py` as a deterministic benchmark contract for API projection, layout, render payload, memory payload, estimated frame budget and synthetic long-task counts.
+- Added `tests/unit/test_scale_benchmarks.py` to lock the A208 payload schema, target scale coverage semantics and per-scale pass/fail budget output.
+- Added `make validate-scale-benchmark-smoke` and wired it into `make verify`.
+- Added `make validate-scale-benchmark-operator` for the manual 10k/100k/1m operator contract.
+- Advanced T1306/A208 governance from `NOT_STARTED` to `IN PROGRESS` without closing A208.
+
+Verification plan:
+
+- `.venv/bin/python -m compileall scripts/run_scale_benchmarks.py tests/unit/test_scale_benchmarks.py scripts/validate_v5_production_readiness_sync.py`
+- `.venv/bin/python scripts/run_scale_benchmarks.py --scales 1000 --iterations 2 --mode ci_smoke --output artifacts/tests/a208/t1306_scale_benchmark_smoke.json --fail-on-budget`
+- `.venv/bin/python scripts/run_scale_benchmarks.py --scales 10000,100000,1000000 --iterations 1 --mode operator_full --output artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json --fail-on-budget`
+- `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`
+- `.venv/bin/python scripts/validate_task_pack.py`
+- `.venv/bin/python scripts/validate_contracts.py`
+- `make verify` or CI equivalent after artifact regeneration.
+
+Residual risks:
+
+- A208 is not complete until operator_full mode records 10k, 100k and 1m relationship scale results.
+- Browser runtime frame, heap/memory and long-task measurements are not yet attached to the benchmark output.
+- This slice proves the benchmark contract and CI smoke only; it does not prove production graph rendering at full scale.
+
 ## 2026-06-19 - Phase 1 / G2 database CI repair loop 1
 
 Status: IN PROGRESS
