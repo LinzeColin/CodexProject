@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "decision_set_key": "a202-production-owner-signoff-contract-v1",
+  "record_mode": "curated_official_fixture",
+  "review_context": "production_owner_signoff_contract",
+  "production_owner_signoff": true,
+  "decisions": [
+    {
+      "candidate_key": "GV-FACT-001",
+      "decision": "approved_for_publication",
+      "reviewer": "production-data-owner-contract",
+      "reviewed_at": "2026-06-21T00:30:00+10:00",
+      "owner_actor": "eei-production-data-owner",
+      "owner_role": "data_owner",
+      "authority_scope": "golden-vertical:nvidia",
+      "signature": "contract-test-owner-signature-gv-fact-001",
+      "source_threshold_override": true,
+      "source_threshold_override_reason": "Production owner sign-off contract accepts the single official source for this bounded MVP Golden Vertical candidate while preserving record_mode and source lineage.",
+      "attestation": "Reviewed endpoint resolution, official source locator, evidence excerpt, empty counter-evidence array, authority scope and production owner sign-off fields."
+    },
+    {
+      "candidate_key": "GV-FACT-002",
+      "decision": "approved_for_publication",
+      "reviewer": "production-data-owner-contract",
+      "reviewed_at": "2026-06-21T00:30:00+10:00",
+      "owner_actor": "eei-production-data-owner",
+      "owner_role": "data_owner",
+      "authority_scope": "golden-vertical:nvidia",
+      "signature": "contract-test-owner-signature-gv-fact-002",
+      "source_threshold_override": true,
+      "source_threshold_override_reason": "Production owner sign-off contract accepts the single official source for this bounded MVP Golden Vertical candidate while preserving record_mode and source lineage.",
+      "attestation": "Reviewed endpoint resolution, official source locator, evidence excerpt, empty counter-evidence array, authority scope and production owner sign-off fields."
+    }
+  ]
+}

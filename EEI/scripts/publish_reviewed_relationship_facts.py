@@ -20,6 +20,8 @@ PUBLISHER_VERSION = "a202-reviewed-publication-v1"
 DEFAULT_SCOPE = "golden-vertical:nvidia"
 DEFAULT_RECORD_MODE = "curated_official_fixture"
 REQUIRED_DECISION = "approved_for_publication"
+FIXTURE_REVIEW_CONTEXT = "integration_contract_fixture"
+PRODUCTION_OWNER_SIGNOFF_CONTEXT = "production_owner_signoff_contract"
 
 
 def canonical_json(payload: object) -> str:
@@ -34,17 +36,42 @@ def parse_dt(value: str) -> datetime:
     return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(UTC)
 
 
-def read_decision_file(path: Path, *, allow_fixture_review: bool) -> dict[str, Any]:
+def read_decision_file(
+    path: Path,
+    *,
+    allow_fixture_review: bool,
+    allow_production_owner_signoff: bool,
+) -> dict[str, Any]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if payload.get("schema_version") != 1:
         raise RuntimeError("review decision schema_version must be 1")
     if payload.get("record_mode") != DEFAULT_RECORD_MODE:
         raise RuntimeError("review decision record_mode must be curated_official_fixture")
-    if payload.get("fixture_review_only_not_production_clearance") and not allow_fixture_review:
+    review_context = require_text(payload, "review_context")
+    fixture_review = bool(payload.get("fixture_review_only_not_production_clearance"))
+    production_owner_signoff = bool(payload.get("production_owner_signoff"))
+    if fixture_review and review_context != FIXTURE_REVIEW_CONTEXT:
+        raise RuntimeError("fixture review decisions must use integration_contract_fixture context")
+    if production_owner_signoff and review_context != PRODUCTION_OWNER_SIGNOFF_CONTEXT:
+        raise RuntimeError(
+            "production owner sign-off decisions must use "
+            "production_owner_signoff_contract context"
+        )
+    if fixture_review and production_owner_signoff:
+        raise RuntimeError(
+            "review decision cannot be both fixture review and production owner sign-off"
+        )
+    if fixture_review and not allow_fixture_review:
         raise RuntimeError(
             "fixture review decisions require --allow-fixture-review and are not "
             "production clearance"
         )
+    if production_owner_signoff and not allow_production_owner_signoff:
+        raise RuntimeError(
+            "production owner sign-off decisions require --allow-production-owner-signoff"
+        )
+    if not fixture_review and not production_owner_signoff:
+        raise RuntimeError("review decision must declare an explicit review clearance mode")
     decisions = payload.get("decisions")
     if not isinstance(decisions, list) or not decisions:
         raise RuntimeError("review decision file must contain at least one decision")
@@ -55,6 +82,11 @@ def read_decision_file(path: Path, *, allow_fixture_review: bool) -> dict[str, A
         require_text(decision, "attestation")
         if decision.get("decision") != REQUIRED_DECISION:
             raise RuntimeError(f"{decision['candidate_key']} decision must be {REQUIRED_DECISION}")
+        if production_owner_signoff:
+            require_text(decision, "owner_actor")
+            require_text(decision, "owner_role")
+            require_text(decision, "authority_scope")
+            require_text(decision, "signature")
     return payload
 
 
@@ -353,14 +385,33 @@ def activate_snapshot(
                     "task_id": "T1301",
                     "publisher_version": PUBLISHER_VERSION,
                     "decision_set_key": decision_payload["decision_set_key"],
+                    "review_context": decision_payload["review_context"],
                     "fixture_review_only_not_production_clearance": bool(
                         decision_payload.get("fixture_review_only_not_production_clearance")
+                    ),
+                    "production_owner_signoff": bool(
+                        decision_payload.get("production_owner_signoff")
                     ),
                 }
             ),
         ),
     ).fetchone()
     return str(row[0])
+
+
+def owner_signature_hash(decision: dict[str, Any]) -> str | None:
+    signature = decision.get("signature")
+    if not isinstance(signature, str) or not signature.strip():
+        return None
+    payload = {
+        "candidate_key": decision["candidate_key"],
+        "owner_actor": decision["owner_actor"],
+        "owner_role": decision["owner_role"],
+        "authority_scope": decision["authority_scope"],
+        "reviewed_at": decision["reviewed_at"],
+        "signature": signature,
+    }
+    return sha256_text(canonical_json(payload))
 
 
 def publish_candidate(
@@ -378,10 +429,13 @@ def publish_candidate(
     relationship_id = reviewed_relationship_id(candidate["candidate_key"])
     source_min = int(candidate["structured_fact"].get("source_threshold_min", 2))
     primary_evidence = evidence[0]
+    production_owner_signoff = bool(decision_set.get("production_owner_signoff"))
+    signature_hash = owner_signature_hash(decision) if production_owner_signoff else None
     publication_structured_fact = {
         "published_relationship_id": relationship_id,
         "publisher_version": PUBLISHER_VERSION,
         "decision_set_key": decision_set["decision_set_key"],
+        "review_context": decision_set["review_context"],
         "reviewer": decision["reviewer"],
         "reviewed_at": reviewed_at.isoformat(),
         "review_attestation": decision["attestation"],
@@ -391,6 +445,11 @@ def publish_candidate(
         "fixture_review_only_not_production_clearance": bool(
             decision_set.get("fixture_review_only_not_production_clearance")
         ),
+        "production_owner_signoff": production_owner_signoff,
+        "owner_actor": decision.get("owner_actor"),
+        "owner_role": decision.get("owner_role"),
+        "authority_scope": decision.get("authority_scope"),
+        "owner_signature_hash": signature_hash,
     }
     qualifiers = {
         "candidate_key": candidate["candidate_key"],
@@ -398,6 +457,7 @@ def publish_candidate(
         "path_role": candidate["structured_fact"].get("path_role"),
         "direction_note": candidate["structured_fact"].get("direction_note"),
         "decision_set_key": decision_set["decision_set_key"],
+        "review_context": decision_set["review_context"],
         "reviewer": decision["reviewer"],
         "reviewed_at": reviewed_at.isoformat(),
         "source_threshold_policy": {
@@ -408,6 +468,11 @@ def publish_candidate(
         "fixture_review_only_not_production_clearance": bool(
             decision_set.get("fixture_review_only_not_production_clearance")
         ),
+        "production_owner_signoff": production_owner_signoff,
+        "owner_actor": decision.get("owner_actor"),
+        "owner_role": decision.get("owner_role"),
+        "authority_scope": decision.get("authority_scope"),
+        "owner_signature_hash": signature_hash,
     }
     observed_at = primary_evidence["observed_at"] or reviewed_at
     connection.execute(
@@ -591,8 +656,13 @@ def publish_reviewed_facts(
     decision_path: Path,
     snapshot_key: str,
     allow_fixture_review: bool,
+    allow_production_owner_signoff: bool,
 ) -> dict[str, Any]:
-    decision_payload = read_decision_file(decision_path, allow_fixture_review=allow_fixture_review)
+    decision_payload = read_decision_file(
+        decision_path,
+        allow_fixture_review=allow_fixture_review,
+        allow_production_owner_signoff=allow_production_owner_signoff,
+    )
     reviewed_at = max(
         parse_dt(decision["reviewed_at"]) for decision in decision_payload["decisions"]
     )
@@ -622,6 +692,7 @@ def publish_reviewed_facts(
         "fixture_review_only_not_production_clearance": bool(
             decision_payload.get("fixture_review_only_not_production_clearance")
         ),
+        "production_owner_signoff": bool(decision_payload.get("production_owner_signoff")),
         "published_count": len(published),
         "published_relationships": published,
     }
@@ -645,6 +716,11 @@ def parse_args() -> argparse.Namespace:
             "clearance."
         ),
     )
+    parser.add_argument(
+        "--allow-production-owner-signoff",
+        action="store_true",
+        help="Allow decisions signed by a production data owner authority contract.",
+    )
     return parser.parse_args()
 
 
@@ -654,6 +730,7 @@ def main() -> int:
         decision_path=args.review_decisions,
         snapshot_key=args.snapshot_key,
         allow_fixture_review=args.allow_fixture_review,
+        allow_production_owner_signoff=args.allow_production_owner_signoff,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0

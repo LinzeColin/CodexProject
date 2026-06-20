@@ -50,6 +50,11 @@ CURATED_ANCHOR_PARSER_VERSION = "nvidia-public-anchor-v1"
 REVIEWED_DECISION_SET_KEY = "a202-integration-reviewed-golden-vertical-v1"
 REVIEWED_RELATIONSHIP_SNAPSHOT_KEY = "a202-reviewed-golden-vertical"
 REVIEW_DECISION_FIXTURE_PATH = "tests/fixtures/golden_vertical_review_decisions.json"
+OWNER_SIGNOFF_DECISION_SET_KEY = "a202-production-owner-signoff-contract-v1"
+OWNER_SIGNOFF_SNAPSHOT_KEY = "a202-production-owner-signoff-golden-vertical"
+OWNER_SIGNOFF_DECISION_FIXTURE_PATH = (
+    "tests/fixtures/golden_vertical_owner_signoff_decisions.json"
+)
 DOSSIER_HUMAN_SUMMARY_KEYS = {
     "headline",
     "business",
@@ -1408,7 +1413,11 @@ def exercise_domain_api_and_repository_contracts() -> None:
             raise AssertionError("amount without currency and amount_kind must be rejected")
 
 
-def reviewed_publication_counts() -> tuple[int, int, int, int]:
+def reviewed_publication_counts(
+    *,
+    decision_set_key: str = REVIEWED_DECISION_SET_KEY,
+    snapshot_key: str = REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,
+) -> tuple[int, int, int, int]:
     with connect_database() as connection:
         return connection.execute(
             """
@@ -1439,10 +1448,10 @@ def reviewed_publication_counts() -> tuple[int, int, int, int]:
               ) AS fact_version_evidence_count
             """,
             (
-                REVIEWED_DECISION_SET_KEY,
-                REVIEWED_DECISION_SET_KEY,
-                REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,
-                REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,
+                decision_set_key,
+                decision_set_key,
+                snapshot_key,
+                snapshot_key,
             ),
         ).fetchone()
 
@@ -1643,6 +1652,153 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
         "--allow-fixture-review",
     )
     assert reviewed_publication_counts() == before_counts
+
+    owner_without_gate = subprocess.run(
+        [
+            sys.executable,
+            "scripts/publish_reviewed_relationship_facts.py",
+            "--review-decisions",
+            OWNER_SIGNOFF_DECISION_FIXTURE_PATH,
+            "--snapshot-key",
+            OWNER_SIGNOFF_SNAPSHOT_KEY,
+        ],
+        cwd=os.getcwd(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert owner_without_gate.returncode != 0
+    assert "--allow-production-owner-signoff" in owner_without_gate.stderr
+
+    run_script(
+        "scripts/publish_reviewed_relationship_facts.py",
+        "--review-decisions",
+        OWNER_SIGNOFF_DECISION_FIXTURE_PATH,
+        "--snapshot-key",
+        OWNER_SIGNOFF_SNAPSHOT_KEY,
+        "--allow-production-owner-signoff",
+    )
+    with connect_database() as connection:
+        owner_snapshot_row = connection.execute(
+            """
+            SELECT ds.snapshot_key,
+                   ds.record_mode,
+                   ds.status,
+                   ds.metadata->>'review_context',
+                   ds.metadata->>'production_owner_signoff',
+                   ds.metadata->>'fixture_review_only_not_production_clearance',
+                   count(DISTINCT fv.id)::int,
+                   count(fve.*)::int
+            FROM data_snapshots ds
+            JOIN fact_versions fv ON fv.snapshot_id = ds.id
+            JOIN fact_version_evidence fve ON fve.fact_version_id = fv.id
+            WHERE ds.snapshot_key = %s
+            GROUP BY ds.id
+            """,
+            (OWNER_SIGNOFF_SNAPSHOT_KEY,),
+        ).fetchone()
+        assert owner_snapshot_row[:6] == (
+            OWNER_SIGNOFF_SNAPSHOT_KEY,
+            "curated_official_fixture",
+            "active",
+            "production_owner_signoff_contract",
+            "true",
+            "false",
+        )
+        assert owner_snapshot_row[6:] == (2, 2)
+
+        owner_relationship_rows = connection.execute(
+            """
+            SELECT count(*)::int,
+                   count(*) FILTER (
+                     WHERE qualifiers->>'production_owner_signoff' = 'true'
+                   )::int,
+                   count(*) FILTER (
+                     WHERE qualifiers->>'owner_actor' = 'eei-production-data-owner'
+                   )::int,
+                   count(*) FILTER (
+                     WHERE qualifiers->>'authority_scope' = 'golden-vertical:nvidia'
+                   )::int,
+                   count(*) FILTER (
+                     WHERE qualifiers->>'owner_signature_hash' IS NOT NULL
+                   )::int
+            FROM relationships
+            WHERE qualifiers->>'decision_set_key' = %s
+            """,
+            (OWNER_SIGNOFF_DECISION_SET_KEY,),
+        ).fetchone()
+        assert owner_relationship_rows == (2, 2, 2, 2, 2)
+
+        owner_evidence_row = connection.execute(
+            """
+            SELECT count(*)::int,
+                   count(*) FILTER (
+                     WHERE re.structured_fact->>'production_owner_signoff' = 'true'
+                   )::int,
+                   count(*) FILTER (
+                     WHERE re.structured_fact->>'owner_role' = 'data_owner'
+                   )::int,
+                   count(*) FILTER (
+                     WHERE re.structured_fact->>'owner_signature_hash' IS NOT NULL
+                   )::int
+            FROM relationship_evidence re
+            JOIN relationships r ON r.id = re.relationship_id
+            WHERE r.qualifiers->>'decision_set_key' = %s
+            """,
+            (OWNER_SIGNOFF_DECISION_SET_KEY,),
+        ).fetchone()
+        assert owner_evidence_row == (2, 2, 2, 2)
+
+        owner_fact_payload_row = connection.execute(
+            """
+            SELECT count(*)::int,
+                   count(*) FILTER (
+                     WHERE fv.payload->'qualifiers'->>'production_owner_signoff' = 'true'
+                   )::int,
+                   count(*) FILTER (
+                     WHERE fv.payload->'qualifiers'->>'owner_role' = 'data_owner'
+                   )::int
+            FROM fact_versions fv
+            JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+            WHERE ds.snapshot_key = %s
+            """,
+            (OWNER_SIGNOFF_SNAPSHOT_KEY,),
+        ).fetchone()
+        assert owner_fact_payload_row == (2, 2, 2)
+
+        owner_queue_row = connection.execute(
+            """
+            SELECT count(*)::int,
+                   count(*) FILTER (
+                     WHERE mrq.status = 'resolved'
+                       AND mrq.reviewer = 'production-data-owner-contract'
+                   )::int
+            FROM manual_review_queue mrq
+            JOIN relationship_fact_candidates rfc ON rfc.id = mrq.object_id
+            WHERE rfc.candidate_key IN ('GV-FACT-001', 'GV-FACT-002')
+            """
+        ).fetchone()
+        assert owner_queue_row == (2, 2)
+
+    owner_before_counts = reviewed_publication_counts(
+        decision_set_key=OWNER_SIGNOFF_DECISION_SET_KEY,
+        snapshot_key=OWNER_SIGNOFF_SNAPSHOT_KEY,
+    )
+    run_script(
+        "scripts/publish_reviewed_relationship_facts.py",
+        "--review-decisions",
+        OWNER_SIGNOFF_DECISION_FIXTURE_PATH,
+        "--snapshot-key",
+        OWNER_SIGNOFF_SNAPSHOT_KEY,
+        "--allow-production-owner-signoff",
+    )
+    assert (
+        reviewed_publication_counts(
+            decision_set_key=OWNER_SIGNOFF_DECISION_SET_KEY,
+            snapshot_key=OWNER_SIGNOFF_SNAPSHOT_KEY,
+        )
+        == owner_before_counts
+    )
 
 
 def exercise_server_saved_view_contracts(

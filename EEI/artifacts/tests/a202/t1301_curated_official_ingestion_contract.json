@@ -19,6 +19,8 @@
     "reviewed publication uses deterministic relationship IDs, a transaction, source-threshold override attestation, relationship_evidence copying, data_snapshots, fact_versions, fact_version_evidence and manual_review_queue resolution",
     "reviewed publication can materialize matched research universe endpoints as research_target legal_entity rows and backfill entity_resolution_candidates, while unresolved endpoints still fail closed",
     "tests/fixtures/golden_vertical_review_decisions.json is fixture-only and explicitly not production legal or data clearance",
+    "publish_reviewed_relationship_facts.py now separates fixture review from production owner sign-off: fixture review requires --allow-fixture-review, production owner sign-off requires --allow-production-owner-signoff, and unsigned owner decisions fail closed",
+    "production owner sign-off decisions persist review_context, owner_actor, owner_role, authority_scope and owner_signature_hash into data_snapshots metadata, relationship qualifiers, relationship_evidence and fact_version payloads",
     "subsequent curated_ingestion_refresh runs preserve published candidates and resolved review queues instead of demoting them back to candidate/open"
   ],
   "evidence_paths": [
@@ -30,6 +32,7 @@
     "scripts/load_curated_ingestion_anchors.py",
     "scripts/publish_reviewed_relationship_facts.py",
     "tests/fixtures/golden_vertical_review_decisions.json",
+    "tests/fixtures/golden_vertical_owner_signoff_decisions.json",
     "scripts/check_database_schema.py",
     "tests/integration/test_database_migrations.py"
   ],
@@ -39,11 +42,18 @@
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_task_pack.py",
     ".venv/bin/python scripts/validate_v5_production_readiness_sync.py",
     ".venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/publish_reviewed_relationship_facts.py scripts/check_database_schema.py tests/integration/test_database_migrations.py",
+    "python3 -m json.tool tests/fixtures/golden_vertical_owner_signoff_decisions.json",
+    "python3 -m py_compile scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py",
     "PYTHONPATH=scripts:. .venv/bin/python -c 'from migrate import discover_migrations; print([(m.version, m.name) for m in discover_migrations()])'"
   ],
   "last_local_validation": [
     ".venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py: PASS",
     "python3 -m json.tool tests/fixtures/golden_vertical_review_decisions.json: PASS",
+    "python3 -m json.tool tests/fixtures/golden_vertical_owner_signoff_decisions.json: PASS",
+    "python3 -m py_compile scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py: PASS",
+    ".venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py: PASS",
+    ".venv/bin/python -m pytest -q tests/unit/test_api_health.py tests/unit/test_scoring.py: PASS with 27/27",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify: PASS after non-sandbox rerun; sandbox run failed only at Chromium browser benchmark with macOS MachPort permission denied",
     "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/pytest tests/integration/test_database_migrations.py -q: SKIPPED locally because this host has no .env/DATABASE_URL and no docker binary"
   ],
   "remote_ci_validation": [
@@ -51,8 +61,8 @@
   ],
   "remaining_blockers_before_a202_done": [
     "live or dry-run full-text connector for official sources is not implemented",
-    "NVIDIA -> TSMC -> ASML reviewed publication is implemented only as a fixture integration path, not production owner approval",
-    "independent source cross-check or production human review signature is not complete",
+    "the production owner sign-off contract is implemented but still needs remote PostgreSQL CI proof and an actual operator-supplied owner decision before release use",
+    "independent source cross-check remains an alternative closure path but is not complete",
     "source health, retry and dead-letter behavior remain owned by T1304/A206"
   ],
   "rollback": [

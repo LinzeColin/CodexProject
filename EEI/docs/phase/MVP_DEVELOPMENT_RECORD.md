@@ -3294,3 +3294,51 @@ Residual risks:
 
 - A203 still needs remaining non-relationship object family scoring coverage beyond entity/event/industry.
 - A203 still depends on A202 for production-approved live relationship facts and on A209 for 4h/24h soak evidence.
+
+## 2026-06-21 - T1301/A202 production owner sign-off contract slice
+
+### Scope
+
+- Extended `scripts/publish_reviewed_relationship_facts.py` so fixture review and production owner sign-off are mutually exclusive clearance modes.
+- Added `--allow-production-owner-signoff`; owner sign-off decision files now fail closed unless `review_context=production_owner_signoff_contract`, `production_owner_signoff=true`, and every approved decision carries `owner_actor`, `owner_role`, `authority_scope` and `signature`.
+- Persisted owner sign-off metadata and `owner_signature_hash` into `data_snapshots.metadata`, `relationships.qualifiers`, `relationship_evidence.structured_fact` and `fact_versions.payload`.
+- Added `tests/fixtures/golden_vertical_owner_signoff_decisions.json` as a contract fixture for signed owner approval semantics.
+- Extended PostgreSQL integration assertions to prove the owner sign-off gate, snapshot metadata, relationship qualifiers, evidence payloads, fact-version payloads, review queue resolution and idempotency.
+
+### Files changed
+
+- `scripts/publish_reviewed_relationship_facts.py`
+- `tests/integration/test_database_migrations.py`
+- `tests/fixtures/golden_vertical_owner_signoff_decisions.json`
+- `artifacts/tests/a202/t1301_curated_official_ingestion_contract.json`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `scripts/validate_v5_production_readiness_sync.py`
+- `README.md`
+- `DEVELOPMENT_STATUS.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+
+### Acceptance mapping
+
+- T1301 -> A202.
+- A202 remains `IN_PROGRESS`, not `DONE`.
+- This slice narrows the production-owner approval contract gap but does not close live/full-text ingestion, real operator-supplied owner approval, second-source closure, source health, retry or dead-letter coverage.
+
+### Local validation
+
+- `python3 -m json.tool tests/fixtures/golden_vertical_owner_signoff_decisions.json`: PASS.
+- `python3 -m py_compile scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_api_health.py tests/unit/test_scoring.py`: PASS, 27/27 with one existing Starlette/httpx deprecation warning.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `.env`, `DATABASE_URL` or Docker runtime.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS after non-sandbox rerun; first sandbox attempt failed only at the Chromium browser benchmark with macOS MachPort permission denied.
+
+### Pending validation
+
+- GitHub Actions must prove the owner sign-off assertions under Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E before this slice can be considered CI validated.
+
+### Remaining gaps
+
+- A202 still needs live/full-text official-source ingestion or an approved dry-run connector.
+- A202 still needs an actual operator-supplied owner decision or second independent source closure before any real Golden Vertical fact is production-approved.
+- Source health, retry and dead-letter behavior remain owned by T1304/A206 and long-duration proof by T1307/A209.
