@@ -4134,8 +4134,8 @@ class DomainRepository:
     ) -> dict[str, Any]:
         evidence = row["evidence"] or []
         fact_payload = row["fact_payload"] or {}
-        publication_status = fact_payload.get("publication_status") or (
-            "published" if row["status"] == "active" else row["status"]
+        publication_status = (
+            "published" if row["status"] in {"active", "fixture"} else row["status"]
         )
         review_status = fact_payload.get("review_status") or "not_applicable"
         metrics = entity_score_metrics(
