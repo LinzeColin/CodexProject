@@ -1285,6 +1285,35 @@ export default function Home() {
     setSavedViewStatus(syncResult.status === "conflict" ? "server-conflict" : "server-error");
   }
 
+  async function resolveSavedViewConflict() {
+    setSavedViewStatus("resolving-conflict");
+    const syncResult = await restoreViewFromServer(savedView.serverId);
+    if (syncResult.mode === "server" && syncResult.status === "restored") {
+      const serverSavedView = {
+        ...savedViewFromServerRecord(syncResult.record, syncResult.endpoint, analysisContext),
+        syncReason: "resolved_latest"
+      };
+      window.localStorage.setItem(SAVED_VIEW_STORAGE_KEY, JSON.stringify(serverSavedView));
+      setSavedView(serverSavedView);
+      restoringHistoryState.current = true;
+      applyWorkspaceState(serverSavedView);
+      setSavedViewStatus("server-conflict-resolved");
+      return;
+    }
+    if (syncResult.mode === "local_fallback") {
+      setSavedViewStatus("local-restored");
+      return;
+    }
+    if (!isFailedServerSyncResult(syncResult)) return;
+    setSavedView({
+      ...savedView,
+      syncMode: "server",
+      syncReason: syncResult.reason,
+      serverEndpoint: syncResult.endpoint
+    });
+    setSavedViewStatus(syncResult.status === "conflict" ? "server-conflict" : "server-error");
+  }
+
   const viewportAnchor = `${focusKey}:${selectedNode.key}:${semanticZoom}`;
   const visibleSearchResults = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -2075,6 +2104,16 @@ export default function Home() {
               <RotateCcw size={16} aria-hidden="true" />
               <span>恢复</span>
             </button>
+            {savedViewStatus === "server-conflict" && savedView.serverId ? (
+              <button
+                data-testid="resolve-saved-view-conflict"
+                onClick={resolveSavedViewConflict}
+                type="button"
+              >
+                <RotateCcw size={16} aria-hidden="true" />
+                <span>获取最新</span>
+              </button>
+            ) : null}
           </div>
         </section>
 

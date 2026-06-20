@@ -7,7 +7,7 @@ UV := $(VENV)/bin/uv
 PNPM_VERSION := 11.8.0
 PNPM ?= npx --yes pnpm@$(PNPM_VERSION)
 
-.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-scale-browser-benchmark validate-soak-smoke secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e verify verify-g1 verify-g2-db dev-api dev-web clean-local
+.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-scale-browser-benchmark validate-soak-smoke secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e test-e2e-live verify verify-g1 verify-g2-db dev-api dev-web clean-local
 
 $(UV):
 	$(PYTHON) -m venv $(VENV)
@@ -137,13 +137,16 @@ test-integration:
 test-e2e:
 	$(PNPM) --filter @eei/web test:e2e
 
+test-e2e-live:
+	$(PNPM) --filter @eei/web exec playwright test --config=../../playwright.live.config.ts
+
 test: test-unit
 
 verify: validate-governance validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-development-status-artifacts validate-risk-control-artifacts validate-clean-room-release validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-soak-smoke secret-scan copy-lint lint typecheck test
 
 verify-g1: db-up health verify test-e2e
 
-verify-g2-db: db-up health verify test-integration test-e2e
+verify-g2-db: db-up health verify test-integration test-e2e test-e2e-live
 
 dev-api:
 	$(UV) run uvicorn apps.api.app.main:app --reload --port 8000

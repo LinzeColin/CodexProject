@@ -92,6 +92,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t1304_scheduler_retry_dead_letter_contract.json
 │   │   ├── a207
 │   │   │   ├── t1305_frontend_saved_view_api_adapter_contract.json
+│   │   │   ├── t1305_live_saved_view_multisession_e2e_contract.json
 │   │   │   └── t1305_server_saved_view_conflict_recovery_contract.json
 │   │   ├── a208
 │   │   │   ├── t1306_browser_runtime_benchmark.json
@@ -327,6 +328,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── preflight.sh
 │   ├── run_browser_scale_benchmarks.mjs
 │   ├── run_codex_autonomous.sh
+│   ├── run_live_e2e_api.sh
 │   ├── run_scale_benchmarks.py
 │   ├── run_soak_smoke.mjs
 │   ├── secret_scan.py
@@ -359,6 +361,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── development-status.spec.ts
 │   │   ├── home.spec.ts
 │   │   ├── industry.spec.ts
+│   │   ├── saved-view-live.spec.ts
 │   │   └── state-contract.spec.ts
 │   ├── fixtures
 │   │   └── README.md
@@ -416,6 +419,7 @@ Enterprise_Ecosystem_Intelligence_release
 ├── manifest.txt
 ├── package.json
 ├── playwright.config.ts
+├── playwright.live.config.ts
 ├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
 ├── pyproject.toml
