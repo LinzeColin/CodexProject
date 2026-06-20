@@ -687,7 +687,7 @@ def load_source_snapshot(
         candidate_id = upsert_resolution_candidate(connection, raw_snapshot_id, token)
         if token == ANCHOR_SUBJECT:
             subject_resolution_id = candidate_id
-    if subject_resolution_id:
+    if include_anchor_subject and subject_resolution_id:
         upsert_evidence_chain(
             connection,
             raw_snapshot_id,
