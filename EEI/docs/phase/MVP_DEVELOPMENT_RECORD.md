@@ -3178,7 +3178,7 @@ Residual risks:
 
 - T1302 -> A203.
 - A203 remains `IN_PROGRESS`, not `DONE`.
-- This closes the relationship-object scoring explanation gap for published relationship records, but not scoring for entity/event/industry object families or production-approved live data.
+- This closes the relationship-object scoring explanation gap for published relationship records. At that point, entity, event and industry scoring were still open; the subsequent entity slice below narrows this gap.
 
 ### Local validation
 
@@ -3190,5 +3190,48 @@ Residual risks:
 
 ### Remaining gaps
 
-- A203 still needs full scoring service coverage for entity/event/industry and other non-relationship object families.
-- A203 still depends on A202 for production-approved live relationship facts and on A208/A209 for release-scale and soak evidence.
+- At that point, A203 still needed full scoring service coverage for entity, event, industry and other non-relationship object families.
+- At that point, A203 still depended on A202 for production-approved live relationship facts and on A208/A209 for release-scale and soak evidence; A208 was closed later and A209 remains open.
+
+## 2026-06-21 - T1302/A203 entity scoring explain slice
+
+### Scope
+
+- Extended `/v1/scoring/explain/{objectType}/{objectId}` to support `objectType=entity`.
+- Added `entity_score_metrics()` for entity coverage scoring using identifiers, aliases, relationship context, relationship-family diversity, relationship evidence source count, industry membership, active status and optional entity fact-version presence.
+- Added repository support for entity scoring payloads backed by `entities`, `entity_identifiers`, `entity_aliases`, `relationships`, `relationship_evidence`, `entity_industry_memberships`, optional `fact_versions` and `production_context`.
+- Extended PostgreSQL/FastAPI integration assertions for the NVIDIA Golden Vertical entity score explanation.
+
+### Files changed
+
+- `apps/api/app/scoring.py`
+- `apps/api/app/domain_repository.py`
+- `specs/api_contract.yaml`
+- `tests/unit/test_scoring.py`
+- `tests/integration/test_database_migrations.py`
+- `artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json`
+- `data/development_status_ledger.csv`
+- `DEVELOPMENT_STATUS.md`
+- `README.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+
+### Acceptance mapping
+
+- T1302 -> A203.
+- A203 remains `IN_PROGRESS`, not `DONE`.
+- This closes the entity-object scoring explanation API slice, but not event/industry scoring, formally production-approved live relationship facts, or long-duration release gates.
+
+### Local validation
+
+- `.venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_scoring.py`: PASS, 6/6.
+- `python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-clean-room-release`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-release-artifacts`: PASS after regenerating release checksums from the updated clean-room ZIP.
+- Elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes governance, contract validation, v5 sync, release validation, scale/browser/soak smoke, secret scan, UI copy lint, ruff, web typecheck and unit tests 27/27.
+
+### Remaining gaps
+
+- A203 still needs event/industry and remaining non-relationship object scoring coverage.
+- A203 still depends on A202 for production-approved live relationship facts and on A209 for 4h/24h soak evidence.

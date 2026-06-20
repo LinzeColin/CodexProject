@@ -3,14 +3,15 @@
   "task_id": "T1302",
   "acceptance_id": "A203",
   "status": "IN_PROGRESS",
-  "generated_at": "2026-06-20T00:00:00+10:00",
+  "generated_at": "2026-06-21T00:00:00+10:00",
   "scope": {
     "implemented_slice": [
       "Production graph and path responses expose production_context with active data snapshot, active scoring profile, graph query version, scoring service version, record modes and publication policy.",
       "Graph coverage reports relationship_fact_candidates excluded from graph edges until source threshold and human review publication gates pass.",
       "GET /v1/scoring/explain/{objectType}/{objectId} supports relationship_fact_candidate explanations backed by existing Golden Vertical candidate/evidence/review tables.",
       "GET /v1/scoring/explain/relationship/{objectId} supports published relationship explanations backed by relationship_evidence, fact_versions, data_snapshots, publication qualifiers and production_context.",
-      "Integration assertions bind A203 to FastAPI, repository queries, OpenAPI contract and curated official fixture evidence.",
+      "GET /v1/scoring/explain/entity/{objectId} supports entity coverage explanations backed by entity identifiers, aliases, relationships, relationship evidence, industry memberships, optional entity fact_versions and production_context.",
+      "Integration assertions bind A203 entity, candidate and relationship scoring to FastAPI, repository queries, OpenAPI contract and curated fixture evidence.",
       "Frontend commercial-map API-first hydration now posts the current focus, lens-derived layers, as-of date, scoring profile id and 42/64/12 budget to /v1/explore, exposes production_context, coverage and publication-gate metadata with explicit fixture fallback, and renders server-returned nodes/edges in the SVG canvas and graph table when the API response is available.",
       "Production_context now exposes bounded sample relationship_fact_candidates so the frontend can discover a score explanation target without hard-coding database UUIDs.",
       "Frontend production data hydration now loads /v1/catalogs and /v1/scoring/explain/relationship_fact_candidate/{objectId}, surfaces catalog inventory counts, source-of-truth counts, adjusted score, evidence count, missing-input count and publication status, and retains explicit local fallback/error states.",
@@ -20,11 +21,11 @@
       "Frontend Evidence Center now hydrates /v1/evidence/relationship_fact_candidate/{objectId}, exposes evidence/source-document counts, endpoint state and source snippets, and refreshes the production evidence detail when the user clicks 打开证据."
     ],
     "explicitly_not_closed": [
-      "Full production scoring engine for entity, event, industry and non-relationship object families remains in T600-T608 and T1303.",
-      "Candidate approval, publication into relationships and atomic global refresh remain in T1301/T1303.",
-      "10k, 100k, 1m scale tests remain in T1306/A208.",
+      "Full production scoring engine for event, industry and remaining non-relationship object families remains in T600-T608 and T1303.",
+      "Production-approved live relationship facts remain dependent on T1301/A202 live/full-text ingestion, second-source verification or production owner sign-off.",
+      "Candidate approval, publication into relationships and atomic global refresh remain dependent on the T1301/T1303 production gate.",
       "4h and 24h soak tests remain in T1307/A209.",
-      "Live backend cross-route E2E remains in T1308/A211."
+      "Remote GitHub Actions proof for the entity scoring slice remains pending until this commit is pushed."
     ]
   },
   "api_contracts": [
@@ -46,7 +47,7 @@
     {
       "path": "/v1/scoring/explain/{objectType}/{objectId}",
       "method": "GET",
-            "contract": "relationship_fact_candidate and published relationship score explanations include raw_score, evidence_quality, adjusted_score, coverage, missing_inputs, evidence, model/profile versions and production_context."
+      "contract": "entity, relationship_fact_candidate and published relationship score explanations include raw_score, evidence_quality, adjusted_score, coverage, missing_inputs, evidence, model/profile versions and production_context."
     },
     {
       "path": "/v1/evidence/{objectType}/{objectId}",
@@ -63,9 +64,9 @@
     "publish_requires_human_review": true
   },
   "evidence_files": [
-        "apps/api/app/domain.py",
-        "apps/api/app/domain_repository.py",
-        "apps/api/app/scoring.py",
+    "apps/api/app/domain.py",
+    "apps/api/app/domain_repository.py",
+    "apps/api/app/scoring.py",
     "apps/web/src/app/explore-api-client.ts",
     "apps/web/src/app/production-data-client.ts",
     "apps/web/src/app/page.tsx",
@@ -86,13 +87,19 @@
     "python3 -m py_compile apps/api/app/domain_repository.py apps/api/app/domain.py tests/integration/test_database_migrations.py",
     "python3 -m py_compile apps/api/app/domain_repository.py tests/integration/test_database_migrations.py",
     ".venv/bin/python -m ruff check apps/api/app/domain_repository.py tests/integration/test_database_migrations.py",
-        ".venv/bin/python -m pytest -q tests/unit/test_api_health.py",
-        ".venv/bin/python -m pytest -q tests/unit/test_scoring.py",
+    ".venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py",
+    ".venv/bin/python -m pytest -q tests/unit/test_scoring.py",
+    "python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py",
+    ".venv/bin/python scripts/validate_contracts.py",
+    ".venv/bin/python -m pytest -q tests/unit/test_api_health.py",
     ".venv/bin/python -m pytest -q tests/integration/test_database_migrations.py",
     "pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1",
     "pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts --workers=1",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/manage_clean_room_release.py validate",
     "python3 scripts/manage_release_artifacts.py validate",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-clean-room-release",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-release-artifacts",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify: PASS after the entity scoring slice, including unit tests 27/27 and release checksum validation",
     "GitHub Actions run 27867365117 job 82473570232: PASS, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E"
   ],
   "rollback": [

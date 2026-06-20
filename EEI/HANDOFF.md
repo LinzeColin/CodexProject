@@ -25,8 +25,8 @@ Updated: 2026-06-21 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - Latest GitHub implementation commit proven by CI:
-  - `a57d110` test: add EEI A211 live cross-route coverage
-  - GitHub Actions run `27876091338`, job `82495713946`: PASS; Steps 7-13 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
+  - `0db3578` feat: add EEI relationship score explanations
+  - GitHub Actions run `27877809195`, job `82500155600`: PASS; Steps 7-13 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 
 ## Completed
 
@@ -87,7 +87,8 @@ Updated: 2026-06-21 Australia/Sydney
 - Completed T1308/A211 by GitHub Actions run `27876091338`; job `82495713946` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 - Advanced T1301/A202 with an explicit reviewed-publication mechanism: `scripts/publish_reviewed_relationship_facts.py` consumes a review decision file, enforces fixture-review opt-in, writes deterministic reviewed `relationships`, copies `relationship_evidence`, activates a `data_snapshots` row, writes `fact_versions`/`fact_version_evidence`, resolves `manual_review_queue`, and remains idempotent by contract.
 - Added `tests/fixtures/golden_vertical_review_decisions.json` as fixture-only review evidence; A202 is still `IN PROGRESS` because this is not production owner approval, second-source verification, live/full-text ingestion, or source health/retry/dead-letter proof.
-- Advanced T1302/A203 with `relationship` scoring explanations: `/v1/scoring/explain/relationship/{objectId}` now scores published relationship records from `relationships`, `relationship_evidence`, `fact_versions`, `data_snapshots`, publication qualifiers and production context; A203 remains `IN_PROGRESS` because entity/event/industry scoring and production-approved live facts are still open.
+- Advanced T1302/A203 with `relationship` scoring explanations: `/v1/scoring/explain/relationship/{objectId}` now scores published relationship records from `relationships`, `relationship_evidence`, `fact_versions`, `data_snapshots`, publication qualifiers and production context.
+- Advanced T1302/A203 with `entity` scoring explanations: `/v1/scoring/explain/entity/{objectId}` now scores entity coverage from identifiers, aliases, relationship context, relationship evidence sources, industry memberships, active status, optional entity fact versions and production context; A203 remains `IN_PROGRESS` because event/industry scoring and production-approved live facts are still open.
 
 ## Verification Evidence
 
@@ -125,6 +126,8 @@ Run from `work/EEI`:
 - 2026-06-21 update: GitHub Actions run `27877209505` / job `82498609174` passed for commit `5e98141f756c1fc55211b23636f9af7cc14fbbdf`; step 10 G2 PostgreSQL integration, step 11 browser E2E and step 12 live FastAPI PostgreSQL E2E all passed for the A202 reviewed-publication path.
 - 2026-06-21 update: local A203 relationship scoring checks passed: `.venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py`, `.venv/bin/python -m pytest -q tests/unit/test_scoring.py`, and `python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`.
 - 2026-06-21 update: elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify` passed after the A203 relationship scoring slice; unit tests now pass 25/25.
+- 2026-06-21 update: local A203 entity scoring checks passed: `.venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py`, `.venv/bin/python -m pytest -q tests/unit/test_scoring.py` with 6/6, `python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`, and `.venv/bin/python scripts/validate_contracts.py`.
+- 2026-06-21 update: elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify` passed after the A203 entity scoring slice; unit tests now pass 27/27 and release checksum validation passes.
 - 2026-06-19 update: GitHub Actions run `27826870509` passed; job `82353421402` proved T1203 through static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - 2026-06-19 update: local `make verify` passed after strengthening G2 schema checks and acceptance traceability.
 - 2026-06-19 update: GitHub Actions run `27827498238` passed; job `82355514060` proved strengthened G2 schema checks under PostgreSQL.
