@@ -44,6 +44,7 @@ THEME_AI_INFRA_ID = "00000000-0000-4000-8000-000000000020"
 FIXTURE_MATERIALS_ID = "00000000-0000-4000-8000-000000000023"
 FIXTURE_DATACENTER_ID = "00000000-0000-4000-8000-000000000024"
 COREWEAVE_NVIDIA_RELATIONSHIP_ID = "10000000-0000-4000-8000-000000000012"
+NVIDIA_CAPEX_EVENT_ID = "30000000-0000-4000-8000-000000000002"
 SUPERSESSION_RELATIONSHIP_ID = "20000000-0000-4000-8000-000000000001"
 CURATED_ANCHOR_PARSER_VERSION = "nvidia-public-anchor-v1"
 REVIEWED_DECISION_SET_KEY = "a202-integration-reviewed-golden-vertical-v1"
@@ -651,6 +652,31 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert nvidia_industry_row["secondary_industry_ids"]
     assert nvidia_industry_row["cross_industry"] is True
 
+    industry_score_response = client.get(
+        f"/v1/scoring/explain/industry/{semiconductor['id']}"
+    )
+    assert industry_score_response.status_code == 200
+    industry_score = industry_score_response.json()
+    assert industry_score["object_type"] == "industry"
+    assert industry_score["object_id"] == semiconductor["id"]
+    assert industry_score["publication_status"] == "published"
+    assert industry_score["industry"]["slug"] == "semiconductors-electronics"
+    assert industry_score["source_threshold"]["minimum_independent_sources"] == 1
+    assert industry_score["source_threshold"]["independent_source_count"] >= 1
+    assert industry_score["source_threshold"]["met"] is True
+    assert industry_score["coverage_summary"]["entity_count"] >= 2
+    assert industry_score["coverage_summary"]["child_industry_count"] >= 1
+    assert industry_score["coverage_summary"]["relationship_count"] >= 3
+    assert industry_score["coverage_summary"]["relationship_family_count"] >= 1
+    assert industry_score["coverage_summary"]["taxonomy_context_present"] is True
+    assert industry_score["evidence"]
+    assert industry_score["evidence"][0]["url"].startswith("fixture://relationship/")
+    assert "industry_independent_source_threshold>=1" not in industry_score[
+        "missing_inputs"
+    ]
+    if industry_score["fact_version"] is None:
+        assert "industry_fact_version" in industry_score["missing_inputs"]
+
     ai_cloud = next(row for row in industries if row["slug"] == "ai-cloud-data")
     ai_landscape = client.get(f"/v1/industries/{ai_cloud['id']}/landscape").json()
     assert ai_landscape["capital"]
@@ -737,6 +763,34 @@ def exercise_domain_api_and_repository_contracts() -> None:
         entity_score["scoring_service_version"]
         == "candidate-score-explanation-v1"
     )
+
+    event_score_response = client.get(
+        f"/v1/scoring/explain/event/{NVIDIA_CAPEX_EVENT_ID}"
+    )
+    assert event_score_response.status_code == 200
+    event_score = event_score_response.json()
+    assert event_score["object_type"] == "event"
+    assert event_score["object_id"] == NVIDIA_CAPEX_EVENT_ID
+    assert event_score["publication_status"] == "published"
+    assert event_score["event"]["event_type"] == "capital_expenditure"
+    assert event_score["event"]["amount"] == 1000000000
+    assert event_score["event"]["currency"] == "USD"
+    assert event_score["event"]["amount_kind"] == "period_capex"
+    assert event_score["source_threshold"]["minimum_independent_sources"] == 1
+    assert event_score["source_threshold"]["independent_source_count"] >= 1
+    assert event_score["source_threshold"]["met"] is True
+    assert event_score["coverage_summary"]["participant_count"] >= 1
+    assert event_score["coverage_summary"]["source_document_count"] >= 1
+    assert event_score["coverage_summary"]["timing_context_present"] is True
+    assert event_score["coverage_summary"]["amount_semantics_present"] is True
+    assert event_score["participants"]
+    assert event_score["evidence"]
+    assert event_score["evidence"][0]["url"].startswith("fixture://event/")
+    assert "event_participant_context>=1" not in event_score["missing_inputs"]
+    assert "event_amount_semantics" not in event_score["missing_inputs"]
+    if event_score["fact_version"] is None:
+        assert "event_fact_version" in event_score["missing_inputs"]
+    assert event_score["production_context"]["schema_version"] == "production-context-v1"
 
     seed_entities = json.loads(Path("data/mock_entities.json").read_text(encoding="utf-8"))
     assert len(seed_entities) == 30

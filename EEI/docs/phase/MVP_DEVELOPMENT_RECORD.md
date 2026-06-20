@@ -3237,3 +3237,54 @@ Residual risks:
 
 - A203 still needs event/industry and remaining non-relationship object scoring coverage.
 - A203 still depends on A202 for production-approved live relationship facts and on A209 for 4h/24h soak evidence.
+
+## 2026-06-21 - T1302/A203 event and industry scoring explain slice
+
+### Scope
+
+- Extended `/v1/scoring/explain/{objectType}/{objectId}` to support `objectType=event` and `objectType=industry`.
+- Added `event_score_metrics()` for event coverage scoring using participant context, independent source count, timing context, amount semantics, active event status, evidence chain and optional event fact-version presence.
+- Added `industry_score_metrics()` for industry coverage scoring using member entity context, relationship context, relationship-family diversity, independent source count, taxonomy hierarchy, active industry status and optional industry fact-version presence.
+- Connected the existing `data/mock_events.json` fixture file to `scripts/load_synthetic_fixtures.py` so PostgreSQL tests load event records, participants and event evidence idempotently.
+- Changed event fixture source document ids to avoid overwriting existing relationship evidence documents and preserve `fixture://relationship/` evidence URLs.
+- Extended PostgreSQL/FastAPI integration assertions for NVIDIA capex event and semiconductor industry score explanations.
+
+### Files changed
+
+- `apps/api/app/scoring.py`
+- `apps/api/app/domain_repository.py`
+- `scripts/load_synthetic_fixtures.py`
+- `data/mock_events.json`
+- `specs/api_contract.yaml`
+- `tests/unit/test_scoring.py`
+- `tests/integration/test_database_migrations.py`
+- `artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json`
+
+### Acceptance mapping
+
+- T1302 -> A203.
+- A203 remains `IN_PROGRESS`, not `DONE`.
+- This closes the event and industry scoring explanation API slice, but not remaining non-relationship object families, formally production-approved live relationship facts, or long-duration release gates.
+
+### Formula and threshold contract
+
+- Event minimum independent sources: `1`; minimum participant context: `1`.
+- Event formula: participant context `20` + source threshold `20` + timing context `15` + amount semantics `10` + active event status `10` + evidence chain `15` + fact version `10`, multiplied by active event status.
+- Industry minimum independent sources: `1`; minimum entity context: `3`; minimum relationship context: `3`; minimum relationship-family context: `3`.
+- Industry formula: entity context `20` + relationship context `20` + relationship-family diversity `15` + source threshold `15` + taxonomy hierarchy `10` + active industry status `10` + fact version `10`, multiplied by active industry status.
+
+### Local validation
+
+- `python3 -m json.tool data/mock_events.json`: PASS.
+- `python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/load_synthetic_fixtures.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/ruff check apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/load_synthetic_fixtures.py tests/unit/test_scoring.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_scoring.py`: PASS, 10/10.
+- `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `DATABASE_URL` or `.env`.
+
+### Remaining gaps
+
+- Remote GitHub Actions must still prove the new event/industry assertions against PostgreSQL.
+- A203 still needs remaining non-relationship object family scoring coverage beyond entity/event/industry.
+- A203 still depends on A202 for production-approved live relationship facts and on A209 for 4h/24h soak evidence.
