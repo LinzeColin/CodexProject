@@ -418,7 +418,7 @@ CREATE TABLE active_analysis_contexts (
 CREATE TABLE operation_logs (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   occurred_at timestamptz NOT NULL DEFAULT now(),
-  actor text NOT NULL CHECK (actor IN ('local_user','system','codex')),
+  actor text NOT NULL CHECK (actor ~ '^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$'),
   action_type text NOT NULL,
   object_type text NOT NULL,
   object_id uuid,

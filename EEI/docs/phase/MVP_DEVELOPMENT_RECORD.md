@@ -2792,6 +2792,7 @@ Residual risks:
 ### Scope
 
 - Added saved-view principal resolution through `X-EEI-User-Namespace` and `X-EEI-Actor` headers, with `local_user` retained as the local MVP default.
+- Added `0010_operation_log_actor_principal` so `operation_logs.actor` can store trusted principal ids that match the saved-view header pattern.
 - Constrained `/v1/saved-views/{savedViewId}` get/update/version-list/restore repository lookups by `saved_views.namespace`.
 - Added cross-namespace fail-closed semantics: another namespace cannot read, update, list versions or restore a saved view id and receives 404.
 - Preserved same-name saved views across different namespaces while keeping duplicate-name conflict inside one namespace/workspace.
@@ -2801,6 +2802,9 @@ Residual risks:
 
 - `apps/api/app/domain.py`
 - `apps/api/app/domain_repository.py`
+- `infra/db/migrations/0010_operation_log_actor_principal/up.sql`
+- `infra/db/migrations/0010_operation_log_actor_principal/down.sql`
+- `specs/domain_schema.sql`
 - `specs/api_contract.yaml`
 - `tests/integration/test_database_migrations.py`
 - `artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json`

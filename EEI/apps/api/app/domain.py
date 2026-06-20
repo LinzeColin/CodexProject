@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from typing import Annotated, Any, Literal
 from uuid import UUID
@@ -18,6 +19,7 @@ from .domain_repository import (
 from .settings import get_settings
 
 router = APIRouter(prefix="/v1", tags=["domain"])
+SAVED_VIEW_PRINCIPAL_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$")
 
 EntityType = Literal[
     "legal_entity",
@@ -196,14 +198,14 @@ def _normalize_saved_view_header(value: str | None, *, default: str) -> str:
                 "message": "Saved-view namespace and actor headers cannot be blank.",
             },
         )
-    if len(normalized) > 120 or any(character.isspace() for character in normalized):
+    if not SAVED_VIEW_PRINCIPAL_PATTERN.fullmatch(normalized):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={
                 "reason": "invalid_saved_view_principal",
                 "message": (
-                    "Saved-view namespace and actor headers must be "
-                    "1-120 non-space characters."
+                    "Saved-view namespace and actor headers must match "
+                    "^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$."
                 ),
             },
         )

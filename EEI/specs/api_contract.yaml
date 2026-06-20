@@ -711,6 +711,7 @@ paths:
           type: string
           default: local_user
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       - name: X-EEI-Actor
         in: header
         required: false
@@ -718,6 +719,7 @@ paths:
         schema:
           type: string
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       - name: workspace_key
         in: query
         schema:
@@ -748,6 +750,7 @@ paths:
           type: string
           default: local_user
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       - name: X-EEI-Actor
         in: header
         required: false
@@ -755,6 +758,7 @@ paths:
         schema:
           type: string
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       requestBody:
         required: true
         content:
@@ -782,6 +786,7 @@ paths:
           type: string
           default: local_user
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       - name: X-EEI-Actor
         in: header
         required: false
@@ -789,6 +794,7 @@ paths:
         schema:
           type: string
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       - name: savedViewId
         in: path
         required: true
@@ -815,6 +821,7 @@ paths:
           type: string
           default: local_user
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       - name: X-EEI-Actor
         in: header
         required: false
@@ -822,6 +829,7 @@ paths:
         schema:
           type: string
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       - name: savedViewId
         in: path
         required: true
@@ -855,6 +863,7 @@ paths:
           type: string
           default: local_user
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       - name: X-EEI-Actor
         in: header
         required: false
@@ -862,6 +871,7 @@ paths:
         schema:
           type: string
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       - name: savedViewId
         in: path
         required: true
@@ -891,6 +901,7 @@ paths:
           type: string
           default: local_user
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       - name: X-EEI-Actor
         in: header
         required: false
@@ -898,6 +909,7 @@ paths:
         schema:
           type: string
           maxLength: 120
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$
       - name: savedViewId
         in: path
         required: true
