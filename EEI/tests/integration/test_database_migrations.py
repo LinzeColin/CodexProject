@@ -1451,6 +1451,18 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
         ).fetchone()
         assert relationship_evidence_row == (2, 2, 2, 2)
 
+        materialized_entities = connection.execute(
+            """
+            SELECT count(*)::int
+            FROM company_research_universe cru
+            JOIN entities e ON e.id = cru.entity_id
+            WHERE cru.research_id IN ('X-001', 'X-002')
+              AND e.entity_type = 'legal_entity'
+              AND e.status = 'research_target'
+            """
+        ).fetchone()[0]
+        assert materialized_entities == 2
+
         snapshot_row = connection.execute(
             """
             SELECT ds.snapshot_key, ds.scope, ds.record_mode, ds.status,
