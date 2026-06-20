@@ -1,0 +1,99 @@
+{
+  "schema_version": "eei-operator-soak-runner-v1",
+  "system_name": "EEI",
+  "task_id": "T1307",
+  "acceptance_ids": [
+    "A209"
+  ],
+  "status": "PASS",
+  "mode": "ci_smoke",
+  "generated_at": "2026-06-20T22:56:51Z",
+  "environment": {
+    "node": "v25.7.0",
+    "platform": "darwin-25.5.0-arm64",
+    "cpu_count": 8
+  },
+  "configured_targets": {
+    "short_duration_hours": 4,
+    "long_duration_hours": 24,
+    "operator_window_seconds": 300
+  },
+  "runner": {
+    "script": "scripts/run_operator_soak.mjs",
+    "child_harness": "scripts/run_soak_smoke.mjs",
+    "requested_duration_seconds": 3,
+    "window_seconds": 3,
+    "completed_duration_seconds": 3,
+    "windows_completed": 1,
+    "windows_failed": 0,
+    "resume_requested": false,
+    "checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl",
+    "output_path": "artifacts/tests/a209/t1307_operator_soak_readiness.json",
+    "started_at": "2026-06-20T22:56:43Z",
+    "ended_at": "2026-06-20T22:56:51Z"
+  },
+  "coverage": {
+    "browser_soak_measured": true,
+    "worker_soak_measured": true,
+    "checkpoint_resume_supported": true,
+    "windowed_operator_run_supported": true,
+    "covers_4h_target": false,
+    "covers_24h_target": false,
+    "full_4h_24h_measured": false,
+    "worker_supervisor_binding_available": true
+  },
+  "a209_release_gate": {
+    "status": "PARTIAL_UNTIL_4H_24H_OPERATOR_EVIDENCE",
+    "release_gate_closed_by_runner": false,
+    "closure_rule": "A209 stays IN PROGRESS until both 4h and 24h operator artifacts are committed, referenced in release evidence, and validated by CI.",
+    "required_operator_artifacts": [
+      "artifacts/tests/a209/t1307_operator_soak_4h.json",
+      "artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl",
+      "artifacts/tests/a209/t1307_operator_soak_24h.json",
+      "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl"
+    ]
+  },
+  "worker_supervisor_binding": {
+    "artifact_path": "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json",
+    "schema_version": "eei-worker-deployment-binding-v1",
+    "status": "PASS",
+    "process_manager": "docker_compose",
+    "start_command": "docker compose --profile worker up -d worker",
+    "stop_command": "docker compose --profile worker stop worker",
+    "logs_command": "docker compose logs --tail=200 worker"
+  },
+  "windows": [
+    {
+      "index": 1,
+      "status": "PASS",
+      "child_status": "PARTIAL",
+      "requested_duration_seconds": 3,
+      "measured_duration_seconds": 3,
+      "elapsed_wall_seconds": 7.6481,
+      "started_at": "2026-06-20T22:56:43Z",
+      "ended_at": "2026-06-20T22:56:51Z",
+      "output_path": "/var/folders/0w/kwy8k87s32qggj0hml1rhhn00000gn/T/eei-operator-soak-49963-1.json",
+      "browser_heap_growth_bytes": 260475,
+      "browser_dom_node_growth": 0,
+      "worker_jobs_completed": 12,
+      "worker_jobs_total": 12,
+      "worker_event_loop_lag_p95_ms": 2.4189
+    }
+  ],
+  "commands": {
+    "ci_readiness": "node scripts/run_operator_soak.mjs --mode ci_smoke --duration-seconds 3 --window-seconds 3 --output /tmp/eei-operator-soak.json --checkpoint /tmp/eei-operator-soak.checkpoints.jsonl --fail-on-budget --quiet",
+    "operator_4h": "node scripts/run_operator_soak.mjs --mode operator_4h --duration-hours 4 --window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_4h.json --checkpoint artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl --fail-on-budget",
+    "operator_24h": "node scripts/run_operator_soak.mjs --mode operator_24h --duration-hours 24 --window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_24h.json --checkpoint artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl --fail-on-budget",
+    "resume_current": "node scripts/run_operator_soak.mjs --mode ci_smoke --duration-seconds 3 --window-seconds 3 --output artifacts/tests/a209/t1307_operator_soak_readiness.json --checkpoint artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl --resume --fail-on-budget"
+  },
+  "rollback": [
+    "Stop any long-running operator soak process with Ctrl-C; resume later with --resume using the same checkpoint.",
+    "Run docker compose --profile worker stop worker if the worker process-manager binding is active.",
+    "Do not promote A209; leave task and acceptance statuses IN PROGRESS until committed 4h and 24h evidence exists."
+  ],
+  "remaining_to_close_a209": [
+    "Run the 4h operator soak command and commit the JSON plus checkpoint JSONL.",
+    "Run the 24h operator soak command and commit the JSON plus checkpoint JSONL.",
+    "Regenerate release evidence and keep A209 IN PROGRESS until CI validates the committed artifacts."
+  ]
+}

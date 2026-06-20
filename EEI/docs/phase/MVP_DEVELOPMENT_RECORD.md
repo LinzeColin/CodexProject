@@ -3715,3 +3715,48 @@ Status: LOCAL AND REMOTE CI VALIDATED; A206/A209 STILL IN PROGRESS
 
 - 4h and 24h soak are still not executed.
 - Docker is still unavailable on the current host, so local Docker Compose worker soak cannot be completed here.
+
+## 2026-06-21 - T1307/A209 resumable operator soak runner readiness
+
+Status: LOCAL READINESS VALIDATED; A209 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/run_operator_soak.mjs` as the operator-facing wrapper around `scripts/run_soak_smoke.mjs`.
+- The runner supports:
+  - windowed execution using `soak.operator_window_seconds` from `data/parameter_catalog.csv`
+  - checkpoint JSONL audit output
+  - `--resume` from successful checkpoint windows
+  - `--duration-hours 4` and `--duration-hours 24` operator commands
+  - `--fail-on-budget` propagation from the child browser+worker soak harness
+  - explicit Docker Compose worker binding reference through the child A206 artifact
+- Added `make validate-operator-soak-runner` and wired it into `make verify`.
+- Added A209 readiness evidence:
+  - `artifacts/tests/a209/t1307_operator_soak_readiness.json`
+  - `artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl`
+- Added governed parameter `soak.operator_window_seconds=300`.
+
+### Acceptance mapping
+
+- T1307 -> A209 for operator runner readiness, checkpoint/resume contract and command surface.
+- T1304 -> A206 indirectly through the Docker Compose worker binding referenced by the child soak harness.
+- A209 remains `IN_PROGRESS`: 3-second readiness and CI smoke are not substitutes for committed 4h and 24h operator soak artifacts.
+
+### Local validation
+
+- Local sandboxed `node scripts/run_operator_soak.mjs --mode ci_smoke --duration-seconds 3 --window-seconds 3 --output artifacts/tests/a209/t1307_operator_soak_readiness.json --checkpoint artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl --fail-on-budget --quiet`: expected FAIL at Chromium launch with macOS `bootstrap_check_in ... Permission denied`.
+- Local elevated rerun of the same command: PASS; output status `PASS`, `a209_release_gate.status=PARTIAL_UNTIL_4H_24H_OPERATOR_EVIDENCE`, `checkpoint_resume_supported=true`, `worker_supervisor_binding_available=true`, one successful 3-second window.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/generate_governance_pdf.py`: BLOCKED in the current environment because Python `playwright.sync_api` is not installed; `scripts/generate_governance_pdf.py` now says 79 parameters, but the existing PDF binary was not regenerated in this slice.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes governance count 17/11/11/79/17, v5 sync, clean-room/release validation, scale/browser/soak smoke, operator soak runner, secret scan, UI copy lint, ruff, web typecheck and unit tests 37/37.
+
+### Operator commands
+
+- 4h: `node scripts/run_operator_soak.mjs --mode operator_4h --duration-hours 4 --window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_4h.json --checkpoint artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl --fail-on-budget`
+- 24h: `node scripts/run_operator_soak.mjs --mode operator_24h --duration-hours 24 --window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_24h.json --checkpoint artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl --fail-on-budget`
+- Resume: rerun the same command with `--resume` and the same checkpoint path.
+
+### Remaining gaps
+
+- 4h and 24h operator soak runs are still not executed.
+- A209 cannot close until both long-duration JSON and checkpoint JSONL artifacts are committed, release evidence is regenerated and CI validates the committed evidence.
+- Local host still lacks Docker, so this slice proves runner readiness and child harness behavior, not a full Docker Compose operator soak.

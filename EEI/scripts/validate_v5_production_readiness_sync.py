@@ -168,7 +168,10 @@ PARTIAL_EVIDENCE = {
     },
     "T1307": {
         "scripts/run_soak_smoke.mjs",
+        "scripts/run_operator_soak.mjs",
         "artifacts/tests/a209/t1307_soak_smoke.json",
+        "artifacts/tests/a209/t1307_operator_soak_readiness.json",
+        "artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl",
     },
 }
 
@@ -190,6 +193,7 @@ EXPECTED_PARAMETERS = {
     "benchmark.scale_1m_p95_ms",
     "soak.short_duration_hours",
     "soak.long_duration_hours",
+    "soak.operator_window_seconds",
     "brand.clearance_required",
 }
 

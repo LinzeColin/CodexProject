@@ -107,6 +107,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── t1306_scale_benchmark_operator_contract.json
 │   │   │   └── t1306_scale_benchmark_smoke.json
 │   │   ├── a209
+│   │   │   ├── t1307_operator_soak_readiness.checkpoints.jsonl
+│   │   │   ├── t1307_operator_soak_readiness.json
 │   │   │   └── t1307_soak_smoke.json
 │   │   └── a211
 │   │       └── t1308_frontend_workspace_context_contract.json
@@ -362,6 +364,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── run_browser_scale_benchmarks.mjs
 │   ├── run_codex_autonomous.sh
 │   ├── run_live_e2e_api.sh
+│   ├── run_operator_soak.mjs
 │   ├── run_scale_benchmarks.py
 │   ├── run_soak_smoke.mjs
 │   ├── secret_scan.py

@@ -3309,3 +3309,37 @@ tasks:
     fact_level: "EXTRACTED"
     unknown_task_ids:
       - "TASK-T1206"
+  - task_id: "TASK-T1307"
+    legacy_task_id: "T1307"
+    phase: "D"
+    objective: "Run 4h and 24h browser and worker soak tests for memory, timer, listener and retry stability"
+    scope: "Current T1307/A209 implementation slice adds a resumable operator soak runner, checkpoint JSONL, readiness artifact, and CI-safe 3-second validation. Long-duration 4h and 24h operator evidence remains required before completion."
+    non_scope: "Does not claim 4h/24h soak completion, production MVP completion, or A209 closure."
+    status: "in_progress"
+    dependencies: []
+    required_files:
+      - "EEI/scripts/run_operator_soak.mjs"
+      - "EEI/scripts/run_soak_smoke.mjs"
+      - "EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json"
+      - "EEI/artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl"
+      - "EEI/data/acceptance_traceability.csv"
+      - "EEI/data/parameter_catalog.csv"
+    acceptance_ids:
+      - "ACC-A209"
+    test_commands:
+      - "node scripts/run_operator_soak.mjs --mode ci_smoke --duration-seconds 3 --window-seconds 3 --output artifacts/tests/a209/t1307_operator_soak_readiness.json --checkpoint artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl --fail-on-budget --quiet"
+      - "make validate-operator-soak-runner"
+      - "UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify"
+    test_results:
+      - "local elevated readiness PASS; one 3-second window; A209 release gate remains PARTIAL_UNTIL_4H_24H_OPERATOR_EVIDENCE"
+      - "local elevated make verify PASS; unit tests 37/37"
+    evidence_refs:
+      - "EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json"
+      - "EEI/artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl"
+      - "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md"
+    risk: "A209 can be falsely closed if CI smoke or 3-second readiness is treated as 4h/24h soak evidence."
+    rollback: "Revert the runner commit, remove the A209 readiness artifacts, regenerate clean-room/release artifacts, and rerun make verify."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []

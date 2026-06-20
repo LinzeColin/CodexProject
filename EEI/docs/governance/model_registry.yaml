@@ -653,6 +653,7 @@ models:
       - "PARAM-058"
       - "PARAM-059"
       - "PARAM-060"
+      - "PARAM-061"
     inputs:
       - "parameter_key"
       - "configured_value"
@@ -663,7 +664,8 @@ models:
       - "validated operational parameter value"
     methodology: "Deterministic lookup and range validation reconstructed from parameter_catalog rows without legacy formula_id."
     code_refs:
-      - "EEI/data/parameter_catalog.csv:43-61"
+      - "EEI/data/parameter_catalog.csv:43-79"
+      - "EEI/scripts/run_operator_soak.mjs"
       - "EEI/config/thresholds/default-v2.json"
       - "EEI/config/model_runtime_defaults.yaml"
     test_refs:
