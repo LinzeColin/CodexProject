@@ -33,6 +33,15 @@
     "latest_local_result": {
       "typecheck": "PASS",
       "playwright_e2e": "PASS_29_OF_29"
+    },
+    "latest_ci_result": {
+      "provider": "GitHub Actions",
+      "workflow": "EEI validation",
+      "run_id": "27875473970",
+      "job_id": "82494131119",
+      "commit_sha": "6e95b450250a447a50061fb926b80e164bdbf9c5",
+      "verify_g2_browser_e2e_step": "PASS",
+      "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
     }
   },
   "remaining_to_close_a207": []

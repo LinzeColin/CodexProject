@@ -3053,7 +3053,7 @@ Residual risks:
 ### Acceptance mapping
 
 - T1305 -> A207.
-- A207 is now `DONE` locally for the saved-view server conflict, version history, recovery, schema migration, namespace isolation and trusted gateway identity boundary.
+- A207 is now `DONE` for the saved-view server conflict, version history, recovery, schema migration, namespace isolation and trusted gateway identity boundary.
 - Share links, export and cross-user publication strategy remain future FUN-RM-03 enhancements and do not block A207.
 
 ### Validation
@@ -3062,9 +3062,16 @@ Residual risks:
 - Local `.venv/bin/ruff check apps/api/app/domain.py apps/api/app/settings.py tests/unit/test_api_health.py`: PASS.
 - Local `.venv/bin/python -m pytest -q tests/unit/test_api_health.py`: PASS, 17 tests with one existing Starlette/httpx deprecation warning.
 - Local `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-clean-room-release`: PASS; clean-room ZIP now includes 353 paths.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-release-artifacts`: PASS; release manifest now includes 360 paths and checksum manifest includes 359 paths.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make validate-clean-room-release`: PASS.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make validate-release-artifacts`: PASS.
+- Local `shasum -a 256 -c CHECKSUMS.sha256`: PASS.
+- Local elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes governance, contract, prototype parity, GitHub governance, v5 sync, worker deployment validator, development/risk/release validation, scale benchmark, Chromium browser benchmark, soak smoke, secret scan, UI copy lint, ruff, web typecheck and unit tests 23/23.
+- GitHub Actions `EEI validation` on `6e95b450250a447a50061fb926b80e164bdbf9c5`: PASS, run `27875473970`, job `82494131119`; Steps 7-12 all succeeded, including static/contract/lint/typecheck/unit, G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 
 ### Remaining gaps
 
-- This closes T1305/A207 locally; GitHub Actions evidence still needs to be attached after this commit is pushed.
+- This closes T1305/A207 with local and GitHub Actions evidence.
 - T1301/A202, T1302/A203, T1303/A204-A205, T1304/A206, T1307/A209, T1308/A211 and T1309/A210 remain v0.1 blockers.
 - T1307 4h and 24h operator soak still cannot be closed on the current host because Docker is not installed and the required duration has not been run.
