@@ -2293,7 +2293,7 @@ def exercise_transactional_model_activation_contract(
     assert context_response.status_code == 200
     active_context = context_response.json()
     assert active_context["schema_version"] == "active-analysis-context-v1"
-    assert active_context["active_scoring_profile_version_id"] == active_profile["id"]
+    assert str(active_context["active_scoring_profile_version_id"]) == str(active_profile["id"])
     assert active_context["client_state"] == "current"
     assert active_context["refresh_generation"] >= 1
     previous_refresh_token = active_context["refresh_token"]
@@ -2316,7 +2316,7 @@ def exercise_transactional_model_activation_contract(
     draft = create_draft_response.json()
     assert draft["schema_version"] == "scoring-profile-draft-v1"
     assert draft["status"] == "created"
-    assert draft["base_profile"]["id"] == active_profile["id"]
+    assert str(draft["base_profile"]["id"]) == str(active_profile["id"])
     assert draft["profile"]["profile_key"] == "balanced-v2-online-draft"
     assert draft["profile"]["active"] is False
     assert draft["profile"]["weights"]["supply_chain_criticality"] == 0.3
@@ -2327,7 +2327,9 @@ def exercise_transactional_model_activation_contract(
         "supply_chain_criticality",
     ]
     assert draft["validation"]["active_context_unchanged"] is True
-    assert draft["active_context"]["active_scoring_profile_version_id"] == active_profile["id"]
+    assert str(draft["active_context"]["active_scoring_profile_version_id"]) == str(
+        active_profile["id"]
+    )
     target_profile_id = draft["profile"]["id"]
 
     invalid_draft_weights = dict(draft_weights)
@@ -2360,7 +2362,7 @@ def exercise_transactional_model_activation_contract(
     activation = activation_response.json()
     assert activation["schema_version"] == "model-activation-v1"
     assert activation["status"] == "activated"
-    assert activation["previous_profile"]["id"] == active_profile["id"]
+    assert str(activation["previous_profile"]["id"]) == str(active_profile["id"])
     assert activation["activated_profile"]["id"] == target_profile_id
     assert activation["activated_profile"]["active"] is True
     assert activation["cache_invalidation"]["previous_refresh_token"] == previous_refresh_token
@@ -2741,11 +2743,13 @@ def exercise_transactional_model_activation_contract(
     assert rollback["schema_version"] == "model-activation-v1"
     assert rollback["status"] == "activated"
     assert rollback["previous_profile"]["id"] == str(target_profile_id)
-    assert rollback["activated_profile"]["id"] == active_profile["id"]
+    assert str(rollback["activated_profile"]["id"]) == str(active_profile["id"])
     assert rollback["activated_profile"]["active"] is True
     assert rollback["cache_invalidation"]["previous_refresh_token"] == data_refresh_token
     assert rollback["cache_invalidation"]["refresh_token"] != data_refresh_token
-    assert rollback["active_context"]["active_scoring_profile_version_id"] == active_profile["id"]
+    assert str(rollback["active_context"]["active_scoring_profile_version_id"]) == str(
+        active_profile["id"]
+    )
     rollback_refresh_token = rollback["cache_invalidation"]["refresh_token"]
 
     stale_rollback_response = client.post(
@@ -2760,7 +2764,9 @@ def exercise_transactional_model_activation_contract(
     rollback_conflict = stale_rollback_response.json()["detail"]
     assert rollback_conflict["status"] == "conflict"
     assert rollback_conflict["reason"] == "stale_active_profile_version"
-    assert rollback_conflict["actual_active_profile_version_id"] == active_profile["id"]
+    assert str(rollback_conflict["actual_active_profile_version_id"]) == str(
+        active_profile["id"]
+    )
 
     with connect_database() as connection:
         active_rows = connection.execute(
