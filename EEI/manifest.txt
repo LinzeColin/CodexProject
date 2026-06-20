@@ -66,6 +66,8 @@ apps/web/src/app/layout.tsx
 apps/web/src/app/objects-scope/page.tsx
 apps/web/src/app/page.tsx
 apps/web/src/app/use-analysis-context.ts
+apps/web/src/app/workspace-context.tsx
+apps/web/src/app/workspace-navigation.tsx
 apps/web/tsconfig.json
 apps/worker/__init__.py
 apps/worker/app/__init__.py
@@ -103,6 +105,7 @@ artifacts/tests/a208/t1306_browser_runtime_benchmark.json
 artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json
 artifacts/tests/a208/t1306_scale_benchmark_smoke.json
 artifacts/tests/a209/t1307_soak_smoke.json
+artifacts/tests/a211/t1308_frontend_workspace_context_contract.json
 brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
 config/brand_policy.yaml
 config/model_profiles/balanced-v2.json
