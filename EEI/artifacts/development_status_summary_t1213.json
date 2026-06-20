@@ -25,8 +25,8 @@
     "validation_status": {
       "CATALOG_VALIDATED": 11,
       "CI_VALIDATED": 5,
-      "LOCAL_E2E_VALIDATED": 8,
-      "LOCAL_VALIDATED": 9,
+      "LOCAL_E2E_VALIDATED": 9,
+      "LOCAL_VALIDATED": 8,
       "SPEC_VALIDATED": 5,
       "VALIDATED": 8
     },
@@ -67,8 +67,8 @@
       "acceptance_ids": "A041;A042;A043;A044;A045;A046;A047;A048;A049;A050;A051;A052;A053;A054;A055;A056;A057;A058;A133;A134;A135;A136;A137;A138;A139;A140;A141;A142;A143;A144;A145;A146;A147;A148;A149;A150;A151;A152;A153;A154;A155;A156;A157;A193;A203;A211",
       "traceability_rows": "51",
       "done_traceability_rows": "45",
-      "test_types": "A11y E2E;API/UI test;Axe/manual;Boundary test;Boundary/negative tests;Budget test;Contract test;Contract/E2E;Contract/integration;Critical E2E;DOM/SVG assertion;Design/a11y review;E2E;E2E + contract;E2E reload;E2E screenshot;E2E/a11y;Failure E2E;Fixture E2E;Integration;Integration/E2E;Keyboard E2E;Keyboard/touch E2E;Reload E2E;Screenshot assertion;State test;Static copy lint;UI test;UI/content test;Usability/E2E;Visual measurement;Visual regression;Visual/a11y review;contract + integration test;visual coverage measurement",
-      "evidence_paths": "Makefile;apps/api/app/domain.py;apps/api/app/domain_repository.py;apps/web/src/app/globals.css;apps/web/src/app/page.tsx;apps/web/src/app/use-analysis-context.ts;artifacts/tests/a133/;artifacts/tests/a134/;artifacts/tests/a135/;artifacts/tests/a153/;artifacts/tests/a193/;artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json;data/ui_copy_lexicon.csv;infra/db/migrations/0002_exploration_state/up.sql;scripts/validate_ui_copy.py;specs/api_contract.yaml;tests/e2e/home.spec.ts;tests/e2e/state-contract.spec.ts;tests/integration/test_database_migrations.py",
+      "test_types": "A11y E2E;API/UI test;Axe/manual;Boundary test;Boundary/negative tests;Budget test;Contract test;Contract/E2E;Contract/integration;Critical E2E;DOM/SVG assertion;Design/a11y review;E2E;E2E + contract;E2E reload;E2E screenshot;E2E/a11y;Failure E2E;Fixture E2E;Integration;Integration/E2E;Keyboard E2E;Keyboard/touch E2E;Reload E2E;Screenshot assertion;State test;Static copy lint;UI test;UI/content test;Usability/E2E;Visual measurement;Visual regression;Visual/a11y review;contract + integration + frontend hydration test;visual coverage measurement",
+      "evidence_paths": "Makefile;apps/api/app/domain.py;apps/api/app/domain_repository.py;apps/web/src/app/explore-api-client.ts;apps/web/src/app/globals.css;apps/web/src/app/page.tsx;apps/web/src/app/use-analysis-context.ts;artifacts/tests/a133/;artifacts/tests/a134/;artifacts/tests/a135/;artifacts/tests/a153/;artifacts/tests/a193/;artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json;data/ui_copy_lexicon.csv;infra/db/migrations/0002_exploration_state/up.sql;scripts/validate_ui_copy.py;specs/api_contract.yaml;tests/e2e/home.spec.ts;tests/e2e/state-contract.spec.ts;tests/integration/test_database_migrations.py",
       "missing_task_ids": "",
       "missing_acceptance_ids": "",
       "source_doc": "docs/13_RECURSIVE_BUSINESS_EMPIRE_EXPLORER.md"

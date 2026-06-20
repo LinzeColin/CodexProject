@@ -9,14 +9,15 @@
       "Production graph and path responses expose production_context with active data snapshot, active scoring profile, graph query version, scoring service version, record modes and publication policy.",
       "Graph coverage reports relationship_fact_candidates excluded from graph edges until source threshold and human review publication gates pass.",
       "GET /v1/scoring/explain/{objectType}/{objectId} supports relationship_fact_candidate explanations backed by existing Golden Vertical candidate/evidence/review tables.",
-      "Integration assertions bind A203 to FastAPI, repository queries, OpenAPI contract and curated official fixture evidence."
+      "Integration assertions bind A203 to FastAPI, repository queries, OpenAPI contract and curated official fixture evidence.",
+      "Frontend commercial-map API-first hydration now posts the current focus, lens-derived layers, as-of date, scoring profile id and 42/64/12 budget to /v1/explore, then exposes production_context, coverage and publication-gate metadata with explicit fixture fallback."
     ],
     "explicitly_not_closed": [
       "Full production scoring engine for all object types remains in T600-T608 and T1303.",
       "Candidate approval, publication into relationships and atomic global refresh remain in T1301/T1303.",
       "10k, 100k, 1m scale tests remain in T1306/A208.",
       "4h and 24h soak tests remain in T1307/A209.",
-      "Production frontend componentization and full real control wiring remain in T1308/A211."
+      "Full production API hydration across graph, evidence, catalogs and score explanations plus live backend cross-route E2E remain in T1308/A211."
     ]
   },
   "api_contracts": [
@@ -47,8 +48,11 @@
   "evidence_files": [
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
+    "apps/web/src/app/explore-api-client.ts",
+    "apps/web/src/app/page.tsx",
     "specs/api_contract.yaml",
     "tests/integration/test_database_migrations.py",
+    "tests/e2e/state-contract.spec.ts",
     "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json"
   ],
   "validation_plan": [
@@ -57,6 +61,7 @@
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_task_pack.py",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_v5_production_readiness_sync.py",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/manage_development_status_artifacts.py validate",
+    "pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/manage_clean_room_release.py validate",
     "python3 scripts/manage_release_artifacts.py validate",
     "GitHub Actions: Verify G2 PostgreSQL migrations and E2E"

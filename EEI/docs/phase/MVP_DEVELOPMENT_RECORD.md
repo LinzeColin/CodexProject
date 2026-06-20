@@ -2233,3 +2233,47 @@ Residual risks:
 
 - Live FastAPI/PostgreSQL cross-route E2E for model activation and stale refresh is still required.
 - Model-center online editing, dedicated rollback endpoint and score recompute UI remain open.
+
+## 2026-06-20 - T1302/A203 and T1308/A211 commercial-map graph API context hydration
+
+### Scope
+
+- Added `explore-api-client.ts` for API-first `POST /v1/explore` hydration with explicit local fixture fallback.
+- Mapped homepage subject, lens, semantic zoom, as-of time, scoring profile id and default 42/64/12 budget into the backend `ExploreRequest` contract.
+- Added a production graph context panel that surfaces `production_context`, graph query version, scoring service version, server coverage, publication gate and candidate-fact exclusion counts.
+- Kept the visible graph rendering as fixture projection; this slice hydrates server context and metadata but does not replace the rendered nodes/edges with live server graph data.
+- Added Playwright mock-server E2E coverage for initial hydration and manual lens-driven refresh.
+- Recorded the current contract gap: the `capital` visual node still falls back to the NVIDIA entity id until a first-class capital object/entity contract is implemented.
+
+### Files changed
+
+- `apps/web/src/app/explore-api-client.ts`
+- `apps/web/src/app/page.tsx`
+- `tests/e2e/state-contract.spec.ts`
+- `artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json`
+- `artifacts/tests/a211/t1308_frontend_workspace_context_contract.json`
+- `scripts/validate_v5_production_readiness_sync.py`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `DEVELOPMENT_STATUS.md`
+- `README.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+
+### Acceptance mapping
+
+- T1302 -> A203.
+- T1308 -> A211.
+- A203/A211 remain `IN PROGRESS`, not `DONE`.
+
+### Validation
+
+- Local `PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make typecheck`: PASS.
+- Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 1/1 for `A203 and A211 hydrate production graph context through the explore API`.
+- Local default Playwright E2E with non-sandbox browser/server access: PASS, 31/31.
+
+### Remaining gaps
+
+- Server graph node/edge data must replace the fixture projection before closing the frontend production hydration claim.
+- Evidence center, catalog and score explanation API hydration remain open.
+- Live FastAPI/PostgreSQL cross-route E2E remains required before A211 can close.
+- Full multi-object scoring and formally published relationship edges remain required before A203 can close.
