@@ -101,6 +101,7 @@ artifacts/tests/a200/t1212_clean_room_preflight.json
 artifacts/tests/a200/t1215_clean_room_release.json
 artifacts/tests/a202/t1301_curated_official_ingestion_contract.json
 artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json
+artifacts/tests/a202/t1301_operator_source_capture_contract.json
 artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json
 artifacts/tests/a204/t1303_transactional_model_activation_contract.json
 artifacts/tests/a205/t1303_atomic_refresh_context_contract.json
@@ -300,6 +301,7 @@ scripts/fetch_official_source_full_text.py
 scripts/generate_governance_pdf.py
 scripts/job_scheduler.py
 scripts/load_curated_ingestion_anchors.py
+scripts/load_operator_source_captures.py
 scripts/load_seed_catalogs.py
 scripts/load_synthetic_fixtures.py
 scripts/manage_clean_room_release.py
@@ -348,6 +350,7 @@ tests/fixtures/README.md
 tests/fixtures/golden_vertical_owner_signoff_decisions.json
 tests/fixtures/golden_vertical_review_decisions.json
 tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json
+tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json
 tests/integration/README.md
 tests/integration/test_database_migrations.py
 tests/unit/test_api_health.py
