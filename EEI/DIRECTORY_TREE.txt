@@ -78,8 +78,10 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip
 │   │   │   ├── t1212_clean_room_preflight.json
 │   │   │   └── t1215_clean_room_release.json
-│   │   └── a202
-│   │       └── t1301_curated_official_ingestion_contract.json
+│   │   ├── a202
+│   │   │   └── t1301_curated_official_ingestion_contract.json
+│   │   └── a203
+│   │       └── t1302_production_api_graph_scoring_contract.json
 │   ├── README.md
 │   ├── development_status_summary_t1213.json
 │   ├── governance_blueprint_v42_source.html
