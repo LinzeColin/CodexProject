@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "artifact_id": "t1301-operator-source-capture-contract",
+  "task_id": "T1301",
+  "acceptance_ids": [
+    "A202"
+  ],
+  "status": "IN_PROGRESS",
+  "record_mode": "operator_source_capture",
+  "parser_version": "nvidia-operator-source-capture-v1",
+  "generated_at": "2026-06-21T03:00:00+10:00",
+  "system": {
+    "zh_name": "商域图谱",
+    "en_name": "Enterprise Ecosystem Intelligence",
+    "subtitle": "企业商业版图与供应链递归探索系统"
+  },
+  "implemented_scope": [
+    "scripts/load_operator_source_captures.py reads the official NVIDIA anchor registry and an operator-provided capture fixture.",
+    "The loader validates source URL agreement, operator identity fields, capture timestamp, approval_scope, operator signature, source_text_sha256 and required usage attestations before writing database rows.",
+    "Operator capture raw_source_snapshots preserve source text, source hash, parser version, record_mode=operator_source_capture, source_health, operator provenance, operator_supplied_capture=true, live_retrieval=false, release_clearance=false and relationship_publication=false.",
+    "Operator capture source_documents use a distinct external_id suffix and raw_storage_uri under tests/fixtures/operator_source_captures/.",
+    "Operator capture entity_resolution_candidates are stored under parser_version nvidia-operator-source-capture-v1 with operator_verified review_status.",
+    "Operator capture ingestion_evidence_chain rows are context-only and explicitly mark operator_capture_context_only_not_published_relationship.",
+    "The integration test runs the loader twice to prove idempotent upsert behavior and asserts 2 raw snapshots, 2 evidence rows, 30 resolution candidates, 2 NVIDIA subject candidates, 2 TSMC candidates and zero relationship_fact_candidates for the operator parser."
+  ],
+  "evidence_paths": [
+    "scripts/load_operator_source_captures.py",
+    "tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json",
+    "tests/integration/test_database_migrations.py",
+    "Makefile",
+    "scripts/validate_v5_production_readiness_sync.py",
+    "artifacts/tests/a202/t1301_operator_source_capture_contract.json"
+  ],
+  "parameters": {
+    "ingestion.operator_capture_min_text_chars": 240,
+    "ingestion.operator_capture_min_token_coverage_ratio": 1.0,
+    "ingestion.operator_capture_required_attestations": [
+      "official_source_observed",
+      "source_url_matches_anchor",
+      "no_paywall_or_login_bypass",
+      "copyright_excerpt_only_for_evidence",
+      "not_production_fact_approval"
+    ],
+    "ingestion.operator_capture_resolution_candidates": 30,
+    "ingestion.operator_capture_raw_snapshots": 2,
+    "ingestion.operator_supplied_capture": true,
+    "ingestion.live_retrieval": false,
+    "ingestion.release_clearance": false,
+    "ingestion.relationship_publication": false
+  },
+  "validation_commands": [
+    "python3 -m json.tool tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json",
+    "python3 -m json.tool artifacts/tests/a202/t1301_operator_source_capture_contract.json",
+    "python3 -m py_compile scripts/load_operator_source_captures.py tests/integration/test_database_migrations.py",
+    ".venv/bin/ruff check scripts/load_operator_source_captures.py tests/integration/test_database_migrations.py",
+    ".venv/bin/python scripts/validate_v5_production_readiness_sync.py",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify",
+    "GitHub Actions make verify-g2-db must prove the operator capture contract inside PostgreSQL integration because this host has no local Docker/PostgreSQL."
+  ],
+  "remote_validation": {
+    "provider": "GitHub Actions",
+    "workflow": "EEI validation",
+    "run_id": null,
+    "job_id": null,
+    "commit": null,
+    "status": "PENDING"
+  },
+  "remaining_gaps_before_done": [
+    "This is an operator capture contract and deterministic fixture, not live official-source retrieval.",
+    "The fixture proves provenance and parser gates; it is not legal clearance or market/brand clearance.",
+    "A real operator-supplied owner decision or a second independent-source closure path is still required before any Golden Vertical fact can be release-approved.",
+    "No relationship_fact_candidates or production relationships are published by this loader."
+  ],
+  "rollback": [
+    "Remove scripts/load_operator_source_captures.py and tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json.",
+    "Remove the operator capture invocation and assertions from tests/integration/test_database_migrations.py.",
+    "Remove the operator evidence paths from Makefile lint and scripts/validate_v5_production_readiness_sync.py.",
+    "Delete artifacts/tests/a202/t1301_operator_source_capture_contract.json and rerun make verify."
+  ]
+}
