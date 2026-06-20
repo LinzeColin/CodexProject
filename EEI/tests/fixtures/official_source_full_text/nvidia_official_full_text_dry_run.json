@@ -1,0 +1,47 @@
+{
+  "schema_version": "nvidia-official-fulltext-dry-run-fixture-v1",
+  "fixture_policy": {
+    "record_mode": "dry_run",
+    "scope": "A202 parser, token coverage, source-health and retry metadata contract",
+    "not_release_clearance": true,
+    "notes": "Deterministic local fixture for official-source full-text parser plumbing. It is not live retrieval, not a reproduction of the official pages, and not production legal or data clearance."
+  },
+  "anchors": [
+    {
+      "anchor_id": "NVDA-ANCHOR-001",
+      "source_url": "https://blogs.nvidia.com/blog/taiwan-ecosystem-ai-infrastructure/",
+      "captured_at": "2026-06-21T00:00:00Z",
+      "capture_status": "success",
+      "http_status": 200,
+      "content_type": "text/html",
+      "source_text": "Dry-run normalized source body for NVIDIA Corporation anchor NVDA-ANCHOR-001. The text fixture represents a parser contract for the official NVIDIA Blog Taiwan ecosystem anchor. It includes the expected ecosystem and supply-chain terms NVIDIA Corporation, TSMC, SPIL, Kinsus, KYEC, UMTC, Foxconn, Pegatron, QCT, Wistron, Inventec, wafer, chip, packaging test, manufacturing, and systems. The fixture is used only to prove token coverage, raw snapshot persistence, source health metadata, parser versioning, and retry policy recording before a live official-source connector is approved."
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-002",
+      "source_url": "https://investor.nvidia.com/files/doc_financials/2026/q4/10K-NVDA.pdf",
+      "captured_at": "2026-06-21T00:00:00Z",
+      "capture_status": "success",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "source_text": "Dry-run normalized source body for NVIDIA Corporation anchor NVDA-ANCHOR-002. The text fixture represents a parser contract for the official NVIDIA Investor Relations Form 10-K anchor. It includes the expected supplier, manufacturing, and packaging terms NVIDIA Corporation, TSMC, Samsung, SK hynix, Micron, Hon Hai Foxconn, Wistron, Fabrinet, foundry, memory, CoWoS, assembly, testing, and packaging. The fixture is not a production filing reproduction; it is a bounded dry-run body for parser, hashing, evidence-chain, source-health, and retry metadata validation."
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-003",
+      "source_url": "https://nvidianews.nvidia.com/news/computer-industry-ai-factories-data-centers",
+      "captured_at": "2026-06-21T00:00:00Z",
+      "capture_status": "success",
+      "http_status": 200,
+      "content_type": "text/html",
+      "source_text": "Dry-run normalized source body for NVIDIA Corporation anchor NVDA-ANCHOR-003. The text fixture represents a parser contract for the official NVIDIA Newsroom computer-industry anchor. It includes the expected downstream system and AI factory ecosystem names NVIDIA Corporation, ASRock Rack, ASUS, GIGABYTE, Ingrasys, Inventec, Pegatron, QCT, Supermicro, Wistron, and Wiwynn. The fixture supports dry-run token coverage and evidence-chain persistence only; it does not publish all named firms as suppliers."
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-004",
+      "source_url": "https://blogs.nvidia.com/blog/computex-2025-jensen-huang/",
+      "captured_at": "2026-06-21T00:00:00Z",
+      "capture_status": "success",
+      "http_status": 200,
+      "content_type": "text/html",
+      "source_text": "Dry-run normalized source body for NVIDIA Corporation anchor NVDA-ANCHOR-004. The text fixture represents a parser contract for the official NVIDIA Blog Computex 2025 anchor. It includes the expected ecosystem and deployment terms NVIDIA Corporation, Foxconn, Taiwan government, TSMC, Wistron, Pegatron, Delta Electronics, Quanta, GIGABYTE, Omniverse, and AI factories. The fixture records full-text parser plumbing, token coverage, health, retry, and dead-letter policy metadata without treating the content as live publication clearance."
+    }
+  ]
+}

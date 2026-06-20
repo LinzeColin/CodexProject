@@ -47,6 +47,7 @@ COREWEAVE_NVIDIA_RELATIONSHIP_ID = "10000000-0000-4000-8000-000000000012"
 NVIDIA_CAPEX_EVENT_ID = "30000000-0000-4000-8000-000000000002"
 SUPERSESSION_RELATIONSHIP_ID = "20000000-0000-4000-8000-000000000001"
 CURATED_ANCHOR_PARSER_VERSION = "nvidia-public-anchor-v1"
+FULL_TEXT_DRY_RUN_PARSER_VERSION = "nvidia-official-fulltext-dry-run-v1"
 REVIEWED_DECISION_SET_KEY = "a202-integration-reviewed-golden-vertical-v1"
 REVIEWED_RELATIONSHIP_SNAPSHOT_KEY = "a202-reviewed-golden-vertical"
 REVIEW_DECISION_FIXTURE_PATH = "tests/fixtures/golden_vertical_review_decisions.json"
@@ -121,6 +122,8 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     run_script("scripts/check_database_schema.py", "--expect-seeds", "--expect-fixtures")
     run_script("scripts/load_curated_ingestion_anchors.py")
     run_script("scripts/load_curated_ingestion_anchors.py")
+    run_script("scripts/fetch_official_source_full_text.py")
+    run_script("scripts/fetch_official_source_full_text.py")
     run_script(
         "scripts/check_database_schema.py",
         "--expect-seeds",
@@ -128,6 +131,7 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
         "--expect-curated-ingestion",
     )
     exercise_curated_official_ingestion_contracts()
+    exercise_official_full_text_dry_run_contracts()
     exercise_production_fact_version_contracts()
     exercise_domain_api_and_repository_contracts()
     exercise_reviewed_relationship_publication_contracts()
@@ -338,6 +342,106 @@ def exercise_curated_official_ingestion_contracts() -> None:
 
         relationship_count = connection.execute("SELECT count(*) FROM relationships").fetchone()[0]
         assert relationship_count == 26
+
+
+def exercise_official_full_text_dry_run_contracts() -> None:
+    with connect_database() as connection:
+        parser_version = FULL_TEXT_DRY_RUN_PARSER_VERSION
+        raw_row = connection.execute(
+            """
+            SELECT count(*),
+                   count(*) FILTER (WHERE record_mode = 'dry_run'),
+                   count(*) FILTER (WHERE review_status = 'machine_verified'),
+                   count(DISTINCT source_document_id),
+                   min((raw_payload->'source_health'->'token_coverage'->>'ratio')::numeric),
+                   count(*) FILTER (
+                     WHERE (raw_payload->'retry_policy'->>'dead_letter_after_attempts')::int = 3
+                   ),
+                   count(*) FILTER (WHERE raw_payload->>'live_retrieval' = 'false'),
+                   count(*) FILTER (WHERE raw_payload->>'release_clearance' = 'false')
+            FROM raw_source_snapshots
+            WHERE parser_version = %s
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert raw_row[0:4] == (4, 4, 4, 4)
+        assert float(raw_row[4]) == 1.0
+        assert raw_row[5:8] == (4, 4, 4)
+
+        latest_run = connection.execute(
+            """
+            SELECT status, counts->>'anchors', counts->>'entity_resolution_candidates',
+                   counts->>'evidence_chain_rows', counts->>'source_health_status',
+                   counts->>'live_retrieval', counts->>'release_clearance'
+            FROM ingestion_runs
+            WHERE connector_version = %s AND mode = 'dry_run'
+            ORDER BY started_at DESC
+            LIMIT 1
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert latest_run == ("succeeded", "4", "53", "4", "healthy", "false", "false")
+
+        source_documents = connection.execute(
+            """
+            SELECT count(*)
+            FROM source_documents sd
+            JOIN raw_source_snapshots rss ON rss.source_document_id = sd.id
+            WHERE rss.parser_version = %s
+              AND sd.parser_version = %s
+              AND sd.raw_storage_uri LIKE
+                'tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json#%%'
+              AND sd.content_hash = rss.content_hash
+            """,
+            (parser_version, parser_version),
+        ).fetchone()[0]
+        assert source_documents == 4
+
+        candidate_row = connection.execute(
+            """
+            SELECT count(*),
+                   count(*) FILTER (WHERE confidence >= 0.72),
+                   count(*) FILTER (WHERE matched_research_id IS NOT NULL),
+                   count(*) FILTER (WHERE candidate_name = 'NVIDIA Corporation'),
+                   count(*) FILTER (WHERE candidate_name = 'TSMC')
+            FROM entity_resolution_candidates
+            WHERE parser_version = %s
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert candidate_row == (53, 10, 10, 4, 3)
+
+        evidence_row = connection.execute(
+            """
+            SELECT count(*),
+                   count(*) FILTER (WHERE evidence_role = 'context'),
+                   count(*) FILTER (WHERE review_status = 'machine_verified'),
+                   count(*) FILTER (
+                     WHERE structured_fact->>'edge_publication' =
+                       'dry_run_context_only_not_published_relationship'
+                   ),
+                   count(*) FILTER (
+                     WHERE structured_fact->'source_health'->>'status' = 'healthy'
+                   ),
+                   count(*) FILTER (
+                     WHERE structured_fact->>'full_text_connector' = %s
+                   )
+            FROM ingestion_evidence_chain
+            WHERE parser_version = %s
+            """,
+            (parser_version, parser_version),
+        ).fetchone()
+        assert evidence_row == (4, 4, 4, 4, 4, 4)
+
+        dry_run_fact_candidates = connection.execute(
+            """
+            SELECT count(*)
+            FROM relationship_fact_candidates
+            WHERE parser_version = %s
+            """,
+            (parser_version,),
+        ).fetchone()[0]
+        assert dry_run_fact_candidates == 0
 
 
 def exercise_production_fact_version_contracts() -> None:

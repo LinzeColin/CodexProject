@@ -3345,3 +3345,65 @@ Status: CI VALIDATED; A202 STILL IN PROGRESS
 - A202 still needs live/full-text official-source ingestion or an approved dry-run connector.
 - A202 still needs an actual operator-supplied owner decision or second independent source closure before any real Golden Vertical fact is production-approved.
 - Source health, retry and dead-letter behavior remain owned by T1304/A206 and long-duration proof by T1307/A209.
+
+## 2026-06-21 - T1301/A202 official-source full-text dry-run and source-health slice
+
+Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A206 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/fetch_official_source_full_text.py` as an idempotent dry-run connector for the NVIDIA official-source anchors.
+- Added `tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json` as a deterministic parser fixture. The fixture is explicitly not live retrieval, not an official-page reproduction, and not legal or market clearance.
+- The connector validates source URL agreement, capture status, minimum text length, and 100% expected-token coverage before writing database rows.
+- The connector writes `raw_source_snapshots`, `source_documents`, `entity_resolution_candidates`, and context-only `ingestion_evidence_chain` rows under parser version `nvidia-official-fulltext-dry-run-v1`.
+- Dry-run payloads preserve `source_health`, `retry_policy`, `attempts`, `live_retrieval=false`, and `release_clearance=false`.
+- PostgreSQL integration now runs the dry-run connector twice and asserts idempotency, 4 raw snapshots, 4 evidence rows, 53 resolution candidates, healthy coverage, and zero `relationship_fact_candidates` for the dry-run parser.
+
+### Files changed
+
+- `scripts/fetch_official_source_full_text.py`
+- `tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json`
+- `tests/integration/test_database_migrations.py`
+- `Makefile`
+- `artifacts/tests/a202/t1301_curated_official_ingestion_contract.json`
+- `artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json`
+- `artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json`
+- `data/acceptance_matrix.csv`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `scripts/validate_v5_production_readiness_sync.py`
+- `README.md`
+- `DEVELOPMENT_STATUS.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+
+### Acceptance mapping
+
+- T1301 -> A202.
+- T1304 -> A206 for source-health/retry metadata only.
+- A202 remains `IN_PROGRESS`: live official retrieval and production approval are still not complete.
+- A206 remains `IN_PROGRESS`: dry-run source-health metadata is not a substitute for 4h/24h operator soak and live dead-letter proof.
+
+### Local validation
+
+- `python3 -m json.tool tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json`: PASS.
+- `python3 -m json.tool artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json`: PASS.
+- `python3 -m json.tool artifacts/tests/a202/t1301_curated_official_ingestion_contract.json`: PASS.
+- `python3 -m json.tool artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json`: PASS.
+- `python3 -m py_compile scripts/fetch_official_source_full_text.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/ruff check scripts/fetch_official_source_full_text.py scripts/validate_v5_production_readiness_sync.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `.venv/bin/python scripts/validate_catalog_integrity.py`: PASS.
+- `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_api_health.py tests/unit/test_scoring.py`: PASS, 27/27 with one existing Starlette/httpx deprecation warning.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `.env` or `DATABASE_URL`.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS after non-sandbox rerun; first sandbox run failed only at Chromium browser benchmark with macOS MachPort permission denied. Unit tests: 31/31.
+
+### Remote CI validation
+
+- Pending GitHub Actions `make verify-g2-db` proof for the dry-run connector inside PostgreSQL integration.
+
+### Remaining gaps
+
+- A202 still needs live official retrieval, or an approved operator-provided source capture process, before production use.
+- A202 still needs an actual operator-supplied owner decision or second independent source closure before any real Golden Vertical fact is production-approved.
+- A206/A209 still need 4h and 24h operator soak evidence for worker wake, retry, recovery, and dead-letter stability.
