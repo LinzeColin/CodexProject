@@ -66,6 +66,7 @@ apps/web/src/app/layout.tsx
 apps/web/src/app/model-activation-client.ts
 apps/web/src/app/objects-scope/page.tsx
 apps/web/src/app/page.tsx
+apps/web/src/app/production-data-client.ts
 apps/web/src/app/saved-view-client.ts
 apps/web/src/app/use-analysis-context.ts
 apps/web/src/app/workspace-context.tsx

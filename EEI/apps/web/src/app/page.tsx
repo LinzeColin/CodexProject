@@ -36,6 +36,13 @@ import {
   type ModelActivationResult,
   type ScoringProfileRecord
 } from "./model-activation-client";
+import {
+  PRODUCTION_DATA_API_BASE_STORAGE_KEY,
+  loadCatalogInventory,
+  loadScoreExplanation,
+  type CatalogInventoryRecord,
+  type ScoreExplanationRecord
+} from "./production-data-client";
 import { useAnalysisContext } from "./use-analysis-context";
 import {
   SAVED_VIEW_API_BASE_STORAGE_KEY,
@@ -140,6 +147,12 @@ type ModelContextStatus =
 type ProductionGraphStatus =
   | "local-fixture"
   | "loading-production-graph"
+  | "server-hydrated"
+  | "server-error";
+
+type ProductionDataStatus =
+  | "local-fixture"
+  | "loading-production-data"
   | "server-hydrated"
   | "server-error";
 
@@ -1376,6 +1389,25 @@ export default function Home() {
   const [productionGraphSyncReason, setProductionGraphSyncReason] = useState("not_synced");
   const [productionGraphEndpoint, setProductionGraphEndpoint] = useState("");
   const [productionGraph, setProductionGraph] = useState<ExploreGraphRecord | null>(null);
+  const [productionCatalogStatus, setProductionCatalogStatus] =
+    useState<ProductionDataStatus>("local-fixture");
+  const [productionCatalogSyncMode, setProductionCatalogSyncMode] = useState<
+    "server" | "local_fallback"
+  >("local_fallback");
+  const [productionCatalogSyncReason, setProductionCatalogSyncReason] = useState("not_synced");
+  const [productionCatalogEndpoint, setProductionCatalogEndpoint] = useState("");
+  const [productionCatalogInventory, setProductionCatalogInventory] =
+    useState<CatalogInventoryRecord | null>(null);
+  const [productionScoreStatus, setProductionScoreStatus] =
+    useState<ProductionDataStatus>("local-fixture");
+  const [productionScoreSyncMode, setProductionScoreSyncMode] = useState<
+    "server" | "local_fallback"
+  >("local_fallback");
+  const [productionScoreSyncReason, setProductionScoreSyncReason] = useState("not_synced");
+  const [productionScoreEndpoint, setProductionScoreEndpoint] = useState("");
+  const [productionScoreTargetId, setProductionScoreTargetId] = useState("");
+  const [productionScoreExplanation, setProductionScoreExplanation] =
+    useState<ScoreExplanationRecord | null>(null);
   const [selectedProductionNodeKey, setSelectedProductionNodeKey] = useState("");
   const [modelContextSyncMode, setModelContextSyncMode] = useState<"server" | "local_fallback">(
     "local_fallback"
@@ -1488,6 +1520,7 @@ export default function Home() {
   const productionCoverage = productionGraph?.coverage;
   const productionCandidateCoverage = productionCoverage?.relationship_fact_candidates;
   const productionCandidateSummary = productionContext?.candidate_fact_summary;
+  const productionSampleCandidate = productionCandidateSummary?.sample_candidates?.[0] ?? null;
   const productionPublishedRelationships =
     productionContext?.record_modes?.published_relationships;
   const productionGraphBudget = productionGraph?.query.budget ?? productionGraphRequest.budget;
@@ -1703,6 +1736,60 @@ export default function Home() {
     setSavedViewStatus(syncResult.status === "conflict" ? "server-conflict" : "server-error");
   }
 
+  async function hydrateProductionData(reason = "manual_refresh", candidateId?: string | null) {
+    setProductionCatalogStatus("loading-production-data");
+    setProductionScoreStatus(candidateId ? "loading-production-data" : "local-fixture");
+    const [catalogResult, scoreResult] = await Promise.all([
+      loadCatalogInventory(),
+      loadScoreExplanation({
+        objectType: "relationship_fact_candidate",
+        objectId: candidateId,
+        profileId: serverModelContext?.active_scoring_profile_version_id
+      })
+    ]);
+
+    if (catalogResult.mode === "local_fallback") {
+      setProductionCatalogSyncMode("local_fallback");
+      setProductionCatalogSyncReason(catalogResult.reason);
+      setProductionCatalogEndpoint("");
+      setProductionCatalogStatus("local-fixture");
+    } else if (catalogResult.status === "error") {
+      setProductionCatalogSyncMode("server");
+      setProductionCatalogSyncReason(catalogResult.reason);
+      setProductionCatalogEndpoint(catalogResult.endpoint);
+      setProductionCatalogStatus("server-error");
+    } else {
+      setProductionCatalogInventory(catalogResult.record);
+      setProductionCatalogSyncMode("server");
+      setProductionCatalogSyncReason(reason);
+      setProductionCatalogEndpoint(catalogResult.endpoint);
+      setProductionCatalogStatus("server-hydrated");
+    }
+
+    if (scoreResult.mode === "local_fallback") {
+      setProductionScoreSyncMode("local_fallback");
+      setProductionScoreSyncReason(scoreResult.reason);
+      setProductionScoreEndpoint("");
+      setProductionScoreTargetId(candidateId ?? "");
+      setProductionScoreStatus("local-fixture");
+      return;
+    }
+    if (scoreResult.status === "error") {
+      setProductionScoreSyncMode("server");
+      setProductionScoreSyncReason(scoreResult.reason);
+      setProductionScoreEndpoint(scoreResult.endpoint);
+      setProductionScoreTargetId(candidateId ?? "");
+      setProductionScoreStatus("server-error");
+      return;
+    }
+    setProductionScoreExplanation(scoreResult.record);
+    setProductionScoreSyncMode("server");
+    setProductionScoreSyncReason(reason);
+    setProductionScoreEndpoint(scoreResult.endpoint);
+    setProductionScoreTargetId(scoreResult.record.object_id);
+    setProductionScoreStatus("server-hydrated");
+  }
+
   async function hydrateProductionGraph(reason = "manual_refresh") {
     setProductionGraphStatus("loading-production-graph");
     const graphResult = await loadExploreGraph(productionGraphRequest);
@@ -1711,6 +1798,7 @@ export default function Home() {
       setProductionGraphSyncReason(graphResult.reason);
       setProductionGraphEndpoint("");
       setProductionGraphStatus("local-fixture");
+      void hydrateProductionData(reason, null);
       return;
     }
     if (graphResult.status === "error") {
@@ -1718,6 +1806,7 @@ export default function Home() {
       setProductionGraphSyncReason(graphResult.reason);
       setProductionGraphEndpoint(graphResult.endpoint);
       setProductionGraphStatus("server-error");
+      void hydrateProductionData(reason, null);
       return;
     }
     setProductionGraph(graphResult.record);
@@ -1725,6 +1814,10 @@ export default function Home() {
     setProductionGraphSyncReason(reason);
     setProductionGraphEndpoint(graphResult.endpoint);
     setProductionGraphStatus("server-hydrated");
+    void hydrateProductionData(
+      `graph_${reason}`,
+      graphResult.record.production_context.candidate_fact_summary?.sample_candidates?.[0]?.id
+    );
   }
 
   async function hydrateModelContext(clientRefreshToken?: string, reason = "manual_refresh") {
@@ -2273,6 +2366,108 @@ export default function Home() {
               type="button"
             >
               Load production graph
+            </button>
+          </div>
+        </section>
+        <section
+          className="modelPreviewPanel productionDataPanel"
+          data-api-base-storage-key={PRODUCTION_DATA_API_BASE_STORAGE_KEY}
+          data-catalog-count={productionCatalogInventory?.catalog_count ?? 0}
+          data-catalog-endpoint={productionCatalogEndpoint || "local"}
+          data-catalog-source-of-truth-count={
+            productionCatalogInventory?.source_of_truth_count ?? 0
+          }
+          data-catalog-sync-mode={productionCatalogSyncMode}
+          data-catalog-sync-reason={productionCatalogSyncReason}
+          data-catalog-total-declared-rows={productionCatalogInventory?.total_declared_rows ?? 0}
+          data-catalog-version={productionCatalogInventory?.catalog_version ?? "local"}
+          data-score-adjusted-score={productionScoreExplanation?.adjusted_score ?? 0}
+          data-score-endpoint={productionScoreEndpoint || "local"}
+          data-score-evidence-count={productionScoreExplanation?.evidence.length ?? 0}
+          data-score-missing-input-count={productionScoreExplanation?.missing_inputs.length ?? 0}
+          data-score-object-id={
+            productionScoreExplanation?.object_id ??
+            (productionScoreTargetId ||
+            productionSampleCandidate?.id ||
+            "none")
+          }
+          data-score-publication-status={
+            productionScoreExplanation?.publication_status ??
+            productionSampleCandidate?.publication_status ??
+            "local"
+          }
+          data-score-sync-mode={productionScoreSyncMode}
+          data-score-sync-reason={productionScoreSyncReason}
+          data-scoring-service-version={
+            productionScoreExplanation?.scoring_service_version ??
+            productionContext?.scoring_service_version ??
+            "local"
+          }
+          data-testid="production-data-context"
+        >
+          <div>
+            <strong>Production data</strong>
+            <span data-testid="production-data-status">
+              {productionCatalogStatus} / {productionScoreStatus}
+            </span>
+          </div>
+          <div>
+            <strong>Catalog inventory</strong>
+            <span data-testid="production-catalog-status">
+              {productionCatalogSyncMode} / {productionCatalogSyncReason}
+            </span>
+          </div>
+          <dl data-testid="production-catalog-contract">
+            <div>
+              <dt>Catalogs</dt>
+              <dd data-testid="production-catalog-count">
+                {productionCatalogInventory?.catalog_count ?? 0} / SOT{" "}
+                {productionCatalogInventory?.source_of_truth_count ?? 0} / rows{" "}
+                {productionCatalogInventory?.total_declared_rows ?? 0}
+              </dd>
+            </div>
+            <div>
+              <dt>Version</dt>
+              <dd>{productionCatalogInventory?.catalog_version ?? "local-fixture"}</dd>
+            </div>
+          </dl>
+          <div>
+            <strong>Score explanation</strong>
+            <span data-testid="production-score-status">
+              {productionScoreSyncMode} / {productionScoreSyncReason}
+            </span>
+          </div>
+          <dl data-testid="production-score-contract">
+            <div>
+              <dt>Candidate</dt>
+              <dd data-testid="production-score-candidate">
+                {productionScoreExplanation?.candidate_key ??
+                  productionSampleCandidate?.candidate_key ??
+                  "candidate-missing"}{" "}
+                / {productionScoreExplanation?.publication_status ?? "local-fixture"}
+              </dd>
+            </div>
+            <div>
+              <dt>Score</dt>
+              <dd data-testid="production-score-adjusted">
+                adjusted={productionScoreExplanation?.adjusted_score ?? 0} / evidence=
+                {productionScoreExplanation?.evidence.length ?? 0} / missing=
+                {productionScoreExplanation?.missing_inputs.length ?? 0}
+              </dd>
+            </div>
+          </dl>
+          <div className="modelPreviewActions">
+            <button
+              data-testid="hydrate-production-data"
+              onClick={() =>
+                void hydrateProductionData(
+                  "manual_refresh",
+                  productionSampleCandidate?.id || productionScoreTargetId || null
+                )
+              }
+              type="button"
+            >
+              Load production data
             </button>
           </div>
         </section>

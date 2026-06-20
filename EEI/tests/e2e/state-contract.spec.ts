@@ -17,6 +17,7 @@ const expectedPreviewContext = {
 const savedViewApiBaseStorageKey = "eei.apiBaseUrl.v1";
 const modelApiBaseStorageKey = "eei.modelApiBaseUrl.v1";
 const exploreApiBaseStorageKey = "eei.exploreApiBaseUrl.v1";
+const productionDataApiBaseStorageKey = "eei.productionDataApiBaseUrl.v1";
 const savedViewWorkspaceKey = "mvp";
 const savedViewLayout =
   "upstream-left focus-center downstream-right capital-top policy-bottom";
@@ -24,6 +25,7 @@ const nvidiaEntityId = "00000000-0000-4000-8000-000000000006";
 const cloudEntityId = "00000000-0000-4000-8000-000000000030";
 const serverFoundryEntityId = "00000000-0000-4000-8000-000000000021";
 const serverPackagingEntityId = "90000000-0000-4000-8000-000000000111";
+const scoreCandidateId = "90000000-0000-4000-8000-000000000201";
 
 async function expectActiveContext(target: Locator) {
   await expect(target).toHaveAttribute("data-active-model-version", expectedContext.modelVersion);
@@ -203,7 +205,19 @@ function createExploreGraphResponse(payload: Record<string, unknown>) {
         published: 0,
         unpublished: 2,
         source_threshold_open: 2,
-        review_open: 2
+        review_open: 2,
+        sample_candidates: [
+          {
+            id: scoreCandidateId,
+            candidate_key: "GV-FACT-001",
+            relationship_type: "wafer_foundry_for",
+            relationship_family: "supply_chain_operations",
+            publication_status: "candidate",
+            review_status: "machine_verified",
+            independent_source_count: 1,
+            source_threshold_met: false
+          }
+        ]
       },
       publication_policy: {
         relationship_fact_candidates_in_graph_edges: false,
@@ -212,6 +226,138 @@ function createExploreGraphResponse(payload: Record<string, unknown>) {
         publish_requires_human_review: true
       }
     }
+  };
+}
+
+function createCatalogInventoryResponse() {
+  return {
+    as_of: "2026-06-19T00:00:00Z",
+    catalog_version: "v4.2.0",
+    catalog_count: 12,
+    source_of_truth_count: 10,
+    total_declared_rows: 349,
+    catalogs: [
+      {
+        catalog_id: "relationship",
+        catalog_key: "relationship",
+        name_zh: "关系类型",
+        path: "data/relationship_type_catalog.csv",
+        primary_key: "relationship_type",
+        row_count: 48,
+        owner: "EEI data governance",
+        ui_surfaces: "商业版图;供应链;资本网络",
+        scope: "mvp",
+        status: "active",
+        source_of_truth: true,
+        export_links: {
+          json: "/v1/catalogs/relationship",
+          csv: "/v1/catalogs/relationship?format=csv",
+          source: "data/relationship_type_catalog.csv"
+        }
+      },
+      {
+        catalog_id: "domain-object",
+        catalog_key: "domain-object",
+        name_zh: "对象范围",
+        path: "data/domain_object_catalog.csv",
+        primary_key: "object_type",
+        row_count: 31,
+        owner: "EEI product architecture",
+        ui_surfaces: "商业版图;证据中心;模型中心",
+        scope: "mvp",
+        status: "active",
+        source_of_truth: true,
+        export_links: {
+          json: "/v1/catalogs/domain-object",
+          csv: "/v1/catalogs/domain-object?format=csv",
+          source: "data/domain_object_catalog.csv"
+        }
+      }
+    ]
+  };
+}
+
+function createScoreExplanationResponse() {
+  return {
+    object_type: "relationship_fact_candidate",
+    object_id: scoreCandidateId,
+    candidate_key: "GV-FACT-001",
+    relationship_type: "wafer_foundry_for",
+    relationship_family: "supply_chain_operations",
+    record_mode: "curated_official_fixture",
+    fact_status: "reported",
+    publication_status: "candidate",
+    source_threshold: {
+      minimum_independent_sources: 2,
+      independent_source_count: 1,
+      met: false
+    },
+    review_status: "machine_verified",
+    parser_version: "nvidia-public-anchor-v1",
+    raw_score: 88,
+    evidence_quality: 50,
+    adjusted_score: 44,
+    coverage: 100,
+    contributions: [
+      {
+        input: "candidate_confidence",
+        value: 0.88,
+        score_points: 88
+      },
+      {
+        input: "independent_source_count",
+        value: 1,
+        score_multiplier: 0.5
+      }
+    ],
+    missing_inputs: [
+      "independent_source_threshold>=2",
+      "human_review_verification",
+      "published_relationship_version"
+    ],
+    model_version: "business-empire-model@2",
+    profile_version: "balanced-v2@2",
+    profile_version_id: "profile-balanced",
+    structured_fact: {
+      path_role: "NVIDIA_TO_TSMC_GOLDEN_VERTICAL"
+    },
+    counter_evidence: [],
+    subject: {
+      candidate_name: "TSMC",
+      entity_id: serverFoundryEntityId
+    },
+    object: {
+      candidate_name: "NVIDIA Corporation",
+      entity_id: nvidiaEntityId
+    },
+    evidence: [
+      {
+        source_tier: "official_filing",
+        publisher: "SEC EDGAR / NVIDIA Form 10-K",
+        title: "NVIDIA Form 10-K FY2026 - Manufacturing disclosure",
+        support_excerpt:
+          "NVIDIA says it utilizes foundries such as TSMC to produce semiconductor wafers."
+      },
+      {
+        source_tier: "official_company",
+        publisher: "ASML Stories",
+        title: "Busting ASML myths",
+        support_excerpt:
+          "ASML says customers such as TSMC use its DUV and EUV lithography systems."
+      }
+    ],
+    review_queue: [
+      {
+        queue_key: "review:GV-FACT-001",
+        priority: "P0",
+        status: "open"
+      }
+    ],
+    production_context: {
+      schema_version: "production-context-v1",
+      scoring_service_version: "candidate-score-explanation-v1"
+    },
+    scoring_service_version: "candidate-score-explanation-v1"
   };
 }
 
@@ -631,6 +777,7 @@ test("A203 and A211 hydrate production graph context through the explore API", a
   page
 }) => {
   const payloads: Record<string, unknown>[] = [];
+  const scoreUrls: string[] = [];
   await page.route("https://graph.eei.test/v1/explore", async (route) => {
     expect(route.request().method()).toBe("POST");
     const payload = route.request().postDataJSON() as Record<string, unknown>;
@@ -641,10 +788,44 @@ test("A203 and A211 hydrate production graph context through the explore API", a
       body: JSON.stringify(createExploreGraphResponse(payload))
     });
   });
+  await page.route("https://graph.eei.test/v1/catalogs", async (route) => {
+    expect(route.request().method()).toBe("GET");
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify(createCatalogInventoryResponse())
+    });
+  });
+  await page.route(
+    "https://graph.eei.test/v1/scoring/explain/relationship_fact_candidate/**",
+    async (route) => {
+      expect(route.request().method()).toBe("GET");
+      scoreUrls.push(route.request().url());
+      await route.fulfill({
+        contentType: "application/json",
+        status: 200,
+        body: JSON.stringify(createScoreExplanationResponse())
+      });
+    }
+  );
   await page.addInitScript(
-    ({ storageKey, apiBase }: { storageKey: string; apiBase: string }) =>
-      window.localStorage.setItem(storageKey, apiBase),
-    { storageKey: exploreApiBaseStorageKey, apiBase: "https://graph.eei.test" }
+    ({
+      exploreStorageKey,
+      productionDataStorageKey,
+      apiBase
+    }: {
+      exploreStorageKey: string;
+      productionDataStorageKey: string;
+      apiBase: string;
+    }) => {
+      window.localStorage.setItem(exploreStorageKey, apiBase);
+      window.localStorage.setItem(productionDataStorageKey, apiBase);
+    },
+    {
+      exploreStorageKey: exploreApiBaseStorageKey,
+      productionDataStorageKey: productionDataApiBaseStorageKey,
+      apiBase: "https://graph.eei.test"
+    }
   );
 
   await page.goto("/");
@@ -719,6 +900,65 @@ test("A203 and A211 hydrate production graph context through the explore API", a
   await expect(page.getByTestId("production-graph-candidates")).toHaveText(
     "excluded=2 / total=2"
   );
+  await expect(page.getByTestId("production-data-status")).toHaveText(
+    "server-hydrated / server-hydrated"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-api-base-storage-key",
+    productionDataApiBaseStorageKey
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-catalog-sync-mode",
+    "server"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-catalog-endpoint",
+    "https://graph.eei.test/v1/catalogs"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-catalog-count",
+    "12"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-catalog-source-of-truth-count",
+    "10"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-catalog-total-declared-rows",
+    "349"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-score-sync-mode",
+    "server"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-score-object-id",
+    scoreCandidateId
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-score-adjusted-score",
+    "44"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-score-evidence-count",
+    "2"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-score-missing-input-count",
+    "3"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-score-publication-status",
+    "candidate"
+  );
+  await expect(page.getByTestId("production-catalog-count")).toHaveText("12 / SOT 10 / rows 349");
+  await expect(page.getByTestId("production-score-candidate")).toHaveText(
+    "GV-FACT-001 / candidate"
+  );
+  await expect(page.getByTestId("production-score-adjusted")).toHaveText(
+    "adjusted=44 / evidence=2 / missing=3"
+  );
+  expect(scoreUrls[0]).toContain(scoreCandidateId);
 
   expect(payloads[0]).toMatchObject({
     focus: { object_type: "entity", object_id: nvidiaEntityId },

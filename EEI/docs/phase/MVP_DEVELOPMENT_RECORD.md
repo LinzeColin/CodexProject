@@ -2274,7 +2274,7 @@ Residual risks:
 ### Remaining gaps at that point
 
 - The commercial-map render layer still had to consume server-returned graph records. This was addressed by the following bounded server graph rendering slice, but A203/A211 remain open.
-- Evidence center, catalog and score explanation API hydration remain open.
+- Evidence center, catalog and score explanation API hydration remained open after this server-rendering slice; catalog and score hydration are addressed by the following bounded slice, while evidence detail/source-snippet hydration remains open.
 - Live FastAPI/PostgreSQL cross-route E2E remains required before A211 can close.
 - Full multi-object scoring and formally published relationship edges remain required before A203 can close.
 
@@ -2325,3 +2325,50 @@ Residual risks:
 - Live FastAPI/PostgreSQL cross-route E2E remains required before A211 can close.
 - Full multi-object scoring and formally published relationship edges remain required before A203 can close.
 - Server graph rendering currently requires a usable edge set; node-only production graph payload behavior remains a future product contract decision.
+
+## 2026-06-20 - T1302/A203 and T1308/A211 catalog and score production data hydration
+
+### Scope
+
+- Added a production data API client for `/v1/catalogs` and `/v1/scoring/explain/relationship_fact_candidate/{objectId}` with runtime response guards and explicit local fallback/error modes.
+- Extended backend `production_context.candidate_fact_summary` with bounded `sample_candidates` so the frontend can discover a live score explanation target without hard-coding randomly generated PostgreSQL UUIDs.
+- Added a homepage production data panel that surfaces catalog version, catalog count, source-of-truth count, declared row count, score adjusted value, evidence count, missing-input count, publication status and scoring service version.
+- Wired successful `/v1/explore` graph hydration to automatically hydrate catalog inventory and the first candidate score explanation.
+- Preserved the existing publication boundary: relationship_fact_candidates remain excluded from graph edges until source threshold and human review gates pass.
+
+### Files changed
+
+- `apps/api/app/domain_repository.py`
+- `apps/web/src/app/explore-api-client.ts`
+- `apps/web/src/app/production-data-client.ts`
+- `apps/web/src/app/page.tsx`
+- `tests/e2e/state-contract.spec.ts`
+- `artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json`
+- `artifacts/tests/a211/t1308_frontend_workspace_context_contract.json`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `DEVELOPMENT_STATUS.md`
+- `README.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `docs/phase/MVP_DEVELOPMENT_RECORD.md`
+
+### Acceptance mapping
+
+- T1302 -> A203.
+- T1308 -> A211.
+- A203/A211 remain `IN_PROGRESS`, not `DONE`.
+
+### Validation
+
+- Local `npm run typecheck` from `apps/web`: PASS.
+- Local `python3 -m py_compile EEI/apps/api/app/domain_repository.py`: PASS.
+- Local `.venv/bin/python -m pytest -q tests/unit/test_api_health.py`: PASS, 9/9.
+- Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 2/2 for A203/A211 production graph, catalog and score hydration.
+- Local default Playwright E2E with non-sandbox browser/server access: PASS, 32/32.
+
+### Remaining gaps
+
+- Evidence detail/source-snippet production API hydration remains open.
+- Live FastAPI/PostgreSQL cross-route E2E remains required before A211 can close.
+- Full multi-object scoring and formally published relationship edges remain required before A203 can close.
+- 4h/24h soak, saved-view authn/authz, real scheduler handlers/deployment wake and brand clearance remain v0.1 blockers.

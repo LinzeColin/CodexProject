@@ -1,0 +1,254 @@
+"use client";
+
+export const PRODUCTION_DATA_API_BASE_STORAGE_KEY = "eei.productionDataApiBaseUrl.v1";
+const SHARED_API_BASE_STORAGE_KEY = "eei.apiBaseUrl.v1";
+
+export type CatalogSummaryRecord = {
+  catalog_id: string;
+  catalog_key: string;
+  name_zh: string;
+  path: string;
+  primary_key: string;
+  row_count: number;
+  owner: string;
+  ui_surfaces: string;
+  scope: string;
+  status: string;
+  source_of_truth: boolean;
+  export_links: Record<string, string>;
+};
+
+export type CatalogInventoryRecord = {
+  as_of: string;
+  catalog_version: string;
+  catalog_count: number;
+  source_of_truth_count: number;
+  total_declared_rows: number;
+  catalogs: CatalogSummaryRecord[];
+};
+
+export type ScoreExplanationRecord = {
+  object_type: "relationship_fact_candidate";
+  object_id: string;
+  candidate_key: string;
+  relationship_type: string;
+  relationship_family: string;
+  record_mode: string;
+  fact_status: string;
+  publication_status: string;
+  source_threshold: {
+    minimum_independent_sources: number;
+    independent_source_count: number;
+    met: boolean;
+  };
+  review_status: string;
+  parser_version: string;
+  raw_score: number;
+  evidence_quality: number;
+  adjusted_score: number;
+  coverage: number;
+  contributions: Record<string, unknown>[];
+  missing_inputs: string[];
+  model_version: string;
+  profile_version: string;
+  profile_version_id: string;
+  structured_fact: Record<string, unknown>;
+  counter_evidence: unknown[];
+  subject: Record<string, unknown>;
+  object: Record<string, unknown>;
+  evidence: Record<string, unknown>[];
+  review_queue: Record<string, unknown>[];
+  production_context: Record<string, unknown>;
+  scoring_service_version: string;
+};
+
+export type CatalogInventorySyncResult =
+  | {
+      mode: "server";
+      status: "hydrated";
+      endpoint: string;
+      record: CatalogInventoryRecord;
+    }
+  | {
+      mode: "server";
+      status: "error";
+      endpoint: string;
+      reason: string;
+      detail?: unknown;
+    }
+  | {
+      mode: "local_fallback";
+      status: "fixture";
+      reason: "api_base_missing";
+    };
+
+export type ScoreExplanationSyncResult =
+  | {
+      mode: "server";
+      status: "hydrated";
+      endpoint: string;
+      record: ScoreExplanationRecord;
+    }
+  | {
+      mode: "server";
+      status: "error";
+      endpoint: string;
+      reason: string;
+      detail?: unknown;
+    }
+  | {
+      mode: "local_fallback";
+      status: "fixture";
+      reason: "api_base_missing" | "candidate_id_missing";
+    };
+
+export function readProductionDataApiBaseUrl() {
+  const override = window.localStorage.getItem(PRODUCTION_DATA_API_BASE_STORAGE_KEY)?.trim();
+  const sharedOverride = window.localStorage.getItem(SHARED_API_BASE_STORAGE_KEY)?.trim();
+  const configured = process.env.NEXT_PUBLIC_EEI_API_BASE_URL?.trim();
+  return stripTrailingSlash(override || sharedOverride || configured || "");
+}
+
+export async function loadCatalogInventory(): Promise<CatalogInventorySyncResult> {
+  const apiBaseUrl = readProductionDataApiBaseUrl();
+  if (!apiBaseUrl) {
+    return { mode: "local_fallback", status: "fixture", reason: "api_base_missing" };
+  }
+
+  const endpoint = `${apiBaseUrl}/v1/catalogs`;
+  try {
+    const response = await window.fetch(endpoint);
+    const payload = (await response.json().catch(() => null)) as unknown;
+    if (!response.ok || !isCatalogInventoryRecord(payload)) {
+      return {
+        mode: "server",
+        status: "error",
+        endpoint,
+        reason: `http_${response.status}`,
+        detail: payload
+      };
+    }
+    return { mode: "server", status: "hydrated", endpoint, record: payload };
+  } catch (error) {
+    return fetchCatalogErrorResult(endpoint, error);
+  }
+}
+
+export async function loadScoreExplanation(input: {
+  objectType: "relationship_fact_candidate";
+  objectId?: string | null;
+  profileId?: string | null;
+}): Promise<ScoreExplanationSyncResult> {
+  if (!input.objectId) {
+    return { mode: "local_fallback", status: "fixture", reason: "candidate_id_missing" };
+  }
+  const apiBaseUrl = readProductionDataApiBaseUrl();
+  if (!apiBaseUrl) {
+    return { mode: "local_fallback", status: "fixture", reason: "api_base_missing" };
+  }
+
+  const query = input.profileId ? `?profile=${encodeURIComponent(input.profileId)}` : "";
+  const endpoint = `${apiBaseUrl}/v1/scoring/explain/${input.objectType}/${input.objectId}${query}`;
+  try {
+    const response = await window.fetch(endpoint);
+    const payload = (await response.json().catch(() => null)) as unknown;
+    if (!response.ok || !isScoreExplanationRecord(payload)) {
+      return {
+        mode: "server",
+        status: "error",
+        endpoint,
+        reason: `http_${response.status}`,
+        detail: payload
+      };
+    }
+    return { mode: "server", status: "hydrated", endpoint, record: payload };
+  } catch (error) {
+    return fetchScoreErrorResult(endpoint, error);
+  }
+}
+
+function isCatalogInventoryRecord(value: unknown): value is CatalogInventoryRecord {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.as_of === "string" &&
+    typeof value.catalog_version === "string" &&
+    typeof value.catalog_count === "number" &&
+    typeof value.source_of_truth_count === "number" &&
+    typeof value.total_declared_rows === "number" &&
+    Array.isArray(value.catalogs) &&
+    value.catalogs.every(isCatalogSummaryRecord)
+  );
+}
+
+function isCatalogSummaryRecord(value: unknown): value is CatalogSummaryRecord {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.catalog_id === "string" &&
+    typeof value.catalog_key === "string" &&
+    typeof value.name_zh === "string" &&
+    typeof value.path === "string" &&
+    typeof value.primary_key === "string" &&
+    typeof value.row_count === "number" &&
+    typeof value.owner === "string" &&
+    typeof value.ui_surfaces === "string" &&
+    typeof value.scope === "string" &&
+    typeof value.status === "string" &&
+    typeof value.source_of_truth === "boolean" &&
+    isRecord(value.export_links)
+  );
+}
+
+function isScoreExplanationRecord(value: unknown): value is ScoreExplanationRecord {
+  if (!isRecord(value)) return false;
+  return (
+    value.object_type === "relationship_fact_candidate" &&
+    typeof value.object_id === "string" &&
+    typeof value.candidate_key === "string" &&
+    typeof value.relationship_type === "string" &&
+    typeof value.relationship_family === "string" &&
+    typeof value.publication_status === "string" &&
+    isRecord(value.source_threshold) &&
+    typeof value.source_threshold.minimum_independent_sources === "number" &&
+    typeof value.source_threshold.independent_source_count === "number" &&
+    typeof value.source_threshold.met === "boolean" &&
+    typeof value.raw_score === "number" &&
+    typeof value.evidence_quality === "number" &&
+    typeof value.adjusted_score === "number" &&
+    typeof value.coverage === "number" &&
+    Array.isArray(value.contributions) &&
+    Array.isArray(value.missing_inputs) &&
+    typeof value.model_version === "string" &&
+    typeof value.profile_version === "string" &&
+    typeof value.profile_version_id === "string" &&
+    Array.isArray(value.evidence) &&
+    typeof value.scoring_service_version === "string"
+  );
+}
+
+function fetchCatalogErrorResult(endpoint: string, error: unknown): CatalogInventorySyncResult {
+  return {
+    mode: "server",
+    status: "error",
+    endpoint,
+    reason: error instanceof Error ? error.name : "fetch_failed",
+    detail: error instanceof Error ? error.message : String(error)
+  };
+}
+
+function fetchScoreErrorResult(endpoint: string, error: unknown): ScoreExplanationSyncResult {
+  return {
+    mode: "server",
+    status: "error",
+    endpoint,
+    reason: error instanceof Error ? error.name : "fetch_failed",
+    detail: error instanceof Error ? error.message : String(error)
+  };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function stripTrailingSlash(value: string) {
+  return value.replace(/\/+$/, "");
+}

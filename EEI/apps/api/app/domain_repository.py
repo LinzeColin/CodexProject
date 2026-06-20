@@ -3049,6 +3049,29 @@ class DomainRepository:
             FROM relationship_fact_candidates
             """
         ).fetchone()
+        candidate_samples = connection.execute(
+            """
+            SELECT
+              id,
+              candidate_key,
+              relationship_type,
+              relationship_family,
+              publication_status,
+              review_status,
+              independent_source_count,
+              source_threshold_met
+            FROM relationship_fact_candidates
+            ORDER BY
+              (publication_status = 'published') DESC,
+              source_threshold_met DESC,
+              candidate_key
+            LIMIT 3
+            """
+        ).fetchall()
+        candidate_fact_summary = {
+            **dict(candidate_status),
+            "sample_candidates": [dict(row) for row in candidate_samples],
+        }
         profile = (
             active_profile
             if active_profile is not None
@@ -3081,7 +3104,7 @@ class DomainRepository:
                     },
                     "relationship_fact_candidates": candidate_modes["record_modes"],
                 },
-                "candidate_fact_summary": dict(candidate_status),
+                "candidate_fact_summary": candidate_fact_summary,
                 "publication_policy": {
                     "published_relationship_table": "relationships",
                     "candidate_fact_table": "relationship_fact_candidates",
