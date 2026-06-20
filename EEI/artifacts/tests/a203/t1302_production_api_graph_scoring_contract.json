@@ -12,14 +12,16 @@
       "Integration assertions bind A203 to FastAPI, repository queries, OpenAPI contract and curated official fixture evidence.",
       "Frontend commercial-map API-first hydration now posts the current focus, lens-derived layers, as-of date, scoring profile id and 42/64/12 budget to /v1/explore, exposes production_context, coverage and publication-gate metadata with explicit fixture fallback, and renders server-returned nodes/edges in the SVG canvas and graph table when the API response is available.",
       "Production_context now exposes bounded sample relationship_fact_candidates so the frontend can discover a score explanation target without hard-coding database UUIDs.",
-      "Frontend production data hydration now loads /v1/catalogs and /v1/scoring/explain/relationship_fact_candidate/{objectId}, surfaces catalog inventory counts, source-of-truth counts, adjusted score, evidence count, missing-input count and publication status, and retains explicit local fallback/error states."
+      "Frontend production data hydration now loads /v1/catalogs and /v1/scoring/explain/relationship_fact_candidate/{objectId}, surfaces catalog inventory counts, source-of-truth counts, adjusted score, evidence count, missing-input count and publication status, and retains explicit local fallback/error states.",
+      "GET /v1/evidence/{objectType}/{objectId} exposes bounded evidence detail and source snippets for relationship_fact_candidate and published relationship objects using existing source_documents, sources, ingestion_evidence_chain and relationship_evidence tables.",
+      "Frontend Evidence Center now hydrates /v1/evidence/relationship_fact_candidate/{objectId}, exposes evidence/source-document counts, endpoint state and source snippets, and refreshes the production evidence detail when the user clicks 打开证据."
     ],
     "explicitly_not_closed": [
       "Full production scoring engine for all object types remains in T600-T608 and T1303.",
       "Candidate approval, publication into relationships and atomic global refresh remain in T1301/T1303.",
       "10k, 100k, 1m scale tests remain in T1306/A208.",
       "4h and 24h soak tests remain in T1307/A209.",
-      "Evidence detail/source-snippet hydration plus live backend cross-route E2E remain in T1308/A211."
+      "Live backend cross-route E2E remains in T1308/A211."
     ]
   },
   "api_contracts": [
@@ -42,6 +44,11 @@
       "path": "/v1/scoring/explain/{objectType}/{objectId}",
       "method": "GET",
       "contract": "relationship_fact_candidate score explanations include raw_score, evidence_quality, adjusted_score, coverage, missing_inputs, evidence, model/profile versions and production_context."
+    },
+    {
+      "path": "/v1/evidence/{objectType}/{objectId}",
+      "method": "GET",
+      "contract": "relationship_fact_candidate and relationship evidence details include evidence_count, returned_evidence_count, source_document_count, truncation state, source snippets, source document summaries and production_context."
     }
   ],
   "publication_policy": {
@@ -71,7 +78,9 @@
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/manage_development_status_artifacts.py validate",
     "npm run typecheck",
     "python3 -m py_compile apps/api/app/domain_repository.py",
+    "python3 -m py_compile apps/api/app/domain_repository.py apps/api/app/domain.py tests/integration/test_database_migrations.py",
     ".venv/bin/python -m pytest -q tests/unit/test_api_health.py",
+    ".venv/bin/python -m pytest -q tests/integration/test_database_migrations.py",
     "pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1",
     "pnpm --filter @eei/web exec playwright test --config=../../playwright.config.ts --workers=1",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/manage_clean_room_release.py validate",

@@ -361,6 +361,117 @@ function createScoreExplanationResponse() {
   };
 }
 
+function createEvidenceDetailResponse() {
+  return {
+    schema_version: "evidence-detail-v1",
+    object_type: "relationship_fact_candidate",
+    object_id: scoreCandidateId,
+    object_summary: {
+      id: scoreCandidateId,
+      candidate_key: "GV-FACT-001",
+      publication_status: "candidate",
+      review_status: "machine_verified"
+    },
+    evidence_count: 2,
+    returned_evidence_count: 2,
+    source_document_count: 2,
+    limit: 20,
+    truncated: false,
+    source_documents: [
+      {
+        id: "90000000-0000-4000-8000-000000000301",
+        source_code: "sec-edgar",
+        source_name: "SEC EDGAR",
+        source_tier: 1,
+        publisher: "SEC EDGAR / NVIDIA Form 10-K",
+        title: "NVIDIA Form 10-K FY2026 - Manufacturing disclosure",
+        url: "https://www.sec.gov/example/nvidia-10k",
+        observed_at: "2026-06-19T00:00:00Z",
+        retrieved_at: "2026-06-19T00:00:00Z",
+        media_type: "text/html",
+        content_hash: "sha256:nvidia"
+      },
+      {
+        id: "90000000-0000-4000-8000-000000000302",
+        source_code: "asml-public",
+        source_name: "ASML public site",
+        source_tier: 2,
+        publisher: "ASML Stories",
+        title: "Busting ASML myths",
+        url: "https://www.asml.com/example/myths",
+        observed_at: "2026-06-19T00:00:00Z",
+        retrieved_at: "2026-06-19T00:00:00Z",
+        media_type: "text/html",
+        content_hash: "sha256:asml"
+      }
+    ],
+    evidence: [
+      {
+        evidence_id: "90000000-0000-4000-8000-000000000401",
+        source_document_id: "90000000-0000-4000-8000-000000000301",
+        ingestion_evidence_chain_id: "90000000-0000-4000-8000-000000000401",
+        role: "supports",
+        source_tier: 1,
+        publisher: "SEC EDGAR / NVIDIA Form 10-K",
+        title: "NVIDIA Form 10-K FY2026 - Manufacturing disclosure",
+        url: "https://www.sec.gov/example/nvidia-10k",
+        locator: "Item 1 > Manufacturing",
+        support_excerpt:
+          "NVIDIA says it utilizes foundries such as TSMC to produce semiconductor wafers.",
+        snippet: {
+          text: "NVIDIA says it utilizes foundries such as TSMC to produce semiconductor wafers.",
+          locator: "Item 1 > Manufacturing",
+          redaction_status: "none"
+        },
+        structured_fact: {
+          path_role: "NVIDIA_TO_TSMC_GOLDEN_VERTICAL"
+        },
+        counter_evidence: [],
+        parser_version: "nvidia-public-anchor-v1",
+        confidence: 0.88,
+        review_status: "machine_verified",
+        source_document: {
+          id: "90000000-0000-4000-8000-000000000301",
+          url: "https://www.sec.gov/example/nvidia-10k"
+        }
+      },
+      {
+        evidence_id: "90000000-0000-4000-8000-000000000402",
+        source_document_id: "90000000-0000-4000-8000-000000000302",
+        ingestion_evidence_chain_id: "90000000-0000-4000-8000-000000000402",
+        role: "context",
+        source_tier: 2,
+        publisher: "ASML Stories",
+        title: "Busting ASML myths",
+        url: "https://www.asml.com/example/myths",
+        locator: "FAQ",
+        support_excerpt:
+          "ASML says customers such as TSMC use its DUV and EUV lithography systems.",
+        snippet: {
+          text: "ASML says customers such as TSMC use its DUV and EUV lithography systems.",
+          locator: "FAQ",
+          redaction_status: "none"
+        },
+        structured_fact: {
+          path_role: "EQUIPMENT_CONTEXT"
+        },
+        counter_evidence: [],
+        parser_version: "nvidia-public-anchor-v1",
+        confidence: 0.74,
+        review_status: "machine_verified",
+        source_document: {
+          id: "90000000-0000-4000-8000-000000000302",
+          url: "https://www.asml.com/example/myths"
+        }
+      }
+    ],
+    production_context: {
+      schema_version: "production-context-v1",
+      scoring_service_version: "candidate-score-explanation-v1"
+    }
+  };
+}
+
 test("stores subject selected node lens time filters and zoom in URL session and reload state", async ({
   page
 }) => {
@@ -778,6 +889,7 @@ test("A203 and A211 hydrate production graph context through the explore API", a
 }) => {
   const payloads: Record<string, unknown>[] = [];
   const scoreUrls: string[] = [];
+  const evidenceUrls: string[] = [];
   await page.route("https://graph.eei.test/v1/explore", async (route) => {
     expect(route.request().method()).toBe("POST");
     const payload = route.request().postDataJSON() as Record<string, unknown>;
@@ -808,6 +920,15 @@ test("A203 and A211 hydrate production graph context through the explore API", a
       });
     }
   );
+  await page.route("https://graph.eei.test/v1/evidence/relationship_fact_candidate/**", async (route) => {
+    expect(route.request().method()).toBe("GET");
+    evidenceUrls.push(route.request().url());
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify(createEvidenceDetailResponse())
+    });
+  });
   await page.addInitScript(
     ({
       exploreStorageKey,
@@ -901,7 +1022,7 @@ test("A203 and A211 hydrate production graph context through the explore API", a
     "excluded=2 / total=2"
   );
   await expect(page.getByTestId("production-data-status")).toHaveText(
-    "server-hydrated / server-hydrated"
+    "server-hydrated / server-hydrated / server-hydrated"
   );
   await expect(page.getByTestId("production-data-context")).toHaveAttribute(
     "data-api-base-storage-key",
@@ -951,6 +1072,22 @@ test("A203 and A211 hydrate production graph context through the explore API", a
     "data-score-publication-status",
     "candidate"
   );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-evidence-sync-mode",
+    "server"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-evidence-object-id",
+    scoreCandidateId
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-evidence-detail-count",
+    "2"
+  );
+  await expect(page.getByTestId("production-data-context")).toHaveAttribute(
+    "data-evidence-source-document-count",
+    "2"
+  );
   await expect(page.getByTestId("production-catalog-count")).toHaveText("12 / SOT 10 / rows 349");
   await expect(page.getByTestId("production-score-candidate")).toHaveText(
     "GV-FACT-001 / candidate"
@@ -958,6 +1095,32 @@ test("A203 and A211 hydrate production graph context through the explore API", a
   await expect(page.getByTestId("production-score-adjusted")).toHaveText(
     "adjusted=44 / evidence=2 / missing=3"
   );
+  await expect(page.getByTestId("production-evidence-summary-count")).toHaveText(
+    "evidence=2 / docs=2"
+  );
+  await expect(page.getByTestId("production-evidence-detail")).toHaveAttribute(
+    "data-evidence-sync-mode",
+    "server"
+  );
+  await expect(page.getByTestId("production-evidence-detail")).toHaveAttribute(
+    "data-evidence-count",
+    "2"
+  );
+  await expect(page.getByTestId("production-evidence-detail")).toHaveAttribute(
+    "data-source-document-count",
+    "2"
+  );
+  await expect(page.getByTestId("production-evidence-count")).toHaveText(
+    "2 sources / 2 documents"
+  );
+  await expect(page.getByTestId("production-evidence-snippet-0")).toContainText(
+    "NVIDIA says it utilizes foundries such as TSMC"
+  );
+  await expect(page.getByTestId("production-evidence-snippet-1")).toContainText("ASML says");
+  await page.getByTestId("node-action-evidence").click();
+  await expect(page.getByTestId("node-action-state")).toHaveText(/evidence:/);
+  expect(evidenceUrls[0]).toContain(scoreCandidateId);
+  expect(evidenceUrls.at(-1)).toContain("limit=20");
   expect(scoreUrls[0]).toContain(scoreCandidateId);
 
   expect(payloads[0]).toMatchObject({

@@ -3380,6 +3380,278 @@ class DomainRepository:
             }
         )
 
+    def evidence_detail(
+        self,
+        *,
+        object_type: str,
+        object_id: UUID,
+        limit: int = 20,
+    ) -> dict[str, Any]:
+        bounded_limit = max(1, min(limit, 50))
+        with self.connect() as connection:
+            if object_type == "relationship_fact_candidate":
+                return self.relationship_fact_candidate_evidence_detail(
+                    connection=connection,
+                    object_id=object_id,
+                    limit=bounded_limit,
+                )
+            if object_type == "relationship":
+                return self.relationship_evidence_detail(
+                    connection=connection,
+                    object_id=object_id,
+                    limit=bounded_limit,
+                )
+        raise RepositoryError(
+            "Only relationship_fact_candidate and relationship evidence details are implemented "
+            "for the MVP evidence center"
+        )
+
+    def relationship_fact_candidate_evidence_detail(
+        self,
+        *,
+        connection: psycopg.Connection[dict[str, Any]],
+        object_id: UUID,
+        limit: int,
+    ) -> dict[str, Any]:
+        candidate = connection.execute(
+            """
+            SELECT
+              id, candidate_key, relationship_type, relationship_family, record_mode,
+              fact_status, publication_status, confidence, independent_source_count,
+              source_threshold_met, review_status, parser_version, structured_fact,
+              counter_evidence, created_at, updated_at
+            FROM relationship_fact_candidates
+            WHERE id = %s
+            """,
+            (object_id,),
+        ).fetchone()
+        if candidate is None:
+            raise NotFoundError(f"Relationship fact candidate not found: {object_id}")
+        total_count = int(
+            connection.execute(
+                """
+                SELECT count(*) AS count
+                FROM relationship_fact_candidate_evidence
+                WHERE candidate_id = %s
+                """,
+                (object_id,),
+            ).fetchone()["count"]
+        )
+        evidence_rows = connection.execute(
+            """
+            SELECT
+              rfce.ingestion_evidence_chain_id,
+              rfce.source_document_id,
+              rfce.role,
+              rfce.locator,
+              rfce.support_excerpt,
+              rfce.created_at,
+              iec.evidence_role,
+              iec.structured_fact,
+              iec.counter_evidence,
+              iec.parser_version,
+              iec.confidence,
+              iec.review_status AS chain_review_status,
+              iec.created_at AS chain_created_at,
+              s.code AS source_code,
+              s.name AS source_name,
+              s.source_tier,
+              sd.url,
+              sd.title,
+              sd.publisher,
+              sd.document_date,
+              sd.observed_at,
+              sd.retrieved_at,
+              sd.media_type,
+              sd.content_hash
+            FROM relationship_fact_candidate_evidence rfce
+            JOIN ingestion_evidence_chain iec ON iec.id = rfce.ingestion_evidence_chain_id
+            JOIN source_documents sd ON sd.id = rfce.source_document_id
+            JOIN sources s ON s.id = sd.source_id
+            WHERE rfce.candidate_id = %s
+            ORDER BY
+              CASE rfce.role WHEN 'supports' THEN 0 WHEN 'context' THEN 1 ELSE 2 END,
+              sd.observed_at DESC,
+              rfce.source_document_id
+            LIMIT %s
+            """,
+            (object_id, limit),
+        ).fetchall()
+        return self.evidence_detail_payload(
+            object_type="relationship_fact_candidate",
+            object_id=object_id,
+            object_summary=candidate,
+            evidence_rows=evidence_rows,
+            total_count=total_count,
+            limit=limit,
+            production_context=self.production_context_for_connection(connection),
+        )
+
+    def relationship_evidence_detail(
+        self,
+        *,
+        connection: psycopg.Connection[dict[str, Any]],
+        object_id: UUID,
+        limit: int,
+    ) -> dict[str, Any]:
+        relationship = connection.execute(
+            """
+            SELECT
+              id, subject_entity_id, object_entity_id, relationship_type,
+              relationship_family, status, confidence, valid_from, valid_to,
+              observed_at, qualifiers, synthetic, fixture_notice
+            FROM relationships
+            WHERE id = %s
+            """,
+            (object_id,),
+        ).fetchone()
+        if relationship is None:
+            raise NotFoundError(f"Relationship not found: {object_id}")
+        total_count = int(
+            connection.execute(
+                """
+                SELECT count(*) AS count
+                FROM relationship_evidence
+                WHERE relationship_id = %s
+                """,
+                (object_id,),
+            ).fetchone()["count"]
+        )
+        evidence_rows = connection.execute(
+            """
+            SELECT
+              NULL::uuid AS ingestion_evidence_chain_id,
+              re.source_document_id,
+              re.role,
+              re.locator,
+              re.support_excerpt,
+              re.created_at,
+              re.role AS evidence_role,
+              re.structured_fact,
+              '[]'::jsonb AS counter_evidence,
+              sd.parser_version,
+              r.confidence,
+              'published' AS chain_review_status,
+              re.created_at AS chain_created_at,
+              s.code AS source_code,
+              s.name AS source_name,
+              s.source_tier,
+              sd.url,
+              sd.title,
+              sd.publisher,
+              sd.document_date,
+              sd.observed_at,
+              sd.retrieved_at,
+              sd.media_type,
+              sd.content_hash
+            FROM relationship_evidence re
+            JOIN relationships r ON r.id = re.relationship_id
+            JOIN source_documents sd ON sd.id = re.source_document_id
+            JOIN sources s ON s.id = sd.source_id
+            WHERE re.relationship_id = %s
+            ORDER BY
+              CASE re.role WHEN 'supports' THEN 0 WHEN 'context' THEN 1 ELSE 2 END,
+              sd.observed_at DESC,
+              re.source_document_id
+            LIMIT %s
+            """,
+            (object_id, limit),
+        ).fetchall()
+        return self.evidence_detail_payload(
+            object_type="relationship",
+            object_id=object_id,
+            object_summary=relationship,
+            evidence_rows=evidence_rows,
+            total_count=total_count,
+            limit=limit,
+            production_context=self.production_context_for_connection(connection),
+        )
+
+    @staticmethod
+    def evidence_detail_payload(
+        *,
+        object_type: str,
+        object_id: UUID,
+        object_summary: dict[str, Any],
+        evidence_rows: list[dict[str, Any]],
+        total_count: int,
+        limit: int,
+        production_context: dict[str, Any],
+    ) -> dict[str, Any]:
+        source_documents: dict[UUID, dict[str, Any]] = {}
+        evidence: list[dict[str, Any]] = []
+        for row in evidence_rows:
+            source_document_id = row["source_document_id"]
+            source_document = {
+                "id": source_document_id,
+                "source_code": row["source_code"],
+                "source_name": row["source_name"],
+                "source_tier": row["source_tier"],
+                "publisher": row["publisher"],
+                "title": row["title"],
+                "url": row["url"],
+                "document_date": row["document_date"],
+                "observed_at": row["observed_at"],
+                "retrieved_at": row["retrieved_at"],
+                "media_type": row["media_type"],
+                "content_hash": row["content_hash"],
+            }
+            source_documents[source_document_id] = source_document
+            ingestion_evidence_chain_id = row["ingestion_evidence_chain_id"]
+            evidence_id = (
+                ingestion_evidence_chain_id
+                if ingestion_evidence_chain_id is not None
+                else f"{object_id}:{source_document_id}:{row['role']}"
+            )
+            evidence.append(
+                {
+                    "evidence_id": evidence_id,
+                    "source_document_id": source_document_id,
+                    "ingestion_evidence_chain_id": ingestion_evidence_chain_id,
+                    "role": row["role"],
+                    "source_tier": row["source_tier"],
+                    "publisher": row["publisher"],
+                    "title": row["title"],
+                    "url": row["url"],
+                    "document_date": row["document_date"],
+                    "observed_at": row["observed_at"],
+                    "retrieved_at": row["retrieved_at"],
+                    "media_type": row["media_type"],
+                    "content_hash": row["content_hash"],
+                    "locator": row["locator"],
+                    "support_excerpt": row["support_excerpt"],
+                    "snippet": {
+                        "text": row["support_excerpt"],
+                        "locator": row["locator"],
+                        "redaction_status": "none",
+                    },
+                    "structured_fact": row["structured_fact"],
+                    "counter_evidence": row["counter_evidence"],
+                    "parser_version": row["parser_version"],
+                    "confidence": row["confidence"],
+                    "review_status": row["chain_review_status"],
+                    "created_at": row["created_at"],
+                    "chain_created_at": row["chain_created_at"],
+                    "source_document": source_document,
+                }
+            )
+        return _jsonable(
+            {
+                "schema_version": "evidence-detail-v1",
+                "object_type": object_type,
+                "object_id": object_id,
+                "object_summary": object_summary,
+                "evidence_count": total_count,
+                "returned_evidence_count": len(evidence),
+                "source_document_count": len(source_documents),
+                "limit": limit,
+                "truncated": total_count > len(evidence),
+                "source_documents": list(source_documents.values()),
+                "evidence": evidence,
+                "production_context": production_context,
+            }
+        )
+
     def start_exploration(self, request: dict[str, Any]) -> dict[str, Any]:
         focus = request["focus"]
         if focus["object_type"] != "entity":

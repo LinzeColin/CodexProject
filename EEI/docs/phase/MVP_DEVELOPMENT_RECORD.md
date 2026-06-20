@@ -2373,3 +2373,53 @@ Residual risks:
 - Live FastAPI/PostgreSQL cross-route E2E remains required before A211 can close.
 - Full multi-object scoring and formally published relationship edges remain required before A203 can close.
 - 4h/24h soak, saved-view authn/authz, real scheduler handlers/deployment wake and brand clearance remain v0.1 blockers.
+
+## 2026-06-20 - T1302/A203 and T1308/A211 evidence detail/source snippet hydration
+
+### Scope
+
+- Added production API route `/v1/evidence/{objectType}/{objectId}` with bounded `limit` validation for `relationship_fact_candidate` and published `relationship` objects.
+- Added repository evidence detail payloads using existing PostgreSQL evidence tables: `relationship_fact_candidate_evidence`, `ingestion_evidence_chain`, `relationship_evidence`, `source_documents` and `sources`.
+- Extended `specs/api_contract.yaml` with `EvidenceDetailResponse`, `EvidenceDetailItem`, `EvidenceSnippet` and `EvidenceDetailSourceDocument`.
+- Extended the frontend production data client with guarded `loadEvidenceDetail` support and local fallback/error modes.
+- Wired the commercial-map homepage so successful `/v1/explore` hydration loads catalog, score explanation and evidence detail in parallel.
+- Added a production evidence panel in Evidence Center showing evidence count, source-document count, endpoint, truncation state and source snippets.
+- Wired the "打开证据" action to refresh production evidence detail instead of only changing a local status marker.
+- Preserved the candidate-vs-published-fact boundary: candidate evidence is visible as evidence detail, but relationship_fact_candidates are still excluded from graph edges until publication gates pass.
+
+### Files changed
+
+- `apps/api/app/domain.py`
+- `apps/api/app/domain_repository.py`
+- `apps/web/src/app/production-data-client.ts`
+- `apps/web/src/app/page.tsx`
+- `specs/api_contract.yaml`
+- `tests/e2e/state-contract.spec.ts`
+- `tests/integration/test_database_migrations.py`
+- `DEVELOPMENT_STATUS.md`
+- `data/development_status_ledger.csv`
+- `data/acceptance_traceability.csv`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+- `docs/phase/MVP_DEVELOPMENT_RECORD.md`
+
+### Acceptance mapping
+
+- T1302 -> A203.
+- T1308 -> A211.
+- A203/A211 remain `IN_PROGRESS`, not `DONE`.
+
+### Validation
+
+- Local `python3 -m py_compile apps/api/app/domain_repository.py apps/api/app/domain.py tests/integration/test_database_migrations.py`: PASS.
+- Local `git diff --check`: PASS.
+- Local `npm run typecheck` from `apps/web`: PASS.
+- Local `.venv/bin/python -m pytest -q tests/unit/test_api_health.py`: PASS, 9/9.
+- Local `.venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED, 1/1 because local `.env`/`DATABASE_URL` is absent; CI remains the destructive PostgreSQL migration/reset evidence source.
+- Local targeted Playwright E2E with non-sandbox browser/server access: PASS, 2/2 for A203/A211 production graph and evidence hydration.
+- Local default Playwright E2E with non-sandbox browser/server access: PASS, 32/32.
+
+### Remaining gaps
+
+- Live FastAPI/PostgreSQL cross-route E2E remains required before A211 can close.
+- Full multi-object scoring, formally published relationship edges and complete graph evidence drawer semantics remain required before A203 can close.
+- 4h/24h soak, saved-view authn/authz, real scheduler handlers/deployment wake and brand clearance remain v0.1 blockers.

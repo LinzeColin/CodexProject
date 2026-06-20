@@ -39,8 +39,10 @@ import {
 import {
   PRODUCTION_DATA_API_BASE_STORAGE_KEY,
   loadCatalogInventory,
+  loadEvidenceDetail,
   loadScoreExplanation,
   type CatalogInventoryRecord,
+  type EvidenceDetailRecord,
   type ScoreExplanationRecord
 } from "./production-data-client";
 import { useAnalysisContext } from "./use-analysis-context";
@@ -1408,6 +1410,16 @@ export default function Home() {
   const [productionScoreTargetId, setProductionScoreTargetId] = useState("");
   const [productionScoreExplanation, setProductionScoreExplanation] =
     useState<ScoreExplanationRecord | null>(null);
+  const [productionEvidenceStatus, setProductionEvidenceStatus] =
+    useState<ProductionDataStatus>("local-fixture");
+  const [productionEvidenceSyncMode, setProductionEvidenceSyncMode] = useState<
+    "server" | "local_fallback"
+  >("local_fallback");
+  const [productionEvidenceSyncReason, setProductionEvidenceSyncReason] =
+    useState("not_synced");
+  const [productionEvidenceEndpoint, setProductionEvidenceEndpoint] = useState("");
+  const [productionEvidenceDetail, setProductionEvidenceDetail] =
+    useState<EvidenceDetailRecord | null>(null);
   const [selectedProductionNodeKey, setSelectedProductionNodeKey] = useState("");
   const [modelContextSyncMode, setModelContextSyncMode] = useState<"server" | "local_fallback">(
     "local_fallback"
@@ -1739,12 +1751,18 @@ export default function Home() {
   async function hydrateProductionData(reason = "manual_refresh", candidateId?: string | null) {
     setProductionCatalogStatus("loading-production-data");
     setProductionScoreStatus(candidateId ? "loading-production-data" : "local-fixture");
-    const [catalogResult, scoreResult] = await Promise.all([
+    setProductionEvidenceStatus(candidateId ? "loading-production-data" : "local-fixture");
+    const [catalogResult, scoreResult, evidenceResult] = await Promise.all([
       loadCatalogInventory(),
       loadScoreExplanation({
         objectType: "relationship_fact_candidate",
         objectId: candidateId,
         profileId: serverModelContext?.active_scoring_profile_version_id
+      }),
+      loadEvidenceDetail({
+        objectType: "relationship_fact_candidate",
+        objectId: candidateId,
+        limit: 20
       })
     ]);
 
@@ -1771,23 +1789,43 @@ export default function Home() {
       setProductionScoreSyncReason(scoreResult.reason);
       setProductionScoreEndpoint("");
       setProductionScoreTargetId(candidateId ?? "");
+      setProductionScoreExplanation(null);
       setProductionScoreStatus("local-fixture");
-      return;
-    }
-    if (scoreResult.status === "error") {
+    } else if (scoreResult.status === "error") {
       setProductionScoreSyncMode("server");
       setProductionScoreSyncReason(scoreResult.reason);
       setProductionScoreEndpoint(scoreResult.endpoint);
       setProductionScoreTargetId(candidateId ?? "");
+      setProductionScoreExplanation(null);
       setProductionScoreStatus("server-error");
-      return;
+    } else {
+      setProductionScoreExplanation(scoreResult.record);
+      setProductionScoreSyncMode("server");
+      setProductionScoreSyncReason(reason);
+      setProductionScoreEndpoint(scoreResult.endpoint);
+      setProductionScoreTargetId(scoreResult.record.object_id);
+      setProductionScoreStatus("server-hydrated");
     }
-    setProductionScoreExplanation(scoreResult.record);
-    setProductionScoreSyncMode("server");
-    setProductionScoreSyncReason(reason);
-    setProductionScoreEndpoint(scoreResult.endpoint);
-    setProductionScoreTargetId(scoreResult.record.object_id);
-    setProductionScoreStatus("server-hydrated");
+
+    if (evidenceResult.mode === "local_fallback") {
+      setProductionEvidenceSyncMode("local_fallback");
+      setProductionEvidenceSyncReason(evidenceResult.reason);
+      setProductionEvidenceEndpoint("");
+      setProductionEvidenceDetail(null);
+      setProductionEvidenceStatus("local-fixture");
+    } else if (evidenceResult.status === "error") {
+      setProductionEvidenceSyncMode("server");
+      setProductionEvidenceSyncReason(evidenceResult.reason);
+      setProductionEvidenceEndpoint(evidenceResult.endpoint);
+      setProductionEvidenceDetail(null);
+      setProductionEvidenceStatus("server-error");
+    } else {
+      setProductionEvidenceDetail(evidenceResult.record);
+      setProductionEvidenceSyncMode("server");
+      setProductionEvidenceSyncReason(reason);
+      setProductionEvidenceEndpoint(evidenceResult.endpoint);
+      setProductionEvidenceStatus("server-hydrated");
+    }
   }
 
   async function hydrateProductionGraph(reason = "manual_refresh") {
@@ -2014,7 +2052,11 @@ export default function Home() {
   }
 
   function openSelectedEvidence() {
-    setNodeActionStatus(`evidence:${selectedNode.key}`);
+    setNodeActionStatus(`evidence:${selectedGraphNode.key}`);
+    void hydrateProductionData(
+      "evidence_center_open",
+      productionSampleCandidate?.id || productionScoreTargetId || productionEvidenceDetail?.object_id || null
+    );
   }
 
   function handleNodeKeyDown(event: KeyboardEvent<SVGGElement>, nextSelected: GraphRenderNode) {
@@ -2381,6 +2423,17 @@ export default function Home() {
           data-catalog-sync-reason={productionCatalogSyncReason}
           data-catalog-total-declared-rows={productionCatalogInventory?.total_declared_rows ?? 0}
           data-catalog-version={productionCatalogInventory?.catalog_version ?? "local"}
+          data-evidence-detail-count={productionEvidenceDetail?.evidence_count ?? 0}
+          data-evidence-endpoint={productionEvidenceEndpoint || "local"}
+          data-evidence-object-id={
+            productionEvidenceDetail?.object_id ??
+            (productionScoreTargetId ||
+            productionSampleCandidate?.id ||
+            "none")
+          }
+          data-evidence-source-document-count={productionEvidenceDetail?.source_document_count ?? 0}
+          data-evidence-sync-mode={productionEvidenceSyncMode}
+          data-evidence-sync-reason={productionEvidenceSyncReason}
           data-score-adjusted-score={productionScoreExplanation?.adjusted_score ?? 0}
           data-score-endpoint={productionScoreEndpoint || "local"}
           data-score-evidence-count={productionScoreExplanation?.evidence.length ?? 0}
@@ -2408,7 +2461,7 @@ export default function Home() {
           <div>
             <strong>Production data</strong>
             <span data-testid="production-data-status">
-              {productionCatalogStatus} / {productionScoreStatus}
+              {productionCatalogStatus} / {productionScoreStatus} / {productionEvidenceStatus}
             </span>
           </div>
           <div>
@@ -2454,6 +2507,25 @@ export default function Home() {
                 {productionScoreExplanation?.evidence.length ?? 0} / missing=
                 {productionScoreExplanation?.missing_inputs.length ?? 0}
               </dd>
+            </div>
+          </dl>
+          <div>
+            <strong>Evidence detail</strong>
+            <span data-testid="production-evidence-summary-status">
+              {productionEvidenceSyncMode} / {productionEvidenceSyncReason}
+            </span>
+          </div>
+          <dl data-testid="production-evidence-summary-contract">
+            <div>
+              <dt>Documents</dt>
+              <dd data-testid="production-evidence-summary-count">
+                evidence={productionEvidenceDetail?.evidence_count ?? 0} / docs=
+                {productionEvidenceDetail?.source_document_count ?? 0}
+              </dd>
+            </div>
+            <div>
+              <dt>Endpoint</dt>
+              <dd>{productionEvidenceEndpoint || "local-fixture"}</dd>
             </div>
           </dl>
           <div className="modelPreviewActions">
@@ -3048,6 +3120,65 @@ export default function Home() {
             </li>
           ))}
         </ol>
+
+        <section
+          className="graphPolicyPanel productionEvidencePanel"
+          data-evidence-count={productionEvidenceDetail?.evidence_count ?? 0}
+          data-evidence-endpoint={productionEvidenceEndpoint || "local"}
+          data-evidence-object-id={
+            productionEvidenceDetail?.object_id ??
+            (productionScoreTargetId ||
+            productionSampleCandidate?.id ||
+            "none")
+          }
+          data-evidence-sync-mode={productionEvidenceSyncMode}
+          data-evidence-sync-reason={productionEvidenceSyncReason}
+          data-source-document-count={productionEvidenceDetail?.source_document_count ?? 0}
+          data-testid="production-evidence-detail"
+          data-truncated={productionEvidenceDetail?.truncated ?? false}
+        >
+          <header>
+            <p className="eyebrow">Production evidence</p>
+            <strong data-testid="production-evidence-status">
+              {productionEvidenceSyncMode} / {productionEvidenceSyncReason}
+            </strong>
+          </header>
+          <dl data-testid="production-evidence-contract">
+            <div>
+              <dt>Candidate</dt>
+              <dd>
+                {productionEvidenceDetail?.object_id ||
+                  productionScoreTargetId ||
+                  productionSampleCandidate?.id ||
+                  "candidate-missing"}
+              </dd>
+            </div>
+            <div>
+              <dt>Evidence</dt>
+              <dd data-testid="production-evidence-count">
+                {productionEvidenceDetail?.evidence_count ?? 0} sources /{" "}
+                {productionEvidenceDetail?.source_document_count ?? 0} documents
+              </dd>
+            </div>
+            <div>
+              <dt>Endpoint</dt>
+              <dd>{productionEvidenceEndpoint || "local-fixture"}</dd>
+            </div>
+          </dl>
+          <ol className="pathList" data-testid="production-evidence-snippets">
+            {(productionEvidenceDetail?.evidence ?? []).slice(0, 3).map((item, index) => (
+              <li
+                data-testid={`production-evidence-snippet-${index}`}
+                key={item.evidence_id}
+              >
+                <strong>{item.title ?? item.publisher ?? item.source_document_id}</strong>
+                <span>{item.role}</span>
+                <em>{item.publisher ?? "source document"}</em>
+                <small>{item.snippet.text ?? item.support_excerpt ?? "snippet-missing"}</small>
+              </li>
+            ))}
+          </ol>
+        </section>
 
         <section
           className="graphPolicyPanel"
