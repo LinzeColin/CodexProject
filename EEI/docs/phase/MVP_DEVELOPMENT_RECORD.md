@@ -2776,6 +2776,8 @@ Residual risks:
 - Local `.venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py`: PASS.
 - Local `.venv/bin/python scripts/validate_contracts.py`: PASS.
 - Local `.venv/bin/python -m pytest -q tests/unit/test_scoring.py tests/unit/test_api_health.py`: PASS, 11/11.
+- Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify` with non-sandbox browser permission: PASS; unit tests 15/15.
+- GitHub Actions `EEI validation` on `405d664b53f872b72be6ee14fe83242a2dd13820`: PASS, run `27871752533`, job `82484659437`; Steps 7-12 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 - PostgreSQL execution proof must come from GitHub Actions G2 integration because this local environment does not provide Docker/PostgreSQL.
 
 ### Remaining gaps
