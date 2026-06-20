@@ -27,6 +27,7 @@ from scripts.job_scheduler import (
     recover_expired_leases,
     release_job,
     run_once,
+    write_outbox_event,
 )
 
 pytestmark = pytest.mark.skipif(
@@ -3100,3 +3101,100 @@ def exercise_background_scheduler_contracts() -> None:
     assert health["background_jobs"]["counts"]["succeeded"] >= 3
     assert health["transactional_outbox"]["counts"]["dispatched"] >= 1
     assert health["dead_letter_job_count"] >= 1
+    exercise_worker_supervisor_cli_contracts()
+
+
+def exercise_worker_supervisor_cli_contracts() -> None:
+    cli_job = enqueue_job(
+        job_type="noop",
+        idempotency_key="a206-worker-supervisor-cli-job-contract",
+        payload={"acceptance_id": "A206", "path": "worker-supervisor-cli"},
+        max_attempts=3,
+        dead_letter_after_attempts=3,
+        metadata={
+            "task_ids": ["T1304", "T1307"],
+            "acceptance_ids": ["A206", "A209"],
+            "contract": "worker-supervisor-cli-v1",
+        },
+    )
+    with connect_database() as connection:
+        cli_event = write_outbox_event(
+            connection,
+            event_type="a206.worker.cli.wake",
+            aggregate_type="worker_supervisor_cli",
+            aggregate_id=None,
+            idempotency_key="a206-worker-supervisor-cli-outbox-contract",
+            payload={
+                "schema_version": "worker-supervisor-cli-event-v1",
+                "acceptance_ids": ["A206", "A209"],
+                "path": "worker-supervisor-cli",
+            },
+            metadata={
+                "task_ids": ["T1304", "T1307"],
+                "acceptance_ids": ["A206", "A209"],
+                "contract": "worker-supervisor-cli-v1",
+            },
+        )
+
+    cli_result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "apps.worker.app.main",
+            "supervise",
+            "--worker-id",
+            "a206-cli-supervisor",
+            "--job-type",
+            "noop",
+            "--event-type",
+            "a206.worker.cli.wake",
+            "--max-jobs-per-cycle",
+            "1",
+            "--max-outbox-per-cycle",
+            "1",
+            "--poll-interval-seconds",
+            "0",
+            "--max-cycles",
+            "2",
+            "--stop-when-idle",
+        ],
+        cwd=os.getcwd(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert cli_result.returncode == 0, cli_result.stderr
+    cli_summary = json.loads(cli_result.stdout)
+    assert cli_summary["schema_version"] == "eei-worker-supervision-summary-v1"
+    assert cli_summary["handler_contract"] == "worker-supervisor-v1"
+    assert cli_summary["worker_id"] == "a206-cli-supervisor"
+    assert cli_summary["status"] == "stopped"
+    assert cli_summary["stop_reason"] == "idle"
+    assert cli_summary["cycles"] == 2
+    assert cli_summary["jobs_processed"] == 1
+    assert cli_summary["outbox_events_dispatched"] == 1
+    assert cli_summary["acceptance_ids"] == ["A206", "A209"]
+    assert cli_summary["last_cycle"]["idle"] is True
+    assert cli_summary["health"]["supervision"]["acceptance_ids"] == ["A206", "A209"]
+    with connect_database() as connection:
+        cli_job_row = connection.execute(
+            """
+            SELECT status, metadata->'result'->>'handler', metadata->'result'->>'acceptance_id'
+            FROM background_jobs
+            WHERE id = %s
+            """,
+            (UUID(cli_job["id"]),),
+        ).fetchone()
+        assert cli_job_row == ("succeeded", "noop", "A206")
+        cli_event_row = connection.execute(
+            """
+            SELECT status, metadata->'dispatch_result'->>'handler_contract',
+                   metadata->'dispatch_result'->'acceptance_ids'
+            FROM transactional_outbox
+            WHERE id = %s
+            """,
+            (UUID(cli_event["id"]),),
+        ).fetchone()
+        assert cli_event_row[0] == "dispatched"
+        assert cli_event_row[1] == "outbox-dispatch-v1"
+        assert cli_event_row[2] == ["A206", "A209"]
