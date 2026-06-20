@@ -231,83 +231,104 @@ def load_research_universe(connection: object) -> int:
 
 def load_default_scoring_profile(connection: object) -> int:
     profile_path = ROOT / "config/model_profiles/balanced-v2.json"
+    candidate_profile_path = ROOT / "config/model_profiles/supply-chain-v3.json"
     threshold_path = ROOT / "config/thresholds/default-v2.json"
     profile = json.loads(profile_path.read_text(encoding="utf-8"))
+    candidate_profile = json.loads(candidate_profile_path.read_text(encoding="utf-8"))
     thresholds = json.loads(threshold_path.read_text(encoding="utf-8"))
-    model_key = profile["model_version"]
-    version = int(profile["version"])
-    model_row = connection.execute(
-        """
-        INSERT INTO scoring_models(model_key, version, name, formula, input_schema, status)
-        VALUES (%s, %s, %s, %s, %s, 'active')
-        ON CONFLICT (model_key, version) DO UPDATE SET
-          name = EXCLUDED.name,
-          formula = EXCLUDED.formula,
-          input_schema = EXCLUDED.input_schema,
-          status = 'active'
-        RETURNING id
-        """,
-        (
-            model_key,
-            version,
-            profile["name"],
-            Jsonb(profile),
-            Jsonb(
-                {
-                    "schema_version": profile["schema_version"],
-                    "components": list(profile["weights"].keys()),
-                    "component_weights": profile["component_weights"],
-                }
+
+    connection.execute("UPDATE scoring_profile_versions SET active = false")
+
+    def upsert_profile_version(
+        model_profile: dict[str, object],
+        *,
+        active: bool,
+        is_system_default: bool,
+        reason: str,
+    ) -> object:
+        model_key = str(model_profile["model_version"])
+        version = int(model_profile["version"])
+        model_row = connection.execute(
+            """
+            INSERT INTO scoring_models(model_key, version, name, formula, input_schema, status)
+            VALUES (%s, %s, %s, %s, %s, 'active')
+            ON CONFLICT (model_key, version) DO UPDATE SET
+              name = EXCLUDED.name,
+              formula = EXCLUDED.formula,
+              input_schema = EXCLUDED.input_schema,
+              status = 'active'
+            RETURNING id
+            """,
+            (
+                model_key,
+                version,
+                model_profile["name"],
+                Jsonb(model_profile),
+                Jsonb(
+                    {
+                        "schema_version": model_profile["schema_version"],
+                        "components": list(model_profile["weights"].keys()),
+                        "component_weights": model_profile["component_weights"],
+                    }
+                ),
             ),
-        ),
-    ).fetchone()
-    profile_row = connection.execute(
-        """
-        INSERT INTO scoring_profiles(namespace, profile_key, name, is_system_default)
-        VALUES ('system', %s, %s, true)
-        ON CONFLICT (namespace, profile_key) DO UPDATE SET
-          name = EXCLUDED.name,
-          is_system_default = true
-        RETURNING id
-        """,
-        (profile["profile_key"], profile["name"]),
-    ).fetchone()
-    connection.execute(
-        """
-        UPDATE scoring_profile_versions
-        SET active = false
-        WHERE profile_id = %s
-        """,
-        (profile_row[0],),
+        ).fetchone()
+        profile_row = connection.execute(
+            """
+            INSERT INTO scoring_profiles(namespace, profile_key, name, is_system_default)
+            VALUES ('system', %s, %s, %s)
+            ON CONFLICT (namespace, profile_key) DO UPDATE SET
+              name = EXCLUDED.name,
+              is_system_default = EXCLUDED.is_system_default
+            RETURNING id
+            """,
+            (model_profile["profile_key"], model_profile["name"], is_system_default),
+        ).fetchone()
+        return connection.execute(
+            """
+            INSERT INTO scoring_profile_versions(
+              profile_id, model_id, version, weights, thresholds, half_lives,
+              missing_value_policy, reason, active
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (profile_id, version) DO UPDATE SET
+              model_id = EXCLUDED.model_id,
+              weights = EXCLUDED.weights,
+              thresholds = EXCLUDED.thresholds,
+              half_lives = EXCLUDED.half_lives,
+              missing_value_policy = EXCLUDED.missing_value_policy,
+              reason = EXCLUDED.reason,
+              active = EXCLUDED.active
+            RETURNING id
+            """,
+            (
+                profile_row[0],
+                model_row[0],
+                version,
+                Jsonb(model_profile["weights"]),
+                Jsonb(thresholds),
+                Jsonb(model_profile["half_life_days"]),
+                model_profile["missing_value_policy"],
+                reason,
+                active,
+            ),
+        ).fetchone()[0]
+
+    profile_version_id = upsert_profile_version(
+        profile,
+        active=True,
+        is_system_default=True,
+        reason="Seeded from config/model_profiles/balanced-v2.json for MVP default profile.",
     )
-    profile_version_row = connection.execute(
-        """
-        INSERT INTO scoring_profile_versions(
-          profile_id, model_id, version, weights, thresholds, half_lives,
-          missing_value_policy, reason, active
-        )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, true)
-        ON CONFLICT (profile_id, version) DO UPDATE SET
-          model_id = EXCLUDED.model_id,
-          weights = EXCLUDED.weights,
-          thresholds = EXCLUDED.thresholds,
-          half_lives = EXCLUDED.half_lives,
-          missing_value_policy = EXCLUDED.missing_value_policy,
-          reason = EXCLUDED.reason,
-          active = true
-        RETURNING id
-        """,
-        (
-            profile_row[0],
-            model_row[0],
-            version,
-            Jsonb(profile["weights"]),
-            Jsonb(thresholds),
-            Jsonb(profile["half_life_days"]),
-            profile["missing_value_policy"],
-            "Seeded from config/model_profiles/balanced-v2.json for MVP default profile.",
+    upsert_profile_version(
+        candidate_profile,
+        active=False,
+        is_system_default=False,
+        reason=(
+            "Seeded from config/model_profiles/supply-chain-v3.json as the MVP "
+            "transactional activation candidate."
         ),
-    ).fetchone()
+    )
     connection.execute(
         """
         INSERT INTO active_analysis_contexts(
@@ -324,7 +345,7 @@ def load_default_scoring_profile(connection: object) -> int:
           updated_at = now()
         """,
         (
-            profile_version_row[0],
+            profile_version_id,
             Jsonb(
                 [
                     "business_empire",
@@ -346,16 +367,17 @@ def load_default_scoring_profile(connection: object) -> int:
                 {
                     "source": "seed_default_scoring_profile",
                     "profile_key": profile["profile_key"],
-                    "profile_version": version,
-                    "model_version": model_key,
+                    "profile_version": int(profile["version"]),
+                    "model_version": profile["model_version"],
                     "cache_policy": "clients compare refresh_token and refresh_generation",
                 }
             ),
         ),
     )
     record_seed_run(connection, "default_scoring_profile", profile_path, 1)
+    record_seed_run(connection, "candidate_scoring_profile", candidate_profile_path, 1)
     record_seed_run(connection, "default_threshold_profile", threshold_path, 1)
-    return 1
+    return 2
 
 
 def main() -> int:

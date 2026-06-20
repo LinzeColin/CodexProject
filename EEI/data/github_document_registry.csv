@@ -62,6 +62,7 @@ artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip,rele
 artifacts/static_validation.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
 artifacts/visual_coverage_validation.txt,qa-and-generation-evidence,false,validation or generation rerun,QA owner,release-zip+git,GENERATED
 config/model_profiles/balanced-v2.json,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
+config/model_profiles/supply-chain-v3.json,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
 config/model_runtime_defaults.yaml,model-configuration,true,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
 config/thresholds/default-v2.json,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE
 config/ui/motion-tokens.json,model-configuration,false,model/formula/parameter/threshold change,model owner,git+release-zip,ACTIVE

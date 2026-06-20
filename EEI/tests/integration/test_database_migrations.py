@@ -492,9 +492,12 @@ def exercise_domain_api_and_repository_contracts() -> None:
     profiles_response = client.get("/v1/scoring/profiles")
     assert profiles_response.status_code == 200
     profiles = profiles_response.json()
-    assert len(profiles) == 1
-    assert profiles[0]["profile_key"] == "balanced-v2"
-    assert profiles[0]["active"] is True
+    assert len(profiles) == 2
+    active_profiles = [profile for profile in profiles if profile["active"] is True]
+    inactive_profiles = [profile for profile in profiles if profile["active"] is False]
+    assert len(active_profiles) == 1
+    assert active_profiles[0]["profile_key"] == "balanced-v2"
+    assert {profile["profile_key"] for profile in inactive_profiles} == {"supply-chain-v3"}
     with connect_database() as connection:
         candidate_row = connection.execute(
             """

@@ -119,7 +119,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   └── BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
 ├── config
 │   ├── model_profiles
-│   │   └── balanced-v2.json
+│   │   ├── balanced-v2.json
+│   │   └── supply-chain-v3.json
 │   ├── thresholds
 │   │   └── default-v2.json
 │   ├── ui

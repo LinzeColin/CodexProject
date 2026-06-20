@@ -10,9 +10,12 @@
     "Activation locks the current and target profile rows, creates a completed scoring_run snapshot, switches the active profile, updates active_analysis_contexts and writes operation_logs in one transaction.",
     "Stale expected active profile requests return 409 and keep the previous active profile unchanged while logging a conflict result.",
     "Added a frontend API-first model-center activation adapter and controls that send expected_active_profile_version_id plus client_refresh_token to the transaction endpoint.",
-    "Added a model-center rollback control that reactivates the previous profile through the same transactional activation endpoint."
+    "Added a model-center rollback control that reactivates the previous profile through the same transactional activation endpoint.",
+    "Added config/model_profiles/supply-chain-v3.json as an inactive immutable candidate profile loaded by the PostgreSQL seed path.",
+    "Added live Playwright coverage that activates supply-chain-v3, observes a transaction-created scoring_run snapshot, checks stale refresh semantics and rolls back to balanced-v2 through FastAPI/PostgreSQL."
   ],
   "evidence_files": [
+    "config/model_profiles/supply-chain-v3.json",
     "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
     "infra/db/migrations/0006_model_activation_refresh_state/down.sql",
     "apps/api/app/domain.py",
@@ -24,18 +27,21 @@
     "apps/web/src/app/model-activation-client.ts",
     "apps/web/src/app/use-analysis-context.ts",
     "apps/web/src/app/page.tsx",
+    "tests/e2e/saved-view-live.spec.ts",
     "tests/e2e/state-contract.spec.ts"
   ],
   "validation_commands": [
+    ".venv/bin/python scripts/validate_model_config.py config/model_profiles/supply-chain-v3.json config/thresholds/default-v2.json",
     "PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py scripts/check_database_schema.py scripts/load_seed_catalogs.py",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_contracts.py",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_v5_production_readiness_sync.py",
+    "npx --yes pnpm@11.8.0 --filter @eei/web typecheck",
+    "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.live.config.ts",
     "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py"
   ],
   "not_closed_scope": [
-    "Model-center online profile editing and score recompute UI are not complete.",
-    "A dedicated rollback endpoint remains a later T600-T608/T1303 slice; current rollback control uses the activation endpoint with the previous profile id.",
-    "Full cross-view browser E2E against live FastAPI/PostgreSQL remains open under A205."
+    "Model-center online profile editing and dedicated score recompute controls are not complete.",
+    "A dedicated rollback endpoint remains a later T600-T608/T1303 slice; current rollback control uses the activation endpoint with the previous profile id."
   ],
   "latest_ci_result": {
     "provider": "GitHub Actions",

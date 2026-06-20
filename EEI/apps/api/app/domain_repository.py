@@ -2057,7 +2057,11 @@ class DomainRepository:
                 FROM scoring_profile_versions spv
                 JOIN scoring_profiles sp ON sp.id = spv.profile_id
                 JOIN scoring_models sm ON sm.id = spv.model_id
-                ORDER BY sp.is_system_default DESC, sp.profile_key, spv.version DESC
+                ORDER BY
+                  spv.active DESC,
+                  sp.is_system_default DESC,
+                  sp.profile_key,
+                  spv.version DESC
                 """
             ).fetchall()
         profiles: list[dict[str, Any]] = []

@@ -85,6 +85,7 @@ def main() -> int:
         "data/release_gate_catalog.csv",
         "config/model_runtime_defaults.yaml",
         "config/model_profiles/balanced-v2.json",
+        "config/model_profiles/supply-chain-v3.json",
         "config/thresholds/default-v2.json",
         "CONTRIBUTING.md",
         ".github/CODEOWNERS",
@@ -276,6 +277,7 @@ def main() -> int:
 
     for path in [
         "config/model_profiles/balanced-v2.json",
+        "config/model_profiles/supply-chain-v3.json",
         "config/thresholds/default-v2.json",
         "models/model_registry.json",
         "models/formula_registry.json",

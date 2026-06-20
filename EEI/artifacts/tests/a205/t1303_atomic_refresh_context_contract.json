@@ -10,9 +10,11 @@
     "Production graph/path context and home model_status now expose active_analysis_context for server-side refresh semantics.",
     "Integration tests assert old refresh tokens are stale and matching refresh tokens are current.",
     "Frontend model-center hydration reads /v1/scoring/active-context and maps server profile/data/score context into visible workspace module state.",
-    "Frontend stale-client refresh checks refetch /v1/scoring/active-context with the previous refresh token and surface stale_client_refetched semantics."
+    "Frontend stale-client refresh checks refetch /v1/scoring/active-context with the previous refresh token and surface stale_client_refetched semantics.",
+    "Live Playwright coverage now configures eei.modelApiBaseUrl.v1 and exercises activation, stale refresh and rollback against FastAPI/PostgreSQL."
   ],
   "evidence_files": [
+    "config/model_profiles/supply-chain-v3.json",
     "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
     "apps/api/app/domain.py",
     "apps/api/app/domain_repository.py",
@@ -21,16 +23,19 @@
     "apps/web/src/app/model-activation-client.ts",
     "apps/web/src/app/use-analysis-context.ts",
     "apps/web/src/app/page.tsx",
+    "tests/e2e/saved-view-live.spec.ts",
     "tests/e2e/state-contract.spec.ts"
   ],
   "validation_commands": [
+    ".venv/bin/python scripts/validate_model_config.py config/model_profiles/supply-chain-v3.json config/thresholds/default-v2.json",
     "PYTHONPATH=/private/tmp/eei-ruff:/private/tmp/eei-pydeps python3 -m ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py scripts/check_database_schema.py scripts/load_seed_catalogs.py",
     "PYTHONPATH=/private/tmp/eei-pydeps python3 scripts/validate_contracts.py",
+    "npx --yes pnpm@11.8.0 --filter @eei/web typecheck",
+    "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.live.config.ts",
     "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py"
   ],
   "not_closed_scope": [
-    "Frontend visible modules now have API-first active-context hydration and mock-server activation/rollback/stale refresh E2E coverage.",
-    "A true cross-route E2E refresh after activation against live FastAPI/PostgreSQL is still required before A205 can be DONE.",
+    "Frontend visible modules now have API-first active-context hydration plus mock and live activation/rollback/stale refresh E2E coverage.",
     "Worker-driven data snapshot activation and transactional outbox are still covered by T1304 and later refresh slices.",
     "Scale and soak refresh stability remain T1306-T1307."
   ],

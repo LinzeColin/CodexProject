@@ -2,8 +2,11 @@ import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 
 const savedViewApiBaseStorageKey = "eei.apiBaseUrl.v1";
 const productionDataApiBaseStorageKey = "eei.productionDataApiBaseUrl.v1";
+const modelApiBaseStorageKey = "eei.modelApiBaseUrl.v1";
 const savedViewStorageKey = "eei.savedView.current.v1";
 const liveApiBaseUrl = process.env.EEI_LIVE_API_BASE_URL ?? "http://127.0.0.1:8000";
+
+test.describe.configure({ mode: "serial" });
 
 async function configureApiBase(context: BrowserContext) {
   await context.addInitScript(
@@ -15,6 +18,11 @@ async function configureApiBase(context: BrowserContext) {
     ({ storageKey, apiBaseUrl }: { storageKey: string; apiBaseUrl: string }) =>
       window.localStorage.setItem(storageKey, apiBaseUrl),
     { storageKey: productionDataApiBaseStorageKey, apiBaseUrl: liveApiBaseUrl }
+  );
+  await context.addInitScript(
+    ({ storageKey, apiBaseUrl }: { storageKey: string; apiBaseUrl: string }) =>
+      window.localStorage.setItem(storageKey, apiBaseUrl),
+    { storageKey: modelApiBaseStorageKey, apiBaseUrl: liveApiBaseUrl }
   );
 }
 
@@ -101,4 +109,73 @@ test("A207 live multi-session saved-view conflict resolves from FastAPI PostgreS
 
   await firstContext.close();
   await secondContext.close();
+});
+
+test("A204 and A205 live model activation refreshes and rolls back through FastAPI PostgreSQL", async ({
+  browser
+}) => {
+  const context = await browser.newContext();
+  await configureApiBase(context);
+  const page = await context.newPage();
+  const uuidPattern = /^[0-9a-f-]{36}$/;
+
+  await page.goto("/");
+  const panel = page.getByTestId("model-preview-panel");
+  const status = page.getByTestId("model-activation-status");
+  const workspace = page.getByTestId("workspace-shell");
+
+  await expect(status).toHaveText("server-current");
+  await expect(panel).toHaveAttribute("data-model-sync-mode", "server");
+  await expect(panel).toHaveAttribute("data-active-profile-id", uuidPattern);
+  await expect(panel).toHaveAttribute("data-target-profile-id", uuidPattern);
+  await expect(workspace).toHaveAttribute("data-active-profile-version", "balanced-v2@2");
+
+  const initialActiveProfileId = await panel.getAttribute("data-active-profile-id");
+  const targetProfileId = await panel.getAttribute("data-target-profile-id");
+  const initialRefreshGeneration = Number(
+    await panel.getAttribute("data-model-refresh-generation")
+  );
+  if (!initialActiveProfileId || !targetProfileId) {
+    throw new Error("missing model activation profile ids");
+  }
+  expect(initialActiveProfileId).toMatch(uuidPattern);
+  expect(targetProfileId).toMatch(uuidPattern);
+  expect(targetProfileId).not.toBe(initialActiveProfileId);
+
+  await page.getByTestId("activate-model-profile").click();
+  await expect(status).toHaveText("server-activated");
+  await expect(panel).toHaveAttribute("data-active-profile-id", targetProfileId);
+  await expect(panel).toHaveAttribute("data-rollback-profile-id", initialActiveProfileId);
+  await expect(panel).toHaveAttribute(
+    "data-model-refresh-generation",
+    String(initialRefreshGeneration + 1)
+  );
+  await expect(workspace).toHaveAttribute(
+    "data-active-model-version",
+    "business-empire-model-v3@3"
+  );
+  await expect(workspace).toHaveAttribute("data-active-profile-version", "supply-chain-v3@3");
+  await expect(workspace).toHaveAttribute("data-active-score-snapshot", uuidPattern);
+  const activatedScoreSnapshot = await workspace.getAttribute("data-active-score-snapshot");
+
+  await page.getByTestId("check-model-refresh").click();
+  await expect(status).toHaveText("server-refreshed");
+  await expect(panel).toHaveAttribute("data-client-state", "stale");
+  await expect(panel).toHaveAttribute("data-model-sync-reason", "stale_client_refetched");
+  await expect(panel).toHaveAttribute("data-active-profile-id", targetProfileId);
+
+  await page.getByTestId("rollback-model-activation").click();
+  await expect(status).toHaveText("server-activated");
+  await expect(panel).toHaveAttribute("data-active-profile-id", initialActiveProfileId);
+  await expect(panel).toHaveAttribute("data-rollback-profile-id", targetProfileId);
+  await expect(panel).toHaveAttribute(
+    "data-model-refresh-generation",
+    String(initialRefreshGeneration + 2)
+  );
+  await expect(workspace).toHaveAttribute("data-active-profile-version", "balanced-v2@2");
+  await expect(workspace).toHaveAttribute("data-active-score-snapshot", uuidPattern);
+  const rollbackScoreSnapshot = await workspace.getAttribute("data-active-score-snapshot");
+  expect(rollbackScoreSnapshot).not.toBe(activatedScoreSnapshot);
+
+  await context.close();
 });

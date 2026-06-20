@@ -346,9 +346,9 @@ SEED_EXPECTATIONS = {
     "industries": 26,
     "supply_chain_stages": 16,
     "company_research_universe": 140,
-    "scoring_models": 1,
-    "scoring_profiles": 1,
-    "scoring_profile_versions": 1,
+    "scoring_models": 2,
+    "scoring_profiles": 2,
+    "scoring_profile_versions": 2,
 }
 
 RESEARCH_TIER_EXPECTATIONS = {
