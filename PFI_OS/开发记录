@@ -43,6 +43,7 @@ PFI_OS 是本地优先的个人研究中台入口，macOS 显示为 `PFI_OS`。P
 - 清理功能面板中的原始英文技术字段展示，默认用户文案改为中文解释；代码、schema、证券代码仍可保留英文。
 - 加严 `scripts/pfiGate2ShellAcceptance.sh`：逐个点击全部可见功能卡，检查按钮属性、同屏面板、同屏操作区、安全边界、无新页面和无 legacy query。
 - 验证结果：用户导向合同测试 `38 passed`；Gate2 浏览器验收 `Pass 844/846`、`fail=0`、`all_feature_control_panels_opened=46`；UI visual acceptance `Pass 146/146`。
+- Gate7 收口规则：当前分支头必须有 GitHub `PFI_OS Smoke` 成功、rollback tag `pfi-os-rollback-20260620-redo-final`，并通过 `scripts/pfi012MVPReleaseGate.sh --require-external-release-evidence`；任何后续提交都必须重新跑 CI/tag/strict。
 
 2026-06-20 PFI-004 Golden/PIT 记录：
 

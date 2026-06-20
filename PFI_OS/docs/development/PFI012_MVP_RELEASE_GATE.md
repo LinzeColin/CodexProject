@@ -1,7 +1,7 @@
 # PFI-012 MVP Release Gate
 
-Status: local release-candidate gate implemented; final external Gate 7
-evidence remains explicit.
+Status: strict release gate implemented; final external Gate 7 evidence is
+fail-closed and must be replayed for the current branch head before closeout.
 
 As of: 2026-06-20 Australia/Sydney
 
@@ -50,6 +50,16 @@ The normal script mode can pass local release-candidate evidence while keeping
 external Gate 7 evidence explicit. The strict mode
 `--require-external-release-evidence` fails closed unless both CI and rollback
 evidence are present.
+
+For the current release scope, closeout uses:
+
+- GitHub Actions workflow: `PFI_OS Smoke` on the branch-head commit.
+- Rollback ref: `pfi-os-rollback-20260620-redo-final`.
+- Strict command:
+  `PFI012_CI_STATUS=Pass PFI012_CI_URL=<github-run-url> PFI012_ROLLBACK_REF=pfi-os-rollback-20260620-redo-final scripts/pfi012MVPReleaseGate.sh --summary-json --require-external-release-evidence`.
+
+If another branch-head commit is added, the CI URL, rollback ref target, and
+strict PFI-012 replay must be refreshed before claiming Gate 7 complete.
 
 ## Verification
 

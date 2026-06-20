@@ -165,20 +165,21 @@ Current sequence:
     `status=Pass`, `pass=134`, `fail=0`, screenshot
     `data/systemAudit/UIVisualAcceptance_20260620_063836.png`. Gate 5 is
     closed for the current local evidence scope and must be re-run in Gate 7.
-28. Gate 6 / PFI-012 MVP Release Gate:
-    Local release-candidate evidence is implemented.
+28. Gate 6 / Gate 7 / PFI-012 MVP Release Gate:
+    Strict release-gate evidence is implemented and must be replayed for the
+    current branch head before closeout.
     `scripts/pfi012MVPReleaseGate.sh` emits
     `PFI012MVPReleaseGateAcceptanceV1` evidence for PFI-001..012 and
     Gate1..7 matrix coverage, P0 open count zero, P1 release dispositions,
     latest UAT/vertical/gate artifacts, privacy audit, active legacy freeze,
     signed checksum manifest, Operational Store records, and external
-    CI/rollback fail-closed state. Latest local run returned `status=Pass`,
-    `local_release_candidate_status=Pass`, `pass=11`, `fail=0`,
-    `issue_count=12`, `gate_count=7`, `p0_open_count=0`,
-    `p1_without_disposition_count=0`, and `external_status=PendingExternal`.
-    Gate 6 is closed for the current local release-candidate scope. Gate 7
-    still requires verified GitHub CI URL and rollback ref before the full
-    pursuing goal can be marked complete.
+    CI/rollback fail-closed state. Current release closeout uses GitHub
+    `PFI_OS Smoke` on branch head, rollback tag
+    `pfi-os-rollback-20260620-redo-final`, and strict
+    `scripts/pfi012MVPReleaseGate.sh --require-external-release-evidence`.
+    Gate 6 and Gate 7 are closed for the current evidence scope only after
+    that strict replay passes; any new branch-head commit must repeat
+    CI/tag/strict replay.
 
 ## Current Local State
 
@@ -679,11 +680,10 @@ Additional Command Center display repair:
 - `tests/test_command_center.py`: updated to enforce Chinese Markdown headings
   and no literal `????` in generated PDF bytes.
 
-Next recommended issue after committing the PFI-012 local release gate:
-attach verified GitHub CI pass URL and rollback ref, then rerun
-`scripts/pfi012MVPReleaseGate.sh --require-external-release-evidence`. Do not
-mark the long-running PFI-001..PFI-012 goal complete while Gate 7 external
-evidence remains `PendingExternal`.
+Next recommended issue after strict PFI-012 replay:
+prepare merge/release handoff. Do not mark the long-running PFI-001..PFI-012
+goal complete if another branch-head commit is added without rerunning
+GitHub CI, refreshing rollback tag target, and rerunning strict PFI-012.
 
 Follow-up rejection repair, 2026-06-20:
 
