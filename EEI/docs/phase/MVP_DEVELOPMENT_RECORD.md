@@ -3675,7 +3675,7 @@ Status: LOCAL AND REMOTE CI VALIDATED; A208 REMAINS CLOSED AFTER REVALIDATION
 
 ## 2026-06-21 - T1304/T1307 A206/A209 worker supervisor CLI wake contract
 
-Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI REQUIRED; A206/A209 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A206/A209 STILL IN PROGRESS
 
 ### Scope
 
@@ -3702,9 +3702,16 @@ Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI REQUIRED; A206/A209 STILL I
 
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check tests/integration/test_database_migrations.py`: PASS.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py`: SKIPPED locally because this host has no `.env`/`DATABASE_URL`; remote GitHub Actions must provide PostgreSQL proof.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS after rerun with elevated permissions because local Chromium browser benchmarks require macOS Mach port access outside the sandbox.
+
+### Remote CI validation
+
+- GitHub Actions run `27886021414` / job `82521454825` on commit `ea111c9`: PASS.
+- Step 10 `Verify G2 PostgreSQL integration`: PASS, proving `python -m apps.worker.app.main supervise` wakes through the production CLI, processes a real PostgreSQL `background_jobs` row, dispatches a real `transactional_outbox` event and stops on an idle cycle.
+- Step 11 `Verify G2 browser E2E`: PASS.
+- Step 12 `Verify G2 live FastAPI PostgreSQL E2E`: PASS.
 
 ### Remaining gaps
 
-- This slice proves the real CLI entry path only when GitHub Actions runs G2 PostgreSQL integration.
 - 4h and 24h soak are still not executed.
 - Docker is still unavailable on the current host, so local Docker Compose worker soak cannot be completed here.
