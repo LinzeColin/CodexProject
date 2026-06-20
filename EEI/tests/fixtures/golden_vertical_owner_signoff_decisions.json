@@ -14,9 +14,9 @@
       "owner_role": "data_owner",
       "authority_scope": "golden-vertical:nvidia",
       "signature": "contract-test-owner-signature-gv-fact-001",
-      "source_threshold_override": true,
-      "source_threshold_override_reason": "Production owner sign-off contract accepts the single official source for this bounded MVP Golden Vertical candidate while preserving record_mode and source lineage.",
-      "attestation": "Reviewed endpoint resolution, official source locator, evidence excerpt, empty counter-evidence array, authority scope and production owner sign-off fields."
+      "source_threshold_override": false,
+      "source_threshold_override_reason": "Not used; A202 second-source closure supplies two independent official sources for this candidate while preserving record_mode and source lineage.",
+      "attestation": "Reviewed endpoint resolution, official source locators, evidence excerpts, empty counter-evidence array, two-source threshold status, authority scope and production owner sign-off fields."
     },
     {
       "candidate_key": "GV-FACT-002",
@@ -27,9 +27,9 @@
       "owner_role": "data_owner",
       "authority_scope": "golden-vertical:nvidia",
       "signature": "contract-test-owner-signature-gv-fact-002",
-      "source_threshold_override": true,
-      "source_threshold_override_reason": "Production owner sign-off contract accepts the single official source for this bounded MVP Golden Vertical candidate while preserving record_mode and source lineage.",
-      "attestation": "Reviewed endpoint resolution, official source locator, evidence excerpt, empty counter-evidence array, authority scope and production owner sign-off fields."
+      "source_threshold_override": false,
+      "source_threshold_override_reason": "Not used; A202 second-source closure supplies two independent official sources for this candidate while preserving record_mode and source lineage.",
+      "attestation": "Reviewed endpoint resolution, official source locators, evidence excerpts, empty counter-evidence array, two-source threshold status, authority scope and production owner sign-off fields."
     }
   ]
 }

@@ -13,11 +13,11 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 121
-- acceptance_count: 184
+- task_count: 122
+- acceptance_count: 185
 - completed_task_count: 50
 - planned_task_count: 70
-- in_progress_task_count: 1
+- in_progress_task_count: 2
 
 Counts are generated from canonical machine registries. Historical Markdown files are compatibility indexes only.
 
@@ -38,7 +38,7 @@ Machine source: `delivery_tasks.yaml`. Completed tasks are only marked `complete
 | Status | Count | Evidence |
 |---|---:|---|
 | completed | 50 | DONE task plus DONE acceptance trace rows |
-| in_progress | 1 | T1307/A209 operator soak runner readiness; 4h/24h evidence pending |
+| in_progress | 2 | T1301/A202 second-source official evidence closure pending CI; T1307/A209 operator soak runner readiness with 4h/24h evidence pending |
 | planned | 70 | Legacy NOT STARTED tasks |
 
 ## Release Gates

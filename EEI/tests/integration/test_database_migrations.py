@@ -160,7 +160,7 @@ def exercise_curated_official_ingestion_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert raw_row == (6, 6, 6, 6)
+        assert raw_row == (8, 8, 8, 8)
 
         latest_run = connection.execute(
             """
@@ -175,7 +175,7 @@ def exercise_curated_official_ingestion_contracts() -> None:
         ).fetchone()
         assert latest_run[0] == "succeeded"
         assert latest_run[1] == "4"
-        assert latest_run[2] == "2"
+        assert latest_run[2] == "4"
         assert latest_run[3] == "2"
 
         source_documents = connection.execute(
@@ -193,7 +193,7 @@ def exercise_curated_official_ingestion_contracts() -> None:
             """,
             (parser_version, parser_version),
         ).fetchone()[0]
-        assert source_documents == 6
+        assert source_documents == 8
 
         candidate_row = connection.execute(
             """
@@ -206,7 +206,7 @@ def exercise_curated_official_ingestion_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert candidate_row[0] >= 55
+        assert candidate_row[0] >= 80
         assert candidate_row[1] >= 10
         assert candidate_row[2] >= 6
         assert candidate_row[3] >= 1
@@ -240,7 +240,7 @@ def exercise_curated_official_ingestion_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert tsmc_candidates[0] >= 2
+        assert tsmc_candidates[0] >= 4
         assert float(tsmc_candidates[1]) >= 0.72
 
         evidence_row = connection.execute(
@@ -270,7 +270,7 @@ def exercise_curated_official_ingestion_contracts() -> None:
             """,
             (parser_version, parser_version, parser_version),
         ).fetchone()
-        assert evidence_row == (6, 4, 2, 6, 6, 2)
+        assert evidence_row == (8, 4, 4, 8, 8, 4)
 
         evidence_sample = connection.execute(
             """
@@ -295,16 +295,16 @@ def exercise_curated_official_ingestion_contracts() -> None:
         fact_candidate_row = connection.execute(
             """
             SELECT count(*),
-                   count(*) FILTER (WHERE publication_status = 'candidate'),
+                   count(*) FILTER (WHERE publication_status = 'ready_for_review'),
                    count(*) FILTER (WHERE source_threshold_met = false),
-                   count(*) FILTER (WHERE review_status = 'machine_verified'),
+                   count(*) FILTER (WHERE review_status = 'ready_for_review'),
                    count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array')
             FROM relationship_fact_candidates
             WHERE parser_version = %s
             """,
             (parser_version,),
         ).fetchone()
-        assert fact_candidate_row == (2, 2, 2, 2, 2)
+        assert fact_candidate_row == (2, 2, 0, 2, 2)
 
         golden_path_roles = {
             row[0]
@@ -331,7 +331,7 @@ def exercise_curated_official_ingestion_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()[0]
-        assert fact_evidence_count == 2
+        assert fact_evidence_count == 4
 
         review_queue_count = connection.execute(
             """
@@ -760,19 +760,20 @@ def exercise_domain_api_and_repository_contracts() -> None:
     assert score_explanation["object_id"] == str(candidate_row[0])
     assert score_explanation["candidate_key"] == candidate_row[1]
     assert score_explanation["record_mode"] == "curated_official_fixture"
-    assert score_explanation["publication_status"] == "candidate"
+    assert score_explanation["publication_status"] == "ready_for_review"
     assert score_explanation["source_threshold"] == {
         "minimum_independent_sources": 2,
-        "independent_source_count": 1,
-        "met": False,
+        "independent_source_count": 2,
+        "met": True,
     }
-    assert score_explanation["raw_score"] > score_explanation["adjusted_score"] > 0
-    assert score_explanation["evidence_quality"] == 50
+    assert score_explanation["raw_score"] == score_explanation["adjusted_score"] > 0
+    assert score_explanation["evidence_quality"] == 100
     assert "human_review_verification" in score_explanation["missing_inputs"]
+    assert "independent_source_threshold>=2" not in score_explanation["missing_inputs"]
     assert "published_relationship_version" in score_explanation["missing_inputs"]
     assert score_explanation["profile_version"].startswith("balanced-v2@")
     assert score_explanation["model_version"]
-    assert len(score_explanation["evidence"]) == 1
+    assert len(score_explanation["evidence"]) == 2
     assert score_explanation["evidence"][0]["url"].startswith("https://")
     assert score_explanation["review_queue"][0]["status"] == "open"
     score_context = score_explanation["production_context"]
@@ -1759,11 +1760,11 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
         }
         for row in relationship_rows:
             qualifiers = row[3]
-            assert row[4] == 1
+            assert row[4] == 2
             assert qualifiers["record_mode"] == "curated_official_fixture"
             assert qualifiers["fixture_review_only_not_production_clearance"] is True
-            assert qualifiers["source_threshold_policy"]["independent_source_count"] == 1
-            assert qualifiers["source_threshold_policy"]["met_by_review_override"] is True
+            assert qualifiers["source_threshold_policy"]["independent_source_count"] == 2
+            assert qualifiers["source_threshold_policy"]["met_by_review_override"] is False
 
         relationship_evidence_row = connection.execute(
             """
@@ -1784,7 +1785,7 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
             """,
             (REVIEWED_DECISION_SET_KEY,),
         ).fetchone()
-        assert relationship_evidence_row == (2, 2, 2, 2)
+        assert relationship_evidence_row == (4, 4, 4, 4)
 
         materialized_entities = connection.execute(
             """
@@ -1821,7 +1822,7 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
             "A202",
             "true",
         )
-        assert snapshot_row[6:] == (2, 2)
+        assert snapshot_row[6:] == (2, 4)
 
         fact_version_payload_row = connection.execute(
             """
@@ -1853,7 +1854,7 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
     assert score["publication_status"] == "published"
     assert score["source_threshold"] == {
         "minimum_independent_sources": 2,
-        "independent_source_count": 1,
+        "independent_source_count": 2,
         "met": True,
     }
     assert score["review_status"] == "human_verified"
@@ -1871,7 +1872,7 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
     assert relationship_score["review_status"] == "human_verified"
     assert relationship_score["source_threshold"] == {
         "minimum_independent_sources": 2,
-        "independent_source_count": 1,
+        "independent_source_count": 2,
         "met": True,
     }
     assert relationship_score["fact_version"]["snapshot_key"] == REVIEWED_RELATIONSHIP_SNAPSHOT_KEY
@@ -1951,7 +1952,7 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
             "true",
             "false",
         )
-        assert owner_snapshot_row[6:] == (2, 2)
+        assert owner_snapshot_row[6:] == (2, 4)
 
         owner_relationship_rows = connection.execute(
             """
@@ -1993,7 +1994,7 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
             """,
             (OWNER_SIGNOFF_DECISION_SET_KEY,),
         ).fetchone()
-        assert owner_evidence_row == (2, 2, 2, 2)
+        assert owner_evidence_row == (4, 4, 4, 4)
 
         owner_fact_payload_row = connection.execute(
             """

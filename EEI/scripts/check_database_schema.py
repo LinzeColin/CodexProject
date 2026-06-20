@@ -1086,15 +1086,15 @@ def main() -> int:
                     (parser_version,),
                 )
             )
-            if raw_snapshot_count != 6:
+            if raw_snapshot_count != 8:
                 raise RuntimeError(
-                    f"Expected 6 curated official raw snapshots, found {raw_snapshot_count}"
+                    f"Expected 8 curated official raw snapshots, found {raw_snapshot_count}"
                 )
             if raw_snapshot_field_violations:
                 raise RuntimeError(
                     "Curated raw snapshots must preserve hash, payload and review state"
                 )
-            if source_document_count != 6:
+            if source_document_count != 8:
                 raise RuntimeError(
                     "Curated source documents must preserve parser version and raw storage URI"
                 )
@@ -1106,9 +1106,9 @@ def main() -> int:
                 raise RuntimeError("Curated entity resolution must record review status")
             if int(candidate_row[3]) < 6:
                 raise RuntimeError("Curated entity resolution must map known catalog entities")
-            if int(evidence_row[0]) != 6:
+            if int(evidence_row[0]) != 8:
                 raise RuntimeError(
-                    "Curated ingestion evidence chain must contain six rows: "
+                    "Curated ingestion evidence chain must contain eight rows: "
                     f"found total={int(evidence_row[0])}, context={int(evidence_row[3])}, "
                     f"supports={int(evidence_row[4])}, typed={int(evidence_row[5])}"
                 )
@@ -1121,12 +1121,12 @@ def main() -> int:
                     "Curated ingestion evidence chain must include four context rows: "
                     f"found {int(evidence_row[3])}"
                 )
-            if int(evidence_row[4]) != 2:
+            if int(evidence_row[4]) != 4:
                 raise RuntimeError(
-                    "Curated ingestion evidence chain must include two support rows: "
+                    "Curated ingestion evidence chain must include four support rows: "
                     f"found {int(evidence_row[4])}"
                 )
-            if int(evidence_row[5]) != 2:
+            if int(evidence_row[5]) != 4:
                 raise RuntimeError(
                     "Curated Golden Vertical must include typed candidate evidence: "
                     f"found {int(evidence_row[5])}"
@@ -1140,9 +1140,9 @@ def main() -> int:
                 """
                 SELECT
                   count(*) AS total,
-                  count(*) FILTER (WHERE publication_status = 'candidate') AS candidates,
+                  count(*) FILTER (WHERE publication_status = 'ready_for_review') AS ready,
                   count(*) FILTER (WHERE source_threshold_met = false) AS below_threshold,
-                  count(*) FILTER (WHERE review_status = 'machine_verified') AS verified,
+                  count(*) FILTER (WHERE review_status = 'ready_for_review') AS ready_review,
                   count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array') AS counters
                 FROM relationship_fact_candidates
                 WHERE parser_version = %s
@@ -1193,16 +1193,18 @@ def main() -> int:
             if int(fact_candidate_row[0]) != 2:
                 raise RuntimeError("Golden Vertical must load two relationship fact candidates")
             if int(fact_candidate_row[1]) != 2:
-                raise RuntimeError("Golden Vertical fact candidates must remain candidate status")
-            if int(fact_candidate_row[2]) != 2:
                 raise RuntimeError(
-                    "Single-source fact candidates must remain below source threshold"
+                    "Golden Vertical fact candidates must be ready for review"
+                )
+            if int(fact_candidate_row[2]) != 0:
+                raise RuntimeError(
+                    "Two-source fact candidates must satisfy the source threshold"
                 )
             if int(fact_candidate_row[3]) != 2:
-                raise RuntimeError("Fact candidates must preserve machine review status")
+                raise RuntimeError("Fact candidates must preserve ready review status")
             if int(fact_candidate_row[4]) != 2:
                 raise RuntimeError("Fact candidates must preserve counter_evidence arrays")
-            if fact_evidence_count != 2:
+            if fact_evidence_count != 4:
                 raise RuntimeError("Fact candidates must link to evidence chain rows")
             if review_queue_count != 2:
                 raise RuntimeError("Fact candidates must create open review queue items")

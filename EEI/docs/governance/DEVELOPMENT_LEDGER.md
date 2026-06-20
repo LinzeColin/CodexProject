@@ -79,11 +79,36 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the runner commit, remove A209 readiness artifacts, regenerate clean-room/release artifacts, and rerun validation.
 - Next step: execute and attach 4h operator soak, then 24h operator soak.
 
+### `ITER-20260621-002`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `944d9e0`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`
+- Goal: add second independent official-source closure for the two Golden Vertical relationship fact candidates without claiming A202 completion.
+- Assumptions: the added TSMC/ASML/NVIDIA official historical sources are acceptable supporting official-source anchors for local fixture evidence; live retrieval, legal clearance and real owner approval remain separate blockers.
+- Files read: curated ingestion loader, database schema checker, Golden Vertical fact candidates, integration tests, review fixtures, V5 synchronization notes and canonical governance files.
+- Files changed: Golden Vertical source anchors/candidates, curated ingestion loader, schema/integration/E2E expectations, review fixtures, status ledgers and governance task records.
+- Model changes: no scoring formula change; source-threshold policy remains `minimum_independent_sources=2`.
+- Parameter changes: no parameter value change.
+- Commands run: focused ruff, unit tests, task-pack validator, web typecheck, local integration skip check; full `make verify` and remote PostgreSQL CI are required before remote evidence can be recorded.
+- Test results: focused local checks passed where runnable; local PostgreSQL integration skipped because this host has no `DATABASE_URL`.
+- Successes: each Golden Vertical relationship candidate now has two official source anchors, `independent_source_count=2`, `source_threshold_met=true` and no source-threshold override in review fixtures.
+- Failures: live official retrieval, real production owner sign-off, formal legal/market clearance, and 4h/24h soak evidence remain incomplete.
+- Decisions: A202 remains `IN_PROGRESS`; second-source closure reduces one blocker but does not make any real fact production-approved.
+- Remaining risks: historical/supporting official sources may still be insufficient for final market/legal clearance without owner review.
+- Rollback: revert the second-source data/loader/test changes, regenerate clean-room/release artifacts, and rerun validation.
+- Next step: run full local verification, push for remote PostgreSQL/browser/live FastAPI CI proof, then execute the real live-source and owner-signoff closure.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
 - `EVENT-RECON-20260620-001`: recent T1207-T1209 evidence reconstructed from Git log and HANDOFF.
 - `EVENT-20260621-002`: remote CI validation for TASK-T1307 operator soak runner readiness.
+- `EVENT-20260621-003`: local implementation evidence for TASK-T1301/A202 second independent official-source closure.
 
 ## Unknown Historical Periods
 
