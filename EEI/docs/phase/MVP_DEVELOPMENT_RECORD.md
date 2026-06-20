@@ -2632,6 +2632,7 @@ Residual risks:
   - writes `score_results` for `relationship_fact_candidate` objects using the same confidence/evidence-quality formula as the explanation API;
   - advances `active_analysis_contexts.refresh_token` and `refresh_generation`;
   - logs `operation_logs.action_type='execute_score_recompute'`.
+- Hardened scheduler clock precision after GitHub Actions run `27870437760` exposed a race where PostgreSQL `scheduled_for DEFAULT now()` kept microseconds while the worker clock was truncated to whole seconds, making a newly queued `score_recompute` job temporarily invisible to `lease_next_job()`.
 - Extended the PostgreSQL integration contract so API enqueue -> scheduler `run_once` -> scoring run -> score_results -> refresh-token advance is verified in one flow.
 - Added unit coverage for the candidate scoring helper.
 
@@ -2668,6 +2669,7 @@ Residual risks:
 - Local `.venv/bin/python -m pytest -q tests/unit/test_scoring.py`: PASS, 2/2.
 - Local `.venv/bin/python scripts/validate_contracts.py`: PASS.
 - Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify` with non-sandbox browser permission after sandbox Chromium Mach-port denial: PASS; unit tests 15/15.
+- GitHub Actions `EEI validation` on `721959ec84832bf158b237bf3d131b4cdde28c15`: FAIL, run `27870437760`, job `82481349638`; Steps 7-9 passed, Step 10 `Verify G2 PostgreSQL integration` failed because `run_once(job_type='score_recompute')` could return `None` before the database-default `scheduled_for` timestamp became due. This was fixed by retaining microsecond precision in the scheduler clock.
 - Local `make verify-g2-db`: BLOCKED before tests because Docker is not installed in this environment.
 - PostgreSQL execution proof is expected from GitHub Actions G2 integration because this local environment does not provide Docker/PostgreSQL.
 
