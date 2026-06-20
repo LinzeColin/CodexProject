@@ -4,6 +4,8 @@ from apps.api.app.scoring import (
     event_score_metrics,
     industry_score_metrics,
     relationship_score_metrics,
+    score_result_score_metrics,
+    source_document_score_metrics,
 )
 
 
@@ -240,4 +242,100 @@ def test_industry_score_metrics_surfaces_missing_industry_context() -> None:
         "industry_taxonomy_hierarchy",
         "active_industry_status",
         "industry_fact_version",
+    ]
+
+
+def test_source_document_score_metrics_full_quality_when_downstream_evidence_exists() -> None:
+    metrics = source_document_score_metrics(
+        source_tier=1,
+        provenance_field_count=6,
+        parser_version_present=True,
+        downstream_evidence_count=3,
+        fact_version_present=True,
+        source_active=True,
+    )
+
+    assert metrics["raw_score"] == 100
+    assert metrics["evidence_quality"] == 100
+    assert metrics["adjusted_score"] == 100
+    assert metrics["coverage"] == 100
+    assert metrics["source_threshold"] == {
+        "minimum_independent_sources": 1,
+        "independent_source_count": 1,
+        "met": True,
+    }
+    assert metrics["missing_inputs"] == []
+
+
+def test_source_document_score_metrics_surfaces_missing_source_contract() -> None:
+    metrics = source_document_score_metrics(
+        source_tier=4,
+        provenance_field_count=3,
+        parser_version_present=False,
+        downstream_evidence_count=0,
+        fact_version_present=False,
+        source_active=False,
+    )
+
+    assert metrics["raw_score"] == 18
+    assert metrics["evidence_quality"] == 16
+    assert metrics["adjusted_score"] == 13.5
+    assert metrics["coverage"] == 0
+    assert metrics["source_threshold"]["met"] is False
+    assert metrics["missing_inputs"] == [
+        "tier_1_or_2_source",
+        "source_document_provenance_fields",
+        "source_document_parser_version",
+        "source_document_downstream_evidence>=1",
+        "source_document_fact_version",
+        "active_source",
+    ]
+
+
+def test_score_result_score_metrics_full_quality_when_active_run_is_complete() -> None:
+    metrics = score_result_score_metrics(
+        raw_score_present=True,
+        evidence_quality_present=True,
+        adjusted_score_present=True,
+        coverage_present=True,
+        contribution_count=2,
+        missing_inputs_is_array=True,
+        scoring_run_status="completed",
+        active_context_present=True,
+    )
+
+    assert metrics["raw_score"] == 100
+    assert metrics["evidence_quality"] == 100
+    assert metrics["adjusted_score"] == 100
+    assert metrics["coverage"] == 100
+    assert metrics["source_threshold"] == {
+        "minimum_independent_sources": 0,
+        "independent_source_count": 0,
+        "met": True,
+    }
+    assert metrics["missing_inputs"] == []
+
+
+def test_score_result_score_metrics_surfaces_incomplete_historical_result() -> None:
+    metrics = score_result_score_metrics(
+        raw_score_present=False,
+        evidence_quality_present=False,
+        adjusted_score_present=True,
+        coverage_present=False,
+        contribution_count=0,
+        missing_inputs_is_array=False,
+        scoring_run_status="failed",
+        active_context_present=False,
+    )
+
+    assert metrics["raw_score"] == 8.75
+    assert metrics["evidence_quality"] == 25
+    assert metrics["adjusted_score"] == 6.12
+    assert metrics["coverage"] == 16.67
+    assert metrics["missing_inputs"] == [
+        "score_result_metric_values",
+        "score_result_contributions",
+        "score_result_missing_inputs_array",
+        "completed_scoring_run",
+        "active_scoring_context",
     ]

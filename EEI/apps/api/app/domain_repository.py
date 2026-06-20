@@ -26,6 +26,8 @@ from .scoring import (
     event_score_metrics,
     industry_score_metrics,
     relationship_score_metrics,
+    score_result_score_metrics,
+    source_document_score_metrics,
 )
 
 
@@ -3714,10 +3716,23 @@ class DomainRepository:
                     object_id=object_id,
                     profile=profile,
                 )
+            if object_type == "source_document":
+                return self.source_document_score_explanation(
+                    connection=connection,
+                    object_id=object_id,
+                    profile=profile,
+                )
+            if object_type == "score_result":
+                return self.score_result_score_explanation(
+                    connection=connection,
+                    object_id=object_id,
+                    profile=profile,
+                )
             if object_type != "relationship_fact_candidate":
                 raise RepositoryError(
-                    "Only entity, event, industry, relationship_fact_candidate and relationship "
-                    "score explanations are implemented in the T1302/A203 API contract slice"
+                    "Only entity, event, industry, relationship_fact_candidate, relationship, "
+                    "source_document and score_result score explanations are implemented in the "
+                    "T1302/A203 API contract slice"
                 )
             row = connection.execute(
                 """
@@ -4388,6 +4403,225 @@ class DomainRepository:
             ),
         )
 
+    def source_document_score_explanation(
+        self,
+        *,
+        connection: psycopg.Connection[dict[str, Any]],
+        object_id: UUID,
+        profile: dict[str, Any],
+    ) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              sd.id,
+              sd.source_id,
+              s.code AS source_code,
+              s.name AS source_name,
+              s.base_url,
+              s.source_tier,
+              s.active AS source_active,
+              s.last_verified_at AS source_last_verified_at,
+              sd.external_id,
+              sd.url,
+              sd.title,
+              sd.publisher,
+              sd.document_date,
+              sd.observed_at,
+              sd.retrieved_at,
+              sd.content_hash,
+              sd.media_type,
+              sd.raw_storage_uri,
+              sd.parser_version,
+              COALESCE(raw_counts.raw_snapshot_count, 0)::int AS raw_snapshot_count,
+              latest_raw.parser_version AS raw_parser_version,
+              latest_raw.record_mode AS raw_record_mode,
+              latest_raw.validation_status AS raw_validation_status,
+              latest_raw.review_status AS raw_review_status,
+              COALESCE(evidence_counts.relationship_evidence_count, 0)::int
+                AS relationship_evidence_count,
+              COALESCE(evidence_counts.event_evidence_count, 0)::int
+                AS event_evidence_count,
+              COALESCE(evidence_counts.candidate_evidence_count, 0)::int
+                AS candidate_evidence_count,
+              COALESCE(evidence_counts.ingestion_evidence_count, 0)::int
+                AS ingestion_evidence_count,
+              COALESCE(evidence_counts.fact_version_evidence_count, 0)::int
+                AS fact_version_evidence_count,
+              COALESCE(evidence_counts.downstream_evidence_count, 0)::int
+                AS downstream_evidence_count,
+              latest_fact.id AS fact_version_id,
+              latest_fact.version_no AS fact_version_no,
+              latest_fact.fact_status::text AS fact_status,
+              latest_fact.record_mode AS fact_record_mode,
+              latest_fact.parser_version AS fact_parser_version,
+              latest_fact.payload AS fact_payload,
+              latest_snapshot.snapshot_key AS snapshot_key,
+              latest_snapshot.scope AS snapshot_scope,
+              latest_snapshot.status AS snapshot_status,
+              latest_snapshot.record_mode AS snapshot_record_mode
+            FROM source_documents sd
+            JOIN sources s ON s.id = sd.source_id
+            LEFT JOIN LATERAL (
+              SELECT count(*)::int AS raw_snapshot_count
+              FROM raw_source_snapshots rss
+              WHERE rss.source_document_id = sd.id
+            ) raw_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT rss.parser_version, rss.record_mode, rss.validation_status,
+                     rss.review_status
+              FROM raw_source_snapshots rss
+              WHERE rss.source_document_id = sd.id
+              ORDER BY rss.retrieved_at DESC, rss.created_at DESC
+              LIMIT 1
+            ) latest_raw ON true
+            LEFT JOIN LATERAL (
+              SELECT
+                (
+                  SELECT count(*)::int
+                  FROM relationship_evidence re
+                  WHERE re.source_document_id = sd.id
+                ) AS relationship_evidence_count,
+                (
+                  SELECT count(*)::int
+                  FROM event_evidence ee
+                  WHERE ee.source_document_id = sd.id
+                ) AS event_evidence_count,
+                (
+                  SELECT count(*)::int
+                  FROM relationship_fact_candidate_evidence rfce
+                  WHERE rfce.source_document_id = sd.id
+                ) AS candidate_evidence_count,
+                (
+                  SELECT count(*)::int
+                  FROM ingestion_evidence_chain iec
+                  WHERE iec.source_document_id = sd.id
+                ) AS ingestion_evidence_count,
+                (
+                  SELECT count(*)::int
+                  FROM fact_version_evidence fve
+                  WHERE fve.source_document_id = sd.id
+                ) AS fact_version_evidence_count,
+                (
+                  SELECT count(*)::int
+                  FROM (
+                    SELECT re.relationship_id::text AS downstream_id
+                    FROM relationship_evidence re
+                    WHERE re.source_document_id = sd.id
+                    UNION ALL
+                    SELECT ee.event_id::text AS downstream_id
+                    FROM event_evidence ee
+                    WHERE ee.source_document_id = sd.id
+                    UNION ALL
+                    SELECT rfce.candidate_id::text AS downstream_id
+                    FROM relationship_fact_candidate_evidence rfce
+                    WHERE rfce.source_document_id = sd.id
+                    UNION ALL
+                    SELECT iec.id::text AS downstream_id
+                    FROM ingestion_evidence_chain iec
+                    WHERE iec.source_document_id = sd.id
+                    UNION ALL
+                    SELECT fve.fact_version_id::text AS downstream_id
+                    FROM fact_version_evidence fve
+                    WHERE fve.source_document_id = sd.id
+                  ) downstream
+                ) AS downstream_evidence_count
+            ) evidence_counts ON true
+            LEFT JOIN LATERAL (
+              SELECT fv.*
+              FROM fact_versions fv
+              JOIN data_snapshots ds ON ds.id = fv.snapshot_id
+              WHERE fv.object_type = 'source_document'
+                AND fv.object_id = sd.id
+              ORDER BY
+                CASE ds.status WHEN 'active' THEN 0 ELSE 1 END,
+                fv.version_no DESC,
+                fv.created_at DESC
+              LIMIT 1
+            ) latest_fact ON true
+            LEFT JOIN data_snapshots latest_snapshot
+              ON latest_snapshot.id = latest_fact.snapshot_id
+            WHERE sd.id = %s
+            """,
+            (object_id,),
+        ).fetchone()
+        if row is None:
+            raise NotFoundError(f"Source document not found: {object_id}")
+        return self.source_document_score_explanation_payload(
+            row=row,
+            profile=profile,
+            production_context=self.production_context_for_connection(
+                connection,
+                as_of=None,
+                active_profile=profile,
+            ),
+        )
+
+    def score_result_score_explanation(
+        self,
+        *,
+        connection: psycopg.Connection[dict[str, Any]],
+        object_id: UUID,
+        profile: dict[str, Any],
+    ) -> dict[str, Any]:
+        row = connection.execute(
+            """
+            SELECT
+              sr.scoring_run_id,
+              sr.object_type AS scored_object_type,
+              sr.object_id,
+              sr.raw_score AS stored_raw_score,
+              sr.evidence_quality AS stored_evidence_quality,
+              sr.adjusted_score AS stored_adjusted_score,
+              sr.coverage AS stored_coverage,
+              COALESCE(sr.contributions, '[]'::jsonb) AS stored_contributions,
+              COALESCE(sr.missing_inputs, '[]'::jsonb) AS stored_missing_inputs,
+              scr.model_id,
+              scr.profile_version_id AS run_profile_version_id,
+              scr.data_snapshot_at,
+              scr.parameters,
+              scr.status AS scoring_run_status,
+              scr.started_at AS scoring_run_started_at,
+              scr.finished_at AS scoring_run_finished_at,
+              scr.content_hash AS scoring_run_content_hash,
+              sm.model_key,
+              sm.version AS model_definition_version,
+              sp.profile_key,
+              spv.version AS scoring_profile_version,
+              aac.context_key AS active_context_key,
+              aac.active_scoring_run_id,
+              aac.refresh_token,
+              aac.refresh_generation,
+              aac.status AS active_context_status,
+              aac.activated_at AS active_context_activated_at
+            FROM score_results sr
+            JOIN scoring_runs scr ON scr.id = sr.scoring_run_id
+            JOIN scoring_models sm ON sm.id = scr.model_id
+            JOIN scoring_profile_versions spv ON spv.id = scr.profile_version_id
+            JOIN scoring_profiles sp ON sp.id = spv.profile_id
+            LEFT JOIN active_analysis_contexts aac
+              ON aac.active_scoring_run_id = sr.scoring_run_id
+            WHERE sr.object_id = %s
+            ORDER BY
+              CASE WHEN aac.context_key = 'global' THEN 0 ELSE 1 END,
+              scr.finished_at DESC NULLS LAST,
+              scr.started_at DESC,
+              sr.scoring_run_id
+            LIMIT 1
+            """,
+            (object_id,),
+        ).fetchone()
+        if row is None:
+            raise NotFoundError(f"Score result not found for object: {object_id}")
+        return self.score_result_score_explanation_payload(
+            row=row,
+            profile=profile,
+            production_context=self.production_context_for_connection(
+                connection,
+                as_of=None,
+                active_profile=profile,
+            ),
+        )
+
     @staticmethod
     def score_explanation_payload(
         *,
@@ -4445,6 +4679,263 @@ class DomainRepository:
                 },
                 "evidence": evidence,
                 "review_queue": row["review_queue"] or [],
+                "production_context": production_context,
+                "scoring_service_version": SCORING_SERVICE_VERSION,
+            }
+        )
+
+    @staticmethod
+    def source_document_score_explanation_payload(
+        *,
+        row: dict[str, Any],
+        profile: dict[str, Any],
+        production_context: dict[str, Any],
+    ) -> dict[str, Any]:
+        fact_payload = row["fact_payload"] or {}
+        evidence = [
+            {
+                "source_document_id": row["id"],
+                "source_id": row["source_id"],
+                "source_code": row["source_code"],
+                "source_name": row["source_name"],
+                "source_tier": row["source_tier"],
+                "publisher": row["publisher"],
+                "title": row["title"],
+                "url": row["url"],
+                "document_date": row["document_date"],
+                "observed_at": row["observed_at"],
+                "retrieved_at": row["retrieved_at"],
+                "content_hash": row["content_hash"],
+                "media_type": row["media_type"],
+                "raw_storage_uri": row["raw_storage_uri"],
+                "role": "context",
+                "locator": row["raw_storage_uri"] or row["url"],
+            }
+        ]
+        provenance_fields = [
+            row["source_id"],
+            row["url"],
+            row["content_hash"],
+            row["observed_at"],
+            row["retrieved_at"],
+            row["publisher"] or row["title"],
+        ]
+        provenance_field_count = sum(1 for item in provenance_fields if item)
+        parser_version = (
+            row["parser_version"]
+            or row["raw_parser_version"]
+            or row["fact_parser_version"]
+        )
+        publication_status = (
+            "evidence_source"
+            if int(row["downstream_evidence_count"] or 0) > 0
+            else "registered_source_document"
+        )
+        review_status = (
+            fact_payload.get("review_status")
+            or row["raw_review_status"]
+            or "not_applicable"
+        )
+        metrics = source_document_score_metrics(
+            source_tier=int(row["source_tier"]),
+            provenance_field_count=provenance_field_count,
+            parser_version_present=parser_version is not None,
+            downstream_evidence_count=int(row["downstream_evidence_count"] or 0),
+            fact_version_present=row["fact_version_id"] is not None,
+            source_active=bool(row["source_active"]),
+        )
+        coverage_summary = {
+            "raw_snapshot_count": row["raw_snapshot_count"],
+            "relationship_evidence_count": row["relationship_evidence_count"],
+            "event_evidence_count": row["event_evidence_count"],
+            "candidate_evidence_count": row["candidate_evidence_count"],
+            "ingestion_evidence_count": row["ingestion_evidence_count"],
+            "fact_version_evidence_count": row["fact_version_evidence_count"],
+            "downstream_evidence_count": row["downstream_evidence_count"],
+            "provenance_field_count": provenance_field_count,
+            "parser_version_present": parser_version is not None,
+            "source_active": row["source_active"],
+            "source_last_verified_at": row["source_last_verified_at"],
+        }
+        return _jsonable(
+            {
+                "object_type": "source_document",
+                "object_id": row["id"],
+                "record_mode": row["fact_record_mode"]
+                or row["snapshot_record_mode"]
+                or row["raw_record_mode"]
+                or "source_document",
+                "fact_status": row["fact_status"] or row["raw_validation_status"] or "reported",
+                "publication_status": publication_status,
+                "source_threshold": metrics["source_threshold"],
+                "review_status": review_status,
+                "parser_version": parser_version,
+                "raw_score": metrics["raw_score"],
+                "evidence_quality": metrics["evidence_quality"],
+                "adjusted_score": metrics["adjusted_score"],
+                "coverage": metrics["coverage"],
+                "coverage_summary": coverage_summary,
+                "contributions": metrics["contributions"],
+                "missing_inputs": metrics["missing_inputs"],
+                "model_version": f"{profile['model_key']}@{profile['version']}",
+                "profile_version": f"{profile['profile_key']}@{profile['version']}",
+                "profile_version_id": profile["id"],
+                "structured_fact": fact_payload,
+                "counter_evidence": [],
+                "fact_version": (
+                    {
+                        "id": row["fact_version_id"],
+                        "version_no": row["fact_version_no"],
+                        "snapshot_key": row["snapshot_key"],
+                        "snapshot_scope": row["snapshot_scope"],
+                        "snapshot_status": row["snapshot_status"],
+                        "record_mode": row["fact_record_mode"]
+                        or row["snapshot_record_mode"],
+                        "parser_version": row["fact_parser_version"],
+                    }
+                    if row["fact_version_id"] is not None
+                    else None
+                ),
+                "source_document": {
+                    "id": row["id"],
+                    "source_id": row["source_id"],
+                    "source_code": row["source_code"],
+                    "source_name": row["source_name"],
+                    "base_url": row["base_url"],
+                    "source_tier": row["source_tier"],
+                    "source_active": row["source_active"],
+                    "external_id": row["external_id"],
+                    "url": row["url"],
+                    "title": row["title"],
+                    "publisher": row["publisher"],
+                    "document_date": row["document_date"],
+                    "observed_at": row["observed_at"],
+                    "retrieved_at": row["retrieved_at"],
+                    "content_hash": row["content_hash"],
+                    "media_type": row["media_type"],
+                    "raw_storage_uri": row["raw_storage_uri"],
+                },
+                "evidence": evidence,
+                "review_queue": [],
+                "production_context": production_context,
+                "scoring_service_version": SCORING_SERVICE_VERSION,
+            }
+        )
+
+    @staticmethod
+    def score_result_score_explanation_payload(
+        *,
+        row: dict[str, Any],
+        profile: dict[str, Any],
+        production_context: dict[str, Any],
+    ) -> dict[str, Any]:
+        stored_contributions = row["stored_contributions"] or []
+        stored_missing_inputs = row["stored_missing_inputs"] or []
+        active_context_present = row["active_context_key"] == "global"
+        metrics = score_result_score_metrics(
+            raw_score_present=row["stored_raw_score"] is not None,
+            evidence_quality_present=row["stored_evidence_quality"] is not None,
+            adjusted_score_present=row["stored_adjusted_score"] is not None,
+            coverage_present=row["stored_coverage"] is not None,
+            contribution_count=len(stored_contributions),
+            missing_inputs_is_array=isinstance(stored_missing_inputs, list),
+            scoring_run_status=row["scoring_run_status"],
+            active_context_present=active_context_present,
+        )
+        coverage_summary = {
+            "stored_value_field_count": sum(
+                1
+                for item in [
+                    row["stored_raw_score"],
+                    row["stored_evidence_quality"],
+                    row["stored_adjusted_score"],
+                    row["stored_coverage"],
+                ]
+                if item is not None
+            ),
+            "contribution_count": len(stored_contributions),
+            "missing_inputs_is_array": isinstance(stored_missing_inputs, list),
+            "scoring_run_status": row["scoring_run_status"],
+            "active_context_present": active_context_present,
+        }
+        return _jsonable(
+            {
+                "object_type": "score_result",
+                "object_id": row["object_id"],
+                "scored_object_type": row["scored_object_type"],
+                "score_result_key": (
+                    f"{row['scoring_run_id']}:{row['scored_object_type']}:"
+                    f"{row['object_id']}"
+                ),
+                "record_mode": "score_result",
+                "fact_status": row["scoring_run_status"],
+                "publication_status": (
+                    "active_score_result"
+                    if active_context_present
+                    else "historical_score_result"
+                ),
+                "source_threshold": metrics["source_threshold"],
+                "review_status": "not_applicable",
+                "parser_version": None,
+                "raw_score": metrics["raw_score"],
+                "evidence_quality": metrics["evidence_quality"],
+                "adjusted_score": metrics["adjusted_score"],
+                "coverage": metrics["coverage"],
+                "coverage_summary": coverage_summary,
+                "contributions": metrics["contributions"],
+                "missing_inputs": metrics["missing_inputs"],
+                "model_version": f"{profile['model_key']}@{profile['version']}",
+                "profile_version": f"{profile['profile_key']}@{profile['version']}",
+                "profile_version_id": profile["id"],
+                "structured_fact": {
+                    "stored_raw_score": row["stored_raw_score"],
+                    "stored_evidence_quality": row["stored_evidence_quality"],
+                    "stored_adjusted_score": row["stored_adjusted_score"],
+                    "stored_coverage": row["stored_coverage"],
+                    "stored_contributions": stored_contributions,
+                    "stored_missing_inputs": stored_missing_inputs,
+                },
+                "counter_evidence": [],
+                "score_result": {
+                    "scoring_run_id": row["scoring_run_id"],
+                    "object_type": row["scored_object_type"],
+                    "object_id": row["object_id"],
+                    "raw_score": row["stored_raw_score"],
+                    "evidence_quality": row["stored_evidence_quality"],
+                    "adjusted_score": row["stored_adjusted_score"],
+                    "coverage": row["stored_coverage"],
+                    "contributions": stored_contributions,
+                    "missing_inputs": stored_missing_inputs,
+                },
+                "scoring_run": {
+                    "id": row["scoring_run_id"],
+                    "model_id": row["model_id"],
+                    "profile_version_id": row["run_profile_version_id"],
+                    "data_snapshot_at": row["data_snapshot_at"],
+                    "parameters": row["parameters"],
+                    "status": row["scoring_run_status"],
+                    "started_at": row["scoring_run_started_at"],
+                    "finished_at": row["scoring_run_finished_at"],
+                    "content_hash": row["scoring_run_content_hash"],
+                    "model_key": row["model_key"],
+                    "model_definition_version": row["model_definition_version"],
+                    "profile_key": row["profile_key"],
+                    "scoring_profile_version": row["scoring_profile_version"],
+                },
+                "active_context": (
+                    {
+                        "context_key": row["active_context_key"],
+                        "active_scoring_run_id": row["active_scoring_run_id"],
+                        "refresh_token": row["refresh_token"],
+                        "refresh_generation": row["refresh_generation"],
+                        "status": row["active_context_status"],
+                        "activated_at": row["active_context_activated_at"],
+                    }
+                    if active_context_present
+                    else None
+                ),
+                "evidence": [],
+                "review_queue": [],
                 "production_context": production_context,
                 "scoring_service_version": SCORING_SERVICE_VERSION,
             }
