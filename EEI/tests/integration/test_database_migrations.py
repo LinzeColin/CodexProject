@@ -247,6 +247,8 @@ def exercise_curated_official_ingestion_contracts() -> None:
                    support_excerpt
             FROM ingestion_evidence_chain
             WHERE parser_version = %s
+              AND evidence_role = 'context'
+              AND structured_fact ? 'edge_publication'
             ORDER BY locator
             LIMIT 1
             """,
