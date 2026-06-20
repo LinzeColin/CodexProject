@@ -25,8 +25,8 @@ Updated: 2026-06-19 Australia/Sydney
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
 - Latest GitHub implementation commit proven by CI:
-  - `6e95b45` feat: add EEI saved-view trusted gateway identity
-  - GitHub Actions run `27875473970`, job `82494131119`: PASS; Steps 7-12 all succeeded.
+  - `a57d110` test: add EEI A211 live cross-route coverage
+  - GitHub Actions run `27876091338`, job `82495713946`: PASS; Steps 7-13 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 
 ## Completed
 
@@ -83,6 +83,8 @@ Updated: 2026-06-19 Australia/Sydney
 - Completed T404 with A049-A050 by GitHub Actions run `27839493483`; job `82395103164` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
 - Completed T1305/A207 saved-view trusted gateway identity binding: production defaults to `trusted_gateway`, signed headers are HMAC-SHA256 verified with TTL, missing secret/headers/invalid/expired signatures fail closed, and A207 is now `DONE`.
 - Completed T1305/A207 by GitHub Actions run `27875473970`; job `82494131119` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
+- Completed T1308/A211 production frontend live cross-route coverage: live FastAPI/PostgreSQL E2E now loads curated ingestion anchors and verifies production graph hydration, catalog inventory, relationship_fact_candidate score explanation, evidence snippets, supply-chain lens, evidence center refresh, Objects and Scope, Industries and System Status routes.
+- Completed T1308/A211 by GitHub Actions run `27876091338`; job `82495713946` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 
 ## Verification Evidence
 

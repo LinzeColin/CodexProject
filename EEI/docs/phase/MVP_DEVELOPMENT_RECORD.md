@@ -3075,3 +3075,45 @@ Residual risks:
 - This closes T1305/A207 with local and GitHub Actions evidence.
 - T1301/A202, T1302/A203, T1303/A204-A205, T1304/A206, T1307/A209, T1308/A211 and T1309/A210 remain v0.1 blockers.
 - T1307 4h and 24h operator soak still cannot be closed on the current host because Docker is not installed and the required duration has not been run.
+
+## 2026-06-21 - T1308/A211 live production frontend cross-route closure
+
+### Scope
+
+- Extended the live FastAPI/PostgreSQL E2E reset path to load curated official ingestion anchors before the API starts.
+- Added live A211 Playwright coverage for production graph hydration, catalog inventory, relationship_fact_candidate score explanation, evidence snippets, supply-chain lens controls, evidence center refresh, Objects and Scope, Industries and System Status routes.
+- Converted A211 from `IN_PROGRESS` to `DONE` after GitHub Actions proved the new live cross-route path.
+- Updated A211 evidence, task backlog, acceptance matrix, traceability, development status, v5 sync and release artifacts.
+
+### Files changed
+
+- `scripts/run_live_e2e_api.sh`
+- `tests/e2e/saved-view-live.spec.ts`
+- `artifacts/tests/a211/t1308_frontend_workspace_context_contract.json`
+- `data/task_backlog.csv`
+- `data/acceptance_matrix.csv`
+- `data/acceptance_traceability.csv`
+- `data/development_status_ledger.csv`
+- `scripts/validate_v5_production_readiness_sync.py`
+- `README.md`
+- `DEVELOPMENT_STATUS.md`
+- `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`
+
+### Acceptance mapping
+
+- T1308 -> A211.
+- A211 is now `DONE` for production componentized frontend routes, WorkspaceContext, real controls, disabled unfinished entries, persisted state/query wiring and live FastAPI/PostgreSQL cross-route hydration.
+
+### Validation
+
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.live.config.ts --list`: PASS; 3 live tests discovered including the new A211 live cross-route test.
+- Local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS after rerun with network access.
+- Local elevated `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/home.spec.ts`: PASS, 32/32 Playwright tests.
+- Local elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes governance, contract, prototype parity, GitHub governance, v5 sync, worker deployment validator, development/risk/release validation, scale benchmark, Chromium browser benchmark, soak smoke, secret scan, UI copy lint, ruff, web typecheck and unit tests 23/23.
+- GitHub Actions `EEI validation` on `a57d1108a3c30da79ef3e35b1d3617f2efd4293a`: PASS, run `27876091338`, job `82495713946`; Steps 7-13 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
+
+### Remaining gaps
+
+- This closes T1308/A211 with local and GitHub Actions evidence.
+- T1301/A202, T1302/A203, T1303/A204-A205, T1304/A206, T1307/A209 and T1309/A210 remain v0.1 blockers.
+- T1307 4h and 24h operator soak still cannot be closed on the current host because Docker is not installed and the required duration has not been run.
