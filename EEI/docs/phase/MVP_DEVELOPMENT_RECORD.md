@@ -2670,6 +2670,7 @@ Residual risks:
 - Local `.venv/bin/python scripts/validate_contracts.py`: PASS.
 - Local `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify` with non-sandbox browser permission after sandbox Chromium Mach-port denial: PASS; unit tests 15/15.
 - GitHub Actions `EEI validation` on `721959ec84832bf158b237bf3d131b4cdde28c15`: FAIL, run `27870437760`, job `82481349638`; Steps 7-9 passed, Step 10 `Verify G2 PostgreSQL integration` failed because `run_once(job_type='score_recompute')` could return `None` before the database-default `scheduled_for` timestamp became due. This was fixed by retaining microsecond precision in the scheduler clock.
+- GitHub Actions `EEI validation` on `b30f187c23d3bcb0da3ba2aac6cbcf195b4b5a30`: PASS, run `27870596002`, job `82481735289`; Steps 7-12 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 - Local `make verify-g2-db`: BLOCKED before tests because Docker is not installed in this environment.
 - PostgreSQL execution proof is expected from GitHub Actions G2 integration because this local environment does not provide Docker/PostgreSQL.
 
