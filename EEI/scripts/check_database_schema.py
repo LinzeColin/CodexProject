@@ -769,17 +769,37 @@ def main() -> int:
             evidence_row = rows(
                 connection,
                 """
+                WITH curated_sources AS (
+                  SELECT rss.id AS raw_snapshot_id, rss.source_document_id
+                  FROM raw_source_snapshots rss
+                  JOIN source_documents sd ON sd.id = rss.source_document_id
+                  WHERE rss.parser_version = %s
+                    AND sd.parser_version = %s
+                    AND (
+                      sd.raw_storage_uri LIKE 'data/nvidia_public_source_anchors.csv#%%'
+                      OR sd.raw_storage_uri LIKE 'data/golden_vertical_fact_candidates.json#%%'
+                    )
+                )
                 SELECT
-                  count(*) AS total,
-                  count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array') AS counters,
-                  count(*) FILTER (WHERE review_status = 'machine_verified') AS verified,
-                  count(*) FILTER (WHERE evidence_role = 'context') AS context_rows,
-                  count(*) FILTER (WHERE evidence_role = 'supports') AS support_rows,
-                  count(*) FILTER (WHERE relationship_type IS NOT NULL) AS typed_candidate_rows
-                FROM ingestion_evidence_chain
-                WHERE parser_version = %s
+                  count(iec.*) AS total,
+                  count(iec.*) FILTER (
+                    WHERE jsonb_typeof(iec.counter_evidence) = 'array'
+                  ) AS counters,
+                  count(iec.*) FILTER (
+                    WHERE iec.review_status = 'machine_verified'
+                  ) AS verified,
+                  count(iec.*) FILTER (WHERE iec.evidence_role = 'context') AS context_rows,
+                  count(iec.*) FILTER (WHERE iec.evidence_role = 'supports') AS support_rows,
+                  count(iec.*) FILTER (
+                    WHERE iec.relationship_type IS NOT NULL
+                  ) AS typed_candidate_rows
+                FROM curated_sources cs
+                JOIN ingestion_evidence_chain iec
+                  ON iec.raw_snapshot_id = cs.raw_snapshot_id
+                 AND iec.source_document_id = cs.source_document_id
+                WHERE iec.parser_version = %s
                 """,
-                (parser_version,),
+                (parser_version, parser_version, parser_version),
             )[0]
             nvidia_subject_count = int(
                 scalar(
@@ -831,7 +851,9 @@ def main() -> int:
                 raise RuntimeError("Curated entity resolution must map known catalog entities")
             if int(evidence_row[0]) != 6:
                 raise RuntimeError(
-                    "Curated ingestion evidence chain must contain six rows"
+                    "Curated ingestion evidence chain must contain six rows: "
+                    f"found total={int(evidence_row[0])}, context={int(evidence_row[3])}, "
+                    f"supports={int(evidence_row[4])}, typed={int(evidence_row[5])}"
                 )
             if int(evidence_row[1]) != int(evidence_row[0]):
                 raise RuntimeError("Curated evidence chain counter_evidence must be an array")
@@ -839,12 +861,19 @@ def main() -> int:
                 raise RuntimeError("Curated evidence chain must preserve review status")
             if int(evidence_row[3]) != 4:
                 raise RuntimeError(
-                    "Curated ingestion evidence chain must include four context rows"
+                    "Curated ingestion evidence chain must include four context rows: "
+                    f"found {int(evidence_row[3])}"
                 )
             if int(evidence_row[4]) != 2:
-                raise RuntimeError("Curated ingestion evidence chain must include two support rows")
+                raise RuntimeError(
+                    "Curated ingestion evidence chain must include two support rows: "
+                    f"found {int(evidence_row[4])}"
+                )
             if int(evidence_row[5]) != 2:
-                raise RuntimeError("Curated Golden Vertical must include typed candidate evidence")
+                raise RuntimeError(
+                    "Curated Golden Vertical must include typed candidate evidence: "
+                    f"found {int(evidence_row[5])}"
+                )
             if nvidia_subject_count != 4:
                 raise RuntimeError("Every curated anchor must resolve the NVIDIA subject")
             if tsmc_candidate_count < 2:

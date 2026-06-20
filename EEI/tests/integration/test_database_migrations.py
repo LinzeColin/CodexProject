@@ -207,16 +207,30 @@ def exercise_curated_official_ingestion_contracts() -> None:
 
         evidence_row = connection.execute(
             """
-            SELECT count(*),
-                   count(*) FILTER (WHERE evidence_role = 'context'),
-                   count(*) FILTER (WHERE evidence_role = 'supports'),
-                   count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array'),
-                   count(*) FILTER (WHERE review_status = 'machine_verified'),
-                   count(*) FILTER (WHERE relationship_type IS NOT NULL)
-            FROM ingestion_evidence_chain
-            WHERE parser_version = %s
+            WITH curated_sources AS (
+              SELECT rss.id AS raw_snapshot_id, rss.source_document_id
+              FROM raw_source_snapshots rss
+              JOIN source_documents sd ON sd.id = rss.source_document_id
+              WHERE rss.parser_version = %s
+                AND sd.parser_version = %s
+                AND (
+                  sd.raw_storage_uri LIKE 'data/nvidia_public_source_anchors.csv#%%'
+                  OR sd.raw_storage_uri LIKE 'data/golden_vertical_fact_candidates.json#%%'
+                )
+            )
+            SELECT count(iec.*),
+                   count(iec.*) FILTER (WHERE iec.evidence_role = 'context'),
+                   count(iec.*) FILTER (WHERE iec.evidence_role = 'supports'),
+                   count(iec.*) FILTER (WHERE jsonb_typeof(iec.counter_evidence) = 'array'),
+                   count(iec.*) FILTER (WHERE iec.review_status = 'machine_verified'),
+                   count(iec.*) FILTER (WHERE iec.relationship_type IS NOT NULL)
+            FROM curated_sources cs
+            JOIN ingestion_evidence_chain iec
+              ON iec.raw_snapshot_id = cs.raw_snapshot_id
+             AND iec.source_document_id = cs.source_document_id
+            WHERE iec.parser_version = %s
             """,
-            (parser_version,),
+            (parser_version, parser_version, parser_version),
         ).fetchone()
         assert evidence_row == (6, 4, 2, 6, 6, 2)
 
