@@ -29,8 +29,8 @@
     },
     "validation_status": {
       "CATALOG_VALIDATED": 11,
-      "CI_VALIDATED": 10,
-      "LOCAL_E2E_VALIDATED": 4,
+      "CI_VALIDATED": 11,
+      "LOCAL_E2E_VALIDATED": 3,
       "LOCAL_VALIDATED": 9,
       "SPEC_VALIDATED": 4,
       "VALIDATED": 8

@@ -3230,6 +3230,8 @@ Residual risks:
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-clean-room-release`: PASS.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-release-artifacts`: PASS after regenerating release checksums from the updated clean-room ZIP.
 - Elevated `UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes governance, contract validation, v5 sync, release validation, scale/browser/soak smoke, secret scan, UI copy lint, ruff, web typecheck and unit tests 27/27.
+- GitHub Actions run `27878302123` / job `82501418538` for commit `ac6693539c4ff961a126921d56c043b7084cc27d`: FAIL in Step 10 G2 PostgreSQL integration because the entity score endpoint returned fixture record mode as `publication_status=fixture` where the contract expected published entity publication semantics.
+- GitHub Actions run `27878398112` / job `82501662399` for commit `d2f35dbba2c508a6d39debf6a9c2431a1f694066`: PASS after fixing entity score `publication_status` to report `published` for active or fixture-backed entity records while retaining fixture semantics in `entity_status` and `record_mode`; Steps 10 G2 PostgreSQL integration, 11 browser E2E and 12 live FastAPI/PostgreSQL E2E all passed.
 
 ### Remaining gaps
 
