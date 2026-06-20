@@ -22,6 +22,10 @@ Gate 2 / PFI-005 now has a formal browser UAT acceptance contract for the PFI
 Web Shell: four named Chinese user journeys, same-shell function panels,
 WCAG structural proof, performance budgets, and no legacy-page primary
 navigation.
+Gate 3 / PFI-006 now has strong local Markets vertical evidence: deterministic
+Golden market bars, market event/hotspot/sentiment cards, same-shell market UI
+controls, portfolio overlay, alerts/saved views, Operational Store
+task/evidence records, and rollback proof.
 
 Execution order:
 
@@ -93,6 +97,9 @@ Current PFI decisions:
   execute real browser clicks through 首页, 策略实验室, 研究, 政策雷达, and
   数据与系统 journeys, with fail-closed JSON evidence and performance/a11y
   budgets.
+- PFI-006 Markets acceptance now uses `scripts/pfi006MarketsAcceptance.sh` to
+  prove the local market vertical chain with `PFI006MarketsVerticalAcceptanceV1`
+  evidence and no provider, broker, LLM, order, or private-holdings dependency.
 - Next product target is Phase 6 deployment preparation on the target Mac while
   keeping research-only boundaries.
 

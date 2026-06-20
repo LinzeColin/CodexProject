@@ -84,6 +84,16 @@ Current sequence:
     Latest local browser run returned `status=Pass`, `pass=126`, `fail=0`,
     `info=2`.
     Gate 2 must still be re-run as part of final Gate 7 release packaging.
+22. Gate 3 / PFI-006 Markets:
+    Markets vertical acceptance is implemented. `scripts/pfi006MarketsAcceptance.sh`
+    emits `PFI006MarketsVerticalAcceptanceV1` evidence for deterministic
+    market bars -> event/hotspot/sentiment cards -> UI read model -> same-shell
+    Chinese Web Shell controls -> task/evidence records -> portfolio overlay
+    -> alerts/saved views -> Golden metrics -> rollback proof. Latest local
+    run returned `status=Pass`, `pass=13`, `fail=0`, event_count=90,
+    alerts=2, saved_views=2, rollback=Pass. Target gate passed 52 tests plus
+    secret scan; UI visual acceptance passed 98/98 after market shell changes.
+    Gate 3 still needs equivalent closure for PFI-007, PFI-008, and PFI-009.
 
 ## Current Local State
 
@@ -227,6 +237,14 @@ Current sequence:
   interaction performance budgets. Latest local evidence: focused contracts
   63 passed; browser acceptance 126 pass / 0 fail; target gate 46 passed plus
   secret scan; legacy identity regression 2 passed; `git diff --check` passed.
+- PFI-006 Markets vertical acceptance complete for local Gate 3 evidence:
+  `src/pfi_os/application/pfi006_markets_acceptance.py`,
+  `scripts/pfi006MarketsAcceptance.sh`,
+  `tests/contract/test_pfi006_markets_vertical_acceptance.py`, and
+  `docs/development/PFI006_MARKETS_VERTICAL_ACCEPTANCE.md`. Latest acceptance
+  passed 13/13 with deterministic Golden metrics and rollback proof. Focused
+  tests passed 62/62, target gate passed 52 tests plus secret scan, and UI
+  visual acceptance passed 98/98.
 
 ## Start Here
 
@@ -240,22 +258,23 @@ Read in this order:
 6. `docs/development/PFI_REPRODUCIBLE_ENV.md`
 7. `docs/development/PFI004_GOLDEN_PIT.md`
 8. `docs/development/PFI005_GATE2_SHELL_ACCEPTANCE.md`
-9. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
-10. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
-11. `docs/data/PFI_DATA_BOUNDARIES.md`
-12. `docs/data/PFI_SOURCE_OF_TRUTH.md`
-13. `docs/ux/PFI_UX_CONTRACT.md`
-14. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
-15. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
-16. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
-17. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
-18. `docs/phase/PHASE_B_MARKETS.md`
-19. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
-20. `docs/phase/PHASE_B_STRATEGY_LAB.md`
-21. `docs/phase/PHASE_B_PORTFOLIO.md`
-22. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
-23. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
-24. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
+9. `docs/development/PFI006_MARKETS_VERTICAL_ACCEPTANCE.md`
+10. `docs/product/PFI_OS_PRODUCT_CONSTITUTION.md`
+11. `docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md`
+12. `docs/data/PFI_DATA_BOUNDARIES.md`
+13. `docs/data/PFI_SOURCE_OF_TRUTH.md`
+14. `docs/ux/PFI_UX_CONTRACT.md`
+15. `docs/ux/PFI_WEB_SHELL_ACCEPTANCE.md`
+16. `docs/architecture/PFI_TARGET_ARCHITECTURE.md`
+17. `docs/phase/PHASE_A_DATA_FOUNDATION.md`
+18. `docs/phase/PHASE_A_COMPLETION_AUDIT.md`
+19. `docs/phase/PHASE_B_MARKETS.md`
+20. `docs/phase/PHASE_B_RESEARCH_POLICY.md`
+21. `docs/phase/PHASE_B_STRATEGY_LAB.md`
+22. `docs/phase/PHASE_B_PORTFOLIO.md`
+23. `docs/phase/PHASE_C_WORKFLOW_RUNTIME.md`
+24. `docs/phase/PHASE_D_DEPLOYMENT_READINESS.md`
+25. `docs/phase/PHASE_5_ACCEPTANCE_PACKAGE.md`
 24. `docs/phase/V0_1_1_FINDINGS_BASELINE.md`
 25. `docs/archive/legacy-migration.md`
 

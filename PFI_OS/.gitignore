@@ -26,6 +26,7 @@ data/systemAudit/UIVisualAcceptance*.log
 data/systemAudit/PFIGate2ShellAcceptance*.json
 data/systemAudit/PFIGate2ShellAcceptance*.png
 data/systemAudit/PFIGate2ShellAcceptance*.log
+data/systemAudit/PFI006MarketsAcceptance*.json
 data/integrations/site52etf/*
 !data/integrations/site52etf/.gitkeep
 data/researchBus/chatInbox/**
