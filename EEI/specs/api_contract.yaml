@@ -1066,6 +1066,76 @@ components:
         evidence_count:
           type: integer
           minimum: 1
+    ProductionContext:
+      type: object
+      required:
+      - schema_version
+      - graph_query_version
+      - scoring_service_version
+      - record_modes
+      - publication_policy
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - production-context-v1
+        request_as_of:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        data_snapshot:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+        active_scoring_profile_version_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        active_scoring_profile:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+        graph_query_version:
+          type: string
+          enum:
+          - bounded-recursive-graph-v1
+        scoring_service_version:
+          type: string
+          enum:
+          - candidate-score-explanation-v1
+        record_modes:
+          type: object
+          additionalProperties: true
+        candidate_fact_summary:
+          type: object
+          additionalProperties: true
+        publication_policy:
+          type: object
+          required:
+          - published_relationship_table
+          - candidate_fact_table
+          - relationship_fact_candidates_in_graph_edges
+          - publish_requires_source_threshold
+          - publish_requires_human_review
+          - minimum_independent_sources
+          properties:
+            published_relationship_table:
+              type: string
+            candidate_fact_table:
+              type: string
+            relationship_fact_candidates_in_graph_edges:
+              type: boolean
+            publish_requires_source_threshold:
+              type: boolean
+            publish_requires_human_review:
+              type: boolean
+            minimum_independent_sources:
+              type: integer
+              minimum: 1
     GraphResponse:
       type: object
       required:
@@ -1076,6 +1146,7 @@ components:
       - query
       - truncation
       - continuation
+      - production_context
       properties:
         as_of:
           type: string
@@ -1215,6 +1286,8 @@ components:
           type: array
           items:
             type: string
+        production_context:
+          $ref: '#/components/schemas/ProductionContext'
     RelationshipDetail:
       allOf:
       - $ref: '#/components/schemas/GraphEdge'
@@ -1310,6 +1383,7 @@ components:
       - paths
       - truncated
       - coverage
+      - production_context
       properties:
         as_of:
           type: string
@@ -1390,6 +1464,8 @@ components:
           type: array
           items:
             type: string
+        production_context:
+          $ref: '#/components/schemas/ProductionContext'
     Event:
       type: object
       required:
@@ -2445,6 +2521,8 @@ components:
       required:
       - object_type
       - object_id
+      - publication_status
+      - source_threshold
       - raw_score
       - evidence_quality
       - adjusted_score
@@ -2453,12 +2531,18 @@ components:
       - missing_inputs
       - model_version
       - profile_version
+      - production_context
       properties:
         object_type:
           type: string
         object_id:
           type: string
           format: uuid
+        publication_status:
+          type: string
+        source_threshold:
+          type: object
+          additionalProperties: true
         raw_score:
           type:
           - number
@@ -2498,6 +2582,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EvidenceSummary'
+        production_context:
+          $ref: '#/components/schemas/ProductionContext'
     AuditLog:
       type: object
       required:

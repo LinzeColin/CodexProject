@@ -121,7 +121,7 @@ T1214,G0,P0,"Map risk controls to functions, tasks, acceptance and release gates
 T1215,G9,P0,"Run clean-room governance, prototype, PDF and ZIP validation","T1210,T1212,T1214",A200,DONE
 T1300,G2,P0,"Harden PostgreSQL production migrations, reversibility and fact/evidence/time/version layers",T1215,A201,DONE
 T1301,G7,P0,"Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical",T1300,A202,IN PROGRESS
-T1302,G4,P0,"Complete production API, recursive graph query and scoring service contracts",T1301,A203,NOT STARTED
+T1302,G4,P0,"Complete production API, recursive graph query and scoring service contracts",T1301,A203,IN PROGRESS
 T1303,G6,P0,"Implement transactional model config activation and atomic global refresh",T1302,"A204,A205",NOT STARTED
 T1304,G7,P0,"Implement scheduler auto wake, idempotency, retry, heartbeat, graceful shutdown and dead-letter",T1301,A206,NOT STARTED
 T1305,G4,P0,"Implement server-side saved views, optimistic conflict control and recovery",T1302,A207,NOT STARTED

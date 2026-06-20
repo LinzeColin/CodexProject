@@ -36,7 +36,7 @@ EXPECTED_TASKS = {
 
 IMPLEMENTED_TASKS = {"T1300": "A201"}
 
-PARTIAL_TASKS = {"T1301": "A202"}
+PARTIAL_TASKS = {"T1301": "A202", "T1302": "A203"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -58,7 +58,14 @@ PARTIAL_EVIDENCE = {
         "scripts/check_database_schema.py",
         "tests/integration/test_database_migrations.py",
         "artifacts/tests/a202/t1301_curated_official_ingestion_contract.json",
-    }
+    },
+    "T1302": {
+        "apps/api/app/domain.py",
+        "apps/api/app/domain_repository.py",
+        "specs/api_contract.yaml",
+        "tests/integration/test_database_migrations.py",
+        "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
+    },
 }
 
 EXPECTED_PARAMETERS = {

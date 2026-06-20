@@ -45,4 +45,4 @@ bash scripts/preflight.sh
 codex exec --sandbox read-only - < prompts/01_PLAN_ONLY.md | tee artifacts/01_plan_output.txt
 ```
 
-先审查 G0 只读计划，再允许 workspace-write。原型使用 fixture；T1300 PostgreSQL 可回滚迁移与 fact/evidence/time/version 分层已实现。T1301 已开始：NVIDIA/ASML 官方来源快照可写入 raw snapshot、实体解析候选、Golden Vertical 关系事实候选、复核队列和证据链，但 A202 仍未关闭。live/full-text 采集、独立来源交叉验证、正式关系事实发布、生产 API、递归图查询、评分服务、模型事务激活、原子刷新、调度、保存视图、规模压测、soak、生产组件化前端和正式品牌清权仍是 v0.1 阻断项。
+先审查 G0 只读计划，再允许 workspace-write。原型使用 fixture；T1300 PostgreSQL 可回滚迁移与 fact/evidence/time/version 分层已实现。T1301 已开始：NVIDIA/ASML 官方来源快照可写入 raw snapshot、实体解析候选、Golden Vertical 关系事实候选、复核队列和证据链，但 A202 仍未关闭。T1302 已开始：生产上下文、递归图/路径 publication policy 和 relationship_fact_candidate 评分解释合同已接入，但 A203 仍未关闭。live/full-text 采集、独立来源交叉验证、正式关系事实发布、完整多对象评分服务、模型事务激活、原子刷新、调度、保存视图、规模压测、soak、生产组件化前端和正式品牌清权仍是 v0.1 阻断项。

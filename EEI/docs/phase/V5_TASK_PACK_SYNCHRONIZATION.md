@@ -33,7 +33,7 @@ EEI identity is unchanged:
 |---|---|---|---|---|
 | PostgreSQL database and reversible migrations | ARCH-001 | T1300 | A201 | DONE |
 | Real data ingestion, entity resolution and evidence chain | ARCH-003, UX-010 | T1301 | A202 | IN_PROGRESS |
-| Production API, recursive graph query and scoring service | ARCH-002, UX-008, UX-011 | T1302 | A203 | NOT_STARTED |
+| Production API, recursive graph query and scoring service | ARCH-002, UX-008, UX-011 | T1302 | A203 | IN_PROGRESS |
 | Model config versioning, transactional activation and atomic global refresh | STRESS-010 | T1303 | A204, A205 | NOT_STARTED |
 | Scheduler, auto wake, idempotency, retry and dead-letter | STRESS-007 | T1304 | A206 | NOT_STARTED |
 | Server-side saved views, conflict control and recovery | STRESS-011 | T1305 | A207 | NOT_STARTED |
@@ -44,7 +44,7 @@ EEI identity is unchanged:
 
 ## Implementation Boundaries
 
-T1301-T1309 remain MVP production blockers. T1300/A201 is implemented by the `0003_production_fact_version_layers` migration and its schema/integration checks. T1301/A202 is in progress through the `0004_curated_ingestion_audit_layers` and `0005_relationship_fact_candidates` migrations plus `scripts/load_curated_ingestion_anchors.py`, but it is not release-ready until live/full-text ingestion, independently sourced reviewed Golden Vertical facts and review approval evidence are complete. Each remaining task must close in a separate bounded implementation run with:
+T1301-T1309 remain MVP production blockers. T1300/A201 is implemented by the `0003_production_fact_version_layers` migration and its schema/integration checks. T1301/A202 is in progress through the `0004_curated_ingestion_audit_layers` and `0005_relationship_fact_candidates` migrations plus `scripts/load_curated_ingestion_anchors.py`, but it is not release-ready until live/full-text ingestion, independently sourced reviewed Golden Vertical facts and review approval evidence are complete. T1302/A203 is now in progress through production context on graph/path responses and candidate fact score explanations, but it is not closed until the remaining production API, multi-object scoring service and downstream release gates have current evidence. Each remaining task must close in a separate bounded implementation run with:
 
 - explicit files and services changed;
 - migration or rollback path where applicable;
