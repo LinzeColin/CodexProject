@@ -692,3 +692,36 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_replay.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_replay.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md"]
+
+  - formula_id: "FORM-ADP-027"
+    model_id: "MOD-ADP-025"
+    assumption_ids: ["ASM-ADP-028", "ASM-ADP-026", "ASM-ADP-022"]
+    status: "active"
+    expression: "A trial recovery evidence report passes only when the failure report validates as adp-scheduled-execution-v1 daily-run with status blocked, failed, or degraded, exit_code 2, production_evidence_ready false, blocking reasons, and a real sent notification; the recovery report validates as adp-scheduled-execution-v1 daily-run with status succeeded, exit_code 0, production_evidence_ready true, a real sent notification, daily run, Release, SMTP, and resource refs, and no unsupported or misleading publication flags; both failure_ref and recovery_ref must be durable refs. When both reports include daily_run_report.date, the dates must match. Blocked recovery reports cannot be used as recovery_ref annotation evidence."
+    variables:
+      - name: "failure_execution_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "failed, blocked, or degraded adp-scheduled-execution-v1 daily-run report"
+      - name: "recovery_execution_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "succeeded production-ready adp-scheduled-execution-v1 daily-run report"
+      - name: "notification_reports"
+        data_type: "object"
+        unit: "SMTP delivery evidence"
+        input_domain: "sent adp-smtp-delivery-v1 reports with delivery_ref"
+      - name: "recovery_evidence_refs"
+        data_type: "object"
+        unit: "evidence references"
+        input_domain: "daily_run_ref, release_ref, email_ref, resource_gate_ref"
+      - name: "failure_ref_and_recovery_ref"
+        data_type: "str"
+        unit: "durable evidence refs"
+        input_domain: "GitHub Actions artifact, private Release, or equivalent refs containing a scheme"
+    constraints: "The recovery builder does not rerun the scheduler, send email, upload Releases, fetch arXiv, generate media, mutate trial evidence, or claim production acceptance."
+    missing_policy: "Invalid scheduled reports, dry-run or missing notifications, non-production-ready recovery evidence, missing refs, unsafe publication flags, or mismatched dates produce a blocked recovery report."
+    output_range: "trial recovery evidence report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_recovery.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md"]

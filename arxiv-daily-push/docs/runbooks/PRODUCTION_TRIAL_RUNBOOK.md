@@ -197,6 +197,26 @@ coverage, at least 7 consecutive days for weekly replay, at least 30 consecutive
 days for monthly replay, and a non-empty durable ref. It does not create Release
 assets, send email, generate media, or mutate the trial ledger.
 
+For recovery drill evidence, first archive both the failed/degraded scheduled
+daily-run report and the recovered production-ready rerun report. Then build the
+recovery evidence report:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push build-trial-recovery-evidence \
+  --failure-execution <failed-or-degraded-scheduled-execution.json> \
+  --recovery-execution <recovered-scheduled-execution.json> \
+  --generated-at <ISO timestamp> \
+  --failure-ref <failure-evidence-ref> \
+  --recovery-ref <recovery-evidence-ref> \
+  --json
+```
+
+The recovery command requires a real sent failure notification, a recovered
+`production_evidence_ready=true` daily-run report with daily run, Release, SMTP,
+and resource refs, and durable failure/recovery refs. It does not rerun the
+scheduler, send mail, upload Releases, mutate the trial ledger, or claim
+production acceptance.
+
 Then merge the explicit evidence refs with:
 
 ```bash

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.15 - 2026-06-22
+
+- Added `adp build-trial-recovery-evidence` and `adp-trial-recovery-v1` to build fail-closed recovery drill evidence from a failed/degraded scheduled daily-run and a recovered production-ready rerun.
+- Added recovery validation requiring real sent failure/recovery notifications, production-ready recovery refs, matching daily dates when available, and durable failure/recovery evidence refs.
+- Added recovery schema and tests covering pass, dry-run failure notification blocking, missing recovery ref blocking, non-production-ready recovery blocking, and CLI JSON output.
+
 ## 0.11.14 - 2026-06-22
 
 - Added `adp build-trial-replay-evidence` and `adp-trial-replay-v1` to build fail-closed weekly/monthly replay evidence from the accumulated trial ledger.
