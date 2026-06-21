@@ -375,3 +375,20 @@ tasks:
     target_version: "0.11.11"
     completed_version: "0.11.11"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-LEDGER-STATE-013"
+    phase: "E"
+    objective: "Persist the trial evidence ledger state across scheduled GitHub Actions runs."
+    scope: "Workflow previous-artifact restore, state export CLI, state artifact upload, scheduler validation, tests, runbook, version and governance records."
+    non_scope: "No Git-committed state, no media/model/cache artifact retention, no secret storage, no default real SMTP send, no default Release upload, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-LEDGER-012"]
+    required_files: ["src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml", "tests/test_trial_ledger.py", "tests/test_production_scheduler.py", "docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-LEDGER-STATE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_ledger.py arxiv-daily-push/tests/test_production_scheduler.py arxiv-daily-push/tests/test_cli.py -q", "bash -n /tmp/resolve-trial-ledger-state.sh", "bash -n /tmp/export-trial-evidence-ledger-state.sh", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial ledger state tests: 15 tests OK", "workflow restore/export bash syntax: pass", "export-trial-ledger-state fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md", "arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    risk: "Real artifact restore still depends on default-branch workflow runs, artifact retention, a provisioned runner, and GitHub Actions token access."
+    rollback: "Revert trial ledger state restore/export workflow changes, export command, tests, and restore version 0.11.11."
+    target_version: "0.11.12"
+    completed_version: "0.11.12"
+    unknown_task_ids: []

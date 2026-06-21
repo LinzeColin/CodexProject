@@ -9,29 +9,29 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - CI mode: `required`
-- Product version: `0.11.11`
-- Model versions: `MOD-ADP-001:adp-foundation-v1, MOD-ADP-002:adp-ranking-v1, MOD-ADP-003:adp-claim-gate-v1, +18`
-- Parameter profile versions: `adp-acceptance-parameters:adp-acceptance-parameters-v1.2, adp-arxiv-adapter-parameters:adp-arxiv-adapter-parameters-v1, adp-contract-parameters:adp-contract-parameters-v1, +18`
-- Current iteration: `ITER-20260621-022`
+- Product version: `0.11.12`
+- Model versions: `MOD-ADP-001:adp-foundation-v1, MOD-ADP-002:adp-ranking-v1, MOD-ADP-003:adp-claim-gate-v1, +19`
+- Parameter profile versions: `adp-acceptance-parameters:adp-acceptance-parameters-v1.2, adp-arxiv-adapter-parameters:adp-arxiv-adapter-parameters-v1, adp-contract-parameters:adp-contract-parameters-v1, +19`
+- Current iteration: `ITER-20260621-023`
 - Current phase: `E`
-- Current gate: `ADP-PHASE11-TRIAL-LEDGER-PASS`
-- Model count: `21`
-- Formula count: `23`
-- Parameter count: `112`
-- Task count: `22`
-- Unbound event count: `29`
+- Current gate: `ADP-PHASE11-TRIAL-LEDGER-STATE-PASS`
+- Model count: `22`
+- Formula count: `24`
+- Parameter count: `117`
+- Task count: `23`
+- Unbound event count: `30`
 
 ## Latest Run
 
-- Event: `EVENT-20260621-ADP-029`
-- Task: `ADP-PHASE11-TRIAL-LEDGER-012`
-- Summary: Added an incremental trial evidence ledger updater that appends production-ready scheduled daily-run evidence without claiming 30-day acceptance early.
-- Model delta: `Added MOD-ADP-021 adp-trial-ledger-v1 and updated scheduler validation for trial ledger artifact evidence.`
-- Parameter delta: `Added PARAM-ADP-108 through PARAM-ADP-112.`
-- Tests: `['PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_ledger_target4 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_ledger.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_production_scheduler.py arxiv-daily-push/tests/test_cli.py -q', 'PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_ledger_project PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q', 'for f in arxiv-daily-push/schemas/*.schema.json; do python3 -m json.tool "$f" >/dev/null || exit 1; done', 'PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_ledger_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push update-trial-ledger --scheduled-execution /tmp/adp-scheduled-production-ready.json --generated-at 2026-07-01T06:00:00+10:00 --trial-id adp-trial-202607 --trial-ref release://adp/trial-ledger.json --text-degradation-verified --video-degradation-verified --scheduler-enabled --scheduler-ref github-actions://adp-scheduler --private-release-verified --release-ref github-release://LinzeColin/CodexProject/adp-trial --real-smtp-verified --email-ref smtp://adp/30-day-delivery-evidence --resource-pressure-ok --resource-ref resource-gate://adp/30-day --json', 'bash -n /tmp/build-scheduled-daily-input.sh', 'bash -n /tmp/update-trial-evidence-ledger.sh', "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_ledger_root2 python3 -m unittest discover -s tests/governance -p 'test_*.py' -q", 'PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_ledger_gov2 python3 scripts/validate_project_governance.py --project arxiv-daily-push', 'PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_ledger_sync python3 scripts/validate_project_governance.py --changed-only --enforce-sync', 'PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_ledger_dashboard python3 scripts/generate_governance_dashboard.py --write', 'git diff --check', "find arxiv-daily-push \\( -name '__pycache__' -o -name '*.pyc' \\) -print", 'du -sh arxiv-daily-push .git']`
-- Evidence: `['arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md', 'arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py', 'arxiv-daily-push/tests/test_trial_ledger.py', 'arxiv-daily-push/schemas/trial_ledger.schema.json', '.github/workflows/arxiv-daily-push-scheduled.yml']`
+- Event: `EVENT-20260622-ADP-030`
+- Task: `ADP-PHASE11-TRIAL-LEDGER-STATE-013`
+- Summary: Added cross-run trial evidence ledger state persistence through GitHub Actions artifact restore/export without storing state in Git or local cache.
+- Model delta: `Added MOD-ADP-022 adp-trial-ledger-state-v1 and updated scheduler validation for trial ledger state artifact evidence.`
+- Parameter delta: `Added PARAM-ADP-113 through PARAM-ADP-117.`
+- Tests: `['PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_state_target2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_ledger.py arxiv-daily-push/tests/test_production_scheduler.py arxiv-daily-push/tests/test_cli.py -q', 'bash -n /tmp/build-scheduled-daily-input.sh', 'bash -n /tmp/resolve-trial-ledger-state.sh', 'bash -n /tmp/update-trial-evidence-ledger.sh', 'bash -n /tmp/export-trial-evidence-ledger-state.sh', 'PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_state_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push export-trial-ledger-state --ledger-update /tmp/adp-ledger-update-pass.json --json', 'PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_state_project PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q', 'for f in arxiv-daily-push/schemas/*.schema.json; do python3 -m json.tool "$f" >/dev/null || exit 1; done', "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_state_root python3 -m unittest discover -s tests/governance -p 'test_*.py' -q", 'PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_state_gov python3 scripts/validate_project_governance.py --project arxiv-daily-push', 'PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_state_sync python3 scripts/validate_project_governance.py --changed-only --enforce-sync', 'PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_state_dashboard python3 scripts/generate_governance_dashboard.py --write', 'git diff --check', "find arxiv-daily-push \\( -name '__pycache__' -o -name '*.pyc' \\) -print", 'du -sh arxiv-daily-push .git']`
+- Evidence: `['arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md', 'arxiv-daily-push/src/arxiv_daily_push/cli.py', 'arxiv-daily-push/tests/test_trial_ledger.py', 'arxiv-daily-push/tests/test_production_scheduler.py', '.github/workflows/arxiv-daily-push-scheduled.yml']`
 - Result: `pass`
-- Rollback: Revert trial ledger updater, workflow ledger artifact changes, schema, tests, and restore version 0.11.10.
+- Rollback: Revert trial ledger state restore/export workflow changes, export command, tests, and restore version 0.11.11.
 
 ## Current Blockers
 

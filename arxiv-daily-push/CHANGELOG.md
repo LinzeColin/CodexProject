@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.12 - 2026-06-22
+
+- Added `adp export-trial-ledger-state` to export the accumulated `trial_evidence` JSON from a passing ledger update report.
+- Updated the scheduled workflow to restore the prior `adp-trial-evidence-ledger` artifact with `gh run download` and upload the new state after successful daily ledger append.
+- Added tests and scheduler validation for cross-run trial ledger state persistence while keeping 30-day production acceptance blocked until the validator passes.
+
 ## 0.11.11 - 2026-06-21
 
 - Added `adp update-trial-ledger` and `adp-trial-ledger-v1` to append production-ready scheduled daily-run evidence into the Phase 11 trial evidence package.

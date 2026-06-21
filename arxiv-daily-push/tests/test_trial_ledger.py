@@ -177,6 +177,46 @@ class TrialLedgerTests(unittest.TestCase):
         self.assertEqual(payload["model_id"], TRIAL_LEDGER_MODEL_ID)
         self.assertTrue(payload["ledger_updated"])
 
+    def test_cli_export_trial_ledger_state_outputs_trial_evidence(self) -> None:
+        report = update_trial_evidence_ledger(
+            None,
+            scheduled_execution_report(),
+            generated_at="2026-07-01T06:00:00+10:00",
+            trial_id="adp-trial-202607",
+            trial_ref="release://adp/trial-ledger.json",
+            text_degradation_path_verified=True,
+            video_degradation_path_verified=True,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            report_path = Path(tmp) / "ledger-update.json"
+            report_path.write_text(json.dumps(report), encoding="utf-8")
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(["export-trial-ledger-state", "--ledger-update", str(report_path), "--json"])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["trial_id"], "adp-trial-202607")
+        self.assertEqual(len(payload["daily_runs"]), 1)
+
+    def test_cli_export_trial_ledger_state_blocks_unupdated_report(self) -> None:
+        report = update_trial_evidence_ledger(
+            None,
+            scheduled_execution_report(production_ready=False),
+            generated_at="2026-07-01T06:00:00+10:00",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            report_path = Path(tmp) / "ledger-update.json"
+            report_path.write_text(json.dumps(report), encoding="utf-8")
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(["export-trial-ledger-state", "--ledger-update", str(report_path), "--json"])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("production_evidence_ready", " ".join(payload["errors"]))
+
 
 if __name__ == "__main__":
     unittest.main()

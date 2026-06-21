@@ -37,6 +37,7 @@ class ProductionSchedulerTests(unittest.TestCase):
     def test_scheduled_workflow_is_preflight_first_and_side_effect_safe(self) -> None:
         workflow = (ROOT / ".github/workflows/arxiv-daily-push-scheduled.yml").read_text(encoding="utf-8")
 
+        self.assertIn("actions: read", workflow)
         self.assertIn('timezone: "Australia/Sydney"', workflow)
         self.assertIn('cron: "45 4 * * *"', workflow)
         self.assertIn('cron: "0 5 * * *"', workflow)
@@ -62,6 +63,9 @@ class ProductionSchedulerTests(unittest.TestCase):
         self.assertIn("adp-scheduled-daily-input", workflow)
         self.assertIn("update-trial-ledger", workflow)
         self.assertIn("adp-trial-ledger-update", workflow)
+        self.assertIn("gh run download", workflow)
+        self.assertIn("export-trial-ledger-state", workflow)
+        self.assertIn("adp-trial-evidence-ledger", workflow)
         self.assertIn("--private-release-verified", workflow)
         self.assertIn("--real-smtp-verified", workflow)
         self.assertIn("--resource-pressure-ok", workflow)

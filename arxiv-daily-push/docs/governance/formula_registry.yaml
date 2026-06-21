@@ -601,3 +601,32 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md"]
+
+  - formula_id: "FORM-ADP-024"
+    model_id: "MOD-ADP-022"
+    assumption_ids: ["ASM-ADP-025", "ASM-ADP-024", "ASM-ADP-021"]
+    status: "active"
+    expression: "For scheduled daily-run, trial ledger state is resolved from ADP_TRIAL_EVIDENCE_INPUT_PATH when that file exists; otherwise the workflow uses gh run download to fetch the latest successful adp-trial-evidence-ledger artifact from prior scheduled workflow runs. After update-trial-ledger runs, export-trial-ledger-state writes the trial_evidence object only when ledger_updated is true. The workflow uploads a replacement adp-trial-evidence-ledger artifact only after that export exits 0."
+    variables:
+      - name: "configured_trial_evidence_path"
+        data_type: "path"
+        unit: "file"
+        input_domain: "ADP_TRIAL_EVIDENCE_INPUT_PATH"
+      - name: "previous_artifact_name"
+        data_type: "str"
+        unit: "GitHub Actions artifact"
+        input_domain: "adp-trial-evidence-ledger"
+      - name: "ledger_update_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "adp-trial-ledger-v1 update report"
+      - name: "export_exit_code"
+        data_type: "int"
+        unit: "process exit code"
+        input_domain: "0 for successful trial_evidence export"
+    constraints: "The state bridge stores only JSON trial evidence artifacts and does not commit state to Git, upload media/model/secrets, or replace state after blocked updates."
+    missing_policy: "Missing configured path and missing prior artifact start a new ledger; blocked update reports prevent state upload."
+    output_range: "restored trial evidence path or empty path; uploaded adp-trial-evidence-ledger state artifact only on successful export"
+    code_refs: [".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_production_scheduler.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]

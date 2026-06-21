@@ -94,6 +94,14 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
             "workflow must build and upload a trial ledger update artifact after daily-run evidence",
         ),
         _check(
+            "trial_ledger_state_persistence_present",
+            "export-trial-ledger-state" in workflow_text
+            and "adp-trial-evidence-ledger" in workflow_text
+            and "gh run download" in workflow_text
+            and "actions: read" in workflow_text,
+            "workflow must restore and upload trial evidence ledger state across scheduled runs",
+        ),
+        _check(
             "secret_names_only",
             all(f"secrets.{key}" in workflow_text for key in REQUIRED_SCHEDULER_SECRETS)
             and "auth.json" not in workflow_text,
@@ -153,6 +161,7 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
             "merge the workflow to the default branch before schedule triggers can run",
             "configure ADP_PRODUCTION_ENABLED only after runner and preflight prerequisites pass",
             "configure ADP_SCHEDULED_RUN_ENABLED only after daily production execution is implemented",
+            "retain adp-trial-evidence-ledger artifacts so 30-day trial evidence can accumulate across runs",
             "keep Release upload and SMTP sending disabled until their explicit production enablement phase",
         ],
     }
