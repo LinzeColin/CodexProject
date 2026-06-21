@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 41
-- acceptance_count: 41
+- task_count: 42
+- acceptance_count: 42
 
 ## Delivery Tasks
 
@@ -66,6 +66,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-028 | E | completed | ADP-ACC-PHASE11-PROVISIONING-AUDIT-WORKFLOW | 20 focused tests OK; GitHub-hosted provisioning audit uploads no-secret production refs readiness before private-runner trial start | `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md` |
 | ADP-PHASE11-PROVISIONING-AUDIT-REVIEW-029 | E | completed | ADP-ACC-PHASE11-PROVISIONING-AUDIT-REVIEW | 23 focused tests OK; downloaded provisioning audit artifacts can be reviewed with durable workflow run and artifact refs before trial start | `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md` |
 | ADP-PHASE11-TWO-DAY-SIMULATION-030 | E | completed | ADP-ACC-PHASE11-TWO-DAY-SIMULATION | 3 focused tests OK; two-day simulation CLI pass with 2 unique daily runs and no production acceptance claim | `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md` |
+| ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031 | E | completed | ADP-ACC-PHASE12-ALL-ARXIV-QUEUE-DELIVERY | 165 arXiv tests OK; targeted root governance tests 2 OK; changed-only sync 0 errors/0 warnings before unrelated missing-project validation; all-arXiv scan, queue fallback, workflow guards, and mail video-link gates pass | `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates

@@ -67,8 +67,8 @@ jobs:
       ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
       ADP_RELEASE_TARGET: ${{ vars.ADP_RELEASE_TARGET }}
       ADP_SELF_HOSTED_RUNNER_LABEL: ${{ inputs.runner_label }}
-      ADP_ARXIV_QUERY: ${{ vars.ADP_ARXIV_QUERY }}
-      ADP_ARXIV_MAX_RESULTS: ${{ vars.ADP_ARXIV_MAX_RESULTS }}
+      ADP_ARXIV_MAX_RESULTS_PER_CATEGORY: ${{ vars.ADP_ARXIV_MAX_RESULTS_PER_CATEGORY }}
+      ADP_CANDIDATE_QUEUE_INPUT_PATH: ${{ vars.ADP_CANDIDATE_QUEUE_INPUT_PATH }}
       ADP_RECENT_SOURCE_IDS: ${{ vars.ADP_RECENT_SOURCE_IDS }}
       ADP_ALLOW_SMTP_SEND: ${{ vars.ADP_ALLOW_SMTP_SEND }}
       ADP_ALLOW_RELEASE_UPLOAD: ${{ vars.ADP_ALLOW_RELEASE_UPLOAD }}
@@ -252,14 +252,24 @@ jobs:
           path: ${{ steps.scheduler.outputs.path }}
           if-no-files-found: error
           retention-days: 35
-      - name: Fetch live source batch
+      - name: Build all-arXiv trial input
         id: source
         shell: bash
         run: |
           set +e
-          output="$RUNNER_TEMP/adp-trial-start-source-batch.json"
-          query="${ADP_ARXIV_QUERY:-cat:cs.AI}"
-          max_results="${ADP_ARXIV_MAX_RESULTS:-10}"
+          output="$RUNNER_TEMP/adp-trial-start-all-arxiv-daily-input.json"
+          artifact_dir="$RUNNER_TEMP/adp-trial-start-phase12-artifacts"
+          queue_output="$RUNNER_TEMP/adp-trial-start-candidate-queue.json"
+          max_results="${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3}"
+          daily_date="$(python3 - "${{ steps.generated_at.outputs.value }}" <<'PY'
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          import sys
+
+          value = sys.argv[1].replace("Z", "+00:00")
+          print(datetime.fromisoformat(value).astimezone(ZoneInfo("Australia/Sydney")).date())
+          PY
+          )"
           seen_args=()
           if [ -n "${ADP_RECENT_SOURCE_IDS:-}" ]; then
             IFS=',' read -ra raw_seen_ids <<< "$ADP_RECENT_SOURCE_IDS"
@@ -271,33 +281,59 @@ jobs:
               fi
             done
           fi
+          queue_args=()
+          if [ -n "${ADP_CANDIDATE_QUEUE_INPUT_PATH:-}" ] && [ -f "${ADP_CANDIDATE_QUEUE_INPUT_PATH:-}" ]; then
+            queue_args+=(--queue-path "$ADP_CANDIDATE_QUEUE_INPUT_PATH")
+          fi
           PYTHONDONTWRITEBYTECODE=1 \
-          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_source" \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_all_arxiv_source" \
           PYTHONPATH=arxiv-daily-push/src \
-            python3 -m arxiv_daily_push fetch-arxiv-latest \
-              --query "$query" \
-              --max-results "$max_results" \
+            python3 -m arxiv_daily_push build-all-arxiv-daily-input \
+              --date "$daily_date" \
               --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --timezone "Australia/Sydney" \
+              --max-results-per-category "$max_results" \
+              --artifact-dir "$artifact_dir" \
+              --queue-output "$queue_output" \
+              "${queue_args[@]}" \
               "${seen_args[@]}" \
               --json > "$output"
           code=$?
           cat "$output"
           printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'artifact_dir=%s\n' "$artifact_dir" >> "$GITHUB_OUTPUT"
+          printf 'candidate_queue_path=%s\n' "$queue_output" >> "$GITHUB_OUTPUT"
           printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
           exit 0
-      - name: Upload trial start source batch
+      - name: Upload trial start all-arXiv daily input
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: adp-trial-start-source-batch
+          name: adp-trial-start-all-arxiv-daily-input
           path: ${{ steps.source.outputs.path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Upload trial start Phase 12 artifacts
+        if: always() && steps.source.outputs.artifact_dir != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-phase12-artifacts
+          path: ${{ steps.source.outputs.artifact_dir }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Upload trial start candidate queue
+        if: always() && steps.source.outputs.candidate_queue_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-candidate-queue
+          path: ${{ steps.source.outputs.candidate_queue_path }}
           if-no-files-found: error
           retention-days: 35
       - name: Stop if source ingest blocked
         if: steps.source.outputs.exit_code != '0'
         shell: bash
         run: |
-          echo "live source ingest blocked; stopping before SMTP, Release, or trial start gate work"
+          echo "all-arXiv Phase 12 source input blocked; stopping before SMTP, Release, or trial start gate work"
           exit "${{ steps.source.outputs.exit_code }}"
       - name: Run SMTP delivery probe
         id: smtp
@@ -407,7 +443,7 @@ jobs:
               --default-branch-ref "git://${{ github.repository }}/${{ github.ref_name }}@${{ github.sha }}" \
               --runner-ref "github-runner://${{ inputs.runner_label }}/${RUNNER_NAME:-unknown}" \
               --preflight-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/adp-trial-start-preflight" \
-              --source-ingest-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/adp-trial-start-source-batch" \
+              --source-ingest-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/adp-trial-start-all-arxiv-daily-input" \
               --smtp-ref "$smtp_ref" \
               --release-ref "$release_ref" \
               --scheduler-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/adp-trial-start-scheduler-plan" \

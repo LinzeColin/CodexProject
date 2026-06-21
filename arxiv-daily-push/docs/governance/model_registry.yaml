@@ -151,6 +151,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/config/examples/production_refs.input.example.json", "arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
     status: "active"
+  - assumption_id: "ASM-ADP-035"
+    statement: "Production daily source selection must scan the primary arXiv archive set, not collapse to the legacy cs.AI-only query, and must persist a candidate queue with ROI-ranked fallback before real SMTP/Release delivery can count."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/tests/test_global_scan.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -701,3 +706,20 @@ models:
     config_refs: ["arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
     test_refs: ["arxiv-daily-push/tests/test_simulation.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md"]
+  - model_id: "MOD-ADP-032"
+    name: "All-arXiv Phase 12 scan queue delivery gate"
+    kind: "deterministic source selection and delivery gate"
+    purpose: "Build all-arXiv daily input from bounded primary archive scans, persist ROI-ranked candidate queue state, require Release-hosted video artifact links in email delivery, and keep production side effects disabled until verified."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-all-arxiv-scan-v1"
+    assumption_ids: ["ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-021", "ASM-ADP-022"]
+    formula_ids: ["FORM-ADP-034"]
+    parameter_ids: ["PARAM-ADP-170", "PARAM-ADP-171", "PARAM-ADP-172", "PARAM-ADP-173", "PARAM-ADP-174", "PARAM-ADP-175", "PARAM-ADP-176"]
+    inputs: ["generated_at", "date", "recent_source_ids", "candidate queue JSON", "bounded arXiv Atom source batches"]
+    outputs: ["all-arXiv scan plan", "daily input", "candidate queue", "video artifact manifest", "email brief", "delivery package"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py"]
+    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/config/examples/sources.example.yaml", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml"]
+    test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_trial_start_workflow.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md"]

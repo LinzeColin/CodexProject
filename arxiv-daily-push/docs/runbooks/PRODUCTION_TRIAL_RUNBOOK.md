@@ -38,8 +38,11 @@ Required GitHub Actions variables:
 - `ADP_PRODUCTION_ENABLED`
 - `ADP_SCHEDULED_RUN_ENABLED`
 - `ADP_DAILY_INPUT_PATH` optional override; leave empty to build from live arXiv
-- `ADP_ARXIV_QUERY` optional; default `cat:cs.AI`
-- `ADP_ARXIV_MAX_RESULTS` optional; default `10`
+- `ADP_ARXIV_MAX_RESULTS_PER_CATEGORY` optional; default `3` per primary
+  arXiv archive
+- `ADP_CANDIDATE_QUEUE_INPUT_PATH` optional existing candidate queue JSON path
+  available on the runner; leave empty to restore the latest
+  `adp-candidate-queue` artifact
 - `ADP_RECENT_SOURCE_IDS` optional comma-separated list of recently selected
   `source_id` values
 - `ADP_TRIAL_EVIDENCE_INPUT_PATH` optional existing trial evidence JSON path
@@ -133,11 +136,13 @@ Scheduled runs skip by default unless `ADP_PRODUCTION_ENABLED=true` is set in
 GitHub Actions variables. Even after that, the scheduled workflow runs
 production preflight first and keeps daily side effects blocked unless
 `ADP_SCHEDULED_RUN_ENABLED=true` is explicitly configured. The scheduled
-workflow uploads two artifacts:
+workflow uploads these artifacts:
 
 - `adp-scheduled-preflight`;
-- `adp-scheduled-source-batch` for daily-run when no override input path is set;
 - `adp-scheduled-daily-input` for daily-run when no override input path is set;
+- `adp-phase12-delivery-artifacts` with the daily input, candidate queue,
+  video artifact manifest, and email brief JSON;
+- `adp-candidate-queue` for carry-forward candidate queue state;
 - `adp-scheduled-execution`;
 - `adp-trial-ledger-update` for daily-run ledger accumulation attempts.
 - `adp-trial-evidence-ledger` after a daily ledger append succeeds.
@@ -153,21 +158,32 @@ PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push run-scheduled-produc
 ```
 
 Daily runs also require `ADP_DAILY_INPUT_PATH` to point to a small daily input
-package, or the workflow builds a daily input report from live arXiv source
-ingest using:
+package, or the workflow builds a Phase 12 all-arXiv daily input report from
+live arXiv source ingest across the primary archive set using:
 
 ```bash
-PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push fetch-arxiv-latest --query "${ADP_ARXIV_QUERY:-cat:cs.AI}" --max-results "${ADP_ARXIV_MAX_RESULTS:-10}" --generated-at <ISO timestamp> --json
-PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push build-daily-input --source-batch <source-batch.json> --date <YYYY-MM-DD> --generated-at <ISO timestamp> --json
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push build-all-arxiv-daily-input \
+  --date <YYYY-MM-DD> \
+  --generated-at <ISO timestamp> \
+  --timezone Australia/Sydney \
+  --max-results-per-category "${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3}" \
+  --queue-path <optional-candidate-queue.json> \
+  --queue-output <updated-candidate-queue.json> \
+  --artifact-dir <phase12-artifact-dir> \
+  --json
 ```
 
-The daily input builder uses only arXiv Atom `<summary>` and metadata claims. It
-does not download PDFs, perform bulk harvest, or claim peer review from arXiv.
-The selected daily input report is used as the initial Release evidence asset.
-Dry-run SMTP or dry-run Release results are recorded as `degraded` with
-`exit_code=2`; they cannot be counted toward Phase 11 production acceptance.
-Production-ready daily evidence requires both real SMTP delivery and real
-private Release creation to return evidence refs.
+The all-arXiv builder scans the configured primary archive queries, ranks
+candidates by relevance, learning value, economic conversion rate, ROI,
+cross-disciplinary value, and explainability, selects one daily lead paper,
+persists the remaining high-value candidates, and consumes the queue when no
+new candidate passes the high-value threshold. It uses only arXiv Atom
+`<summary>` and metadata claims. It does not download PDFs, perform bulk
+harvest, or claim peer review from arXiv. Dry-run SMTP or dry-run Release
+results are recorded as `degraded` with `exit_code=2`; they cannot be counted
+toward production acceptance. Production-ready daily evidence requires a real
+private GitHub Release, a Release-hosted video artifact link, a Chinese lesson,
+candidate queue summary, and real SMTP delivery to `linzezhang35@gmail.com`.
 
 After a daily-run execution artifact exists, the scheduled workflow attempts to
 append it to the trial evidence ledger with:
@@ -573,25 +589,28 @@ Validate the scheduled workflow contract locally or on the runner:
 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-scheduler --path . --generated-at <ISO timestamp> --json
 ```
 
-Before enabling scheduled source collection, verify live arXiv source ingest:
+Before enabling scheduled source collection, verify the all-arXiv Phase 12 scan
+plan and live daily-input path:
 
 ```bash
-PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push fetch-arxiv-latest --query 'cat:cs.AI' --max-results 1 --generated-at <ISO timestamp> --json
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-all-arxiv-scan --json
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push build-all-arxiv-daily-input \
+  --date <YYYY-MM-DD> \
+  --generated-at <ISO timestamp> \
+  --timezone Australia/Sydney \
+  --max-results-per-category "${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3}" \
+  --queue-output <updated-candidate-queue.json> \
+  --artifact-dir <phase12-artifact-dir> \
+  --json
 ```
 
 If this blocks on Python SSL certificate validation, update the runner CA trust
 store or Python certificate bundle. Do not switch to insecure TLS behavior.
 
-After source ingest succeeds, verify daily input construction with the emitted
-source batch:
-
-```bash
-PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push build-daily-input --source-batch <source-batch.json> --date <YYYY-MM-DD> --generated-at <ISO timestamp> --json
-```
-
 If this blocks on missing Atom summary, duplicate recent source ID, metadata
 conflict, or missing P0 evidence, stop the daily run and inspect the uploaded
-`adp-scheduled-source-batch` and `adp-scheduled-daily-input` artifacts.
+`adp-scheduled-daily-input`, `adp-phase12-delivery-artifacts`, and
+`adp-candidate-queue` artifacts.
 
 Before enabling real notification sending, verify the SMTP delivery boundary in
 dry-run mode:
