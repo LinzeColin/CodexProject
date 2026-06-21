@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import urllib.error
@@ -17,6 +18,7 @@ from typing import Any
 sys.dont_write_bytecode = True
 
 ROOT = Path(__file__).resolve().parents[1]
+WORKFLOW = ROOT / ".github" / "workflows" / "project-governance.yml"
 
 
 def git_output(*args: str) -> str:
@@ -57,6 +59,53 @@ def hook_status() -> dict[str, Any]:
     if config_template.exists():
         result["config_template_enables_hooks"] = "hooks = true" in config_template.read_text(encoding="utf-8")
     return result
+
+
+def workflow_entry_gate_status() -> dict[str, Any]:
+    text = WORKFLOW.read_text(encoding="utf-8") if WORKFLOW.exists() else ""
+
+    checks = {
+        "workflow_exists": WORKFLOW.is_file(),
+        "pull_request_changed_only_enforce_sync_semantic": (
+            "github.event_name == 'pull_request'" in text
+            and "--changed-only --enforce-sync --semantic" in text
+        ),
+        "main_push_changed_only_uses_event_before": (
+            "github.event_name == 'push'" in text
+            and "GOVERNANCE_BASE_REF: ${{ github.event.before }}" in text
+            and '--base-ref "${GOVERNANCE_BASE_REF}"' in text
+        ),
+        "main_push_runs_all_semantic_drift_report": (
+            "github.event_name == 'push'" in text
+            and "--all --semantic --drift-report" in text
+        ),
+        "manual_changed_only_accepts_base_ref": (
+            "inputs.scope == 'changed-only'" in text
+            and "GOVERNANCE_BASE_REF: ${{ inputs.base_ref || '' }}" in text
+        ),
+        "manual_project_scope_requires_project": (
+            "inputs.scope == 'project'" in text
+            and "project input is required when scope=project" in text
+        ),
+        "ci_attestation_validated": (
+            "scripts/validate_ci_attestation.py write" in text
+            and "scripts/validate_ci_attestation.py validate" in text
+        ),
+        "ci_attestation_uploaded_as_artifact": (
+            "actions/upload-artifact@v4" in text
+            and "project-governance-ci-attestation-" in text
+            and "if-no-files-found: error" in text
+        ),
+        "setup_doctor_runs_in_ci": "scripts/governance_setup_doctor.py --json --check-github" in text,
+        "required_failures_not_masked": re.search(r"(?m)^\s*continue-on-error\s*:", text) is None,
+    }
+    missing = sorted(name for name, ok in checks.items() if not ok)
+    return {
+        "status": "PASS" if not missing else "FAIL",
+        "workflow": str(WORKFLOW.relative_to(ROOT)),
+        "checks": checks,
+        "missing": missing,
+    }
 
 
 def github_branch_status(owner_repo: str, token: str | None) -> dict[str, Any]:
@@ -105,6 +154,7 @@ def build_report(check_github: bool) -> dict[str, Any]:
         "repository": owner_repo,
         "commit": git_output("rev-parse", "HEAD"),
         "hook": hook_status(),
+        "workflow_entry_gates": workflow_entry_gate_status(),
         "branch_protection": github_branch_status(owner_repo, token) if check_github else {
             "repository": owner_repo,
             "branch": "main",
@@ -129,6 +179,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"status: {report['status']}")
         print(f"repository: {report['repository']}")
         print(f"hook.trust_status: {report['hook']['trust_status']}")
+        print(f"workflow_entry_gates.status: {report['workflow_entry_gates']['status']}")
         print(f"branch.required_status_checks: {report['branch_protection']['required_status_checks']}")
         print(f"branch.no_bypass: {report['branch_protection']['no_bypass']}")
     return 0

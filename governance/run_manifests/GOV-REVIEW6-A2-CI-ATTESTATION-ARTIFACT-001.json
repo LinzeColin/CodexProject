@@ -1,0 +1,93 @@
+{
+  "acceptance_id": "ACC-REVIEW6-A2-001",
+  "actor": "codex",
+  "base_commit": "4731a543911ab04a92cd534f541b73b32217068f",
+  "change_classification": [
+    "root_governance_change",
+    "entry_gate_hardening",
+    "ci_attestation_artifact",
+    "setup_doctor"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
+    "docs/governance/CODEX_SETUP.md",
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/GOV-REVIEW6-A2-CI-ATTESTATION-ARTIFACT-001.json",
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:0fb527b813bbc0aee9674f8f6d370dbab752f73142e6da345e496868dc0a9817",
+  "evidence_refs": [
+    ".github/workflows/project-governance.yml",
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_project_governance_validator.py",
+    "docs/governance/STANDARD.md",
+    "docs/governance/CODEX_SETUP.md"
+  ],
+  "finished_at": "2026-06-21T11:26:10Z",
+  "formula_delta": "NOT_APPLICABLE: no project formula or model behavior changed",
+  "model_delta": "NOT_APPLICABLE: root governance CI evidence binding only",
+  "observed_results": [
+    "LOCAL_PASS: python3 -m pytest tests/governance/test_project_governance_validator.py -q exited 0 with 41 passed",
+    "LOCAL_PASS: python3 scripts/governance_setup_doctor.py --json exited 0 and reported workflow_entry_gates.status PASS",
+    "LOCAL_PASS: python3 scripts/governance_setup_doctor.py --json --check-github exited 0 and kept branch protection/no-bypass UNVERIFIED without authenticated evidence",
+    "LOCAL_PASS: python3 -m py_compile scripts/governance_setup_doctor.py scripts/validate_ci_attestation.py scripts/validate_governance_sync.py scripts/validate_project_governance.py exited 0",
+    "LOCAL_PASS: python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref 4731a543911ab04a92cd534f541b73b32217068f exited 0 with errors 0 warnings 0",
+    "LOCAL_PASS: python3 scripts/validate_project_governance.py --all --semantic --drift-report exited 0 with errors 0 warnings 0",
+    "REMOTE_CI_REQUIRED: Project Governance must upload project-governance-ci-attestation artifact during PR or main validation"
+  ],
+  "parameter_delta": "NOT_APPLICABLE: no project parameter values changed",
+  "project_id": "root",
+  "required_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "docs/governance/STANDARD.md",
+    "docs/governance/CODEX_SETUP.md",
+    "governance/run_manifests/GOV-REVIEW6-A2-CI-ATTESTATION-ARTIFACT-001.json",
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "rollback": "Revert the Review6-A2 root governance commit. No project or business-code rollback is required.",
+  "run_id": "GOV-REVIEW6-A2-CI-ATTESTATION-ARTIFACT-001",
+  "started_at": "2026-06-21T11:25:05Z",
+  "task_id": "GOV-REVIEW6-A2-CI-ATTESTATION-ARTIFACT-001",
+  "tests_run": [
+    {
+      "command": "python3 -m pytest tests/governance/test_project_governance_validator.py -q",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 scripts/governance_setup_doctor.py --json",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 scripts/governance_setup_doctor.py --json --check-github",
+      "result": "PASS_UNVERIFIED_BRANCH_PROTECTION"
+    },
+    {
+      "command": "python3 -m py_compile scripts/governance_setup_doctor.py scripts/validate_ci_attestation.py scripts/validate_governance_sync.py scripts/validate_project_governance.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref 4731a543911ab04a92cd534f541b73b32217068f",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "result": "PASS"
+    }
+  ],
+  "unresolved_risks": [
+    "Branch protection and no-bypass remain UNVERIFIED without authenticated GitHub branch protection or ruleset evidence.",
+    "This hardens root entry and CI evidence only; planned semantic extractor rollout still remains for Alpha, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, and whkmSalary.",
+    "GitHub Actions artifact evidence can prove the current CI run, while committed attestations remain required for old PENDING_CI manifests after the binding window."
+  ],
+  "updated_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "docs/governance/STANDARD.md",
+    "docs/governance/CODEX_SETUP.md",
+    "governance/run_manifests/GOV-REVIEW6-A2-CI-ATTESTATION-ARTIFACT-001.json",
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "version_delta": "NOT_APPLICABLE: root governance control change only"
+}
