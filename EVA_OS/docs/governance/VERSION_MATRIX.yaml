@@ -22,10 +22,11 @@ model_versions:
   MOD-016: "0.0.0-provisional"
 parameter_profile_versions:
   default: "param-profile-20260620"
+  semantic_extractor_profile: "param-semantic-profile-20260621"
 data_snapshot_version: "UNKNOWN; see TASK-EVA-B-003"
-current_iteration: "ITER-20260620-EVA-002"
-current_phase: "A"
-current_gate: "GOV-P13-required-passed"
+current_iteration: "ITER-20260621-EVA-003"
+current_phase: "B"
+current_gate: "GOV-SEMANTIC-EVA-001-in-progress"
 legacy_version_labels:
   pyproject: "0.1.0"
   prior_VERSION: "UNKNOWN"
