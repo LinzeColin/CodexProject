@@ -390,6 +390,36 @@ def validate_semantic_coverage_config(
         validation.add(required, scope, "semantic_coverage.not_applicable requires evidence_ref")
 
 
+def check_semantic_coverage_task_binding(
+    validation: Validation,
+    project: dict[str, Any],
+    parsed: dict[str, Any],
+    required: bool,
+    scope: str,
+) -> None:
+    coverage = project.get("semantic_coverage")
+    if not isinstance(coverage, dict):
+        return
+    task_id = str(coverage.get("task_id") or "").strip()
+    acceptance_id = str(coverage.get("acceptance_id") or "").strip()
+    status = str(coverage.get("status") or "").strip()
+    if not task_id:
+        return
+    tasks = [task for task in parsed.get("tasks", []) if isinstance(task, dict)]
+    task = next((item for item in tasks if str(item.get("task_id") or "") == task_id), None)
+    if not task:
+        validation.add(required, scope, f"semantic_coverage.task_id not found in delivery_tasks.yaml: {task_id}")
+        return
+    acceptance_ids = {str(item) for item in as_list(task.get("acceptance_ids")) if item}
+    if acceptance_id and acceptance_id not in acceptance_ids:
+        validation.add(required, scope, f"semantic_coverage.acceptance_id {acceptance_id} is not listed on task {task_id}")
+    task_status = str(task.get("status") or "")
+    if status == "machine_verified" and task_status != "completed":
+        validation.add(required, scope, f"semantic_coverage.machine_verified requires task {task_id} to be completed")
+    if status in {"planned", "in_progress", "blocked"} and task_status in {"completed", "rejected", "deprecated"}:
+        validation.add(required, scope, f"semantic_coverage.{status} cannot point to terminal task {task_id} with status {task_status}")
+
+
 def rel(path: Path) -> str:
     try:
         return str(path.relative_to(ROOT))
@@ -807,6 +837,7 @@ def validate_project(
     check_weight_groups(validation, [p for p in parsed["parameters"] if isinstance(p, dict)], required, scope)
     check_versions(validation, project_path, parsed, required, scope)
     check_manual_counts(validation, project_path, parsed, required, scope)
+    check_semantic_coverage_task_binding(validation, project, parsed, required, scope)
 
 
 ZERO_SHA = "0" * 40

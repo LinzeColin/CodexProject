@@ -145,3 +145,19 @@ tasks:
     rollback: "Downgrade to advisory only with explicit governance decision."
     target_version: "0.1.0"
     completed_version: ""
+  - task_id: "GOV-SEMANTIC-OAIDB-001"
+    phase: "B"
+    objective: "Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints."
+    scope: ["OpenAIDatabase semantic extractor metadata", "root validator evidence", "generated status pages"]
+    non_scope: ["runtime behavior", "memory data mutation", "new product features", "provider credential changes"]
+    status: "planned"
+    dependencies: ["TASK-OAI-A-004"]
+    required_files: ["OpenAIDatabase/docs/governance/parameter_registry.csv", "OpenAIDatabase/docs/governance/formula_registry.yaml", "governance/projects.yaml"]
+    acceptance_ids: ["ACC-SEMANTIC-OAIDB-001"]
+    test_commands: ["python3 scripts/validate_project_governance.py --project OpenAIDatabase --semantic", "python3 scripts/validate_semantic_extractors.py OpenAIDatabase"]
+    test_results: ["NOT_RUN - semantic extractor rollout task is planned, not completed"]
+    evidence_refs: ["OpenAIDatabase/docs/governance/OWNER_STATUS.md", "governance/projects.yaml"]
+    risk: "OpenAIDatabase remains structurally governed but not machine semantic-verified until extractors are implemented."
+    rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
+    target_version: "0.2.0"
+    completed_version: ""

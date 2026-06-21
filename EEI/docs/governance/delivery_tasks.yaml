@@ -3421,3 +3421,21 @@ tasks:
     completed_version: ""
     fact_level: "EXTRACTED"
     unknown_task_ids: []
+  - task_id: "GOV-SEMANTIC-EEI-001"
+    phase: "B"
+    objective: "Bind EEI active parameter_catalog and model/formula registries to machine extractors without changing runtime behavior."
+    scope: ["EEI semantic extractor metadata", "root validator evidence", "generated status pages"]
+    non_scope: ["business behavior changes", "scoring formula changes", "parameter active value changes"]
+    status: "planned"
+    dependencies: ["TASK-T1215"]
+    required_files: ["EEI/docs/governance/parameter_registry.csv", "EEI/docs/governance/formula_registry.yaml", "EEI/data/parameter_catalog.csv", "governance/projects.yaml"]
+    acceptance_ids: ["ACC-SEMANTIC-EEI-001"]
+    test_commands: ["python3 scripts/validate_project_governance.py --project EEI --semantic", "python3 scripts/validate_semantic_extractors.py EEI"]
+    test_results: ["NOT_RUN - semantic extractor rollout task is planned, not completed"]
+    evidence_refs: ["EEI/docs/governance/OWNER_STATUS.md", "governance/projects.yaml"]
+    risk: "EEI remains structurally governed but not machine semantic-verified until extractors are implemented."
+    rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "PROPOSED"
+    unknown_task_ids: []

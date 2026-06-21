@@ -81,3 +81,19 @@ tasks:
     rollback: "Keep offline rules advisory and require engineer review."
     target_version: "UNKNOWN (TASK-OPME-B-001)"
     completed_version: ""
+  - task_id: "GOV-SEMANTIC-OPME-001"
+    phase: "B"
+    objective: "Add extractors for analysis rule constants and fingerprints for active deterministic formulas."
+    scope: ["semantic extractor metadata", "root validator evidence", "generated status pages"]
+    non_scope: ["backend behavior", "frontend behavior", "provider configuration changes", "API key handling"]
+    status: "planned"
+    dependencies: ["TASK-OPME-A-004"]
+    required_files: ["OpMe_System/docs/governance/parameter_registry.csv", "OpMe_System/docs/governance/formula_registry.yaml", "governance/projects.yaml"]
+    acceptance_ids: ["ACC-SEMANTIC-OPME-001"]
+    test_commands: ["python3 scripts/validate_project_governance.py --project OpMe_System --semantic", "python3 scripts/validate_semantic_extractors.py OpMe_System"]
+    test_results: ["NOT_RUN - semantic extractor rollout task is planned, not completed"]
+    evidence_refs: ["OpMe_System/docs/governance/OWNER_STATUS.md", "governance/projects.yaml"]
+    risk: "OpMe_System remains structurally governed but not machine semantic-verified until extractors are implemented."
+    rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
+    target_version: "1.0.0"
+    completed_version: ""

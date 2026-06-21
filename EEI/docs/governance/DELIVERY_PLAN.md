@@ -13,10 +13,10 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 123
-- acceptance_count: 186
+- task_count: 124
+- acceptance_count: 187
 - completed_task_count: 50
-- planned_task_count: 70
+- planned_task_count: 71
 - in_progress_task_count: 3
 
 Counts are generated from canonical machine registries. Historical Markdown files are compatibility indexes only.

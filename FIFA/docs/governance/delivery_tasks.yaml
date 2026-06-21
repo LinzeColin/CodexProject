@@ -283,3 +283,35 @@ tasks:
     rollback: "Keep MOD-011 deprecated and excluded from active execution claims."
     target_version: "0.1.0"
     completed_version: ""
+  - task_id: "GOV-SEMANTIC-FIFA-001"
+    phase: "B"
+    objective: "Add extractors for parser constants, validation rules, and active governance formulas."
+    scope:
+      - "FIFA semantic extractor metadata"
+      - "root validator evidence"
+      - "generated status pages"
+    non_scope:
+      - "Runtime scoring logic"
+      - "TAB/provider refresh behavior"
+      - "Business feature changes"
+    status: "planned"
+    dependencies:
+      - "TASK-FIFA-A-001"
+    required_files:
+      - "docs/governance/parameter_registry.csv"
+      - "docs/governance/formula_registry.yaml"
+      - "governance/projects.yaml"
+    acceptance_ids:
+      - "ACC-SEMANTIC-FIFA-001"
+    test_commands:
+      - "python3 scripts/validate_project_governance.py --project FIFA --semantic"
+      - "python3 scripts/validate_semantic_extractors.py FIFA"
+    test_results:
+      - "NOT_RUN - semantic extractor rollout task is planned, not completed"
+    evidence_refs:
+      - "FIFA/docs/governance/OWNER_STATUS.md"
+      - "governance/projects.yaml"
+    risk: "FIFA remains structurally governed but not machine semantic-verified until extractors are implemented."
+    rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
+    target_version: "0.1.0"
+    completed_version: ""

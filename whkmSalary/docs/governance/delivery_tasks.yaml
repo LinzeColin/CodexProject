@@ -81,3 +81,19 @@ tasks:
     rollback: "Keep current behavior unchanged and mark as not release-ready for payroll compliance."
     target_version: "UNKNOWN (TASK-WHKM-B-001)"
     completed_version: ""
+  - task_id: "GOV-SEMANTIC-WHKM-001"
+    phase: "B"
+    objective: "Add extractors for salary constants, policy formula references, and active formula fingerprints."
+    scope: ["salary semantic extractor metadata", "root validator evidence", "generated status pages"]
+    non_scope: ["salary formula changes", "policy value changes", "Streamlit behavior changes", "deployment changes"]
+    status: "planned"
+    dependencies: ["TASK-WHKM-A-004"]
+    required_files: ["whkmSalary/docs/governance/parameter_registry.csv", "whkmSalary/docs/governance/formula_registry.yaml", "governance/projects.yaml"]
+    acceptance_ids: ["ACC-SEMANTIC-WHKM-001"]
+    test_commands: ["python3 scripts/validate_project_governance.py --project whkmSalary --semantic", "python3 scripts/validate_semantic_extractors.py whkmSalary"]
+    test_results: ["NOT_RUN - semantic extractor rollout task is planned, not completed"]
+    evidence_refs: ["whkmSalary/docs/governance/OWNER_STATUS.md", "governance/projects.yaml"]
+    risk: "whkmSalary remains structurally governed but not machine semantic-verified until extractors are implemented."
+    rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
+    target_version: "0.0.0"
+    completed_version: ""
