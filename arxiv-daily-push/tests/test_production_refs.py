@@ -10,12 +10,15 @@ from pathlib import Path
 from arxiv_daily_push.cli import main
 from arxiv_daily_push.production_refs import (
     PRODUCTION_REFS_VALIDATOR_ID,
+    PROVISIONING_AUDIT_REVIEW_ID,
     ProductionRefsDiscoveryError,
     build_production_refs_input_from_github_metadata,
     build_production_refs_input_template,
     build_production_refs_report,
+    build_provisioning_audit_review,
     discover_production_refs_input_with_gh,
     validate_production_refs_report,
+    validate_provisioning_audit_review,
 )
 
 
@@ -135,6 +138,73 @@ class ProductionRefsTests(unittest.TestCase):
         self.assertEqual(result, 0)
         self.assertEqual(payload["validator_id"], PRODUCTION_REFS_VALIDATOR_ID)
         self.assertTrue(payload["production_refs_ready"])
+
+    def test_provisioning_audit_review_passes_with_durable_artifact_refs(self) -> None:
+        refs_report = build_production_refs_report(readiness_input(), generated_at="2026-07-01T04:20:00+10:00")
+
+        review = build_provisioning_audit_review(
+            refs_report,
+            generated_at="2026-07-01T04:25:00+10:00",
+            workflow_run_ref="github-actions://LinzeColin/CodexProject/actions/runs/123456",
+            artifact_ref="github-artifact://LinzeColin/CodexProject/actions/runs/123456/adp-production-provisioning-audit",
+        )
+
+        self.assertEqual(review["validator_id"], PROVISIONING_AUDIT_REVIEW_ID)
+        self.assertEqual(review["status"], "pass")
+        self.assertTrue(review["provisioning_audit_ready"])
+        self.assertEqual(review["readiness_refs"], refs_report["readiness_refs"])
+        self.assertFalse(review["side_effects_performed"])
+        self.assertFalse(review["secret_values_logged"])
+        self.assertFalse(review["codex_auth_read"])
+        self.assertFalse(review["workflow_dispatched"])
+        self.assertFalse(review["smtp_sent"])
+        self.assertFalse(review["release_uploaded"])
+        self.assertFalse(review["production_acceptance_claimed"])
+        self.assertFalse(validate_provisioning_audit_review(review))
+
+    def test_provisioning_audit_review_blocks_missing_artifact_refs(self) -> None:
+        refs_report = build_production_refs_report(readiness_input(), generated_at="2026-07-01T04:20:00+10:00")
+
+        review = build_provisioning_audit_review(
+            refs_report,
+            generated_at="2026-07-01T04:25:00+10:00",
+        )
+
+        self.assertEqual(review["status"], "blocked")
+        self.assertFalse(review["provisioning_audit_ready"])
+        self.assertIn("workflow_run_ref must be a durable ref", " ".join(review["blocking_reasons"]))
+        self.assertIn("artifact_ref must be a durable ref", " ".join(review["blocking_reasons"]))
+        self.assertFalse(validate_provisioning_audit_review(review))
+
+    def test_cli_review_provisioning_audit_outputs_json(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report_path = Path(tmp) / "adp-production-provisioning-audit.json"
+            report_path.write_text(
+                json.dumps(build_production_refs_report(readiness_input(), generated_at="2026-07-01T04:20:00+10:00"), ensure_ascii=False),
+                encoding="utf-8",
+            )
+
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "review-provisioning-audit",
+                        "--production-refs-report",
+                        str(report_path),
+                        "--workflow-run-ref",
+                        "github-actions://LinzeColin/CodexProject/actions/runs/123456",
+                        "--artifact-ref",
+                        "github-artifact://LinzeColin/CodexProject/actions/runs/123456/adp-production-provisioning-audit",
+                        "--generated-at",
+                        "2026-07-01T04:25:00+10:00",
+                        "--json",
+                    ]
+                )
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["validator_id"], PROVISIONING_AUDIT_REVIEW_ID)
+        self.assertTrue(payload["provisioning_audit_ready"])
 
     def test_cli_print_production_refs_template_outputs_no_secret_json(self) -> None:
         buffer = io.StringIO()

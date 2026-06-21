@@ -24,8 +24,10 @@ from .production_refs import (
     ProductionRefsDiscoveryError,
     build_production_refs_input_template,
     build_production_refs_report,
+    build_provisioning_audit_review,
     discover_production_refs_input_with_gh,
     validate_production_refs_report,
+    validate_provisioning_audit_review,
 )
 from .production_scheduler import build_production_scheduler_plan, validate_production_scheduler_plan
 from .ranking import selection_payload
@@ -329,6 +331,16 @@ def build_parser() -> argparse.ArgumentParser:
     production_refs_discovery.add_argument("--generated-at", required=True, help="Production refs report timestamp.")
     production_refs_discovery.add_argument("--gh-command", default="gh", help="gh executable name or path.")
     production_refs_discovery.add_argument("--json", action="store_true", help="Print JSON production refs report.")
+
+    provisioning_audit_review = subparsers.add_parser(
+        "review-provisioning-audit",
+        help="Review a no-secret provisioning audit artifact before trial-start dispatch.",
+    )
+    provisioning_audit_review.add_argument("--production-refs-report", required=True, help="Downloaded adp-production-provisioning-audit JSON report.")
+    provisioning_audit_review.add_argument("--workflow-run-ref", default="", help="Durable GitHub Actions workflow run ref for the audit.")
+    provisioning_audit_review.add_argument("--artifact-ref", default="", help="Durable artifact ref for adp-production-provisioning-audit.")
+    provisioning_audit_review.add_argument("--generated-at", required=True, help="Provisioning audit review timestamp.")
+    provisioning_audit_review.add_argument("--json", action="store_true", help="Print JSON provisioning audit review.")
 
     production_launch = subparsers.add_parser(
         "plan-production-launch",
@@ -1053,6 +1065,31 @@ def main(argv: list[str] | None = None) -> int:
             for reason in report["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if report["production_refs_ready"] else 2
+    if args.command == "review-provisioning-audit":
+        review = build_provisioning_audit_review(
+            load_json_mapping(args.production_refs_report),
+            generated_at=args.generated_at,
+            workflow_run_ref=args.workflow_run_ref,
+            artifact_ref=args.artifact_ref,
+        )
+        errors = validate_provisioning_audit_review(review)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(review, ensure_ascii=False, indent=2, sort_keys=True))
+        elif review["provisioning_audit_ready"]:
+            print(f"{review['audit_review_id']}\tready")
+        else:
+            print("blocked")
+            for reason in review["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if review["provisioning_audit_ready"] else 2
     if args.command == "plan-production-launch":
         launch_refs = {
             "runner_ref": args.runner_ref,

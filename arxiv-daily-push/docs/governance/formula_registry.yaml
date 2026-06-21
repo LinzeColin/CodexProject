@@ -770,10 +770,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:3940bb498708da1713748bfdd0e0cefef5ce7861899382649465479899043011"
-    last_verified_commit: "aa8a31f8033f337a7ea0c62ffa446a1c8ca0200b"
-    verified_at: "2026-06-22T21:00:00+10:00"
-    evidence_hash: "sha256:a67b180122dee29a864d8ea4a876981671a0a7e66201e8e76b3ea0e50e30179b"
+    implementation_fingerprint: "sha256:f21133b13b48886987583b5e96b19ddc40c84e8e6e7b0495c3274880af74bdbd"
+    last_verified_commit: "4e25ce2db01466b1053809d9b4aaeb949837fb4e"
+    verified_at: "2026-06-22T23:30:00+10:00"
+    evidence_hash: "sha256:1704f2fc4899ffa7b753c0b2cda920aaa9acc82f510699124ca223aed21ce85c"
 
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
@@ -1056,7 +1056,7 @@ formulas:
     model_id: "MOD-ADP-030"
     assumption_ids: ["ASM-ADP-033", "ASM-ADP-032", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
     status: "active"
-    expression: "A production refs input template contains only runner, SMTP secrets, Release target, and workflow variable sections with ready=false defaults, required secret and variable names, and no secret values. GitHub metadata discovery may build the same no-secret input from gh api runner labels/status, secret names, variable names, and ADP_RELEASE_TARGET without printing gh stdout/stderr, either on a provisioned runner or through the GitHub-hosted provisioning audit workflow. A production refs report passes only when those readiness sections are explicitly ready, required SMTP secret names and workflow variable names are present, every readiness ref is durable, suspicious secret-value keys or values are absent, and the gate performs no side effects, reads no Codex auth, dispatches no trial-start workflow, logs no secret values, and claims no production acceptance."
+    expression: "A production refs input template contains only runner, SMTP secrets, Release target, and workflow variable sections with ready=false defaults, required secret and variable names, and no secret values. GitHub metadata discovery may build the same no-secret input from gh api runner labels/status, secret names, variable names, and ADP_RELEASE_TARGET without printing gh stdout/stderr, either on a provisioned runner or through the GitHub-hosted provisioning audit workflow. A production refs report passes only when those readiness sections are explicitly ready, required SMTP secret names and workflow variable names are present, every readiness ref is durable, suspicious secret-value keys or values are absent, and the gate performs no side effects, reads no Codex auth, dispatches no trial-start workflow, logs no secret values, and claims no production acceptance. A provisioning audit review passes only when the downloaded production refs report itself passes and durable workflow_run_ref plus artifact_ref are supplied."
     variables:
       - name: "readiness_input"
         data_type: "object"
@@ -1086,15 +1086,19 @@ formulas:
         data_type: "str"
         unit: "GitHub Actions workflow path"
         input_domain: ".github/workflows/arxiv-daily-push-provisioning-audit.yml"
-    constraints: "The production refs gate does not inspect GitHub secret values, print gh stdout/stderr, read Codex auth, dispatch workflows, send SMTP, create Releases, mutate trial evidence, generate media, or claim production acceptance."
-    missing_policy: "Missing template sections, missing ready flags, missing required names, missing durable refs, missing gh, failed GitHub metadata access, invalid Release target variable, or secret-like input keys or values produce a blocked refs report or redacted blocked discovery error."
-    output_range: "production refs input template, discovered no-secret refs input, production refs readiness report, and provisioning audit artifact with status pass or blocked"
+      - name: "provisioning_audit_review_refs"
+        data_type: "map[str,str]"
+        unit: "durable refs"
+        input_domain: "workflow_run_ref and artifact_ref for adp-production-provisioning-audit"
+    constraints: "The production refs and provisioning audit review gates do not inspect GitHub secret values, print gh stdout/stderr, read Codex auth, dispatch workflows, send SMTP, create Releases, mutate trial evidence, generate media, or claim production acceptance."
+    missing_policy: "Missing template sections, missing ready flags, missing required names, missing durable refs, missing gh, failed GitHub metadata access, invalid Release target variable, secret-like input keys or values, missing workflow_run_ref, or missing artifact_ref produce a blocked refs report, redacted blocked discovery error, or blocked audit review."
+    output_range: "production refs input template, discovered no-secret refs input, production refs readiness report, provisioning audit artifact, and provisioning audit review with status pass or blocked"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-provisioning-audit.yml"]
     test_refs: ["arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/tests/test_production_launch.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md"]
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_input_template", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_input_from_github_metadata", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::discover_production_refs_input_with_gh", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_runner_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_smtp_secret_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_release_target_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_workflow_vars_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_secret_hygiene_errors", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_gh_api_json"]
-    implementation_fingerprint: "sha256:ae23ea78546c3f6430b3760066b7b463998ed50d76be2887d51e643cc163e7bc"
-    last_verified_commit: "aa8a31f8033f337a7ea0c62ffa446a1c8ca0200b"
-    verified_at: "2026-06-22T21:00:00+10:00"
-    evidence_hash: "sha256:5ec8504afeae6acc19ef72ddf997360d0418c694a2f9635d4faaf9fd94968dfd"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_input_template", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_input_from_github_metadata", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::discover_production_refs_input_with_gh", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_provisioning_audit_review", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_provisioning_audit_review", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_runner_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_smtp_secret_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_release_target_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_workflow_vars_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_secret_hygiene_errors", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_gh_api_json"]
+    implementation_fingerprint: "sha256:9b4657552b556b64452ba88c3eebb620e625db93d77e5aab2f70c1c764e23a01"
+    last_verified_commit: "4e25ce2db01466b1053809d9b4aaeb949837fb4e"
+    verified_at: "2026-06-22T23:30:00+10:00"
+    evidence_hash: "sha256:06533bd632d1380fd951cc0654e8c6851c70b17575e838e7404183e24ce5f203"

@@ -34,6 +34,7 @@ PRODUCTION_REFS_TEMPLATE_REQUIRED_SECTIONS = (
     "release_target",
     "workflow_vars",
 )
+PROVISIONING_AUDIT_REVIEW_ID = "adp-provisioning-audit-review-v1"
 SENSITIVE_INPUT_KEYWORDS = (
     "api_key",
     "auth_json",
@@ -297,6 +298,125 @@ def validate_production_refs_report(report: Mapping[str, Any]) -> list[str]:
     return errors
 
 
+def build_provisioning_audit_review(
+    refs_report: Mapping[str, Any],
+    *,
+    generated_at: str,
+    workflow_run_ref: str = "",
+    artifact_ref: str = "",
+) -> dict[str, Any]:
+    """Register a downloaded provisioning audit artifact without side effects."""
+
+    refs_errors = validate_production_refs_report(refs_report)
+    refs_ready = not refs_errors and refs_report.get("production_refs_ready") is True
+    gates = [
+        _gate("production_refs_report_valid", not refs_errors, refs_errors),
+        _simple_gate(
+            "production_refs_ready",
+            refs_ready,
+            "production refs report must pass before trial-start dispatch",
+        ),
+        _durable_value_gate("workflow_run_ref", workflow_run_ref),
+        _durable_value_gate("artifact_ref", artifact_ref),
+        _simple_gate(
+            "no_side_effects_confirmed",
+            all(
+                refs_report.get(key) is False
+                for key in (
+                    "side_effects_performed",
+                    "secret_values_logged",
+                    "codex_auth_read",
+                    "workflow_dispatched",
+                    "production_acceptance_claimed",
+                )
+            ),
+            "production refs report must record no side effects, no secret logging, no Codex auth read, no workflow dispatch, and no acceptance claim",
+        ),
+    ]
+    blocking_reasons = [
+        reason
+        for gate in gates
+        for reason in gate["blocking_reasons"]
+        if gate.get("passed") is not True
+    ]
+    ready = not blocking_reasons
+    return _with_audit_validation(
+        {
+            "audit_review_id": f"provisioning-audit:arxiv-daily-push:{generated_at}",
+            "validator_id": PROVISIONING_AUDIT_REVIEW_ID,
+            "project_id": "arxiv-daily-push",
+            "generated_at": generated_at,
+            "status": "pass" if ready else "blocked",
+            "provisioning_audit_ready": ready,
+            "refs_report_id": str(refs_report.get("refs_report_id") or ""),
+            "refs_validator_id": str(refs_report.get("validator_id") or ""),
+            "workflow_run_ref": _ref(workflow_run_ref),
+            "artifact_ref": _ref(artifact_ref),
+            "readiness_refs": dict(refs_report.get("readiness_refs") or {}) if isinstance(refs_report.get("readiness_refs"), Mapping) else {},
+            "review_gates": gates,
+            "side_effects_performed": False,
+            "secret_values_logged": False,
+            "codex_auth_read": False,
+            "workflow_dispatched": False,
+            "smtp_sent": False,
+            "release_uploaded": False,
+            "production_acceptance_claimed": False,
+            "blocking_reasons": blocking_reasons,
+            "next_external_actions": [] if ready else _next_audit_actions(gates),
+        }
+    )
+
+
+def validate_provisioning_audit_review(review: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if review.get("validator_id") != PROVISIONING_AUDIT_REVIEW_ID:
+        errors.append("provisioning audit review validator_id must be adp-provisioning-audit-review-v1")
+    if review.get("status") not in {"pass", "blocked"}:
+        errors.append("provisioning audit review status must be pass or blocked")
+    if review.get("provisioning_audit_ready") not in {True, False}:
+        errors.append("provisioning audit review requires provisioning_audit_ready boolean")
+    for key in (
+        "side_effects_performed",
+        "secret_values_logged",
+        "codex_auth_read",
+        "workflow_dispatched",
+        "smtp_sent",
+        "release_uploaded",
+        "production_acceptance_claimed",
+    ):
+        if review.get(key) is not False:
+            errors.append(f"provisioning audit review {key} must be false")
+    if not isinstance(review.get("review_gates"), list) or not review.get("review_gates"):
+        errors.append("provisioning audit review requires review_gates list")
+        return errors
+    failed = [
+        str(gate.get("gate_id"))
+        for gate in review.get("review_gates", [])
+        if isinstance(gate, Mapping) and gate.get("passed") is not True
+    ]
+    if review.get("status") == "pass":
+        if review.get("provisioning_audit_ready") is not True:
+            errors.append("passing provisioning audit review requires provisioning_audit_ready true")
+        if failed:
+            errors.append("passing provisioning audit review cannot include failed gates: " + ", ".join(failed))
+        if review.get("blocking_reasons"):
+            errors.append("passing provisioning audit review cannot include blocking_reasons")
+        if not _ref(review.get("workflow_run_ref")):
+            errors.append("passing provisioning audit review requires durable workflow_run_ref")
+        if not _ref(review.get("artifact_ref")):
+            errors.append("passing provisioning audit review requires durable artifact_ref")
+        refs = review.get("readiness_refs")
+        if not isinstance(refs, Mapping):
+            errors.append("passing provisioning audit review requires readiness_refs object")
+        else:
+            for key in REQUIRED_REF_KEYS:
+                if not _ref(refs.get(key)):
+                    errors.append(f"passing provisioning audit review requires durable {key}")
+    if review.get("status") == "blocked" and not review.get("blocking_reasons"):
+        errors.append("blocked provisioning audit review requires blocking_reasons")
+    return errors
+
+
 def _section(data: Mapping[str, Any], key: str) -> Mapping[str, Any]:
     value = data.get(key)
     return value if isinstance(value, Mapping) else {}
@@ -361,6 +481,14 @@ def _durable_refs_gate(readiness_refs: Mapping[str, str]) -> dict[str, Any]:
     )
 
 
+def _durable_value_gate(gate_id: str, value: Any) -> dict[str, Any]:
+    return _simple_gate(gate_id, bool(_ref(value)), f"{gate_id} must be a durable ref containing ://")
+
+
+def _simple_gate(gate_id: str, passed: bool, reason: str) -> dict[str, Any]:
+    return _gate(gate_id, passed, [] if passed else [reason])
+
+
 def _secret_hygiene_errors(value: Any, path: str = "$") -> list[str]:
     errors: list[str] = []
     if isinstance(value, Mapping):
@@ -409,6 +537,22 @@ def _next_external_actions(gates: list[Mapping[str, Any]]) -> list[str]:
         "release_target_ready": "provide ADP_RELEASE_TARGET readiness and durable GitHub variables ref",
         "workflow_vars_ready": "provide required workflow variable names and durable GitHub variables readiness ref",
         "readiness_refs_durable": "provide all production readiness refs with a durable scheme",
+    }
+    actions = []
+    for gate in gates:
+        if gate.get("passed") is True:
+            continue
+        actions.append(action_map.get(str(gate.get("gate_id")), f"resolve {gate.get('gate_id')}"))
+    return actions
+
+
+def _next_audit_actions(gates: list[Mapping[str, Any]]) -> list[str]:
+    action_map = {
+        "production_refs_report_valid": "rerun the provisioning audit workflow and download a valid adp-production-refs-v1 artifact",
+        "production_refs_ready": "resolve blocked runner, SMTP secret-name, Release target, or workflow variable readiness in the provisioning audit",
+        "workflow_run_ref": "provide a durable GitHub Actions workflow run ref for the provisioning audit",
+        "artifact_ref": "provide a durable artifact ref for adp-production-provisioning-audit",
+        "no_side_effects_confirmed": "use a no-secret provisioning refs report that records no side effects",
     }
     actions = []
     for gate in gates:
@@ -503,6 +647,12 @@ def _run_command(command: list[str]) -> subprocess.CompletedProcess[str]:
 def _with_validation(report: Mapping[str, Any]) -> dict[str, Any]:
     normalized = dict(report)
     normalized["validation_errors"] = validate_production_refs_report(normalized)
+    return normalized
+
+
+def _with_audit_validation(review: Mapping[str, Any]) -> dict[str, Any]:
+    normalized = dict(review)
+    normalized["validation_errors"] = validate_provisioning_audit_review(normalized)
     return normalized
 
 
