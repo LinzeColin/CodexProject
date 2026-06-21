@@ -1324,6 +1324,28 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020")
         self.assertIn("MOD-ADP-029", manifest["model_delta"])
 
+    def test_arxiv_daily_push_phase11_manifest_records_post_merge_launch_audit(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021")
+        self.assertTrue(manifest["pr_evidence"]["merged"])
+        self.assertFalse(manifest["pr_evidence"]["draft"])
+        self.assertIn("default_branch_ref", manifest["launch_gate"]["failed_gates"])
+        self.assertIn("trial_start_workflow_ready", manifest["launch_gate"]["passed_gates"])
+
+        status_text = (ROOT / "arxiv-daily-push" / "docs" / "governance" / "STATUS.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("PR #14 is merged", status_text)
+        self.assertNotIn("draft and unmerged", status_text)
+
 
 if __name__ == "__main__":
     unittest.main()

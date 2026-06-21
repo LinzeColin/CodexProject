@@ -10,11 +10,11 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.11.19
 - Current phase: E
-- Current gate: GOV-SEMANTIC-ADP-PLANNED
-- Confirmed iteration count: 31
+- Current gate: ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-PASS
+- Confirmed iteration count: 32
 - Reconstructed event count: 0
 - Current task: GOV-SEMANTIC-ADP-001
-- Blockers: Semantic coverage remains planned and not machine verified; production launch remains blocked while PR #14 is draft and unmerged; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries; those are not claimed by this handoff.
+- Blockers: PR #14 is merged to `main`; production launch remains blocked by missing explicit launch confirmation and missing durable readiness refs for `default_branch_ref`, `runner_ref`, `smtp_secret_ref`, `release_target_ref`, `workflow_vars_ref`, and `trial_start_workflow_ref`; no GitHub Actions workflow runs or combined status checks exist for merge commit `9616264221cecc8077fc862692ec6025f1e4872b`; semantic coverage remains planned and not machine verified; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
 
 ## Phase Matrix
 
@@ -24,7 +24,7 @@ The append-only machine record is `development_events.jsonl`.
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
-| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, SMTP delivery, Release delivery, scheduler gate, scheduled execution driver, daily input builder, trial ledger update, trial ledger state persistence, trial ops evidence annotation, trial replay evidence, trial recovery evidence, trial resource evidence, trial start gate, trial start workflow, and production launch readiness generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md` |
+| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, SMTP delivery, Release delivery, scheduler gate, scheduled execution driver, daily input builder, trial ledger update, trial ledger state persistence, trial ops evidence annotation, trial replay evidence, trial recovery evidence, trial resource evidence, trial start gate, trial start workflow, production launch readiness, and post-merge launch audit generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md` |
 
 ## Iteration Records
 
@@ -735,6 +735,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Production launch still requires PR ready/merge, private runner provisioning, GitHub secrets and vars, default-branch workflow dispatch, real SMTP/Release evidence, and archived start-gate artifacts; production acceptance still requires 30 unique daily production evidence entries plus replay, recovery, and resource evidence.
 - Rollback: Remove the arXiv `semantic_coverage` block, `GOV-SEMANTIC-ADP-001` task, generated owner/status changes, run manifest, and this ledger/event update.
 - Next step: After governance validation passes, finish merging latest `main` into PR #14, push, then reassess ready/merge and default-branch trial-start prerequisites.
+
+### `ITER-20260621-032`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from GitHub PR #14 merge metadata, local `main`, workflow file presence, workflow run/status checks, and the `plan-production-launch` post-merge gate result.
+- Version before: 0.11.19
+- Version after: 0.11.19
+- Base commit: 9616264221cecc8077fc862692ec6025f1e4872b
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021
+- Goal: Record the post-merge production launch audit after PR #14 was merged to `main`.
+- Assumptions: This iteration must not dispatch workflows, provision runners, read or write secrets, send SMTP mail, create Releases, or claim 30-day production acceptance.
+- Files changed: post-merge phase record, delivery plan/task records, development ledger/status, production trial runbook, development event, run manifest, and generated governance dashboard/status views.
+- Model changes: No runtime model behavior change.
+- Parameter changes: No active parameter value change.
+- Commands run: `plan-production-launch` with merged PR #14 metadata and expected head SHA; arXiv unit tests; root governance tests; project governance validator; dashboard generator; changed-only enforce-sync semantic validator; `git diff --check`; project cache scan; storage check.
+- Test results: launch gate expected blocked with PR/default-branch gates passing and only `launch_confirmed`, `default_branch_ref`, `runner_ref`, `smtp_secret_ref`, `release_target_ref`, `workflow_vars_ref`, and `trial_start_workflow_ref` missing; 143 arXiv tests OK; 83 root governance tests OK; project governance errors 0 warnings 0; changed-only enforce-sync semantic errors 0 warnings 0; dashboard generation PASS; diff check exit 0; no arXiv `__pycache__` or `.pyc`; pre-shrink storage arXiv 1.6M, `.git` 89M, worktree 221M.
+- Successes: PR #14 is merged; local `main` is at merge commit `9616264221cecc8077fc862692ec6025f1e4872b`; workflow files are present on default branch; post-merge `plan-production-launch` no longer blocks on draft/unmerged PR or head SHA mismatch.
+- Failures: No workflow runs or combined status checks exist for the merge commit; launch still blocks because durable external refs and explicit confirmation are missing.
+- Decisions: Do not dispatch the trial start workflow until durable refs and explicit launch confirmation are available.
+- Remaining risks: Semantic coverage remains planned and not machine verified; production acceptance still requires default-branch trial start evidence, live source pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
+- Rollback: Revert the post-merge phase record, delivery task, ledger/status/runbook updates, run manifest, event record, and generated dashboard/status changes.
+- Next step: Provision or record durable readiness refs for runner, SMTP secrets, Release target, workflow variables, default-branch workflow location, and launch confirmation; then rerun `plan-production-launch` before dispatching the trial start workflow.
 
 ## Unknown Historical Periods
 

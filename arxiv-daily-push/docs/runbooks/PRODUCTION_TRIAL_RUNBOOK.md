@@ -295,6 +295,24 @@ ref, or while the trial start workflow contract is not ready. It does not merge
 the PR, dispatch workflows, read secret values, send SMTP mail, create Releases,
 retain media/model/cache artifacts, or claim production acceptance.
 
+## Post-Merge Launch Audit
+
+After PR #14 was merged to `main`, the PR and expected-head checks cleared. A
+post-merge local launch audit still blocks because the durable external refs and
+explicit launch confirmation are not present:
+
+- `default_branch_ref`
+- `runner_ref`
+- `smtp_secret_ref`
+- `release_target_ref`
+- `workflow_vars_ref`
+- `trial_start_workflow_ref`
+- `launch_confirmed`
+
+Do not dispatch `.github/workflows/arxiv-daily-push-trial-start.yml` until those
+refs are recorded and a fresh `plan-production-launch` report returns
+`production_launch_ready=true`.
+
 ## Trial Start Evidence Workflow
 
 After the start gate command has been validated locally, the default-branch

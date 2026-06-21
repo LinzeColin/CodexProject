@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 31
-- acceptance_count: 31
+- task_count: 32
+- acceptance_count: 32
 
 ## Delivery Tasks
 
@@ -57,6 +57,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-TRIAL-START-WORKFLOW-019 | E | completed | ADP-ACC-PHASE11-TRIAL-START-WORKFLOW | 20 focused tests OK; workflow validator checks manual dispatch, artifact set, side-effect vars, durable refs, and secret safety | `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md` |
 | ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020 | E | completed | ADP-ACC-PHASE11-PRODUCTION-LAUNCH-READINESS | 12 focused tests OK; launch gate blocks draft/unmerged PR, head SHA mismatch, missing durable refs, and missing confirmation | `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md` |
 | GOV-SEMANTIC-ADP-001 | E | planned | ACC-SEMANTIC-ADP-001 | pending; semantic coverage rollout contract is planned and not machine verified | `governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json` |
+| ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021 | E | completed | ADP-ACC-PHASE11-POST-MERGE-LAUNCH-AUDIT | 143 arXiv tests OK; 83 root tests OK; project governance 0 errors; changed-only semantic 0 errors; launch gate blocks only external refs/confirmation | `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md` |
 
 ## Release Gates
 
@@ -92,7 +93,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 trial resource evidence | 30 unique daily resource refs matched to passing production preflight reports and durable resource evidence ref before annotation | pass for resource evidence contract; no real 30-day resource telemetry claimed |
 | Phase 11 trial start gate | passing preflight, bootstrap, scheduler, live source, real SMTP, real Release, durable refs, and explicit confirmation before start-ready | pass for start-readiness contract; no real trial start or production acceptance claimed |
 | Phase 11 trial start workflow | manual default-branch workflow that collects preflight, bootstrap, scheduler, source, SMTP, Release, and start-gate artifacts with explicit side-effect variables | pass for workflow contract; not yet run on default branch |
-| Phase 11 production launch readiness | non-draft merged PR, expected head SHA binding, ready trial start workflow contract, durable runner/secret/Release/variable/default-branch refs, and explicit launch confirmation | pass for launch readiness contract; current PR remains draft and unmerged |
+| Phase 11 production launch readiness | non-draft merged PR, expected head SHA binding, ready trial start workflow contract, durable runner/secret/Release/variable/default-branch refs, and explicit launch confirmation | pass for launch readiness contract; PR/default-branch gates are now satisfied after merge, while external durable refs and confirmation remain blocked |
+| Phase 11 post-merge launch audit | PR #14 merged to main, default branch contains workflow files, and launch gate blocks only external refs/confirmation | pass for audit; production launch remains blocked until durable refs and confirmation exist |
 | Semantic coverage rollout contract | task-bound plan for machine-checking active parameter values and formula fingerprints | planned; not machine verified |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
