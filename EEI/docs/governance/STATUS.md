@@ -21,6 +21,8 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Task count: `123`
 - Unbound event count: `14`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `135`
+- Semantic coverage: `planned`
+- Semantic rollout task: `GOV-SEMANTIC-EEI-001`
 
 ## Latest Run
 
@@ -37,6 +39,12 @@ Source: generated from machine governance registries, Git metadata, and validati
 ## Current Blockers
 
 A209 remains open until committed 4h and 24h operator soak evidence exists.
+
+## Semantic Coverage
+
+- Status: `planned`
+- Target: Bind EEI active parameter_catalog and model/formula registries to machine extractors without changing runtime behavior.
+- Evidence/rollout: acceptance_id: ACC-SEMANTIC-EEI-001; evidence_ref: EEI/docs/governance/OWNER_STATUS.md; owner: project owner; rationale: Review6-D rollout guard; EEI has rich legacy registries but no root semantic extractor profile yet.; status: planned; target: Bind EEI active parameter_catalog and model/formula registries to machine extractors without changing runtime behavior.; +1 more
 
 ## Next Task
 

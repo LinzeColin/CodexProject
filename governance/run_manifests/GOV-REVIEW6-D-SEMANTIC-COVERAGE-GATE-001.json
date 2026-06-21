@@ -1,0 +1,153 @@
+{
+  "acceptance_id": "ACC-REVIEW6-D-SEMANTIC-COVERAGE-GATE-001",
+  "actor": "Codex",
+  "base_commit": "aad1145bef1c8307f5204b5973631d64f4ead372",
+  "change_classification": [
+    "root_governance_change",
+    "semantic_coverage_rollout_gate",
+    "generated_status_update",
+    "no_business_behavior_change"
+  ],
+  "changed_files_actual": [
+    ".agents/skills/project-governance/SKILL.md",
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/STATUS.md",
+    "EEI/CHECKSUMS.sha256",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "EVA_OS/docs/governance/OWNER_STATUS.md",
+    "EVA_OS/docs/governance/STATUS.md",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "Serenity-Alipay/docs/governance/OWNER_STATUS.md",
+    "Serenity-Alipay/docs/governance/STATUS.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:b38c1730c418fbf307bd6e908c764e131026685f20c62b1301060fb473ae0e59",
+  "evidence_refs": [
+    "governance/projects.yaml",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "GOVERNANCE_DASHBOARD.md",
+    "*/docs/governance/OWNER_STATUS.md"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "formula_delta": {
+    "runtime_behavior": "unchanged",
+    "semantic_coverage_gate": "future and existing registered projects must declare semantic_coverage"
+  },
+  "model_delta": {
+    "runtime_behavior": "unchanged",
+    "semantic_coverage_statuses": "Serenity-Alipay machine_verified; all other required projects planned"
+  },
+  "observed_results": [
+    "LOCAL_VALIDATION_PASS",
+    "SEMANTIC_COVERAGE_DECLARED_FOR_ALL_REGISTERED_PROJECTS",
+    "EEI_CLEAN_ROOM_RELEASE_ARTIFACTS_RESYNCED",
+    "REQUIRED_PROJECT_WITHOUT_SEMANTIC_COVERAGE_FAILS",
+    "MACHINE_VERIFIED_REQUIRES_EXTRACTORS",
+    "GITHUB_ACTIONS_TO_BE_VERIFIED_BY_PR_CHECK"
+  ],
+  "parameter_delta": {
+    "active_values_changed": 0,
+    "runtime_parameters_changed": 0
+  },
+  "project_id": "root",
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-REVIEW6-D-SEMANTIC-COVERAGE-GATE-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "result_commit": "PENDING_GITHUB_MERGE",
+  "rollback": "Revert Review6-D semantic_coverage additions, validator rules, generated dashboard/status files, tests, and this manifest. No business code rollback is required.",
+  "run_id": "GOV-REVIEW6-D-SEMANTIC-COVERAGE-GATE-001",
+  "started_at": "2026-06-21T09:58:47Z",
+  "task_id": "GOV-REVIEW6-D-SEMANTIC-COVERAGE-GATE-001",
+  "tests_run": [
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write",
+      "exit_code": 0,
+      "result": "generated dashboard, 9 STATUS files, and 9 OWNER_STATUS files with semantic coverage status"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write && python3 scripts/generate_governance_dashboard.py --write && git diff --exit-code -- GOVERNANCE_DASHBOARD.md ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'",
+      "exit_code": 0,
+      "result": "generated status outputs are stable on a second generation pass"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 -m pytest tests/governance -q",
+      "exit_code": 0,
+      "result": "32 passed"
+    },
+    {
+      "command": "python3 scripts/manage_clean_room_release.py generate/validate using an in-memory yaml shim because local PyYAML is unavailable",
+      "exit_code": 0,
+      "result": "EEI clean-room package paths 390, markdown category 109, package sha256 11c199006cf8358ab52e21277c4a3c0d686c6a4867eac1c96ea515dd19a2305a"
+    },
+    {
+      "command": "python3 scripts/manage_release_artifacts.py generate && python3 scripts/manage_release_artifacts.py validate && shasum -a 256 -c CHECKSUMS.sha256",
+      "exit_code": 0,
+      "result": "EEI release manifest paths 397, checksum paths 396, checksums OK"
+    },
+    {
+      "command": "python3 -m py_compile scripts/generate_governance_dashboard.py scripts/validate_project_governance.py scripts/validate_governance_sync.py scripts/validate_semantic_extractors.py",
+      "exit_code": 0,
+      "result": "governance scripts compile"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "no whitespace errors"
+    }
+  ],
+  "unresolved_risks": [
+    "This task establishes full-project semantic coverage as a required declared rollout contract; it does not complete machine extractors for projects other than Serenity-Alipay.",
+    "Branch protection/no-bypass authenticated evidence remains UNVERIFIED without a GitHub token or dedicated branch protection API tool."
+  ],
+  "updated_governance_files": [
+    ".agents/skills/project-governance/SKILL.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "GOVERNANCE_DASHBOARD.md"
+  ],
+  "updated_release_evidence_files": [
+    "EEI/CHECKSUMS.sha256",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json"
+  ],
+  "version_delta": {
+    "governance_outputs": "semantic_coverage displayed in dashboard/status/owner reports",
+    "product_versions": "unchanged"
+  }
+}

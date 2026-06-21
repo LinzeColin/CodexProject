@@ -37,6 +37,8 @@ No runtime model delta recorded.
 
 - 置信度：`Medium`
 - 证据新鲜度：`2 unbound event(s)`
+- 语义覆盖：`planned`
+- 语义覆盖任务：`GOV-SEMANTIC-OPME-001`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED 数量：`92`
 - 未绑定事件数量：`2`
 
@@ -46,9 +48,9 @@ Resolve engineering calibration, prompt version, provider policy, and signoff ev
 
 ## 9. 当前前三风险
 
-1. Blocker: `TASK-OPME-B-001` for calibration, prompt/provider governance, and signoff evidence.
-2. UNKNOWN/HUMAN_REVIEW_REQUIRED facts: 92
-3. Unbound or stale evidence events: 2
+1. Semantic extractor coverage is planned; rollout task GOV-SEMANTIC-OPME-001 remains open.
+2. Blocker: `TASK-OPME-B-001` for calibration, prompt/provider governance, and signoff evidence.
+3. UNKNOWN/HUMAN_REVIEW_REQUIRED facts: 92
 
 ## 10. 下一项可执行任务及 Acceptance
 

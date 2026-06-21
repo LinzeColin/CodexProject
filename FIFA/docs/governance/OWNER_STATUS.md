@@ -37,6 +37,8 @@ MOD-001, MOD-002, MOD-003, MOD-004, MOD-005, MOD-006, +5 more
 
 - 置信度：`Medium`
 - 证据新鲜度：`2 unbound event(s)`
+- 语义覆盖：`planned`
+- 语义覆盖任务：`GOV-SEMANTIC-FIFA-001`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED 数量：`72`
 - 未绑定事件数量：`2`
 
@@ -46,9 +48,9 @@ Recover authorized raw data path without violating TAB access-policy boundaries.
 
 ## 9. 当前前三风险
 
-1. Blocker: TASK-FIFA-B-001, TASK-FIFA-B-002, TASK-FIFA-C-001, TASK-FIFA-C-002, TASK-FIFA-D-001, TASK-FIFA-D-002, TASK-FIFA-E-001, TASK-FIFA-E-002
-2. UNKNOWN/HUMAN_REVIEW_REQUIRED facts: 72
-3. Unbound or stale evidence events: 2
+1. Semantic extractor coverage is planned; rollout task GOV-SEMANTIC-FIFA-001 remains open.
+2. Blocker: TASK-FIFA-B-001, TASK-FIFA-B-002, TASK-FIFA-C-001, TASK-FIFA-C-002, TASK-FIFA-D-001, TASK-FIFA-D-002, TASK-FIFA-E-001, TASK-FIFA-E-002
+3. UNKNOWN/HUMAN_REVIEW_REQUIRED facts: 72
 
 ## 10. 下一项可执行任务及 Acceptance
 

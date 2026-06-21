@@ -21,6 +21,8 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Task count: `5`
 - Unbound event count: `2`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `92`
+- Semantic coverage: `planned`
+- Semantic rollout task: `GOV-SEMANTIC-OPME-001`
 
 ## Latest Run
 
@@ -37,6 +39,12 @@ Source: generated from machine governance registries, Git metadata, and validati
 ## Current Blockers
 
 `TASK-OPME-B-001` for calibration, prompt/provider governance, and signoff evidence.
+
+## Semantic Coverage
+
+- Status: `planned`
+- Target: Add extractors for analysis rule constants and fingerprints for active deterministic formulas.
+- Evidence/rollout: acceptance_id: ACC-SEMANTIC-OPME-001; evidence_ref: OpMe_System/docs/governance/OWNER_STATUS.md; owner: project owner; rationale: Review6-D rollout guard; semantic extractors are not yet implemented for OpMe_System.; status: planned; target: Add extractors for analysis rule constants and fingerprints for active deterministic formulas.; +1 more
 
 ## Next Task
 
