@@ -125,9 +125,11 @@ PARTIAL_EVIDENCE = {
         "tests/fixtures/golden_vertical_owner_signoff_decisions.json",
         "scripts/check_database_schema.py",
         "tests/integration/test_database_migrations.py",
+        "tests/unit/test_official_source_live_capture.py",
         "artifacts/tests/a202/t1301_curated_official_ingestion_contract.json",
         "artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json",
         "artifacts/tests/a202/t1301_operator_source_capture_contract.json",
+        "artifacts/tests/a202/t1301_live_official_retrieval_contract.json",
     },
     "T1302": {
         "apps/api/app/domain.py",
