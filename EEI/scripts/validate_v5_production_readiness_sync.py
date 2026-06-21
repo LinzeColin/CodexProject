@@ -47,9 +47,10 @@ PARTIAL_TASKS = {
     "T1303": "A204",
     "T1304": "A206",
     "T1307": "A209",
+    "T1309": "A210",
 }
 
-PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A209"}
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A209", "A210"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -172,6 +173,13 @@ PARTIAL_EVIDENCE = {
         "artifacts/tests/a209/t1307_soak_smoke.json",
         "artifacts/tests/a209/t1307_operator_soak_readiness.json",
         "artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl",
+    },
+    "T1309": {
+        "config/brand_policy.yaml",
+        "data/brand_name_conflict_register.csv",
+        "brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md",
+        "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
+        "scripts/validate_brand_clearance.py",
     },
 }
 

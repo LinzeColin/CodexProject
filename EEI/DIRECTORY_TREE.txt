@@ -110,6 +110,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── t1307_operator_soak_readiness.checkpoints.jsonl
 │   │   │   ├── t1307_operator_soak_readiness.json
 │   │   │   └── t1307_soak_smoke.json
+│   │   ├── a210
+│   │   │   └── t1309_brand_clearance_preflight_contract.json
 │   │   └── a211
 │   │       └── t1308_frontend_workspace_context_contract.json
 │   ├── README.md
@@ -369,6 +371,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── run_soak_smoke.mjs
 │   ├── secret_scan.py
 │   ├── smoke_test_prototype.py
+│   ├── validate_brand_clearance.py
 │   ├── validate_catalog_integrity.py
 │   ├── validate_contracts.py
 │   ├── validate_github_governance.py

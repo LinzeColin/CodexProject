@@ -103,12 +103,37 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the second-source data/loader/test changes, regenerate clean-room/release artifacts, and rerun validation.
 - Next step: run full local verification, push for remote PostgreSQL/browser/live FastAPI CI proof, then execute the real live-source and owner-signoff closure.
 
+### `ITER-20260621-003`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `f52d4a1`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1309`
+- Goal: add a fail-closed brand-clearance preflight contract for A210 without claiming legal or market clearance.
+- Assumptions: current local v5 brand policy and conflict register are sufficient to validate repository controls, but they are not legal advice or trademark clearance.
+- Files read: brand policy, brand conflict register, v5 synchronization validator, task/acceptance/status ledgers and release governance records.
+- Files changed: A210 preflight script/artifact, Makefile validation wiring, T1309/A210 status rows, V5 synchronization notes, delivery tasks and this ledger.
+- Model changes: no scoring model change; brand release gate remains a governance control.
+- Parameter changes: no parameter value change; `brand.clearance_required=true` remains active.
+- Commands run: `scripts/validate_brand_clearance.py generate` and `scripts/validate_brand_clearance.py validate`; broader validation is required before commit.
+- Test results: local A210 preflight generation and validation passed.
+- Successes: EEI name lock, forbidden-name coverage, BRAND-G1 fail-closed release status and required clearance checklist are now machine-validated.
+- Failures: formal legal opinion, trademark knockout, market search evidence and signed risk waiver remain absent.
+- Decisions: A210 moves to `IN_PROGRESS`, not `DONE`.
+- Remaining risks: a repository preflight can be mistaken for legal clearance if status files are not read carefully.
+- Rollback: revert the A210 preflight script/artifact/status changes, regenerate release artifacts, and rerun validation.
+- Next step: attach dated legal/market clearance evidence or signed risk waiver before any public brand launch.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
 - `EVENT-RECON-20260620-001`: recent T1207-T1209 evidence reconstructed from Git log and HANDOFF.
 - `EVENT-20260621-002`: remote CI validation for TASK-T1307 operator soak runner readiness.
 - `EVENT-20260621-003`: local implementation evidence for TASK-T1301/A202 second independent official-source closure.
+- `EVENT-20260621-004`: local implementation evidence for TASK-T1309/A210 brand-clearance fail-closed preflight.
 
 ## Unknown Historical Periods
 
