@@ -1,0 +1,7 @@
+notification:
+  channel: email
+  recipient: linzezhang35@gmail.com
+  dry_run_required: true
+  real_send_enabled: false
+  smtp_secret_source: external_secret_store_only
+

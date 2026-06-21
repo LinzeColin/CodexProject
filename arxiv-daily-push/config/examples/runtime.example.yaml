@@ -1,0 +1,11 @@
+project: arXiv Daily Push
+timezone: Australia/Sydney
+health_check_time: "04:45"
+daily_time: "05:00"
+watchdog_time: "05:10"
+weekday_silent_source_sync_time: "12:30"
+openai_platform_api_key_allowed: false
+paid_api_allowed: false
+real_email_send_enabled: false
+min_video_tts_free_disk_gib: 80
+

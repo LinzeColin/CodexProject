@@ -243,6 +243,26 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertTrue(validation.errors)
         self.assertIn("files_changed does not cover", validation.errors[0].message)
 
+    def test_review5_root_governance_change_requires_sync_markers(self) -> None:
+        sync = load_sync_module()
+        changed = ["governance/projects.yaml", "GOVERNANCE_DASHBOARD.md"]
+        validation = sync.SyncValidation()
+
+        sync.root_sync_requirements(validation, ["governance/projects.yaml"], changed)
+
+        messages = [issue.message for issue in validation.issues]
+        self.assertIn("Root governance change requires updated run_manifest", messages)
+        self.assertIn("Root governance change requires updated governance_tests", messages)
+
+        covered = [
+            *changed,
+            "governance/run_manifests/ADP-PHASE1-FOUNDATION-20260621.json",
+            "tests/governance/test_project_governance_validator.py",
+        ]
+        validation = sync.SyncValidation()
+        sync.root_sync_requirements(validation, ["governance/projects.yaml"], covered)
+        self.assertFalse(validation.errors)
+
     def test_review5_version_matrix_current_iteration_mismatch_fails(self) -> None:
         sync = load_sync_module()
         with tempfile.TemporaryDirectory() as tmp:

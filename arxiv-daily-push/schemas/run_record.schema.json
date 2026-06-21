@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/run_record.schema.json",
+  "title": "RunRecord",
+  "type": "object",
+  "required": ["run_id", "date", "timezone", "phase", "status", "stages"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "date": {"type": "string"},
+    "timezone": {"type": "string"},
+    "phase": {"type": "string"},
+    "status": {"type": "string"},
+    "stages": {"type": "array", "items": {"type": "object"}},
+    "notification": {"type": "object"},
+    "sha256": {"type": "string"}
+  },
+  "additionalProperties": false
+}
+
