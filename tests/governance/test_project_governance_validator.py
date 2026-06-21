@@ -430,6 +430,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["task_id"], "ADP-PHASE7-TTS-001")
         self.assertIn("MOD-ADP-007", manifest["model_delta"])
 
+    def test_arxiv_daily_push_phase8_manifest_records_video_gate(self) -> None:
+        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE8-VIDEO-20260621.json").read_text())
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE8-VIDEO-001")
+        self.assertIn("MOD-ADP-008", manifest["model_delta"])
+
 
 if __name__ == "__main__":
     unittest.main()
