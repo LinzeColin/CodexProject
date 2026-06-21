@@ -345,3 +345,29 @@ tasks:
     completed_commit: ""
     unknown_task_ids:
       - "TASK-EVA-B-008"
+  - task_id: "GOV-SEMANTIC-EVA-001"
+    phase: "B"
+    objective: "Add machine selectors for strategy parameters and fingerprints for active strategy formulas."
+    scope: "EVA_OS semantic extractor metadata and governance validator evidence only; no business code or runtime behavior changes"
+    non_scope: "business source, runtime logic, model behavior, data generation, dependency installation, commits and pushes"
+    status: "planned"
+    dependencies: ["TASK-EVA-A-004"]
+    required_files:
+      - "EVA_OS/docs/governance/parameter_registry.csv"
+      - "EVA_OS/docs/governance/formula_registry.yaml"
+      - "governance/projects.yaml"
+    acceptance_ids:
+      - "ACC-SEMANTIC-EVA-001"
+    test_commands:
+      - "python3 scripts/validate_project_governance.py --project EVA_OS --semantic"
+      - "python3 scripts/validate_semantic_extractors.py EVA_OS"
+    test_results:
+      - "NOT_RUN - semantic extractor rollout task is planned, not completed"
+    evidence_refs:
+      - "EVA_OS/docs/governance/OWNER_STATUS.md"
+      - "governance/projects.yaml"
+    risk: "EVA_OS remains structurally governed but not machine semantic-verified until extractors are implemented."
+    rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
+    target_version: "0.1.0"
+    completed_version: ""
+    completed_commit: ""

@@ -1,0 +1,169 @@
+{
+  "acceptance_id": "ACC-REVIEW6-E-SEMANTIC-TASK-BINDING-001",
+  "actor": "Codex",
+  "base_commit": "0fff46996ee25532c863c73d4ea04c332bb270fc",
+  "change_classification": [
+    "root_governance_change",
+    "semantic_coverage_task_binding",
+    "generated_status_update",
+    "no_business_behavior_change"
+  ],
+  "changed_files_actual": [
+    ".agents/skills/project-governance/SKILL.md",
+    "Alpha/docs/governance/DELIVERY_PLAN.md",
+    "Alpha/docs/governance/STATUS.md",
+    "Alpha/docs/governance/delivery_tasks.yaml",
+    "EEI/CHECKSUMS.sha256",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/docs/governance/DELIVERY_PLAN.md",
+    "EEI/docs/governance/STATUS.md",
+    "EEI/docs/governance/delivery_tasks.yaml",
+    "EVA_OS/docs/governance/DELIVERY_PLAN.md",
+    "EVA_OS/docs/governance/MODEL_SPEC.md",
+    "EVA_OS/docs/governance/STATUS.md",
+    "EVA_OS/docs/governance/delivery_tasks.yaml",
+    "FIFA/docs/governance/DELIVERY_PLAN.md",
+    "FIFA/docs/governance/STATUS.md",
+    "FIFA/docs/governance/delivery_tasks.yaml",
+    "OpMe_System/docs/governance/DELIVERY_PLAN.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpMe_System/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/DELIVERY_PLAN.md",
+    "OpenAIDatabase/docs/governance/MODEL_SPEC.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "PFI/大数据模拟器/docs/governance/DELIVERY_PLAN.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml",
+    "Serenity-Alipay/docs/governance/OWNER_STATUS.md",
+    "Serenity-Alipay/docs/governance/STATUS.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/docs/governance/DELIVERY_PLAN.md",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/delivery_tasks.yaml"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:82becf7a2e8cf8c584d50f0175e5d403a04587340cbd42b6fca012a44435953e",
+  "evidence_refs": [
+    "governance/projects.yaml",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "*/docs/governance/delivery_tasks.yaml",
+    "*/docs/governance/STATUS.md"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "formula_delta": {
+    "runtime_behavior": "unchanged",
+    "semantic_coverage_binding": "non-machine-verified projects now have explicit project delivery tasks for semantic extractor rollout"
+  },
+  "model_delta": {
+    "runtime_behavior": "unchanged",
+    "semantic_coverage_task_binding": "root semantic_coverage.task_id must bind to project delivery_tasks.yaml"
+  },
+  "observed_results": [
+    "LOCAL_STRUCTURAL_VALIDATION_PASS",
+    "GOVERNANCE_TESTS_PASS",
+    "SEMANTIC_COVERAGE_TASKS_ADDED_FOR_NON_MACHINE_VERIFIED_PROJECTS",
+    "SERENITY_ROOT_COVERAGE_REUSES_COMPLETED_TASK_B_003",
+    "EEI_CLEAN_ROOM_RELEASE_ARTIFACTS_RESYNCED",
+    "GITHUB_ACTIONS_TO_BE_VERIFIED_BY_PR_CHECK"
+  ],
+  "parameter_delta": {
+    "active_values_changed": 0,
+    "runtime_parameters_changed": 0
+  },
+  "project_id": "root",
+  "required_governance_files": [
+    "governance/projects.yaml",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW6-E-SEMANTIC-TASK-BINDING-001.json"
+  ],
+  "result_commit": "PENDING_GITHUB_MERGE",
+  "rollback": "Revert Review6-E semantic_coverage task-binding validator rules, project delivery task additions, generated status updates, tests, and this manifest. No business code rollback is required.",
+  "run_id": "GOV-REVIEW6-E-SEMANTIC-TASK-BINDING-001",
+  "started_at": "2026-06-21T10:20:00Z",
+  "task_id": "GOV-REVIEW6-E-SEMANTIC-TASK-BINDING-001",
+  "tests_run": [
+    {
+      "command": "python3 scripts/validate_project_governance.py --all",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0 after manual count reconciliation"
+    },
+    {
+      "command": "python3 -m unittest tests/governance/test_project_governance_validator.py -q",
+      "exit_code": 0,
+      "result": "35 tests OK"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write",
+      "exit_code": 0,
+      "result": "generated dashboard and per-project STATUS/OWNER_STATUS views"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0; Serenity semantic checks remain 49 parameters and 12 formulas"
+    },
+    {
+      "command": "python3 -m pytest tests/governance -q",
+      "exit_code": 0,
+      "result": "35 passed"
+    },
+    {
+      "command": "python3 scripts/validate_semantic_extractors.py Serenity-Alipay",
+      "exit_code": 0,
+      "result": "semantic_formulas_checked 12; semantic_parameters_checked 49"
+    },
+    {
+      "command": "python3 -m py_compile scripts/generate_governance_dashboard.py scripts/validate_project_governance.py scripts/validate_governance_sync.py scripts/validate_semantic_extractors.py && git diff --check",
+      "exit_code": 0,
+      "result": "governance scripts compile; no whitespace errors"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write with before/after generated-output diff hash comparison",
+      "exit_code": 0,
+      "result": "generated output diff hash stable: c57ac6d6dd1db95a39b5dbff91a555b3cd0c1076eb4ce97ea0120b3017571f28"
+    },
+    {
+      "command": "python3 scripts/manage_clean_room_release.py generate/validate using an in-memory yaml shim because local PyYAML is unavailable",
+      "exit_code": 0,
+      "result": "EEI clean-room package paths 390; package sha256 d6b3460e00946cac269407deeaf807f3874a6c7a3097effd77c6e88b4e63e077"
+    },
+    {
+      "command": "python3 scripts/manage_release_artifacts.py generate && python3 scripts/manage_release_artifacts.py validate && shasum -a 256 -c CHECKSUMS.sha256",
+      "exit_code": 0,
+      "result": "EEI release manifest paths 397, checksum paths 396, checksums OK"
+    }
+  ],
+  "unresolved_risks": [
+    "This task binds semantic coverage rollout contracts to project delivery tasks; it does not complete machine semantic extractors for projects other than Serenity-Alipay.",
+    "Branch protection/no-bypass authenticated evidence remains UNVERIFIED without a GitHub token or dedicated branch protection API tool."
+  ],
+  "updated_governance_files": [
+    ".agents/skills/project-governance/SKILL.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_release_evidence_files": [
+    "EEI/CHECKSUMS.sha256",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json"
+  ],
+  "version_delta": {
+    "governance_outputs": "semantic rollout tasks and task counts updated in generated status outputs",
+    "product_versions": "unchanged"
+  }
+}
