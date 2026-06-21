@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/release_delivery.schema.json",
+  "title": "arXiv Daily Push GitHub Release Delivery Evidence",
+  "type": "object",
+  "required": [
+    "delivery_id",
+    "validator_id",
+    "project_id",
+    "generated_at",
+    "repo",
+    "tag",
+    "target",
+    "title",
+    "status",
+    "dry_run",
+    "release_upload_enabled",
+    "draft",
+    "private_channel_expected",
+    "notes",
+    "asset_policy",
+    "assets",
+    "command",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "delivery_id": {"type": "string"},
+    "validator_id": {"const": "adp-release-delivery-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "generated_at": {"type": "string"},
+    "repo": {"type": "string"},
+    "tag": {"type": "string"},
+    "target": {"type": "string"},
+    "title": {"type": "string"},
+    "status": {"type": "string", "enum": ["dry_run", "created", "blocked"]},
+    "dry_run": {"type": "boolean"},
+    "release_upload_enabled": {"type": "boolean"},
+    "draft": {"type": "boolean"},
+    "private_channel_expected": {"const": true},
+    "notes": {
+      "type": "object",
+      "required": ["notes_sha256", "notes_logged"],
+      "properties": {
+        "notes_sha256": {"type": "string"},
+        "notes_logged": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "asset_policy": {
+      "type": "object",
+      "required": [
+        "max_asset_mib",
+        "forbidden_names",
+        "forbidden_suffixes",
+        "clobber_enabled",
+        "secret_values_logged"
+      ],
+      "properties": {
+        "max_asset_mib": {"type": "integer", "minimum": 1},
+        "forbidden_names": {"type": "array", "items": {"type": "string"}},
+        "forbidden_suffixes": {"type": "array", "items": {"type": "string"}},
+        "clobber_enabled": {"const": false},
+        "secret_values_logged": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "name", "size_bytes", "sha256"],
+        "properties": {
+          "path": {"type": "string"},
+          "name": {"type": "string"},
+          "size_bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "command": {
+      "type": "object",
+      "required": [
+        "gh_required",
+        "gh_available",
+        "command_preview",
+        "stdout_logged",
+        "stderr_logged"
+      ],
+      "properties": {
+        "gh_required": {"const": true},
+        "gh_available": {"type": "boolean"},
+        "command_preview": {"type": "array", "items": {"type": "string"}},
+        "stdout_logged": {"const": false},
+        "stderr_logged": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "release_ref": {"type": "string"},
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

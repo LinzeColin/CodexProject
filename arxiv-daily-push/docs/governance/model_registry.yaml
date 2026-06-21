@@ -96,6 +96,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/tests/test_notifications.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-020"
+    statement: "GitHub Release transport defaults to dry-run, requires explicit allow-upload for real Release creation, uses ADP_RELEASE_TARGET or --target, avoids clobber upload, and never logs Release notes, secrets, gh stdout, or gh stderr."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/tests/test_release_delivery.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -376,3 +381,21 @@ models:
     config_refs: ["arxiv-daily-push/config/examples/notification.example.yaml", "arxiv-daily-push/schemas/smtp_delivery.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md"]
+
+  - model_id: "MOD-ADP-017"
+    name: "GitHub Release delivery boundary"
+    kind: "deterministic release transport gate"
+    purpose: "Render Release delivery evidence and create a real GitHub Release only when explicit allow-upload, target, safe-asset, gh, and no-clobber checks pass."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-release-delivery-v1"
+    assumption_ids: ["ASM-ADP-020", "ASM-ADP-003"]
+    formula_ids: ["FORM-ADP-019"]
+    parameter_ids: ["PARAM-ADP-086", "PARAM-ADP-087", "PARAM-ADP-088", "PARAM-ADP-089", "PARAM-ADP-090", "PARAM-ADP-091"]
+    inputs: ["Release tag", "Release title", "Release notes", "asset paths", "generated_at", "allow_upload flag", "Release target"]
+    outputs: ["Release delivery report", "asset SHA256 values", "release_ref", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/release_delivery.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "https://cli.github.com/manual/gh_release_create"]

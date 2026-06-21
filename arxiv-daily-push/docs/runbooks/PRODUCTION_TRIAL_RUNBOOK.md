@@ -107,6 +107,39 @@ The delivery report must be archived as evidence. It records the recipient,
 subject, body SHA256, delivery status, and configured key names only; it must not
 log SMTP secret values or the email body.
 
+Before enabling private Release creation, verify the Release delivery boundary
+in dry-run mode with a small metadata/report asset:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push publish-release \
+  --tag adp-release-probe-<YYYYMMDD> \
+  --title "arXiv Daily Push release probe" \
+  --notes "Release delivery boundary probe" \
+  --asset <trial-evidence-or-run-record.json> \
+  --generated-at <ISO timestamp> \
+  --json
+```
+
+Real GitHub Release creation is allowed only after production preflight passes,
+`ADP_RELEASE_TARGET` is configured, and the asset list has passed the local
+secret/model suffix and size gates. Use an explicit flag; published Releases
+also require `--publish` because draft is the default:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push publish-release \
+  --tag adp-release-probe-<YYYYMMDD> \
+  --title "arXiv Daily Push release probe" \
+  --notes-file <release-notes.md> \
+  --asset <trial-evidence-or-run-record.json> \
+  --generated-at <ISO timestamp> \
+  --allow-upload \
+  --json
+```
+
+The Release delivery report must be archived as evidence. It records asset
+names, sizes, SHA256 values, tag, target, and a redacted command preview only.
+It must not log Release notes text, secret values, `gh` stdout, or `gh` stderr.
+
 ## Trial Evidence
 
 After production side effects are explicitly enabled in a later controlled step,

@@ -7,5 +7,6 @@ weekday_silent_source_sync_time: "12:30"
 openai_platform_api_key_allowed: false
 paid_api_allowed: false
 real_email_send_enabled: false
+real_release_upload_enabled: false
+release_target_env_key: ADP_RELEASE_TARGET
 min_video_tts_free_disk_gib: 80
-

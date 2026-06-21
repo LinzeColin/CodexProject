@@ -18,6 +18,7 @@ from .notifications import render_email
 from .pipeline import PipelineError, run_daily_dry_run
 from .production_preflight import build_production_preflight, validate_production_preflight
 from .ranking import selection_payload
+from .release_delivery import DEFAULT_RELEASE_REPO, deliver_release, validate_release_delivery_report
 from .source_ingest import ingest_latest_arxiv, validate_source_batch
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
 from .state_machine import validate_run_record
@@ -54,6 +55,19 @@ def build_parser() -> argparse.ArgumentParser:
     send_notification.add_argument("--next-action", default="inspect_smtp_delivery_report")
     send_notification.add_argument("--allow-send", action="store_true", help="Actually send SMTP mail when required env keys are present.")
     send_notification.add_argument("--json", action="store_true", help="Print JSON delivery evidence.")
+
+    release = subparsers.add_parser("publish-release", help="Create a fail-closed GitHub Release delivery evidence report.")
+    release.add_argument("--tag", required=True, help="GitHub Release tag.")
+    release.add_argument("--title", required=True, help="GitHub Release title.")
+    release.add_argument("--notes", default="", help="Release notes text. The evidence report stores only a SHA256.")
+    release.add_argument("--notes-file", help="Path to Release notes text. Overrides --notes.")
+    release.add_argument("--asset", action="append", default=[], help="Release asset path. May be repeated.")
+    release.add_argument("--generated-at", required=True, help="Release evidence timestamp.")
+    release.add_argument("--target", help="Release target commit-ish. Defaults to ADP_RELEASE_TARGET.")
+    release.add_argument("--repo", default=DEFAULT_RELEASE_REPO, help="GitHub repo owner/name.")
+    release.add_argument("--allow-upload", action="store_true", help="Actually create the Release with gh.")
+    release.add_argument("--publish", action="store_true", help="Create a published Release instead of the default draft.")
+    release.add_argument("--json", action="store_true", help="Print JSON delivery evidence.")
 
     validate_record = subparsers.add_parser("validate-record", help="Validate a RunRecord JSON file.")
     validate_record.add_argument("--path", required=True, help="RunRecord JSON path.")
@@ -180,6 +194,33 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{report['delivery_id']}\t{report['status']}")
         return 0 if report["status"] in {"dry_run", "sent"} else 2
+    if args.command == "publish-release":
+        notes = Path(args.notes_file).read_text(encoding="utf-8") if args.notes_file else args.notes
+        report = deliver_release(
+            tag=args.tag,
+            title=args.title,
+            notes=notes,
+            asset_paths=args.asset,
+            generated_at=args.generated_at,
+            target=args.target,
+            repo=args.repo,
+            draft=not args.publish,
+            allow_upload=args.allow_upload,
+        )
+        errors = validate_release_delivery_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{report['delivery_id']}\t{report['status']}")
+        return 0 if report["status"] in {"dry_run", "created"} else 2
     if args.command == "validate-record":
         data = json.loads(Path(args.path).read_text(encoding="utf-8"))
         errors = validate_run_record(data)

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.7 - 2026-06-21
+
+- Added `adp publish-release` for dry-run GitHub Release evidence and explicit Release creation.
+- Added `adp-release-delivery-v1` with target gating, safe asset checks, no clobber upload, and no notes/stdout/stderr logging.
+- Added Release delivery schema and tests covering dry-run, missing-target blocking, forbidden secret-like assets, mocked `gh release create`, and CLI JSON output.
+
 ## 0.11.6 - 2026-06-21
 
 - Added `adp send-notification` for dry-run notification evidence and explicit SMTP delivery.

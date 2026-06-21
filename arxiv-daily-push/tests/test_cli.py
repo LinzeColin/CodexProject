@@ -15,7 +15,7 @@ class CliTests(unittest.TestCase):
         with redirect_stdout(buffer):
             result = main(["version"])
         self.assertEqual(result, 0)
-        self.assertEqual(buffer.getvalue().strip(), "0.11.6")
+        self.assertEqual(buffer.getvalue().strip(), "0.11.7")
 
     def test_doctor_json_command_warns_without_blocking_phase1(self):
         buffer = io.StringIO()
@@ -57,6 +57,34 @@ class CliTests(unittest.TestCase):
         payload = json.loads(buffer.getvalue())
         self.assertEqual(payload["status"], "dry_run")
         self.assertFalse(payload["real_smtp_send_enabled"])
+
+    def test_publish_release_json_command_defaults_to_dry_run(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            asset = Path(tmp) / "trial-evidence.json"
+            asset.write_text('{"status":"pass"}\n', encoding="utf-8")
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "publish-release",
+                        "--tag",
+                        "adp-test-20260621",
+                        "--title",
+                        "ADP test release",
+                        "--notes",
+                        "Release notes",
+                        "--asset",
+                        str(asset),
+                        "--generated-at",
+                        "2026-06-21T05:00:00+10:00",
+                        "--json",
+                    ]
+                )
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "dry_run")
+        self.assertFalse(payload["release_upload_enabled"])
+        self.assertFalse(payload["notes"]["notes_logged"])
 
 
 if __name__ == "__main__":

@@ -290,3 +290,20 @@ tasks:
     target_version: "0.11.6"
     completed_version: "0.11.6"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-RELEASE-DELIVERY-008"
+    phase: "E"
+    objective: "Add a fail-closed GitHub Release delivery boundary with dry-run evidence and explicit real-upload gating."
+    scope: "Release delivery report, dry-run default, explicit allow-upload flag, ADP_RELEASE_TARGET validation, safe asset checks, no-clobber command construction, CLI command, schema, tests, runbook, and governance records."
+    non_scope: "No implicit real Release upload, no clobber upload, no secret value logging, no Release notes logging, no gh stdout/stderr logging, no scheduled runner execution, no SMTP send, and no 30-day acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-SMTP-DELIVERY-007"]
+    required_files: ["src/arxiv_daily_push/release_delivery.py", "src/arxiv_daily_push/cli.py", "tests/test_release_delivery.py", "tests/test_cli.py", "schemas/release_delivery.schema.json", "docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-RELEASE-DELIVERY"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused release and CLI tests: 9 tests OK", "publish-release dry-run: pass", "mocked gh release create: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py"]
+    risk: "Real private GitHub Release delivery is still unverified until gh auth, ADP_RELEASE_TARGET, assets, and runner are provisioned and archived Release evidence exists."
+    rollback: "Revert Release delivery command, schema, tests, and restore version 0.11.6."
+    target_version: "0.11.7"
+    completed_version: "0.11.7"
+    unknown_task_ids: []

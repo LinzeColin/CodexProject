@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 16
-- formula_count: 18
-- parameter_count: 85
+- model_count: 17
+- formula_count: 19
+- parameter_count: 91
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -31,6 +31,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-014 | Manual production trial bootstrap gate | deterministic workflow contract validator | Validate the GitHub workflow/runbook entrypoint for preflight-first trial startup while keeping production side effects disabled | active | adp-trial-bootstrap-v1 | `src/arxiv_daily_push/trial_bootstrap.py`, `.github/workflows/arxiv-daily-push-production-trial.yml` |
 | MOD-ADP-015 | Live arXiv latest source ingest | deterministic source ingest adapter | Fetch a small latest arXiv Atom window, parse SourceItems, and filter previously seen source IDs without downloading PDFs | active | adp-live-arxiv-ingest-v1 | `src/arxiv_daily_push/source_ingest.py` |
 | MOD-ADP-016 | SMTP notification delivery boundary | deterministic notification transport gate | Produce dry-run SMTP delivery evidence by default and send real mail only with explicit allow flag plus configured SMTP environment keys | active | adp-smtp-delivery-v1 | `src/arxiv_daily_push/smtp_delivery.py` |
+| MOD-ADP-017 | GitHub Release delivery boundary | deterministic release transport gate | Produce dry-run Release delivery evidence by default and create a GitHub Release only with explicit upload flag, configured target, safe assets, and `gh` | active | adp-release-delivery-v1 | `src/arxiv_daily_push/release_delivery.py` |
 
 ## B. Assumptions
 
@@ -55,6 +56,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-017 | Production trial startup must be manual-only until prerequisites pass, run preflight before any trial work, upload preflight evidence, and avoid Release upload or SMTP sending in bootstrap mode. | `docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md`, `src/arxiv_daily_push/trial_bootstrap.py`, `.github/workflows/arxiv-daily-push-production-trial.yml` | Phase 11 trial bootstrap | active |
 | ASM-ADP-018 | Live arXiv source ingest must use the official Atom API, keep request windows small, filter duplicate source IDs, avoid PDF/bulk download, and fail closed on network, TLS, API, or SourceItem validation errors. | `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`, `src/arxiv_daily_push/source_ingest.py`, `tests/test_source_ingest.py` | Phase 11 source ingest readiness | active |
 | ASM-ADP-019 | SMTP notification transport must default to dry-run, require explicit `--allow-send` for real mail, use only external environment keys for secrets, require TLS, and never log SMTP secret values or email body text. | `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`, `src/arxiv_daily_push/smtp_delivery.py`, `tests/test_notifications.py` | Phase 11 SMTP delivery readiness | active |
+| ASM-ADP-020 | GitHub Release transport must default to dry-run, require explicit `--allow-upload` for real Release creation, use `ADP_RELEASE_TARGET` or `--target`, avoid clobber upload, and never log Release notes, secrets, `gh` stdout, or `gh` stderr. | `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`, `src/arxiv_daily_push/release_delivery.py`, `tests/test_release_delivery.py` | Phase 11 Release delivery readiness | active |
 
 ## C. Functions and Formulas
 
@@ -78,6 +80,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-016 validates the manual GitHub trial bootstrap workflow and runbook before a real 30-day trial can be started.
 - FORM-ADP-017 fetches latest arXiv Atom SourceItems, validates them, and filters already-seen source IDs before ranking.
 - FORM-ADP-018 emits SMTP delivery evidence in dry-run mode by default and blocks real sends unless explicit allow-send, SMTP env keys, recipient, TLS, and delivery checks pass.
+- FORM-ADP-019 emits GitHub Release delivery evidence in dry-run mode by default and blocks real Release creation unless explicit allow-upload, Release target, safe assets, `gh`, and no-clobber checks pass.
 
 ## D. Parameters
 
@@ -99,6 +102,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 trial bootstrap parameters: PARAM-ADP-071 through PARAM-ADP-074.
 - Active Phase 11 live source ingest parameters: PARAM-ADP-075 through PARAM-ADP-080.
 - Active Phase 11 SMTP delivery parameters: PARAM-ADP-081 through PARAM-ADP-085.
+- Active Phase 11 Release delivery parameters: PARAM-ADP-086 through PARAM-ADP-091.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -194,6 +198,14 @@ mode. Real SMTP sending requires the explicit `--allow-send` flag, the configure
 recipient, all SMTP environment keys, valid port parsing, TLS startup, login, and
 successful `send_message`. Reports include the subject, recipient, body SHA256,
 and key names only; they do not log SMTP secret values or the email body.
+
+The GitHub Release delivery gate turns an explicit list of local evidence
+artifacts into Release delivery evidence. It defaults to dry-run and does not
+call GitHub in that mode. Real Release creation requires `--allow-upload`,
+`ADP_RELEASE_TARGET` or `--target`, `gh`, non-empty safe assets, a tag, title,
+and notes. Reports include asset names, sizes, SHA256 values, tag, target, and a
+redacted command preview only; they do not log Release notes, secret values,
+`gh` stdout, or `gh` stderr, and they never use clobber upload.
 
 ## F. Strategy Logic
 
