@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -88,6 +89,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             ".codex/hooks/governance_stop.py",
             ".github/workflows/project-governance.yml",
             "scripts/validate_project_governance.py",
+            "scripts/validate_governance_sync.py",
+            "scripts/validate_ci_attestation.py",
+            "scripts/governance_setup_doctor.py",
+            "governance/schemas/ci_attestation.schema.json",
         }:
             self.assertIn(path, required)
             self.assertTrue((ROOT / path).is_file(), path)
@@ -118,6 +123,33 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         payload = json.loads(result.stdout)
         self.assertEqual(payload.get("decision"), "block")
         self.assertIn("validate_project_governance.py is missing", payload.get("reason", ""))
+
+    def test_governance_stop_hook_rechecks_recursive_stop_pass(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            subprocess.run(["git", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=tmp_path, check=True)
+            subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+            (tmp_path / "governance").mkdir()
+            (tmp_path / "governance" / "projects.yaml").write_text("governance_spec_version: '1.0.0'\n", encoding="utf-8")
+            scripts = tmp_path / "scripts"
+            scripts.mkdir()
+            validator = scripts / "validate_project_governance.py"
+            validator.write_text("import sys\nprint('still failing')\nsys.exit(1)\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
+            subprocess.run(["git", "commit", "-m", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
+            result = subprocess.run(
+                [sys.executable, str(STOP_HOOK)],
+                input=json.dumps({"cwd": str(tmp_path), "stop_hook_active": True}),
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+            )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload.get("decision"), "block")
+        self.assertIn("recursive Stop pass", payload.get("reason", ""))
 
     def test_required_mode_promotes_missing_file_warning_to_error(self) -> None:
         validator = load_validator_module()
@@ -341,6 +373,71 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         sync.validate_diff_contract(validation, changes)
         self.assertFalse(validation.errors)
         self.assertEqual(changes[0].classifications, {"generated_artifact_change"})
+
+    def test_review6_root_governance_change_does_not_require_dashboard_diff(self) -> None:
+        sync = load_sync_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            (tmp_path / "GOVERNANCE_DASHBOARD.md").write_text("# Dashboard\n", encoding="utf-8")
+            with patch.object(sync, "ROOT", tmp_path):
+                validation = sync.SyncValidation()
+                sync.root_sync_requirements(
+                    validation,
+                    ["scripts/validate_governance_sync.py"],
+                    [
+                        "scripts/validate_governance_sync.py",
+                        "governance/run_manifests/GOV-TEST.json",
+                        "tests/governance/test_project_governance_validator.py",
+                    ],
+                )
+        self.assertFalse(validation.errors)
+
+    def test_review6_explicit_missing_base_ref_fails_enforced_sync(self) -> None:
+        sync = load_sync_module()
+        with patch.object(sync, "load_projects", return_value={"projects": []}), patch.object(sync, "git_ref_exists", return_value=False):
+            exit_code, _ = sync.validate(changed_only=True, enforce_sync=True, base_ref="missing-base")
+        self.assertEqual(exit_code, 1)
+
+    def test_review6_stale_pending_manifest_requires_ci_attestation(self) -> None:
+        sync = load_sync_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            manifests = tmp_path / "governance" / "run_manifests"
+            attestations = tmp_path / "governance" / "ci_attestations"
+            manifests.mkdir(parents=True)
+            attestations.mkdir(parents=True)
+            old = (datetime.now(timezone.utc) - timedelta(days=3)).isoformat()
+            (manifests / "GOV-OLD.json").write_text(
+                json.dumps({"run_id": "GOV-OLD", "started_at": old, "finished_at": "PENDING_CI"}) + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(sync, "ROOT", tmp_path), patch.object(sync, "RUN_MANIFESTS_DIR", manifests), patch.object(sync, "CI_ATTESTATIONS_DIR", attestations):
+                validation = sync.SyncValidation()
+                sync.validate_pending_ci_bindings(validation)
+        self.assertTrue(validation.errors)
+        self.assertIn("PENDING_CI", validation.errors[0].message)
+
+    def test_review6_success_attestation_clears_pending_manifest(self) -> None:
+        sync = load_sync_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            manifests = tmp_path / "governance" / "run_manifests"
+            attestations = tmp_path / "governance" / "ci_attestations"
+            manifests.mkdir(parents=True)
+            attestations.mkdir(parents=True)
+            old = (datetime.now(timezone.utc) - timedelta(days=3)).isoformat()
+            (manifests / "GOV-OLD.json").write_text(
+                json.dumps({"run_id": "GOV-OLD", "started_at": old, "finished_at": "PENDING_CI"}) + "\n",
+                encoding="utf-8",
+            )
+            (attestations / "GOV-OLD.json").write_text(
+                json.dumps({"binds_run_manifest": "GOV-OLD", "conclusion": "success"}) + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(sync, "ROOT", tmp_path), patch.object(sync, "RUN_MANIFESTS_DIR", manifests), patch.object(sync, "CI_ATTESTATIONS_DIR", attestations):
+                validation = sync.SyncValidation()
+                sync.validate_pending_ci_bindings(validation)
+        self.assertFalse(validation.errors)
 
     def test_review5_dashboard_generation_is_deterministic(self) -> None:
         result = run_validator("--all")

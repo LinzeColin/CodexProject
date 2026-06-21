@@ -133,6 +133,12 @@ the changed files must satisfy the diff synchronization gate:
 python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
 ```
 
+For push-range or post-merge verification, pass the explicit base:
+
+```bash
+python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref <base-sha-or-ref>
+```
+
 If the gate identifies missing governance updates, update the canonical
 registries, ledger, tasks, traceability, version matrix, changelog, and generated
 status page in the same run or explicitly keep the task incomplete.
@@ -158,7 +164,9 @@ For root governance changes, run:
 
 ```bash
 python scripts/validate_project_governance.py --all --semantic --drift-report
+python scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
 python scripts/generate_governance_dashboard.py --write
+python scripts/governance_setup_doctor.py --json
 python -m unittest discover -s tests/governance -p 'test_*.py' -q
 ```
 
