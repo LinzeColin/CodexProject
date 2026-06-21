@@ -1139,13 +1139,13 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-049")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-050")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-20260622.json",
+            "governance/run_manifests/ADP-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT-20260622.json",
         )
         rendered = dashboard.render_owner_status(info, "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
-        self.assertIn("no-secret GitHub Actions metadata discovery command", rendered)
+        self.assertIn("production refs discovery and launch readiness", rendered)
         self.assertNotIn("root semantic extractor selector behavior expanded", rendered)
 
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
@@ -1524,6 +1524,28 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(gate["secret_values_logged"])
         self.assertFalse(gate["gh_stdout_logged"])
         self.assertFalse(gate["gh_stderr_logged"])
+        self.assertFalse(gate["production_acceptance_claimed"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_trial_start_launch_preflight(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT-027")
+        gate = manifest["trial_start_launch_preflight_gate"]
+        self.assertIn("discover-production-refs", gate["pre_side_effect_commands"])
+        self.assertIn("plan-production-launch", gate["pre_side_effect_commands"])
+        self.assertIn("adp-trial-start-production-refs", gate["required_artifacts"])
+        self.assertIn("adp-trial-start-launch-readiness", gate["required_artifacts"])
+        self.assertFalse(gate["default_side_effects_enabled"])
+        self.assertFalse(gate["secret_values_logged"])
+        self.assertFalse(gate["codex_auth_read"])
+        self.assertFalse(gate["workflow_dispatched"])
         self.assertFalse(gate["production_acceptance_claimed"])
 
     def test_arxiv_daily_push_semantic_extract_manifest_records_partial_coverage(self) -> None:

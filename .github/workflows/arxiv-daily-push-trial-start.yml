@@ -117,6 +117,99 @@ jobs:
         run: |
           echo "production preflight blocked; stopping before source, SMTP, Release, or trial start gate work"
           exit "${{ steps.preflight.outputs.exit_code }}"
+      - name: Discover production refs
+        id: production_refs
+        shell: bash
+        run: |
+          set +e
+          output="$RUNNER_TEMP/adp-trial-start-production-refs.json"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_production_refs" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push discover-production-refs \
+              --repo "${{ github.repository }}" \
+              --runner-label "${{ inputs.runner_label }}" \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --json > "$output"
+          code=$?
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload trial start production refs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-production-refs
+          path: ${{ steps.production_refs.outputs.path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Stop if production refs blocked
+        if: steps.production_refs.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "production refs discovery blocked; stopping before source, SMTP, Release, or trial start gate work"
+          exit "${{ steps.production_refs.outputs.exit_code }}"
+      - name: Run launch readiness precheck
+        id: launch
+        shell: bash
+        run: |
+          set +e
+          pr_info="$RUNNER_TEMP/adp-trial-start-launch-pr-info.json"
+          output="$RUNNER_TEMP/adp-trial-start-launch-readiness.json"
+          python3 - "$pr_info" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          data = {
+              "state": "closed",
+              "merged": True,
+              "draft": False,
+              "base": "main",
+              "head": "${{ github.ref_name }}",
+              "head_sha": "${{ github.sha }}",
+              "mergeable": None,
+              "changed_files": None,
+              "source": "default_branch_trial_start_workflow",
+          }
+          Path(sys.argv[1]).write_text(json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
+          PY
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_launch" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push plan-production-launch \
+              --path . \
+              --pr-info "$pr_info" \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --expected-head-sha "${{ github.sha }}" \
+              --default-branch-ref "git://${{ github.repository }}/${{ github.ref_name }}@${{ github.sha }}" \
+              --trial-start-workflow-ref "github-actions://${{ github.repository }}/.github/workflows/arxiv-daily-push-trial-start.yml@${{ github.ref_name }}#${{ github.sha }}" \
+              --production-refs-report "${{ steps.production_refs.outputs.path }}" \
+              --confirm-launch \
+              --json > "$output"
+          code=$?
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'pr_info=%s\n' "$pr_info" >> "$GITHUB_OUTPUT"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload trial start launch readiness
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-launch-readiness
+          path: |
+            ${{ steps.launch.outputs.path }}
+            ${{ steps.launch.outputs.pr_info }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Stop if launch readiness blocked
+        if: steps.launch.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "production launch readiness blocked; stopping before source, SMTP, Release, or trial start gate work"
+          exit "${{ steps.launch.outputs.exit_code }}"
       - name: Build bootstrap plan
         id: bootstrap
         shell: bash
@@ -348,6 +441,8 @@ jobs:
             echo "## arXiv Daily Push trial start evidence"
             echo "- generated_at: ${{ steps.generated_at.outputs.value }}"
             echo "- preflight_exit_code: ${{ steps.preflight.outputs.exit_code || 'not_run' }}"
+            echo "- production_refs_exit_code: ${{ steps.production_refs.outputs.exit_code || 'not_run' }}"
+            echo "- launch_exit_code: ${{ steps.launch.outputs.exit_code || 'not_run' }}"
             echo "- source_exit_code: ${{ steps.source.outputs.exit_code || 'not_run' }}"
             echo "- smtp_exit_code: ${{ steps.smtp.outputs.exit_code || 'not_run' }}"
             echo "- release_exit_code: ${{ steps.release.outputs.exit_code || 'not_run' }}"

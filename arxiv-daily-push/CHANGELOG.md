@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.24 - 2026-06-22
+
+- Updated the default-branch trial-start workflow to run no-secret production refs discovery before any live source, SMTP, Release, or start-gate work.
+- Added an in-workflow `plan-production-launch` readiness precheck that consumes the production refs artifact and fails closed before side effects.
+- Added workflow contract checks and artifacts for `adp-trial-start-production-refs` and `adp-trial-start-launch-readiness` while keeping Phase 11 production acceptance blocked until real trial evidence exists.
+
 ## 0.11.23 - 2026-06-22
 
 - Added `adp discover-production-refs` to use `gh api` on a provisioned runner and build a no-secret production refs report from GitHub Actions metadata.

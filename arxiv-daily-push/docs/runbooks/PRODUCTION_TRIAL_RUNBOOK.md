@@ -444,9 +444,10 @@ Dispatch inputs:
 - `generated_at=<ISO timestamp>` optional
 
 The workflow is manual-only and starts no private runner job when
-`confirm_trial_start` is not `true`. It always runs production preflight before
-live source ingest, SMTP probe, Release probe, or `plan-trial-start`. Real SMTP
-and Release side effects remain disabled unless GitHub variables
+`confirm_trial_start` is not `true`. It always runs production preflight,
+no-secret production refs discovery, and `plan-production-launch` readiness
+before live source ingest, SMTP probe, Release probe, or `plan-trial-start`.
+Real SMTP and Release side effects remain disabled unless GitHub variables
 `ADP_ALLOW_SMTP_SEND=true` and `ADP_ALLOW_RELEASE_UPLOAD=true` are explicitly
 set for a controlled probe.
 The workflow declares `contents: write` only so that the controlled Release
@@ -456,6 +457,8 @@ alone must not be treated as upload authorization.
 Expected artifacts:
 
 - `adp-trial-start-preflight`
+- `adp-trial-start-production-refs`
+- `adp-trial-start-launch-readiness`
 - `adp-trial-start-bootstrap-plan`
 - `adp-trial-start-scheduler-plan`
 - `adp-trial-start-source-batch`

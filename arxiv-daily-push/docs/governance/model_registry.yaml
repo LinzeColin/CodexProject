@@ -633,20 +633,20 @@ models:
   - model_id: "MOD-ADP-028"
     name: "Trial start evidence workflow validator"
     kind: "deterministic workflow contract validator"
-    purpose: "Validate the manual GitHub workflow that collects default-branch trial start preflight, source, SMTP, Release, and start-gate artifacts on the private runner."
+    purpose: "Validate the manual GitHub workflow that collects default-branch trial start preflight, production refs, launch readiness, source, SMTP, Release, and start-gate artifacts on the private runner."
     owner: "arxiv-daily-push"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-trial-start-workflow-v1"
     assumption_ids: ["ASM-ADP-031", "ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
     formula_ids: ["FORM-ADP-030"]
-    parameter_ids: ["PARAM-ADP-144", "PARAM-ADP-145", "PARAM-ADP-146", "PARAM-ADP-147", "PARAM-ADP-148", "PARAM-ADP-161"]
-    inputs: ["trial start workflow file", "production trial runbook", "generated_at"]
+    parameter_ids: ["PARAM-ADP-144", "PARAM-ADP-145", "PARAM-ADP-146", "PARAM-ADP-147", "PARAM-ADP-148", "PARAM-ADP-161", "PARAM-ADP-164"]
+    inputs: ["trial start workflow file", "production refs discovery step", "production launch readiness step", "production trial runbook", "generated_at"]
     outputs: ["trial start workflow plan", "checks", "required_artifacts", "blocking_reasons", "next_external_actions"]
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-trial-start.yml"]
     config_refs: ["arxiv-daily-push/schemas/trial_start_workflow.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
     test_refs: ["arxiv-daily-push/tests/test_trial_start_workflow.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md"]
 
   - model_id: "MOD-ADP-029"
     name: "Production launch readiness gate"

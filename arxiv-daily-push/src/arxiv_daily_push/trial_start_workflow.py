@@ -14,6 +14,8 @@ TRIAL_START_WORKFLOW = ".github/workflows/arxiv-daily-push-trial-start.yml"
 TRIAL_START_WORKFLOW_RUNBOOK = "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
 REQUIRED_START_WORKFLOW_ARTIFACTS = (
     "adp-trial-start-preflight",
+    "adp-trial-start-production-refs",
+    "adp-trial-start-launch-readiness",
     "adp-trial-start-bootstrap-plan",
     "adp-trial-start-scheduler-plan",
     "adp-trial-start-source-batch",
@@ -61,6 +63,21 @@ def build_trial_start_workflow_plan(path: Path | str | None = None, *, generated
             and _appears_before(workflow_text, "Stop if preflight blocked", "Run SMTP delivery probe")
             and _appears_before(workflow_text, "Stop if preflight blocked", "Run Release delivery probe"),
             "workflow must run and pass preflight before source, SMTP, or Release probes",
+        ),
+        _check(
+            "production_refs_before_source_and_delivery",
+            _appears_before(workflow_text, "discover-production-refs", "Fetch live source batch")
+            and _appears_before(workflow_text, "Stop if production refs blocked", "Run SMTP delivery probe")
+            and _appears_before(workflow_text, "Stop if production refs blocked", "Run Release delivery probe"),
+            "workflow must discover production refs before source, SMTP, or Release probes",
+        ),
+        _check(
+            "launch_readiness_before_source_and_delivery",
+            _appears_before(workflow_text, "plan-production-launch", "Fetch live source batch")
+            and _appears_before(workflow_text, "--production-refs-report", "Fetch live source batch")
+            and _appears_before(workflow_text, "Stop if launch readiness blocked", "Run SMTP delivery probe")
+            and _appears_before(workflow_text, "Stop if launch readiness blocked", "Run Release delivery probe"),
+            "workflow must pass launch readiness before source, SMTP, or Release probes",
         ),
         _check(
             "source_before_delivery",
@@ -159,6 +176,7 @@ def build_trial_start_workflow_plan(path: Path | str | None = None, *, generated
         "next_external_actions": [
             "merge the workflow to the default branch",
             "configure the private self-hosted runner and required GitHub secrets",
+            "run production refs discovery and launch readiness precheck on the default branch",
             "set ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD only for a controlled start probe",
             "run workflow_dispatch with confirm_trial_start=true and archive adp-trial-start-gate",
         ],
