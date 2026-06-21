@@ -22,3 +22,8 @@ commands:
   exit_code: 0
   result: PASS
   observed: failures []
+github:
+- pull_request: https://github.com/LinzeColin/CodexProject/pull/9
+- merged_main_commit: 722e09fc64bf707504563bd2f7c86557fd8ecbd3
+- project_governance_run: https://github.com/LinzeColin/CodexProject/actions/runs/27896216487
+- openai_database_ci_run: https://github.com/LinzeColin/CodexProject/actions/runs/27896216488
