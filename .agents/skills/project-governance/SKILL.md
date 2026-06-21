@@ -54,6 +54,9 @@ iteration counts. Git commit count is not iteration count.
 6. Run `python3 scripts/validate_project_governance.py --project <project_id>`.
 7. For root governance changes, run
    `python3 scripts/validate_project_governance.py --all --semantic --drift-report`.
+   Projects with `semantic_extractors: true` also run machine extraction of
+   documented parameter values and formula implementation fingerprints during
+   this command.
 8. For diff-sensitive root, PR, or push checks, run
    `python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic`.
    Use `--base-ref <sha-or-ref>` when validating a pushed range.

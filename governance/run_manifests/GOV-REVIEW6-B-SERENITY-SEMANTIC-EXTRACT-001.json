@@ -1,0 +1,128 @@
+{
+  "acceptance_id": "ACC-B-003",
+  "actor": "Codex",
+  "base_commit": "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b",
+  "change_classification": [
+    "root_governance_change",
+    "project_governance_semantic_hardening",
+    "no_business_behavior_change"
+  ],
+  "changed_files_actual": [
+    "Serenity-Alipay/docs/governance/formula_registry.yaml",
+    "scripts/validate_semantic_extractors.py"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:40af2a3ee08cccf9b8760a67d78a7daa2ea97c00b2913695cb1d1195287b3cd7",
+  "evidence_refs": [
+    "Serenity-Alipay/docs/governance/parameter_registry.csv",
+    "Serenity-Alipay/docs/governance/formula_registry.yaml",
+    "Serenity-Alipay/docs/governance/development_events.jsonl",
+    "tests/governance/test_project_governance_validator.py",
+    "scripts/validate_semantic_extractors.py"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "formula_delta": {
+    "FORM-001..FORM-012": "implementation_refs, implementation_fingerprint, verified_at, evidence_hash added",
+    "FORM-008": "post-renormalization cap caveat recorded; max weights for 1..5 candidates machine-observed"
+  },
+  "model_delta": {
+    "formula_fingerprints_added": 12,
+    "runtime_behavior": "unchanged",
+    "semantic_extractors_enabled_for": [
+      "Serenity-Alipay"
+    ]
+  },
+  "observed_results": [
+    "LOCAL_VALIDATION_PASS",
+    "SERENITY_PARAMETERS_CHECKED_49",
+    "SERENITY_FORMULAS_CHECKED_12",
+    "FORM_008_POST_RENORMALIZATION_CAP_FALSE_FOR_COUNTS_1_TO_4",
+    "GITHUB_ACTIONS_TO_BE_VERIFIED_BY_PR_CHECK"
+  ],
+  "parameter_delta": {
+    "PARAM-001..PARAM-049": "source_selector, extracted_value, verified_at, last_verified_commit, evidence_hash added",
+    "active_values_changed": 0
+  },
+  "project_id": "Serenity-Alipay",
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/run_manifests/GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "result_commit": "PENDING_GITHUB_MERGE",
+  "rollback": "Revert this manifest, root semantic extractor changes, Serenity semantic metadata, generated dashboard/status changes, and governance tests. No business code rollback is required.",
+  "run_id": "GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001",
+  "started_at": "2026-06-21T08:57:39Z",
+  "task_id": "GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001",
+  "tests_run": [
+    {
+      "command": "python3 scripts/validate_semantic_extractors.py Serenity-Alipay",
+      "exit_code": 0,
+      "result": "checked 49 parameters and 12 formulas"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project Serenity-Alipay --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 -m pytest tests/governance -q",
+      "exit_code": 0,
+      "result": "28 passed"
+    },
+    {
+      "command": "python3 -m py_compile scripts/validate_project_governance.py scripts/validate_governance_sync.py scripts/validate_semantic_extractors.py",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "PYTHONPATH=Serenity-Alipay python3 -m pytest -q Serenity-Alipay/tests/test_scoring.py Serenity-Alipay/tests/test_pipeline_serenity_priority.py Serenity-Alipay/tests/test_risk_gate_regression.py Serenity-Alipay/tests/test_metrics.py Serenity-Alipay/tests/test_discipline.py Serenity-Alipay/tests/test_comparison.py Serenity-Alipay/tests/test_scheduler.py Serenity-Alipay/tests/test_timezones.py",
+      "exit_code": 1,
+      "result": "root cwd fixture-path failure in scheduler tests; rerun from project cwd"
+    },
+    {
+      "command": "cd Serenity-Alipay && PYTHONPATH=. python3 -m pytest -q tests/test_scoring.py tests/test_pipeline_serenity_priority.py tests/test_risk_gate_regression.py tests/test_metrics.py tests/test_discipline.py tests/test_comparison.py tests/test_scheduler.py tests/test_timezones.py",
+      "exit_code": 0,
+      "result": "22 passed"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write (twice)",
+      "exit_code": 0,
+      "result": "deterministic generation pass"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+      "exit_code": 0,
+      "result": "28 tests OK; missing-base output is expected failure-path test evidence"
+    }
+  ],
+  "unresolved_risks": [
+    "Review6-B is a Serenity pilot; other projects still need semantic extractors before the full Review6 objective is complete.",
+    "FORM-008 current algorithm does not guarantee final max(weight) <= 0.30 after renormalization for fewer than five candidates; this run records evidence only and does not change business behavior.",
+    "Branch protection/no-bypass authenticated evidence remains outside this Review6-B scope."
+  ],
+  "updated_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "Serenity-Alipay/CHANGELOG.md",
+    "Serenity-Alipay/docs/governance/DELIVERY_PLAN.md",
+    "Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Serenity-Alipay/docs/governance/STATUS.md",
+    "Serenity-Alipay/docs/governance/TRACEABILITY_MATRIX.csv",
+    "Serenity-Alipay/docs/governance/VERSION_MATRIX.yaml",
+    "Serenity-Alipay/docs/governance/delivery_tasks.yaml",
+    "Serenity-Alipay/docs/governance/development_events.jsonl",
+    "Serenity-Alipay/docs/governance/formula_registry.yaml",
+    "Serenity-Alipay/docs/governance/parameter_registry.csv",
+    "docs/governance/STANDARD.md"
+  ],
+  "version_delta": {
+    "current_gate": "GOV-G3-SERENITY-BASELINE -> GOV-REVIEW6-B-SEMANTIC-EXTRACT",
+    "current_iteration": "ITER-20260621-001 -> ITER-20260621-002",
+    "current_phase": "A -> B",
+    "product_version": "0.1.0 unchanged"
+  }
+}
