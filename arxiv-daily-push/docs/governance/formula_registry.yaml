@@ -25,6 +25,12 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/doctor.py"]
     test_refs: ["arxiv-daily-push/tests/test_doctor.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_01.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/doctor.py::command_status", "arxiv-daily-push/src/arxiv_daily_push/doctor.py::disk_status", "arxiv-daily-push/src/arxiv_daily_push/doctor.py::doctor_report"]
+    implementation_fingerprint: "sha256:39a38a30715fa1bc99424a17db080f5b02206fa940bc8fcf4103d4445b381b89"
+    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
+    verified_at: "2026-06-22T14:15:00+10:00"
+    evidence_hash: "sha256:7e24064a4ffdb88ad68b4efeff708f343a56467e94aa4ea966c505a84e616d5a"
   - formula_id: "FORM-ADP-002"
     model_id: "MOD-ADP-001"
     assumption_ids: ["ASM-ADP-002"]
@@ -49,6 +55,12 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/notifications.py"]
     test_refs: ["arxiv-daily-push/tests/test_notifications.py"]
     evidence_refs: ["arxiv-daily-push/config/examples/notification.example.yaml"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/notifications.py::render_email"]
+    implementation_fingerprint: "sha256:a1b617014981fa7742edfee8b30a3f1bd16ca52498caef555a5848bf1cb302bd"
+    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
+    verified_at: "2026-06-22T14:15:00+10:00"
+    evidence_hash: "sha256:0d170f7cd2b97df36f33bc4666de371f150e508d43bfa51b1bdc482beb4617bf"
   - formula_id: "FORM-ADP-005"
     model_id: "MOD-ADP-004"
     assumption_ids: ["ASM-ADP-003", "ASM-ADP-004"]
@@ -73,6 +85,12 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/contracts.py"]
     test_refs: ["arxiv-daily-push/tests/test_contracts.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/contracts.py::validate_source_item", "arxiv-daily-push/src/arxiv_daily_push/contracts.py::validate_evidence_claim", "arxiv-daily-push/src/arxiv_daily_push/contracts.py::validate_lesson", "arxiv-daily-push/src/arxiv_daily_push/contracts.py::validate_storyboard", "arxiv-daily-push/src/arxiv_daily_push/contracts.py::validate_publication", "arxiv-daily-push/src/arxiv_daily_push/contracts.py::validate_contract"]
+    implementation_fingerprint: "sha256:6a6c4a703b139a2471c9020d93540b093a7c22559a2d9907b34574652cb3c579"
+    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
+    verified_at: "2026-06-22T14:15:00+10:00"
+    evidence_hash: "sha256:33b2513278186af2323011bf6f252a909a6fa1f6c92e2af7d2ed9db57f50a650"
   - formula_id: "FORM-ADP-006"
     model_id: "MOD-ADP-004"
     assumption_ids: ["ASM-ADP-004"]
@@ -97,6 +115,12 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/state_machine.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_state_machine.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/state_machine.py::validate_transition", "arxiv-daily-push/src/arxiv_daily_push/state_machine.py::validate_run_record", "arxiv-daily-push/src/arxiv_daily_push/state_machine.py::transition_run_record"]
+    implementation_fingerprint: "sha256:3c1cd2eaa00fd90e841bbea7ddb59037c8cad365a0779e73155b0eb69f18e790"
+    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
+    verified_at: "2026-06-22T14:15:00+10:00"
+    evidence_hash: "sha256:1c9113cebb12cfbdfa340e48f429f750f08b2ac76ce372f9f4b75d6c3b103fa5"
   - formula_id: "FORM-ADP-007"
     model_id: "MOD-ADP-005"
     assumption_ids: ["ASM-ADP-003", "ASM-ADP-005"]
@@ -121,6 +145,12 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_arxiv_adapter.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_03.md", "https://info.arxiv.org/help/api/basics.html", "https://info.arxiv.org/help/api/user-manual.html"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py::build_query_url", "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py::parse_atom_feed", "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py::_entry_to_source_item"]
+    implementation_fingerprint: "sha256:6813608e00bcf0bc48aed91ee9122b250eac86f4759bdef94d2467482294d27f"
+    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
+    verified_at: "2026-06-22T14:15:00+10:00"
+    evidence_hash: "sha256:da6609eb3900cfdcf228b08318b972374dc8689366803776576790087817b14b"
   - formula_id: "FORM-ADP-003"
     model_id: "MOD-ADP-002"
     assumption_ids: ["ASM-ADP-003", "ASM-ADP-006"]
@@ -141,6 +171,12 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/ranking.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_ranking.py", "arxiv-daily-push/tests/fixtures/ranking_candidates.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_04.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/ranking.py::validate_ranking_weights", "arxiv-daily-push/src/arxiv_daily_push/ranking.py::audit_candidate", "arxiv-daily-push/src/arxiv_daily_push/ranking.py::_component_scores", "arxiv-daily-push/src/arxiv_daily_push/ranking.py::rank_candidates"]
+    implementation_fingerprint: "sha256:0b8889ae6d330223417a19271f909bd39321d96f54865929a3861d6c2aa3d742"
+    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
+    verified_at: "2026-06-22T14:15:00+10:00"
+    evidence_hash: "sha256:22b72860b5b8a739eac2893c1f8538f5d7b41c41980456b6d1e3439530e2c6ae"
   - formula_id: "FORM-ADP-004"
     model_id: "MOD-ADP-003"
     assumption_ids: ["ASM-ADP-003", "ASM-ADP-007"]
@@ -157,6 +193,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/evidence_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_evidence_gate.py", "arxiv-daily-push/tests/fixtures/claim_ledger_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_05.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-008"
     model_id: "MOD-ADP-006"
@@ -182,6 +220,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/fixtures/lesson_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-009"
     model_id: "MOD-ADP-007"
@@ -207,6 +247,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/narration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_narration.py", "arxiv-daily-push/tests/fixtures/narration_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_07.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-010"
     model_id: "MOD-ADP-008"
@@ -232,6 +274,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/fixtures/video_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-011"
     model_id: "MOD-ADP-009"
@@ -253,6 +297,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/pipeline.py"]
     test_refs: ["arxiv-daily-push/tests/test_pipeline.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_09.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-012"
     model_id: "MOD-ADP-010"
@@ -278,6 +324,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/handoff.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_handoff.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-013"
     model_id: "MOD-ADP-011"
@@ -311,6 +359,12 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_acceptance.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md", "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/acceptance.py::build_acceptance_package", "arxiv-daily-push/src/arxiv_daily_push/acceptance.py::validate_acceptance_package", "arxiv-daily-push/src/arxiv_daily_push/acceptance.py::_requirement_passed"]
+    implementation_fingerprint: "sha256:09b3f5365ea3fe9c2faf1dcbd19d9bf6828a472d9c09d9320adf738eff4ec9b4"
+    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
+    verified_at: "2026-06-22T14:15:00+10:00"
+    evidence_hash: "sha256:b9e54d9887cd19883ed5c45743a4db73d8c8e897a8890ce9aef2fdda6eb3c2f5"
 
   - formula_id: "FORM-ADP-014"
     model_id: "MOD-ADP-012"
@@ -340,6 +394,12 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial.py", "arxiv-daily-push/tests/test_acceptance.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial.py::evaluate_trial_evidence", "arxiv-daily-push/src/arxiv_daily_push/trial.py::validate_trial_evidence_report", "arxiv-daily-push/src/arxiv_daily_push/trial.py::_evaluate_daily_runs"]
+    implementation_fingerprint: "sha256:5f4d7941e4322684ad7ca47c96a2f7f6ee541eb7cee070eeaeae8f8cb241fad9"
+    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
+    verified_at: "2026-06-22T14:15:00+10:00"
+    evidence_hash: "sha256:5018a0f851d4fee8404ecd6e66f644091b45c45b896a4f95b7f461071cd53984"
 
   - formula_id: "FORM-ADP-015"
     model_id: "MOD-ADP-013"
@@ -373,6 +433,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_production_preflight.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-016"
     model_id: "MOD-ADP-014"
@@ -398,6 +460,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_bootstrap.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-017"
     model_id: "MOD-ADP-015"
@@ -427,6 +491,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_source_ingest.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "https://info.arxiv.org/help/api/user-manual.html"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-018"
     model_id: "MOD-ADP-016"
@@ -456,6 +522,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-019"
     model_id: "MOD-ADP-017"
@@ -485,6 +553,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "https://cli.github.com/manual/gh_release_create"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-020"
     model_id: "MOD-ADP-018"
@@ -514,6 +584,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
     test_refs: ["arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-021"
     model_id: "MOD-ADP-019"
@@ -543,6 +615,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-022"
     model_id: "MOD-ADP-020"
@@ -572,6 +646,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/daily_input.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_daily_input.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md", "https://info.arxiv.org/help/api/user-manual.html"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-023"
     model_id: "MOD-ADP-021"
@@ -601,6 +677,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-024"
     model_id: "MOD-ADP-022"
@@ -630,6 +708,8 @@ formulas:
     code_refs: [".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_production_scheduler.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
@@ -659,6 +739,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ops.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_ops.py", "arxiv-daily-push/tests/test_trial.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-026"
     model_id: "MOD-ADP-024"
@@ -692,6 +774,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_replay.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_replay.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-027"
     model_id: "MOD-ADP-025"
@@ -725,6 +809,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_recovery.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-028"
     model_id: "MOD-ADP-026"
@@ -758,6 +844,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_resource.py", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_resource.py", "arxiv-daily-push/tests/test_production_preflight.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-029"
     model_id: "MOD-ADP-027"
@@ -799,6 +887,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_start.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-030"
     model_id: "MOD-ADP-028"
@@ -828,6 +918,8 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-trial-start.yml"]
     test_refs: ["arxiv-daily-push/tests/test_trial_start_workflow.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md"]
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: ["GOV-SEMANTIC-ADP-001"]
 
   - formula_id: "FORM-ADP-031"
     model_id: "MOD-ADP-029"
@@ -861,3 +953,9 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_launch.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_production_launch.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_launch.py::build_production_launch_readiness", "arxiv-daily-push/src/arxiv_daily_push/production_launch.py::validate_production_launch_readiness"]
+    implementation_fingerprint: "sha256:3f20e1051040d0872530165308c7b63a5eb750fec95fa1c9f9acca75042f6fe0"
+    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
+    verified_at: "2026-06-22T14:15:00+10:00"
+    evidence_hash: "sha256:ff304124990e33be62d2e098ed80acc82aebc9386177fcc206d060a9d0e27bbb"

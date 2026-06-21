@@ -10,11 +10,11 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.11.19
 - Current phase: E
-- Current gate: ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-PASS
-- Confirmed iteration count: 32
+- Current gate: GOV-SEMANTIC-ADP-IN-PROGRESS
+- Confirmed iteration count: 33
 - Reconstructed event count: 0
 - Current task: GOV-SEMANTIC-ADP-001
-- Blockers: PR #14 is merged to `main`; production launch remains blocked by missing explicit launch confirmation and missing durable readiness refs for `default_branch_ref`, `runner_ref`, `smtp_secret_ref`, `release_target_ref`, `workflow_vars_ref`, and `trial_start_workflow_ref`; no GitHub Actions workflow runs or combined status checks exist for merge commit `9616264221cecc8077fc862692ec6025f1e4872b`; semantic coverage remains planned and not machine verified; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
+- Blockers: Semantic coverage is now in progress with 45 machine-checked active parameters and 9 machine-checked active formulas; 107 active parameters and 22 active formulas remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. PR #14 is merged to `main`; production launch remains blocked by missing explicit launch confirmation and missing durable readiness refs for `default_branch_ref`, `runner_ref`, `smtp_secret_ref`, `release_target_ref`, `workflow_vars_ref`, and `trial_start_workflow_ref`; no GitHub Actions workflow runs or combined status checks exist for merge commit `9616264221cecc8077fc862692ec6025f1e4872b`; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
 
 ## Phase Matrix
 
@@ -758,6 +758,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Semantic coverage remains planned and not machine verified; production acceptance still requires default-branch trial start evidence, live source pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
 - Rollback: Revert the post-merge phase record, delivery task, ledger/status/runbook updates, run manifest, event record, and generated dashboard/status changes.
 - Next step: Provision or record durable readiness refs for runner, SMTP secrets, Release target, workflow variables, default-branch workflow location, and launch confirmation; then rerun `plan-production-launch` before dispatching the trial start workflow.
+
+### `ITER-20260621-033`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED for machine selector/fingerprint validation and HUMAN_REVIEW_REQUIRED remainder binding.
+- Version before: 0.11.19
+- Version after: 0.11.19
+- Base commit: b52b88c1c7eadba64cb98fef655edc828f92b751
+- Result commit: PENDING
+- Task IDs: GOV-SEMANTIC-ADP-001
+- Goal: Move arXiv Daily Push semantic coverage from planned to in-progress without changing runtime behavior.
+- Assumptions: Partial semantic extraction is valuable only when machine selectors point at implementation/config/test surfaces, not at the governance registry itself.
+- Files changed: governance project registry, arXiv parameter registry semantic columns, formula registry semantic fields, delivery task, version matrix, ledger/status, run manifest, and root governance tests/dashboard.
+- Model changes: No runtime model behavior change.
+- Parameter changes: No active parameter value change; semantic metadata added for 45 active parameter selectors.
+- Commands run: `validate_semantic_extractors.py arxiv-daily-push`; `validate_project_governance.py --project arxiv-daily-push`; root governance unittest discover; arXiv unit test discover; `generate_governance_dashboard.py --write`; `validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main`; `git diff --check`; arXiv cache scan; storage check.
+- Test results: semantic extractor checked 45 active parameters and 9 active formulas with no errors; project governance errors 0 warnings 0; root governance tests 84 OK; arXiv unit tests 143 OK; dashboard generation PASS; changed-only enforce-sync semantic errors 0 warnings 0 with `arxiv-daily-push` changed and all registered project validation errors 0 warnings 0; `git diff --check` exit 0; no arXiv `__pycache__` or `.pyc`; pre-shrink storage worktree 221M, `arxiv-daily-push` 1.7M, `.git` 89M.
+- Successes: `validate_semantic_extractors.py arxiv-daily-push` checks 45 active parameters and 9 active formula fingerprints with no errors; the all-project semantic drift gate also passes after temporarily restoring full registered project validation context.
+- Failures: 107 active parameters and 22 active formulas still require follow-up machine selectors or explicit human review before semantic coverage can become machine_verified.
+- Decisions: Keep semantic coverage `in_progress` and keep `GOV-SEMANTIC-ADP-001` open until the remaining semantic surface is resolved.
+- Remaining risks: Production launch and production acceptance remain blocked by external refs, runner/secrets/Release evidence, trial start evidence, and 30-day operational evidence.
+- Rollback: Remove ArXiv semantic extractor enablement, semantic registry columns/fields, semantic run manifest/event, generated status/dashboard changes, and this test update.
+- Next step: Expand selectors for the remaining active parameters/formulas or decide which should stay as owner-approved HUMAN_REVIEW_REQUIRED.
 
 ## Unknown Historical Periods
 
