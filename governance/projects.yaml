@@ -15,6 +15,7 @@ root_governance:
     - "docs/governance/templates/delivery_tasks.template.yaml"
     - "docs/governance/templates/TRACEABILITY_MATRIX.template.csv"
     - "docs/governance/templates/INCIDENT_RESPONSE.template.md"
+    - "docs/governance/CODEX_SETUP.md"
     - "governance/projects.yaml"
     - "governance/schemas/model_registry.schema.json"
     - "governance/schemas/formula_registry.schema.json"
@@ -24,6 +25,10 @@ root_governance:
     - "tests/governance/test_project_governance_validator.py"
     - ".github/workflows/project-governance.yml"
     - ".agents/skills/project-governance/SKILL.md"
+    - ".agents/skills/codex-dex/SKILL.md"
+    - ".codex/config.template.toml"
+    - ".codex/hooks.json"
+    - ".codex/hooks/governance_stop.py"
 project_governance_files:
   - "docs/governance/MODEL_SPEC.md"
   - "docs/governance/model_registry.yaml"
