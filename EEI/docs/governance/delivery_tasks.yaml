@@ -7,7 +7,7 @@ tasks:
     objective: "Inventory repository and confirm v2.0 canonical inputs"
     scope: "Legacy EEI gate G0 task from data/task_backlog.csv."
     non_scope: "No business behavior changes in governance migration."
-    status: "planned"
+    status: "in_progress"
     dependencies: []
     required_files:
       - "EEI/data/task_backlog.csv"
@@ -3431,11 +3431,11 @@ tasks:
     required_files: ["EEI/docs/governance/parameter_registry.csv", "EEI/docs/governance/formula_registry.yaml", "EEI/data/parameter_catalog.csv", "governance/projects.yaml"]
     acceptance_ids: ["ACC-SEMANTIC-EEI-001"]
     test_commands: ["python3 scripts/validate_project_governance.py --project EEI --semantic", "python3 scripts/validate_semantic_extractors.py EEI"]
-    test_results: ["NOT_RUN - semantic extractor rollout task is planned, not completed"]
-    evidence_refs: ["EEI/docs/governance/OWNER_STATUS.md", "governance/projects.yaml"]
-    risk: "EEI remains structurally governed but not machine semantic-verified until extractors are implemented."
-    rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
+    test_results: ["PARTIAL_PASS - python3 scripts/validate_semantic_extractors.py EEI checks 54 active parameters and 10 active formulas; 7 UNKNOWN motion parameters and FORM-012 remain deferred to this task"]
+    evidence_refs: ["governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-001.json", "EEI/docs/governance/OWNER_STATUS.md", "governance/projects.yaml"]
+    risk: "EEI has partial machine semantic extraction but is not machine_verified until all active UNKNOWN parameters and FORM-012 have extractor evidence or explicit human-review closure."
+    rollback: "Remove EEI semantic selector columns and formula semantic fields, reset governance/projects.yaml semantic_coverage to planned, and rerun governance validators."
     target_version: "0.1.0"
     completed_version: ""
-    fact_level: "PROPOSED"
+    fact_level: "EXTRACTED"
     unknown_task_ids: []

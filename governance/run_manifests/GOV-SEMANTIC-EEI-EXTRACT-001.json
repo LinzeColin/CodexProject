@@ -1,0 +1,166 @@
+{
+  "acceptance_id": "ACC-SEMANTIC-EEI-001",
+  "actor": "Codex",
+  "base_commit": "810ea9fd0beb6d0aebdb4b40fcb55b53c2d81104",
+  "change_classification": [
+    "project_governance_semantic_hardening",
+    "root_validator_capability_change",
+    "no_business_behavior_change"
+  ],
+  "changed_files_actual": [
+    "EEI/CHECKSUMS.sha256",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "EEI/docs/governance/VERSION_MATRIX.yaml",
+    "EEI/docs/governance/delivery_tasks.yaml",
+    "EEI/docs/governance/development_events.jsonl",
+    "EEI/docs/governance/formula_registry.yaml",
+    "EEI/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-001.json",
+    "scripts/validate_project_governance.py",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:9875ab2412aef9f82e32fe180a37b5179a0cd0de84644f617a977e93c364b2b3",
+  "evidence_refs": [
+    "EEI/docs/governance/parameter_registry.csv",
+    "EEI/docs/governance/formula_registry.yaml",
+    "EEI/docs/governance/development_events.jsonl",
+    "EEI/docs/governance/delivery_tasks.yaml",
+    "governance/projects.yaml"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "formula_delta": {
+    "deferred": "FORM-012 threshold-control rule",
+    "machine_refs": "csv_row:EEI/data/formula_registry.csv::formula_id=<legacy_formula_id>",
+    "semantic_formulas_checked": 10
+  },
+  "model_delta": {
+    "formula_fingerprints_added": 10,
+    "human_review_required": [
+      "FORM-012"
+    ],
+    "runtime_behavior": "unchanged"
+  },
+  "observed_results": [
+    "LOCAL_SEMANTIC_PARTIAL_PASS",
+    "EEI_PARAMETERS_CHECKED_54",
+    "EEI_FORMULAS_CHECKED_10",
+    "EEI_SEMANTIC_COVERAGE_IN_PROGRESS_NOT_MACHINE_VERIFIED"
+  ],
+  "parameter_delta": {
+    "active_values_changed": 0,
+    "semantic_parameters_checked": 54,
+    "unknown_parameters_deferred": [
+      "PARAM-052",
+      "PARAM-053",
+      "PARAM-054",
+      "PARAM-055",
+      "PARAM-056",
+      "PARAM-057",
+      "PARAM-058"
+    ]
+  },
+  "project_id": "EEI",
+  "required_governance_files": [
+    "governance/projects.yaml",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py",
+    "EEI/docs/governance/parameter_registry.csv",
+    "EEI/docs/governance/formula_registry.yaml",
+    "EEI/docs/governance/delivery_tasks.yaml",
+    "EEI/docs/governance/development_events.jsonl",
+    "EEI/docs/governance/VERSION_MATRIX.yaml"
+  ],
+  "result_commit": "PENDING_GITHUB_MERGE",
+  "rollback": "Revert this manifest, EEI semantic metadata, root semantic validator/test changes, generated dashboard/status changes, and governance/projects.yaml semantic coverage update. No EEI business code rollback is required.",
+  "run_id": "GOV-SEMANTIC-EEI-EXTRACT-001",
+  "started_at": "2026-06-21T06:20:00Z",
+  "task_id": "GOV-SEMANTIC-EEI-001",
+  "tests_run": [
+    {
+      "command": "python3 scripts/validate_semantic_extractors.py EEI",
+      "exit_code": 0,
+      "result": "checked 54 parameters and 10 formulas"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project EEI --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0; EEI semantic_parameters_checked=54 semantic_formulas_checked=10"
+    },
+    {
+      "command": "python3 -m pytest tests/governance -q",
+      "exit_code": 0,
+      "result": "39 passed"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write twice",
+      "exit_code": 0,
+      "result": "deterministic generation zero diff"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 -m py_compile scripts/validate_project_governance.py scripts/validate_semantic_extractors.py scripts/validate_governance_sync.py",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "cd EEI && python scripts/manage_clean_room_release.py generate && python scripts/manage_clean_room_release.py validate",
+      "exit_code": 0,
+      "result": "package_paths=390; package_sha256=3474c965d5bb5487c860ef7c43d7957e7f23e596f9fea8cad1f132c00d578d84"
+    },
+    {
+      "command": "cd EEI && python scripts/manage_release_artifacts.py generate --remote-status PENDING && python scripts/manage_release_artifacts.py validate",
+      "exit_code": 0,
+      "result": "manifest_paths=397; checksum_paths=396; remote_status=PENDING"
+    }
+  ],
+  "unresolved_risks": [
+    "EEI semantic coverage remains in_progress, not machine_verified.",
+    "7 active motion parameters remain UNKNOWN with task binding.",
+    "FORM-012 requires a dedicated extractor or human-review closure.",
+    "Branch protection/no-bypass authenticated evidence remains UNVERIFIED without GitHub admin evidence."
+  ],
+  "updated_governance_files": [
+    "EEI/docs/governance/parameter_registry.csv",
+    "EEI/docs/governance/formula_registry.yaml",
+    "EEI/docs/governance/delivery_tasks.yaml",
+    "EEI/docs/governance/development_events.jsonl",
+    "EEI/docs/governance/VERSION_MATRIX.yaml",
+    "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "governance/projects.yaml",
+    "scripts/validate_project_governance.py",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py",
+    "EEI/CHECKSUMS.sha256",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json"
+  ],
+  "version_delta": {
+    "current_gate": "TASK-T1307-A209-RUNNER-REPAIR-REMOTE-CI -> GOV-SEMANTIC-EEI-001-PARTIAL-EXTRACTORS",
+    "current_iteration": "ITER-20260621-015 -> ITER-20260621-016",
+    "current_phase": "D -> B",
+    "product_version": "0.1.0 unchanged"
+  }
+}

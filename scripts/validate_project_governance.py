@@ -384,8 +384,8 @@ def validate_semantic_coverage_config(
             validation.add(required, scope, "semantic_coverage.status=machine_verified requires semantic_extractors: true")
         if not value_present(coverage.get("evidence_ref")):
             validation.add(required, scope, "semantic_coverage.machine_verified requires evidence_ref")
-    elif bool(project.get("semantic_extractors")):
-        validation.add(required, scope, "semantic_extractors: true requires semantic_coverage.status=machine_verified")
+    elif bool(project.get("semantic_extractors")) and status not in {"in_progress", "blocked"}:
+        validation.add(required, scope, "semantic_extractors: true requires semantic_coverage.status to be in_progress, blocked, or machine_verified")
     if status == "not_applicable" and not value_present(coverage.get("evidence_ref")):
         validation.add(required, scope, "semantic_coverage.not_applicable requires evidence_ref")
 
