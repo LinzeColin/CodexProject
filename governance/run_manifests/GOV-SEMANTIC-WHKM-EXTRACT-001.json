@@ -1,0 +1,172 @@
+{
+  "acceptance_id": "ACC-SEMANTIC-WHKM-001",
+  "actor": "Codex",
+  "base_commit": "5712cb6666d2abf5c9426d4ad282899774090a85",
+  "change_classification": [
+    "governance_semantic_extractor_rollout"
+  ],
+  "changed_files_actual": [
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/VERSION_MATRIX.yaml",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/parameter_registry.csv"
+  ],
+  "changed_files_declared": [
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/VERSION_MATRIX.yaml",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/parameter_registry.csv"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:fe4b00b383e8d2121403cbdc36db623e0dd39a8e73003df12728c7f966d9259f",
+  "evidence_refs": [
+    "whkmSalary/docs/governance/parameter_registry.csv",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "formula_delta": {
+    "formula_fingerprints_added": 9,
+    "human_review_formula_ids": [
+      "FORM-010"
+    ],
+    "semantic_formulas_checked": 9
+  },
+  "model_delta": {
+    "runtime_behavior": "unchanged",
+    "semantic_coverage": "planned -> in_progress"
+  },
+  "observed_results": [
+    "ALL_PROJECT_SEMANTIC_DRIFT_PASS",
+    "CHANGED_ONLY_SYNC_PASS",
+    "DASHBOARD_STATUS_OWNER_STATUS_DOUBLE_GENERATION_STABLE",
+    "GIT_DIFF_CHECK_PASS",
+    "GOVERNANCE_TESTS_46_PASSED",
+    "LOCAL_SEMANTIC_PARTIAL_PASS",
+    "WHKM_COMPILE_FIXTURE_PASS",
+    "WHKM_FORMULAS_CHECKED_9",
+    "WHKM_PARAMETERS_CHECKED_78",
+    "WHKM_PROJECT_VALIDATOR_PASS",
+    "WHKM_SEMANTIC_COVERAGE_IN_PROGRESS_NOT_MACHINE_VERIFIED"
+  ],
+  "parameter_delta": {
+    "active_values_changed": 0,
+    "human_review_parameter_ids": [
+      "PARAM-004",
+      "PARAM-005"
+    ],
+    "semantic_parameters_checked": 78
+  },
+  "project_id": "whkmSalary",
+  "project_path": "whkmSalary",
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/VERSION_MATRIX.yaml",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/parameter_registry.csv"
+  ],
+  "result_commit": "PENDING",
+  "rollback": "Revert this manifest, whkmSalary semantic metadata/status files, root projects.yaml semantic coverage update, and generated dashboard/status pages. No salary business code rollback is required.",
+  "run_id": "GOV-SEMANTIC-WHKM-EXTRACT-001",
+  "runtime_behavior_changed": false,
+  "semantic_formulas_checked": 9,
+  "semantic_parameters_checked": 78,
+  "semantic_status": "in_progress",
+  "started_at": "2026-06-21T22:45:05+10:00",
+  "task_id": "GOV-SEMANTIC-WHKM-001",
+  "tests_run": [
+    {
+      "command": "python3 scripts/validate_semantic_extractors.py whkmSalary",
+      "exit_code": 0,
+      "result": "semantic_parameters_checked=78 semantic_formulas_checked=9"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project whkmSalary --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0; whkmSalary semantic_parameters_checked=78 semantic_formulas_checked=9"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 -m pytest tests/governance/test_project_governance_validator.py -q",
+      "exit_code": 0,
+      "result": "46 passed"
+    },
+    {
+      "command": "cd whkmSalary && python3 -m compileall salary_logic.py streamlit_app.py",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "cd whkmSalary && python3 salary_logic.calculate fixture",
+      "exit_code": 0,
+      "result": "total_score=13.875 total_salary=22995.0 after_tax_salary=22305.15"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write (twice with hash comparison)",
+      "exit_code": 0,
+      "result": "stable hash 609e896ad51ac861a7f742cb406e79bcd0f85e7705b5b3030f516d132a667576"
+    }
+  ],
+  "unresolved_risks": [
+    "PARAM-004 and PARAM-005 positive-input guard semantics remain HUMAN_REVIEW_REQUIRED.",
+    "FORM-010 Streamlit UI constraints remain HUMAN_REVIEW_REQUIRED.",
+    "Salary policy/source and legal correctness remain blocked under TASK-WHKM-B-001."
+  ],
+  "updated_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/VERSION_MATRIX.yaml",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/parameter_registry.csv"
+  ],
+  "version_delta": {
+    "current_gate": "GOV-G4-WHKM-REQUIRED -> GOV-SEMANTIC-WHKM-in-progress",
+    "current_iteration": "ITER-20260620-WHKM-001 -> ITER-20260621-WHKM-001",
+    "current_phase": "E -> B",
+    "product_version": "0.0.0 unchanged"
+  }
+}
