@@ -66,6 +66,15 @@ def load_dashboard_module():
     return module
 
 
+def load_setup_doctor_module():
+    spec = importlib.util.spec_from_file_location("governance_setup_doctor", ROOT / "scripts" / "governance_setup_doctor.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
 def run_validator(*args: str) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
     env.setdefault("PYTHONPYCACHEPREFIX", "/tmp/codex_governance_test_pycache")
@@ -583,6 +592,33 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 validation = sync.SyncValidation()
                 sync.validate_pending_ci_bindings(validation)
                 self.assertFalse(validation.errors)
+
+    def test_review6_project_governance_workflow_uploads_ci_attestation_artifact(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
+        self.assertIn("scripts/validate_ci_attestation.py write", workflow)
+        self.assertIn("scripts/validate_ci_attestation.py validate", workflow)
+        self.assertIn("actions/upload-artifact@v4", workflow)
+        self.assertIn("project-governance-ci-attestation-${{ github.run_id }}-${{ github.run_attempt }}", workflow)
+        self.assertIn("if-no-files-found: error", workflow)
+        self.assertIn("scripts/governance_setup_doctor.py --json --check-github", workflow)
+
+    def test_review6_setup_doctor_reports_entry_gate_contract(self) -> None:
+        doctor = load_setup_doctor_module()
+        report = doctor.workflow_entry_gate_status()
+        self.assertEqual(report["status"], "PASS", report)
+        checks = report["checks"]
+        for check_name in {
+            "pull_request_changed_only_enforce_sync_semantic",
+            "main_push_changed_only_uses_event_before",
+            "main_push_runs_all_semantic_drift_report",
+            "manual_changed_only_accepts_base_ref",
+            "manual_project_scope_requires_project",
+            "ci_attestation_validated",
+            "ci_attestation_uploaded_as_artifact",
+            "setup_doctor_runs_in_ci",
+            "required_failures_not_masked",
+        }:
+            self.assertTrue(checks[check_name], check_name)
 
     def test_review6_serenity_semantic_extractors_pass_current_registry(self) -> None:
         semantic = load_semantic_module()

@@ -183,6 +183,11 @@ Post-commit CI evidence is recorded as an attestation under:
 governance/ci_attestations/<RUN_ID>.json
 ```
 
+or, for the CI run that is proving the current commit, as a GitHub Actions
+artifact named `project-governance-ci-attestation-<run_id>-<attempt>`. Runner
+temporary files are not sufficient evidence unless they are uploaded or later
+bound by an append-only committed attestation.
+
 Each attestation binds a pre-commit run manifest or workflow run to:
 
 - final commit SHA
