@@ -1,0 +1,150 @@
+{
+  "acceptance_id": "ACC-SEMANTIC-EVA-001",
+  "actor": "Codex",
+  "base_commit": "529fd458559db35d3212a0c520de4b2ed4d3882b",
+  "change_classification": [
+    "governance_semantic_extractor_rollout"
+  ],
+  "changed_files_actual": [
+    "EVA_OS/docs/governance/DEVELOPMENT_LEDGER.md",
+    "EVA_OS/docs/governance/OWNER_STATUS.md",
+    "EVA_OS/docs/governance/STATUS.md",
+    "EVA_OS/docs/governance/VERSION_MATRIX.yaml",
+    "EVA_OS/docs/governance/delivery_tasks.yaml",
+    "EVA_OS/docs/governance/development_events.jsonl",
+    "EVA_OS/docs/governance/formula_registry.yaml",
+    "EVA_OS/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_declared": [
+    "EVA_OS/docs/governance/DEVELOPMENT_LEDGER.md",
+    "EVA_OS/docs/governance/OWNER_STATUS.md",
+    "EVA_OS/docs/governance/STATUS.md",
+    "EVA_OS/docs/governance/VERSION_MATRIX.yaml",
+    "EVA_OS/docs/governance/delivery_tasks.yaml",
+    "EVA_OS/docs/governance/development_events.jsonl",
+    "EVA_OS/docs/governance/formula_registry.yaml",
+    "EVA_OS/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:be5e88ebe2f55eb58a9323e63e220e1b78c89a355292c57f178ba69f731bf559",
+  "evidence_refs": [
+    "EVA_OS/docs/governance/parameter_registry.csv",
+    "EVA_OS/docs/governance/formula_registry.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "formula_delta": {
+    "human_review_required": "none at formula level in this rollout",
+    "machine_refs": "implementation_refs on FORM-001 through FORM-016",
+    "semantic_formulas_checked": 16
+  },
+  "model_delta": {
+    "formula_fingerprints_added": 16,
+    "runtime_behavior": "unchanged",
+    "semantic_coverage": "in_progress"
+  },
+  "observed_results": [
+    "LOCAL_SEMANTIC_PARTIAL_PASS",
+    "EVA_OS_PARAMETERS_CHECKED_52",
+    "EVA_OS_FORMULAS_CHECKED_16",
+    "EVA_OS_SEMANTIC_COVERAGE_IN_PROGRESS_NOT_MACHINE_VERIFIED"
+  ],
+  "parameter_delta": {
+    "active_values_changed": 0,
+    "human_review_required_count": 137,
+    "human_review_task_id": "GOV-SEMANTIC-EVA-001",
+    "semantic_parameters_checked": 52
+  },
+  "project_id": "EVA_OS",
+  "project_path": "EVA_OS",
+  "required_governance_files": [
+    "governance/projects.yaml",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py",
+    "EVA_OS/docs/governance/parameter_registry.csv",
+    "EVA_OS/docs/governance/formula_registry.yaml",
+    "EVA_OS/docs/governance/delivery_tasks.yaml",
+    "EVA_OS/docs/governance/development_events.jsonl",
+    "EVA_OS/docs/governance/VERSION_MATRIX.yaml",
+    "EVA_OS/docs/governance/DEVELOPMENT_LEDGER.md",
+    "EVA_OS/docs/governance/STATUS.md",
+    "EVA_OS/docs/governance/OWNER_STATUS.md",
+    "GOVERNANCE_DASHBOARD.md"
+  ],
+  "result_commit": "PENDING",
+  "rollback": "Revert this manifest, EVA_OS semantic metadata/status files, root projects.yaml semantic coverage update, and semantic validator/test changes. No EVA_OS business code rollback is required.",
+  "run_id": "GOV-SEMANTIC-EVA-EXTRACT-001",
+  "runtime_behavior_changed": false,
+  "semantic_formulas_checked": 16,
+  "semantic_parameters_checked": 52,
+  "semantic_status": "in_progress",
+  "started_at": "2026-06-21T00:00:00+10:00",
+  "task_id": "GOV-SEMANTIC-EVA-EXTRACT-001",
+  "tests_run": [
+    {
+      "command": "python3 -m py_compile scripts/validate_semantic_extractors.py",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "python3 scripts/validate_semantic_extractors.py EVA_OS",
+      "exit_code": 0,
+      "result": "semantic_parameters_checked=52 semantic_formulas_checked=16"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project EVA_OS --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0; EVA_OS semantic_parameters_checked=52 semantic_formulas_checked=16"
+    },
+    {
+      "command": "python3 -m pytest tests/governance -q",
+      "exit_code": 0,
+      "result": "44 passed"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    }
+  ],
+  "unresolved_risks": [
+    "EVA_OS semantic coverage remains in_progress, not machine_verified.",
+    "137 active parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-EVA-001.",
+    "Branch protection/no-bypass authenticated evidence remains UNVERIFIED without GitHub admin evidence."
+  ],
+  "updated_governance_files": [
+    "EVA_OS/docs/governance/DEVELOPMENT_LEDGER.md",
+    "EVA_OS/docs/governance/OWNER_STATUS.md",
+    "EVA_OS/docs/governance/STATUS.md",
+    "EVA_OS/docs/governance/VERSION_MATRIX.yaml",
+    "EVA_OS/docs/governance/delivery_tasks.yaml",
+    "EVA_OS/docs/governance/development_events.jsonl",
+    "EVA_OS/docs/governance/formula_registry.yaml",
+    "EVA_OS/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "version_delta": {
+    "current_gate": "GOV-P13-required-passed -> GOV-SEMANTIC-EVA-001-in-progress",
+    "current_iteration": "ITER-20260620-EVA-002 -> ITER-20260621-EVA-003",
+    "current_phase": "A -> B",
+    "product_version": "0.1.0 unchanged"
+  }
+}

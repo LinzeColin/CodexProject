@@ -679,6 +679,59 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse([issue for issue in issues if issue.level == "ERROR"], issues)
         self.assertEqual(summary["semantic_parameters_checked"], 1)
 
+    def test_review6_method_default_selector_checks_active_value(self) -> None:
+        semantic = load_semantic_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project = tmp_path / "P"
+            docs = project / "docs" / "governance"
+            docs.mkdir(parents=True)
+            (project / "impl.py").write_text(
+                "class Strategy:\n    def __init__(self, *, short_window: int = 20):\n        self.short_window = short_window\n",
+                encoding="utf-8",
+            )
+            selector = "python_ast_method_default:P/impl.py::Strategy.__init__.short_window"
+            expected_hash = semantic.parameter_evidence_hash("PARAM-X", selector, 20)
+            (docs / "parameter_registry.csv").write_text(
+                "\n".join(
+                    [
+                        "parameter_id,model_id,formula_id,symbol,name,category,data_type,unit,default_value,initial_or_prior_value,active_value,weight,weight_group,weight_group_target,weight_group_tolerance,min_value,max_value,formula_or_transform,source_or_rationale,calibration_method,sensitivity,code_ref,config_ref,test_ref,status,fact_level,unknown_task_ids,parameter_version,last_updated,source_selector,extracted_value,last_verified_commit,verified_at,evidence_hash",
+                        f"PARAM-X,MOD-X,FORM-X,SHORT_WINDOW,Short window,window,int,periods,20,20,20,NOT_APPLICABLE,,,,1,500,identity,test,test,medium,P/impl.py,P/impl.py,P/test_impl.py,active,EXTRACTED,,v1,2026-06-21,{selector},20,HEAD,2026-06-21T00:00:00Z,{expected_hash}",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(semantic, "ROOT", tmp_path), patch.object(semantic, "git_ref_exists", return_value=True):
+                issues, summary = semantic.validate_project_semantics(project, "P")
+        self.assertFalse([issue for issue in issues if issue.level == "ERROR"], issues)
+        self.assertEqual(summary["semantic_parameters_checked"], 1)
+
+    def test_review6_assignment_selector_checks_set_active_value(self) -> None:
+        semantic = load_semantic_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project = tmp_path / "P"
+            docs = project / "docs" / "governance"
+            docs.mkdir(parents=True)
+            (project / "impl.py").write_text('STATUSES = {"pass", "warn", "fail"}\n', encoding="utf-8")
+            selector = "python_ast_assignment:P/impl.py::STATUSES"
+            expected_hash = semantic.parameter_evidence_hash("PARAM-X", selector, {"pass", "warn", "fail"})
+            (docs / "parameter_registry.csv").write_text(
+                "\n".join(
+                    [
+                        "parameter_id,model_id,formula_id,symbol,name,category,data_type,unit,default_value,initial_or_prior_value,active_value,weight,weight_group,weight_group_target,weight_group_tolerance,min_value,max_value,formula_or_transform,source_or_rationale,calibration_method,sensitivity,code_ref,config_ref,test_ref,status,fact_level,unknown_task_ids,parameter_version,last_updated,source_selector,extracted_value,last_verified_commit,verified_at,evidence_hash",
+                        f"PARAM-X,MOD-X,FORM-X,STATUSES,Statuses,enum,set,labels,fail|pass|warn,fail|pass|warn,fail|pass|warn,NOT_APPLICABLE,,,,NOT_APPLICABLE,NOT_APPLICABLE,identity,test,test,medium,P/impl.py,P/impl.py,P/test_impl.py,active,EXTRACTED,,v1,2026-06-21,{selector},fail|pass|warn,HEAD,2026-06-21T00:00:00Z,{expected_hash}",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(semantic, "ROOT", tmp_path), patch.object(semantic, "git_ref_exists", return_value=True):
+                issues, summary = semantic.validate_project_semantics(project, "P")
+        self.assertFalse([issue for issue in issues if issue.level == "ERROR"], issues)
+        self.assertEqual(summary["semantic_parameters_checked"], 1)
+
     def test_review6_unknown_active_parameter_with_task_may_defer_selector(self) -> None:
         semantic = load_semantic_module()
         with tempfile.TemporaryDirectory() as tmp:
@@ -691,6 +744,28 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                     [
                         "parameter_id,model_id,formula_id,symbol,name,category,data_type,unit,default_value,initial_or_prior_value,active_value,weight,weight_group,weight_group_target,weight_group_tolerance,min_value,max_value,formula_or_transform,source_or_rationale,calibration_method,sensitivity,code_ref,config_ref,test_ref,status,fact_level,unknown_task_ids,parameter_version,last_updated,source_selector,extracted_value,last_verified_commit,verified_at,evidence_hash",
                         "PARAM-X,MOD-X,FORM-X,threshold,Threshold,threshold,float,ratio,UNKNOWN,UNKNOWN,UNKNOWN (GOV-SEMANTIC-P-001: source not yet evidenced),NOT_APPLICABLE,,,,0,1,identity,test,test,medium,P/catalog.csv,P/catalog.csv,P/test_impl.py,active,UNKNOWN,GOV-SEMANTIC-P-001,v1,2026-06-21,,,,,",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(semantic, "ROOT", tmp_path), patch.object(semantic, "git_ref_exists", return_value=True):
+                issues, summary = semantic.validate_project_semantics(project, "P")
+        self.assertFalse([issue for issue in issues if issue.level == "ERROR"], issues)
+        self.assertEqual(summary["semantic_parameters_checked"], 0)
+
+    def test_review6_human_review_parameter_with_task_may_defer_selector(self) -> None:
+        semantic = load_semantic_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project = tmp_path / "P"
+            docs = project / "docs" / "governance"
+            docs.mkdir(parents=True)
+            (docs / "parameter_registry.csv").write_text(
+                "\n".join(
+                    [
+                        "parameter_id,model_id,formula_id,symbol,name,category,data_type,unit,default_value,initial_or_prior_value,active_value,weight,weight_group,weight_group_target,weight_group_tolerance,min_value,max_value,formula_or_transform,source_or_rationale,calibration_method,sensitivity,code_ref,config_ref,test_ref,status,fact_level,unknown_task_ids,parameter_version,last_updated,source_selector,extracted_value,last_verified_commit,verified_at,evidence_hash,semantic_status,semantic_review_task_ids",
+                        "PARAM-X,MOD-X,FORM-X,THRESHOLD,Threshold,threshold,float,ratio,0.45,0.45,0.45,NOT_APPLICABLE,,,,0,1,identity,test,test,medium,P/impl.py,P/impl.py,P/test_impl.py,active,EXTRACTED,,v1,2026-06-21,,,,,,HUMAN_REVIEW_REQUIRED,GOV-SEMANTIC-P-001",
                     ]
                 )
                 + "\n",

@@ -98,14 +98,15 @@ projects:
     path: "EVA_OS"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
     semantic_coverage:
-      status: "planned"
+      status: "in_progress"
       task_id: "GOV-SEMANTIC-EVA-001"
       acceptance_id: "ACC-SEMANTIC-EVA-001"
       target: "Add machine selectors for strategy parameters and fingerprints for active strategy formulas."
-      evidence_ref: "EVA_OS/docs/governance/OWNER_STATUS.md"
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for EVA_OS."
+      rationale: "Review6-D rollout guard; EVA_OS now machine-checks 52 active parameters and 16 active formulas while remaining parameters stay HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-EVA-001."
     model_behavior_globs:
       - "src/**"
       - "systems/**"

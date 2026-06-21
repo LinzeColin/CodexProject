@@ -153,6 +153,8 @@ def literal_value(node: ast.AST) -> Any:
         return tuple(literal_value(item) for item in node.elts)
     if isinstance(node, ast.List):
         return [literal_value(item) for item in node.elts]
+    if isinstance(node, ast.Set):
+        return {literal_value(item) for item in node.elts}
     if isinstance(node, ast.Dict):
         return {literal_value(key): literal_value(value) for key, value in zip(node.keys, node.values)}
     raise SemanticExtractionError(f"unsupported literal expression: {ast.dump(node, include_attributes=False)}")
@@ -204,7 +206,39 @@ def find_function_default(tree: ast.Module, function_name: str, arg_name: str) -
         if default_index < 0:
             raise SemanticExtractionError(f"function argument has no default: {function_name}.{arg_name}")
         return literal_value(defaults[default_index])
+    for arg, default in zip(function.args.kwonlyargs, function.args.kw_defaults):
+        if arg.arg != arg_name:
+            continue
+        if default is None:
+            raise SemanticExtractionError(f"function keyword-only argument has no default: {function_name}.{arg_name}")
+        return literal_value(default)
     raise SemanticExtractionError(f"function argument not found: {function_name}.{arg_name}")
+
+
+def find_method_default(tree: ast.Module, class_name: str, method_name: str, arg_name: str) -> Any:
+    for node in tree.body:
+        if not isinstance(node, ast.ClassDef) or node.name != class_name:
+            continue
+        for item in node.body:
+            if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)) and item.name == method_name:
+                args = item.args.args
+                defaults = item.args.defaults
+                first_default = len(args) - len(defaults)
+                for index, arg in enumerate(args):
+                    if arg.arg != arg_name:
+                        continue
+                    default_index = index - first_default
+                    if default_index < 0:
+                        raise SemanticExtractionError(f"method argument has no default: {class_name}.{method_name}.{arg_name}")
+                    return literal_value(defaults[default_index])
+                for arg, default in zip(item.args.kwonlyargs, item.args.kw_defaults):
+                    if arg.arg != arg_name:
+                        continue
+                    if default is None:
+                        raise SemanticExtractionError(f"method keyword-only argument has no default: {class_name}.{method_name}.{arg_name}")
+                    return literal_value(default)
+                raise SemanticExtractionError(f"method argument not found: {class_name}.{method_name}.{arg_name}")
+    raise SemanticExtractionError(f"method not found: {class_name}.{method_name}")
 
 
 def find_line_literal(tree: ast.Module, line_no: int, occurrence: int) -> Any:
@@ -232,6 +266,12 @@ def parse_options(text: str) -> tuple[str, dict[str, str]]:
 
 
 def apply_selector_options(value: Any, options: dict[str, str]) -> Any:
+    if "order" in options:
+        order = [item for item in options["order"].split(",") if item]
+        values = {normalize_value(item) for item in value} if isinstance(value, (set, list, tuple)) else {normalize_value(value)}
+        if set(order) != values:
+            raise SemanticExtractionError(f"order transform values do not match extracted values: expected {sorted(values)}, got {order}")
+        value = "|".join(order)
     if "subtract" not in options:
         return value
     amount = float(options["subtract"])
@@ -256,6 +296,18 @@ def extract_selector(selector: str) -> Any:
         path_text, symbol = target.split("::", 1)
         function_name, arg_name = symbol.split(".", 1)
         return apply_selector_options(find_function_default(parse_tree(selector_path(path_text)), function_name, arg_name), options)
+    if selector.startswith("python_ast_method_default:"):
+        target = selector.removeprefix("python_ast_method_default:")
+        path_text, symbol = target.split("::", 1)
+        class_name, method_name, arg_name = symbol.split(".", 2)
+        return apply_selector_options(
+            find_method_default(parse_tree(selector_path(path_text)), class_name, method_name, arg_name),
+            options,
+        )
+    if selector.startswith("python_ast_assignment:"):
+        target = selector.removeprefix("python_ast_assignment:")
+        path_text, name = target.split("::", 1)
+        return apply_selector_options(literal_value(find_module_assignment(parse_tree(selector_path(path_text)), name)), options)
     if selector.startswith("python_ast_literal:"):
         target = selector.removeprefix("python_ast_literal:")
         path_text, line_text, occurrence_text = target.rsplit(":", 2)
@@ -309,6 +361,10 @@ def normalize_value(value: Any) -> str:
         if math.isfinite(value):
             return format(value, ".12g")
         return str(value)
+    if isinstance(value, dict):
+        return "|".join(f"{normalize_value(key)}={normalize_value(item)}" for key, item in value.items())
+    if isinstance(value, set):
+        return "|".join(sorted(normalize_value(item) for item in value))
     if isinstance(value, (tuple, list)):
         return "|".join(normalize_value(item) for item in value)
     return str(value)
@@ -317,6 +373,10 @@ def normalize_value(value: Any) -> str:
 def values_equal(documented: Any, extracted: Any) -> bool:
     left = normalize_value(documented).strip()
     right = normalize_value(extracted).strip()
+    if left.lower() in {"true", "false"} or right.lower() in {"true", "false"}:
+        return left.lower() == right.lower()
+    if left.lower() in {"none", "null"} or right.lower() in {"none", "null"}:
+        return left.lower() in {"none", "null"} and right.lower() in {"none", "null"}
     try:
         return math.isclose(float(left), float(right), rel_tol=0.0, abs_tol=1e-12)
     except ValueError:
@@ -482,6 +542,10 @@ def validate_parameters(
             continue
         selector = str(row.get("source_selector") or "").strip()
         if not selector or is_unknownish(selector):
+            semantic_status = str(row.get("semantic_status") or "").strip()
+            review_task_ids = str(row.get("semantic_review_task_ids") or "").strip()
+            if semantic_status == "HUMAN_REVIEW_REQUIRED" and review_task_ids:
+                continue
             if is_unknownish(row.get("active_value")) and str(row.get("unknown_task_ids") or "").strip():
                 continue
             issues.append(SemanticIssue("ERROR", scope, f"{parameter_id}: active parameter has no machine source_selector"))
