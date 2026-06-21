@@ -1,0 +1,67 @@
+{
+  "schema_version": "eei-a209-operator-soak-evidence-validation-v1",
+  "system_name": "EEI",
+  "task_id": "T1307",
+  "acceptance_ids": [
+    "A209"
+  ],
+  "status": "MISSING_OPERATOR_EVIDENCE",
+  "release_gate_closed_by_validator": false,
+  "a209_task_status_required": "IN_PROGRESS",
+  "configured_targets": {
+    "short_duration_hours": 4.0,
+    "long_duration_hours": 24.0,
+    "operator_window_seconds": 300.0
+  },
+  "required_artifacts": [
+    {
+      "label": "operator_4h",
+      "output_path": "artifacts/tests/a209/t1307_operator_soak_4h.json",
+      "checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl"
+    },
+    {
+      "label": "operator_24h",
+      "output_path": "artifacts/tests/a209/t1307_operator_soak_24h.json",
+      "checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl"
+    }
+  ],
+  "results": [
+    {
+      "label": "operator_4h",
+      "mode": "operator_4h",
+      "status": "MISSING",
+      "target_seconds": 14400.0,
+      "output_path": "artifacts/tests/a209/t1307_operator_soak_4h.json",
+      "checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl",
+      "errors": [],
+      "missing": [
+        "output_json",
+        "checkpoint_jsonl"
+      ]
+    },
+    {
+      "label": "operator_24h",
+      "mode": "operator_24h",
+      "status": "MISSING",
+      "target_seconds": 86400.0,
+      "output_path": "artifacts/tests/a209/t1307_operator_soak_24h.json",
+      "checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl",
+      "errors": [],
+      "missing": [
+        "output_json",
+        "checkpoint_jsonl"
+      ]
+    }
+  ],
+  "commands": {
+    "validate": "python scripts/validate_operator_soak_evidence.py validate",
+    "release_gate": "python scripts/validate_operator_soak_evidence.py validate --require-release-ready",
+    "operator_4h": "node scripts/run_operator_soak.mjs --mode operator_4h --duration-hours 4 --window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_4h.json --checkpoint artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl --fail-on-budget",
+    "operator_24h": "node scripts/run_operator_soak.mjs --mode operator_24h --duration-hours 24 --window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_24h.json --checkpoint artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl --fail-on-budget"
+  },
+  "rollback": [
+    "Remove invalid 4h/24h operator soak artifacts instead of promoting A209.",
+    "Rerun the matching operator soak command with --resume against the same checkpoint.",
+    "Keep T1307/A209 IN PROGRESS until this validator reports release-ready evidence and release evidence is regenerated."
+  ]
+}

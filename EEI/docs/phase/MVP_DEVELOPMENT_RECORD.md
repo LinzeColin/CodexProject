@@ -3924,7 +3924,7 @@ Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING
 
 ## 2026-06-21 - T1301/A202 live E2E publication-status contract repair
 
-Status: PATCHED; REMOTE LIVE E2E RERUN PENDING
+Status: LOCAL AND REMOTE CI VALIDATED; A202 STILL IN PROGRESS
 
 ### Scope
 
@@ -3942,8 +3942,47 @@ Status: PATCHED; REMOTE LIVE E2E RERUN PENDING
 
 ### Validation
 
-- Pending local TypeScript/targeted validation and remote EEI validation rerun.
+- `./node_modules/.bin/tsc --noEmit` in `apps/web`: PASS.
+- `NEXT_TELEMETRY_DISABLED=1 ./node_modules/.bin/next typegen` in `apps/web`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_clean_room_release.py generate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_release_artifacts.py generate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_clean_room_release.py validate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_release_artifacts.py validate`: PASS.
+- `shasum -a 256 -c CHECKSUMS.sha256`: PASS.
+- GitHub Actions EEI validation run `27891576364` / job `82535792245`: PASS; Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI PostgreSQL E2E all succeeded.
+- GitHub Actions Project Governance run `27891576355`: PASS.
 
 ### Rollback
 
 - Revert `tests/e2e/saved-view-live.spec.ts` expectation and rerun live E2E.
+
+## 2026-06-21 - T1307/A209 fail-closed long-duration soak evidence validator
+
+Status: LOCAL VALIDATION IN PROGRESS; A209 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/validate_operator_soak_evidence.py` as an independent validator for future committed 4h and 24h operator soak artifacts.
+- The validator checks both summary JSON and checkpoint JSONL for `operator_4h` and `operator_24h`, required target durations, window pass status, worker job completion, browser heap/DOM budgets, worker event-loop lag budget, Docker Compose worker binding and release-gate semantics.
+- Generated `artifacts/tests/a209/t1307_operator_soak_evidence_validation.json` with status `MISSING_OPERATOR_EVIDENCE`, which is the expected current state because the actual 4h and 24h artifacts do not exist.
+- Wired `validate-operator-soak-evidence` into `make verify` and added `generate-operator-soak-evidence-artifact`.
+- Updated T1307/A209 traceability, v5 readiness sync and development status ledger.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- This is a control-plane hardening slice only: it prevents false positive A209 release evidence but does not run the missing 4h/24h soaks.
+- A209 remains `IN_PROGRESS`; `MISSING_OPERATOR_EVIDENCE` and 3-second readiness are not substitutes for long-duration soak evidence.
+
+### Validation
+
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run ruff check scripts/validate_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_operator_soak_evidence.py -q`: PASS; 3 passed.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_operator_soak_evidence.py validate --quiet`: PASS; status remains `MISSING_OPERATOR_EVIDENCE`.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_operator_soak_evidence.py validate --require-release-ready --quiet`: EXPECTED FAIL; exits non-zero because 4h/24h artifacts are absent.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_v5_production_readiness_sync.py`: PASS; implemented tasks 4, partial tasks 6, not-done tasks 6.
+
+### Rollback
+
+- Revert `scripts/validate_operator_soak_evidence.py`, `tests/unit/test_operator_soak_evidence.py`, the generated A209 evidence-validation artifact, Makefile wiring and A209 traceability/docs changes.

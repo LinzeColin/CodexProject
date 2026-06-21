@@ -170,9 +170,11 @@ PARTIAL_EVIDENCE = {
     "T1307": {
         "scripts/run_soak_smoke.mjs",
         "scripts/run_operator_soak.mjs",
+        "scripts/validate_operator_soak_evidence.py",
         "artifacts/tests/a209/t1307_soak_smoke.json",
         "artifacts/tests/a209/t1307_operator_soak_readiness.json",
         "artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl",
+        "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     },
     "T1309": {
         "config/brand_policy.yaml",

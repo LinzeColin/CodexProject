@@ -7,7 +7,7 @@ UV := $(VENV)/bin/uv
 PNPM_VERSION := 11.8.0
 PNPM ?= npx --yes pnpm@$(PNPM_VERSION)
 
-.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health worker-health worker-once worker-supervise validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-worker-deployment generate-brand-clearance-artifact validate-brand-clearance generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-scale-browser-benchmark validate-soak-smoke validate-operator-soak-runner secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e test-e2e-live verify verify-g1 verify-g2-db dev-api dev-web clean-local
+.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health worker-health worker-once worker-supervise validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-worker-deployment generate-brand-clearance-artifact validate-brand-clearance generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-scale-browser-benchmark validate-soak-smoke validate-operator-soak-runner generate-operator-soak-evidence-artifact validate-operator-soak-evidence secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e test-e2e-live verify verify-g1 verify-g2-db dev-api dev-web clean-local
 
 $(UV):
 	$(PYTHON) -m venv $(VENV)
@@ -137,6 +137,12 @@ validate-soak-smoke:
 validate-operator-soak-runner:
 	node scripts/run_operator_soak.mjs --mode ci_smoke --duration-seconds 3 --window-seconds 3 --output /tmp/eei-operator-soak.json --checkpoint /tmp/eei-operator-soak.checkpoints.jsonl --fail-on-budget --quiet
 
+generate-operator-soak-evidence-artifact:
+	$(UV) run python scripts/validate_operator_soak_evidence.py generate --quiet
+
+validate-operator-soak-evidence:
+	$(UV) run python scripts/validate_operator_soak_evidence.py validate --quiet
+
 secret-scan:
 	$(UV) run python scripts/secret_scan.py
 
@@ -144,7 +150,7 @@ copy-lint:
 	$(UV) run python scripts/validate_ui_copy.py
 
 lint:
-	$(UV) run ruff check apps tests scripts/db_tools.py scripts/env_doctor.py scripts/migrate.py scripts/load_seed_catalogs.py scripts/load_synthetic_fixtures.py scripts/load_curated_ingestion_anchors.py scripts/fetch_official_source_full_text.py scripts/load_operator_source_captures.py scripts/publish_reviewed_relationship_facts.py scripts/job_scheduler.py scripts/run_scale_benchmarks.py scripts/check_database_schema.py scripts/wait_for_database.py scripts/validate_contracts.py scripts/secret_scan.py scripts/validate_ui_copy.py scripts/validate_prototype_parity.py scripts/validate_github_governance.py scripts/validate_governance_consistency.py scripts/validate_v5_production_readiness_sync.py scripts/validate_worker_deployment.py scripts/validate_brand_clearance.py scripts/manage_development_status_artifacts.py scripts/manage_risk_control_artifacts.py scripts/manage_clean_room_release.py scripts/manage_release_artifacts.py
+	$(UV) run ruff check apps tests scripts/db_tools.py scripts/env_doctor.py scripts/migrate.py scripts/load_seed_catalogs.py scripts/load_synthetic_fixtures.py scripts/load_curated_ingestion_anchors.py scripts/fetch_official_source_full_text.py scripts/load_operator_source_captures.py scripts/publish_reviewed_relationship_facts.py scripts/job_scheduler.py scripts/run_scale_benchmarks.py scripts/check_database_schema.py scripts/wait_for_database.py scripts/validate_contracts.py scripts/secret_scan.py scripts/validate_ui_copy.py scripts/validate_prototype_parity.py scripts/validate_github_governance.py scripts/validate_governance_consistency.py scripts/validate_v5_production_readiness_sync.py scripts/validate_worker_deployment.py scripts/validate_brand_clearance.py scripts/validate_operator_soak_evidence.py scripts/manage_development_status_artifacts.py scripts/manage_risk_control_artifacts.py scripts/manage_clean_room_release.py scripts/manage_release_artifacts.py
 
 typecheck:
 	$(PNPM) --filter @eei/web typecheck
@@ -163,7 +169,7 @@ test-e2e-live:
 
 test: test-unit
 
-verify: validate-governance validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-worker-deployment validate-brand-clearance validate-development-status-artifacts validate-risk-control-artifacts validate-clean-room-release validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-soak-smoke validate-operator-soak-runner secret-scan copy-lint lint typecheck test
+verify: validate-governance validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-worker-deployment validate-brand-clearance validate-development-status-artifacts validate-risk-control-artifacts validate-clean-room-release validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-soak-smoke validate-operator-soak-runner validate-operator-soak-evidence secret-scan copy-lint lint typecheck test
 
 verify-g1: db-up health verify test-e2e
 

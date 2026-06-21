@@ -199,6 +199,30 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the live E2E assertion and rerun Step 12.
 - Next step: run local TypeScript/checksum validations, commit, push and verify CI Step 12.
 
+### `ITER-20260621-007`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `4450533`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`
+- Goal: add fail-closed validation for future 4h/24h operator soak evidence without claiming A209 completion.
+- Assumptions: current repository does not include committed 4h/24h operator soak JSON/checkpoint artifacts, so the correct validator status is `MISSING_OPERATOR_EVIDENCE`.
+- Files read: T1307/A209 readiness artifacts, `scripts/run_operator_soak.mjs`, `scripts/run_soak_smoke.mjs`, Makefile, v5 readiness validator, A209 traceability and development status ledgers.
+- Files changed: `EEI/scripts/validate_operator_soak_evidence.py`, `EEI/tests/unit/test_operator_soak_evidence.py`, `EEI/artifacts/tests/a209/t1307_operator_soak_evidence_validation.json`, Makefile, v5 readiness validator, A209 traceability, development status ledger, MVP development record and this ledger.
+- Model changes: no scoring model change.
+- Parameter changes: no parameter value change; `soak.short_duration_hours=4`, `soak.long_duration_hours=24` and `soak.operator_window_seconds=300` remain authoritative.
+- Commands run: generated A209 evidence-validation artifact; focused ruff, unit test, ordinary A209 evidence validation, fail-closed release-gate validation and v5 readiness validation.
+- Test results: focused ruff PASS; A209 validator unit tests PASS 3/3; ordinary A209 evidence validation PASS with `MISSING_OPERATOR_EVIDENCE`; release-gate mode expected-fail while long artifacts are absent; v5 readiness sync PASS.
+- Successes: future 4h/24h evidence now has an explicit machine-checkable release gate that fails on insufficient duration, invalid checkpoints, budget breaches or missing Docker Compose worker binding.
+- Failures: actual 4h and 24h operator soaks are still absent.
+- Decisions: keep A209 `IN_PROGRESS`; `MISSING_OPERATOR_EVIDENCE` is an honest blocker state, not a release pass.
+- Remaining risks: local macOS sandbox cannot prove long browser/worker soak; actual 4h/24h evidence still requires an operator-capable runtime.
+- Rollback: revert the validator script, unit test, artifact, Makefile wiring and A209 traceability/docs changes.
+- Next step: run focused lint/unit/v5/release validations, commit, push and verify CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -207,6 +231,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-003`: local implementation evidence for TASK-T1301/A202 second independent official-source closure.
 - `EVENT-20260621-004`: local implementation evidence for TASK-T1309/A210 brand-clearance fail-closed preflight.
 - `EVENT-20260621-005`: local repair for TASK-T1301/A202 evidence-chain review-status persistence.
+- `EVENT-20260621-009`: fail-closed validator for TASK-T1307/A209 long-duration operator soak evidence.
 
 ## Unknown Historical Periods
 
