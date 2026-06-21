@@ -1,17 +1,17 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.2`
+Active product version: `0.11.3`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.2
+- Product version: 0.11.3
 - Current phase: E
-- Current gate: ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-PASS
-- Confirmed iteration count: 13
+- Current gate: ADP-PHASE11-PRODUCTION-PREFLIGHT-PASS
+- Confirmed iteration count: 14
 - Reconstructed event count: 0
 - Current task: NONE
 - Blockers: Production acceptance still requires real 30-day trial, scheduler, Release, SMTP, and resource evidence; those are not claimed by this handoff.
@@ -24,7 +24,7 @@ The append-only machine record is `development_events.jsonl`.
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
-| E | Weekly/monthly trial and handoff | completed | handoff readiness package and trial evidence validator generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md` |
+| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, and production preflight gate generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md` |
 
 ## Iteration Records
 
@@ -320,6 +320,29 @@ The append-only machine record is `development_events.jsonl`.
 - Decisions: Treat weekly/monthly replay and recovery drill evidence as required parts of the 30-day trial evidence package.
 - Remaining risks: Live production acceptance still requires external scheduler, SMTP, Release, resources, and actual 30-day run evidence.
 - Rollback: Revert Phase 11 trial evidence validator and restore version 0.11.1.
+- Next step: Run project and governance validation, then sync the PR.
+
+### `ITER-20260621-014`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for production preflight gate, CLI command, schema, tests, and governance updates.
+- Version before: 0.11.2
+- Version after: 0.11.3
+- Base commit: 0d0e23fda99410770283401bfdb70ee8026cd489
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-PRODUCTION-PREFLIGHT-004
+- Goal: Add a fail-closed gate before any scheduled production execution.
+- Assumptions: Production runs must block if runtime commands, secret key presence, disk, memory, Git artifact hygiene, or cache/staging checks fail.
+- Files changed: production preflight code, CLI command, tests, schema, README, CHANGELOG, phase record, version files, and governance records.
+- Model changes: Added MOD-ADP-013 as adp-production-preflight-v1.
+- Parameter changes: Added PARAM-ADP-065 through PARAM-ADP-070.
+- Commands run: project unit tests; root governance tests; schema parse; project governance validator; changed-only enforce-sync; production preflight CLI; dashboard generation; git diff check.
+- Test results: 71 project tests OK; 34 root governance tests OK; schemas parse; project governance errors 0 warnings 0; changed-only enforce-sync errors 0 warnings 0; production preflight exits 2 with blocked status as expected on current environment; dashboard PASS; git diff check exit 0.
+- Successes: Preflight does not log secret values and does not read Codex auth.
+- Failures: production preflight correctly blocks current environment because `gh`, `ffmpeg`, and `docker` are missing; SMTP/Release/runner env keys are missing; free disk is 25.36 GiB below the 80 GiB threshold.
+- Decisions: Treat current local missing `gh`, `ffmpeg`, `docker`, SMTP env keys, Release target, and runner label as expected production blockers.
+- Remaining risks: Production acceptance still requires provisioning the blocked prerequisites and running a real 30-day trial.
+- Rollback: Revert Phase 11 production preflight gate and restore version 0.11.2.
 - Next step: Run project and governance validation, then sync the PR.
 
 ## Unknown Historical Periods

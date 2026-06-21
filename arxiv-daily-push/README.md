@@ -28,6 +28,7 @@ Implemented now:
 - `adp build-handoff`
 - `adp build-acceptance`
 - `adp evaluate-trial`
+- `adp preflight-production`
 - dry-run email rendering for `linzezhang35@gmail.com`
 - local resource and dependency readiness checks
 - generic contracts for `SourceItem`, `EvidenceClaim`, `Lesson`, `Storyboard`, `Publication`, and `RunRecord`
@@ -47,6 +48,7 @@ Implemented now:
 - runner/release/email dry-run handoff that keeps scheduler, Release upload, and real SMTP disabled
 - final acceptance package that marks production acceptance blocked until real 30-day, scheduler, Release, SMTP, and resource evidence exists
 - 30-day trial evidence validator that exports production acceptance evidence only after daily uniqueness, P0 traceability, scheduler, Release, SMTP, resource, weekly/monthly replay, and recovery gates pass
+- production preflight gate that blocks scheduled execution unless runtime commands, secret env keys, disk, memory, Git artifact hygiene, and cache/staging directories are safe
 - governance records required by `CodexProject`
 
 Not implemented yet:

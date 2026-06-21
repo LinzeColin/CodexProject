@@ -16,6 +16,7 @@ from .lesson import LessonGenerationError, generate_lesson
 from .narration import NarrationError, generate_narration_plan
 from .notifications import render_email
 from .pipeline import PipelineError, run_daily_dry_run
+from .production_preflight import build_production_preflight, validate_production_preflight
 from .ranking import selection_payload
 from .state_machine import validate_run_record
 from .trial import evaluate_trial_evidence, validate_trial_evidence_report
@@ -100,6 +101,11 @@ def build_parser() -> argparse.ArgumentParser:
     trial.add_argument("--path", required=True, help="JSON file containing 30-day trial evidence.")
     trial.add_argument("--generated-at", required=True, help="Trial evidence report generation timestamp.")
     trial.add_argument("--json", action="store_true", help="Print JSON trial evidence report.")
+
+    preflight = subparsers.add_parser("preflight-production", help="Run fail-closed production preflight before scheduled execution.")
+    preflight.add_argument("--path", default=".", help="Repository path used for disk, Git, and cache checks.")
+    preflight.add_argument("--generated-at", required=True, help="Preflight report generation timestamp.")
+    preflight.add_argument("--json", action="store_true", help="Print JSON preflight report.")
     return parser
 
 
@@ -334,4 +340,20 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{report['trial_evidence_id']}\t{report['production_evidence_status']}")
         return 0 if report["accepted_for_production"] else 2
+    if args.command == "preflight-production":
+        report = build_production_preflight(Path(args.path), generated_at=args.generated_at)
+        errors = validate_production_preflight(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{report['preflight_id']}\t{report['status']}")
+        return 0 if report["production_run_allowed"] else 2
     raise AssertionError(f"Unhandled command: {args.command}")

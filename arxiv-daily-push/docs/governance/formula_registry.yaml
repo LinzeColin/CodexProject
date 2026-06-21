@@ -340,3 +340,36 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial.py", "arxiv-daily-push/tests/test_acceptance.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"]
+
+  - formula_id: "FORM-ADP-015"
+    model_id: "MOD-ADP-013"
+    assumption_ids: ["ASM-ADP-016", "ASM-ADP-002"]
+    status: "active"
+    expression: "Production preflight passes only when all required runtime commands are available, required secret environment keys are present without logging values, free disk is at least 80 GiB, memory is at least 8 GiB, Git tracked/untracked files contain no forbidden media/model/secret artifacts or oversized files, and local cache/staging/render/media/model/voice/release asset directories are empty."
+    variables:
+      - name: "required_commands"
+        data_type: "list[str]"
+        unit: "commands"
+        input_domain: "python3, git, node, npm, gh, ffmpeg, docker, codex"
+      - name: "required_secret_keys"
+        data_type: "list[str]"
+        unit: "environment variable names"
+        input_domain: "SMTP, Release target, and self-hosted runner label key names"
+      - name: "disk_free_gib"
+        data_type: "float"
+        unit: "GiB"
+        input_domain: "0..unbounded"
+      - name: "memory_total_gib"
+        data_type: "float"
+        unit: "GiB"
+        input_domain: "0..unbounded"
+      - name: "git_artifact_violations"
+        data_type: "list[object]"
+        unit: "files"
+        input_domain: "tracked and untracked Git file paths"
+    constraints: "Secret values and Codex auth are never read or printed; the preflight does not schedule, upload, send mail, render media, or download models."
+    missing_policy: "Any missing command, missing secret key, low resource value, Git artifact violation, or non-empty local artifact directory blocks production_run_allowed."
+    output_range: "production preflight report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_production_preflight.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md"]

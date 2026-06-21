@@ -76,6 +76,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md", "arxiv-daily-push/src/arxiv_daily_push/trial.py", "arxiv-daily-push/tests/test_trial.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-016"
+    statement: "Scheduled production execution must be blocked unless runtime commands, secret environment keys, disk, memory, Git artifact hygiene, and local cache/staging checks pass without logging secret values."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/tests/test_production_preflight.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -287,3 +292,20 @@ models:
     config_refs: ["arxiv-daily-push/schemas/trial_evidence.schema.json", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
     test_refs: ["arxiv-daily-push/tests/test_trial.py", "arxiv-daily-push/tests/test_acceptance.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"]
+  - model_id: "MOD-ADP-013"
+    name: "Production preflight fail-closed gate"
+    kind: "deterministic production readiness validator"
+    purpose: "Block scheduled production execution unless local runtime, secret-key presence, resource, Git artifact, and cache gates pass."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-production-preflight-v1"
+    assumption_ids: ["ASM-ADP-016", "ASM-ADP-002"]
+    formula_ids: ["FORM-ADP-015"]
+    parameter_ids: ["PARAM-ADP-065", "PARAM-ADP-066", "PARAM-ADP-067", "PARAM-ADP-068", "PARAM-ADP-069", "PARAM-ADP-070"]
+    inputs: ["repository path", "PATH command availability", "secret environment key presence", "disk usage", "memory total", "Git tracked and untracked files", "local cache/staging directories"]
+    outputs: ["production preflight report", "production_run_allowed", "blocking_reasons", "resource_evidence"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/production_preflight.schema.json", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    test_refs: ["arxiv-daily-push/tests/test_production_preflight.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md"]

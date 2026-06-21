@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.3 - 2026-06-21
+
+- Added `adp preflight-production` as a fail-closed gate before any scheduled production run.
+- Preflight now checks production commands, required secret environment key presence without logging values, disk, memory, Git artifact hygiene, and local cache/staging directories.
+- Added production preflight schema and tests covering blocked and passing reports.
+
 ## 0.11.2 - 2026-06-21
 
 - Added a Phase 11 trial evidence validator for 30-day production evidence packages.
