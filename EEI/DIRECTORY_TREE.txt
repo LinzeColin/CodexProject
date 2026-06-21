@@ -86,6 +86,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t1215_clean_room_release.json
 │   │   ├── a202
 │   │   │   ├── t1301_curated_official_ingestion_contract.json
+│   │   │   ├── t1301_live_official_retrieval_contract.json
 │   │   │   ├── t1301_official_full_text_dry_run_contract.json
 │   │   │   └── t1301_operator_source_capture_contract.json
 │   │   ├── a203
@@ -418,6 +419,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── test_database_migrations.py
 │   └── unit
 │       ├── test_api_health.py
+│       ├── test_official_source_live_capture.py
 │       ├── test_operator_soak_evidence.py
 │       ├── test_scale_benchmarks.py
 │       └── test_scoring.py

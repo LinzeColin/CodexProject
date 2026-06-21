@@ -223,6 +223,30 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the validator script, unit test, artifact, Makefile wiring and A209 traceability/docs changes.
 - Next step: run focused lint/unit/v5/release validations, commit, push and verify CI.
 
+### `ITER-20260621-008`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `5594da2`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, `TASK-T1304`
+- Goal: add a bounded live official-source retrieval adapter and no-network evidence contract without claiming A202 completion.
+- Assumptions: the correct committed state is `NETWORK_EVIDENCE_MISSING` because real official-source network capture, operator review, PostgreSQL live-capture ingestion and legal/release clearance are not present.
+- Files read: A202 official-source dry-run script and fixtures, source anchor registry, v5 readiness validator, A202/A206 traceability, development status ledger, v5 sync doc and MVP development record.
+- Files changed: `EEI/scripts/fetch_official_source_full_text.py`, `EEI/tests/unit/test_official_source_live_capture.py`, `EEI/artifacts/tests/a202/t1301_live_official_retrieval_contract.json`, v5 readiness validator, A202/A206 traceability, acceptance matrix, development status ledger, development status artifacts, `DEVELOPMENT_STATUS.md`, MVP development record, v5 sync doc, this ledger and governance events.
+- Model changes: no scoring formula change.
+- Parameter changes: no canonical parameter value change; live capture contract records `min_text_chars=240`, `min_token_coverage_ratio=1.0`, `timeout_seconds=20.0`, `max_bytes=8388608` and the existing three-attempt retry policy.
+- Commands run: generated A202 live official retrieval contract artifact; focused ruff; A202 live adapter unit tests; JSON validation; v5 readiness validation; development status artifact generation.
+- Test results: focused ruff PASS; A202 live adapter unit tests PASS 4/4; JSON artifact validation PASS; v5 readiness sync PASS; development status artifact generation/validation PASS.
+- Successes: live capture code path can parse HTML/PDF, hash source text, record retry/source-health metadata and prove no full official text or relationship publication is committed.
+- Failures: no real operator live payload, live PostgreSQL ingestion, owner approval, legal clearance or 4h/24h source-health soak evidence exists.
+- Decisions: keep A202 and A206 `IN_PROGRESS`; do not treat a no-network contract as live evidence or release clearance.
+- Remaining risks: real official-source sites may require per-source fetch tuning, licensing review or PDF extraction adjustments during operator capture.
+- Rollback: revert the live adapter script changes, unit test, generated artifact and A202/A206 traceability/status/docs changes, then regenerate development/release artifacts and rerun validation.
+- Next step: run full unit/task-pack/release/checksum validations, commit, push and verify GitHub Actions.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -232,6 +256,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-004`: local implementation evidence for TASK-T1309/A210 brand-clearance fail-closed preflight.
 - `EVENT-20260621-005`: local repair for TASK-T1301/A202 evidence-chain review-status persistence.
 - `EVENT-20260621-009`: fail-closed validator for TASK-T1307/A209 long-duration operator soak evidence.
+- `EVENT-20260621-010`: local implementation evidence for TASK-T1301/A202 live official retrieval adapter contract.
 
 ## Unknown Historical Periods
 

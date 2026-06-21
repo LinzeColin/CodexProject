@@ -3959,7 +3959,7 @@ Status: LOCAL AND REMOTE CI VALIDATED; A202 STILL IN PROGRESS
 
 ## 2026-06-21 - T1307/A209 fail-closed long-duration soak evidence validator
 
-Status: LOCAL VALIDATION IN PROGRESS; A209 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A209 STILL IN PROGRESS
 
 ### Scope
 
@@ -3982,7 +3982,47 @@ Status: LOCAL VALIDATION IN PROGRESS; A209 STILL IN PROGRESS
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_operator_soak_evidence.py validate --quiet`: PASS; status remains `MISSING_OPERATOR_EVIDENCE`.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_operator_soak_evidence.py validate --require-release-ready --quiet`: EXPECTED FAIL; exits non-zero because 4h/24h artifacts are absent.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_v5_production_readiness_sync.py`: PASS; implemented tasks 4, partial tasks 6, not-done tasks 6.
+- GitHub Actions EEI validation run `27891998013` / job `82536980138`: PASS; Step 7 static/contract/lint/typecheck/unit, Step 8 PostgreSQL preparation, Step 9 G2 static/contract/lint/typecheck/unit, Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI PostgreSQL E2E all succeeded.
+- GitHub Actions Project Governance run `27891998018`: PASS.
 
 ### Rollback
 
 - Revert `scripts/validate_operator_soak_evidence.py`, `tests/unit/test_operator_soak_evidence.py`, the generated A209 evidence-validation artifact, Makefile wiring and A209 traceability/docs changes.
+
+## 2026-06-21 - T1301/A202 live official retrieval adapter contract
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A202/A206 STILL IN PROGRESS
+
+### Scope
+
+- Extended `scripts/fetch_official_source_full_text.py` with an explicit live official-source retrieval adapter for the NVIDIA Golden Vertical official source registry.
+- Live capture is fail-closed behind `--capture-live --allow-live-network`; default CI does not access the network.
+- The adapter extracts normalized text from HTML or PDF responses, computes `source_text_sha256`, stores only a short excerpt, validates expected-token coverage, and records HTTP attempt, retry and `source_health` metadata.
+- Generated `artifacts/tests/a202/t1301_live_official_retrieval_contract.json` with status `NETWORK_EVIDENCE_MISSING`.
+- Added `tests/unit/test_official_source_live_capture.py` using `httpx.MockTransport`, so unit coverage proves parsing and contract fields without real network access.
+
+### Acceptance mapping
+
+- T1301 -> A202 for official-source ingestion, entity-resolution evidence and source-health contract hardening.
+- T1304 -> A206 only for retry/source-health metadata shape; this does not prove long-duration scheduler retry/dead-letter behavior.
+- A202 remains `IN_PROGRESS`: no operator-approved live payload is committed, no live payload is loaded into PostgreSQL evidence tables, no relationship facts are published, and no legal/release clearance is implied.
+
+### Parameters and formulas
+
+- `min_text_chars`: 240, inherited from the existing official-source full-text contract.
+- `min_token_coverage_ratio`: 1.0, inherited from the Golden Vertical expected-token evidence gate.
+- `timeout_seconds`: default 20.0 for operator live capture.
+- `max_bytes`: default 8 MiB per source response.
+- `retry_policy`: max attempts 3; retryable statuses 408, 425, 429, 500, 502, 503, 504; backoff seconds 0, 2, 5; dead-letter-after-attempts 3.
+- No scoring model or formula changed.
+
+### Local validation
+
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/fetch_official_source_full_text.py tests/unit/test_official_source_live_capture.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_official_source_live_capture.py -q`: PASS; 4 passed.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/fetch_official_source_full_text.py --generate-live-contract --output artifacts/tests/a202/t1301_live_official_retrieval_contract.json --quiet`: PASS.
+- `.venv/bin/python -m json.tool artifacts/tests/a202/t1301_live_official_retrieval_contract.json`: PASS.
+
+### Rollback
+
+- Revert the live adapter additions in `scripts/fetch_official_source_full_text.py`, remove `tests/unit/test_official_source_live_capture.py`, remove `artifacts/tests/a202/t1301_live_official_retrieval_contract.json`, restore A202/A206 traceability/status entries, regenerate development/release artifacts, and rerun validations.
