@@ -1343,7 +1343,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         status_text = (ROOT / "arxiv-daily-push" / "docs" / "governance" / "STATUS.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("PR #28 is merged", status_text)
+        self.assertIn("PR #29 is merged", status_text)
         self.assertNotIn("draft and unmerged", status_text)
 
     def test_arxiv_daily_push_semantic_extract_manifest_records_partial_coverage(self) -> None:
@@ -1377,6 +1377,23 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["coverage_status"], "in_progress")
         self.assertEqual(manifest["semantic_parameters_checked"], 72)
         self.assertEqual(manifest["human_review_required_parameters"], 80)
+        self.assertEqual(manifest["semantic_formulas_checked"], 31)
+        self.assertEqual(manifest["human_review_required_formulas"], 0)
+
+    def test_arxiv_daily_push_semantic_extract_manifest_records_narrowed_coverage(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-SEMANTIC-ADP-EXTRACT-003.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "GOV-SEMANTIC-ADP-001")
+        self.assertEqual(manifest["coverage_status"], "in_progress")
+        self.assertEqual(manifest["semantic_parameters_checked"], 93)
+        self.assertEqual(manifest["human_review_required_parameters"], 59)
         self.assertEqual(manifest["semantic_formulas_checked"], 31)
         self.assertEqual(manifest["human_review_required_formulas"], 0)
 
