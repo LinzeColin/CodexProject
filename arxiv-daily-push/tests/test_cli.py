@@ -15,7 +15,7 @@ class CliTests(unittest.TestCase):
         with redirect_stdout(buffer):
             result = main(["version"])
         self.assertEqual(result, 0)
-        self.assertEqual(buffer.getvalue().strip(), "0.11.7")
+        self.assertEqual(buffer.getvalue().strip(), "0.11.8")
 
     def test_doctor_json_command_warns_without_blocking_phase1(self):
         buffer = io.StringIO()

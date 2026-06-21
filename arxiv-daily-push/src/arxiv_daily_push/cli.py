@@ -17,6 +17,7 @@ from .narration import NarrationError, generate_narration_plan
 from .notifications import render_email
 from .pipeline import PipelineError, run_daily_dry_run
 from .production_preflight import build_production_preflight, validate_production_preflight
+from .production_scheduler import build_production_scheduler_plan, validate_production_scheduler_plan
 from .ranking import selection_payload
 from .release_delivery import DEFAULT_RELEASE_REPO, deliver_release, validate_release_delivery_report
 from .source_ingest import ingest_latest_arxiv, validate_source_batch
@@ -149,6 +150,11 @@ def build_parser() -> argparse.ArgumentParser:
     bootstrap.add_argument("--path", default=".", help="Repository root path containing the workflow and runbook.")
     bootstrap.add_argument("--generated-at", required=True, help="Bootstrap plan generation timestamp.")
     bootstrap.add_argument("--json", action="store_true", help="Print JSON bootstrap plan.")
+
+    scheduler = subparsers.add_parser("plan-production-scheduler", help="Validate the scheduled production workflow gate.")
+    scheduler.add_argument("--path", default=".", help="Repository root path containing the scheduled workflow and runbook.")
+    scheduler.add_argument("--generated-at", required=True, help="Scheduler plan generation timestamp.")
+    scheduler.add_argument("--json", action="store_true", help="Print JSON scheduler plan.")
     return parser
 
 
@@ -495,4 +501,20 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{plan['plan_id']}\t{plan['status']}")
         return 0 if plan["trial_bootstrap_ready"] else 2
+    if args.command == "plan-production-scheduler":
+        plan = build_production_scheduler_plan(Path(args.path), generated_at=args.generated_at)
+        errors = validate_production_scheduler_plan(plan)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{plan['plan_id']}\t{plan['status']}")
+        return 0 if plan["scheduler_contract_ready"] else 2
     raise AssertionError(f"Unhandled command: {args.command}")

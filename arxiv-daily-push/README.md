@@ -9,7 +9,7 @@ generation, TTS dry-run narration planning, storyboard/video dry-run planning,
 daily dry-run orchestration, runner/release/email dry-run handoff, final
 acceptance/handoff readiness packaging, small-window live arXiv ingest, an
 explicit SMTP delivery boundary, a fail-closed GitHub Release delivery
-boundary, and tests.
+boundary, a scheduled production workflow gate, and tests.
 
 ## Current Scope
 
@@ -35,6 +35,7 @@ Implemented now:
 - `adp evaluate-trial`
 - `adp preflight-production`
 - `adp plan-trial-bootstrap`
+- `adp plan-production-scheduler`
 - dry-run email rendering for `linzezhang35@gmail.com`
 - fail-closed SMTP notification delivery evidence; real sending requires explicit `--allow-send` and SMTP environment variables
 - fail-closed GitHub Release delivery evidence; real Release creation requires explicit `--allow-upload`, `ADP_RELEASE_TARGET`, `gh`, and safe asset checks
@@ -59,6 +60,7 @@ Implemented now:
 - 30-day trial evidence validator that exports production acceptance evidence only after daily uniqueness, P0 traceability, scheduler, Release, SMTP, resource, weekly/monthly replay, and recovery gates pass
 - production preflight gate that blocks scheduled execution unless runtime commands, secret env keys, disk, memory, Git artifact hygiene, and cache/staging directories are safe
 - manual production trial bootstrap workflow/runbook that runs preflight before any trial work and keeps cron, Release upload, and SMTP sending disabled
+- scheduled production workflow gate with `Australia/Sydney` 04:45 health check, 05:00 daily run, and 05:10 watchdog slots; default GitHub variables keep scheduled work and side effects disabled
 - SMTP delivery report schema that records message hashes and secret-key presence without logging SMTP secret values or email body
 - GitHub Release delivery report schema that records asset hashes and command intent without logging Release notes, secrets, stdout, or stderr
 - governance records required by `CodexProject`
@@ -73,7 +75,7 @@ Not implemented yet:
 - enabled GitHub Actions runner setup
 - verified real SMTP delivery on a provisioned production runner
 - verified private GitHub Release creation on a provisioned production runner
-- scheduled runner execution
+- enabled scheduled runner execution on the default branch
 - claimed scheduled 30-day trial start
 - claimed 30-day operational acceptance
 

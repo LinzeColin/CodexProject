@@ -101,6 +101,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/tests/test_release_delivery.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-021"
+    statement: "Scheduled production workflow declares Australia/Sydney 04:45 health-check, 05:00 daily-run, and 05:10 watchdog slots, supports manual rerun, runs preflight first, and remains disabled unless production GitHub variables are explicitly configured."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/tests/test_production_scheduler.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -399,3 +404,21 @@ models:
     config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/release_delivery.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "https://cli.github.com/manual/gh_release_create"]
+
+  - model_id: "MOD-ADP-018"
+    name: "Scheduled production workflow gate"
+    kind: "deterministic scheduler contract validator"
+    purpose: "Validate the timezone-aware GitHub Actions production scheduler contract while keeping scheduled production, SMTP, and Release side effects disabled by default."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-production-scheduler-v1"
+    assumption_ids: ["ASM-ADP-021", "ASM-ADP-017"]
+    formula_ids: ["FORM-ADP-020"]
+    parameter_ids: ["PARAM-ADP-092", "PARAM-ADP-093", "PARAM-ADP-094", "PARAM-ADP-095", "PARAM-ADP-096"]
+    inputs: ["scheduled workflow text", "production trial runbook text", "generated_at"]
+    outputs: ["scheduler plan", "schedule slots", "checks", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/production_scheduler.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"]

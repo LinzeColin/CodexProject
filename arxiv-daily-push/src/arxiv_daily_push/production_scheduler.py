@@ -1,0 +1,185 @@
+"""Fail-closed scheduled production workflow contract validator."""
+
+from __future__ import annotations
+
+import re
+from collections.abc import Mapping
+from pathlib import Path
+from typing import Any
+
+
+PRODUCTION_SCHEDULER_VALIDATOR_ID = "adp-production-scheduler-v1"
+PRODUCTION_SCHEDULER_WORKFLOW = ".github/workflows/arxiv-daily-push-scheduled.yml"
+PRODUCTION_SCHEDULER_RUNBOOK = "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+SCHEDULER_TIMEZONE = "Australia/Sydney"
+REQUIRED_SCHEDULES = (
+    {"mode": "health-check", "local_time": "04:45", "cron": "45 4 * * *"},
+    {"mode": "daily-run", "local_time": "05:00", "cron": "0 5 * * *"},
+    {"mode": "watchdog", "local_time": "05:10", "cron": "10 5 * * *"},
+)
+REQUIRED_SCHEDULER_SECRETS = ("ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD")
+REQUIRED_SCHEDULER_VARS = ("ADP_PRODUCTION_ENABLED", "ADP_RELEASE_TARGET", "ADP_SCHEDULED_RUN_ENABLED")
+
+
+def build_production_scheduler_plan(path: Path | str | None = None, *, generated_at: str) -> dict[str, Any]:
+    root = Path(path or ".").resolve()
+    workflow_path = root / PRODUCTION_SCHEDULER_WORKFLOW
+    runbook_path = root / PRODUCTION_SCHEDULER_RUNBOOK
+    workflow_text = _read_text(workflow_path)
+    runbook_text = _read_text(runbook_path)
+    checks = [
+        _check("workflow_file_exists", workflow_path.is_file(), f"{PRODUCTION_SCHEDULER_WORKFLOW} is missing"),
+        _check("runbook_file_exists", runbook_path.is_file(), f"{PRODUCTION_SCHEDULER_RUNBOOK} is missing"),
+        _check(
+            "timezone_schedule_declared",
+            all(_has_schedule(workflow_text, item["cron"], SCHEDULER_TIMEZONE) for item in REQUIRED_SCHEDULES),
+            "workflow must declare 04:45, 05:00, and 05:10 Australia/Sydney schedules",
+        ),
+        _check(
+            "manual_rerun_supported",
+            "workflow_dispatch" in workflow_text and "confirm_scheduled_production" in workflow_text,
+            "workflow must support manual rerun with explicit confirmation",
+        ),
+        _check(
+            "production_enabled_gate",
+            "vars.ADP_PRODUCTION_ENABLED" in workflow_text and "should_run=\"false\"" in workflow_text,
+            "scheduled workflow must skip by default unless ADP_PRODUCTION_ENABLED is true",
+        ),
+        _check(
+            "self_hosted_runner_targeted",
+            "self-hosted" in workflow_text and "arxiv-daily-push" in workflow_text,
+            "scheduled production work must target the private arxiv-daily-push self-hosted runner",
+        ),
+        _check(
+            "preflight_before_scheduled_mode",
+            _appears_before(workflow_text, "preflight-production", "Run scheduled mode"),
+            "production preflight must run before any scheduled mode work",
+        ),
+        _check(
+            "preflight_artifact_uploaded",
+            "adp-scheduled-preflight" in workflow_text and "actions/upload-artifact" in workflow_text,
+            "workflow must upload scheduled preflight evidence",
+        ),
+        _check(
+            "secret_names_only",
+            all(f"secrets.{key}" in workflow_text for key in REQUIRED_SCHEDULER_SECRETS)
+            and "auth.json" not in workflow_text,
+            "workflow must map required secret names without reading Codex auth",
+        ),
+        _check(
+            "release_target_declared",
+            "vars.ADP_RELEASE_TARGET" in workflow_text,
+            "workflow must map release target through GitHub variables",
+        ),
+        _check(
+            "scheduled_side_effects_disabled",
+            "--allow-send" not in workflow_text
+            and "--allow-upload" not in workflow_text
+            and "gh release create" not in workflow_text
+            and "gh release upload" not in workflow_text,
+            "scheduler gate must not send SMTP or upload Releases before controlled enablement",
+        ),
+        _check(
+            "runbook_documents_schedule",
+            "arxiv-daily-push-scheduled" in runbook_text
+            and "04:45" in runbook_text
+            and "05:00" in runbook_text
+            and "05:10" in runbook_text,
+            "runbook must document the scheduled workflow, health check, daily run, and watchdog",
+        ),
+    ]
+    ready = all(check["passed"] for check in checks)
+    return {
+        "plan_id": "production-scheduler:arxiv-daily-push",
+        "validator_id": PRODUCTION_SCHEDULER_VALIDATOR_ID,
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": "pass" if ready else "blocked",
+        "scheduler_contract_ready": ready,
+        "workflow_path": PRODUCTION_SCHEDULER_WORKFLOW,
+        "runbook_path": PRODUCTION_SCHEDULER_RUNBOOK,
+        "timezone": SCHEDULER_TIMEZONE,
+        "schedule_slots": list(REQUIRED_SCHEDULES),
+        "required_github_secrets": list(REQUIRED_SCHEDULER_SECRETS),
+        "required_github_vars": list(REQUIRED_SCHEDULER_VARS),
+        "scheduled_production_enabled": False,
+        "scheduled_run_enabled": False,
+        "release_upload_enabled": False,
+        "real_smtp_send_enabled": False,
+        "secret_values_logged": False,
+        "codex_auth_read": False,
+        "checks": checks,
+        "blocking_reasons": [
+            reason
+            for check in checks
+            for reason in check["blocking_reasons"]
+            if check["passed"] is not True
+        ],
+        "next_external_actions": [
+            "merge the workflow to the default branch before schedule triggers can run",
+            "configure ADP_PRODUCTION_ENABLED only after runner and preflight prerequisites pass",
+            "configure ADP_SCHEDULED_RUN_ENABLED only after daily production execution is implemented",
+            "keep Release upload and SMTP sending disabled until their explicit production enablement phase",
+        ],
+    }
+
+
+def validate_production_scheduler_plan(plan: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if plan.get("validator_id") != PRODUCTION_SCHEDULER_VALIDATOR_ID:
+        errors.append("production scheduler validator_id must be adp-production-scheduler-v1")
+    slots = plan.get("schedule_slots")
+    if not isinstance(slots, list) or len(slots) != len(REQUIRED_SCHEDULES):
+        errors.append("production scheduler must include the required schedule slots")
+    checks = plan.get("checks")
+    if not isinstance(checks, list) or not checks:
+        errors.append("production scheduler checks must be a non-empty list")
+        return errors
+    ready = bool(plan.get("scheduler_contract_ready"))
+    failed = [
+        str(check.get("check_id"))
+        for check in checks
+        if isinstance(check, Mapping) and check.get("passed") is not True
+    ]
+    if ready and failed:
+        errors.append("scheduler_contract_ready cannot be true with failed checks: " + ", ".join(failed))
+    if ready and plan.get("blocking_reasons"):
+        errors.append("scheduler_contract_ready cannot be true with blocking_reasons")
+    if not ready and not plan.get("blocking_reasons"):
+        errors.append("blocked production scheduler plan must include blocking_reasons")
+    for key in (
+        "scheduled_production_enabled",
+        "scheduled_run_enabled",
+        "release_upload_enabled",
+        "real_smtp_send_enabled",
+        "secret_values_logged",
+        "codex_auth_read",
+    ):
+        if plan.get(key) is not False:
+            errors.append(f"{key} must be false for scheduler gate planning")
+    return errors
+
+
+def _check(check_id: str, passed: bool, reason: str) -> dict[str, Any]:
+    return {
+        "check_id": check_id,
+        "passed": bool(passed),
+        "blocking_reasons": [] if passed else [reason],
+    }
+
+
+def _read_text(path: Path) -> str:
+    if not path.is_file():
+        return ""
+    return path.read_text(encoding="utf-8")
+
+
+def _has_schedule(text: str, cron: str, timezone: str) -> bool:
+    pattern = rf"cron:\s*[\"']{re.escape(cron)}[\"'][\s\S]{{0,120}}timezone:\s*[\"']{re.escape(timezone)}[\"']"
+    return re.search(pattern, text) is not None
+
+
+def _appears_before(text: str, first: str, second: str) -> bool:
+    first_index = text.find(first)
+    second_index = text.find(second)
+    return first_index >= 0 and second_index >= 0 and first_index < second_index
