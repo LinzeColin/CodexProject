@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 23
-- formula_count: 25
-- parameter_count: 122
+- model_count: 24
+- formula_count: 26
+- parameter_count: 127
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -38,6 +38,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-021 | Trial evidence ledger update | deterministic trial ledger updater | Append one production-ready scheduled daily-run report into the 30-day trial evidence ledger without claiming acceptance early | active | adp-trial-ledger-v1 | `src/arxiv_daily_push/trial_ledger.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-022 | Trial ledger state persistence | deterministic workflow state bridge | Restore and upload small trial evidence ledger state artifacts across scheduled GitHub Actions runs | active | adp-trial-ledger-state-v1 | `.github/workflows/arxiv-daily-push-scheduled.yml`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-023 | Trial operational evidence annotation | deterministic operational evidence annotator | Merge explicit weekly/monthly replay, recovery drill, scheduler, Release, SMTP, and resource refs into trial evidence without hand-editing JSON | active | adp-trial-ops-evidence-v1 | `src/arxiv_daily_push/trial_ops.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-024 | Trial replay evidence builder | deterministic replay evidence validator | Build weekly/monthly replay evidence from production-ready daily trial entries and block missing durable refs or incomplete coverage | active | adp-trial-replay-v1 | `src/arxiv_daily_push/trial_replay.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -69,6 +70,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-024 | Trial ledger updates may append daily evidence only from production-ready scheduled daily-run reports and must block duplicates, dry-run evidence, missing refs, unsupported claims, and misleading failure output. | `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`, `src/arxiv_daily_push/trial_ledger.py`, `tests/test_trial_ledger.py` | Phase 11 trial ledger readiness | active |
 | ASM-ADP-025 | Trial evidence ledger state must be carried forward as a small GitHub Actions artifact, never committed to Git, and must not be replaced when a daily ledger update is blocked. | `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`, `.github/workflows/arxiv-daily-push-scheduled.yml`, `tests/test_production_scheduler.py` | Phase 11 trial ledger state readiness | active |
 | ASM-ADP-026 | Weekly/monthly replay and recovery drill evidence must be merged through explicit refs, not by hand-editing trial evidence or inferring that the operations occurred. | `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`, `src/arxiv_daily_push/trial_ops.py`, `tests/test_trial_ops.py` | Phase 11 operational evidence readiness | active |
+| ASM-ADP-027 | Weekly/monthly replay evidence must be generated from production-ready daily trial entries and archived under a durable replay ref before it can be merged into trial evidence. | `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`, `src/arxiv_daily_push/trial_replay.py`, `tests/test_trial_replay.py` | Phase 11 replay evidence readiness | active |
 
 ## C. Functions and Formulas
 
@@ -99,6 +101,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-023 appends a scheduled daily-run report to trial evidence only when production-ready refs, P0 traceability, publication safety, and duplicate gates pass.
 - FORM-ADP-024 restores prior trial evidence state from a configured path or previous artifact and exports the updated state only after a successful ledger append.
 - FORM-ADP-025 merges explicit operational evidence refs into trial evidence and blocks verified operational flags that lack refs.
+- FORM-ADP-026 builds weekly/monthly replay evidence only from production-ready daily entries with duplicate-free consecutive coverage and a durable replay ref.
 
 ## D. Parameters
 
@@ -127,6 +130,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 trial ledger parameters: PARAM-ADP-108 through PARAM-ADP-112.
 - Active Phase 11 trial ledger state parameters: PARAM-ADP-113 through PARAM-ADP-117.
 - Active Phase 11 trial operational evidence parameters: PARAM-ADP-118 through PARAM-ADP-122.
+- Active Phase 11 trial replay evidence parameters: PARAM-ADP-123 through PARAM-ADP-127.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -275,6 +279,17 @@ updated `trial_evidence` JSON with `export-trial-ledger-state` and uploads the
 replacement state artifact. Blocked ledger updates do not overwrite the previous
 state.
 
+The trial operational evidence annotator merges explicit weekly/monthly replay,
+recovery drill, scheduler, Release, SMTP, and resource refs into the accumulated
+trial evidence JSON. It blocks verified flags without refs and exports updated
+state only when the annotation actually changed evidence.
+
+The trial replay evidence builder generates an auditable weekly/monthly replay
+report from the accumulated daily trial entries. It requires production-ready
+daily refs, duplicate-free date/source/publication coverage, 7 consecutive days
+for weekly replay, 30 consecutive days for monthly replay, and a durable replay
+ref before its annotation hint can be used by the ops annotator.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -307,6 +322,9 @@ state.
 - Trial evidence with fewer than 30 unique dates -> production evidence blocked.
 - Trial evidence with duplicate source or publication IDs -> production evidence blocked.
 - Trial evidence with untraceable P0 claims, unsupported publications, misleading failure output, missing weekly/monthly replay, missing recovery drill, or missing resource/secret hygiene refs -> production evidence blocked.
+- Trial replay without a requested weekly or monthly mode -> replay evidence blocked.
+- Trial replay without a durable replay ref -> replay evidence blocked.
+- Trial replay with duplicate daily dates, source IDs, publication IDs, missing production refs, or insufficient consecutive coverage -> replay evidence blocked.
 - Missing production command, secret environment key, disk threshold, memory threshold, Git artifact hygiene, or local cache/staging cleanliness -> production preflight blocked.
 - Production preflight never logs secret values and never reads Codex auth.
 - Trial bootstrap without manual confirmation, self-hosted runner targeting, preflight-first ordering, artifact upload, GitHub secret-name mapping, or runbook evidence path -> bootstrap validation blocked.
@@ -349,3 +367,4 @@ Uncovered planned scenarios:
 - Actual 30-day trial start and scheduled daily run execution on the provisioned runner.
 - Local Python HTTPS certificate validation for `https://export.arxiv.org/api/query` currently blocks live source ingest on this machine.
 - Real SMTP delivery against the provisioned production SMTP server and archived message evidence.
+- Actual weekly/monthly replay execution archived under a durable GitHub Actions artifact or private Release ref.

@@ -178,7 +178,26 @@ carry-forward input for later scheduled daily runs. If the ledger update blocks,
 the state export also blocks and no replacement state artifact is uploaded.
 
 After weekly replay, monthly replay, or recovery drill evidence exists, do not
-hand-edit the trial evidence JSON. Merge the explicit evidence refs with:
+hand-edit the trial evidence JSON. For weekly/monthly replay, first build a
+replay evidence report from the accumulated trial ledger and archive that report
+as a durable artifact or Release ref:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push build-trial-replay-evidence \
+  --path <trial-evidence.json> \
+  --generated-at <ISO timestamp> \
+  --weekly-replay \
+  --monthly-replay \
+  --replay-ref <weekly-monthly-evidence-ref> \
+  --json
+```
+
+The replay command validates production-ready daily refs, duplicate-free
+coverage, at least 7 consecutive days for weekly replay, at least 30 consecutive
+days for monthly replay, and a non-empty durable ref. It does not create Release
+assets, send email, generate media, or mutate the trial ledger.
+
+Then merge the explicit evidence refs with:
 
 ```bash
 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push annotate-trial-ops-evidence \

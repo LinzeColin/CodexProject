@@ -126,6 +126,16 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/tests/test_production_scheduler.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-026"
+    statement: "Weekly/monthly replay and recovery drill evidence must be merged through explicit refs, not by hand-editing trial evidence or inferring that the operations occurred."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py", "arxiv-daily-push/tests/test_trial_ops.py"]
+    status: "active"
+  - assumption_id: "ASM-ADP-027"
+    statement: "Weekly/monthly replay evidence must be generated from production-ready daily trial entries and archived under a durable replay ref before it can be merged into trial evidence."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_replay.py", "arxiv-daily-push/tests/test_trial_replay.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -532,3 +542,21 @@ models:
     config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/trial_evidence.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_trial_ops.py", "arxiv-daily-push/tests/test_trial.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md"]
+
+  - model_id: "MOD-ADP-024"
+    name: "Trial replay evidence builder"
+    kind: "deterministic replay evidence validator"
+    purpose: "Build weekly/monthly replay evidence from production-ready daily trial entries and block missing durable refs or incomplete coverage."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-trial-replay-v1"
+    assumption_ids: ["ASM-ADP-027", "ASM-ADP-026", "ASM-ADP-024"]
+    formula_ids: ["FORM-ADP-026"]
+    parameter_ids: ["PARAM-ADP-123", "PARAM-ADP-124", "PARAM-ADP-125", "PARAM-ADP-126", "PARAM-ADP-127"]
+    inputs: ["existing trial evidence", "generated_at", "requested replay modes", "durable replay ref"]
+    outputs: ["trial replay evidence report", "annotation_hint", "daily_entry_refs", "coverage", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_replay.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/trial_replay.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_replay.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md"]

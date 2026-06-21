@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.14 - 2026-06-22
+
+- Added `adp build-trial-replay-evidence` and `adp-trial-replay-v1` to build fail-closed weekly/monthly replay evidence from the accumulated trial ledger.
+- Added replay validation requiring production-ready daily refs, no duplicate dates/source/publication IDs, 7 consecutive days for weekly replay, 30 consecutive days for monthly replay, and a durable replay evidence ref.
+- Added replay schema and tests covering weekly/monthly pass, monthly coverage blocking, missing durable ref blocking, duplicate-date blocking, and CLI JSON output.
+
 ## 0.11.13 - 2026-06-22
 
 - Added `adp annotate-trial-ops-evidence` for fail-closed annotation of explicit weekly/monthly replay, recovery drill, scheduler, Release, SMTP, and resource evidence refs.

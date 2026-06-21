@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 24
-- acceptance_count: 24
+- task_count: 25
+- acceptance_count: 25
 
 ## Delivery Tasks
 
@@ -50,6 +50,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-TRIAL-LEDGER-012 | E | completed | ADP-ACC-PHASE11-TRIAL-LEDGER | 106 tests OK; production-ready scheduled daily-run evidence appends to trial ledger while 30-day acceptance remains blocked | `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md` |
 | ADP-PHASE11-TRIAL-LEDGER-STATE-013 | E | completed | ADP-ACC-PHASE11-TRIAL-LEDGER-STATE | 15 focused tests OK; workflow restore/export bash syntax pass; state exporter CLI pass | `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md` |
 | ADP-PHASE11-TRIAL-OPS-EVIDENCE-014 | E | completed | ADP-ACC-PHASE11-TRIAL-OPS-EVIDENCE | 16 focused tests OK; operational evidence annotation and export gates pass | `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md` |
+| ADP-PHASE11-TRIAL-REPLAY-EVIDENCE-015 | E | completed | ADP-ACC-PHASE11-TRIAL-REPLAY-EVIDENCE | 16 focused tests OK; replay evidence builder blocks incomplete coverage and missing durable refs | `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md` |
 
 ## Release Gates
 
@@ -80,6 +81,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 trial ledger update | production-ready scheduled daily-run append, duplicate blocking, daily refs, P0 traceability, and embedded trial validator output | pass for ledger update contract; no 30-day acceptance claimed |
 | Phase 11 trial ledger state persistence | restore previous trial evidence ledger artifact, export updated state only after append, and avoid Git/media/secret/cache state retention | pass for state persistence contract; no real production evidence claimed |
 | Phase 11 trial operational evidence annotation | explicit weekly/monthly replay, recovery, scheduler, Release, SMTP, and resource refs can be merged without hand-editing trial evidence | pass for annotation contract; no real production evidence claimed |
+| Phase 11 trial replay evidence | weekly/monthly replay report from production daily entries, duplicate-free consecutive coverage, and durable replay ref before annotation | pass for replay evidence contract; no real production replay claimed |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |
