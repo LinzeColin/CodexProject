@@ -66,6 +66,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md", "arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/tests/test_acceptance.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-014"
+    statement: "Production acceptance pass requires non-empty evidence references for every true operational evidence flag."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_EVIDENCE_REF_HARDENING.md", "arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/tests/test_acceptance.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -250,10 +255,10 @@ models:
     owner: "arxiv-daily-push"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "adp-acceptance-v1"
-    assumption_ids: ["ASM-ADP-013"]
+    model_version: "adp-acceptance-v1.1"
+    assumption_ids: ["ASM-ADP-013", "ASM-ADP-014"]
     formula_ids: ["FORM-ADP-013"]
-    parameter_ids: ["PARAM-ADP-051", "PARAM-ADP-052", "PARAM-ADP-053", "PARAM-ADP-054", "PARAM-ADP-055"]
+    parameter_ids: ["PARAM-ADP-051", "PARAM-ADP-052", "PARAM-ADP-053", "PARAM-ADP-054", "PARAM-ADP-055", "PARAM-ADP-056"]
     inputs: ["Phase 10 handoff", "optional operational evidence refs", "generated_at"]
     outputs: ["acceptance package", "production_acceptance_status", "blocking_reasons", "next_actions"]
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]

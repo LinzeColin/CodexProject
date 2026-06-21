@@ -49,10 +49,15 @@ class AcceptanceTests(unittest.TestCase):
     def test_acceptance_can_pass_with_explicit_operational_evidence(self) -> None:
         evidence = {
             "thirty_day_trial_passed": True,
+            "thirty_day_trial_passed_ref": "release://adp/30-day-trial.json",
             "scheduler_operational": True,
+            "scheduler_operational_ref": "release://adp/scheduler-rerun-evidence.json",
             "release_upload_verified": True,
+            "release_upload_verified_ref": "release://adp/private-release-evidence.json",
             "real_smtp_verified": True,
+            "real_smtp_verified_ref": "release://adp/smtp-delivery-evidence.json",
             "resource_pressure_ok": True,
+            "resource_pressure_ok_ref": "release://adp/resource-pressure-evidence.json",
         }
         package = build_acceptance_package(
             handoff_payload(),
@@ -64,6 +69,24 @@ class AcceptanceTests(unittest.TestCase):
         self.assertEqual(package["production_acceptance_status"], "pass")
         self.assertFalse(package["blocking_reasons"])
         self.assertFalse(validate_acceptance_package(package))
+
+    def test_acceptance_blocks_true_flags_without_evidence_refs(self) -> None:
+        evidence = {
+            "thirty_day_trial_passed": True,
+            "scheduler_operational": True,
+            "release_upload_verified": True,
+            "real_smtp_verified": True,
+            "resource_pressure_ok": True,
+        }
+        package = build_acceptance_package(
+            handoff_payload(),
+            generated_at="2026-06-21T06:00:00+10:00",
+            operational_evidence=evidence,
+        )
+
+        self.assertFalse(package["accepted_for_production"])
+        self.assertEqual(package["production_acceptance_status"], "blocked")
+        self.assertIn("missing 30-day live trial evidence", " ".join(package["blocking_reasons"]))
 
     def test_validation_rejects_false_production_pass(self) -> None:
         package = build_acceptance_package(handoff_payload(), generated_at="2026-06-21T06:00:00+10:00")

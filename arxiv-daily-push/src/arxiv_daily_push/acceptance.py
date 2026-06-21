@@ -37,7 +37,7 @@ def build_acceptance_package(
         {
             "requirement_id": key,
             "description": description,
-            "passed": bool(evidence.get(key)),
+            "passed": _requirement_passed(evidence, key),
             "evidence_ref": str(evidence.get(f"{key}_ref") or ""),
         }
         for key, description in PRODUCTION_REQUIREMENTS
@@ -108,3 +108,7 @@ def validate_acceptance_package(package: Mapping[str, Any]) -> list[str]:
         if not isinstance(no_claims, Mapping) or no_claims.get("does_not_claim_30_day_trial") is not True:
             errors.append("blocked acceptance must explicitly avoid claiming a 30-day trial")
     return errors
+
+
+def _requirement_passed(evidence: Mapping[str, Any], key: str) -> bool:
+    return bool(evidence.get(key)) and bool(str(evidence.get(f"{key}_ref") or "").strip())

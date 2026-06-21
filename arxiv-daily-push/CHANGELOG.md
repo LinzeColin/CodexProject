@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.11.1 - 2026-06-21
+
+- Hardened Phase 11 production acceptance: every production pass requirement now needs both a true flag and a non-empty evidence reference.
+- Added regression coverage that blocks boolean-only operational evidence from marking production acceptance as passed.
+
 ## 0.11.0 - 2026-06-21
 
 - Added Phase 11 acceptance and handoff readiness package generation.

@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 11
-- acceptance_count: 11
+- task_count: 12
+- acceptance_count: 12
 
 ## Delivery Tasks
 
@@ -37,6 +37,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE9-LOCAL-PIPELINE-001 | D | completed | ADP-ACC-PHASE9-LOCAL-PIPELINE | 51 tests OK; local dry-run pipeline pass | `docs/phase_records/PHASE_09.md` |
 | ADP-PHASE10-RUNNER-RELEASE-EMAIL-001 | D | completed | ADP-ACC-PHASE10-RUNNER-RELEASE-EMAIL | 55 tests OK; handoff side-effect gate pass; validator 0 errors | `docs/phase_records/PHASE_10.md` |
 | ADP-PHASE11-ACCEPTANCE-HANDOFF-001 | E | completed | ADP-ACC-PHASE11-ACCEPTANCE-HANDOFF | 60 tests OK; handoff readiness pass; production acceptance blocked until live evidence exists | `docs/phase_records/PHASE_11.md` |
+| ADP-PHASE11-EVIDENCE-REF-HARDENING-002 | E | completed | ADP-ACC-PHASE11-EVIDENCE-REF-HARDENING | 61 tests OK; production pass requires evidence refs | `docs/phase_records/PHASE_11_EVIDENCE_REF_HARDENING.md` |
 
 ## Release Gates
 
@@ -54,6 +55,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 9 local dry-run pipeline | completed RunRecord, publication gate, Lesson, Narration, Storyboard, email preview | pass |
 | Phase 10 runner/release/email handoff | completed RunRecord input, side-effect flags false, recipient preview | pass |
 | Phase 11 final acceptance handoff | handoff readiness package, no unsupported 30-day/live-operation claim | pass |
+| Phase 11 evidence-ref hardening | every production pass requirement needs non-empty evidence ref | pass |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |

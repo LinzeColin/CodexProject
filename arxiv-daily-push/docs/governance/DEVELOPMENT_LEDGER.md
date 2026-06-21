@@ -1,17 +1,17 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.0`
+Active product version: `0.11.1`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.0
+- Product version: 0.11.1
 - Current phase: E
-- Current gate: ADP-PHASE11-ACCEPTANCE-HANDOFF-PASS
-- Confirmed iteration count: 11
+- Current gate: ADP-PHASE11-EVIDENCE-REF-HARDENING-PASS
+- Confirmed iteration count: 12
 - Reconstructed event count: 0
 - Current task: NONE
 - Blockers: Production acceptance still requires real 30-day trial, scheduler, Release, SMTP, and resource evidence; those are not claimed by this handoff.
@@ -275,6 +275,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Live production readiness still requires external runner, SMTP, Release, and 30-day trial execution.
 - Rollback: Revert Phase 11 acceptance code, tests, and governance updates.
 - Next step: Provide final handoff and stop unless operational prerequisites are supplied.
+
+### `ITER-20260621-012`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for acceptance evidence-reference hardening, tests, and governance updates.
+- Version before: 0.11.0
+- Version after: 0.11.1
+- Base commit: b6c1dce15a4fc850c7e555af178deda92899d120
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-EVIDENCE-REF-HARDENING-002
+- Goal: Prevent boolean-only operational evidence from marking production acceptance as passed.
+- Assumptions: Every production pass requirement must include a non-empty evidence reference.
+- Files changed: acceptance code, acceptance tests, version files, and governance records.
+- Model changes: Updated MOD-ADP-011 to adp-acceptance-v1.1.
+- Parameter changes: Added PARAM-ADP-056 for evidence-reference requirements.
+- Commands run: project unit tests; root governance tests; schema parse; project governance validator; changed-only enforce-sync; dashboard generation; git diff check.
+- Test results: 61 project tests OK; 32 root governance tests OK; schemas parse; project governance errors 0 warnings 0; changed-only enforce-sync errors 0 warnings 0; dashboard PASS; git diff check exit 0.
+- Successes: Production acceptance cannot pass on true flags without evidence refs.
+- Failures: none recorded at implementation time.
+- Decisions: Keep production acceptance blocked unless both requirement flags and evidence references are present.
+- Remaining risks: Live production readiness still requires external runner, SMTP, Release, and 30-day trial execution.
+- Rollback: Revert evidence-reference hardening and restore version 0.11.0.
+- Next step: Continue only with real operational prerequisite setup or evidence collection.
 
 ## Unknown Historical Periods
 

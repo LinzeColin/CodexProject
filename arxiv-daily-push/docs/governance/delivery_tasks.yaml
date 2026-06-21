@@ -188,3 +188,20 @@ tasks:
     target_version: "0.11.0"
     completed_version: "0.11.0"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-EVIDENCE-REF-HARDENING-002"
+    phase: "E"
+    objective: "Harden Phase 11 production acceptance so every passed operational requirement needs an evidence reference."
+    scope: "Acceptance gate, regression tests, version and governance records."
+    non_scope: "No fabricated 30-day trial, no real scheduler, no Release upload, and no SMTP send."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-ACCEPTANCE-HANDOFF-001"]
+    required_files: ["src/arxiv_daily_push/acceptance.py", "tests/test_acceptance.py", "docs/phase_records/PHASE_11_EVIDENCE_REF_HARDENING.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-EVIDENCE-REF-HARDENING"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 61 tests OK", "root governance tests: 32 tests OK", "evidence-ref regression: pass", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_EVIDENCE_REF_HARDENING.md", "arxiv-daily-push/tests/test_acceptance.py"]
+    risk: "Operational 30-day evidence still requires future scheduled production runs; this hardening only prevents unsupported production pass claims."
+    rollback: "Revert Phase 11 evidence-ref hardening and restore version 0.11.0."
+    target_version: "0.11.1"
+    completed_version: "0.11.1"
+    unknown_task_ids: []
