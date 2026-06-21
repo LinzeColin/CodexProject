@@ -456,3 +456,32 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md"]
+
+  - formula_id: "FORM-ADP-019"
+    model_id: "MOD-ADP-017"
+    assumption_ids: ["ASM-ADP-020", "ASM-ADP-003"]
+    status: "active"
+    expression: "Release delivery evidence is dry-run by default. A real GitHub Release creation is attempted only when allow_upload is true, a tag/title/notes are provided, at least one safe asset exists, ADP_RELEASE_TARGET or --target is present, gh is available, and no clobber upload is used. The report blocks on missing target, missing gh, missing/empty/oversized/secret-like/model assets, missing metadata, or gh nonzero exit, and never logs Release notes text, secret values, gh stdout, or gh stderr."
+    variables:
+      - name: "allow_upload"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "CLI explicit flag"
+      - name: "release_target"
+        data_type: "str"
+        unit: "commit-ish"
+        input_domain: "ADP_RELEASE_TARGET or --target"
+      - name: "asset_paths"
+        data_type: "list[path]"
+        unit: "files"
+        input_domain: "explicit local evidence/report assets"
+      - name: "asset_sha256"
+        data_type: "str"
+        unit: "hash"
+        input_domain: "streamed asset content hash"
+    constraints: "Dry-run mode makes no gh call. Real upload mode does not log Release notes, secret values, gh stdout, or gh stderr, and does not use --clobber."
+    missing_policy: "Missing metadata, missing target, unavailable gh, unsafe asset, or gh failure produces a blocked Release delivery report."
+    output_range: "Release delivery report with status dry_run, created, or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "https://cli.github.com/manual/gh_release_create"]

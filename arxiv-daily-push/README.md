@@ -8,7 +8,8 @@ deterministic ranking, Claim Ledger publication gate, evidence-linked lesson
 generation, TTS dry-run narration planning, storyboard/video dry-run planning,
 daily dry-run orchestration, runner/release/email dry-run handoff, final
 acceptance/handoff readiness packaging, small-window live arXiv ingest, an
-explicit SMTP delivery boundary, and tests.
+explicit SMTP delivery boundary, a fail-closed GitHub Release delivery
+boundary, and tests.
 
 ## Current Scope
 
@@ -18,6 +19,7 @@ Implemented now:
 - `adp doctor`
 - `adp render-email`
 - `adp send-notification`
+- `adp publish-release`
 - `adp validate-record`
 - `adp arxiv-url`
 - `adp parse-arxiv-atom`
@@ -35,6 +37,7 @@ Implemented now:
 - `adp plan-trial-bootstrap`
 - dry-run email rendering for `linzezhang35@gmail.com`
 - fail-closed SMTP notification delivery evidence; real sending requires explicit `--allow-send` and SMTP environment variables
+- fail-closed GitHub Release delivery evidence; real Release creation requires explicit `--allow-upload`, `ADP_RELEASE_TARGET`, `gh`, and safe asset checks
 - local resource and dependency readiness checks
 - generic contracts for `SourceItem`, `EvidenceClaim`, `Lesson`, `Storyboard`, `Publication`, and `RunRecord`
 - deterministic state transitions for local `RunRecord` validation
@@ -57,6 +60,7 @@ Implemented now:
 - production preflight gate that blocks scheduled execution unless runtime commands, secret env keys, disk, memory, Git artifact hygiene, and cache/staging directories are safe
 - manual production trial bootstrap workflow/runbook that runs preflight before any trial work and keeps cron, Release upload, and SMTP sending disabled
 - SMTP delivery report schema that records message hashes and secret-key presence without logging SMTP secret values or email body
+- GitHub Release delivery report schema that records asset hashes and command intent without logging Release notes, secrets, stdout, or stderr
 - governance records required by `CodexProject`
 
 Not implemented yet:
@@ -68,6 +72,7 @@ Not implemented yet:
 - real video rendering
 - enabled GitHub Actions runner setup
 - verified real SMTP delivery on a provisioned production runner
+- verified private GitHub Release creation on a provisioned production runner
 - scheduled runner execution
 - claimed scheduled 30-day trial start
 - claimed 30-day operational acceptance

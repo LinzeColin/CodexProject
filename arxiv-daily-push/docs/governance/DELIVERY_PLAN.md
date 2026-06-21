@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 17
-- acceptance_count: 17
+- task_count: 18
+- acceptance_count: 18
 
 ## Delivery Tasks
 
@@ -43,6 +43,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-TRIAL-BOOTSTRAP-005 | E | completed | ADP-ACC-PHASE11-TRIAL-BOOTSTRAP | 74 tests OK; bootstrap workflow/runbook gate pass | `docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md` |
 | ADP-PHASE11-LIVE-ARXIV-INGEST-006 | E | completed | ADP-ACC-PHASE11-LIVE-ARXIV-INGEST | 78 tests OK; live local fetch blocked by Python SSL CA as expected | `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md` |
 | ADP-PHASE11-SMTP-DELIVERY-007 | E | completed | ADP-ACC-PHASE11-SMTP-DELIVERY | 83 tests OK; SMTP dry-run and mocked send gate pass; no real SMTP evidence claimed | `docs/phase_records/PHASE_11_SMTP_DELIVERY.md` |
+| ADP-PHASE11-RELEASE-DELIVERY-008 | E | completed | ADP-ACC-PHASE11-RELEASE-DELIVERY | 9 focused tests OK; Release dry-run and mocked gh create gate pass; no real Release evidence claimed | `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md` |
 
 ## Release Gates
 
@@ -66,6 +67,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 trial bootstrap workflow | manual GitHub workflow, self-hosted runner input, preflight-first ordering, artifact upload, and runbook | pass for bootstrap; no production side effects enabled |
 | Phase 11 live arXiv source ingest | small-window Atom fetch, SourceItem validation, duplicate filtering, no PDF/bulk download | pass for code gate; current local live fetch blocked by Python SSL CA |
 | Phase 11 SMTP delivery boundary | dry-run default, explicit allow-send, env-key checks, TLS-required mocked send, no secret/body logging | pass for code gate; no real production SMTP evidence claimed |
+| Phase 11 Release delivery boundary | dry-run default, explicit allow-upload, target check, safe assets, no clobber upload, no notes/stdout/stderr logging | pass for code gate; no real private Release evidence claimed |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |
