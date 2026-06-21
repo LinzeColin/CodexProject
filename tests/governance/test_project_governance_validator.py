@@ -943,6 +943,26 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertNotIn("{'", rendered)
         self.assertEqual(info["next_task"], "TASK-B-001")
 
+    def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
+        validator = load_validator_module()
+        matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260621-017")
+        self.assertEqual(matrix["current_gate"], "TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL")
+
+        events = [json.loads(line) for line in (ROOT / "EEI" / "docs" / "governance" / "development_events.jsonl").read_text(encoding="utf-8").splitlines()]
+        latest = events[-1]
+        self.assertEqual(latest["event_id"], "EVENT-20260621-019")
+        self.assertEqual(latest["task_id"], "TASK-T1307")
+        self.assertIn("PARTIAL", latest["result"])
+
+        dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
+        self.assertIn("TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL", dashboard_text)
+        self.assertIn("A209/A206 remain open until 24h operator soak evidence", dashboard_text)
+
+        self.assertTrue((ROOT / "EEI" / "artifacts" / "tests" / "a209" / "t1307_operator_soak_4h.json").is_file())
+        self.assertTrue((ROOT / "EEI" / "artifacts" / "tests" / "a209" / "t1307_operator_soak_4h.checkpoints.jsonl").is_file())
+        self.assertFalse((ROOT / "EEI" / "artifacts" / "tests" / "a209" / "t1307_operator_soak_24h.json").exists())
+
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads((ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text())
         for field in {

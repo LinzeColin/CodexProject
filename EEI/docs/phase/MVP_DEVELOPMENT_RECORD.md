@@ -4206,3 +4206,37 @@ This remote PASS does not close A209/A206: it validates the runner and fail-clos
 - Revert the parallel `Promise.all` measurement in `scripts/run_soak_smoke.mjs`.
 - Revert the elapsed-wall validator rule and regression test.
 - Regenerate the A209 evidence-validation artifact and rerun validation.
+
+## 2026-06-21 - T1307/A209 4h operator soak evidence
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A209 STILL IN PROGRESS
+
+### Scope
+
+- Produced `artifacts/tests/a209/t1307_operator_soak_4h.json`.
+- Produced `artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl`.
+- Regenerated `artifacts/tests/a209/t1307_operator_soak_evidence_validation.json`.
+- The accepted run used `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright` after an earlier attempt failed at window 33 because the default macOS Playwright cache no longer contained `chromium_headless_shell-1228`.
+
+### Acceptance mapping
+
+- T1307 -> A209 for 4h long-duration soak evidence.
+- T1304 -> A206 only indirectly because the run exercises browser+worker soak with the worker supervisor binding, but it is not full retry/dead-letter production soak proof.
+- A209 remains `IN_PROGRESS`: 24h operator evidence is still missing.
+
+### Validation
+
+- `env PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright apps/web/node_modules/.bin/playwright install chromium`: PASS.
+- `env PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright node scripts/run_operator_soak.mjs --mode ci_fixed_browser_path_probe --duration-seconds 5 --window-seconds 5 --output /tmp/eei-fixed-browser-path-probe.json --checkpoint /tmp/eei-fixed-browser-path-probe.checkpoints.jsonl --fail-on-budget --quiet`: PASS.
+- `env PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright node scripts/run_operator_soak.mjs --mode operator_4h --duration-hours 4 --window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_4h.json --checkpoint artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl --fail-on-budget --quiet`: PASS.
+- 4h run summary: status PASS; requested duration 14400 seconds; completed duration 14400 seconds; windows_completed 48; windows_failed 0; checkpoint rows 48; every checkpoint window PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_operator_soak_evidence.py generate --quiet`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_operator_soak_evidence.py validate --quiet`: PASS.
+- Validation artifact status: `PARTIAL_OPERATOR_EVIDENCE`; `operator_4h` PASS, `operator_24h` MISSING.
+
+### Rollback
+
+- Remove `artifacts/tests/a209/t1307_operator_soak_4h.json`.
+- Remove `artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl`.
+- Regenerate `artifacts/tests/a209/t1307_operator_soak_evidence_validation.json`.
+- Regenerate development, clean-room and release artifacts, then rerun validation.
