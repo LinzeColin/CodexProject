@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arxiv-daily-push"
+version = "0.1.0"
+description = "Evidence-first daily arXiv learning push pipeline."
+requires-python = ">=3.9"
+readme = "README.md"
+dependencies = []
+
+[project.scripts]
+adp = "arxiv_daily_push.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+

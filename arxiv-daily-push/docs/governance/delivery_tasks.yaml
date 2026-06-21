@@ -1,0 +1,88 @@
+governance_spec_version: "1.0.0"
+project_id: "arxiv-daily-push"
+tasks:
+  - task_id: "ADP-PHASE1-FOUNDATION-001"
+    phase: "A"
+    objective: "Create the arXiv Daily Push Phase 1 repository foundation inside CodexProject."
+    scope: "Project directory, CLI doctor/version/render-email, config examples, schemas, governance records, and focused tests."
+    non_scope: "No arXiv ingest, ranking, Claim Ledger extraction, TTS, video, GitHub runner, or real SMTP sending."
+    status: "completed"
+    dependencies: []
+    required_files: ["README.md", "AGENTS.md", "PLANS.md", "pyproject.toml", "src/arxiv_daily_push", "tests", "docs/governance", "VERSION", "CHANGELOG.md"]
+    acceptance_ids: ["ADP-ACC-PHASE1-FOUNDATION"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 4 tests OK", "project governance: errors 0 warnings 0", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_01.md", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/tests/test_doctor.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/docs/governance/STATUS.md"]
+    risk: "Later phases remain blocked by missing Node, npm, gh, ffmpeg, docker, disk, runner, and real mail transport readiness."
+    rollback: "Remove arxiv-daily-push/ and restore README.md plus governance/projects.yaml."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE2-DATA-CONTRACTS-001"
+    phase: "B"
+    objective: "Implement generic SourceItem, EvidenceClaim, Lesson, Storyboard, Publication, and RunRecord schemas and state machine."
+    scope: "Schemas, contract tests, migration notes, and generic source boundaries."
+    non_scope: "No network ingest or media generation."
+    status: "planned"
+    dependencies: ["ADP-PHASE1-FOUNDATION-001"]
+    required_files: ["schemas", "tests"]
+    acceptance_ids: ["ADP-ACC-PHASE2-DATA-CONTRACTS"]
+    test_commands: []
+    test_results: ["NOT_RUN planned Phase 2"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    risk: "Hard-coding arXiv-only fields would block future source expansion."
+    rollback: "Revert Phase 2 schema changes only."
+    target_version: "0.2.0"
+    completed_version: ""
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE4-RANKING-001"
+    phase: "B"
+    objective: "Implement the planned 100-point selection scoring model with golden tests."
+    scope: "Ranking model, queue selection audit, fixed weights, and deterministic tests."
+    non_scope: "No TTS or video."
+    status: "planned"
+    dependencies: ["ADP-PHASE2-DATA-CONTRACTS-001"]
+    required_files: ["src", "tests", "docs/governance/parameter_registry.csv"]
+    acceptance_ids: ["ADP-ACC-PHASE4-RANKING"]
+    test_commands: []
+    test_results: ["NOT_RUN planned Phase 4"]
+    evidence_refs: ["arxiv-daily-push/docs/governance/parameter_registry.csv"]
+    risk: "Selection can become non-auditable without per-component evidence."
+    rollback: "Revert Phase 4 ranking code and governance updates together."
+    target_version: "0.4.0"
+    completed_version: ""
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE5-EVIDENCE-GATE-001"
+    phase: "C"
+    objective: "Implement Claim Ledger extraction and publication hard-block gate."
+    scope: "Claim types, locators, metadata conflict handling, and fail-closed publication checks."
+    non_scope: "No video generation."
+    status: "planned"
+    dependencies: ["ADP-PHASE4-RANKING-001"]
+    required_files: ["src", "tests", "schemas"]
+    acceptance_ids: ["ADP-ACC-PHASE5-EVIDENCE-GATE"]
+    test_commands: []
+    test_results: ["NOT_RUN planned Phase 5"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    risk: "Unsupported key claims must block publication rather than be filled by generation."
+    rollback: "Revert Phase 5 evidence gate code and generated fixtures."
+    target_version: "0.5.0"
+    completed_version: ""
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE8-VIDEO-001"
+    phase: "D"
+    objective: "Implement video system only after text, evidence, TTS, license, and resource gates pass."
+    scope: "Visual bible, scene library, sample video, and media QA."
+    non_scope: "No factual claims beyond lesson.json."
+    status: "planned"
+    dependencies: ["ADP-PHASE5-EVIDENCE-GATE-001"]
+    required_files: ["video", "docs/governance", "tests"]
+    acceptance_ids: ["ADP-ACC-PHASE8-VIDEO"]
+    test_commands: []
+    test_results: ["NOT_RUN planned Phase 8"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    risk: "Current local machine lacks Node/npm/ffmpeg/docker and has limited disk."
+    rollback: "Remove Phase 8 video artifacts and keep text-only pipeline."
+    target_version: "0.8.0"
+    completed_version: ""
+    unknown_task_ids: []

@@ -1,0 +1,86 @@
+governance_spec_version: "1.0.0"
+project_id: "arxiv-daily-push"
+formulas:
+  - formula_id: "FORM-ADP-001"
+    model_id: "MOD-ADP-001"
+    assumption_ids: ["ASM-ADP-001"]
+    status: "active"
+    expression: "If any Phase 1 required command is missing, status is blocked. Else if any future runtime command is missing or free disk is below the video/TTS threshold, status is warn. Else status is pass."
+    variables:
+      - name: "missing_required_commands"
+        data_type: "list[str]"
+        unit: "commands"
+        input_domain: "subset of phase1_required_commands"
+      - name: "missing_future_runtime_commands"
+        data_type: "list[str]"
+        unit: "commands"
+        input_domain: "subset of future_runtime_commands"
+      - name: "free_gib"
+        data_type: "float"
+        unit: "GiB"
+        input_domain: "0..unbounded"
+    constraints: "Required command failures dominate warning-level future runtime gaps."
+    missing_policy: "Unavailable command paths are represented as unavailable command_status entries."
+    output_range: "blocked, warn, or pass"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/doctor.py"]
+    test_refs: ["arxiv-daily-push/tests/test_doctor.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_01.md"]
+  - formula_id: "FORM-ADP-002"
+    model_id: "MOD-ADP-001"
+    assumption_ids: ["ASM-ADP-002"]
+    status: "active"
+    expression: "subject = [arXiv Daily Push][STATUS][date] summary. Body is a fixed key-value report containing project, run_id, date, timezone, status, phase, stage, claim_gate, publication, release_url, report_path, queue_health, degradation, next_action, and sha256."
+    variables:
+      - name: "status"
+        data_type: "str"
+        unit: "label"
+        input_domain: "any string normalized to uppercase"
+      - name: "run_id"
+        data_type: "str"
+        unit: "identifier"
+        input_domain: "non-secret run label"
+      - name: "recipient"
+        data_type: "str"
+        unit: "email"
+        input_domain: "configured recipient"
+    constraints: "Renderer does not read SMTP secrets and does not send mail."
+    missing_policy: "Default status, run_id, summary, date, phase, and stage are used for dry-run preview."
+    output_range: "EmailNotification subject, recipient, and body"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/notifications.py"]
+    test_refs: ["arxiv-daily-push/tests/test_notifications.py"]
+    evidence_refs: ["arxiv-daily-push/config/examples/notification.example.yaml"]
+  - formula_id: "FORM-ADP-003"
+    model_id: "MOD-ADP-002"
+    assumption_ids: ["ASM-ADP-003"]
+    status: "planned"
+    expression: "selection_score = frontier_signal + evidence_reliability + novelty + transfer_value + problem_importance + taxonomy_priority + waiting_time + diversity, with planned weights summing to 100."
+    variables:
+      - name: "component_score"
+        data_type: "float"
+        unit: "points"
+        input_domain: "0..component weight"
+    constraints: "Same input must produce the same score; arXiv metadata conflicts and unsupported evidence block eligibility before ranking."
+    missing_policy: "Missing P0 evidence makes the item ineligible instead of imputing a score."
+    output_range: "0..100 points"
+    code_refs: []
+    test_refs: []
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    unknown_task_ids: ["ADP-PHASE4-RANKING-001"]
+  - formula_id: "FORM-ADP-004"
+    model_id: "MOD-ADP-003"
+    assumption_ids: ["ASM-ADP-003"]
+    status: "planned"
+    expression: "Publish is allowed only if every P0 claim has a Claim ID, source locator, and compatible metadata; arXiv preprint peer-review status cannot be upgraded without independent evidence; video may not add facts absent from lesson.json."
+    variables:
+      - name: "claim"
+        data_type: "EvidenceClaim"
+        unit: "claim"
+        input_domain: "reported_result, author_claim, system_inference, analogy, uncertainty, metadata"
+    constraints: "Any unsupported P0 claim blocks publication."
+    missing_policy: "Missing locator or parse failure creates a blocking result."
+    output_range: "publish_allowed true or false"
+    code_refs: []
+    test_refs: []
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    unknown_task_ids: ["ADP-PHASE5-EVIDENCE-GATE-001"]
+

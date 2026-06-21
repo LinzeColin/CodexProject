@@ -1,0 +1,18 @@
+sources:
+  - source_id: arxiv
+    source_type: arxiv
+    enabled: true
+    phase: planned_phase3
+    api_base_url: https://export.arxiv.org/api/query
+    rate_limit_policy: polite_retry_with_backoff
+future_source_types:
+  - rss
+  - github
+  - standards
+  - industry_reports
+  - web_pages
+  - books
+  - courses
+  - podcasts
+  - user_documents
+

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/source_item.schema.json",
+  "title": "SourceItem",
+  "type": "object",
+  "required": ["source_id", "source_type", "stable_id", "title", "retrieved_at", "metadata"],
+  "properties": {
+    "source_id": {"type": "string"},
+    "source_type": {"type": "string"},
+    "stable_id": {"type": "string"},
+    "title": {"type": "string"},
+    "retrieved_at": {"type": "string"},
+    "metadata": {"type": "object"},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
+
