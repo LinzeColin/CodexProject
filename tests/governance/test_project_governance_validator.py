@@ -190,6 +190,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json",
         )
 
+    def test_review6d_fifa_semantic_rollout_is_task_bound(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        fifa = next(project for project in config["projects"] if project["project_id"] == "FIFA")
+        self.assertTrue(fifa.get("semantic_extractors"))
+        coverage = fifa["semantic_coverage"]
+        self.assertEqual(coverage["status"], "in_progress")
+        self.assertEqual(coverage["task_id"], "GOV-SEMANTIC-FIFA-001")
+        self.assertEqual(coverage["acceptance_id"], "ACC-SEMANTIC-FIFA-001")
+        self.assertEqual(
+            coverage["evidence_ref"],
+            "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json",
+        )
+
     def test_review6d_required_project_missing_semantic_coverage_fails(self) -> None:
         validator = load_validator_module()
         with tempfile.TemporaryDirectory() as tmp:
@@ -1005,7 +1019,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         rendered = dashboard.render_dashboard([dashboard.load_project(project) for project in dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")["projects"]], "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
         self.assertIn("Semantic coverage", rendered)
         self.assertIn("machine_verified", rendered)
-        self.assertIn("planned", rendered)
+        self.assertIn("in_progress", rendered)
 
     def test_review6_owner_status_is_readable_and_prioritized(self) -> None:
         dashboard = load_dashboard_module()

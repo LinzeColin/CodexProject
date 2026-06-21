@@ -286,32 +286,16 @@ tasks:
   - task_id: "GOV-SEMANTIC-FIFA-001"
     phase: "B"
     objective: "Add extractors for parser constants, validation rules, and active governance formulas."
-    scope:
-      - "FIFA semantic extractor metadata"
-      - "root validator evidence"
-      - "generated status pages"
-    non_scope:
-      - "Runtime scoring logic"
-      - "TAB/provider refresh behavior"
-      - "Business feature changes"
-    status: "planned"
-    dependencies:
-      - "TASK-FIFA-A-001"
-    required_files:
-      - "docs/governance/parameter_registry.csv"
-      - "docs/governance/formula_registry.yaml"
-      - "governance/projects.yaml"
-    acceptance_ids:
-      - "ACC-SEMANTIC-FIFA-001"
-    test_commands:
-      - "python3 scripts/validate_project_governance.py --project FIFA --semantic"
-      - "python3 scripts/validate_semantic_extractors.py FIFA"
-    test_results:
-      - "NOT_RUN - semantic extractor rollout task is planned, not completed"
-    evidence_refs:
-      - "FIFA/docs/governance/OWNER_STATUS.md"
-      - "governance/projects.yaml"
-    risk: "FIFA remains structurally governed but not machine semantic-verified until extractors are implemented."
-    rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
+    scope: ["FIFA semantic extractor metadata", "root validator evidence", "generated status pages"]
+    non_scope: ["runtime scoring logic", "TAB/provider refresh behavior", "business feature changes"]
+    status: "in_progress"
+    dependencies: ["TASK-FIFA-A-001"]
+    required_files: ["FIFA/docs/governance/parameter_registry.csv", "FIFA/docs/governance/formula_registry.yaml", "governance/projects.yaml"]
+    acceptance_ids: ["ACC-SEMANTIC-FIFA-001"]
+    test_commands: ["python3 scripts/validate_semantic_extractors.py FIFA", "python3 scripts/validate_project_governance.py --project FIFA --semantic", "python3 scripts/validate_project_governance.py --all --semantic --drift-report", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic"]
+    test_results: ["exit 0; semantic_parameters_checked=91 semantic_formulas_checked=10", "exit 0; FIFA semantic validator errors 0 warnings 0", "exit 0; all-project semantic drift errors 0 warnings 0", "exit 0; changed-only enforce-sync semantic errors 0 warnings 0", "exit 0; governance tests 52 passed", "exit 0; FIFA Python py_compile, shell syntax, and node --check focused checks passed", "exit 1; FIFA unittest without Downloads app-entry fixture failed product_readiness present_required_column_count 0 != 21", "exit 0; FIFA unittest with 21-column temp HOME Downloads HTML fixture ran 206 tests OK using Codex bundled Python"]
+    evidence_refs: ["FIFA/docs/governance/parameter_registry.csv", "FIFA/docs/governance/formula_registry.yaml", "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"]
+    risk: "FIFA semantic coverage remains in_progress because 17 active parameters are deterministic but still require human semantic review or composite-rule extractor support."
+    rollback: "Revert semantic columns/fields, reset governance/projects.yaml FIFA semantic_coverage to planned, and remove GOV-SEMANTIC-FIFA-EXTRACT-001 manifest if validation fails."
     target_version: "0.1.0"
     completed_version: ""
