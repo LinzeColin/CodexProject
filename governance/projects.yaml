@@ -25,6 +25,7 @@ root_governance:
     - "governance/schemas/ci_attestation.schema.json"
     - "scripts/validate_project_governance.py"
     - "scripts/validate_governance_sync.py"
+    - "scripts/validate_semantic_extractors.py"
     - "scripts/validate_ci_attestation.py"
     - "scripts/governance_setup_doctor.py"
     - "scripts/generate_governance_dashboard.py"
@@ -129,6 +130,7 @@ projects:
     path: "Serenity-Alipay"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
     model_behavior_globs:
       - "app/**/*.py"
       - "tests/**/*.py"

@@ -206,6 +206,22 @@ domain knowledge:
 - `DEVELOPMENT_LEDGER` confirmed iteration counts must match the actual
   confirmed iteration sections.
 - Existing development events remain append-only under diff validation.
+- Projects that set `semantic_extractors: true` in `governance/projects.yaml`
+  must machine-check documented active parameter values against extracted
+  implementation values.
+- Parameter rows with semantic extraction must include `source_selector`,
+  `extracted_value`, `last_verified_commit`, `verified_at`, and
+  `evidence_hash`.
+- Supported first-pass extractors are Python AST dataclass/class defaults,
+  function defaults, line literals, module tuples, module dictionaries, and
+  bounded text-regex selectors.
+- Formula rows with semantic extraction must include `implementation_refs`,
+  `implementation_fingerprint`, `last_verified_commit`, `verified_at`, and
+  `evidence_hash`; the fingerprint is computed from normalized Python AST for
+  the referenced symbols.
+- Formula semantics that cannot be fully machine-proved must be marked
+  `HUMAN_REVIEW_REQUIRED` or carry explicit machine-observed caveats rather
+  than being treated as verified.
 
 Facts that cannot be machine-verified must remain `UNKNOWN` or
 `HUMAN_REVIEW_REQUIRED`; do not present them as `EXTRACTED`.

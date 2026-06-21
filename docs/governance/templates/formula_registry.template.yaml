@@ -17,4 +17,10 @@ formulas:
     code_refs: []
     test_refs: []
     evidence_refs: []
+    semantic_status: "UNKNOWN"
+    implementation_refs: []
+    implementation_fingerprint: "UNKNOWN (<TASK-ID>)"
+    last_verified_commit: "UNKNOWN (<TASK-ID>)"
+    verified_at: "UNKNOWN (<TASK-ID>)"
+    evidence_hash: "UNKNOWN (<TASK-ID>)"
     unknown_task_ids: ["<TASK-ID>"]

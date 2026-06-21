@@ -25,6 +25,12 @@ formulas:
     code_refs: ["Serenity-Alipay/app/core/metrics.py:21", "Serenity-Alipay/app/core/metrics.py:31", "Serenity-Alipay/app/core/metrics.py:39"]
     test_refs: ["Serenity-Alipay/tests/test_metrics.py:14", "Serenity-Alipay/tests/test_metrics.py:22"]
     evidence_refs: ["Serenity-Alipay/README.md:13"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/core/metrics.py::_return_from_start", "Serenity-Alipay/app/core/metrics.py::_index_for_days", "Serenity-Alipay/app/core/metrics.py::calculate_returns"]
+    implementation_fingerprint: "sha256:845893abbaf70e74334e3f5f2164ec76c6338c3c5eaf18f2d024b0f7ae479f87"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:a9a7b5272574b5911b42856d61efaee7c4fab6eb1ce4c2d0edc9ce5beca14043"
   - formula_id: "FORM-002"
     model_id: "MOD-003"
     assumption_ids: ["ASM-003"]
@@ -49,6 +55,12 @@ formulas:
     code_refs: ["Serenity-Alipay/app/core/metrics.py:52", "Serenity-Alipay/app/core/metrics.py:79", "Serenity-Alipay/app/core/metrics.py:90"]
     test_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_risk_gate_regression.py:8"]
     evidence_refs: ["Serenity-Alipay/README.md:12"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/core/metrics.py::max_drawdown_and_recovery", "Serenity-Alipay/app/core/metrics.py::drawdown_over_last_n", "Serenity-Alipay/app/core/metrics.py::calculate_metrics"]
+    implementation_fingerprint: "sha256:1e99ecb424f30fc3ae2c8c88cd1c2b412d84eec9fe472a1184804a9d03079388"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:35a8bf4feb41481e8b17c32e4662d54cea0a4853f7c73f1cc81253e125957b3e"
   - formula_id: "FORM-003"
     model_id: "MOD-001"
     assumption_ids: ["ASM-004", "ASM-006"]
@@ -77,6 +89,12 @@ formulas:
     code_refs: ["Serenity-Alipay/app/core/scoring.py:81", "Serenity-Alipay/app/core/scoring.py:105", "Serenity-Alipay/app/core/scoring.py:141"]
     test_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_quality.py:15"]
     evidence_refs: ["Serenity-Alipay/README.md:338"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/core/scoring.py::score_candidate"]
+    implementation_fingerprint: "sha256:001d0ef5716f5fa3773344ee5c9d3752afef602d3199ed971d65d22be71032ef"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:4d96ebfcdf326ee66179a64c5cfec08cd138713714cae3557cd2c5aff5a2967d"
   - formula_id: "FORM-004"
     model_id: "MOD-001"
     assumption_ids: ["ASM-004"]
@@ -93,6 +111,12 @@ formulas:
     code_refs: ["Serenity-Alipay/app/core/scoring.py:44"]
     test_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:34"]
     evidence_refs: ["Serenity-Alipay/README.md:347"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/core/scoring.py::_grade_from_score"]
+    implementation_fingerprint: "sha256:88caf829ce67dcba3c1d40e0ab7b03bfa66ce87dcfcdac05fefd1fd752f2dbba"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:0e9f01b547412f52302ffafa0c2c34a02ce558f29f7ca715b028d17798fa1f7d"
   - formula_id: "FORM-005"
     model_id: "MOD-001"
     assumption_ids: ["ASM-004", "ASM-006"]
@@ -121,6 +145,12 @@ formulas:
     code_refs: ["Serenity-Alipay/app/core/scoring.py:148"]
     test_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_risk_gate_regression.py:8"]
     evidence_refs: ["Serenity-Alipay/模型参数文件:9"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/core/scoring.py::_is_conservative", "Serenity-Alipay/app/core/scoring.py::score_candidate"]
+    implementation_fingerprint: "sha256:1fdf4d482080b8bad915dd6694f9bbd3fee10622c5d855827a16a63fa55afd39"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:91ac37e9a68285da982e51332a979e7767d5b40ebe7e05c38e8a138c9084f743"
   - formula_id: "FORM-006"
     model_id: "MOD-001"
     assumption_ids: ["ASM-004"]
@@ -145,6 +175,12 @@ formulas:
     code_refs: ["Serenity-Alipay/app/core/scoring.py:54", "Serenity-Alipay/app/core/scoring.py:117"]
     test_refs: ["Serenity-Alipay/tests/test_scoring.py:70", "Serenity-Alipay/tests/test_metrics.py:22"]
     evidence_refs: ["Serenity-Alipay/README.md:13"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/core/scoring.py::_benchmark_win_count", "Serenity-Alipay/app/core/scoring.py::score_candidate"]
+    implementation_fingerprint: "sha256:a62302cc272d5252a58db4a8d7fec088e0738fe81ff1cbb8b7fe37227c0ac48c"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:d730d7036a0be039b704ecf06ad561e89bd3b5f8896760c6d78a945b90542272"
   - formula_id: "FORM-007"
     model_id: "MOD-002"
     assumption_ids: ["ASM-002", "ASM-006"]
@@ -169,6 +205,12 @@ formulas:
     code_refs: ["Serenity-Alipay/app/core/pipeline.py:182", "Serenity-Alipay/app/core/pipeline.py:191"]
     test_refs: ["Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62", "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:100"]
     evidence_refs: ["Serenity-Alipay/README.md:14"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/core/pipeline.py::_serenity_priority", "Serenity-Alipay/app/core/pipeline.py::_ranked_recommendation_rows"]
+    implementation_fingerprint: "sha256:b6ed290c83d087e5cd88521b5ec8afc0f2a875d160d033968f049fce32401f24"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:e1bb1de5d2acc885bc2a9f2a91000ab87688a764880f7d477029bad7bc90a4ba"
   - formula_id: "FORM-008"
     model_id: "MOD-002"
     assumption_ids: ["ASM-002"]
@@ -193,6 +235,17 @@ formulas:
     code_refs: ["Serenity-Alipay/app/core/pipeline.py:186", "Serenity-Alipay/app/core/pipeline.py:204"]
     test_refs: ["Serenity-Alipay/tests/test_pipeline_serenity_priority.py:85"]
     evidence_refs: ["Serenity-Alipay/模型参数文件:17"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/core/pipeline.py::_confidence_multiplier", "Serenity-Alipay/app/core/pipeline.py::_target_weights"]
+    implementation_fingerprint: "sha256:620e43f111069f20d671e042292af0a70cae7b6e8d2ec45cbdb9e9f96d8b8de7"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:df6c7c21b1acc0b7efa18ad137e2b5eb7a8c04ec54b62e1af2664db496313109"
+    post_renormalization_cap_holds: "false"
+    observed_max_weight_by_candidate_count: "1=1|2=0.5|3=0.344914753856|4=0.308813586561|5=0.286050210004"
+    existing_target_weight_test_candidate_counts: "5"
+    missing_target_weight_test_candidate_counts: "1|2|3|4"
+    human_review_required_reason: "Final renormalization can raise capped weights above 0.30 for 1, 2, 3, and 4 candidate scenarios; current tests cover only the 5-candidate target-weight scenario."
   - formula_id: "FORM-009"
     model_id: "MOD-002"
     assumption_ids: ["ASM-006"]
@@ -217,6 +270,12 @@ formulas:
     code_refs: ["Serenity-Alipay/app/core/pipeline.py:220", "Serenity-Alipay/app/core/pipeline.py:536"]
     test_refs: ["Serenity-Alipay/tests/test_discipline.py:5", "Serenity-Alipay/tests/test_integration.py:34"]
     evidence_refs: ["Serenity-Alipay/README.md:14"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/core/pipeline.py::_action_with_deviation"]
+    implementation_fingerprint: "sha256:5c96660b4aeae5df6f24b294652560b3c5bb3dc5ad7b4ca62e9768386170473e"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:46c2e96bf7129ba3fc1b1b97c89b0bd243235d84e4d2fb7254df04153d738a59"
   - formula_id: "FORM-010"
     model_id: "MOD-004"
     assumption_ids: ["ASM-006"]
@@ -241,6 +300,12 @@ formulas:
     code_refs: ["Serenity-Alipay/app/core/comparison.py:13", "Serenity-Alipay/app/core/comparison.py:128", "Serenity-Alipay/app/core/comparison.py:201"]
     test_refs: ["Serenity-Alipay/tests/test_comparison.py:44", "Serenity-Alipay/tests/test_comparison.py:58"]
     evidence_refs: ["Serenity-Alipay/HANDOFF.md:15"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/core/comparison.py::_top5", "Serenity-Alipay/app/core/comparison.py::_base_run", "Serenity-Alipay/app/core/comparison.py::_score_sigma", "Serenity-Alipay/app/core/comparison.py::persist_comparisons"]
+    implementation_fingerprint: "sha256:0de46aabbbc1c81067bf3c3b47ea04502a16de4e4524bf32d0a5e43c29073297"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:74a41c4d3a083111ed392884c100845d3fddcf2aa9a53f2dfdb0be4c34d6452b"
   - formula_id: "FORM-011"
     model_id: "MOD-004"
     assumption_ids: ["ASM-006"]
@@ -261,6 +326,12 @@ formulas:
     code_refs: ["Serenity-Alipay/app/core/discipline.py:15", "Serenity-Alipay/app/core/discipline.py:32"]
     test_refs: ["Serenity-Alipay/tests/test_discipline.py:5", "Serenity-Alipay/tests/test_discipline.py:21"]
     evidence_refs: ["Serenity-Alipay/HANDOFF.md:15"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/core/discipline.py::deviation_events", "Serenity-Alipay/app/core/discipline.py::single_position_overexpansion_events"]
+    implementation_fingerprint: "sha256:61c74dd066c17bb4186b6a422e26177e04f8c3f5bcbcb66fcb706f82141ff63e"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:e8a3da3a72c6928be53985580a111c95ee33ee4d99c3ecba9fea583116a14764"
   - formula_id: "FORM-012"
     model_id: "MOD-005"
     assumption_ids: ["ASM-005", "ASM-006"]
@@ -285,3 +356,9 @@ formulas:
     code_refs: ["Serenity-Alipay/app/scheduler.py:8", "Serenity-Alipay/app/scheduler.py:76", "Serenity-Alipay/app/core/scheduler_runner.py:28", "Serenity-Alipay/app/core/automation_tick.py:26"]
     test_refs: ["Serenity-Alipay/tests/test_timezones.py:6", "Serenity-Alipay/tests/test_scheduler.py:12", "Serenity-Alipay/tests/test_automation_tick.py:8"]
     evidence_refs: ["Serenity-Alipay/README.md:300"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["Serenity-Alipay/app/scheduler.py::SCHEDULE_SLOTS", "Serenity-Alipay/app/scheduler.py::is_business_day", "Serenity-Alipay/app/scheduler.py::due_slot_at", "Serenity-Alipay/app/core/scheduler_runner.py::scheduler_tick", "Serenity-Alipay/app/core/automation_tick.py::automation_tick"]
+    implementation_fingerprint: "sha256:4515233bae8943ec273d7dfdfacacb2688ba56a13f4017270bab8ada5559132a"
+    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
+    verified_at: "2026-06-21T08:57:39Z"
+    evidence_hash: "sha256:31a50dffa889affa812af5822fb5a0a16493915e27edeccf63bac6878332f1c9"

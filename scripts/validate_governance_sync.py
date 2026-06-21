@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any
 
 import validate_project_governance as structural
+import validate_semantic_extractors
 
 
 sys.dont_write_bytecode = True
@@ -494,6 +495,8 @@ def validate_semantic_project(validation: SyncValidation, project: dict[str, Any
         "confirmed_iterations_declared": None,
         "confirmed_iterations_actual": None,
         "unbound_event_count": 0,
+        "semantic_parameters_checked": 0,
+        "semantic_formulas_checked": 0,
     }
     matrix = parsed.get("version_matrix") or {}
     if isinstance(matrix, dict):
@@ -537,6 +540,14 @@ def validate_semantic_project(validation: SyncValidation, project: dict[str, Any
                 candidate = ref_to_path(ref, project_path)
                 if candidate is not None and not candidate.exists():
                     validation.error(scope, f"{identifier}: {field_name} points to missing path {ref}")
+    if bool(project.get("semantic_extractors")):
+        extractor_issues, extractor_summary = validate_semantic_extractors.validate_project_semantics(project_path, scope)
+        summary.update(extractor_summary)
+        for issue in extractor_issues:
+            if issue.level == "ERROR":
+                validation.error(issue.scope, issue.message)
+            else:
+                validation.warn(issue.scope, issue.message)
     return summary
 
 

@@ -40,6 +40,18 @@ def load_sync_module():
     return module
 
 
+def load_semantic_module():
+    scripts_dir = str(ROOT / "scripts")
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    spec = importlib.util.spec_from_file_location("validate_semantic_extractors", ROOT / "scripts" / "validate_semantic_extractors.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
 def load_dashboard_module():
     scripts_dir = str(ROOT / "scripts")
     if scripts_dir not in sys.path:
@@ -90,6 +102,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             ".github/workflows/project-governance.yml",
             "scripts/validate_project_governance.py",
             "scripts/validate_governance_sync.py",
+            "scripts/validate_semantic_extractors.py",
             "scripts/validate_ci_attestation.py",
             "scripts/governance_setup_doctor.py",
             "governance/schemas/ci_attestation.schema.json",
@@ -437,7 +450,86 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             with patch.object(sync, "ROOT", tmp_path), patch.object(sync, "RUN_MANIFESTS_DIR", manifests), patch.object(sync, "CI_ATTESTATIONS_DIR", attestations):
                 validation = sync.SyncValidation()
                 sync.validate_pending_ci_bindings(validation)
-        self.assertFalse(validation.errors)
+                self.assertFalse(validation.errors)
+
+    def test_review6_serenity_semantic_extractors_pass_current_registry(self) -> None:
+        semantic = load_semantic_module()
+        issues, summary = semantic.validate_project_semantics(ROOT / "Serenity-Alipay", "Serenity-Alipay")
+        self.assertFalse([issue for issue in issues if issue.level == "ERROR"], issues)
+        self.assertEqual(summary["semantic_parameters_checked"], 49)
+        self.assertEqual(summary["semantic_formulas_checked"], 12)
+
+    def test_review6_parameter_active_value_mismatch_fails(self) -> None:
+        semantic = load_semantic_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project = tmp_path / "P"
+            docs = project / "docs" / "governance"
+            docs.mkdir(parents=True)
+            (project / "impl.py").write_text(
+                "from dataclasses import dataclass\n\n@dataclass(frozen=True)\nclass Settings:\n    threshold: float = 0.45\n",
+                encoding="utf-8",
+            )
+            selector = "python_ast_attr:P/impl.py::Settings.threshold"
+            expected_hash = semantic.parameter_evidence_hash("PARAM-X", selector, 0.45)
+            (docs / "parameter_registry.csv").write_text(
+                "\n".join(
+                    [
+                        "parameter_id,model_id,formula_id,symbol,name,category,data_type,unit,default_value,initial_or_prior_value,active_value,weight,weight_group,weight_group_target,weight_group_tolerance,min_value,max_value,formula_or_transform,source_or_rationale,calibration_method,sensitivity,code_ref,config_ref,test_ref,status,fact_level,unknown_task_ids,parameter_version,last_updated,source_selector,extracted_value,last_verified_commit,verified_at,evidence_hash",
+                        f"PARAM-X,MOD-X,FORM-X,THRESHOLD,Threshold,threshold,float,ratio,0.45,0.45,0.40,NOT_APPLICABLE,,,,0,1,identity,test,test,medium,P/impl.py,P/impl.py,P/test_impl.py,active,EXTRACTED,,v1,2026-06-21,{selector},0.45,HEAD,2026-06-21T00:00:00Z,{expected_hash}",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(semantic, "ROOT", tmp_path), patch.object(semantic, "git_ref_exists", return_value=True):
+                issues, _ = semantic.validate_project_semantics(project, "P")
+        self.assertTrue(any("active_value='0.40'" in issue.message for issue in issues), issues)
+
+    def test_review6_formula_implementation_fingerprint_mismatch_fails(self) -> None:
+        semantic = load_semantic_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project = tmp_path / "P"
+            docs = project / "docs" / "governance"
+            docs.mkdir(parents=True)
+            (project / "impl.py").write_text("def rule(value):\n    return value + 1\n", encoding="utf-8")
+            (docs / "parameter_registry.csv").write_text(
+                "parameter_id,model_id,formula_id,symbol,name,category,data_type,unit,default_value,initial_or_prior_value,active_value,weight,weight_group,weight_group_target,weight_group_tolerance,min_value,max_value,formula_or_transform,source_or_rationale,calibration_method,sensitivity,code_ref,config_ref,test_ref,status,fact_level,unknown_task_ids,parameter_version,last_updated\n",
+                encoding="utf-8",
+            )
+            (docs / "formula_registry.yaml").write_text(
+                "\n".join(
+                    [
+                        'governance_spec_version: "1.0.0"',
+                        'project_id: "P"',
+                        "formulas:",
+                        '  - formula_id: "FORM-X"',
+                        '    model_id: "MOD-X"',
+                        "    assumption_ids: []",
+                        '    status: "active"',
+                        '    expression: "return value + 1"',
+                        "    variables: []",
+                        '    constraints: "none"',
+                        '    missing_policy: "none"',
+                        '    output_range: "number"',
+                        '    code_refs: ["P/impl.py:1"]',
+                        "    test_refs: []",
+                        "    evidence_refs: []",
+                        '    semantic_status: "MACHINE_VERIFIED"',
+                        '    implementation_refs: ["P/impl.py::rule"]',
+                        '    implementation_fingerprint: "sha256:bad"',
+                        '    last_verified_commit: "HEAD"',
+                        '    verified_at: "2026-06-21T00:00:00Z"',
+                        '    evidence_hash: "sha256:bad"',
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(semantic, "ROOT", tmp_path), patch.object(semantic, "git_ref_exists", return_value=True):
+                issues, _ = semantic.validate_project_semantics(project, "P")
+        self.assertTrue(any("implementation_fingerprint" in issue.message for issue in issues), issues)
 
     def test_review5_dashboard_generation_is_deterministic(self) -> None:
         result = run_validator("--all")
