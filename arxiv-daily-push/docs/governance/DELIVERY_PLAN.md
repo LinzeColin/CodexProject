@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 13
-- acceptance_count: 13
+- task_count: 14
+- acceptance_count: 14
 
 ## Delivery Tasks
 
@@ -39,6 +39,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-ACCEPTANCE-HANDOFF-001 | E | completed | ADP-ACC-PHASE11-ACCEPTANCE-HANDOFF | 60 tests OK; handoff readiness pass; production acceptance blocked until live evidence exists | `docs/phase_records/PHASE_11.md` |
 | ADP-PHASE11-EVIDENCE-REF-HARDENING-002 | E | completed | ADP-ACC-PHASE11-EVIDENCE-REF-HARDENING | 61 tests OK; production pass requires evidence refs | `docs/phase_records/PHASE_11_EVIDENCE_REF_HARDENING.md` |
 | ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-003 | E | completed | ADP-ACC-PHASE11-TRIAL-EVIDENCE-VALIDATOR | 67 tests OK; 33 root tests OK; validator 0 errors; production pass requires validated trial report | `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md` |
+| ADP-PHASE11-PRODUCTION-PREFLIGHT-004 | E | completed | ADP-ACC-PHASE11-PRODUCTION-PREFLIGHT | 71 tests OK; 34 root tests OK; current environment preflight blocked as expected | `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md` |
 
 ## Release Gates
 
@@ -58,6 +59,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 final acceptance handoff | handoff readiness package, no unsupported 30-day/live-operation claim | pass |
 | Phase 11 evidence-ref hardening | every production pass requirement needs non-empty evidence ref | pass |
 | Phase 11 trial evidence validator | 30-day evidence package validates daily uniqueness, traceability, scheduler, Release, SMTP, resource, weekly/monthly replay, and recovery evidence | pass |
+| Phase 11 production preflight | runtime commands, secret env keys, disk, memory, Git artifacts, and cache/staging checks | pass for gate; current environment blocked as expected |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "arXiv Daily Push Production Preflight",
+  "type": "object",
+  "required": [
+    "preflight_id",
+    "validator_id",
+    "project_id",
+    "generated_at",
+    "status",
+    "production_run_allowed",
+    "gates",
+    "blocking_reasons",
+    "secret_policy"
+  ],
+  "properties": {
+    "preflight_id": {
+      "type": "string"
+    },
+    "validator_id": {
+      "const": "adp-production-preflight-v1"
+    },
+    "project_id": {
+      "const": "arxiv-daily-push"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "status": {
+      "enum": ["pass", "blocked"]
+    },
+    "production_run_allowed": {
+      "type": "boolean"
+    },
+    "gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["gate_id", "passed", "blocking_reasons"]
+      }
+    },
+    "blocking_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "secret_policy": {
+      "type": "object",
+      "required": ["secret_values_logged", "secret_names_only", "codex_auth_read"],
+      "properties": {
+        "secret_values_logged": {
+          "const": false
+        },
+        "secret_names_only": {
+          "const": true
+        },
+        "codex_auth_read": {
+          "const": false
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}
