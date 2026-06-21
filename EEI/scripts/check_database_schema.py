@@ -1142,7 +1142,7 @@ def main() -> int:
                   count(*) AS total,
                   count(*) FILTER (WHERE publication_status = 'ready_for_review') AS ready,
                   count(*) FILTER (WHERE source_threshold_met = false) AS below_threshold,
-                  count(*) FILTER (WHERE review_status = 'ready_for_review') AS ready_review,
+                  count(*) FILTER (WHERE review_status = 'machine_verified') AS verified_review,
                   count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array') AS counters
                 FROM relationship_fact_candidates
                 WHERE parser_version = %s
@@ -1201,7 +1201,7 @@ def main() -> int:
                     "Two-source fact candidates must satisfy the source threshold"
                 )
             if int(fact_candidate_row[3]) != 2:
-                raise RuntimeError("Fact candidates must preserve ready review status")
+                raise RuntimeError("Fact candidates must preserve database review status")
             if int(fact_candidate_row[4]) != 2:
                 raise RuntimeError("Fact candidates must preserve counter_evidence arrays")
             if fact_evidence_count != 4:

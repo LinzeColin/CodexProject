@@ -213,7 +213,7 @@ function createExploreGraphResponse(payload: Record<string, unknown>) {
             relationship_type: "wafer_foundry_for",
             relationship_family: "supply_chain_operations",
             publication_status: "ready_for_review",
-            review_status: "ready_for_review",
+            review_status: "machine_verified",
             independent_source_count: 2,
             source_threshold_met: true
           }

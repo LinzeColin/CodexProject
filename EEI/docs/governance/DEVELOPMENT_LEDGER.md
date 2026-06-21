@@ -151,6 +151,30 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the status mapper and rerun PostgreSQL integration.
 - Next step: run local validation, commit, push and verify CI Step 10-12.
 
+### `ITER-20260621-005`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `501f296`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`
+- Goal: repair the remaining A202 PostgreSQL integration failure by aligning relationship fact candidate review-state semantics with the production database constraint.
+- Assumptions: `ready_for_review` is a publication workflow state; database `review_status` records evidence/review verification state and must remain in the enum-like set enforced by migrations.
+- Files read: failed GitHub Actions step summary, A202 fixture data, curated ingestion loader, migration constraints, integration tests, schema checker and E2E state fixture.
+- Files changed: `EEI/data/golden_vertical_fact_candidates.json`, `EEI/scripts/load_curated_ingestion_anchors.py`, `EEI/tests/integration/test_database_migrations.py`, `EEI/scripts/check_database_schema.py`, `EEI/tests/e2e/state-contract.spec.ts`, MVP development record and this ledger.
+- Model changes: no scoring model change.
+- Parameter changes: no parameter value change.
+- Commands run: remote run `27891135295` showed Step 10 failure; focused ruff, Task Pack validation, V5 readiness sync, brand-clearance validation, JSON parse, unit tests, web typegen, TypeScript, clean-room/release artifact regeneration/validation and checksum validation passed after patch.
+- Test results: local non-browser/non-PostgreSQL validation PASS; local `make verify` remains blocked by macOS Chromium MachPort sandbox at browser benchmark; remote PostgreSQL CI rerun required.
+- Successes: removed the contradiction between `publication_status=ready_for_review` and database `review_status` check constraints without weakening the human publication gate.
+- Failures: remote PostgreSQL CI logs remain unavailable through the unauthenticated logs endpoint.
+- Decisions: keep A202 `IN_PROGRESS`; do not publish candidate relationships to graph edges from this fix.
+- Remaining risks: exact remote traceback is unavailable; local Docker/PostgreSQL is unavailable; full proof depends on rerunning GitHub Actions Step 10-12.
+- Rollback: revert the A202 review-status normalization patch and rerun PostgreSQL integration.
+- Next step: run local validation, commit, push and verify CI Step 10-12.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
