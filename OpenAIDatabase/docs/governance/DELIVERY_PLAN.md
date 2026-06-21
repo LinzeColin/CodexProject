@@ -1,6 +1,6 @@
 # OpenAIDatabase Delivery Plan
 
-task_count: 8
+task_count: 9
 
 ## Phase A - Discovery and Baseline
 
@@ -115,6 +115,24 @@ task_count: 8
 - rollback: keep proposal-only frontend contract.
 - target version: UNKNOWN (TASK-OAI-B-001)
 - completed version:
+
+### TASK-OAI-C-002
+
+- task_id: TASK-OAI-C-002
+- phase: C
+- objective: Add private three-layer context source, ChatGPT/Codex personalization exports, Codex config, on-demand resource routing, evaluation harness, and four run-log categories.
+- scope: `config/context_sources`, `config/codex`, `config/evaluation`, `docs/PERSONAL_CONTEXT_ARCHITECTURE.md`, `context/`, `data/derived/personalization`, `data/run_logs`, scripts, focused tests, governance registries.
+- non_scope: raw exports, plaintext secrets, business runtime behavior outside personalization sync, other projects.
+- status: completed
+- dependencies: TASK-OAI-A-004
+- required files: `config/context_sources/three_layer_context.json`, `config/context_sources/resource_routes.json`, `config/codex/config.template.toml`, `config/codex/project.config.toml`, `config/evaluation/personalization_harness.json`, `data/derived/personalization/*`, `data/run_logs/*`
+- acceptance_ids: ACC-OAI-C-002
+- test commands: `python3 scripts/build_personalization_exports.py --database-dir .`; `python3 scripts/route_agent_resources.py --database-dir . --intent startup`; `python3 scripts/evaluate_personalization_context.py --database-dir .`; `python3 -m unittest tests.test_personalization_architecture -q`
+- evidence: personalization export PASS, startup route PASS, evaluation harness PASS with no failures, focused unittest added.
+- risk: generated export is redacted derived context but pattern scan is not a full secret scanner.
+- rollback: remove `TASK-OAI-C-002` files and revert VERSION, CHANGELOG, and governance entries to 0.1.0.
+- target version: 0.2.0
+- completed version: 0.2.0
 
 ## Phase D - Verification and Hardening
 

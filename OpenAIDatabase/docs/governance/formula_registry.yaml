@@ -249,3 +249,31 @@ formulas:
     code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:1227", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2308", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2328", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2374", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:4477"]
     test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25", "OpenAIDatabase/tests/test_memory_atlas_release_audit.py:24"]
     evidence_refs: ["OpenAIDatabase/README.md:121"]
+  - formula_id: "FORM-011"
+    model_id: "MOD-011"
+    assumption_ids: ["ASM-001", "ASM-004", "ASM-007"]
+    status: "active"
+    expression: "build_export_payload loads agent_context_pack plus three_layer_context and resource_routes. It copies layer metadata, sync_required_targets, run_log_categories, startup/chatgpt/codex/project/taste routes, profile, memory, preferences, meta_data, behavior, data_sources, and safety flags. render_chatgpt writes Core Profile, Preferences And Taste, History And Patterns, Project And Decision Context, Future Agent Sync Rules, and Meta Rules. render_codex writes Startup Read Order, Codex Route, Required Sync Targets, Four Run Log Categories, and Agent Rules. route_resources selects exactly one route by intent or fails with valid_intents. evaluate checks required files, required export sections, sync targets, run log categories, and forbidden plaintext patterns. sync_codex_memory_data --build-atlas now rebuilds agent context and personalization exports after Codex-derived data refresh."
+    variables:
+      - name: "sync_required_targets"
+        data_type: "list[string]"
+        unit: "semantic update target"
+        input_domain: "profile/preference/taste/history/pattern"
+      - name: "intent"
+        data_type: "string"
+        unit: "routing key"
+        input_domain: "startup/chatgpt_personalization/codex_personalization/project_history/taste_profile/evaluation"
+      - name: "run_log_categories"
+        data_type: "list[string]"
+        unit: "log category"
+        input_domain: "sync_runs/export_runs/evaluation_runs/agent_runs"
+      - name: "required_export_sections"
+        data_type: "list[string]"
+        unit: "Markdown section title"
+        input_domain: "evaluation harness required sections"
+    constraints: ["Exports are redacted derived context only.", "Future agents must update mapped source files before regenerating exports.", "Evaluation fails when required files or sections are missing.", "Run logs must be JSONL and redacted."]
+    missing_policy: "Missing optional source data yields empty sections; missing route intent returns FAIL with valid intents; missing required files or sections fails evaluation."
+    output_range: "PASS/FAIL JSON; Markdown exports; machine export JSON; JSONL log rows."
+    code_refs: ["OpenAIDatabase/scripts/build_personalization_exports.py:1", "OpenAIDatabase/scripts/route_agent_resources.py:1", "OpenAIDatabase/scripts/evaluate_personalization_context.py:1", "OpenAIDatabase/scripts/sync_codex_memory_data.py:407"]
+    test_refs: ["OpenAIDatabase/tests/test_personalization_architecture.py:1"]
+    evidence_refs: ["OpenAIDatabase/docs/PERSONAL_CONTEXT_ARCHITECTURE.md:1", "OpenAIDatabase/config/evaluation/personalization_harness.json:1"]

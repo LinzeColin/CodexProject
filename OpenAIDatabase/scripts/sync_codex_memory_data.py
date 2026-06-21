@@ -30,6 +30,7 @@ DAILY_OUTPUT = Path("data/processed/codex/codex_daily_activity.jsonl")
 SNAPSHOT_OUTPUT = Path("data/processed/codex/codex_activity_snapshot.json")
 RECOMMENDATION_OUTPUT = Path("data/derived/codex/codex_agent_recommendations.json")
 REPORT_OUTPUT = Path("data/derived/codex/codex_behavior_report.md")
+SYNC_LOG_DIR = Path("data/run_logs/sync_runs")
 
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_\-]{16,}"),
@@ -566,12 +567,36 @@ def run_command(args: list[str], cwd: Path) -> None:
     subprocess.run(args, cwd=str(cwd), check=True)
 
 
+def append_sync_log(database_dir: Path, result: dict[str, Any]) -> Path:
+    generated_at = str(result.get("generated_at") or datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z"))
+    log_dir = database_dir / SYNC_LOG_DIR
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / f"{generated_at[:10]}.jsonl"
+    row = {
+        "timestamp": generated_at,
+        "category": "sync_runs",
+        "status": result.get("status", "UNKNOWN"),
+        "task": "sync_codex_memory_data",
+        "updated_targets": ["profile", "preference", "history", "pattern"],
+        "source_files": ["local Codex session logs redacted in memory only"],
+        "output_files": list(result.get("outputs", {}).values()),
+        "tests": ["tests/test_codex_memory_sync.py", "tests/test_agent_context_pack.py", "tests/test_personalization_architecture.py"],
+        "risks": ["raw transcripts stay local and are not committed"],
+        "git_commit": "PENDING",
+    }
+    with log_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+    return log_path
+
+
 def git_commit_and_push(repo_root: Path, push: bool) -> dict[str, Any]:
     targets = [
         "data/processed/codex",
         "data/derived/codex",
         "data/derived/agent_context",
         "data/derived/visualization/memory_atlas.json",
+        "data/derived/personalization",
+        "data/run_logs",
     ]
     run_command(["git", "add", *targets], repo_root)
     diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=str(repo_root))
@@ -627,13 +652,23 @@ def sync_codex_data(
             ],
             database_dir,
         )
+        run_command(
+            [
+                sys.executable,
+                "scripts/build_personalization_exports.py",
+                "--database-dir",
+                str(database_dir),
+            ],
+            database_dir,
+        )
 
     git_result = {"committed": False, "pushed": False, "reason": "not_requested"}
     if commit:
         git_result = git_commit_and_push(database_dir, push)
 
-    return {
+    result = {
         "status": "PASS",
+        "generated_at": snapshot["generated_at"],
         "database_dir": str(database_dir),
         "codex_home": str(codex_home),
         "session_count": len(session_rows),
@@ -649,9 +684,13 @@ def sync_codex_data(
             "recommendations": str(RECOMMENDATION_OUTPUT),
             "report": str(REPORT_OUTPUT),
             "agent_context": "data/derived/agent_context/agent_context_pack.json",
+            "personalization": "data/derived/personalization/personalization_export.json",
         },
         "git": git_result,
     }
+    log_path = append_sync_log(database_dir, result)
+    result["outputs"]["sync_log"] = str(log_path.relative_to(database_dir))
+    return result
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

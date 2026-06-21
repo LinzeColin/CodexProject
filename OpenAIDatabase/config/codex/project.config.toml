@@ -1,0 +1,27 @@
+[project]
+schema_version = "openai_database.codex_project_config.v1"
+project_id = "OpenAIDatabase"
+canonical_github_path = "LinzeColin/CodexProject/OpenAIDatabase"
+default_intent = "startup"
+agents_file = "AGENTS.md"
+architecture_doc = "docs/PERSONAL_CONTEXT_ARCHITECTURE.md"
+
+[personalization]
+three_layer_context = "config/context_sources/three_layer_context.json"
+resource_routes = "config/context_sources/resource_routes.json"
+chatgpt_export = "data/derived/personalization/chatgpt_personalization.md"
+codex_export = "data/derived/personalization/codex_personalization.md"
+machine_export = "data/derived/personalization/personalization_export.json"
+agent_context_pack = "data/derived/agent_context/agent_context_pack.json"
+
+[logs]
+sync_runs = "data/run_logs/sync_runs"
+export_runs = "data/run_logs/export_runs"
+evaluation_runs = "data/run_logs/evaluation_runs"
+agent_runs = "data/run_logs/agent_runs"
+
+[rules]
+future_agent_sync_required = true
+required_update_targets = ["profile", "preference", "taste", "history", "pattern"]
+raw_private_data_in_git = false
+plaintext_secrets_in_git = false

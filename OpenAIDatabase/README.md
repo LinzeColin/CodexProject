@@ -24,6 +24,25 @@ Legacy files `功能清单`, `开发记录`, and `模型参数文件` are compat
 indexes only. Do not add new editable model, parameter, task, acceptance, or
 version facts there.
 
+## Personal Context Architecture
+
+OpenAIDatabase exposes a structured agent-personalization layer:
+
+- Private three-layer context source: `config/context_sources/three_layer_context.json`
+- On-demand resource routing: `config/context_sources/resource_routes.json`
+- Architecture guide: `docs/PERSONAL_CONTEXT_ARCHITECTURE.md`
+- ChatGPT/Codex exports: `data/derived/personalization/`
+- Codex user config template: `config/codex/config.template.toml`
+- Project config: `config/codex/project.config.toml`
+- Evaluation harness: `config/evaluation/personalization_harness.json`
+- Four run-log categories: `data/run_logs/sync_runs`, `export_runs`, `evaluation_runs`, and `agent_runs`
+
+Future agents that update or sync profile, preference, taste, history, or
+pattern information must update the mapped source files, regenerate
+`data/derived/agent_context/*` and `data/derived/personalization/*`, run the
+evaluation harness, and append a redacted run log. Raw exports, plaintext
+secrets, cookies, browser state, and full transcripts must not be committed.
+
 It contains the `openai-memory-analysis` skill and a minimal vault layout. It
 ingests manually downloaded OpenAI export ZIPs, generates redacted pending
 memory candidates, creates human-readable weekly/monthly memory packs, and
@@ -325,6 +344,9 @@ python3 scripts/build_memory_atlas_data.py \
   --output data/derived/visualization/memory_atlas.json
 python3 scripts/build_agent_context_pack.py --database-dir .
 python3 scripts/sync_codex_memory_data.py --database-dir . --build-atlas
+python3 scripts/build_personalization_exports.py --database-dir .
+python3 scripts/route_agent_resources.py --database-dir . --intent startup
+python3 scripts/evaluate_personalization_context.py --database-dir .
 python3 scripts/install_codex_weekly_sync.py --load
 
 npm ci --prefix apps/memory-atlas
