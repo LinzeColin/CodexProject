@@ -4,10 +4,15 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
+
+MAX_ATTEMPTS = 3
+STATE_FILE = Path(tempfile.gettempdir()) / "codexproject-governance-stop-hook-state.json"
 
 
 def emit(payload: dict[str, Any]) -> None:
@@ -35,14 +40,54 @@ def git_root(cwd: Path) -> Path | None:
     return Path(result.stdout.strip())
 
 
+def repo_state_key(root: Path) -> str:
+    commands = (
+        ["git", "rev-parse", "HEAD"],
+        ["git", "-c", "core.quotePath=false", "status", "--porcelain=v1"],
+    )
+    digest = hashlib.sha256(str(root).encode("utf-8"))
+    for command in commands:
+        result = subprocess.run(
+            command,
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        digest.update(result.stdout.encode("utf-8", errors="replace"))
+    return digest.hexdigest()
+
+
+def read_state() -> dict[str, int]:
+    try:
+        data = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+    return {str(key): int(value) for key, value in data.items() if isinstance(value, int)}
+
+
+def write_state(state: dict[str, int]) -> None:
+    STATE_FILE.write_text(json.dumps(state, sort_keys=True), encoding="utf-8")
+
+
+def record_attempt(root: Path) -> int:
+    state = read_state()
+    key = repo_state_key(root)
+    state[key] = state.get(key, 0) + 1
+    write_state(state)
+    return state[key]
+
+
+def clear_attempt(root: Path) -> None:
+    state = read_state()
+    key = repo_state_key(root)
+    if key in state:
+        del state[key]
+        write_state(state)
+
+
 def main() -> int:
     payload = read_payload()
-
-    # Avoid infinite repair loops. A second Stop pass should leave final hard
-    # enforcement to GitHub CI and the explicit validator command.
-    if payload.get("stop_hook_active"):
-        emit({"continue": True})
-        return 0
 
     cwd = Path(str(payload.get("cwd") or ".")).resolve()
     root = git_root(cwd)
@@ -80,15 +125,25 @@ def main() -> int:
     )
 
     if result.returncode == 0:
+        clear_attempt(root)
         emit({"continue": True})
         return 0
 
+    attempt = record_attempt(root)
     output = (result.stdout + "\n" + result.stderr).strip()[-6000:]
+    prefix = (
+        f"Project governance validation failed on Stop Hook attempt {attempt}/{MAX_ATTEMPTS}. "
+    )
+    if payload.get("stop_hook_active"):
+        prefix += "This is a recursive Stop pass, but governance is still rechecked. "
+    if attempt >= MAX_ATTEMPTS:
+        prefix += "Maximum automatic repair attempts reached; run the validator manually and continue only after it passes. "
     emit(
         {
             "decision": "block",
             "reason": (
-                "Project governance validation failed. Fix the focused "
+                prefix
+                + "Fix the focused "
                 "findings, rerun the validator, and do not mark the task "
                 "completed.\n\n" + output
             ),

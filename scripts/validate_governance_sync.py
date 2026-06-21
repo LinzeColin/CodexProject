@@ -19,7 +19,7 @@ import re
 import subprocess
 import sys
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +30,9 @@ sys.dont_write_bytecode = True
 
 ROOT = structural.ROOT
 PROJECTS_FILE = structural.PROJECTS_FILE
+RUN_MANIFESTS_DIR = ROOT / "governance" / "run_manifests"
+CI_ATTESTATIONS_DIR = ROOT / "governance" / "ci_attestations"
+PENDING_CI_MAX_AGE = timedelta(hours=24)
 ROOT_GOVERNANCE_PREFIXES = (
     ".agents/",
     ".codex/",
@@ -169,11 +172,31 @@ def tree_hash(paths: list[str] | None = None) -> str:
     return git_output(["rev-parse", "HEAD^{tree}"]).strip()
 
 
-def merge_base() -> str | None:
+ZERO_SHA = "0" * 40
+
+
+def explicit_base_ref(value: str | None = None) -> str | None:
+    candidate = value or os.environ.get("GOVERNANCE_BASE_REF") or os.environ.get("GOVERNANCE_BASE_SHA")
+    if not candidate:
+        return None
+    candidate = candidate.strip()
+    if not candidate or candidate == ZERO_SHA:
+        return None
+    return candidate
+
+
+def git_ref_exists(ref: str) -> bool:
+    return bool(git_output(["rev-parse", "--verify", "--quiet", f"{ref}^{{commit}}"]).strip())
+
+
+def merge_base(base_ref: str | None = None) -> str | None:
+    explicit = explicit_base_ref(base_ref)
+    if explicit:
+        return explicit if git_ref_exists(explicit) else None
     candidates = []
-    base_ref = os.environ.get("GITHUB_BASE_REF")
-    if base_ref:
-        candidates.append(f"origin/{base_ref}")
+    github_base_ref = os.environ.get("GITHUB_BASE_REF")
+    if github_base_ref:
+        candidates.append(f"origin/{github_base_ref}")
     candidates.append("origin/main")
     for candidate in candidates:
         value = git_output(["merge-base", candidate, "HEAD"]).strip()
@@ -528,13 +551,61 @@ def root_sync_requirements(validation: SyncValidation, root_changes: list[str], 
     if not root_changes:
         return
     required_markers = {
-        "GOVERNANCE_DASHBOARD.md": any(path == "GOVERNANCE_DASHBOARD.md" for path in changed),
+        "GOVERNANCE_DASHBOARD.md": (ROOT / "GOVERNANCE_DASHBOARD.md").is_file(),
         "run_manifest": any(path.startswith("governance/run_manifests/") and path.endswith(".json") for path in changed),
         "governance_tests": any(path.startswith("tests/governance/") for path in changed),
     }
     for label, present in required_markers.items():
         if not present:
             validation.error("root", f"Root governance change requires updated {label}")
+
+
+def load_json_object(path: Path) -> dict[str, Any] | None:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def attested_manifest_ids() -> set[str]:
+    ids: set[str] = set()
+    for path in sorted(CI_ATTESTATIONS_DIR.glob("*.json")):
+        data = load_json_object(path)
+        if not data:
+            continue
+        bound = str(data.get("binds_run_manifest") or "").strip()
+        conclusion = str(data.get("conclusion") or "").strip()
+        if bound and conclusion == "success":
+            ids.add(bound)
+    return ids
+
+
+def validate_pending_ci_bindings(validation: SyncValidation) -> None:
+    attested = attested_manifest_ids()
+    for path in sorted(RUN_MANIFESTS_DIR.glob("*.json")):
+        data = load_json_object(path)
+        if not data:
+            validation.error("root", f"Cannot parse run manifest: {path.relative_to(ROOT)}")
+            continue
+        run_id = str(data.get("run_id") or path.stem)
+        observed = [str(item) for item in structural.as_list(data.get("observed_results"))]
+        pending = str(data.get("finished_at") or "").upper() == "PENDING_CI" or any(
+            "PENDING_GITHUB_ACTIONS" in item for item in observed
+        )
+        if pending and run_id not in attested:
+            started_raw = str(data.get("started_at") or "")
+            stale = True
+            try:
+                started = datetime.fromisoformat(started_raw.replace("Z", "+00:00"))
+                stale = datetime.now(started.tzinfo or timezone.utc) - started > PENDING_CI_MAX_AGE
+            except ValueError:
+                stale = True
+            message = f"{path.relative_to(ROOT)} is PENDING_CI without a matching governance/ci_attestations binding"
+            if stale:
+                validation.error("root", message)
+            else:
+                validation.warn("root", message + " (within allowed binding window)")
 
 
 def build_drift_report(config: dict[str, Any], semantic_summaries: dict[str, Any]) -> dict[str, Any]:
@@ -568,12 +639,16 @@ def validate(
     enforce_sync: bool = False,
     semantic: bool = False,
     drift_report: bool = False,
+    base_ref: str | None = None,
 ) -> tuple[int, dict[str, Any]]:
     config = load_projects()
-    base = merge_base()
+    explicit_base = explicit_base_ref(base_ref)
+    base = merge_base(base_ref)
     changed = changed_files_against_base(base) if changed_only or enforce_sync else []
     project_changes, root_changes = classify_changes(config, changed)
     validation = SyncValidation()
+    if enforce_sync and explicit_base and base is None:
+        validation.error("root", f"Explicit governance diff base does not resolve to a commit: {explicit_base}")
     semantic_summaries: dict[str, Any] = {}
     if enforce_sync:
         validate_diff_contract(validation, project_changes)
@@ -582,6 +657,7 @@ def validate(
         root_sync_requirements(validation, root_changes, changed)
     if semantic or all_projects or drift_report:
         semantic_summaries = validate_semantic(validation, config)
+        validate_pending_ci_bindings(validation)
     report = build_drift_report(config, semantic_summaries) if drift_report else {}
     print_summary(validation, changed, project_changes)
     if drift_report:
@@ -593,6 +669,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--all", action="store_true", help="Run semantic checks for all projects.")
     parser.add_argument("--changed-only", action="store_true", help="Inspect changed files against merge base and worktree.")
+    parser.add_argument("--base-ref", help="Explicit base commit/ref for changed-only diff validation.")
     parser.add_argument("--enforce-sync", action="store_true", help="Fail when changed files are missing required governance updates.")
     parser.add_argument("--semantic", action="store_true", help="Run semantic consistency checks.")
     parser.add_argument("--drift-report", action="store_true", help="Print machine-readable drift report after validation.")
@@ -603,6 +680,7 @@ def main(argv: list[str] | None = None) -> int:
         enforce_sync=args.enforce_sync,
         semantic=args.semantic,
         drift_report=args.drift_report,
+        base_ref=args.base_ref,
     )
     return exit_code
 
