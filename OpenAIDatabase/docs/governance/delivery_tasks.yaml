@@ -108,7 +108,7 @@ tasks:
     acceptance_ids: ["ACC-OAI-C-002"]
     test_commands: ["python3 scripts/build_personalization_exports.py --database-dir .", "python3 scripts/route_agent_resources.py --database-dir . --intent startup", "python3 scripts/evaluate_personalization_context.py --database-dir .", "python3 -m unittest tests.test_personalization_architecture -q"]
     test_results: ["exit 0; status PASS; generated ChatGPT/Codex/machine personalization exports", "exit 0; startup route returned profile preference taste history pattern update targets", "exit 0; status PASS; failures empty", "exit 0; 2 tests OK", "exit 0; OpenAIDatabase unittest discover ran 32 tests OK", "exit 0; CodexProject governance --all errors 0 warnings 0", "exit 0; git diff --check"]
-    evidence_refs: ["OpenAIDatabase/data/derived/personalization/personalization_export.json", "OpenAIDatabase/data/run_logs/export_runs/2026-06-21.jsonl", "OpenAIDatabase/data/run_logs/evaluation_runs/2026-06-21.jsonl", "OpenAIDatabase/tests/test_personalization_architecture.py"]
+    evidence_refs: ["OpenAIDatabase/data/derived/personalization/personalization_export.json", "OpenAIDatabase/data/run_logs/sync_runs/2026-06-21.jsonl", "OpenAIDatabase/data/run_logs/export_runs/2026-06-21.jsonl", "OpenAIDatabase/data/run_logs/evaluation_runs/2026-06-21.jsonl", "OpenAIDatabase/data/run_logs/agent_runs/2026-06-21.jsonl", "OpenAIDatabase/tests/test_personalization_architecture.py"]
     risk: "Generated export is redacted derived context, but pattern scan is not a full secret scanner."
     rollback: "Revert TASK-OAI-C-002 commit and restore VERSION, CHANGELOG, and governance entries to 0.1.0."
     target_version: "0.2.0"

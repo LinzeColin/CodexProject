@@ -87,8 +87,11 @@ def evaluate(database_dir: Path) -> dict[str, Any]:
         category_text = str(category)
         if category_text not in actual_logs:
             failures.append(f"missing_log_category_in_export:{category_text}")
-        if not (database_dir / "data/run_logs" / category_text).exists():
+        category_dir = database_dir / "data/run_logs" / category_text
+        if not category_dir.exists():
             failures.append(f"missing_log_directory:{category_text}")
+        elif not any(category_dir.glob("*.jsonl")):
+            failures.append(f"missing_log_records:{category_text}")
 
     result = {
         "timestamp": now_utc(),
@@ -98,7 +101,7 @@ def evaluate(database_dir: Path) -> dict[str, Any]:
         "updated_targets": sorted(actual_targets),
         "source_files": [str(HARNESS_CONFIG), "data/derived/personalization/personalization_export.json"],
         "output_files": ["data/run_logs/evaluation_runs"],
-        "tests": ["required_files", "required_sections", "sync_targets", "run_log_categories", "forbidden_patterns"],
+        "tests": ["required_files", "required_sections", "sync_targets", "run_log_categories", "run_log_records", "forbidden_patterns"],
         "failures": failures,
         "risks": ["pattern scan is a guardrail, not a full secret scanner"],
         "git_commit": "PENDING",
