@@ -20,7 +20,7 @@ Old root files are compatibility indexes only:
 
 machine_summary:
 
-- task_count: 7
+- task_count: 8
 
 No historical task is marked `completed` unless direct acceptance and evidence
 are present in the canonical registry. Current historical implementation facts
@@ -32,7 +32,7 @@ tasks.
 | Phase | Purpose | Current task | Status | Exit Gate |
 |---|---|---|---|---|
 | A | Discovery and baseline | `TASK-A-001` | in_progress | Serenity governance validator passes |
-| B | Model and data specification | `TASK-B-001` | planned | Calibration and sensitivity gaps are resolved or explicitly deferred |
+| B | Model and data specification | `TASK-B-003` | completed | Semantic extractor pilot passes for documented Serenity parameters and formulas |
 | C | Implementation | `TASK-C-001` | planned | Future behavior changes update governance in same run |
 | D | Verification and hardening | `TASK-D-001` | ready | Focused tests and governance validation pass |
 | E | Delivery and operation | `TASK-E-001` | planned | Project can be promoted from advisory to required |
@@ -45,13 +45,14 @@ tasks.
 - `ACC-A-004`: Independent read-only verification confirms no business-code diff and no duplicate fact source.
 - `ACC-B-001`: Calibration and sensitivity evidence is added or explicitly accepted as deferred.
 - `ACC-B-002`: Parameter test coverage gaps are closed or task-linked.
+- `ACC-B-003`: Active parameter values and formula implementation fingerprints are machine-checked against Serenity code without changing business behavior.
 - `ACC-C-001`: Future model behavior changes update governance registries in the same run.
 - `ACC-D-001`: Validator and focused tests pass in the local environment.
 - `ACC-E-001`: Required CI mode blocks Serenity failures while advisory projects remain non-blocking.
 
 ## Release Gates
 
-- Current governance gate: `GOV-G3-SERENITY-BASELINE`.
+- Current governance gate: `GOV-REVIEW6-B-SEMANTIC-EXTRACT`.
 - Required promotion gate: `TASK-E-001` after `GOV-G3-SERENITY-VERIFY-001` passes.
 
 ## Rollback
