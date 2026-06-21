@@ -80,6 +80,27 @@
       ]
     }
   ],
+  "agent_views": {
+    "who_i_am": {
+      "purpose": "Stable identity, preference, taste, collaboration style, and safety boundaries for future agents.",
+      "sources": [
+        "data/derived/profile/CORE_PROFILE.md"
+      ]
+    },
+    "how_i_work": {
+      "purpose": "Operational rules, answer style, validation expectations, and Codex collaboration flow.",
+      "sources": [
+        "AGENTS.md",
+        "data/derived/personalization/codex_personalization.md"
+      ]
+    },
+    "resources_to_load": {
+      "purpose": "Intent-based resource routing and conditional loading policy.",
+      "sources": [
+        "config/context_sources/resource_routes.json"
+      ]
+    }
+  },
   "sync_required_targets": [
     "profile",
     "preference",

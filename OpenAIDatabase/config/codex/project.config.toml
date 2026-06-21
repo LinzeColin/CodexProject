@@ -1,5 +1,10 @@
+# OpenAIDatabase project personalization manifest.
+# This is not a Codex runtime config and is not loaded automatically by Codex.
+# The project runtime config is .codex/config.toml.
+
 [project]
 schema_version = "openai_database.codex_project_config.v1"
+manifest_kind = "project_personalization_manifest"
 project_id = "OpenAIDatabase"
 canonical_github_path = "LinzeColin/CodexProject/OpenAIDatabase"
 default_intent = "startup"

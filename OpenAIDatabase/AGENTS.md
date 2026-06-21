@@ -5,11 +5,14 @@ names, errors, and source titles in English when that is clearer.
 
 ## Startup
 
-1. Read `docs/PERSONAL_CONTEXT_ARCHITECTURE.md`.
+1. Read this `AGENTS.md`.
 2. Route the task with `scripts/route_agent_resources.py --intent <intent>`.
-3. For fast personalization, read `data/derived/profile/CORE_PROFILE.md`.
-4. For Codex startup context, read `data/derived/personalization/codex_personalization.md`.
-5. For ChatGPT/Project personalization, read `data/derived/personalization/chatgpt_personalization.md`.
+3. For default startup, read only the route's required `read_order`.
+4. Load `data/derived/profile/CORE_PROFILE.md`, full agent context packs, or
+   architecture docs only when the route lists them as conditional resources
+   and the current task gives a concrete reason.
+5. For ChatGPT/Project personalization tasks, read
+   `data/derived/personalization/chatgpt_personalization.md`.
 
 Use route-specific files before broad repository search.
 
@@ -17,9 +20,11 @@ Use route-specific files before broad repository search.
 
 - Three-layer context source: `config/context_sources/three_layer_context.json`
 - Resource routing: `config/context_sources/resource_routes.json`
-- Codex config template: `config/codex/config.template.toml`
-- Project config: `config/codex/project.config.toml`
+- Codex runtime config: `.codex/config.toml`
+- Personalization manifests, not runtime config:
+  `config/codex/config.template.toml` and `config/codex/project.config.toml`
 - Evaluation harness: `config/evaluation/personalization_harness.json`
+- Task-run evidence schema: `config/evaluation/task_run.schema.json`
 - Detailed user requirements: `docs/USER_REQUIREMENTS.md`
 - Model and parameter documentation: `docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md`
 - Delivery record: `docs/MEMORY_ATLAS_DELIVERY_RECORD.md`
@@ -33,11 +38,13 @@ pattern information must:
 2. Regenerate `data/derived/agent_context/*`.
 3. Regenerate `data/derived/personalization/*`.
 4. Run `scripts/evaluate_personalization_context.py`.
-5. Append a redacted run log under one of:
+5. Append a redacted task-run evidence row under one of:
    - `data/run_logs/sync_runs/`
    - `data/run_logs/export_runs/`
    - `data/run_logs/evaluation_runs/`
    - `data/run_logs/agent_runs/`
+   Each row must include `context_used`, `tools_used`, `tests_run`, and
+   `failure_recovery`.
 6. Commit and push the redacted derived updates to GitHub.
 
 If the update target is unclear, log it as `UNKNOWN` with a follow-up task.

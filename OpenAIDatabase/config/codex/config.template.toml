@@ -1,5 +1,10 @@
+# OpenAIDatabase personalization manifest.
+# This is not a Codex runtime config and must not be copied verbatim to
+# ~/.codex/config.toml. The project runtime config is .codex/config.toml.
+
 [codex_user_config_template]
 schema_version = "openai_database.codex_user_config_template.v1"
+manifest_kind = "user_personalization_manifest"
 purpose = "Template for a user's local Codex configuration when using OpenAIDatabase as durable personalization memory."
 default_language = "zh-CN"
 canonical_repo = "LinzeColin/CodexProject/OpenAIDatabase"
@@ -25,6 +30,6 @@ after_memory_sync_commands = [
 ]
 
 [routing]
-startup = ["AGENTS.md", "docs/PERSONAL_CONTEXT_ARCHITECTURE.md", "data/derived/agent_context/AGENT_CONTEXT.md"]
+startup = ["AGENTS.md", "data/derived/personalization/codex_personalization.md"]
 profile = ["data/derived/profile/CORE_PROFILE.md", "data/derived/personalization/chatgpt_personalization.md"]
 history = ["data/derived/timeline/TIMELINE.md", "data/processed/codex/codex_activity_snapshot.json"]

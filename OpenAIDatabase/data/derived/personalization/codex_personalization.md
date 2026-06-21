@@ -1,6 +1,6 @@
 # Codex Personalization Export
 
-- generated_at: 2026-06-21T02:44:09Z
+- generated_at: 2026-06-21T06:34:23Z
 - source: OpenAIDatabase redacted derived context
 - raw_private_data_included: false
 - plaintext_secrets_included: false
@@ -8,17 +8,12 @@
 ## Startup Read Order
 
 - `AGENTS.md`
-- `docs/PERSONAL_CONTEXT_ARCHITECTURE.md`
-- `data/derived/agent_context/AGENT_CONTEXT.md`
-- `data/derived/profile/CORE_PROFILE.md`
 - `data/derived/personalization/codex_personalization.md`
 
 ## Codex Route
 
 - `AGENTS.md`
 - `data/derived/personalization/codex_personalization.md`
-- `data/derived/agent_context/agent_context_pack.json`
-- `config/codex/project.config.toml`
 
 ## Required Sync Targets
 
