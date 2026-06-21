@@ -1,0 +1,169 @@
+{
+  "acceptance_id": "ACC-SEMANTIC-OPME-001",
+  "actor": "Codex",
+  "base_commit": "1fa711b5f480c78b2421d63bd9183939022d9ca0",
+  "change_classification": [
+    "governance_semantic_extractor_rollout"
+  ],
+  "changed_files_actual": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OpMe_System/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpMe_System/docs/governance/VERSION_MATRIX.yaml",
+    "OpMe_System/docs/governance/delivery_tasks.yaml",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpMe_System/docs/governance/formula_registry.yaml",
+    "OpMe_System/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_declared": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OpMe_System/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpMe_System/docs/governance/VERSION_MATRIX.yaml",
+    "OpMe_System/docs/governance/delivery_tasks.yaml",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpMe_System/docs/governance/formula_registry.yaml",
+    "OpMe_System/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:95eeec1977526f5a7dbd334d71e7a118a16ceddc7e24e0d0d03d0fd0059196ac",
+  "evidence_refs": [
+    "OpMe_System/docs/governance/parameter_registry.csv",
+    "OpMe_System/docs/governance/formula_registry.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "formula_delta": {
+    "formula_fingerprints_added": 7,
+    "human_review_formula_ids": [],
+    "semantic_formulas_checked": 7
+  },
+  "model_delta": {
+    "runtime_behavior": "unchanged",
+    "semantic_coverage": "planned -> in_progress"
+  },
+  "observed_results": [
+    "ALL_PROJECT_SEMANTIC_DRIFT_PASS",
+    "CHANGED_ONLY_SYNC_PASS",
+    "DASHBOARD_STATUS_OWNER_STATUS_DOUBLE_GENERATION_STABLE",
+    "GIT_DIFF_CHECK_PASS",
+    "GOVERNANCE_TESTS_50_PASSED",
+    "LOCAL_SEMANTIC_PASS",
+    "OPME_FORMULAS_CHECKED_7",
+    "OPME_PARAMETERS_CHECKED_49",
+    "OPME_PROJECT_VALIDATOR_PASS",
+    "OPME_SEMANTIC_COVERAGE_IN_PROGRESS_NOT_MACHINE_VERIFIED",
+    "OPME_TEST_ANALYSIS_BLOCKED_MISSING_PYDANTIC",
+    "OPME_TEST_API_BLOCKED_MISSING_FASTAPI"
+  ],
+  "parameter_delta": {
+    "active_values_changed": 0,
+    "calibration_blocked_task_id": "TASK-OPME-B-001",
+    "semantic_parameters_checked": 49
+  },
+  "project_id": "OpMe_System",
+  "project_path": "OpMe_System",
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OpMe_System/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpMe_System/docs/governance/VERSION_MATRIX.yaml",
+    "OpMe_System/docs/governance/delivery_tasks.yaml",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpMe_System/docs/governance/formula_registry.yaml",
+    "OpMe_System/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "result_commit": "PENDING",
+  "rollback": "Revert this manifest, OpMe_System semantic metadata/status files, root projects.yaml semantic coverage update, and generated dashboard/status pages. No OpMe_System runtime code rollback is required.",
+  "run_id": "GOV-SEMANTIC-OPME-EXTRACT-001",
+  "runtime_behavior_changed": false,
+  "semantic_formulas_checked": 7,
+  "semantic_parameters_checked": 49,
+  "semantic_status": "in_progress",
+  "started_at": "2026-06-21T13:31:42Z",
+  "task_id": "GOV-SEMANTIC-OPME-001",
+  "tests_run": [
+    {
+      "command": "python3 -m py_compile scripts/validate_semantic_extractors.py",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "python3 scripts/validate_semantic_extractors.py OpMe_System",
+      "exit_code": 0,
+      "result": "semantic_parameters_checked=49 semantic_formulas_checked=7"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project OpMe_System --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0; OpMe_System semantic_parameters_checked=49 semantic_formulas_checked=7"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 -m pytest tests/governance/test_project_governance_validator.py -q",
+      "exit_code": 0,
+      "result": "50 passed"
+    },
+    {
+      "command": "cd OpMe_System/backend && PYTHONPATH=. python3 -m pytest tests/test_analysis.py -q",
+      "exit_code": 2,
+      "result": "blocked by ModuleNotFoundError: pydantic"
+    },
+    {
+      "command": "cd OpMe_System/backend && PYTHONPATH=. python3 -m pytest tests/test_api.py -q",
+      "exit_code": 2,
+      "result": "blocked by ModuleNotFoundError: fastapi"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write (twice with hash comparison)",
+      "exit_code": 0,
+      "result": "stable hash c3a1752ad97a56cfeb5f02e84c61864e0d4332f0566037fb93ad6d3bc464c439"
+    }
+  ],
+  "unresolved_risks": [
+    "OpMe_System semantic coverage remains in_progress, not machine_verified.",
+    "Engineering calibration source, prompt/provider policy, and owner signoff evidence remain blocked under TASK-OPME-B-001.",
+    "Machine extractors verify code constants and formula fingerprints, not business calibration validity."
+  ],
+  "updated_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OpMe_System/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpMe_System/docs/governance/VERSION_MATRIX.yaml",
+    "OpMe_System/docs/governance/delivery_tasks.yaml",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpMe_System/docs/governance/formula_registry.yaml",
+    "OpMe_System/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "version_delta": {
+    "current_gate": "GOV-G4-OPME-REQUIRED -> GOV-SEMANTIC-OPME-in-progress",
+    "current_iteration": "ITER-20260620-OPME-001 -> ITER-20260621-OPME-001",
+    "current_phase": "E -> B",
+    "product_version": "1.0.0 unchanged"
+  },
+  "finished_local_at": "2026-06-21T13:42:55Z"
+}

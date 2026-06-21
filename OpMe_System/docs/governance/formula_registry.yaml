@@ -22,6 +22,13 @@ formulas:
     code_refs: ["OpMe_System/backend/app/services/analysis.py:60"]
     test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
     evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::analyze_dynamic", "OpMe_System/backend/app/services/analysis.py::_risk_level", "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"]
+    implementation_fingerprint: "sha256:1f5a245eecd02498be57b7916bc26371a3e9db12b1778aec9efcf981edbd42ae"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    evidence_hash: "sha256:7faac7344d8eddd63427010f518b35cdac69c03b3462ecca830755972b533390"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-002"
     model_id: "MOD-002"
     assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
@@ -43,6 +50,13 @@ formulas:
     code_refs: ["OpMe_System/backend/app/services/analysis.py:137"]
     test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
     evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::analyze_fault", "OpMe_System/backend/app/services/analysis.py::_risk_level", "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"]
+    implementation_fingerprint: "sha256:93e620abdb8a3b1c9c3121ad0661232150f13f3420cb4b6908cbecec4fdb3b8d"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    evidence_hash: "sha256:15ad9d948e691cbdec23842eb99a33a9e3d410a43880136079adc93cfd8de036"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-003"
     model_id: "MOD-003"
     assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
@@ -64,6 +78,13 @@ formulas:
     code_refs: ["OpMe_System/backend/app/services/analysis.py:205"]
     test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
     evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::analyze_gear", "OpMe_System/backend/app/services/analysis.py::_risk_level", "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"]
+    implementation_fingerprint: "sha256:00eec7f7fa9e8162b98901d7916a0ff4799b7e2984a2ac5d888bd4a9861fc7a9"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    evidence_hash: "sha256:7692b401cdd296f7bdc9d870199a3d0982a6124112bae1b3411b4da647fc35f9"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-004"
     model_id: "MOD-004"
     assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
@@ -85,6 +106,13 @@ formulas:
     code_refs: ["OpMe_System/backend/app/services/analysis.py:262"]
     test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
     evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::analyze_machining", "OpMe_System/backend/app/services/analysis.py::_risk_level", "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"]
+    implementation_fingerprint: "sha256:6d71222d8b493bdaa6f4d27ef4eb37ed8a8ab52770da6bba18220307c0b25e15"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    evidence_hash: "sha256:b7d0b7b727d70c739fd01e5fc1806dcd4bb7d37d31fe52f337719fbbf5b23391"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-005"
     model_id: "MOD-005"
     assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
@@ -106,6 +134,13 @@ formulas:
     code_refs: ["OpMe_System/backend/app/services/analysis.py:333"]
     test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
     evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::analyze_other", "OpMe_System/backend/app/services/analysis.py::_risk_level", "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"]
+    implementation_fingerprint: "sha256:2fca115f446d6008c7b69e02d34c6ad0066e08fb2ac6790033fe2790a4a3e2d5"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    evidence_hash: "sha256:0a890c9e2aa8fe6237d61bae90197043d0af79590116c4568ad9eeac5434498e"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-006"
     model_id: "MOD-006"
     assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
@@ -127,6 +162,13 @@ formulas:
     code_refs: ["OpMe_System/backend/app/services/analysis.py:16"]
     test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
     evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::_risk_level"]
+    implementation_fingerprint: "sha256:7a091c1e552fe839aabb40e1d6f54bde80dafb992ea10d150fa36ee172d529cf"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    evidence_hash: "sha256:c989ced04342480650ec701d5155715c03878a18abd553f9a22896ac297646c1"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-007"
     model_id: "MOD-007"
     assumption_ids: ["ASM-001", "ASM-002", "ASM-003"]
@@ -148,3 +190,10 @@ formulas:
     code_refs: ["OpMe_System/backend/app/services/model_router.py:15"]
     test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
     evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
+    implementation_refs: ["OpMe_System/backend/app/services/model_router.py::route_model", "OpMe_System/backend/app/services/model_router.py::SYSTEM_PROMPT", "OpMe_System/backend/app/services/db.py::init_db", "OpMe_System/backend/app/services/db.py::get_model_configs"]
+    implementation_fingerprint: "sha256:7569c8b96d17cc4ec822f2efbf1700392ad754cf84ff57d0b17aac6e0bed696c"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    evidence_hash: "sha256:5ca3143d2ab665ba7ac80d7c5b47c090e9d2bf8a0e0263f23ac63bc932de82b4"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
