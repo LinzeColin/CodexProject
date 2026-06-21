@@ -136,6 +136,9 @@ class ScheduledExecutionTests(unittest.TestCase):
         self.assertEqual(report["status"], "degraded")
         self.assertEqual(report["daily_run_report"]["status"], "succeeded")
         self.assertEqual(report["daily_run_report"]["run_id"], "daily:2026-07-01:arxiv:2401.00001")
+        self.assertEqual(report["daily_run_report"]["source_id"], "arxiv:2401.00001")
+        self.assertTrue(report["daily_run_report"]["p0_claims_traceable"])
+        self.assertFalse(report["daily_run_report"]["unsupported_claims_published"])
         self.assertFalse(validate_scheduled_execution_report(report))
 
     def test_daily_run_production_ready_only_with_real_smtp_and_release_evidence(self) -> None:
@@ -184,6 +187,8 @@ class ScheduledExecutionTests(unittest.TestCase):
         self.assertTrue(report["production_evidence_ready"])
         self.assertEqual(report["release_report"]["status"], "created")
         self.assertEqual(report["notification_report"]["status"], "sent")
+        self.assertEqual(report["daily_run_report"]["scheduled_local_time"], "05:00")
+        self.assertTrue(report["daily_run_report"]["p0_claims_traceable"])
         self.assertEqual(FakeSMTP.sent_messages[0]["To"], "linzezhang35@gmail.com")
         self.assertNotIn("super-secret-password", str(report))
         self.assertFalse(validate_scheduled_execution_report(report))

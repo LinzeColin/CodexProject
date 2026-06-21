@@ -106,6 +106,21 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/tests/test_production_scheduler.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-022"
+    statement: "Scheduled execution must produce evidence artifacts after preflight and may count as production evidence only when daily run, real SMTP, real Release, and resource evidence refs are present."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
+    status: "active"
+  - assumption_id: "ASM-ADP-023"
+    statement: "Daily input generation must use only arXiv Atom summary/metadata evidence, avoid PDF download and bulk harvest, and fail closed before scheduled daily-run if the source batch, summary, metadata, or ranking gate is unsafe."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md", "arxiv-daily-push/src/arxiv_daily_push/daily_input.py", "arxiv-daily-push/tests/test_daily_input.py"]
+    status: "active"
+  - assumption_id: "ASM-ADP-024"
+    statement: "Trial ledger updates may append daily evidence only from production-ready scheduled daily-run reports and must block duplicates, dry-run evidence, missing refs, unsupported claims, and misleading failure output."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py", "arxiv-daily-push/tests/test_trial_ledger.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -458,3 +473,21 @@ models:
     config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/daily_input.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_daily_input.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md", "https://info.arxiv.org/help/api/user-manual.html"]
+
+  - model_id: "MOD-ADP-021"
+    name: "Trial evidence ledger update"
+    kind: "deterministic trial ledger updater"
+    purpose: "Append one production-ready scheduled daily-run report into the 30-day trial evidence ledger without claiming acceptance early."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-trial-ledger-v1"
+    assumption_ids: ["ASM-ADP-024", "ASM-ADP-022", "ASM-ADP-015"]
+    formula_ids: ["FORM-ADP-023"]
+    parameter_ids: ["PARAM-ADP-108", "PARAM-ADP-109", "PARAM-ADP-110", "PARAM-ADP-111", "PARAM-ADP-112"]
+    inputs: ["existing trial evidence", "scheduled execution report", "generated_at", "trial refs", "explicit operational evidence flags"]
+    outputs: ["trial ledger update report", "updated trial evidence", "daily_entry", "embedded trial evidence report", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/trial_ledger.schema.json", "arxiv-daily-push/schemas/trial_evidence.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md"]

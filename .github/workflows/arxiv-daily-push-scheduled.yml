@@ -95,6 +95,11 @@ jobs:
       ADP_ARXIV_QUERY: ${{ vars.ADP_ARXIV_QUERY }}
       ADP_ARXIV_MAX_RESULTS: ${{ vars.ADP_ARXIV_MAX_RESULTS }}
       ADP_RECENT_SOURCE_IDS: ${{ vars.ADP_RECENT_SOURCE_IDS }}
+      ADP_TRIAL_EVIDENCE_INPUT_PATH: ${{ vars.ADP_TRIAL_EVIDENCE_INPUT_PATH }}
+      ADP_TRIAL_ID: ${{ vars.ADP_TRIAL_ID }}
+      ADP_TRIAL_REF: ${{ vars.ADP_TRIAL_REF }}
+      ADP_TEXT_DEGRADATION_VERIFIED: ${{ vars.ADP_TEXT_DEGRADATION_VERIFIED }}
+      ADP_VIDEO_DEGRADATION_VERIFIED: ${{ vars.ADP_VIDEO_DEGRADATION_VERIFIED }}
       ADP_ALLOW_SMTP_SEND: ${{ vars.ADP_ALLOW_SMTP_SEND }}
       ADP_ALLOW_RELEASE_UPLOAD: ${{ vars.ADP_ALLOW_RELEASE_UPLOAD }}
     steps:
@@ -254,6 +259,76 @@ jobs:
         with:
           name: adp-scheduled-execution
           path: ${{ runner.temp }}/adp-scheduled-execution.json
+          if-no-files-found: error
+          retention-days: 35
+      - name: Update trial evidence ledger
+        id: trial_ledger
+        if: always() && needs.gate.outputs.mode == 'daily-run'
+        shell: bash
+        run: |
+          set +e
+          output="$RUNNER_TEMP/adp-trial-ledger-update.json"
+          extra_args="$RUNNER_TEMP/adp-trial-ledger-extra-args.txt"
+          command=(
+            python3 -m arxiv_daily_push update-trial-ledger
+            --scheduled-execution "$RUNNER_TEMP/adp-scheduled-execution.json"
+            --generated-at "${{ steps.generated_at.outputs.value }}"
+            --trial-id "${ADP_TRIAL_ID:-adp-trial-current}"
+            --trial-ref "${ADP_TRIAL_REF:-}"
+            --json
+          )
+          if [ -n "${ADP_TRIAL_EVIDENCE_INPUT_PATH:-}" ]; then
+            command+=(--path "$ADP_TRIAL_EVIDENCE_INPUT_PATH")
+          fi
+          if [ "${ADP_TEXT_DEGRADATION_VERIFIED:-false}" = "true" ]; then
+            command+=(--text-degradation-verified)
+          fi
+          if [ "${ADP_VIDEO_DEGRADATION_VERIFIED:-false}" = "true" ]; then
+            command+=(--video-degradation-verified)
+          fi
+          python3 - "$RUNNER_TEMP/adp-scheduled-execution.json" "$extra_args" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          report = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          refs = report.get("evidence_refs") if isinstance(report.get("evidence_refs"), dict) else {}
+          args = []
+          if report.get("production_evidence_ready") is True:
+              execution_ref = str(report.get("execution_id") or "")
+              release_ref = str(refs.get("release_ref") or "")
+              email_ref = str(refs.get("email_ref") or "")
+              resource_ref = str(refs.get("resource_gate_ref") or "")
+              if execution_ref:
+                  args.extend(["--scheduler-enabled", "--scheduler-ref", execution_ref])
+              if release_ref:
+                  args.extend(["--private-release-verified", "--release-ref", release_ref])
+              if email_ref:
+                  args.extend(["--real-smtp-verified", "--email-ref", email_ref])
+              if resource_ref:
+                  args.extend(["--resource-pressure-ok", "--resource-ref", resource_ref])
+          Path(sys.argv[2]).write_text("\n".join(args) + ("\n" if args else ""), encoding="utf-8")
+          PY
+          while IFS= read -r arg; do
+            if [ -n "$arg" ]; then
+              command+=("$arg")
+            fi
+          done < "$extra_args"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_ledger" \
+          PYTHONPATH=arxiv-daily-push/src \
+            "${command[@]}" > "$output"
+          code=$?
+          cat "$output"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          printf 'trial_ledger_path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload trial ledger update artifact
+        if: always() && steps.trial_ledger.outputs.trial_ledger_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-ledger-update
+          path: ${{ steps.trial_ledger.outputs.trial_ledger_path }}
           if-no-files-found: error
           retention-days: 35
       - name: Stop if preflight blocked

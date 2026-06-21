@@ -572,3 +572,32 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/daily_input.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_daily_input.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md", "https://info.arxiv.org/help/api/user-manual.html"]
+
+  - formula_id: "FORM-ADP-023"
+    model_id: "MOD-ADP-021"
+    assumption_ids: ["ASM-ADP-024", "ASM-ADP-022", "ASM-ADP-015"]
+    status: "active"
+    expression: "A trial ledger update appends exactly one daily entry only when the scheduled execution report validates as adp-scheduled-execution-v1, mode is daily-run, production_evidence_ready is true, daily_run_report contains date, run_id, source_id, publication_id, P0 traceability true, unsupported/misleading publication flags false, evidence_refs contains daily_run_ref, release_ref, email_ref, and resource_gate_ref, and no existing daily_runs entry duplicates the new date, source_id, or publication_id. The updated evidence is immediately re-evaluated by adp-trial-evidence-v1; the ledger update can pass while production acceptance remains blocked."
+    variables:
+      - name: "scheduled_execution_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "adp-scheduled-execution-v1 daily-run report"
+      - name: "production_evidence_ready"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "true only when daily run, Release, SMTP, and resource refs exist"
+      - name: "daily_entry"
+        data_type: "object"
+        unit: "trial evidence daily run"
+        input_domain: "date, run_id, source_id, publication_id, refs, and safety flags"
+      - name: "existing_daily_runs"
+        data_type: "list[object]"
+        unit: "trial evidence entries"
+        input_domain: "existing daily_runs from trial evidence JSON"
+    constraints: "The updater does not send email, upload Releases, fetch arXiv, run the scheduler, create media, or mark weekly/monthly or recovery evidence complete by default."
+    missing_policy: "Invalid scheduled execution, non-production-ready evidence, missing refs, unsafe publication flags, or duplicate date/source/publication IDs produce a blocked ledger update report."
+    output_range: "trial ledger update report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md"]

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.11 - 2026-06-21
+
+- Added `adp update-trial-ledger` and `adp-trial-ledger-v1` to append production-ready scheduled daily-run evidence into the Phase 11 trial evidence package.
+- Updated the scheduled workflow to upload an `adp-trial-ledger-update` artifact after daily-run evidence while preserving fail-closed behavior for duplicate days, dry-run side effects, and missing production refs.
+- Added trial ledger schema and tests covering blocked non-production evidence, duplicate daily evidence, global evidence flag upgrades, CLI JSON output, and scheduled workflow wiring.
+
 ## 0.11.10 - 2026-06-21
 
 - Added `adp build-daily-input` and `adp-daily-input-builder-v1` to convert live arXiv source batches into ranked daily pipeline inputs using only Atom summary claims.
