@@ -1,0 +1,143 @@
+{
+  "run_id": "ADP-PHASE11-PRODUCTION-TRIAL-START-PRECHECK-20260622",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-PHASE11-PRODUCTION-TRIAL-START-022",
+  "iteration_id": "ITER-20260621-038",
+  "phase": "E",
+  "started_at": "2026-06-22T04:55:00+10:00",
+  "finished_at": "2026-06-22T04:55:00+10:00",
+  "generated_at": "2026-06-22T04:55:00+10:00",
+  "version_before": "0.11.19",
+  "version_after": "0.11.19",
+  "base_commit": "df28c70f255d4db0cabf15d6555ce34a8b2fa560",
+  "result_commit": "PENDING",
+  "result": "pass",
+  "objective": "Record a no-secret production trial start precheck after PR #32 merged to main.",
+  "scope": [
+    "PR #32 merge metadata",
+    "main Project Governance CI evidence",
+    "default branch commit ref",
+    "default branch trial start workflow ref",
+    "fail-closed production launch precheck result"
+  ],
+  "non_scope": [
+    "GitHub workflow dispatch",
+    "private runner provisioning",
+    "SMTP send",
+    "Release upload",
+    "secret value read",
+    "Codex auth read",
+    "30-day production acceptance claim",
+    "local media/model/cache retention"
+  ],
+  "pr_evidence": {
+    "pr_number": 32,
+    "state": "closed",
+    "merged": true,
+    "draft": false,
+    "base": "main",
+    "head": "codex/arxiv-semantic-final-coverage-20260622",
+    "head_sha": "426709648fde32bbaf0d0a1f4f6006318891f5f2",
+    "merge_commit_sha": "df28c70f255d4db0cabf15d6555ce34a8b2fa560",
+    "merged_at": "2026-06-21T18:38:57Z",
+    "url": "https://github.com/LinzeColin/CodexProject/pull/32"
+  },
+  "main_ci_evidence": {
+    "workflow": "Project Governance",
+    "run_id": 27913796642,
+    "job_id": 82595401999,
+    "head_branch": "main",
+    "head_sha": "df28c70f255d4db0cabf15d6555ce34a8b2fa560",
+    "status": "completed",
+    "conclusion": "success",
+    "artifact_name": "project-governance-ci-attestation-27913796642-1",
+    "artifact_id": 7778177399,
+    "artifact_digest": "sha256:760571e2a0a1e0ed4410aa39303cbb2a3b052f1b58729f0ce14e07d00d72d0a8",
+    "url": "https://github.com/LinzeColin/CodexProject/actions/runs/27913796642"
+  },
+  "launch_gate": {
+    "command_exit_code": 2,
+    "status": "blocked",
+    "production_launch_ready": false,
+    "production_acceptance_claimed": false,
+    "side_effects_performed": false,
+    "secret_values_logged": false,
+    "codex_auth_read": false,
+    "passed_gates": [
+      "pr_metadata_present",
+      "pr_not_draft",
+      "pr_merged_to_main",
+      "expected_head_sha_matches",
+      "trial_start_workflow_ready",
+      "default_branch_ref",
+      "trial_start_workflow_ref"
+    ],
+    "failed_gates": [
+      "launch_confirmed",
+      "runner_ref",
+      "smtp_secret_ref",
+      "release_target_ref",
+      "workflow_vars_ref"
+    ],
+    "blocking_reasons": [
+      "confirm_launch must be true before production launch",
+      "runner_ref must be a durable ref containing ://",
+      "smtp_secret_ref must be a durable ref containing ://",
+      "release_target_ref must be a durable ref containing ://",
+      "workflow_vars_ref must be a durable ref containing ://"
+    ]
+  },
+  "evidence_refs": {
+    "default_branch_ref": "git://LinzeColin/CodexProject/main@df28c70f255d4db0cabf15d6555ce34a8b2fa560",
+    "trial_start_workflow_ref": "github-actions://LinzeColin/CodexProject/.github/workflows/arxiv-daily-push-trial-start.yml@main#df28c70f255d4db0cabf15d6555ce34a8b2fa560",
+    "precheck_phase_record": "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md",
+    "precheck_manifest": "governance/run_manifests/ADP-PHASE11-PRODUCTION-TRIAL-START-PRECHECK-20260622.json"
+  },
+  "changed_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md",
+    "governance/run_manifests/ADP-PHASE11-PRODUCTION-TRIAL-START-PRECHECK-20260622.json"
+  ],
+  "model_delta": "No runtime model behavior change.",
+  "formula_delta": "No formula behavior change.",
+  "parameter_delta": "No active parameter value change.",
+  "tests_run": [
+    "curl GitHub PR #32 metadata",
+    "curl GitHub Actions runs for main merge commit df28c70f255d4db0cabf15d6555ce34a8b2fa560",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_trial_start_precheck PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-launch --path . --pr-info <pr32 metadata> --generated-at 2026-06-22T04:55:00+10:00 --expected-head-sha 426709648fde32bbaf0d0a1f4f6006318891f5f2 --default-branch-ref git://LinzeColin/CodexProject/main@df28c70f255d4db0cabf15d6555ce34a8b2fa560 --trial-start-workflow-ref github-actions://LinzeColin/CodexProject/.github/workflows/arxiv-daily-push-trial-start.yml@main#df28c70f255d4db0cabf15d6555ce34a8b2fa560 --json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_precheck_target_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_production_launch.py arxiv-daily-push/tests/test_trial_start_workflow.py arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_precheck_arxiv_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_precheck_root_tests2 python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_precheck_dashboard2 python3 scripts/generate_governance_dashboard.py --write",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_precheck_project2 python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_precheck_changed2 python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "git diff --check"
+  ],
+  "test_results": [
+    "PR #32 metadata: closed, merged true, draft false, base main, head SHA 426709648fde32bbaf0d0a1f4f6006318891f5f2, merge commit df28c70f255d4db0cabf15d6555ce34a8b2fa560",
+    "main Project Governance CI: run 27913796642 completed success with attestation artifact project-governance-ci-attestation-27913796642-1",
+    "production launch precheck: expected blocked exit 2; passed PR/default-branch/workflow gates; failed only launch_confirmed, runner_ref, smtp_secret_ref, release_target_ref, workflow_vars_ref",
+    "focused production launch/workflow/CLI tests: 12 tests OK",
+    "arxiv-daily-push unit tests: 143 tests OK",
+    "root governance tests: 91 tests OK",
+    "dashboard generation: PASS",
+    "project governance: arxiv-daily-push errors 0 warnings 0",
+    "changed-only enforce-sync semantic: errors 0 warnings 0; projects changed arxiv-daily-push; all registered project validation errors 0 warnings 0",
+    "git diff --check: pass"
+  ],
+  "production_acceptance_status": "blocked",
+  "risks": [
+    "Production launch remains blocked until explicit confirmation and durable runner, SMTP secret, Release target, and workflow variable refs exist.",
+    "Real production acceptance remains blocked until default-branch trial start workflow passes and 30 unique daily production evidence entries plus replay, recovery, resource, SMTP, and Release evidence are archived and validated."
+  ],
+  "rollback": "Remove this precheck phase record, run manifest, development event, runbook/status/delivery task updates, and regenerated governance dashboard/status files.",
+  "next_task": "PROVISION_REMAINING_PRODUCTION_REFS_AND_RERUN_LAUNCH_PRECHECK"
+}

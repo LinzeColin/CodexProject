@@ -1134,6 +1134,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertNotIn("{'", rendered)
         self.assertEqual(info["next_task"], "TASK-B-001")
 
+    def test_arxiv_owner_status_uses_latest_event_manifest(self) -> None:
+        dashboard = load_dashboard_module()
+        config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
+        project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
+        info = dashboard.load_project(project)
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-045")
+        self.assertEqual(
+            info["latest_manifest"]["_path"],
+            "governance/run_manifests/ADP-PHASE11-PRODUCTION-TRIAL-START-PRECHECK-20260622.json",
+        )
+        rendered = dashboard.render_owner_status(info, "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
+        self.assertIn("No runtime model behavior change.", rendered)
+        self.assertNotIn("root semantic extractor selector behavior expanded", rendered)
+
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
@@ -1416,8 +1430,26 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         status_text = (ROOT / "arxiv-daily-push" / "docs" / "governance" / "STATUS.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("PR #31 is merged", status_text)
+        self.assertIn("PR #32 is merged", status_text)
+        self.assertIn("default_branch_ref` and `trial_start_workflow_ref` are now durable", status_text)
         self.assertNotIn("draft and unmerged", status_text)
+
+    def test_arxiv_daily_push_phase11_manifest_records_production_trial_start_precheck(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE11-PRODUCTION-TRIAL-START-PRECHECK-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-TRIAL-START-022")
+        self.assertEqual(manifest["pr_evidence"]["pr_number"], 32)
+        self.assertEqual(manifest["main_ci_evidence"]["conclusion"], "success")
+        self.assertIn("default_branch_ref", manifest["launch_gate"]["passed_gates"])
+        self.assertIn("trial_start_workflow_ref", manifest["launch_gate"]["passed_gates"])
+        self.assertIn("runner_ref", manifest["launch_gate"]["failed_gates"])
 
     def test_arxiv_daily_push_semantic_extract_manifest_records_partial_coverage(self) -> None:
         manifest = json.loads(
