@@ -7,7 +7,8 @@ validators, a deterministic `RunRecord` state machine, an arXiv Atom adapter,
 deterministic ranking, Claim Ledger publication gate, evidence-linked lesson
 generation, TTS dry-run narration planning, storyboard/video dry-run planning,
 daily dry-run orchestration, runner/release/email dry-run handoff, final
-acceptance/handoff readiness packaging, and tests.
+acceptance/handoff readiness packaging, small-window live arXiv ingest, an
+explicit SMTP delivery boundary, and tests.
 
 ## Current Scope
 
@@ -16,6 +17,7 @@ Implemented now:
 - `adp version`
 - `adp doctor`
 - `adp render-email`
+- `adp send-notification`
 - `adp validate-record`
 - `adp arxiv-url`
 - `adp parse-arxiv-atom`
@@ -32,6 +34,7 @@ Implemented now:
 - `adp preflight-production`
 - `adp plan-trial-bootstrap`
 - dry-run email rendering for `linzezhang35@gmail.com`
+- fail-closed SMTP notification delivery evidence; real sending requires explicit `--allow-send` and SMTP environment variables
 - local resource and dependency readiness checks
 - generic contracts for `SourceItem`, `EvidenceClaim`, `Lesson`, `Storyboard`, `Publication`, and `RunRecord`
 - deterministic state transitions for local `RunRecord` validation
@@ -53,6 +56,7 @@ Implemented now:
 - 30-day trial evidence validator that exports production acceptance evidence only after daily uniqueness, P0 traceability, scheduler, Release, SMTP, resource, weekly/monthly replay, and recovery gates pass
 - production preflight gate that blocks scheduled execution unless runtime commands, secret env keys, disk, memory, Git artifact hygiene, and cache/staging directories are safe
 - manual production trial bootstrap workflow/runbook that runs preflight before any trial work and keeps cron, Release upload, and SMTP sending disabled
+- SMTP delivery report schema that records message hashes and secret-key presence without logging SMTP secret values or email body
 - governance records required by `CodexProject`
 
 Not implemented yet:
@@ -63,7 +67,8 @@ Not implemented yet:
 - real TTS audio synthesis
 - real video rendering
 - enabled GitHub Actions runner setup
-- real SMTP sending or scheduled runner execution
+- verified real SMTP delivery on a provisioned production runner
+- scheduled runner execution
 - claimed scheduled 30-day trial start
 - claimed 30-day operational acceptance
 

@@ -91,6 +91,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/tests/test_source_ingest.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-019"
+    statement: "SMTP notification transport defaults to dry-run, requires explicit allow-send for real mail, uses only external environment keys for secrets, requires TLS, and never logs SMTP secret values or email body text."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/tests/test_notifications.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -353,3 +358,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/source_batch.schema.json", "arxiv-daily-push/config/examples/sources.example.yaml"]
     test_refs: ["arxiv-daily-push/tests/test_source_ingest.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "https://info.arxiv.org/help/api/user-manual.html"]
+
+  - model_id: "MOD-ADP-016"
+    name: "SMTP notification delivery boundary"
+    kind: "deterministic notification transport gate"
+    purpose: "Render notification evidence and send real SMTP mail only when explicit allow-send, recipient, environment-key, TLS, login, and delivery checks pass."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-smtp-delivery-v1"
+    assumption_ids: ["ASM-ADP-019", "ASM-ADP-002"]
+    formula_ids: ["FORM-ADP-018"]
+    parameter_ids: ["PARAM-ADP-081", "PARAM-ADP-082", "PARAM-ADP-083", "PARAM-ADP-084", "PARAM-ADP-085"]
+    inputs: ["EmailNotification", "generated_at", "allow_send flag", "SMTP environment key presence"]
+    outputs: ["SMTP delivery report", "body_sha256", "delivery_ref", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/notifications.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/config/examples/notification.example.yaml", "arxiv-daily-push/schemas/smtp_delivery.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md"]

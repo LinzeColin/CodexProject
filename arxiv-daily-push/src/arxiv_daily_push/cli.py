@@ -19,6 +19,7 @@ from .pipeline import PipelineError, run_daily_dry_run
 from .production_preflight import build_production_preflight, validate_production_preflight
 from .ranking import selection_payload
 from .source_ingest import ingest_latest_arxiv, validate_source_batch
+from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
 from .state_machine import validate_run_record
 from .trial import evaluate_trial_evidence, validate_trial_evidence_report
 from .trial_bootstrap import build_trial_bootstrap_plan, validate_trial_bootstrap_plan
@@ -40,6 +41,19 @@ def build_parser() -> argparse.ArgumentParser:
     email.add_argument("--run-id", default="phase1-foundation")
     email.add_argument("--summary", default="Phase 1 foundation status")
     email.add_argument("--date", default="not-scheduled")
+
+    send_notification = subparsers.add_parser("send-notification", help="Render and optionally send a fail-closed SMTP notification.")
+    send_notification.add_argument("--status", default="success")
+    send_notification.add_argument("--run-id", required=True)
+    send_notification.add_argument("--summary", required=True)
+    send_notification.add_argument("--date", required=True)
+    send_notification.add_argument("--generated-at", required=True)
+    send_notification.add_argument("--phase", default="11")
+    send_notification.add_argument("--stage", default="production-trial")
+    send_notification.add_argument("--claim-gate", default="not_applicable_notification")
+    send_notification.add_argument("--next-action", default="inspect_smtp_delivery_report")
+    send_notification.add_argument("--allow-send", action="store_true", help="Actually send SMTP mail when required env keys are present.")
+    send_notification.add_argument("--json", action="store_true", help="Print JSON delivery evidence.")
 
     validate_record = subparsers.add_parser("validate-record", help="Validate a RunRecord JSON file.")
     validate_record.add_argument("--path", required=True, help="RunRecord JSON path.")
@@ -140,6 +154,32 @@ def main(argv: list[str] | None = None) -> int:
         print("")
         print(email.body)
         return 0
+    if args.command == "send-notification":
+        email = render_email(
+            args.status,
+            args.run_id,
+            args.summary,
+            date=args.date,
+            phase=args.phase,
+            stage=args.stage,
+            claim_gate=args.claim_gate,
+            next_action=args.next_action,
+        )
+        report = deliver_notification(email, generated_at=args.generated_at, allow_send=args.allow_send)
+        errors = validate_smtp_delivery_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{report['delivery_id']}\t{report['status']}")
+        return 0 if report["status"] in {"dry_run", "sent"} else 2
     if args.command == "validate-record":
         data = json.loads(Path(args.path).read_text(encoding="utf-8"))
         errors = validate_run_record(data)

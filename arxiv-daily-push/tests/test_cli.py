@@ -15,7 +15,7 @@ class CliTests(unittest.TestCase):
         with redirect_stdout(buffer):
             result = main(["version"])
         self.assertEqual(result, 0)
-        self.assertEqual(buffer.getvalue().strip(), "0.11.5")
+        self.assertEqual(buffer.getvalue().strip(), "0.11.6")
 
     def test_doctor_json_command_warns_without_blocking_phase1(self):
         buffer = io.StringIO()
@@ -35,6 +35,28 @@ class CliTests(unittest.TestCase):
                 result = main(["validate-record", "--path", str(path), "--json"])
         self.assertEqual(result, 0)
         self.assertIn('"status": "pass"', buffer.getvalue())
+
+    def test_send_notification_json_command_defaults_to_dry_run(self):
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "send-notification",
+                    "--run-id",
+                    "run-001",
+                    "--summary",
+                    "Daily status",
+                    "--date",
+                    "2026-06-21",
+                    "--generated-at",
+                    "2026-06-21T05:00:00+10:00",
+                    "--json",
+                ]
+            )
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "dry_run")
+        self.assertFalse(payload["real_smtp_send_enabled"])
 
 
 if __name__ == "__main__":

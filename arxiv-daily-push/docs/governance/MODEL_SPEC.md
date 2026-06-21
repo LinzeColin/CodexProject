@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 15
-- formula_count: 17
-- parameter_count: 80
+- model_count: 16
+- formula_count: 18
+- parameter_count: 85
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -30,6 +30,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-013 | Production preflight fail-closed gate | deterministic production readiness validator | Block scheduled production execution unless runtime, secret-key, resource, Git artifact, and cache gates pass | active | adp-production-preflight-v1 | `src/arxiv_daily_push/production_preflight.py` |
 | MOD-ADP-014 | Manual production trial bootstrap gate | deterministic workflow contract validator | Validate the GitHub workflow/runbook entrypoint for preflight-first trial startup while keeping production side effects disabled | active | adp-trial-bootstrap-v1 | `src/arxiv_daily_push/trial_bootstrap.py`, `.github/workflows/arxiv-daily-push-production-trial.yml` |
 | MOD-ADP-015 | Live arXiv latest source ingest | deterministic source ingest adapter | Fetch a small latest arXiv Atom window, parse SourceItems, and filter previously seen source IDs without downloading PDFs | active | adp-live-arxiv-ingest-v1 | `src/arxiv_daily_push/source_ingest.py` |
+| MOD-ADP-016 | SMTP notification delivery boundary | deterministic notification transport gate | Produce dry-run SMTP delivery evidence by default and send real mail only with explicit allow flag plus configured SMTP environment keys | active | adp-smtp-delivery-v1 | `src/arxiv_daily_push/smtp_delivery.py` |
 
 ## B. Assumptions
 
@@ -53,6 +54,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-016 | Scheduled production execution must be blocked unless runtime commands, secret environment keys, disk, memory, Git artifact hygiene, and local cache/staging checks pass without logging secret values. | `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`, `src/arxiv_daily_push/production_preflight.py`, `tests/test_production_preflight.py` | Phase 11 production preflight | active |
 | ASM-ADP-017 | Production trial startup must be manual-only until prerequisites pass, run preflight before any trial work, upload preflight evidence, and avoid Release upload or SMTP sending in bootstrap mode. | `docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md`, `src/arxiv_daily_push/trial_bootstrap.py`, `.github/workflows/arxiv-daily-push-production-trial.yml` | Phase 11 trial bootstrap | active |
 | ASM-ADP-018 | Live arXiv source ingest must use the official Atom API, keep request windows small, filter duplicate source IDs, avoid PDF/bulk download, and fail closed on network, TLS, API, or SourceItem validation errors. | `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`, `src/arxiv_daily_push/source_ingest.py`, `tests/test_source_ingest.py` | Phase 11 source ingest readiness | active |
+| ASM-ADP-019 | SMTP notification transport must default to dry-run, require explicit `--allow-send` for real mail, use only external environment keys for secrets, require TLS, and never log SMTP secret values or email body text. | `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`, `src/arxiv_daily_push/smtp_delivery.py`, `tests/test_notifications.py` | Phase 11 SMTP delivery readiness | active |
 
 ## C. Functions and Formulas
 
@@ -75,6 +77,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-015 blocks production execution unless runtime command, secret-key presence, disk, memory, Git artifact hygiene, and local cache/staging gates pass.
 - FORM-ADP-016 validates the manual GitHub trial bootstrap workflow and runbook before a real 30-day trial can be started.
 - FORM-ADP-017 fetches latest arXiv Atom SourceItems, validates them, and filters already-seen source IDs before ranking.
+- FORM-ADP-018 emits SMTP delivery evidence in dry-run mode by default and blocks real sends unless explicit allow-send, SMTP env keys, recipient, TLS, and delivery checks pass.
 
 ## D. Parameters
 
@@ -95,6 +98,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 production preflight parameters: PARAM-ADP-065 through PARAM-ADP-070.
 - Active Phase 11 trial bootstrap parameters: PARAM-ADP-071 through PARAM-ADP-074.
 - Active Phase 11 live source ingest parameters: PARAM-ADP-075 through PARAM-ADP-080.
+- Active Phase 11 SMTP delivery parameters: PARAM-ADP-081 through PARAM-ADP-085.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -184,6 +188,13 @@ download and bulk harvest, records the API request metadata, and blocks on
 network, TLS, API, Atom parsing, duplicate-only, or SourceItem validation
 failures.
 
+The SMTP notification delivery gate renders the existing email notification into
+delivery evidence. It defaults to dry-run and does not require secrets in that
+mode. Real SMTP sending requires the explicit `--allow-send` flag, the configured
+recipient, all SMTP environment keys, valid port parsing, TLS startup, login, and
+successful `send_message`. Reports include the subject, recipient, body SHA256,
+and key names only; they do not log SMTP secret values or the email body.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -223,6 +234,9 @@ failures.
 - Live arXiv ingest with network/TLS/API/Atom errors -> source batch blocked.
 - Live arXiv ingest with only previously seen source IDs -> source batch blocked to avoid duplicate publication.
 - Live arXiv ingest never downloads PDFs or performs bulk harvest.
+- SMTP delivery without `--allow-send` -> dry-run evidence only, no SMTP connection.
+- SMTP delivery with `--allow-send` but missing SMTP env keys, invalid port, wrong recipient, SMTP failure, or refused recipient -> blocked.
+- SMTP delivery reports never log SMTP secret values or email body text.
 - Production pass with any missing requirement -> acceptance validation error.
 
 ## G. Validation
@@ -245,3 +259,4 @@ Uncovered planned scenarios:
 - Actual production preflight pass on a provisioned runner with SMTP, Release, and media dependencies installed.
 - Actual 30-day trial start and scheduled daily run execution on the provisioned runner.
 - Local Python HTTPS certificate validation for `https://export.arxiv.org/api/query` currently blocks live source ingest on this machine.
+- Real SMTP delivery against the provisioned production SMTP server and archived message evidence.
