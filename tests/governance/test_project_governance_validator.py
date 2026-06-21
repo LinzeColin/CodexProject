@@ -1139,13 +1139,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-052")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-053")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-PHASE11-PROVISIONING-AUDIT-REVIEW-20260622.json",
+            "governance/run_manifests/ADP-PHASE11-TWO-DAY-SIMULATION-20260622.json",
         )
         rendered = dashboard.render_owner_status(info, "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
-        self.assertIn("provisioning audit artifact review", rendered)
+        self.assertIn("two-day simulation", rendered)
+        self.assertIn("production acceptance claim", rendered)
         self.assertNotIn("root semantic extractor selector behavior expanded", rendered)
 
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
@@ -1427,12 +1428,16 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("default_branch_ref", manifest["launch_gate"]["failed_gates"])
         self.assertIn("trial_start_workflow_ready", manifest["launch_gate"]["passed_gates"])
 
-        status_text = (ROOT / "arxiv-daily-push" / "docs" / "governance" / "STATUS.md").read_text(
+        trial_start_workflow = (ROOT / ".github" / "workflows" / "arxiv-daily-push-trial-start.yml").read_text(
             encoding="utf-8"
         )
-        self.assertIn("contents: write", status_text)
-        self.assertIn("Production launch remains blocked", status_text)
-        self.assertNotIn("draft and unmerged", status_text)
+        scheduled_workflow = (ROOT / ".github" / "workflows" / "arxiv-daily-push-scheduled.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("contents: write", trial_start_workflow)
+        self.assertIn("contents: write", scheduled_workflow)
+        self.assertTrue(any("Production launch remains blocked" in risk for risk in manifest["risks"]))
+        self.assertNotIn("draft and unmerged", " ".join(manifest["risks"]))
 
     def test_arxiv_daily_push_phase11_manifest_records_production_trial_start_precheck(self) -> None:
         manifest = json.loads(
@@ -1595,6 +1600,32 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(gate["workflow_dispatched"])
         self.assertFalse(gate["smtp_sent"])
         self.assertFalse(gate["release_uploaded"])
+        self.assertFalse(gate["production_acceptance_claimed"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_two_day_simulation(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE11-TWO-DAY-SIMULATION-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TWO-DAY-SIMULATION-030")
+        gate = manifest["two_day_simulation_gate"]
+        self.assertEqual(gate["command"], "run-two-day-simulation")
+        self.assertEqual(gate["model_id"], "adp-two-day-simulation-v1")
+        self.assertEqual(gate["observed_day_count"], 2)
+        self.assertEqual(gate["observed_dates"], ["2026-06-22", "2026-06-23"])
+        self.assertTrue(gate["two_day_simulation_ready"])
+        self.assertFalse(gate["network_fetch_performed"])
+        self.assertFalse(gate["side_effects_performed"])
+        self.assertFalse(gate["real_smtp_sent"])
+        self.assertFalse(gate["real_release_uploaded"])
+        self.assertFalse(gate["secret_values_logged"])
+        self.assertFalse(gate["codex_auth_read"])
+        self.assertFalse(gate["accepted_for_production"])
         self.assertFalse(gate["production_acceptance_claimed"])
 
     def test_arxiv_daily_push_semantic_extract_manifest_records_partial_coverage(self) -> None:

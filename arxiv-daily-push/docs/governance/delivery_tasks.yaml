@@ -681,3 +681,20 @@ tasks:
     target_version: "0.11.26"
     completed_version: "0.11.26"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TWO-DAY-SIMULATION-030"
+    phase: "E"
+    objective: "Run and validate the updated Phase 11 two-day simulation acceptance path."
+    scope: "Two-day simulation module, CLI command, focused tests, runbook, phase record, version, and governance records."
+    non_scope: "No network fetch, no real SMTP send, no real Release upload, no secret value read, no Codex auth read, no media/model/cache artifact retention, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-SCHEDULED-EXECUTION-010", "ADP-PHASE11-TRIAL-LEDGER-012"]
+    required_files: ["src/arxiv_daily_push/simulation.py", "src/arxiv_daily_push/cli.py", "tests/test_simulation.py", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TWO-DAY-SIMULATION"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_two_day_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_simulation.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_two_day_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push run-two-day-simulation --path . --generated-at 2026-06-22T06:30:00+10:00 --start-date 2026-06-22 --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_two_day_arxiv PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused two-day simulation tests: 3 tests OK", "two-day simulation CLI report: pass with observed_day_count=2 and production_acceptance_claimed=false", "arxiv-daily-push unit tests: 160 tests OK", "pending final semantic/governance validation"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md", "arxiv-daily-push/src/arxiv_daily_push/simulation.py", "arxiv-daily-push/tests/test_simulation.py", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    risk: "The two-day simulation proves the scheduled daily path and ledger update under mocked SMTP/Release boundaries only; real owner provisioning and live production launch remain separate external work."
+    rollback: "Remove the simulation module, CLI command, tests, PARAM-ADP-167/168/169, MOD-ADP-031, FORM-ADP-033, phase record, manifest, governance updates, and restore version 0.11.26."
+    target_version: "0.11.27"
+    completed_version: "0.11.27"
+    unknown_task_ids: []

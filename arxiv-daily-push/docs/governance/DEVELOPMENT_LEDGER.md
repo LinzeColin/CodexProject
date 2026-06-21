@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.26`
+Active product version: `0.11.27`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.26
+- Product version: 0.11.27
 - Current phase: E
-- Current gate: ADP-PHASE11-PRODUCTION-TRIAL-START-BLOCKED
-- Confirmed iteration count: 45
+- Current gate: ADP-PHASE11-TWO-DAY-SIMULATION-PASS
+- Confirmed iteration count: 46
 - Reconstructed event count: 0
-- Current task: ADP-PHASE11-PRODUCTION-TRIAL-START-022
-- Blockers: Semantic coverage is machine_verified with 165 machine-checked active parameters and all 32 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. Production refs provisioning now has a no-secret owner-fillable template, a GitHub metadata discovery command for provisioned runners, a GitHub-hosted no-secret provisioning audit workflow, and a local no-side-effect provisioning audit artifact review command. Trial-start/scheduled production workflows declare machine-checked `contents: write` permission for controlled draft Release evidence, and trial-start now runs production refs discovery plus launch readiness before source, SMTP, Release, or start-gate work. Production launch remains blocked by missing owner-provisioned durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, missing explicit launch confirmation, missing passing provisioning audit workflow and artifact review evidence, and missing default-branch trial-start run evidence. Production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
+- Current task: ADP-PHASE11-TWO-DAY-SIMULATION-030
+- Blockers: The updated local Phase 11 two-day simulation gate passes with two consecutive mocked scheduled daily runs, two trial ledger appends, no real SMTP, no real Release upload, no network fetch, no Codex auth read, and no production acceptance claim. Semantic coverage is machine_verified with 168 machine-checked active parameters and all 33 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. Production launch remains blocked by missing owner-provisioned durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, missing explicit launch confirmation, missing passing owner-run provisioning audit and artifact review evidence, and missing default-branch trial-start run evidence. Full production acceptance still requires owner-provisioned runner/secret/Release/workflow refs, a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries if the project chooses the real production-trial path later.
 
 ## Phase Matrix
 
@@ -24,7 +24,7 @@ The append-only machine record is `development_events.jsonl`.
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
-| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, SMTP delivery, Release delivery, scheduler gate, scheduled execution driver, daily input builder, trial ledger update, trial ledger state persistence, trial ops evidence annotation, trial replay evidence, trial recovery evidence, trial resource evidence, trial start gate, trial start workflow, production launch readiness, post-merge launch audit, production refs readiness bundle, production refs input template, GitHub metadata discovery, trial-start launch preflight, provisioning audit workflow, and provisioning audit review generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md` |
+| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, SMTP delivery, Release delivery, scheduler gate, scheduled execution driver, daily input builder, trial ledger update, trial ledger state persistence, trial ops evidence annotation, trial replay evidence, trial recovery evidence, trial resource evidence, trial start gate, trial start workflow, production launch readiness, post-merge launch audit, production refs readiness bundle, production refs input template, GitHub metadata discovery, trial-start launch preflight, provisioning audit workflow, provisioning audit review, and updated two-day simulation gate generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md` |
 
 ## Iteration Records
 
@@ -1063,6 +1063,30 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: The review proves only downloaded artifact registration; production acceptance still requires passing default-branch trial start evidence, live source pass on the runner, real SMTP/Release refs, archived weekly/monthly replay evidence, archived recovery drill evidence, actual resource telemetry, and 30 unique daily production evidence entries.
 - Rollback: Remove provisioning audit review function, CLI command, tests, PARAM-ADP-166, phase record, manifest, and related governance records, then restore version 0.11.25.
 - Next step: Run the provisioning audit workflow on `main`, download its artifact, run `review-provisioning-audit` with durable refs, then dispatch the default-branch trial-start workflow only after audit review and launch readiness pass.
+
+### `ITER-20260621-046`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from two-day simulation code, CLI report, focused tests, full arXiv tests, and semantic registry checks.
+- Version before: 0.11.26
+- Version after: 0.11.27
+- Base commit: c75fa25fc79eed87ef510b4ce990ab663e362db5
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-TWO-DAY-SIMULATION-030
+- Goal: Satisfy the updated Phase 11 local acceptance target with a deterministic two-day simulation instead of requiring 30 production days.
+- Assumptions: The simulation can prove only the local scheduled-path behavior with mocked SMTP and mocked Release boundaries; it must not fetch live network data, read secret values, read Codex auth, retain media/model/cache artifacts, or claim production acceptance.
+- Files changed: simulation module, CLI command, focused tests, version/changelog files, model/formula/parameter/traceability registries, delivery task, phase record, event, and run manifest.
+- Model changes: Added MOD-ADP-031 for the two-day simulation acceptance gate.
+- Formula changes: Refreshed FORM-ADP-024 because `cli.py::main` changed, and added FORM-ADP-033 for two-day simulation validation.
+- Parameter changes: Added PARAM-ADP-167 through PARAM-ADP-169 for the simulation model ID, required simulated day count, and no-production-claim safety flags.
+- Commands run: focused simulation tests; `run-two-day-simulation` CLI with start date 2026-06-22; simulation report JSON parse; full arXiv unit test discovery; semantic extractor validation; governance manifest and JSONL parse.
+- Test results: focused two-day simulation tests 3 OK; two-day simulation CLI status pass with `two_day_simulation_ready=true`, `observed_day_count=2`, and `production_acceptance_claimed=false`; simulation report JSON parse OK; arXiv unit tests 160 OK; semantic extractor checked 168 active parameters and 33 active formulas with no errors.
+- Successes: The updated local goal has a durable two-day simulation report covering 2026-06-22 and 2026-06-23, with unique simulated source/publication IDs and explicit no-real-side-effect gates.
+- Failures: No real owner-run provisioning audit artifact, owner-provisioned runner/SMTP/Release/workflow refs, workflow dispatch, SMTP send, Release upload, default-branch trial-start run, or 30-day production evidence was produced in this run.
+- Decisions: Treat the two-day simulation as sufficient for the updated local Phase 11 acceptance target while preserving the separate real production-trial path as blocked until external owner evidence exists.
+- Remaining risks: Real production launch still requires owner-provisioned durable refs, explicit launch confirmation, default-branch workflow evidence, and real SMTP/Release/resource evidence.
+- Rollback: Remove the two-day simulation module, CLI command, tests, MOD-ADP-031, FORM-ADP-033, PARAM-ADP-167 through PARAM-ADP-169, phase record, manifest, and related governance records, then restore version 0.11.26.
+- Next step: Sync the two-day simulation changes to GitHub and, only if real production launch is requested later, run the provisioning audit and default-branch trial-start path with owner-provided refs.
 
 ## Unknown Historical Periods
 

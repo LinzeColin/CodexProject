@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.27 - 2026-06-22
+
+- Added `adp run-two-day-simulation` for the updated Phase 11 two-day simulation acceptance path.
+- The simulation runs two unique scheduled daily paths with mocked SMTP and Release boundaries, appends both days to trial evidence, and verifies no duplicate dates, source IDs, or publication IDs.
+- Kept the simulation fail-closed and explicit: it does not fetch network data, send real SMTP mail, upload a real Release, read Codex auth, log secret values, retain media/cache artifacts, or claim production acceptance.
+
 ## 0.11.26 - 2026-06-22
 
 - Added `adp review-provisioning-audit` to register a downloaded `adp-production-provisioning-audit` artifact before trial-start dispatch.
