@@ -4048,7 +4048,7 @@ Status: LOCAL AND REMOTE CI VALIDATED; A202/A206 STILL IN PROGRESS
 
 ## 2026-06-21 - T1301/A202 live capture PostgreSQL ingestion contract
 
-Status: LOCAL VALIDATED; A202/A206 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A202/A206 STILL IN PROGRESS
 
 ### Scope
 
@@ -4080,6 +4080,18 @@ Status: LOCAL VALIDATED; A202/A206 STILL IN PROGRESS
 - `.venv/bin/python -m json.tool tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json`: PASS.
 - `.venv/bin/python -m json.tool artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json`: PASS.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make verify`: PASS after rerun outside the macOS sandbox for Chromium browser benchmark; release package paths 387, manifest paths 394, checksum paths 393.
+
+### Remote validation
+
+- GitHub Actions EEI validation run `27893172875` / job `82540125436`: PASS on commit `4c9c63a7ccbb9a925ed97af64b2e31d46b73c6cf`.
+- Step 7 static/contract/lint/typecheck/unit: PASS.
+- Step 8 G2 PostgreSQL preparation: PASS.
+- Step 9 G2 static/contract/lint/typecheck/unit: PASS.
+- Step 10 G2 PostgreSQL integration: PASS.
+- Step 11 G2 browser E2E: PASS.
+- Step 12 G2 live FastAPI PostgreSQL E2E: PASS.
+- GitHub Actions Project Governance run `27893172917`: PASS.
 
 ### Rollback
 

@@ -288,6 +288,23 @@ Do not infer iteration count from Git commit count.
 - Rollback: remove the live ingestion loader, fixture, tests, contract artifact and status/traceability updates; remove any deployed live parser rows by `parser_version='nvidia-official-fulltext-live-v1'` or restore a data snapshot.
 - Next step: run full local verification, regenerate release artifacts, commit, push and verify GitHub Actions.
 
+### `ITER-20260621-011`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `4c9c63a`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, `TASK-T1304`
+- Goal: record remote CI evidence for the A202 live capture PostgreSQL ingestion contract without closing A202/A206.
+- Commands run: GitHub Actions EEI validation run `27893172875` / job `82540125436`; GitHub Actions Project Governance run `27893172917`.
+- Test results: EEI validation PASS; Step 7 static/contract/lint/typecheck/unit PASS, Step 8 G2 PostgreSQL preparation PASS, Step 9 G2 static/contract/lint/typecheck/unit PASS, Step 10 G2 PostgreSQL integration PASS, Step 11 browser E2E PASS and Step 12 live FastAPI PostgreSQL E2E PASS. Project Governance PASS.
+- Decisions: keep A202/A206 `IN_PROGRESS`; remote CI proves the loader contract and fixture-gated PostgreSQL path, not real operator payload, owner decision, legal clearance or long soak.
+- Remaining risks: production capture still depends on operator-approved network run, source licensing review, non-fixture PostgreSQL ingestion, owner sign-off and A206/A209 long-duration evidence.
+- Rollback: revert the remote evidence update and regenerate release artifacts with `remote_status=PENDING`.
+- Next step: commit and push the remote evidence update, then verify the evidence-only CI run.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -300,6 +317,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-010`: local implementation evidence for TASK-T1301/A202 live official retrieval adapter contract.
 - `EVENT-20260621-011`: remote CI validation evidence for TASK-T1301/A202 live official retrieval adapter contract.
 - `EVENT-20260621-012`: local implementation evidence for TASK-T1301/A202 live capture PostgreSQL ingestion contract.
+- `EVENT-20260621-013`: remote CI validation evidence for TASK-T1301/A202 live capture PostgreSQL ingestion contract.
 
 ## Unknown Historical Periods
 
