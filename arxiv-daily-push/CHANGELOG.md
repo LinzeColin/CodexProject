@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 - 2026-06-21
+
+- Added Phase 5 Claim Ledger construction and publication hard-block gate.
+- Added `adp gate-publication` for local source/claim JSON gate checks.
+- Added fail-closed checks for missing P0 locators, unsupported P0 claims, metadata conflicts, and unsupported arXiv peer-review claims.
+- Added Claim Ledger fixture and evidence gate tests.
+
 ## 0.4.0 - 2026-06-21
 
 - Added Phase 4 deterministic 100-point ranking and queue audit.

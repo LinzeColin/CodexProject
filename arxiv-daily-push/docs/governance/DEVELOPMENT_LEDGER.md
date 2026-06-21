@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.4.0`
+Active product version: `0.5.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.4.0
+- Product version: 0.5.0
 - Current phase: C
-- Current gate: ADP-PHASE4-RANKING-PASS
-- Confirmed iteration count: 4
+- Current gate: ADP-PHASE5-EVIDENCE-GATE-PASS
+- Confirmed iteration count: 5
 - Reconstructed event count: 0
-- Current task: ADP-PHASE5-EVIDENCE-GATE-001
-- Blockers: Later phases still need automatic Claim Ledger extraction, lesson generation, real mail transport validation, and later media/runner resource readiness.
+- Current task: ADP-PHASE6-LESSON-001
+- Blockers: Later phases still need lesson generation, real mail transport validation, and later media/runner resource readiness.
 
 ## Phase Matrix
 
@@ -22,7 +22,7 @@ The append-only machine record is `development_events.jsonl`.
 |---|---|---|---|---|
 | A | Phase 1 repository foundation | completed | CLI skeleton, governance records, and tests pass | `docs/phase_records/PHASE_01.md` |
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
-| C | Evidence and text lesson | in_progress | Claim Ledger and lesson verification pass | planned Phase 5-6 |
+| C | Evidence and text lesson | in_progress | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; planned Phase 6 |
 | D | TTS/video/local pipeline/GitHub automation | planned | media gates and daily pipeline pass | planned Phase 7-10 |
 | E | Weekly/monthly trial and handoff | planned | 30-day acceptance passes | planned Phase 11 |
 
@@ -120,6 +120,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Live source freshness and automatic Claim Ledger extraction remain future gates.
 - Rollback: Revert Phase 4 ranking code, tests, fixture, and governance updates.
 - Next step: Start Phase 5 Claim Ledger extraction and publication gate after final Phase 4 validation passes.
+
+### `ITER-20260621-005`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for Claim Ledger gate code, CLI command, local fixture, tests, and governance updates.
+- Version before: 0.4.0
+- Version after: 0.5.0
+- Base commit: 5a8034552810fb1efa2b9ff85f774180c85ac1f2
+- Result commit: PENDING
+- Task IDs: ADP-PHASE5-EVIDENCE-GATE-001
+- Goal: Implement deterministic Claim Ledger construction and publication hard-block gates.
+- Assumptions: Phase 5 consumes explicit evidence claims and does not parse PDFs, generate lesson text, send email, or create media.
+- Files changed: evidence gate code, CLI command, Claim Ledger fixture, evidence gate tests, version files, and governance records.
+- Model changes: Activated MOD-ADP-003 as adp-claim-gate-v1.
+- Parameter changes: Activated PARAM-ADP-017 and PARAM-ADP-018 as adp-evidence-parameters-v1.
+- Commands run: `PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q`.
+- Test results: 32 unit tests OK.
+- Successes: Missing P0 locator, unsupported P0, metadata conflict, and unsupported arXiv peer-review claims block publication.
+- Failures: Initial empty `Publication.artifacts` output failed validation and was fixed by recording the Claim Ledger artifact.
+- Decisions: Treat Claim Ledger as a required publication artifact before publication is ready.
+- Remaining risks: Lesson generation and text-level claim coverage remain future gates.
+- Rollback: Revert Phase 5 evidence gate code, tests, fixture, and governance updates.
+- Next step: Start Phase 6 evidence-linked lesson generation.
 
 ## Unknown Historical Periods
 

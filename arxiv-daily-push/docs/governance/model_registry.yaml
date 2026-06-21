@@ -31,6 +31,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_04.md", "arxiv-daily-push/src/arxiv_daily_push/ranking.py", "arxiv-daily-push/tests/test_ranking.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-007"
+    statement: "Phase 5 builds a Claim Ledger from explicit evidence claims and blocks publication on unsupported P0 claims, metadata conflicts, or unsupported arXiv peer-review claims."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_05.md", "arxiv-daily-push/src/arxiv_daily_push/evidence_gate.py", "arxiv-daily-push/tests/test_evidence_gate.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -105,16 +110,15 @@ models:
     kind: "deterministic evidence gate"
     purpose: "Block publication when claims lack source locators or conflict with source metadata."
     owner: "arxiv-daily-push"
-    status: "planned"
-    fact_level: "PROPOSED"
-    model_version: "adp-claim-gate-planned-v1"
-    assumption_ids: ["ASM-ADP-003"]
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-claim-gate-v1"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-007"]
     formula_ids: ["FORM-ADP-004"]
-    parameter_ids: ["PARAM-ADP-017", "PARAM-ADP-018", "PARAM-ADP-019"]
-    inputs: ["EvidenceClaim", "source locator", "paper metadata", "lesson.json"]
-    outputs: ["publish allowed", "blocking reason", "manual review queue"]
-    code_refs: []
-    config_refs: []
-    test_refs: []
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-    unknown_task_ids: ["ADP-PHASE5-EVIDENCE-GATE-001"]
+    parameter_ids: ["PARAM-ADP-017", "PARAM-ADP-018"]
+    inputs: ["SourceItem", "EvidenceClaim", "source locator", "paper metadata"]
+    outputs: ["Claim Ledger", "publish allowed", "blocking reason", "Publication status"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/evidence_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/evidence_claim.schema.json", "arxiv-daily-push/schemas/publication.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_evidence_gate.py", "arxiv-daily-push/tests/fixtures/claim_ledger_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_05.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
