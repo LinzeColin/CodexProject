@@ -1,10 +1,11 @@
 # arXiv Daily Push
 
 `arXiv 日报推送 / arXiv Daily Push` is a private, evidence-first daily learning
-pipeline. The Phase 5 foundation provides the local package, CLI contract,
+pipeline. The Phase 6 foundation provides the local package, CLI contract,
 governance records, configuration examples, generic schemas, runtime contract
 validators, a deterministic `RunRecord` state machine, an arXiv Atom adapter,
-deterministic ranking, Claim Ledger publication gate, and tests.
+deterministic ranking, Claim Ledger publication gate, evidence-linked lesson
+generation, and tests.
 
 ## Current Scope
 
@@ -18,6 +19,7 @@ Implemented now:
 - `adp parse-arxiv-atom`
 - `adp rank-candidates`
 - `adp gate-publication`
+- `adp generate-lesson`
 - dry-run email rendering for `linzezhang35@gmail.com`
 - local resource and dependency readiness checks
 - generic contracts for `SourceItem`, `EvidenceClaim`, `Lesson`, `Storyboard`, `Publication`, and `RunRecord`
@@ -27,12 +29,13 @@ Implemented now:
 - fail-closed candidate blocking for missing P0 evidence, metadata conflicts, and recent duplicate selections
 - Claim Ledger construction from explicit evidence claims
 - publication hard-block gate for unsupported P0 claims, metadata conflicts, and unsupported peer-review claims
+- deterministic Chinese Lesson JSON generation from supported Claim Ledger evidence
+- lesson validation that blocks unsupported or unknown claim references
 - governance records required by `CodexProject`
 
 Not implemented yet:
 
 - scheduled or bulk arXiv ingestion
-- lesson generation
 - TTS model download
 - video rendering
 - GitHub Actions runner setup

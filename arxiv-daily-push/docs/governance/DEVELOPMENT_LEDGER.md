@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.5.0`
+Active product version: `0.6.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.5.0
+- Product version: 0.6.0
 - Current phase: C
-- Current gate: ADP-PHASE5-EVIDENCE-GATE-PASS
-- Confirmed iteration count: 5
+- Current gate: ADP-PHASE6-LESSON-PASS
+- Confirmed iteration count: 6
 - Reconstructed event count: 0
-- Current task: ADP-PHASE6-LESSON-001
-- Blockers: Later phases still need lesson generation, real mail transport validation, and later media/runner resource readiness.
+- Current task: ADP-PHASE7-TTS-001
+- Blockers: Later phases still need narration/TTS resource validation, real mail transport validation, and later media/runner readiness.
 
 ## Phase Matrix
 
@@ -22,7 +22,7 @@ The append-only machine record is `development_events.jsonl`.
 |---|---|---|---|---|
 | A | Phase 1 repository foundation | completed | CLI skeleton, governance records, and tests pass | `docs/phase_records/PHASE_01.md` |
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
-| C | Evidence and text lesson | in_progress | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; planned Phase 6 |
+| C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | planned | media gates and daily pipeline pass | planned Phase 7-10 |
 | E | Weekly/monthly trial and handoff | planned | 30-day acceptance passes | planned Phase 11 |
 
@@ -143,6 +143,30 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Lesson generation and text-level claim coverage remain future gates.
 - Rollback: Revert Phase 5 evidence gate code, tests, fixture, and governance updates.
 - Next step: Start Phase 6 evidence-linked lesson generation.
+
+
+### `ITER-20260621-006`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for lesson generation code, CLI command, local fixture, tests, and governance updates.
+- Version before: 0.5.0
+- Version after: 0.6.0
+- Base commit: 7d67c585ec1a808da23ffd0e097dddc6af617b02
+- Result commit: PENDING
+- Task IDs: ADP-PHASE6-LESSON-001
+- Goal: Implement deterministic Chinese Lesson JSON generation from supported Claim Ledger evidence.
+- Assumptions: Phase 6 remains text-only and does not synthesize narration, download models, render video, run schedulers, or send SMTP mail.
+- Files changed: lesson generation code, CLI command, lesson fixture, lesson tests, version files, and governance records.
+- Model changes: Activated MOD-ADP-006 as adp-lesson-v1.
+- Parameter changes: Activated PARAM-ADP-035 and PARAM-ADP-036 as adp-lesson-parameters-v1.
+- Commands run: `PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q`.
+- Test results: 37 unit tests OK.
+- Successes: Generated Lesson JSON references only supported claim IDs; unverified non-P0 claims are excluded; blocked ledgers prevent generation; unregistered section claims fail validation.
+- Failures: none recorded at implementation time.
+- Decisions: Use deterministic template generation with visible `[claim_id]` markers rather than model-generated free text.
+- Remaining risks: Narration/TTS, media rendering, daily scheduler, Release upload, and real SMTP transport remain future gates.
+- Rollback: Revert Phase 6 lesson code, tests, fixture, and governance updates.
+- Next step: Start Phase 7 narration/TTS dry-run and resource gate.
 
 ## Unknown Historical Periods
 
