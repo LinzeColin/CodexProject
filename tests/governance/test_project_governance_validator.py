@@ -458,6 +458,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-ACCEPTANCE-HANDOFF-001")
         self.assertIn("MOD-ADP-011", manifest["model_delta"])
 
+    def test_arxiv_daily_push_phase11_manifest_records_evidence_ref_hardening(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-EVIDENCE-REF-HARDENING-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-EVIDENCE-REF-HARDENING-002")
+        self.assertIn("MOD-ADP-011", manifest["model_delta"])
+
 
 if __name__ == "__main__":
     unittest.main()
