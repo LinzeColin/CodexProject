@@ -10,11 +10,11 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.11.19
 - Current phase: E
-- Current gate: GOV-SEMANTIC-ADP-REDUCED
-- Confirmed iteration count: 36
+- Current gate: GOV-SEMANTIC-ADP-MACHINE-VERIFIED
+- Confirmed iteration count: 37
 - Reconstructed event count: 0
-- Current task: GOV-SEMANTIC-ADP-001
-- Blockers: Semantic coverage is now in progress with 131 machine-checked active parameters and all 31 active formulas; 21 active parameters remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. PR #30 is merged to `main` and main Project Governance CI passed for merge commit `662451767eb280765ea01f0d08bf7f54c2add0ec`; production launch remains blocked by missing explicit launch confirmation and missing durable readiness refs for `default_branch_ref`, `runner_ref`, `smtp_secret_ref`, `release_target_ref`, `workflow_vars_ref`, and `trial_start_workflow_ref`; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
+- Current task: PROVISION_PRODUCTION_REFS_AND_START_DEFAULT_BRANCH_TRIAL
+- Blockers: Semantic coverage is machine_verified with 152 machine-checked active parameters and all 31 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. PR #31 is merged to `main` and main Project Governance CI passed for merge commit `d7ad354519374946c70440abae213410c2cb061d`; production launch remains blocked by missing explicit launch confirmation and missing durable readiness refs for `default_branch_ref`, `runner_ref`, `smtp_secret_ref`, `release_target_ref`, `workflow_vars_ref`, and `trial_start_workflow_ref`; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
 
 ## Phase Matrix
 
@@ -850,6 +850,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Production launch and production acceptance remain blocked by external refs, runner/secrets/Release evidence, trial start evidence, and 30-day operational evidence.
 - Rollback: Revert the selector transform changes, remove the fourth semantic extractor expansion, `GOV-SEMANTIC-ADP-EXTRACT-004.json`, generated status/dashboard changes, event update, and test update.
 - Next step: Resolve the remaining external/composite parameters or provision durable production launch refs before trial start.
+
+### `ITER-20260621-037`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED for final semantic selector behavior, active parameter validation, and machine_verified coverage binding.
+- Version before: 0.11.19
+- Version after: 0.11.19
+- Base commit: d7ad354519374946c70440abae213410c2cb061d
+- Result commit: PENDING
+- Task IDs: GOV-SEMANTIC-ADP-001
+- Goal: Complete machine semantic coverage for arXiv Daily Push active parameters and formulas without changing runtime behavior.
+- Assumptions: Final selectors inspect deterministic source/config/workflow text and Python AST constants only; external production evidence remains outside semantic registry completion and still blocks Phase 11 production acceptance.
+- Files changed: semantic extractor validator, root governance tests, arXiv parameter registry semantic columns, governance project registry, delivery task, version matrix, ledger/status, run manifest, development event, and dashboard.
+- Model changes: No arXiv Daily Push runtime model behavior change; root semantic extractor selector behavior expanded for governance validation only.
+- Parameter changes: No active parameter value change; semantic metadata added for the final 21 active parameter selectors.
+- Commands run: selector transform focused test; selector probe for the final 21 parameters; `validate_semantic_extractors.py arxiv-daily-push`; `validate_project_governance.py --project arxiv-daily-push`; root governance unittest discover; arXiv unit test discover; `generate_governance_dashboard.py --write`; `validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main`; manifest JSON parse; `git diff --check`; arXiv cache scan; storage check.
+- Test results: selector transform focused test 1 OK; selector probe matched all final 21 active parameter values; semantic extractor checked 152 active parameters and 31 active formulas with no errors; project governance errors 0 warnings 0; root governance tests 89 OK; arXiv unit tests 143 OK; dashboard generation PASS after temporarily restoring full registered project validation context; changed-only enforce-sync semantic errors 0 warnings 0 with `arxiv-daily-push` changed and all registered project validation errors 0 warnings 0; manifest JSON parse passed; `git diff --check` passed after EOF cleanup; no arXiv `__pycache__` or `.pyc`; pre-shrink storage worktree 222M, `arxiv-daily-push` 1.8M, `.git` 90M.
+- Successes: All 152 active parameters and all 31 active formulas machine-check under `GOV-SEMANTIC-ADP-001`; next tracked task is external production trial start provisioning.
+- Failures: No active semantic registry rows remain HUMAN_REVIEW_REQUIRED; production launch and production acceptance remain blocked by external runner/secrets/Release/workflow/trial evidence.
+- Decisions: Mark semantic coverage `machine_verified` and complete `GOV-SEMANTIC-ADP-001`; keep production launch/30-day acceptance blocked until real external evidence exists.
+- Remaining risks: Production launch and production acceptance remain blocked by external refs, runner/secrets/Release evidence, trial start evidence, and 30-day operational evidence.
+- Rollback: Revert the final selector transform changes, remove the fifth semantic extractor expansion, `GOV-SEMANTIC-ADP-EXTRACT-005.json`, generated status/dashboard changes, event update, and test update.
+- Next step: Provision durable production refs and run the default-branch trial start workflow with explicit confirmation.
 
 ## Unknown Historical Periods
 

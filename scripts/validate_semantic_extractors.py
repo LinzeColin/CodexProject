@@ -168,6 +168,22 @@ def literal_value(node: ast.AST) -> Any:
         return {literal_value(item) for item in node.elts}
     if isinstance(node, ast.Dict):
         return {literal_value(key): literal_value(value) for key, value in zip(node.keys, node.values)}
+    if (
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "frozenset"
+        and len(node.args) == 1
+        and not node.keywords
+    ):
+        return set(literal_sequence_items(node.args[0], "frozenset literal"))
+    if (
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "set"
+        and not node.args
+        and not node.keywords
+    ):
+        return set()
     raise SemanticExtractionError(f"unsupported literal expression: {ast.dump(node, include_attributes=False)}")
 
 
@@ -279,6 +295,125 @@ def sequence_firsts_from_node(node: ast.AST, selector: str) -> list[Any]:
     return firsts
 
 
+def literal_sequence_items(node: ast.AST, selector: str) -> list[Any]:
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "frozenset" and len(node.args) == 1:
+        return literal_sequence_items(node.args[0], selector)
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "set" and not node.args:
+        return []
+    if not isinstance(node, (ast.List, ast.Tuple, ast.Set)):
+        raise SemanticExtractionError(f"selector did not extract a literal sequence: {selector}")
+    return [literal_value(item) for item in node.elts]
+
+
+def find_module_assignment_node(tree: ast.Module, name: str) -> ast.AST:
+    return find_module_assignment(tree, name)
+
+
+def dict_projection_from_node(node: ast.AST, selector: str, options: dict[str, str]) -> str:
+    if not isinstance(node, ast.Dict):
+        raise SemanticExtractionError(f"selector did not extract dict: {selector}")
+    excluded = set(option_items(options.get("exclude_values", "")))
+    exclude_empty = options.get("exclude_empty", "").lower() == "true"
+    pair = options.get("pair", "=")
+    sep = options.get("sep", "|")
+    value_sep = options.get("value_sep", "|")
+    entries: list[str] = []
+    for key_node, value_node in zip(node.keys, node.values):
+        key = normalize_value(literal_value(key_node))
+        if isinstance(value_node, (ast.List, ast.Tuple, ast.Set)) or (
+            isinstance(value_node, ast.Call)
+            and isinstance(value_node.func, ast.Name)
+            and value_node.func.id in {"frozenset", "set"}
+        ):
+            values = [normalize_value(item) for item in literal_sequence_items(value_node, selector)]
+        else:
+            values = [normalize_value(literal_value(value_node))]
+        filtered = [item for item in values if item not in excluded]
+        if exclude_empty and not filtered:
+            continue
+        entries.append(f"{key}{pair}{value_sep.join(filtered)}")
+    return sep.join(entries)
+
+
+def assignments_concat(tree: ast.Module, names_text: str, selector: str) -> list[Any]:
+    values: list[Any] = []
+    for name in option_items(names_text):
+        node = find_module_assignment_node(tree, name)
+        if isinstance(node, (ast.List, ast.Tuple, ast.Set)) or (
+            isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in {"frozenset", "set"}
+        ):
+            values.extend(literal_sequence_items(node, selector))
+            continue
+        value = literal_value(node)
+        if isinstance(value, (list, tuple, set)):
+            values.extend(value)
+        else:
+            values.append(value)
+    return values
+
+
+def sequence_dict_field_values(node: ast.AST, field: str, selector: str) -> list[Any]:
+    if not isinstance(node, (ast.List, ast.Tuple)):
+        raise SemanticExtractionError(f"selector did not extract sequence of dicts: {selector}")
+    values: list[Any] = []
+    for item in node.elts:
+        if not isinstance(item, ast.Dict):
+            raise SemanticExtractionError(f"sequence item is not a dict: {selector}")
+        found = False
+        for key_node, value_node in zip(item.keys, item.values):
+            if normalize_value(literal_value(key_node)) == field:
+                values.append(literal_value(value_node))
+                found = True
+                break
+        if not found:
+            raise SemanticExtractionError(f"sequence dict item missing field {field}: {selector}")
+    return values
+
+
+def function_call_argument_values(tree: ast.Module, function_name: str, callee_name: str, arg_index: int) -> list[Any]:
+    function = find_function(tree, function_name)
+    calls: list[ast.Call] = []
+    for node in ast.walk(function):
+        if not isinstance(node, ast.Call):
+            continue
+        func = node.func
+        name = func.id if isinstance(func, ast.Name) else func.attr if isinstance(func, ast.Attribute) else ""
+        if name == callee_name:
+            calls.append(node)
+    calls.sort(key=lambda node: (getattr(node, "lineno", 0), getattr(node, "col_offset", 0)))
+    values: list[Any] = []
+    for call in calls:
+        if arg_index >= len(call.args):
+            raise SemanticExtractionError(f"call {callee_name} is missing positional arg {arg_index}")
+        values.append(literal_value(call.args[arg_index]))
+    if not values:
+        raise SemanticExtractionError(f"call {callee_name} not found in function {function_name}")
+    return values
+
+
+def for_tuple_values(tree: ast.Module, function_name: str, target_name: str, options: dict[str, str], selector: str) -> list[Any]:
+    function = find_function(tree, function_name)
+    candidates: list[list[Any]] = []
+    for node in ast.walk(function):
+        if not isinstance(node, ast.For):
+            continue
+        if not isinstance(node.target, ast.Name) or node.target.id != target_name:
+            continue
+        try:
+            candidates.append(literal_sequence_items(node.iter, selector))
+        except SemanticExtractionError:
+            continue
+    if not candidates:
+        raise SemanticExtractionError(f"for tuple target {target_name} not found in function {function_name}")
+    if "order" in options:
+        expected = set(option_items(options["order"]))
+        for values in candidates:
+            if {normalize_value(item) for item in values} == expected:
+                return values
+        raise SemanticExtractionError(f"no for tuple matches order values: {sorted(expected)}")
+    return candidates[0]
+
+
 def parse_options(text: str) -> tuple[str, dict[str, str]]:
     if "|" not in text:
         return text, {}
@@ -314,7 +449,49 @@ def filter_sequence(value: Any, selected_text: str) -> list[str]:
     return selected
 
 
+def project_tokens(value: Any, options: dict[str, str]) -> list[str]:
+    text = str(value)
+    tokens = option_items(options["tokens"])
+    projected = option_items(options.get("values", "")) or tokens
+    if len(projected) != len(tokens):
+        raise SemanticExtractionError("tokens and values transforms must have matching lengths")
+    cursor = -1
+    for token in tokens:
+        index = text.find(token, cursor + 1)
+        if index < 0:
+            raise SemanticExtractionError(f"token transform value not found after cursor {cursor}: {token}")
+        cursor = index
+    strip_prefix = options.get("strip_prefix", "")
+    strip_suffix = options.get("strip_suffix", "")
+    normalized = []
+    for item in projected:
+        if strip_prefix and item.startswith(strip_prefix):
+            item = item[len(strip_prefix) :]
+        if strip_suffix and item.endswith(strip_suffix):
+            item = item[: -len(strip_suffix)]
+        normalized.append(item)
+    return normalized
+
+
+def apply_prefix_assignment(value: Any, options: dict[str, str]) -> Any:
+    if "prefix_assignment_value" not in options:
+        return value
+    values = list(value) if isinstance(value, (list, tuple, set)) else [value]
+    if not values:
+        return values
+    prefix = options["prefix_assignment_value"]
+    separator = options.get("prefix_first_separator", ":")
+    return [f"{prefix}{separator}{values[0]}"] + [str(item) for item in values[1:]]
+
+
 def apply_selector_options(value: Any, options: dict[str, str]) -> Any:
+    if "tokens" in options:
+        value = project_tokens(value, options)
+    value = apply_prefix_assignment(value, options)
+    if "prepend" in options:
+        value = option_items(options["prepend"]) + (list(value) if isinstance(value, (list, tuple, set)) else [value])
+    if "append" in options:
+        value = (list(value) if isinstance(value, (list, tuple, set)) else [value]) + option_items(options["append"])
     if "order" in options:
         order = option_items(options["order"])
         values = {normalize_value(item) for item in value} if isinstance(value, (set, list, tuple)) else {normalize_value(value)}
@@ -328,6 +505,19 @@ def apply_selector_options(value: Any, options: dict[str, str]) -> Any:
         value = all(value_contains(value, needle) for needle in needles)
     if "contains" in options:
         value = value_contains(value, options["contains"])
+    if "not_contains_all" in options:
+        needles = option_items(options["not_contains_all"])
+        value = all(not value_contains(value, needle) for needle in needles)
+    if "not_contains" in options:
+        value = not value_contains(value, options["not_contains"])
+    if "before" in options:
+        first, second = options["before"].split(">>", 1)
+        text = str(value)
+        first_index = text.find(first)
+        second_index = text.find(second)
+        value = first_index >= 0 and second_index >= 0 and first_index < second_index
+    if "remove_spaces" in options:
+        value = str(value).replace(" ", "")
     if "join" in options:
         if isinstance(value, str):
             return value
@@ -380,6 +570,36 @@ def extract_selector(selector: str) -> Any:
         path_text, name = target.split("::", 1)
         node = find_module_assignment(parse_tree(selector_path(path_text)), name)
         return apply_selector_options(sequence_firsts_from_node(node, selector), options)
+    if selector.startswith("python_ast_dict_projection:"):
+        target = selector.removeprefix("python_ast_dict_projection:")
+        path_text, name = target.split("::", 1)
+        node = find_module_assignment(parse_tree(selector_path(path_text)), name)
+        return apply_selector_options(dict_projection_from_node(node, selector, options), options)
+    if selector.startswith("python_ast_assignments_concat:"):
+        target = selector.removeprefix("python_ast_assignments_concat:")
+        path_text, names_text = target.split("::", 1)
+        return apply_selector_options(assignments_concat(parse_tree(selector_path(path_text)), names_text, selector), options)
+    if selector.startswith("python_ast_sequence_dict_field:"):
+        target = selector.removeprefix("python_ast_sequence_dict_field:")
+        path_text, name, field = target.split("::", 2)
+        tree = parse_tree(selector_path(path_text))
+        node = find_module_assignment(tree, name)
+        if "prefix_assignment" in options:
+            prefix_node = find_module_assignment(tree, options["prefix_assignment"])
+            options = dict(options)
+            options["prefix_assignment_value"] = normalize_value(literal_value(prefix_node))
+        return apply_selector_options(sequence_dict_field_values(node, field, selector), options)
+    if selector.startswith("python_ast_call_arg_sequence:"):
+        target = selector.removeprefix("python_ast_call_arg_sequence:")
+        path_text, function_name, callee_name, arg_index_text = target.split("::", 3)
+        return apply_selector_options(
+            function_call_argument_values(parse_tree(selector_path(path_text)), function_name, callee_name, int(arg_index_text)),
+            options,
+        )
+    if selector.startswith("python_ast_for_tuple:"):
+        target = selector.removeprefix("python_ast_for_tuple:")
+        path_text, function_name, target_name = target.split("::", 2)
+        return apply_selector_options(for_tuple_values(parse_tree(selector_path(path_text)), function_name, target_name, options, selector), options)
     if selector.startswith("python_ast_literal:"):
         target = selector.removeprefix("python_ast_literal:")
         path_text, line_text, occurrence_text = target.rsplit(":", 2)
