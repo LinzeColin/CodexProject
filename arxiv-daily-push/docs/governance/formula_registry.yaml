@@ -278,3 +278,28 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/handoff.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_handoff.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md"]
+
+  - formula_id: "FORM-ADP-013"
+    model_id: "MOD-ADP-011"
+    assumption_ids: ["ASM-ADP-013"]
+    status: "active"
+    expression: "A Phase 11 acceptance package is valid when the Phase 10 handoff is valid; production acceptance is pass only if 30-day trial, scheduler, Release, SMTP, and resource evidence requirements all pass. If any production requirement is missing, accepted_for_production must be false and blocking_reasons must be non-empty."
+    variables:
+      - name: "handoff_valid"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "validate_handoff output is empty"
+      - name: "production_requirements"
+        data_type: "list[object]"
+        unit: "requirement records"
+        input_domain: "30-day trial, scheduler, Release, SMTP, and resource evidence gates"
+      - name: "accepted_for_production"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "true only when every production requirement passes"
+    constraints: "Dry-run handoff readiness is separate from production acceptance; missing live evidence cannot be converted into a pass."
+    missing_policy: "Missing operational evidence creates blocked production acceptance with explicit no-claim flags."
+    output_range: "acceptance package with production_acceptance_status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_acceptance.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md"]

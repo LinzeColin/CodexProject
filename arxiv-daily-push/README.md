@@ -1,12 +1,13 @@
 # arXiv Daily Push
 
 `arXiv 日报推送 / arXiv Daily Push` is a private, evidence-first daily learning
-pipeline. The Phase 10 foundation provides the local package, CLI contract,
+pipeline. The Phase 11 foundation provides the local package, CLI contract,
 governance records, configuration examples, generic schemas, runtime contract
 validators, a deterministic `RunRecord` state machine, an arXiv Atom adapter,
 deterministic ranking, Claim Ledger publication gate, evidence-linked lesson
 generation, TTS dry-run narration planning, storyboard/video dry-run planning,
-daily dry-run orchestration, runner/release/email dry-run handoff, and tests.
+daily dry-run orchestration, runner/release/email dry-run handoff, final
+acceptance/handoff readiness packaging, and tests.
 
 ## Current Scope
 
@@ -25,6 +26,7 @@ Implemented now:
 - `adp generate-storyboard`
 - `adp run-daily-dry-run`
 - `adp build-handoff`
+- `adp build-acceptance`
 - dry-run email rendering for `linzezhang35@gmail.com`
 - local resource and dependency readiness checks
 - generic contracts for `SourceItem`, `EvidenceClaim`, `Lesson`, `Storyboard`, `Publication`, and `RunRecord`
@@ -42,6 +44,7 @@ Implemented now:
 - video media gate that blocks rendering, media writes, and asset downloads in Phase 8
 - local daily dry-run pipeline across evidence, lesson, narration, storyboard, publication, and email preview
 - runner/release/email dry-run handoff that keeps scheduler, Release upload, and real SMTP disabled
+- final acceptance package that marks production acceptance blocked until real 30-day, scheduler, Release, SMTP, and resource evidence exists
 - governance records required by `CodexProject`
 
 Not implemented yet:
@@ -52,6 +55,7 @@ Not implemented yet:
 - real video rendering
 - enabled GitHub Actions runner setup
 - real SMTP sending or scheduled runner execution
+- claimed 30-day operational acceptance
 
 ## Goal Baseline
 
@@ -76,6 +80,6 @@ git diff --check
 ## Resource Policy
 
 Do not commit media, model weights, voice samples, credentials, Codex auth,
-GitHub tokens, SMTP secrets, render cache, or dependency directories. Phase 1-10
+GitHub tokens, SMTP secrets, render cache, or dependency directories. Phase 1-11
 must remain code, schema, fixture, governance, and dry-run JSON only unless a
 later explicit resource and acceptance gate permits more.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.0 - 2026-06-21
+
+- Added Phase 11 acceptance and handoff readiness package generation.
+- Added `adp build-acceptance` for converting Phase 10 handoff JSON into a truthful acceptance package.
+- Acceptance output blocks production acceptance unless explicit 30-day, scheduler, Release, SMTP, and resource evidence is provided.
+- Added acceptance tests covering default blocked status, unsupported claim prevention, invalid handoff rejection, future evidence pass, and CLI output.
+
 ## 0.10.0 - 2026-06-21
 
 - Added Phase 10 runner/release/email dry-run handoff.

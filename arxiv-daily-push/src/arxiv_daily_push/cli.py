@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from . import __version__
+from .acceptance import AcceptanceError, build_acceptance_package, validate_acceptance_package
 from .arxiv_adapter import ArxivQuery, build_query_url, parse_atom_feed
 from .doctor import doctor_report, render_report
 from .evidence_gate import gate_publication
@@ -87,6 +88,12 @@ def build_parser() -> argparse.ArgumentParser:
     handoff.add_argument("--path", required=True, help="JSON file containing a dry-run pipeline payload.")
     handoff.add_argument("--generated-at", required=True, help="Handoff generation timestamp.")
     handoff.add_argument("--json", action="store_true", help="Print JSON handoff output.")
+
+    acceptance = subparsers.add_parser("build-acceptance", help="Build Phase 11 acceptance/handoff package from handoff JSON.")
+    acceptance.add_argument("--path", required=True, help="JSON file containing a Phase 10 handoff payload.")
+    acceptance.add_argument("--generated-at", required=True, help="Acceptance package generation timestamp.")
+    acceptance.add_argument("--operational-evidence", help="Optional JSON file with live operational evidence refs.")
+    acceptance.add_argument("--json", action="store_true", help="Print JSON acceptance package.")
     return parser
 
 
@@ -273,5 +280,35 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(handoff, ensure_ascii=False, indent=2, sort_keys=True))
         else:
             print(f"{handoff['handoff_id']}\tdry-run")
+        return 0
+    if args.command == "build-acceptance":
+        handoff = json.loads(Path(args.path).read_text(encoding="utf-8"))
+        evidence = (
+            json.loads(Path(args.operational_evidence).read_text(encoding="utf-8"))
+            if args.operational_evidence
+            else None
+        )
+        try:
+            package = build_acceptance_package(handoff, generated_at=args.generated_at, operational_evidence=evidence)
+        except AcceptanceError as error:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": [str(error)]}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                print(f"- {error}")
+            return 2
+        errors = validate_acceptance_package(package)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(package, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{package['acceptance_id']}\t{package['production_acceptance_status']}")
         return 0
     raise AssertionError(f"Unhandled command: {args.command}")

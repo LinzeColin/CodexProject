@@ -36,7 +36,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE8-VIDEO-001 | D | completed | ADP-ACC-PHASE8-VIDEO | 47 tests OK; storyboard dry-run gate pass | `docs/phase_records/PHASE_08.md` |
 | ADP-PHASE9-LOCAL-PIPELINE-001 | D | completed | ADP-ACC-PHASE9-LOCAL-PIPELINE | 51 tests OK; local dry-run pipeline pass | `docs/phase_records/PHASE_09.md` |
 | ADP-PHASE10-RUNNER-RELEASE-EMAIL-001 | D | completed | ADP-ACC-PHASE10-RUNNER-RELEASE-EMAIL | 55 tests OK; handoff side-effect gate pass; validator 0 errors | `docs/phase_records/PHASE_10.md` |
-| ADP-PHASE11-ACCEPTANCE-HANDOFF-001 | E | planned | ADP-ACC-PHASE11-ACCEPTANCE-HANDOFF | not run | pursuing goal baseline |
+| ADP-PHASE11-ACCEPTANCE-HANDOFF-001 | E | completed | ADP-ACC-PHASE11-ACCEPTANCE-HANDOFF | 60 tests OK; handoff readiness pass; production acceptance blocked until live evidence exists | `docs/phase_records/PHASE_11.md` |
 
 ## Release Gates
 
@@ -53,6 +53,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 8 storyboard/video dry-run gate | dry-run storyboard JSON, blocked render/write/download | pass |
 | Phase 9 local dry-run pipeline | completed RunRecord, publication gate, Lesson, Narration, Storyboard, email preview | pass |
 | Phase 10 runner/release/email handoff | completed RunRecord input, side-effect flags false, recipient preview | pass |
+| Phase 11 final acceptance handoff | handoff readiness package, no unsupported 30-day/live-operation claim | pass |
+| Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |
 | Diff hygiene | `git diff --check` | pass |

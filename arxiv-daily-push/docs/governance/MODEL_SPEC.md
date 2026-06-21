@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 10
-- formula_count: 12
-- parameter_count: 50
+- model_count: 11
+- formula_count: 13
+- parameter_count: 55
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -25,6 +25,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-008 | Storyboard and video dry-run media gate | deterministic storyboard planner | Generate Storyboard JSON while blocking render/write/download media outputs | active | adp-video-dry-run-v1 | `src/arxiv_daily_push/video.py` |
 | MOD-ADP-009 | Local daily dry-run pipeline | deterministic orchestration pipeline | Run a local daily dry-run through publication, Lesson, Narration, Storyboard, RunRecord completion, and email preview | active | adp-local-pipeline-v1 | `src/arxiv_daily_push/pipeline.py` |
 | MOD-ADP-010 | Runner release email dry-run handoff | deterministic handoff gate | Build a handoff preview while keeping scheduler, Release upload, unattended execution, and real SMTP disabled | active | adp-handoff-v1 | `src/arxiv_daily_push/handoff.py` |
+| MOD-ADP-011 | Final acceptance and handoff readiness gate | deterministic acceptance gate | Generate final handoff readiness package and block unsupported production acceptance claims | active | adp-acceptance-v1 | `src/arxiv_daily_push/acceptance.py` |
 
 ## B. Assumptions
 
@@ -42,6 +43,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-010 | Phase 8 generates Storyboard JSON and video media gate outputs in dry-run mode while blocking rendering, media writes, and asset downloads. | `docs/phase_records/PHASE_08.md`, `src/arxiv_daily_push/video.py`, `tests/test_video.py` | Phase 8 | active |
 | ASM-ADP-011 | Phase 9 runs a local daily dry-run pipeline without scheduler, Release upload, or real SMTP send. | `docs/phase_records/PHASE_09.md`, `src/arxiv_daily_push/pipeline.py`, `tests/test_pipeline.py` | Phase 9 | active |
 | ASM-ADP-012 | Phase 10 builds a runner/release/email handoff preview from a completed RunRecord while all external side effects remain disabled. | `docs/phase_records/PHASE_10.md`, `src/arxiv_daily_push/handoff.py`, `tests/test_handoff.py` | Phase 10 | active |
+| ASM-ADP-013 | Phase 11 generates a truthful acceptance/handoff readiness package; production acceptance remains blocked unless real operational evidence is supplied. | `docs/phase_records/PHASE_11.md`, `src/arxiv_daily_push/acceptance.py`, `tests/test_acceptance.py` | Phase 11 | active |
 
 ## C. Functions and Formulas
 
@@ -59,6 +61,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-010 generates Storyboard dry-run JSON while blocking video rendering, media writes, and asset downloads.
 - FORM-ADP-011 runs the local dry-run pipeline through the required RunRecord state sequence.
 - FORM-ADP-012 builds a handoff only from a completed RunRecord and requires every external side-effect flag to be false.
+- FORM-ADP-013 separates handoff readiness from production acceptance and blocks unsupported 30-day/live-operation claims.
 
 ## D. Parameters
 
@@ -74,6 +77,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 8 video dry-run parameters: PARAM-ADP-041 through PARAM-ADP-044.
 - Active Phase 9 local pipeline parameters: PARAM-ADP-045 through PARAM-ADP-047.
 - Active Phase 10 handoff parameters: PARAM-ADP-048 through PARAM-ADP-050.
+- Active Phase 11 acceptance parameters: PARAM-ADP-051 through PARAM-ADP-055.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -127,6 +131,11 @@ dry-run payload. The handoff records the intended recipient and artifact
 previews, but validation requires scheduler, GitHub Actions runner, unattended
 execution, Release upload, and real SMTP sending to remain disabled.
 
+Phase 11 generates the final acceptance and handoff readiness package. It
+validates the Phase 10 handoff, lists production requirements, and marks
+production acceptance as blocked unless 30-day trial, scheduler, Release, SMTP,
+and resource-pressure evidence are explicitly supplied.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -153,6 +162,8 @@ execution, Release upload, and real SMTP sending to remain disabled.
 - Scene claim outside narration claims -> storyboard validation error.
 - Incomplete RunRecord in Phase 10 -> handoff generation error.
 - Scheduler, GitHub Actions runner, unattended execution, Release upload, or real SMTP enabled in Phase 10 -> handoff validation error.
+- Missing 30-day trial, scheduler, Release, SMTP, or resource evidence in Phase 11 -> production acceptance blocked.
+- Production pass with any missing requirement -> acceptance validation error.
 
 ## G. Validation
 
@@ -169,4 +180,5 @@ Uncovered planned scenarios:
 - arXiv network ingest idempotency.
 - Claim extraction from paper text/PDF.
 - TTS/video sample gates.
-- GitHub self-hosted runner and email transport health.
+- Live 30-day operational trial evidence.
+- GitHub self-hosted runner, private Release, and real email transport health.

@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.10.0`
+Active product version: `0.11.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.10.0
-- Current phase: D
-- Current gate: ADP-PHASE10-RUNNER-RELEASE-EMAIL-PASS
-- Confirmed iteration count: 10
+- Product version: 0.11.0
+- Current phase: E
+- Current gate: ADP-PHASE11-ACCEPTANCE-HANDOFF-PASS
+- Confirmed iteration count: 11
 - Reconstructed event count: 0
-- Current task: ADP-PHASE11-ACCEPTANCE-HANDOFF-001
-- Blockers: Final acceptance still needs handoff packaging; live 30-day operational evidence is not claimed.
+- Current task: NONE
+- Blockers: Production acceptance still requires real 30-day trial, scheduler, Release, SMTP, and resource evidence; those are not claimed by this handoff.
 
 ## Phase Matrix
 
@@ -24,7 +24,7 @@ The append-only machine record is `development_events.jsonl`.
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
-| E | Weekly/monthly trial and handoff | planned | 30-day acceptance passes | planned Phase 11 |
+| E | Weekly/monthly trial and handoff | completed | handoff readiness package generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md` |
 
 ## Iteration Records
 
@@ -252,6 +252,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Phase 11 final acceptance handoff is still pending; no live 30-day run evidence is claimed.
 - Rollback: Revert Phase 10 handoff code, tests, and governance updates.
 - Next step: Start Phase 11 final acceptance and handoff package after Phase 10 validation passes.
+
+### `ITER-20260621-011`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for final acceptance/handoff readiness code, CLI command, tests, and governance updates.
+- Version before: 0.10.0
+- Version after: 0.11.0
+- Base commit: 06ce53098bb5f84b05e8f3e6c0a4c789ece298d8
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-ACCEPTANCE-HANDOFF-001
+- Goal: Generate final acceptance and handoff readiness package without making unsupported production or 30-day trial claims.
+- Assumptions: Handoff readiness can pass locally, but production acceptance remains blocked until real 30-day, scheduler, Release, SMTP, and resource evidence exists.
+- Files changed: acceptance code, CLI command, acceptance tests, version files, and governance records.
+- Model changes: Activated MOD-ADP-011 as adp-acceptance-v1.
+- Parameter changes: Activated PARAM-ADP-051 through PARAM-ADP-055 as adp-acceptance-parameters-v1.
+- Commands run: project unit tests; root governance tests; schema parse; project governance validator; changed-only enforce-sync; dashboard generation; git diff check.
+- Test results: 60 project tests OK; 31 root governance tests OK; schemas parse; project governance errors 0 warnings 0; changed-only enforce-sync errors 0 warnings 0; dashboard PASS; git diff check exit 0.
+- Successes: Acceptance package separates dry-run readiness from production acceptance.
+- Failures: none recorded at implementation time.
+- Decisions: Do not mark production acceptance pass without explicit operational evidence references.
+- Remaining risks: Live production readiness still requires external runner, SMTP, Release, and 30-day trial execution.
+- Rollback: Revert Phase 11 acceptance code, tests, and governance updates.
+- Next step: Provide final handoff and stop unless operational prerequisites are supplied.
 
 ## Unknown Historical Periods
 
