@@ -18,6 +18,7 @@ from .notifications import render_email
 from .pipeline import PipelineError, run_daily_dry_run
 from .production_preflight import build_production_preflight, validate_production_preflight
 from .ranking import selection_payload
+from .source_ingest import ingest_latest_arxiv, validate_source_batch
 from .state_machine import validate_run_record
 from .trial import evaluate_trial_evidence, validate_trial_evidence_report
 from .trial_bootstrap import build_trial_bootstrap_plan, validate_trial_bootstrap_plan
@@ -55,6 +56,14 @@ def build_parser() -> argparse.ArgumentParser:
     parse_arxiv.add_argument("--path", required=True, help="Atom XML fixture or downloaded response path.")
     parse_arxiv.add_argument("--retrieved-at", required=True, help="Retrieval timestamp to stamp on SourceItems.")
     parse_arxiv.add_argument("--json", action="store_true", help="Pretty-print JSON output.")
+
+    fetch_arxiv = subparsers.add_parser("fetch-arxiv-latest", help="Fetch latest arXiv SourceItems with incremental duplicate filtering.")
+    fetch_arxiv.add_argument("--query", default="cat:cs.AI", help="arXiv search_query.")
+    fetch_arxiv.add_argument("--max-results", type=int, default=10, help="Small arXiv result window to fetch.")
+    fetch_arxiv.add_argument("--start", type=int, default=0, help="arXiv result start offset.")
+    fetch_arxiv.add_argument("--generated-at", required=True, help="Fetch timestamp used for SourceItems and batch evidence.")
+    fetch_arxiv.add_argument("--seen-source-id", action="append", default=[], help="Previously published source_id to exclude.")
+    fetch_arxiv.add_argument("--json", action="store_true", help="Print JSON source batch.")
 
     rank = subparsers.add_parser("rank-candidates", help="Rank candidate SourceItems with evidence-gated audit output.")
     rank.add_argument("--path", required=True, help="JSON file containing a candidates array.")
@@ -160,6 +169,33 @@ def main(argv: list[str] | None = None) -> int:
             for item in items:
                 print(f"{item['source_id']}\t{item['title']}")
         return 0
+    if args.command == "fetch-arxiv-latest":
+        batch = ingest_latest_arxiv(
+            search_query=args.query,
+            generated_at=args.generated_at,
+            max_results=args.max_results,
+            start=args.start,
+            seen_source_ids=args.seen_source_id,
+        )
+        errors = validate_source_batch(batch)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(batch, ensure_ascii=False, indent=2, sort_keys=True))
+        elif batch["new_items"]:
+            for item in batch["new_items"]:
+                print(f"{item['source_id']}\t{item['title']}")
+        else:
+            print(batch["status"])
+            for reason in batch["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if batch["status"] == "pass" else 2
     if args.command == "rank-candidates":
         data = json.loads(Path(args.path).read_text(encoding="utf-8"))
         candidates = data.get("candidates") if isinstance(data, dict) else data

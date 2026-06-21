@@ -86,6 +86,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md", "arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py", ".github/workflows/arxiv-daily-push-production-trial.yml"]
     status: "active"
+  - assumption_id: "ASM-ADP-018"
+    statement: "Live arXiv source ingest uses the official Atom API in small windows, filters duplicate source IDs, avoids PDF/bulk download, and fails closed on network, TLS, API, Atom, or SourceItem errors."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/tests/test_source_ingest.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -331,3 +336,20 @@ models:
     config_refs: [".github/workflows/arxiv-daily-push-production-trial.yml", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "arxiv-daily-push/schemas/trial_bootstrap.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_trial_bootstrap.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md"]
+  - model_id: "MOD-ADP-015"
+    name: "Live arXiv latest source ingest"
+    kind: "deterministic source ingest adapter"
+    purpose: "Fetch latest arXiv Atom SourceItems, validate generic SourceItem records, and filter already-seen source IDs before ranking."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-live-arxiv-ingest-v1"
+    assumption_ids: ["ASM-ADP-018", "ASM-ADP-003"]
+    formula_ids: ["FORM-ADP-017"]
+    parameter_ids: ["PARAM-ADP-075", "PARAM-ADP-076", "PARAM-ADP-077", "PARAM-ADP-078", "PARAM-ADP-079", "PARAM-ADP-080"]
+    inputs: ["arXiv search_query", "generated_at", "max_results", "seen source IDs", "arXiv Atom XML"]
+    outputs: ["SourceBatch", "new SourceItems", "duplicate_source_ids", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/source_batch.schema.json", "arxiv-daily-push/config/examples/sources.example.yaml"]
+    test_refs: ["arxiv-daily-push/tests/test_source_ingest.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "https://info.arxiv.org/help/api/user-manual.html"]

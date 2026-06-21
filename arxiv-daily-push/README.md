@@ -19,6 +19,7 @@ Implemented now:
 - `adp validate-record`
 - `adp arxiv-url`
 - `adp parse-arxiv-atom`
+- `adp fetch-arxiv-latest`
 - `adp rank-candidates`
 - `adp gate-publication`
 - `adp generate-lesson`
@@ -35,6 +36,7 @@ Implemented now:
 - generic contracts for `SourceItem`, `EvidenceClaim`, `Lesson`, `Storyboard`, `Publication`, and `RunRecord`
 - deterministic state transitions for local `RunRecord` validation
 - arXiv Atom feed parsing into generic `SourceItem` records using local fixture tests
+- small-window live arXiv Atom source ingestion with incremental duplicate filtering and fail-closed network/API behavior
 - deterministic 100-point ranking with per-component audit output
 - fail-closed candidate blocking for missing P0 evidence, metadata conflicts, and recent duplicate selections
 - Claim Ledger construction from explicit evidence claims
@@ -56,6 +58,7 @@ Implemented now:
 Not implemented yet:
 
 - scheduled or bulk arXiv ingestion
+- live source ingest pass on the current local machine; Python SSL certificate validation currently blocks this environment
 - TTS model download
 - real TTS audio synthesis
 - real video rendering

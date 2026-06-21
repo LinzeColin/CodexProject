@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/source_batch.schema.json",
+  "title": "arXiv Daily Push Source Batch",
+  "type": "object",
+  "required": [
+    "ingest_id",
+    "model_id",
+    "project_id",
+    "source_adapter",
+    "generated_at",
+    "status",
+    "request",
+    "source_policy",
+    "source_items",
+    "new_items",
+    "new_item_count",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "ingest_id": {"type": "string"},
+    "model_id": {"const": "adp-live-arxiv-ingest-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "source_adapter": {"const": "arxiv.atom.v1"},
+    "generated_at": {"type": "string"},
+    "status": {"type": "string", "enum": ["pass", "blocked"]},
+    "request": {"type": "object", "additionalProperties": true},
+    "source_policy": {
+      "type": "object",
+      "required": ["network_fetch_enabled", "pdf_download_enabled", "bulk_harvest_enabled"],
+      "properties": {
+        "network_fetch_enabled": {"type": "boolean"},
+        "pdf_download_enabled": {"const": false},
+        "bulk_harvest_enabled": {"const": false},
+        "max_results_per_call": {"type": "integer"},
+        "polite_min_interval_seconds": {"type": "integer"}
+      },
+      "additionalProperties": true
+    },
+    "seen_source_ids": {"type": "array", "items": {"type": "string"}},
+    "duplicate_source_ids": {"type": "array", "items": {"type": "string"}},
+    "source_items": {"type": "array", "items": {"type": "object"}},
+    "new_items": {"type": "array", "items": {"type": "object"}},
+    "new_item_count": {"type": "integer", "minimum": 0},
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
