@@ -1,0 +1,116 @@
+{
+  "schema_version": "nvidia-official-fulltext-live-capture-v1",
+  "system_name": "EEI",
+  "task_id": "T1301",
+  "acceptance_ids": [
+    "A202",
+    "A206"
+  ],
+  "status": "LIVE_CAPTURE_READY_FOR_OPERATOR_REVIEW",
+  "record_mode": "live",
+  "parser_version": "nvidia-official-fulltext-live-v1",
+  "generated_at": "2026-06-21T04:00:00+00:00",
+  "source_registry": "data/nvidia_public_source_anchors.csv",
+  "source_registry_sha256": "62d6effde0b3e750cae8213cdcdcb49187ccb62306e3469c29168ad43ccaca2d",
+  "fixture_artifact": true,
+  "capture_policy": {
+    "live_retrieval": true,
+    "relationship_publication": false,
+    "release_clearance": false,
+    "committed_full_text": false,
+    "requires_operator_review": true
+  },
+  "parameters": {
+    "min_text_chars": 240,
+    "min_token_coverage_ratio": 1.0
+  },
+  "counts": {
+    "anchors_total": 2,
+    "anchors_healthy": 2,
+    "anchors_failed": 0
+  },
+  "anchors": [
+    {
+      "anchor_id": "NVDA-ANCHOR-001",
+      "source_url": "https://blogs.nvidia.com/blog/taiwan-ecosystem-ai-infrastructure/",
+      "source_url_sha256": "793d7bc49e29836b211dbd3c868bf04bd079f6008128d7f384fb9ed9ccabc212",
+      "document_date": "2026-05-31",
+      "title": "Taiwan's Industry Titans Turbocharge World's AI Infrastructure Buildout With NVIDIA",
+      "official_publisher": "NVIDIA Blog",
+      "capture_status": "success",
+      "last_error": null,
+      "source_text_sha256": "edeccbae437178603668a52166508f5d415740018ccadd8a4fe1ad47af506949",
+      "source_text_excerpt": "NVIDIA Corporation official live fixture excerpt references TSMC, SPIL, Kinsus, KYEC, UMTC, Foxconn, Pegatron, QCT, Wistron, Inventec, wafer, chip, packaging/test, manufacturing and systems.",
+      "source_health": {
+        "status": "healthy",
+        "expected_token_count": 16,
+        "matched_token_count": 16,
+        "missing_tokens": [],
+        "token_coverage": {
+          "ratio": 1.0,
+          "minimum_ratio": 1.0
+        },
+        "text_char_count": 980,
+        "content_length_bytes": 41821,
+        "http_status": 200,
+        "content_type": "text/html; charset=utf-8",
+        "attempts": [
+          {
+            "attempt": 1,
+            "transport": "fixture_httpx",
+            "status": "response",
+            "http_status": 200,
+            "elapsed_ms": 12.2,
+            "retryable": false,
+            "truncated_by_max_bytes": false
+          }
+        ]
+      },
+      "relationship_publication": false,
+      "release_clearance": false
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-002",
+      "source_url": "https://investor.nvidia.com/files/doc_financials/2026/q4/10K-NVDA.pdf",
+      "source_url_sha256": "4fc8e0515ac55b044a62c2e576a7973b4db72c16df0ca47b394370a873cbfe39",
+      "document_date": "2026-02-25",
+      "title": "NVIDIA Corporation FY2026 Form 10-K",
+      "official_publisher": "NVIDIA Investor Relations",
+      "capture_status": "success",
+      "last_error": null,
+      "source_text_sha256": "25cb1f144bfd8c3afe54eae33ad54c038322ee80fa2403f43f6311a307494404",
+      "source_text_excerpt": "NVIDIA Corporation official live fixture excerpt references TSMC, Samsung, SK hynix, Micron, Hon Hai/Foxconn, Wistron, Fabrinet, foundry, memory, CoWoS, assembly, testing and packaging.",
+      "source_health": {
+        "status": "healthy",
+        "expected_token_count": 14,
+        "matched_token_count": 14,
+        "missing_tokens": [],
+        "token_coverage": {
+          "ratio": 1.0,
+          "minimum_ratio": 1.0
+        },
+        "text_char_count": 1220,
+        "content_length_bytes": 721944,
+        "http_status": 200,
+        "content_type": "application/pdf",
+        "attempts": [
+          {
+            "attempt": 1,
+            "transport": "fixture_httpx",
+            "status": "response",
+            "http_status": 200,
+            "elapsed_ms": 21.4,
+            "retryable": false,
+            "truncated_by_max_bytes": false
+          }
+        ]
+      },
+      "relationship_publication": false,
+      "release_clearance": false
+    }
+  ],
+  "remaining_gaps_before_a202_done": [
+    "This committed file is a fixture_artifact for PostgreSQL loader validation only.",
+    "No real operator live payload, production owner sign-off or legal release clearance is included."
+  ]
+}

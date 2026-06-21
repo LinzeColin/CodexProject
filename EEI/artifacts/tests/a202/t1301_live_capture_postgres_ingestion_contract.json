@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "artifact_id": "t1301-live-capture-postgres-ingestion-contract",
+  "task_id": "T1301",
+  "acceptance_ids": [
+    "A202",
+    "A206"
+  ],
+  "status": "MISSING_OPERATOR_LIVE_PAYLOAD",
+  "record_mode": "live",
+  "parser_version": "nvidia-official-fulltext-live-v1",
+  "system": {
+    "zh_name": "商域图谱",
+    "en_name": "Enterprise Ecosystem Intelligence",
+    "subtitle": "企业商业版图与供应链递归探索系统"
+  },
+  "implemented_scope": [
+    "scripts/load_live_official_captures.py validates a live official-source retrieval artifact before database writes.",
+    "The loader rejects committed official full text and stores only source_text_sha256, short source_text_excerpt, retry/source_health metadata and context evidence.",
+    "PostgreSQL writes are idempotent through source_documents, raw_source_snapshots, entity_resolution_candidates and ingestion_evidence_chain upserts under record_mode=live.",
+    "The loader never creates relationship_fact_candidates, never publishes relationships and keeps release_clearance=false.",
+    "Fixture artifacts require --allow-fixture-capture and cannot close A202."
+  ],
+  "commands": {
+    "generate_contract": "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/load_live_official_captures.py --generate-contract --output artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json",
+    "operator_live_capture": "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/fetch_official_source_full_text.py --capture-live --allow-live-network --output artifacts/private/t1301_live_official_capture.json",
+    "operator_postgres_ingestion": "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/load_live_official_captures.py --artifact artifacts/private/t1301_live_official_capture.json"
+  },
+  "database_contract": {
+    "source_documents": "external_id suffix live-official-retrieval and content_hash=source_text_sha256",
+    "raw_source_snapshots": "record_mode=live, review_status=machine_verified, no raw source_text",
+    "entity_resolution_candidates": "parser_version=nvidia-official-fulltext-live-v1, review_status=machine_verified",
+    "ingestion_evidence_chain": "evidence_role=context, edge_publication=live_capture_context_only_not_published_relationship",
+    "relationship_fact_candidates": "must remain zero for this parser"
+  },
+  "remaining_gaps_before_a202_done": [
+    "No operator-approved live network payload is committed.",
+    "No formal source-license review, production owner sign-off or legal/release clearance is attached.",
+    "A206/A209 long-duration retry/dead-letter soak evidence remains incomplete."
+  ],
+  "rollback": [
+    "Remove scripts/load_live_official_captures.py, the fixture, tests and contract artifact.",
+    "Delete live parser rows by parser_version before deployment, or run a schema/data snapshot restore if already deployed.",
+    "Continue using dry-run and operator-source capture contracts until live evidence is ready."
+  ]
+}

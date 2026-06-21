@@ -264,6 +264,30 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the remote evidence update and regenerate release artifacts with `remote_status=PENDING`.
 - Next step: commit and push the remote evidence update, then verify the evidence-only CI run.
 
+### `ITER-20260621-010`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `e37c2aa`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, `TASK-T1304`
+- Goal: add the T1301/A202 PostgreSQL ingestion path for live official-source capture artifacts without claiming live operator evidence or legal clearance.
+- Assumptions: committed fixtures may validate loader behavior only when explicitly marked as `fixture_artifact`; real A202 evidence still requires an operator-approved live network payload and owner/legal review.
+- Files read: A202 live adapter, operator-source capture loader, PostgreSQL ingestion tests, v5 readiness validator, A202/A206 traceability and development status ledgers.
+- Files changed: `EEI/scripts/load_live_official_captures.py`, `EEI/tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json`, `EEI/tests/unit/test_official_source_live_capture.py`, `EEI/tests/integration/test_database_migrations.py`, `EEI/artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json`, Makefile, v5 readiness validator, A202/A206 traceability, acceptance matrix, development status ledger, `DEVELOPMENT_STATUS.md`, MVP development record, v5 sync doc, this ledger and governance events.
+- Model changes: no scoring formula change.
+- Parameter changes: no canonical parameter change; ingestion uses existing `min_text_chars=240`, `min_token_coverage_ratio=1.0`, `record_mode=live` and `review_status=machine_verified` before operator review.
+- Commands run: generated A202 live capture PostgreSQL ingestion contract artifact; focused ruff; A202 focused unit tests; JSON validation for live fixture and contract artifact; v5 readiness validation.
+- Test results: focused ruff PASS; A202 live unit tests PASS 7/7; fixture JSON validation PASS; contract JSON validation PASS; v5 readiness sync PASS.
+- Successes: live capture artifacts can now be loaded into PostgreSQL as hash/excerpt/source-health evidence without storing official full text or publishing relationship facts.
+- Failures: no real operator live payload, source-license review, production owner approval, legal clearance or 4h/24h retry/dead-letter soak evidence exists.
+- Decisions: keep A202 and A206 `IN_PROGRESS`; fixture ingestion is a CI contract and not production evidence.
+- Remaining risks: real live payload ingestion may reveal per-source PDF/HTML parser differences and source licensing restrictions.
+- Rollback: remove the live ingestion loader, fixture, tests, contract artifact and status/traceability updates; remove any deployed live parser rows by `parser_version='nvidia-official-fulltext-live-v1'` or restore a data snapshot.
+- Next step: run full local verification, regenerate release artifacts, commit, push and verify GitHub Actions.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -275,6 +299,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-009`: fail-closed validator for TASK-T1307/A209 long-duration operator soak evidence.
 - `EVENT-20260621-010`: local implementation evidence for TASK-T1301/A202 live official retrieval adapter contract.
 - `EVENT-20260621-011`: remote CI validation evidence for TASK-T1301/A202 live official retrieval adapter contract.
+- `EVENT-20260621-012`: local implementation evidence for TASK-T1301/A202 live capture PostgreSQL ingestion contract.
 
 ## Unknown Historical Periods
 
