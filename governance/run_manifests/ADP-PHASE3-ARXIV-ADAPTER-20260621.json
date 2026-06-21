@@ -4,10 +4,10 @@
   "task_id": "ADP-PHASE3-ARXIV-ADAPTER-001",
   "acceptance_id": "ADP-ACC-PHASE3-ARXIV-ADAPTER",
   "actor": "Codex",
-  "started_at": "2026-06-21T20:45:00+10:00",
+  "started_at": "2026-06-21T19:30:00+10:00",
   "finished_at": "2026-06-21T19:33:00+10:00",
   "base_commit": "e5f15384887e8e4878a228673dfb487345d1a5c1",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:5caeeca07db5a7d79c9a96c4f262ecd6ca7e391d3b76ec20a23520623f36d879",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:410470aec2f99e32f560afb640ff48cf6cd47909456010e1e2af3b382a72fd69",
   "changed_files_actual": [
     "GOVERNANCE_DASHBOARD.md",
     "README.md",
