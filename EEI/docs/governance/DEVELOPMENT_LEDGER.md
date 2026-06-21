@@ -10,12 +10,12 @@ This ledger is human-readable. The append-only machine record is `development_ev
 
 - Product version: `0.1.0`
 - Product version status: `provisional`
-- Current phase: `B`
-- Current gate: `GOV-SEMANTIC-EEI-001-PARTIAL-EXTRACTORS`
-- Confirmed iteration count: 17
+- Current phase: `C`
+- Current gate: `TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
+- Confirmed iteration count: 18
 - Reconstructed development event count: 2
-- Current task: `GOV-SEMANTIC-EEI-001`
-- Blockers: 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T1307`
+- Blockers: A209/A206 remain open until 24h operator soak evidence is produced and CI-validated; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -408,6 +408,25 @@ Do not infer iteration count from Git commit count.
 - Rollback: remove the semantic selector/fingerprint fields, reset EEI semantic coverage to `planned`, regenerate clean-room/release artifacts from the reverted tree, and rerun governance validators.
 - Next step: verify the partial EEI semantic extraction through root validator, all-project semantic drift report and GitHub CI.
 
+### `ITER-20260621-017`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `4d31fff`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, `TASK-T1304`
+- Goal: produce committed 4h A209 operator soak evidence while keeping A209 open until 24h evidence exists.
+- Commands run: fixed-path Playwright install; 5-second fixed-browser-path probe; `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright node scripts/run_operator_soak.mjs --mode operator_4h --duration-hours 4 --window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_4h.json --checkpoint artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl --fail-on-budget --quiet`; A209 evidence validator generate/validate.
+- Test results: 4h operator soak PASS; 48/48 checkpoint windows PASS; completed duration 14400 seconds; windows_failed 0; validator status `PARTIAL_OPERATOR_EVIDENCE` because 24h output/checkpoint are missing.
+- Successes: generated real 4h browser+worker soak evidence with windowed checkpoint audit and fail-closed A209 validator coverage.
+- Failures: an earlier 4h attempt failed at window 33 because the default macOS Playwright cache lost `chromium_headless_shell-1228`; the accepted run was restarted from zero with an explicit `PLAYWRIGHT_BROWSERS_PATH`.
+- Decisions: keep A209 and A206 `IN_PROGRESS`; 4h evidence alone is not 24h evidence and cannot close the release gate.
+- Remaining risks: 24h operator soak, CI validation of the committed 4h artifact, and final A209 release-manager review are still required.
+- Rollback: remove the 4h JSON/checkpoint, regenerate the A209 evidence-validation artifact back to missing 4h/24h evidence, and rerun validation.
+- Next step: commit/push the 4h local evidence, verify GitHub Actions, then run 24h operator soak.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -425,6 +444,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-015`: remote CI validation evidence for TASK-T1301/A202 selected-anchor live official capture ingestion.
 - `EVENT-20260621-016`: local A209 operator soak parallel-window contract repair.
 - `EVENT-20260621-017`: remote CI validation evidence for TASK-T1307/A209 operator soak parallel-window repair.
+- `EVENT-20260621-019`: local 4h operator soak evidence for TASK-T1307/A209.
 
 ## Unknown Historical Periods
 

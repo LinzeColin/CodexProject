@@ -117,6 +117,8 @@ artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json
 artifacts/tests/a208/t1306_browser_runtime_benchmark.json
 artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json
 artifacts/tests/a208/t1306_scale_benchmark_smoke.json
+artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl
+artifacts/tests/a209/t1307_operator_soak_4h.json
 artifacts/tests/a209/t1307_operator_soak_evidence_validation.json
 artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl
 artifacts/tests/a209/t1307_operator_soak_readiness.json
