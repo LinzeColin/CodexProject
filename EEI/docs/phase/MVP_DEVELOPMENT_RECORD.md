@@ -4161,7 +4161,7 @@ This remote PASS does not close A202/A206: the selected artifact is not producti
 
 ## 2026-06-21 - T1307/A209 operator soak parallel-window contract repair
 
-Status: LOCAL VALIDATED; REMOTE CI PENDING; A209 STILL IN PROGRESS
+Status: LOCAL VALIDATED; REMOTE CI VALIDATED; A209 STILL IN PROGRESS
 
 ### Scope
 
@@ -4185,6 +4185,21 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A209 STILL IN PROGRESS
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_operator_soak_evidence.py -q`: PASS; 4 passed.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py`: PASS.
 - `node scripts/run_operator_soak.mjs --mode ci_parallel_probe --duration-seconds 5 --window-seconds 5 --output /tmp/eei-operator-soak-parallel-probe.json --checkpoint /tmp/eei-operator-soak-parallel-probe.checkpoints.jsonl --fail-on-budget --quiet`: PASS outside the macOS sandbox; output status PASS, completed duration 5 seconds, elapsed wall 6.5612 seconds, worker jobs 12/12.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make verify`: PASS locally after rerun outside the macOS sandbox for Chromium; includes governance validation, contracts, v5 readiness sync, worker/brand validators, scale benchmarks, soak smoke, operator-soak evidence validator, secret scan, UI copy validation, ruff, Next typecheck and 50 unit tests.
+
+### Remote validation
+
+- GitHub Actions EEI validation run `27894602887` / job `82543882466`: PASS on commit `5b9fe87b9d8c3344647525ff27f57ae9bd8c7e34`.
+- Step 7 static/contract/lint/typecheck/unit: PASS.
+- Step 8 G2 PostgreSQL preparation: PASS.
+- Step 9 G2 static/contract/lint/typecheck/unit: PASS.
+- Step 10 G2 PostgreSQL integration: PASS.
+- Step 11 G2 browser E2E: PASS.
+- Step 12 G2 live FastAPI PostgreSQL E2E: PASS.
+- Step 13 Stop PostgreSQL: PASS.
+- GitHub Actions Project Governance run `27894602898`: PASS.
+
+This remote PASS does not close A209/A206: it validates the runner and fail-closed validator repair only, not committed 4h or 24h operator soak evidence.
 
 ### Rollback
 
