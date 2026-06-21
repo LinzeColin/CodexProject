@@ -108,7 +108,7 @@ def build_production_preflight(
         },
         "resource_evidence": {
             "resource_pressure_ok": status == "pass",
-            "resource_pressure_ok_ref": "production-preflight://arxiv-daily-push/current" if status == "pass" else "",
+            "resource_pressure_ok_ref": _resource_pressure_ref(generated_at) if status == "pass" else "",
         },
     }
 
@@ -257,6 +257,11 @@ def _memory_total_gib() -> float | None:
     except (ValueError, OSError):
         return None
     return float(page_size * pages) / (1024**3)
+
+
+def _resource_pressure_ref(generated_at: str) -> str:
+    token = "".join(character if character.isalnum() else "-" for character in str(generated_at or "current")).strip("-")
+    return f"production-preflight://arxiv-daily-push/{token or 'current'}"
 
 
 def _gate(gate_id: str, passed: bool, blocking_reasons: Sequence[str], extra: Mapping[str, Any] | None = None) -> dict[str, Any]:

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.16 - 2026-06-22
+
+- Added `adp build-trial-resource-evidence` and `adp-trial-resource-v1` to verify 30-day resource telemetry from daily trial resource refs and passing production preflight reports.
+- Tightened production preflight resource refs so passing preflight reports use timestamped `production-preflight://` refs instead of a static `current` ref.
+- Added resource schema and tests covering pass, missing matching preflight blocking, blocked preflight blocking, missing durable resource ref blocking, and CLI JSON output.
+
 ## 0.11.15 - 2026-06-22
 
 - Added `adp build-trial-recovery-evidence` and `adp-trial-recovery-v1` to build fail-closed recovery drill evidence from a failed/degraded scheduled daily-run and a recovered production-ready rerun.

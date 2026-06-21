@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 25
-- formula_count: 27
-- parameter_count: 132
+- model_count: 26
+- formula_count: 28
+- parameter_count: 137
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -40,6 +40,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-023 | Trial operational evidence annotation | deterministic operational evidence annotator | Merge explicit weekly/monthly replay, recovery drill, scheduler, Release, SMTP, and resource refs into trial evidence without hand-editing JSON | active | adp-trial-ops-evidence-v1 | `src/arxiv_daily_push/trial_ops.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-024 | Trial replay evidence builder | deterministic replay evidence validator | Build weekly/monthly replay evidence from production-ready daily trial entries and block missing durable refs or incomplete coverage | active | adp-trial-replay-v1 | `src/arxiv_daily_push/trial_replay.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-025 | Trial recovery evidence builder | deterministic recovery evidence validator | Build recovery drill evidence from a failed/degraded scheduled daily-run plus a recovered production-ready rerun while blocking dry-run notifications or missing durable refs | active | adp-trial-recovery-v1 | `src/arxiv_daily_push/trial_recovery.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-026 | Trial resource telemetry evidence builder | deterministic resource evidence validator | Build resource pressure evidence from daily trial resource refs and passing production preflight reports while blocking static or unmatched refs | active | adp-trial-resource-v1 | `src/arxiv_daily_push/trial_resource.py`, `src/arxiv_daily_push/production_preflight.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -73,6 +74,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-026 | Weekly/monthly replay and recovery drill evidence must be merged through explicit refs, not by hand-editing trial evidence or inferring that the operations occurred. | `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`, `src/arxiv_daily_push/trial_ops.py`, `tests/test_trial_ops.py` | Phase 11 operational evidence readiness | active |
 | ASM-ADP-027 | Weekly/monthly replay evidence must be generated from production-ready daily trial entries and archived under a durable replay ref before it can be merged into trial evidence. | `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`, `src/arxiv_daily_push/trial_replay.py`, `tests/test_trial_replay.py` | Phase 11 replay evidence readiness | active |
 | ASM-ADP-028 | Recovery drill evidence must be generated from an archived failed/degraded scheduled daily-run report and a recovered production-ready rerun report with real sent notifications before it can be merged into trial evidence. | `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`, `src/arxiv_daily_push/trial_recovery.py`, `tests/test_trial_recovery.py` | Phase 11 recovery evidence readiness | active |
+| ASM-ADP-029 | Resource telemetry evidence must be generated from unique daily trial resource refs that match passing production preflight reports before the global resource gate can be merged into trial evidence. | `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`, `src/arxiv_daily_push/trial_resource.py`, `tests/test_trial_resource.py` | Phase 11 resource evidence readiness | active |
 
 ## C. Functions and Formulas
 
@@ -105,6 +107,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-025 merges explicit operational evidence refs into trial evidence and blocks verified operational flags that lack refs.
 - FORM-ADP-026 builds weekly/monthly replay evidence only from production-ready daily entries with duplicate-free consecutive coverage and a durable replay ref.
 - FORM-ADP-027 builds recovery drill evidence only from a failed/degraded scheduled daily-run and a recovered production-ready rerun with real sent notifications and durable failure/recovery refs.
+- FORM-ADP-028 builds resource telemetry evidence only from unique daily resource refs that match passing production preflight reports and a durable resource evidence ref.
 
 ## D. Parameters
 
@@ -135,6 +138,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 trial operational evidence parameters: PARAM-ADP-118 through PARAM-ADP-122.
 - Active Phase 11 trial replay evidence parameters: PARAM-ADP-123 through PARAM-ADP-127.
 - Active Phase 11 trial recovery evidence parameters: PARAM-ADP-128 through PARAM-ADP-132.
+- Active Phase 11 trial resource evidence parameters: PARAM-ADP-133 through PARAM-ADP-137.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -303,6 +307,15 @@ when both reports include `daily_run_report` details. Its output is an
 annotation hint for the ops annotator and does not rerun the scheduler, send
 mail, upload Releases, mutate the trial ledger, or claim production acceptance.
 
+The trial resource telemetry evidence builder generates an auditable resource
+evidence report from the accumulated trial ledger and archived production
+preflight reports. It requires 30 unique daily `resource_gate_ref` values, a
+matching passing production preflight report for each daily ref, passing disk,
+memory, Git artifact, cache, and secret-environment gates, and a durable
+resource evidence ref before its annotation hint can be used by the ops
+annotator. Production preflight refs are timestamped so each daily run can be
+matched to its own resource gate evidence.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -342,6 +355,9 @@ mail, upload Releases, mutate the trial ledger, or claim production acceptance.
 - Trial recovery without real sent failure and recovery notifications -> recovery evidence blocked.
 - Trial recovery without durable failure and recovery refs -> recovery evidence blocked.
 - Trial recovery with mismatched failure/recovery daily dates when both are present -> recovery evidence blocked.
+- Trial resource evidence without 30 unique daily resource refs -> resource evidence blocked.
+- Trial resource evidence without matching passing preflight reports -> resource evidence blocked.
+- Trial resource evidence without a durable resource ref -> resource evidence blocked.
 - Missing production command, secret environment key, disk threshold, memory threshold, Git artifact hygiene, or local cache/staging cleanliness -> production preflight blocked.
 - Production preflight never logs secret values and never reads Codex auth.
 - Trial bootstrap without manual confirmation, self-hosted runner targeting, preflight-first ordering, artifact upload, GitHub secret-name mapping, or runbook evidence path -> bootstrap validation blocked.
@@ -386,3 +402,4 @@ Uncovered planned scenarios:
 - Real SMTP delivery against the provisioned production SMTP server and archived message evidence.
 - Actual weekly/monthly replay execution archived under a durable GitHub Actions artifact or private Release ref.
 - Actual recovery drill execution archived under a durable GitHub Actions artifact or private Release ref.
+- Actual 30-day resource telemetry evidence archived under a durable GitHub Actions artifact or private Release ref.

@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 26
-- acceptance_count: 26
+- task_count: 27
+- acceptance_count: 27
 
 ## Delivery Tasks
 
@@ -52,6 +52,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-TRIAL-OPS-EVIDENCE-014 | E | completed | ADP-ACC-PHASE11-TRIAL-OPS-EVIDENCE | 16 focused tests OK; operational evidence annotation and export gates pass | `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md` |
 | ADP-PHASE11-TRIAL-REPLAY-EVIDENCE-015 | E | completed | ADP-ACC-PHASE11-TRIAL-REPLAY-EVIDENCE | 16 focused tests OK; replay evidence builder blocks incomplete coverage and missing durable refs | `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md` |
 | ADP-PHASE11-TRIAL-RECOVERY-EVIDENCE-016 | E | completed | ADP-ACC-PHASE11-TRIAL-RECOVERY-EVIDENCE | 21 focused tests OK; recovery evidence builder blocks dry-run notifications, missing refs, and non-production recovery reports | `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md` |
+| ADP-PHASE11-TRIAL-RESOURCE-EVIDENCE-017 | E | completed | ADP-ACC-PHASE11-TRIAL-RESOURCE-EVIDENCE | 27 focused tests OK; resource evidence builder blocks missing preflight matches, blocked preflight, missing durable refs, and lowered expected days | `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md` |
 
 ## Release Gates
 
@@ -84,6 +85,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 trial operational evidence annotation | explicit weekly/monthly replay, recovery, scheduler, Release, SMTP, and resource refs can be merged without hand-editing trial evidence | pass for annotation contract; no real production evidence claimed |
 | Phase 11 trial replay evidence | weekly/monthly replay report from production daily entries, duplicate-free consecutive coverage, and durable replay ref before annotation | pass for replay evidence contract; no real production replay claimed |
 | Phase 11 trial recovery evidence | failed/degraded scheduled daily-run plus recovered production-ready rerun with real sent notifications and durable refs before annotation | pass for recovery evidence contract; no real production recovery drill claimed |
+| Phase 11 trial resource evidence | 30 unique daily resource refs matched to passing production preflight reports and durable resource evidence ref before annotation | pass for resource evidence contract; no real 30-day resource telemetry claimed |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |
