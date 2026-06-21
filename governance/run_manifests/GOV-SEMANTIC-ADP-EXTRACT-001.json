@@ -1,0 +1,60 @@
+{
+  "acceptance_id": "ACC-SEMANTIC-ADP-001",
+  "actor": "Codex",
+  "active_formulas_total": 31,
+  "active_parameters_total": 152,
+  "base_commit": "b52b88c1c7eadba64cb98fef655edc828f92b751",
+  "change_classification": [
+    "governance_semantic_coverage_partial_extractors",
+    "no_runtime_behavior_change",
+    "no_production_side_effects"
+  ],
+  "coverage_status": "in_progress",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "governance/projects.yaml"
+  ],
+  "fact_level": "EXTRACTED",
+  "formula_delta": "Added semantic metadata and implementation fingerprints for 9 active formulas; 22 active formulas remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-ADP-001.",
+  "git_commit": "PENDING",
+  "human_review_required_formulas": 22,
+  "human_review_required_parameters": 107,
+  "iteration_id": "ITER-20260621-033",
+  "model_delta": "No runtime model behavior change.",
+  "parameter_delta": "Added implementation/config/test-backed semantic selectors for 45 active parameters; 107 active parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-ADP-001.",
+  "project_id": "arxiv-daily-push",
+  "result": "pass",
+  "result_commit": "PENDING",
+  "rollback": "Remove arXiv semantic extractor enablement, semantic registry columns/fields, this semantic run manifest/event, generated status/dashboard changes, and the root governance test update.",
+  "semantic_formulas_checked": 9,
+  "semantic_parameters_checked": 45,
+  "semantic_review_task_id": "GOV-SEMANTIC-ADP-001",
+  "summary": "Moved arXiv Daily Push semantic coverage from planned to in_progress with partial machine-checked parameter selectors and formula fingerprints while keeping the remaining active semantic surface explicitly bound to HUMAN_REVIEW_REQUIRED.",
+  "task_id": "GOV-SEMANTIC-ADP-001",
+  "test_results": [
+    "semantic extractor: 45 active parameters and 9 active formulas checked with no errors",
+    "project governance: arxiv-daily-push errors 0 warnings 0",
+    "root governance tests: 84 tests OK",
+    "arxiv-daily-push unit tests: 143 tests OK",
+    "dashboard generation: PASS",
+    "changed-only enforce-sync semantic: errors 0 warnings 0; projects changed arxiv-daily-push; all registered project validation errors 0 warnings 0",
+    "git diff --check: exit 0",
+    "cache check: no arxiv-daily-push __pycache__ or .pyc files",
+    "storage check before final sparse shrink: worktree 221M, arxiv-daily-push 1.7M, .git 89M"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_semantic_adp3 python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_semantic_project python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_semantic_root python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_semantic_arxiv_final PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_semantic_dashboard python3 scripts/generate_governance_dashboard.py --write",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_semantic_changed python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "git diff --check",
+    "find arxiv-daily-push -name '__pycache__' -o -name '*.pyc'",
+    "du -sh arxiv-daily-push .git ."
+  ],
+  "timestamp": "2026-06-22T14:15:00+10:00",
+  "version_after": "0.11.19",
+  "version_before": "0.11.19"
+}
