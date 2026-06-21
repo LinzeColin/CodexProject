@@ -132,6 +132,7 @@ PARTIAL_EVIDENCE = {
         "artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json",
         "artifacts/tests/a202/t1301_operator_source_capture_contract.json",
         "artifacts/tests/a202/t1301_live_official_retrieval_contract.json",
+        "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
         "artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json",
     },
     "T1302": {
@@ -172,6 +173,7 @@ PARTIAL_EVIDENCE = {
         "scripts/check_database_schema.py",
         "tests/integration/test_database_migrations.py",
         "artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json",
+        "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
         "artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json",
     },
     "T1307": {

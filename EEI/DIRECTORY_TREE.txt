@@ -88,6 +88,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── t1301_curated_official_ingestion_contract.json
 │   │   │   ├── t1301_live_capture_postgres_ingestion_contract.json
 │   │   │   ├── t1301_live_official_retrieval_contract.json
+│   │   │   ├── t1301_live_official_selected_capture_evidence.json
 │   │   │   ├── t1301_official_full_text_dry_run_contract.json
 │   │   │   └── t1301_operator_source_capture_contract.json
 │   │   ├── a203

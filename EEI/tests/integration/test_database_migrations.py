@@ -55,6 +55,9 @@ LIVE_OFFICIAL_CAPTURE_PARSER_VERSION = "nvidia-official-fulltext-live-v1"
 LIVE_OFFICIAL_CAPTURE_FIXTURE_PATH = (
     "tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json"
 )
+LIVE_OFFICIAL_CAPTURE_SELECTED_PATH = (
+    "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json"
+)
 REVIEWED_DECISION_SET_KEY = "a202-integration-reviewed-golden-vertical-v1"
 REVIEWED_RELATIONSHIP_SNAPSHOT_KEY = "a202-reviewed-golden-vertical"
 REVIEW_DECISION_FIXTURE_PATH = "tests/fixtures/golden_vertical_review_decisions.json"
@@ -144,6 +147,16 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
         "--artifact",
         LIVE_OFFICIAL_CAPTURE_FIXTURE_PATH,
         "--allow-fixture-capture",
+    )
+    run_script(
+        "scripts/load_live_official_captures.py",
+        "--artifact",
+        LIVE_OFFICIAL_CAPTURE_SELECTED_PATH,
+    )
+    run_script(
+        "scripts/load_live_official_captures.py",
+        "--artifact",
+        LIVE_OFFICIAL_CAPTURE_SELECTED_PATH,
     )
     run_script(
         "scripts/check_database_schema.py",
@@ -607,11 +620,11 @@ def exercise_live_official_capture_postgres_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert raw_row[0:4] == (2, 2, 2, 2)
+        assert raw_row[0:4] == (5, 5, 5, 5)
         assert float(raw_row[4]) == 1.0
-        assert raw_row[5:9] == (2, 2, 2, 2)
+        assert raw_row[5:9] == (5, 5, 5, 5)
         assert raw_row[9] == 0
-        assert raw_row[10] == 2
+        assert raw_row[10] == 5
 
         latest_run = connection.execute(
             """
@@ -629,19 +642,19 @@ def exercise_live_official_capture_postgres_contracts() -> None:
         ).fetchone()
         assert latest_run == (
             "succeeded",
-            "2",
-            "30",
-            "2",
+            "3",
+            "36",
+            "3",
             "healthy",
             "true",
             "true",
             "false",
             "false",
             "false",
-            "true",
+            "false",
         )
 
-        source_documents = connection.execute(
+        fixture_source_documents = connection.execute(
             """
             SELECT count(*)
             FROM source_documents sd
@@ -654,7 +667,22 @@ def exercise_live_official_capture_postgres_contracts() -> None:
             """,
             (parser_version, parser_version),
         ).fetchone()[0]
-        assert source_documents == 2
+        assert fixture_source_documents == 2
+
+        selected_source_documents = connection.execute(
+            """
+            SELECT count(*)
+            FROM source_documents sd
+            JOIN raw_source_snapshots rss ON rss.source_document_id = sd.id
+            WHERE rss.parser_version = %s
+              AND sd.parser_version = %s
+              AND sd.raw_storage_uri LIKE
+                'artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json#%%'
+              AND sd.content_hash = rss.content_hash
+            """,
+            (parser_version, parser_version),
+        ).fetchone()[0]
+        assert selected_source_documents == 3
 
         candidate_row = connection.execute(
             """
@@ -669,10 +697,10 @@ def exercise_live_official_capture_postgres_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert candidate_row[0] == 30
+        assert candidate_row[0] == 66
         assert candidate_row[1] >= 6
         assert candidate_row[2] >= 6
-        assert candidate_row[3:6] == (30, 2, 2)
+        assert candidate_row[3:6] == (66, 5, 4)
 
         evidence_row = connection.execute(
             """
@@ -700,7 +728,7 @@ def exercise_live_official_capture_postgres_contracts() -> None:
             """,
             (parser_version, parser_version),
         ).fetchone()
-        assert evidence_row == (2, 2, 2, 2, 2, 2, 2, 2)
+        assert evidence_row == (5, 5, 5, 5, 5, 5, 5, 5)
 
         live_fact_candidates = connection.execute(
             """

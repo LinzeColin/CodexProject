@@ -63,6 +63,14 @@ RETRY_POLICY = {
     "retryable_statuses": [408, 425, 429, 500, 502, 503, 504],
     "dead_letter_after_attempts": 3,
 }
+TOKEN_ALIAS_POLICY_VERSION = "official-source-token-alias-v1"
+TOKEN_ALIASES = {
+    "nvidia corporation": ("nvidia",),
+    "hon hai foxconn": ("hon hai", "foxconn", "hon hai precision"),
+}
+COMPOSITE_TOKEN_RULES = {
+    "packaging test": (("packaging",), ("test", "testing")),
+}
 
 
 @dataclass(frozen=True)
@@ -89,10 +97,38 @@ def token_words(value: str) -> str:
     return " ".join(re.sub(r"[^a-z0-9]+", " ", value.casefold()).split())
 
 
+def normalized_phrase_present(normalized_text: str, phrase: str) -> bool:
+    normalized_phrase = token_words(phrase)
+    return bool(normalized_phrase) and f" {normalized_phrase} " in normalized_text
+
+
 def token_present(source_text: str, token: str) -> bool:
     normalized_text = f" {token_words(source_text)} "
     normalized_token = token_words(token)
-    return bool(normalized_token) and f" {normalized_token} " in normalized_text
+    if not normalized_token:
+        return False
+    if f" {normalized_token} " in normalized_text:
+        return True
+    if any(
+        normalized_phrase_present(normalized_text, alias)
+        for alias in TOKEN_ALIASES.get(normalized_token, ())
+    ):
+        return True
+    composite_rule = COMPOSITE_TOKEN_RULES.get(normalized_token)
+    if composite_rule:
+        return all(
+            any(normalized_phrase_present(normalized_text, option) for option in options)
+            for options in composite_rule
+        )
+    return False
+
+
+def token_alias_contract() -> dict[str, object]:
+    return {
+        "version": TOKEN_ALIAS_POLICY_VERSION,
+        "aliases": TOKEN_ALIASES,
+        "composite_rules": COMPOSITE_TOKEN_RULES,
+    }
 
 
 def normalize_live_text(value: str) -> str:
@@ -158,6 +194,7 @@ def live_capture_source_health(
         "http_status": http_status,
         "content_type": content_type,
         "attempts": attempts,
+        "token_alias_policy": token_alias_contract(),
     }
 
 
@@ -317,6 +354,7 @@ def capture_live_official_sources(
             "timeout_seconds": options.timeout_seconds,
             "max_bytes": options.max_bytes,
             "retry_policy": RETRY_POLICY,
+            "token_alias_policy": token_alias_contract(),
         },
         "counts": {
             "anchors_total": len(anchors),
@@ -330,6 +368,20 @@ def capture_live_official_sources(
             "Production owner decision and formal release/legal clearance remain required.",
         ],
     }
+
+
+def select_anchor_rows(
+    rows: list[dict[str, str]],
+    selected_anchor_ids: list[str] | None,
+) -> list[dict[str, str]]:
+    if not selected_anchor_ids:
+        return rows
+    known_ids = {row["anchor_id"] for row in rows}
+    unknown_ids = sorted(set(selected_anchor_ids) - known_ids)
+    if unknown_ids:
+        raise ValueError(f"Unknown live capture anchor_id values: {unknown_ids}")
+    selected = set(selected_anchor_ids)
+    return [row for row in rows if row["anchor_id"] in selected]
 
 
 def build_live_contract_artifact() -> dict[str, object]:
@@ -361,6 +413,11 @@ def build_live_contract_artifact() -> dict[str, object]:
                 "records retry/source-health metadata."
             ),
             (
+                "Expected-token coverage keeps a 100% threshold while applying the "
+                "official-source token alias contract for canonical company names "
+                "and composite stage terms."
+            ),
+            (
                 "Default CI generation does not access the network and does not "
                 "commit official full text; it records NETWORK_EVIDENCE_MISSING "
                 "until an operator live run is attached."
@@ -383,6 +440,13 @@ def build_live_contract_artifact() -> dict[str, object]:
                 "--allow-live-network --output "
                 "artifacts/private/t1301_live_official_capture.json"
             ),
+            "operator_live_capture_selected_anchors": (
+                "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python "
+                "scripts/fetch_official_source_full_text.py --capture-live "
+                "--allow-live-network --anchor-id NVDA-ANCHOR-002 "
+                "--anchor-id NVDA-ANCHOR-003 --anchor-id NVDA-ANCHOR-004 --output "
+                "artifacts/private/t1301_live_official_capture.json"
+            ),
         },
         "required_operator_evidence": [
             (
@@ -390,6 +454,7 @@ def build_live_contract_artifact() -> dict[str, object]:
                 "LIVE_CAPTURE_READY_FOR_OPERATOR_REVIEW."
             ),
             "Operator review decision for source licensing and source text retention policy.",
+            "Operator review of token-alias matches before production approval.",
             (
                 "PostgreSQL ingestion evidence proving live capture rows, source health "
                 "and retry metadata."
@@ -935,6 +1000,15 @@ def main() -> int:
         help="Maximum response bytes retained per official source during live capture.",
     )
     parser.add_argument(
+        "--anchor-id",
+        action="append",
+        default=None,
+        help=(
+            "Restrict live capture to one official-source anchor_id. "
+            "May be supplied multiple times; unknown ids fail closed."
+        ),
+    )
+    parser.add_argument(
         "--quiet",
         action="store_true",
         help="Suppress JSON stdout after writing an output artifact.",
@@ -973,7 +1047,9 @@ def main() -> int:
             )
             return 2
         output_path = args.output or ROOT / "artifacts/private/t1301_live_official_capture.json"
+        rows = select_anchor_rows(read_csv(ANCHOR_PATH), args.anchor_id)
         payload = capture_live_official_sources(
+            rows=rows,
             options=LiveCaptureOptions(
                 timeout_seconds=args.timeout_seconds,
                 max_bytes=args.max_bytes,

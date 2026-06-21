@@ -9,7 +9,7 @@
   "status": "NETWORK_EVIDENCE_MISSING",
   "record_mode": "live",
   "parser_version": "nvidia-official-fulltext-live-v1",
-  "generated_at": "2026-06-21T03:31:23+00:00",
+  "generated_at": "2026-06-21T04:34:16+00:00",
   "capture_policy": {
     "live_retrieval": false,
     "relationship_publication": false,
@@ -20,16 +20,19 @@
   "implemented_scope": [
     "scripts/fetch_official_source_full_text.py can capture live official-source URLs only when --capture-live and --allow-live-network are both supplied.",
     "Live capture extracts normalized text from HTML or PDF responses, computes content hashes, validates expected-token coverage and records retry/source-health metadata.",
+    "Expected-token coverage keeps a 100% threshold while applying the official-source token alias contract for canonical company names and composite stage terms.",
     "Default CI generation does not access the network and does not commit official full text; it records NETWORK_EVIDENCE_MISSING until an operator live run is attached.",
     "Live capture does not publish relationship facts and does not imply release/legal clearance."
   ],
   "commands": {
     "generate_contract": "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/fetch_official_source_full_text.py --generate-live-contract --output artifacts/tests/a202/t1301_live_official_retrieval_contract.json",
-    "operator_live_capture": "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/fetch_official_source_full_text.py --capture-live --allow-live-network --output artifacts/private/t1301_live_official_capture.json"
+    "operator_live_capture": "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/fetch_official_source_full_text.py --capture-live --allow-live-network --output artifacts/private/t1301_live_official_capture.json",
+    "operator_live_capture_selected_anchors": "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/fetch_official_source_full_text.py --capture-live --allow-live-network --anchor-id NVDA-ANCHOR-002 --anchor-id NVDA-ANCHOR-003 --anchor-id NVDA-ANCHOR-004 --output artifacts/private/t1301_live_official_capture.json"
   },
   "required_operator_evidence": [
     "Successful operator live capture payload with status LIVE_CAPTURE_READY_FOR_OPERATOR_REVIEW.",
     "Operator review decision for source licensing and source text retention policy.",
+    "Operator review of token-alias matches before production approval.",
     "PostgreSQL ingestion evidence proving live capture rows, source health and retry metadata."
   ],
   "remaining_gaps_before_a202_done": [

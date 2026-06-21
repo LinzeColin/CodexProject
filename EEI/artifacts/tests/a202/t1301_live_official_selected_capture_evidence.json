@@ -1,0 +1,271 @@
+{
+  "schema_version": "nvidia-official-fulltext-live-capture-v1",
+  "system_name": "EEI",
+  "task_id": "T1301",
+  "acceptance_ids": [
+    "A202",
+    "A206"
+  ],
+  "status": "LIVE_CAPTURE_READY_FOR_OPERATOR_REVIEW",
+  "record_mode": "live",
+  "parser_version": "nvidia-official-fulltext-live-v1",
+  "generated_at": "2026-06-21T04:33:54+00:00",
+  "source_registry": "data/nvidia_public_source_anchors.csv",
+  "source_registry_sha256": "62d6effde0b3e750cae8213cdcdcb49187ccb62306e3469c29168ad43ccaca2d",
+  "capture_policy": {
+    "live_retrieval": true,
+    "relationship_publication": false,
+    "release_clearance": false,
+    "committed_full_text": false,
+    "requires_operator_review": true
+  },
+  "parameters": {
+    "min_text_chars": 240,
+    "min_token_coverage_ratio": 1.0,
+    "timeout_seconds": 30.0,
+    "max_bytes": 8388608,
+    "retry_policy": {
+      "max_attempts": 3,
+      "backoff_seconds": [
+        0,
+        2,
+        5
+      ],
+      "retryable_statuses": [
+        408,
+        425,
+        429,
+        500,
+        502,
+        503,
+        504
+      ],
+      "dead_letter_after_attempts": 3
+    },
+    "token_alias_policy": {
+      "version": "official-source-token-alias-v1",
+      "aliases": {
+        "nvidia corporation": [
+          "nvidia"
+        ],
+        "hon hai foxconn": [
+          "hon hai",
+          "foxconn",
+          "hon hai precision"
+        ]
+      },
+      "composite_rules": {
+        "packaging test": [
+          [
+            "packaging"
+          ],
+          [
+            "test",
+            "testing"
+          ]
+        ]
+      }
+    }
+  },
+  "counts": {
+    "anchors_total": 3,
+    "anchors_healthy": 3,
+    "anchors_failed": 0
+  },
+  "anchors": [
+    {
+      "anchor_id": "NVDA-ANCHOR-002",
+      "source_url": "https://investor.nvidia.com/files/doc_financials/2026/q4/10K-NVDA.pdf",
+      "source_url_sha256": "4fc8e0515ac55b044a62c2e576a7973b4db72c16df0ca47b394370a873cbfe39",
+      "document_date": "2026-02-25",
+      "title": "NVIDIA Corporation FY2026 Form 10-K",
+      "official_publisher": "NVIDIA Investor Relations",
+      "capture_status": "success",
+      "last_error": null,
+      "source_text_sha256": "d07a35bf9b349e7bf109cf567abef8c6205c9b0011b7982369ced1be9fd4284d",
+      "source_text_excerpt": "Table of Contents UNITED STATESSECURITIES AND EXCHANGE COMMISSION Washington, D.C. 20549 ____________________________________________________________________________________________ FORM 10-K ☒ ANNUAL REPORT PURSUANT TO",
+      "source_health": {
+        "status": "healthy",
+        "expected_token_count": 14,
+        "matched_token_count": 14,
+        "missing_tokens": [],
+        "token_coverage": {
+          "ratio": 1.0,
+          "minimum_ratio": 1.0
+        },
+        "text_char_count": 356605,
+        "content_length_bytes": 1048995,
+        "http_status": 200,
+        "content_type": "application/pdf",
+        "attempts": [
+          {
+            "attempt": 1,
+            "transport": "httpx",
+            "status": "response",
+            "http_status": 200,
+            "elapsed_ms": 1326.4813,
+            "retryable": false,
+            "truncated_by_max_bytes": false
+          }
+        ],
+        "token_alias_policy": {
+          "version": "official-source-token-alias-v1",
+          "aliases": {
+            "nvidia corporation": [
+              "nvidia"
+            ],
+            "hon hai foxconn": [
+              "hon hai",
+              "foxconn",
+              "hon hai precision"
+            ]
+          },
+          "composite_rules": {
+            "packaging test": [
+              [
+                "packaging"
+              ],
+              [
+                "test",
+                "testing"
+              ]
+            ]
+          }
+        }
+      },
+      "relationship_publication": false,
+      "release_clearance": false
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-003",
+      "source_url": "https://nvidianews.nvidia.com/news/computer-industry-ai-factories-data-centers",
+      "source_url_sha256": "69400554ed85016ecedf3865620780c38921d1757cd84ef407de012c35d1a986",
+      "document_date": "2024-06-02",
+      "title": "Computer Industry Joins NVIDIA to Build AI Factories and Data Centers for Next Industrial Revolution",
+      "official_publisher": "NVIDIA Newsroom",
+      "capture_status": "success",
+      "last_error": null,
+      "source_text_sha256": "f2e2217445ba6c1fdb2012ef3655c80c2ad63a24caa39edf1e8bebe674221095",
+      "source_text_excerpt": "Computer Industry Joins NVIDIA to Build AI Factories and Data Centers for the Next Industrial Revolution | NVIDIA Newsroom Artificial Intelligence Computing Leadership from NVIDIA --> PLATFORMS Autonomous Machines Cloud",
+      "source_health": {
+        "status": "healthy",
+        "expected_token_count": 11,
+        "matched_token_count": 11,
+        "missing_tokens": [],
+        "token_coverage": {
+          "ratio": 1.0,
+          "minimum_ratio": 1.0
+        },
+        "text_char_count": 21040,
+        "content_length_bytes": 84949,
+        "http_status": 200,
+        "content_type": "text/html; charset=utf-8",
+        "attempts": [
+          {
+            "attempt": 1,
+            "transport": "httpx",
+            "status": "response",
+            "http_status": 200,
+            "elapsed_ms": 600.5346,
+            "retryable": false,
+            "truncated_by_max_bytes": false
+          }
+        ],
+        "token_alias_policy": {
+          "version": "official-source-token-alias-v1",
+          "aliases": {
+            "nvidia corporation": [
+              "nvidia"
+            ],
+            "hon hai foxconn": [
+              "hon hai",
+              "foxconn",
+              "hon hai precision"
+            ]
+          },
+          "composite_rules": {
+            "packaging test": [
+              [
+                "packaging"
+              ],
+              [
+                "test",
+                "testing"
+              ]
+            ]
+          }
+        }
+      },
+      "relationship_publication": false,
+      "release_clearance": false
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-004",
+      "source_url": "https://blogs.nvidia.com/blog/computex-2025-jensen-huang/",
+      "source_url_sha256": "17227c45d8516a41a1903f1ccc043fb10de2474d0c2bc1ca055ea131dbfde5aa",
+      "document_date": "2025-05-18",
+      "title": "NVIDIA CEO Envisions AI Infrastructure Industry Worth Tens of Trillions of Dollars",
+      "official_publisher": "NVIDIA Blog",
+      "capture_status": "success",
+      "last_error": null,
+      "source_text_sha256": "769af5690063ad9da0e52c9496e06e5ccd0f1a04eafb942c73fbed000daf5cb0",
+      "source_text_excerpt": "NVIDIA CEO Envisions AI Infrastructure Industry Worth ‘Trillions of Dollars’ | NVIDIA Blog Skip to content NVIDIA CEO Envisions AI Infrastructure Industry Worth ‘Trillions of Dollars’ In his COMPUTEX keynote, Huang unvei",
+      "source_health": {
+        "status": "healthy",
+        "expected_token_count": 11,
+        "matched_token_count": 11,
+        "missing_tokens": [],
+        "token_coverage": {
+          "ratio": 1.0,
+          "minimum_ratio": 1.0
+        },
+        "text_char_count": 7950,
+        "content_length_bytes": 111808,
+        "http_status": 200,
+        "content_type": "text/html; charset=UTF-8",
+        "attempts": [
+          {
+            "attempt": 1,
+            "transport": "httpx",
+            "status": "response",
+            "http_status": 200,
+            "elapsed_ms": 195.9873,
+            "retryable": false,
+            "truncated_by_max_bytes": false
+          }
+        ],
+        "token_alias_policy": {
+          "version": "official-source-token-alias-v1",
+          "aliases": {
+            "nvidia corporation": [
+              "nvidia"
+            ],
+            "hon hai foxconn": [
+              "hon hai",
+              "foxconn",
+              "hon hai precision"
+            ]
+          },
+          "composite_rules": {
+            "packaging test": [
+              [
+                "packaging"
+              ],
+              [
+                "test",
+                "testing"
+              ]
+            ]
+          }
+        }
+      },
+      "relationship_publication": false,
+      "release_clearance": false
+    }
+  ],
+  "remaining_gaps_before_a202_done": [
+    "Operator must review the live capture payload and source licensing.",
+    "Live capture payload must be loaded into PostgreSQL evidence tables.",
+    "Production owner decision and formal release/legal clearance remain required."
+  ]
+}

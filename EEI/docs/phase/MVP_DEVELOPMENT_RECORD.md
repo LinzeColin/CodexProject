@@ -4097,3 +4097,50 @@ Status: LOCAL AND REMOTE CI VALIDATED; A202/A206 STILL IN PROGRESS
 
 - Remove `scripts/load_live_official_captures.py`, the live fixture, the A202 ingestion contract artifact, the integration/unit test additions and the status/traceability updates.
 - If live parser rows were written to a deployed database, delete rows by `parser_version='nvidia-official-fulltext-live-v1'` before release or restore from a data snapshot.
+
+## 2026-06-21 - T1301/A202 selected live official capture evidence
+
+Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A206 STILL IN PROGRESS
+
+### Scope
+
+- Added `official-source-token-alias-v1` to `scripts/fetch_official_source_full_text.py` so canonical expected-token coverage can match governed aliases such as `NVIDIA Corporation` -> `NVIDIA` and `Hon Hai/Foxconn` -> `Hon Hai` / `Foxconn` without lowering `min_token_coverage_ratio=1.0`.
+- Added composite token handling for `packaging/test` that requires `packaging` plus either `test` or `testing`; a source containing only `packaging` still fails.
+- Added repeatable `--anchor-id` support for operator live capture so selected official anchors can be captured fail-closed without treating unsupported anchors as healthy.
+- Generated `artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json` from real NVIDIA official sources `NVDA-ANCHOR-002`, `NVDA-ANCHOR-003` and `NVDA-ANCHOR-004`.
+- The selected live artifact has status `LIVE_CAPTURE_READY_FOR_OPERATOR_REVIEW`, `anchors_total=3`, `anchors_failed=0`, 100% token coverage, no `source_text`, `release_clearance=false` and `relationship_publication=false`.
+- Extended `tests/integration/test_database_migrations.py` so GitHub Actions G2 PostgreSQL loads the selected live artifact twice without `--allow-fixture-capture` and asserts idempotent non-fixture evidence rows.
+- `NVDA-ANCHOR-001` intentionally remains outside the selected live artifact because the live page did not support the current `packaging/test` expected-token contract; this is a source-registry semantic review item, not a forced pass.
+
+### Acceptance mapping
+
+- T1301 -> A202 for real selected-anchor live retrieval evidence, non-fixture PostgreSQL ingestion assertions, source-health metadata and evidence-chain persistence.
+- T1304 -> A206 only for retry/source-health metadata persistence; this does not prove long-duration retry/dead-letter behavior.
+- A202 remains `IN_PROGRESS`: the artifact is ready for operator review but lacks production owner sign-off, formal source-license/legal clearance, production relationship publication and the `NVDA-ANCHOR-001` semantic review.
+- A206 remains `IN_PROGRESS`: source-health metadata and retry attempts are not substitutes for 4h/24h scheduler/worker soak.
+
+### Parameters and formulas
+
+- `min_text_chars`: 240.
+- `min_token_coverage_ratio`: 1.0.
+- `token_alias_policy_version`: `official-source-token-alias-v1`.
+- `timeout_seconds`: 30.0 for the generated selected live capture artifact.
+- `max_bytes`: 8 MiB per source response.
+- No scoring formula or model profile changed.
+
+### Local validation
+
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/fetch_official_source_full_text.py scripts/load_live_official_captures.py tests/unit/test_official_source_live_capture.py tests/integration/test_database_migrations.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_official_source_live_capture.py -q`: PASS; 9 passed.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/fetch_official_source_full_text.py --capture-live --allow-live-network --anchor-id NVDA-ANCHOR-002 --anchor-id NVDA-ANCHOR-003 --anchor-id NVDA-ANCHOR-004 --output artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json --timeout-seconds 30 --quiet`: PASS.
+- `jq -e '(.status == "LIVE_CAPTURE_READY_FOR_OPERATOR_REVIEW") and (.counts.anchors_total == 3) and (.counts.anchors_failed == 0) and ([.. | objects | has("source_text")] | all(. == false)) and (.capture_policy.committed_full_text == false) and (.capture_policy.relationship_publication == false) and (.capture_policy.release_clearance == false)' artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_v5_production_readiness_sync.py`: PASS.
+
+Local PostgreSQL integration was not run because the current shell has no `docker`, no `.env`, no `DATABASE_URL`, no `psql` and no `pg_ctl`. Remote G2 PostgreSQL validation is required before this slice can be called CI validated.
+
+### Rollback
+
+- Revert the token alias and `--anchor-id` changes in `scripts/fetch_official_source_full_text.py`.
+- Remove `artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json`.
+- Restore `tests/integration/test_database_migrations.py` to fixture-only live-capture assertions.
+- Regenerate development, clean-room and release artifacts, then rerun validation.
