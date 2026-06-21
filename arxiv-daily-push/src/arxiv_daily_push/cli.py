@@ -188,6 +188,13 @@ def build_parser() -> argparse.ArgumentParser:
     trial_ledger.add_argument("--recovery-ref", default="")
     trial_ledger.add_argument("--json", action="store_true", help="Print JSON trial ledger update report.")
 
+    trial_state = subparsers.add_parser(
+        "export-trial-ledger-state",
+        help="Export the trial_evidence object from a passing trial ledger update report.",
+    )
+    trial_state.add_argument("--ledger-update", required=True, help="Trial ledger update report JSON.")
+    trial_state.add_argument("--json", action="store_true", help="Print JSON trial evidence state.")
+
     preflight = subparsers.add_parser("preflight-production", help="Run fail-closed production preflight before scheduled execution.")
     preflight.add_argument("--path", default=".", help="Repository path used for disk, Git, and cache checks.")
     preflight.add_argument("--generated-at", required=True, help="Preflight report generation timestamp.")
@@ -598,6 +605,28 @@ def main(argv: list[str] | None = None) -> int:
             for reason in report["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if report["ledger_updated"] else 2
+    if args.command == "export-trial-ledger-state":
+        report = load_json_mapping(args.ledger_update)
+        errors = validate_trial_ledger_update_report(report)
+        if report.get("ledger_updated") is not True:
+            errors.extend(str(reason) for reason in report.get("blocking_reasons") or ["trial ledger update did not append evidence"])
+        evidence = report.get("trial_evidence")
+        if not isinstance(evidence, dict):
+            errors.append("trial ledger update report requires trial_evidence object")
+        if errors:
+            payload = {"status": "blocked", "errors": errors}
+            if args.json:
+                print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(evidence, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{evidence.get('trial_id', 'trial:unknown')}\t{len(evidence.get('daily_runs') or [])} days")
+        return 0
     if args.command == "preflight-production":
         report = build_production_preflight(Path(args.path), generated_at=args.generated_at)
         errors = validate_production_preflight(report)

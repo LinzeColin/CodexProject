@@ -19,6 +19,7 @@ trial_id: adp-trial-current
 trial_ref: null
 trial_text_degradation_verified: false
 trial_video_degradation_verified: false
+trial_ledger_artifact_name: adp-trial-evidence-ledger
 allow_smtp_send_from_scheduler: false
 allow_release_upload_from_scheduler: false
 release_target_env_key: ADP_RELEASE_TARGET

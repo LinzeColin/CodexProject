@@ -121,6 +121,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py", "arxiv-daily-push/tests/test_trial_ledger.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-025"
+    statement: "Trial evidence ledger state must be carried forward as a small GitHub Actions artifact, never committed to Git, and must not be replaced when a daily ledger update is blocked."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/tests/test_production_scheduler.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -491,3 +496,21 @@ models:
     config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/trial_ledger.schema.json", "arxiv-daily-push/schemas/trial_evidence.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md"]
+
+  - model_id: "MOD-ADP-022"
+    name: "Trial ledger state persistence"
+    kind: "deterministic workflow state bridge"
+    purpose: "Restore and upload small trial evidence ledger state artifacts across scheduled GitHub Actions runs."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-trial-ledger-state-v1"
+    assumption_ids: ["ASM-ADP-025", "ASM-ADP-024", "ASM-ADP-021"]
+    formula_ids: ["FORM-ADP-024"]
+    parameter_ids: ["PARAM-ADP-113", "PARAM-ADP-114", "PARAM-ADP-115", "PARAM-ADP-116", "PARAM-ADP-117"]
+    inputs: ["configured trial evidence path", "previous GitHub Actions artifact", "trial ledger update report", "workflow token"]
+    outputs: ["restored trial evidence path", "trial evidence ledger state artifact", "state source", "export status"]
+    code_refs: [".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py"]
+    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]

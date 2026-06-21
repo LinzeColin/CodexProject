@@ -33,6 +33,7 @@ on:
         type: string
 
 permissions:
+  actions: read
   contents: read
 
 concurrency:
@@ -261,6 +262,68 @@ jobs:
           path: ${{ runner.temp }}/adp-scheduled-execution.json
           if-no-files-found: error
           retention-days: 35
+      - name: Resolve trial ledger state
+        id: trial_ledger_state
+        if: always() && needs.gate.outputs.mode == 'daily-run'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          state_path="$RUNNER_TEMP/adp-trial-evidence-ledger.json"
+          source="none"
+          if [ -n "${ADP_TRIAL_EVIDENCE_INPUT_PATH:-}" ] && [ -f "${ADP_TRIAL_EVIDENCE_INPUT_PATH:-}" ]; then
+            cp "$ADP_TRIAL_EVIDENCE_INPUT_PATH" "$state_path"
+            source="configured-path"
+          elif command -v gh >/dev/null 2>&1; then
+            runs_json="$RUNNER_TEMP/adp-trial-ledger-runs.json"
+            previous_dir="$RUNNER_TEMP/adp-trial-ledger-previous"
+            mkdir -p "$previous_dir"
+            gh run list \
+              --repo "${{ github.repository }}" \
+              --workflow "arXiv Daily Push scheduled production gate" \
+              --branch "${{ github.ref_name }}" \
+              --status completed \
+              --limit 20 \
+              --json databaseId,conclusion > "$runs_json" 2>/dev/null || true
+            previous_run_id="$(python3 - "$runs_json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          try:
+              runs = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          except Exception:
+              runs = []
+          for run in runs:
+              if run.get("conclusion") == "success" and run.get("databaseId"):
+                  print(run["databaseId"])
+                  break
+          PY
+            )"
+            if [ -n "$previous_run_id" ]; then
+              gh run download "$previous_run_id" \
+                --repo "${{ github.repository }}" \
+                --name adp-trial-evidence-ledger \
+                --dir "$previous_dir" >/dev/null 2>&1 || true
+              previous_file="$(find "$previous_dir" -type f -name '*.json' | head -n 1)"
+              if [ -n "$previous_file" ]; then
+                cp "$previous_file" "$state_path"
+                source="artifact:$previous_run_id"
+              fi
+            fi
+          fi
+          if [ -f "$state_path" ]; then
+            printf 'trial_evidence_path=%s\n' "$state_path" >> "$GITHUB_OUTPUT"
+          else
+            printf 'trial_evidence_path=\n' >> "$GITHUB_OUTPUT"
+          fi
+          printf 'source=%s\n' "$source" >> "$GITHUB_OUTPUT"
+          {
+            echo "## arXiv Daily Push trial ledger state"
+            echo "- source: $source"
+            echo "- path: ${state_path:-not-found}"
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Update trial evidence ledger
         id: trial_ledger
         if: always() && needs.gate.outputs.mode == 'daily-run'
@@ -277,8 +340,9 @@ jobs:
             --trial-ref "${ADP_TRIAL_REF:-}"
             --json
           )
-          if [ -n "${ADP_TRIAL_EVIDENCE_INPUT_PATH:-}" ]; then
-            command+=(--path "$ADP_TRIAL_EVIDENCE_INPUT_PATH")
+          resolved_trial_evidence="${{ steps.trial_ledger_state.outputs.trial_evidence_path }}"
+          if [ -n "$resolved_trial_evidence" ]; then
+            command+=(--path "$resolved_trial_evidence")
           fi
           if [ "${ADP_TEXT_DEGRADATION_VERIFIED:-false}" = "true" ]; then
             command+=(--text-degradation-verified)
@@ -329,6 +393,36 @@ jobs:
         with:
           name: adp-trial-ledger-update
           path: ${{ steps.trial_ledger.outputs.trial_ledger_path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Export trial evidence ledger state
+        id: trial_ledger_export
+        if: always() && steps.trial_ledger.outputs.trial_ledger_path != ''
+        shell: bash
+        run: |
+          set +e
+          state="$RUNNER_TEMP/adp-trial-evidence-ledger.json"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_ledger_export" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push export-trial-ledger-state \
+              --ledger-update "${{ steps.trial_ledger.outputs.trial_ledger_path }}" \
+              --json > "$state"
+          code=$?
+          cat "$state"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" = "0" ]; then
+            printf 'trial_evidence_path=%s\n' "$state" >> "$GITHUB_OUTPUT"
+          else
+            printf 'trial_evidence_path=\n' >> "$GITHUB_OUTPUT"
+          fi
+          exit 0
+      - name: Upload trial evidence ledger state artifact
+        if: always() && steps.trial_ledger_export.outputs.trial_evidence_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-evidence-ledger
+          path: ${{ steps.trial_ledger_export.outputs.trial_evidence_path }}
           if-no-files-found: error
           retention-days: 35
       - name: Stop if preflight blocked

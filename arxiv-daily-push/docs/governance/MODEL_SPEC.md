@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 21
-- formula_count: 23
-- parameter_count: 112
+- model_count: 22
+- formula_count: 24
+- parameter_count: 117
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -36,6 +36,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-019 | Scheduled execution driver | deterministic scheduled execution gate | Convert scheduled health-check, daily-run, and watchdog invocations into evidence artifacts while blocking unsupported production acceptance | active | adp-scheduled-execution-v1 | `src/arxiv_daily_push/scheduled_execution.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-020 | Daily input builder | deterministic source-to-input builder | Convert a passing arXiv SourceBatch into ranked daily pipeline input using Atom summary claims only | active | adp-daily-input-builder-v1 | `src/arxiv_daily_push/daily_input.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-021 | Trial evidence ledger update | deterministic trial ledger updater | Append one production-ready scheduled daily-run report into the 30-day trial evidence ledger without claiming acceptance early | active | adp-trial-ledger-v1 | `src/arxiv_daily_push/trial_ledger.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
+| MOD-ADP-022 | Trial ledger state persistence | deterministic workflow state bridge | Restore and upload small trial evidence ledger state artifacts across scheduled GitHub Actions runs | active | adp-trial-ledger-state-v1 | `.github/workflows/arxiv-daily-push-scheduled.yml`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -65,6 +66,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-022 | Scheduled execution must produce evidence artifacts after preflight and may count as production evidence only when daily run, real SMTP, real Release, and resource evidence refs are present. | `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`, `src/arxiv_daily_push/scheduled_execution.py`, `tests/test_scheduled_execution.py` | Phase 11 scheduled execution readiness | active |
 | ASM-ADP-023 | Daily input generation must use only arXiv Atom summary/metadata evidence, avoid PDF download and bulk harvest, and fail closed before scheduled daily-run if the source batch, summary, metadata, or ranking gate is unsafe. | `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`, `src/arxiv_daily_push/daily_input.py`, `tests/test_daily_input.py` | Phase 11 daily input readiness | active |
 | ASM-ADP-024 | Trial ledger updates may append daily evidence only from production-ready scheduled daily-run reports and must block duplicates, dry-run evidence, missing refs, unsupported claims, and misleading failure output. | `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`, `src/arxiv_daily_push/trial_ledger.py`, `tests/test_trial_ledger.py` | Phase 11 trial ledger readiness | active |
+| ASM-ADP-025 | Trial evidence ledger state must be carried forward as a small GitHub Actions artifact, never committed to Git, and must not be replaced when a daily ledger update is blocked. | `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`, `.github/workflows/arxiv-daily-push-scheduled.yml`, `tests/test_production_scheduler.py` | Phase 11 trial ledger state readiness | active |
 
 ## C. Functions and Formulas
 
@@ -93,6 +95,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-021 runs one scheduled mode and only marks production evidence ready when preflight, daily run, real SMTP, real Release, and resource evidence refs all pass.
 - FORM-ADP-022 builds daily pipeline input from a passing arXiv SourceBatch using only Atom summary claims, then applies ranking and duplicate gates.
 - FORM-ADP-023 appends a scheduled daily-run report to trial evidence only when production-ready refs, P0 traceability, publication safety, and duplicate gates pass.
+- FORM-ADP-024 restores prior trial evidence state from a configured path or previous artifact and exports the updated state only after a successful ledger append.
 
 ## D. Parameters
 
@@ -119,6 +122,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 scheduled execution parameters: PARAM-ADP-097 through PARAM-ADP-101.
 - Active Phase 11 daily input builder parameters: PARAM-ADP-102 through PARAM-ADP-107.
 - Active Phase 11 trial ledger parameters: PARAM-ADP-108 through PARAM-ADP-112.
+- Active Phase 11 trial ledger state parameters: PARAM-ADP-113 through PARAM-ADP-117.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -258,6 +262,14 @@ duplicate dates/source IDs/publication IDs, and re-runs the 30-day trial
 evidence validator after appending. It may return a passing ledger update while
 the embedded trial evidence report remains blocked until all 30-day, scheduler,
 weekly/monthly, recovery, and resource gates are satisfied.
+
+The trial ledger state persistence bridge carries that JSON state between
+scheduled workflow runs. It prefers an explicit configured trial evidence path;
+otherwise it uses `gh run download` to recover the previous successful
+`adp-trial-evidence-ledger` artifact. After a successful append it exports the
+updated `trial_evidence` JSON with `export-trial-ledger-state` and uploads the
+replacement state artifact. Blocked ledger updates do not overwrite the previous
+state.
 
 ## F. Strategy Logic
 

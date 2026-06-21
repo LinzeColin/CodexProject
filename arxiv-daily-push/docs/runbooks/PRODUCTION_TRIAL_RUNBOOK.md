@@ -111,6 +111,7 @@ workflow uploads two artifacts:
 - `adp-scheduled-daily-input` for daily-run when no override input path is set;
 - `adp-scheduled-execution`;
 - `adp-trial-ledger-update` for daily-run ledger accumulation attempts.
+- `adp-trial-evidence-ledger` after a daily ledger append succeeds.
 
 The execution artifact is produced by:
 
@@ -160,6 +161,21 @@ resource refs. It can record daily Release/SMTP/resource evidence from
 production-ready scheduled execution, but it does not mark weekly/monthly replay
 or recovery drill evidence complete unless those later evidence refs are
 explicitly supplied.
+
+If `ADP_TRIAL_EVIDENCE_INPUT_PATH` is not set, the workflow tries to restore the
+previous successful run's `adp-trial-evidence-ledger` artifact using `gh run
+download` with the workflow `GITHUB_TOKEN`. After a successful append, it exports
+the updated `trial_evidence` object with:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push export-trial-ledger-state \
+  --ledger-update <adp-trial-ledger-update.json> \
+  --json
+```
+
+The exported state is uploaded as `adp-trial-evidence-ledger` and is the default
+carry-forward input for later scheduled daily runs. If the ledger update blocks,
+the state export also blocks and no replacement state artifact is uploaded.
 
 Validate the scheduled workflow contract locally or on the runner:
 
