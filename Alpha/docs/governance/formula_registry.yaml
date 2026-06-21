@@ -25,6 +25,13 @@ formulas:
     code_refs: ["Alpha/backend/app/services/strategy_iteration.py:28", "Alpha/backend/app/services/strategy_iteration.py:82"]
     test_refs: ["Alpha/tests/test_strategy_iteration.py:4"]
     evidence_refs: ["Alpha/backend/app/services/strategy_iteration.py:43"]
+    implementation_refs: ["Alpha/backend/app/services/strategy_iteration.py::run_strategy_tournament", "Alpha/backend/app/services/strategy_iteration.py::_simple_drawdown", "Alpha/backend/app/services/strategy_iteration.py::_walk_forward_momentum", "Alpha/backend/app/services/risk.py::risk_score"]
+    implementation_fingerprint: "sha256:d271265fd715b36d37e589f1e3fcd4d3ea73ebfc40ed2c515267446534292d16"
+    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
+    verified_at: "2026-06-21T13:51:43Z"
+    evidence_hash: "sha256:a2df5ec3cccc3908049448be17c4876df95b1fb26b8fad98b312997672d0e6d6"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-002"
     model_id: "MOD-002"
     assumption_ids: ["ASM-001", "ASM-002"]
@@ -49,6 +56,13 @@ formulas:
     code_refs: ["Alpha/backend/app/services/risk.py:22"]
     test_refs: ["Alpha/tests/test_strategy_iteration.py:4"]
     evidence_refs: ["Alpha/backend/app/services/risk.py:34"]
+    implementation_refs: ["Alpha/backend/app/services/risk.py::risk_score"]
+    implementation_fingerprint: "sha256:de8582f383ab1281aa8ed96a789151456a70da4bb66df94431f5961b9287534e"
+    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
+    verified_at: "2026-06-21T13:51:43Z"
+    evidence_hash: "sha256:3a6693c998b313215b68e7db7c48312f27d934d496bdcf6e04c45aa21b4ed32b"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-003"
     model_id: "MOD-003"
     assumption_ids: ["ASM-001"]
@@ -73,6 +87,13 @@ formulas:
     code_refs: ["Alpha/backend/app/services/risk.py:40"]
     test_refs: ["Alpha/tests/test_paper_trading_loop.py:8"]
     evidence_refs: ["Alpha/tests/test_paper_trading_loop.py:45"]
+    implementation_refs: ["Alpha/backend/app/services/risk.py::pre_trade_risk_check", "Alpha/backend/app/services/policy.py::GovernorPolicy"]
+    implementation_fingerprint: "sha256:4ddcaf7c06ec3889069950d451f1b0864eba8f019e4e2a2e42f7aac8d578df1f"
+    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
+    verified_at: "2026-06-21T13:51:43Z"
+    evidence_hash: "sha256:22b1c470c22710e7f4e352b1d245d728e99903436d6783022998401cee5014e4"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-004"
     model_id: "MOD-004"
     assumption_ids: ["ASM-001", "ASM-003"]
@@ -97,6 +118,13 @@ formulas:
     code_refs: ["Alpha/backend/app/services/policy.py:38", "Alpha/backend/app/services/live_broker.py:19"]
     test_refs: ["Alpha/tests/test_policy.py:5", "Alpha/tests/test_live_broker_fail_closed.py:6"]
     evidence_refs: ["Alpha/configs/trading_governor_policy.yaml:4"]
+    implementation_refs: ["Alpha/backend/app/services/policy.py::GovernorPolicy.live_order_decision", "Alpha/backend/app/services/live_broker.py::FailClosedLiveBroker.submit_order_intent"]
+    implementation_fingerprint: "sha256:a6bb626a14bff5b088af8e930eeb00715f70feda5de5028ce33b0feaf6b557f8"
+    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
+    verified_at: "2026-06-21T13:51:43Z"
+    evidence_hash: "sha256:c695d309824d8d16fa225f7ba5a4ebfae0867d6b2fb31d5b1650c80226ac1d4e"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-005"
     model_id: "MOD-005"
     assumption_ids: ["ASM-001", "ASM-002"]
@@ -121,6 +149,13 @@ formulas:
     code_refs: ["Alpha/backend/app/services/paper_trading_loop.py:42", "Alpha/backend/app/services/paper_trading_loop.py:104"]
     test_refs: ["Alpha/tests/test_paper_trading_loop.py:8"]
     evidence_refs: ["Alpha/configs/agent_loop.yaml:1"]
+    implementation_refs: ["Alpha/backend/app/services/paper_trading_loop.py::PaperTradingLoop.run_once", "Alpha/backend/app/services/paper_trading_loop.py::PaperTradingLoop._generate_order_intent", "Alpha/backend/app/services/paper_trading_loop.py::build_default_loop", "Alpha/backend/app/services/paper_trading_loop.py::_select_tradable_winner", "Alpha/backend/app/services/paper_trading_loop.py::latest_mark_prices", "Alpha/backend/app/services/order_ticket.py::OrderIntent.create", "Alpha/backend/app/services/order_ticket.py::BrokerReadyOrderTicket.from_intent"]
+    implementation_fingerprint: "sha256:b4063ccedb41575c3b848eefc155200b0514254cf48d4f6240a25a1262dd12ce"
+    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
+    verified_at: "2026-06-21T13:51:43Z"
+    evidence_hash: "sha256:a55762e879c000f5b35acf239b5acff2a08a343153553898f41c7c8711354baa"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-006"
     model_id: "MOD-006"
     assumption_ids: ["ASM-001"]
@@ -145,6 +180,13 @@ formulas:
     code_refs: ["Alpha/backend/app/services/paper_broker.py:43", "Alpha/backend/app/services/paper_broker.py:83"]
     test_refs: ["Alpha/tests/test_paper_broker_persistence.py:4"]
     evidence_refs: ["Alpha/backend/app/services/paper_broker.py:74"]
+    implementation_refs: ["Alpha/backend/app/services/paper_broker.py::PaperBroker", "Alpha/backend/app/services/paper_broker.py::PaperBroker.submit_order", "Alpha/backend/app/services/paper_broker.py::PaperBroker.snapshot", "Alpha/backend/app/services/paper_broker.py::PaperBroker.portfolio_snapshot"]
+    implementation_fingerprint: "sha256:2915e4608b9bcf49a3931d2fc39cd3fbb5bcc4cb7747f3409249919e99c92483"
+    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
+    verified_at: "2026-06-21T13:51:43Z"
+    evidence_hash: "sha256:498d2b6fb0315fb0328ad4bba719508b1da5e9a61c7ccc571b63ca665ed77bd7"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-007"
     model_id: "MOD-007"
     assumption_ids: ["ASM-001"]
@@ -170,6 +212,13 @@ formulas:
     code_refs: ["Alpha/backend/app/services/approval_queue.py:59"]
     test_refs: ["Alpha/tests/test_approval_queue.py:17"]
     evidence_refs: ["Alpha/backend/app/services/approval_queue.py:74"]
+    implementation_refs: ["Alpha/backend/app/services/approval_queue.py::ApprovalQueue.latest", "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.latest_with_freshness", "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.summary", "Alpha/backend/app/services/approval_queue.py::annotate_ticket_freshness", "Alpha/backend/app/services/approval_queue.py::_freshness", "Alpha/backend/app/services/approval_queue.py::_parse_iso_datetime"]
+    implementation_fingerprint: "sha256:33e472dcc264823e921c92e8b3697db11cf723a8ecb05db28b5e81f75cc8912e"
+    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
+    verified_at: "2026-06-21T13:51:43Z"
+    evidence_hash: "sha256:ca2fd1856e6c55914766ddf67efe616faeb5d145d37fdaf9c1491494a18b3c13"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-008"
     model_id: "MOD-008"
     assumption_ids: ["ASM-001"]
@@ -194,6 +243,13 @@ formulas:
     code_refs: ["Alpha/backend/app/schemas/strategy_dsl.py:22", "Alpha/backend/app/schemas/strategy_dsl.py:53"]
     test_refs: ["Alpha/tests/test_strategy_dsl.py:16"]
     evidence_refs: ["Alpha/tests/test_strategy_dsl.py:22"]
+    implementation_refs: ["Alpha/backend/app/schemas/strategy_dsl.py::Signal", "Alpha/backend/app/schemas/strategy_dsl.py::PortfolioRules", "Alpha/backend/app/schemas/strategy_dsl.py::RiskRules", "Alpha/backend/app/schemas/strategy_dsl.py::RiskRules.enforce_mvp_safety", "Alpha/backend/app/schemas/strategy_dsl.py::StrategyDSL", "Alpha/backend/app/schemas/strategy_dsl.py::StrategyDSL.validate_universe", "Alpha/backend/app/schemas/strategy_dsl.py::validate_strategy"]
+    implementation_fingerprint: "sha256:dd4887c63fb8d50aa2b619ed4ae94b977d28d4a6c1fb69e0f0c91e5c3e28a866"
+    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
+    verified_at: "2026-06-21T13:51:43Z"
+    evidence_hash: "sha256:d84d0a2934af9abc6c0df8251ca4b9f870bf734ee3b35594059c3e645fc63d91"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-009"
     model_id: "MOD-009"
     assumption_ids: ["ASM-002"]
@@ -218,3 +274,10 @@ formulas:
     code_refs: ["Alpha/backend/app/services/backtest.py:14"]
     test_refs: ["Alpha/tests/test_backtest_fixture.py:4"]
     evidence_refs: ["Alpha/backend/app/services/backtest.py:19"]
+    implementation_refs: ["Alpha/backend/app/services/backtest.py::load_price_fixture", "Alpha/backend/app/services/backtest.py::run_buy_and_hold_fixture", "Alpha/backend/app/services/risk.py::max_drawdown", "Alpha/backend/app/services/risk.py::annualized_volatility"]
+    implementation_fingerprint: "sha256:751c3866c234caf1abc831e427d70c13b867e9db4671867e2359c1ed08604eb1"
+    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
+    verified_at: "2026-06-21T13:51:43Z"
+    evidence_hash: "sha256:c57b463ef53f0fe76fc1a42fca1c4522dc906d8fe9736493fb226ffe83d66c41"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""

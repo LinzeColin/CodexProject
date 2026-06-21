@@ -134,6 +134,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 project.get("project_id"),
             )
 
+    def test_review6d_alpha_semantic_rollout_is_task_bound(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        alpha = next(project for project in config["projects"] if project["project_id"] == "Alpha")
+        self.assertTrue(alpha.get("semantic_extractors"))
+        coverage = alpha["semantic_coverage"]
+        self.assertEqual(coverage["status"], "in_progress")
+        self.assertEqual(coverage["task_id"], "GOV-SEMANTIC-ALPHA-001")
+        self.assertEqual(coverage["acceptance_id"], "ACC-SEMANTIC-ALPHA-001")
+        self.assertEqual(
+            coverage["evidence_ref"],
+            "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json",
+        )
+
     def test_review6d_whkm_semantic_rollout_is_task_bound(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
