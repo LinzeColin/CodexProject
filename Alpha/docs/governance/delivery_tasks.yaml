@@ -134,14 +134,14 @@ tasks:
     objective: "Add machine source selectors for active parameters and implementation fingerprints for active formulas."
     scope: ["semantic extractor metadata", "governance validator evidence", "generated status pages"]
     non_scope: ["business logic changes", "active parameter changes", "live trading activation"]
-    status: "planned"
+    status: "in_progress"
     dependencies: ["TASK-ALPHA-A-004"]
     required_files: ["Alpha/docs/governance/parameter_registry.csv", "Alpha/docs/governance/formula_registry.yaml", "governance/projects.yaml"]
     acceptance_ids: ["ACC-SEMANTIC-ALPHA-001"]
-    test_commands: ["python3 scripts/validate_project_governance.py --project Alpha --semantic", "python3 scripts/validate_semantic_extractors.py Alpha"]
-    test_results: ["NOT_RUN - semantic extractor rollout task is planned, not completed"]
-    evidence_refs: ["Alpha/docs/governance/OWNER_STATUS.md", "governance/projects.yaml"]
-    risk: "Alpha remains structurally governed but not machine semantic-verified until extractors are implemented."
-    rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
+    test_commands: ["python3 scripts/validate_semantic_extractors.py Alpha", "python3 scripts/validate_project_governance.py --project Alpha --semantic", "python3 scripts/validate_project_governance.py --all --semantic --drift-report", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic"]
+    test_results: ["exit 0; semantic_parameters_checked=42 semantic_formulas_checked=9", "exit 0; Alpha semantic validator errors 0 warnings 0", "exit 0; all-project semantic drift errors 0 warnings 0", "exit 0; changed-only enforce-sync semantic errors 0 warnings 0", "exit 0; governance tests 51 passed", "exit 2; Alpha focused tests blocked by missing yaml/PyYAML in current environment"]
+    evidence_refs: ["Alpha/docs/governance/parameter_registry.csv", "Alpha/docs/governance/formula_registry.yaml", "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json"]
+    risk: "Alpha semantic coverage remains in_progress because branch-rule parameters need human review and live-readiness evidence remains blocked under TASK-ALPHA-B-001."
+    rollback: "Revert semantic columns/fields, reset governance/projects.yaml Alpha semantic_coverage to planned, and remove GOV-SEMANTIC-ALPHA-EXTRACT-001 manifest if validation fails."
     target_version: "0.1.0"
     completed_version: ""

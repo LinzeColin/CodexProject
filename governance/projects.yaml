@@ -57,14 +57,15 @@ projects:
     path: "Alpha"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
     semantic_coverage:
-      status: "planned"
+      status: "in_progress"
       task_id: "GOV-SEMANTIC-ALPHA-001"
       acceptance_id: "ACC-SEMANTIC-ALPHA-001"
       target: "Add machine source selectors for active parameters and implementation fingerprints for active formulas."
-      evidence_ref: "Alpha/docs/governance/OWNER_STATUS.md"
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for Alpha."
+      rationale: "Review6-D rollout guard; Alpha now machine-checks 42 active parameters and 9 active formulas while 13 branch-rule parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-ALPHA-001."
     model_behavior_globs:
       - "backend/**/*.py"
       - "configs/**/*.yaml"
