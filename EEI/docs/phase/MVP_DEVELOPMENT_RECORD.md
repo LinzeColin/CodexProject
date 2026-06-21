@@ -3780,7 +3780,7 @@ Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A202 STILL IN PROG
   - `GV-SNAPSHOT-004`: TSMC Press Center official ASML/TSMC lithography technology relationship support.
 - Extended `scripts/load_curated_ingestion_anchors.py` so each relationship candidate may carry `supporting_source_anchor_ids`.
 - The loader now validates that `independent_source_count` equals the de-duplicated source-anchor count and writes one `relationship_fact_candidate_evidence` row per official source.
-- Updated `GV-FACT-001` and `GV-FACT-002` to `independent_source_count=2`, `source_threshold_met=true`, `publication_status=ready_for_review` and `review_status=ready_for_review`.
+- Updated `GV-FACT-001` and `GV-FACT-002` to `independent_source_count=2`, `source_threshold_met=true`, `publication_status=ready_for_review` and database-valid `review_status=machine_verified`.
 - Updated fixture and owner-signoff decision files so source-threshold override is no longer used for these two candidates.
 
 ### Acceptance mapping
@@ -3872,21 +3872,23 @@ Status: LOCAL VALIDATED; FORMAL LEGAL/MARKET CLEARANCE PENDING; A210 STILL IN PR
 - Regenerate clean-room/release artifacts.
 - Rerun governance, brand-clearance and release validations.
 
-## 2026-06-21 - T1301/A202 evidence-chain review-status CI repair
+## 2026-06-21 - T1301/A202 database review-status CI repair
 
 Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING
 
 ### Scope
 
 - GitHub Actions run `27890945803` failed at Step 10 `Verify G2 PostgreSQL integration` after static, contract, lint, typecheck and unit checks passed.
-- Static diagnosis found `ingestion_evidence_chain.review_status` is constrained to `unreviewed`, `machine_verified`, `human_verified` or `disputed`.
-- The second-source loader had started writing relationship candidate status `ready_for_review` into `ingestion_evidence_chain.review_status`.
-- Added `evidence_chain_review_status()` in `scripts/load_curated_ingestion_anchors.py` so candidate-level `ready_for_review` maps to evidence-chain-level `machine_verified`.
+- First static diagnosis found `ingestion_evidence_chain.review_status` is constrained to `unreviewed`, `machine_verified`, `human_verified` or `disputed`.
+- GitHub Actions run `27891135295` then failed again at Step 10 after Step 7 and Step 9 passed, exposing the same semantic mismatch for `relationship_fact_candidates.review_status`.
+- `ready_for_review` is now treated strictly as `publication_status`, while database `review_status` remains `machine_verified` until human review publishes the candidate.
+- Added `database_review_status()` in `scripts/load_curated_ingestion_anchors.py` so candidate and evidence-chain rows stay inside the PostgreSQL review-status contract.
+- Updated A202 integration, schema-check and E2E fixture assertions to expect `publication_status=ready_for_review` plus `review_status=machine_verified`.
 
 ### Acceptance mapping
 
 - T1301 -> A202.
-- The relationship fact candidate remains `ready_for_review`; only the evidence-chain persistence status is normalized to satisfy the PostgreSQL contract.
+- The relationship fact candidate remains publication-gated via `publication_status=ready_for_review`; its database review state is normalized to `machine_verified`.
 - A202 remains `IN_PROGRESS` until remote PostgreSQL CI passes and live retrieval / owner approval / release clearance are complete.
 
 ### Local validation
@@ -3897,6 +3899,25 @@ Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_brand_clearance.py validate`: PASS.
 - Local PostgreSQL integration remains unavailable because this host has no Docker/PostgreSQL; remote CI rerun remains required.
 
+### Follow-up validation after second Step 10 failure
+
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py tests/integration/test_database_migrations.py scripts/check_database_schema.py scripts/validate_v5_production_readiness_sync.py scripts/validate_brand_clearance.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_brand_clearance.py validate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python -m json.tool data/golden_vertical_fact_candidates.json`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit -q`: PASS; 37 passed, 1 Starlette/httpx deprecation warning.
+- `NEXT_TELEMETRY_DISABLED=1 ./node_modules/.bin/next typegen` in `apps/web`: PASS.
+- `./node_modules/.bin/tsc --noEmit` in `apps/web`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_clean_room_release.py generate`: PASS; authoritative package SHA is recorded in `artifacts/tests/a200/t1215_clean_room_release.json`.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_release_artifacts.py generate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_clean_room_release.py validate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_release_artifacts.py validate`: PASS with `remote_status=PENDING`.
+- `shasum -a 256 -c CHECKSUMS.sha256`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache PNPM=./node_modules/.bin/pnpm make verify`: LOCAL ENV BLOCKED at `validate-scale-browser-benchmark` because Chromium cannot register MachPort inside the macOS sandbox.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache PNPM=./node_modules/.bin/pnpm make secret-scan copy-lint lint typecheck test`: command selection failure at `typecheck` because that root-relative PNPM path does not exist; preceding secret scan, copy lint and full ruff passed.
+- Local Docker/PostgreSQL is still unavailable, so Step 10 proof must come from GitHub Actions.
+
 ### Rollback
 
-- Revert the evidence-chain status mapper and rerun G2 PostgreSQL integration.
+- Revert the database status mapper, A202 fixture data, schema/integration/E2E assertions and rerun G2 PostgreSQL integration.

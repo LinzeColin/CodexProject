@@ -297,7 +297,7 @@ def exercise_curated_official_ingestion_contracts() -> None:
             SELECT count(*),
                    count(*) FILTER (WHERE publication_status = 'ready_for_review'),
                    count(*) FILTER (WHERE source_threshold_met = false),
-                   count(*) FILTER (WHERE review_status = 'ready_for_review'),
+                   count(*) FILTER (WHERE review_status = 'machine_verified'),
                    count(*) FILTER (WHERE jsonb_typeof(counter_evidence) = 'array')
             FROM relationship_fact_candidates
             WHERE parser_version = %s

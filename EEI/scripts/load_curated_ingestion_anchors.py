@@ -21,13 +21,13 @@ PARSER_VERSION = "nvidia-public-anchor-v1"
 RECORD_MODE = "curated_official_fixture"
 ENTITY_RESOLUTION_MIN_CONFIDENCE = 0.72
 INDEPENDENT_SOURCE_MIN = 2
-EVIDENCE_CHAIN_REVIEW_STATUSES = {
+DATABASE_REVIEW_STATUSES = {
     "unreviewed",
     "machine_verified",
     "human_verified",
     "disputed",
 }
-EVIDENCE_CHAIN_STATUS_ALIASES = {
+DATABASE_REVIEW_STATUS_ALIASES = {
     "ready_for_review": "machine_verified",
 }
 ANCHOR_SUBJECT = "NVIDIA Corporation"
@@ -491,15 +491,15 @@ def resolution_id(
     return str(row[0])
 
 
-def evidence_chain_review_status(candidate: dict[str, object]) -> str:
+def database_review_status(candidate: dict[str, object]) -> str:
     status = str(candidate.get("review_status", "unreviewed"))
-    if status in EVIDENCE_CHAIN_REVIEW_STATUSES:
+    if status in DATABASE_REVIEW_STATUSES:
         return status
-    if status in EVIDENCE_CHAIN_STATUS_ALIASES:
-        return EVIDENCE_CHAIN_STATUS_ALIASES[status]
+    if status in DATABASE_REVIEW_STATUS_ALIASES:
+        return DATABASE_REVIEW_STATUS_ALIASES[status]
     raise ValueError(
         f"{candidate.get('candidate_key', '<unknown>')} has unsupported "
-        f"evidence-chain review status {status!r}"
+        f"database review status {status!r}"
     )
 
 
@@ -555,7 +555,7 @@ def upsert_candidate_evidence_chain(
             Jsonb(candidate["counter_evidence"]),
             PARSER_VERSION,
             candidate["confidence"],
-            evidence_chain_review_status(candidate),
+            database_review_status(candidate),
         ),
     ).fetchone()
     return str(result[0])
@@ -631,7 +631,7 @@ def upsert_relationship_fact_candidate(
             candidate["confidence"],
             source_count,
             source_threshold_met,
-            candidate["review_status"],
+            database_review_status(candidate),
             PARSER_VERSION,
             Jsonb(structured_fact),
             Jsonb(candidate["counter_evidence"]),
