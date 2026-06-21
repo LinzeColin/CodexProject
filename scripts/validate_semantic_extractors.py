@@ -293,19 +293,47 @@ def parse_options(text: str) -> tuple[str, dict[str, str]]:
     return base, options
 
 
+def option_items(text: str) -> list[str]:
+    return [item for item in text.split(",") if item]
+
+
+def value_contains(value: Any, needle: str) -> bool:
+    if isinstance(value, dict):
+        return any(value_contains(key, needle) or value_contains(item, needle) for key, item in value.items())
+    if isinstance(value, (list, tuple, set)):
+        return any(value_contains(item, needle) for item in value)
+    return needle in str(value)
+
+
+def filter_sequence(value: Any, selected_text: str) -> list[str]:
+    selected = option_items(selected_text)
+    values = {normalize_value(item): item for item in value} if isinstance(value, (set, list, tuple)) else {normalize_value(value): value}
+    missing = [item for item in selected if item not in values]
+    if missing:
+        raise SemanticExtractionError(f"filter transform values not found: {missing}")
+    return selected
+
+
 def apply_selector_options(value: Any, options: dict[str, str]) -> Any:
+    if "order" in options:
+        order = option_items(options["order"])
+        values = {normalize_value(item) for item in value} if isinstance(value, (set, list, tuple)) else {normalize_value(value)}
+        if set(order) != values:
+            raise SemanticExtractionError(f"order transform values do not match extracted values: expected {sorted(values)}, got {order}")
+        value = order if "join" in options else "|".join(order)
+    if "filter" in options:
+        value = filter_sequence(value, options["filter"])
+    if "contains_all" in options:
+        needles = option_items(options["contains_all"])
+        value = all(value_contains(value, needle) for needle in needles)
+    if "contains" in options:
+        value = value_contains(value, options["contains"])
     if "join" in options:
         if isinstance(value, str):
             return value
         if not isinstance(value, (list, tuple, set)):
             raise SemanticExtractionError(f"join transform requires sequence value, got {value!r}")
         value = options["join"].join(str(item) for item in value)
-    if "order" in options:
-        order = [item for item in options["order"].split(",") if item]
-        values = {normalize_value(item) for item in value} if isinstance(value, (set, list, tuple)) else {normalize_value(value)}
-        if set(order) != values:
-            raise SemanticExtractionError(f"order transform values do not match extracted values: expected {sorted(values)}, got {order}")
-        value = "|".join(order)
     if "subtract" not in options:
         return value
     amount = float(options["subtract"])
@@ -362,9 +390,7 @@ def extract_selector(selector: str) -> Any:
         value = literal_value(find_module_assignment(parse_tree(selector_path(path_text)), name))
         if not isinstance(value, tuple):
             raise SemanticExtractionError(f"selector did not extract tuple: {selector}")
-        joiner = options.get("join")
-        extracted = joiner.join(str(item) for item in value) if joiner is not None else value
-        return apply_selector_options(extracted, options)
+        return apply_selector_options(value, options)
     if selector.startswith("python_ast_dict:"):
         target = selector.removeprefix("python_ast_dict:")
         path_text, name = target.split("::", 1)
@@ -389,6 +415,9 @@ def extract_selector(selector: str) -> Any:
         if not match:
             raise SemanticExtractionError(f"text_regex pattern did not match: {selector}")
         return apply_selector_options(match.group(1), options)
+    if selector.startswith("text_file:"):
+        path_text = selector.removeprefix("text_file:")
+        return apply_selector_options(selector_path(path_text).read_text(encoding="utf-8"), options)
     if selector.startswith("csv_cell:"):
         target = selector.removeprefix("csv_cell:")
         return apply_selector_options(extract_csv_cell(target), options)
