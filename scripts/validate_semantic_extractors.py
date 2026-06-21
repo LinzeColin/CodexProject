@@ -142,6 +142,17 @@ def extract_structural_path(data: Any, path_text: str) -> Any:
     return current
 
 
+def extract_mapping_path(data: Any, path_text: str) -> Any:
+    current = data
+    for part in [item for item in path_text.split(".") if item]:
+        if not isinstance(current, dict):
+            raise SemanticExtractionError(f"mapping path cannot descend through {type(current).__name__}: {part}")
+        if part not in current:
+            raise SemanticExtractionError(f"mapping path key not found: {part}")
+        current = current[part]
+    return current
+
+
 def literal_value(node: ast.AST) -> Any:
     if isinstance(node, ast.Constant):
         return node.value
@@ -266,6 +277,12 @@ def parse_options(text: str) -> tuple[str, dict[str, str]]:
 
 
 def apply_selector_options(value: Any, options: dict[str, str]) -> Any:
+    if "join" in options:
+        if isinstance(value, str):
+            return value
+        if not isinstance(value, (list, tuple, set)):
+            raise SemanticExtractionError(f"join transform requires sequence value, got {value!r}")
+        value = options["join"].join(str(item) for item in value)
     if "order" in options:
         order = [item for item in options["order"].split(",") if item]
         values = {normalize_value(item) for item in value} if isinstance(value, (set, list, tuple)) else {normalize_value(value)}
@@ -330,6 +347,13 @@ def extract_selector(selector: str) -> Any:
         pair = options.get("pair", "=")
         sep = options.get("sep", "|")
         return apply_selector_options(sep.join(f"{key}{pair}{item}" for key, item in value.items()), options)
+    if selector.startswith("python_ast_dict_value:"):
+        target = selector.removeprefix("python_ast_dict_value:")
+        path_text, name, path_expr = target.split("::", 2)
+        value = literal_value(find_module_assignment(parse_tree(selector_path(path_text)), name))
+        if not isinstance(value, dict):
+            raise SemanticExtractionError(f"selector did not extract dict: {selector}")
+        return apply_selector_options(extract_mapping_path(value, path_expr), options)
     if selector.startswith("text_regex:"):
         target = selector.removeprefix("text_regex:")
         path_text, pattern = target.split("::", 1)
@@ -423,6 +447,8 @@ def symbol_node(path_text: str, symbol: str) -> ast.AST:
 
 def stable_ast_payload(node: Any) -> Any:
     """Return a Python-version-stable AST payload for semantic fingerprinting."""
+    if node is Ellipsis:
+        return "Ellipsis"
     if isinstance(node, ast.AST):
         payload: dict[str, Any] = {"_type": node.__class__.__name__}
         for field_name in getattr(node, "_fields", ()):
