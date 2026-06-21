@@ -51,6 +51,10 @@ SUPERSESSION_RELATIONSHIP_ID = "20000000-0000-4000-8000-000000000001"
 CURATED_ANCHOR_PARSER_VERSION = "nvidia-public-anchor-v1"
 FULL_TEXT_DRY_RUN_PARSER_VERSION = "nvidia-official-fulltext-dry-run-v1"
 OPERATOR_SOURCE_CAPTURE_PARSER_VERSION = "nvidia-operator-source-capture-v1"
+LIVE_OFFICIAL_CAPTURE_PARSER_VERSION = "nvidia-official-fulltext-live-v1"
+LIVE_OFFICIAL_CAPTURE_FIXTURE_PATH = (
+    "tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json"
+)
 REVIEWED_DECISION_SET_KEY = "a202-integration-reviewed-golden-vertical-v1"
 REVIEWED_RELATIONSHIP_SNAPSHOT_KEY = "a202-reviewed-golden-vertical"
 REVIEW_DECISION_FIXTURE_PATH = "tests/fixtures/golden_vertical_review_decisions.json"
@@ -130,6 +134,18 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     run_script("scripts/load_operator_source_captures.py")
     run_script("scripts/load_operator_source_captures.py")
     run_script(
+        "scripts/load_live_official_captures.py",
+        "--artifact",
+        LIVE_OFFICIAL_CAPTURE_FIXTURE_PATH,
+        "--allow-fixture-capture",
+    )
+    run_script(
+        "scripts/load_live_official_captures.py",
+        "--artifact",
+        LIVE_OFFICIAL_CAPTURE_FIXTURE_PATH,
+        "--allow-fixture-capture",
+    )
+    run_script(
         "scripts/check_database_schema.py",
         "--expect-seeds",
         "--expect-fixtures",
@@ -138,6 +154,7 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     exercise_curated_official_ingestion_contracts()
     exercise_official_full_text_dry_run_contracts()
     exercise_operator_source_capture_contracts()
+    exercise_live_official_capture_postgres_contracts()
     exercise_production_fact_version_contracts()
     exercise_domain_api_and_repository_contracts()
     exercise_reviewed_relationship_publication_contracts()
@@ -566,6 +583,134 @@ def exercise_operator_source_capture_contracts() -> None:
             (parser_version,),
         ).fetchone()[0]
         assert operator_fact_candidates == 0
+
+
+def exercise_live_official_capture_postgres_contracts() -> None:
+    with connect_database() as connection:
+        parser_version = LIVE_OFFICIAL_CAPTURE_PARSER_VERSION
+        raw_row = connection.execute(
+            """
+            SELECT count(*),
+                   count(*) FILTER (WHERE record_mode = 'live'),
+                   count(*) FILTER (WHERE review_status = 'machine_verified'),
+                   count(DISTINCT source_document_id),
+                   min((raw_payload->'source_health'->'token_coverage'->>'ratio')::numeric),
+                   count(*) FILTER (WHERE raw_payload->>'live_retrieval' = 'true'),
+                   count(*) FILTER (WHERE raw_payload->>'operator_review_required' = 'true'),
+                   count(*) FILTER (WHERE raw_payload->>'release_clearance' = 'false'),
+                   count(*) FILTER (WHERE raw_payload->>'relationship_publication' = 'false'),
+                   count(*) FILTER (WHERE raw_payload ? 'source_text'),
+                   count(*) FILTER (WHERE raw_payload->>'committed_full_text' = 'false')
+            FROM raw_source_snapshots
+            WHERE parser_version = %s
+              AND raw_payload->>'source_kind' = 'live_official_retrieval_hash_excerpt'
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert raw_row[0:4] == (2, 2, 2, 2)
+        assert float(raw_row[4]) == 1.0
+        assert raw_row[5:9] == (2, 2, 2, 2)
+        assert raw_row[9] == 0
+        assert raw_row[10] == 2
+
+        latest_run = connection.execute(
+            """
+            SELECT status, counts->>'captures', counts->>'entity_resolution_candidates',
+                   counts->>'evidence_chain_rows', counts->>'source_health_status',
+                   counts->>'live_retrieval', counts->>'operator_review_required',
+                   counts->>'release_clearance', counts->>'relationship_publication',
+                   counts->>'committed_full_text', counts->>'fixture_artifact'
+            FROM ingestion_runs
+            WHERE connector_version = %s AND mode = 'live'
+            ORDER BY started_at DESC
+            LIMIT 1
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert latest_run == (
+            "succeeded",
+            "2",
+            "30",
+            "2",
+            "healthy",
+            "true",
+            "true",
+            "false",
+            "false",
+            "false",
+            "true",
+        )
+
+        source_documents = connection.execute(
+            """
+            SELECT count(*)
+            FROM source_documents sd
+            JOIN raw_source_snapshots rss ON rss.source_document_id = sd.id
+            WHERE rss.parser_version = %s
+              AND sd.parser_version = %s
+              AND sd.raw_storage_uri LIKE
+                'tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json#%%'
+              AND sd.content_hash = rss.content_hash
+            """,
+            (parser_version, parser_version),
+        ).fetchone()[0]
+        assert source_documents == 2
+
+        candidate_row = connection.execute(
+            """
+            SELECT count(*),
+                   count(*) FILTER (WHERE confidence >= 0.72),
+                   count(*) FILTER (WHERE matched_research_id IS NOT NULL),
+                   count(*) FILTER (WHERE review_status = 'machine_verified'),
+                   count(*) FILTER (WHERE candidate_name = 'NVIDIA Corporation'),
+                   count(*) FILTER (WHERE candidate_name = 'TSMC')
+            FROM entity_resolution_candidates
+            WHERE parser_version = %s
+            """,
+            (parser_version,),
+        ).fetchone()
+        assert candidate_row[0] == 30
+        assert candidate_row[1] >= 6
+        assert candidate_row[2] >= 6
+        assert candidate_row[3:6] == (30, 2, 2)
+
+        evidence_row = connection.execute(
+            """
+            SELECT count(*),
+                   count(*) FILTER (WHERE evidence_role = 'context'),
+                   count(*) FILTER (WHERE review_status = 'machine_verified'),
+                   count(*) FILTER (
+                     WHERE structured_fact->>'edge_publication' =
+                       'live_capture_context_only_not_published_relationship'
+                   ),
+                   count(*) FILTER (
+                     WHERE structured_fact->'source_health'->>'status' = 'healthy'
+                   ),
+                   count(*) FILTER (
+                     WHERE structured_fact->>'live_capture_ingestion' = %s
+                   ),
+                   count(*) FILTER (
+                     WHERE structured_fact->>'committed_full_text' = 'false'
+                   ),
+                   count(*) FILTER (
+                     WHERE structured_fact->>'source_license_review_required' = 'true'
+                   )
+            FROM ingestion_evidence_chain
+            WHERE parser_version = %s
+            """,
+            (parser_version, parser_version),
+        ).fetchone()
+        assert evidence_row == (2, 2, 2, 2, 2, 2, 2, 2)
+
+        live_fact_candidates = connection.execute(
+            """
+            SELECT count(*)
+            FROM relationship_fact_candidates
+            WHERE parser_version = %s
+            """,
+            (parser_version,),
+        ).fetchone()[0]
+        assert live_fact_candidates == 0
 
 
 def exercise_production_fact_version_contracts() -> None:

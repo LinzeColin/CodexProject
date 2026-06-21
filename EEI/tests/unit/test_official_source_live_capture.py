@@ -3,8 +3,10 @@ from __future__ import annotations
 import sys
 
 import httpx
+import pytest
 
 from scripts import fetch_official_source_full_text as official_source
+from scripts import load_live_official_captures as live_loader
 
 
 def sample_anchor_row() -> dict[str, str]:
@@ -105,3 +107,70 @@ def test_capture_live_cli_requires_explicit_network_permission(monkeypatch, caps
 
     assert exit_code == 2
     assert "LIVE_NETWORK_NOT_ALLOWED" in capsys.readouterr().out
+
+
+def test_live_capture_postgres_contract_requires_missing_operator_payload() -> None:
+    payload = live_loader.build_contract_artifact()
+
+    assert payload["system"]["en_name"] == "Enterprise Ecosystem Intelligence"
+    assert payload["task_id"] == "T1301"
+    assert payload["acceptance_ids"] == ["A202", "A206"]
+    assert payload["status"] == "MISSING_OPERATOR_LIVE_PAYLOAD"
+    assert payload["database_contract"]["relationship_fact_candidates"].startswith(
+        "must remain zero"
+    )
+
+
+def test_live_capture_loader_rejects_committed_full_text() -> None:
+    row = sample_anchor_row()
+    source_health = official_source.live_capture_source_health(
+        row,
+        source_text=(
+            "NVIDIA Corporation official text references TSMC, CoWoS and "
+            "AI factories. "
+            * 10
+        ),
+        http_status=200,
+        content_type="text/html",
+        content_length_bytes=512,
+        attempts=[
+            {
+                "attempt": 1,
+                "transport": "httpx",
+                "status": "response",
+                "http_status": 200,
+            }
+        ],
+    )
+    anchor = {
+        "anchor_id": row["anchor_id"],
+        "source_url": row["url"],
+        "source_url_sha256": official_source.sha256_text(row["url"]),
+        "capture_status": "success",
+        "source_text": "forbidden committed full text",
+        "source_text_sha256": "a" * 64,
+        "source_text_excerpt": "NVIDIA Corporation official text references TSMC.",
+        "source_health": source_health,
+        "relationship_publication": False,
+        "release_clearance": False,
+    }
+
+    with pytest.raises(ValueError, match="must not include committed source_text"):
+        live_loader.validate_live_anchor(row, anchor)
+
+
+def test_live_capture_fixture_requires_explicit_fixture_flag() -> None:
+    fixture = live_loader.load_artifact(
+        live_loader.ROOT
+        / "tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json"
+    )
+
+    with pytest.raises(ValueError, match="fixture_artifact requires"):
+        live_loader.validate_live_capture_artifact(fixture)
+
+    result = live_loader.validate_live_capture_artifact(
+        fixture,
+        allow_fixture_capture=True,
+    )
+
+    assert len(result["anchors"]) == 2

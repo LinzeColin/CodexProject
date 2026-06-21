@@ -4045,3 +4045,43 @@ Status: LOCAL AND REMOTE CI VALIDATED; A202/A206 STILL IN PROGRESS
 ### Rollback
 
 - Revert the live adapter additions in `scripts/fetch_official_source_full_text.py`, remove `tests/unit/test_official_source_live_capture.py`, remove `artifacts/tests/a202/t1301_live_official_retrieval_contract.json`, restore A202/A206 traceability/status entries, regenerate development/release artifacts, and rerun validations.
+
+## 2026-06-21 - T1301/A202 live capture PostgreSQL ingestion contract
+
+Status: LOCAL VALIDATED; A202/A206 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/load_live_official_captures.py` to validate a live official-source retrieval artifact and write it into PostgreSQL evidence tables.
+- The loader stores `source_text_sha256`, a short `source_text_excerpt`, `source_health`, retry metadata and context evidence; it rejects committed `source_text`.
+- The loader upserts `source_documents`, `raw_source_snapshots`, `entity_resolution_candidates` and `ingestion_evidence_chain` under `record_mode=live`.
+- Added `tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json` as a CI-only `fixture_artifact` that requires `--allow-fixture-capture`.
+- Added `artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json` with status `MISSING_OPERATOR_LIVE_PAYLOAD`.
+
+### Acceptance mapping
+
+- T1301 -> A202 for live capture ingestion, hash/excerpt retention, entity resolution and evidence-chain persistence.
+- T1304 -> A206 only for source-health/retry metadata persistence; this does not prove long-duration retry/dead-letter behavior.
+- A202 remains `IN_PROGRESS`: this contract does not include a real operator live payload, production owner decision, legal/release clearance or relationship publication.
+
+### Parameters and formulas
+
+- `min_text_chars`: 240.
+- `min_token_coverage_ratio`: 1.0.
+- `record_mode`: `live`.
+- `review_status`: `machine_verified` until operator review and production owner sign-off are attached.
+- No scoring formula or model profile changed.
+
+### Local validation
+
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_live_official_captures.py tests/unit/test_official_source_live_capture.py tests/integration/test_database_migrations.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_official_source_live_capture.py -q`: PASS; 7 passed.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/load_live_official_captures.py --generate-contract --output artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json --quiet`: PASS.
+- `.venv/bin/python -m json.tool tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json`: PASS.
+- `.venv/bin/python -m json.tool artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_v5_production_readiness_sync.py`: PASS.
+
+### Rollback
+
+- Remove `scripts/load_live_official_captures.py`, the live fixture, the A202 ingestion contract artifact, the integration/unit test additions and the status/traceability updates.
+- If live parser rows were written to a deployed database, delete rows by `parser_version='nvidia-official-fulltext-live-v1'` before release or restore from a data snapshot.
