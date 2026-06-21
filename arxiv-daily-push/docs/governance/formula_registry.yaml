@@ -398,3 +398,32 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_bootstrap.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md"]
+
+  - formula_id: "FORM-ADP-017"
+    model_id: "MOD-ADP-015"
+    assumption_ids: ["ASM-ADP-018", "ASM-ADP-003"]
+    status: "active"
+    expression: "A live arXiv source batch passes only when a small Atom query fetch succeeds, all parsed entries validate as SourceItem objects, at least one item is not in seen_source_ids, PDF download and bulk harvest are disabled, and TLS/network/API/Atom errors are absent. If all fetched items are already seen or any fetch/parse/validation error occurs, the batch is blocked with reasons."
+    variables:
+      - name: "search_query"
+        data_type: "str"
+        unit: "arXiv API query"
+        input_domain: "configured arXiv search query"
+      - name: "max_results"
+        data_type: "int"
+        unit: "items"
+        input_domain: "1..25"
+      - name: "seen_source_ids"
+        data_type: "set[str]"
+        unit: "source IDs"
+        input_domain: "prior published source_id values"
+      - name: "source_items"
+        data_type: "list[SourceItem]"
+        unit: "records"
+        input_domain: "parsed arXiv Atom entries"
+    constraints: "The ingest command does not download PDFs, perform bulk metadata harvest, write repository files, or bypass TLS verification."
+    missing_policy: "Network, TLS, API, Atom parse, SourceItem validation, or duplicate-only conditions produce a blocked SourceBatch."
+    output_range: "SourceBatch with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_source_ingest.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "https://info.arxiv.org/help/api/user-manual.html"]

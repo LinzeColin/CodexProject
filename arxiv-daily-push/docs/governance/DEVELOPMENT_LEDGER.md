@@ -1,17 +1,17 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.4`
+Active product version: `0.11.5`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.4
+- Product version: 0.11.5
 - Current phase: E
-- Current gate: ADP-PHASE11-TRIAL-BOOTSTRAP-PASS
-- Confirmed iteration count: 15
+- Current gate: ADP-PHASE11-LIVE-ARXIV-INGEST-PASS
+- Confirmed iteration count: 16
 - Reconstructed event count: 0
 - Current task: NONE
 - Blockers: Production acceptance still requires real 30-day trial, scheduler, Release, SMTP, and resource evidence; those are not claimed by this handoff.
@@ -366,6 +366,29 @@ The append-only machine record is `development_events.jsonl`.
 - Decisions: Keep cron scheduling and real production side effects disabled until a provisioned runner produces a passing preflight artifact.
 - Remaining risks: Production acceptance still requires actual runner provisioning, SMTP/Release configuration, preflight pass on runner, scheduled execution, and 30-day trial evidence.
 - Rollback: Revert Phase 11 trial bootstrap workflow, runbook, validator, tests, and restore version 0.11.3.
+- Next step: Run root governance validation, update run manifest, and sync the PR.
+
+### `ITER-20260621-016`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for live arXiv source ingest code, CLI command, SourceBatch schema, tests, phase record, and governance updates.
+- Version before: 0.11.4
+- Version after: 0.11.5
+- Base commit: 26d82979344b49ad0628264713bf6423c4a1c11e
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-LIVE-ARXIV-INGEST-006
+- Goal: Add a real arXiv latest-source ingest command with incremental duplicate filtering and fail-closed network/API behavior.
+- Assumptions: Source ingest may use live arXiv Atom metadata but must not download PDFs, bulk harvest, bypass TLS, schedule runs, send email, or publish content.
+- Files changed: source ingest code, CLI command, tests, SourceBatch schema, README, CHANGELOG, runbook, phase record, version files, and governance records.
+- Model changes: Added MOD-ADP-015 as adp-live-arxiv-ingest-v1.
+- Parameter changes: Added PARAM-ADP-075 through PARAM-ADP-080.
+- Commands run: project unit tests; schema parse; live arXiv fetch command; root governance tests; project governance validator; changed-only enforce-sync; dashboard generation; git diff check.
+- Test results: 78 project tests OK; 36 root governance tests OK; schemas parse; live fetch command blocked on current local Python SSL certificate verification; project governance errors 0 warnings 0; changed-only enforce-sync errors 0 warnings 0; dashboard PASS; git diff check exit 0.
+- Successes: Source ingest returns valid SourceBatch objects, filters duplicate source IDs, blocks duplicate-only batches, and blocks network/API failures.
+- Failures: Current local machine cannot complete HTTPS arXiv fetch because Python certificate verification fails for `https://export.arxiv.org/api/query`.
+- Decisions: Do not bypass TLS verification or switch to insecure fetch behavior; require runner CA trust repair before live trial source collection.
+- Remaining risks: Production acceptance still requires actual runner provisioning, CA trust fix, SMTP/Release configuration, preflight pass on runner, scheduled execution, and 30-day trial evidence.
+- Rollback: Revert live arXiv ingest command, SourceBatch schema, tests, and restore version 0.11.4.
 - Next step: Run root governance validation, update run manifest, and sync the PR.
 
 ## Unknown Historical Periods

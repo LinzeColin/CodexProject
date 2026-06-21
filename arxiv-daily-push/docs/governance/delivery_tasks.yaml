@@ -256,3 +256,20 @@ tasks:
     target_version: "0.11.4"
     completed_version: "0.11.4"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-LIVE-ARXIV-INGEST-006"
+    phase: "E"
+    objective: "Add a small-window live arXiv latest source ingest command with incremental duplicate filtering."
+    scope: "Live arXiv Atom fetch wrapper, SourceBatch output, SourceItem validation, seen-source filtering, CLI command, schema, tests, and governance records."
+    non_scope: "No PDF download, no bulk harvest, no scheduled runner execution, no ranking automation, no content generation, no SMTP send, and no TLS bypass."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-BOOTSTRAP-005"]
+    required_files: ["src/arxiv_daily_push/source_ingest.py", "src/arxiv_daily_push/cli.py", "tests/test_source_ingest.py", "schemas/source_batch.schema.json", "docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-LIVE-ARXIV-INGEST"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 78 tests OK", "schema parse: OK", "live fetch current environment: blocked on Python SSL certificate validation"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "arxiv-daily-push/tests/test_source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py"]
+    risk: "Current local Python CA trust blocks live HTTPS fetch; production runner must fix CA trust before 30-day trial source collection can pass."
+    rollback: "Revert live arXiv ingest command, SourceBatch schema, tests, and restore version 0.11.4."
+    target_version: "0.11.5"
+    completed_version: "0.11.5"
+    unknown_task_ids: []

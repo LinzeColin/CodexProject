@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.5 - 2026-06-21
+
+- Added `adp fetch-arxiv-latest` for small-window live arXiv Atom source ingestion.
+- Added incremental duplicate filtering by prior `source_id` and a SourceBatch schema.
+- Added fail-closed network/API/Atom parsing behavior with tests and current local SSL-blocker evidence.
+
 ## 0.11.4 - 2026-06-21
 
 - Added a manual GitHub Actions production trial bootstrap workflow that runs production preflight before any trial work.

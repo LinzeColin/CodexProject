@@ -20,6 +20,8 @@ Required private self-hosted runner:
   `runner_label` input.
 - Required commands on runner: `python3`, `git`, `node`, `npm`, `gh`, `ffmpeg`,
   `docker`, and `codex`.
+- Python HTTPS certificate validation must work for
+  `https://export.arxiv.org/api/query`; do not bypass TLS verification.
 - Minimum free disk before production work: 80 GiB.
 - Minimum memory before production work: 8 GiB.
 
@@ -65,6 +67,15 @@ PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push preflight-production
 ```
 
 If preflight exits non-zero, stop. Do not start the 30-day trial.
+
+Before enabling scheduled source collection, verify live arXiv source ingest:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push fetch-arxiv-latest --query 'cat:cs.AI' --max-results 1 --generated-at <ISO timestamp> --json
+```
+
+If this blocks on Python SSL certificate validation, update the runner CA trust
+store or Python certificate bundle. Do not switch to insecure TLS behavior.
 
 ## Trial Evidence
 
