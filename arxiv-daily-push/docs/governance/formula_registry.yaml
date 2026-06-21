@@ -758,3 +758,44 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_resource.py", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_resource.py", "arxiv-daily-push/tests/test_production_preflight.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md"]
+
+  - formula_id: "FORM-ADP-029"
+    model_id: "MOD-ADP-027"
+    assumption_ids: ["ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
+    status: "active"
+    expression: "A trial start readiness report passes only when confirm_start is true, all required durable refs contain a scheme separator, production preflight validates and allows production, the bootstrap and scheduler plans validate as ready, the live arXiv source batch passes with at least one unseen item and no PDF or bulk harvest behavior, the SMTP report is real sent evidence whose delivery_ref matches smtp_ref, the Release report is real created evidence whose release_ref matches release_ref, and the gate performs no side effects or production acceptance claim."
+    variables:
+      - name: "confirm_start"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "explicit CLI flag or function argument"
+      - name: "preflight_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "adp-production-preflight-v1"
+      - name: "bootstrap_plan"
+        data_type: "object"
+        unit: "JSON plan"
+        input_domain: "adp-trial-bootstrap-v1"
+      - name: "scheduler_plan"
+        data_type: "object"
+        unit: "JSON plan"
+        input_domain: "adp-production-scheduler-v1"
+      - name: "source_batch"
+        data_type: "object"
+        unit: "JSON batch"
+        input_domain: "adp-live-arxiv-ingest-v1"
+      - name: "delivery_reports"
+        data_type: "object"
+        unit: "JSON reports"
+        input_domain: "adp-smtp-delivery-v1 and adp-release-delivery-v1"
+      - name: "evidence_refs"
+        data_type: "map[str,str]"
+        unit: "durable refs"
+        input_domain: "default branch, runner, preflight, source, SMTP, Release, scheduler, trial state, and start gate refs"
+    constraints: "The start gate does not enable schedules, send SMTP, create Releases, mutate trial evidence, generate media, retain cache/model artifacts, or claim production acceptance."
+    missing_policy: "Missing confirmation, missing durable refs, blocked upstream reports, dry-run SMTP or Release probes, mismatched refs, or any validation error produce a blocked trial start report."
+    output_range: "trial start readiness report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_start.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md"]

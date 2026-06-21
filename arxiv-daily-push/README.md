@@ -14,7 +14,7 @@ execution driver, a daily input builder from arXiv Atom source batches, an
 incremental trial evidence ledger update bridge, cross-run ledger state
 persistence, operational trial evidence annotation, weekly/monthly replay
 evidence generation, recovery drill evidence generation, resource telemetry
-evidence generation, and tests.
+evidence generation, a fail-closed 30-day trial start gate, and tests.
 
 ## Current Scope
 
@@ -46,6 +46,7 @@ Implemented now:
 - `adp build-trial-replay-evidence`
 - `adp build-trial-recovery-evidence`
 - `adp build-trial-resource-evidence`
+- `adp plan-trial-start`
 - `adp preflight-production`
 - `adp plan-trial-bootstrap`
 - `adp plan-production-scheduler`
@@ -65,6 +66,7 @@ Implemented now:
 - weekly/monthly replay evidence builder that validates production-ready daily refs, duplicate-free coverage, 7-day weekly coverage, 30-day monthly coverage, and a durable replay evidence ref before producing annotation hints
 - recovery drill evidence builder that validates a failed or degraded scheduled daily-run plus a recovered production-ready rerun with real sent notifications and durable failure/recovery refs before producing annotation hints
 - resource telemetry evidence builder that validates 30 unique daily resource refs against passing production preflight reports before producing annotation hints
+- trial start readiness gate that requires passing preflight, bootstrap, scheduler, live source, real SMTP, real Release, durable refs, and explicit confirmation before a real 30-day trial is marked start-ready
 - deterministic 100-point ranking with per-component audit output
 - fail-closed candidate blocking for missing P0 evidence, metadata conflicts, and recent duplicate selections
 - Claim Ledger construction from explicit evidence claims
@@ -103,7 +105,7 @@ Not implemented yet:
 - actual weekly/monthly replay run archived with a durable production ref
 - actual recovery drill run archived with a durable production ref
 - actual 30-day resource telemetry run archived with a durable production ref
-- claimed scheduled 30-day trial start
+- claimed scheduled 30-day trial start from current live GitHub runner evidence
 - claimed 30-day operational acceptance
 
 ## Goal Baseline

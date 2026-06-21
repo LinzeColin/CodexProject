@@ -37,6 +37,7 @@ from .trial_ops import annotate_trial_operational_evidence, validate_trial_ops_r
 from .trial_recovery import build_trial_recovery_evidence, validate_trial_recovery_report
 from .trial_resource import build_trial_resource_evidence, validate_trial_resource_report
 from .trial_replay import build_trial_replay_evidence, validate_trial_replay_report
+from .trial_start import build_trial_start_gate, validate_trial_start_report
 from .video import VideoPlanError, generate_storyboard
 
 
@@ -262,6 +263,29 @@ def build_parser() -> argparse.ArgumentParser:
     trial_resource.add_argument("--generated-at", required=True, help="Resource evidence timestamp.")
     trial_resource.add_argument("--resource-ref", default="", help="Durable artifact, workflow, or Release ref for the resource evidence report.")
     trial_resource.add_argument("--json", action="store_true", help="Print JSON resource evidence report.")
+
+    trial_start = subparsers.add_parser(
+        "plan-trial-start",
+        help="Build a fail-closed start-readiness gate for the real 30-day production trial.",
+    )
+    trial_start.add_argument("--preflight-report", required=True, help="Passing production preflight report JSON.")
+    trial_start.add_argument("--bootstrap-plan", required=True, help="Passing trial bootstrap plan JSON.")
+    trial_start.add_argument("--scheduler-plan", required=True, help="Passing production scheduler plan JSON.")
+    trial_start.add_argument("--source-batch", required=True, help="Passing live arXiv source batch JSON.")
+    trial_start.add_argument("--smtp-delivery", required=True, help="Real sent SMTP delivery report JSON.")
+    trial_start.add_argument("--release-delivery", required=True, help="Real created Release delivery report JSON.")
+    trial_start.add_argument("--generated-at", required=True, help="Trial start readiness timestamp.")
+    trial_start.add_argument("--default-branch-ref", default="", help="Durable default-branch commit/workflow ref.")
+    trial_start.add_argument("--runner-ref", default="", help="Durable private self-hosted runner ref.")
+    trial_start.add_argument("--preflight-ref", default="", help="Durable archived production preflight ref.")
+    trial_start.add_argument("--source-ingest-ref", default="", help="Durable archived live source ingest ref.")
+    trial_start.add_argument("--smtp-ref", default="", help="Durable SMTP delivery ref matching the SMTP report.")
+    trial_start.add_argument("--release-ref", default="", help="Durable Release ref matching the Release report.")
+    trial_start.add_argument("--scheduler-ref", default="", help="Durable scheduled workflow/default-branch ref.")
+    trial_start.add_argument("--trial-state-ref", default="", help="Durable initial trial ledger state ref.")
+    trial_start.add_argument("--trial-start-ref", default="", help="Durable archived trial start gate ref.")
+    trial_start.add_argument("--confirm-start", action="store_true", help="Explicitly confirm start-readiness evaluation.")
+    trial_start.add_argument("--json", action="store_true", help="Print JSON trial start report.")
 
     preflight = subparsers.add_parser("preflight-production", help="Run fail-closed production preflight before scheduled execution.")
     preflight.add_argument("--path", default=".", help="Repository path used for disk, Git, and cache checks.")
@@ -841,6 +865,44 @@ def main(argv: list[str] | None = None) -> int:
             for reason in report["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if report["resource_pressure_verified"] else 2
+    if args.command == "plan-trial-start":
+        report = build_trial_start_gate(
+            generated_at=args.generated_at,
+            preflight_report=load_json_mapping(args.preflight_report),
+            bootstrap_plan=load_json_mapping(args.bootstrap_plan),
+            scheduler_plan=load_json_mapping(args.scheduler_plan),
+            source_batch=load_json_mapping(args.source_batch),
+            smtp_delivery_report=load_json_mapping(args.smtp_delivery),
+            release_delivery_report=load_json_mapping(args.release_delivery),
+            default_branch_ref=args.default_branch_ref,
+            runner_ref=args.runner_ref,
+            preflight_ref=args.preflight_ref,
+            source_ingest_ref=args.source_ingest_ref,
+            smtp_ref=args.smtp_ref,
+            release_ref=args.release_ref,
+            scheduler_ref=args.scheduler_ref,
+            trial_state_ref=args.trial_state_ref,
+            trial_start_ref=args.trial_start_ref,
+            confirm_start=args.confirm_start,
+        )
+        errors = validate_trial_start_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["trial_start_ready"]:
+            print(f"{report['trial_start_report_id']}\tready")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["trial_start_ready"] else 2
     if args.command == "preflight-production":
         report = build_production_preflight(Path(args.path), generated_at=args.generated_at)
         errors = validate_production_preflight(report)
