@@ -32,7 +32,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE4-RANKING-001 | B | completed | ADP-ACC-PHASE4-RANKING | 26 tests OK; ranking golden score and gates pass | `docs/phase_records/PHASE_04.md` |
 | ADP-PHASE5-EVIDENCE-GATE-001 | C | completed | ADP-ACC-PHASE5-EVIDENCE-GATE | 32 tests OK; Claim Ledger gates pass | `docs/phase_records/PHASE_05.md` |
 | ADP-PHASE6-LESSON-001 | C | completed | ADP-ACC-PHASE6-LESSON | 37 tests OK; lesson evidence linkage pass | `docs/phase_records/PHASE_06.md` |
-| ADP-PHASE7-TTS-001 | D | planned | ADP-ACC-PHASE7-TTS | not run | pursuing goal baseline |
+| ADP-PHASE7-TTS-001 | D | completed | ADP-ACC-PHASE7-TTS | 42 tests OK; narration dry-run gate pass | `docs/phase_records/PHASE_07.md` |
 | ADP-PHASE8-VIDEO-001 | D | planned | ADP-ACC-PHASE8-VIDEO | not run | pursuing goal baseline |
 
 ## Release Gates
@@ -45,7 +45,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 3 arXiv adapter tests | unittest output and fixture parse | pass |
 | Phase 4 ranking tests | golden score, evidence gate, metadata conflict gate, duplicate gate | pass |
 | Phase 5 Claim Ledger gate tests | P0 locator, unsupported P0, metadata conflict, peer-review claim gate | pass |
-| Phase 6 lesson linkage tests | supported claim IDs, unknown claim rejection, visible claim markers | pass |
+| Phase 6 lesson linkage tests | supported claim IDs, unregistered claim rejection, visible claim markers | pass |
+| Phase 7 narration/TTS dry-run gate | dry-run narration JSON, blocked real TTS, no audio paths | pass |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |
 | Diff hygiene | `git diff --check` | pass |

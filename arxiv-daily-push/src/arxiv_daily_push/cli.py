@@ -11,6 +11,7 @@ from .arxiv_adapter import ArxivQuery, build_query_url, parse_atom_feed
 from .doctor import doctor_report, render_report
 from .evidence_gate import gate_publication
 from .lesson import LessonGenerationError, generate_lesson
+from .narration import NarrationError, generate_narration_plan
 from .notifications import render_email
 from .ranking import selection_payload
 from .state_machine import validate_run_record
@@ -61,6 +62,13 @@ def build_parser() -> argparse.ArgumentParser:
     lesson.add_argument("--path", required=True, help="JSON file containing source_item, claims, and generated_at or created_at.")
     lesson.add_argument("--language", default="zh-CN", help="Lesson language; default zh-CN.")
     lesson.add_argument("--json", action="store_true", help="Print JSON lesson output.")
+
+    narration = subparsers.add_parser("generate-narration", help="Generate dry-run narration/TTS plan from Lesson JSON.")
+    narration.add_argument("--path", required=True, help="JSON file containing lesson or a Lesson object.")
+    narration.add_argument("--generated-at", required=True, help="Narration generation timestamp.")
+    narration.add_argument("--tts-mode", default="dry_run", help="Only dry_run is allowed in Phase 7.")
+    narration.add_argument("--check-path", default=".", help="Path used for resource gate disk checks.")
+    narration.add_argument("--json", action="store_true", help="Print JSON narration output.")
     return parser
 
 
@@ -159,5 +167,27 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(lesson, ensure_ascii=False, indent=2, sort_keys=True))
         else:
             print(f"{lesson['lesson_id']}\t{lesson['title']}")
+        return 0
+    if args.command == "generate-narration":
+        data = json.loads(Path(args.path).read_text(encoding="utf-8"))
+        lesson = data.get("lesson", data) if isinstance(data, dict) else data
+        try:
+            narration = generate_narration_plan(
+                lesson,
+                generated_at=args.generated_at,
+                tts_mode=args.tts_mode,
+                path=Path(args.check_path),
+            )
+        except NarrationError as error:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": [str(error)]}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(narration, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{narration['narration_id']}\t{len(narration['segments'])} segments")
         return 0
     raise AssertionError(f"Unhandled command: {args.command}")

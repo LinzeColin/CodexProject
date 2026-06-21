@@ -41,6 +41,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/tests/test_lesson.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-009"
+    statement: "Phase 7 generates dry-run narration/TTS plan JSON from Lesson objects and blocks audio synthesis, model downloads, audio writes, and media retention."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_07.md", "arxiv-daily-push/src/arxiv_daily_push/narration.py", "arxiv-daily-push/tests/test_narration.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -145,3 +150,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/lesson.schema.json", "arxiv-daily-push/schemas/evidence_claim.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/fixtures/lesson_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+
+  - model_id: "MOD-ADP-007"
+    name: "Narration and TTS dry-run gate"
+    kind: "deterministic narration planner"
+    purpose: "Generate narration/TTS-ready dry-run JSON from Lesson objects while blocking real audio synthesis and retained media artifacts."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-narration-v1"
+    assumption_ids: ["ASM-ADP-009"]
+    formula_ids: ["FORM-ADP-009"]
+    parameter_ids: ["PARAM-ADP-037", "PARAM-ADP-038", "PARAM-ADP-039", "PARAM-ADP-040"]
+    inputs: ["Lesson", "local command availability", "local disk status"]
+    outputs: ["Narration plan", "TTS resource gate", "dry-run validation errors"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/narration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/config.py"]
+    config_refs: ["arxiv-daily-push/schemas/narration.schema.json", "arxiv-daily-push/config/examples/runtime.example.yaml"]
+    test_refs: ["arxiv-daily-push/tests/test_narration.py", "arxiv-daily-push/tests/fixtures/narration_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_07.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
