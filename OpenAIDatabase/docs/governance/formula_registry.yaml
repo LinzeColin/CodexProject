@@ -29,6 +29,13 @@ formulas:
     code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:512", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:637", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:724", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:735"]
     test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:17", "OpenAIDatabase/tests/test_openai_memory_analysis.py:68"]
     evidence_refs: ["OpenAIDatabase/config/memory_schema.json:1"]
+    implementation_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::classify_chunk", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::candidate_chunks", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::make_candidate", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::assign_memory_tier", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::merge_candidates", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::TRIGGER_PATTERNS"]
+    implementation_fingerprint: "sha256:d874d1406b4a4729bf5632688e0e938ff4d2b05475dd99063d5e0cab6cd2d736"
+    last_verified_commit: "074295212402b6dfd1f807a567c5a18fc6e1558d"
+    verified_at: "2026-06-21T13:09:57Z"
+    evidence_hash: "sha256:b351beeae33ef5f01f11acfbebadb450dd2f6fdd454a621d210632ef15c35d76"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-002"
     model_id: "MOD-002"
     assumption_ids: ["ASM-001", "ASM-002"]
@@ -53,6 +60,13 @@ formulas:
     code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:51", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:63", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:661", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:712"]
     test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:17"]
     evidence_refs: ["OpenAIDatabase/skills/openai-memory-analysis/references/security-policy.md:1"]
+    implementation_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::redact_text", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::make_candidate", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::SECRET_PATTERNS", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::PII_PATTERNS", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::SENSITIVITY_RANK"]
+    implementation_fingerprint: "sha256:5a178aa0e4416090084955a66988ffdd3c8a4a91010130f85c2943af86fd6861"
+    last_verified_commit: "074295212402b6dfd1f807a567c5a18fc6e1558d"
+    verified_at: "2026-06-21T13:09:57Z"
+    evidence_hash: "sha256:45a20e6b8485f5fed3f5aad040bc96fcee0261da9c1e77cb9f20649076142f24"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-003"
     model_id: "MOD-003"
     assumption_ids: ["ASM-001", "ASM-002"]
@@ -77,6 +91,13 @@ formulas:
     code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1672", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1701", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1710", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1741"]
     test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:46", "OpenAIDatabase/tests/test_openai_memory_analysis.py:87"]
     evidence_refs: ["OpenAIDatabase/AGENTS.md:24"]
+    implementation_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::load_curation_overrides", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::apply_curation_override", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::retrieval_weight", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::normalized_memory_tier", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::build_active_memory_rows", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::TIER_ALIASES"]
+    implementation_fingerprint: "sha256:0fd919dc463eff06c49e3bdff56e5fbf0b1a6717d3afa4c0d1c54f2bbddb3031"
+    last_verified_commit: "074295212402b6dfd1f807a567c5a18fc6e1558d"
+    verified_at: "2026-06-21T13:09:57Z"
+    evidence_hash: "sha256:1150af8c0995162ff2fab668d677de6d995152a74568499ba591fc6018bddcd9"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-004"
     model_id: "MOD-004"
     assumption_ids: ["ASM-001", "ASM-002"]
@@ -101,6 +122,13 @@ formulas:
     code_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1993", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2055", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2083"]
     test_refs: ["OpenAIDatabase/tests/test_openai_memory_analysis.py:112"]
     evidence_refs: ["OpenAIDatabase/skills/openai-memory-analysis/references/retrieval.md:1"]
+    implementation_refs: ["OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::build_sqlite_index", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::query_index", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::fetch_index", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py::SENSITIVITY_RANK"]
+    implementation_fingerprint: "sha256:6551e4673a846c490893bc495e716ab9f648ac7a3b4686a6b0238f0fc074ea4c"
+    last_verified_commit: "074295212402b6dfd1f807a567c5a18fc6e1558d"
+    verified_at: "2026-06-21T13:09:57Z"
+    evidence_hash: "sha256:1af8c9ceb0bddee50016b19942ce410ad175dd244fb1cce1700cfdf8cfc17502"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-005"
     model_id: "MOD-005"
     assumption_ids: ["ASM-002", "ASM-003", "ASM-006"]
@@ -129,6 +157,13 @@ formulas:
     code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:46", "OpenAIDatabase/scripts/build_memory_atlas_data.py:380", "OpenAIDatabase/scripts/build_memory_atlas_data.py:669"]
     test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25"]
     evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:20"]
+    implementation_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py::TIER_WEIGHT", "OpenAIDatabase/scripts/build_memory_atlas_data.py::IMPORTANCE_WEIGHT", "OpenAIDatabase/scripts/build_memory_atlas_data.py::CONFIDENCE_WEIGHT", "OpenAIDatabase/scripts/build_memory_atlas_data.py::memory_weight", "OpenAIDatabase/scripts/build_memory_atlas_data.py::visual_position", "OpenAIDatabase/scripts/build_memory_atlas_data.py::build_nodes_and_edges"]
+    implementation_fingerprint: "sha256:c2a1ca9f9e07c06e5b81951adaef3e1bb8f3c20208c566b6995cc2ad92d1e475"
+    last_verified_commit: "074295212402b6dfd1f807a567c5a18fc6e1558d"
+    verified_at: "2026-06-21T13:09:57Z"
+    evidence_hash: "sha256:48c749f8f13b1cd8ec92a0910f7bd5ddd8c6d4de1fd4639d65632bdf39d7fc73"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-006"
     model_id: "MOD-006"
     assumption_ids: ["ASM-002", "ASM-003", "ASM-006"]
@@ -153,6 +188,13 @@ formulas:
     code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:387"]
     test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25"]
     evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:56"]
+    implementation_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py::roi_metrics", "OpenAIDatabase/scripts/build_memory_atlas_data.py::memory_weight"]
+    implementation_fingerprint: "sha256:2971d43c92cdf6747bb091dfa8b591573ae3307dff80fdc68b1b2bc84ccb281b"
+    last_verified_commit: "074295212402b6dfd1f807a567c5a18fc6e1558d"
+    verified_at: "2026-06-21T13:09:57Z"
+    evidence_hash: "sha256:e7cd3e8c2fd76b201043baa35e5bfdeb9fb6571548734a5ea3d5921c073eabbc"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-007"
     model_id: "MOD-007"
     assumption_ids: ["ASM-002", "ASM-003"]
@@ -177,6 +219,13 @@ formulas:
     code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:462", "OpenAIDatabase/scripts/build_memory_atlas_data.py:475", "OpenAIDatabase/scripts/build_memory_atlas_data.py:481", "OpenAIDatabase/scripts/build_memory_atlas_data.py:530"]
     test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25"]
     evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:87"]
+    implementation_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py::add_activity_score", "OpenAIDatabase/scripts/build_memory_atlas_data.py::activity_level", "OpenAIDatabase/scripts/build_memory_atlas_data.py::score_quantiles", "OpenAIDatabase/scripts/build_memory_atlas_data.py::fill_daily_range", "OpenAIDatabase/scripts/build_memory_atlas_data.py::aggregate_periods", "OpenAIDatabase/scripts/build_memory_atlas_data.py::build_contribution"]
+    implementation_fingerprint: "sha256:99d1c496b523cfe4757d17ab3f1c218a7f9f935bb2ea882002a1be6acb08d0d7"
+    last_verified_commit: "074295212402b6dfd1f807a567c5a18fc6e1558d"
+    verified_at: "2026-06-21T13:09:57Z"
+    evidence_hash: "sha256:1a250931d26a58e0d54374fc20baec1e691c2d00f35490e23ca54ae5e9647eb1"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-008"
     model_id: "MOD-008"
     assumption_ids: ["ASM-001", "ASM-004"]
@@ -201,6 +250,13 @@ formulas:
     code_refs: ["OpenAIDatabase/scripts/sync_codex_memory_data.py:43", "OpenAIDatabase/scripts/sync_codex_memory_data.py:54", "OpenAIDatabase/scripts/sync_codex_memory_data.py:279", "OpenAIDatabase/scripts/sync_codex_memory_data.py:334"]
     test_refs: ["OpenAIDatabase/tests/test_codex_memory_sync.py:20"]
     evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md:119"]
+    implementation_refs: ["OpenAIDatabase/scripts/sync_codex_memory_data.py::TOPIC_RULES", "OpenAIDatabase/scripts/sync_codex_memory_data.py::SIGNAL_RULES", "OpenAIDatabase/scripts/sync_codex_memory_data.py::parse_session_file", "OpenAIDatabase/scripts/sync_codex_memory_data.py::activity_level", "OpenAIDatabase/scripts/sync_codex_memory_data.py::build_daily", "OpenAIDatabase/scripts/sync_codex_memory_data.py::build_recommendations"]
+    implementation_fingerprint: "sha256:a119ed37601d4ee4f9d6239acb6a37c165df26b38a0fa98b25f59da05deb7e2c"
+    last_verified_commit: "074295212402b6dfd1f807a567c5a18fc6e1558d"
+    verified_at: "2026-06-21T13:09:57Z"
+    evidence_hash: "sha256:77e5ac83e9d3a526b0265455ed5e65599d97e23306b7b7e22635722faef5fc03"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-009"
     model_id: "MOD-009"
     assumption_ids: ["ASM-003", "ASM-005"]
@@ -225,6 +281,13 @@ formulas:
     code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:156", "OpenAIDatabase/scripts/build_memory_atlas_data.py:1208", "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py:86", "OpenAIDatabase/scripts/build_memory_atlas_data.py:271"]
     test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25", "OpenAIDatabase/tests/test_memory_atlas_acceptance_audit.py"]
     evidence_refs: ["OpenAIDatabase/config/data_sources/source_registry.json:1"]
+    implementation_refs: ["json_path:OpenAIDatabase/config/data_sources/source_registry.json::schema_version", "OpenAIDatabase/scripts/build_memory_atlas_data.py::load_data_source_registry", "OpenAIDatabase/scripts/build_memory_atlas_data.py::registry_source_map", "OpenAIDatabase/scripts/build_memory_atlas_data.py::source_summary", "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py::data_source_registry_ready"]
+    implementation_fingerprint: "sha256:b51f90bfe2fcafce26dc39bb61d0d8822f5b35f0186c9c5f744f6d9f1bbd2ca2"
+    last_verified_commit: "074295212402b6dfd1f807a567c5a18fc6e1558d"
+    verified_at: "2026-06-21T13:09:57Z"
+    evidence_hash: "sha256:8d1e06e5c19276800ff6ac7a261126c783713acfc3e0989e16c560934698e284"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
   - formula_id: "FORM-010"
     model_id: "MOD-010"
     assumption_ids: ["ASM-001", "ASM-003"]
@@ -249,6 +312,13 @@ formulas:
     code_refs: ["OpenAIDatabase/scripts/build_memory_atlas_data.py:1227", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2308", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2328", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2374", "OpenAIDatabase/apps/memory-atlas/src/App.tsx:4477"]
     test_refs: ["OpenAIDatabase/tests/test_memory_atlas_data.py:25", "OpenAIDatabase/tests/test_memory_atlas_release_audit.py:24"]
     evidence_refs: ["OpenAIDatabase/README.md:121"]
+    implementation_refs: []
+    implementation_fingerprint: "HUMAN_REVIEW_REQUIRED"
+    last_verified_commit: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
+    verified_at: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
+    evidence_hash: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: "GOV-SEMANTIC-OAIDB-001"
   - formula_id: "FORM-011"
     model_id: "MOD-011"
     assumption_ids: ["ASM-001", "ASM-004", "ASM-007"]
@@ -277,3 +347,10 @@ formulas:
     code_refs: ["OpenAIDatabase/scripts/build_personalization_exports.py:1", "OpenAIDatabase/scripts/route_agent_resources.py:1", "OpenAIDatabase/scripts/evaluate_personalization_context.py:1", "OpenAIDatabase/scripts/sync_codex_memory_data.py:407"]
     test_refs: ["OpenAIDatabase/tests/test_personalization_architecture.py:1"]
     evidence_refs: ["OpenAIDatabase/docs/PERSONAL_CONTEXT_ARCHITECTURE.md:1", "OpenAIDatabase/config/evaluation/personalization_harness.json:1"]
+    implementation_refs: ["OpenAIDatabase/scripts/build_personalization_exports.py::build_export_payload", "OpenAIDatabase/scripts/build_personalization_exports.py::render_chatgpt", "OpenAIDatabase/scripts/build_personalization_exports.py::render_codex", "OpenAIDatabase/scripts/route_agent_resources.py::route_resources", "OpenAIDatabase/scripts/evaluate_personalization_context.py::evaluate", "OpenAIDatabase/scripts/sync_codex_memory_data.py::sync_codex_data"]
+    implementation_fingerprint: "sha256:0df0bb02deed96c836221fcf81b743cd8f56a60d2947353bcaa4c124df8c021e"
+    last_verified_commit: "074295212402b6dfd1f807a567c5a18fc6e1558d"
+    verified_at: "2026-06-21T13:09:57Z"
+    evidence_hash: "sha256:03243dd481474c2151822cc7b05e296f17f1d2fc034a3c239d6989c10a8d31d2"
+    semantic_status: "MACHINE_VERIFIED"
+    semantic_review_task_ids: ""
