@@ -1,0 +1,9 @@
+command: python3 scripts/build_personalization_exports.py --database-dir .
+exit_code: 0
+observed_result: PASS
+observed_at: 2026-06-21T06:34:23Z
+outputs:
+- data/derived/personalization/chatgpt_personalization.md
+- data/derived/personalization/codex_personalization.md
+- data/derived/personalization/personalization_export.json
+log: data/run_logs/export_runs/2026-06-21.jsonl

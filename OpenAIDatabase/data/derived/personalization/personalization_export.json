@@ -134,7 +134,7 @@
     "registry_path": "config/data_sources/source_registry.json",
     "schema_version": "memory_atlas_data_source_registry.v1"
   },
-  "generated_at": "2026-06-21T02:44:09Z",
+  "generated_at": "2026-06-21T06:34:23Z",
   "layers": [
     {
       "canonical_files": [
@@ -597,13 +597,21 @@
       ]
     },
     "codex_personalization": {
+      "conditional_resources": [
+        {
+          "condition": "Load for architecture maintenance, personalization analysis, or memory audit tasks.",
+          "path": "data/derived/agent_context/agent_context_pack.json"
+        },
+        {
+          "condition": "Load only when editing OpenAIDatabase personalization manifests.",
+          "path": "config/codex/project.config.toml"
+        }
+      ],
       "description": "Codex startup and AGENTS.md-oriented personalization.",
       "intent": "codex_personalization",
       "read_order": [
         "AGENTS.md",
-        "data/derived/personalization/codex_personalization.md",
-        "data/derived/agent_context/agent_context_pack.json",
-        "config/codex/project.config.toml"
+        "data/derived/personalization/codex_personalization.md"
       ],
       "update_targets": [
         "profile",
@@ -628,13 +636,16 @@
       ]
     },
     "startup": {
-      "description": "Default new-agent boot path.",
+      "conditional_resources": [
+        {
+          "condition": "Load only when the task needs stable user profile or taste detail beyond the startup summary.",
+          "path": "data/derived/profile/CORE_PROFILE.md"
+        }
+      ],
+      "description": "Minimal default new-agent boot path.",
       "intent": "startup",
       "read_order": [
         "AGENTS.md",
-        "docs/PERSONAL_CONTEXT_ARCHITECTURE.md",
-        "data/derived/agent_context/AGENT_CONTEXT.md",
-        "data/derived/profile/CORE_PROFILE.md",
         "data/derived/personalization/codex_personalization.md"
       ],
       "update_targets": [
