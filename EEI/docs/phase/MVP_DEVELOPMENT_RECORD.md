@@ -4100,7 +4100,7 @@ Status: LOCAL AND REMOTE CI VALIDATED; A202/A206 STILL IN PROGRESS
 
 ## 2026-06-21 - T1301/A202 selected live official capture evidence
 
-Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A206 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A202/A206 STILL IN PROGRESS
 
 ### Scope
 
@@ -4135,8 +4135,22 @@ Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A206 STILL IN PROGRE
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/fetch_official_source_full_text.py --capture-live --allow-live-network --anchor-id NVDA-ANCHOR-002 --anchor-id NVDA-ANCHOR-003 --anchor-id NVDA-ANCHOR-004 --output artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json --timeout-seconds 30 --quiet`: PASS.
 - `jq -e '(.status == "LIVE_CAPTURE_READY_FOR_OPERATOR_REVIEW") and (.counts.anchors_total == 3) and (.counts.anchors_failed == 0) and ([.. | objects | has("source_text")] | all(. == false)) and (.capture_policy.committed_full_text == false) and (.capture_policy.relationship_publication == false) and (.capture_policy.release_clearance == false)' artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json`: PASS.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make verify`: PASS after rerun outside the macOS sandbox for Chromium browser benchmark; includes governance validation, contracts, v5 readiness sync, worker/brand validators, scale benchmarks, soak smoke, operator-soak evidence validator, secret scan, UI copy validation, ruff, Next typecheck and 49 unit tests.
 
-Local PostgreSQL integration was not run because the current shell has no `docker`, no `.env`, no `DATABASE_URL`, no `psql` and no `pg_ctl`. Remote G2 PostgreSQL validation is required before this slice can be called CI validated.
+Local PostgreSQL integration was not run because the current shell has no `docker`, no `.env`, no `DATABASE_URL`, no `psql` and no `pg_ctl`. Remote G2 PostgreSQL validation is therefore the authoritative database evidence for this slice.
+
+### Remote validation
+
+- GitHub Actions EEI validation run `27893872934` / job `82541974047`: PASS on commit `d2c74426802e6d1792d160c16bc9a1561d84f87a`.
+- Step 7 static/contract/lint/typecheck/unit: PASS.
+- Step 8 G2 PostgreSQL preparation: PASS.
+- Step 9 G2 static/contract/lint/typecheck/unit: PASS.
+- Step 10 G2 PostgreSQL integration: PASS; validates the selected live artifact non-fixture PostgreSQL ingestion path.
+- Step 11 G2 browser E2E: PASS.
+- Step 12 G2 live FastAPI PostgreSQL E2E: PASS.
+- GitHub Actions Project Governance run `27893872928`: PASS.
+
+This remote PASS does not close A202/A206: the selected artifact is not production owner approval, source-license/legal clearance, relationship publication, `NVDA-ANCHOR-001` semantic resolution, or 4h/24h retry/dead-letter soak evidence.
 
 ### Rollback
 

@@ -329,6 +329,24 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the live adapter alias and `--anchor-id` changes, remove the selected live artifact, restore fixture-only integration assertions, regenerate release artifacts and rerun validation.
 - Next step: run full local validation where possible, regenerate release artifacts, commit, push and verify GitHub Actions G2 PostgreSQL integration.
 
+### `ITER-20260621-013`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `d2c7442`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, `TASK-T1304`
+- Goal: record remote CI evidence for selected-anchor live official-source capture ingestion without closing A202/A206.
+- Commands run: GitHub Actions EEI validation run `27893872934` / job `82541974047`; GitHub Actions Project Governance run `27893872928`.
+- Test results: EEI validation PASS; Step 7 static/contract/lint/typecheck/unit PASS, Step 8 G2 PostgreSQL preparation PASS, Step 9 G2 static/contract/lint/typecheck/unit PASS, Step 10 G2 PostgreSQL integration PASS, Step 11 browser E2E PASS and Step 12 live FastAPI PostgreSQL E2E PASS. Project Governance PASS.
+- Successes: remote CI proved the selected live artifact loads into PostgreSQL without fixture mode and preserves no-full-text, zero relationship fact candidates and source-health evidence boundaries through browser and live API paths.
+- Decisions: keep A202/A206 `IN_PROGRESS`; remote CI proves ingestion mechanics, not production owner approval, source-license/legal clearance, relationship publication, `NVDA-ANCHOR-001` semantic resolution or long-duration retry/dead-letter soak.
+- Remaining risks: formal operator/legal approval, failed-anchor review and A206/A209 4h/24h soak evidence remain open.
+- Rollback: revert the remote evidence update and regenerate release artifacts with `remote_status=PENDING`.
+- Next step: commit and push the remote evidence update, then verify the evidence-only CI run.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -343,6 +361,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-012`: local implementation evidence for TASK-T1301/A202 live capture PostgreSQL ingestion contract.
 - `EVENT-20260621-013`: remote CI validation evidence for TASK-T1301/A202 live capture PostgreSQL ingestion contract.
 - `EVENT-20260621-014`: local selected-anchor live official capture evidence for TASK-T1301/A202 and TASK-T1304/A206.
+- `EVENT-20260621-015`: remote CI validation evidence for TASK-T1301/A202 selected-anchor live official capture ingestion.
 
 ## Unknown Historical Periods
 
