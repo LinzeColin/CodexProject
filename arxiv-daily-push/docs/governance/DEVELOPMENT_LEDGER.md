@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.19`
+Active product version: `0.11.20`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.19
+- Product version: 0.11.20
 - Current phase: E
-- Current gate: ADP-PHASE11-PRODUCTION-TRIAL-START-PRECHECK-BLOCKED
-- Confirmed iteration count: 38
+- Current gate: ADP-PHASE11-PRODUCTION-TRIAL-START-BLOCKED
+- Confirmed iteration count: 39
 - Reconstructed event count: 0
 - Current task: ADP-PHASE11-PRODUCTION-TRIAL-START-022
-- Blockers: Semantic coverage is machine_verified with 152 machine-checked active parameters and all 31 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. PR #32 is merged to `main` at merge commit `df28c70f255d4db0cabf15d6555ce34a8b2fa560` and main Project Governance CI run `27913796642` passed; `default_branch_ref` and `trial_start_workflow_ref` are now durable, but production launch remains blocked by missing explicit launch confirmation and missing durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
+- Blockers: Semantic coverage is machine_verified with 158 machine-checked active parameters and all 32 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. A no-secret production refs bundle gate now exists for runner, SMTP secret-name, Release target, and workflow variable readiness refs, and PR #32 remains merged to `main` at merge commit `df28c70f255d4db0cabf15d6555ce34a8b2fa560`; however production launch remains blocked by missing owner-provisioned durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, missing explicit launch confirmation, and missing default-branch trial-start run evidence. Production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
 
 ## Phase Matrix
 
@@ -24,7 +24,7 @@ The append-only machine record is `development_events.jsonl`.
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
-| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, SMTP delivery, Release delivery, scheduler gate, scheduled execution driver, daily input builder, trial ledger update, trial ledger state persistence, trial ops evidence annotation, trial replay evidence, trial recovery evidence, trial resource evidence, trial start gate, trial start workflow, production launch readiness, and post-merge launch audit generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md` |
+| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, SMTP delivery, Release delivery, scheduler gate, scheduled execution driver, daily input builder, trial ledger update, trial ledger state persistence, trial ops evidence annotation, trial replay evidence, trial recovery evidence, trial resource evidence, trial start gate, trial start workflow, production launch readiness, post-merge launch audit, and production refs readiness bundle generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md` |
 
 ## Iteration Records
 
@@ -896,6 +896,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Production acceptance still requires passing default-branch trial start evidence, live source pass on the runner, real SMTP/Release refs, archived weekly/monthly replay evidence, archived recovery drill evidence, actual resource telemetry, and 30 unique daily production evidence entries.
 - Rollback: Remove the precheck phase record, run manifest, development event, runbook/status/delivery task updates, and generated dashboard/status changes.
 - Next step: Provision durable `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`; then rerun `plan-production-launch` with `--confirm-launch`.
+
+### `ITER-20260621-039`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from production refs code, CLI command, schema, tests, runbook, and machine semantic registry validation.
+- Version before: 0.11.19
+- Version after: 0.11.20
+- Base commit: 468738d44a2bf99b6fbdebaab85d7360ab731f4f
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023
+- Goal: Add a no-secret production refs readiness bundle before default-branch launch readiness consumes external runner, SMTP, Release, and workflow variable refs.
+- Assumptions: The bundle may validate names, ready flags, labels, targets, and durable refs, but it must not read or store SMTP hosts, SMTP ports, usernames, passwords, tokens, API keys, Codex auth, or any credential values.
+- Files changed: production refs validator, CLI command and launch integration, production refs schema, focused tests, runbook section, phase record, changelog/version files, model/formula/parameter/traceability registries, delivery task, delivery plan, model spec, and development ledger.
+- Model changes: Added MOD-ADP-030 `adp-production-refs-v1`; updated FORM-ADP-024 fingerprint because `cli.py::main` changed; added FORM-ADP-032.
+- Parameter changes: Added PARAM-ADP-154 through PARAM-ADP-159 for production refs validator id, required SMTP secret names, required workflow var names, required ref keys, secret-value key blocklist, and no-side-effect safety.
+- Commands run: focused production refs/launch pytest; semantic extractor validation; project governance validation; pending full local validation and GitHub CI.
+- Test results: focused production refs/launch pytest 9 OK; semantic extractor checked 158 active parameters and 32 active formulas with no errors; project governance content errors reduced to sparse-checkout missing registered project noise plus generated view sync before final pass.
+- Successes: `plan-production-refs` now blocks missing required names and secret-like payloads, emits a no-side-effect readiness report, and `plan-production-launch` can consume a passing refs report to fill external readiness refs.
+- Failures: No real owner-provisioned runner/SMTP/Release/workflow refs were available in this run; production launch and 30-day acceptance remain blocked.
+- Decisions: Keep `ADP-PHASE11-PRODUCTION-TRIAL-START-022` blocked until a real passing production refs report, explicit launch confirmation, and default-branch trial-start workflow evidence exist.
+- Remaining risks: Production acceptance still requires passing default-branch trial start evidence, live source pass on the runner, real SMTP/Release refs, archived weekly/monthly replay evidence, archived recovery drill evidence, actual resource telemetry, and 30 unique daily production evidence entries.
+- Rollback: Revert production refs module, CLI integration, schema, tests, runbook/phase record/governance updates, and restore version 0.11.19.
+- Next step: Provision owner-approved durable `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref` through `plan-production-refs`, then rerun `plan-production-launch --confirm-launch`.
 
 ## Unknown Historical Periods
 

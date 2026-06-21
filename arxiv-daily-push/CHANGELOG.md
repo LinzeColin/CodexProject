@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.20 - 2026-06-22
+
+- Added `adp plan-production-refs` and `adp-production-refs-v1` to collect external runner, SMTP secret-name, Release target, and workflow variable readiness refs without reading or logging secret values.
+- Added fail-closed checks for required SMTP secret names, required workflow variable names, durable readiness refs, explicit ready flags, and suspicious secret-value input fields.
+- Updated `adp plan-production-launch` so a passing production refs report can fill the external runner/SMTP/Release/workflow refs while keeping launch and 30-day production acceptance blocked until real external evidence exists.
+
 ## 0.11.19 - 2026-06-22
 
 - Added `adp plan-production-launch` and `adp-production-launch-readiness-v1` to fail closed before default-branch trial start workflow dispatch.

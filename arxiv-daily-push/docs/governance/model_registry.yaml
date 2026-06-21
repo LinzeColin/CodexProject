@@ -146,6 +146,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_resource.py", "arxiv-daily-push/tests/test_trial_resource.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-033"
+    statement: "Production runner, SMTP secret, Release target, and workflow variable readiness must be collected as names and durable refs only; secret values and credential material must never enter the readiness report."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -660,3 +665,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/production_launch.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
     test_refs: ["arxiv-daily-push/tests/test_production_launch.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md"]
+
+  - model_id: "MOD-ADP-030"
+    name: "Production refs readiness bundle"
+    kind: "deterministic no-secret readiness validator"
+    purpose: "Collect and validate external runner, SMTP secret-name, Release target, and workflow variable readiness refs without reading or logging secret values before launch readiness can consume them."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-production-refs-v1"
+    assumption_ids: ["ASM-ADP-033", "ASM-ADP-032", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
+    formula_ids: ["FORM-ADP-032"]
+    parameter_ids: ["PARAM-ADP-154", "PARAM-ADP-155", "PARAM-ADP-156", "PARAM-ADP-157", "PARAM-ADP-158", "PARAM-ADP-159"]
+    inputs: ["no-secret readiness metadata JSON", "generated_at"]
+    outputs: ["production refs readiness report", "readiness_refs", "readiness_gates", "blocking_reasons", "next_external_actions"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/production_refs.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    test_refs: ["arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/tests/test_production_launch.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md"]
