@@ -1,0 +1,9 @@
+command: python3 scripts/route_agent_resources.py --database-dir . --intent startup
+exit_code: 0
+observed_result: PASS
+observed_at: 2026-06-21T06:34:23Z
+read_order:
+- AGENTS.md
+- data/derived/personalization/codex_personalization.md
+conditional_resources:
+- data/derived/profile/CORE_PROFILE.md

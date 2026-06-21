@@ -1,0 +1,9 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+project_doc_max_bytes = 24576
+
+[features]
+memories = false
+
+[sandbox_workspace_write]
+network_access = false

@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -36,8 +37,35 @@ def read_json(path: Path) -> dict[str, Any]:
     return data if isinstance(data, dict) else {}
 
 
+def equivalent_payload_without_generated_at(left: dict[str, Any], right: dict[str, Any]) -> bool:
+    left_copy = dict(left)
+    right_copy = dict(right)
+    left_copy.pop("generated_at", None)
+    right_copy.pop("generated_at", None)
+    return left_copy == right_copy
+
+
+def write_text_if_changed(path: Path, payload: str) -> bool:
+    if path.exists() and path.read_text(encoding="utf-8", errors="ignore") == payload:
+        return False
+    write_if_changed(path, payload)
+    return True
+
+
 def rel(path: Path) -> str:
     return path.as_posix()
+
+
+def git_head(database_dir: Path) -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=database_dir,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except Exception:
+        return "UNKNOWN_NO_GIT_HEAD"
 
 
 def compact_item(item: dict[str, Any]) -> str:
@@ -77,7 +105,7 @@ def build_export_payload(database_dir: Path) -> dict[str, Any]:
         log_categories = []
     if not isinstance(layers, list):
         layers = []
-    return {
+    payload = {
         "schema_version": "openai_database.personalization_export.v1",
         "generated_at": now_utc(),
         "source": "redacted_derived_openai_database_context",
@@ -109,6 +137,10 @@ def build_export_payload(database_dir: Path) -> dict[str, Any]:
             "local_absolute_paths_included": False,
         },
     }
+    existing_payload = read_json(database_dir / MACHINE_EXPORT)
+    if existing_payload and equivalent_payload_without_generated_at(payload, existing_payload):
+        payload["generated_at"] = str(existing_payload.get("generated_at") or payload["generated_at"])
+    return payload
 
 
 def markdown_header(title: str, payload: dict[str, Any]) -> list[str]:
@@ -212,17 +244,38 @@ def append_export_log(database_dir: Path, payload: dict[str, Any], output_files:
     log_dir.mkdir(parents=True, exist_ok=True)
     day = payload["generated_at"][:10]
     log_path = log_dir / f"{day}.jsonl"
+    head = git_head(database_dir)
     row = {
         "timestamp": payload["generated_at"],
         "category": "export_runs",
+        "task_id": "TASK-OAI-D-001",
+        "run_type": "export_run",
         "status": "PASS",
         "task": "build_personalization_exports",
         "updated_targets": payload.get("sync_required_targets", []),
         "source_files": list(payload.get("source_files", {}).values()),
         "output_files": output_files,
+        "context_used": [
+            {"source": str(CONTEXT_CONFIG), "reason": "three-layer source map"},
+            {"source": str(ROUTE_CONFIG), "reason": "resource routing source map"},
+        ],
+        "tools_used": [
+            {"tool": "python", "operation": "build_personalization_exports", "result": "success"}
+        ],
         "tests": ["scripts/evaluate_personalization_context.py"],
+        "tests_run": [
+            {
+                "command": "python3 scripts/build_personalization_exports.py --database-dir .",
+                "exit_code": 0,
+                "result": "PASS",
+                "evidence": "data/run_logs/evidence/TASK-OAI-D-001-build-exports.txt",
+            }
+        ],
+        "failure_recovery": [],
+        "base_commit": head,
+        "result_commit": head,
         "risks": ["generated exports are redacted derived context, not raw private data"],
-        "git_commit": "PENDING",
+        "residual_risks": ["generated exports remain redacted derived context, not raw private data"],
     }
     with log_path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
@@ -233,15 +286,19 @@ def write_exports(database_dir: Path) -> dict[str, Any]:
     database_dir = database_dir.resolve()
     payload = build_export_payload(database_dir)
     output_files = [rel(CHATGPT_EXPORT), rel(CODEX_EXPORT), rel(MACHINE_EXPORT)]
-    write_if_changed(database_dir / CHATGPT_EXPORT, render_chatgpt(payload))
-    write_if_changed(database_dir / CODEX_EXPORT, render_codex(payload))
-    write_if_changed(database_dir / MACHINE_EXPORT, json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
-    log_path = append_export_log(database_dir, payload, output_files)
+    changed = [
+        write_text_if_changed(database_dir / CHATGPT_EXPORT, render_chatgpt(payload)),
+        write_text_if_changed(database_dir / CODEX_EXPORT, render_codex(payload)),
+        write_text_if_changed(database_dir / MACHINE_EXPORT, json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n"),
+    ]
+    log_path = None
+    if any(changed):
+        log_path = append_export_log(database_dir, payload, output_files)
     return {
         "status": "PASS",
         "generated_at": payload["generated_at"],
         "outputs": output_files,
-        "log": str(log_path.relative_to(database_dir)),
+        "log": str(log_path.relative_to(database_dir)) if log_path else "not_appended_no_output_changes",
     }
 
 

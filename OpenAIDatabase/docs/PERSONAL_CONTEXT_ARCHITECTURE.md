@@ -71,12 +71,18 @@ personalization exports after refreshing Codex-derived data.
 
 ## Codex Config
 
-- User template: `config/codex/config.template.toml`
-- Project config: `config/codex/project.config.toml`
+- Runtime project config: `.codex/config.toml`
+- User personalization manifest: `config/codex/config.template.toml`
+- Project personalization manifest: `config/codex/project.config.toml`
 
-The template is safe to copy into a local Codex setup. It points agents to the
-three-layer source, resource routes, generated exports, and required run logs
-without embedding secrets or raw private data.
+Only `.codex/config.toml` is the Codex project runtime config. It uses the
+official Codex config shape and keeps the project-level settings intentionally
+small: `project_doc_max_bytes`, `features.memories`, and
+`sandbox_workspace_write.network_access`.
+
+The two files under `config/codex/` are OpenAIDatabase personalization
+manifests. They are valid TOML, but they are not loaded automatically by Codex
+and must not be copied verbatim into `~/.codex/config.toml`.
 
 ## On-Demand Resource Routing
 
@@ -93,6 +99,19 @@ Agents must start with the smallest route that matches the task instead of
 loading the entire repository. Broad search is allowed only after the route is
 insufficient.
 
+The startup route is intentionally minimal:
+
+- Required `read_order`: `AGENTS.md`,
+  `data/derived/personalization/codex_personalization.md`.
+- Conditional resource:
+  `data/derived/profile/CORE_PROFILE.md`, only when the task needs stable user
+  profile or taste detail beyond the startup summary.
+
+`docs/PERSONAL_CONTEXT_ARCHITECTURE.md`, full `AGENT_CONTEXT.md`,
+`agent_context_pack.json`, and full Memory Atlas data are not default startup
+resources. They are loaded for architecture maintenance, profile analysis, or
+memory audit tasks with an explicit reason.
+
 ## Evaluation Harness
 
 Machine rules live in `config/evaluation/personalization_harness.json`.
@@ -104,10 +123,10 @@ python3 scripts/evaluate_personalization_context.py --database-dir .
 ```
 
 The harness checks required architecture files, generated exports, required
-sections, update targets, log categories, and basic forbidden plaintext
-patterns.
+sections, update targets, log categories, JSONL syntax, task-run evidence
+schema, test exit-code evidence, and basic forbidden plaintext patterns.
 
-## Four Run Log Categories
+## Per-Task Evidence And Run Log Categories
 
 Run logs live under `data/run_logs/` and are designed for GitHub backup:
 
@@ -117,8 +136,18 @@ Run logs live under `data/run_logs/` and are designed for GitHub backup:
 - `agent_runs`: meaningful future-agent runs that update or consume
   personalization context.
 
-Logs are JSONL and must be redacted. Do not write raw transcript text,
-plaintext secrets, cookies, browser state, or local absolute paths.
+Logs are JSONL and must be redacted. Each task row must include the four
+evidence fields required by `config/evaluation/task_run.schema.json`:
+
+- `context_used`
+- `tools_used`
+- `tests_run`
+- `failure_recovery`
+
+`PASS` tests must include `exit_code = 0` and an evidence path that exists.
+`NOT_RUN` tests must include `not_run_reason`. Planned commands are not
+recorded as executed tests. Do not write raw transcript text, plaintext
+secrets, cookies, browser state, or local absolute paths.
 
 ## Future-Agent Sync Rule
 

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OpenAIDatabase Task Run Evidence",
+  "type": "object",
+  "required": [
+    "task_id",
+    "run_type",
+    "status",
+    "context_used",
+    "tools_used",
+    "tests_run",
+    "failure_recovery",
+    "base_commit",
+    "result_commit",
+    "residual_risks"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run_type": {
+      "type": "string",
+      "enum": ["sync_run", "export_run", "evaluation_run", "agent_run"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["PASS", "FAIL", "NOT_RUN"]
+    },
+    "not_run_reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "context_used": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "reason"],
+        "properties": {
+          "source": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1},
+          "version": {"type": "string"},
+          "load_mode": {"type": "string"},
+          "max_chars": {"type": "integer"},
+          "freshness_ttl_days": {"type": "integer"},
+          "access": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "tools_used": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["tool", "operation", "result"],
+        "properties": {
+          "tool": {"type": "string", "minLength": 1},
+          "operation": {"type": "string", "minLength": 1},
+          "result": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": true
+      }
+    },
+    "tests_run": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["command", "result"],
+        "properties": {
+          "command": {"type": "string", "minLength": 1},
+          "exit_code": {"type": "integer"},
+          "result": {"type": "string", "enum": ["PASS", "FAIL", "NOT_RUN"]},
+          "evidence": {"type": "string"},
+          "not_run_reason": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "failure_recovery": {
+      "type": "array"
+    },
+    "base_commit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "result_commit": {
+      "type": ["string", "null"]
+    },
+    "residual_risks": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}

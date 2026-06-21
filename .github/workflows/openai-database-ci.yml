@@ -1,0 +1,49 @@
+name: OpenAIDatabase CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "OpenAIDatabase/**"
+      - ".github/workflows/openai-database-ci.yml"
+  pull_request:
+    paths:
+      - "OpenAIDatabase/**"
+      - ".github/workflows/openai-database-ci.yml"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: OpenAIDatabase
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests -p "test_*.py"
+      - name: Build personalization exports
+        run: python3 scripts/build_personalization_exports.py --database-dir .
+      - name: Route startup resources
+        run: python3 scripts/route_agent_resources.py --database-dir . --intent startup
+      - name: Evaluate personalization context
+        run: python3 scripts/evaluate_personalization_context.py --database-dir .
+      - name: Parse JSONL run logs
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          for path in sorted(Path("data/run_logs").glob("*/*.jsonl")):
+              for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                  if line.strip():
+                      json.loads(line)
+          PY
+      - name: Ensure generated outputs are committed
+        run: git diff --exit-code
