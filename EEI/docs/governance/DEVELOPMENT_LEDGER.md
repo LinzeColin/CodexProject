@@ -175,6 +175,30 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the A202 review-status normalization patch and rerun PostgreSQL integration.
 - Next step: run local validation, commit, push and verify CI Step 10-12.
 
+### `ITER-20260621-006`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `9fbbb87`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, `TASK-T1308`
+- Goal: align live FastAPI/PostgreSQL E2E with the A202 second-source publication state.
+- Assumptions: Step 12 failure is caused by live E2E expecting the pre-A202 candidate publication text, because the same run passed Step 10 PostgreSQL integration and Step 11 browser E2E.
+- Files read: latest GitHub Actions step summary, live Playwright config, saved-view live E2E spec and production-data UI rendering.
+- Files changed: `EEI/tests/e2e/saved-view-live.spec.ts`, MVP development record and this ledger.
+- Model changes: no scoring model change.
+- Parameter changes: no parameter value change.
+- Commands run: remote run `27891379096` showed Step 10 and Step 11 pass, Step 12 fail; local validation pending after patch.
+- Test results: remote PostgreSQL integration PASS; remote browser E2E PASS; remote live E2E rerun required.
+- Successes: preserved A202 publication gate while updating the live route contract to expect `ready_for_review`.
+- Failures: exact Step 12 traceback is unavailable because GitHub logs endpoint returned 403.
+- Decisions: do not revert the A202 `ready_for_review` publication state to satisfy an outdated live assertion.
+- Remaining risks: Step 12 may expose an additional live assertion after this contract drift is fixed.
+- Rollback: revert the live E2E assertion and rerun Step 12.
+- Next step: run local TypeScript/checksum validations, commit, push and verify CI Step 12.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.

@@ -3921,3 +3921,29 @@ Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING
 ### Rollback
 
 - Revert the database status mapper, A202 fixture data, schema/integration/E2E assertions and rerun G2 PostgreSQL integration.
+
+## 2026-06-21 - T1301/A202 live E2E publication-status contract repair
+
+Status: PATCHED; REMOTE LIVE E2E RERUN PENDING
+
+### Scope
+
+- GitHub Actions run `27891379096` for commit `9fbbb87` passed Step 7 static/contract/lint/typecheck/unit, Step 8 PostgreSQL preparation, Step 9 G2 static/contract/lint/typecheck/unit, Step 10 G2 PostgreSQL integration and Step 11 G2 browser E2E.
+- The same run failed only at Step 12 live FastAPI/PostgreSQL E2E.
+- Static diagnosis found `tests/e2e/saved-view-live.spec.ts` still expected the production score candidate text to include the older `candidate` publication state.
+- A202 second-source closure intentionally moved Golden Vertical candidates to `publication_status=ready_for_review` while keeping graph-edge publication blocked.
+- Updated the live E2E assertion to expect `ready_for_review`.
+
+### Acceptance mapping
+
+- T1301 -> A202.
+- T1308 -> A211 only as a live production-route consumer of the A202 candidate status.
+- A202 remains `IN_PROGRESS`: this repair does not publish candidate facts, perform live official retrieval, attach legal clearance or complete production owner sign-off.
+
+### Validation
+
+- Pending local TypeScript/targeted validation and remote EEI validation rerun.
+
+### Rollback
+
+- Revert `tests/e2e/saved-view-live.spec.ts` expectation and rerun live E2E.

@@ -222,7 +222,7 @@ test("A211 live production routes and data controls hydrate from FastAPI Postgre
   await expect(dataPanel).toHaveAttribute("data-score-evidence-count", /^[1-9]\d*$/);
   await expect(dataPanel).toHaveAttribute("data-evidence-detail-count", /^[1-9]\d*$/);
   await expect(page.getByTestId("production-score-candidate")).toContainText("GV-FACT-001");
-  await expect(page.getByTestId("production-score-candidate")).toContainText("candidate");
+  await expect(page.getByTestId("production-score-candidate")).toContainText("ready_for_review");
   await expect(page.getByTestId("production-evidence-snippets")).toContainText("SEC EDGAR");
 
   await page.getByTestId("main-nav-supply_chain").click();
