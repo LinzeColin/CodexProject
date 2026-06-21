@@ -1,0 +1,97 @@
+{
+  "schema_version": "openai_database.resource_routes.v1",
+  "purpose": "On-demand resource routing so agents read the smallest sufficient context set before broad search.",
+  "default_intent": "startup",
+  "routes": [
+    {
+      "intent": "startup",
+      "description": "Default new-agent boot path.",
+      "read_order": [
+        "AGENTS.md",
+        "docs/PERSONAL_CONTEXT_ARCHITECTURE.md",
+        "data/derived/agent_context/AGENT_CONTEXT.md",
+        "data/derived/profile/CORE_PROFILE.md",
+        "data/derived/personalization/codex_personalization.md"
+      ],
+      "update_targets": [
+        "profile",
+        "preference",
+        "taste",
+        "history",
+        "pattern"
+      ]
+    },
+    {
+      "intent": "chatgpt_personalization",
+      "description": "Compact export for ChatGPT Project / custom instructions style personalization.",
+      "read_order": [
+        "data/derived/personalization/chatgpt_personalization.md",
+        "data/derived/profile/CORE_PROFILE.md",
+        "data/memory/active/active_memory.md"
+      ],
+      "update_targets": [
+        "profile",
+        "preference",
+        "taste"
+      ]
+    },
+    {
+      "intent": "codex_personalization",
+      "description": "Codex startup and AGENTS.md-oriented personalization.",
+      "read_order": [
+        "AGENTS.md",
+        "data/derived/personalization/codex_personalization.md",
+        "data/derived/agent_context/agent_context_pack.json",
+        "config/codex/project.config.toml"
+      ],
+      "update_targets": [
+        "profile",
+        "preference",
+        "history",
+        "pattern"
+      ]
+    },
+    {
+      "intent": "project_history",
+      "description": "Project continuity, decisions, and prior work.",
+      "read_order": [
+        "data/derived/project_index/PROJECT_INDEX.md",
+        "data/derived/decision_log/DECISION_LOG.md",
+        "data/derived/timeline/TIMELINE.md",
+        "data/processed/codex/codex_activity_snapshot.json"
+      ],
+      "update_targets": [
+        "history",
+        "pattern",
+        "project_context"
+      ]
+    },
+    {
+      "intent": "taste_profile",
+      "description": "Taste, visual/product preferences, answer style, and recurring quality bar.",
+      "read_order": [
+        "data/derived/profile/CORE_PROFILE.md",
+        "data/derived/codex/codex_agent_recommendations.json",
+        "data/memory/active/active_memory.jsonl"
+      ],
+      "update_targets": [
+        "taste",
+        "preference",
+        "profile"
+      ]
+    },
+    {
+      "intent": "evaluation",
+      "description": "Verify personalization freshness and architecture completeness.",
+      "read_order": [
+        "config/evaluation/personalization_harness.json",
+        "data/derived/personalization/personalization_export.json",
+        "data/run_logs/evaluation_runs/README.md"
+      ],
+      "update_targets": [
+        "history",
+        "pattern"
+      ]
+    }
+  ]
+}
