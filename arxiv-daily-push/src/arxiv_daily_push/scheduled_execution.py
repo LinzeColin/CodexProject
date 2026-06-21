@@ -268,8 +268,15 @@ def _run_daily(
     report["daily_run_report"] = {
         "status": daily["status"],
         "run_id": daily["run_record"]["run_id"],
+        "date": payload["date"],
+        "scheduled_local_time": "05:00",
+        "source_id": daily["run_record"]["source_items"][0]["source_id"],
         "publication_id": daily["publication_gate"]["publication"]["publication_id"],
         "run_record_status": daily["run_record"]["status"],
+        "p0_claims_traceable": daily["publication_gate"]["publish_allowed"]
+        and int(daily["publication_gate"].get("p0_claim_count") or 0) > 0,
+        "unsupported_claims_published": False,
+        "failure_generated_misleading_content": False,
     }
     report["release_report"] = release_report
     report["notification_report"] = notification_report

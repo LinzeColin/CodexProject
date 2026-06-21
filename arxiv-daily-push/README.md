@@ -11,7 +11,7 @@ acceptance/handoff readiness packaging, small-window live arXiv ingest, an
 explicit SMTP delivery boundary, a fail-closed GitHub Release delivery
 boundary, a scheduled production workflow gate, a controlled scheduled
 execution driver, a daily input builder from arXiv Atom source batches, and
-tests.
+an incremental trial evidence ledger update bridge, and tests.
 
 ## Current Scope
 
@@ -36,6 +36,7 @@ Implemented now:
 - `adp build-handoff`
 - `adp build-acceptance`
 - `adp evaluate-trial`
+- `adp update-trial-ledger`
 - `adp preflight-production`
 - `adp plan-trial-bootstrap`
 - `adp plan-production-scheduler`
@@ -49,6 +50,7 @@ Implemented now:
 - arXiv Atom feed parsing into generic `SourceItem` records using local fixture tests
 - small-window live arXiv Atom source ingestion with incremental duplicate filtering and fail-closed network/API behavior
 - deterministic daily input builder that converts an arXiv `SourceBatch` into ranked daily pipeline input using only Atom `<summary>` claims
+- incremental trial evidence ledger updater that appends only production-ready scheduled daily-run reports and blocks duplicate or dry-run evidence
 - deterministic 100-point ranking with per-component audit output
 - fail-closed candidate blocking for missing P0 evidence, metadata conflicts, and recent duplicate selections
 - Claim Ledger construction from explicit evidence claims
@@ -67,6 +69,7 @@ Implemented now:
 - manual production trial bootstrap workflow/runbook that runs preflight before any trial work and keeps cron, Release upload, and SMTP sending disabled
 - scheduled production workflow gate with `Australia/Sydney` 04:45 health check, 05:00 daily run, and 05:10 watchdog slots; default GitHub variables keep scheduled work and side effects disabled
 - controlled scheduled execution driver that turns preflight, daily-run, and watchdog results into `adp-scheduled-execution` evidence while requiring real SMTP and Release refs before production evidence can count
+- scheduled trial ledger update artifact that can accumulate daily evidence without claiming 30-day acceptance before the validator passes
 - SMTP delivery report schema that records message hashes and secret-key presence without logging SMTP secret values or email body
 - GitHub Release delivery report schema that records asset hashes and command intent without logging Release notes, secrets, stdout, or stderr
 - governance records required by `CodexProject`

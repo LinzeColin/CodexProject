@@ -32,6 +32,7 @@ from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
 from .state_machine import validate_run_record
 from .trial import evaluate_trial_evidence, validate_trial_evidence_report
 from .trial_bootstrap import build_trial_bootstrap_plan, validate_trial_bootstrap_plan
+from .trial_ledger import update_trial_evidence_ledger, validate_trial_ledger_update_report
 from .video import VideoPlanError, generate_storyboard
 
 
@@ -158,6 +159,34 @@ def build_parser() -> argparse.ArgumentParser:
     trial.add_argument("--path", required=True, help="JSON file containing 30-day trial evidence.")
     trial.add_argument("--generated-at", required=True, help="Trial evidence report generation timestamp.")
     trial.add_argument("--json", action="store_true", help="Print JSON trial evidence report.")
+
+    trial_ledger = subparsers.add_parser(
+        "update-trial-ledger",
+        help="Append one production-ready scheduled daily-run report to a trial evidence ledger.",
+    )
+    trial_ledger.add_argument("--path", help="Existing trial evidence JSON. Empty starts a new ledger.")
+    trial_ledger.add_argument("--scheduled-execution", required=True, help="Scheduled execution report JSON.")
+    trial_ledger.add_argument("--generated-at", required=True, help="Ledger update timestamp.")
+    trial_ledger.add_argument("--trial-id", default="adp-trial-current")
+    trial_ledger.add_argument("--trial-ref", default="")
+    trial_ledger.add_argument("--expected-days", type=int, default=30)
+    trial_ledger.add_argument("--text-degradation-verified", action="store_true")
+    trial_ledger.add_argument("--video-degradation-verified", action="store_true")
+    trial_ledger.add_argument("--scheduler-enabled", action="store_true")
+    trial_ledger.add_argument("--manual-rerun-verified", action="store_true")
+    trial_ledger.add_argument("--scheduler-ref", default="")
+    trial_ledger.add_argument("--private-release-verified", action="store_true")
+    trial_ledger.add_argument("--release-ref", default="")
+    trial_ledger.add_argument("--real-smtp-verified", action="store_true")
+    trial_ledger.add_argument("--email-ref", default="")
+    trial_ledger.add_argument("--resource-pressure-ok", action="store_true")
+    trial_ledger.add_argument("--resource-ref", default="")
+    trial_ledger.add_argument("--weekly-replay-verified", action="store_true")
+    trial_ledger.add_argument("--monthly-replay-verified", action="store_true")
+    trial_ledger.add_argument("--weekly-monthly-ref", default="")
+    trial_ledger.add_argument("--recovery-drill-verified", action="store_true")
+    trial_ledger.add_argument("--recovery-ref", default="")
+    trial_ledger.add_argument("--json", action="store_true", help="Print JSON trial ledger update report.")
 
     preflight = subparsers.add_parser("preflight-production", help="Run fail-closed production preflight before scheduled execution.")
     preflight.add_argument("--path", default=".", help="Repository path used for disk, Git, and cache checks.")
@@ -524,6 +553,51 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{report['trial_evidence_id']}\t{report['production_evidence_status']}")
         return 0 if report["accepted_for_production"] else 2
+    if args.command == "update-trial-ledger":
+        existing = load_json_mapping(args.path) if args.path else None
+        scheduled_report = load_json_mapping(args.scheduled_execution)
+        report = update_trial_evidence_ledger(
+            existing,
+            scheduled_report,
+            generated_at=args.generated_at,
+            trial_id=args.trial_id,
+            trial_ref=args.trial_ref,
+            expected_days=args.expected_days,
+            text_degradation_path_verified=args.text_degradation_verified,
+            video_degradation_path_verified=args.video_degradation_verified,
+            scheduler_enabled=args.scheduler_enabled,
+            manual_rerun_verified=args.manual_rerun_verified,
+            scheduler_ref=args.scheduler_ref,
+            private_release_verified=args.private_release_verified,
+            release_ref=args.release_ref,
+            real_smtp_verified=args.real_smtp_verified,
+            email_ref=args.email_ref,
+            resource_pressure_ok=args.resource_pressure_ok,
+            resource_ref=args.resource_ref,
+            weekly_replay_verified=args.weekly_replay_verified,
+            monthly_replay_verified=args.monthly_replay_verified,
+            weekly_monthly_ref=args.weekly_monthly_ref,
+            recovery_drill_verified=args.recovery_drill_verified,
+            recovery_ref=args.recovery_ref,
+        )
+        errors = validate_trial_ledger_update_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["ledger_updated"]:
+            print(f"{report['ledger_update_id']}\t{report['observed_day_count']} days")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["ledger_updated"] else 2
     if args.command == "preflight-production":
         report = build_production_preflight(Path(args.path), generated_at=args.generated_at)
         errors = validate_production_preflight(report)

@@ -42,6 +42,14 @@ Required GitHub Actions variables:
 - `ADP_ARXIV_MAX_RESULTS` optional; default `10`
 - `ADP_RECENT_SOURCE_IDS` optional comma-separated list of recently selected
   `source_id` values
+- `ADP_TRIAL_EVIDENCE_INPUT_PATH` optional existing trial evidence JSON path
+  available on the runner
+- `ADP_TRIAL_ID` optional; default `adp-trial-current`
+- `ADP_TRIAL_REF` required before final trial acceptance can pass
+- `ADP_TEXT_DEGRADATION_VERIFIED` optional explicit flag for verified text
+  degradation path evidence
+- `ADP_VIDEO_DEGRADATION_VERIFIED` optional explicit flag for verified video
+  degradation path evidence
 - `ADP_ALLOW_SMTP_SEND`
 - `ADP_ALLOW_RELEASE_UPLOAD`
 
@@ -101,7 +109,8 @@ workflow uploads two artifacts:
 - `adp-scheduled-preflight`;
 - `adp-scheduled-source-batch` for daily-run when no override input path is set;
 - `adp-scheduled-daily-input` for daily-run when no override input path is set;
-- `adp-scheduled-execution`.
+- `adp-scheduled-execution`;
+- `adp-trial-ledger-update` for daily-run ledger accumulation attempts.
 
 The execution artifact is produced by:
 
@@ -129,6 +138,28 @@ Dry-run SMTP or dry-run Release results are recorded as `degraded` with
 `exit_code=2`; they cannot be counted toward Phase 11 production acceptance.
 Production-ready daily evidence requires both real SMTP delivery and real
 private Release creation to return evidence refs.
+
+After a daily-run execution artifact exists, the scheduled workflow attempts to
+append it to the trial evidence ledger with:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push update-trial-ledger \
+  --scheduled-execution <adp-scheduled-execution.json> \
+  --generated-at <ISO timestamp> \
+  --trial-id "${ADP_TRIAL_ID:-adp-trial-current}" \
+  --trial-ref "${ADP_TRIAL_REF:-}" \
+  --json
+```
+
+When `ADP_TRIAL_EVIDENCE_INPUT_PATH` is set, the command also reads the existing
+trial evidence JSON and appends one new daily entry. The ledger updater refuses
+dry-run or degraded non-production evidence, duplicate daily dates, duplicate
+source IDs, duplicate publication IDs, missing P0 traceability, unsupported
+claim publication, misleading failure output, and missing daily Release/SMTP/
+resource refs. It can record daily Release/SMTP/resource evidence from
+production-ready scheduled execution, but it does not mark weekly/monthly replay
+or recovery drill evidence complete unless those later evidence refs are
+explicitly supplied.
 
 Validate the scheduled workflow contract locally or on the runner:
 

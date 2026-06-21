@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/trial_ledger.schema.json",
+  "title": "arXiv Daily Push Trial Ledger Update Report",
+  "type": "object",
+  "required": [
+    "ledger_update_id",
+    "model_id",
+    "project_id",
+    "generated_at",
+    "status",
+    "ledger_updated",
+    "trial_evidence",
+    "trial_evidence_report",
+    "daily_entry",
+    "observed_day_count",
+    "accepted_for_production",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "ledger_update_id": {"type": "string", "minLength": 1},
+    "model_id": {"const": "adp-trial-ledger-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "blocked"]},
+    "ledger_updated": {"type": "boolean"},
+    "trial_evidence": {"type": "object"},
+    "trial_evidence_report": {"type": "object"},
+    "daily_entry": {"type": "object"},
+    "observed_day_count": {"type": "integer", "minimum": 0},
+    "accepted_for_production": {"type": "boolean"},
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}},
+    "validation_errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

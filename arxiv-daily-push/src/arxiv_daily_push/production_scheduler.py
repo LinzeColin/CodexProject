@@ -26,6 +26,11 @@ REQUIRED_SCHEDULER_VARS = (
     "ADP_ARXIV_QUERY",
     "ADP_ARXIV_MAX_RESULTS",
     "ADP_RECENT_SOURCE_IDS",
+    "ADP_TRIAL_EVIDENCE_INPUT_PATH",
+    "ADP_TRIAL_ID",
+    "ADP_TRIAL_REF",
+    "ADP_TEXT_DEGRADATION_VERIFIED",
+    "ADP_VIDEO_DEGRADATION_VERIFIED",
     "ADP_ALLOW_SMTP_SEND",
     "ADP_ALLOW_RELEASE_UPLOAD",
 )
@@ -82,6 +87,11 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
             and "adp-scheduled-source-batch" in workflow_text
             and "adp-scheduled-daily-input" in workflow_text,
             "workflow must build and upload scheduled daily input evidence when no override path is configured",
+        ),
+        _check(
+            "trial_ledger_update_present",
+            "update-trial-ledger" in workflow_text and "adp-trial-ledger-update" in workflow_text,
+            "workflow must build and upload a trial ledger update artifact after daily-run evidence",
         ),
         _check(
             "secret_names_only",
