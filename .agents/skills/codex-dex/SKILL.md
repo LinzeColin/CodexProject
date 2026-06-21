@@ -166,6 +166,7 @@ For root governance changes, run:
 python scripts/validate_project_governance.py --all --semantic --drift-report
 python scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
 python scripts/generate_governance_dashboard.py --write
+git diff --exit-code -- GOVERNANCE_DASHBOARD.md ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
 python scripts/governance_setup_doctor.py --json
 python -m unittest discover -s tests/governance -p 'test_*.py' -q
 ```
