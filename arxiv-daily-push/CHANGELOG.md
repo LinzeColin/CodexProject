@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.4 - 2026-06-21
+
+- Added a manual GitHub Actions production trial bootstrap workflow that runs production preflight before any trial work.
+- Added `adp plan-trial-bootstrap` to validate the workflow/runbook contract without enabling cron, Release upload, or SMTP sending.
+- Added a production trial runbook and trial bootstrap schema/tests.
+
 ## 0.11.3 - 2026-06-21
 
 - Added `adp preflight-production` as a fail-closed gate before any scheduled production run.
