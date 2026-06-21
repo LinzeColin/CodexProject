@@ -3871,3 +3871,32 @@ Status: LOCAL VALIDATED; FORMAL LEGAL/MARKET CLEARANCE PENDING; A210 STILL IN PR
 - Revert `scripts/validate_brand_clearance.py`, `artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json`, status CSV changes and Makefile wiring.
 - Regenerate clean-room/release artifacts.
 - Rerun governance, brand-clearance and release validations.
+
+## 2026-06-21 - T1301/A202 evidence-chain review-status CI repair
+
+Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING
+
+### Scope
+
+- GitHub Actions run `27890945803` failed at Step 10 `Verify G2 PostgreSQL integration` after static, contract, lint, typecheck and unit checks passed.
+- Static diagnosis found `ingestion_evidence_chain.review_status` is constrained to `unreviewed`, `machine_verified`, `human_verified` or `disputed`.
+- The second-source loader had started writing relationship candidate status `ready_for_review` into `ingestion_evidence_chain.review_status`.
+- Added `evidence_chain_review_status()` in `scripts/load_curated_ingestion_anchors.py` so candidate-level `ready_for_review` maps to evidence-chain-level `machine_verified`.
+
+### Acceptance mapping
+
+- T1301 -> A202.
+- The relationship fact candidate remains `ready_for_review`; only the evidence-chain persistence status is normalized to satisfy the PostgreSQL contract.
+- A202 remains `IN_PROGRESS` until remote PostgreSQL CI passes and live retrieval / owner approval / release clearance are complete.
+
+### Local validation
+
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py tests/integration/test_database_migrations.py scripts/check_database_schema.py scripts/validate_brand_clearance.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_brand_clearance.py validate`: PASS.
+- Local PostgreSQL integration remains unavailable because this host has no Docker/PostgreSQL; remote CI rerun remains required.
+
+### Rollback
+
+- Revert the evidence-chain status mapper and rerun G2 PostgreSQL integration.
