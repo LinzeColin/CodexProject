@@ -1,0 +1,91 @@
+{
+  "candidates": [
+    {
+      "source_item": {
+        "source_id": "arxiv:2401.00001",
+        "source_type": "arxiv",
+        "source_adapter": "arxiv.atom.v1",
+        "stable_id": "2401.00001",
+        "title": "A Useful Paper",
+        "retrieved_at": "2026-06-21T05:00:00+10:00",
+        "canonical_url": "https://arxiv.org/abs/2401.00001",
+        "metadata": {
+          "arxiv": {
+            "primary_category": "cs.AI",
+            "categories": ["cs.AI"],
+            "published": "2026-06-20T10:00:00Z"
+          }
+        },
+        "content_refs": [
+          {"ref_id": "abstract", "ref_type": "html", "uri": "https://arxiv.org/abs/2401.00001"}
+        ],
+        "license": {"status": "unknown", "usage": "private_learning_link_only"}
+      },
+      "evidence_claims": [
+        {
+          "claim_id": "claim-2401-00001-p0",
+          "source_id": "arxiv:2401.00001",
+          "claim_type": "reported_result",
+          "priority": "P0",
+          "statement": "The abstract contains a verifiable reported result.",
+          "locator": {"stable_url": "https://arxiv.org/abs/2401.00001", "section": "abstract"},
+          "support_status": "supported",
+          "extracted_at": "2026-06-21T05:10:00+10:00"
+        }
+      ],
+      "signals": {
+        "frontier_signal": 0.9,
+        "evidence_reliability": 1.0,
+        "novelty": 0.8,
+        "transfer_value": 0.7,
+        "problem_importance": 0.9,
+        "taxonomy_priority": 1.0,
+        "waiting_time": 0.4,
+        "diversity": 0.8
+      }
+    },
+    {
+      "source_item": {
+        "source_id": "arxiv:2401.00002",
+        "source_type": "arxiv",
+        "source_adapter": "arxiv.atom.v1",
+        "stable_id": "2401.00002",
+        "title": "A Conflicted Paper",
+        "retrieved_at": "2026-06-21T05:00:00+10:00",
+        "canonical_url": "https://arxiv.org/abs/2401.00002",
+        "metadata": {
+          "arxiv": {
+            "primary_category": "cs.AI",
+            "metadata_conflicts": ["version date mismatch"]
+          }
+        },
+        "content_refs": [
+          {"ref_id": "abstract", "ref_type": "html", "uri": "https://arxiv.org/abs/2401.00002"}
+        ],
+        "license": {"status": "unknown", "usage": "private_learning_link_only"}
+      },
+      "evidence_claims": [
+        {
+          "claim_id": "claim-2401-00002-p0",
+          "source_id": "arxiv:2401.00002",
+          "claim_type": "reported_result",
+          "priority": "P0",
+          "statement": "The abstract contains a verifiable reported result.",
+          "locator": {"stable_url": "https://arxiv.org/abs/2401.00002", "section": "abstract"},
+          "support_status": "supported",
+          "extracted_at": "2026-06-21T05:10:00+10:00"
+        }
+      ],
+      "signals": {
+        "frontier_signal": 1.0,
+        "evidence_reliability": 1.0,
+        "novelty": 1.0,
+        "transfer_value": 1.0,
+        "problem_importance": 1.0,
+        "taxonomy_priority": 1.0,
+        "waiting_time": 1.0,
+        "diversity": 1.0
+      }
+    }
+  ]
+}

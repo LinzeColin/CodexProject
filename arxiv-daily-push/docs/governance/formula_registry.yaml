@@ -123,21 +123,24 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_03.md", "https://info.arxiv.org/help/api/basics.html", "https://info.arxiv.org/help/api/user-manual.html"]
   - formula_id: "FORM-ADP-003"
     model_id: "MOD-ADP-002"
-    assumption_ids: ["ASM-ADP-003"]
-    status: "planned"
-    expression: "selection_score = frontier_signal + evidence_reliability + novelty + transfer_value + problem_importance + taxonomy_priority + waiting_time + diversity, with planned weights summing to 100."
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-006"]
+    status: "active"
+    expression: "selection_score = sum(normalized_component_signal * component_weight) across frontier_signal, evidence_reliability, novelty, transfer_value, problem_importance, taxonomy_priority, waiting_time, and diversity; weights sum to 100."
     variables:
-      - name: "component_score"
+      - name: "normalized_component_signal"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "0..1"
+      - name: "component_weight"
         data_type: "float"
         unit: "points"
-        input_domain: "0..component weight"
+        input_domain: "5, 10, 15, or 20 depending on component"
     constraints: "Same input must produce the same score; arXiv metadata conflicts and unsupported evidence block eligibility before ranking."
-    missing_policy: "Missing P0 evidence makes the item ineligible instead of imputing a score."
-    output_range: "0..100 points"
-    code_refs: []
-    test_refs: []
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-    unknown_task_ids: ["ADP-PHASE4-RANKING-001"]
+    missing_policy: "Missing P0 evidence or missing component signal makes the item ineligible instead of imputing a score."
+    output_range: "0..100 points plus blocking reasons for ineligible candidates"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/ranking.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_ranking.py", "arxiv-daily-push/tests/fixtures/ranking_candidates.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_04.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
   - formula_id: "FORM-ADP-004"
     model_id: "MOD-ADP-003"
     assumption_ids: ["ASM-ADP-003"]

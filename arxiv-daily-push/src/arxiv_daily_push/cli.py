@@ -1,4 +1,4 @@
-"""Command-line interface for Phase 1."""
+"""Command-line interface for arXiv Daily Push."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ from . import __version__
 from .arxiv_adapter import ArxivQuery, build_query_url, parse_atom_feed
 from .doctor import doctor_report, render_report
 from .notifications import render_email
+from .ranking import selection_payload
 from .state_machine import validate_run_record
 
 
@@ -44,6 +45,11 @@ def build_parser() -> argparse.ArgumentParser:
     parse_arxiv.add_argument("--path", required=True, help="Atom XML fixture or downloaded response path.")
     parse_arxiv.add_argument("--retrieved-at", required=True, help="Retrieval timestamp to stamp on SourceItems.")
     parse_arxiv.add_argument("--json", action="store_true", help="Pretty-print JSON output.")
+
+    rank = subparsers.add_parser("rank-candidates", help="Rank candidate SourceItems with evidence-gated audit output.")
+    rank.add_argument("--path", required=True, help="JSON file containing a candidates array.")
+    rank.add_argument("--recent-source-id", action="append", default=[], help="Source ID already selected recently.")
+    rank.add_argument("--json", action="store_true", help="Print JSON selection payload.")
     return parser
 
 
@@ -92,4 +98,19 @@ def main(argv: list[str] | None = None) -> int:
             for item in items:
                 print(f"{item['source_id']}\t{item['title']}")
         return 0
+    if args.command == "rank-candidates":
+        data = json.loads(Path(args.path).read_text(encoding="utf-8"))
+        candidates = data.get("candidates") if isinstance(data, dict) else data
+        payload = selection_payload(candidates, recent_source_ids=args.recent_source_id)
+        if args.json:
+            print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+        elif payload["selected"]:
+            selected = payload["selected"]
+            print(f"{selected['source_id']}\t{selected['total_score']}")
+        else:
+            print("blocked")
+            for audit in payload["audits"]:
+                for reason in audit["blocking_reasons"]:
+                    print(f"- {audit['source_id']}: {reason}")
+        return 0 if payload["selected"] else 2
     raise AssertionError(f"Unhandled command: {args.command}")

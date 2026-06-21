@@ -1,28 +1,28 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.3.0`
+Active product version: `0.4.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.3.0
-- Current phase: B
-- Current gate: ADP-PHASE3-ARXIV-ADAPTER-PASS
-- Confirmed iteration count: 3
+- Product version: 0.4.0
+- Current phase: C
+- Current gate: ADP-PHASE4-RANKING-PASS
+- Confirmed iteration count: 4
 - Reconstructed event count: 0
-- Current task: ADP-PHASE4-RANKING-001
-- Blockers: Later phases still need arXiv network ingest/ranking/evidence implementation, real mail transport validation, and later media/runner resource readiness.
+- Current task: ADP-PHASE5-EVIDENCE-GATE-001
+- Blockers: Later phases still need automatic Claim Ledger extraction, lesson generation, real mail transport validation, and later media/runner resource readiness.
 
 ## Phase Matrix
 
 | Phase | Name | Status | Exit criteria | Evidence |
 |---|---|---|---|---|
 | A | Phase 1 repository foundation | completed | CLI skeleton, governance records, and tests pass | `docs/phase_records/PHASE_01.md` |
-| B | Data contracts and arXiv source/ranking | in_progress | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; planned Phase 4 |
-| C | Evidence and text lesson | planned | Claim Ledger and lesson verification pass | planned Phase 5-6 |
+| B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
+| C | Evidence and text lesson | in_progress | Claim Ledger and lesson verification pass | planned Phase 5-6 |
 | D | TTS/video/local pipeline/GitHub automation | planned | media gates and daily pipeline pass | planned Phase 7-10 |
 | E | Weekly/monthly trial and handoff | planned | 30-day acceptance passes | planned Phase 11 |
 
@@ -97,6 +97,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Live arXiv API availability, rate limits, and daily freshness are not yet covered by scheduler/runner gates.
 - Rollback: Revert Phase 3 adapter code, tests, fixture, and governance updates.
 - Next step: Start Phase 4 queue/ranking once final Phase 3 validation passes.
+
+### `ITER-20260621-004`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for ranking code, CLI command, local fixture, golden tests, and governance updates.
+- Version before: 0.3.0
+- Version after: 0.4.0
+- Base commit: 8538e98f62838c1f2c1fad86f564b10838691219
+- Result commit: PENDING
+- Task IDs: ADP-PHASE4-RANKING-001
+- Goal: Implement deterministic 100-point candidate ranking with auditable component scores and fail-closed eligibility gates.
+- Assumptions: Phase 4 ranks explicit candidate inputs only and does not fetch live sources, extract claims, generate lessons, send email, or create media.
+- Files changed: ranking code, CLI command, ranking fixture, ranking tests, version files, and governance records.
+- Model changes: Activated MOD-ADP-002 as adp-ranking-v1.
+- Parameter changes: Activated PARAM-ADP-009 through PARAM-ADP-016 as adp-ranking-parameters-v1.
+- Commands run: `PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q`.
+- Test results: 26 unit tests OK.
+- Successes: Golden candidate scores 85.5 points; missing P0 evidence, metadata conflicts, and recent duplicate selections fail closed.
+- Failures: none recorded at implementation time.
+- Decisions: Use normalized 0..1 component signals multiplied by fixed weights summing to 100.
+- Remaining risks: Live source freshness and automatic Claim Ledger extraction remain future gates.
+- Rollback: Revert Phase 4 ranking code, tests, fixture, and governance updates.
+- Next step: Start Phase 5 Claim Ledger extraction and publication gate after final Phase 4 validation passes.
 
 ## Unknown Historical Periods
 

@@ -26,6 +26,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_03.md", "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
     status: "active"
+  - assumption_id: "ASM-ADP-006"
+    statement: "Phase 4 ranks only explicit candidate inputs with supported P0 evidence and non-conflicting metadata; it does not extract claims or fetch live sources."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_04.md", "arxiv-daily-push/src/arxiv_daily_push/ranking.py", "arxiv-daily-push/tests/test_ranking.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -83,19 +88,18 @@ models:
     kind: "deterministic scoring model"
     purpose: "Score eligible arXiv candidates and select the daily learning item."
     owner: "arxiv-daily-push"
-    status: "planned"
-    fact_level: "PROPOSED"
-    model_version: "adp-ranking-planned-v1"
-    assumption_ids: ["ASM-ADP-003"]
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-ranking-v1"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-006"]
     formula_ids: ["FORM-ADP-003"]
     parameter_ids: ["PARAM-ADP-009", "PARAM-ADP-010", "PARAM-ADP-011", "PARAM-ADP-012", "PARAM-ADP-013", "PARAM-ADP-014", "PARAM-ADP-015", "PARAM-ADP-016"]
-    inputs: ["SourceItem", "EvidenceClaim", "queue state", "recent selection history"]
-    outputs: ["selection score", "selection audit", "daily selected item"]
-    code_refs: []
+    inputs: ["SourceItem", "EvidenceClaim", "normalized component signals", "recent selection history"]
+    outputs: ["selection score", "selection audit", "daily selected item", "blocking reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/ranking.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     config_refs: ["arxiv-daily-push/config/examples/sources.example.yaml"]
-    test_refs: []
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-    unknown_task_ids: ["ADP-PHASE4-RANKING-001"]
+    test_refs: ["arxiv-daily-push/tests/test_ranking.py", "arxiv-daily-push/tests/fixtures/ranking_candidates.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_04.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
   - model_id: "MOD-ADP-003"
     name: "Claim Ledger publication gate"
     kind: "deterministic evidence gate"

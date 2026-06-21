@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 - 2026-06-21
+
+- Added Phase 4 deterministic 100-point ranking and queue audit.
+- Added fail-closed gates for missing P0 evidence, unsupported P0 evidence, metadata conflicts, and recent duplicate selections.
+- Added `adp rank-candidates` for local candidate ranking from JSON fixtures.
+- Added ranking golden tests and a small queue fixture.
+
 ## 0.3.0 - 2026-06-21
 
 - Added Phase 3 arXiv Atom source adapter.

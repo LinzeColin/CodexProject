@@ -56,18 +56,18 @@ tasks:
     phase: "B"
     objective: "Implement the planned 100-point selection scoring model with golden tests."
     scope: "Ranking model, queue selection audit, fixed weights, and deterministic tests."
-    non_scope: "No TTS or video."
-    status: "planned"
+    non_scope: "No live ingest, Claim Ledger extraction, lesson generation, TTS, video, or real SMTP sending."
+    status: "completed"
     dependencies: ["ADP-PHASE3-ARXIV-ADAPTER-001"]
-    required_files: ["src", "tests", "docs/governance/parameter_registry.csv"]
+    required_files: ["src/arxiv_daily_push/ranking.py", "tests/test_ranking.py", "tests/fixtures/ranking_candidates.json", "docs/governance/parameter_registry.csv"]
     acceptance_ids: ["ADP-ACC-PHASE4-RANKING"]
-    test_commands: []
-    test_results: ["NOT_RUN planned Phase 4"]
-    evidence_refs: ["arxiv-daily-push/docs/governance/parameter_registry.csv"]
-    risk: "Selection can become non-auditable without per-component evidence."
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 26 tests OK", "root governance tests: 24 tests OK", "schemas: JSON parse OK", "ranking golden score: 85.5 points", "P0 evidence and metadata conflict gates: pass", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "dashboard generation: PASS", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_04.md", "arxiv-daily-push/tests/test_ranking.py", "arxiv-daily-push/tests/fixtures/ranking_candidates.json"]
+    risk: "Phase 4 ranks explicit candidate inputs only; live source freshness and automatic Claim Ledger extraction remain future gates."
     rollback: "Revert Phase 4 ranking code and governance updates together."
     target_version: "0.4.0"
-    completed_version: ""
+    completed_version: "0.4.0"
     unknown_task_ids: []
   - task_id: "ADP-PHASE5-EVIDENCE-GATE-001"
     phase: "C"
