@@ -514,17 +514,17 @@ tasks:
   - task_id: "GOV-SEMANTIC-ADP-001"
     phase: "E"
     objective: "Plan machine semantic coverage for arXiv Daily Push active parameter values and formula implementation fingerprints under the latest CodexProject governance standard."
-    scope: "Root semantic_coverage rollout contract, task binding, generated owner/status views, and governance validation evidence."
-    non_scope: "No runtime behavior change, no machine_verified semantic extraction claim, no production launch, no SMTP send, no Release upload, and no secret value read."
-    status: "planned"
+    scope: "Root semantic_coverage rollout contract, active parameter source selectors, active formula implementation fingerprints, generated owner/status views, and governance validation evidence."
+    non_scope: "No runtime behavior change, no full machine_verified semantic extraction claim, no production launch, no SMTP send, no Release upload, and no secret value read."
+    status: "in_progress"
     dependencies: ["ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020"]
-    required_files: ["governance/projects.yaml", "docs/governance/delivery_tasks.yaml", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md"]
+    required_files: ["governance/projects.yaml", "docs/governance/formula_registry.yaml", "docs/governance/parameter_registry.csv", "docs/governance/delivery_tasks.yaml", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md"]
     acceptance_ids: ["ACC-SEMANTIC-ADP-001"]
-    test_commands: ["python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "python3 scripts/generate_governance_dashboard.py --write", "git diff --check"]
-    test_results: ["post-merge launch gate expected blocked with PR/default-branch gates passing and only launch_confirmed/default_branch_ref/runner_ref/smtp_secret_ref/release_target_ref/workflow_vars_ref/trial_start_workflow_ref missing", "143 arXiv tests OK", "83 root governance tests OK", "project governance errors 0 warnings 0", "changed-only enforce-sync semantic errors 0 warnings 0", "dashboard generation PASS", "git diff --check exit 0", "cache check no arxiv-daily-push __pycache__ or .pyc files", "storage check arxiv-daily-push 1.6M, .git 89M, worktree 221M before sparse shrink"]
-    evidence_refs: ["governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json"]
-    risk: "Semantic coverage remains planned until extractors prove active values and formula fingerprints; production acceptance remains blocked by external runner, SMTP, Release, and 30-day trial evidence."
-    rollback: "Remove the arxiv semantic_coverage block, this task, generated OWNER_STATUS/status changes, and the semantic planning run manifest."
+    test_commands: ["python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "python3 scripts/generate_governance_dashboard.py --write", "git diff --check"]
+    test_results: ["semantic extractor: 45 active parameters and 9 active formulas checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "root governance tests: 84 tests OK", "arxiv-daily-push unit tests: 143 tests OK", "dashboard generation: PASS", "changed-only enforce-sync semantic: errors 0 warnings 0; projects changed arxiv-daily-push; all registered project validation errors 0 warnings 0", "git diff --check: exit 0", "cache check: no arxiv-daily-push __pycache__ or .pyc files", "storage check before final sparse shrink: worktree 221M, arxiv-daily-push 1.7M, .git 89M"]
+    evidence_refs: ["governance/run_manifests/GOV-SEMANTIC-ADP-EXTRACT-001.json"]
+    risk: "Semantic coverage is in progress, not machine_verified; 107 active parameters and 22 active formulas still require follow-up extractors or explicit owner review before the task can complete."
+    rollback: "Remove arxiv semantic_extractors enablement, semantic registry columns/fields, generated OWNER_STATUS/status changes, and the semantic extraction run manifest."
     target_version: "0.11.19"
     completed_version: ""
     unknown_task_ids: []
@@ -538,7 +538,7 @@ tasks:
     required_files: ["docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md", "docs/governance/DEVELOPMENT_LEDGER.md", "docs/governance/STATUS.md", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
     acceptance_ids: ["ADP-ACC-PHASE11-POST-MERGE-LAUNCH-AUDIT"]
     test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --base-ref origin/main", "git diff --check"]
-    test_results: ["pending"]
+    test_results: ["post-merge launch gate expected blocked with PR/default-branch gates passing and only launch_confirmed/default_branch_ref/runner_ref/smtp_secret_ref/release_target_ref/workflow_vars_ref/trial_start_workflow_ref missing", "143 arXiv tests OK", "83 root governance tests OK", "project governance errors 0 warnings 0", "changed-only enforce-sync semantic errors 0 warnings 0", "dashboard generation PASS", "git diff --check exit 0", "cache check no arxiv-daily-push __pycache__ or .pyc files", "storage check arxiv-daily-push 1.6M, .git 89M, worktree 221M before sparse shrink"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md", "governance/run_manifests/ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-20260622.json"]
     risk: "Post-merge audit proves PR/default-branch state only; real launch remains blocked until runner, secrets, Release target, workflow variables, launch confirmation, and trial-start workflow evidence exist."
     rollback: "Remove the post-merge audit phase record, event, manifest, and status updates."
