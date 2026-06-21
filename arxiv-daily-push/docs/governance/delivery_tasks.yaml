@@ -515,18 +515,18 @@ tasks:
     phase: "E"
     objective: "Plan machine semantic coverage for arXiv Daily Push active parameter values and formula implementation fingerprints under the latest CodexProject governance standard."
     scope: "Root semantic_coverage rollout contract, active parameter source selectors, active formula implementation fingerprints, generated owner/status views, and governance validation evidence."
-    non_scope: "No runtime behavior change, no full machine_verified semantic extraction claim, no production launch, no SMTP send, no Release upload, and no secret value read."
-    status: "in_progress"
+    non_scope: "No runtime behavior change, no production launch, no SMTP send, no Release upload, no secret value read, and no 30-day production acceptance claim."
+    status: "completed"
     dependencies: ["ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020"]
     required_files: ["governance/projects.yaml", "docs/governance/formula_registry.yaml", "docs/governance/parameter_registry.csv", "docs/governance/delivery_tasks.yaml", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md"]
     acceptance_ids: ["ACC-SEMANTIC-ADP-001"]
     test_commands: ["python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "python3 scripts/generate_governance_dashboard.py --write", "git diff --check"]
-    test_results: ["selector transform focused tests: 2 tests OK", "semantic extractor: 131 active parameters and 31 active formulas checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "root governance tests: 88 tests OK", "arxiv-daily-push unit tests: 143 tests OK", "dashboard generation: PASS after temporarily restoring full registered project validation context", "changed-only enforce-sync semantic: errors 0 warnings 0; projects changed arxiv-daily-push; all registered project validation errors 0 warnings 0", "manifest JSON and git diff --check: pass", "cache check: no arxiv-daily-push __pycache__ or .pyc files", "storage check before final sparse shrink: worktree 222M, arxiv-daily-push 1.8M, .git 90M"]
-    evidence_refs: ["governance/run_manifests/GOV-SEMANTIC-ADP-EXTRACT-004.json"]
-    risk: "Semantic coverage is in progress, not machine_verified; 21 active parameters still require follow-up extractors, explicit owner review, or external production evidence before the task can complete."
+    test_results: ["selector transform focused test: 1 test OK", "selector probe: final 21 active parameters matched documented active values", "semantic extractor: 152 active parameters and 31 active formulas checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "root governance tests: 89 tests OK", "arxiv-daily-push unit tests: 143 tests OK", "dashboard generation: PASS after temporarily restoring full registered project validation context", "changed-only enforce-sync semantic: errors 0 warnings 0; projects changed arxiv-daily-push; all registered project validation errors 0 warnings 0", "manifest JSON: pass; git diff --check: pass after EOF cleanup", "cache check: no arxiv-daily-push __pycache__ or .pyc files", "storage check before final sparse shrink: worktree 222M, arxiv-daily-push 1.8M, .git 90M"]
+    evidence_refs: ["governance/run_manifests/GOV-SEMANTIC-ADP-EXTRACT-005.json"]
+    risk: "Semantic coverage is machine_verified for active registry rows; production launch and 30-day production acceptance remain blocked by external runner, secret, Release, workflow, trial-start, replay, recovery, and daily evidence refs."
     rollback: "Remove arxiv semantic_extractors enablement, semantic registry columns/fields, generated OWNER_STATUS/status changes, and the semantic extraction run manifest."
     target_version: "0.11.19"
-    completed_version: ""
+    completed_version: "0.11.19"
     unknown_task_ids: []
   - task_id: "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021"
     phase: "E"
@@ -544,4 +544,21 @@ tasks:
     rollback: "Remove the post-merge audit phase record, event, manifest, and status updates."
     target_version: "0.11.19"
     completed_version: "0.11.19"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
+    phase: "E"
+    objective: "Provision durable production refs and run the default-branch trial start workflow before 30-day acceptance evidence can begin."
+    scope: "External default-branch ref, private self-hosted runner ref, SMTP secret ref, Release target ref, workflow variables ref, explicit launch confirmation, and default-branch trial-start workflow evidence."
+    non_scope: "No secret value read, no Codex auth read, no unconfirmed workflow dispatch, no SMTP send, no Release upload, no 30-day acceptance claim, and no local media/model/cache retention."
+    status: "blocked"
+    dependencies: ["GOV-SEMANTIC-ADP-001", "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021"]
+    required_files: ["docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md", ".github/workflows/arxiv-daily-push-trial-start.yml"]
+    acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-TRIAL-START"]
+    test_commands: ["python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
+    test_results: ["blocked before execution: missing explicit launch confirmation and durable refs for default_branch_ref, runner_ref, smtp_secret_ref, release_target_ref, workflow_vars_ref, and trial_start_workflow_ref"]
+    evidence_refs: ["arxiv-daily-push/docs/governance/STATUS.md", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", ".github/workflows/arxiv-daily-push-trial-start.yml"]
+    risk: "Cannot satisfy Phase 11 production acceptance until the owner provisions the private runner, GitHub secrets/vars, private Release target, explicit launch confirmation, passing trial-start workflow evidence, and 30 unique daily production evidence entries."
+    rollback: "Remove this blocked external production trial-start tracking task; no runtime code or external state is changed by this task record."
+    target_version: "0.11.19"
+    completed_version: ""
     unknown_task_ids: []
