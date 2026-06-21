@@ -145,3 +145,19 @@ tasks:
     rollback: "Downgrade to advisory only with explicit governance decision."
     target_version: "0.1.0"
     completed_version: ""
+  - task_id: "GOV-SEMANTIC-OAIDB-001"
+    phase: "B"
+    objective: "Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints."
+    scope: ["OpenAIDatabase semantic extractor metadata", "root validator evidence", "generated status pages"]
+    non_scope: ["runtime behavior", "memory data mutation", "new product features", "provider credential changes"]
+    status: "in_progress"
+    dependencies: ["TASK-OAI-A-004"]
+    required_files: ["OpenAIDatabase/docs/governance/parameter_registry.csv", "OpenAIDatabase/docs/governance/formula_registry.yaml", "governance/projects.yaml"]
+    acceptance_ids: ["ACC-SEMANTIC-OAIDB-001"]
+    test_commands: ["python3 scripts/validate_semantic_extractors.py OpenAIDatabase", "python3 scripts/validate_project_governance.py --project OpenAIDatabase --semantic"]
+    test_results: ["PASS: semantic extractor validator checked 28 active parameters and 10 active formulas; remaining active parameters and FORM-010 are task-bound HUMAN_REVIEW_REQUIRED"]
+    evidence_refs: ["OpenAIDatabase/docs/governance/parameter_registry.csv", "OpenAIDatabase/docs/governance/formula_registry.yaml", "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json"]
+    risk: "OpenAIDatabase has partial machine semantic coverage; TS writeback semantics, calibration constants, and complex branch rules still require human review under this task."
+    rollback: "Restore parameter/formula semantic columns and governance/projects.yaml OpenAIDatabase semantic_coverage to the previous planned state."
+    target_version: "0.2.0"
+    completed_version: ""

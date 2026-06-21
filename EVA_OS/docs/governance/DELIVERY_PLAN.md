@@ -3,7 +3,7 @@
 - model_count: 16
 - formula_count: 16
 - parameter_count: 189
-- task_count: 12
+- task_count: 13
 
 Machine task source of truth: `delivery_tasks.yaml`.
 

@@ -1,0 +1,181 @@
+{
+  "acceptance_id": "ACC-SEMANTIC-FIFA-001",
+  "actor": "Codex",
+  "base_commit": "92b2969822a267d8a72d8d3c484e25f55858c8b5",
+  "change_classification": [
+    "governance_semantic_extractor_rollout"
+  ],
+  "changed_files_actual": [
+    "FIFA/docs/governance/DEVELOPMENT_LEDGER.md",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/docs/governance/delivery_tasks.yaml",
+    "FIFA/docs/governance/development_events.jsonl",
+    "FIFA/docs/governance/formula_registry.yaml",
+    "FIFA/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"
+  ],
+  "changed_files_declared": [
+    "FIFA/docs/governance/DEVELOPMENT_LEDGER.md",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/docs/governance/delivery_tasks.yaml",
+    "FIFA/docs/governance/development_events.jsonl",
+    "FIFA/docs/governance/formula_registry.yaml",
+    "FIFA/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:3aa38a2251503ff58c10c2e1aa908302f98d82c7fa686d403244108e24fc1bd1",
+  "evidence_refs": [
+    "FIFA/docs/governance/parameter_registry.csv",
+    "FIFA/docs/governance/formula_registry.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "finished_local_at": "2026-06-21T14:36:23Z",
+  "formula_delta": {
+    "formula_fingerprints_added": 10,
+    "human_review_formula_ids": [],
+    "semantic_formulas_checked": 10
+  },
+  "model_delta": {
+    "runtime_behavior": "unchanged",
+    "semantic_coverage": "planned -> in_progress"
+  },
+  "observed_results": [
+    "ALL_PROJECT_SEMANTIC_DRIFT_PASS",
+    "CHANGED_ONLY_SYNC_PASS",
+    "DASHBOARD_STATUS_OWNER_STATUS_DOUBLE_GENERATION_STABLE",
+    "GOVERNANCE_TESTS_52_PASSED",
+    "FIFA_FOCUSED_SYNTAX_CHECKS_PASS",
+    "FIFA_UNITTEST_TEMP_HOME_FIXTURE_206_OK",
+    "FIFA_UNITTEST_WITHOUT_DOWNLOADS_ENTRY_FAILS_AS_ENVIRONMENT_FIXTURE_GAP",
+    "LOCAL_SEMANTIC_PARTIAL_PASS",
+    "FIFA_PARAMETERS_CHECKED_91",
+    "FIFA_FORMULAS_CHECKED_10",
+    "FIFA_PARAMETERS_HUMAN_REVIEW_REQUIRED_17",
+    "FIFA_PROJECT_VALIDATOR_PASS",
+    "FIFA_SEMANTIC_COVERAGE_IN_PROGRESS_NOT_MACHINE_VERIFIED"
+  ],
+  "parameter_delta": {
+    "active_values_changed": "governance registry values corrected where previous summaries were count labels rather than exact extracted values; runtime behavior unchanged",
+    "human_review_parameter_count": 17,
+    "human_review_task_id": "GOV-SEMANTIC-FIFA-001",
+    "semantic_parameters_checked": 91
+  },
+  "project_id": "FIFA",
+  "project_path": "FIFA",
+  "required_governance_files": [
+    "FIFA/docs/governance/DEVELOPMENT_LEDGER.md",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/docs/governance/delivery_tasks.yaml",
+    "FIFA/docs/governance/development_events.jsonl",
+    "FIFA/docs/governance/formula_registry.yaml",
+    "FIFA/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"
+  ],
+  "result_commit": "PENDING",
+  "rollback": "Revert this manifest, FIFA semantic metadata/status files, root projects.yaml semantic coverage update, and generated dashboard/status pages. No FIFA runtime code rollback is required.",
+  "run_id": "GOV-SEMANTIC-FIFA-EXTRACT-001",
+  "runtime_behavior_changed": false,
+  "semantic_formulas_checked": 10,
+  "semantic_parameters_checked": 91,
+  "semantic_status": "in_progress",
+  "started_at": "2026-06-21T14:17:29Z",
+  "task_id": "GOV-SEMANTIC-FIFA-001",
+  "tests_run": [
+    {
+      "command": "python3 scripts/validate_semantic_extractors.py FIFA",
+      "exit_code": 0,
+      "result": "semantic_parameters_checked=91 semantic_formulas_checked=10"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project FIFA --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0; FIFA semantic_parameters_checked=91 semantic_formulas_checked=10"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 -m pytest tests/governance/test_project_governance_validator.py -q",
+      "exit_code": 0,
+      "result": "52 passed"
+    },
+    {
+      "command": "cd FIFA/tab-research-pipeline && python3 -m py_compile run_daily_report.py scripts/tab_fifa_app_server.py tests/test_pipeline.py",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "cd FIFA/tab-research-pipeline && bash -n scripts/run_tab_fifa_daily_automation.sh scripts/tab_real_refresh_smoke.sh",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "cd FIFA/tab-research-pipeline && node --check scripts/refresh_tab_readonly.mjs && node --check scripts/discover_tab_live_boards.mjs",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "cd FIFA/tab-research-pipeline && HOME=<temp without Downloads app entry> python3 -m unittest tests.test_pipeline -q",
+      "exit_code": 1,
+      "result": "206 tests ran; failed test_report_store_and_dashboard_outputs because present_required_column_count 0 != 21"
+    },
+    {
+      "command": "cd FIFA/tab-research-pipeline && HOME=<temp with 21-column Downloads/FIFA Report/TAB FIFA盘口研究系统.html fixture> /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m unittest tests.test_pipeline -q",
+      "exit_code": 0,
+      "result": "Ran 206 tests OK with Codex bundled Python and 21-column Downloads entry fixture"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write (twice)",
+      "exit_code": 0,
+      "result": "stable deterministic generation; changed generated files limited to GOVERNANCE_DASHBOARD.md and FIFA status pages"
+    }
+  ],
+  "unresolved_risks": [
+    "FIFA semantic coverage remains in_progress, not machine_verified.",
+    "17 active parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-FIFA-001.",
+    "Heuristic calibration and curation completeness remain open under TASK-FIFA-B-001 and TASK-FIFA-B-002."
+  ],
+  "updated_governance_files": [
+    "FIFA/docs/governance/DEVELOPMENT_LEDGER.md",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/docs/governance/delivery_tasks.yaml",
+    "FIFA/docs/governance/development_events.jsonl",
+    "FIFA/docs/governance/formula_registry.yaml",
+    "FIFA/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"
+  ],
+  "version_delta": {
+    "current_gate": "GOV-P13-required-passed -> GOV-SEMANTIC-FIFA-in-progress",
+    "current_iteration": "ITER-20260620-001 -> ITER-20260621-FIFA-001",
+    "current_phase": "A -> B",
+    "product_version": "0.1.0 unchanged"
+  }
+}

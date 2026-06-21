@@ -57,7 +57,19 @@ It runs:
 python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
 ```
 
-Codex must trust this repository before project hooks are loaded.
+Codex must trust this repository before project hooks are loaded. Recursive Stop
+passes are still revalidated; the hook may stop after a bounded number of failed
+repair loops, but it must not unconditionally pass a failed second Stop.
+
+Run setup diagnostics with:
+
+```bash
+python3 scripts/governance_setup_doctor.py --json
+```
+
+The doctor can verify repository hook files. Local Codex trust and GitHub
+no-bypass settings remain `UNVERIFIED` unless authenticated evidence is
+available.
 
 ## GitHub Required CI
 
@@ -70,13 +82,32 @@ Pull requests run the changed-scope sync gate:
 python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
 ```
 
-Pushes and manual full audits run all-project semantic drift reporting:
+Pushes to `main` run the same changed-scope sync gate against
+`github.event.before` before the all-project audit:
+
+```bash
+python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref "$GOVERNANCE_BASE_REF"
+```
+
+Pushes and manual full audits also run all-project semantic drift reporting:
 
 ```bash
 python3 scripts/validate_project_governance.py --all --semantic --drift-report
 python3 scripts/generate_governance_dashboard.py --write
-git diff --exit-code -- GOVERNANCE_DASHBOARD.md */docs/governance/STATUS.md
+git diff --exit-code -- GOVERNANCE_DASHBOARD.md ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
 ```
+
+Successful CI writes and validates a post-commit attestation with:
+
+```bash
+python3 scripts/validate_ci_attestation.py write ...
+python3 scripts/validate_ci_attestation.py validate --file <attestation.json>
+```
+
+The Project Governance workflow must upload that attestation and the setup
+doctor report as a GitHub Actions artifact named
+`project-governance-ci-attestation-<run_id>-<attempt>`. A runner-temp JSON file
+alone is not durable delivery evidence.
 
 Repository administrators must configure GitHub branch protection or rulesets
 for `main` so `Project Governance / governance` is a required status check.

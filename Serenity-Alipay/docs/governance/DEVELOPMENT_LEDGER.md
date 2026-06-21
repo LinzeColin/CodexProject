@@ -11,26 +11,26 @@ This ledger is human-readable. The append-only machine event stream is
 
 - Product version: `0.1.0`
 - Product version status: `provisional`
-- Current phase: `A`
-- Current gate: `GOV-G3-SERENITY-BASELINE`
-- Confirmed iteration count: 1
+- Current phase: `B`
+- Current gate: `GOV-REVIEW6-B-SEMANTIC-EXTRACT`
+- Confirmed iteration count: 2
 - Reconstructed development event count: 2
-- Current task: `GOV-G3-SERENITY-MIGRATE-001`
-- Blockers: validation not yet recorded in this file; see final run report for actual command results.
+- Current task: `GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001`
+- Blockers: semantic extractor pilot currently covers Serenity-Alipay only; other projects need separate migration tasks.
 
 machine_summary:
 
 - model_count: 5
 - formula_count: 12
 - parameter_count: 49
-- task_count: 7
+- task_count: 8
 
 ## Phase Matrix
 
 | Phase | Name | Status | Exit criteria | Evidence |
 |---|---|---|---|---|
-| A | Discovery and baseline | in_progress | Governance files exist and validator passes for Serenity-Alipay | current run |
-| B | Model and data specification | planned | Calibration and sensitivity UNKNOWNs are closed or explicitly deferred | `TASK-B-001`, `TASK-B-002` |
+| A | Discovery and baseline | completed | Governance files exist and validator passes for Serenity-Alipay | `ITER-20260621-001` |
+| B | Model and data specification | in_progress | Calibration, sensitivity, and semantic extractor gaps are closed or explicitly deferred | `TASK-B-001`, `TASK-B-002`, `TASK-B-003` |
 | C | Implementation | planned | Future behavior changes update governance in the same run | `TASK-C-001` |
 | D | Verification and hardening | ready | Focused model tests and governance validator pass | `TASK-D-001` |
 | E | Delivery and operation | planned | CI required mode can be enabled without advisory drift | `TASK-E-001` |
@@ -62,6 +62,30 @@ Do not infer iteration count from Git commit count.
 - Remaining risks: empirical calibration and sensitivity evidence are not proven; see `TASK-B-001` and `TASK-B-002`.
 - Rollback: remove `docs/governance/` and restore edited Serenity root files from pre-run state.
 - Next step: `GOV-G3-SERENITY-VERIFY-001`.
+
+### `ITER-20260621-002`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b`
+- Result commit: `PENDING`
+- Task IDs: `GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001`, `TASK-B-003`
+- Goal: add a machine-verifiable Serenity semantic extraction pilot without changing scoring, ranking, gate, parameter, data, or business behavior.
+- Assumptions: Python AST and bounded text-regex selectors are sufficient to verify the current Serenity active parameters and formula implementation symbols.
+- Files read: root governance standard, root project registry, Serenity governance files, `app/config.py`, `app/core/scoring.py`, `app/core/pipeline.py`, `app/core/metrics.py`, `app/core/comparison.py`, `app/core/discipline.py`, `app/scheduler.py`, `app/core/scheduler_runner.py`, `app/core/automation_tick.py`, and focused tests.
+- Files changed: Serenity governance registries, delivery records, version matrix, changelog, root semantic validator, root standard/templates, and governance tests.
+- Model changes: no runtime model change; active formula implementation fingerprints are recorded for FORM-001 through FORM-012.
+- Parameter changes: no active parameter value change; PARAM-001 through PARAM-049 now include machine source selectors, extracted values, verification commit/time, and evidence hashes.
+- Commands run: `python3 scripts/validate_semantic_extractors.py Serenity-Alipay`; `python3 scripts/validate_project_governance.py --project Serenity-Alipay --semantic`; `python3 scripts/validate_project_governance.py --all --semantic --drift-report`; `python3 -m pytest tests/governance -q`; `python3 -m py_compile scripts/validate_project_governance.py scripts/validate_governance_sync.py scripts/validate_semantic_extractors.py`; `cd Serenity-Alipay && PYTHONPATH=. python3 -m pytest -q tests/test_scoring.py tests/test_pipeline_serenity_priority.py tests/test_risk_gate_regression.py tests/test_metrics.py tests/test_discipline.py tests/test_comparison.py tests/test_scheduler.py tests/test_timezones.py`.
+- Test results: semantic extractor PASS with 49 parameters and 12 formulas checked; Serenity semantic validator PASS with errors 0 warnings 0; full semantic validator PASS with errors 0 warnings 0; governance tests PASS with 28 passed; py_compile PASS; focused Serenity tests PASS with 22 passed from project cwd.
+- Successes: registry active values now fail validation when they diverge from extractable code defaults/literals; formula implementation symbols now fail validation when AST fingerprints drift.
+- Failures: FORM-008 semantic check proves final post-renormalization weights can exceed the 0.30 cap for 1, 2, 3, and 4 candidate scenarios; current business tests cover only the 5-candidate target-weight scenario. A root-cwd focused pytest invocation failed because scheduler tests expect `Path.cwd()` to be `Serenity-Alipay`; rerunning the same focused set from project cwd passed.
+- Decisions: record FORM-008 caveat as machine-observed governance evidence and defer algorithm or business-test changes to a separate non-governance-behavior task.
+- Remaining risks: semantic extractor coverage is a Serenity pilot; other projects remain structurally governed until separately migrated.
+- Rollback: revert this iteration's governance metadata, root semantic extractor, root standard/template updates, tests, and run manifest together.
+- Next step: `GOV-REVIEW6-C-OWNER-STATUS-001`.
 
 ## Reconstructed Development Events
 

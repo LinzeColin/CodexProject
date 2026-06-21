@@ -1,0 +1,178 @@
+{
+  "acceptance_id": "ACC-SEMANTIC-OAIDB-001",
+  "actor": "Codex",
+  "base_commit": "074295212402b6dfd1f807a567c5a18fc6e1558d",
+  "change_classification": [
+    "governance_semantic_extractor_rollout"
+  ],
+  "changed_files_actual": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/formula_registry.yaml",
+    "OpenAIDatabase/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_declared": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/formula_registry.yaml",
+    "OpenAIDatabase/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:0c204c9c7fac08aa1c37a73c963e8d48cb916d415b1dce0c69eb41fbd1766ad2",
+  "evidence_refs": [
+    "OpenAIDatabase/docs/governance/parameter_registry.csv",
+    "OpenAIDatabase/docs/governance/formula_registry.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "finished_local_at": "2026-06-21T13:17:40Z",
+  "formula_delta": {
+    "human_review_formula_ids": [
+      "FORM-010"
+    ],
+    "semantic_formulas_checked": 10
+  },
+  "model_delta": {
+    "formula_fingerprints_added": 10,
+    "human_review_formula_ids": [
+      "FORM-010"
+    ],
+    "runtime_behavior": "unchanged",
+    "semantic_coverage": "planned -> in_progress"
+  },
+  "observed_results": [
+    "ALL_PROJECT_SEMANTIC_DRIFT_PASS",
+    "CHANGED_ONLY_SYNC_PASS",
+    "DASHBOARD_STATUS_OWNER_STATUS_DOUBLE_GENERATION_STABLE",
+    "GIT_DIFF_CHECK_PASS",
+    "GOVERNANCE_TESTS_48_PASSED",
+    "LOCAL_SEMANTIC_PARTIAL_PASS",
+    "OAIDB_FOCUSED_TESTS_18_OK",
+    "OAIDB_FORMULAS_CHECKED_10",
+    "OAIDB_PARAMETERS_CHECKED_28",
+    "OAIDB_PROJECT_VALIDATOR_PASS",
+    "OAIDB_SEMANTIC_COVERAGE_IN_PROGRESS_NOT_MACHINE_VERIFIED",
+    "PARAM_086_DOCUMENTATION_CORRECTED_TO_ACTUAL_STARTUP_ROUTE"
+  ],
+  "parameter_delta": {
+    "active_values_changed": "documentation correction only for PARAM-086; runtime value unchanged",
+    "human_review_task_id": "GOV-SEMANTIC-OAIDB-001",
+    "semantic_parameters_checked": 28
+  },
+  "project_id": "OpenAIDatabase",
+  "project_path": "OpenAIDatabase",
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/formula_registry.yaml",
+    "OpenAIDatabase/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "result_commit": "PENDING",
+  "rollback": "Revert this manifest, OpenAIDatabase semantic metadata/status files, root projects.yaml semantic coverage update, semantic validator/test changes, and generated dashboard/status pages. No OpenAIDatabase runtime code rollback is required.",
+  "run_id": "GOV-SEMANTIC-OAIDB-EXTRACT-001",
+  "runtime_behavior_changed": false,
+  "semantic_formulas_checked": 10,
+  "semantic_parameters_checked": 28,
+  "semantic_status": "in_progress",
+  "started_at": "2026-06-21T13:13:28Z",
+  "task_id": "GOV-SEMANTIC-OAIDB-001",
+  "tests_run": [
+    {
+      "command": "python3 -m py_compile scripts/validate_semantic_extractors.py",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "python3 scripts/validate_semantic_extractors.py OpenAIDatabase",
+      "exit_code": 0,
+      "result": "semantic_parameters_checked=28 semantic_formulas_checked=10"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project OpenAIDatabase --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0; OpenAIDatabase semantic_parameters_checked=28 semantic_formulas_checked=10"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 -m pytest tests/governance/test_project_governance_validator.py -q",
+      "exit_code": 0,
+      "result": "48 passed"
+    },
+    {
+      "command": "cd OpenAIDatabase && python3 -m unittest tests.test_openai_memory_analysis tests.test_memory_atlas_data tests.test_codex_memory_sync tests.test_memory_atlas_release_audit tests.test_memory_atlas_acceptance_audit tests.test_personalization_architecture -q",
+      "exit_code": 0,
+      "result": "18 tests OK"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write (twice with hash comparison)",
+      "exit_code": 0,
+      "result": "stable hash 13d72987caef0d44644589ffd7277cde4fec2c138c6d0474a20ad14738ed8627"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "unresolved_risks": [
+    "OpenAIDatabase semantic coverage remains in_progress, not machine_verified.",
+    "FORM-010 TypeScript writeback semantics remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-OAIDB-001.",
+    "Complex branch-rule equivalence and heuristic calibration evidence remain HUMAN_REVIEW_REQUIRED or UNKNOWN under GOV-SEMANTIC-OAIDB-001 and TASK-OAI-B-001."
+  ],
+  "updated_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/formula_registry.yaml",
+    "OpenAIDatabase/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "version_delta": {
+    "current_gate": "TASK-OAI-C-002-PERSONALIZATION-ARCHITECTURE -> GOV-SEMANTIC-OAIDB-in-progress",
+    "current_iteration": "ITER-20260621-OAI-003 -> ITER-20260621-OAI-004",
+    "current_phase": "C -> B",
+    "product_version": "0.2.0 unchanged"
+  }
+}

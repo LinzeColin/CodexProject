@@ -10,11 +10,11 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.11.19
 - Current phase: E
-- Current gate: ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-PASS
-- Confirmed iteration count: 30
+- Current gate: GOV-SEMANTIC-ADP-PLANNED
+- Confirmed iteration count: 31
 - Reconstructed event count: 0
-- Current task: NONE
-- Blockers: Production launch remains blocked while PR #14 is draft and unmerged; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries; those are not claimed by this handoff.
+- Current task: GOV-SEMANTIC-ADP-001
+- Blockers: Semantic coverage remains planned and not machine verified; production launch remains blocked while PR #14 is draft and unmerged; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries; those are not claimed by this handoff.
 
 ## Phase Matrix
 
@@ -712,6 +712,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Production launch still requires PR ready/merge, private runner provisioning, GitHub secrets and vars, default-branch workflow dispatch, real SMTP/Release evidence, and archived start-gate artifacts; production acceptance still requires 30 unique daily production evidence entries plus replay, recovery, and resource evidence.
 - Rollback: Revert production launch readiness gate, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.18.
 - Next step: Mark PR ready, merge to `main`, provision runner/secrets/vars, rerun `plan-production-launch` with durable refs, then dispatch the default-branch trial start workflow.
+
+### `ITER-20260621-031`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED for latest main governance requirements and root `semantic_coverage` validation behavior; PLANNED for future arXiv semantic extractor work.
+- Version before: 0.11.19
+- Version after: 0.11.19
+- Base commit: 21f97f2
+- Result commit: PENDING
+- Task IDs: GOV-SEMANTIC-ADP-001
+- Goal: Synchronize PR #14 with the latest `main` governance semantic coverage rollout contract without changing arXiv Daily Push runtime behavior.
+- Assumptions: arXiv Daily Push cannot claim `machine_verified` semantic coverage until active parameter values and formula implementation fingerprints are extracted and validated by a dedicated machine extractor.
+- Files changed: root semantic coverage project registry entry, arXiv delivery task binding, generated dashboard/status/owner status views, run manifest, and governance ledger records.
+- Model changes: No runtime model behavior change.
+- Parameter changes: No active parameter value change.
+- Commands run: pending final validation after merge conflict resolution and generated status refresh.
+- Test results: pending final validation.
+- Successes: The semantic coverage rollout is task-bound and explicitly non-terminal, preventing the project from silently bypassing the new root governance gate.
+- Failures: none recorded yet; semantic extraction remains unimplemented and therefore planned.
+- Decisions: Keep `semantic_extractors` disabled for arXiv Daily Push until extractor evidence exists; do not mark semantic coverage as machine verified in this merge-sync increment.
+- Remaining risks: Production launch still requires PR ready/merge, private runner provisioning, GitHub secrets and vars, default-branch workflow dispatch, real SMTP/Release evidence, and archived start-gate artifacts; production acceptance still requires 30 unique daily production evidence entries plus replay, recovery, and resource evidence.
+- Rollback: Remove the arXiv `semantic_coverage` block, `GOV-SEMANTIC-ADP-001` task, generated owner/status changes, run manifest, and this ledger/event update.
+- Next step: After governance validation passes, finish merging latest `main` into PR #14, push, then reassess ready/merge and default-branch trial-start prerequisites.
 
 ## Unknown Historical Periods
 

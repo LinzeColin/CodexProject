@@ -55,6 +55,7 @@ Each registered project must eventually maintain:
 - `docs/governance/VERSION_MATRIX.yaml`
 - `docs/governance/TRACEABILITY_MATRIX.csv`
 - `docs/governance/STATUS.md`
+- `docs/governance/OWNER_STATUS.md`
 - `VERSION`
 - `CHANGELOG.md`
 
@@ -119,11 +120,25 @@ behavior changes require same-run updates or explicit review of:
 - `TRACEABILITY_MATRIX.csv`
 - `VERSION_MATRIX.yaml`
 - `STATUS.md`
+- `OWNER_STATUS.md`
 - `CHANGELOG.md` or an explicit no-version-change rationale in the run record
 
 Project `development_events.jsonl` files are append-only. Existing lines must
 not be modified or removed; follow-up evidence belongs in a new event or a
 post-commit binding.
+
+## Review-6 Entry Gate Contract
+
+Every execution entry must use the same diff contract when a diff is available:
+
+- Pull requests run `--changed-only --enforce-sync --semantic` against the PR base.
+- Pushes to `main` run `--changed-only --enforce-sync --semantic --base-ref <github.event.before>` and then `--all --semantic --drift-report`.
+- Manual `workflow_dispatch` with `scope=changed-only` accepts an optional `base_ref` and uses the same diff contract.
+- The Codex Stop Hook reruns the validator even on recursive Stop passes. It may cap automatic repair loops, but it must not unconditionally allow a failed second Stop.
+
+If branch protection or ruleset details cannot be inspected with authenticated
+GitHub evidence, their required-check and no-bypass status must remain
+`UNVERIFIED`.
 
 ## Run Manifest and Post-Commit Binding
 
@@ -162,6 +177,31 @@ Do not require a commit to contain its own final SHA. If final commit binding is
 required, use GitHub Checks evidence or append a later binding event that maps
 `run_id`, `content_tree_hash`, final commit SHA, and CI run.
 
+Post-commit CI evidence is recorded as an attestation under:
+
+```text
+governance/ci_attestations/<RUN_ID>.json
+```
+
+or, for the CI run that is proving the current commit, as a GitHub Actions
+artifact named `project-governance-ci-attestation-<run_id>-<attempt>`. Runner
+temporary files are not sufficient evidence unless they are uploaded or later
+bound by an append-only committed attestation.
+
+Each attestation binds a pre-commit run manifest or workflow run to:
+
+- final commit SHA
+- workflow name
+- workflow run ID and attempt
+- job ID when available
+- conclusion
+- finished timestamp
+- evidence hash
+
+Run manifests may remain local/pre-submit facts. A manifest that still says
+`PENDING_CI` after the allowed binding window must have a matching successful
+CI attestation or the semantic validator reports a governance issue.
+
 ## Semantic Accuracy
 
 `--semantic` checks enforce facts that can be machine-verified without inventing
@@ -173,6 +213,39 @@ domain knowledge:
 - `DEVELOPMENT_LEDGER` confirmed iteration counts must match the actual
   confirmed iteration sections.
 - Existing development events remain append-only under diff validation.
+- Projects that set `semantic_extractors: true` in `governance/projects.yaml`
+  must machine-check documented active parameter values against extracted
+  implementation values.
+- Parameter rows with semantic extraction must include `source_selector`,
+  `extracted_value`, `last_verified_commit`, `verified_at`, and
+  `evidence_hash`.
+- Supported first-pass extractors are Python AST dataclass/class defaults,
+  function defaults, line literals, module tuples, module dictionaries, and
+  bounded text-regex selectors.
+- Formula rows with semantic extraction must include `implementation_refs`,
+  `implementation_fingerprint`, `last_verified_commit`, `verified_at`, and
+  `evidence_hash`; the fingerprint is computed from normalized Python AST for
+  the referenced symbols.
+- Formula semantics that cannot be fully machine-proved must be marked
+  `HUMAN_REVIEW_REQUIRED` or carry explicit machine-observed caveats rather
+  than being treated as verified.
+- Every registered project must declare `semantic_coverage` in
+  `governance/projects.yaml`. Required projects without that rollout contract
+  fail validation.
+- `semantic_coverage.status` must be one of `machine_verified`, `planned`,
+  `in_progress`, `blocked`, or `not_applicable`.
+- `semantic_coverage.status: machine_verified` is only valid when the project
+  also has `semantic_extractors: true` and cites evidence. Planned, blocked, or
+  not-applicable projects must still identify a task, Acceptance ID, owner,
+  target, and rationale so future agents cannot silently skip semantic closure.
+- `semantic_coverage.task_id` must exist in that project's
+  `docs/governance/delivery_tasks.yaml`; `semantic_coverage.acceptance_id` must
+  be listed on the same task. `machine_verified` coverage must point to a
+  completed task, while planned/in-progress/blocked coverage must not point to a
+  terminal task.
+- `GOVERNANCE_DASHBOARD.md`, per-project `STATUS.md`, and per-project
+  `OWNER_STATUS.md` display semantic coverage status from this machine config.
+  These generated reports do not become editable fact sources.
 
 Facts that cannot be machine-verified must remain `UNKNOWN` or
 `HUMAN_REVIEW_REQUIRED`; do not present them as `EXTRACTED`.
@@ -183,10 +256,14 @@ Facts that cannot be machine-verified must remain `UNKNOWN` or
 
 - root `GOVERNANCE_DASHBOARD.md`
 - each project `docs/governance/STATUS.md`
+- each project `docs/governance/OWNER_STATUS.md`
 
 These pages are read-only views generated from registries, events, version
 matrices, ledgers, and Git metadata. They must not become duplicate editable
 fact sources. CI regenerates them and fails if committed status pages drift.
+`OWNER_STATUS.md` is the project-owner view: it must answer current version,
+recent changes, why they matter, key risks, owner decisions, and the selected
+next task without Python list/dict representations.
 
 Personalization and user-level config are documented in
 `docs/governance/CODEX_SETUP.md`. Repository files, validators, tests, and

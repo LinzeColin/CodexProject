@@ -36,6 +36,13 @@ formulas:
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1024"
     evidence_refs:
       - "FIFA/tab-research-pipeline/README.md"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    implementation_refs: ["FIFA/tab-research-pipeline/tab_research/odds.py::parse_decimal_odds", "FIFA/tab-research-pipeline/tab_research/odds.py::require_decimal_odds", "FIFA/tab-research-pipeline/tab_research/odds.py::no_vig_from_decimal_odds", "FIFA/tab-research-pipeline/tab_research/model.py::novig_probabilities", "FIFA/tab-research-pipeline/tab_research/model.py::implied_probability"]
+    implementation_fingerprint: "sha256:5c00f7275b4315f3a12d0ec0ac57f043ea6d41021248c470d751a20143b63b97"
+    last_verified_commit: "92b2969822a267d8a72d8d3c484e25f55858c8b5"
+    verified_at: "2026-06-21T14:17:29Z"
+    evidence_hash: "sha256:56611d5ab292157040a71404a3cd96af33db082df8268f6d2543019843f6902e"
+    semantic_review_task_ids: "GOV-SEMANTIC-FIFA-001"
   - formula_id: "FORM-002"
     model_id: "MOD-002"
     assumption_ids:
@@ -86,6 +93,13 @@ formulas:
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11628"
     evidence_refs:
       - "FIFA/docs/DEVELOPMENT_STATUS.md"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    implementation_refs: ["FIFA/tab-research-pipeline/tab_research/model.py::QUALITY_OVERLAYS", "FIFA/tab-research-pipeline/tab_research/model.py::MODEL_QUALITY_NOTES", "FIFA/tab-research-pipeline/tab_research/model.py::CURATED_TOTALS", "FIFA/tab-research-pipeline/tab_research/model.py::poisson_distribution", "FIFA/tab-research-pipeline/tab_research/model.py::probability_of", "FIFA/tab-research-pipeline/tab_research/model.py::estimate_xg", "FIFA/tab-research-pipeline/tab_research/model.py::apply_quality_overlay", "FIFA/tab-research-pipeline/tab_research/model.py::score_candidate", "FIFA/tab-research-pipeline/tab_research/model.py::stake_policy", "FIFA/tab-research-pipeline/tab_research/model.py::passes_quality_gate", "FIFA/tab-research-pipeline/tab_research/model.py::has_curated_support"]
+    implementation_fingerprint: "sha256:d9c636e42eae580a3b3ca047b9c5be4e5992acfff445ef87fd57a181eb8edc13"
+    last_verified_commit: "92b2969822a267d8a72d8d3c484e25f55858c8b5"
+    verified_at: "2026-06-21T14:17:29Z"
+    evidence_hash: "sha256:c8183307b9321c7442b8e31c45a0689c810f82d6134d7449fe00eca38836d22d"
+    semantic_review_task_ids: "GOV-SEMANTIC-FIFA-001"
   - formula_id: "FORM-003"
     model_id: "MOD-003"
     assumption_ids:
@@ -128,6 +142,13 @@ formulas:
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
     evidence_refs:
       - "FIFA/tab-research-pipeline/README.md"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    implementation_refs: ["FIFA/tab-research-pipeline/tab_research/bankroll.py::build_bankroll_plan", "FIFA/tab-research-pipeline/tab_research/bankroll.py::allocate_time_adjusted_stakes", "FIFA/tab-research-pipeline/tab_research/bankroll.py::round_to_nearest", "FIFA/tab-research-pipeline/tab_research/bankroll.py::first_number", "FIFA/tab-research-pipeline/tab_research/bankroll.py::cap_to_target", "FIFA/tab-research-pipeline/tab_research/bankroll.py::rebalance_rounded"]
+    implementation_fingerprint: "sha256:62523ad0d9a79155eedd851ea991dea70c8ea12daf39f46aa7414d72ad50095b"
+    last_verified_commit: "92b2969822a267d8a72d8d3c484e25f55858c8b5"
+    verified_at: "2026-06-21T14:17:29Z"
+    evidence_hash: "sha256:3a22f125575be5161321930235ce0c5afae5b595b0c7d6ca2c9d22e13bd047df"
+    semantic_review_task_ids: "GOV-SEMANTIC-FIFA-001"
   - formula_id: "FORM-004"
     model_id: "MOD-004"
     assumption_ids:
@@ -166,6 +187,13 @@ formulas:
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2513"
     evidence_refs:
       - "FIFA/tab-research-pipeline/README.md"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    implementation_refs: ["FIFA/tab-research-pipeline/tab_research/recommendations.py::display_stake_aud", "FIFA/tab-research-pipeline/tab_research/recommendations.py::apply_public_time_adjusted_match_stakes", "FIFA/tab-research-pipeline/tab_research/recommendations.py::enrich_match_recommendations_with_model_comparison", "FIFA/tab-research-pipeline/tab_research/recommendations.py::model_signal_for_recommendation", "FIFA/tab-research-pipeline/tab_research/recommendations.py::model_probability_key", "FIFA/tab-research-pipeline/tab_research/recommendations.py::model_signal_summary_zh", "FIFA/tab-research-pipeline/tab_research/recommendations.py::append_model_summary", "FIFA/tab-research-pipeline/tab_research/recommendations.py::format_pct"]
+    implementation_fingerprint: "sha256:5f526b071cc49d0e3306477470bbc6899713a6403ee8b4cfd2a4f707a98d03fb"
+    last_verified_commit: "92b2969822a267d8a72d8d3c484e25f55858c8b5"
+    verified_at: "2026-06-21T14:17:29Z"
+    evidence_hash: "sha256:ce5538f71fedf70ff0c81afa3e1ce293c37a6deee8a480394a2a9547ac411bf5"
+    semantic_review_task_ids: "GOV-SEMANTIC-FIFA-001"
   - formula_id: "FORM-005"
     model_id: "MOD-005"
     assumption_ids:
@@ -206,6 +234,13 @@ formulas:
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8912"
     evidence_refs:
       - "FIFA/README.md"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    implementation_refs: ["FIFA/tab-research-pipeline/tab_research/raw_refresh.py::raw_refresh_health", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::raw_target_health", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::partial_research_refresh_summary", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::normalize_partial_research_refresh", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::raw_refresh_next_action", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::refresh_error_blocker_codes", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::diagnostics_has_ai_controlled_access_rejection", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::access_policy_status", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::looks_like_route_mismatch", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::looks_like_partial_coverage"]
+    implementation_fingerprint: "sha256:09b375fdd8fb47fe19212fef29802dd2824653206ca9f11061ed7202dcb05adf"
+    last_verified_commit: "92b2969822a267d8a72d8d3c484e25f55858c8b5"
+    verified_at: "2026-06-21T14:17:29Z"
+    evidence_hash: "sha256:657b226e994f0689751f5ceb72ac2d094a344f430ad6a5da417bfcae397010e2"
+    semantic_review_task_ids: "GOV-SEMANTIC-FIFA-001"
   - formula_id: "FORM-006"
     model_id: "MOD-006"
     assumption_ids:
@@ -246,6 +281,13 @@ formulas:
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:9005"
     evidence_refs:
       - "FIFA/tab-research-pipeline/README.md"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    implementation_refs: ["FIFA/tab-research-pipeline/tab_research/live_board_discovery.py::build_live_board_discovery", "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py::live_board_compare_metrics", "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py::normalize_expected_rows", "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py::discovery_raw_failed", "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py::normalize_observed_rows", "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py::unavailable_review_queue", "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py::discovery_retry_queue", "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py::has_route_mismatch", "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py::missing_gap_text"]
+    implementation_fingerprint: "sha256:5ebf943fdd33618e803314029c1901f22224897ea55df9ea4fa015c4416af6e9"
+    last_verified_commit: "92b2969822a267d8a72d8d3c484e25f55858c8b5"
+    verified_at: "2026-06-21T14:17:29Z"
+    evidence_hash: "sha256:6322df1c98643c35c4bb793c5750e2cb0f17b8b7291eb40f8b67d957c237585e"
+    semantic_review_task_ids: "GOV-SEMANTIC-FIFA-001"
   - formula_id: "FORM-007"
     model_id: "MOD-007"
     assumption_ids:
@@ -287,6 +329,13 @@ formulas:
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:12012"
     evidence_refs:
       - "FIFA/AGENTS.md"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    implementation_refs: ["FIFA/tab-research-pipeline/tab_research/safety.py::SENSITIVE_MARKERS", "FIFA/tab-research-pipeline/tab_research/safety.py::PRIVATE_OUTPUT_FIELD_MARKERS", "FIFA/tab-research-pipeline/tab_research/safety.py::PUBLIC_PATH_PATTERNS", "FIFA/tab-research-pipeline/tab_research/safety.py::audit_safety", "FIFA/tab-research-pipeline/tab_research/safety.py::audit_output_safety", "FIFA/tab-research-pipeline/tab_research/safety.py::audit_public_artifact_safety", "FIFA/tab-research-pipeline/tab_research/safety.py::public_artifact_hits", "FIFA/tab-research-pipeline/tab_research/safety.py::scan_sensitive_artifacts", "FIFA/tab-research-pipeline/tab_research/safety.py::scan_public_output_artifacts"]
+    implementation_fingerprint: "sha256:4bc3d040ca53459fe01b8d17aae2d227979d159fa9b217536f1bf10cc138b53b"
+    last_verified_commit: "92b2969822a267d8a72d8d3c484e25f55858c8b5"
+    verified_at: "2026-06-21T14:17:29Z"
+    evidence_hash: "sha256:3456c2467cdee4f9bd209082427e6af44d7f2164825845e16e30d0a96592f9b4"
+    semantic_review_task_ids: "GOV-SEMANTIC-FIFA-001"
   - formula_id: "FORM-008"
     model_id: "MOD-008"
     assumption_ids:
@@ -335,6 +384,13 @@ formulas:
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
     evidence_refs:
       - "FIFA/docs/HANDOFF.md"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    implementation_refs: ["FIFA/tab-research-pipeline/tab_research/provider_kpi.py::build_provider_kpi", "FIFA/tab-research-pipeline/tab_research/provider_kpi.py::build_kpi_rows", "FIFA/tab-research-pipeline/tab_research/provider_kpi.py::market_row", "FIFA/tab-research-pipeline/tab_research/provider_kpi.py::credit_status", "FIFA/tab-research-pipeline/tab_research/provider_kpi.py::credit_score", "FIFA/tab-research-pipeline/tab_research/provider_kpi.py::alternate_plan_summary", "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py::TARGET_MARKET_FAMILIES", "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py::build_provider_alternate_plan", "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py::market_family_gaps", "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py::annotate_family_provider_status", "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py::operational_decision", "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py::credit_policy", "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py::market_family_priority"]
+    implementation_fingerprint: "sha256:9acc0eea659e572550f9e68735670ba9365d51cea93ea3101fd7461efacc5d5f"
+    last_verified_commit: "92b2969822a267d8a72d8d3c484e25f55858c8b5"
+    verified_at: "2026-06-21T14:17:29Z"
+    evidence_hash: "sha256:4117c83b4a7d11dbe9ca43acc0775746a4e3959640e1bf83ae4cf39dd902e796"
+    semantic_review_task_ids: "GOV-SEMANTIC-FIFA-001"
   - formula_id: "FORM-009"
     model_id: "MOD-009"
     assumption_ids:
@@ -384,6 +440,13 @@ formulas:
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7250"
     evidence_refs:
       - "FIFA/docs/HANDOFF.md"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    implementation_refs: ["FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py::DEFAULT_IMPORT_RELATIVE_PATH", "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py::DEFAULT_OVERLAY_APPROVAL_RELATIVE_PATH", "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py::DEFAULT_WORKBENCH_BATCH_SIZE", "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py::QUALITY_REQUIRED_FIELDS", "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py::build_provider_manual_verification_status", "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py::validate_overlay_approval", "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py::audit_import_rows", "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py::hash_gate_status", "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py::build_provider_manual_hash_gate"]
+    implementation_fingerprint: "sha256:a25658066c6a94f4a404ebb4ee3df4b42065d0e5825c8795c9ee317ed0f0f83a"
+    last_verified_commit: "92b2969822a267d8a72d8d3c484e25f55858c8b5"
+    verified_at: "2026-06-21T14:17:29Z"
+    evidence_hash: "sha256:75b42032e6f999f38efa55d609985e7b438812f1643df47b2e24e35e271a6546"
+    semantic_review_task_ids: "GOV-SEMANTIC-FIFA-001"
   - formula_id: "FORM-010"
     model_id: "MOD-010"
     assumption_ids:
@@ -427,6 +490,13 @@ formulas:
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:9894"
     evidence_refs:
       - "FIFA/tab-research-pipeline/README.md"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    implementation_refs: ["FIFA/tab-research-pipeline/tab_research/automation_candidate.py::build_automation_candidate", "FIFA/tab-research-pipeline/tab_research/automation_candidate.py::guardrails", "FIFA/tab-research-pipeline/tab_research/automation_candidate.py::required_gates", "FIFA/tab-research-pipeline/tab_research/automation_candidate.py::expected_artifacts", "FIFA/tab-research-pipeline/tab_research/automation_readiness.py::build_automation_readiness_summary", "FIFA/tab-research-pipeline/tab_research/automation_readiness.py::readiness_status", "FIFA/tab-research-pipeline/tab_research/automation_readiness.py::readiness_blockers", "FIFA/tab-research-pipeline/tab_research/automation_readiness.py::research_only_daily_report_ready"]
+    implementation_fingerprint: "sha256:aa03e84b0741d51c66134536ab5384b7a3f72ac2704f926824b3557fb55c43fc"
+    last_verified_commit: "92b2969822a267d8a72d8d3c484e25f55858c8b5"
+    verified_at: "2026-06-21T14:17:29Z"
+    evidence_hash: "sha256:b61673e996242b01c9bff52f11a299b7b29db0a04b62af30546fb623a0b04831"
+    semantic_review_task_ids: "GOV-SEMANTIC-FIFA-001"
   - formula_id: "FORM-011"
     model_id: "MOD-011"
     assumption_ids:

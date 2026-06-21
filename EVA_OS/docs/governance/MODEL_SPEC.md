@@ -3,7 +3,7 @@
 - model_count: 16
 - formula_count: 16
 - parameter_count: 189
-- task_count: 12
+- task_count: 13
 - Evidence level: EXTRACTED for current code/config/tests; RECONSTRUCTED only for scoped Git events; UNKNOWN items are linked to blocked tasks.
 
 ## A. Model Overview

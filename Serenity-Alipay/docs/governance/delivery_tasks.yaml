@@ -65,6 +65,22 @@ tasks:
     rollback: "Remove added tests or docs from the focused task only."
     target_version: "0.1.0"
     completed_version: ""
+  - task_id: "TASK-B-003"
+    phase: "B"
+    objective: "Bind Serenity active parameter values and formula implementation semantics to machine extractors."
+    scope: "Serenity governance metadata, root semantic validator, governance tests, and generated governance evidence only."
+    non_scope: "No scoring, ranking, gate, parameter, data, or business-code behavior changes."
+    status: "completed"
+    dependencies: ["TASK-A-002"]
+    required_files: ["docs/governance/parameter_registry.csv", "docs/governance/formula_registry.yaml", "scripts/validate_semantic_extractors.py", "tests/governance/test_project_governance_validator.py"]
+    acceptance_ids: ["ACC-B-003"]
+    test_commands: ["python3 scripts/validate_semantic_extractors.py Serenity-Alipay", "python3 scripts/validate_project_governance.py --project Serenity-Alipay --semantic", "python3 -m pytest tests/governance -q", "cd Serenity-Alipay && PYTHONPATH=. python3 -m pytest -q tests/test_scoring.py tests/test_pipeline_serenity_priority.py tests/test_risk_gate_regression.py tests/test_metrics.py tests/test_discipline.py tests/test_comparison.py tests/test_scheduler.py tests/test_timezones.py"]
+    test_results: ["PASS: semantic extractors checked 49 parameters and 12 formulas", "PASS: Serenity semantic validator errors 0 warnings 0", "PASS: governance tests 28 passed", "PASS: focused Serenity tests 22 passed from project cwd"]
+    evidence_refs: ["Serenity-Alipay/docs/governance/parameter_registry.csv", "Serenity-Alipay/docs/governance/formula_registry.yaml", "tests/governance/test_project_governance_validator.py"]
+    risk: "The first extractor pilot covers Serenity only; other projects remain structurally governed until they opt into semantic_extractors."
+    rollback: "Revert TASK-B-003 governance metadata, root semantic extractor code, and tests together; no business code rollback is required."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
   - task_id: "TASK-C-001"
     phase: "C"
     objective: "Keep future scoring or gate implementation changes synchronized with governance registries."

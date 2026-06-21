@@ -1,0 +1,176 @@
+{
+  "acceptance_id": "ACC-SEMANTIC-PFI-001",
+  "actor": "Codex",
+  "base_commit": "94478ef52caecb9d856bf4a0543719f8d50a9645",
+  "change_classification": [
+    "governance_semantic_extractor_rollout"
+  ],
+  "changed_files_actual": [
+    "GOVERNANCE_DASHBOARD.md",
+    "PFI/大数据模拟器/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "PFI/大数据模拟器/docs/governance/formula_registry.yaml",
+    "PFI/大数据模拟器/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-PFI-EXTRACT-001.json",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_declared": [
+    "GOVERNANCE_DASHBOARD.md",
+    "PFI/大数据模拟器/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "PFI/大数据模拟器/docs/governance/formula_registry.yaml",
+    "PFI/大数据模拟器/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-PFI-EXTRACT-001.json",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:4c11cdd972e604d692fa65cd0205fb45194dd291534caa83666208961ccfbc97",
+  "evidence_refs": [
+    "PFI/大数据模拟器/docs/governance/parameter_registry.csv",
+    "PFI/大数据模拟器/docs/governance/formula_registry.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-PFI-EXTRACT-001.json"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "formula_delta": {
+    "human_review_required": "none at formula level in this rollout",
+    "machine_refs": "implementation_refs on FORM-001 through FORM-015",
+    "semantic_formulas_checked": 15
+  },
+  "model_delta": {
+    "formula_fingerprints_added": 15,
+    "runtime_behavior": "unchanged",
+    "semantic_coverage": "in_progress"
+  },
+  "observed_results": [
+    "ALL_PROJECT_SEMANTIC_DRIFT_PASS",
+    "CHANGED_ONLY_SYNC_PASS",
+    "DASHBOARD_STATUS_OWNER_STATUS_DOUBLE_GENERATION_STABLE",
+    "GIT_DIFF_CHECK_PASS",
+    "LOCAL_SEMANTIC_PARTIAL_PASS",
+    "PFI_FOCUSED_TESTS_32_PASSED",
+    "PFI_FORMULAS_CHECKED_15",
+    "PFI_PARAMETERS_CHECKED_211",
+    "PFI_PROJECT_VALIDATOR_PASS",
+    "PFI_SEMANTIC_COVERAGE_IN_PROGRESS_NOT_MACHINE_VERIFIED"
+  ],
+  "parameter_delta": {
+    "active_values_changed": 0,
+    "human_review_parameter_ids": [
+      "PARAM-110",
+      "PARAM-111"
+    ],
+    "human_review_required_count": 2,
+    "human_review_task_id": "GOV-SEMANTIC-PFI-001",
+    "semantic_parameters_checked": 211
+  },
+  "project_id": "PFI_BIG_DATA_SIMULATOR",
+  "project_path": "PFI/大数据模拟器",
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "PFI/大数据模拟器/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "PFI/大数据模拟器/docs/governance/formula_registry.yaml",
+    "PFI/大数据模拟器/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-PFI-EXTRACT-001.json",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "result_commit": "PENDING",
+  "rollback": "Revert this manifest, PFI semantic metadata/status files, root projects.yaml semantic coverage update, and semantic validator/test changes. No PFI business code rollback is required.",
+  "run_id": "GOV-SEMANTIC-PFI-EXTRACT-001",
+  "runtime_behavior_changed": false,
+  "semantic_formulas_checked": 15,
+  "semantic_parameters_checked": 211,
+  "semantic_status": "in_progress",
+  "started_at": "2026-06-21T00:00:00+10:00",
+  "task_id": "GOV-SEMANTIC-PFI-001",
+  "tests_run": [
+    {
+      "command": "python3 -m py_compile scripts/validate_semantic_extractors.py",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "python3 scripts/validate_semantic_extractors.py 'PFI/大数据模拟器'",
+      "exit_code": 0,
+      "result": "semantic_parameters_checked=211 semantic_formulas_checked=15"
+    },
+    {
+      "command": "python3 -m pytest tests/governance/test_project_governance_validator.py -q",
+      "exit_code": 0,
+      "result": "45 passed"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project 'PFI/大数据模拟器' --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0; PFI semantic_parameters_checked=211 semantic_formulas_checked=15"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "cd 'PFI/大数据模拟器' && PYTHONPATH=. python3 -m pytest tests/test_core.py -q",
+      "exit_code": 0,
+      "result": "32 passed"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write (twice with hash comparison)",
+      "exit_code": 0,
+      "result": "stable hash d75f33fa79e2716a75626c867c8726e9dc22bcbdc78b9d01bc0cb219e9a0556c"
+    }
+  ],
+  "unresolved_risks": [
+    "PFI semantic coverage remains in_progress, not machine_verified.",
+    "PARAM-110 summary_sort_keys and PARAM-111 cost_rate_transform remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-PFI-001.",
+    "Line-literal selectors may need updates if implementation constants move without semantic changes."
+  ],
+  "updated_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "PFI/大数据模拟器/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "PFI/大数据模拟器/docs/governance/formula_registry.yaml",
+    "PFI/大数据模拟器/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-PFI-EXTRACT-001.json",
+    "scripts/validate_semantic_extractors.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "version_delta": {
+    "current_gate": "GOV-P13-required-passed -> GOV-SEMANTIC-PFI-in-progress",
+    "current_iteration": "ITER-20260620-PFI-002 -> ITER-20260621-PFI-001",
+    "current_phase": "A -> B",
+    "product_version": "0.1.0 unchanged"
+  }
+}

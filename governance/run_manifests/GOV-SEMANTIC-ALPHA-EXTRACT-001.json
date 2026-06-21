@@ -1,0 +1,165 @@
+{
+  "acceptance_id": "ACC-SEMANTIC-ALPHA-001",
+  "actor": "Codex",
+  "base_commit": "f7288e9edf09484dd8cf36fe8e6523ccb1780125",
+  "change_classification": [
+    "governance_semantic_extractor_rollout"
+  ],
+  "changed_files_actual": [
+    "Alpha/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/STATUS.md",
+    "Alpha/docs/governance/VERSION_MATRIX.yaml",
+    "Alpha/docs/governance/delivery_tasks.yaml",
+    "Alpha/docs/governance/development_events.jsonl",
+    "Alpha/docs/governance/formula_registry.yaml",
+    "Alpha/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_declared": [
+    "Alpha/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/STATUS.md",
+    "Alpha/docs/governance/VERSION_MATRIX.yaml",
+    "Alpha/docs/governance/delivery_tasks.yaml",
+    "Alpha/docs/governance/development_events.jsonl",
+    "Alpha/docs/governance/formula_registry.yaml",
+    "Alpha/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:ea4a619a756f9fae3f0e2dffd2e52002521526bef3baaa39d58615a2dcc016ba",
+  "evidence_refs": [
+    "Alpha/docs/governance/parameter_registry.csv",
+    "Alpha/docs/governance/formula_registry.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "formula_delta": {
+    "formula_fingerprints_added": 9,
+    "human_review_formula_ids": [],
+    "semantic_formulas_checked": 9
+  },
+  "model_delta": {
+    "runtime_behavior": "unchanged",
+    "semantic_coverage": "planned -> in_progress"
+  },
+  "observed_results": [
+    "ALL_PROJECT_SEMANTIC_DRIFT_PASS",
+    "CHANGED_ONLY_SYNC_PASS",
+    "DASHBOARD_STATUS_OWNER_STATUS_DOUBLE_GENERATION_STABLE",
+    "GIT_DIFF_CHECK_PASS",
+    "GOVERNANCE_TESTS_51_PASSED",
+    "LOCAL_SEMANTIC_PARTIAL_PASS",
+    "ALPHA_FORMULAS_CHECKED_9",
+    "ALPHA_PARAMETERS_CHECKED_42",
+    "ALPHA_PARAMETERS_HUMAN_REVIEW_REQUIRED_13",
+    "ALPHA_PROJECT_VALIDATOR_PASS",
+    "ALPHA_SEMANTIC_COVERAGE_IN_PROGRESS_NOT_MACHINE_VERIFIED",
+    "ALPHA_FOCUSED_TESTS_BLOCKED_MISSING_PYYAML"
+  ],
+  "parameter_delta": {
+    "active_values_changed": 0,
+    "human_review_parameter_count": 13,
+    "human_review_task_id": "GOV-SEMANTIC-ALPHA-001",
+    "semantic_parameters_checked": 42
+  },
+  "project_id": "Alpha",
+  "project_path": "Alpha",
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "Alpha/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/STATUS.md",
+    "Alpha/docs/governance/VERSION_MATRIX.yaml",
+    "Alpha/docs/governance/delivery_tasks.yaml",
+    "Alpha/docs/governance/development_events.jsonl",
+    "Alpha/docs/governance/formula_registry.yaml",
+    "Alpha/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "result_commit": "PENDING",
+  "rollback": "Revert this manifest, Alpha semantic metadata/status files, root projects.yaml semantic coverage update, and generated dashboard/status pages. No Alpha runtime code rollback is required.",
+  "run_id": "GOV-SEMANTIC-ALPHA-EXTRACT-001",
+  "runtime_behavior_changed": false,
+  "semantic_formulas_checked": 9,
+  "semantic_parameters_checked": 42,
+  "semantic_status": "in_progress",
+  "started_at": "2026-06-21T13:51:43Z",
+  "task_id": "GOV-SEMANTIC-ALPHA-001",
+  "tests_run": [
+    {
+      "command": "python3 scripts/validate_semantic_extractors.py Alpha",
+      "exit_code": 0,
+      "result": "semantic_parameters_checked=42 semantic_formulas_checked=9"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project Alpha --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0; Alpha semantic_parameters_checked=42 semantic_formulas_checked=9"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 -m pytest tests/governance/test_project_governance_validator.py -q",
+      "exit_code": 0,
+      "result": "51 passed"
+    },
+    {
+      "command": "cd Alpha && python3 -m pytest tests/test_policy.py tests/test_live_broker_fail_closed.py tests/test_strategy_iteration.py tests/test_paper_trading_loop.py -q",
+      "exit_code": 2,
+      "result": "blocked by ModuleNotFoundError: yaml"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write (twice with hash comparison)",
+      "exit_code": 0,
+      "result": "stable hash 2cabdc2d354c240c75224d2b72c4bc6bcf7cd7f9d354ccb839ece0a1b0fad827"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "unresolved_risks": [
+    "Alpha semantic coverage remains in_progress, not machine_verified.",
+    "13 branch-rule parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-ALPHA-001.",
+    "Live execution policy and production validation remain blocked under TASK-ALPHA-B-001."
+  ],
+  "updated_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "Alpha/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/STATUS.md",
+    "Alpha/docs/governance/VERSION_MATRIX.yaml",
+    "Alpha/docs/governance/delivery_tasks.yaml",
+    "Alpha/docs/governance/development_events.jsonl",
+    "Alpha/docs/governance/formula_registry.yaml",
+    "Alpha/docs/governance/parameter_registry.csv",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "version_delta": {
+    "current_gate": "GOV-G4-ALPHA-REQUIRED -> GOV-SEMANTIC-ALPHA-in-progress",
+    "current_iteration": "ITER-20260620-ALPHA-001 -> ITER-20260621-ALPHA-001",
+    "current_phase": "E -> B",
+    "product_version": "0.1.0 unchanged"
+  },
+  "finished_local_at": "2026-06-21T13:58:35Z"
+}
