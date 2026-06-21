@@ -1,17 +1,17 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.1`
+Active product version: `0.11.2`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.1
+- Product version: 0.11.2
 - Current phase: E
-- Current gate: ADP-PHASE11-EVIDENCE-REF-HARDENING-PASS
-- Confirmed iteration count: 12
+- Current gate: ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-PASS
+- Confirmed iteration count: 13
 - Reconstructed event count: 0
 - Current task: NONE
 - Blockers: Production acceptance still requires real 30-day trial, scheduler, Release, SMTP, and resource evidence; those are not claimed by this handoff.
@@ -24,7 +24,7 @@ The append-only machine record is `development_events.jsonl`.
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
-| E | Weekly/monthly trial and handoff | completed | handoff readiness package generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md` |
+| E | Weekly/monthly trial and handoff | completed | handoff readiness package and trial evidence validator generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md` |
 
 ## Iteration Records
 
@@ -298,6 +298,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Live production readiness still requires external runner, SMTP, Release, and 30-day trial execution.
 - Rollback: Revert evidence-reference hardening and restore version 0.11.0.
 - Next step: Continue only with real operational prerequisite setup or evidence collection.
+
+### `ITER-20260621-013`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for 30-day trial evidence validator, acceptance integration, CLI command, tests, schema, and governance updates.
+- Version before: 0.11.1
+- Version after: 0.11.2
+- Base commit: a67a988acf3778392ae584742fad8bf2c89d7d1d
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-003
+- Goal: Require a validated 30-day trial evidence report before production acceptance can pass.
+- Assumptions: The validator defines and enforces the evidence package but does not fabricate or execute the live 30-day trial.
+- Files changed: trial evidence validator, acceptance gate, CLI command, tests, schema, README, CHANGELOG, phase record, version files, and governance records.
+- Model changes: Added MOD-ADP-012 as adp-trial-evidence-v1 and updated MOD-ADP-011 to adp-acceptance-v1.2.
+- Parameter changes: Added PARAM-ADP-057 through PARAM-ADP-064.
+- Commands run: project unit tests; root governance tests; schema parse; project governance validator; changed-only enforce-sync; dashboard generation; git diff check.
+- Test results: 67 project tests OK; 33 root governance tests OK; schemas parse; project governance errors 0 warnings 0; changed-only enforce-sync errors 0 warnings 0; dashboard PASS; git diff check exit 0.
+- Successes: Production acceptance now rejects raw refs/booleans unless they come from a validated trial report.
+- Failures: initial changed-only sync failed because the latest event did not cover the full branch diff; fixed by updating the latest development event and run manifest to the current 100-file diff list.
+- Decisions: Treat weekly/monthly replay and recovery drill evidence as required parts of the 30-day trial evidence package.
+- Remaining risks: Live production acceptance still requires external scheduler, SMTP, Release, resources, and actual 30-day run evidence.
+- Rollback: Revert Phase 11 trial evidence validator and restore version 0.11.1.
+- Next step: Run project and governance validation, then sync the PR.
 
 ## Unknown Historical Periods
 

@@ -205,3 +205,20 @@ tasks:
     target_version: "0.11.1"
     completed_version: "0.11.1"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-003"
+    phase: "E"
+    objective: "Add a deterministic 30-day trial evidence validator and require its report for production acceptance."
+    scope: "Trial evidence validation, CLI command, schema, acceptance integration, tests, version and governance records."
+    non_scope: "No fabricated 30-day trial, no scheduler enablement, no Release upload, no SMTP send, and no media/model output."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-EVIDENCE-REF-HARDENING-002"]
+    required_files: ["src/arxiv_daily_push/trial.py", "src/arxiv_daily_push/acceptance.py", "src/arxiv_daily_push/cli.py", "tests/test_trial.py", "tests/test_acceptance.py", "schemas/trial_evidence.schema.json", "docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-EVIDENCE-VALIDATOR"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 67 tests OK", "root governance tests: 33 tests OK", "trial evidence validator tests: pass", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md", "arxiv-daily-push/tests/test_trial.py", "arxiv-daily-push/tests/test_acceptance.py"]
+    risk: "Operational 30-day evidence still requires future scheduled production runs; this validator only defines and enforces the evidence package."
+    rollback: "Revert Phase 11 trial evidence validator and restore version 0.11.1."
+    target_version: "0.11.2"
+    completed_version: "0.11.2"
+    unknown_task_ids: []
