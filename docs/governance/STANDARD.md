@@ -224,6 +224,18 @@ domain knowledge:
 - Formula semantics that cannot be fully machine-proved must be marked
   `HUMAN_REVIEW_REQUIRED` or carry explicit machine-observed caveats rather
   than being treated as verified.
+- Every registered project must declare `semantic_coverage` in
+  `governance/projects.yaml`. Required projects without that rollout contract
+  fail validation.
+- `semantic_coverage.status` must be one of `machine_verified`, `planned`,
+  `in_progress`, `blocked`, or `not_applicable`.
+- `semantic_coverage.status: machine_verified` is only valid when the project
+  also has `semantic_extractors: true` and cites evidence. Planned, blocked, or
+  not-applicable projects must still identify a task, Acceptance ID, owner,
+  target, and rationale so future agents cannot silently skip semantic closure.
+- `GOVERNANCE_DASHBOARD.md`, per-project `STATUS.md`, and per-project
+  `OWNER_STATUS.md` display semantic coverage status from this machine config.
+  These generated reports do not become editable fact sources.
 
 Facts that cannot be machine-verified must remain `UNKNOWN` or
 `HUMAN_REVIEW_REQUIRED`; do not present them as `EXTRACTED`.

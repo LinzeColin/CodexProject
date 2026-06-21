@@ -21,6 +21,8 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Task count: `12`
 - Unbound event count: `2`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `266`
+- Semantic coverage: `planned`
+- Semantic rollout task: `GOV-SEMANTIC-EVA-001`
 
 ## Latest Run
 
@@ -37,6 +39,12 @@ Source: generated from machine governance registries, Git metadata, and validati
 ## Current Blockers
 
 calibration/source rationale gaps tracked by `TASK-EVA-B-001` through `TASK-EVA-B-008`
+
+## Semantic Coverage
+
+- Status: `planned`
+- Target: Add machine selectors for strategy parameters and fingerprints for active strategy formulas.
+- Evidence/rollout: acceptance_id: ACC-SEMANTIC-EVA-001; evidence_ref: EVA_OS/docs/governance/OWNER_STATUS.md; owner: project owner; rationale: Review6-D rollout guard; semantic extractors are not yet implemented for EVA_OS.; status: planned; target: Add machine selectors for strategy parameters and fingerprints for active strategy formulas.; +1 more
 
 ## Next Task
 

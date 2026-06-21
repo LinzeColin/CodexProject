@@ -57,6 +57,14 @@ projects:
     path: "Alpha"
     ci_mode: "required"
     status: "existing"
+    semantic_coverage:
+      status: "planned"
+      task_id: "GOV-SEMANTIC-ALPHA-001"
+      acceptance_id: "ACC-SEMANTIC-ALPHA-001"
+      target: "Add machine source selectors for active parameters and implementation fingerprints for active formulas."
+      evidence_ref: "Alpha/docs/governance/OWNER_STATUS.md"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for Alpha."
     model_behavior_globs:
       - "backend/**/*.py"
       - "configs/**/*.yaml"
@@ -67,6 +75,14 @@ projects:
     path: "EEI"
     ci_mode: "required"
     status: "existing"
+    semantic_coverage:
+      status: "planned"
+      task_id: "GOV-SEMANTIC-EEI-001"
+      acceptance_id: "ACC-SEMANTIC-EEI-001"
+      target: "Bind EEI active parameter_catalog and model/formula registries to machine extractors without changing runtime behavior."
+      evidence_ref: "EEI/docs/governance/OWNER_STATUS.md"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; EEI has rich legacy registries but no root semantic extractor profile yet."
     model_behavior_globs:
       - "apps/**"
       - "packages/**"
@@ -81,6 +97,14 @@ projects:
     path: "EVA_OS"
     ci_mode: "required"
     status: "existing"
+    semantic_coverage:
+      status: "planned"
+      task_id: "GOV-SEMANTIC-EVA-001"
+      acceptance_id: "ACC-SEMANTIC-EVA-001"
+      target: "Add machine selectors for strategy parameters and fingerprints for active strategy formulas."
+      evidence_ref: "EVA_OS/docs/governance/OWNER_STATUS.md"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for EVA_OS."
     model_behavior_globs:
       - "src/**"
       - "systems/**"
@@ -92,6 +116,14 @@ projects:
     path: "FIFA"
     ci_mode: "required"
     status: "existing"
+    semantic_coverage:
+      status: "planned"
+      task_id: "GOV-SEMANTIC-FIFA-001"
+      acceptance_id: "ACC-SEMANTIC-FIFA-001"
+      target: "Add extractors for parser constants, validation rules, and active governance formulas."
+      evidence_ref: "FIFA/docs/governance/OWNER_STATUS.md"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for FIFA."
     model_behavior_globs:
       - "tab-research-pipeline/**"
       - "docs/**"
@@ -100,6 +132,14 @@ projects:
     path: "OpMe_System"
     ci_mode: "required"
     status: "existing"
+    semantic_coverage:
+      status: "planned"
+      task_id: "GOV-SEMANTIC-OPME-001"
+      acceptance_id: "ACC-SEMANTIC-OPME-001"
+      target: "Add extractors for analysis rule constants and fingerprints for active deterministic formulas."
+      evidence_ref: "OpMe_System/docs/governance/OWNER_STATUS.md"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for OpMe_System."
     model_behavior_globs:
       - "backend/**"
       - "frontend/**"
@@ -110,6 +150,14 @@ projects:
     path: "OpenAIDatabase"
     ci_mode: "required"
     status: "existing"
+    semantic_coverage:
+      status: "planned"
+      task_id: "GOV-SEMANTIC-OAIDB-001"
+      acceptance_id: "ACC-SEMANTIC-OAIDB-001"
+      target: "Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints."
+      evidence_ref: "OpenAIDatabase/docs/governance/OWNER_STATUS.md"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for OpenAIDatabase."
     model_behavior_globs:
       - "apps/**"
       - "config/**"
@@ -121,6 +169,14 @@ projects:
     path: "PFI/大数据模拟器"
     ci_mode: "required"
     status: "existing"
+    semantic_coverage:
+      status: "planned"
+      task_id: "GOV-SEMANTIC-PFI-001"
+      acceptance_id: "ACC-SEMANTIC-PFI-001"
+      target: "Add extractors for simulator strategy defaults, risk controls, and active formula fingerprints."
+      evidence_ref: "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for PFI_BIG_DATA_SIMULATOR."
     model_behavior_globs:
       - "config/**"
       - "qbvs/**"
@@ -133,6 +189,14 @@ projects:
     ci_mode: "required"
     status: "existing"
     semantic_extractors: true
+    semantic_coverage:
+      status: "machine_verified"
+      task_id: "GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001"
+      acceptance_id: "ACC-B-003"
+      target: "Machine-check active parameter values and active formula implementation fingerprints."
+      evidence_ref: "governance/run_manifests/GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001.json"
+      owner: "project owner"
+      rationale: "Review6-B enabled 49 active parameter checks and 12 active formula fingerprints."
     model_behavior_globs:
       - "app/**/*.py"
       - "tests/**/*.py"
@@ -143,6 +207,14 @@ projects:
     path: "whkmSalary"
     ci_mode: "required"
     status: "existing"
+    semantic_coverage:
+      status: "planned"
+      task_id: "GOV-SEMANTIC-WHKM-001"
+      acceptance_id: "ACC-SEMANTIC-WHKM-001"
+      target: "Add extractors for salary constants, policy formula references, and active formula fingerprints."
+      evidence_ref: "whkmSalary/docs/governance/OWNER_STATUS.md"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for whkmSalary."
     model_behavior_globs:
       - "*.py"
       - "tests/**/*.py"

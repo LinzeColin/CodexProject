@@ -57,6 +57,9 @@ iteration counts. Git commit count is not iteration count.
    Projects with `semantic_extractors: true` also run machine extraction of
    documented parameter values and formula implementation fingerprints during
    this command.
+   Every registered project must also declare `semantic_coverage` in
+   `governance/projects.yaml`; only projects with live extractor checks may use
+   `status: machine_verified`.
 8. For diff-sensitive root, PR, or push checks, run
    `python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic`.
    Use `--base-ref <sha-or-ref>` when validating a pushed range.

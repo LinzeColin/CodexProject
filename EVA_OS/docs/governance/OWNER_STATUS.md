@@ -37,6 +37,8 @@ No runtime model delta recorded.
 
 - 置信度：`Medium`
 - 证据新鲜度：`2 unbound event(s)`
+- 语义覆盖：`planned`
+- 语义覆盖任务：`GOV-SEMANTIC-EVA-001`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED 数量：`266`
 - 未绑定事件数量：`2`
 
@@ -46,9 +48,9 @@ Resolve source rationale for cross-source validation tolerance.
 
 ## 9. 当前前三风险
 
-1. Blocker: calibration/source rationale gaps tracked by `TASK-EVA-B-001` through `TASK-EVA-B-008`
-2. UNKNOWN/HUMAN_REVIEW_REQUIRED facts: 266
-3. Unbound or stale evidence events: 2
+1. Semantic extractor coverage is planned; rollout task GOV-SEMANTIC-EVA-001 remains open.
+2. Blocker: calibration/source rationale gaps tracked by `TASK-EVA-B-001` through `TASK-EVA-B-008`
+3. UNKNOWN/HUMAN_REVIEW_REQUIRED facts: 266
 
 ## 10. 下一项可执行任务及 Acceptance
 

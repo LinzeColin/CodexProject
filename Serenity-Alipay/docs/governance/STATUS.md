@@ -21,6 +21,8 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Task count: `8`
 - Unbound event count: `3`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `0`
+- Semantic coverage: `machine_verified`
+- Semantic rollout task: `GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001`
 
 ## Latest Run
 
@@ -37,6 +39,12 @@ Source: generated from machine governance registries, Git metadata, and validati
 ## Current Blockers
 
 semantic extractor pilot currently covers Serenity-Alipay only; other projects need separate migration tasks.
+
+## Semantic Coverage
+
+- Status: `machine_verified`
+- Target: Machine-check active parameter values and active formula implementation fingerprints.
+- Evidence/rollout: acceptance_id: ACC-B-003; evidence_ref: governance/run_manifests/GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001.json; owner: project owner; rationale: Review6-B enabled 49 active parameter checks and 12 active formula fingerprints.; status: machine_verified; target: Machine-check active parameter values and active formula implementation fingerprints.; +1 more
 
 ## Next Task
 

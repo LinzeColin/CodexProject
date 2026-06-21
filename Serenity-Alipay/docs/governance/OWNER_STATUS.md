@@ -37,6 +37,8 @@ formula_fingerprints_added: 12; runtime_behavior: unchanged; semantic_extractors
 
 - 置信度：`Medium`
 - 证据新鲜度：`3 unbound event(s)`
+- 语义覆盖：`machine_verified`
+- 语义覆盖任务：`GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED 数量：`0`
 - 未绑定事件数量：`3`
 

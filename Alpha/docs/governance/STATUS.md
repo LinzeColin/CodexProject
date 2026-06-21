@@ -21,6 +21,8 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Task count: `8`
 - Unbound event count: `2`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `3`
+- Semantic coverage: `planned`
+- Semantic rollout task: `GOV-SEMANTIC-ALPHA-001`
 
 ## Latest Run
 
@@ -37,6 +39,12 @@ Source: generated from machine governance registries, Git metadata, and validati
 ## Current Blockers
 
 live execution policy and production validation remain blocked under `TASK-ALPHA-B-001`.
+
+## Semantic Coverage
+
+- Status: `planned`
+- Target: Add machine source selectors for active parameters and implementation fingerprints for active formulas.
+- Evidence/rollout: acceptance_id: ACC-SEMANTIC-ALPHA-001; evidence_ref: Alpha/docs/governance/OWNER_STATUS.md; owner: project owner; rationale: Review6-D rollout guard; semantic extractors are not yet implemented for Alpha.; status: planned; target: Add machine source selectors for active parameters and implementation fingerprints for active formulas.; +1 more
 
 ## Next Task
 

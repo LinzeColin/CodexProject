@@ -111,6 +111,54 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, required)
             self.assertTrue((ROOT / path).is_file(), path)
 
+    def test_review6d_all_registered_projects_declare_semantic_coverage(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        projects = [project for project in validator.as_list(config.get("projects")) if isinstance(project, dict)]
+        self.assertGreaterEqual(len(projects), 9)
+        for project in projects:
+            coverage = project.get("semantic_coverage")
+            self.assertIsInstance(coverage, dict, project.get("project_id"))
+            self.assertIn(
+                coverage.get("status"),
+                validator.SEMANTIC_COVERAGE_STATES,
+                project.get("project_id"),
+            )
+
+    def test_review6d_required_project_missing_semantic_coverage_fails(self) -> None:
+        validator = load_validator_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            (tmp_path / "P").mkdir()
+            config = {
+                "root_governance": {"ci_mode": "required", "required_files": []},
+                "projects": [{"project_id": "P", "path": "P", "ci_mode": "required"}],
+            }
+            with patch.object(validator, "ROOT", tmp_path), patch.object(validator, "discover_project_dirs", return_value=["P"]):
+                validation = validator.Validation()
+                validator.validate_root(validation, config)
+        self.assertTrue(any("semantic_coverage" in issue.message for issue in validation.errors), validation.errors)
+
+    def test_review6d_machine_verified_requires_semantic_extractors(self) -> None:
+        validator = load_validator_module()
+        project = {
+            "project_id": "P",
+            "path": "P",
+            "ci_mode": "required",
+            "semantic_coverage": {
+                "status": "machine_verified",
+                "task_id": "GOV-SEMANTIC-P-001",
+                "acceptance_id": "ACC-SEMANTIC-P-001",
+                "target": "Machine-check active facts.",
+                "owner": "project owner",
+                "rationale": "test",
+                "evidence_ref": "governance/run_manifests/example.json",
+            },
+        }
+        validation = validator.Validation()
+        validator.validate_semantic_coverage_config(validation, project, True, "P")
+        self.assertTrue(any("semantic_extractors" in issue.message for issue in validation.errors), validation.errors)
+
     def test_unknown_project_returns_nonzero(self) -> None:
         result = run_validator("--project", "__missing_project__")
         self.assertNotEqual(result.returncode, 0)
@@ -546,6 +594,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         status_outputs = [path for path in first["outputs"] if path.endswith("/docs/governance/STATUS.md")]
         self.assertEqual(len(owner_outputs), len(status_outputs))
         self.assertIn("PFI/大数据模拟器/docs/governance/OWNER_STATUS.md", owner_outputs)
+        rendered = dashboard.render_dashboard([dashboard.load_project(project) for project in dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")["projects"]], "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
+        self.assertIn("Semantic coverage", rendered)
+        self.assertIn("machine_verified", rendered)
+        self.assertIn("planned", rendered)
 
     def test_review6_owner_status_is_readable_and_prioritized(self) -> None:
         dashboard = load_dashboard_module()
@@ -561,6 +613,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "## 12. UNKNOWN 与过期证据数量",
         ):
             self.assertIn(marker, rendered)
+        self.assertIn("语义覆盖", rendered)
+        self.assertIn("machine_verified", rendered)
         self.assertNotIn("['", rendered)
         self.assertNotIn("{'", rendered)
         self.assertEqual(info["next_task"], "TASK-B-001")

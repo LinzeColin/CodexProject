@@ -37,6 +37,8 @@ No scoring formula change; remote CI evidence only.
 
 - 置信度：`Medium`
 - 证据新鲜度：`14 unbound event(s)`
+- 语义覆盖：`planned`
+- 语义覆盖任务：`GOV-SEMANTIC-EEI-001`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED 数量：`135`
 - 未绑定事件数量：`14`
 
@@ -46,9 +48,9 @@ Run 4h and 24h browser and worker soak tests for memory, timer, listener and ret
 
 ## 9. 当前前三风险
 
-1. Blocker: A209 remains open until committed 4h and 24h operator soak evidence exists.
-2. UNKNOWN/HUMAN_REVIEW_REQUIRED facts: 135
-3. Unbound or stale evidence events: 14
+1. Semantic extractor coverage is planned; rollout task GOV-SEMANTIC-EEI-001 remains open.
+2. Blocker: A209 remains open until committed 4h and 24h operator soak evidence exists.
+3. UNKNOWN/HUMAN_REVIEW_REQUIRED facts: 135
 
 ## 10. 下一项可执行任务及 Acceptance
 

@@ -21,6 +21,8 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Task count: `9`
 - Unbound event count: `4`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `19`
+- Semantic coverage: `planned`
+- Semantic rollout task: `GOV-SEMANTIC-OAIDB-001`
 
 ## Latest Run
 
@@ -37,6 +39,12 @@ Source: generated from machine governance registries, Git metadata, and validati
 ## Current Blockers
 
 calibration evidence for heuristic weights is UNKNOWN and tracked by `TASK-OAI-B-001`
+
+## Semantic Coverage
+
+- Status: `planned`
+- Target: Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints.
+- Evidence/rollout: acceptance_id: ACC-SEMANTIC-OAIDB-001; evidence_ref: OpenAIDatabase/docs/governance/OWNER_STATUS.md; owner: project owner; rationale: Review6-D rollout guard; semantic extractors are not yet implemented for OpenAIDatabase.; status: planned; target: Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints.; +1 more
 
 ## Next Task
 

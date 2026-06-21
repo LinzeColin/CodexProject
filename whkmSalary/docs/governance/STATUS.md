@@ -21,6 +21,8 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Task count: `5`
 - Unbound event count: `2`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `158`
+- Semantic coverage: `planned`
+- Semantic rollout task: `GOV-SEMANTIC-WHKM-001`
 
 ## Latest Run
 
@@ -37,6 +39,12 @@ Source: generated from machine governance registries, Git metadata, and validati
 ## Current Blockers
 
 `TASK-WHKM-B-001` for policy/source/effective date/rounding/boundary evidence.
+
+## Semantic Coverage
+
+- Status: `planned`
+- Target: Add extractors for salary constants, policy formula references, and active formula fingerprints.
+- Evidence/rollout: acceptance_id: ACC-SEMANTIC-WHKM-001; evidence_ref: whkmSalary/docs/governance/OWNER_STATUS.md; owner: project owner; rationale: Review6-D rollout guard; semantic extractors are not yet implemented for whkmSalary.; status: planned; target: Add extractors for salary constants, policy formula references, and active formula fingerprints.; +1 more
 
 ## Next Task
 

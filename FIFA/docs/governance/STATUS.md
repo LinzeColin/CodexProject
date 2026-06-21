@@ -21,6 +21,8 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Task count: `9`
 - Unbound event count: `2`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `72`
+- Semantic coverage: `planned`
+- Semantic rollout task: `GOV-SEMANTIC-FIFA-001`
 
 ## Latest Run
 
@@ -37,6 +39,12 @@ Source: generated from machine governance registries, Git metadata, and validati
 ## Current Blockers
 
 TASK-FIFA-B-001, TASK-FIFA-B-002, TASK-FIFA-C-001, TASK-FIFA-C-002, TASK-FIFA-D-001, TASK-FIFA-D-002, TASK-FIFA-E-001, TASK-FIFA-E-002
+
+## Semantic Coverage
+
+- Status: `planned`
+- Target: Add extractors for parser constants, validation rules, and active governance formulas.
+- Evidence/rollout: acceptance_id: ACC-SEMANTIC-FIFA-001; evidence_ref: FIFA/docs/governance/OWNER_STATUS.md; owner: project owner; rationale: Review6-D rollout guard; semantic extractors are not yet implemented for FIFA.; status: planned; target: Add extractors for parser constants, validation rules, and active governance formulas.; +1 more
 
 ## Next Task
 
