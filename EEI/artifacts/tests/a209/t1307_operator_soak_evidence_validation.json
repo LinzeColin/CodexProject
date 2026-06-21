@@ -13,6 +13,11 @@
     "long_duration_hours": 24.0,
     "operator_window_seconds": 300.0
   },
+  "window_wall_clock_policy": {
+    "measurement_strategy": "parallel_browser_worker_v1",
+    "max_elapsed_wall_seconds": "measured_duration_seconds + max(60, measured_duration_seconds * 0.25)",
+    "reason": "browser and worker soak must be measured in the same operator window, not serialized into double wall-clock evidence."
+  },
   "required_artifacts": [
     {
       "label": "operator_4h",

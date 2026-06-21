@@ -347,6 +347,25 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the remote evidence update and regenerate release artifacts with `remote_status=PENDING`.
 - Next step: commit and push the remote evidence update, then verify the evidence-only CI run.
 
+### `ITER-20260621-014`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `51ba6ef`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, `TASK-T1304`
+- Goal: repair the A209 operator soak window semantics before running 4h/24h evidence.
+- Commands run: attempted 4h operator soak and interrupted after no first checkpoint was written; JS syntax checks; A209 unit tests; focused ruff; A209 evidence validator generation; 5-second parallel operator soak probe.
+- Test results: `node --check` PASS for `run_soak_smoke.mjs` and `run_operator_soak.mjs`; A209 validator unit tests PASS 4/4; focused ruff PASS; 5-second parallel probe PASS with completed duration 5 seconds, elapsed wall 6.5612 seconds and worker jobs 12/12.
+- Successes: `scripts/run_soak_smoke.mjs` now measures browser and worker soak concurrently inside each operator window, and `scripts/validate_operator_soak_evidence.py` rejects serialized double-wall-clock soak evidence.
+- Failures: the first 4h attempt exposed the old serial child-harness behavior; no 4h or 24h release evidence was produced.
+- Decisions: keep A209 and A206 `IN_PROGRESS`; the repair is prerequisite hardening, not long-duration evidence.
+- Remaining risks: actual 4h and 24h operator artifacts still must be run, committed, validated and referenced in release evidence.
+- Rollback: revert the parallel measurement and elapsed-wall validator changes, regenerate A209 evidence-validation artifact and rerun validation.
+- Next step: commit/push the runner repair, verify CI, then run the 4h operator soak on the CI-validated code.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -362,6 +381,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-013`: remote CI validation evidence for TASK-T1301/A202 live capture PostgreSQL ingestion contract.
 - `EVENT-20260621-014`: local selected-anchor live official capture evidence for TASK-T1301/A202 and TASK-T1304/A206.
 - `EVENT-20260621-015`: remote CI validation evidence for TASK-T1301/A202 selected-anchor live official capture ingestion.
+- `EVENT-20260621-016`: local A209 operator soak parallel-window contract repair.
 
 ## Unknown Historical Periods
 

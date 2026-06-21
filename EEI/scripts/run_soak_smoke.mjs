@@ -321,8 +321,12 @@ async function main() {
   const args = parseArgs(process.argv);
   const parameters = await readSoakParameters();
   const workerDeploymentBinding = await readWorkerDeploymentBinding();
-  const browserResult = await runBrowserSoak(args.durationSeconds);
-  const workerResult = await runWorkerSoak(args.durationSeconds);
+  const measurementStartedAt = performance.now();
+  const [browserResult, workerResult] = await Promise.all([
+    runBrowserSoak(args.durationSeconds),
+    runWorkerSoak(args.durationSeconds)
+  ]);
+  const elapsedWallSeconds = (performance.now() - measurementStartedAt) / 1000;
   const evaluation = evaluate(browserResult, workerResult);
   const targetSeconds = [
     parameters.short_duration_hours * 3600,
@@ -350,6 +354,12 @@ async function main() {
       long_duration_hours: parameters.long_duration_hours
     },
     measured_duration_seconds: args.durationSeconds,
+    measurement: {
+      strategy: "parallel_browser_worker_v1",
+      requested_duration_seconds: args.durationSeconds,
+      elapsed_wall_seconds: Number(elapsedWallSeconds.toFixed(4)),
+      browser_worker_parallel: true
+    },
     coverage: {
       browser_soak_measured: true,
       worker_soak_measured: true,
