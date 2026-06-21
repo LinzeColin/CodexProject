@@ -1,0 +1,123 @@
+{
+  "base_commit": "9616264221cecc8077fc862692ec6025f1e4872b",
+  "changed_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md",
+    "governance/run_manifests/ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md",
+    "governance/run_manifests/ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-20260622.json"
+  ],
+  "formula_delta": "No formula behavior change.",
+  "generated_at": "2026-06-22T13:05:00+10:00",
+  "iteration_id": "ITER-20260621-032",
+  "launch_gate": {
+    "codex_auth_read": false,
+    "command_exit_code": 2,
+    "failed_gates": [
+      "launch_confirmed",
+      "default_branch_ref",
+      "runner_ref",
+      "smtp_secret_ref",
+      "release_target_ref",
+      "workflow_vars_ref",
+      "trial_start_workflow_ref"
+    ],
+    "passed_gates": [
+      "pr_metadata_present",
+      "pr_not_draft",
+      "pr_merged_to_main",
+      "expected_head_sha_matches",
+      "trial_start_workflow_ready"
+    ],
+    "production_acceptance_claimed": false,
+    "production_launch_ready": false,
+    "secret_values_logged": false,
+    "side_effects_performed": false,
+    "status": "blocked"
+  },
+  "model_delta": "No runtime model behavior change.",
+  "next_task": "PROVISION_DURABLE_REFS_AND_RERUN_PRODUCTION_LAUNCH",
+  "non_scope": [
+    "workflow dispatch",
+    "private runner provisioning",
+    "SMTP send",
+    "Release upload",
+    "secret value read",
+    "Codex auth read",
+    "semantic coverage machine verification",
+    "production acceptance claim"
+  ],
+  "objective": "Record the post-merge production launch audit after PR #14 was merged to main.",
+  "parameter_delta": "No active parameter value change.",
+  "phase": "E",
+  "post_merge_checks": {
+    "combined_statuses_for_merge_commit": [],
+    "local_main_commit": "9616264221cecc8077fc862692ec6025f1e4872b",
+    "trial_start_workflow_path": ".github/workflows/arxiv-daily-push-trial-start.yml",
+    "trial_start_workflow_present_on_default_branch": true,
+    "workflow_runs_for_merge_commit": []
+  },
+  "pr_evidence": {
+    "base": "main",
+    "draft": false,
+    "head_sha": "ff4490159d49121d4008caa49c47a83de4dfa4b3",
+    "merge_commit_sha": "9616264221cecc8077fc862692ec6025f1e4872b",
+    "merged": true,
+    "pr_number": 14,
+    "state": "closed"
+  },
+  "production_acceptance_status": "blocked",
+  "project_id": "arxiv-daily-push",
+  "result": "pass",
+  "result_commit": "PENDING",
+  "risks": [
+    "Production launch remains blocked until explicit confirmation and durable default-branch, runner, SMTP secret, Release target, workflow variable, and trial-start workflow refs exist.",
+    "Semantic coverage remains planned and not machine verified.",
+    "Real production acceptance remains blocked until default-branch trial start evidence and 30 unique daily production evidence entries are archived and validated."
+  ],
+  "rollback": "Revert the post-merge audit phase record, delivery task, ledger/status/runbook updates, run manifest, event record, and generated dashboard/status changes.",
+  "run_id": "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-20260622",
+  "scope": [
+    "PR #14 merge metadata",
+    "default branch workflow file availability",
+    "post-merge launch gate result",
+    "workflow run/status absence for merge commit",
+    "governance status and runbook update"
+  ],
+  "task_id": "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021",
+  "test_results": [
+    "post-merge launch gate: expected blocked exit 2; PR metadata, pr_not_draft, pr_merged_to_main, expected_head_sha_matches, and trial_start_workflow_ready pass; missing launch_confirmed/default_branch_ref/runner_ref/smtp_secret_ref/release_target_ref/workflow_vars_ref/trial_start_workflow_ref remain blocking",
+    "arxiv-daily-push unit tests: 143 tests OK",
+    "root governance tests: 83 tests OK",
+    "project governance: arxiv-daily-push errors 0 warnings 0",
+    "dashboard generation: PASS",
+    "changed-only enforce-sync semantic: errors 0 warnings 0; projects changed arxiv-daily-push",
+    "git diff --check: exit 0",
+    "cache check: no arxiv-daily-push __pycache__ or .pyc files",
+    "storage check before sparse shrink: arxiv-daily-push 1.6M, .git 89M, worktree 221M"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_postmerge_launch_current PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-launch --path . --pr-info /tmp/adp_pr14_merged_current.json --generated-at 2026-06-22T13:05:00+10:00 --expected-head-sha ff4490159d49121d4008caa49c47a83de4dfa4b3 --json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_postmerge_unit_final PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_postmerge_root_final python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_postmerge_project_final python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_postmerge_dashboard_final python3 scripts/generate_governance_dashboard.py --write",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_postmerge_changed_final python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "git diff --check",
+    "find arxiv-daily-push -name '__pycache__' -o -name '*.pyc'",
+    "du -sh arxiv-daily-push .git ."
+  ],
+  "version_after": "0.11.19",
+  "version_before": "0.11.19"
+}
