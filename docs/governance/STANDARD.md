@@ -125,6 +125,19 @@ Project `development_events.jsonl` files are append-only. Existing lines must
 not be modified or removed; follow-up evidence belongs in a new event or a
 post-commit binding.
 
+## Review-6 Entry Gate Contract
+
+Every execution entry must use the same diff contract when a diff is available:
+
+- Pull requests run `--changed-only --enforce-sync --semantic` against the PR base.
+- Pushes to `main` run `--changed-only --enforce-sync --semantic --base-ref <github.event.before>` and then `--all --semantic --drift-report`.
+- Manual `workflow_dispatch` with `scope=changed-only` accepts an optional `base_ref` and uses the same diff contract.
+- The Codex Stop Hook reruns the validator even on recursive Stop passes. It may cap automatic repair loops, but it must not unconditionally allow a failed second Stop.
+
+If branch protection or ruleset details cannot be inspected with authenticated
+GitHub evidence, their required-check and no-bypass status must remain
+`UNVERIFIED`.
+
 ## Run Manifest and Post-Commit Binding
 
 Root governance runs may record machine-readable manifests under:
@@ -161,6 +174,26 @@ Each manifest records at least:
 Do not require a commit to contain its own final SHA. If final commit binding is
 required, use GitHub Checks evidence or append a later binding event that maps
 `run_id`, `content_tree_hash`, final commit SHA, and CI run.
+
+Post-commit CI evidence is recorded as an attestation under:
+
+```text
+governance/ci_attestations/<RUN_ID>.json
+```
+
+Each attestation binds a pre-commit run manifest or workflow run to:
+
+- final commit SHA
+- workflow name
+- workflow run ID and attempt
+- job ID when available
+- conclusion
+- finished timestamp
+- evidence hash
+
+Run manifests may remain local/pre-submit facts. A manifest that still says
+`PENDING_CI` after the allowed binding window must have a matching successful
+CI attestation or the semantic validator reports a governance issue.
 
 ## Semantic Accuracy
 

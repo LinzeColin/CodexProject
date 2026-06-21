@@ -1,0 +1,83 @@
+{
+  "run_id": "GOV-REVIEW6-A-ENTRY-CI-BINDING-001",
+  "project_id": "root",
+  "task_id": "GOV-REVIEW6-A-ENTRY-CI-BINDING-001",
+  "acceptance_id": "ACC-GOV-REVIEW6-A-001",
+  "actor": "Codex",
+  "started_at": "2026-06-21T18:35:00+10:00",
+  "finished_at": "LOCAL_VALIDATED",
+  "base_commit": "18c3773dd5cb9d618993a5685eed7fb668349ac3",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:87423e5619ed92d2ba1c7e7e2ed130c1660aae588a2b7b530d167587962dfff6",
+  "changed_files_actual": [
+    ".agents/skills/codex-dex/SKILL.md",
+    ".agents/skills/project-governance/SKILL.md",
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/project-governance.yml",
+    "docs/governance/CODEX_SETUP.md",
+    "docs/governance/STANDARD.md",
+    "governance/ci_attestations/GOV-REVIEW5-SYNC-001.json",
+    "governance/projects.yaml",
+    "governance/schemas/ci_attestation.schema.json",
+    "scripts/governance_setup_doctor.py",
+    "scripts/validate_ci_attestation.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "entry_gate_hardening",
+    "main_push_diff_sync",
+    "stop_hook_recursive_recheck",
+    "ci_attestation_binding",
+    "setup_doctor"
+  ],
+  "required_governance_files": [
+    "docs/governance/STANDARD.md",
+    "docs/governance/CODEX_SETUP.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-REVIEW6-A-ENTRY-CI-BINDING-001.json",
+    "governance/schemas/ci_attestation.schema.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "docs/governance/STANDARD.md",
+    "docs/governance/CODEX_SETUP.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-REVIEW6-A-ENTRY-CI-BINDING-001.json",
+    "governance/schemas/ci_attestation.schema.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "model_delta": "NOT_APPLICABLE: root governance entry gate and CI evidence binding only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "tests_run": [
+    "python3 -m pytest tests/governance -q",
+    "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+    "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+    "python3 -m py_compile scripts/validate_project_governance.py scripts/validate_governance_sync.py scripts/validate_ci_attestation.py scripts/governance_setup_doctor.py .codex/hooks/governance_stop.py",
+    "python3 scripts/governance_setup_doctor.py --json",
+    "python3 scripts/validate_ci_attestation.py validate --file governance/ci_attestations/GOV-REVIEW5-SYNC-001.json"
+  ],
+  "observed_results": [
+    "LOCAL_PASS: governance tests ran 25 tests after Review6-A additions",
+    "LOCAL_PASS: validate_project_governance --all --semantic --drift-report exited 0 with errors 0 warnings 0",
+    "LOCAL_PENDING: changed-only sync was expected to fail before this run manifest existed and must be rerun after adding it",
+    "LOCAL_PASS: setup doctor reports hook files present and trust/no-bypass UNVERIFIED without authenticated evidence",
+    "LOCAL_PASS: Review5 main Project Governance attestation validates"
+  ],
+  "evidence_refs": [
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_ci_attestation.py",
+    "scripts/governance_setup_doctor.py",
+    ".github/workflows/project-governance.yml",
+    ".codex/hooks/governance_stop.py",
+    "governance/ci_attestations/GOV-REVIEW5-SYNC-001.json"
+  ],
+  "rollback": "Revert the Review6-A root governance commit or delete the codex/review6-entry-ci-binding branch before merge.",
+  "unresolved_risks": [
+    "Authenticated GitHub branch protection/ruleset no-bypass details remain UNVERIFIED unless checked with a token or UI evidence.",
+    "This task closes entry gates and CI binding only; semantic parameter extraction and OWNER_STATUS decision reports remain for Review6-B and Review6-C."
+  ]
+}

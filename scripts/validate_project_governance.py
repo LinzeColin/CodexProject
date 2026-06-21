@@ -773,7 +773,32 @@ def validate_project(
     check_manual_counts(validation, project_path, parsed, required, scope)
 
 
-def git_changed_files() -> list[str]:
+ZERO_SHA = "0" * 40
+
+
+def explicit_base_ref(value: str | None = None) -> str | None:
+    candidate = value or os.environ.get("GOVERNANCE_BASE_REF") or os.environ.get("GOVERNANCE_BASE_SHA")
+    if not candidate:
+        return None
+    candidate = candidate.strip()
+    if not candidate or candidate == ZERO_SHA:
+        return None
+    return candidate
+
+
+def git_ref_exists(ref: str) -> bool:
+    result = subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", f"{ref}^{{commit}}"],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    return result.returncode == 0
+
+
+def git_changed_files(base_ref: str | None = None) -> list[str]:
     commands = [
         ["git", "diff", "--name-only", "--cached"],
         ["git", "diff", "--name-only"],
@@ -786,11 +811,23 @@ def git_changed_files() -> list[str]:
         except subprocess.CalledProcessError:
             continue
         changed.update(line.strip() for line in output.splitlines() if line.strip())
-    base_ref = os.environ.get("GITHUB_BASE_REF")
-    if base_ref:
+    explicit_base = explicit_base_ref(base_ref)
+    if explicit_base and git_ref_exists(explicit_base):
         try:
             output = subprocess.check_output(
-                ["git", "-c", "core.quotePath=false", "diff", "--name-only", f"origin/{base_ref}...HEAD"],
+                ["git", "-c", "core.quotePath=false", "diff", "--name-only", f"{explicit_base}...HEAD"],
+                cwd=ROOT,
+                text=True,
+                stderr=subprocess.DEVNULL,
+            )
+            changed.update(line.strip() for line in output.splitlines() if line.strip())
+        except subprocess.CalledProcessError:
+            pass
+    github_base_ref = os.environ.get("GITHUB_BASE_REF")
+    if not explicit_base and github_base_ref:
+        try:
+            output = subprocess.check_output(
+                ["git", "-c", "core.quotePath=false", "diff", "--name-only", f"origin/{github_base_ref}...HEAD"],
                 cwd=ROOT,
                 text=True,
                 stderr=subprocess.DEVNULL,
@@ -823,7 +860,7 @@ def select_projects(config: dict[str, Any], args: argparse.Namespace) -> list[di
             raise SystemExit(f"Unknown project: {args.project}")
         return selected
     if args.changed_only:
-        changed = git_changed_files()
+        changed = git_changed_files(getattr(args, "base_ref", None))
         root_governance_changed = any(
             filename.startswith(
                 (
@@ -863,6 +900,7 @@ def main(argv: list[str] | None = None) -> int:
     group.add_argument("--project", help="Validate one registered project by project_id or path.")
     group.add_argument("--changed-only", action="store_true", help="Validate root governance and changed project scopes.")
     parser.add_argument("--mode", choices=["advisory", "required"], help="Override project ci_mode.")
+    parser.add_argument("--base-ref", help="Explicit base commit/ref for changed-only diff validation.")
     parser.add_argument("--enforce-sync", action="store_true", help="Enforce diff-driven governance update requirements.")
     parser.add_argument("--semantic", action="store_true", help="Run semantic drift checks for current iterations, ledgers, and references.")
     parser.add_argument("--drift-report", action="store_true", help="Print a machine-readable semantic drift report.")
@@ -905,6 +943,7 @@ def main(argv: list[str] | None = None) -> int:
             enforce_sync=args.enforce_sync,
             semantic=args.semantic or args.all,
             drift_report=args.drift_report,
+            base_ref=args.base_ref,
         )
 
     print_summary(validation, selected_projects)

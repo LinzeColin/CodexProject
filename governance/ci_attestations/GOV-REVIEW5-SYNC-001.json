@@ -1,0 +1,17 @@
+{
+  "artifact_ref": "https://github.com/LinzeColin/CodexProject/actions/runs/27897975200/job/82552941403",
+  "attestation_id": "GOV-REVIEW5-SYNC-001-main-project-governance",
+  "base_ref": "b320b214ffaff055977098b88389e0a39d5d0096",
+  "binds_run_manifest": "GOV-REVIEW5-SYNC-001",
+  "commit_sha": "18c3773dd5cb9d618993a5685eed7fb668349ac3",
+  "conclusion": "success",
+  "evidence_hash": "1c11e3fb6383b03c7e899fcd4789eb20d0c4c86a322d58bc5489a66b2663487b",
+  "fact_level": "EXTRACTED",
+  "finished_at": "2026-06-21T08:01:55+00:00",
+  "job_id": "82552941403",
+  "schema_version": 1,
+  "tree_hash": "10a94ec8055b198ced4431c9e8e1f08337df1519",
+  "workflow": "Project Governance",
+  "workflow_run_attempt": "1",
+  "workflow_run_id": "27897975200"
+}
