@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.24`
+Active product version: `0.11.25`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.24
+- Product version: 0.11.25
 - Current phase: E
 - Current gate: ADP-PHASE11-PRODUCTION-TRIAL-START-BLOCKED
-- Confirmed iteration count: 43
+- Confirmed iteration count: 44
 - Reconstructed event count: 0
 - Current task: ADP-PHASE11-PRODUCTION-TRIAL-START-022
-- Blockers: Semantic coverage is machine_verified with 163 machine-checked active parameters and all 32 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. Production refs provisioning now has a no-secret owner-fillable template plus a GitHub metadata discovery command for provisioned runners, trial-start/scheduled production workflows declare machine-checked `contents: write` permission for controlled draft Release evidence, and trial-start now runs production refs discovery plus launch readiness before source, SMTP, Release, or start-gate work. Production launch remains blocked by missing owner-provisioned durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, missing explicit launch confirmation, and missing default-branch trial-start run evidence. Production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
+- Blockers: Semantic coverage is machine_verified with 164 machine-checked active parameters and all 32 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. Production refs provisioning now has a no-secret owner-fillable template, a GitHub metadata discovery command for provisioned runners, and a GitHub-hosted no-secret provisioning audit workflow that can run before private-runner trial-start dispatch. Trial-start/scheduled production workflows declare machine-checked `contents: write` permission for controlled draft Release evidence, and trial-start now runs production refs discovery plus launch readiness before source, SMTP, Release, or start-gate work. Production launch remains blocked by missing owner-provisioned durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, missing explicit launch confirmation, missing passing provisioning audit evidence, and missing default-branch trial-start run evidence. Production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
 
 ## Phase Matrix
 
@@ -24,7 +24,7 @@ The append-only machine record is `development_events.jsonl`.
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
-| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, SMTP delivery, Release delivery, scheduler gate, scheduled execution driver, daily input builder, trial ledger update, trial ledger state persistence, trial ops evidence annotation, trial replay evidence, trial recovery evidence, trial resource evidence, trial start gate, trial start workflow, production launch readiness, post-merge launch audit, production refs readiness bundle, production refs input template, GitHub metadata discovery, and trial-start launch preflight generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md` |
+| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, SMTP delivery, Release delivery, scheduler gate, scheduled execution driver, daily input builder, trial ledger update, trial ledger state persistence, trial ops evidence annotation, trial replay evidence, trial recovery evidence, trial resource evidence, trial start gate, trial start workflow, production launch readiness, post-merge launch audit, production refs readiness bundle, production refs input template, GitHub metadata discovery, trial-start launch preflight, and provisioning audit workflow generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md` |
 
 ## Iteration Records
 
@@ -1015,6 +1015,30 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Production acceptance still requires passing default-branch trial start evidence, live source pass on the runner, real SMTP/Release refs, archived weekly/monthly replay evidence, archived recovery drill evidence, actual resource telemetry, and 30 unique daily production evidence entries.
 - Rollback: Remove trial-start workflow production refs and launch precheck steps, revert workflow contract checks, remove PARAM-ADP-164 and related governance records, and restore version 0.11.23.
 - Next step: After owner provisioning, dispatch the default-branch trial-start workflow with explicit confirmation and archive the new refs, launch, source, SMTP, Release, and start-gate artifacts.
+
+### `ITER-20260621-044`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from GitHub-hosted provisioning audit workflow text, focused workflow tests, local blocked discovery output, and semantic registry checks.
+- Version before: 0.11.24
+- Version after: 0.11.25
+- Base commit: 12d022784bc79863ed4ae380ac1638c6bf85ca19
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-028, ADP-PHASE11-PRODUCTION-TRIAL-START-022
+- Goal: Add a GitHub-hosted no-secret provisioning audit workflow before private-runner trial-start dispatch.
+- Assumptions: The workflow may inspect GitHub Actions metadata for runner labels, secret names, and variable names through `ADP_GITHUB_METADATA_TOKEN` or `github.token`, but it must not read secret values, Codex auth, local media/model/cache artifacts, or dispatch production trial-start work.
+- Files changed: provisioning audit workflow, production refs workflow test, runbook, phase record, version/changelog files, model/formula/parameter/traceability registries, delivery task, event, and run manifest.
+- Model changes: No new runtime model; MOD-ADP-030 now includes a GitHub-hosted no-secret provisioning audit workflow before private-runner trial-start dispatch.
+- Formula changes: No implementation formula change; FORM-ADP-032 documents the provisioning audit wrapper around existing no-secret discovery.
+- Parameter changes: Added PARAM-ADP-165 for the GitHub-hosted production provisioning audit workflow.
+- Commands run: focused production refs/launch/CLI tests; local `discover-production-refs` blocked path with missing `gh`; semantic extractor validation; project governance validation; root governance tests; arXiv unit tests; changed-only enforce-sync semantic validation; manifest JSON parse; development_events JSONL parse; git diff check.
+- Test results: Focused tests and blocked local discovery passed before final governance validation; final validation results are recorded in the run manifest for this iteration.
+- Successes: Owner can now run a no-secret GitHub-hosted provisioning audit and archive `adp-production-provisioning-audit` before occupying the private self-hosted runner.
+- Failures: No owner-provisioned runner/SMTP/Release/workflow refs, workflow dispatch, SMTP send, Release upload, or trial-start evidence was produced in this run.
+- Decisions: Keep production launch and Phase 11 acceptance blocked until provisioning audit, default-branch trial-start, SMTP/Release, replay/recovery/resource, and 30-day daily evidence pass.
+- Remaining risks: The audit can prove GitHub metadata only when token permissions can list self-hosted runners, repository secret names, and variables; production acceptance still requires passing default-branch trial start evidence, live source pass on the runner, real SMTP/Release refs, archived weekly/monthly replay evidence, archived recovery drill evidence, actual resource telemetry, and 30 unique daily production evidence entries.
+- Rollback: Remove provisioning audit workflow, workflow test, PARAM-ADP-165, phase record, manifest, and related governance records, then restore version 0.11.24.
+- Next step: Configure owner-approved GitHub metadata permissions, run the provisioning audit workflow on `main`, then dispatch the default-branch trial-start workflow only after the audit and launch readiness pass.
 
 ## Unknown Historical Periods
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.25 - 2026-06-22
+
+- Added a manual `arxiv-daily-push-provisioning-audit.yml` workflow that runs on `ubuntu-latest` before trial start and uploads `adp-production-provisioning-audit`.
+- Reused `discover-production-refs` to validate runner label, required SMTP secret names, Release target variable, and workflow variables without occupying the private runner.
+- Kept the audit fail-closed and no-secret: it does not read secret values, Codex auth, dispatch trial start, send SMTP, create Releases, or claim production acceptance.
+
 ## 0.11.24 - 2026-06-22
 
 - Updated the default-branch trial-start workflow to run no-secret production refs discovery before any live source, SMTP, Release, or start-gate work.
