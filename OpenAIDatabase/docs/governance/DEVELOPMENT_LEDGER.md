@@ -4,23 +4,24 @@
 
 - product version: 0.2.0
 - product version status: provisional
-- current phase: C - personalization architecture
-- current gate: TASK-OAI-C-002-PERSONALIZATION-ARCHITECTURE
-- confirmed iterations: 4
+- current phase: B - semantic extractor coverage
+- current gate: GOV-SEMANTIC-OAIDB-in-progress
+- confirmed iterations: 5
 - reconstructed development events: 15
-- current task: TASK-OAI-C-002
-- blockers: calibration evidence for heuristic weights is UNKNOWN and tracked by `TASK-OAI-B-001`
+- current task: GOV-SEMANTIC-OAIDB-001
+- blockers: remaining complex branch rules, TypeScript writeback semantics, and heuristic calibration evidence are HUMAN_REVIEW_REQUIRED or UNKNOWN under `GOV-SEMANTIC-OAIDB-001` and `TASK-OAI-B-001`
 
 Confirmed iterations are not inferred from commit count. This ledger currently
-records four confirmed iterations: the baseline run and three TASK-OAI-C-002
-follow-up governance and personalization hardening runs.
+records five confirmed iterations: the baseline run, three TASK-OAI-C-002
+follow-up governance and personalization hardening runs, and this semantic
+extractor rollout run.
 
 ## Phase Matrix
 
 | Phase | Name | Status | Evidence |
 | --- | --- | --- | --- |
 | A | Discovery and baseline | completed | `MODEL_SPEC.md`, registries, scoped git log |
-| B | Model and data specification | blocked | `TASK-OAI-B-001` calibration evidence gap |
+| B | Model and data specification | in_progress | `GOV-SEMANTIC-OAIDB-001` partial machine semantic coverage; `TASK-OAI-B-001` calibration evidence gap |
 | C | Implementation | completed | Existing app implementation plus TASK-OAI-C-002 personalization architecture, route, export, evaluation harness, and non-empty four-category run-log evidence |
 | D | Verification and hardening | planned | Focused tests run in this baseline; full app/deploy acceptance remains planned |
 | E | Delivery and operation | completed for governance baseline | OpenAIDatabase project validator passed and `governance/projects.yaml` ci_mode is required |
@@ -122,6 +123,30 @@ follow-up governance and personalization hardening runs.
 - remaining risks: the `sync_runs` baseline is `NOT_RUN`; a future real sync must append PASS/FAIL evidence after reading local Codex session data
 - rollback: revert the sync-log baseline and evaluator hardening commit
 - next step: run focused validation and push follow-up to GitHub
+
+### ITER-20260621-OAI-004
+
+- date: 2026-06-21
+- fact level: EXTRACTED
+- version before: 0.2.0 provisional
+- version after: 0.2.0 provisional
+- base commit: 074295212402b6dfd1f807a567c5a18fc6e1558d
+- result commit: PENDING
+- task IDs: GOV-SEMANTIC-OAIDB-001
+- objective: add partial machine semantic extraction for OpenAIDatabase active parameter values and active formula implementation fingerprints without changing runtime behavior
+- assumptions: source selectors can verify Python AST, JSON config, and targeted text constants; TypeScript writeback semantics and complex branch-rule equivalence remain human-review-only until a stronger extractor exists
+- files read: `OpenAIDatabase/docs/governance/parameter_registry.csv`, `OpenAIDatabase/docs/governance/formula_registry.yaml`, `OpenAIDatabase/docs/governance/delivery_tasks.yaml`, targeted OpenAIDatabase scripts/config/tests, `governance/projects.yaml`, `scripts/validate_semantic_extractors.py`
+- files changed: `GOVERNANCE_DASHBOARD.md`, `OpenAIDatabase/docs/governance/parameter_registry.csv`, `OpenAIDatabase/docs/governance/formula_registry.yaml`, `OpenAIDatabase/docs/governance/delivery_tasks.yaml`, `OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml`, `OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md`, `OpenAIDatabase/docs/governance/development_events.jsonl`, `OpenAIDatabase/docs/governance/STATUS.md`, `OpenAIDatabase/docs/governance/OWNER_STATUS.md`, `governance/projects.yaml`, `scripts/validate_semantic_extractors.py`, `tests/governance/test_project_governance_validator.py`, `governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json`
+- model changes: governance metadata only; 10 active formulas now have machine implementation fingerprints and FORM-010 is explicitly HUMAN_REVIEW_REQUIRED
+- parameter changes: governance metadata only; 28 active parameters now have live source selectors, extracted values, verification commit, verification timestamp, and evidence hash; `PARAM-086` documentation was corrected to match the actual minimal startup route
+- commands: `python3 scripts/validate_semantic_extractors.py OpenAIDatabase`
+- test results: `PASS: semantic_formulas_checked=10; semantic_parameters_checked=28`; broader governance and focused OpenAIDatabase tests pending in this run
+- successes: semantic drift can now detect selected OpenAIDatabase parameter value and formula implementation changes instead of only file touches
+- failures: none observed in semantic extractor validation; many complex branch rules still require human review
+- decisions: keep product version 0.2.0 because this is governance verification metadata only
+- remaining risks: TypeScript writeback semantics, heuristic calibration evidence, and complex Python branch equivalence are not fully machine-verified
+- rollback: revert this iteration's governance metadata, root project semantic_coverage block, semantic selector additions, run manifest, and generated status pages
+- next step: complete focused project/root validation and publish through PR/main CI
 
 ## Reconstructed Development Events
 
