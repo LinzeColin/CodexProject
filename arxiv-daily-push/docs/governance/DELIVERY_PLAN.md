@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 9
-- acceptance_count: 9
+- task_count: 10
+- acceptance_count: 10
 
 ## Delivery Tasks
 
@@ -34,7 +34,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE6-LESSON-001 | C | completed | ADP-ACC-PHASE6-LESSON | 37 tests OK; lesson evidence linkage pass | `docs/phase_records/PHASE_06.md` |
 | ADP-PHASE7-TTS-001 | D | completed | ADP-ACC-PHASE7-TTS | 42 tests OK; narration dry-run gate pass | `docs/phase_records/PHASE_07.md` |
 | ADP-PHASE8-VIDEO-001 | D | completed | ADP-ACC-PHASE8-VIDEO | 47 tests OK; storyboard dry-run gate pass | `docs/phase_records/PHASE_08.md` |
-| ADP-PHASE9-LOCAL-PIPELINE-001 | D | planned | ADP-ACC-PHASE9-LOCAL-PIPELINE | not run | pursuing goal baseline |
+| ADP-PHASE9-LOCAL-PIPELINE-001 | D | completed | ADP-ACC-PHASE9-LOCAL-PIPELINE | 51 tests OK; local dry-run pipeline pass | `docs/phase_records/PHASE_09.md` |
+| ADP-PHASE10-RUNNER-RELEASE-EMAIL-001 | D | planned | ADP-ACC-PHASE10-RUNNER-RELEASE-EMAIL | not run | pursuing goal baseline |
 
 ## Release Gates
 

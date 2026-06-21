@@ -51,6 +51,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/tests/test_video.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-011"
+    statement: "Phase 9 runs a local daily dry-run pipeline across evidence, lesson, narration, storyboard, publication, RunRecord, and email preview without scheduler, Release upload, or real SMTP send."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_09.md", "arxiv-daily-push/src/arxiv_daily_push/pipeline.py", "arxiv-daily-push/tests/test_pipeline.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -191,3 +196,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/storyboard.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/fixtures/video_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+
+  - model_id: "MOD-ADP-009"
+    name: "Local daily dry-run pipeline"
+    kind: "deterministic orchestration pipeline"
+    purpose: "Run a single local daily dry-run from SourceItem and EvidenceClaim inputs through publication gate, Lesson, Narration, Storyboard, RunRecord completion, and email preview."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-local-pipeline-v1"
+    assumption_ids: ["ASM-ADP-011"]
+    formula_ids: ["FORM-ADP-011"]
+    parameter_ids: ["PARAM-ADP-045", "PARAM-ADP-046", "PARAM-ADP-047"]
+    inputs: ["SourceItem", "EvidenceClaim", "run_id", "date"]
+    outputs: ["RunRecord", "Publication", "Lesson", "Narration", "Storyboard", "email preview"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/pipeline.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/run_record.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_pipeline.py", "arxiv-daily-push/tests/fixtures/pipeline_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_09.md"]

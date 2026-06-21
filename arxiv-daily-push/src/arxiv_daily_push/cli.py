@@ -13,6 +13,7 @@ from .evidence_gate import gate_publication
 from .lesson import LessonGenerationError, generate_lesson
 from .narration import NarrationError, generate_narration_plan
 from .notifications import render_email
+from .pipeline import PipelineError, run_daily_dry_run
 from .ranking import selection_payload
 from .state_machine import validate_run_record
 from .video import VideoPlanError, generate_storyboard
@@ -76,6 +77,10 @@ def build_parser() -> argparse.ArgumentParser:
     storyboard.add_argument("--generated-at", required=True, help="Storyboard generation timestamp.")
     storyboard.add_argument("--check-path", default=".", help="Path used for media gate disk checks.")
     storyboard.add_argument("--json", action="store_true", help="Print JSON storyboard output.")
+
+    pipeline = subparsers.add_parser("run-daily-dry-run", help="Run local daily dry-run pipeline from source/claims JSON.")
+    pipeline.add_argument("--path", required=True, help="JSON file containing source_item, claims, run_id, publication_id, date, and generated_at.")
+    pipeline.add_argument("--json", action="store_true", help="Print JSON dry-run pipeline output.")
     return parser
 
 
@@ -213,5 +218,29 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(storyboard, ensure_ascii=False, indent=2, sort_keys=True))
         else:
             print(f"{storyboard['storyboard_id']}\t{len(storyboard['scenes'])} scenes")
+        return 0
+    if args.command == "run-daily-dry-run":
+        data = json.loads(Path(args.path).read_text(encoding="utf-8"))
+        try:
+            payload = run_daily_dry_run(
+                data["source_item"],
+                data["claims"],
+                run_id=data["run_id"],
+                publication_id=data["publication_id"],
+                date=data["date"],
+                generated_at=data["generated_at"],
+                timezone=data.get("timezone", "Australia/Sydney"),
+            )
+        except PipelineError as error:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": [str(error)]}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{payload['run_record']['run_id']}\t{payload['status']}")
         return 0
     raise AssertionError(f"Unhandled command: {args.command}")
