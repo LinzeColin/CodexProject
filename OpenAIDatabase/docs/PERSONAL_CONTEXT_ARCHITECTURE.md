@@ -1,0 +1,140 @@
+# OpenAIDatabase Personal Context Architecture
+
+This document is the canonical architecture entry for future agents that need
+profile, preference, taste, history, pattern, project context, or
+personalization data from `LinzeColin/CodexProject/OpenAIDatabase`.
+
+## Scope
+
+OpenAIDatabase is a private, structured, local-first memory source. GitHub
+stores redacted derived memory, machine-readable contracts, generated
+personalization exports, and audit logs. Raw exports, cookies, browser state,
+full transcripts, plaintext secrets, and private keys stay outside GitHub.
+
+## Three-Layer Context Source
+
+The machine contract is `config/context_sources/three_layer_context.json`.
+
+### L1_CORE_PROFILE
+
+- Purpose: durable core profile, stable answer style, collaboration standards,
+  preference, taste, long-term plans, and hard safety boundaries.
+- Canonical files:
+  - `data/derived/profile/CORE_PROFILE.md`
+  - `data/memory/curation/core_profile_review.json`
+- Required update targets: `profile`, `preference`, `taste`.
+
+### L2_PROJECT_MEMORY
+
+- Purpose: accepted active memory, project index, decision log, reusable
+  workflows, medium/long-term constraints, and durable project context.
+- Canonical files:
+  - `data/memory/active/active_memory.jsonl`
+  - `data/memory/active/active_memory.md`
+  - `data/derived/project_index/PROJECT_INDEX.md`
+  - `data/derived/decision_log/DECISION_LOG.md`
+- Required update targets: `history`, `pattern`, `project_context`.
+
+### L3_BEHAVIOR_HISTORY
+
+- Purpose: redacted Codex behavior history, activity snapshots, recurring
+  execution patterns, timeline, weekly/monthly packs, candidates, and temporary
+  sensitive references.
+- Canonical files:
+  - `data/processed/codex/codex_activity_snapshot.json`
+  - `data/processed/codex/codex_daily_activity.jsonl`
+  - `data/processed/codex/codex_session_manifest.jsonl`
+  - `data/derived/codex/codex_agent_recommendations.json`
+  - `data/derived/timeline/TIMELINE.md`
+  - `data/derived/weekly/*.weekly_memory_pack.md`
+  - `data/derived/monthly/*.monthly_memory_pack.md`
+- Required update targets: `history`, `pattern`.
+
+## Generated Personalization Exports
+
+Generated outputs live in `data/derived/personalization/`:
+
+- `chatgpt_personalization.md`: compact ChatGPT/Project personalization export.
+- `codex_personalization.md`: Codex startup and AGENTS-oriented export.
+- `personalization_export.json`: machine-readable export with source refs,
+  update targets, and route hints.
+
+Regenerate them with:
+
+```bash
+python3 scripts/build_agent_context_pack.py --database-dir .
+python3 scripts/build_personalization_exports.py --database-dir .
+```
+
+`scripts/sync_codex_memory_data.py --build-atlas` also rebuilds the
+personalization exports after refreshing Codex-derived data.
+
+## Codex Config
+
+- User template: `config/codex/config.template.toml`
+- Project config: `config/codex/project.config.toml`
+
+The template is safe to copy into a local Codex setup. It points agents to the
+three-layer source, resource routes, generated exports, and required run logs
+without embedding secrets or raw private data.
+
+## On-Demand Resource Routing
+
+Machine route definitions live in `config/context_sources/resource_routes.json`.
+
+Use:
+
+```bash
+python3 scripts/route_agent_resources.py --database-dir . --intent startup
+python3 scripts/route_agent_resources.py --database-dir . --intent taste_profile
+```
+
+Agents must start with the smallest route that matches the task instead of
+loading the entire repository. Broad search is allowed only after the route is
+insufficient.
+
+## Evaluation Harness
+
+Machine rules live in `config/evaluation/personalization_harness.json`.
+
+Run:
+
+```bash
+python3 scripts/evaluate_personalization_context.py --database-dir .
+```
+
+The harness checks required architecture files, generated exports, required
+sections, update targets, log categories, and basic forbidden plaintext
+patterns.
+
+## Four Run Log Categories
+
+Run logs live under `data/run_logs/` and are designed for GitHub backup:
+
+- `sync_runs`: Codex/ChatGPT/source sync operations.
+- `export_runs`: generated personalization export operations.
+- `evaluation_runs`: evaluation harness results.
+- `agent_runs`: meaningful future-agent runs that update or consume
+  personalization context.
+
+Logs are JSONL and must be redacted. Do not write raw transcript text,
+plaintext secrets, cookies, browser state, or local absolute paths.
+
+## Future-Agent Sync Rule
+
+Any future agent that changes user profile, preference, taste, history, or
+pattern information must update the corresponding canonical source files and
+then regenerate the derived exports.
+
+Minimum required sequence:
+
+1. Update the relevant source layer file.
+2. Rebuild `data/derived/agent_context/*`.
+3. Rebuild `data/derived/personalization/*`.
+4. Run the evaluation harness.
+5. Append the matching run log category.
+6. Commit and push the redacted derived files to GitHub.
+
+If the agent cannot determine which target changed, it must mark the item as
+`UNKNOWN` in the run log and create a follow-up task rather than silently
+dropping the update.

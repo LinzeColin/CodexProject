@@ -1,0 +1,41 @@
+{
+  "schema_version": "openai_database.personalization_harness.v1",
+  "purpose": "Evaluation harness for the three-layer context source, personalization exports, resource routes, and run logs.",
+  "required_files": [
+    "config/context_sources/three_layer_context.json",
+    "config/context_sources/resource_routes.json",
+    "config/codex/config.template.toml",
+    "config/codex/project.config.toml",
+    "docs/PERSONAL_CONTEXT_ARCHITECTURE.md",
+    "data/derived/personalization/chatgpt_personalization.md",
+    "data/derived/personalization/codex_personalization.md",
+    "data/derived/personalization/personalization_export.json"
+  ],
+  "required_export_sections": [
+    "Core Profile",
+    "Preferences And Taste",
+    "History And Patterns",
+    "Project And Decision Context",
+    "Future Agent Sync Rules"
+  ],
+  "required_update_targets": [
+    "profile",
+    "preference",
+    "taste",
+    "history",
+    "pattern"
+  ],
+  "required_log_categories": [
+    "sync_runs",
+    "export_runs",
+    "evaluation_runs",
+    "agent_runs"
+  ],
+  "forbidden_plaintext_patterns": [
+    "sk-",
+    "BEGIN PRIVATE KEY",
+    "api_key=",
+    "password=",
+    "Bearer "
+  ]
+}

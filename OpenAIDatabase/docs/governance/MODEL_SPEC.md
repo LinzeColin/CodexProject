@@ -1,12 +1,12 @@
 # OpenAIDatabase Governance Model Specification
 
-task_id: GOV-BASELINE-001
+task_id: TASK-OAI-C-002
 evidence_level: EXTRACTED unless marked otherwise
 governance_spec_version: 1.0.0
-model_count: 10
-formula_count: 10
-parameter_count: 82
-task_count: 8
+model_count: 11
+formula_count: 11
+parameter_count: 92
+task_count: 9
 
 ## A. Model Overview
 
@@ -26,6 +26,7 @@ parameter, task, version, and traceability counts.
 | MOD-008 | Codex local behavior summary | heuristic_algorithm | active | codex-sync-v0 | `scripts/sync_codex_memory_data.py:279` |
 | MOD-009 | Data source registry and public snapshot gate | deterministic_rule_engine | active | source-registry-v0 | `scripts/audit_memory_atlas_acceptance.py:86` |
 | MOD-010 | Writeback proposal version chain | deterministic_workflow_model | active | writeback-proposal-v0 | `apps/memory-atlas/src/App.tsx:2328` |
+| MOD-011 | Personalization export and resource routing | deterministic_workflow_model | active | personalization-routing-v0 | `scripts/build_personalization_exports.py:1` |
 
 Non-use cases:
 
@@ -43,6 +44,7 @@ Non-use cases:
 | ASM-004 | EXTRACTED | Codex local sync emits redacted summaries only, without raw transcripts, plaintext secrets, or local absolute paths. | `tests/test_codex_memory_sync.py` asserts redaction. |
 | ASM-005 | EXTRACTED | Planned data sources must be registered and must not create fake activity. | `audit_memory_atlas_acceptance.py` checks planned source status and selector visibility. |
 | ASM-006 | UNKNOWN | Weight and threshold calibration is not evidenced by labeled data or out-of-sample experiments. | Resolve under `TASK-OAI-B-001` with calibration evidence or explicit decision to keep heuristic constants. |
+| ASM-007 | EXTRACTED | Future agents need deterministic routing from redacted memory sources into ChatGPT/Codex personalization exports and must update profile, preference, taste, history, and pattern files together when those concepts change. | `evaluate_personalization_context.py` checks required files, sections, sync targets, and log categories. |
 
 ## C. Functions and Formulas
 
@@ -62,6 +64,7 @@ Summary:
 - FORM-008: Codex redacted session activity and recommendation summaries.
 - FORM-009: Data source registry, homepage source gate, and static summary privacy policy.
 - FORM-010: Writeback proposal revision, diff, rollback, and controlled apply gate.
+- FORM-011: Three-layer context to ChatGPT/Codex personalization export, route selection, evaluation, and run logging.
 
 ## D. Parameters
 
@@ -89,6 +92,12 @@ The current methodology is deterministic local processing:
 - Use fixed scoring formulas for Atlas node weight, ROI leverage, and activity heat.
 - Use source registry gates before adding new platform sources.
 - Use frontend proposal JSON for writeback requests and require controlled agent/human apply before memory mutation.
+- Use a three-layer context source and deterministic resource routes before
+  broad search.
+- Generate ChatGPT and Codex personalization exports from redacted derived
+  memory after every meaningful sync.
+- Verify personalization exports with the evaluation harness and preserve four
+  redacted run-log categories.
 
 Alternative methods not currently evidenced:
 
@@ -104,6 +113,8 @@ Signal formation:
 - Candidate signals come from trigger regex categories.
 - Atlas signals come from memory tier, importance, confidence, category, date, and source registry metadata.
 - Codex behavior signals come from redacted local session metadata, tool counts, topic rules, and preference signal rules.
+- Personalization export signals come from Core Profile, active memory,
+  Codex recommendations, behavior snapshots, and resource-route config.
 
 Gates:
 
@@ -111,12 +122,17 @@ Gates:
 - `review_status=pending` blocks treating generated candidates as accepted memories.
 - `source_contract.mode=public_redacted_read_only_visualization` blocks raw public snapshots.
 - Writeback proposals remain `draft_pending_agent_apply`.
+- Future agents must update mapped source files before regenerating
+  personalization exports when profile, preference, taste, history, or pattern
+  facts change.
 
 Fallback:
 
 - Unknown memory tier, importance, or confidence uses numeric fallback scores.
 - Missing search index triggers local rebuild from redacted JSONL.
 - Missing Codex fields become empty, redacted, or hashed labels.
+- Missing route intent returns a fail result with valid intents; missing
+  required export sections fails evaluation.
 
 Stop conditions:
 
@@ -132,6 +148,10 @@ Current focused validation commands for this baseline:
 - `python scripts/validate_project_governance.py --project OpenAIDatabase`
 - `python scripts/validate_project_governance.py --all`
 - `python3 -m unittest tests.test_openai_memory_analysis tests.test_memory_atlas_data tests.test_codex_memory_sync tests.test_memory_atlas_release_audit -q`
+- `python3 -m unittest tests.test_personalization_architecture -q`
+- `python3 scripts/build_personalization_exports.py --database-dir .`
+- `python3 scripts/route_agent_resources.py --database-dir . --intent startup`
+- `python3 scripts/evaluate_personalization_context.py --database-dir .`
 - `git diff --check`
 
 Release gate for this governance baseline:

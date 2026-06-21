@@ -7,6 +7,10 @@ Default language: Chinese for user-facing replies.
 - Default to Chinese for user-facing output. Keep professional terms, APIs, model names, code identifiers, and source titles in English when needed for precision.
 - Treat this repo as a local-first, review-gated memory database.
 - Treat this repo as the durable memory source for future AI agents. A new agent should be able to continue the user's work from this database without relying only on chat history.
+- Start from `docs/PERSONAL_CONTEXT_ARCHITECTURE.md`, `config/context_sources/three_layer_context.json`, and `config/context_sources/resource_routes.json` before broad search.
+- Use `scripts/route_agent_resources.py --intent <intent>` to select the smallest sufficient context route.
+- The three required context layers are L1 core profile, L2 project/decision memory, and L3 behavior history/patterns.
+- Future agents that update or sync profile, preference, taste, history, or pattern information must update the mapped source files, regenerate `data/derived/agent_context/*` and `data/derived/personalization/*`, run the evaluation harness, and append a redacted run log.
 - For fast personalization, read `data/derived/profile/CORE_PROFILE.md` before broad search. It reflects manually reviewed core profile overrides from `data/memory/curation/core_profile_review.json`.
 - Never commit raw unencrypted OpenAI export ZIPs or unredacted full messages.
 - Never commit `.local_keys/`, cookies, sessions, browser profiles, tokens, passwords, private keys, or `.env`.
@@ -14,6 +18,8 @@ Default language: Chinese for user-facing replies.
 - Default user-facing delivery is chat output plus GitHub-backed repository updates. Do not create local delivery ZIPs, copied report packages, or extra local deliverables unless the user explicitly asks.
 - After every processing run, paste the analysis report, weekly review, and monthly review into the chat. Repository files are backup/audit/RAG surfaces, not a substitute for the chat answer.
 - Also write the same chat-facing report to `data/derived/chat_reports/*.chat_report.md` for GitHub backup.
+- Generated ChatGPT/Codex personalization exports live in `data/derived/personalization/` and are rebuilt with `scripts/build_personalization_exports.py`.
+- Run logs use four GitHub-backed categories: `data/run_logs/sync_runs`, `data/run_logs/export_runs`, `data/run_logs/evaluation_runs`, and `data/run_logs/agent_runs`.
 - Keep the local machine lean: clean transient delivery packages, copied report folders, `.DS_Store`, and Python cache after use. Do not delete source exports or encrypted raw archives without explicit authorization.
 - Do not automate ChatGPT login, UI scraping, export download, or saved-memory writes.
 - Keep generated memory candidates `review_status = pending` until the user accepts or edits them.
@@ -58,6 +64,9 @@ python3 skills/openai-memory-analysis/scripts/openai_memory_analysis.py self-tes
 python3 skills/openai-memory-analysis/scripts/openai_memory_analysis.py search --database-dir . --query Codex --limit 5
 python3 scripts/build_memory_atlas_data.py --database-dir . --output data/derived/visualization/memory_atlas.json
 python3 scripts/sync_codex_memory_data.py --database-dir . --build-atlas
+python3 scripts/build_personalization_exports.py --database-dir .
+python3 scripts/route_agent_resources.py --database-dir . --intent startup
+python3 scripts/evaluate_personalization_context.py --database-dir .
 python3 -m unittest discover -s tests -p "test_*.py"
 npm ci --prefix apps/memory-atlas
 npm run build --prefix apps/memory-atlas

@@ -1,0 +1,103 @@
+{
+  "schema_version": "openai_database.three_layer_context.v1",
+  "purpose": "Canonical private structured context source map for future ChatGPT, Codex, and agent personalization.",
+  "privacy_contract": {
+    "repository_policy": "GitHub stores redacted derived context, schemas, templates, and audit logs only.",
+    "raw_private_policy": "Raw exports, full transcripts, browser state, cookies, and plaintext secrets stay local or encrypted and are referenced by secret_ref/local_ref only.",
+    "writeback_policy": "Every meaningful memory/profile/preference/taste/history/pattern update must update the mapped files and append a run log."
+  },
+  "layers": [
+    {
+      "layer_id": "L1_CORE_PROFILE",
+      "name": "核心画像 / Core Profile",
+      "purpose": "High-weight durable identity, communication preferences, collaboration standards, stable taste, long-term plans, and safety boundaries.",
+      "canonical_files": [
+        "data/derived/profile/CORE_PROFILE.md",
+        "data/memory/curation/core_profile_review.json"
+      ],
+      "update_triggers": [
+        "profile",
+        "identity",
+        "preference",
+        "taste",
+        "long_term_plan",
+        "stable_answering_rule"
+      ],
+      "required_update_targets": [
+        "profile",
+        "preference",
+        "taste"
+      ]
+    },
+    {
+      "layer_id": "L2_PROJECT_MEMORY",
+      "name": "一般长期上下文 / Project And Decision Memory",
+      "purpose": "Project index, decision log, workflows, medium/long-term constraints, reusable context, and accepted active memory.",
+      "canonical_files": [
+        "data/memory/active/active_memory.jsonl",
+        "data/memory/active/active_memory.md",
+        "data/derived/project_index/PROJECT_INDEX.md",
+        "data/derived/decision_log/DECISION_LOG.md"
+      ],
+      "update_triggers": [
+        "project_context",
+        "decision",
+        "workflow",
+        "medium_term_constraint",
+        "accepted_memory"
+      ],
+      "required_update_targets": [
+        "history",
+        "pattern",
+        "project_context"
+      ]
+    },
+    {
+      "layer_id": "L3_BEHAVIOR_HISTORY",
+      "name": "行为历史与模式 / Behavior History And Patterns",
+      "purpose": "Redacted chronological activity, Codex behavior summaries, recurring execution patterns, candidate memory, weekly/monthly packs, and temporary sensitive references.",
+      "canonical_files": [
+        "data/processed/codex/codex_activity_snapshot.json",
+        "data/processed/codex/codex_daily_activity.jsonl",
+        "data/processed/codex/codex_session_manifest.jsonl",
+        "data/derived/codex/codex_agent_recommendations.json",
+        "data/derived/timeline/TIMELINE.md",
+        "data/derived/weekly/2026-06-15.weekly_memory_pack.md",
+        "data/derived/monthly/2026-06.monthly_memory_pack.md"
+      ],
+      "update_triggers": [
+        "history",
+        "behavior",
+        "execution_pattern",
+        "temporary_context",
+        "sensitive_reference",
+        "weekly_review",
+        "monthly_review"
+      ],
+      "required_update_targets": [
+        "history",
+        "pattern"
+      ]
+    }
+  ],
+  "sync_required_targets": [
+    "profile",
+    "preference",
+    "taste",
+    "history",
+    "pattern"
+  ],
+  "derived_export_outputs": [
+    "data/derived/agent_context/agent_context_pack.json",
+    "data/derived/agent_context/AGENT_CONTEXT.md",
+    "data/derived/personalization/chatgpt_personalization.md",
+    "data/derived/personalization/codex_personalization.md",
+    "data/derived/personalization/personalization_export.json"
+  ],
+  "run_log_categories": [
+    "sync_runs",
+    "export_runs",
+    "evaluation_runs",
+    "agent_runs"
+  ]
+}
