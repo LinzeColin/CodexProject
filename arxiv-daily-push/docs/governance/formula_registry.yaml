@@ -258,8 +258,8 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/narration.py::tts_resource_gate", "arxiv-daily-push/src/arxiv_daily_push/narration.py::generate_narration_plan", "arxiv-daily-push/src/arxiv_daily_push/narration.py::validate_narration_plan", "arxiv-daily-push/src/arxiv_daily_push/narration.py::_segment_from_section"]
     implementation_fingerprint: "sha256:515cbaeb99b527fb558544db425f1e408e03f866409351cf7f4b8f9c09effdb0"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
+    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
+    verified_at: "2026-06-22T14:15:00+10:00"
     evidence_hash: "sha256:0918de3e7eeb3b043ba9a3e76f8778efc48004d7ba99ffa5e71ae747fd087ef4"
 
   - formula_id: "FORM-ADP-010"
@@ -770,10 +770,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:353dac84da73f331778ce739f976ab0d9ffe685f4fc0f426520264e0908a2618"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:a9928e32c3448ba5ba6308e1449eeb80e2be8b72b83edbd9fcb13631e68f50bb"
+    implementation_fingerprint: "sha256:21aa2056479674bb743dc4516765c5a3f6e158aef3bd7654a58da544bcb606ba"
+    last_verified_commit: "468738d44a2bf99b6fbdebaab85d7360ab731f4f"
+    verified_at: "2026-06-22T16:10:00+10:00"
+    evidence_hash: "sha256:9f23bcbf406df247c51b577cda58bfdb710731aa011c72a077c91ecd0ab4d73d"
 
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
@@ -1047,3 +1047,38 @@ formulas:
     last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
     verified_at: "2026-06-22T14:15:00+10:00"
     evidence_hash: "sha256:ff304124990e33be62d2e098ed80acc82aebc9386177fcc206d060a9d0e27bbb"
+
+  - formula_id: "FORM-ADP-032"
+    model_id: "MOD-ADP-030"
+    assumption_ids: ["ASM-ADP-033", "ASM-ADP-032", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
+    status: "active"
+    expression: "A production refs report passes only when runner, SMTP secrets, Release target, and workflow variable readiness sections are explicitly ready, required SMTP secret names and workflow variable names are present, every readiness ref is durable, suspicious secret-value keys or values are absent, and the gate performs no side effects, reads no Codex auth, dispatches no workflow, logs no secret values, and claims no production acceptance."
+    variables:
+      - name: "readiness_input"
+        data_type: "object"
+        unit: "JSON"
+        input_domain: "no-secret owner or runner metadata with ready flags, names, labels, targets, and durable refs"
+      - name: "required_smtp_secret_names"
+        data_type: "list[str]"
+        unit: "GitHub secret names"
+        input_domain: "ADP_SMTP_HOST, ADP_SMTP_PORT, ADP_SMTP_USERNAME, and ADP_SMTP_PASSWORD"
+      - name: "required_workflow_var_names"
+        data_type: "list[str]"
+        unit: "GitHub variable names"
+        input_domain: "ADP_RELEASE_TARGET, ADP_ALLOW_SMTP_SEND, and ADP_ALLOW_RELEASE_UPLOAD"
+      - name: "readiness_refs"
+        data_type: "map[str,str]"
+        unit: "durable refs"
+        input_domain: "runner, SMTP secrets, Release target, and workflow variables"
+    constraints: "The production refs gate does not inspect GitHub secret values, read Codex auth, dispatch workflows, send SMTP, create Releases, mutate trial evidence, generate media, or claim production acceptance."
+    missing_policy: "Missing ready flags, missing required names, missing durable refs, invalid Release target variable, or secret-like input keys or values produce a blocked refs report."
+    output_range: "production refs readiness report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/tests/test_production_launch.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_runner_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_smtp_secret_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_release_target_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_workflow_vars_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_secret_hygiene_errors"]
+    implementation_fingerprint: "sha256:5a3dc2483bbab49ccc0bd8da147552ededbeb366aba939c9c3a20ab33a3d3fcb"
+    last_verified_commit: "468738d44a2bf99b6fbdebaab85d7360ab731f4f"
+    verified_at: "2026-06-22T16:10:00+10:00"
+    evidence_hash: "sha256:f050eefd64ded7e13413cc23d0d9086c263c26bc0a4d02898efc8fe7c6f81255"

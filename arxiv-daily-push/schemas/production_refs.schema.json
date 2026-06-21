@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/production_refs.schema.json",
+  "title": "arXiv Daily Push Production Refs Readiness Report",
+  "type": "object",
+  "required": [
+    "refs_report_id",
+    "validator_id",
+    "project_id",
+    "generated_at",
+    "status",
+    "production_refs_ready",
+    "readiness_refs",
+    "readiness_gates",
+    "side_effects_performed",
+    "secret_values_logged",
+    "codex_auth_read",
+    "workflow_dispatched",
+    "production_acceptance_claimed",
+    "blocking_reasons",
+    "next_external_actions"
+  ],
+  "properties": {
+    "refs_report_id": {"type": "string", "minLength": 1},
+    "validator_id": {"const": "adp-production-refs-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "blocked"]},
+    "production_refs_ready": {"type": "boolean"},
+    "readiness_refs": {
+      "type": "object",
+      "required": ["runner_ref", "smtp_secret_ref", "release_target_ref", "workflow_vars_ref"],
+      "properties": {
+        "runner_ref": {"type": "string"},
+        "smtp_secret_ref": {"type": "string"},
+        "release_target_ref": {"type": "string"},
+        "workflow_vars_ref": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "readiness_gates": {"type": "array", "items": {"type": "object"}},
+    "side_effects_performed": {"const": false},
+    "secret_values_logged": {"const": false},
+    "codex_auth_read": {"const": false},
+    "workflow_dispatched": {"const": false},
+    "production_acceptance_claimed": {"const": false},
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}},
+    "next_external_actions": {"type": "array", "items": {"type": "string"}},
+    "validation_errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

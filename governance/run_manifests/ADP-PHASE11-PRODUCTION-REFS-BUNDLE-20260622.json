@@ -1,0 +1,133 @@
+{
+  "run_id": "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-20260622",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023",
+  "iteration_id": "ITER-20260621-039",
+  "phase": "E",
+  "started_at": "2026-06-22T16:10:00+10:00",
+  "finished_at": "2026-06-22T16:10:00+10:00",
+  "generated_at": "2026-06-22T16:10:00+10:00",
+  "version_before": "0.11.19",
+  "version_after": "0.11.20",
+  "base_commit": "468738d44a2bf99b6fbdebaab85d7360ab731f4f",
+  "result_commit": "PENDING",
+  "result": "pass",
+  "objective": "Add a no-secret production refs readiness bundle for runner, SMTP secret-name, Release target, and workflow variable refs.",
+  "scope": [
+    "production refs validator",
+    "plan-production-refs CLI",
+    "plan-production-launch refs report integration",
+    "production refs schema",
+    "focused regression tests",
+    "governance registry and runbook updates"
+  ],
+  "non_scope": [
+    "secret value read",
+    "Codex auth read",
+    "GitHub workflow dispatch",
+    "SMTP send",
+    "Release upload",
+    "30-day production acceptance claim",
+    "local media/model/cache retention"
+  ],
+  "production_refs_gate": {
+    "validator_id": "adp-production-refs-v1",
+    "required_smtp_secret_names": [
+      "ADP_SMTP_HOST",
+      "ADP_SMTP_PORT",
+      "ADP_SMTP_USERNAME",
+      "ADP_SMTP_PASSWORD"
+    ],
+    "required_workflow_var_names": [
+      "ADP_RELEASE_TARGET",
+      "ADP_ALLOW_SMTP_SEND",
+      "ADP_ALLOW_RELEASE_UPLOAD"
+    ],
+    "required_ref_keys": [
+      "runner_ref",
+      "smtp_secret_ref",
+      "release_target_ref",
+      "workflow_vars_ref"
+    ],
+    "side_effects_performed": false,
+    "secret_values_logged": false,
+    "codex_auth_read": false,
+    "workflow_dispatched": false,
+    "production_acceptance_claimed": false
+  },
+  "semantic_coverage": {
+    "semantic_parameters_checked": 158,
+    "semantic_formulas_checked": 32,
+    "human_review_required_parameters": 0,
+    "human_review_required_formulas": 0,
+    "status": "machine_verified"
+  },
+  "changed_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/production_refs.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_production_refs.py",
+    "arxiv-daily-push/tests/test_production_launch.py",
+    "arxiv-daily-push/schemas/production_refs.schema.json",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/run_manifests/ADP-PHASE11-PRODUCTION-REFS-BUNDLE-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "model_delta": "Added MOD-ADP-030 adp-production-refs-v1 and kept production launch/acceptance fail-closed.",
+  "formula_delta": "Added FORM-ADP-032 and refreshed FORM-ADP-024 implementation fingerprint after CLI main changed.",
+  "parameter_delta": "Added PARAM-ADP-154 through PARAM-ADP-159 for production refs readiness parameters.",
+  "model_delta_ids": [
+    "MOD-ADP-030"
+  ],
+  "formula_delta_ids": [
+    "FORM-ADP-024",
+    "FORM-ADP-032"
+  ],
+  "parameter_delta_ids": [
+    "PARAM-ADP-154",
+    "PARAM-ADP-155",
+    "PARAM-ADP-156",
+    "PARAM-ADP-157",
+    "PARAM-ADP-158",
+    "PARAM-ADP-159"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_production_refs.py arxiv-daily-push/tests/test_production_launch.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "python3 -m json.tool arxiv-daily-push/schemas/production_refs.schema.json",
+    "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "git diff --check"
+  ],
+  "test_results": [
+    "focused production refs/launch pytest: 9 tests OK",
+    "arxiv-daily-push unit tests: 148 tests OK",
+    "production_refs schema JSON parse: OK",
+    "semantic extractor: 158 active parameters and 32 active formulas checked with no errors",
+    "project governance: arxiv-daily-push errors 0 warnings 0",
+    "root governance tests: 91 tests OK",
+    "git diff --check: pass"
+  ],
+  "production_acceptance_status": "blocked",
+  "risks": [
+    "Production launch remains blocked until owner-provisioned durable runner, SMTP secret, Release target, workflow variable refs, and explicit launch confirmation exist.",
+    "Real production acceptance remains blocked until default-branch trial start workflow passes and 30 unique daily production evidence entries plus replay, recovery, resource, SMTP, and Release evidence are archived and validated."
+  ],
+  "rollback": "Revert production refs gate, CLI integration, schema, tests, runbook/phase record/governance updates, and restore version 0.11.19.",
+  "next_task": "PROVISION_REMAINING_PRODUCTION_REFS_AND_RERUN_LAUNCH_PRECHECK"
+}
