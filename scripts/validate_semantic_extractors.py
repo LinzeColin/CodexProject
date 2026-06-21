@@ -262,6 +262,23 @@ def find_line_literal(tree: ast.Module, line_no: int, occurrence: int) -> Any:
     return values[occurrence - 1]
 
 
+def dict_keys_from_node(node: ast.AST, selector: str) -> list[Any]:
+    if not isinstance(node, ast.Dict):
+        raise SemanticExtractionError(f"selector did not extract dict: {selector}")
+    return [literal_value(key) for key in node.keys]
+
+
+def sequence_firsts_from_node(node: ast.AST, selector: str) -> list[Any]:
+    if not isinstance(node, (ast.List, ast.Tuple)):
+        raise SemanticExtractionError(f"selector did not extract sequence: {selector}")
+    firsts: list[Any] = []
+    for item in node.elts:
+        if not isinstance(item, (ast.List, ast.Tuple)) or not item.elts:
+            raise SemanticExtractionError(f"sequence item has no first value: {selector}")
+        firsts.append(literal_value(item.elts[0]))
+    return firsts
+
+
 def parse_options(text: str) -> tuple[str, dict[str, str]]:
     if "|" not in text:
         return text, {}
@@ -325,6 +342,16 @@ def extract_selector(selector: str) -> Any:
         target = selector.removeprefix("python_ast_assignment:")
         path_text, name = target.split("::", 1)
         return apply_selector_options(literal_value(find_module_assignment(parse_tree(selector_path(path_text)), name)), options)
+    if selector.startswith("python_ast_dict_keys:"):
+        target = selector.removeprefix("python_ast_dict_keys:")
+        path_text, name = target.split("::", 1)
+        node = find_module_assignment(parse_tree(selector_path(path_text)), name)
+        return apply_selector_options(dict_keys_from_node(node, selector), options)
+    if selector.startswith("python_ast_sequence_firsts:"):
+        target = selector.removeprefix("python_ast_sequence_firsts:")
+        path_text, name = target.split("::", 1)
+        node = find_module_assignment(parse_tree(selector_path(path_text)), name)
+        return apply_selector_options(sequence_firsts_from_node(node, selector), options)
     if selector.startswith("python_ast_literal:"):
         target = selector.removeprefix("python_ast_literal:")
         path_text, line_text, occurrence_text = target.rsplit(":", 2)
@@ -369,6 +396,21 @@ def extract_selector(selector: str) -> Any:
         target = selector.removeprefix("json_path:")
         path_text, path_expr = target.split("::", 1)
         return apply_selector_options(extract_structural_path(load_json(selector_path(path_text)), path_expr), options)
+    if selector.startswith("json_path_list_field:"):
+        target = selector.removeprefix("json_path_list_field:")
+        path_text, path_expr, field = target.split("::", 2)
+        value = extract_structural_path(load_json(selector_path(path_text)), path_expr)
+        if not isinstance(value, list):
+            raise SemanticExtractionError(f"json_path_list_field did not extract list: {selector}")
+        if "where" in options:
+            where_key, where_value = split_lookup(options["where"])
+            value = [item for item in value if isinstance(item, dict) and str(item.get(where_key) or "") == where_value]
+        extracted: list[Any] = []
+        for item in value:
+            if not isinstance(item, dict) or field not in item:
+                raise SemanticExtractionError(f"json_path_list_field item is missing field {field}: {selector}")
+            extracted.append(item[field])
+        return apply_selector_options(extracted, options)
     if selector.startswith("yaml_path:"):
         target = selector.removeprefix("yaml_path:")
         path_text, path_expr = target.split("::", 1)

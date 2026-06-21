@@ -152,14 +152,15 @@ projects:
     path: "OpenAIDatabase"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
     semantic_coverage:
-      status: "planned"
+      status: "in_progress"
       task_id: "GOV-SEMANTIC-OAIDB-001"
       acceptance_id: "ACC-SEMANTIC-OAIDB-001"
       target: "Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints."
-      evidence_ref: "OpenAIDatabase/docs/governance/OWNER_STATUS.md"
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for OpenAIDatabase."
+      rationale: "Review6-D rollout guard; OpenAIDatabase now machine-checks 28 active parameters and 10 active formulas while remaining active parameters and FORM-010 stay HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-OAIDB-001."
     model_behavior_globs:
       - "apps/**"
       - "config/**"

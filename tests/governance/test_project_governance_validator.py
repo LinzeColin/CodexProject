@@ -148,6 +148,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json",
         )
 
+    def test_review6d_openai_database_semantic_rollout_is_task_bound(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        openai_database = next(project for project in config["projects"] if project["project_id"] == "OpenAIDatabase")
+        self.assertTrue(openai_database.get("semantic_extractors"))
+        coverage = openai_database["semantic_coverage"]
+        self.assertEqual(coverage["status"], "in_progress")
+        self.assertEqual(coverage["task_id"], "GOV-SEMANTIC-OAIDB-001")
+        self.assertEqual(coverage["acceptance_id"], "ACC-SEMANTIC-OAIDB-001")
+        self.assertEqual(
+            coverage["evidence_ref"],
+            "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json",
+        )
+
     def test_review6d_required_project_missing_semantic_coverage_fails(self) -> None:
         validator = load_validator_module()
         with tempfile.TemporaryDirectory() as tmp:
@@ -745,6 +759,48 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 issues, summary = semantic.validate_project_semantics(project, "P")
         self.assertFalse([issue for issue in issues if issue.level == "ERROR"], issues)
         self.assertEqual(summary["semantic_parameters_checked"], 1)
+
+    def test_review6_collection_key_selectors_extract_without_evaluating_values(self) -> None:
+        semantic = load_semantic_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            (tmp_path / "P").mkdir()
+            (tmp_path / "P" / "impl.py").write_text(
+                "\n".join(
+                    [
+                        "import re",
+                        "RULES = {'alpha': re.compile('a'), 'beta': re.compile('b')}",
+                        "PAIRS = [('one', re.compile('1')), ('two', re.compile('2'))]",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (tmp_path / "P" / "config.json").write_text(
+                json.dumps(
+                    {
+                        "sources": [
+                            {"id": "memory_atlas", "status": "active"},
+                            {"id": "codex", "status": "active"},
+                            {"id": "wechat", "status": "planned"},
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with patch.object(semantic, "ROOT", tmp_path):
+                self.assertEqual(
+                    semantic.extract_selector("python_ast_dict_keys:P/impl.py::RULES|join=;"),
+                    "alpha;beta",
+                )
+                self.assertEqual(
+                    semantic.extract_selector("python_ast_sequence_firsts:P/impl.py::PAIRS|join=;"),
+                    "one;two",
+                )
+                self.assertEqual(
+                    semantic.extract_selector("json_path_list_field:P/config.json::sources::id|where=status=active|join=;"),
+                    "memory_atlas;codex",
+                )
 
     def test_review6_python_dict_value_selector_checks_active_value(self) -> None:
         semantic = load_semantic_module()
