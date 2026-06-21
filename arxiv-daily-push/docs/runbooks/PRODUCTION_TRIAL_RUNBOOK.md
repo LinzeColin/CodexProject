@@ -267,6 +267,54 @@ only marks `trial_start_ready=true` when all upstream reports pass, real SMTP an
 Release probes are present, every ref is durable, and the explicit confirmation
 flag is set.
 
+## Trial Start Evidence Workflow
+
+After the start gate command has been validated locally, the default-branch
+workflow for collecting real start evidence is:
+
+```text
+.github/workflows/arxiv-daily-push-trial-start.yml
+```
+
+GitHub Actions display name:
+
+```text
+arXiv Daily Push trial start evidence
+```
+
+Dispatch inputs:
+
+- `confirm_trial_start=true`
+- `runner_label=arxiv-daily-push` unless the private runner uses another label
+- `generated_at=<ISO timestamp>` optional
+
+The workflow is manual-only and starts no private runner job when
+`confirm_trial_start` is not `true`. It always runs production preflight before
+live source ingest, SMTP probe, Release probe, or `plan-trial-start`. Real SMTP
+and Release side effects remain disabled unless GitHub variables
+`ADP_ALLOW_SMTP_SEND=true` and `ADP_ALLOW_RELEASE_UPLOAD=true` are explicitly
+set for a controlled probe.
+
+Expected artifacts:
+
+- `adp-trial-start-preflight`
+- `adp-trial-start-bootstrap-plan`
+- `adp-trial-start-scheduler-plan`
+- `adp-trial-start-source-batch`
+- `adp-trial-start-smtp-delivery`
+- `adp-trial-start-release-delivery`
+- `adp-trial-start-gate`
+
+The workflow can be validated without running production side effects:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-trial-start-workflow --path . --generated-at <ISO timestamp> --json
+```
+
+Only a passing `adp-trial-start-gate` artifact from this workflow on the default
+branch should be treated as trial start evidence for the 30-day acceptance
+window.
+
 Then merge the explicit evidence refs with:
 
 ```bash

@@ -477,3 +477,20 @@ tasks:
     target_version: "0.11.17"
     completed_version: "0.11.17"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-START-WORKFLOW-019"
+    phase: "E"
+    objective: "Add the manual default-branch trial start evidence workflow."
+    scope: "GitHub workflow, workflow validator, CLI command, schema, tests, runbook, phase record, version, and governance records."
+    non_scope: "No actual default-branch run evidence, no real SMTP or Release evidence in local validation, no schedule enablement, no trial acceptance claim, and no local cache/media/model retention."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-START-GATE-018"]
+    required_files: [".github/workflows/arxiv-daily-push-trial-start.yml", "src/arxiv_daily_push/trial_start_workflow.py", "src/arxiv_daily_push/cli.py", "tests/test_trial_start_workflow.py", "schemas/trial_start_workflow.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-START-WORKFLOW"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_start_workflow.py arxiv-daily-push/tests/test_trial_start.py arxiv-daily-push/tests/test_trial_bootstrap.py arxiv-daily-push/tests/test_production_scheduler.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial start workflow/start/bootstrap/scheduler/CLI tests: 20 tests OK", "plan-trial-start-workflow CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/tests/test_trial_start_workflow.py", ".github/workflows/arxiv-daily-push-trial-start.yml"]
+    risk: "Real start evidence requires running the workflow from the default branch with a provisioned private runner, GitHub variables, SMTP secrets, Release target, live source access, and archived artifacts."
+    rollback: "Revert trial start workflow, validator, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.17."
+    target_version: "0.11.18"
+    completed_version: "0.11.18"
+    unknown_task_ids: []

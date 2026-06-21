@@ -47,6 +47,7 @@ Implemented now:
 - `adp build-trial-recovery-evidence`
 - `adp build-trial-resource-evidence`
 - `adp plan-trial-start`
+- `adp plan-trial-start-workflow`
 - `adp preflight-production`
 - `adp plan-trial-bootstrap`
 - `adp plan-production-scheduler`
@@ -67,6 +68,7 @@ Implemented now:
 - recovery drill evidence builder that validates a failed or degraded scheduled daily-run plus a recovered production-ready rerun with real sent notifications and durable failure/recovery refs before producing annotation hints
 - resource telemetry evidence builder that validates 30 unique daily resource refs against passing production preflight reports before producing annotation hints
 - trial start readiness gate that requires passing preflight, bootstrap, scheduler, live source, real SMTP, real Release, durable refs, and explicit confirmation before a real 30-day trial is marked start-ready
+- manual trial start evidence workflow that collects preflight, source, SMTP, Release, and start-gate artifacts on the private runner with explicit variable-gated side effects
 - deterministic 100-point ranking with per-component audit output
 - fail-closed candidate blocking for missing P0 evidence, metadata conflicts, and recent duplicate selections
 - Claim Ledger construction from explicit evidence claims

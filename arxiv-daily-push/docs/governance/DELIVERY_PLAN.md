@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 28
-- acceptance_count: 28
+- task_count: 29
+- acceptance_count: 29
 
 ## Delivery Tasks
 
@@ -54,6 +54,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-TRIAL-RECOVERY-EVIDENCE-016 | E | completed | ADP-ACC-PHASE11-TRIAL-RECOVERY-EVIDENCE | 21 focused tests OK; recovery evidence builder blocks dry-run notifications, missing refs, and non-production recovery reports | `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md` |
 | ADP-PHASE11-TRIAL-RESOURCE-EVIDENCE-017 | E | completed | ADP-ACC-PHASE11-TRIAL-RESOURCE-EVIDENCE | 27 focused tests OK; resource evidence builder blocks missing preflight matches, blocked preflight, missing durable refs, and lowered expected days | `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md` |
 | ADP-PHASE11-TRIAL-START-GATE-018 | E | completed | ADP-ACC-PHASE11-TRIAL-START-GATE | 34 focused tests OK; start gate blocks missing confirmation, missing durable refs, SMTP dry-run probes, and blocked preflight reports | `docs/phase_records/PHASE_11_TRIAL_START_GATE.md` |
+| ADP-PHASE11-TRIAL-START-WORKFLOW-019 | E | completed | ADP-ACC-PHASE11-TRIAL-START-WORKFLOW | 20 focused tests OK; workflow validator checks manual dispatch, artifact set, side-effect vars, durable refs, and secret safety | `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md` |
 
 ## Release Gates
 
@@ -88,6 +89,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 trial recovery evidence | failed/degraded scheduled daily-run plus recovered production-ready rerun with real sent notifications and durable refs before annotation | pass for recovery evidence contract; no real production recovery drill claimed |
 | Phase 11 trial resource evidence | 30 unique daily resource refs matched to passing production preflight reports and durable resource evidence ref before annotation | pass for resource evidence contract; no real 30-day resource telemetry claimed |
 | Phase 11 trial start gate | passing preflight, bootstrap, scheduler, live source, real SMTP, real Release, durable refs, and explicit confirmation before start-ready | pass for start-readiness contract; no real trial start or production acceptance claimed |
+| Phase 11 trial start workflow | manual default-branch workflow that collects preflight, bootstrap, scheduler, source, SMTP, Release, and start-gate artifacts with explicit side-effect variables | pass for workflow contract; not yet run on default branch |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |
