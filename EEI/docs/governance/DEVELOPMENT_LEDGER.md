@@ -10,12 +10,12 @@ This ledger is human-readable. The append-only machine record is `development_ev
 
 - Product version: `0.1.0`
 - Product version status: `provisional`
-- Current phase: `D`
-- Current gate: `TASK-T1307-A209-RUNNER-REPAIR-REMOTE-CI`
-- Confirmed iteration count: 16
+- Current phase: `B`
+- Current gate: `GOV-SEMANTIC-EEI-001-PARTIAL-EXTRACTORS`
+- Confirmed iteration count: 17
 - Reconstructed development event count: 2
-- Current task: `TASK-T1307`
-- Blockers: A209 remains open until committed 4h and 24h operator soak evidence exists.
+- Current task: `GOV-SEMANTIC-EEI-001`
+- Blockers: 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -383,6 +383,30 @@ Do not infer iteration count from Git commit count.
 - Remaining risks: actual 4h and 24h operator artifacts must still be generated, validated, committed and referenced before A209 can close.
 - Rollback: revert the remote evidence update and regenerate release artifacts with `remote_status=PENDING`.
 - Next step: commit/push the remote evidence update, verify the evidence-only CI run, then run the 4h operator soak.
+
+### `ITER-20260621-016`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `810ea9f`
+- Result commit: `PENDING`
+- Task IDs: `GOV-SEMANTIC-EEI-001`
+- Goal: add partial machine semantic extraction for EEI active parameter and formula governance facts without changing runtime behavior.
+- Assumptions: values equal to `EEI/data/parameter_catalog.csv` default values are machine-checkable in this slice; motion runtime activation values and FORM-012 threshold-control semantics remain unresolved until extractor or human-review evidence is added.
+- Files read: root governance validator, EEI parameter registry, EEI formula registry, EEI parameter/formula CSV evidence sources, EEI delivery task registry.
+- Files changed: EEI semantic governance registries, EEI delivery task registry, EEI version matrix, this ledger, and clean-room/release checksum evidence regenerated because the EEI CI release package must include the updated governance ledger.
+- Model changes: no model behavior change; 10 active formula entries now have machine implementation fingerprints from `EEI/data/formula_registry.csv`, and FORM-012 is marked `HUMAN_REVIEW_REQUIRED`.
+- Parameter changes: no active parameter value change; 54 active parameters now have machine source selectors and evidence hashes; 7 UNKNOWN motion parameters remain task-bound to `GOV-SEMANTIC-EEI-001`.
+- Commands run: `python3 scripts/validate_semantic_extractors.py EEI`, root governance validators, governance pytest suite, `python scripts/manage_clean_room_release.py generate`, and `python scripts/manage_release_artifacts.py generate --remote-status PENDING`.
+- Test results: local semantic extractor direct run PASS with `semantic_parameters_checked=54` and `semantic_formulas_checked=10`; root governance tests passed; clean-room release package regenerated with 390 package paths; release artifacts regenerated with `remote_status=PENDING`.
+- Successes: EEI is no longer structure-only for its verifiable parameter/catalog facts and canonical formula CSV rows.
+- Failures: EEI is not `machine_verified` because motion runtime activation sources and FORM-012 implementation fingerprint are still unresolved.
+- Decisions: keep `semantic_coverage.status=in_progress`, not `machine_verified`.
+- Remaining risks: catalog-level extraction does not prove every runtime loader path yet; FORM-012 still needs a dedicated extractor or explicit human-review acceptance.
+- Rollback: remove the semantic selector/fingerprint fields, reset EEI semantic coverage to `planned`, regenerate clean-room/release artifacts from the reverted tree, and rerun governance validators.
+- Next step: verify the partial EEI semantic extraction through root validator, all-project semantic drift report and GitHub CI.
 
 ## Reconstructed Development Events
 

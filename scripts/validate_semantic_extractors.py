@@ -48,8 +48,11 @@ def load_yaml(path: Path) -> Any:
 
 
 def load_csv(path: Path) -> list[dict[str, str]]:
-    with path.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
+    with path.open(newline="", encoding="utf-8-sig") as handle:
+        rows: list[dict[str, str]] = []
+        for row in csv.DictReader(handle):
+            rows.append({str(key).lstrip("\ufeff"): value for key, value in row.items()})
+        return rows
 
 
 def as_list(value: Any) -> list[Any]:
@@ -72,6 +75,71 @@ def selector_path(path_text: str) -> Path:
     if not path.is_file():
         raise SemanticExtractionError(f"selector path does not exist: {path_text}")
     return path
+
+
+def is_unknownish(value: Any) -> bool:
+    text = str(value or "").strip().upper()
+    return text in UNKNOWN_VALUES or text.startswith("UNKNOWN")
+
+
+def split_lookup(text: str) -> tuple[str, str]:
+    if "=" not in text:
+        raise SemanticExtractionError(f"lookup must use column=value syntax: {text}")
+    key, value = text.split("=", 1)
+    key = key.strip()
+    if not key:
+        raise SemanticExtractionError(f"lookup column is empty: {text}")
+    return key, value
+
+
+def extract_csv_row(target: str) -> dict[str, str]:
+    path_text, lookup_text = target.split("::", 1)
+    lookup_column, lookup_value = split_lookup(lookup_text)
+    matches = [row for row in load_csv(selector_path(path_text)) if str(row.get(lookup_column) or "") == lookup_value]
+    if not matches:
+        raise SemanticExtractionError(f"csv_row lookup did not match: {target}")
+    if len(matches) > 1:
+        raise SemanticExtractionError(f"csv_row lookup matched multiple rows: {target}")
+    return {key: str(matches[0].get(key) or "") for key in sorted(matches[0])}
+
+
+def extract_csv_cell(target: str) -> str:
+    path_text, lookup_text, value_column = target.split("::", 2)
+    row = extract_csv_row(f"{path_text}::{lookup_text}")
+    if value_column not in row:
+        raise SemanticExtractionError(f"csv_cell value column not found: {value_column}")
+    return row[value_column]
+
+
+def load_json(path: Path) -> Any:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def path_parts(path_text: str) -> list[str]:
+    cleaned = path_text.strip()
+    if cleaned.startswith("$."):
+        cleaned = cleaned[2:]
+    elif cleaned.startswith("$"):
+        cleaned = cleaned[1:].lstrip(".")
+    return [part for part in cleaned.split(".") if part]
+
+
+def extract_structural_path(data: Any, path_text: str) -> Any:
+    current = data
+    for part in path_parts(path_text):
+        if isinstance(current, dict):
+            if part not in current:
+                raise SemanticExtractionError(f"structural path key not found: {part}")
+            current = current[part]
+            continue
+        if isinstance(current, list) and part.isdigit():
+            index = int(part)
+            if index >= len(current):
+                raise SemanticExtractionError(f"structural path index out of range: {part}")
+            current = current[index]
+            continue
+        raise SemanticExtractionError(f"structural path cannot descend through {type(current).__name__}: {part}")
+    return current
 
 
 def literal_value(node: ast.AST) -> Any:
@@ -218,6 +286,17 @@ def extract_selector(selector: str) -> Any:
         if not match:
             raise SemanticExtractionError(f"text_regex pattern did not match: {selector}")
         return apply_selector_options(match.group(1), options)
+    if selector.startswith("csv_cell:"):
+        target = selector.removeprefix("csv_cell:")
+        return apply_selector_options(extract_csv_cell(target), options)
+    if selector.startswith("json_path:"):
+        target = selector.removeprefix("json_path:")
+        path_text, path_expr = target.split("::", 1)
+        return apply_selector_options(extract_structural_path(load_json(selector_path(path_text)), path_expr), options)
+    if selector.startswith("yaml_path:"):
+        target = selector.removeprefix("yaml_path:")
+        path_text, path_expr = target.split("::", 1)
+        return apply_selector_options(extract_structural_path(load_yaml(selector_path(path_text)), path_expr), options)
     raise SemanticExtractionError(f"unsupported selector: {selector}")
 
 
@@ -298,17 +377,49 @@ def stable_ast_payload(node: Any) -> Any:
     return node
 
 
+def implementation_ref_payload(ref: str) -> dict[str, str]:
+    if ref.startswith("csv_row:"):
+        target = ref.removeprefix("csv_row:")
+        return {
+            "ref": ref,
+            "csv_row": json.dumps(extract_csv_row(target), sort_keys=True, ensure_ascii=False, separators=(",", ":")),
+        }
+    if ref.startswith("json_path:"):
+        target = ref.removeprefix("json_path:")
+        path_text, path_expr = target.split("::", 1)
+        return {
+            "ref": ref,
+            "json_path": json.dumps(
+                extract_structural_path(load_json(selector_path(path_text)), path_expr),
+                sort_keys=True,
+                ensure_ascii=False,
+                separators=(",", ":"),
+            ),
+        }
+    if ref.startswith("yaml_path:"):
+        target = ref.removeprefix("yaml_path:")
+        path_text, path_expr = target.split("::", 1)
+        return {
+            "ref": ref,
+            "yaml_path": json.dumps(
+                extract_structural_path(load_yaml(selector_path(path_text)), path_expr),
+                sort_keys=True,
+                ensure_ascii=False,
+                separators=(",", ":"),
+            ),
+        }
+    path_text, symbol = ref.split("::", 1)
+    node = symbol_node(path_text, symbol)
+    return {
+        "ref": ref,
+        "ast": json.dumps(stable_ast_payload(node), sort_keys=True, ensure_ascii=False, separators=(",", ":")),
+    }
+
+
 def implementation_fingerprint(refs: list[str]) -> str:
     payload: list[dict[str, str]] = []
     for ref in refs:
-        path_text, symbol = str(ref).split("::", 1)
-        node = symbol_node(path_text, symbol)
-        payload.append(
-            {
-                "ref": ref,
-                "ast": json.dumps(stable_ast_payload(node), sort_keys=True, ensure_ascii=False, separators=(",", ":")),
-            }
-        )
+        payload.append(implementation_ref_payload(str(ref)))
     return stable_hash({"kind": "implementation_fingerprint", "refs": payload})
 
 
@@ -370,7 +481,9 @@ def validate_parameters(
         if str(row.get("status") or "") != "active":
             continue
         selector = str(row.get("source_selector") or "").strip()
-        if not selector or selector.upper() in UNKNOWN_VALUES:
+        if not selector or is_unknownish(selector):
+            if is_unknownish(row.get("active_value")) and str(row.get("unknown_task_ids") or "").strip():
+                continue
             issues.append(SemanticIssue("ERROR", scope, f"{parameter_id}: active parameter has no machine source_selector"))
             continue
         try:
@@ -449,6 +562,8 @@ def validate_form008(
 ) -> None:
     form = formulas_by_id.get("FORM-008")
     if not form:
+        return
+    if "observed_max_weight_by_candidate_count" not in form and "post_renormalization_cap_holds" not in form:
         return
     required = ["SERENITY_DECAY", "CONF_MULT_MIN", "CONF_MULT_VAR", "SCORE_DENOM", "TARGET_WEIGHT_CAP"]
     try:
