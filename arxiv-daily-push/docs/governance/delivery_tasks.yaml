@@ -494,3 +494,20 @@ tasks:
     target_version: "0.11.18"
     completed_version: "0.11.18"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020"
+    phase: "E"
+    objective: "Add a fail-closed production launch readiness gate before dispatching the default-branch trial start workflow."
+    scope: "Launch readiness validator, CLI command, schema, tests, runbook, phase record, version, and governance records."
+    non_scope: "No PR merge, no workflow dispatch, no SMTP send, no Release upload, no secret value read, no Codex auth read, no local cache/media/model retention, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-START-WORKFLOW-019"]
+    required_files: ["src/arxiv_daily_push/production_launch.py", "src/arxiv_daily_push/cli.py", "tests/test_production_launch.py", "schemas/production_launch.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-LAUNCH-READINESS"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_production_launch.py arxiv-daily-push/tests/test_trial_start_workflow.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused production launch/workflow/CLI tests: 12 tests OK", "plan-production-launch fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md", "arxiv-daily-push/src/arxiv_daily_push/production_launch.py", "arxiv-daily-push/tests/test_production_launch.py"]
+    risk: "Current GitHub PR remains draft and unmerged, so launch readiness correctly blocks until PR state and external runner/secrets/vars readiness refs are provisioned."
+    rollback: "Revert production launch readiness gate, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.18."
+    target_version: "0.11.19"
+    completed_version: "0.11.19"
+    unknown_task_ids: []

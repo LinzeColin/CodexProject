@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.18`
+Active product version: `0.11.19`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.18
+- Product version: 0.11.19
 - Current phase: E
-- Current gate: ADP-PHASE11-TRIAL-START-WORKFLOW-PASS
-- Confirmed iteration count: 29
+- Current gate: ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-PASS
+- Confirmed iteration count: 30
 - Reconstructed event count: 0
 - Current task: NONE
-- Blockers: Production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries; those are not claimed by this handoff.
+- Blockers: Production launch remains blocked while PR #14 is draft and unmerged; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries; those are not claimed by this handoff.
 
 ## Phase Matrix
 
@@ -24,7 +24,7 @@ The append-only machine record is `development_events.jsonl`.
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
-| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, SMTP delivery, Release delivery, scheduler gate, scheduled execution driver, daily input builder, trial ledger update, trial ledger state persistence, trial ops evidence annotation, trial replay evidence, trial recovery evidence, trial resource evidence, trial start gate, and trial start workflow generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md` |
+| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, SMTP delivery, Release delivery, scheduler gate, scheduled execution driver, daily input builder, trial ledger update, trial ledger state persistence, trial ops evidence annotation, trial replay evidence, trial recovery evidence, trial resource evidence, trial start gate, trial start workflow, and production launch readiness generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md` |
 
 ## Iteration Records
 
@@ -689,6 +689,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Production acceptance still requires a passing default-branch trial start workflow run, live source pass on the runner, real SMTP/Release refs, archived weekly/monthly replay evidence, archived recovery drill evidence, actual resource telemetry, and 30 unique daily production evidence entries.
 - Rollback: Revert trial start workflow, validator, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.17.
 - Next step: Merge to default branch, provision runner/secrets/vars, run the manual trial start workflow, archive `adp-trial-start-gate`, then begin controlled 30-day evidence collection.
+
+### `ITER-20260621-030`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED for production launch readiness code, CLI command, schema, tests, runbook, and governance updates; EXTRACTED from GitHub connector for current PR #14 draft/unmerged state.
+- Version before: 0.11.18
+- Version after: 0.11.19
+- Base commit: fc5a100
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020
+- Goal: Add an audited launch readiness gate before dispatching the default-branch trial start workflow.
+- Assumptions: Launch may proceed only after PR #14 is non-draft and merged to `main`, the expected head SHA is bound, the trial start workflow contract is ready, and runner/secrets/Release/vars/default-branch refs are durable.
+- Files changed: production launch readiness gate, CLI command, launch schema, tests, runbook, README, CHANGELOG, phase record, version files, and governance records.
+- Model changes: Added MOD-ADP-029 as adp-production-launch-readiness-v1.
+- Parameter changes: Added PARAM-ADP-149 through PARAM-ADP-153.
+- Commands run: focused production launch/workflow/CLI tests. Full validation is recorded in the run manifest after this iteration.
+- Test results: focused production launch/workflow/CLI tests: 12 tests OK.
+- Successes: The launch gate validates PR merged/non-draft state, expected head SHA binding, trial start workflow readiness, durable external readiness refs, explicit launch confirmation, and no secret/auth/side-effect behavior.
+- Failures: none for focused tests; current PR #14 is draft and unmerged, so real launch readiness correctly remains blocked.
+- Decisions: Keep launch readiness as an explicit input gate that consumes current PR metadata JSON and durable readiness refs rather than merging PRs, dispatching workflows, or reading secret values.
+- Remaining risks: Production launch still requires PR ready/merge, private runner provisioning, GitHub secrets and vars, default-branch workflow dispatch, real SMTP/Release evidence, and archived start-gate artifacts; production acceptance still requires 30 unique daily production evidence entries plus replay, recovery, and resource evidence.
+- Rollback: Revert production launch readiness gate, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.18.
+- Next step: Mark PR ready, merge to `main`, provision runner/secrets/vars, rerun `plan-production-launch` with durable refs, then dispatch the default-branch trial start workflow.
 
 ## Unknown Historical Periods
 

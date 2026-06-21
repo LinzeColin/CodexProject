@@ -642,3 +642,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/trial_start_workflow.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
     test_refs: ["arxiv-daily-push/tests/test_trial_start_workflow.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md"]
+
+  - model_id: "MOD-ADP-029"
+    name: "Production launch readiness gate"
+    kind: "deterministic launch-readiness validator"
+    purpose: "Block default-branch trial start workflow dispatch until the PR is merged and non-draft, expected head SHA matches, workflow contract is ready, and external runner, secret, Release target, and variable refs are durable."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-production-launch-readiness-v1"
+    assumption_ids: ["ASM-ADP-032", "ASM-ADP-031", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
+    formula_ids: ["FORM-ADP-031"]
+    parameter_ids: ["PARAM-ADP-149", "PARAM-ADP-150", "PARAM-ADP-151", "PARAM-ADP-152", "PARAM-ADP-153"]
+    inputs: ["repository path", "GitHub PR metadata JSON", "expected head SHA", "external readiness refs", "confirm_launch"]
+    outputs: ["production launch readiness report", "PR summary", "workflow plan summary", "readiness_gates", "blocking_reasons", "next_external_actions"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_launch.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/production_launch.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    test_refs: ["arxiv-daily-push/tests/test_production_launch.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md"]

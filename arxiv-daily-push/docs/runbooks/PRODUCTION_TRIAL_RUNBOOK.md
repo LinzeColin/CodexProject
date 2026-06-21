@@ -267,6 +267,34 @@ only marks `trial_start_ready=true` when all upstream reports pass, real SMTP an
 Release probes are present, every ref is durable, and the explicit confirmation
 flag is set.
 
+## Production Launch Readiness
+
+Before dispatching the default-branch trial start workflow, build a launch
+readiness report from current GitHub PR metadata and external readiness refs:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-launch \
+  --path . \
+  --pr-info <current-pr-info.json> \
+  --generated-at <ISO timestamp> \
+  --expected-head-sha <expected-pr-head-sha> \
+  --default-branch-ref <merged-default-branch-ref> \
+  --runner-ref <private-runner-readiness-ref> \
+  --smtp-secret-ref <github-smtp-secrets-readiness-ref> \
+  --release-target-ref <github-release-target-readiness-ref> \
+  --workflow-vars-ref <github-vars-readiness-ref> \
+  --trial-start-workflow-ref <default-branch-trial-start-workflow-ref> \
+  --confirm-launch \
+  --json
+```
+
+The PR metadata JSON must include `state`, `merged`, `draft`, `base`, and
+`head_sha`. The gate blocks while the PR is draft, unmerged, pointed at a branch
+other than `main`, missing the expected head SHA, missing any durable readiness
+ref, or while the trial start workflow contract is not ready. It does not merge
+the PR, dispatch workflows, read secret values, send SMTP mail, create Releases,
+retain media/model/cache artifacts, or claim production acceptance.
+
 ## Trial Start Evidence Workflow
 
 After the start gate command has been validated locally, the default-branch
