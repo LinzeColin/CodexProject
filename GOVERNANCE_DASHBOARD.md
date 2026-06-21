@@ -1,0 +1,24 @@
+# Governance Dashboard
+
+Generated: `DETERMINISTIC_GENERATION`
+Commit: `CURRENT_CHECKOUT`
+Tree hash: `CURRENT_CHECKOUT_TREE`
+Source: generated from machine governance registries and Git metadata. Do not hand-edit project counts here.
+
+| Project | Version | Model versions | Parameter versions | Iteration | Phase | Gate | Latest run | Model delta | Parameter delta | Blockers | Unbound events | CI | Next task |
+|---|---:|---|---|---|---|---|---|---|---|---|---:|---|---|
+| `Alpha` | `0.1.0` | MOD-001:strategy-tournament-v0, MOD-002:risk-score-v0, +7 | agent_loop:agent-loop-v0, paper_broker_defaults:paper-broker-v0, +2 | `ITER-20260620-ALPHA-001` | `E` | `GOV-G4-ALPHA-REQUIRED` | `EVENT-ALPHA-20260620-002` | `UNKNOWN` | `UNKNOWN` | live execution policy and production validation remain blocked under `TASK-ALPHA-B-001`. | 2 | `required` | `TASK-ALPHA-B-001` |
+| `EEI` | `0.1.0` | MOD-001:business-empire-model-v2, MOD-002:business-empire-model-v2, +10 | balanced-v2:2, default-v2:2, +1 | `ITER-20260621-015` | `D` | `TASK-T1307-A209-RUNNER-REPAIR-REMOTE-CI` | `EVENT-20260621-017` | `No scoring formula change; remote CI evidence only.` | `No canonical parameter behavior change; remote CI evidence only.` | A209 remains open until committed 4h and 24h operator soak evidence exists. | 14 | `required` | `TASK-T1301` |
+| `EVA_OS` | `0.1.0` | MOD-001:0.0.0-provisional, MOD-002:0.0.0-provisional, +14 | default:param-profile-20260620 | `ITER-20260620-EVA-002` | `A` | `GOV-P13-required-passed` | `ITER-20260620-EVA-002` | `UNKNOWN` | `UNKNOWN` | calibration/source rationale gaps tracked by `TASK-EVA-B-001` through `TASK-EVA-B-008` | 2 | `required` | `TASK-EVA-B-001` |
+| `FIFA` | `0.1.0` | MOD-001:0.0.0-provisional, MOD-002:0.0.0-provisional, +9 | active_profile:param-profile-20260620, legacy_profile:rules-v1.0.0 | `ITER-20260620-001` | `A` | `GOV-P13-required-passed` | `EVT-FIFA-GOV-20260620-002` | `['MOD-001', 'MOD-002', 'MOD-003', 'MOD-004', 'MOD-005', 'MOD-006', 'MOD-007', 'MOD-008', 'MOD-009', 'MOD-010', 'MOD-011']` | `['PARAM-001..PARAM-117']` | TASK-FIFA-B-001, TASK-FIFA-B-002, TASK-FIFA-C-001, TASK-FIFA-C-002, TASK-FIFA-D-001, TASK-FIFA-D-002, TASK-FIFA-E-001, TASK-FIFA-E-002 | 2 | `required` | `TASK-FIFA-C-001` |
+| `OpMe_System` | `1.0.0` | MOD-001:mod-001-v0, MOD-002:mod-002-v0, +5 | llm_router:opme-router-v0, offline_rules:opme-rules-v0 | `ITER-20260620-OPME-001` | `E` | `GOV-G4-OPME-REQUIRED` | `EVENT-OPME-20260620-002` | `UNKNOWN` | `UNKNOWN` | `TASK-OPME-B-001` for calibration, prompt/provider governance, and signoff evidence. | 2 | `required` | `TASK-OPME-B-001` |
+| `OpenAIDatabase` | `0.2.0` | MOD-001:memory-candidate-v0, MOD-002:redaction-policy-v0, +9 | codex_sync:codex-sync-parameters-v0, memory_analysis:memory-analysis-parameters-v0, +3 | `ITER-20260621-OAI-003` | `C` | `TASK-OAI-C-002-PERSONALIZATION-ARCHITECTURE` | `ITER-20260621-OAI-003` | `UNKNOWN` | `UNKNOWN` | calibration evidence for heuristic weights is UNKNOWN and tracked by `TASK-OAI-B-001` | 4 | `required` | `TASK-OAI-B-001` |
+| `PFI_BIG_DATA_SIMULATOR` | `0.1.0` | MOD-001:0.0.0-provisional, MOD-002:0.0.0-provisional, +13 | default:param-profile-20260620 | `ITER-20260620-PFI-002` | `A` | `GOV-P13-required-passed` | `ITER-20260620-PFI-002` | `UNKNOWN` | `UNKNOWN` | calibration/source rationale gaps tracked by `TASK-PFI-B-001` through `TASK-PFI-B-010` | 2 | `required` | `TASK-PFI-B-001` |
+| `Serenity-Alipay` | `0.1.0` | MOD-001:serenity-scoring-v1, MOD-002:serenity-ranking-v1, +3 | serenity-parameters:serenity-parameters-v1 | `ITER-20260621-001` | `A` | `GOV-G3-SERENITY-BASELINE` | `EVENT-20260621-002` | `UNKNOWN` | `UNKNOWN` | validation not yet recorded in this file; see final run report for actual command results. | 2 | `required` | `TASK-A-001` |
+| `whkmSalary` | `0.0.0` | MOD-001:salary-logic-v0, MOD-002:streamlit-input-v0 | province_weights:salary-logic-v0, salary_logic_constants:salary-logic-v0, +1 | `ITER-20260620-WHKM-001` | `E` | `GOV-G4-WHKM-REQUIRED` | `EVENT-WHKM-20260620-002` | `UNKNOWN` | `UNKNOWN` | `TASK-WHKM-B-001` for policy/source/effective date/rounding/boundary evidence. | 2 | `required` | `TASK-WHKM-B-001` |
+
+## Audit Notes
+
+- `Unbound events` counts historical events that still use `git_commit: PENDING` without a concrete `result_commit`.
+- GitHub branch protection or ruleset status is an external repository setting. If it cannot be read with an authenticated API/UI check, report it as `UNVERIFIED` instead of claiming no-bypass enforcement.
+- Regenerate with `python3 scripts/generate_governance_dashboard.py --write`; verify determinism with `git diff --exit-code` after a second run.

@@ -215,6 +215,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── DELIVERY_PLAN.md
 │   │   ├── DEVELOPMENT_LEDGER.md
 │   │   ├── MODEL_SPEC.md
+│   │   ├── STATUS.md
 │   │   ├── TRACEABILITY_MATRIX.csv
 │   │   ├── VERSION_MATRIX.yaml
 │   │   ├── delivery_tasks.yaml

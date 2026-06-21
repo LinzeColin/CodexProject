@@ -54,7 +54,7 @@ The Stop Hook lives at:
 It runs:
 
 ```bash
-python3 scripts/validate_project_governance.py --changed-only
+python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
 ```
 
 Codex must trust this repository before project hooks are loaded.
@@ -64,6 +64,22 @@ Codex must trust this repository before project hooks are loaded.
 `.github/workflows/project-governance.yml` runs governance validation on PRs,
 pushes to `main`, and manual all/project/changed-only scopes.
 
+Pull requests run the changed-scope sync gate:
+
+```bash
+python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
+```
+
+Pushes and manual full audits run all-project semantic drift reporting:
+
+```bash
+python3 scripts/validate_project_governance.py --all --semantic --drift-report
+python3 scripts/generate_governance_dashboard.py --write
+git diff --exit-code -- GOVERNANCE_DASHBOARD.md */docs/governance/STATUS.md
+```
+
 Repository administrators must configure GitHub branch protection or rulesets
 for `main` so `Project Governance / governance` is a required status check.
 Without this repository setting, CI runs but cannot block merges by itself.
+If branch protection cannot be verified through an authenticated API or UI
+inspection, report it as `UNVERIFIED`; do not claim no-bypass enforcement.

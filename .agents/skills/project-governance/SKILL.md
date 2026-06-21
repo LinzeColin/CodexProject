@@ -53,7 +53,11 @@ iteration counts. Git commit count is not iteration count.
 5. Update delivery task acceptance and evidence when a task is completed.
 6. Run `python3 scripts/validate_project_governance.py --project <project_id>`.
 7. For root governance changes, run
-   `python3 scripts/validate_project_governance.py --all`.
+   `python3 scripts/validate_project_governance.py --all --semantic --drift-report`.
+8. Regenerate human-readable status pages with
+   `python3 scripts/generate_governance_dashboard.py --write` and verify
+   `git diff --exit-code -- GOVERNANCE_DASHBOARD.md */docs/governance/STATUS.md`
+   after a second generation pass.
 
 ## P20 Incident Runs
 

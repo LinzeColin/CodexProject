@@ -54,6 +54,7 @@ Each registered project must eventually maintain:
 - `docs/governance/delivery_tasks.yaml`
 - `docs/governance/VERSION_MATRIX.yaml`
 - `docs/governance/TRACEABILITY_MATRIX.csv`
+- `docs/governance/STATUS.md`
 - `VERSION`
 - `CHANGELOG.md`
 
@@ -87,6 +88,105 @@ The repository governance framework is enforced in layers:
 - Repository `.codex/hooks.json` and `.codex/hooks/governance_stop.py`: Stop Hook that runs changed-scope governance validation before a Codex turn is allowed to finish.
 - `.github/workflows/project-governance.yml`: GitHub Actions validation for PRs, pushes to `main`, and manual all/project/changed-only runs.
 - GitHub branch protection or rulesets: repository setting that must make Project Governance a required status check for `main`.
+
+## Review-5 Diff Synchronization Contract
+
+Structural validation is not enough. The repository also enforces a
+diff-driven synchronization contract through
+`scripts/validate_governance_sync.py`.
+
+The sync validator classifies changed files as:
+
+- `model_behavior_change`
+- `parameter_or_config_change`
+- `data_snapshot_change`
+- `test_or_evidence_change`
+- `product_capability_change`
+- `governance_only_change`
+- `trivial_change`
+
+Behavior, parameter, data, test, evidence, or product changes must travel with
+the governance records that make the change auditable. For example, model
+behavior changes require same-run updates or explicit review of:
+
+- `MODEL_SPEC.md`
+- `model_registry.yaml`
+- `formula_registry.yaml`
+- `parameter_registry.csv`
+- `DEVELOPMENT_LEDGER.md`
+- `development_events.jsonl`
+- `delivery_tasks.yaml`
+- `TRACEABILITY_MATRIX.csv`
+- `VERSION_MATRIX.yaml`
+- `STATUS.md`
+- `CHANGELOG.md` or an explicit no-version-change rationale in the run record
+
+Project `development_events.jsonl` files are append-only. Existing lines must
+not be modified or removed; follow-up evidence belongs in a new event or a
+post-commit binding.
+
+## Run Manifest and Post-Commit Binding
+
+Root governance runs may record machine-readable manifests under:
+
+```text
+governance/run_manifests/<RUN_ID>.json
+```
+
+Each manifest records at least:
+
+- `run_id`
+- `project_id`
+- `task_id`
+- `acceptance_id`
+- `actor`
+- `started_at`
+- `finished_at`
+- `base_commit`
+- `content_tree_hash`
+- `changed_files_actual`
+- `change_classification`
+- `required_governance_files`
+- `updated_governance_files`
+- `model_delta`
+- `formula_delta`
+- `parameter_delta`
+- `version_delta`
+- `tests_run`
+- `observed_results`
+- `evidence_refs`
+- `rollback`
+- `unresolved_risks`
+
+Do not require a commit to contain its own final SHA. If final commit binding is
+required, use GitHub Checks evidence or append a later binding event that maps
+`run_id`, `content_tree_hash`, final commit SHA, and CI run.
+
+## Semantic Accuracy
+
+`--semantic` checks enforce facts that can be machine-verified without inventing
+domain knowledge:
+
+- `code_ref`, `config_ref`, and `test_ref` paths must exist when they point to
+  repository files.
+- `VERSION_MATRIX.current_iteration` must match the latest extracted event.
+- `DEVELOPMENT_LEDGER` confirmed iteration counts must match the actual
+  confirmed iteration sections.
+- Existing development events remain append-only under diff validation.
+
+Facts that cannot be machine-verified must remain `UNKNOWN` or
+`HUMAN_REVIEW_REQUIRED`; do not present them as `EXTRACTED`.
+
+## Human-Readable Generated Status
+
+`scripts/generate_governance_dashboard.py` generates:
+
+- root `GOVERNANCE_DASHBOARD.md`
+- each project `docs/governance/STATUS.md`
+
+These pages are read-only views generated from registries, events, version
+matrices, ledgers, and Git metadata. They must not become duplicate editable
+fact sources. CI regenerates them and fails if committed status pages drift.
 
 Personalization and user-level config are documented in
 `docs/governance/CODEX_SETUP.md`. Repository files, validators, tests, and

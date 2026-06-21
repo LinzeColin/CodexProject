@@ -1,0 +1,99 @@
+{
+  "run_id": "GOV-REVIEW5-SYNC-001",
+  "project_id": "root",
+  "task_id": "GOV-REVIEW5-SYNC-001",
+  "acceptance_id": "ACC-GOV-REVIEW5-SYNC-001",
+  "actor": "Codex",
+  "started_at": "2026-06-21T17:24:00+10:00",
+  "finished_at": "PENDING_CI",
+  "base_commit": "b320b214ffaff055977098b88389e0a39d5d0096",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:079d678e8e149641a7dd21b8142214f4421a6977beef51a7a7e2be5be773edc5",
+  "changed_files_actual": [
+    ".agents/skills/codex-dex/SKILL.md",
+    ".agents/skills/project-governance/SKILL.md",
+    ".codex/hooks/governance_stop.py",
+    ".gitignore",
+    ".github/workflows/project-governance.yml",
+    "Alpha/docs/governance/STATUS.md",
+    "EEI/CHECKSUMS.sha256",
+    "EEI/DIRECTORY_TREE.txt",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "EEI/docs/governance/STATUS.md",
+    "EEI/docs/governance/VERSION_MATRIX.yaml",
+    "EEI/manifest.txt",
+    "EVA_OS/docs/governance/STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "Serenity-Alipay/docs/governance/STATUS.md",
+    "docs/governance/CODEX_SETUP.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-REVIEW5-SYNC-001.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/docs/governance/STATUS.md"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "semantic_accuracy_hardening",
+    "human_readable_status_generation",
+    "governance_summary_drift_repair",
+    "generated_release_artifact_resynchronization"
+  ],
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/run_manifests/GOV-REVIEW5-SYNC-001.json",
+    "tests/governance/test_project_governance_validator.py",
+    "*/docs/governance/STATUS.md"
+  ],
+  "updated_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/run_manifests/GOV-REVIEW5-SYNC-001.json",
+    "tests/governance/test_project_governance_validator.py",
+    "*/docs/governance/STATUS.md"
+  ],
+  "model_delta": "NOT_APPLICABLE: root governance validator and generated status hardening only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "tests_run": [
+    "python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+    "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+    "python3 scripts/generate_governance_dashboard.py --write",
+    "git diff --exit-code -- GOVERNANCE_DASHBOARD.md */docs/governance/STATUS.md",
+    "python3 EEI/scripts/manage_release_artifacts.py generate --remote-status PENDING",
+    "PYTHONPATH=/tmp/codex-review5-pydeps python3 EEI/scripts/manage_clean_room_release.py generate",
+    "PYTHONPATH=/tmp/codex-review5-pydeps python3 EEI/scripts/manage_clean_room_release.py validate",
+    "python3 EEI/scripts/manage_release_artifacts.py validate",
+    "git diff --check"
+  ],
+  "observed_results": [
+    "LOCAL_PASS: governance tests ran 20 tests OK",
+    "LOCAL_PASS: validate_project_governance --all --semantic --drift-report exited 0 with errors 0 warnings 0",
+    "LOCAL_PASS: validate_project_governance --changed-only --enforce-sync --semantic exited 0 with errors 0 warnings 0",
+    "LOCAL_PASS: generated dashboard is deterministic under git diff --exit-code",
+    "LOCAL_PASS: EEI clean-room release evidence regenerated and validated",
+    "LOCAL_PASS: EEI release manifest/checksum artifacts regenerated and validated",
+    "PENDING_GITHUB_ACTIONS"
+  ],
+  "evidence_refs": [
+    "GOVERNANCE_DASHBOARD.md",
+    "scripts/validate_governance_sync.py",
+    ".github/workflows/project-governance.yml"
+  ],
+  "rollback": "Revert this root governance commit or remove the codex/review5-governance-sync branch before merge.",
+  "unresolved_risks": [
+    "GitHub branch protection and no-bypass settings remain external repository settings and must be reported as UNVERIFIED unless inspected with authenticated API/UI evidence.",
+    "Historical events with git_commit=PENDING are reported as unbound counts; final commit self-reference is intentionally not required."
+  ]
+}
