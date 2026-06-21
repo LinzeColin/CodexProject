@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.23 - 2026-06-22
+
+- Added `adp discover-production-refs` to use `gh api` on a provisioned runner and build a no-secret production refs report from GitHub Actions metadata.
+- Added metadata discovery coverage for runner label, required SMTP secret names, Release target variable, and workflow variable names without printing `gh` stdout/stderr or secret values.
+- Kept local execution fail-closed when `gh` is unavailable and kept production launch/30-day acceptance blocked until real external refs and trial evidence exist.
+
 ## 0.11.22 - 2026-06-22
 
 - Added `adp print-production-refs-template` to emit a no-secret owner-fillable JSON template before `plan-production-refs`.
