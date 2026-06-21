@@ -404,7 +404,7 @@ tasks:
     objective: "Add extractors for simulator strategy defaults, risk controls, and active formula fingerprints."
     scope: "PFI/大数据模拟器 semantic extractor metadata and governance validator evidence only; no business code or runtime behavior changes"
     non_scope: "qbvs source, runtime logic, model behavior, data generation, dependency installation, commits and pushes"
-    status: "planned"
+    status: "in_progress"
     dependencies: ["TASK-PFI-A-004"]
     required_files:
       - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
@@ -416,12 +416,14 @@ tasks:
       - "python3 scripts/validate_project_governance.py --project 'PFI/大数据模拟器' --semantic"
       - "python3 scripts/validate_semantic_extractors.py 'PFI/大数据模拟器'"
     test_results:
-      - "NOT_RUN - semantic extractor rollout task is planned, not completed"
+      - "PASS local semantic extractor dry run: 211 active parameters and 15 active formulas checked; PARAM-110 and PARAM-111 remain HUMAN_REVIEW_REQUIRED."
     evidence_refs:
-      - "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md"
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+      - "PFI/大数据模拟器/docs/governance/formula_registry.yaml"
+      - "governance/run_manifests/GOV-SEMANTIC-PFI-EXTRACT-001.json"
       - "governance/projects.yaml"
-    risk: "PFI_BIG_DATA_SIMULATOR remains structurally governed but not machine semantic-verified until extractors are implemented."
-    rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
+    risk: "PFI_BIG_DATA_SIMULATOR is partially machine-verified; PARAM-110 summary_sort_keys and PARAM-111 cost_rate_transform still require human semantic review."
+    rollback: "Remove semantic extractor columns/fields from PFI parameter and formula registries and reset governance/projects.yaml PFI semantic_coverage to planned."
     target_version: "0.1.0"
     completed_version: ""
     completed_commit: ""
