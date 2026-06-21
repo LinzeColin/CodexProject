@@ -59,6 +59,41 @@ def test_extract_text_from_html_ignores_scripts_and_tags() -> None:
     assert "TSMC supports CoWoS packaging for AI factories" in text
 
 
+def test_token_present_accepts_governed_aliases_without_lowering_threshold() -> None:
+    source_text = (
+        "NVIDIA announced that Foxconn and partner facilities support "
+        "advanced packaging and testing for AI factories."
+    )
+
+    assert official_source.token_present(source_text, "NVIDIA Corporation")
+    assert official_source.token_present(source_text, "Hon Hai/Foxconn")
+    assert official_source.token_present(source_text, "packaging/test")
+    assert not official_source.token_present(
+        "NVIDIA announced advanced packaging for AI factories.",
+        "packaging/test",
+    )
+
+
+def test_select_anchor_rows_preserves_registry_order_and_rejects_unknown() -> None:
+    rows = [
+        {"anchor_id": "NVDA-ANCHOR-001"},
+        {"anchor_id": "NVDA-ANCHOR-002"},
+        {"anchor_id": "NVDA-ANCHOR-003"},
+    ]
+
+    selected = official_source.select_anchor_rows(
+        rows,
+        ["NVDA-ANCHOR-003", "NVDA-ANCHOR-001"],
+    )
+
+    assert [row["anchor_id"] for row in selected] == [
+        "NVDA-ANCHOR-001",
+        "NVDA-ANCHOR-003",
+    ]
+    with pytest.raises(ValueError, match="Unknown live capture anchor_id"):
+        official_source.select_anchor_rows(rows, ["NVDA-ANCHOR-404"])
+
+
 def test_capture_live_official_sources_records_hash_not_full_text() -> None:
     row = sample_anchor_row()
     paragraph = (

@@ -726,6 +726,11 @@ def build_contract_artifact() -> dict[str, object]:
                 "scripts/load_live_official_captures.py --artifact "
                 "artifacts/private/t1301_live_official_capture.json"
             ),
+            "selected_evidence_postgres_ingestion": (
+                "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python "
+                "scripts/load_live_official_captures.py --artifact "
+                "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json"
+            ),
         },
         "database_contract": {
             "source_documents": (

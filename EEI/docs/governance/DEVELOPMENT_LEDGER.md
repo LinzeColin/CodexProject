@@ -305,6 +305,30 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the remote evidence update and regenerate release artifacts with `remote_status=PENDING`.
 - Next step: commit and push the remote evidence update, then verify the evidence-only CI run.
 
+### `ITER-20260621-012`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `19cf61e`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, `TASK-T1304`
+- Goal: add selected-anchor real live official-source capture evidence and remote PostgreSQL assertions without closing A202/A206.
+- Assumptions: a selected-anchor artifact can move A202 forward only if it stays no-full-text, no-publication and no-clearance; unsupported anchors must remain explicit review items.
+- Files read: A202 live adapter, live capture loader, NVIDIA source anchor registry, PostgreSQL integration tests, v5 readiness validator, A202/A206 traceability and development status ledgers.
+- Files changed: `EEI/scripts/fetch_official_source_full_text.py`, `EEI/tests/unit/test_official_source_live_capture.py`, `EEI/tests/integration/test_database_migrations.py`, `EEI/artifacts/tests/a202/t1301_live_official_retrieval_contract.json`, `EEI/artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json`, `EEI/scripts/validate_v5_production_readiness_sync.py`, A202/A206 traceability and status docs, this ledger and governance events.
+- Model changes: no scoring formula change.
+- Parameter changes: no canonical parameter change; selected capture records `timeout_seconds=30.0`, `min_text_chars=240`, `min_token_coverage_ratio=1.0`, and `token_alias_policy_version=official-source-token-alias-v1`.
+- Commands run: selected live network capture for `NVDA-ANCHOR-002/003/004`; focused ruff; A202 focused unit tests; JSON/no-full-text artifact validation; v5 readiness validation.
+- Test results: focused ruff PASS; A202 live unit tests PASS 9/9; selected live artifact validation PASS; v5 readiness sync PASS.
+- Successes: committed a real selected-anchor live evidence artifact with 3 healthy NVIDIA official-source captures, 100% token coverage, no committed full text, no relationship publication and no release clearance; added remote PostgreSQL assertions for non-fixture ingestion.
+- Failures: local PostgreSQL integration could not run because the shell has no `docker`, `.env`, `DATABASE_URL`, `psql` or `pg_ctl`; `NVDA-ANCHOR-001` did not support the current `packaging/test` expected-token contract and remains a semantic review item.
+- Decisions: keep A202 and A206 `IN_PROGRESS`; selected live capture is ready for operator review but is not owner/legal approval, production relationship publication or long-duration retry/dead-letter evidence.
+- Remaining risks: remote G2 PostgreSQL must prove non-fixture ingestion; source licensing, owner decision, legal clearance, failed-anchor review and A206/A209 long-duration evidence remain open.
+- Rollback: revert the live adapter alias and `--anchor-id` changes, remove the selected live artifact, restore fixture-only integration assertions, regenerate release artifacts and rerun validation.
+- Next step: run full local validation where possible, regenerate release artifacts, commit, push and verify GitHub Actions G2 PostgreSQL integration.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -318,6 +342,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-011`: remote CI validation evidence for TASK-T1301/A202 live official retrieval adapter contract.
 - `EVENT-20260621-012`: local implementation evidence for TASK-T1301/A202 live capture PostgreSQL ingestion contract.
 - `EVENT-20260621-013`: remote CI validation evidence for TASK-T1301/A202 live capture PostgreSQL ingestion contract.
+- `EVENT-20260621-014`: local selected-anchor live official capture evidence for TASK-T1301/A202 and TASK-T1304/A206.
 
 ## Unknown Historical Periods
 
