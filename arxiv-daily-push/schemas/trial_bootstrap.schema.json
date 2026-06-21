@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/trial_bootstrap.schema.json",
+  "title": "arXiv Daily Push Trial Bootstrap Plan",
+  "type": "object",
+  "required": [
+    "validator_id",
+    "project_id",
+    "status",
+    "trial_bootstrap_ready",
+    "workflow_path",
+    "runbook_path",
+    "checks",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "validator_id": {
+      "const": "adp-trial-bootstrap-v1"
+    },
+    "project_id": {
+      "const": "arxiv-daily-push"
+    },
+    "generated_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pass", "blocked", "invalid"]
+    },
+    "trial_bootstrap_ready": {
+      "type": "boolean"
+    },
+    "workflow_path": {
+      "type": "string"
+    },
+    "runbook_path": {
+      "type": "string"
+    },
+    "required_github_secrets": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "required_github_vars": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "passed", "blocking_reasons"],
+        "properties": {
+          "check_id": {"type": "string"},
+          "passed": {"type": "boolean"},
+          "blocking_reasons": {
+            "type": "array",
+            "items": {"type": "string"}
+          }
+        }
+      }
+    },
+    "blocking_reasons": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

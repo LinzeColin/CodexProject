@@ -81,6 +81,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/tests/test_production_preflight.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-017"
+    statement: "Production trial startup is manual-only until prerequisites pass; the GitHub bootstrap workflow must run preflight before trial work, upload preflight evidence, and avoid Release upload or SMTP sending."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md", "arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py", ".github/workflows/arxiv-daily-push-production-trial.yml"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -309,3 +314,20 @@ models:
     config_refs: ["arxiv-daily-push/schemas/production_preflight.schema.json", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
     test_refs: ["arxiv-daily-push/tests/test_production_preflight.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md"]
+  - model_id: "MOD-ADP-014"
+    name: "Manual production trial bootstrap gate"
+    kind: "deterministic workflow contract validator"
+    purpose: "Validate the manual GitHub trial bootstrap workflow and runbook before any real 30-day trial startup."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-trial-bootstrap-v1"
+    assumption_ids: ["ASM-ADP-017", "ASM-ADP-016", "ASM-ADP-002"]
+    formula_ids: ["FORM-ADP-016"]
+    parameter_ids: ["PARAM-ADP-071", "PARAM-ADP-072", "PARAM-ADP-073", "PARAM-ADP-074"]
+    inputs: ["workflow file", "production trial runbook", "generated_at"]
+    outputs: ["trial bootstrap plan", "trial_bootstrap_ready", "blocking_reasons", "next_external_actions"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: [".github/workflows/arxiv-daily-push-production-trial.yml", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "arxiv-daily-push/schemas/trial_bootstrap.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_bootstrap.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md"]

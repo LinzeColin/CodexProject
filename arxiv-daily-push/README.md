@@ -29,6 +29,7 @@ Implemented now:
 - `adp build-acceptance`
 - `adp evaluate-trial`
 - `adp preflight-production`
+- `adp plan-trial-bootstrap`
 - dry-run email rendering for `linzezhang35@gmail.com`
 - local resource and dependency readiness checks
 - generic contracts for `SourceItem`, `EvidenceClaim`, `Lesson`, `Storyboard`, `Publication`, and `RunRecord`
@@ -49,6 +50,7 @@ Implemented now:
 - final acceptance package that marks production acceptance blocked until real 30-day, scheduler, Release, SMTP, and resource evidence exists
 - 30-day trial evidence validator that exports production acceptance evidence only after daily uniqueness, P0 traceability, scheduler, Release, SMTP, resource, weekly/monthly replay, and recovery gates pass
 - production preflight gate that blocks scheduled execution unless runtime commands, secret env keys, disk, memory, Git artifact hygiene, and cache/staging directories are safe
+- manual production trial bootstrap workflow/runbook that runs preflight before any trial work and keeps cron, Release upload, and SMTP sending disabled
 - governance records required by `CodexProject`
 
 Not implemented yet:
@@ -59,6 +61,7 @@ Not implemented yet:
 - real video rendering
 - enabled GitHub Actions runner setup
 - real SMTP sending or scheduled runner execution
+- claimed scheduled 30-day trial start
 - claimed 30-day operational acceptance
 
 ## Goal Baseline

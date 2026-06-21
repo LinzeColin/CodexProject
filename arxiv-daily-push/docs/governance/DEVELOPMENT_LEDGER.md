@@ -1,17 +1,17 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.3`
+Active product version: `0.11.4`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.3
+- Product version: 0.11.4
 - Current phase: E
-- Current gate: ADP-PHASE11-PRODUCTION-PREFLIGHT-PASS
-- Confirmed iteration count: 14
+- Current gate: ADP-PHASE11-TRIAL-BOOTSTRAP-PASS
+- Confirmed iteration count: 15
 - Reconstructed event count: 0
 - Current task: NONE
 - Blockers: Production acceptance still requires real 30-day trial, scheduler, Release, SMTP, and resource evidence; those are not claimed by this handoff.
@@ -344,6 +344,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Production acceptance still requires provisioning the blocked prerequisites and running a real 30-day trial.
 - Rollback: Revert Phase 11 production preflight gate and restore version 0.11.2.
 - Next step: Run project and governance validation, then sync the PR.
+
+### `ITER-20260621-015`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for manual production trial bootstrap workflow, runbook, CLI validator, schema, tests, and governance updates.
+- Version before: 0.11.3
+- Version after: 0.11.4
+- Base commit: 6ca3847899ea4c2647d90d219e0c5995fd6aedc5
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-TRIAL-BOOTSTRAP-005
+- Goal: Add a manual GitHub Actions entrypoint that can start the real trial path only after production preflight succeeds.
+- Assumptions: Bootstrap mode is manual-only and does not schedule production, upload Releases, send SMTP mail, render media, download models, or claim 30-day acceptance.
+- Files changed: trial bootstrap validator, CLI command, workflow, runbook, tests, schema, README, CHANGELOG, phase record, version files, and governance records.
+- Model changes: Added MOD-ADP-014 as adp-trial-bootstrap-v1.
+- Parameter changes: Added PARAM-ADP-071 through PARAM-ADP-074.
+- Commands run: project unit tests; schema parse; trial bootstrap CLI; root governance tests; project governance validator; changed-only enforce-sync; dashboard generation; git diff check.
+- Test results: 74 project tests OK; 35 root governance tests OK; schemas parse; trial bootstrap plan pass; project governance errors 0 warnings 0; changed-only enforce-sync errors 0 warnings 0; dashboard PASS; git diff check exit 0.
+- Successes: Bootstrap workflow requires explicit confirmation, targets a private self-hosted runner label, runs production preflight first, uploads preflight evidence, and leaves Release/SMTP side effects disabled.
+- Failures: none recorded at implementation time.
+- Decisions: Keep cron scheduling and real production side effects disabled until a provisioned runner produces a passing preflight artifact.
+- Remaining risks: Production acceptance still requires actual runner provisioning, SMTP/Release configuration, preflight pass on runner, scheduled execution, and 30-day trial evidence.
+- Rollback: Revert Phase 11 trial bootstrap workflow, runbook, validator, tests, and restore version 0.11.3.
+- Next step: Run root governance validation, update run manifest, and sync the PR.
 
 ## Unknown Historical Periods
 

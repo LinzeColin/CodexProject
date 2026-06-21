@@ -20,6 +20,7 @@ from .production_preflight import build_production_preflight, validate_productio
 from .ranking import selection_payload
 from .state_machine import validate_run_record
 from .trial import evaluate_trial_evidence, validate_trial_evidence_report
+from .trial_bootstrap import build_trial_bootstrap_plan, validate_trial_bootstrap_plan
 from .video import VideoPlanError, generate_storyboard
 
 
@@ -106,6 +107,11 @@ def build_parser() -> argparse.ArgumentParser:
     preflight.add_argument("--path", default=".", help="Repository path used for disk, Git, and cache checks.")
     preflight.add_argument("--generated-at", required=True, help="Preflight report generation timestamp.")
     preflight.add_argument("--json", action="store_true", help="Print JSON preflight report.")
+
+    bootstrap = subparsers.add_parser("plan-trial-bootstrap", help="Validate the manual production trial bootstrap workflow.")
+    bootstrap.add_argument("--path", default=".", help="Repository root path containing the workflow and runbook.")
+    bootstrap.add_argument("--generated-at", required=True, help="Bootstrap plan generation timestamp.")
+    bootstrap.add_argument("--json", action="store_true", help="Print JSON bootstrap plan.")
     return parser
 
 
@@ -356,4 +362,20 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{report['preflight_id']}\t{report['status']}")
         return 0 if report["production_run_allowed"] else 2
+    if args.command == "plan-trial-bootstrap":
+        plan = build_trial_bootstrap_plan(Path(args.path), generated_at=args.generated_at)
+        errors = validate_trial_bootstrap_plan(plan)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{plan['plan_id']}\t{plan['status']}")
+        return 0 if plan["trial_bootstrap_ready"] else 2
     raise AssertionError(f"Unhandled command: {args.command}")
