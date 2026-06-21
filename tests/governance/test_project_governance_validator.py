@@ -874,18 +874,61 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                     [
                         "FLAGS = {'blocked', 'failed', 'degraded'}",
                         "VARS = ('ADP_RELEASE_TARGET', 'ADP_ALLOW_SMTP_SEND', 'ADP_ALLOW_RELEASE_UPLOAD')",
+                        "NAMES = {'.env', 'auth.json'}",
+                        "SUFFIXES = frozenset({'.mp4', '.wav'})",
+                        "TRANSITIONS = {'created': {'health_checked', 'blocked'}, 'health_checked': {'completed'}}",
+                        "SCHEDULES = ({'local_time': '04:45'}, {'local_time': '05:00'})",
+                        "TIMEZONE = 'Australia/Sydney'",
+                        "def run():",
+                        "    step('created')",
+                        "    step('completed')",
                     ]
                 )
                 + "\n",
                 encoding="utf-8",
             )
-            (tmp_path / "P" / "policy.txt").write_text("workflow_dispatch confirm_trial_start gh run download\n", encoding="utf-8")
+            (tmp_path / "P" / "policy.txt").write_text(
+                "permissions:\n  actions: read\npreflight-production\nRun project tests\n"
+                "--default-branch-ref --runner-ref --trial-start-ref\n",
+                encoding="utf-8",
+            )
             with patch.object(semantic, "ROOT", tmp_path):
-                self.assertTrue(semantic.extract_selector("text_file:P/policy.txt|contains=confirm_trial_start"))
-                self.assertTrue(semantic.extract_selector("text_file:P/policy.txt|contains_all=workflow_dispatch,gh run download"))
+                self.assertTrue(semantic.extract_selector("text_file:P/policy.txt|contains=preflight-production"))
+                self.assertTrue(semantic.extract_selector("text_file:P/policy.txt|contains_all=permissions,Run project tests"))
+                self.assertTrue(semantic.extract_selector("text_file:P/policy.txt|before=preflight-production>>Run project tests"))
+                self.assertTrue(semantic.extract_selector("text_file:P/policy.txt|not_contains=auth.json"))
+                self.assertEqual(semantic.extract_selector("text_regex:P/policy.txt::(actions:\\s*read)|remove_spaces"), "actions:read")
+                self.assertEqual(
+                    semantic.extract_selector(
+                        "text_file:P/policy.txt|tokens=--default-branch-ref,--runner-ref,--trial-start-ref|strip_prefix=--|join=;"
+                    ),
+                    "default-branch-ref;runner-ref;trial-start-ref",
+                )
                 self.assertEqual(
                     semantic.extract_selector("python_ast_assignment:P/impl.py::FLAGS|order=blocked,failed,degraded|join=;"),
                     "blocked;failed;degraded",
+                )
+                self.assertEqual(
+                    semantic.extract_selector(
+                        "python_ast_assignments_concat:P/impl.py::SUFFIXES,NAMES|order=.mp4,.wav,.env,auth.json|join=;"
+                    ),
+                    ".mp4;.wav;.env;auth.json",
+                )
+                self.assertEqual(
+                    semantic.extract_selector(
+                        "python_ast_dict_projection:P/impl.py::TRANSITIONS|exclude_values=blocked|exclude_empty=true|pair=>|sep=;|value_sep=pipe"
+                    ),
+                    "created>health_checked;health_checked>completed",
+                )
+                self.assertEqual(
+                    semantic.extract_selector("python_ast_call_arg_sequence:P/impl.py::run::step::0|join=>"),
+                    "created>completed",
+                )
+                self.assertEqual(
+                    semantic.extract_selector(
+                        "python_ast_sequence_dict_field:P/impl.py::SCHEDULES::local_time|prefix_assignment=TIMEZONE|prefix_first_separator=:|join=;"
+                    ),
+                    "Australia/Sydney:04:45;05:00",
                 )
                 self.assertEqual(
                     semantic.extract_selector(
@@ -1373,7 +1416,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         status_text = (ROOT / "arxiv-daily-push" / "docs" / "governance" / "STATUS.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("PR #30 is merged", status_text)
+        self.assertIn("PR #31 is merged", status_text)
         self.assertNotIn("draft and unmerged", status_text)
 
     def test_arxiv_daily_push_semantic_extract_manifest_records_partial_coverage(self) -> None:
@@ -1441,6 +1484,23 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["coverage_status"], "in_progress")
         self.assertEqual(manifest["semantic_parameters_checked"], 131)
         self.assertEqual(manifest["human_review_required_parameters"], 21)
+        self.assertEqual(manifest["semantic_formulas_checked"], 31)
+        self.assertEqual(manifest["human_review_required_formulas"], 0)
+
+    def test_arxiv_daily_push_semantic_extract_manifest_records_machine_verified_coverage(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-SEMANTIC-ADP-EXTRACT-005.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "GOV-SEMANTIC-ADP-001")
+        self.assertEqual(manifest["coverage_status"], "machine_verified")
+        self.assertEqual(manifest["semantic_parameters_checked"], 152)
+        self.assertEqual(manifest["human_review_required_parameters"], 0)
         self.assertEqual(manifest["semantic_formulas_checked"], 31)
         self.assertEqual(manifest["human_review_required_formulas"], 0)
 
