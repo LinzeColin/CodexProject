@@ -46,6 +46,7 @@ class TrialStartWorkflowTests(unittest.TestCase):
         self.assertIn("vars.ADP_ALLOW_RELEASE_UPLOAD", workflow)
         self.assertIn("--allow-send", workflow)
         self.assertIn("--allow-upload", workflow)
+        self.assertIn("contents: write", workflow)
         self.assertIn("secrets.ADP_SMTP_PASSWORD", workflow)
         self.assertIn("vars.ADP_RELEASE_TARGET", workflow)
         self.assertNotIn("auth.json", workflow)

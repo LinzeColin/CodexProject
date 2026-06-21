@@ -53,8 +53,15 @@ Required GitHub Actions variables:
 - `ADP_ALLOW_SMTP_SEND`
 - `ADP_ALLOW_RELEASE_UPLOAD`
 
+Required workflow permissions for Release evidence:
+
+- `actions: read` for prior artifact/state restore.
+- `contents: write` for controlled draft GitHub Release creation when
+  `ADP_ALLOW_RELEASE_UPLOAD=true`.
+
 The workflow maps only secret names into environment variables. It must not echo
-secret values, read `~/.codex/auth.json`, upload Releases, or send SMTP mail.
+secret values, read `~/.codex/auth.json`, upload Releases, or send SMTP mail
+unless the explicit side-effect variables are set for a controlled probe.
 
 ## Preflight Dispatch
 
@@ -410,6 +417,9 @@ live source ingest, SMTP probe, Release probe, or `plan-trial-start`. Real SMTP
 and Release side effects remain disabled unless GitHub variables
 `ADP_ALLOW_SMTP_SEND=true` and `ADP_ALLOW_RELEASE_UPLOAD=true` are explicitly
 set for a controlled probe.
+The workflow declares `contents: write` only so that the controlled Release
+probe can create a draft Release after that variable is enabled; the permission
+alone must not be treated as upload authorization.
 
 Expected artifacts:
 

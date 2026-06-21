@@ -460,7 +460,7 @@ models:
     model_version: "adp-production-scheduler-v1"
     assumption_ids: ["ASM-ADP-021", "ASM-ADP-017"]
     formula_ids: ["FORM-ADP-020"]
-    parameter_ids: ["PARAM-ADP-092", "PARAM-ADP-093", "PARAM-ADP-094", "PARAM-ADP-095", "PARAM-ADP-096"]
+    parameter_ids: ["PARAM-ADP-092", "PARAM-ADP-093", "PARAM-ADP-094", "PARAM-ADP-095", "PARAM-ADP-096", "PARAM-ADP-160"]
     inputs: ["scheduled workflow text", "production trial runbook text", "generated_at"]
     outputs: ["scheduler plan", "schedule slots", "checks", "blocking_reasons"]
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
@@ -640,7 +640,7 @@ models:
     model_version: "adp-trial-start-workflow-v1"
     assumption_ids: ["ASM-ADP-031", "ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
     formula_ids: ["FORM-ADP-030"]
-    parameter_ids: ["PARAM-ADP-144", "PARAM-ADP-145", "PARAM-ADP-146", "PARAM-ADP-147", "PARAM-ADP-148"]
+    parameter_ids: ["PARAM-ADP-144", "PARAM-ADP-145", "PARAM-ADP-146", "PARAM-ADP-147", "PARAM-ADP-148", "PARAM-ADP-161"]
     inputs: ["trial start workflow file", "production trial runbook", "generated_at"]
     outputs: ["trial start workflow plan", "checks", "required_artifacts", "blocking_reasons", "next_external_actions"]
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-trial-start.yml"]

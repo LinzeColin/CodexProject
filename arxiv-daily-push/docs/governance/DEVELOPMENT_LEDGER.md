@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.20`
+Active product version: `0.11.21`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.20
+- Product version: 0.11.21
 - Current phase: E
 - Current gate: ADP-PHASE11-PRODUCTION-TRIAL-START-BLOCKED
-- Confirmed iteration count: 39
+- Confirmed iteration count: 40
 - Reconstructed event count: 0
 - Current task: ADP-PHASE11-PRODUCTION-TRIAL-START-022
-- Blockers: Semantic coverage is machine_verified with 158 machine-checked active parameters and all 32 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. A no-secret production refs bundle gate now exists for runner, SMTP secret-name, Release target, and workflow variable readiness refs, and PR #32 remains merged to `main` at merge commit `df28c70f255d4db0cabf15d6555ce34a8b2fa560`; however production launch remains blocked by missing owner-provisioned durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, missing explicit launch confirmation, and missing default-branch trial-start run evidence. Production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
+- Blockers: Semantic coverage is machine_verified with 160 machine-checked active parameters and all 32 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. Trial-start and scheduled production workflows now declare machine-checked `contents: write` permission for controlled draft Release evidence, while Release upload remains disabled by default. Production launch remains blocked by missing owner-provisioned durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, missing explicit launch confirmation, and missing default-branch trial-start run evidence. Production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
 
 ## Phase Matrix
 
@@ -919,6 +919,30 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Production acceptance still requires passing default-branch trial start evidence, live source pass on the runner, real SMTP/Release refs, archived weekly/monthly replay evidence, archived recovery drill evidence, actual resource telemetry, and 30 unique daily production evidence entries.
 - Rollback: Revert production refs module, CLI integration, schema, tests, runbook/phase record/governance updates, and restore version 0.11.19.
 - Next step: Provision owner-approved durable `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref` through `plan-production-refs`, then rerun `plan-production-launch --confirm-launch`.
+
+### `ITER-20260621-040`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from workflow permissions, scheduler/workflow validators, focused tests, and semantic registry checks.
+- Version before: 0.11.20
+- Version after: 0.11.21
+- Base commit: 4795473858926de7e8e2b9f3eb4e8346ca3a20a2
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-RELEASE-PERMISSIONS-024, ADP-PHASE11-PRODUCTION-TRIAL-START-022
+- Goal: Require GitHub Actions `contents: write` for the controlled Release evidence paths used by trial-start and scheduled production workflows.
+- Assumptions: The permission is necessary for real draft Release evidence, but does not authorize upload by itself; `ADP_ALLOW_RELEASE_UPLOAD=true`, Release target, safe assets, `gh`, and Release delivery validation are still required.
+- Files changed: trial-start workflow, scheduled production workflow, scheduler validator, trial-start workflow validator, focused tests, runbook, phase record, version/changelog files, model/formula/parameter/traceability registries, delivery task, and run manifest.
+- Model changes: No new runtime model; MOD-ADP-018 and MOD-ADP-028 now include machine-checked Release write permission parameters.
+- Formula changes: Refreshed FORM-ADP-020 and FORM-ADP-030 implementation fingerprints after adding Release write permission checks.
+- Parameter changes: Added PARAM-ADP-160 and PARAM-ADP-161 for scheduled and trial-start workflow `contents: write` permission requirements.
+- Commands run: focused workflow/scheduler tests; trial-start workflow plan CLI JSON parse; production scheduler plan CLI JSON parse; semantic extractor validation; project governance validation; root governance tests; arXiv unit tests; changed-only enforce-sync semantic validation; manifest JSON parse; development_events JSONL parse; git diff check.
+- Test results: focused workflow/scheduler tests 6 OK; trial-start workflow plan JSON OK; production scheduler plan JSON OK; semantic extractor checked 160 active parameters and 32 active formulas with no errors; project governance errors 0 warnings 0; root governance tests 93 OK; arXiv unit tests 148 OK; changed-only enforce-sync semantic validation errors 0 warnings 0 across all registered projects; manifest JSON and development_events JSONL parse OK; git diff check OK.
+- Successes: Real Release evidence paths will no longer fail only because workflow token permissions are read-only.
+- Failures: No workflow dispatch, SMTP send, Release upload, or trial-start evidence was produced in this run.
+- Decisions: Keep production launch blocked until external refs and explicit confirmation exist; keep Release upload disabled by default despite `contents: write`.
+- Remaining risks: Production acceptance still requires passing default-branch trial start evidence, live source pass on the runner, real SMTP/Release refs, archived weekly/monthly replay evidence, archived recovery drill evidence, actual resource telemetry, and 30 unique daily production evidence entries.
+- Rollback: Restore workflow `contents` permissions to read, remove release write permission checks, remove PARAM-ADP-160/161, phase record, manifest, and related governance updates, then restore version 0.11.20.
+- Next step: Provision owner-approved durable `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`; run `plan-production-refs`, then rerun `plan-production-launch --confirm-launch`.
 
 ## Unknown Historical Periods
 

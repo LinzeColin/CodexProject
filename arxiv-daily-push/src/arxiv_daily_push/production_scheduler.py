@@ -113,6 +113,11 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
             "workflow must map release target through GitHub variables",
         ),
         _check(
+            "release_write_permission_declared",
+            "contents: write" in workflow_text,
+            "workflow must declare contents: write so controlled scheduled Release uploads can create draft Releases",
+        ),
+        _check(
             "scheduled_side_effects_disabled",
             "--allow-send" not in workflow_text
             and "--allow-upload" not in workflow_text
@@ -143,6 +148,7 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
         "schedule_slots": list(REQUIRED_SCHEDULES),
         "required_github_secrets": list(REQUIRED_SCHEDULER_SECRETS),
         "required_github_vars": list(REQUIRED_SCHEDULER_VARS),
+        "required_github_permissions": ["actions: read", "contents: write"],
         "scheduled_production_enabled": False,
         "scheduled_run_enabled": False,
         "release_upload_enabled": False,

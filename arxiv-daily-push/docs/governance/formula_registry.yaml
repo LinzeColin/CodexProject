@@ -604,7 +604,7 @@ formulas:
     model_id: "MOD-ADP-018"
     assumption_ids: ["ASM-ADP-021", "ASM-ADP-017"]
     status: "active"
-    expression: "The production scheduler contract passes only when the GitHub workflow declares timezone-aware Australia/Sydney schedules for 04:45 health-check, 05:00 daily-run, and 05:10 watchdog, supports manual rerun with explicit confirmation, skips scheduled work unless ADP_PRODUCTION_ENABLED is true, targets the private self-hosted runner, runs production preflight before scheduled execution work, uploads preflight and scheduled execution evidence, builds and uploads daily source batch and daily input artifacts for daily-run when no override input path is configured, maps secret names without reading Codex auth, declares ADP_RELEASE_TARGET, and contains no --allow-send, --allow-upload, or direct gh Release command flags. Any missing schedule, missing gate, missing preflight ordering, missing artifact upload, secret/auth violation, or unsafe direct side-effect command blocks the scheduler plan."
+    expression: "The production scheduler contract passes only when the GitHub workflow declares timezone-aware Australia/Sydney schedules for 04:45 health-check, 05:00 daily-run, and 05:10 watchdog, supports manual rerun with explicit confirmation, skips scheduled work unless ADP_PRODUCTION_ENABLED is true, targets the private self-hosted runner, runs production preflight before scheduled execution work, uploads preflight and scheduled execution evidence, builds and uploads daily source batch and daily input artifacts for daily-run when no override input path is configured, maps secret names without reading Codex auth, declares ADP_RELEASE_TARGET, declares contents: write for controlled draft Release creation, and contains no --allow-send, --allow-upload, or direct gh Release command flags. Any missing schedule, missing gate, missing preflight ordering, missing artifact upload, missing Release write permission, secret/auth violation, or unsafe direct side-effect command blocks the scheduler plan."
     variables:
       - name: "schedule_slots"
         data_type: "list[dict]"
@@ -630,10 +630,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::_has_schedule", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::_appears_before"]
-    implementation_fingerprint: "sha256:b515bbda04e4b02e4b9778e483550df7c784fc9432b98074a0d472ecde338c06"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:17f4fbc1a1fd3d17fe7738e49a58a007ea66a539e191b0d52ffe8f761765f1e5"
+    implementation_fingerprint: "sha256:44c7c83c5736fa8164e5d0080e899d70369fb77bea16fa9f8c4d63c363f566e8"
+    last_verified_commit: "4795473858926de7e8e2b9f3eb4e8346ca3a20a2"
+    verified_at: "2026-06-22T18:00:00+10:00"
+    evidence_hash: "sha256:e1e85d603a5a1577dc03016e46c9b30c54ab786e8775cd9605dbc300760c68fa"
 
   - formula_id: "FORM-ADP-021"
     model_id: "MOD-ADP-019"
@@ -770,10 +770,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:21aa2056479674bb743dc4516765c5a3f6e158aef3bd7654a58da544bcb606ba"
-    last_verified_commit: "468738d44a2bf99b6fbdebaab85d7360ab731f4f"
-    verified_at: "2026-06-22T16:10:00+10:00"
-    evidence_hash: "sha256:9f23bcbf406df247c51b577cda58bfdb710731aa011c72a077c91ecd0ab4d73d"
+    implementation_fingerprint: "sha256:0a52531bd1cdd366dd7a1ce49bfa0ebe5de1d4c7def20bd07b1a8af5bfe2819e"
+    last_verified_commit: "4795473858926de7e8e2b9f3eb4e8346ca3a20a2"
+    verified_at: "2026-06-22T18:00:00+10:00"
+    evidence_hash: "sha256:d77e3518180fb19b5f2e640774f55e66f2e5a2d49cbe5a6b11c3b8bb7426e5f7"
 
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
@@ -978,7 +978,7 @@ formulas:
     model_id: "MOD-ADP-028"
     assumption_ids: ["ASM-ADP-031", "ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
     status: "active"
-    expression: "A trial start workflow plan passes only when the workflow is manual-only, requires confirm_trial_start before self-hosted runner work, targets a private runner label, runs preflight before live source and delivery probes, runs live source before SMTP or Release probes, invokes plan-trial-start with --confirm-start and all durable ref arguments, uploads the complete trial start artifact set, maps only secret names without reading Codex auth, and exposes real SMTP or Release probes only through explicit ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD GitHub variables."
+    expression: "A trial start workflow plan passes only when the workflow is manual-only, requires confirm_trial_start before self-hosted runner work, targets a private runner label, runs preflight before live source and delivery probes, runs live source before SMTP or Release probes, invokes plan-trial-start with --confirm-start and all durable ref arguments, uploads the complete trial start artifact set, maps only secret names without reading Codex auth, declares contents: write for controlled draft Release probe creation, and exposes real SMTP or Release probes only through explicit ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD GitHub variables."
     variables:
       - name: "workflow_text"
         data_type: "str"
@@ -1004,10 +1004,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::build_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::validate_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::_appears_before"]
-    implementation_fingerprint: "sha256:30dbba30838ae8f0c94f857ff3f74c80dc22009db5b633fc333e5ac1d8fdec4f"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:82b9ef2f9909f1dbee58c7836ce29e4df31ca424b406f8788040e88986272a21"
+    implementation_fingerprint: "sha256:28205b0945649d9aabf11d7ab45dfa72be41b295c0b5fb5f1c70af7152abb1cd"
+    last_verified_commit: "4795473858926de7e8e2b9f3eb4e8346ca3a20a2"
+    verified_at: "2026-06-22T18:00:00+10:00"
+    evidence_hash: "sha256:cac1fad68639ab98fb3330dbd8f1974fd48fe3e762243b339caba1cb42bd060c"
 
   - formula_id: "FORM-ADP-031"
     model_id: "MOD-ADP-029"
