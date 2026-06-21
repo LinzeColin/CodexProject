@@ -177,6 +177,35 @@ The exported state is uploaded as `adp-trial-evidence-ledger` and is the default
 carry-forward input for later scheduled daily runs. If the ledger update blocks,
 the state export also blocks and no replacement state artifact is uploaded.
 
+After weekly replay, monthly replay, or recovery drill evidence exists, do not
+hand-edit the trial evidence JSON. Merge the explicit evidence refs with:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push annotate-trial-ops-evidence \
+  --path <trial-evidence.json> \
+  --generated-at <ISO timestamp> \
+  --weekly-replay-verified \
+  --monthly-replay-verified \
+  --weekly-monthly-ref <weekly-monthly-evidence-ref> \
+  --recovery-drill-verified \
+  --recovery-ref <recovery-drill-evidence-ref> \
+  --json
+```
+
+The command can also merge explicit scheduler, manual rerun, Release, SMTP, and
+resource refs when those are produced outside the daily ledger update. It blocks
+verified flags without refs and does not generate weekly/monthly reports,
+recovery drills, SMTP sends, Releases, or production acceptance claims.
+
+To carry the annotated state forward without local persistence, export the state
+only from a passing annotation report:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push export-trial-ops-state \
+  --ops-update <trial-ops-update.json> \
+  --json
+```
+
 Validate the scheduled workflow contract locally or on the runner:
 
 ```bash

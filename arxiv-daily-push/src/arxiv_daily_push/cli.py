@@ -33,6 +33,7 @@ from .state_machine import validate_run_record
 from .trial import evaluate_trial_evidence, validate_trial_evidence_report
 from .trial_bootstrap import build_trial_bootstrap_plan, validate_trial_bootstrap_plan
 from .trial_ledger import update_trial_evidence_ledger, validate_trial_ledger_update_report
+from .trial_ops import annotate_trial_operational_evidence, validate_trial_ops_report
 from .video import VideoPlanError, generate_storyboard
 
 
@@ -194,6 +195,38 @@ def build_parser() -> argparse.ArgumentParser:
     )
     trial_state.add_argument("--ledger-update", required=True, help="Trial ledger update report JSON.")
     trial_state.add_argument("--json", action="store_true", help="Print JSON trial evidence state.")
+
+    trial_ops = subparsers.add_parser(
+        "annotate-trial-ops-evidence",
+        help="Merge explicit weekly/monthly/recovery and operational evidence refs into a trial evidence ledger.",
+    )
+    trial_ops.add_argument("--path", required=True, help="Existing trial evidence JSON.")
+    trial_ops.add_argument("--generated-at", required=True, help="Operational evidence annotation timestamp.")
+    trial_ops.add_argument("--trial-id", default="adp-trial-current")
+    trial_ops.add_argument("--trial-ref", default="")
+    trial_ops.add_argument("--expected-days", type=int, default=30)
+    trial_ops.add_argument("--scheduler-enabled", action="store_true")
+    trial_ops.add_argument("--manual-rerun-verified", action="store_true")
+    trial_ops.add_argument("--scheduler-ref", default="")
+    trial_ops.add_argument("--private-release-verified", action="store_true")
+    trial_ops.add_argument("--release-ref", default="")
+    trial_ops.add_argument("--real-smtp-verified", action="store_true")
+    trial_ops.add_argument("--email-ref", default="")
+    trial_ops.add_argument("--resource-pressure-ok", action="store_true")
+    trial_ops.add_argument("--resource-ref", default="")
+    trial_ops.add_argument("--weekly-replay-verified", action="store_true")
+    trial_ops.add_argument("--monthly-replay-verified", action="store_true")
+    trial_ops.add_argument("--weekly-monthly-ref", default="")
+    trial_ops.add_argument("--recovery-drill-verified", action="store_true")
+    trial_ops.add_argument("--recovery-ref", default="")
+    trial_ops.add_argument("--json", action="store_true", help="Print JSON operational evidence annotation report.")
+
+    trial_ops_state = subparsers.add_parser(
+        "export-trial-ops-state",
+        help="Export the trial_evidence object from a passing trial ops annotation report.",
+    )
+    trial_ops_state.add_argument("--ops-update", required=True, help="Trial ops annotation report JSON.")
+    trial_ops_state.add_argument("--json", action="store_true", help="Print JSON trial evidence state.")
 
     preflight = subparsers.add_parser("preflight-production", help="Run fail-closed production preflight before scheduled execution.")
     preflight.add_argument("--path", default=".", help="Repository path used for disk, Git, and cache checks.")
@@ -613,6 +646,69 @@ def main(argv: list[str] | None = None) -> int:
         evidence = report.get("trial_evidence")
         if not isinstance(evidence, dict):
             errors.append("trial ledger update report requires trial_evidence object")
+        if errors:
+            payload = {"status": "blocked", "errors": errors}
+            if args.json:
+                print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(evidence, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{evidence.get('trial_id', 'trial:unknown')}\t{len(evidence.get('daily_runs') or [])} days")
+        return 0
+    if args.command == "annotate-trial-ops-evidence":
+        evidence = load_json_mapping(args.path)
+        report = annotate_trial_operational_evidence(
+            evidence,
+            generated_at=args.generated_at,
+            trial_id=args.trial_id,
+            trial_ref=args.trial_ref,
+            expected_days=args.expected_days,
+            scheduler_enabled=args.scheduler_enabled,
+            manual_rerun_verified=args.manual_rerun_verified,
+            scheduler_ref=args.scheduler_ref,
+            private_release_verified=args.private_release_verified,
+            release_ref=args.release_ref,
+            real_smtp_verified=args.real_smtp_verified,
+            email_ref=args.email_ref,
+            resource_pressure_ok=args.resource_pressure_ok,
+            resource_ref=args.resource_ref,
+            weekly_replay_verified=args.weekly_replay_verified,
+            monthly_replay_verified=args.monthly_replay_verified,
+            weekly_monthly_ref=args.weekly_monthly_ref,
+            recovery_drill_verified=args.recovery_drill_verified,
+            recovery_ref=args.recovery_ref,
+        )
+        errors = validate_trial_ops_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["trial_evidence_updated"]:
+            print(f"{report['ops_update_id']}\t{report['observed_day_count']} days")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["trial_evidence_updated"] else 2
+    if args.command == "export-trial-ops-state":
+        report = load_json_mapping(args.ops_update)
+        errors = validate_trial_ops_report(report)
+        if report.get("trial_evidence_updated") is not True:
+            errors.extend(str(reason) for reason in report.get("blocking_reasons") or ["trial ops annotation did not update evidence"])
+        evidence = report.get("trial_evidence")
+        if not isinstance(evidence, dict):
+            errors.append("trial ops annotation report requires trial_evidence object")
         if errors:
             payload = {"status": "blocked", "errors": errors}
             if args.json:

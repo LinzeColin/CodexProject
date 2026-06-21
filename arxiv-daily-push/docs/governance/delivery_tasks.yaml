@@ -392,3 +392,20 @@ tasks:
     target_version: "0.11.12"
     completed_version: "0.11.12"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-OPS-EVIDENCE-014"
+    phase: "E"
+    objective: "Add a fail-closed annotation path for weekly/monthly replay, recovery drill, and other operational trial evidence refs."
+    scope: "Trial ops annotator, CLI commands, export command, tests, runbook, version and governance records."
+    non_scope: "No generated weekly/monthly report, no recovery drill execution, no SMTP send, no Release upload, no media/model/cache artifact retention, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-LEDGER-STATE-013"]
+    required_files: ["src/arxiv_daily_push/trial_ops.py", "src/arxiv_daily_push/cli.py", "tests/test_trial_ops.py", "docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-OPS-EVIDENCE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_ops.py arxiv-daily-push/tests/test_trial.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial ops tests: 16 tests OK", "annotate-trial-ops-evidence fixture CLI: pass and JSON parse OK", "export-trial-ops-state fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py", "arxiv-daily-push/tests/test_trial_ops.py"]
+    risk: "Real weekly/monthly replay and recovery drill evidence still requires controlled production operations and durable refs."
+    rollback: "Revert trial ops annotator, CLI commands, tests, runbook/docs/governance updates, and restore version 0.11.12."
+    target_version: "0.11.13"
+    completed_version: "0.11.13"
+    unknown_task_ids: []
