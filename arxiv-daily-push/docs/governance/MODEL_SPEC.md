@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 30
-- formula_count: 32
-- parameter_count: 166
+- model_count: 31
+- formula_count: 33
+- parameter_count: 169
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -45,6 +45,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-028 | Trial start evidence workflow validator | deterministic workflow contract validator | Validate the manual GitHub workflow that collects default-branch trial start evidence artifacts, production refs discovery, launch readiness, and Release write permission on the private runner | active | adp-trial-start-workflow-v1 | `src/arxiv_daily_push/trial_start_workflow.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-trial-start.yml` |
 | MOD-ADP-029 | Production launch readiness gate | deterministic launch-readiness validator | Block default-branch trial start dispatch until PR, workflow, runner, secrets, Release target, variables, refs, and confirmation are launch-ready | active | adp-production-launch-readiness-v1 | `src/arxiv_daily_push/production_launch.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-030 | Production refs readiness bundle | deterministic no-secret readiness validator | Generate a no-secret owner-fillable template, discover GitHub Actions metadata, run a GitHub-hosted provisioning audit, and review downloaded audit artifacts before launch readiness consumes refs | active | adp-production-refs-v1 | `src/arxiv_daily_push/production_refs.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-provisioning-audit.yml` |
+| MOD-ADP-031 | Two-day simulation acceptance gate | deterministic simulation validator | Run the updated two-day Phase 11 simulation with mocked SMTP and Release boundaries while blocking network fetch, real side effects, secret reads, cache/media retention, and production acceptance claims | active | adp-two-day-simulation-v1 | `src/arxiv_daily_push/simulation.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -83,6 +84,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-031 | The default-branch trial start evidence path must be manual-only, preflight-first, production-refs-checked, launch-readiness-checked, artifact-backed, and gated by explicit GitHub variables before any real SMTP or Release probe can run. | `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`, `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`, `.github/workflows/arxiv-daily-push-trial-start.yml`, `src/arxiv_daily_push/trial_start_workflow.py`, `tests/test_trial_start_workflow.py` | Phase 11 trial start workflow readiness | active |
 | ASM-ADP-032 | Production launch may proceed only after the PR is non-draft and merged into `main`, the expected head SHA is bound, the workflow contract is ready, and durable refs exist for runner, SMTP secrets, Release target, workflow variables, and default-branch workflow location. | `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`, `src/arxiv_daily_push/production_launch.py`, `tests/test_production_launch.py` | Phase 11 production launch readiness | active |
 | ASM-ADP-033 | Production runner, SMTP secret, Release target, and workflow variable readiness must be collected through a no-secret template or GitHub metadata discovery as names and durable refs only; secret values and credential material must never enter the readiness report. | `src/arxiv_daily_push/production_refs.py`, `config/examples/production_refs.input.example.json`, `tests/test_production_refs.py`, `docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md` | Phase 11 production refs readiness | active |
+| ASM-ADP-034 | The updated local Phase 11 goal is satisfied by a deterministic two-day simulation only when both scheduled daily runs and ledger appends pass with mocked SMTP/Release boundaries and no production acceptance claim. | `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`, `src/arxiv_daily_push/simulation.py`, `tests/test_simulation.py`, `governance/run_manifests/ADP-PHASE11-TWO-DAY-SIMULATION-20260622.json` | Phase 11 two-day simulation | active |
 
 ## C. Functions and Formulas
 
@@ -120,6 +122,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-030 validates the manual default-branch trial start evidence workflow across dispatch confirmation, preflight, production refs and launch readiness ordering, artifact coverage, durable refs, secret safety, Release write permission, and explicit side-effect variable gates.
 - FORM-ADP-031 validates production launch readiness across PR merged/non-draft state, expected head SHA binding, workflow contract readiness, durable external readiness refs, explicit launch confirmation, and no-side-effect safety.
 - FORM-ADP-032 validates production refs template generation, GitHub metadata discovery, provisioning audit workflow, downloaded audit artifact review, and readiness across required runner, SMTP secret-name, Release target, workflow variable, durable-ref, no-secret-input, redacted discovery-error, audit artifact refs, and no-side-effect gates.
+- FORM-ADP-033 validates the two-day simulation across consecutive dates, mocked scheduled daily runs, mocked SMTP/Release evidence, trial ledger appends, unique source/publication IDs, no secret leakage, no Codex auth read, no network fetch, and no production acceptance claim.
 
 ## D. Parameters
 
@@ -155,6 +158,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 trial start workflow parameters: PARAM-ADP-144 through PARAM-ADP-148 plus PARAM-ADP-161 and PARAM-ADP-164.
 - Active Phase 11 production launch readiness parameters: PARAM-ADP-149 through PARAM-ADP-153.
 - Active Phase 11 production refs readiness parameters: PARAM-ADP-154 through PARAM-ADP-159 plus PARAM-ADP-162, PARAM-ADP-163, PARAM-ADP-165, and PARAM-ADP-166.
+- Active Phase 11 two-day simulation parameters: PARAM-ADP-167 through PARAM-ADP-169.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

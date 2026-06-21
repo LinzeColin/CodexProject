@@ -1,0 +1,126 @@
+{
+  "run_id": "ADP-PHASE11-TWO-DAY-SIMULATION-20260622",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-PHASE11-TWO-DAY-SIMULATION-030",
+  "phase": "E",
+  "iteration_id": "ITER-20260621-046",
+  "generated_at": "2026-06-22T06:30:00+10:00",
+  "actor": "Codex",
+  "version_before": "0.11.26",
+  "version_after": "0.11.27",
+  "base_commit": "c75fa25fc79eed87ef510b4ce990ab663e362db5",
+  "objective": "Run and validate the updated Phase 11 two-day simulation acceptance path without requiring 30 production days.",
+  "non_scope": [
+    "network fetch",
+    "real SMTP send",
+    "real Release upload",
+    "secret value read",
+    "Codex auth read",
+    "media/model/cache artifact retention",
+    "production acceptance claim"
+  ],
+  "two_day_simulation_gate": {
+    "command": "run-two-day-simulation",
+    "model_id": "adp-two-day-simulation-v1",
+    "start_date": "2026-06-22",
+    "observed_dates": [
+      "2026-06-22",
+      "2026-06-23"
+    ],
+    "observed_day_count": 2,
+    "two_day_simulation_ready": true,
+    "smtp_boundary": "mocked",
+    "release_boundary": "mocked",
+    "network_fetch_performed": false,
+    "side_effects_performed": false,
+    "real_smtp_sent": false,
+    "real_release_uploaded": false,
+    "secret_values_logged": false,
+    "codex_auth_read": false,
+    "accepted_for_production": false,
+    "production_acceptance_claimed": false
+  },
+  "files_changed": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/simulation.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_simulation.py",
+    "governance/run_manifests/ADP-PHASE11-TWO-DAY-SIMULATION-20260622.json",
+    "GOVERNANCE_DASHBOARD.md",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "model_delta": "Added MOD-ADP-031 adp-two-day-simulation-v1 for the updated two-day simulation acceptance path.",
+  "formula_delta": "Refreshed FORM-ADP-024 because cli.py::main changed, and added FORM-ADP-033 for the two-day simulation gate.",
+  "parameter_delta": "Added PARAM-ADP-167 through PARAM-ADP-169 for the simulation model id, required two-day count, and no-production-claim safety flags.",
+  "model_ids_changed": [
+    "MOD-ADP-031"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-024",
+    "FORM-ADP-033"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-167",
+    "PARAM-ADP-168",
+    "PARAM-ADP-169"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_two_day_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_simulation.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_two_day_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push run-two-day-simulation --path . --generated-at 2026-06-22T06:30:00+10:00 --start-date 2026-06-22 --json",
+    "python3 -m json.tool /Users/linzezhang/Documents/Codex/2026-06-21/readme-first-md-01-execution-contract/outputs/arxiv_daily_push_two_day_simulation_20260622.json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_two_day_arxiv1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_two_day_semantic2 python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_two_day_project3 python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_two_day_dashboard python3 scripts/generate_governance_dashboard.py --write",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_two_day_root2 python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_two_day_changed3 python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "git diff --check"
+  ],
+  "test_results": [
+    "focused two-day simulation tests: 3 tests OK",
+    "two-day simulation CLI: status pass, two_day_simulation_ready true, observed_day_count 2",
+    "simulation report JSON parse: pass",
+    "arxiv-daily-push unit tests: 160 tests OK",
+    "semantic extractor: 168 active parameters and 33 active formulas checked with no errors",
+    "project governance: arxiv-daily-push errors 0 warnings 0 after temporarily restoring full registered project validation context",
+    "dashboard generation: PASS",
+    "root governance tests: 99 tests OK",
+    "changed-only enforce-sync semantic: errors 0 warnings 0; all registered projects errors 0 warnings 0",
+    "git diff --check: pass"
+  ],
+  "simulation_report": "/Users/linzezhang/Documents/Codex/2026-06-21/readme-first-md-01-execution-contract/outputs/arxiv_daily_push_two_day_simulation_20260622.json",
+  "result": "pass",
+  "evidence_refs": [
+    "governance/run_manifests/ADP-PHASE11-TWO-DAY-SIMULATION-20260622.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md",
+    "arxiv-daily-push/src/arxiv_daily_push/simulation.py",
+    "arxiv-daily-push/tests/test_simulation.py",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+  ],
+  "git_commit": "PENDING",
+  "fact_level": "EXTRACTED",
+  "result_commit": "PENDING",
+  "rollback": "Remove the two-day simulation module, CLI command, tests, MOD-ADP-031, FORM-ADP-033, PARAM-ADP-167 through PARAM-ADP-169, phase record, manifest, governance updates, and restore version 0.11.26.",
+  "next_task": "SYNC_TWO_DAY_SIMULATION_TO_GITHUB_AND_REVIEW_EXTERNAL_PRODUCTION_OPTIONS",
+  "risks": [
+    "The two-day simulation proves local scheduled-path behavior with mocked SMTP and Release boundaries only.",
+    "Real production launch still requires owner-provisioned runner, GitHub secrets/variables, real SMTP, real Release target, and default-branch workflow evidence."
+  ]
+}

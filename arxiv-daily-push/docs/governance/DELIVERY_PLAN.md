@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 40
-- acceptance_count: 40
+- task_count: 41
+- acceptance_count: 41
 
 ## Delivery Tasks
 
@@ -65,6 +65,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT-027 | E | completed | ADP-ACC-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT | 13 focused tests OK; trial-start workflow now runs production refs discovery and launch readiness before live source, SMTP, Release, or start gate | `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md` |
 | ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-028 | E | completed | ADP-ACC-PHASE11-PROVISIONING-AUDIT-WORKFLOW | 20 focused tests OK; GitHub-hosted provisioning audit uploads no-secret production refs readiness before private-runner trial start | `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md` |
 | ADP-PHASE11-PROVISIONING-AUDIT-REVIEW-029 | E | completed | ADP-ACC-PHASE11-PROVISIONING-AUDIT-REVIEW | 23 focused tests OK; downloaded provisioning audit artifacts can be reviewed with durable workflow run and artifact refs before trial start | `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md` |
+| ADP-PHASE11-TWO-DAY-SIMULATION-030 | E | completed | ADP-ACC-PHASE11-TWO-DAY-SIMULATION | 3 focused tests OK; two-day simulation CLI pass with 2 unique daily runs and no production acceptance claim | `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates
@@ -107,7 +108,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 production refs readiness bundle | no-secret runner, SMTP secret-name, Release target, and workflow variable readiness refs report | pass for refs bundle contract; real external refs still must be owner-provisioned before launch |
 | Phase 11 production refs input template | no-secret owner-fillable JSON input template for production refs readiness | pass for template contract; generated template defaults blocked until durable refs are filled |
 | Phase 11 provisioning audit review | downloaded provisioning audit report plus durable workflow run and artifact refs before trial-start dispatch | pass for review contract; real audit artifact still must come from owner-run workflow |
-| Semantic coverage rollout contract | task-bound machine checks for active parameter values and formula fingerprints | machine_verified; 161 active parameters and all 32 active formulas machine-check, 0 active rows remain HUMAN_REVIEW_REQUIRED |
+| Phase 11 two-day simulation acceptance | two unique scheduled daily simulation runs, mocked SMTP/Release refs, ledger appends, and no production acceptance claim | pass; `run-two-day-simulation` produced 2 observed days for 2026-06-22 and 2026-06-23 |
+| Semantic coverage rollout contract | task-bound machine checks for active parameter values and formula fingerprints | machine_verified; 168 active parameters and all 33 active formulas machine-check, 0 active rows remain HUMAN_REVIEW_REQUIRED |
 | Phase 11 production trial start | explicit confirmation, durable default branch, runner, SMTP, Release, workflow vars, and trial-start workflow refs | blocked; default branch and trial-start workflow refs recorded, while confirmation, runner, SMTP, Release, workflow-vars, and default-branch trial-start run evidence are not present |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
