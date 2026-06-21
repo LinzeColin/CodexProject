@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.6 - 2026-06-21
+
+- Added `adp send-notification` for dry-run notification evidence and explicit SMTP delivery.
+- Added `adp-smtp-delivery-v1` with fail-closed environment-key checks, TLS-required delivery, body hashing, and no secret/body logging.
+- Added SMTP delivery schema and tests covering dry-run, missing-env blocking, and mocked real send.
+
 ## 0.11.5 - 2026-06-21
 
 - Added `adp fetch-arxiv-latest` for small-window live arXiv Atom source ingestion.

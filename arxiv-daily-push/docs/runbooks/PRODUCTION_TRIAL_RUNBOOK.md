@@ -77,6 +77,36 @@ PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push fetch-arxiv-latest -
 If this blocks on Python SSL certificate validation, update the runner CA trust
 store or Python certificate bundle. Do not switch to insecure TLS behavior.
 
+Before enabling real notification sending, verify the SMTP delivery boundary in
+dry-run mode:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push send-notification \
+  --run-id adp-notification-probe \
+  --summary "SMTP delivery boundary probe" \
+  --date <YYYY-MM-DD> \
+  --generated-at <ISO timestamp> \
+  --json
+```
+
+Real SMTP sending is allowed only after production preflight passes and the SMTP
+secrets are configured. Use the explicit flag so accidental dispatches fail
+closed by default:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push send-notification \
+  --run-id adp-notification-probe \
+  --summary "SMTP delivery boundary probe" \
+  --date <YYYY-MM-DD> \
+  --generated-at <ISO timestamp> \
+  --allow-send \
+  --json
+```
+
+The delivery report must be archived as evidence. It records the recipient,
+subject, body SHA256, delivery status, and configured key names only; it must not
+log SMTP secret values or the email body.
+
 ## Trial Evidence
 
 After production side effects are explicitly enabled in a later controlled step,

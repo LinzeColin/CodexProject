@@ -273,3 +273,20 @@ tasks:
     target_version: "0.11.5"
     completed_version: "0.11.5"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-SMTP-DELIVERY-007"
+    phase: "E"
+    objective: "Add a fail-closed SMTP notification delivery boundary with dry-run evidence and explicit real-send gating."
+    scope: "SMTP delivery report, dry-run default, explicit allow-send flag, SMTP env-key validation, TLS-required mocked send, CLI command, schema, tests, runbook, and governance records."
+    non_scope: "No implicit real SMTP send, no secret value logging, no email body logging, no scheduled runner execution, no Release upload, and no 30-day acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-LIVE-ARXIV-INGEST-006"]
+    required_files: ["src/arxiv_daily_push/smtp_delivery.py", "src/arxiv_daily_push/cli.py", "tests/test_notifications.py", "tests/test_cli.py", "schemas/smtp_delivery.schema.json", "docs/phase_records/PHASE_11_SMTP_DELIVERY.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-SMTP-DELIVERY"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 83 tests OK", "schema parse: OK", "send-notification dry-run: pass", "mocked SMTP send: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py"]
+    risk: "Real production SMTP delivery is still unverified until SMTP secrets and runner are provisioned and archived delivery evidence exists."
+    rollback: "Revert SMTP delivery command, schema, tests, and restore version 0.11.5."
+    target_version: "0.11.6"
+    completed_version: "0.11.6"
+    unknown_task_ids: []

@@ -427,3 +427,32 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_source_ingest.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "https://info.arxiv.org/help/api/user-manual.html"]
+
+  - formula_id: "FORM-ADP-018"
+    model_id: "MOD-ADP-016"
+    assumption_ids: ["ASM-ADP-019", "ASM-ADP-002"]
+    status: "active"
+    expression: "SMTP delivery evidence is dry-run by default. A real SMTP send is attempted only when allow_send is true, the recipient is the configured user email, all required SMTP environment keys are present, ADP_SMTP_PORT parses to 1..65535, TLS starts, login succeeds, and send_message returns no refused recipients. The report blocks on missing keys, invalid port, wrong recipient, SMTP exception, or refused recipient, and never logs SMTP secret values or email body text."
+    variables:
+      - name: "allow_send"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "CLI explicit flag"
+      - name: "recipient"
+        data_type: "str"
+        unit: "email"
+        input_domain: "configured notification recipient"
+      - name: "smtp_env_keys"
+        data_type: "list[str]"
+        unit: "environment variable names"
+        input_domain: "ADP_SMTP_HOST, ADP_SMTP_PORT, ADP_SMTP_USERNAME, ADP_SMTP_PASSWORD"
+      - name: "body_sha256"
+        data_type: "str"
+        unit: "hash"
+        input_domain: "email body content hash"
+    constraints: "Dry-run mode makes no SMTP connection. Real send mode does not log secret values, email body text, or Codex auth, and requires TLS."
+    missing_policy: "Missing env keys, invalid port, wrong recipient, SMTP exception, or refused recipients produce a blocked SMTP delivery report."
+    output_range: "SMTP delivery report with status dry_run, sent, or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md"]

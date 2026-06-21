@@ -1,17 +1,17 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.5`
+Active product version: `0.11.6`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.5
+- Product version: 0.11.6
 - Current phase: E
-- Current gate: ADP-PHASE11-LIVE-ARXIV-INGEST-PASS
-- Confirmed iteration count: 16
+- Current gate: ADP-PHASE11-SMTP-DELIVERY-PASS
+- Confirmed iteration count: 17
 - Reconstructed event count: 0
 - Current task: NONE
 - Blockers: Production acceptance still requires real 30-day trial, scheduler, Release, SMTP, and resource evidence; those are not claimed by this handoff.
@@ -24,7 +24,7 @@ The append-only machine record is `development_events.jsonl`.
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
-| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, and production preflight gate generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md` |
+| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, and SMTP delivery gates generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md` |
 
 ## Iteration Records
 
@@ -390,6 +390,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Production acceptance still requires actual runner provisioning, CA trust fix, SMTP/Release configuration, preflight pass on runner, scheduled execution, and 30-day trial evidence.
 - Rollback: Revert live arXiv ingest command, SourceBatch schema, tests, and restore version 0.11.4.
 - Next step: Run root governance validation, update run manifest, and sync the PR.
+
+### `ITER-20260621-017`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for SMTP delivery boundary code, CLI command, schema, tests, runbook, and governance updates.
+- Version before: 0.11.5
+- Version after: 0.11.6
+- Base commit: 3d8efa4017d15e00d4e1202faa42209ff3c7e227
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-SMTP-DELIVERY-007
+- Goal: Add a fail-closed SMTP notification delivery boundary with dry-run evidence and explicit real-send gating.
+- Assumptions: Notification delivery must default to dry-run; real SMTP requires explicit `--allow-send`, configured SMTP environment keys, TLS, and no secret/body logging.
+- Files changed: SMTP delivery code, CLI command, tests, SMTP delivery schema, notification example, runbook, README, CHANGELOG, phase record, version files, and governance records.
+- Model changes: Added MOD-ADP-016 as adp-smtp-delivery-v1.
+- Parameter changes: Added PARAM-ADP-081 through PARAM-ADP-085.
+- Commands run: focused notification/CLI tests; send-notification dry-run CLI. Full project and governance validation pending in this iteration.
+- Test results: focused notification/CLI tests 9 OK; send-notification dry-run evidence emitted.
+- Successes: Dry-run mode requires no secrets and makes no SMTP connection; real send blocks without env keys; mocked SMTP send starts TLS, logs in, sends to `linzezhang35@gmail.com`, and does not log password values in the report.
+- Failures: none for focused tests; real production SMTP remains unverified because SMTP secrets and runner are not provisioned in this local environment.
+- Decisions: Keep scheduler/workflow SMTP side effects disabled until production preflight and explicit production enablement exist.
+- Remaining risks: Production acceptance still requires actual runner provisioning, CA trust fix, SMTP/Release configuration, preflight pass on runner, scheduled execution, weekly/monthly replay, recovery drill, and 30-day trial evidence.
+- Rollback: Revert SMTP delivery command, schema, tests, and restore version 0.11.5.
+- Next step: Run full project and governance validation, update run manifest, and sync the PR.
 
 ## Unknown Historical Periods
 
