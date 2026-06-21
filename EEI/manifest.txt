@@ -117,6 +117,7 @@ artifacts/tests/a208/t1306_scale_benchmark_smoke.json
 artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl
 artifacts/tests/a209/t1307_operator_soak_readiness.json
 artifacts/tests/a209/t1307_soak_smoke.json
+artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json
 artifacts/tests/a211/t1308_frontend_workspace_context_contract.json
 brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
 config/brand_policy.yaml
@@ -333,6 +334,7 @@ scripts/run_scale_benchmarks.py
 scripts/run_soak_smoke.mjs
 scripts/secret_scan.py
 scripts/smoke_test_prototype.py
+scripts/validate_brand_clearance.py
 scripts/validate_catalog_integrity.py
 scripts/validate_contracts.py
 scripts/validate_github_governance.py

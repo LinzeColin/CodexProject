@@ -56,6 +56,7 @@ REQUIRED_JSON = {
     "artifacts/development_status_summary_t1213.json",
     "artifacts/risk_control_summary_t1214.json",
     "artifacts/tests/a200/t1212_clean_room_preflight.json",
+    "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
 }
 
 REQUIRED_GITHUB = {
@@ -81,6 +82,7 @@ REQUIRED_SUPPORTING = {
     "scripts/validate_v5_production_readiness_sync.py",
     "scripts/validate_github_governance.py",
     "scripts/validate_prototype_parity.py",
+    "scripts/validate_brand_clearance.py",
 }
 
 REQUIRED_CONFIG = {"config/brand_policy.yaml"}

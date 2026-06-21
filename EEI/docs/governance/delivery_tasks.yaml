@@ -3384,3 +3384,40 @@ tasks:
     completed_version: ""
     fact_level: "EXTRACTED"
     unknown_task_ids: []
+  - task_id: "TASK-T1309"
+    legacy_task_id: "T1309"
+    phase: "E"
+    objective: "Complete EEI formal brand legal and market clearance or signed risk waiver before public launch"
+    scope: "Current T1309/A210 implementation slice adds a fail-closed brand-clearance preflight contract that validates the EEI name is unchanged, forbidden names are covered by the conflict register, BRAND-G1 blocks public launch, and legal/market clearance or risk waiver remains required."
+    non_scope: "Does not claim formal legal clearance, trademark availability, market clearance, public launch approval, or A210 closure."
+    status: "in_progress"
+    dependencies: []
+    required_files:
+      - "EEI/config/brand_policy.yaml"
+      - "EEI/data/brand_name_conflict_register.csv"
+      - "EEI/brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md"
+      - "EEI/scripts/validate_brand_clearance.py"
+      - "EEI/artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json"
+    acceptance_ids:
+      - "ACC-A210"
+    test_commands:
+      - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_brand_clearance.py generate"
+      - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_brand_clearance.py validate"
+      - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_brand_clearance.py scripts/validate_v5_production_readiness_sync.py"
+      - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_v5_production_readiness_sync.py"
+    test_results:
+      - "local brand-clearance preflight generate PASS"
+      - "local brand-clearance preflight validate PASS"
+      - "local ruff PASS"
+      - "formal legal/market clearance remains pending; A210 remains IN_PROGRESS"
+    evidence_refs:
+      - "EEI/artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json"
+      - "EEI/config/brand_policy.yaml"
+      - "EEI/data/brand_name_conflict_register.csv"
+      - "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md"
+    risk: "A210 can be falsely closed if a fail-closed preflight is treated as legal advice, trademark clearance, market clearance, or signed risk waiver."
+    rollback: "Revert the A210 preflight script/artifact/status changes, regenerate clean-room/release artifacts, and rerun validation."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []

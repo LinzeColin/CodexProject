@@ -41,7 +41,7 @@ EEI identity is unchanged:
 | 10k, 100k and 1m relationship scale tests | STRESS-008 | T1306 | A208 | DONE |
 | 4h and 24h soak tests | STRESS-012 | T1307 | A209 | IN_PROGRESS |
 | Production componentized frontend, real routes and real controls | UX-003, UX-009, UX-012 | T1308 | A211 | DONE |
-| Formal brand legal and market clearance | BRAND-001 and EEI user constraint | T1309 | A210 | NOT_STARTED |
+| Formal brand legal and market clearance | BRAND-001 and EEI user constraint | T1309 | A210 | IN_PROGRESS |
 
 Latest validation: GitHub Actions run `27886021414` / job `82521454825` passed Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI PostgreSQL E2E for the worker supervisor CLI wake contract. The current T1307 slice adds `scripts/run_operator_soak.mjs`, `soak.operator_window_seconds=300`, checkpoint JSONL resume support and `artifacts/tests/a209/t1307_operator_soak_readiness.json` as a 3-second readiness proof only. T1303/A204-A205, T1304/A206 and T1307/A209 remain `IN_PROGRESS` until 4h/24h refresh and worker soak stability evidence are complete.
 
@@ -70,7 +70,7 @@ T1301-T1304, T1307 and T1309 remain MVP production blockers. T1300/A201 is imple
 | Frontend visualization | Production frontend must be componentized with real route/state/query wiring; toast-only controls are not accepted. |
 | Data ingestion | The Golden Vertical is NVIDIA-centered semiconductor and AI infrastructure, with minimum path NVIDIA -> TSMC -> ASML and at least one data-center or energy branch. |
 | Background jobs | Job lease, idempotency key, heartbeat, retry cap, dead-letter and graceful shutdown are mandatory. |
-| Brand | EEI remains the system name; formal legal/market clearance remains a release blocker for public brand use. |
+| Brand | EEI remains the system name; A210 brand-clearance preflight now validates fail-closed release controls, but formal legal/market clearance remains a release blocker for public brand use. |
 
 ## Rollback Procedures
 

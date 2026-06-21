@@ -3825,3 +3825,49 @@ Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A202 STILL IN PROG
 - Revert `data/golden_vertical_fact_candidates.json`, `scripts/load_curated_ingestion_anchors.py`, the updated fixtures and test assertions.
 - Regenerate clean-room/release artifacts.
 - Rerun `make verify` and remote CI.
+
+## 2026-06-21 - T1309/A210 brand-clearance fail-closed preflight
+
+Status: LOCAL VALIDATED; FORMAL LEGAL/MARKET CLEARANCE PENDING; A210 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/validate_brand_clearance.py` with `generate` and `validate` commands.
+- Added `artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json`.
+- The preflight verifies:
+  - system name remains `商域图谱` / `Enterprise Ecosystem Intelligence` / `EEI`;
+  - `BRAND-G1` remains the public-launch release gate;
+  - public disclosure status remains `not_cleared_for_public_brand_launch`;
+  - forbidden active names in `config/brand_policy.yaml` are covered by `data/brand_name_conflict_register.csv`;
+  - public domain registration, app store publication, public SaaS launch, trademark filing and paid public marketing remain blocked unless formal clearance or a signed risk waiver exists.
+- Wired `validate-brand-clearance` into `Makefile verify` and added the script to ruff lint coverage.
+
+### Acceptance mapping
+
+- T1309 -> A210.
+- A210 moves from `NOT_STARTED` to `IN_PROGRESS` because the repository now has a verifiable fail-closed preflight gate.
+- A210 remains open: this slice does not provide legal counsel sign-off, trademark availability, domain/social/app-store/package search evidence, market clearance, or a signed risk waiver.
+
+### Model, formulas and thresholds
+
+- No scoring model or graph formula changed.
+- Existing parameter `brand.clearance_required=true` remains active.
+- The gate is binary and fail-closed: `public_release_allowed=false` until formal legal/market clearance or signed risk waiver is attached.
+
+### Local validation
+
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_brand_clearance.py generate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_brand_clearance.py validate`: PASS.
+
+### Remaining gaps
+
+- No formal legal opinion is attached.
+- No current CN/US/EU/UK/AU trademark knockout evidence is attached.
+- No current domain, social handle, app store, GitHub/npm/PyPI or company-name search evidence is attached.
+- No legal counsel sign-off or repository-owner risk waiver is attached.
+
+### Rollback
+
+- Revert `scripts/validate_brand_clearance.py`, `artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json`, status CSV changes and Makefile wiring.
+- Regenerate clean-room/release artifacts.
+- Rerun governance, brand-clearance and release validations.
