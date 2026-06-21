@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 30
 - formula_count: 32
-- parameter_count: 162
+- parameter_count: 163
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -44,7 +44,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-027 | Trial start readiness gate | deterministic start-readiness validator | Aggregate preflight, bootstrap, scheduler, live source, SMTP, Release, and durable-ref evidence before a real 30-day production trial can be marked start-ready | active | adp-trial-start-v1 | `src/arxiv_daily_push/trial_start.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-028 | Trial start evidence workflow validator | deterministic workflow contract validator | Validate the manual GitHub workflow that collects default-branch trial start evidence artifacts and Release write permission on the private runner | active | adp-trial-start-workflow-v1 | `src/arxiv_daily_push/trial_start_workflow.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-trial-start.yml` |
 | MOD-ADP-029 | Production launch readiness gate | deterministic launch-readiness validator | Block default-branch trial start dispatch until PR, workflow, runner, secrets, Release target, variables, refs, and confirmation are launch-ready | active | adp-production-launch-readiness-v1 | `src/arxiv_daily_push/production_launch.py`, `src/arxiv_daily_push/cli.py` |
-| MOD-ADP-030 | Production refs readiness bundle | deterministic no-secret readiness validator | Generate a no-secret owner-fillable template, then collect runner, SMTP secret-name, Release target, and workflow variable readiness refs before launch readiness consumes them | active | adp-production-refs-v1 | `src/arxiv_daily_push/production_refs.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-030 | Production refs readiness bundle | deterministic no-secret readiness validator | Generate a no-secret owner-fillable template or discover GitHub Actions metadata, then collect runner, SMTP secret-name, Release target, and workflow variable readiness refs before launch readiness consumes them | active | adp-production-refs-v1 | `src/arxiv_daily_push/production_refs.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -82,7 +82,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-030 | A real 30-day production trial may be marked start-ready only after preflight, bootstrap, scheduler, live source, real SMTP, real Release, durable evidence refs, and explicit confirmation all pass. | `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`, `src/arxiv_daily_push/trial_start.py`, `tests/test_trial_start.py` | Phase 11 trial start readiness | active |
 | ASM-ADP-031 | The default-branch trial start evidence path must be manual-only, preflight-first, artifact-backed, and gated by explicit GitHub variables before any real SMTP or Release probe can run. | `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`, `.github/workflows/arxiv-daily-push-trial-start.yml`, `src/arxiv_daily_push/trial_start_workflow.py`, `tests/test_trial_start_workflow.py` | Phase 11 trial start workflow readiness | active |
 | ASM-ADP-032 | Production launch may proceed only after the PR is non-draft and merged into `main`, the expected head SHA is bound, the workflow contract is ready, and durable refs exist for runner, SMTP secrets, Release target, workflow variables, and default-branch workflow location. | `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`, `src/arxiv_daily_push/production_launch.py`, `tests/test_production_launch.py` | Phase 11 production launch readiness | active |
-| ASM-ADP-033 | Production runner, SMTP secret, Release target, and workflow variable readiness must be collected through a no-secret template as names and durable refs only; secret values and credential material must never enter the readiness report. | `src/arxiv_daily_push/production_refs.py`, `config/examples/production_refs.input.example.json`, `tests/test_production_refs.py`, `docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md` | Phase 11 production refs readiness | active |
+| ASM-ADP-033 | Production runner, SMTP secret, Release target, and workflow variable readiness must be collected through a no-secret template or GitHub metadata discovery as names and durable refs only; secret values and credential material must never enter the readiness report. | `src/arxiv_daily_push/production_refs.py`, `config/examples/production_refs.input.example.json`, `tests/test_production_refs.py`, `docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md` | Phase 11 production refs readiness | active |
 
 ## C. Functions and Formulas
 
@@ -119,7 +119,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-029 builds trial start readiness only from passing preflight, bootstrap, scheduler, live source, real SMTP, real Release, durable refs, and explicit confirmation while performing no side effects.
 - FORM-ADP-030 validates the manual default-branch trial start evidence workflow across dispatch confirmation, preflight-first ordering, artifact coverage, durable refs, secret safety, Release write permission, and explicit side-effect variable gates.
 - FORM-ADP-031 validates production launch readiness across PR merged/non-draft state, expected head SHA binding, workflow contract readiness, durable external readiness refs, explicit launch confirmation, and no-side-effect safety.
-- FORM-ADP-032 validates production refs template generation and readiness across required runner, SMTP secret-name, Release target, workflow variable, durable-ref, no-secret-input, and no-side-effect gates.
+- FORM-ADP-032 validates production refs template generation, GitHub metadata discovery, and readiness across required runner, SMTP secret-name, Release target, workflow variable, durable-ref, no-secret-input, redacted discovery-error, and no-side-effect gates.
 
 ## D. Parameters
 
@@ -154,7 +154,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 trial start gate parameters: PARAM-ADP-138 through PARAM-ADP-143.
 - Active Phase 11 trial start workflow parameters: PARAM-ADP-144 through PARAM-ADP-148 plus PARAM-ADP-161.
 - Active Phase 11 production launch readiness parameters: PARAM-ADP-149 through PARAM-ADP-153.
-- Active Phase 11 production refs readiness parameters: PARAM-ADP-154 through PARAM-ADP-159 plus PARAM-ADP-162.
+- Active Phase 11 production refs readiness parameters: PARAM-ADP-154 through PARAM-ADP-159 plus PARAM-ADP-162 and PARAM-ADP-163.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -393,6 +393,7 @@ matched to its own resource gate evidence.
 - Daily input builder missing Atom summary -> daily input report blocked.
 - Daily input builder selected candidate recently used -> daily input report blocked.
 - Daily input builder pass -> daily input contains SourceItem, supported claims, date, run_id, and selection audit.
+- Production refs discovery without `gh`, with failed GitHub metadata access, missing runner label, missing SMTP secret names, missing workflow variables, empty `ADP_RELEASE_TARGET`, or secret-like input -> refs report blocked or redacted discovery error.
 - Production pass with any missing requirement -> acceptance validation error.
 
 ## G. Validation
@@ -412,6 +413,7 @@ Uncovered planned scenarios:
 - TTS/video sample gates.
 - Live 30-day operational trial evidence.
 - GitHub self-hosted runner, private Release, and real email transport health.
+- GitHub metadata discovery on the actual private runner after owner provisioning.
 - Actual production preflight pass on a provisioned runner with SMTP, Release, and media dependencies installed.
 - Actual 30-day trial start and scheduled daily run execution on the provisioned runner.
 - Local Python HTTPS certificate validation for `https://export.arxiv.org/api/query` currently blocks live source ingest on this machine.

@@ -1,0 +1,131 @@
+{
+  "run_id": "ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-20260622",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-026",
+  "phase": "E",
+  "iteration_id": "ITER-20260621-042",
+  "generated_at": "2026-06-22T21:00:00+10:00",
+  "actor": "Codex",
+  "version_before": "0.11.22",
+  "version_after": "0.11.23",
+  "base_commit": "aa8a31f8033f337a7ea0c62ffa446a1c8ca0200b",
+  "objective": "Discover no-secret production refs readiness from GitHub Actions metadata on a provisioned runner.",
+  "non_scope": [
+    "secret value read",
+    "gh stdout or stderr logging",
+    "Codex auth read",
+    "GitHub API mutation",
+    "workflow dispatch",
+    "SMTP send",
+    "Release upload",
+    "local media/model/cache retention",
+    "production acceptance claim"
+  ],
+  "production_refs_github_discovery_gate": {
+    "command": "discover-production-refs",
+    "default_repo": "LinzeColin/CodexProject",
+    "metadata_source": "gh api",
+    "metadata_read": [
+      "runner labels and status",
+      "SMTP secret names and update timestamps",
+      "GitHub Actions variable names",
+      "ADP_RELEASE_TARGET variable value"
+    ],
+    "required_smtp_secret_names": [
+      "ADP_SMTP_HOST",
+      "ADP_SMTP_PORT",
+      "ADP_SMTP_USERNAME",
+      "ADP_SMTP_PASSWORD"
+    ],
+    "required_workflow_var_names": [
+      "ADP_RELEASE_TARGET",
+      "ADP_ALLOW_SMTP_SEND",
+      "ADP_ALLOW_RELEASE_UPLOAD"
+    ],
+    "local_discovery_status": "blocked_gh_missing",
+    "local_discovery_exit_code": 2,
+    "local_discovery_error": "gh command is required for GitHub metadata discovery",
+    "secret_values_logged": false,
+    "gh_stdout_logged": false,
+    "gh_stderr_logged": false,
+    "codex_auth_read": false,
+    "workflow_dispatched": false,
+    "production_acceptance_claimed": false
+  },
+  "files_changed": [
+    "GOVERNANCE_DASHBOARD.md",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/production_refs.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_production_refs.py",
+    "governance/run_manifests/ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "model_delta": "No new runtime model; MOD-ADP-030 now includes no-secret GitHub metadata discovery for production refs readiness input.",
+  "formula_delta": "Refreshed FORM-ADP-024 because cli.py::main changed, and refreshed FORM-ADP-032 after adding GitHub metadata discovery helpers.",
+  "parameter_delta": "Added PARAM-ADP-163 for the default GitHub repository used by production refs metadata discovery.",
+  "model_ids_changed": [],
+  "formula_ids_changed": [
+    "FORM-ADP-024",
+    "FORM-ADP-032"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-163"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_github_refs_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_production_refs.py arxiv-daily-push/tests/test_production_launch.py arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_github_refs_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push discover-production-refs --generated-at 2026-06-22T21:00:00+10:00 --json >/tmp/codex_adp_github_refs_discovery.json; rc=$?; python3 -m json.tool /tmp/codex_adp_github_refs_discovery.json >/tmp/codex_adp_github_refs_discovery.pretty.json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_github_refs_semantic python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_github_refs_project python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_github_refs_root python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_github_refs_arxiv PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_github_refs_changed python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python3 -m json.tool governance/run_manifests/ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-20260622.json >/dev/null",
+    "python3 -c \"import json,pathlib; [json.loads(line) for line in pathlib.Path('arxiv-daily-push/docs/governance/development_events.jsonl').read_text().splitlines() if line.strip()]\"",
+    "git diff --check"
+  ],
+  "test_results": [
+    "focused production refs/launch/CLI tests: 19 tests OK",
+    "local discover-production-refs: expected blocked exit 2 because gh is not installed; JSON parse OK and redacted error only",
+    "semantic extractor: 162 active parameters and 32 active formulas checked with no errors",
+    "project governance: arxiv-daily-push errors 0 warnings 0",
+    "root governance tests: 95 tests OK",
+    "arxiv-daily-push unit tests: 153 tests OK",
+    "changed-only enforce-sync semantic: errors 0 warnings 0; all registered projects errors 0 warnings 0",
+    "manifest JSON and development_events JSONL parse: pass",
+    "git diff --check: pass"
+  ],
+  "result": "pass",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md",
+    "arxiv-daily-push/src/arxiv_daily_push/production_refs.py",
+    "arxiv-daily-push/tests/test_production_refs.py",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+  ],
+  "git_commit": "PENDING",
+  "fact_level": "EXTRACTED",
+  "result_commit": "PENDING",
+  "rollback": "Remove GitHub metadata discovery functions, CLI command, tests, runbook section, phase record, manifest, and governance updates, then restore version 0.11.22.",
+  "next_task": "RUN_DISCOVER_PRODUCTION_REFS_ON_PROVISIONED_RUNNER_AND_RERUN_LAUNCH_PRECHECK",
+  "risks": [
+    "Discovery can prove no-secret GitHub metadata only after the private runner has gh access.",
+    "Production launch and 30-day acceptance remain blocked by external refs, explicit launch confirmation, trial-start evidence, real SMTP/Release evidence, replay/recovery/resource evidence, and 30 daily production entries."
+  ]
+}
