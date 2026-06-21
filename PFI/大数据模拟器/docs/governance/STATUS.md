@@ -18,7 +18,7 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Model count: `15`
 - Formula count: `15`
 - Parameter count: `213`
-- Task count: `14`
+- Task count: `15`
 - Unbound event count: `2`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `215`
 - Semantic coverage: `planned`

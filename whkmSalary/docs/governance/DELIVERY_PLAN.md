@@ -1,6 +1,6 @@
 # whkmSalary Delivery Plan
 
-task_count: 5
+task_count: 6
 
 | Phase | Name | Status | Tasks |
 |---|---|---|---|

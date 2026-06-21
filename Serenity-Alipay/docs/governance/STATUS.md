@@ -22,7 +22,7 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Unbound event count: `3`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `0`
 - Semantic coverage: `machine_verified`
-- Semantic rollout task: `GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001`
+- Semantic rollout task: `TASK-B-003`
 
 ## Latest Run
 

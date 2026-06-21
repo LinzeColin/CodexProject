@@ -233,6 +233,11 @@ domain knowledge:
   also has `semantic_extractors: true` and cites evidence. Planned, blocked, or
   not-applicable projects must still identify a task, Acceptance ID, owner,
   target, and rationale so future agents cannot silently skip semantic closure.
+- `semantic_coverage.task_id` must exist in that project's
+  `docs/governance/delivery_tasks.yaml`; `semantic_coverage.acceptance_id` must
+  be listed on the same task. `machine_verified` coverage must point to a
+  completed task, while planned/in-progress/blocked coverage must not point to a
+  terminal task.
 - `GOVERNANCE_DASHBOARD.md`, per-project `STATUS.md`, and per-project
   `OWNER_STATUS.md` display semantic coverage status from this machine config.
   These generated reports do not become editable fact sources.

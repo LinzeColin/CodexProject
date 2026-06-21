@@ -1,7 +1,7 @@
 # FIFA Delivery Plan
 
 fact_level: EXTRACTED
-task_count: 9
+task_count: 10
 
 This delivery plan uses `docs/governance/delivery_tasks.yaml` as the machine source of truth. Markdown is an explanatory layer only.
 

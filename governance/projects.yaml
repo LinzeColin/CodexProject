@@ -191,7 +191,7 @@ projects:
     semantic_extractors: true
     semantic_coverage:
       status: "machine_verified"
-      task_id: "GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001"
+      task_id: "TASK-B-003"
       acceptance_id: "ACC-B-003"
       target: "Machine-check active parameter values and active formula implementation fingerprints."
       evidence_ref: "governance/run_manifests/GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001.json"
