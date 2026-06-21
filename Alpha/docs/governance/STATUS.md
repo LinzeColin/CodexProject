@@ -20,16 +20,17 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Parameter count: `55`
 - Task count: `8`
 - Unbound event count: `2`
+- UNKNOWN/HUMAN_REVIEW_REQUIRED count: `3`
 
 ## Latest Run
 
 - Event: `EVENT-ALPHA-20260620-002`
 - Task: `GOV-G4-ALPHA-PROMOTE-001`
 - Summary: Verified Alpha governance baseline and promoted Alpha enforcement from advisory to required.
-- Model delta: `UNKNOWN`
-- Parameter delta: `UNKNOWN`
-- Tests: `['python scripts/validate_project_governance.py --project Alpha', 'python -m pytest tests/test_policy.py tests/test_live_broker_fail_closed.py tests/test_strategy_iteration.py tests/test_paper_trading_loop.py -q', 'python scripts/validate_project_governance.py --all', 'git diff --check']`
-- Evidence: `['Alpha/docs/governance/DEVELOPMENT_LEDGER.md', 'governance/projects.yaml']`
+- Model delta: UNKNOWN
+- Parameter delta: UNKNOWN
+- Tests: python scripts/validate_project_governance.py --project Alpha, python -m pytest tests/test_policy.py tests/test_live_broker_fail_closed.py tests/test_strategy_iteration.py tests/test_paper_trading_loop.py -q, python scripts/validate_project_governance.py --all, git diff --check
+- Evidence: Alpha/docs/governance/DEVELOPMENT_LEDGER.md, governance/projects.yaml
 - Result: `PASS`
 - Rollback: Set Alpha ci_mode back to advisory and restore Alpha governance task status if promotion is reverted.
 
@@ -39,4 +40,8 @@ live execution policy and production validation remain blocked under `TASK-ALPHA
 
 ## Next Task
 
-`TASK-ALPHA-B-001`
+`TASK-ALPHA-B-001` - Resolve production validation and execution-policy UNKNOWN items before release readiness.
+
+- Status: `blocked`
+- Acceptance: ACC-ALPHA-B-001
+- Selection rationale: status=blocked; phase=B; current_phase=E; unmet_dependencies=none; score=152

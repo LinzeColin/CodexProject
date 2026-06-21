@@ -73,7 +73,7 @@ jobs:
       - name: Verify generated governance dashboard
         run: |
           python3 scripts/generate_governance_dashboard.py --write
-          git diff --exit-code -- GOVERNANCE_DASHBOARD.md */docs/governance/STATUS.md
+          git diff --exit-code -- GOVERNANCE_DASHBOARD.md ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
       - name: Write CI attestation
         if: success()
         env:

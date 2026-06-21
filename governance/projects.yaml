@@ -16,6 +16,7 @@ root_governance:
     - "docs/governance/templates/delivery_tasks.template.yaml"
     - "docs/governance/templates/TRACEABILITY_MATRIX.template.csv"
     - "docs/governance/templates/INCIDENT_RESPONSE.template.md"
+    - "docs/governance/templates/OWNER_STATUS.template.md"
     - "docs/governance/CODEX_SETUP.md"
     - "governance/projects.yaml"
     - "governance/schemas/model_registry.schema.json"
@@ -48,6 +49,7 @@ project_governance_files:
   - "docs/governance/VERSION_MATRIX.yaml"
   - "docs/governance/TRACEABILITY_MATRIX.csv"
   - "docs/governance/STATUS.md"
+  - "docs/governance/OWNER_STATUS.md"
   - "VERSION"
   - "CHANGELOG.md"
 projects:

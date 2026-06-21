@@ -62,7 +62,7 @@ iteration counts. Git commit count is not iteration count.
    Use `--base-ref <sha-or-ref>` when validating a pushed range.
 9. Regenerate human-readable status pages with
    `python3 scripts/generate_governance_dashboard.py --write` and verify
-   `git diff --exit-code -- GOVERNANCE_DASHBOARD.md */docs/governance/STATUS.md`
+   `git diff --exit-code -- GOVERNANCE_DASHBOARD.md ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'`
    after a second generation pass.
 10. Run `python3 scripts/governance_setup_doctor.py --json` when checking local
     hook trust or GitHub branch-protection evidence. Report no-bypass as

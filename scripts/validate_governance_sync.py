@@ -59,6 +59,7 @@ PROJECT_GOVERNANCE_FILES = {
     "VERSION_MATRIX.yaml",
     "TRACEABILITY_MATRIX.csv",
     "STATUS.md",
+    "OWNER_STATUS.md",
 }
 COMMON_REQUIRED_BY_CLASS = {
     "model_behavior_change": {
@@ -72,6 +73,7 @@ COMMON_REQUIRED_BY_CLASS = {
         "docs/governance/TRACEABILITY_MATRIX.csv",
         "docs/governance/VERSION_MATRIX.yaml",
         "docs/governance/STATUS.md",
+        "docs/governance/OWNER_STATUS.md",
         "CHANGELOG.md",
     },
     "parameter_or_config_change": {
@@ -82,6 +84,7 @@ COMMON_REQUIRED_BY_CLASS = {
         "docs/governance/TRACEABILITY_MATRIX.csv",
         "docs/governance/VERSION_MATRIX.yaml",
         "docs/governance/STATUS.md",
+        "docs/governance/OWNER_STATUS.md",
         "CHANGELOG.md",
     },
     "data_snapshot_change": {
@@ -90,6 +93,7 @@ COMMON_REQUIRED_BY_CLASS = {
         "docs/governance/TRACEABILITY_MATRIX.csv",
         "docs/governance/VERSION_MATRIX.yaml",
         "docs/governance/STATUS.md",
+        "docs/governance/OWNER_STATUS.md",
     },
     "test_or_evidence_change": {
         "docs/governance/DEVELOPMENT_LEDGER.md",
@@ -97,6 +101,7 @@ COMMON_REQUIRED_BY_CLASS = {
         "docs/governance/delivery_tasks.yaml",
         "docs/governance/TRACEABILITY_MATRIX.csv",
         "docs/governance/STATUS.md",
+        "docs/governance/OWNER_STATUS.md",
     },
     "product_capability_change": {
         "docs/governance/DEVELOPMENT_LEDGER.md",
@@ -105,6 +110,7 @@ COMMON_REQUIRED_BY_CLASS = {
         "docs/governance/TRACEABILITY_MATRIX.csv",
         "docs/governance/VERSION_MATRIX.yaml",
         "docs/governance/STATUS.md",
+        "docs/governance/OWNER_STATUS.md",
         "CHANGELOG.md",
     },
 }

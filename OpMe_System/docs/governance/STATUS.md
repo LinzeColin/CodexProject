@@ -20,16 +20,17 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Parameter count: `49`
 - Task count: `5`
 - Unbound event count: `2`
+- UNKNOWN/HUMAN_REVIEW_REQUIRED count: `92`
 
 ## Latest Run
 
 - Event: `EVENT-OPME-20260620-002`
 - Task: `GOV-G4-OPME-PROMOTE-001`
 - Summary: Verified OpMe_System governance baseline and promoted OpMe_System enforcement from advisory to required.
-- Model delta: `UNKNOWN`
-- Parameter delta: `UNKNOWN`
-- Tests: `['python scripts/validate_project_governance.py --project OpMe_System', 'python -m pytest tests/test_analysis.py -q', 'python -m pytest tests/test_api.py -q', 'python scripts/validate_project_governance.py --all', 'git diff --check']`
-- Evidence: `['OpMe_System/docs/governance/DEVELOPMENT_LEDGER.md', 'governance/projects.yaml']`
+- Model delta: UNKNOWN
+- Parameter delta: UNKNOWN
+- Tests: python scripts/validate_project_governance.py --project OpMe_System, python -m pytest tests/test_analysis.py -q, python -m pytest tests/test_api.py -q, python scripts/validate_project_governance.py --all, git diff --check
+- Evidence: OpMe_System/docs/governance/DEVELOPMENT_LEDGER.md, governance/projects.yaml
 - Result: `PASS_WITH_BLOCKED_ADDITIONAL_CHECK`
 - Rollback: Set OpMe_System ci_mode back to advisory and restore OpMe_System governance task status if promotion is reverted.
 
@@ -39,4 +40,8 @@ Source: generated from machine governance registries, Git metadata, and validati
 
 ## Next Task
 
-`TASK-OPME-B-001`
+`TASK-OPME-B-001` - Resolve engineering calibration, prompt version, provider policy, and signoff evidence gaps.
+
+- Status: `blocked`
+- Acceptance: ACC-OPME-B-001
+- Selection rationale: status=blocked; phase=B; current_phase=E; unmet_dependencies=none; score=120
