@@ -6,7 +6,7 @@
 - product version status: provisional
 - current phase: C - personalization architecture
 - current gate: TASK-OAI-C-002-PERSONALIZATION-ARCHITECTURE
-- confirmed iterations: 3
+- confirmed iterations: 4
 - reconstructed development events: 15
 - current task: TASK-OAI-C-002
 - blockers: calibration evidence for heuristic weights is UNKNOWN and tracked by `TASK-OAI-B-001`
@@ -20,7 +20,7 @@ iteration in this ledger is the current governance baseline run.
 | --- | --- | --- | --- |
 | A | Discovery and baseline | completed | `MODEL_SPEC.md`, registries, scoped git log |
 | B | Model and data specification | blocked | `TASK-OAI-B-001` calibration evidence gap |
-| C | Implementation | completed | Existing app implementation plus TASK-OAI-C-002 personalization architecture, route, export, and evaluation harness |
+| C | Implementation | completed | Existing app implementation plus TASK-OAI-C-002 personalization architecture, route, export, evaluation harness, and non-empty four-category run-log evidence |
 | D | Verification and hardening | planned | Focused tests run in this baseline; full app/deploy acceptance remains planned |
 | E | Delivery and operation | completed for governance baseline | OpenAIDatabase project validator passed and `governance/projects.yaml` ci_mode is required |
 
@@ -97,6 +97,30 @@ iteration in this ledger is the current governance baseline run.
 - remaining risks: if future agents ignore referenced documents, they may miss detailed Memory Atlas visual rules
 - rollback: revert this AGENTS simplification commit
 - next step: push AGENTS simplification follow-up to GitHub
+
+### ITER-20260621-OAI-003
+
+- date: 2026-06-21
+- fact level: EXTRACTED
+- version before: 0.2.0 provisional
+- version after: 0.2.0 provisional
+- base commit: 4213f88
+- result commit: PENDING
+- task IDs: TASK-OAI-C-002
+- objective: close the four-category run-log evidence gap by recording a redacted sync baseline and requiring each configured run-log category to contain JSONL records
+- assumptions: a sync baseline can truthfully record `NOT_RUN` when raw local session re-ingest is intentionally out of scope
+- files read: `OpenAIDatabase/data/run_logs/*`, `OpenAIDatabase/scripts/evaluate_personalization_context.py`, `OpenAIDatabase/tests/test_personalization_architecture.py`
+- files changed: `OpenAIDatabase/data/run_logs/sync_runs/2026-06-21.jsonl`, `OpenAIDatabase/data/run_logs/evaluation_runs/2026-06-21.jsonl`, `OpenAIDatabase/scripts/evaluate_personalization_context.py`, `OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md`, `OpenAIDatabase/docs/governance/development_events.jsonl`, `OpenAIDatabase/docs/governance/delivery_tasks.yaml`, `OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv`, `OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml`, `OpenAIDatabase/CHANGELOG.md`
+- model changes: none
+- parameter changes: none
+- commands: `python3 scripts/evaluate_personalization_context.py --database-dir .`; `python3 -m unittest tests.test_personalization_architecture -q`; `python3 scripts/validate_project_governance.py --project OpenAIDatabase`; `python3 scripts/validate_project_governance.py --all`
+- test results: evaluation PASS with failures empty and `run_log_records` included; personalization architecture unittest exit 0 with 2 tests OK; project governance validator exit 0 errors 0 warnings 0; all-project governance validator exit 0 errors 0 warnings 0
+- successes: all four run-log categories now contain JSONL records; evaluator detects missing log records instead of accepting empty directories
+- failures: none observed in focused validation
+- decisions: keep product version at 0.2.0 because this is evaluation evidence hardening, not a new product capability
+- remaining risks: the `sync_runs` baseline is `NOT_RUN`; a future real sync must append PASS/FAIL evidence after reading local Codex session data
+- rollback: revert the sync-log baseline and evaluator hardening commit
+- next step: run focused validation and push follow-up to GitHub
 
 ## Reconstructed Development Events
 

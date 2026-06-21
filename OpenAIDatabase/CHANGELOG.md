@@ -4,6 +4,7 @@
 
 - Added the three-layer private context architecture for core profile, project memory, and behavior history.
 - Added generated ChatGPT/Codex personalization exports, Codex config templates, resource routing, evaluation harness, and four redacted run-log categories.
+- Added explicit sync-run baseline evidence and tightened the evaluation harness so required run-log categories must contain JSONL records, not only directories.
 - Wired Codex sync to regenerate personalization exports after derived data refresh.
 - Added focused tests and governance records for `MOD-011`, `FORM-011`, and `PARAM-083` through `PARAM-092`.
 
