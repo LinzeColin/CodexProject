@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0 - 2026-06-21
+
+- Added Phase 7 dry-run narration/TTS plan generation from Lesson JSON.
+- Added `adp generate-narration` for local narration plan rendering.
+- Added TTS resource gate with real synthesis, audio writes, and model downloads blocked in Phase 7.
+- Added narration schema, fixture, and tests covering dry-run boundaries, real TTS blocking, audio path rejection, CLI output, and runtime parameters.
+
 ## 0.6.0 - 2026-06-21
 
 - Added Phase 6 deterministic Chinese Lesson JSON generation from supported Claim Ledger evidence.

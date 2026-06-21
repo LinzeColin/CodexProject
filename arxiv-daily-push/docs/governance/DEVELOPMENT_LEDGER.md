@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.6.0`
+Active product version: `0.7.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.6.0
-- Current phase: C
-- Current gate: ADP-PHASE6-LESSON-PASS
-- Confirmed iteration count: 6
+- Product version: 0.7.0
+- Current phase: D
+- Current gate: ADP-PHASE7-TTS-DRY-RUN-PASS
+- Confirmed iteration count: 7
 - Reconstructed event count: 0
-- Current task: ADP-PHASE7-TTS-001
-- Blockers: Later phases still need narration/TTS resource validation, real mail transport validation, and later media/runner readiness.
+- Current task: ADP-PHASE8-VIDEO-001
+- Blockers: Later phases still need video/media QA, daily runner automation, real mail transport validation, and release readiness.
 
 ## Phase Matrix
 
@@ -23,7 +23,7 @@ The append-only machine record is `development_events.jsonl`.
 | A | Phase 1 repository foundation | completed | CLI skeleton, governance records, and tests pass | `docs/phase_records/PHASE_01.md` |
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
-| D | TTS/video/local pipeline/GitHub automation | planned | media gates and daily pipeline pass | planned Phase 7-10 |
+| D | TTS/video/local pipeline/GitHub automation | in_progress | media gates and daily pipeline pass | `docs/phase_records/PHASE_07.md`; planned Phase 8-10 |
 | E | Weekly/monthly trial and handoff | planned | 30-day acceptance passes | planned Phase 11 |
 
 ## Iteration Records
@@ -167,6 +167,30 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Narration/TTS, media rendering, daily scheduler, Release upload, and real SMTP transport remain future gates.
 - Rollback: Revert Phase 6 lesson code, tests, fixture, and governance updates.
 - Next step: Start Phase 7 narration/TTS dry-run and resource gate.
+
+
+### `ITER-20260621-007`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for narration dry-run code, CLI command, schema, local fixture, tests, and governance updates.
+- Version before: 0.6.0
+- Version after: 0.7.0
+- Base commit: 847652080c949a6678231677409de9d9dbb96989
+- Result commit: PENDING
+- Task IDs: ADP-PHASE7-TTS-001
+- Goal: Implement narration/TTS-ready dry-run JSON and resource gates without audio synthesis or retained media.
+- Assumptions: Phase 7 remains dry-run only and does not download models, synthesize voice, write audio files, render video, run schedulers, or send SMTP mail.
+- Files changed: narration dry-run code, CLI command, narration schema, narration fixture, tests, version files, and governance records.
+- Model changes: Activated MOD-ADP-007 as adp-narration-v1.
+- Parameter changes: Activated PARAM-ADP-037 through PARAM-ADP-040 as adp-narration-parameters-v1.
+- Commands run: `PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q`.
+- Test results: 42 unit tests OK.
+- Successes: Dry-run narration plan maps Lesson sections to segments, real TTS mode is blocked, audio paths are rejected, and runtime parameters expose real synthesis disabled.
+- Failures: none recorded at implementation time.
+- Decisions: Keep Phase 7 artifact as JSON only and defer any media writes until later resource gates pass.
+- Remaining risks: Video rendering, daily scheduler, Release upload, and real SMTP transport remain future gates.
+- Rollback: Revert Phase 7 narration code, schema, tests, fixture, and governance updates.
+- Next step: Start Phase 8 video/storyboard dry-run and media QA gate.
 
 ## Unknown Historical Periods
 

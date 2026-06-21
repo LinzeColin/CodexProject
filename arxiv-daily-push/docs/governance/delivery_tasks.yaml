@@ -108,17 +108,17 @@ tasks:
     objective: "Generate narration/TTS-ready script from Lesson JSON with resource gates before any voice synthesis."
     scope: "Narration script contract, TTS dry-run boundaries, and resource/license readiness checks."
     non_scope: "No heavyweight model download or real media rendering until resource gates pass."
-    status: "planned"
+    status: "completed"
     dependencies: ["ADP-PHASE6-LESSON-001"]
-    required_files: ["src", "tests", "docs/governance"]
+    required_files: ["src/arxiv_daily_push/narration.py", "tests/test_narration.py", "tests/fixtures/narration_input.json", "schemas/narration.schema.json"]
     acceptance_ids: ["ADP-ACC-PHASE7-TTS"]
-    test_commands: []
-    test_results: ["NOT_RUN planned Phase 7"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 42 tests OK", "narration dry-run tests: pass", "real TTS blocking: pass", "audio path rejection: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_07.md", "arxiv-daily-push/tests/test_narration.py", "arxiv-daily-push/tests/fixtures/narration_input.json"]
     risk: "TTS phases must not download models or retain media/cache artifacts without explicit resource gate pass."
     rollback: "Remove Phase 7 narration/TTS dry-run artifacts."
     target_version: "0.7.0"
-    completed_version: ""
+    completed_version: "0.7.0"
     unknown_task_ids: []
   - task_id: "ADP-PHASE8-VIDEO-001"
     phase: "D"

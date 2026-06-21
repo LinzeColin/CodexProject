@@ -12,6 +12,7 @@ PROJECT_NAME = "arXiv Daily Push"
 MIN_VIDEO_TTS_FREE_DISK_GIB = 80
 PHASE1_REQUIRED_COMMANDS = ("python3", "git")
 FUTURE_RUNTIME_COMMANDS = ("node", "npm", "gh", "ffmpeg", "docker")
+TTS_REQUIRED_COMMANDS = ("ffmpeg",)
 
 
 def runtime_parameters() -> dict[str, object]:
@@ -22,7 +23,8 @@ def runtime_parameters() -> dict[str, object]:
         "min_video_tts_free_disk_gib": MIN_VIDEO_TTS_FREE_DISK_GIB,
         "phase1_required_commands": list(PHASE1_REQUIRED_COMMANDS),
         "future_runtime_commands": list(FUTURE_RUNTIME_COMMANDS),
+        "tts_required_commands": list(TTS_REQUIRED_COMMANDS),
         "paid_api_allowed": False,
         "real_email_send_enabled": False,
+        "real_tts_synthesis_enabled": False,
     }
-

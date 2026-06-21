@@ -182,3 +182,28 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/fixtures/lesson_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+
+  - formula_id: "FORM-ADP-009"
+    model_id: "MOD-ADP-007"
+    assumption_ids: ["ASM-ADP-009"]
+    status: "active"
+    expression: "Narration can be generated only in dry_run mode; audio_synthesis_allowed, audio_write_allowed, and model_download_allowed must be false; each narration segment must map to one Lesson section and use only Lesson claim IDs."
+    variables:
+      - name: "tts_mode"
+        data_type: "str"
+        unit: "mode"
+        input_domain: "dry_run"
+      - name: "audio_synthesis_allowed"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "false in Phase 7"
+      - name: "segment_claim_ids"
+        data_type: "list[str]"
+        unit: "claim identifiers"
+        input_domain: "subset of Lesson.claim_ids"
+    constraints: "Phase 7 cannot write audio paths, download models, or synthesize voice output."
+    missing_policy: "Invalid Lesson input or real TTS request creates NarrationError rather than media output."
+    output_range: "valid Narration dry-run JSON or NarrationError"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/narration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_narration.py", "arxiv-daily-push/tests/fixtures/narration_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_07.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
