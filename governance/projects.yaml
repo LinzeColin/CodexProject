@@ -238,9 +238,9 @@ projects:
       task_id: "GOV-SEMANTIC-ADP-001"
       acceptance_id: "ACC-SEMANTIC-ADP-001"
       target: "Add machine extractors for arXiv Daily Push active parameter values and formula implementation fingerprints without changing runtime behavior."
-      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-ADP-EXTRACT-001.json"
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-ADP-EXTRACT-002.json"
       owner: "project owner"
-      rationale: "GOV-SEMANTIC-ADP-001 now machine-checks 45 active parameters and 9 active formulas while 107 active parameters and 22 active formulas remain HUMAN_REVIEW_REQUIRED under the same task."
+      rationale: "GOV-SEMANTIC-ADP-001 now machine-checks 72 active parameters and all 31 active formulas while 80 active parameters remain HUMAN_REVIEW_REQUIRED under the same task."
     model_behavior_globs:
       - "src/**/*.py"
       - "tests/**/*.py"
