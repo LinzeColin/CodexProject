@@ -119,14 +119,15 @@ projects:
     path: "FIFA"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
     semantic_coverage:
-      status: "planned"
+      status: "in_progress"
       task_id: "GOV-SEMANTIC-FIFA-001"
       acceptance_id: "ACC-SEMANTIC-FIFA-001"
       target: "Add extractors for parser constants, validation rules, and active governance formulas."
-      evidence_ref: "FIFA/docs/governance/OWNER_STATUS.md"
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for FIFA."
+      rationale: "Review6-D rollout guard; FIFA now machine-checks 91 active parameters and 10 active formulas while 17 active parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-FIFA-001."
     model_behavior_globs:
       - "tab-research-pipeline/**"
       - "docs/**"
