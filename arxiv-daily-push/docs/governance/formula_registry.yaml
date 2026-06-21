@@ -490,7 +490,7 @@ formulas:
     model_id: "MOD-ADP-018"
     assumption_ids: ["ASM-ADP-021", "ASM-ADP-017"]
     status: "active"
-    expression: "The production scheduler contract passes only when the GitHub workflow declares timezone-aware Australia/Sydney schedules for 04:45 health-check, 05:00 daily-run, and 05:10 watchdog, supports manual rerun with explicit confirmation, skips scheduled work unless ADP_PRODUCTION_ENABLED is true, targets the private self-hosted runner, runs production preflight before scheduled mode work, uploads preflight evidence, maps secret names without reading Codex auth, declares ADP_RELEASE_TARGET, and contains no SMTP send or Release upload side-effect flags. Any missing schedule, missing gate, missing preflight ordering, missing artifact upload, secret/auth violation, or early side-effect command blocks the scheduler plan."
+    expression: "The production scheduler contract passes only when the GitHub workflow declares timezone-aware Australia/Sydney schedules for 04:45 health-check, 05:00 daily-run, and 05:10 watchdog, supports manual rerun with explicit confirmation, skips scheduled work unless ADP_PRODUCTION_ENABLED is true, targets the private self-hosted runner, runs production preflight before scheduled execution work, uploads preflight and scheduled execution evidence, maps secret names without reading Codex auth, declares ADP_RELEASE_TARGET, and contains no --allow-send, --allow-upload, or direct gh Release command flags. Any missing schedule, missing gate, missing preflight ordering, missing artifact upload, secret/auth violation, or unsafe direct side-effect command blocks the scheduler plan."
     variables:
       - name: "schedule_slots"
         data_type: "list[dict]"
@@ -508,9 +508,38 @@ formulas:
         data_type: "str"
         unit: "GitHub Actions variable"
         input_domain: "ADP_SCHEDULED_RUN_ENABLED"
-    constraints: "Scheduler gate does not enable SMTP send or Release upload and does not read Codex auth. Schedule trigger readiness still depends on the workflow being merged to the default branch."
-    missing_policy: "Missing schedules, missing timezone, missing production gate, missing preflight-first ordering, missing artifact upload, or side-effect commands produce a blocked scheduler plan."
+    constraints: "Scheduler gate does not read Codex auth and does not hard-code SMTP send or Release upload flags. Schedule trigger readiness still depends on the workflow being merged to the default branch."
+    missing_policy: "Missing schedules, missing timezone, missing production gate, missing preflight-first ordering, missing preflight/execution artifact upload, or direct side-effect commands produce a blocked scheduler plan."
     output_range: "Scheduler plan with status pass or blocked"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
     test_refs: ["arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"]
+
+  - formula_id: "FORM-ADP-021"
+    model_id: "MOD-ADP-019"
+    assumption_ids: ["ASM-ADP-022", "ASM-ADP-021", "ASM-ADP-016"]
+    status: "active"
+    expression: "A scheduled execution report succeeds for health-check when production preflight passes. Daily-run is blocked unless ADP_SCHEDULED_RUN_ENABLED is true and a daily input package is supplied. Daily-run is production_evidence_ready only when the daily pipeline completes, Release delivery returns a release_ref, SMTP delivery returns an email delivery_ref, and the preflight resource gate provides a resource_gate_ref. Dry-run SMTP or dry-run Release output creates degraded evidence with exit_code 2 and cannot feed Phase 11 production acceptance. Watchdog succeeds only when previous daily execution evidence is production_evidence_ready."
+    variables:
+      - name: "mode"
+        data_type: "str"
+        unit: "scheduled mode"
+        input_domain: "health-check, daily-run, watchdog"
+      - name: "preflight_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "adp-production-preflight-v1"
+      - name: "scheduled_run_enabled"
+        data_type: "bool"
+        unit: "environment flag"
+        input_domain: "ADP_SCHEDULED_RUN_ENABLED"
+      - name: "side_effect_refs"
+        data_type: "dict"
+        unit: "evidence references"
+        input_domain: "daily_run_ref, release_ref, email_ref, resource_gate_ref"
+    constraints: "The driver never reads Codex auth, never logs secret values, never logs email body text, and never logs gh stdout or stderr. Real side effects require dedicated SMTP and Release delivery gates."
+    missing_policy: "Missing preflight pass, daily input, scheduled-run flag, previous watchdog evidence, or real side-effect evidence produces blocked or degraded scheduled execution."
+    output_range: "scheduled execution report with status succeeded, blocked, failed, or degraded"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md"]

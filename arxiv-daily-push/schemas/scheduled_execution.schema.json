@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/scheduled_execution.schema.json",
+  "title": "arXiv Daily Push Scheduled Execution Report",
+  "type": "object",
+  "required": [
+    "execution_id",
+    "validator_id",
+    "project_id",
+    "generated_at",
+    "mode",
+    "status",
+    "exit_code",
+    "preflight_status",
+    "scheduled_run_enabled",
+    "production_evidence_ready",
+    "side_effect_policy",
+    "evidence_refs",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "execution_id": {"type": "string", "minLength": 1},
+    "validator_id": {"const": "adp-scheduled-execution-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "mode": {"enum": ["health-check", "daily-run", "watchdog"]},
+    "status": {"enum": ["succeeded", "blocked", "failed", "degraded"]},
+    "exit_code": {"enum": [0, 2]},
+    "preflight_status": {"type": "string"},
+    "scheduled_run_enabled": {"type": "boolean"},
+    "production_evidence_ready": {"type": "boolean"},
+    "side_effect_policy": {
+      "type": "object",
+      "required": [
+        "smtp_send_requested",
+        "release_upload_requested",
+        "secret_values_logged",
+        "email_body_logged",
+        "gh_output_logged",
+        "codex_auth_read"
+      ],
+      "properties": {
+        "smtp_send_requested": {"type": "boolean"},
+        "release_upload_requested": {"type": "boolean"},
+        "secret_values_logged": {"const": false},
+        "email_body_logged": {"const": false},
+        "gh_output_logged": {"const": false},
+        "codex_auth_read": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "evidence_refs": {
+      "type": "object",
+      "required": ["daily_run_ref", "release_ref", "email_ref", "resource_gate_ref"],
+      "properties": {
+        "daily_run_ref": {"type": "string"},
+        "release_ref": {"type": "string"},
+        "email_ref": {"type": "string"},
+        "resource_gate_ref": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}},
+    "notification_report": {"type": "object"},
+    "release_report": {"type": "object"},
+    "daily_run_report": {"type": "object"},
+    "watchdog": {"type": "object"},
+    "validation_errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

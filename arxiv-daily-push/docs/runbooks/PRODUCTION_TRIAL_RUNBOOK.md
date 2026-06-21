@@ -35,6 +35,11 @@ Required GitHub Actions secrets:
 Required GitHub Actions variables:
 
 - `ADP_RELEASE_TARGET`
+- `ADP_PRODUCTION_ENABLED`
+- `ADP_SCHEDULED_RUN_ENABLED`
+- `ADP_DAILY_INPUT_PATH`
+- `ADP_ALLOW_SMTP_SEND`
+- `ADP_ALLOW_RELEASE_UPLOAD`
 
 The workflow maps only secret names into environment variables. It must not echo
 secret values, read `~/.codex/auth.json`, upload Releases, or send SMTP mail.
@@ -86,9 +91,28 @@ slots:
 Scheduled runs skip by default unless `ADP_PRODUCTION_ENABLED=true` is set in
 GitHub Actions variables. Even after that, the scheduled workflow runs
 production preflight first and keeps daily side effects blocked unless
-`ADP_SCHEDULED_RUN_ENABLED=true` is explicitly configured. This scheduler gate
-does not send SMTP mail or upload Releases; those remain separately gated by
-the SMTP and Release delivery commands.
+`ADP_SCHEDULED_RUN_ENABLED=true` is explicitly configured. The scheduled
+workflow uploads two artifacts:
+
+- `adp-scheduled-preflight`;
+- `adp-scheduled-execution`.
+
+The execution artifact is produced by:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push run-scheduled-production \
+  --mode <health-check|daily-run|watchdog> \
+  --generated-at <ISO timestamp> \
+  --preflight-report <adp-scheduled-preflight.json> \
+  --json
+```
+
+Daily runs also require `ADP_DAILY_INPUT_PATH` to point to a small daily input
+package and use that package as the initial Release evidence asset. Dry-run
+SMTP or dry-run Release results are recorded as `degraded` with `exit_code=2`;
+they cannot be counted toward Phase 11 production acceptance. Production-ready
+daily evidence requires both real SMTP delivery and real private Release
+creation to return evidence refs.
 
 Validate the scheduled workflow contract locally or on the runner:
 

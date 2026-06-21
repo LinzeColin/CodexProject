@@ -20,6 +20,12 @@ from .production_preflight import build_production_preflight, validate_productio
 from .production_scheduler import build_production_scheduler_plan, validate_production_scheduler_plan
 from .ranking import selection_payload
 from .release_delivery import DEFAULT_RELEASE_REPO, deliver_release, validate_release_delivery_report
+from .scheduled_execution import (
+    SCHEDULED_EXECUTION_MODES,
+    load_json_mapping,
+    run_scheduled_execution,
+    validate_scheduled_execution_report,
+)
 from .source_ingest import ingest_latest_arxiv, validate_source_batch
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
 from .state_machine import validate_run_record
@@ -155,6 +161,15 @@ def build_parser() -> argparse.ArgumentParser:
     scheduler.add_argument("--path", default=".", help="Repository root path containing the scheduled workflow and runbook.")
     scheduler.add_argument("--generated-at", required=True, help="Scheduler plan generation timestamp.")
     scheduler.add_argument("--json", action="store_true", help="Print JSON scheduler plan.")
+
+    scheduled = subparsers.add_parser("run-scheduled-production", help="Run one fail-closed scheduled production mode.")
+    scheduled.add_argument("--mode", required=True, choices=SCHEDULED_EXECUTION_MODES, help="Scheduled mode to run.")
+    scheduled.add_argument("--generated-at", required=True, help="Scheduled execution timestamp.")
+    scheduled.add_argument("--preflight-report", required=True, help="JSON report from preflight-production.")
+    scheduled.add_argument("--daily-input", help="Daily input package for daily-run mode.")
+    scheduled.add_argument("--release-asset", action="append", default=[], help="Release asset path for daily-run mode.")
+    scheduled.add_argument("--previous-execution-report", help="Previous daily execution report for watchdog mode.")
+    scheduled.add_argument("--json", action="store_true", help="Print JSON scheduled execution report.")
     return parser
 
 
@@ -517,4 +532,31 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{plan['plan_id']}\t{plan['status']}")
         return 0 if plan["scheduler_contract_ready"] else 2
+    if args.command == "run-scheduled-production":
+        preflight_report = load_json_mapping(args.preflight_report)
+        daily_input = load_json_mapping(args.daily_input) if args.daily_input else None
+        previous = load_json_mapping(args.previous_execution_report) if args.previous_execution_report else None
+        report = run_scheduled_execution(
+            mode=args.mode,
+            generated_at=args.generated_at,
+            preflight_report=preflight_report,
+            daily_input=daily_input,
+            daily_input_path=args.daily_input,
+            release_asset_paths=args.release_asset,
+            previous_execution_report=previous,
+        )
+        errors = validate_scheduled_execution_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{report['execution_id']}\t{report['status']}")
+        return int(report["exit_code"])
     raise AssertionError(f"Unhandled command: {args.command}")

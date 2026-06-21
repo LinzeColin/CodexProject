@@ -10,6 +10,8 @@ daily dry-run orchestration, runner/release/email dry-run handoff, final
 acceptance/handoff readiness packaging, small-window live arXiv ingest, an
 explicit SMTP delivery boundary, a fail-closed GitHub Release delivery
 boundary, a scheduled production workflow gate, and tests.
+boundary, a scheduled production workflow gate, a controlled scheduled
+execution driver, and tests.
 
 ## Current Scope
 
@@ -36,6 +38,7 @@ Implemented now:
 - `adp preflight-production`
 - `adp plan-trial-bootstrap`
 - `adp plan-production-scheduler`
+- `adp run-scheduled-production`
 - dry-run email rendering for `linzezhang35@gmail.com`
 - fail-closed SMTP notification delivery evidence; real sending requires explicit `--allow-send` and SMTP environment variables
 - fail-closed GitHub Release delivery evidence; real Release creation requires explicit `--allow-upload`, `ADP_RELEASE_TARGET`, `gh`, and safe asset checks
@@ -61,6 +64,7 @@ Implemented now:
 - production preflight gate that blocks scheduled execution unless runtime commands, secret env keys, disk, memory, Git artifact hygiene, and cache/staging directories are safe
 - manual production trial bootstrap workflow/runbook that runs preflight before any trial work and keeps cron, Release upload, and SMTP sending disabled
 - scheduled production workflow gate with `Australia/Sydney` 04:45 health check, 05:00 daily run, and 05:10 watchdog slots; default GitHub variables keep scheduled work and side effects disabled
+- controlled scheduled execution driver that turns preflight, daily-run, and watchdog results into `adp-scheduled-execution` evidence while requiring real SMTP and Release refs before production evidence can count
 - SMTP delivery report schema that records message hashes and secret-key presence without logging SMTP secret values or email body
 - GitHub Release delivery report schema that records asset hashes and command intent without logging Release notes, secrets, stdout, or stderr
 - governance records required by `CodexProject`

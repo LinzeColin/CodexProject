@@ -18,7 +18,14 @@ REQUIRED_SCHEDULES = (
     {"mode": "watchdog", "local_time": "05:10", "cron": "10 5 * * *"},
 )
 REQUIRED_SCHEDULER_SECRETS = ("ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD")
-REQUIRED_SCHEDULER_VARS = ("ADP_PRODUCTION_ENABLED", "ADP_RELEASE_TARGET", "ADP_SCHEDULED_RUN_ENABLED")
+REQUIRED_SCHEDULER_VARS = (
+    "ADP_PRODUCTION_ENABLED",
+    "ADP_RELEASE_TARGET",
+    "ADP_SCHEDULED_RUN_ENABLED",
+    "ADP_DAILY_INPUT_PATH",
+    "ADP_ALLOW_SMTP_SEND",
+    "ADP_ALLOW_RELEASE_UPLOAD",
+)
 
 
 def build_production_scheduler_plan(path: Path | str | None = None, *, generated_at: str) -> dict[str, Any]:
@@ -59,6 +66,11 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
             "preflight_artifact_uploaded",
             "adp-scheduled-preflight" in workflow_text and "actions/upload-artifact" in workflow_text,
             "workflow must upload scheduled preflight evidence",
+        ),
+        _check(
+            "scheduled_execution_driver_present",
+            "run-scheduled-production" in workflow_text and "adp-scheduled-execution" in workflow_text,
+            "workflow must invoke the scheduled execution driver and upload execution evidence",
         ),
         _check(
             "secret_names_only",
@@ -106,6 +118,7 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
         "scheduled_run_enabled": False,
         "release_upload_enabled": False,
         "real_smtp_send_enabled": False,
+        "side_effect_enablement_vars": ["ADP_ALLOW_SMTP_SEND", "ADP_ALLOW_RELEASE_UPLOAD"],
         "secret_values_logged": False,
         "codex_auth_read": False,
         "checks": checks,
