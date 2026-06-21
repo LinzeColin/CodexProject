@@ -8,17 +8,21 @@ from contextlib import redirect_stdout
 from email.message import EmailMessage
 from pathlib import Path
 
+from arxiv_daily_push.arxiv_adapter import ArxivQuery
 from arxiv_daily_push.cli import main
+from arxiv_daily_push.daily_input import build_daily_input_package
 from arxiv_daily_push.production_preflight import PRODUCTION_REQUIRED_COMMANDS, PRODUCTION_SECRET_ENV_KEYS, build_production_preflight
 from arxiv_daily_push.scheduled_execution import (
     SCHEDULED_EXECUTION_MODEL_ID,
     run_scheduled_execution,
     validate_scheduled_execution_report,
 )
+from arxiv_daily_push.source_ingest import ingest_latest_arxiv
 
 
 ROOT = Path(__file__).resolve().parents[2]
 PIPELINE_INPUT = ROOT / "arxiv-daily-push/tests/fixtures/pipeline_input.json"
+ARXIV_FIXTURE = ROOT / "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"
 
 
 def complete_env(**extra: str) -> dict[str, str]:
@@ -49,6 +53,25 @@ def preflight_pass(env: dict[str, str] | None = None) -> dict:
         disk_free_gib=120.0,
         memory_total_gib=16.0,
         git_scan={"gate_id": "git_artifact_hygiene", "passed": True, "blocking_reasons": [], "violations": []},
+    )
+
+
+def fixture_fetcher(query: ArxivQuery) -> str:
+    assert query.search_query == "cat:cs.AI"
+    return ARXIV_FIXTURE.read_text(encoding="utf-8")
+
+
+def daily_input_builder_report() -> dict:
+    batch = ingest_latest_arxiv(
+        search_query="cat:cs.AI",
+        generated_at="2026-07-01T05:00:00+10:00",
+        max_results=1,
+        fetcher=fixture_fetcher,
+    )
+    return build_daily_input_package(
+        batch,
+        date="2026-07-01",
+        generated_at="2026-07-01T05:00:00+10:00",
     )
 
 
@@ -99,6 +122,20 @@ class ScheduledExecutionTests(unittest.TestCase):
         self.assertFalse(report["production_evidence_ready"])
         self.assertEqual(report["release_report"]["status"], "dry_run")
         self.assertEqual(report["notification_report"]["status"], "dry_run")
+        self.assertFalse(validate_scheduled_execution_report(report))
+
+    def test_daily_run_accepts_daily_input_builder_report(self) -> None:
+        report = run_scheduled_execution(
+            mode="daily-run",
+            generated_at="2026-07-01T05:00:00+10:00",
+            preflight_report=preflight_pass(),
+            env=complete_env(ADP_SCHEDULED_RUN_ENABLED="true"),
+            daily_input=daily_input_builder_report(),
+        )
+
+        self.assertEqual(report["status"], "degraded")
+        self.assertEqual(report["daily_run_report"]["status"], "succeeded")
+        self.assertEqual(report["daily_run_report"]["run_id"], "daily:2026-07-01:arxiv:2401.00001")
         self.assertFalse(validate_scheduled_execution_report(report))
 
     def test_daily_run_production_ready_only_with_real_smtp_and_release_evidence(self) -> None:

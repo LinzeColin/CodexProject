@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 20
-- acceptance_count: 20
+- task_count: 21
+- acceptance_count: 21
 
 ## Delivery Tasks
 
@@ -46,6 +46,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-RELEASE-DELIVERY-008 | E | completed | ADP-ACC-PHASE11-RELEASE-DELIVERY | 9 focused tests OK; Release dry-run and mocked gh create gate pass; no real Release evidence claimed | `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md` |
 | ADP-PHASE11-PRODUCTION-SCHEDULER-009 | E | completed | ADP-ACC-PHASE11-PRODUCTION-SCHEDULER | 8 focused tests OK; timezone schedule workflow gate pass; no scheduled production side effects enabled | `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md` |
 | ADP-PHASE11-SCHEDULED-EXECUTION-010 | E | completed | ADP-ACC-PHASE11-SCHEDULED-EXECUTION | 13 focused tests OK; scheduled execution driver emits evidence and blocks dry-run side effects from production acceptance | `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md` |
+| ADP-PHASE11-DAILY-INPUT-BUILDER-011 | E | completed | ADP-ACC-PHASE11-DAILY-INPUT-BUILDER | 18 focused tests OK; arXiv SourceBatch converts to summary-claim daily input and scheduled daily-run accepts builder reports | `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md` |
 
 ## Release Gates
 
@@ -72,6 +73,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 Release delivery boundary | dry-run default, explicit allow-upload, target check, safe assets, no clobber upload, no notes/stdout/stderr logging | pass for code gate; no real private Release evidence claimed |
 | Phase 11 scheduled production workflow gate | Australia/Sydney 04:45/05:00/05:10 schedules, manual rerun, production variable gates, preflight-first artifact, no SMTP/Release side effects | pass for scheduler contract; not enabled on default branch |
 | Phase 11 scheduled execution driver | scheduled health-check, daily-run, watchdog execution reports, preflight refs, dry-run degradation, real SMTP/Release evidence refs before production count | pass for driver contract; no real production evidence claimed |
+| Phase 11 daily input builder | passing SourceBatch to daily input report, Atom summary P0 claim, ranking selection audit, no PDF/bulk harvest, recent duplicate blocking | pass for builder contract; no real production evidence claimed |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |

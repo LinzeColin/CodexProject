@@ -440,3 +440,21 @@ models:
     config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/scheduled_execution.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md"]
+
+  - model_id: "MOD-ADP-020"
+    name: "Daily input builder"
+    kind: "deterministic source-to-input builder"
+    purpose: "Convert a passing arXiv SourceBatch into ranked daily pipeline input using Atom summary and metadata claims only."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-daily-input-builder-v1"
+    assumption_ids: ["ASM-ADP-023", "ASM-ADP-018", "ASM-ADP-006"]
+    formula_ids: ["FORM-ADP-022"]
+    parameter_ids: ["PARAM-ADP-102", "PARAM-ADP-103", "PARAM-ADP-104", "PARAM-ADP-105", "PARAM-ADP-106", "PARAM-ADP-107"]
+    inputs: ["arXiv SourceBatch", "date", "generated_at", "timezone", "recent source IDs"]
+    outputs: ["daily input builder report", "daily input package", "selection audit", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/daily_input.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/daily_input.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_daily_input.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md", "https://info.arxiv.org/help/api/user-manual.html"]
