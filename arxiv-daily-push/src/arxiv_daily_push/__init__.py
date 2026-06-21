@@ -1,3 +1,3 @@
 """arXiv Daily Push package."""
 
-__version__ = "0.11.21"
+__version__ = "0.11.22"

@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 35
-- acceptance_count: 35
+- task_count: 36
+- acceptance_count: 36
 
 ## Delivery Tasks
 
@@ -60,6 +60,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021 | E | completed | ADP-ACC-PHASE11-POST-MERGE-LAUNCH-AUDIT | 143 arXiv tests OK; 83 root tests OK; project governance 0 errors; changed-only semantic 0 errors; launch gate blocks only external refs/confirmation | `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md` |
 | ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023 | E | completed | ADP-ACC-PHASE11-PRODUCTION-REFS-BUNDLE | 9 focused tests OK; semantic extractor 158 parameters/32 formulas OK; refs gate blocks secret-like inputs and missing required names | `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md` |
 | ADP-PHASE11-RELEASE-PERMISSIONS-024 | E | completed | ADP-ACC-PHASE11-RELEASE-PERMISSIONS | 6 focused tests OK; trial-start and scheduled workflow contracts require `contents: write` while uploads remain explicitly gated | `docs/phase_records/PHASE_11_RELEASE_PERMISSIONS.md` |
+| ADP-PHASE11-PRODUCTION-REFS-TEMPLATE-025 | E | completed | ADP-ACC-PHASE11-PRODUCTION-REFS-TEMPLATE | 16 focused tests OK; no-secret production refs template emits JSON and remains blocked until owner fills durable refs | `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates
@@ -100,7 +101,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 post-merge launch audit | latest required code merged to main, default branch contains workflow files, and launch gate blocks only external refs/confirmation | pass for audit; production launch remains blocked until durable refs and confirmation exist |
 | Phase 11 Release permission hardening | trial-start and scheduled workflows declare `contents: write` for controlled draft Release creation | pass for contract; upload still blocked until explicit variables and Release delivery checks pass |
 | Phase 11 production refs readiness bundle | no-secret runner, SMTP secret-name, Release target, and workflow variable readiness refs report | pass for refs bundle contract; real external refs still must be owner-provisioned before launch |
-| Semantic coverage rollout contract | task-bound machine checks for active parameter values and formula fingerprints | machine_verified; 158 active parameters and all 32 active formulas machine-check, 0 active rows remain HUMAN_REVIEW_REQUIRED |
+| Phase 11 production refs input template | no-secret owner-fillable JSON input template for production refs readiness | pass for template contract; generated template defaults blocked until durable refs are filled |
+| Semantic coverage rollout contract | task-bound machine checks for active parameter values and formula fingerprints | machine_verified; 161 active parameters and all 32 active formulas machine-check, 0 active rows remain HUMAN_REVIEW_REQUIRED |
 | Phase 11 production trial start | explicit confirmation, durable default branch, runner, SMTP, Release, workflow vars, and trial-start workflow refs | blocked; default branch and trial-start workflow refs recorded, while confirmation, runner, SMTP, Release, workflow-vars, and default-branch trial-start run evidence are not present |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
