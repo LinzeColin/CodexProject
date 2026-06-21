@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 19
-- formula_count: 21
-- parameter_count: 101
+- model_count: 20
+- formula_count: 22
+- parameter_count: 107
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -34,6 +34,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-017 | GitHub Release delivery boundary | deterministic release transport gate | Produce dry-run Release delivery evidence by default and create a GitHub Release only with explicit upload flag, configured target, safe assets, and `gh` | active | adp-release-delivery-v1 | `src/arxiv_daily_push/release_delivery.py` |
 | MOD-ADP-018 | Scheduled production workflow gate | deterministic scheduler contract validator | Validate Australia/Sydney 04:45 health-check, 05:00 daily-run, and 05:10 watchdog schedules while keeping production side effects disabled by default | active | adp-production-scheduler-v1 | `src/arxiv_daily_push/production_scheduler.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-019 | Scheduled execution driver | deterministic scheduled execution gate | Convert scheduled health-check, daily-run, and watchdog invocations into evidence artifacts while blocking unsupported production acceptance | active | adp-scheduled-execution-v1 | `src/arxiv_daily_push/scheduled_execution.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
+| MOD-ADP-020 | Daily input builder | deterministic source-to-input builder | Convert a passing arXiv SourceBatch into ranked daily pipeline input using Atom summary claims only | active | adp-daily-input-builder-v1 | `src/arxiv_daily_push/daily_input.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 
 ## B. Assumptions
 
@@ -61,6 +62,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-020 | GitHub Release transport must default to dry-run, require explicit `--allow-upload` for real Release creation, use `ADP_RELEASE_TARGET` or `--target`, avoid clobber upload, and never log Release notes, secrets, `gh` stdout, or `gh` stderr. | `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`, `src/arxiv_daily_push/release_delivery.py`, `tests/test_release_delivery.py` | Phase 11 Release delivery readiness | active |
 | ASM-ADP-021 | Scheduled production workflow must declare Australia/Sydney 04:45 health-check, 05:00 daily-run, and 05:10 watchdog slots, support manual rerun, run preflight first, and remain disabled unless production GitHub variables are explicitly configured. | `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`, `.github/workflows/arxiv-daily-push-scheduled.yml`, `src/arxiv_daily_push/production_scheduler.py`, `tests/test_production_scheduler.py` | Phase 11 scheduler readiness | active |
 | ASM-ADP-022 | Scheduled execution must produce evidence artifacts after preflight and may count as production evidence only when daily run, real SMTP, real Release, and resource evidence refs are present. | `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`, `src/arxiv_daily_push/scheduled_execution.py`, `tests/test_scheduled_execution.py` | Phase 11 scheduled execution readiness | active |
+| ASM-ADP-023 | Daily input generation must use only arXiv Atom summary/metadata evidence, avoid PDF download and bulk harvest, and fail closed before scheduled daily-run if the source batch, summary, metadata, or ranking gate is unsafe. | `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`, `src/arxiv_daily_push/daily_input.py`, `tests/test_daily_input.py` | Phase 11 daily input readiness | active |
 
 ## C. Functions and Formulas
 
@@ -87,6 +89,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-019 emits GitHub Release delivery evidence in dry-run mode by default and blocks real Release creation unless explicit allow-upload, Release target, safe assets, `gh`, and no-clobber checks pass.
 - FORM-ADP-020 validates the scheduled production workflow contract across timezone schedule slots, manual rerun, production variable gates, preflight-first ordering, artifact evidence, and default side-effect disablement.
 - FORM-ADP-021 runs one scheduled mode and only marks production evidence ready when preflight, daily run, real SMTP, real Release, and resource evidence refs all pass.
+- FORM-ADP-022 builds daily pipeline input from a passing arXiv SourceBatch using only Atom summary claims, then applies ranking and duplicate gates.
 
 ## D. Parameters
 
@@ -111,6 +114,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 Release delivery parameters: PARAM-ADP-086 through PARAM-ADP-091.
 - Active Phase 11 scheduler parameters: PARAM-ADP-092 through PARAM-ADP-096.
 - Active Phase 11 scheduled execution parameters: PARAM-ADP-097 through PARAM-ADP-101.
+- Active Phase 11 daily input builder parameters: PARAM-ADP-102 through PARAM-ADP-107.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -233,6 +237,15 @@ produce `degraded` evidence with exit code 2. Production evidence can be counted
 only when the daily run completes and real SMTP, real Release, and resource
 evidence refs are all present.
 
+The daily input builder connects live arXiv source ingest to scheduled daily
+execution. It accepts only a validated `adp-live-arxiv-ingest-v1` SourceBatch,
+creates supported P0 evidence claims from Atom `<summary>` text, adds bounded
+ranking signals, selects one candidate through the existing ranking gate, and
+emits a daily input package usable by `run-daily-dry-run` and scheduled
+daily-run. It blocks on missing summaries, blocked source batches, metadata
+conflicts, recent duplicate selections, and ineligible ranking results. It does
+not download PDFs, perform bulk harvest, or infer peer review status from arXiv.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -280,6 +293,10 @@ evidence refs are all present.
 - Scheduled daily execution without daily input package -> scheduled execution blocked.
 - Scheduled daily execution with dry-run SMTP or dry-run Release -> scheduled execution degraded and not production evidence.
 - Scheduled production evidence ready without daily run, Release, email, and resource refs -> validation error.
+- Daily input builder source batch blocked -> daily input report blocked.
+- Daily input builder missing Atom summary -> daily input report blocked.
+- Daily input builder selected candidate recently used -> daily input report blocked.
+- Daily input builder pass -> daily input contains SourceItem, supported claims, date, run_id, and selection audit.
 - Production pass with any missing requirement -> acceptance validation error.
 
 ## G. Validation

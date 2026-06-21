@@ -92,6 +92,9 @@ jobs:
       ADP_SELF_HOSTED_RUNNER_LABEL: arxiv-daily-push
       ADP_SCHEDULED_RUN_ENABLED: ${{ vars.ADP_SCHEDULED_RUN_ENABLED }}
       ADP_DAILY_INPUT_PATH: ${{ vars.ADP_DAILY_INPUT_PATH }}
+      ADP_ARXIV_QUERY: ${{ vars.ADP_ARXIV_QUERY }}
+      ADP_ARXIV_MAX_RESULTS: ${{ vars.ADP_ARXIV_MAX_RESULTS }}
+      ADP_RECENT_SOURCE_IDS: ${{ vars.ADP_RECENT_SOURCE_IDS }}
       ADP_ALLOW_SMTP_SEND: ${{ vars.ADP_ALLOW_SMTP_SEND }}
       ADP_ALLOW_RELEASE_UPLOAD: ${{ vars.ADP_ALLOW_RELEASE_UPLOAD }}
     steps:
@@ -132,12 +135,91 @@ jobs:
           path: ${{ runner.temp }}/adp-scheduled-preflight.json
           if-no-files-found: error
           retention-days: 35
+      - name: Build scheduled daily input
+        id: daily_input
+        if: needs.gate.outputs.mode == 'daily-run' && env.ADP_DAILY_INPUT_PATH == ''
+        shell: bash
+        run: |
+          set +e
+          source_batch="$RUNNER_TEMP/adp-scheduled-source-batch.json"
+          daily_input="$RUNNER_TEMP/adp-scheduled-daily-input.json"
+          query="${ADP_ARXIV_QUERY:-cat:cs.AI}"
+          max_results="${ADP_ARXIV_MAX_RESULTS:-10}"
+          generated_at="${{ steps.generated_at.outputs.value }}"
+          daily_date="$(python3 - "$generated_at" <<'PY'
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          import sys
+
+          value = sys.argv[1].replace("Z", "+00:00")
+          print(datetime.fromisoformat(value).astimezone(ZoneInfo("Australia/Sydney")).date())
+          PY
+          )"
+          seen_args=()
+          if [ -n "${ADP_RECENT_SOURCE_IDS:-}" ]; then
+            IFS=',' read -ra raw_seen_ids <<< "$ADP_RECENT_SOURCE_IDS"
+            for raw_seen_id in "${raw_seen_ids[@]}"; do
+              seen_id="${raw_seen_id#"${raw_seen_id%%[![:space:]]*}"}"
+              seen_id="${seen_id%"${seen_id##*[![:space:]]}"}"
+              if [ -n "$seen_id" ]; then
+                seen_args+=(--seen-source-id "$seen_id")
+              fi
+            done
+          fi
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_source_ingest" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push fetch-arxiv-latest \
+              --query "$query" \
+              --max-results "$max_results" \
+              --generated-at "$generated_at" \
+              "${seen_args[@]}" \
+              --json > "$source_batch"
+          source_code=$?
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_daily_input" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push build-daily-input \
+              --source-batch "$source_batch" \
+              --date "$daily_date" \
+              --generated-at "$generated_at" \
+              --timezone "Australia/Sydney" \
+              "${seen_args[@]}" \
+              --json > "$daily_input"
+          daily_code=$?
+          cat "$source_batch"
+          cat "$daily_input"
+          printf 'source_batch_path=%s\n' "$source_batch" >> "$GITHUB_OUTPUT"
+          printf 'daily_input_path=%s\n' "$daily_input" >> "$GITHUB_OUTPUT"
+          printf 'source_exit_code=%s\n' "$source_code" >> "$GITHUB_OUTPUT"
+          printf 'daily_input_exit_code=%s\n' "$daily_code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload scheduled source batch artifact
+        if: always() && steps.daily_input.outputs.source_batch_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-scheduled-source-batch
+          path: ${{ steps.daily_input.outputs.source_batch_path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Upload scheduled daily input artifact
+        if: always() && steps.daily_input.outputs.daily_input_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-scheduled-daily-input
+          path: ${{ steps.daily_input.outputs.daily_input_path }}
+          if-no-files-found: error
+          retention-days: 35
       - name: Run scheduled mode
         id: scheduled_execution
         shell: bash
         run: |
           set +e
           output="$RUNNER_TEMP/adp-scheduled-execution.json"
+          resolved_daily_input="${ADP_DAILY_INPUT_PATH:-}"
+          if [ -z "$resolved_daily_input" ]; then
+            resolved_daily_input="${{ steps.daily_input.outputs.daily_input_path }}"
+          fi
           command=(
             python3 -m arxiv_daily_push run-scheduled-production
             --mode "${{ needs.gate.outputs.mode }}"
@@ -145,8 +227,8 @@ jobs:
             --preflight-report "$RUNNER_TEMP/adp-scheduled-preflight.json"
             --json
           )
-          if [ -n "${ADP_DAILY_INPUT_PATH:-}" ]; then
-            command+=(--daily-input "$ADP_DAILY_INPUT_PATH" --release-asset "$ADP_DAILY_INPUT_PATH")
+          if [ -n "$resolved_daily_input" ]; then
+            command+=(--daily-input "$resolved_daily_input" --release-asset "$resolved_daily_input")
           fi
           PYTHONDONTWRITEBYTECODE=1 \
           PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_execution" \
@@ -162,6 +244,7 @@ jobs:
             echo "- scheduled_run_enabled: ${ADP_SCHEDULED_RUN_ENABLED:-false}"
             echo "- real SMTP requested: ${ADP_ALLOW_SMTP_SEND:-false}"
             echo "- real Release requested: ${ADP_ALLOW_RELEASE_UPLOAD:-false}"
+            echo "- daily input path: ${resolved_daily_input:-not-provided}"
             echo "- execution_exit_code: $code"
           } >> "$GITHUB_STEP_SUMMARY"
           exit 0

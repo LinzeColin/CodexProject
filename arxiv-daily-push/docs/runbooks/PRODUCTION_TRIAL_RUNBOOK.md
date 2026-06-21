@@ -37,7 +37,11 @@ Required GitHub Actions variables:
 - `ADP_RELEASE_TARGET`
 - `ADP_PRODUCTION_ENABLED`
 - `ADP_SCHEDULED_RUN_ENABLED`
-- `ADP_DAILY_INPUT_PATH`
+- `ADP_DAILY_INPUT_PATH` optional override; leave empty to build from live arXiv
+- `ADP_ARXIV_QUERY` optional; default `cat:cs.AI`
+- `ADP_ARXIV_MAX_RESULTS` optional; default `10`
+- `ADP_RECENT_SOURCE_IDS` optional comma-separated list of recently selected
+  `source_id` values
 - `ADP_ALLOW_SMTP_SEND`
 - `ADP_ALLOW_RELEASE_UPLOAD`
 
@@ -95,6 +99,8 @@ production preflight first and keeps daily side effects blocked unless
 workflow uploads two artifacts:
 
 - `adp-scheduled-preflight`;
+- `adp-scheduled-source-batch` for daily-run when no override input path is set;
+- `adp-scheduled-daily-input` for daily-run when no override input path is set;
 - `adp-scheduled-execution`.
 
 The execution artifact is produced by:
@@ -108,11 +114,21 @@ PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push run-scheduled-produc
 ```
 
 Daily runs also require `ADP_DAILY_INPUT_PATH` to point to a small daily input
-package and use that package as the initial Release evidence asset. Dry-run
-SMTP or dry-run Release results are recorded as `degraded` with `exit_code=2`;
-they cannot be counted toward Phase 11 production acceptance. Production-ready
-daily evidence requires both real SMTP delivery and real private Release
-creation to return evidence refs.
+package, or the workflow builds a daily input report from live arXiv source
+ingest using:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push fetch-arxiv-latest --query "${ADP_ARXIV_QUERY:-cat:cs.AI}" --max-results "${ADP_ARXIV_MAX_RESULTS:-10}" --generated-at <ISO timestamp> --json
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push build-daily-input --source-batch <source-batch.json> --date <YYYY-MM-DD> --generated-at <ISO timestamp> --json
+```
+
+The daily input builder uses only arXiv Atom `<summary>` and metadata claims. It
+does not download PDFs, perform bulk harvest, or claim peer review from arXiv.
+The selected daily input report is used as the initial Release evidence asset.
+Dry-run SMTP or dry-run Release results are recorded as `degraded` with
+`exit_code=2`; they cannot be counted toward Phase 11 production acceptance.
+Production-ready daily evidence requires both real SMTP delivery and real
+private Release creation to return evidence refs.
 
 Validate the scheduled workflow contract locally or on the runner:
 
@@ -128,6 +144,17 @@ PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push fetch-arxiv-latest -
 
 If this blocks on Python SSL certificate validation, update the runner CA trust
 store or Python certificate bundle. Do not switch to insecure TLS behavior.
+
+After source ingest succeeds, verify daily input construction with the emitted
+source batch:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push build-daily-input --source-batch <source-batch.json> --date <YYYY-MM-DD> --generated-at <ISO timestamp> --json
+```
+
+If this blocks on missing Atom summary, duplicate recent source ID, metadata
+conflict, or missing P0 evidence, stop the daily run and inspect the uploaded
+`adp-scheduled-source-batch` and `adp-scheduled-daily-input` artifacts.
 
 Before enabling real notification sending, verify the SMTP delivery boundary in
 dry-run mode:

@@ -9,6 +9,7 @@ from pathlib import Path
 from . import __version__
 from .acceptance import AcceptanceError, build_acceptance_package, validate_acceptance_package
 from .arxiv_adapter import ArxivQuery, build_query_url, parse_atom_feed
+from .daily_input import build_daily_input_package, validate_daily_input_report
 from .doctor import doctor_report, render_report
 from .evidence_gate import gate_publication
 from .handoff import HandoffError, build_handoff, validate_handoff
@@ -99,6 +100,17 @@ def build_parser() -> argparse.ArgumentParser:
     fetch_arxiv.add_argument("--generated-at", required=True, help="Fetch timestamp used for SourceItems and batch evidence.")
     fetch_arxiv.add_argument("--seen-source-id", action="append", default=[], help="Previously published source_id to exclude.")
     fetch_arxiv.add_argument("--json", action="store_true", help="Print JSON source batch.")
+
+    build_daily_input = subparsers.add_parser(
+        "build-daily-input",
+        help="Build a ranked daily pipeline input from an arXiv source batch.",
+    )
+    build_daily_input.add_argument("--source-batch", required=True, help="JSON source batch from fetch-arxiv-latest.")
+    build_daily_input.add_argument("--date", required=True, help="Daily publication date in YYYY-MM-DD form.")
+    build_daily_input.add_argument("--generated-at", required=True, help="Builder timestamp used for evidence claims.")
+    build_daily_input.add_argument("--timezone", default="Australia/Sydney", help="Daily run timezone.")
+    build_daily_input.add_argument("--recent-source-id", action="append", default=[], help="Source ID already selected recently.")
+    build_daily_input.add_argument("--json", action="store_true", help="Print JSON daily input builder report.")
 
     rank = subparsers.add_parser("rank-candidates", help="Rank candidate SourceItems with evidence-gated audit output.")
     rank.add_argument("--path", required=True, help="JSON file containing a candidates array.")
@@ -298,6 +310,34 @@ def main(argv: list[str] | None = None) -> int:
             for reason in batch["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if batch["status"] == "pass" else 2
+    if args.command == "build-daily-input":
+        source_batch = load_json_mapping(args.source_batch)
+        report = build_daily_input_package(
+            source_batch,
+            date=args.date,
+            generated_at=args.generated_at,
+            timezone=args.timezone,
+            recent_source_ids=args.recent_source_id,
+        )
+        errors = validate_daily_input_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["daily_input_ready"]:
+            daily_input = report["daily_input"]
+            print(f"{daily_input['run_id']}\t{daily_input['source_item']['source_id']}")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["daily_input_ready"] else 2
     if args.command == "rank-candidates":
         data = json.loads(Path(args.path).read_text(encoding="utf-8"))
         candidates = data.get("candidates") if isinstance(data, dict) else data

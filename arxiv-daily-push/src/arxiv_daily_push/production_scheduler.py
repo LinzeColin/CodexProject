@@ -23,6 +23,9 @@ REQUIRED_SCHEDULER_VARS = (
     "ADP_RELEASE_TARGET",
     "ADP_SCHEDULED_RUN_ENABLED",
     "ADP_DAILY_INPUT_PATH",
+    "ADP_ARXIV_QUERY",
+    "ADP_ARXIV_MAX_RESULTS",
+    "ADP_RECENT_SOURCE_IDS",
     "ADP_ALLOW_SMTP_SEND",
     "ADP_ALLOW_RELEASE_UPLOAD",
 )
@@ -71,6 +74,14 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
             "scheduled_execution_driver_present",
             "run-scheduled-production" in workflow_text and "adp-scheduled-execution" in workflow_text,
             "workflow must invoke the scheduled execution driver and upload execution evidence",
+        ),
+        _check(
+            "daily_input_builder_present",
+            "fetch-arxiv-latest" in workflow_text
+            and "build-daily-input" in workflow_text
+            and "adp-scheduled-source-batch" in workflow_text
+            and "adp-scheduled-daily-input" in workflow_text,
+            "workflow must build and upload scheduled daily input evidence when no override path is configured",
         ),
         _check(
             "secret_names_only",

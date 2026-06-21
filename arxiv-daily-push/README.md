@@ -9,9 +9,9 @@ generation, TTS dry-run narration planning, storyboard/video dry-run planning,
 daily dry-run orchestration, runner/release/email dry-run handoff, final
 acceptance/handoff readiness packaging, small-window live arXiv ingest, an
 explicit SMTP delivery boundary, a fail-closed GitHub Release delivery
-boundary, a scheduled production workflow gate, and tests.
 boundary, a scheduled production workflow gate, a controlled scheduled
-execution driver, and tests.
+execution driver, a daily input builder from arXiv Atom source batches, and
+tests.
 
 ## Current Scope
 
@@ -26,6 +26,7 @@ Implemented now:
 - `adp arxiv-url`
 - `adp parse-arxiv-atom`
 - `adp fetch-arxiv-latest`
+- `adp build-daily-input`
 - `adp rank-candidates`
 - `adp gate-publication`
 - `adp generate-lesson`
@@ -47,6 +48,7 @@ Implemented now:
 - deterministic state transitions for local `RunRecord` validation
 - arXiv Atom feed parsing into generic `SourceItem` records using local fixture tests
 - small-window live arXiv Atom source ingestion with incremental duplicate filtering and fail-closed network/API behavior
+- deterministic daily input builder that converts an arXiv `SourceBatch` into ranked daily pipeline input using only Atom `<summary>` claims
 - deterministic 100-point ranking with per-component audit output
 - fail-closed candidate blocking for missing P0 evidence, metadata conflicts, and recent duplicate selections
 - Claim Ledger construction from explicit evidence claims
@@ -71,7 +73,7 @@ Implemented now:
 
 Not implemented yet:
 
-- scheduled or bulk arXiv ingestion
+- bulk arXiv ingestion
 - live source ingest pass on the current local machine; Python SSL certificate validation currently blocks this environment
 - TTS model download
 - real TTS audio synthesis

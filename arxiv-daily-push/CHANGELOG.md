@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.10 - 2026-06-21
+
+- Added `adp build-daily-input` and `adp-daily-input-builder-v1` to convert live arXiv source batches into ranked daily pipeline inputs using only Atom summary claims.
+- Updated scheduled daily-run workflow wiring to build and upload `adp-scheduled-source-batch` and `adp-scheduled-daily-input` artifacts when no override input path is configured.
+- Added daily input schema and tests covering summary-derived P0 claims, missing-summary blocking, recent-selection blocking, CLI JSON output, and scheduled execution compatibility.
+
 ## 0.11.9 - 2026-06-21
 
 - Added `adp run-scheduled-production` and `adp-scheduled-execution-v1` as the controlled execution driver for scheduled health-check, daily-run, and watchdog modes.

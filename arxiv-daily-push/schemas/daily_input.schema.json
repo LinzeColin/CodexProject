@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/daily_input.schema.json",
+  "title": "arXiv Daily Push Daily Input Builder Report",
+  "type": "object",
+  "required": [
+    "builder_id",
+    "model_id",
+    "project_id",
+    "generated_at",
+    "date",
+    "timezone",
+    "status",
+    "daily_input_ready",
+    "source_batch_ref",
+    "candidate_count",
+    "selection",
+    "daily_input",
+    "source_policy",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "builder_id": {"type": "string", "minLength": 1},
+    "model_id": {"const": "adp-daily-input-builder-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "date": {"type": "string", "minLength": 1},
+    "timezone": {"const": "Australia/Sydney"},
+    "status": {"type": "string", "enum": ["pass", "blocked"]},
+    "daily_input_ready": {"type": "boolean"},
+    "source_batch_ref": {"type": "string"},
+    "candidate_count": {"type": "integer", "minimum": 0},
+    "selection": {"type": "object", "additionalProperties": true},
+    "daily_input": {
+      "type": "object",
+      "properties": {
+        "run_id": {"type": "string", "minLength": 1},
+        "publication_id": {"type": "string", "minLength": 1},
+        "date": {"type": "string", "minLength": 1},
+        "generated_at": {"type": "string", "minLength": 1},
+        "timezone": {"const": "Australia/Sydney"},
+        "source_item": {"type": "object"},
+        "claims": {"type": "array", "items": {"type": "object"}},
+        "selection_audit": {"type": "object"}
+      },
+      "additionalProperties": true
+    },
+    "source_policy": {
+      "type": "object",
+      "required": [
+        "claim_source",
+        "pdf_download_enabled",
+        "bulk_harvest_enabled",
+        "peer_review_claim_enabled",
+        "network_fetch_enabled"
+      ],
+      "properties": {
+        "claim_source": {"const": "arxiv_atom_summary_only"},
+        "pdf_download_enabled": {"const": false},
+        "bulk_harvest_enabled": {"const": false},
+        "peer_review_claim_enabled": {"const": false},
+        "network_fetch_enabled": {"const": false},
+        "source_batch_model_id": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}},
+    "candidate_errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

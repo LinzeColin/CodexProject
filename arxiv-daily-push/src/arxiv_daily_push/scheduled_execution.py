@@ -8,6 +8,7 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
+from .daily_input import DAILY_INPUT_BUILDER_MODEL_ID, validate_daily_input_report
 from .notifications import render_email
 from .pipeline import PipelineError, run_daily_dry_run
 from .production_preflight import validate_production_preflight
@@ -182,9 +183,21 @@ def _run_daily(
         )
         return _with_validation(report)
 
-    payload = dict(daily_input or {})
-    if not payload and daily_input_path:
-        payload = load_json_mapping(daily_input_path)
+    raw_payload = dict(daily_input or {})
+    if not raw_payload and daily_input_path:
+        raw_payload = load_json_mapping(daily_input_path)
+    payload, input_reasons = _resolve_daily_input_payload(raw_payload)
+    if input_reasons:
+        report = _blocked(base, input_reasons)
+        report["notification_report"] = _notification(
+            "failure",
+            "daily-run",
+            generated_at,
+            "Daily input package blocked",
+            env,
+            smtp_factory=smtp_factory,
+        )
+        return _with_validation(report)
     if not payload:
         report = _blocked(base, ["daily-run requires a daily input package with SourceItem and EvidenceClaim data"])
         report["notification_report"] = _notification(
@@ -272,6 +285,25 @@ def _run_daily(
             "daily pipeline completed but real SMTP and Release evidence are not both present",
         ]
     return _with_validation(report)
+
+
+def _resolve_daily_input_payload(payload: Mapping[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    if not payload:
+        return {}, []
+    if payload.get("model_id") != DAILY_INPUT_BUILDER_MODEL_ID and "daily_input" not in payload:
+        return dict(payload), []
+    errors = validate_daily_input_report(payload)
+    if errors:
+        return {}, [f"daily input builder report invalid: {errors[0]}"]
+    if payload.get("daily_input_ready") is not True or payload.get("status") != "pass":
+        return {}, [
+            "daily input builder blocked: " + reason
+            for reason in (payload.get("blocking_reasons") or ["daily input not ready"])
+        ]
+    daily_input = payload.get("daily_input")
+    if not isinstance(daily_input, Mapping):
+        return {}, ["daily input builder report missing daily_input object"]
+    return dict(daily_input), []
 
 
 def _run_watchdog(
