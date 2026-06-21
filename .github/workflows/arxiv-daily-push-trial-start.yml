@@ -1,0 +1,356 @@
+name: arXiv Daily Push trial start evidence
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_trial_start:
+        description: "Set true only when default-branch runner, SMTP, Release, source, and preflight prerequisites are provisioned."
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      runner_label:
+        description: "Private self-hosted runner label for arXiv Daily Push."
+        required: true
+        default: "arxiv-daily-push"
+        type: string
+      generated_at:
+        description: "Optional ISO timestamp for deterministic evidence. Empty uses current UTC."
+        required: false
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: arxiv-daily-push-trial-start-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report disabled start gate
+        if: inputs.confirm_trial_start != 'true'
+        run: |
+          {
+            echo "## arXiv Daily Push trial start evidence"
+            echo "- status: skipped"
+            echo "- reason: confirm_trial_start was not true"
+            echo "- no self-hosted runner job was started"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Report confirmed start gate
+        if: inputs.confirm_trial_start == 'true'
+        run: |
+          {
+            echo "## arXiv Daily Push trial start evidence"
+            echo "- status: confirmed"
+            echo "- runner_label: ${{ inputs.runner_label }}"
+            echo "- real SMTP requested: ${{ vars.ADP_ALLOW_SMTP_SEND || 'false' }}"
+            echo "- real Release requested: ${{ vars.ADP_ALLOW_RELEASE_UPLOAD || 'false' }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  start-gate:
+    needs: guard
+    if: inputs.confirm_trial_start == 'true'
+    runs-on:
+      - self-hosted
+      - "${{ inputs.runner_label }}"
+    timeout-minutes: 30
+    env:
+      ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
+      ADP_SMTP_PORT: ${{ secrets.ADP_SMTP_PORT }}
+      ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME }}
+      ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
+      ADP_RELEASE_TARGET: ${{ vars.ADP_RELEASE_TARGET }}
+      ADP_SELF_HOSTED_RUNNER_LABEL: ${{ inputs.runner_label }}
+      ADP_ARXIV_QUERY: ${{ vars.ADP_ARXIV_QUERY }}
+      ADP_ARXIV_MAX_RESULTS: ${{ vars.ADP_ARXIV_MAX_RESULTS }}
+      ADP_RECENT_SOURCE_IDS: ${{ vars.ADP_RECENT_SOURCE_IDS }}
+      ADP_ALLOW_SMTP_SEND: ${{ vars.ADP_ALLOW_SMTP_SEND }}
+      ADP_ALLOW_RELEASE_UPLOAD: ${{ vars.ADP_ALLOW_RELEASE_UPLOAD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Resolve generated_at
+        id: generated_at
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.generated_at }}" ]; then
+            printf 'value=%s\n' "${{ inputs.generated_at }}" >> "$GITHUB_OUTPUT"
+          else
+            printf 'value=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run production preflight
+        id: preflight
+        shell: bash
+        run: |
+          set +e
+          output="$RUNNER_TEMP/adp-trial-start-preflight.json"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_preflight" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push preflight-production \
+              --path . \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --json > "$output"
+          code=$?
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload trial start preflight artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-preflight
+          path: ${{ steps.preflight.outputs.path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Stop if preflight blocked
+        if: steps.preflight.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "production preflight blocked; stopping before source, SMTP, Release, or trial start gate work"
+          exit "${{ steps.preflight.outputs.exit_code }}"
+      - name: Build bootstrap plan
+        id: bootstrap
+        shell: bash
+        run: |
+          output="$RUNNER_TEMP/adp-trial-start-bootstrap-plan.json"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_bootstrap" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push plan-trial-bootstrap \
+              --path . \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --json > "$output"
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+      - name: Upload trial start bootstrap plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-bootstrap-plan
+          path: ${{ steps.bootstrap.outputs.path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Build scheduler plan
+        id: scheduler
+        shell: bash
+        run: |
+          output="$RUNNER_TEMP/adp-trial-start-scheduler-plan.json"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_scheduler" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push plan-production-scheduler \
+              --path . \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --json > "$output"
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+      - name: Upload trial start scheduler plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-scheduler-plan
+          path: ${{ steps.scheduler.outputs.path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Fetch live source batch
+        id: source
+        shell: bash
+        run: |
+          set +e
+          output="$RUNNER_TEMP/adp-trial-start-source-batch.json"
+          query="${ADP_ARXIV_QUERY:-cat:cs.AI}"
+          max_results="${ADP_ARXIV_MAX_RESULTS:-10}"
+          seen_args=()
+          if [ -n "${ADP_RECENT_SOURCE_IDS:-}" ]; then
+            IFS=',' read -ra raw_seen_ids <<< "$ADP_RECENT_SOURCE_IDS"
+            for raw_seen_id in "${raw_seen_ids[@]}"; do
+              seen_id="${raw_seen_id#"${raw_seen_id%%[![:space:]]*}"}"
+              seen_id="${seen_id%"${seen_id##*[![:space:]]}"}"
+              if [ -n "$seen_id" ]; then
+                seen_args+=(--seen-source-id "$seen_id")
+              fi
+            done
+          fi
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_source" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push fetch-arxiv-latest \
+              --query "$query" \
+              --max-results "$max_results" \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              "${seen_args[@]}" \
+              --json > "$output"
+          code=$?
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload trial start source batch
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-source-batch
+          path: ${{ steps.source.outputs.path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Stop if source ingest blocked
+        if: steps.source.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "live source ingest blocked; stopping before SMTP, Release, or trial start gate work"
+          exit "${{ steps.source.outputs.exit_code }}"
+      - name: Run SMTP delivery probe
+        id: smtp
+        shell: bash
+        run: |
+          set +e
+          output="$RUNNER_TEMP/adp-trial-start-smtp-delivery.json"
+          allow_args=()
+          if [ "${ADP_ALLOW_SMTP_SEND:-false}" = "true" ]; then
+            allow_args+=(--allow-send)
+          fi
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_smtp" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push send-notification \
+              --run-id "adp-trial-start-probe-${{ github.run_id }}" \
+              --summary "arXiv Daily Push trial start SMTP probe" \
+              --date "${{ steps.generated_at.outputs.value }}" \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              "${allow_args[@]}" \
+              --json > "$output"
+          code=$?
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload trial start SMTP delivery
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-smtp-delivery
+          path: ${{ steps.smtp.outputs.path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Run Release delivery probe
+        id: release
+        shell: bash
+        run: |
+          set +e
+          asset="$RUNNER_TEMP/adp-trial-start-release-asset.json"
+          output="$RUNNER_TEMP/adp-trial-start-release-delivery.json"
+          cp "${{ steps.source.outputs.path }}" "$asset"
+          allow_args=()
+          if [ "${ADP_ALLOW_RELEASE_UPLOAD:-false}" = "true" ]; then
+            allow_args+=(--allow-upload)
+          fi
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_release" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push publish-release \
+              --tag "adp-trial-start-probe-${{ github.run_id }}" \
+              --title "arXiv Daily Push trial start probe" \
+              --notes "Trial start Release delivery probe" \
+              --asset "$asset" \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              "${allow_args[@]}" \
+              --json > "$output"
+          code=$?
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'asset=%s\n' "$asset" >> "$GITHUB_OUTPUT"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload trial start Release delivery
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-release-delivery
+          path: |
+            ${{ steps.release.outputs.path }}
+            ${{ steps.release.outputs.asset }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Build trial start gate
+        id: trial_start
+        shell: bash
+        run: |
+          set +e
+          output="$RUNNER_TEMP/adp-trial-start-gate.json"
+          smtp_ref="$(python3 - "${{ steps.smtp.outputs.path }}" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          report = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          print(report.get("delivery_ref") or "")
+          PY
+          )"
+          release_ref="$(python3 - "${{ steps.release.outputs.path }}" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          report = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          print(report.get("release_ref") or "")
+          PY
+          )"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_gate" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push plan-trial-start \
+              --preflight-report "${{ steps.preflight.outputs.path }}" \
+              --bootstrap-plan "${{ steps.bootstrap.outputs.path }}" \
+              --scheduler-plan "${{ steps.scheduler.outputs.path }}" \
+              --source-batch "${{ steps.source.outputs.path }}" \
+              --smtp-delivery "${{ steps.smtp.outputs.path }}" \
+              --release-delivery "${{ steps.release.outputs.path }}" \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --default-branch-ref "git://${{ github.repository }}/${{ github.ref_name }}@${{ github.sha }}" \
+              --runner-ref "github-runner://${{ inputs.runner_label }}/${RUNNER_NAME:-unknown}" \
+              --preflight-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/adp-trial-start-preflight" \
+              --source-ingest-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/adp-trial-start-source-batch" \
+              --smtp-ref "$smtp_ref" \
+              --release-ref "$release_ref" \
+              --scheduler-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/adp-trial-start-scheduler-plan" \
+              --trial-state-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/adp-trial-evidence-ledger-initial" \
+              --trial-start-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/adp-trial-start-gate" \
+              --confirm-start \
+              --json > "$output"
+          code=$?
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload trial start gate artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-gate
+          path: ${{ steps.trial_start.outputs.path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Stop if trial start gate blocked
+        if: steps.trial_start.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "trial start gate blocked; inspect adp-trial-start-gate artifact"
+          exit "${{ steps.trial_start.outputs.exit_code }}"
+      - name: Write trial start summary
+        if: always()
+        run: |
+          {
+            echo "## arXiv Daily Push trial start evidence"
+            echo "- generated_at: ${{ steps.generated_at.outputs.value }}"
+            echo "- preflight_exit_code: ${{ steps.preflight.outputs.exit_code || 'not_run' }}"
+            echo "- source_exit_code: ${{ steps.source.outputs.exit_code || 'not_run' }}"
+            echo "- smtp_exit_code: ${{ steps.smtp.outputs.exit_code || 'not_run' }}"
+            echo "- release_exit_code: ${{ steps.release.outputs.exit_code || 'not_run' }}"
+            echo "- trial_start_exit_code: ${{ steps.trial_start.outputs.exit_code || 'not_run' }}"
+            echo "- next: enable scheduled production only after adp-trial-start-gate passes on the default branch"
+          } >> "$GITHUB_STEP_SUMMARY"

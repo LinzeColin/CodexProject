@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.18 - 2026-06-22
+
+- Added `.github/workflows/arxiv-daily-push-trial-start.yml` to collect default-branch trial start evidence on the private runner.
+- Added `adp plan-trial-start-workflow` and `adp-trial-start-workflow-v1` to validate manual dispatch, preflight-first ordering, live source and delivery probe ordering, artifact uploads, durable refs, and explicit SMTP/Release variable gates.
+- Added workflow plan schema and tests covering manual-only behavior, required artifacts, side-effect gating, secret-name-only mapping, and CLI JSON output.
+
 ## 0.11.17 - 2026-06-22
 
 - Added `adp plan-trial-start` and `adp-trial-start-v1` to build a fail-closed readiness report before starting the real 30-day production trial.

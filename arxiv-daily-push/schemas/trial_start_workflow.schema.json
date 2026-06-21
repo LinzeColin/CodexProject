@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/trial_start_workflow.schema.json",
+  "title": "arXiv Daily Push Trial Start Workflow Plan",
+  "type": "object",
+  "required": [
+    "plan_id",
+    "validator_id",
+    "project_id",
+    "generated_at",
+    "status",
+    "trial_start_workflow_ready",
+    "workflow_path",
+    "runbook_path",
+    "required_artifacts",
+    "required_github_secrets",
+    "required_github_vars",
+    "manual_only",
+    "default_side_effects_enabled",
+    "requires_explicit_smtp_var",
+    "requires_explicit_release_var",
+    "secret_values_logged",
+    "codex_auth_read",
+    "checks",
+    "blocking_reasons",
+    "next_external_actions"
+  ],
+  "properties": {
+    "plan_id": {"type": "string", "minLength": 1},
+    "validator_id": {"const": "adp-trial-start-workflow-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "blocked"]},
+    "trial_start_workflow_ready": {"type": "boolean"},
+    "workflow_path": {"type": "string", "minLength": 1},
+    "runbook_path": {"type": "string", "minLength": 1},
+    "required_artifacts": {"type": "array", "items": {"type": "string"}},
+    "required_github_secrets": {"type": "array", "items": {"type": "string"}},
+    "required_github_vars": {"type": "array", "items": {"type": "string"}},
+    "manual_only": {"const": true},
+    "default_side_effects_enabled": {"const": false},
+    "requires_explicit_smtp_var": {"const": true},
+    "requires_explicit_release_var": {"const": true},
+    "secret_values_logged": {"const": false},
+    "codex_auth_read": {"const": false},
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "passed", "blocking_reasons"],
+        "properties": {
+          "check_id": {"type": "string"},
+          "passed": {"type": "boolean"},
+          "blocking_reasons": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}},
+    "next_external_actions": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

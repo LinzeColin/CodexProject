@@ -38,6 +38,7 @@ from .trial_recovery import build_trial_recovery_evidence, validate_trial_recove
 from .trial_resource import build_trial_resource_evidence, validate_trial_resource_report
 from .trial_replay import build_trial_replay_evidence, validate_trial_replay_report
 from .trial_start import build_trial_start_gate, validate_trial_start_report
+from .trial_start_workflow import build_trial_start_workflow_plan, validate_trial_start_workflow_plan
 from .video import VideoPlanError, generate_storyboard
 
 
@@ -286,6 +287,14 @@ def build_parser() -> argparse.ArgumentParser:
     trial_start.add_argument("--trial-start-ref", default="", help="Durable archived trial start gate ref.")
     trial_start.add_argument("--confirm-start", action="store_true", help="Explicitly confirm start-readiness evaluation.")
     trial_start.add_argument("--json", action="store_true", help="Print JSON trial start report.")
+
+    trial_start_workflow = subparsers.add_parser(
+        "plan-trial-start-workflow",
+        help="Validate the manual GitHub workflow that collects trial start evidence.",
+    )
+    trial_start_workflow.add_argument("--path", default=".", help="Repository root path containing the workflow and runbook.")
+    trial_start_workflow.add_argument("--generated-at", required=True, help="Workflow plan generation timestamp.")
+    trial_start_workflow.add_argument("--json", action="store_true", help="Print JSON workflow plan.")
 
     preflight = subparsers.add_parser("preflight-production", help="Run fail-closed production preflight before scheduled execution.")
     preflight.add_argument("--path", default=".", help="Repository path used for disk, Git, and cache checks.")
@@ -903,6 +912,22 @@ def main(argv: list[str] | None = None) -> int:
             for reason in report["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if report["trial_start_ready"] else 2
+    if args.command == "plan-trial-start-workflow":
+        plan = build_trial_start_workflow_plan(Path(args.path), generated_at=args.generated_at)
+        errors = validate_trial_start_workflow_plan(plan)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{plan['plan_id']}\t{plan['status']}")
+        return 0 if plan["trial_start_workflow_ready"] else 2
     if args.command == "preflight-production":
         report = build_production_preflight(Path(args.path), generated_at=args.generated_at)
         errors = validate_production_preflight(report)

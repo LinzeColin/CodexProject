@@ -799,3 +799,32 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_start.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md"]
+
+  - formula_id: "FORM-ADP-030"
+    model_id: "MOD-ADP-028"
+    assumption_ids: ["ASM-ADP-031", "ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
+    status: "active"
+    expression: "A trial start workflow plan passes only when the workflow is manual-only, requires confirm_trial_start before self-hosted runner work, targets a private runner label, runs preflight before live source and delivery probes, runs live source before SMTP or Release probes, invokes plan-trial-start with --confirm-start and all durable ref arguments, uploads the complete trial start artifact set, maps only secret names without reading Codex auth, and exposes real SMTP or Release probes only through explicit ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD GitHub variables."
+    variables:
+      - name: "workflow_text"
+        data_type: "str"
+        unit: "YAML"
+        input_domain: ".github/workflows/arxiv-daily-push-trial-start.yml"
+      - name: "required_artifacts"
+        data_type: "list[str]"
+        unit: "artifact names"
+        input_domain: "trial start preflight, bootstrap, scheduler, source, SMTP, Release, and gate artifacts"
+      - name: "side_effect_gates"
+        data_type: "list[str]"
+        unit: "GitHub variables"
+        input_domain: "ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD"
+      - name: "durable_ref_args"
+        data_type: "list[str]"
+        unit: "CLI args"
+        input_domain: "all plan-trial-start ref arguments"
+    constraints: "The validator does not run GitHub Actions, send SMTP, create Releases, fetch arXiv, mutate trial evidence, generate media, or claim production acceptance."
+    missing_policy: "Missing workflow file, missing manual confirmation, missing artifact upload, unsafe secret/auth handling, missing side-effect gates, missing durable refs, or missing runbook documentation produce a blocked workflow plan."
+    output_range: "trial start workflow plan with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-trial-start.yml"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_start_workflow.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md"]
