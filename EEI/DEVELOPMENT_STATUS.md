@@ -19,9 +19,9 @@ entry; do not edit it as an independent machine source for governance counts.
 
 当前共有 **130 个产品开发任务**、**211 条验收标准**、**53 项风险**。新增 T1300-T1309/A201-A211 来自 v5 审查和用户当前待开发清单；T1300/A201、T1305/A207、T1306/A208 和 T1308/A211 已关闭，T1301/A202、T1302/A203、T1303/A204-A205、T1304/A206、T1307/A209、T1309/A210 进行中但未关闭，避免把规格/原型或部分生产合同误报为生产 MVP 完成。
 
-最新远端验证：GitHub Actions EEI validation run `27892494323` / job `82538366876` PASS，Step 7-12 均通过；Project Governance run `27892494331` PASS。该 run 验证 A202 live official retrieval adapter contract 已进入远端 CI，但 artifact 仍是 `NETWORK_EVIDENCE_MISSING`，不代表真实 operator live payload 或法律清权。A202/A204/A205/A206/A209/A210 仍保持 IN PROGRESS，因为真实 operator live capture、live capture PostgreSQL 入库、4h/24h refresh/worker soak stability 和正式品牌法律/市场清权尚未完成。
+最新远端验证：GitHub Actions EEI validation run `27893172875` / job `82540125436` PASS，Step 7-12 均通过；Project Governance run `27893172917` PASS。该 run 验证 A202 live capture PostgreSQL ingestion contract 已进入远端 CI，但 artifact 仍是 `MISSING_OPERATOR_LIVE_PAYLOAD`，不代表真实 operator live payload 或法律清权。A202/A204/A205/A206/A209/A210 仍保持 IN PROGRESS，因为真实 operator live capture payload 入库、4h/24h refresh/worker soak stability 和正式品牌法律/市场清权尚未完成。
 
-本轮本地推进：新增 T1301/A202 live capture PostgreSQL ingestion contract。`scripts/load_live_official_captures.py` 可验证 operator live artifact 并将 `source_text_sha256`、短 excerpt、`source_health` 和 retry metadata 幂等写入 PostgreSQL evidence tables；CI fixture 必须显式 `--allow-fixture-capture`，合同 artifact 状态保持 `MISSING_OPERATOR_LIVE_PAYLOAD`，不提交官方全文、不发布关系事实、不代表生产 owner 或法律清权。
+本轮本地与远端推进：新增 T1301/A202 live capture PostgreSQL ingestion contract。`scripts/load_live_official_captures.py` 可验证 operator live artifact 并将 `source_text_sha256`、短 excerpt、`source_health` 和 retry metadata 幂等写入 PostgreSQL evidence tables；CI fixture 必须显式 `--allow-fixture-capture`，合同 artifact 状态保持 `MISSING_OPERATOR_LIVE_PAYLOAD`，不提交官方全文、不发布关系事实、不代表生产 owner 或法律清权。
 
 ## 已解决的关键决策（7）
 
