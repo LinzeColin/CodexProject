@@ -12,7 +12,8 @@ explicit SMTP delivery boundary, a fail-closed GitHub Release delivery
 boundary, a scheduled production workflow gate, a controlled scheduled
 execution driver, a daily input builder from arXiv Atom source batches, an
 incremental trial evidence ledger update bridge, cross-run ledger state
-persistence, and operational trial evidence annotation, and tests.
+persistence, operational trial evidence annotation, weekly/monthly replay
+evidence generation, and tests.
 
 ## Current Scope
 
@@ -41,6 +42,7 @@ Implemented now:
 - `adp export-trial-ledger-state`
 - `adp annotate-trial-ops-evidence`
 - `adp export-trial-ops-state`
+- `adp build-trial-replay-evidence`
 - `adp preflight-production`
 - `adp plan-trial-bootstrap`
 - `adp plan-production-scheduler`
@@ -57,6 +59,7 @@ Implemented now:
 - incremental trial evidence ledger updater that appends only production-ready scheduled daily-run reports and blocks duplicate or dry-run evidence
 - trial ledger state exporter and scheduled artifact restoration so 30-day evidence can accumulate across GitHub Actions runs
 - operational trial evidence annotator that merges explicit weekly/monthly replay, recovery drill, scheduler, Release, SMTP, and resource refs without hand-editing the ledger
+- weekly/monthly replay evidence builder that validates production-ready daily refs, duplicate-free coverage, 7-day weekly coverage, 30-day monthly coverage, and a durable replay evidence ref before producing annotation hints
 - deterministic 100-point ranking with per-component audit output
 - fail-closed candidate blocking for missing P0 evidence, metadata conflicts, and recent duplicate selections
 - Claim Ledger construction from explicit evidence claims
@@ -92,6 +95,7 @@ Not implemented yet:
 - verified real SMTP delivery on a provisioned production runner
 - verified private GitHub Release creation on a provisioned production runner
 - enabled scheduled runner execution on the default branch
+- actual weekly/monthly replay run archived with a durable production ref
 - claimed scheduled 30-day trial start
 - claimed 30-day operational acceptance
 

@@ -34,6 +34,7 @@ from .trial import evaluate_trial_evidence, validate_trial_evidence_report
 from .trial_bootstrap import build_trial_bootstrap_plan, validate_trial_bootstrap_plan
 from .trial_ledger import update_trial_evidence_ledger, validate_trial_ledger_update_report
 from .trial_ops import annotate_trial_operational_evidence, validate_trial_ops_report
+from .trial_replay import build_trial_replay_evidence, validate_trial_replay_report
 from .video import VideoPlanError, generate_storyboard
 
 
@@ -227,6 +228,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     trial_ops_state.add_argument("--ops-update", required=True, help="Trial ops annotation report JSON.")
     trial_ops_state.add_argument("--json", action="store_true", help="Print JSON trial evidence state.")
+
+    trial_replay = subparsers.add_parser(
+        "build-trial-replay-evidence",
+        help="Build fail-closed weekly/monthly replay evidence from a trial evidence ledger.",
+    )
+    trial_replay.add_argument("--path", required=True, help="Existing trial evidence JSON.")
+    trial_replay.add_argument("--generated-at", required=True, help="Replay evidence timestamp.")
+    trial_replay.add_argument("--weekly-replay", action="store_true", help="Verify weekly replay coverage.")
+    trial_replay.add_argument("--monthly-replay", action="store_true", help="Verify monthly replay coverage.")
+    trial_replay.add_argument("--replay-ref", default="", help="Durable artifact, workflow, or Release ref for the replay evidence.")
+    trial_replay.add_argument("--json", action="store_true", help="Print JSON replay evidence report.")
 
     preflight = subparsers.add_parser("preflight-production", help="Run fail-closed production preflight before scheduled execution.")
     preflight.add_argument("--path", default=".", help="Repository path used for disk, Git, and cache checks.")
@@ -723,6 +735,34 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{evidence.get('trial_id', 'trial:unknown')}\t{len(evidence.get('daily_runs') or [])} days")
         return 0
+    if args.command == "build-trial-replay-evidence":
+        evidence = load_json_mapping(args.path)
+        report = build_trial_replay_evidence(
+            evidence,
+            generated_at=args.generated_at,
+            weekly_replay=args.weekly_replay,
+            monthly_replay=args.monthly_replay,
+            replay_ref=args.replay_ref,
+        )
+        errors = validate_trial_replay_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["replay_evidence_verified"]:
+            modes = ",".join(mode for mode, enabled in report["requested_replay_modes"].items() if enabled)
+            print(f"{report['replay_report_id']}\t{modes}")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["replay_evidence_verified"] else 2
     if args.command == "preflight-production":
         report = build_production_preflight(Path(args.path), generated_at=args.generated_at)
         errors = validate_production_preflight(report)

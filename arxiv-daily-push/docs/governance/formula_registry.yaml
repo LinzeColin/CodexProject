@@ -659,3 +659,36 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ops.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_ops.py", "arxiv-daily-push/tests/test_trial.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md"]
+
+  - formula_id: "FORM-ADP-026"
+    model_id: "MOD-ADP-024"
+    assumption_ids: ["ASM-ADP-027", "ASM-ADP-026", "ASM-ADP-024"]
+    status: "active"
+    expression: "A trial replay evidence report passes only when at least one replay mode is requested, a durable replay_ref is supplied, every daily entry has production run, Release, SMTP, and resource refs, daily dates/source IDs/publication IDs are unique, weekly replay has at least 7 consecutive daily entries, and monthly replay has at least 30 consecutive daily entries regardless of any lower period.expected_days value. Blocked replay reports cannot be used as weekly_monthly_ref annotation evidence."
+    variables:
+      - name: "existing_trial_evidence"
+        data_type: "object"
+        unit: "JSON evidence"
+        input_domain: "adp-trial-evidence-v1 state"
+      - name: "requested_replay_modes"
+        data_type: "object"
+        unit: "booleans"
+        input_domain: "weekly and monthly replay flags"
+      - name: "daily_entry_refs"
+        data_type: "list[object]"
+        unit: "evidence references"
+        input_domain: "run_record_ref, release_ref, email_ref, resource_gate_ref"
+      - name: "consecutive_day_coverage"
+        data_type: "int"
+        unit: "days"
+        input_domain: "longest consecutive ISO date streak"
+      - name: "replay_ref"
+        data_type: "str"
+        unit: "evidence ref"
+        input_domain: "durable GitHub Actions artifact, private Release, or equivalent ref"
+    constraints: "The replay builder does not mutate trial evidence, send email, upload Releases, fetch arXiv, generate media, or claim production acceptance."
+    missing_policy: "No replay mode, missing replay_ref, duplicate daily coverage, missing production refs, or insufficient consecutive coverage produces a blocked replay report."
+    output_range: "trial replay evidence report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_replay.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_replay.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md"]
