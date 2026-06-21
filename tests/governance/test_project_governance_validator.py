@@ -162,6 +162,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json",
         )
 
+    def test_review6d_opme_semantic_rollout_is_task_bound(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        opme = next(project for project in config["projects"] if project["project_id"] == "OpMe_System")
+        self.assertTrue(opme.get("semantic_extractors"))
+        coverage = opme["semantic_coverage"]
+        self.assertEqual(coverage["status"], "in_progress")
+        self.assertEqual(coverage["task_id"], "GOV-SEMANTIC-OPME-001")
+        self.assertEqual(coverage["acceptance_id"], "ACC-SEMANTIC-OPME-001")
+        self.assertEqual(
+            coverage["evidence_ref"],
+            "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json",
+        )
+
     def test_review6d_required_project_missing_semantic_coverage_fails(self) -> None:
         validator = load_validator_module()
         with tempfile.TemporaryDirectory() as tmp:
