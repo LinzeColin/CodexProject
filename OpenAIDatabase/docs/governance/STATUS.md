@@ -20,16 +20,17 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Parameter count: `92`
 - Task count: `9`
 - Unbound event count: `4`
+- UNKNOWN/HUMAN_REVIEW_REQUIRED count: `19`
 
 ## Latest Run
 
 - Event: `ITER-20260621-OAI-003`
 - Task: `TASK-OAI-C-002`
 - Summary: Add truthful sync-run baseline evidence and require each configured run-log category to contain JSONL records.
-- Model delta: `UNKNOWN`
-- Parameter delta: `UNKNOWN`
-- Tests: `['python3 scripts/evaluate_personalization_context.py --database-dir .', 'python3 -m unittest tests.test_personalization_architecture -q', 'python3 scripts/validate_project_governance.py --project OpenAIDatabase', 'python3 scripts/validate_project_governance.py --all']`
-- Evidence: `['OpenAIDatabase/data/run_logs/sync_runs/2026-06-21.jsonl', 'OpenAIDatabase/data/run_logs/evaluation_runs/2026-06-21.jsonl', 'OpenAIDatabase/scripts/evaluate_personalization_context.py']`
+- Model delta: UNKNOWN
+- Parameter delta: UNKNOWN
+- Tests: python3 scripts/evaluate_personalization_context.py --database-dir ., python3 -m unittest tests.test_personalization_architecture -q, python3 scripts/validate_project_governance.py --project OpenAIDatabase, python3 scripts/validate_project_governance.py --all
+- Evidence: OpenAIDatabase/data/run_logs/sync_runs/2026-06-21.jsonl, OpenAIDatabase/data/run_logs/evaluation_runs/2026-06-21.jsonl, OpenAIDatabase/scripts/evaluate_personalization_context.py
 - Result: `PASS: evaluation PASS with failures empty and run_log_records included; personalization architecture unittest exit 0 with 2 tests OK; project governance validator exit 0 errors 0 warnings 0; all-project governance validator exit 0 errors 0 warnings 0`
 - Rollback: UNKNOWN
 
@@ -39,4 +40,8 @@ calibration evidence for heuristic weights is UNKNOWN and tracked by `TASK-OAI-B
 
 ## Next Task
 
-`TASK-OAI-B-001`
+`TASK-OAI-B-001` - Resolve UNKNOWN calibration evidence for heuristic weights and thresholds.
+
+- Status: `blocked`
+- Acceptance: ACC-OAI-B-001
+- Selection rationale: status=blocked; phase=B; current_phase=C; unmet_dependencies=none; score=136

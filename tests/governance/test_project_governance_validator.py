@@ -95,6 +95,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "AGENTS.md",
             "docs/governance/STANDARD.md",
             "docs/governance/CODEX_SETUP.md",
+            "docs/governance/templates/OWNER_STATUS.template.md",
             ".agents/skills/codex-dex/SKILL.md",
             ".codex/config.template.toml",
             ".codex/hooks.json",
@@ -354,6 +355,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "P/docs/governance/TRACEABILITY_MATRIX.csv",
             "P/docs/governance/VERSION_MATRIX.yaml",
             "P/docs/governance/STATUS.md",
+            "P/docs/governance/OWNER_STATUS.md",
             "P/CHANGELOG.md",
         ]
         changes, _ = sync.classify_changes({"projects": [project]}, files)
@@ -540,6 +542,28 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(first["generated_at"], second["generated_at"])
         self.assertEqual(first["commit"], second["commit"])
         self.assertEqual(first["outputs"], second["outputs"])
+        owner_outputs = [path for path in first["outputs"] if path.endswith("/docs/governance/OWNER_STATUS.md")]
+        status_outputs = [path for path in first["outputs"] if path.endswith("/docs/governance/STATUS.md")]
+        self.assertEqual(len(owner_outputs), len(status_outputs))
+        self.assertIn("PFI/大数据模拟器/docs/governance/OWNER_STATUS.md", owner_outputs)
+
+    def test_review6_owner_status_is_readable_and_prioritized(self) -> None:
+        dashboard = load_dashboard_module()
+        config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
+        serenity = next(project for project in config["projects"] if project["project_id"] == "Serenity-Alipay")
+        info = dashboard.load_project(serenity)
+        rendered = dashboard.render_owner_status(info, "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
+        for marker in (
+            "## 1. 当前结论",
+            "## 4. 模型、公式、参数旧值到新值",
+            "## 8. 需要项目所有者决定的事项",
+            "## 10. 下一项可执行任务及 Acceptance",
+            "## 12. UNKNOWN 与过期证据数量",
+        ):
+            self.assertIn(marker, rendered)
+        self.assertNotIn("['", rendered)
+        self.assertNotIn("{'", rendered)
+        self.assertEqual(info["next_task"], "TASK-B-001")
 
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads((ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text())

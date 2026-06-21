@@ -20,16 +20,17 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Parameter count: `117`
 - Task count: `9`
 - Unbound event count: `2`
+- UNKNOWN/HUMAN_REVIEW_REQUIRED count: `72`
 
 ## Latest Run
 
 - Event: `EVT-FIFA-GOV-20260620-002`
 - Task: `TASK-FIFA-A-001`
 - Summary: Validated FIFA governance baseline and promoted FIFA ci_mode to required. Real HOME full suite exposed a missing external Downloads app entry; isolated temp HOME fixture with original user site-packages ran 206 tests OK.
-- Model delta: `['MOD-001', 'MOD-002', 'MOD-003', 'MOD-004', 'MOD-005', 'MOD-006', 'MOD-007', 'MOD-008', 'MOD-009', 'MOD-010', 'MOD-011']`
-- Parameter delta: `['PARAM-001..PARAM-117']`
-- Tests: `['python scripts/validate_project_governance.py --project FIFA -> exit 127 python unavailable', 'python3 scripts/validate_project_governance.py --project FIFA -> exit 0', 'python3 -m py_compile run_daily_report.py scripts/tab_fifa_app_server.py tests/test_pipeline.py -> exit 0', 'bash -n scripts/run_tab_fifa_daily_automation.sh scripts/tab_real_refresh_smoke.sh -> exit 0', 'node --check scripts/refresh_tab_readonly.mjs -> exit 0', 'node --check scripts/discover_tab_live_boards.mjs -> exit 0', 'python3 -m unittest tests.test_pipeline -q -> exit 1 real HOME missing Downloads entry', 'PYTHONPATH=/Users/linzezhang/Library/Python/3.13/lib/python/site-packages HOME=<temp fixture home> python3 -m unittest tests.test_pipeline -q -> exit 0']`
-- Evidence: `['FIFA/docs/governance/delivery_tasks.yaml', 'FIFA/docs/governance/DELIVERY_PLAN.md']`
+- Model delta: MOD-001, MOD-002, MOD-003, MOD-004, MOD-005, MOD-006, +5 more
+- Parameter delta: PARAM-001..PARAM-117
+- Tests: python scripts/validate_project_governance.py --project FIFA -> exit 127 python unavailable, python3 scripts/validate_project_governance.py --project FIFA -> exit 0, python3 -m py_compile run_daily_report.py scripts/tab_fifa_app_server.py tests/test_pipeline.py -> exit 0, bash -n scripts/run_tab_fifa_daily_automation.sh scripts/tab_real_refresh_smoke.sh -> exit 0, node --check scripts/refresh_tab_readonly.mjs -> exit 0, node --check scripts/discover_tab_live_boards.mjs -> exit 0, +2 more
+- Evidence: FIFA/docs/governance/delivery_tasks.yaml, FIFA/docs/governance/DELIVERY_PLAN.md
 - Result: `completed_with_external_downloads_entry_risk`
 - Rollback: UNKNOWN
 
@@ -39,4 +40,8 @@ TASK-FIFA-B-001, TASK-FIFA-B-002, TASK-FIFA-C-001, TASK-FIFA-C-002, TASK-FIFA-D-
 
 ## Next Task
 
-`TASK-FIFA-C-001`
+`TASK-FIFA-C-001` - Recover authorized raw data path without violating TAB access-policy boundaries.
+
+- Status: `blocked`
+- Acceptance: ACC-FIFA-008
+- Selection rationale: status=blocked; phase=C; current_phase=A; unmet_dependencies=none; score=114

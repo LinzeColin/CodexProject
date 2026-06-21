@@ -55,6 +55,7 @@ Each registered project must eventually maintain:
 - `docs/governance/VERSION_MATRIX.yaml`
 - `docs/governance/TRACEABILITY_MATRIX.csv`
 - `docs/governance/STATUS.md`
+- `docs/governance/OWNER_STATUS.md`
 - `VERSION`
 - `CHANGELOG.md`
 
@@ -119,6 +120,7 @@ behavior changes require same-run updates or explicit review of:
 - `TRACEABILITY_MATRIX.csv`
 - `VERSION_MATRIX.yaml`
 - `STATUS.md`
+- `OWNER_STATUS.md`
 - `CHANGELOG.md` or an explicit no-version-change rationale in the run record
 
 Project `development_events.jsonl` files are append-only. Existing lines must
@@ -232,10 +234,14 @@ Facts that cannot be machine-verified must remain `UNKNOWN` or
 
 - root `GOVERNANCE_DASHBOARD.md`
 - each project `docs/governance/STATUS.md`
+- each project `docs/governance/OWNER_STATUS.md`
 
 These pages are read-only views generated from registries, events, version
 matrices, ledgers, and Git metadata. They must not become duplicate editable
 fact sources. CI regenerates them and fails if committed status pages drift.
+`OWNER_STATUS.md` is the project-owner view: it must answer current version,
+recent changes, why they matter, key risks, owner decisions, and the selected
+next task without Python list/dict representations.
 
 Personalization and user-level config are documented in
 `docs/governance/CODEX_SETUP.md`. Repository files, validators, tests, and
