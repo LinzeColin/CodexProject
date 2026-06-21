@@ -125,15 +125,32 @@ tasks:
     objective: "Implement video system only after text, evidence, TTS, license, and resource gates pass."
     scope: "Visual bible, scene library, sample video, and media QA."
     non_scope: "No factual claims beyond lesson.json."
-    status: "planned"
+    status: "completed"
     dependencies: ["ADP-PHASE7-TTS-001"]
-    required_files: ["video", "docs/governance", "tests"]
+    required_files: ["src/arxiv_daily_push/video.py", "tests/test_video.py", "tests/fixtures/video_input.json", "schemas/storyboard.schema.json"]
     acceptance_ids: ["ADP-ACC-PHASE8-VIDEO"]
-    test_commands: []
-    test_results: ["NOT_RUN planned Phase 8"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 47 tests OK", "storyboard dry-run tests: pass", "media gate blocks render/write/download: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md", "arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/fixtures/video_input.json"]
     risk: "Current local machine lacks Node, npm, gh, ffmpeg, docker and has limited disk."
     rollback: "Remove Phase 8 video artifacts and keep text-only pipeline."
     target_version: "0.8.0"
+    completed_version: "0.8.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE9-LOCAL-PIPELINE-001"
+    phase: "D"
+    objective: "Connect local daily dry-run pipeline across source, ranking, evidence, lesson, narration, storyboard, and notification preview."
+    scope: "Pipeline orchestration, RunRecord transitions, idempotent local state, and dry-run artifacts."
+    non_scope: "No real SMTP, Release upload, or scheduled runner until later gates."
+    status: "planned"
+    dependencies: ["ADP-PHASE8-VIDEO-001"]
+    required_files: ["src", "tests", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE9-LOCAL-PIPELINE"]
+    test_commands: []
+    test_results: ["NOT_RUN planned Phase 9"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    risk: "Pipeline must stay idempotent and avoid retained media/cache artifacts."
+    rollback: "Remove Phase 9 local pipeline artifacts."
+    target_version: "0.9.0"
     completed_version: ""
     unknown_task_ids: []

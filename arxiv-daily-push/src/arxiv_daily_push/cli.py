@@ -15,6 +15,7 @@ from .narration import NarrationError, generate_narration_plan
 from .notifications import render_email
 from .ranking import selection_payload
 from .state_machine import validate_run_record
+from .video import VideoPlanError, generate_storyboard
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -69,6 +70,12 @@ def build_parser() -> argparse.ArgumentParser:
     narration.add_argument("--tts-mode", default="dry_run", help="Only dry_run is allowed in Phase 7.")
     narration.add_argument("--check-path", default=".", help="Path used for resource gate disk checks.")
     narration.add_argument("--json", action="store_true", help="Print JSON narration output.")
+
+    storyboard = subparsers.add_parser("generate-storyboard", help="Generate dry-run video storyboard from narration JSON.")
+    storyboard.add_argument("--path", required=True, help="JSON file containing narration or a narration object.")
+    storyboard.add_argument("--generated-at", required=True, help="Storyboard generation timestamp.")
+    storyboard.add_argument("--check-path", default=".", help="Path used for media gate disk checks.")
+    storyboard.add_argument("--json", action="store_true", help="Print JSON storyboard output.")
     return parser
 
 
@@ -189,5 +196,22 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(narration, ensure_ascii=False, indent=2, sort_keys=True))
         else:
             print(f"{narration['narration_id']}\t{len(narration['segments'])} segments")
+        return 0
+    if args.command == "generate-storyboard":
+        data = json.loads(Path(args.path).read_text(encoding="utf-8"))
+        narration = data.get("narration", data) if isinstance(data, dict) else data
+        try:
+            storyboard = generate_storyboard(narration, generated_at=args.generated_at, path=Path(args.check_path))
+        except VideoPlanError as error:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": [str(error)]}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(storyboard, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{storyboard['storyboard_id']}\t{len(storyboard['scenes'])} scenes")
         return 0
     raise AssertionError(f"Unhandled command: {args.command}")

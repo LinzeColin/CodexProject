@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.0 - 2026-06-21
+
+- Added Phase 8 storyboard/video dry-run generation from narration JSON.
+- Added `adp generate-storyboard` for local storyboard rendering.
+- Added video media gate with rendering, media writes, and asset downloads blocked in Phase 8.
+- Added video fixture and tests covering dry-run storyboard generation, real render blocking, media path rejection, claim subset validation, and CLI output.
+
 ## 0.7.0 - 2026-06-21
 
 - Added Phase 7 dry-run narration/TTS plan generation from Lesson JSON.

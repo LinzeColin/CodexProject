@@ -1,0 +1,39 @@
+{
+  "narration": {
+    "narration_id": "narration:lesson:arxiv:2401.00001:fixture",
+    "lesson_id": "lesson:arxiv:2401.00001:fixture",
+    "language": "zh-CN",
+    "tts_mode": "dry_run",
+    "audio_synthesis_allowed": false,
+    "segments": [
+      {
+        "segment_id": "seg-01",
+        "section_id": "overview",
+        "text": "研究问题。这篇内容的学习入口来自 Claim Ledger [claim:lesson:001]。",
+        "duration_estimate_sec": 12,
+        "claim_ids": ["claim:lesson:001"]
+      },
+      {
+        "segment_id": "seg-02",
+        "section_id": "evidence",
+        "text": "关键证据。证据来自 Claim Ledger [claim:lesson:001] 和 [claim:lesson:002]。",
+        "duration_estimate_sec": 15,
+        "claim_ids": ["claim:lesson:001", "claim:lesson:002"]
+      }
+    ],
+    "claim_ids": ["claim:lesson:001", "claim:lesson:002"],
+    "resource_gate": {
+      "tts_mode": "dry_run",
+      "dry_run_ready": true,
+      "real_tts_ready": false,
+      "audio_synthesis_allowed": false,
+      "model_download_allowed": false,
+      "audio_write_allowed": false,
+      "required_commands": [],
+      "missing_commands": [],
+      "disk": {"path": ".", "free_gib": 0, "video_tts_min_free_gib": 80, "video_tts_ready": false},
+      "blocking_reasons": ["real TTS synthesis disabled in Phase 7"]
+    },
+    "generated_at": "2026-06-21T05:30:00+10:00"
+  }
+}

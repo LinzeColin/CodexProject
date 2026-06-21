@@ -46,6 +46,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_07.md", "arxiv-daily-push/src/arxiv_daily_push/narration.py", "arxiv-daily-push/tests/test_narration.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-010"
+    statement: "Phase 8 generates Storyboard JSON and video media gate outputs in dry-run mode while blocking rendering, media writes, and asset downloads."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/tests/test_video.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -168,3 +173,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/narration.schema.json", "arxiv-daily-push/config/examples/runtime.example.yaml"]
     test_refs: ["arxiv-daily-push/tests/test_narration.py", "arxiv-daily-push/tests/fixtures/narration_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_07.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+
+  - model_id: "MOD-ADP-008"
+    name: "Storyboard and video dry-run media gate"
+    kind: "deterministic storyboard planner"
+    purpose: "Generate video storyboard dry-run JSON from narration segments while blocking rendering, media writes, and asset downloads."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-video-dry-run-v1"
+    assumption_ids: ["ASM-ADP-010"]
+    formula_ids: ["FORM-ADP-010"]
+    parameter_ids: ["PARAM-ADP-041", "PARAM-ADP-042", "PARAM-ADP-043", "PARAM-ADP-044"]
+    inputs: ["Narration", "local command availability", "local disk status"]
+    outputs: ["Storyboard", "video media gate", "dry-run validation errors"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/storyboard.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/fixtures/video_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]

@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 7
-- formula_count: 9
-- parameter_count: 40
+- model_count: 8
+- formula_count: 10
+- parameter_count: 44
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -22,6 +22,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-003 | Claim Ledger publication gate | deterministic evidence gate | Block publication when key claims lack source locators or metadata is conflicted | active | adp-claim-gate-v1 | `src/arxiv_daily_push/evidence_gate.py` |
 | MOD-ADP-006 | Evidence-linked Chinese lesson generator | deterministic lesson generator | Generate text-only Chinese Lesson JSON from supported Claim Ledger evidence | active | adp-lesson-v1 | `src/arxiv_daily_push/lesson.py` |
 | MOD-ADP-007 | Narration and TTS dry-run gate | deterministic narration planner | Generate narration/TTS-ready dry-run JSON from Lesson objects while blocking media artifacts | active | adp-narration-v1 | `src/arxiv_daily_push/narration.py` |
+| MOD-ADP-008 | Storyboard and video dry-run media gate | deterministic storyboard planner | Generate Storyboard JSON while blocking render/write/download media outputs | active | adp-video-dry-run-v1 | `src/arxiv_daily_push/video.py` |
 
 ## B. Assumptions
 
@@ -36,6 +37,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-007 | Phase 5 builds a Claim Ledger from explicit evidence claims and blocks publication on unsupported P0 claims, metadata conflicts, or unsupported arXiv peer-review claims. | `docs/phase_records/PHASE_05.md`, `src/arxiv_daily_push/evidence_gate.py`, `tests/test_evidence_gate.py` | Phase 5 | active |
 | ASM-ADP-008 | Phase 6 generates deterministic Chinese Lesson JSON only from supported Claim Ledger evidence and does not create narration, TTS, video, runner automation, or SMTP output. | `docs/phase_records/PHASE_06.md`, `src/arxiv_daily_push/lesson.py`, `tests/test_lesson.py` | Phase 6 | active |
 | ASM-ADP-009 | Phase 7 generates dry-run narration/TTS plan JSON from Lesson objects and blocks audio synthesis, model downloads, audio writes, and media retention. | `docs/phase_records/PHASE_07.md`, `src/arxiv_daily_push/narration.py`, `tests/test_narration.py` | Phase 7 | active |
+| ASM-ADP-010 | Phase 8 generates Storyboard JSON and video media gate outputs in dry-run mode while blocking rendering, media writes, and asset downloads. | `docs/phase_records/PHASE_08.md`, `src/arxiv_daily_push/video.py`, `tests/test_video.py` | Phase 8 | active |
 
 ## C. Functions and Formulas
 
@@ -50,6 +52,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-004 applies the active Claim Ledger publication hard-block rules.
 - FORM-ADP-008 generates and validates Lesson JSON only from supported Claim Ledger claim IDs.
 - FORM-ADP-009 generates narration dry-run JSON while blocking real TTS synthesis, audio writes, and model downloads.
+- FORM-ADP-010 generates Storyboard dry-run JSON while blocking video rendering, media writes, and asset downloads.
 
 ## D. Parameters
 
@@ -62,6 +65,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 5 evidence gate parameters: PARAM-ADP-017 through PARAM-ADP-018.
 - Active Phase 6 lesson parameters: PARAM-ADP-035 through PARAM-ADP-036.
 - Active Phase 7 narration/TTS dry-run parameters: PARAM-ADP-037 through PARAM-ADP-040.
+- Active Phase 8 video dry-run parameters: PARAM-ADP-041 through PARAM-ADP-044.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -102,6 +106,10 @@ each Lesson section to a narration segment, estimates duration without audio
 output, reports local TTS resource readiness, and keeps real synthesis, audio
 writes, model downloads, and retained media artifacts blocked.
 
+Phase 8 generates Storyboard JSON from narration segments. It maps each segment
+to a visual scene, reports local video media readiness, and keeps rendering,
+media writes, asset downloads, and retained video artifacts blocked.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -124,6 +132,8 @@ writes, model downloads, and retained media artifacts blocked.
 - Non-dry-run TTS mode -> narration generation error.
 - Audio path in dry-run narration -> narration validation error.
 - Model download or audio write flag in Phase 7 -> narration validation error.
+- Video render, media write, or asset download flag in Phase 8 -> storyboard validation error.
+- Scene claim outside narration claims -> storyboard validation error.
 
 ## G. Validation
 

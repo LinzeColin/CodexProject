@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.7.0`
+Active product version: `0.8.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.7.0
+- Product version: 0.8.0
 - Current phase: D
-- Current gate: ADP-PHASE7-TTS-DRY-RUN-PASS
-- Confirmed iteration count: 7
+- Current gate: ADP-PHASE8-VIDEO-DRY-RUN-PASS
+- Confirmed iteration count: 8
 - Reconstructed event count: 0
-- Current task: ADP-PHASE8-VIDEO-001
-- Blockers: Later phases still need video/media QA, daily runner automation, real mail transport validation, and release readiness.
+- Current task: ADP-PHASE9-LOCAL-PIPELINE-001
+- Blockers: Later phases still need local pipeline orchestration, real mail transport validation, runner automation, release readiness, and 30-day acceptance evidence.
 
 ## Phase Matrix
 
@@ -23,7 +23,7 @@ The append-only machine record is `development_events.jsonl`.
 | A | Phase 1 repository foundation | completed | CLI skeleton, governance records, and tests pass | `docs/phase_records/PHASE_01.md` |
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
-| D | TTS/video/local pipeline/GitHub automation | in_progress | media gates and daily pipeline pass | `docs/phase_records/PHASE_07.md`; planned Phase 8-10 |
+| D | TTS/video/local pipeline/GitHub automation | in_progress | media gates and daily pipeline pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; planned Phase 9-10 |
 | E | Weekly/monthly trial and handoff | planned | 30-day acceptance passes | planned Phase 11 |
 
 ## Iteration Records
@@ -191,6 +191,30 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Video rendering, daily scheduler, Release upload, and real SMTP transport remain future gates.
 - Rollback: Revert Phase 7 narration code, schema, tests, fixture, and governance updates.
 - Next step: Start Phase 8 video/storyboard dry-run and media QA gate.
+
+
+### `ITER-20260621-008`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for storyboard/video dry-run code, CLI command, fixture, tests, and governance updates.
+- Version before: 0.7.0
+- Version after: 0.8.0
+- Base commit: 7332df2c5abed8aefbf694afe839ac496efafe06
+- Result commit: PENDING
+- Task IDs: ADP-PHASE8-VIDEO-001
+- Goal: Implement Storyboard dry-run and video media gate without rendering or retained media.
+- Assumptions: Phase 8 remains dry-run only and does not render video, write media, download assets, run schedulers, or send SMTP mail.
+- Files changed: video dry-run code, CLI command, video fixture, tests, version files, and governance records.
+- Model changes: Activated MOD-ADP-008 as adp-video-dry-run-v1.
+- Parameter changes: Activated PARAM-ADP-041 through PARAM-ADP-044 as adp-video-parameters-v1.
+- Commands run: `PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q`.
+- Test results: 47 unit tests OK.
+- Successes: Storyboard dry-run maps narration segments to scenes, media gate blocks real rendering/writes/downloads, media paths are rejected, and scene claims must stay inside narration claims.
+- Failures: none recorded at implementation time.
+- Decisions: Keep Phase 8 artifact as JSON storyboard only and defer real video rendering until resource gates pass.
+- Remaining risks: Local pipeline orchestration, Release upload, runner scheduling, and real SMTP transport remain future gates.
+- Rollback: Revert Phase 8 video dry-run code, tests, fixture, and governance updates.
+- Next step: Start Phase 9 local daily pipeline dry-run.
 
 ## Unknown Historical Periods
 
