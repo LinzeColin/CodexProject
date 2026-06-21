@@ -978,7 +978,7 @@ formulas:
     model_id: "MOD-ADP-028"
     assumption_ids: ["ASM-ADP-031", "ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
     status: "active"
-    expression: "A trial start workflow plan passes only when the workflow is manual-only, requires confirm_trial_start before self-hosted runner work, targets a private runner label, runs preflight before live source and delivery probes, runs live source before SMTP or Release probes, invokes plan-trial-start with --confirm-start and all durable ref arguments, uploads the complete trial start artifact set, maps only secret names without reading Codex auth, declares contents: write for controlled draft Release probe creation, and exposes real SMTP or Release probes only through explicit ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD GitHub variables."
+    expression: "A trial start workflow plan passes only when the workflow is manual-only, requires confirm_trial_start before self-hosted runner work, targets a private runner label, runs preflight, production refs discovery, and production launch readiness before live source and delivery probes, runs live source before SMTP or Release probes, invokes plan-trial-start with --confirm-start and all durable ref arguments, uploads the complete trial start artifact set, maps only secret names without reading Codex auth, declares contents: write for controlled draft Release probe creation, and exposes real SMTP or Release probes only through explicit ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD GitHub variables."
     variables:
       - name: "workflow_text"
         data_type: "str"
@@ -987,7 +987,11 @@ formulas:
       - name: "required_artifacts"
         data_type: "list[str]"
         unit: "artifact names"
-        input_domain: "trial start preflight, bootstrap, scheduler, source, SMTP, Release, and gate artifacts"
+        input_domain: "trial start preflight, production refs, launch readiness, bootstrap, scheduler, source, SMTP, Release, and gate artifacts"
+      - name: "launch_prechecks"
+        data_type: "list[str]"
+        unit: "workflow steps"
+        input_domain: "discover-production-refs and plan-production-launch"
       - name: "side_effect_gates"
         data_type: "list[str]"
         unit: "GitHub variables"
@@ -1001,13 +1005,13 @@ formulas:
     output_range: "trial start workflow plan with status pass or blocked"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-trial-start.yml"]
     test_refs: ["arxiv-daily-push/tests/test_trial_start_workflow.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::build_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::validate_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::_appears_before"]
-    implementation_fingerprint: "sha256:28205b0945649d9aabf11d7ab45dfa72be41b295c0b5fb5f1c70af7152abb1cd"
-    last_verified_commit: "4795473858926de7e8e2b9f3eb4e8346ca3a20a2"
-    verified_at: "2026-06-22T18:00:00+10:00"
-    evidence_hash: "sha256:cac1fad68639ab98fb3330dbd8f1974fd48fe3e762243b339caba1cb42bd060c"
+    implementation_fingerprint: "sha256:72c6ed513b91ffda7fc576136b639b215792f38c3060ffe3de40e15cfaf6d298"
+    last_verified_commit: "46932dd4535695326a9f90c34f5f42bdca49d7df"
+    verified_at: "2026-06-22T22:00:00+10:00"
+    evidence_hash: "sha256:d5f89238ead58ad20243b4dd08042f16ed0143a14b5189f14db5322e36b4e02d"
 
   - formula_id: "FORM-ADP-031"
     model_id: "MOD-ADP-029"
