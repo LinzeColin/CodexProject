@@ -23,7 +23,13 @@ def requirement(tmp_path: Path, label: str, hours_key: str, coverage_key: str) -
     )
 
 
-def write_run(requirement: SoakRequirement, *, target_seconds: int, completed_seconds: int) -> None:
+def write_run(
+    requirement: SoakRequirement,
+    *,
+    target_seconds: int,
+    completed_seconds: int,
+    elapsed_wall_seconds: int | None = None,
+) -> None:
     windows = [
         {
             "index": 1,
@@ -31,6 +37,7 @@ def write_run(requirement: SoakRequirement, *, target_seconds: int, completed_se
             "child_status": "PARTIAL",
             "requested_duration_seconds": target_seconds,
             "measured_duration_seconds": completed_seconds,
+            "elapsed_wall_seconds": elapsed_wall_seconds or completed_seconds,
             "browser_heap_growth_bytes": 1000,
             "browser_dom_node_growth": 0,
             "worker_jobs_completed": 12,
@@ -97,6 +104,22 @@ def test_insufficient_operator_soak_duration_fails_closed(tmp_path: Path) -> Non
     payload = build_validation_payload(parameters=PARAMETERS, required_runs=(req_4h, req_24h))
     assert payload["status"] == "FAIL"
     assert "completed duration is below target" in payload["results"][0]["errors"]
+
+
+def test_serialized_wall_clock_soak_window_fails_closed(tmp_path: Path) -> None:
+    req_4h = requirement(tmp_path, "operator_4h", "soak.short_duration_hours", "covers_4h_target")
+    write_run(
+        req_4h,
+        target_seconds=4 * 3600,
+        completed_seconds=4 * 3600,
+        elapsed_wall_seconds=8 * 3600,
+    )
+    payload = build_validation_payload(parameters=PARAMETERS, required_runs=(req_4h,))
+    assert payload["status"] == "FAIL"
+    assert any(
+        "elapsed_wall_seconds exceeds parallel window budget" in error
+        for error in payload["results"][0]["errors"]
+    )
 
 
 def test_complete_operator_soak_evidence_is_ready_for_release_review(tmp_path: Path) -> None:

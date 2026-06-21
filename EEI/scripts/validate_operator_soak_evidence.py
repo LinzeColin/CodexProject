@@ -165,6 +165,19 @@ def validate_window_metrics(
         measured_duration is not None and measured_duration > 0,
         f"window {index} measured_duration_seconds must be positive",
     )
+    elapsed_wall = number(window.get("elapsed_wall_seconds"))
+    max_expected_wall = (
+        measured_duration + max(60.0, measured_duration * 0.25)
+        if measured_duration is not None
+        else None
+    )
+    require(
+        errors,
+        elapsed_wall is not None
+        and max_expected_wall is not None
+        and elapsed_wall <= max_expected_wall,
+        f"window {index} elapsed_wall_seconds exceeds parallel window budget",
+    )
     heap_growth = number(window.get("browser_heap_growth_bytes"))
     dom_growth = number(window.get("browser_dom_node_growth"))
     lag_p95 = number(window.get("worker_event_loop_lag_p95_ms"))
@@ -366,6 +379,16 @@ def build_validation_payload(
             "short_duration_hours": parameters["soak.short_duration_hours"],
             "long_duration_hours": parameters["soak.long_duration_hours"],
             "operator_window_seconds": parameters["soak.operator_window_seconds"],
+        },
+        "window_wall_clock_policy": {
+            "measurement_strategy": "parallel_browser_worker_v1",
+            "max_elapsed_wall_seconds": (
+                "measured_duration_seconds + max(60, measured_duration_seconds * 0.25)"
+            ),
+            "reason": (
+                "browser and worker soak must be measured in the same operator window, "
+                "not serialized into double wall-clock evidence."
+            ),
         },
         "required_artifacts": [
             {

@@ -4158,3 +4158,36 @@ This remote PASS does not close A202/A206: the selected artifact is not producti
 - Remove `artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json`.
 - Restore `tests/integration/test_database_migrations.py` to fixture-only live-capture assertions.
 - Regenerate development, clean-room and release artifacts, then rerun validation.
+
+## 2026-06-21 - T1307/A209 operator soak parallel-window contract repair
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A209 STILL IN PROGRESS
+
+### Scope
+
+- Attempted to start the documented 4h operator soak command and interrupted it after the first checkpoint stayed empty beyond the expected first-window boundary.
+- Root cause: `scripts/run_soak_smoke.mjs` measured browser soak and worker soak serially, so a nominal 300-second operator window needed about 600 seconds of wall-clock time before checkpointing.
+- Updated `scripts/run_soak_smoke.mjs` to run browser and worker soak in parallel inside each operator window and record `measurement.strategy=parallel_browser_worker_v1`.
+- Updated `scripts/validate_operator_soak_evidence.py` so future committed 4h/24h evidence fails closed when `elapsed_wall_seconds` exceeds `measured_duration_seconds + max(60, measured_duration_seconds * 0.25)`.
+- Added a regression test proving serialized double-wall-clock windows are rejected.
+- Regenerated `artifacts/tests/a209/t1307_operator_soak_evidence_validation.json`; it still reports `MISSING_OPERATOR_EVIDENCE` because actual 4h and 24h artifacts are not committed.
+
+### Acceptance mapping
+
+- T1307 -> A209 for long-duration soak evidence quality control.
+- T1304 -> A206 only indirectly: this improves the future worker/retry/dead-letter soak evidence contract but does not prove 4h/24h stability.
+- A209 remains `IN_PROGRESS`; the 5-second parallel probe and validator hardening are not substitutes for committed 4h and 24h operator artifacts.
+
+### Validation
+
+- `node --check scripts/run_soak_smoke.mjs`: PASS.
+- `node --check scripts/run_operator_soak.mjs`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_operator_soak_evidence.py -q`: PASS; 4 passed.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py`: PASS.
+- `node scripts/run_operator_soak.mjs --mode ci_parallel_probe --duration-seconds 5 --window-seconds 5 --output /tmp/eei-operator-soak-parallel-probe.json --checkpoint /tmp/eei-operator-soak-parallel-probe.checkpoints.jsonl --fail-on-budget --quiet`: PASS outside the macOS sandbox; output status PASS, completed duration 5 seconds, elapsed wall 6.5612 seconds, worker jobs 12/12.
+
+### Rollback
+
+- Revert the parallel `Promise.all` measurement in `scripts/run_soak_smoke.mjs`.
+- Revert the elapsed-wall validator rule and regression test.
+- Regenerate the A209 evidence-validation artifact and rerun validation.
