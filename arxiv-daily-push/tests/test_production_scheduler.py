@@ -38,6 +38,7 @@ class ProductionSchedulerTests(unittest.TestCase):
         workflow = (ROOT / ".github/workflows/arxiv-daily-push-scheduled.yml").read_text(encoding="utf-8")
 
         self.assertIn("actions: read", workflow)
+        self.assertIn("contents: write", workflow)
         self.assertIn('timezone: "Australia/Sydney"', workflow)
         self.assertIn('cron: "45 4 * * *"', workflow)
         self.assertIn('cron: "0 5 * * *"', workflow)

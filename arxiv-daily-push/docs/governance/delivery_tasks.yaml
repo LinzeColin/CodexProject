@@ -551,7 +551,7 @@ tasks:
     scope: "External default-branch ref, private self-hosted runner ref, SMTP secret ref, Release target ref, workflow variables ref, explicit launch confirmation, and default-branch trial-start workflow evidence."
     non_scope: "No secret value read, no Codex auth read, no unconfirmed workflow dispatch, no SMTP send, no Release upload, no 30-day acceptance claim, and no local media/model/cache retention."
     status: "blocked"
-    dependencies: ["GOV-SEMANTIC-ADP-001", "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021", "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023"]
+    dependencies: ["GOV-SEMANTIC-ADP-001", "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021", "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023", "ADP-PHASE11-RELEASE-PERMISSIONS-024"]
     required_files: ["docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md", ".github/workflows/arxiv-daily-push-trial-start.yml"]
     acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-TRIAL-START"]
     test_commands: ["python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
@@ -578,4 +578,21 @@ tasks:
     rollback: "Revert production refs gate, CLI integration, schema, tests, runbook/docs/governance updates, and restore version 0.11.19."
     target_version: "0.11.20"
     completed_version: "0.11.20"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-RELEASE-PERMISSIONS-024"
+    phase: "E"
+    objective: "Require GitHub Actions Release write permission for controlled trial-start and scheduled production Release evidence."
+    scope: "Trial-start workflow permissions, scheduled production workflow permissions, workflow contract validators, focused tests, runbook, phase record, and governance records."
+    non_scope: "No workflow dispatch, no SMTP send, no Release upload, no secret value read, no Codex auth read, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023", "ADP-PHASE11-TRIAL-START-WORKFLOW-019", "ADP-PHASE11-PRODUCTION-SCHEDULER-009"]
+    required_files: [".github/workflows/arxiv-daily-push-trial-start.yml", ".github/workflows/arxiv-daily-push-scheduled.yml", "src/arxiv_daily_push/trial_start_workflow.py", "src/arxiv_daily_push/production_scheduler.py", "tests/test_trial_start_workflow.py", "tests/test_production_scheduler.py", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_RELEASE_PERMISSIONS.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-RELEASE-PERMISSIONS"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_start_workflow.py arxiv-daily-push/tests/test_production_scheduler.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-trial-start-workflow --path . --generated-at 2026-06-22T18:00:00+10:00 --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_cli2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-scheduler --path . --generated-at 2026-06-22T18:00:00+10:00 --json", "python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial-start workflow and production scheduler tests: 6 tests OK", "plan-trial-start-workflow JSON: pass", "plan-production-scheduler JSON: pass", "semantic extractor: 160 active parameters and 32 active formulas checked with no errors", "project governance: errors 0 warnings 0", "root governance tests: 93 tests OK", "arxiv-daily-push unit tests: 148 tests OK", "changed-only enforce-sync semantic: errors 0 warnings 0; all registered projects errors 0 warnings 0", "manifest JSON and development_events JSONL parse: pass", "git diff --check: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_PERMISSIONS.md", ".github/workflows/arxiv-daily-push-trial-start.yml", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py"]
+    risk: "The permission allows controlled draft Release creation only after ADP_ALLOW_RELEASE_UPLOAD=true and Release delivery checks pass; production launch and 30-day acceptance remain blocked by external refs and runtime evidence."
+    rollback: "Restore workflow contents permission to read, remove the release_write_permission_declared checks, remove new parameters/traceability/phase record/governance updates, and restore version 0.11.20."
+    target_version: "0.11.21"
+    completed_version: "0.11.21"
     unknown_task_ids: []

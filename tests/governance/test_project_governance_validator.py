@@ -1139,13 +1139,13 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-046")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-047")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-PHASE11-PRODUCTION-REFS-BUNDLE-20260622.json",
+            "governance/run_manifests/ADP-PHASE11-RELEASE-PERMISSIONS-20260622.json",
         )
         rendered = dashboard.render_owner_status(info, "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
-        self.assertIn("adp-production-refs-v1", rendered)
+        self.assertIn("contents: write", rendered)
         self.assertNotIn("root semantic extractor selector behavior expanded", rendered)
 
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
@@ -1430,8 +1430,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         status_text = (ROOT / "arxiv-daily-push" / "docs" / "governance" / "STATUS.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("PR #32 remains merged", status_text)
-        self.assertIn("no-secret production refs bundle gate", status_text)
+        self.assertIn("contents: write", status_text)
+        self.assertIn("Production launch remains blocked", status_text)
         self.assertNotIn("draft and unmerged", status_text)
 
     def test_arxiv_daily_push_phase11_manifest_records_production_trial_start_precheck(self) -> None:
@@ -1467,6 +1467,25 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(manifest["production_refs_gate"]["secret_values_logged"])
         self.assertEqual(manifest["semantic_coverage"]["semantic_parameters_checked"], 158)
         self.assertEqual(manifest["semantic_coverage"]["semantic_formulas_checked"], 32)
+
+    def test_arxiv_daily_push_phase11_manifest_records_release_permissions(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE11-RELEASE-PERMISSIONS-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-RELEASE-PERMISSIONS-024")
+        self.assertEqual(manifest["release_permission_gate"]["permission"], "contents: write")
+        self.assertIn(
+            ".github/workflows/arxiv-daily-push-trial-start.yml",
+            manifest["release_permission_gate"]["required_for"],
+        )
+        self.assertFalse(manifest["release_permission_gate"]["default_release_upload_enabled"])
+        self.assertFalse(manifest["release_permission_gate"]["production_acceptance_claimed"])
 
     def test_arxiv_daily_push_semantic_extract_manifest_records_partial_coverage(self) -> None:
         manifest = json.loads(

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.21 - 2026-06-22
+
+- Added machine-checked GitHub Actions `contents: write` permission requirements for controlled Release probes.
+- Updated trial-start and scheduled production workflow contracts so real Release evidence can be created only after explicit enablement.
+- Kept SMTP/Release side effects disabled by default and production acceptance blocked until external refs and 30-day evidence exist.
+
 ## 0.11.20 - 2026-06-22
 
 - Added `adp plan-production-refs` and `adp-production-refs-v1` to collect external runner, SMTP secret-name, Release target, and workflow variable readiness refs without reading or logging secret values.

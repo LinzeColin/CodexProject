@@ -34,7 +34,7 @@ on:
 
 permissions:
   actions: read
-  contents: read
+  contents: write
 
 concurrency:
   group: arxiv-daily-push-scheduled-production

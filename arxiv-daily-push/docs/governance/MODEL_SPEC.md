@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 30
 - formula_count: 32
-- parameter_count: 159
+- parameter_count: 161
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -32,7 +32,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-015 | Live arXiv latest source ingest | deterministic source ingest adapter | Fetch a small latest arXiv Atom window, parse SourceItems, and filter previously seen source IDs without downloading PDFs | active | adp-live-arxiv-ingest-v1 | `src/arxiv_daily_push/source_ingest.py` |
 | MOD-ADP-016 | SMTP notification delivery boundary | deterministic notification transport gate | Produce dry-run SMTP delivery evidence by default and send real mail only with explicit allow flag plus configured SMTP environment keys | active | adp-smtp-delivery-v1 | `src/arxiv_daily_push/smtp_delivery.py` |
 | MOD-ADP-017 | GitHub Release delivery boundary | deterministic release transport gate | Produce dry-run Release delivery evidence by default and create a GitHub Release only with explicit upload flag, configured target, safe assets, and `gh` | active | adp-release-delivery-v1 | `src/arxiv_daily_push/release_delivery.py` |
-| MOD-ADP-018 | Scheduled production workflow gate | deterministic scheduler contract validator | Validate Australia/Sydney 04:45 health-check, 05:00 daily-run, and 05:10 watchdog schedules while keeping production side effects disabled by default | active | adp-production-scheduler-v1 | `src/arxiv_daily_push/production_scheduler.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
+| MOD-ADP-018 | Scheduled production workflow gate | deterministic scheduler contract validator | Validate Australia/Sydney 04:45 health-check, 05:00 daily-run, 05:10 watchdog, and Release write permission while keeping production side effects disabled by default | active | adp-production-scheduler-v1 | `src/arxiv_daily_push/production_scheduler.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-019 | Scheduled execution driver | deterministic scheduled execution gate | Convert scheduled health-check, daily-run, and watchdog invocations into evidence artifacts while blocking unsupported production acceptance | active | adp-scheduled-execution-v1 | `src/arxiv_daily_push/scheduled_execution.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-020 | Daily input builder | deterministic source-to-input builder | Convert a passing arXiv SourceBatch into ranked daily pipeline input using Atom summary claims only | active | adp-daily-input-builder-v1 | `src/arxiv_daily_push/daily_input.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-021 | Trial evidence ledger update | deterministic trial ledger updater | Append one production-ready scheduled daily-run report into the 30-day trial evidence ledger without claiming acceptance early | active | adp-trial-ledger-v1 | `src/arxiv_daily_push/trial_ledger.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
@@ -42,7 +42,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-025 | Trial recovery evidence builder | deterministic recovery evidence validator | Build recovery drill evidence from a failed/degraded scheduled daily-run plus a recovered production-ready rerun while blocking dry-run notifications or missing durable refs | active | adp-trial-recovery-v1 | `src/arxiv_daily_push/trial_recovery.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-026 | Trial resource telemetry evidence builder | deterministic resource evidence validator | Build resource pressure evidence from daily trial resource refs and passing production preflight reports while blocking static or unmatched refs | active | adp-trial-resource-v1 | `src/arxiv_daily_push/trial_resource.py`, `src/arxiv_daily_push/production_preflight.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-027 | Trial start readiness gate | deterministic start-readiness validator | Aggregate preflight, bootstrap, scheduler, live source, SMTP, Release, and durable-ref evidence before a real 30-day production trial can be marked start-ready | active | adp-trial-start-v1 | `src/arxiv_daily_push/trial_start.py`, `src/arxiv_daily_push/cli.py` |
-| MOD-ADP-028 | Trial start evidence workflow validator | deterministic workflow contract validator | Validate the manual GitHub workflow that collects default-branch trial start evidence artifacts on the private runner | active | adp-trial-start-workflow-v1 | `src/arxiv_daily_push/trial_start_workflow.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-trial-start.yml` |
+| MOD-ADP-028 | Trial start evidence workflow validator | deterministic workflow contract validator | Validate the manual GitHub workflow that collects default-branch trial start evidence artifacts and Release write permission on the private runner | active | adp-trial-start-workflow-v1 | `src/arxiv_daily_push/trial_start_workflow.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-trial-start.yml` |
 | MOD-ADP-029 | Production launch readiness gate | deterministic launch-readiness validator | Block default-branch trial start dispatch until PR, workflow, runner, secrets, Release target, variables, refs, and confirmation are launch-ready | active | adp-production-launch-readiness-v1 | `src/arxiv_daily_push/production_launch.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-030 | Production refs readiness bundle | deterministic no-secret readiness validator | Collect runner, SMTP secret-name, Release target, and workflow variable readiness refs without secret values before launch readiness consumes them | active | adp-production-refs-v1 | `src/arxiv_daily_push/production_refs.py`, `src/arxiv_daily_push/cli.py` |
 
@@ -107,7 +107,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-017 fetches latest arXiv Atom SourceItems, validates them, and filters already-seen source IDs before ranking.
 - FORM-ADP-018 emits SMTP delivery evidence in dry-run mode by default and blocks real sends unless explicit allow-send, SMTP env keys, recipient, TLS, and delivery checks pass.
 - FORM-ADP-019 emits GitHub Release delivery evidence in dry-run mode by default and blocks real Release creation unless explicit allow-upload, Release target, safe assets, `gh`, and no-clobber checks pass.
-- FORM-ADP-020 validates the scheduled production workflow contract across timezone schedule slots, manual rerun, production variable gates, preflight-first ordering, artifact evidence, and default side-effect disablement.
+- FORM-ADP-020 validates the scheduled production workflow contract across timezone schedule slots, manual rerun, production variable gates, preflight-first ordering, artifact evidence, Release write permission, and default side-effect disablement.
 - FORM-ADP-021 runs one scheduled mode and only marks production evidence ready when preflight, daily run, real SMTP, real Release, and resource evidence refs all pass.
 - FORM-ADP-022 builds daily pipeline input from a passing arXiv SourceBatch using only Atom summary claims, then applies ranking and duplicate gates.
 - FORM-ADP-023 appends a scheduled daily-run report to trial evidence only when production-ready refs, P0 traceability, publication safety, and duplicate gates pass.
@@ -117,7 +117,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-027 builds recovery drill evidence only from a failed/degraded scheduled daily-run and a recovered production-ready rerun with real sent notifications and durable failure/recovery refs.
 - FORM-ADP-028 builds resource telemetry evidence only from unique daily resource refs that match passing production preflight reports and a durable resource evidence ref.
 - FORM-ADP-029 builds trial start readiness only from passing preflight, bootstrap, scheduler, live source, real SMTP, real Release, durable refs, and explicit confirmation while performing no side effects.
-- FORM-ADP-030 validates the manual default-branch trial start evidence workflow across dispatch confirmation, preflight-first ordering, artifact coverage, durable refs, secret safety, and explicit side-effect variable gates.
+- FORM-ADP-030 validates the manual default-branch trial start evidence workflow across dispatch confirmation, preflight-first ordering, artifact coverage, durable refs, secret safety, Release write permission, and explicit side-effect variable gates.
 - FORM-ADP-031 validates production launch readiness across PR merged/non-draft state, expected head SHA binding, workflow contract readiness, durable external readiness refs, explicit launch confirmation, and no-side-effect safety.
 - FORM-ADP-032 validates production refs readiness across required runner, SMTP secret-name, Release target, workflow variable, durable-ref, no-secret-input, and no-side-effect gates.
 
@@ -142,7 +142,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 live source ingest parameters: PARAM-ADP-075 through PARAM-ADP-080.
 - Active Phase 11 SMTP delivery parameters: PARAM-ADP-081 through PARAM-ADP-085.
 - Active Phase 11 Release delivery parameters: PARAM-ADP-086 through PARAM-ADP-091.
-- Active Phase 11 scheduler parameters: PARAM-ADP-092 through PARAM-ADP-096.
+- Active Phase 11 scheduler parameters: PARAM-ADP-092 through PARAM-ADP-096 plus PARAM-ADP-160.
 - Active Phase 11 scheduled execution parameters: PARAM-ADP-097 through PARAM-ADP-101.
 - Active Phase 11 daily input builder parameters: PARAM-ADP-102 through PARAM-ADP-107.
 - Active Phase 11 trial ledger parameters: PARAM-ADP-108 through PARAM-ADP-112.
@@ -152,7 +152,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 trial recovery evidence parameters: PARAM-ADP-128 through PARAM-ADP-132.
 - Active Phase 11 trial resource evidence parameters: PARAM-ADP-133 through PARAM-ADP-137.
 - Active Phase 11 trial start gate parameters: PARAM-ADP-138 through PARAM-ADP-143.
-- Active Phase 11 trial start workflow parameters: PARAM-ADP-144 through PARAM-ADP-148.
+- Active Phase 11 trial start workflow parameters: PARAM-ADP-144 through PARAM-ADP-148 plus PARAM-ADP-161.
 - Active Phase 11 production launch readiness parameters: PARAM-ADP-149 through PARAM-ADP-153.
 - Active Phase 11 production refs readiness parameters: PARAM-ADP-154 through PARAM-ADP-159.
 - Planned video evidence policy parameter: PARAM-ADP-019.
