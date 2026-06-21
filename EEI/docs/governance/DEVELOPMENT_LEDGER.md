@@ -127,6 +127,30 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the A210 preflight script/artifact/status changes, regenerate release artifacts, and rerun validation.
 - Next step: attach dated legal/market clearance evidence or signed risk waiver before any public brand launch.
 
+### `ITER-20260621-004`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `71a697e`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`
+- Goal: repair the A202 curated-ingestion PostgreSQL integration failure without weakening the human review gate.
+- Assumptions: candidate-level `ready_for_review` is a publication workflow status, while `ingestion_evidence_chain.review_status` must stay within the existing database enum-like check.
+- Files read: CI job step summary, curated ingestion loader, PostgreSQL migration constraints, integration tests and schema checker.
+- Files changed: `EEI/scripts/load_curated_ingestion_anchors.py`, MVP development record and this ledger.
+- Model changes: no scoring model change.
+- Parameter changes: no parameter value change.
+- Commands run: remote run `27890945803` showed Step 10 failure; focused ruff, task-pack validation, V5 readiness sync and brand-clearance validation passed after patch.
+- Test results: local static/governance validations PASS; remote PostgreSQL CI rerun pending.
+- Successes: introduced an explicit status mapper so evidence-chain rows remain database-valid while candidates remain ready for review.
+- Failures: remote PostgreSQL CI still needs a rerun.
+- Decisions: keep A202 `IN_PROGRESS`; do not change relationship candidate publication semantics.
+- Remaining risks: without direct CI logs, the repair is based on migration constraint analysis and integration-test expectations.
+- Rollback: revert the status mapper and rerun PostgreSQL integration.
+- Next step: run local validation, commit, push and verify CI Step 10-12.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -134,6 +158,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-002`: remote CI validation for TASK-T1307 operator soak runner readiness.
 - `EVENT-20260621-003`: local implementation evidence for TASK-T1301/A202 second independent official-source closure.
 - `EVENT-20260621-004`: local implementation evidence for TASK-T1309/A210 brand-clearance fail-closed preflight.
+- `EVENT-20260621-005`: local repair for TASK-T1301/A202 evidence-chain review-status persistence.
 
 ## Unknown Historical Periods
 
