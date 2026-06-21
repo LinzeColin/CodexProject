@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.9.0`
+Active product version: `0.10.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.9.0
+- Product version: 0.10.0
 - Current phase: D
-- Current gate: ADP-PHASE9-LOCAL-PIPELINE-PASS
-- Confirmed iteration count: 9
+- Current gate: ADP-PHASE10-RUNNER-RELEASE-EMAIL-PASS
+- Confirmed iteration count: 10
 - Reconstructed event count: 0
-- Current task: ADP-PHASE10-RUNNER-RELEASE-EMAIL-001
-- Blockers: Later phases still need runner/release/email dry-run handoff and 30-day acceptance evidence.
+- Current task: ADP-PHASE11-ACCEPTANCE-HANDOFF-001
+- Blockers: Final acceptance still needs handoff packaging; live 30-day operational evidence is not claimed.
 
 ## Phase Matrix
 
@@ -23,7 +23,7 @@ The append-only machine record is `development_events.jsonl`.
 | A | Phase 1 repository foundation | completed | CLI skeleton, governance records, and tests pass | `docs/phase_records/PHASE_01.md` |
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
-| D | TTS/video/local pipeline/GitHub automation | in_progress | media gates and daily pipeline pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; planned Phase 10 |
+| D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
 | E | Weekly/monthly trial and handoff | planned | 30-day acceptance passes | planned Phase 11 |
 
 ## Iteration Records
@@ -229,6 +229,29 @@ The append-only machine record is `development_events.jsonl`.
 - Assumptions: Phase 9 remains manual dry-run only and does not schedule runs, upload Releases, send SMTP mail, or retain media.
 - Test results: 51 unit tests OK.
 - Next step: Start Phase 10 runner/release/email dry-run handoff.
+
+### `ITER-20260621-010`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for runner/release/email dry-run handoff code, CLI command, tests, and governance updates.
+- Version before: 0.9.0
+- Version after: 0.10.0
+- Base commit: f7615d001c21ddc2778f802b2ca264702dd37308
+- Result commit: PENDING
+- Task IDs: ADP-PHASE10-RUNNER-RELEASE-EMAIL-001
+- Goal: Implement Phase 10 handoff preview for runner, release, and email transport without enabling any external side effect.
+- Assumptions: Phase 10 requires a completed local dry-run RunRecord and keeps scheduler, GitHub Actions runner, unattended execution, Release upload, and real SMTP sending disabled.
+- Files changed: handoff code, CLI command, handoff tests, version files, and governance records.
+- Model changes: Activated MOD-ADP-010 as adp-handoff-v1.
+- Parameter changes: Activated PARAM-ADP-048 through PARAM-ADP-050 as adp-handoff-parameters-v1.
+- Commands run: project unit tests; root governance tests; schema parse; project governance validator; changed-only enforce-sync; dashboard generation; git diff check.
+- Test results: 55 project tests OK; 30 root governance tests OK; schemas parse; project governance errors 0 warnings 0; changed-only enforce-sync errors 0 warnings 0; dashboard PASS; git diff check exit 0.
+- Successes: Handoff contract encodes disabled runner/release/email transport side effects.
+- Failures: none recorded at implementation time.
+- Decisions: Use dry-run artifact previews rather than writing release assets or sending email.
+- Remaining risks: Phase 11 final acceptance handoff is still pending; no live 30-day run evidence is claimed.
+- Rollback: Revert Phase 10 handoff code, tests, and governance updates.
+- Next step: Start Phase 11 final acceptance and handoff package after Phase 10 validation passes.
 
 ## Unknown Historical Periods
 

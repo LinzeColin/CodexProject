@@ -442,6 +442,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["task_id"], "ADP-PHASE9-LOCAL-PIPELINE-001")
         self.assertIn("MOD-ADP-009", manifest["model_delta"])
 
+    def test_arxiv_daily_push_phase10_manifest_records_handoff_gate(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE10-RUNNER-RELEASE-EMAIL-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE10-RUNNER-RELEASE-EMAIL-001")
+        self.assertIn("MOD-ADP-010", manifest["model_delta"])
+
 
 if __name__ == "__main__":
     unittest.main()

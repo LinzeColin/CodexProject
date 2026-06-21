@@ -56,6 +56,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_09.md", "arxiv-daily-push/src/arxiv_daily_push/pipeline.py", "arxiv-daily-push/tests/test_pipeline.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-012"
+    statement: "Phase 10 builds a runner/release/email dry-run handoff from a completed RunRecord while keeping scheduler, GitHub Actions runner, Release upload, unattended execution, and real SMTP send disabled."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md", "arxiv-daily-push/src/arxiv_daily_push/handoff.py", "arxiv-daily-push/tests/test_handoff.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -214,3 +219,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/run_record.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_pipeline.py", "arxiv-daily-push/tests/fixtures/pipeline_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_09.md"]
+
+  - model_id: "MOD-ADP-010"
+    name: "Runner release email dry-run handoff"
+    kind: "deterministic handoff gate"
+    purpose: "Build a Phase 10 handoff preview from a completed daily dry-run payload while blocking all external side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-handoff-v1"
+    assumption_ids: ["ASM-ADP-012", "ASM-ADP-002"]
+    formula_ids: ["FORM-ADP-012"]
+    parameter_ids: ["PARAM-ADP-048", "PARAM-ADP-049", "PARAM-ADP-050"]
+    inputs: ["completed RunRecord", "dry-run pipeline payload", "generated_at"]
+    outputs: ["handoff_id", "runner_gate", "release_gate", "email_transport_gate", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/handoff.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/config/examples/notification.example.yaml"]
+    test_refs: ["arxiv-daily-push/tests/test_handoff.py", "arxiv-daily-push/tests/fixtures/pipeline_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md"]

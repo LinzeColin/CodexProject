@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10.0 - 2026-06-21
+
+- Added Phase 10 runner/release/email dry-run handoff.
+- Added `adp build-handoff` for converting a completed dry-run pipeline payload into a handoff preview.
+- Added fail-closed validation that keeps scheduler, GitHub Actions runner, Release upload, unattended execution, and real SMTP sending disabled.
+- Added handoff tests covering completed RunRecord requirements, disabled external side effects, validation errors, and CLI output.
+
 ## 0.9.0 - 2026-06-21
 
 - Added Phase 9 local daily dry-run pipeline orchestration.
