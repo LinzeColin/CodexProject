@@ -3,16 +3,45 @@
   "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/source_item.schema.json",
   "title": "SourceItem",
   "type": "object",
-  "required": ["source_id", "source_type", "stable_id", "title", "retrieved_at", "metadata"],
+  "required": ["source_id", "source_type", "source_adapter", "stable_id", "title", "retrieved_at", "canonical_url", "metadata", "content_refs", "license"],
   "properties": {
-    "source_id": {"type": "string"},
-    "source_type": {"type": "string"},
-    "stable_id": {"type": "string"},
-    "title": {"type": "string"},
+    "source_id": {"type": "string", "minLength": 1},
+    "source_type": {
+      "type": "string",
+      "enum": ["arxiv", "rss", "github", "standard", "industry_report", "web", "book", "course", "podcast", "user_document"]
+    },
+    "source_adapter": {"type": "string", "minLength": 1},
+    "stable_id": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
     "retrieved_at": {"type": "string"},
-    "metadata": {"type": "object"},
+    "canonical_url": {"type": "string"},
+    "metadata": {"type": "object", "additionalProperties": true},
+    "content_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["ref_id", "ref_type", "uri"],
+        "properties": {
+          "ref_id": {"type": "string"},
+          "ref_type": {"type": "string"},
+          "uri": {"type": "string"},
+          "sha256": {"type": "string"},
+          "local_path": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "license": {
+      "type": "object",
+      "required": ["status", "usage"],
+      "properties": {
+        "status": {"type": "string"},
+        "usage": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
     "evidence_refs": {"type": "array", "items": {"type": "string"}}
   },
   "additionalProperties": false
 }
-

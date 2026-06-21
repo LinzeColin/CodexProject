@@ -49,6 +49,54 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/notifications.py"]
     test_refs: ["arxiv-daily-push/tests/test_notifications.py"]
     evidence_refs: ["arxiv-daily-push/config/examples/notification.example.yaml"]
+  - formula_id: "FORM-ADP-005"
+    model_id: "MOD-ADP-004"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-004"]
+    status: "active"
+    expression: "Each contract object must include required fields and use the allowed enum set for its type; P0 EvidenceClaim records must include a stable locator such as stable_url, page, section, table, figure, or quote."
+    variables:
+      - name: "contract_kind"
+        data_type: "str"
+        unit: "enum"
+        input_domain: "source_item, evidence_claim, lesson, storyboard, publication"
+      - name: "required_fields"
+        data_type: "list[str]"
+        unit: "field names"
+        input_domain: "contract-specific required fields"
+      - name: "enum_value"
+        data_type: "str"
+        unit: "enum value"
+        input_domain: "declared parameter enum sets"
+    constraints: "Validation is dependency-free and has no network, filesystem write, or media side effect."
+    missing_policy: "Missing required field creates a validation error instead of imputation."
+    output_range: "empty error list for pass or one or more validation error strings"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/contracts.py"]
+    test_refs: ["arxiv-daily-push/tests/test_contracts.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md"]
+  - formula_id: "FORM-ADP-006"
+    model_id: "MOD-ADP-004"
+    assumption_ids: ["ASM-ADP-004"]
+    status: "active"
+    expression: "A RunRecord transition is valid only when next_state belongs to ALLOWED_TRANSITIONS[current_state]; completed, blocked, and failed are terminal."
+    variables:
+      - name: "current_state"
+        data_type: "str"
+        unit: "state"
+        input_domain: "RUN_STATES"
+      - name: "next_state"
+        data_type: "str"
+        unit: "state"
+        input_domain: "RUN_STATES"
+      - name: "state_history"
+        data_type: "list[object]"
+        unit: "transition records"
+        input_domain: "ordered transition list"
+    constraints: "Skipped states and unrecognized states fail closed."
+    missing_policy: "Missing RunRecord fields create validation errors."
+    output_range: "validated transition or validation error"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/state_machine.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_state_machine.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md"]
   - formula_id: "FORM-ADP-003"
     model_id: "MOD-ADP-002"
     assumption_ids: ["ASM-ADP-003"]
@@ -83,4 +131,3 @@ formulas:
     test_refs: []
     evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
     unknown_task_ids: ["ADP-PHASE5-EVIDENCE-GATE-001"]
-
