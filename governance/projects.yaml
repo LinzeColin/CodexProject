@@ -210,14 +210,15 @@ projects:
     path: "whkmSalary"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
     semantic_coverage:
-      status: "planned"
+      status: "in_progress"
       task_id: "GOV-SEMANTIC-WHKM-001"
       acceptance_id: "ACC-SEMANTIC-WHKM-001"
       target: "Add extractors for salary constants, policy formula references, and active formula fingerprints."
-      evidence_ref: "whkmSalary/docs/governance/OWNER_STATUS.md"
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for whkmSalary."
+      rationale: "Review6-D rollout guard; whkmSalary now machine-checks 78 active parameters and 9 active formulas while PARAM-004, PARAM-005, and FORM-010 remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-WHKM-001."
     model_behavior_globs:
       - "*.py"
       - "tests/**/*.py"

@@ -12,9 +12,9 @@ parameter_profile_versions:
   province_weights: "salary-logic-v0"
   streamlit_defaults: "streamlit-input-v0"
 data_snapshot_version: "NOT_APPLICABLE - no committed salary data snapshot"
-current_iteration: "ITER-20260620-WHKM-001"
-current_phase: "E"
-current_gate: "GOV-G4-WHKM-REQUIRED"
+current_iteration: "ITER-20260621-WHKM-001"
+current_phase: "B"
+current_gate: "GOV-SEMANTIC-WHKM-in-progress"
 legacy_version_labels:
   - source: "README.md"
     value: "whkmSalesSalary deployment health link only"

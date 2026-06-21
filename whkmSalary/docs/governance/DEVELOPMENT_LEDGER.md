@@ -7,12 +7,12 @@ Governance spec version: `1.0.0`
 
 - Product version: `0.0.0`
 - Product version status: `provisional`
-- Current phase: `E`
-- Current gate: `GOV-G4-WHKM-REQUIRED`
-- Confirmed iterations: 1
+- Current phase: `B`
+- Current gate: `GOV-SEMANTIC-WHKM-in-progress`
+- Confirmed iterations: 2
 - Reconstructed development events: 1
-- Current task: `GOV-G4-WHKM-PROMOTE-001`
-- Blockers: `TASK-WHKM-B-001` for policy/source/effective date/rounding/boundary evidence.
+- Current task: `GOV-SEMANTIC-WHKM-001`
+- Blockers: `TASK-WHKM-B-001` for policy/source/effective date/rounding/boundary evidence; `GOV-SEMANTIC-WHKM-001` retains human review for `PARAM-004`, `PARAM-005`, and `FORM-010`.
 
 ## Confirmed Iterations
 
@@ -32,6 +32,23 @@ Governance spec version: `1.0.0`
 - Test results: whkmSalary project validator exit 0 with errors 0 warnings 0; compileall exit 0; fixture calculation exit 0 with total_score 13.875 and after_tax_salary 22305.15; all-project validator exit 0 with advisory warnings only outside required projects; diff check exit 0.
 - Rollback: remove `whkmSalary/docs/governance` and restore indexes/VERSION/CHANGELOG.
 - Next step: continue with OpMe_System P10.
+
+### `ITER-20260621-WHKM-001`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.0.0`
+- Version after: `0.0.0`
+- Base commit: `5712cb6666d2abf5c9426d4ad282899774090a85`
+- Result commit: `PENDING`
+- Task IDs: `GOV-SEMANTIC-WHKM-001`
+- Goal: add Review6 semantic extraction metadata for whkmSalary without changing salary calculation behavior.
+- Model changes: none to runtime models; governance records now bind salary formulas and constants to machine evidence where possible.
+- Parameter changes: 78 active parameters machine-verified; `PARAM-004` and `PARAM-005` remain `HUMAN_REVIEW_REQUIRED`.
+- Commands: `python3 scripts/validate_semantic_extractors.py whkmSalary`; final project/all/changed-only validation pending in `GOV-SEMANTIC-WHKM-EXTRACT-001`.
+- Test results: semantic extractor exit 0 with 78 parameters and 9 formulas checked; final validation pending.
+- Rollback: revert this iteration's governance metadata, root semantic coverage update, generated status pages, and run manifest.
+- Next step: complete final validator, focused compile/fixture tests, GitHub PR, and CI attestation.
 
 ## Reconstructed Development Events
 

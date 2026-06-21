@@ -86,14 +86,14 @@ tasks:
     objective: "Add extractors for salary constants, policy formula references, and active formula fingerprints."
     scope: ["salary semantic extractor metadata", "root validator evidence", "generated status pages"]
     non_scope: ["salary formula changes", "policy value changes", "Streamlit behavior changes", "deployment changes"]
-    status: "planned"
+    status: "in_progress"
     dependencies: ["TASK-WHKM-A-004"]
     required_files: ["whkmSalary/docs/governance/parameter_registry.csv", "whkmSalary/docs/governance/formula_registry.yaml", "governance/projects.yaml"]
     acceptance_ids: ["ACC-SEMANTIC-WHKM-001"]
-    test_commands: ["python3 scripts/validate_project_governance.py --project whkmSalary --semantic", "python3 scripts/validate_semantic_extractors.py whkmSalary"]
-    test_results: ["NOT_RUN - semantic extractor rollout task is planned, not completed"]
-    evidence_refs: ["whkmSalary/docs/governance/OWNER_STATUS.md", "governance/projects.yaml"]
-    risk: "whkmSalary remains structurally governed but not machine semantic-verified until extractors are implemented."
-    rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
+    test_commands: ["python3 scripts/validate_semantic_extractors.py whkmSalary", "python3 scripts/validate_project_governance.py --project whkmSalary --semantic"]
+    test_results: ["exit 0; semantic_parameters_checked=78 semantic_formulas_checked=9", "exit 0; errors 0 warnings 0"]
+    evidence_refs: ["governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json", "whkmSalary/docs/governance/parameter_registry.csv", "whkmSalary/docs/governance/formula_registry.yaml"]
+    risk: "whkmSalary semantic coverage remains in_progress because PARAM-004, PARAM-005, and FORM-010 require human review."
+    rollback: "Revert GOV-SEMANTIC-WHKM-EXTRACT-001 changes and reset whkmSalary semantic_coverage to planned."
     target_version: "0.0.0"
     completed_version: ""
