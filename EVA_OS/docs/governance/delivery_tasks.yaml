@@ -350,23 +350,26 @@ tasks:
     objective: "Add machine selectors for strategy parameters and fingerprints for active strategy formulas."
     scope: "EVA_OS semantic extractor metadata and governance validator evidence only; no business code or runtime behavior changes"
     non_scope: "business source, runtime logic, model behavior, data generation, dependency installation, commits and pushes"
-    status: "planned"
+    status: "in_progress"
     dependencies: ["TASK-EVA-A-004"]
     required_files:
       - "EVA_OS/docs/governance/parameter_registry.csv"
       - "EVA_OS/docs/governance/formula_registry.yaml"
       - "governance/projects.yaml"
+      - "governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json"
     acceptance_ids:
       - "ACC-SEMANTIC-EVA-001"
     test_commands:
       - "python3 scripts/validate_project_governance.py --project EVA_OS --semantic"
       - "python3 scripts/validate_semantic_extractors.py EVA_OS"
     test_results:
-      - "NOT_RUN - semantic extractor rollout task is planned, not completed"
+      - "IN_PROGRESS - 52 active parameters and 16 active formulas have machine semantic extraction metadata; remaining active parameters are task-bound HUMAN_REVIEW_REQUIRED."
     evidence_refs:
-      - "EVA_OS/docs/governance/OWNER_STATUS.md"
+      - "EVA_OS/docs/governance/parameter_registry.csv"
+      - "EVA_OS/docs/governance/formula_registry.yaml"
+      - "governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json"
       - "governance/projects.yaml"
-    risk: "EVA_OS remains structurally governed but not machine semantic-verified until extractors are implemented."
+    risk: "EVA_OS remains partially semantic-verified; parameters without selectors require human review before machine_verified promotion."
     rollback: "Remove this planned semantic rollout task and reset governance/projects.yaml semantic_coverage only if the root rollout gate is reverted."
     target_version: "0.1.0"
     completed_version: ""
