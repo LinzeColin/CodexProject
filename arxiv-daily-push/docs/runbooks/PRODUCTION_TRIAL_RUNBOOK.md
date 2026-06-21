@@ -236,6 +236,37 @@ The resource command requires 30 unique daily `resource_gate_ref` values, matchi
 passing production preflight reports, and a durable resource evidence ref. It
 does not run preflight, mutate the trial ledger, or claim production acceptance.
 
+Before starting a real acceptance-counting 30-day trial, build the start gate
+from archived production-readiness evidence:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-trial-start \
+  --preflight-report <passing-production-preflight.json> \
+  --bootstrap-plan <trial-bootstrap-plan.json> \
+  --scheduler-plan <production-scheduler-plan.json> \
+  --source-batch <passing-live-source-batch.json> \
+  --smtp-delivery <real-sent-smtp-report.json> \
+  --release-delivery <real-created-release-report.json> \
+  --generated-at <ISO timestamp> \
+  --default-branch-ref <default-branch-commit-ref> \
+  --runner-ref <private-runner-ref> \
+  --preflight-ref <preflight-artifact-ref> \
+  --source-ingest-ref <source-batch-artifact-ref> \
+  --smtp-ref <smtp-delivery-ref> \
+  --release-ref <private-release-ref> \
+  --scheduler-ref <scheduled-workflow-ref> \
+  --trial-state-ref <initial-ledger-state-ref> \
+  --trial-start-ref <trial-start-gate-artifact-ref> \
+  --confirm-start \
+  --json
+```
+
+The start gate does not enable schedules, send mail, create Releases, mutate the
+trial ledger, retain media/model/cache artifacts, or claim 30-day acceptance. It
+only marks `trial_start_ready=true` when all upstream reports pass, real SMTP and
+Release probes are present, every ref is durable, and the explicit confirmation
+flag is set.
+
 Then merge the explicit evidence refs with:
 
 ```bash

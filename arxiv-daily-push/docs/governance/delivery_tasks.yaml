@@ -460,3 +460,20 @@ tasks:
     target_version: "0.11.16"
     completed_version: "0.11.16"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-START-GATE-018"
+    phase: "E"
+    objective: "Add a fail-closed start-readiness gate for the real 30-day production trial."
+    scope: "Trial start gate, CLI command, schema, tests, runbook, version and governance records."
+    non_scope: "No schedule enablement, no SMTP send, no Release upload, no media/model/cache artifact retention, no trial evidence mutation, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-RESOURCE-EVIDENCE-017"]
+    required_files: ["src/arxiv_daily_push/trial_start.py", "src/arxiv_daily_push/cli.py", "tests/test_trial_start.py", "schemas/trial_start.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_TRIAL_START_GATE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-START-GATE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_start.py arxiv-daily-push/tests/test_trial_bootstrap.py arxiv-daily-push/tests/test_production_scheduler.py arxiv-daily-push/tests/test_production_preflight.py arxiv-daily-push/tests/test_source_ingest.py arxiv-daily-push/tests/test_notifications.py arxiv-daily-push/tests/test_release_delivery.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial start/bootstrap/scheduler/preflight/source/SMTP/Release/CLI tests: 34 tests OK", "plan-trial-start fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_start.py", "arxiv-daily-push/tests/test_trial_start.py"]
+    risk: "Real trial start still requires default-branch runner evidence and archived real SMTP Release source preflight and start-gate refs."
+    rollback: "Revert trial start gate, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.16."
+    target_version: "0.11.17"
+    completed_version: "0.11.17"
+    unknown_task_ids: []

@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 26
-- formula_count: 28
-- parameter_count: 137
+- model_count: 27
+- formula_count: 29
+- parameter_count: 143
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -41,6 +41,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-024 | Trial replay evidence builder | deterministic replay evidence validator | Build weekly/monthly replay evidence from production-ready daily trial entries and block missing durable refs or incomplete coverage | active | adp-trial-replay-v1 | `src/arxiv_daily_push/trial_replay.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-025 | Trial recovery evidence builder | deterministic recovery evidence validator | Build recovery drill evidence from a failed/degraded scheduled daily-run plus a recovered production-ready rerun while blocking dry-run notifications or missing durable refs | active | adp-trial-recovery-v1 | `src/arxiv_daily_push/trial_recovery.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-026 | Trial resource telemetry evidence builder | deterministic resource evidence validator | Build resource pressure evidence from daily trial resource refs and passing production preflight reports while blocking static or unmatched refs | active | adp-trial-resource-v1 | `src/arxiv_daily_push/trial_resource.py`, `src/arxiv_daily_push/production_preflight.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-027 | Trial start readiness gate | deterministic start-readiness validator | Aggregate preflight, bootstrap, scheduler, live source, SMTP, Release, and durable-ref evidence before a real 30-day production trial can be marked start-ready | active | adp-trial-start-v1 | `src/arxiv_daily_push/trial_start.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -75,6 +76,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-027 | Weekly/monthly replay evidence must be generated from production-ready daily trial entries and archived under a durable replay ref before it can be merged into trial evidence. | `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`, `src/arxiv_daily_push/trial_replay.py`, `tests/test_trial_replay.py` | Phase 11 replay evidence readiness | active |
 | ASM-ADP-028 | Recovery drill evidence must be generated from an archived failed/degraded scheduled daily-run report and a recovered production-ready rerun report with real sent notifications before it can be merged into trial evidence. | `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`, `src/arxiv_daily_push/trial_recovery.py`, `tests/test_trial_recovery.py` | Phase 11 recovery evidence readiness | active |
 | ASM-ADP-029 | Resource telemetry evidence must be generated from unique daily trial resource refs that match passing production preflight reports before the global resource gate can be merged into trial evidence. | `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`, `src/arxiv_daily_push/trial_resource.py`, `tests/test_trial_resource.py` | Phase 11 resource evidence readiness | active |
+| ASM-ADP-030 | A real 30-day production trial may be marked start-ready only after preflight, bootstrap, scheduler, live source, real SMTP, real Release, durable evidence refs, and explicit confirmation all pass. | `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`, `src/arxiv_daily_push/trial_start.py`, `tests/test_trial_start.py` | Phase 11 trial start readiness | active |
 
 ## C. Functions and Formulas
 
@@ -108,6 +110,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-026 builds weekly/monthly replay evidence only from production-ready daily entries with duplicate-free consecutive coverage and a durable replay ref.
 - FORM-ADP-027 builds recovery drill evidence only from a failed/degraded scheduled daily-run and a recovered production-ready rerun with real sent notifications and durable failure/recovery refs.
 - FORM-ADP-028 builds resource telemetry evidence only from unique daily resource refs that match passing production preflight reports and a durable resource evidence ref.
+- FORM-ADP-029 builds trial start readiness only from passing preflight, bootstrap, scheduler, live source, real SMTP, real Release, durable refs, and explicit confirmation while performing no side effects.
 
 ## D. Parameters
 
@@ -139,6 +142,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 trial replay evidence parameters: PARAM-ADP-123 through PARAM-ADP-127.
 - Active Phase 11 trial recovery evidence parameters: PARAM-ADP-128 through PARAM-ADP-132.
 - Active Phase 11 trial resource evidence parameters: PARAM-ADP-133 through PARAM-ADP-137.
+- Active Phase 11 trial start gate parameters: PARAM-ADP-138 through PARAM-ADP-143.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

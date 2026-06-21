@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.17 - 2026-06-22
+
+- Added `adp plan-trial-start` and `adp-trial-start-v1` to build a fail-closed readiness report before starting the real 30-day production trial.
+- Added start gating across passing production preflight, bootstrap workflow, scheduler contract, live arXiv source batch, real sent SMTP probe, real created Release probe, explicit confirmation, and durable GitHub/runner/state/start refs.
+- Added trial start schema and tests covering pass, missing confirmation, missing durable refs, SMTP dry-run blocking, blocked preflight, and CLI JSON output.
+
 ## 0.11.16 - 2026-06-22
 
 - Added `adp build-trial-resource-evidence` and `adp-trial-resource-v1` to verify 30-day resource telemetry from daily trial resource refs and passing production preflight reports.

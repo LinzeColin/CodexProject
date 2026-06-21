@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/trial_start.schema.json",
+  "title": "arXiv Daily Push Trial Start Readiness Report",
+  "type": "object",
+  "required": [
+    "trial_start_report_id",
+    "model_id",
+    "project_id",
+    "generated_at",
+    "status",
+    "trial_start_ready",
+    "notification_recipient",
+    "start_confirmation_required",
+    "start_confirmed",
+    "evidence_refs",
+    "readiness_gates",
+    "side_effects_performed",
+    "production_acceptance_claimed",
+    "blocking_reasons",
+    "next_external_actions"
+  ],
+  "properties": {
+    "trial_start_report_id": {"type": "string", "minLength": 1},
+    "model_id": {"const": "adp-trial-start-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "blocked"]},
+    "trial_start_ready": {"type": "boolean"},
+    "notification_recipient": {"const": "linzezhang35@gmail.com"},
+    "start_confirmation_required": {"type": "boolean"},
+    "start_confirmed": {"type": "boolean"},
+    "evidence_refs": {
+      "type": "object",
+      "required": [
+        "default_branch_ref",
+        "runner_ref",
+        "preflight_ref",
+        "source_ingest_ref",
+        "smtp_ref",
+        "release_ref",
+        "scheduler_ref",
+        "trial_state_ref",
+        "trial_start_ref"
+      ],
+      "properties": {
+        "default_branch_ref": {"type": "string"},
+        "runner_ref": {"type": "string"},
+        "preflight_ref": {"type": "string"},
+        "source_ingest_ref": {"type": "string"},
+        "smtp_ref": {"type": "string"},
+        "release_ref": {"type": "string"},
+        "scheduler_ref": {"type": "string"},
+        "trial_state_ref": {"type": "string"},
+        "trial_start_ref": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "readiness_gates": {"type": "array", "items": {"type": "object"}},
+    "side_effects_performed": {"const": false},
+    "production_acceptance_claimed": {"const": false},
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}},
+    "next_external_actions": {"type": "array", "items": {"type": "string"}},
+    "validation_errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

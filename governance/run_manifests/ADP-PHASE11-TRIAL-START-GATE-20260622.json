@@ -1,0 +1,93 @@
+{
+  "base_commit": "4e572b8",
+  "changed_files": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/README.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md",
+    "arxiv-daily-push/pyproject.toml",
+    "arxiv-daily-push/schemas/trial_start.schema.json",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/trial_start.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_trial_start.py",
+    "governance/run_manifests/ADP-PHASE11-TRIAL-START-GATE-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md",
+    "arxiv-daily-push/src/arxiv_daily_push/trial_start.py",
+    "arxiv-daily-push/tests/test_trial_start.py"
+  ],
+  "formula_delta": "Added FORM-ADP-029 trial start readiness gate.",
+  "generated_at": "2026-06-22T08:45:00+10:00",
+  "iteration_id": "ITER-20260621-028",
+  "model_delta": "Added MOD-ADP-027 adp-trial-start-v1.",
+  "next_task": "RUN_CONTROLLED_DEFAULT_BRANCH_TRIAL_START_EVIDENCE",
+  "non_scope": [
+    "schedule enablement",
+    "SMTP send",
+    "Release upload",
+    "media/model/cache artifact retention",
+    "trial evidence mutation",
+    "production acceptance claim"
+  ],
+  "objective": "Add a fail-closed start-readiness gate for the real 30-day production trial.",
+  "parameter_delta": "Added PARAM-ADP-138 through PARAM-ADP-143.",
+  "phase": "E",
+  "production_acceptance_status": "blocked",
+  "project_id": "arxiv-daily-push",
+  "result": "pass",
+  "result_commit": "PENDING",
+  "risks": [
+    "Real trial start still requires default-branch runner evidence and archived real SMTP Release source preflight and start-gate refs.",
+    "Real production acceptance remains blocked until 30 unique daily production evidence entries plus replay recovery resource evidence are archived and validated."
+  ],
+  "rollback": "Revert trial start gate, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.16.",
+  "run_id": "ADP-PHASE11-TRIAL-START-GATE-20260622",
+  "scope": [
+    "trial start readiness gate",
+    "plan-trial-start CLI command",
+    "trial start schema",
+    "tests",
+    "runbook and governance records"
+  ],
+  "task_id": "ADP-PHASE11-TRIAL-START-GATE-018",
+  "test_results": [
+    "focused trial start/bootstrap/scheduler/preflight/source/SMTP/Release/CLI tests: 34 tests OK",
+    "schemas: all schema JSON files parse",
+    "arxiv-daily-push unit tests: 136 tests OK",
+    "root governance tests: 48 tests OK",
+    "project governance: errors 0 warnings 0",
+    "dashboard generation: PASS",
+    "changed-only enforce-sync: errors 0 warnings 0",
+    "git diff --check: exit 0",
+    "cache check: no arxiv-daily-push __pycache__ or .pyc files",
+    "storage check: arxiv-daily-push 1.5M and .git 75M"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_start_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_start.py arxiv-daily-push/tests/test_trial_bootstrap.py arxiv-daily-push/tests/test_production_scheduler.py arxiv-daily-push/tests/test_production_preflight.py arxiv-daily-push/tests/test_source_ingest.py arxiv-daily-push/tests/test_notifications.py arxiv-daily-push/tests/test_release_delivery.py arxiv-daily-push/tests/test_cli.py -q",
+    "find arxiv-daily-push/schemas -name '*.schema.json' -exec python3 -m json.tool {} \\; >/dev/null",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_start_project PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_start_root python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_start_gov python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_start_dashboard python3 scripts/generate_governance_dashboard.py --write",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_pycache_trial_start_sync python3 scripts/validate_project_governance.py --changed-only --enforce-sync",
+    "git diff --check",
+    "find arxiv-daily-push -name '__pycache__' -o -name '*.pyc'",
+    "du -sh arxiv-daily-push .git"
+  ],
+  "version_after": "0.11.17",
+  "version_before": "0.11.16"
+}

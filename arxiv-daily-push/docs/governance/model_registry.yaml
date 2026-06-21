@@ -606,3 +606,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/trial_resource.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
     test_refs: ["arxiv-daily-push/tests/test_trial_resource.py", "arxiv-daily-push/tests/test_production_preflight.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md"]
+
+  - model_id: "MOD-ADP-027"
+    name: "Trial start readiness gate"
+    kind: "deterministic start-readiness validator"
+    purpose: "Aggregate preflight, bootstrap, scheduler, live source, SMTP, Release, and durable-ref evidence before a real 30-day production trial can be marked start-ready."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-trial-start-v1"
+    assumption_ids: ["ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
+    formula_ids: ["FORM-ADP-029"]
+    parameter_ids: ["PARAM-ADP-138", "PARAM-ADP-139", "PARAM-ADP-140", "PARAM-ADP-141", "PARAM-ADP-142", "PARAM-ADP-143"]
+    inputs: ["production preflight report", "trial bootstrap plan", "production scheduler plan", "live source batch", "SMTP delivery report", "Release delivery report", "durable evidence refs", "confirm_start"]
+    outputs: ["trial start readiness report", "readiness_gates", "evidence_refs", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/trial_start.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_start.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md"]
