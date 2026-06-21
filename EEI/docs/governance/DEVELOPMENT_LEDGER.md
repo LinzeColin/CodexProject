@@ -366,6 +366,24 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the parallel measurement and elapsed-wall validator changes, regenerate A209 evidence-validation artifact and rerun validation.
 - Next step: commit/push the runner repair, verify CI, then run the 4h operator soak on the CI-validated code.
 
+### `ITER-20260621-015`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `5b9fe87`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, `TASK-T1304`
+- Goal: record remote CI evidence for the A209 operator soak parallel-window repair without closing A209/A206.
+- Commands run: GitHub Actions EEI validation run `27894602887` / job `82543882466`; GitHub Actions Project Governance run `27894602898`.
+- Test results: EEI validation PASS; Step 7 static/contract/lint/typecheck/unit PASS, Step 8 G2 PostgreSQL preparation PASS, Step 9 G2 static/contract/lint/typecheck/unit PASS, Step 10 G2 PostgreSQL integration PASS, Step 11 browser E2E PASS, Step 12 live FastAPI PostgreSQL E2E PASS and Step 13 PostgreSQL stop PASS. Project Governance PASS.
+- Successes: remote CI proved the soak runner/validator repair is compatible with the full EEI validation chain, including G2 PostgreSQL and browser/live API paths.
+- Decisions: keep A209 and A206 `IN_PROGRESS`; remote CI proves only the runner repair, not committed 4h/24h operator soak evidence.
+- Remaining risks: actual 4h and 24h operator artifacts must still be generated, validated, committed and referenced before A209 can close.
+- Rollback: revert the remote evidence update and regenerate release artifacts with `remote_status=PENDING`.
+- Next step: commit/push the remote evidence update, verify the evidence-only CI run, then run the 4h operator soak.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -382,6 +400,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-014`: local selected-anchor live official capture evidence for TASK-T1301/A202 and TASK-T1304/A206.
 - `EVENT-20260621-015`: remote CI validation evidence for TASK-T1301/A202 selected-anchor live official capture ingestion.
 - `EVENT-20260621-016`: local A209 operator soak parallel-window contract repair.
+- `EVENT-20260621-017`: remote CI validation evidence for TASK-T1307/A209 operator soak parallel-window repair.
 
 ## Unknown Historical Periods
 
