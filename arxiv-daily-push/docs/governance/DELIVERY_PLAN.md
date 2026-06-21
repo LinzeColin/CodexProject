@@ -58,7 +58,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020 | E | completed | ADP-ACC-PHASE11-PRODUCTION-LAUNCH-READINESS | 12 focused tests OK; launch gate blocks draft/unmerged PR, head SHA mismatch, missing durable refs, and missing confirmation | `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md` |
 | GOV-SEMANTIC-ADP-001 | E | completed | ACC-SEMANTIC-ADP-001 | semantic extractor 152 parameters/31 formulas OK; selector probe matched final 21 parameters; root governance 89 OK; arXiv unit 143 OK; changed-only semantic 0 errors | `governance/run_manifests/GOV-SEMANTIC-ADP-EXTRACT-005.json` |
 | ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021 | E | completed | ADP-ACC-PHASE11-POST-MERGE-LAUNCH-AUDIT | 143 arXiv tests OK; 83 root tests OK; project governance 0 errors; changed-only semantic 0 errors; launch gate blocks only external refs/confirmation | `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md` |
-| ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | blocked before execution: missing launch confirmation and durable production refs | `docs/governance/STATUS.md` |
+| ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates
 
@@ -97,7 +97,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 production launch readiness | non-draft merged PR, expected head SHA binding, ready trial start workflow contract, durable runner/secret/Release/variable/default-branch refs, and explicit launch confirmation | pass for launch readiness contract; PR/default-branch gates are now satisfied after merge, while external durable refs and confirmation remain blocked |
 | Phase 11 post-merge launch audit | latest required code merged to main, default branch contains workflow files, and launch gate blocks only external refs/confirmation | pass for audit; production launch remains blocked until durable refs and confirmation exist |
 | Semantic coverage rollout contract | task-bound machine checks for active parameter values and formula fingerprints | machine_verified; 152 active parameters and all 31 active formulas machine-check, 0 active rows remain HUMAN_REVIEW_REQUIRED |
-| Phase 11 production trial start | explicit confirmation, durable default branch, runner, SMTP, Release, workflow vars, and trial-start workflow refs | blocked; external refs and default-branch trial start evidence not present |
+| Phase 11 production trial start | explicit confirmation, durable default branch, runner, SMTP, Release, workflow vars, and trial-start workflow refs | blocked; default branch and trial-start workflow refs recorded, while confirmation, runner, SMTP, Release, workflow-vars, and default-branch trial-start run evidence are not present |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |
