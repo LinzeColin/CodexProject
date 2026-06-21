@@ -3991,7 +3991,7 @@ Status: LOCAL AND REMOTE CI VALIDATED; A209 STILL IN PROGRESS
 
 ## 2026-06-21 - T1301/A202 live official retrieval adapter contract
 
-Status: LOCAL VALIDATED; REMOTE CI PENDING; A202/A206 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A202/A206 STILL IN PROGRESS
 
 ### Scope
 
@@ -4022,6 +4022,25 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A202/A206 STILL IN PROGRESS
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_official_source_live_capture.py -q`: PASS; 4 passed.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/fetch_official_source_full_text.py --generate-live-contract --output artifacts/tests/a202/t1301_live_official_retrieval_contract.json --quiet`: PASS.
 - `.venv/bin/python -m json.tool artifacts/tests/a202/t1301_live_official_retrieval_contract.json`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit -q`: PASS; 44 passed, 1 Starlette/httpx deprecation warning.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_task_pack.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_development_status_artifacts.py generate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_clean_room_release.py generate`: PASS; package paths 384.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_release_artifacts.py generate`: PASS; manifest paths 391, checksum paths 390, `remote_status=PENDING` before remote CI evidence update.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_clean_room_release.py validate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/manage_release_artifacts.py validate`: PASS.
+- `shasum -a 256 -c CHECKSUMS.sha256`: PASS.
+
+### Remote validation
+
+- GitHub Actions EEI validation run `27892494323` / job `82538366876`: PASS on commit `f5fa298bc468430b68e75d311582b9f491b4d078`.
+- Step 7 static/contract/lint/typecheck/unit: PASS.
+- Step 8 G2 PostgreSQL preparation: PASS.
+- Step 9 G2 static/contract/lint/typecheck/unit: PASS.
+- Step 10 G2 PostgreSQL integration: PASS.
+- Step 11 G2 browser E2E: PASS.
+- Step 12 G2 live FastAPI PostgreSQL E2E: PASS.
+- GitHub Actions Project Governance run `27892494331`: PASS.
 
 ### Rollback
 

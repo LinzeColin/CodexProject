@@ -247,6 +247,23 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the live adapter script changes, unit test, generated artifact and A202/A206 traceability/status/docs changes, then regenerate development/release artifacts and rerun validation.
 - Next step: run full unit/task-pack/release/checksum validations, commit, push and verify GitHub Actions.
 
+### `ITER-20260621-009`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `f5fa298`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, `TASK-T1304`
+- Goal: record remote CI evidence for the A202 live official retrieval adapter contract without closing A202/A206.
+- Commands run: GitHub Actions EEI validation run `27892494323` / job `82538366876`; GitHub Actions Project Governance run `27892494331`.
+- Test results: EEI validation PASS; Step 7 static/contract/lint/typecheck/unit PASS, Step 8 G2 PostgreSQL preparation PASS, Step 9 G2 static/contract/lint/typecheck/unit PASS, Step 10 G2 PostgreSQL integration PASS, Step 11 browser E2E PASS and Step 12 live FastAPI PostgreSQL E2E PASS. Project Governance PASS.
+- Decisions: keep A202/A206 `IN_PROGRESS`; remote CI proves the adapter and no-network contract, not real operator capture, live DB ingestion, legal clearance or long soak.
+- Remaining risks: production capture still depends on operator-approved network run, source licensing review and PostgreSQL live-capture ingestion.
+- Rollback: revert the remote evidence update and regenerate release artifacts with `remote_status=PENDING`.
+- Next step: commit and push the remote evidence update, then verify the evidence-only CI run.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -257,6 +274,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-005`: local repair for TASK-T1301/A202 evidence-chain review-status persistence.
 - `EVENT-20260621-009`: fail-closed validator for TASK-T1307/A209 long-duration operator soak evidence.
 - `EVENT-20260621-010`: local implementation evidence for TASK-T1301/A202 live official retrieval adapter contract.
+- `EVENT-20260621-011`: remote CI validation evidence for TASK-T1301/A202 live official retrieval adapter contract.
 
 ## Unknown Historical Periods
 
