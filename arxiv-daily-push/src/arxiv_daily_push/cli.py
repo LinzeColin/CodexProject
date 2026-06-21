@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from . import __version__
+from .arxiv_adapter import ArxivQuery, build_query_url, parse_atom_feed
 from .doctor import doctor_report, render_report
 from .notifications import render_email
 from .state_machine import validate_run_record
@@ -31,6 +32,18 @@ def build_parser() -> argparse.ArgumentParser:
     validate_record = subparsers.add_parser("validate-record", help="Validate a RunRecord JSON file.")
     validate_record.add_argument("--path", required=True, help="RunRecord JSON path.")
     validate_record.add_argument("--json", action="store_true", help="Print JSON validation output.")
+
+    arxiv_url = subparsers.add_parser("arxiv-url", help="Render an arXiv API query URL without fetching it.")
+    arxiv_url.add_argument("--query", default="cat:cs.AI")
+    arxiv_url.add_argument("--start", type=int, default=0)
+    arxiv_url.add_argument("--max-results", type=int, default=10)
+    arxiv_url.add_argument("--sort-by", default="submittedDate")
+    arxiv_url.add_argument("--sort-order", default="descending")
+
+    parse_arxiv = subparsers.add_parser("parse-arxiv-atom", help="Parse an arXiv Atom XML file into SourceItem JSON.")
+    parse_arxiv.add_argument("--path", required=True, help="Atom XML fixture or downloaded response path.")
+    parse_arxiv.add_argument("--retrieved-at", required=True, help="Retrieval timestamp to stamp on SourceItems.")
+    parse_arxiv.add_argument("--json", action="store_true", help="Pretty-print JSON output.")
     return parser
 
 
@@ -61,4 +74,22 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- {error}")
         return 0 if not errors else 2
+    if args.command == "arxiv-url":
+        query = ArxivQuery(
+            search_query=args.query,
+            start=args.start,
+            max_results=args.max_results,
+            sort_by=args.sort_by,
+            sort_order=args.sort_order,
+        )
+        print(build_query_url(query))
+        return 0
+    if args.command == "parse-arxiv-atom":
+        items = parse_atom_feed(Path(args.path).read_text(encoding="utf-8"), retrieved_at=args.retrieved_at)
+        if args.json:
+            print(json.dumps(items, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            for item in items:
+                print(f"{item['source_id']}\t{item['title']}")
+        return 0
     raise AssertionError(f"Unhandled command: {args.command}")

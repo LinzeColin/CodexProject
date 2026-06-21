@@ -1,17 +1,17 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.2.0`
+Active product version: `0.3.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.2.0
+- Product version: 0.3.0
 - Current phase: B
-- Current gate: ADP-PHASE2-DATA-CONTRACTS-PASS
-- Confirmed iteration count: 2
+- Current gate: ADP-PHASE3-ARXIV-ADAPTER-PASS
+- Confirmed iteration count: 3
 - Reconstructed event count: 0
 - Current task: ADP-PHASE4-RANKING-001
 - Blockers: Later phases still need arXiv network ingest/ranking/evidence implementation, real mail transport validation, and later media/runner resource readiness.
@@ -21,7 +21,7 @@ The append-only machine record is `development_events.jsonl`.
 | Phase | Name | Status | Exit criteria | Evidence |
 |---|---|---|---|---|
 | A | Phase 1 repository foundation | completed | CLI skeleton, governance records, and tests pass | `docs/phase_records/PHASE_01.md` |
-| B | Data contracts and arXiv source/ranking | in_progress | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; planned Phase 4 |
+| B | Data contracts and arXiv source/ranking | in_progress | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; planned Phase 4 |
 | C | Evidence and text lesson | planned | Claim Ledger and lesson verification pass | planned Phase 5-6 |
 | D | TTS/video/local pipeline/GitHub automation | planned | media gates and daily pipeline pass | planned Phase 7-10 |
 | E | Weekly/monthly trial and handoff | planned | 30-day acceptance passes | planned Phase 11 |
@@ -74,6 +74,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Phase 4 ranking and real arXiv adapter are not implemented.
 - Rollback: Revert Phase 2 commit and restore version/governance records to 0.1.0.
 - Next step: Start Phase 4 arXiv adapter/ranking only after final Phase 2 validation passes.
+
+### `ITER-20260621-003`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for arXiv adapter code, local fixture, CLI commands, tests, and governance updates.
+- Version before: 0.2.0
+- Version after: 0.3.0
+- Base commit: e5f15384887e8e4878a228673dfb487345d1a5c1
+- Result commit: PENDING
+- Task IDs: ADP-PHASE3-ARXIV-ADAPTER-001
+- Goal: Implement the first concrete arXiv SourceAdapter without bulk ingest or media side effects.
+- Assumptions: Phase 3 validates URL construction and Atom parsing locally; live scheduled ingestion remains future work.
+- Files changed: arXiv adapter code, CLI commands, fixture, tests, source config, version files, and governance records.
+- Model changes: Added MOD-ADP-005 active arXiv Atom source adapter.
+- Parameter changes: Added PARAM-ADP-029 through PARAM-ADP-034.
+- Commands run: `PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q`.
+- Test results: 19 unit tests OK.
+- Successes: arXiv Atom fixture maps into generic SourceItem and validates against Phase 2 contract.
+- Failures: Initial CLI indentation error was caught by tests and fixed before governance validation.
+- Decisions: Keep Phase 3 tests offline and cap Phase 3 query construction at 50 results per call.
+- Remaining risks: Live arXiv API availability, rate limits, and daily freshness are not yet covered by scheduler/runner gates.
+- Rollback: Revert Phase 3 adapter code, tests, fixture, and governance updates.
+- Next step: Start Phase 4 queue/ranking once final Phase 3 validation passes.
 
 ## Unknown Historical Periods
 
