@@ -171,14 +171,15 @@ projects:
     path: "PFI/大数据模拟器"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
     semantic_coverage:
-      status: "planned"
+      status: "in_progress"
       task_id: "GOV-SEMANTIC-PFI-001"
       acceptance_id: "ACC-SEMANTIC-PFI-001"
       target: "Add extractors for simulator strategy defaults, risk controls, and active formula fingerprints."
-      evidence_ref: "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md"
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-PFI-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for PFI_BIG_DATA_SIMULATOR."
+      rationale: "Review6-D rollout guard; PFI_BIG_DATA_SIMULATOR now machine-checks 211 active parameters and 15 active formulas while PARAM-110 and PARAM-111 remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-PFI-001."
     model_behavior_globs:
       - "config/**"
       - "qbvs/**"
