@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 36
-- acceptance_count: 36
+- task_count: 37
+- acceptance_count: 37
 
 ## Delivery Tasks
 
@@ -61,6 +61,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023 | E | completed | ADP-ACC-PHASE11-PRODUCTION-REFS-BUNDLE | 9 focused tests OK; semantic extractor 158 parameters/32 formulas OK; refs gate blocks secret-like inputs and missing required names | `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md` |
 | ADP-PHASE11-RELEASE-PERMISSIONS-024 | E | completed | ADP-ACC-PHASE11-RELEASE-PERMISSIONS | 6 focused tests OK; trial-start and scheduled workflow contracts require `contents: write` while uploads remain explicitly gated | `docs/phase_records/PHASE_11_RELEASE_PERMISSIONS.md` |
 | ADP-PHASE11-PRODUCTION-REFS-TEMPLATE-025 | E | completed | ADP-ACC-PHASE11-PRODUCTION-REFS-TEMPLATE | 16 focused tests OK; no-secret production refs template emits JSON and remains blocked until owner fills durable refs | `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md` |
+| ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-026 | E | completed | ADP-ACC-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY | 19 focused tests OK; discovery command builds refs from no-secret GitHub metadata and fails closed without `gh` | `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates

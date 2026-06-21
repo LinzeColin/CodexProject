@@ -336,6 +336,24 @@ values. This command does not inspect GitHub secret values, read Codex auth,
 dispatch workflows, send SMTP mail, create Releases, or claim production
 acceptance.
 
+When running on a provisioned private runner with `gh` available, the no-secret
+metadata collection can be generated directly from GitHub Actions metadata:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push discover-production-refs \
+  --repo LinzeColin/CodexProject \
+  --runner-label arxiv-daily-push \
+  --generated-at <ISO timestamp> \
+  --json > <production-refs-report.json>
+```
+
+This discovery command reads only GitHub Actions metadata exposed by `gh api`:
+runner labels/status, secret names and update timestamps, and repository
+variable names plus `ADP_RELEASE_TARGET`. It does not read secret values, print
+`gh` stdout/stderr, dispatch workflows, send SMTP mail, create Releases, mutate
+trial evidence, read Codex auth, or claim production acceptance. If `gh` is not
+installed or GitHub metadata access fails, it exits blocked.
+
 ## Production Launch Readiness
 
 Before dispatching the default-branch trial start workflow, build a launch

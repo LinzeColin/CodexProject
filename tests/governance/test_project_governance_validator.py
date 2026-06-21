@@ -1139,13 +1139,13 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-048")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-049")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-PHASE11-PRODUCTION-REFS-TEMPLATE-20260622.json",
+            "governance/run_manifests/ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-20260622.json",
         )
         rendered = dashboard.render_owner_status(info, "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
-        self.assertIn("no-secret owner-fillable production refs input template", rendered)
+        self.assertIn("no-secret GitHub Actions metadata discovery command", rendered)
         self.assertNotIn("root semantic extractor selector behavior expanded", rendered)
 
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
@@ -1505,6 +1505,26 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("ADP_SMTP_PASSWORD", manifest["production_refs_template_gate"]["required_smtp_secret_names"])
         self.assertFalse(manifest["production_refs_template_gate"]["template_defaults_ready"])
         self.assertFalse(manifest["production_refs_template_gate"]["secret_values_logged"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_production_refs_github_discovery(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-026")
+        gate = manifest["production_refs_github_discovery_gate"]
+        self.assertEqual(gate["command"], "discover-production-refs")
+        self.assertEqual(gate["default_repo"], "LinzeColin/CodexProject")
+        self.assertEqual(gate["local_discovery_status"], "blocked_gh_missing")
+        self.assertFalse(gate["secret_values_logged"])
+        self.assertFalse(gate["gh_stdout_logged"])
+        self.assertFalse(gate["gh_stderr_logged"])
+        self.assertFalse(gate["production_acceptance_claimed"])
 
     def test_arxiv_daily_push_semantic_extract_manifest_records_partial_coverage(self) -> None:
         manifest = json.loads(

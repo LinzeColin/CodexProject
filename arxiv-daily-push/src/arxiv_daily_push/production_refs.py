@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
+import subprocess
 from collections.abc import Mapping
 from typing import Any
 
 
 PRODUCTION_REFS_VALIDATOR_ID = "adp-production-refs-v1"
+DEFAULT_GITHUB_REPO = "LinzeColin/CodexProject"
 REQUIRED_SMTP_SECRET_NAMES = (
     "ADP_SMTP_HOST",
     "ADP_SMTP_PORT",
@@ -55,6 +59,10 @@ SECRET_LIKE_VALUE_MARKERS = (
     "password=",
     "token=",
 )
+
+
+class ProductionRefsDiscoveryError(RuntimeError):
+    """Raised when no-secret GitHub metadata discovery cannot complete."""
 
 
 def build_production_refs_report(readiness_input: Mapping[str, Any], *, generated_at: str) -> dict[str, Any]:
@@ -136,6 +144,108 @@ def build_production_refs_input_template(
             "evidence_ref": "",
         },
     }
+
+
+def build_production_refs_input_from_github_metadata(
+    *,
+    repo: str = DEFAULT_GITHUB_REPO,
+    runner_label: str = "arxiv-daily-push",
+    secrets_metadata: Mapping[str, Any] | list[Any] | tuple[Any, ...],
+    variables_metadata: Mapping[str, Any] | list[Any] | tuple[Any, ...],
+    runners_metadata: Mapping[str, Any] | list[Any] | tuple[Any, ...],
+) -> dict[str, Any]:
+    """Build no-secret production refs input from GitHub Actions metadata."""
+
+    repo_name = str(repo or DEFAULT_GITHUB_REPO).strip() or DEFAULT_GITHUB_REPO
+    label = str(runner_label or "arxiv-daily-push").strip() or "arxiv-daily-push"
+    secret_items = _metadata_items(secrets_metadata, "secrets")
+    variable_items = _metadata_items(variables_metadata, "variables")
+    runner_items = _metadata_items(runners_metadata, "runners")
+    secret_names = _metadata_names(secret_items)
+    variable_by_name = _metadata_by_name(variable_items)
+    runner_matches = [runner for runner in runner_items if _runner_has_label(runner, label)]
+    online_runner_matches = [runner for runner in runner_matches if str(runner.get("status") or "").lower() == "online"]
+    release_target_item = variable_by_name.get("ADP_RELEASE_TARGET", {})
+    release_target = str(release_target_item.get("value") or "").strip() if isinstance(release_target_item, Mapping) else ""
+    configured_workflow_vars = sorted(name for name in REQUIRED_WORKFLOW_VAR_NAMES if name in variable_by_name)
+    configured_smtp_secrets = sorted(name for name in REQUIRED_SMTP_SECRET_NAMES if name in secret_names)
+    runner_ready = bool(online_runner_matches)
+    smtp_ready = all(name in secret_names for name in REQUIRED_SMTP_SECRET_NAMES)
+    release_target_ready = "ADP_RELEASE_TARGET" in variable_by_name and bool(release_target)
+    workflow_vars_ready = all(name in variable_by_name for name in REQUIRED_WORKFLOW_VAR_NAMES)
+    return {
+        "runner": {
+            "ready": runner_ready,
+            "label": label,
+            "evidence_ref": _metadata_ref(
+                "github-runners",
+                repo_name,
+                label,
+                _runner_fingerprint_payload(online_runner_matches),
+            )
+            if runner_ready
+            else "",
+        },
+        "smtp_secrets": {
+            "ready": smtp_ready,
+            "secret_names": configured_smtp_secrets,
+            "evidence_ref": _metadata_ref(
+                "github-secrets",
+                repo_name,
+                "actions/smtp",
+                _named_item_fingerprint_payload(secret_items, REQUIRED_SMTP_SECRET_NAMES),
+            )
+            if smtp_ready
+            else "",
+        },
+        "release_target": {
+            "ready": release_target_ready,
+            "var_name": "ADP_RELEASE_TARGET",
+            "target": release_target,
+            "evidence_ref": _metadata_ref(
+                "github-vars",
+                repo_name,
+                "actions/ADP_RELEASE_TARGET",
+                {"name": "ADP_RELEASE_TARGET", "target": release_target},
+            )
+            if release_target_ready
+            else "",
+        },
+        "workflow_vars": {
+            "ready": workflow_vars_ready,
+            "var_names": configured_workflow_vars,
+            "evidence_ref": _metadata_ref(
+                "github-vars",
+                repo_name,
+                "actions/workflow-vars",
+                {"names": configured_workflow_vars},
+            )
+            if workflow_vars_ready
+            else "",
+        },
+    }
+
+
+def discover_production_refs_input_with_gh(
+    *,
+    repo: str = DEFAULT_GITHUB_REPO,
+    runner_label: str = "arxiv-daily-push",
+    gh_command: str = "gh",
+    runner: Any = None,
+) -> dict[str, Any]:
+    """Collect GitHub Actions metadata with gh and return no-secret refs input."""
+
+    repo_name = str(repo or DEFAULT_GITHUB_REPO).strip() or DEFAULT_GITHUB_REPO
+    secrets_metadata = _gh_api_json(f"/repos/{repo_name}/actions/secrets", gh_command=gh_command, runner=runner)
+    variables_metadata = _gh_api_json(f"/repos/{repo_name}/actions/variables", gh_command=gh_command, runner=runner)
+    runners_metadata = _gh_api_json(f"/repos/{repo_name}/actions/runners", gh_command=gh_command, runner=runner)
+    return build_production_refs_input_from_github_metadata(
+        repo=repo_name,
+        runner_label=runner_label,
+        secrets_metadata=secrets_metadata,
+        variables_metadata=variables_metadata,
+        runners_metadata=runners_metadata,
+    )
 
 
 def validate_production_refs_report(report: Mapping[str, Any]) -> list[str]:
@@ -306,6 +416,88 @@ def _next_external_actions(gates: list[Mapping[str, Any]]) -> list[str]:
             continue
         actions.append(action_map.get(str(gate.get("gate_id")), f"resolve {gate.get('gate_id')}"))
     return actions
+
+
+def _metadata_items(metadata: Mapping[str, Any] | list[Any] | tuple[Any, ...], key: str) -> list[Mapping[str, Any]]:
+    raw_items: Any
+    if isinstance(metadata, Mapping):
+        raw_items = metadata.get(key)
+    else:
+        raw_items = metadata
+    if not isinstance(raw_items, list | tuple):
+        return []
+    return [item for item in raw_items if isinstance(item, Mapping)]
+
+
+def _metadata_names(items: list[Mapping[str, Any]]) -> set[str]:
+    return {str(item.get("name") or "").strip() for item in items if str(item.get("name") or "").strip()}
+
+
+def _metadata_by_name(items: list[Mapping[str, Any]]) -> dict[str, Mapping[str, Any]]:
+    return {str(item.get("name") or "").strip(): item for item in items if str(item.get("name") or "").strip()}
+
+
+def _runner_has_label(runner: Mapping[str, Any], label: str) -> bool:
+    labels = runner.get("labels")
+    if not isinstance(labels, list | tuple):
+        return False
+    names = {str(item.get("name") or "").strip() for item in labels if isinstance(item, Mapping)}
+    return label in names
+
+
+def _runner_fingerprint_payload(runners: list[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    payload = []
+    for runner in runners:
+        labels = runner.get("labels") if isinstance(runner.get("labels"), list | tuple) else []
+        payload.append(
+            {
+                "name": str(runner.get("name") or ""),
+                "status": str(runner.get("status") or ""),
+                "busy": bool(runner.get("busy")),
+                "labels": sorted(str(item.get("name") or "") for item in labels if isinstance(item, Mapping)),
+            }
+        )
+    return payload
+
+
+def _named_item_fingerprint_payload(items: list[Mapping[str, Any]], names: tuple[str, ...]) -> list[dict[str, Any]]:
+    by_name = _metadata_by_name(items)
+    return [
+        {
+            "name": name,
+            "updated_at": str(by_name.get(name, {}).get("updated_at") or ""),
+        }
+        for name in names
+        if name in by_name
+    ]
+
+
+def _metadata_ref(scheme: str, repo: str, path: str, payload: Any) -> str:
+    return f"{scheme}://{repo}/{path}#sha256:{_fingerprint(payload)}"
+
+
+def _fingerprint(payload: Any) -> str:
+    text = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _gh_api_json(endpoint: str, *, gh_command: str, runner: Any = None) -> Any:
+    command = [gh_command, "api", endpoint]
+    run = runner or _run_command
+    try:
+        result = run(command)
+    except FileNotFoundError as exc:
+        raise ProductionRefsDiscoveryError("gh command is required for GitHub metadata discovery") from exc
+    if int(getattr(result, "returncode", 1)) != 0:
+        raise ProductionRefsDiscoveryError(f"gh api {endpoint} failed with exit code {getattr(result, 'returncode', '<unknown>')}")
+    try:
+        return json.loads(str(getattr(result, "stdout", "") or ""))
+    except json.JSONDecodeError as exc:
+        raise ProductionRefsDiscoveryError(f"gh api {endpoint} returned invalid JSON") from exc
+
+
+def _run_command(command: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(command, capture_output=True, text=True, check=False, timeout=30)
 
 
 def _with_validation(report: Mapping[str, Any]) -> dict[str, Any]:

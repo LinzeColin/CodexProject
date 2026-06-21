@@ -20,8 +20,11 @@ from .pipeline import PipelineError, run_daily_dry_run
 from .production_launch import build_production_launch_readiness, validate_production_launch_readiness
 from .production_preflight import build_production_preflight, validate_production_preflight
 from .production_refs import (
+    DEFAULT_GITHUB_REPO,
+    ProductionRefsDiscoveryError,
     build_production_refs_input_template,
     build_production_refs_report,
+    discover_production_refs_input_with_gh,
     validate_production_refs_report,
 )
 from .production_scheduler import build_production_scheduler_plan, validate_production_scheduler_plan
@@ -316,6 +319,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     production_refs_template.add_argument("--runner-label", default="arxiv-daily-push", help="Self-hosted runner label placeholder.")
     production_refs_template.add_argument("--release-target", default="", help="Optional ADP_RELEASE_TARGET placeholder.")
+
+    production_refs_discovery = subparsers.add_parser(
+        "discover-production-refs",
+        help="Use gh to discover no-secret GitHub Actions metadata and build a production refs report.",
+    )
+    production_refs_discovery.add_argument("--repo", default=DEFAULT_GITHUB_REPO, help="GitHub repo owner/name.")
+    production_refs_discovery.add_argument("--runner-label", default="arxiv-daily-push", help="Required self-hosted runner label.")
+    production_refs_discovery.add_argument("--generated-at", required=True, help="Production refs report timestamp.")
+    production_refs_discovery.add_argument("--gh-command", default="gh", help="gh executable name or path.")
+    production_refs_discovery.add_argument("--json", action="store_true", help="Print JSON production refs report.")
 
     production_launch = subparsers.add_parser(
         "plan-production-launch",
@@ -997,6 +1010,49 @@ def main(argv: list[str] | None = None) -> int:
         )
         print(json.dumps(template, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
+    if args.command == "discover-production-refs":
+        try:
+            refs_input = discover_production_refs_input_with_gh(
+                repo=args.repo,
+                runner_label=args.runner_label,
+                gh_command=args.gh_command,
+            )
+        except ProductionRefsDiscoveryError as error:
+            payload = {
+                "status": "blocked",
+                "production_refs_ready": False,
+                "side_effects_performed": False,
+                "secret_values_logged": False,
+                "codex_auth_read": False,
+                "workflow_dispatched": False,
+                "production_acceptance_claimed": False,
+                "errors": [str(error)],
+            }
+            if args.json:
+                print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                print(f"- {error}")
+            return 2
+        report = build_production_refs_report(refs_input, generated_at=args.generated_at)
+        errors = validate_production_refs_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["production_refs_ready"]:
+            print(f"{report['refs_report_id']}\tready")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["production_refs_ready"] else 2
     if args.command == "plan-production-launch":
         launch_refs = {
             "runner_ref": args.runner_ref,

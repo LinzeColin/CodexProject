@@ -10,8 +10,11 @@ from pathlib import Path
 from arxiv_daily_push.cli import main
 from arxiv_daily_push.production_refs import (
     PRODUCTION_REFS_VALIDATOR_ID,
+    ProductionRefsDiscoveryError,
+    build_production_refs_input_from_github_metadata,
     build_production_refs_input_template,
     build_production_refs_report,
+    discover_production_refs_input_with_gh,
     validate_production_refs_report,
 )
 
@@ -149,6 +152,91 @@ class ProductionRefsTests(unittest.TestCase):
         self.assertEqual(payload["release_target"]["target"], "adp-private")
         self.assertEqual(payload["workflow_vars"]["var_names"], ["ADP_RELEASE_TARGET", "ADP_ALLOW_SMTP_SEND", "ADP_ALLOW_RELEASE_UPLOAD"])
         self.assertNotIn("secret_values", json.dumps(payload, ensure_ascii=False))
+
+    def test_github_metadata_discovery_builds_ready_no_secret_input(self) -> None:
+        payload = build_production_refs_input_from_github_metadata(
+            repo="LinzeColin/CodexProject",
+            runner_label="arxiv-daily-push",
+            secrets_metadata={
+                "secrets": [
+                    {"name": "ADP_SMTP_HOST", "updated_at": "2026-07-01T00:00:00Z"},
+                    {"name": "ADP_SMTP_PORT", "updated_at": "2026-07-01T00:00:00Z"},
+                    {"name": "ADP_SMTP_USERNAME", "updated_at": "2026-07-01T00:00:00Z"},
+                    {"name": "ADP_SMTP_PASSWORD", "updated_at": "2026-07-01T00:00:00Z"},
+                ]
+            },
+            variables_metadata={
+                "variables": [
+                    {"name": "ADP_RELEASE_TARGET", "value": "main"},
+                    {"name": "ADP_ALLOW_SMTP_SEND", "value": "true"},
+                    {"name": "ADP_ALLOW_RELEASE_UPLOAD", "value": "true"},
+                ]
+            },
+            runners_metadata={
+                "runners": [
+                    {
+                        "name": "adp-runner",
+                        "status": "online",
+                        "busy": False,
+                        "labels": [{"name": "self-hosted"}, {"name": "arxiv-daily-push"}],
+                    }
+                ]
+            },
+        )
+
+        report = build_production_refs_report(payload, generated_at="2026-07-01T04:20:00+10:00")
+        text = json.dumps(payload, ensure_ascii=False)
+        self.assertTrue(payload["runner"]["ready"])
+        self.assertTrue(payload["smtp_secrets"]["ready"])
+        self.assertTrue(payload["release_target"]["ready"])
+        self.assertTrue(payload["workflow_vars"]["ready"])
+        self.assertEqual(report["status"], "pass")
+        self.assertNotIn("super-secret-password", text)
+        self.assertNotIn("credential-material", text)
+
+    def test_github_metadata_discovery_blocks_missing_runner_label(self) -> None:
+        payload = build_production_refs_input_from_github_metadata(
+            repo="LinzeColin/CodexProject",
+            runner_label="arxiv-daily-push",
+            secrets_metadata={
+                "secrets": [
+                    {"name": "ADP_SMTP_HOST"},
+                    {"name": "ADP_SMTP_PORT"},
+                    {"name": "ADP_SMTP_USERNAME"},
+                    {"name": "ADP_SMTP_PASSWORD"},
+                ]
+            },
+            variables_metadata={
+                "variables": [
+                    {"name": "ADP_RELEASE_TARGET", "value": "main"},
+                    {"name": "ADP_ALLOW_SMTP_SEND", "value": "true"},
+                    {"name": "ADP_ALLOW_RELEASE_UPLOAD", "value": "true"},
+                ]
+            },
+            runners_metadata={"runners": [{"name": "other", "status": "online", "labels": [{"name": "self-hosted"}]}]},
+        )
+
+        report = build_production_refs_report(payload, generated_at="2026-07-01T04:20:00+10:00")
+        self.assertFalse(payload["runner"]["ready"])
+        self.assertEqual(report["status"], "blocked")
+        self.assertIn("runner.ready must be true", " ".join(report["blocking_reasons"]))
+
+    def test_gh_discovery_error_redacts_stdout_and_stderr(self) -> None:
+        class Result:
+            returncode = 1
+            stdout = "stdout-should-not-leak"
+            stderr = "stderr-should-not-leak"
+
+        def fake_runner(command: list[str]) -> Result:
+            return Result()
+
+        with self.assertRaises(ProductionRefsDiscoveryError) as context:
+            discover_production_refs_input_with_gh(runner=fake_runner)
+
+        message = str(context.exception)
+        self.assertIn("gh api /repos/LinzeColin/CodexProject/actions/secrets failed", message)
+        self.assertNotIn("stdout-should-not-leak", message)
+        self.assertNotIn("stderr-should-not-leak", message)
 
 
 if __name__ == "__main__":
