@@ -1,0 +1,695 @@
+{
+  "behavior": {
+    "atlas_edges": 3500,
+    "atlas_nodes": 657,
+    "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
+    "message_count": 50692,
+    "range_end": "2026-06-19",
+    "range_start": "2026-06-03",
+    "session_count": 333,
+    "source": "real_codex_local_data",
+    "tool_call_count": 176908,
+    "top_topics": [
+      {
+        "count": 3188,
+        "label": "Codex 本地数据 / agent 工作流"
+      },
+      {
+        "count": 2560,
+        "label": "高质量交付 / 验证 / CI"
+      },
+      {
+        "count": 2549,
+        "label": "安全边界 / secret / 权限"
+      },
+      {
+        "count": 1514,
+        "label": "GitHub 备份 / durable state"
+      },
+      {
+        "count": 1196,
+        "label": "前端交互 / Three.js / Dashboard"
+      },
+      {
+        "count": 1122,
+        "label": "金融 / trading / 风险边界"
+      },
+      {
+        "count": 564,
+        "label": "长期记忆数据库 / RAG"
+      },
+      {
+        "count": 450,
+        "label": "Memory Atlas / 记忆可视化"
+      }
+    ]
+  },
+  "data_sources": {
+    "active": [
+      {
+        "agent_use": [
+          "personalization",
+          "rag",
+          "timeline",
+          "decision_recall",
+          "human_review"
+        ],
+        "id": "memory_atlas",
+        "ingestion_status": "active_redacted_derived_data",
+        "label": "ChatGPT",
+        "platform": "openai_export_derived_memory",
+        "status": "active"
+      },
+      {
+        "agent_use": [
+          "agent_personalization",
+          "workflow_improvement",
+          "behavior_analysis",
+          "tool_usage_analysis"
+        ],
+        "id": "codex",
+        "ingestion_status": "active_real_local_redacted_summary",
+        "label": "Codex",
+        "platform": "codex_local_derived_behavior",
+        "status": "active"
+      }
+    ],
+    "canonical_required_fields": [
+      "source_id",
+      "record_id",
+      "occurred_at",
+      "record_type",
+      "title",
+      "summary",
+      "topics",
+      "sensitivity",
+      "memory_tier",
+      "importance",
+      "confidence",
+      "dedupe_key"
+    ],
+    "compatibility_rule": "Add future platform ingestors by emitting canonical redacted derived events and registering the source here; do not create fake Memory Atlas nodes.",
+    "contract_version": "canonical_memory_event.v1",
+    "planned": [
+      {
+        "agent_use": [
+          "relationship_memory",
+          "communication_pattern_analysis",
+          "opportunity_discovery",
+          "follow_up_recommendations"
+        ],
+        "id": "wechat",
+        "ingestion_status": "planned_no_real_data",
+        "label": "微信数据（计划接入）",
+        "platform": "wechat",
+        "status": "planned"
+      },
+      {
+        "agent_use": [
+          "taste_profile",
+          "content_strategy",
+          "consumer_interest_analysis",
+          "brand_and_investment_opportunity_discovery"
+        ],
+        "id": "xiaohongshu",
+        "ingestion_status": "planned_no_real_data",
+        "label": "小红书数据（计划接入）",
+        "platform": "xiaohongshu",
+        "status": "planned"
+      },
+      {
+        "agent_use": [
+          "attention_analysis",
+          "interest_shift_detection",
+          "trend_discovery",
+          "content_and_investment_opportunity_discovery"
+        ],
+        "id": "douyin",
+        "ingestion_status": "planned_no_real_data",
+        "label": "抖音数据（计划接入）",
+        "platform": "douyin",
+        "status": "planned"
+      }
+    ],
+    "registry_path": "config/data_sources/source_registry.json",
+    "schema_version": "memory_atlas_data_source_registry.v1"
+  },
+  "generated_at": "2026-06-21T02:44:09Z",
+  "layers": [
+    {
+      "canonical_files": [
+        "data/derived/profile/CORE_PROFILE.md",
+        "data/memory/curation/core_profile_review.json"
+      ],
+      "layer_id": "L1_CORE_PROFILE",
+      "name": "核心画像 / Core Profile",
+      "purpose": "High-weight durable identity, communication preferences, collaboration standards, stable taste, long-term plans, and safety boundaries.",
+      "required_update_targets": [
+        "profile",
+        "preference",
+        "taste"
+      ],
+      "update_triggers": [
+        "profile",
+        "identity",
+        "preference",
+        "taste",
+        "long_term_plan",
+        "stable_answering_rule"
+      ]
+    },
+    {
+      "canonical_files": [
+        "data/memory/active/active_memory.jsonl",
+        "data/memory/active/active_memory.md",
+        "data/derived/project_index/PROJECT_INDEX.md",
+        "data/derived/decision_log/DECISION_LOG.md"
+      ],
+      "layer_id": "L2_PROJECT_MEMORY",
+      "name": "一般长期上下文 / Project And Decision Memory",
+      "purpose": "Project index, decision log, workflows, medium/long-term constraints, reusable context, and accepted active memory.",
+      "required_update_targets": [
+        "history",
+        "pattern",
+        "project_context"
+      ],
+      "update_triggers": [
+        "project_context",
+        "decision",
+        "workflow",
+        "medium_term_constraint",
+        "accepted_memory"
+      ]
+    },
+    {
+      "canonical_files": [
+        "data/processed/codex/codex_activity_snapshot.json",
+        "data/processed/codex/codex_daily_activity.jsonl",
+        "data/processed/codex/codex_session_manifest.jsonl",
+        "data/derived/codex/codex_agent_recommendations.json",
+        "data/derived/timeline/TIMELINE.md",
+        "data/derived/weekly/2026-06-15.weekly_memory_pack.md",
+        "data/derived/monthly/2026-06.monthly_memory_pack.md"
+      ],
+      "layer_id": "L3_BEHAVIOR_HISTORY",
+      "name": "行为历史与模式 / Behavior History And Patterns",
+      "purpose": "Redacted chronological activity, Codex behavior summaries, recurring execution patterns, candidate memory, weekly/monthly packs, and temporary sensitive references.",
+      "required_update_targets": [
+        "history",
+        "pattern"
+      ],
+      "update_triggers": [
+        "history",
+        "behavior",
+        "execution_pattern",
+        "temporary_context",
+        "sensitive_reference",
+        "weekly_review",
+        "monthly_review"
+      ]
+    }
+  ],
+  "memory": {
+    "changes": {
+      "added": [],
+      "deleted_or_demoted": [],
+      "modified": [
+        {
+          "after": {
+            "confidence": "high",
+            "evidence_count": 1112,
+            "id": "codex_signal_github_as_memory_source",
+            "importance": "高",
+            "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 1112 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
+            "title": "OpenAIDatabase 是 durable memory source"
+          },
+          "before": {
+            "confidence": "high",
+            "evidence_count": 1109,
+            "id": "codex_signal_github_as_memory_source",
+            "importance": "高",
+            "reason": "从 332 个真实 Codex session 的用户消息和任务目标中检测到 1109 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
+            "title": "OpenAIDatabase 是 durable memory source"
+          }
+        },
+        {
+          "after": {
+            "confidence": "high",
+            "evidence_count": 1069,
+            "id": "codex_signal_real_data_required",
+            "importance": "高",
+            "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 1069 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。",
+            "title": "真实数据优先"
+          },
+          "before": {
+            "confidence": "high",
+            "evidence_count": 1067,
+            "id": "codex_signal_real_data_required",
+            "importance": "高",
+            "reason": "从 332 个真实 Codex session 的用户消息和任务目标中检测到 1067 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。",
+            "title": "真实数据优先"
+          }
+        },
+        {
+          "after": {
+            "confidence": "high",
+            "evidence_count": 832,
+            "id": "codex_signal_agent_personalization",
+            "importance": "高",
+            "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 832 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。",
+            "title": "任意 agent personalization"
+          },
+          "before": {
+            "confidence": "high",
+            "evidence_count": 830,
+            "id": "codex_signal_agent_personalization",
+            "importance": "高",
+            "reason": "从 332 个真实 Codex session 的用户消息和任务目标中检测到 830 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。",
+            "title": "任意 agent personalization"
+          }
+        },
+        {
+          "after": {
+            "confidence": "high",
+            "evidence_count": 799,
+            "id": "codex_signal_prefer_chinese",
+            "importance": "高",
+            "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 799 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
+            "title": "默认中文输出"
+          },
+          "before": {
+            "confidence": "high",
+            "evidence_count": 798,
+            "id": "codex_signal_prefer_chinese",
+            "importance": "高",
+            "reason": "从 332 个真实 Codex session 的用户消息和任务目标中检测到 798 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
+            "title": "默认中文输出"
+          }
+        },
+        {
+          "after": {
+            "confidence": "high",
+            "evidence_count": 490,
+            "id": "codex_signal_human_readable_reports",
+            "importance": "高",
+            "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 490 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。",
+            "title": "报告面向人类 ROI 和成长"
+          },
+          "before": {
+            "confidence": "high",
+            "evidence_count": 488,
+            "id": "codex_signal_human_readable_reports",
+            "importance": "高",
+            "reason": "从 332 个真实 Codex session 的用户消息和任务目标中检测到 488 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。",
+            "title": "报告面向人类 ROI 和成长"
+          }
+        }
+      ]
+    },
+    "current": [
+      {
+        "confidence": "high",
+        "evidence_count": 1112,
+        "id": "codex_signal_github_as_memory_source",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 1112 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
+        "title": "OpenAIDatabase 是 durable memory source"
+      },
+      {
+        "confidence": "high",
+        "evidence_count": 1069,
+        "id": "codex_signal_real_data_required",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 1069 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。",
+        "title": "真实数据优先"
+      },
+      {
+        "confidence": "high",
+        "evidence_count": 832,
+        "id": "codex_signal_agent_personalization",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 832 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。",
+        "title": "任意 agent personalization"
+      },
+      {
+        "confidence": "high",
+        "evidence_count": 799,
+        "id": "codex_signal_prefer_chinese",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 799 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
+        "title": "默认中文输出"
+      },
+      {
+        "confidence": "high",
+        "evidence_count": 490,
+        "id": "codex_signal_human_readable_reports",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 490 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。",
+        "title": "报告面向人类 ROI 和成长"
+      }
+    ],
+    "purpose": "给任意 ChatGPT / Codex / future agent 作为长期记忆和 RAG 入口。"
+  },
+  "meta_data": {
+    "changes": {
+      "added": [],
+      "deleted_or_demoted": [],
+      "modified": [
+        {
+          "after": {
+            "confidence": "high",
+            "evidence_count": 2331,
+            "id": "codex_signal_no_plaintext_secrets_in_git",
+            "importance": "高",
+            "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 2331 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。",
+            "title": "GitHub secret 边界"
+          },
+          "before": {
+            "confidence": "high",
+            "evidence_count": 2321,
+            "id": "codex_signal_no_plaintext_secrets_in_git",
+            "importance": "高",
+            "reason": "从 332 个真实 Codex session 的用户消息和任务目标中检测到 2321 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。",
+            "title": "GitHub secret 边界"
+          }
+        },
+        {
+          "after": {
+            "confidence": "high",
+            "evidence_count": 1340,
+            "id": "codex_signal_authorization_gate",
+            "importance": "高",
+            "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 1340 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。",
+            "title": "授权边界"
+          },
+          "before": {
+            "confidence": "high",
+            "evidence_count": 1338,
+            "id": "codex_signal_authorization_gate",
+            "importance": "高",
+            "reason": "从 332 个真实 Codex session 的用户消息和任务目标中检测到 1338 次相关信号。",
+            "scope": "ChatGPT / Codex / future agents",
+            "source": "real_codex_local_sessions",
+            "statement": "用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。",
+            "title": "授权边界"
+          }
+        }
+      ]
+    },
+    "current": [
+      {
+        "confidence": "high",
+        "evidence_count": 2331,
+        "id": "codex_signal_no_plaintext_secrets_in_git",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 2331 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。",
+        "title": "GitHub secret 边界"
+      },
+      {
+        "confidence": "high",
+        "evidence_count": 1340,
+        "id": "codex_signal_authorization_gate",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 1340 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。",
+        "title": "授权边界"
+      }
+    ],
+    "purpose": "给 ChatGPT / Codex Agents.md / workflow 使用的行为规则、授权边界和安全边界。"
+  },
+  "preferences": {
+    "items": [
+      {
+        "confidence": "high",
+        "evidence_count": 1112,
+        "id": "codex_signal_github_as_memory_source",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 1112 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
+        "title": "OpenAIDatabase 是 durable memory source"
+      },
+      {
+        "confidence": "high",
+        "evidence_count": 1069,
+        "id": "codex_signal_real_data_required",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 1069 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。",
+        "title": "真实数据优先"
+      },
+      {
+        "confidence": "high",
+        "evidence_count": 832,
+        "id": "codex_signal_agent_personalization",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 832 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。",
+        "title": "任意 agent personalization"
+      },
+      {
+        "confidence": "high",
+        "evidence_count": 799,
+        "id": "codex_signal_prefer_chinese",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 799 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
+        "title": "默认中文输出"
+      },
+      {
+        "confidence": "high",
+        "evidence_count": 490,
+        "id": "codex_signal_human_readable_reports",
+        "importance": "高",
+        "reason": "从 333 个真实 Codex session 的用户消息和任务目标中检测到 490 次相关信号。",
+        "scope": "ChatGPT / Codex / future agents",
+        "source": "real_codex_local_sessions",
+        "statement": "处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。",
+        "title": "报告面向人类 ROI 和成长"
+      }
+    ],
+    "top_topics": [
+      {
+        "count": 3188,
+        "label": "Codex 本地数据 / agent 工作流"
+      },
+      {
+        "count": 2560,
+        "label": "高质量交付 / 验证 / CI"
+      },
+      {
+        "count": 2549,
+        "label": "安全边界 / secret / 权限"
+      },
+      {
+        "count": 1514,
+        "label": "GitHub 备份 / durable state"
+      },
+      {
+        "count": 1196,
+        "label": "前端交互 / Three.js / Dashboard"
+      },
+      {
+        "count": 1122,
+        "label": "金融 / trading / 风险边界"
+      },
+      {
+        "count": 564,
+        "label": "长期记忆数据库 / RAG"
+      },
+      {
+        "count": 450,
+        "label": "Memory Atlas / 记忆可视化"
+      }
+    ]
+  },
+  "profile": {
+    "core_profile_item_count": 6,
+    "core_profile_items": [
+      "复杂工程、研究或系统任务应输出当前阶段状态表，按严格高标准推进，并以可验证、可维护、可落地的交付为目标；部署、本地运行、PDF 报告等只在任务明确需要时作为交付要求。",
+      "研究和决策支持任务优先使用公开、合规、授权、可验证的信息来源，避免依赖未授权或不可审计来源。",
+      "用户长期关注 AI 时代对社会、工作方式、沟通、人类能力边界和个人突破路径的影响；讨论这类问题时应先做深度研究，再输出结构化机会、风险和行动建议。",
+      "如果具备联网能力，涉及最新事实、官方文档、行业报告、论文、政策、价格、API 或高风险决策时，必须先检索权威来源再回答。",
+      "默认交互方式应优先使用编号选择题、多选矩阵、默认推荐项、少量必要填空、当前步骤状态表和下一步 A/B/C，避免让用户大量自由文本输入。",
+      "如果当前环境不具备联网或外部验证能力，必须明确标注“待外部验证”，不要把未验证信息说成确定事实。"
+    ],
+    "core_profile_path": "data/derived/profile/CORE_PROFILE.md"
+  },
+  "routes": {
+    "chatgpt_personalization": {
+      "description": "Compact export for ChatGPT Project / custom instructions style personalization.",
+      "intent": "chatgpt_personalization",
+      "read_order": [
+        "data/derived/personalization/chatgpt_personalization.md",
+        "data/derived/profile/CORE_PROFILE.md",
+        "data/memory/active/active_memory.md"
+      ],
+      "update_targets": [
+        "profile",
+        "preference",
+        "taste"
+      ]
+    },
+    "codex_personalization": {
+      "description": "Codex startup and AGENTS.md-oriented personalization.",
+      "intent": "codex_personalization",
+      "read_order": [
+        "AGENTS.md",
+        "data/derived/personalization/codex_personalization.md",
+        "data/derived/agent_context/agent_context_pack.json",
+        "config/codex/project.config.toml"
+      ],
+      "update_targets": [
+        "profile",
+        "preference",
+        "history",
+        "pattern"
+      ]
+    },
+    "project_history": {
+      "description": "Project continuity, decisions, and prior work.",
+      "intent": "project_history",
+      "read_order": [
+        "data/derived/project_index/PROJECT_INDEX.md",
+        "data/derived/decision_log/DECISION_LOG.md",
+        "data/derived/timeline/TIMELINE.md",
+        "data/processed/codex/codex_activity_snapshot.json"
+      ],
+      "update_targets": [
+        "history",
+        "pattern",
+        "project_context"
+      ]
+    },
+    "startup": {
+      "description": "Default new-agent boot path.",
+      "intent": "startup",
+      "read_order": [
+        "AGENTS.md",
+        "docs/PERSONAL_CONTEXT_ARCHITECTURE.md",
+        "data/derived/agent_context/AGENT_CONTEXT.md",
+        "data/derived/profile/CORE_PROFILE.md",
+        "data/derived/personalization/codex_personalization.md"
+      ],
+      "update_targets": [
+        "profile",
+        "preference",
+        "taste",
+        "history",
+        "pattern"
+      ]
+    },
+    "taste_profile": {
+      "description": "Taste, visual/product preferences, answer style, and recurring quality bar.",
+      "intent": "taste_profile",
+      "read_order": [
+        "data/derived/profile/CORE_PROFILE.md",
+        "data/derived/codex/codex_agent_recommendations.json",
+        "data/memory/active/active_memory.jsonl"
+      ],
+      "update_targets": [
+        "taste",
+        "preference",
+        "profile"
+      ]
+    }
+  },
+  "run_log_categories": [
+    "sync_runs",
+    "export_runs",
+    "evaluation_runs",
+    "agent_runs"
+  ],
+  "safety": {
+    "local_absolute_paths_included": false,
+    "plaintext_high_risk_secrets_included": false,
+    "plaintext_secrets_included": false,
+    "raw_private_data_included": false,
+    "raw_transcripts_included": false,
+    "writeback_policy": "proposal_only_with_agent_or_human_apply_and_git_rollback"
+  },
+  "schema_version": "openai_database.personalization_export.v1",
+  "source": "redacted_derived_openai_database_context",
+  "source_files": {
+    "codex_recommendations": "data/derived/codex/codex_agent_recommendations.json",
+    "codex_snapshot": "data/processed/codex/codex_activity_snapshot.json",
+    "context_config": "config/context_sources/three_layer_context.json",
+    "core_profile": "data/derived/profile/CORE_PROFILE.md",
+    "data_source_registry": "config/data_sources/source_registry.json",
+    "memory_atlas": "data/derived/visualization/memory_atlas.json",
+    "route_config": "config/context_sources/resource_routes.json"
+  },
+  "sync_required_targets": [
+    "profile",
+    "preference",
+    "taste",
+    "history",
+    "pattern"
+  ]
+}
