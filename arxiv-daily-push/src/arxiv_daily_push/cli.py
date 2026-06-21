@@ -9,6 +9,7 @@ from pathlib import Path
 from . import __version__
 from .arxiv_adapter import ArxivQuery, build_query_url, parse_atom_feed
 from .doctor import doctor_report, render_report
+from .evidence_gate import gate_publication
 from .notifications import render_email
 from .ranking import selection_payload
 from .state_machine import validate_run_record
@@ -50,6 +51,10 @@ def build_parser() -> argparse.ArgumentParser:
     rank.add_argument("--path", required=True, help="JSON file containing a candidates array.")
     rank.add_argument("--recent-source-id", action="append", default=[], help="Source ID already selected recently.")
     rank.add_argument("--json", action="store_true", help="Print JSON selection payload.")
+
+    gate = subparsers.add_parser("gate-publication", help="Build a Claim Ledger and gate publication from local JSON input.")
+    gate.add_argument("--path", required=True, help="JSON file containing source_item, claims, run_id, publication_id, and created_at.")
+    gate.add_argument("--json", action="store_true", help="Print JSON gate output.")
     return parser
 
 
@@ -113,4 +118,23 @@ def main(argv: list[str] | None = None) -> int:
                 for reason in audit["blocking_reasons"]:
                     print(f"- {audit['source_id']}: {reason}")
         return 0 if payload["selected"] else 2
+    if args.command == "gate-publication":
+        data = json.loads(Path(args.path).read_text(encoding="utf-8"))
+        payload = gate_publication(
+            data["source_item"],
+            data["claims"],
+            run_id=data["run_id"],
+            publication_id=data["publication_id"],
+            publication_type=data.get("publication_type", "daily"),
+            created_at=data["created_at"],
+        )
+        if args.json:
+            print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+        elif payload["publish_allowed"]:
+            print("ready")
+        else:
+            print("blocked")
+            for reason in payload["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if payload["publish_allowed"] else 2
     raise AssertionError(f"Unhandled command: {args.command}")

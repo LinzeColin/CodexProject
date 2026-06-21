@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 6
-- acceptance_count: 6
+- task_count: 7
+- acceptance_count: 7
 
 ## Delivery Tasks
 
@@ -30,7 +30,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE2-DATA-CONTRACTS-001 | B | completed | ADP-ACC-PHASE2-DATA-CONTRACTS | 13 tests OK; schema parse OK; validator 0 errors; sync 0 errors | `docs/phase_records/PHASE_02.md` |
 | ADP-PHASE3-ARXIV-ADAPTER-001 | B | completed | ADP-ACC-PHASE3-ARXIV-ADAPTER | 19 tests OK; adapter fixture parse OK; validator 0 errors | `docs/phase_records/PHASE_03.md` |
 | ADP-PHASE4-RANKING-001 | B | completed | ADP-ACC-PHASE4-RANKING | 26 tests OK; ranking golden score and gates pass | `docs/phase_records/PHASE_04.md` |
-| ADP-PHASE5-EVIDENCE-GATE-001 | C | planned | ADP-ACC-PHASE5-EVIDENCE-GATE | not run | pursuing goal baseline |
+| ADP-PHASE5-EVIDENCE-GATE-001 | C | completed | ADP-ACC-PHASE5-EVIDENCE-GATE | 32 tests OK; Claim Ledger gates pass | `docs/phase_records/PHASE_05.md` |
+| ADP-PHASE6-LESSON-001 | C | planned | ADP-ACC-PHASE6-LESSON | not run | pursuing goal baseline |
 | ADP-PHASE8-VIDEO-001 | D | planned | ADP-ACC-PHASE8-VIDEO | not run | pursuing goal baseline |
 
 ## Release Gates
@@ -42,6 +43,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 2 schema syntax | `json.tool` output | pass |
 | Phase 3 arXiv adapter tests | unittest output and fixture parse | pass |
 | Phase 4 ranking tests | golden score, evidence gate, metadata conflict gate, duplicate gate | pass |
+| Phase 5 Claim Ledger gate tests | P0 locator, unsupported P0, metadata conflict, peer-review claim gate | pass |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |
 | Diff hygiene | `git diff --check` | pass |
