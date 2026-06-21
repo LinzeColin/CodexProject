@@ -35,6 +35,7 @@ from .trial_bootstrap import build_trial_bootstrap_plan, validate_trial_bootstra
 from .trial_ledger import update_trial_evidence_ledger, validate_trial_ledger_update_report
 from .trial_ops import annotate_trial_operational_evidence, validate_trial_ops_report
 from .trial_recovery import build_trial_recovery_evidence, validate_trial_recovery_report
+from .trial_resource import build_trial_resource_evidence, validate_trial_resource_report
 from .trial_replay import build_trial_replay_evidence, validate_trial_replay_report
 from .video import VideoPlanError, generate_storyboard
 
@@ -251,6 +252,16 @@ def build_parser() -> argparse.ArgumentParser:
     trial_recovery.add_argument("--failure-ref", default="", help="Durable artifact, workflow, or Release ref for the failed execution.")
     trial_recovery.add_argument("--recovery-ref", default="", help="Durable artifact, workflow, or Release ref for the recovered execution.")
     trial_recovery.add_argument("--json", action="store_true", help="Print JSON recovery evidence report.")
+
+    trial_resource = subparsers.add_parser(
+        "build-trial-resource-evidence",
+        help="Build fail-closed resource telemetry evidence from trial daily refs and production preflight reports.",
+    )
+    trial_resource.add_argument("--path", required=True, help="Existing trial evidence JSON.")
+    trial_resource.add_argument("--preflight-report", action="append", default=[], help="Production preflight report JSON. Repeat for each daily resource ref.")
+    trial_resource.add_argument("--generated-at", required=True, help="Resource evidence timestamp.")
+    trial_resource.add_argument("--resource-ref", default="", help="Durable artifact, workflow, or Release ref for the resource evidence report.")
+    trial_resource.add_argument("--json", action="store_true", help="Print JSON resource evidence report.")
 
     preflight = subparsers.add_parser("preflight-production", help="Run fail-closed production preflight before scheduled execution.")
     preflight.add_argument("--path", default=".", help="Repository path used for disk, Git, and cache checks.")
@@ -803,6 +814,33 @@ def main(argv: list[str] | None = None) -> int:
             for reason in report["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if report["recovery_drill_verified"] else 2
+    if args.command == "build-trial-resource-evidence":
+        evidence = load_json_mapping(args.path)
+        preflight_reports = [load_json_mapping(path) for path in args.preflight_report]
+        report = build_trial_resource_evidence(
+            evidence,
+            preflight_reports,
+            generated_at=args.generated_at,
+            resource_ref=args.resource_ref,
+        )
+        errors = validate_trial_resource_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["resource_pressure_verified"]:
+            print(f"{report['resource_report_id']}\t{report['resource_evidence_ref']}")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["resource_pressure_verified"] else 2
     if args.command == "preflight-production":
         report = build_production_preflight(Path(args.path), generated_at=args.generated_at)
         errors = validate_production_preflight(report)

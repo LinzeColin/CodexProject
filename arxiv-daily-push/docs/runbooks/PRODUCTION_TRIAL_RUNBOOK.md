@@ -217,6 +217,25 @@ and resource refs, and durable failure/recovery refs. It does not rerun the
 scheduler, send mail, upload Releases, mutate the trial ledger, or claim
 production acceptance.
 
+For 30-day resource telemetry evidence, archive the passing production preflight
+reports whose `resource_pressure_ok_ref` values appear in the daily trial
+entries. Then build the resource evidence report:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push build-trial-resource-evidence \
+  --path <trial-evidence.json> \
+  --preflight-report <day-01-production-preflight.json> \
+  --preflight-report <day-02-production-preflight.json> \
+  ... \
+  --generated-at <ISO timestamp> \
+  --resource-ref <resource-telemetry-evidence-ref> \
+  --json
+```
+
+The resource command requires 30 unique daily `resource_gate_ref` values, matching
+passing production preflight reports, and a durable resource evidence ref. It
+does not run preflight, mutate the trial ledger, or claim production acceptance.
+
 Then merge the explicit evidence refs with:
 
 ```bash
@@ -228,6 +247,8 @@ PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push annotate-trial-ops-e
   --weekly-monthly-ref <weekly-monthly-evidence-ref> \
   --recovery-drill-verified \
   --recovery-ref <recovery-drill-evidence-ref> \
+  --resource-pressure-ok \
+  --resource-ref <resource-telemetry-evidence-ref> \
   --json
 ```
 

@@ -141,6 +141,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py", "arxiv-daily-push/tests/test_trial_recovery.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-029"
+    statement: "Resource telemetry evidence must be generated from unique daily trial resource refs that match passing production preflight reports before the global resource gate can be merged into trial evidence."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_resource.py", "arxiv-daily-push/tests/test_trial_resource.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -583,3 +588,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/trial_recovery.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
     test_refs: ["arxiv-daily-push/tests/test_trial_recovery.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md"]
+
+  - model_id: "MOD-ADP-026"
+    name: "Trial resource telemetry evidence builder"
+    kind: "deterministic resource evidence validator"
+    purpose: "Build resource pressure evidence from daily trial resource refs and passing production preflight reports while blocking static or unmatched refs."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-trial-resource-v1"
+    assumption_ids: ["ASM-ADP-029", "ASM-ADP-016", "ASM-ADP-026"]
+    formula_ids: ["FORM-ADP-028"]
+    parameter_ids: ["PARAM-ADP-133", "PARAM-ADP-134", "PARAM-ADP-135", "PARAM-ADP-136", "PARAM-ADP-137"]
+    inputs: ["existing trial evidence", "production preflight reports", "generated_at", "durable resource ref"]
+    outputs: ["trial resource evidence report", "annotation_hint", "daily_resource_refs", "preflight_resource_refs", "coverage", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_resource.py", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/trial_resource.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_resource.py", "arxiv-daily-push/tests/test_production_preflight.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md"]
