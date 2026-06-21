@@ -104,6 +104,11 @@ python3 scripts/validate_ci_attestation.py write ...
 python3 scripts/validate_ci_attestation.py validate --file <attestation.json>
 ```
 
+The Project Governance workflow must upload that attestation and the setup
+doctor report as a GitHub Actions artifact named
+`project-governance-ci-attestation-<run_id>-<attempt>`. A runner-temp JSON file
+alone is not durable delivery evidence.
+
 Repository administrators must configure GitHub branch protection or rulesets
 for `main` so `Project Governance / governance` is a required status check.
 Without this repository setting, CI runs but cannot block merges by itself.

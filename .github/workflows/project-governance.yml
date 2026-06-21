@@ -78,7 +78,10 @@ jobs:
         if: success()
         env:
           GOVERNANCE_ATTESTATION_BASE_REF: ${{ github.event.before || github.event.pull_request.base.sha || '' }}
+          GOVERNANCE_ATTESTATION_ARTIFACT: project-governance-ci-attestation-${{ github.run_id }}-${{ github.run_attempt }}
+          GOVERNANCE_ATTESTATION_DIR: ${{ runner.temp }}/governance-ci-attestation
         run: |
+          mkdir -p "${GOVERNANCE_ATTESTATION_DIR}"
           python3 scripts/validate_ci_attestation.py write \
             --run-id "GITHUB-${{ github.run_id }}-${{ github.run_attempt }}" \
             --workflow "Project Governance" \
@@ -86,9 +89,19 @@ jobs:
             --run-attempt "${{ github.run_attempt }}" \
             --commit-sha "${{ github.sha }}" \
             --base-ref "${GOVERNANCE_ATTESTATION_BASE_REF}" \
+            --artifact-ref "github-actions-artifact:${GOVERNANCE_ATTESTATION_ARTIFACT}" \
             --conclusion success \
-            --output "$RUNNER_TEMP/governance-ci-attestation.json"
-          python3 scripts/validate_ci_attestation.py validate --file "$RUNNER_TEMP/governance-ci-attestation.json"
+            --output "${GOVERNANCE_ATTESTATION_DIR}/governance-ci-attestation.json"
+          python3 scripts/validate_ci_attestation.py validate --file "${GOVERNANCE_ATTESTATION_DIR}/governance-ci-attestation.json"
+          python3 scripts/governance_setup_doctor.py --json --check-github > "${GOVERNANCE_ATTESTATION_DIR}/governance-setup-doctor.json"
+      - name: Upload CI attestation artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-governance-ci-attestation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/governance-ci-attestation/*.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Write governance summary
         if: always()
         run: |
