@@ -297,21 +297,27 @@ retain media/model/cache artifacts, or claim production acceptance.
 
 ## Post-Merge Launch Audit
 
-After PR #14 was merged to `main`, the PR and expected-head checks cleared. A
-post-merge local launch audit still blocks because the durable external refs and
-explicit launch confirmation are not present:
+After PR #32 was merged to `main`, the PR, expected-head, default-branch, and
+trial-start workflow checks cleared. A production trial start precheck still
+blocks because the remaining durable external refs and explicit launch
+confirmation are not present:
 
-- `default_branch_ref`
 - `runner_ref`
 - `smtp_secret_ref`
 - `release_target_ref`
 - `workflow_vars_ref`
-- `trial_start_workflow_ref`
 - `launch_confirmed`
 
 Do not dispatch `.github/workflows/arxiv-daily-push-trial-start.yml` until those
 refs are recorded and a fresh `plan-production-launch` report returns
 `production_launch_ready=true`.
+
+Current recorded refs:
+
+- `default_branch_ref`:
+  `git://LinzeColin/CodexProject/main@df28c70f255d4db0cabf15d6555ce34a8b2fa560`
+- `trial_start_workflow_ref`:
+  `github-actions://LinzeColin/CodexProject/.github/workflows/arxiv-daily-push-trial-start.yml@main#df28c70f255d4db0cabf15d6555ce34a8b2fa560`
 
 ## Trial Start Evidence Workflow
 
