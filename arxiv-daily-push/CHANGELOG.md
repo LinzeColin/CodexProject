@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.26 - 2026-06-22
+
+- Added `adp review-provisioning-audit` to register a downloaded `adp-production-provisioning-audit` artifact before trial-start dispatch.
+- The review gate requires a valid passing production refs report plus durable workflow run and artifact refs.
+- Kept the review fail-closed and no-side-effect: it does not read secret values, Codex auth, dispatch workflows, send SMTP mail, upload Releases, or claim production acceptance.
+
 ## 0.11.25 - 2026-06-22
 
 - Added a manual `arxiv-daily-push-provisioning-audit.yml` workflow that runs on `ubuntu-latest` before trial start and uploads `adp-production-provisioning-audit`.
