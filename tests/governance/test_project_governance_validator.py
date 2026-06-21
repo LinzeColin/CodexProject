@@ -602,6 +602,19 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-START-WORKFLOW-019")
         self.assertIn("MOD-ADP-028", manifest["model_delta"])
 
+    def test_arxiv_daily_push_phase11_manifest_records_production_launch_readiness(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020")
+        self.assertIn("MOD-ADP-029", manifest["model_delta"])
+
 
 if __name__ == "__main__":
     unittest.main()

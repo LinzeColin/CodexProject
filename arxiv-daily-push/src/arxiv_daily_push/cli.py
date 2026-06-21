@@ -17,6 +17,7 @@ from .lesson import LessonGenerationError, generate_lesson
 from .narration import NarrationError, generate_narration_plan
 from .notifications import render_email
 from .pipeline import PipelineError, run_daily_dry_run
+from .production_launch import build_production_launch_readiness, validate_production_launch_readiness
 from .production_preflight import build_production_preflight, validate_production_preflight
 from .production_scheduler import build_production_scheduler_plan, validate_production_scheduler_plan
 from .ranking import selection_payload
@@ -295,6 +296,23 @@ def build_parser() -> argparse.ArgumentParser:
     trial_start_workflow.add_argument("--path", default=".", help="Repository root path containing the workflow and runbook.")
     trial_start_workflow.add_argument("--generated-at", required=True, help="Workflow plan generation timestamp.")
     trial_start_workflow.add_argument("--json", action="store_true", help="Print JSON workflow plan.")
+
+    production_launch = subparsers.add_parser(
+        "plan-production-launch",
+        help="Build a fail-closed launch readiness report before running the default-branch trial start workflow.",
+    )
+    production_launch.add_argument("--path", default=".", help="Repository root path containing the trial start workflow.")
+    production_launch.add_argument("--pr-info", required=True, help="JSON metadata for the GitHub PR.")
+    production_launch.add_argument("--generated-at", required=True, help="Launch readiness timestamp.")
+    production_launch.add_argument("--expected-head-sha", required=True, help="Expected PR head SHA to bind the launch audit.")
+    production_launch.add_argument("--default-branch-ref", default="", help="Durable merged default-branch commit ref.")
+    production_launch.add_argument("--runner-ref", default="", help="Durable private self-hosted runner readiness ref.")
+    production_launch.add_argument("--smtp-secret-ref", default="", help="Durable GitHub SMTP secrets readiness ref without secret values.")
+    production_launch.add_argument("--release-target-ref", default="", help="Durable GitHub Release target readiness ref.")
+    production_launch.add_argument("--workflow-vars-ref", default="", help="Durable GitHub variables readiness ref.")
+    production_launch.add_argument("--trial-start-workflow-ref", default="", help="Durable default-branch trial start workflow ref.")
+    production_launch.add_argument("--confirm-launch", action="store_true", help="Explicitly confirm launch readiness evaluation.")
+    production_launch.add_argument("--json", action="store_true", help="Print JSON launch readiness report.")
 
     preflight = subparsers.add_parser("preflight-production", help="Run fail-closed production preflight before scheduled execution.")
     preflight.add_argument("--path", default=".", help="Repository path used for disk, Git, and cache checks.")
@@ -928,6 +946,38 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{plan['plan_id']}\t{plan['status']}")
         return 0 if plan["trial_start_workflow_ready"] else 2
+    if args.command == "plan-production-launch":
+        report = build_production_launch_readiness(
+            Path(args.path),
+            generated_at=args.generated_at,
+            pr_info=load_json_mapping(args.pr_info),
+            expected_head_sha=args.expected_head_sha,
+            default_branch_ref=args.default_branch_ref,
+            runner_ref=args.runner_ref,
+            smtp_secret_ref=args.smtp_secret_ref,
+            release_target_ref=args.release_target_ref,
+            workflow_vars_ref=args.workflow_vars_ref,
+            trial_start_workflow_ref=args.trial_start_workflow_ref,
+            confirm_launch=args.confirm_launch,
+        )
+        errors = validate_production_launch_readiness(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["production_launch_ready"]:
+            print(f"{report['launch_readiness_id']}\tready")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["production_launch_ready"] else 2
     if args.command == "preflight-production":
         report = build_production_preflight(Path(args.path), generated_at=args.generated_at)
         errors = validate_production_preflight(report)

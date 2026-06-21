@@ -14,7 +14,8 @@ execution driver, a daily input builder from arXiv Atom source batches, an
 incremental trial evidence ledger update bridge, cross-run ledger state
 persistence, operational trial evidence annotation, weekly/monthly replay
 evidence generation, recovery drill evidence generation, resource telemetry
-evidence generation, a fail-closed 30-day trial start gate, and tests.
+evidence generation, a fail-closed 30-day trial start gate, a production launch
+readiness gate, and tests.
 
 ## Current Scope
 
@@ -48,6 +49,7 @@ Implemented now:
 - `adp build-trial-resource-evidence`
 - `adp plan-trial-start`
 - `adp plan-trial-start-workflow`
+- `adp plan-production-launch`
 - `adp preflight-production`
 - `adp plan-trial-bootstrap`
 - `adp plan-production-scheduler`
@@ -69,6 +71,7 @@ Implemented now:
 - resource telemetry evidence builder that validates 30 unique daily resource refs against passing production preflight reports before producing annotation hints
 - trial start readiness gate that requires passing preflight, bootstrap, scheduler, live source, real SMTP, real Release, durable refs, and explicit confirmation before a real 30-day trial is marked start-ready
 - manual trial start evidence workflow that collects preflight, source, SMTP, Release, and start-gate artifacts on the private runner with explicit variable-gated side effects
+- production launch readiness gate that blocks default-branch trial start workflow dispatch until the PR is merged and non-draft, expected head SHA matches, workflow contract is ready, runner/secrets/vars have durable refs, and launch is explicitly confirmed
 - deterministic 100-point ranking with per-component audit output
 - fail-closed candidate blocking for missing P0 evidence, metadata conflicts, and recent duplicate selections
 - Claim Ledger construction from explicit evidence claims
@@ -108,6 +111,7 @@ Not implemented yet:
 - actual recovery drill run archived with a durable production ref
 - actual 30-day resource telemetry run archived with a durable production ref
 - claimed scheduled 30-day trial start from current live GitHub runner evidence
+- claimed production launch readiness for the current draft PR
 - claimed 30-day operational acceptance
 
 ## Goal Baseline

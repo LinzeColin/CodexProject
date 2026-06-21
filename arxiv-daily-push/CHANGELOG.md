@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.19 - 2026-06-22
+
+- Added `adp plan-production-launch` and `adp-production-launch-readiness-v1` to fail closed before default-branch trial start workflow dispatch.
+- Added launch readiness validation for PR merged/non-draft state, expected head SHA binding, trial start workflow contract, private runner ref, SMTP secrets ref, Release target ref, workflow variable ref, and explicit launch confirmation.
+- Added launch readiness schema and tests covering pass, current draft/unmerged PR blocking, head SHA mismatch blocking, and CLI JSON output.
+
 ## 0.11.18 - 2026-06-22
 
 - Added `.github/workflows/arxiv-daily-push-trial-start.yml` to collect default-branch trial start evidence on the private runner.

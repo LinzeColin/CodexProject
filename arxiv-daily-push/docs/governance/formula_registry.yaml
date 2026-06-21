@@ -828,3 +828,36 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-trial-start.yml"]
     test_refs: ["arxiv-daily-push/tests/test_trial_start_workflow.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md"]
+
+  - formula_id: "FORM-ADP-031"
+    model_id: "MOD-ADP-029"
+    assumption_ids: ["ASM-ADP-032", "ASM-ADP-031", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
+    status: "active"
+    expression: "A production launch readiness report passes only when confirm_launch is true, current PR metadata is present, the PR is non-draft and merged into main, the observed head_sha equals the expected head SHA, the trial start workflow contract validates as ready, default branch, runner, SMTP secrets, Release target, workflow variable, and trial start workflow refs are durable, and the gate performs no side effects, reads no Codex auth, logs no secret values, and claims no production acceptance."
+    variables:
+      - name: "pr_info"
+        data_type: "object"
+        unit: "GitHub metadata"
+        input_domain: "current PR metadata JSON with state, merged, draft, base, and head_sha"
+      - name: "expected_head_sha"
+        data_type: "str"
+        unit: "git SHA"
+        input_domain: "expected PR head SHA captured before launch"
+      - name: "workflow_plan"
+        data_type: "object"
+        unit: "JSON plan"
+        input_domain: "adp-trial-start-workflow-v1"
+      - name: "external_readiness_refs"
+        data_type: "map[str,str]"
+        unit: "durable refs"
+        input_domain: "default branch, runner, SMTP secrets, Release target, workflow vars, and trial start workflow refs"
+      - name: "confirm_launch"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "explicit CLI flag or function argument"
+    constraints: "The launch readiness gate does not merge PRs, dispatch workflows, send SMTP, create Releases, fetch arXiv, mutate trial evidence, generate media, read secret values, read Codex auth, or claim production acceptance."
+    missing_policy: "Missing confirmation, missing PR metadata, draft or unmerged PR state, head SHA mismatch, blocked workflow contract, or missing durable readiness refs produce a blocked launch readiness report."
+    output_range: "production launch readiness report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_launch.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_production_launch.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md"]
