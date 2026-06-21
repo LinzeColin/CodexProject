@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "arXiv Daily Push Trial Evidence",
+  "type": "object",
+  "required": [
+    "trial_id",
+    "trial_ref",
+    "daily_runs",
+    "scheduler",
+    "release",
+    "email",
+    "resource_pressure",
+    "weekly_monthly",
+    "recovery"
+  ],
+  "properties": {
+    "trial_id": {
+      "type": "string"
+    },
+    "trial_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "period": {
+      "type": "object"
+    },
+    "daily_runs": {
+      "type": "array",
+      "minItems": 30,
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "run_id",
+          "source_id",
+          "publication_id",
+          "status",
+          "scheduled_local_time",
+          "p0_claims_traceable",
+          "duplicate_publication",
+          "unsupported_claims_published",
+          "failure_generated_misleading_content",
+          "text_degradation_path_verified",
+          "video_degradation_path_verified",
+          "run_record_ref",
+          "release_ref",
+          "email_ref",
+          "resource_gate_ref"
+        ]
+      }
+    },
+    "scheduler": {
+      "type": "object"
+    },
+    "release": {
+      "type": "object"
+    },
+    "email": {
+      "type": "object"
+    },
+    "resource_pressure": {
+      "type": "object"
+    },
+    "weekly_monthly": {
+      "type": "object"
+    },
+    "recovery": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

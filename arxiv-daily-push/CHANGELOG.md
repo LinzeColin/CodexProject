@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.2 - 2026-06-21
+
+- Added a Phase 11 trial evidence validator for 30-day production evidence packages.
+- Added `adp evaluate-trial` for validating daily run uniqueness, traceability, scheduler, Release, SMTP, resource, weekly/monthly replay, and recovery evidence.
+- Hardened production acceptance so manual operational flags cannot pass unless they come from a validated trial evidence report.
+
 ## 0.11.1 - 2026-06-21
 
 - Hardened Phase 11 production acceptance: every production pass requirement now needs both a true flag and a non-empty evidence reference.

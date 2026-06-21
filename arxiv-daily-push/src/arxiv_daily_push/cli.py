@@ -18,6 +18,7 @@ from .notifications import render_email
 from .pipeline import PipelineError, run_daily_dry_run
 from .ranking import selection_payload
 from .state_machine import validate_run_record
+from .trial import evaluate_trial_evidence, validate_trial_evidence_report
 from .video import VideoPlanError, generate_storyboard
 
 
@@ -94,6 +95,11 @@ def build_parser() -> argparse.ArgumentParser:
     acceptance.add_argument("--generated-at", required=True, help="Acceptance package generation timestamp.")
     acceptance.add_argument("--operational-evidence", help="Optional JSON file with live operational evidence refs.")
     acceptance.add_argument("--json", action="store_true", help="Print JSON acceptance package.")
+
+    trial = subparsers.add_parser("evaluate-trial", help="Evaluate 30-day production trial evidence for Phase 11 acceptance.")
+    trial.add_argument("--path", required=True, help="JSON file containing 30-day trial evidence.")
+    trial.add_argument("--generated-at", required=True, help="Trial evidence report generation timestamp.")
+    trial.add_argument("--json", action="store_true", help="Print JSON trial evidence report.")
     return parser
 
 
@@ -311,4 +317,21 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{package['acceptance_id']}\t{package['production_acceptance_status']}")
         return 0
+    if args.command == "evaluate-trial":
+        evidence = json.loads(Path(args.path).read_text(encoding="utf-8"))
+        report = evaluate_trial_evidence(evidence, generated_at=args.generated_at)
+        errors = validate_trial_evidence_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{report['trial_evidence_id']}\t{report['production_evidence_status']}")
+        return 0 if report["accepted_for_production"] else 2
     raise AssertionError(f"Unhandled command: {args.command}")

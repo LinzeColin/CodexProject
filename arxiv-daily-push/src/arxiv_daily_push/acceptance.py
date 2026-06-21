@@ -7,6 +7,7 @@ from typing import Any
 
 from .config import DEFAULT_RECIPIENT
 from .handoff import validate_handoff
+from .trial import TRIAL_EVIDENCE_VALIDATOR_ID
 
 
 class AcceptanceError(ValueError):
@@ -32,7 +33,7 @@ def build_acceptance_package(
     if handoff_errors:
         raise AcceptanceError("; ".join(handoff_errors))
 
-    evidence = operational_evidence or {}
+    evidence = _normalize_operational_evidence(operational_evidence or {})
     requirements = [
         {
             "requirement_id": key,
@@ -60,6 +61,8 @@ def build_acceptance_package(
         "production_acceptance_status": "pass" if accepted_for_production else "blocked",
         "accepted_for_production": accepted_for_production,
         "requirements": requirements,
+        "evidence_validator": str(evidence.get("_validated_by") or ""),
+        "trial_evidence_id": str(evidence.get("_trial_evidence_id") or ""),
         "blocking_reasons": blocking_reasons,
         "no_claims": {
             "does_not_claim_30_day_trial": not accepted_for_production,
@@ -101,6 +104,10 @@ def validate_acceptance_package(package: Mapping[str, Any]) -> list[str]:
         errors.append("accepted_for_production cannot be true when requirements are missing: " + ", ".join(failed_requirements))
     if accepted and blocking_reasons:
         errors.append("accepted_for_production cannot be true with blocking_reasons")
+    if accepted and package.get("evidence_validator") != TRIAL_EVIDENCE_VALIDATOR_ID:
+        errors.append("accepted_for_production requires validated trial evidence")
+    if accepted and not str(package.get("trial_evidence_id") or "").strip():
+        errors.append("accepted_for_production requires trial_evidence_id")
     if not accepted and not blocking_reasons:
         errors.append("blocked acceptance must include blocking_reasons")
     no_claims = package.get("no_claims")
@@ -111,4 +118,17 @@ def validate_acceptance_package(package: Mapping[str, Any]) -> list[str]:
 
 
 def _requirement_passed(evidence: Mapping[str, Any], key: str) -> bool:
-    return bool(evidence.get(key)) and bool(str(evidence.get(f"{key}_ref") or "").strip())
+    return (
+        evidence.get("_validated_by") == TRIAL_EVIDENCE_VALIDATOR_ID
+        and evidence.get("_validated_report") is True
+        and bool(evidence.get(key))
+        and bool(str(evidence.get(f"{key}_ref") or "").strip())
+    )
+
+
+def _normalize_operational_evidence(evidence: Mapping[str, Any]) -> Mapping[str, Any]:
+    if evidence.get("validator_id") == TRIAL_EVIDENCE_VALIDATOR_ID and isinstance(evidence.get("operational_evidence"), Mapping):
+        normalized = dict(evidence["operational_evidence"])
+        normalized["_validated_report"] = True
+        return normalized
+    return evidence
