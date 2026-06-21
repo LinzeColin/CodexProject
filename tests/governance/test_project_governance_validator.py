@@ -864,6 +864,36 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                     "memory_atlas;codex",
                 )
 
+    def test_review6_selector_options_can_check_contains_filter_and_order(self) -> None:
+        semantic = load_semantic_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            (tmp_path / "P").mkdir()
+            (tmp_path / "P" / "impl.py").write_text(
+                "\n".join(
+                    [
+                        "FLAGS = {'blocked', 'failed', 'degraded'}",
+                        "VARS = ('ADP_RELEASE_TARGET', 'ADP_ALLOW_SMTP_SEND', 'ADP_ALLOW_RELEASE_UPLOAD')",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (tmp_path / "P" / "policy.txt").write_text("workflow_dispatch confirm_trial_start gh run download\n", encoding="utf-8")
+            with patch.object(semantic, "ROOT", tmp_path):
+                self.assertTrue(semantic.extract_selector("text_file:P/policy.txt|contains=confirm_trial_start"))
+                self.assertTrue(semantic.extract_selector("text_file:P/policy.txt|contains_all=workflow_dispatch,gh run download"))
+                self.assertEqual(
+                    semantic.extract_selector("python_ast_assignment:P/impl.py::FLAGS|order=blocked,failed,degraded|join=;"),
+                    "blocked;failed;degraded",
+                )
+                self.assertEqual(
+                    semantic.extract_selector(
+                        "python_ast_tuple:P/impl.py::VARS|filter=ADP_ALLOW_SMTP_SEND,ADP_ALLOW_RELEASE_UPLOAD|join=;"
+                    ),
+                    "ADP_ALLOW_SMTP_SEND;ADP_ALLOW_RELEASE_UPLOAD",
+                )
+
     def test_review6_python_dict_value_selector_checks_active_value(self) -> None:
         semantic = load_semantic_module()
         with tempfile.TemporaryDirectory() as tmp:
@@ -1343,7 +1373,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         status_text = (ROOT / "arxiv-daily-push" / "docs" / "governance" / "STATUS.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("PR #29 is merged", status_text)
+        self.assertIn("PR #30 is merged", status_text)
         self.assertNotIn("draft and unmerged", status_text)
 
     def test_arxiv_daily_push_semantic_extract_manifest_records_partial_coverage(self) -> None:
@@ -1394,6 +1424,23 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["coverage_status"], "in_progress")
         self.assertEqual(manifest["semantic_parameters_checked"], 93)
         self.assertEqual(manifest["human_review_required_parameters"], 59)
+        self.assertEqual(manifest["semantic_formulas_checked"], 31)
+        self.assertEqual(manifest["human_review_required_formulas"], 0)
+
+    def test_arxiv_daily_push_semantic_extract_manifest_records_reduced_coverage(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-SEMANTIC-ADP-EXTRACT-004.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "GOV-SEMANTIC-ADP-001")
+        self.assertEqual(manifest["coverage_status"], "in_progress")
+        self.assertEqual(manifest["semantic_parameters_checked"], 131)
+        self.assertEqual(manifest["human_review_required_parameters"], 21)
         self.assertEqual(manifest["semantic_formulas_checked"], 31)
         self.assertEqual(manifest["human_review_required_formulas"], 0)
 
