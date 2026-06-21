@@ -71,6 +71,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     latest_manifest = latest_run_manifest(structural.project_scope(project))
     current_phase = matrix.get("current_phase", "UNKNOWN") if isinstance(matrix, dict) else "UNKNOWN"
     next_task_info = select_next_task(tasks, completed_task_ids, str(current_phase))
+    semantic_coverage = project.get("semantic_coverage") if isinstance(project.get("semantic_coverage"), dict) else {}
     return {
         "project_id": structural.project_scope(project),
         "path": str(project.get("path") or ""),
@@ -94,6 +95,10 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         "next_task_info": next_task_info,
         "tasks": tasks,
         "latest_manifest": latest_manifest,
+        "semantic_coverage": semantic_coverage,
+        "semantic_coverage_status": semantic_coverage.get("status", "UNKNOWN") if isinstance(semantic_coverage, dict) else "UNKNOWN",
+        "semantic_coverage_task": semantic_coverage.get("task_id", "UNKNOWN") if isinstance(semantic_coverage, dict) else "UNKNOWN",
+        "semantic_coverage_target": semantic_coverage.get("target", "UNKNOWN") if isinstance(semantic_coverage, dict) else "UNKNOWN",
     }
 
 
@@ -249,6 +254,12 @@ def confidence_label(project_info: dict[str, Any]) -> str:
 
 def top_risks(project_info: dict[str, Any]) -> list[str]:
     risks: list[str] = []
+    if project_info.get("semantic_coverage_status") != "machine_verified":
+        risks.append(
+            "Semantic extractor coverage is "
+            f"{project_info.get('semantic_coverage_status', 'UNKNOWN')}; "
+            f"rollout task {project_info.get('semantic_coverage_task', 'UNKNOWN')} remains open."
+        )
     blockers = str(project_info.get("blockers") or "")
     if blockers and blockers.lower() not in {"none", "no blockers"}:
         risks.append(f"Blocker: {blockers}")
@@ -294,6 +305,8 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Task count: `{project_info['task_count']}`
 - Unbound event count: `{project_info['unbound_event_count']}`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `{project_info['unknown_count']}`
+- Semantic coverage: `{project_info['semantic_coverage_status']}`
+- Semantic rollout task: `{project_info['semantic_coverage_task']}`
 
 ## Latest Run
 
@@ -310,6 +323,12 @@ Source: generated from machine governance registries, Git metadata, and validati
 ## Current Blockers
 
 {project_info['blockers']}
+
+## Semantic Coverage
+
+- Status: `{project_info['semantic_coverage_status']}`
+- Target: {value_text(project_info['semantic_coverage_target'], limit=4)}
+- Evidence/rollout: {value_text(project_info.get('semantic_coverage'), limit=6)}
 
 ## Next Task
 
@@ -378,6 +397,8 @@ def render_owner_status(project_info: dict[str, Any], commit: str, generated_at:
 
 - 置信度：`{confidence_label(project_info)}`
 - 证据新鲜度：`{freshness}`
+- 语义覆盖：`{project_info['semantic_coverage_status']}`
+- 语义覆盖任务：`{project_info['semantic_coverage_task']}`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED 数量：`{project_info['unknown_count']}`
 - 未绑定事件数量：`{project_info['stale_evidence_count']}`
 
@@ -419,8 +440,8 @@ def render_dashboard(projects: list[dict[str, Any]], commit: str, generated_at: 
         "Tree hash: `CURRENT_CHECKOUT_TREE`",
         "Source: generated from machine governance registries and Git metadata. Do not hand-edit project counts here.",
         "",
-        "| Project | Version | Model versions | Parameter versions | Iteration | Phase | Gate | Latest run | Model delta | Parameter delta | Blockers | Unbound events | CI | Next task |",
-        "|---|---:|---|---|---|---|---|---|---|---|---|---:|---|---|",
+        "| Project | Version | Model versions | Parameter versions | Semantic coverage | Iteration | Phase | Gate | Latest run | Model delta | Parameter delta | Blockers | Unbound events | CI | Next task |",
+        "|---|---:|---|---|---|---|---|---|---|---|---|---|---:|---|---|",
     ]
     for project in projects:
         latest = project["latest_event"] if isinstance(project["latest_event"], dict) else {}
@@ -435,6 +456,7 @@ def render_dashboard(projects: list[dict[str, Any]], commit: str, generated_at: 
                     f"`{project['product_version']}`",
                     compact_versions(project["model_versions"], 2),
                     compact_versions(project["parameter_versions"], 2),
+                    f"`{project['semantic_coverage_status']}`",
                     f"`{project['current_iteration']}`",
                     f"`{project['current_phase']}`",
                     f"`{project['current_gate']}`",

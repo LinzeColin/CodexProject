@@ -21,6 +21,8 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Task count: `14`
 - Unbound event count: `2`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `215`
+- Semantic coverage: `planned`
+- Semantic rollout task: `GOV-SEMANTIC-PFI-001`
 
 ## Latest Run
 
@@ -37,6 +39,12 @@ Source: generated from machine governance registries, Git metadata, and validati
 ## Current Blockers
 
 calibration/source rationale gaps tracked by `TASK-PFI-B-001` through `TASK-PFI-B-010`
+
+## Semantic Coverage
+
+- Status: `planned`
+- Target: Add extractors for simulator strategy defaults, risk controls, and active formula fingerprints.
+- Evidence/rollout: acceptance_id: ACC-SEMANTIC-PFI-001; evidence_ref: PFI/大数据模拟器/docs/governance/OWNER_STATUS.md; owner: project owner; rationale: Review6-D rollout guard; semantic extractors are not yet implemented for PFI_BIG_DATA_SIMULATOR.; status: planned; target: Add extractors for simulator strategy defaults, risk controls, and active formula fingerprints.; +1 more
 
 ## Next Task
 

@@ -35,6 +35,13 @@ TASK_STATES = {
     "rejected",
     "deprecated",
 }
+SEMANTIC_COVERAGE_STATES = {
+    "machine_verified",
+    "planned",
+    "in_progress",
+    "blocked",
+    "not_applicable",
+}
 PROJECT_MARKERS = {
     "README.md",
     "AGENTS.md",
@@ -353,6 +360,34 @@ def is_required(project: dict[str, Any], mode: str | None = None) -> bool:
 
 def project_scope(project: dict[str, Any]) -> str:
     return str(project.get("project_id") or project.get("path") or "unknown-project")
+
+
+def validate_semantic_coverage_config(
+    validation: Validation,
+    project: dict[str, Any],
+    required: bool,
+    scope: str,
+) -> None:
+    coverage = project.get("semantic_coverage")
+    if not isinstance(coverage, dict):
+        validation.add(required, scope, "Missing semantic_coverage rollout contract")
+        return
+    status = str(coverage.get("status") or "").strip()
+    if status not in SEMANTIC_COVERAGE_STATES:
+        validation.add(required, scope, f"Invalid semantic_coverage.status: {status or '<empty>'}")
+        return
+    for field in ("task_id", "acceptance_id", "target", "owner", "rationale"):
+        if not value_present(coverage.get(field)):
+            validation.add(required, scope, f"semantic_coverage.{field} is required")
+    if status == "machine_verified":
+        if not bool(project.get("semantic_extractors")):
+            validation.add(required, scope, "semantic_coverage.status=machine_verified requires semantic_extractors: true")
+        if not value_present(coverage.get("evidence_ref")):
+            validation.add(required, scope, "semantic_coverage.machine_verified requires evidence_ref")
+    elif bool(project.get("semantic_extractors")):
+        validation.add(required, scope, "semantic_extractors: true requires semantic_coverage.status=machine_verified")
+    if status == "not_applicable" and not value_present(coverage.get("evidence_ref")):
+        validation.add(required, scope, "semantic_coverage.not_applicable requires evidence_ref")
 
 
 def rel(path: Path) -> str:
@@ -743,6 +778,7 @@ def validate_root(validation: Validation, config: dict[str, Any]) -> None:
         ci_mode = str(project.get("ci_mode") or "")
         if ci_mode not in {"required", "advisory"}:
             validation.error(scope, f"Invalid ci_mode: {ci_mode}")
+        validate_semantic_coverage_config(validation, project, ci_mode == "required", scope)
         if path and not (ROOT / path).exists():
             validation.error(scope, f"Registered project path missing: {path}")
     for value, label in ((registered_paths, "project path"), (registered_ids, "project_id")):
