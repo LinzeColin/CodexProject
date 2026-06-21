@@ -307,3 +307,20 @@ tasks:
     target_version: "0.11.7"
     completed_version: "0.11.7"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-PRODUCTION-SCHEDULER-009"
+    phase: "E"
+    objective: "Add a fail-closed scheduled production workflow gate for 04:45 health check, 05:00 daily run, and 05:10 watchdog in Australia/Sydney."
+    scope: "GitHub scheduled workflow, timezone schedule validation, manual rerun support, production variable gates, preflight-first artifact, CLI validator, schema, tests, runbook, and governance records."
+    non_scope: "No real scheduled production enablement, no SMTP send, no Release upload, no media/model output, and no 30-day acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-RELEASE-DELIVERY-008"]
+    required_files: [".github/workflows/arxiv-daily-push-scheduled.yml", "src/arxiv_daily_push/production_scheduler.py", "src/arxiv_daily_push/cli.py", "tests/test_production_scheduler.py", "schemas/production_scheduler.schema.json", "docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-SCHEDULER"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused scheduler and CLI tests: 8 tests OK", "plan-production-scheduler CLI: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    risk: "Schedule triggers run only after merge to the default branch and still require external runner, production variables, preflight pass, and later daily execution enablement."
+    rollback: "Revert scheduled production workflow, scheduler validator, schema, tests, and restore version 0.11.7."
+    target_version: "0.11.8"
+    completed_version: "0.11.8"
+    unknown_task_ids: []

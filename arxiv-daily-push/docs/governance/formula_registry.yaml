@@ -485,3 +485,32 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "https://cli.github.com/manual/gh_release_create"]
+
+  - formula_id: "FORM-ADP-020"
+    model_id: "MOD-ADP-018"
+    assumption_ids: ["ASM-ADP-021", "ASM-ADP-017"]
+    status: "active"
+    expression: "The production scheduler contract passes only when the GitHub workflow declares timezone-aware Australia/Sydney schedules for 04:45 health-check, 05:00 daily-run, and 05:10 watchdog, supports manual rerun with explicit confirmation, skips scheduled work unless ADP_PRODUCTION_ENABLED is true, targets the private self-hosted runner, runs production preflight before scheduled mode work, uploads preflight evidence, maps secret names without reading Codex auth, declares ADP_RELEASE_TARGET, and contains no SMTP send or Release upload side-effect flags. Any missing schedule, missing gate, missing preflight ordering, missing artifact upload, secret/auth violation, or early side-effect command blocks the scheduler plan."
+    variables:
+      - name: "schedule_slots"
+        data_type: "list[dict]"
+        unit: "local schedule slots"
+        input_domain: "04:45 health-check, 05:00 daily-run, 05:10 watchdog"
+      - name: "timezone"
+        data_type: "str"
+        unit: "IANA timezone"
+        input_domain: "Australia/Sydney"
+      - name: "production_enabled_var"
+        data_type: "str"
+        unit: "GitHub Actions variable"
+        input_domain: "ADP_PRODUCTION_ENABLED"
+      - name: "scheduled_run_enabled_var"
+        data_type: "str"
+        unit: "GitHub Actions variable"
+        input_domain: "ADP_SCHEDULED_RUN_ENABLED"
+    constraints: "Scheduler gate does not enable SMTP send or Release upload and does not read Codex auth. Schedule trigger readiness still depends on the workflow being merged to the default branch."
+    missing_policy: "Missing schedules, missing timezone, missing production gate, missing preflight-first ordering, missing artifact upload, or side-effect commands produce a blocked scheduler plan."
+    output_range: "Scheduler plan with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    test_refs: ["arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"]

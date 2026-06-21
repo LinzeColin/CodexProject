@@ -68,6 +68,34 @@ PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push preflight-production
 
 If preflight exits non-zero, stop. Do not start the 30-day trial.
 
+## Scheduled Production Gate
+
+The scheduled workflow is:
+
+```text
+.github/workflows/arxiv-daily-push-scheduled.yml
+```
+
+The workflow declares `timezone: "Australia/Sydney"` and these local schedule
+slots:
+
+- `04:45` health check;
+- `05:00` daily run gate;
+- `05:10` watchdog.
+
+Scheduled runs skip by default unless `ADP_PRODUCTION_ENABLED=true` is set in
+GitHub Actions variables. Even after that, the scheduled workflow runs
+production preflight first and keeps daily side effects blocked unless
+`ADP_SCHEDULED_RUN_ENABLED=true` is explicitly configured. This scheduler gate
+does not send SMTP mail or upload Releases; those remain separately gated by
+the SMTP and Release delivery commands.
+
+Validate the scheduled workflow contract locally or on the runner:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-scheduler --path . --generated-at <ISO timestamp> --json
+```
+
 Before enabling scheduled source collection, verify live arXiv source ingest:
 
 ```bash

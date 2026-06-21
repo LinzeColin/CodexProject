@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.8 - 2026-06-21
+
+- Added `.github/workflows/arxiv-daily-push-scheduled.yml` with `Australia/Sydney` 04:45 health-check, 05:00 daily-run, and 05:10 watchdog schedule slots.
+- Added `adp plan-production-scheduler` and `adp-production-scheduler-v1` to validate the scheduled workflow gate without enabling production side effects.
+- Added scheduler schema and tests covering timezone schedules, production variable gates, preflight-first ordering, and no SMTP/Release side effects.
+
 ## 0.11.7 - 2026-06-21
 
 - Added `adp publish-release` for dry-run GitHub Release evidence and explicit Release creation.

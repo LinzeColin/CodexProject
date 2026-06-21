@@ -1,0 +1,154 @@
+name: arXiv Daily Push scheduled production gate
+
+on:
+  schedule:
+    - cron: "45 4 * * *"
+      timezone: "Australia/Sydney"
+    - cron: "0 5 * * *"
+      timezone: "Australia/Sydney"
+    - cron: "10 5 * * *"
+      timezone: "Australia/Sydney"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Scheduled mode to probe."
+        required: true
+        default: "health-check"
+        type: choice
+        options:
+          - "health-check"
+          - "daily-run"
+          - "watchdog"
+      confirm_scheduled_production:
+        description: "Set true only after runner, SMTP, Release, schedule, and resource prerequisites are provisioned."
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      generated_at:
+        description: "Optional ISO timestamp for deterministic evidence. Empty uses current UTC."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arxiv-daily-push-scheduled-production
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.mode.outputs.value }}
+      should_run: ${{ steps.mode.outputs.should_run }}
+    steps:
+      - name: Resolve scheduled mode
+        id: mode
+        shell: bash
+        run: |
+          mode="${{ inputs.mode }}"
+          should_run="false"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            case "${{ github.event.schedule }}" in
+              "45 4 * * *") mode="health-check" ;;
+              "0 5 * * *") mode="daily-run" ;;
+              "10 5 * * *") mode="watchdog" ;;
+              *) mode="unknown" ;;
+            esac
+            if [ "${{ vars.ADP_PRODUCTION_ENABLED }}" = "true" ]; then
+              should_run="true"
+            fi
+          elif [ "${{ inputs.confirm_scheduled_production }}" = "true" ]; then
+            should_run="true"
+          fi
+          printf 'value=%s\n' "$mode" >> "$GITHUB_OUTPUT"
+          printf 'should_run=%s\n' "$should_run" >> "$GITHUB_OUTPUT"
+          {
+            echo "## arXiv Daily Push scheduled gate"
+            echo "- event: ${{ github.event_name }}"
+            echo "- schedule: ${{ github.event.schedule || 'manual' }}"
+            echo "- mode: $mode"
+            echo "- should_run: $should_run"
+            echo "- production_enabled: ${{ vars.ADP_PRODUCTION_ENABLED || 'false' }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  preflight:
+    needs: gate
+    if: needs.gate.outputs.should_run == 'true'
+    runs-on:
+      - self-hosted
+      - arxiv-daily-push
+    timeout-minutes: 20
+    env:
+      ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
+      ADP_SMTP_PORT: ${{ secrets.ADP_SMTP_PORT }}
+      ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME }}
+      ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
+      ADP_RELEASE_TARGET: ${{ vars.ADP_RELEASE_TARGET }}
+      ADP_SELF_HOSTED_RUNNER_LABEL: arxiv-daily-push
+      ADP_SCHEDULED_RUN_ENABLED: ${{ vars.ADP_SCHEDULED_RUN_ENABLED }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Resolve generated_at
+        id: generated_at
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.generated_at }}" ]; then
+            printf 'value=%s\n' "${{ inputs.generated_at }}" >> "$GITHUB_OUTPUT"
+          else
+            printf 'value=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run production preflight
+        id: preflight
+        shell: bash
+        run: |
+          set +e
+          output="$RUNNER_TEMP/adp-scheduled-preflight.json"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_preflight" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push preflight-production \
+              --path . \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --json > "$output"
+          code=$?
+          cat "$output"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload scheduled preflight artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-scheduled-preflight
+          path: ${{ runner.temp }}/adp-scheduled-preflight.json
+          if-no-files-found: error
+          retention-days: 35
+      - name: Stop if preflight blocked
+        if: steps.preflight.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "scheduled production preflight blocked; stopping before scheduled mode"
+          exit "${{ steps.preflight.outputs.exit_code }}"
+      - name: Run scheduled mode
+        shell: bash
+        run: |
+          {
+            echo "## arXiv Daily Push scheduled mode"
+            echo "- mode: ${{ needs.gate.outputs.mode }}"
+            echo "- generated_at: ${{ steps.generated_at.outputs.value }}"
+            echo "- scheduled_run_enabled: ${ADP_SCHEDULED_RUN_ENABLED:-false}"
+            echo "- release upload: disabled in scheduler gate"
+            echo "- SMTP send: disabled in scheduler gate"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "${ADP_SCHEDULED_RUN_ENABLED:-false}" != "true" ]; then
+            echo "ADP_SCHEDULED_RUN_ENABLED is not true; failing closed before daily production side effects"
+            exit 1
+          fi
+          echo "scheduled daily production execution is intentionally blocked until the next controlled enablement phase"
+          exit 1
