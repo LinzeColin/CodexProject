@@ -6,7 +6,7 @@
 - product version status: provisional
 - current phase: C - personalization architecture
 - current gate: TASK-OAI-C-002-PERSONALIZATION-ARCHITECTURE
-- confirmed iterations: 2
+- confirmed iterations: 3
 - reconstructed development events: 15
 - current task: TASK-OAI-C-002
 - blockers: calibration evidence for heuristic weights is UNKNOWN and tracked by `TASK-OAI-B-001`
@@ -73,6 +73,30 @@ iteration in this ledger is the current governance baseline run.
 - remaining risks: evaluation pattern scan is not a full secret scanner; full Memory Atlas app/browser/deploy acceptance remains TASK-OAI-D-001
 - rollback: revert TASK-OAI-C-002 commit and restore VERSION, CHANGELOG, and governance entries to 0.1.0
 - next step: run focused validation and push branch to GitHub
+
+### ITER-20260621-OAI-002
+
+- date: 2026-06-21
+- fact level: EXTRACTED
+- version before: 0.2.0 provisional
+- version after: 0.2.0 provisional
+- base commit: 40e0a72
+- result commit: PENDING
+- task IDs: TASK-OAI-C-002
+- objective: make project `AGENTS.md` concise while preserving detailed OpenAIDatabase rules through canonical document references
+- assumptions: the detailed durable rules already live in `docs/PERSONAL_CONTEXT_ARCHITECTURE.md`, `docs/USER_REQUIREMENTS.md`, config contracts, and governance files
+- files read: `OpenAIDatabase/AGENTS.md`, `OpenAIDatabase/docs/PERSONAL_CONTEXT_ARCHITECTURE.md`
+- files changed: `OpenAIDatabase/AGENTS.md`, `OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md`, `OpenAIDatabase/docs/governance/development_events.jsonl`
+- model changes: none
+- parameter changes: none
+- commands: `python3 scripts/evaluate_personalization_context.py --database-dir .`; `python3 -m unittest tests.test_personalization_architecture -q`; `python3 scripts/validate_project_governance.py --project OpenAIDatabase`; `git diff --check`
+- test results: evaluation PASS with failures empty; personalization architecture unittest exit 0 with 2 tests OK; project governance validator exit 0 errors 0 warnings 0; git diff --check exit 0
+- successes: reduced AGENTS to startup, canonical contracts, sync requirement, hard boundaries, and minimum validation
+- failures: none observed before validation
+- decisions: keep product version at 0.2.0 because this is documentation consolidation only
+- remaining risks: if future agents ignore referenced documents, they may miss detailed Memory Atlas visual rules
+- rollback: revert this AGENTS simplification commit
+- next step: push AGENTS simplification follow-up to GitHub
 
 ## Reconstructed Development Events
 
