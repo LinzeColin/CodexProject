@@ -134,14 +134,15 @@ projects:
     path: "OpMe_System"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
     semantic_coverage:
-      status: "planned"
+      status: "in_progress"
       task_id: "GOV-SEMANTIC-OPME-001"
       acceptance_id: "ACC-SEMANTIC-OPME-001"
       target: "Add extractors for analysis rule constants and fingerprints for active deterministic formulas."
-      evidence_ref: "OpMe_System/docs/governance/OWNER_STATUS.md"
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; semantic extractors are not yet implemented for OpMe_System."
+      rationale: "Review6-D rollout guard; OpMe_System now machine-checks 49 active parameters and 7 active formulas while calibration, prompt/provider policy, and signoff evidence remain blocked under TASK-OPME-B-001."
     model_behavior_globs:
       - "backend/**"
       - "frontend/**"
