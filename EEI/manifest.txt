@@ -239,6 +239,7 @@ docs/adr/ADR-015-fixture-and-live-data-separation.md
 docs/governance/DELIVERY_PLAN.md
 docs/governance/DEVELOPMENT_LEDGER.md
 docs/governance/MODEL_SPEC.md
+docs/governance/STATUS.md
 docs/governance/TRACEABILITY_MATRIX.csv
 docs/governance/VERSION_MATRIX.yaml
 docs/governance/delivery_tasks.yaml

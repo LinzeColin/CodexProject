@@ -3,6 +3,7 @@ root_governance:
   ci_mode: "required"
   required_files:
     - "AGENTS.md"
+    - "GOVERNANCE_DASHBOARD.md"
     - "docs/governance/STANDARD.md"
     - "docs/governance/templates/MODEL_SPEC.template.md"
     - "docs/governance/templates/DEVELOPMENT_LEDGER.template.md"
@@ -22,6 +23,8 @@ root_governance:
     - "governance/schemas/delivery_tasks.schema.json"
     - "governance/schemas/incident_response.schema.json"
     - "scripts/validate_project_governance.py"
+    - "scripts/validate_governance_sync.py"
+    - "scripts/generate_governance_dashboard.py"
     - "tests/governance/test_project_governance_validator.py"
     - ".github/workflows/project-governance.yml"
     - ".agents/skills/project-governance/SKILL.md"
@@ -40,6 +43,7 @@ project_governance_files:
   - "docs/governance/delivery_tasks.yaml"
   - "docs/governance/VERSION_MATRIX.yaml"
   - "docs/governance/TRACEABILITY_MATRIX.csv"
+  - "docs/governance/STATUS.md"
   - "VERSION"
   - "CHANGELOG.md"
 projects:
