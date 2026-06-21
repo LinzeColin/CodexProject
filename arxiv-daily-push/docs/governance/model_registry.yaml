@@ -683,3 +683,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/production_refs.schema.json", "arxiv-daily-push/config/examples/production_refs.input.example.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", ".github/workflows/arxiv-daily-push-provisioning-audit.yml"]
     test_refs: ["arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/tests/test_production_launch.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md"]
+
+  - model_id: "MOD-ADP-031"
+    name: "Two-day simulation acceptance gate"
+    kind: "deterministic simulation validator"
+    purpose: "Run and validate the updated Phase 11 two-day simulation path without real SMTP, real Release upload, network fetch, retained media/cache artifacts, or production acceptance claim."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-two-day-simulation-v1"
+    assumption_ids: ["ASM-ADP-024", "ASM-ADP-026", "ASM-ADP-020"]
+    formula_ids: ["FORM-ADP-033"]
+    parameter_ids: ["PARAM-ADP-167", "PARAM-ADP-168", "PARAM-ADP-169"]
+    inputs: ["repository path", "generated_at", "start_date"]
+    outputs: ["two-day simulation report", "scheduled_execution_summaries", "ledger_update_summaries", "trial_evidence", "gates", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/simulation.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    test_refs: ["arxiv-daily-push/tests/test_simulation.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md"]

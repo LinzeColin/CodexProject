@@ -38,6 +38,7 @@ from .scheduled_execution import (
     run_scheduled_execution,
     validate_scheduled_execution_report,
 )
+from .simulation import run_two_day_simulation, validate_two_day_simulation_report
 from .source_ingest import ingest_latest_arxiv, validate_source_batch
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
 from .state_machine import validate_run_record
@@ -383,6 +384,12 @@ def build_parser() -> argparse.ArgumentParser:
     scheduled.add_argument("--release-asset", action="append", default=[], help="Release asset path for daily-run mode.")
     scheduled.add_argument("--previous-execution-report", help="Previous daily execution report for watchdog mode.")
     scheduled.add_argument("--json", action="store_true", help="Print JSON scheduled execution report.")
+
+    simulation = subparsers.add_parser("run-two-day-simulation", help="Run the no-real-side-effect two-day Phase 11 simulation.")
+    simulation.add_argument("--path", default=".", help="Repository root path for simulated preflight context.")
+    simulation.add_argument("--generated-at", required=True, help="Simulation report generation timestamp.")
+    simulation.add_argument("--start-date", required=True, help="First simulated local date in YYYY-MM-DD format.")
+    simulation.add_argument("--json", action="store_true", help="Print JSON two-day simulation report.")
     return parser
 
 
@@ -1220,4 +1227,28 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{report['execution_id']}\t{report['status']}")
         return int(report["exit_code"])
+    if args.command == "run-two-day-simulation":
+        report = run_two_day_simulation(
+            path=Path(args.path),
+            generated_at=args.generated_at,
+            start_date=args.start_date,
+        )
+        errors = validate_two_day_simulation_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["two_day_simulation_ready"]:
+            print(f"{report['simulation_id']}\t{report['observed_day_count']} days")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["two_day_simulation_ready"] else 2
     raise AssertionError(f"Unhandled command: {args.command}")

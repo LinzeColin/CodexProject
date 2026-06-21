@@ -770,10 +770,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:f21133b13b48886987583b5e96b19ddc40c84e8e6e7b0495c3274880af74bdbd"
-    last_verified_commit: "4e25ce2db01466b1053809d9b4aaeb949837fb4e"
-    verified_at: "2026-06-22T23:30:00+10:00"
-    evidence_hash: "sha256:1704f2fc4899ffa7b753c0b2cda920aaa9acc82f510699124ca223aed21ce85c"
+    implementation_fingerprint: "sha256:1c6e68781a3676cc3e19db11ce46b6d8e29360ef5a900a2f9cdece611f704f9e"
+    last_verified_commit: "c75fa25fc79eed87ef510b4ce990ab663e362db5"
+    verified_at: "2026-06-22T06:30:00+10:00"
+    evidence_hash: "sha256:0b28127ca5ef5f43d148a0c552c583f716f0b185114059303e57e83978b7be7c"
 
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
@@ -1102,3 +1102,42 @@ formulas:
     last_verified_commit: "4e25ce2db01466b1053809d9b4aaeb949837fb4e"
     verified_at: "2026-06-22T23:30:00+10:00"
     evidence_hash: "sha256:06533bd632d1380fd951cc0654e8c6851c70b17575e838e7404183e24ce5f203"
+
+  - formula_id: "FORM-ADP-033"
+    model_id: "MOD-ADP-031"
+    assumption_ids: ["ASM-ADP-024", "ASM-ADP-026", "ASM-ADP-020"]
+    status: "active"
+    expression: "A two-day simulation report passes only when start_date resolves to two consecutive local dates, a simulated production preflight passes, both scheduled daily-run executions succeed with mocked SMTP and mocked Release evidence, both ledger updates append unique dates/source IDs/publication IDs, no configured SMTP password appears in the report, and accepted_for_production, production_acceptance_claimed, side_effects_performed, real_smtp_sent, real_release_uploaded, secret_values_logged, codex_auth_read, and network_fetch_performed all remain false."
+    variables:
+      - name: "start_date"
+        data_type: "str"
+        unit: "YYYY-MM-DD"
+        input_domain: "first simulated Australia/Sydney date"
+      - name: "simulation_days_required"
+        data_type: "int"
+        unit: "days"
+        input_domain: "exactly 2"
+      - name: "scheduled_reports"
+        data_type: "list[object]"
+        unit: "JSON reports"
+        input_domain: "two adp-scheduled-execution-v1 daily-run reports produced with mocked SMTP and mocked Release boundaries"
+      - name: "ledger_reports"
+        data_type: "list[object]"
+        unit: "JSON reports"
+        input_domain: "two adp-trial-ledger-v1 update reports"
+      - name: "safety_flags"
+        data_type: "map[str,bool]"
+        unit: "flags"
+        input_domain: "production and side-effect claim flags that must remain false"
+    constraints: "The two-day simulation does not fetch network data, send real SMTP mail, create real Releases, read Codex auth, retain local temp assets, generate media/model artifacts, or claim production acceptance."
+    missing_policy: "Invalid start date, failed preflight, failed scheduled report validation, non-production-ready simulated daily execution, failed ledger update, duplicate date/source/publication ID, leaked simulated SMTP password, or any production/side-effect claim produces a blocked simulation report."
+    output_range: "two-day simulation report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/simulation.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_simulation.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/simulation.py::run_two_day_simulation", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::validate_two_day_simulation_report", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::_simulation_gates", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::_daily_input"]
+    implementation_fingerprint: "sha256:9a7e07cc236cda37788e25a77745fc78f3a839a2fdb9603b3124419244f34b18"
+    last_verified_commit: "c75fa25fc79eed87ef510b4ce990ab663e362db5"
+    verified_at: "2026-06-22T06:30:00+10:00"
+    evidence_hash: "sha256:034734b7498eb0ee7faa87306a80ee218e9f8db323c98df835087520784dc768"
