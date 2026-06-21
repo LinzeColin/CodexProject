@@ -551,7 +551,7 @@ tasks:
     scope: "External default-branch ref, private self-hosted runner ref, SMTP secret ref, Release target ref, workflow variables ref, explicit launch confirmation, and default-branch trial-start workflow evidence."
     non_scope: "No secret value read, no Codex auth read, no unconfirmed workflow dispatch, no SMTP send, no Release upload, no 30-day acceptance claim, and no local media/model/cache retention."
     status: "blocked"
-    dependencies: ["GOV-SEMANTIC-ADP-001", "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021", "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023", "ADP-PHASE11-RELEASE-PERMISSIONS-024"]
+    dependencies: ["GOV-SEMANTIC-ADP-001", "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021", "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023", "ADP-PHASE11-RELEASE-PERMISSIONS-024", "ADP-PHASE11-PRODUCTION-REFS-TEMPLATE-025"]
     required_files: ["docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md", ".github/workflows/arxiv-daily-push-trial-start.yml"]
     acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-TRIAL-START"]
     test_commands: ["python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
@@ -595,4 +595,21 @@ tasks:
     rollback: "Restore workflow contents permission to read, remove the release_write_permission_declared checks, remove new parameters/traceability/phase record/governance updates, and restore version 0.11.20."
     target_version: "0.11.21"
     completed_version: "0.11.21"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-PRODUCTION-REFS-TEMPLATE-025"
+    phase: "E"
+    objective: "Add a no-secret owner-fillable production refs input template before external refs provisioning."
+    scope: "Production refs template builder, CLI command, example input JSON, focused tests, runbook, phase record, and governance records."
+    non_scope: "No secret value read, no Codex auth read, no GitHub API mutation, no workflow dispatch, no SMTP send, no Release upload, no local cache/media/model retention, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023"]
+    required_files: ["src/arxiv_daily_push/production_refs.py", "src/arxiv_daily_push/cli.py", "config/examples/production_refs.input.example.json", "tests/test_production_refs.py", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-REFS-TEMPLATE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_refs_template_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_production_refs.py arxiv-daily-push/tests/test_production_launch.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_refs_template_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push print-production-refs-template --runner-label arxiv-daily-push-prod --release-target adp-private | python3 -m json.tool >/tmp/codex_adp_refs_template.json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_refs_template_plan PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-refs --readiness-input /tmp/codex_adp_refs_template.json --generated-at 2026-06-22T20:00:00+10:00 --json", "python3 -m json.tool arxiv-daily-push/config/examples/production_refs.input.example.json", "python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused production refs/launch/CLI tests: 16 tests OK", "print-production-refs-template JSON: pass", "generated template plan-production-refs: expected blocked exit 2", "example production refs JSON: parse OK", "semantic extractor: 161 active parameters and 32 active formulas checked with no errors", "project governance: errors 0 warnings 0", "root governance tests: 94 tests OK", "arxiv-daily-push unit tests: 150 tests OK", "changed-only enforce-sync semantic: errors 0 warnings 0; all registered projects errors 0 warnings 0", "manifest JSON and development_events JSONL parse: pass", "git diff --check: pass", "cache check: no __pycache__, pyc, pytest, mypy, or ruff cache files"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md", "arxiv-daily-push/config/examples/production_refs.input.example.json", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    risk: "The template only reduces no-secret owner input errors; real production launch remains blocked until durable external refs are provisioned and confirmed."
+    rollback: "Remove the template function, CLI command, example JSON, tests, runbook/docs/governance updates, and restore version 0.11.21."
+    target_version: "0.11.22"
+    completed_version: "0.11.22"
     unknown_task_ids: []

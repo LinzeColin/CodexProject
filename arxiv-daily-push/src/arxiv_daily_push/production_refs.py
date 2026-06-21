@@ -24,6 +24,12 @@ REQUIRED_REF_KEYS = (
     "release_target_ref",
     "workflow_vars_ref",
 )
+PRODUCTION_REFS_TEMPLATE_REQUIRED_SECTIONS = (
+    "runner",
+    "smtp_secrets",
+    "release_target",
+    "workflow_vars",
+)
 SENSITIVE_INPUT_KEYWORDS = (
     "api_key",
     "auth_json",
@@ -98,6 +104,38 @@ def build_production_refs_report(readiness_input: Mapping[str, Any], *, generate
         "next_external_actions": [] if ready else _next_external_actions(gates),
     }
     return _with_validation(report)
+
+
+def build_production_refs_input_template(
+    *,
+    runner_label: str = "arxiv-daily-push",
+    release_target: str = "",
+) -> dict[str, Any]:
+    """Build a no-secret owner-fillable input template for production refs."""
+
+    return {
+        "runner": {
+            "ready": False,
+            "label": str(runner_label or "").strip() or "arxiv-daily-push",
+            "evidence_ref": "",
+        },
+        "smtp_secrets": {
+            "ready": False,
+            "secret_names": list(REQUIRED_SMTP_SECRET_NAMES),
+            "evidence_ref": "",
+        },
+        "release_target": {
+            "ready": False,
+            "var_name": "ADP_RELEASE_TARGET",
+            "target": str(release_target or "").strip(),
+            "evidence_ref": "",
+        },
+        "workflow_vars": {
+            "ready": False,
+            "var_names": list(REQUIRED_WORKFLOW_VAR_NAMES),
+            "evidence_ref": "",
+        },
+    }
 
 
 def validate_production_refs_report(report: Mapping[str, Any]) -> list[str]:

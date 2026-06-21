@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.22 - 2026-06-22
+
+- Added `adp print-production-refs-template` to emit a no-secret owner-fillable JSON template before `plan-production-refs`.
+- Added a repository example production refs input template that defaults to blocked readiness and contains only secret/variable names plus empty refs.
+- Kept production launch blocked until owner-provisioned durable refs, explicit confirmation, default-branch trial-start evidence, and 30-day production evidence exist.
+
 ## 0.11.21 - 2026-06-22
 
 - Added machine-checked GitHub Actions `contents: write` permission requirements for controlled Release probes.

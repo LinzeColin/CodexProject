@@ -770,10 +770,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:0a52531bd1cdd366dd7a1ce49bfa0ebe5de1d4c7def20bd07b1a8af5bfe2819e"
-    last_verified_commit: "4795473858926de7e8e2b9f3eb4e8346ca3a20a2"
-    verified_at: "2026-06-22T18:00:00+10:00"
-    evidence_hash: "sha256:d77e3518180fb19b5f2e640774f55e66f2e5a2d49cbe5a6b11c3b8bb7426e5f7"
+    implementation_fingerprint: "sha256:192bca753695fd9c2af5edf1bbe1d06cfbea94a1b540f90fd90b40285c78ec27"
+    last_verified_commit: "bd3512a3ee85d9b943fa1bf9ef39e7c1fc02cb6c"
+    verified_at: "2026-06-22T20:00:00+10:00"
+    evidence_hash: "sha256:ec8db5a5a568436ef8c8d70776a9cb1d372bb8aad9462e9c49143ca45f92c630"
 
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
@@ -1052,12 +1052,16 @@ formulas:
     model_id: "MOD-ADP-030"
     assumption_ids: ["ASM-ADP-033", "ASM-ADP-032", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
     status: "active"
-    expression: "A production refs report passes only when runner, SMTP secrets, Release target, and workflow variable readiness sections are explicitly ready, required SMTP secret names and workflow variable names are present, every readiness ref is durable, suspicious secret-value keys or values are absent, and the gate performs no side effects, reads no Codex auth, dispatches no workflow, logs no secret values, and claims no production acceptance."
+    expression: "A production refs input template contains only runner, SMTP secrets, Release target, and workflow variable sections with ready=false defaults, required secret and variable names, and no secret values; a production refs report passes only when those readiness sections are explicitly ready, required SMTP secret names and workflow variable names are present, every readiness ref is durable, suspicious secret-value keys or values are absent, and the gate performs no side effects, reads no Codex auth, dispatches no workflow, logs no secret values, and claims no production acceptance."
     variables:
       - name: "readiness_input"
         data_type: "object"
         unit: "JSON"
         input_domain: "no-secret owner or runner metadata with ready flags, names, labels, targets, and durable refs"
+      - name: "template_sections"
+        data_type: "list[str]"
+        unit: "section names"
+        input_domain: "runner, smtp_secrets, release_target, and workflow_vars"
       - name: "required_smtp_secret_names"
         data_type: "list[str]"
         unit: "GitHub secret names"
@@ -1071,14 +1075,14 @@ formulas:
         unit: "durable refs"
         input_domain: "runner, SMTP secrets, Release target, and workflow variables"
     constraints: "The production refs gate does not inspect GitHub secret values, read Codex auth, dispatch workflows, send SMTP, create Releases, mutate trial evidence, generate media, or claim production acceptance."
-    missing_policy: "Missing ready flags, missing required names, missing durable refs, invalid Release target variable, or secret-like input keys or values produce a blocked refs report."
-    output_range: "production refs readiness report with status pass or blocked"
+    missing_policy: "Missing template sections, missing ready flags, missing required names, missing durable refs, invalid Release target variable, or secret-like input keys or values produce a blocked refs report."
+    output_range: "production refs input template, and production refs readiness report with status pass or blocked"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/tests/test_production_launch.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md"]
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_runner_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_smtp_secret_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_release_target_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_workflow_vars_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_secret_hygiene_errors"]
-    implementation_fingerprint: "sha256:5a3dc2483bbab49ccc0bd8da147552ededbeb366aba939c9c3a20ab33a3d3fcb"
-    last_verified_commit: "468738d44a2bf99b6fbdebaab85d7360ab731f4f"
-    verified_at: "2026-06-22T16:10:00+10:00"
-    evidence_hash: "sha256:f050eefd64ded7e13413cc23d0d9086c263c26bc0a4d02898efc8fe7c6f81255"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_input_template", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_runner_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_smtp_secret_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_release_target_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_workflow_vars_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_secret_hygiene_errors"]
+    implementation_fingerprint: "sha256:7f82661e71bbc33fea787939fb10c5946a9fe46c5ec14a720db9a8895d1ae959"
+    last_verified_commit: "bd3512a3ee85d9b943fa1bf9ef39e7c1fc02cb6c"
+    verified_at: "2026-06-22T20:00:00+10:00"
+    evidence_hash: "sha256:30f5da3e70bd002c77520d83e963c1e5f32598699c184bd07c3ebf2d8f3fad0e"
