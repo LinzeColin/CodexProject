@@ -551,7 +551,7 @@ tasks:
     scope: "External default-branch ref, private self-hosted runner ref, SMTP secret ref, Release target ref, workflow variables ref, explicit launch confirmation, and default-branch trial-start workflow evidence."
     non_scope: "No secret value read, no Codex auth read, no unconfirmed workflow dispatch, no SMTP send, no Release upload, no 30-day acceptance claim, and no local media/model/cache retention."
     status: "blocked"
-    dependencies: ["GOV-SEMANTIC-ADP-001", "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021"]
+    dependencies: ["GOV-SEMANTIC-ADP-001", "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021", "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023"]
     required_files: ["docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md", ".github/workflows/arxiv-daily-push-trial-start.yml"]
     acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-TRIAL-START"]
     test_commands: ["python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
@@ -561,4 +561,21 @@ tasks:
     rollback: "Remove this blocked external production trial-start tracking task; no runtime code or external state is changed by this task record."
     target_version: "0.11.19"
     completed_version: ""
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023"
+    phase: "E"
+    objective: "Add a no-secret production refs readiness bundle gate for runner, SMTP secret-name, Release target, and workflow variable refs."
+    scope: "Production refs validator, CLI command, production launch integration, schema, tests, runbook, phase record, version, and governance records."
+    non_scope: "No secret value read, no Codex auth read, no workflow dispatch, no SMTP send, no Release upload, no local cache/media/model retention, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020", "GOV-SEMANTIC-ADP-001"]
+    required_files: ["src/arxiv_daily_push/production_refs.py", "src/arxiv_daily_push/cli.py", "tests/test_production_refs.py", "tests/test_production_launch.py", "schemas/production_refs.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-REFS-BUNDLE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_production_refs.py arxiv-daily-push/tests/test_production_launch.py", "python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused production refs/launch tests: 9 tests OK", "pending final semantic/governance validation"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/tests/test_production_refs.py"]
+    risk: "This gate validates no-secret readiness metadata only; real production launch still requires owner-provisioned durable refs, explicit launch confirmation, and default-branch trial start evidence."
+    rollback: "Revert production refs gate, CLI integration, schema, tests, runbook/docs/governance updates, and restore version 0.11.19."
+    target_version: "0.11.20"
+    completed_version: "0.11.20"
     unknown_task_ids: []
