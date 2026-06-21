@@ -19,7 +19,11 @@ from .notifications import render_email
 from .pipeline import PipelineError, run_daily_dry_run
 from .production_launch import build_production_launch_readiness, validate_production_launch_readiness
 from .production_preflight import build_production_preflight, validate_production_preflight
-from .production_refs import build_production_refs_report, validate_production_refs_report
+from .production_refs import (
+    build_production_refs_input_template,
+    build_production_refs_report,
+    validate_production_refs_report,
+)
 from .production_scheduler import build_production_scheduler_plan, validate_production_scheduler_plan
 from .ranking import selection_payload
 from .release_delivery import DEFAULT_RELEASE_REPO, deliver_release, validate_release_delivery_report
@@ -305,6 +309,13 @@ def build_parser() -> argparse.ArgumentParser:
     production_refs.add_argument("--readiness-input", required=True, help="JSON file containing no-secret readiness metadata.")
     production_refs.add_argument("--generated-at", required=True, help="Production refs report timestamp.")
     production_refs.add_argument("--json", action="store_true", help="Print JSON production refs report.")
+
+    production_refs_template = subparsers.add_parser(
+        "print-production-refs-template",
+        help="Print a no-secret JSON input template for plan-production-refs.",
+    )
+    production_refs_template.add_argument("--runner-label", default="arxiv-daily-push", help="Self-hosted runner label placeholder.")
+    production_refs_template.add_argument("--release-target", default="", help="Optional ADP_RELEASE_TARGET placeholder.")
 
     production_launch = subparsers.add_parser(
         "plan-production-launch",
@@ -979,6 +990,13 @@ def main(argv: list[str] | None = None) -> int:
             for reason in report["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if report["production_refs_ready"] else 2
+    if args.command == "print-production-refs-template":
+        template = build_production_refs_input_template(
+            runner_label=args.runner_label,
+            release_target=args.release_target,
+        )
+        print(json.dumps(template, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
     if args.command == "plan-production-launch":
         launch_refs = {
             "runner_ref": args.runner_ref,

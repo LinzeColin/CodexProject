@@ -281,6 +281,20 @@ non-secret readiness metadata in a JSON file. The file may contain secret names
 and durable evidence refs, but must not contain SMTP hosts, ports, usernames,
 passwords, tokens, API keys, or credential values:
 
+Generate the owner-fillable no-secret template first:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push print-production-refs-template \
+  --runner-label arxiv-daily-push \
+  --release-target <private-release-target> \
+  > <production-refs-input.json>
+```
+
+The repository example at
+`config/examples/production_refs.input.example.json` has the same structure and
+defaults every `ready` flag to `false`. Fill only readiness booleans, names, the
+Release target, and durable refs. Do not add secret values.
+
 ```json
 {
   "runner": {

@@ -1,0 +1,32 @@
+{
+  "release_target": {
+    "evidence_ref": "",
+    "ready": false,
+    "target": "",
+    "var_name": "ADP_RELEASE_TARGET"
+  },
+  "runner": {
+    "evidence_ref": "",
+    "label": "arxiv-daily-push",
+    "ready": false
+  },
+  "smtp_secrets": {
+    "evidence_ref": "",
+    "ready": false,
+    "secret_names": [
+      "ADP_SMTP_HOST",
+      "ADP_SMTP_PORT",
+      "ADP_SMTP_USERNAME",
+      "ADP_SMTP_PASSWORD"
+    ]
+  },
+  "workflow_vars": {
+    "evidence_ref": "",
+    "ready": false,
+    "var_names": [
+      "ADP_RELEASE_TARGET",
+      "ADP_ALLOW_SMTP_SEND",
+      "ADP_ALLOW_RELEASE_UPLOAD"
+    ]
+  }
+}
