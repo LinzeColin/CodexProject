@@ -1,0 +1,530 @@
+governance_spec_version: "1.0.0"
+project_id: "arxiv-daily-push"
+tasks:
+  - task_id: "ADP-PHASE1-FOUNDATION-001"
+    phase: "A"
+    objective: "Create the arXiv Daily Push Phase 1 repository foundation inside CodexProject."
+    scope: "Project directory, CLI doctor/version/render-email, config examples, schemas, governance records, and focused tests."
+    non_scope: "No arXiv ingest, ranking, Claim Ledger extraction, TTS, video, GitHub runner, or real SMTP sending."
+    status: "completed"
+    dependencies: []
+    required_files: ["README.md", "AGENTS.md", "PLANS.md", "pyproject.toml", "src/arxiv_daily_push", "tests", "docs/governance", "VERSION", "CHANGELOG.md"]
+    acceptance_ids: ["ADP-ACC-PHASE1-FOUNDATION"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 4 tests OK", "project governance: errors 0 warnings 0", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_01.md", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/tests/test_doctor.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/docs/governance/STATUS.md"]
+    risk: "Later phases remain blocked by missing Node, npm, gh, ffmpeg, docker, disk, runner, and real mail transport readiness."
+    rollback: "Remove arxiv-daily-push/ and restore README.md plus governance/projects.yaml."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE2-DATA-CONTRACTS-001"
+    phase: "B"
+    objective: "Implement generic SourceItem, EvidenceClaim, Lesson, Storyboard, Publication, and RunRecord schemas and state machine."
+    scope: "Schemas, contract tests, migration notes, and generic source boundaries."
+    non_scope: "No network ingest or media generation."
+    status: "completed"
+    dependencies: ["ADP-PHASE1-FOUNDATION-001"]
+    required_files: ["schemas", "tests"]
+    acceptance_ids: ["ADP-ACC-PHASE2-DATA-CONTRACTS"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 -m json.tool arxiv-daily-push/schemas/*.schema.json", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 13 tests OK", "schemas: JSON parse OK", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md", "arxiv-daily-push/tests/test_contracts.py", "arxiv-daily-push/tests/test_state_machine.py", "arxiv-daily-push/tests/test_cli.py"]
+    risk: "Hard-coding arXiv-only fields would block future source expansion."
+    rollback: "Revert Phase 2 schema changes only."
+    target_version: "0.2.0"
+    completed_version: "0.2.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE3-ARXIV-ADAPTER-001"
+    phase: "B"
+    objective: "Implement the first arXiv SourceAdapter by mapping arXiv Atom XML into generic SourceItem records."
+    scope: "URL construction, Atom parser, local fixture, CLI parse/url commands, adapter tests, and governance updates."
+    non_scope: "No scheduled ingest, bulk harvesting, PDF download, ranking, Claim Ledger extraction, media generation, or real SMTP sending."
+    status: "completed"
+    dependencies: ["ADP-PHASE2-DATA-CONTRACTS-001"]
+    required_files: ["src/arxiv_daily_push/arxiv_adapter.py", "tests/test_arxiv_adapter.py", "tests/fixtures/arxiv_atom_sample.xml", "config/examples/sources.example.yaml"]
+    acceptance_ids: ["ADP-ACC-PHASE3-ARXIV-ADAPTER"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 19 tests OK", "root governance tests: 23 tests OK", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "dashboard generation: PASS", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_03.md", "arxiv-daily-push/tests/test_arxiv_adapter.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
+    risk: "Live arXiv service behavior remains external; Phase 3 validates URL construction and Atom parsing with local fixtures only."
+    rollback: "Revert Phase 3 adapter code, tests, fixture, and governance updates."
+    target_version: "0.3.0"
+    completed_version: "0.3.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE4-RANKING-001"
+    phase: "B"
+    objective: "Implement the planned 100-point selection scoring model with golden tests."
+    scope: "Ranking model, queue selection audit, fixed weights, and deterministic tests."
+    non_scope: "No live ingest, Claim Ledger extraction, lesson generation, TTS, video, or real SMTP sending."
+    status: "completed"
+    dependencies: ["ADP-PHASE3-ARXIV-ADAPTER-001"]
+    required_files: ["src/arxiv_daily_push/ranking.py", "tests/test_ranking.py", "tests/fixtures/ranking_candidates.json", "docs/governance/parameter_registry.csv"]
+    acceptance_ids: ["ADP-ACC-PHASE4-RANKING"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 26 tests OK", "root governance tests: 24 tests OK", "schemas: JSON parse OK", "ranking golden score: 85.5 points", "P0 evidence and metadata conflict gates: pass", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "dashboard generation: PASS", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_04.md", "arxiv-daily-push/tests/test_ranking.py", "arxiv-daily-push/tests/fixtures/ranking_candidates.json"]
+    risk: "Phase 4 ranks explicit candidate inputs only; live source freshness and automatic Claim Ledger extraction remain future gates."
+    rollback: "Revert Phase 4 ranking code and governance updates together."
+    target_version: "0.4.0"
+    completed_version: "0.4.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE5-EVIDENCE-GATE-001"
+    phase: "C"
+    objective: "Implement Claim Ledger extraction and publication hard-block gate."
+    scope: "Claim types, locators, metadata conflict handling, and fail-closed publication checks."
+    non_scope: "No video generation."
+    status: "completed"
+    dependencies: ["ADP-PHASE4-RANKING-001"]
+    required_files: ["src/arxiv_daily_push/evidence_gate.py", "tests/test_evidence_gate.py", "tests/fixtures/claim_ledger_input.json", "schemas/evidence_claim.schema.json", "schemas/publication.schema.json"]
+    acceptance_ids: ["ADP-ACC-PHASE5-EVIDENCE-GATE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 32 tests OK", "root governance tests: 25 tests OK", "schemas: JSON parse OK", "Claim Ledger gate tests: pass", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "dashboard generation: PASS", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_05.md", "arxiv-daily-push/tests/test_evidence_gate.py", "arxiv-daily-push/tests/fixtures/claim_ledger_input.json"]
+    risk: "Unsupported key claims must block publication rather than be filled by generation."
+    rollback: "Revert Phase 5 evidence gate code and generated fixtures."
+    target_version: "0.5.0"
+    completed_version: "0.5.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE6-LESSON-001"
+    phase: "C"
+    objective: "Generate evidence-linked Chinese text lesson JSON from a selected source and Claim Ledger."
+    scope: "Lesson structure, claim-id references, no unsupported facts, and text-only validation."
+    non_scope: "No TTS, video, runner automation, Release upload, or real SMTP sending."
+    status: "completed"
+    dependencies: ["ADP-PHASE5-EVIDENCE-GATE-001"]
+    required_files: ["src/arxiv_daily_push/lesson.py", "tests/test_lesson.py", "tests/fixtures/lesson_input.json", "schemas/lesson.schema.json"]
+    acceptance_ids: ["ADP-ACC-PHASE6-LESSON"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 37 tests OK", "lesson generator tests: pass", "unsupported claim exclusion: pass", "blocked ledger prevents lesson: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/fixtures/lesson_input.json"]
+    risk: "Lesson text must not introduce claims absent from the Claim Ledger."
+    rollback: "Revert Phase 6 lesson code and fixtures."
+    target_version: "0.6.0"
+    completed_version: "0.6.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE7-TTS-001"
+    phase: "D"
+    objective: "Generate narration/TTS-ready script from Lesson JSON with resource gates before any voice synthesis."
+    scope: "Narration script contract, TTS dry-run boundaries, and resource/license readiness checks."
+    non_scope: "No heavyweight model download or real media rendering until resource gates pass."
+    status: "completed"
+    dependencies: ["ADP-PHASE6-LESSON-001"]
+    required_files: ["src/arxiv_daily_push/narration.py", "tests/test_narration.py", "tests/fixtures/narration_input.json", "schemas/narration.schema.json"]
+    acceptance_ids: ["ADP-ACC-PHASE7-TTS"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 42 tests OK", "narration dry-run tests: pass", "real TTS blocking: pass", "audio path rejection: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_07.md", "arxiv-daily-push/tests/test_narration.py", "arxiv-daily-push/tests/fixtures/narration_input.json"]
+    risk: "TTS phases must not download models or retain media/cache artifacts without explicit resource gate pass."
+    rollback: "Remove Phase 7 narration/TTS dry-run artifacts."
+    target_version: "0.7.0"
+    completed_version: "0.7.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE8-VIDEO-001"
+    phase: "D"
+    objective: "Implement video system only after text, evidence, TTS, license, and resource gates pass."
+    scope: "Visual bible, scene library, sample video, and media QA."
+    non_scope: "No factual claims beyond lesson.json."
+    status: "completed"
+    dependencies: ["ADP-PHASE7-TTS-001"]
+    required_files: ["src/arxiv_daily_push/video.py", "tests/test_video.py", "tests/fixtures/video_input.json", "schemas/storyboard.schema.json"]
+    acceptance_ids: ["ADP-ACC-PHASE8-VIDEO"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 47 tests OK", "storyboard dry-run tests: pass", "media gate blocks render/write/download: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md", "arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/fixtures/video_input.json"]
+    risk: "Current local machine lacks Node, npm, gh, ffmpeg, docker and has limited disk."
+    rollback: "Remove Phase 8 video artifacts and keep text-only pipeline."
+    target_version: "0.8.0"
+    completed_version: "0.8.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE9-LOCAL-PIPELINE-001"
+    phase: "D"
+    objective: "Connect local daily dry-run pipeline across source, ranking, evidence, lesson, narration, storyboard, and notification preview."
+    scope: "Pipeline orchestration, RunRecord transitions, idempotent local state, and dry-run artifacts."
+    non_scope: "No real SMTP, Release upload, or scheduled runner until later gates."
+    status: "completed"
+    dependencies: ["ADP-PHASE8-VIDEO-001"]
+    required_files: ["src", "tests", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE9-LOCAL-PIPELINE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 51 tests OK", "daily dry-run pipeline pass"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    risk: "Pipeline must stay idempotent and avoid retained media/cache artifacts."
+    rollback: "Remove Phase 9 local pipeline artifacts."
+    target_version: "0.9.0"
+    completed_version: "0.9.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE10-RUNNER-RELEASE-EMAIL-001"
+    phase: "D"
+    objective: "Prepare runner, release, and email transport dry-run handoff without enabling unattended execution."
+    scope: "Runner config templates, release manifest preview, SMTP readiness preview, and fail-closed controls."
+    non_scope: "No real scheduler, Release upload, or SMTP send."
+    status: "completed"
+    dependencies: ["ADP-PHASE9-LOCAL-PIPELINE-001"]
+    required_files: ["src/arxiv_daily_push/handoff.py", "src/arxiv_daily_push/cli.py", "tests/test_handoff.py", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE10-RUNNER-RELEASE-EMAIL"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 55 tests OK", "root governance tests: 30 tests OK", "handoff gate tests: pass", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md", "arxiv-daily-push/tests/test_handoff.py"]
+    risk: "Unattended execution and real email must remain disabled until final acceptance."
+    rollback: "Remove Phase 10 runner/release/email dry-run artifacts."
+    target_version: "0.10.0"
+    completed_version: "0.10.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-ACCEPTANCE-HANDOFF-001"
+    phase: "E"
+    objective: "Generate final acceptance and handoff package for arXiv Daily Push without claiming live 30-day operation."
+    scope: "Acceptance checklist, readiness evidence, local pressure report, GitHub PR sync summary, and next-run instructions."
+    non_scope: "No fabricated 30-day trial results, no real scheduler, no Release upload, no SMTP send, and no retained media/model artifacts."
+    status: "completed"
+    dependencies: ["ADP-PHASE10-RUNNER-RELEASE-EMAIL-001"]
+    required_files: ["src/arxiv_daily_push/acceptance.py", "src/arxiv_daily_push/cli.py", "tests/test_acceptance.py", "docs/phase_records/PHASE_11.md", "docs/governance", "README.md", "CHANGELOG.md"]
+    acceptance_ids: ["ADP-ACC-PHASE11-ACCEPTANCE-HANDOFF"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 60 tests OK", "root governance tests: 31 tests OK", "acceptance gate tests: pass", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "production acceptance: blocked until live evidence exists"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md", "arxiv-daily-push/tests/test_acceptance.py"]
+    risk: "Operational 30-day evidence still requires future scheduled production runs; Phase 11 blocks production acceptance until those proofs exist."
+    rollback: "Remove Phase 11 handoff-only records and restore Phase 10 current gate."
+    target_version: "0.11.0"
+    completed_version: "0.11.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-EVIDENCE-REF-HARDENING-002"
+    phase: "E"
+    objective: "Harden Phase 11 production acceptance so every passed operational requirement needs an evidence reference."
+    scope: "Acceptance gate, regression tests, version and governance records."
+    non_scope: "No fabricated 30-day trial, no real scheduler, no Release upload, and no SMTP send."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-ACCEPTANCE-HANDOFF-001"]
+    required_files: ["src/arxiv_daily_push/acceptance.py", "tests/test_acceptance.py", "docs/phase_records/PHASE_11_EVIDENCE_REF_HARDENING.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-EVIDENCE-REF-HARDENING"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 61 tests OK", "root governance tests: 32 tests OK", "evidence-ref regression: pass", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_EVIDENCE_REF_HARDENING.md", "arxiv-daily-push/tests/test_acceptance.py"]
+    risk: "Operational 30-day evidence still requires future scheduled production runs; this hardening only prevents unsupported production pass claims."
+    rollback: "Revert Phase 11 evidence-ref hardening and restore version 0.11.0."
+    target_version: "0.11.1"
+    completed_version: "0.11.1"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-003"
+    phase: "E"
+    objective: "Add a deterministic 30-day trial evidence validator and require its report for production acceptance."
+    scope: "Trial evidence validation, CLI command, schema, acceptance integration, tests, version and governance records."
+    non_scope: "No fabricated 30-day trial, no scheduler enablement, no Release upload, no SMTP send, and no media/model output."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-EVIDENCE-REF-HARDENING-002"]
+    required_files: ["src/arxiv_daily_push/trial.py", "src/arxiv_daily_push/acceptance.py", "src/arxiv_daily_push/cli.py", "tests/test_trial.py", "tests/test_acceptance.py", "schemas/trial_evidence.schema.json", "docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-EVIDENCE-VALIDATOR"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 67 tests OK", "root governance tests: 33 tests OK", "trial evidence validator tests: pass", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md", "arxiv-daily-push/tests/test_trial.py", "arxiv-daily-push/tests/test_acceptance.py"]
+    risk: "Operational 30-day evidence still requires future scheduled production runs; this validator only defines and enforces the evidence package."
+    rollback: "Revert Phase 11 trial evidence validator and restore version 0.11.1."
+    target_version: "0.11.2"
+    completed_version: "0.11.2"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-PRODUCTION-PREFLIGHT-004"
+    phase: "E"
+    objective: "Add a fail-closed production preflight gate before scheduled execution."
+    scope: "Production command checks, secret environment key presence without value logging, disk and memory checks, Git artifact hygiene, local cache/staging checks, CLI command, schema, tests, and governance records."
+    non_scope: "No secret value reads, no Codex auth access, no scheduler enablement, no Release upload, no SMTP send, and no media/model output."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-003"]
+    required_files: ["src/arxiv_daily_push/production_preflight.py", "src/arxiv_daily_push/cli.py", "tests/test_production_preflight.py", "schemas/production_preflight.schema.json", "docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-PREFLIGHT"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 71 tests OK", "root governance tests: 34 tests OK", "production preflight current environment: blocked as expected", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md", "arxiv-daily-push/tests/test_production_preflight.py"]
+    risk: "Current local environment is expected to block until gh, ffmpeg, docker, SMTP keys, Release target, and runner label are provisioned."
+    rollback: "Revert Phase 11 production preflight gate and restore version 0.11.2."
+    target_version: "0.11.3"
+    completed_version: "0.11.3"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-BOOTSTRAP-005"
+    phase: "E"
+    objective: "Add a manual GitHub Actions bootstrap entrypoint for starting the real production trial path after preflight succeeds."
+    scope: "Manual workflow_dispatch contract, self-hosted runner label input, production preflight artifact upload, runbook, CLI plan validator, schema, tests, and governance records."
+    non_scope: "No cron schedule, no Release upload, no SMTP send, no media/model output, and no claim that the 30-day trial has started or passed."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-PRODUCTION-PREFLIGHT-004"]
+    required_files: ["src/arxiv_daily_push/trial_bootstrap.py", "src/arxiv_daily_push/cli.py", "tests/test_trial_bootstrap.py", "schemas/trial_bootstrap.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", ".github/workflows/arxiv-daily-push-production-trial.yml", "docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-BOOTSTRAP"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 74 tests OK", "schema parse: OK", "trial bootstrap plan: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md", "arxiv-daily-push/tests/test_trial_bootstrap.py", ".github/workflows/arxiv-daily-push-production-trial.yml"]
+    risk: "Production acceptance still requires actual runner provisioning, SMTP/Release configuration, preflight pass on the runner, scheduled execution, and 30-day trial evidence."
+    rollback: "Revert Phase 11 trial bootstrap workflow, runbook, validator, tests, and restore version 0.11.3."
+    target_version: "0.11.4"
+    completed_version: "0.11.4"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-LIVE-ARXIV-INGEST-006"
+    phase: "E"
+    objective: "Add a small-window live arXiv latest source ingest command with incremental duplicate filtering."
+    scope: "Live arXiv Atom fetch wrapper, SourceBatch output, SourceItem validation, seen-source filtering, CLI command, schema, tests, and governance records."
+    non_scope: "No PDF download, no bulk harvest, no scheduled runner execution, no ranking automation, no content generation, no SMTP send, and no TLS bypass."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-BOOTSTRAP-005"]
+    required_files: ["src/arxiv_daily_push/source_ingest.py", "src/arxiv_daily_push/cli.py", "tests/test_source_ingest.py", "schemas/source_batch.schema.json", "docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-LIVE-ARXIV-INGEST"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 78 tests OK", "schema parse: OK", "live fetch current environment: blocked on Python SSL certificate validation"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "arxiv-daily-push/tests/test_source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py"]
+    risk: "Current local Python CA trust blocks live HTTPS fetch; production runner must fix CA trust before 30-day trial source collection can pass."
+    rollback: "Revert live arXiv ingest command, SourceBatch schema, tests, and restore version 0.11.4."
+    target_version: "0.11.5"
+    completed_version: "0.11.5"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-SMTP-DELIVERY-007"
+    phase: "E"
+    objective: "Add a fail-closed SMTP notification delivery boundary with dry-run evidence and explicit real-send gating."
+    scope: "SMTP delivery report, dry-run default, explicit allow-send flag, SMTP env-key validation, TLS-required mocked send, CLI command, schema, tests, runbook, and governance records."
+    non_scope: "No implicit real SMTP send, no secret value logging, no email body logging, no scheduled runner execution, no Release upload, and no 30-day acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-LIVE-ARXIV-INGEST-006"]
+    required_files: ["src/arxiv_daily_push/smtp_delivery.py", "src/arxiv_daily_push/cli.py", "tests/test_notifications.py", "tests/test_cli.py", "schemas/smtp_delivery.schema.json", "docs/phase_records/PHASE_11_SMTP_DELIVERY.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-SMTP-DELIVERY"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 83 tests OK", "schema parse: OK", "send-notification dry-run: pass", "mocked SMTP send: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py"]
+    risk: "Real production SMTP delivery is still unverified until SMTP secrets and runner are provisioned and archived delivery evidence exists."
+    rollback: "Revert SMTP delivery command, schema, tests, and restore version 0.11.5."
+    target_version: "0.11.6"
+    completed_version: "0.11.6"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-RELEASE-DELIVERY-008"
+    phase: "E"
+    objective: "Add a fail-closed GitHub Release delivery boundary with dry-run evidence and explicit real-upload gating."
+    scope: "Release delivery report, dry-run default, explicit allow-upload flag, ADP_RELEASE_TARGET validation, safe asset checks, no-clobber command construction, CLI command, schema, tests, runbook, and governance records."
+    non_scope: "No implicit real Release upload, no clobber upload, no secret value logging, no Release notes logging, no gh stdout/stderr logging, no scheduled runner execution, no SMTP send, and no 30-day acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-SMTP-DELIVERY-007"]
+    required_files: ["src/arxiv_daily_push/release_delivery.py", "src/arxiv_daily_push/cli.py", "tests/test_release_delivery.py", "tests/test_cli.py", "schemas/release_delivery.schema.json", "docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-RELEASE-DELIVERY"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused release and CLI tests: 9 tests OK", "publish-release dry-run: pass", "mocked gh release create: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py"]
+    risk: "Real private GitHub Release delivery is still unverified until gh auth, ADP_RELEASE_TARGET, assets, and runner are provisioned and archived Release evidence exists."
+    rollback: "Revert Release delivery command, schema, tests, and restore version 0.11.6."
+    target_version: "0.11.7"
+    completed_version: "0.11.7"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-PRODUCTION-SCHEDULER-009"
+    phase: "E"
+    objective: "Add a fail-closed scheduled production workflow gate for 04:45 health check, 05:00 daily run, and 05:10 watchdog in Australia/Sydney."
+    scope: "GitHub scheduled workflow, timezone schedule validation, manual rerun support, production variable gates, preflight-first artifact, CLI validator, schema, tests, runbook, and governance records."
+    non_scope: "No real scheduled production enablement, no SMTP send, no Release upload, no media/model output, and no 30-day acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-RELEASE-DELIVERY-008"]
+    required_files: [".github/workflows/arxiv-daily-push-scheduled.yml", "src/arxiv_daily_push/production_scheduler.py", "src/arxiv_daily_push/cli.py", "tests/test_production_scheduler.py", "schemas/production_scheduler.schema.json", "docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-SCHEDULER"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused scheduler and CLI tests: 8 tests OK", "plan-production-scheduler CLI: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    risk: "Schedule triggers run only after merge to the default branch and still require external runner, production variables, preflight pass, and later daily execution enablement."
+    rollback: "Revert scheduled production workflow, scheduler validator, schema, tests, and restore version 0.11.7."
+    target_version: "0.11.8"
+    completed_version: "0.11.8"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-SCHEDULED-EXECUTION-010"
+    phase: "E"
+    objective: "Add a controlled scheduled execution driver that turns health-check, daily-run, and watchdog modes into structured evidence artifacts."
+    scope: "Scheduled execution driver, CLI command, scheduled workflow execution artifact, schema, tests, runbook, version and governance records."
+    non_scope: "No fabricated 30-day evidence, no default real SMTP send, no default Release upload, no default daily production enablement, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-PRODUCTION-SCHEDULER-009"]
+    required_files: ["src/arxiv_daily_push/scheduled_execution.py", "src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml", "tests/test_scheduled_execution.py", "schemas/scheduled_execution.schema.json", "docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-SCHEDULED-EXECUTION"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused scheduled execution and scheduler tests: 13 tests OK", "run-scheduled-production health-check CLI: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    risk: "Real production evidence remains blocked until default-branch schedule, runner, daily input, SMTP, Release, and resource evidence are provisioned and archived."
+    rollback: "Revert scheduled execution driver, workflow execution artifact changes, schema, tests, and restore version 0.11.8."
+    target_version: "0.11.9"
+    completed_version: "0.11.9"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-DAILY-INPUT-BUILDER-011"
+    phase: "E"
+    objective: "Add a deterministic daily input builder from live arXiv SourceBatch output into scheduled daily pipeline input."
+    scope: "Daily input builder, CLI command, scheduled workflow source/daily-input artifacts, scheduled execution compatibility, schema, tests, runbook, version and governance records."
+    non_scope: "No PDF download, no bulk harvest, no inferred peer-review claim, no real SMTP send, no Release upload, no media/model output, and no 30-day acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-SCHEDULED-EXECUTION-010"]
+    required_files: ["src/arxiv_daily_push/daily_input.py", "src/arxiv_daily_push/cli.py", "src/arxiv_daily_push/scheduled_execution.py", ".github/workflows/arxiv-daily-push-scheduled.yml", "tests/test_daily_input.py", "tests/test_scheduled_execution.py", "schemas/daily_input.schema.json", "docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-DAILY-INPUT-BUILDER"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused daily input and scheduled tests: 18 tests OK", "build-daily-input fixture CLI: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md", "arxiv-daily-push/tests/test_daily_input.py", "arxiv-daily-push/src/arxiv_daily_push/daily_input.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    risk: "Real production evidence remains blocked until live arXiv ingest passes on the runner and real daily SMTP/Release/resource evidence is provisioned and archived."
+    rollback: "Revert daily input builder, workflow source/daily-input artifact changes, schema, tests, and restore version 0.11.9."
+    target_version: "0.11.10"
+    completed_version: "0.11.10"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-LEDGER-012"
+    phase: "E"
+    objective: "Add an incremental trial evidence ledger updater for production-ready scheduled daily-run reports."
+    scope: "Trial ledger updater, CLI command, scheduled workflow ledger artifact, scheduled execution compatibility fields, schema, tests, runbook, version and governance records."
+    non_scope: "No fabricated 30-day evidence, no default real SMTP send, no default Release upload, no weekly/monthly or recovery evidence claim, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-DAILY-INPUT-BUILDER-011"]
+    required_files: ["src/arxiv_daily_push/trial_ledger.py", "src/arxiv_daily_push/cli.py", "src/arxiv_daily_push/scheduled_execution.py", ".github/workflows/arxiv-daily-push-scheduled.yml", "tests/test_trial_ledger.py", "tests/test_scheduled_execution.py", "tests/test_production_scheduler.py", "schemas/trial_ledger.schema.json", "docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-LEDGER"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial ledger and scheduled tests: 19 tests OK", "arxiv-daily-push unit tests: 106 tests OK", "schemas: all schema JSON files parse", "update-trial-ledger fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md", "arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    risk: "Real production acceptance remains blocked until live source, real SMTP, real Release, resource, weekly/monthly replay, recovery drill, and 30 unique daily evidence entries are provisioned and archived."
+    rollback: "Revert trial ledger updater, workflow ledger artifact changes, schema, tests, and restore version 0.11.10."
+    target_version: "0.11.11"
+    completed_version: "0.11.11"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-LEDGER-STATE-013"
+    phase: "E"
+    objective: "Persist the trial evidence ledger state across scheduled GitHub Actions runs."
+    scope: "Workflow previous-artifact restore, state export CLI, state artifact upload, scheduler validation, tests, runbook, version and governance records."
+    non_scope: "No Git-committed state, no media/model/cache artifact retention, no secret storage, no default real SMTP send, no default Release upload, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-LEDGER-012"]
+    required_files: ["src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml", "tests/test_trial_ledger.py", "tests/test_production_scheduler.py", "docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-LEDGER-STATE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_ledger.py arxiv-daily-push/tests/test_production_scheduler.py arxiv-daily-push/tests/test_cli.py -q", "bash -n /tmp/resolve-trial-ledger-state.sh", "bash -n /tmp/export-trial-evidence-ledger-state.sh", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial ledger state tests: 15 tests OK", "workflow restore/export bash syntax: pass", "export-trial-ledger-state fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md", "arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    risk: "Real artifact restore still depends on default-branch workflow runs, artifact retention, a provisioned runner, and GitHub Actions token access."
+    rollback: "Revert trial ledger state restore/export workflow changes, export command, tests, and restore version 0.11.11."
+    target_version: "0.11.12"
+    completed_version: "0.11.12"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-OPS-EVIDENCE-014"
+    phase: "E"
+    objective: "Add a fail-closed annotation path for weekly/monthly replay, recovery drill, and other operational trial evidence refs."
+    scope: "Trial ops annotator, CLI commands, export command, tests, runbook, version and governance records."
+    non_scope: "No generated weekly/monthly report, no recovery drill execution, no SMTP send, no Release upload, no media/model/cache artifact retention, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-LEDGER-STATE-013"]
+    required_files: ["src/arxiv_daily_push/trial_ops.py", "src/arxiv_daily_push/cli.py", "tests/test_trial_ops.py", "docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-OPS-EVIDENCE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_ops.py arxiv-daily-push/tests/test_trial.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial ops tests: 16 tests OK", "annotate-trial-ops-evidence fixture CLI: pass and JSON parse OK", "export-trial-ops-state fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py", "arxiv-daily-push/tests/test_trial_ops.py"]
+    risk: "Real weekly/monthly replay and recovery drill evidence still requires controlled production operations and durable refs."
+    rollback: "Revert trial ops annotator, CLI commands, tests, runbook/docs/governance updates, and restore version 0.11.12."
+    target_version: "0.11.13"
+    completed_version: "0.11.13"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-REPLAY-EVIDENCE-015"
+    phase: "E"
+    objective: "Add a fail-closed weekly/monthly replay evidence builder for accumulated trial ledger entries."
+    scope: "Trial replay evidence builder, CLI command, schema, tests, runbook, version and governance records."
+    non_scope: "No actual production replay claim, no SMTP send, no Release upload, no media/model/cache artifact retention, no trial evidence mutation, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-OPS-EVIDENCE-014"]
+    required_files: ["src/arxiv_daily_push/trial_replay.py", "src/arxiv_daily_push/cli.py", "tests/test_trial_replay.py", "schemas/trial_replay.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-REPLAY-EVIDENCE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_replay.py arxiv-daily-push/tests/test_trial_ops.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial replay tests: 16 tests OK", "build-trial-replay-evidence fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_replay.py", "arxiv-daily-push/tests/test_trial_replay.py"]
+    risk: "Real weekly/monthly replay evidence still requires controlled production replay execution and a durable ref."
+    rollback: "Revert trial replay builder, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.13."
+    target_version: "0.11.14"
+    completed_version: "0.11.14"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-RECOVERY-EVIDENCE-016"
+    phase: "E"
+    objective: "Add a fail-closed recovery drill evidence builder for failed and recovered scheduled daily-run reports."
+    scope: "Trial recovery evidence builder, CLI command, schema, tests, runbook, version and governance records."
+    non_scope: "No actual production recovery drill claim, no scheduler rerun, no SMTP send, no Release upload, no media/model/cache artifact retention, no trial evidence mutation, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-REPLAY-EVIDENCE-015"]
+    required_files: ["src/arxiv_daily_push/trial_recovery.py", "src/arxiv_daily_push/cli.py", "tests/test_trial_recovery.py", "schemas/trial_recovery.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-RECOVERY-EVIDENCE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_recovery.py arxiv-daily-push/tests/test_trial_replay.py arxiv-daily-push/tests/test_trial_ops.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial recovery/replay/ops/CLI tests: 21 tests OK", "build-trial-recovery-evidence fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py", "arxiv-daily-push/tests/test_trial_recovery.py"]
+    risk: "Real recovery drill evidence still requires controlled production failure and recovery execution plus durable refs."
+    rollback: "Revert trial recovery builder, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.14."
+    target_version: "0.11.15"
+    completed_version: "0.11.15"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-RESOURCE-EVIDENCE-017"
+    phase: "E"
+    objective: "Add a fail-closed resource telemetry evidence builder for 30-day trial daily resource refs."
+    scope: "Trial resource evidence builder, timestamped preflight resource refs, CLI command, schema, tests, runbook, version and governance records."
+    non_scope: "No actual 30-day production resource telemetry claim, no preflight execution, no SMTP send, no Release upload, no media/model/cache artifact retention, no trial evidence mutation, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-RECOVERY-EVIDENCE-016"]
+    required_files: ["src/arxiv_daily_push/trial_resource.py", "src/arxiv_daily_push/production_preflight.py", "src/arxiv_daily_push/cli.py", "tests/test_trial_resource.py", "tests/test_production_preflight.py", "schemas/trial_resource.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-RESOURCE-EVIDENCE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_resource.py arxiv-daily-push/tests/test_production_preflight.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_trial_ops.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial resource/preflight/scheduled/ops/CLI tests: 27 tests OK", "build-trial-resource-evidence fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_resource.py", "arxiv-daily-push/tests/test_trial_resource.py"]
+    risk: "Real resource telemetry evidence still requires 30 production preflight reports archived from default-branch scheduled runs."
+    rollback: "Revert trial resource builder, timestamped preflight resource ref change, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.15."
+    target_version: "0.11.16"
+    completed_version: "0.11.16"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-START-GATE-018"
+    phase: "E"
+    objective: "Add a fail-closed start-readiness gate for the real 30-day production trial."
+    scope: "Trial start gate, CLI command, schema, tests, runbook, version and governance records."
+    non_scope: "No schedule enablement, no SMTP send, no Release upload, no media/model/cache artifact retention, no trial evidence mutation, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-RESOURCE-EVIDENCE-017"]
+    required_files: ["src/arxiv_daily_push/trial_start.py", "src/arxiv_daily_push/cli.py", "tests/test_trial_start.py", "schemas/trial_start.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_TRIAL_START_GATE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-START-GATE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_start.py arxiv-daily-push/tests/test_trial_bootstrap.py arxiv-daily-push/tests/test_production_scheduler.py arxiv-daily-push/tests/test_production_preflight.py arxiv-daily-push/tests/test_source_ingest.py arxiv-daily-push/tests/test_notifications.py arxiv-daily-push/tests/test_release_delivery.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial start/bootstrap/scheduler/preflight/source/SMTP/Release/CLI tests: 34 tests OK", "plan-trial-start fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_start.py", "arxiv-daily-push/tests/test_trial_start.py"]
+    risk: "Real trial start still requires default-branch runner evidence and archived real SMTP Release source preflight and start-gate refs."
+    rollback: "Revert trial start gate, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.16."
+    target_version: "0.11.17"
+    completed_version: "0.11.17"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-START-WORKFLOW-019"
+    phase: "E"
+    objective: "Add the manual default-branch trial start evidence workflow."
+    scope: "GitHub workflow, workflow validator, CLI command, schema, tests, runbook, phase record, version, and governance records."
+    non_scope: "No actual default-branch run evidence, no real SMTP or Release evidence in local validation, no schedule enablement, no trial acceptance claim, and no local cache/media/model retention."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-START-GATE-018"]
+    required_files: [".github/workflows/arxiv-daily-push-trial-start.yml", "src/arxiv_daily_push/trial_start_workflow.py", "src/arxiv_daily_push/cli.py", "tests/test_trial_start_workflow.py", "schemas/trial_start_workflow.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-START-WORKFLOW"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_start_workflow.py arxiv-daily-push/tests/test_trial_start.py arxiv-daily-push/tests/test_trial_bootstrap.py arxiv-daily-push/tests/test_production_scheduler.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial start workflow/start/bootstrap/scheduler/CLI tests: 20 tests OK", "plan-trial-start-workflow CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/tests/test_trial_start_workflow.py", ".github/workflows/arxiv-daily-push-trial-start.yml"]
+    risk: "Real start evidence requires running the workflow from the default branch with a provisioned private runner, GitHub variables, SMTP secrets, Release target, live source access, and archived artifacts."
+    rollback: "Revert trial start workflow, validator, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.17."
+    target_version: "0.11.18"
+    completed_version: "0.11.18"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020"
+    phase: "E"
+    objective: "Add a fail-closed production launch readiness gate before dispatching the default-branch trial start workflow."
+    scope: "Launch readiness validator, CLI command, schema, tests, runbook, phase record, version, and governance records."
+    non_scope: "No PR merge, no workflow dispatch, no SMTP send, no Release upload, no secret value read, no Codex auth read, no local cache/media/model retention, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-START-WORKFLOW-019"]
+    required_files: ["src/arxiv_daily_push/production_launch.py", "src/arxiv_daily_push/cli.py", "tests/test_production_launch.py", "schemas/production_launch.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-LAUNCH-READINESS"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_production_launch.py arxiv-daily-push/tests/test_trial_start_workflow.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused production launch/workflow/CLI tests: 12 tests OK", "plan-production-launch fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md", "arxiv-daily-push/src/arxiv_daily_push/production_launch.py", "arxiv-daily-push/tests/test_production_launch.py"]
+    risk: "Current GitHub PR remains draft and unmerged, so launch readiness correctly blocks until PR state and external runner/secrets/vars readiness refs are provisioned."
+    rollback: "Revert production launch readiness gate, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.18."
+    target_version: "0.11.19"
+    completed_version: "0.11.19"
+    unknown_task_ids: []
+  - task_id: "GOV-SEMANTIC-ADP-001"
+    phase: "E"
+    objective: "Plan machine semantic coverage for arXiv Daily Push active parameter values and formula implementation fingerprints under the latest CodexProject governance standard."
+    scope: "Root semantic_coverage rollout contract, task binding, generated owner/status views, and governance validation evidence."
+    non_scope: "No runtime behavior change, no machine_verified semantic extraction claim, no production launch, no SMTP send, no Release upload, and no secret value read."
+    status: "planned"
+    dependencies: ["ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020"]
+    required_files: ["governance/projects.yaml", "docs/governance/delivery_tasks.yaml", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md"]
+    acceptance_ids: ["ACC-SEMANTIC-ADP-001"]
+    test_commands: ["python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "python3 scripts/generate_governance_dashboard.py --write", "git diff --check"]
+    test_results: ["pending"]
+    evidence_refs: ["governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json"]
+    risk: "Semantic coverage remains planned until extractors prove active values and formula fingerprints; production acceptance remains blocked by external runner, SMTP, Release, and 30-day trial evidence."
+    rollback: "Remove the arxiv semantic_coverage block, this task, generated OWNER_STATUS/status changes, and the semantic planning run manifest."
+    target_version: "0.11.19"
+    completed_version: ""
+    unknown_task_ids: []

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/production_launch.schema.json",
+  "title": "arXiv Daily Push Production Launch Readiness Report",
+  "type": "object",
+  "required": [
+    "launch_readiness_id",
+    "model_id",
+    "project_id",
+    "generated_at",
+    "status",
+    "production_launch_ready",
+    "launch_confirmation_required",
+    "launch_confirmed",
+    "expected_head_sha",
+    "pr_summary",
+    "workflow_plan",
+    "evidence_refs",
+    "readiness_gates",
+    "side_effects_performed",
+    "secret_values_logged",
+    "codex_auth_read",
+    "production_acceptance_claimed",
+    "blocking_reasons",
+    "next_external_actions"
+  ],
+  "properties": {
+    "launch_readiness_id": {"type": "string", "minLength": 1},
+    "model_id": {"const": "adp-production-launch-readiness-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "blocked"]},
+    "production_launch_ready": {"type": "boolean"},
+    "launch_confirmation_required": {"const": true},
+    "launch_confirmed": {"type": "boolean"},
+    "expected_head_sha": {"type": "string"},
+    "pr_summary": {
+      "type": "object",
+      "properties": {
+        "state": {"type": ["string", "null"]},
+        "merged": {"type": ["boolean", "null"]},
+        "draft": {"type": ["boolean", "null"]},
+        "mergeable": {"type": ["boolean", "null"]},
+        "base": {"type": ["string", "null"]},
+        "head": {"type": ["string", "null"]},
+        "head_sha": {"type": ["string", "null"]},
+        "changed_files": {"type": ["integer", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "workflow_plan": {
+      "type": "object",
+      "required": ["validator_id", "status", "trial_start_workflow_ready", "workflow_path"],
+      "properties": {
+        "validator_id": {"const": "adp-trial-start-workflow-v1"},
+        "status": {"type": ["string", "null"], "enum": ["pass", "blocked", null]},
+        "trial_start_workflow_ready": {"type": ["boolean", "null"]},
+        "workflow_path": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "evidence_refs": {
+      "type": "object",
+      "required": [
+        "default_branch_ref",
+        "runner_ref",
+        "smtp_secret_ref",
+        "release_target_ref",
+        "workflow_vars_ref",
+        "trial_start_workflow_ref"
+      ],
+      "properties": {
+        "default_branch_ref": {"type": "string"},
+        "runner_ref": {"type": "string"},
+        "smtp_secret_ref": {"type": "string"},
+        "release_target_ref": {"type": "string"},
+        "workflow_vars_ref": {"type": "string"},
+        "trial_start_workflow_ref": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "readiness_gates": {"type": "array", "items": {"type": "object"}},
+    "side_effects_performed": {"const": false},
+    "secret_values_logged": {"const": false},
+    "codex_auth_read": {"const": false},
+    "production_acceptance_claimed": {"const": false},
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}},
+    "next_external_actions": {"type": "array", "items": {"type": "string"}},
+    "validation_errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

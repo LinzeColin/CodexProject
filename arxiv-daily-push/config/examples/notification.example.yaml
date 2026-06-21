@@ -1,0 +1,16 @@
+notification:
+  channel: email
+  recipient: linzezhang35@gmail.com
+  dry_run_required: true
+  real_send_enabled: false
+  real_send_requires_allow_send_flag: true
+  smtp_secret_source: external_secret_store_only
+  smtp_env_keys:
+    - ADP_SMTP_HOST
+    - ADP_SMTP_PORT
+    - ADP_SMTP_USERNAME
+    - ADP_SMTP_PASSWORD
+  smtp_tls_required: true
+  smtp_timeout_seconds: 30
+  log_secret_values: false
+  log_email_body_in_delivery_report: false

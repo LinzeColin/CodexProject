@@ -16,6 +16,7 @@ It is no longer a submodule-only index.
 | `Serenity-Alipay` | https://github.com/LinzeColin/Serenity-Alipay |
 | `OpMe_System` | https://github.com/LinzeColin/OpMe_System |
 | `whkmSalary` | https://github.com/LinzeColin/whkmSalary |
+| `arxiv-daily-push` | https://github.com/LinzeColin/CodexProject/tree/main/arxiv-daily-push |
 
 ## Clone
 

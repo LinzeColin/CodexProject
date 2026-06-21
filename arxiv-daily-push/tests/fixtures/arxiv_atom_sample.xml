@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+      xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
+      xmlns:arxiv="http://arxiv.org/schemas/atom">
+  <title>ArXiv Query: search_query=cat:cs.AI</title>
+  <id>https://export.arxiv.org/api/query?search_query=cat:cs.AI</id>
+  <updated>2026-06-21T05:00:00+10:00</updated>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <opensearch:itemsPerPage>1</opensearch:itemsPerPage>
+  <entry>
+    <id>http://arxiv.org/abs/2401.00001v2</id>
+    <published>2024-01-01T00:00:00Z</published>
+    <updated>2024-01-02T00:00:00Z</updated>
+    <title>  Example AI System for Evidence Grounding  </title>
+    <summary>
+      This synthetic fixture describes an evidence-grounded AI system.
+    </summary>
+    <author><name>Ada Example</name></author>
+    <author><name>Lin Test</name></author>
+    <arxiv:comment>10 pages, 2 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <link href="http://arxiv.org/abs/2401.00001v2" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2401.00001v2" rel="related" type="application/pdf"/>
+  </entry>
+</feed>

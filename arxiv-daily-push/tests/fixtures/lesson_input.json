@@ -1,0 +1,46 @@
+{
+  "generated_at": "2026-06-21T05:25:00+10:00",
+  "source_item": {
+    "source_id": "arxiv:2401.00001",
+    "source_type": "arxiv",
+    "source_adapter": "arxiv.atom.v1",
+    "stable_id": "2401.00001",
+    "title": "A Useful Paper",
+    "retrieved_at": "2026-06-21T05:00:00+10:00",
+    "canonical_url": "https://arxiv.org/abs/2401.00001",
+    "metadata": {
+      "arxiv": {
+        "primary_category": "cs.AI",
+        "categories": ["cs.AI"],
+        "published": "2026-06-20T10:00:00Z"
+      }
+    },
+    "content_refs": [
+      {"ref_id": "abstract", "ref_type": "html", "uri": "https://arxiv.org/abs/2401.00001"}
+    ],
+    "license": {"status": "unknown", "usage": "private_learning_link_only"}
+  },
+  "claims": [
+    {
+      "claim_type": "reported_result",
+      "priority": "P0",
+      "statement": "The abstract reports an evidence-grounded AI system.",
+      "locator": {"locator_type": "abstract", "stable_url": "https://arxiv.org/abs/2401.00001", "section": "abstract"},
+      "support_status": "supported"
+    },
+    {
+      "claim_type": "metadata",
+      "priority": "P1",
+      "statement": "The paper is an arXiv preprint.",
+      "locator": {"locator_type": "metadata", "stable_url": "https://arxiv.org/abs/2401.00001"},
+      "support_status": "supported"
+    },
+    {
+      "claim_type": "uncertainty",
+      "priority": "P2",
+      "statement": "The practical deployment status is not verified.",
+      "locator": {"locator_type": "abstract", "stable_url": "https://arxiv.org/abs/2401.00001", "section": "limitations"},
+      "support_status": "unverified"
+    }
+  ]
+}

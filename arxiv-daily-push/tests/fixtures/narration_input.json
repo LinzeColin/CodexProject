@@ -1,0 +1,24 @@
+{
+  "lesson": {
+    "lesson_id": "lesson:arxiv:2401.00001:fixture",
+    "source_item_id": "arxiv:2401.00001",
+    "language": "zh-CN",
+    "title": "今日论文学习：A Useful Paper",
+    "sections": [
+      {
+        "section_id": "overview",
+        "title": "研究问题",
+        "body": "这篇内容的学习入口来自 Claim Ledger [claim:lesson:001]：The abstract reports an evidence-grounded AI system",
+        "claim_ids": ["claim:lesson:001"]
+      },
+      {
+        "section_id": "evidence",
+        "title": "关键证据",
+        "body": "证据来自 Claim Ledger [claim:lesson:001]：The abstract reports an evidence-grounded AI system；证据来自 Claim Ledger [claim:lesson:002]：The paper is an arXiv preprint。",
+        "claim_ids": ["claim:lesson:001", "claim:lesson:002"]
+      }
+    ],
+    "claim_ids": ["claim:lesson:001", "claim:lesson:002"],
+    "generated_at": "2026-06-21T05:25:00+10:00"
+  }
+}
