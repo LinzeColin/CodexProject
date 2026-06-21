@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 24
-- formula_count: 26
-- parameter_count: 127
+- model_count: 25
+- formula_count: 27
+- parameter_count: 132
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -39,6 +39,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-022 | Trial ledger state persistence | deterministic workflow state bridge | Restore and upload small trial evidence ledger state artifacts across scheduled GitHub Actions runs | active | adp-trial-ledger-state-v1 | `.github/workflows/arxiv-daily-push-scheduled.yml`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-023 | Trial operational evidence annotation | deterministic operational evidence annotator | Merge explicit weekly/monthly replay, recovery drill, scheduler, Release, SMTP, and resource refs into trial evidence without hand-editing JSON | active | adp-trial-ops-evidence-v1 | `src/arxiv_daily_push/trial_ops.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-024 | Trial replay evidence builder | deterministic replay evidence validator | Build weekly/monthly replay evidence from production-ready daily trial entries and block missing durable refs or incomplete coverage | active | adp-trial-replay-v1 | `src/arxiv_daily_push/trial_replay.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-025 | Trial recovery evidence builder | deterministic recovery evidence validator | Build recovery drill evidence from a failed/degraded scheduled daily-run plus a recovered production-ready rerun while blocking dry-run notifications or missing durable refs | active | adp-trial-recovery-v1 | `src/arxiv_daily_push/trial_recovery.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -71,6 +72,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-025 | Trial evidence ledger state must be carried forward as a small GitHub Actions artifact, never committed to Git, and must not be replaced when a daily ledger update is blocked. | `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`, `.github/workflows/arxiv-daily-push-scheduled.yml`, `tests/test_production_scheduler.py` | Phase 11 trial ledger state readiness | active |
 | ASM-ADP-026 | Weekly/monthly replay and recovery drill evidence must be merged through explicit refs, not by hand-editing trial evidence or inferring that the operations occurred. | `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`, `src/arxiv_daily_push/trial_ops.py`, `tests/test_trial_ops.py` | Phase 11 operational evidence readiness | active |
 | ASM-ADP-027 | Weekly/monthly replay evidence must be generated from production-ready daily trial entries and archived under a durable replay ref before it can be merged into trial evidence. | `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`, `src/arxiv_daily_push/trial_replay.py`, `tests/test_trial_replay.py` | Phase 11 replay evidence readiness | active |
+| ASM-ADP-028 | Recovery drill evidence must be generated from an archived failed/degraded scheduled daily-run report and a recovered production-ready rerun report with real sent notifications before it can be merged into trial evidence. | `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`, `src/arxiv_daily_push/trial_recovery.py`, `tests/test_trial_recovery.py` | Phase 11 recovery evidence readiness | active |
 
 ## C. Functions and Formulas
 
@@ -102,6 +104,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-024 restores prior trial evidence state from a configured path or previous artifact and exports the updated state only after a successful ledger append.
 - FORM-ADP-025 merges explicit operational evidence refs into trial evidence and blocks verified operational flags that lack refs.
 - FORM-ADP-026 builds weekly/monthly replay evidence only from production-ready daily entries with duplicate-free consecutive coverage and a durable replay ref.
+- FORM-ADP-027 builds recovery drill evidence only from a failed/degraded scheduled daily-run and a recovered production-ready rerun with real sent notifications and durable failure/recovery refs.
 
 ## D. Parameters
 
@@ -131,6 +134,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 trial ledger state parameters: PARAM-ADP-113 through PARAM-ADP-117.
 - Active Phase 11 trial operational evidence parameters: PARAM-ADP-118 through PARAM-ADP-122.
 - Active Phase 11 trial replay evidence parameters: PARAM-ADP-123 through PARAM-ADP-127.
+- Active Phase 11 trial recovery evidence parameters: PARAM-ADP-128 through PARAM-ADP-132.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -290,6 +294,15 @@ daily refs, duplicate-free date/source/publication coverage, 7 consecutive days
 for weekly replay, 30 consecutive days for monthly replay, and a durable replay
 ref before its annotation hint can be used by the ops annotator.
 
+The trial recovery evidence builder generates an auditable recovery drill report
+from one failed, blocked, or degraded scheduled daily-run report and one later
+production-ready scheduled daily-run rerun. It requires real sent failure and
+recovery notifications, daily run, Release, SMTP, and resource refs on the
+recovery execution, durable refs for both executions, and matching daily dates
+when both reports include `daily_run_report` details. Its output is an
+annotation hint for the ops annotator and does not rerun the scheduler, send
+mail, upload Releases, mutate the trial ledger, or claim production acceptance.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -325,6 +338,10 @@ ref before its annotation hint can be used by the ops annotator.
 - Trial replay without a requested weekly or monthly mode -> replay evidence blocked.
 - Trial replay without a durable replay ref -> replay evidence blocked.
 - Trial replay with duplicate daily dates, source IDs, publication IDs, missing production refs, or insufficient consecutive coverage -> replay evidence blocked.
+- Trial recovery without a failed/degraded scheduled daily-run and a succeeded production-ready rerun -> recovery evidence blocked.
+- Trial recovery without real sent failure and recovery notifications -> recovery evidence blocked.
+- Trial recovery without durable failure and recovery refs -> recovery evidence blocked.
+- Trial recovery with mismatched failure/recovery daily dates when both are present -> recovery evidence blocked.
 - Missing production command, secret environment key, disk threshold, memory threshold, Git artifact hygiene, or local cache/staging cleanliness -> production preflight blocked.
 - Production preflight never logs secret values and never reads Codex auth.
 - Trial bootstrap without manual confirmation, self-hosted runner targeting, preflight-first ordering, artifact upload, GitHub secret-name mapping, or runbook evidence path -> bootstrap validation blocked.
@@ -368,3 +385,4 @@ Uncovered planned scenarios:
 - Local Python HTTPS certificate validation for `https://export.arxiv.org/api/query` currently blocks live source ingest on this machine.
 - Real SMTP delivery against the provisioned production SMTP server and archived message evidence.
 - Actual weekly/monthly replay execution archived under a durable GitHub Actions artifact or private Release ref.
+- Actual recovery drill execution archived under a durable GitHub Actions artifact or private Release ref.

@@ -34,6 +34,7 @@ from .trial import evaluate_trial_evidence, validate_trial_evidence_report
 from .trial_bootstrap import build_trial_bootstrap_plan, validate_trial_bootstrap_plan
 from .trial_ledger import update_trial_evidence_ledger, validate_trial_ledger_update_report
 from .trial_ops import annotate_trial_operational_evidence, validate_trial_ops_report
+from .trial_recovery import build_trial_recovery_evidence, validate_trial_recovery_report
 from .trial_replay import build_trial_replay_evidence, validate_trial_replay_report
 from .video import VideoPlanError, generate_storyboard
 
@@ -239,6 +240,17 @@ def build_parser() -> argparse.ArgumentParser:
     trial_replay.add_argument("--monthly-replay", action="store_true", help="Verify monthly replay coverage.")
     trial_replay.add_argument("--replay-ref", default="", help="Durable artifact, workflow, or Release ref for the replay evidence.")
     trial_replay.add_argument("--json", action="store_true", help="Print JSON replay evidence report.")
+
+    trial_recovery = subparsers.add_parser(
+        "build-trial-recovery-evidence",
+        help="Build fail-closed recovery drill evidence from failed and recovered scheduled daily runs.",
+    )
+    trial_recovery.add_argument("--failure-execution", required=True, help="Failed, blocked, or degraded scheduled execution report JSON.")
+    trial_recovery.add_argument("--recovery-execution", required=True, help="Recovered production-ready scheduled execution report JSON.")
+    trial_recovery.add_argument("--generated-at", required=True, help="Recovery evidence timestamp.")
+    trial_recovery.add_argument("--failure-ref", default="", help="Durable artifact, workflow, or Release ref for the failed execution.")
+    trial_recovery.add_argument("--recovery-ref", default="", help="Durable artifact, workflow, or Release ref for the recovered execution.")
+    trial_recovery.add_argument("--json", action="store_true", help="Print JSON recovery evidence report.")
 
     preflight = subparsers.add_parser("preflight-production", help="Run fail-closed production preflight before scheduled execution.")
     preflight.add_argument("--path", default=".", help="Repository path used for disk, Git, and cache checks.")
@@ -763,6 +775,34 @@ def main(argv: list[str] | None = None) -> int:
             for reason in report["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if report["replay_evidence_verified"] else 2
+    if args.command == "build-trial-recovery-evidence":
+        failure_report = load_json_mapping(args.failure_execution)
+        recovery_report = load_json_mapping(args.recovery_execution)
+        report = build_trial_recovery_evidence(
+            failure_report,
+            recovery_report,
+            generated_at=args.generated_at,
+            failure_ref=args.failure_ref,
+            recovery_ref=args.recovery_ref,
+        )
+        errors = validate_trial_recovery_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["recovery_drill_verified"]:
+            print(f"{report['recovery_report_id']}\t{report['recovery_ref']}")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["recovery_drill_verified"] else 2
     if args.command == "preflight-production":
         report = build_production_preflight(Path(args.path), generated_at=args.generated_at)
         errors = validate_production_preflight(report)

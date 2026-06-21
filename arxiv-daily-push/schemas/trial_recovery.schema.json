@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/trial_recovery.schema.json",
+  "title": "arXiv Daily Push Trial Recovery Evidence Report",
+  "type": "object",
+  "required": [
+    "recovery_report_id",
+    "model_id",
+    "project_id",
+    "generated_at",
+    "status",
+    "recovery_drill_verified",
+    "failure_ref",
+    "recovery_ref",
+    "failure_summary",
+    "recovery_summary",
+    "evidence_refs",
+    "annotation_hint",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "recovery_report_id": {"type": "string", "minLength": 1},
+    "model_id": {"const": "adp-trial-recovery-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "blocked"]},
+    "recovery_drill_verified": {"type": "boolean"},
+    "failure_ref": {"type": "string"},
+    "recovery_ref": {"type": "string"},
+    "failure_summary": {"type": "object"},
+    "recovery_summary": {"type": "object"},
+    "evidence_refs": {"type": "object"},
+    "annotation_hint": {"type": "object"},
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}},
+    "validation_errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

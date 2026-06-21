@@ -136,6 +136,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_replay.py", "arxiv-daily-push/tests/test_trial_replay.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-028"
+    statement: "Recovery drill evidence must be generated from an archived failed, blocked, or degraded scheduled daily-run report and a recovered production-ready rerun report with real sent notifications before it can be merged into trial evidence."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py", "arxiv-daily-push/tests/test_trial_recovery.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -560,3 +565,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/trial_replay.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
     test_refs: ["arxiv-daily-push/tests/test_trial_replay.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md"]
+
+  - model_id: "MOD-ADP-025"
+    name: "Trial recovery evidence builder"
+    kind: "deterministic recovery evidence validator"
+    purpose: "Build recovery drill evidence from a failed, blocked, or degraded scheduled daily-run plus a recovered production-ready rerun while blocking dry-run notifications or missing durable refs."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-trial-recovery-v1"
+    assumption_ids: ["ASM-ADP-028", "ASM-ADP-026", "ASM-ADP-022"]
+    formula_ids: ["FORM-ADP-027"]
+    parameter_ids: ["PARAM-ADP-128", "PARAM-ADP-129", "PARAM-ADP-130", "PARAM-ADP-131", "PARAM-ADP-132"]
+    inputs: ["failed scheduled execution report", "recovered scheduled execution report", "generated_at", "failure ref", "recovery ref"]
+    outputs: ["trial recovery evidence report", "annotation_hint", "failure_summary", "recovery_summary", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/trial_recovery.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_recovery.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md"]

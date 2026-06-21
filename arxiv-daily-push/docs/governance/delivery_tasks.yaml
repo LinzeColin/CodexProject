@@ -426,3 +426,20 @@ tasks:
     target_version: "0.11.14"
     completed_version: "0.11.14"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE11-TRIAL-RECOVERY-EVIDENCE-016"
+    phase: "E"
+    objective: "Add a fail-closed recovery drill evidence builder for failed and recovered scheduled daily-run reports."
+    scope: "Trial recovery evidence builder, CLI command, schema, tests, runbook, version and governance records."
+    non_scope: "No actual production recovery drill claim, no scheduler rerun, no SMTP send, no Release upload, no media/model/cache artifact retention, no trial evidence mutation, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-TRIAL-REPLAY-EVIDENCE-015"]
+    required_files: ["src/arxiv_daily_push/trial_recovery.py", "src/arxiv_daily_push/cli.py", "tests/test_trial_recovery.py", "schemas/trial_recovery.schema.json", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-TRIAL-RECOVERY-EVIDENCE"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_recovery.py arxiv-daily-push/tests/test_trial_replay.py arxiv-daily-push/tests/test_trial_ops.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused trial recovery/replay/ops/CLI tests: 21 tests OK", "build-trial-recovery-evidence fixture CLI: pass and JSON parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py", "arxiv-daily-push/tests/test_trial_recovery.py"]
+    risk: "Real recovery drill evidence still requires controlled production failure and recovery execution plus durable refs."
+    rollback: "Revert trial recovery builder, CLI command, schema, tests, runbook/docs/governance updates, and restore version 0.11.14."
+    target_version: "0.11.15"
+    completed_version: "0.11.15"
+    unknown_task_ids: []

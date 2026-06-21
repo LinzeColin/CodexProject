@@ -13,7 +13,7 @@ boundary, a scheduled production workflow gate, a controlled scheduled
 execution driver, a daily input builder from arXiv Atom source batches, an
 incremental trial evidence ledger update bridge, cross-run ledger state
 persistence, operational trial evidence annotation, weekly/monthly replay
-evidence generation, and tests.
+evidence generation, recovery drill evidence generation, and tests.
 
 ## Current Scope
 
@@ -43,6 +43,7 @@ Implemented now:
 - `adp annotate-trial-ops-evidence`
 - `adp export-trial-ops-state`
 - `adp build-trial-replay-evidence`
+- `adp build-trial-recovery-evidence`
 - `adp preflight-production`
 - `adp plan-trial-bootstrap`
 - `adp plan-production-scheduler`
@@ -60,6 +61,7 @@ Implemented now:
 - trial ledger state exporter and scheduled artifact restoration so 30-day evidence can accumulate across GitHub Actions runs
 - operational trial evidence annotator that merges explicit weekly/monthly replay, recovery drill, scheduler, Release, SMTP, and resource refs without hand-editing the ledger
 - weekly/monthly replay evidence builder that validates production-ready daily refs, duplicate-free coverage, 7-day weekly coverage, 30-day monthly coverage, and a durable replay evidence ref before producing annotation hints
+- recovery drill evidence builder that validates a failed or degraded scheduled daily-run plus a recovered production-ready rerun with real sent notifications and durable failure/recovery refs before producing annotation hints
 - deterministic 100-point ranking with per-component audit output
 - fail-closed candidate blocking for missing P0 evidence, metadata conflicts, and recent duplicate selections
 - Claim Ledger construction from explicit evidence claims
@@ -96,6 +98,7 @@ Not implemented yet:
 - verified private GitHub Release creation on a provisioned production runner
 - enabled scheduled runner execution on the default branch
 - actual weekly/monthly replay run archived with a durable production ref
+- actual recovery drill run archived with a durable production ref
 - claimed scheduled 30-day trial start
 - claimed 30-day operational acceptance
 
