@@ -9,36 +9,36 @@ Source: generated from machine governance registries, Git metadata, and validati
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - CI mode: `required`
-- Product version: `0.11.20`
+- Product version: `0.11.21`
 - Model versions: `MOD-ADP-001:adp-foundation-v1, MOD-ADP-002:adp-ranking-v1, MOD-ADP-003:adp-claim-gate-v1, +27`
 - Parameter profile versions: `adp-acceptance-parameters:adp-acceptance-parameters-v1.2, adp-arxiv-adapter-parameters:adp-arxiv-adapter-parameters-v1, adp-contract-parameters:adp-contract-parameters-v1, +27`
-- Current iteration: `ITER-20260621-039`
+- Current iteration: `ITER-20260621-040`
 - Current phase: `E`
 - Current gate: `ADP-PHASE11-PRODUCTION-TRIAL-START-BLOCKED`
 - Model count: `30`
 - Formula count: `32`
-- Parameter count: `159`
-- Task count: `34`
-- Unbound event count: `46`
+- Parameter count: `161`
+- Task count: `35`
+- Unbound event count: `47`
 - UNKNOWN/HUMAN_REVIEW_REQUIRED count: `0`
 - Semantic coverage: `machine_verified`
 - Semantic rollout task: `GOV-SEMANTIC-ADP-001`
 
 ## Latest Run
 
-- Event: `EVENT-20260622-ADP-046`
-- Task: `ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023`
-- Summary: Added a no-secret production refs readiness bundle for runner, SMTP secret-name, Release target, and workflow variable refs, and wired passing reports into production launch readiness while keeping real launch blocked until owner-provisioned refs and confirmation exist.
-- Model delta: Added MOD-ADP-030 adp-production-refs-v1 and kept production launch/acceptance fail-closed.
-- Parameter delta: Added PARAM-ADP-154 through PARAM-ADP-159 for production refs validator id, required SMTP secret names, workflow var names, ref keys, secret-like key blocklist, and no-side-effect safety.
-- Tests: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_production_refs.py arxiv-daily-push/tests/test_production_launch.py, PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q, python3 -m json.tool arxiv-daily-push/schemas/production_refs.schema.json, PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_semantic_extractors.py arxiv-daily-push, PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_project_governance.py --project arxiv-daily-push, PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests/governance -p 'test_*.py' -q, +1 more
-- Evidence: governance/run_manifests/ADP-PHASE11-PRODUCTION-REFS-BUNDLE-20260622.json, arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md, arxiv-daily-push/src/arxiv_daily_push/production_refs.py, arxiv-daily-push/tests/test_production_refs.py, arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md
+- Event: `EVENT-20260622-ADP-047`
+- Task: `ADP-PHASE11-RELEASE-PERMISSIONS-024`
+- Summary: Added machine-checked GitHub Actions contents: write permission requirements to the trial-start and scheduled production workflows so controlled Release evidence can be created after explicit enablement while uploads remain disabled by default.
+- Model delta: No new runtime model; MOD-ADP-018 and MOD-ADP-028 now include Release write permission parameters.
+- Parameter delta: Added PARAM-ADP-160 and PARAM-ADP-161 for scheduled and trial-start workflow contents: write requirements.
+- Tests: PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_start_workflow.py arxiv-daily-push/tests/test_production_scheduler.py -q, PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-trial-start-workflow --path . --generated-at 2026-06-22T18:00:00+10:00 --json, PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_cli2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-scheduler --path . --generated-at 2026-06-22T18:00:00+10:00 --json, PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_semantic_extractors.py arxiv-daily-push, PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_project_governance.py --project arxiv-daily-push, PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests/governance -p 'test_*.py' -q, +2 more
+- Evidence: governance/run_manifests/ADP-PHASE11-RELEASE-PERMISSIONS-20260622.json, arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_PERMISSIONS.md, .github/workflows/arxiv-daily-push-trial-start.yml, .github/workflows/arxiv-daily-push-scheduled.yml, arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md
 - Result: `pass`
-- Rollback: Revert production refs gate, CLI integration, schema, tests, runbook/phase record/governance updates, and restore version 0.11.19.
+- Rollback: Restore workflow contents permission to read, remove release write permission checks, remove PARAM-ADP-160/161, phase record, manifest, and governance updates, then restore version 0.11.20.
 
 ## Current Blockers
 
-Semantic coverage is machine_verified with 158 machine-checked active parameters and all 32 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. A no-secret production refs bundle gate now exists for runner, SMTP secret-name, Release target, and workflow variable readiness refs, and PR #32 remains merged to `main` at merge commit `df28c70f255d4db0cabf15d6555ce34a8b2fa560`; however production launch remains blocked by missing owner-provisioned durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, missing explicit launch confirmation, and missing default-branch trial-start run evidence. Production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
+Semantic coverage is machine_verified with 160 machine-checked active parameters and all 32 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. Trial-start and scheduled production workflows now declare machine-checked `contents: write` permission for controlled draft Release evidence, while Release upload remains disabled by default. Production launch remains blocked by missing owner-provisioned durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, missing explicit launch confirmation, and missing default-branch trial-start run evidence. Production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
 
 ## Semantic Coverage
 

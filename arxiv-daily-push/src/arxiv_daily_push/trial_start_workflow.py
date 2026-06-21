@@ -94,6 +94,11 @@ def build_trial_start_workflow_plan(path: Path | str | None = None, *, generated
             "workflow must expose SMTP and Release probes only through explicit GitHub variable gates",
         ),
         _check(
+            "release_write_permission_declared",
+            "contents: write" in workflow_text,
+            "workflow must declare contents: write so controlled Release probes can create draft Releases",
+        ),
+        _check(
             "release_target_declared",
             "vars.ADP_RELEASE_TARGET" in workflow_text,
             "workflow must map Release target through GitHub variables",
@@ -141,6 +146,7 @@ def build_trial_start_workflow_plan(path: Path | str | None = None, *, generated
         "default_side_effects_enabled": False,
         "requires_explicit_smtp_var": True,
         "requires_explicit_release_var": True,
+        "required_github_permissions": ["actions: read", "contents: write"],
         "secret_values_logged": False,
         "codex_auth_read": False,
         "checks": checks,

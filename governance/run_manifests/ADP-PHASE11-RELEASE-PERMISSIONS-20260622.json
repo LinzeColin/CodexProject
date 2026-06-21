@@ -1,0 +1,128 @@
+{
+  "run_id": "ADP-PHASE11-RELEASE-PERMISSIONS-20260622",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-PHASE11-RELEASE-PERMISSIONS-024",
+  "phase": "E",
+  "iteration_id": "ITER-20260621-040",
+  "generated_at": "2026-06-22T18:00:00+10:00",
+  "actor": "Codex",
+  "version_before": "0.11.20",
+  "version_after": "0.11.21",
+  "base_commit": "4795473858926de7e8e2b9f3eb4e8346ca3a20a2",
+  "objective": "Require GitHub Actions Release write permission for controlled trial-start and scheduled production Release evidence.",
+  "non_scope": [
+    "workflow dispatch",
+    "SMTP send",
+    "Release upload",
+    "secret value read",
+    "Codex auth read",
+    "production acceptance claim"
+  ],
+  "release_permission_gate": {
+    "permission": "contents: write",
+    "required_for": [
+      ".github/workflows/arxiv-daily-push-trial-start.yml",
+      ".github/workflows/arxiv-daily-push-scheduled.yml"
+    ],
+    "permission_checks": [
+      "trial_start_workflow.release_write_permission_declared",
+      "production_scheduler.release_write_permission_declared"
+    ],
+    "default_release_upload_enabled": false,
+    "real_upload_requires": [
+      "ADP_ALLOW_RELEASE_UPLOAD=true",
+      "ADP_RELEASE_TARGET",
+      "safe asset checks",
+      "gh available",
+      "release_delivery status created"
+    ],
+    "secret_values_logged": false,
+    "codex_auth_read": false,
+    "production_acceptance_claimed": false
+  },
+  "files_changed": [
+    ".github/workflows/arxiv-daily-push-trial-start.yml",
+    ".github/workflows/arxiv-daily-push-scheduled.yml",
+    "GOVERNANCE_DASHBOARD.md",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_PERMISSIONS.md",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py",
+    "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_production_scheduler.py",
+    "arxiv-daily-push/tests/test_trial_start_workflow.py",
+    "governance/run_manifests/ADP-PHASE11-RELEASE-PERMISSIONS-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "model_delta": "No new runtime model; MOD-ADP-018 and MOD-ADP-028 now include Release write permission parameters.",
+  "formula_delta": "Refreshed FORM-ADP-020 and FORM-ADP-030 implementation fingerprints after adding Release write permission checks.",
+  "parameter_delta": "Added PARAM-ADP-160 and PARAM-ADP-161 for scheduled and trial-start workflow contents: write requirements.",
+  "model_ids_changed": [],
+  "formula_ids_changed": [
+    "FORM-ADP-020",
+    "FORM-ADP-030"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-160",
+    "PARAM-ADP-161"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial_start_workflow.py arxiv-daily-push/tests/test_production_scheduler.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-trial-start-workflow --path . --generated-at 2026-06-22T18:00:00+10:00 --json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_cli2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-scheduler --path . --generated-at 2026-06-22T18:00:00+10:00 --json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_semantic3 python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_project2 python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_root2 python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_arxiv2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_perms_changed python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python3 -m json.tool governance/run_manifests/ADP-PHASE11-RELEASE-PERMISSIONS-20260622.json >/dev/null",
+    "python3 -c \"import json,pathlib; [json.loads(line) for line in pathlib.Path('arxiv-daily-push/docs/governance/development_events.jsonl').read_text().splitlines() if line.strip()]\"",
+    "git diff --check"
+  ],
+  "test_results": [
+    "focused trial-start workflow and production scheduler tests: 6 tests OK",
+    "plan-trial-start-workflow JSON: pass",
+    "plan-production-scheduler JSON: pass",
+    "semantic extractor: 160 active parameters and 32 active formulas checked with no errors",
+    "project governance: errors 0 warnings 0",
+    "root governance tests: 93 tests OK",
+    "arxiv-daily-push unit tests: 148 tests OK",
+    "changed-only enforce-sync semantic: errors 0 warnings 0; all registered projects errors 0 warnings 0",
+    "manifest JSON and development_events JSONL parse: pass",
+    "git diff --check: pass"
+  ],
+  "result": "pass",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_PERMISSIONS.md",
+    ".github/workflows/arxiv-daily-push-trial-start.yml",
+    ".github/workflows/arxiv-daily-push-scheduled.yml",
+    "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py",
+    "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py",
+    "arxiv-daily-push/tests/test_trial_start_workflow.py",
+    "arxiv-daily-push/tests/test_production_scheduler.py"
+  ],
+  "git_commit": "PENDING",
+  "fact_level": "EXTRACTED",
+  "result_commit": "PENDING",
+  "rollback": "Restore workflow contents permission to read, remove release write permission checks, remove PARAM-ADP-160/161, phase record, manifest, and governance updates, then restore version 0.11.20.",
+  "next_task": "PROVISION_REMAINING_PRODUCTION_REFS_AND_RERUN_LAUNCH_PRECHECK",
+  "risks": [
+    "The permission allows controlled draft Release creation only after ADP_ALLOW_RELEASE_UPLOAD=true and Release delivery checks pass; it does not enable upload by itself.",
+    "Production launch and 30-day acceptance remain blocked by external refs, trial-start evidence, real SMTP/Release evidence, replay/recovery/resource evidence, and 30 daily production entries."
+  ]
+}
