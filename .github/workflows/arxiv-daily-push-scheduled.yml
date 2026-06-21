@@ -91,6 +91,9 @@ jobs:
       ADP_RELEASE_TARGET: ${{ vars.ADP_RELEASE_TARGET }}
       ADP_SELF_HOSTED_RUNNER_LABEL: arxiv-daily-push
       ADP_SCHEDULED_RUN_ENABLED: ${{ vars.ADP_SCHEDULED_RUN_ENABLED }}
+      ADP_DAILY_INPUT_PATH: ${{ vars.ADP_DAILY_INPUT_PATH }}
+      ADP_ALLOW_SMTP_SEND: ${{ vars.ADP_ALLOW_SMTP_SEND }}
+      ADP_ALLOW_RELEASE_UPLOAD: ${{ vars.ADP_ALLOW_RELEASE_UPLOAD }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -129,26 +132,56 @@ jobs:
           path: ${{ runner.temp }}/adp-scheduled-preflight.json
           if-no-files-found: error
           retention-days: 35
-      - name: Stop if preflight blocked
-        if: steps.preflight.outputs.exit_code != '0'
-        shell: bash
-        run: |
-          echo "scheduled production preflight blocked; stopping before scheduled mode"
-          exit "${{ steps.preflight.outputs.exit_code }}"
       - name: Run scheduled mode
+        id: scheduled_execution
         shell: bash
         run: |
+          set +e
+          output="$RUNNER_TEMP/adp-scheduled-execution.json"
+          command=(
+            python3 -m arxiv_daily_push run-scheduled-production
+            --mode "${{ needs.gate.outputs.mode }}"
+            --generated-at "${{ steps.generated_at.outputs.value }}"
+            --preflight-report "$RUNNER_TEMP/adp-scheduled-preflight.json"
+            --json
+          )
+          if [ -n "${ADP_DAILY_INPUT_PATH:-}" ]; then
+            command+=(--daily-input "$ADP_DAILY_INPUT_PATH" --release-asset "$ADP_DAILY_INPUT_PATH")
+          fi
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_execution" \
+          PYTHONPATH=arxiv-daily-push/src \
+            "${command[@]}" > "$output"
+          code=$?
+          cat "$output"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
           {
             echo "## arXiv Daily Push scheduled mode"
             echo "- mode: ${{ needs.gate.outputs.mode }}"
             echo "- generated_at: ${{ steps.generated_at.outputs.value }}"
             echo "- scheduled_run_enabled: ${ADP_SCHEDULED_RUN_ENABLED:-false}"
-            echo "- release upload: disabled in scheduler gate"
-            echo "- SMTP send: disabled in scheduler gate"
+            echo "- real SMTP requested: ${ADP_ALLOW_SMTP_SEND:-false}"
+            echo "- real Release requested: ${ADP_ALLOW_RELEASE_UPLOAD:-false}"
+            echo "- execution_exit_code: $code"
           } >> "$GITHUB_STEP_SUMMARY"
-          if [ "${ADP_SCHEDULED_RUN_ENABLED:-false}" != "true" ]; then
-            echo "ADP_SCHEDULED_RUN_ENABLED is not true; failing closed before daily production side effects"
-            exit 1
-          fi
-          echo "scheduled daily production execution is intentionally blocked until the next controlled enablement phase"
-          exit 1
+          exit 0
+      - name: Upload scheduled execution artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-scheduled-execution
+          path: ${{ runner.temp }}/adp-scheduled-execution.json
+          if-no-files-found: error
+          retention-days: 35
+      - name: Stop if preflight blocked
+        if: steps.preflight.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "scheduled production preflight blocked; scheduled execution evidence was uploaded"
+          exit "${{ steps.preflight.outputs.exit_code }}"
+      - name: Stop if scheduled execution blocked
+        if: steps.scheduled_execution.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "scheduled execution did not produce production-ready evidence"
+          exit "${{ steps.scheduled_execution.outputs.exit_code }}"

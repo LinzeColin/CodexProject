@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.9 - 2026-06-21
+
+- Added `adp run-scheduled-production` and `adp-scheduled-execution-v1` as the controlled execution driver for scheduled health-check, daily-run, and watchdog modes.
+- Updated the scheduled GitHub workflow to upload `adp-scheduled-execution` evidence after preflight while still failing closed when preflight, daily input, SMTP, or Release evidence is missing.
+- Added scheduled execution schema and tests covering dry-run notification evidence, scheduled-run gating, degraded dry-run side effects, and mocked production-ready SMTP/Release evidence.
+
 ## 0.11.8 - 2026-06-21
 
 - Added `.github/workflows/arxiv-daily-push-scheduled.yml` with `Australia/Sydney` 04:45 health-check, 05:00 daily-run, and 05:10 watchdog schedule slots.

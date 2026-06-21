@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 18
-- formula_count: 20
-- parameter_count: 96
+- model_count: 19
+- formula_count: 21
+- parameter_count: 101
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -33,6 +33,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-016 | SMTP notification delivery boundary | deterministic notification transport gate | Produce dry-run SMTP delivery evidence by default and send real mail only with explicit allow flag plus configured SMTP environment keys | active | adp-smtp-delivery-v1 | `src/arxiv_daily_push/smtp_delivery.py` |
 | MOD-ADP-017 | GitHub Release delivery boundary | deterministic release transport gate | Produce dry-run Release delivery evidence by default and create a GitHub Release only with explicit upload flag, configured target, safe assets, and `gh` | active | adp-release-delivery-v1 | `src/arxiv_daily_push/release_delivery.py` |
 | MOD-ADP-018 | Scheduled production workflow gate | deterministic scheduler contract validator | Validate Australia/Sydney 04:45 health-check, 05:00 daily-run, and 05:10 watchdog schedules while keeping production side effects disabled by default | active | adp-production-scheduler-v1 | `src/arxiv_daily_push/production_scheduler.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
+| MOD-ADP-019 | Scheduled execution driver | deterministic scheduled execution gate | Convert scheduled health-check, daily-run, and watchdog invocations into evidence artifacts while blocking unsupported production acceptance | active | adp-scheduled-execution-v1 | `src/arxiv_daily_push/scheduled_execution.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 
 ## B. Assumptions
 
@@ -59,6 +60,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-019 | SMTP notification transport must default to dry-run, require explicit `--allow-send` for real mail, use only external environment keys for secrets, require TLS, and never log SMTP secret values or email body text. | `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`, `src/arxiv_daily_push/smtp_delivery.py`, `tests/test_notifications.py` | Phase 11 SMTP delivery readiness | active |
 | ASM-ADP-020 | GitHub Release transport must default to dry-run, require explicit `--allow-upload` for real Release creation, use `ADP_RELEASE_TARGET` or `--target`, avoid clobber upload, and never log Release notes, secrets, `gh` stdout, or `gh` stderr. | `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`, `src/arxiv_daily_push/release_delivery.py`, `tests/test_release_delivery.py` | Phase 11 Release delivery readiness | active |
 | ASM-ADP-021 | Scheduled production workflow must declare Australia/Sydney 04:45 health-check, 05:00 daily-run, and 05:10 watchdog slots, support manual rerun, run preflight first, and remain disabled unless production GitHub variables are explicitly configured. | `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`, `.github/workflows/arxiv-daily-push-scheduled.yml`, `src/arxiv_daily_push/production_scheduler.py`, `tests/test_production_scheduler.py` | Phase 11 scheduler readiness | active |
+| ASM-ADP-022 | Scheduled execution must produce evidence artifacts after preflight and may count as production evidence only when daily run, real SMTP, real Release, and resource evidence refs are present. | `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`, `src/arxiv_daily_push/scheduled_execution.py`, `tests/test_scheduled_execution.py` | Phase 11 scheduled execution readiness | active |
 
 ## C. Functions and Formulas
 
@@ -84,6 +86,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-018 emits SMTP delivery evidence in dry-run mode by default and blocks real sends unless explicit allow-send, SMTP env keys, recipient, TLS, and delivery checks pass.
 - FORM-ADP-019 emits GitHub Release delivery evidence in dry-run mode by default and blocks real Release creation unless explicit allow-upload, Release target, safe assets, `gh`, and no-clobber checks pass.
 - FORM-ADP-020 validates the scheduled production workflow contract across timezone schedule slots, manual rerun, production variable gates, preflight-first ordering, artifact evidence, and default side-effect disablement.
+- FORM-ADP-021 runs one scheduled mode and only marks production evidence ready when preflight, daily run, real SMTP, real Release, and resource evidence refs all pass.
 
 ## D. Parameters
 
@@ -107,6 +110,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 SMTP delivery parameters: PARAM-ADP-081 through PARAM-ADP-085.
 - Active Phase 11 Release delivery parameters: PARAM-ADP-086 through PARAM-ADP-091.
 - Active Phase 11 scheduler parameters: PARAM-ADP-092 through PARAM-ADP-096.
+- Active Phase 11 scheduled execution parameters: PARAM-ADP-097 through PARAM-ADP-101.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -216,10 +220,18 @@ contract before real scheduled execution is allowed. It requires timezone-aware
 `Australia/Sydney` schedule slots for the 04:45 health check, 05:00 daily run,
 and 05:10 watchdog; it supports manual rerun with explicit confirmation; it
 skips scheduled work unless `ADP_PRODUCTION_ENABLED=true`; it runs production
-preflight before any scheduled mode; and it keeps SMTP sending and Release
-upload disabled in this scheduler gate. Full daily production execution remains
-blocked until the next controlled enablement phase supplies the missing run
-logic and 30-day evidence.
+preflight before any scheduled mode; uploads preflight and scheduled execution
+evidence artifacts; and keeps real SMTP sending and Release upload off unless
+their dedicated enablement variables are explicitly configured.
+
+The scheduled execution driver is the runtime bridge after the scheduler gate.
+It reads the production preflight report, runs one scheduled mode, and produces
+an `adp-scheduled-execution-v1` report. Health-check can succeed when preflight
+passes. Daily-run remains blocked until `ADP_SCHEDULED_RUN_ENABLED=true` and a
+daily input package is supplied. Dry-run SMTP or dry-run Release side effects
+produce `degraded` evidence with exit code 2. Production evidence can be counted
+only when the daily run completes and real SMTP, real Release, and resource
+evidence refs are all present.
 
 ## F. Strategy Logic
 
@@ -263,6 +275,11 @@ logic and 30-day evidence.
 - SMTP delivery without `--allow-send` -> dry-run evidence only, no SMTP connection.
 - SMTP delivery with `--allow-send` but missing SMTP env keys, invalid port, wrong recipient, SMTP failure, or refused recipient -> blocked.
 - SMTP delivery reports never log SMTP secret values or email body text.
+- Scheduled workflow without `run-scheduled-production` or `adp-scheduled-execution` artifact upload -> scheduler validation blocked.
+- Scheduled daily execution without `ADP_SCHEDULED_RUN_ENABLED=true` -> scheduled execution blocked.
+- Scheduled daily execution without daily input package -> scheduled execution blocked.
+- Scheduled daily execution with dry-run SMTP or dry-run Release -> scheduled execution degraded and not production evidence.
+- Scheduled production evidence ready without daily run, Release, email, and resource refs -> validation error.
 - Production pass with any missing requirement -> acceptance validation error.
 
 ## G. Validation

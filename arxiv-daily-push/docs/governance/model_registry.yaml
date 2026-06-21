@@ -422,3 +422,21 @@ models:
     config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/production_scheduler.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"]
+
+  - model_id: "MOD-ADP-019"
+    name: "Scheduled execution driver"
+    kind: "deterministic scheduled execution gate"
+    purpose: "Run one scheduled health-check, daily-run, or watchdog mode after preflight and produce evidence without counting dry-run side effects as production acceptance."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-scheduled-execution-v1"
+    assumption_ids: ["ASM-ADP-022", "ASM-ADP-021", "ASM-ADP-016"]
+    formula_ids: ["FORM-ADP-021"]
+    parameter_ids: ["PARAM-ADP-097", "PARAM-ADP-098", "PARAM-ADP-099", "PARAM-ADP-100", "PARAM-ADP-101"]
+    inputs: ["scheduled mode", "generated_at", "production preflight report", "daily input package", "previous execution report", "SMTP/Release enablement variables"]
+    outputs: ["scheduled execution report", "notification report", "Release report", "evidence_refs", "production_evidence_ready"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/scheduled_execution.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md"]

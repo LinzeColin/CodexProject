@@ -10,5 +10,8 @@ real_email_send_enabled: false
 real_release_upload_enabled: false
 scheduled_production_enabled: false
 scheduled_run_enabled: false
+scheduled_daily_input_path: null
+allow_smtp_send_from_scheduler: false
+allow_release_upload_from_scheduler: false
 release_target_env_key: ADP_RELEASE_TARGET
 min_video_tts_free_disk_gib: 80
