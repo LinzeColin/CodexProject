@@ -16,6 +16,8 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
+sys.dont_write_bytecode = True
+
 ROOT = Path(__file__).resolve().parents[1]
 PROJECTS_FILE = ROOT / "governance" / "projects.yaml"
 
@@ -780,7 +782,7 @@ def git_changed_files() -> list[str]:
     changed: set[str] = set()
     for command in commands:
         try:
-            output = subprocess.check_output(command, cwd=ROOT, text=True)
+            output = subprocess.check_output(["git", "-c", "core.quotePath=false", *command[1:]], cwd=ROOT, text=True)
         except subprocess.CalledProcessError:
             continue
         changed.update(line.strip() for line in output.splitlines() if line.strip())
@@ -788,7 +790,7 @@ def git_changed_files() -> list[str]:
     if base_ref:
         try:
             output = subprocess.check_output(
-                ["git", "diff", "--name-only", f"origin/{base_ref}...HEAD"],
+                ["git", "-c", "core.quotePath=false", "diff", "--name-only", f"origin/{base_ref}...HEAD"],
                 cwd=ROOT,
                 text=True,
                 stderr=subprocess.DEVNULL,
@@ -861,6 +863,9 @@ def main(argv: list[str] | None = None) -> int:
     group.add_argument("--project", help="Validate one registered project by project_id or path.")
     group.add_argument("--changed-only", action="store_true", help="Validate root governance and changed project scopes.")
     parser.add_argument("--mode", choices=["advisory", "required"], help="Override project ci_mode.")
+    parser.add_argument("--enforce-sync", action="store_true", help="Enforce diff-driven governance update requirements.")
+    parser.add_argument("--semantic", action="store_true", help="Run semantic drift checks for current iterations, ledgers, and references.")
+    parser.add_argument("--drift-report", action="store_true", help="Print a machine-readable semantic drift report.")
     args = parser.parse_args(argv)
     if not (args.all or args.project or args.changed_only):
         args.changed_only = True
@@ -890,8 +895,20 @@ def main(argv: list[str] | None = None) -> int:
     for project in selected_projects:
         validate_project(validation, project, project_files, args.mode)
 
+    sync_exit_code = 0
+    if args.enforce_sync or args.semantic or args.drift_report:
+        import validate_governance_sync
+
+        sync_exit_code, _ = validate_governance_sync.validate(
+            all_projects=args.all,
+            changed_only=args.changed_only,
+            enforce_sync=args.enforce_sync,
+            semantic=args.semantic or args.all,
+            drift_report=args.drift_report,
+        )
+
     print_summary(validation, selected_projects)
-    return 1 if validation.errors else 0
+    return 1 if validation.errors or sync_exit_code else 0
 
 
 if __name__ == "__main__":

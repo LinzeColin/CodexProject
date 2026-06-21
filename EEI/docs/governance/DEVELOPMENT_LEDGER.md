@@ -10,9 +10,9 @@ This ledger is human-readable. The append-only machine record is `development_ev
 
 - Product version: `0.1.0`
 - Product version status: `provisional`
-- Current phase: `A`
-- Current gate: `GOV-G2-EEI-BASELINE`
-- Confirmed iteration count: 2
+- Current phase: `D`
+- Current gate: `TASK-T1307-A209-RUNNER-REPAIR-REMOTE-CI`
+- Confirmed iteration count: 16
 - Reconstructed development event count: 2
 - Current task: `TASK-T1307`
 - Blockers: A209 remains open until committed 4h and 24h operator soak evidence exists.

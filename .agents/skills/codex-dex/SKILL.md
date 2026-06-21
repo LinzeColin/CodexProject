@@ -126,6 +126,17 @@ Every event is append-only and records:
 - rollback
 - next task
 
+For behavior, parameter, configuration, data, evidence, or product changes,
+the changed files must satisfy the diff synchronization gate:
+
+```bash
+python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
+```
+
+If the gate identifies missing governance updates, update the canonical
+registries, ledger, tasks, traceability, version matrix, changelog, and generated
+status page in the same run or explicitly keep the task incomplete.
+
 ## Completion Gate
 
 Before reporting completion, run:
@@ -146,7 +157,8 @@ If either fails:
 For root governance changes, run:
 
 ```bash
-python scripts/validate_project_governance.py --all
+python scripts/validate_project_governance.py --all --semantic --drift-report
+python scripts/generate_governance_dashboard.py --write
 python -m unittest discover -s tests/governance -p 'test_*.py' -q
 ```
 

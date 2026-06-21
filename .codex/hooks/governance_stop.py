@@ -72,7 +72,7 @@ def main() -> int:
         return 0
 
     result = subprocess.run(
-        [sys.executable, str(validator), "--changed-only"],
+        [sys.executable, str(validator), "--changed-only", "--enforce-sync", "--semantic"],
         cwd=root,
         text=True,
         capture_output=True,

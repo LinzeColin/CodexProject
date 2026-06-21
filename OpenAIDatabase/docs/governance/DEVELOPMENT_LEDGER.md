@@ -11,8 +11,9 @@
 - current task: TASK-OAI-C-002
 - blockers: calibration evidence for heuristic weights is UNKNOWN and tracked by `TASK-OAI-B-001`
 
-Confirmed iterations are not inferred from commit count. The only confirmed
-iteration in this ledger is the current governance baseline run.
+Confirmed iterations are not inferred from commit count. This ledger currently
+records four confirmed iterations: the baseline run and three TASK-OAI-C-002
+follow-up governance and personalization hardening runs.
 
 ## Phase Matrix
 
