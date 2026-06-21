@@ -19,9 +19,9 @@ parameter_profile_versions:
   active_profile: "param-profile-20260620"
   legacy_profile: "rules-v1.0.0"
 data_snapshot_version: "NOT_APPLICABLE-governance-baseline-no-data-refresh"
-current_iteration: "ITER-20260620-001"
-current_phase: "A"
-current_gate: "GOV-P13-required-passed"
+current_iteration: "ITER-20260621-FIFA-001"
+current_phase: "B"
+current_gate: "GOV-SEMANTIC-FIFA-in-progress"
 legacy_version_labels:
   - label: "tab-research-pipeline package.json version"
     value: "0.1.0"
@@ -34,3 +34,4 @@ legacy_version_labels:
 notes:
   - "Product version is extracted from the active tab-research-pipeline package manifest. This governance baseline does not change product behavior."
   - "Active TAB research model versions are provisional because no separate code-level model version labels were found for those modules."
+  - "Review6-D semantic extractor rollout adds machine checks for 91 active parameters and 10 active formulas; 17 active parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-FIFA-001."
