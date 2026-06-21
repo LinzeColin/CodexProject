@@ -142,15 +142,32 @@ tasks:
     objective: "Connect local daily dry-run pipeline across source, ranking, evidence, lesson, narration, storyboard, and notification preview."
     scope: "Pipeline orchestration, RunRecord transitions, idempotent local state, and dry-run artifacts."
     non_scope: "No real SMTP, Release upload, or scheduled runner until later gates."
-    status: "planned"
+    status: "completed"
     dependencies: ["ADP-PHASE8-VIDEO-001"]
     required_files: ["src", "tests", "docs/governance"]
     acceptance_ids: ["ADP-ACC-PHASE9-LOCAL-PIPELINE"]
-    test_commands: []
-    test_results: ["NOT_RUN planned Phase 9"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 51 tests OK", "daily dry-run pipeline pass"]
     evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
     risk: "Pipeline must stay idempotent and avoid retained media/cache artifacts."
     rollback: "Remove Phase 9 local pipeline artifacts."
     target_version: "0.9.0"
+    completed_version: "0.9.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE10-RUNNER-RELEASE-EMAIL-001"
+    phase: "D"
+    objective: "Prepare runner, release, and email transport dry-run handoff without enabling unattended execution."
+    scope: "Runner config templates, release manifest preview, SMTP readiness preview, and fail-closed controls."
+    non_scope: "No real scheduler, Release upload, or SMTP send."
+    status: "planned"
+    dependencies: ["ADP-PHASE9-LOCAL-PIPELINE-001"]
+    required_files: ["src", "tests", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE10-RUNNER-RELEASE-EMAIL"]
+    test_commands: []
+    test_results: ["NOT_RUN planned Phase 10"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    risk: "Unattended execution and real email must remain disabled until final acceptance."
+    rollback: "Remove Phase 10 runner/release/email dry-run artifacts."
+    target_version: "0.10.0"
     completed_version: ""
     unknown_task_ids: []

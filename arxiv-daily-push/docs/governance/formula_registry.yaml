@@ -232,3 +232,24 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/fixtures/video_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md"]
+
+  - formula_id: "FORM-ADP-011"
+    model_id: "MOD-ADP-009"
+    assumption_ids: ["ASM-ADP-011"]
+    status: "active"
+    expression: "The dry-run pipeline succeeds only when the publication gate passes and RunRecord transitions follow created > health_checked > source_collected > evidence_bound > lesson_ready > storyboard_ready > publication_ready > notified > completed."
+    variables:
+      - name: "publish_allowed"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "Claim Ledger publication gate output"
+      - name: "run_state_sequence"
+        data_type: "list[str]"
+        unit: "states"
+        input_domain: "allowed RunRecord transition graph"
+    constraints: "Real SMTP, Release upload, and scheduler execution are not performed in Phase 9."
+    missing_policy: "Failed evidence gate or invalid RunRecord raises PipelineError."
+    output_range: "succeeded dry-run payload or PipelineError"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/pipeline.py"]
+    test_refs: ["arxiv-daily-push/tests/test_pipeline.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_09.md"]

@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.8.0`
+Active product version: `0.9.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.8.0
+- Product version: 0.9.0
 - Current phase: D
-- Current gate: ADP-PHASE8-VIDEO-DRY-RUN-PASS
-- Confirmed iteration count: 8
+- Current gate: ADP-PHASE9-LOCAL-PIPELINE-PASS
+- Confirmed iteration count: 9
 - Reconstructed event count: 0
-- Current task: ADP-PHASE9-LOCAL-PIPELINE-001
-- Blockers: Later phases still need local pipeline orchestration, real mail transport validation, runner automation, release readiness, and 30-day acceptance evidence.
+- Current task: ADP-PHASE10-RUNNER-RELEASE-EMAIL-001
+- Blockers: Later phases still need runner/release/email dry-run handoff and 30-day acceptance evidence.
 
 ## Phase Matrix
 
@@ -23,7 +23,7 @@ The append-only machine record is `development_events.jsonl`.
 | A | Phase 1 repository foundation | completed | CLI skeleton, governance records, and tests pass | `docs/phase_records/PHASE_01.md` |
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
-| D | TTS/video/local pipeline/GitHub automation | in_progress | media gates and daily pipeline pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; planned Phase 9-10 |
+| D | TTS/video/local pipeline/GitHub automation | in_progress | media gates and daily pipeline pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; planned Phase 10 |
 | E | Weekly/monthly trial and handoff | planned | 30-day acceptance passes | planned Phase 11 |
 
 ## Iteration Records
@@ -215,6 +215,20 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Local pipeline orchestration, Release upload, runner scheduling, and real SMTP transport remain future gates.
 - Rollback: Revert Phase 8 video dry-run code, tests, fixture, and governance updates.
 - Next step: Start Phase 9 local daily pipeline dry-run.
+
+### `ITER-20260621-009`
+
+- Date: 2026-06-21
+- Fact level: EXTRACTED for local dry-run pipeline code, CLI command, fixture, tests, and governance updates.
+- Version before: 0.8.0
+- Version after: 0.9.0
+- Base commit: 8eda3772f881a0aaaa388c3c488de7e3a0ef773c
+- Result commit: PENDING
+- Task IDs: ADP-PHASE9-LOCAL-PIPELINE-001
+- Goal: Implement local daily dry-run orchestration through completed RunRecord and email preview.
+- Assumptions: Phase 9 remains manual dry-run only and does not schedule runs, upload Releases, send SMTP mail, or retain media.
+- Test results: 51 unit tests OK.
+- Next step: Start Phase 10 runner/release/email dry-run handoff.
 
 ## Unknown Historical Periods
 

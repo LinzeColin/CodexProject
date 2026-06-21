@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.0 - 2026-06-21
+
+- Added Phase 9 local daily dry-run pipeline orchestration.
+- Added `adp run-daily-dry-run` for local source/claim JSON pipeline execution.
+- Added RunRecord state transitions through completed, publication gate, Lesson, Narration, Storyboard, and email preview output.
+- Added pipeline fixture and tests covering successful completion, evidence blocking, email preview, and CLI output.
+
 ## 0.8.0 - 2026-06-21
 
 - Added Phase 8 storyboard/video dry-run generation from narration JSON.
