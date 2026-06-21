@@ -61,6 +61,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md", "arxiv-daily-push/src/arxiv_daily_push/handoff.py", "arxiv-daily-push/tests/test_handoff.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-013"
+    statement: "Phase 11 generates a truthful acceptance and handoff readiness package; production acceptance remains blocked unless real 30-day trial, scheduler, Release, SMTP, and resource evidence is supplied."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md", "arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/tests/test_acceptance.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -237,3 +242,21 @@ models:
     config_refs: ["arxiv-daily-push/config/examples/notification.example.yaml"]
     test_refs: ["arxiv-daily-push/tests/test_handoff.py", "arxiv-daily-push/tests/fixtures/pipeline_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md"]
+
+  - model_id: "MOD-ADP-011"
+    name: "Final acceptance and handoff readiness gate"
+    kind: "deterministic acceptance gate"
+    purpose: "Build a final handoff package that separates dry-run readiness from production acceptance and blocks unsupported 30-day/live-operation claims."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-acceptance-v1"
+    assumption_ids: ["ASM-ADP-013"]
+    formula_ids: ["FORM-ADP-013"]
+    parameter_ids: ["PARAM-ADP-051", "PARAM-ADP-052", "PARAM-ADP-053", "PARAM-ADP-054", "PARAM-ADP-055"]
+    inputs: ["Phase 10 handoff", "optional operational evidence refs", "generated_at"]
+    outputs: ["acceptance package", "production_acceptance_status", "blocking_reasons", "next_actions"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    test_refs: ["arxiv-daily-push/tests/test_acceptance.py", "arxiv-daily-push/tests/fixtures/pipeline_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md"]

@@ -176,15 +176,15 @@ tasks:
     objective: "Generate final acceptance and handoff package for arXiv Daily Push without claiming live 30-day operation."
     scope: "Acceptance checklist, readiness evidence, local pressure report, GitHub PR sync summary, and next-run instructions."
     non_scope: "No fabricated 30-day trial results, no real scheduler, no Release upload, no SMTP send, and no retained media/model artifacts."
-    status: "planned"
+    status: "completed"
     dependencies: ["ADP-PHASE10-RUNNER-RELEASE-EMAIL-001"]
-    required_files: ["docs/phase_records/PHASE_11.md", "docs/governance", "README.md", "CHANGELOG.md"]
+    required_files: ["src/arxiv_daily_push/acceptance.py", "src/arxiv_daily_push/cli.py", "tests/test_acceptance.py", "docs/phase_records/PHASE_11.md", "docs/governance", "README.md", "CHANGELOG.md"]
     acceptance_ids: ["ADP-ACC-PHASE11-ACCEPTANCE-HANDOFF"]
-    test_commands: []
-    test_results: ["NOT_RUN planned Phase 11"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-    risk: "Operational 30-day evidence requires future scheduled production runs; Phase 11 can only document readiness unless those runs exist."
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 60 tests OK", "root governance tests: 31 tests OK", "acceptance gate tests: pass", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "production acceptance: blocked until live evidence exists"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md", "arxiv-daily-push/tests/test_acceptance.py"]
+    risk: "Operational 30-day evidence still requires future scheduled production runs; Phase 11 blocks production acceptance until those proofs exist."
     rollback: "Remove Phase 11 handoff-only records and restore Phase 10 current gate."
     target_version: "0.11.0"
-    completed_version: ""
+    completed_version: "0.11.0"
     unknown_task_ids: []
