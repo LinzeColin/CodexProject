@@ -107,6 +107,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── t1306_scale_benchmark_operator_contract.json
 │   │   │   └── t1306_scale_benchmark_smoke.json
 │   │   ├── a209
+│   │   │   ├── t1307_operator_soak_evidence_validation.json
 │   │   │   ├── t1307_operator_soak_readiness.checkpoints.jsonl
 │   │   │   ├── t1307_operator_soak_readiness.json
 │   │   │   └── t1307_soak_smoke.json
@@ -378,6 +379,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_governance.py
 │   ├── validate_governance_consistency.py
 │   ├── validate_model_config.py
+│   ├── validate_operator_soak_evidence.py
 │   ├── validate_prototype_parity.py
 │   ├── validate_task_pack.py
 │   ├── validate_ui_copy.py
@@ -416,6 +418,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── test_database_migrations.py
 │   └── unit
 │       ├── test_api_health.py
+│       ├── test_operator_soak_evidence.py
 │       ├── test_scale_benchmarks.py
 │       └── test_scoring.py
 ├── wireframes

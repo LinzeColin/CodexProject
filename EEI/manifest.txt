@@ -114,6 +114,7 @@ artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json
 artifacts/tests/a208/t1306_browser_runtime_benchmark.json
 artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json
 artifacts/tests/a208/t1306_scale_benchmark_smoke.json
+artifacts/tests/a209/t1307_operator_soak_evidence_validation.json
 artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl
 artifacts/tests/a209/t1307_operator_soak_readiness.json
 artifacts/tests/a209/t1307_soak_smoke.json
@@ -341,6 +342,7 @@ scripts/validate_github_governance.py
 scripts/validate_governance.py
 scripts/validate_governance_consistency.py
 scripts/validate_model_config.py
+scripts/validate_operator_soak_evidence.py
 scripts/validate_prototype_parity.py
 scripts/validate_task_pack.py
 scripts/validate_ui_copy.py
@@ -371,6 +373,7 @@ tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json
 tests/integration/README.md
 tests/integration/test_database_migrations.py
 tests/unit/test_api_health.py
+tests/unit/test_operator_soak_evidence.py
 tests/unit/test_scale_benchmarks.py
 tests/unit/test_scoring.py
 uv.lock
