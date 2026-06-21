@@ -1,0 +1,143 @@
+name: arXiv Daily Push production trial bootstrap
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_production_trial:
+        description: "Set true only after runner, SMTP, Release, and resource prerequisites are provisioned."
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      runner_label:
+        description: "Private self-hosted runner label for arXiv Daily Push."
+        required: true
+        default: "arxiv-daily-push"
+        type: string
+      mode:
+        description: "Bootstrap mode. preflight-only is the only enabled mode in this workflow."
+        required: true
+        default: "preflight-only"
+        type: choice
+        options:
+          - "preflight-only"
+      generated_at:
+        description: "Optional ISO timestamp for deterministic evidence. Empty uses current UTC."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arxiv-daily-push-production-trial-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report disabled dispatch
+        if: inputs.confirm_production_trial != 'true'
+        run: |
+          {
+            echo "## arXiv Daily Push production trial"
+            echo "- status: skipped"
+            echo "- reason: confirm_production_trial was not true"
+            echo "- no self-hosted runner job was started"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Report confirmed dispatch
+        if: inputs.confirm_production_trial == 'true'
+        run: |
+          {
+            echo "## arXiv Daily Push production trial"
+            echo "- status: confirmed"
+            echo "- mode: ${{ inputs.mode }}"
+            echo "- runner_label: ${{ inputs.runner_label }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  preflight:
+    needs: guard
+    if: inputs.confirm_production_trial == 'true' && inputs.mode == 'preflight-only'
+    runs-on:
+      - self-hosted
+      - "${{ inputs.runner_label }}"
+    timeout-minutes: 15
+    env:
+      ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
+      ADP_SMTP_PORT: ${{ secrets.ADP_SMTP_PORT }}
+      ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME }}
+      ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
+      ADP_RELEASE_TARGET: ${{ vars.ADP_RELEASE_TARGET }}
+      ADP_SELF_HOSTED_RUNNER_LABEL: ${{ inputs.runner_label }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Resolve generated_at
+        id: generated_at
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.generated_at }}" ]; then
+            printf 'value=%s\n' "${{ inputs.generated_at }}" >> "$GITHUB_OUTPUT"
+          else
+            printf 'value=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run production preflight
+        id: preflight
+        shell: bash
+        run: |
+          set +e
+          output="$RUNNER_TEMP/adp-production-preflight.json"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_preflight" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push preflight-production \
+              --path . \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --json > "$output"
+          code=$?
+          cat "$output"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload production preflight artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-production-preflight
+          path: ${{ runner.temp }}/adp-production-preflight.json
+          if-no-files-found: error
+          retention-days: 35
+      - name: Stop if preflight blocked
+        if: steps.preflight.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "production preflight blocked; stopping before trial execution"
+          exit "${{ steps.preflight.outputs.exit_code }}"
+      - name: Run project tests after preflight
+        shell: bash
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_tests" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m unittest discover -s arxiv-daily-push/tests -q
+      - name: Run governance validator after preflight
+        shell: bash
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_governance" \
+            python3 scripts/validate_project_governance.py --project arxiv-daily-push
+      - name: Write bootstrap summary
+        if: always()
+        run: |
+          {
+            echo "## arXiv Daily Push production trial bootstrap"
+            echo "- mode: ${{ inputs.mode }}"
+            echo "- generated_at: ${{ steps.generated_at.outputs.value }}"
+            echo "- preflight_exit_code: ${{ steps.preflight.outputs.exit_code || 'not_run' }}"
+            echo "- release upload: disabled"
+            echo "- SMTP send: disabled"
+            echo "- next: start 30-day trial only after preflight passes and production side effects are explicitly enabled"
+          } >> "$GITHUB_STEP_SUMMARY"

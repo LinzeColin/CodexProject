@@ -1,0 +1,863 @@
+governance_spec_version: "1.0.0"
+project_id: "arxiv-daily-push"
+formulas:
+  - formula_id: "FORM-ADP-001"
+    model_id: "MOD-ADP-001"
+    assumption_ids: ["ASM-ADP-001"]
+    status: "active"
+    expression: "If any Phase 1 required command is missing, status is blocked. Else if any future runtime command is missing or free disk is below the video/TTS threshold, status is warn. Else status is pass."
+    variables:
+      - name: "missing_required_commands"
+        data_type: "list[str]"
+        unit: "commands"
+        input_domain: "subset of phase1_required_commands"
+      - name: "missing_future_runtime_commands"
+        data_type: "list[str]"
+        unit: "commands"
+        input_domain: "subset of future_runtime_commands"
+      - name: "free_gib"
+        data_type: "float"
+        unit: "GiB"
+        input_domain: "0..unbounded"
+    constraints: "Required command failures dominate warning-level future runtime gaps."
+    missing_policy: "Unavailable command paths are represented as unavailable command_status entries."
+    output_range: "blocked, warn, or pass"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/doctor.py"]
+    test_refs: ["arxiv-daily-push/tests/test_doctor.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_01.md"]
+  - formula_id: "FORM-ADP-002"
+    model_id: "MOD-ADP-001"
+    assumption_ids: ["ASM-ADP-002"]
+    status: "active"
+    expression: "subject = [arXiv Daily Push][STATUS][date] summary. Body is a fixed key-value report containing project, run_id, date, timezone, status, phase, stage, claim_gate, publication, release_url, report_path, queue_health, degradation, next_action, and sha256."
+    variables:
+      - name: "status"
+        data_type: "str"
+        unit: "label"
+        input_domain: "any string normalized to uppercase"
+      - name: "run_id"
+        data_type: "str"
+        unit: "identifier"
+        input_domain: "non-secret run label"
+      - name: "recipient"
+        data_type: "str"
+        unit: "email"
+        input_domain: "configured recipient"
+    constraints: "Renderer does not read SMTP secrets and does not send mail."
+    missing_policy: "Default status, run_id, summary, date, phase, and stage are used for dry-run preview."
+    output_range: "EmailNotification subject, recipient, and body"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/notifications.py"]
+    test_refs: ["arxiv-daily-push/tests/test_notifications.py"]
+    evidence_refs: ["arxiv-daily-push/config/examples/notification.example.yaml"]
+  - formula_id: "FORM-ADP-005"
+    model_id: "MOD-ADP-004"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-004"]
+    status: "active"
+    expression: "Each contract object must include required fields and use the allowed enum set for its type; P0 EvidenceClaim records must include a stable locator such as stable_url, page, section, table, figure, or quote."
+    variables:
+      - name: "contract_kind"
+        data_type: "str"
+        unit: "enum"
+        input_domain: "source_item, evidence_claim, lesson, storyboard, publication"
+      - name: "required_fields"
+        data_type: "list[str]"
+        unit: "field names"
+        input_domain: "contract-specific required fields"
+      - name: "enum_value"
+        data_type: "str"
+        unit: "enum value"
+        input_domain: "declared parameter enum sets"
+    constraints: "Validation is dependency-free and has no network, filesystem write, or media side effect."
+    missing_policy: "Missing required field creates a validation error instead of imputation."
+    output_range: "empty error list for pass or one or more validation error strings"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/contracts.py"]
+    test_refs: ["arxiv-daily-push/tests/test_contracts.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md"]
+  - formula_id: "FORM-ADP-006"
+    model_id: "MOD-ADP-004"
+    assumption_ids: ["ASM-ADP-004"]
+    status: "active"
+    expression: "A RunRecord transition is valid only when next_state belongs to ALLOWED_TRANSITIONS[current_state]; completed, blocked, and failed are terminal."
+    variables:
+      - name: "current_state"
+        data_type: "str"
+        unit: "state"
+        input_domain: "RUN_STATES"
+      - name: "next_state"
+        data_type: "str"
+        unit: "state"
+        input_domain: "RUN_STATES"
+      - name: "state_history"
+        data_type: "list[object]"
+        unit: "transition records"
+        input_domain: "ordered transition list"
+    constraints: "Skipped states and unrecognized states fail closed."
+    missing_policy: "Missing RunRecord fields create validation errors."
+    output_range: "validated transition or validation error"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/state_machine.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_state_machine.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md"]
+  - formula_id: "FORM-ADP-007"
+    model_id: "MOD-ADP-005"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-005"]
+    status: "active"
+    expression: "Build URL = ARXIV_API_BASE_URL + encoded search_query, start, max_results, sortBy, sortOrder where 1 <= max_results <= 50; parse each Atom entry into SourceItem with arXiv-specific metadata under metadata.arxiv."
+    variables:
+      - name: "search_query"
+        data_type: "str"
+        unit: "arXiv query"
+        input_domain: "arXiv API search query"
+      - name: "max_results"
+        data_type: "int"
+        unit: "entries"
+        input_domain: "1..50 for Phase 3"
+      - name: "atom_entry"
+        data_type: "xml element"
+        unit: "entry"
+        input_domain: "Atom entry with arxiv namespace extensions"
+    constraints: "No bulk download, PDF download, or scheduled ingest in Phase 3."
+    missing_policy: "Malformed Atom XML or API error entries raise ArxivAdapterError."
+    output_range: "arXiv API URL or list[SourceItem]"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_arxiv_adapter.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_03.md", "https://info.arxiv.org/help/api/basics.html", "https://info.arxiv.org/help/api/user-manual.html"]
+  - formula_id: "FORM-ADP-003"
+    model_id: "MOD-ADP-002"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-006"]
+    status: "active"
+    expression: "selection_score = sum(normalized_component_signal * component_weight) across frontier_signal, evidence_reliability, novelty, transfer_value, problem_importance, taxonomy_priority, waiting_time, and diversity; weights sum to 100."
+    variables:
+      - name: "normalized_component_signal"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "0..1"
+      - name: "component_weight"
+        data_type: "float"
+        unit: "points"
+        input_domain: "5, 10, 15, or 20 depending on component"
+    constraints: "Same input must produce the same score; arXiv metadata conflicts and unsupported evidence block eligibility before ranking."
+    missing_policy: "Missing P0 evidence or missing component signal makes the item ineligible instead of imputing a score."
+    output_range: "0..100 points plus blocking reasons for ineligible candidates"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/ranking.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_ranking.py", "arxiv-daily-push/tests/fixtures/ranking_candidates.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_04.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+  - formula_id: "FORM-ADP-004"
+    model_id: "MOD-ADP-003"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-007"]
+    status: "active"
+    expression: "Publish is allowed only if every P0 claim has a Claim ID, source locator, supported status, and compatible metadata; arXiv preprint peer-review status cannot be upgraded without independent non-arXiv evidence."
+    variables:
+      - name: "claim"
+        data_type: "EvidenceClaim"
+        unit: "claim"
+        input_domain: "reported_result, author_claim, system_inference, analogy, uncertainty, metadata"
+    constraints: "Any unsupported P0 claim blocks publication."
+    missing_policy: "Missing locator or parse failure creates a blocking result."
+    output_range: "publish_allowed true or false plus Claim Ledger, Publication status, and blocking reasons"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/evidence_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_evidence_gate.py", "arxiv-daily-push/tests/fixtures/claim_ledger_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_05.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+
+  - formula_id: "FORM-ADP-008"
+    model_id: "MOD-ADP-006"
+    assumption_ids: ["ASM-ADP-008"]
+    status: "active"
+    expression: "A Lesson can be generated only when the Claim Ledger status is pass, at least one supported claim exists, Lesson.claim_ids are all supported Claim Ledger claim IDs, every section claim_id is present in Lesson.claim_ids, and every section body includes visible [claim_id] markers."
+    variables:
+      - name: "ledger_status"
+        data_type: "str"
+        unit: "status"
+        input_domain: "pass or blocked"
+      - name: "supported_claim_ids"
+        data_type: "list[str]"
+        unit: "claim identifiers"
+        input_domain: "Claim Ledger claims where support_status=supported"
+      - name: "section_claim_ids"
+        data_type: "list[str]"
+        unit: "claim identifiers"
+        input_domain: "per-section Lesson claim references"
+    constraints: "Unsupported, unverified, conflicted, or unregistered claim IDs cannot enter Lesson.claim_ids or section claim_ids."
+    missing_policy: "Missing supported evidence creates a LessonGenerationError rather than generated filler text."
+    output_range: "valid Lesson JSON or LessonGenerationError"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/fixtures/lesson_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+
+  - formula_id: "FORM-ADP-009"
+    model_id: "MOD-ADP-007"
+    assumption_ids: ["ASM-ADP-009"]
+    status: "active"
+    expression: "Narration can be generated only in dry_run mode; audio_synthesis_allowed, audio_write_allowed, and model_download_allowed must be false; each narration segment must map to one Lesson section and use only Lesson claim IDs."
+    variables:
+      - name: "tts_mode"
+        data_type: "str"
+        unit: "mode"
+        input_domain: "dry_run"
+      - name: "audio_synthesis_allowed"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "false in Phase 7"
+      - name: "segment_claim_ids"
+        data_type: "list[str]"
+        unit: "claim identifiers"
+        input_domain: "subset of Lesson.claim_ids"
+    constraints: "Phase 7 cannot write audio paths, download models, or synthesize voice output."
+    missing_policy: "Invalid Lesson input or real TTS request creates NarrationError rather than media output."
+    output_range: "valid Narration dry-run JSON or NarrationError"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/narration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_narration.py", "arxiv-daily-push/tests/fixtures/narration_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_07.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+
+  - formula_id: "FORM-ADP-010"
+    model_id: "MOD-ADP-008"
+    assumption_ids: ["ASM-ADP-010"]
+    status: "active"
+    expression: "Storyboard can be generated only as dry-run JSON; video_render_allowed, media_write_allowed, and asset_download_allowed must be false; each scene must map to narration claim IDs."
+    variables:
+      - name: "video_render_allowed"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "false in Phase 8"
+      - name: "media_write_allowed"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "false in Phase 8"
+      - name: "scene_claim_ids"
+        data_type: "list[str]"
+        unit: "claim identifiers"
+        input_domain: "subset of Narration.claim_ids"
+    constraints: "Phase 8 cannot render video, write media paths, or download external assets."
+    missing_policy: "Invalid narration input or media path output creates VideoPlanError rather than media output."
+    output_range: "valid Storyboard dry-run JSON or VideoPlanError"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/fixtures/video_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md"]
+
+  - formula_id: "FORM-ADP-011"
+    model_id: "MOD-ADP-009"
+    assumption_ids: ["ASM-ADP-011"]
+    status: "active"
+    expression: "The dry-run pipeline succeeds only when the publication gate passes and RunRecord transitions follow created > health_checked > source_collected > evidence_bound > lesson_ready > storyboard_ready > publication_ready > notified > completed."
+    variables:
+      - name: "publish_allowed"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "Claim Ledger publication gate output"
+      - name: "run_state_sequence"
+        data_type: "list[str]"
+        unit: "states"
+        input_domain: "allowed RunRecord transition graph"
+    constraints: "Real SMTP, Release upload, and scheduler execution are not performed in Phase 9."
+    missing_policy: "Failed evidence gate or invalid RunRecord raises PipelineError."
+    output_range: "succeeded dry-run payload or PipelineError"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/pipeline.py"]
+    test_refs: ["arxiv-daily-push/tests/test_pipeline.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_09.md"]
+
+  - formula_id: "FORM-ADP-012"
+    model_id: "MOD-ADP-010"
+    assumption_ids: ["ASM-ADP-012", "ASM-ADP-002"]
+    status: "active"
+    expression: "A Phase 10 handoff is valid only when the input RunRecord current_state is completed and scheduler_enabled, github_actions_runner_enabled, unattended_execution_allowed, release_upload_allowed, and real_smtp_send_enabled are all false; otherwise the handoff is blocked."
+    variables:
+      - name: "run_record_state"
+        data_type: "str"
+        unit: "state"
+        input_domain: "RunRecord.current_state"
+      - name: "external_side_effect_flags"
+        data_type: "map[str,bool]"
+        unit: "flags"
+        input_domain: "scheduler, runner, release, unattended, and SMTP booleans"
+      - name: "blocking_reasons"
+        data_type: "list[str]"
+        unit: "reasons"
+        input_domain: "non-empty disabled external side-effect explanation list"
+    constraints: "Phase 10 cannot run a scheduler, upload a Release, execute unattended, or send real SMTP mail."
+    missing_policy: "Missing RunRecord, incomplete RunRecord, missing gates, or missing blocking reasons creates a HandoffError or validation error."
+    output_range: "valid handoff preview or HandoffError/validation errors"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/handoff.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_handoff.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md"]
+
+  - formula_id: "FORM-ADP-013"
+    model_id: "MOD-ADP-011"
+    assumption_ids: ["ASM-ADP-013", "ASM-ADP-014", "ASM-ADP-015"]
+    status: "active"
+    expression: "A Phase 11 acceptance package is valid when the Phase 10 handoff is valid; production acceptance is pass only if evidence comes from the adp-trial-evidence-v1 report, 30-day trial, scheduler, Release, SMTP, and resource requirements all pass, and each passed requirement has a non-empty evidence_ref. If any production requirement, evidence_ref, or validator marker is missing, accepted_for_production must be false and blocking_reasons must be non-empty."
+    variables:
+      - name: "handoff_valid"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "validate_handoff output is empty"
+      - name: "production_requirements"
+        data_type: "list[object]"
+        unit: "requirement records"
+        input_domain: "30-day trial, scheduler, Release, SMTP, and resource evidence gates"
+      - name: "accepted_for_production"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "true only when every production requirement passes"
+      - name: "evidence_ref"
+        data_type: "str"
+        unit: "reference"
+        input_domain: "non-empty stable evidence reference for every passed requirement"
+      - name: "evidence_validator"
+        data_type: "str"
+        unit: "validator id"
+        input_domain: "adp-trial-evidence-v1"
+    constraints: "Dry-run handoff readiness is separate from production acceptance; raw manual booleans cannot be converted into a production pass."
+    missing_policy: "Missing operational evidence, missing evidence references, or missing trial validator report creates blocked production acceptance with explicit no-claim flags."
+    output_range: "acceptance package with production_acceptance_status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_acceptance.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md", "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"]
+
+  - formula_id: "FORM-ADP-014"
+    model_id: "MOD-ADP-012"
+    assumption_ids: ["ASM-ADP-015", "ASM-ADP-002"]
+    status: "active"
+    expression: "A trial evidence report passes only when at least 30 unique daily dates exist, source_id and publication_id values are unique, every daily run is succeeded or degraded, every P0 claim is traceable, no duplicate or unsupported publication is recorded, no misleading failure output is published, every daily run has RunRecord, Release, SMTP, and resource refs, the scheduler records 05:00 target and 04:45 health check with manual rerun evidence, weekly and monthly replay evidence exists, recovery drill evidence exists, real SMTP targets linzezhang35@gmail.com, and resource pressure evidence covers disk, memory, cache, Git artifacts, and secrets."
+    variables:
+      - name: "daily_runs"
+        data_type: "list[object]"
+        unit: "run records"
+        input_domain: "30 or more daily run evidence objects"
+      - name: "scheduler"
+        data_type: "object"
+        unit: "evidence"
+        input_domain: "enabled scheduler, target time, health check, rerun ref"
+      - name: "email"
+        data_type: "object"
+        unit: "evidence"
+        input_domain: "real SMTP delivery evidence for configured recipient"
+      - name: "resource_pressure"
+        data_type: "object"
+        unit: "evidence"
+        input_domain: "disk, memory, cache, Git artifact, and secret hygiene flags"
+    constraints: "The validator reads JSON metadata and refs only; it does not schedule jobs, upload releases, send SMTP mail, render media, or inspect secrets."
+    missing_policy: "Missing, duplicate, false, or unreferenced evidence creates blocked production evidence."
+    output_range: "trial evidence report with production_evidence_status pass or blocked plus operational_evidence for acceptance"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial.py", "arxiv-daily-push/tests/test_acceptance.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"]
+
+  - formula_id: "FORM-ADP-015"
+    model_id: "MOD-ADP-013"
+    assumption_ids: ["ASM-ADP-016", "ASM-ADP-002"]
+    status: "active"
+    expression: "Production preflight passes only when all required runtime commands are available, required secret environment keys are present without logging values, free disk is at least 80 GiB, memory is at least 8 GiB, Git tracked/untracked files contain no forbidden media/model/secret artifacts or oversized files, and local cache/staging/render/media/model/voice/release asset directories are empty."
+    variables:
+      - name: "required_commands"
+        data_type: "list[str]"
+        unit: "commands"
+        input_domain: "python3, git, node, npm, gh, ffmpeg, docker, codex"
+      - name: "required_secret_keys"
+        data_type: "list[str]"
+        unit: "environment variable names"
+        input_domain: "SMTP, Release target, and self-hosted runner label key names"
+      - name: "disk_free_gib"
+        data_type: "float"
+        unit: "GiB"
+        input_domain: "0..unbounded"
+      - name: "memory_total_gib"
+        data_type: "float"
+        unit: "GiB"
+        input_domain: "0..unbounded"
+      - name: "git_artifact_violations"
+        data_type: "list[object]"
+        unit: "files"
+        input_domain: "tracked and untracked Git file paths"
+    constraints: "Secret values and Codex auth are never read or printed; the preflight does not schedule, upload, send mail, render media, or download models."
+    missing_policy: "Any missing command, missing secret key, low resource value, Git artifact violation, or non-empty local artifact directory blocks production_run_allowed."
+    output_range: "production preflight report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_production_preflight.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md"]
+
+  - formula_id: "FORM-ADP-016"
+    model_id: "MOD-ADP-014"
+    assumption_ids: ["ASM-ADP-017", "ASM-ADP-016", "ASM-ADP-002"]
+    status: "active"
+    expression: "A production trial bootstrap plan passes only when the workflow and runbook exist, workflow_dispatch is present without schedule, confirm_production_trial is required before self-hosted execution, production preflight appears before project tests, the preflight JSON artifact is uploaded, required GitHub secret names and Release target variable are mapped, Codex auth is not referenced, and Release/SMTP side effects are absent."
+    variables:
+      - name: "workflow_text"
+        data_type: "str"
+        unit: "file contents"
+        input_domain: "GitHub Actions workflow file"
+      - name: "runbook_text"
+        data_type: "str"
+        unit: "file contents"
+        input_domain: "production trial runbook"
+      - name: "bootstrap_checks"
+        data_type: "list[object]"
+        unit: "checks"
+        input_domain: "manual dispatch, runner, preflight, artifact, secret, and side-effect checks"
+    constraints: "Bootstrap mode does not enable scheduled production, upload a Release, send SMTP mail, log secret values, or read Codex auth."
+    missing_policy: "Missing workflow, runbook, confirmation guard, preflight-first order, artifact upload, secret mapping, or runbook evidence path blocks trial_bootstrap_ready."
+    output_range: "trial bootstrap plan with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_bootstrap.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md"]
+
+  - formula_id: "FORM-ADP-017"
+    model_id: "MOD-ADP-015"
+    assumption_ids: ["ASM-ADP-018", "ASM-ADP-003"]
+    status: "active"
+    expression: "A live arXiv source batch passes only when a small Atom query fetch succeeds, all parsed entries validate as SourceItem objects, at least one item is not in seen_source_ids, PDF download and bulk harvest are disabled, and TLS/network/API/Atom errors are absent. If all fetched items are already seen or any fetch/parse/validation error occurs, the batch is blocked with reasons."
+    variables:
+      - name: "search_query"
+        data_type: "str"
+        unit: "arXiv API query"
+        input_domain: "configured arXiv search query"
+      - name: "max_results"
+        data_type: "int"
+        unit: "items"
+        input_domain: "1..25"
+      - name: "seen_source_ids"
+        data_type: "set[str]"
+        unit: "source IDs"
+        input_domain: "prior published source_id values"
+      - name: "source_items"
+        data_type: "list[SourceItem]"
+        unit: "records"
+        input_domain: "parsed arXiv Atom entries"
+    constraints: "The ingest command does not download PDFs, perform bulk metadata harvest, write repository files, or bypass TLS verification."
+    missing_policy: "Network, TLS, API, Atom parse, SourceItem validation, or duplicate-only conditions produce a blocked SourceBatch."
+    output_range: "SourceBatch with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_source_ingest.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "https://info.arxiv.org/help/api/user-manual.html"]
+
+  - formula_id: "FORM-ADP-018"
+    model_id: "MOD-ADP-016"
+    assumption_ids: ["ASM-ADP-019", "ASM-ADP-002"]
+    status: "active"
+    expression: "SMTP delivery evidence is dry-run by default. A real SMTP send is attempted only when allow_send is true, the recipient is the configured user email, all required SMTP environment keys are present, ADP_SMTP_PORT parses to 1..65535, TLS starts, login succeeds, and send_message returns no refused recipients. The report blocks on missing keys, invalid port, wrong recipient, SMTP exception, or refused recipient, and never logs SMTP secret values or email body text."
+    variables:
+      - name: "allow_send"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "CLI explicit flag"
+      - name: "recipient"
+        data_type: "str"
+        unit: "email"
+        input_domain: "configured notification recipient"
+      - name: "smtp_env_keys"
+        data_type: "list[str]"
+        unit: "environment variable names"
+        input_domain: "ADP_SMTP_HOST, ADP_SMTP_PORT, ADP_SMTP_USERNAME, ADP_SMTP_PASSWORD"
+      - name: "body_sha256"
+        data_type: "str"
+        unit: "hash"
+        input_domain: "email body content hash"
+    constraints: "Dry-run mode makes no SMTP connection. Real send mode does not log secret values, email body text, or Codex auth, and requires TLS."
+    missing_policy: "Missing env keys, invalid port, wrong recipient, SMTP exception, or refused recipients produce a blocked SMTP delivery report."
+    output_range: "SMTP delivery report with status dry_run, sent, or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md"]
+
+  - formula_id: "FORM-ADP-019"
+    model_id: "MOD-ADP-017"
+    assumption_ids: ["ASM-ADP-020", "ASM-ADP-003"]
+    status: "active"
+    expression: "Release delivery evidence is dry-run by default. A real GitHub Release creation is attempted only when allow_upload is true, a tag/title/notes are provided, at least one safe asset exists, ADP_RELEASE_TARGET or --target is present, gh is available, and no clobber upload is used. The report blocks on missing target, missing gh, missing/empty/oversized/secret-like/model assets, missing metadata, or gh nonzero exit, and never logs Release notes text, secret values, gh stdout, or gh stderr."
+    variables:
+      - name: "allow_upload"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "CLI explicit flag"
+      - name: "release_target"
+        data_type: "str"
+        unit: "commit-ish"
+        input_domain: "ADP_RELEASE_TARGET or --target"
+      - name: "asset_paths"
+        data_type: "list[path]"
+        unit: "files"
+        input_domain: "explicit local evidence/report assets"
+      - name: "asset_sha256"
+        data_type: "str"
+        unit: "hash"
+        input_domain: "streamed asset content hash"
+    constraints: "Dry-run mode makes no gh call. Real upload mode does not log Release notes, secret values, gh stdout, or gh stderr, and does not use --clobber."
+    missing_policy: "Missing metadata, missing target, unavailable gh, unsafe asset, or gh failure produces a blocked Release delivery report."
+    output_range: "Release delivery report with status dry_run, created, or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "https://cli.github.com/manual/gh_release_create"]
+
+  - formula_id: "FORM-ADP-020"
+    model_id: "MOD-ADP-018"
+    assumption_ids: ["ASM-ADP-021", "ASM-ADP-017"]
+    status: "active"
+    expression: "The production scheduler contract passes only when the GitHub workflow declares timezone-aware Australia/Sydney schedules for 04:45 health-check, 05:00 daily-run, and 05:10 watchdog, supports manual rerun with explicit confirmation, skips scheduled work unless ADP_PRODUCTION_ENABLED is true, targets the private self-hosted runner, runs production preflight before scheduled execution work, uploads preflight and scheduled execution evidence, builds and uploads daily source batch and daily input artifacts for daily-run when no override input path is configured, maps secret names without reading Codex auth, declares ADP_RELEASE_TARGET, and contains no --allow-send, --allow-upload, or direct gh Release command flags. Any missing schedule, missing gate, missing preflight ordering, missing artifact upload, secret/auth violation, or unsafe direct side-effect command blocks the scheduler plan."
+    variables:
+      - name: "schedule_slots"
+        data_type: "list[dict]"
+        unit: "local schedule slots"
+        input_domain: "04:45 health-check, 05:00 daily-run, 05:10 watchdog"
+      - name: "timezone"
+        data_type: "str"
+        unit: "IANA timezone"
+        input_domain: "Australia/Sydney"
+      - name: "production_enabled_var"
+        data_type: "str"
+        unit: "GitHub Actions variable"
+        input_domain: "ADP_PRODUCTION_ENABLED"
+      - name: "scheduled_run_enabled_var"
+        data_type: "str"
+        unit: "GitHub Actions variable"
+        input_domain: "ADP_SCHEDULED_RUN_ENABLED"
+    constraints: "Scheduler gate does not read Codex auth and does not hard-code SMTP send or Release upload flags. Schedule trigger readiness still depends on the workflow being merged to the default branch."
+    missing_policy: "Missing schedules, missing timezone, missing production gate, missing preflight-first ordering, missing preflight/execution artifact upload, or direct side-effect commands produce a blocked scheduler plan."
+    output_range: "Scheduler plan with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    test_refs: ["arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"]
+
+  - formula_id: "FORM-ADP-021"
+    model_id: "MOD-ADP-019"
+    assumption_ids: ["ASM-ADP-022", "ASM-ADP-021", "ASM-ADP-016"]
+    status: "active"
+    expression: "A scheduled execution report succeeds for health-check when production preflight passes. Daily-run is blocked unless ADP_SCHEDULED_RUN_ENABLED is true and a daily input package is supplied. Daily-run is production_evidence_ready only when the daily pipeline completes, Release delivery returns a release_ref, SMTP delivery returns an email delivery_ref, and the preflight resource gate provides a resource_gate_ref. Dry-run SMTP or dry-run Release output creates degraded evidence with exit_code 2 and cannot feed Phase 11 production acceptance. Watchdog succeeds only when previous daily execution evidence is production_evidence_ready."
+    variables:
+      - name: "mode"
+        data_type: "str"
+        unit: "scheduled mode"
+        input_domain: "health-check, daily-run, watchdog"
+      - name: "preflight_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "adp-production-preflight-v1"
+      - name: "scheduled_run_enabled"
+        data_type: "bool"
+        unit: "environment flag"
+        input_domain: "ADP_SCHEDULED_RUN_ENABLED"
+      - name: "side_effect_refs"
+        data_type: "dict"
+        unit: "evidence references"
+        input_domain: "daily_run_ref, release_ref, email_ref, resource_gate_ref"
+    constraints: "The driver never reads Codex auth, never logs secret values, never logs email body text, and never logs gh stdout or stderr. Real side effects require dedicated SMTP and Release delivery gates."
+    missing_policy: "Missing preflight pass, daily input, scheduled-run flag, previous watchdog evidence, or real side-effect evidence produces blocked or degraded scheduled execution."
+    output_range: "scheduled execution report with status succeeded, blocked, failed, or degraded"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md"]
+
+  - formula_id: "FORM-ADP-022"
+    model_id: "MOD-ADP-020"
+    assumption_ids: ["ASM-ADP-023", "ASM-ADP-018", "ASM-ADP-006"]
+    status: "active"
+    expression: "A daily input builder report passes only when the source batch validates as adp-live-arxiv-ingest-v1 with at least one new item, each selected candidate has an arXiv Atom summary, P0 evidence claims cite only the Atom summary locator, PDF download and bulk harvest are disabled, and the ranking selection audit returns a selected eligible candidate not present in recent_source_ids. Blocked source batches, missing summaries, metadata conflicts, recent duplicate selections, or ineligible ranking output produce a blocked daily input builder report."
+    variables:
+      - name: "source_batch"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "adp-live-arxiv-ingest-v1"
+      - name: "summary"
+        data_type: "str"
+        unit: "Atom field"
+        input_domain: "metadata.arxiv.summary"
+      - name: "recent_source_ids"
+        data_type: "set[str]"
+        unit: "source IDs"
+        input_domain: "recently selected daily sources"
+      - name: "selection"
+        data_type: "object"
+        unit: "ranking audit"
+        input_domain: "adp-ranking-v1 selection payload"
+    constraints: "The builder does not fetch network data itself, download PDFs, perform bulk harvest, infer peer review, or create media/model artifacts."
+    missing_policy: "Blocked source batch, no new items, missing summary, metadata conflict, or no selected candidate produces a blocked report."
+    output_range: "daily input builder report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/daily_input.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_daily_input.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md", "https://info.arxiv.org/help/api/user-manual.html"]
+
+  - formula_id: "FORM-ADP-023"
+    model_id: "MOD-ADP-021"
+    assumption_ids: ["ASM-ADP-024", "ASM-ADP-022", "ASM-ADP-015"]
+    status: "active"
+    expression: "A trial ledger update appends exactly one daily entry only when the scheduled execution report validates as adp-scheduled-execution-v1, mode is daily-run, production_evidence_ready is true, daily_run_report contains date, run_id, source_id, publication_id, P0 traceability true, unsupported/misleading publication flags false, evidence_refs contains daily_run_ref, release_ref, email_ref, and resource_gate_ref, and no existing daily_runs entry duplicates the new date, source_id, or publication_id. The updated evidence is immediately re-evaluated by adp-trial-evidence-v1; the ledger update can pass while production acceptance remains blocked."
+    variables:
+      - name: "scheduled_execution_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "adp-scheduled-execution-v1 daily-run report"
+      - name: "production_evidence_ready"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "true only when daily run, Release, SMTP, and resource refs exist"
+      - name: "daily_entry"
+        data_type: "object"
+        unit: "trial evidence daily run"
+        input_domain: "date, run_id, source_id, publication_id, refs, and safety flags"
+      - name: "existing_daily_runs"
+        data_type: "list[object]"
+        unit: "trial evidence entries"
+        input_domain: "existing daily_runs from trial evidence JSON"
+    constraints: "The updater does not send email, upload Releases, fetch arXiv, run the scheduler, create media, or mark weekly/monthly or recovery evidence complete by default."
+    missing_policy: "Invalid scheduled execution, non-production-ready evidence, missing refs, unsafe publication flags, or duplicate date/source/publication IDs produce a blocked ledger update report."
+    output_range: "trial ledger update report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md"]
+
+  - formula_id: "FORM-ADP-024"
+    model_id: "MOD-ADP-022"
+    assumption_ids: ["ASM-ADP-025", "ASM-ADP-024", "ASM-ADP-021"]
+    status: "active"
+    expression: "For scheduled daily-run, trial ledger state is resolved from ADP_TRIAL_EVIDENCE_INPUT_PATH when that file exists; otherwise the workflow uses gh run download to fetch the latest successful adp-trial-evidence-ledger artifact from prior scheduled workflow runs. After update-trial-ledger runs, export-trial-ledger-state writes the trial_evidence object only when ledger_updated is true. The workflow uploads a replacement adp-trial-evidence-ledger artifact only after that export exits 0."
+    variables:
+      - name: "configured_trial_evidence_path"
+        data_type: "path"
+        unit: "file"
+        input_domain: "ADP_TRIAL_EVIDENCE_INPUT_PATH"
+      - name: "previous_artifact_name"
+        data_type: "str"
+        unit: "GitHub Actions artifact"
+        input_domain: "adp-trial-evidence-ledger"
+      - name: "ledger_update_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "adp-trial-ledger-v1 update report"
+      - name: "export_exit_code"
+        data_type: "int"
+        unit: "process exit code"
+        input_domain: "0 for successful trial_evidence export"
+    constraints: "The state bridge stores only JSON trial evidence artifacts and does not commit state to Git, upload media/model/secrets, or replace state after blocked updates."
+    missing_policy: "Missing configured path and missing prior artifact start a new ledger; blocked update reports prevent state upload."
+    output_range: "restored trial evidence path or empty path; uploaded adp-trial-evidence-ledger state artifact only on successful export"
+    code_refs: [".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_production_scheduler.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
+
+  - formula_id: "FORM-ADP-025"
+    model_id: "MOD-ADP-023"
+    assumption_ids: ["ASM-ADP-026", "ASM-ADP-015", "ASM-ADP-025"]
+    status: "active"
+    expression: "A trial ops annotation passes only when at least one operational evidence update is requested and every verified operational flag has a non-empty evidence ref. Weekly/monthly replay refs require at least one replay verification flag, recovery refs require a recovery verification flag, and blocked annotations cannot be exported as replacement trial evidence state. The updated evidence is re-evaluated by adp-trial-evidence-v1; the ops annotation can pass while production acceptance remains blocked."
+    variables:
+      - name: "existing_trial_evidence"
+        data_type: "object"
+        unit: "JSON evidence"
+        input_domain: "adp-trial-evidence-v1 state"
+      - name: "weekly_monthly_ref"
+        data_type: "str"
+        unit: "evidence ref"
+        input_domain: "weekly and monthly replay artifact or Release ref"
+      - name: "recovery_ref"
+        data_type: "str"
+        unit: "evidence ref"
+        input_domain: "failure recovery drill artifact or run ref"
+      - name: "verified_flags"
+        data_type: "object"
+        unit: "booleans"
+        input_domain: "explicit operator supplied evidence flags"
+    constraints: "The annotator does not create weekly/monthly reports, run recovery drills, send SMTP, upload Releases, generate media, or claim production acceptance without validated trial evidence."
+    missing_policy: "No requested update, verified flag without ref, or ref without matching verification flag produces a blocked ops update report."
+    output_range: "trial ops annotation report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ops.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_ops.py", "arxiv-daily-push/tests/test_trial.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md"]
+
+  - formula_id: "FORM-ADP-026"
+    model_id: "MOD-ADP-024"
+    assumption_ids: ["ASM-ADP-027", "ASM-ADP-026", "ASM-ADP-024"]
+    status: "active"
+    expression: "A trial replay evidence report passes only when at least one replay mode is requested, a durable replay_ref is supplied, every daily entry has production run, Release, SMTP, and resource refs, daily dates/source IDs/publication IDs are unique, weekly replay has at least 7 consecutive daily entries, and monthly replay has at least 30 consecutive daily entries regardless of any lower period.expected_days value. Blocked replay reports cannot be used as weekly_monthly_ref annotation evidence."
+    variables:
+      - name: "existing_trial_evidence"
+        data_type: "object"
+        unit: "JSON evidence"
+        input_domain: "adp-trial-evidence-v1 state"
+      - name: "requested_replay_modes"
+        data_type: "object"
+        unit: "booleans"
+        input_domain: "weekly and monthly replay flags"
+      - name: "daily_entry_refs"
+        data_type: "list[object]"
+        unit: "evidence references"
+        input_domain: "run_record_ref, release_ref, email_ref, resource_gate_ref"
+      - name: "consecutive_day_coverage"
+        data_type: "int"
+        unit: "days"
+        input_domain: "longest consecutive ISO date streak"
+      - name: "replay_ref"
+        data_type: "str"
+        unit: "evidence ref"
+        input_domain: "durable GitHub Actions artifact, private Release, or equivalent ref"
+    constraints: "The replay builder does not mutate trial evidence, send email, upload Releases, fetch arXiv, generate media, or claim production acceptance."
+    missing_policy: "No replay mode, missing replay_ref, duplicate daily coverage, missing production refs, or insufficient consecutive coverage produces a blocked replay report."
+    output_range: "trial replay evidence report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_replay.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_replay.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md"]
+
+  - formula_id: "FORM-ADP-027"
+    model_id: "MOD-ADP-025"
+    assumption_ids: ["ASM-ADP-028", "ASM-ADP-026", "ASM-ADP-022"]
+    status: "active"
+    expression: "A trial recovery evidence report passes only when the failure report validates as adp-scheduled-execution-v1 daily-run with status blocked, failed, or degraded, exit_code 2, production_evidence_ready false, blocking reasons, and a real sent notification; the recovery report validates as adp-scheduled-execution-v1 daily-run with status succeeded, exit_code 0, production_evidence_ready true, a real sent notification, daily run, Release, SMTP, and resource refs, and no unsupported or misleading publication flags; both failure_ref and recovery_ref must be durable refs. When both reports include daily_run_report.date, the dates must match. Blocked recovery reports cannot be used as recovery_ref annotation evidence."
+    variables:
+      - name: "failure_execution_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "failed, blocked, or degraded adp-scheduled-execution-v1 daily-run report"
+      - name: "recovery_execution_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "succeeded production-ready adp-scheduled-execution-v1 daily-run report"
+      - name: "notification_reports"
+        data_type: "object"
+        unit: "SMTP delivery evidence"
+        input_domain: "sent adp-smtp-delivery-v1 reports with delivery_ref"
+      - name: "recovery_evidence_refs"
+        data_type: "object"
+        unit: "evidence references"
+        input_domain: "daily_run_ref, release_ref, email_ref, resource_gate_ref"
+      - name: "failure_ref_and_recovery_ref"
+        data_type: "str"
+        unit: "durable evidence refs"
+        input_domain: "GitHub Actions artifact, private Release, or equivalent refs containing a scheme"
+    constraints: "The recovery builder does not rerun the scheduler, send email, upload Releases, fetch arXiv, generate media, mutate trial evidence, or claim production acceptance."
+    missing_policy: "Invalid scheduled reports, dry-run or missing notifications, non-production-ready recovery evidence, missing refs, unsafe publication flags, or mismatched dates produce a blocked recovery report."
+    output_range: "trial recovery evidence report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_recovery.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md"]
+
+  - formula_id: "FORM-ADP-028"
+    model_id: "MOD-ADP-026"
+    assumption_ids: ["ASM-ADP-029", "ASM-ADP-016", "ASM-ADP-026"]
+    status: "active"
+    expression: "A trial resource evidence report passes only when the trial evidence contains at least 30 unique daily resource_gate_ref values, every daily resource ref is matched by a production preflight report whose adp-production-preflight-v1 validation passes, production_run_allowed is true, resource_evidence.resource_pressure_ok is true, disk_pressure, memory_pressure, git_artifact_hygiene, local_artifact_cache, and secret_environment gates pass, and a durable resource_ref is supplied. Blocked resource reports cannot be used as resource_ref annotation evidence."
+    variables:
+      - name: "trial_evidence"
+        data_type: "object"
+        unit: "JSON evidence"
+        input_domain: "adp-trial-evidence-v1 state"
+      - name: "daily_resource_refs"
+        data_type: "list[str]"
+        unit: "resource refs"
+        input_domain: "daily_runs[].resource_gate_ref"
+      - name: "preflight_reports"
+        data_type: "list[object]"
+        unit: "JSON reports"
+        input_domain: "adp-production-preflight-v1 production preflight reports"
+      - name: "required_preflight_gates"
+        data_type: "list[str]"
+        unit: "gate ids"
+        input_domain: "disk_pressure, memory_pressure, git_artifact_hygiene, local_artifact_cache, secret_environment"
+      - name: "resource_ref"
+        data_type: "str"
+        unit: "evidence ref"
+        input_domain: "durable GitHub Actions artifact, private Release, or equivalent ref"
+    constraints: "The resource builder does not run preflight, mutate trial evidence, send SMTP, upload Releases, generate media, or claim production acceptance."
+    missing_policy: "Missing daily resource refs, duplicate/static refs, invalid or blocked preflight reports, unmatched refs, failing resource gates, or missing resource_ref produce a blocked resource report."
+    output_range: "trial resource evidence report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_resource.py", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_resource.py", "arxiv-daily-push/tests/test_production_preflight.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md"]
+
+  - formula_id: "FORM-ADP-029"
+    model_id: "MOD-ADP-027"
+    assumption_ids: ["ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
+    status: "active"
+    expression: "A trial start readiness report passes only when confirm_start is true, all required durable refs contain a scheme separator, production preflight validates and allows production, the bootstrap and scheduler plans validate as ready, the live arXiv source batch passes with at least one unseen item and no PDF or bulk harvest behavior, the SMTP report is real sent evidence whose delivery_ref matches smtp_ref, the Release report is real created evidence whose release_ref matches release_ref, and the gate performs no side effects or production acceptance claim."
+    variables:
+      - name: "confirm_start"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "explicit CLI flag or function argument"
+      - name: "preflight_report"
+        data_type: "object"
+        unit: "JSON report"
+        input_domain: "adp-production-preflight-v1"
+      - name: "bootstrap_plan"
+        data_type: "object"
+        unit: "JSON plan"
+        input_domain: "adp-trial-bootstrap-v1"
+      - name: "scheduler_plan"
+        data_type: "object"
+        unit: "JSON plan"
+        input_domain: "adp-production-scheduler-v1"
+      - name: "source_batch"
+        data_type: "object"
+        unit: "JSON batch"
+        input_domain: "adp-live-arxiv-ingest-v1"
+      - name: "delivery_reports"
+        data_type: "object"
+        unit: "JSON reports"
+        input_domain: "adp-smtp-delivery-v1 and adp-release-delivery-v1"
+      - name: "evidence_refs"
+        data_type: "map[str,str]"
+        unit: "durable refs"
+        input_domain: "default branch, runner, preflight, source, SMTP, Release, scheduler, trial state, and start gate refs"
+    constraints: "The start gate does not enable schedules, send SMTP, create Releases, mutate trial evidence, generate media, retain cache/model artifacts, or claim production acceptance."
+    missing_policy: "Missing confirmation, missing durable refs, blocked upstream reports, dry-run SMTP or Release probes, mismatched refs, or any validation error produce a blocked trial start report."
+    output_range: "trial start readiness report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_start.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md"]
+
+  - formula_id: "FORM-ADP-030"
+    model_id: "MOD-ADP-028"
+    assumption_ids: ["ASM-ADP-031", "ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
+    status: "active"
+    expression: "A trial start workflow plan passes only when the workflow is manual-only, requires confirm_trial_start before self-hosted runner work, targets a private runner label, runs preflight before live source and delivery probes, runs live source before SMTP or Release probes, invokes plan-trial-start with --confirm-start and all durable ref arguments, uploads the complete trial start artifact set, maps only secret names without reading Codex auth, and exposes real SMTP or Release probes only through explicit ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD GitHub variables."
+    variables:
+      - name: "workflow_text"
+        data_type: "str"
+        unit: "YAML"
+        input_domain: ".github/workflows/arxiv-daily-push-trial-start.yml"
+      - name: "required_artifacts"
+        data_type: "list[str]"
+        unit: "artifact names"
+        input_domain: "trial start preflight, bootstrap, scheduler, source, SMTP, Release, and gate artifacts"
+      - name: "side_effect_gates"
+        data_type: "list[str]"
+        unit: "GitHub variables"
+        input_domain: "ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD"
+      - name: "durable_ref_args"
+        data_type: "list[str]"
+        unit: "CLI args"
+        input_domain: "all plan-trial-start ref arguments"
+    constraints: "The validator does not run GitHub Actions, send SMTP, create Releases, fetch arXiv, mutate trial evidence, generate media, or claim production acceptance."
+    missing_policy: "Missing workflow file, missing manual confirmation, missing artifact upload, unsafe secret/auth handling, missing side-effect gates, missing durable refs, or missing runbook documentation produce a blocked workflow plan."
+    output_range: "trial start workflow plan with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-trial-start.yml"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_start_workflow.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md"]
+
+  - formula_id: "FORM-ADP-031"
+    model_id: "MOD-ADP-029"
+    assumption_ids: ["ASM-ADP-032", "ASM-ADP-031", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
+    status: "active"
+    expression: "A production launch readiness report passes only when confirm_launch is true, current PR metadata is present, the PR is non-draft and merged into main, the observed head_sha equals the expected head SHA, the trial start workflow contract validates as ready, default branch, runner, SMTP secrets, Release target, workflow variable, and trial start workflow refs are durable, and the gate performs no side effects, reads no Codex auth, logs no secret values, and claims no production acceptance."
+    variables:
+      - name: "pr_info"
+        data_type: "object"
+        unit: "GitHub metadata"
+        input_domain: "current PR metadata JSON with state, merged, draft, base, and head_sha"
+      - name: "expected_head_sha"
+        data_type: "str"
+        unit: "git SHA"
+        input_domain: "expected PR head SHA captured before launch"
+      - name: "workflow_plan"
+        data_type: "object"
+        unit: "JSON plan"
+        input_domain: "adp-trial-start-workflow-v1"
+      - name: "external_readiness_refs"
+        data_type: "map[str,str]"
+        unit: "durable refs"
+        input_domain: "default branch, runner, SMTP secrets, Release target, workflow vars, and trial start workflow refs"
+      - name: "confirm_launch"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "explicit CLI flag or function argument"
+    constraints: "The launch readiness gate does not merge PRs, dispatch workflows, send SMTP, create Releases, fetch arXiv, mutate trial evidence, generate media, read secret values, read Codex auth, or claim production acceptance."
+    missing_policy: "Missing confirmation, missing PR metadata, draft or unmerged PR state, head SHA mismatch, blocked workflow contract, or missing durable readiness refs produce a blocked launch readiness report."
+    output_range: "production launch readiness report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_launch.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_production_launch.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md"]

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/trial_resource.schema.json",
+  "title": "arXiv Daily Push Trial Resource Evidence Report",
+  "type": "object",
+  "required": [
+    "resource_report_id",
+    "model_id",
+    "project_id",
+    "generated_at",
+    "status",
+    "trial_id",
+    "expected_days",
+    "resource_pressure_verified",
+    "resource_evidence_ref",
+    "observed_day_count",
+    "daily_resource_refs",
+    "preflight_resource_refs",
+    "coverage",
+    "annotation_hint",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "resource_report_id": {"type": "string", "minLength": 1},
+    "model_id": {"const": "adp-trial-resource-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "blocked"]},
+    "trial_id": {"type": "string", "minLength": 1},
+    "expected_days": {"type": "integer", "minimum": 1},
+    "resource_pressure_verified": {"type": "boolean"},
+    "resource_evidence_ref": {"type": "string"},
+    "observed_day_count": {"type": "integer", "minimum": 0},
+    "daily_resource_refs": {"type": "array", "items": {"type": "object"}},
+    "preflight_resource_refs": {"type": "array", "items": {"type": "object"}},
+    "coverage": {"type": "object"},
+    "annotation_hint": {"type": "object"},
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}},
+    "validation_errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

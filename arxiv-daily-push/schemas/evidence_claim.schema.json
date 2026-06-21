@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/evidence_claim.schema.json",
+  "title": "EvidenceClaim",
+  "type": "object",
+  "required": ["claim_id", "source_id", "claim_type", "priority", "statement", "locator", "support_status", "extracted_at"],
+  "properties": {
+    "claim_id": {"type": "string", "minLength": 1},
+    "source_id": {"type": "string", "minLength": 1},
+    "claim_type": {
+      "type": "string",
+      "enum": ["reported_result", "author_claim", "system_inference", "analogy", "uncertainty", "metadata"]
+    },
+    "priority": {"type": "string", "enum": ["P0", "P1", "P2"]},
+    "statement": {"type": "string", "minLength": 1},
+    "locator": {
+      "type": "object",
+      "required": ["locator_type"],
+      "properties": {
+        "locator_type": {"type": "string"},
+        "stable_url": {"type": "string"},
+        "page": {"type": "string"},
+        "section": {"type": "string"},
+        "table": {"type": "string"},
+        "figure": {"type": "string"},
+        "quote": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "support_status": {"type": "string", "enum": ["supported", "unsupported", "conflict", "unverified"]},
+    "extracted_at": {"type": "string"},
+    "notes": {"type": "string"}
+  },
+  "additionalProperties": false
+}

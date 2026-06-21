@@ -498,6 +498,26 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertTrue(validation.errors)
         self.assertIn("files_changed does not cover", validation.errors[0].message)
 
+    def test_review5_root_governance_change_requires_sync_markers(self) -> None:
+        sync = load_sync_module()
+        changed = ["governance/projects.yaml", "GOVERNANCE_DASHBOARD.md"]
+        validation = sync.SyncValidation()
+
+        sync.root_sync_requirements(validation, ["governance/projects.yaml"], changed)
+
+        messages = [issue.message for issue in validation.issues]
+        self.assertIn("Root governance change requires updated run_manifest", messages)
+        self.assertIn("Root governance change requires updated governance_tests", messages)
+
+        covered = [
+            *changed,
+            "governance/run_manifests/ADP-PHASE1-FOUNDATION-20260621.json",
+            "tests/governance/test_project_governance_validator.py",
+        ]
+        validation = sync.SyncValidation()
+        sync.root_sync_requirements(validation, ["governance/projects.yaml"], covered)
+        self.assertFalse(validation.errors)
+
     def test_review5_version_matrix_current_iteration_mismatch_fails(self) -> None:
         sync = load_sync_module()
         with tempfile.TemporaryDirectory() as tmp:
@@ -1076,6 +1096,233 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "evidence_refs",
         }:
             self.assertIn(field, manifest)
+
+    def test_arxiv_daily_push_phase2_manifest_records_contract_gate(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE2-DATA-CONTRACTS-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE2-DATA-CONTRACTS-001")
+        self.assertIn("MOD-ADP-004", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase3_manifest_records_arxiv_adapter_gate(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE3-ARXIV-ADAPTER-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE3-ARXIV-ADAPTER-001")
+        self.assertIn("MOD-ADP-005", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase4_manifest_records_ranking_gate(self) -> None:
+        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE4-RANKING-20260621.json").read_text())
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE4-RANKING-001")
+        self.assertIn("MOD-ADP-002", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase5_manifest_records_evidence_gate(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE5-EVIDENCE-GATE-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE5-EVIDENCE-GATE-001")
+        self.assertIn("MOD-ADP-003", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase6_manifest_records_lesson_gate(self) -> None:
+        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE6-LESSON-20260621.json").read_text())
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE6-LESSON-001")
+        self.assertIn("MOD-ADP-006", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase7_manifest_records_narration_gate(self) -> None:
+        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE7-TTS-20260621.json").read_text())
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE7-TTS-001")
+        self.assertIn("MOD-ADP-007", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase8_manifest_records_video_gate(self) -> None:
+        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE8-VIDEO-20260621.json").read_text())
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE8-VIDEO-001")
+        self.assertIn("MOD-ADP-008", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase9_manifest_records_pipeline_gate(self) -> None:
+        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE9-LOCAL-PIPELINE-20260621.json").read_text())
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE9-LOCAL-PIPELINE-001")
+        self.assertIn("MOD-ADP-009", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase10_manifest_records_handoff_gate(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE10-RUNNER-RELEASE-EMAIL-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE10-RUNNER-RELEASE-EMAIL-001")
+        self.assertIn("MOD-ADP-010", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_acceptance_gate(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-ACCEPTANCE-HANDOFF-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-ACCEPTANCE-HANDOFF-001")
+        self.assertIn("MOD-ADP-011", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_evidence_ref_hardening(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-EVIDENCE-REF-HARDENING-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-EVIDENCE-REF-HARDENING-002")
+        self.assertIn("MOD-ADP-011", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_trial_evidence_validator(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-003")
+        self.assertIn("MOD-ADP-012", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_production_preflight(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-PRODUCTION-PREFLIGHT-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-PREFLIGHT-004")
+        self.assertIn("MOD-ADP-013", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_trial_bootstrap(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-BOOTSTRAP-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-BOOTSTRAP-005")
+        self.assertIn("MOD-ADP-014", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_live_arxiv_ingest(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-LIVE-ARXIV-INGEST-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-LIVE-ARXIV-INGEST-006")
+        self.assertIn("MOD-ADP-015", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_smtp_delivery(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-SMTP-DELIVERY-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-SMTP-DELIVERY-007")
+        self.assertIn("MOD-ADP-016", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_release_delivery(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-RELEASE-DELIVERY-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-RELEASE-DELIVERY-008")
+        self.assertIn("MOD-ADP-017", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_production_scheduler(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-PRODUCTION-SCHEDULER-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-SCHEDULER-009")
+        self.assertIn("MOD-ADP-018", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_scheduled_execution(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-SCHEDULED-EXECUTION-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-SCHEDULED-EXECUTION-010")
+        self.assertIn("MOD-ADP-019", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_daily_input_builder(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-DAILY-INPUT-BUILDER-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-DAILY-INPUT-BUILDER-011")
+        self.assertIn("MOD-ADP-020", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_trial_ledger(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-LEDGER-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-LEDGER-012")
+        self.assertIn("MOD-ADP-021", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_trial_ledger_state(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-LEDGER-STATE-20260622.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-LEDGER-STATE-013")
+        self.assertIn("MOD-ADP-022", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_trial_ops_evidence(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-OPS-EVIDENCE-20260622.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-OPS-EVIDENCE-014")
+        self.assertIn("MOD-ADP-023", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_trial_replay_evidence(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-REPLAY-EVIDENCE-20260622.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-REPLAY-EVIDENCE-015")
+        self.assertIn("MOD-ADP-024", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_trial_recovery_evidence(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-RECOVERY-EVIDENCE-20260622.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-RECOVERY-EVIDENCE-016")
+        self.assertIn("MOD-ADP-025", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_trial_resource_evidence(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-RESOURCE-EVIDENCE-20260622.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-RESOURCE-EVIDENCE-017")
+        self.assertIn("MOD-ADP-026", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_trial_start_gate(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-START-GATE-20260622.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-START-GATE-018")
+        self.assertIn("MOD-ADP-027", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_trial_start_workflow(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-START-WORKFLOW-20260622.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-START-WORKFLOW-019")
+        self.assertIn("MOD-ADP-028", manifest["model_delta"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_production_launch_readiness(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020")
+        self.assertIn("MOD-ADP-029", manifest["model_delta"])
 
 
 if __name__ == "__main__":

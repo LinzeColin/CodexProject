@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/smtp_delivery.schema.json",
+  "title": "arXiv Daily Push SMTP Delivery Evidence",
+  "type": "object",
+  "required": [
+    "delivery_id",
+    "validator_id",
+    "project_id",
+    "generated_at",
+    "recipient",
+    "status",
+    "dry_run",
+    "real_smtp_send_enabled",
+    "required_env_keys",
+    "smtp_config",
+    "message",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "delivery_id": {"type": "string"},
+    "validator_id": {"const": "adp-smtp-delivery-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "project_name": {"const": "arXiv Daily Push"},
+    "generated_at": {"type": "string"},
+    "recipient": {"const": "linzezhang35@gmail.com"},
+    "expected_recipient": {"const": "linzezhang35@gmail.com"},
+    "subject": {"type": "string"},
+    "status": {"type": "string", "enum": ["dry_run", "sent", "blocked"]},
+    "dry_run": {"type": "boolean"},
+    "real_smtp_send_enabled": {"type": "boolean"},
+    "required_env_keys": {"type": "array", "items": {"type": "string"}},
+    "smtp_config": {
+      "type": "object",
+      "required": [
+        "host_configured",
+        "port_configured",
+        "username_configured",
+        "password_configured",
+        "port_valid",
+        "require_tls",
+        "timeout_seconds",
+        "secret_values_logged"
+      ],
+      "properties": {
+        "host_configured": {"type": "boolean"},
+        "port_configured": {"type": "boolean"},
+        "username_configured": {"type": "boolean"},
+        "password_configured": {"type": "boolean"},
+        "port_valid": {"type": "boolean"},
+        "require_tls": {"const": true},
+        "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 300},
+        "secret_values_logged": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "message": {
+      "type": "object",
+      "required": ["body_sha256", "body_logged", "message_id"],
+      "properties": {
+        "body_sha256": {"type": "string"},
+        "body_logged": {"const": false},
+        "message_id": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "delivery_ref": {"type": "string"},
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

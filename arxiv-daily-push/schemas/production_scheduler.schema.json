@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/production_scheduler.schema.json",
+  "title": "arXiv Daily Push Production Scheduler Plan",
+  "type": "object",
+  "required": [
+    "validator_id",
+    "project_id",
+    "status",
+    "scheduler_contract_ready",
+    "workflow_path",
+    "runbook_path",
+    "timezone",
+    "schedule_slots",
+    "checks",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "plan_id": {"type": "string"},
+    "validator_id": {"const": "adp-production-scheduler-v1"},
+    "project_id": {"const": "arxiv-daily-push"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "blocked", "invalid"]},
+    "scheduler_contract_ready": {"type": "boolean"},
+    "workflow_path": {"type": "string"},
+    "runbook_path": {"type": "string"},
+    "timezone": {"const": "Australia/Sydney"},
+    "schedule_slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["mode", "local_time", "cron"],
+        "properties": {
+          "mode": {"type": "string", "enum": ["health-check", "daily-run", "watchdog"]},
+          "local_time": {"type": "string"},
+          "cron": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "required_github_secrets": {"type": "array", "items": {"type": "string"}},
+    "required_github_vars": {"type": "array", "items": {"type": "string"}},
+    "scheduled_production_enabled": {"const": false},
+    "scheduled_run_enabled": {"const": false},
+    "release_upload_enabled": {"const": false},
+    "real_smtp_send_enabled": {"const": false},
+    "secret_values_logged": {"const": false},
+    "codex_auth_read": {"const": false},
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "passed", "blocking_reasons"],
+        "properties": {
+          "check_id": {"type": "string"},
+          "passed": {"type": "boolean"},
+          "blocking_reasons": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}},
+    "next_external_actions": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
