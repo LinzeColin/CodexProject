@@ -10,8 +10,9 @@ daily dry-run orchestration, runner/release/email dry-run handoff, final
 acceptance/handoff readiness packaging, small-window live arXiv ingest, an
 explicit SMTP delivery boundary, a fail-closed GitHub Release delivery
 boundary, a scheduled production workflow gate, a controlled scheduled
-execution driver, a daily input builder from arXiv Atom source batches, and
-an incremental trial evidence ledger update bridge, and tests.
+execution driver, a daily input builder from arXiv Atom source batches, an
+incremental trial evidence ledger update bridge, cross-run ledger state
+persistence, and operational trial evidence annotation, and tests.
 
 ## Current Scope
 
@@ -38,6 +39,8 @@ Implemented now:
 - `adp evaluate-trial`
 - `adp update-trial-ledger`
 - `adp export-trial-ledger-state`
+- `adp annotate-trial-ops-evidence`
+- `adp export-trial-ops-state`
 - `adp preflight-production`
 - `adp plan-trial-bootstrap`
 - `adp plan-production-scheduler`
@@ -53,6 +56,7 @@ Implemented now:
 - deterministic daily input builder that converts an arXiv `SourceBatch` into ranked daily pipeline input using only Atom `<summary>` claims
 - incremental trial evidence ledger updater that appends only production-ready scheduled daily-run reports and blocks duplicate or dry-run evidence
 - trial ledger state exporter and scheduled artifact restoration so 30-day evidence can accumulate across GitHub Actions runs
+- operational trial evidence annotator that merges explicit weekly/monthly replay, recovery drill, scheduler, Release, SMTP, and resource refs without hand-editing the ledger
 - deterministic 100-point ranking with per-component audit output
 - fail-closed candidate blocking for missing P0 evidence, metadata conflicts, and recent duplicate selections
 - Claim Ledger construction from explicit evidence claims

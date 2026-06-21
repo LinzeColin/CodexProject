@@ -630,3 +630,32 @@ formulas:
     code_refs: [".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_production_scheduler.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
+
+  - formula_id: "FORM-ADP-025"
+    model_id: "MOD-ADP-023"
+    assumption_ids: ["ASM-ADP-026", "ASM-ADP-015", "ASM-ADP-025"]
+    status: "active"
+    expression: "A trial ops annotation passes only when at least one operational evidence update is requested and every verified operational flag has a non-empty evidence ref. Weekly/monthly replay refs require at least one replay verification flag, recovery refs require a recovery verification flag, and blocked annotations cannot be exported as replacement trial evidence state. The updated evidence is re-evaluated by adp-trial-evidence-v1; the ops annotation can pass while production acceptance remains blocked."
+    variables:
+      - name: "existing_trial_evidence"
+        data_type: "object"
+        unit: "JSON evidence"
+        input_domain: "adp-trial-evidence-v1 state"
+      - name: "weekly_monthly_ref"
+        data_type: "str"
+        unit: "evidence ref"
+        input_domain: "weekly and monthly replay artifact or Release ref"
+      - name: "recovery_ref"
+        data_type: "str"
+        unit: "evidence ref"
+        input_domain: "failure recovery drill artifact or run ref"
+      - name: "verified_flags"
+        data_type: "object"
+        unit: "booleans"
+        input_domain: "explicit operator supplied evidence flags"
+    constraints: "The annotator does not create weekly/monthly reports, run recovery drills, send SMTP, upload Releases, generate media, or claim production acceptance without validated trial evidence."
+    missing_policy: "No requested update, verified flag without ref, or ref without matching verification flag produces a blocked ops update report."
+    output_range: "trial ops annotation report with status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ops.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_trial_ops.py", "arxiv-daily-push/tests/test_trial.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md"]

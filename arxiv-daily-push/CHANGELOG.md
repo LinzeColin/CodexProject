@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.13 - 2026-06-22
+
+- Added `adp annotate-trial-ops-evidence` for fail-closed annotation of explicit weekly/monthly replay, recovery drill, scheduler, Release, SMTP, and resource evidence refs.
+- Added `adp export-trial-ops-state` so a passing ops annotation can carry forward the updated `trial_evidence` JSON without hand-editing state.
+- Added tests that block verified operational flags without refs and prove weekly/monthly plus recovery evidence can unlock the final trial validator when all daily evidence already exists.
+
 ## 0.11.12 - 2026-06-22
 
 - Added `adp export-trial-ledger-state` to export the accumulated `trial_evidence` JSON from a passing ledger update report.
