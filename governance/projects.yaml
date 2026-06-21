@@ -16,14 +16,19 @@ root_governance:
     - "docs/governance/templates/delivery_tasks.template.yaml"
     - "docs/governance/templates/TRACEABILITY_MATRIX.template.csv"
     - "docs/governance/templates/INCIDENT_RESPONSE.template.md"
+    - "docs/governance/templates/OWNER_STATUS.template.md"
     - "docs/governance/CODEX_SETUP.md"
     - "governance/projects.yaml"
     - "governance/schemas/model_registry.schema.json"
     - "governance/schemas/formula_registry.schema.json"
     - "governance/schemas/delivery_tasks.schema.json"
     - "governance/schemas/incident_response.schema.json"
+    - "governance/schemas/ci_attestation.schema.json"
     - "scripts/validate_project_governance.py"
     - "scripts/validate_governance_sync.py"
+    - "scripts/validate_semantic_extractors.py"
+    - "scripts/validate_ci_attestation.py"
+    - "scripts/governance_setup_doctor.py"
     - "scripts/generate_governance_dashboard.py"
     - "tests/governance/test_project_governance_validator.py"
     - ".github/workflows/project-governance.yml"
@@ -44,6 +49,7 @@ project_governance_files:
   - "docs/governance/VERSION_MATRIX.yaml"
   - "docs/governance/TRACEABILITY_MATRIX.csv"
   - "docs/governance/STATUS.md"
+  - "docs/governance/OWNER_STATUS.md"
   - "VERSION"
   - "CHANGELOG.md"
 projects:
@@ -51,6 +57,15 @@ projects:
     path: "Alpha"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
+    semantic_coverage:
+      status: "in_progress"
+      task_id: "GOV-SEMANTIC-ALPHA-001"
+      acceptance_id: "ACC-SEMANTIC-ALPHA-001"
+      target: "Add machine source selectors for active parameters and implementation fingerprints for active formulas."
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; Alpha now machine-checks 42 active parameters and 9 active formulas while 13 branch-rule parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-ALPHA-001."
     model_behavior_globs:
       - "backend/**/*.py"
       - "configs/**/*.yaml"
@@ -61,6 +76,15 @@ projects:
     path: "EEI"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
+    semantic_coverage:
+      status: "in_progress"
+      task_id: "GOV-SEMANTIC-EEI-001"
+      acceptance_id: "ACC-SEMANTIC-EEI-001"
+      target: "Bind EEI active parameter_catalog and model/formula registries to machine extractors without changing runtime behavior."
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-001.json"
+      owner: "project owner"
+      rationale: "EEI now has partial machine semantic extraction for 54 active parameters and 10 active formulas; 7 UNKNOWN motion parameters and FORM-012 remain task-bound."
     model_behavior_globs:
       - "apps/**"
       - "packages/**"
@@ -75,6 +99,15 @@ projects:
     path: "EVA_OS"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
+    semantic_coverage:
+      status: "in_progress"
+      task_id: "GOV-SEMANTIC-EVA-001"
+      acceptance_id: "ACC-SEMANTIC-EVA-001"
+      target: "Add machine selectors for strategy parameters and fingerprints for active strategy formulas."
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; EVA_OS now machine-checks 52 active parameters and 16 active formulas while remaining parameters stay HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-EVA-001."
     model_behavior_globs:
       - "src/**"
       - "systems/**"
@@ -86,6 +119,15 @@ projects:
     path: "FIFA"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
+    semantic_coverage:
+      status: "in_progress"
+      task_id: "GOV-SEMANTIC-FIFA-001"
+      acceptance_id: "ACC-SEMANTIC-FIFA-001"
+      target: "Add extractors for parser constants, validation rules, and active governance formulas."
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; FIFA now machine-checks 91 active parameters and 10 active formulas while 17 active parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-FIFA-001."
     model_behavior_globs:
       - "tab-research-pipeline/**"
       - "docs/**"
@@ -94,6 +136,15 @@ projects:
     path: "OpMe_System"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
+    semantic_coverage:
+      status: "in_progress"
+      task_id: "GOV-SEMANTIC-OPME-001"
+      acceptance_id: "ACC-SEMANTIC-OPME-001"
+      target: "Add extractors for analysis rule constants and fingerprints for active deterministic formulas."
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; OpMe_System now machine-checks 49 active parameters and 7 active formulas while calibration, prompt/provider policy, and signoff evidence remain blocked under TASK-OPME-B-001."
     model_behavior_globs:
       - "backend/**"
       - "frontend/**"
@@ -104,6 +155,15 @@ projects:
     path: "OpenAIDatabase"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
+    semantic_coverage:
+      status: "in_progress"
+      task_id: "GOV-SEMANTIC-OAIDB-001"
+      acceptance_id: "ACC-SEMANTIC-OAIDB-001"
+      target: "Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints."
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; OpenAIDatabase now machine-checks 28 active parameters and 10 active formulas while remaining active parameters and FORM-010 stay HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-OAIDB-001."
     model_behavior_globs:
       - "apps/**"
       - "config/**"
@@ -115,6 +175,15 @@ projects:
     path: "PFI/大数据模拟器"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
+    semantic_coverage:
+      status: "in_progress"
+      task_id: "GOV-SEMANTIC-PFI-001"
+      acceptance_id: "ACC-SEMANTIC-PFI-001"
+      target: "Add extractors for simulator strategy defaults, risk controls, and active formula fingerprints."
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-PFI-EXTRACT-001.json"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; PFI_BIG_DATA_SIMULATOR now machine-checks 211 active parameters and 15 active formulas while PARAM-110 and PARAM-111 remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-PFI-001."
     model_behavior_globs:
       - "config/**"
       - "qbvs/**"
@@ -126,6 +195,15 @@ projects:
     path: "Serenity-Alipay"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
+    semantic_coverage:
+      status: "machine_verified"
+      task_id: "TASK-B-003"
+      acceptance_id: "ACC-B-003"
+      target: "Machine-check active parameter values and active formula implementation fingerprints."
+      evidence_ref: "governance/run_manifests/GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001.json"
+      owner: "project owner"
+      rationale: "Review6-B enabled 49 active parameter checks and 12 active formula fingerprints."
     model_behavior_globs:
       - "app/**/*.py"
       - "tests/**/*.py"
@@ -136,6 +214,15 @@ projects:
     path: "whkmSalary"
     ci_mode: "required"
     status: "existing"
+    semantic_extractors: true
+    semantic_coverage:
+      status: "in_progress"
+      task_id: "GOV-SEMANTIC-WHKM-001"
+      acceptance_id: "ACC-SEMANTIC-WHKM-001"
+      target: "Add extractors for salary constants, policy formula references, and active formula fingerprints."
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json"
+      owner: "project owner"
+      rationale: "Review6-D rollout guard; whkmSalary now machine-checks 78 active parameters and 9 active formulas while PARAM-004, PARAM-005, and FORM-010 remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-WHKM-001."
     model_behavior_globs:
       - "*.py"
       - "tests/**/*.py"
@@ -145,6 +232,14 @@ projects:
     path: "arxiv-daily-push"
     ci_mode: "required"
     status: "existing"
+    semantic_coverage:
+      status: "planned"
+      task_id: "GOV-SEMANTIC-ADP-001"
+      acceptance_id: "ACC-SEMANTIC-ADP-001"
+      target: "Add machine extractors for arXiv Daily Push active parameter values and formula implementation fingerprints without changing runtime behavior."
+      evidence_ref: "governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json"
+      owner: "project owner"
+      rationale: "Main branch governance now requires every required project to carry a semantic coverage rollout contract. arXiv Daily Push does not yet claim machine-verified semantic extraction, so coverage remains planned and task-bound."
     model_behavior_globs:
       - "src/**/*.py"
       - "tests/**/*.py"

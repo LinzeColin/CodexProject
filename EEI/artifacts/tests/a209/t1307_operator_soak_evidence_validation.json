@@ -5,7 +5,7 @@
   "acceptance_ids": [
     "A209"
   ],
-  "status": "MISSING_OPERATOR_EVIDENCE",
+  "status": "PARTIAL_OPERATOR_EVIDENCE",
   "release_gate_closed_by_validator": false,
   "a209_task_status_required": "IN_PROGRESS",
   "configured_targets": {
@@ -34,15 +34,14 @@
     {
       "label": "operator_4h",
       "mode": "operator_4h",
-      "status": "MISSING",
+      "status": "PASS",
       "target_seconds": 14400.0,
       "output_path": "artifacts/tests/a209/t1307_operator_soak_4h.json",
       "checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl",
       "errors": [],
-      "missing": [
-        "output_json",
-        "checkpoint_jsonl"
-      ]
+      "completed_duration_seconds": 14400,
+      "windows_completed": 48,
+      "checkpoint_windows": 48
     },
     {
       "label": "operator_24h",

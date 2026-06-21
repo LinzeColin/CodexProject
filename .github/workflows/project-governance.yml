@@ -19,6 +19,10 @@ on:
         description: "Project id or path when scope=project"
         required: false
         type: string
+      base_ref:
+        description: "Optional base commit/ref for scope=changed-only"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -47,7 +51,14 @@ jobs:
           fi
       - name: Validate changed governance scope
         if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
+        env:
+          GOVERNANCE_BASE_REF: ${{ inputs.base_ref || '' }}
         run: python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
+      - name: Validate pushed governance diff
+        if: github.event_name == 'push'
+        env:
+          GOVERNANCE_BASE_REF: ${{ github.event.before }}
+        run: python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref "${GOVERNANCE_BASE_REF}"
       - name: Validate all registered scopes
         if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')
         run: python3 scripts/validate_project_governance.py --all --semantic --drift-report
@@ -58,11 +69,39 @@ jobs:
             echo "project input is required when scope=project"
             exit 1
           fi
-          python3 scripts/validate_project_governance.py --project "${{ inputs.project }}"
+          python3 scripts/validate_project_governance.py --project "${{ inputs.project }}" --semantic
       - name: Verify generated governance dashboard
         run: |
           python3 scripts/generate_governance_dashboard.py --write
-          git diff --exit-code -- GOVERNANCE_DASHBOARD.md */docs/governance/STATUS.md
+          git diff --exit-code -- GOVERNANCE_DASHBOARD.md ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
+      - name: Write CI attestation
+        if: success()
+        env:
+          GOVERNANCE_ATTESTATION_BASE_REF: ${{ github.event.before || github.event.pull_request.base.sha || '' }}
+          GOVERNANCE_ATTESTATION_ARTIFACT: project-governance-ci-attestation-${{ github.run_id }}-${{ github.run_attempt }}
+          GOVERNANCE_ATTESTATION_DIR: ${{ runner.temp }}/governance-ci-attestation
+        run: |
+          mkdir -p "${GOVERNANCE_ATTESTATION_DIR}"
+          python3 scripts/validate_ci_attestation.py write \
+            --run-id "GITHUB-${{ github.run_id }}-${{ github.run_attempt }}" \
+            --workflow "Project Governance" \
+            --run-id-number "${{ github.run_id }}" \
+            --run-attempt "${{ github.run_attempt }}" \
+            --commit-sha "${{ github.sha }}" \
+            --base-ref "${GOVERNANCE_ATTESTATION_BASE_REF}" \
+            --artifact-ref "github-actions-artifact:${GOVERNANCE_ATTESTATION_ARTIFACT}" \
+            --conclusion success \
+            --output "${GOVERNANCE_ATTESTATION_DIR}/governance-ci-attestation.json"
+          python3 scripts/validate_ci_attestation.py validate --file "${GOVERNANCE_ATTESTATION_DIR}/governance-ci-attestation.json"
+          python3 scripts/governance_setup_doctor.py --json --check-github > "${GOVERNANCE_ATTESTATION_DIR}/governance-setup-doctor.json"
+      - name: Upload CI attestation artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-governance-ci-attestation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/governance-ci-attestation/*.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Write governance summary
         if: always()
         run: |

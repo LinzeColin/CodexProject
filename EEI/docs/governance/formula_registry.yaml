@@ -51,6 +51,12 @@ formulas:
       - "EEI/data/formula_registry.csv:4"
       - "EEI/data/formula_registry.csv"
     unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-NP-001"]
+    implementation_fingerprint: "sha256:4b54b5033800be78c35d8cd9778aa14b11a5e03487d44818eab32ebe54adc50f"
+    last_verified_commit: "810ea9fd0beb6d0aebdb4b40fcb55b53c2d81104"
+    verified_at: "2026-06-21T06:20:00Z"
+    evidence_hash: "sha256:a9dc5c1f3bf153d498d6eb2b77b41508df4d25b0211eb5de53a935439c5ab418"
   - formula_id: "FORM-002"
     legacy_formula_id: "F-EQ-001"
     model_id: "MOD-002"
@@ -111,6 +117,12 @@ formulas:
       - "EEI/data/formula_registry.csv:2"
       - "EEI/data/formula_registry.csv"
     unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-EQ-001"]
+    implementation_fingerprint: "sha256:1d26694fc49fcfc2f9d57f054cb7fd2f91a81728378745c157ded4af89c58e59"
+    last_verified_commit: "810ea9fd0beb6d0aebdb4b40fcb55b53c2d81104"
+    verified_at: "2026-06-21T06:20:00Z"
+    evidence_hash: "sha256:bcdb1d9a1d9e31eff96c5be1d86e786f60863495dd6c07d1c4a84af674cd5513"
   - formula_id: "FORM-003"
     legacy_formula_id: "F-RF-001"
     model_id: "MOD-003"
@@ -151,6 +163,12 @@ formulas:
       - "EEI/data/formula_registry.csv:3"
       - "EEI/data/formula_registry.csv"
     unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-RF-001"]
+    implementation_fingerprint: "sha256:d0c55ad227b42cbde611b69e9be7aebd620df01248dab7075dfb40555e2a6c01"
+    last_verified_commit: "810ea9fd0beb6d0aebdb4b40fcb55b53c2d81104"
+    verified_at: "2026-06-21T06:20:00Z"
+    evidence_hash: "sha256:2b07c01e7ab66705b5ec7f0b4d43f3c20affa7cf5f5d69f5b1ffa9af6f8b6e4c"
   - formula_id: "FORM-004"
     legacy_formula_id: "F-EM-001"
     model_id: "MOD-004"
@@ -206,6 +224,12 @@ formulas:
       - "EEI/data/formula_registry.csv:5"
       - "EEI/data/formula_registry.csv"
     unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-EM-001"]
+    implementation_fingerprint: "sha256:b2846377d077c0ff962ccd5ad5c034f5dde66f5b53ca6b651b9dcf0f311de9ca"
+    last_verified_commit: "810ea9fd0beb6d0aebdb4b40fcb55b53c2d81104"
+    verified_at: "2026-06-21T06:20:00Z"
+    evidence_hash: "sha256:e1de5b0834114a4bcb307bca60fa48735f29e3b87203965e4c000eb1a7ec5c05"
   - formula_id: "FORM-005"
     legacy_formula_id: "F-SC-001"
     model_id: "MOD-005"
@@ -261,6 +285,12 @@ formulas:
       - "EEI/data/formula_registry.csv:8"
       - "EEI/data/formula_registry.csv"
     unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-SC-001"]
+    implementation_fingerprint: "sha256:4f2edd4991001b36e733441f830c71f28ddd98201a2870fd9ed4554d1253216a"
+    last_verified_commit: "810ea9fd0beb6d0aebdb4b40fcb55b53c2d81104"
+    verified_at: "2026-06-21T06:20:00Z"
+    evidence_hash: "sha256:46d9bd6d808a5b2ffc0e0311e51491a0a2619f9abcc07ff102dd7c23bcc911e5"
   - formula_id: "FORM-006"
     legacy_formula_id: "F-CI-001"
     model_id: "MOD-006"
@@ -316,6 +346,12 @@ formulas:
       - "EEI/data/formula_registry.csv:9"
       - "EEI/data/formula_registry.csv"
     unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-CI-001"]
+    implementation_fingerprint: "sha256:b642418e13299cf41514c853c4a18fd37eeb2165623bc4f670955dc276a44db4"
+    last_verified_commit: "810ea9fd0beb6d0aebdb4b40fcb55b53c2d81104"
+    verified_at: "2026-06-21T06:20:00Z"
+    evidence_hash: "sha256:8ac96d46df75dc7297e8c0b86f5c9dc7a2ba275937356d71ec2333329987bd55"
   - formula_id: "FORM-007"
     legacy_formula_id: "F-CM-001"
     model_id: "MOD-007"
@@ -376,6 +412,12 @@ formulas:
       - "EEI/data/formula_registry.csv:10"
       - "EEI/data/formula_registry.csv"
     unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-CM-001"]
+    implementation_fingerprint: "sha256:13301d8c829a099c9f7990b2f8a79cdcb4bd48ecfd191c9277dbd8e3a1cf2343"
+    last_verified_commit: "810ea9fd0beb6d0aebdb4b40fcb55b53c2d81104"
+    verified_at: "2026-06-21T06:20:00Z"
+    evidence_hash: "sha256:755b6c006dc10e39d7963c9a669a8002625f5ce5fbdcaa38d6f7c217a087ea54"
   - formula_id: "FORM-008"
     legacy_formula_id: "F-PE-001"
     model_id: "MOD-008"
@@ -436,6 +478,12 @@ formulas:
       - "EEI/data/formula_registry.csv:11"
       - "EEI/data/formula_registry.csv"
     unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-PE-001"]
+    implementation_fingerprint: "sha256:98079ba09dc5d03d625850c15c2675b5326de827b72b3ff948036378db1adfe4"
+    last_verified_commit: "810ea9fd0beb6d0aebdb4b40fcb55b53c2d81104"
+    verified_at: "2026-06-21T06:20:00Z"
+    evidence_hash: "sha256:45b762d6d2dc9960a6900957bbd7a0a86ca292b479d31fbb394561cc12bcc81b"
   - formula_id: "FORM-009"
     legacy_formula_id: "F-SS-001"
     model_id: "MOD-009"
@@ -496,6 +544,12 @@ formulas:
       - "EEI/data/formula_registry.csv:6"
       - "EEI/data/formula_registry.csv"
     unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-SS-001"]
+    implementation_fingerprint: "sha256:ad476c50eebb1d627c41dc68113f3a5f080f3b0a33b06c9eb518ddc8cb25d85e"
+    last_verified_commit: "810ea9fd0beb6d0aebdb4b40fcb55b53c2d81104"
+    verified_at: "2026-06-21T06:20:00Z"
+    evidence_hash: "sha256:eda3361202848b2af1291f0d9d9e3631498e89add5e503abeb5b590cd7822fcd"
   - formula_id: "FORM-010"
     legacy_formula_id: "F-AS-001"
     model_id: "MOD-010"
@@ -546,6 +600,12 @@ formulas:
       - "EEI/data/formula_registry.csv:7"
       - "EEI/data/formula_registry.csv"
     unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-AS-001"]
+    implementation_fingerprint: "sha256:0fb72992189409677dbcf82a9b4040d39c3a05b76e15ffb691911a07e3fa5967"
+    last_verified_commit: "810ea9fd0beb6d0aebdb4b40fcb55b53c2d81104"
+    verified_at: "2026-06-21T06:20:00Z"
+    evidence_hash: "sha256:162f15264559913c1a57647ad2826a018020b0b4b04b04c49c187d7a9d0c0d49"
   - formula_id: "FORM-011"
     legacy_formula_id: "F-DR-001"
     model_id: "MOD-011"
@@ -653,3 +713,10 @@ formulas:
       - "EEI/config/model_runtime_defaults.yaml:1"
     unknown_task_ids:
       - "TASK-T1206"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    implementation_refs: []
+    implementation_fingerprint: "NOT_APPLICABLE (GOV-SEMANTIC-EEI-001: threshold-control rule spans generated runtime/config surfaces and remains under human semantic review)"
+    last_verified_commit: ""
+    verified_at: ""
+    evidence_hash: "UNKNOWN (GOV-SEMANTIC-EEI-001: machine fingerprint pending for threshold-control rule)"
+    semantic_review_task_ids: ["GOV-SEMANTIC-EEI-001"]

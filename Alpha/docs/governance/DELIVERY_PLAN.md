@@ -1,7 +1,7 @@
 # Alpha Delivery Plan
 
 Project: `Alpha`
-task_count: 8
+task_count: 9
 
 ## Phase Matrix
 

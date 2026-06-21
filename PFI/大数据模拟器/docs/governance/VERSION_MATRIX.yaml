@@ -22,9 +22,9 @@ model_versions:
 parameter_profile_versions:
   default: "param-profile-20260620"
 data_snapshot_version: "UNKNOWN; see TASK-PFI-B-010"
-current_iteration: "ITER-20260620-PFI-002"
-current_phase: "A"
-current_gate: "GOV-P13-required-passed"
+current_iteration: "ITER-20260621-PFI-001"
+current_phase: "B"
+current_gate: "GOV-SEMANTIC-PFI-in-progress"
 legacy_version_labels:
   integration_contract: "0.1.0"
   prior_VERSION: "UNKNOWN"

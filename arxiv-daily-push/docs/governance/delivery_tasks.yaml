@@ -511,3 +511,20 @@ tasks:
     target_version: "0.11.19"
     completed_version: "0.11.19"
     unknown_task_ids: []
+  - task_id: "GOV-SEMANTIC-ADP-001"
+    phase: "E"
+    objective: "Plan machine semantic coverage for arXiv Daily Push active parameter values and formula implementation fingerprints under the latest CodexProject governance standard."
+    scope: "Root semantic_coverage rollout contract, task binding, generated owner/status views, and governance validation evidence."
+    non_scope: "No runtime behavior change, no machine_verified semantic extraction claim, no production launch, no SMTP send, no Release upload, and no secret value read."
+    status: "planned"
+    dependencies: ["ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020"]
+    required_files: ["governance/projects.yaml", "docs/governance/delivery_tasks.yaml", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md"]
+    acceptance_ids: ["ACC-SEMANTIC-ADP-001"]
+    test_commands: ["python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "python3 scripts/generate_governance_dashboard.py --write", "git diff --check"]
+    test_results: ["pending"]
+    evidence_refs: ["governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json"]
+    risk: "Semantic coverage remains planned until extractors prove active values and formula fingerprints; production acceptance remains blocked by external runner, SMTP, Release, and 30-day trial evidence."
+    rollback: "Remove the arxiv semantic_coverage block, this task, generated OWNER_STATUS/status changes, and the semantic planning run manifest."
+    target_version: "0.11.19"
+    completed_version: ""
+    unknown_task_ids: []

@@ -81,3 +81,19 @@ tasks:
     rollback: "Keep offline rules advisory and require engineer review."
     target_version: "UNKNOWN (TASK-OPME-B-001)"
     completed_version: ""
+  - task_id: "GOV-SEMANTIC-OPME-001"
+    phase: "B"
+    objective: "Add extractors for analysis rule constants and fingerprints for active deterministic formulas."
+    scope: ["semantic extractor metadata", "root validator evidence", "generated status pages"]
+    non_scope: ["backend behavior", "frontend behavior", "provider configuration changes", "API key handling"]
+    status: "in_progress"
+    dependencies: ["TASK-OPME-A-004"]
+    required_files: ["OpMe_System/docs/governance/parameter_registry.csv", "OpMe_System/docs/governance/formula_registry.yaml", "governance/projects.yaml"]
+    acceptance_ids: ["ACC-SEMANTIC-OPME-001"]
+    test_commands: ["python3 scripts/validate_semantic_extractors.py OpMe_System", "python3 scripts/validate_project_governance.py --project OpMe_System --semantic", "python3 scripts/validate_project_governance.py --all --semantic --drift-report", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic"]
+    test_results: ["exit 0; semantic_parameters_checked=49 semantic_formulas_checked=7", "exit 0; OpMe_System semantic validator errors 0 warnings 0", "exit 0; all-project semantic drift errors 0 warnings 0", "exit 0; changed-only enforce-sync semantic errors 0 warnings 0", "exit 0; governance tests 50 passed", "exit 2; OpMe test_analysis blocked by missing pydantic in current environment", "exit 2; OpMe test_api blocked by missing fastapi in current environment", "exit 0; generated dashboard/status outputs stable on repeat"]
+    evidence_refs: ["OpMe_System/docs/governance/parameter_registry.csv", "OpMe_System/docs/governance/formula_registry.yaml", "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json"]
+    risk: "Machine extractors verify current code constants and formula fingerprints, but engineering calibration, prompt/provider policy, and signoff evidence remain blocked under TASK-OPME-B-001."
+    rollback: "Revert semantic columns/fields, reset governance/projects.yaml semantic_coverage to planned, and remove GOV-SEMANTIC-OPME-EXTRACT-001 manifest if validation fails."
+    target_version: "1.0.0"
+    completed_version: ""

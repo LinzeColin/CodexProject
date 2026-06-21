@@ -16,9 +16,9 @@ parameter_profile_versions:
   offline_rules: "opme-rules-v0"
   llm_router: "opme-router-v0"
 data_snapshot_version: "sample_inputs_only"
-current_iteration: "ITER-20260620-OPME-001"
-current_phase: "E"
-current_gate: "GOV-G4-OPME-REQUIRED"
+current_iteration: "ITER-20260621-OPME-001"
+current_phase: "B"
+current_gate: "GOV-SEMANTIC-OPME-in-progress"
 legacy_version_labels:
   - source: "OpMe_System/frontend/package.json"
     value: "1.0.0"

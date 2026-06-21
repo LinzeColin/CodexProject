@@ -40,6 +40,12 @@ formulas:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
     unknown_task_ids:
       - "TASK-EVA-B-001"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/strategies/trend/ma_crossover.py::MovingAverageCrossoverStrategy", "EVA_OS/src/quantlab/strategies/mean_reversion/rsi_reversion.py::RSIReversionStrategy", "EVA_OS/src/quantlab/strategies/mean_reversion/bollinger_reversion.py::BollingerReversionStrategy", "EVA_OS/src/quantlab/strategies/trend/breakout.py::BreakoutStrategy", "EVA_OS/src/quantlab/strategies/momentum/momentum_rotation.py::MomentumRotationStrategy", "EVA_OS/src/quantlab/strategies/behavioral/alipay.py::AlipayStrategy", "EVA_OS/src/quantlab/strategies/behavioral/alipay.py::AlipayEnhancedStrategy", "EVA_OS/src/quantlab/strategies/profiles.py::DEFAULT_BUILT_IN_STRATEGY_PARAMETERS"]
+    implementation_fingerprint: "sha256:24a2df1e3872a104637d08dd5f00a146ed0f956c8bc021a0fb2827c984e2abe0"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:c719106b0598fe79e45a25cfb0f84e28a01afa64219405d87de1662ee7cfdb5b"
   - formula_id: "FORM-002"
     model_id: "MOD-002"
     assumption_ids:
@@ -78,6 +84,12 @@ formulas:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
     unknown_task_ids:
       - "TASK-EVA-B-001"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/backtest/engine.py::BacktestEngine", "EVA_OS/src/quantlab/backtest/metrics.py::performance_metrics"]
+    implementation_fingerprint: "sha256:97b875cb0d1edb98651cdc8d375a19e0348ac921b73d4c4485dced4f14553a86"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:7a36612c8a2f698a884358d07d521312b5885c55c4bdb63ba633187b423b3bf5"
   - formula_id: "FORM-003"
     model_id: "MOD-003"
     assumption_ids:
@@ -113,6 +125,12 @@ formulas:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
     unknown_task_ids:
       - "TASK-EVA-B-002"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/risk/gates.py::evaluate_research_risk_gates", "EVA_OS/src/quantlab/risk/gates.py::_risk_status"]
+    implementation_fingerprint: "sha256:463ac2f195cd4978f55de341a7a7a4d6ac27a765ebf4b58c792b9e05175cf458"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:a4ba705cbb1669bc6d5a9ad4fe20d414a61c20bb3d6272eb1fe2b26d348583f6"
   - formula_id: "FORM-004"
     model_id: "MOD-004"
     assumption_ids:
@@ -149,6 +167,12 @@ formulas:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
     unknown_task_ids:
       - "TASK-EVA-B-002"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/risk/decision_quality.py::evaluate_decision_quality", "EVA_OS/src/quantlab/risk/decision_quality.py::simulated_exposure_summary"]
+    implementation_fingerprint: "sha256:0f28bc2e82a5a0433b401f5313c25af5816dd43ff1cbe7f2de9385865aa55b9b"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:7fed105f6039cd98a68aa7453e674730c08a1733be63b43e346eb327a578c7ea"
   - formula_id: "FORM-005"
     model_id: "MOD-005"
     assumption_ids:
@@ -186,6 +210,12 @@ formulas:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
     unknown_task_ids:
       - "TASK-EVA-B-003"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/data/quality.py::assess_bars", "EVA_OS/src/quantlab/data/validation.py::validate_close_across_sources"]
+    implementation_fingerprint: "sha256:4e4a84761aadac7bcce9a71e19e13686c4634e4f9fd9b69e315b0ad87238573a"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:931e1f881c7df9115719b8abeca3fc254d66a5ecb36c34f78a106c16cf611cf5"
   - formula_id: "FORM-006"
     model_id: "MOD-006"
     assumption_ids:
@@ -223,6 +253,12 @@ formulas:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
     unknown_task_ids:
       - "TASK-EVA-B-004"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/research/validation_priority.py::build_validation_priority_plan", "EVA_OS/src/quantlab/research/validation_priority.py::_priority_score", "EVA_OS/src/quantlab/research/validation_execution.py::build_validation_task_execution", "EVA_OS/src/quantlab/research/validation_execution.py::_conclusion"]
+    implementation_fingerprint: "sha256:e00645e967b7eb6f79fec2a7478a8867ff2d914b2a300680ba393159b0ef3675"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:0ba8e9adaaa41afddf4cd47635b2602f08dff70b84533f4740d056bffed3a8a0"
   - formula_id: "FORM-007"
     model_id: "MOD-007"
     assumption_ids:
@@ -257,6 +293,12 @@ formulas:
       - "EVA_OS/tests/test_data_trust_audit.py"
     evidence_refs:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/system/data_trust.py::build_data_trust_audit", "EVA_OS/src/quantlab/system/data_trust.py::DATA_TRUST_STATUSES"]
+    implementation_fingerprint: "sha256:2d73fbeacb67cf2ccefe31c83c929d10e630c508e573063df18d75ffceebe71f"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:c1edec65d584a5ef610c4eff1dc742401752120a3426e948f1e8196c1c0ffee0"
   - formula_id: "FORM-008"
     model_id: "MOD-008"
     assumption_ids:
@@ -294,6 +336,12 @@ formulas:
       - "EVA_OS/tests/test_command_center.py"
     evidence_refs:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/system/integration_audit.py::build_quantlab_integration_audit", "EVA_OS/src/quantlab/system/daily_readiness.py::build_daily_readiness", "EVA_OS/src/quantlab/executive/command_center.py::build_command_center"]
+    implementation_fingerprint: "sha256:6ad013420f57e992b0301a720791aeb3b9f188716a7b8a4e03b141cfa2d89514"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:93537d7ff91983dfdb79d3053603c9175b554cd6d097cabc74ae29f7236997f4"
   - formula_id: "FORM-009"
     model_id: "MOD-009"
     assumption_ids:
@@ -331,6 +379,12 @@ formulas:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
     unknown_task_ids:
       - "TASK-EVA-B-005"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/reports/decision_support.py::build_report_decision_support_index", "EVA_OS/src/quantlab/reports/decision_support.py::_report_readiness", "EVA_OS/src/quantlab/reports/decision_support.py::_evidence_score", "EVA_OS/src/quantlab/research/report_gap_tasks.py::build_report_gap_validation_tasks"]
+    implementation_fingerprint: "sha256:18d1d674ac2864ec741d0f64f4065d5aceb47b9ed74600d8585dfa609d98dac4"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:984b03247229ca8e0b461f8f15265490bf500014df94326a25a1578107886afe"
   - formula_id: "FORM-010"
     model_id: "MOD-010"
     assumption_ids:
@@ -367,6 +421,12 @@ formulas:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
     unknown_task_ids:
       - "TASK-EVA-B-006"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/analysis/market_hotspots.py::build_hotspot_history", "EVA_OS/src/quantlab/analysis/market_hotspots.py::build_hotspot_evidence_gate_rows", "EVA_OS/src/quantlab/analysis/market_hotspots.py::hotspot_state", "EVA_OS/src/quantlab/analysis/market_hotspots.py::_hotspot_heat_score"]
+    implementation_fingerprint: "sha256:4302e4aa178487afdee5d603d83c1bab0260e116bbd70e2a5a5b0d2d9b2d3f33"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:1cefab3bc0f5a0c07a54a709b921ed88c0f67a3866e95fa54fb242de10c50d83"
   - formula_id: "FORM-011"
     model_id: "MOD-011"
     assumption_ids:
@@ -400,6 +460,12 @@ formulas:
       - "EVA_OS/tests/test_cashflow_command.py"
     evidence_refs:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/business/cashflow.py::build_cashflow_command", "EVA_OS/src/quantlab/business/cashflow.py::_summary", "EVA_OS/src/quantlab/business/cashflow.py::_cashflow_status"]
+    implementation_fingerprint: "sha256:bb7520ccfa1ad3dd18441146329c0996ee3bfae03c435529cfd6d53d3617b653"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:1f276add0f0a8c4a9b613641a760007eeca321e58ee101ac8b0c2d8063c891e7"
   - formula_id: "FORM-012"
     model_id: "MOD-012"
     assumption_ids:
@@ -436,6 +502,12 @@ formulas:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
     unknown_task_ids:
       - "TASK-EVA-B-007"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/consumption/guard.py::build_consumption_guard", "EVA_OS/src/quantlab/consumption/guard.py::_risk_score", "EVA_OS/src/quantlab/consumption/guard.py::_guard_status"]
+    implementation_fingerprint: "sha256:91b1b8909f392f7f4037fc425d1242d0f305e78bd866628fd107751f073d8e3d"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:062833d485071b14c031a01ea397917da9658db1e1647f794c9ae7eecf093bce"
   - formula_id: "FORM-013"
     model_id: "MOD-013"
     assumption_ids:
@@ -472,6 +544,12 @@ formulas:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
     unknown_task_ids:
       - "TASK-EVA-B-008"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/policy/radar.py::build_policy_radar", "EVA_OS/src/quantlab/policy/radar.py::_normalize_opportunity", "EVA_OS/src/quantlab/policy/radar.py::_opportunity_status"]
+    implementation_fingerprint: "sha256:5f2fd3b203b7e9fafc7fcc89b10bf83a22234cca9d08976dc97b54d2f82271c2"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:5f0307bc1f83a950d45611d20a212142db8ac9b879e9a662e7a9640ed3c711a5"
   - formula_id: "FORM-014"
     model_id: "MOD-014"
     assumption_ids:
@@ -505,6 +583,12 @@ formulas:
       - "EVA_OS/tests/test_token_roi_ledger.py"
     evidence_refs:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/value/token_roi.py::build_token_roi_ledger", "EVA_OS/src/quantlab/value/token_roi.py::build_token_roi_runtime_summary", "EVA_OS/src/quantlab/value/token_roi.py::create_manual_token_roi_entry"]
+    implementation_fingerprint: "sha256:608d2b901d2a627e1d1469bcd76763c48eca51417b42a1e0e8b79f399f74c863"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:dea306e37106661003a4fec9f0097da3b1f9d7d9cc8a3c0b59dacfb9a291d97f"
   - formula_id: "FORM-015"
     model_id: "MOD-015"
     assumption_ids:
@@ -540,6 +624,12 @@ formulas:
       - "EVA_OS/tests/test_strategy_profiles.py"
     evidence_refs:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/strategies/templates.py::create_strategy_template", "EVA_OS/src/quantlab/strategies/templates.py::evaluate_strategy_code_quality", "EVA_OS/src/quantlab/strategies/templates.py::evaluate_strategy_readiness_gate"]
+    implementation_fingerprint: "sha256:5e0386fb99ca7adc7b042659637fc1128a73907b848964e4099105072307ce2c"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:5569a3346821475cf93973d0413f01b81c92a2c38274e70627a3dc90a8942a7e"
   - formula_id: "FORM-016"
     model_id: "MOD-016"
     assumption_ids:
@@ -573,3 +663,9 @@ formulas:
       - "EVA_OS/tests/test_dev_readiness.py"
     evidence_refs:
       - "EVA_OS/docs/governance/MODEL_SPEC.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["EVA_OS/src/quantlab/system/dev_readiness.py::build_dev_ready_check", "EVA_OS/src/quantlab/system/dev_readiness.py::_executable_checks", "EVA_OS/src/quantlab/system/dev_readiness.py::_shell_syntax_checks", "EVA_OS/src/quantlab/system/dev_readiness.py::_python_syntax_checks"]
+    implementation_fingerprint: "sha256:859e9f5796dd28c0988e421d03a5a93bb4009b895a62d1dc1e8c45cd68ecfa2c"
+    last_verified_commit: "529fd458559db35d3212a0c520de4b2ed4d3882b"
+    verified_at: "2026-06-21T00:00:00+10:00"
+    evidence_hash: "sha256:b0c67d0019fb5271fbb7b61df3986c6e857b5b07cc0bb7f66cc9903c5a1e5851"

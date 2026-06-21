@@ -4,23 +4,23 @@
 
 - product version: 0.1.0
 - product version status: provisional
-- current phase: A - discovery and baseline
-- current gate: GOV-P13-required-passed
-- confirmed iteration count: 2
+- current phase: B - model and data specification
+- current gate: GOV-SEMANTIC-PFI-in-progress
+- confirmed iteration count: 3
 - reconstructed development event count: 1
-- current task: GOV-BASELINE-001 / TASK-PFI-A-004 completed
-- blockers: calibration/source rationale gaps tracked by `TASK-PFI-B-001` through `TASK-PFI-B-010`
+- current task: GOV-SEMANTIC-PFI-001 in progress
+- blockers: `PARAM-110` and `PARAM-111` remain HUMAN_REVIEW_REQUIRED; calibration/source rationale gaps tracked by `TASK-PFI-B-001` through `TASK-PFI-B-010`
 
-Confirmed iterations are not inferred from commit count. The confirmed iterations in this ledger are the current governance baseline creation event and the validation/promotion event.
+Confirmed iterations are not inferred from commit count. The confirmed iterations in this ledger are the governance baseline creation event, the validation/promotion event, and the current semantic extractor rollout event.
 
 ## Phase Matrix
 
 | Phase | Name | Status | Evidence |
 | --- | --- | --- | --- |
 | A | Discovery and baseline | completed | governance registries, validator pass and required promotion in this run |
-| B | Model and data specification | blocked | unresolved heuristic calibration/source tasks |
+| B | Model and data specification | in_progress | semantic extractor rollout in `GOV-SEMANTIC-PFI-001`; unresolved heuristic calibration/source tasks remain blocked |
 | C | Implementation | completed-existing | existing `qbvs` code; no business behavior changed by this run |
-| D | Verification and hardening | completed | project validator passed and focused tests passed |
+| D | Verification and hardening | in_progress | semantic extractor check passed locally; full project/root/changed-only validation pending in this iteration |
 | E | Delivery and operation | completed | PFI_BIG_DATA_SIMULATOR promoted to required in `governance/projects.yaml` after validation |
 
 ## Iteration Record
@@ -72,6 +72,30 @@ Confirmed iterations are not inferred from commit count. The confirmed iteration
 - remaining risks: heuristic calibration/source evidence and provider/account-level validations remain blocked B-stage tasks
 - rollback: reset PFI_BIG_DATA_SIMULATOR `ci_mode` to advisory and revert PFI governance file changes from this run
 - next step: resolve P20 hotfix/rollback blocker because no incident variables were supplied
+
+### ITER-20260621-PFI-001
+
+- date: 2026-06-21
+- fact level: EXTRACTED
+- version before: 0.1.0 provisional
+- version after: 0.1.0 provisional
+- base commit: 94478ef52caecb9d856bf4a0543719f8d50a9645
+- result commit: PENDING
+- task IDs: GOV-SEMANTIC-PFI-001
+- objective: add machine semantic extraction for PFI active parameters and formula implementation fingerprints without changing QBVS/PFI runtime behavior
+- assumptions: governance selector metadata and formula fingerprints are documentation/control-plane changes only
+- files read: PFI parameter and formula registries, PFI delivery/version/ledger files, targeted `qbvs` implementation files referenced by active formulas, root semantic validator
+- files changed: PFI parameter/formula registries, PFI delivery/version/ledger files, `governance/projects.yaml`, root semantic extractor and focused governance tests
+- model changes: no runtime model behavior changed; formula registry now records machine implementation fingerprints for 15 active formulas
+- parameter changes: no runtime parameter values changed; 211 active parameters now carry machine selectors and 2 parameters remain HUMAN_REVIEW_REQUIRED
+- commands: `python3 scripts/validate_semantic_extractors.py 'PFI/大数据模拟器'`
+- test results: semantic extractor exit 0 with 211 active parameters and 15 active formulas checked; full validation pending
+- successes: PFI semantic coverage moved from planned to in_progress with evidence-bound machine extraction
+- failures: `PARAM-110` summary_sort_keys and `PARAM-111` cost_rate_transform still require human semantic review
+- decisions: keep `GOV-SEMANTIC-PFI-001` in_progress rather than completed or machine_verified until human-review parameters are resolved
+- remaining risks: line-literal selectors may need updates if implementation constants move without semantic content changes
+- rollback: revert this iteration's governance changes and reset PFI semantic coverage to planned
+- next step: run full PFI, all-project, changed-only, dashboard and governance test validation
 
 ## Reconstructed Development Events
 

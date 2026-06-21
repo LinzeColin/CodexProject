@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CodexProject CI Attestation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "attestation_id",
+    "binds_run_manifest",
+    "workflow",
+    "workflow_run_id",
+    "workflow_run_attempt",
+    "job_id",
+    "commit_sha",
+    "base_ref",
+    "tree_hash",
+    "conclusion",
+    "finished_at",
+    "artifact_ref",
+    "fact_level",
+    "evidence_hash"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "attestation_id": { "type": "string", "minLength": 1 },
+    "binds_run_manifest": { "type": "string", "minLength": 1 },
+    "workflow": { "type": "string", "minLength": 1 },
+    "workflow_run_id": { "type": "string", "minLength": 1 },
+    "workflow_run_attempt": { "type": "string", "minLength": 1 },
+    "job_id": { "type": "string", "minLength": 1 },
+    "commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "base_ref": { "type": "string", "minLength": 1 },
+    "tree_hash": { "type": "string", "minLength": 1 },
+    "conclusion": {
+      "type": "string",
+      "enum": ["success", "failure", "cancelled", "skipped", "timed_out", "action_required"]
+    },
+    "finished_at": { "type": "string", "minLength": 1 },
+    "artifact_ref": { "type": "string", "minLength": 1 },
+    "fact_level": { "type": "string", "enum": ["EXTRACTED"] },
+    "evidence_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

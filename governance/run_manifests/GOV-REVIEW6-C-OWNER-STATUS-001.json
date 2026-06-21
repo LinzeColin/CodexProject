@@ -1,0 +1,184 @@
+{
+  "acceptance_id": "ACC-REVIEW6-C-OWNER-STATUS-001",
+  "actor": "Codex",
+  "base_commit": "4d84ffa6b6d08c12f12374a1b3296705e3ad25f9",
+  "change_classification": [
+    "root_governance_change",
+    "generated_owner_status_reports",
+    "no_business_behavior_change"
+  ],
+  "changed_files_actual": [
+    ".agents/skills/codex-dex/SKILL.md",
+    ".agents/skills/project-governance/SKILL.md",
+    ".github/workflows/project-governance.yml",
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/STATUS.md",
+    "EEI/CHECKSUMS.sha256",
+    "EEI/DIRECTORY_TREE.txt",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "EEI/manifest.txt",
+    "EVA_OS/docs/governance/OWNER_STATUS.md",
+    "EVA_OS/docs/governance/STATUS.md",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "Serenity-Alipay/docs/governance/OWNER_STATUS.md",
+    "Serenity-Alipay/docs/governance/STATUS.md",
+    "docs/governance/CODEX_SETUP.md",
+    "docs/governance/STANDARD.md",
+    "docs/governance/templates/OWNER_STATUS.template.md",
+    "governance/projects.yaml",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:5b77e3d52382cb6bb1a98aa73ba267e70ecf578d9a99b420af35f302c8e42f73",
+  "evidence_refs": [
+    "scripts/generate_governance_dashboard.py",
+    "GOVERNANCE_DASHBOARD.md",
+    "*/docs/governance/OWNER_STATUS.md",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "finished_at": "LOCAL_VALIDATED",
+  "formula_delta": {
+    "reporting_only": "OWNER_STATUS generated from machine facts",
+    "runtime_behavior": "unchanged"
+  },
+  "model_delta": {
+    "owner_reports_generated_for_projects": 9,
+    "runtime_behavior": "unchanged"
+  },
+  "observed_results": [
+    "LOCAL_VALIDATION_PASS",
+    "OWNER_STATUS_GENERATED_FOR_ALL_REGISTERED_PROJECTS",
+    "EEI_CLEAN_ROOM_RELEASE_ARTIFACTS_RESYNCED",
+    "NO_PYTHON_REPR_IN_GENERATED_REPORTS",
+    "GITHUB_ACTIONS_TO_BE_VERIFIED_BY_PR_CHECK"
+  ],
+  "parameter_delta": {
+    "active_values_changed": 0,
+    "runtime_parameters_changed": 0
+  },
+  "project_id": "root",
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/run_manifests/GOV-REVIEW6-C-OWNER-STATUS-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "result_commit": "PENDING_GITHUB_MERGE",
+  "rollback": "Revert Review6-C generator changes, OWNER_STATUS generated files, template, workflow drift pathspec, tests, and this manifest. No business code rollback is required.",
+  "run_id": "GOV-REVIEW6-C-OWNER-STATUS-001",
+  "started_at": "2026-06-21T09:24:00Z",
+  "task_id": "GOV-REVIEW6-C-OWNER-STATUS-001",
+  "tests_run": [
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write",
+      "exit_code": 0,
+      "result": "generated dashboard, 9 STATUS files, and 9 OWNER_STATUS files"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 -m pytest tests/governance -q",
+      "exit_code": 0,
+      "result": "29 passed"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+      "exit_code": 0,
+      "result": "29 tests OK"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write twice plus git diff hash check",
+      "exit_code": 0,
+      "result": "dashboard/status/owner regeneration stable"
+    },
+    {
+      "command": "find generated STATUS/OWNER_STATUS files and rg for Python repr patterns",
+      "exit_code": 0,
+      "result": "no Python list/dict repr patterns found"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 -m py_compile scripts/generate_governance_dashboard.py scripts/validate_project_governance.py scripts/validate_governance_sync.py && git diff --check",
+      "exit_code": 0,
+      "result": "compile and whitespace checks passed"
+    },
+    {
+      "command": "python3 check generated reports for Python repr patterns",
+      "exit_code": 0,
+      "result": "readable_generated_reports_checked=19"
+    },
+    {
+      "command": "python3 scripts/manage_clean_room_release.py generate/validate using an in-memory yaml shim because local PyYAML is unavailable",
+      "exit_code": 0,
+      "result": "EEI clean-room package paths 390, markdown category 109, package sha256 5a321ceadf7c6461fd3c19ede76e1d0b9cfdc9cebcca1b2ca182d961d5340a39"
+    },
+    {
+      "command": "python3 scripts/manage_release_artifacts.py generate && python3 scripts/manage_release_artifacts.py validate && shasum -a 256 -c CHECKSUMS.sha256",
+      "exit_code": 0,
+      "result": "EEI release manifest paths 397, checksum paths 396, checksums OK"
+    }
+  ],
+  "unresolved_risks": [
+    "OWNER_STATUS is generated from existing machine facts; projects with stale or PENDING evidence still show those gaps rather than silently fixing them.",
+    "Semantic extractors remain enabled only for Serenity-Alipay after Review6-B; cross-project semantic extraction rollout is still required for the full Review6 objective.",
+    "Branch protection/no-bypass authenticated evidence remains separate from generated owner reports."
+  ],
+  "updated_governance_files": [
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/STATUS.md",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "EVA_OS/docs/governance/OWNER_STATUS.md",
+    "EVA_OS/docs/governance/STATUS.md",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "Serenity-Alipay/docs/governance/OWNER_STATUS.md",
+    "Serenity-Alipay/docs/governance/STATUS.md",
+    "docs/governance/CODEX_SETUP.md",
+    "docs/governance/STANDARD.md",
+    "docs/governance/templates/OWNER_STATUS.template.md",
+    "governance/projects.yaml",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md"
+  ],
+  "updated_release_evidence_files": [
+    "EEI/CHECKSUMS.sha256",
+    "EEI/DIRECTORY_TREE.txt",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/manifest.txt"
+  ],
+  "version_delta": {
+    "governance_outputs": "OWNER_STATUS.md added to required generated project files",
+    "product_versions": "unchanged"
+  }
+}

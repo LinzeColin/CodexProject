@@ -1,0 +1,142 @@
+{
+  "run_id": "GOV-EEI-A209-4H-SOAK-001",
+  "project_id": "EEI",
+  "task_id": "TASK-T1307",
+  "acceptance_id": "ACC-A209",
+  "actor": "Codex",
+  "started_at": "2026-06-21T22:35:00+10:00",
+  "finished_at": "LOCAL_VALIDATED",
+  "base_commit": "94478ef52caecb9d856bf4a0543719f8d50a9645",
+  "result_commit": "PENDING_GITHUB_MERGE",
+  "change_classification": [
+    "project_evidence_change",
+    "generated_release_artifact_change",
+    "root_governance_dashboard_refresh",
+    "no_business_behavior_change"
+  ],
+  "changed_files_actual": [
+    "EEI/CHECKSUMS.sha256",
+    "EEI/CHANGELOG.md",
+    "EEI/DEVELOPMENT_STATUS.md",
+    "EEI/DIRECTORY_TREE.txt",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl",
+    "EEI/artifacts/tests/a209/t1307_operator_soak_4h.json",
+    "EEI/artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
+    "EEI/data/development_status_ledger.csv",
+    "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "EEI/docs/governance/TRACEABILITY_MATRIX.csv",
+    "EEI/docs/governance/VERSION_MATRIX.yaml",
+    "EEI/docs/governance/delivery_tasks.yaml",
+    "EEI/docs/governance/development_events.jsonl",
+    "EEI/docs/governance/parameter_registry.csv",
+    "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
+    "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
+    "EEI/manifest.txt",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/run_manifests/GOV-EEI-A209-4H-SOAK-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "EEI/CHANGELOG.md",
+    "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "EEI/docs/governance/TRACEABILITY_MATRIX.csv",
+    "EEI/docs/governance/VERSION_MATRIX.yaml",
+    "EEI/docs/governance/delivery_tasks.yaml",
+    "EEI/docs/governance/development_events.jsonl",
+    "EEI/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/run_manifests/GOV-EEI-A209-4H-SOAK-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "EEI/CHANGELOG.md",
+    "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "EEI/docs/governance/TRACEABILITY_MATRIX.csv",
+    "EEI/docs/governance/VERSION_MATRIX.yaml",
+    "EEI/docs/governance/delivery_tasks.yaml",
+    "EEI/docs/governance/development_events.jsonl",
+    "EEI/docs/governance/parameter_registry.csv",
+    "GOVERNANCE_DASHBOARD.md",
+    "governance/run_manifests/GOV-EEI-A209-4H-SOAK-001.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "evidence_refs": [
+    "EEI/artifacts/tests/a209/t1307_operator_soak_4h.json",
+    "EEI/artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl",
+    "EEI/artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
+    "EEI/docs/governance/development_events.jsonl",
+    "EEI/docs/governance/VERSION_MATRIX.yaml",
+    "GOVERNANCE_DASHBOARD.md"
+  ],
+  "observed_results": [
+    "LOCAL_4H_OPERATOR_SOAK_PASS",
+    "A209_PARTIAL_OPERATOR_EVIDENCE",
+    "A209_24H_MISSING",
+    "A206_STILL_IN_PROGRESS",
+    "NO_EEI_PRODUCT_CODE_CHANGED_IN_THIS_GOVERNANCE_SYNC"
+  ],
+  "tests_run": [
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project EEI --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 -m pytest tests/governance/test_project_governance_validator.py::ProjectGovernanceValidatorTests::test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists -q",
+      "exit_code": 0,
+      "result": "1 passed"
+    },
+    {
+      "command": "python3 -m pytest tests/governance -q",
+      "exit_code": 0,
+      "result": "45 passed"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "cd EEI && shasum -a 256 -c CHECKSUMS.sha256",
+      "exit_code": 0,
+      "result": "398 checksum paths OK"
+    },
+    {
+      "command": "cd EEI && .venv/bin/python scripts/manage_clean_room_release.py validate",
+      "exit_code": 0,
+      "result": "package_paths=392; package_sha256=d4bcb196114b1e321fba7b820b5beb31d595aa9471970bee4d6fe12a684022bb"
+    },
+    {
+      "command": "cd EEI && .venv/bin/python scripts/manage_release_artifacts.py validate",
+      "exit_code": 0,
+      "result": "manifest_paths=399; checksum_paths=398; remote_status=PENDING"
+    },
+    {
+      "command": "cd EEI && PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright UV_CACHE_DIR=/private/tmp/eei-uv-cache PNPM=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm make verify",
+      "exit_code": 0,
+      "result": "PASS after sandbox-elevated Chromium rerun; unit tests 50 passed"
+    }
+  ],
+  "model_delta": "No scoring formula change.",
+  "parameter_delta": "No canonical parameter value change; 4h run used PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright.",
+  "rollback": "Remove the A209 4h JSON/checkpoint, regenerate A209 evidence validation plus release artifacts, reset VERSION_MATRIX/ledger to the previous gate, and rerun governance validators.",
+  "unresolved_risks": [
+    "24h operator soak remains missing.",
+    "GitHub Actions has not yet validated this committed 4h evidence.",
+    "A209 and A206 remain in progress."
+  ]
+}
