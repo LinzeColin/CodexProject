@@ -45,6 +45,7 @@ PROJECT_MARKERS = {
 }
 INFRA_DIRS = {
     ".agents",
+    ".codex",
     ".git",
     ".github",
     ".pytest_cache",
@@ -828,6 +829,8 @@ def select_projects(config: dict[str, Any], args: argparse.Namespace) -> list[di
                     "governance/",
                     "scripts/validate_project_governance.py",
                     ".agents/skills/project-governance/",
+                    ".agents/skills/codex-dex/",
+                    ".codex/",
                     ".github/workflows/project-governance.yml",
                 )
             )

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
 import subprocess
 import sys
@@ -14,6 +15,7 @@ from unittest.mock import patch
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 VALIDATOR = ROOT / "scripts" / "validate_project_governance.py"
+STOP_HOOK = ROOT / ".codex" / "hooks" / "governance_stop.py"
 
 
 def load_validator_module():
@@ -46,10 +48,50 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("errors: 0", result.stdout)
         self.assertIn("warnings: 0", result.stdout)
 
+    def test_review3_root_governance_framework_files_are_required(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        required = set(config["root_governance"]["required_files"])
+        for path in {
+            "AGENTS.md",
+            "docs/governance/STANDARD.md",
+            "docs/governance/CODEX_SETUP.md",
+            ".agents/skills/codex-dex/SKILL.md",
+            ".codex/config.template.toml",
+            ".codex/hooks.json",
+            ".codex/hooks/governance_stop.py",
+            ".github/workflows/project-governance.yml",
+            "scripts/validate_project_governance.py",
+        }:
+            self.assertIn(path, required)
+            self.assertTrue((ROOT / path).is_file(), path)
+
     def test_unknown_project_returns_nonzero(self) -> None:
         result = run_validator("--project", "__missing_project__")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Unknown project: __missing_project__", result.stdout)
+
+    def test_governance_stop_hook_blocks_enabled_repo_without_validator(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            subprocess.run(["git", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
+            (tmp_path / "governance").mkdir()
+            (tmp_path / "governance" / "projects.yaml").write_text(
+                "governance_spec_version: '1.0.0'\n",
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [sys.executable, str(STOP_HOOK)],
+                input=json.dumps({"cwd": str(tmp_path)}),
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+            )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload.get("decision"), "block")
+        self.assertIn("validate_project_governance.py is missing", payload.get("reason", ""))
 
     def test_required_mode_promotes_missing_file_warning_to_error(self) -> None:
         validator = load_validator_module()

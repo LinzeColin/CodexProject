@@ -76,6 +76,22 @@ Root governance is separate from project governance:
 Do not make all projects required before their governance baseline has been
 migrated and accepted.
 
+## Codex Execution Layers
+
+The repository governance framework is enforced in layers:
+
+- Codex Personalization: short global routing instructions for the user profile.
+- Global `~/.codex/AGENTS.md`: user-wide development constraints.
+- Repository `AGENTS.md`: this repository's mandatory governance contract.
+- Repository `.agents/skills/codex-dex/SKILL.md`: governed development workflow for implementation, model changes, releases, and multi-file fixes.
+- Repository `.codex/hooks.json` and `.codex/hooks/governance_stop.py`: Stop Hook that runs changed-scope governance validation before a Codex turn is allowed to finish.
+- `.github/workflows/project-governance.yml`: GitHub Actions validation for PRs, pushes to `main`, and manual all/project/changed-only runs.
+- GitHub branch protection or rulesets: repository setting that must make Project Governance a required status check for `main`.
+
+Personalization and user-level config are documented in
+`docs/governance/CODEX_SETUP.md`. Repository files, validators, tests, and
+GitHub Actions are the source of truth for auditable delivery.
+
 ## Run Contract
 
 Before changing files, each implementation run should report:
@@ -89,6 +105,8 @@ Before changing files, each implementation run should report:
 7. Stop conditions.
 
 Default execution boundary: one project, one task ID, one acceptance target.
+
+For non-trivial software development, invoke `$codex-dex` before editing.
 
 ## Data Structures
 
