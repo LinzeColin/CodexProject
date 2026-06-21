@@ -1,0 +1,131 @@
+{
+  "run_id": "ADP-PHASE11-PROVISIONING-AUDIT-REVIEW-20260622",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-PHASE11-PROVISIONING-AUDIT-REVIEW-029",
+  "phase": "E",
+  "iteration_id": "ITER-20260621-045",
+  "generated_at": "2026-06-22T23:30:00+10:00",
+  "actor": "Codex",
+  "version_before": "0.11.25",
+  "version_after": "0.11.26",
+  "base_commit": "4e25ce2db01466b1053809d9b4aaeb949837fb4e",
+  "objective": "Review a downloaded no-secret provisioning audit artifact before trial-start dispatch.",
+  "non_scope": [
+    "secret value read",
+    "Codex auth read",
+    "workflow dispatch",
+    "SMTP send",
+    "Release upload",
+    "trial evidence mutation",
+    "local media/model/cache retention",
+    "production acceptance claim"
+  ],
+  "provisioning_audit_review_gate": {
+    "command": "review-provisioning-audit",
+    "validator_id": "adp-provisioning-audit-review-v1",
+    "source_artifact": "adp-production-provisioning-audit",
+    "required_inputs": [
+      "valid adp-production-refs-v1 report",
+      "production_refs_ready=true",
+      "workflow_run_ref",
+      "artifact_ref"
+    ],
+    "required_refs": [
+      "workflow_run_ref",
+      "artifact_ref",
+      "runner_ref",
+      "smtp_secret_ref",
+      "release_target_ref",
+      "workflow_vars_ref"
+    ],
+    "inherited_readiness_refs_required": true,
+    "side_effects_performed": false,
+    "secret_values_logged": false,
+    "codex_auth_read": false,
+    "workflow_dispatched": false,
+    "smtp_sent": false,
+    "release_uploaded": false,
+    "production_acceptance_claimed": false
+  },
+  "files_changed": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/production_refs.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_production_refs.py",
+    "governance/run_manifests/ADP-PHASE11-PROVISIONING-AUDIT-REVIEW-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "model_delta": "No new runtime model; MOD-ADP-030 now includes a no-side-effect provisioning audit artifact review before trial-start dispatch.",
+  "formula_delta": "Refreshed FORM-ADP-024 because cli.py::main changed, and refreshed FORM-ADP-032 after adding build_provisioning_audit_review and validate_provisioning_audit_review.",
+  "parameter_delta": "Added PARAM-ADP-166 for the provisioning audit review validator identifier.",
+  "model_ids_changed": [],
+  "formula_ids_changed": [
+    "FORM-ADP-024",
+    "FORM-ADP-032"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-166"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_audit_review_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_production_refs.py arxiv-daily-push/tests/test_production_launch.py arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_audit_review_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push review-provisioning-audit --production-refs-report <fixture-report> --workflow-run-ref github-actions://LinzeColin/CodexProject/actions/runs/123456 --artifact-ref github-artifact://LinzeColin/CodexProject/actions/runs/123456/adp-production-provisioning-audit --generated-at 2026-06-22T23:30:00+10:00 --json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_audit_review_semantic python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_audit_review_project python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_audit_review_root python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_audit_review_arxiv PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_audit_review_changed python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python3 -m json.tool governance/run_manifests/ADP-PHASE11-PROVISIONING-AUDIT-REVIEW-20260622.json",
+    "python3 -c \"import json,pathlib; [json.loads(line) for line in pathlib.Path('arxiv-daily-push/docs/governance/development_events.jsonl').read_text().splitlines() if line.strip()]\"",
+    "git diff --check"
+  ],
+  "test_results": [
+    "focused production refs/launch/CLI tests: 23 tests OK",
+    "review-provisioning-audit fixture CLI: pass and blocked sample returns exit 2",
+    "semantic extractor: 165 active parameters and 32 active formulas checked with no errors",
+    "project governance: arxiv-daily-push errors 0 warnings 0",
+    "dashboard generation: PASS",
+    "root governance tests: 98 tests OK",
+    "arxiv-daily-push unit tests: 157 tests OK",
+    "changed-only enforce-sync semantic: errors 0 warnings 0; all registered projects errors 0 warnings 0",
+    "manifest JSON and development_events JSONL parse: pass",
+    "git diff --check: pass"
+  ],
+  "semantic_coverage": {
+    "semantic_parameters_checked": 165,
+    "semantic_formulas_checked": 32
+  },
+  "result": "pass",
+  "evidence_refs": [
+    "governance/run_manifests/ADP-PHASE11-PROVISIONING-AUDIT-REVIEW-20260622.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md",
+    "arxiv-daily-push/src/arxiv_daily_push/production_refs.py",
+    "arxiv-daily-push/tests/test_production_refs.py",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+  ],
+  "git_commit": "PENDING",
+  "fact_level": "EXTRACTED",
+  "result_commit": "PENDING",
+  "rollback": "Remove provisioning audit review function, CLI command, tests, PARAM-ADP-166, phase record, manifest, governance updates, and restore version 0.11.25.",
+  "next_task": "RUN_PROVISIONING_AUDIT_REVIEW_THEN_DEFAULT_BRANCH_TRIAL_START_AFTER_OWNER_PROVISIONING",
+  "risks": [
+    "The review proves only that a downloaded no-secret provisioning audit artifact is valid and durably referenced.",
+    "Production launch and 30-day acceptance remain blocked by owner provisioning, default-branch trial-start evidence, real SMTP/Release evidence, replay/recovery/resource evidence, and 30 daily production entries."
+  ]
+}

@@ -669,17 +669,17 @@ models:
   - model_id: "MOD-ADP-030"
     name: "Production refs readiness bundle"
     kind: "deterministic no-secret readiness validator"
-    purpose: "Generate a no-secret owner-fillable refs input template, discover GitHub Actions metadata, and expose a GitHub-hosted provisioning audit workflow that validates runner, SMTP secret-name, Release target, and workflow variable readiness refs before launch readiness can consume them."
+    purpose: "Generate a no-secret owner-fillable refs input template, discover GitHub Actions metadata, expose a GitHub-hosted provisioning audit workflow, and review downloaded audit artifacts before launch readiness can consume refs."
     owner: "arxiv-daily-push"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-production-refs-v1"
     assumption_ids: ["ASM-ADP-033", "ASM-ADP-032", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
     formula_ids: ["FORM-ADP-032"]
-    parameter_ids: ["PARAM-ADP-154", "PARAM-ADP-155", "PARAM-ADP-156", "PARAM-ADP-157", "PARAM-ADP-158", "PARAM-ADP-159", "PARAM-ADP-162", "PARAM-ADP-163", "PARAM-ADP-165"]
-    inputs: ["repo", "runner_label", "release_target", "no-secret readiness metadata JSON", "GitHub Actions metadata from gh api", "manual provisioning audit dispatch", "generated_at"]
-    outputs: ["production refs input template", "production refs readiness report", "provisioning audit artifact", "readiness_refs", "readiness_gates", "blocking_reasons", "next_external_actions", "redacted discovery errors"]
+    parameter_ids: ["PARAM-ADP-154", "PARAM-ADP-155", "PARAM-ADP-156", "PARAM-ADP-157", "PARAM-ADP-158", "PARAM-ADP-159", "PARAM-ADP-162", "PARAM-ADP-163", "PARAM-ADP-165", "PARAM-ADP-166"]
+    inputs: ["repo", "runner_label", "release_target", "no-secret readiness metadata JSON", "GitHub Actions metadata from gh api", "manual provisioning audit dispatch", "downloaded provisioning audit artifact", "workflow_run_ref", "artifact_ref", "generated_at"]
+    outputs: ["production refs input template", "production refs readiness report", "provisioning audit artifact", "provisioning audit review", "readiness_refs", "readiness_gates", "review_gates", "blocking_reasons", "next_external_actions", "redacted discovery errors"]
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-provisioning-audit.yml"]
     config_refs: ["arxiv-daily-push/schemas/production_refs.schema.json", "arxiv-daily-push/config/examples/production_refs.input.example.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", ".github/workflows/arxiv-daily-push-provisioning-audit.yml"]
     test_refs: ["arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/tests/test_production_launch.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md"]

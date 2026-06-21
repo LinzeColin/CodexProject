@@ -92,6 +92,28 @@ PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push preflight-production
 
 If preflight exits non-zero, stop. Do not start the 30-day trial.
 
+## Provisioning Audit Review
+
+Before dispatching the private-runner trial-start workflow, run the GitHub-hosted
+no-secret provisioning audit workflow and download its `adp-production-
+provisioning-audit` JSON artifact. Register the downloaded artifact locally with
+durable refs:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push review-provisioning-audit \
+  --production-refs-report <downloaded-adp-production-provisioning-audit.json> \
+  --workflow-run-ref <github-actions-run-ref> \
+  --artifact-ref <github-artifact-ref> \
+  --generated-at <ISO timestamp> \
+  --json
+```
+
+The review must return `provisioning_audit_ready=true`. It requires the
+underlying production refs report to pass, `workflow_run_ref` to identify the
+GitHub Actions audit run, and `artifact_ref` to identify the downloaded audit
+artifact. If the review exits non-zero, stop. Do not dispatch trial-start,
+send SMTP mail, upload a Release, or claim production acceptance.
+
 ## Scheduled Production Gate
 
 The scheduled workflow is:
