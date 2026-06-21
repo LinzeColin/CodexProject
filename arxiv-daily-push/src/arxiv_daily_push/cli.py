@@ -19,6 +19,7 @@ from .notifications import render_email
 from .pipeline import PipelineError, run_daily_dry_run
 from .production_launch import build_production_launch_readiness, validate_production_launch_readiness
 from .production_preflight import build_production_preflight, validate_production_preflight
+from .production_refs import build_production_refs_report, validate_production_refs_report
 from .production_scheduler import build_production_scheduler_plan, validate_production_scheduler_plan
 from .ranking import selection_payload
 from .release_delivery import DEFAULT_RELEASE_REPO, deliver_release, validate_release_delivery_report
@@ -297,6 +298,14 @@ def build_parser() -> argparse.ArgumentParser:
     trial_start_workflow.add_argument("--generated-at", required=True, help="Workflow plan generation timestamp.")
     trial_start_workflow.add_argument("--json", action="store_true", help="Print JSON workflow plan.")
 
+    production_refs = subparsers.add_parser(
+        "plan-production-refs",
+        help="Build a no-secret readiness report for external runner, SMTP secret, Release target, and workflow variable refs.",
+    )
+    production_refs.add_argument("--readiness-input", required=True, help="JSON file containing no-secret readiness metadata.")
+    production_refs.add_argument("--generated-at", required=True, help="Production refs report timestamp.")
+    production_refs.add_argument("--json", action="store_true", help="Print JSON production refs report.")
+
     production_launch = subparsers.add_parser(
         "plan-production-launch",
         help="Build a fail-closed launch readiness report before running the default-branch trial start workflow.",
@@ -311,6 +320,7 @@ def build_parser() -> argparse.ArgumentParser:
     production_launch.add_argument("--release-target-ref", default="", help="Durable GitHub Release target readiness ref.")
     production_launch.add_argument("--workflow-vars-ref", default="", help="Durable GitHub variables readiness ref.")
     production_launch.add_argument("--trial-start-workflow-ref", default="", help="Durable default-branch trial start workflow ref.")
+    production_launch.add_argument("--production-refs-report", default="", help="Optional passing plan-production-refs report used to fill external refs.")
     production_launch.add_argument("--confirm-launch", action="store_true", help="Explicitly confirm launch readiness evaluation.")
     production_launch.add_argument("--json", action="store_true", help="Print JSON launch readiness report.")
 
@@ -946,17 +956,63 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{plan['plan_id']}\t{plan['status']}")
         return 0 if plan["trial_start_workflow_ready"] else 2
+    if args.command == "plan-production-refs":
+        report = build_production_refs_report(
+            load_json_mapping(args.readiness_input),
+            generated_at=args.generated_at,
+        )
+        errors = validate_production_refs_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["production_refs_ready"]:
+            print(f"{report['refs_report_id']}\tready")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["production_refs_ready"] else 2
     if args.command == "plan-production-launch":
+        launch_refs = {
+            "runner_ref": args.runner_ref,
+            "smtp_secret_ref": args.smtp_secret_ref,
+            "release_target_ref": args.release_target_ref,
+            "workflow_vars_ref": args.workflow_vars_ref,
+        }
+        if args.production_refs_report:
+            refs_report = load_json_mapping(args.production_refs_report)
+            refs_errors = validate_production_refs_report(refs_report)
+            if refs_errors or refs_report.get("production_refs_ready") is not True:
+                errors = refs_errors or ["production refs report is not ready"]
+                if args.json:
+                    print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+                else:
+                    print("blocked")
+                    for error in errors:
+                        print(f"- {error}")
+                return 2
+            report_refs = refs_report.get("readiness_refs")
+            if isinstance(report_refs, dict):
+                for key in launch_refs:
+                    if not launch_refs[key]:
+                        launch_refs[key] = str(report_refs.get(key) or "")
         report = build_production_launch_readiness(
             Path(args.path),
             generated_at=args.generated_at,
             pr_info=load_json_mapping(args.pr_info),
             expected_head_sha=args.expected_head_sha,
             default_branch_ref=args.default_branch_ref,
-            runner_ref=args.runner_ref,
-            smtp_secret_ref=args.smtp_secret_ref,
-            release_target_ref=args.release_target_ref,
-            workflow_vars_ref=args.workflow_vars_ref,
+            runner_ref=launch_refs["runner_ref"],
+            smtp_secret_ref=launch_refs["smtp_secret_ref"],
+            release_target_ref=launch_refs["release_target_ref"],
+            workflow_vars_ref=launch_refs["workflow_vars_ref"],
             trial_start_workflow_ref=args.trial_start_workflow_ref,
             confirm_launch=args.confirm_launch,
         )

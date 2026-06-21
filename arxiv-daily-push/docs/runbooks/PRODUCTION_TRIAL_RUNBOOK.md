@@ -267,6 +267,54 @@ only marks `trial_start_ready=true` when all upstream reports pass, real SMTP an
 Release probes are present, every ref is durable, and the explicit confirmation
 flag is set.
 
+## Production Refs Readiness Bundle
+
+Before the launch readiness report can be run with external refs, collect only
+non-secret readiness metadata in a JSON file. The file may contain secret names
+and durable evidence refs, but must not contain SMTP hosts, ports, usernames,
+passwords, tokens, API keys, or credential values:
+
+```json
+{
+  "runner": {
+    "ready": true,
+    "label": "arxiv-daily-push",
+    "evidence_ref": "github-runner://LinzeColin/CodexProject/arxiv-daily-push"
+  },
+  "smtp_secrets": {
+    "ready": true,
+    "secret_names": ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],
+    "evidence_ref": "github-secrets://LinzeColin/CodexProject/actions/smtp"
+  },
+  "release_target": {
+    "ready": true,
+    "var_name": "ADP_RELEASE_TARGET",
+    "target": "main",
+    "evidence_ref": "github-vars://LinzeColin/CodexProject/actions/ADP_RELEASE_TARGET"
+  },
+  "workflow_vars": {
+    "ready": true,
+    "var_names": ["ADP_RELEASE_TARGET", "ADP_ALLOW_SMTP_SEND", "ADP_ALLOW_RELEASE_UPLOAD"],
+    "evidence_ref": "github-vars://LinzeColin/CodexProject/actions/workflow-vars"
+  }
+}
+```
+
+Build the machine-checkable refs report:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-refs \
+  --readiness-input <production-refs-input.json> \
+  --generated-at <ISO timestamp> \
+  --json > <production-refs-report.json>
+```
+
+The report is ready only when all required names are present, each readiness ref
+contains a durable scheme, and the input does not include secret-like keys or
+values. This command does not inspect GitHub secret values, read Codex auth,
+dispatch workflows, send SMTP mail, create Releases, or claim production
+acceptance.
+
 ## Production Launch Readiness
 
 Before dispatching the default-branch trial start workflow, build a launch
@@ -284,6 +332,22 @@ PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-laun
   --release-target-ref <github-release-target-readiness-ref> \
   --workflow-vars-ref <github-vars-readiness-ref> \
   --trial-start-workflow-ref <default-branch-trial-start-workflow-ref> \
+  --confirm-launch \
+  --json
+```
+
+When a passing production refs report already exists, it can fill the external
+runner, SMTP secret, Release target, and workflow variable refs:
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push plan-production-launch \
+  --path . \
+  --pr-info <current-pr-info.json> \
+  --generated-at <ISO timestamp> \
+  --expected-head-sha <expected-pr-head-sha> \
+  --default-branch-ref <merged-default-branch-ref> \
+  --trial-start-workflow-ref <default-branch-trial-start-workflow-ref> \
+  --production-refs-report <production-refs-report.json> \
   --confirm-launch \
   --json
 ```
