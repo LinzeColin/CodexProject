@@ -354,6 +354,45 @@ variable names plus `ADP_RELEASE_TARGET`. It does not read secret values, print
 trial evidence, read Codex auth, or claim production acceptance. If `gh` is not
 installed or GitHub metadata access fails, it exits blocked.
 
+## Provisioning Audit Workflow
+
+Before dispatching the private-runner trial-start workflow, run the no-secret
+provisioning audit workflow from the default branch:
+
+```text
+.github/workflows/arxiv-daily-push-provisioning-audit.yml
+```
+
+GitHub Actions display name:
+
+```text
+arXiv Daily Push provisioning audit
+```
+
+Dispatch inputs:
+
+- `runner_label=arxiv-daily-push` unless the private runner uses another label
+- `generated_at=<ISO timestamp>` optional
+
+Expected artifact:
+
+```text
+adp-production-provisioning-audit
+```
+
+The workflow runs on `ubuntu-latest`, not on the private self-hosted runner. It
+uses `discover-production-refs` to verify runner label metadata, required SMTP
+secret names, required workflow variable names, and `ADP_RELEASE_TARGET` before
+the trial-start workflow can occupy the private runner. It uses
+`secrets.ADP_GITHUB_METADATA_TOKEN` when configured, otherwise it falls back to
+`github.token`; if metadata permissions are insufficient, the artifact reports a
+blocked readiness result.
+
+The provisioning audit must not be treated as trial-start evidence. It reads no
+secret values, does not read Codex auth, does not dispatch trial-start, sends no
+SMTP mail, creates no Release, mutates no trial ledger, and claims no production
+acceptance.
+
 ## Production Launch Readiness
 
 Before dispatching the default-branch trial start workflow, build a launch

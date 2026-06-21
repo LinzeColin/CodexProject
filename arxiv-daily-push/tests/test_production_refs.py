@@ -19,6 +19,9 @@ from arxiv_daily_push.production_refs import (
 )
 
 
+ROOT = Path(__file__).resolve().parents[2]
+
+
 def readiness_input(**overrides) -> dict:
     payload = {
         "runner": {
@@ -237,6 +240,21 @@ class ProductionRefsTests(unittest.TestCase):
         self.assertIn("gh api /repos/LinzeColin/CodexProject/actions/secrets failed", message)
         self.assertNotIn("stdout-should-not-leak", message)
         self.assertNotIn("stderr-should-not-leak", message)
+
+    def test_provisioning_audit_workflow_is_github_hosted_and_no_secret(self) -> None:
+        workflow = (ROOT / ".github/workflows/arxiv-daily-push-provisioning-audit.yml").read_text(encoding="utf-8")
+
+        self.assertIn("workflow_dispatch", workflow)
+        self.assertIn("runs-on: ubuntu-latest", workflow)
+        self.assertNotIn("- self-hosted", workflow)
+        self.assertIn("ADP_GITHUB_METADATA_TOKEN", workflow)
+        self.assertIn("github.token", workflow)
+        self.assertIn("discover-production-refs", workflow)
+        self.assertIn("adp-production-provisioning-audit", workflow)
+        self.assertIn("production_refs_ready=true", workflow)
+        self.assertNotIn("auth.json", workflow)
+        self.assertNotIn("ADP_SMTP_PASSWORD", workflow)
+        self.assertLess(workflow.index("discover-production-refs"), workflow.index("Stop if provisioning audit blocked"))
 
 
 if __name__ == "__main__":

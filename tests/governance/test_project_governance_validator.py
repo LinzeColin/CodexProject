@@ -1139,13 +1139,13 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-050")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-051")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT-20260622.json",
+            "governance/run_manifests/ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-20260622.json",
         )
         rendered = dashboard.render_owner_status(info, "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
-        self.assertIn("production refs discovery and launch readiness", rendered)
+        self.assertIn("GitHub-hosted no-secret provisioning audit workflow", rendered)
         self.assertNotIn("root semantic extractor selector behavior expanded", rendered)
 
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
@@ -1546,6 +1546,30 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(gate["secret_values_logged"])
         self.assertFalse(gate["codex_auth_read"])
         self.assertFalse(gate["workflow_dispatched"])
+        self.assertFalse(gate["production_acceptance_claimed"])
+
+    def test_arxiv_daily_push_phase11_manifest_records_provisioning_audit_workflow(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-028")
+        gate = manifest["provisioning_audit_gate"]
+        self.assertEqual(gate["workflow"], ".github/workflows/arxiv-daily-push-provisioning-audit.yml")
+        self.assertEqual(gate["runner"], "ubuntu-latest")
+        self.assertEqual(gate["command"], "discover-production-refs")
+        self.assertEqual(gate["artifact"], "adp-production-provisioning-audit")
+        self.assertFalse(gate["self_hosted_runner_started"])
+        self.assertFalse(gate["secret_values_logged"])
+        self.assertFalse(gate["codex_auth_read"])
+        self.assertFalse(gate["trial_start_dispatched"])
+        self.assertFalse(gate["smtp_sent"])
+        self.assertFalse(gate["release_uploaded"])
         self.assertFalse(gate["production_acceptance_claimed"])
 
     def test_arxiv_daily_push_semantic_extract_manifest_records_partial_coverage(self) -> None:

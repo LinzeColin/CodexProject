@@ -1,0 +1,121 @@
+{
+  "run_id": "ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-20260622",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-028",
+  "phase": "E",
+  "iteration_id": "ITER-20260621-044",
+  "generated_at": "2026-06-22T23:00:00+10:00",
+  "actor": "Codex",
+  "version_before": "0.11.24",
+  "version_after": "0.11.25",
+  "base_commit": "12d022784bc79863ed4ae380ac1638c6bf85ca19",
+  "objective": "Add a GitHub-hosted no-secret provisioning audit workflow before private-runner trial-start dispatch.",
+  "non_scope": [
+    "secret value read",
+    "Codex auth read",
+    "self-hosted runner job",
+    "trial-start dispatch",
+    "SMTP send",
+    "Release upload",
+    "trial evidence mutation",
+    "local media/model/cache retention",
+    "production acceptance claim"
+  ],
+  "provisioning_audit_gate": {
+    "workflow": ".github/workflows/arxiv-daily-push-provisioning-audit.yml",
+    "runner": "ubuntu-latest",
+    "command": "discover-production-refs",
+    "artifact": "adp-production-provisioning-audit",
+    "metadata_token_source": "secrets.ADP_GITHUB_METADATA_TOKEN or github.token",
+    "checks": [
+      "runner label metadata",
+      "required SMTP secret names",
+      "required workflow variable names",
+      "ADP_RELEASE_TARGET variable",
+      "durable readiness refs"
+    ],
+    "self_hosted_runner_started": false,
+    "secret_values_logged": false,
+    "codex_auth_read": false,
+    "trial_start_dispatched": false,
+    "smtp_sent": false,
+    "release_uploaded": false,
+    "production_acceptance_claimed": false
+  },
+  "files_changed": [
+    ".github/workflows/arxiv-daily-push-provisioning-audit.yml",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_production_refs.py",
+    "governance/run_manifests/ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "model_delta": "No new runtime model; MOD-ADP-030 now includes a GitHub-hosted no-secret provisioning audit workflow before private-runner trial-start dispatch.",
+  "formula_delta": "No implementation formula change; FORM-ADP-032 now documents the provisioning audit workflow wrapper around existing no-secret discovery.",
+  "parameter_delta": "Added PARAM-ADP-165 for the GitHub-hosted production provisioning audit workflow.",
+  "model_ids_changed": [],
+  "formula_ids_changed": [],
+  "parameter_ids_changed": [
+    "PARAM-ADP-165"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_production_refs.py arxiv-daily-push/tests/test_production_launch.py arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push discover-production-refs --generated-at 2026-06-22T23:00:00+10:00 --json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_semantic python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_project python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_root python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_arxiv PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_changed python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python3 -m json.tool governance/run_manifests/ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-20260622.json",
+    "python3 -c \"import json,pathlib; [json.loads(line) for line in pathlib.Path('arxiv-daily-push/docs/governance/development_events.jsonl').read_text().splitlines() if line.strip()]\"",
+    "git diff --check"
+  ],
+  "test_results": [
+    "focused production refs/launch/CLI tests: 20 tests OK",
+    "local discover-production-refs: expected blocked exit 2 because gh is not installed; JSON parse OK and redacted error only",
+    "semantic extractor: 164 active parameters and 32 active formulas checked with no errors",
+    "project governance: arxiv-daily-push errors 0 warnings 0",
+    "root governance tests: 97 tests OK",
+    "arxiv-daily-push unit tests: 154 tests OK",
+    "changed-only enforce-sync semantic: errors 0 warnings 0; all registered projects errors 0 warnings 0",
+    "manifest JSON and development_events JSONL parse: pass",
+    "git diff --check: pass"
+  ],
+  "semantic_coverage": {
+    "semantic_parameters_checked": 164,
+    "semantic_formulas_checked": 32
+  },
+  "result": "pass",
+  "evidence_refs": [
+    "governance/run_manifests/ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-20260622.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md",
+    ".github/workflows/arxiv-daily-push-provisioning-audit.yml",
+    "arxiv-daily-push/tests/test_production_refs.py",
+    "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+  ],
+  "git_commit": "PENDING",
+  "fact_level": "EXTRACTED",
+  "result_commit": "PENDING",
+  "rollback": "Remove provisioning audit workflow, workflow test, PARAM-ADP-165, phase record, manifest, and related governance records, then restore version 0.11.24.",
+  "next_task": "RUN_PROVISIONING_AUDIT_THEN_DEFAULT_BRANCH_TRIAL_START_AFTER_OWNER_PROVISIONING",
+  "risks": [
+    "The audit can prove GitHub metadata only when token permissions can list runners, repository secret names, and variables.",
+    "Production launch and 30-day acceptance remain blocked by default-branch trial-start evidence, real SMTP/Release evidence, replay/recovery/resource evidence, and 30 daily production entries."
+  ]
+}
