@@ -396,6 +396,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["task_id"], "ADP-PHASE2-DATA-CONTRACTS-001")
         self.assertIn("MOD-ADP-004", manifest["model_delta"])
 
+    def test_arxiv_daily_push_phase3_manifest_records_arxiv_adapter_gate(self) -> None:
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE3-ARXIV-ADAPTER-20260621.json").read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE3-ARXIV-ADAPTER-001")
+        self.assertIn("MOD-ADP-005", manifest["model_delta"])
+
 
 if __name__ == "__main__":
     unittest.main()

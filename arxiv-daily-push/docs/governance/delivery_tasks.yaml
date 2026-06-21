@@ -35,13 +35,30 @@ tasks:
     target_version: "0.2.0"
     completed_version: "0.2.0"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE3-ARXIV-ADAPTER-001"
+    phase: "B"
+    objective: "Implement the first arXiv SourceAdapter by mapping arXiv Atom XML into generic SourceItem records."
+    scope: "URL construction, Atom parser, local fixture, CLI parse/url commands, adapter tests, and governance updates."
+    non_scope: "No scheduled ingest, bulk harvesting, PDF download, ranking, Claim Ledger extraction, media generation, or real SMTP sending."
+    status: "completed"
+    dependencies: ["ADP-PHASE2-DATA-CONTRACTS-001"]
+    required_files: ["src/arxiv_daily_push/arxiv_adapter.py", "tests/test_arxiv_adapter.py", "tests/fixtures/arxiv_atom_sample.xml", "config/examples/sources.example.yaml"]
+    acceptance_ids: ["ADP-ACC-PHASE3-ARXIV-ADAPTER"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 19 tests OK", "root governance tests: 23 tests OK", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "dashboard generation: PASS", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_03.md", "arxiv-daily-push/tests/test_arxiv_adapter.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
+    risk: "Live arXiv service behavior remains external; Phase 3 validates URL construction and Atom parsing with local fixtures only."
+    rollback: "Revert Phase 3 adapter code, tests, fixture, and governance updates."
+    target_version: "0.3.0"
+    completed_version: "0.3.0"
+    unknown_task_ids: []
   - task_id: "ADP-PHASE4-RANKING-001"
     phase: "B"
     objective: "Implement the planned 100-point selection scoring model with golden tests."
     scope: "Ranking model, queue selection audit, fixed weights, and deterministic tests."
     non_scope: "No TTS or video."
     status: "planned"
-    dependencies: ["ADP-PHASE2-DATA-CONTRACTS-001"]
+    dependencies: ["ADP-PHASE3-ARXIV-ADAPTER-001"]
     required_files: ["src", "tests", "docs/governance/parameter_registry.csv"]
     acceptance_ids: ["ADP-ACC-PHASE4-RANKING"]
     test_commands: []

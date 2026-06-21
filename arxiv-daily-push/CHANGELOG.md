@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - 2026-06-21
+
+- Added Phase 3 arXiv Atom source adapter.
+- Added offline Atom fixture parsing into generic `SourceItem` records.
+- Added arXiv query URL rendering without network fetch.
+- Added source adapter tests using local fixtures only.
+
 ## 0.2.0 - 2026-06-21
 
 - Added Phase 2 generic contracts for `SourceItem`, `EvidenceClaim`, `Lesson`, `Storyboard`, `Publication`, and `RunRecord`.

@@ -97,6 +97,30 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/state_machine.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_state_machine.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md"]
+  - formula_id: "FORM-ADP-007"
+    model_id: "MOD-ADP-005"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-005"]
+    status: "active"
+    expression: "Build URL = ARXIV_API_BASE_URL + encoded search_query, start, max_results, sortBy, sortOrder where 1 <= max_results <= 50; parse each Atom entry into SourceItem with arXiv-specific metadata under metadata.arxiv."
+    variables:
+      - name: "search_query"
+        data_type: "str"
+        unit: "arXiv query"
+        input_domain: "arXiv API search query"
+      - name: "max_results"
+        data_type: "int"
+        unit: "entries"
+        input_domain: "1..50 for Phase 3"
+      - name: "atom_entry"
+        data_type: "xml element"
+        unit: "entry"
+        input_domain: "Atom entry with arxiv namespace extensions"
+    constraints: "No bulk download, PDF download, or scheduled ingest in Phase 3."
+    missing_policy: "Malformed Atom XML or API error entries raise ArxivAdapterError."
+    output_range: "arXiv API URL or list[SourceItem]"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_arxiv_adapter.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_03.md", "https://info.arxiv.org/help/api/basics.html", "https://info.arxiv.org/help/api/user-manual.html"]
   - formula_id: "FORM-ADP-003"
     model_id: "MOD-ADP-002"
     assumption_ids: ["ASM-ADP-003"]

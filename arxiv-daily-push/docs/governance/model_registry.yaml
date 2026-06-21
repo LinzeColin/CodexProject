@@ -21,6 +21,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md", "arxiv-daily-push/src/arxiv_daily_push/contracts.py", "arxiv-daily-push/src/arxiv_daily_push/state_machine.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-005"
+    statement: "Phase 3 implements the first arXiv adapter with offline fixture tests and no scheduled or bulk ingestion."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_03.md", "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -56,6 +61,23 @@ models:
     config_refs: ["arxiv-daily-push/schemas/source_item.schema.json", "arxiv-daily-push/schemas/evidence_claim.schema.json", "arxiv-daily-push/schemas/run_record.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_contracts.py", "arxiv-daily-push/tests/test_state_machine.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md"]
+  - model_id: "MOD-ADP-005"
+    name: "arXiv Atom source adapter"
+    kind: "deterministic source adapter"
+    purpose: "Build bounded arXiv API URLs and map Atom entries into generic SourceItem records."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-arxiv-adapter-v1"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-005"]
+    formula_ids: ["FORM-ADP-007"]
+    parameter_ids: ["PARAM-ADP-029", "PARAM-ADP-030", "PARAM-ADP-031", "PARAM-ADP-032", "PARAM-ADP-033", "PARAM-ADP-034"]
+    inputs: ["arXiv query parameters", "arXiv Atom XML"]
+    outputs: ["arXiv API URL", "SourceItem records", "adapter errors"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/config/examples/sources.example.yaml", "arxiv-daily-push/schemas/source_item.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_arxiv_adapter.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_03.md", "https://info.arxiv.org/help/api/basics.html", "https://info.arxiv.org/help/api/user-manual.html", "https://info.arxiv.org/help/api/index.html"]
   - model_id: "MOD-ADP-002"
     name: "100-point arXiv selection score"
     kind: "deterministic scoring model"

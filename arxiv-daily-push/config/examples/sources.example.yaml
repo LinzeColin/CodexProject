@@ -2,9 +2,15 @@ sources:
   - source_id: arxiv
     source_type: arxiv
     enabled: true
-    phase: planned_phase3
+    phase: phase3_adapter
     api_base_url: https://export.arxiv.org/api/query
+    default_query: cat:cs.AI
+    default_sort_by: submittedDate
+    default_sort_order: descending
+    max_results_per_call: 50
+    acknowledgement: Thank you to arXiv for use of its open access interoperability.
     rate_limit_policy: polite_retry_with_backoff
+    phase3_policy: url_build_and_atom_parse_only
 future_source_types:
   - rss
   - github
@@ -15,4 +21,3 @@ future_source_types:
   - courses
   - podcasts
   - user_documents
-
