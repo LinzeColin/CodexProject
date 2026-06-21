@@ -134,6 +134,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 project.get("project_id"),
             )
 
+    def test_review6d_whkm_semantic_rollout_is_task_bound(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        whkm = next(project for project in config["projects"] if project["project_id"] == "whkmSalary")
+        self.assertTrue(whkm.get("semantic_extractors"))
+        coverage = whkm["semantic_coverage"]
+        self.assertEqual(coverage["status"], "in_progress")
+        self.assertEqual(coverage["task_id"], "GOV-SEMANTIC-WHKM-001")
+        self.assertEqual(coverage["acceptance_id"], "ACC-SEMANTIC-WHKM-001")
+        self.assertEqual(
+            coverage["evidence_ref"],
+            "governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json",
+        )
+
     def test_review6d_required_project_missing_semantic_coverage_fails(self) -> None:
         validator = load_validator_module()
         with tempfile.TemporaryDirectory() as tmp:
