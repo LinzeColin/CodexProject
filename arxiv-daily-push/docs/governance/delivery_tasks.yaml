@@ -23,17 +23,17 @@ tasks:
     objective: "Implement generic SourceItem, EvidenceClaim, Lesson, Storyboard, Publication, and RunRecord schemas and state machine."
     scope: "Schemas, contract tests, migration notes, and generic source boundaries."
     non_scope: "No network ingest or media generation."
-    status: "planned"
+    status: "completed"
     dependencies: ["ADP-PHASE1-FOUNDATION-001"]
     required_files: ["schemas", "tests"]
     acceptance_ids: ["ADP-ACC-PHASE2-DATA-CONTRACTS"]
-    test_commands: []
-    test_results: ["NOT_RUN planned Phase 2"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 -m json.tool arxiv-daily-push/schemas/*.schema.json", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 13 tests OK", "schemas: JSON parse OK", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md", "arxiv-daily-push/tests/test_contracts.py", "arxiv-daily-push/tests/test_state_machine.py", "arxiv-daily-push/tests/test_cli.py"]
     risk: "Hard-coding arXiv-only fields would block future source expansion."
     rollback: "Revert Phase 2 schema changes only."
     target_version: "0.2.0"
-    completed_version: ""
+    completed_version: "0.2.0"
     unknown_task_ids: []
   - task_id: "ADP-PHASE4-RANKING-001"
     phase: "B"

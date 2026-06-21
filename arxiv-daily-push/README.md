@@ -1,21 +1,25 @@
 # arXiv Daily Push
 
 `arXiv 日报推送 / arXiv Daily Push` is a private, evidence-first daily learning
-pipeline. The Phase 1 repository foundation provides only the local package,
-CLI contract, governance records, configuration examples, schemas, and tests.
+pipeline. The Phase 2 foundation provides the local package, CLI contract,
+governance records, configuration examples, generic schemas, runtime contract
+validators, a deterministic `RunRecord` state machine, and tests.
 
-## Phase 1 Scope
+## Current Scope
 
 Implemented now:
 
 - `adp version`
 - `adp doctor`
 - `adp render-email`
+- `adp validate-record`
 - dry-run email rendering for `linzezhang35@gmail.com`
 - local resource and dependency readiness checks
+- generic contracts for `SourceItem`, `EvidenceClaim`, `Lesson`, `Storyboard`, `Publication`, and `RunRecord`
+- deterministic state transitions for local `RunRecord` validation
 - governance records required by `CodexProject`
 
-Not implemented in Phase 1:
+Not implemented yet:
 
 - arXiv ingestion
 - ranking or queue selection
@@ -50,4 +54,3 @@ git diff --check
 Do not commit media, model weights, voice samples, credentials, Codex auth,
 GitHub tokens, SMTP secrets, render cache, or dependency directories. Phase 1-6
 must remain text/code/schema only.
-

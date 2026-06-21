@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 from . import __version__
 from .doctor import doctor_report, render_report
 from .notifications import render_email
+from .state_machine import validate_run_record
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -25,6 +27,10 @@ def build_parser() -> argparse.ArgumentParser:
     email.add_argument("--run-id", default="phase1-foundation")
     email.add_argument("--summary", default="Phase 1 foundation status")
     email.add_argument("--date", default="not-scheduled")
+
+    validate_record = subparsers.add_parser("validate-record", help="Validate a RunRecord JSON file.")
+    validate_record.add_argument("--path", required=True, help="RunRecord JSON path.")
+    validate_record.add_argument("--json", action="store_true", help="Print JSON validation output.")
     return parser
 
 
@@ -44,5 +50,15 @@ def main(argv: list[str] | None = None) -> int:
         print("")
         print(email.body)
         return 0
+    if args.command == "validate-record":
+        data = json.loads(Path(args.path).read_text(encoding="utf-8"))
+        errors = validate_run_record(data)
+        payload = {"status": "pass" if not errors else "fail", "errors": errors}
+        if args.json:
+            print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(payload["status"])
+            for error in errors:
+                print(f"- {error}")
+        return 0 if not errors else 2
     raise AssertionError(f"Unhandled command: {args.command}")
-

@@ -3,17 +3,53 @@
   "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/run_record.schema.json",
   "title": "RunRecord",
   "type": "object",
-  "required": ["run_id", "date", "timezone", "phase", "status", "stages"],
+  "required": ["run_id", "date", "timezone", "phase", "status", "current_state", "stages"],
   "properties": {
-    "run_id": {"type": "string"},
+    "run_id": {"type": "string", "minLength": 1},
     "date": {"type": "string"},
     "timezone": {"type": "string"},
     "phase": {"type": "string"},
-    "status": {"type": "string"},
-    "stages": {"type": "array", "items": {"type": "object"}},
+    "status": {"type": "string", "enum": ["created", "running", "blocked", "failed", "degraded", "succeeded"]},
+    "current_state": {
+      "type": "string",
+      "enum": ["created", "health_checked", "source_collected", "evidence_bound", "lesson_ready", "storyboard_ready", "publication_ready", "notified", "completed", "blocked", "failed"]
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "status"],
+        "properties": {
+          "name": {"type": "string"},
+          "status": {"type": "string", "enum": ["not_started", "running", "passed", "blocked", "failed", "skipped"]},
+          "started_at": {"type": "string"},
+          "finished_at": {"type": "string"},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "state_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from_state", "to_state", "reason", "at"],
+        "properties": {
+          "from_state": {"type": "string"},
+          "to_state": {"type": "string"},
+          "reason": {"type": "string"},
+          "at": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "source_items": {"type": "array", "items": {"$ref": "source_item.schema.json"}},
+    "evidence_claims": {"type": "array", "items": {"$ref": "evidence_claim.schema.json"}},
+    "lessons": {"type": "array", "items": {"$ref": "lesson.schema.json"}},
+    "storyboards": {"type": "array", "items": {"$ref": "storyboard.schema.json"}},
+    "publications": {"type": "array", "items": {"$ref": "publication.schema.json"}},
     "notification": {"type": "object"},
     "sha256": {"type": "string"}
   },
   "additionalProperties": false
 }
-

@@ -16,6 +16,11 @@ assumptions:
     fact_level: "PROPOSED"
     evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
     status: "active"
+  - assumption_id: "ASM-ADP-004"
+    statement: "Phase 2 implements only offline generic contracts and RunRecord state validation; it does not fetch sources or generate publishable content."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md", "arxiv-daily-push/src/arxiv_daily_push/contracts.py", "arxiv-daily-push/src/arxiv_daily_push/state_machine.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -34,6 +39,23 @@ models:
     config_refs: ["arxiv-daily-push/src/arxiv_daily_push/config.py", "arxiv-daily-push/config/examples/notification.example.yaml"]
     test_refs: ["arxiv-daily-push/tests/test_doctor.py", "arxiv-daily-push/tests/test_notifications.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_01.md"]
+  - model_id: "MOD-ADP-004"
+    name: "Generic data contract and RunRecord state gate"
+    kind: "deterministic contract/state validator"
+    purpose: "Validate SourceItem, EvidenceClaim, Lesson, Storyboard, Publication, and RunRecord boundaries without network or media side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-contracts-v1"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-004"]
+    formula_ids: ["FORM-ADP-005", "FORM-ADP-006"]
+    parameter_ids: ["PARAM-ADP-020", "PARAM-ADP-021", "PARAM-ADP-022", "PARAM-ADP-023", "PARAM-ADP-024", "PARAM-ADP-025", "PARAM-ADP-026", "PARAM-ADP-027", "PARAM-ADP-028"]
+    inputs: ["SourceItem", "EvidenceClaim", "Lesson", "Storyboard", "Publication", "RunRecord", "current_state", "next_state"]
+    outputs: ["validation errors", "validated RunRecord", "transition result"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/contracts.py", "arxiv-daily-push/src/arxiv_daily_push/state_machine.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/source_item.schema.json", "arxiv-daily-push/schemas/evidence_claim.schema.json", "arxiv-daily-push/schemas/run_record.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_contracts.py", "arxiv-daily-push/tests/test_state_machine.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md"]
   - model_id: "MOD-ADP-002"
     name: "100-point arXiv selection score"
     kind: "deterministic scoring model"
@@ -70,4 +92,3 @@ models:
     test_refs: []
     evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
     unknown_task_ids: ["ADP-PHASE5-EVIDENCE-GATE-001"]
-
