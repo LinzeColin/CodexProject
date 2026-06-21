@@ -68,7 +68,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     )
     model_versions = matrix.get("model_versions") if isinstance(matrix, dict) else {}
     parameter_versions = matrix.get("parameter_profile_versions") if isinstance(matrix, dict) else {}
-    latest_manifest = latest_run_manifest(structural.project_scope(project))
+    latest_manifest = latest_run_manifest(structural.project_scope(project), latest_event)
     current_phase = matrix.get("current_phase", "UNKNOWN") if isinstance(matrix, dict) else "UNKNOWN"
     next_task_info = select_next_task(tasks, completed_task_ids, str(current_phase))
     semantic_coverage = project.get("semantic_coverage") if isinstance(project.get("semantic_coverage"), dict) else {}
@@ -228,20 +228,42 @@ def select_next_task(tasks: list[dict[str, Any]], completed_task_ids: set[str], 
     }
 
 
-def latest_run_manifest(project_id: str) -> dict[str, Any]:
+def load_manifest(path: Path, project_id: str) -> dict[str, Any]:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    if str(data.get("project_id") or "") != project_id:
+        return {}
+    data["_path"] = str(path.relative_to(ROOT))
+    return data
+
+
+def latest_run_manifest(project_id: str, latest_event: dict[str, Any] | None = None) -> dict[str, Any]:
     manifest_dir = ROOT / "governance" / "run_manifests"
+    if latest_event:
+        for ref in structural.as_list(latest_event.get("evidence_refs")):
+            ref_path = ROOT / str(ref)
+            if ref_path.suffix == ".json" and ref_path.is_file() and manifest_dir in ref_path.parents:
+                data = load_manifest(ref_path, project_id)
+                if data:
+                    return data
     manifests: list[dict[str, Any]] = []
     for path in sorted(manifest_dir.glob("*.json")):
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            continue
-        if str(data.get("project_id") or "") == project_id:
-            data["_path"] = str(path.relative_to(ROOT))
+        data = load_manifest(path, project_id)
+        if data:
             manifests.append(data)
     if not manifests:
         return {}
-    return sorted(manifests, key=lambda item: str(item.get("started_at") or item.get("finished_at") or item.get("_path")), reverse=True)[0]
+    return sorted(
+        manifests,
+        key=lambda item: (
+            1 if (item.get("started_at") or item.get("finished_at") or item.get("generated_at")) else 0,
+            str(item.get("started_at") or item.get("finished_at") or item.get("generated_at") or ""),
+            str(item.get("_path") or ""),
+        ),
+        reverse=True,
+    )[0]
 
 
 def confidence_label(project_info: dict[str, Any]) -> str:

@@ -10,11 +10,11 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.11.19
 - Current phase: E
-- Current gate: GOV-SEMANTIC-ADP-MACHINE-VERIFIED
-- Confirmed iteration count: 37
+- Current gate: ADP-PHASE11-PRODUCTION-TRIAL-START-PRECHECK-BLOCKED
+- Confirmed iteration count: 38
 - Reconstructed event count: 0
-- Current task: PROVISION_PRODUCTION_REFS_AND_START_DEFAULT_BRANCH_TRIAL
-- Blockers: Semantic coverage is machine_verified with 152 machine-checked active parameters and all 31 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. PR #31 is merged to `main` and main Project Governance CI passed for merge commit `d7ad354519374946c70440abae213410c2cb061d`; production launch remains blocked by missing explicit launch confirmation and missing durable readiness refs for `default_branch_ref`, `runner_ref`, `smtp_secret_ref`, `release_target_ref`, `workflow_vars_ref`, and `trial_start_workflow_ref`; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
+- Current task: ADP-PHASE11-PRODUCTION-TRIAL-START-022
+- Blockers: Semantic coverage is machine_verified with 152 machine-checked active parameters and all 31 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. PR #32 is merged to `main` at merge commit `df28c70f255d4db0cabf15d6555ce34a8b2fa560` and main Project Governance CI run `27913796642` passed; `default_branch_ref` and `trial_start_workflow_ref` are now durable, but production launch remains blocked by missing explicit launch confirmation and missing durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`; production acceptance still requires a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries.
 
 ## Phase Matrix
 
@@ -873,6 +873,29 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Production launch and production acceptance remain blocked by external refs, runner/secrets/Release evidence, trial start evidence, and 30-day operational evidence.
 - Rollback: Revert the final selector transform changes, remove the fifth semantic extractor expansion, `GOV-SEMANTIC-ADP-EXTRACT-005.json`, generated status/dashboard changes, event update, and test update.
 - Next step: Provision durable production refs and run the default-branch trial start workflow with explicit confirmation.
+
+### `ITER-20260621-038`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from GitHub PR #32 metadata, main Project Governance CI metadata, local default-branch workflow file presence, and the `plan-production-launch` precheck result.
+- Version before: 0.11.19
+- Version after: 0.11.19
+- Base commit: df28c70f255d4db0cabf15d6555ce34a8b2fa560
+- Result commit: PENDING
+- Task IDs: ADP-PHASE11-PRODUCTION-TRIAL-START-022
+- Goal: Record a no-secret production trial start precheck after PR #32 merged to `main`.
+- Assumptions: `default_branch_ref` and `trial_start_workflow_ref` can be proven from current Git/default-branch state without reading secrets or dispatching workflows; private runner, SMTP secret, Release target, workflow variable readiness, and explicit launch confirmation still require external owner-provisioned refs.
+- Files changed: production trial start precheck phase record, run manifest, development event, delivery task/status sources, runbook, version matrix, and generated governance dashboard/status files.
+- Model changes: No arXiv Daily Push runtime model behavior change.
+- Parameter changes: No active parameter value change.
+- Commands run: GitHub PR #32 metadata fetch; GitHub Actions run lookup for merge commit `df28c70f255d4db0cabf15d6555ce34a8b2fa560`; `plan-production-launch` with PR #32 metadata, expected head SHA, merged default-branch ref, and default-branch trial-start workflow ref; focused production launch/workflow/CLI tests; arXiv unit test discover; root governance unittest discover; dashboard generation; project governance validation; changed-only enforce-sync semantic validation; `git diff --check`.
+- Test results: PR #32 metadata shows closed/merged/non-draft/base main with head SHA `426709648fde32bbaf0d0a1f4f6006318891f5f2` and merge commit `df28c70f255d4db0cabf15d6555ce34a8b2fa560`; main Project Governance CI run `27913796642` completed success with attestation artifact `project-governance-ci-attestation-27913796642-1`; launch precheck exited 2 as expected, with PR/default-branch/workflow gates passing and only `launch_confirmed`, `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref` blocking; focused production launch/workflow/CLI tests 12 OK; arXiv unit tests 143 OK; root governance tests 91 OK; dashboard generation PASS; project governance errors 0 warnings 0; changed-only enforce-sync semantic errors 0 warnings 0 with all registered project validation errors 0 warnings 0; `git diff --check` pass.
+- Successes: `default_branch_ref` and `trial_start_workflow_ref` are now durable and recorded without reading secrets or triggering production side effects.
+- Failures: Production launch remains blocked by missing explicit launch confirmation and missing durable runner, SMTP secret, Release target, and workflow variable readiness refs.
+- Decisions: Keep `ADP-PHASE11-PRODUCTION-TRIAL-START-022` blocked until remaining external refs exist; do not dispatch `.github/workflows/arxiv-daily-push-trial-start.yml` yet.
+- Remaining risks: Production acceptance still requires passing default-branch trial start evidence, live source pass on the runner, real SMTP/Release refs, archived weekly/monthly replay evidence, archived recovery drill evidence, actual resource telemetry, and 30 unique daily production evidence entries.
+- Rollback: Remove the precheck phase record, run manifest, development event, runbook/status/delivery task updates, and generated dashboard/status changes.
+- Next step: Provision durable `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`; then rerun `plan-production-launch` with `--confirm-launch`.
 
 ## Unknown Historical Periods
 
