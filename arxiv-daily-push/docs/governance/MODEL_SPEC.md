@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 5
-- formula_count: 7
-- parameter_count: 34
+- model_count: 6
+- formula_count: 8
+- parameter_count: 36
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -20,6 +20,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-005 | arXiv Atom source adapter | deterministic source adapter | Build bounded arXiv API URLs and map Atom entries into generic SourceItem records | active | adp-arxiv-adapter-v1 | `src/arxiv_daily_push/arxiv_adapter.py` |
 | MOD-ADP-002 | 100-point arXiv selection score | deterministic scoring model | Select the daily learning item from eligible arXiv candidates | active | adp-ranking-v1 | `src/arxiv_daily_push/ranking.py` |
 | MOD-ADP-003 | Claim Ledger publication gate | deterministic evidence gate | Block publication when key claims lack source locators or metadata is conflicted | active | adp-claim-gate-v1 | `src/arxiv_daily_push/evidence_gate.py` |
+| MOD-ADP-006 | Evidence-linked Chinese lesson generator | deterministic lesson generator | Generate text-only Chinese Lesson JSON from supported Claim Ledger evidence | active | adp-lesson-v1 | `src/arxiv_daily_push/lesson.py` |
 
 ## B. Assumptions
 
@@ -32,6 +33,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-005 | Phase 3 implements the first arXiv adapter but keeps tests offline and does not perform scheduled or bulk ingestion. | `docs/phase_records/PHASE_03.md`, `src/arxiv_daily_push/arxiv_adapter.py`, `tests/fixtures/arxiv_atom_sample.xml` | Phase 3 | active |
 | ASM-ADP-006 | Phase 4 ranks only explicit candidate inputs with supported P0 evidence and non-conflicting metadata; it does not extract claims or fetch live sources. | `docs/phase_records/PHASE_04.md`, `src/arxiv_daily_push/ranking.py`, `tests/test_ranking.py` | Phase 4 | active |
 | ASM-ADP-007 | Phase 5 builds a Claim Ledger from explicit evidence claims and blocks publication on unsupported P0 claims, metadata conflicts, or unsupported arXiv peer-review claims. | `docs/phase_records/PHASE_05.md`, `src/arxiv_daily_push/evidence_gate.py`, `tests/test_evidence_gate.py` | Phase 5 | active |
+| ASM-ADP-008 | Phase 6 generates deterministic Chinese Lesson JSON only from supported Claim Ledger evidence and does not create narration, TTS, video, runner automation, or SMTP output. | `docs/phase_records/PHASE_06.md`, `src/arxiv_daily_push/lesson.py`, `tests/test_lesson.py` | Phase 6 | active |
 
 ## C. Functions and Formulas
 
@@ -44,6 +46,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-007 maps arXiv Atom metadata into generic `SourceItem` records with bounded query parameters.
 - FORM-ADP-003 applies the active 100-point ranking weights and evidence/metadata eligibility gate.
 - FORM-ADP-004 applies the active Claim Ledger publication hard-block rules.
+- FORM-ADP-008 generates and validates Lesson JSON only from supported Claim Ledger claim IDs.
 
 ## D. Parameters
 
@@ -54,6 +57,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 3 arXiv adapter parameters: PARAM-ADP-029 through PARAM-ADP-034.
 - Active Phase 4 ranking weights: PARAM-ADP-009 through PARAM-ADP-016.
 - Active Phase 5 evidence gate parameters: PARAM-ADP-017 through PARAM-ADP-018.
+- Active Phase 6 lesson parameters: PARAM-ADP-035 through PARAM-ADP-036.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -84,6 +88,11 @@ publication. It produces a `Publication` record with a Claim Ledger artifact and
 blocks on missing P0 locators, unsupported P0 claims, metadata conflicts, and
 arXiv peer-review claims that only cite arXiv.
 
+Phase 6 generates text-only Chinese Lesson JSON from supported Claim Ledger
+claims. It rejects blocked ledgers, excludes unverified or unsupported non-P0
+claims, requires Lesson and section claim IDs to be known supported claims, and
+requires visible `[claim_id]` markers in every generated section body.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -100,6 +109,9 @@ arXiv peer-review claims that only cite arXiv.
 - Same candidate ranking input -> same score and deterministic tie-break order.
 - P0 claim without supported status -> publication blocked.
 - arXiv peer-review claim without independent non-arXiv evidence -> publication blocked.
+- Blocked Claim Ledger -> lesson generation blocked.
+- Unsupported or unregistered claim ID in Lesson -> lesson validation error.
+- Missing visible claim marker in section body -> lesson validation error.
 
 ## G. Validation
 

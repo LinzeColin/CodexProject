@@ -157,3 +157,28 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/evidence_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_evidence_gate.py", "arxiv-daily-push/tests/fixtures/claim_ledger_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_05.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+
+  - formula_id: "FORM-ADP-008"
+    model_id: "MOD-ADP-006"
+    assumption_ids: ["ASM-ADP-008"]
+    status: "active"
+    expression: "A Lesson can be generated only when the Claim Ledger status is pass, at least one supported claim exists, Lesson.claim_ids are all supported Claim Ledger claim IDs, every section claim_id is present in Lesson.claim_ids, and every section body includes visible [claim_id] markers."
+    variables:
+      - name: "ledger_status"
+        data_type: "str"
+        unit: "status"
+        input_domain: "pass or blocked"
+      - name: "supported_claim_ids"
+        data_type: "list[str]"
+        unit: "claim identifiers"
+        input_domain: "Claim Ledger claims where support_status=supported"
+      - name: "section_claim_ids"
+        data_type: "list[str]"
+        unit: "claim identifiers"
+        input_domain: "per-section Lesson claim references"
+    constraints: "Unsupported, unverified, conflicted, or unregistered claim IDs cannot enter Lesson.claim_ids or section claim_ids."
+    missing_policy: "Missing supported evidence creates a LessonGenerationError rather than generated filler text."
+    output_range: "valid Lesson JSON or LessonGenerationError"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/fixtures/lesson_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0 - 2026-06-21
+
+- Added Phase 6 deterministic Chinese Lesson JSON generation from supported Claim Ledger evidence.
+- Added `adp generate-lesson` for local lesson rendering from source/claim JSON fixtures.
+- Added lesson validation that blocks unsupported or unknown claim references and requires visible claim markers in section bodies.
+- Added lesson fixture and tests covering supported-claim linkage, unverified claim exclusion, blocked ledger handling, validation failures, and CLI output.
+
 ## 0.5.0 - 2026-06-21
 
 - Added Phase 5 Claim Ledger construction and publication hard-block gate.

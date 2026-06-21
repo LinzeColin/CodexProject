@@ -36,6 +36,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_05.md", "arxiv-daily-push/src/arxiv_daily_push/evidence_gate.py", "arxiv-daily-push/tests/test_evidence_gate.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-008"
+    statement: "Phase 6 generates deterministic Chinese Lesson JSON only from supported Claim Ledger evidence and does not create narration, TTS, video, runner automation, or SMTP output."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/tests/test_lesson.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -122,3 +127,21 @@ models:
     config_refs: ["arxiv-daily-push/schemas/evidence_claim.schema.json", "arxiv-daily-push/schemas/publication.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_evidence_gate.py", "arxiv-daily-push/tests/fixtures/claim_ledger_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_05.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+
+  - model_id: "MOD-ADP-006"
+    name: "Evidence-linked Chinese lesson generator"
+    kind: "deterministic lesson generator"
+    purpose: "Generate text-only Chinese Lesson JSON from supported Claim Ledger evidence while blocking unsupported or unregistered claim references."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-lesson-v1"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-008"]
+    formula_ids: ["FORM-ADP-008"]
+    parameter_ids: ["PARAM-ADP-035", "PARAM-ADP-036"]
+    inputs: ["SourceItem", "EvidenceClaim", "Claim Ledger"]
+    outputs: ["Lesson", "lesson validation errors"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/schemas/lesson.schema.json", "arxiv-daily-push/schemas/evidence_claim.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/fixtures/lesson_input.json"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
