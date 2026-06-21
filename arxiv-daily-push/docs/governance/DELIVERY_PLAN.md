@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 38
-- acceptance_count: 38
+- task_count: 39
+- acceptance_count: 39
 
 ## Delivery Tasks
 
@@ -63,6 +63,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-PRODUCTION-REFS-TEMPLATE-025 | E | completed | ADP-ACC-PHASE11-PRODUCTION-REFS-TEMPLATE | 16 focused tests OK; no-secret production refs template emits JSON and remains blocked until owner fills durable refs | `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md` |
 | ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-026 | E | completed | ADP-ACC-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY | 19 focused tests OK; discovery command builds refs from no-secret GitHub metadata and fails closed without `gh` | `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md` |
 | ADP-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT-027 | E | completed | ADP-ACC-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT | 13 focused tests OK; trial-start workflow now runs production refs discovery and launch readiness before live source, SMTP, Release, or start gate | `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md` |
+| ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-028 | E | completed | ADP-ACC-PHASE11-PROVISIONING-AUDIT-WORKFLOW | 20 focused tests OK; GitHub-hosted provisioning audit uploads no-secret production refs readiness before private-runner trial start | `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates

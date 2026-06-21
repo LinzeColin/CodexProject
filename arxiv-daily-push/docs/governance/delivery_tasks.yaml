@@ -551,7 +551,7 @@ tasks:
     scope: "External default-branch ref, private self-hosted runner ref, SMTP secret ref, Release target ref, workflow variables ref, explicit launch confirmation, and default-branch trial-start workflow evidence."
     non_scope: "No secret value read, no Codex auth read, no unconfirmed workflow dispatch, no SMTP send, no Release upload, no 30-day acceptance claim, and no local media/model/cache retention."
     status: "blocked"
-    dependencies: ["GOV-SEMANTIC-ADP-001", "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021", "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023", "ADP-PHASE11-RELEASE-PERMISSIONS-024", "ADP-PHASE11-PRODUCTION-REFS-TEMPLATE-025", "ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-026", "ADP-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT-027"]
+    dependencies: ["GOV-SEMANTIC-ADP-001", "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021", "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023", "ADP-PHASE11-RELEASE-PERMISSIONS-024", "ADP-PHASE11-PRODUCTION-REFS-TEMPLATE-025", "ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-026", "ADP-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT-027", "ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-028"]
     required_files: ["docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md", ".github/workflows/arxiv-daily-push-trial-start.yml"]
     acceptance_ids: ["ADP-ACC-PHASE11-PRODUCTION-TRIAL-START"]
     test_commands: ["python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
@@ -646,4 +646,21 @@ tasks:
     rollback: "Remove trial-start workflow production refs and launch precheck steps, revert workflow contract checks, remove PARAM-ADP-164 and related governance records, and restore version 0.11.23."
     target_version: "0.11.24"
     completed_version: "0.11.24"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-028"
+    phase: "E"
+    objective: "Add a GitHub-hosted no-secret provisioning audit workflow before private-runner trial-start dispatch."
+    scope: "Manual provisioning audit workflow, production refs workflow test, runbook, version, phase record, and governance records."
+    non_scope: "No secret value read, no Codex auth read, no self-hosted runner job, no trial-start dispatch, no SMTP send, no Release upload, no 30-day acceptance claim, and no local media/model/cache retention."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-026", "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023"]
+    required_files: [".github/workflows/arxiv-daily-push-provisioning-audit.yml", "tests/test_production_refs.py", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE11-PROVISIONING-AUDIT-WORKFLOW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_production_refs.py arxiv-daily-push/tests/test_production_launch.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push discover-production-refs --generated-at 2026-06-22T23:00:00+10:00 --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_semantic python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_project python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_root python3 -m unittest discover -s tests/governance -p 'test_*.py' -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_arxiv PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_provisioning_audit_changed python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "python3 -m json.tool governance/run_manifests/ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-20260622.json", "python3 -c \"import json,pathlib; [json.loads(line) for line in pathlib.Path('arxiv-daily-push/docs/governance/development_events.jsonl').read_text().splitlines() if line.strip()]\"", "git diff --check"]
+    test_results: ["focused production refs/launch/CLI tests: 20 tests OK", "local discover-production-refs: expected blocked exit 2 because gh is not installed; JSON parse OK and redacted error only", "semantic extractor: 164 active parameters and 32 active formulas checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "root governance tests: 97 tests OK", "arxiv-daily-push unit tests: 154 tests OK", "changed-only enforce-sync semantic: errors 0 warnings 0; all registered projects errors 0 warnings 0", "manifest JSON and development_events JSONL parse: pass", "git diff --check: pass"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md", ".github/workflows/arxiv-daily-push-provisioning-audit.yml", "arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    risk: "The audit can prove metadata only when GitHub token permissions can list runners, secret names, and variables; production acceptance remains blocked until the default-branch trial-start workflow and 30-day evidence pass."
+    rollback: "Remove provisioning audit workflow, workflow test, PARAM-ADP-165, phase record, manifest, and related governance records, then restore version 0.11.24."
+    target_version: "0.11.25"
+    completed_version: "0.11.25"
     unknown_task_ids: []
