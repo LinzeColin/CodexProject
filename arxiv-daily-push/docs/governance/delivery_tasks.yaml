@@ -159,15 +159,32 @@ tasks:
     objective: "Prepare runner, release, and email transport dry-run handoff without enabling unattended execution."
     scope: "Runner config templates, release manifest preview, SMTP readiness preview, and fail-closed controls."
     non_scope: "No real scheduler, Release upload, or SMTP send."
-    status: "planned"
+    status: "completed"
     dependencies: ["ADP-PHASE9-LOCAL-PIPELINE-001"]
-    required_files: ["src", "tests", "docs/governance"]
+    required_files: ["src/arxiv_daily_push/handoff.py", "src/arxiv_daily_push/cli.py", "tests/test_handoff.py", "docs/governance"]
     acceptance_ids: ["ADP-ACC-PHASE10-RUNNER-RELEASE-EMAIL"]
-    test_commands: []
-    test_results: ["NOT_RUN planned Phase 10"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["unittest: 55 tests OK", "root governance tests: 30 tests OK", "handoff gate tests: pass", "project governance: errors 0 warnings 0", "changed-only enforce-sync: errors 0 warnings 0", "git diff --check: exit 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md", "arxiv-daily-push/tests/test_handoff.py"]
     risk: "Unattended execution and real email must remain disabled until final acceptance."
     rollback: "Remove Phase 10 runner/release/email dry-run artifacts."
     target_version: "0.10.0"
+    completed_version: "0.10.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE11-ACCEPTANCE-HANDOFF-001"
+    phase: "E"
+    objective: "Generate final acceptance and handoff package for arXiv Daily Push without claiming live 30-day operation."
+    scope: "Acceptance checklist, readiness evidence, local pressure report, GitHub PR sync summary, and next-run instructions."
+    non_scope: "No fabricated 30-day trial results, no real scheduler, no Release upload, no SMTP send, and no retained media/model artifacts."
+    status: "planned"
+    dependencies: ["ADP-PHASE10-RUNNER-RELEASE-EMAIL-001"]
+    required_files: ["docs/phase_records/PHASE_11.md", "docs/governance", "README.md", "CHANGELOG.md"]
+    acceptance_ids: ["ADP-ACC-PHASE11-ACCEPTANCE-HANDOFF"]
+    test_commands: []
+    test_results: ["NOT_RUN planned Phase 11"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    risk: "Operational 30-day evidence requires future scheduled production runs; Phase 11 can only document readiness unless those runs exist."
+    rollback: "Remove Phase 11 handoff-only records and restore Phase 10 current gate."
+    target_version: "0.11.0"
     completed_version: ""
     unknown_task_ids: []

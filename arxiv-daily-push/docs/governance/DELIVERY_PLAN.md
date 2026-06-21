@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 10
-- acceptance_count: 10
+- task_count: 11
+- acceptance_count: 11
 
 ## Delivery Tasks
 
@@ -35,7 +35,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE7-TTS-001 | D | completed | ADP-ACC-PHASE7-TTS | 42 tests OK; narration dry-run gate pass | `docs/phase_records/PHASE_07.md` |
 | ADP-PHASE8-VIDEO-001 | D | completed | ADP-ACC-PHASE8-VIDEO | 47 tests OK; storyboard dry-run gate pass | `docs/phase_records/PHASE_08.md` |
 | ADP-PHASE9-LOCAL-PIPELINE-001 | D | completed | ADP-ACC-PHASE9-LOCAL-PIPELINE | 51 tests OK; local dry-run pipeline pass | `docs/phase_records/PHASE_09.md` |
-| ADP-PHASE10-RUNNER-RELEASE-EMAIL-001 | D | planned | ADP-ACC-PHASE10-RUNNER-RELEASE-EMAIL | not run | pursuing goal baseline |
+| ADP-PHASE10-RUNNER-RELEASE-EMAIL-001 | D | completed | ADP-ACC-PHASE10-RUNNER-RELEASE-EMAIL | 55 tests OK; handoff side-effect gate pass; validator 0 errors | `docs/phase_records/PHASE_10.md` |
+| ADP-PHASE11-ACCEPTANCE-HANDOFF-001 | E | planned | ADP-ACC-PHASE11-ACCEPTANCE-HANDOFF | not run | pursuing goal baseline |
 
 ## Release Gates
 
@@ -50,6 +51,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 6 lesson linkage tests | supported claim IDs, unregistered claim rejection, visible claim markers | pass |
 | Phase 7 narration/TTS dry-run gate | dry-run narration JSON, blocked real TTS, no audio paths | pass |
 | Phase 8 storyboard/video dry-run gate | dry-run storyboard JSON, blocked render/write/download | pass |
+| Phase 9 local dry-run pipeline | completed RunRecord, publication gate, Lesson, Narration, Storyboard, email preview | pass |
+| Phase 10 runner/release/email handoff | completed RunRecord input, side-effect flags false, recipient preview | pass |
 | Project governance | validator output | pass |
 | Changed-only sync | validator output | pass |
 | Diff hygiene | `git diff --check` | pass |

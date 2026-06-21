@@ -253,3 +253,28 @@ formulas:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/pipeline.py"]
     test_refs: ["arxiv-daily-push/tests/test_pipeline.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_09.md"]
+
+  - formula_id: "FORM-ADP-012"
+    model_id: "MOD-ADP-010"
+    assumption_ids: ["ASM-ADP-012", "ASM-ADP-002"]
+    status: "active"
+    expression: "A Phase 10 handoff is valid only when the input RunRecord current_state is completed and scheduler_enabled, github_actions_runner_enabled, unattended_execution_allowed, release_upload_allowed, and real_smtp_send_enabled are all false; otherwise the handoff is blocked."
+    variables:
+      - name: "run_record_state"
+        data_type: "str"
+        unit: "state"
+        input_domain: "RunRecord.current_state"
+      - name: "external_side_effect_flags"
+        data_type: "map[str,bool]"
+        unit: "flags"
+        input_domain: "scheduler, runner, release, unattended, and SMTP booleans"
+      - name: "blocking_reasons"
+        data_type: "list[str]"
+        unit: "reasons"
+        input_domain: "non-empty disabled external side-effect explanation list"
+    constraints: "Phase 10 cannot run a scheduler, upload a Release, execute unattended, or send real SMTP mail."
+    missing_policy: "Missing RunRecord, incomplete RunRecord, missing gates, or missing blocking reasons creates a HandoffError or validation error."
+    output_range: "valid handoff preview or HandoffError/validation errors"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/handoff.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_handoff.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md"]

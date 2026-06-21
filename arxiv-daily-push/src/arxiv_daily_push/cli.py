@@ -10,6 +10,7 @@ from . import __version__
 from .arxiv_adapter import ArxivQuery, build_query_url, parse_atom_feed
 from .doctor import doctor_report, render_report
 from .evidence_gate import gate_publication
+from .handoff import HandoffError, build_handoff, validate_handoff
 from .lesson import LessonGenerationError, generate_lesson
 from .narration import NarrationError, generate_narration_plan
 from .notifications import render_email
@@ -81,6 +82,11 @@ def build_parser() -> argparse.ArgumentParser:
     pipeline = subparsers.add_parser("run-daily-dry-run", help="Run local daily dry-run pipeline from source/claims JSON.")
     pipeline.add_argument("--path", required=True, help="JSON file containing source_item, claims, run_id, publication_id, date, and generated_at.")
     pipeline.add_argument("--json", action="store_true", help="Print JSON dry-run pipeline output.")
+
+    handoff = subparsers.add_parser("build-handoff", help="Build runner/release/email dry-run handoff from pipeline output.")
+    handoff.add_argument("--path", required=True, help="JSON file containing a dry-run pipeline payload.")
+    handoff.add_argument("--generated-at", required=True, help="Handoff generation timestamp.")
+    handoff.add_argument("--json", action="store_true", help="Print JSON handoff output.")
     return parser
 
 
@@ -242,5 +248,30 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
         else:
             print(f"{payload['run_record']['run_id']}\t{payload['status']}")
+        return 0
+    if args.command == "build-handoff":
+        data = json.loads(Path(args.path).read_text(encoding="utf-8"))
+        try:
+            handoff = build_handoff(data, generated_at=args.generated_at)
+        except HandoffError as error:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": [str(error)]}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                print(f"- {error}")
+            return 2
+        errors = validate_handoff(handoff)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(handoff, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(f"{handoff['handoff_id']}\tdry-run")
         return 0
     raise AssertionError(f"Unhandled command: {args.command}")

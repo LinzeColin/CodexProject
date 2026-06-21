@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 9
-- formula_count: 11
-- parameter_count: 47
+- model_count: 10
+- formula_count: 12
+- parameter_count: 50
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -23,6 +23,8 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-006 | Evidence-linked Chinese lesson generator | deterministic lesson generator | Generate text-only Chinese Lesson JSON from supported Claim Ledger evidence | active | adp-lesson-v1 | `src/arxiv_daily_push/lesson.py` |
 | MOD-ADP-007 | Narration and TTS dry-run gate | deterministic narration planner | Generate narration/TTS-ready dry-run JSON from Lesson objects while blocking media artifacts | active | adp-narration-v1 | `src/arxiv_daily_push/narration.py` |
 | MOD-ADP-008 | Storyboard and video dry-run media gate | deterministic storyboard planner | Generate Storyboard JSON while blocking render/write/download media outputs | active | adp-video-dry-run-v1 | `src/arxiv_daily_push/video.py` |
+| MOD-ADP-009 | Local daily dry-run pipeline | deterministic orchestration pipeline | Run a local daily dry-run through publication, Lesson, Narration, Storyboard, RunRecord completion, and email preview | active | adp-local-pipeline-v1 | `src/arxiv_daily_push/pipeline.py` |
+| MOD-ADP-010 | Runner release email dry-run handoff | deterministic handoff gate | Build a handoff preview while keeping scheduler, Release upload, unattended execution, and real SMTP disabled | active | adp-handoff-v1 | `src/arxiv_daily_push/handoff.py` |
 
 ## B. Assumptions
 
@@ -38,6 +40,8 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-008 | Phase 6 generates deterministic Chinese Lesson JSON only from supported Claim Ledger evidence and does not create narration, TTS, video, runner automation, or SMTP output. | `docs/phase_records/PHASE_06.md`, `src/arxiv_daily_push/lesson.py`, `tests/test_lesson.py` | Phase 6 | active |
 | ASM-ADP-009 | Phase 7 generates dry-run narration/TTS plan JSON from Lesson objects and blocks audio synthesis, model downloads, audio writes, and media retention. | `docs/phase_records/PHASE_07.md`, `src/arxiv_daily_push/narration.py`, `tests/test_narration.py` | Phase 7 | active |
 | ASM-ADP-010 | Phase 8 generates Storyboard JSON and video media gate outputs in dry-run mode while blocking rendering, media writes, and asset downloads. | `docs/phase_records/PHASE_08.md`, `src/arxiv_daily_push/video.py`, `tests/test_video.py` | Phase 8 | active |
+| ASM-ADP-011 | Phase 9 runs a local daily dry-run pipeline without scheduler, Release upload, or real SMTP send. | `docs/phase_records/PHASE_09.md`, `src/arxiv_daily_push/pipeline.py`, `tests/test_pipeline.py` | Phase 9 | active |
+| ASM-ADP-012 | Phase 10 builds a runner/release/email handoff preview from a completed RunRecord while all external side effects remain disabled. | `docs/phase_records/PHASE_10.md`, `src/arxiv_daily_push/handoff.py`, `tests/test_handoff.py` | Phase 10 | active |
 
 ## C. Functions and Formulas
 
@@ -53,6 +57,8 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-008 generates and validates Lesson JSON only from supported Claim Ledger claim IDs.
 - FORM-ADP-009 generates narration dry-run JSON while blocking real TTS synthesis, audio writes, and model downloads.
 - FORM-ADP-010 generates Storyboard dry-run JSON while blocking video rendering, media writes, and asset downloads.
+- FORM-ADP-011 runs the local dry-run pipeline through the required RunRecord state sequence.
+- FORM-ADP-012 builds a handoff only from a completed RunRecord and requires every external side-effect flag to be false.
 
 ## D. Parameters
 
@@ -66,6 +72,8 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 6 lesson parameters: PARAM-ADP-035 through PARAM-ADP-036.
 - Active Phase 7 narration/TTS dry-run parameters: PARAM-ADP-037 through PARAM-ADP-040.
 - Active Phase 8 video dry-run parameters: PARAM-ADP-041 through PARAM-ADP-044.
+- Active Phase 9 local pipeline parameters: PARAM-ADP-045 through PARAM-ADP-047.
+- Active Phase 10 handoff parameters: PARAM-ADP-048 through PARAM-ADP-050.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -110,6 +118,15 @@ Phase 8 generates Storyboard JSON from narration segments. It maps each segment
 to a visual scene, reports local video media readiness, and keeps rendering,
 media writes, asset downloads, and retained video artifacts blocked.
 
+Phase 9 runs the local daily dry-run pipeline over explicit source and claim
+inputs. It produces the publication gate output, Lesson, Narration, Storyboard,
+RunRecord completion, and an email preview without scheduling or sending.
+
+Phase 10 builds the runner/release/email handoff preview from a completed
+dry-run payload. The handoff records the intended recipient and artifact
+previews, but validation requires scheduler, GitHub Actions runner, unattended
+execution, Release upload, and real SMTP sending to remain disabled.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -134,6 +151,8 @@ media writes, asset downloads, and retained video artifacts blocked.
 - Model download or audio write flag in Phase 7 -> narration validation error.
 - Video render, media write, or asset download flag in Phase 8 -> storyboard validation error.
 - Scene claim outside narration claims -> storyboard validation error.
+- Incomplete RunRecord in Phase 10 -> handoff generation error.
+- Scheduler, GitHub Actions runner, unattended execution, Release upload, or real SMTP enabled in Phase 10 -> handoff validation error.
 
 ## G. Validation
 
