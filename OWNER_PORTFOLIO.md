@@ -1,44 +1,49 @@
 # OWNER_PORTFOLIO
 
-## Overall Conclusion
+## 1. Overall Conclusion
 
-Review 6 governance is a portfolio control layer, not a production-readiness claim for every project.
+Review 7 governance is a portfolio control layer with automatic generated-view synchronization, full-repository read-only drift checks, and explicit evidence-binding backlog. It is not a production-readiness claim for every project.
 
-## Snapshot Metadata
+## 2. Immutable Snapshot
 
 - source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:c42f6bf28748680a7dc675517659bde21260d9bcb5a1c4d45d41d5837a583688`
+- source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
+- source_snapshot_hash: `sha256:b4095f816a22599670f943335e40509b7f907a4079b16ee9e82a82a81b2b2291`
 - snapshot_event_time: `2026-06-22T13:05:00+10:00`
-- generator_version: `2.0.0`
+- generator_version: `3.0.0`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached
 
-## Owner Decisions Needed
+## 3. Red Yellow Green
 
-- `Alpha`: 是否提供生产数据、paper broker 与 live execution policy 证据，或继续保持 blocked。
-- `EEI`: 是否继续 24 小时 operator soak；当前 4 小时证据只支持 partial。
-- `EVA_OS`: 是否投入 137 个 remaining parameter reviews 和来源/校准证据。
-- `FIFA`: 是否关闭 17 个 parser/validation 参数人工复核。
-- `OpMe_System`: 是否补齐 calibration、prompt/provider policy 与 owner sign-off 证据。
-- `OpenAIDatabase`: 是否继续补齐 memory routing 分支和 FORM-010 语义复核。
-- `PFI_BIG_DATA_SIMULATOR`: 是否关闭 PARAM-110/PARAM-111 或保留 human review required。
-- `Serenity-Alipay`: 是否启动 empirical calibration evidence task；实现一致性已经 machine verified。
-- `whkmSalary`: 是否提供一手政策、法域、生效日期、计税基础和舍入证据。
-- `arxiv-daily-push`: 是否启动生产 trial；当前只有本地两日模拟，生产启动和 30 天验收仍 blocked。
+- red_FAILED: `6`
+- yellow_PARTIAL: `0`
+- green_VERIFIED_OR_NOT_APPLICABLE: `0`
 
-## Top Blockers
+## 4. Top 5 Blockers
 
 - Alpha: production validation evidence
 - Alpha: broker policy decision
 - EEI: 24h operator soak evidence
 - EEI: historical event binding backlog
 - EVA_OS: parameter review backlog
-- EVA_OS: source and calibration evidence
-- FIFA: 17 active parameters need semantic review
-- FIFA: TAB production evidence not claimed
-- OpMe_System: calibration evidence
-- OpMe_System: prompt/provider policy
 
-## Executable Tasks
+## 5. Owner Decisions
+
+| Decision | Default Recommendation | Option A | Option B | No Decision Consequence | Owner | Unblock Condition |
+|---|---|---|---|---|---|---|
+| `DEC-Alpha-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `FAILED` | Codex/governance runner | Run the listed test commands and attach evidence. |
+| `DEC-EEI-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `FAILED` | Codex/governance runner | Run the listed test commands and attach evidence. |
+| `DEC-EVA_OS-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `FAILED` | Codex/governance runner | Run the listed test commands and attach evidence. |
+| `DEC-FIFA-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `UNVERIFIED` | Codex/governance runner | Run the listed test commands and attach evidence. |
+| `DEC-OpMe_System-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `UNVERIFIED` | Codex/governance runner | Run the listed test commands and attach evidence. |
+| `DEC-OpenAIDatabase-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `FAILED` | Codex/governance runner | Run the listed test commands and attach evidence. |
+| `DEC-PFI_BIG_DATA_SIMULATOR-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `UNVERIFIED` | Codex/governance runner | Run the listed test commands and attach evidence. |
+| `DEC-Serenity-Alipay-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `UNVERIFIED` | Codex/governance runner | Run the listed test commands and attach evidence. |
+| `DEC-whkmSalary-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `FAILED` | Codex/governance runner | Run the listed test commands and attach evidence. |
+| `DEC-arxiv-daily-push-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `FAILED` | Codex/governance runner | Run the listed test commands and attach evidence. |
+
+## 6. Executable Tasks
 
 - `Alpha`: `GOV-SEMANTIC-ALPHA-001` - Add machine source selectors for active parameters and implementation fingerprints for active formulas.
 - `EEI`: `TASK-T1301` - Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical
@@ -51,17 +56,21 @@ Review 6 governance is a portfolio control layer, not a production-readiness cla
 - `whkmSalary`: `GOV-SEMANTIC-WHKM-001` - Add extractors for salary constants, policy formula references, and active formula fingerprints.
 - `arxiv-daily-push`: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034` - Repair the controlled manual GitHub Release plus Gmail SMTP test workflow after the first real manual dispatch failed closed during Release creation because duplicate asset names were supplied.
 
-## Four-Dimension Assurance
+## 7. Next Unique Governance Task
 
-| Project | Impl | Empirical | Ops | Readiness | Owner action |
-|---|---|---|---|---|---|
-| `Alpha` | `partial` | `unknown` | `blocked` | `blocked` | 是否提供生产数据、paper broker 与 live execution policy 证据，或继续保持 blocked。 |
-| `EEI` | `partial` | `partial` | `partial` | `blocked` | 是否继续 24 小时 operator soak；当前 4 小时证据只支持 partial。 |
-| `EVA_OS` | `partial` | `unknown` | `blocked` | `blocked` | 是否投入 137 个 remaining parameter reviews 和来源/校准证据。 |
-| `FIFA` | `partial` | `unknown` | `blocked` | `conditional` | 是否关闭 17 个 parser/validation 参数人工复核。 |
-| `OpMe_System` | `machine_verified` | `unknown` | `blocked` | `conditional` | 是否补齐 calibration、prompt/provider policy 与 owner sign-off 证据。 |
-| `OpenAIDatabase` | `partial` | `unknown` | `blocked` | `blocked` | 是否继续补齐 memory routing 分支和 FORM-010 语义复核。 |
-| `PFI_BIG_DATA_SIMULATOR` | `partial` | `unknown` | `blocked` | `conditional` | 是否关闭 PARAM-110/PARAM-111 或保留 human review required。 |
-| `Serenity-Alipay` | `machine_verified` | `unknown` | `partial` | `conditional` | 是否启动 empirical calibration evidence task；实现一致性已经 machine verified。 |
-| `whkmSalary` | `partial` | `unknown` | `blocked` | `blocked` | 是否提供一手政策、法域、生效日期、计税基础和舍入证据。 |
-| `arxiv-daily-push` | `machine_verified` | `partial` | `partial` | `blocked` | 是否启动生产 trial；当前只有本地两日模拟，生产启动和 30 天验收仍 blocked。 |
+- `GOV-SEMANTIC-ALPHA-001` - Add machine source selectors for active parameters and implementation fingerprints for active formulas.
+
+## 8. Assurance Dimensions
+
+| Project | Structural | Impl | Param Source | Empirical | Operational | Delivery | Freshness | Readiness | Owner action |
+|---|---|---|---|---|---|---|---|---|---|
+| `Alpha` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `FAILED` | `PARTIAL` | `FAILED` | 是否提供生产数据、paper broker 与 live execution policy 证据，或继续保持 blocked。 |
+| `EEI` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `FAILED` | `PARTIAL` | `FAILED` | 是否继续 24 小时 operator soak；当前 4 小时证据只支持 partial。 |
+| `EVA_OS` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `FAILED` | `PARTIAL` | `FAILED` | 是否投入 137 个 remaining parameter reviews 和来源/校准证据。 |
+| `FIFA` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否关闭 17 个 parser/validation 参数人工复核。 |
+| `OpMe_System` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `FAILED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否补齐 calibration、prompt/provider policy 与 owner sign-off 证据。 |
+| `OpenAIDatabase` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `FAILED` | `PARTIAL` | `FAILED` | 是否继续补齐 memory routing 分支和 FORM-010 语义复核。 |
+| `PFI_BIG_DATA_SIMULATOR` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否关闭 PARAM-110/PARAM-111 或保留 human review required。 |
+| `Serenity-Alipay` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否启动 empirical calibration evidence task；实现一致性已经 machine verified。 |
+| `whkmSalary` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `FAILED` | `PARTIAL` | `FAILED` | 是否提供一手政策、法域、生效日期、计税基础和舍入证据。 |
+| `arxiv-daily-push` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `FAILED` | `PARTIAL` | `FAILED` | 是否启动生产 trial；当前只有本地两日模拟，生产启动和 30 天验收仍 blocked。 |

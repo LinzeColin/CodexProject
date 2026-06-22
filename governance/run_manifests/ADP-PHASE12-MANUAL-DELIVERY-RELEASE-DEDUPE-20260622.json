@@ -9,7 +9,7 @@
   "status": "prepared",
   "version_before": "0.12.2",
   "version_after": "0.12.3",
-  "base_commit": "932446fd2154ac477ea0cb6862a60098b1e1ed55",
+  "base_commit": "9764bf20ae43029d615d0bd02b4eb5b4a4c70ded",
   "result_commit": "PENDING",
   "summary": "Fixed the controlled manual Release plus Gmail SMTP test workflow to deduplicate Release assets by filename before scheduled delivery after the first default-branch manual run failed closed during GitHub Release creation.",
   "scope": [
@@ -49,6 +49,7 @@
     "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
     "arxiv-daily-push/tests/test_cli.py",
     "arxiv-daily-push/tests/test_manual_delivery_workflow.py",
+    "governance/binding_backlog.yaml",
     "governance/run_manifests/ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-20260622.json",
     "tests/governance/test_project_governance_validator.py"
   ],
@@ -66,11 +67,33 @@
   ],
   "tests_run": [
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_semantic3 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_dashboard2 python3 scripts/generate_governance_dashboard.py --write"
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_dashboard2 python3 scripts/generate_governance_dashboard.py --write",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_merge_dashboard python3 scripts/generate_governance_dashboard.py --write",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_focus_final PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_manual_delivery_workflow.py arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_adp_final PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_root_final PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_gov_final2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_semantic_final PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_iq_final PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+    "manifest JSON, development_events JSONL, TRACEABILITY_MATRIX.csv, and parameter_registry.csv parse/width check",
+    "git diff --check",
+    "rg -n '^(<<<<<<<|=======|>>>>>>>)' .",
+    "find arxiv-daily-push ( -name __pycache__ -o -name '*.pyc' ) -print"
   ],
   "test_results": [
-    "semantic extractor: 36 active formulas and 183 active parameters checked with no errors",
-    "governance dashboard regenerated: PASS"
+    "pre-merge semantic extractor: 36 active formulas and 183 active parameters checked with no errors",
+    "governance dashboard regenerated before merge: PASS",
+    "governance dashboard regenerated after origin/main merge: PASS",
+    "focused manual workflow and CLI tests: 8 tests OK",
+    "arxiv-daily-push unit tests: 174 tests OK",
+    "root governance unit tests: 115 tests OK; missing-base line is an expected negative fixture with exit code 0",
+    "changed-only governance sync with semantic checks: errors 0 warnings 0; projects changed arxiv-daily-push only",
+    "final semantic extractor: 36 active formulas and 183 active parameters checked with no errors",
+    "information quality validation: PASS errors 0 warnings 0",
+    "manifest JSON, development_events JSONL, traceability CSV, and parameter CSV width checks: PASS",
+    "git diff --check: PASS",
+    "conflict marker check: no merge markers found",
+    "arxiv-daily-push cache check: no __pycache__ or .pyc files found"
   ],
   "evidence_refs": [
     "arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_RELEASE_DEDUPE.md",

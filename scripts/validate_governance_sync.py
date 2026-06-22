@@ -34,6 +34,33 @@ PROJECTS_FILE = structural.PROJECTS_FILE
 RUN_MANIFESTS_DIR = ROOT / "governance" / "run_manifests"
 CI_ATTESTATIONS_DIR = ROOT / "governance" / "ci_attestations"
 PENDING_CI_MAX_AGE = timedelta(hours=24)
+RUN_MANIFEST_REQUIRED_FIELDS = {
+    "schema_version",
+    "run_id",
+    "project_id",
+    "task_id",
+    "acceptance_ids",
+    "iteration_id",
+    "generated_at",
+    "implementation_base_sha",
+    "content_tree_hash",
+    "changed_files_declared",
+    "changed_files_actual",
+    "required_governance_files",
+    "updated_governance_files",
+    "test_commands",
+    "test_results",
+    "evidence_refs",
+    "binding_status",
+    "ci_attestation_subject",
+    "ci_run_reference",
+}
+RUN_MANIFEST_BINDING_STATUSES = {
+    "PRECOMMIT_TREE_BOUND",
+    "COMMIT_BOUND",
+    "CI_ATTESTED",
+    "LEGACY_UNBOUND",
+}
 ROOT_GOVERNANCE_PREFIXES = (
     ".agents/",
     ".codex/",
@@ -666,6 +693,38 @@ def validate_pending_ci_bindings(validation: SyncValidation) -> None:
                 validation.warn("root", message + " (within allowed binding window)")
 
 
+def validate_run_manifests(validation: SyncValidation, changed: list[str]) -> None:
+    changed_set = set(changed)
+    for path in sorted(RUN_MANIFESTS_DIR.glob("*.json")):
+        data = load_json_object(path)
+        if not data:
+            validation.error("root", f"Cannot parse run manifest: {path.relative_to(ROOT)}")
+            continue
+        schema_version = int(data.get("schema_version") or 1)
+        if schema_version < 2:
+            continue
+        run_id = str(data.get("run_id") or path.stem)
+        missing = sorted(field for field in RUN_MANIFEST_REQUIRED_FIELDS if not data.get(field))
+        if missing:
+            validation.error("root", f"{path.relative_to(ROOT)} missing Review7 required fields: {', '.join(missing)}")
+        binding_status = str(data.get("binding_status") or "")
+        if binding_status not in RUN_MANIFEST_BINDING_STATUSES:
+            validation.error("root", f"{path.relative_to(ROOT)} invalid binding_status: {binding_status}")
+        for field in ("result_commit", "finished_at", "ci_run_reference"):
+            if str(data.get(field) or "").strip().upper() == "PENDING":
+                validation.error("root", f"{path.relative_to(ROOT)} contains bare PENDING in {field}")
+        declared = {str(item) for item in structural.as_list(data.get("changed_files_actual"))}
+        if path.relative_to(ROOT).as_posix() in changed_set:
+            missing_changed = sorted(changed_set - declared)
+            if missing_changed:
+                validation.error(
+                    "root",
+                    f"{path.relative_to(ROOT)} changed_files_actual does not cover actual diff files: {', '.join(missing_changed[:20])}",
+                )
+        if str(data.get("content_tree_hash") or "").strip().upper() in {"", "PENDING", "UNKNOWN"}:
+            validation.error("root", f"{path.relative_to(ROOT)} lacks content_tree_hash")
+
+
 def build_drift_report(config: dict[str, Any], semantic_summaries: dict[str, Any]) -> dict[str, Any]:
     return {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
@@ -716,6 +775,7 @@ def validate(
     if semantic or all_projects or drift_report:
         semantic_summaries = validate_semantic(validation, config)
         validate_pending_ci_bindings(validation)
+        validate_run_manifests(validation, changed)
     report = build_drift_report(config, semantic_summaries) if drift_report else {}
     print_summary(validation, changed, project_changes)
     if drift_report:

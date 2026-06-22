@@ -1,49 +1,82 @@
 # OWNER_STATUS
 
-EVA_OS 当前治理结论：实现一致性为 `partial`，交付状态为 `blocked`；这不是生产上线声明。
+EVA_OS 当前治理结论：实现一致性为 `PARTIAL`，交付状态为 `FAILED`；这不是生产上线声明。
 
-## 1. Version, Phase, Gate
+## 1. Current Conclusion
 
-- source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:87611d049cd444155001a30c448635e552e553cd3d2d7367f42f521bf5c45ac7`
+- source_base_commit: `932446fd2154ac477ea0cb6862a60098b1e1ed55`
+- source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
+- source_snapshot_hash: `sha256:5a35994864b903f11c70f98698d4ba2a5ad7d789ab6fa83d7e34f6aec668668b`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
-- generator_version: `2.0.0`
+- generator_version: `3.0.0`
 - version: `0.1.0`
 - phase/gate: `B / GOV-SEMANTIC-EVA-001-in-progress`
 
-## 2. Assurance And Readiness
+## 2. This Run Change
 
-- structural_validation: `pass`
-- implementation_congruence: `partial` (52/189 active parameters, 16/16 active formulas)
-- empirical_validation: `unknown`
-- operational_evidence: `blocked`
-- delivery_readiness: `blocked`
+Generated owner-facing views now separate implementation congruence from parameter source quality, empirical validation, operational validation, delivery evidence, and evidence freshness.
 
-## 3. Latest Meaningful Change
+## 3. Owner Impact
 
-Current canonical registries separate implementation congruence from empirical and operational evidence, so machine verification does not imply production readiness.
+- structural_completeness: `VERIFIED`
+- implementation_congruence: `PARTIAL` (52/189 active parameters, 16/16 active formulas)
+- parameter_source_quality: `PARTIAL`
+- empirical_validation: `UNVERIFIED`
+- operational_validation: `FAILED`
+- delivery_evidence: `FAILED`
+- evidence_freshness: `PARTIAL`
+- delivery_readiness: `FAILED`
 
-## 4. Top Blockers
+## 4. Decision Needed
+
+- decision_id: `DEC-EVA_OS-REVIEW6-001`
+- question: 是否投入 137 个 remaining parameter reviews 和来源/校准证据。
+
+## 5. A/B/C Choice Matrix
+
+| Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
+|---|---|---|---|---|---|
+| `DEC-EVA_OS-REVIEW6-001` | A | A: fund evidence hardening | B: keep blocked/conditional and defer | C: de-scope this project from delivery claims | remains `FAILED` with unresolved evidence. |
+
+## 6. Current Blockers
 
 1. parameter review backlog
 2. source and calibration evidence
 3. No third blocker recorded.
 
-## 5. Owner Decision
-
-- decision_id: `DEC-EVA_OS-REVIEW6-001`
-- question: 是否投入 137 个 remaining parameter reviews 和来源/校准证据。
-- options: A: fund evidence hardening, B: keep blocked/conditional and defer, C: de-scope this project from delivery claims
-
-## 6. Next Executable Task
-
-- task_id: `GOV-SEMANTIC-EVA-001`
-- reason: Add machine selectors for strategy parameters and fingerprints for active strategy formulas.
-- acceptance: ACC-SEMANTIC-EVA-001
-
-## 7. Owner And Evidence Freshness
+## 7. Evidence Required To Unblock
 
 - owner: Codex/governance runner
 - unblock_condition: Run the listed test commands and attach evidence.
-- unresolved_fact_ids: `12`
+- acceptance: ACC-SEMANTIC-EVA-001
+
+## 8. Model Formula Parameter Change
+
+- model_count: `16`
+- total_formulas: `16`
+- active_formulas: `16`
+- total_parameters: `189`
+- active_parameters: `189`
+- active_values_changed_by_this_view: `0`
+
+## 9. Tests And Acceptance
+
+- required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
+- release_gate: `GOV-SEMANTIC-EVA-001-in-progress`
+
+## 10. Evidence Freshness
+
+- tree_bound_events: `0`
+- commit_bound_events: `0`
+- legacy_unbound_events: `3`
+- precommit_pending_events: `1`
 - pending_or_stale_events: `4`
+
+## 11. UNKNOWN
+
+- unresolved_fact_ids: `12`
+
+## 12. Next Unique Task
+
+- task_id: `GOV-SEMANTIC-EVA-001`
+- reason: Add machine selectors for strategy parameters and fingerprints for active strategy formulas.
