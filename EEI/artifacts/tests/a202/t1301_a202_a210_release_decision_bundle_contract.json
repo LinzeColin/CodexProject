@@ -20,7 +20,7 @@
     "A210"
   ],
   "artifact_id": "t1301-a202-a210-release-decision-bundle-contract",
-  "generated_at": "2026-06-22T09:07:09Z",
+  "generated_at": "2026-06-22T11:30:18Z",
   "non_claims": [
     "This contract does not certify legal clearance.",
     "This contract does not certify trademark or market clearance.",
@@ -68,13 +68,22 @@
     "A209 24h operator soak evidence must still be provided separately"
   ],
   "schema_version": "eei-a202-a210-release-decision-bundle-contract-v1",
+  "signed_contract_test_summary": {
+    "brand_decision": "RISK_WAIVER_ACCEPTED",
+    "legal_clearance_status": "RISK_WAIVER_ACCEPTED",
+    "owner_signoffs": 2,
+    "passage_reviews": 2,
+    "source_license_reviews": 3
+  },
   "source_files": {
     "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
     "a202_operator_review_packet_sha256": "f200c51f7165ad7016988cfe1d651a921aa80d400261cbee7265f3effd65f530",
     "a210_brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
     "a210_brand_preflight_sha256": "f7a63f8d651a965c94c61a73b957b0df87fbdf5425efb735d55cf1f048c7aec4",
     "decision_bundle_template": "tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
-    "decision_bundle_template_sha256": "3bd00ed447cd32f44ae39f0f4f56e7120bea857b2e9e22c7507103a3d5f79775"
+    "decision_bundle_template_sha256": "3bd00ed447cd32f44ae39f0f4f56e7120bea857b2e9e22c7507103a3d5f79775",
+    "signed_contract_test_bundle": "tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
+    "signed_contract_test_bundle_sha256": "3ff6bc855141661b183c1d64800dcaa1eb00060fed7c53b7226a61198869b091"
   },
   "status": "PENDING_SIGNED_DECISIONS",
   "system_en_name": "Enterprise Ecosystem Intelligence",
@@ -87,7 +96,9 @@
   "validation_policy": {
     "contract_test_signatures_are_not_clearance": true,
     "default_publication_state": "fail_closed",
+    "production_owner_publication_requires_signed_bundle": true,
     "signed_bundle_required_for_a202_a210_closure": true,
+    "signed_contract_test_counts_as_clearance": false,
     "template_only_allowed_in_repository": true,
     "template_only_counts_as_clearance": false
   }

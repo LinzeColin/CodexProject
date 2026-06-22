@@ -104,6 +104,7 @@ generate-release-decision-bundle-artifact:
 validate-release-decision-bundle:
 	$(UV) run python scripts/validate_release_decision_bundle.py validate
 	$(UV) run python scripts/validate_release_decision_bundle.py validate-bundle --template-only
+	$(UV) run python scripts/validate_release_decision_bundle.py validate-bundle --bundle tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json
 
 generate-gold-quality-evaluation-artifacts:
 	$(UV) run python scripts/validate_gold_quality_evaluation.py generate

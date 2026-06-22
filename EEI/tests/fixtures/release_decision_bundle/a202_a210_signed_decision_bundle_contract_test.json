@@ -1,0 +1,122 @@
+{
+  "schema_version": "eei-a202-a210-release-decision-bundle-v1",
+  "bundle_id": "A202-A210-SIGNED-CONTRACT-TEST-NOT-LEGAL-CLEARANCE",
+  "bundle_status": "SIGNED_DECISION_BUNDLE",
+  "system_name": "EEI",
+  "task_ids": [
+    "T1301",
+    "T1309"
+  ],
+  "acceptance_ids": [
+    "A202",
+    "A210"
+  ],
+  "release_gate_closure_allowed": true,
+  "decision_scope": {
+    "relationship_publication": false,
+    "public_brand_launch": false,
+    "release_clearance": false
+  },
+  "source_license_reviews": [
+    {
+      "anchor_id": "NVDA-ANCHOR-002",
+      "reviewer": "contract-test-source-reviewer",
+      "reviewed_at": "2026-06-22T00:00:00Z",
+      "source_license_status": "approved_for_public_release",
+      "allowed_use_scope": "EEI relationship review contract test only",
+      "evidence_uri": "internal://contract-test/source-license/NVDA-ANCHOR-002",
+      "signature": "contract-test-source-signature-nvda-anchor-002"
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-003",
+      "reviewer": "contract-test-source-reviewer",
+      "reviewed_at": "2026-06-22T00:00:00Z",
+      "source_license_status": "approved_for_public_release",
+      "allowed_use_scope": "EEI relationship review contract test only",
+      "evidence_uri": "internal://contract-test/source-license/NVDA-ANCHOR-003",
+      "signature": "contract-test-source-signature-nvda-anchor-003"
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-004",
+      "reviewer": "contract-test-source-reviewer",
+      "reviewed_at": "2026-06-22T00:00:00Z",
+      "source_license_status": "approved_for_public_release",
+      "allowed_use_scope": "EEI relationship review contract test only",
+      "evidence_uri": "internal://contract-test/source-license/NVDA-ANCHOR-004",
+      "signature": "contract-test-source-signature-nvda-anchor-004"
+    }
+  ],
+  "passage_level_relationship_reviews": [
+    {
+      "candidate_key": "GV-FACT-001",
+      "supporting_anchor_ids": [
+        "NVDA-ANCHOR-002",
+        "NVDA-ANCHOR-003"
+      ],
+      "supporting_passage_locator": "internal://contract-test/passage/GV-FACT-001",
+      "counter_evidence_reviewed": true,
+      "decision": "approved_for_publication",
+      "reviewer": "contract-test-relationship-reviewer",
+      "reviewed_at": "2026-06-22T00:00:00Z",
+      "signature": "contract-test-passage-signature-gv-fact-001"
+    },
+    {
+      "candidate_key": "GV-FACT-002",
+      "supporting_anchor_ids": [
+        "NVDA-ANCHOR-002",
+        "NVDA-ANCHOR-004"
+      ],
+      "supporting_passage_locator": "internal://contract-test/passage/GV-FACT-002",
+      "counter_evidence_reviewed": true,
+      "decision": "approved_for_publication",
+      "reviewer": "contract-test-relationship-reviewer",
+      "reviewed_at": "2026-06-22T00:00:00Z",
+      "signature": "contract-test-passage-signature-gv-fact-002"
+    }
+  ],
+  "production_owner_signoffs": [
+    {
+      "candidate_key": "GV-FACT-001",
+      "owner_actor": "eei-production-data-owner",
+      "owner_role": "data_owner",
+      "authority_scope": "golden-vertical:nvidia",
+      "signed_at": "2026-06-22T00:00:00Z",
+      "signature": "contract-test-owner-release-bundle-signature-gv-fact-001"
+    },
+    {
+      "candidate_key": "GV-FACT-002",
+      "owner_actor": "eei-production-data-owner",
+      "owner_role": "data_owner",
+      "authority_scope": "golden-vertical:nvidia",
+      "signed_at": "2026-06-22T00:00:00Z",
+      "signature": "contract-test-owner-release-bundle-signature-gv-fact-002"
+    }
+  ],
+  "legal_release_clearance": {
+    "legal_reviewer": "contract-test-legal-reviewer",
+    "clearance_status": "RISK_WAIVER_ACCEPTED",
+    "clearance_scope": "A202/A210 contract-test bundle only",
+    "risk_waiver_id_or_opinion_ref": "internal://contract-test/legal-waiver",
+    "signed_at": "2026-06-22T00:00:00Z",
+    "signature": "contract-test-legal-signature"
+  },
+  "brand_clearance_or_risk_waiver": {
+    "decision": "RISK_WAIVER_ACCEPTED",
+    "scope": "EEI public brand launch contract-test bundle only",
+    "evidence_uri": "internal://contract-test/brand-waiver",
+    "signed_by": "contract-test-brand-owner",
+    "signed_at": "2026-06-22T00:00:00Z",
+    "signature": "contract-test-brand-signature"
+  },
+  "attestation": {
+    "signed_by": "contract-test-release-manager",
+    "signed_at": "2026-06-22T00:00:00Z",
+    "signature": "contract-test-release-manager-signature"
+  },
+  "non_claims": [
+    "This fixture is not a legal opinion.",
+    "This fixture is not real owner approval.",
+    "This fixture is not source-license clearance.",
+    "This fixture proves only fail-closed signed-bundle validation and persistence."
+  ]
+}

@@ -140,6 +140,7 @@ PARTIAL_EVIDENCE = {
         "tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json",
         "tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json",
         "tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
+        "tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
         "tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json",
         "tests/fixtures/golden_vertical_review_decisions.json",
         "tests/fixtures/golden_vertical_owner_signoff_decisions.json",
@@ -204,6 +205,7 @@ PARTIAL_EVIDENCE = {
         "scripts/validate_brand_clearance.py",
         "scripts/validate_release_decision_bundle.py",
         "tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
+        "tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
         "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     },
 }

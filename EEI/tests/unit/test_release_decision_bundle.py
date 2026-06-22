@@ -9,6 +9,11 @@ import pytest
 
 from scripts import validate_release_decision_bundle as bundle
 
+SIGNED_FIXTURE = (
+    bundle.ROOT
+    / "tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json"
+)
+
 
 def test_release_decision_bundle_contract_is_fail_closed() -> None:
     contract = bundle.build_contract(generated_at="2026-06-22T00:00:00Z")
@@ -22,6 +27,17 @@ def test_release_decision_bundle_contract_is_fail_closed() -> None:
     assert contract["a202_gate_statuses"]["source_license_review"] == "missing"
     assert contract["a202_gate_statuses"]["production_owner_signoff"] == "missing"
     assert contract["a210_current_clearance_status"]["formal_legal_clearance"] == "NOT_COMPLETE"
+    assert contract["signed_contract_test_summary"]["passage_reviews"] == 2
+    assert (
+        contract["source_files"]["signed_contract_test_bundle"]
+        == "tests/fixtures/release_decision_bundle/"
+        "a202_a210_signed_decision_bundle_contract_test.json"
+    )
+    assert contract["validation_policy"]["signed_contract_test_counts_as_clearance"] is False
+    assert (
+        contract["validation_policy"]["production_owner_publication_requires_signed_bundle"]
+        is True
+    )
 
 
 def test_release_decision_template_validates_but_is_not_release_evidence() -> None:
@@ -131,3 +147,26 @@ def test_signed_decision_bundle_is_complete_but_not_release_ready(
     assert result["signed_decision_complete"] is True
     assert result["release_ready"] is False
     assert "A209_24h_operator_soak" in result["remaining_external_gates"]
+
+
+def test_signed_decision_fixture_validates_but_still_requires_external_gates(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    signed = bundle.read_json(SIGNED_FIXTURE)
+
+    summary = bundle.validate_signed_decision_bundle(signed)
+    assert summary["source_license_reviews"] == 3
+    assert summary["passage_reviews"] == 2
+    assert summary["owner_signoffs"] == 2
+    assert summary["legal_clearance_status"] == "RISK_WAIVER_ACCEPTED"
+    assert summary["brand_decision"] == "RISK_WAIVER_ACCEPTED"
+
+    bundle.validate_bundle(Namespace(bundle=SIGNED_FIXTURE, template_only=False))
+
+    result = json.loads(capsys.readouterr().out)
+    assert result["signed_decision_complete"] is True
+    assert result["release_ready"] is False
+    assert result["bundle"].endswith(
+        "tests/fixtures/release_decision_bundle/"
+        "a202_a210_signed_decision_bundle_contract_test.json"
+    )

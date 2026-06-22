@@ -78,15 +78,15 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1302-A203-THEME-FACILITY-SCORING-IN-PROGRESS`
+- release_gate: `TASK-T1301-A202-SIGNED-BUNDLE-PUBLICATION-BINDING-IN-PROGRESS`
 
 ## 14. Evidence Freshness
 
 - tree_bound_events: `0`
 - commit_bound_events: `6`
 - legacy_unbound_events: `17`
-- precommit_pending_events: `19`
-- pending_or_stale_events: `35`
+- precommit_pending_events: `20`
+- pending_or_stale_events: `36`
 
 ## 15. UNKNOWN
 
@@ -96,11 +96,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:3af586538a6b75a16941a8ac8ea901d05f3acf3c43eaadf095b41e18ab34fdd2`
-- snapshot_event_time: `2026-06-22T11:10:30Z`
+- source_snapshot_hash: `sha256:81c824415a08297ce056489ac4e23f2488e238991485abc1d695de9cdf535220`
+- snapshot_event_time: `2026-06-22T11:32:56Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1302-A203-THEME-FACILITY-SCORING-IN-PROGRESS`
+- phase/gate: `C / TASK-T1301-A202-SIGNED-BUNDLE-PUBLICATION-BINDING-IN-PROGRESS`
 
 ## 17. Next Unique Task
 

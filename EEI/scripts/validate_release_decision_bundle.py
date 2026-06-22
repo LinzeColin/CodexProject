@@ -24,6 +24,11 @@ DEFAULT_A210_PREFLIGHT = ROOT / "artifacts/tests/a210/t1309_brand_clearance_pref
 DEFAULT_TEMPLATE = (
     ROOT / "tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json"
 )
+DEFAULT_SIGNED_CONTRACT_TEST = (
+    ROOT
+    / "tests/fixtures/release_decision_bundle/"
+    "a202_a210_signed_decision_bundle_contract_test.json"
+)
 DEFAULT_OUTPUT = ROOT / "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json"
 
 REQUIRED_TASK_IDS = ["T1301", "T1309"]
@@ -227,12 +232,15 @@ def build_contract(
     a202_packet_path: Path = DEFAULT_A202_PACKET,
     a210_preflight_path: Path = DEFAULT_A210_PREFLIGHT,
     template_path: Path = DEFAULT_TEMPLATE,
+    signed_contract_test_path: Path = DEFAULT_SIGNED_CONTRACT_TEST,
     generated_at: str | None = None,
 ) -> dict[str, Any]:
     a202_packet = read_json(a202_packet_path)
     a210_preflight = read_json(a210_preflight_path)
     template = read_json(template_path)
     validate_template_bundle(template)
+    signed_contract_test = read_json(signed_contract_test_path)
+    signed_contract_test_summary = validate_signed_decision_bundle(signed_contract_test)
     a202_gates = gate_statuses(a202_packet)
     a210_current = a210_preflight.get("current_clearance_status") or {}
     return {
@@ -255,7 +263,10 @@ def build_contract(
             "a210_brand_preflight_sha256": sha256_file(a210_preflight_path),
             "decision_bundle_template": relative(template_path),
             "decision_bundle_template_sha256": sha256_file(template_path),
+            "signed_contract_test_bundle": relative(signed_contract_test_path),
+            "signed_contract_test_bundle_sha256": sha256_file(signed_contract_test_path),
         },
+        "signed_contract_test_summary": signed_contract_test_summary,
         "required_sections": REQUIRED_SECTIONS,
         "a202_gate_statuses": a202_gates,
         "a210_current_clearance_status": a210_current,
@@ -272,6 +283,8 @@ def build_contract(
             "template_only_counts_as_clearance": False,
             "signed_bundle_required_for_a202_a210_closure": True,
             "contract_test_signatures_are_not_clearance": True,
+            "signed_contract_test_counts_as_clearance": False,
+            "production_owner_publication_requires_signed_bundle": True,
             "default_publication_state": "fail_closed",
         },
         "non_claims": [
@@ -289,11 +302,13 @@ def validate_contract(
     a202_packet_path: Path = DEFAULT_A202_PACKET,
     a210_preflight_path: Path = DEFAULT_A210_PREFLIGHT,
     template_path: Path = DEFAULT_TEMPLATE,
+    signed_contract_test_path: Path = DEFAULT_SIGNED_CONTRACT_TEST,
 ) -> None:
     expected = build_contract(
         a202_packet_path=a202_packet_path,
         a210_preflight_path=a210_preflight_path,
         template_path=template_path,
+        signed_contract_test_path=signed_contract_test_path,
         generated_at=contract.get("generated_at"),
     )
     for key in (
@@ -307,6 +322,7 @@ def validate_contract(
         "relationship_publication_allowed",
         "public_brand_launch_allowed",
         "source_files",
+        "signed_contract_test_summary",
         "a202_gate_statuses",
         "a210_current_clearance_status",
     ):
@@ -325,12 +341,14 @@ def generate(args: argparse.Namespace) -> None:
         a202_packet_path=args.a202_packet,
         a210_preflight_path=args.a210_preflight,
         template_path=args.template,
+        signed_contract_test_path=args.signed_contract_test,
     )
     validate_contract(
         contract,
         a202_packet_path=args.a202_packet,
         a210_preflight_path=args.a210_preflight,
         template_path=args.template,
+        signed_contract_test_path=args.signed_contract_test,
     )
     write_json(args.output, contract)
     print(json.dumps({"generated": True, "artifact": relative(args.output)}, indent=2))
@@ -342,6 +360,7 @@ def validate(args: argparse.Namespace) -> None:
         a202_packet_path=args.a202_packet,
         a210_preflight_path=args.a210_preflight,
         template_path=args.template,
+        signed_contract_test_path=args.signed_contract_test,
     )
     print(json.dumps({"valid": True, "artifact": relative(args.output)}, indent=2))
 
@@ -375,6 +394,11 @@ def main() -> int:
         child.add_argument("--a202-packet", type=Path, default=DEFAULT_A202_PACKET)
         child.add_argument("--a210-preflight", type=Path, default=DEFAULT_A210_PREFLIGHT)
         child.add_argument("--template", type=Path, default=DEFAULT_TEMPLATE)
+        child.add_argument(
+            "--signed-contract-test",
+            type=Path,
+            default=DEFAULT_SIGNED_CONTRACT_TEST,
+        )
         child.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     bundle = sub.add_parser("validate-bundle")
     bundle.add_argument("--bundle", type=Path, default=DEFAULT_TEMPLATE)

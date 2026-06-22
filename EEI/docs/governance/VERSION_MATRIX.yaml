@@ -24,9 +24,9 @@ parameter_profile_versions:
   operator-review-packet: "1"
   release-decision-bundle: "1"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260622-016"
+current_iteration: "ITER-20260622-018"
 current_phase: "C"
-current_gate: "TASK-T1302-A203-THEME-FACILITY-SCORING-IN-PROGRESS"
+current_gate: "TASK-T1301-A202-SIGNED-BUNDLE-PUBLICATION-BINDING-IN-PROGRESS"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "v4.2.0"
