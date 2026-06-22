@@ -1601,23 +1601,24 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1-04-SQLITE-DATA-MODEL-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-05-ARXIV-CONNECTOR-CONTRACT-001"]["status"], "ready")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "ready")
+        self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "ready")
 
     def test_arxiv_owner_status_uses_latest_event_manifest(self) -> None:
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-063")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-063")
-        self.assertEqual(info["product_version"], "0.14.0")
-        self.assertEqual(info["current_gate"], "ADP-S1-04-SQLITE-DATA-MODEL-READY")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-064")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-064")
+        self.assertEqual(info["product_version"], "0.14.1")
+        self.assertEqual(info["current_gate"], "ADP-PHASE12-EMAIL-DECISION-UI-V2-READY")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json",
+            "governance/run_manifests/ADP-PHASE12-EMAIL-DECISION-UI-V2-20260622.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.14.0", rendered)
-        self.assertIn("ADP-S1-04-SQLITE-DATA-MODEL-READY", rendered)
+        self.assertIn("0.14.1", rendered)
+        self.assertIn("ADP-PHASE12-EMAIL-DECISION-UI-V2-READY", rendered)
         self.assertIn("production trial not started", rendered)
         self.assertIn("30-day acceptance absent", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)

@@ -1,19 +1,19 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.14.0`
+Active product version: `0.14.1`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.14.0
-- Current phase: S1-A
-- Current gate: ADP-S1-04-SQLITE-DATA-MODEL-READY
-- Confirmed iteration count: 56
+- Product version: 0.14.1
+- Current phase: E
+- Current gate: ADP-PHASE12-EMAIL-DECISION-UI-V2-READY
+- Confirmed iteration count: 57
 - Reconstructed event count: 0
-- Current task: S1-04-SQLITE-DATA-MODEL-001
+- Current task: ADP-PHASE12-EMAIL-DECISION-UI-V2-038
 - Blockers: S1-04 local storage is complete, but S1-05 connector contract, S1-06 scoring/queue/content ledger replay, S1-07 B1 report/email/media interface, S1-08 local runtime recovery, S1-09 migration package, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
@@ -29,6 +29,30 @@ The append-only machine record is `development_events.jsonl`.
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260621-055`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from owner V2 mockup/notes, email renderer code, SMTP multipart boundary, focused V2 tests, full ADP tests, semantic extractor, and governance validation.
+- Version before: 0.14.0
+- Version after: 0.14.1
+- Base commit: f6d6131a6f87274fbfa29edc587b1b5523f1c85c
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-EMAIL-DECISION-UI-V2-038
+- Goal: Rebuild the daily email as a Chinese decision-first HTML/plain-text frontstage with optional Release-hosted MP4 link, q-fin candidate filtering, feedback actions, and hidden backend ROI/Claim Ledger foreground details.
+- Assumptions: This is a frontstage delivery-quality fix only; it does not enable scheduled production, send SMTP, upload Releases, reduce all-arXiv scan scope, change queue persistence, or log secrets.
+- Files changed: lesson frontstage, daily email renderer, SMTP HTML alternative boundary, video transcript wording, schema/tests, version files, governance registries, phase record, run manifest, and governance tests.
+- Model changes: Added MOD-ADP-037 `adp-email-decision-ui-v2`; refreshed MOD-ADP-034 to `adp-manual-delivery-test-v1.4`.
+- Formula changes: Added FORM-ADP-039; refreshed FORM-ADP-008, FORM-ADP-018, FORM-ADP-034, and FORM-ADP-036 evidence after renderer changes.
+- Parameter changes: Refreshed PARAM-ADP-186 and added PARAM-ADP-276 through PARAM-ADP-279 for HTML alternative, plain-text length, q-fin candidate filter, and lesson frontstage.
+- Commands run: focused email V2 tests, semantic extractor, full ADP tests, governance dashboard generation, root governance tests, changed-only semantic governance validation, information-quality validation, manifest JSON parse, diff check, and cache check.
+- Test results: focused email V2 tests 35 OK; semantic extractor checked 39 active formulas and 278 active parameters; arxiv-daily-push tests 189 OK; governance dashboard PASS; root governance tests 128 OK; changed-only governance sync errors 0 warnings 0; information quality PASS; manifest JSON and CSV width checks PASS; cache check PASS.
+- Successes: Email frontstage is no longer shaped like backend evidence; visible ROI, Claim Ledger, delivery policy, Release landing clutter, and irrelevant q-fin candidate pollution are suppressed.
+- Failures: No revised-format real Gmail email has been sent yet after this correction.
+- Decisions: Keep production schedule disabled; open PR, wait for CI, merge, then perform one controlled manual Release plus Gmail SMTP rerun.
+- Remaining risks: Live Gmail rendering still needs the controlled manual workflow proof after PR CI and merge.
+- Rollback: Revert version 0.14.1 email decision UI V2 code, tests, schema updates, governance records, phase record, manifest, and event; restore version 0.14.0.
+- Next step: Open PR, wait for PR CI green, then controlled manual Release + Gmail SMTP rerun after merge.
 
 ### `ITER-20260622-S1-003`
 
@@ -47,7 +71,7 @@ The append-only machine record is `development_events.jsonl`.
 - Formula changes: Added FORM-ADP-038 and refreshed FORM-ADP-024 implementation evidence because `cli.py::main` gained storage subcommands.
 - Parameter changes: Added PARAM-ADP-268 through PARAM-ADP-275 for schema version, default DB filename, WAL mode, FTS5 requirement, rollback target, object table count, relation type count, and time field count.
 - Commands run: focused storage/CLI unit tests with ResourceWarning as error; full arxiv-daily-push unit tests; semantic extractor; project governance validator; all-project governance validator; changed-only semantic sync validator; root governance unit tests; information-quality validator; manifest JSON parse; CSV width checks.
-- Test results: focused storage/CLI tests 9 OK; arxiv-daily-push unit tests 186 OK; semantic extractor checked 38 active formulas and 274 active parameters with no errors; project governance errors 0 warnings 0; all-project governance errors 0 warnings 0; changed-only semantic sync errors 0 warnings 0; root governance tests 127 OK; information-quality PASS; manifest JSON parse OK; parameter registry and traceability CSV widths consistent.
+- Test results: focused storage/CLI tests 9 OK; arxiv-daily-push unit tests 186 OK; semantic extractor checked 38 active formulas and 274 active parameters with no errors; project governance errors 0 warnings 0; all-project governance errors 0 warnings 0; changed-only semantic sync errors 0 warnings 0; root governance tests 128 OK; information-quality PASS; manifest JSON parse OK; parameter registry and traceability CSV widths consistent.
 - Successes: Migration creates schema version 1 with WAL and FTS5, stores SourceItem data idempotently, supports FTS search, and rolls back to version 0.
 - Failures: First semantic extractor run caught FORM-ADP-024 CLI fingerprint drift after adding storage subcommands; fixed by refreshing FORM-ADP-024 machine evidence. Project governance initially caught ledger and generated assurance count drift; those generated views were refreshed.
 - Decisions: Bump product version to 0.14.0 because S1-04 adds a backward-compatible local storage CLI and schema capability while preserving disabled production side effects.
