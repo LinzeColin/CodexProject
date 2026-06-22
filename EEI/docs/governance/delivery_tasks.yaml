@@ -3332,8 +3332,8 @@ tasks:
     legacy_task_id: "T1301"
     phase: "C"
     objective: "Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical"
-    scope: "Current T1301/A202 implementation slice adds a fail-closed A202/A210 signed release decision bundle contract on top of the operator/legal review packet, binds that signed bundle to the production owner sign-off publication path, and adds deterministic operation_logs audit entries for each reviewed relationship publication so source-license review, passage-level relationship review, production owner sign-off, legal release clearance or risk waiver, brand clearance or risk waiver, publication audit, and the still-separate A209 24h soak gate are explicit evidence-chain inputs."
-    non_scope: "Does not claim real source-license review, passage-level relationship approval, legal clearance, real operator production owner approval, trademark/market clearance, relationship publication, public brand launch, production MVP completion, or A202 closure."
+    scope: "Current T1301/A202 implementation slice adds a fail-closed source-withdrawal and counter-evidence publication rehearsal on top of the operator/legal review packet, signed A202/A210 release decision bundle and deterministic operation_logs audit path. Reviewed relationship publication now rejects linked disputed raw source snapshots, disputed ingestion evidence-chain rows and unreviewed evidence-chain counter-evidence before writing relationships, fact_versions or operation_logs, while keeping the still-separate A209 24h soak gate explicit."
+    non_scope: "Does not claim real source-license review, passage-level relationship approval, legal clearance, real operator production owner approval, trademark/market clearance, relationship publication, public brand launch, production MVP completion, A209 closure, or A202 closure."
     status: "in_progress"
     dependencies: []
     required_files:
@@ -3372,6 +3372,8 @@ tasks:
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/unit/test_release_decision_bundle.py"
       - "PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache .venv/bin/python -m py_compile scripts/publish_reviewed_relationship_facts.py scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py tests/integration/test_database_migrations.py"
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py tests/integration/test_database_migrations.py"
+      - "PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache .venv/bin/python -m py_compile scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py"
+      - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py"
       - "PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_release_decision_bundle.py tests/unit/test_scoring.py -q -p no:cacheprovider"
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_development_status_artifacts.py validate"
     test_results:
@@ -3389,6 +3391,11 @@ tasks:
       - "A202 signed-bundle publication binding local validation PASS: production owner publication requires --release-decision-bundle, template bundle fails closed, signed contract-test fixture validates with release_ready=false, and unit tests PASS 5/5"
       - "A202 publication operation-log audit local validation PASS: py_compile PASS, focused ruff PASS, release/scoring unit tests PASS 19/19, local PostgreSQL integration collection SKIPPED on this host without DATABASE_URL"
       - "A202 publication operation-log audit remote CI PASS: Project Governance run 27989821924 job 82839592718 PASS; EEI validation run 27989821946 job 82839592720 PASS, including Step 10 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E"
+      - "A202 source-withdrawal fail-closed rehearsal local static validation PASS: py_compile PASS; focused ruff PASS"
+      - "A202 source-withdrawal fail-closed rehearsal local unit validation PASS: release-decision/scoring unit tests PASS 19/19"
+      - "A202 source-withdrawal fail-closed rehearsal local integration collection SKIPPED because this host has no DATABASE_URL"
+      - "A202 source-withdrawal fail-closed rehearsal local make verify PASS: governance/catalog validators, release artifacts, scale/soak smoke, secret scan, UI copy, ruff, web typecheck and unit tests 62/62"
+      - "A202 source-withdrawal fail-closed rehearsal remote PostgreSQL CI PENDING: local host has no DATABASE_URL"
     evidence_refs:
       - "EEI/data/golden_vertical_fact_candidates.json"
       - "EEI/tests/integration/test_database_migrations.py"
@@ -3400,8 +3407,8 @@ tasks:
       - "GitHub Actions run 27930880852 job 82642378395"
       - "GitHub Actions Project Governance run 27989821924 job 82839592718"
       - "GitHub Actions EEI validation run 27989821946 job 82839592720"
-    risk: "A202 can be falsely closed if a review packet, signed decision bundle template, two official historical/supporting sources, selected live capture evidence, or publication operation log entries are treated as real source-license review, legal clearance, production owner approval, relationship publication, trademark/market clearance, or long-duration soak proof."
-    rollback: "Revert the operator-review packet, release-decision bundle and publication operation-log audit scripts/artifacts/tests/governance updates, regenerate clean-room/release artifacts, and rerun make verify or the documented A202 validation subset."
+    risk: "A202 can be falsely closed if a review packet, signed decision bundle template, two official historical/supporting sources, selected live capture evidence, publication operation log entries, or repository source-withdrawal rehearsal are treated as real source-license review, legal clearance, production owner approval, relationship publication, trademark/market clearance, live operator withdrawal proof, or long-duration soak proof."
+    rollback: "Revert the operator-review packet, release-decision bundle, publication operation-log audit and source-withdrawal fail-closed scripts/artifacts/tests/governance updates, regenerate clean-room/release artifacts, and rerun make verify or the documented A202 validation subset."
     target_version: "0.1.0"
     completed_version: ""
     fact_level: "EXTRACTED"

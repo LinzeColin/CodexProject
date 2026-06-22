@@ -1,12 +1,8 @@
 {
   "acceptance_ids": [
     "ACC-A202",
-    "ACC-A203",
-    "ACC-A204",
-    "ACC-A205",
     "ACC-A209",
-    "ACC-A210",
-    "ACC-REVIEW7-CI-BINDING"
+    "ACC-A210"
   ],
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "changed_files_actual": [
@@ -67,10 +63,6 @@
     "EEI/tests/integration/test_database_migrations.py",
     "EEI/tests/unit/test_gold_quality_evaluation.py",
     "EEI/tests/unit/test_release_decision_bundle.py",
-    "GOVERNANCE_DASHBOARD.md",
-    "OWNER_PORTFOLIO.md",
-    "README.md",
-    "governance/binding_backlog.yaml",
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "governance/run_manifests/GOV-EEI-T1301-A202-OPERATION-LOG-AUDIT-20260623.json",
@@ -138,10 +130,6 @@
     "EEI/tests/integration/test_database_migrations.py",
     "EEI/tests/unit/test_gold_quality_evaluation.py",
     "EEI/tests/unit/test_release_decision_bundle.py",
-    "GOVERNANCE_DASHBOARD.md",
-    "OWNER_PORTFOLIO.md",
-    "README.md",
-    "governance/binding_backlog.yaml",
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "governance/run_manifests/GOV-EEI-T1301-A202-OPERATION-LOG-AUDIT-20260623.json",
@@ -151,22 +139,27 @@
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
-  "ci_attestation_subject": "Project Governance and EEI validation workflows for d009516c; current governance repair precommit manifest",
-  "ci_run_reference": "Project Governance run 27950933950 job 82707373153; EEI validation run 27950933933 job 82707372790",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:c97a9fc5b77779b836c5ba0f86481df7a715fef88d5f106b0ba73e5c68795244",
+  "ci_attestation_subject": "commit pending until push; expected Project Governance and EEI validation workflows",
+  "ci_run_reference": "PENDING_GITHUB_ACTIONS_AFTER_PUSH",
+  "content_tree_hash": "sha256-changed-files-excluding-run-manifests:85756d8beb33d8747e3e5ed20ef4cb0cfc91c854e5a34c02ad20fe96fb9eabf1",
   "evidence_refs": [
+    "EEI/scripts/publish_reviewed_relationship_facts.py",
+    "EEI/tests/integration/test_database_migrations.py",
+    "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
     "EEI/docs/governance/development_events.jsonl",
-    "EEI/docs/governance/delivery_tasks.yaml",
-    "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
-    "tests/governance/test_project_governance_validator.py"
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/CHECKSUMS.sha256"
   ],
-  "finished_at": "2026-06-22T20:49:58Z",
-  "generated_at": "2026-06-22T20:49:58Z",
-  "implementation_base_sha": "d009516c57c4908a025c401a711dfb4d599f7b73",
-  "iteration_id": "ITER-20260623-001",
+  "finished_at": "PENDING_CI",
+  "generated_at": "2026-06-22T23:39:25Z",
+  "implementation_base_sha": "a23548d19ec658e58fb4afb2278df42ee69ede58",
+  "iteration_id": "ITER-20260623-005",
+  "observed_results": [
+    "LOCAL_MAKE_VERIFY_PASS",
+    "PENDING_GITHUB_ACTIONS_AFTER_PUSH"
+  ],
   "project_id": "root-governance",
   "required_governance_files": [
-    "scripts/generate_governance_dashboard.py",
     "EEI/docs/governance/VERSION_MATRIX.yaml",
     "EEI/docs/governance/delivery_tasks.yaml",
     "EEI/docs/governance/development_events.jsonl",
@@ -174,76 +167,82 @@
     "EEI/docs/governance/ASSURANCE_STATUS.yaml",
     "EEI/docs/governance/OWNER_STATUS.md",
     "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
     "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
+    "EEI/data/acceptance_matrix.csv",
     "EEI/data/acceptance_traceability.csv",
     "EEI/data/development_status_ledger.csv",
-    "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
-    "tests/governance/test_project_governance_validator.py",
-    "EEI/docs/governance/DELIVERY_PLAN.md",
-    "README.md",
-    "GOVERNANCE_DASHBOARD.md",
-    "OWNER_PORTFOLIO.md",
-    "governance/binding_backlog.yaml"
+    "governance/run_manifests/GOV-EEI-T1301-A202-SOURCE-WITHDRAWAL-REHEARSAL-20260623.json"
   ],
-  "result_commit": "PRECOMMIT_TREE_BOUND",
-  "rollback": "Revert the generator, ITER-20260623-001 event, T1302/T1303 task contracts, status/ledger/traceability updates, this manifest and root test changes; regenerate governance/release artifacts and rerun validation.",
-  "run_id": "GOV-EEI-CI-EVIDENCE-BINDING-20260623",
+  "result_commit": "PENDING_GITHUB_ACTIONS_AFTER_PUSH",
+  "risk_summary": [
+    "A202 remains open until real source/license/owner/legal/brand, production gold labels and release-manager evidence exist.",
+    "A209 24h soak remains a background long-running evidence gate.",
+    "Repository withdrawal rehearsal is not live operator withdrawal proof."
+  ],
+  "rollback": "Revert the A202 source-withdrawal publication gate/test/governance updates, regenerate release artifacts and rerun make verify.",
+  "run_id": "GOV-EEI-T1301-A202-SOURCE-WITHDRAWAL-REHEARSAL-20260623",
   "schema_version": 2,
-  "summary": "Bind d009516c remote CI evidence into EEI governance status, add explicit T1302/T1303 delivery task contracts and keep A209 24h soak as a background evidence gate.",
-  "task_id": "GOV-EEI-CI-EVIDENCE-BINDING-20260623",
+  "started_at": "2026-06-22T23:39:25Z",
+  "task_id": "GOV-EEI-T1301-A202-SOURCE-WITHDRAWAL-REHEARSAL-20260623",
   "test_commands": [
-    "python3 scripts/generate_governance_dashboard.py --write --project EEI",
+    "PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache .venv/bin/python -m py_compile scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py",
+    "PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_release_decision_bundle.py tests/unit/test_scoring.py -q -p no:cacheprovider",
+    "env -u DATABASE_URL PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/integration/test_database_migrations.py -q -p no:cacheprovider",
     "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_development_status_artifacts.py generate",
+    "python3 scripts/generate_governance_dashboard.py --write --project EEI",
     "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_clean_room_release.py generate",
     "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_release_artifacts.py generate --remote-status PENDING",
-    "TMPDIR=/private/tmp PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify",
-    "python3 scripts/validate_governance_sync.py --changed-only --base-ref origin/main --enforce-sync --semantic",
-    "PYTHONPYCACHEPREFIX=/private/tmp/eei-root-pycache python3 -m pytest tests/governance/test_project_governance_validator.py -q -p no:cacheprovider"
+    "TMPDIR=/private/tmp PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify"
   ],
   "test_results": [
     {
-      "command": "Project Governance run 27950933950 job 82707373153",
+      "command": "py_compile scoped A202 source-withdrawal files",
       "exit_code": 0,
-      "observed": "remote CI passed for d009516c",
+      "observed": "Publication script and integration test modules compile.",
       "result": "PASS"
     },
     {
-      "command": "EEI validation run 27950933933 job 82707372790",
+      "command": "ruff scoped A202 source-withdrawal files",
       "exit_code": 0,
-      "observed": "Step 10/11/12 passed for d009516c; current governance repair still requires local validation and follow-up CI",
+      "observed": "Scoped publication script and integration test pass lint.",
+      "result": "PASS"
+    },
+    {
+      "command": "unit tests release decision bundle and scoring",
+      "exit_code": 0,
+      "observed": "19 passed.",
+      "result": "PASS"
+    },
+    {
+      "command": "integration database migrations without local DATABASE_URL",
+      "exit_code": 0,
+      "observed": "1 skipped locally; remote PostgreSQL CI required for state-mutation rehearsal.",
+      "result": "SKIP"
+    },
+    {
+      "command": "make verify",
+      "exit_code": 0,
+      "observed": "Governance/catalog validators, release artifacts, scale/soak smoke, secret scan, UI copy, ruff, web typecheck and unit tests 62/62 passed.",
       "result": "PASS"
     }
   ],
   "updated_governance_files": [
+    "EEI/CHANGELOG.md",
     "EEI/data/acceptance_matrix.csv",
     "EEI/data/acceptance_traceability.csv",
-    "EEI/data/data_catalog_manifest.csv",
     "EEI/data/development_status_ledger.csv",
-    "EEI/data/parameter_catalog.csv",
-    "EEI/data/task_backlog.csv",
     "EEI/docs/governance/ASSURANCE_STATUS.yaml",
-    "EEI/docs/governance/DELIVERY_PLAN.md",
     "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
     "EEI/docs/governance/MODEL_SPEC.md",
     "EEI/docs/governance/OWNER_STATUS.md",
     "EEI/docs/governance/STATUS.md",
-    "EEI/docs/governance/TRACEABILITY_MATRIX.csv",
     "EEI/docs/governance/VERSION_MATRIX.yaml",
     "EEI/docs/governance/delivery_tasks.yaml",
     "EEI/docs/governance/development_events.jsonl",
-    "EEI/docs/governance/formula_registry.yaml",
-    "EEI/docs/governance/model_registry.yaml",
-    "EEI/docs/governance/parameter_registry.csv",
     "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
     "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
-    "GOVERNANCE_DASHBOARD.md",
-    "OWNER_PORTFOLIO.md",
-    "README.md",
-    "governance/binding_backlog.yaml",
-    "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
-    "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
-    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
-    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
-    "tests/governance/test_project_governance_validator.py"
+    "governance/run_manifests/GOV-EEI-T1301-A202-SOURCE-WITHDRAWAL-REHEARSAL-20260623.json"
   ]
 }

@@ -1642,10 +1642,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260623-004")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260623-005")
         self.assertEqual(
             matrix["current_gate"],
-            "TASK-T1301-A202-PUBLICATION-OPERATION-LOG-AUDIT-IN-PROGRESS",
+            "TASK-T1301-A202-SOURCE-WITHDRAWAL-FAIL-CLOSED-IN-PROGRESS",
         )
 
         events = [json.loads(line) for line in (ROOT / "EEI" / "docs" / "governance" / "development_events.jsonl").read_text(encoding="utf-8").splitlines()]
@@ -1679,10 +1679,17 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "cb8e096fd54508080d73a6e83c015c15cfd9bd9a",
         )
         self.assertIn("TASK-T1307", operation_log_event["task_ids"])
+        source_withdrawal_event = next(
+            event for event in events if event.get("event_id") == "EVENT-20260623-005"
+        )
+        self.assertEqual(source_withdrawal_event["task_id"], "TASK-T1301")
+        self.assertEqual(source_withdrawal_event["binding_status"], "pre_commit_pending")
+        self.assertIn("TASK-T1307", source_withdrawal_event["task_ids"])
+        self.assertIn("make verify PASS", "; ".join(source_withdrawal_event["test_results"]))
 
         owner_text = (ROOT / "EEI" / "docs" / "governance" / "OWNER_STATUS.md").read_text(encoding="utf-8")
         self.assertIn(
-            "TASK-T1301-A202-PUBLICATION-OPERATION-LOG-AUDIT-IN-PROGRESS",
+            "TASK-T1301-A202-SOURCE-WITHDRAWAL-FAIL-CLOSED-IN-PROGRESS",
             owner_text,
         )
         self.assertIn("24h operator soak evidence", owner_text)

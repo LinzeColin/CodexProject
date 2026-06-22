@@ -4653,3 +4653,44 @@ Status: LOCAL AND REMOTE CI VALIDATED; A202/A209/A210 STILL IN PROGRESS
 
 - Revert `scripts/publish_reviewed_relationship_facts.py`, `scripts/validate_release_decision_bundle.py`, `tests/integration/test_database_migrations.py` and the regenerated A202 contract artifact.
 - Regenerate development, clean-room and release artifacts, then rerun local validation and GitHub CI.
+
+## 2026-06-23 - T1301/A202 source withdrawal and counter-evidence fail-closed publication gate
+
+Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A209/A210 STILL IN PROGRESS
+
+### Scope
+
+- Added publication-time checks in `scripts/publish_reviewed_relationship_facts.py` so reviewed relationship facts fail closed when linked `raw_source_snapshots` are `disputed`, linked `ingestion_evidence_chain` rows are `disputed`, or linked evidence-chain rows contain counter-evidence without explicit counter-evidence review.
+- Propagated `counter_evidence_reviewed` from the signed A202/A210 release decision bundle into the production owner sign-off publication validation path.
+- Extended the PostgreSQL integration contract with a source-withdrawal rehearsal that mutates database state before publication and asserts failed publication leaves relationships, fact versions and publication operation logs unchanged.
+- A209 24h soak remains a background long-running stability gate and does not block this bounded A202 source-withdrawal protection slice.
+
+### Acceptance mapping
+
+- T1301 -> A202 for real-data evidence-chain safety, source withdrawal rehearsal and counter-evidence control.
+- This does not close A202: real source-license review, passage-level relationship approval, real production owner approval, formal legal/brand clearance, production gold labels, release-manager activation and A209 24h soak are still missing.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold or active parameter value changed.
+- This is a publication-control and evidence-chain gate change under the existing MOD-012 operational-controls contract.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache .venv/bin/python -m py_compile scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py`: PASS.
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_release_decision_bundle.py tests/unit/test_scoring.py -q -p no:cacheprovider`: PASS, 19 passed.
+- `env -u DATABASE_URL PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/integration/test_database_migrations.py -q -p no:cacheprovider`: SKIPPED locally because this host has no `DATABASE_URL`; remote PostgreSQL CI is required for the new rehearsal assertions.
+- `TMPDIR=/private/tmp PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS, including governance/catalog validators, release artifacts, scale/soak smoke, secret scan, UI copy, ruff, web typecheck and 62 unit tests.
+
+### Remaining gaps
+
+- A202 remains `IN_PROGRESS` until real signed source/legal/owner/brand evidence and production gold labels are attached.
+- A209 24h soak remains a background independent gate and is not replaced by source-withdrawal rehearsal.
+- Formal market/legal brand clearance remains A210 work.
+
+### Rollback
+
+- Revert `scripts/publish_reviewed_relationship_facts.py`, `tests/integration/test_database_migrations.py` and the governance/artifact updates from this slice.
+- Regenerate development, clean-room and release artifacts, then rerun local validation and GitHub CI.
