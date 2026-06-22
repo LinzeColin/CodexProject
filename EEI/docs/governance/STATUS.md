@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:fc5e915fc2de104958100aa8043d240ade099ef21616940aee8115ac3b74ccb3`
-- snapshot_event_time: `2026-06-22T07:04:50Z`
+- source_snapshot_hash: `sha256:8ddb004bb8609ac356da0a8fb7e02a1327e689bf25415421bd6ae89f47449b07`
+- snapshot_event_time: `2026-06-22T09:15:00Z`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
-- Models/Formulas/Parameters total: `12 / 12 / 62`
-- Active formulas/parameters: `11 / 62`
-- Machine checked formulas/parameters: `10 / 55`
+- Phase/Gate: `C / TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-PENDING-CI`
+- Models/Formulas/Parameters total: `12 / 12 / 63`
+- Active formulas/parameters: `11 / 63`
+- Machine checked formulas/parameters: `10 / 56`
 
 ## Assurance
 
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
+- Release gate: `TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-PENDING-CI`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `29`
+- Pending/stale events: `30`
 - Tree-bound events: `0`
 - Commit-bound events: `6`
 - Legacy unbound events: `17`

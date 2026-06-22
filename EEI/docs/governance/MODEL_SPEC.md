@@ -17,13 +17,14 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 62
+- parameter_count: 63
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
 ## Current Audit Note
 
 - 2026-06-22 T1304/A206 closure changes scheduler, retry and dead-letter delivery status only; no scoring model, graph traversal formula, extraction formula, formula weight or runtime model behavior changed.
+- 2026-06-22 T1301/A202 plus T1309/A210 release-decision bundle adds governance contract parameter `PARAM-063` for `CONTRACT_SCHEMA_VERSION`; no scoring model, graph traversal formula, extraction formula, formula weight or runtime threshold changed.
 
 ## A. Model Overview
 
@@ -228,19 +229,19 @@ The counts above are generated from the canonical machine registries in this dir
 ### `MOD-012` - 运行、视觉与校准阈值控制
 
 - Kind: `deterministic_configuration_rule`
-- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows, and fail-closed A202 review-packet gates.
+- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows, fail-closed A202 review-packet gates, and A202/A210 release-decision bundle schema validation.
 - Owner: model owner
 - Status: `active`
 - Model version: `operational-controls-v1`
-- Implementation reference: EEI/data/parameter_catalog.csv:43-79, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_a202_operator_review_packet.py
+- Implementation reference: EEI/data/parameter_catalog.csv:43-79, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py
 - Inputs: parameter_key; configured_value; default_value; min_value; max_value
 - Outputs: validated operational parameter value
 - Use cases: research prioritization, explainable visual focus, governance validation, and bounded exploration support.
 - Non-use cases: investment return prediction, live trading signal generation, hidden-truth inference, or production factual claims without evidence.
 - Formula IDs: FORM-012
-- Parameter IDs: PARAM-042, PARAM-043, PARAM-044, PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051, PARAM-052, PARAM-053, PARAM-054, PARAM-055, PARAM-056, PARAM-057, PARAM-058, PARAM-059, PARAM-060, PARAM-061, PARAM-062
-- Test references: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_v5_production_readiness_sync.py, EEI/scripts/validate_a202_operator_review_packet.py, EEI/tests/unit/test_official_source_live_capture.py
-- Evidence references: EEI/data/parameter_catalog.csv:43-79, EEI/config/thresholds/default-v2.json:1, EEI/config/model_runtime_defaults.yaml:1, EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json, EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json
+- Parameter IDs: PARAM-042, PARAM-043, PARAM-044, PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051, PARAM-052, PARAM-053, PARAM-054, PARAM-055, PARAM-056, PARAM-057, PARAM-058, PARAM-059, PARAM-060, PARAM-061, PARAM-062, PARAM-063
+- Test references: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_v5_production_readiness_sync.py, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py
+- Evidence references: EEI/data/parameter_catalog.csv:43-79, EEI/config/thresholds/default-v2.json:1, EEI/config/model_runtime_defaults.yaml:1, EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json, EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json, EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json
 - Failure modes: missing runtime motion config; threshold out of schema range; auto activation enabled
 
 ## B. Assumptions
@@ -478,8 +479,8 @@ Machine source: `formula_registry.yaml`. Legacy `F-*` IDs are preserved as `lega
 - Missing data handling: fallback_to_default_or_UNKNOWN_with_task
 - Boundary conditions: respect per-variable input domain and configured min/max bounds; invalid configuration fails validation.
 - Fallback: use configured default or previous valid snapshot; Unavailable values remain disclosed and task-linked.
-- Implementation position: EEI/data/parameter_catalog.csv:43-61, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/validate_a202_operator_review_packet.py
-- Test position: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121, EEI/scripts/validate_a202_operator_review_packet.py, EEI/tests/unit/test_official_source_live_capture.py
+- Implementation position: EEI/data/parameter_catalog.csv:43-61, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py
+- Test position: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py
 
 ## D. Parameters
 
@@ -505,7 +506,7 @@ Machine source: `parameter_registry.csv`. Defaults, initial/prior values, active
 - Risk limits: unknowns are disclosed, fixture/live boundaries are preserved, calibration does not auto-activate, and previous valid snapshots remain available.
 - Fallback: validation failure blocks activation; existing snapshot remains active.
 - Deactivation conditions: invalid config, inconsistent model/data snapshot, unresolved source coverage risk, or missing acceptance evidence.
-- Human approval points: model/parameter activation, calibration proposal acceptance, and release gates.
+- Human approval points: model/parameter activation, calibration proposal acceptance, release gates, source-license/legal/brand decisions, and production owner sign-off.
 - Safe behavior on failure: no partial publish and no silent fill of unknowns.
 
 ## G. Validation

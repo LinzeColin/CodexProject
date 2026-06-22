@@ -621,7 +621,7 @@ models:
   - model_id: "MOD-012"
     name: "运行、视觉与校准阈值控制"
     kind: "deterministic_configuration_rule"
-    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, and calibration controls."
+    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak windows, review-packet gates and release-decision bundle schema validation."
     owner: "model owner"
     status: "active"
     fact_level: "RECONSTRUCTED"
@@ -655,6 +655,8 @@ models:
       - "PARAM-059"
       - "PARAM-060"
       - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
     inputs:
       - "parameter_key"
       - "configured_value"
@@ -667,6 +669,8 @@ models:
     code_refs:
       - "EEI/data/parameter_catalog.csv:43-79"
       - "EEI/scripts/run_operator_soak.mjs"
+      - "EEI/scripts/validate_a202_operator_review_packet.py"
+      - "EEI/scripts/validate_release_decision_bundle.py"
       - "EEI/config/thresholds/default-v2.json"
       - "EEI/config/model_runtime_defaults.yaml"
     test_refs:
@@ -676,6 +680,7 @@ models:
     risk_controls:
       - "range validation"
       - "manual calibration approval"
+      - "fail-closed release decision bundle validation"
       - "reduced-motion respect"
       - "visual coverage gates"
     failure_modes:

@@ -21,10 +21,11 @@ parameter_profile_versions:
   default-v2: "2"
   model_runtime_defaults: "14"
   operator-review-packet: "1"
+  release-decision-bundle: "1"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260621-017"
+current_iteration: "ITER-20260622-012"
 current_phase: "C"
-current_gate: "TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL"
+current_gate: "TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-PENDING-CI"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "v4.2.0"

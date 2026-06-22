@@ -1,0 +1,116 @@
+{
+  "schema_version": "eei-a202-a210-release-decision-bundle-v1",
+  "bundle_id": "A202-A210-TEMPLATE-ONLY-NOT-CLEARANCE",
+  "bundle_status": "TEMPLATE_ONLY",
+  "system_name": "EEI",
+  "task_ids": [
+    "T1301",
+    "T1309"
+  ],
+  "acceptance_ids": [
+    "A202",
+    "A210"
+  ],
+  "release_gate_closure_allowed": false,
+  "decision_scope": {
+    "relationship_publication": false,
+    "public_brand_launch": false,
+    "release_clearance": false
+  },
+  "source_license_reviews": [
+    {
+      "anchor_id": "NVDA-ANCHOR-002",
+      "reviewer": "",
+      "reviewed_at": "",
+      "source_license_status": "PENDING_REVIEW",
+      "allowed_use_scope": "",
+      "evidence_uri": "",
+      "signature": ""
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-003",
+      "reviewer": "",
+      "reviewed_at": "",
+      "source_license_status": "PENDING_REVIEW",
+      "allowed_use_scope": "",
+      "evidence_uri": "",
+      "signature": ""
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-004",
+      "reviewer": "",
+      "reviewed_at": "",
+      "source_license_status": "PENDING_REVIEW",
+      "allowed_use_scope": "",
+      "evidence_uri": "",
+      "signature": ""
+    }
+  ],
+  "passage_level_relationship_reviews": [
+    {
+      "candidate_key": "GV-FACT-001",
+      "supporting_anchor_ids": [],
+      "supporting_passage_locator": "",
+      "counter_evidence_reviewed": false,
+      "decision": "PENDING_REVIEW",
+      "reviewer": "",
+      "reviewed_at": "",
+      "signature": ""
+    },
+    {
+      "candidate_key": "GV-FACT-002",
+      "supporting_anchor_ids": [],
+      "supporting_passage_locator": "",
+      "counter_evidence_reviewed": false,
+      "decision": "PENDING_REVIEW",
+      "reviewer": "",
+      "reviewed_at": "",
+      "signature": ""
+    }
+  ],
+  "production_owner_signoffs": [
+    {
+      "candidate_key": "GV-FACT-001",
+      "owner_actor": "",
+      "owner_role": "",
+      "authority_scope": "",
+      "signed_at": "",
+      "signature": ""
+    },
+    {
+      "candidate_key": "GV-FACT-002",
+      "owner_actor": "",
+      "owner_role": "",
+      "authority_scope": "",
+      "signed_at": "",
+      "signature": ""
+    }
+  ],
+  "legal_release_clearance": {
+    "legal_reviewer": "",
+    "clearance_status": "PENDING_REVIEW",
+    "clearance_scope": "",
+    "risk_waiver_id_or_opinion_ref": "",
+    "signed_at": "",
+    "signature": ""
+  },
+  "brand_clearance_or_risk_waiver": {
+    "decision": "PENDING_REVIEW",
+    "scope": "",
+    "evidence_uri": "",
+    "signed_by": "",
+    "signed_at": "",
+    "signature": ""
+  },
+  "attestation": {
+    "signed_by": "",
+    "signed_at": "",
+    "signature": ""
+  },
+  "non_claims": [
+    "This template is not a legal opinion.",
+    "This template is not owner approval.",
+    "This template is not source-license clearance.",
+    "This template does not allow public launch or relationship publication."
+  ]
+}

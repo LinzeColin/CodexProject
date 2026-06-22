@@ -1,0 +1,94 @@
+{
+  "a202_gate_statuses": {
+    "a206_scheduler_retry_dead_letter": "present",
+    "a209_24h_operator_soak": "missing",
+    "legal_release_clearance": "missing",
+    "live_capture_ready_for_review": "present",
+    "passage_level_relationship_review": "missing",
+    "production_owner_signoff": "missing",
+    "source_license_review": "missing"
+  },
+  "a210_current_clearance_status": {
+    "a210_status": "IN_PROGRESS",
+    "formal_legal_clearance": "NOT_COMPLETE",
+    "market_clearance": "NOT_COMPLETE",
+    "owner_signoff": "NOT_PROVIDED",
+    "signed_risk_waiver": "NOT_PROVIDED"
+  },
+  "acceptance_ids": [
+    "A202",
+    "A210"
+  ],
+  "artifact_id": "t1301-a202-a210-release-decision-bundle-contract",
+  "generated_at": "2026-06-22T09:07:09Z",
+  "non_claims": [
+    "This contract does not certify legal clearance.",
+    "This contract does not certify trademark or market clearance.",
+    "This contract does not publish relationship facts or graph edges.",
+    "This contract does not close A202, A209 or A210 without real signed evidence."
+  ],
+  "public_brand_launch_allowed": false,
+  "relationship_publication_allowed": false,
+  "release_gate_closed_by_contract": false,
+  "required_sections": {
+    "passage_level_relationship_reviews": [
+      "candidate_key",
+      "supporting_anchor_ids",
+      "supporting_passage_locator",
+      "counter_evidence_reviewed",
+      "decision",
+      "reviewer",
+      "reviewed_at",
+      "signature"
+    ],
+    "production_owner_signoffs": [
+      "candidate_key",
+      "owner_actor",
+      "owner_role",
+      "authority_scope",
+      "signed_at",
+      "signature"
+    ],
+    "source_license_reviews": [
+      "anchor_id",
+      "reviewer",
+      "reviewed_at",
+      "source_license_status",
+      "allowed_use_scope",
+      "evidence_uri",
+      "signature"
+    ]
+  },
+  "required_signed_inputs_before_closure": [
+    "source license review for each selected live official-source anchor",
+    "passage-level relationship review for every candidate intended for publication",
+    "production owner sign-off with authority scope and signature",
+    "legal release clearance or explicit signed risk waiver",
+    "brand clearance or explicit signed risk waiver covering public launch surfaces",
+    "A209 24h operator soak evidence must still be provided separately"
+  ],
+  "schema_version": "eei-a202-a210-release-decision-bundle-contract-v1",
+  "source_files": {
+    "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
+    "a202_operator_review_packet_sha256": "f200c51f7165ad7016988cfe1d651a921aa80d400261cbee7265f3effd65f530",
+    "a210_brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
+    "a210_brand_preflight_sha256": "f7a63f8d651a965c94c61a73b957b0df87fbdf5425efb735d55cf1f048c7aec4",
+    "decision_bundle_template": "tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
+    "decision_bundle_template_sha256": "3bd00ed447cd32f44ae39f0f4f56e7120bea857b2e9e22c7507103a3d5f79775"
+  },
+  "status": "PENDING_SIGNED_DECISIONS",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_ids": [
+    "T1301",
+    "T1309"
+  ],
+  "validation_policy": {
+    "contract_test_signatures_are_not_clearance": true,
+    "default_publication_state": "fail_closed",
+    "signed_bundle_required_for_a202_a210_closure": true,
+    "template_only_allowed_in_repository": true,
+    "template_only_counts_as_clearance": false
+  }
+}

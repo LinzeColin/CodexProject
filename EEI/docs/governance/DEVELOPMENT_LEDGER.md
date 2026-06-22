@@ -11,11 +11,11 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
-- Confirmed iteration count: 20
+- Current gate: `TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-PENDING-CI`
+- Confirmed iteration count: 21
 - Reconstructed development event count: 2
-- Current task: `TASK-T1304`
-- Blockers: A209 remains open until 24h operator soak evidence is produced and CI-validated; A202 still needs source-license review, passage-level relationship review, production owner sign-off and legal release clearance; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T1301` / `TASK-T1309`
+- Blockers: A209 remains open until 24h operator soak evidence is produced and CI-validated; A202 still needs real source-license review, passage-level relationship review, production owner sign-off and legal release clearance; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -478,6 +478,29 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the A206 status rows, validator status move, A206 contract status, A202 gate map and regenerated release artifacts; rerun `make verify`.
 - Next step: commit/push this closure and verify EEI validation plus Project Governance CI before proceeding to the next MVP gap.
 
+### `ITER-20260622-012`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `19206c19`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, `TASK-T1309`
+- Goal: add a fail-closed A202/A210 signed release decision bundle contract without claiming legal clearance, relationship publication, public brand launch or A209 closure.
+- Assumptions: A209 24h soak continues as a background long-running evidence gate; waiting for all 288 five-minute windows must not block bounded A202/A210 feature delivery.
+- Files changed: `scripts/validate_release_decision_bundle.py`, `tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json`, `tests/unit/test_release_decision_bundle.py`, `artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json`, Makefile, A202/A210 acceptance/traceability rows, v5 readiness validator, delivery tasks, phase records and governance traceability.
+- Model changes: no scoring formula, graph traversal, extraction model or model-weight behavior change.
+- Parameter changes: no runtime threshold change; new schema constants define the release decision bundle contract and validation behavior.
+- Commands run: release decision bundle generation/validation, template-only bundle validation, focused unit tests, focused ruff, py_compile, A202 official-source unit slice, v5 readiness sync and task-pack validation.
+- Test results: release decision bundle generate PASS; contract validate PASS; template-only bundle validate PASS with `release_ready=false`; targeted bundle unit tests PASS 4/4; combined A202 bundle/official-source tests PASS 16/16; ruff PASS; py_compile PASS; v5 readiness sync PASS; task-pack validation PASS.
+- Successes: A202/A210 now have one machine-readable bundle listing the exact signed source-license, passage-level, owner, legal and brand decisions still required before closure; signed bundle completion remains separate from A209 and release-manager activation.
+- Failures: no real signed source-license review, production owner approval, legal opinion, brand clearance, risk waiver or 24h soak evidence was added.
+- Decisions: keep A202 and A210 `IN_PROGRESS`; keep A209 as an independent background production-stability gate; do not change EEI system name.
+- Remaining risks: remote GitHub Actions validation is pending; a future operator could still misread a repository template as clearance if downstream release checks ignore `release_ready=false`.
+- Rollback: revert the release-decision bundle script, template, test, artifact, Makefile and governance/data record updates; regenerate release artifacts and rerun the documented validation subset.
+- Next step: regenerate development/release artifacts, run final local verification, commit/push and bind this event to CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -505,6 +528,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-008`: local A202 dry-run ingestion count assertion repair after EEI validation run `27930880852` failed G2 PostgreSQL integration.
 - `EVENT-20260622-010`: local A202 operator/legal review packet contract for selected live official-source evidence while A209 24h soak continues as a background release gate.
 - `EVENT-20260622-011`: local T1304/A206 scheduler closure decoupled from A209 24h operator soak.
+- `EVENT-20260622-012`: local A202/A210 signed release decision bundle contract; signed decisions are separate from A209 24h soak and release-manager activation.
 
 ## Unknown Historical Periods
 

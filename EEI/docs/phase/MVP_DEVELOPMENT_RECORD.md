@@ -4360,3 +4360,52 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A206 DONE; A209 STILL IN PROGRESS
 - Revert the A206 status rows, validator move from implemented back to partial, A206 contract status change and A202 gate rename.
 - Regenerate A202 packet, development artifacts, clean-room package and release checksums.
 - Rerun `make verify` and keep A206 `IN_PROGRESS` if the scheduler closure evidence no longer validates.
+
+## 2026-06-22 - T1301/A202 and T1309/A210 signed release decision bundle contract
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A202/A210 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/validate_release_decision_bundle.py`.
+- Added `tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json`.
+- Added `tests/unit/test_release_decision_bundle.py`.
+- Generated `artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json`.
+- Wired `validate-release-decision-bundle` into `make verify`.
+- Updated A202/A210 acceptance, traceability, v5 readiness and task records.
+
+### Acceptance mapping
+
+- T1301 -> A202 for source-license, passage-level relationship review, production owner sign-off and legal release-clearance decision inputs.
+- T1309 -> A210 for brand clearance or signed risk waiver decision inputs.
+- A209 remains a separate long-running production stability gate; this contract does not replace 24h soak evidence.
+- A202 and A210 remain `IN_PROGRESS`: repository templates and contract tests are not real legal advice, source-license clearance, production owner approval, brand clearance, relationship publication or public launch approval.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction or model-weight behavior changed.
+- New governance contract constants: `eei-a202-a210-release-decision-bundle-v1` and `eei-a202-a210-release-decision-bundle-contract-v1`.
+- Signed-bundle CLI semantics: a complete signed bundle reports `signed_decision_complete=true` and `release_ready=false` until A209 24h soak and release-manager activation are separately satisfied.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-release-decision-pycache python3 -m py_compile scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_release_decision_bundle.py`: PASS; 4 passed.
+- `.venv/bin/ruff check scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py`: PASS.
+- `.venv/bin/python scripts/validate_release_decision_bundle.py generate`: PASS.
+- `.venv/bin/python scripts/validate_release_decision_bundle.py validate`: PASS.
+- `.venv/bin/python scripts/validate_release_decision_bundle.py validate-bundle --template-only`: PASS; `release_ready=false`.
+- `make validate-release-decision-bundle`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_release_decision_bundle.py tests/unit/test_official_source_live_capture.py`: PASS; 16 passed.
+- `.venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `.venv/bin/python scripts/validate_task_pack.py`: PASS.
+
+### Rollback
+
+- Remove `scripts/validate_release_decision_bundle.py`.
+- Remove `tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json`.
+- Remove `tests/unit/test_release_decision_bundle.py`.
+- Remove `artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json`.
+- Revert Makefile, acceptance, traceability and governance-record updates.
+- Regenerate development, clean-room and release artifacts, then rerun validation.
