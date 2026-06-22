@@ -21,6 +21,7 @@ try:
     from load_curated_ingestion_anchors import (
         ANCHOR_PATH,
         ANCHOR_SUBJECT,
+        anchor_scope_metadata,
         expected_tokens,
         media_type,
         parse_source_date,
@@ -39,6 +40,7 @@ except ModuleNotFoundError:  # pragma: no cover - used when imported as scripts 
     from scripts.load_curated_ingestion_anchors import (
         ANCHOR_PATH,
         ANCHOR_SUBJECT,
+        anchor_scope_metadata,
         expected_tokens,
         media_type,
         parse_source_date,
@@ -431,6 +433,7 @@ def upsert_evidence_chain(
         "official_url": row["url"],
         "evidence_scope": row["evidence_scope"],
         "expected_entities_or_stages": tokens,
+        "anchor_scope": anchor_scope_metadata(row),
         "record_mode": RECORD_MODE,
         "edge_publication": "operator_capture_context_only_not_published_relationship",
         "operator_source_capture": PARSER_VERSION,
@@ -510,6 +513,7 @@ def load_operator_source_captures(*, fixture_path: Path = FIXTURE_PATH) -> dict[
                 "source_text": source_text,
                 "source_text_sha256": source_health["source_text_sha256"],
                 "tokens": tokens,
+                "anchor_scope": anchor_scope_metadata(row),
                 "parser_version": PARSER_VERSION,
                 "record_mode": RECORD_MODE,
                 "source_kind": "operator_provided_official_source_capture",

@@ -74,6 +74,50 @@ def test_token_present_accepts_governed_aliases_without_lowering_threshold() -> 
     )
 
 
+def test_nvda_anchor_001_is_context_only_without_packaging_test_requirement() -> None:
+    row = next(
+        row
+        for row in official_source.read_csv(official_source.ANCHOR_PATH)
+        if row["anchor_id"] == "NVDA-ANCHOR-001"
+    )
+
+    tokens = official_source.expected_tokens(row, include_anchor_subject=True)
+    source_text = (
+        "NVIDIA Taiwan AI infrastructure ecosystem context references TSMC, "
+        "SPIL, Kinsus, KYEC, UMTC, Foxconn, Pegatron, QCT, Wistron and "
+        "Inventec. "
+        * 4
+    )
+    source_health = official_source.live_capture_source_health(
+        row,
+        source_text=source_text,
+        http_status=200,
+        content_type="text/html",
+        content_length_bytes=len(source_text.encode("utf-8")),
+        attempts=[
+            {
+                "attempt": 1,
+                "transport": "httpx",
+                "status": "response",
+                "http_status": 200,
+            }
+        ],
+    )
+
+    assert "packaging/test" not in tokens
+    assert official_source.anchor_scope_metadata(row) == {
+        "evidence_role": "context",
+        "publication_scope": "discovery_context_only",
+        "source_use_limit": (
+            "Discovery/context evidence only; not eligible for "
+            "relationship_fact_candidates or graph-edge publication without "
+            "separate passage-level support."
+        ),
+    }
+    assert source_health["status"] == "healthy"
+    assert source_health["missing_tokens"] == []
+
+
 def test_select_anchor_rows_preserves_registry_order_and_rejects_unknown() -> None:
     rows = [
         {"anchor_id": "NVDA-ANCHOR-001"},
