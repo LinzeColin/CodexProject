@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.12.5`
+Active product version: `0.13.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.12.5
-- Current phase: E
-- Current gate: ADP-PHASE12-EMAIL-HUMAN-FORMAT-READY
-- Confirmed iteration count: 53
+- Product version: 0.13.0
+- Current phase: S1-A
+- Current gate: S1-03-OWNER-CONTROLS
+- Confirmed iteration count: 54
 - Reconstructed event count: 0
-- Current task: ADP-PHASE12-EMAIL-HUMAN-FORMAT-036
-- Blockers: The human-facing email format still needs PR CI, merge to `main`, and a controlled manual workflow_dispatch rerun before it replaces the previously verified manual email format. GitHub Actions run `27932072771` proves one controlled manual Release plus Gmail SMTP delivery test at commit `bbdc69bb49758e4ad84f91f45fbe7921b82b1414`, but production launch remains blocked by Stage 1 owner controls, owner views, unified data model, local runtime recovery controls, migration readiness, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables.
+- Current task: S1-03-OWNER-CONTROLS-001
+- Blockers: GitHub Actions run `27932072771` proves one controlled manual Release plus Gmail SMTP delivery test at commit `bbdc69bb49758e4ad84f91f45fbe7921b82b1414`, but production launch remains blocked by the unified local data model, local runtime recovery controls, migration readiness, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables.
 
 ## Phase Matrix
 
@@ -53,6 +53,32 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: The next real email can still expose formatting issues in a live article title or generated lesson section; scheduled production remains blocked until separately approved.
 - Rollback: Revert version 0.12.5 email format code, tests, phase record, event, manifest, and governance records, then restore version 0.12.4.
 - Next step: Complete post-rebase validation, open PR, wait for PR CI green, merge, then rerun the manual Release + Gmail SMTP workflow.
+
+
+### `ITER-20260622-S1-002`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED for owner_controls config, generated owner views, schema, CLI commands, tests, model/formula/parameter registry updates, and semantic extractor evidence.
+- Version before: 0.12.5
+- Version after: 0.13.0
+- Base commit: 823f374a751a37b55e7eeb63cc8d91498d06da46
+- Result commit: PENDING
+- Task IDs: S1-03-OWNER-CONTROLS-001
+- Goal: Create the Review8 V4 single owner-editable control file and generated owner-readable views without changing runtime scoring, source ingestion, SMTP, Release, or scheduler behavior.
+- Assumptions: `config/owner_controls.yaml` is the owner-editable source; `docs/owner/*` are generated views and not additional editable facts.
+- Files read: `AGENTS.md`, `docs/governance/STANDARD.md`, Review8 V4 task pack, `arxiv-daily-push/docs/governance/*`, CLI, scoring/ranking constants, semantic extractor, and focused tests.
+- Files changed: owner controls config, owner controls schema, owner controls module, CLI owner subcommands, owner focused tests, generated owner views, version files, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, ledger/event records, and run manifest.
+- Model changes: Added MOD-ADP-035 `adp-owner-controls-v1`.
+- Formula changes: Added FORM-ADP-037 and refreshed FORM-ADP-024 implementation evidence because `cli.py::main` gained owner subcommands.
+- Parameter changes: Added PARAM-ADP-187 through PARAM-ADP-266 for owner controls scalar values and owner weight groups with machine `yaml_path` selectors.
+- Commands run: `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s103_owner2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_owner_controls.py -q`; `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s103_cli PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_cli.py -q`; `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s103_semantic2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push`.
+- Test results: owner focused tests 5 OK; CLI focused tests 5 OK; semantic extractor checked 37 active formulas and 265 active parameters with no errors.
+- Successes: Owner controls validate, preview impact without side effects, generate four owner-readable files, and block bad owner scoring weights in regression tests.
+- Failures: Initial owner focused test caught an over-broad secret-key pattern that treated `max_context_tokens` as a token; fixed by narrowing secret-key matching. First semantic extractor run caught FORM-ADP-024 CLI fingerprint drift; fixed by refreshing the formula evidence.
+- Decisions: Bump product version to 0.13.0 because S1-03 adds a backward-compatible owner controls CLI/config/view capability while preserving disabled production side effects.
+- Remaining risks: SQLite/WAL/FTS5 model, arXiv connector contract hardening, queue replay, B1 report/email/media interface, local runtime recovery, migration package, real production trial start, two live days, and 30-day trial evidence remain incomplete.
+- Rollback: Revert version 0.13.0 owner_controls files, generated owner views, CLI subcommands, owner tests, and governance registry updates; restore version 0.12.5 while keeping production variables disabled.
+- Next step: Complete final validation and then continue with S1-04 SQLite data model.
 
 ### `ITER-20260622-S1-001`
 

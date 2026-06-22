@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.13.0 - 2026-06-22
+
+- Added `config/owner_controls.yaml` as the single owner-editable control file for Stage 1 Window A.
+- Added `adp owner validate`, `adp owner preview-impact --days 30`, and `adp owner render-docs --write` to validate controls, preview impact, and generate four owner-readable files.
+- Added generated `docs/owner/OWNER_CONSOLE.md`, `SOURCE_CATALOG.md`, `MODEL_AND_QUEUE.md`, and `CONTENT_LEDGER.csv` views from machine facts only.
+- Kept production schedule, SMTP, Release upload, source ingestion expansion, and scoring runtime behavior unchanged.
+
 ## 0.12.5 - 2026-06-22
 
 - Refined the daily email front-end format for human scanning, actionability, and information density.
