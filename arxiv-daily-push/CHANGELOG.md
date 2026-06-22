@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.1 - 2026-06-22
+
+- Rebuilt the daily email as a responsive HTML plus concise Chinese plain-text decision brief based on the V2 mockup: read/skim/skip, relevance score, evidence level, reading time, first-principles chain, decision mapping, key questions, evidence gaps, minimal experiment, optional `.mp4` video link, and feedback actions.
+- Added a human-frontstage lesson payload so backend Claim Ledger and ROI details remain auditable while user-visible email hides Claim Ledger IDs, visible ROI scores, delivery policy text, Release landing-page clutter, and irrelevant q-fin candidate pollution.
+- Kept production schedule disabled; this change prepares the next PR CI and controlled manual Gmail SMTP plus GitHub Release rerun only.
+
 ## 0.14.0 - 2026-06-22
 
 - Added the Review8 Stage 1 local SQLite/WAL/FTS5 document and event storage model.
