@@ -13,11 +13,11 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 125
-- acceptance_count: 188
+- task_count: 127
+- acceptance_count: 191
 - completed_task_count: 51
 - planned_task_count: 70
-- in_progress_task_count: 4
+- in_progress_task_count: 6
 
 Counts are generated from canonical machine registries. Historical Markdown files are compatibility indexes only.
 
@@ -37,11 +37,11 @@ Machine source: `delivery_tasks.yaml`. Completed tasks are only marked `complete
 
 | Status | Count | Evidence |
 |---|---:|---|
-| completed | 50 | DONE task plus DONE acceptance trace rows |
-| in_progress | 3 | T1301/A202 second-source official evidence closure pending CI; T1307/A209 operator soak runner readiness with 4h/24h evidence pending; T1309/A210 brand-clearance preflight fail-closed contract with formal clearance pending |
+| completed | 51 | DONE task plus DONE acceptance trace rows |
+| in_progress | 6 | T1301/A202 source/legal/owner clearance pending; T1302/A203 production-approved edges pending; T1303/A204-A205 refresh/wake/soak evidence pending; T1307/A209 24h operator soak running as background gate; T1309/A210 formal brand clearance pending |
 | planned | 70 | Legacy NOT STARTED tasks |
 
 ## Release Gates
 
 - Gate count from legacy catalog: 10 (machine evidence: `data/release_gate_catalog.csv`).
-- Current governance gate: `GOV-G2-EEI-BASELINE`.
+- Current governance gate: `TASK-T1301-T1302-T1303-CI-EVIDENCE-BINDING-IN-PROGRESS`.

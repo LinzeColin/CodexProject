@@ -1642,10 +1642,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260622-018")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260623-001")
         self.assertEqual(
             matrix["current_gate"],
-            "TASK-T1301-A202-SIGNED-BUNDLE-PUBLICATION-BINDING-IN-PROGRESS",
+            "TASK-T1301-T1302-T1303-CI-EVIDENCE-BINDING-IN-PROGRESS",
         )
 
         events = [json.loads(line) for line in (ROOT / "EEI" / "docs" / "governance" / "development_events.jsonl").read_text(encoding="utf-8").splitlines()]
@@ -1658,10 +1658,18 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("release_ready=false", "; ".join(release_bundle_event["test_results"]))
         review6_event = next(event for event in events if event.get("event_id") == "EVT-REVIEW6-FINAL-EEI-001")
         self.assertEqual(review6_event["binding_status"], "pre_commit_pending")
+        ci_binding_event = next(event for event in events if event.get("event_id") == "EVENT-20260623-001")
+        self.assertEqual(ci_binding_event["binding_status"], "ci_attested")
+        self.assertEqual(
+            ci_binding_event["result_commit"],
+            "d009516c57c4908a025c401a711dfb4d599f7b73",
+        )
+        self.assertIn("TASK-T1302", ci_binding_event["task_ids"])
+        self.assertIn("TASK-T1303", ci_binding_event["task_ids"])
 
         owner_text = (ROOT / "EEI" / "docs" / "governance" / "OWNER_STATUS.md").read_text(encoding="utf-8")
         self.assertIn(
-            "TASK-T1301-A202-SIGNED-BUNDLE-PUBLICATION-BINDING-IN-PROGRESS",
+            "TASK-T1301-T1302-T1303-CI-EVIDENCE-BINDING-IN-PROGRESS",
             owner_text,
         )
         self.assertIn("24h operator soak evidence", owner_text)
