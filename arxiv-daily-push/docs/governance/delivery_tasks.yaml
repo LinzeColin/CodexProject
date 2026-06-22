@@ -717,18 +717,35 @@ tasks:
     unknown_task_ids: []
   - task_id: "ADP-PHASE12-PRODUCTION-ENABLEMENT-032"
     phase: "E"
-    objective: "Run Phase 12 on the owner-provisioned default branch runner and enable production variables only after all-arXiv scan, candidate queue, Release video link, and SMTP evidence pass."
-    scope: "Owner-provisioned default-branch GitHub Actions run evidence, live all-arXiv scan, candidate queue restore/persist, daily lead selection, Release-hosted video artifact link, Gmail SMTP delivery to linzezhang35@gmail.com, and explicit production variable enablement."
-    non_scope: "No local CPU/cache/storage/GPU use, no secret value logging, no video email attachment, no production enablement before evidence, and no 30-day acceptance claim."
-    status: "blocked"
+    objective: "Prepare Phase 12 production enablement for true cloud execution by removing self-hosted workflow targeting, adding a GitHub-hosted live all-arXiv dry-run workflow, and requiring real MP4 video artifacts before email video-link evidence can pass."
+    scope: "GitHub-hosted workflow migration, live all-arXiv dry-run coverage for 20 primary archive buckets, sample daily input generation, candidate queue and ROI path preservation, lightweight MP4 render command, Release .mp4 video-link gate, and manual SMTP/Release side-effect gates remaining disabled by default."
+    non_scope: "No production scheduled run enablement, no real SMTP send, no real Release upload, no local CPU/cache/storage/GPU production dependency, no secret value logging, no video email attachment, and no 30-day acceptance claim."
+    status: "completed"
     dependencies: ["ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031", "GOV-SEMANTIC-ADP-001"]
-    required_files: ["docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md"]
+    required_files: ["src/arxiv_daily_push/global_scan.py", "src/arxiv_daily_push/video.py", "src/arxiv_daily_push/production_preflight.py", "src/arxiv_daily_push/production_scheduler.py", "src/arxiv_daily_push/trial_start_workflow.py", ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml", ".github/workflows/arxiv-daily-push-production-trial.yml", ".github/workflows/arxiv-daily-push-provisioning-audit.yml", "tests/test_cloud_dry_run_workflow.py", "docs/governance"]
     acceptance_ids: ["ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT"]
-    test_commands: ["python3 scripts/generate_governance_dashboard.py --write", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync", "git diff --check"]
-    test_results: ["blocked until PR CI passes and owner-provisioned default-branch runner, SMTP, Release video link, and production variable evidence exists"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md", "governance/run_manifests/ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-20260622.json", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml"]
-    risk: "Production remains blocked and variables must remain disabled until all-arXiv scan, candidate queue, Release-hosted video link, and SMTP evidence pass on the owner-provisioned default-branch runner."
-    rollback: "Keep production variables disabled and remove this Phase 12 production enablement tracking task; no external state is changed by this task record."
-    target_version: "0.12.0"
-    completed_version: ""
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_all2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync", "python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "git diff --check"]
+    test_results: ["arxiv-daily-push unit tests: 171 tests OK", "workflow grep: no self-hosted runner_label or ADP_SELF_HOSTED in arxiv workflow YAML", "GitHub Actions run 27924078126: 20/20 archives verified, 16 candidates, sample daily input, real MP4 artifact 80246 bytes", "changed-only governance and semantic validation: errors 0 warnings 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md", ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/tests/test_cloud_dry_run_workflow.py", "https://github.com/LinzeColin/CodexProject/actions/runs/27924078126"]
+    risk: "Production remains disabled until PR CI passes, a controlled GitHub Release .mp4 upload is created, Gmail SMTP manual test evidence passes, and owner explicitly enables production variables."
+    rollback: "Restore self-hosted workflow targeting only if cloud execution is abandoned; otherwise remove cloud dry-run workflow, MP4 render command, cloud preflight updates, registry updates, and restore version 0.12.0 while keeping production variables disabled."
+    target_version: "0.12.1"
+    completed_version: "0.12.1"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE12-MANUAL-DELIVERY-TEST-033"
+    phase: "E"
+    objective: "Prepare a controlled manual GitHub Release plus Gmail SMTP test workflow that sends one email with Chinese lesson text, Release link, video link, and candidate queue summary without enabling production scheduling."
+    scope: "Default-branch workflow_dispatch guard, GitHub-hosted runner, Gmail SMTP defaults, all-arXiv daily input, lightweight MP4 render, Release-backed scheduled execution, manual delivery artifacts, focused workflow and scheduled-execution tests, and governance records."
+    non_scope: "No production schedule enablement, no automatic workflow schedule trigger, no real SMTP send in this preparation commit, no real Release upload in this preparation commit, no secret value logging, no video email attachment, and no 30-day production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE12-PRODUCTION-ENABLEMENT-032"]
+    required_files: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml", "arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_delivery_pycache_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_manual_delivery_workflow.py arxiv-daily-push/tests/test_scheduled_execution.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_delivery_pycache_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_delivery_pycache_semantic python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_delivery_pycache_gov python3 scripts/validate_project_governance.py --changed-only --enforce-sync", "git diff --check"]
+    test_results: ["focused manual workflow and scheduled execution tests: 8 tests OK", "full arxiv-daily-push tests pending final run", "semantic and governance validation pending final run", "git diff check pending final run"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", ".github/workflows/arxiv-daily-push-manual-delivery-test.yml", "arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
+    risk: "The workflow is prepared but real manual GitHub Release and Gmail SMTP evidence still requires default-branch dispatch after PR CI and merge; missing Gmail app password or GitHub Release permission will block the run before production can be considered."
+    rollback: "Remove manual delivery workflow, focused tests, governance records, and restore version 0.12.1 while keeping production variables disabled."
+    target_version: "0.12.2"
+    completed_version: "0.12.2"
     unknown_task_ids: []

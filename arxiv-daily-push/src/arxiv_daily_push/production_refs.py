@@ -117,15 +117,17 @@ def build_production_refs_report(readiness_input: Mapping[str, Any], *, generate
 
 def build_production_refs_input_template(
     *,
-    runner_label: str = "arxiv-daily-push",
+    runner_label: str = "ubuntu-latest",
     release_target: str = "",
 ) -> dict[str, Any]:
     """Build a no-secret owner-fillable input template for production refs."""
 
+    label = str(runner_label or "").strip() or "ubuntu-latest"
     return {
         "runner": {
             "ready": False,
-            "label": str(runner_label or "").strip() or "arxiv-daily-push",
+            "provider": "github-hosted",
+            "label": label,
             "evidence_ref": "",
         },
         "smtp_secrets": {
@@ -532,7 +534,7 @@ def _gate(gate_id: str, passed: bool, reasons: list[str]) -> dict[str, Any]:
 def _next_external_actions(gates: list[Mapping[str, Any]]) -> list[str]:
     action_map = {
         "no_secret_values_in_input": "remove secret values and provide only secret names plus durable evidence refs",
-        "runner_ready": "provide ready runner label and durable runner readiness ref",
+        "runner_ready": "provide ready GitHub-hosted runner label and durable runner readiness ref",
         "smtp_secrets_ready": "provide required SMTP secret names and durable GitHub secrets readiness ref without values",
         "release_target_ready": "provide ADP_RELEASE_TARGET readiness and durable GitHub variables ref",
         "workflow_vars_ready": "provide required workflow variable names and durable GitHub variables readiness ref",

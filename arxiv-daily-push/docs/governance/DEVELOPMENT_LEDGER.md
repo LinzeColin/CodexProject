@@ -1112,6 +1112,54 @@ The append-only machine record is `development_events.jsonl`.
 - Rollback: Remove `global_scan.py`, Phase 12 CLI commands, workflow updates, delivery-package gates, tests, runbook/config/governance updates, and restore version 0.11.27.
 - Next step: Open PR for Phase 12, wait for CI, merge only after checks pass, then configure production variables only after runner-side all-arXiv scan, queue, Release link, and SMTP evidence pass.
 
+### `ITER-20260621-048`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from workflow contracts, live dry-run command implementation, MP4 render implementation, focused tests, and full arXiv unit tests.
+- Version before: 0.12.0
+- Version after: 0.12.1
+- Base commit: 05c69c6522a74901f33350e03046f03a6f47b061
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-PRODUCTION-ENABLEMENT-032
+- Goal: Prepare Phase 12 production enablement for true cloud execution without self-hosted runner dependency, while adding live all-arXiv dry-run and real MP4 artifact gates before production can be enabled.
+- Assumptions: GitHub-hosted `ubuntu-latest` with installed `ffmpeg` is sufficient for the lightweight MP4 artifact; production schedule, SMTP, and Release uploads remain disabled until explicit cloud evidence and owner-controlled manual tests pass.
+- Files changed: cloud dry-run workflow, scheduled/trial-start/production-trial/provisioning-audit workflows, global scan, video rendering, production preflight, scheduler/trial workflow validators, simulation fixtures, focused tests, version/changelog/governance records, and Phase 12 cloud phase record.
+- Model changes: Added MOD-ADP-033 `adp-phase12-cloud-enablement-v1`.
+- Formula changes: Added FORM-ADP-035 for cloud dry-run, GitHub-hosted runner, real MP4, and side-effect gates; FORM-ADP-034 requires `.mp4` video links rather than JSON manifests.
+- Parameter changes: Added PARAM-ADP-177 through PARAM-ADP-180 for live dry-run id, MP4 render id, cloud disk threshold, and GitHub-hosted runner requirement.
+- Commands run: full arXiv unit tests; workflow self-hosted grep; focused workflow/preflight/video/global scan tests; changed-only governance validation; GitHub Actions run `27924078126`.
+- Test results: arXiv unit tests 171 OK; all arXiv workflow YAML files contain no `self-hosted`, `runner_label`, or `ADP_SELF_HOSTED`; GitHub Actions run `27924078126` passed with 20/20 archive buckets, 16 candidates, sample daily input, and a real MP4 artifact of 80246 bytes.
+- Successes: Active workflows now target GitHub-hosted runners, live dry-run verified all 20 archive buckets and emitted a sample daily input, real MP4 rendering succeeded through ffmpeg, and email video links require a Release `.mp4` asset.
+- Failures: No real GitHub Release was uploaded, no Gmail SMTP test email was sent, and no production schedule variables were enabled.
+- Decisions: Keep production launch blocked until Release `.mp4`, Gmail SMTP manual test, PR CI, and owner confirmation pass.
+- Remaining risks: PR CI, SMTP secret configuration, Release permissions, and controlled manual side-effect tests remain before production enablement.
+- Rollback: Revert version 0.12.1 changes, remove the cloud dry-run workflow and MP4 render command, restore version 0.12.0, and keep production variables disabled.
+- Next step: Push branch, open PR, run the Phase 12 cloud dry-run on GitHub-hosted Actions, inspect `adp-phase12-cloud-dry-run`, then run controlled Release/Gmail SMTP manual test only after dry-run passes.
+
+### `ITER-20260621-049`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from manual workflow contract, focused tests, and scheduled execution delivery-package behavior.
+- Version before: 0.12.1
+- Version after: 0.12.2
+- Base commit: beb075a419b8b4c6cb6f73807284dcaa930866e2
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-MANUAL-DELIVERY-TEST-033
+- Goal: Prepare the controlled GitHub Release plus Gmail SMTP manual test path requested after PR CI, without enabling production scheduling.
+- Assumptions: The manual workflow will be dispatched from the default branch after PR CI and merge; it may perform one Release upload and one Gmail SMTP send only after the exact confirmation string is supplied.
+- Files changed: manual delivery workflow, focused workflow test, scheduled execution email-link assertion, version/changelog files, model/formula/parameter/traceability registries, delivery task, phase record, event, and run manifest.
+- Model changes: Added MOD-ADP-034 `adp-manual-delivery-test-v1`.
+- Formula changes: Added FORM-ADP-036 for default-branch manual Release + SMTP test gating.
+- Parameter changes: Added PARAM-ADP-181 through PARAM-ADP-184 for confirmation string, default-branch guard, real side-effect flags, and Release-backed email path.
+- Commands run: focused manual workflow and scheduled execution tests.
+- Test results: focused manual workflow and scheduled execution tests 8 OK.
+- Successes: The manual workflow has no schedule trigger, uses GitHub-hosted `ubuntu-latest`, defaults Gmail SMTP host/port/username, requires `ADP_SMTP_PASSWORD`, creates Release assets before SMTP, and sends no video attachment.
+- Failures: No real GitHub Release has been uploaded and no Gmail SMTP email has been sent in this preparation commit.
+- Decisions: Keep production schedule disabled until this manual workflow is merged, dispatched, and verified by received email plus Release/video links.
+- Remaining risks: GitHub workflow_dispatch availability requires the workflow on the default branch; missing/invalid Gmail app password or GitHub token Release permission will fail the manual test.
+- Rollback: Remove the manual delivery workflow, tests, version 0.12.2 governance records, and restore version 0.12.1 while keeping production variables disabled.
+- Next step: Commit and push this PR update, wait for PR CI green, merge the safe manual-test entrypoint to main, then run the GitHub Actions manual delivery workflow with the confirmation string.
+
 ## Unknown Historical Periods
 
 None for this new project baseline.

@@ -159,6 +159,8 @@ class ScheduledExecutionTests(unittest.TestCase):
         self.assertFalse(validate_scheduled_execution_report(report))
 
     def test_daily_run_production_ready_only_with_real_smtp_and_release_evidence(self) -> None:
+        release_commands: list[list[str]] = []
+
         class FakeSMTP:
             sent_messages: list[EmailMessage] = []
 
@@ -184,8 +186,8 @@ class ScheduledExecutionTests(unittest.TestCase):
                 return {}
 
         with tempfile.TemporaryDirectory() as tmp:
-            video_artifact = Path(tmp) / "adp-video-artifact.json"
-            video_artifact.write_text('{"artifact_type":"video_manifest"}\n', encoding="utf-8")
+            video_artifact = Path(tmp) / "adp-daily-video.mp4"
+            video_artifact.write_bytes(b"\x00\x00\x00\x18ftypmp42fake-video")
             report = run_scheduled_execution(
                 mode="daily-run",
                 generated_at="2026-07-01T05:00:00+10:00",
@@ -194,12 +196,13 @@ class ScheduledExecutionTests(unittest.TestCase):
                     ADP_SCHEDULED_RUN_ENABLED="true",
                     ADP_ALLOW_SMTP_SEND="true",
                     ADP_ALLOW_RELEASE_UPLOAD="true",
+                    ADP_RELEASE_DRAFT="false",
                 ),
                 daily_input=production_daily_input_payload(),
                 release_asset_paths=[PIPELINE_INPUT, video_artifact],
                 smtp_factory=FakeSMTP,
                 release_command_resolver=lambda _name: "/usr/bin/gh",
-                release_command_runner=lambda _command: {"returncode": 0},
+                release_command_runner=lambda command: release_commands.append(list(command)) or {"returncode": 0},
             )
 
         self.assertEqual(report["status"], "succeeded")
@@ -212,8 +215,11 @@ class ScheduledExecutionTests(unittest.TestCase):
         self.assertEqual(report["daily_run_report"]["scheduled_local_time"], "05:00")
         self.assertTrue(report["daily_run_report"]["p0_claims_traceable"])
         self.assertEqual(FakeSMTP.sent_messages[0]["To"], "linzezhang35@gmail.com")
-        self.assertIn("adp-video-artifact.json", FakeSMTP.sent_messages[0].get_content())
-        self.assertIn("候选队列摘要", FakeSMTP.sent_messages[0].get_content())
+        email_body = FakeSMTP.sent_messages[0].get_content()
+        self.assertIn("https://github.com/LinzeColin/CodexProject/releases/download/adp-daily-20260621/adp-daily-video.mp4", email_body)
+        self.assertIn("https://github.com/LinzeColin/CodexProject/releases/tag/adp-daily-20260621", email_body)
+        self.assertIn("候选队列摘要", email_body)
+        self.assertNotIn("--draft", release_commands[0])
         self.assertNotIn("super-secret-password", str(report))
         self.assertFalse(validate_scheduled_execution_report(report))
 

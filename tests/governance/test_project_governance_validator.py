@@ -1163,13 +1163,17 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVT-REVIEW6-FINAL-arxiv-daily-push-001")
-        self.assertEqual(info["latest_event"]["binding_status"], "pre_commit_pending")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-056")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-056")
+        self.assertEqual(info["product_version"], "0.12.2")
+        self.assertEqual(info["current_gate"], "ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED")
         self.assertEqual(
             info["latest_manifest"]["_path"],
             "governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json",
         )
         rendered = dashboard.render_owner_status(info)
+        self.assertIn("0.12.2", rendered)
+        self.assertIn("ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED", rendered)
         self.assertIn("production trial not started", rendered)
         self.assertIn("30-day acceptance absent", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
@@ -1678,6 +1682,69 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(acceptance["scheduled_run_enabled"])
         self.assertFalse(acceptance["allow_smtp_send"])
         self.assertFalse(acceptance["allow_release_upload"])
+
+    def test_arxiv_daily_push_phase12_manifest_records_cloud_production_enablement(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE12-PRODUCTION-ENABLEMENT-CLOUD-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE12-PRODUCTION-ENABLEMENT-032")
+        self.assertEqual(manifest["version_after"], "0.12.1")
+        self.assertEqual(manifest["model_ids_changed"], ["MOD-ADP-033"])
+        self.assertIn("FORM-ADP-035", manifest["formula_ids_changed"])
+        self.assertIn("PARAM-ADP-180", manifest["parameter_ids_changed"])
+        self.assertFalse(manifest["production_flags"]["ADP_PRODUCTION_ENABLED"])
+        self.assertFalse(manifest["production_flags"]["ADP_SCHEDULED_RUN_ENABLED"])
+        self.assertFalse(manifest["production_flags"]["ADP_ALLOW_SMTP_SEND"])
+        self.assertFalse(manifest["production_flags"]["ADP_ALLOW_RELEASE_UPLOAD"])
+        self.assertTrue(manifest["live_cloud_dry_run_executed"])
+        cloud_result = manifest["live_cloud_dry_run_result"]
+        self.assertEqual(cloud_result["workflow_run_id"], 27924078126)
+        self.assertEqual(cloud_result["conclusion"], "success")
+        self.assertEqual(cloud_result["verified_archive_count"], 20)
+        self.assertEqual(cloud_result["failed_archive_count"], 0)
+        self.assertEqual(cloud_result["candidate_count"], 16)
+        self.assertTrue(cloud_result["sample_daily_input_generated"])
+        self.assertTrue(cloud_result["mp4_artifact_generated"])
+        self.assertGreater(cloud_result["mp4_artifact_size_bytes"], 0)
+        self.assertFalse(manifest["real_smtp_sent"])
+        self.assertFalse(manifest["real_release_uploaded"])
+        self.assertFalse(manifest["production_schedule_enabled"])
+        self.assertIn(
+            ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+            manifest["files_changed"],
+        )
+
+    def test_arxiv_daily_push_phase12_manifest_records_manual_delivery_test(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE12-MANUAL-DELIVERY-TEST-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE12-MANUAL-DELIVERY-TEST-033")
+        self.assertEqual(manifest["version_after"], "0.12.2")
+        self.assertEqual(manifest["model_ids_changed"], ["MOD-ADP-034"])
+        self.assertIn("FORM-ADP-036", manifest["formula_ids_changed"])
+        self.assertIn("PARAM-ADP-184", manifest["parameter_ids_changed"])
+        self.assertTrue(manifest["manual_test_workflow_prepared"])
+        self.assertTrue(manifest["manual_workflow_side_effect_flags"]["workflow_dispatch_only"])
+        self.assertTrue(manifest["manual_workflow_side_effect_flags"]["default_branch_only"])
+        self.assertFalse(manifest["real_smtp_sent"])
+        self.assertFalse(manifest["real_release_uploaded"])
+        self.assertFalse(manifest["production_schedule_enabled"])
+        self.assertIn(
+            ".github/workflows/arxiv-daily-push-manual-delivery-test.yml",
+            manifest["files_changed"],
+        )
 
     def test_arxiv_daily_push_semantic_extract_manifest_records_partial_coverage(self) -> None:
         manifest = json.loads(

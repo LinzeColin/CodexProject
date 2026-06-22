@@ -9,20 +9,20 @@ from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
-from .config import DEFAULT_RECIPIENT, DEFAULT_TIMEZONE, MIN_VIDEO_TTS_FREE_DISK_GIB
+from .config import DEFAULT_RECIPIENT, DEFAULT_TIMEZONE
 from .doctor import disk_status
 
 
 PRODUCTION_PREFLIGHT_VALIDATOR_ID = "adp-production-preflight-v1"
-PRODUCTION_REQUIRED_COMMANDS = ("python3", "git", "node", "npm", "gh", "ffmpeg", "docker", "codex")
+PRODUCTION_REQUIRED_COMMANDS = ("python3", "git", "gh", "ffmpeg")
 PRODUCTION_SECRET_ENV_KEYS = (
     "ADP_SMTP_HOST",
     "ADP_SMTP_PORT",
     "ADP_SMTP_USERNAME",
     "ADP_SMTP_PASSWORD",
     "ADP_RELEASE_TARGET",
-    "ADP_SELF_HOSTED_RUNNER_LABEL",
 )
+MIN_PRODUCTION_FREE_DISK_GIB = 8.0
 MIN_PRODUCTION_MEMORY_GIB = 8.0
 MAX_GIT_FILE_MIB = 20
 FORBIDDEN_PATH_NAMES = {".env", "auth.json"}
@@ -168,19 +168,25 @@ def _disk_gate(root: Path, *, disk_free_gib: float | None = None) -> dict[str, A
     if disk_free_gib is None:
         disk = disk_status(root)
         free_gib = float(disk["free_gib"])
+        disk = {
+            "path": str(root),
+            "free_gib": round(free_gib, 2),
+            "production_min_free_gib": MIN_PRODUCTION_FREE_DISK_GIB,
+            "lightweight_mp4_ready": free_gib >= MIN_PRODUCTION_FREE_DISK_GIB,
+        }
     else:
         free_gib = float(disk_free_gib)
         disk = {
             "path": str(root),
             "free_gib": round(free_gib, 2),
-            "video_tts_min_free_gib": MIN_VIDEO_TTS_FREE_DISK_GIB,
-            "video_tts_ready": free_gib >= MIN_VIDEO_TTS_FREE_DISK_GIB,
+            "production_min_free_gib": MIN_PRODUCTION_FREE_DISK_GIB,
+            "lightweight_mp4_ready": free_gib >= MIN_PRODUCTION_FREE_DISK_GIB,
         }
-    passed = free_gib >= MIN_VIDEO_TTS_FREE_DISK_GIB
+    passed = free_gib >= MIN_PRODUCTION_FREE_DISK_GIB
     return _gate(
         "disk_pressure",
         passed,
-        [f"free disk {free_gib:.2f} GiB is below required {MIN_VIDEO_TTS_FREE_DISK_GIB:.2f} GiB"] if not passed else [],
+        [f"free disk {free_gib:.2f} GiB is below required {MIN_PRODUCTION_FREE_DISK_GIB:.2f} GiB"] if not passed else [],
         {"disk": disk},
     )
 

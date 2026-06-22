@@ -53,23 +53,9 @@ def run_two_day_simulation(
             day_generated_at = f"{day.isoformat()}T05:00:00+10:00"
             daily_input = _daily_input(day, index=index, generated_at=day_generated_at)
             asset = tmp_path / f"adp-two-day-simulation-{day.isoformat()}.json"
-            video_asset = tmp_path / f"adp-two-day-simulation-video-{day.isoformat()}.json"
+            video_asset = tmp_path / f"adp-two-day-simulation-video-{day.isoformat()}.mp4"
             asset.write_text(json.dumps(daily_input, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
-            video_asset.write_text(
-                json.dumps(
-                    {
-                        "artifact_type": "video_manifest",
-                        "mp4_rendered": False,
-                        "video_attachment_allowed": False,
-                        "release_storage_required": "github_release",
-                        "source_id": daily_input["source_item"]["source_id"],
-                    },
-                    ensure_ascii=False,
-                    indent=2,
-                    sort_keys=True,
-                ),
-                encoding="utf-8",
-            )
+            video_asset.write_bytes("\x00\x00\x00\x18ftypmp42simulation-video".encode("ascii"))
             scheduled = run_scheduled_execution(
                 mode="daily-run",
                 generated_at=day_generated_at,

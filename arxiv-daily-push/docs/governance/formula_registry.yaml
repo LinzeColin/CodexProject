@@ -459,10 +459,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::build_production_preflight", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::validate_production_preflight", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_command_gate", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_secret_gate", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_disk_gate", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_memory_gate", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_git_artifact_gate", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_cache_gate"]
-    implementation_fingerprint: "sha256:6e35f6eeaf8782d968263465b45f7bceeff75ad1f6a6eba9347473a492e965c0"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:b62014d194b1ccad70a0438eb2f05106f9ff6aee3b572df42391eb7d67b18007"
+    implementation_fingerprint: "sha256:ea431e588dc81daa4edea3653abc8fda2ff1c43ce7911ddfb8dac20bd47bd670"
+    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
+    verified_at: "2026-06-22T12:15:00+10:00"
+    evidence_hash: "sha256:0f483df362f75715f190587f594cd05419604206e71cf76f11ef6d1633b90690"
 
   - formula_id: "FORM-ADP-016"
     model_id: "MOD-ADP-014"
@@ -490,10 +490,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py::build_trial_bootstrap_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py::validate_trial_bootstrap_plan"]
-    implementation_fingerprint: "sha256:c310780162b11dcf409d9db38ee372bef4b2895991e38346cb9e1fc9f5bb5a64"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:f7cdd919766d9677496df2a6acb81cd7f4c7a5f5c0ba415adcfb31fd24bc1c06"
+    implementation_fingerprint: "sha256:5b9e79044c5a8fb3de2427d236a64dfc124e87e82c01460977cc5927e402fa24"
+    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
+    verified_at: "2026-06-22T12:15:00+10:00"
+    evidence_hash: "sha256:724e46dd8accbe183b61994e65070852f880d345ad6d983e93805c87801642ef"
 
   - formula_id: "FORM-ADP-017"
     model_id: "MOD-ADP-015"
@@ -630,10 +630,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::_has_schedule", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::_appears_before"]
-    implementation_fingerprint: "sha256:4d5eea7852e5c3326d5697123c9e27adcabfde8818382e24bfd093cb124e07ba"
+    implementation_fingerprint: "sha256:1a9abc44cc56baa865721c296d60d2705f358fa9aca36545fa18f6e18b01e63f"
     last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-    verified_at: "2026-06-22T10:10:00+10:00"
-    evidence_hash: "sha256:8a1d31636a6ca7842e20d57ba1a56b0dddec3112489b828ab77353ce525dfff8"
+    verified_at: "2026-06-22T12:15:00+10:00"
+    evidence_hash: "sha256:586b8dff2b7a7769fb250d0716b230e0e3a0d9ffaba96b40fb08a32f441ccbf2"
   - formula_id: "FORM-ADP-021"
     model_id: "MOD-ADP-019"
     assumption_ids: ["ASM-ADP-022", "ASM-ADP-021", "ASM-ADP-016"]
@@ -768,10 +768,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:f5b44276b3cb982640922695b3497b2237f5c538210932fc82a465afb9721fc5"
+    implementation_fingerprint: "sha256:9b5d086240b51a3b4d5c8e8e816c9213e67384f2b1f38aea17d7c3d89ab3b388"
     last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-    verified_at: "2026-06-22T10:10:00+10:00"
-    evidence_hash: "sha256:5fbc434903c0def926e0e607bd2bd9bf6d52fe8e817560bed17299d0cf89a219"
+    verified_at: "2026-06-22T12:15:00+10:00"
+    evidence_hash: "sha256:b7fb3b38d83662ac3fdbe75b8e1ab4f20c29235ca53a2250ddf5419d98e575b6"
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
     assumption_ids: ["ASM-ADP-026", "ASM-ADP-015", "ASM-ADP-025"]
@@ -1005,10 +1005,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::build_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::validate_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::_appears_before"]
-    implementation_fingerprint: "sha256:27589596ba7b001a54edadfd6b37f7089f69e97667993b8c1fc97698afe5510f"
+    implementation_fingerprint: "sha256:fbc02a0ec19305eab7047e60fc7d899592b613743accdd413a47eb86131927cc"
     last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-    verified_at: "2026-06-22T10:10:00+10:00"
-    evidence_hash: "sha256:ebca9cdb2e11b9aae8b8bef0c7bf6388524569402af375a3a5911b3afa327bb9"
+    verified_at: "2026-06-22T12:15:00+10:00"
+    evidence_hash: "sha256:f9f41fd515b8576017603c79afc3efed699529692eed5da66a99373d735e07b2"
   - formula_id: "FORM-ADP-031"
     model_id: "MOD-ADP-029"
     assumption_ids: ["ASM-ADP-032", "ASM-ADP-031", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
@@ -1094,10 +1094,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_input_template", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_input_from_github_metadata", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::discover_production_refs_input_with_gh", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_provisioning_audit_review", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_provisioning_audit_review", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_runner_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_smtp_secret_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_release_target_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_workflow_vars_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_secret_hygiene_errors", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_gh_api_json"]
-    implementation_fingerprint: "sha256:9b4657552b556b64452ba88c3eebb620e625db93d77e5aab2f70c1c764e23a01"
-    last_verified_commit: "4e25ce2db01466b1053809d9b4aaeb949837fb4e"
-    verified_at: "2026-06-22T23:30:00+10:00"
-    evidence_hash: "sha256:06533bd632d1380fd951cc0654e8c6851c70b17575e838e7404183e24ce5f203"
+    implementation_fingerprint: "sha256:f725b45e395c0484a6c53b6a86a981a9350ae0a468f8178ec84fa85255518836"
+    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
+    verified_at: "2026-06-22T12:15:00+10:00"
+    evidence_hash: "sha256:0abad9b9d6f767f40a2d97f6912a0561ef34c7332ad2818afa7bc69bc2547bf3"
 
   - formula_id: "FORM-ADP-033"
     model_id: "MOD-ADP-031"
@@ -1133,10 +1133,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/simulation.py::run_two_day_simulation", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::validate_two_day_simulation_report", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::_simulation_gates", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::_daily_input"]
-    implementation_fingerprint: "sha256:06ef5e5f2dd8893acccc75723d8e476d1c481390edf3d4780be8c13d0cc864d7"
+    implementation_fingerprint: "sha256:4b0a7471e4a0402d0905b361e012843d8a3c85f477b31150f2d1419f9a3205e8"
     last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-    verified_at: "2026-06-22T10:10:00+10:00"
-    evidence_hash: "sha256:1057c9440835d9613bdc3bbfa18616de56e7229d7dcb2ba0e71f980857169c46"
+    verified_at: "2026-06-22T12:15:00+10:00"
+    evidence_hash: "sha256:19df6602bfeb63594ca8b1ed531ced410eadc526410f9bb2e28a0d87ebffd1e8"
   - formula_id: "FORM-ADP-034"
     model_id: "MOD-ADP-032"
     assumption_ids: ["ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-021", "ASM-ADP-022"]
@@ -1167,7 +1167,75 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_all_arxiv_scan_plan", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_all_arxiv_daily_input", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::select_roi_candidate", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_daily_delivery_package", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution"]
-    implementation_fingerprint: "sha256:3c23a2135facac38d2881d723897697ca078a986295d9afd9f8d735a832aba76"
+    implementation_fingerprint: "sha256:0ab95dc19e9cbb410dd8934e7ea9b9137c643e734499f28d0910772a2359c3ed"
     last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-    verified_at: "2026-06-22T10:10:00+10:00"
-    evidence_hash: "sha256:60de6fa774b22649cb0abef0f11e521afcc82b8d9d55f78e1529cdeaa428078e"
+    verified_at: "2026-06-22T12:15:00+10:00"
+    evidence_hash: "sha256:ba80aa58ed1eeec7061e467b7a66884cb443ad66507cf6e728fff5629a98c171"
+  - formula_id: "FORM-ADP-035"
+    model_id: "MOD-ADP-033"
+    assumption_ids: ["ASM-ADP-035", "ASM-ADP-020", "ASM-ADP-021", "ASM-ADP-022"]
+    status: "active"
+    expression: "Phase 12 cloud enablement passes only when GitHub-hosted workflows avoid self-hosted runner targeting, live dry-run verifies all 20 arXiv primary archive buckets with at least one SourceItem each, a sample daily input is available, real MP4 rendering produces a non-empty .mp4 artifact through ffmpeg, and production schedule/SMTP/Release side effects remain disabled unless explicit manual gates are later enabled."
+    variables:
+      - name: "workflow_runner"
+        data_type: "string"
+        unit: "GitHub Actions runs-on"
+        input_domain: "ubuntu-latest"
+      - name: "verified_archive_count"
+        data_type: "int"
+        unit: "archive buckets"
+        input_domain: "0..20"
+      - name: "mp4_rendered"
+        data_type: "bool"
+        unit: "flag"
+        input_domain: "true or false"
+      - name: "side_effect_flags"
+        data_type: "object"
+        unit: "GitHub variables"
+        input_domain: "ADP_PRODUCTION_ENABLED, ADP_SCHEDULED_RUN_ENABLED, ADP_ALLOW_SMTP_SEND, ADP_ALLOW_RELEASE_UPLOAD"
+    constraints: "JSON video manifests do not satisfy the email video-link gate; only a Release-hosted .mp4 asset can produce video_url. Cloud dry-run workflows must use contents: read and must not send SMTP or upload Releases."
+    missing_policy: "Missing archive coverage, missing sample daily input, missing ffmpeg, missing or empty MP4, self-hosted runner references, or enabled side effects keep the cloud enablement gate blocked."
+    output_range: "live dry-run report status pass or blocked; MP4 render report status rendered or blocked; workflow contract status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py"]
+    test_refs: ["arxiv-daily-push/tests/test_cloud_dry_run_workflow.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_trial_start_workflow.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_live_all_arxiv_dry_run", "arxiv-daily-push/src/arxiv_daily_push/video.py::render_lightweight_mp4", "arxiv-daily-push/src/arxiv_daily_push/video.py::validate_mp4_render_report", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::build_production_preflight", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::build_trial_start_workflow_plan"]
+    implementation_fingerprint: "sha256:9b2c8b25d8faaae8babed98f04f7e5b80a534124f9de71e0ee7872c7acdd7e80"
+    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
+    verified_at: "2026-06-22T12:15:00+10:00"
+    evidence_hash: "sha256:6eb1c275fba57f7baf93824e580b90fffb42373787d6a17854b0bbeaccc6eac1"
+  - formula_id: "FORM-ADP-036"
+    model_id: "MOD-ADP-034"
+    assumption_ids: ["ASM-ADP-036", "ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-022"]
+    status: "active"
+    expression: "Manual delivery testing may perform real side effects only after an explicit workflow_dispatch confirmation on the default branch; the workflow must use GitHub-hosted ubuntu-latest, build all-arXiv daily input, render MP4, run scheduled daily-run delivery with Release assets, send exactly to the configured recipient, and avoid enabling scheduled production."
+    variables:
+      - name: "confirm_manual_delivery_test"
+        data_type: "string"
+        unit: "workflow input"
+        input_domain: "SEND_TEST_EMAIL_TO_LINZEZHANG35_GMAIL_COM"
+      - name: "workflow_ref"
+        data_type: "string"
+        unit: "branch"
+        input_domain: "default branch only"
+      - name: "delivery_side_effects"
+        data_type: "object"
+        unit: "workflow env"
+        input_domain: "ADP_ALLOW_SMTP_SEND=true, ADP_ALLOW_RELEASE_UPLOAD=true, ADP_RELEASE_DRAFT=false"
+      - name: "delivery_order"
+        data_type: "list"
+        unit: "workflow steps"
+        input_domain: "preflight, all-arXiv input, MP4, Release-backed scheduled execution"
+    constraints: "The manual test workflow has no schedule trigger, does not read repository production enablement variables, does not attach video to email, and stops before side effects when preflight, all-arXiv input, or MP4 rendering fails."
+    missing_policy: "Missing confirmation, non-default branch dispatch, missing SMTP password secret, missing Release permission, failed source fetch, failed MP4 render, or failed scheduled execution blocks the manual test before claiming success."
+    output_range: "manual workflow run status success only when Release-backed scheduled execution returns production_evidence_ready true; otherwise blocked or failed with artifacts"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
+    test_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py::ManualDeliveryWorkflowTests"]
+    implementation_fingerprint: "sha256:1624399bd56c2f842c642e0db7c2f32b258141097ab2e7b887194ebd4151da7b"
+    last_verified_commit: "beb075a419b8b4c6cb6f73807284dcaa930866e2"
+    verified_at: "2026-06-22T12:18:37+10:00"
+    evidence_hash: "sha256:2114a5c69dc044260989a10184d777829c7c520453b3910ca3c51bd7336a4831"
