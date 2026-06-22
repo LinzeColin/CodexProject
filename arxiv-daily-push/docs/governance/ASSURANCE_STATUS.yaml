@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260622-ADP-070"
-source_snapshot_hash: "sha256:9afc43b371e95d69a81c29bd8211e371a6b852223ce1d7c69d3256fd0b25ca2d"
+as_of_event_id: "EVENT-20260623-ADP-071"
+source_snapshot_hash: "sha256:36bd9bcff03515120b0e8c46dad7c7d7a505602bfa09fd4e4f301cb8d10666b5"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-22T22:40:00+10:00"
+snapshot_event_time: "2026-06-23T06:55:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 314
-    total_active_parameters: 314
-    checked_active_formulas: 44
-    total_active_formulas: 44
+    checked_active_parameters: 322
+    total_active_parameters: 322
+    checked_active_formulas: 45
+    total_active_formulas: 45
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 314
-    total_active_parameters: 314
+    checked_active_parameters: 322
+    total_active_parameters: 322
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,54 +64,54 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 0
     legacy_unbound_events: 54
-    precommit_pending_events: 17
+    precommit_pending_events: 18
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "ADP-S1-09-MIGRATION-PACKAGE-READY"
+  release_gate: "ADP-S1-10-POST-MIGRATION-BOOTSTRAP-READY"
   blocker_ids:
     - "ADP-PHASE8-VIDEO-001"
     - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
     - "FACT-arxiv-daily-push-OPERATIONAL-EVIDENCE"
 next_executable_task:
-  task_id: "S1-10-POST_MIGRATION_BOOTSTRAP-001"
+  task_id: "S1-11-HISTORICAL_B1_PREVIEWS-001"
   status: "planned"
-  reason: "Verify the post-migration machine or cloud runner bootstrap before heavy historical previews and live-day evidence."
+  reason: "Generate 30 independent historical B1/arXiv report and email preview packages from supported inputs without production side effects."
   acceptance_ids:
-    - "ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP"
-  owner: "engineering_owner + operations_owner"
-  human_owner_role: "engineering_owner + operations_owner"
-  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_bootstrap.py arxiv-daily-push/tests/test_stage1_migration.py -q` and attach the listed evidence refs."
+    - "ADP-ACC-S1-11-HISTORICAL-B1-PREVIEWS"
+  owner: "content_owner + engineering_owner"
+  human_owner_role: "content_owner + engineering_owner"
+  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_stage1_queue.py -q` and attach the listed evidence refs."
   stale_candidates: []
 owner_decision:
   required: true
-  decision_id: "DEC-arxiv-daily-push-V5-S1-004"
+  decision_id: "DEC-arxiv-daily-push-V5-S1-005"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否继续执行 S1-10，在迁移后目标环境验证 runtime 边界，再进入历史预览和 live-day 证据。"
-  question: "是否继续执行 S1-10，在迁移后目标环境验证 runtime 边界，再进入历史预览和 live-day 证据。"
-  human_owner_role: "engineering_owner + operations_owner"
+  decision_question: "是否继续执行 S1-11，生成 30 份独立历史 B1/arXiv 报告和邮件预览证据。"
+  question: "是否继续执行 S1-11，生成 30 份独立历史 B1/arXiv 报告和邮件预览证据。"
+  human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT"
-  current_recommendation: "A: run post-migration bootstrap before historical previews and live-day evidence"
-  option_a: "继续 S1-10，验证新机器或云 runner 的 Python、Git、SSL、SQLite、runtime smoke、secret-name 和 no-production-side-effect 边界。"
-  option_b: "暂停在 S1-09，只保留迁移包，不执行目标环境 bootstrap。"
-  option_c: "跳过 bootstrap 直接做历史预览；不推荐，因为运行环境可能仍是本机或缺少可恢复证据。"
+  current_recommendation: "A: run S1-11 historical B1 previews before live-day email evidence"
+  option_a: "继续 S1-11，产出 30 份独立历史 B1 报告/邮件预览、Claim evidence 和内容台账证据。"
+  option_b: "暂停在 S1-10，只保留迁移后 bootstrap，不进入历史预览证据。"
+  option_c: "跳过历史预览直接做 live-day delivery；不推荐，因为内容质量和独立样本证据不足。"
   options:
-    - "继续 S1-10，验证新机器或云 runner 的 Python、Git、SSL、SQLite、runtime smoke、secret-name 和 no-production-side-effect 边界。"
-    - "暂停在 S1-09，只保留迁移包，不执行目标环境 bootstrap。"
-    - "跳过 bootstrap 直接做历史预览；不推荐，因为运行环境可能仍是本机或缺少可恢复证据。"
-  estimated_effort: "P1; target runtime bootstrap and evidence collection"
-  estimated_cost_or_resource: "target runner smoke tests only; no production schedule install, no real SMTP, no Release upload, no large replay"
-  expected_benefit: "确认 arXiv Stage 1 后续长期运行不依赖当前 Mac 后台，并为重验证与生产验收建立目标环境证据。"
-  principal_risks: "wrong runner boundary, SSL/network failure, hidden local-state dependency, secret leakage, premature production enablement"
-  evidence_required: "bootstrap report, migration verify report, runtime audit/tick/watchdog smoke, no-secret readiness refs, governance records"
+    - "继续 S1-11，产出 30 份独立历史 B1 报告/邮件预览、Claim evidence 和内容台账证据。"
+    - "暂停在 S1-10，只保留迁移后 bootstrap，不进入历史预览证据。"
+    - "跳过历史预览直接做 live-day delivery；不推荐，因为内容质量和独立样本证据不足。"
+  estimated_effort: "P1; historical preview evidence generation"
+  estimated_cost_or_resource: "local fixture/replay artifacts only; no production schedule install, no real SMTP, no Release upload, no video generation"
+  expected_benefit: "在 live-day 发送前证明 B1/arXiv 文本报告和邮件预览能跨 30 个独立历史样本稳定生成。"
+  principal_risks: "fixture overfitting, duplicate historical samples, unsupported claims, stale content ledger, premature production acceptance"
+  evidence_required: "30 B1 report/email preview artifacts, Claim evidence audit, content ledger rows, focused tests, governance records"
   decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "arxiv-daily-push remains at S1-09 and cannot reach ARXIV_PRODUCTION_ACCEPTED."
-  unblock_task_id: "S1-10-POST_MIGRATION_BOOTSTRAP-001"
+  consequence_of_no_decision: "arxiv-daily-push remains at S1-10 and cannot reach ARXIV_PRODUCTION_ACCEPTED."
+  unblock_task_id: "S1-11-HISTORICAL_B1_PREVIEWS-001"
   acceptance_ids:
-    - "ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP"
+    - "ADP-ACC-S1-11-HISTORICAL-B1-PREVIEWS"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-22T22:40:00+10:00"
+  last_reviewed_at: "2026-06-23T06:55:00+10:00"
