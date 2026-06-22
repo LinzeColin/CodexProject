@@ -177,6 +177,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/storage.py", "arxiv-daily-push/tests/test_storage.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     status: "active"
+  - assumption_id: "ASM-ADP-039"
+    statement: "Review8 Stage 1 Window A source registry must keep `config/owner_controls.yaml` as the single editable source list, enable only SRC-ARXIV with arxiv.atom.v1, cap online metadata canaries at 10, and block PDFs, bulk harvest, paid APIs, secrets, scheduler enablement, SMTP, Release upload, and production acceptance claims."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_registry.py", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/tests/test_source_registry.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -917,3 +922,27 @@ models:
     config_refs: ["arxiv-daily-push/schemas/lesson.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_video.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
+  - model_id: "MOD-ADP-038"
+    name: "Review8 Stage 1 source registry and arXiv connector contract"
+    kind: "deterministic source registry and connector contract validator"
+    purpose: "Bind the Stage 1 source registry to the single owner controls fact source, prove SRC-ARXIV/arxiv.atom.v1 is the only active connector, cap online canaries at 10 metadata records, and fail closed without PDFs, bulk harvest, secrets, production scheduler enablement, SMTP, Release upload, or production acceptance claims."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-source-registry-contract-v1"
+    assumption_ids: ["ASM-ADP-039", "ASM-ADP-037", "ASM-ADP-018"]
+    formula_ids: ["FORM-ADP-040"]
+    parameter_ids:
+      - "PARAM-ADP-280"
+      - "PARAM-ADP-281"
+      - "PARAM-ADP-282"
+      - "PARAM-ADP-283"
+      - "PARAM-ADP-284"
+      - "PARAM-ADP-285"
+      - "PARAM-ADP-286"
+    inputs: ["config/owner_controls.yaml", "fixture Atom XML", "generated_at", "source_ingest limits"]
+    outputs: ["source registry report", "connector contract section", "active source list", "active adapter descriptor", "fixture validation", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_registry.py", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/schemas/source_registry.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_source_registry.py", "arxiv-daily-push/tests/test_source_ingest.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-20260622.json", "arxiv-daily-push/tests/test_source_registry.py"]

@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 37
-- formula_count: 39
-- parameter_count: 279
+- model_count: 38
+- formula_count: 40
+- parameter_count: 286
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -60,6 +60,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-035 | Review8 V4 owner controls and generated owner views | deterministic owner configuration validator and view generator | Validate the single owner-editable control file, preview no-side-effect impact, and generate four owner-readable files from machine facts | active | adp-owner-controls-v1 | `src/arxiv_daily_push/owner_controls.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-036 | Review8 Stage 1 SQLite document and event data model | deterministic local storage schema and migration gate | Create, inspect, validate, populate, search, and rollback the low-resource local SQLite/WAL/FTS5 document/event model | active | adp-sqlite-data-model-v1 | `src/arxiv_daily_push/storage.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-037 | Phase 12 email decision UI V2 | deterministic human-frontstage email renderer | Render a Chinese decision-first HTML email plus concise plain-text fallback from the all-arXiv daily package, with `YYYYMMDD -- Project Name -- arXiv Group -- Theme` subject and no foreground numeric score labels, while keeping backend ROI and Claim Ledger evidence out of the user-facing foreground | active | adp-email-decision-ui-v2 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/lesson.py`, `src/arxiv_daily_push/smtp_delivery.py`, `src/arxiv_daily_push/video.py` |
+| MOD-ADP-038 | Review8 Stage 1 source registry and arXiv connector contract | deterministic source registry and connector contract validator | Bind the source registry to owner controls, prove only SRC-ARXIV/arxiv.atom.v1 is active, and cap canaries at 10 metadata records without production side effects | active | adp-source-registry-contract-v1 | `src/arxiv_daily_push/source_registry.py`, `src/arxiv_daily_push/source_ingest.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -103,6 +104,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-036 | Controlled manual Release and Gmail SMTP testing may perform real side effects only from an explicit default-branch workflow_dispatch and must not enable scheduled production. | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml`, `tests/test_manual_delivery_workflow.py`, `docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md` | Phase 12 manual delivery test | active |
 | ASM-ADP-037 | Review8 V4 owner control must be a single human-editable YAML file, while owner-visible Markdown/CSV views are generated artifacts and not second editable fact sources. | `config/owner_controls.yaml`, `src/arxiv_daily_push/owner_controls.py`, `tests/test_owner_controls.py`, `docs/owner/OWNER_CONSOLE.md` | Review8 Stage 1 owner controls | active |
 | ASM-ADP-038 | Review8 Stage 1 Window A storage must remain local SQLite/WAL/FTS5 with deterministic migration and rollback, and must not perform bulk imports, PDF retention, production scheduler enablement, SMTP send, Release upload, or source expansion. | `src/arxiv_daily_push/storage.py`, `tests/test_storage.py`, `tests/test_cli.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 SQLite data model | active |
+| ASM-ADP-039 | Review8 Stage 1 Window A source registry must keep `config/owner_controls.yaml` as the single editable source list, enable only SRC-ARXIV with arxiv.atom.v1, cap canaries at 10, and block PDFs, bulk harvest, paid APIs, secrets, scheduler enablement, SMTP, Release upload, and production acceptance claims. | `src/arxiv_daily_push/source_registry.py`, `src/arxiv_daily_push/source_ingest.py`, `config/owner_controls.yaml`, `tests/test_source_registry.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 connector contract | active |
 
 ## C. Functions and Formulas
 
@@ -147,6 +149,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-037 validates owner_controls schema, no-secret/no-paid-service policy, Window A resource caps, owner weight groups, no-side-effect impact preview, and generated owner views.
 - FORM-ADP-038 validates the local SQLite/WAL/FTS5 schema migration, inspection, rollback, SourceItem persistence, FTS search readiness, and no-side-effect Stage 1 storage boundary.
 - FORM-ADP-039 validates the V2 decision-first email frontstage: owner subject contract, Chinese plain text, responsive HTML, frontstage lesson payload, q-fin candidate filtering, optional MP4 link card, feedback actions, no foreground numeric score labels, and hidden backend ROI/Claim Ledger foreground details.
+- FORM-ADP-040 validates the Stage 1 source registry and connector contract: single owner-controls fact source, only SRC-ARXIV active, arxiv.atom.v1 adapter, canary max 10, no PDF/bulk/paid/secret/production side effects, and offline fixture SourceItem validation.
 
 ## D. Parameters
 
@@ -189,6 +192,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Review8 Stage 1 owner controls parameters: PARAM-ADP-187 through PARAM-ADP-266.
 - Active Review8 Stage 1 SQLite storage parameters: PARAM-ADP-268 through PARAM-ADP-275.
 - Active Phase 12 email decision UI V2 parameters: PARAM-ADP-276 through PARAM-ADP-279.
+- Active Review8 Stage 1 source registry contract parameters: PARAM-ADP-280 through PARAM-ADP-286.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -385,6 +389,15 @@ does not fetch sources, download PDFs, send mail, upload Releases, enable
 scheduling, or claim production acceptance. Rollback supports target version 0
 only and drops the Stage 1 schema.
 
+The S1-05 source registry model uses `config/owner_controls.yaml` as the only
+editable source registry. `source_registry.py` renders a machine report from
+that config, validates the arXiv connector contract, and returns blocked status
+for any non-arXiv enabled source, wrong adapter, canary limit drift, fixture
+parse failure, production flag, or prohibited side effect. The model is a
+boundary and evidence contract; it does not add B1 non-arXiv ingestion, run a
+network canary during local validation, download PDFs, send mail, upload
+Releases, install a scheduler, or claim production acceptance.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -460,6 +473,11 @@ only and drops the Stage 1 schema.
 - SQLite storage rollback with target version other than 0 -> `StorageError`.
 - SourceItem storage before migration or with invalid generic SourceItem data -> `StorageError`.
 - SourceItem storage with the same content -> idempotent raw/canonical/version/FTS rows rather than duplicate document versions.
+- Source registry with any enabled source other than `SRC-ARXIV` -> blocked report.
+- Source registry with `SRC-ARXIV` not bound to B1, `official_atom_api`, or `arxiv.atom.v1` -> blocked report.
+- Source registry with `SOURCE_INGEST_MAX_RESULTS` or canary max above 10 -> blocked report.
+- Source registry with PDF download, bulk harvest, paid API, secret requirement, production enabled, or production acceptance claimed -> blocked report.
+- Source registry fixture Atom parse or SourceItem validation failure -> blocked report.
 - Production pass with any missing requirement -> acceptance validation error.
 
 ## G. Validation
