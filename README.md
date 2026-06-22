@@ -11,10 +11,23 @@ Active Codex-related project hub for LinzeColin.
 
 ## Snapshot Metadata
 
-- source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:ad06cba425bb4f3defa60a2e3a4182aa46541b88f66349d5453f6f8419bff26a`
-- generator_version: `2.0.0`
-- final_commit_binding: `CI_ATTESTATION_REQUIRED`
+- source_base_commit: `932446fd2154ac477ea0cb6862a60098b1e1ed55`
+- source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
+- source_snapshot_hash: `sha256:39f6165dbead37182eef8b06f68527bd352681fbd2f5db107c87cbfde847f622`
+- generator_version: `3.0.0`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+
+## Assurance Vocabulary
+
+- `structural_completeness`: required governance files parse and cross-reference.
+- `implementation_congruence`: documented implementation values and fingerprints match extractable code/config sources.
+- `parameter_source_quality`: active parameter values have source selectors or explicit unresolved tasks.
+- `empirical_validation`: model claims are supported by calibration, backtest, fixture, or experiment evidence.
+- `operational_validation`: runtime, CI, soak, or production-trial evidence exists.
+- `delivery_evidence`: delivery gates and completed tasks have acceptance evidence.
+- `evidence_freshness`: events are tree-bound, commit-bound, or honestly listed as legacy unbound.
+
+`machine_verified` is not a production claim. It only maps to implementation congruence when code/config extraction proves documented facts.
 
 ## Projects
 
