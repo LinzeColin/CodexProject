@@ -547,7 +547,8 @@ def select_next_task(
             "unblock_condition": "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy.",
             "stale_candidates": stale,
         }
-    if current_phase:
+    use_current_phase_priority = project_id == "arxiv-daily-push" and str(current_phase).startswith("S1")
+    if use_current_phase_priority:
         phase_candidates = [
             task
             for task in candidates
