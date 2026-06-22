@@ -1748,7 +1748,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("| `arxiv-daily-push` | `0.21.0` |", dashboard_text)
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         adp_backlog = backlog_text.split('project_id: "arxiv-daily-push"', 1)[1].split("next_task:", 1)[0]
-        self.assertIn("precommit_pending_events: 19", adp_backlog)
+        self.assertIn("precommit_pending_events: 20", adp_backlog)
 
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads((ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text())
