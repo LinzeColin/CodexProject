@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.14.0 - 2026-06-22
+
+- Added the Review8 Stage 1 local SQLite/WAL/FTS5 document and event storage model.
+- Added `adp storage migrate`, `adp storage inspect`, and `adp storage rollback` JSON CLI commands.
+- Added deterministic migration, SourceItem persistence, full-text search, inspection, and rollback tests.
+- Kept source fetching, PDF retention, SMTP, Release upload, scheduler enablement, and production acceptance unchanged.
+
 ## 0.13.1 - 2026-06-22
 
 - Corrected the Phase 12 human front-stage after manual run `27934320671`: the email text is now the reading entry point, Release is backend evidence/download storage, and video is an optional file link.

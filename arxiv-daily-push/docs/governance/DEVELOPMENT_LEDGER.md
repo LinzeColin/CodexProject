@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.13.1`
+Active product version: `0.14.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.13.1
-- Current phase: E
-- Current gate: ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-READY
-- Confirmed iteration count: 55
+- Product version: 0.14.0
+- Current phase: S1-A
+- Current gate: ADP-S1-04-SQLITE-DATA-MODEL-READY
+- Confirmed iteration count: 56
 - Reconstructed event count: 0
-- Current task: ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037
-- Blockers: GitHub Actions run `27934320671` proves one controlled cloud Release plus Gmail SMTP path, but its human front-stage was rejected. The revised front-stage still needs PR CI, merge, and one controlled manual Release plus Gmail SMTP rerun. Production launch remains blocked by the unified local data model, local runtime recovery controls, migration readiness, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables.
+- Current task: S1-04-SQLITE-DATA-MODEL-001
+- Blockers: S1-04 local storage is complete, but S1-05 connector contract, S1-06 scoring/queue/content ledger replay, S1-07 B1 report/email/media interface, S1-08 local runtime recovery, S1-09 migration package, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
 
@@ -29,6 +29,31 @@ The append-only machine record is `development_events.jsonl`.
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260622-S1-003`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from `storage.py`, storage CLI dispatch, focused storage tests, full ADP unit tests, semantic extractor, and governance registry updates.
+- Version before: 0.13.1
+- Version after: 0.14.0
+- Base commit: f05525698a51f88828cd5aeadac4c7c8859e74a2
+- Result commit: PENDING
+- Task IDs: S1-04-SQLITE-DATA-MODEL-001
+- Goal: Add the Review8 Stage 1 local SQLite/WAL/FTS5 document and event storage model with migration, inspection, SourceItem persistence, full-text search, rollback, and governance traceability.
+- Assumptions: S1-04 is local-storage-only and does not fetch sources, retain PDFs, send SMTP, upload Releases, enable the production scheduler, or claim production acceptance.
+- Files read: `AGENTS.md`, `arxiv-daily-push/AGENTS.md`, Review8 V4 baseline files, existing governance registries, CLI, generic SourceItem contracts, and focused CLI/storage tests.
+- Files changed: `storage.py`, CLI storage subcommands, focused storage/CLI tests, version files, changelog, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, ledger/event records, and run manifest.
+- Model changes: Added MOD-ADP-036 `adp-sqlite-data-model-v1`.
+- Formula changes: Added FORM-ADP-038 and refreshed FORM-ADP-024 implementation evidence because `cli.py::main` gained storage subcommands.
+- Parameter changes: Added PARAM-ADP-268 through PARAM-ADP-275 for schema version, default DB filename, WAL mode, FTS5 requirement, rollback target, object table count, relation type count, and time field count.
+- Commands run: focused storage/CLI unit tests with ResourceWarning as error; full arxiv-daily-push unit tests; semantic extractor; project governance validator; all-project governance validator; changed-only semantic sync validator; root governance unit tests; information-quality validator; manifest JSON parse; CSV width checks.
+- Test results: focused storage/CLI tests 9 OK; arxiv-daily-push unit tests 186 OK; semantic extractor checked 38 active formulas and 274 active parameters with no errors; project governance errors 0 warnings 0; all-project governance errors 0 warnings 0; changed-only semantic sync errors 0 warnings 0; root governance tests 127 OK; information-quality PASS; manifest JSON parse OK; parameter registry and traceability CSV widths consistent.
+- Successes: Migration creates schema version 1 with WAL and FTS5, stores SourceItem data idempotently, supports FTS search, and rolls back to version 0.
+- Failures: First semantic extractor run caught FORM-ADP-024 CLI fingerprint drift after adding storage subcommands; fixed by refreshing FORM-ADP-024 machine evidence. Project governance initially caught ledger and generated assurance count drift; those generated views were refreshed.
+- Decisions: Bump product version to 0.14.0 because S1-04 adds a backward-compatible local storage CLI and schema capability while preserving disabled production side effects.
+- Remaining risks: Connector contract, queue/content ledger replay, B1 delivery interface, local runtime recovery, migration package, production trial start, and 30-day acceptance evidence remain incomplete.
+- Rollback: Remove storage module, storage CLI dispatch/tests, version 0.14.0 governance records, and run manifest; restore version 0.13.1.
+- Next step: S1-05-ARXIV-CONNECTOR-CONTRACT-001.
 
 ### `ITER-20260621-054`
 

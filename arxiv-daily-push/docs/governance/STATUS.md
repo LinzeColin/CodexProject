@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:693baccb60be59db55154b4dbe8ae86d188aad7b4ed5756bcc0dd58ac6d1a3d4`
-- snapshot_event_time: `2026-06-22T17:20:00+10:00`
+- source_snapshot_hash: `sha256:a8f3a229dfde51ded7413cb7761891c70b2dafdc572bb76b2e169caafae4b416`
+- snapshot_event_time: `2026-06-22T18:20:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -13,11 +13,11 @@
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
-- Product version: `0.13.1`
-- Phase/Gate: `E / ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-READY`
-- Models/Formulas/Parameters total: `35 / 37 / 267`
-- Active formulas/parameters: `37 / 266`
-- Machine checked formulas/parameters: `37 / 266`
+- Product version: `0.14.0`
+- Phase/Gate: `S1-A / ADP-S1-04-SQLITE-DATA-MODEL-READY`
+- Models/Formulas/Parameters total: `36 / 38 / 275`
+- Active formulas/parameters: `38 / 274`
+- Machine checked formulas/parameters: `38 / 274`
 
 ## Assurance
 
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-READY`
+- Release gate: `ADP-S1-04-SQLITE-DATA-MODEL-READY`
 - Next executable task: `ADP-PHASE11-PRODUCTION-TRIAL-START-022`
-- Pending/stale events: `63`
+- Pending/stale events: `64`
 - Tree-bound events: `0`
 - Commit-bound events: `0`
 - Legacy unbound events: `54`
