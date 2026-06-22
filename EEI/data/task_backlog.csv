@@ -70,7 +70,7 @@ T900,G9,P0,Run graph/reroot/score performance benchmarks,"T805,T608","A113,A114,
 T901,G9,P0,Run accessibility and keyboard/table audit,T805,A116,NOT STARTED
 T902,G9,P0,"Run security, dependency and sanitization tests",T805,A117,NOT STARTED
 T903,G9,P0,Run failure injection across ingest/scoring/calibration,"T805,T608",A118,NOT STARTED
-T904,G9,P0,Run quality evaluation and risk review,T903,"A026,A027,A123",NOT STARTED
+T904,G9,P0,Run quality evaluation and risk review,T903,"A026,A027,A123",IN PROGRESS
 T905,G9,P0,"Rehearse migrations, rollback and clean-start",T904,"A119,A120",NOT STARTED
 T906,G9,P0,Write exact release report and demo evidence,T905,A121,NOT STARTED
 T907,G9,P0,Run final make verify,T906,"A007,A122",NOT STARTED

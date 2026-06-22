@@ -12,6 +12,7 @@
 - Added a T1301/A202 fail-closed operator/legal review packet for selected live official-source evidence; it records seven required closure gates and keeps relationship publication and legal clearance disabled.
 - Closed T1304/A206 scheduler functionality independently from A209 soak: lease, auto wake, idempotency, heartbeat, retry cap, dead-letter, graceful shutdown, outbox dispatch, Docker Compose worker binding and supervisor execution are treated as DONE while 24h soak remains A209-only.
 - Added a T1301/A202 plus T1309/A210 signed release decision bundle contract; it enumerates the exact source-license, passage-level, owner, legal and brand signed inputs still required, while keeping `release_ready=false` until A209 24h soak and release-manager activation are separately satisfied.
+- Added a T904/A026-A027 gold-quality evaluation contract; it reports precision, recall and source coverage, but keeps A026/A027 `IN_PROGRESS` until production human-labeled gold sets meet the 50/95% entity and 100/90% relationship gates.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

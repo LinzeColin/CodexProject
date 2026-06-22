@@ -4409,3 +4409,53 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A202/A210 STILL IN PROGRESS
 - Remove `artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json`.
 - Revert Makefile, acceptance, traceability and governance-record updates.
 - Regenerate development, clean-room and release artifacts, then rerun validation.
+
+## 2026-06-22 - T904/A026-A027 gold-quality evaluation contract
+
+Status: LOCAL FOCUSED VALIDATED; REMOTE CI PENDING; A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/validate_gold_quality_evaluation.py`.
+- Added `tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json`.
+- Added `tests/unit/test_gold_quality_evaluation.py`.
+- Generated `artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json`.
+- Generated `artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json`.
+- Wired `validate-gold-quality-evaluation` into `make verify`.
+- Updated A026/A027 acceptance, traceability, T904 backlog status, V5 readiness and governance parameter/model records.
+
+### Acceptance mapping
+
+- T904 -> A026 for entity-resolution gold-label precision/recall/source-coverage reporting.
+- T904 -> A027 for relationship gold-label precision/recall/source-coverage reporting.
+- T1301 -> A202 remains linked because production real-data ingestion cannot be accepted without a production-quality evidence chain.
+- A026 and A027 remain `IN_PROGRESS`: the repository fixture is intentionally small, `production_gold_set=false`, and `release_gate_closure_allowed=false`.
+- A209 remains a separate long-running production stability gate; 24h soak continues in the background and must not block this bounded quality-contract work.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction or model-weight behavior changed.
+- New MOD-012/FORM-012 gate parameters:
+  - `PARAM-064` / `gold_quality.entity_min_cases = 50`.
+  - `PARAM-065` / `gold_quality.entity_min_precision = 0.95`.
+  - `PARAM-066` / `gold_quality.relationship_min_cases = 100`.
+  - `PARAM-067` / `gold_quality.relationship_min_precision = 0.90`.
+  - `PARAM-068` / `gold_quality.source_coverage_min = 1.0`.
+
+### Validation
+
+- `TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-gold-pycache python3 -m py_compile scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q tests/unit/test_gold_quality_evaluation.py -p no:cacheprovider`: PASS; 4 passed.
+- `TMPDIR=/private/tmp .venv/bin/ruff check scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py generate`: PASS; `release_gate_closure_allowed=false`.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py validate`: PASS; A026/A027 `IN_PROGRESS`.
+
+### Rollback
+
+- Remove `scripts/validate_gold_quality_evaluation.py`.
+- Remove `tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json`.
+- Remove `tests/unit/test_gold_quality_evaluation.py`.
+- Remove A026/A027 gold-quality contract artifacts.
+- Revert Makefile, A026/A027 acceptance, T904 backlog, parameter/model and V5 readiness updates.
+- Regenerate development, clean-room and release artifacts, then rerun validation.

@@ -1984,30 +1984,49 @@ tasks:
       - "TASK-T1206"
   - task_id: "TASK-T904"
     legacy_task_id: "T904"
-    phase: "A"
+    phase: "D"
     objective: "Run quality evaluation and risk review"
-    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
-    non_scope: "No business behavior changes in governance migration."
-    status: "planned"
+    scope: "Current T904/A026/A027 implementation slice adds a fail-closed gold-quality evaluation contract for Golden Vertical entity resolution and relationship extraction. It computes precision, recall and source coverage, enforces A026 sample>=50 and precision>=95%, enforces A027 sample>=100 and precision>=90%, and keeps repository fixture output IN_PROGRESS until a production gold set is supplied."
+    non_scope: "Does not close A026, A027, A202, A209 or production MVP readiness; does not treat synthetic or repository fixture labels as production gold-set evidence."
+    status: "in_progress"
     dependencies:
       - "TASK-T903"
     required_files:
       - "EEI/data/task_backlog.csv"
       - "EEI/data/acceptance_traceability.csv"
+      - "EEI/scripts/validate_gold_quality_evaluation.py"
+      - "EEI/tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json"
+      - "EEI/tests/unit/test_gold_quality_evaluation.py"
+      - "EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json"
+      - "EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json"
     acceptance_ids:
       - "ACC-A026"
       - "ACC-A027"
       - "ACC-A123"
-    test_commands: []
-    test_results: []
-    evidence_refs: []
-    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
-    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    test_commands:
+      - "TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-gold-pycache python3 -m py_compile scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py"
+      - "TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q tests/unit/test_gold_quality_evaluation.py -p no:cacheprovider"
+      - "TMPDIR=/private/tmp .venv/bin/ruff check scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py"
+      - ".venv/bin/python scripts/validate_gold_quality_evaluation.py generate"
+      - ".venv/bin/python scripts/validate_gold_quality_evaluation.py validate"
+    test_results:
+      - "local py_compile PASS"
+      - "gold-quality unit tests PASS 4/4"
+      - "focused ruff PASS"
+      - "gold-quality artifact generation PASS with release_gate_closure_allowed=false"
+      - "gold-quality artifact validation PASS with A026/A027 IN_PROGRESS"
+    evidence_refs:
+      - "EEI/scripts/validate_gold_quality_evaluation.py"
+      - "EEI/tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json"
+      - "EEI/tests/unit/test_gold_quality_evaluation.py"
+      - "EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json"
+      - "EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json"
+    risk: "A026/A027 can be falsely closed if a small repository fixture, precision/recall formula proof, or source-coverage accounting contract is treated as a production gold set."
+    rollback: "Revert the gold-quality validator, fixture, unit test, artifacts and A026/A027/T904 status rows, regenerate development/release artifacts, and rerun make verify."
     target_version: "0.1.0"
     completed_version: ""
     fact_level: "EXTRACTED"
-    unknown_task_ids:
-      - "TASK-T1206"
+    unknown_task_ids: []
   - task_id: "TASK-T905"
     legacy_task_id: "T905"
     phase: "A"

@@ -61,7 +61,7 @@ product_navigation = require(
 )
 models = require("model_registry.csv", ["model_id", "formula_id", "scoring_object", "status"], exact_rows=11)
 formulas = require("formula_registry.csv", ["formula_id", "formula", "missing_policy", "default_threshold"], exact_rows=11)
-parameters = require("parameter_catalog.csv", ["parameter_key", "default_value", "min_value", "max_value", "refresh_behavior"], exact_rows=79)
+parameters = require("parameter_catalog.csv", ["parameter_key", "default_value", "min_value", "max_value", "refresh_behavior"], exact_rows=84)
 thresholds = require("threshold_registry.csv", ["threshold_id", "parameter_key", "default_value", "behavior"], exact_rows=17)
 relationships = require("relationship_taxonomy.csv", ["relationship_type", "family", "direction"], exact_rows=52)
 families = require("relationship_family_catalog.csv", ["family_key", "relationship_type_count"], exact_rows=10)

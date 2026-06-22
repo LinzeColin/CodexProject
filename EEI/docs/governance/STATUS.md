@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:dc5104f9b35a5cf80b398330fcc0999d7e575b3263c3de72b2d02e1e62a4453c`
-- snapshot_event_time: `2026-06-22T09:36:01Z`
+- source_snapshot_hash: `sha256:a2864535bab767d0f23a00d8a869c7ba9a9d01f6817d00a8142a361c775e941e`
+- snapshot_event_time: `2026-06-22T10:26:14Z`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-AWAITING-CI`
-- Models/Formulas/Parameters total: `12 / 12 / 63`
-- Active formulas/parameters: `11 / 63`
-- Machine checked formulas/parameters: `10 / 56`
+- Phase/Gate: `C / TASK-T904-A026-A027-GOLD-QUALITY-EVALUATION-IN-PROGRESS`
+- Models/Formulas/Parameters total: `12 / 12 / 68`
+- Active formulas/parameters: `11 / 68`
+- Machine checked formulas/parameters: `10 / 61`
 
 ## Assurance
 
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-AWAITING-CI`
+- Release gate: `TASK-T904-A026-A027-GOLD-QUALITY-EVALUATION-IN-PROGRESS`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `31`
+- Pending/stale events: `33`
 - Tree-bound events: `0`
 - Commit-bound events: `6`
 - Legacy unbound events: `17`

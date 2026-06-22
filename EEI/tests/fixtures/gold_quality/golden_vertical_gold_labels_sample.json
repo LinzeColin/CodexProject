@@ -1,0 +1,269 @@
+{
+  "dataset_id": "golden-vertical-gold-labels-sample-v1",
+  "fixture_policy": {
+    "production_gold_set": false,
+    "relationship_publication": false,
+    "release_clearance": false
+  },
+  "relationship_cases": [
+    {
+      "case_id": "REL-GOLD-001",
+      "evidence_refs": [
+        "data/golden_vertical_fact_candidates.json#GV-FACT-001"
+      ],
+      "expected_relation_present": true,
+      "expected_relationship_key": "nvidia-tsmc-supplier",
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_relation_present": true,
+      "predicted_relationship_key": "nvidia-tsmc-supplier",
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "NVDA-2025-10K",
+          "TSMC-2024-ANNUAL"
+        ],
+        "required_source_ids": [
+          "NVDA-2025-10K",
+          "TSMC-2024-ANNUAL"
+        ]
+      }
+    },
+    {
+      "case_id": "REL-GOLD-002",
+      "evidence_refs": [
+        "data/golden_vertical_fact_candidates.json#GV-FACT-002"
+      ],
+      "expected_relation_present": true,
+      "expected_relationship_key": "asml-tsmc-equipment",
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_relation_present": true,
+      "predicted_relationship_key": "asml-tsmc-equipment",
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "ASML-2024-ANNUAL",
+          "TSMC-2024-ANNUAL"
+        ],
+        "required_source_ids": [
+          "ASML-2024-ANNUAL",
+          "TSMC-2024-ANNUAL"
+        ]
+      }
+    },
+    {
+      "case_id": "REL-GOLD-003",
+      "evidence_refs": [
+        "tests/fixtures/golden_vertical_review_decisions.json"
+      ],
+      "expected_relation_present": false,
+      "expected_relationship_key": null,
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_relation_present": false,
+      "predicted_relationship_key": null,
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "NVDA-2025-10K"
+        ],
+        "required_source_ids": [
+          "NVDA-2025-10K"
+        ]
+      }
+    },
+    {
+      "case_id": "REL-GOLD-004",
+      "evidence_refs": [
+        "tests/fixtures/golden_vertical_review_decisions.json"
+      ],
+      "expected_relation_present": true,
+      "expected_relationship_key": "nvidia-foxconn-system-integration",
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_relation_present": true,
+      "predicted_relationship_key": "nvidia-foxconn-system-integration",
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "NVDA-ANCHOR-001",
+          "FOXCONN-OFFICIAL"
+        ],
+        "required_source_ids": [
+          "NVDA-ANCHOR-001",
+          "FOXCONN-OFFICIAL"
+        ]
+      }
+    },
+    {
+      "case_id": "REL-GOLD-005",
+      "evidence_refs": [
+        "tests/fixtures/golden_vertical_review_decisions.json"
+      ],
+      "expected_relation_present": true,
+      "expected_relationship_key": "nvidia-spil-packaging",
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_relation_present": false,
+      "predicted_relationship_key": null,
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "NVDA-ANCHOR-001",
+          "SPIL-OFFICIAL"
+        ],
+        "required_source_ids": [
+          "NVDA-ANCHOR-001",
+          "SPIL-OFFICIAL"
+        ]
+      }
+    },
+    {
+      "case_id": "REL-GOLD-006",
+      "evidence_refs": [
+        "tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json"
+      ],
+      "expected_relation_present": false,
+      "expected_relationship_key": null,
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_relation_present": true,
+      "predicted_relationship_key": "nvidia-context-only-packaging",
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "NVDA-ANCHOR-001"
+        ],
+        "required_source_ids": [
+          "NVDA-ANCHOR-001"
+        ]
+      }
+    }
+  ],
+  "schema_version": "eei-gold-quality-labels-v1",
+  "scope": "golden-vertical:nvidia",
+  "system_name": "EEI",
+  "entity_resolution_cases": [
+    {
+      "case_id": "ENT-GOLD-001",
+      "evidence_refs": [
+        "data/seed_universe.csv#nvidia"
+      ],
+      "expected_entity_id": "nvidia",
+      "input_text": "NVIDIA Corporation",
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_entity_id": "nvidia",
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "NVDA-2025-10K"
+        ],
+        "required_source_ids": [
+          "NVDA-2025-10K"
+        ]
+      }
+    },
+    {
+      "case_id": "ENT-GOLD-002",
+      "evidence_refs": [
+        "data/seed_universe.csv#tsmc"
+      ],
+      "expected_entity_id": "tsmc",
+      "input_text": "Taiwan Semiconductor Manufacturing Company",
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_entity_id": "tsmc",
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "TSMC-2024-ANNUAL"
+        ],
+        "required_source_ids": [
+          "TSMC-2024-ANNUAL"
+        ]
+      }
+    },
+    {
+      "case_id": "ENT-GOLD-003",
+      "evidence_refs": [
+        "data/seed_universe.csv#asml"
+      ],
+      "expected_entity_id": "asml",
+      "input_text": "ASML Holding N.V.",
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_entity_id": "asml",
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "ASML-2024-ANNUAL"
+        ],
+        "required_source_ids": [
+          "ASML-2024-ANNUAL"
+        ]
+      }
+    },
+    {
+      "case_id": "ENT-GOLD-004",
+      "evidence_refs": [
+        "data/seed_universe.csv#foxconn"
+      ],
+      "expected_entity_id": "foxconn",
+      "input_text": "Hon Hai / Foxconn",
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_entity_id": "foxconn",
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "FOXCONN-OFFICIAL"
+        ],
+        "required_source_ids": [
+          "FOXCONN-OFFICIAL"
+        ]
+      }
+    },
+    {
+      "case_id": "ENT-GOLD-005",
+      "evidence_refs": [
+        "data/seed_universe.csv#spil"
+      ],
+      "expected_entity_id": "spil",
+      "input_text": "Siliconware Precision Industries",
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_entity_id": "advanced_packaging_generic",
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "SPIL-OFFICIAL"
+        ],
+        "required_source_ids": [
+          "SPIL-OFFICIAL"
+        ]
+      }
+    },
+    {
+      "case_id": "ENT-GOLD-006",
+      "evidence_refs": [
+        "data/seed_universe.csv#inventec"
+      ],
+      "expected_entity_id": "inventec",
+      "input_text": "Inventec",
+      "labeler": "fixture_reviewer",
+      "labeled_at": "2026-06-22T00:00:00Z",
+      "predicted_entity_id": null,
+      "source_coverage": {
+        "counter_evidence_reviewed": true,
+        "observed_source_ids": [
+          "INVENTEC-OFFICIAL"
+        ],
+        "required_source_ids": [
+          "INVENTEC-OFFICIAL"
+        ]
+      }
+    }
+  ]
+}
