@@ -70,7 +70,7 @@
   ],
   "ci_attestation_subject": "Post-push CI attestation required for final S1-09 commit; this manifest binds local pre-commit tree facts only.",
   "ci_run_reference": "PENDING_POST_PUSH_CI_ATTESTATION",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:05471167ab6554d5e46a0bbd81cea4595cd41cb36cd83744ec26e2a1fa3a85b4",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:60f5b306d45185a111896acf9a3f01d135a6861e5e450d716e8b663be06a78b5",
   "evidence_refs": [
     "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py",
     "arxiv-daily-push/tests/test_stage1_migration.py",
