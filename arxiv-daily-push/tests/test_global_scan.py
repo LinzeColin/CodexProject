@@ -243,6 +243,12 @@ class GlobalScanTests(unittest.TestCase):
                 "source_id": "arxiv:2607.00001",
                 "title": "Foundation model agents for portfolio risk optimization",
                 "canonical_url": "https://arxiv.org/abs/2607.00001",
+                "metadata": {
+                    "arxiv": {
+                        "primary_category": "cs.AI",
+                        "summary": "A concise abstract about foundation model agents for portfolio risk optimization and operational decision support.",
+                    }
+                },
             },
             "selection_audit": {"roi_total_score": 92.5},
             "queue_summary": {
@@ -273,8 +279,13 @@ class GlobalScanTests(unittest.TestCase):
         self.assertTrue(package["email_contains_chinese_lesson"])
         self.assertTrue(package["email_contains_video_link"])
         self.assertTrue(package["email_contains_candidate_queue_summary"])
-        self.assertIn("视频观看/下载链接", package["notification"].body)
+        self.assertTrue(package["notification"].subject.startswith("20260701 -- arXiv Computer Science -- Computer Science --"))
+        self.assertIn("【12秒视频】", package["notification"].body)
         self.assertIn("候选队列摘要", package["notification"].body)
+        self.assertNotIn("project:", package["notification"].body)
+        self.assertNotIn("recipient:", package["notification"].body)
+        self.assertNotIn("ROI score", package["notification"].body)
+        self.assertNotIn("delivery_policy", package["notification"].body)
 
     def test_release_video_link_requires_mp4_not_manifest(self) -> None:
         release_report = {
