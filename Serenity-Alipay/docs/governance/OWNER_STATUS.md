@@ -1,70 +1,49 @@
 # OWNER_STATUS
 
-生成方式：由 `scripts/generate_governance_dashboard.py` 从机器事实源生成；不要手工编辑。
+Serenity-Alipay 当前治理结论：实现一致性为 `machine_verified`，交付状态为 `conditional`；这不是生产上线声明。
 
-## 1. 当前结论
+## 1. Version, Phase, Gate
 
-Serenity-Alipay 当前处于 B 阶段 / GOV-REVIEW6-B-SEMANTIC-EXTRACT gate；CI 模式为 required，机器事实源显示模型 5 个、公式 12 个、参数 49 个。
+- source_base_commit: `3ce9066664bab17253a25da11529d8146d8b314f`
+- source_snapshot_hash: `sha256:5a65a85815a5e5f5b703ceed5c51a17fe746eab7f09bd8434baaac79009b504b`
+- snapshot_event_time: `2026-06-22T00:24:25Z`
+- generator_version: `2.0.0`
+- version: `0.1.0`
+- phase/gate: `B / GOV-REVIEW6-B-SEMANTIC-EXTRACT`
 
-## 2. 更新时间与 Commit
+## 2. Assurance And Readiness
 
-- 生成标记：`DETERMINISTIC_GENERATION`
-- 仓库提交：`CURRENT_CHECKOUT`
-- 最近事件时间：`2026-06-21T19:09:37+10:00`
-- 最近事件提交证据：`PENDING`
+- structural_validation: `pass`
+- implementation_congruence: `machine_verified` (49/49 active parameters, 12/12 active formulas)
+- empirical_validation: `unknown`
+- operational_evidence: `partial`
+- delivery_readiness: `conditional`
 
-## 3. 本轮最重要变化
+## 3. Latest Meaningful Change
 
-Added Serenity-Alipay semantic extraction pilot for active parameters and formulas without changing business behavior.
+Current canonical registries separate implementation congruence from empirical and operational evidence, so machine verification does not imply production readiness.
 
-## 4. 模型、公式、参数旧值到新值
+## 4. Top Blockers
 
-- 版本变化：current_gate: GOV-G3-SERENITY-BASELINE -> GOV-REVIEW6-B-SEMANTIC-EXTRACT; current_iteration: ITER-20260621-001 -> ITER-20260621-002; current_phase: A -> B; product_version: 0.1.0 unchanged
-- 模型/公式变化：FORM-001..FORM-012: implementation_refs, implementation_fingerprint, verified_at, evidence_hash added; FORM-008: post-renormalization cap caveat recorded; max weights for 1..5 candidates machine-observed
-- 参数变化：PARAM-001..PARAM-049: source_selector, extracted_value, verified_at, last_verified_commit, evidence_hash added; active_values_changed: 0
+1. empirical calibration unknown
+2. owner evidence decision
+3. No third blocker recorded.
 
-## 5. 为什么改变及证据等级
+## 5. Owner Decision
 
-- 原因：Added Serenity-Alipay semantic extraction pilot for active parameters and formulas without changing business behavior.
-- 证据等级：`EXTRACTED`
-- 证据引用：Serenity-Alipay/docs/governance/parameter_registry.csv, Serenity-Alipay/docs/governance/formula_registry.yaml, tests/governance/test_project_governance_validator.py, scripts/validate_semantic_extractors.py
+- decision_id: `DEC-Serenity-Alipay-REVIEW6-001`
+- question: 是否启动 empirical calibration evidence task；实现一致性已经 machine verified。
+- options: A: fund evidence hardening, B: keep blocked/conditional and defer, C: de-scope this project from delivery claims
 
-## 6. 对输出、风险和业务决策的影响
+## 6. Next Executable Task
 
-formula_fingerprints_added: 12; runtime_behavior: unchanged; semantic_extractors_enabled_for: Serenity-Alipay
+- task_id: `TASK-A-001`
+- reason: Create the first CodexProject-auditable Serenity-Alipay governance baseline.
+- acceptance: ACC-A-001, ACC-A-002, ACC-A-003
 
-## 7. 当前置信度和证据新鲜度
+## 7. Owner And Evidence Freshness
 
-- 置信度：`Medium`
-- 证据新鲜度：`3 unbound event(s)`
-- 语义覆盖：`machine_verified`
-- 语义覆盖任务：`TASK-B-003`
-- UNKNOWN/HUMAN_REVIEW_REQUIRED 数量：`0`
-- 未绑定事件数量：`3`
-
-## 8. 需要项目所有者决定的事项
-
-Close empirical calibration UNKNOWNs for score weights, grade thresholds, and Top5 allocation constants.
-
-## 9. 当前前三风险
-
-1. Blocker: semantic extractor pilot currently covers Serenity-Alipay only; other projects need separate migration tasks.
-2. Unbound or stale evidence events: 3
-3. Review6-B is a Serenity pilot; other projects still need semantic extractors before the full Review6 objective is complete.
-
-## 10. 下一项可执行任务及 Acceptance
-
-- 下一任务：`TASK-B-001`
-- 状态：`planned`
-- Acceptance：ACC-B-001
-- 选择理由：status=planned; phase=B; current_phase=B; unmet_dependencies=TASK-A-002; score=59
-
-## 11. 阻塞负责人和解除条件
-
-- 负责人：Project owner
-- 解除条件：Complete dependencies TASK-A-002
-
-## 12. UNKNOWN 与过期证据数量
-
-- UNKNOWN/HUMAN_REVIEW_REQUIRED：`0`
-- 过期或未绑定证据：`3`
+- owner: Codex/governance runner
+- unblock_condition: Run the listed test commands and attach evidence.
+- unresolved_fact_ids: `2`
+- pending_or_stale_events: `4`

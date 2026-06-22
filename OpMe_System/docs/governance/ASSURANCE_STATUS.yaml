@@ -1,0 +1,61 @@
+project_id: "OpMe_System"
+as_of_event_id: "EVT-REVIEW6-FINAL-OpMe_System-001"
+source_snapshot_hash: "sha256:95e46d7aa228bcfa136bff34c9174c00a3057fa576a0964e5ee6942f50f3de90"
+source_base_commit: "3ce9066664bab17253a25da11529d8146d8b314f"
+snapshot_event_time: "2026-06-22T00:24:25Z"
+generator_version: "2.0.0"
+final_commit_binding: "CI_ATTESTATION_REQUIRED"
+dimensions:
+  structural_validation:
+    status: "pass"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "scripts/validate_project_governance.py"
+  implementation_congruence:
+    status: "machine_verified"
+    fact_level: "EXTRACTED"
+    checked_active_parameters: 49
+    total_active_parameters: 49
+    checked_active_formulas: 7
+    total_active_formulas: 7
+    unresolved_fact_ids: []
+    evidence_refs:
+      - "OpMe_System/docs/governance/parameter_registry.csv"
+      - "OpMe_System/docs/governance/formula_registry.yaml"
+  empirical_validation:
+    status: "unknown"
+    fact_level: "UNKNOWN"
+    unresolved_fact_ids:
+      - "FACT-OpMe_System-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "OpMe_System/docs/governance/delivery_tasks.yaml"
+  operational_evidence:
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    unresolved_fact_ids:
+      - "FACT-OpMe_System-OPERATIONAL-EVIDENCE"
+    evidence_refs:
+      - "OpMe_System/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "conditional"
+  release_gate: "GOV-SEMANTIC-OPME-in-progress"
+  blocker_ids:
+    - "FACT-OpMe_System-EMPIRICAL-EVIDENCE"
+    - "FACT-OpMe_System-OPERATIONAL-EVIDENCE"
+    - "TASK-OPME-B-001"
+next_executable_task:
+  task_id: "GOV-SEMANTIC-OPME-001"
+  status: "in_progress"
+  reason: "Add extractors for analysis rule constants and fingerprints for active deterministic formulas."
+  acceptance_ids:
+    - "ACC-SEMANTIC-OPME-001"
+  owner: "Codex/governance runner"
+  unblock_condition: "Run the listed test commands and attach evidence."
+owner_decision:
+  required: true
+  decision_id: "DEC-OpMe_System-REVIEW6-001"
+  question: "是否补齐 calibration、prompt/provider policy 与 owner sign-off 证据。"
+  options:
+    - "A: fund evidence hardening"
+    - "B: keep blocked/conditional and defer"
+    - "C: de-scope this project from delivery claims"

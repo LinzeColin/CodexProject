@@ -1,0 +1,67 @@
+project_id: "EVA_OS"
+as_of_event_id: "EVT-REVIEW6-FINAL-EVA_OS-001"
+source_snapshot_hash: "sha256:87611d049cd444155001a30c448635e552e553cd3d2d7367f42f521bf5c45ac7"
+source_base_commit: "3ce9066664bab17253a25da11529d8146d8b314f"
+snapshot_event_time: "2026-06-22T00:24:25Z"
+generator_version: "2.0.0"
+final_commit_binding: "CI_ATTESTATION_REQUIRED"
+dimensions:
+  structural_validation:
+    status: "pass"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "scripts/validate_project_governance.py"
+  implementation_congruence:
+    status: "partial"
+    fact_level: "EXTRACTED"
+    checked_active_parameters: 52
+    total_active_parameters: 189
+    checked_active_formulas: 16
+    total_active_formulas: 16
+    unresolved_fact_ids:
+      - "FACT-EVA_OS-IMPLEMENTATION-PARAMETER-REVIEW"
+    evidence_refs:
+      - "EVA_OS/docs/governance/parameter_registry.csv"
+      - "EVA_OS/docs/governance/formula_registry.yaml"
+  empirical_validation:
+    status: "unknown"
+    fact_level: "UNKNOWN"
+    unresolved_fact_ids:
+      - "FACT-EVA_OS-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "EVA_OS/docs/governance/delivery_tasks.yaml"
+  operational_evidence:
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    unresolved_fact_ids:
+      - "FACT-EVA_OS-OPERATIONAL-EVIDENCE"
+    evidence_refs:
+      - "EVA_OS/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "blocked"
+  release_gate: "GOV-SEMANTIC-EVA-001-in-progress"
+  blocker_ids:
+    - "FACT-EVA_OS-EMPIRICAL-EVIDENCE"
+    - "FACT-EVA_OS-IMPLEMENTATION-PARAMETER-REVIEW"
+    - "FACT-EVA_OS-OPERATIONAL-EVIDENCE"
+    - "GOV-SEMANTIC-EVA-001"
+    - "TASK-EVA-B-001"
+    - "TASK-EVA-B-002"
+    - "TASK-EVA-B-003"
+    - "TASK-EVA-B-004"
+next_executable_task:
+  task_id: "GOV-SEMANTIC-EVA-001"
+  status: "in_progress"
+  reason: "Add machine selectors for strategy parameters and fingerprints for active strategy formulas."
+  acceptance_ids:
+    - "ACC-SEMANTIC-EVA-001"
+  owner: "Codex/governance runner"
+  unblock_condition: "Run the listed test commands and attach evidence."
+owner_decision:
+  required: true
+  decision_id: "DEC-EVA_OS-REVIEW6-001"
+  question: "是否投入 137 个 remaining parameter reviews 和来源/校准证据。"
+  options:
+    - "A: fund evidence hardening"
+    - "B: keep blocked/conditional and defer"
+    - "C: de-scope this project from delivery claims"

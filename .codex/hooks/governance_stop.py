@@ -98,39 +98,51 @@ def main() -> int:
 
     marker = root / "governance" / "projects.yaml"
     validator = root / "scripts" / "validate_project_governance.py"
+    quality_validator = root / "scripts" / "validate_information_quality.py"
 
     if not marker.exists():
         emit({"continue": True})
         return 0
 
-    if not validator.exists():
+    if not validator.exists() or not quality_validator.exists():
         emit(
             {
                 "decision": "block",
                 "reason": (
-                    "Repository governance is enabled, but "
-                    "scripts/validate_project_governance.py is missing. "
-                    "Create or restore the validator before completion."
+                    "Repository governance is enabled, but one required validator is missing. "
+                    "Restore scripts/validate_project_governance.py and "
+                    "scripts/validate_information_quality.py before completion."
                 ),
             }
         )
         return 0
 
-    result = subprocess.run(
+    commands = [
         [sys.executable, str(validator), "--changed-only", "--enforce-sync", "--semantic"],
-        cwd=root,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
+        [sys.executable, str(quality_validator), "--all", "--fast", "--fail-on-error"],
+    ]
+    outputs: list[str] = []
+    failed = False
+    for command in commands:
+        result = subprocess.run(
+            command,
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        label = " ".join(Path(part).name if idx == 1 else part for idx, part in enumerate(command))
+        outputs.append(f"$ {label}\n{result.stdout}\n{result.stderr}".strip())
+        if result.returncode != 0:
+            failed = True
 
-    if result.returncode == 0:
+    if not failed:
         clear_attempt(root)
         emit({"continue": True})
         return 0
 
     attempt = record_attempt(root)
-    output = (result.stdout + "\n" + result.stderr).strip()[-6000:]
+    output = "\n\n".join(outputs).strip()[-6000:]
     prefix = (
         f"Project governance validation failed on Stop Hook attempt {attempt}/{MAX_ATTEMPTS}. "
     )

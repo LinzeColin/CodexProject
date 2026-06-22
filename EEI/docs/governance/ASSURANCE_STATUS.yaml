@@ -1,0 +1,67 @@
+project_id: "EEI"
+as_of_event_id: "EVT-REVIEW6-FINAL-EEI-001"
+source_snapshot_hash: "sha256:b3ef4cb3148bd3da194634ca4a097e460ef1475ec9097b55f105bf2191ca7588"
+source_base_commit: "3ce9066664bab17253a25da11529d8146d8b314f"
+snapshot_event_time: "2026-06-22T00:24:25Z"
+generator_version: "2.0.0"
+final_commit_binding: "CI_ATTESTATION_REQUIRED"
+dimensions:
+  structural_validation:
+    status: "pass"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "scripts/validate_project_governance.py"
+  implementation_congruence:
+    status: "partial"
+    fact_level: "EXTRACTED"
+    checked_active_parameters: 54
+    total_active_parameters: 61
+    checked_active_formulas: 10
+    total_active_formulas: 11
+    unresolved_fact_ids:
+      - "FACT-EEI-IMPLEMENTATION-FORMULA-REVIEW"
+      - "FACT-EEI-IMPLEMENTATION-PARAMETER-REVIEW"
+    evidence_refs:
+      - "EEI/docs/governance/parameter_registry.csv"
+      - "EEI/docs/governance/formula_registry.yaml"
+  empirical_validation:
+    status: "partial"
+    fact_level: "EXTRACTED"
+    unresolved_fact_ids:
+      - "FACT-EEI-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "EEI/docs/governance/delivery_tasks.yaml"
+  operational_evidence:
+    status: "partial"
+    fact_level: "EXTRACTED"
+    unresolved_fact_ids:
+      - "FACT-EEI-OPERATIONAL-EVIDENCE"
+    evidence_refs:
+      - "EEI/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "blocked"
+  release_gate: "TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL"
+  blocker_ids:
+    - "FACT-EEI-EMPIRICAL-EVIDENCE"
+    - "FACT-EEI-IMPLEMENTATION-FORMULA-REVIEW"
+    - "FACT-EEI-IMPLEMENTATION-PARAMETER-REVIEW"
+    - "FACT-EEI-OPERATIONAL-EVIDENCE"
+    - "GOV-SEMANTIC-EEI-001"
+    - "TASK-T1206"
+    - "TASK-T1206|GOV-SEMANTIC-EEI-001"
+next_executable_task:
+  task_id: "TASK-T1301"
+  status: "in_progress"
+  reason: "Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical"
+  acceptance_ids:
+    - "ACC-A202"
+  owner: "Codex/governance runner"
+  unblock_condition: "Run the listed test commands and attach evidence."
+owner_decision:
+  required: true
+  decision_id: "DEC-EEI-REVIEW6-001"
+  question: "是否继续 24 小时 operator soak；当前 4 小时证据只支持 partial。"
+  options:
+    - "A: fund evidence hardening"
+    - "B: keep blocked/conditional and defer"
+    - "C: de-scope this project from delivery claims"
