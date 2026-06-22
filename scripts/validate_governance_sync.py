@@ -625,9 +625,9 @@ def validate_semantic_project(validation: SyncValidation, project: dict[str, Any
     return summary
 
 
-def validate_semantic(validation: SyncValidation, config: dict[str, Any]) -> dict[str, Any]:
+def validate_semantic(validation: SyncValidation, projects: list[dict[str, Any]]) -> dict[str, Any]:
     summaries: dict[str, Any] = {}
-    for project in [p for p in structural.as_list(config.get("projects")) if isinstance(p, dict)]:
+    for project in projects:
         summaries[project_scope(project)] = validate_semantic_project(validation, project)
     return summaries
 
@@ -693,9 +693,12 @@ def validate_pending_ci_bindings(validation: SyncValidation) -> None:
                 validation.warn("root", message + " (within allowed binding window)")
 
 
-def validate_run_manifests(validation: SyncValidation, changed: list[str]) -> None:
+def validate_run_manifests(validation: SyncValidation, changed: list[str], *, changed_only: bool = False) -> None:
     changed_set = set(changed)
     for path in sorted(RUN_MANIFESTS_DIR.glob("*.json")):
+        relative = path.relative_to(ROOT).as_posix()
+        if changed_only and relative not in changed_set:
+            continue
         data = load_json_object(path)
         if not data:
             validation.error("root", f"Cannot parse run manifest: {path.relative_to(ROOT)}")
@@ -714,7 +717,7 @@ def validate_run_manifests(validation: SyncValidation, changed: list[str]) -> No
             if str(data.get(field) or "").strip().upper() == "PENDING":
                 validation.error("root", f"{path.relative_to(ROOT)} contains bare PENDING in {field}")
         declared = {str(item) for item in structural.as_list(data.get("changed_files_actual"))}
-        if path.relative_to(ROOT).as_posix() in changed_set:
+        if relative in changed_set:
             missing_changed = sorted(changed_set - declared)
             if missing_changed:
                 validation.error(
@@ -773,9 +776,15 @@ def validate(
         validate_event_files_changed(validation, project_changes)
         root_sync_requirements(validation, root_changes, changed)
     if semantic or all_projects or drift_report:
-        semantic_summaries = validate_semantic(validation, config)
-        validate_pending_ci_bindings(validation)
-        validate_run_manifests(validation, changed)
+        if all_projects or drift_report or not changed_only:
+            semantic_projects = [p for p in structural.as_list(config.get("projects")) if isinstance(p, dict)]
+            semantic_summaries = validate_semantic(validation, semantic_projects)
+            validate_pending_ci_bindings(validation)
+            validate_run_manifests(validation, changed)
+        else:
+            semantic_projects = [change.project for change in project_changes]
+            semantic_summaries = validate_semantic(validation, semantic_projects)
+            validate_run_manifests(validation, changed, changed_only=True)
     report = build_drift_report(config, semantic_summaries) if drift_report else {}
     print_summary(validation, changed, project_changes)
     if drift_report:

@@ -419,7 +419,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 validator.validate_project(required, project, project_files, mode="required")
                 self.assertTrue(required.errors)
 
-    def test_changed_only_root_governance_change_selects_all_projects(self) -> None:
+    def test_changed_only_root_governance_change_does_not_select_all_projects(self) -> None:
         validator = load_validator_module()
         config = {
             "projects": [
@@ -436,7 +436,22 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         ):
             selected = validator.select_projects(config, args)
 
-        self.assertEqual([project["project_id"] for project in selected], ["A", "B"])
+        self.assertEqual([project["project_id"] for project in selected], ["A"])
+
+    def test_changed_only_root_governance_only_change_selects_no_projects(self) -> None:
+        validator = load_validator_module()
+        config = {
+            "projects": [
+                {"project_id": "A", "path": "A", "model_behavior_globs": []},
+                {"project_id": "B", "path": "B", "model_behavior_globs": []},
+            ]
+        }
+        args = SimpleNamespace(project=None, changed_only=True)
+
+        with patch.object(validator, "git_changed_files", return_value=["scripts/validate_project_governance.py"]):
+            selected = validator.select_projects(config, args)
+
+        self.assertEqual(selected, [])
 
     def test_manual_acceptance_count_drift_is_reported(self) -> None:
         validator = load_validator_module()
@@ -538,6 +553,41 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         validation = sync.SyncValidation()
         sync.root_sync_requirements(validation, ["governance/projects.yaml"], covered)
         self.assertFalse(validation.errors)
+
+    def test_sync_changed_only_semantic_checks_only_changed_projects(self) -> None:
+        sync = load_sync_module()
+        project_a = {"project_id": "A", "path": "A"}
+        project_b = {"project_id": "B", "path": "B"}
+        checked: list[str] = []
+
+        def fake_validate_semantic_project(validation, project):
+            checked.append(project["project_id"])
+            return {"current_iteration": "ITER-1"}
+
+        with (
+            patch.object(sync, "load_projects", return_value={"projects": [project_a, project_b]}),
+            patch.object(sync, "explicit_base_ref", return_value=None),
+            patch.object(sync, "merge_base", return_value="BASE"),
+            patch.object(sync, "changed_files_against_base", return_value=["B/app/main.py"]),
+            patch.object(
+                sync,
+                "classify_changes",
+                return_value=(
+                    [sync.ProjectChange(project=project_b, files=["B/app/main.py"])],
+                    [],
+                ),
+            ),
+            patch.object(sync, "validate_diff_contract"),
+            patch.object(sync, "validate_append_only"),
+            patch.object(sync, "validate_event_files_changed"),
+            patch.object(sync, "root_sync_requirements"),
+            patch.object(sync, "validate_semantic_project", side_effect=fake_validate_semantic_project),
+            patch.object(sync, "validate_run_manifests"),
+        ):
+            exit_code, _ = sync.validate(changed_only=True, enforce_sync=True, semantic=True)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(checked, ["B"])
 
     def test_review5_version_matrix_current_iteration_mismatch_fails(self) -> None:
         sync = load_sync_module()
@@ -739,8 +789,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "--enforce-sync",
             "--semantic",
             "validate_information_quality.py",
-            "--all",
-            "--drift-report",
+            "--fast",
             "governance_setup_doctor.py",
             "governance/binding_backlog.yaml",
             "ASSURANCE_STATUS.yaml",

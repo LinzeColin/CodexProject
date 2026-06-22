@@ -962,12 +962,44 @@ def render_binding_backlog(projects: list[dict[str, Any]], meta: dict[str, str])
     return "\n".join(dump_yaml(payload)) + "\n"
 
 
-def generate(write: bool) -> dict[str, Any]:
+ROOT_OUTPUT_REL_PATHS = [
+    "README.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "governance/binding_backlog.yaml",
+]
+
+
+def select_projects(
+    projects: list[dict[str, Any]], *, project_filter: str | None = None, changed_only: bool = False, base_ref: str | None = None
+) -> tuple[list[dict[str, Any]], bool]:
+    if project_filter:
+        selected = [
+            project
+            for project in projects
+            if project_filter in {str(project.get("project_id")), str(project.get("path"))}
+        ]
+        if not selected:
+            raise SystemExit(f"Unknown project: {project_filter}")
+        return selected, False
+    if changed_only:
+        changed = structural.git_changed_files(base_ref)
+        selected = [project for project in projects if structural.project_matches_changed(project, changed)]
+        include_root = any(path in changed for path in ROOT_OUTPUT_REL_PATHS)
+        return selected, include_root
+    return projects, True
+
+
+def generate(write: bool, *, project_filter: str | None = None, changed_only: bool = False, base_ref: str | None = None) -> dict[str, Any]:
     config = structural.load_yaml(structural.PROJECTS_FILE)
     projects = [project for project in structural.as_list(config.get("projects")) if isinstance(project, dict)]
-    infos = [load_project(project) for project in projects]
-    portfolio_hash = source_snapshot_hash([ROOT / "governance/projects.yaml"] + [ROOT / i["path"] / "docs/governance/parameter_registry.csv" for i in infos])
-    event_times = [info["assurance"]["snapshot_event_time"] for info in infos if info["assurance"]["snapshot_event_time"] != "UNKNOWN"]
+    selected_projects, include_root = select_projects(projects, project_filter=project_filter, changed_only=changed_only, base_ref=base_ref)
+    infos = [load_project(project) for project in selected_projects]
+    all_infos = [load_project(project) for project in projects] if include_root else infos
+    portfolio_hash = source_snapshot_hash(
+        [ROOT / "governance/projects.yaml"] + [ROOT / i["path"] / "docs/governance/parameter_registry.csv" for i in all_infos]
+    )
+    event_times = [info["assurance"]["snapshot_event_time"] for info in all_infos if info["assurance"]["snapshot_event_time"] != "UNKNOWN"]
     meta = {
         "source_base_commit": configured_source_base() or existing_root_base() or current_commit(),
         "source_tree_hash": configured_source_tree() or existing_root_tree() or current_tree_hash(),
@@ -975,16 +1007,17 @@ def generate(write: bool) -> dict[str, Any]:
         "snapshot_event_time": max(event_times) if event_times else "UNKNOWN",
     }
     outputs: list[str] = []
-    root_outputs = {
-        ROOT / "README.md": render_readme(infos, meta),
-        ROOT / "GOVERNANCE_DASHBOARD.md": render_dashboard(infos, meta),
-        ROOT / "OWNER_PORTFOLIO.md": render_owner_portfolio(infos, meta),
-        ROOT / "governance" / "binding_backlog.yaml": render_binding_backlog(infos, meta),
-    }
-    for path, text in root_outputs.items():
-        if write:
-            path.write_text(text, encoding="utf-8")
-        outputs.append(rel(path))
+    if include_root:
+        root_outputs = {
+            ROOT / "README.md": render_readme(all_infos, meta),
+            ROOT / "GOVERNANCE_DASHBOARD.md": render_dashboard(all_infos, meta),
+            ROOT / "OWNER_PORTFOLIO.md": render_owner_portfolio(all_infos, meta),
+            ROOT / "governance" / "binding_backlog.yaml": render_binding_backlog(all_infos, meta),
+        }
+        for path, text in root_outputs.items():
+            if write:
+                path.write_text(text, encoding="utf-8")
+            outputs.append(rel(path))
     for info in infos:
         base = ROOT / info["path"] / "docs/governance"
         assurance_path = base / "ASSURANCE_STATUS.yaml"
@@ -1010,8 +1043,20 @@ def generate(write: bool) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--write", action="store_true", help="Write generated governance views.")
+    scope = parser.add_mutually_exclusive_group()
+    scope.add_argument("--all", action="store_true", help="Generate all root and project governance views.")
+    scope.add_argument("--project", help="Generate governance views for one project id or path.")
+    scope.add_argument("--changed-only", action="store_true", help="Generate governance views for changed projects only.")
+    parser.add_argument("--base-ref", help="Optional base ref for --changed-only.")
     args = parser.parse_args()
-    print(json.dumps(generate(args.write), ensure_ascii=False, indent=2, sort_keys=True))
+    print(
+        json.dumps(
+            generate(args.write, project_filter=args.project, changed_only=args.changed_only, base_ref=args.base_ref),
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+    )
     return 0
 
 
