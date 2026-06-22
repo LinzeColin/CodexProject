@@ -1,6 +1,6 @@
 # Source Catalog
 
-- generated_at: 2026-06-22T16:30:00+10:00
+- generated_at: 2026-06-22T21:00:00+10:00
 - generated_from: `config/owner_controls.yaml`
 - config_version: `owner-controls-v1`
 

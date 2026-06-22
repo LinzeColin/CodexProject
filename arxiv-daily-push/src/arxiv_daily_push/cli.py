@@ -55,7 +55,13 @@ from .scheduled_execution import (
 )
 from .simulation import run_two_day_simulation, validate_two_day_simulation_report
 from .source_ingest import ingest_latest_arxiv, validate_source_batch
+from .source_registry import (
+    build_source_registry_report,
+    load_source_registry_controls,
+    validate_source_registry_report,
+)
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
+from .stage1_queue import build_stage1_queue_report, validate_stage1_queue_report
 from .storage import (
     inspect_database,
     migrate_database,
@@ -112,6 +118,26 @@ def build_parser() -> argparse.ArgumentParser:
     storage_rollback.add_argument("--db", required=True, help="SQLite database path.")
     storage_rollback.add_argument("--target-version", type=int, default=0, help="Rollback target schema version.")
     storage_rollback.add_argument("--json", action="store_true", help="Print JSON storage report.")
+
+    source_registry = subparsers.add_parser(
+        "source-registry",
+        help="Validate the Stage 1 source registry and connector contract.",
+    )
+    source_registry.add_argument("--controls", help="Path to owner_controls.yaml.")
+    source_registry.add_argument("--fixture-atom", help="Optional offline arXiv Atom fixture to validate.")
+    source_registry.add_argument("--generated-at", required=True, help="Registry report timestamp.")
+    source_registry.add_argument("--json", action="store_true", help="Print JSON registry report.")
+
+    stage1_queue = subparsers.add_parser(
+        "stage1-queue",
+        help="Build and validate the Review8 Stage 1 scoring, 10,000 queue, and content ledger report.",
+    )
+    stage1_queue.add_argument("--input", required=True, help="JSON file containing items or an object with an items array.")
+    stage1_queue.add_argument("--controls", help="Path to owner_controls.yaml.")
+    stage1_queue.add_argument("--as-of-date", required=True, help="Queue date in YYYY-MM-DD form.")
+    stage1_queue.add_argument("--generated-at", required=True, help="Queue report timestamp.")
+    stage1_queue.add_argument("--run-id", default="stage1-queue-fixture", help="Run ID written to content ledger rows.")
+    stage1_queue.add_argument("--json", action="store_true", help="Print JSON queue report.")
 
     doctor = subparsers.add_parser("doctor", help="Run local Phase 1 readiness checks.")
     doctor.add_argument("--json", action="store_true", help="Print JSON report.")
@@ -550,6 +576,52 @@ def main(argv: list[str] | None = None) -> int:
             print(report["status"])
             for reason in report.get("blocking_reasons", []):
                 print(f"- {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "source-registry":
+        controls = load_source_registry_controls(args.controls)
+        fixture_atom = Path(args.fixture_atom).read_text(encoding="utf-8") if args.fixture_atom else None
+        report = build_source_registry_report(controls, generated_at=args.generated_at, fixture_atom=fixture_atom)
+        errors = validate_source_registry_report(report, controls=controls)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "stage1-queue":
+        controls = load_owner_controls(args.controls)
+        payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
+        items = payload.get("items", payload) if isinstance(payload, dict) else payload
+        if not isinstance(items, list):
+            report = {"status": "blocked", "blocking_reasons": ["input must be a JSON array or object with an items array"]}
+            if args.json:
+                print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for reason in report["blocking_reasons"]:
+                    print(f"- {reason}")
+            return 2
+        report = build_stage1_queue_report(
+            items,
+            controls,
+            as_of_date=args.as_of_date,
+            generated_at=args.generated_at,
+            run_id=args.run_id,
+        )
+        errors = validate_stage1_queue_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": errors}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- active_count: {report.get('active_count')}")
+            print(f"- evicted_count: {report.get('evicted_count')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
         return 0 if report["status"] == "pass" else 2
     if args.command == "doctor":
         report = doctor_report(Path(args.path))

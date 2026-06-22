@@ -1,0 +1,312 @@
+/goal
+
+在 GitHub 仓库 `LinzeColin/CodexProject` 的 `arxiv-daily-push/` 项目中，读取我提供的压缩包，并以：
+
+```text
+START_HERE_MASTER_TASK_PACK_TWO_STAGE_TEXT_DELIVERY_V5.md
+```
+
+作为本次 Pursuing Goal 的唯一完整需求、开发、测试和交付基线。
+
+持续推进，直到最终状态：
+
+```text
+PRODUCTION_ACCEPTED
+→ DAILY_OPERATION
+```
+
+本项目只有两个顶层阶段：
+
+```text
+Stage 1：arXiv 单源完整纵向切片与生产验收
+Stage 2：逐来源、逐板块晋升与全系统生产验收
+```
+
+任何迁移前/迁移后窗口、来源 Wave、内部 Task 都不是第三个顶层阶段。
+
+# 一、V5 基线和范围
+
+1. 本 V5 是唯一生效基线。旧版中任何非文本交付链路及其配置、任务、测试、调度、存储和验收项全部不属于当前范围。
+2. 当前唯一外发交付是高密度文本报告、五封独立邮件、Markdown/HTML/JSON 审计产物。
+3. 保留并完整实现所有非上述旧链路的需求：来源、板块、数据库、关系图、权重、队列、报告、邮件、人工控制、治理、历史重放、真实运行、周迭代和半月迭代。
+4. 发现本 Prompt、Master 与仓库现状冲突时，不得静默折中，进入 `BLOCKED_REQUIREMENT_CONFLICT`，输出冲突位置、影响、A/B/C 最小选项、推荐项和唯一待确认问题。
+
+# 二、首次读取和开发纪律
+
+首次只做最小范围只读审计，读取：
+
+- 根 `AGENTS.md`；
+- `arxiv-daily-push/AGENTS.md`；
+- `README.md`、`PLANS.md`、`VERSION`、`CHANGELOG.md`、`pyproject.toml`；
+- `config/`；
+- `src/arxiv_daily_push/`；
+- `tests/`；
+- `docs/governance/`；
+- `docs/phase_records/`；
+- 既有 `docs/pursuing_goal/`；
+- 仅与本项目直接相关的 `.github/workflows/`。
+
+禁止第一次就全仓扫描、全仓重构、读取其他项目、虚拟环境、`node_modules`、大缓存、数据库、秘密、用户主目录或无关 Git 历史。
+
+每次只推进一个 Task ID、一个主要目录范围、一个主要验收标准；门禁通过后可自动继续。
+
+每个 Task 开始前输出：目标/非目标、读取文件、修改文件、测试命令、资源预算、风险、回滚和停止条件。每个 Task 结束后输出并写入治理记录：状态、Diff summary、真实命令/退出码/耗时/证据路径、需求追踪、资源峰值、剩余风险、回滚和下一门禁。不得只写“测试通过”。
+
+# 三、冻结产品要求
+
+最终必须实现：
+
+```text
+B1 研究前沿
+B2 顶级期刊
+B3 中国政策法规
+B4 美国科技金融官方信号
+B5 跨板块总览
+```
+
+正式生产每天：
+
+```text
+5 份完整报告
+5 封独立邮件：B1、B2、B3、B4、B5 各一封
+```
+
+B5 只有在 B1—B4 进入成功或明确降级终态后生成。
+
+全系统 30 日历史重放：
+
+```text
+150 份完整报告
+150 份邮件渲染预览
+历史邮件不得真实发送
+```
+
+连续 2 个真实自然日：
+
+```text
+10 份完整报告
+10 封真实邮件
+```
+
+报告不设牺牲专业度、证据密度和准确性的固定字数上限。所有长任务必须有 heartbeat、检查点、无进展超时、断点续跑和恢复。
+
+# 四、来源、成本和范围
+
+禁止付费数据 API、付费云主机作为默认生产依赖、OpenAI Platform 付费 API、未公开私有接口、绕过登录/验证码/订阅墙、逐来源要求人工配置。
+
+采集优先级：
+
+```text
+官方 RSS/Atom
+→ 官方 OAI-PMH
+→ 官方网页/档案/政策库/公报
+→ 官方 XML/CSV/JSON/Bulk/Sitemap
+→ 免费无密钥官方 API
+→ 免费需密钥官方 API
+→ 受控低频 HTML
+```
+
+B1：arXiv、TechRxiv、bioRxiv、medRxiv、ChemRxiv、SSRN、EarthArXiv、ChinaXiv、PubMed、Europe PMC。  
+B2：Nature、Science、The Lancet 主刊。  
+B3：C0 全国权威主干、C1 中央机关与重点职能部门、C2 全部省级行政区域、C3 24 个重点城市、C4 特殊功能区和垂直机构。  
+C3 城市：北京、上海、深圳、广州、天津、重庆、杭州、南京、苏州、合肥、武汉、西安、成都、长沙、无锡、东莞、佛山、珠海、沈阳、宁波、青岛、厦门、大连、郑州。  
+B4 不启用 FINRA、MSRB 等 SRO；注意力预算：科技创新 35、金融市场 30、科技政策 20、法律主干 15。
+
+完整机构、字段、行业、方式、频率和回退路径以 Master 为准，不得缩减。
+
+# 五、人工控制、治理和可审查性
+
+人工只编辑：
+
+```text
+config/owner_controls.yaml
+```
+
+人工只需查看：
+
+```text
+docs/owner/OWNER_CONSOLE.md
+docs/owner/SOURCE_CATALOG.md
+docs/owner/MODEL_AND_QUEUE.md
+docs/owner/CONTENT_LEDGER.csv
+```
+
+必须维护：需求清单、功能清单、开发阶段、开发任务、开发目的、函数清单、模型参数、来源清单、开发记录、状态、版本、测试证据和追踪矩阵。
+
+追踪链必须达到：
+
+```text
+Requirement → Feature → Task → Config → Function → Test → Artifact → Run Evidence
+```
+
+任何内容不得静默消失。CONTENT_LEDGER 必须记录已深度讲解、简要提及、待讲、生成中、降级、容量淘汰、超期淘汰、重复合并、替代、撤回、证据阻断、许可阻断、来源失败和归档。
+
+# 六、数据、模型、权重和队列
+
+实现 SQLite WAL + FTS5、RawRecord、CanonicalDocument、DocumentVersion、Event、Entity、Relation、ThemeCluster、EvidencePacket、AnalysisSnapshot、Claim、EvidenceBinding、ScoreSnapshot、QueueEntry、ReportArtifact、EmailArtifact、RunManifest。
+
+实现版本关系图、跨源去重、身份解析、Taxonomy、主题聚类和重新激活。
+
+权重必须来自 `owner_controls.yaml`，禁止隐藏硬编码。
+
+研究卡：22/16/16/16/14/8/5/3。  
+中国政策卡：18/16/16/14/10/10/8/5/3。  
+美国官方卡：20/18/14/14/12/10/8/4。  
+跨板块：40/20/15/10/10/5。  
+队列优先级：55/15/10/10/5/5。
+
+活跃队列：最大 10,000，事件最大年龄 365 天，软配额 B1 3500、B2 1500、B3 3000、B4 2000，单来源默认不长期超过板块 40%。
+
+每条分数必须保存维度信号、权重、贡献、修正因子、硬门禁、模型/参数版本和 commit。
+
+# 七、文本质量和 Token 效率
+
+必须实现：
+
+```text
+确定性预筛
+→ 证据包缓存
+→ 版本 delta 分析
+→ 两遍专业分析
+→ 反证和矛盾审查
+→ Claim/Evidence 审计
+→ 编辑压缩和密度优化
+→ Markdown/HTML/JSON
+→ 独立邮件
+```
+
+原始内容、解析、证据和分析按内容哈希复用；未变化版本不得重复全量分析；只有入选或高潜内容进入深度分析；同一主题的 EvidencePacket 跨报告复用；每次模型调用保存 provider、model、prompt hash、输入输出估算、缓存命中、用途和结果哈希。
+
+关键 Claim 证据绑定 100%，重要事实来源追踪 100%，静默丢失 0，Canonical 重复 0，未来信息泄漏 0，重复邮件 0，P0/P1 缺陷 0。
+
+# 八、Stage 1 Goal 与门禁
+
+## Stage 1 Goal
+
+先完成 arXiv 单源完整纵向切片：
+
+```text
+arXiv
+→ 抓取
+→ 原始证据
+→ 文档/版本/事件
+→ 分类、评分和队列
+→ EvidencePacket
+→ B1 报告和 Claim
+→ B1 邮件
+→ 人工查看文件
+→ 本地计划任务、恢复和备份
+```
+
+## Stage 1 窗口 A：2026-06-30 前
+
+当前电脑资源不足，只做低资源代码工作：治理校准、Schema、owner_controls、SQLite 接口、Connector Contract、arXiv fixture、评分和队列、文本报告、邮件 mock、调度脚本、watchdog、备份、迁移 Runbook。
+
+禁止：30 日真实重放、长期生产调度、大范围在线抓取、批量附件、大缓存、大型本地模型、真实群发邮件。
+
+建议上限：单次测试数据 100 MB、临时文件 2 GB、分析并发 1。
+
+完成 S1-01 至 S1-10，并生成新电脑 bootstrap 和最少一次性人工清单。
+
+## Stage 1 窗口 B：2026-06-30 后
+
+先完成新电脑实测和凭据预检，再执行：
+
+1. 真实 arXiv 全链预检；
+2. 30 个独立历史 as-of 日；
+3. 30 份 B1 报告；
+4. 30 份 B1 邮件预览；
+5. 连续 2 个真实自然日；
+6. 2 份真实 B1 报告和 2 封真实邮件；
+7. 网络、SSL、解析、重启、邮件失败、磁盘、10,001 和 365 天故障演练。
+
+只有在幂等、确定性、证据覆盖、静默丢失、恢复、人工查看文件和 P0/P1 门禁全部通过后，状态才可为：
+
+```text
+ARXIV_PRODUCTION_ACCEPTED
+```
+
+未达到该状态，不得进入 Stage 2。
+
+# 九、Stage 2 Goal 与门禁
+
+## Stage 2 Goal
+
+在稳定 arXiv 生产上逐来源、逐板块晋升，不允许新增来源直接影响生产。
+
+状态机：
+
+```text
+DISABLED → TEST → REPLAY_PASSED → SHADOW → BOARD_PRODUCTION → FULL_PRODUCTION
+```
+
+Shadow 可以真实抓取、保存、评分和模拟排名，但不得影响正式队列和邮件。
+
+晋升顺序：
+
+1. bioRxiv、medRxiv、PubMed、Europe PMC；
+2. TechRxiv、ChemRxiv、EarthArXiv；
+3. SSRN、ChinaXiv；
+4. Nature、Science、The Lancet；
+5. 中国 C0、C1；
+6. 美国 US-TA、US-LG、US-FM、US-TP；
+7. 中国 C2；
+8. 中国 C3；
+9. 中国 C4；
+10. B5 和最终组合。
+
+单来源必须：fixture、30 日终态、48 小时 Shadow、幂等、去重、版本、许可、成功/无更新率目标 ≥95%、静默丢失 0、P0/P1 为 0。
+
+单板块必须：必需来源已晋升或有批准降级、板块 30 日重放、连续 2 日候选运行、报告/Claim/邮件合同、排名/队列/淘汰可解释、旧生产无回归。
+
+B1—B4 分别通过后启用对应邮件；B5 只有 B1—B4 全部通过后启用。
+
+最终全系统验收：
+
+```text
+30 个独立历史日期
+150 份报告
+150 份邮件预览
+未来信息泄漏 0
+连续 2 个真实自然日
+10 份报告
+10 封真实邮件
+```
+
+同时验证全来源终态、幂等、确定性、10,001、365 天、限流、解析漂移、重启恢复、磁盘阈值、B5 水位线、单来源隔离、人工控制面和 P0/P1 为 0。
+
+通过后：
+
+```text
+PRODUCTION_ACCEPTED
+→ DAILY_OPERATION
+```
+
+若 `production_auto_enable_after_acceptance=true`，自动进入每日五封邮件运行。
+
+# 十、本地运行、资源和自动迭代
+
+默认本地原生 Python + OS 计划任务，不购买云主机，不依赖 Docker Desktop，不要求 GitHub self-hosted runner 才能运行生产。
+
+OS 任务：`adp tick`、`adp watchdog`、`adp backup`、`adp weekly-review`、`adp biweekly-review`。支持唤醒、错过补跑、单实例、锁、heartbeat、固定工作目录、退避重试、重启恢复和备份。
+
+新电脑建议最低 4 核、16 GB RAM、60 GB 可用 SSD；推荐 8 核、32 GB RAM、120 GB 以上。硬件加速不是验收要求。本地模型可选，不得成为必需依赖。
+
+每周只读诊断后选择一个问题创建一个 PR，禁止自动合并。每 14 天进行参数复审和 30 日 A/B 重放，展示排名、报告覆盖和模型调用效率变化，人工批准后生效。
+
+Codex 不得自动改变：成本禁令、来源范围、10,000/365、五封邮件、三套评分结构、C0—C4、B4 预算、发布门禁、收件人、秘密、自动合并和外部交易行为。
+
+# 十一、完成声明与当前第一步
+
+完成条件不是代码存在、单元测试通过、只跑 arXiv fixture 或生成模拟报告。
+
+只有以下状态可声明完成：
+
+```text
+Stage 1：ARXIV_PRODUCTION_ACCEPTED
+Stage 2：PRODUCTION_ACCEPTED → DAILY_OPERATION
+```
+
+任何无法自动完成的事项才进入 `BLOCKED_OWNER_ACTION`，并合并为最少一次性清单，例如 SMTP 授权、Codex 登录、管理员权限或磁盘不足。不得把可由 Codex 完成的逐来源配置转交给我。
+
+现在先执行 Stage 1 的 S1-01：最小范围只读审计和治理校准计划。不要直接全仓扫描、不要重构、不要运行重资源任务。先输出本 Task 的目标/非目标、读取文件、修改文件、测试命令、资源预算、风险、回滚和停止条件。

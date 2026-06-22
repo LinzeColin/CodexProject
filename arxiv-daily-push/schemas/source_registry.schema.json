@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/source_registry.schema.json",
+  "title": "SourceRegistryReport",
+  "type": "object",
+  "required": [
+    "model_id",
+    "schema_version",
+    "contract_version",
+    "generated_at",
+    "status",
+    "source_registry_source",
+    "stage",
+    "task_id",
+    "acceptance_id",
+    "connector_contract",
+    "active_source_ids",
+    "allowed_enabled_source_ids",
+    "sources",
+    "active_adapter",
+    "fixture_validation",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "model_id": {"const": "adp-source-registry-contract-v1"},
+    "schema_version": {"const": 1},
+    "contract_version": {"const": "source-connector-contract-v1"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "blocked"]},
+    "source_registry_source": {"const": "config/owner_controls.yaml"},
+    "stage": {"const": "S1-A"},
+    "task_id": {"const": "S1-05-ARXIV-CONNECTOR-CONTRACT-001"},
+    "acceptance_id": {"const": "ADP-ACC-S1-05-ARXIV-CONNECTOR-CONTRACT"},
+    "connector_contract": {
+      "type": "object",
+      "required": [
+        "required_output_contracts",
+        "required_fail_closed_reasons",
+        "pdf_download_enabled",
+        "bulk_harvest_enabled",
+        "paid_api_allowed",
+        "secret_required",
+        "max_canary_results",
+        "fixture_required",
+        "real_canary_status"
+      ],
+      "properties": {
+        "required_output_contracts": {"type": "array", "items": {"type": "string"}},
+        "required_fail_closed_reasons": {"type": "array", "items": {"type": "string"}},
+        "pdf_download_enabled": {"const": false},
+        "bulk_harvest_enabled": {"const": false},
+        "paid_api_allowed": {"const": false},
+        "secret_required": {"const": false},
+        "max_canary_results": {"type": "integer", "minimum": 1, "maximum": 10},
+        "fixture_required": {"const": true},
+        "real_canary_status": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "active_source_ids": {"type": "array", "items": {"type": "string"}},
+    "allowed_enabled_source_ids": {"type": "array", "items": {"type": "string"}},
+    "sources": {"type": "array", "items": {"type": "object"}},
+    "active_adapter": {"type": "object"},
+    "fixture_validation": {"type": "object"},
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

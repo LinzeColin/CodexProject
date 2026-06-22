@@ -55,8 +55,8 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:8c8421a79ecad927cd95a1f7f479a367b093881c881cb79c8a26e63b1799fc7c`
-- snapshot_event_time: `2026-06-22T18:20:00+10:00`
+- source_snapshot_hash: `sha256:f6ed31abdb5cc95805005d365d580bc606db1cea9ff64a14899898c14286a449`
+- snapshot_event_time: `2026-06-22T21:00:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached
@@ -170,16 +170,16 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 - evidence_required: policy refs, jurisdiction/effective-date matrix, reconciliation results, approval memo
 - no_decision_consequence: whkmSalary remains FAILED and must not be used for production payroll.
 
-### `DEC-arxiv-daily-push-REVIEW8-001`
+### `DEC-arxiv-daily-push-V5-S1-001`
 
-- human_owner_role: `product_owner + operations_owner + content_owner`
-- recommendation: A: start controlled production trial only after owner-provisioned refs are verified
-- estimated_effort: P2; product, operations, content owners
-- estimated_cost_or_resource: owner-provisioned refs, private runner, SMTP/release credentials, monitoring
-- expected_benefit: 证明日常投递真实可运行且内容主张有证据绑定。
-- principal_risks: secret misconfiguration, delivery failure, hallucinated claims, stale schedule evidence
-- evidence_required: provisioning audit, trial logs, 30-day ledger, claim evidence sample
-- no_decision_consequence: arxiv-daily-push remains FAILED for delivery readiness despite local simulations.
+- human_owner_role: `content_owner + product_owner`
+- recommendation: A: implement S1-07 B1/arXiv text teaching email before any production enablement
+- estimated_effort: P1; content and product implementation
+- estimated_cost_or_resource: local tests only; no real SMTP, no Release upload, no video generation
+- expected_benefit: 把 arXiv 输出从日报摘要提升为可长期运行的讲解教学邮件。
+- principal_risks: shallow digest quality, unsupported claims, old media path leakage, premature production enablement
+- evidence_required: B1 report artifact, email preview, claim evidence, focused tests, governance records
+- no_decision_consequence: arxiv-daily-push remains at S1-06 and cannot reach ARXIV_PRODUCTION_ACCEPTED.
 
 
 ## 12. Executable Tasks
@@ -193,7 +193,7 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 - `PFI_BIG_DATA_SIMULATOR`: `TASK-PFI-B-001` - Resolve calibration evidence for strategy catalog rule constants and indicator thresholds.
 - `Serenity-Alipay`: `NONE` - No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.
 - `whkmSalary`: `TASK-WHKM-B-001` - Resolve salary policy source, jurisdiction, effective date, tax basis, boundary behavior, and rounding policy evidence.
-- `arxiv-daily-push`: `ADP-PHASE11-PRODUCTION-TRIAL-START-022` - Provision durable production refs and run the default-branch trial start workflow before 30-day acceptance evidence can begin.
+- `arxiv-daily-push`: `S1-07-B1_REPORT_EMAIL_TEXT-001` - Produce the B1/arXiv explanatory teaching report, Claim evidence, Chinese email text/HTML preview, and audit artifacts required by V5 Stage 1.
 
 ## 13. Next Unique Governance Task
 
@@ -212,4 +212,4 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 | `PFI_BIG_DATA_SIMULATOR` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否投入多市场、OOS、成本和多重检验控制，验证 PFI 策略族不是数据挖掘赢家。 |
 | `Serenity-Alipay` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否投入历史基金快照、基准、OOS、消融和敏感性，验证评分权重、等级阈值、硬门禁和 Top5 衰减是否有稳定区分力。 |
 | `whkmSalary` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `FAILED` | `PARTIAL` | `FAILED` | 是否由工资、法务/政策和产品责任人提供权威政策、法域、生效日期、税务和舍入证据，验证 whkmSalary 可用于真实算薪。 |
-| `arxiv-daily-push` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `FAILED` | `PARTIAL` | `FAILED` | 是否启动 owner 配置的生产 trial，验证 arxiv-daily-push 的排序、Claim Ledger、中文课程、通知和 30 天运行稳定性。 |
+| `arxiv-daily-push` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `FAILED` | `PARTIAL` | `FAILED` | 是否继续执行 S1-07，生成 B1/arXiv 的高信息密度中文讲解教学邮件，而不是启动生产 trial。 |

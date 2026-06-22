@@ -24,6 +24,57 @@
         "additionalProperties": false
       }
     },
+    "frontstage": {
+      "type": "object",
+      "required": [
+        "decision",
+        "attention_score",
+        "evidence_level",
+        "estimated_reading_time",
+        "one_line_takeaway",
+        "first_principles_chain",
+        "domain_mappings",
+        "key_questions",
+        "evidence_gaps",
+        "default_action",
+        "video_card"
+      ],
+      "properties": {
+        "decision": {"type": "string", "enum": ["读", "扫读", "跳过"]},
+        "attention_score": {"type": "number", "minimum": 0, "maximum": 5},
+        "evidence_level": {"type": "string", "minLength": 1},
+        "estimated_reading_time": {"type": "string", "minLength": 1},
+        "one_line_takeaway": {"type": "string", "minLength": 1},
+        "first_principles_chain": {"type": "array", "minItems": 2, "items": {"type": "string"}},
+        "domain_mappings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["paper_variable", "decision_mapping"],
+            "properties": {
+              "paper_variable": {"type": "string"},
+              "decision_mapping": {"type": "string"}
+            },
+            "additionalProperties": false
+          }
+        },
+        "key_questions": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "evidence_gaps": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "default_action": {"type": "string", "minLength": 1},
+        "video_card": {
+          "type": "object",
+          "required": ["duration", "content", "learning_goal"],
+          "properties": {
+            "duration": {"type": "string"},
+            "content": {"type": "string"},
+            "learning_goal": {"type": "string"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "claim_ids": {"type": "array", "items": {"type": "string"}},
     "generated_at": {"type": "string"}
   },
