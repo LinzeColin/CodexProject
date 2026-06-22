@@ -4609,3 +4609,43 @@ Status: REMOTE CI VALIDATED FOR THIS SLICE; A204/A205/A209 STILL IN PROGRESS
 
 - Revert this CI-binding governance update and restore the previous precommit-pending T1303 worker wake evidence records.
 - Regenerate development, clean-room and release artifacts, then rerun local validation and GitHub CI.
+
+## 2026-06-23 - T1301/A202 publication operation-log audit
+
+Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A209/A210 STILL IN PROGRESS
+
+### Scope
+
+- Added deterministic `operation_logs` writes to `scripts/publish_reviewed_relationship_facts.py` for each reviewed relationship publication.
+- Each audit row uses action `a202_publish_reviewed_relationship_fact`, object type `relationship`, deterministic `request_id`, old/new publication payloads, A202 task/acceptance metadata, release-decision bundle hashes when present, and explicit non-closure flags for A202/A209/release-manager gates.
+- Extended the PostgreSQL integration contract so fixture-review and production-owner-signoff contract paths assert audit rows and idempotent reruns do not duplicate them.
+- Added `production_owner_publication_writes_operation_log=true` to the A202/A210 release decision contract artifact.
+
+### Acceptance mapping
+
+- T1301 -> A202 for real-data evidence-chain auditability and recovery traceability.
+- This does not close A202: source-license review, passage-level relationship approval, real production owner approval, formal legal/brand clearance, production gold labels, release-manager activation and A209 24h soak are still missing.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model-weight, threshold or parameter value changed.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache .venv/bin/python -m py_compile scripts/publish_reviewed_relationship_facts.py scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py tests/integration/test_database_migrations.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py tests/integration/test_database_migrations.py`: PASS.
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_release_decision_bundle.py tests/unit/test_scoring.py -q -p no:cacheprovider`: PASS, 19 passed.
+- `env -u DATABASE_URL PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/integration/test_database_migrations.py -q -p no:cacheprovider`: SKIPPED locally because this host has no `DATABASE_URL`; remote PostgreSQL CI is required.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_decision_bundle.py validate`: PASS.
+
+### Remaining gaps
+
+- Remote G2 PostgreSQL integration must prove the operation-log audit assertions.
+- A202 remains `IN_PROGRESS` until real signed source/legal/owner/brand evidence and production gold labels are attached.
+- A209 24h soak remains a background independent gate and is not replaced by operation logs.
+
+### Rollback
+
+- Revert `scripts/publish_reviewed_relationship_facts.py`, `scripts/validate_release_decision_bundle.py`, `tests/integration/test_database_migrations.py` and the regenerated A202 contract artifact.
+- Regenerate development, clean-room and release artifacts, then rerun local validation and GitHub CI.

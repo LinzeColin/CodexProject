@@ -285,6 +285,7 @@ def build_contract(
             "contract_test_signatures_are_not_clearance": True,
             "signed_contract_test_counts_as_clearance": False,
             "production_owner_publication_requires_signed_bundle": True,
+            "production_owner_publication_writes_operation_log": True,
             "default_publication_state": "fail_closed",
         },
         "non_claims": [

@@ -1910,6 +1910,44 @@ def reviewed_publication_counts(
         ).fetchone()
 
 
+def reviewed_publication_operation_log_counts(
+    *,
+    decision_set_key: str,
+    expected_actor: str,
+    release_bundle_hash: str | None = None,
+) -> tuple[int, int, int, int, int, int, int]:
+    release_hash_filter = (
+        "diff->>'release_decision_bundle_sha256' = %s"
+        if release_bundle_hash is not None
+        else "diff->>'release_decision_bundle_sha256' IS NULL"
+    )
+    params = [decision_set_key, expected_actor]
+    if release_bundle_hash is not None:
+        params.append(release_bundle_hash)
+    with connect_database() as connection:
+        return connection.execute(
+            f"""
+            SELECT count(*)::int,
+                   count(DISTINCT request_id)::int,
+                   count(*) FILTER (WHERE object_type = 'relationship')::int,
+                   count(*) FILTER (WHERE actor = %s)::int,
+                   count(*) FILTER (WHERE new_value->>'decision_set_key' = %s)::int,
+                   count(*) FILTER (WHERE diff->>'a202_closure_claimed' = 'false')::int,
+                   count(*) FILTER (WHERE {release_hash_filter})::int
+            FROM operation_logs
+            WHERE action_type = 'a202_publish_reviewed_relationship_fact'
+              AND new_value->>'decision_set_key' = %s
+              AND result_status = 'success'
+            """,
+            (
+                expected_actor,
+                decision_set_key,
+                *params[2:],
+                decision_set_key,
+            ),
+        ).fetchone()
+
+
 def exercise_reviewed_relationship_publication_contracts() -> None:
     run_script(
         "scripts/publish_reviewed_relationship_facts.py",
@@ -2044,6 +2082,10 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
             (REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,),
         ).fetchone()
         assert fact_version_payload_row == (2, 2, 2, 2)
+        assert reviewed_publication_operation_log_counts(
+            decision_set_key=REVIEWED_DECISION_SET_KEY,
+            expected_actor="integration-test-reviewer",
+        ) == (2, 2, 2, 2, 2, 2, 2)
 
         candidate_id, relationship_id = connection.execute(
             """
@@ -2097,6 +2139,10 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
     assert "relationship_fact_version" not in relationship_score["missing_inputs"]
 
     before_counts = reviewed_publication_counts()
+    before_log_counts = reviewed_publication_operation_log_counts(
+        decision_set_key=REVIEWED_DECISION_SET_KEY,
+        expected_actor="integration-test-reviewer",
+    )
     run_script(
         "scripts/publish_reviewed_relationship_facts.py",
         "--review-decisions",
@@ -2106,6 +2152,13 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
         "--allow-fixture-review",
     )
     assert reviewed_publication_counts() == before_counts
+    assert (
+        reviewed_publication_operation_log_counts(
+            decision_set_key=REVIEWED_DECISION_SET_KEY,
+            expected_actor="integration-test-reviewer",
+        )
+        == before_log_counts
+    )
 
     owner_without_gate = subprocess.run(
         [
@@ -2316,10 +2369,20 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
             """
         ).fetchone()
         assert owner_queue_row == (2, 2)
+        assert reviewed_publication_operation_log_counts(
+            decision_set_key=OWNER_SIGNOFF_DECISION_SET_KEY,
+            expected_actor="eei-production-data-owner",
+            release_bundle_hash=release_bundle_hash,
+        ) == (2, 2, 2, 2, 2, 2, 2)
 
     owner_before_counts = reviewed_publication_counts(
         decision_set_key=OWNER_SIGNOFF_DECISION_SET_KEY,
         snapshot_key=OWNER_SIGNOFF_SNAPSHOT_KEY,
+    )
+    owner_before_log_counts = reviewed_publication_operation_log_counts(
+        decision_set_key=OWNER_SIGNOFF_DECISION_SET_KEY,
+        expected_actor="eei-production-data-owner",
+        release_bundle_hash=release_bundle_hash,
     )
     run_script(
         "scripts/publish_reviewed_relationship_facts.py",
@@ -2337,6 +2400,14 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
             snapshot_key=OWNER_SIGNOFF_SNAPSHOT_KEY,
         )
         == owner_before_counts
+    )
+    assert (
+        reviewed_publication_operation_log_counts(
+            decision_set_key=OWNER_SIGNOFF_DECISION_SET_KEY,
+            expected_actor="eei-production-data-owner",
+            release_bundle_hash=release_bundle_hash,
+        )
+        == owner_before_log_counts
     )
 
 

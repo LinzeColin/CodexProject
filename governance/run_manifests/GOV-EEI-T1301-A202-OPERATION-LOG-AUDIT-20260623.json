@@ -1,19 +1,18 @@
 {
   "schema_version": 2,
-  "run_id": "GOV-EEI-T1303-WORKER-WAKE-20260623",
+  "run_id": "GOV-EEI-T1301-A202-OPERATION-LOG-AUDIT-20260623",
   "project_id": "root-governance",
-  "task_id": "GOV-EEI-T1303-WORKER-WAKE-20260623",
+  "task_id": "GOV-EEI-T1301-A202-OPERATION-LOG-AUDIT-20260623",
   "acceptance_ids": [
-    "ACC-A204",
-    "ACC-A205",
-    "ACC-A206",
+    "ACC-A202",
     "ACC-A209",
+    "ACC-A210",
     "ACC-REVIEW7-CI-BINDING"
   ],
-  "iteration_id": "ITER-20260623-002",
-  "generated_at": "2026-06-22T21:48:05Z",
-  "implementation_base_sha": "2d732d2987e30c508941f2e59fc5bc8a61865ffe",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:5ef5b2a9a45692db4f460ac4e038c565497d19cf7d3bef145cdab307091b70f5",
+  "iteration_id": "ITER-20260623-004",
+  "generated_at": "2026-06-23T00:00:00Z",
+  "implementation_base_sha": "14aaa2d538268d51376f3582983ab01ff1cc9ae7",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:e5acff73ac1c8205360941a50054a2dede9a0af94419c3e278746fd22ebe7e6a",
   "changed_files_declared": [
     "EEI/CHANGELOG.md",
     "EEI/CHECKSUMS.sha256",
@@ -155,7 +154,6 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "required_governance_files": [
-    "scripts/generate_governance_dashboard.py",
     "EEI/docs/governance/VERSION_MATRIX.yaml",
     "EEI/docs/governance/delivery_tasks.yaml",
     "EEI/docs/governance/development_events.jsonl",
@@ -166,83 +164,71 @@
     "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
     "EEI/data/acceptance_traceability.csv",
     "EEI/data/development_status_ledger.csv",
-    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json"
+    "governance/run_manifests/GOV-EEI-T1301-A202-OPERATION-LOG-AUDIT-20260623.json"
   ],
   "updated_governance_files": [
-    "EEI/data/acceptance_matrix.csv",
     "EEI/data/acceptance_traceability.csv",
-    "EEI/data/data_catalog_manifest.csv",
     "EEI/data/development_status_ledger.csv",
-    "EEI/data/parameter_catalog.csv",
-    "EEI/data/task_backlog.csv",
-    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
-    "EEI/docs/governance/DELIVERY_PLAN.md",
     "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
-    "EEI/docs/governance/MODEL_SPEC.md",
-    "EEI/docs/governance/OWNER_STATUS.md",
-    "EEI/docs/governance/STATUS.md",
-    "EEI/docs/governance/TRACEABILITY_MATRIX.csv",
     "EEI/docs/governance/VERSION_MATRIX.yaml",
     "EEI/docs/governance/delivery_tasks.yaml",
     "EEI/docs/governance/development_events.jsonl",
-    "EEI/docs/governance/formula_registry.yaml",
-    "EEI/docs/governance/model_registry.yaml",
-    "EEI/docs/governance/parameter_registry.csv",
     "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
     "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
-    "GOVERNANCE_DASHBOARD.md",
-    "OWNER_PORTFOLIO.md",
-    "README.md",
-    "governance/binding_backlog.yaml",
-    "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
-    "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
-    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
-    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
-    "tests/governance/test_project_governance_validator.py"
+    "governance/run_manifests/GOV-EEI-T1301-A202-OPERATION-LOG-AUDIT-20260623.json"
   ],
   "test_commands": [
-    "PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache .venv/bin/python -m py_compile apps/worker/app/main.py tests/integration/test_database_migrations.py",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check apps/worker/app/main.py tests/integration/test_database_migrations.py",
-    "python3 scripts/generate_governance_dashboard.py --write --project EEI",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_development_status_artifacts.py generate",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_clean_room_release.py generate",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_release_artifacts.py generate --remote-status PENDING",
-    "make verify",
-    "python3 scripts/validate_governance_sync.py --changed-only --base-ref origin/main --enforce-sync --semantic",
-    "PYTHONPYCACHEPREFIX=/private/tmp/eei-root-pycache python3 -m pytest tests/governance/test_project_governance_validator.py -q -p no:cacheprovider"
+    "PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache .venv/bin/python -m py_compile scripts/publish_reviewed_relationship_facts.py scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py tests/integration/test_database_migrations.py",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py tests/integration/test_database_migrations.py",
+    "PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_release_decision_bundle.py tests/unit/test_scoring.py -q -p no:cacheprovider",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_decision_bundle.py validate",
+    "env -u DATABASE_URL PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/integration/test_database_migrations.py -q -p no:cacheprovider"
   ],
   "test_results": [
     {
-      "command": "py_compile worker/test",
+      "command": "py_compile scoped A202 files",
       "result": "PASS",
-      "exit_code": 0
+      "exit_code": 0,
+      "observed": "Scoped publication script, release bundle validator, unit test and integration test modules compile."
     },
     {
-      "command": "focused ruff worker/test",
+      "command": "ruff scoped A202 files",
       "result": "PASS",
-      "exit_code": 0
+      "exit_code": 0,
+      "observed": "Scoped A202 files pass lint."
     },
     {
-      "command": "EEI G2 PostgreSQL integration",
-      "result": "REMOTE_CI_REQUIRED",
-      "observed": "new supervisor CLI assertions require GitHub Actions after commit"
+      "command": "unit tests release decision bundle and scoring",
+      "result": "PASS",
+      "exit_code": 0,
+      "observed": "19 passed."
+    },
+    {
+      "command": "release decision bundle validator",
+      "result": "PASS",
+      "exit_code": 0,
+      "observed": "Signed decision bundle contract validates with operation-log audit policy."
+    },
+    {
+      "command": "integration database migrations without local DATABASE_URL",
+      "result": "SKIP",
+      "exit_code": 0,
+      "observed": "1 skipped locally; remote PostgreSQL CI still required for operation_logs assertions."
     }
   ],
   "evidence_refs": [
-    "EEI/apps/worker/app/main.py",
+    "EEI/scripts/publish_reviewed_relationship_facts.py",
     "EEI/tests/integration/test_database_migrations.py",
-    "EEI/artifacts/tests/a204/t1303_transactional_model_activation_contract.json",
-    "EEI/artifacts/tests/a205/t1303_atomic_refresh_context_contract.json",
+    "EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md"
   ],
   "binding_status": "PRECOMMIT_TREE_BOUND",
-  "ci_attestation_subject": "T1303/A204-A205 supervised worker wake precommit tree; CI attestation will be recorded after push",
-  "ci_run_reference": "not-yet-run-precommit-tree-bound",
-  "result_commit": "not-yet-committed-precommit-tree-bound",
-  "finished_at": "2026-06-22T21:48:05Z",
-  "rollback": "Revert the T1303 worker supervisor/test/artifact/status changes, remove this run manifest, regenerate governance/release artifacts and rerun validation.",
+  "ci_attestation_subject": "T1301/A202 reviewed relationship publication operation_logs audit",
+  "ci_run_reference": "local precommit validation complete; remote CI not yet started",
+  "rollback": "Revert this A202 operation-log audit slice, regenerate EEI release artifacts, rerun make verify and governance sync.",
   "notes": [
-    "A209 24h soak remains a background long-running evidence gate and is not closed by this manifest.",
-    "A204/A205 remain IN_PROGRESS until remote CI, release-manager and long-duration refresh evidence are current."
+    "This manifest does not close A202, A209, or A210.",
+    "A209 24h soak remains a background long-running evidence gate and must not block bounded MVP feature work.",
+    "Remote PostgreSQL CI is required to prove operation_logs rows on the real migration-backed integration path."
   ]
 }

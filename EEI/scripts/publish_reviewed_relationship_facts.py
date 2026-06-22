@@ -564,6 +564,111 @@ def owner_signature_hash(decision: dict[str, Any]) -> str | None:
     return sha256_text(canonical_json(payload))
 
 
+def log_publication_operation(
+    connection: object,
+    *,
+    decision_set: dict[str, Any],
+    decision: dict[str, Any],
+    candidate: dict[str, Any],
+    relationship_id: str,
+    snapshot_id: str,
+    fact_version_id: str,
+    evidence_count: int,
+    release_decision_context: dict[str, Any] | None,
+) -> None:
+    request_id = (
+        f"a202:{decision_set['decision_set_key']}:"
+        f"{candidate['candidate_key']}:publish:v1"
+    )
+    exists = connection.execute(
+        """
+        SELECT 1
+        FROM operation_logs
+        WHERE request_id = %s
+          AND action_type = 'a202_publish_reviewed_relationship_fact'
+        LIMIT 1
+        """,
+        (request_id,),
+    ).fetchone()
+    if exists:
+        return
+    production_owner_signoff = bool(decision_set.get("production_owner_signoff"))
+    actor = decision.get("owner_actor") if production_owner_signoff else decision["reviewer"]
+    old_value = {
+        "candidate_id": candidate["id"],
+        "candidate_key": candidate["candidate_key"],
+        "publication_status": candidate["publication_status"],
+        "review_status": candidate["review_status"],
+        "source_threshold_met": candidate["source_threshold_met"],
+    }
+    new_value = {
+        "relationship_id": relationship_id,
+        "snapshot_id": snapshot_id,
+        "fact_version_id": fact_version_id,
+        "publication_status": "published",
+        "review_status": "human_verified",
+        "decision_set_key": decision_set["decision_set_key"],
+        "review_context": decision_set["review_context"],
+    }
+    diff = {
+        "task_id": "T1301",
+        "acceptance_ids": ["A202"],
+        "publisher_version": PUBLISHER_VERSION,
+        "candidate_key": candidate["candidate_key"],
+        "decision_set_key": decision_set["decision_set_key"],
+        "review_context": decision_set["review_context"],
+        "fixture_review_only_not_production_clearance": bool(
+            decision_set.get("fixture_review_only_not_production_clearance")
+        ),
+        "production_owner_signoff": production_owner_signoff,
+        "release_decision_bundle_id": (
+            release_decision_context["bundle_id"] if release_decision_context else None
+        ),
+        "release_decision_bundle_sha256": (
+            release_decision_context["bundle_sha256"] if release_decision_context else None
+        ),
+        "signed_decision_complete": (
+            release_decision_context["signed_decision_complete"]
+            if release_decision_context
+            else False
+        ),
+        "legal_clearance_status": (
+            release_decision_context["legal_clearance_status"]
+            if release_decision_context
+            else None
+        ),
+        "brand_decision": (
+            release_decision_context["brand_decision"] if release_decision_context else None
+        ),
+        "evidence_rows": evidence_count,
+        "a202_closure_claimed": False,
+        "a209_24h_operator_soak_required": True,
+        "release_manager_activation_required": True,
+    }
+    connection.execute(
+        """
+        INSERT INTO operation_logs(
+          actor, action_type, object_type, object_id, old_value, new_value,
+          diff, reason, request_id, result_status
+        )
+        VALUES (%s, 'a202_publish_reviewed_relationship_fact', 'relationship',
+                %s, %s, %s, %s, %s, %s, 'success')
+        """,
+        (
+            actor,
+            relationship_id,
+            Jsonb(old_value),
+            Jsonb(new_value),
+            Jsonb(diff),
+            (
+                "A202 reviewed relationship publication audit; does not close "
+                "A202, A209 or A210 without external gates."
+            ),
+            request_id,
+        ),
+    )
+
+
 def publish_candidate(
     connection: object,
     *,
@@ -840,6 +945,17 @@ def publish_candidate(
                 Jsonb(publication_structured_fact),
             ),
         )
+    log_publication_operation(
+        connection,
+        decision_set=decision_set,
+        decision=decision,
+        candidate=candidate,
+        relationship_id=relationship_id,
+        snapshot_id=snapshot_id,
+        fact_version_id=str(fact_version_id),
+        evidence_count=len(evidence),
+        release_decision_context=release_decision_context,
+    )
     connection.execute(
         """
         UPDATE manual_review_queue
