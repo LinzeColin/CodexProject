@@ -50,6 +50,7 @@
   "tests_run": [
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_phase12_pycache_all3 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_phase12_pycache_root3 python3 -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_arxiv_owner_status_uses_latest_event_manifest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_arxiv_daily_push_phase12_manifest_records_all_arxiv_queue_delivery -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_phase12_pycache_semantic_project3 python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_phase12_pycache_gov3 python3 scripts/validate_project_governance.py --changed-only --enforce-sync",
     "rg -n \"ADP_ARXIV_QUERY|cat:cs\\.AI\" .github/workflows/arxiv-daily-push-scheduled.yml .github/workflows/arxiv-daily-push-trial-start.yml",
     "python3 -m json.tool governance/run_manifests/ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-20260622.json",
@@ -59,6 +60,7 @@
   "test_results": [
     "arxiv-daily-push unit tests: 165 tests OK",
     "targeted root governance manifest tests: 2 tests OK",
+    "semantic extractor: 34 active formulas and 175 active parameters checked with no errors",
     "changed-only governance sync: errors 0 warnings 0; command continued to full registered-project validation and reported unrelated missing local project directories",
     "scheduled/trial-start production workflows: no ADP_ARXIV_QUERY or cat:cs.AI entry found",
     "manifest JSON, development_events JSONL, CSV width checks: pass",
