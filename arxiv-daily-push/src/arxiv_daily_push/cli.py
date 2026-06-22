@@ -63,6 +63,16 @@ from .source_registry import (
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
 from .stage1_b1_report import build_b1_report_email_package, validate_b1_report_email_package
 from .stage1_queue import build_stage1_queue_report, validate_stage1_queue_report
+from .stage1_runtime import (
+    STAGE1_RUNTIME_SUPPORTED_SCHEDULER_PLATFORMS,
+    build_runtime_audit,
+    build_scheduler_plan,
+    create_runtime_backup,
+    restore_runtime_backup,
+    run_tick,
+    run_watchdog,
+    validate_stage1_runtime_report,
+)
 from .storage import (
     inspect_database,
     migrate_database,
@@ -150,6 +160,50 @@ def build_parser() -> argparse.ArgumentParser:
     b1_report.add_argument("--artifact-dir", help="Directory for Markdown, HTML, and JSON artifacts.")
     b1_report.add_argument("--write", action="store_true", help="Write report/email/audit artifacts to --artifact-dir.")
     b1_report.add_argument("--json", action="store_true", help="Print JSON report/email package.")
+
+    runtime_audit = subparsers.add_parser("runtime-audit", help="Audit Stage 1 local runtime readiness without side effects.")
+    runtime_audit.add_argument("--state-dir", required=True, help="Explicit local runtime state directory.")
+    runtime_audit.add_argument("--db", help="Optional Stage 1 SQLite database path to inspect.")
+    runtime_audit.add_argument("--generated-at", required=True, help="Audit timestamp.")
+    runtime_audit.add_argument("--json", action="store_true", help="Print JSON runtime audit report.")
+
+    tick = subparsers.add_parser("tick", help="Run the Stage 1 local tick control and write heartbeat/checkpoint state.")
+    tick.add_argument("--state-dir", required=True, help="Explicit local runtime state directory.")
+    tick.add_argument("--generated-at", required=True, help="Tick timestamp.")
+    tick.add_argument("--no-write", action="store_true", help="Dry-run the tick without writing heartbeat/checkpoint files.")
+    tick.add_argument("--json", action="store_true", help="Print JSON tick report.")
+
+    watchdog = subparsers.add_parser("watchdog", help="Check Stage 1 local heartbeat and lock freshness.")
+    watchdog.add_argument("--state-dir", required=True, help="Explicit local runtime state directory.")
+    watchdog.add_argument("--generated-at", required=True, help="Watchdog timestamp.")
+    watchdog.add_argument("--json", action="store_true", help="Print JSON watchdog report.")
+
+    backup = subparsers.add_parser("backup", help="Create a small Stage 1 SQLite/config backup with a SHA256 manifest.")
+    backup.add_argument("--db", required=True, help="Stage 1 SQLite database path.")
+    backup.add_argument("--backup-dir", required=True, help="Directory that receives the backup folder.")
+    backup.add_argument("--generated-at", required=True, help="Backup timestamp.")
+    backup.add_argument("--include-path", action="append", default=[], help="Small supporting file to include. May be repeated.")
+    backup.add_argument("--json", action="store_true", help="Print JSON backup report.")
+
+    restore = subparsers.add_parser("restore", help="Restore a Stage 1 SQLite backup to an explicit target path.")
+    restore.add_argument("--manifest", required=True, help="backup_manifest.json path.")
+    restore.add_argument("--target-db", required=True, help="Explicit restore target database path.")
+    restore.add_argument("--generated-at", required=True, help="Restore timestamp.")
+    restore.add_argument("--confirm-restore", action="store_true", help="Required confirmation for restore writes.")
+    restore.add_argument("--allow-overwrite", action="store_true", help="Allow replacing an existing target database.")
+    restore.add_argument("--json", action="store_true", help="Print JSON restore report.")
+
+    scheduler = subparsers.add_parser("scheduler", help="Build Stage 1 OS-native scheduler dry-run templates.")
+    scheduler_subparsers = scheduler.add_subparsers(dest="scheduler_command", required=True)
+    for scheduler_action in ("install", "uninstall"):
+        scheduler_parser = scheduler_subparsers.add_parser(scheduler_action, help=f"Build scheduler {scheduler_action} dry-run templates.")
+        scheduler_parser.add_argument("--platform", choices=STAGE1_RUNTIME_SUPPORTED_SCHEDULER_PLATFORMS, required=True)
+        scheduler_parser.add_argument("--project-root", default=".", help="Repository root used in generated templates.")
+        scheduler_parser.add_argument("--state-dir", required=True, help="Explicit local runtime state directory.")
+        scheduler_parser.add_argument("--generated-at", required=True, help="Template generation timestamp.")
+        scheduler_parser.add_argument("--artifact-dir", help="Directory for template files when --write is used.")
+        scheduler_parser.add_argument("--write", action="store_true", help="Write template files only; never install them.")
+        scheduler_parser.add_argument("--json", action="store_true", help="Print JSON scheduler report.")
 
     doctor = subparsers.add_parser("doctor", help="Run local Phase 1 readiness checks.")
     doctor.add_argument("--json", action="store_true", help="Print JSON report.")
@@ -654,6 +708,108 @@ def main(argv: list[str] | None = None) -> int:
             if report["status"] == "pass":
                 print(f"- report_id: {report['report_id']}")
                 print(f"- email_subject: {report['email_subject']}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "runtime-audit":
+        report = build_runtime_audit(
+            state_dir=args.state_dir,
+            db_path=args.db,
+            generated_at=args.generated_at,
+        )
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "tick":
+        report = run_tick(state_dir=args.state_dir, generated_at=args.generated_at, write=not args.no_write)
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- heartbeat_path: {report.get('heartbeat_path')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "watchdog":
+        report = run_watchdog(state_dir=args.state_dir, generated_at=args.generated_at)
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "backup":
+        report = create_runtime_backup(
+            db_path=args.db,
+            backup_dir=args.backup_dir,
+            generated_at=args.generated_at,
+            include_paths=args.include_path,
+        )
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            if report["status"] == "pass":
+                print(f"- backup_manifest_path: {report.get('backup_manifest_path')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "restore":
+        report = restore_runtime_backup(
+            manifest_path=args.manifest,
+            target_db_path=args.target_db,
+            generated_at=args.generated_at,
+            confirm_restore=args.confirm_restore,
+            allow_overwrite=args.allow_overwrite,
+        )
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "scheduler":
+        action = f"scheduler_{args.scheduler_command}"
+        report = build_scheduler_plan(
+            action=action,
+            platform=args.platform,
+            project_root=args.project_root,
+            state_dir=args.state_dir,
+            generated_at=args.generated_at,
+            artifact_dir=args.artifact_dir,
+            write=args.write,
+        )
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print("- dry_run_only: true")
+            for path in report.get("written_paths", []):
+                print(f"- template: {path}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- error: {reason}")
         return 0 if report["status"] == "pass" else 2

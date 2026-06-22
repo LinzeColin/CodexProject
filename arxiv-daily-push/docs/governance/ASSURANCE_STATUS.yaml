@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260622-ADP-068"
-source_snapshot_hash: "sha256:304930c939caeaa24af08464c6e433337e01efedccd506cfe6849b2500464ac3"
+as_of_event_id: "EVENT-20260622-ADP-069"
+source_snapshot_hash: "sha256:920473d1be61a2cf6d89a4acbb909fd488741749dacff54bef9c537174bceb99"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-22T21:45:00+10:00"
+snapshot_event_time: "2026-06-22T22:20:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 298
-    total_active_parameters: 298
-    checked_active_formulas: 42
-    total_active_formulas: 42
+    checked_active_parameters: 308
+    total_active_parameters: 308
+    checked_active_formulas: 43
+    total_active_formulas: 43
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 298
-    total_active_parameters: 298
+    checked_active_parameters: 308
+    total_active_parameters: 308
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,54 +64,54 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 0
     legacy_unbound_events: 54
-    precommit_pending_events: 15
+    precommit_pending_events: 16
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "ADP-S1-07-B1-REPORT-EMAIL-TEXT-READY"
+  release_gate: "ADP-S1-08-LOCAL-RUNTIME-RECOVERY-READY"
   blocker_ids:
     - "ADP-PHASE8-VIDEO-001"
     - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
     - "FACT-arxiv-daily-push-OPERATIONAL-EVIDENCE"
 next_executable_task:
-  task_id: "S1-08-LOCAL_RUNTIME_RECOVERY-001"
+  task_id: "S1-09-MIGRATION_PACKAGE-001"
   status: "planned"
-  reason: "Add local runtime controls for tick, watchdog, backup, restore, runtime audit, and scheduler install/uninstall helpers."
+  reason: "Produce the low-resource integration evidence and new-machine migration checklist."
   acceptance_ids:
-    - "ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY"
+    - "ADP-ACC-S1-09-MIGRATION-PACKAGE"
   owner: "engineering_owner + operations_owner"
   human_owner_role: "engineering_owner + operations_owner"
-  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q` and attach the listed evidence refs."
+  unblock_condition: "Define concrete acceptance test commands before marking the task ready, then attach the listed evidence refs."
   stale_candidates: []
 owner_decision:
   required: true
-  decision_id: "DEC-arxiv-daily-push-V5-S1-002"
+  decision_id: "DEC-arxiv-daily-push-V5-S1-003"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否继续执行 S1-08，补齐本地 tick、watchdog、backup、restore、runtime audit 和 scheduler install/uninstall 恢复控制。"
-  question: "是否继续执行 S1-08，补齐本地 tick、watchdog、backup、restore、runtime audit 和 scheduler install/uninstall 恢复控制。"
+  decision_question: "是否继续执行 S1-09，产出新机器迁移包、低资源运行证据和长期运行交接清单。"
+  question: "是否继续执行 S1-09，产出新机器迁移包、低资源运行证据和长期运行交接清单。"
   human_owner_role: "engineering_owner + operations_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT"
-  current_recommendation: "A: implement S1-08 local runtime recovery controls before migration packaging"
-  option_a: "继续 S1-08，完成本地运行、恢复、备份和调度控制的低资源代码与证据。"
-  option_b: "暂停在 S1-07，只保留 B1 报告/邮件预览，不进入本地运行恢复门禁。"
-  option_c: "跳过 S1-08 直接迁移；不推荐，因为会缺少恢复和调度证据。"
+  current_recommendation: "A: implement S1-09 migration package before historical previews and live-day evidence"
+  option_a: "继续 S1-09，完成新机器迁移清单、低资源 smoke 证据、恢复路径和运行交接材料。"
+  option_b: "暂停在 S1-08，只保留本地运行恢复控制，不进入迁移准备。"
+  option_c: "跳过迁移包直接跑历史预览；不推荐，因为长期稳定运行和换机恢复证据不足。"
   options:
-    - "继续 S1-08，完成本地运行、恢复、备份和调度控制的低资源代码与证据。"
-    - "暂停在 S1-07，只保留 B1 报告/邮件预览，不进入本地运行恢复门禁。"
-    - "跳过 S1-08 直接迁移；不推荐，因为会缺少恢复和调度证据。"
-  estimated_effort: "P1; local runtime and operations implementation"
-  estimated_cost_or_resource: "local tests only; no production schedule install, no real SMTP, no large replay"
-  expected_benefit: "让 arXiv Stage 1 从文本预览能力推进到可恢复、可审计、可迁移的本地运行骨架。"
-  principal_risks: "scheduler side effects, stale heartbeat, unsafe restore, secret leakage, oversized artifacts"
-  evidence_required: "tick/watchdog reports, backup/restore fixtures, scheduler dry-run evidence, focused tests, governance records"
+    - "继续 S1-09，完成新机器迁移清单、低资源 smoke 证据、恢复路径和运行交接材料。"
+    - "暂停在 S1-08，只保留本地运行恢复控制，不进入迁移准备。"
+    - "跳过迁移包直接跑历史预览；不推荐，因为长期稳定运行和换机恢复证据不足。"
+  estimated_effort: "P1; migration and operations documentation"
+  estimated_cost_or_resource: "local fixture tests and migration checklist only; no production schedule install, no real SMTP, no large replay"
+  expected_benefit: "把 arXiv Stage 1 从可恢复本地骨架推进到可迁移、可交接、可长期运行的低资源操作包。"
+  principal_risks: "migration checklist gaps, hidden local-state dependency, resource pressure, premature production enablement"
+  evidence_required: "migration package, low-resource smoke evidence, restore checklist, focused tests, governance records"
   decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "arxiv-daily-push remains at S1-07 and cannot reach ARXIV_PRODUCTION_ACCEPTED."
-  unblock_task_id: "S1-08-LOCAL_RUNTIME_RECOVERY-001"
+  consequence_of_no_decision: "arxiv-daily-push remains at S1-08 and cannot reach ARXIV_PRODUCTION_ACCEPTED."
+  unblock_task_id: "S1-09-MIGRATION_PACKAGE-001"
   acceptance_ids:
-    - "ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY"
+    - "ADP-ACC-S1-09-MIGRATION-PACKAGE"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-22T21:45:00+10:00"
+  last_reviewed_at: "2026-06-22T22:20:00+10:00"

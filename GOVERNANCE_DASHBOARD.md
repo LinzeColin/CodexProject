@@ -2,8 +2,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:958c0843669e631661d31c10c7ec42e84612c073bd455a9fb1feb43369727dfc`
-- snapshot_event_time: `2026-06-22T21:45:00+10:00`
+- source_snapshot_hash: `sha256:aea5ae1879ca52b9ce0a0138b5611cfaa70dc4a3702949faeeea7a684e8fedbc`
+- snapshot_event_time: `2026-06-22T22:20:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -18,7 +18,7 @@
 | `PFI_BIG_DATA_SIMULATOR` | `0.1.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `UNVERIFIED` | `TASK-PFI-B-001` |
 | `Serenity-Alipay` | `0.1.0` | `B` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `NONE` |
 | `whkmSalary` | `0.0.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `FAILED` | `TASK-WHKM-B-001` |
-| `arxiv-daily-push` | `0.17.0` | `S1-A` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `FAILED` | `S1-08-LOCAL_RUNTIME_RECOVERY-001` |
+| `arxiv-daily-push` | `0.18.0` | `S1-A` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `FAILED` | `S1-09-MIGRATION_PACKAGE-001` |
 
 ## Notes
 
