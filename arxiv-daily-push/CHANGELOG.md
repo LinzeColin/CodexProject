@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.4 - 2026-06-22
+
+- Fixed GitHub Release delivery to deduplicate repeated identical asset paths before invoking `gh release create`.
+- Added fail-closed blocking for distinct Release assets that would publish with the same filename.
+- Recorded second manual delivery run `27927785092`, where workflow-level dedupe passed but the lower release delivery boundary still blocked before SMTP.
+- Added bounded transient retry handling for live all-arXiv cloud dry-runs after PR CI run `27928505758` hit arXiv 429 limits while preserving the 20/20 archive pass requirement.
+- Kept production schedule disabled and preserved no-secret/no-attachment Release-link delivery policy.
+
 ## 0.12.3 - 2026-06-22
 
 - Fixed the manual GitHub Release plus Gmail SMTP test workflow to deduplicate Release assets by filename before invoking scheduled delivery.

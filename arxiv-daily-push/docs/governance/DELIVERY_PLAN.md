@@ -17,7 +17,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 45
+- task_count: 46
 - acceptance_count: 44
 
 ## Delivery Tasks
@@ -69,7 +69,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031 | E | completed | ADP-ACC-PHASE12-ALL-ARXIV-QUEUE-DELIVERY | 165 arXiv tests OK; semantic extractor 34 formulas/175 parameters OK; targeted root governance tests 2 OK; changed-only sync 0 errors/0 warnings before unrelated missing-project validation; all-arXiv scan, queue fallback, workflow guards, and mail video-link gates pass | `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
 | ADP-PHASE12-PRODUCTION-ENABLEMENT-032 | E | completed | ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT | PR cloud dry-run path passed on GitHub-hosted runner with 20/20 arXiv buckets and real MP4 artifact; production variables remain disabled | `docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md` |
 | ADP-PHASE12-MANUAL-DELIVERY-TEST-033 | E | prepared | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual workflow prepared for default-branch Release + Gmail SMTP test; real Release upload and real email send still require post-PR manual workflow dispatch | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md` |
-| ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual workflow now deduplicates Release assets by filename after first default-branch manual run failed closed during Release creation; rerun required for real SMTP evidence | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_RELEASE_DEDUPE.md` |
+| ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034 | E | completed | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual workflow now deduplicates Release assets by filename after first default-branch manual run failed closed during Release creation; second run exposed the lower release delivery boundary now handled by 035 | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_RELEASE_DEDUPE.md` |
+| ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | release delivery now deduplicates identical asset paths, blocks conflicting duplicate asset filenames, and retries transient arXiv 429/timeout blocks in cloud dry-run after second manual run and PR CI exposed both fail-closed gaps; rerun required for real SMTP evidence | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_INTERNAL_RELEASE_DEDUPE.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates
