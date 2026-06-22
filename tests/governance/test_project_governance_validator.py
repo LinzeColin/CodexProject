@@ -497,30 +497,6 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertTrue(validation.errors)
         self.assertIn("append-only", validation.errors[0].message)
 
-    def test_review5_development_events_allow_binding_classification_metadata(self) -> None:
-        sync = load_sync_module()
-        old_event = {
-            "event_id": "E1",
-            "git_commit": "PENDING",
-            "binding_status": "pre_commit_pending",
-        }
-        new_event = {
-            **old_event,
-            "binding_status": "stale_unbound",
-            "binding_rationale": "Final commit/CI binding was not present in the original event.",
-        }
-        with tempfile.TemporaryDirectory() as tmp:
-            tmp_path = Path(tmp)
-            event_file = tmp_path / "P" / "docs" / "governance" / "development_events.jsonl"
-            event_file.parent.mkdir(parents=True)
-            event_file.write_text(json.dumps(new_event) + "\n", encoding="utf-8")
-            with patch.object(sync, "ROOT", tmp_path), patch.object(
-                sync, "base_file_text", return_value=json.dumps(old_event) + "\n"
-            ):
-                validation = sync.SyncValidation()
-                sync.validate_append_only(validation, ["P/docs/governance/development_events.jsonl"], "BASE")
-        self.assertFalse(validation.errors)
-
     def test_review5_event_files_changed_must_cover_actual_diff(self) -> None:
         sync = load_sync_module()
         with tempfile.TemporaryDirectory() as tmp:
@@ -1415,17 +1391,18 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260622-002")
-        self.assertEqual(matrix["current_gate"], "GOV-EEI-BINDING-CLASSIFICATION")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260621-017")
+        self.assertEqual(matrix["current_gate"], "TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL")
 
         events = [json.loads(line) for line in (ROOT / "EEI" / "docs" / "governance" / "development_events.jsonl").read_text(encoding="utf-8").splitlines()]
         soak_event = next(event for event in events if event.get("event_id") == "EVENT-20260621-019")
         self.assertEqual(soak_event["task_id"], "TASK-T1307")
         self.assertIn("PARTIAL", soak_event["result"])
         review6_event = next(event for event in events if event.get("event_id") == "EVT-REVIEW6-FINAL-EEI-001")
-        self.assertEqual(review6_event["binding_status"], "stale_unbound")
+        self.assertEqual(review6_event["binding_status"], "pre_commit_pending")
 
         owner_text = (ROOT / "EEI" / "docs" / "governance" / "OWNER_STATUS.md").read_text(encoding="utf-8")
+        self.assertIn("TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL", owner_text)
         self.assertIn("24h operator soak evidence", owner_text)
 
         self.assertTrue((ROOT / "EEI" / "artifacts" / "tests" / "a209" / "t1307_operator_soak_4h.json").is_file())

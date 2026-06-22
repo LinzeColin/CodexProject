@@ -1,9 +1,9 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260622-005"
-source_snapshot_hash: "sha256:a3ce95e782fae9c5191da47dd2ec35180f12fc6073656e9f9d3eacb42d27a5de"
+as_of_event_id: "EVT-REVIEW6-FINAL-EEI-CI-001"
+source_snapshot_hash: "sha256:c711765daef57609355d95d45de0da52b46ae663ce8ec92c34a81cf355410a23"
 source_base_commit: "932446fd2154ac477ea0cb6862a60098b1e1ed55"
 source_tree_hash: "a661be1db22d99ff3afe6183ac1ae8f4c444be18"
-snapshot_event_time: "2026-06-22T14:35:00+10:00"
+snapshot_event_time: "2026-06-22T00:42:00Z"
 generator_version: "3.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -57,13 +57,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 6
-    legacy_unbound_events: 24
-    precommit_pending_events: 0
+    legacy_unbound_events: 17
+    precommit_pending_events: 2
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "GOV-EEI-BINDING-CLASSIFICATION"
+  release_gate: "TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-IMPLEMENTATION-FORMULA-REVIEW"
