@@ -167,6 +167,16 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml", "arxiv-daily-push/tests/test_manual_delivery_workflow.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-037"
+    statement: "Review8 V4 owner controls must use one owner-editable YAML file, while owner-visible Markdown and CSV views are generated artifacts and not second editable fact sources."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py", "arxiv-daily-push/tests/test_owner_controls.py", "arxiv-daily-push/docs/owner/OWNER_CONSOLE.md"]
+    status: "active"
+  - assumption_id: "ASM-ADP-038"
+    statement: "Review8 Stage 1 Window A storage must remain a local SQLite database with WAL journal mode, FTS5 search, deterministic schema migration, and rollback support, with no bulk import, retained PDF corpus, production scheduler enablement, SMTP send, Release upload, or source expansion in S1-04."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/storage.py", "arxiv-daily-push/tests/test_storage.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -865,3 +875,28 @@ models:
     config_refs: ["arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/schemas/owner_controls.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_owner_controls.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/owner/OWNER_CONSOLE.md", "arxiv-daily-push/docs/owner/SOURCE_CATALOG.md", "arxiv-daily-push/docs/owner/MODEL_AND_QUEUE.md", "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"]
+  - model_id: "MOD-ADP-036"
+    name: "Review8 Stage 1 SQLite document and event data model"
+    kind: "deterministic local storage schema and migration gate"
+    purpose: "Create, inspect, validate, populate, search, and rollback the low-resource local SQLite/WAL/FTS5 document/event model required before the Stage 1 connector, queue, ledger, runtime recovery, and migration tasks."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-sqlite-data-model-v1"
+    assumption_ids: ["ASM-ADP-038", "ASM-ADP-035", "ASM-ADP-020"]
+    formula_ids: ["FORM-ADP-038"]
+    parameter_ids:
+      - "PARAM-ADP-268"
+      - "PARAM-ADP-269"
+      - "PARAM-ADP-270"
+      - "PARAM-ADP-271"
+      - "PARAM-ADP-272"
+      - "PARAM-ADP-273"
+      - "PARAM-ADP-274"
+      - "PARAM-ADP-275"
+    inputs: ["database path", "SourceItem mapping", "fetch_run_id", "storage CLI command", "target rollback version"]
+    outputs: ["SQLite database", "migration report", "inspection report", "rollback report", "canonical document rows", "document_versions rows", "FTS5 rows", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/storage.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["NOT_APPLICABLE"]
+    test_refs: ["arxiv-daily-push/tests/test_storage.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json", "arxiv-daily-push/tests/test_storage.py"]

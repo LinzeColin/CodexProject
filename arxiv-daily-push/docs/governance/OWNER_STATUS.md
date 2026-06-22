@@ -39,7 +39,7 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (266/266 active parameters, 37/37 active formulas)
+- implementation_congruence: `VERIFIED` (274/274 active parameters, 38/38 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -68,25 +68,25 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `35`
-- total_formulas: `37`
-- active_formulas: `37`
-- total_parameters: `267`
-- active_parameters: `266`
+- model_count: `36`
+- total_formulas: `38`
+- active_formulas: `38`
+- total_parameters: `275`
+- active_parameters: `274`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-READY`
+- release_gate: `ADP-S1-04-SQLITE-DATA-MODEL-READY`
 
 ## 14. Evidence Freshness
 
 - tree_bound_events: `0`
 - commit_bound_events: `0`
 - legacy_unbound_events: `54`
-- precommit_pending_events: `9`
-- pending_or_stale_events: `63`
+- precommit_pending_events: `10`
+- pending_or_stale_events: `64`
 
 ## 15. UNKNOWN
 
@@ -96,11 +96,11 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:693baccb60be59db55154b4dbe8ae86d188aad7b4ed5756bcc0dd58ac6d1a3d4`
-- snapshot_event_time: `2026-06-22T17:20:00+10:00`
+- source_snapshot_hash: `sha256:a8f3a229dfde51ded7413cb7761891c70b2dafdc572bb76b2e169caafae4b416`
+- snapshot_event_time: `2026-06-22T18:20:00+10:00`
 - generator_version: `4.0.0`
-- version: `0.13.1`
-- phase/gate: `E / ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-READY`
+- version: `0.14.0`
+- phase/gate: `S1-A / ADP-S1-04-SQLITE-DATA-MODEL-READY`
 
 ## 17. Next Unique Task
 
