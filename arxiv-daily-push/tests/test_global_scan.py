@@ -111,6 +111,13 @@ class GlobalScanTests(unittest.TestCase):
         self.assertIn("q-fin", {item["archive_id"] for item in plan["archives"]})
         self.assertIn("quant-ph", {item["archive_id"] for item in plan["archives"]})
         self.assertNotEqual({item["query"] for item in plan["archives"]}, {"cat:cs.AI"})
+        queries = {item["archive_id"]: item["query"] for item in plan["archives"]}
+        self.assertIn("cat:q-fin.PM", queries["q-fin"])
+        self.assertIn("cat:stat.ML", queries["stat"])
+        self.assertIn("cat:nlin.CD", queries["nlin"])
+        self.assertIn("cat:physics.optics", queries["physics"])
+        self.assertNotEqual(queries["q-fin"], "cat:q-fin")
+        self.assertNotEqual(queries["stat"], "cat:stat")
         self.assertFalse(validate_all_arxiv_scan_plan(plan))
 
     def test_daily_input_selects_highest_roi_and_persists_queue_artifacts(self) -> None:
