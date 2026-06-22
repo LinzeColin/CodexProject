@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .daily_input import DAILY_INPUT_BUILDER_MODEL_ID, validate_daily_input_report
+from .global_scan import ALL_ARXIV_SCAN_MODEL_ID, build_daily_delivery_package, validate_all_arxiv_daily_input_report
 from .notifications import render_email
 from .pipeline import PipelineError, run_daily_dry_run
 from .production_preflight import validate_production_preflight
@@ -140,6 +141,8 @@ def validate_scheduled_execution_report(report: Mapping[str, Any]) -> list[str]:
             errors.append("scheduled execution must not log email body text")
         if policy.get("gh_output_logged") is not False:
             errors.append("scheduled execution must not log gh stdout or stderr")
+        if policy.get("video_attachment_allowed") is not False:
+            errors.append("scheduled execution must not allow video email attachments")
     if report.get("production_evidence_ready") is True:
         refs = report.get("evidence_refs")
         if not isinstance(refs, Mapping):
@@ -148,6 +151,13 @@ def validate_scheduled_execution_report(report: Mapping[str, Any]) -> list[str]:
             for key in ("daily_run_ref", "release_ref", "email_ref", "resource_gate_ref"):
                 if not str(refs.get(key) or "").strip():
                     errors.append(f"production evidence ready requires {key}")
+        delivery = report.get("delivery_package")
+        if not isinstance(delivery, Mapping):
+            errors.append("production evidence ready requires delivery_package")
+        else:
+            for key in ("video_link_ready", "email_contains_chinese_lesson", "email_contains_video_link", "email_contains_candidate_queue_summary"):
+                if delivery.get(key) is not True:
+                    errors.append(f"production evidence ready requires delivery_package.{key}")
     if report.get("status") == "blocked" and not report.get("blocking_reasons"):
         errors.append("blocked scheduled execution requires blocking_reasons")
     notification = report.get("notification_report")
@@ -236,6 +246,12 @@ def _run_daily(
         return _with_validation(report)
 
     assets = list(release_asset_paths or [])
+    artifact_paths = payload.get("artifact_paths")
+    if isinstance(artifact_paths, Mapping):
+        for key in ("daily_input", "candidate_queue", "video_artifact", "email_brief"):
+            value = artifact_paths.get(key)
+            if value:
+                assets.append(value)
     if not assets and daily_input_path:
         assets = [daily_input_path]
     release_report = deliver_release(
@@ -252,15 +268,22 @@ def _run_daily(
         command_resolver=release_command_resolver,
         command_runner=release_command_runner,
     )
-    notification_report = _notification(
-        "success" if release_report.get("status") == "created" else "degraded",
-        "daily-run",
-        generated_at,
-        "Daily scheduled pipeline completed",
-        env,
+    delivery_package = build_daily_delivery_package(daily, payload, release_report, generated_at=generated_at)
+    notification_report = deliver_notification(
+        delivery_package["notification"],
+        generated_at=generated_at,
+        allow_send=_env_true(env, SMTP_SEND_ENV_KEY) and bool(delivery_package["video_link_ready"]),
+        env=env,
         smtp_factory=smtp_factory,
     )
-    production_ready = release_report.get("status") == "created" and notification_report.get("status") == "sent"
+    production_ready = (
+        release_report.get("status") == "created"
+        and notification_report.get("status") == "sent"
+        and delivery_package.get("video_link_ready") is True
+        and delivery_package.get("email_contains_chinese_lesson") is True
+        and delivery_package.get("email_contains_video_link") is True
+        and delivery_package.get("email_contains_candidate_queue_summary") is True
+    )
 
     report = dict(base)
     report["status"] = "succeeded" if production_ready else "degraded"
@@ -280,6 +303,11 @@ def _run_daily(
     }
     report["release_report"] = release_report
     report["notification_report"] = notification_report
+    report["delivery_package"] = {
+        key: value
+        for key, value in delivery_package.items()
+        if key != "notification"
+    }
     report["production_evidence_ready"] = production_ready
     report["evidence_refs"] = {
         "daily_run_ref": f"run-record://{daily['run_record']['run_id']}",
@@ -288,9 +316,7 @@ def _run_daily(
         "resource_gate_ref": base["evidence_refs"]["resource_gate_ref"],
     }
     if not production_ready:
-        report["blocking_reasons"] = [
-            "daily pipeline completed but real SMTP and Release evidence are not both present",
-        ]
+        report["blocking_reasons"] = _daily_production_blockers(release_report, notification_report, delivery_package)
     return _with_validation(report)
 
 
@@ -299,6 +325,24 @@ def _resolve_daily_input_payload(payload: Mapping[str, Any]) -> tuple[dict[str, 
         return {}, []
     if payload.get("model_id") != DAILY_INPUT_BUILDER_MODEL_ID and "daily_input" not in payload:
         return dict(payload), []
+    if payload.get("model_id") == ALL_ARXIV_SCAN_MODEL_ID:
+        errors = validate_all_arxiv_daily_input_report(payload)
+        if errors:
+            return {}, [f"all-arxiv daily input report invalid: {errors[0]}"]
+        if payload.get("daily_input_ready") is not True or payload.get("status") != "pass":
+            return {}, [
+                "all-arxiv daily input blocked: " + reason
+                for reason in (payload.get("blocking_reasons") or ["all-arxiv daily input not ready"])
+            ]
+        daily_input = payload.get("daily_input")
+        if not isinstance(daily_input, Mapping):
+            return {}, ["all-arxiv daily input report missing daily_input object"]
+        resolved = dict(daily_input)
+        for key in ("artifact_paths", "delivery_requirements"):
+            value = payload.get(key)
+            if isinstance(value, Mapping):
+                resolved[key] = dict(value)
+        return resolved, []
     errors = validate_daily_input_report(payload)
     if errors:
         return {}, [f"daily input builder report invalid: {errors[0]}"]
@@ -382,6 +426,7 @@ def _base_report(
             "email_body_logged": False,
             "gh_output_logged": False,
             "codex_auth_read": False,
+            "video_attachment_allowed": False,
         },
         "evidence_refs": {
             "daily_run_ref": "",
@@ -421,6 +466,25 @@ def _notification(
         env=env,
         smtp_factory=smtp_factory,
     )
+
+
+def _daily_production_blockers(
+    release_report: Mapping[str, Any],
+    notification_report: Mapping[str, Any],
+    delivery_package: Mapping[str, Any],
+) -> list[str]:
+    reasons = []
+    if release_report.get("status") != "created":
+        reasons.append("daily pipeline completed but GitHub Release evidence is not created")
+    if delivery_package.get("video_link_ready") is not True:
+        reasons.append("daily email requires a GitHub Release video artifact link before real SMTP send")
+    if delivery_package.get("email_contains_chinese_lesson") is not True:
+        reasons.append("daily email requires Chinese lesson content")
+    if delivery_package.get("email_contains_candidate_queue_summary") is not True:
+        reasons.append("daily email requires candidate queue summary")
+    if notification_report.get("status") != "sent":
+        reasons.append("daily pipeline completed but real SMTP evidence is not sent")
+    return reasons or ["daily pipeline completed but production delivery evidence is incomplete"]
 
 
 def _blocked(base: Mapping[str, Any], reasons: Sequence[str]) -> dict[str, Any]:

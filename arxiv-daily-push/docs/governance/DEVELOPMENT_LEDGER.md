@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.11.27`
+Active product version: `0.12.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.11.27
+- Product version: 0.12.0
 - Current phase: E
-- Current gate: ADP-PHASE11-TWO-DAY-SIMULATION-PASS
-- Confirmed iteration count: 46
+- Current gate: ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-PASS
+- Confirmed iteration count: 47
 - Reconstructed event count: 0
-- Current task: ADP-PHASE11-TWO-DAY-SIMULATION-030
-- Blockers: The updated local Phase 11 two-day simulation gate passes with two consecutive mocked scheduled daily runs, two trial ledger appends, no real SMTP, no real Release upload, no network fetch, no Codex auth read, and no production acceptance claim. Semantic coverage is machine_verified with 168 machine-checked active parameters and all 33 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED under `GOV-SEMANTIC-ADP-001`. Production launch remains blocked by missing owner-provisioned durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, missing explicit launch confirmation, missing passing owner-run provisioning audit and artifact review evidence, and missing default-branch trial-start run evidence. Full production acceptance still requires owner-provisioned runner/secret/Release/workflow refs, a passing default-branch trial start workflow run, live source ingest pass on the runner, real SMTP and Release refs, resource telemetry, weekly/monthly replay, recovery drill, and 30 unique daily production evidence entries if the project chooses the real production-trial path later.
+- Current task: ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031
+- Blockers: Phase 12 all-arXiv scan, candidate queue persistence, ROI ranking, daily lead selection, Release-hosted video artifact link gating, and email queue summary pass focused local tests. Production launch remains blocked by PR CI completion, owner-provisioned default-branch runner networking/TLS, durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, explicit launch confirmation, default-branch Phase 12 workflow evidence, real Gmail SMTP evidence to `linzezhang35@gmail.com`, real GitHub Release video-link evidence, resource telemetry, replay/recovery evidence, 30 unique daily production entries, and explicitly disabled production variables.
 
 ## Phase Matrix
 
@@ -24,7 +24,7 @@ The append-only machine record is `development_events.jsonl`.
 | B | Data contracts and arXiv source/ranking | completed | generic schemas and arXiv adapter/ranking gates pass | `docs/phase_records/PHASE_02.md`; `docs/phase_records/PHASE_03.md`; `docs/phase_records/PHASE_04.md` |
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
-| E | Weekly/monthly trial and handoff | completed | handoff readiness, trial evidence validator, production preflight, live ingest, SMTP delivery, Release delivery, scheduler gate, scheduled execution driver, daily input builder, trial ledger update, trial ledger state persistence, trial ops evidence annotation, trial replay evidence, trial recovery evidence, trial resource evidence, trial start gate, trial start workflow, production launch readiness, post-merge launch audit, production refs readiness bundle, production refs input template, GitHub metadata discovery, trial-start launch preflight, provisioning audit workflow, provisioning audit review, and updated two-day simulation gate generated; production acceptance blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md` |
+| E | Weekly/monthly trial, all-arXiv queue delivery, and production handoff | completed | Phase 11 production gates plus Phase 12 all-arXiv scan, candidate queue, ROI ranking, daily lead, Release video-link email gate, and production blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`; `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
 
 ## Iteration Records
 
@@ -1087,6 +1087,30 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: Real production launch still requires owner-provisioned durable refs, explicit launch confirmation, default-branch workflow evidence, and real SMTP/Release/resource evidence.
 - Rollback: Remove the two-day simulation module, CLI command, tests, MOD-ADP-031, FORM-ADP-033, PARAM-ADP-167 through PARAM-ADP-169, phase record, manifest, and related governance records, then restore version 0.11.26.
 - Next step: Sync the two-day simulation changes to GitHub and, only if real production launch is requested later, run the provisioning audit and default-branch trial-start path with owner-provided refs.
+
+### `ITER-20260621-047`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from official arXiv taxonomy/API documentation, Phase 12 implementation, focused tests, and workflow contract checks.
+- Version before: 0.11.27
+- Version after: 0.12.0
+- Base commit: c775a956b29e976c965c0c58e7ba25d250c70eae
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031
+- Goal: Upgrade scheduled production input from legacy cs.AI-only defaults to all-arXiv primary archive scanning with candidate queue persistence, ROI ranking, one daily lead paper, Release-hosted video artifact link, and email queue summary.
+- Assumptions: Phase 12 may prove code and workflow gates with local fixture source batches, but real production remains disabled until owner-provisioned runner networking/TLS, SMTP, Release target, and default-branch workflow evidence pass.
+- Files changed: global scan module, CLI, scheduled execution, scheduler validator, trial-start gate/workflow validator, scheduled and trial-start workflows, focused tests, runbook, config examples, README, version/changelog files, model/formula/parameter/traceability registries, delivery task, phase record, event, and run manifest.
+- Model changes: Added MOD-ADP-032 `adp-all-arxiv-scan-v1`.
+- Formula changes: Added FORM-ADP-034 Phase 12 all-arXiv scan queue delivery gate.
+- Parameter changes: Added PARAM-ADP-170 through PARAM-ADP-176 for all-arXiv model id, archive count, per-archive window, queue size, ROI thresholds, ROI weights, and mail video-link policy.
+- Commands run: full arXiv unit test discovery; project semantic extractor; targeted root governance manifest tests; project governance changed-only sync check; workflow legacy-query grep; JSON/CSV format checks; git diff check.
+- Test results: arXiv unit tests 165 OK; semantic extractor checked 34 active formulas and 175 active parameters with no errors; targeted root governance tests 2 OK; changed-only governance sync reported 0 errors and 0 warnings before the validator continued into unrelated missing project directories; workflow legacy-query grep found no `ADP_ARXIV_QUERY` or `cat:cs.AI` production entry; manifest JSON, JSONL, CSV width, and git diff checks passed.
+- Successes: Production workflows no longer default to `cat:cs.AI`; scheduled daily-run can restore/persist a candidate queue, scan the arXiv primary archive set, rank by requested ROI/learning criteria, emit Phase 12 artifacts, and require a Release video artifact link before real SMTP can count.
+- Failures: No production variables were enabled, no real SMTP message was sent, no real Release was uploaded, no live runner all-arXiv fetch was proven, and no real MP4 rendering was claimed.
+- Decisions: Keep `ADP_PRODUCTION_ENABLED`, `ADP_SCHEDULED_RUN_ENABLED`, `ADP_ALLOW_SMTP_SEND`, and `ADP_ALLOW_RELEASE_UPLOAD` disabled until Phase 12 is verified on the owner-provisioned runner and Release/SMTP evidence passes.
+- Remaining risks: Real production launch still requires owner-provisioned GitHub Actions runner networking/TLS, SMTP app password, Release target, default-branch workflow evidence, real Release-hosted video/MP4 artifacts, resource telemetry, replay/recovery evidence, and 30 daily production entries.
+- Rollback: Remove `global_scan.py`, Phase 12 CLI commands, workflow updates, delivery-package gates, tests, runbook/config/governance updates, and restore version 0.11.27.
+- Next step: Open PR for Phase 12, wait for CI, merge only after checks pass, then configure production variables only after runner-side all-arXiv scan, queue, Release link, and SMTP evidence pass.
 
 ## Unknown Historical Periods
 

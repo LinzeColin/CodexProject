@@ -75,6 +75,23 @@ def daily_input_builder_report() -> dict:
     )
 
 
+def production_daily_input_payload() -> dict:
+    payload = json.loads(PIPELINE_INPUT.read_text(encoding="utf-8"))
+    payload["queue_summary"] = {
+        "queue_model_id": "adp-candidate-queue-v1",
+        "queued_item_count": 1,
+        "top_queued": [
+            {
+                "source_id": "arxiv:2401.00002",
+                "title": "Queued high-value arXiv candidate",
+                "roi_total_score": 87.0,
+                "primary_category": "q-fin.PM",
+            }
+        ],
+    }
+    return payload
+
+
 class ScheduledExecutionTests(unittest.TestCase):
     def test_health_check_succeeds_with_passed_preflight_and_dry_run_notification(self) -> None:
         report = run_scheduled_execution(
@@ -166,30 +183,37 @@ class ScheduledExecutionTests(unittest.TestCase):
                 FakeSMTP.sent_messages.append(message)
                 return {}
 
-        report = run_scheduled_execution(
-            mode="daily-run",
-            generated_at="2026-07-01T05:00:00+10:00",
-            preflight_report=preflight_pass(),
-            env=complete_env(
-                ADP_SCHEDULED_RUN_ENABLED="true",
-                ADP_ALLOW_SMTP_SEND="true",
-                ADP_ALLOW_RELEASE_UPLOAD="true",
-            ),
-            daily_input_path=PIPELINE_INPUT,
-            release_asset_paths=[PIPELINE_INPUT],
-            smtp_factory=FakeSMTP,
-            release_command_resolver=lambda _name: "/usr/bin/gh",
-            release_command_runner=lambda _command: {"returncode": 0},
-        )
+        with tempfile.TemporaryDirectory() as tmp:
+            video_artifact = Path(tmp) / "adp-video-artifact.json"
+            video_artifact.write_text('{"artifact_type":"video_manifest"}\n', encoding="utf-8")
+            report = run_scheduled_execution(
+                mode="daily-run",
+                generated_at="2026-07-01T05:00:00+10:00",
+                preflight_report=preflight_pass(),
+                env=complete_env(
+                    ADP_SCHEDULED_RUN_ENABLED="true",
+                    ADP_ALLOW_SMTP_SEND="true",
+                    ADP_ALLOW_RELEASE_UPLOAD="true",
+                ),
+                daily_input=production_daily_input_payload(),
+                release_asset_paths=[PIPELINE_INPUT, video_artifact],
+                smtp_factory=FakeSMTP,
+                release_command_resolver=lambda _name: "/usr/bin/gh",
+                release_command_runner=lambda _command: {"returncode": 0},
+            )
 
         self.assertEqual(report["status"], "succeeded")
         self.assertEqual(report["exit_code"], 0)
         self.assertTrue(report["production_evidence_ready"])
         self.assertEqual(report["release_report"]["status"], "created")
         self.assertEqual(report["notification_report"]["status"], "sent")
+        self.assertTrue(report["delivery_package"]["video_link_ready"])
+        self.assertTrue(report["delivery_package"]["email_contains_candidate_queue_summary"])
         self.assertEqual(report["daily_run_report"]["scheduled_local_time"], "05:00")
         self.assertTrue(report["daily_run_report"]["p0_claims_traceable"])
         self.assertEqual(FakeSMTP.sent_messages[0]["To"], "linzezhang35@gmail.com")
+        self.assertIn("adp-video-artifact.json", FakeSMTP.sent_messages[0].get_content())
+        self.assertIn("候选队列摘要", FakeSMTP.sent_messages[0].get_content())
         self.assertNotIn("super-secret-password", str(report))
         self.assertFalse(validate_scheduled_execution_report(report))
 

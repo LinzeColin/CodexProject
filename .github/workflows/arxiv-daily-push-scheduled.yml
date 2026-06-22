@@ -93,8 +93,8 @@ jobs:
       ADP_SELF_HOSTED_RUNNER_LABEL: arxiv-daily-push
       ADP_SCHEDULED_RUN_ENABLED: ${{ vars.ADP_SCHEDULED_RUN_ENABLED }}
       ADP_DAILY_INPUT_PATH: ${{ vars.ADP_DAILY_INPUT_PATH }}
-      ADP_ARXIV_QUERY: ${{ vars.ADP_ARXIV_QUERY }}
-      ADP_ARXIV_MAX_RESULTS: ${{ vars.ADP_ARXIV_MAX_RESULTS }}
+      ADP_ARXIV_MAX_RESULTS_PER_CATEGORY: ${{ vars.ADP_ARXIV_MAX_RESULTS_PER_CATEGORY }}
+      ADP_CANDIDATE_QUEUE_INPUT_PATH: ${{ vars.ADP_CANDIDATE_QUEUE_INPUT_PATH }}
       ADP_RECENT_SOURCE_IDS: ${{ vars.ADP_RECENT_SOURCE_IDS }}
       ADP_TRIAL_EVIDENCE_INPUT_PATH: ${{ vars.ADP_TRIAL_EVIDENCE_INPUT_PATH }}
       ADP_TRIAL_ID: ${{ vars.ADP_TRIAL_ID }}
@@ -141,16 +141,78 @@ jobs:
           path: ${{ runner.temp }}/adp-scheduled-preflight.json
           if-no-files-found: error
           retention-days: 35
+      - name: Resolve candidate queue state
+        id: candidate_queue_state
+        if: needs.gate.outputs.mode == 'daily-run'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          queue_path="$RUNNER_TEMP/adp-candidate-queue.json"
+          source="none"
+          if [ -n "${ADP_CANDIDATE_QUEUE_INPUT_PATH:-}" ] && [ -f "${ADP_CANDIDATE_QUEUE_INPUT_PATH:-}" ]; then
+            cp "$ADP_CANDIDATE_QUEUE_INPUT_PATH" "$queue_path"
+            source="configured-path"
+          elif command -v gh >/dev/null 2>&1; then
+            runs_json="$RUNNER_TEMP/adp-candidate-queue-runs.json"
+            previous_dir="$RUNNER_TEMP/adp-candidate-queue-previous"
+            mkdir -p "$previous_dir"
+            gh run list \
+              --repo "${{ github.repository }}" \
+              --workflow "arXiv Daily Push scheduled production gate" \
+              --branch "${{ github.ref_name }}" \
+              --status completed \
+              --limit 20 \
+              --json databaseId,conclusion > "$runs_json" 2>/dev/null || true
+            previous_run_id="$(python3 - "$runs_json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          try:
+              runs = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          except Exception:
+              runs = []
+          for run in runs:
+              if run.get("conclusion") == "success" and run.get("databaseId"):
+                  print(run["databaseId"])
+                  break
+          PY
+            )"
+            if [ -n "$previous_run_id" ]; then
+              gh run download "$previous_run_id" \
+                --repo "${{ github.repository }}" \
+                --name adp-candidate-queue \
+                --dir "$previous_dir" >/dev/null 2>&1 || true
+              previous_file="$(find "$previous_dir" -type f -name '*.json' | head -n 1)"
+              if [ -n "$previous_file" ]; then
+                cp "$previous_file" "$queue_path"
+                source="artifact:$previous_run_id"
+              fi
+            fi
+          fi
+          if [ -f "$queue_path" ]; then
+            printf 'candidate_queue_path=%s\n' "$queue_path" >> "$GITHUB_OUTPUT"
+          else
+            printf 'candidate_queue_path=\n' >> "$GITHUB_OUTPUT"
+          fi
+          printf 'source=%s\n' "$source" >> "$GITHUB_OUTPUT"
+          {
+            echo "## arXiv Daily Push candidate queue"
+            echo "- source: $source"
+            echo "- path: ${queue_path:-not-found}"
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Build scheduled daily input
         id: daily_input
         if: needs.gate.outputs.mode == 'daily-run' && env.ADP_DAILY_INPUT_PATH == ''
         shell: bash
         run: |
           set +e
-          source_batch="$RUNNER_TEMP/adp-scheduled-source-batch.json"
           daily_input="$RUNNER_TEMP/adp-scheduled-daily-input.json"
-          query="${ADP_ARXIV_QUERY:-cat:cs.AI}"
-          max_results="${ADP_ARXIV_MAX_RESULTS:-10}"
+          artifact_dir="$RUNNER_TEMP/adp-phase12-artifacts"
+          queue_output="$RUNNER_TEMP/adp-candidate-queue-updated.json"
+          max_results="${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3}"
           generated_at="${{ steps.generated_at.outputs.value }}"
           daily_date="$(python3 - "$generated_at" <<'PY'
           from datetime import datetime
@@ -172,48 +234,54 @@ jobs:
               fi
             done
           fi
+          command=(
+            python3 -m arxiv_daily_push build-all-arxiv-daily-input
+            --date "$daily_date"
+            --generated-at "$generated_at"
+            --timezone "Australia/Sydney"
+            --max-results-per-category "$max_results"
+            --artifact-dir "$artifact_dir"
+            --queue-output "$queue_output"
+            --json
+          )
+          restored_queue="${{ steps.candidate_queue_state.outputs.candidate_queue_path }}"
+          if [ -n "$restored_queue" ]; then
+            command+=(--queue-path "$restored_queue")
+          fi
+          command+=("${seen_args[@]}")
           PYTHONDONTWRITEBYTECODE=1 \
-          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_source_ingest" \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_all_arxiv_daily_input" \
           PYTHONPATH=arxiv-daily-push/src \
-            python3 -m arxiv_daily_push fetch-arxiv-latest \
-              --query "$query" \
-              --max-results "$max_results" \
-              --generated-at "$generated_at" \
-              "${seen_args[@]}" \
-              --json > "$source_batch"
-          source_code=$?
-          PYTHONDONTWRITEBYTECODE=1 \
-          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_daily_input" \
-          PYTHONPATH=arxiv-daily-push/src \
-            python3 -m arxiv_daily_push build-daily-input \
-              --source-batch "$source_batch" \
-              --date "$daily_date" \
-              --generated-at "$generated_at" \
-              --timezone "Australia/Sydney" \
-              "${seen_args[@]}" \
-              --json > "$daily_input"
+            "${command[@]}" > "$daily_input"
           daily_code=$?
-          cat "$source_batch"
           cat "$daily_input"
-          printf 'source_batch_path=%s\n' "$source_batch" >> "$GITHUB_OUTPUT"
           printf 'daily_input_path=%s\n' "$daily_input" >> "$GITHUB_OUTPUT"
-          printf 'source_exit_code=%s\n' "$source_code" >> "$GITHUB_OUTPUT"
+          printf 'artifact_dir=%s\n' "$artifact_dir" >> "$GITHUB_OUTPUT"
+          printf 'candidate_queue_path=%s\n' "$queue_output" >> "$GITHUB_OUTPUT"
           printf 'daily_input_exit_code=%s\n' "$daily_code" >> "$GITHUB_OUTPUT"
           exit 0
-      - name: Upload scheduled source batch artifact
-        if: always() && steps.daily_input.outputs.source_batch_path != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: adp-scheduled-source-batch
-          path: ${{ steps.daily_input.outputs.source_batch_path }}
-          if-no-files-found: error
-          retention-days: 35
       - name: Upload scheduled daily input artifact
         if: always() && steps.daily_input.outputs.daily_input_path != ''
         uses: actions/upload-artifact@v4
         with:
           name: adp-scheduled-daily-input
           path: ${{ steps.daily_input.outputs.daily_input_path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Upload Phase 12 delivery artifacts
+        if: always() && steps.daily_input.outputs.artifact_dir != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-phase12-delivery-artifacts
+          path: ${{ steps.daily_input.outputs.artifact_dir }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Upload candidate queue artifact
+        if: always() && steps.daily_input.outputs.candidate_queue_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-candidate-queue
+          path: ${{ steps.daily_input.outputs.candidate_queue_path }}
           if-no-files-found: error
           retention-days: 35
       - name: Run scheduled mode
@@ -226,6 +294,7 @@ jobs:
           if [ -z "$resolved_daily_input" ]; then
             resolved_daily_input="${{ steps.daily_input.outputs.daily_input_path }}"
           fi
+          phase12_artifact_dir="${{ steps.daily_input.outputs.artifact_dir }}"
           command=(
             python3 -m arxiv_daily_push run-scheduled-production
             --mode "${{ needs.gate.outputs.mode }}"
@@ -234,7 +303,14 @@ jobs:
             --json
           )
           if [ -n "$resolved_daily_input" ]; then
-            command+=(--daily-input "$resolved_daily_input" --release-asset "$resolved_daily_input")
+            command+=(--daily-input "$resolved_daily_input")
+          fi
+          if [ -n "$phase12_artifact_dir" ] && [ -d "$phase12_artifact_dir" ]; then
+            while IFS= read -r artifact; do
+              command+=(--release-asset "$artifact")
+            done < <(find "$phase12_artifact_dir" -type f -name '*.json' | sort)
+          elif [ -n "$resolved_daily_input" ]; then
+            command+=(--release-asset "$resolved_daily_input")
           fi
           PYTHONDONTWRITEBYTECODE=1 \
           PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_execution" \

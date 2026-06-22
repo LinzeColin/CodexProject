@@ -18,7 +18,7 @@ from arxiv_daily_push.trial_ledger import (
 
 def scheduled_execution_report(*, date: str = "2026-07-01", production_ready: bool = True) -> dict:
     status = "succeeded" if production_ready else "degraded"
-    return {
+    report = {
         "execution_id": f"scheduled-execution:arxiv-daily-push:daily-run:{date}",
         "validator_id": SCHEDULED_EXECUTION_MODEL_ID,
         "project_id": "arxiv-daily-push",
@@ -36,6 +36,7 @@ def scheduled_execution_report(*, date: str = "2026-07-01", production_ready: bo
             "email_body_logged": False,
             "gh_output_logged": False,
             "codex_auth_read": False,
+            "video_attachment_allowed": False,
         },
         "evidence_refs": {
             "daily_run_ref": f"run-record://daily-{date}",
@@ -57,6 +58,15 @@ def scheduled_execution_report(*, date: str = "2026-07-01", production_ready: bo
             "failure_generated_misleading_content": False,
         },
     }
+    if production_ready:
+        report["delivery_package"] = {
+            "video_link_ready": True,
+            "email_contains_chinese_lesson": True,
+            "email_contains_video_link": True,
+            "email_contains_candidate_queue_summary": True,
+            "video_attachment_allowed": False,
+        }
+    return report
 
 
 class TrialLedgerTests(unittest.TestCase):

@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 31
-- formula_count: 33
-- parameter_count: 169
+- model_count: 32
+- formula_count: 34
+- parameter_count: 176
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -46,6 +46,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-029 | Production launch readiness gate | deterministic launch-readiness validator | Block default-branch trial start dispatch until PR, workflow, runner, secrets, Release target, variables, refs, and confirmation are launch-ready | active | adp-production-launch-readiness-v1 | `src/arxiv_daily_push/production_launch.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-030 | Production refs readiness bundle | deterministic no-secret readiness validator | Generate a no-secret owner-fillable template, discover GitHub Actions metadata, run a GitHub-hosted provisioning audit, and review downloaded audit artifacts before launch readiness consumes refs | active | adp-production-refs-v1 | `src/arxiv_daily_push/production_refs.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-provisioning-audit.yml` |
 | MOD-ADP-031 | Two-day simulation acceptance gate | deterministic simulation validator | Run the updated two-day Phase 11 simulation with mocked SMTP and Release boundaries while blocking network fetch, real side effects, secret reads, cache/media retention, and production acceptance claims | active | adp-two-day-simulation-v1 | `src/arxiv_daily_push/simulation.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-032 | All-arXiv Phase 12 scan queue delivery gate | deterministic source selection and delivery gate | Build all-arXiv daily input from bounded primary archive scans, persist ROI-ranked queue state, and require Release-hosted video artifact links before production email evidence can count | active | adp-all-arxiv-scan-v1 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/scheduled_execution.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 
 ## B. Assumptions
 
@@ -85,6 +86,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-032 | Production launch may proceed only after the PR is non-draft and merged into `main`, the expected head SHA is bound, the workflow contract is ready, and durable refs exist for runner, SMTP secrets, Release target, workflow variables, and default-branch workflow location. | `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`, `src/arxiv_daily_push/production_launch.py`, `tests/test_production_launch.py` | Phase 11 production launch readiness | active |
 | ASM-ADP-033 | Production runner, SMTP secret, Release target, and workflow variable readiness must be collected through a no-secret template or GitHub metadata discovery as names and durable refs only; secret values and credential material must never enter the readiness report. | `src/arxiv_daily_push/production_refs.py`, `config/examples/production_refs.input.example.json`, `tests/test_production_refs.py`, `docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md` | Phase 11 production refs readiness | active |
 | ASM-ADP-034 | The updated local Phase 11 goal is satisfied by a deterministic two-day simulation only when both scheduled daily runs and ledger appends pass with mocked SMTP/Release boundaries and no production acceptance claim. | `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`, `src/arxiv_daily_push/simulation.py`, `tests/test_simulation.py`, `governance/run_manifests/ADP-PHASE11-TWO-DAY-SIMULATION-20260622.json` | Phase 11 two-day simulation | active |
+| ASM-ADP-035 | Production daily source selection must scan the primary arXiv archive set, not collapse to the legacy cs.AI-only query, and must persist a candidate queue with ROI-ranked fallback before real SMTP/Release delivery can count. | `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md`, `src/arxiv_daily_push/global_scan.py`, `.github/workflows/arxiv-daily-push-scheduled.yml`, `tests/test_global_scan.py` | Phase 12 all-arXiv production path | active |
 
 ## C. Functions and Formulas
 
@@ -123,6 +125,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-031 validates production launch readiness across PR merged/non-draft state, expected head SHA binding, workflow contract readiness, durable external readiness refs, explicit launch confirmation, and no-side-effect safety.
 - FORM-ADP-032 validates production refs template generation, GitHub metadata discovery, provisioning audit workflow, downloaded audit artifact review, and readiness across required runner, SMTP secret-name, Release target, workflow variable, durable-ref, no-secret-input, redacted discovery-error, audit artifact refs, and no-side-effect gates.
 - FORM-ADP-033 validates the two-day simulation across consecutive dates, mocked scheduled daily runs, mocked SMTP/Release evidence, trial ledger appends, unique source/publication IDs, no secret leakage, no Codex auth read, no network fetch, and no production acceptance claim.
+- FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 
 ## D. Parameters
 
@@ -159,6 +162,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 production launch readiness parameters: PARAM-ADP-149 through PARAM-ADP-153.
 - Active Phase 11 production refs readiness parameters: PARAM-ADP-154 through PARAM-ADP-159 plus PARAM-ADP-162, PARAM-ADP-163, PARAM-ADP-165, and PARAM-ADP-166.
 - Active Phase 11 two-day simulation parameters: PARAM-ADP-167 through PARAM-ADP-169.
+- Active Phase 12 all-arXiv scan queue delivery parameters: PARAM-ADP-170 through PARAM-ADP-176.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -397,6 +401,10 @@ matched to its own resource gate evidence.
 - Daily input builder missing Atom summary -> daily input report blocked.
 - Daily input builder selected candidate recently used -> daily input report blocked.
 - Daily input builder pass -> daily input contains SourceItem, supported claims, date, run_id, and selection audit.
+- All-arXiv scan plan missing a primary archive bucket or collapsing to `cat:cs.AI` -> Phase 12 daily input blocked.
+- All-arXiv daily selection chooses one new high-value candidate first, otherwise consumes a queued high-value candidate, otherwise blocks if no candidate meets the minimum threshold.
+- Phase 12 candidate queue persists high-value unselected candidates as a small JSON artifact and never stores PDFs, media, model weights, or secrets.
+- Scheduled production email cannot count as production-ready unless it includes Chinese lesson content, candidate queue summary, and a GitHub Release-hosted video artifact link.
 - Production refs discovery without `gh`, with failed GitHub metadata access, missing runner label, missing SMTP secret names, missing workflow variables, empty `ADP_RELEASE_TARGET`, or secret-like input -> refs report blocked or redacted discovery error.
 - Production pass with any missing requirement -> acceptance validation error.
 

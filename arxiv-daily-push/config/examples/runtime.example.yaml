@@ -11,8 +11,10 @@ real_release_upload_enabled: false
 scheduled_production_enabled: false
 scheduled_run_enabled: false
 scheduled_daily_input_path: null
-scheduled_arxiv_query: "cat:cs.AI"
-scheduled_arxiv_max_results: 10
+scheduled_arxiv_scope: all_arxiv_primary_archives
+scheduled_arxiv_max_results_per_category: 3
+candidate_queue_input_path: null
+candidate_queue_artifact_name: adp-candidate-queue
 scheduled_recent_source_ids: []
 trial_evidence_input_path: null
 trial_id: adp-trial-current

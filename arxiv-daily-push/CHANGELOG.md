@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.0 - 2026-06-22
+
+- Added Phase 12 all-arXiv primary archive scanning via `adp plan-all-arxiv-scan` and `adp build-all-arxiv-daily-input`.
+- Added persistent candidate queue behavior with ROI/learning-value ranking, one daily lead selection, high-value queue carry-forward, and queue fallback when no new high-value paper is available.
+- Updated scheduled and trial-start workflows to remove the old `cat:cs.AI` production default and build Phase 12 all-arXiv daily input artifacts instead.
+- Added Release-hosted video artifact link requirements before real SMTP can count as production-ready scheduled evidence.
+- Updated runbook and config examples for all-arXiv scope, candidate queue state, GitHub Release artifact links, and fail-closed production enablement.
+
 ## 0.11.27 - 2026-06-22
 
 - Added `adp run-two-day-simulation` for the updated Phase 11 two-day simulation acceptance path.

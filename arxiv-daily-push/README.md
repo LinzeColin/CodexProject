@@ -10,7 +10,8 @@ daily dry-run orchestration, runner/release/email dry-run handoff, final
 acceptance/handoff readiness packaging, small-window live arXiv ingest, an
 explicit SMTP delivery boundary, a fail-closed GitHub Release delivery
 boundary, a scheduled production workflow gate, a controlled scheduled
-execution driver, a daily input builder from arXiv Atom source batches, an
+execution driver, an all-arXiv Phase 12 scanner with candidate queue and ROI
+ranking, a daily input builder from arXiv Atom source batches, an
 incremental trial evidence ledger update bridge, cross-run ledger state
 persistence, operational trial evidence annotation, weekly/monthly replay
 evidence generation, recovery drill evidence generation, resource telemetry
@@ -30,6 +31,8 @@ Implemented now:
 - `adp arxiv-url`
 - `adp parse-arxiv-atom`
 - `adp fetch-arxiv-latest`
+- `adp plan-all-arxiv-scan`
+- `adp build-all-arxiv-daily-input`
 - `adp build-daily-input`
 - `adp rank-candidates`
 - `adp gate-publication`
@@ -63,14 +66,17 @@ Implemented now:
 - arXiv Atom feed parsing into generic `SourceItem` records using local fixture tests
 - small-window live arXiv Atom source ingestion with incremental duplicate filtering and fail-closed network/API behavior
 - deterministic daily input builder that converts an arXiv `SourceBatch` into ranked daily pipeline input using only Atom `<summary>` claims
+- Phase 12 all-arXiv primary archive scan plan and daily input builder that ranks candidates by relevance, learning value, economic conversion rate, ROI, cross-disciplinary value, and explainability
+- persistent `adp-candidate-queue` behavior that stores high-value unselected papers and consumes the queue when no new high-value candidate is available
+- scheduled email delivery package that requires a Chinese lesson, candidate queue summary, and a GitHub Release-hosted video artifact link before real SMTP can count as production evidence
 - incremental trial evidence ledger updater that appends only production-ready scheduled daily-run reports and blocks duplicate or dry-run evidence
 - trial ledger state exporter and scheduled artifact restoration so 30-day evidence can accumulate across GitHub Actions runs
 - operational trial evidence annotator that merges explicit weekly/monthly replay, recovery drill, scheduler, Release, SMTP, and resource refs without hand-editing the ledger
 - weekly/monthly replay evidence builder that validates production-ready daily refs, duplicate-free coverage, 7-day weekly coverage, 30-day monthly coverage, and a durable replay evidence ref before producing annotation hints
 - recovery drill evidence builder that validates a failed or degraded scheduled daily-run plus a recovered production-ready rerun with real sent notifications and durable failure/recovery refs before producing annotation hints
 - resource telemetry evidence builder that validates 30 unique daily resource refs against passing production preflight reports before producing annotation hints
-- trial start readiness gate that requires passing preflight, bootstrap, scheduler, live source, real SMTP, real Release, durable refs, and explicit confirmation before a real 30-day trial is marked start-ready
-- manual trial start evidence workflow that collects preflight, source, SMTP, Release, and start-gate artifacts on the private runner with explicit variable-gated side effects
+- trial start readiness gate that requires passing preflight, bootstrap, scheduler, all-arXiv source input, real SMTP, real Release, durable refs, and explicit confirmation before a real 30-day trial is marked start-ready
+- manual trial start evidence workflow that collects preflight, all-arXiv source input, Phase 12 artifacts, candidate queue, SMTP, Release, and start-gate artifacts on the private runner with explicit variable-gated side effects
 - production launch readiness gate that blocks default-branch trial start workflow dispatch until the PR is merged and non-draft, expected head SHA matches, workflow contract is ready, runner/secrets/vars have durable refs, and launch is explicitly confirmed
 - deterministic 100-point ranking with per-component audit output
 - fail-closed candidate blocking for missing P0 evidence, metadata conflicts, and recent duplicate selections
@@ -98,7 +104,7 @@ Implemented now:
 
 Not implemented yet:
 
-- bulk arXiv ingestion
+- bulk arXiv ingestion beyond the bounded per-archive latest window
 - live source ingest pass on the current local machine; Python SSL certificate validation currently blocks this environment
 - TTS model download
 - real TTS audio synthesis

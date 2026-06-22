@@ -611,6 +611,13 @@ def extract_selector(selector: str) -> Any:
         if not isinstance(value, tuple):
             raise SemanticExtractionError(f"selector did not extract tuple: {selector}")
         return apply_selector_options(value, options)
+    if selector.startswith("python_ast_tuple_len:"):
+        target = selector.removeprefix("python_ast_tuple_len:")
+        path_text, name = target.split("::", 1)
+        value = literal_value(find_module_assignment(parse_tree(selector_path(path_text)), name))
+        if not isinstance(value, tuple):
+            raise SemanticExtractionError(f"selector did not extract tuple: {selector}")
+        return apply_selector_options(len(value), options)
     if selector.startswith("python_ast_dict:"):
         target = selector.removeprefix("python_ast_dict:")
         path_text, name = target.split("::", 1)

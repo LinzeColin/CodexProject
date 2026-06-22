@@ -630,11 +630,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::_has_schedule", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::_appears_before"]
-    implementation_fingerprint: "sha256:44c7c83c5736fa8164e5d0080e899d70369fb77bea16fa9f8c4d63c363f566e8"
-    last_verified_commit: "4795473858926de7e8e2b9f3eb4e8346ca3a20a2"
-    verified_at: "2026-06-22T18:00:00+10:00"
-    evidence_hash: "sha256:e1e85d603a5a1577dc03016e46c9b30c54ab786e8775cd9605dbc300760c68fa"
-
+    implementation_fingerprint: "sha256:4d5eea7852e5c3326d5697123c9e27adcabfde8818382e24bfd093cb124e07ba"
+    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    verified_at: "2026-06-22T10:10:00+10:00"
+    evidence_hash: "sha256:8a1d31636a6ca7842e20d57ba1a56b0dddec3112489b828ab77353ce525dfff8"
   - formula_id: "FORM-ADP-021"
     model_id: "MOD-ADP-019"
     assumption_ids: ["ASM-ADP-022", "ASM-ADP-021", "ASM-ADP-016"]
@@ -665,11 +664,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::validate_scheduled_execution_report", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_run_daily", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_run_watchdog", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_notification"]
-    implementation_fingerprint: "sha256:69d584a7852ade96fa665d43df53e3b354ab6d8774613c1bf0af8cf1311926c1"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:692aa7a78e387e21a316c8f6d118106e591c6a982c1713effdde5250875a49b1"
-
+    implementation_fingerprint: "sha256:1cc95a615cfb5d88ee67a9c255ca0ed6a2c72b121ebb287d24b08edcdfdc1251"
+    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    verified_at: "2026-06-22T10:10:00+10:00"
+    evidence_hash: "sha256:f4e8be07aa6bb36d4081e51640c2bac6c0190fce2913200b6eb3b542b62da189"
   - formula_id: "FORM-ADP-022"
     model_id: "MOD-ADP-020"
     assumption_ids: ["ASM-ADP-023", "ASM-ADP-018", "ASM-ADP-006"]
@@ -770,11 +768,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:1c6e68781a3676cc3e19db11ce46b6d8e29360ef5a900a2f9cdece611f704f9e"
-    last_verified_commit: "c75fa25fc79eed87ef510b4ce990ab663e362db5"
-    verified_at: "2026-06-22T06:30:00+10:00"
-    evidence_hash: "sha256:0b28127ca5ef5f43d148a0c552c583f716f0b185114059303e57e83978b7be7c"
-
+    implementation_fingerprint: "sha256:f5b44276b3cb982640922695b3497b2237f5c538210932fc82a465afb9721fc5"
+    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    verified_at: "2026-06-22T10:10:00+10:00"
+    evidence_hash: "sha256:5fbc434903c0def926e0e607bd2bd9bf6d52fe8e817560bed17299d0cf89a219"
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
     assumption_ids: ["ASM-ADP-026", "ASM-ADP-015", "ASM-ADP-025"]
@@ -1008,11 +1005,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::build_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::validate_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::_appears_before"]
-    implementation_fingerprint: "sha256:72c6ed513b91ffda7fc576136b639b215792f38c3060ffe3de40e15cfaf6d298"
-    last_verified_commit: "46932dd4535695326a9f90c34f5f42bdca49d7df"
-    verified_at: "2026-06-22T22:00:00+10:00"
-    evidence_hash: "sha256:d5f89238ead58ad20243b4dd08042f16ed0143a14b5189f14db5322e36b4e02d"
-
+    implementation_fingerprint: "sha256:27589596ba7b001a54edadfd6b37f7089f69e97667993b8c1fc97698afe5510f"
+    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    verified_at: "2026-06-22T10:10:00+10:00"
+    evidence_hash: "sha256:ebca9cdb2e11b9aae8b8bef0c7bf6388524569402af375a3a5911b3afa327bb9"
   - formula_id: "FORM-ADP-031"
     model_id: "MOD-ADP-029"
     assumption_ids: ["ASM-ADP-032", "ASM-ADP-031", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
@@ -1137,7 +1133,41 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/simulation.py::run_two_day_simulation", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::validate_two_day_simulation_report", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::_simulation_gates", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::_daily_input"]
-    implementation_fingerprint: "sha256:9a7e07cc236cda37788e25a77745fc78f3a839a2fdb9603b3124419244f34b18"
-    last_verified_commit: "c75fa25fc79eed87ef510b4ce990ab663e362db5"
-    verified_at: "2026-06-22T06:30:00+10:00"
-    evidence_hash: "sha256:034734b7498eb0ee7faa87306a80ee218e9f8db323c98df835087520784dc768"
+    implementation_fingerprint: "sha256:06ef5e5f2dd8893acccc75723d8e476d1c481390edf3d4780be8c13d0cc864d7"
+    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    verified_at: "2026-06-22T10:10:00+10:00"
+    evidence_hash: "sha256:1057c9440835d9613bdc3bbfa18616de56e7229d7dcb2ba0e71f980857169c46"
+  - formula_id: "FORM-ADP-034"
+    model_id: "MOD-ADP-032"
+    assumption_ids: ["ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-021", "ASM-ADP-022"]
+    status: "active"
+    expression: "A Phase 12 all-arXiv daily input report passes only when the scan plan covers the primary archive set and does not collapse to cat:cs.AI, per-archive Atom source ingest avoids PDF download and bulk harvest, candidates are scored by relevance, learning value, economic conversion rate, ROI, interdisciplinary value, and explainability, one lead paper is selected, high-value unselected papers are persisted in the candidate queue, queued candidates can be consumed when no new high-value candidate exists, video artifacts are stored as GitHub Release assets, and real SMTP can count only when the email package contains Chinese lesson content, a Release-hosted video link, and candidate queue summary."
+    variables:
+      - name: "archive_plan"
+        data_type: "list[object]"
+        unit: "arXiv archive queries"
+        input_domain: "primary arXiv archive buckets"
+      - name: "roi_signals"
+        data_type: "map[str,float]"
+        unit: "0..1 components"
+        input_domain: "relevance, learning_value, economic_conversion_rate, roi, interdisciplinary_value, explainability"
+      - name: "candidate_queue"
+        data_type: "object"
+        unit: "JSON queue"
+        input_domain: "adp-candidate-queue-v1 items"
+      - name: "delivery_package"
+        data_type: "object"
+        unit: "email and Release link evidence"
+        input_domain: "adp-mail-video-link-v1"
+    constraints: "No production workflow may use the legacy cs.AI-only default. Phase 12 does not download PDFs, perform bulk harvest, attach video to email, log secret values, or enable SMTP/Release side effects by default."
+    missing_policy: "Missing required archive coverage, invalid source batch, no selectable new or queued candidate, missing queue summary, missing Release video asset link, missing Chinese lesson content, or dry-run delivery keeps production evidence degraded or blocked."
+    output_range: "all-arXiv daily input report with status pass or blocked; scheduled execution with production_evidence_ready true only after real Release and SMTP evidence plus video link gates pass"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py"]
+    test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_trial_start_workflow.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_all_arxiv_scan_plan", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_all_arxiv_daily_input", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::select_roi_candidate", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_daily_delivery_package", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution"]
+    implementation_fingerprint: "sha256:3c23a2135facac38d2881d723897697ca078a986295d9afd9f8d735a832aba76"
+    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    verified_at: "2026-06-22T10:10:00+10:00"
+    evidence_hash: "sha256:60de6fa774b22649cb0abef0f11e521afcc82b8d9d55f78e1529cdeaa428078e"

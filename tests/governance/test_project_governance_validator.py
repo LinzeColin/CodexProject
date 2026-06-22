@@ -1139,14 +1139,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-053")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-054")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-PHASE11-TWO-DAY-SIMULATION-20260622.json",
+            "governance/run_manifests/ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-20260622.json",
         )
         rendered = dashboard.render_owner_status(info, "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
-        self.assertIn("two-day simulation", rendered)
-        self.assertIn("production acceptance claim", rendered)
+        self.assertIn("all-arXiv", rendered)
+        self.assertIn("video artifact link", rendered)
         self.assertNotIn("root semantic extractor selector behavior expanded", rendered)
 
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
@@ -1627,6 +1627,31 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(gate["codex_auth_read"])
         self.assertFalse(gate["accepted_for_production"])
         self.assertFalse(gate["production_acceptance_claimed"])
+
+    def test_arxiv_daily_push_phase12_manifest_records_all_arxiv_queue_delivery(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031")
+        acceptance = manifest["acceptance"]
+        self.assertTrue(acceptance["all_arxiv_scan"])
+        self.assertTrue(acceptance["candidate_queue_persistence"])
+        self.assertTrue(acceptance["roi_ranking"])
+        self.assertTrue(acceptance["one_daily_lead"])
+        self.assertTrue(acceptance["queue_fallback"])
+        self.assertTrue(acceptance["release_video_artifact_link_required"])
+        self.assertTrue(acceptance["email_candidate_queue_summary_required"])
+        self.assertTrue(acceptance["legacy_cs_ai_production_default_removed"])
+        self.assertFalse(acceptance["production_enabled"])
+        self.assertFalse(acceptance["scheduled_run_enabled"])
+        self.assertFalse(acceptance["allow_smtp_send"])
+        self.assertFalse(acceptance["allow_release_upload"])
 
     def test_arxiv_daily_push_semantic_extract_manifest_records_partial_coverage(self) -> None:
         manifest = json.loads(
