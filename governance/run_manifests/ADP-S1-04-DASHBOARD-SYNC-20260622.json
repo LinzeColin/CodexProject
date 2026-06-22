@@ -1,0 +1,113 @@
+{
+  "schema_version": 2,
+  "run_id": "ADP-S1-04-DASHBOARD-SYNC-20260622",
+  "project_id": "root-governance",
+  "task_id": "ADP-S1-04-DASHBOARD-SYNC-20260622",
+  "acceptance_ids": [
+    "ACC-REVIEW7-CI-BINDING",
+    "ACC-REVIEW7-OWNER-VIEWS",
+    "ACC-ADP-S1-04-GITHUB-MAIN-CHECKS"
+  ],
+  "iteration_id": "ITER-20260622-ROOT-DASHBOARD-003",
+  "generated_at": "2026-06-22T19:05:00+10:00",
+  "implementation_base_sha": "a835546b44b871ff9a329b72d1c9fc3402163bd6",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:9bdf8e2d6fb3be2b797bc759d69f2e009b8046cf346b3b30a724becfb880a508",
+  "changed_files_declared": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/ADP-S1-04-DASHBOARD-SYNC-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/ADP-S1-04-DASHBOARD-SYNC-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/ADP-S1-04-DASHBOARD-SYNC-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/ADP-S1-04-DASHBOARD-SYNC-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_review8_main_dashboard_sync PYTHONPATH=arxiv-daily-push/src python3 scripts/generate_governance_dashboard.py --write --all",
+    "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+    "python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+    "python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_review8_main_dashboard_sync PYTHONPATH=arxiv-daily-push/src python3 scripts/generate_governance_dashboard.py --write --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root governance dashboard generated with source_snapshot_hash sha256:8c8421a79ecad927cd95a1f7f479a367b093881c881cb79c8a26e63b1799fc7c"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root and required projects checked; errors=0 warnings=0"
+    },
+    {
+      "command": "python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS errors=0 warnings=0"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "128 tests passed; expected negative fixture output for missing-base remains covered by unittest assertions"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed files covered; root manifest and governance test binding present; errors=0 warnings=0"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors"
+    }
+  ],
+  "evidence_refs": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Project Governance main push dashboard verification after ADP S1-04 merge",
+  "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI",
+  "result_commit": "PRECOMMIT_TREE_BOUND",
+  "finished_at": "2026-06-22T19:05:00+10:00",
+  "summary": "Synchronize generated root governance dashboard views after ADP S1-04 raised arxiv-daily-push to version 0.14.0, so main push dashboard verification has no generated diff.",
+  "rollback": "Revert this manifest, the root dashboard hash updates, binding backlog update and test binding; then rerun governance dashboard generation from origin/main.",
+  "unresolved_risks": [
+    "This change does not make arxiv-daily-push production accepted; OWNER_STATUS still reports delivery readiness as FAILED.",
+    "GitHub Actions Project Governance must pass after this dashboard drift repair lands on main.",
+    "This change does not alter product behavior, ranking, storage logic, API or frontend implementation."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; CI attestation must bind the final commit after push."
+}

@@ -56,6 +56,12 @@ from .scheduled_execution import (
 from .simulation import run_two_day_simulation, validate_two_day_simulation_report
 from .source_ingest import ingest_latest_arxiv, validate_source_batch
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
+from .storage import (
+    inspect_database,
+    migrate_database,
+    rollback_database,
+    validate_storage_report,
+)
 from .state_machine import validate_run_record
 from .trial import evaluate_trial_evidence, validate_trial_evidence_report
 from .trial_bootstrap import build_trial_bootstrap_plan, validate_trial_bootstrap_plan
@@ -93,6 +99,19 @@ def build_parser() -> argparse.ArgumentParser:
     owner_render.add_argument("--generated-at", default="2026-06-22T00:00:00+10:00", help="Timestamp written to generated docs.")
     owner_render.add_argument("--write", action="store_true", help="Write generated owner docs to disk.")
     owner_render.add_argument("--json", action="store_true", help="Print JSON render output.")
+
+    storage = subparsers.add_parser("storage", help="Manage the local SQLite/WAL/FTS5 document store.")
+    storage_subparsers = storage.add_subparsers(dest="storage_command", required=True)
+    storage_migrate = storage_subparsers.add_parser("migrate", help="Create or migrate the local SQLite store.")
+    storage_migrate.add_argument("--db", required=True, help="SQLite database path.")
+    storage_migrate.add_argument("--json", action="store_true", help="Print JSON storage report.")
+    storage_inspect = storage_subparsers.add_parser("inspect", help="Inspect the local SQLite store.")
+    storage_inspect.add_argument("--db", required=True, help="SQLite database path.")
+    storage_inspect.add_argument("--json", action="store_true", help="Print JSON storage report.")
+    storage_rollback = storage_subparsers.add_parser("rollback", help="Rollback the S1-04 local SQLite schema.")
+    storage_rollback.add_argument("--db", required=True, help="SQLite database path.")
+    storage_rollback.add_argument("--target-version", type=int, default=0, help="Rollback target schema version.")
+    storage_rollback.add_argument("--json", action="store_true", help="Print JSON storage report.")
 
     doctor = subparsers.add_parser("doctor", help="Run local Phase 1 readiness checks.")
     doctor.add_argument("--json", action="store_true", help="Print JSON report.")
@@ -513,6 +532,25 @@ def main(argv: list[str] | None = None) -> int:
                     print(f"- error: {error}")
             return 0 if report["status"] == "rendered" else 2
         raise AssertionError(f"Unhandled owner command: {args.owner_command}")
+    if args.command == "storage":
+        if args.storage_command == "migrate":
+            report = migrate_database(args.db)
+        elif args.storage_command == "inspect":
+            report = inspect_database(args.db)
+        elif args.storage_command == "rollback":
+            report = rollback_database(args.db, target_version=args.target_version)
+        else:
+            raise AssertionError(f"Unhandled storage command: {args.storage_command}")
+        errors = validate_storage_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": [*report.get("blocking_reasons", []), *errors]}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- {reason}")
+        return 0 if report["status"] == "pass" else 2
     if args.command == "doctor":
         report = doctor_report(Path(args.path))
         print(render_report(report, as_json=args.json))

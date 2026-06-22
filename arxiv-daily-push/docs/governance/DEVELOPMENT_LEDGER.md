@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.13.0`
+Active product version: `0.14.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.13.0
+- Product version: 0.14.0
 - Current phase: S1-A
-- Current gate: S1-03-OWNER-CONTROLS
-- Confirmed iteration count: 54
+- Current gate: ADP-S1-04-SQLITE-DATA-MODEL-READY
+- Confirmed iteration count: 56
 - Reconstructed event count: 0
-- Current task: S1-03-OWNER-CONTROLS-001
-- Blockers: GitHub Actions run `27932072771` proves one controlled manual Release plus Gmail SMTP delivery test at commit `bbdc69bb49758e4ad84f91f45fbe7921b82b1414`, but production launch remains blocked by the unified local data model, local runtime recovery controls, migration readiness, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables.
+- Current task: S1-04-SQLITE-DATA-MODEL-001
+- Blockers: S1-04 local storage is complete, but S1-05 connector contract, S1-06 scoring/queue/content ledger replay, S1-07 B1 report/email/media interface, S1-08 local runtime recovery, S1-09 migration package, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
 
@@ -29,6 +29,55 @@ The append-only machine record is `development_events.jsonl`.
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260622-S1-003`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from `storage.py`, storage CLI dispatch, focused storage tests, full ADP unit tests, semantic extractor, and governance registry updates.
+- Version before: 0.13.1
+- Version after: 0.14.0
+- Base commit: f05525698a51f88828cd5aeadac4c7c8859e74a2
+- Result commit: PENDING
+- Task IDs: S1-04-SQLITE-DATA-MODEL-001
+- Goal: Add the Review8 Stage 1 local SQLite/WAL/FTS5 document and event storage model with migration, inspection, SourceItem persistence, full-text search, rollback, and governance traceability.
+- Assumptions: S1-04 is local-storage-only and does not fetch sources, retain PDFs, send SMTP, upload Releases, enable the production scheduler, or claim production acceptance.
+- Files read: `AGENTS.md`, `arxiv-daily-push/AGENTS.md`, Review8 V4 baseline files, existing governance registries, CLI, generic SourceItem contracts, and focused CLI/storage tests.
+- Files changed: `storage.py`, CLI storage subcommands, focused storage/CLI tests, version files, changelog, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, ledger/event records, and run manifest.
+- Model changes: Added MOD-ADP-036 `adp-sqlite-data-model-v1`.
+- Formula changes: Added FORM-ADP-038 and refreshed FORM-ADP-024 implementation evidence because `cli.py::main` gained storage subcommands.
+- Parameter changes: Added PARAM-ADP-268 through PARAM-ADP-275 for schema version, default DB filename, WAL mode, FTS5 requirement, rollback target, object table count, relation type count, and time field count.
+- Commands run: focused storage/CLI unit tests with ResourceWarning as error; full arxiv-daily-push unit tests; semantic extractor; project governance validator; all-project governance validator; changed-only semantic sync validator; root governance unit tests; information-quality validator; manifest JSON parse; CSV width checks.
+- Test results: focused storage/CLI tests 9 OK; arxiv-daily-push unit tests 186 OK; semantic extractor checked 38 active formulas and 274 active parameters with no errors; project governance errors 0 warnings 0; all-project governance errors 0 warnings 0; changed-only semantic sync errors 0 warnings 0; root governance tests 127 OK; information-quality PASS; manifest JSON parse OK; parameter registry and traceability CSV widths consistent.
+- Successes: Migration creates schema version 1 with WAL and FTS5, stores SourceItem data idempotently, supports FTS search, and rolls back to version 0.
+- Failures: First semantic extractor run caught FORM-ADP-024 CLI fingerprint drift after adding storage subcommands; fixed by refreshing FORM-ADP-024 machine evidence. Project governance initially caught ledger and generated assurance count drift; those generated views were refreshed.
+- Decisions: Bump product version to 0.14.0 because S1-04 adds a backward-compatible local storage CLI and schema capability while preserving disabled production side effects.
+- Remaining risks: Connector contract, queue/content ledger replay, B1 delivery interface, local runtime recovery, migration package, production trial start, and 30-day acceptance evidence remain incomplete.
+- Rollback: Remove storage module, storage CLI dispatch/tests, version 0.14.0 governance records, and run manifest; restore version 0.13.1.
+- Next step: S1-05-ARXIV-CONNECTOR-CONTRACT-001.
+
+### `ITER-20260621-054`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from manual run `27934320671`, the email renderer, MP4 transcript renderer, scheduled Release notes, focused regression tests, and governance registry updates.
+- Version before: 0.13.0
+- Version after: 0.13.1
+- Base commit: ecd43e80a29193120d788ef8125d4ebca233dca3
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037
+- Goal: Correct the human front-stage after the controlled manual email technically succeeded but foregrounded a low-value 12-second video/Release path and exposed backend ROI scoring in the MP4 transcript.
+- Assumptions: The Chinese email body is the daily reading entry point; Release is backend evidence/download storage; MP4 is optional; backend ROI evidence remains available in GitHub artifacts.
+- Files changed: daily email renderer, scheduled Release notes wording, MP4 transcript renderer, focused tests, version/changelog files, model/formula/parameter/traceability registries, delivery task, phase record, run manifest, and event.
+- Model changes: Refined MOD-ADP-034 to `adp-manual-delivery-test-v1.3`.
+- Formula changes: Refreshed FORM-ADP-036 with email-as-reading-entry, Release-as-backend-storage, optional-video, and MP4 transcript ROI suppression constraints.
+- Parameter changes: Updated PARAM-ADP-186 and added PARAM-ADP-267, preserving owner controls PARAM-ADP-187 through PARAM-ADP-266.
+- Commands run: focused front-stage tests; full arXiv unit tests; semantic extractor; governance dashboard generation; root governance tests; changed-only governance validation; information-quality validation; JSON/JSONL/CSV parse checks; diff/cache checks.
+- Test results: focused front-stage tests 27 OK; arXiv unit tests 182 OK; semantic extractor checked 37 active formulas and 266 active parameters; root governance tests 126 OK; changed-only governance errors 0 warnings 0; information quality PASS.
+- Successes: Email no longer includes the Release landing page as a reading entry, no longer foregrounds `【12秒视频】`, marks video as optional, and the MP4 transcript no longer includes `ROI score`.
+- Failures: No revised-format real email has been sent yet after this correction.
+- Decisions: Keep production schedule disabled; rerun the controlled manual Release + Gmail SMTP workflow only after PR CI passes and this fix merges to `main`.
+- Remaining risks: The next real email can still expose live formatting issues; scheduled production remains blocked until separately approved.
+- Rollback: Revert version 0.13.1 front-stage quality code, tests, phase record, event, manifest, and governance records, then restore version 0.13.0.
+- Next step: Complete post-rebase validation, update PR, wait for CI green, merge, then rerun the controlled manual Release + Gmail SMTP workflow.
 
 ### `ITER-20260621-053`
 

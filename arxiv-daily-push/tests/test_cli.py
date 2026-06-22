@@ -15,7 +15,7 @@ class CliTests(unittest.TestCase):
         with redirect_stdout(buffer):
             result = main(["version"])
         self.assertEqual(result, 0)
-        self.assertEqual(buffer.getvalue().strip(), "0.13.0")
+        self.assertEqual(buffer.getvalue().strip(), "0.14.0")
 
     def test_doctor_json_command_warns_without_blocking_phase1(self):
         buffer = io.StringIO()
@@ -85,6 +85,32 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "dry_run")
         self.assertFalse(payload["release_upload_enabled"])
         self.assertFalse(payload["notes"]["notes_logged"])
+
+    def test_storage_json_commands_migrate_inspect_and_rollback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db_path = Path(tmp) / "adp.sqlite3"
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                migrate_result = main(["storage", "migrate", "--db", str(db_path), "--json"])
+            migrate_payload = json.loads(buffer.getvalue())
+            self.assertEqual(migrate_result, 0)
+            self.assertEqual(migrate_payload["status"], "pass")
+            self.assertEqual(migrate_payload["journal_mode"], "wal")
+            self.assertTrue(migrate_payload["fts5_ready"])
+
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                inspect_result = main(["storage", "inspect", "--db", str(db_path), "--json"])
+            self.assertEqual(inspect_result, 0)
+            self.assertEqual(json.loads(buffer.getvalue())["schema_version"], 1)
+
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                rollback_result = main(["storage", "rollback", "--db", str(db_path), "--target-version", "0", "--json"])
+            rollback_payload = json.loads(buffer.getvalue())
+            self.assertEqual(rollback_result, 0)
+            self.assertEqual(rollback_payload["status"], "pass")
+            self.assertEqual(rollback_payload["schema_version"], 0)
 
 
 if __name__ == "__main__":
