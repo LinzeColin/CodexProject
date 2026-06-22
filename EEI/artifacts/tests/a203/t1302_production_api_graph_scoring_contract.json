@@ -11,12 +11,14 @@
       "GET /v1/scoring/explain/{objectType}/{objectId} supports relationship_fact_candidate explanations backed by existing Golden Vertical candidate/evidence/review tables.",
       "GET /v1/scoring/explain/relationship/{objectId} supports published relationship explanations backed by relationship_evidence, fact_versions, data_snapshots, publication qualifiers and production_context.",
       "GET /v1/scoring/explain/entity/{objectId} supports entity coverage explanations backed by entity identifiers, aliases, relationships, relationship evidence, industry memberships, optional entity fact_versions and production_context.",
+      "GET /v1/scoring/explain/theme/{objectId} supports strategic-theme explanations for entity records whose entity_type is theme; mismatched entity IDs fail closed with 404.",
+      "GET /v1/scoring/explain/facility/{objectId} supports facility explanations for entity records whose entity_type is facility; mismatched entity IDs fail closed with 404.",
       "GET /v1/scoring/explain/event/{objectId} supports event coverage explanations backed by event_participants, event_evidence, source_documents, optional event fact_versions and production_context.",
       "GET /v1/scoring/explain/industry/{objectId} supports industry coverage explanations backed by industry taxonomy hierarchy, entity_industry_memberships, relationship context/evidence, optional industry fact_versions and production_context.",
       "GET /v1/scoring/explain/source_document/{objectId} supports source-document provenance explanations backed by sources, source_documents, raw_source_snapshots, downstream evidence references, optional source_document fact_versions and production_context.",
       "GET /v1/scoring/explain/score_result/{objectId} supports score-result health explanations backed by score_results, scoring_runs, model/profile versions, active_analysis_contexts and production_context.",
       "Integration assertions bind A203 entity, event, industry, source_document, score_result, candidate and relationship scoring to FastAPI, repository queries, OpenAPI contract and curated fixture evidence.",
-      "score_recompute worker persists score_results for the MVP object families relationship_fact_candidate, relationship, entity, event, industry and source_document in one active scoring run, with object-type counts recorded in scoring_run parameters, active context metadata, outbox payload and operation log.",
+      "score_recompute worker persists score_results for the MVP object families relationship_fact_candidate, relationship, entity, theme, facility, event, industry and source_document in one active scoring run, with object-type counts recorded in scoring_run parameters, active context metadata, outbox payload and operation log.",
       "Frontend commercial-map API-first hydration now posts the current focus, lens-derived layers, as-of date, scoring profile id and 42/64/12 budget to /v1/explore, exposes production_context, coverage and publication-gate metadata with explicit fixture fallback, and renders server-returned nodes/edges in the SVG canvas and graph table when the API response is available.",
       "Production_context now exposes bounded sample relationship_fact_candidates so the frontend can discover a score explanation target without hard-coding database UUIDs.",
       "Frontend production data hydration now loads /v1/catalogs and /v1/scoring/explain/relationship_fact_candidate/{objectId}, surfaces catalog inventory counts, source-of-truth counts, adjusted score, evidence count, missing-input count and publication status, and retains explicit local fallback/error states.",
@@ -50,7 +52,7 @@
     {
       "path": "/v1/scoring/explain/{objectType}/{objectId}",
       "method": "GET",
-      "contract": "entity, event, industry, source_document, score_result, relationship_fact_candidate and published relationship score explanations include raw_score, evidence_quality, adjusted_score, coverage, missing_inputs, evidence, model/profile versions and production_context."
+      "contract": "entity, theme, facility, event, industry, source_document, score_result, relationship_fact_candidate and published relationship score explanations include raw_score, evidence_quality, adjusted_score, coverage, missing_inputs, evidence, model/profile versions and production_context."
     },
     {
       "path": "/v1/evidence/{objectType}/{objectId}",
@@ -72,6 +74,16 @@
       "minimum_relationship_context": 3,
       "minimum_relationship_family_context": 3,
       "formula_points": "identifier 20 + alias 10 + relationship context 20 + relationship family diversity 15 + source threshold 15 + industry membership 10 + fact version 10, multiplied by active status."
+    },
+    "theme": {
+      "minimum_independent_sources": 1,
+      "object_type_guard": "entities.entity_type must equal theme",
+      "formula_points": "uses the entity coverage formula while reporting object_type=theme and preserving the entity subobject."
+    },
+    "facility": {
+      "minimum_independent_sources": 1,
+      "object_type_guard": "entities.entity_type must equal facility",
+      "formula_points": "uses the entity coverage formula while reporting object_type=facility and preserving the entity subobject."
     },
     "event": {
       "minimum_independent_sources": 1,
@@ -133,6 +145,11 @@
     ".venv/bin/python -m pytest -q tests/unit/test_scoring.py: PASS with 14/14 after source_document and score_result scoring explain slice",
     "python3 -m py_compile scripts/job_scheduler.py tests/integration/test_database_migrations.py: PASS after MVP object-family score_results recompute slice",
     ".venv/bin/ruff check scripts/job_scheduler.py tests/integration/test_database_migrations.py: PASS after MVP object-family score_results recompute slice",
+    "python3 -m py_compile apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py: PASS after theme/facility scoring explain and score_results recompute slice",
+    ".venv/bin/ruff check apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py: PASS after theme/facility scoring explain and score_results recompute slice",
+    ".venv/bin/python scripts/validate_contracts.py: PASS after OpenAPI objectType enum expanded to include theme/facility score explanations",
+    ".venv/bin/pytest tests/unit/test_scoring.py -q -p no:cacheprovider: PASS 14/14 after theme/facility scoring explain and score_results recompute slice",
+    ".venv/bin/pytest tests/integration/test_database_migrations.py -q -p no:cacheprovider: SKIPPED locally because this host has no DATABASE_URL or .env; remote PostgreSQL CI must prove the theme/facility assertions",
     "GitHub Actions run 27883953630 job 82516108840: PASS for commit f2bf996c1ea57f652f6d4d5da517f1f4b501e6ad, including Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E for full MVP object-family score_results recompute",
     ".venv/bin/python scripts/validate_contracts.py: PASS after OpenAPI objectType enum expanded to seven score explanation object types",
     ".venv/bin/python scripts/validate_v5_production_readiness_sync.py: PASS after source_document and score_result scoring explain slice",

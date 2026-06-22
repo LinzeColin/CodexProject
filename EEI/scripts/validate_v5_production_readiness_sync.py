@@ -163,6 +163,7 @@ PARTIAL_EVIDENCE = {
         "apps/api/app/domain_repository.py",
         "apps/web/src/app/explore-api-client.ts",
         "apps/web/src/app/page.tsx",
+        "scripts/job_scheduler.py",
         "specs/api_contract.yaml",
         "tests/integration/test_database_migrations.py",
         "tests/e2e/state-contract.spec.ts",

@@ -1189,6 +1189,35 @@ def exercise_domain_api_and_repository_contracts() -> None:
         == "candidate-score-explanation-v1"
     )
 
+    theme_score_response = client.get(f"/v1/scoring/explain/theme/{THEME_AI_INFRA_ID}")
+    assert theme_score_response.status_code == 200
+    theme_score = theme_score_response.json()
+    assert theme_score["object_type"] == "theme"
+    assert theme_score["object_id"] == THEME_AI_INFRA_ID
+    assert theme_score["entity"]["entity_type"] == "theme"
+    assert theme_score["entity"]["canonical_name"] == "AI Infrastructure"
+    assert theme_score["coverage_summary"]["recent_event_count"] >= 1
+    assert theme_score["publication_status"] == "published"
+    assert theme_score["source_threshold"]["minimum_independent_sources"] == 1
+
+    facility_score_response = client.get(
+        f"/v1/scoring/explain/facility/{FIXTURE_DATACENTER_ID}"
+    )
+    assert facility_score_response.status_code == 200
+    facility_score = facility_score_response.json()
+    assert facility_score["object_type"] == "facility"
+    assert facility_score["object_id"] == FIXTURE_DATACENTER_ID
+    assert facility_score["entity"]["entity_type"] == "facility"
+    assert facility_score["entity"]["canonical_name"] == "Synthetic AI Data Center Campus"
+    assert facility_score["coverage_summary"]["relationship_count"] >= 1
+    assert facility_score["publication_status"] == "published"
+    assert facility_score["source_threshold"]["minimum_independent_sources"] == 1
+
+    wrong_scoring_type_response = client.get(
+        f"/v1/scoring/explain/facility/{NVIDIA_ID}"
+    )
+    assert wrong_scoring_type_response.status_code == 404
+
     event_score_response = client.get(
         f"/v1/scoring/explain/event/{NVIDIA_CAPEX_EVENT_ID}"
     )
@@ -2631,6 +2660,8 @@ def exercise_transactional_model_activation_contract(
         "relationship_fact_candidate",
         "relationship",
         "entity",
+        "theme",
+        "facility",
         "event",
         "industry",
         "source_document",
