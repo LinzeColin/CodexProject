@@ -126,13 +126,16 @@ def parse_time(value: str) -> datetime | None:
     return parsed.astimezone(timezone.utc)
 
 
-def generated_paths(projects: list[dict[str, Any]]) -> list[Path]:
-    paths = [
-        ROOT / "README.md",
-        ROOT / "GOVERNANCE_DASHBOARD.md",
-        ROOT / "OWNER_PORTFOLIO.md",
-        ROOT / "governance" / "binding_backlog.yaml",
-    ]
+ROOT_GENERATED_REL_PATHS = [
+    "README.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "governance/binding_backlog.yaml",
+]
+
+
+def generated_paths(projects: list[dict[str, Any]], *, include_root: bool = True) -> list[Path]:
+    paths = [ROOT / path for path in ROOT_GENERATED_REL_PATHS] if include_root else []
     for project in projects:
         base = ROOT / str(project.get("path")) / "docs/governance"
         paths.extend([base / "ASSURANCE_STATUS.yaml", base / "STATUS.md", base / "OWNER_STATUS.md"])
@@ -151,8 +154,8 @@ def check_project_set(gate: Gate, projects: list[dict[str, Any]]) -> None:
             gate.add("ERROR", "README_PROJECT", "README omits project", "README.md", project_id)
 
 
-def check_generated_views(gate: Gate, projects: list[dict[str, Any]]) -> None:
-    for path in generated_paths(projects):
+def check_generated_views(gate: Gate, projects: list[dict[str, Any]], *, include_root: bool = True) -> None:
+    for path in generated_paths(projects, include_root=include_root):
         if not path.exists():
             gate.add("ERROR", "GENERATED_MISSING", "Generated view is missing", path)
             continue
@@ -260,10 +263,14 @@ def check_hook_and_ci(gate: Gate) -> None:
     workflow = ROOT / ".github/workflows/project-governance.yml"
     for path, code in ((hook, "HOOK_QUALITY"), (workflow, "CI_QUALITY")):
         text = path.read_text(encoding="utf-8") if path.exists() else ""
-        if "validate_information_quality.py" not in text or "--all" not in text or "--fast" not in text:
-            gate.add("ERROR", code, "information-quality all-fast gate is not wired", path)
+        if "validate_information_quality.py" not in text or "--fast" not in text:
+            gate.add("ERROR", code, "information-quality fast gate is not wired", path)
     if workflow.exists():
         text = workflow.read_text(encoding="utf-8")
+        if "--changed-only" not in text:
+            gate.add("ERROR", "CI_CHANGED_QUALITY", "pull_request changed-only information-quality gate missing", workflow)
+        if "--all --fast --fail-on-error" not in text:
+            gate.add("ERROR", "CI_ALL_QUALITY", "main/manual all information-quality gate missing", workflow)
         if "--all --semantic --drift-report" not in text:
             gate.add("ERROR", "CI_DRIFT", "all semantic drift check missing", workflow)
         if "OWNER_PORTFOLIO.md" not in text:
@@ -272,9 +279,16 @@ def check_hook_and_ci(gate: Gate) -> None:
             gate.add("ERROR", "CI_MASKING", "continue-on-error is not allowed", workflow)
 
 
-def run(project_filter: str | None = None) -> dict[str, Any]:
+def changed_projects(projects: list[dict[str, Any]], base_ref: str | None = None) -> tuple[list[dict[str, Any]], list[str]]:
+    changed = structural.git_changed_files(base_ref)
+    selected = [project for project in projects if structural.project_matches_changed(project, changed)]
+    return selected, changed
+
+
+def run(project_filter: str | None = None, *, changed_only: bool = False, base_ref: str | None = None) -> dict[str, Any]:
     gate = Gate()
     projects = project_config()
+    include_root_generated = True
     if project_filter:
         projects = [
             project
@@ -283,9 +297,12 @@ def run(project_filter: str | None = None) -> dict[str, Any]:
         ]
         if not projects:
             gate.add("ERROR", "PROJECT_FILTER", f"No project matches {project_filter!r}")
+    elif changed_only:
+        projects, changed = changed_projects(projects, base_ref)
+        include_root_generated = any(path in changed for path in ROOT_GENERATED_REL_PATHS)
     else:
         check_project_set(gate, projects)
-    check_generated_views(gate, projects)
+    check_generated_views(gate, projects, include_root=include_root_generated)
     check_hook_and_ci(gate)
     for project in projects:
         check_assurance(gate, project)
@@ -303,11 +320,13 @@ def main(argv: list[str] | None = None) -> int:
     scope = parser.add_mutually_exclusive_group(required=True)
     scope.add_argument("--all", action="store_true", help="Validate all registered projects.")
     scope.add_argument("--project", help="Project id or path.")
+    scope.add_argument("--changed-only", action="store_true", help="Validate changed project information quality only.")
+    parser.add_argument("--base-ref", help="Optional base ref for --changed-only.")
     parser.add_argument("--fast", action="store_true", help="Reserved for CI fast mode; all current checks are fast.")
     parser.add_argument("--fail-on-error", action="store_true", help="Return non-zero on errors.")
     parser.add_argument("--json-out", help="Write JSON result to a file.")
     args = parser.parse_args(argv)
-    result = run(args.project)
+    result = run(args.project, changed_only=args.changed_only, base_ref=args.base_ref)
     if args.json_out:
         out = Path(args.json_out)
         out.parent.mkdir(parents=True, exist_ok=True)

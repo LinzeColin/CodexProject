@@ -56,7 +56,12 @@ jobs:
           GOVERNANCE_BASE_REF: ${{ inputs.base_ref || '' }}
         run: python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
       - name: Validate information quality
-        if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'information-quality')
+        if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
+        env:
+          GOVERNANCE_BASE_REF: ${{ inputs.base_ref || '' }}
+        run: python3 scripts/validate_information_quality.py --changed-only --fast --fail-on-error
+      - name: Validate all information quality
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (inputs.scope == 'information-quality' || inputs.scope == 'all'))
         run: python3 scripts/validate_information_quality.py --all --fast --fail-on-error
       - name: Validate pushed governance diff
         if: github.event_name == 'push'
@@ -76,7 +81,11 @@ jobs:
           python3 scripts/validate_project_governance.py --project "${{ inputs.project }}" --semantic
       - name: Verify generated governance dashboard
         run: |
-          python3 scripts/generate_governance_dashboard.py --write
+          if [ "${{ github.event_name }}" = "pull_request" ] || { [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.scope }}" = "changed-only" ]; }; then
+            python3 scripts/generate_governance_dashboard.py --write --changed-only
+          else
+            python3 scripts/generate_governance_dashboard.py --write --all
+          fi
           git diff --exit-code -- README.md GOVERNANCE_DASHBOARD.md OWNER_PORTFOLIO.md governance/binding_backlog.yaml ':(glob)**/docs/governance/ASSURANCE_STATUS.yaml' ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
       - name: Write CI attestation
         if: success()
