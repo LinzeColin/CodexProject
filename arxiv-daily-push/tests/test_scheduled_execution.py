@@ -216,7 +216,10 @@ class ScheduledExecutionTests(unittest.TestCase):
         self.assertEqual(report["daily_run_report"]["scheduled_local_time"], "05:00")
         self.assertTrue(report["daily_run_report"]["p0_claims_traceable"])
         self.assertEqual(FakeSMTP.sent_messages[0]["To"], "linzezhang35@gmail.com")
-        self.assertTrue(str(FakeSMTP.sent_messages[0]["Subject"]).startswith("[CS Daily｜"))
+        self.assertEqual(
+            str(FakeSMTP.sent_messages[0]["Subject"]),
+            "20260621 -- arXiv Computer Science -- Computer Science -- A Useful Paper",
+        )
         self.assertTrue(FakeSMTP.sent_messages[0].is_multipart())
         email_body = FakeSMTP.sent_messages[0].get_body(preferencelist=("plain",)).get_content()
         html_body = FakeSMTP.sent_messages[0].get_body(preferencelist=("html",)).get_content()
@@ -233,6 +236,9 @@ class ScheduledExecutionTests(unittest.TestCase):
         self.assertNotIn("ROI score", email_body)
         self.assertNotIn("roi_total_score", email_body)
         self.assertNotIn("delivery_policy", email_body)
+        self.assertNotRegex(str(FakeSMTP.sent_messages[0]["Subject"]), r"\d(?:\.\d)?/5")
+        self.assertNotRegex(email_body, r"\d(?:\.\d)?/5")
+        self.assertNotRegex(html_body, r"\d(?:\.\d)?/5")
         self.assertIn("not the reading entry point", " ".join(release_commands[0]))
         self.assertNotIn("--draft", release_commands[0])
         self.assertNotIn("super-secret-password", str(report))

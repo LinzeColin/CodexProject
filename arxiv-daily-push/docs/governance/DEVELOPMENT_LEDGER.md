@@ -39,7 +39,7 @@ The append-only machine record is `development_events.jsonl`.
 - Base commit: f6d6131a6f87274fbfa29edc587b1b5523f1c85c
 - Result commit: PENDING
 - Task IDs: ADP-PHASE12-EMAIL-DECISION-UI-V2-038
-- Goal: Rebuild the daily email as a Chinese decision-first HTML/plain-text frontstage with optional Release-hosted MP4 link, q-fin candidate filtering, feedback actions, and hidden backend ROI/Claim Ledger foreground details.
+- Goal: Rebuild the daily email as a Chinese decision-first HTML/plain-text frontstage with the exact `YYYYMMDD -- Project Name -- arXiv Group -- Theme` subject contract, optional Release-hosted MP4 link, q-fin candidate filtering, feedback actions, and hidden backend ROI/Claim Ledger foreground details.
 - Assumptions: This is a frontstage delivery-quality fix only; it does not enable scheduled production, send SMTP, upload Releases, reduce all-arXiv scan scope, change queue persistence, or log secrets.
 - Files changed: lesson frontstage, daily email renderer, SMTP HTML alternative boundary, video transcript wording, schema/tests, version files, governance registries, phase record, run manifest, and governance tests.
 - Model changes: Added MOD-ADP-037 `adp-email-decision-ui-v2`; refreshed MOD-ADP-034 to `adp-manual-delivery-test-v1.4`.
@@ -47,7 +47,7 @@ The append-only machine record is `development_events.jsonl`.
 - Parameter changes: Refreshed PARAM-ADP-186 and added PARAM-ADP-276 through PARAM-ADP-279 for HTML alternative, plain-text length, q-fin candidate filter, and lesson frontstage.
 - Commands run: focused email V2 tests, semantic extractor, full ADP tests, governance dashboard generation, root governance tests, changed-only semantic governance validation, information-quality validation, manifest JSON parse, diff check, and cache check.
 - Test results: focused email V2 tests 35 OK; semantic extractor checked 39 active formulas and 278 active parameters; arxiv-daily-push tests 189 OK; governance dashboard PASS; root governance tests 128 OK; changed-only governance sync errors 0 warnings 0; information quality PASS; manifest JSON and CSV width checks PASS; cache check PASS.
-- Successes: Email frontstage is no longer shaped like backend evidence; visible ROI, Claim Ledger, delivery policy, Release landing clutter, and irrelevant q-fin candidate pollution are suppressed.
+- Successes: Email frontstage is no longer shaped like backend evidence; visible ROI, Claim Ledger, delivery policy, Release landing clutter, numeric `x/5` foreground scoring, and irrelevant q-fin candidate pollution are suppressed.
 - Failures: No revised-format real Gmail email has been sent yet after this correction.
 - Decisions: Keep production schedule disabled; open PR, wait for CI, merge, then perform one controlled manual Release plus Gmail SMTP rerun.
 - Remaining risks: Live Gmail rendering still needs the controlled manual workflow proof after PR CI and merge.
