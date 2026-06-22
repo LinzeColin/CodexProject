@@ -117,6 +117,12 @@ class VideoStoryboardTests(unittest.TestCase):
             self.assertEqual(report["video_filename"], "adp-daily-video.mp4")
             self.assertFalse(report["video_attachment_allowed"])
             self.assertTrue(output.is_file())
+            transcript = output.with_suffix(".txt").read_text(encoding="utf-8")
+            self.assertIn("Read the email first", transcript)
+            self.assertIn("optional cloud-generated file index", transcript)
+            self.assertNotIn("ROI score", transcript)
+            self.assertNotIn("91.0", transcript)
+            self.assertNotIn("roi_total_score", transcript)
 
     def test_render_lightweight_mp4_blocks_without_ffmpeg(self) -> None:
         report = render_lightweight_mp4(
