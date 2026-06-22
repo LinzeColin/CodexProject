@@ -774,10 +774,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:b1505840ebe4b9f6a3a3319e45861a87df11d51abe3522c40f29a9af48b10d61"
-    last_verified_commit: "17afce7844f1fc67de0721940af3bda8eab582f9"
-    verified_at: "2026-06-22T20:13:09+10:00"
-    evidence_hash: "sha256:091f25c97fd0301e7c6ff93c3f99453933e0a9b879ebc4bb29b1c286589a23ae"
+    implementation_fingerprint: "sha256:5999e6bfa574f7032f4a40739ab958add862ca19313ff1e4784a070e1958fb8b"
+    last_verified_commit: "89fe618f953b73e168f4f218b8c3edfc0102f6f9"
+    verified_at: "2026-06-22T21:00:00+10:00"
+    evidence_hash: "sha256:b0d53007b57b77380c8f5964b8ae4379a08f7066ccb67569e97576690f079505"
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
     assumption_ids: ["ASM-ADP-026", "ASM-ADP-015", "ASM-ADP-025"]
@@ -1253,7 +1253,7 @@ formulas:
     model_id: "MOD-ADP-035"
     assumption_ids: ["ASM-ADP-037", "ASM-ADP-035", "ASM-ADP-020"]
     status: "active"
-    expression: "Owner controls validation passes only when `config/owner_controls.yaml` has schema_version 1, required sections, production and production_acceptance flags false, no paid API/cloud/model allowance, no token-like values, canonical generated owner view paths, Window A resource caps within limits, and every source, board, scoring, queue-priority, legacy-ranking, ROI, and US-attention weight group sums to 100 within tolerance. Impact preview is no-side-effect and marks replay/ranking deltas as not computed until S1-06 replay data exists. Owner docs are generated from the config and validation output only."
+    expression: "Owner controls validation passes only when `config/owner_controls.yaml` has schema_version 1, required sections, production and production_acceptance flags false, no paid API/cloud/model allowance, no token-like values, canonical generated owner view paths, Window A resource caps within limits, and every source, board, research scoring, queue-priority, cross-board, and US-attention weight group sums to 100 within tolerance. Impact preview is no-side-effect and marks replay/ranking deltas as not computed until S1-06 replay data exists. Owner docs are generated from the config and validation output only."
     variables:
       - name: "owner_controls"
         data_type: "object"
@@ -1262,11 +1262,11 @@ formulas:
       - name: "weight_groups"
         data_type: "list[object]"
         unit: "points"
-        input_domain: "source, board, scoring card, queue, ranking, ROI, and attention-budget groups"
+        input_domain: "source, board, research scoring, queue-priority, cross-board, and attention-budget groups"
       - name: "window_a_resource_limits"
         data_type: "object"
         unit: "items, GB, seconds, flags"
-        input_domain: "max_online_arxiv_metadata <= 10, max_temp_cache_gb <= 2, media_smoke_max_seconds <= 30, large_pdf_download_allowed=false"
+        input_domain: "max_online_arxiv_metadata <= 10, max_temp_cache_gb <= 2, large_pdf_download_allowed=false"
       - name: "owner_view_files"
         data_type: "list[str]"
         unit: "paths"
@@ -1279,10 +1279,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/owner/OWNER_CONSOLE.md", "arxiv-daily-push/docs/owner/SOURCE_CATALOG.md", "arxiv-daily-push/docs/owner/MODEL_AND_QUEUE.md", "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/owner_controls.py::validate_owner_controls", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py::build_owner_impact_preview", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py::render_owner_documents", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py::_weight_group_reports", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py::_secret_hygiene_errors"]
-    implementation_fingerprint: "sha256:8ea6dc010119afca515bfb98e9350a797a8ed19f4bd34751ca1f3741f2a547ea"
-    last_verified_commit: "eb9a5ace979530d93c257e2a1f3c85703d55e302"
-    verified_at: "2026-06-22T16:30:00+10:00"
-    evidence_hash: "sha256:30a54341b638ccd347589ecc8d848e2bb45431db83f867516289406a6b5e930e"
+    implementation_fingerprint: "sha256:b2426fe42ba62b23205135c36ab2f323bace7b3958d09cd3c561209646750150"
+    last_verified_commit: "89fe618f953b73e168f4f218b8c3edfc0102f6f9"
+    verified_at: "2026-06-22T21:00:00+10:00"
+    evidence_hash: "sha256:f97e9e7489607656c9fd835401cf29669ee053e604068d8016788b6a8b23f3a5"
   - formula_id: "FORM-ADP-038"
     model_id: "MOD-ADP-036"
     assumption_ids: ["ASM-ADP-038", "ASM-ADP-035", "ASM-ADP-020"]
@@ -1413,3 +1413,45 @@ formulas:
     last_verified_commit: "17afce7844f1fc67de0721940af3bda8eab582f9"
     verified_at: "2026-06-22T20:13:09+10:00"
     evidence_hash: "sha256:f9a9b85ceaa635a3cda8ee19ec996df13d1021e62d36e2f3615baabd391e5ad7"
+  - formula_id: "FORM-ADP-041"
+    model_id: "MOD-ADP-039"
+    assumption_ids: ["ASM-ADP-040", "ASM-ADP-037", "ASM-ADP-039"]
+    status: "active"
+    expression: "For each Stage 1 item, research_score = sum(normalized_signal_i * research_weight_i) where each signal is clamped to [0,1] and missing signals contribute 0. queue_priority_score = quality * 55 + event_delta * 15 + urgency * 10 + cross_board_linkage * 10 + waiting_credit * 5 + source_balance * 5, where quality = research_score / 100 and waiting_credit = min(max(waiting_days / 365, 0), 1). Items older than 365 days are evicted with EVICTED_AGE; exactly 365 days remains eligible. Retracted or superseded items are non-active with lifecycle reason codes. Eligible items are stably sorted by queue_priority_score descending, research_score descending, then input order; only the first 10000 remain queued and later items receive EVICTED_CAPACITY. Multi-source board groups enforce source_share_cap_per_board when feasible; one-source Stage 1 arXiv groups are reported without fabricated alternate sources. Every input item emits exactly one canonical CONTENT_LEDGER row."
+    variables:
+      - name: "normalized_signal_i"
+        data_type: "float"
+        unit: "normalized component score"
+        input_domain: "0..1; missing value contributes 0"
+      - name: "research_weight_i"
+        data_type: "float"
+        unit: "percentage points"
+        input_domain: "owner_controls.scoring.research; sum 100"
+      - name: "queue_priority_weight_i"
+        data_type: "float"
+        unit: "percentage points"
+        input_domain: "owner_controls.scoring.queue_priority; sum 100"
+      - name: "event_age_days"
+        data_type: "int"
+        unit: "days"
+        input_domain: "0..365 inclusive for active queue eligibility"
+      - name: "max_active_items"
+        data_type: "int"
+        unit: "items"
+        input_domain: "10000 active queue cap"
+      - name: "content_ledger_columns"
+        data_type: "tuple[str]"
+        unit: "CSV columns"
+        input_domain: "canonical Task Pack CONTENT_LEDGER fields"
+    constraints: "The formula is deterministic, low-resource, fixture-testable, and does not fetch sources, enable production schedule, send SMTP, upload Release assets, generate media, or claim production replay/acceptance."
+    missing_policy: "Missing research component signals contribute 0; missing or invalid event_date blocks the queue report; every non-active item must carry a reason_code; missing prior ledger rows are recorded as UNKNOWN_NO_PRIOR_LEDGER rather than inferred."
+    output_range: "research_score 0..100, queue_priority_score 0..100, active queue count 0..10000, and one CONTENT_LEDGER row per input item"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/tests/test_owner_controls.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json", "arxiv-daily-push/tests/test_stage1_queue.py"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py::score_research_item", "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py::build_stage1_queue_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py::validate_stage1_queue_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py::render_content_ledger_csv", "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py::STAGE1_CONTENT_LEDGER_COLUMNS", "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py::STAGE1_DEFAULT_SOFT_QUOTAS", "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py::STAGE1_DEFAULT_RESEARCH_WEIGHTS", "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py::STAGE1_DEFAULT_QUEUE_PRIORITY_WEIGHTS"]
+    implementation_fingerprint: "sha256:f0764bb2ab9a86e311e68d2297b767868a66535b27b6cac0746661d21941403e"
+    last_verified_commit: "89fe618f953b73e168f4f218b8c3edfc0102f6f9"
+    verified_at: "2026-06-22T21:00:00+10:00"
+    evidence_hash: "sha256:4d9f7512a9ac4633035139fa49a1ee366638cf2a585b8954411b24cb6b7e38e9"
