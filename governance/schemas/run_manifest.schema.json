@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CodexProject Governance Run Manifest",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "run_id",
+    "project_id",
+    "task_id",
+    "acceptance_ids",
+    "iteration_id",
+    "generated_at",
+    "implementation_base_sha",
+    "content_tree_hash",
+    "changed_files_declared",
+    "changed_files_actual",
+    "required_governance_files",
+    "updated_governance_files",
+    "test_commands",
+    "test_results",
+    "evidence_refs",
+    "binding_status",
+    "ci_attestation_subject",
+    "ci_run_reference"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 2 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "project_id": { "type": "string", "minLength": 1 },
+    "task_id": { "type": "string", "minLength": 1 },
+    "acceptance_ids": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "iteration_id": { "type": "string", "minLength": 1 },
+    "generated_at": { "type": "string", "minLength": 1 },
+    "implementation_base_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "content_tree_hash": { "type": "string", "minLength": 1 },
+    "changed_files_declared": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "changed_files_actual": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "required_governance_files": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "updated_governance_files": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "test_commands": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "test_results": { "type": "array" },
+    "evidence_refs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "binding_status": {
+      "type": "string",
+      "enum": ["PRECOMMIT_TREE_BOUND", "COMMIT_BOUND", "CI_ATTESTED", "LEGACY_UNBOUND"]
+    },
+    "ci_attestation_subject": { "type": "string", "minLength": 1 },
+    "ci_run_reference": { "type": "string", "minLength": 1 }
+  }
+}

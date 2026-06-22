@@ -99,27 +99,47 @@ def main() -> int:
     marker = root / "governance" / "projects.yaml"
     validator = root / "scripts" / "validate_project_governance.py"
     quality_validator = root / "scripts" / "validate_information_quality.py"
+    generator = root / "scripts" / "generate_governance_dashboard.py"
+    setup_doctor = root / "scripts" / "governance_setup_doctor.py"
 
     if not marker.exists():
         emit({"continue": True})
         return 0
 
-    if not validator.exists() or not quality_validator.exists():
+    required_scripts = [validator, quality_validator, generator, setup_doctor]
+    missing_scripts = [str(path.relative_to(root)) for path in required_scripts if not path.exists()]
+    if missing_scripts:
         emit(
             {
                 "decision": "block",
                 "reason": (
-                    "Repository governance is enabled, but one required validator is missing. "
-                    "Restore scripts/validate_project_governance.py and "
-                    "scripts/validate_information_quality.py before completion."
+                    "Repository governance is enabled, but required governance scripts are missing. "
+                    "Restore these files before completion: " + ", ".join(missing_scripts)
                 ),
             }
         )
         return 0
 
     commands = [
+        [sys.executable, str(generator), "--write"],
         [sys.executable, str(validator), "--changed-only", "--enforce-sync", "--semantic"],
         [sys.executable, str(quality_validator), "--all", "--fast", "--fail-on-error"],
+        [sys.executable, str(validator), "--all", "--semantic", "--drift-report"],
+        [sys.executable, str(generator), "--write"],
+        [
+            "git",
+            "diff",
+            "--exit-code",
+            "--",
+            "README.md",
+            "GOVERNANCE_DASHBOARD.md",
+            "OWNER_PORTFOLIO.md",
+            "governance/binding_backlog.yaml",
+            ":(glob)**/docs/governance/ASSURANCE_STATUS.yaml",
+            ":(glob)**/docs/governance/STATUS.md",
+            ":(glob)**/docs/governance/OWNER_STATUS.md",
+        ],
+        [sys.executable, str(setup_doctor), "--json"],
     ]
     outputs: list[str] = []
     failed = False
