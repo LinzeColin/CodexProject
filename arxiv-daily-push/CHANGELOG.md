@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.1 - 2026-06-22
+
+- Corrected the Phase 12 human front-stage after manual run `27934320671`: the email text is now the reading entry point, Release is backend evidence/download storage, and video is an optional file link.
+- Removed backend ROI score exposure from the MP4 transcript.
+- Kept production schedule disabled; this change prepares the next controlled manual Release plus Gmail SMTP rerun only.
+
 ## 0.13.0 - 2026-06-22
 
 - Added `config/owner_controls.yaml` as the single owner-editable control file for Stage 1 Window A.

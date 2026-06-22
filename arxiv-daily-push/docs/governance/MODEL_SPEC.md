@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 35
 - formula_count: 37
-- parameter_count: 266
+- parameter_count: 267
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -180,8 +180,8 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 two-day simulation parameters: PARAM-ADP-167 through PARAM-ADP-169.
 - Active Phase 12 all-arXiv scan queue delivery parameters: PARAM-ADP-170 through PARAM-ADP-176.
 - Active Phase 12 cloud production enablement parameters: PARAM-ADP-177 through PARAM-ADP-180.
-- Active Phase 12 manual delivery test parameters: PARAM-ADP-181 through PARAM-ADP-184 plus PARAM-ADP-186.
-- Active Review8 Stage 1 owner controls parameters: PARAM-ADP-188 through PARAM-ADP-266.
+- Active Phase 12 manual delivery test parameters: PARAM-ADP-181 through PARAM-ADP-184 plus PARAM-ADP-186 and PARAM-ADP-267.
+- Active Review8 Stage 1 owner controls parameters: PARAM-ADP-187 through PARAM-ADP-266.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

@@ -754,20 +754,20 @@ models:
   - model_id: "MOD-ADP-034"
     name: "Phase 12 manual Release and SMTP delivery test gate"
     kind: "deterministic GitHub Actions manual delivery workflow contract"
-    purpose: "Prepare a default-branch-only manual workflow that scans all arXiv, renders a real MP4, creates a GitHub Release with deduplicated asset names, and sends one Gmail SMTP test email with human-scannable Chinese lesson text, 12-second video link, concise evidence, candidate queue summary, and hidden backend ROI scoring while keeping scheduled production disabled."
+    purpose: "Prepare a default-branch-only manual workflow that scans all arXiv, renders a real MP4, creates a GitHub Release with deduplicated asset names, and sends one Gmail SMTP test email where the human-scannable Chinese lesson text is the reading entry point, Release remains backend evidence/download storage, video is only an optional file link, backend ROI scoring is hidden from email and MP4 transcript, and scheduled production stays disabled."
     owner: "arxiv-daily-push"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "adp-manual-delivery-test-v1.2"
+    model_version: "adp-manual-delivery-test-v1.3"
     assumption_ids: ["ASM-ADP-036", "ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-022"]
     formula_ids: ["FORM-ADP-036"]
-    parameter_ids: ["PARAM-ADP-181", "PARAM-ADP-182", "PARAM-ADP-183", "PARAM-ADP-184", "PARAM-ADP-186"]
+    parameter_ids: ["PARAM-ADP-181", "PARAM-ADP-182", "PARAM-ADP-183", "PARAM-ADP-184", "PARAM-ADP-186", "PARAM-ADP-267"]
     inputs: ["workflow_dispatch confirmation", "generated_at", "max_results_per_category", "GitHub token", "Gmail SMTP password secret", "all-arXiv Atom fetches"]
     outputs: ["manual delivery preflight", "daily input", "candidate queue", "MP4 artifact", "GitHub Release", "SMTP delivery report", "scheduled execution evidence"]
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
     config_refs: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml"]
-    test_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md"]
+    test_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_video.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md"]
   - model_id: "MOD-ADP-035"
     name: "Review8 V4 owner controls and generated owner views"
     kind: "deterministic owner configuration validator and view generator"
