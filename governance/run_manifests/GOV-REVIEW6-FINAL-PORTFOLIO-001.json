@@ -1,7 +1,7 @@
 {
   "acceptance_id": "ACC-GOV-REVIEW6-FINAL-PORTFOLIO-001",
   "actor": "Codex",
-  "base_commit": "3ce9066664bab17253a25da11529d8146d8b314f",
+  "base_commit": "05c69c6522a74901f33350e03046f03a6f47b061",
   "binding_status": "pre_commit_pending",
   "change_classification": [
     "root_governance_change",
@@ -63,7 +63,7 @@
     "whkmSalary/docs/governance/STATUS.md",
     "whkmSalary/docs/governance/development_events.jsonl"
   ],
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:196fa9766b7aaa26ae268b9a254943405c7e5d238c4d69c91917714f9249abcb",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:799dea810ae43de14b272d145a394f552f5ed6ace1005065166ef74dea5bd59a",
   "evidence_refs": [
     "scripts/validate_project_governance.py",
     "scripts/validate_information_quality.py",
@@ -74,7 +74,7 @@
     "*/docs/governance/OWNER_STATUS.md",
     "tests/governance/test_project_governance_validator.py"
   ],
-  "finished_at": "2026-06-22T00:42:19Z",
+  "finished_at": "2026-06-22T00:55:07Z",
   "formula_delta": {
     "runtime_behavior": "unchanged",
     "semantic_fact_source": "generated assurance views only"
