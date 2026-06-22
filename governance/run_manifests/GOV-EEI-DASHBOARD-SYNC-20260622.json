@@ -9,9 +9,9 @@
     "ACC-REVIEW7-OWNER-VIEWS"
   ],
   "iteration_id": "ITER-20260622-002",
-  "generated_at": "2026-06-22T05:00:20Z",
-  "implementation_base_sha": "64f73f0999223b07caefc71ba202693ff7406d5c",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:aeb5fd3301e6fe215101b604fe3669c63feca4ee7a39c451bbae5b0045e57e5e",
+  "generated_at": "2026-06-22T05:26:21Z",
+  "implementation_base_sha": "3f250931cac3271a8ce553e048349cb384f1e985",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:c2d1aa06dfbf03b8cea07035aea47756110c316f63e478318dd8b0cbcffb1dea",
   "changed_files_declared": [
     "EEI/CHECKSUMS.sha256",
     "EEI/artifacts/release_evidence_t1211.json",
@@ -127,6 +127,12 @@
       "exit_code": 0,
       "result": "PASS",
       "observed": "No whitespace errors before manifest creation"
+    },
+    {
+      "command": "python3 -m pytest tests/governance/test_project_governance_validator.py::ProjectGovernanceValidatorTests::test_eei_dashboard_sync_manifest_binds_root_views -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "EEI root binding backlog precommit_pending_events is bound to 11"
     }
   ],
   "evidence_refs": [
