@@ -7,6 +7,7 @@ import pytest
 
 from scripts import fetch_official_source_full_text as official_source
 from scripts import load_live_official_captures as live_loader
+from scripts import validate_a202_operator_review_packet as review_packet
 
 
 def sample_anchor_row() -> dict[str, str]:
@@ -253,3 +254,53 @@ def test_live_capture_fixture_requires_explicit_fixture_flag() -> None:
     )
 
     assert len(result["anchors"]) == 2
+
+
+def test_a202_operator_review_packet_stays_fail_closed() -> None:
+    capture_path = review_packet.DEFAULT_CAPTURE_ARTIFACT
+    capture = review_packet.read_json(capture_path)
+
+    packet = review_packet.build_review_packet(
+        capture,
+        capture_artifact_path=capture_path,
+        generated_at="2026-06-22T00:00:00Z",
+    )
+    review_packet.validate_review_packet(packet, capture_artifact_path=capture_path)
+
+    assert packet["status"] == review_packet.REQUIRED_PACKET_STATUS
+    assert packet["counts"]["anchors_total"] == 3
+    assert packet["counts"]["anchors_with_source_text_committed"] == 0
+    assert packet["publication_policy"]["relationship_fact_publication_allowed"] is False
+    assert packet["publication_policy"]["release_clearance"] is False
+    assert {
+        gate["gate_id"]: gate["status"] for gate in packet["closure_gates"]
+    } == {
+        "live_capture_ready_for_review": "present",
+        "source_license_review": "missing",
+        "passage_level_relationship_review": "missing",
+        "production_owner_signoff": "missing",
+        "legal_release_clearance": "missing",
+        "a206_retry_dead_letter_soak": "missing",
+        "a209_24h_operator_soak": "missing",
+    }
+    for anchor in packet["anchors"]:
+        assert "source_text" not in anchor
+        assert anchor["publication_controls"] == {
+            "relationship_publication_allowed": False,
+            "release_clearance": False,
+            "may_create_relationship_fact_candidates": False,
+            "may_publish_relationships": False,
+        }
+
+
+def test_a202_operator_review_packet_rejects_claimed_clearance() -> None:
+    capture_path = review_packet.DEFAULT_CAPTURE_ARTIFACT
+    packet = review_packet.build_review_packet(
+        review_packet.read_json(capture_path),
+        capture_artifact_path=capture_path,
+        generated_at="2026-06-22T00:00:00Z",
+    )
+    packet["anchors"][0]["publication_controls"]["release_clearance"] = True
+
+    with pytest.raises(ValueError, match="release_clearance must be false"):
+        review_packet.validate_review_packet(packet, capture_artifact_path=capture_path)

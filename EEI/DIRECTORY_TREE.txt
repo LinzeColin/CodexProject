@@ -91,6 +91,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── t1301_live_official_retrieval_contract.json
 │   │   │   ├── t1301_live_official_selected_capture_evidence.json
 │   │   │   ├── t1301_official_full_text_dry_run_contract.json
+│   │   │   ├── t1301_operator_review_packet_contract.json
 │   │   │   └── t1301_operator_source_capture_contract.json
 │   │   ├── a203
 │   │   │   └── t1302_production_api_graph_scoring_contract.json
@@ -382,6 +383,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── run_soak_smoke.mjs
 │   ├── secret_scan.py
 │   ├── smoke_test_prototype.py
+│   ├── validate_a202_operator_review_packet.py
 │   ├── validate_brand_clearance.py
 │   ├── validate_catalog_integrity.py
 │   ├── validate_contracts.py

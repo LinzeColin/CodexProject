@@ -19,6 +19,7 @@ parameter_profile_versions:
   balanced-v2: "2"
   default-v2: "2"
   model_runtime_defaults: "14"
+  operator-review-packet: "1"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
 current_iteration: "ITER-20260621-017"
 current_phase: "C"

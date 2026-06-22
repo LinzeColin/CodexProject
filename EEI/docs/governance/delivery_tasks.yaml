@@ -3313,8 +3313,8 @@ tasks:
     legacy_task_id: "T1301"
     phase: "C"
     objective: "Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical"
-    scope: "Current T1301/A202 implementation slice adds second independent official-source closure for the two Golden Vertical relationship candidates and revises NVDA-ANCHOR-001 into a discovery_context_only context anchor with persisted anchor_scope metadata."
-    non_scope: "Does not claim live network retrieval, legal clearance, real operator production owner approval, production MVP completion, or A202 closure."
+    scope: "Current T1301/A202 implementation slice adds a fail-closed operator/legal review packet for the selected live official-source evidence, binding source hashes, excerpts, source health, parser version, anchor scope and missing closure gates."
+    non_scope: "Does not claim source-license review, passage-level relationship approval, legal clearance, real operator production owner approval, relationship publication, production MVP completion, or A202 closure."
     status: "in_progress"
     dependencies: []
     required_files:
@@ -3325,6 +3325,9 @@ tasks:
       - "EEI/tests/fixtures/golden_vertical_review_decisions.json"
       - "EEI/tests/fixtures/golden_vertical_owner_signoff_decisions.json"
       - "EEI/tests/e2e/state-contract.spec.ts"
+      - "EEI/scripts/validate_a202_operator_review_packet.py"
+      - "EEI/artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json"
+      - "EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json"
       - "EEI/artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json"
     acceptance_ids:
       - "ACC-A202"
@@ -3335,6 +3338,8 @@ tasks:
       - "npx --yes pnpm@11.8.0 --filter @eei/web typecheck"
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest -q tests/integration/test_database_migrations.py"
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/pytest tests/unit/test_official_source_live_capture.py -q"
+      - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_a202_operator_review_packet.py tests/unit/test_official_source_live_capture.py"
+      - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_a202_operator_review_packet.py validate --packet artifacts/tests/a202/t1301_operator_review_packet_contract.json"
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_development_status_artifacts.py validate"
     test_results:
       - "local ruff PASS"
@@ -3346,14 +3351,16 @@ tasks:
       - "A202 context-anchor unit tests PASS 10/10"
       - "development-status artifact validation PASS after pushed-diff artifact sync"
       - "A202 dry-run ingestion count assertion repair: local py_compile PASS; remote EEI validation run 27930880852 job 82642378395 showed the loader/table count is 50, not stale expectation 52"
+      - "A202 operator/legal review packet local validation PASS: ruff PASS, py_compile PASS, targeted unit tests PASS 12/12, packet generate/validate PASS, JSON syntax PASS"
     evidence_refs:
       - "EEI/data/golden_vertical_fact_candidates.json"
       - "EEI/tests/integration/test_database_migrations.py"
       - "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md"
       - "EEI/artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json"
+      - "EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json"
       - "GitHub Actions run 27930880852 job 82642378395"
-    risk: "A202 can be falsely closed if two official historical/supporting sources are treated as live retrieval, legal clearance, or real production owner approval."
-    rollback: "Revert the second-source data/loader/test changes, regenerate clean-room/release artifacts, and rerun make verify."
+    risk: "A202 can be falsely closed if a review packet, two official historical/supporting sources, or selected live capture evidence are treated as source-license review, legal clearance, production owner approval, relationship publication, or long-duration soak proof."
+    rollback: "Revert the operator-review packet script/artifact/test/governance updates, regenerate clean-room/release artifacts, and rerun make verify or the documented A202 validation subset."
     target_version: "0.1.0"
     completed_version: ""
     fact_level: "EXTRACTED"

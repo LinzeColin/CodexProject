@@ -1,0 +1,230 @@
+{
+  "acceptance_ids": [
+    "A202"
+  ],
+  "anchors": [
+    {
+      "anchor_id": "NVDA-ANCHOR-002",
+      "anchor_scope": {
+        "evidence_role": "context",
+        "publication_scope": "relationship_candidate_review_required",
+        "source_use_limit": "May support relationship_fact_candidates only after passage-level review, owner sign-off, source-license review and release clearance."
+      },
+      "document_date": "2026-02-25",
+      "official_publisher": "NVIDIA Investor Relations",
+      "publication_controls": {
+        "may_create_relationship_fact_candidates": false,
+        "may_publish_relationships": false,
+        "relationship_publication_allowed": false,
+        "release_clearance": false
+      },
+      "review_required": {
+        "legal_clearance_status": "missing",
+        "passage_level_relationship_review_status": "missing",
+        "production_owner_signoff_status": "missing",
+        "source_license_review_status": "missing"
+      },
+      "source_health": {
+        "attempts_count": 1,
+        "content_type": "application/pdf",
+        "http_status": 200,
+        "status": "healthy",
+        "text_char_count": 356605,
+        "token_coverage": {
+          "minimum_ratio": 1.0,
+          "ratio": 1.0
+        }
+      },
+      "source_text_excerpt": "Table of Contents UNITED STATESSECURITIES AND EXCHANGE COMMISSION Washington, D.C. 20549 ____________________________________________________________________________________________ FORM 10-K ☒ ANNUAL REPORT PURSUANT TO",
+      "source_text_sha256": "d07a35bf9b349e7bf109cf567abef8c6205c9b0011b7982369ced1be9fd4284d",
+      "source_url": "https://investor.nvidia.com/files/doc_financials/2026/q4/10K-NVDA.pdf",
+      "source_url_sha256": "4fc8e0515ac55b044a62c2e576a7973b4db72c16df0ca47b394370a873cbfe39",
+      "title": "NVIDIA Corporation FY2026 Form 10-K"
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-003",
+      "anchor_scope": {
+        "evidence_role": "context",
+        "publication_scope": "relationship_candidate_review_required",
+        "source_use_limit": "May support downstream/system partner candidates only after passage-level review, owner sign-off, source-license review and release clearance."
+      },
+      "document_date": "2024-06-02",
+      "official_publisher": "NVIDIA Newsroom",
+      "publication_controls": {
+        "may_create_relationship_fact_candidates": false,
+        "may_publish_relationships": false,
+        "relationship_publication_allowed": false,
+        "release_clearance": false
+      },
+      "review_required": {
+        "legal_clearance_status": "missing",
+        "passage_level_relationship_review_status": "missing",
+        "production_owner_signoff_status": "missing",
+        "source_license_review_status": "missing"
+      },
+      "source_health": {
+        "attempts_count": 1,
+        "content_type": "text/html; charset=utf-8",
+        "http_status": 200,
+        "status": "healthy",
+        "text_char_count": 21040,
+        "token_coverage": {
+          "minimum_ratio": 1.0,
+          "ratio": 1.0
+        }
+      },
+      "source_text_excerpt": "Computer Industry Joins NVIDIA to Build AI Factories and Data Centers for the Next Industrial Revolution | NVIDIA Newsroom Artificial Intelligence Computing Leadership from NVIDIA --> PLATFORMS Autonomous Machines Cloud",
+      "source_text_sha256": "f2e2217445ba6c1fdb2012ef3655c80c2ad63a24caa39edf1e8bebe674221095",
+      "source_url": "https://nvidianews.nvidia.com/news/computer-industry-ai-factories-data-centers",
+      "source_url_sha256": "69400554ed85016ecedf3865620780c38921d1757cd84ef407de012c35d1a986",
+      "title": "Computer Industry Joins NVIDIA to Build AI Factories and Data Centers for Next Industrial Revolution"
+    },
+    {
+      "anchor_id": "NVDA-ANCHOR-004",
+      "anchor_scope": {
+        "evidence_role": "context",
+        "publication_scope": "relationship_candidate_review_required",
+        "source_use_limit": "May support ecosystem, deployment or government collaboration candidates only after passage-level review, owner sign-off, source-license review and release clearance."
+      },
+      "document_date": "2025-05-18",
+      "official_publisher": "NVIDIA Blog",
+      "publication_controls": {
+        "may_create_relationship_fact_candidates": false,
+        "may_publish_relationships": false,
+        "relationship_publication_allowed": false,
+        "release_clearance": false
+      },
+      "review_required": {
+        "legal_clearance_status": "missing",
+        "passage_level_relationship_review_status": "missing",
+        "production_owner_signoff_status": "missing",
+        "source_license_review_status": "missing"
+      },
+      "source_health": {
+        "attempts_count": 1,
+        "content_type": "text/html; charset=UTF-8",
+        "http_status": 200,
+        "status": "healthy",
+        "text_char_count": 7950,
+        "token_coverage": {
+          "minimum_ratio": 1.0,
+          "ratio": 1.0
+        }
+      },
+      "source_text_excerpt": "NVIDIA CEO Envisions AI Infrastructure Industry Worth ‘Trillions of Dollars’ | NVIDIA Blog Skip to content NVIDIA CEO Envisions AI Infrastructure Industry Worth ‘Trillions of Dollars’ In his COMPUTEX keynote, Huang unvei",
+      "source_text_sha256": "769af5690063ad9da0e52c9496e06e5ccd0f1a04eafb942c73fbed000daf5cb0",
+      "source_url": "https://blogs.nvidia.com/blog/computex-2025-jensen-huang/",
+      "source_url_sha256": "17227c45d8516a41a1903f1ccc043fb10de2474d0c2bc1ca055ea131dbfde5aa",
+      "title": "NVIDIA CEO Envisions AI Infrastructure Industry Worth Tens of Trillions of Dollars"
+    }
+  ],
+  "artifact_id": "t1301-a202-operator-review-packet",
+  "closure_gates": [
+    {
+      "evidence": "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
+      "gate_id": "live_capture_ready_for_review",
+      "status": "present"
+    },
+    {
+      "evidence": "required before A202 closure",
+      "gate_id": "source_license_review",
+      "status": "missing"
+    },
+    {
+      "evidence": "required before relationship_fact_candidates publication",
+      "gate_id": "passage_level_relationship_review",
+      "status": "missing"
+    },
+    {
+      "evidence": "required before production-approved facts",
+      "gate_id": "production_owner_signoff",
+      "status": "missing"
+    },
+    {
+      "evidence": "required before public launch or publication claims",
+      "gate_id": "legal_release_clearance",
+      "status": "missing"
+    },
+    {
+      "evidence": "required long-duration source-health/retry evidence",
+      "gate_id": "a206_retry_dead_letter_soak",
+      "status": "missing"
+    },
+    {
+      "evidence": "required long-duration operator stability evidence",
+      "gate_id": "a209_24h_operator_soak",
+      "status": "missing"
+    }
+  ],
+  "counts": {
+    "anchors_ready_for_review": 3,
+    "anchors_total": 3,
+    "anchors_with_release_clearance": 0,
+    "anchors_with_source_text_committed": 0,
+    "relationship_fact_candidates_allowed": 0,
+    "relationships_publishable": 0
+  },
+  "generated_at": "2026-06-22T05:35:13Z",
+  "parser_version": "nvidia-official-fulltext-live-v1",
+  "publication_policy": {
+    "reason": "Live capture evidence is ready for review only; source-license, passage-level, owner, legal, A206 and A209 gates are not complete.",
+    "relationship_edge_publication_allowed": false,
+    "relationship_fact_publication_allowed": false,
+    "release_clearance": false
+  },
+  "record_mode": "live",
+  "required_decision_fields": {
+    "legal_release_clearance": [
+      "legal_reviewer",
+      "clearance_status",
+      "clearance_scope",
+      "risk_waiver_id_or_opinion_ref",
+      "signed_at"
+    ],
+    "passage_level_relationship_review": [
+      "candidate_key",
+      "supporting_anchor_ids",
+      "supporting_passage_locator",
+      "counter_evidence_reviewed",
+      "decision"
+    ],
+    "production_owner_signoff": [
+      "owner_actor",
+      "owner_role",
+      "authority_scope",
+      "signature",
+      "signed_at"
+    ],
+    "source_license_review": [
+      "reviewer",
+      "reviewed_at",
+      "source_license_status",
+      "allowed_use_scope",
+      "evidence_uri"
+    ]
+  },
+  "review_packet_scope": [
+    "Summarize selected live official-source evidence for operator review.",
+    "Bind source URL, source text hash, excerpt, source health and anchor scope.",
+    "Preserve no-full-text, no-relationship-publication and no-release-clearance controls.",
+    "List exact human/legal decision fields required before any stronger claim."
+  ],
+  "schema_version": "eei-a202-operator-review-packet-v1",
+  "source_capture_artifact": "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
+  "source_capture_artifact_sha256": "dd74bab057a817b5705a862024b2579331e206d9bd962038f53aa13ea0984ed6",
+  "source_registry": "data/nvidia_public_source_anchors.csv",
+  "source_registry_sha256": "cf9013872f5b5e8a33367b583e6e5877a7c3d29cce45174728afd4d59871fc2d",
+  "status": "PENDING_OWNER_LEGAL_CLEARANCE",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_id": "T1301",
+  "validation_summary": {
+    "full_text_committed": false,
+    "relationship_publication": false,
+    "release_clearance": false,
+    "source_health_statuses": [
+      "healthy"
+    ]
+  }
+}

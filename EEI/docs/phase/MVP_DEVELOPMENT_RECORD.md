@@ -4285,3 +4285,43 @@ Local PostgreSQL integration was not run in this shell; remote G2 PostgreSQL mus
 - Remove `anchor_scope` fields from ingestion structured facts.
 - Remove `artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json`.
 - Restore previous A202 candidate-count assertions and rerun validation.
+
+## 2026-06-22 - T1301/A202 operator/legal review packet contract
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A202 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/validate_a202_operator_review_packet.py`.
+- Generated `artifacts/tests/a202/t1301_operator_review_packet_contract.json` from the selected live official-source capture artifact.
+- Extended `tests/unit/test_official_source_live_capture.py` so the packet stays fail-closed and rejects any claimed clearance.
+- Added the validator to `make lint`.
+- Updated A202 acceptance, traceability, V5 status and task records.
+
+### Acceptance mapping
+
+- T1301 -> A202 for the real-data evidence-chain review handoff.
+- A202 remains `IN_PROGRESS`: this contract is review input only and does not provide source-license review, passage-level relationship approval, production owner sign-off, legal release clearance, A206 retry/dead-letter soak evidence or A209 24h operator soak evidence.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No canonical model parameter changed.
+- New fail-closed review-packet status: `PENDING_OWNER_LEGAL_CLEARANCE`.
+- Required gate set: `live_capture_ready_for_review`, `source_license_review`, `passage_level_relationship_review`, `production_owner_signoff`, `legal_release_clearance`, `a206_retry_dead_letter_soak`, `a209_24h_operator_soak`.
+
+### Validation
+
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_a202_operator_review_packet.py tests/unit/test_official_source_live_capture.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m py_compile scripts/validate_a202_operator_review_packet.py tests/unit/test_official_source_live_capture.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/unit/test_official_source_live_capture.py`: PASS; 12 passed.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_a202_operator_review_packet.py generate --packet artifacts/tests/a202/t1301_operator_review_packet_contract.json`: PASS; 3 anchors, publication allowed false.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_a202_operator_review_packet.py validate --packet artifacts/tests/a202/t1301_operator_review_packet_contract.json`: PASS.
+- `python3 -m json.tool artifacts/tests/a202/t1301_operator_review_packet_contract.json`: PASS.
+
+### Rollback
+
+- Remove `scripts/validate_a202_operator_review_packet.py`.
+- Remove `artifacts/tests/a202/t1301_operator_review_packet_contract.json`.
+- Revert the unit-test, Makefile, acceptance, traceability and task-record updates.
+- Regenerate development, clean-room and release artifacts, then rerun validation.
