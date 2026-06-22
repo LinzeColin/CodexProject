@@ -992,13 +992,13 @@ tasks:
     objective: "Collect controlled live B1/arXiv email delivery evidence across two real natural days before ARXIV_PRODUCTION_ACCEPTED can be claimed."
     scope: "Target-runner live arXiv input, B1 report/email generation, controlled Gmail SMTP send evidence, no-secret delivery refs, and two natural-day evidence ledger updates."
     non_scope: "No production scheduler enablement, no broad non-arXiv board expansion, no video generation, no GitHub Release upload requirement, and no final production acceptance claim until the dedicated acceptance gate passes."
-    status: "planned"
+    status: "in_progress"
     dependencies: ["S1-11-HISTORICAL_B1_PREVIEWS-001"]
     required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"]
     test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_live_preflight PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push run-live-all-arxiv-dry-run --generated-at 2026-06-23T09:00:00+10:00 --date 2026-06-23 --max-results-per-category 1 --json"]
-    test_results: ["NOT_RUN: S1-12 is planned and requires the next implementation run plus live network/target-runner evidence."]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    test_results: ["PREFLIGHT_ONLY: GitHub Actions PR #67 live all-arXiv dry-run passed on run 27987189886/job 82831357067 with 20/20 archives verified, max_results_per_category 1, artifact digest sha256:2011bf655a2d8237b5c20f3111c70d6242a4b6582b5e90069d1f63d43a4da81a, and SMTP/Release/scheduler disabled.", "NOT_COMPLETE: two real natural-day controlled B1 Gmail SMTP delivery evidence is still missing."]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md", "arxiv-daily-push/docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md", "governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json", "github-actions://LinzeColin/CodexProject/actions/runs/27987189886/artifacts/7806168015"]
     risk: "Live-day evidence must be collected on the target runner and must not silently turn into a production schedule or local Mac background service."
     rollback: "Revert S1-12 live-day evidence files and governance records."
     target_version: "0.22.0"
