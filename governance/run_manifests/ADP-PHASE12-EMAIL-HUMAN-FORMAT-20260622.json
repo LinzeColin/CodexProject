@@ -1,0 +1,125 @@
+{
+  "manifest_id": "ADP-PHASE12-EMAIL-HUMAN-FORMAT-20260622",
+  "project_id": "arxiv-daily-push",
+  "iteration_id": "ITER-20260621-053",
+  "event_id": "EVENT-20260622-ADP-060",
+  "timestamp": "2026-06-22T16:20:00+10:00",
+  "phase": "E",
+  "task_id": "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036",
+  "status": "ready",
+  "version_before": "0.12.4",
+  "version_after": "0.12.5",
+  "base_commit": "b7451f8533d7f9c33bc3a2739c297de93ff2f615f",
+  "result_commit": "PENDING",
+  "summary": "Refined the daily email front-end after the controlled manual Release plus Gmail SMTP test passed so the next email uses a human-scannable Chinese layout, compact arXiv subject, 12-second video link, concise evidence, action guidance, candidate queue summary, and hides ROI scoring in backend artifacts.",
+  "scope": [
+    "daily email subject contract",
+    "human-scannable Chinese email body",
+    "12-second video link wording",
+    "candidate queue front-end summary without visible ROI score",
+    "email format regression tests",
+    "version and governance metadata"
+  ],
+  "non_scope": [
+    "no production scheduled run enablement",
+    "no new SMTP send in this formatting commit",
+    "no direct GitHub Release upload outside the manual workflow",
+    "no ranking algorithm change",
+    "no candidate queue policy change",
+    "no secret value logging",
+    "no video email attachments"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md",
+    "arxiv-daily-push/pyproject.toml",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_global_scan.py",
+    "arxiv-daily-push/tests/test_scheduled_execution.py",
+    "governance/run_manifests/ADP-PHASE12-EMAIL-HUMAN-FORMAT-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "model_delta": "Refines MOD-ADP-034 to adp-manual-delivery-test-v1.2 for human front-end email formatting.",
+  "formula_delta": "Refreshes FORM-ADP-036 with YYYYMMDD arXiv subject, Chinese section layout, hidden visible ROI score, concise evidence, and 12-second video link requirements.",
+  "parameter_delta": "Adds PARAM-ADP-186 for the daily email human front-end format contract.",
+  "model_ids_changed": [
+    "MOD-ADP-034"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-036"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-186"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_fmt_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_notifications.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_fmt_all_final PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_fmt_semantic_fix PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_fmt_dash PYTHONPATH=arxiv-daily-push/src python3 scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_fmt_root_final2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_fmt_iq PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_fmt_gov_final PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python3 -m json.tool governance/run_manifests/ADP-PHASE12-EMAIL-HUMAN-FORMAT-20260622.json",
+    "git diff --check",
+    "find arxiv-daily-push tests/governance ( -name __pycache__ -o -name '*.pyc' ) -print"
+  ],
+  "test_results": [
+    "focused email and scheduled execution tests: 20 tests OK",
+    "arxiv-daily-push unit tests: 177 tests OK after S1-02 rebase",
+    "semantic extractor: 36 active formulas and 185 active parameters checked with no errors after S1-02 rebase",
+    "governance dashboard regenerated: PASS after S1-02 rebase",
+    "root governance unit tests: 126 tests OK; missing-base lines are expected negative fixtures with exit code 0",
+    "changed-only governance sync with semantic checks: errors 0 warnings 0; projects changed arxiv-daily-push only",
+    "information quality validation: PASS errors 0 warnings 0 after S1-02 rebase",
+    "manifest JSON parse: PASS",
+    "git diff --check: PASS",
+    "cache check: no __pycache__ or .pyc files found under arxiv-daily-push or tests/governance"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md",
+    "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
+    "arxiv-daily-push/tests/test_global_scan.py",
+    "arxiv-daily-push/tests/test_scheduled_execution.py",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/27932072771"
+  ],
+  "email_frontend_contract": {
+    "subject_format": "YYYYMMDD -- Project Name -- arXiv Group -- Theme",
+    "body_language": "Chinese except necessary technical terms",
+    "removed_visible_lines": [
+      "project",
+      "date",
+      "recipient",
+      "ROI score",
+      "delivery_policy"
+    ],
+    "video_duration_label": "12-second video",
+    "visible_video_delivery": "Release/video link only; no email attachment",
+    "backend_roi_retained": true
+  },
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "production_schedule_enabled": false,
+  "secret_values_logged": false,
+  "rollback": "Revert version 0.12.5 email format code, tests, phase record, manifest, event, and governance records, then restore version 0.12.4.",
+  "next_task": "OPEN_PR_RUN_PR_CI_MERGE_THEN_RERUN_MANUAL_RELEASE_SMTP_TEST",
+  "risks": [
+    "The revised front-end format still needs PR CI, merge to main, and a controlled manual workflow_dispatch to prove the next real email renders as intended.",
+    "Scheduled production remains disabled until the owner separately approves production variables."
+  ]
+}

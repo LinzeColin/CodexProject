@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.12.4`
+Active product version: `0.12.5`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.12.4
-- Current phase: S1-A
-- Current gate: S1-02-BASELINE-LOCK-TRACEABILITY
-- Confirmed iteration count: 52
+- Product version: 0.12.5
+- Current phase: E
+- Current gate: ADP-PHASE12-EMAIL-HUMAN-FORMAT-READY
+- Confirmed iteration count: 53
 - Reconstructed event count: 0
-- Current task: S1-02-BASELINE-LOCK-TRACEABILITY-001
-- Blockers: GitHub Actions run `27932072771` proves one controlled manual Release plus Gmail SMTP delivery test at commit `bbdc69bb49758e4ad84f91f45fbe7921b82b1414`, but production launch remains blocked by Stage 1 owner controls, owner views, unified data model, local runtime recovery controls, migration readiness, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables.
+- Current task: ADP-PHASE12-EMAIL-HUMAN-FORMAT-036
+- Blockers: The human-facing email format still needs PR CI, merge to `main`, and a controlled manual workflow_dispatch rerun before it replaces the previously verified manual email format. GitHub Actions run `27932072771` proves one controlled manual Release plus Gmail SMTP delivery test at commit `bbdc69bb49758e4ad84f91f45fbe7921b82b1414`, but production launch remains blocked by Stage 1 owner controls, owner views, unified data model, local runtime recovery controls, migration readiness, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables.
 
 ## Phase Matrix
 
@@ -29,6 +29,30 @@ The append-only machine record is `development_events.jsonl`.
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260621-053`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from owner email-format requirements, the successful controlled manual delivery run `27932072771`, daily email renderer code, focused email/scheduled-execution tests, and sample preview output.
+- Version before: 0.12.4
+- Version after: 0.12.5
+- Base commit: b7451f8533d7f9c33bc3a2739c297de93ff2f615f
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-EMAIL-HUMAN-FORMAT-036
+- Goal: Refine the daily email front-end into a human-scannable Chinese layout with compact arXiv subject, 12-second video link, concise evidence, action guidance, and candidate queue summary while keeping ROI scoring in backend artifacts.
+- Assumptions: The owner wants the email front-end optimized for direct reading and decision-making; backend GitHub artifacts remain the correct place for ROI scores, ranking details, and delivery evidence.
+- Files changed: daily email renderer, global scan/scheduled execution tests, version/changelog files, pyproject version metadata, model/formula/parameter/traceability registries, delivery task, phase record, run manifest, generated views, and event.
+- Model changes: Refined MOD-ADP-034 to `adp-manual-delivery-test-v1.2`.
+- Formula changes: Refreshed FORM-ADP-036 with human email front-end constraints.
+- Parameter changes: Added PARAM-ADP-186 for the daily email front-end format contract.
+- Commands run: focused email and scheduled execution tests; full arXiv unit tests; semantic extractor; governance dashboard generation; root governance tests; information-quality validation; changed-only governance validation; JSON parse; diff/cache checks.
+- Test results: focused email and scheduled execution tests 20 OK; arXiv unit tests 177 OK; semantic extractor checked 36 active formulas and 185 active parameters; governance, information quality, JSON, diff, and cache checks passed before rebase and will be rerun after conflict resolution.
+- Successes: Daily email subject now follows `YYYYMMDD -- Project Name -- arXiv Group -- Theme`. Body no longer starts with `project`, `date`, `recipient`, and no longer injects visible ROI score or delivery policy text. Body keeps Chinese sections, 12-second video link, Release link, concise evidence, action-time guidance, and candidate queue summary.
+- Failures: No revised-format real email has been sent yet in this preparation commit.
+- Decisions: Keep production schedule disabled; rerun the controlled manual Release + Gmail SMTP workflow only after PR CI passes and this format change merges to `main`.
+- Remaining risks: The next real email can still expose formatting issues in a live article title or generated lesson section; scheduled production remains blocked until separately approved.
+- Rollback: Revert version 0.12.5 email format code, tests, phase record, event, manifest, and governance records, then restore version 0.12.4.
+- Next step: Complete post-rebase validation, open PR, wait for PR CI green, merge, then rerun the manual Release + Gmail SMTP workflow.
 
 ### `ITER-20260622-S1-001`
 

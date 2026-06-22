@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.5 - 2026-06-22
+
+- Refined the daily email front-end format for human scanning, actionability, and information density.
+- Changed the daily email subject to `YYYYMMDD -- arXiv <Project Group> -- <arXiv Group> -- <Theme>`.
+- Removed front-end `project`, `date`, `recipient`, ROI score, and delivery policy lines from the daily email body while preserving ROI evidence in backend artifacts.
+- Kept Release/video links, Chinese lesson text, concise evidence, candidate queue summary, and no video email attachment policy.
+- Kept production schedule disabled; this change only prepares the next controlled manual email test.
+
 ## 0.12.4 - 2026-06-22
 
 - Fixed GitHub Release delivery to deduplicate repeated identical asset paths before invoking `gh release create`.

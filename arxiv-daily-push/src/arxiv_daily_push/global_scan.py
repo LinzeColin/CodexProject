@@ -75,6 +75,29 @@ ROI_COMPONENT_WEIGHTS: dict[str, float] = {
     "explainability": 10.0,
 }
 
+_ARXIV_GROUP_LABELS: dict[str, str] = {
+    "astro-ph": "Astrophysics",
+    "cond-mat": "Condensed Matter",
+    "cs": "Computer Science",
+    "econ": "Economics",
+    "eess": "Electrical Engineering",
+    "gr-qc": "General Relativity",
+    "hep-ex": "High Energy Physics",
+    "hep-lat": "High Energy Physics",
+    "hep-ph": "High Energy Physics",
+    "hep-th": "High Energy Physics",
+    "math": "Mathematics",
+    "math-ph": "Mathematical Physics",
+    "nlin": "Nonlinear Sciences",
+    "nucl-ex": "Nuclear Physics",
+    "nucl-th": "Nuclear Physics",
+    "physics": "Physics",
+    "q-bio": "Quant Biology",
+    "q-fin": "Quant Finance",
+    "quant-ph": "Quant Physics",
+    "stat": "Statistics",
+}
+
 _RELEVANCE_KEYWORDS = (
     "agent",
     "artificial intelligence",
@@ -913,43 +936,60 @@ def _daily_email(
     generated_at: str,
 ) -> EmailNotification:
     source_item = daily_input.get("source_item") if isinstance(daily_input.get("source_item"), Mapping) else {}
+    arxiv = (source_item.get("metadata") or {}).get("arxiv") if isinstance(source_item.get("metadata"), Mapping) else {}
+    if not isinstance(arxiv, Mapping):
+        arxiv = {}
+    category = str(arxiv.get("primary_category") or "")
+    title = str(source_item.get("title") or "arXiv Daily Push")
+    subject_date = _compact_date(str(daily_input.get("date") or generated_at[:10]))
+    project_label, group_label = _human_arxiv_labels(category)
+    theme = _human_email_theme(title)
     sections = lesson.get("sections") if isinstance(lesson.get("sections"), list) else []
     lesson_lines = []
     for section in sections:
         if isinstance(section, Mapping):
-            lesson_lines.append(f"- {section.get('title', 'section')}: {section.get('body', '')}")
+            section_title = _clean_text(str(section.get("title") or "核心解释"))
+            section_body = _truncate_text(str(section.get("body") or ""), max_chars=180)
+            if section_body:
+                lesson_lines.append(f"- {section_title}：{section_body}")
+    summary = _truncate_text(str(arxiv.get("summary") or ""), max_chars=260)
     top_queue = queue_summary.get("top_queued") if isinstance(queue_summary.get("top_queued"), list) else []
     queue_lines = [
-        f"- {item.get('title', '')} ({item.get('primary_category', '')}, ROI {item.get('roi_total_score', 0)})"
+        f"- {_truncate_text(str(item.get('title') or ''), max_chars=96)}（{item.get('primary_category', '')}）"
         for item in top_queue
         if isinstance(item, Mapping)
     ]
+    queued_count = int(queue_summary.get("queued_item_count") or len(queue_lines))
     body = "\n".join(
         [
-            f"project: {PROJECT_NAME}",
-            f"date: {daily_input.get('date', generated_at[:10])}",
-            f"recipient: {DEFAULT_RECIPIENT}",
+            "【今日主讲】",
+            title,
+            f"分类：{project_label} / {group_label}" + (f" / {category}" if category else ""),
+            f"原文：{source_item.get('canonical_url', '')}",
             "",
-            "今日主讲文章",
-            f"- title: {source_item.get('title', '')}",
-            f"- url: {source_item.get('canonical_url', '')}",
-            f"- source_id: {source_item.get('source_id', '')}",
-            f"- ROI score: {(daily_input.get('selection_audit') or {}).get('roi_total_score', '')}",
+            "【12秒视频】",
+            f"观看/下载：{links.get('video_url') or '待 GitHub Release MP4 生成后发送'}",
+            f"Release 资料包：{links.get('release_url') or '待 GitHub Release 创建后发送'}",
             "",
-            "中文讲解",
+            "【核心讲解】",
             *(lesson_lines or ["- 讲解暂不可用：缺少已验证 Lesson artifact。"]),
             "",
-            "视频观看/下载链接",
-            f"- video: {links.get('video_url') or 'BLOCKED_UNTIL_GITHUB_RELEASE_VIDEO_ARTIFACT_EXISTS'}",
-            f"- release: {links.get('release_url') or 'BLOCKED_UNTIL_GITHUB_RELEASE_CREATED'}",
+            "【可操作转化】",
+            "- 5分钟：先看 12 秒视频，判断这篇是否值得今天深读。",
+            "- 30分钟：读摘要、图表或引言，提炼一个可复用方法或判断变量。",
+            "- 90分钟：把方法映射到你的研究、产品、投资或学习清单，形成一个可验证小实验。",
             "",
-            "候选队列摘要",
-            *(queue_lines or ["- 当前无候选队列条目。"]),
+            "【关键证据】",
+            f"- 论文 ID：{source_item.get('source_id', '')}",
+            "- 来源：arXiv Atom 摘要与分类元数据；未把预印本当作已同行评审结论。",
+            *(["- 摘要信号：" + summary] if summary else []),
             "",
-            "delivery_policy: no video attachments; GitHub Release link only",
+            "【候选队列摘要】",
+            f"- 当前保留：{queued_count} 篇未讲高价值候选。",
+            *(queue_lines[:3] or ["- 暂无未讲候选。"]),
         ]
     )
-    subject = f"[{PROJECT_NAME}][DAILY][{daily_input.get('date', generated_at[:10])}] {source_item.get('title', 'arXiv Daily Push')}"
+    subject = f"{subject_date} -- {project_label} -- {group_label} -- {theme}"
     return EmailNotification(subject=subject, recipient=DEFAULT_RECIPIENT, body=body)
 
 
@@ -1056,6 +1096,42 @@ def _lesson_has_chinese_text(lesson: Mapping[str, Any]) -> bool:
         return False
     text = json.dumps(lesson, ensure_ascii=False)
     return bool(re.search(r"[\u4e00-\u9fff]", text))
+
+
+def _compact_date(value: str) -> str:
+    match = re.match(r"^(\d{4})-(\d{2})-(\d{2})", value)
+    if match:
+        return "".join(match.groups())
+    digits = re.sub(r"\D+", "", value)
+    return digits[:8] or "00000000"
+
+
+def _human_arxiv_labels(primary_category: str) -> tuple[str, str]:
+    archive_id = _archive_id_from_category(primary_category)
+    archive = next((item for item in ALL_ARXIV_ARCHIVES if item["archive_id"] == archive_id), None)
+    project_label = f"arXiv {archive['group']}" if archive else "arXiv Daily Push"
+    group_label = _ARXIV_GROUP_LABELS.get(archive_id, archive_id or "All arXiv")
+    return project_label, group_label
+
+
+def _archive_id_from_category(primary_category: str) -> str:
+    value = str(primary_category or "")
+    for archive_id in sorted(_required_archive_ids(), key=len, reverse=True):
+        if value == archive_id or value.startswith(f"{archive_id}."):
+            return archive_id
+    return value.split(".")[0] if value else ""
+
+
+def _human_email_theme(title: str) -> str:
+    cleaned = re.sub(r"\s+", " ", str(title or "")).strip(" .:-")
+    return _truncate_text(cleaned or "Daily arXiv insight", max_chars=72)
+
+
+def _truncate_text(value: str, *, max_chars: int) -> str:
+    cleaned = _clean_text(str(value or ""))
+    if len(cleaned) <= max_chars:
+        return cleaned
+    return cleaned[: max(0, max_chars - 3)].rstrip(" ,.;:") + "..."
 
 
 def _safe_id(value: str) -> str:

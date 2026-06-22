@@ -1579,32 +1579,33 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         pyproject = (ROOT / "arxiv-daily-push" / "pyproject.toml").read_text(encoding="utf-8")
         package_init = (ROOT / "arxiv-daily-push" / "src" / "arxiv_daily_push" / "__init__.py").read_text(encoding="utf-8")
         matrix = load_validator_module().load_yaml(ROOT / "arxiv-daily-push" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(version, "0.12.4")
-        self.assertIn('version = "0.12.4"', pyproject)
-        self.assertIn('__version__ = "0.12.4"', package_init)
-        self.assertEqual(matrix["product_version"], "0.12.4")
+        self.assertEqual(version, "0.12.5")
+        self.assertIn('version = "0.12.5"', pyproject)
+        self.assertIn('__version__ = "0.12.5"', package_init)
+        self.assertEqual(matrix["product_version"], "0.12.5")
 
         tasks = load_validator_module().load_yaml(ROOT / "arxiv-daily-push" / "docs" / "governance" / "delivery_tasks.yaml")["tasks"]
         task_by_id = {task["task_id"]: task for task in tasks}
         self.assertEqual(task_by_id["ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035"]["status"], "completed")
         self.assertEqual(task_by_id["S1-02-BASELINE-LOCK-TRACEABILITY-001"]["status"], "completed")
+        self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"]["status"], "ready")
 
     def test_arxiv_owner_status_uses_latest_event_manifest(self) -> None:
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-059")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-059")
-        self.assertEqual(info["product_version"], "0.12.4")
-        self.assertEqual(info["current_gate"], "S1-02-BASELINE-LOCK-TRACEABILITY")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-060")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-060")
+        self.assertEqual(info["product_version"], "0.12.5")
+        self.assertEqual(info["current_gate"], "ADP-PHASE12-EMAIL-HUMAN-FORMAT-READY")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-S1-02-BASELINE-LOCK-TRACEABILITY-20260622.json",
+            "governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.12.4", rendered)
-        self.assertIn("S1-02-BASELINE-LOCK-TRACEABILITY", rendered)
+        self.assertIn("0.12.5", rendered)
+        self.assertIn("ADP-PHASE12-EMAIL-HUMAN-FORMAT-READY", rendered)
         self.assertIn("production trial not started", rendered)
         self.assertIn("30-day acceptance absent", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
