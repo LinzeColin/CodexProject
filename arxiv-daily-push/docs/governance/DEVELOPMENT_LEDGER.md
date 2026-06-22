@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.16.0`
+Active product version: `0.17.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.16.0
+- Product version: 0.17.0
 - Current phase: S1-A
-- Current gate: ADP-S1-06-SCORING-QUEUE-LEDGER-READY
-- Confirmed iteration count: 59
+- Current gate: ADP-S1-07-B1-REPORT-EMAIL-TEXT-READY
+- Confirmed iteration count: 60
 - Reconstructed event count: 0
-- Current task: S1-07-B1_REPORT_EMAIL_TEXT-001
-- Blockers: S1-07 B1 report/email text interface, S1-08 local runtime recovery, S1-09 migration package, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables still block final production acceptance.
+- Current task: S1-08-LOCAL_RUNTIME_RECOVERY-001
+- Blockers: S1-08 local runtime recovery, S1-09 migration package, 30 historical previews, two live production days, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
 
@@ -29,6 +29,31 @@ The append-only machine record is `development_events.jsonl`.
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260622-S1-006`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from `stage1_b1_report.py`, focused B1 report/email tests, full ADP unit tests, semantic extractor, and governance registry updates.
+- Version before: 0.16.0
+- Version after: 0.17.0
+- Base commit: bbcdc21caab1c4377810d66bb95359ed3ef18611
+- Result commit: PENDING
+- Task IDs: S1-07-B1_REPORT_EMAIL_TEXT-001
+- Goal: Add the Review8 Stage 1 B1/arXiv Chinese teaching report and email preview package with supported claim evidence, candidate queue summary, owner subject contract, artifact/audit output, and no production side effects.
+- Assumptions: S1-07 is a deterministic local text delivery interface only; it does not send Gmail SMTP, upload GitHub Releases, generate video, enable production scheduling, run 30 historical previews, or claim `ARXIV_PRODUCTION_ACCEPTED`.
+- Files read: `arxiv-daily-push/AGENTS.md`, V5 baseline lock and task pack, daily input builder, Claim Ledger gate, lesson renderer, Stage 1 queue, CLI, focused tests, semantic extractor, and existing governance registries.
+- Files changed: `stage1_b1_report.py`, B1 report/email CLI dispatch, focused B1 report tests, version files, changelog, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, phase record, ledger/event records, and run manifest.
+- Model changes: Added MOD-ADP-040 `adp-stage1-b1-report-email-v1`.
+- Formula changes: Added FORM-ADP-042 and refreshed FORM-ADP-024 because `cli.py::main` gained the `build-b1-report-email` subcommand.
+- Parameter changes: Added PARAM-ADP-310 through PARAM-ADP-315 for B1 report schema, board ID/name, subject contract, critical claim coverage gate, and prohibited email marker count.
+- Commands run: focused B1 report/email plus CLI tests; full arxiv-daily-push unit tests; semantic extractor.
+- Test results: focused B1 report/email and CLI tests 9 OK; arxiv-daily-push unit tests 203 OK; semantic extractor checked 42 active formulas and 298 active parameters with no errors.
+- Successes: The package validates arXiv daily input and supported claims, blocks unsupported P0 claims, renders Chinese teaching report/email previews, keeps claim IDs in report/audit rather than the user email foreground, includes candidate queue summary, removes frontend percentage/ROI/video clutter, writes artifacts only when explicitly requested, and keeps SMTP/Release/video/network side effects false.
+- Failures: No real Gmail email or GitHub Release was sent in S1-07 by design; production acceptance remains blocked.
+- Decisions: Bump product version to 0.17.0 because S1-07 adds a backward-compatible Stage 1 B1 report/email text CLI and contract while preserving disabled production side effects.
+- Remaining risks: S1-08 runtime recovery, S1-09 migration package, 30 historical previews, two live production days, and production trial evidence remain incomplete before `ARXIV_PRODUCTION_ACCEPTED`.
+- Rollback: Remove `stage1_b1_report.py`, `build-b1-report-email` CLI dispatch/tests, restore version 0.16.0, and revert S1-07 governance records and run manifest.
+- Next step: S1-08-LOCAL_RUNTIME_RECOVERY-001.
 
 ### `ITER-20260622-S1-005`
 
