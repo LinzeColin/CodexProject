@@ -15,6 +15,17 @@ from scripts.job_scheduler import (
 )
 
 WORKER_CONTRACT_VERSION = "worker-supervisor-v1"
+BASE_ACCEPTANCE_IDS = {"A206", "A209"}
+MODEL_REFRESH_ACCEPTANCE_IDS = {"A204", "A205"}
+ACCEPTANCE_ID_ORDER = ["A204", "A205", "A206", "A209"]
+MODEL_REFRESH_JOB_TYPES = {"score_recompute", "data_snapshot_refresh"}
+MODEL_REFRESH_EVENT_TYPES = {
+    "data.snapshot.activated",
+    "data.snapshot.refresh.requested",
+    "model.profile.activated",
+    "score.recompute.requested",
+    "score.snapshot.activated",
+}
 _STOP_REQUESTED = False
 
 
@@ -33,6 +44,57 @@ def _status_counts(connection: Any, *, table: str) -> dict[str, int]:
         """
     ).fetchall()
     return {str(row["status"]): int(row["count"]) for row in rows}
+
+
+def _ordered_acceptance_ids(ids: set[str]) -> list[str]:
+    return [acceptance_id for acceptance_id in ACCEPTANCE_ID_ORDER if acceptance_id in ids]
+
+
+def _acceptance_ids_for_filters(
+    *,
+    job_type: str | None,
+    event_type: str | None,
+) -> list[str]:
+    ids = set(BASE_ACCEPTANCE_IDS)
+    if job_type in MODEL_REFRESH_JOB_TYPES or event_type in MODEL_REFRESH_EVENT_TYPES:
+        ids.update(MODEL_REFRESH_ACCEPTANCE_IDS)
+    return _ordered_acceptance_ids(ids)
+
+
+def _model_refresh_wake_contract(
+    *,
+    job_type: str | None,
+    event_type: str | None,
+) -> dict[str, Any] | None:
+    matched_job = job_type in MODEL_REFRESH_JOB_TYPES
+    matched_event = event_type in MODEL_REFRESH_EVENT_TYPES
+    if not matched_job and not matched_event:
+        return None
+    return {
+        "schema_version": "eei-model-refresh-worker-wake-contract-v1",
+        "contract": "t1303-a204-a205-supervised-refresh-wake-v1",
+        "scope": "supervisor_cli_and_process_manager_wake",
+        "job_type": job_type,
+        "event_type": event_type,
+        "matched_model_refresh_job": matched_job,
+        "matched_model_refresh_event": matched_event,
+        "covered_job_types": sorted(MODEL_REFRESH_JOB_TYPES),
+        "covered_event_types": sorted(MODEL_REFRESH_EVENT_TYPES),
+        "guarantees": [
+            "supervisor_wake_can_execute_score_recompute_and_data_snapshot_refresh_handlers",
+            "handlers_advance_active_analysis_context_refresh_token_atomically",
+            "transactional_outbox_dispatch_is_available_in_the_same_supervised_cycle",
+        ],
+        "non_closure": [
+            "does_not_complete_A209_4h_or_24h_soak",
+            "does_not_replace_host_level_release_manager_or_platform_process_supervision",
+            "does_not_close_A204_or_A205_without_current_governance_evidence",
+        ],
+        "acceptance_ids": _acceptance_ids_for_filters(
+            job_type=job_type,
+            event_type=event_type,
+        ),
+    }
 
 
 def worker_health_snapshot() -> dict[str, Any]:
@@ -116,6 +178,11 @@ def run_worker_cycle(
     max_outbox: int = 1,
     recover_leases: bool = True,
 ) -> dict[str, Any]:
+    acceptance_ids = _acceptance_ids_for_filters(job_type=job_type, event_type=event_type)
+    model_refresh_wake_contract = _model_refresh_wake_contract(
+        job_type=job_type,
+        event_type=event_type,
+    )
     recovered = recover_expired_leases() if recover_leases else {"recovered": 0, "dead_lettered": 0}
     jobs: list[dict[str, Any]] = []
     outbox_events: list[dict[str, Any]] = []
@@ -158,7 +225,8 @@ def run_worker_cycle(
             "jobs": jobs,
             "outbox_events": outbox_events,
             "health": worker_health_snapshot(),
-            "acceptance_ids": ["A206", "A209"],
+            "model_refresh_wake_contract": model_refresh_wake_contract,
+            "acceptance_ids": acceptance_ids,
         }
     )
 
@@ -174,6 +242,11 @@ def supervise_worker(
     max_cycles: int | None = None,
     stop_when_idle: bool = False,
 ) -> dict[str, Any]:
+    acceptance_ids = _acceptance_ids_for_filters(job_type=job_type, event_type=event_type)
+    model_refresh_wake_contract = _model_refresh_wake_contract(
+        job_type=job_type,
+        event_type=event_type,
+    )
     signal.signal(signal.SIGTERM, _request_stop)
     signal.signal(signal.SIGINT, _request_stop)
     summary: dict[str, Any] = {
@@ -186,9 +259,14 @@ def supervise_worker(
         "outbox_events_dispatched": 0,
         "lease_recoveries": 0,
         "lease_dead_letters": 0,
+        "filters": {
+            "job_type": job_type,
+            "event_type": event_type,
+        },
+        "model_refresh_wake_contract": model_refresh_wake_contract,
         "stop_reason": None,
         "last_cycle": None,
-        "acceptance_ids": ["A206", "A209"],
+        "acceptance_ids": acceptance_ids,
     }
     while not _STOP_REQUESTED:
         cycle = run_worker_cycle(

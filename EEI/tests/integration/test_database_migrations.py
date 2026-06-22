@@ -2580,6 +2580,75 @@ def exercise_server_saved_view_contracts(
         assert log_row == (3, 3)
 
 
+def run_worker_supervisor_cli_for_t1303(
+    *,
+    worker_id: str,
+    job_type: str,
+    event_type: str,
+) -> dict[str, object]:
+    cli_result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "apps.worker.app.main",
+            "supervise",
+            "--worker-id",
+            worker_id,
+            "--job-type",
+            job_type,
+            "--event-type",
+            event_type,
+            "--max-jobs-per-cycle",
+            "1",
+            "--max-outbox-per-cycle",
+            "0",
+            "--poll-interval-seconds",
+            "0",
+            "--max-cycles",
+            "1",
+        ],
+        cwd=os.getcwd(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert cli_result.returncode == 0, cli_result.stderr
+    cli_summary = json.loads(cli_result.stdout)
+    assert cli_summary["schema_version"] == "eei-worker-supervision-summary-v1"
+    assert cli_summary["handler_contract"] == "worker-supervisor-v1"
+    assert cli_summary["worker_id"] == worker_id
+    assert cli_summary["status"] == "stopped"
+    assert cli_summary["stop_reason"] == "max_cycles"
+    assert cli_summary["cycles"] == 1
+    assert cli_summary["jobs_processed"] == 1
+    assert cli_summary["outbox_events_dispatched"] == 0
+    assert cli_summary["filters"] == {
+        "job_type": job_type,
+        "event_type": event_type,
+    }
+    assert cli_summary["acceptance_ids"] == ["A204", "A205", "A206", "A209"]
+    wake_contract = cli_summary["model_refresh_wake_contract"]
+    assert wake_contract["schema_version"] == "eei-model-refresh-worker-wake-contract-v1"
+    assert wake_contract["contract"] == "t1303-a204-a205-supervised-refresh-wake-v1"
+    assert wake_contract["scope"] == "supervisor_cli_and_process_manager_wake"
+    assert wake_contract["matched_model_refresh_job"] is True
+    assert wake_contract["matched_model_refresh_event"] is True
+    assert job_type in wake_contract["covered_job_types"]
+    assert event_type in wake_contract["covered_event_types"]
+    assert wake_contract["acceptance_ids"] == ["A204", "A205", "A206", "A209"]
+    assert "does_not_complete_A209_4h_or_24h_soak" in wake_contract["non_closure"]
+    assert cli_summary["last_cycle"]["acceptance_ids"] == [
+        "A204",
+        "A205",
+        "A206",
+        "A209",
+    ]
+    assert cli_summary["last_cycle"]["jobs_processed"] == 1
+    assert cli_summary["last_cycle"]["outbox_events_dispatched"] == 0
+    assert cli_summary["last_cycle"]["model_refresh_wake_contract"] == wake_contract
+    return cli_summary
+
+
 def exercise_transactional_model_activation_contract(
     client: TestClient,
     active_profile: dict[str, object],
@@ -2729,10 +2798,12 @@ def exercise_transactional_model_activation_contract(
     assert duplicate_recompute["idempotency_key"] == recompute["idempotency_key"]
     assert duplicate_recompute["outbox_event"]["id"] == recompute["outbox_event"]["id"]
 
-    executed_recompute = run_once(
-        worker_id="a206-score-recompute-worker",
+    recompute_supervisor = run_worker_supervisor_cli_for_t1303(
+        worker_id="a204-a205-score-recompute-supervisor",
         job_type="score_recompute",
+        event_type="score.recompute.requested",
     )
+    executed_recompute = recompute_supervisor["last_cycle"]["jobs"][0]
     assert executed_recompute is not None
     assert executed_recompute["id"] == recompute["job"]["id"]
     assert executed_recompute["status"] == "succeeded"
@@ -2927,10 +2998,12 @@ def exercise_transactional_model_activation_contract(
     assert duplicate_data_refresh["idempotency_key"] == data_refresh["idempotency_key"]
     assert duplicate_data_refresh["outbox_event"]["id"] == data_refresh["outbox_event"]["id"]
 
-    executed_data_refresh = run_once(
-        worker_id="a206-data-snapshot-refresh-worker",
+    data_refresh_supervisor = run_worker_supervisor_cli_for_t1303(
+        worker_id="a204-a205-data-snapshot-refresh-supervisor",
         job_type="data_snapshot_refresh",
+        event_type="data.snapshot.refresh.requested",
     )
+    executed_data_refresh = data_refresh_supervisor["last_cycle"]["jobs"][0]
     assert executed_data_refresh is not None
     assert executed_data_refresh["id"] == data_refresh["job"]["id"]
     assert executed_data_refresh["status"] == "succeeded"
