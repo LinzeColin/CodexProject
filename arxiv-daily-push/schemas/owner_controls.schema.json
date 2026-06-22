@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/owner_controls.schema.json",
+  "title": "arXiv Daily Push Owner Controls",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "config_version",
+    "project",
+    "cost_policy",
+    "runtime",
+    "intelligence_provider",
+    "boards",
+    "sources",
+    "email",
+    "outputs",
+    "queue",
+    "scoring",
+    "source_defaults",
+    "iteration",
+    "validation"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "config_version": {"type": "string", "minLength": 1},
+    "last_updated": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "project": {
+      "type": "object",
+      "required": ["display_name", "display_timezone", "production_enabled", "production_auto_enable_after_acceptance"],
+      "properties": {
+        "display_name": {"type": "string", "minLength": 1},
+        "display_timezone": {"type": "string", "minLength": 1},
+        "production_enabled": {"type": "boolean"},
+        "production_auto_enable_after_acceptance": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "cost_policy": {
+      "type": "object",
+      "required": [
+        "paid_data_api_allowed",
+        "paid_cloud_compute_allowed",
+        "free_official_api_allowed",
+        "free_api_key_requires_owner_approval",
+        "undocumented_endpoint_allowed",
+        "paywall_bypass_allowed"
+      ],
+      "additionalProperties": {"type": "boolean"}
+    },
+    "runtime": {
+      "type": "object",
+      "required": [
+        "deployment_mode",
+        "scheduler_mode",
+        "offline_policy",
+        "run_on_battery",
+        "max_fetch_concurrency",
+        "max_temp_cache_gb",
+        "window_a_resource_limits"
+      ],
+      "properties": {
+        "deployment_mode": {"type": "string"},
+        "scheduler_mode": {"type": "string"},
+        "offline_policy": {"type": "string"},
+        "wake_from_sleep": {"type": "boolean"},
+        "run_on_battery": {"type": "boolean"},
+        "interactive_cpu_limit_percent": {"type": "number", "minimum": 0, "maximum": 100},
+        "background_cpu_limit_percent": {"type": "number", "minimum": 0, "maximum": 100},
+        "max_fetch_concurrency": {"type": "integer", "minimum": 1},
+        "max_browser_concurrency": {"type": "integer", "minimum": 0},
+        "browser_fetch_default": {"type": "boolean"},
+        "min_free_disk_gb": {"type": "number", "minimum": 0},
+        "emergency_free_disk_gb": {"type": "number", "minimum": 0},
+        "max_temp_cache_gb": {"type": "number", "minimum": 0},
+        "max_parallel_report_jobs": {"type": "integer", "minimum": 0},
+        "max_parallel_video_jobs": {"type": "integer", "minimum": 0},
+        "window_a_resource_limits": {
+          "type": "object",
+          "required": ["max_online_arxiv_metadata", "max_temp_cache_gb", "media_smoke_max_seconds", "large_pdf_download_allowed"],
+          "properties": {
+            "max_online_arxiv_metadata": {"type": "integer", "minimum": 0},
+            "max_temp_cache_gb": {"type": "number", "minimum": 0},
+            "media_smoke_max_seconds": {"type": "integer", "minimum": 0},
+            "large_pdf_download_allowed": {"type": "boolean"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "intelligence_provider": {"type": "object"},
+    "boards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["board_id", "enabled", "name", "weight"],
+        "properties": {
+          "board_id": {"type": "string", "pattern": "^B[0-9]+$"},
+          "enabled": {"type": "boolean"},
+          "name": {"type": "string", "minLength": 1},
+          "weight": {"type": "number", "minimum": 0, "maximum": 100}
+        },
+        "additionalProperties": false
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["source_id", "board_id", "enabled", "name", "access_method", "tier", "frequency", "weight", "health_status"],
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "board_id": {"type": "string", "pattern": "^B[0-9]+$"},
+          "enabled": {"type": "boolean"},
+          "name": {"type": "string", "minLength": 1},
+          "access_method": {"type": "string", "minLength": 1},
+          "tier": {"type": "string", "minLength": 1},
+          "frequency": {"type": "string", "minLength": 1},
+          "weight": {"type": "number", "minimum": 0, "maximum": 100},
+          "health_status": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "email": {"type": "object"},
+    "outputs": {
+      "type": "object",
+      "required": ["report_enabled", "email_enabled", "video_enabled", "owner_docs_generated", "production_acceptance_claimed"],
+      "additionalProperties": {"type": "boolean"}
+    },
+    "video": {"type": "object"},
+    "queue": {
+      "type": "object",
+      "required": ["max_active_items", "max_event_age_days", "source_share_cap_per_board", "soft_quotas"],
+      "properties": {
+        "max_active_items": {"type": "integer", "minimum": 1},
+        "max_event_age_days": {"type": "integer", "minimum": 1},
+        "source_share_cap_per_board": {"type": "number", "minimum": 0, "maximum": 1},
+        "soft_quotas": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}
+      },
+      "additionalProperties": false
+    },
+    "scoring": {
+      "type": "object",
+      "required": ["research", "china_policy", "us_official", "cross_board", "queue_priority", "legacy_arxiv_ranking", "phase12_roi"],
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {"type": "number", "minimum": 0}
+      }
+    },
+    "us_attention_budget": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0}},
+    "source_defaults": {"type": "object"},
+    "source_overrides": {"type": "object"},
+    "interest_profile": {"type": "object"},
+    "iteration": {"type": "object"},
+    "validation": {
+      "type": "object",
+      "required": ["weight_target", "weight_tolerance", "rollback_config_version", "machine_generated_owner_views"],
+      "properties": {
+        "weight_target": {"type": "number", "const": 100},
+        "weight_tolerance": {"type": "number", "minimum": 0},
+        "rollback_config_version": {"type": "string", "minLength": 1},
+        "machine_generated_owner_views": {
+          "type": "array",
+          "minItems": 4,
+          "items": {"type": "string", "minLength": 1}
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

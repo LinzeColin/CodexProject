@@ -55,8 +55,8 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:34bebdc30d063b0c853d2683b1ae5c1532871d118939903d040ab764f47f321b`
-- snapshot_event_time: `2026-06-22T15:59:11+10:00`
+- source_snapshot_hash: `sha256:665f7d0a4fcb09ead9d390ecc1d26806b6e73aa3ee0427bb203c2fa4587dad20`
+- snapshot_event_time: `2026-06-22T16:30:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached

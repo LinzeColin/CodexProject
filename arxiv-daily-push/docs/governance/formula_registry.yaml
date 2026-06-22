@@ -774,10 +774,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:9b5d086240b51a3b4d5c8e8e816c9213e67384f2b1f38aea17d7c3d89ab3b388"
-    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-    verified_at: "2026-06-22T12:15:00+10:00"
-    evidence_hash: "sha256:b7fb3b38d83662ac3fdbe75b8e1ab4f20c29235ca53a2250ddf5419d98e575b6"
+    implementation_fingerprint: "sha256:a47b5bc617a787874beb95781a397d0fcd5c7f47f7dd5e4af22bce1b6a0a1d0b"
+    last_verified_commit: "eb9a5ace979530d93c257e2a1f3c85703d55e302"
+    verified_at: "2026-06-22T16:30:00+10:00"
+    evidence_hash: "sha256:1eb8cf2aa8e78be97e186b64bd94b706d9a6e236b7596799d148e6f8f6f61afc"
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
     assumption_ids: ["ASM-ADP-026", "ASM-ADP-015", "ASM-ADP-025"]
@@ -1249,3 +1249,37 @@ formulas:
     last_verified_commit: "beb075a419b8b4c6cb6f73807284dcaa930866e2"
     verified_at: "2026-06-22T15:55:00+10:00"
     evidence_hash: "sha256:c45bb4947acf0abe7c3ffdd6563e12347eaabc3cb47979cc69a4d4232ebd3f41"
+  - formula_id: "FORM-ADP-037"
+    model_id: "MOD-ADP-035"
+    assumption_ids: ["ASM-ADP-037", "ASM-ADP-035", "ASM-ADP-020"]
+    status: "active"
+    expression: "Owner controls validation passes only when `config/owner_controls.yaml` has schema_version 1, required sections, production and production_acceptance flags false, no paid API/cloud/model allowance, no token-like values, canonical generated owner view paths, Window A resource caps within limits, and every source, board, scoring, queue-priority, legacy-ranking, ROI, and US-attention weight group sums to 100 within tolerance. Impact preview is no-side-effect and marks replay/ranking deltas as not computed until S1-06 replay data exists. Owner docs are generated from the config and validation output only."
+    variables:
+      - name: "owner_controls"
+        data_type: "object"
+        unit: "YAML mapping"
+        input_domain: "config/owner_controls.yaml"
+      - name: "weight_groups"
+        data_type: "list[object]"
+        unit: "points"
+        input_domain: "source, board, scoring card, queue, ranking, ROI, and attention-budget groups"
+      - name: "window_a_resource_limits"
+        data_type: "object"
+        unit: "items, GB, seconds, flags"
+        input_domain: "max_online_arxiv_metadata <= 10, max_temp_cache_gb <= 2, media_smoke_max_seconds <= 30, large_pdf_download_allowed=false"
+      - name: "owner_view_files"
+        data_type: "list[str]"
+        unit: "paths"
+        input_domain: "docs/owner/OWNER_CONSOLE.md, SOURCE_CATALOG.md, MODEL_AND_QUEUE.md, CONTENT_LEDGER.csv"
+    constraints: "The owner controls model does not fetch sources, change scoring runtime constants, send SMTP, create Releases, enable production schedule, mutate trial evidence, read secret values, or claim production acceptance."
+    missing_policy: "Missing sections, stale owner view list, invalid weight totals, enabled production flags, enabled paid services, secret-like key values, or Window A resource violations produce a blocked owner-controls report."
+    output_range: "owner validation report status pass or blocked; generated owner docs with no Python repr and no second editable fact source"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/owner_controls.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_owner_controls.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["arxiv-daily-push/docs/owner/OWNER_CONSOLE.md", "arxiv-daily-push/docs/owner/SOURCE_CATALOG.md", "arxiv-daily-push/docs/owner/MODEL_AND_QUEUE.md", "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/owner_controls.py::validate_owner_controls", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py::build_owner_impact_preview", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py::render_owner_documents", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py::_weight_group_reports", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py::_secret_hygiene_errors"]
+    implementation_fingerprint: "sha256:8ea6dc010119afca515bfb98e9350a797a8ed19f4bd34751ca1f3741f2a547ea"
+    last_verified_commit: "eb9a5ace979530d93c257e2a1f3c85703d55e302"
+    verified_at: "2026-06-22T16:30:00+10:00"
+    evidence_hash: "sha256:30a54341b638ccd347589ecc8d848e2bb45431db83f867516289406a6b5e930e"
