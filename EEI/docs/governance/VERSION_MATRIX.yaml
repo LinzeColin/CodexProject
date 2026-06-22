@@ -25,7 +25,7 @@ parameter_profile_versions:
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
 current_iteration: "ITER-20260622-012"
 current_phase: "C"
-current_gate: "TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-PENDING-CI"
+current_gate: "TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-AWAITING-CI"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "v4.2.0"
