@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 34
 - formula_count: 36
-- parameter_count: 184
+- parameter_count: 185
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -31,7 +31,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-014 | Manual production trial bootstrap gate | deterministic workflow contract validator | Validate the GitHub workflow/runbook entrypoint for preflight-first trial startup while keeping production side effects disabled | active | adp-trial-bootstrap-v1 | `src/arxiv_daily_push/trial_bootstrap.py`, `.github/workflows/arxiv-daily-push-production-trial.yml` |
 | MOD-ADP-015 | Live arXiv latest source ingest | deterministic source ingest adapter | Fetch a small latest arXiv Atom window, parse SourceItems, and filter previously seen source IDs without downloading PDFs | active | adp-live-arxiv-ingest-v1 | `src/arxiv_daily_push/source_ingest.py` |
 | MOD-ADP-016 | SMTP notification delivery boundary | deterministic notification transport gate | Produce dry-run SMTP delivery evidence by default and send real mail only with explicit allow flag plus configured SMTP environment keys | active | adp-smtp-delivery-v1 | `src/arxiv_daily_push/smtp_delivery.py` |
-| MOD-ADP-017 | GitHub Release delivery boundary | deterministic release transport gate | Produce dry-run Release delivery evidence by default and create a GitHub Release only with explicit upload flag, configured target, safe assets, and `gh` | active | adp-release-delivery-v1 | `src/arxiv_daily_push/release_delivery.py` |
+| MOD-ADP-017 | GitHub Release delivery boundary | deterministic release transport gate | Produce dry-run Release delivery evidence by default and create a GitHub Release only with explicit upload flag, configured target, deduplicated safe assets, and `gh` | active | adp-release-delivery-v1.1 | `src/arxiv_daily_push/release_delivery.py` |
 | MOD-ADP-018 | Scheduled production workflow gate | deterministic scheduler contract validator | Validate Australia/Sydney 04:45 health-check, 05:00 daily-run, 05:10 watchdog, and Release write permission while keeping production side effects disabled by default | active | adp-production-scheduler-v1 | `src/arxiv_daily_push/production_scheduler.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-019 | Scheduled execution driver | deterministic scheduled execution gate | Convert scheduled health-check, daily-run, and watchdog invocations into evidence artifacts while blocking unsupported production acceptance | active | adp-scheduled-execution-v1 | `src/arxiv_daily_push/scheduled_execution.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-020 | Daily input builder | deterministic source-to-input builder | Convert a passing arXiv SourceBatch into ranked daily pipeline input using Atom summary claims only | active | adp-daily-input-builder-v1 | `src/arxiv_daily_push/daily_input.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
@@ -112,7 +112,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-016 validates the manual GitHub trial bootstrap workflow and runbook before a real 30-day trial can be started.
 - FORM-ADP-017 fetches latest arXiv Atom SourceItems, validates them, and filters already-seen source IDs before ranking.
 - FORM-ADP-018 emits SMTP delivery evidence in dry-run mode by default and blocks real sends unless explicit allow-send, SMTP env keys, recipient, TLS, and delivery checks pass.
-- FORM-ADP-019 emits GitHub Release delivery evidence in dry-run mode by default and blocks real Release creation unless explicit allow-upload, Release target, safe assets, `gh`, and no-clobber checks pass.
+- FORM-ADP-019 emits GitHub Release delivery evidence in dry-run mode by default and blocks real Release creation unless explicit allow-upload, Release target, deduplicated safe assets, `gh`, and no-clobber checks pass.
 - FORM-ADP-020 validates the scheduled production workflow contract across timezone schedule slots, manual rerun, production variable gates, preflight-first ordering, artifact evidence, Release write permission, and default side-effect disablement.
 - FORM-ADP-021 runs one scheduled mode and only marks production evidence ready when preflight, daily run, real SMTP, real Release, and resource evidence refs all pass.
 - FORM-ADP-022 builds daily pipeline input from a passing arXiv SourceBatch using only Atom summary claims, then applies ranking and duplicate gates.
@@ -149,7 +149,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 trial bootstrap parameters: PARAM-ADP-071 through PARAM-ADP-074.
 - Active Phase 11 live source ingest parameters: PARAM-ADP-075 through PARAM-ADP-080.
 - Active Phase 11 SMTP delivery parameters: PARAM-ADP-081 through PARAM-ADP-085.
-- Active Phase 11 Release delivery parameters: PARAM-ADP-086 through PARAM-ADP-091.
+- Active Phase 11 Release delivery parameters: PARAM-ADP-086 through PARAM-ADP-091 plus PARAM-ADP-185.
 - Active Phase 11 scheduler parameters: PARAM-ADP-092 through PARAM-ADP-096 plus PARAM-ADP-160.
 - Active Phase 11 scheduled execution parameters: PARAM-ADP-097 through PARAM-ADP-101.
 - Active Phase 11 daily input builder parameters: PARAM-ADP-102 through PARAM-ADP-107.

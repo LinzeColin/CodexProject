@@ -184,6 +184,8 @@ def validate_release_delivery_report(report: Mapping[str, Any]) -> list[str]:
 def _inspect_assets(asset_paths: Sequence[str | Path], *, max_bytes: int) -> tuple[list[dict[str, Any]], list[str]]:
     assets: list[dict[str, Any]] = []
     reasons: list[str] = []
+    seen_paths: set[str] = set()
+    seen_names: dict[str, str] = {}
     if not asset_paths:
         return assets, ["at least one release asset path is required"]
     for value in asset_paths:
@@ -192,6 +194,14 @@ def _inspect_assets(asset_paths: Sequence[str | Path], *, max_bytes: int) -> tup
         if asset_reasons:
             reasons.extend(asset_reasons)
             continue
+        resolved_path = str(path.resolve())
+        if resolved_path in seen_paths:
+            continue
+        if path.name in seen_names:
+            reasons.append(f"release asset name duplicates existing asset: {path.name}")
+            continue
+        seen_paths.add(resolved_path)
+        seen_names[path.name] = resolved_path
         assets.append(
             {
                 "path": str(path),

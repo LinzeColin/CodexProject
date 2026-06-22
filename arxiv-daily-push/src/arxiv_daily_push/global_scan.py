@@ -21,6 +21,8 @@ CANDIDATE_QUEUE_MODEL_ID = "adp-candidate-queue-v1"
 ROI_RANKING_MODEL_ID = "adp-roi-ranking-v1"
 MAIL_VIDEO_LINK_MODEL_ID = "adp-mail-video-link-v1"
 LIVE_ALL_ARXIV_DRY_RUN_MODEL_ID = "adp-live-all-arxiv-dry-run-v1"
+LIVE_ARXIV_TRANSIENT_RETRY_COUNT = 2
+LIVE_ARXIV_TRANSIENT_RETRY_DELAY_SECONDS = 20.0
 
 ALL_ARXIV_MAX_RESULTS_PER_CATEGORY = 3
 ALL_ARXIV_MAX_TOTAL_CANDIDATES = 120
@@ -259,6 +261,8 @@ def build_live_all_arxiv_dry_run(
     source_batches: Mapping[str, Mapping[str, Any]] | None = None,
     artifact_dir: str | Path | None = None,
     polite_delay_seconds: float = 0.0,
+    transient_retry_count: int = LIVE_ARXIV_TRANSIENT_RETRY_COUNT,
+    transient_retry_delay_seconds: float = LIVE_ARXIV_TRANSIENT_RETRY_DELAY_SECONDS,
 ) -> dict[str, Any]:
     """Run a live all-arXiv fetchability dry-run for every primary archive."""
 
@@ -288,6 +292,8 @@ def build_live_all_arxiv_dry_run(
         fetcher=fetcher,
         source_batches=source_batches,
         polite_delay_seconds=polite_delay_seconds,
+        transient_retry_count=transient_retry_count,
+        transient_retry_delay_seconds=transient_retry_delay_seconds,
     )
     category_reports = scan.get("category_reports") if isinstance(scan.get("category_reports"), list) else []
     verified = [item for item in category_reports if isinstance(item, Mapping) and item.get("status") == "pass" and int(item.get("new_item_count") or 0) > 0]
@@ -334,6 +340,8 @@ def build_live_all_arxiv_dry_run(
         "production_schedule_enabled": False,
         "smtp_send_enabled": False,
         "release_upload_enabled": False,
+        "transient_retry_count": int(transient_retry_count),
+        "transient_retry_delay_seconds": float(transient_retry_delay_seconds),
         "sample_daily_input": sample_daily_input,
         "blocking_reasons": _live_dry_run_blockers(failed) + sample_reasons,
         "artifact_paths": {},
@@ -640,6 +648,8 @@ def _scan_archives(
     fetcher: FetchAtom | None,
     source_batches: Mapping[str, Mapping[str, Any]] | None,
     polite_delay_seconds: float = 0.0,
+    transient_retry_count: int = 0,
+    transient_retry_delay_seconds: float = 0.0,
 ) -> dict[str, Any]:
     category_reports: list[dict[str, Any]] = []
     candidates: list[dict[str, Any]] = []
@@ -649,16 +659,23 @@ def _scan_archives(
     for index, archive in enumerate(archives):
         archive_id = str(archive["archive_id"])
         query = str(archive["query"])
+        retry_attempts = 0
         if source_batches and archive_id in source_batches:
             batch = dict(source_batches[archive_id])
         else:
-            batch = ingest_latest_arxiv(
-                search_query=query,
-                generated_at=generated_at,
-                max_results=int(plan["max_results_per_category"]),
-                seen_source_ids=recent_source_ids,
-                fetcher=_archive_fetcher(fetcher),
-            )
+            while True:
+                batch = ingest_latest_arxiv(
+                    search_query=query,
+                    generated_at=generated_at,
+                    max_results=int(plan["max_results_per_category"]),
+                    seen_source_ids=recent_source_ids,
+                    fetcher=_archive_fetcher(fetcher),
+                )
+                if retry_attempts >= int(transient_retry_count) or not _transient_source_batch_block(batch):
+                    break
+                retry_attempts += 1
+                if transient_retry_delay_seconds > 0:
+                    time.sleep(float(transient_retry_delay_seconds))
         batch_errors = validate_source_batch(batch)
         hard_blocked = bool(batch_errors) or (batch.get("status") == "blocked" and not _only_no_unseen(batch))
         category_reports.append(
@@ -668,6 +685,7 @@ def _scan_archives(
                 "query": query,
                 "status": "blocked" if hard_blocked else "pass",
                 "new_item_count": int(batch.get("new_item_count") or 0),
+                "retry_attempts": retry_attempts,
                 "blocking_reasons": batch_errors or list(batch.get("blocking_reasons") or []),
             }
         )
@@ -700,6 +718,20 @@ def _scan_archives(
         "candidates": _sort_candidates(candidates)[:ALL_ARXIV_MAX_TOTAL_CANDIDATES],
         "candidate_errors": candidate_errors,
     }
+
+
+def _transient_source_batch_block(batch: Mapping[str, Any]) -> bool:
+    if batch.get("status") != "blocked":
+        return False
+    text = " ".join(str(reason) for reason in (batch.get("blocking_reasons") or []))
+    transient_markers = (
+        "HTTP Error 429",
+        "Too Many Requests",
+        "timed out",
+        "temporarily unavailable",
+        "Remote end closed connection",
+    )
+    return any(marker.lower() in text.lower() for marker in transient_markers)
 
 
 def _candidate_from_source_item(source_item: Mapping[str, Any], *, generated_at: str) -> tuple[dict[str, Any] | None, list[str]]:
