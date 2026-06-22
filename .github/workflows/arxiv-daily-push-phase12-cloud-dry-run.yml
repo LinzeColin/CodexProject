@@ -1,6 +1,9 @@
 name: arXiv Daily Push Phase 12 cloud dry-run
 
 on:
+  push:
+    branches:
+      - "adp-phase12-cloud-enable"
   pull_request:
     paths:
       - ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml"
