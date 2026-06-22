@@ -4,9 +4,9 @@
 
 - Stage: `S1`
 - Window: `A`
-- Task ID: `S1-02-BASELINE-LOCK-TRACEABILITY-001`
-- Acceptance ID: `ADP-ACC-S1-02-BASELINE-LOCK`
-- Gate: V4 baseline locked, version drift removed, manual delivery evidence bound, and traceability updated.
+- Task ID: `S1-04-SQLITE-DATA-MODEL-001`
+- Acceptance ID: `ADP-ACC-S1-04-SQLITE-DATA-MODEL`
+- Gate: Local SQLite/WAL/FTS5 storage model migrated, inspected, rollback-tested, and ready for the S1-05 connector contract.
 
 The current goal baseline is `docs/pursuing_goal/BASELINE_LOCK.md`. The older
 `docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md` remains historical context
@@ -17,10 +17,10 @@ only.
 | Task ID | Status | Acceptance ID | Scope |
 |---|---|---|---|
 | `S1-01-READONLY-AUDIT-001` | completed | `ADP-ACC-S1-01-READONLY-AUDIT` | Verify Review8 package hashes, current implementation gap, and GitHub evidence without changing files. |
-| `S1-02-BASELINE-LOCK-TRACEABILITY-001` | in_progress | `ADP-ACC-S1-02-BASELINE-LOCK` | Lock the V4 baseline into governance and connect requirements, tasks, tests, and evidence. |
-| `S1-03-OWNER-CONTROLS-001` | planned | `ADP-ACC-S1-03-OWNER-CONTROLS` | Add `config/owner_controls.yaml` and generated owner-facing views. |
-| `S1-04-SQLITE-DATA-MODEL-001` | planned | `ADP-ACC-S1-04-SQLITE-DATA-MODEL` | Add the unified SQLite/WAL/FTS5 document and event model with migrations and rollback. |
-| `S1-05-ARXIV-CONNECTOR-CONTRACT-001` | planned | `ADP-ACC-S1-05-ARXIV-CONNECTOR-CONTRACT` | Define source registry, connector contract, and arXiv adapter boundary. |
+| `S1-02-BASELINE-LOCK-TRACEABILITY-001` | completed | `ADP-ACC-S1-02-BASELINE-LOCK` | Lock the V4 baseline into governance and connect requirements, tasks, tests, and evidence. |
+| `S1-03-OWNER-CONTROLS-001` | completed | `ADP-ACC-S1-03-OWNER-CONTROLS` | Add `config/owner_controls.yaml` and generated owner-facing views. |
+| `S1-04-SQLITE-DATA-MODEL-001` | completed | `ADP-ACC-S1-04-SQLITE-DATA-MODEL` | Add the unified SQLite/WAL/FTS5 document and event model with migrations and rollback. |
+| `S1-05-ARXIV-CONNECTOR-CONTRACT-001` | ready | `ADP-ACC-S1-05-ARXIV-CONNECTOR-CONTRACT` | Define source registry, connector contract, and arXiv adapter boundary. |
 | `S1-06-SCORING-QUEUE-LEDGER-001` | planned | `ADP-ACC-S1-06-SCORING-QUEUE-LEDGER` | Implement research scoring, 10,000 queue behavior, and content ledger. |
 | `S1-07-B1_REPORT_EMAIL_MEDIA-001` | planned | `ADP-ACC-S1-07-B1-REPORT-EMAIL-MEDIA` | Produce B1 report, Claim evidence, email preview, and media interface. |
 | `S1-08-LOCAL_RUNTIME_RECOVERY-001` | planned | `ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY` | Add `tick`, `watchdog`, backup, restore, runtime audit, and scheduler controls. |
@@ -57,4 +57,3 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/valida
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main
 git diff --check
 ```
-

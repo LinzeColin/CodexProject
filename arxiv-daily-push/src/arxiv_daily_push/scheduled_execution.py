@@ -257,7 +257,10 @@ def _run_daily(
     release_report = deliver_release(
         tag=str(env.get("ADP_RELEASE_TAG") or f"adp-daily-{payload['date'].replace('-', '')}"),
         title=str(env.get("ADP_RELEASE_TITLE") or f"arXiv Daily Push {payload['date']}"),
-        notes=f"Scheduled daily run evidence for {payload['date']}.",
+        notes=(
+            f"Machine evidence and downloadable media artifacts for arXiv Daily Push {payload['date']}. "
+            "The human-facing brief is the email; this Release is not the reading entry point."
+        ),
         asset_paths=assets,
         generated_at=generated_at,
         target=env.get("ADP_RELEASE_TARGET"),

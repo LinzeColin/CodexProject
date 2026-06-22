@@ -1,0 +1,140 @@
+{
+  "manifest_id": "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-20260622",
+  "project_id": "arxiv-daily-push",
+  "iteration_id": "ITER-20260621-054",
+  "event_id": "EVENT-20260622-ADP-062",
+  "timestamp": "2026-06-22T16:55:00+10:00",
+  "phase": "E",
+  "task_id": "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037",
+  "status": "ready",
+  "version_before": "0.13.0",
+  "version_after": "0.13.1",
+  "base_commit": "ecd43e80a29193120d788ef8125d4ebca233dca3",
+  "result_commit": "PENDING",
+  "summary": "Corrected the Phase 12 human front-stage after manual run 27934320671 succeeded technically but produced low-value email/video presentation: the email now treats the Chinese brief as the reading entry point, keeps Release as backend evidence/download storage, demotes video to an optional file link, and removes backend ROI score from the MP4 transcript.",
+  "scope": [
+    "email reading entry point",
+    "Release landing-page suppression from email body",
+    "optional video file wording",
+    "MP4 transcript ROI score suppression",
+    "Release notes positioning as evidence/download storage",
+    "front-stage regression tests",
+    "version and governance metadata"
+  ],
+  "non_scope": [
+    "no production scheduled run enablement",
+    "no new SMTP send in this code-change commit",
+    "no direct GitHub Release upload outside the manual workflow",
+    "no ranking algorithm change",
+    "no candidate queue policy change",
+    "no secret value logging",
+    "no video email attachments"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md",
+    "arxiv-daily-push/pyproject.toml",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
+    "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py",
+    "arxiv-daily-push/src/arxiv_daily_push/video.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_global_scan.py",
+    "arxiv-daily-push/tests/test_scheduled_execution.py",
+    "arxiv-daily-push/tests/test_video.py",
+    "governance/run_manifests/ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "model_delta": "Refines MOD-ADP-034 to adp-manual-delivery-test-v1.3 for human front-stage quality after a real manual test email.",
+  "formula_delta": "Refreshes FORM-ADP-036 with email-as-reading-entry, Release-as-backend-storage, optional video, and MP4 transcript ROI suppression requirements.",
+  "parameter_delta": "Updates PARAM-ADP-186 and adds PARAM-ADP-267 for MP4 transcript ROI score suppression after owner controls occupied PARAM-ADP-187 through PARAM-ADP-266.",
+  "model_ids_changed": [
+    "MOD-ADP-034"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-036"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-186",
+    "PARAM-ADP-267"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_video.py arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_semantic PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_dash PYTHONPATH=arxiv-daily-push/src python3 scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_root PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_iq PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_gov PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python3 -m json.tool governance/run_manifests/ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-20260622.json",
+    "git diff --check",
+    "find arxiv-daily-push tests/governance \\( -name __pycache__ -o -name '*.pyc' \\) -print"
+  ],
+  "test_results": [
+    "focused front-stage tests: 27 tests OK",
+    "arxiv-daily-push unit tests: 182 tests OK",
+    "semantic extractor: 37 active formulas and 266 active parameters checked with no errors",
+    "governance dashboard regenerated: PASS",
+    "root governance unit tests: 126 tests OK; missing-base lines are expected negative fixtures with exit code 0",
+    "information quality validation: PASS errors 0 warnings 0",
+    "changed-only governance sync with semantic checks: errors 0 warnings 0; projects changed arxiv-daily-push only",
+    "manifest JSON parse: PASS",
+    "git diff --check: PASS",
+    "cache check: no __pycache__ or .pyc files found under arxiv-daily-push or tests/governance"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md",
+    "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
+    "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py",
+    "arxiv-daily-push/src/arxiv_daily_push/video.py",
+    "arxiv-daily-push/tests/test_global_scan.py",
+    "arxiv-daily-push/tests/test_scheduled_execution.py",
+    "arxiv-daily-push/tests/test_video.py",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/27934320671"
+  ],
+  "manual_run_audit": {
+    "workflow_run_id": 27934320671,
+    "conclusion": "success",
+    "cloud_runner_confirmed": true,
+    "technical_delivery_succeeded": true,
+    "human_frontstage_accepted": false,
+    "failure_reasons": [
+      "Release was not a human reading entry point",
+      "email foregrounded a short video instead of the Chinese brief",
+      "MP4 transcript exposed backend ROI score"
+    ]
+  },
+  "email_frontstage_contract": {
+    "subject_format": "YYYYMMDD -- Project Name -- arXiv Group -- Theme",
+    "reading_entry_point": "Chinese email brief",
+    "release_landing_page_in_email": false,
+    "video_position": "optional file link after text evidence",
+    "visible_backend_roi_score": false,
+    "mp4_transcript_backend_roi_score": false,
+    "backend_roi_retained": true
+  },
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "production_schedule_enabled": false,
+  "secret_values_logged": false,
+  "rollback": "Revert version 0.13.1 front-stage quality code, tests, phase record, manifest, event, and governance records, then restore version 0.13.0.",
+  "next_task": "OPEN_PR_RUN_PR_CI_MERGE_THEN_RERUN_MANUAL_RELEASE_SMTP_TEST",
+  "risks": [
+    "The revised front-stage still needs PR CI, merge to main, and a controlled manual workflow_dispatch to prove the next real email renders as intended.",
+    "Scheduled production remains disabled until the owner separately approves production variables."
+  ]
+}

@@ -555,6 +555,15 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         sync.root_sync_requirements(validation, ["governance/projects.yaml"], covered)
         self.assertFalse(validation.errors)
 
+    def test_review8_manifest_only_root_change_does_not_require_test_marker(self) -> None:
+        sync = load_sync_module()
+        changed = ["governance/run_manifests/GOV-REVIEW8-TEST.json"]
+        validation = sync.SyncValidation()
+
+        sync.root_sync_requirements(validation, changed, changed)
+
+        self.assertFalse(validation.errors)
+
     def test_sync_changed_only_semantic_checks_only_changed_projects(self) -> None:
         sync = load_sync_module()
         project_a = {"project_id": "A", "path": "A"}
@@ -1589,23 +1598,26 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1-02-BASELINE-LOCK-TRACEABILITY-001"]["status"], "completed")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"]["status"], "ready")
         self.assertEqual(task_by_id["S1-03-OWNER-CONTROLS-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-04-SQLITE-DATA-MODEL-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-05-ARXIV-CONNECTOR-CONTRACT-001"]["status"], "ready")
+        self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "ready")
 
     def test_arxiv_owner_status_uses_latest_event_manifest(self) -> None:
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-061")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-061")
-        self.assertEqual(info["product_version"], "0.13.0")
-        self.assertEqual(info["current_gate"], "S1-03-OWNER-CONTROLS")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-063")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-063")
+        self.assertEqual(info["product_version"], "0.14.0")
+        self.assertEqual(info["current_gate"], "ADP-S1-04-SQLITE-DATA-MODEL-READY")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-S1-03-OWNER-CONTROLS-20260622.json",
+            "governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.13.0", rendered)
-        self.assertIn("S1-03-OWNER-CONTROLS", rendered)
+        self.assertIn("0.14.0", rendered)
+        self.assertIn("ADP-S1-04-SQLITE-DATA-MODEL-READY", rendered)
         self.assertIn("production trial not started", rendered)
         self.assertIn("30-day acceptance absent", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
@@ -1660,6 +1672,38 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         eei_backlog = backlog_text.split('project_id: "EEI"', 1)[1].split('project_id: "EVA_OS"', 1)[0]
         self.assertIn("precommit_pending_events: 13", eei_backlog)
+
+    def test_adp_s104_dashboard_sync_manifest_binds_root_views(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-S1-04-DASHBOARD-SYNC-20260622.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "root-governance")
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "README.md",
+            "GOVERNANCE_DASHBOARD.md",
+            "OWNER_PORTFOLIO.md",
+            "governance/binding_backlog.yaml",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/ADP-S1-04-DASHBOARD-SYNC-20260622.json",
+        }:
+            self.assertIn(path, changed)
+        dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
+        self.assertIn("| `arxiv-daily-push` | `0.14.0` |", dashboard_text)
+        backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
+        adp_backlog = backlog_text.split('project_id: "arxiv-daily-push"', 1)[1].split("next_task:", 1)[0]
+        self.assertIn("precommit_pending_events: 10", adp_backlog)
 
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads((ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text())

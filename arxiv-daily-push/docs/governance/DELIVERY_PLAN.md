@@ -19,7 +19,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 56
+- task_count: 57
 - acceptance_count: 53
 
 ## Delivery Tasks
@@ -76,13 +76,14 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S1-01-READONLY-AUDIT-001 | S1-A | completed | ADP-ACC-S1-01-READONLY-AUDIT | Review8 V4 package hashes, implementation gaps, current validation baseline, and GitHub run evidence verified without file edits | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S1-02-BASELINE-LOCK-TRACEABILITY-001 | S1-A | completed | ADP-ACC-S1-02-BASELINE-LOCK | V4 two-stage baseline imported with hash lock, version drift repaired, delivery/traceability updated, and initial project validation passed | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S1-03-OWNER-CONTROLS-001 | S1-A | completed | ADP-ACC-S1-03-OWNER-CONTROLS | owner controls config validates, 10 weight groups pass, four owner views generate, semantic extractor checks 37 formulas/265 active parameters, and ADP project validation passes | `config/owner_controls.yaml`; `docs/owner/OWNER_CONSOLE.md`; `tests/test_owner_controls.py` |
-| S1-04-SQLITE-DATA-MODEL-001 | S1-A | planned | ADP-ACC-S1-04-SQLITE-DATA-MODEL | Unified SQLite/WAL/FTS5 document and event model, migrations, and rollback | `docs/pursuing_goal/BASELINE_LOCK.md` |
-| S1-05-ARXIV-CONNECTOR-CONTRACT-001 | S1-A | planned | ADP-ACC-S1-05-ARXIV-CONNECTOR-CONTRACT | Source registry, connector contract, and arXiv adapter boundary | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-04-SQLITE-DATA-MODEL-001 | S1-A | completed | ADP-ACC-S1-04-SQLITE-DATA-MODEL | SQLite/WAL/FTS5 schema migration, inspection, SourceItem persistence, FTS search, rollback, semantic extraction, and focused storage/CLI tests pass without production side effects | `src/arxiv_daily_push/storage.py`; `tests/test_storage.py`; `governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json` |
+| S1-05-ARXIV-CONNECTOR-CONTRACT-001 | S1-A | ready | ADP-ACC-S1-05-ARXIV-CONNECTOR-CONTRACT | Source registry, connector contract, and arXiv adapter boundary | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S1-06-SCORING-QUEUE-LEDGER-001 | S1-A | planned | ADP-ACC-S1-06-SCORING-QUEUE-LEDGER | Research scoring, 10,000 queue behavior, and content ledger | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S1-07-B1_REPORT_EMAIL_MEDIA-001 | S1-A | planned | ADP-ACC-S1-07-B1-REPORT-EMAIL-MEDIA | B1 report, Claim evidence, email preview, and media interface | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S1-08-LOCAL_RUNTIME_RECOVERY-001 | S1-A | planned | ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY | Tick/watchdog, backup/restore, runtime audit, and scheduler controls | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S1-09-MIGRATION_PACKAGE-001 | S1-A | planned | ADP-ACC-S1-09-MIGRATION-PACKAGE | Low-resource integration evidence and new-machine migration checklist | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | daily email front-end now uses human-scannable Chinese sections, compact arXiv subject, 12-second video link, action guidance, concise evidence, and hides ROI scoring in backend artifacts | `docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md` |
+| ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates

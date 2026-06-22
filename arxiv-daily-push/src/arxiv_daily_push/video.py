@@ -253,19 +253,17 @@ def _real_video_blockers(missing_commands: list[str], disk: Mapping[str, Any]) -
 
 def _video_transcript(daily_input: Mapping[str, Any]) -> str:
     source = daily_input.get("source_item") if isinstance(daily_input.get("source_item"), Mapping) else {}
-    audit = daily_input.get("selection_audit") if isinstance(daily_input.get("selection_audit"), Mapping) else {}
     queue = daily_input.get("queue_summary") if isinstance(daily_input.get("queue_summary"), Mapping) else {}
     title = str(source.get("title") or "arXiv Daily Push").strip()
     category = str((source.get("metadata") or {}).get("arxiv", {}).get("primary_category") or "").strip()
-    score = audit.get("roi_total_score", "n/a")
     queued = queue.get("queued_item_count", 0)
     lines = [
-        "arXiv Daily Push",
+        "arXiv Daily Push brief",
         title[:96],
-        f"Primary category: {category or 'unknown'}",
-        f"ROI score: {score}",
-        f"Candidate queue: {queued} items",
-        "Full Chinese explanation and source links are in the email and Release assets.",
+        f"arXiv category: {category or 'unknown'}",
+        f"Candidate queue: {queued} saved items",
+        "Read the email first: it is the human-facing Chinese brief.",
+        "This MP4 is an optional cloud-generated file index.",
     ]
     return "\n".join(lines)
 
