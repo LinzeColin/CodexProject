@@ -11,11 +11,11 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-AWAITING-CI`
-- Confirmed iteration count: 21
+- Current gate: `TASK-T904-A026-A027-GOLD-QUALITY-EVALUATION-IN-PROGRESS`
+- Confirmed iteration count: 22
 - Reconstructed development event count: 2
-- Current task: `TASK-T1301` / `TASK-T1309`
-- Blockers: A209 remains open until 24h operator soak evidence is produced and CI-validated; A202 still needs real source-license review, passage-level relationship review, production owner sign-off and legal release clearance; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T904` / `TASK-T1301`
+- Blockers: A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A202 still needs real source-license review, passage-level relationship review, production owner sign-off and legal release clearance; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -502,6 +502,29 @@ Do not infer iteration count from Git commit count.
 - Next step: regenerate development/release artifacts, run final local verification, commit/push and bind this event to CI.
 - CI merge-context repair: renamed the current release gate to `TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-AWAITING-CI`, updated the root governance test so A209 24h soak remains open but non-blocking, and regenerated status/release evidence for the PR merge tree.
 
+### `ITER-20260622-014`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `0e0967c`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T904`, `TASK-T1301`
+- Goal: add a fail-closed A026/A027 gold-quality evaluation contract for the Golden Vertical without claiming production gold-set coverage or relationship publication.
+- Assumptions: the repository fixture is intentionally small and not production gold-set evidence; A209 24h soak continues as a background long-running stability gate and does not block this bounded quality-contract slice.
+- Files changed: `scripts/validate_gold_quality_evaluation.py`, `tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json`, `tests/unit/test_gold_quality_evaluation.py`, A026/A027 gold-quality artifacts, Makefile, acceptance/traceability rows, parameter/model/phase records and V5 readiness sync.
+- Model changes: no scoring formula, graph traversal, extraction model or model-weight behavior changed; MOD-012/FORM-012 now list gold-quality gate constants.
+- Parameter changes: added `PARAM-064` through `PARAM-068` for entity minimum cases 50, entity precision 0.95, relationship minimum cases 100, relationship precision 0.90 and required source coverage 1.0.
+- Commands run: gold-quality contract generation/validation, focused py_compile, focused unit tests and focused ruff.
+- Test results: gold-quality generation PASS with `release_gate_closure_allowed=false`; contract validation PASS with A026/A027 `IN_PROGRESS`; unit tests PASS 4/4; focused ruff PASS; final broader validation and remote CI binding remain pending for this commit.
+- Successes: A026/A027 now have explicit precision, recall and source-coverage reporting requirements plus sample-size thresholds, and repository fixtures cannot be mistaken for production acceptance evidence.
+- Failures: no production human-labeled gold set, owner approval, legal/source clearance or A209 24h soak evidence was added.
+- Decisions: keep A026 and A027 `IN_PROGRESS`; keep A202 `IN_PROGRESS`; keep A209 as a non-blocking background production-stability gate; do not change EEI system name.
+- Remaining risks: broader generated artifacts and remote CI still need to bind this pre-commit event; future operators must attach real labeled data before closing A026/A027.
+- Rollback: revert the gold-quality script, fixture, test, artifacts, Makefile, parameter rows and governance/data records; regenerate release artifacts and rerun validation.
+- Next step: run V5 sync, semantic governance sync, release artifact validation, commit/push and verify CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -530,6 +553,8 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-010`: local A202 operator/legal review packet contract for selected live official-source evidence while A209 24h soak continues as a background release gate.
 - `EVENT-20260622-011`: local T1304/A206 scheduler closure decoupled from A209 24h operator soak.
 - `EVENT-20260622-012`: local A202/A210 signed release decision bundle contract; signed decisions are separate from A209 24h soak and release-manager activation.
+- `EVENT-20260622-014`: local A026/A027 gold-quality evaluation contract; production gold-set labels remain required and A209 stays a background gate.
+- `EVENT-20260622-015`: governance sync coverage repair for the current EEI branch diff after adding the A026/A027 gold-quality contract.
 
 ## Unknown Historical Periods
 

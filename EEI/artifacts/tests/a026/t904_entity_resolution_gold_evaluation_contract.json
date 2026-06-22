@@ -1,0 +1,129 @@
+{
+  "acceptance_ids": [
+    "A026",
+    "A027",
+    "A202"
+  ],
+  "artifact_id": "t904-a026-gold-quality-evaluation-contract",
+  "dataset_id": "golden-vertical-gold-labels-sample-v1",
+  "fixture_policy": {
+    "production_gold_set": false,
+    "relationship_publication": false,
+    "release_clearance": false
+  },
+  "focus_acceptance_id": "A026",
+  "focus_quality_result": {
+    "acceptance_id": "A026",
+    "closure_blockers": [
+      "sample_count 6 < required 50",
+      "precision 0.8000 < required 0.9500",
+      "repository fixture is not production_gold_set"
+    ],
+    "metrics": {
+      "false_negative": 2,
+      "false_positive": 1,
+      "precision": 0.8,
+      "recall": 0.666667,
+      "sample_count": 6,
+      "source_coverage_avg": 1.0,
+      "source_coverage_min": 1.0,
+      "true_negative": 0,
+      "true_positive": 4
+    },
+    "release_gate_closure_allowed": false,
+    "status": "IN_PROGRESS",
+    "threshold_result": "FAIL_CLOSED",
+    "thresholds": {
+      "minimum_cases": 50,
+      "minimum_precision": 0.95,
+      "minimum_source_coverage": 1.0,
+      "recall_is_reported_not_release_threshold": true
+    }
+  },
+  "generated_at": "2026-06-22T10:18:34Z",
+  "manual_review_requirements": [
+    "A026 requires at least 50 human-labeled entity-resolution cases and precision >= 95.00%.",
+    "A027 requires at least 100 human-labeled relationship cases and precision >= 90.00%.",
+    "Recall and source coverage must be reported for every run.",
+    "Repository fixtures are not production gold-set evidence."
+  ],
+  "production_claim_allowed": false,
+  "quality_results": {
+    "A026": {
+      "acceptance_id": "A026",
+      "closure_blockers": [
+        "sample_count 6 < required 50",
+        "precision 0.8000 < required 0.9500",
+        "repository fixture is not production_gold_set"
+      ],
+      "metrics": {
+        "false_negative": 2,
+        "false_positive": 1,
+        "precision": 0.8,
+        "recall": 0.666667,
+        "sample_count": 6,
+        "source_coverage_avg": 1.0,
+        "source_coverage_min": 1.0,
+        "true_negative": 0,
+        "true_positive": 4
+      },
+      "release_gate_closure_allowed": false,
+      "status": "IN_PROGRESS",
+      "threshold_result": "FAIL_CLOSED",
+      "thresholds": {
+        "minimum_cases": 50,
+        "minimum_precision": 0.95,
+        "minimum_source_coverage": 1.0,
+        "recall_is_reported_not_release_threshold": true
+      }
+    },
+    "A027": {
+      "acceptance_id": "A027",
+      "closure_blockers": [
+        "sample_count 6 < required 100",
+        "precision 0.7500 < required 0.9000",
+        "repository fixture is not production_gold_set"
+      ],
+      "metrics": {
+        "false_negative": 1,
+        "false_positive": 1,
+        "precision": 0.75,
+        "recall": 0.75,
+        "sample_count": 6,
+        "source_coverage_avg": 1.0,
+        "source_coverage_min": 1.0,
+        "true_negative": 1,
+        "true_positive": 3
+      },
+      "release_gate_closure_allowed": false,
+      "status": "IN_PROGRESS",
+      "threshold_result": "FAIL_CLOSED",
+      "thresholds": {
+        "minimum_cases": 100,
+        "minimum_precision": 0.9,
+        "minimum_source_coverage": 1.0,
+        "recall_is_reported_not_release_threshold": true
+      }
+    }
+  },
+  "relationship_publication_allowed": false,
+  "release_gate_closure_allowed": false,
+  "schema_version": "eei-gold-quality-evaluation-contract-v1",
+  "scope": "golden-vertical:nvidia",
+  "source_coverage": {
+    "entity_resolution_min": 1.0,
+    "minimum_required": 1.0,
+    "relationship_min": 1.0
+  },
+  "source_files": {
+    "gold_labels": "tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json"
+  },
+  "status": "GOLD_EVALUATION_FAIL_CLOSED",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "task_id": "T904",
+  "task_ids": [
+    "T904",
+    "T1301"
+  ]
+}

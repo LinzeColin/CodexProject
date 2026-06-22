@@ -15,4 +15,4 @@
 | 风险/控制/验收 | `33_RISK_CONTROL_ACCEPTANCE_TRACEABILITY.md`、`36_RELEASE_GATES_AND_DEFINITION_OF_DONE.md` | `data/risk_control_traceability.csv`、`data/acceptance_traceability.csv` |
 | GitHub 备份与防漂移 | `34_GITHUB_DOCUMENTATION_AND_BACKUP.md` | `.github/`、`scripts/validate_governance.py` |
 
-**基线规模**：17 功能、11 模型、60 参数、10 关系家族、52 关系、16 供应链阶段、140 研究对象、120 任务、200 验收、53 风险。
+**基线规模**：17 功能、11 模型、84 参数、10 关系家族、52 关系、16 供应链阶段、140 研究对象、120 任务、200 验收、53 风险。

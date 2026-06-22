@@ -672,7 +672,7 @@ formulas:
       - "ASM-004"
     status: "active"
     expression: "value = configured_value if present and within [min_value,max_value] else default_value; activation requires validation and manual gate where configured."
-    description: "Operational deterministic lookup for threshold, motion, visual, refresh, and calibration parameters without a scoring formula."
+    description: "Operational deterministic lookup for threshold, motion, visual, refresh, calibration and gold-quality gate parameters without a scoring formula."
     variables:
       - name: "configured_value"
         data_type: "number|string|boolean"
@@ -698,6 +698,7 @@ formulas:
       - "parameter-specific range from parameter_registry.csv"
       - "calibration.auto_activate must be false"
       - "calibration cadence remains 14 days"
+      - "gold-quality closure requires the configured sample-count, precision and source-coverage gates to pass"
     missing_policy: "fallback_to_default_or_UNKNOWN_with_task"
     normalization: "NOT_APPLICABLE: deterministic configuration lookup, not a score aggregation."
     output_range: "parameter_specific"
@@ -705,6 +706,7 @@ formulas:
       - "EEI/data/parameter_catalog.csv:43-61"
       - "EEI/scripts/validate_a202_operator_review_packet.py"
       - "EEI/scripts/validate_release_decision_bundle.py"
+      - "EEI/scripts/validate_gold_quality_evaluation.py"
       - "EEI/config/thresholds/default-v2.json"
       - "EEI/config/model_runtime_defaults.yaml"
     test_refs:
@@ -713,11 +715,14 @@ formulas:
       - "EEI/scripts/validate_a202_operator_review_packet.py"
       - "EEI/scripts/validate_release_decision_bundle.py"
       - "EEI/tests/unit/test_release_decision_bundle.py"
+      - "EEI/tests/unit/test_gold_quality_evaluation.py"
     evidence_refs:
       - "EEI/data/parameter_catalog.csv:43-61"
       - "EEI/config/thresholds/default-v2.json:1"
       - "EEI/config/model_runtime_defaults.yaml:1"
       - "EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json"
+      - "EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json"
+      - "EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json"
     unknown_task_ids:
       - "TASK-T1206"
     semantic_status: "HUMAN_REVIEW_REQUIRED"

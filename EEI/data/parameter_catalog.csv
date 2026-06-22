@@ -78,3 +78,8 @@ Soak 测试,soak.short_duration_hours,短期 soak 时长,production,4,1,8,1,hour
 Soak 测试,soak.long_duration_hours,长期 soak 时长,production,24,8,72,1,hours,number,release_gate,False,soak,,schema range,T1307 长期稳定性测试时长
 Soak 测试,soak.operator_window_seconds,Operator soak 窗口时长,production,300,30,1800,30,seconds,number,release_gate,False,soak,,schema range,T1307 operator runner 每个 checkpoint 窗口时长
 品牌清权,brand.clearance_required,公开发布前品牌清权,production,True,True,True,0,boolean,read-only,release_gate,False,brand,,must be true,T1309 EEI 公开发布前必须完成法律与市场清权或风险豁免
+Gold 质量门槛,gold_quality.entity_min_cases,实体解析 gold 最少样本,production,50,50,10000,1,count,number,release_gate,False,ingestion,FORM-012,const 50,A026/T904 关闭前必须至少具备 50 条人工标注实体解析 gold cases
+Gold 质量门槛,gold_quality.entity_min_precision,实体解析 gold 精确率门槛,production,0.95,0.5,1.0,0.01,ratio,number,release_gate,False,ingestion,FORM-012,const 0.95,A026/T904 关闭前实体解析 precision 必须大于等于 95%
+Gold 质量门槛,gold_quality.relationship_min_cases,关系抽取 gold 最少样本,production,100,100,10000,1,count,number,release_gate,False,ingestion,FORM-012,const 100,A027/T904 关闭前必须至少具备 100 条人工标注关系 gold cases
+Gold 质量门槛,gold_quality.relationship_min_precision,关系抽取 gold 精确率门槛,production,0.9,0.5,1.0,0.01,ratio,number,release_gate,False,ingestion,FORM-012,const 0.90,A027/T904 关闭前关系 precision 必须大于等于 90%
+Gold 质量门槛,gold_quality.source_coverage_min,Gold 证据来源覆盖门槛,production,1.0,0.5,1.0,0.01,ratio,number,release_gate,False,ingestion,FORM-012,const 1.0,A026/A027 gold evaluation 每条样本必须报告并满足完整 required source coverage

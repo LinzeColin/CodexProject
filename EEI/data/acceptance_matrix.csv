@@ -24,8 +24,8 @@ A022,P0,data,"Temporal fields preserve validity, announcement, filing, report, o
 A023,P0,data,Supersession and conflict preserve history,Repository integration test,DONE
 A024,P0,data,Seed and fixture load are idempotent,Run twice and compare,DONE
 A025,P0,data,Synthetic fixtures are visibly marked and never presented as live facts,UI/API content test,DONE
-A026,P0,data,Entity resolution precision is >=95% on at least 50 cases,Gold evaluation,NOT STARTED
-A027,P0,data,Relationship precision is >=90% on at least 100 cases,Gold evaluation,NOT STARTED
+A026,P0,data,Entity resolution precision is >=95% on at least 50 cases,Gold evaluation,IN PROGRESS
+A027,P0,data,Relationship precision is >=90% on at least 100 cases,Gold evaluation,IN PROGRESS
 A028,P0,data,Research/source/metric/parameter registries load without malformed rows,Static validation,DONE
 A029,P0,home,"Home shows global search, industries, Watchlist, recent explorations, changes and freshness",E2E,DONE
 A030,P0,home,Home shows active scoring profile and last/next calibration status,E2E,DONE
