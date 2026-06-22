@@ -1052,23 +1052,6 @@ def select_projects(config: dict[str, Any], args: argparse.Namespace) -> list[di
         return selected
     if args.changed_only:
         changed = git_changed_files(getattr(args, "base_ref", None))
-        root_governance_changed = any(
-            filename.startswith(
-                (
-                    "docs/governance/",
-                    "governance/",
-                    "scripts/validate_project_governance.py",
-                    ".agents/skills/project-governance/",
-                    ".agents/skills/codex-dex/",
-                    ".codex/",
-                    ".github/workflows/project-governance.yml",
-                )
-            )
-            or filename == "AGENTS.md"
-            for filename in changed
-        )
-        if root_governance_changed:
-            return projects
         selected = [p for p in projects if project_matches_changed(p, changed)]
         return selected
     return projects
