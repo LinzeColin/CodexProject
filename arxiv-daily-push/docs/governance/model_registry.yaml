@@ -182,6 +182,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_registry.py", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/tests/test_source_registry.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     status: "active"
+  - assumption_id: "ASM-ADP-040"
+    statement: "Review8 Stage 1 scoring and queue behavior must use owner_controls.yaml as the active parameter source, keep at most 10000 active items, treat 365 days as an inclusive event-age boundary, retain deterministic reason codes for every non-active item, and emit the canonical content ledger columns without claiming production replay output."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -946,3 +951,43 @@ models:
     config_refs: ["arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/schemas/source_registry.schema.json"]
     test_refs: ["arxiv-daily-push/tests/test_source_registry.py", "arxiv-daily-push/tests/test_source_ingest.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["governance/run_manifests/ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-20260622.json", "arxiv-daily-push/tests/test_source_registry.py"]
+  - model_id: "MOD-ADP-039"
+    name: "Review8 Stage 1 scoring, queue, and content ledger contract"
+    kind: "deterministic weighted scoring, queue ranking, and ledger renderer"
+    purpose: "Score explicit Stage 1 research signals using frozen owner-controls weights, rank eligible items into a deterministic active queue capped at 10000 items and 365 event-age days, enforce multi-source share caps when feasible, preserve soft-quota borrowing evidence, and emit canonical CONTENT_LEDGER rows with reason codes for every non-active item."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-stage1-scoring-queue-ledger-v1"
+    assumption_ids: ["ASM-ADP-040", "ASM-ADP-037", "ASM-ADP-039"]
+    formula_ids: ["FORM-ADP-041"]
+    parameter_ids:
+      - "PARAM-ADP-287"
+      - "PARAM-ADP-288"
+      - "PARAM-ADP-289"
+      - "PARAM-ADP-290"
+      - "PARAM-ADP-291"
+      - "PARAM-ADP-292"
+      - "PARAM-ADP-293"
+      - "PARAM-ADP-294"
+      - "PARAM-ADP-295"
+      - "PARAM-ADP-296"
+      - "PARAM-ADP-297"
+      - "PARAM-ADP-298"
+      - "PARAM-ADP-299"
+      - "PARAM-ADP-300"
+      - "PARAM-ADP-301"
+      - "PARAM-ADP-302"
+      - "PARAM-ADP-303"
+      - "PARAM-ADP-304"
+      - "PARAM-ADP-305"
+      - "PARAM-ADP-306"
+      - "PARAM-ADP-307"
+      - "PARAM-ADP-308"
+      - "PARAM-ADP-309"
+    inputs: ["explicit item signals", "config/owner_controls.yaml", "as_of_date", "generated_at", "previous content ledger rows"]
+    outputs: ["research score snapshots", "queue report", "reason counts", "quota report", "canonical CONTENT_LEDGER.csv rows", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/config/owner_controls.yaml"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/tests/test_owner_controls.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json", "arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"]

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.16.0 - 2026-06-22
+
+- Promoted the V5 two-stage text-delivery baseline for Stage 1 B1/arXiv and marked conflicting V4/media requirements as inactive for the current acceptance path.
+- Added the V5 Stage 1 scoring, 10,000 queue, 365-day window, reason-code, and text-first content-ledger contract.
+- Added `adp stage1-queue` JSON output plus deterministic tests for 10,001st-item eviction, 365-day boundary handling, soft quota borrowing, source-share cap enforcement, lifecycle reason codes, stable tie ordering, and canonical `CONTENT_LEDGER.csv` columns.
+- Updated generated owner ledger columns to use the Stage 1 text content-ledger contract while keeping production acceptance, scheduler, SMTP, Release upload, video generation, and broad source expansion disabled.
+
 ## 0.15.0 - 2026-06-22
 
 - Added the Review8 Stage 1 source registry and arXiv connector contract for `SRC-ARXIV` / `arxiv.atom.v1`.

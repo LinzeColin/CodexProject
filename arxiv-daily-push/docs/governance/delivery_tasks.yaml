@@ -817,6 +817,23 @@ tasks:
     target_version: "0.12.4"
     completed_version: "0.12.4"
     unknown_task_ids: []
+  - task_id: "S1-02-V5-BASELINE-GOVERNANCE-CALIBRATION-001"
+    phase: "S1-A"
+    objective: "Promote the V5 two-stage text-delivery pursuing-goal package as the active Stage 1 baseline and demote conflicting V4/media requirements for the current acceptance path."
+    scope: "V5 baseline lock, imported V5 prompt/task pack, README/PLANS/AGENTS calibration, owner-control media requirement removal, and governance traceability for text-first Stage 1."
+    non_scope: "No production schedule enablement, no real SMTP send, no Release upload, no video generation, no Stage 2 source or board promotion, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["S1-01-READONLY-AUDIT-001"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md", "arxiv-daily-push/docs/pursuing_goal/START_HERE_MASTER_TASK_PACK_TWO_STAGE_TEXT_DELIVERY_V5.md", "arxiv-daily-push/docs/pursuing_goal/FULL_PURSUING_GOAL_PROMPT_TWO_STAGE_TEXT_DELIVERY_V5.txt", "arxiv-daily-push/README.md", "arxiv-daily-push/PLANS.md", "arxiv-daily-push/AGENTS.md"]
+    acceptance_ids: ["ADP-ACC-S1-02-V5-BASELINE-GOVERNANCE-CALIBRATION"]
+    test_commands: ["shasum -a 256 arxiv-daily-push/docs/pursuing_goal/START_HERE_MASTER_TASK_PACK_TWO_STAGE_TEXT_DELIVERY_V5.md arxiv-daily-push/docs/pursuing_goal/FULL_PURSUING_GOAL_PROMPT_TWO_STAGE_TEXT_DELIVERY_V5.txt", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push.tests.test_owner_controls arxiv-daily-push.tests.test_stage1_queue arxiv-daily-push.tests.test_cli -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"]
+    test_results: ["V5 task pack hash 2ce872967c063c6a1da51133e2422159dd181607bea8c17f1ef1608db93b6f74 and V5 full prompt hash a79af57bce62caa8176773f76f10e058ee8f7bed96e7140592137674877b812a verified", "focused owner/stage1/CLI tests: 18 tests OK", "semantic extractor: 41 active formulas and 292 active parameters checked with no errors"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md", "arxiv-daily-push/docs/pursuing_goal/START_HERE_MASTER_TASK_PACK_TWO_STAGE_TEXT_DELIVERY_V5.md", "arxiv-daily-push/docs/pursuing_goal/FULL_PURSUING_GOAL_PROMPT_TWO_STAGE_TEXT_DELIVERY_V5.txt", "arxiv-daily-push/README.md", "arxiv-daily-push/PLANS.md"]
+    risk: "Historical Phase 12 and V4 records remain in the repository and must not be misread as active V5 Stage 1 acceptance gates."
+    rollback: "Restore V4 baseline lock text and owner media fields, remove imported V5 pursuing-goal files, and restore README/PLANS/AGENTS to the S1-05 baseline."
+    target_version: "0.16.0"
+    completed_version: "0.16.0"
+    unknown_task_ids: []
   - task_id: "S1-03-OWNER-CONTROLS-001"
     phase: "S1-A"
     objective: "Create the owner-editable control file and generated owner-readable views required by the V4 baseline."
@@ -873,33 +890,33 @@ tasks:
     objective: "Build the Stage 1 research scoring, 10,000 queue behavior, and content ledger path."
     scope: "Scoring/queue/ledger implementation, deterministic tests, owner view integration, and governance records."
     non_scope: "No parameter value changes without registry updates and no production acceptance claim."
-    status: "ready"
+    status: "completed"
     dependencies: ["S1-05-ARXIV-CONNECTOR-CONTRACT-001"]
-    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/tests/test_owner_controls.py", "arxiv-daily-push/docs/governance/model_registry.yaml", "arxiv-daily-push/docs/governance/formula_registry.yaml", "arxiv-daily-push/docs/governance/parameter_registry.csv", "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"]
     acceptance_ids: ["ADP-ACC-S1-06-SCORING-QUEUE-LEDGER"]
-    test_commands: ["PENDING"]
-    test_results: ["PENDING"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
-    risk: "Scoring changes must preserve exact formula and parameter traceability."
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_queue.py arxiv-daily-push/tests/test_owner_controls.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_semantic PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_project PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_allgov PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --all", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_changed PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
+    test_results: ["focused S1-06 queue, owner, and CLI tests: 18 tests OK", "arxiv-daily-push unit tests: 200 tests OK", "semantic extractor: 41 active formulas and 292 active parameters checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "all-project governance validation: errors 0 warnings 0", "root governance unit tests: 128 tests OK", "information quality validation: PASS errors 0 warnings 0", "governance dashboard/status regenerated: PASS", "S1-06 run manifest JSON parse: OK", "changed-only semantic governance sync: errors 0 warnings 0", "git diff --check: PASS"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv", "governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json"]
+    risk: "S1-06 proves deterministic fixture scoring and queue behavior only; it does not claim production replay output or broad source expansion."
     rollback: "Revert S1-06 scoring, queue, ledger, tests, and governance records."
     target_version: "0.16.0"
-    completed_version: ""
+    completed_version: "0.16.0"
     unknown_task_ids: []
-  - task_id: "S1-07-B1_REPORT_EMAIL_MEDIA-001"
+  - task_id: "S1-07-B1_REPORT_EMAIL_TEXT-001"
     phase: "S1-A"
-    objective: "Produce the B1 report, Claim evidence, email preview, and media interface required by Stage 1."
-    scope: "Report generation, claim evidence, email preview, media interface smoke, tests, and governance records."
-    non_scope: "No long media render, no large model/TTS download, and no unsupported factual claims."
+    objective: "Produce the B1/arXiv explanatory teaching report, Claim evidence, Chinese email text/HTML preview, and audit artifacts required by V5 Stage 1."
+    scope: "B1 report generation, claim evidence, Chinese email subject/body, Markdown/HTML/JSON audit artifacts, focused tests, and governance records."
+    non_scope: "No video generation, no MP4/TTS requirement, no Release upload, no real SMTP send, and no unsupported factual claims."
     status: "planned"
     dependencies: ["S1-06-SCORING-QUEUE-LEDGER-001"]
     required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
-    acceptance_ids: ["ADP-ACC-S1-07-B1-REPORT-EMAIL-MEDIA"]
-    test_commands: ["PENDING"]
-    test_results: ["PENDING"]
+    acceptance_ids: ["ADP-ACC-S1-07-B1-REPORT-EMAIL-TEXT"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
+    test_results: ["not_run_yet"]
     evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
-    risk: "Media and email evidence must stay within Window A resource limits and fail closed on unsupported claims."
-    rollback: "Revert S1-07 report/email/media interface files and governance updates."
-    target_version: "0.12.4"
+    risk: "The report must be teaching/explanation quality rather than a shallow daily digest, and must fail closed on unsupported claims."
+    rollback: "Revert S1-07 report/email text files and governance updates."
+    target_version: "0.17.0"
     completed_version: ""
     unknown_task_ids: []
   - task_id: "S1-08-LOCAL_RUNTIME_RECOVERY-001"
@@ -908,7 +925,7 @@ tasks:
     scope: "CLI commands, runtime audit, backup/restore tests, scheduler controls, runbook, and governance records."
     non_scope: "No production scheduler enablement before acceptance gates pass."
     status: "planned"
-    dependencies: ["S1-07-B1_REPORT_EMAIL_MEDIA-001"]
+    dependencies: ["S1-07-B1_REPORT_EMAIL_TEXT-001"]
     required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY"]
     test_commands: ["PENDING"]
