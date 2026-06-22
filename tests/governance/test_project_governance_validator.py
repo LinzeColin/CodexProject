@@ -1673,6 +1673,38 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         eei_backlog = backlog_text.split('project_id: "EEI"', 1)[1].split('project_id: "EVA_OS"', 1)[0]
         self.assertIn("precommit_pending_events: 13", eei_backlog)
 
+    def test_adp_s104_dashboard_sync_manifest_binds_root_views(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-S1-04-DASHBOARD-SYNC-20260622.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "root-governance")
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "README.md",
+            "GOVERNANCE_DASHBOARD.md",
+            "OWNER_PORTFOLIO.md",
+            "governance/binding_backlog.yaml",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/ADP-S1-04-DASHBOARD-SYNC-20260622.json",
+        }:
+            self.assertIn(path, changed)
+        dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
+        self.assertIn("| `arxiv-daily-push` | `0.14.0` |", dashboard_text)
+        backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
+        adp_backlog = backlog_text.split('project_id: "arxiv-daily-push"', 1)[1].split("next_task:", 1)[0]
+        self.assertIn("precommit_pending_events: 10", adp_backlog)
+
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads((ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text())
         for field in {
