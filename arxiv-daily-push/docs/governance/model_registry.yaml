@@ -1079,3 +1079,28 @@ models:
     config_refs: ["NOT_APPLICABLE"]
     test_refs: ["arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["governance/run_manifests/ADP-S1-09-MIGRATION-PACKAGE-20260622.json", "arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md"]
+  - model_id: "MOD-ADP-043"
+    name: "Review8 Stage 1 post-migration bootstrap gate"
+    kind: "deterministic target-runner bootstrap and migration verification gate"
+    purpose: "Verify the post-migration target machine or GitHub-hosted cloud runner boundary before historical B1 previews and live-day evidence, while preserving no-production-side-effect constraints."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-stage1-post-migration-bootstrap-v1"
+    assumption_ids: ["ASM-ADP-044", "ASM-ADP-043", "ASM-ADP-042", "ASM-ADP-038"]
+    formula_ids: ["FORM-ADP-045"]
+    parameter_ids:
+      - "PARAM-ADP-332"
+      - "PARAM-ADP-333"
+      - "PARAM-ADP-334"
+      - "PARAM-ADP-335"
+      - "PARAM-ADP-336"
+      - "PARAM-ADP-337"
+      - "PARAM-ADP-338"
+      - "PARAM-ADP-339"
+    inputs: ["project_root", "migration_manifest", "state_dir", "SQLite database path", "workflow_path", "generated_at", "target_environment", "explicit requirement flags", "environment variables"]
+    outputs: ["bootstrap report", "migration verification report", "runtime smoke reports", "workflow/GitHub runner evidence", "secret-name readiness report", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["NOT_APPLICABLE"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_bootstrap.py", "arxiv-daily-push/tests/test_stage1_migration.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md", "arxiv-daily-push/tests/test_stage1_bootstrap.py"]

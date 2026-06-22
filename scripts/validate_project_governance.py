@@ -196,10 +196,21 @@ def parse_scalar(value: str) -> Any:
 
 
 def split_key_value(text: str) -> tuple[str, str | None]:
-    if ":" not in text:
-        return text.strip(), None
-    key, value = text.split(":", 1)
-    return key.strip(), value.strip()
+    in_single = False
+    in_double = False
+    escaped = False
+    for idx, char in enumerate(text):
+        if char == "\\" and not escaped:
+            escaped = True
+            continue
+        if char == "'" and not in_double and not escaped:
+            in_single = not in_single
+        elif char == '"' and not in_single and not escaped:
+            in_double = not in_double
+        elif char == ":" and not in_single and not in_double:
+            return text[:idx].strip(), text[idx + 1 :].strip()
+        escaped = False
+    return text.strip(), None
 
 
 def fallback_yaml_load(text: str) -> Any:

@@ -345,6 +345,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "arxiv-daily-push remains at S1-09 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S1-11-HISTORICAL_B1_PREVIEWS-001":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V5-S1-005",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + engineering_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+                "question": "是否继续执行 S1-11，生成 30 份独立历史 B1/arXiv 报告和邮件预览证据。",
+                "recommendation": "A: run S1-11 historical B1 previews before live-day email evidence",
+                "option_a": "继续 S1-11，产出 30 份独立历史 B1 报告/邮件预览、Claim evidence 和内容台账证据。",
+                "option_b": "暂停在 S1-10，只保留迁移后 bootstrap，不进入历史预览证据。",
+                "option_c": "跳过历史预览直接做 live-day delivery；不推荐，因为内容质量和独立样本证据不足。",
+                "effort": "P1; historical preview evidence generation",
+                "resource": "local fixture/replay artifacts only; no production schedule install, no real SMTP, no Release upload, no video generation",
+                "benefit": "在 live-day 发送前证明 B1/arXiv 文本报告和邮件预览能跨 30 个独立历史样本稳定生成。",
+                "risks": "fixture overfitting, duplicate historical samples, unsupported claims, stale content ledger, premature production acceptance",
+                "evidence": "30 B1 report/email preview artifacts, Claim evidence audit, content ledger rows, focused tests, governance records",
+                "priority": "P1",
+                "no_decision": "arxiv-daily-push remains at S1-10 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
+            }
+        )
     return policy
 
 
