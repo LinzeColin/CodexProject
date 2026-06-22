@@ -7,8 +7,8 @@ Review 6 governance is a portfolio control layer, not a production-readiness cla
 ## Snapshot Metadata
 
 - source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:ad06cba425bb4f3defa60a2e3a4182aa46541b88f66349d5453f6f8419bff26a`
-- snapshot_event_time: `2026-06-22T12:18:37+10:00`
+- source_snapshot_hash: `sha256:c42f6bf28748680a7dc675517659bde21260d9bcb5a1c4d45d41d5837a583688`
+- snapshot_event_time: `2026-06-22T13:05:00+10:00`
 - generator_version: `2.0.0`
 - branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached
 
@@ -49,7 +49,7 @@ Review 6 governance is a portfolio control layer, not a production-readiness cla
 - `PFI_BIG_DATA_SIMULATOR`: `GOV-SEMANTIC-PFI-001` - Add extractors for simulator strategy defaults, risk controls, and active formula fingerprints.
 - `Serenity-Alipay`: `TASK-A-001` - Create the first CodexProject-auditable Serenity-Alipay governance baseline.
 - `whkmSalary`: `GOV-SEMANTIC-WHKM-001` - Add extractors for salary constants, policy formula references, and active formula fingerprints.
-- `arxiv-daily-push`: `NONE` - No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.
+- `arxiv-daily-push`: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034` - Repair the controlled manual GitHub Release plus Gmail SMTP test workflow after the first real manual dispatch failed closed during Release creation because duplicate asset names were supplied.
 
 ## Four-Dimension Assurance
 
