@@ -62,6 +62,7 @@ from .source_registry import (
 )
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
 from .stage1_b1_report import build_b1_report_email_package, validate_b1_report_email_package
+from .stage1_bootstrap import build_stage1_bootstrap_report, validate_stage1_bootstrap_report
 from .stage1_migration import build_migration_package, validate_stage1_migration_report, verify_migration_package
 from .stage1_queue import build_stage1_queue_report, validate_stage1_queue_report
 from .stage1_runtime import (
@@ -221,6 +222,26 @@ def build_parser() -> argparse.ArgumentParser:
     migration_verify.add_argument("--manifest", required=True, help="migration_manifest.json path.")
     migration_verify.add_argument("--generated-at", required=True, help="Verification timestamp.")
     migration_verify.add_argument("--json", action="store_true", help="Print JSON migration verification report.")
+
+    post_migration_bootstrap = subparsers.add_parser(
+        "post-migration-bootstrap",
+        help="Verify the Stage 1 target machine or GitHub-hosted cloud runner bootstrap boundary.",
+    )
+    post_migration_bootstrap.add_argument("--project-root", default=".", help="Repository root to validate as a Git checkout.")
+    post_migration_bootstrap.add_argument("--migration-manifest", required=True, help="S1-09 migration_manifest.json to verify before bootstrap.")
+    post_migration_bootstrap.add_argument("--state-dir", required=True, help="Explicit runtime state directory for low-resource smoke.")
+    post_migration_bootstrap.add_argument("--db", required=True, help="SQLite database path to create or inspect.")
+    post_migration_bootstrap.add_argument("--generated-at", required=True, help="Bootstrap report timestamp.")
+    post_migration_bootstrap.add_argument(
+        "--target-environment",
+        choices=("github_actions_cloud_runner", "new_machine"),
+        default="github_actions_cloud_runner",
+    )
+    post_migration_bootstrap.add_argument("--workflow-path", help="Optional GitHub Actions workflow path to verify.")
+    post_migration_bootstrap.add_argument("--require-github-actions", action="store_true", help="Require GitHub-hosted cloud runner evidence.")
+    post_migration_bootstrap.add_argument("--require-network-probe", action="store_true", help="Run one lightweight HTTPS arXiv API probe.")
+    post_migration_bootstrap.add_argument("--require-secret-presence", action="store_true", help="Require SMTP secret env names to be present without printing values.")
+    post_migration_bootstrap.add_argument("--json", action="store_true", help="Print JSON bootstrap report.")
 
     doctor = subparsers.add_parser("doctor", help="Run local Phase 1 readiness checks.")
     doctor.add_argument("--json", action="store_true", help="Print JSON report.")
@@ -852,6 +873,31 @@ def main(argv: list[str] | None = None) -> int:
             print(report["status"])
             if report.get("package_manifest_path"):
                 print(f"- package_manifest_path: {report.get('package_manifest_path')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "post-migration-bootstrap":
+        report = build_stage1_bootstrap_report(
+            project_root=args.project_root,
+            migration_manifest=args.migration_manifest,
+            state_dir=args.state_dir,
+            db_path=args.db,
+            generated_at=args.generated_at,
+            target_environment=args.target_environment,
+            workflow_path=args.workflow_path,
+            require_github_actions=args.require_github_actions,
+            require_network_probe=args.require_network_probe,
+            require_secret_presence=args.require_secret_presence,
+        )
+        errors = validate_stage1_bootstrap_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "bootstrap_ready": False, "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- target_environment: {report.get('target_environment')}")
+            print(f"- cloud_runner_verified: {str(report.get('cloud_runner_verified')).lower()}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- error: {reason}")
         return 0 if report["status"] == "pass" else 2

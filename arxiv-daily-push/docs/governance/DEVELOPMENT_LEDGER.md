@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.19.0`
+Active product version: `0.20.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.19.0
+- Product version: 0.20.0
 - Current phase: S1-A
 - Current gate: ADP-S1-09-MIGRATION-PACKAGE-READY
 - Confirmed iteration count: 62
 - Reconstructed event count: 0
-- Current task: S1-10-POST_MIGRATION_BOOTSTRAP-001
-- Blockers: S1-10 post-migration bootstrap, 30 historical previews, two live production days, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
+- Current task: S1-11-HISTORICAL_B1_PREVIEWS-001
+- Blockers: 30 historical previews, two live production days, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
 
@@ -51,9 +51,9 @@ The append-only machine record is `development_events.jsonl`.
 - Successes: The migration surface writes only the explicit output directory, inventories source files by SHA256, inspects the Stage 1 SQLite database, runs low-resource runtime smoke, produces a backup manifest and restore checklist, verifies package hashes, scans outputs for obvious secret values, and blocks enabled production flags.
 - Failures: No new machine or cloud runner bootstrap was executed in S1-09 by design; no real Gmail email, GitHub Release, video, 30 historical previews, or live production days were executed.
 - Decisions: Bump product version to 0.19.0 because S1-09 adds a backward-compatible migration export/verify CLI and transfer contract while preserving disabled production side effects.
-- Remaining risks: S1-10 post-migration bootstrap, 30 historical previews, two live production days, and production trial evidence remain incomplete before `ARXIV_PRODUCTION_ACCEPTED`.
+- Remaining risks: 30 historical previews, two live production days, and production trial evidence remain incomplete before `ARXIV_PRODUCTION_ACCEPTED`.
 - Rollback: Remove `stage1_migration.py`, migration CLI dispatch/tests/runbook, restore version 0.18.0, and revert S1-09 governance records and run manifest.
-- Next step: S1-10-POST_MIGRATION_BOOTSTRAP-001.
+- Next step: S1-11-HISTORICAL_B1_PREVIEWS-001.
 
 ### `ITER-20260622-S1-007`
 
@@ -1485,3 +1485,28 @@ The append-only machine record is `development_events.jsonl`.
 ## Unknown Historical Periods
 
 None for this new project baseline.
+
+
+### `ITER-20260623-S1-009`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from S1-10 implementation, migration-bound bootstrap tests, and governance registries.
+- Version before: 0.19.0
+- Version after: 0.20.0
+- Base commit: 014d0a5fbc6111e99c4fba33f3e363d0643e10ad
+- Result commit: PENDING
+- Task IDs: S1-10-POST_MIGRATION_BOOTSTRAP-001
+- Goal: Verify the post-migration target machine or GitHub-hosted runner bootstrap boundary before historical previews and live-day evidence.
+- Assumptions: S1-10 readiness requires a verified S1-09 migration manifest and explicit runtime smoke evidence, but it must not claim production delivery or enable side effects.
+- Files changed: stage1 bootstrap module, CLI, focused tests, version/changelog files, model/formula/parameter/traceability registries, delivery task, phase record, event, run manifest, and generated status views.
+- Model changes: Added MOD-ADP-043 `adp-stage1-post-migration-bootstrap-v1`.
+- Formula changes: Added FORM-ADP-045 for migration-bound target-runner bootstrap readiness.
+- Parameter changes: Added PARAM-ADP-332 through PARAM-ADP-339 for bootstrap schema, acceptance ID, target environment count, secret-name count, GitHub env count, Python minimum, network timeout, and probe URL.
+- Commands run: focused bootstrap/migration/CLI tests; version CLI; full arxiv-daily-push unit tests; semantic extractor; project/all/changed-only governance validators; root governance tests; information quality validator; JSON/CSV parse checks; git diff check; cache hygiene check.
+- Test results: focused bootstrap/migration/CLI tests 16 OK; version CLI returned 0.20.0; arxiv-daily-push unit tests 220 OK; semantic extractor checked 45 active formulas and 322 active parameters with no errors; project/all/changed-only governance validators 0 errors 0 warnings; root governance tests 130 OK; information quality PASS errors 0 warnings 0; JSON/CSV/diff/cache hygiene PASS.
+- Successes: Tampered migration package blocks bootstrap; cloud-runner proof requires GitHub-hosted workflow/environment evidence; production side effects remain disabled.
+- Failures: No 30 historical previews, live SMTP delivery days, Release upload, scheduler enablement, or production acceptance evidence exists.
+- Decisions: Proceed next to S1-11 historical B1 previews only after final governance validation and CI binding.
+- Remaining risks: Local SSL CA count can be zero on this Mac, so real live network readiness must be proven by explicit probe on the target runner when required.
+- Rollback: Revert version 0.20.0 S1-10 bootstrap code/tests and governance records, then restore version 0.19.0.
+- Next step: S1-11-HISTORICAL_B1_PREVIEWS-001

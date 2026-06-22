@@ -1524,6 +1524,23 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 issues, _ = semantic.validate_project_semantics(project, "P")
         self.assertTrue(any("implementation_fingerprint" in issue.message for issue in issues), issues)
 
+    def test_fallback_yaml_loader_preserves_quoted_symbol_refs(self) -> None:
+        structural = load_validator_module()
+        parsed = structural.fallback_yaml_load(
+            "\n".join(
+                [
+                    "implementation_refs:",
+                    '  - "P/impl.py::rule"',
+                    '  - "csv_row:P/formulas.csv::formula_id=F-X"',
+                    "",
+                ]
+            )
+        )
+        self.assertEqual(
+            parsed["implementation_refs"],
+            ["P/impl.py::rule", "csv_row:P/formulas.csv::formula_id=F-X"],
+        )
+
     def test_review5_dashboard_generation_is_deterministic(self) -> None:
         result = run_validator("--all")
         self.assertEqual(result.returncode, 0, result.stdout)
@@ -1604,7 +1621,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1-07-B1_REPORT_EMAIL_TEXT-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-08-LOCAL_RUNTIME_RECOVERY-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-09-MIGRATION_PACKAGE-001"]["status"], "completed")
-        self.assertEqual(task_by_id["S1-10-POST_MIGRATION_BOOTSTRAP-001"]["status"], "planned")
+        self.assertEqual(task_by_id["S1-10-POST_MIGRATION_BOOTSTRAP-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-11-HISTORICAL_B1_PREVIEWS-001"]["status"], "planned")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "ready")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "ready")
 
@@ -1613,29 +1631,30 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-070")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-070")
-        self.assertEqual(info["product_version"], "0.19.0")
-        self.assertEqual(info["current_gate"], "ADP-S1-09-MIGRATION-PACKAGE-READY")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-071")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-071")
+        self.assertEqual(info["product_version"], "0.20.0")
+        self.assertEqual(info["current_gate"], "ADP-S1-10-POST-MIGRATION-BOOTSTRAP-READY")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-S1-09-MIGRATION-PACKAGE-20260622.json",
+            "governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.19.0", rendered)
-        self.assertIn("ADP-S1-09-MIGRATION-PACKAGE-READY", rendered)
-        self.assertIn("S1-10-POST_MIGRATION_BOOTSTRAP-001", rendered)
-        self.assertIn("post-migration", rendered)
+        self.assertIn("0.20.0", rendered)
+        self.assertIn("ADP-S1-10-POST-MIGRATION-BOOTSTRAP-READY", rendered)
+        self.assertIn("S1-11-HISTORICAL_B1_PREVIEWS-001", rendered)
+        self.assertIn("historical B1", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)
         self.assertNotIn("是否继续执行 S1-09", rendered)
+        self.assertNotIn("是否继续执行 S1-10", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
 
     def test_arxiv_s1_next_task_priority_does_not_reorder_other_projects(self) -> None:
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         expected = {
-            "arxiv-daily-push": "S1-10-POST_MIGRATION_BOOTSTRAP-001",
+            "arxiv-daily-push": "S1-11-HISTORICAL_B1_PREVIEWS-001",
             "OpenAIDatabase": "TASK-OAI-B-001",
             "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
             "whkmSalary": "TASK-WHKM-B-001",
@@ -1724,10 +1743,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         }:
             self.assertIn(path, changed)
         dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
-        self.assertIn("| `arxiv-daily-push` | `0.19.0` |", dashboard_text)
+        self.assertIn("| `arxiv-daily-push` | `0.20.0` |", dashboard_text)
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         adp_backlog = backlog_text.split('project_id: "arxiv-daily-push"', 1)[1].split("next_task:", 1)[0]
-        self.assertIn("precommit_pending_events: 17", adp_backlog)
+        self.assertIn("precommit_pending_events: 18", adp_backlog)
 
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads((ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text())
