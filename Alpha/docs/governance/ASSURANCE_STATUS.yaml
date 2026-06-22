@@ -1,10 +1,10 @@
 project_id: "Alpha"
 as_of_event_id: "EVT-REVIEW6-FINAL-Alpha-001"
-source_snapshot_hash: "sha256:ebd67bb1420c9586dbe3d7d6ccc8cdf09de8d3f4574b6d49ae499ed9bd058d25"
-source_base_commit: "932446fd2154ac477ea0cb6862a60098b1e1ed55"
-source_tree_hash: "a661be1db22d99ff3afe6183ac1ae8f4c444be18"
+source_snapshot_hash: "sha256:a2cd25349f6bd5295ab00337f164c1d3752178b89188931a5b14474b021bb644"
+source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
+source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-22T00:24:25Z"
-generator_version: "3.0.0"
+generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
@@ -32,6 +32,14 @@ dimensions:
     total_active_parameters: 55
     evidence_refs:
       - "Alpha/docs/governance/parameter_registry.csv"
+  methodological_rationale:
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    machine_verified_means: "methodological, calibration, and baseline rationale are tracked separately from implementation congruence"
+    unresolved_fact_ids:
+      - "FACT-Alpha-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "Alpha/docs/governance/MODEL_SPEC.md"
   empirical_validation:
     status: "UNVERIFIED"
     fact_level: "UNKNOWN"
@@ -70,18 +78,43 @@ delivery_readiness:
     - "GOV-SEMANTIC-ALPHA-001"
     - "TASK-ALPHA-B-001"
 next_executable_task:
-  task_id: "GOV-SEMANTIC-ALPHA-001"
-  status: "in_progress"
-  reason: "Add machine source selectors for active parameters and implementation fingerprints for active formulas."
+  task_id: "TASK-ALPHA-B-001"
+  status: "blocked"
+  reason: "Resolve production validation and execution-policy UNKNOWN items before release readiness."
   acceptance_ids:
-    - "ACC-SEMANTIC-ALPHA-001"
-  owner: "Codex/governance runner"
-  unblock_condition: "Run the listed test commands and attach evidence."
+    - "ACC-ALPHA-B-001"
+  owner: "model_owner + risk_owner"
+  human_owner_role: "model_owner + risk_owner"
+  unblock_condition: "Without explicit owner decision and validation evidence Alpha must not be called release-ready for live execution."
+  stale_candidates: []
 owner_decision:
   required: true
-  decision_id: "DEC-Alpha-REVIEW6-001"
-  question: "是否提供生产数据、paper broker 与 live execution policy 证据，或继续保持 blocked。"
+  decision_id: "DEC-Alpha-REVIEW8-001"
+  review_id: "REVIEW8"
+  project_id: "Alpha"
+  decision_question: "是否投入资源用真实历史行情、交易成本和样本外窗口验证 Alpha 动量筛选、风险评分和交易前门禁是否优于简单基线，同时保持零实盘执行。"
+  question: "是否投入资源用真实历史行情、交易成本和样本外窗口验证 Alpha 动量筛选、风险评分和交易前门禁是否优于简单基线，同时保持零实盘执行。"
+  human_owner_role: "model_owner + risk_owner"
+  human_assignment_status: "HUMAN_ASSIGNMENT_REQUIRED"
+  current_recommendation: "A: fund historical-data validation before any stronger delivery claim"
+  option_a: "投入真实历史数据、walk-forward、成本/滑点和买入持有基线验证。"
+  option_b: "保持研究/模拟用途，所有生产和实盘相关声明继续 blocked。"
+  option_c: "暂停 Alpha 交付声称，只保留代码与治理同步。"
   options:
-    - "A: fund evidence hardening"
-    - "B: keep blocked/conditional and defer"
-    - "C: de-scope this project from delivery claims"
+    - "投入真实历史数据、walk-forward、成本/滑点和买入持有基线验证。"
+    - "保持研究/模拟用途，所有生产和实盘相关声明继续 blocked。"
+    - "暂停 Alpha 交付声称，只保留代码与治理同步。"
+  estimated_effort: "P1; model_owner + risk_owner review plus data preparation"
+  estimated_cost_or_resource: "historical market data, cost/slippage assumptions, review time"
+  expected_benefit: "判断当前信号和风险门禁是否有样本外价值，而不把实现一致性误认为有效性。"
+  principal_risks: "future leakage, overfitting, data/vendor limits, transaction-cost understatement"
+  evidence_required: "versioned market snapshot, baseline metrics, OOS report, sensitivity table"
+  decision_deadline_or_priority: "P1"
+  consequence_of_no_decision: "Alpha remains FAILED for operational/delivery readiness and cannot support production claims."
+  unblock_task_id: "TASK-ALPHA-B-001"
+  acceptance_ids:
+    - "ACC-ALPHA-B-001"
+  generated_from_refs:
+    - "Alpha/docs/governance/ASSURANCE_STATUS.yaml"
+    - "Alpha/docs/governance/delivery_tasks.yaml"
+  last_reviewed_at: "2026-06-22T00:24:25Z"

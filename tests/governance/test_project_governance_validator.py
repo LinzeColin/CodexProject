@@ -807,6 +807,151 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(status["stop_hook_loaded"], "UNVERIFIED")
         self.assertEqual(status["repository_trusted"], "UNVERIFIED")
 
+    def test_review8_setup_doctor_strict_local_fails_unverified_hook(self) -> None:
+        doctor = load_setup_doctor_module()
+        report = doctor.build_report(check_github=False, strict_local=True, strict_github=False)
+        self.assertEqual(report["status"], "FAIL", report)
+        self.assertTrue(any("hook.repository_trusted" in item for item in report["failures"]), report)
+
+    def test_review8_setup_doctor_non_strict_reports_warn_not_pass(self) -> None:
+        doctor = load_setup_doctor_module()
+        report = doctor.build_report(check_github=False)
+        self.assertEqual(report["status"], "WARN", report)
+        self.assertTrue(report["warnings"], report)
+
+    def test_review8_owner_portfolio_bucket_total_must_cover_unverified(self) -> None:
+        quality = load_information_quality_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            (tmp_path / "OWNER_PORTFOLIO.md").write_text(
+                "\n".join(
+                    [
+                        "# OWNER_PORTFOLIO",
+                        "- project_total: `2`",
+                        "- bucket_total: `1`",
+                        "- failed: `1`",
+                        "- partial: `0`",
+                        "- unverified: `0`",
+                        "- verified: `0`",
+                        "- not_applicable: `0`",
+                        "`A`",
+                        "`B`",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            projects = [{"project_id": "A"}, {"project_id": "B"}]
+            with patch.object(quality, "ROOT", tmp_path):
+                gate = quality.Gate()
+                quality.check_owner_portfolio_buckets(gate, projects)
+        self.assertTrue(any(item.code == "PORTFOLIO_BUCKET_TOTAL" for item in gate.errors), gate.errors)
+
+    def test_review8_owner_decision_rejects_codex_owner_and_review6(self) -> None:
+        quality = load_information_quality_module()
+        assurance = {
+            "owner_decision": {
+                "decision_id": "DEC-P-REVIEW6-001",
+                "review_id": "REVIEW6",
+                "project_id": "P",
+                "decision_question": "Decide",
+                "human_owner_role": "Codex/governance runner",
+                "human_assignment_status": "HUMAN_ASSIGNMENT_REQUIRED",
+                "current_recommendation": "A",
+                "option_a": "A",
+                "option_b": "B",
+                "option_c": "C",
+                "estimated_effort": "P1",
+                "estimated_cost_or_resource": "time",
+                "expected_benefit": "benefit",
+                "principal_risks": "risk",
+                "evidence_required": "evidence",
+                "decision_deadline_or_priority": "P1",
+                "consequence_of_no_decision": "blocked",
+                "unblock_task_id": "TASK-1",
+                "acceptance_ids": ["ACC-1"],
+            }
+        }
+        gate = quality.Gate()
+        quality.check_owner_decision(gate, assurance, ROOT / "OWNER_PORTFOLIO.md", "P")
+        codes = {item.code for item in gate.errors}
+        self.assertIn("DECISION_OWNER", codes)
+        self.assertIn("DECISION_REVIEW", codes)
+
+    def test_review8_serenity_first_baseline_next_task_is_stale(self) -> None:
+        quality = load_information_quality_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            docs = tmp_path / "Serenity-Alipay" / "docs" / "governance"
+            docs.mkdir(parents=True)
+            (docs / "delivery_tasks.yaml").write_text(
+                "\n".join(
+                    [
+                        "tasks:",
+                        "  - task_id: TASK-A-001",
+                        "    objective: Create the first CodexProject-auditable Serenity-Alipay governance baseline.",
+                        "    status: in_progress",
+                        "    dependencies: []",
+                        "    acceptance_ids: [ACC-A-001]",
+                        "    test_commands: [validator]",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            assurance = {
+                "next_executable_task": {"task_id": "TASK-A-001"},
+                "dimensions": {
+                    "implementation_congruence": {
+                        "status": "VERIFIED",
+                        "total_active_parameters": 49,
+                        "total_active_formulas": 12,
+                    }
+                },
+            }
+            with patch.object(quality, "ROOT", tmp_path), patch.object(quality.structural, "ROOT", tmp_path):
+                gate = quality.Gate()
+                quality.check_next_task(gate, assurance, tmp_path / "Serenity-Alipay", "Serenity-Alipay")
+        self.assertTrue(any(item.code == "NEXT_TASK_STALE" for item in gate.errors), gate.errors)
+
+    def test_review8_stop_hook_writes_completed_receipt_atomically(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            subprocess.run(["git", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=tmp_path, check=True)
+            subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+            (tmp_path / "governance").mkdir()
+            (tmp_path / "governance" / "projects.yaml").write_text("governance_spec_version: '1.0.0'\n", encoding="utf-8")
+            scripts = tmp_path / "scripts"
+            scripts.mkdir()
+            for script_name in [
+                "validate_project_governance.py",
+                "validate_information_quality.py",
+                "generate_governance_dashboard.py",
+                "governance_setup_doctor.py",
+            ]:
+                (scripts / script_name).write_text("import sys\nprint('ok')\nsys.exit(0)\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
+            subprocess.run(["git", "commit", "-m", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
+            result = subprocess.run(
+                [sys.executable, str(STOP_HOOK)],
+                input=json.dumps({"cwd": str(tmp_path), "task_id": "GOV-REVIEW8-TEST"}),
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+            )
+            payload = json.loads(result.stdout)
+            receipt = tmp_path / str(payload["governance_receipt"])
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertTrue(payload.get("continue"))
+            self.assertTrue(receipt.name.startswith("STOP-HOOK-"))
+            data = json.loads(receipt.read_text(encoding="utf-8"))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(data["final_status"], "PASS")
+        self.assertEqual(data["task_id"], "GOV-REVIEW8-TEST")
+        self.assertTrue(data["commands"])
+
     def test_review7_v2_manifest_requires_content_tree_hash(self) -> None:
         sync = load_sync_module()
         with tempfile.TemporaryDirectory() as tmp:
@@ -1403,11 +1548,11 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         info = dashboard.load_project(serenity)
         rendered = dashboard.render_owner_status(info)
         for marker in (
-            "## 1. Current Conclusion",
-            "## 2. This Run Change",
-            "## 4. Decision Needed",
-            "## 5. A/B/C Choice Matrix",
-            "## 12. Next Unique Task",
+            "## 1. 当前结论",
+            "## 2. 本次运行改变了什么",
+            "## 4. 需要人类决定什么",
+            "## 9. A/B/C Choice Matrix",
+            "## 17. Next Unique Task",
         ):
             self.assertIn(marker, rendered)
         self.assertIn("实现一致性", rendered)
@@ -1415,7 +1560,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("operational_validation", rendered)
         self.assertNotIn("['", rendered)
         self.assertNotIn("{'", rendered)
-        self.assertEqual(info["assurance"]["next_executable_task"]["task_id"], "TASK-A-001")
+        self.assertNotEqual(info["assurance"]["next_executable_task"]["task_id"], "TASK-A-001")
 
     def test_arxiv_owner_status_uses_latest_event_manifest(self) -> None:
         dashboard = load_dashboard_module()

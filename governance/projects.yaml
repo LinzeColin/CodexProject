@@ -27,6 +27,7 @@ root_governance:
     - "governance/schemas/incident_response.schema.json"
     - "governance/schemas/ci_attestation.schema.json"
     - "governance/schemas/run_manifest.schema.json"
+    - "governance/schemas/run_receipt.schema.json"
     - "scripts/validate_project_governance.py"
     - "scripts/validate_information_quality.py"
     - "scripts/validate_governance_sync.py"

@@ -1,56 +1,72 @@
 # OWNER_STATUS
 
-Alpha 当前治理结论：实现一致性为 `PARTIAL`，交付状态为 `FAILED`；这不是生产上线声明。
+## 1. 当前结论
 
-## 1. Current Conclusion
+Alpha 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 `UNVERIFIED` / `UNVERIFIED`，交付状态为 `FAILED`；这不是生产上线声明。
 
-- source_base_commit: `932446fd2154ac477ea0cb6862a60098b1e1ed55`
-- source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
-- source_snapshot_hash: `sha256:ebd67bb1420c9586dbe3d7d6ccc8cdf09de8d3f4574b6d49ae499ed9bd058d25`
-- snapshot_event_time: `2026-06-22T00:24:25Z`
-- generator_version: `3.0.0`
-- version: `0.1.0`
-- phase/gate: `B / GOV-SEMANTIC-ALPHA-in-progress`
+## 2. 本次运行改变了什么
 
-## 2. This Run Change
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
-Generated owner-facing views now separate implementation congruence from parameter source quality, empirical validation, operational validation, delivery evidence, and evidence freshness.
+## 3. 为什么重要
 
-## 3. Owner Impact
+判断当前信号和风险门禁是否有样本外价值，而不把实现一致性误认为有效性。
+
+## 4. 需要人类决定什么
+
+- decision_id: `DEC-Alpha-REVIEW8-001`
+- decision_question: 是否投入资源用真实历史行情、交易成本和样本外窗口验证 Alpha 动量筛选、风险评分和交易前门禁是否优于简单基线，同时保持零实盘执行。
+- human_owner_role: `model_owner + risk_owner`
+- human_assignment_status: `HUMAN_ASSIGNMENT_REQUIRED`
+
+## 5. 默认建议
+
+- current_recommendation: A: fund historical-data validation before any stronger delivery claim
+- estimated_effort: P1; model_owner + risk_owner review plus data preparation
+- estimated_cost_or_resource: historical market data, cost/slippage assumptions, review time
+
+## 6. 不决策后果
+
+Alpha remains FAILED for operational/delivery readiness and cannot support production claims.
+
+## 7. 下一行动、责任角色和验收证据
+
+- next_task_id: `TASK-ALPHA-B-001`
+- responsible_role: `model_owner + risk_owner`
+- acceptance_ids: `ACC-ALPHA-B-001`
+- unblock_condition: Without explicit owner decision and validation evidence Alpha must not be called release-ready for live execution.
+
+## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
 - implementation_congruence: `PARTIAL` (42/55 active parameters, 9/9 active formulas)
 - parameter_source_quality: `PARTIAL`
+- methodological_rationale: `UNVERIFIED`
 - empirical_validation: `UNVERIFIED`
 - operational_validation: `FAILED`
 - delivery_evidence: `FAILED`
 - evidence_freshness: `PARTIAL`
 - delivery_readiness: `FAILED`
 
-## 4. Decision Needed
-
-- decision_id: `DEC-Alpha-REVIEW6-001`
-- question: 是否提供生产数据、paper broker 与 live execution policy 证据，或继续保持 blocked。
-
-## 5. A/B/C Choice Matrix
+## 9. A/B/C Choice Matrix
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-Alpha-REVIEW6-001` | A | A: fund evidence hardening | B: keep blocked/conditional and defer | C: de-scope this project from delivery claims | remains `FAILED` with unresolved evidence. |
+| `DEC-Alpha-REVIEW8-001` | A: fund historical-data validation before any stronger delivery claim | 投入真实历史数据、walk-forward、成本/滑点和买入持有基线验证。 | 保持研究/模拟用途，所有生产和实盘相关声明继续 blocked。 | 暂停 Alpha 交付声称，只保留代码与治理同步。 | Alpha remains FAILED for operational/delivery readiness and cannot support production claims. |
 
-## 6. Current Blockers
+## 10. Current Blockers
 
 1. production validation evidence
 2. broker policy decision
 3. calibration evidence
 
-## 7. Evidence Required To Unblock
+## 11. Evidence Required To Unblock
 
-- owner: Codex/governance runner
-- unblock_condition: Run the listed test commands and attach evidence.
-- acceptance: ACC-SEMANTIC-ALPHA-001
+- evidence_required: versioned market snapshot, baseline metrics, OOS report, sensitivity table
+- principal_risks: future leakage, overfitting, data/vendor limits, transaction-cost understatement
+- generated_from_refs: `Alpha/docs/governance/ASSURANCE_STATUS.yaml, Alpha/docs/governance/delivery_tasks.yaml`
 
-## 8. Model Formula Parameter Change
+## 12. Model Formula Parameter Change
 
 - model_count: `9`
 - total_formulas: `9`
@@ -59,12 +75,12 @@ Generated owner-facing views now separate implementation congruence from paramet
 - active_parameters: `55`
 - active_values_changed_by_this_view: `0`
 
-## 9. Tests And Acceptance
+## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
 - release_gate: `GOV-SEMANTIC-ALPHA-in-progress`
 
-## 10. Evidence Freshness
+## 14. Evidence Freshness
 
 - tree_bound_events: `0`
 - commit_bound_events: `0`
@@ -72,11 +88,21 @@ Generated owner-facing views now separate implementation congruence from paramet
 - precommit_pending_events: `1`
 - pending_or_stale_events: `5`
 
-## 11. UNKNOWN
+## 15. UNKNOWN
 
 - unresolved_fact_ids: `5`
 
-## 12. Next Unique Task
+## 16. 技术元数据
 
-- task_id: `GOV-SEMANTIC-ALPHA-001`
-- reason: Add machine source selectors for active parameters and implementation fingerprints for active formulas.
+- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
+- source_snapshot_hash: `sha256:a2cd25349f6bd5295ab00337f164c1d3752178b89188931a5b14474b021bb644`
+- snapshot_event_time: `2026-06-22T00:24:25Z`
+- generator_version: `4.0.0`
+- version: `0.1.0`
+- phase/gate: `B / GOV-SEMANTIC-ALPHA-in-progress`
+
+## 17. Next Unique Task
+
+- task_id: `TASK-ALPHA-B-001`
+- reason: Resolve production validation and execution-policy UNKNOWN items before release readiness.

@@ -19,6 +19,8 @@ sys.dont_write_bytecode = True
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "project-governance.yml"
+BAD_STATUSES = {"FAIL", "NOT_CONFIGURED"}
+UNKNOWN_STATUSES = {"UNVERIFIED"}
 
 
 def git_output(*args: str) -> str:
@@ -165,11 +167,73 @@ def github_branch_status(owner_repo: str, token: str | None) -> dict[str, Any]:
     return result
 
 
-def build_report(check_github: bool) -> dict[str, Any]:
+def is_bad_status(value: Any) -> bool:
+    text = str(value).upper()
+    return any(status in text for status in BAD_STATUSES)
+
+
+def is_unknown_status(value: Any) -> bool:
+    text = str(value).upper()
+    return any(status in text for status in UNKNOWN_STATUSES)
+
+
+def flatten_statuses(prefix: str, value: Any) -> list[tuple[str, Any]]:
+    if isinstance(value, dict):
+        items: list[tuple[str, Any]] = []
+        for key, child in value.items():
+            items.extend(flatten_statuses(f"{prefix}.{key}" if prefix else str(key), child))
+        return items
+    if isinstance(value, list):
+        items = []
+        for idx, child in enumerate(value):
+            items.extend(flatten_statuses(f"{prefix}[{idx}]", child))
+        return items
+    if isinstance(value, (str, bool)):
+        return [(prefix, value)]
+    return []
+
+
+def evaluate_report(report: dict[str, Any], strict_local: bool, strict_github: bool) -> dict[str, Any]:
+    local_paths = {
+        "hook.repository_trusted",
+        "hook.hooks_enabled",
+        "hook.stop_hook_loaded",
+        "hook.governance_script_executable",
+        "hook.python_environment",
+        "hook.trust_status",
+        "workflow_entry_gates.status",
+    }
+    github_paths = {
+        "branch_protection.protected",
+        "branch_protection.required_status_checks",
+        "branch_protection.no_bypass",
+    }
+    failures: list[str] = []
+    warnings: list[str] = []
+    for path, value in flatten_statuses("", report):
+        if path == "status":
+            continue
+        in_local = path in local_paths
+        in_github = path in github_paths
+        strict = (strict_local and in_local) or (strict_github and in_github)
+        if is_bad_status(value):
+            if strict or path == "workflow_entry_gates.status":
+                failures.append(f"{path}={value}")
+            else:
+                warnings.append(f"{path}={value}")
+        elif is_unknown_status(value):
+            if strict:
+                failures.append(f"{path}={value}")
+            else:
+                warnings.append(f"{path}={value}")
+    status = "FAIL" if failures else "WARN" if warnings else "PASS"
+    return {"status": status, "failures": sorted(set(failures)), "warnings": sorted(set(warnings))}
+
+
+def build_report(check_github: bool, strict_local: bool = False, strict_github: bool = False) -> dict[str, Any]:
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     owner_repo = repo_full_name()
     report = {
-        "status": "PASS",
         "repository": owner_repo,
         "commit": git_output("rev-parse", "HEAD"),
         "hook": hook_status(),
@@ -183,6 +247,12 @@ def build_report(check_github: bool) -> dict[str, Any]:
             "note": "Run with --check-github and GITHUB_TOKEN/GH_TOKEN for authenticated branch protection details.",
         },
     }
+    evaluation = evaluate_report(report, strict_local, strict_github)
+    report["status"] = evaluation["status"]
+    report["strict_local"] = strict_local
+    report["strict_github"] = strict_github
+    report["failures"] = evaluation["failures"]
+    report["warnings"] = evaluation["warnings"]
     return report
 
 
@@ -190,8 +260,13 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", action="store_true", help="Print JSON report.")
     parser.add_argument("--check-github", action="store_true", help="Attempt GitHub branch protection checks.")
+    parser.add_argument("--strict-local", action="store_true", help="Fail if local hook trust or entry-gate state is unverified.")
+    parser.add_argument("--strict-github", action="store_true", help="Fail if GitHub branch protection/required/no-bypass state is unverified.")
+    parser.add_argument("--strict-all", action="store_true", help="Enable both strict local and strict GitHub checks.")
     args = parser.parse_args(argv)
-    report = build_report(args.check_github)
+    strict_local = bool(args.strict_local or args.strict_all)
+    strict_github = bool(args.strict_github or args.strict_all)
+    report = build_report(args.check_github or strict_github, strict_local, strict_github)
     if args.json:
         print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     else:
@@ -201,7 +276,15 @@ def main(argv: list[str] | None = None) -> int:
         print(f"workflow_entry_gates.status: {report['workflow_entry_gates']['status']}")
         print(f"branch.required_status_checks: {report['branch_protection']['required_status_checks']}")
         print(f"branch.no_bypass: {report['branch_protection']['no_bypass']}")
-    return 0
+        if report["failures"]:
+            print("failures:")
+            for item in report["failures"]:
+                print(f"- {item}")
+        if report["warnings"]:
+            print("warnings:")
+            for item in report["warnings"]:
+                print(f"- {item}")
+    return 1 if report["status"] == "FAIL" else 0
 
 
 if __name__ == "__main__":

@@ -1,10 +1,10 @@
 project_id: "EVA_OS"
 as_of_event_id: "EVT-REVIEW6-FINAL-EVA_OS-001"
-source_snapshot_hash: "sha256:5a35994864b903f11c70f98698d4ba2a5ad7d789ab6fa83d7e34f6aec668668b"
-source_base_commit: "932446fd2154ac477ea0cb6862a60098b1e1ed55"
-source_tree_hash: "a661be1db22d99ff3afe6183ac1ae8f4c444be18"
+source_snapshot_hash: "sha256:bf06c8bc22aa6788b5efc648028ba1515b1546188c22ee151e26296f108798af"
+source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
+source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-22T00:24:25Z"
-generator_version: "3.0.0"
+generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
@@ -32,6 +32,14 @@ dimensions:
     total_active_parameters: 189
     evidence_refs:
       - "EVA_OS/docs/governance/parameter_registry.csv"
+  methodological_rationale:
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    machine_verified_means: "methodological, calibration, and baseline rationale are tracked separately from implementation congruence"
+    unresolved_fact_ids:
+      - "FACT-EVA_OS-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "EVA_OS/docs/governance/MODEL_SPEC.md"
   empirical_validation:
     status: "UNVERIFIED"
     fact_level: "UNKNOWN"
@@ -73,18 +81,43 @@ delivery_readiness:
     - "TASK-EVA-B-003"
     - "TASK-EVA-B-004"
 next_executable_task:
-  task_id: "GOV-SEMANTIC-EVA-001"
-  status: "in_progress"
-  reason: "Add machine selectors for strategy parameters and fingerprints for active strategy formulas."
+  task_id: "TASK-EVA-B-001"
+  status: "blocked"
+  reason: "Resolve calibration evidence for built-in strategy defaults and enhanced Alipay multipliers."
   acceptance_ids:
-    - "ACC-SEMANTIC-EVA-001"
-  owner: "Codex/governance runner"
-  unblock_condition: "Run the listed test commands and attach evidence."
+    - "ACC-EVA-B-001"
+  owner: "model_owner + research_owner"
+  human_owner_role: "model_owner + research_owner"
+  unblock_condition: "Heuristic constants may lack external calibration evidence; unresolved items remain blocked tasks."
+  stale_candidates: []
 owner_decision:
   required: true
-  decision_id: "DEC-EVA_OS-REVIEW6-001"
-  question: "是否投入 137 个 remaining parameter reviews 和来源/校准证据。"
+  decision_id: "DEC-EVA_OS-REVIEW8-001"
+  review_id: "REVIEW8"
+  project_id: "EVA_OS"
+  decision_question: "是否投入参数来源、样本外、成本和报告 claim-to-evidence 验证，证明 EVA_OS 研究结论可复现且不夸大。"
+  question: "是否投入参数来源、样本外、成本和报告 claim-to-evidence 验证，证明 EVA_OS 研究结论可复现且不夸大。"
+  human_owner_role: "model_owner + research_owner"
+  human_assignment_status: "HUMAN_ASSIGNMENT_REQUIRED"
+  current_recommendation: "A: fund parameter review and OOS evidence hardening"
+  option_a: "完成剩余参数来源、OOS、成本压力和报告主张抽检。"
+  option_b: "保持研究假设，不提升 readiness。"
+  option_c: "暂停对外报告交付声明。"
   options:
-    - "A: fund evidence hardening"
-    - "B: keep blocked/conditional and defer"
-    - "C: de-scope this project from delivery claims"
+    - "完成剩余参数来源、OOS、成本压力和报告主张抽检。"
+    - "保持研究假设，不提升 readiness。"
+    - "暂停对外报告交付声明。"
+  estimated_effort: "P1; research/model owner review"
+  estimated_cost_or_resource: "historical data, experiment logs, report evidence manifest"
+  expected_benefit: "把实验实现与真实可复现证据分开，避免选择性报告。"
+  principal_risks: "parameter instability, cost omissions, cherry-picked reports"
+  evidence_required: "OOS protocol, rerun logs, claim ledger, sensitivity results"
+  decision_deadline_or_priority: "P1"
+  consequence_of_no_decision: "EVA_OS remains FAILED for operational and delivery readiness."
+  unblock_task_id: "TASK-EVA-B-001"
+  acceptance_ids:
+    - "ACC-EVA-B-001"
+  generated_from_refs:
+    - "EVA_OS/docs/governance/ASSURANCE_STATUS.yaml"
+    - "EVA_OS/docs/governance/delivery_tasks.yaml"
+  last_reviewed_at: "2026-06-22T00:24:25Z"

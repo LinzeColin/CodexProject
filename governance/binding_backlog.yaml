@@ -1,9 +1,9 @@
 generated_by: "scripts/generate_governance_dashboard.py"
-generator_version: "3.0.0"
+generator_version: "4.0.0"
 task_id: "GOV-REVIEW7-BINDING-BACKLOG-001"
-source_base_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-source_tree_hash: "a661be1db22d99ff3afe6183ac1ae8f4c444be18"
-source_snapshot_hash: "sha256:b6b9cf159382f0a32ea2140c9c646f0d9d3d79230b6395c0210ff6d657601602"
+source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
+source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
+source_snapshot_hash: "sha256:815e2d4acd9787e08bcc34709249062db1d700b3af425903626b7c1371af590d"
 status: "open"
 policy: "Legacy events are not rewritten. Future meaningful runs must be PRECOMMIT_TREE_BOUND before commit and commit-bound by CI attestation after merge."
 projects:

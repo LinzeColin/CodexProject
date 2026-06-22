@@ -2,11 +2,11 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `932446fd2154ac477ea0cb6862a60098b1e1ed55`
-- source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
-- source_snapshot_hash: `sha256:267e808b46dce0d5d7d705e13fd3f01341ae2a8d35fcbc5453eae4ff1b2d763a`
+- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
+- source_snapshot_hash: `sha256:fbe1f9b8684e12205646d6b658f807d03c87b6fe621817cdcb64be98e499802e`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
-- generator_version: `3.0.0`
+- generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
@@ -26,6 +26,7 @@
 | structural_completeness | `VERIFIED` | `scripts/validate_project_governance.py` |
 | implementation_congruence | `PARTIAL` | `FIFA/docs/governance/parameter_registry.csv, FIFA/docs/governance/formula_registry.yaml` |
 | parameter_source_quality | `PARTIAL` | `FIFA/docs/governance/parameter_registry.csv` |
+| methodological_rationale | `UNVERIFIED` | `FIFA/docs/governance/MODEL_SPEC.md` |
 | empirical_validation | `UNVERIFIED` | `FIFA/docs/governance/delivery_tasks.yaml` |
 | operational_validation | `FAILED` | `FIFA/docs/governance/development_events.jsonl` |
 | delivery_evidence | `UNVERIFIED` | `FIFA/docs/governance/delivery_tasks.yaml` |
@@ -35,7 +36,7 @@
 
 - Readiness: `UNVERIFIED`
 - Release gate: `GOV-SEMANTIC-FIFA-in-progress`
-- Next executable task: `GOV-SEMANTIC-FIFA-001`
+- Next executable task: `TASK-FIFA-C-001`
 - Pending/stale events: `4`
 - Tree-bound events: `0`
 - Commit-bound events: `4`

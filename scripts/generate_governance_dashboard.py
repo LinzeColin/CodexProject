@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Review 7 governance views from canonical machine sources."""
+"""Generate Review 8 governance views from canonical machine sources."""
 
 from __future__ import annotations
 
@@ -21,9 +21,9 @@ import validate_project_governance as structural
 sys.dont_write_bytecode = True
 
 ROOT = structural.ROOT
-GENERATOR_VERSION = "3.0.0"
+GENERATOR_VERSION = "4.0.0"
 COMPLETED_TASK_STATES = {"completed", "rejected", "deprecated"}
-EXECUTABLE_TASK_STATES = {"ready", "in_progress"}
+EXECUTABLE_TASK_STATES = {"ready", "in_progress", "blocked", "planned"}
 ASSURANCE_STATUSES = {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"}
 PROJECT_REPOSITORIES = {
     "Alpha": "https://github.com/LinzeColin/Alpha",
@@ -109,6 +109,170 @@ ASSURANCE_POLICY = {
         "readiness": "blocked",
         "decision": "是否启动生产 trial；当前只有本地两日模拟，生产启动和 30 天验收仍 blocked。",
         "blockers": ["production trial not started", "30-day acceptance absent", "historical event binding backlog"],
+    },
+}
+
+
+REVIEW8_DECISION_POLICY = {
+    "Alpha": {
+        "owner_role": "model_owner + risk_owner",
+        "assignment": "HUMAN_ASSIGNMENT_REQUIRED",
+        "question": "是否投入资源用真实历史行情、交易成本和样本外窗口验证 Alpha 动量筛选、风险评分和交易前门禁是否优于简单基线，同时保持零实盘执行。",
+        "recommendation": "A: fund historical-data validation before any stronger delivery claim",
+        "option_a": "投入真实历史数据、walk-forward、成本/滑点和买入持有基线验证。",
+        "option_b": "保持研究/模拟用途，所有生产和实盘相关声明继续 blocked。",
+        "option_c": "暂停 Alpha 交付声称，只保留代码与治理同步。",
+        "effort": "P1; model_owner + risk_owner review plus data preparation",
+        "resource": "historical market data, cost/slippage assumptions, review time",
+        "benefit": "判断当前信号和风险门禁是否有样本外价值，而不把实现一致性误认为有效性。",
+        "risks": "future leakage, overfitting, data/vendor limits, transaction-cost understatement",
+        "evidence": "versioned market snapshot, baseline metrics, OOS report, sensitivity table",
+        "priority": "P1",
+        "no_decision": "Alpha remains FAILED for operational/delivery readiness and cannot support production claims.",
+    },
+    "EEI": {
+        "owner_role": "product_owner + data_owner + risk_owner",
+        "assignment": "HUMAN_ASSIGNMENT_REQUIRED",
+        "question": "是否继续投入 24 小时 operator soak 和人工黄金集，验证 EEI 实体解析、关系抽取、证据覆盖与撤回能力。",
+        "recommendation": "A: complete 24h soak and gold-set validation before publishing stronger claims",
+        "option_a": "补齐人工裁决黄金集、24h soak、来源撤回和冲突演练。",
+        "option_b": "保持 partial，仅允许内部研究和人工复核。",
+        "option_c": "暂停关系发布相关交付声明。",
+        "effort": "P2; product/data/risk owners plus operator time",
+        "resource": "official-source access, labeled gold set, soak runner time",
+        "benefit": "降低未经证实企业关系被发布为事实的风险。",
+        "risks": "source license limits, stale relationships, false relation assertions",
+        "evidence": "gold-set labels, precision/recall, source coverage, soak manifest",
+        "priority": "P2",
+        "no_decision": "EEI remains FAILED/PARTIAL and publication readiness stays blocked.",
+    },
+    "EVA_OS": {
+        "owner_role": "model_owner + research_owner",
+        "assignment": "HUMAN_ASSIGNMENT_REQUIRED",
+        "question": "是否投入参数来源、样本外、成本和报告 claim-to-evidence 验证，证明 EVA_OS 研究结论可复现且不夸大。",
+        "recommendation": "A: fund parameter review and OOS evidence hardening",
+        "option_a": "完成剩余参数来源、OOS、成本压力和报告主张抽检。",
+        "option_b": "保持研究假设，不提升 readiness。",
+        "option_c": "暂停对外报告交付声明。",
+        "effort": "P1; research/model owner review",
+        "resource": "historical data, experiment logs, report evidence manifest",
+        "benefit": "把实验实现与真实可复现证据分开，避免选择性报告。",
+        "risks": "parameter instability, cost omissions, cherry-picked reports",
+        "evidence": "OOS protocol, rerun logs, claim ledger, sensitivity results",
+        "priority": "P1",
+        "no_decision": "EVA_OS remains FAILED for operational and delivery readiness.",
+    },
+    "FIFA": {
+        "owner_role": "research_owner + risk_owner",
+        "assignment": "HUMAN_ASSIGNMENT_REQUIRED",
+        "question": "是否补齐授权赛前赔率快照、概率校准和报告事实复核，且继续保证 stake/executable amount 为 0。",
+        "recommendation": "A: validate historical odds snapshots under zero-stake boundary",
+        "option_a": "建立赛前快照数据合同、Brier/log loss/ECE 校准和事实抽检。",
+        "option_b": "维持研究用途，不声称预测有效。",
+        "option_c": "暂停 FIFA 概率/价值报告交付。",
+        "effort": "P1; research and risk review",
+        "resource": "authorized odds snapshots, match results, report audit samples",
+        "benefit": "判断概率和报告是否比市场/简单基线更有用，同时避免下注风险。",
+        "risks": "post-event leakage, unauthorized data, betting misuse",
+        "evidence": "timestamped odds data, calibration report, zero-stake gate evidence",
+        "priority": "P1",
+        "no_decision": "FIFA remains UNVERIFIED and cannot support value/recommendation claims.",
+    },
+    "OpMe_System": {
+        "owner_role": "engineering_owner + safety_owner + operations_owner",
+        "assignment": "HUMAN_ASSIGNMENT_REQUIRED",
+        "question": "是否由工程/安全/运营责任人投入专家裁决案例，验证 OpMe 诊断、严重度、LLM 路由和危险漏报失效安全。",
+        "recommendation": "A: fund expert-labeled safety validation before operational use",
+        "option_a": "完成专家双评、危险漏报专项集、回退演练和报告可执行性复核。",
+        "option_b": "保持内部辅助研究，所有现场/生产建议需工程师复核。",
+        "option_c": "暂停高风险诊断和操作建议交付。",
+        "effort": "P0; engineering, safety, operations owners required",
+        "resource": "de-identified industrial cases, expert adjudication, safety review time",
+        "benefit": "降低危险故障漏报和无依据操作建议风险。",
+        "risks": "unsafe advice, missing expert labels, provider outage,现场适用性不足",
+        "evidence": "expert labels, severity-weighted errors, dangerous false-negative rate, fallback logs",
+        "priority": "P0",
+        "no_decision": "OpMe_System remains UNVERIFIED and must not be treated as production safety tooling.",
+    },
+    "OpenAIDatabase": {
+        "owner_role": "privacy_owner + product_owner",
+        "assignment": "HUMAN_ASSIGNMENT_REQUIRED",
+        "question": "是否投入去标识黄金集和隐私攻击测试，验证记忆提取、脱敏、冲突/去重、检索和建议效用不会泄漏高风险秘密。",
+        "recommendation": "A: fund privacy-first gold-set validation before persistent memory write claims",
+        "option_a": "建立同意样本/高保真合成集、秘密泄漏测试、检索和建议盲评。",
+        "option_b": "保留本地只读研究，写入前继续人工确认。",
+        "option_c": "暂停持久记忆和自动建议交付。",
+        "effort": "P0; privacy and product owner review",
+        "resource": "consented/de-identified exports, adversarial secret set, evaluator time",
+        "benefit": "验证系统有用且不会把私密内容错误持久化或泄漏。",
+        "risks": "PII/secret leakage, stale memory, false user facts",
+        "evidence": "gold labels, leakage-rate report, retrieval metrics, human write approval logs",
+        "priority": "P0",
+        "no_decision": "OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memory operation.",
+    },
+    "PFI_BIG_DATA_SIMULATOR": {
+        "owner_role": "model_owner + risk_owner + research_owner",
+        "assignment": "HUMAN_ASSIGNMENT_REQUIRED",
+        "question": "是否投入多市场、OOS、成本和多重检验控制，验证 PFI 策略族不是数据挖掘赢家。",
+        "recommendation": "A: validate OOS and multiple-testing controls before ranking strategy claims",
+        "option_a": "执行预注册、walk-forward、FDR/Reality Check、快筛-精确一致性和成本压力。",
+        "option_b": "保持模拟研究，不提升策略有效性状态。",
+        "option_c": "暂停策略族交付声称。",
+        "effort": "P1; model/risk/research owner review",
+        "resource": "multi-market snapshots, compute time, multiple-testing protocol",
+        "benefit": "区分真实稳健表现与大规模搜索偏差。",
+        "risks": "data mining, survivor bias, underestimated costs, resource blowups",
+        "evidence": "pre-registration, OOS metrics, corrected significance, sensitivity results",
+        "priority": "P1",
+        "no_decision": "PFI remains UNVERIFIED and cannot support strategy approval.",
+    },
+    "Serenity-Alipay": {
+        "owner_role": "model_owner + risk_owner",
+        "assignment": "HUMAN_ASSIGNMENT_REQUIRED",
+        "question": "是否投入历史基金快照、基准、OOS、消融和敏感性，验证评分权重、等级阈值、硬门禁和 Top5 衰减是否有稳定区分力。",
+        "recommendation": "A: fund empirical calibration and OOS validation; implementation is already machine-verified",
+        "option_a": "补齐基金快照、基准、OOS、消融和参数敏感性证据。",
+        "option_b": "保持规则实现已核对，不宣称策略有效。",
+        "option_c": "暂停基金评分交付声明。",
+        "effort": "P1; model/risk owner plus data preparation",
+        "resource": "historical fund snapshots, benchmark series, calibration protocol",
+        "benefit": "判断当前权重/阈值/门禁是否有风险控制和排序价值。",
+        "risks": "survivorship bias, overfitting, stale fund availability, investment misuse",
+        "evidence": "versioned snapshots, OOS metrics, ablation, sensitivity and gate-value report",
+        "priority": "P1",
+        "no_decision": "Serenity remains UNVERIFIED for empirical/delivery readiness despite machine-verified implementation.",
+    },
+    "whkmSalary": {
+        "owner_role": "payroll_owner + legal_or_policy_owner + product_owner",
+        "assignment": "HUMAN_ASSIGNMENT_REQUIRED",
+        "question": "是否由工资、法务/政策和产品责任人提供权威政策、法域、生效日期、税务和舍入证据，验证 whkmSalary 可用于真实算薪。",
+        "recommendation": "A: fund policy and payroll reconciliation evidence before any production payroll use",
+        "option_a": "补齐政策来源、司法辖区、生效日期、税务、舍入和匿名历史对账。",
+        "option_b": "保持演示/研究用途，禁止生产算薪。",
+        "option_c": "暂停工资计算交付声明。",
+        "effort": "P0; payroll + legal/policy + product owner sign-off",
+        "resource": "authoritative policy docs, approved payroll examples, reviewer time",
+        "benefit": "避免把未经授权或过期规则用于工资、税费和绩效结算。",
+        "risks": "legal error, payroll under/overpayment, PII leakage, unfair impact",
+        "evidence": "policy refs, jurisdiction/effective-date matrix, reconciliation results, approval memo",
+        "priority": "P0",
+        "no_decision": "whkmSalary remains FAILED and must not be used for production payroll.",
+    },
+    "arxiv-daily-push": {
+        "owner_role": "product_owner + operations_owner + content_owner",
+        "assignment": "HUMAN_ASSIGNMENT_REQUIRED",
+        "question": "是否启动 owner 配置的生产 trial，验证 arxiv-daily-push 的排序、Claim Ledger、中文课程、通知和 30 天运行稳定性。",
+        "recommendation": "A: start controlled production trial only after owner-provisioned refs are verified",
+        "option_a": "完成私有 runner/refs、trial-start、SMTP/Release、replay/recovery/resource 和 30 天证据。",
+        "option_b": "保留本地模拟和手动发布，不提升生产状态。",
+        "option_c": "暂停自动日更投递。",
+        "effort": "P2; product, operations, content owners",
+        "resource": "owner-provisioned refs, private runner, SMTP/release credentials, monitoring",
+        "benefit": "证明日常投递真实可运行且内容主张有证据绑定。",
+        "risks": "secret misconfiguration, delivery failure, hallucinated claims, stale schedule evidence",
+        "evidence": "provisioning audit, trial logs, 30-day ledger, claim evidence sample",
+        "priority": "P2",
+        "no_decision": "arxiv-daily-push remains FAILED for delivery readiness despite local simulations.",
     },
 }
 
@@ -327,18 +491,41 @@ def completed_task_ids(tasks: list[dict[str, Any]]) -> set[str]:
     }
 
 
-def select_next_task(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+def task_is_stale_or_satisfied(project_id: str, task: dict[str, Any], counts: dict[str, int], impl_status: str) -> str:
+    objective = str(task.get("objective") or "").lower()
+    task_id = str(task.get("task_id") or "")
+    if project_id == "Serenity-Alipay" and task_id == "TASK-A-001":
+        baseline_exists = (
+            counts["active_parameters"] > 0
+            and counts["active_formulas"] > 0
+            and impl_status == "VERIFIED"
+        )
+        if baseline_exists and "first" in objective and "governance baseline" in objective:
+            return "Serenity-Alipay baseline exists and implementation congruence is VERIFIED; the first-baseline task is stale."
+    if "create the first" in objective and counts["active_parameters"] > 0 and counts["active_formulas"] > 0:
+        return "Task objective says to create the first baseline, but active formula and parameter registries already exist."
+    return ""
+
+
+def select_next_task(project_id: str, tasks: list[dict[str, Any]], counts: dict[str, int], impl_status: str) -> dict[str, Any]:
     completed = completed_task_ids(tasks)
     candidates: list[dict[str, Any]] = []
+    stale: list[dict[str, str]] = []
     for task in tasks:
         if not isinstance(task, dict):
             continue
         status = str(task.get("status") or "")
         if status not in EXECUTABLE_TASK_STATES:
             continue
+        stale_reason = task_is_stale_or_satisfied(project_id, task, counts, impl_status)
+        if stale_reason:
+            stale.append({"task_id": str(task.get("task_id") or ""), "reason": stale_reason})
+            continue
         dependencies = [str(dep) for dep in structural.as_list(task.get("dependencies")) if str(dep)]
         unmet = [dep for dep in dependencies if dep not in completed]
-        if unmet or not task.get("acceptance_ids") or not task.get("test_commands"):
+        if unmet or not task.get("acceptance_ids"):
+            continue
+        if status != "blocked" and not task.get("test_commands"):
             continue
         candidates.append(task)
     if not candidates:
@@ -348,17 +535,29 @@ def select_next_task(tasks: list[dict[str, Any]]) -> dict[str, Any]:
             "reason": "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.",
             "acceptance_ids": [],
             "owner": "project owner",
-            "unblock_condition": "Unblock or define a ready/in_progress task with completed dependencies and evidence policy.",
+            "human_owner_role": "project_owner",
+            "unblock_condition": "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy.",
+            "stale_candidates": stale,
         }
-    candidates.sort(key=lambda task: (0 if str(task.get("status")) == "in_progress" else 1, str(task.get("task_id"))))
+    priority = {"blocked": 0, "in_progress": 1, "ready": 2, "planned": 3}
+    candidates.sort(key=lambda task: (priority.get(str(task.get("status")), 9), str(task.get("task_id"))))
     task = candidates[0]
+    role = REVIEW8_DECISION_POLICY.get(project_id, {}).get("owner_role", "project_owner")
+    status = str(task.get("status") or "")
+    if status == "blocked":
+        unblock = str(task.get("risk") or task.get("objective") or "Human owner must provide the missing evidence before this task can complete.")
+    else:
+        command = structural.as_list(task.get("test_commands"))[0] if task.get("test_commands") else "listed acceptance command"
+        unblock = f"Run `{command}` and attach the listed evidence refs."
     return {
         "task_id": str(task.get("task_id") or "NONE"),
-        "status": str(task.get("status") or ""),
+        "status": status,
         "reason": str(task.get("objective") or ""),
         "acceptance_ids": structural.as_list(task.get("acceptance_ids")),
-        "owner": "Codex/governance runner",
-        "unblock_condition": "Run the listed test commands and attach evidence.",
+        "owner": role,
+        "human_owner_role": role,
+        "unblock_condition": unblock,
+        "stale_candidates": stale,
     }
 
 
@@ -486,7 +685,9 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     parameter_source_status = "VERIFIED" if counts["checked_parameters"] == counts["active_parameters"] else "PARTIAL"
     event_counts = event_binding_counts(events)
     evidence_freshness_status = "PARTIAL" if event_counts["legacy_unbound_events"] else "VERIFIED"
-    next_task = select_next_task(tasks)
+    methodological_status = "UNVERIFIED" if policy.get("empirical") in {"unknown", "partial"} else "VERIFIED"
+    next_task = select_next_task(project_id, tasks, counts, impl_status)
+    decision_policy = REVIEW8_DECISION_POLICY.get(project_id, {})
     assurance = {
         "project_id": project_id,
         "as_of_event_id": str(events[-1].get("event_id") or events[-1].get("iteration_id") or "NONE") if events else "NONE",
@@ -525,6 +726,13 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "total_active_parameters": counts["active_parameters"],
                 "evidence_refs": [f"{project.get('path')}/docs/governance/parameter_registry.csv"],
             },
+            "methodological_rationale": {
+                "status": methodological_status,
+                "fact_level": "UNKNOWN" if methodological_status == "UNVERIFIED" else "EXTRACTED",
+                "machine_verified_means": "methodological, calibration, and baseline rationale are tracked separately from implementation congruence",
+                "unresolved_fact_ids": [item for item in unresolved if "EMPIRICAL" in item],
+                "evidence_refs": [f"{project.get('path')}/docs/governance/MODEL_SPEC.md"],
+            },
             "empirical_validation": {
                 "status": assurance_status(str(policy.get("empirical") or "unknown")),
                 "fact_level": "UNKNOWN" if assurance_status(str(policy.get("empirical") or "unknown")) == "UNVERIFIED" else "EXTRACTED",
@@ -562,13 +770,33 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         "next_executable_task": next_task,
         "owner_decision": {
             "required": True,
-            "decision_id": f"DEC-{project_id}-REVIEW6-001",
-            "question": str(policy.get("decision") or "Decide whether to continue evidence hardening."),
+            "decision_id": f"DEC-{project_id}-REVIEW8-001",
+            "review_id": "REVIEW8",
+            "project_id": project_id,
+            "decision_question": str(decision_policy.get("question") or policy.get("decision") or "Decide the next evidence investment."),
+            "question": str(decision_policy.get("question") or policy.get("decision") or "Decide the next evidence investment."),
+            "human_owner_role": str(decision_policy.get("owner_role") or "project_owner"),
+            "human_assignment_status": str(decision_policy.get("assignment") or "HUMAN_ASSIGNMENT_REQUIRED"),
+            "current_recommendation": str(decision_policy.get("recommendation") or "A: fund project-specific evidence collection"),
+            "option_a": str(decision_policy.get("option_a") or "Collect the project-specific evidence required by the current blocker."),
+            "option_b": str(decision_policy.get("option_b") or "Keep the project blocked or conditional until evidence exists."),
+            "option_c": str(decision_policy.get("option_c") or "Pause this project from delivery claims."),
             "options": [
-                "A: fund evidence hardening",
-                "B: keep blocked/conditional and defer",
-                "C: de-scope this project from delivery claims",
+                str(decision_policy.get("option_a") or "Collect the project-specific evidence required by the current blocker."),
+                str(decision_policy.get("option_b") or "Keep the project blocked or conditional until evidence exists."),
+                str(decision_policy.get("option_c") or "Pause this project from delivery claims."),
             ],
+            "estimated_effort": str(decision_policy.get("effort") or "project_owner review required"),
+            "estimated_cost_or_resource": str(decision_policy.get("resource") or "owner time and evidence collection"),
+            "expected_benefit": str(decision_policy.get("benefit") or "close the current evidence blocker"),
+            "principal_risks": str(decision_policy.get("risks") or "evidence remains missing or unsuitable"),
+            "evidence_required": str(decision_policy.get("evidence") or "project-specific evidence manifest"),
+            "decision_deadline_or_priority": str(decision_policy.get("priority") or "P1"),
+            "consequence_of_no_decision": str(decision_policy.get("no_decision") or "readiness remains blocked"),
+            "unblock_task_id": next_task["task_id"],
+            "acceptance_ids": next_task["acceptance_ids"] or ["HUMAN-ACTION-REQUIRED"],
+            "generated_from_refs": [f"{project.get('path')}/docs/governance/ASSURANCE_STATUS.yaml", f"{project.get('path')}/docs/governance/delivery_tasks.yaml"],
+            "last_reviewed_at": max_event_time(events),
         },
     }
     return {
@@ -667,8 +895,8 @@ def render_dashboard(projects: list[dict[str, Any]], meta: dict[str, str]) -> st
         f"- generator_version: `{GENERATOR_VERSION}`",
         "- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`",
         "",
-        "| Project | Version | Phase | Impl | Param Source | Empirical | Operational | Freshness | Readiness | Next |",
-        "|---|---|---|---|---|---|---|---|---|---|",
+        "| Project | Version | Phase | Impl | Param Source | Methodology | Empirical | Operational | Freshness | Readiness | Next |",
+        "|---|---|---|---|---|---|---|---|---|---|---|",
     ]
     for item in projects:
         assurance = item["assurance"]
@@ -683,6 +911,7 @@ def render_dashboard(projects: list[dict[str, Any]], meta: dict[str, str]) -> st
                     f"`{item['current_phase']}`",
                     f"`{dims['implementation_congruence']['status']}`",
                     f"`{dims['parameter_source_quality']['status']}`",
+                    f"`{dims['methodological_rationale']['status']}`",
                     f"`{dims['empirical_validation']['status']}`",
                     f"`{dims['operational_validation']['status']}`",
                     f"`{dims['evidence_freshness']['status']}`",
@@ -711,13 +940,11 @@ def render_owner_portfolio(projects: list[dict[str, Any]], meta: dict[str, str])
     for item in projects:
         for blocker in item["policy_blockers"][:2]:
             blockers.append(f"{item['project_id']}: {blocker}")
-    red = [item for item in projects if item["assurance"]["delivery_readiness"]["status"] == "FAILED"]
-    yellow = [item for item in projects if item["assurance"]["delivery_readiness"]["status"] == "PARTIAL"]
-    green = [
-        item
-        for item in projects
-        if item["assurance"]["delivery_readiness"]["status"] in {"VERIFIED", "NOT_APPLICABLE"}
-    ]
+    buckets = {status: [] for status in sorted(ASSURANCE_STATUSES)}
+    for item in projects:
+        status = item["assurance"]["delivery_readiness"]["status"]
+        buckets.setdefault(status, []).append(item)
+    bucket_total = sum(len(values) for values in buckets.values())
     next_task = next(
         (
             item["assurance"]["next_executable_task"]
@@ -729,12 +956,64 @@ def render_owner_portfolio(projects: list[dict[str, Any]], meta: dict[str, str])
     lines = [
         "# OWNER_PORTFOLIO",
         "",
-        "## 1. Overall Conclusion",
+        "## 1. 当前结论",
         "",
-        "Review 7 governance is a portfolio control layer with automatic generated-view synchronization, full-repository read-only drift checks, and explicit evidence-binding backlog. It is not a production-readiness claim for every project.",
+        "Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、方法依据、实证、运行和交付分开；当前 Portfolio 不是生产可用声明。",
         "",
-        "## 2. Immutable Snapshot",
+        "## 2. 本次运行改变了什么",
         "",
+        "- 状态桶现在覆盖 `FAILED`、`PARTIAL`、`UNVERIFIED`、`VERIFIED`、`NOT_APPLICABLE`，总数必须等于登记项目数。",
+        "- Owner 决策改为项目特定的人类责任角色、资源、收益、风险、证据和不决策后果。",
+        "- 陈旧的“创建首个治理基线”任务不得在事实已满足时继续作为下一任务。",
+        "",
+        "## 3. 为什么重要",
+        "",
+        "没有这些约束，仓库可能在 CI 绿色时仍输出错误汇总、陈旧任务或无责任人的资金/上线决策。",
+        "",
+        "## 4. 需要人类决定什么",
+        "",
+        "优先决定 P0/P1 项目是否投入真实数据、专家/法务/隐私/风险 owner 时间和验收证据；Codex 只能执行治理和验证，不能替代人类批准。",
+        "",
+        "## 5. 默认建议",
+        "",
+        f"- 下一唯一任务：`{next_task['task_id']}` - {next_task['reason']}",
+        "- 默认策略：先关闭 P0 证据和人类责任 blocker，再进入项目 C0-C7 实证闭环。",
+        "",
+        "## 6. 不决策后果",
+        "",
+        "没有 owner 决策和证据投入的项目保持 `FAILED`、`PARTIAL` 或 `UNVERIFIED`，不得提升为交付就绪。",
+        "",
+        "## 7. 下一行动、责任角色和验收证据",
+        "",
+        f"- human_owner_role: `{next_task.get('human_owner_role') or next_task.get('owner')}`",
+        f"- acceptance_ids: `{brief_list([str(x) for x in next_task.get('acceptance_ids', [])])}`",
+        f"- unblock_condition: {next_task.get('unblock_condition')}",
+        "",
+        "## 8. 九层 Assurance 状态",
+        "",
+        f"- project_total: `{len(projects)}`",
+        f"- bucket_total: `{bucket_total}`",
+        f"- failed: `{len(buckets.get('FAILED', []))}`",
+        f"- partial: `{len(buckets.get('PARTIAL', []))}`",
+        f"- unverified: `{len(buckets.get('UNVERIFIED', []))}`",
+        f"- verified: `{len(buckets.get('VERIFIED', []))}`",
+        f"- not_applicable: `{len(buckets.get('NOT_APPLICABLE', []))}`",
+        "",
+        "| Bucket | Count | Projects |",
+        "|---|---:|---|",
+    ]
+    for status in ["FAILED", "PARTIAL", "UNVERIFIED", "VERIFIED", "NOT_APPLICABLE"]:
+        values = buckets.get(status, [])
+        lines.append(f"| `{status}` | `{len(values)}` | {brief_list([item['project_id'] for item in values], 20)} |")
+    lines.extend(
+        [
+            "",
+            "## 9. 技术元数据",
+            "",
+        ]
+    )
+    lines.extend(
+        [
         f"- source_base_commit: `{meta['source_base_commit']}`",
         f"- source_tree_hash: `{meta['source_tree_hash']}`",
         f"- source_snapshot_hash: `{meta['source_snapshot_hash']}`",
@@ -743,49 +1022,54 @@ def render_owner_portfolio(projects: list[dict[str, Any]], meta: dict[str, str])
         "- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`",
         "- branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached",
         "",
-        "## 3. Red Yellow Green",
+        "## 10. Top 5 Blockers",
         "",
-        f"- red_FAILED: `{len(red)}`",
-        f"- yellow_PARTIAL: `{len(yellow)}`",
-        f"- green_VERIFIED_OR_NOT_APPLICABLE: `{len(green)}`",
-        "",
-        "## 4. Top 5 Blockers",
-        "",
-    ]
+        ]
+    )
     for blocker in blockers[:5]:
         lines.append(f"- {blocker}")
     lines.extend(
         [
             "",
-            "## 5. Owner Decisions",
+            "## 11. Owner Decisions",
             "",
-            "| Decision | Default Recommendation | Option A | Option B | No Decision Consequence | Owner | Unblock Condition |",
-            "|---|---|---|---|---|---|---|",
         ]
     )
     for item in decision_projects:
         decision = item["assurance"]["owner_decision"]
-        task = item["assurance"]["next_executable_task"]
-        lines.append(
-            f"| `{decision['decision_id']}` | A: fund evidence hardening | {decision['options'][0]} | {decision['options'][1]} | remains `{item['assurance']['delivery_readiness']['status']}` | {task['owner']} | {task['unblock_condition']} |"
+        lines.extend(
+            [
+                f"### `{decision['decision_id']}`",
+                "",
+                f"- human_owner_role: `{decision['human_owner_role']}`",
+                f"- recommendation: {decision['current_recommendation']}",
+                f"- estimated_effort: {decision['estimated_effort']}",
+                f"- estimated_cost_or_resource: {decision['estimated_cost_or_resource']}",
+                f"- expected_benefit: {decision['expected_benefit']}",
+                f"- principal_risks: {decision['principal_risks']}",
+                f"- evidence_required: {decision['evidence_required']}",
+                f"- no_decision_consequence: {decision['consequence_of_no_decision']}",
+                "",
+            ]
         )
-    lines.extend(["", "## 6. Executable Tasks", ""])
+    lines.extend(["", "## 12. Executable Tasks", ""])
     for item in projects:
         task = item["assurance"]["next_executable_task"]
         lines.append(f"- `{item['project_id']}`: `{task['task_id']}` - {task['reason']}")
-    lines.extend(["", "## 7. Next Unique Governance Task", ""])
+    lines.extend(["", "## 13. Next Unique Governance Task", ""])
     lines.append(f"- `{next_task['task_id']}` - {next_task['reason']}")
-    lines.extend(["", "## 8. Assurance Dimensions", ""])
-    lines.append("| Project | Structural | Impl | Param Source | Empirical | Operational | Delivery | Freshness | Readiness | Owner action |")
-    lines.append("|---|---|---|---|---|---|---|---|---|---|")
+    lines.extend(["", "## 14. Assurance Dimensions", ""])
+    lines.append("| Project | Structural | Impl | Param Source | Methodology | Empirical | Operational | Delivery | Freshness | Readiness | Owner action |")
+    lines.append("|---|---|---|---|---|---|---|---|---|---|---|")
     for item in projects:
         dims = item["assurance"]["dimensions"]
         lines.append(
             f"| `{item['project_id']}` | `{dims['structural_completeness']['status']}` | "
             f"`{dims['implementation_congruence']['status']}` | `{dims['parameter_source_quality']['status']}` | "
+            f"`{dims['methodological_rationale']['status']}` | "
             f"`{dims['empirical_validation']['status']}` | `{dims['operational_validation']['status']}` | "
             f"`{dims['delivery_evidence']['status']}` | `{dims['evidence_freshness']['status']}` | "
-            f"`{item['assurance']['delivery_readiness']['status']}` | {item['assurance']['owner_decision']['question']} |"
+            f"`{item['assurance']['delivery_readiness']['status']}` | {item['assurance']['owner_decision']['decision_question']} |"
         )
     return "\n".join(lines) + "\n"
 
@@ -822,6 +1106,7 @@ def render_status(item: dict[str, Any]) -> str:
 | structural_completeness | `{dims['structural_completeness']['status']}` | `{brief_list(dims['structural_completeness']['evidence_refs'])}` |
 | implementation_congruence | `{dims['implementation_congruence']['status']}` | `{brief_list(dims['implementation_congruence']['evidence_refs'])}` |
 | parameter_source_quality | `{dims['parameter_source_quality']['status']}` | `{brief_list(dims['parameter_source_quality']['evidence_refs'])}` |
+| methodological_rationale | `{dims['methodological_rationale']['status']}` | `{brief_list(dims['methodological_rationale']['evidence_refs'])}` |
 | empirical_validation | `{dims['empirical_validation']['status']}` | `{brief_list(dims['empirical_validation']['evidence_refs'])}` |
 | operational_validation | `{dims['operational_validation']['status']}` | `{brief_list(dims['operational_validation']['evidence_refs'])}` |
 | delivery_evidence | `{dims['delivery_evidence']['status']}` | `{brief_list(dims['delivery_evidence']['evidence_refs'])}` |
@@ -846,15 +1131,107 @@ def render_owner_status(item: dict[str, Any]) -> str:
     counts = item["counts"]
     next_task = assurance["next_executable_task"]
     decision = assurance["owner_decision"]
-    blockers = item["policy_blockers"][:3] or ["No blocker recorded."]
-    option_a = decision["options"][0]
-    option_b = decision["options"][1] if len(decision["options"]) > 1 else "B: defer"
-    option_c = decision["options"][2] if len(decision["options"]) > 2 else "C: de-scope"
+    blockers = item["policy_blockers"][:3] or [decision["evidence_required"]]
+    while len(blockers) < 3:
+        blockers.append(f"{decision['human_owner_role']} must provide project-specific evidence before readiness can improve.")
+    option_a = decision["option_a"]
+    option_b = decision["option_b"]
+    option_c = decision["option_c"]
     return f"""# OWNER_STATUS
 
-{item['project_id']} 当前治理结论：实现一致性为 `{dims['implementation_congruence']['status']}`，交付状态为 `{assurance['delivery_readiness']['status']}`；这不是生产上线声明。
+## 1. 当前结论
 
-## 1. Current Conclusion
+{item['project_id']} 当前治理结论：实现一致性为 `{dims['implementation_congruence']['status']}`，方法/实证为 `{dims['methodological_rationale']['status']}` / `{dims['empirical_validation']['status']}`，交付状态为 `{assurance['delivery_readiness']['status']}`；这不是生产上线声明。
+
+## 2. 本次运行改变了什么
+
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+
+## 3. 为什么重要
+
+{decision['expected_benefit']}
+
+## 4. 需要人类决定什么
+
+- decision_id: `{decision['decision_id']}`
+- decision_question: {decision['decision_question']}
+- human_owner_role: `{decision['human_owner_role']}`
+- human_assignment_status: `{decision['human_assignment_status']}`
+
+## 5. 默认建议
+
+- current_recommendation: {decision['current_recommendation']}
+- estimated_effort: {decision['estimated_effort']}
+- estimated_cost_or_resource: {decision['estimated_cost_or_resource']}
+
+## 6. 不决策后果
+
+{decision['consequence_of_no_decision']}
+
+## 7. 下一行动、责任角色和验收证据
+
+- next_task_id: `{next_task['task_id']}`
+- responsible_role: `{next_task['human_owner_role']}`
+- acceptance_ids: `{brief_list([str(x) for x in next_task.get('acceptance_ids', [])])}`
+- unblock_condition: {next_task['unblock_condition']}
+
+## 8. 九层 Assurance 状态
+
+- structural_completeness: `{dims['structural_completeness']['status']}`
+- implementation_congruence: `{dims['implementation_congruence']['status']}` ({counts['checked_parameters']}/{counts['active_parameters']} active parameters, {counts['checked_formulas']}/{counts['active_formulas']} active formulas)
+- parameter_source_quality: `{dims['parameter_source_quality']['status']}`
+- methodological_rationale: `{dims['methodological_rationale']['status']}`
+- empirical_validation: `{dims['empirical_validation']['status']}`
+- operational_validation: `{dims['operational_validation']['status']}`
+- delivery_evidence: `{dims['delivery_evidence']['status']}`
+- evidence_freshness: `{dims['evidence_freshness']['status']}`
+- delivery_readiness: `{assurance['delivery_readiness']['status']}`
+
+## 9. A/B/C Choice Matrix
+
+| Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
+|---|---|---|---|---|---|
+| `{decision['decision_id']}` | {decision['current_recommendation']} | {option_a} | {option_b} | {option_c} | {decision['consequence_of_no_decision']} |
+
+## 10. Current Blockers
+
+1. {blockers[0]}
+2. {blockers[1]}
+3. {blockers[2]}
+
+## 11. Evidence Required To Unblock
+
+- evidence_required: {decision['evidence_required']}
+- principal_risks: {decision['principal_risks']}
+- generated_from_refs: `{brief_list([str(x) for x in decision.get('generated_from_refs', [])])}`
+
+## 12. Model Formula Parameter Change
+
+- model_count: `{item['models']}`
+- total_formulas: `{counts['total_formulas']}`
+- active_formulas: `{counts['active_formulas']}`
+- total_parameters: `{counts['total_parameters']}`
+- active_parameters: `{counts['active_parameters']}`
+- active_values_changed_by_this_view: `0`
+
+## 13. Tests And Acceptance
+
+- required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
+- release_gate: `{assurance['delivery_readiness']['release_gate']}`
+
+## 14. Evidence Freshness
+
+- tree_bound_events: `{item['event_binding_counts']['tree_bound_events']}`
+- commit_bound_events: `{item['event_binding_counts']['commit_bound_events']}`
+- legacy_unbound_events: `{item['event_binding_counts']['legacy_unbound_events']}`
+- precommit_pending_events: `{item['event_binding_counts']['precommit_pending_events']}`
+- pending_or_stale_events: `{item['pending_event_count']}`
+
+## 15. UNKNOWN
+
+- unresolved_fact_ids: `{len(item['unresolved_fact_ids'])}`
+
+## 16. 技术元数据
 
 - source_base_commit: `{assurance['source_base_commit']}`
 - source_tree_hash: `{assurance['source_tree_hash']}`
@@ -864,71 +1241,7 @@ def render_owner_status(item: dict[str, Any]) -> str:
 - version: `{item['product_version']}`
 - phase/gate: `{item['current_phase']} / {item['current_gate']}`
 
-## 2. This Run Change
-
-Generated owner-facing views now separate implementation congruence from parameter source quality, empirical validation, operational validation, delivery evidence, and evidence freshness.
-
-## 3. Owner Impact
-
-- structural_completeness: `{dims['structural_completeness']['status']}`
-- implementation_congruence: `{dims['implementation_congruence']['status']}` ({counts['checked_parameters']}/{counts['active_parameters']} active parameters, {counts['checked_formulas']}/{counts['active_formulas']} active formulas)
-- parameter_source_quality: `{dims['parameter_source_quality']['status']}`
-- empirical_validation: `{dims['empirical_validation']['status']}`
-- operational_validation: `{dims['operational_validation']['status']}`
-- delivery_evidence: `{dims['delivery_evidence']['status']}`
-- evidence_freshness: `{dims['evidence_freshness']['status']}`
-- delivery_readiness: `{assurance['delivery_readiness']['status']}`
-
-## 4. Decision Needed
-
-- decision_id: `{decision['decision_id']}`
-- question: {decision['question']}
-
-## 5. A/B/C Choice Matrix
-
-| Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
-|---|---|---|---|---|---|
-| `{decision['decision_id']}` | A | {option_a} | {option_b} | {option_c} | remains `{assurance['delivery_readiness']['status']}` with unresolved evidence. |
-
-## 6. Current Blockers
-
-1. {blockers[0]}
-2. {blockers[1] if len(blockers) > 1 else 'No second blocker recorded.'}
-3. {blockers[2] if len(blockers) > 2 else 'No third blocker recorded.'}
-
-## 7. Evidence Required To Unblock
-
-- owner: {next_task['owner']}
-- unblock_condition: {next_task['unblock_condition']}
-- acceptance: {brief_list([str(x) for x in next_task.get('acceptance_ids', [])])}
-
-## 8. Model Formula Parameter Change
-
-- model_count: `{item['models']}`
-- total_formulas: `{counts['total_formulas']}`
-- active_formulas: `{counts['active_formulas']}`
-- total_parameters: `{counts['total_parameters']}`
-- active_parameters: `{counts['active_parameters']}`
-- active_values_changed_by_this_view: `0`
-
-## 9. Tests And Acceptance
-
-- required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `{assurance['delivery_readiness']['release_gate']}`
-
-## 10. Evidence Freshness
-
-- tree_bound_events: `{item['event_binding_counts']['tree_bound_events']}`
-- commit_bound_events: `{item['event_binding_counts']['commit_bound_events']}`
-- legacy_unbound_events: `{item['event_binding_counts']['legacy_unbound_events']}`
-- precommit_pending_events: `{item['event_binding_counts']['precommit_pending_events']}`
-- pending_or_stale_events: `{item['pending_event_count']}`
-
-## 11. UNKNOWN
-
-- unresolved_fact_ids: `{len(item['unresolved_fact_ids'])}`
-
-## 12. Next Unique Task
+## 17. Next Unique Task
 
 - task_id: `{next_task['task_id']}`
 - reason: {next_task['reason']}
