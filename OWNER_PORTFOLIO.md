@@ -7,7 +7,7 @@ Review 6 governance is a portfolio control layer, not a production-readiness cla
 ## Snapshot Metadata
 
 - source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:0872e3a329c61d33f74cc12cf5d9c96c1931087215696a8bf3a7e6187b714c09`
+- source_snapshot_hash: `sha256:86c6c57a474d2582ab746456e377ccb5227f61083cdce67bab25f268be7242f8`
 - snapshot_event_time: `2026-06-22T12:04:20+10:00`
 - generator_version: `2.0.0`
 - branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached
