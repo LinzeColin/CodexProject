@@ -1184,8 +1184,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         soak_event = next(event for event in events if event.get("event_id") == "EVENT-20260621-019")
         self.assertEqual(soak_event["task_id"], "TASK-T1307")
         self.assertIn("PARTIAL", soak_event["result"])
-        self.assertEqual(events[-1]["event_id"], "EVT-REVIEW6-FINAL-EEI-001")
-        self.assertEqual(events[-1]["binding_status"], "pre_commit_pending")
+        review6_event = next(event for event in events if event.get("event_id") == "EVT-REVIEW6-FINAL-EEI-001")
+        self.assertEqual(review6_event["binding_status"], "pre_commit_pending")
 
         owner_text = (ROOT / "EEI" / "docs" / "governance" / "OWNER_STATUS.md").read_text(encoding="utf-8")
         self.assertIn("TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL", owner_text)

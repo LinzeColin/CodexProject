@@ -631,7 +631,7 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::_has_schedule", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::_appears_before"]
     implementation_fingerprint: "sha256:4d5eea7852e5c3326d5697123c9e27adcabfde8818382e24bfd093cb124e07ba"
-    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
     verified_at: "2026-06-22T10:10:00+10:00"
     evidence_hash: "sha256:8a1d31636a6ca7842e20d57ba1a56b0dddec3112489b828ab77353ce525dfff8"
   - formula_id: "FORM-ADP-021"
@@ -665,7 +665,7 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::validate_scheduled_execution_report", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_run_daily", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_run_watchdog", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_notification"]
     implementation_fingerprint: "sha256:1cc95a615cfb5d88ee67a9c255ca0ed6a2c72b121ebb287d24b08edcdfdc1251"
-    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
     verified_at: "2026-06-22T10:10:00+10:00"
     evidence_hash: "sha256:f4e8be07aa6bb36d4081e51640c2bac6c0190fce2913200b6eb3b542b62da189"
   - formula_id: "FORM-ADP-022"
@@ -769,7 +769,7 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
     implementation_fingerprint: "sha256:f5b44276b3cb982640922695b3497b2237f5c538210932fc82a465afb9721fc5"
-    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
     verified_at: "2026-06-22T10:10:00+10:00"
     evidence_hash: "sha256:5fbc434903c0def926e0e607bd2bd9bf6d52fe8e817560bed17299d0cf89a219"
   - formula_id: "FORM-ADP-025"
@@ -1006,7 +1006,7 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::build_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::validate_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::_appears_before"]
     implementation_fingerprint: "sha256:27589596ba7b001a54edadfd6b37f7089f69e97667993b8c1fc97698afe5510f"
-    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
     verified_at: "2026-06-22T10:10:00+10:00"
     evidence_hash: "sha256:ebca9cdb2e11b9aae8b8bef0c7bf6388524569402af375a3a5911b3afa327bb9"
   - formula_id: "FORM-ADP-031"
@@ -1134,7 +1134,7 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/simulation.py::run_two_day_simulation", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::validate_two_day_simulation_report", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::_simulation_gates", "arxiv-daily-push/src/arxiv_daily_push/simulation.py::_daily_input"]
     implementation_fingerprint: "sha256:06ef5e5f2dd8893acccc75723d8e476d1c481390edf3d4780be8c13d0cc864d7"
-    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
     verified_at: "2026-06-22T10:10:00+10:00"
     evidence_hash: "sha256:1057c9440835d9613bdc3bbfa18616de56e7229d7dcb2ba0e71f980857169c46"
   - formula_id: "FORM-ADP-034"
@@ -1168,6 +1168,6 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_all_arxiv_scan_plan", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_all_arxiv_daily_input", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::select_roi_candidate", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_daily_delivery_package", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution"]
     implementation_fingerprint: "sha256:3c23a2135facac38d2881d723897697ca078a986295d9afd9f8d735a832aba76"
-    last_verified_commit: "e23e3bb47cf979e076265fbfd578c8b4c805110e"
+    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
     verified_at: "2026-06-22T10:10:00+10:00"
     evidence_hash: "sha256:60de6fa774b22649cb0abef0f11e521afcc82b8d9d55f78e1529cdeaa428078e"

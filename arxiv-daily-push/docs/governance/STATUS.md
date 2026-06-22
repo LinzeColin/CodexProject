@@ -3,7 +3,7 @@
 ## Snapshot Metadata
 
 - source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:20b9a5a9ea6748d678de1f6ece25d59959ee165cd91e0c9c17b3cf77d54759bc`
+- source_snapshot_hash: `sha256:d5fd84399540bbd6c729893ed31cf6c665e38173d8a81d01f0f90cba5e80867e`
 - snapshot_event_time: `2026-06-22T10:10:00+10:00`
 - generator_version: `2.0.0`
 - final_commit_binding: `CI_ATTESTATION_REQUIRED`
