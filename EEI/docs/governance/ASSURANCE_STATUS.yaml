@@ -1,10 +1,10 @@
 project_id: "EEI"
 as_of_event_id: "EVENT-20260622-007"
-source_snapshot_hash: "sha256:2a46af5fcdcb4deeeff7a7ddc807742e489e5b5a9b234996345694ab915d4482"
-source_base_commit: "932446fd2154ac477ea0cb6862a60098b1e1ed55"
-source_tree_hash: "a661be1db22d99ff3afe6183ac1ae8f4c444be18"
+source_snapshot_hash: "sha256:aaac5435b4231bc7f9a3279508030c1fccafffa56fe7712551496d64f17db08f"
+source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
+source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-22T04:49:00Z"
-generator_version: "3.0.0"
+generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
@@ -33,6 +33,14 @@ dimensions:
     total_active_parameters: 61
     evidence_refs:
       - "EEI/docs/governance/parameter_registry.csv"
+  methodological_rationale:
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    machine_verified_means: "methodological, calibration, and baseline rationale are tracked separately from implementation congruence"
+    unresolved_fact_ids:
+      - "FACT-EEI-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "EEI/docs/governance/MODEL_SPEC.md"
   empirical_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -78,13 +86,38 @@ next_executable_task:
   reason: "Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical"
   acceptance_ids:
     - "ACC-A202"
-  owner: "Codex/governance runner"
-  unblock_condition: "Run the listed test commands and attach evidence."
+  owner: "product_owner + data_owner + risk_owner"
+  human_owner_role: "product_owner + data_owner + risk_owner"
+  unblock_condition: "Run `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/check_database_schema.py tests/integration/test_database_migrations.py` and attach the listed evidence refs."
+  stale_candidates: []
 owner_decision:
   required: true
-  decision_id: "DEC-EEI-REVIEW6-001"
-  question: "是否继续 24 小时 operator soak；当前 4 小时证据只支持 partial。"
+  decision_id: "DEC-EEI-REVIEW8-001"
+  review_id: "REVIEW8"
+  project_id: "EEI"
+  decision_question: "是否继续投入 24 小时 operator soak 和人工黄金集，验证 EEI 实体解析、关系抽取、证据覆盖与撤回能力。"
+  question: "是否继续投入 24 小时 operator soak 和人工黄金集，验证 EEI 实体解析、关系抽取、证据覆盖与撤回能力。"
+  human_owner_role: "product_owner + data_owner + risk_owner"
+  human_assignment_status: "HUMAN_ASSIGNMENT_REQUIRED"
+  current_recommendation: "A: complete 24h soak and gold-set validation before publishing stronger claims"
+  option_a: "补齐人工裁决黄金集、24h soak、来源撤回和冲突演练。"
+  option_b: "保持 partial，仅允许内部研究和人工复核。"
+  option_c: "暂停关系发布相关交付声明。"
   options:
-    - "A: fund evidence hardening"
-    - "B: keep blocked/conditional and defer"
-    - "C: de-scope this project from delivery claims"
+    - "补齐人工裁决黄金集、24h soak、来源撤回和冲突演练。"
+    - "保持 partial，仅允许内部研究和人工复核。"
+    - "暂停关系发布相关交付声明。"
+  estimated_effort: "P2; product/data/risk owners plus operator time"
+  estimated_cost_or_resource: "official-source access, labeled gold set, soak runner time"
+  expected_benefit: "降低未经证实企业关系被发布为事实的风险。"
+  principal_risks: "source license limits, stale relationships, false relation assertions"
+  evidence_required: "gold-set labels, precision/recall, source coverage, soak manifest"
+  decision_deadline_or_priority: "P2"
+  consequence_of_no_decision: "EEI remains FAILED/PARTIAL and publication readiness stays blocked."
+  unblock_task_id: "TASK-T1301"
+  acceptance_ids:
+    - "ACC-A202"
+  generated_from_refs:
+    - "EEI/docs/governance/ASSURANCE_STATUS.yaml"
+    - "EEI/docs/governance/delivery_tasks.yaml"
+  last_reviewed_at: "2026-06-22T04:49:00Z"

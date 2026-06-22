@@ -216,10 +216,12 @@ def fallback_yaml_load(text: str) -> Any:
     def parse_block(index: int, indent: int) -> tuple[Any, int]:
         if index >= len(lines):
             return {}, index
-        if lines[index][1].startswith("- "):
+        if lines[index][1].startswith("- ") or lines[index][1] == "-":
             result: list[Any] = []
-            while index < len(lines) and lines[index][0] == indent and lines[index][1].startswith("- "):
-                item_text = lines[index][1][2:].strip()
+            while index < len(lines) and lines[index][0] == indent and (
+                lines[index][1].startswith("- ") or lines[index][1] == "-"
+            ):
+                item_text = lines[index][1][1:].strip()
                 index += 1
                 if item_text == "":
                     child_indent = lines[index][0] if index < len(lines) else indent + 2
@@ -251,7 +253,9 @@ def fallback_yaml_load(text: str) -> Any:
             return result, index
 
         result_map: dict[str, Any] = {}
-        while index < len(lines) and lines[index][0] == indent and not lines[index][1].startswith("- "):
+        while index < len(lines) and lines[index][0] == indent and not (
+            lines[index][1].startswith("- ") or lines[index][1] == "-"
+        ):
             key, value = split_key_value(lines[index][1])
             if value is None:
                 raise ValueError(f"Invalid YAML line: {lines[index][1]}")
@@ -878,6 +882,7 @@ def validate_assurance_status(validation: Validation, project: dict[str, Any]) -
         "structural_completeness",
         "implementation_congruence",
         "parameter_source_quality",
+        "methodological_rationale",
         "empirical_validation",
         "operational_validation",
         "delivery_evidence",
