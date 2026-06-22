@@ -1,55 +1,36 @@
 # Project Governance Status
 
-Generated: `DETERMINISTIC_GENERATION`
-Commit: `CURRENT_CHECKOUT`
-Source: generated from machine governance registries, Git metadata, and validation results. Do not hand-edit counts here.
+## Snapshot Metadata
+
+- source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
+- source_snapshot_hash: `sha256:19f488ad4b0d0052cb3cd995bb79bb2394e2b222942ac96c6efef83d24f697d8`
+- snapshot_event_time: `2026-06-22T00:24:25Z`
+- generator_version: `2.0.0`
+- final_commit_binding: `CI_ATTESTATION_REQUIRED`
 
 ## Current State
 
 - Project: `OpenAIDatabase`
 - Path: `OpenAIDatabase`
-- CI mode: `required`
 - Product version: `0.2.0`
-- Model versions: `MOD-001:memory-candidate-v0, MOD-002:redaction-policy-v0, MOD-003:active-memory-v0, +8`
-- Parameter profile versions: `codex_sync:codex-sync-parameters-v0, memory_analysis:memory-analysis-parameters-v0, memory_atlas:memory-atlas-parameters-v0, +2`
-- Current iteration: `ITER-20260621-OAI-004`
-- Current phase: `B`
-- Current gate: `GOV-SEMANTIC-OAIDB-in-progress`
-- Model count: `11`
-- Formula count: `11`
-- Parameter count: `92`
-- Task count: `10`
-- Unbound event count: `6`
-- UNKNOWN/HUMAN_REVIEW_REQUIRED count: `345`
-- Semantic coverage: `in_progress`
-- Semantic rollout task: `GOV-SEMANTIC-OAIDB-001`
+- Phase/Gate: `B / GOV-SEMANTIC-OAIDB-in-progress`
+- Models/Formulas/Parameters total: `11 / 11 / 92`
+- Active formulas/parameters: `11 / 92`
+- Machine checked formulas/parameters: `10 / 28`
 
-## Latest Run
+## Assurance
 
-- Event: `GOV-SEMANTIC-OAIDB-STATUS-001`
-- Task: `GOV-SEMANTIC-OAIDB-001`
-- Summary: Bind generated dashboard, STATUS, and OWNER_STATUS outputs to the OpenAIDatabase semantic extractor rollout diff.
-- Model delta: UNKNOWN
-- Parameter delta: UNKNOWN
-- Tests: python3 scripts/generate_governance_dashboard.py --write, python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
-- Evidence: GOVERNANCE_DASHBOARD.md, OpenAIDatabase/docs/governance/STATUS.md, OpenAIDatabase/docs/governance/OWNER_STATUS.md
-- Result: `RETRY: initial changed-only run failed because generated STATUS and OWNER_STATUS were not listed in the latest development event; this append-only event records the complete diff set before rerun.`
-- Rollback: UNKNOWN
+| Dimension | Status | Evidence |
+|---|---|---|
+| structural_validation | `pass` | `scripts/validate_project_governance.py` |
+| implementation_congruence | `partial` | `OpenAIDatabase/docs/governance/parameter_registry.csv, OpenAIDatabase/docs/governance/formula_registry.yaml` |
+| empirical_validation | `unknown` | `OpenAIDatabase/docs/governance/delivery_tasks.yaml` |
+| operational_evidence | `blocked` | `OpenAIDatabase/docs/governance/development_events.jsonl` |
 
-## Current Blockers
+## Delivery
 
-remaining complex branch rules, TypeScript writeback semantics, and heuristic calibration evidence are HUMAN_REVIEW_REQUIRED or UNKNOWN under `GOV-SEMANTIC-OAIDB-001` and `TASK-OAI-B-001`
-
-## Semantic Coverage
-
-- Status: `in_progress`
-- Target: Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints.
-- Evidence/rollout: acceptance_id: ACC-SEMANTIC-OAIDB-001; evidence_ref: governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json; owner: project owner; rationale: Review6-D rollout guard; OpenAIDatabase now machine-checks 28 active parameters and 10 active formulas while remaining active parameters and FORM-010 stay HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-OAIDB-001.; status: in_progress; target: Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints.; +1 more
-
-## Next Task
-
-`TASK-OAI-B-001` - Resolve UNKNOWN calibration evidence for heuristic weights and thresholds.
-
-- Status: `blocked`
-- Acceptance: ACC-OAI-B-001
-- Selection rationale: status=blocked; phase=B; current_phase=B; unmet_dependencies=none; score=136
+- Readiness: `blocked`
+- Release gate: `GOV-SEMANTIC-OAIDB-in-progress`
+- Next executable task: `GOV-SEMANTIC-OAIDB-001`
+- Pending/stale events: `7`
+- Unresolved fact IDs: `6`

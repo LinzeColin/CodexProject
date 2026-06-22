@@ -1,0 +1,156 @@
+{
+  "acceptance_id": "ACC-GOV-REVIEW6-FINAL-PORTFOLIO-001",
+  "actor": "Codex",
+  "base_commit": "05c69c6522a74901f33350e03046f03a6f47b061",
+  "binding_status": "pre_commit_pending",
+  "change_classification": [
+    "root_governance_change",
+    "generated_assurance_status_reports",
+    "generated_owner_portfolio",
+    "information_quality_gate",
+    "no_business_behavior_change"
+  ],
+  "changed_files_actual": [
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/project-governance.yml",
+    "Alpha/docs/governance/ASSURANCE_STATUS.yaml",
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/STATUS.md",
+    "Alpha/docs/governance/development_events.jsonl",
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "EEI/docs/governance/development_events.jsonl",
+    "EVA_OS/docs/governance/ASSURANCE_STATUS.yaml",
+    "EVA_OS/docs/governance/OWNER_STATUS.md",
+    "EVA_OS/docs/governance/STATUS.md",
+    "EVA_OS/docs/governance/development_events.jsonl",
+    "FIFA/docs/governance/ASSURANCE_STATUS.yaml",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "FIFA/docs/governance/development_events.jsonl",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "OpMe_System/docs/governance/ASSURANCE_STATUS.yaml",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/ASSURANCE_STATUS.yaml",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "PFI/大数据模拟器/docs/governance/ASSURANCE_STATUS.yaml",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "README.md",
+    "Serenity-Alipay/docs/governance/ASSURANCE_STATUS.yaml",
+    "Serenity-Alipay/docs/governance/OWNER_STATUS.md",
+    "Serenity-Alipay/docs/governance/STATUS.md",
+    "Serenity-Alipay/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/docs/governance/ASSURANCE_STATUS.yaml",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/development_events.jsonl"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:799dea810ae43de14b272d145a394f552f5ed6ace1005065166ef74dea5bd59a",
+  "evidence_refs": [
+    "scripts/validate_project_governance.py",
+    "scripts/validate_information_quality.py",
+    "scripts/generate_governance_dashboard.py",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "*/docs/governance/ASSURANCE_STATUS.yaml",
+    "*/docs/governance/OWNER_STATUS.md",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "finished_at": "2026-06-22T00:55:07Z",
+  "formula_delta": {
+    "runtime_behavior": "unchanged",
+    "semantic_fact_source": "generated assurance views only"
+  },
+  "model_delta": {
+    "owner_reports_generated_for_projects": 10,
+    "runtime_behavior": "unchanged"
+  },
+  "observed_results": [
+    "GOVERNANCE_UNIT_TESTS_PASS_103",
+    "CHANGED_SYNC_SEMANTIC_PASS",
+    "INFORMATION_QUALITY_PASS",
+    "ALL_SEMANTIC_DRIFT_PASS",
+    "GENERATED_DASHBOARD_WRITE_PASS",
+    "GIT_DIFF_CHECK_PASS",
+    "REVIEW6_FINAL_GATE_PASS",
+    "EXTERNAL_ACCEPTANCE_PASS",
+    "GITHUB_ACTIONS_TO_BE_ATTESTED_AFTER_COMMIT"
+  ],
+  "parameter_delta": {
+    "active_values_changed": 0,
+    "runtime_parameters_changed": 0
+  },
+  "project_id": "root",
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "result_commit": "PENDING_GITHUB_ACTIONS",
+  "rollback": "Revert this manifest plus Review6 final governance generator, information-quality validator, hook, workflow, generated assurance/status reports, and tests. No business code rollback is required.",
+  "run_id": "GOV-REVIEW6-FINAL-PORTFOLIO-001",
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; final commit and CI binding are recorded by ci_attestation.",
+  "started_at": "2026-06-22T00:33:41Z",
+  "task_id": "GOV-REVIEW6-FINAL-PORTFOLIO-001",
+  "tests_run": [
+    {
+      "command": "python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+      "exit_code": 0,
+      "result": "Ran 103 tests; OK"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "errors 0 warnings 0"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write",
+      "exit_code": 0,
+      "result": "generated README, GOVERNANCE_DASHBOARD, OWNER_PORTFOLIO, and 10 project ASSURANCE/STATUS/OWNER_STATUS files"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "whitespace check passed"
+    },
+    {
+      "command": "bash /tmp/CodexProject_Review6_Final_Repair_Pack_2026-06-22/tools/review6_gate.sh --repo \"$PWD\"",
+      "exit_code": 0,
+      "result": "REVIEW6 FINAL GATE: PASS; external_acceptance errors 0 warnings 0"
+    }
+  ],
+  "version_delta": {
+    "business_product_versions": "unchanged",
+    "governance_generator_version": "2.0.0"
+  }
+}

@@ -15,6 +15,7 @@ on:
           - all
           - changed-only
           - project
+          - information-quality
       project:
         description: "Project id or path when scope=project"
         required: false
@@ -54,6 +55,9 @@ jobs:
         env:
           GOVERNANCE_BASE_REF: ${{ inputs.base_ref || '' }}
         run: python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
+      - name: Validate information quality
+        if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'information-quality')
+        run: python3 scripts/validate_information_quality.py --all --fast --fail-on-error
       - name: Validate pushed governance diff
         if: github.event_name == 'push'
         env:
@@ -73,7 +77,7 @@ jobs:
       - name: Verify generated governance dashboard
         run: |
           python3 scripts/generate_governance_dashboard.py --write
-          git diff --exit-code -- GOVERNANCE_DASHBOARD.md ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
+          git diff --exit-code -- README.md GOVERNANCE_DASHBOARD.md OWNER_PORTFOLIO.md ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
       - name: Write CI attestation
         if: success()
         env:

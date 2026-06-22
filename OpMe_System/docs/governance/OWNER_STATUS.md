@@ -1,70 +1,49 @@
 # OWNER_STATUS
 
-生成方式：由 `scripts/generate_governance_dashboard.py` 从机器事实源生成；不要手工编辑。
+OpMe_System 当前治理结论：实现一致性为 `machine_verified`，交付状态为 `conditional`；这不是生产上线声明。
 
-## 1. 当前结论
+## 1. Version, Phase, Gate
 
-OpMe_System 当前处于 B 阶段 / GOV-SEMANTIC-OPME-in-progress gate；CI 模式为 required，机器事实源显示模型 7 个、公式 7 个、参数 49 个。
+- source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
+- source_snapshot_hash: `sha256:95e46d7aa228bcfa136bff34c9174c00a3057fa576a0964e5ee6942f50f3de90`
+- snapshot_event_time: `2026-06-22T00:24:25Z`
+- generator_version: `2.0.0`
+- version: `1.0.0`
+- phase/gate: `B / GOV-SEMANTIC-OPME-in-progress`
 
-## 2. 更新时间与 Commit
+## 2. Assurance And Readiness
 
-- 生成标记：`DETERMINISTIC_GENERATION`
-- 仓库提交：`CURRENT_CHECKOUT`
-- 最近事件时间：`2026-06-21T13:42:30Z`
-- 最近事件提交证据：`PENDING`
+- structural_validation: `pass`
+- implementation_congruence: `machine_verified` (49/49 active parameters, 7/7 active formulas)
+- empirical_validation: `unknown`
+- operational_evidence: `blocked`
+- delivery_readiness: `conditional`
 
-## 3. 本轮最重要变化
+## 3. Latest Meaningful Change
 
-Validated OpMe_System semantic extractor rollout locally and recorded blocked backend focused tests caused by missing local dependencies.
+Current canonical registries separate implementation congruence from empirical and operational evidence, so machine verification does not imply production readiness.
 
-## 4. 模型、公式、参数旧值到新值
+## 4. Top Blockers
 
-- 版本变化：current_gate: GOV-G4-OPME-REQUIRED -> GOV-SEMANTIC-OPME-in-progress; current_iteration: ITER-20260620-OPME-001 -> ITER-20260621-OPME-001; current_phase: E -> B; product_version: 1.0.0 unchanged
-- 模型/公式变化：formula_fingerprints_added: 7; human_review_formula_ids: none; semantic_formulas_checked: 7
-- 参数变化：active_values_changed: 0; calibration_blocked_task_id: TASK-OPME-B-001; semantic_parameters_checked: 49
+1. calibration evidence
+2. prompt/provider policy
+3. owner sign-off
 
-## 5. 为什么改变及证据等级
+## 5. Owner Decision
 
-- 原因：Validated OpMe_System semantic extractor rollout locally and recorded blocked backend focused tests caused by missing local dependencies.
-- 证据等级：`EXTRACTED`
-- 证据引用：OpMe_System/docs/governance/parameter_registry.csv, OpMe_System/docs/governance/formula_registry.yaml, governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json, tests/governance/test_project_governance_validator.py
+- decision_id: `DEC-OpMe_System-REVIEW6-001`
+- question: 是否补齐 calibration、prompt/provider policy 与 owner sign-off 证据。
+- options: A: fund evidence hardening, B: keep blocked/conditional and defer, C: de-scope this project from delivery claims
 
-## 6. 对输出、风险和业务决策的影响
+## 6. Next Executable Task
 
-runtime_behavior: unchanged; semantic_coverage: planned -> in_progress
+- task_id: `GOV-SEMANTIC-OPME-001`
+- reason: Add extractors for analysis rule constants and fingerprints for active deterministic formulas.
+- acceptance: ACC-SEMANTIC-OPME-001
 
-## 7. 当前置信度和证据新鲜度
+## 7. Owner And Evidence Freshness
 
-- 置信度：`Medium`
-- 证据新鲜度：`2 unbound event(s)`
-- 语义覆盖：`in_progress`
-- 语义覆盖任务：`GOV-SEMANTIC-OPME-001`
-- UNKNOWN/HUMAN_REVIEW_REQUIRED 数量：`92`
-- 未绑定事件数量：`2`
-
-## 8. 需要项目所有者决定的事项
-
-Add extractors for analysis rule constants and fingerprints for active deterministic formulas.
-
-## 9. 当前前三风险
-
-1. Semantic extractor coverage is in_progress; rollout task GOV-SEMANTIC-OPME-001 remains open.
-2. Blocker: `TASK-OPME-B-001` for calibration, prompt/provider governance, and signoff evidence.
-3. UNKNOWN/HUMAN_REVIEW_REQUIRED facts: 92
-
-## 10. 下一项可执行任务及 Acceptance
-
-- 下一任务：`GOV-SEMANTIC-OPME-001`
-- 状态：`in_progress`
-- Acceptance：ACC-SEMANTIC-OPME-001
-- 选择理由：status=in_progress; phase=B; current_phase=B; unmet_dependencies=none; score=133
-
-## 11. 阻塞负责人和解除条件
-
-- 负责人：Codex/governance runner
-- 解除条件：Meet acceptance ACC-SEMANTIC-OPME-001
-
-## 12. UNKNOWN 与过期证据数量
-
-- UNKNOWN/HUMAN_REVIEW_REQUIRED：`92`
-- 过期或未绑定证据：`2`
+- owner: Codex/governance runner
+- unblock_condition: Run the listed test commands and attach evidence.
+- unresolved_fact_ids: `3`
+- pending_or_stale_events: `6`

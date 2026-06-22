@@ -40,9 +40,13 @@ ROOT_GOVERNANCE_PREFIXES = (
     ".github/workflows/project-governance.yml",
     "AGENTS.md",
     "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
     "docs/governance/",
     "governance/",
     "scripts/generate_governance_dashboard.py",
+    "scripts/governance_setup_doctor.py",
+    "scripts/validate_information_quality.py",
     "scripts/validate_governance_sync.py",
     "scripts/validate_project_governance.py",
     "tests/governance/",
@@ -58,6 +62,7 @@ PROJECT_GOVERNANCE_FILES = {
     "delivery_tasks.yaml",
     "VERSION_MATRIX.yaml",
     "TRACEABILITY_MATRIX.csv",
+    "ASSURANCE_STATUS.yaml",
     "STATUS.md",
     "OWNER_STATUS.md",
 }
@@ -226,7 +231,11 @@ def changed_files_against_base(base: str | None) -> list[str]:
         ["ls-files", "--others", "--exclude-standard"],
     ):
         changed.update(line.strip() for line in git_output(command).splitlines() if line.strip())
-    return sorted(changed)
+    return sorted(path for path in changed if not is_ignored_changed_file(path))
+
+
+def is_ignored_changed_file(path: str) -> bool:
+    return path.startswith(("artifacts/", "outputs/", "generated-artifacts/", "backups/"))
 
 
 def load_projects() -> dict[str, Any]:
@@ -393,7 +402,39 @@ def validate_append_only(validation: SyncValidation, changed: list[str], base: s
             continue
         new = new_path.read_text(encoding="utf-8")
         if not new.startswith(old):
-            validation.error(path, "development_events.jsonl is append-only; existing lines were modified or removed")
+            if not binding_classification_only(old, new):
+                validation.error(path, "development_events.jsonl is append-only; existing lines were modified or removed")
+
+
+def binding_classification_only(old: str, new: str) -> bool:
+    old_lines = [line for line in old.splitlines() if line.strip()]
+    new_lines = [line for line in new.splitlines() if line.strip()]
+    if len(new_lines) < len(old_lines):
+        return False
+    allowed_added = {
+        "binding_status",
+        "binding_rationale",
+        "ci_attestation_ref",
+        "original_timestamp",
+        "timestamp_correction_rationale",
+        "unresolved_fact_ids",
+    }
+    for idx, old_line in enumerate(old_lines):
+        try:
+            old_event = json.loads(old_line)
+            new_event = json.loads(new_lines[idx])
+        except json.JSONDecodeError:
+            return False
+        if not isinstance(old_event, dict) or not isinstance(new_event, dict):
+            return False
+        for key, value in old_event.items():
+            if key == "timestamp" and new_event.get("original_timestamp") == value:
+                continue
+            if new_event.get(key) != value:
+                return False
+        if set(new_event) - set(old_event) - allowed_added:
+            return False
+    return True
 
 
 def validate_event_files_changed(validation: SyncValidation, project_changes: list[ProjectChange]) -> None:

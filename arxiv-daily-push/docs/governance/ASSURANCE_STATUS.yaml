@@ -1,0 +1,60 @@
+project_id: "arxiv-daily-push"
+as_of_event_id: "EVT-REVIEW6-FINAL-arxiv-daily-push-001"
+source_snapshot_hash: "sha256:d5fd84399540bbd6c729893ed31cf6c665e38173d8a81d01f0f90cba5e80867e"
+source_base_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
+snapshot_event_time: "2026-06-22T10:10:00+10:00"
+generator_version: "2.0.0"
+final_commit_binding: "CI_ATTESTATION_REQUIRED"
+dimensions:
+  structural_validation:
+    status: "pass"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "scripts/validate_project_governance.py"
+  implementation_congruence:
+    status: "machine_verified"
+    fact_level: "EXTRACTED"
+    checked_active_parameters: 175
+    total_active_parameters: 175
+    checked_active_formulas: 34
+    total_active_formulas: 34
+    unresolved_fact_ids: []
+    evidence_refs:
+      - "arxiv-daily-push/docs/governance/parameter_registry.csv"
+      - "arxiv-daily-push/docs/governance/formula_registry.yaml"
+  empirical_validation:
+    status: "partial"
+    fact_level: "EXTRACTED"
+    unresolved_fact_ids:
+      - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
+  operational_evidence:
+    status: "partial"
+    fact_level: "EXTRACTED"
+    unresolved_fact_ids:
+      - "FACT-arxiv-daily-push-OPERATIONAL-EVIDENCE"
+    evidence_refs:
+      - "arxiv-daily-push/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "blocked"
+  release_gate: "ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-PASS"
+  blocker_ids:
+    - "ADP-PHASE8-VIDEO-001"
+    - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
+    - "FACT-arxiv-daily-push-OPERATIONAL-EVIDENCE"
+next_executable_task:
+  task_id: "NONE"
+  status: "not_applicable"
+  reason: "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands."
+  acceptance_ids: []
+  owner: "project owner"
+  unblock_condition: "Unblock or define a ready/in_progress task with completed dependencies and evidence policy."
+owner_decision:
+  required: true
+  decision_id: "DEC-arxiv-daily-push-REVIEW6-001"
+  question: "是否启动生产 trial；当前只有本地两日模拟，生产启动和 30 天验收仍 blocked。"
+  options:
+    - "A: fund evidence hardening"
+    - "B: keep blocked/conditional and defer"
+    - "C: de-scope this project from delivery claims"
