@@ -1,0 +1,73 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW8-MANIFEST-ONLY-SYNC-GATE-20260622",
+  "project_id": "root-governance",
+  "task_id": "GOV-REVIEW8-MANIFEST-ONLY-SYNC-GATE-001",
+  "acceptance_ids": [
+    "ACC-REVIEW8-MAIN-PUSH-MANIFEST-ONLY"
+  ],
+  "iteration_id": "ITER-20260622-MANIFEST-ONLY-SYNC-GATE-001",
+  "generated_at": "2026-06-22T07:27:52Z",
+  "implementation_base_sha": "4a3339f496f5d19aa05297969836d9368010db81",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:f8764c45c847292c1a365a033f6882bb31c55562aa5c89f802d7307055990226",
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-REVIEW8-MANIFEST-ONLY-SYNC-GATE-20260622.json",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-REVIEW8-MANIFEST-ONLY-SYNC-GATE-20260622.json",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW8-MANIFEST-ONLY-SYNC-GATE-20260622.json"
+  ],
+  "updated_governance_files": [
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW8-MANIFEST-ONLY-SYNC-GATE-20260622.json"
+  ],
+  "test_commands": [
+    "git diff --check",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_manifest_only_gate_roottests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_manifest_only_gate_iq python3 scripts/validate_information_quality.py --all --fast --fail-on-error"
+  ],
+  "test_results": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_manifest_only_gate_roottests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "127 tests OK; missing-base and missing-manifest lines are expected negative fixture output from the suite."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_manifest_only_gate_iq python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0"
+    }
+  ],
+  "evidence_refs": [
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW8-MANIFEST-ONLY-SYNC-GATE-20260622.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Project Governance workflow main push manifest-only diff handling",
+  "ci_run_reference": "PRECOMMIT_PENDING_CI_ATTESTATION",
+  "summary": "Allow append-only run manifest diffs to pass root sync marker checks while retaining run manifest schema and changed-file coverage validation.",
+  "rollback": "Revert this manifest, the manifest-only gate exception in scripts/validate_governance_sync.py, and its regression test.",
+  "unresolved_risks": [
+    "Final GitHub Actions success must be attested after this repair PR merges.",
+    "This repair changes only root governance sync policy and does not alter project business behavior."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; CI attestation must bind the final commit after push."
+}
