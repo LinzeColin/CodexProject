@@ -1642,10 +1642,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260623-003")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260623-004")
         self.assertEqual(
             matrix["current_gate"],
-            "TASK-T1303-A204-A205-WORKER-WAKE-CI-EVIDENCE-BINDING-IN-PROGRESS",
+            "TASK-T1301-A202-PUBLICATION-OPERATION-LOG-AUDIT-IN-PROGRESS",
         )
 
         events = [json.loads(line) for line in (ROOT / "EEI" / "docs" / "governance" / "development_events.jsonl").read_text(encoding="utf-8").splitlines()]
@@ -1671,10 +1671,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("make verify PASS", worker_wake_event["test_results"])
         self.assertIn("TASK-T1302", ci_binding_event["task_ids"])
         self.assertIn("TASK-T1303", ci_binding_event["task_ids"])
+        operation_log_event = next(event for event in events if event.get("event_id") == "EVENT-20260623-004")
+        self.assertEqual(operation_log_event["task_id"], "TASK-T1301")
+        self.assertEqual(operation_log_event["binding_status"], "pre_commit_pending")
+        self.assertIn("TASK-T1307", operation_log_event["task_ids"])
 
         owner_text = (ROOT / "EEI" / "docs" / "governance" / "OWNER_STATUS.md").read_text(encoding="utf-8")
         self.assertIn(
-            "TASK-T1303-A204-A205-WORKER-WAKE-CI-EVIDENCE-BINDING-IN-PROGRESS",
+            "TASK-T1301-A202-PUBLICATION-OPERATION-LOG-AUDIT-IN-PROGRESS",
             owner_text,
         )
         self.assertIn("24h operator soak evidence", owner_text)

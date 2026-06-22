@@ -11,11 +11,11 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1303-A204-A205-WORKER-WAKE-CI-EVIDENCE-BINDING-IN-PROGRESS`
-- Confirmed iteration count: 27
+- Current gate: `TASK-T1301-A202-PUBLICATION-OPERATION-LOG-AUDIT-IN-PROGRESS`
+- Confirmed iteration count: 28
 - Reconstructed development event count: 3
-- Current task: `TASK-T1303/A204-A205 supervised model refresh worker wake CI binding`
-- Blockers: commit `d009516c57c4908a025c401a711dfb4d599f7b73` is remote-CI bound by Project Governance run `27950933950` and EEI validation run `27950933933`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A204/A205 worker wake is remote-CI bound, but A204/A205 remain open until release-manager plus long-duration refresh evidence are current; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T1301/A202 reviewed relationship publication operation-log audit`
+- Blockers: current T1301/A202 operation-log audit is local-validated and pending remote PostgreSQL CI binding; A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A204/A205 worker wake is remote-CI bound, but A204/A205 remain open until release-manager plus long-duration refresh evidence are current; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -640,6 +640,27 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert this CI-binding event/artifact/status update, regenerate release artifacts and rerun validation.
 - Next step: regenerate artifacts, run `make verify`, run governance sync and root governance tests, then commit/push and verify CI.
 
+### `ITER-20260623-004`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `14aaa2d538268d51376f3582983ab01ff1cc9ae7`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, `TASK-T1307`, `TASK-T1309`
+- Goal: add an idempotent operation-log audit trail to the A202 reviewed relationship publication path without closing A202/A209/A210.
+- Assumptions: operation logs are audit evidence only; they do not replace source-license review, passage-level approval, owner/legal/brand signatures, release-manager activation, production gold labels or A209 24h soak.
+- Files changed: `scripts/publish_reviewed_relationship_facts.py`, `scripts/validate_release_decision_bundle.py`, `tests/integration/test_database_migrations.py`, A202 contract artifact and governance records.
+- Commands run: targeted py_compile, focused ruff, release/scoring unit tests, release-decision contract generate/validate and local integration collection.
+- Test results: py_compile PASS; focused ruff PASS; `tests/unit/test_release_decision_bundle.py tests/unit/test_scoring.py` PASS 19/19; A202 contract validate PASS; local integration collection SKIPPED because this host has no `DATABASE_URL`.
+- Successes: fixture-review and production-owner-signoff contract paths now require one deterministic `operation_logs` audit row per reviewed relationship publication and idempotent reruns skip duplicate logs.
+- Failures: remote PostgreSQL CI is still pending for the new operation-log assertions; no real signed legal/source/brand clearance or 24h soak was added.
+- Decisions: keep A202/A209/A210 `IN_PROGRESS`; keep A209 24h soak as a background long-running gate while bounded A202 audit work continues.
+- Remaining risks: future operators could misread audit log presence as production clearance unless the non-closure flags and signed decision requirements are preserved.
+- Rollback: revert the publication audit code/test/contract/governance updates, regenerate artifacts and rerun validation.
+- Next step: regenerate development/release artifacts, run `make verify`, run governance sync/root tests, commit/push and bind CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -675,6 +696,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260623-001`: remote CI evidence binding for `d009516c` and T1302/T1303 delivery task contract repair; A209 24h soak remains a background gate.
 - `EVENT-20260623-002`: local T1303/A204-A205 supervised model refresh worker wake evidence; A209 24h soak remains a background gate.
 - `EVENT-20260623-003`: remote CI binding for T1303/A204-A205 supervised worker wake; A204/A205/A209 remain open.
+- `EVENT-20260623-004`: local T1301/A202 publication operation-log audit; A202/A209/A210 remain open.
 
 ## Unknown Historical Periods
 

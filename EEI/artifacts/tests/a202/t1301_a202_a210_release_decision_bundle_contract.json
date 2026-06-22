@@ -20,7 +20,7 @@
     "A210"
   ],
   "artifact_id": "t1301-a202-a210-release-decision-bundle-contract",
-  "generated_at": "2026-06-22T11:30:18Z",
+  "generated_at": "2026-06-22T22:28:14Z",
   "non_claims": [
     "This contract does not certify legal clearance.",
     "This contract does not certify trademark or market clearance.",
@@ -97,6 +97,7 @@
     "contract_test_signatures_are_not_clearance": true,
     "default_publication_state": "fail_closed",
     "production_owner_publication_requires_signed_bundle": true,
+    "production_owner_publication_writes_operation_log": true,
     "signed_bundle_required_for_a202_a210_closure": true,
     "signed_contract_test_counts_as_clearance": false,
     "template_only_allowed_in_repository": true,
