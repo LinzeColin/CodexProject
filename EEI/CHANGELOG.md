@@ -9,6 +9,7 @@
 - No model runtime logic, business behavior, data generation, or product feature code changed.
 - Added T1307/A209 4h operator soak evidence: 48/48 checkpoint windows PASS over 14400 seconds; A209/A206 remain open until 24h operator soak evidence and CI validation exist.
 - Repaired the T1301/A202 operator-source capture fixture hash after G2 PostgreSQL CI flagged `NVDA-ANCHOR-001 source_text_sha256 does not match text`; 24h soak remains a background evidence task and does not block this fixture/CI repair.
+- Added a T1301/A202 fail-closed operator/legal review packet for selected live official-source evidence; it records seven required closure gates and keeps relationship publication and legal clearance disabled.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

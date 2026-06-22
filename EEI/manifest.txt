@@ -105,6 +105,7 @@ artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json
 artifacts/tests/a202/t1301_live_official_retrieval_contract.json
 artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json
 artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json
+artifacts/tests/a202/t1301_operator_review_packet_contract.json
 artifacts/tests/a202/t1301_operator_source_capture_contract.json
 artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json
 artifacts/tests/a204/t1303_transactional_model_activation_contract.json
@@ -345,6 +346,7 @@ scripts/run_scale_benchmarks.py
 scripts/run_soak_smoke.mjs
 scripts/secret_scan.py
 scripts/smoke_test_prototype.py
+scripts/validate_a202_operator_review_packet.py
 scripts/validate_brand_clearance.py
 scripts/validate_catalog_integrity.py
 scripts/validate_contracts.py

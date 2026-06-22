@@ -453,6 +453,7 @@ Do not infer iteration count from Git commit count.
 - Additional validation: EEI single-project information-quality gate PASS, development-status artifact validation PASS, clean-room release validation PASS, release artifact validation PASS and checksum validation PASS.
 - CI fixture-hash repair: GitHub Actions run `27929407052` flagged `NVDA-ANCHOR-001 source_text_sha256 does not match text` in the operator-source capture fixture; the fixture attestation hash was corrected, clean-room/release evidence was regenerated, and A209 24h soak remains a background evidence task.
 - CI dry-run count repair: GitHub Actions run `27930880852` flagged the A202 dry-run ingestion count assertion as stale: `ingestion_runs.counts.entity_resolution_candidates` and the SQL table count are `50`, while the test expected `52`. The assertion was aligned to `50` without changing loader behavior, scoring formulas, publication status, owner sign-off, source-license review, legal clearance or A209 soak status.
+- A202 operator/legal review packet note: `scripts/validate_a202_operator_review_packet.py` and `artifacts/tests/a202/t1301_operator_review_packet_contract.json` bind selected live official-source evidence to seven required closure gates while preserving `release_clearance=false`, zero relationship publication and A202 `IN_PROGRESS`. A209 24h soak remains a separate background gate and is not replaced by this packet.
 
 ## Reconstructed Development Events
 
@@ -479,6 +480,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-005`: governance pushed-diff artifact sync for TASK-T1301/A202 context-anchor semantic revision.
 - `EVENT-20260622-004`: final clean-room and release evidence resync after tracking the new A202 semantic-revision artifact.
 - `EVENT-20260622-008`: local A202 dry-run ingestion count assertion repair after EEI validation run `27930880852` failed G2 PostgreSQL integration.
+- `EVENT-20260622-010`: local A202 operator/legal review packet contract for selected live official-source evidence while A209 24h soak continues as a background release gate.
 
 ## Unknown Historical Periods
 
