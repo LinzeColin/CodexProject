@@ -303,6 +303,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "arxiv-daily-push remains at S1-07 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S1-09-MIGRATION_PACKAGE-001":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V5-S1-003",
+                "review_id": "REVIEW8",
+                "owner_role": "engineering_owner + operations_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+                "question": "是否继续执行 S1-09，产出新机器迁移包、低资源运行证据和长期运行交接清单。",
+                "recommendation": "A: implement S1-09 migration package before historical previews and live-day evidence",
+                "option_a": "继续 S1-09，完成新机器迁移清单、低资源 smoke 证据、恢复路径和运行交接材料。",
+                "option_b": "暂停在 S1-08，只保留本地运行恢复控制，不进入迁移准备。",
+                "option_c": "跳过迁移包直接跑历史预览；不推荐，因为长期稳定运行和换机恢复证据不足。",
+                "effort": "P1; migration and operations documentation",
+                "resource": "local fixture tests and migration checklist only; no production schedule install, no real SMTP, no large replay",
+                "benefit": "把 arXiv Stage 1 从可恢复本地骨架推进到可迁移、可交接、可长期运行的低资源操作包。",
+                "risks": "migration checklist gaps, hidden local-state dependency, resource pressure, premature production enablement",
+                "evidence": "migration package, low-resource smoke evidence, restore checklist, focused tests, governance records",
+                "priority": "P1",
+                "no_decision": "arxiv-daily-push remains at S1-08 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
+            }
+        )
     return policy
 
 

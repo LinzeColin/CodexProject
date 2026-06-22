@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.18.0 - 2026-06-22
+
+- Added S1-08 local runtime recovery controls for `adp tick`, `adp watchdog`, `adp backup`, `adp restore`, `adp runtime-audit`, and `adp scheduler install|uninstall`.
+- Added heartbeat/checkpoint state, stale-heartbeat watchdog checks, SHA256 SQLite backup/restore manifests, and scheduler dry-run template generation.
+- Kept production scheduling, real SMTP, Release upload, video generation, and long-running local background execution disabled.
+
 ## 0.17.0 - 2026-06-22
 
 - Added S1-07 B1/arXiv Chinese teaching report and email preview artifact generation.

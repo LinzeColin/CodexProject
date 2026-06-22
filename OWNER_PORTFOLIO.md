@@ -55,8 +55,8 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:958c0843669e631661d31c10c7ec42e84612c073bd455a9fb1feb43369727dfc`
-- snapshot_event_time: `2026-06-22T21:45:00+10:00`
+- source_snapshot_hash: `sha256:aea5ae1879ca52b9ce0a0138b5611cfaa70dc4a3702949faeeea7a684e8fedbc`
+- snapshot_event_time: `2026-06-22T22:20:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached
@@ -170,16 +170,16 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 - evidence_required: policy refs, jurisdiction/effective-date matrix, reconciliation results, approval memo
 - no_decision_consequence: whkmSalary remains FAILED and must not be used for production payroll.
 
-### `DEC-arxiv-daily-push-V5-S1-002`
+### `DEC-arxiv-daily-push-V5-S1-003`
 
 - human_owner_role: `engineering_owner + operations_owner`
-- recommendation: A: implement S1-08 local runtime recovery controls before migration packaging
-- estimated_effort: P1; local runtime and operations implementation
-- estimated_cost_or_resource: local tests only; no production schedule install, no real SMTP, no large replay
-- expected_benefit: 让 arXiv Stage 1 从文本预览能力推进到可恢复、可审计、可迁移的本地运行骨架。
-- principal_risks: scheduler side effects, stale heartbeat, unsafe restore, secret leakage, oversized artifacts
-- evidence_required: tick/watchdog reports, backup/restore fixtures, scheduler dry-run evidence, focused tests, governance records
-- no_decision_consequence: arxiv-daily-push remains at S1-07 and cannot reach ARXIV_PRODUCTION_ACCEPTED.
+- recommendation: A: implement S1-09 migration package before historical previews and live-day evidence
+- estimated_effort: P1; migration and operations documentation
+- estimated_cost_or_resource: local fixture tests and migration checklist only; no production schedule install, no real SMTP, no large replay
+- expected_benefit: 把 arXiv Stage 1 从可恢复本地骨架推进到可迁移、可交接、可长期运行的低资源操作包。
+- principal_risks: migration checklist gaps, hidden local-state dependency, resource pressure, premature production enablement
+- evidence_required: migration package, low-resource smoke evidence, restore checklist, focused tests, governance records
+- no_decision_consequence: arxiv-daily-push remains at S1-08 and cannot reach ARXIV_PRODUCTION_ACCEPTED.
 
 
 ## 12. Executable Tasks
@@ -193,7 +193,7 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 - `PFI_BIG_DATA_SIMULATOR`: `TASK-PFI-B-001` - Resolve calibration evidence for strategy catalog rule constants and indicator thresholds.
 - `Serenity-Alipay`: `NONE` - No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.
 - `whkmSalary`: `TASK-WHKM-B-001` - Resolve salary policy source, jurisdiction, effective date, tax basis, boundary behavior, and rounding policy evidence.
-- `arxiv-daily-push`: `S1-08-LOCAL_RUNTIME_RECOVERY-001` - Add local runtime controls for tick, watchdog, backup, restore, runtime audit, and scheduler install/uninstall helpers.
+- `arxiv-daily-push`: `S1-09-MIGRATION_PACKAGE-001` - Produce the low-resource integration evidence and new-machine migration checklist.
 
 ## 13. Next Unique Governance Task
 
@@ -212,4 +212,4 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 | `PFI_BIG_DATA_SIMULATOR` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否投入多市场、OOS、成本和多重检验控制，验证 PFI 策略族不是数据挖掘赢家。 |
 | `Serenity-Alipay` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否投入历史基金快照、基准、OOS、消融和敏感性，验证评分权重、等级阈值、硬门禁和 Top5 衰减是否有稳定区分力。 |
 | `whkmSalary` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `FAILED` | `PARTIAL` | `FAILED` | 是否由工资、法务/政策和产品责任人提供权威政策、法域、生效日期、税务和舍入证据，验证 whkmSalary 可用于真实算薪。 |
-| `arxiv-daily-push` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `FAILED` | `PARTIAL` | `FAILED` | 是否继续执行 S1-08，补齐本地 tick、watchdog、backup、restore、runtime audit 和 scheduler install/uninstall 恢复控制。 |
+| `arxiv-daily-push` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `FAILED` | `PARTIAL` | `FAILED` | 是否继续执行 S1-09，产出新机器迁移包、低资源运行证据和长期运行交接清单。 |
