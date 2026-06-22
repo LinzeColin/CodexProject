@@ -1,0 +1,156 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-EEI-DASHBOARD-SYNC-20260622",
+  "project_id": "root-governance",
+  "task_id": "GOV-EEI-DASHBOARD-SYNC-20260622",
+  "acceptance_ids": [
+    "ACC-A209",
+    "ACC-REVIEW7-CI-BINDING",
+    "ACC-REVIEW7-OWNER-VIEWS"
+  ],
+  "iteration_id": "ITER-20260622-002",
+  "generated_at": "2026-06-22T05:00:20Z",
+  "implementation_base_sha": "64f73f0999223b07caefc71ba202693ff7406d5c",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:aeb5fd3301e6fe215101b604fe3669c63feca4ee7a39c451bbae5b0045e57e5e",
+  "changed_files_declared": [
+    "EEI/CHECKSUMS.sha256",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "EEI/CHECKSUMS.sha256",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "README.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
+    "tests/governance/test_project_governance_validator.py",
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md"
+  ],
+  "updated_governance_files": [
+    "README.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
+    "tests/governance/test_project_governance_validator.py",
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md"
+  ],
+  "test_commands": [
+    "python3 scripts/validate_information_quality.py --project EEI --fast --fail-on-error",
+    "cd EEI && .venv/bin/python scripts/manage_clean_room_release.py validate",
+    "cd EEI && .venv/bin/python scripts/manage_release_artifacts.py validate",
+    "cd EEI && shasum -a 256 -c CHECKSUMS.sha256 --quiet",
+    "python3 -m pytest tests/governance/test_project_governance_validator.py::ProjectGovernanceValidatorTests::test_eei_dashboard_sync_manifest_binds_root_views -q",
+    "python3 -c \"import sys; sys.path.insert(0,'scripts'); import validate_governance_sync as v; code,_=v.validate(changed_only=True,enforce_sync=True,semantic=False,base_ref='64f73f0999223b07caefc71ba202693ff7406d5c'); raise SystemExit(code)\"",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python3 scripts/validate_information_quality.py --project EEI --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0"
+    },
+    {
+      "command": "cd EEI && .venv/bin/python scripts/manage_clean_room_release.py validate",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "package_paths=394; package_sha256=610a75752605c0baf8dcebfc59528b1d71a0fcb75f72b47fae46cdf9e67f7044"
+    },
+    {
+      "command": "cd EEI && .venv/bin/python scripts/manage_release_artifacts.py validate",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "manifest_paths=401; checksum_paths=400; remote_status=PENDING"
+    },
+    {
+      "command": "cd EEI && shasum -a 256 -c CHECKSUMS.sha256 --quiet",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "quiet checksum validation emitted no failures"
+    },
+    {
+      "command": "python3 scripts/validate_semantic_extractors.py EEI",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "semantic_formulas_checked=10; semantic_parameters_checked=54"
+    },
+    {
+      "command": "python3 -m pytest tests/governance/test_project_governance_validator.py::ProjectGovernanceValidatorTests::test_eei_dashboard_sync_manifest_binds_root_views -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "1 passed in 0.30s"
+    },
+    {
+      "command": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import validate_governance_sync as v; code,_=v.validate(changed_only=True,enforce_sync=True,semantic=False,base_ref='64f73f0999223b07caefc71ba202693ff7406d5c'); raise SystemExit(code)\"",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed files covered; errors=0 warnings=0"
+    },
+    {
+      "command": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import validate_governance_sync as v; val=v.SyncValidation(); v.validate_run_manifests(val, ['governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json']); print('errors:', len(val.errors)); print('warnings:', len(val.warnings)); raise SystemExit(1 if val.errors else 0)\"",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors before manifest creation"
+    }
+  ],
+  "evidence_refs": [
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/CHECKSUMS.sha256",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Project Governance and EEI validation workflows",
+  "ci_run_reference": "PRECOMMIT_PENDING_CI_ATTESTATION",
+  "summary": "Synchronize EEI/root generated governance dashboard views after EVENT-20260622-007 and refresh EEI release artifacts without treating the A209 24h soak as a blocking foreground task.",
+  "rollback": "Revert this manifest, the root dashboard hash updates, the EEI generated status files, the test binding, and the regenerated EEI release artifacts; then rerun the governance sync validator from 64f73f0999223b07caefc71ba202693ff7406d5c.",
+  "unresolved_risks": [
+    "A209 24h soak is still a background evidence gate and not complete in this change.",
+    "GitHub Actions has not yet produced post-push CI attestation for this manifest.",
+    "This change does not alter product behavior, data ingestion, scoring, API, or frontend implementation."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; CI attestation must bind the final commit after push."
+}
