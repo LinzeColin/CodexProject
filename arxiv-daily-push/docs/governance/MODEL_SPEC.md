@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 33
-- formula_count: 35
-- parameter_count: 180
+- model_count: 34
+- formula_count: 36
+- parameter_count: 184
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -48,6 +48,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-031 | Two-day simulation acceptance gate | deterministic simulation validator | Run the updated two-day Phase 11 simulation with mocked SMTP and Release boundaries while blocking network fetch, real side effects, secret reads, cache/media retention, and production acceptance claims | active | adp-two-day-simulation-v1 | `src/arxiv_daily_push/simulation.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-032 | All-arXiv Phase 12 scan queue delivery gate | deterministic source selection and delivery gate | Build all-arXiv daily input from bounded primary archive scans, persist ROI-ranked queue state, and require Release-hosted `.mp4` video artifact links before production email evidence can count | active | adp-all-arxiv-scan-v1 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/scheduled_execution.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-033 | Phase 12 cloud production enablement gate | deterministic cloud workflow and media evidence validator | Verify GitHub-hosted workflow contracts, live all-arXiv 20-bucket dry-run readiness, real lightweight MP4 artifact rendering, and disabled production side effects before Release/SMTP manual tests | active | adp-phase12-cloud-enablement-v1 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/video.py`, `.github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml` |
+| MOD-ADP-034 | Phase 12 manual Release and SMTP delivery test gate | deterministic manual workflow contract | Prepare a default-branch-only workflow that creates one GitHub Release and sends one Gmail SMTP test email with Chinese lesson text, Release/video links, and candidate queue summary without enabling scheduled production | active | adp-manual-delivery-test-v1 | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml`, `src/arxiv_daily_push/scheduled_execution.py`, `tests/test_manual_delivery_workflow.py` |
 
 ## B. Assumptions
 
@@ -165,6 +166,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 two-day simulation parameters: PARAM-ADP-167 through PARAM-ADP-169.
 - Active Phase 12 all-arXiv scan queue delivery parameters: PARAM-ADP-170 through PARAM-ADP-176.
 - Active Phase 12 cloud production enablement parameters: PARAM-ADP-177 through PARAM-ADP-180.
+- Active Phase 12 manual delivery test parameters: PARAM-ADP-181 through PARAM-ADP-184.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

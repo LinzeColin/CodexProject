@@ -1,8 +1,8 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260622-ADP-055"
-source_snapshot_hash: "sha256:c6c9985afd8b0de3b93172999a1eb1421f171cebf876a6f4da92bb929772a4da"
+as_of_event_id: "EVENT-20260622-ADP-056"
+source_snapshot_hash: "sha256:68ea542b00c11279fa842b594d8ba45556aab0090dc5b96da14cdf7e3a91ba7f"
 source_base_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-snapshot_event_time: "2026-06-22T12:04:20+10:00"
+snapshot_event_time: "2026-06-22T12:18:37+10:00"
 generator_version: "2.0.0"
 final_commit_binding: "CI_ATTESTATION_REQUIRED"
 dimensions:
@@ -14,10 +14,10 @@ dimensions:
   implementation_congruence:
     status: "machine_verified"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 179
-    total_active_parameters: 179
-    checked_active_formulas: 35
-    total_active_formulas: 35
+    checked_active_parameters: 183
+    total_active_parameters: 183
+    checked_active_formulas: 36
+    total_active_formulas: 36
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -38,7 +38,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "blocked"
-  release_gate: "ADP-PHASE12-PRODUCTION-ENABLEMENT-CLOUD-GATED"
+  release_gate: "ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED"
   blocker_ids:
     - "ADP-PHASE8-VIDEO-001"
     - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
