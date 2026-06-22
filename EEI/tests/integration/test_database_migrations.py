@@ -445,7 +445,7 @@ def exercise_official_full_text_dry_run_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert candidate_row == (52, 13, 13, 4, 3)
+        assert candidate_row == (50, 13, 13, 4, 3)
 
         evidence_row = connection.execute(
             """
@@ -519,7 +519,7 @@ def exercise_operator_source_capture_contracts() -> None:
         assert latest_run == (
             "succeeded",
             "2",
-            "30",
+            "28",
             "2",
             "operator_verified",
             "true",
@@ -556,10 +556,10 @@ def exercise_operator_source_capture_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert candidate_row[0] == 30
+        assert candidate_row[0] == 28
         assert candidate_row[1] >= 6
         assert candidate_row[2] >= 6
-        assert candidate_row[3:6] == (30, 2, 2)
+        assert candidate_row[3:6] == (28, 2, 2)
 
         evidence_row = connection.execute(
             """
@@ -697,10 +697,10 @@ def exercise_live_official_capture_postgres_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert candidate_row[0] == 66
+        assert candidate_row[0] == 64
         assert candidate_row[1] >= 6
         assert candidate_row[2] >= 6
-        assert candidate_row[3:6] == (66, 5, 4)
+        assert candidate_row[3:6] == (64, 5, 4)
 
         evidence_row = connection.execute(
             """

@@ -137,6 +137,28 @@ def expected_tokens(row: dict[str, str], *, include_anchor_subject: bool = True)
     return unique_tokens
 
 
+def anchor_evidence_role(row: dict[str, str]) -> str:
+    return (row.get("evidence_role") or "context").strip() or "context"
+
+
+def anchor_publication_scope(row: dict[str, str]) -> str:
+    return (
+        row.get("publication_scope") or "context_only_not_published_relationship"
+    ).strip() or "context_only_not_published_relationship"
+
+
+def anchor_source_use_limit(row: dict[str, str]) -> str:
+    return (row.get("source_use_limit") or "").strip()
+
+
+def anchor_scope_metadata(row: dict[str, str]) -> dict[str, str]:
+    return {
+        "evidence_role": anchor_evidence_role(row),
+        "publication_scope": anchor_publication_scope(row),
+        "source_use_limit": anchor_source_use_limit(row),
+    }
+
+
 def snapshot_to_row(snapshot: dict[str, object]) -> dict[str, str]:
     return {
         "_source_path": FACT_CANDIDATE_PATH.relative_to(ROOT).as_posix(),
@@ -433,6 +455,7 @@ def upsert_evidence_chain(
         "official_url": row["url"],
         "evidence_scope": row["evidence_scope"],
         "expected_entities_or_stages": tokens,
+        "anchor_scope": anchor_scope_metadata(row),
         "record_mode": RECORD_MODE,
         "edge_publication": "candidate_context_only_not_published_relationship",
         "minimum_entity_resolution_confidence": ENTITY_RESOLUTION_MIN_CONFIDENCE,

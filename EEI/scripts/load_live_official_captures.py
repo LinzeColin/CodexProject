@@ -28,6 +28,7 @@ try:
     from load_curated_ingestion_anchors import (
         ANCHOR_PATH,
         ANCHOR_SUBJECT,
+        anchor_scope_metadata,
         expected_tokens,
         media_type,
         parse_source_date,
@@ -51,6 +52,7 @@ except ModuleNotFoundError:  # pragma: no cover - used when imported as scripts 
     from scripts.load_curated_ingestion_anchors import (
         ANCHOR_PATH,
         ANCHOR_SUBJECT,
+        anchor_scope_metadata,
         expected_tokens,
         media_type,
         parse_source_date,
@@ -126,6 +128,9 @@ def validate_live_anchor(row: dict[str, str], anchor: dict[str, object]) -> dict
         raise ValueError(f"{anchor_id} release_clearance must be false")
     if "source_text" in anchor:
         raise ValueError(f"{anchor_id} must not include committed source_text")
+    for key, expected_value in anchor_scope_metadata(row).items():
+        if anchor.get(key, expected_value) != expected_value:
+            raise ValueError(f"{anchor_id} {key} does not match anchor registry")
 
     source_text_sha256 = str(anchor.get("source_text_sha256") or "")
     if not SHA256_PATTERN.fullmatch(source_text_sha256):
@@ -504,6 +509,7 @@ def upsert_evidence_chain(
         "official_url": row["url"],
         "evidence_scope": row["evidence_scope"],
         "expected_entities_or_stages": tokens,
+        "anchor_scope": anchor_scope_metadata(row),
         "record_mode": RECORD_MODE,
         "source_kind": SOURCE_KIND,
         "edge_publication": "live_capture_context_only_not_published_relationship",
@@ -590,6 +596,7 @@ def load_live_official_captures(
                 "source_text_sha256": anchor["source_text_sha256"],
                 "source_text_excerpt": anchor["source_text_excerpt"],
                 "tokens": tokens,
+                "anchor_scope": anchor_scope_metadata(row),
                 "parser_version": LIVE_PARSER_VERSION,
                 "record_mode": RECORD_MODE,
                 "source_kind": SOURCE_KIND,
@@ -696,8 +703,8 @@ def build_contract_artifact() -> dict[str, object]:
             ),
             (
                 "The loader rejects committed official full text and stores only "
-                "source_text_sha256, short source_text_excerpt, retry/source_health "
-                "metadata and context evidence."
+                "source_text_sha256, short source_text_excerpt, anchor_scope, "
+                "retry/source_health metadata and context evidence."
             ),
             (
                 "PostgreSQL writes are idempotent through source_documents, "
@@ -745,7 +752,7 @@ def build_contract_artifact() -> dict[str, object]:
                 "review_status=machine_verified"
             ),
             "ingestion_evidence_chain": (
-                "evidence_role=context, edge_publication="
+                "evidence_role=context, anchor_scope persisted, edge_publication="
                 "live_capture_context_only_not_published_relationship"
             ),
             "relationship_fact_candidates": "must remain zero for this parser",

@@ -14,7 +14,7 @@
       "capture_status": "success",
       "http_status": 200,
       "content_type": "text/html",
-      "source_text": "Dry-run normalized source body for NVIDIA Corporation anchor NVDA-ANCHOR-001. The text fixture represents a parser contract for the official NVIDIA Blog Taiwan ecosystem anchor. It includes the expected ecosystem and supply-chain terms NVIDIA Corporation, TSMC, SPIL, Kinsus, KYEC, UMTC, Foxconn, Pegatron, QCT, Wistron, Inventec, wafer, chip, packaging test, manufacturing, and systems. The fixture is used only to prove token coverage, raw snapshot persistence, source health metadata, parser versioning, and retry policy recording before a live official-source connector is approved."
+      "source_text": "Dry-run normalized source body for NVIDIA Corporation anchor NVDA-ANCHOR-001. The text fixture represents a parser contract for the official NVIDIA Blog Taiwan ecosystem anchor. It includes the expected discovery-context terms NVIDIA Corporation, TSMC, SPIL, Kinsus, KYEC, UMTC, Foxconn, Pegatron, QCT, Wistron, Inventec, AI infrastructure, ecosystem, and Taiwan. The fixture is used only to prove context-only token coverage, raw snapshot persistence, source health metadata, parser versioning, and retry policy recording before a live official-source connector is approved."
     },
     {
       "anchor_id": "NVDA-ANCHOR-002",

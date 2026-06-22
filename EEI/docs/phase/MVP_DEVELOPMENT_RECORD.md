@@ -4240,3 +4240,48 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A209 STILL IN PROGRESS
 - Remove `artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl`.
 - Regenerate `artifacts/tests/a209/t1307_operator_soak_evidence_validation.json`.
 - Regenerate development, clean-room and release artifacts, then rerun validation.
+
+## 2026-06-22 - T1301/A202 context-only source anchor semantic revision
+
+Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI PENDING; A202 STILL IN PROGRESS
+
+### Scope
+
+- Revised `data/nvidia_public_source_anchors.csv` so `NVDA-ANCHOR-001` is explicitly `publication_scope=discovery_context_only`.
+- Removed `packaging/test`, `wafer`, `chip`, `manufacturing` and `systems` from the 001 expected-token contract and replaced them with discovery-context terms `AI infrastructure`, `ecosystem` and `Taiwan`.
+- Added `anchor_scope` persistence to curated, dry-run, operator-source and live-capture ingestion payloads and evidence-chain structured facts.
+- Added `artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json` as the machine-readable contract for this revision.
+- Updated A202 unit/integration tests and fixtures so candidate counts reflect the revised context-only token set.
+
+### Acceptance mapping
+
+- T1301 -> A202 for source-registry semantic correctness and evidence-chain provenance.
+- A202 remains `IN_PROGRESS`: this does not provide production owner sign-off, formal source-license/legal clearance, relationship publication or A206/A209 long-duration evidence.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No canonical runtime parameter changed.
+- `NVDA-ANCHOR-001` source metadata now has `evidence_role=context` and `publication_scope=discovery_context_only`.
+
+### Validation
+
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/fetch_official_source_full_text.py scripts/load_operator_source_captures.py scripts/load_live_official_captures.py tests/unit/test_official_source_live_capture.py tests/integration/test_database_migrations.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/pytest tests/unit/test_official_source_live_capture.py -q`: PASS; 10 passed.
+- `.venv/bin/python -m json.tool artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json`: PASS.
+- `.venv/bin/python -m json.tool tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json`: PASS.
+- `.venv/bin/python -m json.tool tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json`: PASS.
+- `.venv/bin/python -m json.tool tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json`: PASS.
+- `.venv/bin/python -m json.tool artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json`: PASS.
+- `.venv/bin/python -m json.tool artifacts/tests/a202/t1301_live_official_retrieval_contract.json`: PASS.
+- `.venv/bin/python -m json.tool artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+
+Local PostgreSQL integration was not run in this shell; remote G2 PostgreSQL must validate the updated candidate-count contracts.
+
+### Rollback
+
+- Restore the prior `NVDA-ANCHOR-001` expected token list.
+- Remove `anchor_scope` fields from ingestion structured facts.
+- Remove `artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json`.
+- Restore previous A202 candidate-count assertions and rerun validation.
