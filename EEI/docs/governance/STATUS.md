@@ -4,8 +4,8 @@
 
 - source_base_commit: `932446fd2154ac477ea0cb6862a60098b1e1ed55`
 - source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
-- source_snapshot_hash: `sha256:a3ce95e782fae9c5191da47dd2ec35180f12fc6073656e9f9d3eacb42d27a5de`
-- snapshot_event_time: `2026-06-22T14:35:00+10:00`
+- source_snapshot_hash: `sha256:c711765daef57609355d95d45de0da52b46ae663ce8ec92c34a81cf355410a23`
+- snapshot_event_time: `2026-06-22T04:34:00Z`
 - generator_version: `3.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `B / GOV-EEI-BINDING-CLASSIFICATION`
+- Phase/Gate: `C / TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
 - Models/Formulas/Parameters total: `12 / 12 / 61`
 - Active formulas/parameters: `11 / 61`
 - Machine checked formulas/parameters: `10 / 54`
@@ -34,10 +34,10 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `GOV-EEI-BINDING-CLASSIFICATION`
+- Release gate: `TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `23`
+- Pending/stale events: `24`
 - Tree-bound events: `0`
 - Commit-bound events: `6`
-- Legacy unbound events: `24`
+- Legacy unbound events: `16`
 - Unresolved fact IDs: `7`
