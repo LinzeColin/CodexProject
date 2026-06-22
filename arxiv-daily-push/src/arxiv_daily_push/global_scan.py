@@ -978,9 +978,12 @@ def _daily_email(
         feedback_links=feedback_links,
         date=str(daily_input.get("date") or generated_at[:10]),
     )
-    brand = _email_brand(category, group_label)
-    takeaway = _truncate_text(str(frontstage["one_line_takeaway"]), max_chars=54)
-    subject = f"[{brand}｜{frontstage['decision']} {_score_label(frontstage['attention_score'])}] {takeaway}"
+    subject = _daily_email_subject(
+        date=str(daily_input.get("date") or generated_at),
+        project_label=project_label,
+        group_label=group_label,
+        title=title,
+    )
     return EmailNotification(subject=subject, recipient=DEFAULT_RECIPIENT, body=body, html_body=html_body)
 
 
@@ -1031,7 +1034,7 @@ def _daily_email_text(
     return "\n".join(
         [
             "【今日判断】",
-            f"建议：{frontstage['decision']} | 相关性：{_score_label(frontstage['attention_score'])} | 证据：{frontstage['evidence_level']} | 时间：{frontstage['estimated_reading_time']}",
+            f"建议：{frontstage['decision']} | 证据：{frontstage['evidence_level']} | 时间：{frontstage['estimated_reading_time']}",
             str(frontstage["one_line_takeaway"]),
             "",
             "【主讲论文】",
@@ -1136,10 +1139,10 @@ h2{{font-size:17px;margin:24px 0 10px}}p,li{{font-size:14px;line-height:1.7}}ul{
 </head>
 <body>
 <div class="wrap"><div class="card">
-<div class="head"><span class="brand">{escape(_email_brand(category, group_label))} · 注意力收益</span><span class="date">{escape(date)}</span><h1>{escape(str(frontstage["one_line_takeaway"]))}</h1><p class="lead">{escape(title)}</p></div>
+<div class="head"><span class="brand">{escape(project_label)} · {escape(group_label)}</span><span class="date">{escape(date)}</span><h1>{escape(str(frontstage["one_line_takeaway"]))}</h1><p class="lead">{escape(title)}</p></div>
 <div class="body">
-<span class="pill ok">建议：{escape(str(frontstage["decision"]))}</span><span class="pill">相关性：{escape(_score_label(frontstage["attention_score"]))}</span><span class="pill warn">证据：{escape(str(frontstage["evidence_level"]))}</span><span class="pill gray">{escape(group_label)}{(" / " + escape(category)) if category else ""}</span>
-<div class="decision"><span class="score">{escape(_score_label(frontstage["attention_score"]))}</span><b>今天值得投入多少注意力？</b><p>{escape(str(frontstage["one_line_takeaway"]))} 建议投入 {escape(str(frontstage["estimated_reading_time"]))}。</p></div>
+<span class="pill ok">建议：{escape(str(frontstage["decision"]))}</span><span class="pill warn">证据：{escape(str(frontstage["evidence_level"]))}</span><span class="pill gray">{escape(group_label)}{(" / " + escape(category)) if category else ""}</span>
+<div class="decision"><span class="score">{escape(str(frontstage["decision"]))}</span><b>今天值得投入多少注意力？</b><p>{escape(str(frontstage["one_line_takeaway"]))} 建议投入 {escape(str(frontstage["estimated_reading_time"]))}。</p></div>
 <h2>第一性原理链条</h2><div class="chain">{chain_nodes}</div>
 <h2>翻译成决策语言</h2>{mappings}
 <h2>真正值得追问的 3 个问题</h2><ul>{questions}</ul>
@@ -1205,28 +1208,6 @@ def _feedback_links(source_id: str) -> list[dict[str, str]]:
 def _html_button(label: str, url: str, *, primary: bool) -> str:
     class_name = "btn" if primary else "btn alt"
     return f"<a class=\"{class_name}\" href=\"{escape(url, quote=True)}\">{escape(label)}</a>"
-
-
-def _email_brand(category: str, group_label: str) -> str:
-    archive = _archive_id_from_category(category)
-    labels = {
-        "cs": "CS Daily",
-        "econ": "Econ Daily",
-        "eess": "EESS Daily",
-        "math": "Math Daily",
-        "q-bio": "QBio Daily",
-        "q-fin": "QF Daily",
-        "stat": "Stat Daily",
-    }
-    if archive in labels:
-        return labels[archive]
-    if archive in {"astro-ph", "cond-mat", "gr-qc", "hep-ex", "hep-lat", "hep-ph", "hep-th", "math-ph", "nlin", "nucl-ex", "nucl-th", "physics", "quant-ph"}:
-        return "Physics Daily"
-    return f"{group_label} Daily" if group_label else "arXiv Daily"
-
-
-def _score_label(value: Any) -> str:
-    return f"{_bounded_score(value):.1f}/5"
 
 
 def _bounded_score(value: Any) -> float:
@@ -1385,6 +1366,17 @@ def _compact_date(value: str) -> str:
     return digits[:8] or "00000000"
 
 
+def _daily_email_subject(*, date: str, project_label: str, group_label: str, title: str) -> str:
+    return " -- ".join(
+        [
+            _compact_date(date),
+            _clean_subject_part(project_label or "arXiv Daily Push"),
+            _clean_subject_part(group_label or "All arXiv"),
+            _human_email_theme(title),
+        ]
+    )
+
+
 def _human_arxiv_labels(primary_category: str) -> tuple[str, str]:
     archive_id = _archive_id_from_category(primary_category)
     archive = next((item for item in ALL_ARXIV_ARCHIVES if item["archive_id"] == archive_id), None)
@@ -1404,6 +1396,10 @@ def _archive_id_from_category(primary_category: str) -> str:
 def _human_email_theme(title: str) -> str:
     cleaned = re.sub(r"\s+", " ", str(title or "")).strip(" .:-")
     return _truncate_text(cleaned or "Daily arXiv insight", max_chars=72)
+
+
+def _clean_subject_part(value: str) -> str:
+    return re.sub(r"\s+", " ", str(value or "")).strip(" -") or "arXiv"
 
 
 def _truncate_text(value: str, *, max_chars: int) -> str:

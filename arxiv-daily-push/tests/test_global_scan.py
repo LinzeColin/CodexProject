@@ -281,7 +281,10 @@ class GlobalScanTests(unittest.TestCase):
         self.assertTrue(package["email_contains_candidate_queue_summary"])
         self.assertFalse(package["email_contains_release_landing_link"])
         self.assertTrue(package["email_contains_html"])
-        self.assertTrue(package["notification"].subject.startswith("[CS Daily｜"))
+        self.assertEqual(
+            package["notification"].subject,
+            "20260701 -- arXiv Computer Science -- Computer Science -- Foundation model agents for portfolio risk optimization",
+        )
         self.assertIn("【视频入口】", package["notification"].body)
         self.assertIn("45-60秒", package["notification"].body)
         self.assertIn("候选队列摘要", package["notification"].body)
@@ -302,6 +305,9 @@ class GlobalScanTests(unittest.TestCase):
         self.assertNotIn("ROI score", package["notification"].body)
         self.assertNotIn("roi_total_score", package["notification"].body)
         self.assertNotIn("delivery_policy", package["notification"].body)
+        self.assertNotRegex(package["notification"].subject, r"\d(?:\.\d)?/5")
+        self.assertNotRegex(package["notification"].body, r"\d(?:\.\d)?/5")
+        self.assertNotRegex(package["notification"].html_body, r"\d(?:\.\d)?/5")
 
     def test_quant_finance_email_filters_frontstage_candidate_pollution(self) -> None:
         daily_input = {
@@ -337,7 +343,10 @@ class GlobalScanTests(unittest.TestCase):
 
         package = build_daily_delivery_package(daily_run_payload, daily_input, release_report, generated_at=GENERATED_AT)
 
-        self.assertTrue(package["notification"].subject.startswith("[QF Daily｜"))
+        self.assertEqual(
+            package["notification"].subject,
+            "20260701 -- arXiv Quantitative Finance -- Quant Finance -- Optimal order in multi-agent systems and market fragility",
+        )
         self.assertNotIn("Quantum algorithm for molecular light", package["notification"].body)
         self.assertNotIn("West Nile virus", package["notification"].body)
         self.assertIn("Market risk simulation benchmark", package["notification"].body)

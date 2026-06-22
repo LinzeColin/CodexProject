@@ -15,14 +15,16 @@ enablement gates, or scheduled production variables.
 
 ## Implemented
 
-- Added a Lesson `frontstage` payload with read/skim/skip decision, attention
-  score, evidence level, estimated reading time, one-line takeaway,
+- Added a Lesson `frontstage` payload with read/skim/skip decision, backend
+  attention score, evidence level, estimated reading time, one-line takeaway,
   first-principles chain, decision mappings, three key questions, evidence
   gaps, default action, and video-card metadata.
 - Rendered daily delivery email as concise Chinese plain text plus responsive
   HTML alternative.
-- Changed the email subject to the V2 decision format:
-  `[QF Daily｜扫读 3.8/5] <one-line takeaway>`.
+- Changed the email subject to the owner contract:
+  `YYYYMMDD -- Project Name -- arXiv Group -- Theme`.
+- Removed numeric `x/5` foreground score labels from the email subject, plain
+  text body, and HTML body; the score remains backend ranking/evidence only.
 - Removed user-visible Claim Ledger IDs, backend ROI score, delivery policy
   text, Release landing-page link clutter, and repeated English summary from
   the frontstage email.
@@ -52,15 +54,14 @@ Already run before governance updates:
   - Result: `Ran 35 tests in 0.223s OK`
 - `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_v2_pycache_all2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q`
   - Result: `Ran 185 tests in 2.272s OK`
-- In-memory q-fin render probe:
-  - Subject: `[QF Daily｜扫读 3.8/5] 同步提高产出，也可能制造拥挤交易脆弱性。`
-  - Plain text length: `678`
-  - HTML alternative length: `5322`
-  - Verified absent: `Claim Ledger`, `roi_total_score`, `ROI score`,
+- Post-subject-contract correction:
+  - Subject contract: `YYYYMMDD -- Project Name -- arXiv Group -- Theme`
+  - Verified absent from user-visible subject/plain text/HTML: numeric `x/5`
+    score labels, `Claim Ledger`, `roi_total_score`, `ROI score`,
     `delivery_policy`, Release landing-page tag link, irrelevant quant-ph title,
-    irrelevant q-bio title.
+    and irrelevant q-bio title.
 
-Post-S1-04 validation completed locally: focused email V2 tests 35 OK; semantic extractor checked 39 active formulas and 278 active parameters; arxiv-daily-push tests 189 OK; governance dashboard PASS; root governance tests 128 OK; changed-only governance sync errors 0 warnings 0; information quality PASS; manifest JSON and CSV width checks PASS. PR CI and controlled manual real-email rerun remain required before replacing the latest owner-visible proof.
+Post-S1-04 validation completed locally: focused email V2 tests 35 OK; semantic extractor checked 39 active formulas and 278 active parameters; arxiv-daily-push tests 189 OK; governance dashboard PASS; root governance tests 128 OK; changed-only governance sync errors 0 warnings 0; information quality PASS; manifest JSON and CSV width checks PASS. A later subject-contract correction reran the focused delivery/SMTP tests and full arxiv-daily-push suite; PR CI and controlled manual real-email rerun remain required before replacing the latest owner-visible proof.
 
 ## Acceptance Boundary
 
