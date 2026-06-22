@@ -19,7 +19,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 57
+- task_count: 58
 - acceptance_count: 53
 
 ## Delivery Tasks
@@ -84,6 +84,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S1-09-MIGRATION_PACKAGE-001 | S1-A | planned | ADP-ACC-S1-09-MIGRATION-PACKAGE | Low-resource integration evidence and new-machine migration checklist | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | daily email front-end now uses human-scannable Chinese sections, compact arXiv subject, 12-second video link, action guidance, concise evidence, and hides ROI scoring in backend artifacts | `docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
+| ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger or ROI score | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates
