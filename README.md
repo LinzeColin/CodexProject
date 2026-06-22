@@ -11,10 +11,10 @@ Active Codex-related project hub for LinzeColin.
 
 ## Snapshot Metadata
 
-- source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
-- source_snapshot_hash: `sha256:e60ad62672fd60593aac5e304bed4e47f46f87c09169035e82b0a6c8bcde943b`
-- generator_version: `3.0.0`
+- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
+- source_snapshot_hash: `sha256:ab2856853003ce53e95b51b7837c499eec7ac8c6381f71ae93698c84e7d7c166`
+- generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Assurance Vocabulary

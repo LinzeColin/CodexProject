@@ -1,10 +1,10 @@
 project_id: "OpenAIDatabase"
 as_of_event_id: "EVT-REVIEW6-FINAL-OpenAIDatabase-001"
-source_snapshot_hash: "sha256:cad9e321744c697e5112af19feadd619797c2c41301d1391c9546651bbbc6cb1"
-source_base_commit: "932446fd2154ac477ea0cb6862a60098b1e1ed55"
-source_tree_hash: "a661be1db22d99ff3afe6183ac1ae8f4c444be18"
+source_snapshot_hash: "sha256:1ce312629c018297a69895936d9e9f832eeed2ae9c69a001cfc8023589c64a28"
+source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
+source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-22T00:24:25Z"
-generator_version: "3.0.0"
+generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
@@ -33,6 +33,14 @@ dimensions:
     total_active_parameters: 92
     evidence_refs:
       - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+  methodological_rationale:
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    machine_verified_means: "methodological, calibration, and baseline rationale are tracked separately from implementation congruence"
+    unresolved_fact_ids:
+      - "FACT-OpenAIDatabase-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "OpenAIDatabase/docs/governance/MODEL_SPEC.md"
   empirical_validation:
     status: "UNVERIFIED"
     fact_level: "UNKNOWN"
@@ -72,18 +80,43 @@ delivery_readiness:
     - "GOV-SEMANTIC-OAIDB-001"
     - "TASK-OAI-B-001"
 next_executable_task:
-  task_id: "GOV-SEMANTIC-OAIDB-001"
-  status: "in_progress"
-  reason: "Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints."
+  task_id: "TASK-OAI-B-001"
+  status: "blocked"
+  reason: "Resolve UNKNOWN calibration evidence for heuristic weights and thresholds."
   acceptance_ids:
-    - "ACC-SEMANTIC-OAIDB-001"
-  owner: "Codex/governance runner"
-  unblock_condition: "Run the listed test commands and attach evidence."
+    - "ACC-OAI-B-001"
+  owner: "privacy_owner + product_owner"
+  human_owner_role: "privacy_owner + product_owner"
+  unblock_condition: "Heuristic constants may be mistaken for calibrated values."
+  stale_candidates: []
 owner_decision:
   required: true
-  decision_id: "DEC-OpenAIDatabase-REVIEW6-001"
-  question: "是否继续补齐 memory routing 分支和 FORM-010 语义复核。"
+  decision_id: "DEC-OpenAIDatabase-REVIEW8-001"
+  review_id: "REVIEW8"
+  project_id: "OpenAIDatabase"
+  decision_question: "是否投入去标识黄金集和隐私攻击测试，验证记忆提取、脱敏、冲突/去重、检索和建议效用不会泄漏高风险秘密。"
+  question: "是否投入去标识黄金集和隐私攻击测试，验证记忆提取、脱敏、冲突/去重、检索和建议效用不会泄漏高风险秘密。"
+  human_owner_role: "privacy_owner + product_owner"
+  human_assignment_status: "HUMAN_ASSIGNMENT_REQUIRED"
+  current_recommendation: "A: fund privacy-first gold-set validation before persistent memory write claims"
+  option_a: "建立同意样本/高保真合成集、秘密泄漏测试、检索和建议盲评。"
+  option_b: "保留本地只读研究，写入前继续人工确认。"
+  option_c: "暂停持久记忆和自动建议交付。"
   options:
-    - "A: fund evidence hardening"
-    - "B: keep blocked/conditional and defer"
-    - "C: de-scope this project from delivery claims"
+    - "建立同意样本/高保真合成集、秘密泄漏测试、检索和建议盲评。"
+    - "保留本地只读研究，写入前继续人工确认。"
+    - "暂停持久记忆和自动建议交付。"
+  estimated_effort: "P0; privacy and product owner review"
+  estimated_cost_or_resource: "consented/de-identified exports, adversarial secret set, evaluator time"
+  expected_benefit: "验证系统有用且不会把私密内容错误持久化或泄漏。"
+  principal_risks: "PII/secret leakage, stale memory, false user facts"
+  evidence_required: "gold labels, leakage-rate report, retrieval metrics, human write approval logs"
+  decision_deadline_or_priority: "P0"
+  consequence_of_no_decision: "OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memory operation."
+  unblock_task_id: "TASK-OAI-B-001"
+  acceptance_ids:
+    - "ACC-OAI-B-001"
+  generated_from_refs:
+    - "OpenAIDatabase/docs/governance/ASSURANCE_STATUS.yaml"
+    - "OpenAIDatabase/docs/governance/delivery_tasks.yaml"
+  last_reviewed_at: "2026-06-22T00:24:25Z"
