@@ -61,6 +61,10 @@ Enterprise_Ecosystem_Intelligence_release
 │   └── __init__.py
 ├── artifacts
 │   ├── tests
+│   │   ├── a026
+│   │   │   └── t904_entity_resolution_gold_evaluation_contract.json
+│   │   ├── a027
+│   │   │   └── t904_relationship_gold_evaluation_contract.json
 │   │   ├── a059
 │   │   │   └── t500_entity_focus_dossier_api.json
 │   │   ├── a060
@@ -389,6 +393,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_catalog_integrity.py
 │   ├── validate_contracts.py
 │   ├── validate_github_governance.py
+│   ├── validate_gold_quality_evaluation.py
 │   ├── validate_governance.py
 │   ├── validate_governance_consistency.py
 │   ├── validate_model_config.py
@@ -420,6 +425,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── saved-view-live.spec.ts
 │   │   └── state-contract.spec.ts
 │   ├── fixtures
+│   │   ├── gold_quality
+│   │   │   └── golden_vertical_gold_labels_sample.json
 │   │   ├── live_official_captures
 │   │   │   └── nvidia_live_official_capture_fixture.json
 │   │   ├── official_source_full_text
@@ -436,6 +443,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── test_database_migrations.py
 │   └── unit
 │       ├── test_api_health.py
+│       ├── test_gold_quality_evaluation.py
 │       ├── test_official_source_live_capture.py
 │       ├── test_operator_soak_evidence.py
 │       ├── test_release_decision_bundle.py

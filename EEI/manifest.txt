@@ -86,6 +86,8 @@ artifacts/release_operation_log_t1211.jsonl
 artifacts/requirement_function_task_test_traceability_t1213.csv
 artifacts/risk_control_mapping_t1214.csv
 artifacts/risk_control_summary_t1214.json
+artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json
+artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json
 artifacts/tests/a059/t500_entity_focus_dossier_api.json
 artifacts/tests/a060/t500_human_summary_dossier_api.json
 artifacts/tests/a061/t501_company_workspace_layers.json
@@ -352,6 +354,7 @@ scripts/validate_brand_clearance.py
 scripts/validate_catalog_integrity.py
 scripts/validate_contracts.py
 scripts/validate_github_governance.py
+scripts/validate_gold_quality_evaluation.py
 scripts/validate_governance.py
 scripts/validate_governance_consistency.py
 scripts/validate_model_config.py
@@ -380,6 +383,7 @@ tests/e2e/industry.spec.ts
 tests/e2e/saved-view-live.spec.ts
 tests/e2e/state-contract.spec.ts
 tests/fixtures/README.md
+tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json
 tests/fixtures/golden_vertical_owner_signoff_decisions.json
 tests/fixtures/golden_vertical_review_decisions.json
 tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json
@@ -389,6 +393,7 @@ tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_templat
 tests/integration/README.md
 tests/integration/test_database_migrations.py
 tests/unit/test_api_health.py
+tests/unit/test_gold_quality_evaluation.py
 tests/unit/test_official_source_live_capture.py
 tests/unit/test_operator_soak_evidence.py
 tests/unit/test_release_decision_bundle.py
