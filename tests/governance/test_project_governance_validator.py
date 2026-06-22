@@ -1608,8 +1608,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-064")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-064")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-065")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-065")
         self.assertEqual(info["product_version"], "0.14.1")
         self.assertEqual(info["current_gate"], "ADP-PHASE12-EMAIL-DECISION-UI-V2-READY")
         self.assertEqual(

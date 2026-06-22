@@ -2,7 +2,8 @@
 
 ## 0.14.1 - 2026-06-22
 
-- Rebuilt the daily email as a responsive HTML plus concise Chinese plain-text decision brief based on the V2 mockup: read/skim/skip, relevance score, evidence level, reading time, first-principles chain, decision mapping, key questions, evidence gaps, minimal experiment, optional `.mp4` video link, and feedback actions.
+- Rebuilt the daily email as a responsive HTML plus concise Chinese plain-text decision brief based on the V2 mockup: exact `YYYYMMDD -- Project Name -- arXiv Group -- Theme` subject, read/skim/skip, evidence level, reading time, first-principles chain, decision mapping, key questions, evidence gaps, minimal experiment, optional `.mp4` video link, and feedback actions.
+- Removed frontend numeric `x/5` score labels from the subject, plain-text body, and HTML body; ranking/ROI scores remain backend-only evidence.
 - Added a human-frontstage lesson payload so backend Claim Ledger and ROI details remain auditable while user-visible email hides Claim Ledger IDs, visible ROI scores, delivery policy text, Release landing-page clutter, and irrelevant q-fin candidate pollution.
 - Kept production schedule disabled; this change prepares the next PR CI and controlled manual Gmail SMTP plus GitHub Release rerun only.
 
