@@ -7,7 +7,7 @@ EEI 当前治理结论：实现一致性为 `PARTIAL`，交付状态为 `FAILED`
 - source_base_commit: `932446fd2154ac477ea0cb6862a60098b1e1ed55`
 - source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
 - source_snapshot_hash: `sha256:c711765daef57609355d95d45de0da52b46ae663ce8ec92c34a81cf355410a23`
-- snapshot_event_time: `2026-06-22T00:42:00Z`
+- snapshot_event_time: `2026-06-22T04:34:00Z`
 - generator_version: `3.0.0`
 - version: `0.1.0`
 - phase/gate: `C / TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
@@ -69,8 +69,8 @@ Generated owner-facing views now separate implementation congruence from paramet
 - tree_bound_events: `0`
 - commit_bound_events: `6`
 - legacy_unbound_events: `17`
-- precommit_pending_events: `2`
-- pending_or_stale_events: `18`
+- precommit_pending_events: `8`
+- pending_or_stale_events: `24`
 
 ## 11. UNKNOWN
 

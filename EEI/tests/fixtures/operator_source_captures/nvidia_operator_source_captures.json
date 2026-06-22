@@ -18,7 +18,7 @@
       "content_type": "text/html",
       "approval_scope": "A202_official_source_capture_contract_only",
       "operator_signature": "fixture-operator-capture-nvda-001",
-      "source_text_sha256": "e42e51508bae6ea5f5d7d82544b7227b31509059d90c854d2932bde8294c880e",
+      "source_text_sha256": "43623e066b0649ce59444dc5d66f39944ceb6cebe7b420d1ef4e81b5142ff6e5",
       "usage_attestation": {
         "official_source_observed": true,
         "source_url_matches_anchor": true,
