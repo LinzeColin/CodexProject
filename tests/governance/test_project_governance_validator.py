@@ -1373,17 +1373,17 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-057")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-057")
-        self.assertEqual(info["product_version"], "0.12.3")
-        self.assertEqual(info["current_gate"], "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-058")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-058")
+        self.assertEqual(info["product_version"], "0.12.4")
+        self.assertEqual(info["current_gate"], "ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED")
         self.assertEqual(
             info["latest_manifest"]["_path"],
             "governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.12.3", rendered)
-        self.assertIn("ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED", rendered)
+        self.assertIn("0.12.4", rendered)
+        self.assertIn("ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED", rendered)
         self.assertIn("production trial not started", rendered)
         self.assertIn("30-day acceptance absent", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
@@ -1978,6 +1978,36 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["failed_manual_run"]["run_id"], 27926461430)
         self.assertIn(
             ".github/workflows/arxiv-daily-push-manual-delivery-test.yml",
+            manifest["files_changed"],
+        )
+
+    def test_arxiv_daily_push_phase12_manifest_records_internal_release_dedupe(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035")
+        self.assertEqual(manifest["version_after"], "0.12.4")
+        self.assertIn("MOD-ADP-017", manifest["model_ids_changed"])
+        self.assertIn("MOD-ADP-033", manifest["model_ids_changed"])
+        self.assertIn("FORM-ADP-019", manifest["formula_ids_changed"])
+        self.assertIn("FORM-ADP-035", manifest["formula_ids_changed"])
+        self.assertIn("PARAM-ADP-185", manifest["parameter_ids_changed"])
+        self.assertTrue(manifest["release_internal_asset_path_dedupe_enabled"])
+        self.assertTrue(manifest["duplicate_release_filename_fail_closed"])
+        self.assertTrue(manifest["live_all_arxiv_transient_retry_enabled"])
+        self.assertFalse(manifest["real_smtp_sent"])
+        self.assertFalse(manifest["real_release_uploaded"])
+        self.assertFalse(manifest["production_schedule_enabled"])
+        self.assertEqual(manifest["failed_manual_run"]["run_id"], 27927785092)
+        self.assertEqual(manifest["failed_pr_cloud_dry_run"]["run_id"], 27928505758)
+        self.assertIn(
+            "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py",
             manifest["files_changed"],
         )
 

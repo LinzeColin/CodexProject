@@ -8,8 +8,8 @@ Review 7 governance is a portfolio control layer with automatic generated-view s
 
 - source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
 - source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
-- source_snapshot_hash: `sha256:b4095f816a22599670f943335e40509b7f907a4079b16ee9e82a82a81b2b2291`
-- snapshot_event_time: `2026-06-22T13:05:00+10:00`
+- source_snapshot_hash: `sha256:9e4189e7bc7819f6bc563fb0ab3d99c5f4b0bf23a8fcd21e13d78d0f24d5e4d9`
+- snapshot_event_time: `2026-06-22T13:40:00+10:00`
 - generator_version: `3.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached
@@ -54,7 +54,7 @@ Review 7 governance is a portfolio control layer with automatic generated-view s
 - `PFI_BIG_DATA_SIMULATOR`: `GOV-SEMANTIC-PFI-001` - Add extractors for simulator strategy defaults, risk controls, and active formula fingerprints.
 - `Serenity-Alipay`: `TASK-A-001` - Create the first CodexProject-auditable Serenity-Alipay governance baseline.
 - `whkmSalary`: `GOV-SEMANTIC-WHKM-001` - Add extractors for salary constants, policy formula references, and active formula fingerprints.
-- `arxiv-daily-push`: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034` - Repair the controlled manual GitHub Release plus Gmail SMTP test workflow after the first real manual dispatch failed closed during Release creation because duplicate asset names were supplied.
+- `arxiv-daily-push`: `ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035` - Repair the lower GitHub Release delivery boundary after the second controlled manual dispatch showed duplicate asset paths still reached gh release create from inside scheduled delivery, and harden PR cloud dry-run against transient arXiv 429/timeout blocks.
 
 ## 7. Next Unique Governance Task
 

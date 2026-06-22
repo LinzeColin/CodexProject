@@ -569,7 +569,7 @@ formulas:
     model_id: "MOD-ADP-017"
     assumption_ids: ["ASM-ADP-020", "ASM-ADP-003"]
     status: "active"
-    expression: "Release delivery evidence is dry-run by default. A real GitHub Release creation is attempted only when allow_upload is true, a tag/title/notes are provided, at least one safe asset exists, ADP_RELEASE_TARGET or --target is present, gh is available, and no clobber upload is used. The report blocks on missing target, missing gh, missing/empty/oversized/secret-like/model assets, missing metadata, or gh nonzero exit, and never logs Release notes text, secret values, gh stdout, or gh stderr."
+    expression: "Release delivery evidence is dry-run by default. A real GitHub Release creation is attempted only when allow_upload is true, a tag/title/notes are provided, at least one deduplicated safe asset exists, ADP_RELEASE_TARGET or --target is present, gh is available, and no clobber upload is used. The report blocks on missing target, missing gh, missing/empty/oversized/secret-like/model assets or conflicting duplicate Release asset names, missing metadata, or gh nonzero exit, and never logs Release notes text, secret values, gh stdout, or gh stderr."
     variables:
       - name: "allow_upload"
         data_type: "bool"
@@ -587,18 +587,18 @@ formulas:
         data_type: "str"
         unit: "hash"
         input_domain: "streamed asset content hash"
-    constraints: "Dry-run mode makes no gh call. Real upload mode does not log Release notes, secret values, gh stdout, or gh stderr, and does not use --clobber."
-    missing_policy: "Missing metadata, missing target, unavailable gh, unsafe asset, or gh failure produces a blocked Release delivery report."
+    constraints: "Dry-run mode makes no gh call. Real upload mode does not log Release notes, secret values, gh stdout, or gh stderr, and does not use --clobber, skips repeated identical asset paths, and blocks distinct duplicate asset filenames."
+    missing_policy: "Missing metadata, missing target, unavailable gh, unsafe asset, duplicate asset name, or gh failure produces a blocked Release delivery report."
     output_range: "Release delivery report with status dry_run, created, or blocked"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "https://cli.github.com/manual/gh_release_create"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py::deliver_release", "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py::validate_release_delivery_report", "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py::_inspect_assets", "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py::_asset_reasons", "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py::_release_command"]
-    implementation_fingerprint: "sha256:1789589bf698f66fc3f526e739374743656a81458caa0c6dfd156ec824a534eb"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:6bbcbec03e484224ed21cadc637ae9bb3ca48dd3bb65f3c2120409636294cbf6"
+    implementation_fingerprint: "sha256:11bb4964a21c12b84f0ee6464629bfa036458fbb786f23c380ad4ae8f6c5c06e"
+    last_verified_commit: "0da8463ad03c94c73c784213199bde8fee110a8d"
+    verified_at: "2026-06-22T13:40:00+10:00"
+    evidence_hash: "sha256:7262d39b47f0c23be45d9fcf73bb45099d68db88ef0f43ec63b8545e76f513e9"
 
   - formula_id: "FORM-ADP-020"
     model_id: "MOD-ADP-018"
@@ -1175,7 +1175,7 @@ formulas:
     model_id: "MOD-ADP-033"
     assumption_ids: ["ASM-ADP-035", "ASM-ADP-020", "ASM-ADP-021", "ASM-ADP-022"]
     status: "active"
-    expression: "Phase 12 cloud enablement passes only when GitHub-hosted workflows avoid self-hosted runner targeting, live dry-run verifies all 20 arXiv primary archive buckets with at least one SourceItem each, a sample daily input is available, real MP4 rendering produces a non-empty .mp4 artifact through ffmpeg, and production schedule/SMTP/Release side effects remain disabled unless explicit manual gates are later enabled."
+    expression: "Phase 12 cloud enablement passes only when GitHub-hosted workflows avoid self-hosted runner targeting, live dry-run verifies all 20 arXiv primary archive buckets with at least one SourceItem each after bounded transient 429/timeout retries, a sample daily input is available, real MP4 rendering produces a non-empty .mp4 artifact through ffmpeg, and production schedule/SMTP/Release side effects remain disabled unless explicit manual gates are later enabled."
     variables:
       - name: "workflow_runner"
         data_type: "string"
@@ -1193,18 +1193,18 @@ formulas:
         data_type: "object"
         unit: "GitHub variables"
         input_domain: "ADP_PRODUCTION_ENABLED, ADP_SCHEDULED_RUN_ENABLED, ADP_ALLOW_SMTP_SEND, ADP_ALLOW_RELEASE_UPLOAD"
-    constraints: "JSON video manifests do not satisfy the email video-link gate; only a Release-hosted .mp4 asset can produce video_url. Cloud dry-run workflows must use contents: read and must not send SMTP or upload Releases."
-    missing_policy: "Missing archive coverage, missing sample daily input, missing ffmpeg, missing or empty MP4, self-hosted runner references, or enabled side effects keep the cloud enablement gate blocked."
+    constraints: "JSON video manifests do not satisfy the email video-link gate; only a Release-hosted .mp4 asset can produce video_url. Cloud dry-run workflows must use contents: read, must not send SMTP or upload Releases, and may retry only transient arXiv 429/timeout blocks."
+    missing_policy: "Missing archive coverage after bounded retry, missing sample daily input, missing ffmpeg, missing or empty MP4, self-hosted runner references, or enabled side effects keep the cloud enablement gate blocked."
     output_range: "live dry-run report status pass or blocked; MP4 render report status rendered or blocked; workflow contract status pass or blocked"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py"]
     test_refs: ["arxiv-daily-push/tests/test_cloud_dry_run_workflow.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_trial_start_workflow.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_live_all_arxiv_dry_run", "arxiv-daily-push/src/arxiv_daily_push/video.py::render_lightweight_mp4", "arxiv-daily-push/src/arxiv_daily_push/video.py::validate_mp4_render_report", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::build_production_preflight", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::build_trial_start_workflow_plan"]
-    implementation_fingerprint: "sha256:9b2c8b25d8faaae8babed98f04f7e5b80a534124f9de71e0ee7872c7acdd7e80"
-    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-    verified_at: "2026-06-22T12:15:00+10:00"
-    evidence_hash: "sha256:6eb1c275fba57f7baf93824e580b90fffb42373787d6a17854b0bbeaccc6eac1"
+    implementation_fingerprint: "sha256:912bd20f9a2fc4d5f1bee7954699df80496a5a7de4ee97d1d199ee68c94ab31f"
+    last_verified_commit: "0da8463ad03c94c73c784213199bde8fee110a8d"
+    verified_at: "2026-06-22T14:05:00+10:00"
+    evidence_hash: "sha256:039df003d6e9c3089a5225f8d0e70cb41c58fb9bec5f8fde71217f024bbccdc5"
   - formula_id: "FORM-ADP-036"
     model_id: "MOD-ADP-034"
     assumption_ids: ["ASM-ADP-036", "ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-022"]

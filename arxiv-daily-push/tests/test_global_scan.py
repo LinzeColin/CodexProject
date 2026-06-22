@@ -100,6 +100,28 @@ def high_roi_summary(topic: str) -> str:
     )
 
 
+def atom_feed(source_id: str = "2607.00042") -> str:
+    return f"""<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:arxiv="http://arxiv.org/schemas/atom">
+  <title>ArXiv Query</title>
+  <id>https://export.arxiv.org/api/query</id>
+  <updated>2026-07-01T05:00:00+10:00</updated>
+  <entry>
+    <id>http://arxiv.org/abs/{source_id}v1</id>
+    <published>2026-07-01T00:00:00Z</published>
+    <updated>2026-07-01T00:00:00Z</updated>
+    <title>Agent benchmark for portfolio risk automation</title>
+    <summary>{high_roi_summary("portfolio risk automation")}</summary>
+    <author><name>Ada Example</name></author>
+    <arxiv:primary_category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="q-fin.PM" scheme="http://arxiv.org/schemas/atom"/>
+    <link href="http://arxiv.org/abs/{source_id}v1" rel="alternate" type="text/html"/>
+  </entry>
+</feed>
+"""
+
+
 class GlobalScanTests(unittest.TestCase):
     def test_plan_covers_all_primary_arxiv_archives_without_cs_ai_default(self) -> None:
         plan = build_all_arxiv_scan_plan(max_results_per_category=3)
@@ -161,6 +183,31 @@ class GlobalScanTests(unittest.TestCase):
             self.assertEqual(report["candidate_queue"]["items"][0]["source_id"], "arxiv:2607.00002")
             for path in report["artifact_paths"].values():
                 self.assertTrue(Path(path).is_file())
+
+    def test_live_dry_run_retries_transient_arxiv_rate_limit(self) -> None:
+        attempts = {"count": 0}
+
+        def flaky_fetcher(_query):
+            attempts["count"] += 1
+            if attempts["count"] == 1:
+                raise RuntimeError("HTTP Error 429: Unknown Error")
+            return atom_feed()
+
+        report = build_live_all_arxiv_dry_run(
+            generated_at=GENERATED_AT,
+            date="2026-07-01",
+            max_results_per_category=1,
+            fetcher=flaky_fetcher,
+            transient_retry_count=1,
+            transient_retry_delay_seconds=0,
+        )
+
+        self.assertFalse(validate_live_all_arxiv_dry_run_report(report))
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["verified_archive_count"], 20)
+        self.assertEqual(report["failed_archive_count"], 0)
+        self.assertEqual(report["scan"]["category_reports"][0]["retry_attempts"], 1)
+        self.assertGreaterEqual(attempts["count"], 21)
 
     def test_daily_input_consumes_queue_when_no_new_high_value_candidate_exists(self) -> None:
         queued = source_item(

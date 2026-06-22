@@ -445,14 +445,14 @@ models:
   - model_id: "MOD-ADP-017"
     name: "GitHub Release delivery boundary"
     kind: "deterministic release transport gate"
-    purpose: "Render Release delivery evidence and create a real GitHub Release only when explicit allow-upload, target, safe-asset, gh, and no-clobber checks pass."
+    purpose: "Render Release delivery evidence and create a real GitHub Release only when explicit allow-upload, target, deduplicated safe assets, gh, and no-clobber checks pass."
     owner: "arxiv-daily-push"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "adp-release-delivery-v1"
+    model_version: "adp-release-delivery-v1.1"
     assumption_ids: ["ASM-ADP-020", "ASM-ADP-003"]
     formula_ids: ["FORM-ADP-019"]
-    parameter_ids: ["PARAM-ADP-086", "PARAM-ADP-087", "PARAM-ADP-088", "PARAM-ADP-089", "PARAM-ADP-090", "PARAM-ADP-091"]
+    parameter_ids: ["PARAM-ADP-086", "PARAM-ADP-087", "PARAM-ADP-088", "PARAM-ADP-089", "PARAM-ADP-090", "PARAM-ADP-091", "PARAM-ADP-185"]
     inputs: ["Release tag", "Release title", "Release notes", "asset paths", "generated_at", "allow_upload flag", "Release target"]
     outputs: ["Release delivery report", "asset SHA256 values", "release_ref", "blocking_reasons"]
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]

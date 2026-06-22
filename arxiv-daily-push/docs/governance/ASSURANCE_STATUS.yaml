@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260622-ADP-057"
-source_snapshot_hash: "sha256:29af55ec14928c4da350aef629622f2ab4b267ecf0fe332c2353dfe053189a7b"
+as_of_event_id: "EVENT-20260622-ADP-058"
+source_snapshot_hash: "sha256:219dba2050c014ba4571151b914dc620d46eeec6b80e89c2247b28642976bcb7"
 source_base_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
 source_tree_hash: "a661be1db22d99ff3afe6183ac1ae8f4c444be18"
-snapshot_event_time: "2026-06-22T13:05:00+10:00"
+snapshot_event_time: "2026-06-22T13:40:00+10:00"
 generator_version: "3.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 183
-    total_active_parameters: 183
+    checked_active_parameters: 184
+    total_active_parameters: 184
     checked_active_formulas: 36
     total_active_formulas: 36
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 183
-    total_active_parameters: 183
+    checked_active_parameters: 184
+    total_active_parameters: 184
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   empirical_validation:
@@ -56,20 +56,20 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 0
     legacy_unbound_events: 54
-    precommit_pending_events: 4
+    precommit_pending_events: 5
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED"
+  release_gate: "ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED"
   blocker_ids:
     - "ADP-PHASE8-VIDEO-001"
     - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
     - "FACT-arxiv-daily-push-OPERATIONAL-EVIDENCE"
 next_executable_task:
-  task_id: "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034"
+  task_id: "ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035"
   status: "ready"
-  reason: "Repair the controlled manual GitHub Release plus Gmail SMTP test workflow after the first real manual dispatch failed closed during Release creation because duplicate asset names were supplied."
+  reason: "Repair the lower GitHub Release delivery boundary after the second controlled manual dispatch showed duplicate asset paths still reached gh release create from inside scheduled delivery, and harden PR cloud dry-run against transient arXiv 429/timeout blocks."
   acceptance_ids:
     - "ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"
   owner: "Codex/governance runner"
