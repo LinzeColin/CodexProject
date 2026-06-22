@@ -44,7 +44,7 @@ REQUIRED_GATE_IDS = (
     "passage_level_relationship_review",
     "production_owner_signoff",
     "legal_release_clearance",
-    "a206_retry_dead_letter_soak",
+    "a206_scheduler_retry_dead_letter",
     "a209_24h_operator_soak",
 )
 
@@ -208,9 +208,9 @@ def build_review_packet(
                 "evidence": "required before public launch or publication claims",
             },
             {
-                "gate_id": "a206_retry_dead_letter_soak",
-                "status": "missing",
-                "evidence": "required long-duration source-health/retry evidence",
+                "gate_id": "a206_scheduler_retry_dead_letter",
+                "status": "present",
+                "evidence": "artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json",
             },
             {
                 "gate_id": "a209_24h_operator_soak",
@@ -224,7 +224,7 @@ def build_review_packet(
             "release_clearance": False,
             "reason": (
                 "Live capture evidence is ready for review only; source-license, "
-                "passage-level, owner, legal, A206 and A209 gates are not complete."
+                "passage-level, owner, legal and A209 gates are not complete."
             ),
         },
         "validation_summary": {
@@ -300,9 +300,12 @@ def validate_review_packet(
     if gate_ids != set(REQUIRED_GATE_IDS):
         raise ValueError("closure_gates do not match the required A202 gate set")
     for gate in packet["closure_gates"]:
-        if gate["gate_id"] == "live_capture_ready_for_review":
+        if gate["gate_id"] in {
+            "live_capture_ready_for_review",
+            "a206_scheduler_retry_dead_letter",
+        }:
             if gate.get("status") != "present":
-                raise ValueError("live_capture_ready_for_review must be present")
+                raise ValueError(f"{gate['gate_id']} must be present")
         elif gate.get("status") != "missing":
             raise ValueError(f"{gate['gate_id']} must remain missing")
     policy = packet.get("publication_policy")

@@ -1,6 +1,7 @@
 governance_spec_version: "1.0.0"
 project_id: "EEI"
 source_policy: "Canonical CodexProject governance source generated from EEI data/config evidence. Legacy EEI/data CSV files remain compatibility evidence, not independent editable governance sources."
+# 2026-06-22 audit: T1304/A206 scheduler closure changes delivery status only; model definitions and runtime scoring behavior are unchanged.
 assumptions:
   - assumption_id: "ASM-001"
     statement: "Scores are research prioritization and explanation aids, not investment return probabilities."

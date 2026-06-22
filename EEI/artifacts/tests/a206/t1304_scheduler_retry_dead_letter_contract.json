@@ -1,46 +1,20 @@
 {
-  "schema_version": 1,
-  "artifact_id": "t1304-scheduler-retry-dead-letter-contract",
-  "task_id": "T1304",
+  "a206_closure_decision": {
+    "decision": "A206 scheduler functionality is closed independently from A209 long-duration soak.",
+    "rationale": "Lease, auto wake, idempotency, heartbeat, retry cap, dead-letter, graceful shutdown, transactional outbox dispatch, Docker Compose worker binding and worker supervisor execution are implemented and CI validated. 24h soak remains an A209 production-stability gate.",
+    "status": "DONE"
+  },
   "acceptance_ids": [
     "A206"
   ],
-  "status": "IN_PROGRESS",
-  "system": {
-    "zh_name": "商域图谱",
-    "en_name": "Enterprise Ecosystem Intelligence",
-    "subtitle": "企业商业版图与供应链递归探索系统"
-  },
-  "implemented_scope": [
-    "PostgreSQL background_jobs table with job_type + idempotency_key uniqueness.",
-    "background_job_attempts table records each lease attempt, heartbeat, release, failure, expiry and success.",
-    "dead_letter_jobs table captures terminal failure payload and final attempt metadata.",
-    "transactional_outbox table captures durable refresh events with idempotency, lease, retry and dispatch state.",
-    "scripts/job_scheduler.py supports enqueue, lease, heartbeat, graceful release, retry, expired lease recovery, completion and dead-letter transitions.",
-    "scripts/job_scheduler.py supports dispatch-outbox-once for pending outbox events and logs dispatch_outbox_event operations.",
-    "POST /v1/scoring/recompute enqueues score_recompute jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
-    "scripts/job_scheduler.py registers a score_recompute handler that validates active-context freshness, writes scoring_runs and score_results for relationship_fact_candidate, relationship, entity, event, industry and source_document object families, advances refresh_token and completes stale jobs as skipped_stale_context instead of retrying forever.",
-    "POST /v1/data/snapshots/refresh enqueues data_snapshot_refresh jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
-    "scripts/job_scheduler.py registers a data_snapshot_refresh handler that validates active-context freshness, writes active data_snapshots, advances refresh_token, emits data.snapshot.activated and completes stale jobs as skipped_stale_context instead of retrying forever.",
-    "scripts/job_scheduler.py registers a curated_ingestion_refresh handler that reuses the curated official NVIDIA/ASML loader idempotently, records execute_curated_ingestion_refresh and emits data.ingestion.completed.",
-    "scripts/fetch_official_source_full_text.py records dry-run source_health, retry_policy, attempt metadata and dead_letter_after_attempts=3 for official-source parser plumbing without live retrieval.",
-    "POST /v1/calibrations/run creates a calibration_run background job and calibration.run.requested outbox event while preserving the 14-day cadence and no-auto-activation policy.",
-    "scripts/job_scheduler.py registers a calibration_run handler that computes relationship-fact coverage, score-result coverage and drift warnings, writes calibration_runs metrics/drift_report/proposal_status=none, records execute_calibration_run and emits calibration.run.completed.",
-    "apps/worker/app/main.py exposes the supervised worker CLI with health, once and supervise commands, covering expired lease recovery, bounded job execution, transactional outbox dispatch, idle stop and SIGTERM/SIGINT graceful stop.",
-    "Makefile exposes worker-health, worker-once and worker-supervise operator commands for deployment wiring.",
-    "docker-compose.yml binds postgres, migrate and worker services under the worker profile so the default MVP worker process manager can start after healthy PostgreSQL and successful migrations.",
-    "infra/docker/worker.Dockerfile builds the worker/migration runtime and runs apps.worker.app.main supervise by default.",
-    "scripts/validate_worker_deployment.py validates the Docker Compose worker process binding and writes a release evidence artifact.",
-    "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion, score_recompute enqueue/execution idempotency, data_snapshot_refresh enqueue/execution idempotency, curated_ingestion_refresh execution and worker supervisor health/once/idle-stop contracts."
-  ],
-  "parameters": {
-    "scheduler.lease_ttl_seconds": 900,
-    "scheduler.heartbeat_interval_seconds": 30,
-    "scheduler.max_retry_attempts": 5,
-    "scheduler.dead_letter_after_attempts": 5,
-    "worker.poll_interval_seconds": 5,
-    "worker.max_jobs_per_cycle": 1,
-    "worker.max_outbox_per_cycle": 5
+  "artifact_id": "t1304-scheduler-retry-dead-letter-contract",
+  "deployment_binding": {
+    "compose_profile": "worker",
+    "healthcheck": "python -m apps.worker.app.main health",
+    "logs_command": "docker compose logs --tail=200 worker",
+    "process_manager": "docker_compose",
+    "start_command": "docker compose --profile worker up -d worker",
+    "stop_command": "docker compose --profile worker stop worker"
   },
   "evidence_paths": [
     "infra/db/migrations/0007_scheduler_job_queue/up.sql",
@@ -68,13 +42,50 @@
     "tests/e2e/state-contract.spec.ts",
     "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json"
   ],
-  "deployment_binding": {
-    "process_manager": "docker_compose",
-    "compose_profile": "worker",
-    "start_command": "docker compose --profile worker up -d worker",
-    "stop_command": "docker compose --profile worker stop worker",
-    "logs_command": "docker compose logs --tail=200 worker",
-    "healthcheck": "python -m apps.worker.app.main health"
+  "implemented_scope": [
+    "PostgreSQL background_jobs table with job_type + idempotency_key uniqueness.",
+    "background_job_attempts table records each lease attempt, heartbeat, release, failure, expiry and success.",
+    "dead_letter_jobs table captures terminal failure payload and final attempt metadata.",
+    "transactional_outbox table captures durable refresh events with idempotency, lease, retry and dispatch state.",
+    "scripts/job_scheduler.py supports enqueue, lease, heartbeat, graceful release, retry, expired lease recovery, completion and dead-letter transitions.",
+    "scripts/job_scheduler.py supports dispatch-outbox-once for pending outbox events and logs dispatch_outbox_event operations.",
+    "POST /v1/scoring/recompute enqueues score_recompute jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
+    "scripts/job_scheduler.py registers a score_recompute handler that validates active-context freshness, writes scoring_runs and score_results for relationship_fact_candidate, relationship, entity, event, industry and source_document object families, advances refresh_token and completes stale jobs as skipped_stale_context instead of retrying forever.",
+    "POST /v1/data/snapshots/refresh enqueues data_snapshot_refresh jobs into background_jobs with task/acceptance metadata and an active-context idempotency key.",
+    "scripts/job_scheduler.py registers a data_snapshot_refresh handler that validates active-context freshness, writes active data_snapshots, advances refresh_token, emits data.snapshot.activated and completes stale jobs as skipped_stale_context instead of retrying forever.",
+    "scripts/job_scheduler.py registers a curated_ingestion_refresh handler that reuses the curated official NVIDIA/ASML loader idempotently, records execute_curated_ingestion_refresh and emits data.ingestion.completed.",
+    "scripts/fetch_official_source_full_text.py records dry-run source_health, retry_policy, attempt metadata and dead_letter_after_attempts=3 for official-source parser plumbing without live retrieval.",
+    "POST /v1/calibrations/run creates a calibration_run background job and calibration.run.requested outbox event while preserving the 14-day cadence and no-auto-activation policy.",
+    "scripts/job_scheduler.py registers a calibration_run handler that computes relationship-fact coverage, score-result coverage and drift warnings, writes calibration_runs metrics/drift_report/proposal_status=none, records execute_calibration_run and emits calibration.run.completed.",
+    "apps/worker/app/main.py exposes the supervised worker CLI with health, once and supervise commands, covering expired lease recovery, bounded job execution, transactional outbox dispatch, idle stop and SIGTERM/SIGINT graceful stop.",
+    "Makefile exposes worker-health, worker-once and worker-supervise operator commands for deployment wiring.",
+    "docker-compose.yml binds postgres, migrate and worker services under the worker profile so the default MVP worker process manager can start after healthy PostgreSQL and successful migrations.",
+    "infra/docker/worker.Dockerfile builds the worker/migration runtime and runs apps.worker.app.main supervise by default.",
+    "scripts/validate_worker_deployment.py validates the Docker Compose worker process binding and writes a release evidence artifact.",
+    "tests/integration/test_database_migrations.py exercises scheduler idempotency, bounded retry, dead-letter, heartbeat, graceful shutdown release, expired lease auto-requeue, success completion, score_recompute enqueue/execution idempotency, data_snapshot_refresh enqueue/execution idempotency, curated_ingestion_refresh execution and worker supervisor health/once/idle-stop contracts."
+  ],
+  "latest_ci_result": {
+    "commit_sha": "f3fdd64980ee27ff08fe10c44e2ae3a8dcbc7762",
+    "job_id": "82651968987",
+    "provider": "GitHub Actions",
+    "run_id": "27934137278",
+    "verify_g2_browser_e2e_step": "PASS",
+    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS",
+    "verify_g2_postgresql_integration_step": "PASS",
+    "verify_g2_static_contract_lint_typecheck_unit_step": "PASS",
+    "verify_static_contract_lint_typecheck_unit_step": "PASS",
+    "workflow": "EEI validation"
+  },
+  "latest_score_recompute_ci_result": {
+    "commit_sha": "f2bf996c1ea57f652f6d4d5da517f1f4b501e6ad",
+    "job_id": "82516108840",
+    "provider": "GitHub Actions",
+    "run_id": "27883953630",
+    "verified_scope": "scheduler score_recompute execution persists all MVP object-family score_results and emits score.snapshot.activated",
+    "verify_g2_browser_e2e_step": "PASS",
+    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS",
+    "verify_g2_postgresql_integration_step": "PASS",
+    "workflow": "EEI validation"
   },
   "local_validation": [
     "python3 -m py_compile apps/api/app/scoring.py apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py",
@@ -86,36 +97,22 @@
     ".venv/bin/python scripts/validate_catalog_integrity.py",
     ".venv/bin/python -m pytest -q tests/unit/test_scoring.py"
   ],
+  "parameters": {
+    "scheduler.dead_letter_after_attempts": 5,
+    "scheduler.heartbeat_interval_seconds": 30,
+    "scheduler.lease_ttl_seconds": 900,
+    "scheduler.max_retry_attempts": 5,
+    "worker.max_jobs_per_cycle": 1,
+    "worker.max_outbox_per_cycle": 5,
+    "worker.poll_interval_seconds": 5
+  },
+  "remaining_gaps_after_a206_done": [
+    "Run T1307 24h operator soak using the Docker Compose worker binding for long-duration timer, retry and recovery stability.",
+    "Keep A209 IN PROGRESS until committed 24h operator evidence is validated by CI.",
+    "Keep A210 formal brand/legal/market clearance blocking public launch."
+  ],
   "remote_validation_required": [
     "GitHub Actions make verify-g2-db must run migrations, schema checks and PostgreSQL integration tests."
-  ],
-  "latest_ci_result": {
-    "provider": "GitHub Actions",
-    "workflow": "EEI validation",
-    "run_id": "27874568202",
-    "job_id": "82491806968",
-    "commit_sha": "a7675452963ab7102f8edaa2af502cb2496b9924",
-    "verify_static_contract_lint_typecheck_unit_step": "PASS",
-    "verify_g2_static_contract_lint_typecheck_unit_step": "PASS",
-    "verify_g2_postgresql_integration_step": "PASS",
-    "verify_g2_browser_e2e_step": "PASS",
-    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
-  },
-  "latest_score_recompute_ci_result": {
-    "provider": "GitHub Actions",
-    "workflow": "EEI validation",
-    "run_id": "27883953630",
-    "job_id": "82516108840",
-    "commit_sha": "f2bf996c1ea57f652f6d4d5da517f1f4b501e6ad",
-    "verified_scope": "scheduler score_recompute execution persists all MVP object-family score_results and emits score.snapshot.activated",
-    "verify_g2_postgresql_integration_step": "PASS",
-    "verify_g2_browser_e2e_step": "PASS",
-    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
-  },
-  "remaining_gaps_before_done": [
-    "Run T1307 4h/24h operator soak using the Docker Compose worker binding for timer, retry and recovery stability.",
-    "Promote dry-run source health into the live official-source connector after live retrieval is approved.",
-    "Attach completed operator soak evidence before marking A206/A209 DONE."
   ],
   "rollback": [
     "Run docker compose --profile worker stop worker.",
@@ -123,5 +120,13 @@
     "Run scripts/migrate.py downgrade --steps 1 to drop dead_letter_jobs, background_job_attempts and background_jobs.",
     "Remove scripts/job_scheduler.py and A206 traceability/evidence rows.",
     "Regenerate release artifacts and rerun make verify-g2-db."
-  ]
+  ],
+  "schema_version": 1,
+  "status": "DONE",
+  "system": {
+    "en_name": "Enterprise Ecosystem Intelligence",
+    "subtitle": "企业商业版图与供应链递归探索系统",
+    "zh_name": "商域图谱"
+  },
+  "task_id": "T1304"
 }

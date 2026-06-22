@@ -1,4 +1,4 @@
-﻿task_id,gate,priority,title,depends_on,acceptance_ids,status
+task_id,gate,priority,title,depends_on,acceptance_ids,status
 T000,G0,P0,Inventory repository and confirm v2.0 canonical inputs,,A001,NOT STARTED
 T001,G0,P0,Pin runtime/dependency versions and lockfiles,T000,"A004,A008,A009",NOT STARTED
 T002,G0,P0,"Write ADRs for recursion, URL state, scoring, logs and calibration",T001,A002,NOT STARTED
@@ -122,10 +122,10 @@ T1215,G9,P0,"Run clean-room governance, prototype, PDF and ZIP validation","T121
 T1300,G2,P0,"Harden PostgreSQL production migrations, reversibility and fact/evidence/time/version layers",T1215,A201,DONE
 T1301,G7,P0,"Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical",T1300,A202,IN PROGRESS
 T1302,G4,P0,"Complete production API, recursive graph query and scoring service contracts",T1301,A203,IN PROGRESS
-T1303,G6,P0,"Implement transactional model config activation and atomic global refresh",T1302,"A204,A205",IN PROGRESS
-T1304,G7,P0,"Implement scheduler auto wake, idempotency, retry, heartbeat, graceful shutdown and dead-letter",T1301,A206,IN PROGRESS
+T1303,G6,P0,Implement transactional model config activation and atomic global refresh,T1302,"A204,A205",IN PROGRESS
+T1304,G7,P0,"Implement scheduler auto wake, idempotency, retry, heartbeat, graceful shutdown and dead-letter",T1301,A206,DONE
 T1305,G4,P0,"Implement server-side saved views, optimistic conflict control and recovery",T1302,A207,DONE
 T1306,G9,P0,"Run 10k, 100k and 1m relationship scale benchmarks for API, layout and render budgets",T1302,A208,DONE
 T1307,G9,P0,"Run 4h and 24h browser and worker soak tests for memory, timer, listener and retry stability",T1304,A209,IN PROGRESS
 T1308,G5,P0,"Componentize production frontend routes and wire real controls to API, state and persistence",T1302,A211,DONE
-T1309,G0,P0,"Complete EEI formal brand legal and market clearance or signed risk waiver before public launch",T1215,A210,IN PROGRESS
+T1309,G0,P0,Complete EEI formal brand legal and market clearance or signed risk waiver before public launch,T1215,A210,IN PROGRESS

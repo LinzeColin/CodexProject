@@ -36,6 +36,7 @@ EXPECTED_TASKS = {
 
 IMPLEMENTED_TASKS = {
     "T1300": "A201",
+    "T1304": "A206",
     "T1305": "A207",
     "T1306": "A208",
     "T1308": "A211",
@@ -45,12 +46,11 @@ PARTIAL_TASKS = {
     "T1301": "A202",
     "T1302": "A203",
     "T1303": "A204",
-    "T1304": "A206",
     "T1307": "A209",
     "T1309": "A210",
 }
 
-PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A206", "A209", "A210"}
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A209", "A210"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -90,6 +90,20 @@ IMPLEMENTED_EVIDENCE = {
         "artifacts/tests/a207/t1305_live_saved_view_multisession_e2e_contract.json",
         "artifacts/tests/a207/t1305_server_saved_view_conflict_recovery_contract.json",
         "artifacts/tests/a207/t1305_saved_view_trusted_gateway_contract.json",
+    },
+    "T1304": {
+        "infra/db/migrations/0007_scheduler_job_queue/up.sql",
+        "infra/db/migrations/0007_scheduler_job_queue/down.sql",
+        "infra/db/migrations/0009_transactional_outbox/up.sql",
+        "infra/db/migrations/0009_transactional_outbox/down.sql",
+        "scripts/job_scheduler.py",
+        "scripts/load_live_official_captures.py",
+        "scripts/check_database_schema.py",
+        "tests/integration/test_database_migrations.py",
+        "artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json",
+        "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
+        "artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json",
+        "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json",
     },
     "T1308": {
         "apps/web/src/app/workspace-context.tsx",
@@ -163,19 +177,6 @@ PARTIAL_EVIDENCE = {
         "tests/e2e/state-contract.spec.ts",
         "artifacts/tests/a204/t1303_transactional_model_activation_contract.json",
         "artifacts/tests/a205/t1303_atomic_refresh_context_contract.json",
-    },
-    "T1304": {
-        "infra/db/migrations/0007_scheduler_job_queue/up.sql",
-        "infra/db/migrations/0007_scheduler_job_queue/down.sql",
-        "infra/db/migrations/0009_transactional_outbox/up.sql",
-        "infra/db/migrations/0009_transactional_outbox/down.sql",
-        "scripts/job_scheduler.py",
-        "scripts/load_live_official_captures.py",
-        "scripts/check_database_schema.py",
-        "tests/integration/test_database_migrations.py",
-        "artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json",
-        "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
-        "artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json",
     },
     "T1307": {
         "scripts/run_soak_smoke.mjs",

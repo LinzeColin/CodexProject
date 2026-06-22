@@ -12,10 +12,10 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version status: `provisional`
 - Current phase: `C`
 - Current gate: `TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
-- Confirmed iteration count: 19
+- Confirmed iteration count: 20
 - Reconstructed development event count: 2
-- Current task: `TASK-T1307`
-- Blockers: A209/A206 remain open until 24h operator soak evidence is produced and CI-validated; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T1304`
+- Blockers: A209 remains open until 24h operator soak evidence is produced and CI-validated; A202 still needs source-license review, passage-level relationship review, production owner sign-off and legal release clearance; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -455,6 +455,29 @@ Do not infer iteration count from Git commit count.
 - CI dry-run count repair: GitHub Actions run `27930880852` flagged the A202 dry-run ingestion count assertion as stale: `ingestion_runs.counts.entity_resolution_candidates` and the SQL table count are `50`, while the test expected `52`. The assertion was aligned to `50` without changing loader behavior, scoring formulas, publication status, owner sign-off, source-license review, legal clearance or A209 soak status.
 - A202 operator/legal review packet note: `scripts/validate_a202_operator_review_packet.py` and `artifacts/tests/a202/t1301_operator_review_packet_contract.json` bind selected live official-source evidence to seven required closure gates while preserving `release_clearance=false`, zero relationship publication and A202 `IN_PROGRESS`. A209 24h soak remains a separate background gate and is not replaced by this packet.
 
+### `ITER-20260622-011`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `f3fdd649`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1304`, `TASK-T1307`, `TASK-T1301`
+- Goal: close the T1304/A206 scheduler, retry and dead-letter functionality gate independently from the A209 24h operator soak.
+- Assumptions: GitHub Actions run `27934137278` / job `82651968987` proves the scheduler, worker, PostgreSQL, browser and live FastAPI/PostgreSQL paths on the current baseline; A209 24h soak remains a separate release stability gate.
+- Files changed: A206 status ledgers, A202 operator-review packet gate map, A206 contract artifact, v5 sync validator, development status artifacts, delivery task traceability, release artifacts and governance status views.
+- Model changes: no scoring, graph traversal or extraction formula behavior change.
+- Parameter changes: no active threshold value changed; PARAM-062 remains a count of seven A202 review-packet gates, with the A206 gate now present instead of missing.
+- Commands run: A202 review packet generation, v5 readiness sync, A202 packet validation, targeted unit tests, ruff, development-status generation, clean-room release generation, release artifact generation and checksum validation.
+- Test results: local A202 packet generation/validation PASS, v5 readiness PASS, targeted unit tests PASS, ruff PASS; final full verification and remote CI binding remain pending for this commit.
+- Successes: T1304/A206 is no longer blocked by waiting for all 288 five-minute A209 24h soak windows; scheduler auto wake, idempotency, heartbeat, retry cap, dead-letter, graceful shutdown, outbox dispatch, worker supervisor and Docker Compose worker binding remain traced to A206 evidence.
+- Failures: A209 24h operator soak is still incomplete in the separate long-running evidence worktree.
+- Decisions: mark A206 `DONE`; keep A209 `IN_PROGRESS`; keep A202 and A210 blocked until their owner/legal/source clearance contracts are satisfied.
+- Remaining risks: remote GitHub Actions validation for this status-closure commit is pending; stale downstream docs could overstate production readiness if they ignore the still-open A209/A202/A210 gates.
+- Rollback: revert the A206 status rows, validator status move, A206 contract status, A202 gate map and regenerated release artifacts; rerun `make verify`.
+- Next step: commit/push this closure and verify EEI validation plus Project Governance CI before proceeding to the next MVP gap.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -481,6 +504,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-004`: final clean-room and release evidence resync after tracking the new A202 semantic-revision artifact.
 - `EVENT-20260622-008`: local A202 dry-run ingestion count assertion repair after EEI validation run `27930880852` failed G2 PostgreSQL integration.
 - `EVENT-20260622-010`: local A202 operator/legal review packet contract for selected live official-source evidence while A209 24h soak continues as a background release gate.
+- `EVENT-20260622-011`: local T1304/A206 scheduler closure decoupled from A209 24h operator soak.
 
 ## Unknown Historical Periods
 

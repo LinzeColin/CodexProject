@@ -1,5 +1,6 @@
 governance_spec_version: "1.0.0"
 project_id: "EEI"
+# 2026-06-22 audit: T1304/A206 scheduler closure changes delivery status only; formula expressions, weights and extraction logic are unchanged.
 formulas:
   - formula_id: "FORM-001"
     legacy_formula_id: "F-NP-001"

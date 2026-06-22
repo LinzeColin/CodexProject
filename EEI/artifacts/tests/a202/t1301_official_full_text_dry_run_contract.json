@@ -71,7 +71,7 @@
     "This is a dry-run fixture connector only; live official-source retrieval is still required before A202 can be closed.",
     "The committed fixture is a parser contract, not a reproduction of official full text and not legal or market clearance.",
     "A production owner-supplied decision or a second independent-source closure path is still required before Golden Vertical facts can be release-approved.",
-    "A206 remains open until source health, retry and dead-letter behavior are proven in the 4h/24h operator soak path."
+    "A206 scheduler/retry/dead-letter functionality is closed separately; A209 24h operator soak remains a separate production stability gate."
   ],
   "rollback": [
     "Remove scripts/fetch_official_source_full_text.py and the official_source_full_text fixture directory.",

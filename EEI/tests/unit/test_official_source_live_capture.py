@@ -280,7 +280,7 @@ def test_a202_operator_review_packet_stays_fail_closed() -> None:
         "passage_level_relationship_review": "missing",
         "production_owner_signoff": "missing",
         "legal_release_clearance": "missing",
-        "a206_retry_dead_letter_soak": "missing",
+        "a206_scheduler_retry_dead_letter": "present",
         "a209_24h_operator_soak": "missing",
     }
     for anchor in packet["anchors"]:
