@@ -42,14 +42,18 @@ ALL_ARXIV_ARCHIVES: tuple[dict[str, str], ...] = (
     {"archive_id": "hep-ph", "group": "Physics", "query": "cat:hep-ph"},
     {"archive_id": "hep-th", "group": "Physics", "query": "cat:hep-th"},
     {"archive_id": "math-ph", "group": "Physics", "query": "cat:math-ph"},
-    {"archive_id": "nlin", "group": "Physics", "query": "cat:nlin"},
+    {"archive_id": "nlin", "group": "Physics", "query": "cat:nlin.AO OR cat:nlin.CD OR cat:nlin.CG OR cat:nlin.PS OR cat:nlin.SI"},
     {"archive_id": "nucl-ex", "group": "Physics", "query": "cat:nucl-ex"},
     {"archive_id": "nucl-th", "group": "Physics", "query": "cat:nucl-th"},
-    {"archive_id": "physics", "group": "Physics", "query": "cat:physics"},
+    {
+        "archive_id": "physics",
+        "group": "Physics",
+        "query": "cat:physics.acc-ph OR cat:physics.app-ph OR cat:physics.atm-clus OR cat:physics.atom-ph OR cat:physics.bio-ph OR cat:physics.chem-ph OR cat:physics.class-ph OR cat:physics.comp-ph OR cat:physics.data-an OR cat:physics.flu-dyn OR cat:physics.gen-ph OR cat:physics.geo-ph OR cat:physics.hist-ph OR cat:physics.ins-det OR cat:physics.med-ph OR cat:physics.optics OR cat:physics.plasm-ph OR cat:physics.pop-ph OR cat:physics.soc-ph OR cat:physics.space-ph",
+    },
     {"archive_id": "quant-ph", "group": "Physics", "query": "cat:quant-ph"},
     {"archive_id": "q-bio", "group": "Quantitative Biology", "query": "cat:q-bio"},
-    {"archive_id": "q-fin", "group": "Quantitative Finance", "query": "cat:q-fin"},
-    {"archive_id": "stat", "group": "Statistics", "query": "cat:stat"},
+    {"archive_id": "q-fin", "group": "Quantitative Finance", "query": "cat:q-fin.CP OR cat:q-fin.EC OR cat:q-fin.GN OR cat:q-fin.MF OR cat:q-fin.PM OR cat:q-fin.PR OR cat:q-fin.RM OR cat:q-fin.ST OR cat:q-fin.TR"},
+    {"archive_id": "stat", "group": "Statistics", "query": "cat:stat.AP OR cat:stat.CO OR cat:stat.ME OR cat:stat.ML OR cat:stat.OT OR cat:stat.TH"},
 )
 
 ROI_COMPONENT_WEIGHTS: dict[str, float] = {
