@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 43
-- formula_count: 45
-- parameter_count: 339
+- model_count: 44
+- formula_count: 46
+- parameter_count: 348
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -66,6 +66,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-041 | Review8 Stage 1 local runtime recovery controls | deterministic local runtime and recovery gate | Provide low-resource tick, watchdog, backup, restore, runtime audit, and scheduler install/uninstall dry-run controls with explicit state/artifact paths and no production side effects | active | adp-stage1-local-runtime-recovery-v1 | `src/arxiv_daily_push/stage1_runtime.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-042 | Review8 Stage 1 migration package and transfer checklist | deterministic migration package and verification gate | Export and verify a low-resource Stage 1 migration package with file hashes, SQLite/runtime smoke evidence, restore instructions, and secret-name-only checklist without production side effects | active | adp-stage1-migration-package-v1 | `src/arxiv_daily_push/stage1_migration.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-043 | Review8 Stage 1 post-migration bootstrap gate | deterministic target-runner bootstrap validator | Verify Python, Git checkout, SSL, SQLite/FTS5, runtime smoke, GitHub-hosted workflow runner boundary, GitHub Actions env names, and secret-name-only readiness without production side effects | active | adp-stage1-post-migration-bootstrap-v1 | `src/arxiv_daily_push/stage1_bootstrap.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-stage1-bootstrap.yml` |
+| MOD-ADP-044 | Review8 Stage 1 historical B1 preview batch | deterministic offline/input-backed B1 report and email preview evidence generator | Generate 30 independent historical B1/arXiv report/email preview packages from supported inputs or deterministic fixtures before live-day delivery while preserving no-production-side-effect and no-future-leakage gates | active | adp-stage1-historical-b1-previews-v1 | `src/arxiv_daily_push/stage1_historical_previews.py`, `src/arxiv_daily_push/stage1_b1_report.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -165,6 +166,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-043 validates Stage 1 local runtime recovery: explicit heartbeat/checkpoint tick, watchdog stale-state rejection, SHA256 SQLite backup/restore with explicit confirmation, production flag audit, and scheduler dry-run templates without applying OS scheduler changes.
 - FORM-ADP-044 validates Stage 1 migration package export and verify: required source hash inventory, SQLite/runtime low-resource smoke, backup manifest, package file hash verification, secret-name-only checklist, and disabled production side effects.
 - FORM-ADP-045 validates Stage 1 post-migration bootstrap: target runner support, GitHub-hosted workflow boundary, Python/Git/SSL/SQLite checks, runtime smoke, secret-name-only readiness, optional arXiv HTTPS probe, and disabled production side effects.
+- FORM-ADP-046 validates S1-11 historical B1 previews: exactly 30 independent B1/arXiv report/email preview packages, supported JSON/JSONL/object or deterministic fixture input, unique dates/source/content/email identifiers, zero future-information leakage, 100% critical claim coverage, content ledger rows, optional five-file artifacts per preview, and disabled SMTP/Release/video/network/scheduler side effects.
 
 ## D. Parameters
 
@@ -213,6 +215,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Review8 Stage 1 local runtime recovery parameters: PARAM-ADP-316 through PARAM-ADP-325.
 - Active Review8 Stage 1 migration package parameters: PARAM-ADP-326 through PARAM-ADP-331.
 - Active Review8 Stage 1 post-migration bootstrap parameters: PARAM-ADP-332 through PARAM-ADP-339.
+- Active Review8 Stage 1 historical B1 preview parameters: PARAM-ADP-340 through PARAM-ADP-348.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

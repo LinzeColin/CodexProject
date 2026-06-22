@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:36bd9bcff03515120b0e8c46dad7c7d7a505602bfa09fd4e4f301cb8d10666b5`
-- snapshot_event_time: `2026-06-23T06:55:00+10:00`
+- source_snapshot_hash: `sha256:3339f730e3fefa68b02e0f99f446252c0d1969c6b2f7327e80ed6efb38008172`
+- snapshot_event_time: `2026-06-23T07:30:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -13,11 +13,11 @@
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
-- Product version: `0.20.0`
-- Phase/Gate: `S1-A / ADP-S1-10-POST-MIGRATION-BOOTSTRAP-READY`
-- Models/Formulas/Parameters total: `43 / 45 / 339`
-- Active formulas/parameters: `45 / 322`
-- Machine checked formulas/parameters: `45 / 322`
+- Product version: `0.21.0`
+- Phase/Gate: `S1-A / ADP-S1-11-HISTORICAL-B1-PREVIEWS-READY`
+- Models/Formulas/Parameters total: `44 / 46 / 348`
+- Active formulas/parameters: `46 / 331`
+- Machine checked formulas/parameters: `46 / 331`
 
 ## Assurance
 
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `ADP-S1-10-POST-MIGRATION-BOOTSTRAP-READY`
-- Next executable task: `S1-11-HISTORICAL_B1_PREVIEWS-001`
-- Pending/stale events: `72`
+- Release gate: `ADP-S1-11-HISTORICAL-B1-PREVIEWS-READY`
+- Next executable task: `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`
+- Pending/stale events: `73`
 - Tree-bound events: `0`
 - Commit-bound events: `0`
 - Legacy unbound events: `54`

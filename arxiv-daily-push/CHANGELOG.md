@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.21.0 - 2026-06-23
+
+- Added S1-11 historical B1/arXiv preview evidence generation via `adp historical-b1-previews`.
+- Added deterministic 30-sample B1 report/email preview generation with unique source IDs, content hashes, email IDs, claim evidence audits, and content ledger rows.
+- Kept live network fetch, production scheduler, real SMTP send, GitHub Release upload, video generation, and `ARXIV_PRODUCTION_ACCEPTED` disabled.
+
 ## 0.20.0 - 2026-06-23
 
 - Added S1-10 post-migration bootstrap verification for the target machine or GitHub-hosted cloud runner.

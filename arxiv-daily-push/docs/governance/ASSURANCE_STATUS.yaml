@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260623-ADP-071"
-source_snapshot_hash: "sha256:36bd9bcff03515120b0e8c46dad7c7d7a505602bfa09fd4e4f301cb8d10666b5"
+as_of_event_id: "EVENT-20260623-ADP-072"
+source_snapshot_hash: "sha256:3339f730e3fefa68b02e0f99f446252c0d1969c6b2f7327e80ed6efb38008172"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-23T06:55:00+10:00"
+snapshot_event_time: "2026-06-23T07:30:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 322
-    total_active_parameters: 322
-    checked_active_formulas: 45
-    total_active_formulas: 45
+    checked_active_parameters: 331
+    total_active_parameters: 331
+    checked_active_formulas: 46
+    total_active_formulas: 46
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 322
-    total_active_parameters: 322
+    checked_active_parameters: 331
+    total_active_parameters: 331
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,54 +64,54 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 0
     legacy_unbound_events: 54
-    precommit_pending_events: 18
+    precommit_pending_events: 19
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "ADP-S1-10-POST-MIGRATION-BOOTSTRAP-READY"
+  release_gate: "ADP-S1-11-HISTORICAL-B1-PREVIEWS-READY"
   blocker_ids:
     - "ADP-PHASE8-VIDEO-001"
     - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
     - "FACT-arxiv-daily-push-OPERATIONAL-EVIDENCE"
 next_executable_task:
-  task_id: "S1-11-HISTORICAL_B1_PREVIEWS-001"
+  task_id: "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"
   status: "planned"
-  reason: "Generate 30 independent historical B1/arXiv report and email preview packages from supported inputs without production side effects."
+  reason: "Collect controlled live B1/arXiv email delivery evidence across two real natural days before ARXIV_PRODUCTION_ACCEPTED can be claimed."
   acceptance_ids:
-    - "ADP-ACC-S1-11-HISTORICAL-B1-PREVIEWS"
-  owner: "content_owner + engineering_owner"
-  human_owner_role: "content_owner + engineering_owner"
-  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_stage1_queue.py -q` and attach the listed evidence refs."
+    - "ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"
+  owner: "content_owner + engineering_owner + operations_owner"
+  human_owner_role: "content_owner + engineering_owner + operations_owner"
+  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_live_preflight PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push run-live-all-arxiv-dry-run --generated-at 2026-06-23T09:00:00+10:00 --date 2026-06-23 --max-results-per-category 1 --json` and attach the listed evidence refs."
   stale_candidates: []
 owner_decision:
   required: true
-  decision_id: "DEC-arxiv-daily-push-V5-S1-005"
+  decision_id: "DEC-arxiv-daily-push-V5-S1-006"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否继续执行 S1-11，生成 30 份独立历史 B1/arXiv 报告和邮件预览证据。"
-  question: "是否继续执行 S1-11，生成 30 份独立历史 B1/arXiv 报告和邮件预览证据。"
-  human_owner_role: "content_owner + engineering_owner"
+  decision_question: "是否继续执行 S1-12，在目标 runner 上收集两个真实自然日的受控 B1/arXiv 邮件发送证据。"
+  question: "是否继续执行 S1-12，在目标 runner 上收集两个真实自然日的受控 B1/arXiv 邮件发送证据。"
+  human_owner_role: "content_owner + engineering_owner + operations_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT"
-  current_recommendation: "A: run S1-11 historical B1 previews before live-day email evidence"
-  option_a: "继续 S1-11，产出 30 份独立历史 B1 报告/邮件预览、Claim evidence 和内容台账证据。"
-  option_b: "暂停在 S1-10，只保留迁移后 bootstrap，不进入历史预览证据。"
-  option_c: "跳过历史预览直接做 live-day delivery；不推荐，因为内容质量和独立样本证据不足。"
+  current_recommendation: "A: run S1-12 controlled live B1 email days before production acceptance"
+  option_a: "继续 S1-12，按目标 runner、实时 arXiv 输入、B1 讲解邮件、Gmail SMTP 发送证据和无 secret 泄露记录两天。"
+  option_b: "暂停在 S1-11，只保留 30 份历史预览，不进入真实邮件证据。"
+  option_c: "跳过两天证据直接启用生产定时；不推荐，因为缺少 live-day delivery evidence。"
   options:
-    - "继续 S1-11，产出 30 份独立历史 B1 报告/邮件预览、Claim evidence 和内容台账证据。"
-    - "暂停在 S1-10，只保留迁移后 bootstrap，不进入历史预览证据。"
-    - "跳过历史预览直接做 live-day delivery；不推荐，因为内容质量和独立样本证据不足。"
-  estimated_effort: "P1; historical preview evidence generation"
-  estimated_cost_or_resource: "local fixture/replay artifacts only; no production schedule install, no real SMTP, no Release upload, no video generation"
-  expected_benefit: "在 live-day 发送前证明 B1/arXiv 文本报告和邮件预览能跨 30 个独立历史样本稳定生成。"
-  principal_risks: "fixture overfitting, duplicate historical samples, unsupported claims, stale content ledger, premature production acceptance"
-  evidence_required: "30 B1 report/email preview artifacts, Claim evidence audit, content ledger rows, focused tests, governance records"
+    - "继续 S1-12，按目标 runner、实时 arXiv 输入、B1 讲解邮件、Gmail SMTP 发送证据和无 secret 泄露记录两天。"
+    - "暂停在 S1-11，只保留 30 份历史预览，不进入真实邮件证据。"
+    - "跳过两天证据直接启用生产定时；不推荐，因为缺少 live-day delivery evidence。"
+  estimated_effort: "P1; controlled target-runner live delivery evidence"
+  estimated_cost_or_resource: "GitHub/cloud runner, Gmail SMTP secret names, live arXiv metadata access, durable evidence refs"
+  expected_benefit: "证明 Stage 1 B1/arXiv 每日邮件在真实运行边界能稳定送达，而不是只在离线历史预览中通过。"
+  principal_risks: "SMTP secret readiness, live arXiv availability, target runner drift, accidental scheduler enablement, local Mac fallback"
+  evidence_required: "two natural-day B1 email delivery refs, target-runner refs, B1 report/email artifacts, no-secret delivery audits, no production scheduler"
   decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "arxiv-daily-push remains at S1-10 and cannot reach ARXIV_PRODUCTION_ACCEPTED."
-  unblock_task_id: "S1-11-HISTORICAL_B1_PREVIEWS-001"
+  consequence_of_no_decision: "arxiv-daily-push remains at S1-11 and cannot reach ARXIV_PRODUCTION_ACCEPTED."
+  unblock_task_id: "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"
   acceptance_ids:
-    - "ADP-ACC-S1-11-HISTORICAL-B1-PREVIEWS"
+    - "ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-23T06:55:00+10:00"
+  last_reviewed_at: "2026-06-23T07:30:00+10:00"
