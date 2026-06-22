@@ -63,6 +63,12 @@ from .source_registry import (
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
 from .stage1_b1_report import build_b1_report_email_package, validate_b1_report_email_package
 from .stage1_bootstrap import build_stage1_bootstrap_report, validate_stage1_bootstrap_report
+from .stage1_historical_previews import (
+    build_historical_b1_previews,
+    build_historical_b1_previews_report,
+    load_historical_daily_inputs,
+    validate_historical_b1_previews,
+)
 from .stage1_migration import build_migration_package, validate_stage1_migration_report, verify_migration_package
 from .stage1_queue import build_stage1_queue_report, validate_stage1_queue_report
 from .stage1_runtime import (
@@ -162,6 +168,19 @@ def build_parser() -> argparse.ArgumentParser:
     b1_report.add_argument("--artifact-dir", help="Directory for Markdown, HTML, and JSON artifacts.")
     b1_report.add_argument("--write", action="store_true", help="Write report/email/audit artifacts to --artifact-dir.")
     b1_report.add_argument("--json", action="store_true", help="Print JSON report/email package.")
+
+    historical_previews = subparsers.add_parser(
+        "historical-b1-previews",
+        help="Build the S1-11 30-sample historical B1/arXiv report and email preview evidence package.",
+    )
+    historical_previews.add_argument("--input", help="Optional JSON array, JSONL, or object with daily_inputs.")
+    historical_previews.add_argument("--generated-at", required=True, help="Preview report timestamp.")
+    historical_previews.add_argument("--start-date", default="2026-05-01", help="First historical local date.")
+    historical_previews.add_argument("--count", type=int, default=30, help="Number of historical previews to build.")
+    historical_previews.add_argument("--recipient", default="linzezhang35@gmail.com", help="Dry-run email recipient.")
+    historical_previews.add_argument("--artifact-dir", help="Directory for preview artifacts and manifest.")
+    historical_previews.add_argument("--write", action="store_true", help="Write preview artifacts to --artifact-dir.")
+    historical_previews.add_argument("--json", action="store_true", help="Print JSON S1-11 preview report.")
 
     runtime_audit = subparsers.add_parser("runtime-audit", help="Audit Stage 1 local runtime readiness without side effects.")
     runtime_audit.add_argument("--state-dir", required=True, help="Explicit local runtime state directory.")
@@ -746,6 +765,44 @@ def main(argv: list[str] | None = None) -> int:
             if report["status"] == "pass":
                 print(f"- report_id: {report['report_id']}")
                 print(f"- email_subject: {report['email_subject']}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "historical-b1-previews":
+        if args.input:
+            report = build_historical_b1_previews_report(
+                load_historical_daily_inputs(args.input),
+                generated_at=args.generated_at,
+                recipient=args.recipient,
+                artifact_dir=args.artifact_dir,
+                write=args.write,
+                required_count=args.count,
+            )
+        else:
+            report = build_historical_b1_previews(
+                generated_at=args.generated_at,
+                start_date=args.start_date,
+                preview_count=args.count,
+                recipient=args.recipient,
+                artifact_dir=args.artifact_dir,
+                write=args.write,
+            )
+        errors = validate_historical_b1_previews(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- preview_count: {report.get('preview_count')}")
+            print(f"- unique_source_id_count: {report.get('unique_source_id_count')}")
+            manifest_path = (
+                (report.get("artifact_summary") or {}).get("manifest_path")
+                if isinstance(report.get("artifact_summary"), dict)
+                else ""
+            )
+            if manifest_path:
+                print(f"- manifest_path: {manifest_path}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- error: {reason}")
         return 0 if report["status"] == "pass" else 2

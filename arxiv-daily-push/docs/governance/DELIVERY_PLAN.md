@@ -19,8 +19,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 61
-- acceptance_count: 56
+- task_count: 62
+- acceptance_count: 57
 
 ## Delivery Tasks
 
@@ -150,7 +150,15 @@ The machine-readable task source is `delivery_tasks.yaml`.
 
 ### `S1-11-HISTORICAL_B1_PREVIEWS-001`
 
-- status: `planned`
-- objective: generate 30 independent historical B1/arXiv report and email preview packages without production side effects.
+- status: `completed`
+- objective: generated 30 independent historical B1/arXiv report and email preview packages without production side effects.
 - acceptance_ids: `ADP-ACC-S1-11-HISTORICAL-B1-PREVIEWS`
-- target_version: `0.21.0`
+- evidence: `governance/run_manifests/ADP-S1-11-HISTORICAL-B1-PREVIEWS-20260623.json`, `arxiv-daily-push/docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`
+- completed_version: `0.21.0`
+
+### `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`
+
+- status: `planned`
+- objective: collect controlled live B1/arXiv email delivery evidence across two real natural days on the target runner before production acceptance.
+- acceptance_ids: `ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS`
+- target_version: `0.22.0`

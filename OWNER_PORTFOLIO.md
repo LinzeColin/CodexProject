@@ -55,8 +55,8 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:707882dc1ce4c43244d5ead97f94857aef4f20ea28c8f1755b10cd609454c764`
-- snapshot_event_time: `2026-06-23T06:55:00+10:00`
+- source_snapshot_hash: `sha256:46fee273ddb76db4c980939b33a126ae48e2e85ab7d104b73643d477f178d977`
+- snapshot_event_time: `2026-06-23T08:00:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached
@@ -170,16 +170,16 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 - evidence_required: policy refs, jurisdiction/effective-date matrix, reconciliation results, approval memo
 - no_decision_consequence: whkmSalary remains FAILED and must not be used for production payroll.
 
-### `DEC-arxiv-daily-push-V5-S1-005`
+### `DEC-arxiv-daily-push-V5-S1-006`
 
-- human_owner_role: `content_owner + engineering_owner`
-- recommendation: A: run S1-11 historical B1 previews before live-day email evidence
-- estimated_effort: P1; historical preview evidence generation
-- estimated_cost_or_resource: local fixture/replay artifacts only; no production schedule install, no real SMTP, no Release upload, no video generation
-- expected_benefit: 在 live-day 发送前证明 B1/arXiv 文本报告和邮件预览能跨 30 个独立历史样本稳定生成。
-- principal_risks: fixture overfitting, duplicate historical samples, unsupported claims, stale content ledger, premature production acceptance
-- evidence_required: 30 B1 report/email preview artifacts, Claim evidence audit, content ledger rows, focused tests, governance records
-- no_decision_consequence: arxiv-daily-push remains at S1-10 and cannot reach ARXIV_PRODUCTION_ACCEPTED.
+- human_owner_role: `content_owner + engineering_owner + operations_owner`
+- recommendation: A: run S1-12 controlled live B1 email days before production acceptance
+- estimated_effort: P1; controlled target-runner live delivery evidence
+- estimated_cost_or_resource: GitHub/cloud runner, Gmail SMTP secret names, live arXiv metadata access, durable evidence refs
+- expected_benefit: 证明 Stage 1 B1/arXiv 每日邮件在真实运行边界能稳定送达，而不是只在离线历史预览中通过。
+- principal_risks: SMTP secret readiness, live arXiv availability, target runner drift, accidental scheduler enablement, local Mac fallback
+- evidence_required: two natural-day B1 email delivery refs, target-runner refs, B1 report/email artifacts, no-secret delivery audits, no production scheduler
+- no_decision_consequence: arxiv-daily-push remains at S1-11 and cannot reach ARXIV_PRODUCTION_ACCEPTED.
 
 
 ## 12. Executable Tasks
@@ -193,7 +193,7 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 - `PFI_BIG_DATA_SIMULATOR`: `TASK-PFI-B-001` - Resolve calibration evidence for strategy catalog rule constants and indicator thresholds.
 - `Serenity-Alipay`: `NONE` - No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.
 - `whkmSalary`: `TASK-WHKM-B-001` - Resolve salary policy source, jurisdiction, effective date, tax basis, boundary behavior, and rounding policy evidence.
-- `arxiv-daily-push`: `S1-11-HISTORICAL_B1_PREVIEWS-001` - Generate 30 independent historical B1/arXiv report and email preview packages from supported inputs without production side effects.
+- `arxiv-daily-push`: `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001` - Collect controlled live B1/arXiv email delivery evidence across two real natural days before ARXIV_PRODUCTION_ACCEPTED can be claimed.
 
 ## 13. Next Unique Governance Task
 
@@ -212,4 +212,4 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 | `PFI_BIG_DATA_SIMULATOR` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否投入多市场、OOS、成本和多重检验控制，验证 PFI 策略族不是数据挖掘赢家。 |
 | `Serenity-Alipay` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否投入历史基金快照、基准、OOS、消融和敏感性，验证评分权重、等级阈值、硬门禁和 Top5 衰减是否有稳定区分力。 |
 | `whkmSalary` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `FAILED` | `PARTIAL` | `FAILED` | 是否由工资、法务/政策和产品责任人提供权威政策、法域、生效日期、税务和舍入证据，验证 whkmSalary 可用于真实算薪。 |
-| `arxiv-daily-push` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `FAILED` | `PARTIAL` | `FAILED` | 是否继续执行 S1-11，生成 30 份独立历史 B1/arXiv 报告和邮件预览证据。 |
+| `arxiv-daily-push` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `FAILED` | `PARTIAL` | `FAILED` | 是否继续执行 S1-12，在目标 runner 上收集两个真实自然日的受控 B1/arXiv 邮件发送证据。 |
