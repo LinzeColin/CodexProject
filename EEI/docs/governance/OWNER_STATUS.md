@@ -85,8 +85,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `6`
 - legacy_unbound_events: `17`
-- precommit_pending_events: `9`
-- pending_or_stale_events: `25`
+- precommit_pending_events: `11`
+- pending_or_stale_events: `27`
 
 ## 15. UNKNOWN
 
@@ -96,8 +96,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:aaac5435b4231bc7f9a3279508030c1fccafffa56fe7712551496d64f17db08f`
-- snapshot_event_time: `2026-06-22T04:49:00Z`
+- source_snapshot_hash: `sha256:06d076d6ade713581af63587acefee6fd16210aa24c1d807d9a48aedc788845c`
+- snapshot_event_time: `2026-06-22T05:15:10Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
 - phase/gate: `C / TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`

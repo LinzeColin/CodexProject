@@ -452,6 +452,7 @@ Do not infer iteration count from Git commit count.
 - CI artifact-sync note: follow-up governance repair synchronized the generated traceability artifact, release artifacts, status views, delivery task view and event binding metadata after GitHub Actions run `27929407037` flagged the pushed-diff contract.
 - Additional validation: EEI single-project information-quality gate PASS, development-status artifact validation PASS, clean-room release validation PASS, release artifact validation PASS and checksum validation PASS.
 - CI fixture-hash repair: GitHub Actions run `27929407052` flagged `NVDA-ANCHOR-001 source_text_sha256 does not match text` in the operator-source capture fixture; the fixture attestation hash was corrected, clean-room/release evidence was regenerated, and A209 24h soak remains a background evidence task.
+- CI dry-run count repair: GitHub Actions run `27930880852` flagged the A202 dry-run ingestion count assertion as stale: `ingestion_runs.counts.entity_resolution_candidates` and the SQL table count are `50`, while the test expected `52`. The assertion was aligned to `50` without changing loader behavior, scoring formulas, publication status, owner sign-off, source-license review, legal clearance or A209 soak status.
 
 ## Reconstructed Development Events
 
@@ -477,6 +478,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-004`: final clean-room and release evidence resync after tracking the A202 context-anchor artifact.
 - `EVENT-20260622-005`: governance pushed-diff artifact sync for TASK-T1301/A202 context-anchor semantic revision.
 - `EVENT-20260622-004`: final clean-room and release evidence resync after tracking the new A202 semantic-revision artifact.
+- `EVENT-20260622-008`: local A202 dry-run ingestion count assertion repair after EEI validation run `27930880852` failed G2 PostgreSQL integration.
 
 ## Unknown Historical Periods
 
