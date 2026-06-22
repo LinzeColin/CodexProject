@@ -2,11 +2,12 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:4532d4d6fabbbd25e47fdd5b4ff12e91e60fcd40eec79e2b6227285b0d10434e`
+- source_base_commit: `932446fd2154ac477ea0cb6862a60098b1e1ed55`
+- source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
+- source_snapshot_hash: `sha256:ebd67bb1420c9586dbe3d7d6ccc8cdf09de8d3f4574b6d49ae499ed9bd058d25`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
-- generator_version: `2.0.0`
-- final_commit_binding: `CI_ATTESTATION_REQUIRED`
+- generator_version: `3.0.0`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
@@ -22,15 +23,21 @@
 
 | Dimension | Status | Evidence |
 |---|---|---|
-| structural_validation | `pass` | `scripts/validate_project_governance.py` |
-| implementation_congruence | `partial` | `Alpha/docs/governance/parameter_registry.csv, Alpha/docs/governance/formula_registry.yaml` |
-| empirical_validation | `unknown` | `Alpha/docs/governance/delivery_tasks.yaml` |
-| operational_evidence | `blocked` | `Alpha/docs/governance/development_events.jsonl` |
+| structural_completeness | `VERIFIED` | `scripts/validate_project_governance.py` |
+| implementation_congruence | `PARTIAL` | `Alpha/docs/governance/parameter_registry.csv, Alpha/docs/governance/formula_registry.yaml` |
+| parameter_source_quality | `PARTIAL` | `Alpha/docs/governance/parameter_registry.csv` |
+| empirical_validation | `UNVERIFIED` | `Alpha/docs/governance/delivery_tasks.yaml` |
+| operational_validation | `FAILED` | `Alpha/docs/governance/development_events.jsonl` |
+| delivery_evidence | `FAILED` | `Alpha/docs/governance/delivery_tasks.yaml` |
+| evidence_freshness | `PARTIAL` | `Alpha/docs/governance/development_events.jsonl` |
 
 ## Delivery
 
-- Readiness: `blocked`
+- Readiness: `FAILED`
 - Release gate: `GOV-SEMANTIC-ALPHA-in-progress`
 - Next executable task: `GOV-SEMANTIC-ALPHA-001`
 - Pending/stale events: `5`
+- Tree-bound events: `0`
+- Commit-bound events: `0`
+- Legacy unbound events: `5`
 - Unresolved fact IDs: `5`

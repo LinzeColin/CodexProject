@@ -1,26 +1,27 @@
 # Governance Dashboard
 
 - source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:c42f6bf28748680a7dc675517659bde21260d9bcb5a1c4d45d41d5837a583688`
+- source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
+- source_snapshot_hash: `sha256:b4095f816a22599670f943335e40509b7f907a4079b16ee9e82a82a81b2b2291`
 - snapshot_event_time: `2026-06-22T13:05:00+10:00`
-- generator_version: `2.0.0`
-- final_commit_binding: `CI_ATTESTATION_REQUIRED`
+- generator_version: `3.0.0`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
-| Project | Version | Phase | Impl | Empirical | Ops | Readiness | Next |
-|---|---|---|---|---|---|---|---|
-| `Alpha` | `0.1.0` | `B` | `partial` | `unknown` | `blocked` | `blocked` | `GOV-SEMANTIC-ALPHA-001` |
-| `EEI` | `0.1.0` | `C` | `partial` | `partial` | `partial` | `blocked` | `TASK-T1301` |
-| `EVA_OS` | `0.1.0` | `B` | `partial` | `unknown` | `blocked` | `blocked` | `GOV-SEMANTIC-EVA-001` |
-| `FIFA` | `0.1.0` | `B` | `partial` | `unknown` | `blocked` | `conditional` | `GOV-SEMANTIC-FIFA-001` |
-| `OpMe_System` | `1.0.0` | `B` | `machine_verified` | `unknown` | `blocked` | `conditional` | `GOV-SEMANTIC-OPME-001` |
-| `OpenAIDatabase` | `0.2.0` | `B` | `partial` | `unknown` | `blocked` | `blocked` | `GOV-SEMANTIC-OAIDB-001` |
-| `PFI_BIG_DATA_SIMULATOR` | `0.1.0` | `B` | `partial` | `unknown` | `blocked` | `conditional` | `GOV-SEMANTIC-PFI-001` |
-| `Serenity-Alipay` | `0.1.0` | `B` | `machine_verified` | `unknown` | `partial` | `conditional` | `TASK-A-001` |
-| `whkmSalary` | `0.0.0` | `B` | `partial` | `unknown` | `blocked` | `blocked` | `GOV-SEMANTIC-WHKM-001` |
-| `arxiv-daily-push` | `0.12.3` | `E` | `machine_verified` | `partial` | `partial` | `blocked` | `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034` |
+| Project | Version | Phase | Impl | Param Source | Empirical | Operational | Freshness | Readiness | Next |
+|---|---|---|---|---|---|---|---|---|---|
+| `Alpha` | `0.1.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `FAILED` | `GOV-SEMANTIC-ALPHA-001` |
+| `EEI` | `0.1.0` | `C` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `FAILED` | `TASK-T1301` |
+| `EVA_OS` | `0.1.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `FAILED` | `GOV-SEMANTIC-EVA-001` |
+| `FIFA` | `0.1.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `UNVERIFIED` | `GOV-SEMANTIC-FIFA-001` |
+| `OpMe_System` | `1.0.0` | `B` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `UNVERIFIED` | `GOV-SEMANTIC-OPME-001` |
+| `OpenAIDatabase` | `0.2.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `FAILED` | `GOV-SEMANTIC-OAIDB-001` |
+| `PFI_BIG_DATA_SIMULATOR` | `0.1.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `UNVERIFIED` | `GOV-SEMANTIC-PFI-001` |
+| `Serenity-Alipay` | `0.1.0` | `B` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `TASK-A-001` |
+| `whkmSalary` | `0.0.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `FAILED` | `GOV-SEMANTIC-WHKM-001` |
+| `arxiv-daily-push` | `0.12.3` | `E` | `VERIFIED` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `FAILED` | `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034` |
 
 ## Notes
 
 - Implementation congruence only means documented values and fingerprints match code/config sources.
-- Empirical validation and operational evidence are separate dimensions and may remain unknown, partial, or blocked.
+- Empirical validation and operational validation are separate dimensions and may remain UNVERIFIED, PARTIAL, or FAILED.
 - Branch protection details remain `UNVERIFIED` unless checked by authenticated GitHub API or UI evidence.

@@ -47,13 +47,31 @@ def hook_status() -> dict[str, Any]:
     hooks_json = ROOT / ".codex" / "hooks.json"
     hook_script = ROOT / ".codex" / "hooks" / "governance_stop.py"
     config_template = ROOT / ".codex" / "config.template.toml"
+    hooks_text = hooks_json.read_text(encoding="utf-8") if hooks_json.exists() else ""
+    hooks_enabled = False
+    stop_hook_configured = False
+    try:
+        hooks_data = json.loads(hooks_text) if hooks_text else {}
+        stop_hooks = hooks_data.get("hooks", {}).get("Stop", []) if isinstance(hooks_data, dict) else []
+        hooks_enabled = bool(stop_hooks)
+        stop_hook_configured = "governance_stop.py" in hooks_text
+    except json.JSONDecodeError:
+        hooks_enabled = False
+        stop_hook_configured = False
+    script_executable = hook_script.is_file() and os.access(hook_script, os.R_OK)
+    python_ok = sys.version_info >= (3, 11)
     result = {
         "hooks_json_exists": hooks_json.is_file(),
         "governance_stop_exists": hook_script.is_file(),
         "config_template_enables_hooks": False,
+        "repository_trusted": "UNVERIFIED",
+        "hooks_enabled": "VERIFIED" if hooks_enabled and stop_hook_configured else "UNVERIFIED",
+        "stop_hook_loaded": "UNVERIFIED",
+        "governance_script_executable": "VERIFIED" if script_executable else "UNVERIFIED",
+        "python_environment": "VERIFIED" if python_ok else "UNVERIFIED",
         "trust_status": "UNVERIFIED",
         "notes": [
-            "Codex project trust is a local app setting; this doctor can verify repository files but cannot prove the app has trusted them."
+            "Codex project trust and loaded-hook state are local app settings; this doctor can verify repository hook files but cannot prove the app has trusted or loaded them."
         ],
     }
     if config_template.exists():
@@ -97,6 +115,7 @@ def workflow_entry_gate_status() -> dict[str, Any]:
             and "if-no-files-found: error" in text
         ),
         "setup_doctor_runs_in_ci": "scripts/governance_setup_doctor.py --json --check-github" in text,
+        "generated_assurance_views_checked": "ASSURANCE_STATUS.yaml" in text and "governance/binding_backlog.yaml" in text,
         "required_failures_not_masked": re.search(r"(?m)^\s*continue-on-error\s*:", text) is None,
     }
     missing = sorted(name for name, ok in checks.items() if not ok)

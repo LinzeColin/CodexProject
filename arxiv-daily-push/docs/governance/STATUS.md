@@ -3,10 +3,11 @@
 ## Snapshot Metadata
 
 - source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:4ef9728988981807592d5f81629877123cb59a275b11f263c3ac5244e120fe25`
+- source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
+- source_snapshot_hash: `sha256:29af55ec14928c4da350aef629622f2ab4b267ecf0fe332c2353dfe053189a7b`
 - snapshot_event_time: `2026-06-22T13:05:00+10:00`
-- generator_version: `2.0.0`
-- final_commit_binding: `CI_ATTESTATION_REQUIRED`
+- generator_version: `3.0.0`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
@@ -22,15 +23,21 @@
 
 | Dimension | Status | Evidence |
 |---|---|---|
-| structural_validation | `pass` | `scripts/validate_project_governance.py` |
-| implementation_congruence | `machine_verified` | `arxiv-daily-push/docs/governance/parameter_registry.csv, arxiv-daily-push/docs/governance/formula_registry.yaml` |
-| empirical_validation | `partial` | `arxiv-daily-push/docs/governance/delivery_tasks.yaml` |
-| operational_evidence | `partial` | `arxiv-daily-push/docs/governance/development_events.jsonl` |
+| structural_completeness | `VERIFIED` | `scripts/validate_project_governance.py` |
+| implementation_congruence | `VERIFIED` | `arxiv-daily-push/docs/governance/parameter_registry.csv, arxiv-daily-push/docs/governance/formula_registry.yaml` |
+| parameter_source_quality | `VERIFIED` | `arxiv-daily-push/docs/governance/parameter_registry.csv` |
+| empirical_validation | `PARTIAL` | `arxiv-daily-push/docs/governance/delivery_tasks.yaml` |
+| operational_validation | `PARTIAL` | `arxiv-daily-push/docs/governance/development_events.jsonl` |
+| delivery_evidence | `FAILED` | `arxiv-daily-push/docs/governance/delivery_tasks.yaml` |
+| evidence_freshness | `PARTIAL` | `arxiv-daily-push/docs/governance/development_events.jsonl` |
 
 ## Delivery
 
-- Readiness: `blocked`
+- Readiness: `FAILED`
 - Release gate: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED`
 - Next executable task: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034`
 - Pending/stale events: `58`
+- Tree-bound events: `0`
+- Commit-bound events: `0`
+- Legacy unbound events: `54`
 - Unresolved fact IDs: `3`

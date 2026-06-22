@@ -779,6 +779,127 @@ def check_manual_counts(validation: Validation, project_path: Path, parsed: dict
                 validation.add(required, scope, f"{rel(path)} declares {name}={value}, actual={actual[name]}")
 
 
+def project_registry_counts(project: dict[str, Any]) -> dict[str, int]:
+    project_path = ROOT / str(project.get("path") or "")
+    parsed_validation = Validation()
+    parsed = parse_project_governance(project_path, parsed_validation, True, project_scope(project))
+    parameters = [row for row in parsed.get("parameters", []) if isinstance(row, dict)]
+    formulas = [row for row in parsed.get("formulas", []) if isinstance(row, dict)]
+    models = [row for row in parsed.get("models", []) if isinstance(row, dict)]
+    tasks = [row for row in parsed.get("tasks", []) if isinstance(row, dict)]
+    events = [row for row in parsed.get("events", []) if isinstance(row, dict)]
+    return {
+        "models": len(models),
+        "total_formulas": len(formulas),
+        "active_formulas": len([row for row in formulas if str(row.get("status") or "").lower() == "active"]),
+        "total_parameters": len(parameters),
+        "active_parameters": len([row for row in parameters if str(row.get("status") or "").lower() == "active"]),
+        "tasks": len(tasks),
+        "events": len(events),
+    }
+
+
+def scalar_strings(value: Any) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, dict):
+        result: list[str] = []
+        for item in value.values():
+            result.extend(scalar_strings(item))
+        return result
+    if isinstance(value, list):
+        result = []
+        for item in value:
+            result.extend(scalar_strings(item))
+        return result
+    return []
+
+
+def validate_projects_yaml_count_claims(validation: Validation, projects: list[dict[str, Any]]) -> None:
+    patterns = [
+        (re.compile(r"\b(\d+)\s+active\s+parameters?\b", re.I), "active_parameters"),
+        (re.compile(r"\b(\d+)\s+total\s+parameters?\b", re.I), "total_parameters"),
+        (re.compile(r"\b(\d+)\s+parameters?\b", re.I), "total_parameters"),
+        (re.compile(r"\b(\d+)\s+active\s+formulas?\b", re.I), "active_formulas"),
+        (re.compile(r"\b(\d+)\s+total\s+formulas?\b", re.I), "total_formulas"),
+        (re.compile(r"\b(\d+)\s+formulas?\b", re.I), "total_formulas"),
+        (re.compile(r"\b(\d+)\s+models?\b", re.I), "models"),
+        (re.compile(r"\b(\d+)\s+tasks?\b", re.I), "tasks"),
+        (re.compile(r"\b(\d+)\s+events?\b", re.I), "events"),
+    ]
+    for project in projects:
+        scope = project_scope(project)
+        counts = project_registry_counts(project)
+        for text in scalar_strings(project):
+            for pattern, key in patterns:
+                for match in pattern.finditer(text):
+                    declared = int(match.group(1))
+                    actual = counts[key]
+                    if declared != actual:
+                        validation.error(
+                            scope,
+                            f"governance/projects.yaml text declares {declared} {key}, actual={actual}: {text}",
+                        )
+
+
+def validate_readme_project_list(validation: Validation, projects: list[dict[str, Any]]) -> None:
+    readme = ROOT / "README.md"
+    if not readme.exists():
+        validation.error("root", "README.md missing")
+        return
+    text = readme.read_text(encoding="utf-8")
+    expected = {str(project.get("project_id") or "") for project in projects}
+    found = {
+        match.group(1)
+        for match in re.finditer(r"^\|\s*`([^`]+)`\s*\|\s*`([^`]+)`\s*\|", text, re.M)
+        if match.group(1) != "Project"
+    }
+    missing = sorted(expected - found)
+    extra = sorted(found - expected)
+    if missing or extra:
+        validation.error("root", f"README project list drift: missing={missing}; extra={extra}")
+
+
+def validate_assurance_status(validation: Validation, project: dict[str, Any]) -> None:
+    scope = project_scope(project)
+    project_path = ROOT / str(project.get("path") or "")
+    path = project_path / "docs" / "governance" / "ASSURANCE_STATUS.yaml"
+    if not path.exists():
+        return
+    data = load_yaml(path)
+    if not isinstance(data, dict):
+        validation.error(scope, f"{rel(path)} must be a mapping")
+        return
+    dimensions = data.get("dimensions")
+    if not isinstance(dimensions, dict):
+        validation.error(scope, f"{rel(path)} missing dimensions")
+        return
+    required_dimensions = {
+        "structural_completeness",
+        "implementation_congruence",
+        "parameter_source_quality",
+        "empirical_validation",
+        "operational_validation",
+        "delivery_evidence",
+        "evidence_freshness",
+    }
+    for dimension in sorted(required_dimensions):
+        status = str((dimensions.get(dimension) or {}).get("status") or "")
+        if status not in {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"}:
+            validation.error(scope, f"{rel(path)} {dimension}.status invalid: {status}")
+    forbidden = {"machine_verified", "unknown", "partial", "blocked", "pass"}
+    for dimension, payload in dimensions.items():
+        status = str((payload or {}).get("status") or "")
+        if status in forbidden:
+            validation.error(scope, f"{rel(path)} {dimension}.status uses legacy status {status}")
+    counts = project_registry_counts(project)
+    impl = dimensions.get("implementation_congruence") or {}
+    if int(impl.get("total_active_parameters") or -1) != counts["active_parameters"]:
+        validation.error(scope, f"{rel(path)} active parameter count drift")
+    if int(impl.get("total_active_formulas") or -1) != counts["active_formulas"]:
+        validation.error(scope, f"{rel(path)} active formula count drift")
+
+
 def validate_root(validation: Validation, config: dict[str, Any]) -> None:
     root_config = config.get("root_governance") if isinstance(config, dict) else {}
     if not isinstance(root_config, dict):
@@ -796,6 +917,8 @@ def validate_root(validation: Validation, config: dict[str, Any]) -> None:
             validation.error("root", f"Invalid JSON schema {rel(schema)}: {exc}")
 
     projects = [p for p in as_list(config.get("projects")) if isinstance(p, dict)]
+    validate_readme_project_list(validation, projects)
+    validate_projects_yaml_count_claims(validation, projects)
     registered_paths = [str(project.get("path") or "").rstrip("/") for project in projects]
     registered_ids = [str(project.get("project_id") or "") for project in projects]
     actual_project_dirs = discover_project_dirs()
@@ -837,6 +960,7 @@ def validate_project(
     check_weight_groups(validation, [p for p in parsed["parameters"] if isinstance(p, dict)], required, scope)
     check_versions(validation, project_path, parsed, required, scope)
     check_manual_counts(validation, project_path, parsed, required, scope)
+    validate_assurance_status(validation, project)
     check_semantic_coverage_task_binding(validation, project, parsed, required, scope)
 
 

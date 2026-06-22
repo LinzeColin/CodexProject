@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Review 6 governance views from canonical machine sources."""
+"""Generate Review 7 governance views from canonical machine sources."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -20,9 +21,10 @@ import validate_project_governance as structural
 sys.dont_write_bytecode = True
 
 ROOT = structural.ROOT
-GENERATOR_VERSION = "2.0.0"
+GENERATOR_VERSION = "3.0.0"
 COMPLETED_TASK_STATES = {"completed", "rejected", "deprecated"}
 EXECUTABLE_TASK_STATES = {"ready", "in_progress"}
+ASSURANCE_STATUSES = {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"}
 PROJECT_REPOSITORIES = {
     "Alpha": "https://github.com/LinzeColin/Alpha",
     "EEI": "https://github.com/LinzeColin/CodexProject/tree/main/EEI",
@@ -126,6 +128,39 @@ def git_output(args: list[str]) -> str:
 def current_commit() -> str:
     value = git_output(["rev-parse", "HEAD"])
     return value if re.fullmatch(r"[0-9a-f]{40}", value) else "0" * 40
+
+
+def current_tree_hash() -> str:
+    value = git_output(["rev-parse", "HEAD^{tree}"])
+    return value if re.fullmatch(r"[0-9a-f]{40}", value) else "0" * 40
+
+
+def configured_source_base() -> str | None:
+    value = os.environ.get("GOVERNANCE_SOURCE_BASE_COMMIT", "").strip()
+    return value if re.fullmatch(r"[0-9a-f]{40}", value) else None
+
+
+def configured_source_tree() -> str | None:
+    value = os.environ.get("GOVERNANCE_SOURCE_TREE_HASH", "").strip()
+    return value if re.fullmatch(r"[0-9a-f]{40}", value) else None
+
+
+def assurance_status(value: str | None) -> str:
+    normalized = str(value or "unknown").strip().lower()
+    mapping = {
+        "pass": "VERIFIED",
+        "verified": "VERIFIED",
+        "machine_verified": "VERIFIED",
+        "partial": "PARTIAL",
+        "blocked": "FAILED",
+        "failed": "FAILED",
+        "unknown": "UNVERIFIED",
+        "unverified": "UNVERIFIED",
+        "not_applicable": "NOT_APPLICABLE",
+        "not applicable": "NOT_APPLICABLE",
+        "n/a": "NOT_APPLICABLE",
+    }
+    return mapping.get(normalized, "UNVERIFIED")
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -262,6 +297,28 @@ def pending_event_count(events: list[dict[str, Any]]) -> int:
     return count
 
 
+def event_binding_counts(events: list[dict[str, Any]]) -> dict[str, int]:
+    counts = {
+        "tree_bound_events": 0,
+        "commit_bound_events": 0,
+        "legacy_unbound_events": 0,
+        "precommit_pending_events": 0,
+    }
+    for event in events:
+        binding = str(event.get("binding_status") or "").strip().lower()
+        commit = str(event.get("result_commit") or event.get("git_commit") or "").strip()
+        has_commit = bool(re.fullmatch(r"[0-9a-f]{7,40}", commit))
+        if binding == "precommit_tree_bound":
+            counts["tree_bound_events"] += 1
+        elif has_commit or event.get("ci_attestation_ref"):
+            counts["commit_bound_events"] += 1
+        elif binding in {"pre_commit_pending", "precommit_pending"}:
+            counts["precommit_pending_events"] += 1
+        else:
+            counts["legacy_unbound_events"] += 1
+    return counts
+
+
 def completed_task_ids(tasks: list[dict[str, Any]]) -> set[str]:
     return {
         str(task.get("task_id"))
@@ -305,26 +362,6 @@ def select_next_task(tasks: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def existing_assurance_base(project_path: Path) -> str | None:
-    path = project_path / "docs/governance/ASSURANCE_STATUS.yaml"
-    if not path.exists():
-        return None
-    match = re.search(r"(?m)^source_base_commit:\s*\"?([0-9a-f]{40})\"?\s*$", path.read_text(encoding="utf-8"))
-    commit = match.group(1) if match else ""
-    return commit if re.fullmatch(r"[0-9a-f]{40}", commit) else None
-
-
-def existing_root_base() -> str | None:
-    for path in (ROOT / "GOVERNANCE_DASHBOARD.md", ROOT / "OWNER_PORTFOLIO.md", ROOT / "README.md"):
-        if not path.exists():
-            continue
-        match = re.search(r"source_base_commit:\s*`?([0-9a-f]{40})`?", path.read_text(encoding="utf-8"))
-        commit = match.group(1) if match else ""
-        if re.fullmatch(r"[0-9a-f]{40}", commit):
-            return commit
-    return None
-
-
 def yaml_scalar(value: Any) -> str:
     if isinstance(value, bool):
         return "true" if value else "false"
@@ -363,6 +400,46 @@ def dump_yaml(value: Any, indent: int = 0) -> list[str]:
     return [f"{pad}{yaml_scalar(value)}"]
 
 
+def existing_assurance_base(project_path: Path) -> str | None:
+    path = project_path / "docs/governance/ASSURANCE_STATUS.yaml"
+    if not path.exists():
+        return None
+    match = re.search(r"(?m)^source_base_commit:\s*\"?([0-9a-f]{40})\"?\s*$", path.read_text(encoding="utf-8"))
+    commit = match.group(1) if match else ""
+    return commit if re.fullmatch(r"[0-9a-f]{40}", commit) else None
+
+
+def existing_assurance_tree(project_path: Path) -> str | None:
+    path = project_path / "docs/governance/ASSURANCE_STATUS.yaml"
+    if not path.exists():
+        return None
+    match = re.search(r"(?m)^source_tree_hash:\s*\"?([0-9a-f]{40})\"?\s*$", path.read_text(encoding="utf-8"))
+    tree = match.group(1) if match else ""
+    return tree if re.fullmatch(r"[0-9a-f]{40}", tree) else None
+
+
+def existing_root_base() -> str | None:
+    for path in (ROOT / "GOVERNANCE_DASHBOARD.md", ROOT / "OWNER_PORTFOLIO.md", ROOT / "README.md"):
+        if not path.exists():
+            continue
+        match = re.search(r"source_base_commit:\s*`?([0-9a-f]{40})`?", path.read_text(encoding="utf-8"))
+        commit = match.group(1) if match else ""
+        if re.fullmatch(r"[0-9a-f]{40}", commit):
+            return commit
+    return None
+
+
+def existing_root_tree() -> str | None:
+    for path in (ROOT / "GOVERNANCE_DASHBOARD.md", ROOT / "OWNER_PORTFOLIO.md", ROOT / "README.md"):
+        if not path.exists():
+            continue
+        match = re.search(r"source_tree_hash:\s*`?([0-9a-f]{40})`?", path.read_text(encoding="utf-8"))
+        tree = match.group(1) if match else ""
+        if re.fullmatch(r"[0-9a-f]{40}", tree):
+            return tree
+    return None
+
+
 def latest_manifest(project_id: str, events: list[dict[str, Any]]) -> dict[str, Any]:
     manifest_dir = ROOT / "governance/run_manifests"
     refs: list[str] = []
@@ -395,33 +472,39 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     unresolved = collect_unresolved_fact_ids(project_id, parsed, counts)
     source_paths = canonical_input_paths(project_path)
     source_hash = source_snapshot_hash(source_paths)
-    base_commit = existing_assurance_base(project_path) or current_commit()
+    base_commit = configured_source_base() or existing_assurance_base(project_path) or current_commit()
+    tree_hash = configured_source_tree() or existing_assurance_tree(project_path) or current_tree_hash()
     policy = ASSURANCE_POLICY.get(project_id, {})
     impl_status = (
-        "not_applicable"
+        "NOT_APPLICABLE"
         if counts["active_parameters"] == 0 and counts["active_formulas"] == 0
-        else "machine_verified"
+        else "VERIFIED"
         if counts["checked_parameters"] == counts["active_parameters"]
         and counts["checked_formulas"] == counts["active_formulas"]
-        else "partial"
+        else "PARTIAL"
     )
+    parameter_source_status = "VERIFIED" if counts["checked_parameters"] == counts["active_parameters"] else "PARTIAL"
+    event_counts = event_binding_counts(events)
+    evidence_freshness_status = "PARTIAL" if event_counts["legacy_unbound_events"] else "VERIFIED"
     next_task = select_next_task(tasks)
     assurance = {
         "project_id": project_id,
         "as_of_event_id": str(events[-1].get("event_id") or events[-1].get("iteration_id") or "NONE") if events else "NONE",
         "source_snapshot_hash": source_hash,
         "source_base_commit": base_commit,
+        "source_tree_hash": tree_hash,
         "snapshot_event_time": max_event_time(events),
         "generator_version": GENERATOR_VERSION,
-        "final_commit_binding": "CI_ATTESTATION_REQUIRED",
+        "final_commit_binding": "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION",
         "dimensions": {
-            "structural_validation": {
-                "status": "pass",
+            "structural_completeness": {
+                "status": "VERIFIED",
                 "fact_level": "EXTRACTED",
                 "evidence_refs": ["scripts/validate_project_governance.py"],
             },
             "implementation_congruence": {
                 "status": impl_status,
+                "machine_verified_means": "documented implementation values and fingerprints match extractable code/config sources only",
                 "fact_level": "EXTRACTED",
                 "checked_active_parameters": counts["checked_parameters"],
                 "total_active_parameters": counts["active_parameters"],
@@ -435,23 +518,44 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                     f"{project.get('path')}/docs/governance/formula_registry.yaml",
                 ],
             },
+            "parameter_source_quality": {
+                "status": parameter_source_status,
+                "fact_level": "EXTRACTED" if parameter_source_status == "VERIFIED" else "UNKNOWN",
+                "checked_active_parameters": counts["checked_parameters"],
+                "total_active_parameters": counts["active_parameters"],
+                "evidence_refs": [f"{project.get('path')}/docs/governance/parameter_registry.csv"],
+            },
             "empirical_validation": {
-                "status": str(policy.get("empirical") or "unknown"),
-                "fact_level": "UNKNOWN" if str(policy.get("empirical") or "unknown") == "unknown" else "EXTRACTED",
+                "status": assurance_status(str(policy.get("empirical") or "unknown")),
+                "fact_level": "UNKNOWN" if assurance_status(str(policy.get("empirical") or "unknown")) == "UNVERIFIED" else "EXTRACTED",
                 "unresolved_fact_ids": [item for item in unresolved if "EMPIRICAL" in item],
                 "evidence_refs": [f"{project.get('path')}/docs/governance/delivery_tasks.yaml"],
             },
-            "operational_evidence": {
-                "status": str(policy.get("operational") or "unknown"),
+            "operational_validation": {
+                "status": assurance_status(str(policy.get("operational") or "unknown")),
                 "fact_level": "UNKNOWN"
-                if str(policy.get("operational") or "unknown") == "unknown"
+                if assurance_status(str(policy.get("operational") or "unknown")) == "UNVERIFIED"
                 else "EXTRACTED",
                 "unresolved_fact_ids": [item for item in unresolved if "OPERATIONAL" in item],
                 "evidence_refs": [f"{project.get('path')}/docs/governance/development_events.jsonl"],
             },
+            "delivery_evidence": {
+                "status": assurance_status(str(policy.get("readiness") or "blocked")),
+                "fact_level": "EXTRACTED",
+                "evidence_refs": [f"{project.get('path')}/docs/governance/delivery_tasks.yaml"],
+            },
+            "evidence_freshness": {
+                "status": evidence_freshness_status,
+                "fact_level": "EXTRACTED",
+                "tree_bound_events": event_counts["tree_bound_events"],
+                "commit_bound_events": event_counts["commit_bound_events"],
+                "legacy_unbound_events": event_counts["legacy_unbound_events"],
+                "precommit_pending_events": event_counts["precommit_pending_events"],
+                "evidence_refs": [f"{project.get('path')}/docs/governance/development_events.jsonl"],
+            },
         },
         "delivery_readiness": {
-            "status": str(policy.get("readiness") or "blocked"),
+            "status": assurance_status(str(policy.get("readiness") or "blocked")),
             "release_gate": str(matrix.get("current_gate") or "UNKNOWN"),
             "blocker_ids": unresolved[:8],
         },
@@ -482,6 +586,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         "latest_event": events[-1] if events else {},
         "latest_manifest": latest_manifest(project_id, events),
         "pending_event_count": pending_event_count(events),
+        "event_binding_counts": event_counts,
         "unresolved_fact_ids": unresolved,
         "policy_blockers": list(policy.get("blockers") or []),
         "assurance": assurance,
@@ -516,9 +621,22 @@ Active Codex-related project hub for LinzeColin.
 ## Snapshot Metadata
 
 - source_base_commit: `{meta['source_base_commit']}`
+- source_tree_hash: `{meta['source_tree_hash']}`
 - source_snapshot_hash: `{meta['source_snapshot_hash']}`
 - generator_version: `{GENERATOR_VERSION}`
-- final_commit_binding: `CI_ATTESTATION_REQUIRED`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+
+## Assurance Vocabulary
+
+- `structural_completeness`: required governance files parse and cross-reference.
+- `implementation_congruence`: documented implementation values and fingerprints match extractable code/config sources.
+- `parameter_source_quality`: active parameter values have source selectors or explicit unresolved tasks.
+- `empirical_validation`: model claims are supported by calibration, backtest, fixture, or experiment evidence.
+- `operational_validation`: runtime, CI, soak, or production-trial evidence exists.
+- `delivery_evidence`: delivery gates and completed tasks have acceptance evidence.
+- `evidence_freshness`: events are tree-bound, commit-bound, or honestly listed as legacy unbound.
+
+`machine_verified` is not a production claim. It only maps to implementation congruence when code/config extraction proves documented facts.
 
 ## Projects
 
@@ -543,13 +661,14 @@ def render_dashboard(projects: list[dict[str, Any]], meta: dict[str, str]) -> st
         "# Governance Dashboard",
         "",
         f"- source_base_commit: `{meta['source_base_commit']}`",
+        f"- source_tree_hash: `{meta['source_tree_hash']}`",
         f"- source_snapshot_hash: `{meta['source_snapshot_hash']}`",
         f"- snapshot_event_time: `{meta['snapshot_event_time']}`",
         f"- generator_version: `{GENERATOR_VERSION}`",
-        "- final_commit_binding: `CI_ATTESTATION_REQUIRED`",
+        "- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`",
         "",
-        "| Project | Version | Phase | Impl | Empirical | Ops | Readiness | Next |",
-        "|---|---|---|---|---|---|---|---|",
+        "| Project | Version | Phase | Impl | Param Source | Empirical | Operational | Freshness | Readiness | Next |",
+        "|---|---|---|---|---|---|---|---|---|---|",
     ]
     for item in projects:
         assurance = item["assurance"]
@@ -563,8 +682,10 @@ def render_dashboard(projects: list[dict[str, Any]], meta: dict[str, str]) -> st
                     f"`{item['product_version']}`",
                     f"`{item['current_phase']}`",
                     f"`{dims['implementation_congruence']['status']}`",
+                    f"`{dims['parameter_source_quality']['status']}`",
                     f"`{dims['empirical_validation']['status']}`",
-                    f"`{dims['operational_evidence']['status']}`",
+                    f"`{dims['operational_validation']['status']}`",
+                    f"`{dims['evidence_freshness']['status']}`",
                     f"`{assurance['delivery_readiness']['status']}`",
                     f"`{next_task}`",
                 ]
@@ -577,7 +698,7 @@ def render_dashboard(projects: list[dict[str, Any]], meta: dict[str, str]) -> st
             "## Notes",
             "",
             "- Implementation congruence only means documented values and fingerprints match code/config sources.",
-            "- Empirical validation and operational evidence are separate dimensions and may remain unknown, partial, or blocked.",
+            "- Empirical validation and operational validation are separate dimensions and may remain UNVERIFIED, PARTIAL, or FAILED.",
             "- Branch protection details remain `UNVERIFIED` unless checked by authenticated GitHub API or UI evidence.",
         ]
     )
@@ -590,42 +711,80 @@ def render_owner_portfolio(projects: list[dict[str, Any]], meta: dict[str, str])
     for item in projects:
         for blocker in item["policy_blockers"][:2]:
             blockers.append(f"{item['project_id']}: {blocker}")
+    red = [item for item in projects if item["assurance"]["delivery_readiness"]["status"] == "FAILED"]
+    yellow = [item for item in projects if item["assurance"]["delivery_readiness"]["status"] == "PARTIAL"]
+    green = [
+        item
+        for item in projects
+        if item["assurance"]["delivery_readiness"]["status"] in {"VERIFIED", "NOT_APPLICABLE"}
+    ]
+    next_task = next(
+        (
+            item["assurance"]["next_executable_task"]
+            for item in projects
+            if item["assurance"]["next_executable_task"]["task_id"] != "NONE"
+        ),
+        {"task_id": "NONE", "reason": "No executable governance task selected."},
+    )
     lines = [
         "# OWNER_PORTFOLIO",
         "",
-        "## Overall Conclusion",
+        "## 1. Overall Conclusion",
         "",
-        "Review 6 governance is a portfolio control layer, not a production-readiness claim for every project.",
+        "Review 7 governance is a portfolio control layer with automatic generated-view synchronization, full-repository read-only drift checks, and explicit evidence-binding backlog. It is not a production-readiness claim for every project.",
         "",
-        "## Snapshot Metadata",
+        "## 2. Immutable Snapshot",
         "",
         f"- source_base_commit: `{meta['source_base_commit']}`",
+        f"- source_tree_hash: `{meta['source_tree_hash']}`",
         f"- source_snapshot_hash: `{meta['source_snapshot_hash']}`",
         f"- snapshot_event_time: `{meta['snapshot_event_time']}`",
         f"- generator_version: `{GENERATOR_VERSION}`",
+        "- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`",
         "- branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached",
         "",
-        "## Owner Decisions Needed",
+        "## 3. Red Yellow Green",
+        "",
+        f"- red_FAILED: `{len(red)}`",
+        f"- yellow_PARTIAL: `{len(yellow)}`",
+        f"- green_VERIFIED_OR_NOT_APPLICABLE: `{len(green)}`",
+        "",
+        "## 4. Top 5 Blockers",
         "",
     ]
+    for blocker in blockers[:5]:
+        lines.append(f"- {blocker}")
+    lines.extend(
+        [
+            "",
+            "## 5. Owner Decisions",
+            "",
+            "| Decision | Default Recommendation | Option A | Option B | No Decision Consequence | Owner | Unblock Condition |",
+            "|---|---|---|---|---|---|---|",
+        ]
+    )
     for item in decision_projects:
         decision = item["assurance"]["owner_decision"]
-        lines.append(f"- `{item['project_id']}`: {decision['question']}")
-    lines.extend(["", "## Top Blockers", ""])
-    for blocker in blockers[:10]:
-        lines.append(f"- {blocker}")
-    lines.extend(["", "## Executable Tasks", ""])
+        task = item["assurance"]["next_executable_task"]
+        lines.append(
+            f"| `{decision['decision_id']}` | A: fund evidence hardening | {decision['options'][0]} | {decision['options'][1]} | remains `{item['assurance']['delivery_readiness']['status']}` | {task['owner']} | {task['unblock_condition']} |"
+        )
+    lines.extend(["", "## 6. Executable Tasks", ""])
     for item in projects:
         task = item["assurance"]["next_executable_task"]
         lines.append(f"- `{item['project_id']}`: `{task['task_id']}` - {task['reason']}")
-    lines.extend(["", "## Four-Dimension Assurance", ""])
-    lines.append("| Project | Impl | Empirical | Ops | Readiness | Owner action |")
-    lines.append("|---|---|---|---|---|---|")
+    lines.extend(["", "## 7. Next Unique Governance Task", ""])
+    lines.append(f"- `{next_task['task_id']}` - {next_task['reason']}")
+    lines.extend(["", "## 8. Assurance Dimensions", ""])
+    lines.append("| Project | Structural | Impl | Param Source | Empirical | Operational | Delivery | Freshness | Readiness | Owner action |")
+    lines.append("|---|---|---|---|---|---|---|---|---|---|")
     for item in projects:
         dims = item["assurance"]["dimensions"]
         lines.append(
-            f"| `{item['project_id']}` | `{dims['implementation_congruence']['status']}` | "
-            f"`{dims['empirical_validation']['status']}` | `{dims['operational_evidence']['status']}` | "
+            f"| `{item['project_id']}` | `{dims['structural_completeness']['status']}` | "
+            f"`{dims['implementation_congruence']['status']}` | `{dims['parameter_source_quality']['status']}` | "
+            f"`{dims['empirical_validation']['status']}` | `{dims['operational_validation']['status']}` | "
+            f"`{dims['delivery_evidence']['status']}` | `{dims['evidence_freshness']['status']}` | "
             f"`{item['assurance']['delivery_readiness']['status']}` | {item['assurance']['owner_decision']['question']} |"
         )
     return "\n".join(lines) + "\n"
@@ -640,10 +799,11 @@ def render_status(item: dict[str, Any]) -> str:
 ## Snapshot Metadata
 
 - source_base_commit: `{assurance['source_base_commit']}`
+- source_tree_hash: `{assurance['source_tree_hash']}`
 - source_snapshot_hash: `{assurance['source_snapshot_hash']}`
 - snapshot_event_time: `{assurance['snapshot_event_time']}`
 - generator_version: `{GENERATOR_VERSION}`
-- final_commit_binding: `CI_ATTESTATION_REQUIRED`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
@@ -659,10 +819,13 @@ def render_status(item: dict[str, Any]) -> str:
 
 | Dimension | Status | Evidence |
 |---|---|---|
-| structural_validation | `{dims['structural_validation']['status']}` | `{brief_list(dims['structural_validation']['evidence_refs'])}` |
+| structural_completeness | `{dims['structural_completeness']['status']}` | `{brief_list(dims['structural_completeness']['evidence_refs'])}` |
 | implementation_congruence | `{dims['implementation_congruence']['status']}` | `{brief_list(dims['implementation_congruence']['evidence_refs'])}` |
+| parameter_source_quality | `{dims['parameter_source_quality']['status']}` | `{brief_list(dims['parameter_source_quality']['evidence_refs'])}` |
 | empirical_validation | `{dims['empirical_validation']['status']}` | `{brief_list(dims['empirical_validation']['evidence_refs'])}` |
-| operational_evidence | `{dims['operational_evidence']['status']}` | `{brief_list(dims['operational_evidence']['evidence_refs'])}` |
+| operational_validation | `{dims['operational_validation']['status']}` | `{brief_list(dims['operational_validation']['evidence_refs'])}` |
+| delivery_evidence | `{dims['delivery_evidence']['status']}` | `{brief_list(dims['delivery_evidence']['evidence_refs'])}` |
+| evidence_freshness | `{dims['evidence_freshness']['status']}` | `{brief_list(dims['evidence_freshness']['evidence_refs'])}` |
 
 ## Delivery
 
@@ -670,6 +833,9 @@ def render_status(item: dict[str, Any]) -> str:
 - Release gate: `{assurance['delivery_readiness']['release_gate']}`
 - Next executable task: `{assurance['next_executable_task']['task_id']}`
 - Pending/stale events: `{item['pending_event_count']}`
+- Tree-bound events: `{item['event_binding_counts']['tree_bound_events']}`
+- Commit-bound events: `{item['event_binding_counts']['commit_bound_events']}`
+- Legacy unbound events: `{item['event_binding_counts']['legacy_unbound_events']}`
 - Unresolved fact IDs: `{len(item['unresolved_fact_ids'])}`
 """
 
@@ -681,56 +847,119 @@ def render_owner_status(item: dict[str, Any]) -> str:
     next_task = assurance["next_executable_task"]
     decision = assurance["owner_decision"]
     blockers = item["policy_blockers"][:3] or ["No blocker recorded."]
+    option_a = decision["options"][0]
+    option_b = decision["options"][1] if len(decision["options"]) > 1 else "B: defer"
+    option_c = decision["options"][2] if len(decision["options"]) > 2 else "C: de-scope"
     return f"""# OWNER_STATUS
 
 {item['project_id']} 当前治理结论：实现一致性为 `{dims['implementation_congruence']['status']}`，交付状态为 `{assurance['delivery_readiness']['status']}`；这不是生产上线声明。
 
-## 1. Version, Phase, Gate
+## 1. Current Conclusion
 
 - source_base_commit: `{assurance['source_base_commit']}`
+- source_tree_hash: `{assurance['source_tree_hash']}`
 - source_snapshot_hash: `{assurance['source_snapshot_hash']}`
 - snapshot_event_time: `{assurance['snapshot_event_time']}`
 - generator_version: `{GENERATOR_VERSION}`
 - version: `{item['product_version']}`
 - phase/gate: `{item['current_phase']} / {item['current_gate']}`
 
-## 2. Assurance And Readiness
+## 2. This Run Change
 
-- structural_validation: `{dims['structural_validation']['status']}`
+Generated owner-facing views now separate implementation congruence from parameter source quality, empirical validation, operational validation, delivery evidence, and evidence freshness.
+
+## 3. Owner Impact
+
+- structural_completeness: `{dims['structural_completeness']['status']}`
 - implementation_congruence: `{dims['implementation_congruence']['status']}` ({counts['checked_parameters']}/{counts['active_parameters']} active parameters, {counts['checked_formulas']}/{counts['active_formulas']} active formulas)
+- parameter_source_quality: `{dims['parameter_source_quality']['status']}`
 - empirical_validation: `{dims['empirical_validation']['status']}`
-- operational_evidence: `{dims['operational_evidence']['status']}`
+- operational_validation: `{dims['operational_validation']['status']}`
+- delivery_evidence: `{dims['delivery_evidence']['status']}`
+- evidence_freshness: `{dims['evidence_freshness']['status']}`
 - delivery_readiness: `{assurance['delivery_readiness']['status']}`
 
-## 3. Latest Meaningful Change
+## 4. Decision Needed
 
-Current canonical registries separate implementation congruence from empirical and operational evidence, so machine verification does not imply production readiness.
+- decision_id: `{decision['decision_id']}`
+- question: {decision['question']}
 
-## 4. Top Blockers
+## 5. A/B/C Choice Matrix
+
+| Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
+|---|---|---|---|---|---|
+| `{decision['decision_id']}` | A | {option_a} | {option_b} | {option_c} | remains `{assurance['delivery_readiness']['status']}` with unresolved evidence. |
+
+## 6. Current Blockers
 
 1. {blockers[0]}
 2. {blockers[1] if len(blockers) > 1 else 'No second blocker recorded.'}
 3. {blockers[2] if len(blockers) > 2 else 'No third blocker recorded.'}
 
-## 5. Owner Decision
-
-- decision_id: `{decision['decision_id']}`
-- question: {decision['question']}
-- options: {brief_list(decision['options'], 3)}
-
-## 6. Next Executable Task
-
-- task_id: `{next_task['task_id']}`
-- reason: {next_task['reason']}
-- acceptance: {brief_list([str(x) for x in next_task.get('acceptance_ids', [])])}
-
-## 7. Owner And Evidence Freshness
+## 7. Evidence Required To Unblock
 
 - owner: {next_task['owner']}
 - unblock_condition: {next_task['unblock_condition']}
-- unresolved_fact_ids: `{len(item['unresolved_fact_ids'])}`
+- acceptance: {brief_list([str(x) for x in next_task.get('acceptance_ids', [])])}
+
+## 8. Model Formula Parameter Change
+
+- model_count: `{item['models']}`
+- total_formulas: `{counts['total_formulas']}`
+- active_formulas: `{counts['active_formulas']}`
+- total_parameters: `{counts['total_parameters']}`
+- active_parameters: `{counts['active_parameters']}`
+- active_values_changed_by_this_view: `0`
+
+## 9. Tests And Acceptance
+
+- required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
+- release_gate: `{assurance['delivery_readiness']['release_gate']}`
+
+## 10. Evidence Freshness
+
+- tree_bound_events: `{item['event_binding_counts']['tree_bound_events']}`
+- commit_bound_events: `{item['event_binding_counts']['commit_bound_events']}`
+- legacy_unbound_events: `{item['event_binding_counts']['legacy_unbound_events']}`
+- precommit_pending_events: `{item['event_binding_counts']['precommit_pending_events']}`
 - pending_or_stale_events: `{item['pending_event_count']}`
+
+## 11. UNKNOWN
+
+- unresolved_fact_ids: `{len(item['unresolved_fact_ids'])}`
+
+## 12. Next Unique Task
+
+- task_id: `{next_task['task_id']}`
+- reason: {next_task['reason']}
 """
+
+
+def render_binding_backlog(projects: list[dict[str, Any]], meta: dict[str, str]) -> str:
+    payload = {
+        "generated_by": "scripts/generate_governance_dashboard.py",
+        "generator_version": GENERATOR_VERSION,
+        "task_id": "GOV-REVIEW7-BINDING-BACKLOG-001",
+        "source_base_commit": meta["source_base_commit"],
+        "source_tree_hash": meta["source_tree_hash"],
+        "source_snapshot_hash": meta["source_snapshot_hash"],
+        "status": "open",
+        "policy": "Legacy events are not rewritten. Future meaningful runs must be PRECOMMIT_TREE_BOUND before commit and commit-bound by CI attestation after merge.",
+        "projects": [
+            {
+                "project_id": item["project_id"],
+                "tree_bound_events": item["event_binding_counts"]["tree_bound_events"],
+                "commit_bound_events": item["event_binding_counts"]["commit_bound_events"],
+                "legacy_unbound_events": item["event_binding_counts"]["legacy_unbound_events"],
+                "precommit_pending_events": item["event_binding_counts"]["precommit_pending_events"],
+                "next_task": "GOV-REVIEW7-BINDING-BACKLOG-001"
+                if item["event_binding_counts"]["legacy_unbound_events"]
+                else "NOT_APPLICABLE",
+            }
+            for item in projects
+        ],
+    }
+    return "\n".join(dump_yaml(payload)) + "\n"
 
 
 def generate(write: bool) -> dict[str, Any]:
@@ -740,7 +969,8 @@ def generate(write: bool) -> dict[str, Any]:
     portfolio_hash = source_snapshot_hash([ROOT / "governance/projects.yaml"] + [ROOT / i["path"] / "docs/governance/parameter_registry.csv" for i in infos])
     event_times = [info["assurance"]["snapshot_event_time"] for info in infos if info["assurance"]["snapshot_event_time"] != "UNKNOWN"]
     meta = {
-        "source_base_commit": existing_root_base() or current_commit(),
+        "source_base_commit": configured_source_base() or existing_root_base() or current_commit(),
+        "source_tree_hash": configured_source_tree() or existing_root_tree() or current_tree_hash(),
         "source_snapshot_hash": portfolio_hash,
         "snapshot_event_time": max(event_times) if event_times else "UNKNOWN",
     }
@@ -749,6 +979,7 @@ def generate(write: bool) -> dict[str, Any]:
         ROOT / "README.md": render_readme(infos, meta),
         ROOT / "GOVERNANCE_DASHBOARD.md": render_dashboard(infos, meta),
         ROOT / "OWNER_PORTFOLIO.md": render_owner_portfolio(infos, meta),
+        ROOT / "governance" / "binding_backlog.yaml": render_binding_backlog(infos, meta),
     }
     for path, text in root_outputs.items():
         if write:

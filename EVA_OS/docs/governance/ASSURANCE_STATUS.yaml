@@ -1,18 +1,20 @@
 project_id: "EVA_OS"
 as_of_event_id: "EVT-REVIEW6-FINAL-EVA_OS-001"
-source_snapshot_hash: "sha256:87611d049cd444155001a30c448635e552e553cd3d2d7367f42f521bf5c45ac7"
-source_base_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
+source_snapshot_hash: "sha256:5a35994864b903f11c70f98698d4ba2a5ad7d789ab6fa83d7e34f6aec668668b"
+source_base_commit: "932446fd2154ac477ea0cb6862a60098b1e1ed55"
+source_tree_hash: "a661be1db22d99ff3afe6183ac1ae8f4c444be18"
 snapshot_event_time: "2026-06-22T00:24:25Z"
-generator_version: "2.0.0"
-final_commit_binding: "CI_ATTESTATION_REQUIRED"
+generator_version: "3.0.0"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
-  structural_validation:
-    status: "pass"
+  structural_completeness:
+    status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "scripts/validate_project_governance.py"
   implementation_congruence:
-    status: "partial"
+    status: "PARTIAL"
+    machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
     checked_active_parameters: 52
     total_active_parameters: 189
@@ -23,22 +25,43 @@ dimensions:
     evidence_refs:
       - "EVA_OS/docs/governance/parameter_registry.csv"
       - "EVA_OS/docs/governance/formula_registry.yaml"
+  parameter_source_quality:
+    status: "PARTIAL"
+    fact_level: "UNKNOWN"
+    checked_active_parameters: 52
+    total_active_parameters: 189
+    evidence_refs:
+      - "EVA_OS/docs/governance/parameter_registry.csv"
   empirical_validation:
-    status: "unknown"
+    status: "UNVERIFIED"
     fact_level: "UNKNOWN"
     unresolved_fact_ids:
       - "FACT-EVA_OS-EMPIRICAL-EVIDENCE"
     evidence_refs:
       - "EVA_OS/docs/governance/delivery_tasks.yaml"
-  operational_evidence:
-    status: "blocked"
+  operational_validation:
+    status: "FAILED"
     fact_level: "EXTRACTED"
     unresolved_fact_ids:
       - "FACT-EVA_OS-OPERATIONAL-EVIDENCE"
     evidence_refs:
       - "EVA_OS/docs/governance/development_events.jsonl"
+  delivery_evidence:
+    status: "FAILED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVA_OS/docs/governance/delivery_tasks.yaml"
+  evidence_freshness:
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    tree_bound_events: 0
+    commit_bound_events: 0
+    legacy_unbound_events: 3
+    precommit_pending_events: 1
+    evidence_refs:
+      - "EVA_OS/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "blocked"
+  status: "FAILED"
   release_gate: "GOV-SEMANTIC-EVA-001-in-progress"
   blocker_ids:
     - "FACT-EVA_OS-EMPIRICAL-EVIDENCE"
