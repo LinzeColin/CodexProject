@@ -3313,7 +3313,7 @@ tasks:
     legacy_task_id: "T1301"
     phase: "C"
     objective: "Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical"
-    scope: "Current T1301/A202 implementation slice adds second independent official-source closure for the two Golden Vertical relationship candidates, updates the curated ingestion loader to attach multiple source documents per candidate, and proves source_threshold_met without source-threshold override."
+    scope: "Current T1301/A202 implementation slice adds second independent official-source closure for the two Golden Vertical relationship candidates and revises NVDA-ANCHOR-001 into a discovery_context_only context anchor with persisted anchor_scope metadata."
     non_scope: "Does not claim live network retrieval, legal clearance, real operator production owner approval, production MVP completion, or A202 closure."
     status: "in_progress"
     dependencies: []
@@ -3325,6 +3325,7 @@ tasks:
       - "EEI/tests/fixtures/golden_vertical_review_decisions.json"
       - "EEI/tests/fixtures/golden_vertical_owner_signoff_decisions.json"
       - "EEI/tests/e2e/state-contract.spec.ts"
+      - "EEI/artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json"
     acceptance_ids:
       - "ACC-A202"
     test_commands:
@@ -3333,6 +3334,8 @@ tasks:
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python scripts/validate_task_pack.py"
       - "npx --yes pnpm@11.8.0 --filter @eei/web typecheck"
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest -q tests/integration/test_database_migrations.py"
+      - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/pytest tests/unit/test_official_source_live_capture.py -q"
+      - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_development_status_artifacts.py validate"
     test_results:
       - "local ruff PASS"
       - "local unit tests PASS 37/37"
@@ -3340,10 +3343,13 @@ tasks:
       - "local web typecheck PASS via local Next typegen and tsc; npx registry access was sandbox-blocked"
       - "local integration SKIPPED because this host has no DATABASE_URL; remote CI is required for PostgreSQL proof"
       - "local make verify subset PASS for runnable non-browser targets; browser scale/soak targets blocked by local macOS Playwright MachPort sandbox and escalation rejected by Codex usage limit"
+      - "A202 context-anchor unit tests PASS 10/10"
+      - "development-status artifact validation PASS after pushed-diff artifact sync"
     evidence_refs:
       - "EEI/data/golden_vertical_fact_candidates.json"
       - "EEI/tests/integration/test_database_migrations.py"
       - "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md"
+      - "EEI/artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json"
     risk: "A202 can be falsely closed if two official historical/supporting sources are treated as live retrieval, legal clearance, or real production owner approval."
     rollback: "Revert the second-source data/loader/test changes, regenerate clean-room/release artifacts, and rerun make verify."
     target_version: "0.1.0"

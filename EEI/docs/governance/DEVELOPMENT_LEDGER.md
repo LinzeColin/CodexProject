@@ -12,7 +12,7 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version status: `provisional`
 - Current phase: `C`
 - Current gate: `TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
-- Confirmed iteration count: 18
+- Confirmed iteration count: 19
 - Reconstructed development event count: 2
 - Current task: `TASK-T1307`
 - Blockers: A209/A206 remain open until 24h operator soak evidence is produced and CI-validated; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
@@ -449,6 +449,10 @@ Do not infer iteration count from Git commit count.
 - Rollback: restore the previous `NVDA-ANCHOR-001` expected-token list, remove `anchor_scope` persistence fields and the new contract artifact, restore candidate-count assertions, then rerun validation.
 - Next step: run focused validation, then commit/push and verify GitHub Actions.
 
+- CI artifact-sync note: follow-up governance repair synchronized the generated traceability artifact, release artifacts, status views, delivery task view and event binding metadata after GitHub Actions run `27929407037` flagged the pushed-diff contract.
+- Additional validation: EEI single-project information-quality gate PASS, development-status artifact validation PASS, clean-room release validation PASS, release artifact validation PASS and checksum validation PASS.
+- CI fixture-hash repair: GitHub Actions run `27929407052` flagged `NVDA-ANCHOR-001 source_text_sha256 does not match text` in the operator-source capture fixture; the fixture attestation hash was corrected, clean-room/release evidence was regenerated, and A209 24h soak remains a background evidence task.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -470,6 +474,8 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-001`: local context-anchor semantic revision for TASK-T1301/A202.
 - `EVENT-20260622-002`: local validation for TASK-T1301/A202 context-anchor semantic revision.
 - `EVENT-20260622-003`: clean-room and release evidence resync after TASK-T1301/A202 context-anchor semantic revision.
+- `EVENT-20260622-004`: final clean-room and release evidence resync after tracking the A202 context-anchor artifact.
+- `EVENT-20260622-005`: governance pushed-diff artifact sync for TASK-T1301/A202 context-anchor semantic revision.
 - `EVENT-20260622-004`: final clean-room and release evidence resync after tracking the new A202 semantic-revision artifact.
 
 ## Unknown Historical Periods
