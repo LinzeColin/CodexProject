@@ -434,7 +434,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── operator_source_captures
 │   │   │   └── nvidia_operator_source_captures.json
 │   │   ├── release_decision_bundle
-│   │   │   └── a202_a210_release_decision_bundle_template.json
+│   │   │   ├── a202_a210_release_decision_bundle_template.json
+│   │   │   └── a202_a210_signed_decision_bundle_contract_test.json
 │   │   ├── README.md
 │   │   ├── golden_vertical_owner_signoff_decisions.json
 │   │   └── golden_vertical_review_decisions.json

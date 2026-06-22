@@ -390,6 +390,7 @@ tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json
 tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json
 tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json
 tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json
+tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json
 tests/integration/README.md
 tests/integration/test_database_migrations.py
 tests/unit/test_api_health.py
