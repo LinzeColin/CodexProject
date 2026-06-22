@@ -78,15 +78,15 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED`
+- release_gate: `S1-02-BASELINE-LOCK-TRACEABILITY`
 
 ## 14. Evidence Freshness
 
 - tree_bound_events: `0`
 - commit_bound_events: `0`
 - legacy_unbound_events: `54`
-- precommit_pending_events: `5`
-- pending_or_stale_events: `59`
+- precommit_pending_events: `6`
+- pending_or_stale_events: `60`
 
 ## 15. UNKNOWN
 
@@ -96,11 +96,11 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:199802b8d5dfccedd1a7e8f85bde80d3c0d4dfd432b1fc516146b0db3e889d2c`
-- snapshot_event_time: `2026-06-22T13:40:00+10:00`
+- source_snapshot_hash: `sha256:b842113862e79bd5b0b43ab9f0e20110e5d1cc8623fe4cbeaf2e3e05446c1b7c`
+- snapshot_event_time: `2026-06-22T15:59:11+10:00`
 - generator_version: `4.0.0`
 - version: `0.12.4`
-- phase/gate: `E / ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED`
+- phase/gate: `S1-A / S1-02-BASELINE-LOCK-TRACEABILITY`
 
 ## 17. Next Unique Task
 

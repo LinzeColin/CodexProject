@@ -1,5 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
+governance_notes:
+  - note_id: "GOV-NOTE-S1-02-BASELINE-LOCK"
+    task_id: "S1-02-BASELINE-LOCK-TRACEABILITY-001"
+    evidence_level: "EXTRACTED"
+    summary: "Review8 V4 baseline lock and version metadata alignment only; no active model behavior changed."
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md", "governance/run_manifests/ADP-S1-02-BASELINE-LOCK-TRACEABILITY-20260622.json"]
 assumptions:
   - assumption_id: "ASM-ADP-001"
     statement: "Phase 1 is limited to repository foundation, CLI doctor/version, dry-run notification rendering, schemas, config examples, and governance records."

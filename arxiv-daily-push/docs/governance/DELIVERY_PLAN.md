@@ -7,18 +7,20 @@ Governance spec version: `1.0.0`
 
 | Phase | Purpose | Exit Gate |
 |---|---|---|
-| A | Phase 1 repository foundation | CLI skeleton, governance records, and focused tests pass |
-| B | Phase 2-4 data contracts, arXiv source, and ranking | schema, adapter, and ranking gates pass |
-| C | Phase 5-6 evidence gate and text lesson | Claim Ledger and lesson verification pass |
-| D | Phase 7-10 TTS, video, local daily pipeline, and GitHub automation | media, resource, runner, and release gates pass |
-| E | Phase 11 weekly/monthly, 30-day trial, and handoff | full operational acceptance passes |
+| A | Legacy Phase 1 repository foundation | CLI skeleton, governance records, and focused tests pass |
+| B | Legacy Phase 2-4 data contracts, arXiv source, and ranking | schema, adapter, and ranking gates pass |
+| C | Legacy Phase 5-6 evidence gate and text lesson | Claim Ledger and lesson verification pass |
+| D | Legacy Phase 7-10 TTS, video, local daily pipeline, and GitHub automation | media, resource, runner, and release gates pass |
+| E | Legacy Phase 11-12 weekly/monthly, all-arXiv queue delivery, manual delivery tests, and production handoff | operational acceptance remains blocked until final trial evidence passes |
+| S1-A | Review8 V4 Stage 1 Window A | arXiv single-source baseline, owner controls, local data model, runtime recovery, and migration package |
+| S2 | Review8 V4 Stage 2 | additional source/board promotion only after Stage 1 arXiv production acceptance |
 
 ## Task Summary
 
 machine_summary:
 
-- task_count: 46
-- acceptance_count: 44
+- task_count: 55
+- acceptance_count: 53
 
 ## Delivery Tasks
 
@@ -68,9 +70,18 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-TWO-DAY-SIMULATION-030 | E | completed | ADP-ACC-PHASE11-TWO-DAY-SIMULATION | 3 focused tests OK; two-day simulation CLI pass with 2 unique daily runs and no production acceptance claim | `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md` |
 | ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031 | E | completed | ADP-ACC-PHASE12-ALL-ARXIV-QUEUE-DELIVERY | 165 arXiv tests OK; semantic extractor 34 formulas/175 parameters OK; targeted root governance tests 2 OK; changed-only sync 0 errors/0 warnings before unrelated missing-project validation; all-arXiv scan, queue fallback, workflow guards, and mail video-link gates pass | `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
 | ADP-PHASE12-PRODUCTION-ENABLEMENT-032 | E | completed | ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT | PR cloud dry-run path passed on GitHub-hosted runner with 20/20 arXiv buckets and real MP4 artifact; production variables remain disabled | `docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md` |
-| ADP-PHASE12-MANUAL-DELIVERY-TEST-033 | E | prepared | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual workflow prepared for default-branch Release + Gmail SMTP test; real Release upload and real email send still require post-PR manual workflow dispatch | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md` |
+| ADP-PHASE12-MANUAL-DELIVERY-TEST-033 | E | prepared | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual workflow prepared for default-branch Release + Gmail SMTP test; final evidence is bound through 035 after the 0.12.4 repair and default-branch run | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md` |
 | ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034 | E | completed | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual workflow now deduplicates Release assets by filename after first default-branch manual run failed closed during Release creation; second run exposed the lower release delivery boundary now handled by 035 | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_RELEASE_DEDUPE.md` |
-| ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | release delivery now deduplicates identical asset paths, blocks conflicting duplicate asset filenames, and retries transient arXiv 429/timeout blocks in cloud dry-run after second manual run and PR CI exposed both fail-closed gaps; rerun required for real SMTP evidence | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_INTERNAL_RELEASE_DEDUPE.md` |
+| ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035 | E | completed | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | 0.12.4 repair merged to main and GitHub Actions manual delivery run 27932072771 completed successfully with Release/Gmail delivery artifacts; this is not 30-day production acceptance | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_INTERNAL_RELEASE_DEDUPE.md`; `https://github.com/LinzeColin/CodexProject/actions/runs/27932072771` |
+| S1-01-READONLY-AUDIT-001 | S1-A | completed | ADP-ACC-S1-01-READONLY-AUDIT | Review8 V4 package hashes, implementation gaps, current validation baseline, and GitHub run evidence verified without file edits | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-02-BASELINE-LOCK-TRACEABILITY-001 | S1-A | completed | ADP-ACC-S1-02-BASELINE-LOCK | V4 two-stage baseline imported with hash lock, version drift repaired, delivery/traceability updated, and initial project validation passed | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-03-OWNER-CONTROLS-001 | S1-A | planned | ADP-ACC-S1-03-OWNER-CONTROLS | Owner-editable controls and generated owner-readable views | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-04-SQLITE-DATA-MODEL-001 | S1-A | planned | ADP-ACC-S1-04-SQLITE-DATA-MODEL | Unified SQLite/WAL/FTS5 document and event model, migrations, and rollback | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-05-ARXIV-CONNECTOR-CONTRACT-001 | S1-A | planned | ADP-ACC-S1-05-ARXIV-CONNECTOR-CONTRACT | Source registry, connector contract, and arXiv adapter boundary | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-06-SCORING-QUEUE-LEDGER-001 | S1-A | planned | ADP-ACC-S1-06-SCORING-QUEUE-LEDGER | Research scoring, 10,000 queue behavior, and content ledger | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-07-B1_REPORT_EMAIL_MEDIA-001 | S1-A | planned | ADP-ACC-S1-07-B1-REPORT-EMAIL-MEDIA | B1 report, Claim evidence, email preview, and media interface | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-08-LOCAL_RUNTIME_RECOVERY-001 | S1-A | planned | ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY | Tick/watchdog, backup/restore, runtime audit, and scheduler controls | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-09-MIGRATION_PACKAGE-001 | S1-A | planned | ADP-ACC-S1-09-MIGRATION-PACKAGE | Low-resource integration evidence and new-machine migration checklist | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates

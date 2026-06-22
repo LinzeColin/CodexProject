@@ -641,20 +641,30 @@ def existing_root_tree() -> str | None:
 
 def latest_manifest(project_id: str, events: list[dict[str, Any]]) -> dict[str, Any]:
     manifest_dir = ROOT / "governance/run_manifests"
-    refs: list[str] = []
+    event_refs: list[str] = []
     if events:
-        refs.extend(str(ref) for ref in structural.as_list(events[-1].get("evidence_refs")))
-    refs.extend(str(path.relative_to(ROOT)) for path in sorted(manifest_dir.glob("*.json")))
-    for ref in reversed(refs):
+        event_refs.extend(str(ref) for ref in structural.as_list(events[-1].get("evidence_refs")))
+
+    def load_manifest(ref: str) -> dict[str, Any]:
         path = ROOT / ref
         if path.suffix != ".json" or not path.is_file() or manifest_dir not in path.parents:
-            continue
+            return {}
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
-            continue
-        if str(data.get("project_id") or "") == project_id:
-            data["_path"] = rel(path)
+            return {}
+        if str(data.get("project_id") or "") != project_id:
+            return {}
+        data["_path"] = rel(path)
+        return data
+
+    for ref in reversed(event_refs):
+        data = load_manifest(ref)
+        if data:
+            return data
+    for ref in reversed([str(path.relative_to(ROOT)) for path in sorted(manifest_dir.glob("*.json"))]):
+        data = load_manifest(ref)
+        if data:
             return data
     return {}
 
