@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.17.0 - 2026-06-22
+
+- Added S1-07 B1/arXiv Chinese teaching report and email preview artifact generation.
+- Added `adp build-b1-report-email` for text-first Markdown, HTML, plain-text email, HTML email, and audit JSON output.
+- Added fail-closed validation for 100% critical-claim evidence coverage, Chinese-first email content, no real SMTP, no Release upload, and no video requirement.
+
 ## 0.16.0 - 2026-06-22
 
 - Promoted the V5 two-stage text-delivery baseline for Stage 1 B1/arXiv and marked conflicting V4/media requirements as inactive for the current acceptance path.

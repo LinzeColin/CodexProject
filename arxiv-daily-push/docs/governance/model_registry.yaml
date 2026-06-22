@@ -187,6 +187,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     status: "active"
+  - assumption_id: "ASM-ADP-041"
+    statement: "Review8 Stage 1 B1/arXiv text delivery must produce Chinese teaching report/email previews with supported claim evidence, candidate queue summary, human-frontstage wording, and no video, Release upload, real SMTP send, production scheduler enablement, or visible backend ROI/policy clutter."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -991,3 +996,26 @@ models:
     config_refs: ["arxiv-daily-push/config/owner_controls.yaml"]
     test_refs: ["arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/tests/test_owner_controls.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json", "arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"]
+  - model_id: "MOD-ADP-040"
+    name: "Review8 Stage 1 B1/arXiv report and email text package"
+    kind: "deterministic Chinese teaching report and email renderer"
+    purpose: "Render the Stage 1 B1/arXiv daily teaching artifact from supported daily input claims into Markdown/HTML report, Chinese plain/HTML email preview, claim audit, candidate queue summary, and content ledger update without production side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-stage1-b1-report-email-v1"
+    assumption_ids: ["ASM-ADP-041", "ASM-ADP-002", "ASM-ADP-040"]
+    formula_ids: ["FORM-ADP-042"]
+    parameter_ids:
+      - "PARAM-ADP-310"
+      - "PARAM-ADP-311"
+      - "PARAM-ADP-312"
+      - "PARAM-ADP-313"
+      - "PARAM-ADP-314"
+      - "PARAM-ADP-315"
+    inputs: ["daily input package", "supported Claim Ledger", "optional Stage 1 queue report", "generated_at", "recipient"]
+    outputs: ["B1 report Markdown", "B1 report HTML", "plain text email preview", "HTML email preview", "claim evidence audit", "content ledger update", "optional artifact files"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["NOT_APPLICABLE"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json", "arxiv-daily-push/tests/test_stage1_b1_report.py"]

@@ -1601,6 +1601,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1-04-SQLITE-DATA-MODEL-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-05-ARXIV-CONNECTOR-CONTRACT-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-06-SCORING-QUEUE-LEDGER-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-07-B1_REPORT_EMAIL_TEXT-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-08-LOCAL_RUNTIME_RECOVERY-001"]["status"], "planned")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "ready")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "ready")
 
@@ -1609,26 +1611,27 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-067")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-067")
-        self.assertEqual(info["product_version"], "0.16.0")
-        self.assertEqual(info["current_gate"], "ADP-S1-06-SCORING-QUEUE-LEDGER-READY")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-068")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-068")
+        self.assertEqual(info["product_version"], "0.17.0")
+        self.assertEqual(info["current_gate"], "ADP-S1-07-B1-REPORT-EMAIL-TEXT-READY")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json",
+            "governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.16.0", rendered)
-        self.assertIn("ADP-S1-06-SCORING-QUEUE-LEDGER-READY", rendered)
-        self.assertIn("production trial not started", rendered)
-        self.assertIn("30-day acceptance absent", rendered)
+        self.assertIn("0.17.0", rendered)
+        self.assertIn("ADP-S1-07-B1-REPORT-EMAIL-TEXT-READY", rendered)
+        self.assertIn("S1-08-LOCAL_RUNTIME_RECOVERY-001", rendered)
+        self.assertIn("tick、watchdog、backup", rendered)
+        self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
 
     def test_arxiv_s1_next_task_priority_does_not_reorder_other_projects(self) -> None:
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         expected = {
-            "arxiv-daily-push": "S1-07-B1_REPORT_EMAIL_TEXT-001",
+            "arxiv-daily-push": "S1-08-LOCAL_RUNTIME_RECOVERY-001",
             "OpenAIDatabase": "TASK-OAI-B-001",
             "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
             "whkmSalary": "TASK-WHKM-B-001",
@@ -1717,11 +1720,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         }:
             self.assertIn(path, changed)
         dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
-        self.assertIn("| `arxiv-daily-push` | `0.16.0` |", dashboard_text)
-        self.assertIn("S1-07-B1_REPORT_EMAIL_TEXT-001", dashboard_text)
+        self.assertIn("| `arxiv-daily-push` | `0.17.0` |", dashboard_text)
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         adp_backlog = backlog_text.split('project_id: "arxiv-daily-push"', 1)[1].split("next_task:", 1)[0]
-        self.assertIn("precommit_pending_events: 14", adp_backlog)
+        self.assertIn("precommit_pending_events: 15", adp_backlog)
 
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads((ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text())

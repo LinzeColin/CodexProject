@@ -279,6 +279,33 @@ REVIEW8_DECISION_POLICY = {
 }
 
 
+def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str, Any]:
+    policy = dict(REVIEW8_DECISION_POLICY.get(project_id, {}))
+    task_id = str(next_task.get("task_id") or "")
+    if project_id == "arxiv-daily-push" and task_id == "S1-08-LOCAL_RUNTIME_RECOVERY-001":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V5-S1-002",
+                "review_id": "REVIEW8",
+                "owner_role": "engineering_owner + operations_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+                "question": "是否继续执行 S1-08，补齐本地 tick、watchdog、backup、restore、runtime audit 和 scheduler install/uninstall 恢复控制。",
+                "recommendation": "A: implement S1-08 local runtime recovery controls before migration packaging",
+                "option_a": "继续 S1-08，完成本地运行、恢复、备份和调度控制的低资源代码与证据。",
+                "option_b": "暂停在 S1-07，只保留 B1 报告/邮件预览，不进入本地运行恢复门禁。",
+                "option_c": "跳过 S1-08 直接迁移；不推荐，因为会缺少恢复和调度证据。",
+                "effort": "P1; local runtime and operations implementation",
+                "resource": "local tests only; no production schedule install, no real SMTP, no large replay",
+                "benefit": "让 arXiv Stage 1 从文本预览能力推进到可恢复、可审计、可迁移的本地运行骨架。",
+                "risks": "scheduler side effects, stale heartbeat, unsafe restore, secret leakage, oversized artifacts",
+                "evidence": "tick/watchdog reports, backup/restore fixtures, scheduler dry-run evidence, focused tests, governance records",
+                "priority": "P1",
+                "no_decision": "arxiv-daily-push remains at S1-07 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
+            }
+        )
+    return policy
+
+
 def git_output(args: list[str]) -> str:
     result = subprocess.run(
         ["git", "-c", "core.quotePath=false", *args],
@@ -720,7 +747,13 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     evidence_freshness_status = "PARTIAL" if event_counts["legacy_unbound_events"] else "VERIFIED"
     methodological_status = "UNVERIFIED" if policy.get("empirical") in {"unknown", "partial"} else "VERIFIED"
     next_task = select_next_task(project_id, tasks, counts, impl_status, str(matrix.get("current_phase") or ""))
-    decision_policy = REVIEW8_DECISION_POLICY.get(project_id, {})
+    decision_policy = decision_policy_for(project_id, next_task)
+    if decision_policy.get("owner_role") and str(next_task.get("task_id") or "") != "NONE":
+        next_task = {
+            **next_task,
+            "owner": str(decision_policy.get("owner_role")),
+            "human_owner_role": str(decision_policy.get("owner_role")),
+        }
     assurance = {
         "project_id": project_id,
         "as_of_event_id": str(events[-1].get("event_id") or events[-1].get("iteration_id") or "NONE") if events else "NONE",

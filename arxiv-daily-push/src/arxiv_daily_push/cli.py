@@ -61,6 +61,7 @@ from .source_registry import (
     validate_source_registry_report,
 )
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
+from .stage1_b1_report import build_b1_report_email_package, validate_b1_report_email_package
 from .stage1_queue import build_stage1_queue_report, validate_stage1_queue_report
 from .storage import (
     inspect_database,
@@ -138,6 +139,17 @@ def build_parser() -> argparse.ArgumentParser:
     stage1_queue.add_argument("--generated-at", required=True, help="Queue report timestamp.")
     stage1_queue.add_argument("--run-id", default="stage1-queue-fixture", help="Run ID written to content ledger rows.")
     stage1_queue.add_argument("--json", action="store_true", help="Print JSON queue report.")
+
+    b1_report = subparsers.add_parser(
+        "build-b1-report-email",
+        help="Build the V5 Stage 1 B1/arXiv Chinese report and email preview artifacts.",
+    )
+    b1_report.add_argument("--daily-input", required=True, help="Daily input builder report or daily_input JSON.")
+    b1_report.add_argument("--generated-at", required=True, help="Report/email artifact timestamp.")
+    b1_report.add_argument("--recipient", default="linzezhang35@gmail.com", help="Dry-run email recipient.")
+    b1_report.add_argument("--artifact-dir", help="Directory for Markdown, HTML, and JSON artifacts.")
+    b1_report.add_argument("--write", action="store_true", help="Write report/email/audit artifacts to --artifact-dir.")
+    b1_report.add_argument("--json", action="store_true", help="Print JSON report/email package.")
 
     doctor = subparsers.add_parser("doctor", help="Run local Phase 1 readiness checks.")
     doctor.add_argument("--json", action="store_true", help="Print JSON report.")
@@ -620,6 +632,28 @@ def main(argv: list[str] | None = None) -> int:
             print(report["status"])
             print(f"- active_count: {report.get('active_count')}")
             print(f"- evicted_count: {report.get('evicted_count')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "build-b1-report-email":
+        payload = load_json_mapping(args.daily_input)
+        report = build_b1_report_email_package(
+            payload,
+            generated_at=args.generated_at,
+            recipient=args.recipient,
+            artifact_dir=args.artifact_dir,
+            write=args.write,
+        )
+        errors = validate_b1_report_email_package(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            if report["status"] == "pass":
+                print(f"- report_id: {report['report_id']}")
+                print(f"- email_subject: {report['email_subject']}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- error: {reason}")
         return 0 if report["status"] == "pass" else 2

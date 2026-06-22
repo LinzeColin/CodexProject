@@ -907,17 +907,17 @@ tasks:
     objective: "Produce the B1/arXiv explanatory teaching report, Claim evidence, Chinese email text/HTML preview, and audit artifacts required by V5 Stage 1."
     scope: "B1 report generation, claim evidence, Chinese email subject/body, Markdown/HTML/JSON audit artifacts, focused tests, and governance records."
     non_scope: "No video generation, no MP4/TTS requirement, no Release upload, no real SMTP send, and no unsupported factual claims."
-    status: "planned"
+    status: "completed"
     dependencies: ["S1-06-SCORING-QUEUE-LEDGER-001"]
-    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-07-B1-REPORT-EMAIL-TEXT"]
     test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
-    test_results: ["not_run_yet"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    test_results: ["focused B1 report/email and CLI tests: 9 tests OK", "arxiv-daily-push unit tests: 203 tests OK", "semantic extractor: 42 active formulas and 298 active parameters checked with no errors"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/docs/phase_records/PHASE_S1_07_B1_REPORT_EMAIL_TEXT.md", "governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json"]
     risk: "The report must be teaching/explanation quality rather than a shallow daily digest, and must fail closed on unsupported claims."
     rollback: "Revert S1-07 report/email text files and governance updates."
     target_version: "0.17.0"
-    completed_version: ""
+    completed_version: "0.17.0"
     unknown_task_ids: []
   - task_id: "S1-08-LOCAL_RUNTIME_RECOVERY-001"
     phase: "S1-A"
@@ -928,12 +928,12 @@ tasks:
     dependencies: ["S1-07-B1_REPORT_EMAIL_TEXT-001"]
     required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY"]
-    test_commands: ["PENDING"]
-    test_results: ["PENDING"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["not_run_yet"]
     evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     risk: "Recovery controls must be idempotent and not leak secrets or retain oversized artifacts."
     rollback: "Revert S1-08 CLI/runtime/recovery files and governance records."
-    target_version: "0.12.4"
+    target_version: "0.18.0"
     completed_version: ""
     unknown_task_ids: []
   - task_id: "S1-09-MIGRATION_PACKAGE-001"
