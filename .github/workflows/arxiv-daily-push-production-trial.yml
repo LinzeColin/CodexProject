@@ -4,18 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       confirm_production_trial:
-        description: "Set true only after runner, SMTP, Release, and resource prerequisites are provisioned."
+        description: "Set true only after cloud runner, SMTP, Release, and resource prerequisites are provisioned."
         required: true
         default: "false"
         type: choice
         options:
           - "false"
           - "true"
-      runner_label:
-        description: "Private self-hosted runner label for arXiv Daily Push."
-        required: true
-        default: "arxiv-daily-push"
-        type: string
       mode:
         description: "Bootstrap mode. preflight-only is the only enabled mode in this workflow."
         required: true
@@ -46,7 +41,7 @@ jobs:
             echo "## arXiv Daily Push production trial"
             echo "- status: skipped"
             echo "- reason: confirm_production_trial was not true"
-            echo "- no self-hosted runner job was started"
+            echo "- no cloud runner preflight job was started"
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Report confirmed dispatch
         if: inputs.confirm_production_trial == 'true'
@@ -55,15 +50,13 @@ jobs:
             echo "## arXiv Daily Push production trial"
             echo "- status: confirmed"
             echo "- mode: ${{ inputs.mode }}"
-            echo "- runner_label: ${{ inputs.runner_label }}"
+            echo "- runner: ubuntu-latest"
           } >> "$GITHUB_STEP_SUMMARY"
 
   preflight:
     needs: guard
     if: inputs.confirm_production_trial == 'true' && inputs.mode == 'preflight-only'
-    runs-on:
-      - self-hosted
-      - "${{ inputs.runner_label }}"
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
@@ -71,11 +64,18 @@ jobs:
       ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME }}
       ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
       ADP_RELEASE_TARGET: ${{ vars.ADP_RELEASE_TARGET }}
-      ADP_SELF_HOSTED_RUNNER_LABEL: ${{ inputs.runner_label }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Install cloud MP4 runtime
+        shell: bash
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          ffmpeg -version | head -n 1
       - name: Resolve generated_at
         id: generated_at
         shell: bash

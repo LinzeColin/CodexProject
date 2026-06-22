@@ -2,12 +2,20 @@ from __future__ import annotations
 
 import io
 import json
+import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
 
 from arxiv_daily_push.cli import main
-from arxiv_daily_push.video import generate_storyboard, validate_storyboard_against_narration, video_media_gate
+from arxiv_daily_push.video import (
+    REAL_MP4_RENDER_MODEL_ID,
+    generate_storyboard,
+    render_lightweight_mp4,
+    validate_mp4_render_report,
+    validate_storyboard_against_narration,
+    video_media_gate,
+)
 
 
 FIXTURE = Path(__file__).parent / "fixtures" / "video_input.json"
@@ -75,6 +83,53 @@ class VideoStoryboardTests(unittest.TestCase):
         self.assertEqual(result, 0)
         self.assertFalse(payload["constraints"]["video_render_allowed"])
         self.assertEqual(len(payload["scenes"]), 2)
+
+    def test_render_lightweight_mp4_records_real_artifact_with_fake_runner(self) -> None:
+        daily_input = {
+            "source_item": {
+                "source_id": "arxiv:2607.00001",
+                "title": "Agent systems for ROI learning",
+                "metadata": {"arxiv": {"primary_category": "cs.AI"}},
+            },
+            "selection_audit": {"roi_total_score": 91.0},
+            "queue_summary": {"queued_item_count": 3},
+        }
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "adp-daily-video.mp4"
+
+            def fake_runner(command: list[str]) -> dict:
+                Path(command[-1]).write_bytes(b"\x00\x00\x00\x18ftypmp42fake-video")
+                return {"returncode": 0}
+
+            report = render_lightweight_mp4(
+                daily_input,
+                output_path=output,
+                generated_at="2026-07-01T05:00:00+10:00",
+                command_resolver=lambda command: "/usr/bin/ffmpeg" if command == "ffmpeg" else None,
+                command_runner=fake_runner,
+            )
+
+            self.assertFalse(validate_mp4_render_report(report))
+            self.assertEqual(report["model_id"], REAL_MP4_RENDER_MODEL_ID)
+            self.assertEqual(report["status"], "rendered")
+            self.assertTrue(report["mp4_rendered"])
+            self.assertEqual(report["video_filename"], "adp-daily-video.mp4")
+            self.assertFalse(report["video_attachment_allowed"])
+            self.assertTrue(output.is_file())
+
+    def test_render_lightweight_mp4_blocks_without_ffmpeg(self) -> None:
+        report = render_lightweight_mp4(
+            {"source_item": {"source_id": "arxiv:2607.00001", "title": "Example"}},
+            output_path="adp-daily-video.mp4",
+            generated_at="2026-07-01T05:00:00+10:00",
+            command_resolver=lambda command: None,
+        )
+
+        self.assertFalse(validate_mp4_render_report(report))
+        self.assertEqual(report["status"], "blocked")
+        self.assertFalse(report["mp4_rendered"])
+        self.assertIn("ffmpeg", " ".join(report["blocking_reasons"]))
 
 
 if __name__ == "__main__":

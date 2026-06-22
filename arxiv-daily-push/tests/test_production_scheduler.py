@@ -39,6 +39,8 @@ class ProductionSchedulerTests(unittest.TestCase):
 
         self.assertIn("actions: read", workflow)
         self.assertIn("contents: write", workflow)
+        self.assertIn("runs-on: ubuntu-latest", workflow)
+        self.assertNotIn("self-hosted", workflow)
         self.assertIn('timezone: "Australia/Sydney"', workflow)
         self.assertIn('cron: "45 4 * * *"', workflow)
         self.assertIn('cron: "0 5 * * *"', workflow)
@@ -59,6 +61,9 @@ class ProductionSchedulerTests(unittest.TestCase):
         self.assertLess(workflow.index("preflight-production"), workflow.index("Run scheduled mode"))
         self.assertIn("adp-scheduled-preflight", workflow)
         self.assertIn("build-all-arxiv-daily-input", workflow)
+        self.assertIn("render-lightweight-mp4", workflow)
+        self.assertIn("adp-scheduled-mp4-video", workflow)
+        self.assertIn("ffmpeg", workflow)
         self.assertIn("adp-phase12-delivery-artifacts", workflow)
         self.assertIn("adp-candidate-queue", workflow)
         self.assertIn("adp-scheduled-daily-input", workflow)

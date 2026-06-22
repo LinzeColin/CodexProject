@@ -35,7 +35,10 @@ class TrialBootstrapTests(unittest.TestCase):
 
         self.assertIn("workflow_dispatch", workflow)
         self.assertNotIn("schedule:", workflow)
+        self.assertIn("runs-on: ubuntu-latest", workflow)
+        self.assertNotIn("self-hosted", workflow)
         self.assertLess(workflow.index("preflight-production"), workflow.index("Run project tests after preflight"))
+        self.assertIn("ffmpeg", workflow)
         self.assertIn("secrets.ADP_SMTP_PASSWORD", workflow)
         self.assertNotIn("auth.json", workflow)
         self.assertNotIn("gh release upload", workflow)

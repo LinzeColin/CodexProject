@@ -48,7 +48,7 @@ def current_blocked_pr_info() -> dict:
 def refs() -> dict[str, str]:
     return {
         "default_branch_ref": "git://LinzeColin/CodexProject/main@abc123",
-        "runner_ref": "github-runner://arxiv-daily-push/private-runner-01",
+        "runner_ref": "github-hosted://LinzeColin/CodexProject/actions/ubuntu-latest",
         "smtp_secret_ref": "github-secrets://LinzeColin/CodexProject/actions/ADP_SMTP",
         "release_target_ref": "github-vars://LinzeColin/CodexProject/actions/ADP_RELEASE_TARGET",
         "workflow_vars_ref": "github-vars://LinzeColin/CodexProject/actions/ADP_ALLOW_PROBES",

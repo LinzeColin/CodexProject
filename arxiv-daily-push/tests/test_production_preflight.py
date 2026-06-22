@@ -80,13 +80,13 @@ class ProductionPreflightTests(unittest.TestCase):
                 generated_at="2026-07-01T04:45:00+10:00",
                 env=complete_env(),
                 command_resolver=command_resolver,
-                disk_free_gib=10.0,
+                disk_free_gib=4.0,
                 memory_total_gib=4.0,
                 git_scan=clean_git_scan(),
             )
 
         reasons = " ".join(report["blocking_reasons"])
-        self.assertIn("free disk 10.00 GiB is below required 80.00 GiB", reasons)
+        self.assertIn("free disk 4.00 GiB is below required 8.00 GiB", reasons)
         self.assertIn("memory 4.00 GiB is below required 8.00 GiB", reasons)
 
     def test_cli_preflight_production_outputs_blocked_json(self) -> None:

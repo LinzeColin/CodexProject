@@ -184,8 +184,8 @@ class ScheduledExecutionTests(unittest.TestCase):
                 return {}
 
         with tempfile.TemporaryDirectory() as tmp:
-            video_artifact = Path(tmp) / "adp-video-artifact.json"
-            video_artifact.write_text('{"artifact_type":"video_manifest"}\n', encoding="utf-8")
+            video_artifact = Path(tmp) / "adp-daily-video.mp4"
+            video_artifact.write_bytes(b"\x00\x00\x00\x18ftypmp42fake-video")
             report = run_scheduled_execution(
                 mode="daily-run",
                 generated_at="2026-07-01T05:00:00+10:00",
@@ -212,7 +212,7 @@ class ScheduledExecutionTests(unittest.TestCase):
         self.assertEqual(report["daily_run_report"]["scheduled_local_time"], "05:00")
         self.assertTrue(report["daily_run_report"]["p0_claims_traceable"])
         self.assertEqual(FakeSMTP.sent_messages[0]["To"], "linzezhang35@gmail.com")
-        self.assertIn("adp-video-artifact.json", FakeSMTP.sent_messages[0].get_content())
+        self.assertIn("adp-daily-video.mp4", FakeSMTP.sent_messages[0].get_content())
         self.assertIn("候选队列摘要", FakeSMTP.sent_messages[0].get_content())
         self.assertNotIn("super-secret-password", str(report))
         self.assertFalse(validate_scheduled_execution_report(report))

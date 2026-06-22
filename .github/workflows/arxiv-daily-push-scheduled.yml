@@ -80,9 +80,7 @@ jobs:
   preflight:
     needs: gate
     if: needs.gate.outputs.should_run == 'true'
-    runs-on:
-      - self-hosted
-      - arxiv-daily-push
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
       ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
@@ -90,10 +88,10 @@ jobs:
       ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME }}
       ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
       ADP_RELEASE_TARGET: ${{ vars.ADP_RELEASE_TARGET }}
-      ADP_SELF_HOSTED_RUNNER_LABEL: arxiv-daily-push
       ADP_SCHEDULED_RUN_ENABLED: ${{ vars.ADP_SCHEDULED_RUN_ENABLED }}
       ADP_DAILY_INPUT_PATH: ${{ vars.ADP_DAILY_INPUT_PATH }}
       ADP_ARXIV_MAX_RESULTS_PER_CATEGORY: ${{ vars.ADP_ARXIV_MAX_RESULTS_PER_CATEGORY }}
+      ADP_ARXIV_POLITE_DELAY_SECONDS: ${{ vars.ADP_ARXIV_POLITE_DELAY_SECONDS }}
       ADP_CANDIDATE_QUEUE_INPUT_PATH: ${{ vars.ADP_CANDIDATE_QUEUE_INPUT_PATH }}
       ADP_RECENT_SOURCE_IDS: ${{ vars.ADP_RECENT_SOURCE_IDS }}
       ADP_TRIAL_EVIDENCE_INPUT_PATH: ${{ vars.ADP_TRIAL_EVIDENCE_INPUT_PATH }}
@@ -107,6 +105,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Install cloud MP4 runtime
+        shell: bash
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          ffmpeg -version | head -n 1
       - name: Resolve generated_at
         id: generated_at
         shell: bash
@@ -213,6 +219,7 @@ jobs:
           artifact_dir="$RUNNER_TEMP/adp-phase12-artifacts"
           queue_output="$RUNNER_TEMP/adp-candidate-queue-updated.json"
           max_results="${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3}"
+          polite_delay="${ADP_ARXIV_POLITE_DELAY_SECONDS:-3}"
           generated_at="${{ steps.generated_at.outputs.value }}"
           daily_date="$(python3 - "$generated_at" <<'PY'
           from datetime import datetime
@@ -240,6 +247,7 @@ jobs:
             --generated-at "$generated_at"
             --timezone "Australia/Sydney"
             --max-results-per-category "$max_results"
+            --polite-delay-seconds "$polite_delay"
             --artifact-dir "$artifact_dir"
             --queue-output "$queue_output"
             --json
@@ -284,6 +292,63 @@ jobs:
           path: ${{ steps.daily_input.outputs.candidate_queue_path }}
           if-no-files-found: error
           retention-days: 35
+      - name: Render scheduled MP4 artifact
+        id: mp4
+        if: needs.gate.outputs.mode == 'daily-run'
+        shell: bash
+        run: |
+          set +e
+          resolved_daily_input="${ADP_DAILY_INPUT_PATH:-}"
+          if [ -z "$resolved_daily_input" ]; then
+            resolved_daily_input="${{ steps.daily_input.outputs.daily_input_path }}"
+          fi
+          output="$RUNNER_TEMP/adp-scheduled-daily-video.mp4"
+          report="$RUNNER_TEMP/adp-scheduled-daily-video-report.json"
+          transcript="$RUNNER_TEMP/adp-scheduled-daily-video.txt"
+          if [ -z "$resolved_daily_input" ] || [ ! -f "$resolved_daily_input" ]; then
+            python3 - "$report" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          Path(sys.argv[1]).write_text(json.dumps({
+              "model_id": "adp-real-mp4-render-v1",
+              "status": "blocked",
+              "mp4_rendered": False,
+              "blocking_reasons": ["daily input is required before MP4 rendering"],
+              "video_attachment_allowed": False,
+          }, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
+            code=2
+          else
+            PYTHONDONTWRITEBYTECODE=1 \
+            PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_mp4" \
+            PYTHONPATH=arxiv-daily-push/src \
+              python3 -m arxiv_daily_push render-lightweight-mp4 \
+                --daily-input "$resolved_daily_input" \
+                --output "$output" \
+                --generated-at "${{ steps.generated_at.outputs.value }}" \
+                --duration-seconds "${ADP_VIDEO_DURATION_SECONDS:-12}" \
+                --json > "$report"
+            code=$?
+          fi
+          cat "$report"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          printf 'video_path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'report_path=%s\n' "$report" >> "$GITHUB_OUTPUT"
+          printf 'transcript_path=%s\n' "$transcript" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload scheduled MP4 video artifact
+        if: always() && steps.mp4.outputs.report_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-scheduled-mp4-video
+          path: |
+            ${{ steps.mp4.outputs.video_path }}
+            ${{ steps.mp4.outputs.report_path }}
+            ${{ steps.mp4.outputs.transcript_path }}
+          if-no-files-found: error
+          retention-days: 35
       - name: Run scheduled mode
         id: scheduled_execution
         shell: bash
@@ -305,6 +370,14 @@ jobs:
           if [ -n "$resolved_daily_input" ]; then
             command+=(--daily-input "$resolved_daily_input")
           fi
+          for mp4_asset in \
+            "${{ steps.mp4.outputs.video_path }}" \
+            "${{ steps.mp4.outputs.report_path }}" \
+            "${{ steps.mp4.outputs.transcript_path }}"; do
+            if [ -n "$mp4_asset" ] && [ -f "$mp4_asset" ]; then
+              command+=(--release-asset "$mp4_asset")
+            fi
+          done
           if [ -n "$phase12_artifact_dir" ] && [ -d "$phase12_artifact_dir" ]; then
             while IFS= read -r artifact; do
               command+=(--release-asset "$artifact")
@@ -327,6 +400,7 @@ jobs:
             echo "- real SMTP requested: ${ADP_ALLOW_SMTP_SEND:-false}"
             echo "- real Release requested: ${ADP_ALLOW_RELEASE_UPLOAD:-false}"
             echo "- daily input path: ${resolved_daily_input:-not-provided}"
+            echo "- mp4 render exit_code: ${{ steps.mp4.outputs.exit_code || 'not_run' }}"
             echo "- execution_exit_code: $code"
           } >> "$GITHUB_STEP_SUMMARY"
           exit 0

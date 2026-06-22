@@ -1112,6 +1112,30 @@ The append-only machine record is `development_events.jsonl`.
 - Rollback: Remove `global_scan.py`, Phase 12 CLI commands, workflow updates, delivery-package gates, tests, runbook/config/governance updates, and restore version 0.11.27.
 - Next step: Open PR for Phase 12, wait for CI, merge only after checks pass, then configure production variables only after runner-side all-arXiv scan, queue, Release link, and SMTP evidence pass.
 
+### `ITER-20260621-048`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from workflow contracts, live dry-run command implementation, MP4 render implementation, focused tests, and full arXiv unit tests.
+- Version before: 0.12.0
+- Version after: 0.12.1
+- Base commit: 05c69c6522a74901f33350e03046f03a6f47b061
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-PRODUCTION-ENABLEMENT-032
+- Goal: Prepare Phase 12 production enablement for true cloud execution without self-hosted runner dependency, while adding live all-arXiv dry-run and real MP4 artifact gates before production can be enabled.
+- Assumptions: GitHub-hosted `ubuntu-latest` with installed `ffmpeg` is sufficient for the lightweight MP4 artifact; production schedule, SMTP, and Release uploads remain disabled until explicit cloud evidence and owner-controlled manual tests pass.
+- Files changed: cloud dry-run workflow, scheduled/trial-start/production-trial/provisioning-audit workflows, global scan, video rendering, production preflight, scheduler/trial workflow validators, simulation fixtures, focused tests, version/changelog/governance records, and Phase 12 cloud phase record.
+- Model changes: Added MOD-ADP-033 `adp-phase12-cloud-enablement-v1`.
+- Formula changes: Added FORM-ADP-035 for cloud dry-run, GitHub-hosted runner, real MP4, and side-effect gates; FORM-ADP-034 requires `.mp4` video links rather than JSON manifests.
+- Parameter changes: Added PARAM-ADP-177 through PARAM-ADP-180 for live dry-run id, MP4 render id, cloud disk threshold, and GitHub-hosted runner requirement.
+- Commands run: full arXiv unit tests; workflow self-hosted grep; focused workflow/preflight/video/global scan tests; changed-only governance validation before registry updates.
+- Test results: arXiv unit tests 171 OK; all arXiv workflow YAML files contain no `self-hosted`, `runner_label`, or `ADP_SELF_HOSTED`; final governance and semantic validations are recorded in the run manifest.
+- Successes: Active workflows now target GitHub-hosted runners, live dry-run can verify all 20 archive buckets and emit a sample daily input, real MP4 rendering is available through ffmpeg, and email video links require a Release `.mp4` asset.
+- Failures: No cloud workflow has been run yet, no real GitHub Release was uploaded, no Gmail SMTP test email was sent, and no production schedule variables were enabled.
+- Decisions: Keep production launch blocked until GitHub-hosted dry-run, Release `.mp4`, Gmail SMTP manual test, PR CI, and owner confirmation pass.
+- Remaining risks: GitHub-hosted workflow execution could fail due to arXiv availability, API throttling, workflow syntax, ffmpeg package behavior, SMTP secret configuration, or Release permissions.
+- Rollback: Revert version 0.12.1 changes, remove the cloud dry-run workflow and MP4 render command, restore version 0.12.0, and keep production variables disabled.
+- Next step: Push branch, open PR, run the Phase 12 cloud dry-run on GitHub-hosted Actions, inspect `adp-phase12-cloud-dry-run`, then run controlled Release/Gmail SMTP manual test only after dry-run passes.
+
 ## Unknown Historical Periods
 
 None for this new project baseline.
