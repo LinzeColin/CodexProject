@@ -2,7 +2,7 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:665f7d0a4fcb09ead9d390ecc1d26806b6e73aa3ee0427bb203c2fa4587dad20`
+- source_snapshot_hash: `sha256:5aa48085bf440686ac59805806176530e62d91dc2fb9d19c62283b45e1184f14`
 - snapshot_event_time: `2026-06-22T16:30:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
