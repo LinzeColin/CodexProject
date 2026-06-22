@@ -133,7 +133,7 @@ class NotificationTests(unittest.TestCase):
             "ADP_SMTP_PASSWORD": "super-secret-password",
         }
         email = EmailNotification(
-            subject="[QF Daily｜扫读 3.8/5] 测试",
+            subject="20260701 -- arXiv Quantitative Finance -- Quant Finance -- 测试",
             recipient="linzezhang35@gmail.com",
             body="纯文本 fallback",
             html_body="<html><body><b>HTML 正文</b></body></html>",
