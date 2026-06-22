@@ -4,18 +4,16 @@
   "project_id": "root-governance",
   "task_id": "GOV-EEI-DASHBOARD-SYNC-20260622",
   "acceptance_ids": [
+    "ACC-A206",
     "ACC-A209",
     "ACC-REVIEW7-CI-BINDING",
     "ACC-REVIEW7-OWNER-VIEWS"
   ],
-  "iteration_id": "ITER-20260622-002",
-  "generated_at": "2026-06-22T06:04:36Z",
-  "implementation_base_sha": "eebed07dfe7d9c0f95d7a3eaac0712945be4873e",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:695c68abc3f328ecdd6da21fe8c58e9cc54e376927ee2bf7624aae22483f41cf",
+  "iteration_id": "ITER-20260622-ROOT-DASHBOARD-002",
+  "generated_at": "2026-06-22T17:21:33+10:00",
+  "implementation_base_sha": "12a028707845a21bb4ba61a66690b2265edd1784",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:0511f6e437d605d840ba4da036ac5109b72f7d145fbbc057cbbc3852d1a48035",
   "changed_files_declared": [
-    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
-    "EEI/docs/governance/OWNER_STATUS.md",
-    "EEI/docs/governance/STATUS.md",
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
     "README.md",
@@ -24,9 +22,6 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "changed_files_actual": [
-    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
-    "EEI/docs/governance/OWNER_STATUS.md",
-    "EEI/docs/governance/STATUS.md",
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
     "README.md",
@@ -35,9 +30,6 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "required_governance_files": [
-    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
-    "EEI/docs/governance/OWNER_STATUS.md",
-    "EEI/docs/governance/STATUS.md",
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
     "README.md",
@@ -46,9 +38,6 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "updated_governance_files": [
-    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
-    "EEI/docs/governance/OWNER_STATUS.md",
-    "EEI/docs/governance/STATUS.md",
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
     "README.md",
@@ -57,57 +46,43 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "test_commands": [
-    "python3 scripts/validate_information_quality.py --project EEI --fast --fail-on-error",
-    "cd EEI && .venv/bin/python scripts/manage_clean_room_release.py validate",
-    "cd EEI && .venv/bin/python scripts/manage_release_artifacts.py validate",
-    "cd EEI && shasum -a 256 -c CHECKSUMS.sha256 --quiet",
-    "python3 scripts/validate_semantic_extractors.py EEI",
+    "python3 scripts/generate_governance_dashboard.py --write --all",
     "python3 -m pytest tests/governance/test_project_governance_validator.py::ProjectGovernanceValidatorTests::test_eei_dashboard_sync_manifest_binds_root_views -q",
-    "python3 -c validate_governance_sync changed_only enforce_sync base_ref=origin/main",
+    "python3 scripts/validate_governance_sync.py --changed-only --base-ref origin/main --enforce-sync --semantic",
+    "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+    "python3 -m pytest tests/governance -q",
     "git diff --check"
   ],
   "test_results": [
     {
-      "command": "python3 scripts/validate_information_quality.py --project EEI --fast --fail-on-error",
+      "command": "python3 scripts/generate_governance_dashboard.py --write --all",
       "exit_code": 0,
       "result": "PASS",
-      "observed": "errors=0 warnings=0"
-    },
-    {
-      "command": "cd EEI && .venv/bin/python scripts/manage_clean_room_release.py validate",
-      "exit_code": 0,
-      "result": "PASS",
-      "observed": "package_paths=396"
-    },
-    {
-      "command": "cd EEI && .venv/bin/python scripts/manage_release_artifacts.py validate",
-      "exit_code": 0,
-      "result": "PASS",
-      "observed": "manifest_paths=403 checksum_paths=402 remote_status=PENDING"
-    },
-    {
-      "command": "cd EEI && shasum -a 256 -c CHECKSUMS.sha256 --quiet",
-      "exit_code": 0,
-      "result": "PASS",
-      "observed": "quiet checksum validation emitted no failures"
-    },
-    {
-      "command": "python3 scripts/validate_semantic_extractors.py EEI",
-      "exit_code": 0,
-      "result": "PASS",
-      "observed": "semantic_formulas_checked=10 semantic_parameters_checked=55"
+      "observed": "root governance dashboard generated with source_snapshot_hash sha256:5aa48085bf440686ac59805806176530e62d91dc2fb9d19c62283b45e1184f14"
     },
     {
       "command": "python3 -m pytest tests/governance/test_project_governance_validator.py::ProjectGovernanceValidatorTests::test_eei_dashboard_sync_manifest_binds_root_views -q",
       "exit_code": 0,
       "result": "PASS",
-      "observed": "1 passed in 0.36s; EEI root binding backlog precommit_pending_events is bound to 12"
+      "observed": "1 passed; EEI root binding backlog precommit_pending_events is bound to 13"
     },
     {
-      "command": "python3 -c validate_governance_sync changed_only enforce_sync base_ref=origin/main",
+      "command": "python3 scripts/validate_governance_sync.py --changed-only --base-ref origin/main --enforce-sync --semantic",
       "exit_code": 0,
       "result": "PASS",
       "observed": "changed files covered; errors=0 warnings=0"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root and required projects checked; errors=0 warnings=0"
+    },
+    {
+      "command": "python3 -m pytest tests/governance -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "governance test suite passed locally"
     },
     {
       "command": "git diff --check",
@@ -117,12 +92,6 @@
     }
   ],
   "evidence_refs": [
-    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
-    "EEI/docs/governance/OWNER_STATUS.md",
-    "EEI/docs/governance/STATUS.md",
-    "EEI/artifacts/release_evidence_t1211.json",
-    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
-    "EEI/CHECKSUMS.sha256",
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
     "README.md",
@@ -131,9 +100,11 @@
   ],
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "ci_attestation_subject": "Project Governance and EEI validation workflows",
-  "ci_run_reference": "PRECOMMIT_PENDING_CI_ATTESTATION",
-  "summary": "Synchronize EEI/root generated governance dashboard views after EVENT-20260622-010 and bind the A202 operator review packet dashboard drift repair.",
-  "rollback": "Revert this manifest, the root dashboard hash updates, the EEI generated status hash updates and the test binding; then rerun governance sync from origin/main.",
+  "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI",
+  "result_commit": "PRECOMMIT_TREE_BOUND",
+  "finished_at": "2026-06-22T17:21:33+10:00",
+  "summary": "Synchronize generated root governance dashboard views after the EEI A206 closure commit and keep A209 24h soak as a background evidence gate.",
+  "rollback": "Revert this manifest, the root dashboard hash updates and the test binding; then rerun governance dashboard generation from origin/main.",
   "unresolved_risks": [
     "A209 24h soak is still a background evidence gate and not complete in this change.",
     "GitHub Actions Project Governance must pass after this dashboard drift repair.",
