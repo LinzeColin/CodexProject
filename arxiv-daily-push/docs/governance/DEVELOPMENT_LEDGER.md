@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.13.0`
+Active product version: `0.13.1`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.13.0
-- Current phase: S1-A
-- Current gate: S1-03-OWNER-CONTROLS
-- Confirmed iteration count: 54
+- Product version: 0.13.1
+- Current phase: E
+- Current gate: ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-READY
+- Confirmed iteration count: 55
 - Reconstructed event count: 0
-- Current task: S1-03-OWNER-CONTROLS-001
-- Blockers: GitHub Actions run `27932072771` proves one controlled manual Release plus Gmail SMTP delivery test at commit `bbdc69bb49758e4ad84f91f45fbe7921b82b1414`, but production launch remains blocked by the unified local data model, local runtime recovery controls, migration readiness, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables.
+- Current task: ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037
+- Blockers: GitHub Actions run `27934320671` proves one controlled cloud Release plus Gmail SMTP path, but its human front-stage was rejected. The revised front-stage still needs PR CI, merge, and one controlled manual Release plus Gmail SMTP rerun. Production launch remains blocked by the unified local data model, local runtime recovery controls, migration readiness, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables.
 
 ## Phase Matrix
 
@@ -29,6 +29,30 @@ The append-only machine record is `development_events.jsonl`.
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260621-054`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from manual run `27934320671`, the email renderer, MP4 transcript renderer, scheduled Release notes, focused regression tests, and governance registry updates.
+- Version before: 0.13.0
+- Version after: 0.13.1
+- Base commit: ecd43e80a29193120d788ef8125d4ebca233dca3
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037
+- Goal: Correct the human front-stage after the controlled manual email technically succeeded but foregrounded a low-value 12-second video/Release path and exposed backend ROI scoring in the MP4 transcript.
+- Assumptions: The Chinese email body is the daily reading entry point; Release is backend evidence/download storage; MP4 is optional; backend ROI evidence remains available in GitHub artifacts.
+- Files changed: daily email renderer, scheduled Release notes wording, MP4 transcript renderer, focused tests, version/changelog files, model/formula/parameter/traceability registries, delivery task, phase record, run manifest, and event.
+- Model changes: Refined MOD-ADP-034 to `adp-manual-delivery-test-v1.3`.
+- Formula changes: Refreshed FORM-ADP-036 with email-as-reading-entry, Release-as-backend-storage, optional-video, and MP4 transcript ROI suppression constraints.
+- Parameter changes: Updated PARAM-ADP-186 and added PARAM-ADP-267, preserving owner controls PARAM-ADP-187 through PARAM-ADP-266.
+- Commands run: focused front-stage tests; full arXiv unit tests; semantic extractor; governance dashboard generation; root governance tests; changed-only governance validation; information-quality validation; JSON/JSONL/CSV parse checks; diff/cache checks.
+- Test results: focused front-stage tests 27 OK; arXiv unit tests 182 OK; semantic extractor checked 37 active formulas and 266 active parameters; root governance tests 126 OK; changed-only governance errors 0 warnings 0; information quality PASS.
+- Successes: Email no longer includes the Release landing page as a reading entry, no longer foregrounds `【12秒视频】`, marks video as optional, and the MP4 transcript no longer includes `ROI score`.
+- Failures: No revised-format real email has been sent yet after this correction.
+- Decisions: Keep production schedule disabled; rerun the controlled manual Release + Gmail SMTP workflow only after PR CI passes and this fix merges to `main`.
+- Remaining risks: The next real email can still expose live formatting issues; scheduled production remains blocked until separately approved.
+- Rollback: Revert version 0.13.1 front-stage quality code, tests, phase record, event, manifest, and governance records, then restore version 0.13.0.
+- Next step: Complete post-rebase validation, update PR, wait for CI green, merge, then rerun the controlled manual Release + Gmail SMTP workflow.
 
 ### `ITER-20260621-053`
 

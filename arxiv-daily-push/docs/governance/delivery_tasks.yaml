@@ -953,3 +953,20 @@ tasks:
     target_version: "0.12.5"
     completed_version: ""
     unknown_task_ids: []
+  - task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"
+    phase: "E"
+    objective: "Correct the manual delivery email and MP4 front-stage after run 27934320671 proved the cloud Release/Gmail path but exposed low-value human-facing format."
+    scope: "Daily delivery email body ordering, Release landing-page suppression from email, optional video-file wording, MP4 transcript score suppression, Release notes positioning, focused regression tests, and governance records."
+    non_scope: "No production schedule enablement, no new SMTP send, no direct Release upload, no ranking algorithm change, no candidate queue policy change, no secret logging, and no video email attachment."
+    status: "ready"
+    dependencies: ["ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_video.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic", "git diff --check"]
+    test_results: ["focused front-stage tests: 27 tests OK", "arxiv-daily-push unit tests: 182 tests OK", "semantic extractor: 37 active formulas and 266 active parameters checked with no errors", "root governance unit tests: 126 tests OK", "changed-only governance sync with semantic checks: errors 0 warnings 0", "information quality validation: PASS errors 0 warnings 0", "manifest JSON parse: PASS", "git diff --check: PASS", "cache check: no __pycache__ or .pyc files found"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_video.py", "https://github.com/LinzeColin/CodexProject/actions/runs/27934320671"]
+    risk: "The revised front-stage still needs PR CI, merge, and a controlled manual workflow_dispatch rerun before it can replace the latest real email."
+    rollback: "Revert version 0.13.1 front-stage quality code, tests, phase record, manifest, event, and governance records, then restore version 0.13.0."
+    target_version: "0.13.1"
+    completed_version: ""
+    unknown_task_ids: []
