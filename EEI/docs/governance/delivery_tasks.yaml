@@ -3345,11 +3345,13 @@ tasks:
       - "local make verify subset PASS for runnable non-browser targets; browser scale/soak targets blocked by local macOS Playwright MachPort sandbox and escalation rejected by Codex usage limit"
       - "A202 context-anchor unit tests PASS 10/10"
       - "development-status artifact validation PASS after pushed-diff artifact sync"
+      - "A202 dry-run ingestion count assertion repair: local py_compile PASS; remote EEI validation run 27930880852 job 82642378395 showed the loader/table count is 50, not stale expectation 52"
     evidence_refs:
       - "EEI/data/golden_vertical_fact_candidates.json"
       - "EEI/tests/integration/test_database_migrations.py"
       - "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md"
       - "EEI/artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json"
+      - "GitHub Actions run 27930880852 job 82642378395"
     risk: "A202 can be falsely closed if two official historical/supporting sources are treated as live retrieval, legal clearance, or real production owner approval."
     rollback: "Revert the second-source data/loader/test changes, regenerate clean-room/release artifacts, and rerun make verify."
     target_version: "0.1.0"

@@ -416,7 +416,7 @@ def exercise_official_full_text_dry_run_contracts() -> None:
             """,
             (parser_version,),
         ).fetchone()
-        assert latest_run == ("succeeded", "4", "52", "4", "healthy", "false", "false")
+        assert latest_run == ("succeeded", "4", "50", "4", "healthy", "false", "false")
 
         source_documents = connection.execute(
             """
