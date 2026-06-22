@@ -1673,7 +1673,11 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("TASK-T1303", ci_binding_event["task_ids"])
         operation_log_event = next(event for event in events if event.get("event_id") == "EVENT-20260623-004")
         self.assertEqual(operation_log_event["task_id"], "TASK-T1301")
-        self.assertEqual(operation_log_event["binding_status"], "pre_commit_pending")
+        self.assertEqual(operation_log_event["binding_status"], "ci_attested")
+        self.assertEqual(
+            operation_log_event["result_commit"],
+            "cb8e096fd54508080d73a6e83c015c15cfd9bd9a",
+        )
         self.assertIn("TASK-T1307", operation_log_event["task_ids"])
 
         owner_text = (ROOT / "EEI" / "docs" / "governance" / "OWNER_STATUS.md").read_text(encoding="utf-8")

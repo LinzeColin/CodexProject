@@ -4612,7 +4612,7 @@ Status: REMOTE CI VALIDATED FOR THIS SLICE; A204/A205/A209 STILL IN PROGRESS
 
 ## 2026-06-23 - T1301/A202 publication operation-log audit
 
-Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A209/A210 STILL IN PROGRESS
+Status: LOCAL AND REMOTE CI VALIDATED; A202/A209/A210 STILL IN PROGRESS
 
 ### Scope
 
@@ -4638,10 +4638,14 @@ Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A209/A210 STI
 - `PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_release_decision_bundle.py tests/unit/test_scoring.py -q -p no:cacheprovider`: PASS, 19 passed.
 - `env -u DATABASE_URL PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/integration/test_database_migrations.py -q -p no:cacheprovider`: SKIPPED locally because this host has no `DATABASE_URL`; remote PostgreSQL CI is required.
 - `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_decision_bundle.py validate`: PASS.
+- Local `make verify`: PASS after artifact regeneration and dashboard-drift repair.
+- Root governance sync: PASS.
+- Root governance pytest: PASS, 129 passed and 4 subtests passed.
+- Project Governance run `27989821924` job `82839592718`: PASS.
+- EEI validation run `27989821946` job `82839592720`: PASS, including Step 10 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E.
 
 ### Remaining gaps
 
-- Remote G2 PostgreSQL integration must prove the operation-log audit assertions.
 - A202 remains `IN_PROGRESS` until real signed source/legal/owner/brand evidence and production gold labels are attached.
 - A209 24h soak remains a background independent gate and is not replaced by operation logs.
 

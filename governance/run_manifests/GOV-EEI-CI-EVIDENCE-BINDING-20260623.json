@@ -15,7 +15,7 @@
   "iteration_id": "ITER-20260623-001",
   "generated_at": "2026-06-22T20:49:58Z",
   "implementation_base_sha": "d009516c57c4908a025c401a711dfb4d599f7b73",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:134df93658d9082e42d8ba077f898728ad255ab09562d5ed5d86a2e35ad6c534",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:c97a9fc5b77779b836c5ba0f86481df7a715fef88d5f106b0ba73e5c68795244",
   "changed_files_declared": [
     "EEI/CHANGELOG.md",
     "EEI/CHECKSUMS.sha256",

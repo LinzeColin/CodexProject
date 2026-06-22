@@ -148,7 +148,7 @@
   ],
   "ci_attestation_subject": "Project Governance and EEI validation workflows",
   "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:3ee7e683431d6369910800b08ad46639a632141ef9d72b43721b5e2f5d040d74",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:944e151d1107b1c99e9c2846806063a2c359f88879bb194556d48ebb2f3469b7",
   "evidence_refs": [
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
