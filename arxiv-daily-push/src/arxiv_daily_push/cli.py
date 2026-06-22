@@ -62,6 +62,7 @@ from .source_registry import (
 )
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
 from .stage1_b1_report import build_b1_report_email_package, validate_b1_report_email_package
+from .stage1_migration import build_migration_package, validate_stage1_migration_report, verify_migration_package
 from .stage1_queue import build_stage1_queue_report, validate_stage1_queue_report
 from .stage1_runtime import (
     STAGE1_RUNTIME_SUPPORTED_SCHEDULER_PLATFORMS,
@@ -204,6 +205,22 @@ def build_parser() -> argparse.ArgumentParser:
         scheduler_parser.add_argument("--artifact-dir", help="Directory for template files when --write is used.")
         scheduler_parser.add_argument("--write", action="store_true", help="Write template files only; never install them.")
         scheduler_parser.add_argument("--json", action="store_true", help="Print JSON scheduler report.")
+
+    migration = subparsers.add_parser("migration", help="Build or verify the Stage 1 low-resource migration package.")
+    migration_subparsers = migration.add_subparsers(dest="migration_command", required=True)
+    migration_export = migration_subparsers.add_parser("export", help="Export the Stage 1 migration package.")
+    migration_export.add_argument("--project-root", default=".", help="Repository root used for source-file inventory.")
+    migration_export.add_argument("--db", required=True, help="Migrated Stage 1 SQLite database path.")
+    migration_export.add_argument("--output-dir", required=True, help="Directory that receives the migration package.")
+    migration_export.add_argument("--generated-at", required=True, help="Migration package timestamp.")
+    migration_export.add_argument("--include-path", action="append", default=[], help="Small supporting file to include in the backup. May be repeated.")
+    migration_export.add_argument("--required-path", action="append", default=[], help="Required source path relative to project root. May be repeated.")
+    migration_export.add_argument("--no-write", action="store_true", help="Validate the export without writing package files.")
+    migration_export.add_argument("--json", action="store_true", help="Print JSON migration export report.")
+    migration_verify = migration_subparsers.add_parser("verify", help="Verify a Stage 1 migration package manifest.")
+    migration_verify.add_argument("--manifest", required=True, help="migration_manifest.json path.")
+    migration_verify.add_argument("--generated-at", required=True, help="Verification timestamp.")
+    migration_verify.add_argument("--json", action="store_true", help="Print JSON migration verification report.")
 
     doctor = subparsers.add_parser("doctor", help="Run local Phase 1 readiness checks.")
     doctor.add_argument("--json", action="store_true", help="Print JSON report.")
@@ -810,6 +827,31 @@ def main(argv: list[str] | None = None) -> int:
             print("- dry_run_only: true")
             for path in report.get("written_paths", []):
                 print(f"- template: {path}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "migration":
+        if args.migration_command == "export":
+            report = build_migration_package(
+                project_root=args.project_root,
+                output_dir=args.output_dir,
+                db_path=args.db,
+                generated_at=args.generated_at,
+                include_paths=args.include_path,
+                required_paths=args.required_path or None,
+                write=not args.no_write,
+            )
+        else:
+            report = verify_migration_package(manifest_path=args.manifest, generated_at=args.generated_at)
+        errors = validate_stage1_migration_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            if report.get("package_manifest_path"):
+                print(f"- package_manifest_path: {report.get('package_manifest_path')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- error: {reason}")
         return 0 if report["status"] == "pass" else 2
