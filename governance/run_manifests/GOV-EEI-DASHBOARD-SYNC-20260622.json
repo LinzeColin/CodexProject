@@ -71,6 +71,7 @@
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
+    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
@@ -139,12 +140,13 @@
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
+    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
   "ci_attestation_subject": "Project Governance and EEI validation workflows",
   "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:776f003df6b98687032578c58094207ea9cf47c0738078945a7dc30a64245d92",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:9c3a7acc538c5f70f2f4cd003b79f7dee995897b6b02a085fd35dbe0648cd779",
   "evidence_refs": [
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
@@ -289,6 +291,7 @@
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
+    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
     "tests/governance/test_project_governance_validator.py"
   ]
 }
