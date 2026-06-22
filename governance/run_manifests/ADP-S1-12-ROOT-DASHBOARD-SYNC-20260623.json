@@ -1,0 +1,85 @@
+{
+  "schema_version": 2,
+  "run_id": "ADP-S1-12-ROOT-DASHBOARD-SYNC-20260623",
+  "project_id": "root-governance",
+  "task_id": "ADP-S1-12-ROOT-DASHBOARD-SYNC-20260623",
+  "acceptance_ids": [
+    "ACC-REVIEW8-CI-GENERATED-DASHBOARD",
+    "ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"
+  ],
+  "iteration_id": "ITER-20260623-ROOT-DASHBOARD-004",
+  "generated_at": "2026-06-23T09:08:00+10:00",
+  "implementation_base_sha": "74349aa779feb9b7ad45a6ee20aa4ba95bebbb71",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:566f3dc8e6236108c6f29980e58694bb51c1269b40b219aa153000eea8d601ad",
+  "changed_files_declared": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/ADP-S1-12-ROOT-DASHBOARD-SYNC-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/ADP-S1-12-ROOT-DASHBOARD-SYNC-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/ADP-S1-12-ROOT-DASHBOARD-SYNC-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/ADP-S1-12-ROOT-DASHBOARD-SYNC-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_rootdash_all PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/generate_governance_dashboard.py --write --all",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_rootdash_tests2 PYTHONPATH=scripts:arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_rootdash_changed2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_rootdash_all2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_rootdash_iq2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+    "python3 -m json.tool governance/run_manifests/ADP-S1-12-ROOT-DASHBOARD-SYNC-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_rootdash_all PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/generate_governance_dashboard.py --write --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root dashboard generation reproduced the main push drift: GOVERNANCE_DASHBOARD.md and OWNER_PORTFOLIO.md snapshot_event_time advanced to 2026-06-23T08:17:00+10:00; arxiv-daily-push precommit_pending_events advanced to 20."
+    },
+    {
+      "command": "final validation rerun",
+      "exit_code": null,
+      "result": "PENDING_LOCAL_RERUN",
+      "observed": "This manifest is created before the final rerun; the final commit/CI binding must be supplied by GitHub Actions after push."
+    }
+  ],
+  "evidence_refs": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "governance/binding_backlog.yaml",
+    "tests/governance/test_project_governance_validator.py",
+    "github-actions://LinzeColin/CodexProject/actions/runs/27989940804"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Project Governance main push dashboard verification after ADP S1-12 preflight merge",
+  "ci_run_reference": "PRECOMMIT_PENDING_CI_ATTESTATION",
+  "result_commit": "PRECOMMIT_TREE_BOUND",
+  "finished_at": "2026-06-23T09:08:00+10:00",
+  "summary": "Refresh generated root governance dashboard views after PR #68 S1-12 preflight evidence merge so the main Project Governance dashboard verification step has no generated diff.",
+  "rollback": "Revert this manifest, the root dashboard snapshot-time updates, the binding backlog count update, and the governance test assertion update.",
+  "unresolved_risks": [
+    "This repair does not complete S1-12; two natural-day controlled B1 Gmail SMTP delivery evidence remains missing.",
+    "Final GitHub Actions success must be attested after this repair PR merges.",
+    "This change does not alter product behavior, scoring, ranking, scheduler, SMTP, Release, workflow, schema, or runtime code."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; CI attestation must bind the final commit after push."
+}
