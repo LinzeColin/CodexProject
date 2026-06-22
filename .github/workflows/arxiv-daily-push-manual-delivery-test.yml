@@ -1,0 +1,315 @@
+name: arXiv Daily Push manual Release and SMTP test
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_manual_delivery_test:
+        description: "Type SEND_TEST_EMAIL_TO_LINZEZHANG35_GMAIL_COM to create a Release and send one Gmail SMTP test email."
+        required: true
+        type: string
+      generated_at:
+        description: "Optional ISO timestamp for deterministic evidence. Empty uses current UTC."
+        required: false
+        type: string
+      max_results_per_category:
+        description: "Small live arXiv fetch window per primary archive."
+        required: true
+        default: "1"
+        type: choice
+        options:
+          - "1"
+          - "2"
+          - "3"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: arxiv-daily-push-manual-delivery-test
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.guard.outputs.should_run }}
+    steps:
+      - name: Resolve manual test guard
+        id: guard
+        shell: bash
+        run: |
+          should_run="false"
+          if [ "${{ inputs.confirm_manual_delivery_test }}" = "SEND_TEST_EMAIL_TO_LINZEZHANG35_GMAIL_COM" ]; then
+            should_run="true"
+          fi
+          printf 'should_run=%s\n' "$should_run" >> "$GITHUB_OUTPUT"
+          {
+            echo "## arXiv Daily Push manual delivery test"
+            echo "- status: $should_run"
+            echo "- event: workflow_dispatch"
+            echo "- runner: ubuntu-latest"
+            echo "- recipient: linzezhang35@gmail.com"
+            echo "- production schedule: not enabled"
+            echo "- video delivery: GitHub Release link only, no email attachment"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  manual-delivery-test:
+    needs: guard
+    if: needs.guard.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ADP_MANUAL_DELIVERY_TEST: "true"
+      ADP_PRODUCTION_ENABLED: "false"
+      ADP_SCHEDULED_RUN_ENABLED: "true"
+      ADP_ALLOW_SMTP_SEND: "true"
+      ADP_ALLOW_RELEASE_UPLOAD: "true"
+      ADP_RELEASE_DRAFT: "false"
+      ADP_RELEASE_REPO: ${{ github.repository }}
+      ADP_RELEASE_TARGET: ${{ github.sha }}
+      ADP_RELEASE_TAG: adp-manual-delivery-test-${{ github.run_id }}
+      ADP_RELEASE_TITLE: arXiv Daily Push manual delivery test ${{ github.run_id }}
+      ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST || 'smtp.gmail.com' }}
+      ADP_SMTP_PORT: ${{ secrets.ADP_SMTP_PORT || '587' }}
+      ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME || 'linzezhang35@gmail.com' }}
+      ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
+      ADP_ARXIV_POLITE_DELAY_SECONDS: "3"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Stop unless default branch
+        shell: bash
+        run: |
+          if [ "${{ github.ref_name }}" != "${{ github.event.repository.default_branch }}" ]; then
+            echo "manual delivery test must run from the default branch after PR CI and merge"
+            exit 2
+          fi
+      - name: Install cloud MP4 runtime
+        shell: bash
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          ffmpeg -version | head -n 1
+      - name: Resolve generated_at
+        id: generated_at
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.generated_at }}" ]; then
+            printf 'value=%s\n' "${{ inputs.generated_at }}" >> "$GITHUB_OUTPUT"
+          else
+            printf 'value=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run production preflight for manual test
+        id: preflight
+        shell: bash
+        run: |
+          set +e
+          output="$RUNNER_TEMP/adp-manual-delivery-preflight.json"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_manual_delivery_preflight" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push preflight-production \
+              --path . \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --json > "$output"
+          code=$?
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload manual delivery preflight
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-manual-delivery-preflight
+          path: ${{ steps.preflight.outputs.path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Stop if manual preflight blocked
+        if: steps.preflight.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "manual delivery preflight blocked before arXiv fetch, Release upload, or SMTP send"
+          exit "${{ steps.preflight.outputs.exit_code }}"
+      - name: Build all-arXiv manual daily input
+        id: source
+        shell: bash
+        run: |
+          set +e
+          output="$RUNNER_TEMP/adp-manual-delivery-daily-input.json"
+          artifact_dir="$RUNNER_TEMP/adp-manual-delivery-phase12-artifacts"
+          queue_output="$RUNNER_TEMP/adp-manual-delivery-candidate-queue.json"
+          generated_at="${{ steps.generated_at.outputs.value }}"
+          daily_date="$(python3 - "$generated_at" <<'PY'
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          import sys
+
+          value = sys.argv[1].replace("Z", "+00:00")
+          print(datetime.fromisoformat(value).astimezone(ZoneInfo("Australia/Sydney")).date())
+          PY
+          )"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_manual_delivery_source" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push build-all-arxiv-daily-input \
+              --date "$daily_date" \
+              --generated-at "$generated_at" \
+              --timezone "Australia/Sydney" \
+              --max-results-per-category "${{ inputs.max_results_per_category }}" \
+              --polite-delay-seconds "${ADP_ARXIV_POLITE_DELAY_SECONDS}" \
+              --artifact-dir "$artifact_dir" \
+              --queue-output "$queue_output" \
+              --json > "$output"
+          code=$?
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'artifact_dir=%s\n' "$artifact_dir" >> "$GITHUB_OUTPUT"
+          printf 'candidate_queue_path=%s\n' "$queue_output" >> "$GITHUB_OUTPUT"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload manual all-arXiv daily input
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-manual-delivery-daily-input
+          path: ${{ steps.source.outputs.path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Upload manual Phase 12 artifacts
+        if: always() && steps.source.outputs.artifact_dir != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-manual-delivery-phase12-artifacts
+          path: ${{ steps.source.outputs.artifact_dir }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Upload manual candidate queue
+        if: always() && steps.source.outputs.candidate_queue_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-manual-delivery-candidate-queue
+          path: ${{ steps.source.outputs.candidate_queue_path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Stop if all-arXiv input blocked
+        if: steps.source.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "manual all-arXiv input blocked before MP4, Release upload, or SMTP send"
+          exit "${{ steps.source.outputs.exit_code }}"
+      - name: Render manual MP4 artifact
+        id: mp4
+        shell: bash
+        run: |
+          set +e
+          video="$RUNNER_TEMP/adp-manual-delivery-daily-video.mp4"
+          report="$RUNNER_TEMP/adp-manual-delivery-daily-video-report.json"
+          transcript="$RUNNER_TEMP/adp-manual-delivery-daily-video.txt"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_manual_delivery_mp4" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push render-lightweight-mp4 \
+              --daily-input "${{ steps.source.outputs.path }}" \
+              --output "$video" \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --duration-seconds "${ADP_VIDEO_DURATION_SECONDS:-12}" \
+              --json > "$report"
+          code=$?
+          cat "$report"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          printf 'video_path=%s\n' "$video" >> "$GITHUB_OUTPUT"
+          printf 'report_path=%s\n' "$report" >> "$GITHUB_OUTPUT"
+          printf 'transcript_path=%s\n' "$transcript" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload manual MP4 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-manual-delivery-mp4-video
+          path: |
+            ${{ steps.mp4.outputs.video_path }}
+            ${{ steps.mp4.outputs.report_path }}
+            ${{ steps.mp4.outputs.transcript_path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Stop if MP4 render blocked
+        if: steps.mp4.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "manual MP4 render blocked before Release upload or SMTP send"
+          exit "${{ steps.mp4.outputs.exit_code }}"
+      - name: Run one manual Release-backed daily delivery test
+        id: delivery
+        shell: bash
+        run: |
+          set +e
+          output="$RUNNER_TEMP/adp-manual-delivery-scheduled-execution.json"
+          command=(
+            python3 -m arxiv_daily_push run-scheduled-production
+            --mode daily-run
+            --generated-at "${{ steps.generated_at.outputs.value }}"
+            --preflight-report "${{ steps.preflight.outputs.path }}"
+            --daily-input "${{ steps.source.outputs.path }}"
+            --release-asset "${{ steps.mp4.outputs.video_path }}"
+            --release-asset "${{ steps.mp4.outputs.report_path }}"
+            --release-asset "${{ steps.mp4.outputs.transcript_path }}"
+            --json
+          )
+          artifact_dir="${{ steps.source.outputs.artifact_dir }}"
+          if [ -n "$artifact_dir" ] && [ -d "$artifact_dir" ]; then
+            while IFS= read -r artifact; do
+              command+=(--release-asset "$artifact")
+            done < <(find "$artifact_dir" -type f -name '*.json' | sort)
+          fi
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_manual_delivery_execution" \
+          PYTHONPATH=arxiv-daily-push/src \
+            "${command[@]}" > "$output"
+          code=$?
+          cat "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload manual delivery execution
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-manual-delivery-scheduled-execution
+          path: ${{ steps.delivery.outputs.path }}
+          if-no-files-found: error
+          retention-days: 35
+      - name: Summarize manual delivery test
+        if: always() && steps.delivery.outputs.path != ''
+        shell: bash
+        run: |
+          python3 - "${{ steps.delivery.outputs.path }}" <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          import sys
+          from pathlib import Path
+
+          report = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          release = report.get("release_report") if isinstance(report.get("release_report"), dict) else {}
+          smtp = report.get("notification_report") if isinstance(report.get("notification_report"), dict) else {}
+          delivery = report.get("delivery_package") if isinstance(report.get("delivery_package"), dict) else {}
+          print("## arXiv Daily Push manual delivery result")
+          print(f"- status: {report.get('status', 'unknown')}")
+          print(f"- production_evidence_ready: {report.get('production_evidence_ready', False)}")
+          print(f"- release_status: {release.get('status', 'unknown')}")
+          print(f"- smtp_status: {smtp.get('status', 'unknown')}")
+          print(f"- recipient: {smtp.get('recipient', 'linzezhang35@gmail.com')}")
+          print(f"- release: {delivery.get('release_url', '')}")
+          print(f"- video: {delivery.get('video_url', '')}")
+          print("- production schedule: still not enabled by this workflow")
+          PY
+      - name: Stop if manual delivery test failed
+        if: steps.delivery.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "manual Release-backed Gmail SMTP delivery test failed; inspect adp-manual-delivery-scheduled-execution"
+          exit "${{ steps.delivery.outputs.exit_code }}"

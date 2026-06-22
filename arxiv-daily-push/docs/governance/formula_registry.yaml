@@ -1205,3 +1205,37 @@ formulas:
     last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
     verified_at: "2026-06-22T12:15:00+10:00"
     evidence_hash: "sha256:6eb1c275fba57f7baf93824e580b90fffb42373787d6a17854b0bbeaccc6eac1"
+  - formula_id: "FORM-ADP-036"
+    model_id: "MOD-ADP-034"
+    assumption_ids: ["ASM-ADP-036", "ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-022"]
+    status: "active"
+    expression: "Manual delivery testing may perform real side effects only after an explicit workflow_dispatch confirmation on the default branch; the workflow must use GitHub-hosted ubuntu-latest, build all-arXiv daily input, render MP4, run scheduled daily-run delivery with Release assets, send exactly to the configured recipient, and avoid enabling scheduled production."
+    variables:
+      - name: "confirm_manual_delivery_test"
+        data_type: "string"
+        unit: "workflow input"
+        input_domain: "SEND_TEST_EMAIL_TO_LINZEZHANG35_GMAIL_COM"
+      - name: "workflow_ref"
+        data_type: "string"
+        unit: "branch"
+        input_domain: "default branch only"
+      - name: "delivery_side_effects"
+        data_type: "object"
+        unit: "workflow env"
+        input_domain: "ADP_ALLOW_SMTP_SEND=true, ADP_ALLOW_RELEASE_UPLOAD=true, ADP_RELEASE_DRAFT=false"
+      - name: "delivery_order"
+        data_type: "list"
+        unit: "workflow steps"
+        input_domain: "preflight, all-arXiv input, MP4, Release-backed scheduled execution"
+    constraints: "The manual test workflow has no schedule trigger, does not read repository production enablement variables, does not attach video to email, and stops before side effects when preflight, all-arXiv input, or MP4 rendering fails."
+    missing_policy: "Missing confirmation, non-default branch dispatch, missing SMTP password secret, missing Release permission, failed source fetch, failed MP4 render, or failed scheduled execution blocks the manual test before claiming success."
+    output_range: "manual workflow run status success only when Release-backed scheduled execution returns production_evidence_ready true; otherwise blocked or failed with artifacts"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
+    test_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py::ManualDeliveryWorkflowTests"]
+    implementation_fingerprint: "sha256:1624399bd56c2f842c642e0db7c2f32b258141097ab2e7b887194ebd4151da7b"
+    last_verified_commit: "beb075a419b8b4c6cb6f73807284dcaa930866e2"
+    verified_at: "2026-06-22T12:18:37+10:00"
+    evidence_hash: "sha256:2114a5c69dc044260989a10184d777829c7c520453b3910ca3c51bd7336a4831"

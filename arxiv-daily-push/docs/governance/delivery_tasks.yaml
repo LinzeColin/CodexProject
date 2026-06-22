@@ -732,3 +732,20 @@ tasks:
     target_version: "0.12.1"
     completed_version: "0.12.1"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE12-MANUAL-DELIVERY-TEST-033"
+    phase: "E"
+    objective: "Prepare a controlled manual GitHub Release plus Gmail SMTP test workflow that sends one email with Chinese lesson text, Release link, video link, and candidate queue summary without enabling production scheduling."
+    scope: "Default-branch workflow_dispatch guard, GitHub-hosted runner, Gmail SMTP defaults, all-arXiv daily input, lightweight MP4 render, Release-backed scheduled execution, manual delivery artifacts, focused workflow and scheduled-execution tests, and governance records."
+    non_scope: "No production schedule enablement, no automatic workflow schedule trigger, no real SMTP send in this preparation commit, no real Release upload in this preparation commit, no secret value logging, no video email attachment, and no 30-day production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE12-PRODUCTION-ENABLEMENT-032"]
+    required_files: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml", "arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_delivery_pycache_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_manual_delivery_workflow.py arxiv-daily-push/tests/test_scheduled_execution.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_delivery_pycache_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_delivery_pycache_semantic python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_delivery_pycache_gov python3 scripts/validate_project_governance.py --changed-only --enforce-sync", "git diff --check"]
+    test_results: ["focused manual workflow and scheduled execution tests: 8 tests OK", "full arxiv-daily-push tests pending final run", "semantic and governance validation pending final run", "git diff check pending final run"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", ".github/workflows/arxiv-daily-push-manual-delivery-test.yml", "arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
+    risk: "The workflow is prepared but real manual GitHub Release and Gmail SMTP evidence still requires default-branch dispatch after PR CI and merge; missing Gmail app password or GitHub Release permission will block the run before production can be considered."
+    rollback: "Remove manual delivery workflow, focused tests, governance records, and restore version 0.12.1 while keeping production variables disabled."
+    target_version: "0.12.2"
+    completed_version: "0.12.2"
+    unknown_task_ids: []

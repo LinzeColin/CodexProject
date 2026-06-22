@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 43
-- acceptance_count: 43
+- task_count: 44
+- acceptance_count: 44
 
 ## Delivery Tasks
 
@@ -67,7 +67,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-PROVISIONING-AUDIT-REVIEW-029 | E | completed | ADP-ACC-PHASE11-PROVISIONING-AUDIT-REVIEW | 23 focused tests OK; downloaded provisioning audit artifacts can be reviewed with durable workflow run and artifact refs before trial start | `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md` |
 | ADP-PHASE11-TWO-DAY-SIMULATION-030 | E | completed | ADP-ACC-PHASE11-TWO-DAY-SIMULATION | 3 focused tests OK; two-day simulation CLI pass with 2 unique daily runs and no production acceptance claim | `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md` |
 | ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031 | E | completed | ADP-ACC-PHASE12-ALL-ARXIV-QUEUE-DELIVERY | 165 arXiv tests OK; semantic extractor 34 formulas/175 parameters OK; targeted root governance tests 2 OK; changed-only sync 0 errors/0 warnings before unrelated missing-project validation; all-arXiv scan, queue fallback, workflow guards, and mail video-link gates pass | `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
-| ADP-PHASE12-PRODUCTION-ENABLEMENT-032 | E | blocked | ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT | blocked until PR CI passes and owner-provisioned default-branch runner, SMTP, Release video link, and production variable evidence exists | `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
+| ADP-PHASE12-PRODUCTION-ENABLEMENT-032 | E | completed | ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT | PR cloud dry-run path passed on GitHub-hosted runner with 20/20 arXiv buckets and real MP4 artifact; production variables remain disabled | `docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md` |
+| ADP-PHASE12-MANUAL-DELIVERY-TEST-033 | E | prepared | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual workflow prepared for default-branch Release + Gmail SMTP test; real Release upload and real email send still require post-PR manual workflow dispatch | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates

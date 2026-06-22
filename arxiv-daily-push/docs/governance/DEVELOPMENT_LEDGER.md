@@ -1136,6 +1136,30 @@ The append-only machine record is `development_events.jsonl`.
 - Rollback: Revert version 0.12.1 changes, remove the cloud dry-run workflow and MP4 render command, restore version 0.12.0, and keep production variables disabled.
 - Next step: Push branch, open PR, run the Phase 12 cloud dry-run on GitHub-hosted Actions, inspect `adp-phase12-cloud-dry-run`, then run controlled Release/Gmail SMTP manual test only after dry-run passes.
 
+### `ITER-20260621-049`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from manual workflow contract, focused tests, and scheduled execution delivery-package behavior.
+- Version before: 0.12.1
+- Version after: 0.12.2
+- Base commit: beb075a419b8b4c6cb6f73807284dcaa930866e2
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-MANUAL-DELIVERY-TEST-033
+- Goal: Prepare the controlled GitHub Release plus Gmail SMTP manual test path requested after PR CI, without enabling production scheduling.
+- Assumptions: The manual workflow will be dispatched from the default branch after PR CI and merge; it may perform one Release upload and one Gmail SMTP send only after the exact confirmation string is supplied.
+- Files changed: manual delivery workflow, focused workflow test, scheduled execution email-link assertion, version/changelog files, model/formula/parameter/traceability registries, delivery task, phase record, event, and run manifest.
+- Model changes: Added MOD-ADP-034 `adp-manual-delivery-test-v1`.
+- Formula changes: Added FORM-ADP-036 for default-branch manual Release + SMTP test gating.
+- Parameter changes: Added PARAM-ADP-181 through PARAM-ADP-184 for confirmation string, default-branch guard, real side-effect flags, and Release-backed email path.
+- Commands run: focused manual workflow and scheduled execution tests.
+- Test results: focused manual workflow and scheduled execution tests 8 OK.
+- Successes: The manual workflow has no schedule trigger, uses GitHub-hosted `ubuntu-latest`, defaults Gmail SMTP host/port/username, requires `ADP_SMTP_PASSWORD`, creates Release assets before SMTP, and sends no video attachment.
+- Failures: No real GitHub Release has been uploaded and no Gmail SMTP email has been sent in this preparation commit.
+- Decisions: Keep production schedule disabled until this manual workflow is merged, dispatched, and verified by received email plus Release/video links.
+- Remaining risks: GitHub workflow_dispatch availability requires the workflow on the default branch; missing/invalid Gmail app password or GitHub token Release permission will fail the manual test.
+- Rollback: Remove the manual delivery workflow, tests, version 0.12.2 governance records, and restore version 0.12.1 while keeping production variables disabled.
+- Next step: Commit and push this PR update, wait for PR CI green, merge the safe manual-test entrypoint to main, then run the GitHub Actions manual delivery workflow with the confirmation string.
+
 ## Unknown Historical Periods
 
 None for this new project baseline.
