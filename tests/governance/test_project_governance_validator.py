@@ -1624,6 +1624,21 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("30-day acceptance absent", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
 
+    def test_arxiv_s1_next_task_priority_does_not_reorder_other_projects(self) -> None:
+        dashboard = load_dashboard_module()
+        config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
+        expected = {
+            "arxiv-daily-push": "S1-07-B1_REPORT_EMAIL_TEXT-001",
+            "OpenAIDatabase": "TASK-OAI-B-001",
+            "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
+            "whkmSalary": "TASK-WHKM-B-001",
+        }
+        for project_id, task_id in expected.items():
+            with self.subTest(project_id=project_id):
+                project = next(project for project in config["projects"] if project["project_id"] == project_id)
+                info = dashboard.load_project(project)
+                self.assertEqual(info["assurance"]["next_executable_task"]["task_id"], task_id)
+
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
@@ -1702,10 +1717,11 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         }:
             self.assertIn(path, changed)
         dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
-        self.assertIn("| `arxiv-daily-push` | `0.15.0` |", dashboard_text)
+        self.assertIn("| `arxiv-daily-push` | `0.16.0` |", dashboard_text)
+        self.assertIn("S1-07-B1_REPORT_EMAIL_TEXT-001", dashboard_text)
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         adp_backlog = backlog_text.split('project_id: "arxiv-daily-push"', 1)[1].split("next_task:", 1)[0]
-        self.assertIn("precommit_pending_events: 13", adp_backlog)
+        self.assertIn("precommit_pending_events: 14", adp_backlog)
 
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads((ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text())
