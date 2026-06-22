@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.14.1`
+Active product version: `0.15.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.14.1
-- Current phase: E
-- Current gate: ADP-PHASE12-EMAIL-DECISION-UI-V2-READY
-- Confirmed iteration count: 57
+- Product version: 0.15.0
+- Current phase: S1-A
+- Current gate: ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-READY
+- Confirmed iteration count: 58
 - Reconstructed event count: 0
-- Current task: ADP-PHASE12-EMAIL-DECISION-UI-V2-038
-- Blockers: S1-04 local storage is complete, but S1-05 connector contract, S1-06 scoring/queue/content ledger replay, S1-07 B1 report/email/media interface, S1-08 local runtime recovery, S1-09 migration package, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables still block final production acceptance.
+- Current task: S1-05-ARXIV-CONNECTOR-CONTRACT-001
+- Blockers: S1-05 arXiv connector contract is complete, but S1-06 scoring/queue/content ledger replay, S1-07 B1 report/email/media interface, S1-08 local runtime recovery, S1-09 migration package, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
 
@@ -29,6 +29,31 @@ The append-only machine record is `development_events.jsonl`.
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260622-S1-004`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from `source_registry.py`, source-registry CLI dispatch, focused source registry/source ingest tests, full ADP unit tests, semantic extractor, and governance registry updates.
+- Version before: 0.14.1
+- Version after: 0.15.0
+- Base commit: 17afce7844f1fc67de0721940af3bda8eab582f9
+- Result commit: PENDING
+- Task IDs: S1-05-ARXIV-CONNECTOR-CONTRACT-001
+- Goal: Add the Review8 Stage 1 source registry and arXiv connector contract that proves the single owner-controls source list, SRC-ARXIV/arxiv.atom.v1 active adapter, offline fixture validation, and max 10 metadata canary cap without production side effects.
+- Assumptions: S1-05 is a connector boundary and evidence contract only; it does not enable B1 non-arXiv sources, run a live network canary during local validation, download PDFs, send SMTP, upload Releases, enable production scheduling, or claim production acceptance.
+- Files read: `AGENTS.md`, `arxiv-daily-push/AGENTS.md`, Review8 V4 baseline files, owner controls, source ingest, arXiv adapter, CLI, SourceItem contracts, existing governance registries, and focused source/CLI tests.
+- Files changed: `source_registry.py`, source-registry CLI dispatch, source ingest canary cap, source registry schema/tests, focused source ingest test, version files, changelog, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, ledger/event records, and run manifest.
+- Model changes: Added MOD-ADP-038 `adp-source-registry-contract-v1`.
+- Formula changes: Added FORM-ADP-040, updated FORM-ADP-017 max_results domain to 1..10, and refreshed FORM-ADP-024 implementation evidence because `cli.py::main` gained the source-registry subcommand.
+- Parameter changes: Updated PARAM-ADP-075 from 25 to 10 for Review8 Window A source ingest canary cap and added PARAM-ADP-280 through PARAM-ADP-286 for source registry schema, connector version, canonical config path, active source, active adapter, max canary results, and allowed enabled source count.
+- Commands run: focused source registry/source ingest/arXiv adapter/CLI unit tests; full arxiv-daily-push unit tests; semantic extractor; project governance validator; all-project governance validator; changed-only semantic sync validator; root governance unit tests; information-quality validator; source registry schema JSON parse; manifest JSON parse; CSV width checks.
+- Test results: focused source registry/source ingest/arXiv adapter/CLI tests 20 OK; arxiv-daily-push unit tests 193 OK; semantic extractor checked 40 active formulas and 285 active parameters with no errors; project governance errors 0 warnings 0; all-project governance errors 0 warnings 0; changed-only semantic sync errors 0 warnings 0; root governance tests 128 OK; information-quality PASS; source registry schema and manifest JSON parse OK; parameter registry and traceability CSV widths consistent.
+- Successes: Source registry report passes from `config/owner_controls.yaml` plus offline arXiv Atom fixture, blocks non-arXiv enabled sources in Window A, keeps PDF/bulk/paid/secret/production side effects disabled, and enforces max 10 metadata records.
+- Failures: The pre-rebase semantic extractor correctly caught PARAM-ADP-075 active value drift and FORM-ADP-024 CLI fingerprint drift before registry updates; the first full unit run caught the version command still expecting 0.14.0, fixed by updating the focused version test to 0.15.0.
+- Decisions: Bump product version to 0.15.0 because S1-05 adds a backward-compatible source registry CLI/schema/contract and changes the Review8 Window A active canary cap from 25 to 10 while preserving disabled production side effects.
+- Remaining risks: Queue/content ledger replay, B1 delivery interface, local runtime recovery, migration package, production trial start, and 30-day acceptance evidence remain incomplete.
+- Rollback: Remove source_registry module, source-registry CLI dispatch/tests/schema, restore SOURCE_INGEST_MAX_RESULTS to 25 if returning to pre-Review8 Window A semantics, restore version 0.14.1, and revert S1-05 governance records and run manifest.
+- Next step: S1-06-SCORING-QUEUE-LEDGER-001.
 
 ### `ITER-20260621-055`
 

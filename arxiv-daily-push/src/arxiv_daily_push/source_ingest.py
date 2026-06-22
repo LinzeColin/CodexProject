@@ -17,7 +17,7 @@ from .contracts import validate_source_item
 
 
 SOURCE_INGEST_MODEL_ID = "adp-live-arxiv-ingest-v1"
-SOURCE_INGEST_MAX_RESULTS = 25
+SOURCE_INGEST_MAX_RESULTS = 10
 SOURCE_INGEST_POLITE_DELAY_SECONDS = 3
 
 FetchAtom = Callable[[ArxivQuery], str]

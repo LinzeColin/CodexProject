@@ -37,6 +37,7 @@ Implemented now:
 - `adp arxiv-url`
 - `adp parse-arxiv-atom`
 - `adp fetch-arxiv-latest`
+- `adp source-registry`
 - `adp plan-all-arxiv-scan`
 - `adp build-all-arxiv-daily-input`
 - `adp build-daily-input`
@@ -70,6 +71,7 @@ Implemented now:
 - generic contracts for `SourceItem`, `EvidenceClaim`, `Lesson`, `Storyboard`, `Publication`, and `RunRecord`
 - deterministic state transitions for local `RunRecord` validation
 - arXiv Atom feed parsing into generic `SourceItem` records using local fixture tests
+- Stage 1 source registry contract that keeps `config/owner_controls.yaml` as the single editable source list, enables only SRC-ARXIV/arxiv.atom.v1, and caps canaries at 10 metadata records
 - small-window live arXiv Atom source ingestion with incremental duplicate filtering and fail-closed network/API behavior
 - deterministic daily input builder that converts an arXiv `SourceBatch` into ranked daily pipeline input using only Atom `<summary>` claims
 - Phase 12 all-arXiv primary archive scan plan and daily input builder that ranks candidates by relevance, learning value, economic conversion rate, ROI, cross-disciplinary value, and explainability
@@ -154,8 +156,8 @@ Current V4 task sequence:
 - `S1-02-BASELINE-LOCK-TRACEABILITY-001`: baseline lock and traceability.
 - `S1-03-OWNER-CONTROLS-001`: owner controls and owner-readable views.
 - `S1-04-SQLITE-DATA-MODEL-001`: unified local document/event store.
-- `S1-05-ARXIV-CONNECTOR-CONTRACT-001`: arXiv source registry contract.
-- `S1-06-SCORING-QUEUE-LEDGER-001`: research scoring, queue, and content ledger.
+- `S1-05-ARXIV-CONNECTOR-CONTRACT-001`: arXiv source registry contract. Completed.
+- `S1-06-SCORING-QUEUE-LEDGER-001`: research scoring, queue, and content ledger. Next ready task.
 - `S1-07-B1_REPORT_EMAIL_MEDIA-001`: B1 report, claims, email preview, and media interface.
 - `S1-08-LOCAL_RUNTIME_RECOVERY-001`: scheduler, watchdog, backup, and restore.
 - `S1-09-MIGRATION_PACKAGE-001`: low-resource integration and migration package.
