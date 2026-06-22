@@ -77,6 +77,8 @@ MVP_SCORE_RESULT_OBJECT_TYPES = [
     "relationship_fact_candidate",
     "relationship",
     "entity",
+    "theme",
+    "facility",
     "event",
     "industry",
     "source_document",
@@ -1735,6 +1737,7 @@ def score_result_rows_for_entities(
         """
         SELECT
           e.id,
+          e.entity_type,
           e.status,
           COALESCE(identifier_counts.identifier_count, 0)::int AS identifier_count,
           COALESCE(alias_counts.alias_count, 0)::int AS alias_count,
@@ -1790,27 +1793,36 @@ def score_result_rows_for_entities(
     ).fetchall()
     rows: list[dict[str, Any]] = []
     for entity in entities:
+        metrics = entity_score_metrics(
+            identifier_count=int(entity["identifier_count"] or 0),
+            alias_count=int(entity["alias_count"] or 0),
+            relationship_count=int(entity["relationship_count"] or 0),
+            relationship_family_count=int(
+                entity["relationship_family_count"] or 0
+            ),
+            independent_source_count=int(entity["source_document_count"] or 0),
+            industry_membership_count=int(
+                entity["industry_membership_count"] or 0
+            ),
+            status=entity["status"],
+            fact_version_present=entity["fact_version_id"] is not None,
+            minimum_independent_sources=ENTITY_SOURCE_THRESHOLD_MIN,
+        )
         rows.append(
             {
                 "object_type": "entity",
                 "object_id": entity["id"],
-                "metrics": entity_score_metrics(
-                    identifier_count=int(entity["identifier_count"] or 0),
-                    alias_count=int(entity["alias_count"] or 0),
-                    relationship_count=int(entity["relationship_count"] or 0),
-                    relationship_family_count=int(
-                        entity["relationship_family_count"] or 0
-                    ),
-                    independent_source_count=int(entity["source_document_count"] or 0),
-                    industry_membership_count=int(
-                        entity["industry_membership_count"] or 0
-                    ),
-                    status=entity["status"],
-                    fact_version_present=entity["fact_version_id"] is not None,
-                    minimum_independent_sources=ENTITY_SOURCE_THRESHOLD_MIN,
-                ),
+                "metrics": metrics,
             }
         )
+        if entity["entity_type"] in {"theme", "facility"}:
+            rows.append(
+                {
+                    "object_type": entity["entity_type"],
+                    "object_id": entity["id"],
+                    "metrics": metrics,
+                }
+            )
     return rows
 
 

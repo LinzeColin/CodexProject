@@ -1625,8 +1625,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260622-014")
-        self.assertEqual(matrix["current_gate"], "TASK-T904-A026-A027-GOLD-QUALITY-EVALUATION-IN-PROGRESS")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260622-016")
+        self.assertEqual(matrix["current_gate"], "TASK-T1302-A203-THEME-FACILITY-SCORING-IN-PROGRESS")
 
         events = [json.loads(line) for line in (ROOT / "EEI" / "docs" / "governance" / "development_events.jsonl").read_text(encoding="utf-8").splitlines()]
         soak_event = next(event for event in events if event.get("event_id") == "EVENT-20260621-019")
@@ -1640,7 +1640,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(review6_event["binding_status"], "pre_commit_pending")
 
         owner_text = (ROOT / "EEI" / "docs" / "governance" / "OWNER_STATUS.md").read_text(encoding="utf-8")
-        self.assertIn("TASK-T904-A026-A027-GOLD-QUALITY-EVALUATION-IN-PROGRESS", owner_text)
+        self.assertIn("TASK-T1302-A203-THEME-FACILITY-SCORING-IN-PROGRESS", owner_text)
         self.assertIn("24h operator soak evidence", owner_text)
 
         self.assertTrue((ROOT / "EEI" / "artifacts" / "tests" / "a209" / "t1307_operator_soak_4h.json").is_file())

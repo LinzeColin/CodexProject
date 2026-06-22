@@ -3590,6 +3590,38 @@ Status: LOCAL AND REMOTE CI VALIDATED; A203/A204-A206 STILL IN PROGRESS
 - At this score-result recompute slice point, A204/A205 still needed online model editing and long-duration refresh stability. The follow-on online draft editing slice below addresses the online-editing portion.
 - A206/A209 still need 4h and 24h operator soak evidence for worker wake, retry, recovery and dead-letter stability.
 
+## 2026-06-22 - T1302/A203 theme and facility scoring explain slice
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A203 STILL IN PROGRESS
+
+### Scope
+
+- Extended `GET /v1/scoring/explain/{objectType}/{objectId}` to support `theme` and `facility` as first-class scoring object types.
+- The implementation reuses the entity coverage scoring formula, but it fail-closes unless `entities.entity_type` matches the requested object type.
+- The response preserves the `entity` subobject while returning `object_type=theme` or `object_type=facility`, so Watchlist, Strategic Signals and Supply Chain facility flows can request score explanations without pretending these objects are generic legal entities.
+- Expanded the OpenAPI scoring `objectType` enum and `ScoreExplanation.object_type` enum to include `theme` and `facility`.
+- Extended `score_recompute` so the active scoring run now writes `score_results` for eight MVP object families: `relationship_fact_candidate`, `relationship`, `entity`, `theme`, `facility`, `event`, `industry` and `source_document`.
+- Added PostgreSQL integration assertions for theme scoring, facility scoring, mismatched facility ID 404, and the expanded score-result object-family counts.
+
+### Acceptance mapping
+
+- T1302 -> A203.
+- A203 remains `IN_PROGRESS`, not `DONE`.
+- This slice reduces the remaining non-relationship object-family scoring gap for `theme` and `facility`; it does not publish production-approved relationship edges.
+
+### Local validation
+
+- `python3 -m py_compile apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/ruff check apps/api/app/domain_repository.py scripts/job_scheduler.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- `.venv/bin/pytest tests/unit/test_scoring.py -q -p no:cacheprovider`: PASS, 14/14.
+- `.venv/bin/pytest tests/integration/test_database_migrations.py -q -p no:cacheprovider`: SKIPPED locally because this host has no `.env` or `DATABASE_URL`.
+
+### Remaining gaps
+
+- Remote GitHub Actions still must prove the new theme/facility integration assertions under PostgreSQL, browser E2E and live FastAPI/PostgreSQL E2E.
+- A203 still depends on A202 for production-approved live relationship facts and on A209 for long-duration stability evidence; A209 continues as a background gate and does not block this bounded feature work.
+
 ## 2026-06-21 - T1303/A204-A205 model-center online draft editing slice
 
 Status: LOCAL AND REMOTE CI VALIDATED; A204-A205 STILL IN PROGRESS

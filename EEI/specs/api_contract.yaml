@@ -1187,6 +1187,8 @@ paths:
           type: string
           enum:
           - entity
+          - theme
+          - facility
           - event
           - industry
           - relationship_fact_candidate
@@ -3790,8 +3792,15 @@ components:
         object_type:
           type: string
           enum:
+          - entity
+          - theme
+          - facility
+          - event
+          - industry
           - relationship_fact_candidate
           - relationship
+          - source_document
+          - score_result
         object_id:
           type: string
           format: uuid

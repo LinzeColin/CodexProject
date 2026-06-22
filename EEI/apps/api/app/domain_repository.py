@@ -3944,6 +3944,14 @@ class DomainRepository:
                     object_id=object_id,
                     profile=profile,
                 )
+            if object_type in {"theme", "facility"}:
+                return self.entity_score_explanation(
+                    connection=connection,
+                    object_id=object_id,
+                    profile=profile,
+                    expected_entity_type=object_type,
+                    response_object_type=object_type,
+                )
             if object_type == "relationship":
                 return self.relationship_score_explanation(
                     connection=connection,
@@ -3976,9 +3984,10 @@ class DomainRepository:
                 )
             if object_type != "relationship_fact_candidate":
                 raise RepositoryError(
-                    "Only entity, event, industry, relationship_fact_candidate, relationship, "
-                    "source_document and score_result score explanations are implemented in the "
-                    "T1302/A203 API contract slice"
+                    "Only entity, theme, facility, event, industry, "
+                    "relationship_fact_candidate, relationship, source_document and "
+                    "score_result score explanations are implemented in the T1302/A203 API "
+                    "contract slice"
                 )
             row = connection.execute(
                 """
@@ -4182,6 +4191,8 @@ class DomainRepository:
         connection: psycopg.Connection[dict[str, Any]],
         object_id: UUID,
         profile: dict[str, Any],
+        expected_entity_type: str | None = None,
+        response_object_type: str = "entity",
     ) -> dict[str, Any]:
         row = connection.execute(
             """
@@ -4332,6 +4343,10 @@ class DomainRepository:
         ).fetchone()
         if row is None:
             raise NotFoundError(f"Entity not found: {object_id}")
+        if expected_entity_type is not None and row["entity_type"] != expected_entity_type:
+            raise NotFoundError(
+                f"{expected_entity_type} scoring object not found: {object_id}"
+            )
         return self.entity_score_explanation_payload(
             row=row,
             profile=profile,
@@ -4340,6 +4355,7 @@ class DomainRepository:
                 as_of=None,
                 active_profile=profile,
             ),
+            response_object_type=response_object_type,
         )
 
     def event_score_explanation(
@@ -5193,6 +5209,7 @@ class DomainRepository:
         row: dict[str, Any],
         profile: dict[str, Any],
         production_context: dict[str, Any],
+        response_object_type: str = "entity",
     ) -> dict[str, Any]:
         evidence = row["evidence"] or []
         fact_payload = row["fact_payload"] or {}
@@ -5224,7 +5241,7 @@ class DomainRepository:
         }
         return _jsonable(
             {
-                "object_type": "entity",
+                "object_type": response_object_type,
                 "object_id": row["id"],
                 "canonical_name": row["canonical_name"],
                 "entity_type": row["entity_type"],

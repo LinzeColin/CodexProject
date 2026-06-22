@@ -11,11 +11,11 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T904-A026-A027-GOLD-QUALITY-EVALUATION-IN-PROGRESS`
-- Confirmed iteration count: 22
+- Current gate: `TASK-T1302-A203-THEME-FACILITY-SCORING-IN-PROGRESS`
+- Confirmed iteration count: 23
 - Reconstructed development event count: 2
-- Current task: `TASK-T904` / `TASK-T1301`
-- Blockers: A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A202 still needs real source-license review, passage-level relationship review, production owner sign-off and legal release clearance; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T1302`
+- Blockers: A203 still requires remote PostgreSQL/browser/live FastAPI CI binding for the current theme/facility scoring slice and remains open until production-approved relationship edges and downstream release gates have current evidence; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A202 still needs real source-license review, passage-level relationship review, production owner sign-off and legal release clearance; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -525,6 +525,29 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the gold-quality script, fixture, test, artifacts, Makefile, parameter rows and governance/data records; regenerate release artifacts and rerun validation.
 - Next step: run V5 sync, semantic governance sync, release artifact validation, commit/push and verify CI.
 
+### `ITER-20260622-016`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `5e6207f5`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1302`
+- Goal: extend A203 production scoring explanations and score-result recompute coverage to first-class `theme` and `facility` objects without claiming A203 completion.
+- Assumptions: `theme` and `facility` are stored in `entities` with type-specific `entity_type` values; the entity coverage formula remains valid when the request is type-guarded and the response object type is explicit.
+- Files changed: `apps/api/app/domain_repository.py`, `scripts/job_scheduler.py`, `specs/api_contract.yaml`, `tests/integration/test_database_migrations.py`, A203 contract artifact, V5 readiness sync map, acceptance/status records, phase records and this ledger.
+- Model changes: no scoring formula, graph traversal, extraction model or model-weight behavior changed; `theme` and `facility` reuse entity coverage scoring with a strict entity-type guard.
+- Parameter changes: no active threshold value changed.
+- Commands run: focused py_compile, focused ruff, OpenAPI contract validation, scoring unit tests and local integration collection.
+- Test results: py_compile PASS; ruff PASS; contract validation PASS; `tests/unit/test_scoring.py` PASS 14/14; `tests/integration/test_database_migrations.py` SKIPPED locally because this host has no `.env` or `DATABASE_URL`; remote PostgreSQL CI remains pending.
+- Successes: `/v1/scoring/explain/theme/{id}` and `/v1/scoring/explain/facility/{id}` now return typed scoring explanations, mismatched IDs fail closed with 404, and `score_recompute` records eight MVP object families in `score_results`.
+- Failures: no production-approved relationship edge, legal/source clearance, production gold set or A209 24h soak evidence was added.
+- Decisions: keep A203 `IN_PROGRESS`; keep A209 as a non-blocking background stability gate; do not change scoring weights or EEI system name.
+- Remaining risks: remote GitHub Actions validation still needs to prove the new PostgreSQL assertions, browser E2E and live FastAPI/PostgreSQL E2E.
+- Rollback: revert the T1302 API/repository/worker/test/contract/status changes, regenerate release artifacts and rerun `make verify`.
+- Next step: run V5 sync, task-pack validation, release artifact regeneration, full local verification, commit/push and verify CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -555,6 +578,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-012`: local A202/A210 signed release decision bundle contract; signed decisions are separate from A209 24h soak and release-manager activation.
 - `EVENT-20260622-014`: local A026/A027 gold-quality evaluation contract; production gold-set labels remain required and A209 stays a background gate.
 - `EVENT-20260622-015`: governance sync coverage repair for the current EEI branch diff after adding the A026/A027 gold-quality contract.
+- `EVENT-20260622-016`: local T1302/A203 theme/facility scoring explain and eight-family score-result recompute extension.
 
 ## Unknown Historical Periods
 
