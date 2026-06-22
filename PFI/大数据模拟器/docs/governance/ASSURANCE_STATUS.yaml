@@ -1,0 +1,67 @@
+project_id: "PFI_BIG_DATA_SIMULATOR"
+as_of_event_id: "EVT-REVIEW6-FINAL-PFI_BIG_DATA_SIMULATOR-001"
+source_snapshot_hash: "sha256:e25d489476560b5156602d62479643c3cef56bfdc51923e32a9c55346d9bcf54"
+source_base_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
+snapshot_event_time: "2026-06-22T00:24:25Z"
+generator_version: "2.0.0"
+final_commit_binding: "CI_ATTESTATION_REQUIRED"
+dimensions:
+  structural_validation:
+    status: "pass"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "scripts/validate_project_governance.py"
+  implementation_congruence:
+    status: "partial"
+    fact_level: "EXTRACTED"
+    checked_active_parameters: 211
+    total_active_parameters: 213
+    checked_active_formulas: 15
+    total_active_formulas: 15
+    unresolved_fact_ids:
+      - "FACT-PFI_BIG_DATA_SIMULATOR-IMPLEMENTATION-PARAMETER-REVIEW"
+    evidence_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+      - "PFI/大数据模拟器/docs/governance/formula_registry.yaml"
+  empirical_validation:
+    status: "unknown"
+    fact_level: "UNKNOWN"
+    unresolved_fact_ids:
+      - "FACT-PFI_BIG_DATA_SIMULATOR-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml"
+  operational_evidence:
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    unresolved_fact_ids:
+      - "FACT-PFI_BIG_DATA_SIMULATOR-OPERATIONAL-EVIDENCE"
+    evidence_refs:
+      - "PFI/大数据模拟器/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "conditional"
+  release_gate: "GOV-SEMANTIC-PFI-in-progress"
+  blocker_ids:
+    - "FACT-PFI_BIG_DATA_SIMULATOR-EMPIRICAL-EVIDENCE"
+    - "FACT-PFI_BIG_DATA_SIMULATOR-IMPLEMENTATION-PARAMETER-REVIEW"
+    - "FACT-PFI_BIG_DATA_SIMULATOR-OPERATIONAL-EVIDENCE"
+    - "GOV-SEMANTIC-PFI-001"
+    - "TASK-PFI-B-001"
+    - "TASK-PFI-B-002"
+    - "TASK-PFI-B-003"
+    - "TASK-PFI-B-004"
+next_executable_task:
+  task_id: "GOV-SEMANTIC-PFI-001"
+  status: "in_progress"
+  reason: "Add extractors for simulator strategy defaults, risk controls, and active formula fingerprints."
+  acceptance_ids:
+    - "ACC-SEMANTIC-PFI-001"
+  owner: "Codex/governance runner"
+  unblock_condition: "Run the listed test commands and attach evidence."
+owner_decision:
+  required: true
+  decision_id: "DEC-PFI_BIG_DATA_SIMULATOR-REVIEW6-001"
+  question: "是否关闭 PARAM-110/PARAM-111 或保留 human review required。"
+  options:
+    - "A: fund evidence hardening"
+    - "B: keep blocked/conditional and defer"
+    - "C: de-scope this project from delivery claims"

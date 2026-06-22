@@ -1,0 +1,67 @@
+project_id: "whkmSalary"
+as_of_event_id: "EVT-REVIEW6-FINAL-whkmSalary-001"
+source_snapshot_hash: "sha256:3d241c50d8420cb40bea95fbe91ba18ce0c27ab33002d87fdeec351003227545"
+source_base_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
+snapshot_event_time: "2026-06-22T00:24:25Z"
+generator_version: "2.0.0"
+final_commit_binding: "CI_ATTESTATION_REQUIRED"
+dimensions:
+  structural_validation:
+    status: "pass"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "scripts/validate_project_governance.py"
+  implementation_congruence:
+    status: "partial"
+    fact_level: "EXTRACTED"
+    checked_active_parameters: 78
+    total_active_parameters: 80
+    checked_active_formulas: 9
+    total_active_formulas: 10
+    unresolved_fact_ids:
+      - "FACT-whkmSalary-IMPLEMENTATION-FORMULA-REVIEW"
+      - "FACT-whkmSalary-IMPLEMENTATION-PARAMETER-REVIEW"
+    evidence_refs:
+      - "whkmSalary/docs/governance/parameter_registry.csv"
+      - "whkmSalary/docs/governance/formula_registry.yaml"
+  empirical_validation:
+    status: "unknown"
+    fact_level: "UNKNOWN"
+    unresolved_fact_ids:
+      - "FACT-whkmSalary-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "whkmSalary/docs/governance/delivery_tasks.yaml"
+  operational_evidence:
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    unresolved_fact_ids:
+      - "FACT-whkmSalary-OPERATIONAL-EVIDENCE"
+    evidence_refs:
+      - "whkmSalary/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "blocked"
+  release_gate: "GOV-SEMANTIC-WHKM-in-progress"
+  blocker_ids:
+    - "FACT-whkmSalary-EMPIRICAL-EVIDENCE"
+    - "FACT-whkmSalary-IMPLEMENTATION-FORMULA-REVIEW"
+    - "FACT-whkmSalary-IMPLEMENTATION-PARAMETER-REVIEW"
+    - "FACT-whkmSalary-OPERATIONAL-EVIDENCE"
+    - "GOV-SEMANTIC-WHKM-001"
+    - "GOV-SEMANTIC-WHKM-001;TASK-WHKM-B-001"
+    - "TASK-WHKM-B-001"
+next_executable_task:
+  task_id: "GOV-SEMANTIC-WHKM-001"
+  status: "in_progress"
+  reason: "Add extractors for salary constants, policy formula references, and active formula fingerprints."
+  acceptance_ids:
+    - "ACC-SEMANTIC-WHKM-001"
+  owner: "Codex/governance runner"
+  unblock_condition: "Run the listed test commands and attach evidence."
+owner_decision:
+  required: true
+  decision_id: "DEC-whkmSalary-REVIEW6-001"
+  question: "是否提供一手政策、法域、生效日期、计税基础和舍入证据。"
+  options:
+    - "A: fund evidence hardening"
+    - "B: keep blocked/conditional and defer"
+    - "C: de-scope this project from delivery claims"

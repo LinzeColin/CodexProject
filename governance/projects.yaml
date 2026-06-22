@@ -4,6 +4,7 @@ root_governance:
   required_files:
     - "AGENTS.md"
     - "GOVERNANCE_DASHBOARD.md"
+    - "OWNER_PORTFOLIO.md"
     - "docs/governance/STANDARD.md"
     - "docs/governance/templates/MODEL_SPEC.template.md"
     - "docs/governance/templates/DEVELOPMENT_LEDGER.template.md"
@@ -25,6 +26,7 @@ root_governance:
     - "governance/schemas/incident_response.schema.json"
     - "governance/schemas/ci_attestation.schema.json"
     - "scripts/validate_project_governance.py"
+    - "scripts/validate_information_quality.py"
     - "scripts/validate_governance_sync.py"
     - "scripts/validate_semantic_extractors.py"
     - "scripts/validate_ci_attestation.py"
@@ -48,6 +50,7 @@ project_governance_files:
   - "docs/governance/delivery_tasks.yaml"
   - "docs/governance/VERSION_MATRIX.yaml"
   - "docs/governance/TRACEABILITY_MATRIX.csv"
+  - "docs/governance/ASSURANCE_STATUS.yaml"
   - "docs/governance/STATUS.md"
   - "docs/governance/OWNER_STATUS.md"
   - "VERSION"
@@ -65,7 +68,7 @@ projects:
       target: "Add machine source selectors for active parameters and implementation fingerprints for active formulas."
       evidence_ref: "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; Alpha now machine-checks 42 active parameters and 9 active formulas while 13 branch-rule parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-ALPHA-001."
+      rationale: "Review6 rollout guard; implementation, empirical, and operational status are reported in ASSURANCE_STATUS.yaml."
     model_behavior_globs:
       - "backend/**/*.py"
       - "configs/**/*.yaml"
@@ -84,7 +87,7 @@ projects:
       target: "Bind EEI active parameter_catalog and model/formula registries to machine extractors without changing runtime behavior."
       evidence_ref: "governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "EEI now has partial machine semantic extraction for 54 active parameters and 10 active formulas; 7 UNKNOWN motion parameters and FORM-012 remain task-bound."
+      rationale: "Review6 rollout guard; implementation, empirical, and operational status are reported in ASSURANCE_STATUS.yaml."
     model_behavior_globs:
       - "apps/**"
       - "packages/**"
@@ -107,7 +110,7 @@ projects:
       target: "Add machine selectors for strategy parameters and fingerprints for active strategy formulas."
       evidence_ref: "governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; EVA_OS now machine-checks 52 active parameters and 16 active formulas while remaining parameters stay HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-EVA-001."
+      rationale: "Review6 rollout guard; implementation, empirical, and operational status are reported in ASSURANCE_STATUS.yaml."
     model_behavior_globs:
       - "src/**"
       - "systems/**"
@@ -127,7 +130,7 @@ projects:
       target: "Add extractors for parser constants, validation rules, and active governance formulas."
       evidence_ref: "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; FIFA now machine-checks 91 active parameters and 10 active formulas while 17 active parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-FIFA-001."
+      rationale: "Review6 rollout guard; implementation, empirical, and operational status are reported in ASSURANCE_STATUS.yaml."
     model_behavior_globs:
       - "tab-research-pipeline/**"
       - "docs/**"
@@ -144,7 +147,7 @@ projects:
       target: "Add extractors for analysis rule constants and fingerprints for active deterministic formulas."
       evidence_ref: "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; OpMe_System now machine-checks 49 active parameters and 7 active formulas while calibration, prompt/provider policy, and signoff evidence remain blocked under TASK-OPME-B-001."
+      rationale: "Review6 rollout guard; implementation, empirical, and operational status are reported in ASSURANCE_STATUS.yaml."
     model_behavior_globs:
       - "backend/**"
       - "frontend/**"
@@ -163,7 +166,7 @@ projects:
       target: "Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints."
       evidence_ref: "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; OpenAIDatabase now machine-checks 28 active parameters and 10 active formulas while remaining active parameters and FORM-010 stay HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-OAIDB-001."
+      rationale: "Review6 rollout guard; implementation, empirical, and operational status are reported in ASSURANCE_STATUS.yaml."
     model_behavior_globs:
       - "apps/**"
       - "config/**"
@@ -183,7 +186,7 @@ projects:
       target: "Add extractors for simulator strategy defaults, risk controls, and active formula fingerprints."
       evidence_ref: "governance/run_manifests/GOV-SEMANTIC-PFI-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; PFI_BIG_DATA_SIMULATOR now machine-checks 211 active parameters and 15 active formulas while PARAM-110 and PARAM-111 remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-PFI-001."
+      rationale: "Review6 rollout guard; implementation, empirical, and operational status are reported in ASSURANCE_STATUS.yaml."
     model_behavior_globs:
       - "config/**"
       - "qbvs/**"
@@ -203,7 +206,7 @@ projects:
       target: "Machine-check active parameter values and active formula implementation fingerprints."
       evidence_ref: "governance/run_manifests/GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-B enabled 49 active parameter checks and 12 active formula fingerprints."
+      rationale: "Review6 rollout guard; implementation, empirical, and operational status are reported in ASSURANCE_STATUS.yaml."
     model_behavior_globs:
       - "app/**/*.py"
       - "tests/**/*.py"
@@ -222,7 +225,7 @@ projects:
       target: "Add extractors for salary constants, policy formula references, and active formula fingerprints."
       evidence_ref: "governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json"
       owner: "project owner"
-      rationale: "Review6-D rollout guard; whkmSalary now machine-checks 78 active parameters and 9 active formulas while PARAM-004, PARAM-005, and FORM-010 remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-WHKM-001."
+      rationale: "Review6 rollout guard; implementation, empirical, and operational status are reported in ASSURANCE_STATUS.yaml."
     model_behavior_globs:
       - "*.py"
       - "tests/**/*.py"
@@ -240,7 +243,7 @@ projects:
       target: "Add machine extractors for arXiv Daily Push active parameter values and formula implementation fingerprints without changing runtime behavior."
       evidence_ref: "governance/run_manifests/GOV-SEMANTIC-ADP-EXTRACT-005.json"
       owner: "project owner"
-      rationale: "GOV-SEMANTIC-ADP-001 now machine-checks all 152 active parameters and all 31 active formulas; no active semantic registry rows remain HUMAN_REVIEW_REQUIRED."
+      rationale: "Review6 rollout guard; implementation, empirical, and operational status are reported in ASSURANCE_STATUS.yaml."
     model_behavior_globs:
       - "src/**/*.py"
       - "tests/**/*.py"

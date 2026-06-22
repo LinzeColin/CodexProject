@@ -238,6 +238,7 @@ docs/adr/ADR-012-search.md
 docs/adr/ADR-013-frontend-visualization.md
 docs/adr/ADR-014-data-ingestion.md
 docs/adr/ADR-015-fixture-and-live-data-separation.md
+docs/governance/ASSURANCE_STATUS.yaml
 docs/governance/DELIVERY_PLAN.md
 docs/governance/DEVELOPMENT_LEDGER.md
 docs/governance/MODEL_SPEC.md
