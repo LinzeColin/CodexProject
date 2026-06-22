@@ -1373,17 +1373,17 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-056")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-056")
-        self.assertEqual(info["product_version"], "0.12.2")
-        self.assertEqual(info["current_gate"], "ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-057")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-057")
+        self.assertEqual(info["product_version"], "0.12.3")
+        self.assertEqual(info["current_gate"], "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED")
         self.assertEqual(
             info["latest_manifest"]["_path"],
             "governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.12.2", rendered)
-        self.assertIn("ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED", rendered)
+        self.assertIn("0.12.3", rendered)
+        self.assertIn("ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED", rendered)
         self.assertIn("production trial not started", rendered)
         self.assertIn("30-day acceptance absent", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
@@ -1951,6 +1951,31 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(manifest["real_smtp_sent"])
         self.assertFalse(manifest["real_release_uploaded"])
         self.assertFalse(manifest["production_schedule_enabled"])
+        self.assertIn(
+            ".github/workflows/arxiv-daily-push-manual-delivery-test.yml",
+            manifest["files_changed"],
+        )
+
+    def test_arxiv_daily_push_phase12_manifest_records_manual_delivery_release_dedupe(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-20260622.json"
+            ).read_text()
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034")
+        self.assertEqual(manifest["version_after"], "0.12.3")
+        self.assertEqual(manifest["model_ids_changed"], ["MOD-ADP-034"])
+        self.assertIn("FORM-ADP-036", manifest["formula_ids_changed"])
+        self.assertIn("PARAM-ADP-184", manifest["parameter_ids_changed"])
+        self.assertTrue(manifest["release_asset_dedupe_enabled"])
+        self.assertFalse(manifest["real_smtp_sent"])
+        self.assertFalse(manifest["real_release_uploaded"])
+        self.assertFalse(manifest["production_schedule_enabled"])
+        self.assertEqual(manifest["failed_manual_run"]["run_id"], 27926461430)
         self.assertIn(
             ".github/workflows/arxiv-daily-push-manual-delivery-test.yml",
             manifest["files_changed"],

@@ -6,10 +6,10 @@ Review 7 governance is a portfolio control layer with automatic generated-view s
 
 ## 2. Immutable Snapshot
 
-- source_base_commit: `932446fd2154ac477ea0cb6862a60098b1e1ed55`
+- source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
 - source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
-- source_snapshot_hash: `sha256:39f6165dbead37182eef8b06f68527bd352681fbd2f5db107c87cbfde847f622`
-- snapshot_event_time: `2026-06-22T12:18:37+10:00`
+- source_snapshot_hash: `sha256:b4095f816a22599670f943335e40509b7f907a4079b16ee9e82a82a81b2b2291`
+- snapshot_event_time: `2026-06-22T13:05:00+10:00`
 - generator_version: `3.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached
@@ -41,7 +41,7 @@ Review 7 governance is a portfolio control layer with automatic generated-view s
 | `DEC-PFI_BIG_DATA_SIMULATOR-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `UNVERIFIED` | Codex/governance runner | Run the listed test commands and attach evidence. |
 | `DEC-Serenity-Alipay-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `UNVERIFIED` | Codex/governance runner | Run the listed test commands and attach evidence. |
 | `DEC-whkmSalary-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `FAILED` | Codex/governance runner | Run the listed test commands and attach evidence. |
-| `DEC-arxiv-daily-push-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `FAILED` | project owner | Unblock or define a ready/in_progress task with completed dependencies and evidence policy. |
+| `DEC-arxiv-daily-push-REVIEW6-001` | A: fund evidence hardening | A: fund evidence hardening | B: keep blocked/conditional and defer | remains `FAILED` | Codex/governance runner | Run the listed test commands and attach evidence. |
 
 ## 6. Executable Tasks
 
@@ -54,7 +54,7 @@ Review 7 governance is a portfolio control layer with automatic generated-view s
 - `PFI_BIG_DATA_SIMULATOR`: `GOV-SEMANTIC-PFI-001` - Add extractors for simulator strategy defaults, risk controls, and active formula fingerprints.
 - `Serenity-Alipay`: `TASK-A-001` - Create the first CodexProject-auditable Serenity-Alipay governance baseline.
 - `whkmSalary`: `GOV-SEMANTIC-WHKM-001` - Add extractors for salary constants, policy formula references, and active formula fingerprints.
-- `arxiv-daily-push`: `NONE` - No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.
+- `arxiv-daily-push`: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034` - Repair the controlled manual GitHub Release plus Gmail SMTP test workflow after the first real manual dispatch failed closed during Release creation because duplicate asset names were supplied.
 
 ## 7. Next Unique Governance Task
 

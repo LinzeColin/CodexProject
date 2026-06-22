@@ -749,3 +749,20 @@ tasks:
     target_version: "0.12.2"
     completed_version: "0.12.2"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034"
+    phase: "E"
+    objective: "Repair the controlled manual GitHub Release plus Gmail SMTP test workflow after the first real manual dispatch failed closed during Release creation because duplicate asset names were supplied."
+    scope: "Deduplicate Release assets by filename before scheduled delivery, add workflow regression coverage, record failed run evidence, and preserve fail-closed SMTP behavior until a Release video link exists."
+    non_scope: "No production schedule enablement, no direct Release upload outside the manual workflow, no real SMTP send in this repair commit, no secret value logging, no video email attachment, and no production acceptance claim."
+    status: "ready"
+    dependencies: ["ADP-PHASE12-MANUAL-DELIVERY-TEST-033"]
+    required_files: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml", "arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_RELEASE_DEDUPE.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_manual_delivery_workflow.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_semantic python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_dedupe_gov python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic", "git diff --check"]
+    test_results: ["pending final local validation before PR", "failed manual run 27926461430 confirmed Release creation blocked and SMTP stayed dry_run/fail-closed"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_RELEASE_DEDUPE.md", ".github/workflows/arxiv-daily-push-manual-delivery-test.yml", "arxiv-daily-push/tests/test_manual_delivery_workflow.py", "https://github.com/LinzeColin/CodexProject/actions/runs/27926461430"]
+    risk: "The repair must still pass PR CI, merge to main, and be rerun through workflow_dispatch before real Release and Gmail SMTP evidence can satisfy the user's test request."
+    rollback: "Revert version 0.12.3 workflow dedupe, tests, phase record, manifest, event, and restore version 0.12.2 while keeping production variables disabled."
+    target_version: "0.12.3"
+    completed_version: ""
+    unknown_task_ids: []
