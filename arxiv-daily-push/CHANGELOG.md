@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.15.0 - 2026-06-22
+
+- Added the Review8 Stage 1 source registry and arXiv connector contract for `SRC-ARXIV` / `arxiv.atom.v1`.
+- Added `adp source-registry validate` JSON output, source registry schema, offline fixture validation, and fail-closed connector contract tests.
+- Lowered the Stage 1 Window A online arXiv metadata canary cap from 25 to 10 without enabling PDFs, bulk harvest, SMTP, Release upload, scheduler, or production acceptance.
+
 ## 0.14.1 - 2026-06-22
 
 - Rebuilt the daily email as a responsive HTML plus concise Chinese plain-text decision brief based on the V2 mockup: exact `YYYYMMDD -- Project Name -- arXiv Group -- Theme` subject, read/skim/skip, evidence level, reading time, first-principles chain, decision mapping, key questions, evidence gaps, minimal experiment, optional `.mp4` video link, and feedback actions.

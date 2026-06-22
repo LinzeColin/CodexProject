@@ -64,6 +64,17 @@ class SourceIngestTests(unittest.TestCase):
         self.assertEqual(batch["status"], "blocked")
         self.assertIn("network timeout", " ".join(batch["blocking_reasons"]))
 
+    def test_ingest_latest_arxiv_blocks_window_a_over_sized_canary(self) -> None:
+        batch = ingest_latest_arxiv(
+            search_query="cat:cs.AI",
+            generated_at="2026-07-01T05:00:00+10:00",
+            max_results=11,
+            fetcher=fixture_fetcher,
+        )
+
+        self.assertEqual(batch["status"], "blocked")
+        self.assertIn("max_results", " ".join(batch["blocking_reasons"]))
+
     def test_cli_fetch_arxiv_latest_uses_ingest_payload(self) -> None:
         fake_batch = {
             "ingest_id": "source-ingest:arxiv-latest",

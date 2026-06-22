@@ -854,26 +854,26 @@ tasks:
   - task_id: "S1-05-ARXIV-CONNECTOR-CONTRACT-001"
     phase: "S1-A"
     objective: "Define the source registry, connector contract, and arXiv adapter boundary for Stage 1."
-    scope: "Connector contract, arXiv adapter registry, small-fixture tests, and governance traceability."
-    non_scope: "No broad non-arXiv source expansion and no bulk PDF download."
-    status: "ready"
+    scope: "Single-source Stage 1 source registry report, arXiv connector contract, owner-controls-backed source list, offline fixture validation, canary cap enforcement, CLI command, schema, focused tests, and governance traceability."
+    non_scope: "No broad non-arXiv source expansion, no network canary in local validation, no bulk or PDF download, no SMTP send, no Release upload, no scheduler enablement, and no production acceptance claim."
+    status: "completed"
     dependencies: ["S1-04-SQLITE-DATA-MODEL-001"]
-    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/source_registry.py", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/schemas/source_registry.schema.json", "arxiv-daily-push/tests/test_source_registry.py", "arxiv-daily-push/tests/test_source_ingest.py", "arxiv-daily-push/docs/governance/model_registry.yaml", "arxiv-daily-push/docs/governance/formula_registry.yaml", "arxiv-daily-push/docs/governance/parameter_registry.csv"]
     acceptance_ids: ["ADP-ACC-S1-05-ARXIV-CONNECTOR-CONTRACT"]
-    test_commands: ["PENDING"]
-    test_results: ["PENDING"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
-    risk: "Connector abstractions must not hide source-specific evidence or rate-limit failures."
-    rollback: "Revert S1-05 connector contract files and governance updates."
-    target_version: "0.12.4"
-    completed_version: ""
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s105_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_source_registry.py arxiv-daily-push/tests/test_source_ingest.py arxiv-daily-push/tests/test_arxiv_adapter.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s105_alltests2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s105_semantic2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s105_project2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s105_allgov1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --all", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s105_changed2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s105_rootgov2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s105_iq1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_information_quality.py --project arxiv-daily-push --fast --fail-on-error", "python3 -m json.tool arxiv-daily-push/schemas/source_registry.schema.json", "python3 -m json.tool governance/run_manifests/ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-20260622.json", "parameter_registry.csv and TRACEABILITY_MATRIX.csv width parse checks"]
+    test_results: ["focused source registry/source ingest/arXiv adapter/CLI tests: 20 tests OK", "arxiv-daily-push unit tests: 193 tests OK", "semantic extractor: 40 active formulas and 285 active parameters checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "all-project governance validation: errors 0 warnings 0", "changed-only governance sync with semantic checks: errors 0 warnings 0; projects changed arxiv-daily-push only", "root governance unit tests: 128 tests OK; missing-base line is an expected negative fixture with exit code 0", "information quality validation: PASS errors 0 warnings 0", "source_registry.schema.json parse: OK", "S1-05 run manifest JSON parse: OK", "parameter_registry.csv: 286 rows width 36; TRACEABILITY_MATRIX.csv: 99 rows width 12"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_registry.py", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/tests/test_source_registry.py", "arxiv-daily-push/tests/test_source_ingest.py", "governance/run_manifests/ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-20260622.json"]
+    risk: "Connector contract proves the arXiv-only Stage 1 boundary and offline fixture path; S1-06 still must prove queue scoring and content ledger replay before production acceptance."
+    rollback: "Remove source_registry.py, source-registry CLI dispatch, source registry schema/tests, restore SOURCE_INGEST_MAX_RESULTS to 25 if returning to pre-Review8 Window A semantics, restore version 0.14.1, and revert S1-05 governance records and run manifest."
+    target_version: "0.15.0"
+    completed_version: "0.15.0"
     unknown_task_ids: []
   - task_id: "S1-06-SCORING-QUEUE-LEDGER-001"
     phase: "S1-A"
     objective: "Build the Stage 1 research scoring, 10,000 queue behavior, and content ledger path."
     scope: "Scoring/queue/ledger implementation, deterministic tests, owner view integration, and governance records."
     non_scope: "No parameter value changes without registry updates and no production acceptance claim."
-    status: "planned"
+    status: "ready"
     dependencies: ["S1-05-ARXIV-CONNECTOR-CONTRACT-001"]
     required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-06-SCORING-QUEUE-LEDGER"]
@@ -882,7 +882,7 @@ tasks:
     evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     risk: "Scoring changes must preserve exact formula and parameter traceability."
     rollback: "Revert S1-06 scoring, queue, ledger, tests, and governance records."
-    target_version: "0.12.4"
+    target_version: "0.16.0"
     completed_version: ""
     unknown_task_ids: []
   - task_id: "S1-07-B1_REPORT_EMAIL_MEDIA-001"

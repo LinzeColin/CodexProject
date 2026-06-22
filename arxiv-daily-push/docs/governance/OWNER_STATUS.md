@@ -39,7 +39,7 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (278/278 active parameters, 39/39 active formulas)
+- implementation_congruence: `VERIFIED` (285/285 active parameters, 40/40 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -68,25 +68,25 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `37`
-- total_formulas: `39`
-- active_formulas: `39`
-- total_parameters: `279`
-- active_parameters: `278`
+- model_count: `38`
+- total_formulas: `40`
+- active_formulas: `40`
+- total_parameters: `286`
+- active_parameters: `285`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `ADP-PHASE12-EMAIL-DECISION-UI-V2-READY`
+- release_gate: `ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-READY`
 
 ## 14. Evidence Freshness
 
 - tree_bound_events: `0`
 - commit_bound_events: `0`
 - legacy_unbound_events: `54`
-- precommit_pending_events: `12`
-- pending_or_stale_events: `66`
+- precommit_pending_events: `13`
+- pending_or_stale_events: `67`
 
 ## 15. UNKNOWN
 
@@ -96,11 +96,11 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:397e8f272d9eae3b7dc1176dbd28ad79a1e00e7ea7b132d4e6cb6faf4f9653cb`
-- snapshot_event_time: `2026-06-22T19:55:00+10:00`
+- source_snapshot_hash: `sha256:7ea01924ff316418509af9cf453a3cfc8eca171a59d781dff50856d58bf1c0b5`
+- snapshot_event_time: `2026-06-22T20:13:09+10:00`
 - generator_version: `4.0.0`
-- version: `0.14.1`
-- phase/gate: `E / ADP-PHASE12-EMAIL-DECISION-UI-V2-READY`
+- version: `0.15.0`
+- phase/gate: `S1-A / ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-READY`
 
 ## 17. Next Unique Task
 
