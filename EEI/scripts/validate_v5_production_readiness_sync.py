@@ -134,9 +134,11 @@ PARTIAL_EVIDENCE = {
         "scripts/load_operator_source_captures.py",
         "scripts/load_live_official_captures.py",
         "scripts/publish_reviewed_relationship_facts.py",
+        "scripts/validate_release_decision_bundle.py",
         "tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json",
         "tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json",
         "tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json",
+        "tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
         "tests/fixtures/golden_vertical_review_decisions.json",
         "tests/fixtures/golden_vertical_owner_signoff_decisions.json",
         "scripts/check_database_schema.py",
@@ -149,6 +151,7 @@ PARTIAL_EVIDENCE = {
         "artifacts/tests/a202/t1301_live_official_retrieval_contract.json",
         "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
         "artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json",
+        "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     },
     "T1302": {
         "apps/api/app/domain.py",
@@ -193,6 +196,9 @@ PARTIAL_EVIDENCE = {
         "brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md",
         "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
         "scripts/validate_brand_clearance.py",
+        "scripts/validate_release_decision_bundle.py",
+        "tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
+        "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     },
 }
 

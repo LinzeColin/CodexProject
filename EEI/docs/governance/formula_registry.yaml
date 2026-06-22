@@ -703,15 +703,21 @@ formulas:
     output_range: "parameter_specific"
     code_refs:
       - "EEI/data/parameter_catalog.csv:43-61"
+      - "EEI/scripts/validate_a202_operator_review_packet.py"
+      - "EEI/scripts/validate_release_decision_bundle.py"
       - "EEI/config/thresholds/default-v2.json"
       - "EEI/config/model_runtime_defaults.yaml"
     test_refs:
       - "EEI/scripts/validate_model_config.py:49-71"
       - "EEI/scripts/validate_governance.py:108-121"
+      - "EEI/scripts/validate_a202_operator_review_packet.py"
+      - "EEI/scripts/validate_release_decision_bundle.py"
+      - "EEI/tests/unit/test_release_decision_bundle.py"
     evidence_refs:
       - "EEI/data/parameter_catalog.csv:43-61"
       - "EEI/config/thresholds/default-v2.json:1"
       - "EEI/config/model_runtime_defaults.yaml:1"
+      - "EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json"
     unknown_task_ids:
       - "TASK-T1206"
     semantic_status: "HUMAN_REVIEW_REQUIRED"
