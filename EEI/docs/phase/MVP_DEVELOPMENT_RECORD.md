@@ -4491,3 +4491,47 @@ Status: LOCAL FOCUSED VALIDATED; REMOTE CI PENDING; A026/A027 STILL IN PROGRESS
 - Remove A026/A027 gold-quality contract artifacts.
 - Revert Makefile, A026/A027 acceptance, T904 backlog, parameter/model and V5 readiness updates.
 - Regenerate development, clean-room and release artifacts, then rerun validation.
+
+## 2026-06-22 - T1301/A202 signed bundle publication binding
+
+Status: LOCAL FOCUSED VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A210/A209 STILL IN PROGRESS
+
+### Scope
+
+- Extended `scripts/publish_reviewed_relationship_facts.py` so `production_owner_signoff=true` publication requires `--release-decision-bundle`.
+- Added `tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json` as a contract-test signed bundle that validates signatures but is not real legal, brand, source-license or owner clearance.
+- Extended `scripts/validate_release_decision_bundle.py` and the A202 contract artifact so the signed fixture is tracked as validation input with `signed_contract_test_counts_as_clearance=false`.
+- Extended PostgreSQL integration assertions so owner-signoff publication fails without a signed bundle, rejects the template bundle, and persists bundle hash/signature summaries into `data_snapshots`, relationship qualifiers, relationship evidence and fact-version payloads.
+
+### Acceptance mapping
+
+- T1301 -> A202 for real-data evidence-chain strengthening and production owner publication gating.
+- T1309 -> A210 remains linked through the signed bundle legal/brand clearance inputs.
+- A202 remains `IN_PROGRESS`: the committed signed bundle is only a contract-test fixture.
+- A209 remains an independent background stability gate and is not replaced by signed-bundle completion.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction or model-weight behavior changed.
+- No active threshold value changed; existing release-decision bundle schema governance remains in force.
+
+### Validation
+
+- `python3 -m json.tool tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json`: PASS.
+- `python3 -m py_compile scripts/publish_reviewed_relationship_facts.py scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_release_decision_bundle.py -p no:cacheprovider`: PASS; 5 passed.
+- `.venv/bin/python scripts/validate_release_decision_bundle.py validate-bundle --bundle tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json`: PASS; `signed_decision_complete=true`, `release_ready=false`.
+- `.venv/bin/python scripts/validate_release_decision_bundle.py generate`: PASS.
+- `.venv/bin/python scripts/validate_release_decision_bundle.py validate`: PASS.
+
+### Remaining gaps
+
+- Real source-license review, passage-level relationship review, production owner approval, legal/brand clearance, release-manager activation, production gold-set evidence and A209 24h soak are still missing.
+- Local PostgreSQL integration is skipped on this host unless `DATABASE_URL` or `.env` is present; remote CI must prove the integration assertions.
+
+### Rollback
+
+- Revert `scripts/publish_reviewed_relationship_facts.py`, `scripts/validate_release_decision_bundle.py`, the signed fixture, unit/integration tests, A202 artifact and governance/status records.
+- Regenerate development, clean-room and release artifacts, then rerun validation.

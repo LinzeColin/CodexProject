@@ -11,11 +11,11 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1302-A203-THEME-FACILITY-SCORING-IN-PROGRESS`
-- Confirmed iteration count: 23
+- Current gate: `TASK-T1301-A202-SIGNED-BUNDLE-PUBLICATION-BINDING-IN-PROGRESS`
+- Confirmed iteration count: 24
 - Reconstructed development event count: 2
-- Current task: `TASK-T1302`
-- Blockers: A203 still requires remote PostgreSQL/browser/live FastAPI CI binding for the current theme/facility scoring slice and remains open until production-approved relationship edges and downstream release gates have current evidence; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A202 still needs real source-license review, passage-level relationship review, production owner sign-off and legal release clearance; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T1301`
+- Blockers: A202 now requires a signed A202/A210 release decision bundle for the production owner sign-off publication path, but the committed signed bundle is a contract-test fixture only and does not close source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation or public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -548,6 +548,29 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the T1302 API/repository/worker/test/contract/status changes, regenerate release artifacts and rerun `make verify`.
 - Next step: run V5 sync, task-pack validation, release artifact regeneration, full local verification, commit/push and verify CI.
 
+### `ITER-20260622-018`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `9055f2b2`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`
+- Goal: require the A202/A210 signed release decision bundle before the production owner sign-off publication path can write reviewed relationship facts, without claiming A202/A210/A209 completion.
+- Assumptions: repository signed-decision fixtures may validate schema and persistence only; real source-license review, passage-level review, production owner/legal/brand clearance and A209 24h soak remain external evidence.
+- Files changed: `scripts/publish_reviewed_relationship_facts.py`, `scripts/validate_release_decision_bundle.py`, signed release-decision fixture, release-decision unit tests, PostgreSQL integration assertions, `Makefile`, A202 contract artifact, V5 readiness sync map, acceptance/status records, phase records and this ledger.
+- Model changes: no scoring formula, graph traversal, extraction model or model-weight behavior changed; this is a fail-closed publication-control and evidence-chain binding change.
+- Parameter changes: no active threshold value changed; existing release-decision bundle schema contract remains the controlling governance parameter.
+- Commands run: signed-bundle JSON validation, py_compile, focused ruff, release-decision unit tests, signed bundle validation and release-decision contract generation/validation.
+- Test results: signed fixture JSON PASS; py_compile PASS; focused ruff PASS after import-format repair; `tests/unit/test_release_decision_bundle.py` PASS 5/5; signed bundle validate PASS with `signed_decision_complete=true` and `release_ready=false`; release-decision contract validate PASS.
+- Successes: production owner sign-off publication now fails closed without `--release-decision-bundle`; template bundles fail closed; successful contract-test publication persists release bundle hash and signed decision summaries into `data_snapshots`, relationship qualifiers, relationship evidence and fact-version payloads.
+- Failures: no real signed release bundle, legal clearance, source-license approval, public relationship publication, release-manager activation, production gold set or A209 24h soak evidence was added.
+- Decisions: keep A202, A210 and A209 `IN_PROGRESS`; keep A209 as a non-blocking background stability gate; do not change EEI system name.
+- Remaining risks: remote PostgreSQL CI still needs to prove the new publication-binding assertions; future operators must not treat the contract-test signed fixture as legal, brand or source-license clearance.
+- Rollback: revert the A202 publication script, signed fixture, unit/integration tests, release-decision artifact/status updates and regenerated release artifacts; rerun `make verify`.
+- Next step: run V5 sync, task-pack validation, release artifact regeneration, full local verification, commit/push and verify CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -579,6 +602,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-014`: local A026/A027 gold-quality evaluation contract; production gold-set labels remain required and A209 stays a background gate.
 - `EVENT-20260622-015`: governance sync coverage repair for the current EEI branch diff after adding the A026/A027 gold-quality contract.
 - `EVENT-20260622-016`: local T1302/A203 theme/facility scoring explain and eight-family score-result recompute extension.
+- `EVENT-20260622-018`: local T1301/A202 signed release decision bundle binding for production owner sign-off publication.
 
 ## Unknown Historical Periods
 

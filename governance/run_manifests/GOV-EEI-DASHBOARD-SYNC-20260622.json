@@ -47,6 +47,7 @@
     "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
     "EEI/manifest.txt",
     "EEI/scripts/job_scheduler.py",
+    "EEI/scripts/publish_reviewed_relationship_facts.py",
     "EEI/scripts/validate_catalog_integrity.py",
     "EEI/scripts/validate_gold_quality_evaluation.py",
     "EEI/scripts/validate_governance.py",
@@ -55,6 +56,7 @@
     "EEI/specs/api_contract.yaml",
     "EEI/tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json",
     "EEI/tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
+    "EEI/tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
     "EEI/tests/integration/test_database_migrations.py",
     "EEI/tests/unit/test_gold_quality_evaluation.py",
     "EEI/tests/unit/test_release_decision_bundle.py",
@@ -106,6 +108,7 @@
     "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
     "EEI/manifest.txt",
     "EEI/scripts/job_scheduler.py",
+    "EEI/scripts/publish_reviewed_relationship_facts.py",
     "EEI/scripts/validate_catalog_integrity.py",
     "EEI/scripts/validate_gold_quality_evaluation.py",
     "EEI/scripts/validate_governance.py",
@@ -114,6 +117,7 @@
     "EEI/specs/api_contract.yaml",
     "EEI/tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json",
     "EEI/tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
+    "EEI/tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
     "EEI/tests/integration/test_database_migrations.py",
     "EEI/tests/unit/test_gold_quality_evaluation.py",
     "EEI/tests/unit/test_release_decision_bundle.py",
@@ -135,7 +139,7 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "finished_at": "2026-06-22T09:36:01Z",
-  "generated_at": "2026-06-22T10:26:14Z",
+  "generated_at": "2026-06-22T11:32:56Z",
   "implementation_base_sha": "2b294ceeef967e4b84038e48e50aa2431e2f1b0c",
   "iteration_id": "ITER-20260622-ROOT-DASHBOARD-002",
   "project_id": "root-governance",
@@ -168,9 +172,12 @@
     "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
     "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
     "EEI/manifest.txt",
+    "EEI/scripts/publish_reviewed_relationship_facts.py",
     "EEI/scripts/validate_release_decision_bundle.py",
     "EEI/scripts/validate_v5_production_readiness_sync.py",
     "EEI/tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
+    "EEI/tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
+    "EEI/tests/integration/test_database_migrations.py",
     "EEI/tests/unit/test_release_decision_bundle.py",
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
@@ -184,7 +191,7 @@
   "run_id": "GOV-EEI-DASHBOARD-SYNC-20260622",
   "schema_version": 2,
   "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; CI attestation must bind the final commit after push.",
-  "summary": "Bind the EEI release decision bundle merge-context repair: A209 24h soak remains background evidence while current A202/A210 gate waits for CI without bare PENDING wording.",
+  "summary": "Bind the EEI A202 signed-bundle publication-control slice: production owner sign-off publication requires a signed A202/A210 release decision bundle while A209 24h soak remains background evidence.",
   "task_id": "GOV-EEI-DASHBOARD-SYNC-20260622",
   "test_commands": [
     "python3 scripts/generate_governance_dashboard.py --write --project EEI",
@@ -195,7 +202,9 @@
     "EEI/.venv/bin/python EEI/scripts/manage_clean_room_release.py validate",
     "EEI/.venv/bin/python EEI/scripts/manage_release_artifacts.py validate",
     "shasum -a 256 -c EEI/CHECKSUMS.sha256 --quiet",
-    "python3 scripts/validate_governance_sync.py --changed-only --base-ref origin/main --enforce-sync --semantic"
+    "python3 scripts/validate_governance_sync.py --changed-only --base-ref origin/main --enforce-sync --semantic",
+    "TMPDIR=/private/tmp .venv/bin/python scripts/validate_release_decision_bundle.py validate-bundle --bundle tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
+    "TMPDIR=/private/tmp .venv/bin/python -m pytest -q tests/unit/test_release_decision_bundle.py -p no:cacheprovider"
   ],
   "test_results": [
     {

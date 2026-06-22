@@ -621,7 +621,7 @@ models:
   - model_id: "MOD-012"
     name: "运行、视觉与校准阈值控制"
     kind: "deterministic_configuration_rule"
-    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak windows, review-packet gates, release-decision bundle schema validation and gold-quality evaluation gates."
+    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak windows, review-packet gates, release-decision bundle schema validation/publication binding and gold-quality evaluation gates."
     owner: "model owner"
     status: "active"
     fact_level: "RECONSTRUCTED"

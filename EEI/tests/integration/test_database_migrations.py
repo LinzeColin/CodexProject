@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import subprocess
@@ -65,6 +66,10 @@ OWNER_SIGNOFF_DECISION_SET_KEY = "a202-production-owner-signoff-contract-v1"
 OWNER_SIGNOFF_SNAPSHOT_KEY = "a202-production-owner-signoff-golden-vertical"
 OWNER_SIGNOFF_DECISION_FIXTURE_PATH = (
     "tests/fixtures/golden_vertical_owner_signoff_decisions.json"
+)
+SIGNED_RELEASE_DECISION_BUNDLE_FIXTURE_PATH = (
+    "tests/fixtures/release_decision_bundle/"
+    "a202_a210_signed_decision_bundle_contract_test.json"
 )
 DOSSIER_HUMAN_SUMMARY_KEYS = {
     "headline",
@@ -2119,6 +2124,45 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
     assert owner_without_gate.returncode != 0
     assert "--allow-production-owner-signoff" in owner_without_gate.stderr
 
+    owner_without_bundle = subprocess.run(
+        [
+            sys.executable,
+            "scripts/publish_reviewed_relationship_facts.py",
+            "--review-decisions",
+            OWNER_SIGNOFF_DECISION_FIXTURE_PATH,
+            "--snapshot-key",
+            OWNER_SIGNOFF_SNAPSHOT_KEY,
+            "--allow-production-owner-signoff",
+        ],
+        cwd=os.getcwd(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert owner_without_bundle.returncode != 0
+    assert "--release-decision-bundle" in owner_without_bundle.stderr
+
+    owner_template_bundle = subprocess.run(
+        [
+            sys.executable,
+            "scripts/publish_reviewed_relationship_facts.py",
+            "--review-decisions",
+            OWNER_SIGNOFF_DECISION_FIXTURE_PATH,
+            "--snapshot-key",
+            OWNER_SIGNOFF_SNAPSHOT_KEY,
+            "--allow-production-owner-signoff",
+            "--release-decision-bundle",
+            "tests/fixtures/release_decision_bundle/"
+            "a202_a210_release_decision_bundle_template.json",
+        ],
+        cwd=os.getcwd(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert owner_template_bundle.returncode != 0
+    assert "template-only bundle is not signed" in owner_template_bundle.stderr
+
     run_script(
         "scripts/publish_reviewed_relationship_facts.py",
         "--review-decisions",
@@ -2126,8 +2170,13 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
         "--snapshot-key",
         OWNER_SIGNOFF_SNAPSHOT_KEY,
         "--allow-production-owner-signoff",
+        "--release-decision-bundle",
+        SIGNED_RELEASE_DECISION_BUNDLE_FIXTURE_PATH,
     )
     with connect_database() as connection:
+        release_bundle_hash = hashlib.sha256(
+            Path(SIGNED_RELEASE_DECISION_BUNDLE_FIXTURE_PATH).read_bytes()
+        ).hexdigest()
         owner_snapshot_row = connection.execute(
             """
             SELECT ds.snapshot_key,
@@ -2136,6 +2185,11 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
                    ds.metadata->>'review_context',
                    ds.metadata->>'production_owner_signoff',
                    ds.metadata->>'fixture_review_only_not_production_clearance',
+                   ds.metadata->>'release_decision_bundle_id',
+                   ds.metadata->>'release_decision_bundle_sha256',
+                   ds.metadata->>'signed_decision_complete',
+                   ds.metadata->>'legal_clearance_status',
+                   ds.metadata->>'brand_decision',
                    count(DISTINCT fv.id)::int,
                    count(fve.*)::int
             FROM data_snapshots ds
@@ -2146,15 +2200,20 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
             """,
             (OWNER_SIGNOFF_SNAPSHOT_KEY,),
         ).fetchone()
-        assert owner_snapshot_row[:6] == (
+        assert owner_snapshot_row[:11] == (
             OWNER_SIGNOFF_SNAPSHOT_KEY,
             "curated_official_fixture",
             "active",
             "production_owner_signoff_contract",
             "true",
             "false",
+            "A202-A210-SIGNED-CONTRACT-TEST-NOT-LEGAL-CLEARANCE",
+            release_bundle_hash,
+            "true",
+            "RISK_WAIVER_ACCEPTED",
+            "RISK_WAIVER_ACCEPTED",
         )
-        assert owner_snapshot_row[6:] == (2, 4)
+        assert owner_snapshot_row[11:] == (2, 4)
 
         owner_relationship_rows = connection.execute(
             """
@@ -2170,13 +2229,25 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
                    )::int,
                    count(*) FILTER (
                      WHERE qualifiers->>'owner_signature_hash' IS NOT NULL
+                   )::int,
+                   count(*) FILTER (
+                     WHERE qualifiers->>'release_decision_bundle_sha256' = %s
+                   )::int,
+                   count(*) FILTER (
+                     WHERE qualifiers->>'signed_decision_complete' = 'true'
+                   )::int,
+                   count(*) FILTER (
+                     WHERE qualifiers->>'passage_review_signature_hash' IS NOT NULL
+                   )::int,
+                   count(*) FILTER (
+                     WHERE qualifiers->>'owner_signoff_signature_hash' IS NOT NULL
                    )::int
             FROM relationships
             WHERE qualifiers->>'decision_set_key' = %s
             """,
-            (OWNER_SIGNOFF_DECISION_SET_KEY,),
+            (release_bundle_hash, OWNER_SIGNOFF_DECISION_SET_KEY),
         ).fetchone()
-        assert owner_relationship_rows == (2, 2, 2, 2, 2)
+        assert owner_relationship_rows == (2, 2, 2, 2, 2, 2, 2, 2, 2)
 
         owner_evidence_row = connection.execute(
             """
@@ -2189,14 +2260,24 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
                    )::int,
                    count(*) FILTER (
                      WHERE re.structured_fact->>'owner_signature_hash' IS NOT NULL
+                   )::int,
+                   count(*) FILTER (
+                     WHERE re.structured_fact->>'release_decision_bundle_sha256' = %s
+                   )::int,
+                   count(*) FILTER (
+                     WHERE re.structured_fact->>'signed_decision_complete' = 'true'
+                   )::int,
+                   count(*) FILTER (
+                     WHERE re.structured_fact->>'supporting_passage_locator'
+                       LIKE 'internal://contract-test/passage/%%'
                    )::int
             FROM relationship_evidence re
             JOIN relationships r ON r.id = re.relationship_id
             WHERE r.qualifiers->>'decision_set_key' = %s
             """,
-            (OWNER_SIGNOFF_DECISION_SET_KEY,),
+            (release_bundle_hash, OWNER_SIGNOFF_DECISION_SET_KEY),
         ).fetchone()
-        assert owner_evidence_row == (4, 4, 4, 4)
+        assert owner_evidence_row == (4, 4, 4, 4, 4, 4, 4)
 
         owner_fact_payload_row = connection.execute(
             """
@@ -2206,14 +2287,21 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
                    )::int,
                    count(*) FILTER (
                      WHERE fv.payload->'qualifiers'->>'owner_role' = 'data_owner'
+                   )::int,
+                   count(*) FILTER (
+                     WHERE fv.payload->'qualifiers'->>'release_decision_bundle_sha256' = %s
+                   )::int,
+                   count(*) FILTER (
+                     WHERE fv.payload->'qualifiers'->>'legal_clearance_status'
+                       = 'RISK_WAIVER_ACCEPTED'
                    )::int
             FROM fact_versions fv
             JOIN data_snapshots ds ON ds.id = fv.snapshot_id
             WHERE ds.snapshot_key = %s
             """,
-            (OWNER_SIGNOFF_SNAPSHOT_KEY,),
+            (release_bundle_hash, OWNER_SIGNOFF_SNAPSHOT_KEY),
         ).fetchone()
-        assert owner_fact_payload_row == (2, 2, 2)
+        assert owner_fact_payload_row == (2, 2, 2, 2, 2)
 
         owner_queue_row = connection.execute(
             """
@@ -2240,6 +2328,8 @@ def exercise_reviewed_relationship_publication_contracts() -> None:
         "--snapshot-key",
         OWNER_SIGNOFF_SNAPSHOT_KEY,
         "--allow-production-owner-signoff",
+        "--release-decision-bundle",
+        SIGNED_RELEASE_DECISION_BUNDLE_FIXTURE_PATH,
     )
     assert (
         reviewed_publication_counts(

@@ -16,6 +16,21 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - used when imported as scripts package.
     from scripts.db_tools import connect_database
 
+try:
+    from validate_release_decision_bundle import (
+        read_json as read_release_bundle_json,
+    )
+    from validate_release_decision_bundle import (
+        validate_signed_decision_bundle,
+    )
+except ModuleNotFoundError:  # pragma: no cover - used when imported as scripts package.
+    from scripts.validate_release_decision_bundle import (
+        read_json as read_release_bundle_json,
+    )
+    from scripts.validate_release_decision_bundle import (
+        validate_signed_decision_bundle,
+    )
+
 PUBLISHER_VERSION = "a202-reviewed-publication-v1"
 DEFAULT_SCOPE = "golden-vertical:nvidia"
 DEFAULT_RECORD_MODE = "curated_official_fixture"
@@ -88,6 +103,122 @@ def read_decision_file(
             require_text(decision, "authority_scope")
             require_text(decision, "signature")
     return payload
+
+
+def signed_entry_hash(entry: dict[str, Any], fields: list[str]) -> str:
+    return sha256_text(canonical_json({field: entry[field] for field in fields}))
+
+
+def validate_release_decision_bundle_for_publication(
+    bundle_path: Path,
+    *,
+    decision_payload: dict[str, Any],
+) -> dict[str, Any]:
+    try:
+        bundle = read_release_bundle_json(bundle_path)
+        summary = validate_signed_decision_bundle(bundle)
+    except ValueError as exc:
+        raise RuntimeError(f"invalid release decision bundle: {exc}") from exc
+
+    decision_keys = {
+        str(decision["candidate_key"]) for decision in decision_payload["decisions"]
+    }
+    passage_reviews = {
+        str(entry["candidate_key"]): entry
+        for entry in bundle["passage_level_relationship_reviews"]
+    }
+    owner_signoffs = {
+        str(entry["candidate_key"]): entry for entry in bundle["production_owner_signoffs"]
+    }
+    missing_passage = sorted(decision_keys - set(passage_reviews))
+    missing_owner = sorted(decision_keys - set(owner_signoffs))
+    if missing_passage:
+        raise RuntimeError(
+            "release decision bundle missing passage reviews for: "
+            + ", ".join(missing_passage)
+        )
+    if missing_owner:
+        raise RuntimeError(
+            "release decision bundle missing owner signoffs for: " + ", ".join(missing_owner)
+        )
+
+    approved_source_anchors = {
+        str(entry["anchor_id"]) for entry in bundle["source_license_reviews"]
+    }
+    candidate_reviews: dict[str, dict[str, Any]] = {}
+    for candidate_key in sorted(decision_keys):
+        passage = passage_reviews[candidate_key]
+        owner = owner_signoffs[candidate_key]
+        supporting_anchor_ids = [str(anchor_id) for anchor_id in passage["supporting_anchor_ids"]]
+        missing_source_licenses = sorted(set(supporting_anchor_ids) - approved_source_anchors)
+        if missing_source_licenses:
+            raise RuntimeError(
+                f"{candidate_key} references anchors without source-license review: "
+                + ", ".join(missing_source_licenses)
+            )
+        candidate_reviews[candidate_key] = {
+            "supporting_anchor_ids": supporting_anchor_ids,
+            "supporting_passage_locator": passage["supporting_passage_locator"],
+            "passage_review_signature_hash": signed_entry_hash(
+                passage,
+                [
+                    "candidate_key",
+                    "supporting_passage_locator",
+                    "reviewer",
+                    "reviewed_at",
+                    "signature",
+                ],
+            ),
+            "owner_signoff_signature_hash": signed_entry_hash(
+                owner,
+                [
+                    "candidate_key",
+                    "owner_actor",
+                    "owner_role",
+                    "authority_scope",
+                    "signed_at",
+                    "signature",
+                ],
+            ),
+        }
+
+    bundle_text = bundle_path.read_text(encoding="utf-8")
+    legal = bundle["legal_release_clearance"]
+    brand = bundle["brand_clearance_or_risk_waiver"]
+    attestation = bundle["attestation"]
+    return {
+        "bundle_id": bundle["bundle_id"],
+        "bundle_status": bundle["bundle_status"],
+        "bundle_sha256": sha256_text(bundle_text),
+        "bundle_path": str(bundle_path),
+        "signed_decision_complete": True,
+        "release_gate_closure_allowed": bool(bundle["release_gate_closure_allowed"]),
+        "source_license_reviews": summary["source_license_reviews"],
+        "passage_reviews": summary["passage_reviews"],
+        "owner_signoffs": summary["owner_signoffs"],
+        "legal_clearance_status": summary["legal_clearance_status"],
+        "legal_clearance_signature_hash": signed_entry_hash(
+            legal,
+            [
+                "legal_reviewer",
+                "clearance_status",
+                "clearance_scope",
+                "risk_waiver_id_or_opinion_ref",
+                "signed_at",
+                "signature",
+            ],
+        ),
+        "brand_decision": summary["brand_decision"],
+        "brand_decision_signature_hash": signed_entry_hash(
+            brand,
+            ["decision", "scope", "evidence_uri", "signed_by", "signed_at", "signature"],
+        ),
+        "attestation_signature_hash": signed_entry_hash(
+            attestation,
+            ["signed_by", "signed_at", "signature"],
+        ),
+        "candidate_reviews": candidate_reviews,
+    }
 
 
 def require_text(payload: dict[str, Any], key: str) -> str:
@@ -329,6 +460,7 @@ def activate_snapshot(
     decision_payload: dict[str, Any],
     source_hash: str,
     as_of: datetime,
+    release_decision_context: dict[str, Any] | None = None,
 ) -> str:
     previous = connection.execute(
         """
@@ -352,6 +484,38 @@ def activate_snapshot(
             WHERE id = %s
             """,
             (previous_id,),
+        )
+    metadata = {
+        "acceptance_id": "A202",
+        "task_id": "T1301",
+        "publisher_version": PUBLISHER_VERSION,
+        "decision_set_key": decision_payload["decision_set_key"],
+        "review_context": decision_payload["review_context"],
+        "fixture_review_only_not_production_clearance": bool(
+            decision_payload.get("fixture_review_only_not_production_clearance")
+        ),
+        "production_owner_signoff": bool(decision_payload.get("production_owner_signoff")),
+    }
+    if release_decision_context:
+        metadata.update(
+            {
+                "release_decision_bundle_id": release_decision_context["bundle_id"],
+                "release_decision_bundle_sha256": release_decision_context[
+                    "bundle_sha256"
+                ],
+                "signed_decision_complete": release_decision_context[
+                    "signed_decision_complete"
+                ],
+                "legal_clearance_status": release_decision_context[
+                    "legal_clearance_status"
+                ],
+                "brand_decision": release_decision_context["brand_decision"],
+                "source_license_reviews": release_decision_context[
+                    "source_license_reviews"
+                ],
+                "passage_reviews": release_decision_context["passage_reviews"],
+                "owner_signoffs": release_decision_context["owner_signoffs"],
+            }
         )
     row = connection.execute(
         """
@@ -379,21 +543,7 @@ def activate_snapshot(
             as_of,
             as_of,
             previous_id,
-            Jsonb(
-                {
-                    "acceptance_id": "A202",
-                    "task_id": "T1301",
-                    "publisher_version": PUBLISHER_VERSION,
-                    "decision_set_key": decision_payload["decision_set_key"],
-                    "review_context": decision_payload["review_context"],
-                    "fixture_review_only_not_production_clearance": bool(
-                        decision_payload.get("fixture_review_only_not_production_clearance")
-                    ),
-                    "production_owner_signoff": bool(
-                        decision_payload.get("production_owner_signoff")
-                    ),
-                }
-            ),
+            Jsonb(metadata),
         ),
     ).fetchone()
     return str(row[0])
@@ -420,6 +570,7 @@ def publish_candidate(
     snapshot_id: str,
     decision_set: dict[str, Any],
     decision: dict[str, Any],
+    release_decision_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     candidate = candidate_row(connection, decision["candidate_key"])
     ensure_candidate_endpoint_entities(connection, candidate)
@@ -431,6 +582,11 @@ def publish_candidate(
     primary_evidence = evidence[0]
     production_owner_signoff = bool(decision_set.get("production_owner_signoff"))
     signature_hash = owner_signature_hash(decision) if production_owner_signoff else None
+    candidate_release_context = (
+        release_decision_context["candidate_reviews"][candidate["candidate_key"]]
+        if release_decision_context
+        else {}
+    )
     publication_structured_fact = {
         "published_relationship_id": relationship_id,
         "publisher_version": PUBLISHER_VERSION,
@@ -450,6 +606,35 @@ def publish_candidate(
         "owner_role": decision.get("owner_role"),
         "authority_scope": decision.get("authority_scope"),
         "owner_signature_hash": signature_hash,
+        "release_decision_bundle_id": (
+            release_decision_context["bundle_id"] if release_decision_context else None
+        ),
+        "release_decision_bundle_sha256": (
+            release_decision_context["bundle_sha256"] if release_decision_context else None
+        ),
+        "signed_decision_complete": (
+            release_decision_context["signed_decision_complete"]
+            if release_decision_context
+            else False
+        ),
+        "legal_clearance_status": (
+            release_decision_context["legal_clearance_status"]
+            if release_decision_context
+            else None
+        ),
+        "brand_decision": (
+            release_decision_context["brand_decision"] if release_decision_context else None
+        ),
+        "supporting_anchor_ids": candidate_release_context.get("supporting_anchor_ids"),
+        "supporting_passage_locator": candidate_release_context.get(
+            "supporting_passage_locator"
+        ),
+        "passage_review_signature_hash": candidate_release_context.get(
+            "passage_review_signature_hash"
+        ),
+        "owner_signoff_signature_hash": candidate_release_context.get(
+            "owner_signoff_signature_hash"
+        ),
     }
     qualifiers = {
         "candidate_key": candidate["candidate_key"],
@@ -473,6 +658,35 @@ def publish_candidate(
         "owner_role": decision.get("owner_role"),
         "authority_scope": decision.get("authority_scope"),
         "owner_signature_hash": signature_hash,
+        "release_decision_bundle_id": (
+            release_decision_context["bundle_id"] if release_decision_context else None
+        ),
+        "release_decision_bundle_sha256": (
+            release_decision_context["bundle_sha256"] if release_decision_context else None
+        ),
+        "signed_decision_complete": (
+            release_decision_context["signed_decision_complete"]
+            if release_decision_context
+            else False
+        ),
+        "legal_clearance_status": (
+            release_decision_context["legal_clearance_status"]
+            if release_decision_context
+            else None
+        ),
+        "brand_decision": (
+            release_decision_context["brand_decision"] if release_decision_context else None
+        ),
+        "supporting_anchor_ids": candidate_release_context.get("supporting_anchor_ids"),
+        "supporting_passage_locator": candidate_release_context.get(
+            "supporting_passage_locator"
+        ),
+        "passage_review_signature_hash": candidate_release_context.get(
+            "passage_review_signature_hash"
+        ),
+        "owner_signoff_signature_hash": candidate_release_context.get(
+            "owner_signoff_signature_hash"
+        ),
     }
     observed_at = primary_evidence["observed_at"] or reviewed_at
     connection.execute(
@@ -657,6 +871,7 @@ def publish_reviewed_facts(
     snapshot_key: str,
     allow_fixture_review: bool,
     allow_production_owner_signoff: bool,
+    release_decision_bundle_path: Path | None = None,
 ) -> dict[str, Any]:
     decision_payload = read_decision_file(
         decision_path,
@@ -666,6 +881,20 @@ def publish_reviewed_facts(
     reviewed_at = max(
         parse_dt(decision["reviewed_at"]) for decision in decision_payload["decisions"]
     )
+    release_decision_context = None
+    if decision_payload.get("production_owner_signoff"):
+        if release_decision_bundle_path is None:
+            raise RuntimeError(
+                "production owner sign-off publication requires --release-decision-bundle"
+            )
+        release_decision_context = validate_release_decision_bundle_for_publication(
+            release_decision_bundle_path,
+            decision_payload=decision_payload,
+        )
+    elif release_decision_bundle_path is not None:
+        raise RuntimeError(
+            "--release-decision-bundle is only allowed for production owner sign-off publication"
+        )
     source_hash = sha256_text(decision_path.read_text(encoding="utf-8"))
     with connect_database() as connection:
         snapshot_id = activate_snapshot(
@@ -674,6 +903,7 @@ def publish_reviewed_facts(
             decision_payload=decision_payload,
             source_hash=source_hash,
             as_of=reviewed_at,
+            release_decision_context=release_decision_context,
         )
         published = [
             publish_candidate(
@@ -681,6 +911,7 @@ def publish_reviewed_facts(
                 snapshot_id=snapshot_id,
                 decision_set=decision_payload,
                 decision=decision,
+                release_decision_context=release_decision_context,
             )
             for decision in decision_payload["decisions"]
         ]
@@ -693,6 +924,25 @@ def publish_reviewed_facts(
             decision_payload.get("fixture_review_only_not_production_clearance")
         ),
         "production_owner_signoff": bool(decision_payload.get("production_owner_signoff")),
+        "release_decision_bundle_id": (
+            release_decision_context["bundle_id"] if release_decision_context else None
+        ),
+        "release_decision_bundle_sha256": (
+            release_decision_context["bundle_sha256"] if release_decision_context else None
+        ),
+        "signed_decision_complete": (
+            release_decision_context["signed_decision_complete"]
+            if release_decision_context
+            else False
+        ),
+        "legal_clearance_status": (
+            release_decision_context["legal_clearance_status"]
+            if release_decision_context
+            else None
+        ),
+        "brand_decision": (
+            release_decision_context["brand_decision"] if release_decision_context else None
+        ),
         "published_count": len(published),
         "published_relationships": published,
     }
@@ -721,6 +971,14 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Allow decisions signed by a production data owner authority contract.",
     )
+    parser.add_argument(
+        "--release-decision-bundle",
+        type=Path,
+        help=(
+            "Signed A202/A210 release decision bundle required for production owner "
+            "sign-off publication. Template bundles fail closed."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -731,6 +989,7 @@ def main() -> int:
         snapshot_key=args.snapshot_key,
         allow_fixture_review=args.allow_fixture_review,
         allow_production_owner_signoff=args.allow_production_owner_signoff,
+        release_decision_bundle_path=args.release_decision_bundle,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0

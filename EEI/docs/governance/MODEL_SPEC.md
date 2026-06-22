@@ -26,6 +26,7 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-22 T1304/A206 closure changes scheduler, retry and dead-letter delivery status only; no scoring model, graph traversal formula, extraction formula, formula weight or runtime model behavior changed.
 - 2026-06-22 T1301/A202 plus T1309/A210 release-decision bundle adds governance contract parameter `PARAM-063` for `CONTRACT_SCHEMA_VERSION`; no scoring model, graph traversal formula, extraction formula, formula weight or runtime threshold changed.
 - 2026-06-22 T904/A026/A027 gold-quality evaluation adds governance gate parameters `PARAM-064` through `PARAM-068` for minimum gold-set sample count, precision and source coverage; no scoring model, graph traversal formula, extraction formula or formula weight changed.
+- 2026-06-22 T1301/A202 signed-bundle publication binding makes the production owner sign-off publication path require a signed A202/A210 release decision bundle and stores bundle/signature hashes in the evidence chain; no scoring model, graph traversal formula, extraction formula, formula weight or threshold value changed.
 
 ## A. Model Overview
 
@@ -230,7 +231,7 @@ The counts above are generated from the canonical machine registries in this dir
 ### `MOD-012` - 运行、视觉与校准阈值控制
 
 - Kind: `deterministic_configuration_rule`
-- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows, fail-closed A202 review-packet gates, A202/A210 release-decision bundle schema validation, and A026/A027 gold-quality gates.
+- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows, fail-closed A202 review-packet gates, A202/A210 release-decision bundle schema validation/publication binding, and A026/A027 gold-quality gates.
 - Owner: model owner
 - Status: `active`
 - Model version: `operational-controls-v1`
