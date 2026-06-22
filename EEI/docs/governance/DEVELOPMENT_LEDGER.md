@@ -15,7 +15,7 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Confirmed iteration count: 28
 - Reconstructed development event count: 3
 - Current task: `TASK-T1301/A202 reviewed relationship publication operation-log audit`
-- Blockers: current T1301/A202 operation-log audit is local-validated and pending remote PostgreSQL CI binding; A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A204/A205 worker wake is remote-CI bound, but A204/A205 remain open until release-manager plus long-duration refresh evidence are current; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Blockers: current T1301/A202 operation-log audit is remote-CI validated by commit `cb8e096fd54508080d73a6e83c015c15cfd9bd9a`, Project Governance run `27989821924` and EEI validation run `27989821946`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A204/A205 worker wake is remote-CI bound, but A204/A205 remain open until release-manager plus long-duration refresh evidence are current; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -38,7 +38,7 @@ Do not infer iteration count from Git commit count.
 - Version before: `v4.2.0` in legacy `VERSION`; product package version was `0.1.0`
 - Version after: `0.1.0` with legacy label preserved in `VERSION_MATRIX.yaml`
 - Base commit: `9516776`
-- Result commit: `PENDING`
+- Result commit: `cb8e096fd54508080d73a6e83c015c15cfd9bd9a`
 - Task IDs: `GOV-G2-EEI-REPAIR-001`
 - Goal: create the first CodexProject-auditable EEI governance baseline without runtime behavior change.
 - Assumptions: use existing CSV/config/test evidence; mark unsupported runtime/calibration facts UNKNOWN.
@@ -652,14 +652,14 @@ Do not infer iteration count from Git commit count.
 - Goal: add an idempotent operation-log audit trail to the A202 reviewed relationship publication path without closing A202/A209/A210.
 - Assumptions: operation logs are audit evidence only; they do not replace source-license review, passage-level approval, owner/legal/brand signatures, release-manager activation, production gold labels or A209 24h soak.
 - Files changed: `scripts/publish_reviewed_relationship_facts.py`, `scripts/validate_release_decision_bundle.py`, `tests/integration/test_database_migrations.py`, A202 contract artifact and governance records.
-- Commands run: targeted py_compile, focused ruff, release/scoring unit tests, release-decision contract generate/validate and local integration collection.
-- Test results: py_compile PASS; focused ruff PASS; `tests/unit/test_release_decision_bundle.py tests/unit/test_scoring.py` PASS 19/19; A202 contract validate PASS; local integration collection SKIPPED because this host has no `DATABASE_URL`.
+- Commands run: targeted py_compile, focused ruff, release/scoring unit tests, release-decision contract generate/validate, local integration collection, local `make verify`, root governance sync, root governance pytest, Project Governance run `27989821924` and EEI validation run `27989821946`.
+- Test results: py_compile PASS; focused ruff PASS; `tests/unit/test_release_decision_bundle.py tests/unit/test_scoring.py` PASS 19/19; A202 contract validate PASS; local integration collection SKIPPED because this host has no `DATABASE_URL`; local `make verify` PASS; root governance sync PASS; root governance pytest PASS 129/129; Project Governance run `27989821924` job `82839592718` PASS; EEI validation run `27989821946` job `82839592720` PASS, including Step 10 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E.
 - Successes: fixture-review and production-owner-signoff contract paths now require one deterministic `operation_logs` audit row per reviewed relationship publication and idempotent reruns skip duplicate logs.
-- Failures: remote PostgreSQL CI is still pending for the new operation-log assertions; no real signed legal/source/brand clearance or 24h soak was added.
+- Failures: no real signed legal/source/brand clearance, release-manager activation, production gold labels or 24h soak was added.
 - Decisions: keep A202/A209/A210 `IN_PROGRESS`; keep A209 24h soak as a background long-running gate while bounded A202 audit work continues.
 - Remaining risks: future operators could misread audit log presence as production clearance unless the non-closure flags and signed decision requirements are preserved.
 - Rollback: revert the publication audit code/test/contract/governance updates, regenerate artifacts and rerun validation.
-- Next step: regenerate development/release artifacts, run `make verify`, run governance sync/root tests, commit/push and bind CI.
+- Next step: continue bounded MVP delivery while A209 24h soak remains a background long-running evidence gate.
 
 ## Reconstructed Development Events
 

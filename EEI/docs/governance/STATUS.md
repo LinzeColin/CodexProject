@@ -4,10 +4,10 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:184e4e88248ec83e432778047b206bd4715ba5bba9256055e6d7453d5988b9b0`
-- snapshot_event_time: `2026-06-22T22:30:00Z`
+- source_snapshot_hash: `sha256:bd5a4d62acd9e10aeae4e543a2f39c316b685bd8b2a038ccbca62bf28af83c0b`
+- snapshot_event_time: `2026-06-22T23:04:30Z`
 - generator_version: `4.0.0`
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `CI_ATTESTED:cb8e096fd54508080d73a6e83c015c15cfd9bd9a`
 
 ## Current State
 
@@ -37,8 +37,8 @@
 - Readiness: `FAILED`
 - Release gate: `TASK-T1301-A202-PUBLICATION-OPERATION-LOG-AUDIT-IN-PROGRESS`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `38`
+- Pending/stale events: `37`
 - Tree-bound events: `0`
-- Commit-bound events: `8`
+- Commit-bound events: `9`
 - Legacy unbound events: `17`
 - Unresolved fact IDs: `7`
