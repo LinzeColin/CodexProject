@@ -1160,6 +1160,30 @@ The append-only machine record is `development_events.jsonl`.
 - Rollback: Remove the manual delivery workflow, tests, version 0.12.2 governance records, and restore version 0.12.1 while keeping production variables disabled.
 - Next step: Commit and push this PR update, wait for PR CI green, merge the safe manual-test entrypoint to main, then run the GitHub Actions manual delivery workflow with the confirmation string.
 
+### `ITER-20260621-050`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from GitHub Actions run `27926461430`, manual delivery execution artifact, workflow contract, and focused regression test.
+- Version before: 0.12.2
+- Version after: 0.12.3
+- Base commit: 932446fd2154ac477ea0cb6862a60098b1e1ed55
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034
+- Goal: Repair the manual Release plus Gmail SMTP test workflow so the next default-branch dispatch can create a Release before sending SMTP.
+- Assumptions: Duplicate Release asset names caused the first manual workflow's `gh release create` failure; SMTP correctly remained blocked because no Release-hosted video link existed.
+- Files changed: manual delivery workflow, focused workflow test, version/changelog files, phase record, event, run manifest, delivery task, traceability, and version matrix.
+- Model changes: No new model; refines MOD-ADP-034.
+- Formula changes: No new formula; refreshes FORM-ADP-036 implementation evidence after workflow asset dedupe.
+- Parameter changes: No new parameter; preserves PARAM-ADP-184 Release-backed email path.
+- Commands run: pending final validation.
+- Test results: pending final validation; failed manual run `27926461430` confirmed GitHub-hosted runner, Release blocked, SMTP dry_run, and production schedule not enabled.
+- Successes: Workflow now deduplicates Release assets by filename before scheduled delivery.
+- Failures: No real Release upload or Gmail SMTP send has passed yet after this repair.
+- Decisions: Keep production schedule disabled; rerun manual workflow only after PR CI passes and repair merges to main.
+- Remaining risks: A second manual workflow run can still fail on Release permissions, Gmail SMTP authentication, or provider policy.
+- Rollback: Revert version 0.12.3 workflow dedupe, tests, phase record, manifest, event, and restore version 0.12.2 while keeping production variables disabled.
+- Next step: Validate locally, open repair PR, wait for PR CI green, merge, then rerun the manual Release + Gmail SMTP workflow.
+
 ## Unknown Historical Periods
 
 None for this new project baseline.

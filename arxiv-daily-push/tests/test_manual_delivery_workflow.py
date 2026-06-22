@@ -45,6 +45,18 @@ class ManualDeliveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("send-notification", workflow)
         self.assertNotIn("gh release create", workflow)
 
+    def test_manual_delivery_workflow_deduplicates_release_assets_by_name(self) -> None:
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+
+        self.assertIn("declare -A release_asset_names=()", workflow)
+        self.assertIn("add_release_asset()", workflow)
+        self.assertIn("basename \"$artifact\"", workflow)
+        self.assertIn("Skipping duplicate Release asset name", workflow)
+        self.assertIn('command+=(--release-asset "$artifact")', workflow)
+        self.assertIn('add_release_asset "${{ steps.mp4.outputs.video_path }}"', workflow)
+        self.assertIn('add_release_asset "$artifact"', workflow)
+        self.assertNotIn('command+=(--release-asset "$artifact")\n            done', workflow)
+
 
 if __name__ == "__main__":
     unittest.main()

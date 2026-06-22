@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.12.3 - 2026-06-22
+
+- Fixed the manual GitHub Release plus Gmail SMTP test workflow to deduplicate Release assets by filename before invoking scheduled delivery.
+- Preserved fail-closed behavior: if Release creation fails, the workflow still blocks SMTP instead of sending an email without a video/Release link.
+- Kept scheduled production disabled and unchanged.
+
 ## 0.12.2 - 2026-06-22
 
 - Added a default-branch-only manual GitHub Actions workflow for one controlled GitHub Release plus Gmail SMTP delivery test.

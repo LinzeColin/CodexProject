@@ -3,8 +3,8 @@
 ## Snapshot Metadata
 
 - source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:68ea542b00c11279fa842b594d8ba45556aab0090dc5b96da14cdf7e3a91ba7f`
-- snapshot_event_time: `2026-06-22T12:18:37+10:00`
+- source_snapshot_hash: `sha256:4ef9728988981807592d5f81629877123cb59a275b11f263c3ac5244e120fe25`
+- snapshot_event_time: `2026-06-22T13:05:00+10:00`
 - generator_version: `2.0.0`
 - final_commit_binding: `CI_ATTESTATION_REQUIRED`
 
@@ -12,8 +12,8 @@
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
-- Product version: `0.12.2`
-- Phase/Gate: `E / ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED`
+- Product version: `0.12.3`
+- Phase/Gate: `E / ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED`
 - Models/Formulas/Parameters total: `34 / 36 / 184`
 - Active formulas/parameters: `36 / 183`
 - Machine checked formulas/parameters: `36 / 183`
@@ -30,7 +30,7 @@
 ## Delivery
 
 - Readiness: `blocked`
-- Release gate: `ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED`
-- Next executable task: `NONE`
-- Pending/stale events: `57`
+- Release gate: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED`
+- Next executable task: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034`
+- Pending/stale events: `58`
 - Unresolved fact IDs: `3`

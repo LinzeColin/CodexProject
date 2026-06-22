@@ -256,15 +256,30 @@ jobs:
             --generated-at "${{ steps.generated_at.outputs.value }}"
             --preflight-report "${{ steps.preflight.outputs.path }}"
             --daily-input "${{ steps.source.outputs.path }}"
-            --release-asset "${{ steps.mp4.outputs.video_path }}"
-            --release-asset "${{ steps.mp4.outputs.report_path }}"
-            --release-asset "${{ steps.mp4.outputs.transcript_path }}"
             --json
           )
+          declare -A release_asset_names=()
+          add_release_asset() {
+            local artifact="$1"
+            local name
+            if [ ! -f "$artifact" ]; then
+              return
+            fi
+            name="$(basename "$artifact")"
+            if [ -n "${release_asset_names[$name]+seen}" ]; then
+              echo "Skipping duplicate Release asset name: $name"
+              return
+            fi
+            release_asset_names["$name"]=1
+            command+=(--release-asset "$artifact")
+          }
+          add_release_asset "${{ steps.mp4.outputs.video_path }}"
+          add_release_asset "${{ steps.mp4.outputs.report_path }}"
+          add_release_asset "${{ steps.mp4.outputs.transcript_path }}"
           artifact_dir="${{ steps.source.outputs.artifact_dir }}"
           if [ -n "$artifact_dir" ] && [ -d "$artifact_dir" ]; then
             while IFS= read -r artifact; do
-              command+=(--release-asset "$artifact")
+              add_release_asset "$artifact"
             done < <(find "$artifact_dir" -type f -name '*.json' | sort)
           fi
           PYTHONDONTWRITEBYTECODE=1 \
