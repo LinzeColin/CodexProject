@@ -259,20 +259,22 @@ REVIEW8_DECISION_POLICY = {
         "no_decision": "whkmSalary remains FAILED and must not be used for production payroll.",
     },
     "arxiv-daily-push": {
-        "owner_role": "product_owner + operations_owner + content_owner",
-        "assignment": "HUMAN_ASSIGNMENT_REQUIRED",
-        "question": "是否启动 owner 配置的生产 trial，验证 arxiv-daily-push 的排序、Claim Ledger、中文课程、通知和 30 天运行稳定性。",
-        "recommendation": "A: start controlled production trial only after owner-provisioned refs are verified",
-        "option_a": "完成私有 runner/refs、trial-start、SMTP/Release、replay/recovery/resource 和 30 天证据。",
-        "option_b": "保留本地模拟和手动发布，不提升生产状态。",
-        "option_c": "暂停自动日更投递。",
-        "effort": "P2; product, operations, content owners",
-        "resource": "owner-provisioned refs, private runner, SMTP/release credentials, monitoring",
-        "benefit": "证明日常投递真实可运行且内容主张有证据绑定。",
-        "risks": "secret misconfiguration, delivery failure, hallucinated claims, stale schedule evidence",
-        "evidence": "provisioning audit, trial logs, 30-day ledger, claim evidence sample",
-        "priority": "P2",
-        "no_decision": "arxiv-daily-push remains FAILED for delivery readiness despite local simulations.",
+        "decision_id": "DEC-arxiv-daily-push-V5-S1-001",
+        "review_id": "REVIEW8",
+        "owner_role": "content_owner + product_owner",
+        "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+        "question": "是否继续执行 S1-07，生成 B1/arXiv 的高信息密度中文讲解教学邮件，而不是启动生产 trial。",
+        "recommendation": "A: implement S1-07 B1/arXiv text teaching email before any production enablement",
+        "option_a": "继续 S1-07，完成 B1/arXiv 中文讲解报告、邮件文本/HTML 和审计工件。",
+        "option_b": "暂停在 S1-06，等待人工重审文本讲解标准。",
+        "option_c": "恢复旧 Phase 12 media path；不推荐，且会偏离 V5 Stage 1。",
+        "effort": "P1; content and product implementation",
+        "resource": "local tests only; no real SMTP, no Release upload, no video generation",
+        "benefit": "把 arXiv 输出从日报摘要提升为可长期运行的讲解教学邮件。",
+        "risks": "shallow digest quality, unsupported claims, old media path leakage, premature production enablement",
+        "evidence": "B1 report artifact, email preview, claim evidence, focused tests, governance records",
+        "priority": "P1",
+        "no_decision": "arxiv-daily-push remains at S1-06 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
     },
 }
 
@@ -507,7 +509,13 @@ def task_is_stale_or_satisfied(project_id: str, task: dict[str, Any], counts: di
     return ""
 
 
-def select_next_task(project_id: str, tasks: list[dict[str, Any]], counts: dict[str, int], impl_status: str) -> dict[str, Any]:
+def select_next_task(
+    project_id: str,
+    tasks: list[dict[str, Any]],
+    counts: dict[str, int],
+    impl_status: str,
+    current_phase: str = "",
+) -> dict[str, Any]:
     completed = completed_task_ids(tasks)
     candidates: list[dict[str, Any]] = []
     stale: list[dict[str, str]] = []
@@ -539,6 +547,17 @@ def select_next_task(project_id: str, tasks: list[dict[str, Any]], counts: dict[
             "unblock_condition": "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy.",
             "stale_candidates": stale,
         }
+    if current_phase:
+        phase_candidates = [
+            task
+            for task in candidates
+            if str(task.get("phase") or "") == current_phase and str(task.get("status") or "") != "blocked"
+        ]
+        if phase_candidates:
+            phase_priority = {"in_progress": 0, "ready": 1, "planned": 2}
+            phase_candidates.sort(key=lambda task: (phase_priority.get(str(task.get("status")), 9), str(task.get("task_id"))))
+            candidates = phase_candidates
+
     priority = {"blocked": 0, "in_progress": 1, "ready": 2, "planned": 3}
     candidates.sort(key=lambda task: (priority.get(str(task.get("status")), 9), str(task.get("task_id"))))
     task = candidates[0]
@@ -548,7 +567,10 @@ def select_next_task(project_id: str, tasks: list[dict[str, Any]], counts: dict[
         unblock = str(task.get("risk") or task.get("objective") or "Human owner must provide the missing evidence before this task can complete.")
     else:
         command = structural.as_list(task.get("test_commands"))[0] if task.get("test_commands") else "listed acceptance command"
-        unblock = f"Run `{command}` and attach the listed evidence refs."
+        if str(command).strip().upper() == "PENDING":
+            unblock = "Define concrete acceptance test commands before marking the task ready, then attach the listed evidence refs."
+        else:
+            unblock = f"Run `{command}` and attach the listed evidence refs."
     return {
         "task_id": str(task.get("task_id") or "NONE"),
         "status": status,
@@ -696,7 +718,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     event_counts = event_binding_counts(events)
     evidence_freshness_status = "PARTIAL" if event_counts["legacy_unbound_events"] else "VERIFIED"
     methodological_status = "UNVERIFIED" if policy.get("empirical") in {"unknown", "partial"} else "VERIFIED"
-    next_task = select_next_task(project_id, tasks, counts, impl_status)
+    next_task = select_next_task(project_id, tasks, counts, impl_status, str(matrix.get("current_phase") or ""))
     decision_policy = REVIEW8_DECISION_POLICY.get(project_id, {})
     assurance = {
         "project_id": project_id,
@@ -780,8 +802,8 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         "next_executable_task": next_task,
         "owner_decision": {
             "required": True,
-            "decision_id": f"DEC-{project_id}-REVIEW8-001",
-            "review_id": "REVIEW8",
+            "decision_id": str(decision_policy.get("decision_id") or f"DEC-{project_id}-REVIEW8-001"),
+            "review_id": str(decision_policy.get("review_id") or "REVIEW8"),
             "project_id": project_id,
             "decision_question": str(decision_policy.get("question") or policy.get("decision") or "Decide the next evidence investment."),
             "question": str(decision_policy.get("question") or policy.get("decision") or "Decide the next evidence investment."),

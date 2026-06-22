@@ -911,8 +911,8 @@ tasks:
     dependencies: ["S1-06-SCORING-QUEUE-LEDGER-001"]
     required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-07-B1-REPORT-EMAIL-TEXT"]
-    test_commands: ["PENDING"]
-    test_results: ["PENDING"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
+    test_results: ["not_run_yet"]
     evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     risk: "The report must be teaching/explanation quality rather than a shallow daily digest, and must fail closed on unsupported claims."
     rollback: "Revert S1-07 report/email text files and governance updates."

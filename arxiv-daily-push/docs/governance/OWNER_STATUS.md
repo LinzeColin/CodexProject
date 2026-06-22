@@ -34,7 +34,7 @@ arxiv-daily-push remains at S1-06 and cannot reach ARXIV_PRODUCTION_ACCEPTED.
 - next_task_id: `S1-07-B1_REPORT_EMAIL_TEXT-001`
 - responsible_role: `content_owner + product_owner`
 - acceptance_ids: `ADP-ACC-S1-07-B1-REPORT-EMAIL-TEXT`
-- unblock_condition: Run S1-07 implementation and attach evidence that the B1/arXiv email is explanatory teaching quality, Chinese-first, claim-bound, text-first, and does not require video/MP4/Release media.
+- unblock_condition: Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q` and attach the listed evidence refs.
 
 ## 8. 九层 Assurance 状态
 
@@ -96,7 +96,7 @@ arxiv-daily-push remains at S1-06 and cannot reach ARXIV_PRODUCTION_ACCEPTED.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:2816f63a3391e13f4d17903c6dc59b81ef57d9e911efa2ef4a59b6275ba8581b`
+- source_snapshot_hash: `sha256:72291da42386b84bd823f84ec3742b0dc3961975450c490f6962ae54bab104c2`
 - snapshot_event_time: `2026-06-22T21:00:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.16.0`

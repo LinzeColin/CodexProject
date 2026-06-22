@@ -42,6 +42,7 @@
     "arxiv-daily-push/tests/test_owner_controls.py",
     "arxiv-daily-push/tests/test_stage1_queue.py",
     "governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json",
+    "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
   "changed_files_declared": [
@@ -82,11 +83,12 @@
     "arxiv-daily-push/tests/test_owner_controls.py",
     "arxiv-daily-push/tests/test_stage1_queue.py",
     "governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json",
+    "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
   "ci_attestation_subject": "Post-push CI attestation required for final S1-06 commit; this manifest binds local pre-commit tree facts only.",
   "ci_run_reference": "PENDING_POST_PUSH_CI_ATTESTATION",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:a7a700d0a49b3c567de048f4f63cf8d6592184840b5c4d5075098e74a3ae0ef8",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:1e513d49ec2d771acd4d62feb98132664d8cea98c5655d8ce0b1a3e6b5916d9d",
   "evidence_refs": [
     "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py",
     "arxiv-daily-push/tests/test_stage1_queue.py",
@@ -127,11 +129,11 @@
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_semantic_final PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_project_final PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_allgov_final PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --all",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_rootgov_final2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_iq_final PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_information_quality.py --project arxiv-daily-push --fast --fail-on-error",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_dashboard PYTHONPATH=arxiv-daily-push/src python3 scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_rootgov_fix2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_iq_fix2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_information_quality.py --project arxiv-daily-push --fast --fail-on-error",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_dashboard_fix2 PYTHONPATH=arxiv-daily-push/src python3 scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main",
     "python3 -m json.tool governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_changed_final PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s106_changed_fix PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
     "git diff --check"
   ],
   "test_results": [
@@ -140,9 +142,9 @@
     "semantic extractor: 41 active formulas and 292 active parameters checked with no errors",
     "project governance: arxiv-daily-push errors 0 warnings 0",
     "all-project governance validation: errors 0 warnings 0",
-    "root governance unit tests: 128 tests OK; missing-base line is an expected negative fixture with exit code 0",
+    "root governance unit tests: 128 tests OK; missing-base and root-manifest marker lines are expected negative fixtures with exit code 0",
     "information quality validation: PASS errors 0 warnings 0",
-    "governance dashboard/status regenerated: PASS",
+    "governance dashboard/status regenerated with V5 S1-07 next-task selection: PASS",
     "S1-06 run manifest JSON parse: OK",
     "changed-only semantic governance sync: errors 0 warnings 0; projects changed arxiv-daily-push only",
     "git diff --check: PASS"
