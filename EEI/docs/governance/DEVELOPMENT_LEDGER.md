@@ -11,7 +11,7 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-PENDING-CI`
+- Current gate: `TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-AWAITING-CI`
 - Confirmed iteration count: 21
 - Reconstructed development event count: 2
 - Current task: `TASK-T1301` / `TASK-T1309`
@@ -500,6 +500,7 @@ Do not infer iteration count from Git commit count.
 - Remaining risks: remote GitHub Actions validation is pending; a future operator could still misread a repository template as clearance if downstream release checks ignore `release_ready=false`.
 - Rollback: revert the release-decision bundle script, template, test, artifact, Makefile and governance/data record updates; regenerate release artifacts and rerun the documented validation subset.
 - Next step: regenerate development/release artifacts, run final local verification, commit/push and bind this event to CI.
+- CI merge-context repair: renamed the current release gate to `TASK-T1301-T1309-SIGNED-DECISION-BUNDLE-AWAITING-CI`, updated the root governance test so A209 24h soak remains open but non-blocking, and regenerated status/release evidence for the PR merge tree.
 
 ## Reconstructed Development Events
 

@@ -85,6 +85,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── t1212_clean_room_preflight.json
 │   │   │   └── t1215_clean_room_release.json
 │   │   ├── a202
+│   │   │   ├── t1301_a202_a210_release_decision_bundle_contract.json
 │   │   │   ├── t1301_context_anchor_semantic_revision_contract.json
 │   │   │   ├── t1301_curated_official_ingestion_contract.json
 │   │   │   ├── t1301_live_capture_postgres_ingestion_contract.json
@@ -393,6 +394,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_model_config.py
 │   ├── validate_operator_soak_evidence.py
 │   ├── validate_prototype_parity.py
+│   ├── validate_release_decision_bundle.py
 │   ├── validate_task_pack.py
 │   ├── validate_ui_copy.py
 │   ├── validate_v5_production_readiness_sync.py
@@ -424,6 +426,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── nvidia_official_full_text_dry_run.json
 │   │   ├── operator_source_captures
 │   │   │   └── nvidia_operator_source_captures.json
+│   │   ├── release_decision_bundle
+│   │   │   └── a202_a210_release_decision_bundle_template.json
 │   │   ├── README.md
 │   │   ├── golden_vertical_owner_signoff_decisions.json
 │   │   └── golden_vertical_review_decisions.json
@@ -434,6 +438,7 @@ Enterprise_Ecosystem_Intelligence_release
 │       ├── test_api_health.py
 │       ├── test_official_source_live_capture.py
 │       ├── test_operator_soak_evidence.py
+│       ├── test_release_decision_bundle.py
 │       ├── test_scale_benchmarks.py
 │       └── test_scoring.py
 ├── wireframes
