@@ -53,6 +53,10 @@
     "EEI/tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
     "EEI/tests/unit/test_gold_quality_evaluation.py",
     "EEI/tests/unit/test_release_decision_bundle.py",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "tests/governance/test_project_governance_validator.py"
   ],
@@ -103,6 +107,10 @@
     "EEI/tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
     "EEI/tests/unit/test_gold_quality_evaluation.py",
     "EEI/tests/unit/test_release_decision_bundle.py",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "tests/governance/test_project_governance_validator.py"
   ],
