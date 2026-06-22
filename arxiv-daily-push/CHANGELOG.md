@@ -6,6 +6,8 @@
 - Added fail-closed blocking for distinct Release assets that would publish with the same filename.
 - Recorded second manual delivery run `27927785092`, where workflow-level dedupe passed but the lower release delivery boundary still blocked before SMTP.
 - Added bounded transient retry handling for live all-arXiv cloud dry-runs after PR CI run `27928505758` hit arXiv 429 limits while preserving the 20/20 archive pass requirement.
+- Bound successful GitHub Actions manual delivery run `27932072771` as controlled Release/Gmail SMTP evidence while preserving the no-production-acceptance boundary.
+- Locked the Review8 two-stage V4 pursuing-goal baseline under `docs/pursuing_goal/BASELINE_LOCK.md` and started Stage 1 Window A traceability without changing runtime behavior.
 - Kept production schedule disabled and preserved no-secret/no-attachment Release-link delivery policy.
 
 ## 0.12.3 - 2026-06-22

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import os
 import subprocess
@@ -1562,22 +1563,48 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertNotIn("{'", rendered)
         self.assertNotEqual(info["assurance"]["next_executable_task"]["task_id"], "TASK-A-001")
 
+    def test_arxiv_s1_v4_baseline_lock_hashes_and_version_alignment(self) -> None:
+        baseline_dir = ROOT / "arxiv-daily-push" / "docs" / "pursuing_goal"
+        expected_hashes = {
+            "START_HERE_MASTER_TASK_PACK_TWO_STAGE_V4.md": "4de90b3ddac0d38880fe185d5f14c997fca797cbd26f80755bb33b5bc6806e1a",
+            "FULL_PURSUING_GOAL_PROMPT_TWO_STAGE_V4.txt": "b20add8661983e4797da72c3800d86f343fad3a1c13c62f3b08c8b0320634c3c",
+            "baseline/REFERENCE_OWNER_DECISIONS.rtf": "ed983f72e6233b6c2d707e69d131be9416f894aa46d39e7d962dcf65c738f7e0",
+            "baseline/MULTISOURCE_LOCAL_PRODUCTION_TASKPACK_V1.md": "2900f5c810ea4e87ea8a33b953551c4d822475e7063547e9cbc1627100f96bab",
+        }
+        for relative, expected in expected_hashes.items():
+            actual = hashlib.sha256((baseline_dir / relative).read_bytes()).hexdigest()
+            self.assertEqual(actual, expected, relative)
+
+        version = (ROOT / "arxiv-daily-push" / "VERSION").read_text(encoding="utf-8").strip()
+        pyproject = (ROOT / "arxiv-daily-push" / "pyproject.toml").read_text(encoding="utf-8")
+        package_init = (ROOT / "arxiv-daily-push" / "src" / "arxiv_daily_push" / "__init__.py").read_text(encoding="utf-8")
+        matrix = load_validator_module().load_yaml(ROOT / "arxiv-daily-push" / "docs" / "governance" / "VERSION_MATRIX.yaml")
+        self.assertEqual(version, "0.12.4")
+        self.assertIn('version = "0.12.4"', pyproject)
+        self.assertIn('__version__ = "0.12.4"', package_init)
+        self.assertEqual(matrix["product_version"], "0.12.4")
+
+        tasks = load_validator_module().load_yaml(ROOT / "arxiv-daily-push" / "docs" / "governance" / "delivery_tasks.yaml")["tasks"]
+        task_by_id = {task["task_id"]: task for task in tasks}
+        self.assertEqual(task_by_id["ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-02-BASELINE-LOCK-TRACEABILITY-001"]["status"], "completed")
+
     def test_arxiv_owner_status_uses_latest_event_manifest(self) -> None:
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-058")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-058")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-059")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-059")
         self.assertEqual(info["product_version"], "0.12.4")
-        self.assertEqual(info["current_gate"], "ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED")
+        self.assertEqual(info["current_gate"], "S1-02-BASELINE-LOCK-TRACEABILITY")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json",
+            "governance/run_manifests/ADP-S1-02-BASELINE-LOCK-TRACEABILITY-20260622.json",
         )
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.12.4", rendered)
-        self.assertIn("ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED", rendered)
+        self.assertIn("S1-02-BASELINE-LOCK-TRACEABILITY", rendered)
         self.assertIn("production trial not started", rendered)
         self.assertIn("30-day acceptance absent", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)

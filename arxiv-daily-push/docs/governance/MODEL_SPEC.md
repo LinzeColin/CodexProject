@@ -11,6 +11,14 @@ machine_summary:
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
+## Governance Notes
+
+- `S1-02-BASELINE-LOCK-TRACEABILITY-001` locked the Review8 V4 two-stage
+  pursuing-goal baseline and repaired version metadata drift only. It did not
+  change active model algorithms, formulas, parameter values, scoring behavior,
+  ranking behavior, Claim Ledger gates, SMTP behavior, Release behavior,
+  scheduler behavior, or media behavior.
+
 ## A. Model Overview
 
 | Model ID | Name | Kind | Purpose | Status | Version | Implementation reference |

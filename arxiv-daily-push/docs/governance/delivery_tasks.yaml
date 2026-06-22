@@ -771,15 +771,168 @@ tasks:
     objective: "Repair the lower GitHub Release delivery boundary after the second controlled manual dispatch showed duplicate asset paths still reached gh release create from inside scheduled delivery, and harden PR cloud dry-run against transient arXiv 429/timeout blocks."
     scope: "Release delivery asset inspection, duplicate path dedupe, duplicate filename fail-closed guard, live all-ArXiv transient retry, focused release delivery/global scan tests, failed run evidence, and governance records."
     non_scope: "No production schedule enablement, no direct Release upload outside the manual workflow, no real SMTP send in this repair commit, no secret value logging, no video email attachment, and no production acceptance claim."
-    status: "ready"
+    status: "completed"
     dependencies: ["ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034"]
     required_files: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_INTERNAL_RELEASE_DEDUPE.md", "docs/governance"]
     acceptance_ids: ["ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"]
     test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_dedupe_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_release_delivery.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_429_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_dedupe_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_dedupe_semantic PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_release_dedupe_gov PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic", "git diff --check"]
-    test_results: ["focused release delivery tests: 6 tests OK", "focused global scan retry tests: 9 tests OK", "failed manual run 27927785092 confirmed workflow-level dedupe passed but release_delivery still sent duplicate asset paths to gh before this repair", "failed PR CI run 27928505758 confirmed live all-ArXiv cloud dry-run can hit arXiv 429 after partial success before this retry hardening"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_INTERNAL_RELEASE_DEDUPE.md", "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/tests/test_global_scan.py", "https://github.com/LinzeColin/CodexProject/actions/runs/27927785092", "https://github.com/LinzeColin/CodexProject/actions/runs/27928505758"]
-    risk: "The repair must still pass PR CI, merge to main, and be rerun through workflow_dispatch before real Release and Gmail SMTP evidence can satisfy the user's test request; repeated upstream arXiv throttling can still fail closed."
+    test_results: ["focused release delivery tests: 6 tests OK", "focused global scan retry tests: 9 tests OK", "GitHub Actions Project Governance run 27931742808 on main commit bbdc69bb49758e4ad84f91f45fbe7921b82b1414 completed success", "GitHub Actions manual delivery run 27932072771 completed success with guard and manual-delivery-test jobs successful", "manual delivery artifacts uploaded: scheduled-execution, mp4-video, candidate-queue, phase12-artifacts, daily-input, preflight", "manual delivery evidence is a controlled Release/Gmail SMTP test and not 30-day production acceptance"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_INTERNAL_RELEASE_DEDUPE.md", "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/tests/test_global_scan.py", "https://github.com/LinzeColin/CodexProject/actions/runs/27927785092", "https://github.com/LinzeColin/CodexProject/actions/runs/27928505758", "https://github.com/LinzeColin/CodexProject/actions/runs/27931742808", "https://github.com/LinzeColin/CodexProject/actions/runs/27932072771"]
+    risk: "The controlled manual delivery test passed, but scheduled production, trial start, two live days, 30-day trial evidence, replay/recovery/resource evidence, and owner production enablement remain blocked."
     rollback: "Revert version 0.12.4 release delivery dedupe, tests, phase record, manifest, event, and restore version 0.12.3 while keeping production variables disabled."
+    target_version: "0.12.4"
+    completed_version: "0.12.4"
+    unknown_task_ids: []
+  - task_id: "S1-01-READONLY-AUDIT-001"
+    phase: "S1-A"
+    objective: "Audit the Review8 V4 package, current arXiv Daily Push implementation, governance drift, and GitHub evidence without changing files."
+    scope: "Read-only package hash verification, project gap inventory, current CLI capability check, GitHub Actions evidence check, and validation baseline."
+    non_scope: "No file edits, no business behavior changes, no production acceptance claim."
+    status: "completed"
+    dependencies: []
+    required_files: ["arxiv-daily-push/docs/governance", "arxiv-daily-push/README.md", "arxiv-daily-push/AGENTS.md", "arxiv-daily-push/PLANS.md", "arxiv-daily-push/pyproject.toml"]
+    acceptance_ids: ["ADP-ACC-S1-01-READONLY-AUDIT"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_information_quality.py --project arxiv-daily-push --fast --fail-on-error", "git diff --check"]
+    test_results: ["project governance: errors 0 warnings 0", "arxiv-daily-push unit tests: 177 tests OK", "information quality fast validation: PASS", "git diff --check: exit 0", "Review8 V4 ZIP hash verified as 3c43f6304d54f3d4fe718fb6ef21413f09723b42f0fd0417ec76ef8d42ded6c7"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    risk: "Read-only audit found missing V4 owner controls, owner views, SQLite model, runtime commands, and old baseline references."
+    rollback: "No repository rollback required because S1-01 was read-only."
+    target_version: "0.12.4"
+    completed_version: "0.12.4"
+    unknown_task_ids: []
+  - task_id: "S1-02-BASELINE-LOCK-TRACEABILITY-001"
+    phase: "S1-A"
+    objective: "Lock the Review8 V4 two-stage baseline into project governance and connect requirements, tasks, tests, and GitHub manual delivery evidence."
+    scope: "Pursuing-goal baseline lock, entry documentation, version drift repair, delivery tasks, traceability rows, development event, run manifest, generated governance views, and focused governance tests."
+    non_scope: "No owner-controls implementation, no SQLite model, no new adapters, no scheduler install, no backup/restore implementation, no runtime behavior change, and no production acceptance claim."
+    status: "completed"
+    dependencies: ["S1-01-READONLY-AUDIT-001"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md", "arxiv-daily-push/docs/pursuing_goal/START_HERE_MASTER_TASK_PACK_TWO_STAGE_V4.md", "arxiv-daily-push/docs/pursuing_goal/FULL_PURSUING_GOAL_PROMPT_TWO_STAGE_V4.txt", "arxiv-daily-push/docs/governance/delivery_tasks.yaml", "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv", "arxiv-daily-push/docs/governance/development_events.jsonl"]
+    acceptance_ids: ["ADP-ACC-S1-02-BASELINE-LOCK"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
+    test_results: ["semantic extractor: 36 active formulas and 184 active parameters checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "arxiv-daily-push unit tests: 177 tests OK", "governance dashboard regenerated: PASS", "root governance unit tests: 126 tests OK"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md", "https://github.com/LinzeColin/CodexProject/actions/runs/27932072771"]
+    risk: "The baseline lock can be misread as implementation completion unless generated status keeps Stage 1 gaps visible."
+    rollback: "Revert S1-02 baseline files, documentation updates, governance records, generated views, manifest, and tests."
+    target_version: "0.12.4"
+    completed_version: "0.12.4"
+    unknown_task_ids: []
+  - task_id: "S1-03-OWNER-CONTROLS-001"
+    phase: "S1-A"
+    objective: "Create the owner-editable control file and generated owner-readable views required by the V4 baseline."
+    scope: "`config/owner_controls.yaml`, owner console, source catalog, model and queue view, content ledger, generator tests, and governance traceability."
+    non_scope: "No new source ingestion behavior and no production schedule enablement."
+    status: "planned"
+    dependencies: ["S1-02-BASELINE-LOCK-TRACEABILITY-001"]
+    required_files: ["arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/docs/owner/OWNER_CONSOLE.md", "arxiv-daily-push/docs/owner/SOURCE_CATALOG.md", "arxiv-daily-push/docs/owner/MODEL_AND_QUEUE.md", "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"]
+    acceptance_ids: ["ADP-ACC-S1-03-OWNER-CONTROLS"]
+    test_commands: ["PENDING"]
+    test_results: ["PENDING"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    risk: "Owner views must be generated from machine facts rather than becoming a second editable source."
+    rollback: "Remove owner control/view files and related governance records from the S1-03 change."
+    target_version: "0.12.4"
+    completed_version: ""
+    unknown_task_ids: []
+  - task_id: "S1-04-SQLITE-DATA-MODEL-001"
+    phase: "S1-A"
+    objective: "Add the unified SQLite/WAL/FTS5 document and event model with migrations and rollback evidence."
+    scope: "Schema, migration, rollback, local tests, and governance records."
+    non_scope: "No large source import, no retained PDFs, and no production scheduler."
+    status: "planned"
+    dependencies: ["S1-03-OWNER-CONTROLS-001"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-04-SQLITE-DATA-MODEL"]
+    test_commands: ["PENDING"]
+    test_results: ["PENDING"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    risk: "Migration must remain low-resource and rollbackable before new-machine readiness."
+    rollback: "Remove migration/data-model files and restore prior governance records for S1-04."
+    target_version: "0.12.4"
+    completed_version: ""
+    unknown_task_ids: []
+  - task_id: "S1-05-ARXIV-CONNECTOR-CONTRACT-001"
+    phase: "S1-A"
+    objective: "Define the source registry, connector contract, and arXiv adapter boundary for Stage 1."
+    scope: "Connector contract, arXiv adapter registry, small-fixture tests, and governance traceability."
+    non_scope: "No broad non-arXiv source expansion and no bulk PDF download."
+    status: "planned"
+    dependencies: ["S1-04-SQLITE-DATA-MODEL-001"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-05-ARXIV-CONNECTOR-CONTRACT"]
+    test_commands: ["PENDING"]
+    test_results: ["PENDING"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    risk: "Connector abstractions must not hide source-specific evidence or rate-limit failures."
+    rollback: "Revert S1-05 connector contract files and governance updates."
+    target_version: "0.12.4"
+    completed_version: ""
+    unknown_task_ids: []
+  - task_id: "S1-06-SCORING-QUEUE-LEDGER-001"
+    phase: "S1-A"
+    objective: "Build the Stage 1 research scoring, 10,000 queue behavior, and content ledger path."
+    scope: "Scoring/queue/ledger implementation, deterministic tests, owner view integration, and governance records."
+    non_scope: "No parameter value changes without registry updates and no production acceptance claim."
+    status: "planned"
+    dependencies: ["S1-05-ARXIV-CONNECTOR-CONTRACT-001"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-06-SCORING-QUEUE-LEDGER"]
+    test_commands: ["PENDING"]
+    test_results: ["PENDING"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    risk: "Scoring changes must preserve exact formula and parameter traceability."
+    rollback: "Revert S1-06 scoring, queue, ledger, tests, and governance records."
+    target_version: "0.12.4"
+    completed_version: ""
+    unknown_task_ids: []
+  - task_id: "S1-07-B1_REPORT_EMAIL_MEDIA-001"
+    phase: "S1-A"
+    objective: "Produce the B1 report, Claim evidence, email preview, and media interface required by Stage 1."
+    scope: "Report generation, claim evidence, email preview, media interface smoke, tests, and governance records."
+    non_scope: "No long media render, no large model/TTS download, and no unsupported factual claims."
+    status: "planned"
+    dependencies: ["S1-06-SCORING-QUEUE-LEDGER-001"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-07-B1-REPORT-EMAIL-MEDIA"]
+    test_commands: ["PENDING"]
+    test_results: ["PENDING"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    risk: "Media and email evidence must stay within Window A resource limits and fail closed on unsupported claims."
+    rollback: "Revert S1-07 report/email/media interface files and governance updates."
+    target_version: "0.12.4"
+    completed_version: ""
+    unknown_task_ids: []
+  - task_id: "S1-08-LOCAL_RUNTIME_RECOVERY-001"
+    phase: "S1-A"
+    objective: "Add local runtime controls for tick, watchdog, backup, restore, runtime audit, and scheduler install/uninstall helpers."
+    scope: "CLI commands, runtime audit, backup/restore tests, scheduler controls, runbook, and governance records."
+    non_scope: "No production scheduler enablement before acceptance gates pass."
+    status: "planned"
+    dependencies: ["S1-07-B1_REPORT_EMAIL_MEDIA-001"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY"]
+    test_commands: ["PENDING"]
+    test_results: ["PENDING"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    risk: "Recovery controls must be idempotent and not leak secrets or retain oversized artifacts."
+    rollback: "Revert S1-08 CLI/runtime/recovery files and governance records."
+    target_version: "0.12.4"
+    completed_version: ""
+    unknown_task_ids: []
+  - task_id: "S1-09-MIGRATION_PACKAGE-001"
+    phase: "S1-A"
+    objective: "Produce the low-resource integration evidence and new-machine migration checklist."
+    scope: "Migration pack, checklist, low-resource smoke evidence, and governance records."
+    non_scope: "No final production acceptance, no 30-day replay, and no source/board Stage 2 promotion."
+    status: "planned"
+    dependencies: ["S1-08-LOCAL_RUNTIME_RECOVERY-001"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-09-MIGRATION-PACKAGE"]
+    test_commands: ["PENDING"]
+    test_results: ["PENDING"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    risk: "Migration readiness must not be confused with production acceptance."
+    rollback: "Revert S1-09 migration package files and governance updates."
     target_version: "0.12.4"
     completed_version: ""
     unknown_task_ids: []

@@ -9,12 +9,12 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.12.4
-- Current phase: E
-- Current gate: ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED
-- Confirmed iteration count: 51
+- Current phase: S1-A
+- Current gate: S1-02-BASELINE-LOCK-TRACEABILITY
+- Confirmed iteration count: 52
 - Reconstructed event count: 0
-- Current task: ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035
-- Blockers: Controlled manual GitHub Release plus Gmail SMTP test still needs the 0.12.4 repair merged to `main` and rerun through workflow_dispatch. Production launch remains blocked by real Gmail SMTP evidence to `linzezhang35@gmail.com`, real GitHub Release video-link evidence, resource telemetry, replay/recovery evidence, 30 unique daily production entries, and explicitly disabled production variables.
+- Current task: S1-02-BASELINE-LOCK-TRACEABILITY-001
+- Blockers: GitHub Actions run `27932072771` proves one controlled manual Release plus Gmail SMTP delivery test at commit `bbdc69bb49758e4ad84f91f45fbe7921b82b1414`, but production launch remains blocked by Stage 1 owner controls, owner views, unified data model, local runtime recovery controls, migration readiness, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables.
 
 ## Phase Matrix
 
@@ -25,8 +25,34 @@ The append-only machine record is `development_events.jsonl`.
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
 | E | Weekly/monthly trial, all-arXiv queue delivery, and production handoff | completed | Phase 11 production gates plus Phase 12 all-arXiv scan, candidate queue, ROI ranking, daily lead, Release video-link email gate, and production blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`; `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
+| S1-A | Review8 V4 Stage 1 Window A | in_progress | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email/media interface, runtime recovery, and migration package pass within low-resource limits | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260622-S1-001`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED for imported baseline hashes, version drift, GitHub Actions run evidence, and governance file updates; PROPOSED for future S1 tasks.
+- Version before: 0.12.4
+- Version after: 0.12.4
+- Base commit: bbdc69bb49758e4ad84f91f45fbe7921b82b1414
+- Result commit: PENDING
+- Task IDs: S1-02-BASELINE-LOCK-TRACEABILITY-001
+- Goal: Lock the Review8 V4 two-stage baseline into arXiv Daily Push governance and bind the successful manual delivery run without claiming production acceptance.
+- Assumptions: S1-02 is governance-only and does not change scoring, ranking, Claim Ledger, email, Release, scheduler, source ingest, or media runtime behavior.
+- Files read: `AGENTS.md`, `arxiv-daily-push/AGENTS.md`, `arxiv-daily-push/README.md`, `arxiv-daily-push/PLANS.md`, `arxiv-daily-push/docs/governance/*`, and the Review8 V4 ZIP.
+- Files changed: pursuing-goal baseline files, project entry docs, governance delivery/version/traceability/ledger files, changelog, pyproject version metadata, generated governance views, manifest, and focused governance tests.
+- Model changes: None.
+- Parameter changes: None.
+- Commands run: PENDING final validation.
+- Test results: PENDING final validation.
+- Successes: V4 baseline imported with matching hashes; pyproject version aligned to 0.12.4; GitHub run `27932072771` scoped as controlled manual delivery evidence only.
+- Failures: None recorded so far.
+- Decisions: Keep product version at 0.12.4 because S1-02 is a governance baseline lock, not a product behavior change.
+- Remaining risks: S1 owner controls, owner views, SQLite data model, local runtime recovery, migration package, 30-day trial, two live days, and final production acceptance remain incomplete.
+- Rollback: Revert S1-02 baseline files, documentation updates, governance records, generated views, manifest, and focused test changes.
+- Next step: Complete S1-02 validation, then run S1-03 owner controls.
 
 ### `ITER-20260621-001`
 

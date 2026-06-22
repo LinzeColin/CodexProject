@@ -1,7 +1,7 @@
 # arXiv Daily Push
 
 `arXiv 日报推送 / arXiv Daily Push` is a private, evidence-first daily learning
-pipeline. The Phase 11 foundation provides the local package, CLI contract,
+pipeline. The current implementation provides the local package, CLI contract,
 governance records, configuration examples, generic schemas, runtime contract
 validators, a deterministic `RunRecord` state machine, an arXiv Atom adapter,
 deterministic ranking, Claim Ledger publication gate, evidence-linked lesson
@@ -17,6 +17,12 @@ persistence, operational trial evidence annotation, weekly/monthly replay
 evidence generation, recovery drill evidence generation, resource telemetry
 evidence generation, a fail-closed 30-day trial start gate, a production launch
 readiness gate, and tests.
+
+The active pursuing-goal baseline is the Review8 two-stage V4 baseline locked
+in `docs/pursuing_goal/BASELINE_LOCK.md`. The project is not production
+accepted: the latest verified GitHub manual delivery run proves one controlled
+Release plus Gmail SMTP test only, not the required 30-day trial or two live
+production days.
 
 ## Current Scope
 
@@ -117,20 +123,42 @@ Not implemented yet:
 - actual recovery drill run archived with a durable production ref
 - actual 30-day resource telemetry run archived with a durable production ref
 - claimed scheduled 30-day trial start from current live GitHub runner evidence
-- claimed production launch readiness for the current draft PR
+- claimed production launch readiness from complete external refs and explicit owner confirmation
 - claimed 30-day operational acceptance
+- Stage 1 V4 owner-control surface: `config/owner_controls.yaml`
+- Stage 1 V4 owner views: `docs/owner/OWNER_CONSOLE.md`,
+  `docs/owner/SOURCE_CATALOG.md`, `docs/owner/MODEL_AND_QUEUE.md`,
+  `docs/owner/CONTENT_LEDGER.csv`
+- Stage 1 V4 unified SQLite/WAL/FTS5 document and event model
+- Stage 1 V4 local runtime commands: `adp tick`, `adp watchdog`,
+  `adp backup`, `adp restore`, `adp runtime-audit`, and scheduler
+  install/uninstall helpers
 
 ## Goal Baseline
 
-The long-running `/goal` baseline is stored at:
+The current long-running `/goal` baseline is locked at:
 
 ```text
-docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md
+docs/pursuing_goal/BASELINE_LOCK.md
+docs/pursuing_goal/FULL_PURSUING_GOAL_PROMPT_TWO_STAGE_V4.txt
 ```
 
-Phase 1-11 use arXiv as the first source, while preserving generic
+The legacy Phase 1-11 baseline remains at
+`docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md` for history only. Stage 1
+uses arXiv as the first source, while preserving generic
 `SourceAdapter`, `SourceItem`, `EvidenceClaim`, `Lesson`, `Storyboard`,
 `Publication`, and `RunRecord` boundaries for future data sources.
+
+Current V4 task sequence:
+
+- `S1-02-BASELINE-LOCK-TRACEABILITY-001`: baseline lock and traceability.
+- `S1-03-OWNER-CONTROLS-001`: owner controls and owner-readable views.
+- `S1-04-SQLITE-DATA-MODEL-001`: unified local document/event store.
+- `S1-05-ARXIV-CONNECTOR-CONTRACT-001`: arXiv source registry contract.
+- `S1-06-SCORING-QUEUE-LEDGER-001`: research scoring, queue, and content ledger.
+- `S1-07-B1_REPORT_EMAIL_MEDIA-001`: B1 report, claims, email preview, and media interface.
+- `S1-08-LOCAL_RUNTIME_RECOVERY-001`: scheduler, watchdog, backup, and restore.
+- `S1-09-MIGRATION_PACKAGE-001`: low-resource integration and migration package.
 
 ## Local Validation
 
@@ -143,6 +171,7 @@ git diff --check
 ## Resource Policy
 
 Do not commit media, model weights, voice samples, credentials, Codex auth,
-GitHub tokens, SMTP secrets, render cache, or dependency directories. Phase 1-11
-must remain code, schema, fixture, governance, and dry-run JSON only unless a
-later explicit resource and acceptance gate permits more.
+GitHub tokens, SMTP secrets, render cache, or dependency directories. Stage 1
+Window A remains low-resource until migration readiness is explicitly proven:
+no PDF bulk downloads, no large model/TTS downloads, no full 30-day replay, and
+no broad non-arXiv source expansion.
