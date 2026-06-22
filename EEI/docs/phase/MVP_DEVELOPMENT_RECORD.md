@@ -4535,3 +4535,46 @@ Status: LOCAL FOCUSED VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A210/A209 ST
 
 - Revert `scripts/publish_reviewed_relationship_facts.py`, `scripts/validate_release_decision_bundle.py`, the signed fixture, unit/integration tests, A202 artifact and governance/status records.
 - Regenerate development, clean-room and release artifacts, then rerun validation.
+
+## 2026-06-23 - T1303/A204-A205 supervised model refresh worker wake
+
+Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A204/A205/A209 STILL IN PROGRESS
+
+### Scope
+
+- Added `apps.worker.app.main` model-refresh wake metadata for supervised `score_recompute` and `data_snapshot_refresh` filters.
+- Bound the model-refresh supervisor path to A204/A205/A206/A209 while explicitly declaring that A209 4h/24h soak is not closed by worker wake evidence.
+- Updated PostgreSQL integration assertions so T1303 recompute and data snapshot refresh jobs execute through `python -m apps.worker.app.main supervise`, not direct in-process `run_once` only.
+- Kept score formulas, model weights, graph traversal, extraction logic, database migrations and public API semantics unchanged.
+
+### Acceptance mapping
+
+- T1303 -> A204 for transactional activation and supervised score/data refresh execution evidence.
+- T1303 -> A205 for atomic active-context refresh token advancement and stale-client semantics after supervised worker completion.
+- T1304/A206 remains the scheduler/worker functionality gate; this slice reuses its supervisor CLI surface without reopening A206.
+- T1307/A209 remains a separate background long-duration stability gate and must not block this bounded feature work.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model or model-weight behavior changed.
+- No threshold or parameter value changed.
+- New contract label only: `t1303-a204-a205-supervised-refresh-wake-v1`.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache .venv/bin/python -m py_compile apps/worker/app/main.py tests/integration/test_database_migrations.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check apps/worker/app/main.py tests/integration/test_database_migrations.py`: PASS.
+- Remote GitHub Actions G2 PostgreSQL integration is still required to execute the new supervisor CLI assertions against PostgreSQL.
+
+### Remaining gaps
+
+- A204/A205 remain `IN_PROGRESS` until this supervised wake slice is remote-CI bound and release-manager plus long-duration refresh evidence are current.
+- A209 24h soak remains a background independent gate with checkpoint evidence; it is not replaced by this slice.
+- Production relationship approval, legal/source clearance and brand clearance remain separate blockers.
+
+### Rollback
+
+- Revert `apps/worker/app/main.py` model-refresh wake metadata and the T1303 integration-test supervisor CLI assertions.
+- Revert A204/A205 artifact, acceptance traceability, development status, V5 sync, delivery task and ledger updates.
+- Regenerate development, clean-room and release artifacts, then rerun local validation and GitHub CI.

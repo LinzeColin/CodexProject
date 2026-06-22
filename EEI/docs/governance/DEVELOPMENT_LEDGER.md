@@ -11,11 +11,11 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1301-T1302-T1303-CI-EVIDENCE-BINDING-IN-PROGRESS`
-- Confirmed iteration count: 25
+- Current gate: `TASK-T1303-A204-A205-WORKER-WAKE-REFRESH-CONSISTENCY-IN-PROGRESS`
+- Confirmed iteration count: 26
 - Reconstructed development event count: 3
-- Current task: `TASK-T1301/TASK-T1302/TASK-T1303 governance evidence binding`
-- Blockers: commit `d009516c57c4908a025c401a711dfb4d599f7b73` is remote-CI bound by Project Governance run `27950933950` and EEI validation run `27950933933`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A204/A205 remain open until deployment wake, atomic refresh consistency and long-duration refresh evidence are current; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T1303/A204-A205 supervised model refresh worker wake`
+- Blockers: commit `d009516c57c4908a025c401a711dfb4d599f7b73` is remote-CI bound by Project Governance run `27950933950` and EEI validation run `27950933933`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A204/A205 remain open until supervised worker wake is remote-CI bound and release-manager plus long-duration refresh evidence are current; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -594,6 +594,31 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the generator, `ITER-20260623-001` event, T1302/T1303 delivery task sections, ledger/status updates, run manifest and root test changes; regenerate governance/release artifacts and rerun validation.
 - Next step: regenerate artifacts, run `make verify`, run governance sync and root governance tests, then commit/push and verify CI.
 
+
+
+### `ITER-20260623-002`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `PENDING`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1303`
+- Goal: add supervised worker wake evidence for T1303/A204-A205 model refresh paths without waiting for A209 24h soak windows.
+- Assumptions: worker supervisor metadata and local static validation prove the contract shape only; remote PostgreSQL CI must execute the new integration assertions before this slice is CI-bound.
+- Files changed: `apps/worker/app/main.py`, `tests/integration/test_database_migrations.py`, A204/A205 artifacts, acceptance/status ledgers, V5 sync record, delivery task contract, VERSION_MATRIX and this ledger.
+- Model changes: no scoring formula, graph traversal, extraction model or model-weight behavior changed.
+- Parameter changes: no active threshold or parameter value changed; new contract label is `t1303-a204-a205-supervised-refresh-wake-v1`.
+- Commands run: targeted py_compile and focused ruff for worker/test files.
+- Test results: py_compile PASS; focused ruff PASS; remote G2 PostgreSQL integration pending.
+- Successes: `score_recompute` and `data_snapshot_refresh` supervisor filters now expose A204/A205/A206/A209 acceptance IDs and non-closure semantics; integration tests now execute both jobs through the worker supervisor CLI.
+- Failures: no 4h/24h refresh soak, release-manager activation, production relationship approval or legal/source/brand clearance was added.
+- Decisions: keep A209 24h soak as a background long-running evidence gate; do not block bounded MVP feature delivery on the 288 five-minute windows.
+- Remaining risks: remote CI could fail the new PostgreSQL integration assertions; future operators must not treat local static validation as long-duration stability proof.
+- Rollback: revert the worker supervisor/test/artifact/status changes, regenerate governance/release artifacts and rerun validation.
+- Next step: regenerate artifacts, run `make verify`, run governance sync and root governance tests, then commit/push and verify CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -627,6 +652,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-016`: local T1302/A203 theme/facility scoring explain and eight-family score-result recompute extension.
 - `EVENT-20260622-018`: local T1301/A202 signed release decision bundle binding for production owner sign-off publication.
 - `EVENT-20260623-001`: remote CI evidence binding for `d009516c` and T1302/T1303 delivery task contract repair; A209 24h soak remains a background gate.
+- `EVENT-20260623-002`: local T1303/A204-A205 supervised model refresh worker wake evidence; A209 24h soak remains a background gate.
 
 ## Unknown Historical Periods
 

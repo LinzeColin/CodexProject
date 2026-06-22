@@ -13,6 +13,7 @@
     "EEI/Makefile",
     "EEI/README.md",
     "EEI/apps/api/app/domain_repository.py",
+    "EEI/apps/worker/app/main.py",
     "EEI/artifacts/development_status_summary_t1213.json",
     "EEI/artifacts/release_evidence_t1211.json",
     "EEI/artifacts/requirement_function_task_test_traceability_t1213.csv",
@@ -23,6 +24,8 @@
     "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
     "EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     "EEI/artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
+    "EEI/artifacts/tests/a204/t1303_transactional_model_activation_contract.json",
+    "EEI/artifacts/tests/a205/t1303_atomic_refresh_context_contract.json",
     "EEI/data/acceptance_matrix.csv",
     "EEI/data/acceptance_traceability.csv",
     "EEI/data/data_catalog_manifest.csv",
@@ -67,6 +70,7 @@
     "governance/binding_backlog.yaml",
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
+    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
@@ -77,6 +81,7 @@
     "EEI/Makefile",
     "EEI/README.md",
     "EEI/apps/api/app/domain_repository.py",
+    "EEI/apps/worker/app/main.py",
     "EEI/artifacts/development_status_summary_t1213.json",
     "EEI/artifacts/release_evidence_t1211.json",
     "EEI/artifacts/requirement_function_task_test_traceability_t1213.csv",
@@ -87,6 +92,8 @@
     "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
     "EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     "EEI/artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
+    "EEI/artifacts/tests/a204/t1303_transactional_model_activation_contract.json",
+    "EEI/artifacts/tests/a205/t1303_atomic_refresh_context_contract.json",
     "EEI/data/acceptance_matrix.csv",
     "EEI/data/acceptance_traceability.csv",
     "EEI/data/data_catalog_manifest.csv",
@@ -131,12 +138,13 @@
     "governance/binding_backlog.yaml",
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
+    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
   "ci_attestation_subject": "Project Governance and EEI validation workflows",
   "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:42f59904fde76cab73619ee9e8d46eb60967ef2a6c8e5fc498e49224d6fbf4c4",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:776f003df6b98687032578c58094207ea9cf47c0738078945a7dc30a64245d92",
   "evidence_refs": [
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
@@ -280,7 +288,7 @@
     "governance/binding_backlog.yaml",
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
-    "scripts/generate_governance_dashboard.py",
+    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "tests/governance/test_project_governance_validator.py"
   ]
 }

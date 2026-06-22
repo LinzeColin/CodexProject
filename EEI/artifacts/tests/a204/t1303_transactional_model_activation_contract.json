@@ -23,7 +23,10 @@
     "Added a data_snapshot_refresh worker handler that validates active context freshness, creates an active data_snapshot, supersedes the previous active snapshot for the same scope and record_mode, writes data.snapshot.activated and advances active_analysis_contexts.refresh_token.",
     "Added config/model_profiles/supply-chain-v3.json as an inactive immutable candidate profile loaded by the PostgreSQL seed path.",
     "Added live Playwright coverage that activates supply-chain-v3, observes a transaction-created scoring_run snapshot, checks stale refresh semantics and rolls back to balanced-v2 through FastAPI/PostgreSQL.",
-    "Added mock Playwright coverage for online draft creation -> activate -> stale refresh -> score recompute enqueue -> rollback."
+    "Added mock Playwright coverage for online draft creation -> activate -> stale refresh -> score recompute enqueue -> rollback.",
+    "Added apps.worker.app.main model_refresh_wake_contract metadata for score_recompute and data_snapshot_refresh supervisor filters.",
+    "Supervisor CLI summaries for model refresh job/event filters now bind A204/A205/A206/A209 and explicitly state that A209 4h/24h soak remains non-closed.",
+    "PostgreSQL integration coverage now executes score_recompute and data_snapshot_refresh through python -m apps.worker.app.main supervise, proving supervised wake can advance refresh tokens and leave outbox dispatch available without treating soak as complete."
   ],
   "evidence_files": [
     "config/model_profiles/supply-chain-v3.json",
@@ -44,7 +47,8 @@
     "apps/web/src/app/page.tsx",
     "tests/unit/test_scoring.py",
     "tests/e2e/saved-view-live.spec.ts",
-    "tests/e2e/state-contract.spec.ts"
+    "tests/e2e/state-contract.spec.ts",
+    "apps/worker/app/main.py"
   ],
   "validation_commands": [
     ".venv/bin/python scripts/validate_model_config.py config/model_profiles/supply-chain-v3.json config/thresholds/default-v2.json",
@@ -56,10 +60,15 @@
     "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.live.config.ts",
     "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A204 and A205\"",
     ".venv/bin/python -m pytest -q tests/unit/test_scoring.py",
-    "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py"
+    "PYTHONPATH=. /private/tmp/eei-ci-repro-venv/bin/python -m pytest -q tests/integration/test_database_migrations.py",
+    "PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache .venv/bin/python -m py_compile apps/worker/app/main.py tests/integration/test_database_migrations.py",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check apps/worker/app/main.py tests/integration/test_database_migrations.py",
+    "GitHub Actions EEI validation workflow Step 10 G2 PostgreSQL integration for supervised score_recompute/data_snapshot_refresh wake assertions"
   ],
   "not_closed_scope": [
-    "Deployment wake and long soak proof remain open."
+    "A204/A205 remain IN_PROGRESS until the supervised wake slice is remote-CI validated and release-manager/long-duration refresh evidence is current.",
+    "A209 4h/24h soak remains a separate background production-stability gate and is not completed by this worker wake evidence.",
+    "Formal source/legal/brand clearance and production relationship approval remain outside T1303."
   ],
   "latest_ci_result": {
     "provider": "GitHub Actions",
@@ -84,33 +93,49 @@
     "verify_g2_browser_e2e_step": "PASS",
     "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
   },
-    "latest_online_edit_local_result": {
-        "status": "LOCAL_AND_REMOTE_CI_VALIDATED",
-        "commands": [
-            "python3 -m py_compile apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py: PASS",
-            ".venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py: PASS",
-            ".venv/bin/python scripts/validate_contracts.py: PASS",
-            "npx --yes pnpm@11.8.0 --filter @eei/web typecheck: PASS",
-            ".venv/bin/python -m pytest -q tests/unit/test_api_health.py tests/unit/test_scale_benchmarks.py tests/unit/test_scoring.py: PASS with 37/37",
-            "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A204 and A205\" --workers=1: PASS with 1/1"
-        ],
-        "verified_scope": "online draft profile creation, validation failure for invalid weights, frontend draft button binding and draft activation target handoff"
-    },
-    "latest_online_edit_ci_result": {
-        "provider": "GitHub Actions",
-        "workflow": "EEI validation",
-        "run_id": "27885349105",
-        "job_id": "82519730263",
-        "commit_sha": "0e5fe53e",
-        "verified_scope": "POST /v1/scoring/profiles creates an inactive draft through the public API, preserves active context before explicit activation, rejects invalid weights, activates the draft, enqueues score recompute and rolls back through PostgreSQL-backed integration plus browser/live FastAPI coverage.",
-        "verify_g2_postgresql_integration_step": "PASS",
-        "verify_g2_browser_e2e_step": "PASS",
-        "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
-    },
+  "latest_online_edit_local_result": {
+    "status": "LOCAL_AND_REMOTE_CI_VALIDATED",
+    "commands": [
+      "python3 -m py_compile apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py: PASS",
+      ".venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py: PASS",
+      ".venv/bin/python scripts/validate_contracts.py: PASS",
+      "npx --yes pnpm@11.8.0 --filter @eei/web typecheck: PASS",
+      ".venv/bin/python -m pytest -q tests/unit/test_api_health.py tests/unit/test_scale_benchmarks.py tests/unit/test_scoring.py: PASS with 37/37",
+      "npx --yes pnpm@11.8.0 --filter @eei/web exec playwright test --config=../../playwright.config.ts tests/e2e/state-contract.spec.ts -g \"A204 and A205\" --workers=1: PASS with 1/1"
+    ],
+    "verified_scope": "online draft profile creation, validation failure for invalid weights, frontend draft button binding and draft activation target handoff"
+  },
+  "latest_online_edit_ci_result": {
+    "provider": "GitHub Actions",
+    "workflow": "EEI validation",
+    "run_id": "27885349105",
+    "job_id": "82519730263",
+    "commit_sha": "0e5fe53e",
+    "verified_scope": "POST /v1/scoring/profiles creates an inactive draft through the public API, preserves active context before explicit activation, rejects invalid weights, activates the draft, enqueues score recompute and rolls back through PostgreSQL-backed integration plus browser/live FastAPI coverage.",
+    "verify_g2_postgresql_integration_step": "PASS",
+    "verify_g2_browser_e2e_step": "PASS",
+    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
+  },
   "rollback": [
     "Revert the T1303 API/repository/migration/test/governance commit.",
     "Run scripts/migrate.py downgrade --steps 1 to remove active_analysis_contexts and the global active profile index in affected environments.",
     "Confirm data/task_backlog.csv returns T1303/A204-A205 to NOT STARTED if the contract slice is removed.",
     "Regenerate release artifacts and rerun make verify plus make verify-g2-db."
-  ]
+  ],
+  "latest_worker_wake_local_result": {
+    "status": "LOCAL_STATIC_VALIDATED_REMOTE_POSTGRESQL_CI_PENDING",
+    "verified_scope": "apps.worker supervisor CLI wake contract metadata and integration assertions for score_recompute and data_snapshot_refresh refresh-token advancing paths",
+    "commands": [
+      "PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache .venv/bin/python -m py_compile apps/worker/app/main.py tests/integration/test_database_migrations.py: PASS",
+      "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check apps/worker/app/main.py tests/integration/test_database_migrations.py: PASS"
+    ],
+    "remote_ci_status": "PENDING",
+    "acceptance_ids": [
+      "A204",
+      "A205",
+      "A206",
+      "A209"
+    ],
+    "soak_non_closure": "A209 24h soak remains background evidence gate"
+  }
 }

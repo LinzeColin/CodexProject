@@ -4,17 +4,17 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:d105c98bd5a360c0143f3a0a4456ee17f8ea9f961206202fb75760b6a089bdc6`
-- snapshot_event_time: `2026-06-22T20:49:58Z`
+- source_snapshot_hash: `sha256:40fbcfeea117324e462a5e15ec3681fcad0dbd976c17bfaa490e0353a88b14a5`
+- snapshot_event_time: `2026-06-22T21:41:00Z`
 - generator_version: `4.0.0`
-- final_commit_binding: `CI_ATTESTED:d009516c57c4908a025c401a711dfb4d599f7b73 Project Governance run 27950933950 job 82707373153; EEI validation run 27950933933 job 82707372790`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T1301-T1302-T1303-CI-EVIDENCE-BINDING-IN-PROGRESS`
+- Phase/Gate: `C / TASK-T1303-A204-A205-WORKER-WAKE-REFRESH-CONSISTENCY-IN-PROGRESS`
 - Models/Formulas/Parameters total: `12 / 12 / 68`
 - Active formulas/parameters: `11 / 68`
 - Machine checked formulas/parameters: `10 / 61`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1301-T1302-T1303-CI-EVIDENCE-BINDING-IN-PROGRESS`
+- Release gate: `TASK-T1303-A204-A205-WORKER-WAKE-REFRESH-CONSISTENCY-IN-PROGRESS`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `36`
+- Pending/stale events: `37`
 - Tree-bound events: `0`
 - Commit-bound events: `7`
 - Legacy unbound events: `17`
