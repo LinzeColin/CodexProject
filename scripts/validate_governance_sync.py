@@ -457,6 +457,8 @@ def binding_classification_only(old: str, new: str) -> bool:
         for key, value in old_event.items():
             if key == "timestamp" and new_event.get("original_timestamp") == value:
                 continue
+            if key == "binding_status" and value == "pre_commit_pending" and new_event.get(key) == "stale_unbound":
+                continue
             if new_event.get(key) != value:
                 return False
         if set(new_event) - set(old_event) - allowed_added:

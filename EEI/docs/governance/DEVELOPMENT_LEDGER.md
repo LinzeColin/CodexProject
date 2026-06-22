@@ -10,12 +10,12 @@ This ledger is human-readable. The append-only machine record is `development_ev
 
 - Product version: `0.1.0`
 - Product version status: `provisional`
-- Current phase: `C`
-- Current gate: `TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
-- Confirmed iteration count: 18
+- Current phase: `B`
+- Current gate: `GOV-EEI-BINDING-CLASSIFICATION`
+- Confirmed iteration count: 20
 - Reconstructed development event count: 2
-- Current task: `TASK-T1307`
-- Blockers: A209/A206 remain open until 24h operator soak evidence is produced and CI-validated; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `GOV-EEI-BINDING-CLASSIFICATION-001`
+- Blockers: A202 remains open until owner sign-off, source-license/legal clearance, remote G2 PostgreSQL validation, and A206/A209 soak evidence are complete; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -448,6 +448,26 @@ Do not infer iteration count from Git commit count.
 - Remaining risks: local PostgreSQL integration was not run in this shell; remote G2 PostgreSQL must prove the updated counts and `anchor_scope` persistence.
 - Rollback: restore the previous `NVDA-ANCHOR-001` expected-token list, remove `anchor_scope` persistence fields and the new contract artifact, restore candidate-count assertions, then rerun validation.
 - Next step: run focused validation, then commit/push and verify GitHub Actions.
+
+### `ITER-20260622-002`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `456854a`
+- Result commit: `PENDING`
+- Task IDs: `GOV-EEI-BINDING-CLASSIFICATION-001`
+- Goal: classify unbound pending governance events without fabricating commit or CI attestation, then resync release evidence.
+- Files changed: `EEI/docs/governance/development_events.jsonl`, `EEI/docs/governance/VERSION_MATRIX.yaml`, `EEI/docs/governance/DEVELOPMENT_LEDGER.md`, `ASSURANCE_STATUS.yaml`, `STATUS.md`, `OWNER_STATUS.md`, EEI clean-room/release evidence and checksums.
+- Model changes: no runtime model behavior change.
+- Parameter changes: no active parameter value change.
+- Commands run: clean-room release generate/validate; release artifact generate/validate; checksum verification; root governance validation pending.
+- Test results: EEI clean-room/release/checksum validation PASS; root governance validation pending.
+- Decisions: keep missing commit/CI bindings as `stale_unbound` unresolved governance history rather than invented attestation.
+- Remaining risks: remote Project Governance must validate this metadata repair in PR CI.
+- Rollback: revert the binding classification metadata, VERSION_MATRIX/ledger sync, release evidence regeneration, and governance sync validator test changes.
+- Next step: rerun root governance validation and PR CI.
 
 ## Reconstructed Development Events
 

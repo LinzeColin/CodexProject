@@ -18,16 +18,31 @@
     "failed second run evidence record",
     "live all-ArXiv transient 429 retry",
     "release delivery asset path dedupe",
-    "version and governance metadata"
+    "version and governance metadata",
+    "EEI pending governance binding classification for PR CI unblock",
+    "governance sync append-only binding classification allowance"
   ],
   "non_scope": [
     "no production scheduled run enablement",
     "no new SMTP send in this repair commit",
     "no direct GitHub Release upload outside the manual workflow",
     "no secret value logging",
-    "no video email attachments"
+    "no video email attachments",
+    "no EEI runtime behavior change",
+    "no fabricated EEI commit or CI attestation"
   ],
   "files_changed": [
+    "EEI/CHECKSUMS.sha256",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/requirement_function_task_test_traceability_t1213.csv",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "EEI/docs/governance/VERSION_MATRIX.yaml",
+    "EEI/docs/governance/development_events.jsonl",
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
     "README.md",
@@ -55,6 +70,7 @@
     "arxiv-daily-push/tests/test_release_delivery.py",
     "governance/binding_backlog.yaml",
     "governance/run_manifests/ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-20260622.json",
+    "scripts/validate_governance_sync.py",
     "tests/governance/test_project_governance_validator.py"
   ],
   "model_delta": "Refines MOD-ADP-017 GitHub Release delivery boundary and MOD-ADP-033 live cloud dry-run transient retry behavior.",
@@ -83,7 +99,14 @@
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_429_iq PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
     "manifest JSON, development_events JSONL, TRACEABILITY_MATRIX.csv, and parameter_registry.csv parse/width check",
     "git diff --check",
-    "find arxiv-daily-push ( -name __pycache__ -o -name *.pyc ) -print"
+    "find arxiv-daily-push ( -name __pycache__ -o -name *.pyc ) -print",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_eei_binding_cache PYTHONPATH=/tmp/eei_yaml_shim python3 EEI/scripts/manage_clean_room_release.py generate/validate (from EEI workdir)",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_eei_binding_cache python3 EEI/scripts/manage_release_artifacts.py generate --remote-status PENDING and validate (from EEI workdir)",
+    "shasum -a 256 -c CHECKSUMS.sha256 (from EEI workdir)",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_iq_final3 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_all_final3 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_sync_final3 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_rootgov_final4 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p test_*.py -q"
   ],
   "test_results": [
     "focused release delivery tests: 6 tests OK",
@@ -97,14 +120,24 @@
     "information quality validation: PASS errors 0 warnings 0",
     "manifest JSON, development_events JSONL, traceability CSV, and parameter CSV width checks: PASS",
     "git diff --check: PASS",
-    "arxiv-daily-push cache check: no __pycache__ or .pyc files found"
+    "arxiv-daily-push cache check: no __pycache__ or .pyc files found",
+    "EEI clean-room release generate/validate PASS: package_paths=394",
+    "EEI release artifacts generate/validate PASS: manifest_paths=401 checksum_paths=400 remote_status=PENDING",
+    "EEI CHECKSUMS.sha256 verification PASS",
+    "information quality validation after EEI binding classification: PASS errors 0 warnings 0",
+    "arxiv-daily-push unit tests after merge: 177 tests OK",
+    "changed-only governance sync after EEI binding classification: errors 0 warnings 0; projects changed EEI and arxiv-daily-push",
+    "root governance unit tests after EEI binding classification: 117 tests OK; missing-base line is an expected negative fixture with exit code 0"
   ],
   "evidence_refs": [
     "arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_INTERNAL_RELEASE_DEDUPE.md",
     "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py",
     "arxiv-daily-push/tests/test_release_delivery.py",
     "https://github.com/LinzeColin/CodexProject/actions/runs/27927785092",
-    "https://github.com/LinzeColin/CodexProject/actions/runs/27928505758"
+    "https://github.com/LinzeColin/CodexProject/actions/runs/27928505758",
+    "EEI/docs/governance/development_events.jsonl",
+    "EEI/docs/governance/VERSION_MATRIX.yaml",
+    "scripts/validate_governance_sync.py"
   ],
   "failed_manual_run": {
     "run_id": 27927785092,
@@ -133,7 +166,8 @@
     "A third default-branch workflow_dispatch is required to prove real Release creation and Gmail SMTP send.",
     "Repeated upstream arXiv throttling can still fail closed even after bounded retry.",
     "SMTP can still fail if the Gmail app password or provider policy rejects authentication.",
-    "Scheduled production remains blocked until manual Release and SMTP evidence passes and the owner separately approves production variables."
+    "Scheduled production remains blocked until manual Release and SMTP evidence passes and the owner separately approves production variables.",
+    "EEI pending event binding metadata now classified as stale_unbound without CI attestation fabrication."
   ],
   "failed_pr_cloud_dry_run": {
     "run_id": 27928505758,
