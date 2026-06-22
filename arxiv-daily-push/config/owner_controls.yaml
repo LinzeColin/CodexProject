@@ -1,0 +1,276 @@
+schema_version: 1
+config_version: "owner-controls-v1"
+last_updated: "2026-06-22"
+task_id: "S1-03-OWNER-CONTROLS-001"
+
+project:
+  display_name: "Multi-Source Daily Intelligence Push"
+  display_timezone: "Australia/Sydney"
+  production_enabled: false
+  production_auto_enable_after_acceptance: true
+
+cost_policy:
+  paid_data_api_allowed: false
+  paid_cloud_compute_allowed: false
+  free_official_api_allowed: true
+  free_api_key_requires_owner_approval: true
+  undocumented_endpoint_allowed: false
+  paywall_bypass_allowed: false
+
+runtime:
+  deployment_mode: "local_native"
+  scheduler_mode: "os_native"
+  offline_policy: "catch_up_on_next_start"
+  wake_from_sleep: true
+  run_on_battery: false
+  interactive_cpu_limit_percent: 50
+  background_cpu_limit_percent: 80
+  max_fetch_concurrency: 6
+  max_browser_concurrency: 1
+  browser_fetch_default: false
+  min_free_disk_gb: 120
+  emergency_free_disk_gb: 40
+  max_temp_cache_gb: 2
+  max_parallel_report_jobs: 1
+  max_parallel_video_jobs: 1
+  window_a_resource_limits:
+    max_online_arxiv_metadata: 10
+    max_temp_cache_gb: 2
+    media_smoke_max_seconds: 30
+    large_pdf_download_allowed: false
+
+intelligence_provider:
+  paid_openai_api_allowed: false
+  priority:
+    - "codex_cli_chatgpt_auth"
+    - "local_model"
+    - "deterministic_degraded"
+  fail_if_no_high_quality_provider: true
+  local_model_autodetect: true
+  unload_local_model_after_minutes: 5
+  max_context_tokens: "auto"
+  chunk_and_retrieve_required: true
+
+boards:
+  - board_id: "B1"
+    enabled: true
+    name: "研究前沿"
+    weight: 25
+  - board_id: "B2"
+    enabled: false
+    name: "顶级期刊"
+    weight: 20
+  - board_id: "B3"
+    enabled: false
+    name: "中国政策法规"
+    weight: 25
+  - board_id: "B4"
+    enabled: false
+    name: "美国科技金融官方信号"
+    weight: 20
+  - board_id: "B5"
+    enabled: true
+    name: "跨板块总览"
+    weight: 10
+
+sources:
+  - source_id: "SRC-ARXIV"
+    board_id: "B1"
+    enabled: true
+    name: "arXiv Atom API"
+    access_method: "official_atom_api"
+    tier: "required"
+    frequency: "daily"
+    weight: 100
+    health_status: "active"
+  - source_id: "SRC-TOP-JOURNALS"
+    board_id: "B2"
+    enabled: false
+    name: "Top journal public feeds"
+    access_method: "planned_official_public_feeds"
+    tier: "important"
+    frequency: "planned"
+    weight: 0
+    health_status: "planned"
+  - source_id: "SRC-CHINA-POLICY"
+    board_id: "B3"
+    enabled: false
+    name: "China official policy sources"
+    access_method: "planned_official_web_or_rss"
+    tier: "required"
+    frequency: "planned"
+    weight: 0
+    health_status: "planned"
+  - source_id: "SRC-US-OFFICIAL"
+    board_id: "B4"
+    enabled: false
+    name: "US official technology and finance signals"
+    access_method: "planned_official_web_or_api"
+    tier: "important"
+    frequency: "planned"
+    weight: 0
+    health_status: "planned"
+
+email:
+  enabled: true
+  recipients:
+    - "linzezhang35@gmail.com"
+  split_mode: "five_independent_messages"
+  send_order:
+    - "B1"
+    - "B2"
+    - "B3"
+    - "B4"
+    - "B5"
+  historical_replay_send: false
+  attach_markdown_report: true
+  attach_mobile_video_when_size_allows: false
+  max_attachment_mb: 20
+  require_message_hash: true
+  retry_count: 3
+  cross_board_waits_for:
+    - "B1"
+    - "B2"
+    - "B3"
+    - "B4"
+
+outputs:
+  report_enabled: true
+  email_enabled: true
+  video_enabled: true
+  owner_docs_generated: true
+  production_acceptance_claimed: false
+
+video:
+  daily_enabled_boards:
+    - "B1"
+  daily_cross_board_video: false
+  historical_replay_video_boards:
+    - "B1"
+    - "B2"
+    - "B3"
+    - "B4"
+    - "B5"
+  keep_master_locally: true
+  make_mobile_copy: true
+  delete_intermediate_after_success: true
+
+queue:
+  max_active_items: 10000
+  max_event_age_days: 365
+  source_share_cap_per_board: 0.40
+  soft_quotas:
+    B1: 3500
+    B2: 1500
+    B3: 3000
+    B4: 2000
+
+scoring:
+  research:
+    relevance: 22
+    novelty: 16
+    evidence_quality: 16
+    technical_breakthrough: 16
+    conversion_economic_value: 14
+    impact_scale: 8
+    timeliness_version_change: 5
+    diversity_coverage: 3
+  china_policy:
+    authority_legal_effect: 18
+    policy_delta: 16
+    technology_industry_relevance: 16
+    economic_impact: 14
+    scope: 10
+    urgency: 10
+    regional_relevance: 8
+    actionability: 5
+    completeness_confidence: 3
+  us_official:
+    innovation_breakthrough: 20
+    regulatory_market_impact: 18
+    authority_evidence: 14
+    novelty_delta: 14
+    entity_asset_scope: 12
+    urgency: 10
+    commercialization: 8
+    actionability: 4
+  cross_board:
+    normalized_quality: 40
+    cross_board_linkage: 20
+    decision_impact: 15
+    urgency: 10
+    confidence: 10
+    diversity: 5
+  queue_priority:
+    quality: 55
+    event_delta: 15
+    urgency: 10
+    cross_board_linkage: 10
+    waiting_credit: 5
+    source_balance: 5
+  legacy_arxiv_ranking:
+    frontier_signal: 20
+    evidence_reliability: 20
+    novelty: 15
+    transfer_value: 15
+    problem_importance: 10
+    taxonomy_priority: 10
+    waiting_time: 5
+    diversity: 5
+  phase12_roi:
+    relevance: 20
+    learning_value: 20
+    economic_conversion_rate: 20
+    roi: 20
+    interdisciplinary_value: 10
+    explainability: 10
+
+us_attention_budget:
+  innovation_breakthrough: 35
+  finance_market_macro: 30
+  technology_policy_industry_rules: 20
+  cross_agency_legal_backbone: 15
+
+source_defaults:
+  required_tier_weight: 1.00
+  important_tier_weight: 0.90
+  extended_tier_weight: 0.75
+  max_host_requests_per_minute: 10
+  request_timeout_seconds: 30
+  max_retries: 3
+
+source_overrides: {}
+
+interest_profile:
+  preferred_industries:
+    - "artificial_intelligence"
+    - "semiconductors"
+    - "biotechnology"
+    - "healthcare"
+    - "finance"
+    - "capital_markets"
+    - "funds"
+    - "advanced_manufacturing"
+    - "energy"
+    - "digital_economy"
+  preferred_entities: []
+  preferred_topics: []
+  negative_keywords: []
+
+iteration:
+  weekly_diagnostic_enabled: true
+  weekly_codex_pr_enabled: true
+  biweekly_parameter_review_enabled: true
+  auto_merge: false
+  max_one_issue_per_pr: true
+  historical_ab_test_days: 30
+
+validation:
+  weight_target: 100
+  weight_tolerance: 0.0001
+  rollback_config_version: "owner-controls-v1"
+  machine_generated_owner_views:
+    - "docs/owner/OWNER_CONSOLE.md"
+    - "docs/owner/SOURCE_CATALOG.md"
+    - "docs/owner/MODEL_AND_QUEUE.md"
+    - "docs/owner/CONTENT_LEDGER.csv"

@@ -25,6 +25,12 @@ from .handoff import HandoffError, build_handoff, validate_handoff
 from .lesson import LessonGenerationError, generate_lesson
 from .narration import NarrationError, generate_narration_plan
 from .notifications import render_email
+from .owner_controls import (
+    build_owner_impact_preview,
+    load_owner_controls,
+    render_owner_documents,
+    validate_owner_controls,
+)
 from .pipeline import PipelineError, run_daily_dry_run
 from .production_launch import build_production_launch_readiness, validate_production_launch_readiness
 from .production_preflight import build_production_preflight, validate_production_preflight
@@ -69,6 +75,24 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     subparsers.add_parser("version", help="Print package version.")
+
+    owner = subparsers.add_parser("owner", help="Validate owner controls and generate owner-readable views.")
+    owner_subparsers = owner.add_subparsers(dest="owner_command", required=True)
+    owner_validate = owner_subparsers.add_parser("validate", help="Validate config/owner_controls.yaml.")
+    owner_validate.add_argument("--controls", help="Path to owner_controls.yaml.")
+    owner_validate.add_argument("--json", action="store_true", help="Print JSON validation output.")
+
+    owner_preview = owner_subparsers.add_parser("preview-impact", help="Preview owner_controls impact without side effects.")
+    owner_preview.add_argument("--controls", help="Path to owner_controls.yaml.")
+    owner_preview.add_argument("--days", type=int, default=30, help="Replay window to describe.")
+    owner_preview.add_argument("--json", action="store_true", help="Print JSON impact output.")
+
+    owner_render = owner_subparsers.add_parser("render-docs", help="Render generated docs/owner files from owner_controls.yaml.")
+    owner_render.add_argument("--controls", help="Path to owner_controls.yaml.")
+    owner_render.add_argument("--project-path", default="", help="Project root that receives docs/owner files.")
+    owner_render.add_argument("--generated-at", default="2026-06-22T00:00:00+10:00", help="Timestamp written to generated docs.")
+    owner_render.add_argument("--write", action="store_true", help="Write generated owner docs to disk.")
+    owner_render.add_argument("--json", action="store_true", help="Print JSON render output.")
 
     doctor = subparsers.add_parser("doctor", help="Run local Phase 1 readiness checks.")
     doctor.add_argument("--json", action="store_true", help="Print JSON report.")
@@ -445,6 +469,50 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "version":
         print(__version__)
         return 0
+    if args.command == "owner":
+        controls = load_owner_controls(args.controls)
+        if args.owner_command == "validate":
+            report = validate_owner_controls(controls)
+            if args.json:
+                print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print(report["status"])
+                for group in report["weight_groups"]:
+                    print(f"- {group['group_id']}: {group['total']}/{group['target']} {group['status']}")
+                for warning in report["warnings"]:
+                    print(f"- warning: {warning}")
+                for error in report["errors"]:
+                    print(f"- error: {error}")
+            return 0 if report["status"] == "pass" else 2
+        if args.owner_command == "preview-impact":
+            report = build_owner_impact_preview(controls, days=args.days)
+            if args.json:
+                print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print(report["status"])
+                print(f"- days: {report['days']}")
+                print(f"- ranking_change_preview: {report['ranking_change_preview']}")
+                print(f"- rollback_config_version: {report['rollback_config_version']}")
+                for error in report["errors"]:
+                    print(f"- error: {error}")
+            return 0 if report["status"] == "pass" else 2
+        if args.owner_command == "render-docs":
+            report = render_owner_documents(
+                controls,
+                project_path=Path(args.project_path) if args.project_path else None,
+                generated_at=args.generated_at,
+                write=args.write,
+            )
+            if args.json:
+                print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print(report["status"])
+                for item in report["owner_view_files"]:
+                    print(f"- {item}")
+                for error in report["errors"]:
+                    print(f"- error: {error}")
+            return 0 if report["status"] == "rendered" else 2
+        raise AssertionError(f"Unhandled owner command: {args.owner_command}")
     if args.command == "doctor":
         report = doctor_report(Path(args.path))
         print(render_report(report, as_json=args.json))

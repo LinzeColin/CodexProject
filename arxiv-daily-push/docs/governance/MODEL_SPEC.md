@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 34
-- formula_count: 36
-- parameter_count: 186
+- model_count: 35
+- formula_count: 37
+- parameter_count: 266
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -57,6 +57,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-032 | All-arXiv Phase 12 scan queue delivery gate | deterministic source selection and delivery gate | Build all-arXiv daily input from bounded primary archive scans, persist ROI-ranked queue state, and require Release-hosted `.mp4` video artifact links before production email evidence can count | active | adp-all-arxiv-scan-v1 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/scheduled_execution.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-033 | Phase 12 cloud production enablement gate | deterministic cloud workflow and media evidence validator | Verify GitHub-hosted workflow contracts, live all-arXiv 20-bucket dry-run readiness, real lightweight MP4 artifact rendering, and disabled production side effects before Release/SMTP manual tests | active | adp-phase12-cloud-enablement-v1 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/video.py`, `.github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml` |
 | MOD-ADP-034 | Phase 12 manual Release and SMTP delivery test gate | deterministic manual workflow contract | Prepare a default-branch-only workflow that creates one GitHub Release and sends one Gmail SMTP test email with human-scannable Chinese lesson text, 12-second video link, concise evidence, candidate queue summary, hidden backend ROI scoring, and deduplicated Release assets without enabling scheduled production | active | adp-manual-delivery-test-v1.2 | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml`, `src/arxiv_daily_push/scheduled_execution.py`, `src/arxiv_daily_push/global_scan.py`, `tests/test_manual_delivery_workflow.py` |
+| MOD-ADP-035 | Review8 V4 owner controls and generated owner views | deterministic owner configuration validator and view generator | Validate the single owner-editable control file, preview no-side-effect impact, and generate four owner-readable files from machine facts | active | adp-owner-controls-v1 | `src/arxiv_daily_push/owner_controls.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -97,6 +98,8 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-033 | Production runner, SMTP secret, Release target, and workflow variable readiness must be collected through a no-secret template or GitHub metadata discovery as names and durable refs only; secret values and credential material must never enter the readiness report. | `src/arxiv_daily_push/production_refs.py`, `config/examples/production_refs.input.example.json`, `tests/test_production_refs.py`, `docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md` | Phase 11 production refs readiness | active |
 | ASM-ADP-034 | The updated local Phase 11 goal is satisfied by a deterministic two-day simulation only when both scheduled daily runs and ledger appends pass with mocked SMTP/Release boundaries and no production acceptance claim. | `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`, `src/arxiv_daily_push/simulation.py`, `tests/test_simulation.py`, `governance/run_manifests/ADP-PHASE11-TWO-DAY-SIMULATION-20260622.json` | Phase 11 two-day simulation | active |
 | ASM-ADP-035 | Production daily source selection must scan the primary arXiv archive set, not collapse to the legacy cs.AI-only query, and must persist a candidate queue with ROI-ranked fallback before real SMTP/Release delivery can count. | `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md`, `src/arxiv_daily_push/global_scan.py`, `.github/workflows/arxiv-daily-push-scheduled.yml`, `tests/test_global_scan.py` | Phase 12 all-arXiv production path | active |
+| ASM-ADP-036 | Controlled manual Release and Gmail SMTP testing may perform real side effects only from an explicit default-branch workflow_dispatch and must not enable scheduled production. | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml`, `tests/test_manual_delivery_workflow.py`, `docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md` | Phase 12 manual delivery test | active |
+| ASM-ADP-037 | Review8 V4 owner control must be a single human-editable YAML file, while owner-visible Markdown/CSV views are generated artifacts and not second editable fact sources. | `config/owner_controls.yaml`, `src/arxiv_daily_push/owner_controls.py`, `tests/test_owner_controls.py`, `docs/owner/OWNER_CONSOLE.md` | Review8 Stage 1 owner controls | active |
 
 ## C. Functions and Formulas
 
@@ -136,6 +139,9 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-032 validates production refs template generation, GitHub metadata discovery, provisioning audit workflow, downloaded audit artifact review, and readiness across required runner, SMTP secret-name, Release target, workflow variable, durable-ref, no-secret-input, redacted discovery-error, audit artifact refs, and no-side-effect gates.
 - FORM-ADP-033 validates the two-day simulation across consecutive dates, mocked scheduled daily runs, mocked SMTP/Release evidence, trial ledger appends, unique source/publication IDs, no secret leakage, no Codex auth read, no network fetch, and no production acceptance claim.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
+- FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
+- FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
+- FORM-ADP-037 validates owner_controls schema, no-secret/no-paid-service policy, Window A resource caps, owner weight groups, no-side-effect impact preview, and generated owner views.
 
 ## D. Parameters
 
@@ -175,6 +181,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 12 all-arXiv scan queue delivery parameters: PARAM-ADP-170 through PARAM-ADP-176.
 - Active Phase 12 cloud production enablement parameters: PARAM-ADP-177 through PARAM-ADP-180.
 - Active Phase 12 manual delivery test parameters: PARAM-ADP-181 through PARAM-ADP-184 plus PARAM-ADP-186.
+- Active Review8 Stage 1 owner controls parameters: PARAM-ADP-188 through PARAM-ADP-266.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -352,6 +359,15 @@ resource evidence ref before its annotation hint can be used by the ops
 annotator. Production preflight refs are timestamped so each daily run can be
 matched to its own resource gate evidence.
 
+The Review8 V4 owner controls model treats `config/owner_controls.yaml` as the
+only owner-editable control surface for Stage 1 Window A. The validator checks
+required sections, no-paid-service and no-production flags, Window A resource
+caps, no token-like values, canonical generated owner view paths, and every
+declared source, board, scoring, queue, ranking, ROI, and attention-budget
+weight group. The impact preview is intentionally no-side-effect and reports
+ranking or queue deltas as not computed until S1-06 replay data exists. The
+four `docs/owner/` files are generated views, not additional editable facts.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -419,6 +435,9 @@ matched to its own resource gate evidence.
 - Scheduled production email cannot count as production-ready unless it includes Chinese lesson content, candidate queue summary, and a GitHub Release-hosted `.mp4` video artifact link.
 - Production refs input without cloud runner evidence, missing SMTP secret names, missing workflow variables, empty `ADP_RELEASE_TARGET`, or secret-like input -> refs report blocked or redacted discovery error.
 - Phase 12 cloud dry-run without 20 verified primary archive buckets, sample daily input, or real MP4 render evidence -> production enablement blocked.
+- Owner controls with production enabled, paid service allowed, token-like value, wrong owner view list, Window A resource overrun, or weight total drift -> owner validation blocked.
+- Owner impact preview cannot claim replay/ranking changes until replay data exists in S1-06.
+- `docs/owner/*` files are regenerated from `config/owner_controls.yaml`; manual edits are drift, not facts.
 - Production pass with any missing requirement -> acceptance validation error.
 
 ## G. Validation
@@ -426,6 +445,10 @@ matched to its own resource gate evidence.
 Current focused validation:
 
 - `PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q`
+- `PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_owner_controls.py -q`
+- `adp owner validate`
+- `adp owner preview-impact --days 30`
+- `adp owner render-docs --write`
 - `python3 -m json.tool arxiv-daily-push/schemas/*.schema.json`
 - `python3 scripts/validate_project_governance.py --project arxiv-daily-push`
 - `python3 scripts/validate_project_governance.py --changed-only --enforce-sync`
