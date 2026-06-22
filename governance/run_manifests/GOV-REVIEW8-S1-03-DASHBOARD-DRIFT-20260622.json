@@ -1,0 +1,108 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW8-S1-03-DASHBOARD-DRIFT-20260622",
+  "project_id": "root-governance",
+  "task_id": "GOV-REVIEW8-S1-03-DASHBOARD-DRIFT-001",
+  "acceptance_ids": [
+    "ACC-REVIEW8-CI-GENERATED-DASHBOARD"
+  ],
+  "iteration_id": "ITER-20260622-S1-03-DASHBOARD-DRIFT-001",
+  "generated_at": "2026-06-22T07:17:55Z",
+  "implementation_base_sha": "ecd43e80a29193120d788ef8125d4ebca233dca3",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:20d000bc562250f977f022df03c4b510c5185dabc88bda6421825818d10c45b7",
+  "changed_files_declared": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-REVIEW8-S1-03-DASHBOARD-DRIFT-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-REVIEW8-S1-03-DASHBOARD-DRIFT-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-REVIEW8-S1-03-DASHBOARD-DRIFT-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-REVIEW8-S1-03-DASHBOARD-DRIFT-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "test_commands": [
+    "git diff --check",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s103_dashfix_allgov PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s103_dashfix_iq python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s103_dashfix_roottests2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s103_dashfix_changed2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python3 -m json.tool governance/run_manifests/GOV-REVIEW8-S1-03-DASHBOARD-DRIFT-20260622.json"
+  ],
+  "test_results": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s103_dashfix_allgov PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --all --semantic --drift-report",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0; all required projects checked; semantic formulas and parameters reported for registered projects."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s103_dashfix_iq python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s103_dashfix_roottests2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "126 tests OK"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s103_dashfix_changed2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed_files covered; projects changed none; errors=0 warnings=0"
+    },
+    {
+      "command": "python3 -m json.tool governance/run_manifests/GOV-REVIEW8-S1-03-DASHBOARD-DRIFT-20260622.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest JSON parsed successfully."
+    }
+  ],
+  "evidence_refs": [
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Project Governance workflow after post-merge dashboard drift repair",
+  "ci_run_reference": "PRECOMMIT_PENDING_CI_ATTESTATION",
+  "summary": "Refresh generated root governance dashboard views after PR #51 S1-03 merge so the main Project Governance dashboard verification step has no generated diff.",
+  "rollback": "Revert this manifest, the root generated dashboard files, binding backlog refresh, and the single root governance test assertion update.",
+  "unresolved_risks": [
+    "Final GitHub Actions success must be attested after this repair PR merges.",
+    "This repair does not complete Review8 production acceptance; next product task remains S1-04-SQLITE-DATA-MODEL-001."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; CI attestation must bind the final commit after push."
+}
