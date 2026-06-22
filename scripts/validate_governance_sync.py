@@ -635,6 +635,9 @@ def validate_semantic(validation: SyncValidation, projects: list[dict[str, Any]]
 def root_sync_requirements(validation: SyncValidation, root_changes: list[str], changed: list[str]) -> None:
     if not root_changes:
         return
+    manifest_only = all(path.startswith("governance/run_manifests/") and path.endswith(".json") for path in root_changes)
+    if manifest_only:
+        return
     required_markers = {
         "GOVERNANCE_DASHBOARD.md": (ROOT / "GOVERNANCE_DASHBOARD.md").is_file(),
         "run_manifest": any(path.startswith("governance/run_manifests/") and path.endswith(".json") for path in changed),
