@@ -1,9 +1,9 @@
 # Governance Dashboard
 
-- source_base_commit: `932446fd2154ac477ea0cb6862a60098b1e1ed55`
+- source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
 - source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
-- source_snapshot_hash: `sha256:39f6165dbead37182eef8b06f68527bd352681fbd2f5db107c87cbfde847f622`
-- snapshot_event_time: `2026-06-22T12:18:37+10:00`
+- source_snapshot_hash: `sha256:b4095f816a22599670f943335e40509b7f907a4079b16ee9e82a82a81b2b2291`
+- snapshot_event_time: `2026-06-22T13:05:00+10:00`
 - generator_version: `3.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -18,7 +18,7 @@
 | `PFI_BIG_DATA_SIMULATOR` | `0.1.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `UNVERIFIED` | `GOV-SEMANTIC-PFI-001` |
 | `Serenity-Alipay` | `0.1.0` | `B` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `TASK-A-001` |
 | `whkmSalary` | `0.0.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `FAILED` | `GOV-SEMANTIC-WHKM-001` |
-| `arxiv-daily-push` | `0.12.2` | `E` | `VERIFIED` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `FAILED` | `NONE` |
+| `arxiv-daily-push` | `0.12.3` | `E` | `VERIFIED` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `FAILED` | `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034` |
 
 ## Notes
 
