@@ -202,6 +202,13 @@ Run manifests may remain local/pre-submit facts. A manifest that still says
 `PENDING_CI` after the allowed binding window must have a matching successful
 CI attestation or the semantic validator reports a governance issue.
 
+Stop Hook execution receipts are separate local execution facts. A completed
+receipt must include run ID, task ID, repository, workspace root, base commit,
+source tree hash, hook start and completion timestamps, commands, return codes,
+final status, changed files, generated views, and `fact_level: EXTRACTED`.
+Start markers, missing `hook_completed_at`, missing command results, or
+`final_status` outside `PASS`/`FAIL` are not valid completion evidence.
+
 ## Semantic Accuracy
 
 `--semantic` checks enforce facts that can be machine-verified without inventing

@@ -1,10 +1,10 @@
 project_id: "arxiv-daily-push"
 as_of_event_id: "EVENT-20260622-ADP-057"
-source_snapshot_hash: "sha256:29af55ec14928c4da350aef629622f2ab4b267ecf0fe332c2353dfe053189a7b"
-source_base_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-source_tree_hash: "a661be1db22d99ff3afe6183ac1ae8f4c444be18"
+source_snapshot_hash: "sha256:b8140a5c3a5ac64af750a33d7384309d05c20c9b74ab1e9afaec37c7ee1b0a6b"
+source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
+source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-22T13:05:00+10:00"
-generator_version: "3.0.0"
+generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
@@ -31,6 +31,14 @@ dimensions:
     total_active_parameters: 183
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
+  methodological_rationale:
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    machine_verified_means: "methodological, calibration, and baseline rationale are tracked separately from implementation congruence"
+    unresolved_fact_ids:
+      - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "arxiv-daily-push/docs/governance/MODEL_SPEC.md"
   empirical_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -67,18 +75,43 @@ delivery_readiness:
     - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
     - "FACT-arxiv-daily-push-OPERATIONAL-EVIDENCE"
 next_executable_task:
-  task_id: "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034"
-  status: "ready"
-  reason: "Repair the controlled manual GitHub Release plus Gmail SMTP test workflow after the first real manual dispatch failed closed during Release creation because duplicate asset names were supplied."
+  task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
+  status: "blocked"
+  reason: "Provision durable production refs and run the default-branch trial start workflow before 30-day acceptance evidence can begin."
   acceptance_ids:
-    - "ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"
-  owner: "Codex/governance runner"
-  unblock_condition: "Run the listed test commands and attach evidence."
+    - "ADP-ACC-PHASE11-PRODUCTION-TRIAL-START"
+  owner: "product_owner + operations_owner + content_owner"
+  human_owner_role: "product_owner + operations_owner + content_owner"
+  unblock_condition: "Cannot satisfy Phase 11 production acceptance until the owner provisions the private runner, GitHub secrets/vars, private Release target, explicit launch confirmation, passing trial-start workflow evidence, and 30 unique daily production evidence entries; default_branch_ref and trial_start_workflow_ref are now recorded."
+  stale_candidates: []
 owner_decision:
   required: true
-  decision_id: "DEC-arxiv-daily-push-REVIEW6-001"
-  question: "是否启动生产 trial；当前只有本地两日模拟，生产启动和 30 天验收仍 blocked。"
+  decision_id: "DEC-arxiv-daily-push-REVIEW8-001"
+  review_id: "REVIEW8"
+  project_id: "arxiv-daily-push"
+  decision_question: "是否启动 owner 配置的生产 trial，验证 arxiv-daily-push 的排序、Claim Ledger、中文课程、通知和 30 天运行稳定性。"
+  question: "是否启动 owner 配置的生产 trial，验证 arxiv-daily-push 的排序、Claim Ledger、中文课程、通知和 30 天运行稳定性。"
+  human_owner_role: "product_owner + operations_owner + content_owner"
+  human_assignment_status: "HUMAN_ASSIGNMENT_REQUIRED"
+  current_recommendation: "A: start controlled production trial only after owner-provisioned refs are verified"
+  option_a: "完成私有 runner/refs、trial-start、SMTP/Release、replay/recovery/resource 和 30 天证据。"
+  option_b: "保留本地模拟和手动发布，不提升生产状态。"
+  option_c: "暂停自动日更投递。"
   options:
-    - "A: fund evidence hardening"
-    - "B: keep blocked/conditional and defer"
-    - "C: de-scope this project from delivery claims"
+    - "完成私有 runner/refs、trial-start、SMTP/Release、replay/recovery/resource 和 30 天证据。"
+    - "保留本地模拟和手动发布，不提升生产状态。"
+    - "暂停自动日更投递。"
+  estimated_effort: "P2; product, operations, content owners"
+  estimated_cost_or_resource: "owner-provisioned refs, private runner, SMTP/release credentials, monitoring"
+  expected_benefit: "证明日常投递真实可运行且内容主张有证据绑定。"
+  principal_risks: "secret misconfiguration, delivery failure, hallucinated claims, stale schedule evidence"
+  evidence_required: "provisioning audit, trial logs, 30-day ledger, claim evidence sample"
+  decision_deadline_or_priority: "P2"
+  consequence_of_no_decision: "arxiv-daily-push remains FAILED for delivery readiness despite local simulations."
+  unblock_task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
+  acceptance_ids:
+    - "ADP-ACC-PHASE11-PRODUCTION-TRIAL-START"
+  generated_from_refs:
+    - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
+    - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
+  last_reviewed_at: "2026-06-22T13:05:00+10:00"

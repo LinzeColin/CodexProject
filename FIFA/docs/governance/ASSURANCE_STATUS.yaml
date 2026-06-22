@@ -1,10 +1,10 @@
 project_id: "FIFA"
 as_of_event_id: "EVT-REVIEW6-FINAL-FIFA-001"
-source_snapshot_hash: "sha256:267e808b46dce0d5d7d705e13fd3f01341ae2a8d35fcbc5453eae4ff1b2d763a"
-source_base_commit: "932446fd2154ac477ea0cb6862a60098b1e1ed55"
-source_tree_hash: "a661be1db22d99ff3afe6183ac1ae8f4c444be18"
+source_snapshot_hash: "sha256:fbe1f9b8684e12205646d6b658f807d03c87b6fe621817cdcb64be98e499802e"
+source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
+source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-22T00:24:25Z"
-generator_version: "3.0.0"
+generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
@@ -32,6 +32,14 @@ dimensions:
     total_active_parameters: 108
     evidence_refs:
       - "FIFA/docs/governance/parameter_registry.csv"
+  methodological_rationale:
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    machine_verified_means: "methodological, calibration, and baseline rationale are tracked separately from implementation congruence"
+    unresolved_fact_ids:
+      - "FACT-FIFA-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "FIFA/docs/governance/MODEL_SPEC.md"
   empirical_validation:
     status: "UNVERIFIED"
     fact_level: "UNKNOWN"
@@ -71,18 +79,43 @@ delivery_readiness:
     - "TASK-FIFA-B-001"
     - "TASK-FIFA-B-002"
 next_executable_task:
-  task_id: "GOV-SEMANTIC-FIFA-001"
-  status: "in_progress"
-  reason: "Add extractors for parser constants, validation rules, and active governance formulas."
+  task_id: "TASK-FIFA-C-001"
+  status: "blocked"
+  reason: "Recover authorized raw data path without violating TAB access-policy boundaries."
   acceptance_ids:
-    - "ACC-SEMANTIC-FIFA-001"
-  owner: "Codex/governance runner"
-  unblock_condition: "Run the listed test commands and attach evidence."
+    - "ACC-FIFA-008"
+  owner: "research_owner + risk_owner"
+  human_owner_role: "research_owner + risk_owner"
+  unblock_condition: "Public raw remains blocked by ai_controlled_access_rejected."
+  stale_candidates: []
 owner_decision:
   required: true
-  decision_id: "DEC-FIFA-REVIEW6-001"
-  question: "是否关闭 17 个 parser/validation 参数人工复核。"
+  decision_id: "DEC-FIFA-REVIEW8-001"
+  review_id: "REVIEW8"
+  project_id: "FIFA"
+  decision_question: "是否补齐授权赛前赔率快照、概率校准和报告事实复核，且继续保证 stake/executable amount 为 0。"
+  question: "是否补齐授权赛前赔率快照、概率校准和报告事实复核，且继续保证 stake/executable amount 为 0。"
+  human_owner_role: "research_owner + risk_owner"
+  human_assignment_status: "HUMAN_ASSIGNMENT_REQUIRED"
+  current_recommendation: "A: validate historical odds snapshots under zero-stake boundary"
+  option_a: "建立赛前快照数据合同、Brier/log loss/ECE 校准和事实抽检。"
+  option_b: "维持研究用途，不声称预测有效。"
+  option_c: "暂停 FIFA 概率/价值报告交付。"
   options:
-    - "A: fund evidence hardening"
-    - "B: keep blocked/conditional and defer"
-    - "C: de-scope this project from delivery claims"
+    - "建立赛前快照数据合同、Brier/log loss/ECE 校准和事实抽检。"
+    - "维持研究用途，不声称预测有效。"
+    - "暂停 FIFA 概率/价值报告交付。"
+  estimated_effort: "P1; research and risk review"
+  estimated_cost_or_resource: "authorized odds snapshots, match results, report audit samples"
+  expected_benefit: "判断概率和报告是否比市场/简单基线更有用，同时避免下注风险。"
+  principal_risks: "post-event leakage, unauthorized data, betting misuse"
+  evidence_required: "timestamped odds data, calibration report, zero-stake gate evidence"
+  decision_deadline_or_priority: "P1"
+  consequence_of_no_decision: "FIFA remains UNVERIFIED and cannot support value/recommendation claims."
+  unblock_task_id: "TASK-FIFA-C-001"
+  acceptance_ids:
+    - "ACC-FIFA-008"
+  generated_from_refs:
+    - "FIFA/docs/governance/ASSURANCE_STATUS.yaml"
+    - "FIFA/docs/governance/delivery_tasks.yaml"
+  last_reviewed_at: "2026-06-22T00:24:25Z"

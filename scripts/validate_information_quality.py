@@ -38,11 +38,18 @@ DIMENSION_STATUSES = {
     "structural_completeness": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
     "implementation_congruence": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
     "parameter_source_quality": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
+    "methodological_rationale": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
     "empirical_validation": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
     "operational_validation": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
     "delivery_evidence": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
     "evidence_freshness": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
 }
+FORBIDDEN_OWNER_TEXT = (
+    "fund evidence hardening",
+    "Run the listed test commands and attach evidence",
+    "No third blocker recorded",
+    "Codex/governance runner",
+)
 
 
 @dataclass
@@ -171,6 +178,41 @@ def check_generated_views(gate: Gate, projects: list[dict[str, Any]], *, include
         for line_no, line in enumerate(text.splitlines(), 1):
             if len(line) > 500:
                 gate.add("ERROR", "LONG_LINE", f"Line {line_no} exceeds 500 characters", path)
+        for forbidden in FORBIDDEN_OWNER_TEXT:
+            if forbidden in text:
+                gate.add("ERROR", "OWNER_TEXT", f"Generated view contains stale or non-decision text: {forbidden}", path)
+
+
+def check_owner_portfolio_buckets(gate: Gate, projects: list[dict[str, Any]]) -> None:
+    path = ROOT / "OWNER_PORTFOLIO.md"
+    if not path.exists():
+        gate.add("ERROR", "PORTFOLIO_MISSING", "OWNER_PORTFOLIO.md missing", path)
+        return
+    text = path.read_text(encoding="utf-8")
+    counts: dict[str, int] = {}
+    for key in ("project_total", "bucket_total", "failed", "partial", "unverified", "verified", "not_applicable"):
+        match = re.search(rf"(?m)^- {key}:\s*`(\d+)`", text)
+        if not match:
+            gate.add("ERROR", "PORTFOLIO_BUCKET", f"Missing {key} count", path)
+            continue
+        counts[key] = int(match.group(1))
+    if not counts:
+        return
+    expected = len(projects)
+    if counts.get("project_total") != expected:
+        gate.add("ERROR", "PORTFOLIO_PROJECT_TOTAL", f"project_total={counts.get('project_total')}, expected {expected}", path)
+    status_total = sum(counts.get(key, 0) for key in ("failed", "partial", "unverified", "verified", "not_applicable"))
+    if counts.get("bucket_total") != expected or status_total != expected:
+        gate.add(
+            "ERROR",
+            "PORTFOLIO_BUCKET_TOTAL",
+            f"bucket_total={counts.get('bucket_total')} status_total={status_total}, expected {expected}",
+            path,
+        )
+    for project in projects:
+        project_id = str(project.get("project_id"))
+        if project_id not in text:
+            gate.add("ERROR", "PORTFOLIO_PROJECT_MISSING", "Project omitted from OWNER_PORTFOLIO", path, project_id)
 
 
 def check_assurance(gate: Gate, project: dict[str, Any]) -> None:
@@ -204,6 +246,7 @@ def check_assurance(gate: Gate, project: dict[str, Any]) -> None:
     if str(readiness.get("status") or "") not in {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"}:
         gate.add("ERROR", "READINESS_STATUS", "Invalid delivery_readiness status", path, project_id)
     check_next_task(gate, data, base, project_id)
+    check_owner_decision(gate, data, path, project_id)
 
 
 def check_next_task(gate: Gate, assurance: dict[str, Any], base: Path, project_id: str) -> None:
@@ -220,15 +263,65 @@ def check_next_task(gate: Gate, assurance: dict[str, Any], base: Path, project_i
         gate.add("ERROR", "NEXT_TASK_MISSING", "next_executable_task does not exist", base, project_id)
         return
     status = str(task.get("status") or "")
-    if status not in {"ready", "in_progress"}:
+    if status not in {"ready", "in_progress", "planned", "blocked"}:
         gate.add("ERROR", "NEXT_TASK_STATUS", f"Task {task_id} has non-executable status {status}", base, project_id)
     unmet = [str(dep) for dep in structural.as_list(task.get("dependencies")) if str(dep) and str(dep) not in completed]
     if unmet:
         gate.add("ERROR", "NEXT_TASK_DEPS", f"Task {task_id} has unmet dependencies {unmet}", base, project_id)
     if not task.get("acceptance_ids"):
         gate.add("ERROR", "NEXT_TASK_ACCEPTANCE", f"Task {task_id} lacks acceptance_ids", base, project_id)
-    if not task.get("test_commands"):
+    if status != "blocked" and not task.get("test_commands"):
         gate.add("ERROR", "NEXT_TASK_TEST", f"Task {task_id} lacks test_commands", base, project_id)
+    objective = str(task.get("objective") or "").lower()
+    dims = assurance.get("dimensions") if isinstance(assurance.get("dimensions"), dict) else {}
+    impl = dims.get("implementation_congruence") if isinstance(dims.get("implementation_congruence"), dict) else {}
+    if (
+        project_id == "Serenity-Alipay"
+        and task_id == "TASK-A-001"
+        and "first" in objective
+        and "governance baseline" in objective
+        and impl.get("status") == "VERIFIED"
+        and int(impl.get("total_active_parameters") or 0) > 0
+        and int(impl.get("total_active_formulas") or 0) > 0
+    ):
+        gate.add("ERROR", "NEXT_TASK_STALE", "Serenity first-baseline task is stale after machine-verified baseline", base, project_id)
+
+
+def check_owner_decision(gate: Gate, assurance: dict[str, Any], path: Path, project_id: str) -> None:
+    decision = assurance.get("owner_decision") if isinstance(assurance.get("owner_decision"), dict) else {}
+    required = {
+        "decision_id",
+        "review_id",
+        "project_id",
+        "decision_question",
+        "human_owner_role",
+        "human_assignment_status",
+        "current_recommendation",
+        "option_a",
+        "option_b",
+        "option_c",
+        "estimated_effort",
+        "estimated_cost_or_resource",
+        "expected_benefit",
+        "principal_risks",
+        "evidence_required",
+        "decision_deadline_or_priority",
+        "consequence_of_no_decision",
+        "unblock_task_id",
+        "acceptance_ids",
+    }
+    missing = sorted(field for field in required if not decision.get(field))
+    if missing:
+        gate.add("ERROR", "DECISION_FIELDS", f"owner_decision missing {missing}", path, project_id)
+    owner = str(decision.get("human_owner_role") or "").lower()
+    if any(value in owner for value in ("codex", "ai", "governance runner")):
+        gate.add("ERROR", "DECISION_OWNER", "Codex/AI/governance runner cannot be human decision owner", path, project_id)
+    if str(decision.get("review_id") or "") != "REVIEW8":
+        gate.add("ERROR", "DECISION_REVIEW", "owner_decision review_id must be REVIEW8", path, project_id)
+    text = json.dumps(decision, ensure_ascii=False)
+    for forbidden in FORBIDDEN_OWNER_TEXT:
+        if forbidden in text:
+            gate.add("ERROR", "DECISION_TEXT", f"owner_decision contains forbidden text: {forbidden}", path, project_id)
 
 
 def check_events(gate: Gate, project: dict[str, Any]) -> None:
@@ -303,6 +396,8 @@ def run(project_filter: str | None = None, *, changed_only: bool = False, base_r
     else:
         check_project_set(gate, projects)
     check_generated_views(gate, projects, include_root=include_root_generated)
+    if not project_filter and include_root_generated:
+        check_owner_portfolio_buckets(gate, project_config())
     check_hook_and_ci(gate)
     for project in projects:
         check_assurance(gate, project)
