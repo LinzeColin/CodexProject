@@ -837,26 +837,26 @@ tasks:
   - task_id: "S1-04-SQLITE-DATA-MODEL-001"
     phase: "S1-A"
     objective: "Add the unified SQLite/WAL/FTS5 document and event model with migrations and rollback evidence."
-    scope: "Schema, migration, rollback, local tests, and governance records."
-    non_scope: "No large source import, no retained PDFs, and no production scheduler."
-    status: "planned"
+    scope: "Local SQLite schema, migration, inspection, SourceItem persistence, FTS5 search, rollback, storage CLI commands, tests, and governance records."
+    non_scope: "No large source import, no retained PDFs, no network fetch, no SMTP send, no Release upload, no production scheduler, and no production acceptance claim."
+    status: "completed"
     dependencies: ["S1-03-OWNER-CONTROLS-001"]
-    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/storage.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_storage.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/governance/model_registry.yaml", "arxiv-daily-push/docs/governance/formula_registry.yaml", "arxiv-daily-push/docs/governance/parameter_registry.csv"]
     acceptance_ids: ["ADP-ACC-S1-04-SQLITE-DATA-MODEL"]
-    test_commands: ["PENDING"]
-    test_results: ["PENDING"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
-    risk: "Migration must remain low-resource and rollbackable before new-machine readiness."
-    rollback: "Remove migration/data-model files and restore prior governance records for S1-04."
-    target_version: "0.12.4"
-    completed_version: ""
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s104_focus3 PYTHONPATH=arxiv-daily-push/src python3 -W error::ResourceWarning -m unittest arxiv-daily-push/tests/test_storage.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s104_alltests1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s104_semantic3 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s104_project2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s104_allgov1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --all", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s104_changed2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s104_rootgov2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s104_iq1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_information_quality.py --project arxiv-daily-push --fast --fail-on-error", "python3 -m json.tool governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json", "parameter_registry.csv and TRACEABILITY_MATRIX.csv width parse checks"]
+    test_results: ["focused storage and CLI tests: 9 tests OK with ResourceWarning treated as error", "arxiv-daily-push unit tests: 186 tests OK", "semantic extractor: 38 active formulas and 274 active parameters checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "all-project governance validation: errors 0 warnings 0", "changed-only governance sync with semantic checks: errors 0 warnings 0; projects changed arxiv-daily-push only", "root governance unit tests: 127 tests OK; missing-base line is an expected negative fixture with exit code 0", "information quality validation: PASS errors 0 warnings 0", "S1-04 run manifest JSON parse: OK", "parameter_registry.csv: 275 rows width 36; TRACEABILITY_MATRIX.csv: 88 rows width 12"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/storage.py", "arxiv-daily-push/tests/test_storage.py", "arxiv-daily-push/tests/test_cli.py", "governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json"]
+    risk: "Migration remains local and low-resource; S1-05 connector contract and S1-06 replay/queue behavior still must prove live connector and scoring integration before production acceptance."
+    rollback: "Remove storage.py and storage CLI dispatch/tests, restore version 0.13.1, and revert S1-04 governance records and run manifest."
+    target_version: "0.14.0"
+    completed_version: "0.14.0"
     unknown_task_ids: []
   - task_id: "S1-05-ARXIV-CONNECTOR-CONTRACT-001"
     phase: "S1-A"
     objective: "Define the source registry, connector contract, and arXiv adapter boundary for Stage 1."
     scope: "Connector contract, arXiv adapter registry, small-fixture tests, and governance traceability."
     non_scope: "No broad non-arXiv source expansion and no bulk PDF download."
-    status: "planned"
+    status: "ready"
     dependencies: ["S1-04-SQLITE-DATA-MODEL-001"]
     required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-05-ARXIV-CONNECTOR-CONTRACT"]

@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 35
-- formula_count: 37
-- parameter_count: 267
+- model_count: 36
+- formula_count: 38
+- parameter_count: 275
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -58,6 +58,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-033 | Phase 12 cloud production enablement gate | deterministic cloud workflow and media evidence validator | Verify GitHub-hosted workflow contracts, live all-arXiv 20-bucket dry-run readiness, real lightweight MP4 artifact rendering, and disabled production side effects before Release/SMTP manual tests | active | adp-phase12-cloud-enablement-v1 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/video.py`, `.github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml` |
 | MOD-ADP-034 | Phase 12 manual Release and SMTP delivery test gate | deterministic manual workflow contract | Prepare a default-branch-only workflow that creates one GitHub Release and sends one Gmail SMTP test email with human-scannable Chinese lesson text, 12-second video link, concise evidence, candidate queue summary, hidden backend ROI scoring, and deduplicated Release assets without enabling scheduled production | active | adp-manual-delivery-test-v1.2 | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml`, `src/arxiv_daily_push/scheduled_execution.py`, `src/arxiv_daily_push/global_scan.py`, `tests/test_manual_delivery_workflow.py` |
 | MOD-ADP-035 | Review8 V4 owner controls and generated owner views | deterministic owner configuration validator and view generator | Validate the single owner-editable control file, preview no-side-effect impact, and generate four owner-readable files from machine facts | active | adp-owner-controls-v1 | `src/arxiv_daily_push/owner_controls.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-036 | Review8 Stage 1 SQLite document and event data model | deterministic local storage schema and migration gate | Create, inspect, validate, populate, search, and rollback the low-resource local SQLite/WAL/FTS5 document/event model | active | adp-sqlite-data-model-v1 | `src/arxiv_daily_push/storage.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -100,6 +101,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-035 | Production daily source selection must scan the primary arXiv archive set, not collapse to the legacy cs.AI-only query, and must persist a candidate queue with ROI-ranked fallback before real SMTP/Release delivery can count. | `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md`, `src/arxiv_daily_push/global_scan.py`, `.github/workflows/arxiv-daily-push-scheduled.yml`, `tests/test_global_scan.py` | Phase 12 all-arXiv production path | active |
 | ASM-ADP-036 | Controlled manual Release and Gmail SMTP testing may perform real side effects only from an explicit default-branch workflow_dispatch and must not enable scheduled production. | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml`, `tests/test_manual_delivery_workflow.py`, `docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md` | Phase 12 manual delivery test | active |
 | ASM-ADP-037 | Review8 V4 owner control must be a single human-editable YAML file, while owner-visible Markdown/CSV views are generated artifacts and not second editable fact sources. | `config/owner_controls.yaml`, `src/arxiv_daily_push/owner_controls.py`, `tests/test_owner_controls.py`, `docs/owner/OWNER_CONSOLE.md` | Review8 Stage 1 owner controls | active |
+| ASM-ADP-038 | Review8 Stage 1 Window A storage must remain local SQLite/WAL/FTS5 with deterministic migration and rollback, and must not perform bulk imports, PDF retention, production scheduler enablement, SMTP send, Release upload, or source expansion. | `src/arxiv_daily_push/storage.py`, `tests/test_storage.py`, `tests/test_cli.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 SQLite data model | active |
 
 ## C. Functions and Formulas
 
@@ -142,6 +144,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
 - FORM-ADP-037 validates owner_controls schema, no-secret/no-paid-service policy, Window A resource caps, owner weight groups, no-side-effect impact preview, and generated owner views.
+- FORM-ADP-038 validates the local SQLite/WAL/FTS5 schema migration, inspection, rollback, SourceItem persistence, FTS search readiness, and no-side-effect Stage 1 storage boundary.
 
 ## D. Parameters
 
@@ -182,6 +185,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 12 cloud production enablement parameters: PARAM-ADP-177 through PARAM-ADP-180.
 - Active Phase 12 manual delivery test parameters: PARAM-ADP-181 through PARAM-ADP-184 plus PARAM-ADP-186 and PARAM-ADP-267.
 - Active Review8 Stage 1 owner controls parameters: PARAM-ADP-187 through PARAM-ADP-266.
+- Active Review8 Stage 1 SQLite storage parameters: PARAM-ADP-268 through PARAM-ADP-275.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -368,6 +372,16 @@ weight group. The impact preview is intentionally no-side-effect and reports
 ranking or queue deltas as not computed until S1-06 replay data exists. The
 four `docs/owner/` files are generated views, not additional editable facts.
 
+The S1-04 SQLite data model creates a local-only document and event storage
+contract before later source connector, queue, ledger, runtime recovery, and
+migration work. Migration requires SQLite FTS5, sets WAL mode, creates the
+schema_migrations table, 18 object tables, and `document_fts`, then returns a
+machine-readable pass/blocked report. `store_source_item` accepts only a valid
+generic `SourceItem`, writes raw/canonical/version/FTS rows idempotently, and
+does not fetch sources, download PDFs, send mail, upload Releases, enable
+scheduling, or claim production acceptance. Rollback supports target version 0
+only and drops the Stage 1 schema.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -438,6 +452,11 @@ four `docs/owner/` files are generated views, not additional editable facts.
 - Owner controls with production enabled, paid service allowed, token-like value, wrong owner view list, Window A resource overrun, or weight total drift -> owner validation blocked.
 - Owner impact preview cannot claim replay/ranking changes until replay data exists in S1-06.
 - `docs/owner/*` files are regenerated from `config/owner_controls.yaml`; manual edits are drift, not facts.
+- SQLite storage migration without FTS5 support, WAL journal mode, schema version 1, all 18 object tables, or `document_fts` -> storage report blocked.
+- SQLite storage inspect on a missing database file -> blocked report with `blocking_reasons`.
+- SQLite storage rollback with target version other than 0 -> `StorageError`.
+- SourceItem storage before migration or with invalid generic SourceItem data -> `StorageError`.
+- SourceItem storage with the same content -> idempotent raw/canonical/version/FTS rows rather than duplicate document versions.
 - Production pass with any missing requirement -> acceptance validation error.
 
 ## G. Validation
@@ -446,6 +465,7 @@ Current focused validation:
 
 - `PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q`
 - `PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_owner_controls.py -q`
+- `PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_storage.py arxiv-daily-push/tests/test_cli.py -q`
 - `adp owner validate`
 - `adp owner preview-impact --days 30`
 - `adp owner render-docs --write`
