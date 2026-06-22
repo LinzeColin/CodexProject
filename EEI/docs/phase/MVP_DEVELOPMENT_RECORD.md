@@ -4578,3 +4578,34 @@ Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A204/A205/A209 STI
 - Revert `apps/worker/app/main.py` model-refresh wake metadata and the T1303 integration-test supervisor CLI assertions.
 - Revert A204/A205 artifact, acceptance traceability, development status, V5 sync, delivery task and ledger updates.
 - Regenerate development, clean-room and release artifacts, then rerun local validation and GitHub CI.
+
+## 2026-06-23 - T1303/A204-A205 supervised worker wake CI binding
+
+Status: REMOTE CI VALIDATED FOR THIS SLICE; A204/A205/A209 STILL IN PROGRESS
+
+### Scope
+
+- Bound commit `df1925aa6c8d2e2c5cd6e4f0c760ebc21b168ed4` remote CI proof into T1303/A204-A205 supervised model refresh worker wake records.
+- Project Governance run `27986420238` / job `82828868078` passed governance validator, changed-scope, information quality, dashboard verification and CI attestation steps.
+- EEI validation run `27986420494` / job `82828868875` passed Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E for the supervisor CLI wake assertions.
+
+### Acceptance mapping
+
+- T1303 -> A204/A205 evidence is stronger: worker wake is no longer local-only or remote-pending.
+- T1307/A209 remains independent and open; this CI binding does not substitute for 24h soak evidence.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model-weight, threshold or parameter value changed.
+
+### Remaining gaps
+
+- A204/A205 remain `IN_PROGRESS` until release-manager activation and long-duration refresh evidence are current.
+- A209 24h soak remains a background independent gate.
+- Production relationship approval and formal legal/source/brand clearance remain separate blockers.
+
+### Rollback
+
+- Revert this CI-binding governance update and restore the previous precommit-pending T1303 worker wake evidence records.
+- Regenerate development, clean-room and release artifacts, then rerun local validation and GitHub CI.

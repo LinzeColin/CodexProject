@@ -64,14 +64,15 @@
   "latest_ci_result": {
     "provider": "GitHub Actions",
     "workflow": "EEI validation",
-    "run_id": "27871752533",
-    "job_id": "82484659437",
-    "commit_sha": "405d664b53f872b72be6ee14fe83242a2dd13820",
+    "run_id": "27986420494",
+    "job_id": "82828868875",
+    "commit_sha": "df1925aa6c8d2e2c5cd6e4f0c760ebc21b168ed4",
     "verify_static_contract_lint_typecheck_unit_step": "PASS",
     "verify_g2_static_contract_lint_typecheck_unit_step": "PASS",
     "verify_g2_postgresql_integration_step": "PASS",
     "verify_g2_browser_e2e_step": "PASS",
-    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS"
+    "verify_g2_live_fastapi_postgresql_e2e_step": "PASS",
+    "verified_scope": "T1303 supervised model refresh worker wake contract for score_recompute and data_snapshot_refresh"
   },
   "latest_score_recompute_ci_result": {
     "provider": "GitHub Actions",
@@ -114,19 +115,34 @@
     "Regenerate release artifacts and rerun make verify plus make verify-g2-db."
   ],
   "latest_worker_wake_local_result": {
-    "status": "LOCAL_STATIC_VALIDATED_REMOTE_POSTGRESQL_CI_PENDING",
+    "status": "LOCAL_AND_REMOTE_CI_VALIDATED",
     "verified_scope": "apps.worker supervisor CLI wake contract metadata and integration assertions for score_recompute and data_snapshot_refresh refresh-token advancing paths",
     "commands": [
       "PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache .venv/bin/python -m py_compile apps/worker/app/main.py tests/integration/test_database_migrations.py: PASS",
       "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check apps/worker/app/main.py tests/integration/test_database_migrations.py: PASS"
     ],
-    "remote_ci_status": "PENDING",
+    "remote_ci_status": "PASS",
     "acceptance_ids": [
       "A204",
       "A205",
       "A206",
       "A209"
     ],
-    "soak_non_closure": "A209 24h soak remains background evidence gate"
+    "soak_non_closure": "A209 24h soak remains background evidence gate",
+    "remote_ci_result": {
+      "provider": "GitHub Actions",
+      "project_governance_run_id": "27986420238",
+      "project_governance_job_id": "82828868078",
+      "eei_validation_run_id": "27986420494",
+      "eei_validation_job_id": "82828868875",
+      "commit_sha": "df1925aa6c8d2e2c5cd6e4f0c760ebc21b168ed4",
+      "verified_steps": [
+        "Project Governance steps 4/5/6/11/12/13/14 PASS",
+        "EEI validation Step 10 G2 PostgreSQL integration PASS",
+        "EEI validation Step 11 browser E2E PASS",
+        "EEI validation Step 12 live FastAPI/PostgreSQL E2E PASS"
+      ],
+      "verified_scope": "supervised score_recompute/data_snapshot_refresh worker wake assertions and A204/A205 non-closure governance evidence"
+    }
   }
 }

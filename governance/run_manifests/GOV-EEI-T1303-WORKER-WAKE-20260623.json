@@ -13,7 +13,7 @@
   "iteration_id": "ITER-20260623-002",
   "generated_at": "2026-06-22T21:48:05Z",
   "implementation_base_sha": "2d732d2987e30c508941f2e59fc5bc8a61865ffe",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:d6fd416a8f5d45021d6c7eb9d8e26d7328d371f850ef43ee3a160e0677c7ef71",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:783c84623a1407d666d4e4e1fdb528e9d621796242217bc83c021ba80e109830",
   "changed_files_declared": [
     "EEI/CHANGELOG.md",
     "EEI/CHECKSUMS.sha256",
@@ -79,6 +79,7 @@
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
+    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
@@ -147,6 +148,7 @@
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
+    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
@@ -193,6 +195,7 @@
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
+    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
     "tests/governance/test_project_governance_validator.py"
   ],
   "test_commands": [

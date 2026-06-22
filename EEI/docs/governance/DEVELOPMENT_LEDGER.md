@@ -11,11 +11,11 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1303-A204-A205-WORKER-WAKE-REFRESH-CONSISTENCY-IN-PROGRESS`
-- Confirmed iteration count: 26
+- Current gate: `TASK-T1303-A204-A205-WORKER-WAKE-CI-EVIDENCE-BINDING-IN-PROGRESS`
+- Confirmed iteration count: 27
 - Reconstructed development event count: 3
-- Current task: `TASK-T1303/A204-A205 supervised model refresh worker wake`
-- Blockers: commit `d009516c57c4908a025c401a711dfb4d599f7b73` is remote-CI bound by Project Governance run `27950933950` and EEI validation run `27950933933`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A204/A205 remain open until supervised worker wake is remote-CI bound and release-manager plus long-duration refresh evidence are current; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T1303/A204-A205 supervised model refresh worker wake CI binding`
+- Blockers: commit `d009516c57c4908a025c401a711dfb4d599f7b73` is remote-CI bound by Project Governance run `27950933950` and EEI validation run `27950933933`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A204/A205 worker wake is remote-CI bound, but A204/A205 remain open until release-manager plus long-duration refresh evidence are current; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -619,6 +619,27 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the worker supervisor/test/artifact/status changes, regenerate governance/release artifacts and rerun validation.
 - Next step: regenerate artifacts, run `make verify`, run governance sync and root governance tests, then commit/push and verify CI.
 
+
+
+### `ITER-20260623-003`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `df1925aa6c8d2e2c5cd6e4f0c760ebc21b168ed4`
+- Result commit: `df1925aa6c8d2e2c5cd6e4f0c760ebc21b168ed4` remote-CI attested; current evidence-binding commit still needs its own CI after push.
+- Task IDs: `TASK-T1303`, `TASK-T1307`
+- Goal: bind remote CI proof for the T1303/A204-A205 supervised model refresh worker wake slice without closing A204/A205/A209.
+- Commands run: GitHub Project Governance and EEI validation workflow inspection, local artifact regeneration and validation required for the current binding commit.
+- Test results: Project Governance run `27986420238` job `82828868078` PASS; EEI validation run `27986420494` job `82828868875` PASS; EEI Step 10/11/12 PASS.
+- Successes: supervised worker wake is no longer remote-CI pending; A204/A205 artifacts and ledgers now cite the GitHub Actions proof.
+- Failures: no release-manager activation, 4h/24h refresh soak, production relationship approval or legal/source/brand clearance was added.
+- Decisions: keep A209 24h soak as a background long-running gate; continue bounded MVP delivery without waiting for 288 five-minute windows.
+- Remaining risks: this binding commit still needs local validation, push and GitHub CI; future operators must not read worker-wake CI as A204/A205/A209 completion.
+- Rollback: revert this CI-binding event/artifact/status update, regenerate release artifacts and rerun validation.
+- Next step: regenerate artifacts, run `make verify`, run governance sync and root governance tests, then commit/push and verify CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -653,6 +674,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-018`: local T1301/A202 signed release decision bundle binding for production owner sign-off publication.
 - `EVENT-20260623-001`: remote CI evidence binding for `d009516c` and T1302/T1303 delivery task contract repair; A209 24h soak remains a background gate.
 - `EVENT-20260623-002`: local T1303/A204-A205 supervised model refresh worker wake evidence; A209 24h soak remains a background gate.
+- `EVENT-20260623-003`: remote CI binding for T1303/A204-A205 supervised worker wake; A204/A205/A209 remain open.
 
 ## Unknown Historical Periods
 
