@@ -1104,3 +1104,29 @@ models:
     config_refs: ["NOT_APPLICABLE"]
     test_refs: ["arxiv-daily-push/tests/test_stage1_bootstrap.py", "arxiv-daily-push/tests/test_stage1_migration.py"]
     evidence_refs: ["governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md", "arxiv-daily-push/tests/test_stage1_bootstrap.py"]
+  - model_id: "MOD-ADP-044"
+    name: "Review8 Stage 1 historical B1 preview batch"
+    kind: "deterministic offline B1 report and email preview evidence generator"
+    purpose: "Generate 30 independent B1/arXiv historical report/email preview packages before live-day delivery, while preserving all no-production-side-effect constraints."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-stage1-historical-b1-previews-v1"
+    assumption_ids: ["ASM-ADP-041", "ASM-ADP-042", "ASM-ADP-044"]
+    formula_ids: ["FORM-ADP-046"]
+    parameter_ids:
+      - "PARAM-ADP-340"
+      - "PARAM-ADP-341"
+      - "PARAM-ADP-342"
+      - "PARAM-ADP-343"
+      - "PARAM-ADP-344"
+      - "PARAM-ADP-345"
+      - "PARAM-ADP-346"
+      - "PARAM-ADP-347"
+      - "PARAM-ADP-348"
+    inputs: ["historical_inputs", "generated_at", "start_date", "preview_count", "recipient", "artifact_dir", "write"]
+    outputs: ["historical preview report", "30 B1 report/email preview packages", "content ledger rows", "artifact manifest", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["NOT_APPLICABLE"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_historical_previews.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-11-HISTORICAL-B1-PREVIEWS-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md", "arxiv-daily-push/tests/test_stage1_historical_previews.py"]

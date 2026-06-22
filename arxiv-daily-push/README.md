@@ -32,8 +32,9 @@ Implemented foundations now:
 - Stage 1 source registry contract with only `SRC-ARXIV / arxiv.atom.v1` active;
 - Stage 1 scoring, deterministic queue, and content ledger contract via
   `adp stage1-queue`;
-- Stage 1 B1 report/email preview, local runtime recovery, migration package,
-  and post-migration bootstrap gates via `adp build-b1-report-email`,
+- Stage 1 B1 report/email preview, 30 historical preview evidence, local
+  runtime recovery, migration package, and post-migration bootstrap gates via
+  `adp build-b1-report-email`, `adp historical-b1-previews`,
   `adp runtime-audit`, `adp migration`, and `adp post-migration-bootstrap`.
 
 Retained but inactive for V5 Stage 1 acceptance:
@@ -45,9 +46,12 @@ Retained but inactive for V5 Stage 1 acceptance:
 These are not current acceptance gates for `ARXIV_PRODUCTION_ACCEPTED` unless a
 later owner decision explicitly restores them.
 
+Completed but not final production acceptance:
+
+- 30 independent historical B1 report/email previews.
+
 Not accepted yet:
 
-- 30 independent historical B1 report/email previews;
 - two real natural days of B1 email delivery evidence;
 - target-runner live network/SMTP readiness evidence when owner enables those checks;
 - `ARXIV_PRODUCTION_ACCEPTED`.
@@ -84,8 +88,10 @@ Current V5 Stage 1 task sequence:
 - `S1-09-MIGRATION_PACKAGE-001`: low-resource integration and migration package.
 - `S1-10-POST_MIGRATION_BOOTSTRAP-001`: migration-bound target machine or
   GitHub-hosted runner bootstrap.
-- `S1-11-HISTORICAL_B1_PREVIEWS-001`: planned 30 independent historical B1
+- `S1-11-HISTORICAL_B1_PREVIEWS-001`: completed 30 independent historical B1
   report/email previews.
+- `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`: planned controlled live B1
+  email-day evidence on the target runner.
 
 ## Local Validation
 

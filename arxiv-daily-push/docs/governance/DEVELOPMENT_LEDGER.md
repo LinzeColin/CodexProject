@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.20.0`
+Active product version: `0.21.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.20.0
+- Product version: 0.21.0
 - Current phase: S1-A
-- Current gate: ADP-S1-09-MIGRATION-PACKAGE-READY
-- Confirmed iteration count: 62
+- Current gate: ADP-S1-11-HISTORICAL-B1-PREVIEWS-READY
+- Confirmed iteration count: 63
 - Reconstructed event count: 0
-- Current task: S1-11-HISTORICAL_B1_PREVIEWS-001
-- Blockers: 30 historical previews, two live production days, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
+- Current task: S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001
+- Blockers: two controlled live B1 email days, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
 
@@ -25,7 +25,7 @@ The append-only machine record is `development_events.jsonl`.
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
 | E | Weekly/monthly trial, all-arXiv queue delivery, and production handoff | completed | Phase 11 production gates plus Phase 12 all-arXiv scan, candidate queue, ROI ranking, daily lead, Release video-link email gate, and production blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`; `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
-| S1-A | Review8 V5 Stage 1 Window A | in_progress | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, and migration package pass within low-resource limits | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-A | Review8 V5 Stage 1 Window A | in_progress | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, and 30 historical B1 previews pass within low-resource limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md` |
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
@@ -1510,3 +1510,27 @@ None for this new project baseline.
 - Remaining risks: Local SSL CA count can be zero on this Mac, so real live network readiness must be proven by explicit probe on the target runner when required.
 - Rollback: Revert version 0.20.0 S1-10 bootstrap code/tests and governance records, then restore version 0.19.0.
 - Next step: S1-11-HISTORICAL_B1_PREVIEWS-001
+
+### `ITER-20260623-S1-010`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from `stage1_historical_previews.py`, focused S1-11 tests, CLI preview generation, semantic extractor, and governance registry updates.
+- Version before: 0.20.0
+- Version after: 0.21.0
+- Base commit: f12a408b5ace76d38487793d04329cc1e009af7a
+- Result commit: PENDING
+- Task IDs: S1-11-HISTORICAL_B1_PREVIEWS-001
+- Goal: Generate 30 independent historical B1/arXiv report and email preview packages before live-day delivery while preserving no-production-side-effect boundaries.
+- Assumptions: S1-11 evidence is historical preview evidence only; it must not claim live delivery, send Gmail SMTP, upload GitHub Releases, generate video, enable production scheduling, or claim `ARXIV_PRODUCTION_ACCEPTED`.
+- Files changed: stage1 historical preview module, CLI dispatch, focused tests, version/changelog files, model/formula/parameter/traceability registries, delivery task, phase record, development event, run manifest, generated status views, and root governance test expectations.
+- Model changes: Added MOD-ADP-044 `adp-stage1-historical-b1-previews-v1`.
+- Formula changes: Added FORM-ADP-046 and refreshed formulas whose implementation fingerprint includes `cli.py::main`.
+- Parameter changes: Added PARAM-ADP-340 through PARAM-ADP-348 for preview schema, acceptance ID, required preview count, minimum unique date/source counts, artifact kind count, source type, supported input format count, and disabled side-effect key count.
+- Commands run: focused S1-11 historical/B1/queue/CLI tests; version CLI; full arxiv-daily-push unit tests; semantic extractor; historical-b1-previews CLI artifact smoke.
+- Test results: focused S1-11 historical/B1/queue/CLI tests 21 OK; version CLI returned 0.21.0; arxiv-daily-push unit tests 225 OK; semantic extractor checked 46 active formulas and 331 active parameters with no errors; historical-b1-previews CLI passed with 30 previews, 30 unique dates, 30 unique source IDs, 30 unique content hashes, 30 unique email IDs, 150 artifact files, manifest exists, future leakage count 0, and SMTP/Release/video/network/scheduler side effects false.
+- Successes: Deterministic offline historical previews are available; 30-preview generation validates unique dates, source IDs, content hashes, email IDs, claim evidence, content ledger rows, optional five-file artifacts per preview, future-leakage blocking, and disabled side effects.
+- Failures: No controlled live B1 email days, real production trial start, replay/recovery/resource evidence, or final production acceptance evidence exists.
+- Decisions: Bump product version to 0.21.0 because S1-11 adds a backward-compatible historical preview evidence CLI and validation model while preserving disabled production side effects.
+- Remaining risks: Historical fixtures can still overfit; S1-12 must prove live target-runner arXiv/network/SMTP evidence before owner-facing production claims.
+- Rollback: Remove `stage1_historical_previews.py`, historical preview CLI dispatch/tests, restore version 0.20.0, and revert S1-11 governance records and run manifest.
+- Next step: S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001

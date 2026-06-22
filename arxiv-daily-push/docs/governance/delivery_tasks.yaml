@@ -975,16 +975,33 @@ tasks:
     objective: "Generate 30 independent historical B1/arXiv report and email preview packages from supported inputs without production side effects."
     scope: "Historical fixture or replay-input selection, B1 report/email artifact generation, content ledger references, evidence manifests, and governance records for 30 independent previews."
     non_scope: "No real SMTP send, no Release upload, no scheduler enablement, no video generation, no broad non-arXiv source expansion, and no final production acceptance claim."
-    status: "planned"
+    status: "completed"
     dependencies: ["S1-10-POST_MIGRATION_BOOTSTRAP-001"]
-    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage1_historical_previews.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-11-HISTORICAL-B1-PREVIEWS"]
-    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_stage1_queue.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_project PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
-    test_results: ["PENDING"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_focus_final PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_historical_previews.py arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_stage1_queue.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_version_final PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push version", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_semantic_final PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_cli_final PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push historical-b1-previews --generated-at 2026-06-23T07:30:00+10:00 --artifact-dir /tmp/codex_adp_s111_preview_artifacts --write --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_project_final PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused S1-11 historical/B1/queue/CLI tests: 21 tests OK", "version CLI: 0.21.0", "arxiv-daily-push unit tests: 225 tests OK", "semantic extractor: 46 active formulas and 331 active parameters checked with no errors", "historical-b1-previews CLI: pass with 30 previews, 30 unique dates, 30 unique source IDs, 30 unique content hashes, 30 unique email IDs, 150 artifact files, manifest exists, future leakage count 0, and SMTP/Release/video/network/scheduler side effects false"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py", "arxiv-daily-push/tests/test_stage1_historical_previews.py", "arxiv-daily-push/docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md", "governance/run_manifests/ADP-S1-11-HISTORICAL-B1-PREVIEWS-20260623.json"]
     risk: "Historical previews must be independent evidence packages and must not be confused with live delivery or final production acceptance."
     rollback: "Revert S1-11 historical preview files and governance updates."
     target_version: "0.21.0"
+    completed_version: "0.21.0"
+    unknown_task_ids: []
+  - task_id: "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"
+    phase: "S1-A"
+    objective: "Collect controlled live B1/arXiv email delivery evidence across two real natural days before ARXIV_PRODUCTION_ACCEPTED can be claimed."
+    scope: "Target-runner live arXiv input, B1 report/email generation, controlled Gmail SMTP send evidence, no-secret delivery refs, and two natural-day evidence ledger updates."
+    non_scope: "No production scheduler enablement, no broad non-arXiv board expansion, no video generation, no GitHub Release upload requirement, and no final production acceptance claim until the dedicated acceptance gate passes."
+    status: "planned"
+    dependencies: ["S1-11-HISTORICAL_B1_PREVIEWS-001"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_live_preflight PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push run-live-all-arxiv-dry-run --generated-at 2026-06-23T09:00:00+10:00 --date 2026-06-23 --max-results-per-category 1 --json"]
+    test_results: ["NOT_RUN: S1-12 is planned and requires the next implementation run plus live network/target-runner evidence."]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    risk: "Live-day evidence must be collected on the target runner and must not silently turn into a production schedule or local Mac background service."
+    rollback: "Revert S1-12 live-day evidence files and governance records."
+    target_version: "0.22.0"
     completed_version: ""
     unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"

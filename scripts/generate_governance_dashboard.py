@@ -366,6 +366,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "arxiv-daily-push remains at S1-10 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V5-S1-006",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + engineering_owner + operations_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+                "question": "是否继续执行 S1-12，在目标 runner 上收集两个真实自然日的受控 B1/arXiv 邮件发送证据。",
+                "recommendation": "A: run S1-12 controlled live B1 email days before production acceptance",
+                "option_a": "继续 S1-12，按目标 runner、实时 arXiv 输入、B1 讲解邮件、Gmail SMTP 发送证据和无 secret 泄露记录两天。",
+                "option_b": "暂停在 S1-11，只保留 30 份历史预览，不进入真实邮件证据。",
+                "option_c": "跳过两天证据直接启用生产定时；不推荐，因为缺少 live-day delivery evidence。",
+                "effort": "P1; controlled target-runner live delivery evidence",
+                "resource": "GitHub/cloud runner, Gmail SMTP secret names, live arXiv metadata access, durable evidence refs",
+                "benefit": "证明 Stage 1 B1/arXiv 每日邮件在真实运行边界能稳定送达，而不是只在离线历史预览中通过。",
+                "risks": "SMTP secret readiness, live arXiv availability, target runner drift, accidental scheduler enablement, local Mac fallback",
+                "evidence": "two natural-day B1 email delivery refs, target-runner refs, B1 report/email artifacts, no-secret delivery audits, no production scheduler",
+                "priority": "P1",
+                "no_decision": "arxiv-daily-push remains at S1-11 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
+            }
+        )
     return policy
 
 
