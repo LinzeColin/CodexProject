@@ -15,7 +15,7 @@ arxiv-daily-push 当前处于 E 阶段 / ADP-PHASE12-PRODUCTION-ENABLEMENT-CLOUD
 
 ## 3. 本轮最重要变化
 
-Prepared Phase 12 production enablement for GitHub-hosted cloud execution by removing self-hosted workflow targeting, adding live all-arXiv dry-run evidence, adding real lightweight MP4 rendering, and requiring Release .mp4 links before email video evidence can pass.
+Prepared and cloud-verified Phase 12 production enablement for GitHub-hosted execution by removing self-hosted workflow targeting, proving live all-arXiv dry-run coverage, rendering a real lightweight MP4 artifact, and requiring Release .mp4 links before email video evidence can pass.
 
 ## 4. 模型、公式、参数旧值到新值
 
@@ -25,9 +25,9 @@ Prepared Phase 12 production enablement for GitHub-hosted cloud execution by rem
 
 ## 5. 为什么改变及证据等级
 
-- 原因：Prepared Phase 12 production enablement for GitHub-hosted cloud execution by removing self-hosted workflow targeting, adding live all-arXiv dry-run evidence, adding real lightweight MP4 rendering, and requiring Release .mp4 links before email video evidence can pass.
+- 原因：Prepared and cloud-verified Phase 12 production enablement for GitHub-hosted execution by removing self-hosted workflow targeting, proving live all-arXiv dry-run coverage, rendering a real lightweight MP4 artifact, and requiring Release .mp4 links before email video evidence can pass.
 - 证据等级：`EXTRACTED`
-- 证据引用：governance/run_manifests/ADP-PHASE12-PRODUCTION-ENABLEMENT-CLOUD-20260622.json, arxiv-daily-push/docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md, .github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml, .github/workflows/arxiv-daily-push-scheduled.yml, .github/workflows/arxiv-daily-push-trial-start.yml, arxiv-daily-push/src/arxiv_daily_push/video.py, +1 more
+- 证据引用：governance/run_manifests/ADP-PHASE12-PRODUCTION-ENABLEMENT-CLOUD-20260622.json, arxiv-daily-push/docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md, .github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml, .github/workflows/arxiv-daily-push-scheduled.yml, .github/workflows/arxiv-daily-push-trial-start.yml, arxiv-daily-push/src/arxiv_daily_push/video.py, +2 more
 
 ## 6. 对输出、风险和业务决策的影响
 

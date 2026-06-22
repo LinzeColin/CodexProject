@@ -1146,8 +1146,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         rendered = dashboard.render_owner_status(info, "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
         self.assertIn("all-arXiv", rendered)
-        self.assertIn("GitHub-hosted cloud execution", rendered)
-        self.assertIn("real lightweight MP4 rendering", rendered)
+        self.assertIn("GitHub-hosted execution", rendered)
+        self.assertIn("real MP4", rendered)
         self.assertNotIn("root semantic extractor selector behavior expanded", rendered)
 
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
@@ -1673,7 +1673,16 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(manifest["production_flags"]["ADP_SCHEDULED_RUN_ENABLED"])
         self.assertFalse(manifest["production_flags"]["ADP_ALLOW_SMTP_SEND"])
         self.assertFalse(manifest["production_flags"]["ADP_ALLOW_RELEASE_UPLOAD"])
-        self.assertFalse(manifest["live_cloud_dry_run_executed"])
+        self.assertTrue(manifest["live_cloud_dry_run_executed"])
+        cloud_result = manifest["live_cloud_dry_run_result"]
+        self.assertEqual(cloud_result["workflow_run_id"], 27924078126)
+        self.assertEqual(cloud_result["conclusion"], "success")
+        self.assertEqual(cloud_result["verified_archive_count"], 20)
+        self.assertEqual(cloud_result["failed_archive_count"], 0)
+        self.assertEqual(cloud_result["candidate_count"], 16)
+        self.assertTrue(cloud_result["sample_daily_input_generated"])
+        self.assertTrue(cloud_result["mp4_artifact_generated"])
+        self.assertGreater(cloud_result["mp4_artifact_size_bytes"], 0)
         self.assertFalse(manifest["real_smtp_sent"])
         self.assertFalse(manifest["real_release_uploaded"])
         self.assertFalse(manifest["production_schedule_enabled"])

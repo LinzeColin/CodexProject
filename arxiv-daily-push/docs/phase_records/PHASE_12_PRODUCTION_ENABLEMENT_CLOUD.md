@@ -33,11 +33,11 @@ Status: completed for cloud enablement preparation; production remains disabled
 - `arxiv-daily-push/tests/test_video.py`
 - `arxiv-daily-push/tests/test_production_scheduler.py`
 - `arxiv-daily-push/tests/test_trial_start_workflow.py`
+- GitHub Actions run `27924078126`: `adp-phase12-cloud-dry-run` passed on GitHub-hosted `ubuntu-latest`.
+- Run artifact `7781385666`: 20/20 archive buckets verified, 16 candidates, sample daily input, real MP4 artifact `80246` bytes, workflow artifact digest `sha256:47976355849d8e326c32373b21e85cda2edfd6279e2d2e682dbe038b1b712648`.
 
 ## Remaining External Gates
 
-- Run the new cloud dry-run workflow on GitHub and archive `adp-phase12-cloud-dry-run`.
-- Confirm the workflow verifies 20 primary archive buckets with live arXiv data.
-- Confirm the workflow uploads a real `.mp4` artifact and render report.
 - Run a controlled manual Release upload and Gmail SMTP test only after the dry-run passes.
+- Open PR and pass PR CI before merge.
 - Enable scheduled production variables only after PR/CI, Release, SMTP, and artifact evidence pass.
