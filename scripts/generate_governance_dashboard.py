@@ -314,6 +314,17 @@ def existing_assurance_base(project_path: Path) -> str | None:
     return commit if re.fullmatch(r"[0-9a-f]{40}", commit) else None
 
 
+def existing_root_base() -> str | None:
+    for path in (ROOT / "GOVERNANCE_DASHBOARD.md", ROOT / "OWNER_PORTFOLIO.md", ROOT / "README.md"):
+        if not path.exists():
+            continue
+        match = re.search(r"source_base_commit:\s*`?([0-9a-f]{40})`?", path.read_text(encoding="utf-8"))
+        commit = match.group(1) if match else ""
+        if re.fullmatch(r"[0-9a-f]{40}", commit):
+            return commit
+    return None
+
+
 def yaml_scalar(value: Any) -> str:
     if isinstance(value, bool):
         return "true" if value else "false"
@@ -729,7 +740,7 @@ def generate(write: bool) -> dict[str, Any]:
     portfolio_hash = source_snapshot_hash([ROOT / "governance/projects.yaml"] + [ROOT / i["path"] / "docs/governance/parameter_registry.csv" for i in infos])
     event_times = [info["assurance"]["snapshot_event_time"] for info in infos if info["assurance"]["snapshot_event_time"] != "UNKNOWN"]
     meta = {
-        "source_base_commit": current_commit(),
+        "source_base_commit": existing_root_base() or current_commit(),
         "source_snapshot_hash": portfolio_hash,
         "snapshot_event_time": max(event_times) if event_times else "UNKNOWN",
     }

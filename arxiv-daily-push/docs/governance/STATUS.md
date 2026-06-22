@@ -2,7 +2,7 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `3ce9066664bab17253a25da11529d8146d8b314f`
+- source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
 - source_snapshot_hash: `sha256:20b9a5a9ea6748d678de1f6ece25d59959ee165cd91e0c9c17b3cf77d54759bc`
 - snapshot_event_time: `2026-06-22T10:10:00+10:00`
 - generator_version: `2.0.0`

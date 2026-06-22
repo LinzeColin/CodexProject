@@ -1,7 +1,7 @@
 project_id: "OpenAIDatabase"
 as_of_event_id: "EVT-REVIEW6-FINAL-OpenAIDatabase-001"
 source_snapshot_hash: "sha256:19f488ad4b0d0052cb3cd995bb79bb2394e2b222942ac96c6efef83d24f697d8"
-source_base_commit: "3ce9066664bab17253a25da11529d8146d8b314f"
+source_base_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
 snapshot_event_time: "2026-06-22T00:24:25Z"
 generator_version: "2.0.0"
 final_commit_binding: "CI_ATTESTATION_REQUIRED"

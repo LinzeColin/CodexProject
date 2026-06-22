@@ -4,7 +4,7 @@ Alpha 当前治理结论：实现一致性为 `partial`，交付状态为 `block
 
 ## 1. Version, Phase, Gate
 
-- source_base_commit: `3ce9066664bab17253a25da11529d8146d8b314f`
+- source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
 - source_snapshot_hash: `sha256:4532d4d6fabbbd25e47fdd5b4ff12e91e60fcd40eec79e2b6227285b0d10434e`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `2.0.0`
