@@ -11,7 +11,7 @@
   "version_after": "0.12.1",
   "base_commit": "05c69c6522a74901f33350e03046f03a6f47b061",
   "result_commit": "PENDING",
-  "summary": "Prepared Phase 12 production enablement for GitHub-hosted cloud execution by removing self-hosted workflow targeting, adding a live all-arXiv dry-run workflow, adding real lightweight MP4 rendering, and requiring Release .mp4 links before email video evidence can pass.",
+  "summary": "Prepared and cloud-verified Phase 12 production enablement for GitHub-hosted execution by removing self-hosted workflow targeting, proving live all-arXiv dry-run coverage, rendering a real lightweight MP4 artifact, and requiring Release .mp4 links before email video evidence can pass.",
   "scope": [
     "GitHub-hosted workflow migration",
     "live all-arXiv 20 primary archive dry-run command and workflow",
@@ -82,7 +82,8 @@
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_all5 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_semantic6 python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_gov8 python3 scripts/validate_project_governance.py --changed-only --enforce-sync",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_push_trigger PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_cloud_dry_run_workflow.py -q"
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_push_trigger PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_cloud_dry_run_workflow.py -q",
+    "GitHub Actions run 27924078126 arXiv Daily Push Phase 12 cloud dry-run on commit 3cef4a0b89a132b20f3581dc665c8753aacab34c"
   ],
   "test_results": [
     "focused scan/video/preflight/scheduler/cloud workflow tests: 23 tests OK",
@@ -101,7 +102,8 @@
     "final changed-only governance sync: errors 0 warnings 0; all registered projects errors 0 warnings 0",
     "final manifest JSON, development_events JSONL, CSV width checks: pass",
     "final git diff --check: pass",
-    "phase12 cloud dry-run push trigger workflow test: 1 test OK"
+    "phase12 cloud dry-run push trigger workflow test: 1 test OK",
+    "live GitHub-hosted all-arXiv dry-run: pass; 20/20 archives verified; candidate_count 16; sample daily input generated; MP4 artifact 80246 bytes; artifact id 7781385666; artifact digest sha256:47976355849d8e326c32373b21e85cda2edfd6279e2d2e682dbe038b1b712648; SMTP/Release/production side effects false"
   ],
   "evidence_refs": [
     "arxiv-daily-push/docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md",
@@ -110,7 +112,8 @@
     ".github/workflows/arxiv-daily-push-trial-start.yml",
     "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
     "arxiv-daily-push/src/arxiv_daily_push/video.py",
-    "arxiv-daily-push/tests/test_cloud_dry_run_workflow.py"
+    "arxiv-daily-push/tests/test_cloud_dry_run_workflow.py",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/27924078126"
   ],
   "production_flags": {
     "ADP_PRODUCTION_ENABLED": false,
@@ -118,17 +121,36 @@
     "ADP_ALLOW_SMTP_SEND": false,
     "ADP_ALLOW_RELEASE_UPLOAD": false
   },
-  "live_cloud_dry_run_executed": false,
+  "live_cloud_dry_run_executed": true,
   "real_smtp_sent": false,
   "real_release_uploaded": false,
   "production_schedule_enabled": false,
   "secret_values_logged": false,
   "codex_auth_read": false,
   "rollback": "Revert version 0.12.1 changes, remove cloud dry-run workflow and MP4 render command, restore 0.12.0 workflow contracts, and keep production variables disabled.",
-  "next_task": "PUSH_PR_RUN_CLOUD_DRY_RUN_THEN_MANUAL_RELEASE_SMTP_TEST",
+  "next_task": "OPEN_PR_RUN_PR_CI_THEN_MANUAL_RELEASE_SMTP_TEST",
   "risks": [
-    "Cloud dry-run still must execute on GitHub-hosted Actions before production enablement.",
-    "GitHub-hosted workflow can fail due to arXiv availability, API throttling, ffmpeg package behavior, or workflow syntax.",
-    "Manual Release and Gmail SMTP tests must pass before production variables are enabled."
-  ]
+    "Pull request CI still must pass on the final reviewed branch before merge.",
+    "Manual GitHub Release and Gmail SMTP tests must pass before production variables are enabled.",
+    "GitHub Actions artifact upload is not the final Release-hosted video link; Release upload remains disabled until explicit manual testing."
+  ],
+  "live_cloud_dry_run_result": {
+    "workflow_run_id": 27924078126,
+    "workflow_run_url": "https://github.com/LinzeColin/CodexProject/actions/runs/27924078126",
+    "head_sha": "3cef4a0b89a132b20f3581dc665c8753aacab34c",
+    "conclusion": "success",
+    "archive_count": 20,
+    "verified_archive_count": 20,
+    "failed_archive_count": 0,
+    "candidate_count": 16,
+    "sample_daily_input_generated": true,
+    "mp4_artifact_generated": true,
+    "mp4_artifact_size_bytes": 80246,
+    "mp4_sha256": "9e68b87ddb5e835a943fadba48becd2d8e0a7b7425896ce73d97c894ac192846",
+    "workflow_artifact_id": 7781385666,
+    "workflow_artifact_digest": "sha256:47976355849d8e326c32373b21e85cda2edfd6279e2d2e682dbe038b1b712648",
+    "production_schedule_enabled": false,
+    "smtp_send_enabled": false,
+    "release_upload_enabled": false
+  }
 }
