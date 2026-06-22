@@ -129,6 +129,7 @@ PARTIAL_EVIDENCE = {
         "tests/integration/test_database_migrations.py",
         "tests/unit/test_official_source_live_capture.py",
         "artifacts/tests/a202/t1301_curated_official_ingestion_contract.json",
+        "artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json",
         "artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json",
         "artifacts/tests/a202/t1301_operator_source_capture_contract.json",
         "artifacts/tests/a202/t1301_live_official_retrieval_contract.json",

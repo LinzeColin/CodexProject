@@ -18,7 +18,7 @@
       "content_type": "text/html",
       "approval_scope": "A202_official_source_capture_contract_only",
       "operator_signature": "fixture-operator-capture-nvda-001",
-      "source_text_sha256": "7630abafbd4f027582345840b9cbff8a017ab95a767298e9cdd75eb3af2e9432",
+      "source_text_sha256": "e42e51508bae6ea5f5d7d82544b7227b31509059d90c854d2932bde8294c880e",
       "usage_attestation": {
         "official_source_observed": true,
         "source_url_matches_anchor": true,
@@ -26,7 +26,7 @@
         "copyright_excerpt_only_for_evidence": true,
         "not_production_fact_approval": true
       },
-      "source_text": "Operator-provided normalized official-source capture for NVIDIA Corporation anchor NVDA-ANCHOR-001. Capture scope is the official NVIDIA Blog Taiwan ecosystem anchor and records only the evidence-chain contract, not publication approval. The captured text includes NVIDIA Corporation, TSMC, SPIL, Kinsus, KYEC, UMTC, Foxconn, Pegatron, QCT, Wistron, Inventec, wafer, chip, packaging test, manufacturing, and systems so the parser can verify expected token coverage, source provenance, operator attestation, and non-publication boundaries."
+      "source_text": "Operator-provided normalized official-source capture for NVIDIA Corporation anchor NVDA-ANCHOR-001. Capture scope is the official NVIDIA Blog Taiwan ecosystem anchor and records only the evidence-chain contract, not publication approval. The captured text includes NVIDIA Corporation, TSMC, SPIL, Kinsus, KYEC, UMTC, Foxconn, Pegatron, QCT, Wistron, Inventec, AI infrastructure, ecosystem, and Taiwan so the parser can verify context-only expected token coverage, source provenance, operator attestation, and non-publication boundaries."
     },
     {
       "capture_id": "OPCAP-NVDA-002",

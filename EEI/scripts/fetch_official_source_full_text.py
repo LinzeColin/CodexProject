@@ -22,6 +22,7 @@ try:
     from load_curated_ingestion_anchors import (
         ANCHOR_PATH,
         ANCHOR_SUBJECT,
+        anchor_scope_metadata,
         expected_tokens,
         media_type,
         parse_source_date,
@@ -33,6 +34,7 @@ except ModuleNotFoundError:  # pragma: no cover - used when imported as scripts 
     from scripts.load_curated_ingestion_anchors import (
         ANCHOR_PATH,
         ANCHOR_SUBJECT,
+        anchor_scope_metadata,
         expected_tokens,
         media_type,
         parse_source_date,
@@ -287,6 +289,7 @@ def fetch_live_anchor(
         "document_date": row["source_date"],
         "title": row["title"],
         "official_publisher": row["official_publisher"],
+        **anchor_scope_metadata(row),
         "capture_status": "success" if source_health["status"] == "healthy" else "failed",
         "last_error": last_error,
         "source_text_sha256": sha256_text(source_text) if source_text else None,
@@ -426,6 +429,10 @@ def build_live_contract_artifact() -> dict[str, object]:
                 "Live capture does not publish relationship facts and does not "
                 "imply release/legal clearance."
             ),
+            (
+                "Context-only anchors such as NVDA-ANCHOR-001 preserve discovery "
+                "evidence without forcing precise stage terms or graph-edge publication."
+            ),
         ],
         "commands": {
             "generate_contract": (
@@ -447,6 +454,12 @@ def build_live_contract_artifact() -> dict[str, object]:
                 "--anchor-id NVDA-ANCHOR-003 --anchor-id NVDA-ANCHOR-004 --output "
                 "artifacts/private/t1301_live_official_capture.json"
             ),
+            "operator_live_capture_context_anchor": (
+                "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python "
+                "scripts/fetch_official_source_full_text.py --capture-live "
+                "--allow-live-network --anchor-id NVDA-ANCHOR-001 --output "
+                "artifacts/private/t1301_live_official_context_anchor_001.json"
+            ),
         },
         "required_operator_evidence": [
             (
@@ -454,7 +467,10 @@ def build_live_contract_artifact() -> dict[str, object]:
                 "LIVE_CAPTURE_READY_FOR_OPERATOR_REVIEW."
             ),
             "Operator review decision for source licensing and source text retention policy.",
-            "Operator review of token-alias matches before production approval.",
+            (
+                "Operator review of token-alias and context-only anchor-scope "
+                "matches before production approval."
+            ),
             (
                 "PostgreSQL ingestion evidence proving live capture rows, source health "
                 "and retry metadata."
@@ -811,6 +827,7 @@ def upsert_evidence_chain(
         "official_url": row["url"],
         "evidence_scope": row["evidence_scope"],
         "expected_entities_or_stages": tokens,
+        "anchor_scope": anchor_scope_metadata(row),
         "record_mode": RECORD_MODE,
         "edge_publication": "dry_run_context_only_not_published_relationship",
         "full_text_connector": PARSER_VERSION,
@@ -882,6 +899,7 @@ def load_official_full_text_dry_run(*, fixture_path: Path = FIXTURE_PATH) -> dic
                 "source_row": row,
                 "source_text": source_text,
                 "tokens": tokens,
+                "anchor_scope": anchor_scope_metadata(row),
                 "parser_version": PARSER_VERSION,
                 "record_mode": RECORD_MODE,
                 "source_kind": "official_full_text_dry_run",

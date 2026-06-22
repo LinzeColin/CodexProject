@@ -427,6 +427,28 @@ Do not infer iteration count from Git commit count.
 - Rollback: remove the 4h JSON/checkpoint, regenerate the A209 evidence-validation artifact back to missing 4h/24h evidence, and rerun validation.
 - Next step: commit/push the 4h local evidence, verify GitHub Actions, then run 24h operator soak.
 
+### `ITER-20260622-001`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `0da8463`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`
+- Goal: resolve the `NVDA-ANCHOR-001` source-registry semantic mismatch without publishing relationship facts or claiming legal clearance.
+- Assumptions: the prior selected live evidence already proved `NVDA-ANCHOR-002/003/004`; `NVDA-ANCHOR-001` should remain a discovery/context anchor unless a separate passage-level relationship review is attached.
+- Files changed: `EEI/data/nvidia_public_source_anchors.csv`, `EEI/scripts/load_curated_ingestion_anchors.py`, `EEI/scripts/fetch_official_source_full_text.py`, `EEI/scripts/load_operator_source_captures.py`, `EEI/scripts/load_live_official_captures.py`, `EEI/tests/unit/test_official_source_live_capture.py`, `EEI/tests/integration/test_database_migrations.py`, A202 fixtures/artifacts, traceability/status docs, this ledger and governance events.
+- Model changes: no scoring formula change.
+- Parameter changes: no canonical runtime parameter change; `NVDA-ANCHOR-001` expected-token scope is revised from precise stage terms to discovery context terms and `publication_scope=discovery_context_only`.
+- Commands run: focused ruff; A202 focused unit tests; JSON validation for A202 fixtures/artifacts; v5 readiness validation.
+- Test results: focused ruff PASS; `tests/unit/test_official_source_live_capture.py` PASS 10/10; A202 JSON validation PASS; v5 readiness sync PASS.
+- Successes: added `artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json`; persisted `anchor_scope` metadata through curated, dry-run, operator and live evidence paths; kept relationship publication and release clearance false.
+- Decisions: keep A202 `IN_PROGRESS`; this revision closes only the failed-anchor semantic-review sub-gap, not owner sign-off, source-license review, legal clearance or A206/A209 soak.
+- Remaining risks: local PostgreSQL integration was not run in this shell; remote G2 PostgreSQL must prove the updated counts and `anchor_scope` persistence.
+- Rollback: restore the previous `NVDA-ANCHOR-001` expected-token list, remove `anchor_scope` persistence fields and the new contract artifact, restore candidate-count assertions, then rerun validation.
+- Next step: run focused validation, then commit/push and verify GitHub Actions.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -445,6 +467,10 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260621-016`: local A209 operator soak parallel-window contract repair.
 - `EVENT-20260621-017`: remote CI validation evidence for TASK-T1307/A209 operator soak parallel-window repair.
 - `EVENT-20260621-019`: local 4h operator soak evidence for TASK-T1307/A209.
+- `EVENT-20260622-001`: local context-anchor semantic revision for TASK-T1301/A202.
+- `EVENT-20260622-002`: local validation for TASK-T1301/A202 context-anchor semantic revision.
+- `EVENT-20260622-003`: clean-room and release evidence resync after TASK-T1301/A202 context-anchor semantic revision.
+- `EVENT-20260622-004`: final clean-room and release evidence resync after tracking the new A202 semantic-revision artifact.
 
 ## Unknown Historical Periods
 

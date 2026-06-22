@@ -16,7 +16,7 @@
   },
   "implemented_scope": [
     "scripts/load_live_official_captures.py validates a live official-source retrieval artifact before database writes.",
-    "The loader rejects committed official full text and stores only source_text_sha256, short source_text_excerpt, retry/source_health metadata and context evidence.",
+    "The loader rejects committed official full text and stores only source_text_sha256, short source_text_excerpt, anchor_scope, retry/source_health metadata and context evidence.",
     "PostgreSQL writes are idempotent through source_documents, raw_source_snapshots, entity_resolution_candidates and ingestion_evidence_chain upserts under record_mode=live.",
     "The loader never creates relationship_fact_candidates, never publishes relationships and keeps release_clearance=false.",
     "Fixture artifacts require --allow-fixture-capture and cannot close A202."
@@ -31,7 +31,7 @@
     "source_documents": "external_id suffix live-official-retrieval and content_hash=source_text_sha256",
     "raw_source_snapshots": "record_mode=live, review_status=machine_verified, no raw source_text",
     "entity_resolution_candidates": "parser_version=nvidia-official-fulltext-live-v1, review_status=machine_verified",
-    "ingestion_evidence_chain": "evidence_role=context, edge_publication=live_capture_context_only_not_published_relationship",
+    "ingestion_evidence_chain": "evidence_role=context, anchor_scope persisted, edge_publication=live_capture_context_only_not_published_relationship",
     "relationship_fact_candidates": "must remain zero for this parser"
   },
   "remaining_gaps_before_a202_done": [
