@@ -10,12 +10,12 @@ This ledger is human-readable. The append-only machine record is `development_ev
 
 - Product version: `0.1.0`
 - Product version status: `provisional`
-- Current phase: `B`
-- Current gate: `GOV-EEI-BINDING-CLASSIFICATION`
-- Confirmed iteration count: 20
+- Current phase: `C`
+- Current gate: `TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
+- Confirmed iteration count: 19
 - Reconstructed development event count: 2
-- Current task: `GOV-EEI-BINDING-CLASSIFICATION-001`
-- Blockers: A202 remains open until owner sign-off, source-license/legal clearance, remote G2 PostgreSQL validation, and A206/A209 soak evidence are complete; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T1307`
+- Blockers: A209/A206 remain open until 24h operator soak evidence is produced and CI-validated; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -449,25 +449,9 @@ Do not infer iteration count from Git commit count.
 - Rollback: restore the previous `NVDA-ANCHOR-001` expected-token list, remove `anchor_scope` persistence fields and the new contract artifact, restore candidate-count assertions, then rerun validation.
 - Next step: run focused validation, then commit/push and verify GitHub Actions.
 
-### `ITER-20260622-002`
-
-- Date: 2026-06-22
-- Fact level: EXTRACTED
-- Version before: `0.1.0`
-- Version after: `0.1.0`
-- Base commit: `456854a`
-- Result commit: `PENDING`
-- Task IDs: `GOV-EEI-BINDING-CLASSIFICATION-001`
-- Goal: classify unbound pending governance events without fabricating commit or CI attestation, then resync release evidence.
-- Files changed: `EEI/docs/governance/development_events.jsonl`, `EEI/docs/governance/VERSION_MATRIX.yaml`, `EEI/docs/governance/DEVELOPMENT_LEDGER.md`, `ASSURANCE_STATUS.yaml`, `STATUS.md`, `OWNER_STATUS.md`, EEI clean-room/release evidence and checksums.
-- Model changes: no runtime model behavior change.
-- Parameter changes: no active parameter value change.
-- Commands run: clean-room release generate/validate; release artifact generate/validate; checksum verification; root governance validation pending.
-- Test results: EEI clean-room/release/checksum validation PASS; root governance validation pending.
-- Decisions: keep missing commit/CI bindings as `stale_unbound` unresolved governance history rather than invented attestation.
-- Remaining risks: remote Project Governance must validate this metadata repair in PR CI.
-- Rollback: revert the binding classification metadata, VERSION_MATRIX/ledger sync, release evidence regeneration, and governance sync validator test changes.
-- Next step: rerun root governance validation and PR CI.
+- CI artifact-sync note: follow-up governance repair synchronized the generated traceability artifact, release artifacts, status views, delivery task view and event binding metadata after GitHub Actions run `27929407037` flagged the pushed-diff contract.
+- Additional validation: EEI single-project information-quality gate PASS, development-status artifact validation PASS, clean-room release validation PASS, release artifact validation PASS and checksum validation PASS.
+- CI fixture-hash repair: GitHub Actions run `27929407052` flagged `NVDA-ANCHOR-001 source_text_sha256 does not match text` in the operator-source capture fixture; the fixture attestation hash was corrected, clean-room/release evidence was regenerated, and A209 24h soak remains a background evidence task.
 
 ## Reconstructed Development Events
 
@@ -490,6 +474,8 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-001`: local context-anchor semantic revision for TASK-T1301/A202.
 - `EVENT-20260622-002`: local validation for TASK-T1301/A202 context-anchor semantic revision.
 - `EVENT-20260622-003`: clean-room and release evidence resync after TASK-T1301/A202 context-anchor semantic revision.
+- `EVENT-20260622-004`: final clean-room and release evidence resync after tracking the A202 context-anchor artifact.
+- `EVENT-20260622-005`: governance pushed-diff artifact sync for TASK-T1301/A202 context-anchor semantic revision.
 - `EVENT-20260622-004`: final clean-room and release evidence resync after tracking the new A202 semantic-revision artifact.
 
 ## Unknown Historical Periods
