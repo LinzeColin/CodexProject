@@ -48,7 +48,8 @@
     "arxiv-daily-push/src/arxiv_daily_push/production_launch.py",
     "arxiv-daily-push/src/arxiv_daily_push/production_refs.py",
     "arxiv-daily-push/tests/test_production_launch.py",
-    "arxiv-daily-push/tests/test_cli.py"
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
   ],
   "model_delta": "Added MOD-ADP-033 adp-phase12-cloud-enablement-v1 for cloud dry-run, real MP4, GitHub-hosted workflow, and side-effect gates.",
   "formula_delta": "Refreshed FORM-ADP-032 for GitHub-hosted runner evidence and added FORM-ADP-035 while keeping JSON video manifests insufficient for email video-link readiness.",

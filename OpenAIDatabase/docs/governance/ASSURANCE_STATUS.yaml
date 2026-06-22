@@ -1,0 +1,66 @@
+project_id: "OpenAIDatabase"
+as_of_event_id: "EVT-REVIEW6-FINAL-OpenAIDatabase-001"
+source_snapshot_hash: "sha256:19f488ad4b0d0052cb3cd995bb79bb2394e2b222942ac96c6efef83d24f697d8"
+source_base_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
+snapshot_event_time: "2026-06-22T00:24:25Z"
+generator_version: "2.0.0"
+final_commit_binding: "CI_ATTESTATION_REQUIRED"
+dimensions:
+  structural_validation:
+    status: "pass"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "scripts/validate_project_governance.py"
+  implementation_congruence:
+    status: "partial"
+    fact_level: "EXTRACTED"
+    checked_active_parameters: 28
+    total_active_parameters: 92
+    checked_active_formulas: 10
+    total_active_formulas: 11
+    unresolved_fact_ids:
+      - "FACT-OpenAIDatabase-IMPLEMENTATION-FORMULA-REVIEW"
+      - "FACT-OpenAIDatabase-IMPLEMENTATION-PARAMETER-REVIEW"
+    evidence_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+      - "OpenAIDatabase/docs/governance/formula_registry.yaml"
+  empirical_validation:
+    status: "unknown"
+    fact_level: "UNKNOWN"
+    unresolved_fact_ids:
+      - "FACT-OpenAIDatabase-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "OpenAIDatabase/docs/governance/delivery_tasks.yaml"
+  operational_evidence:
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    unresolved_fact_ids:
+      - "FACT-OpenAIDatabase-OPERATIONAL-EVIDENCE"
+    evidence_refs:
+      - "OpenAIDatabase/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "blocked"
+  release_gate: "GOV-SEMANTIC-OAIDB-in-progress"
+  blocker_ids:
+    - "FACT-OpenAIDatabase-EMPIRICAL-EVIDENCE"
+    - "FACT-OpenAIDatabase-IMPLEMENTATION-FORMULA-REVIEW"
+    - "FACT-OpenAIDatabase-IMPLEMENTATION-PARAMETER-REVIEW"
+    - "FACT-OpenAIDatabase-OPERATIONAL-EVIDENCE"
+    - "GOV-SEMANTIC-OAIDB-001"
+    - "TASK-OAI-B-001"
+next_executable_task:
+  task_id: "GOV-SEMANTIC-OAIDB-001"
+  status: "in_progress"
+  reason: "Add extractors for memory-analysis trigger rules, routing constants, and active formula fingerprints."
+  acceptance_ids:
+    - "ACC-SEMANTIC-OAIDB-001"
+  owner: "Codex/governance runner"
+  unblock_condition: "Run the listed test commands and attach evidence."
+owner_decision:
+  required: true
+  decision_id: "DEC-OpenAIDatabase-REVIEW6-001"
+  question: "是否继续补齐 memory routing 分支和 FORM-010 语义复核。"
+  options:
+    - "A: fund evidence hardening"
+    - "B: keep blocked/conditional and defer"
+    - "C: de-scope this project from delivery claims"

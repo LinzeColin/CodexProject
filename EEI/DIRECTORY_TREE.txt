@@ -214,6 +214,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── ADR-014-data-ingestion.md
 │   │   └── ADR-015-fixture-and-live-data-separation.md
 │   ├── governance
+│   │   ├── ASSURANCE_STATUS.yaml
 │   │   ├── DELIVERY_PLAN.md
 │   │   ├── DEVELOPMENT_LEDGER.md
 │   │   ├── MODEL_SPEC.md

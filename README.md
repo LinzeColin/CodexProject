@@ -2,38 +2,41 @@
 
 Active Codex-related project hub for LinzeColin.
 
-This repository keeps active project code together as real directories.
-It is no longer a submodule-only index.
+## Governance Entry
+
+- Owner portfolio: [OWNER_PORTFOLIO.md](OWNER_PORTFOLIO.md)
+- Engineering dashboard: [GOVERNANCE_DASHBOARD.md](GOVERNANCE_DASHBOARD.md)
+- Project registry: [governance/projects.yaml](governance/projects.yaml)
+- Standard: [docs/governance/STANDARD.md](docs/governance/STANDARD.md)
+
+## Snapshot Metadata
+
+- source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
+- source_snapshot_hash: `sha256:0872e3a329c61d33f74cc12cf5d9c96c1931087215696a8bf3a7e6187b714c09`
+- generator_version: `2.0.0`
+- final_commit_binding: `CI_ATTESTATION_REQUIRED`
 
 ## Projects
 
-| Path | Repository |
-| --- | --- |
-| `Alpha` | https://github.com/LinzeColin/Alpha |
-| `EVA_OS` | https://github.com/LinzeColin/EVA_OS |
-| `OpenAIDatabase` | https://github.com/LinzeColin/OpenAIDatabase |
-| `FIFA` | https://github.com/LinzeColin/FIFA |
-| `Serenity-Alipay` | https://github.com/LinzeColin/Serenity-Alipay |
-| `OpMe_System` | https://github.com/LinzeColin/OpMe_System |
-| `whkmSalary` | https://github.com/LinzeColin/whkmSalary |
-| `arxiv-daily-push` | https://github.com/LinzeColin/CodexProject/tree/main/arxiv-daily-push |
+| Project | Path | Repository |
+|---|---|---|
+| `Alpha` | `Alpha` | https://github.com/LinzeColin/Alpha |
+| `EEI` | `EEI` | https://github.com/LinzeColin/CodexProject/tree/main/EEI |
+| `EVA_OS` | `EVA_OS` | https://github.com/LinzeColin/EVA_OS |
+| `FIFA` | `FIFA` | https://github.com/LinzeColin/FIFA |
+| `OpMe_System` | `OpMe_System` | https://github.com/LinzeColin/OpMe_System |
+| `OpenAIDatabase` | `OpenAIDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase |
+| `PFI_BIG_DATA_SIMULATOR` | `PFI/大数据模拟器` | https://github.com/LinzeColin/CodexProject/tree/main/PFI/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%8B%9F%E5%99%A8 |
+| `Serenity-Alipay` | `Serenity-Alipay` | https://github.com/LinzeColin/Serenity-Alipay |
+| `whkmSalary` | `whkmSalary` | https://github.com/LinzeColin/whkmSalary |
+| `arxiv-daily-push` | `arxiv-daily-push` | https://github.com/LinzeColin/CodexProject/tree/main/arxiv-daily-push |
 
-## Clone
-
-```bash
-git clone git@github.com:LinzeColin/CodexProject.git
-```
-
-## Update
+## Required Checks
 
 ```bash
-git status
-git add .
-git commit -m "Update CodexProject"
-git push
+python3 scripts/validate_project_governance.py --all --semantic --drift-report
+python3 scripts/validate_information_quality.py --all --fast --fail-on-error
+python3 scripts/generate_governance_dashboard.py --write
 ```
 
-## Rule
-
-Treat this repository as the source-level project hub for active Codex projects.
-Each project directory should remain internally coherent and runnable.
+This repository is the source-level project hub. Each project directory must keep canonical governance files, assurance status, owner status, and traceability records synchronized with implementation evidence.

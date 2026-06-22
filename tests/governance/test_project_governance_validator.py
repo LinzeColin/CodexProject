@@ -75,6 +75,20 @@ def load_setup_doctor_module():
     return module
 
 
+def load_information_quality_module():
+    scripts_dir = str(ROOT / "scripts")
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    spec = importlib.util.spec_from_file_location(
+        "validate_information_quality", ROOT / "scripts" / "validate_information_quality.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
 def run_validator(*args: str) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
     env.setdefault("PYTHONPYCACHEPREFIX", "/tmp/codex_governance_test_pycache")
@@ -345,7 +359,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         payload = json.loads(result.stdout)
         self.assertEqual(payload.get("decision"), "block")
-        self.assertIn("validate_project_governance.py is missing", payload.get("reason", ""))
+        self.assertIn("required validator is missing", payload.get("reason", ""))
+        self.assertIn("validate_project_governance.py", payload.get("reason", ""))
 
     def test_governance_stop_hook_rechecks_recursive_stop_pass(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -359,6 +374,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             scripts.mkdir()
             validator = scripts / "validate_project_governance.py"
             validator.write_text("import sys\nprint('still failing')\nsys.exit(1)\n", encoding="utf-8")
+            quality = scripts / "validate_information_quality.py"
+            quality.write_text("import sys\nprint('still failing')\nsys.exit(1)\n", encoding="utf-8")
             subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
             subprocess.run(["git", "commit", "-m", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
             result = subprocess.run(
@@ -1102,37 +1119,44 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         dashboard = load_dashboard_module()
         first = dashboard.generate(write=False)
         second = dashboard.generate(write=False)
-        self.assertEqual(first["generated_at"], second["generated_at"])
-        self.assertEqual(first["commit"], second["commit"])
+        self.assertEqual(first["snapshot_event_time"], second["snapshot_event_time"])
+        self.assertEqual(first["source_base_commit"], second["source_base_commit"])
+        self.assertEqual(first["source_snapshot_hash"], second["source_snapshot_hash"])
         self.assertEqual(first["outputs"], second["outputs"])
         owner_outputs = [path for path in first["outputs"] if path.endswith("/docs/governance/OWNER_STATUS.md")]
         status_outputs = [path for path in first["outputs"] if path.endswith("/docs/governance/STATUS.md")]
         self.assertEqual(len(owner_outputs), len(status_outputs))
         self.assertIn("PFI/大数据模拟器/docs/governance/OWNER_STATUS.md", owner_outputs)
-        rendered = dashboard.render_dashboard([dashboard.load_project(project) for project in dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")["projects"]], "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
-        self.assertIn("Semantic coverage", rendered)
+        meta = {
+            "source_base_commit": first["source_base_commit"],
+            "source_snapshot_hash": first["source_snapshot_hash"],
+            "snapshot_event_time": first["snapshot_event_time"],
+        }
+        rendered = dashboard.render_dashboard([dashboard.load_project(project) for project in dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")["projects"]], meta)
+        self.assertIn("Implementation congruence", rendered)
+        self.assertIn("Empirical", rendered)
         self.assertIn("machine_verified", rendered)
-        self.assertIn("in_progress", rendered)
+        self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
 
     def test_review6_owner_status_is_readable_and_prioritized(self) -> None:
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         serenity = next(project for project in config["projects"] if project["project_id"] == "Serenity-Alipay")
         info = dashboard.load_project(serenity)
-        rendered = dashboard.render_owner_status(info, "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
+        rendered = dashboard.render_owner_status(info)
         for marker in (
-            "## 1. 当前结论",
-            "## 4. 模型、公式、参数旧值到新值",
-            "## 8. 需要项目所有者决定的事项",
-            "## 10. 下一项可执行任务及 Acceptance",
-            "## 12. UNKNOWN 与过期证据数量",
+            "## 1. Version, Phase, Gate",
+            "## 2. Assurance And Readiness",
+            "## 5. Owner Decision",
+            "## 6. Next Executable Task",
+            "## 7. Owner And Evidence Freshness",
         ):
             self.assertIn(marker, rendered)
-        self.assertIn("语义覆盖", rendered)
+        self.assertIn("实现一致性", rendered)
         self.assertIn("machine_verified", rendered)
         self.assertNotIn("['", rendered)
         self.assertNotIn("{'", rendered)
-        self.assertEqual(info["next_task"], "TASK-B-001")
+        self.assertEqual(info["assurance"]["next_executable_task"]["task_id"], "TASK-A-001")
 
     def test_arxiv_owner_status_uses_latest_event_manifest(self) -> None:
         dashboard = load_dashboard_module()
@@ -1140,15 +1164,19 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
         self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-055")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-055")
+        self.assertEqual(info["product_version"], "0.12.1")
+        self.assertEqual(info["current_gate"], "ADP-PHASE12-PRODUCTION-ENABLEMENT-CLOUD-GATED")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-PHASE12-PRODUCTION-ENABLEMENT-CLOUD-20260622.json",
+            "governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json",
         )
-        rendered = dashboard.render_owner_status(info, "CURRENT_CHECKOUT", "DETERMINISTIC_GENERATION")
-        self.assertIn("all-arXiv", rendered)
-        self.assertIn("GitHub-hosted execution", rendered)
-        self.assertIn("real MP4", rendered)
-        self.assertNotIn("root semantic extractor selector behavior expanded", rendered)
+        rendered = dashboard.render_owner_status(info)
+        self.assertIn("0.12.1", rendered)
+        self.assertIn("ADP-PHASE12-PRODUCTION-ENABLEMENT-CLOUD-GATED", rendered)
+        self.assertIn("production trial not started", rendered)
+        self.assertIn("30-day acceptance absent", rendered)
+        self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
 
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
@@ -1157,14 +1185,15 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(matrix["current_gate"], "TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL")
 
         events = [json.loads(line) for line in (ROOT / "EEI" / "docs" / "governance" / "development_events.jsonl").read_text(encoding="utf-8").splitlines()]
-        latest = events[-1]
-        self.assertEqual(latest["event_id"], "EVENT-20260621-019")
-        self.assertEqual(latest["task_id"], "TASK-T1307")
-        self.assertIn("PARTIAL", latest["result"])
+        soak_event = next(event for event in events if event.get("event_id") == "EVENT-20260621-019")
+        self.assertEqual(soak_event["task_id"], "TASK-T1307")
+        self.assertIn("PARTIAL", soak_event["result"])
+        review6_event = next(event for event in events if event.get("event_id") == "EVT-REVIEW6-FINAL-EEI-001")
+        self.assertEqual(review6_event["binding_status"], "pre_commit_pending")
 
-        dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
-        self.assertIn("TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL", dashboard_text)
-        self.assertIn("A209/A206 remain open until 24h operator soak evidence", dashboard_text)
+        owner_text = (ROOT / "EEI" / "docs" / "governance" / "OWNER_STATUS.md").read_text(encoding="utf-8")
+        self.assertIn("TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL", owner_text)
+        self.assertIn("24h operator soak evidence", owner_text)
 
         self.assertTrue((ROOT / "EEI" / "artifacts" / "tests" / "a209" / "t1307_operator_soak_4h.json").is_file())
         self.assertTrue((ROOT / "EEI" / "artifacts" / "tests" / "a209" / "t1307_operator_soak_4h.checkpoints.jsonl").is_file())
@@ -1775,6 +1804,35 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["human_review_required_parameters"], 0)
         self.assertEqual(manifest["semantic_formulas_checked"], 31)
         self.assertEqual(manifest["human_review_required_formulas"], 0)
+
+    def test_review6_final_information_quality_gate_passes(self) -> None:
+        quality = load_information_quality_module()
+        result = quality.run()
+        self.assertEqual(result["status"], "PASS", result)
+        self.assertEqual(result["errors"], 0, result)
+
+    def test_review6_final_all_projects_have_assurance_status(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        projects = [project for project in validator.as_list(config.get("projects")) if isinstance(project, dict)]
+        self.assertEqual(len(projects), 10)
+        for project in projects:
+            path = ROOT / project["path"] / "docs" / "governance" / "ASSURANCE_STATUS.yaml"
+            self.assertTrue(path.is_file(), path)
+            data = validator.load_yaml(path)
+            self.assertEqual(data["project_id"], project["project_id"])
+            self.assertRegex(data["source_base_commit"], r"^[0-9a-f]{40}$")
+            self.assertRegex(data["source_snapshot_hash"], r"^sha256:[0-9a-f]{64}$")
+
+    def test_review6_final_generated_views_have_real_metadata(self) -> None:
+        paths = [ROOT / "README.md", ROOT / "GOVERNANCE_DASHBOARD.md", ROOT / "OWNER_PORTFOLIO.md"]
+        for path in paths:
+            text = path.read_text(encoding="utf-8")
+            self.assertIn("source_base_commit", text)
+            self.assertIn("source_snapshot_hash", text)
+            self.assertIn("generator_version", text)
+            self.assertNotIn("DETERMINISTIC_GENERATION", text)
+            self.assertNotIn("CURRENT_CHECKOUT", text)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,64 @@
+project_id: "Alpha"
+as_of_event_id: "EVT-REVIEW6-FINAL-Alpha-001"
+source_snapshot_hash: "sha256:4532d4d6fabbbd25e47fdd5b4ff12e91e60fcd40eec79e2b6227285b0d10434e"
+source_base_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
+snapshot_event_time: "2026-06-22T00:24:25Z"
+generator_version: "2.0.0"
+final_commit_binding: "CI_ATTESTATION_REQUIRED"
+dimensions:
+  structural_validation:
+    status: "pass"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "scripts/validate_project_governance.py"
+  implementation_congruence:
+    status: "partial"
+    fact_level: "EXTRACTED"
+    checked_active_parameters: 42
+    total_active_parameters: 55
+    checked_active_formulas: 9
+    total_active_formulas: 9
+    unresolved_fact_ids:
+      - "FACT-Alpha-IMPLEMENTATION-PARAMETER-REVIEW"
+    evidence_refs:
+      - "Alpha/docs/governance/parameter_registry.csv"
+      - "Alpha/docs/governance/formula_registry.yaml"
+  empirical_validation:
+    status: "unknown"
+    fact_level: "UNKNOWN"
+    unresolved_fact_ids:
+      - "FACT-Alpha-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "Alpha/docs/governance/delivery_tasks.yaml"
+  operational_evidence:
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    unresolved_fact_ids:
+      - "FACT-Alpha-OPERATIONAL-EVIDENCE"
+    evidence_refs:
+      - "Alpha/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "blocked"
+  release_gate: "GOV-SEMANTIC-ALPHA-in-progress"
+  blocker_ids:
+    - "FACT-Alpha-EMPIRICAL-EVIDENCE"
+    - "FACT-Alpha-IMPLEMENTATION-PARAMETER-REVIEW"
+    - "FACT-Alpha-OPERATIONAL-EVIDENCE"
+    - "GOV-SEMANTIC-ALPHA-001"
+    - "TASK-ALPHA-B-001"
+next_executable_task:
+  task_id: "GOV-SEMANTIC-ALPHA-001"
+  status: "in_progress"
+  reason: "Add machine source selectors for active parameters and implementation fingerprints for active formulas."
+  acceptance_ids:
+    - "ACC-SEMANTIC-ALPHA-001"
+  owner: "Codex/governance runner"
+  unblock_condition: "Run the listed test commands and attach evidence."
+owner_decision:
+  required: true
+  decision_id: "DEC-Alpha-REVIEW6-001"
+  question: "是否提供生产数据、paper broker 与 live execution policy 证据，或继续保持 blocked。"
+  options:
+    - "A: fund evidence hardening"
+    - "B: keep blocked/conditional and defer"
+    - "C: de-scope this project from delivery claims"
