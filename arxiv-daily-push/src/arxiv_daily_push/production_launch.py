@@ -198,7 +198,7 @@ def _next_external_actions(gates: list[Mapping[str, Any]]) -> list[str]:
         "expected_head_sha_matches": "refresh PR metadata and expected head SHA",
         "trial_start_workflow_ready": "fix the trial start workflow contract before launch",
         "default_branch_ref": "provide the merged default-branch commit ref",
-        "runner_ref": "provide a durable private runner readiness ref",
+        "runner_ref": "provide a durable GitHub-hosted runner readiness ref",
         "smtp_secret_ref": "provide a durable GitHub SMTP secrets readiness ref without secret values",
         "release_target_ref": "provide a durable Release target readiness ref",
         "workflow_vars_ref": "provide a durable GitHub variables readiness ref",

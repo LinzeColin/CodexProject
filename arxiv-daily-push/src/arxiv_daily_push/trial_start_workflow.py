@@ -21,6 +21,7 @@ REQUIRED_START_WORKFLOW_ARTIFACTS = (
     "adp-trial-start-all-arxiv-daily-input",
     "adp-trial-start-phase12-artifacts",
     "adp-trial-start-candidate-queue",
+    "adp-trial-start-mp4-video",
     "adp-trial-start-smtp-delivery",
     "adp-trial-start-release-delivery",
     "adp-trial-start-gate",
@@ -52,12 +53,12 @@ def build_trial_start_workflow_plan(path: Path | str | None = None, *, generated
         _check(
             "manual_confirmation_required",
             "confirm_trial_start" in workflow_text and "confirm_trial_start == 'true'" in workflow_text,
-            "workflow must require confirm_trial_start before starting self-hosted runner work",
+            "workflow must require confirm_trial_start before starting cloud runner work",
         ),
         _check(
-            "self_hosted_runner_targeted",
-            "self-hosted" in workflow_text and "runner_label" in workflow_text,
-            "workflow must target a private self-hosted runner label",
+            "github_hosted_runner_targeted",
+            "runs-on: ubuntu-latest" in workflow_text and "self-hosted" not in workflow_text,
+            "workflow must target GitHub-hosted ubuntu-latest instead of a self-hosted runner",
         ),
         _check(
             "preflight_before_source_and_delivery",
@@ -68,7 +69,7 @@ def build_trial_start_workflow_plan(path: Path | str | None = None, *, generated
         ),
         _check(
             "production_refs_before_source_and_delivery",
-            _appears_before(workflow_text, "discover-production-refs", "Build all-arXiv trial input")
+            _appears_before(workflow_text, "plan-production-refs", "Build all-arXiv trial input")
             and _appears_before(workflow_text, "Stop if production refs blocked", "Run SMTP delivery probe")
             and _appears_before(workflow_text, "Stop if production refs blocked", "Run Release delivery probe"),
             "workflow must discover production refs before source, SMTP, or Release probes",
@@ -86,6 +87,14 @@ def build_trial_start_workflow_plan(path: Path | str | None = None, *, generated
             _appears_before(workflow_text, "build-all-arxiv-daily-input", "Run SMTP delivery probe")
             and _appears_before(workflow_text, "Stop if source ingest blocked", "Run Release delivery probe"),
             "workflow must pass all-arXiv Phase 12 source input before SMTP or Release probes",
+        ),
+        _check(
+            "real_mp4_before_delivery",
+            _appears_before(workflow_text, "render-lightweight-mp4", "Run Release delivery probe")
+            and _appears_before(workflow_text, "Stop if MP4 render blocked", "Run SMTP delivery probe")
+            and "adp-trial-start-mp4-video" in workflow_text
+            and ".mp4" in workflow_text,
+            "workflow must render and upload a real MP4 before SMTP or Release probes",
         ),
         _check(
             "legacy_cs_ai_default_absent",
@@ -182,7 +191,7 @@ def build_trial_start_workflow_plan(path: Path | str | None = None, *, generated
         ],
         "next_external_actions": [
             "merge the workflow to the default branch",
-            "configure the private self-hosted runner and required GitHub secrets",
+            "use GitHub-hosted ubuntu-latest and configure required GitHub secrets",
             "run production refs discovery and launch readiness precheck on the default branch",
             "set ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD only for a controlled start probe",
             "run workflow_dispatch with confirm_trial_start=true and archive adp-trial-start-gate",

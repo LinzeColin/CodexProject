@@ -29,8 +29,9 @@ def readiness_input(**overrides) -> dict:
     payload = {
         "runner": {
             "ready": True,
-            "label": "arxiv-daily-push",
-            "evidence_ref": "github-runner://LinzeColin/CodexProject/arxiv-daily-push",
+            "provider": "github-hosted",
+            "label": "ubuntu-latest",
+            "evidence_ref": "github-hosted://LinzeColin/CodexProject/actions/ubuntu-latest",
         },
         "smtp_secrets": {
             "ready": True,
@@ -100,11 +101,12 @@ class ProductionRefsTests(unittest.TestCase):
 
     def test_production_refs_template_contains_only_no_secret_names_and_blocks_until_filled(self) -> None:
         template = build_production_refs_input_template(
-            runner_label="arxiv-daily-push-prod",
+            runner_label="ubuntu-latest",
             release_target="adp-private",
         )
 
-        self.assertEqual(template["runner"]["label"], "arxiv-daily-push-prod")
+        self.assertEqual(template["runner"]["provider"], "github-hosted")
+        self.assertEqual(template["runner"]["label"], "ubuntu-latest")
         self.assertFalse(template["runner"]["ready"])
         self.assertEqual(template["smtp_secrets"]["secret_names"], ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"])
         self.assertNotIn("secret_values", template["smtp_secrets"])
@@ -213,7 +215,7 @@ class ProductionRefsTests(unittest.TestCase):
                 [
                     "print-production-refs-template",
                     "--runner-label",
-                    "arxiv-daily-push-prod",
+                    "ubuntu-latest",
                     "--release-target",
                     "adp-private",
                 ]
@@ -221,7 +223,8 @@ class ProductionRefsTests(unittest.TestCase):
 
         payload = json.loads(buffer.getvalue())
         self.assertEqual(result, 0)
-        self.assertEqual(payload["runner"]["label"], "arxiv-daily-push-prod")
+        self.assertEqual(payload["runner"]["provider"], "github-hosted")
+        self.assertEqual(payload["runner"]["label"], "ubuntu-latest")
         self.assertEqual(payload["release_target"]["target"], "adp-private")
         self.assertEqual(payload["workflow_vars"]["var_names"], ["ADP_RELEASE_TARGET", "ADP_ALLOW_SMTP_SEND", "ADP_ALLOW_RELEASE_UPLOAD"])
         self.assertNotIn("secret_values", json.dumps(payload, ensure_ascii=False))
@@ -316,15 +319,15 @@ class ProductionRefsTests(unittest.TestCase):
 
         self.assertIn("workflow_dispatch", workflow)
         self.assertIn("runs-on: ubuntu-latest", workflow)
-        self.assertNotIn("- self-hosted", workflow)
-        self.assertIn("ADP_GITHUB_METADATA_TOKEN", workflow)
-        self.assertIn("github.token", workflow)
-        self.assertIn("discover-production-refs", workflow)
+        self.assertNotIn("self-hosted", workflow)
+        self.assertNotIn("runner_label", workflow)
+        self.assertIn("secrets.ADP_SMTP_PASSWORD", workflow)
+        self.assertIn("vars.ADP_RELEASE_TARGET", workflow)
+        self.assertIn("plan-production-refs", workflow)
         self.assertIn("adp-production-provisioning-audit", workflow)
         self.assertIn("production_refs_ready=true", workflow)
         self.assertNotIn("auth.json", workflow)
-        self.assertNotIn("ADP_SMTP_PASSWORD", workflow)
-        self.assertLess(workflow.index("discover-production-refs"), workflow.index("Stop if provisioning audit blocked"))
+        self.assertLess(workflow.index("plan-production-refs"), workflow.index("Stop if provisioning audit blocked"))
 
 
 if __name__ == "__main__":

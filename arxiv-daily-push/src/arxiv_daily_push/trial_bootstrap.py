@@ -33,12 +33,12 @@ def build_trial_bootstrap_plan(path: Path | str | None = None, *, generated_at: 
         _check(
             "manual_confirmation_required",
             "confirm_production_trial" in workflow_text and "== 'true'" in workflow_text,
-            "workflow must require explicit confirm_production_trial input before running on self-hosted runner",
+            "workflow must require explicit confirm_production_trial input before running on cloud runner",
         ),
         _check(
-            "self_hosted_runner_targeted",
-            "self-hosted" in workflow_text and "runner_label" in workflow_text,
-            "workflow must target a private self-hosted runner label",
+            "github_hosted_runner_targeted",
+            "runs-on: ubuntu-latest" in workflow_text and "self-hosted" not in workflow_text,
+            "workflow must target GitHub-hosted ubuntu-latest instead of a self-hosted runner",
         ),
         _check(
             "preflight_first",
@@ -98,7 +98,7 @@ def build_trial_bootstrap_plan(path: Path | str | None = None, *, generated_at: 
             if check["passed"] is not True
         ],
         "next_external_actions": [
-            "install production commands on the private self-hosted runner",
+            "confirm GitHub-hosted ubuntu-latest preflight passes with ffmpeg and gh available",
             "configure GitHub SMTP secrets and Release target variable",
             "run workflow_dispatch with confirm_production_trial=true and mode=preflight-only",
             "start 30-day trial only after production preflight passes",

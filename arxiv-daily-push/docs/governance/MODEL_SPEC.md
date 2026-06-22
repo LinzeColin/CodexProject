@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 32
-- formula_count: 34
-- parameter_count: 176
+- model_count: 33
+- formula_count: 35
+- parameter_count: 180
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -42,11 +42,12 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-025 | Trial recovery evidence builder | deterministic recovery evidence validator | Build recovery drill evidence from a failed/degraded scheduled daily-run plus a recovered production-ready rerun while blocking dry-run notifications or missing durable refs | active | adp-trial-recovery-v1 | `src/arxiv_daily_push/trial_recovery.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-026 | Trial resource telemetry evidence builder | deterministic resource evidence validator | Build resource pressure evidence from daily trial resource refs and passing production preflight reports while blocking static or unmatched refs | active | adp-trial-resource-v1 | `src/arxiv_daily_push/trial_resource.py`, `src/arxiv_daily_push/production_preflight.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-027 | Trial start readiness gate | deterministic start-readiness validator | Aggregate preflight, bootstrap, scheduler, live source, SMTP, Release, and durable-ref evidence before a real 30-day production trial can be marked start-ready | active | adp-trial-start-v1 | `src/arxiv_daily_push/trial_start.py`, `src/arxiv_daily_push/cli.py` |
-| MOD-ADP-028 | Trial start evidence workflow validator | deterministic workflow contract validator | Validate the manual GitHub workflow that collects default-branch trial start evidence artifacts, production refs discovery, launch readiness, and Release write permission on the private runner | active | adp-trial-start-workflow-v1 | `src/arxiv_daily_push/trial_start_workflow.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-trial-start.yml` |
+| MOD-ADP-028 | Trial start evidence workflow validator | deterministic workflow contract validator | Validate the manual GitHub workflow that collects default-branch trial start evidence artifacts, cloud production refs, launch readiness, real MP4 evidence, and Release write permission on GitHub-hosted runner | active | adp-trial-start-workflow-v1 | `src/arxiv_daily_push/trial_start_workflow.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-trial-start.yml` |
 | MOD-ADP-029 | Production launch readiness gate | deterministic launch-readiness validator | Block default-branch trial start dispatch until PR, workflow, runner, secrets, Release target, variables, refs, and confirmation are launch-ready | active | adp-production-launch-readiness-v1 | `src/arxiv_daily_push/production_launch.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-030 | Production refs readiness bundle | deterministic no-secret readiness validator | Generate a no-secret owner-fillable template, discover GitHub Actions metadata, run a GitHub-hosted provisioning audit, and review downloaded audit artifacts before launch readiness consumes refs | active | adp-production-refs-v1 | `src/arxiv_daily_push/production_refs.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-provisioning-audit.yml` |
 | MOD-ADP-031 | Two-day simulation acceptance gate | deterministic simulation validator | Run the updated two-day Phase 11 simulation with mocked SMTP and Release boundaries while blocking network fetch, real side effects, secret reads, cache/media retention, and production acceptance claims | active | adp-two-day-simulation-v1 | `src/arxiv_daily_push/simulation.py`, `src/arxiv_daily_push/cli.py` |
-| MOD-ADP-032 | All-arXiv Phase 12 scan queue delivery gate | deterministic source selection and delivery gate | Build all-arXiv daily input from bounded primary archive scans, persist ROI-ranked queue state, and require Release-hosted video artifact links before production email evidence can count | active | adp-all-arxiv-scan-v1 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/scheduled_execution.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
+| MOD-ADP-032 | All-arXiv Phase 12 scan queue delivery gate | deterministic source selection and delivery gate | Build all-arXiv daily input from bounded primary archive scans, persist ROI-ranked queue state, and require Release-hosted `.mp4` video artifact links before production email evidence can count | active | adp-all-arxiv-scan-v1 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/scheduled_execution.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
+| MOD-ADP-033 | Phase 12 cloud production enablement gate | deterministic cloud workflow and media evidence validator | Verify GitHub-hosted workflow contracts, live all-arXiv 20-bucket dry-run readiness, real lightweight MP4 artifact rendering, and disabled production side effects before Release/SMTP manual tests | active | adp-phase12-cloud-enablement-v1 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/video.py`, `.github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml` |
 
 ## B. Assumptions
 
@@ -125,7 +126,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-031 validates production launch readiness across PR merged/non-draft state, expected head SHA binding, workflow contract readiness, durable external readiness refs, explicit launch confirmation, and no-side-effect safety.
 - FORM-ADP-032 validates production refs template generation, GitHub metadata discovery, provisioning audit workflow, downloaded audit artifact review, and readiness across required runner, SMTP secret-name, Release target, workflow variable, durable-ref, no-secret-input, redacted discovery-error, audit artifact refs, and no-side-effect gates.
 - FORM-ADP-033 validates the two-day simulation across consecutive dates, mocked scheduled daily runs, mocked SMTP/Release evidence, trial ledger appends, unique source/publication IDs, no secret leakage, no Codex auth read, no network fetch, and no production acceptance claim.
-- FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
+- FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 
 ## D. Parameters
 
@@ -163,6 +164,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 11 production refs readiness parameters: PARAM-ADP-154 through PARAM-ADP-159 plus PARAM-ADP-162, PARAM-ADP-163, PARAM-ADP-165, and PARAM-ADP-166.
 - Active Phase 11 two-day simulation parameters: PARAM-ADP-167 through PARAM-ADP-169.
 - Active Phase 12 all-arXiv scan queue delivery parameters: PARAM-ADP-170 through PARAM-ADP-176.
+- Active Phase 12 cloud production enablement parameters: PARAM-ADP-177 through PARAM-ADP-180.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -240,8 +242,8 @@ Releases, schedule jobs, render media, or download models.
 
 The production trial bootstrap gate validates the GitHub workflow and runbook
 used to start the real trial path. The workflow is manual-only, requires
-`confirm_production_trial=true`, targets a private self-hosted runner label,
-runs `adp preflight-production` before project tests, uploads the preflight JSON
+`confirm_production_trial=true`, targets GitHub-hosted `ubuntu-latest`,
+runs `adp preflight-production` before project tests, installs/checks `ffmpeg`, uploads the preflight JSON
 artifact, and keeps cron scheduling, Release upload, and SMTP sending disabled
 in bootstrap mode.
 
@@ -384,7 +386,7 @@ matched to its own resource gate evidence.
 - Trial resource evidence without a durable resource ref -> resource evidence blocked.
 - Missing production command, secret environment key, disk threshold, memory threshold, Git artifact hygiene, or local cache/staging cleanliness -> production preflight blocked.
 - Production preflight never logs secret values and never reads Codex auth.
-- Trial bootstrap without manual confirmation, self-hosted runner targeting, preflight-first ordering, artifact upload, GitHub secret-name mapping, or runbook evidence path -> bootstrap validation blocked.
+- Trial bootstrap without manual confirmation, GitHub-hosted runner targeting, preflight-first ordering, artifact upload, GitHub secret-name mapping, or runbook evidence path -> bootstrap validation blocked.
 - Trial bootstrap never enables cron, Release upload, SMTP sending, secret value logging, or Codex auth access.
 - Live arXiv ingest with network/TLS/API/Atom errors -> source batch blocked.
 - Live arXiv ingest with only previously seen source IDs -> source batch blocked to avoid duplicate publication.
@@ -404,8 +406,9 @@ matched to its own resource gate evidence.
 - All-arXiv scan plan missing a primary archive bucket or collapsing to `cat:cs.AI` -> Phase 12 daily input blocked.
 - All-arXiv daily selection chooses one new high-value candidate first, otherwise consumes a queued high-value candidate, otherwise blocks if no candidate meets the minimum threshold.
 - Phase 12 candidate queue persists high-value unselected candidates as a small JSON artifact and never stores PDFs, media, model weights, or secrets.
-- Scheduled production email cannot count as production-ready unless it includes Chinese lesson content, candidate queue summary, and a GitHub Release-hosted video artifact link.
-- Production refs discovery without `gh`, with failed GitHub metadata access, missing runner label, missing SMTP secret names, missing workflow variables, empty `ADP_RELEASE_TARGET`, or secret-like input -> refs report blocked or redacted discovery error.
+- Scheduled production email cannot count as production-ready unless it includes Chinese lesson content, candidate queue summary, and a GitHub Release-hosted `.mp4` video artifact link.
+- Production refs input without cloud runner evidence, missing SMTP secret names, missing workflow variables, empty `ADP_RELEASE_TARGET`, or secret-like input -> refs report blocked or redacted discovery error.
+- Phase 12 cloud dry-run without 20 verified primary archive buckets, sample daily input, or real MP4 render evidence -> production enablement blocked.
 - Production pass with any missing requirement -> acceptance validation error.
 
 ## G. Validation
@@ -424,10 +427,9 @@ Uncovered planned scenarios:
 - Claim extraction from paper text/PDF.
 - TTS/video sample gates.
 - Live 30-day operational trial evidence.
-- GitHub self-hosted runner, private Release, and real email transport health.
-- GitHub metadata discovery on the actual private runner after owner provisioning.
-- Actual production preflight pass on a provisioned runner with SMTP, Release, and media dependencies installed.
-- Actual 30-day trial start and scheduled daily run execution on the provisioned runner.
+- GitHub-hosted cloud dry-run workflow run, private Release, and real email transport health.
+- Actual production preflight pass on GitHub-hosted Actions with SMTP, Release, and media dependencies installed.
+- Actual 30-day trial start and scheduled daily run execution on the default branch.
 - Local Python HTTPS certificate validation for `https://export.arxiv.org/api/query` currently blocks live source ingest on this machine.
 - Real SMTP delivery against the provisioned production SMTP server and archived message evidence.
 - Actual weekly/monthly replay execution archived under a durable GitHub Actions artifact or private Release ref.

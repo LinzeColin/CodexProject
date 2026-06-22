@@ -4,18 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       confirm_trial_start:
-        description: "Set true only when default-branch runner, SMTP, Release, source, and preflight prerequisites are provisioned."
+        description: "Set true only when default-branch cloud runner, SMTP, Release, source, and preflight prerequisites are provisioned."
         required: true
         default: "false"
         type: choice
         options:
           - "false"
           - "true"
-      runner_label:
-        description: "Private self-hosted runner label for arXiv Daily Push."
-        required: true
-        default: "arxiv-daily-push"
-        type: string
       generated_at:
         description: "Optional ISO timestamp for deterministic evidence. Empty uses current UTC."
         required: false
@@ -40,7 +35,7 @@ jobs:
             echo "## arXiv Daily Push trial start evidence"
             echo "- status: skipped"
             echo "- reason: confirm_trial_start was not true"
-            echo "- no self-hosted runner job was started"
+            echo "- no cloud runner evidence job was started"
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Report confirmed start gate
         if: inputs.confirm_trial_start == 'true'
@@ -48,7 +43,7 @@ jobs:
           {
             echo "## arXiv Daily Push trial start evidence"
             echo "- status: confirmed"
-            echo "- runner_label: ${{ inputs.runner_label }}"
+            echo "- runner: ubuntu-latest"
             echo "- real SMTP requested: ${{ vars.ADP_ALLOW_SMTP_SEND || 'false' }}"
             echo "- real Release requested: ${{ vars.ADP_ALLOW_RELEASE_UPLOAD || 'false' }}"
           } >> "$GITHUB_STEP_SUMMARY"
@@ -56,9 +51,7 @@ jobs:
   start-gate:
     needs: guard
     if: inputs.confirm_trial_start == 'true'
-    runs-on:
-      - self-hosted
-      - "${{ inputs.runner_label }}"
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
       ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
@@ -66,8 +59,8 @@ jobs:
       ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME }}
       ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
       ADP_RELEASE_TARGET: ${{ vars.ADP_RELEASE_TARGET }}
-      ADP_SELF_HOSTED_RUNNER_LABEL: ${{ inputs.runner_label }}
       ADP_ARXIV_MAX_RESULTS_PER_CATEGORY: ${{ vars.ADP_ARXIV_MAX_RESULTS_PER_CATEGORY }}
+      ADP_ARXIV_POLITE_DELAY_SECONDS: ${{ vars.ADP_ARXIV_POLITE_DELAY_SECONDS }}
       ADP_CANDIDATE_QUEUE_INPUT_PATH: ${{ vars.ADP_CANDIDATE_QUEUE_INPUT_PATH }}
       ADP_RECENT_SOURCE_IDS: ${{ vars.ADP_RECENT_SOURCE_IDS }}
       ADP_ALLOW_SMTP_SEND: ${{ vars.ADP_ALLOW_SMTP_SEND }}
@@ -76,6 +69,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Install cloud MP4 runtime
+        shell: bash
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          ffmpeg -version | head -n 1
       - name: Resolve generated_at
         id: generated_at
         shell: bash
@@ -123,12 +124,59 @@ jobs:
         run: |
           set +e
           output="$RUNNER_TEMP/adp-trial-start-production-refs.json"
+          readiness_input="$RUNNER_TEMP/adp-trial-start-production-refs-input.json"
+          python3 - "$readiness_input" <<'PY'
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          repo = "${{ github.repository }}"
+          run_id = "${{ github.run_id }}"
+          release_target = os.environ.get("ADP_RELEASE_TARGET", "")
+          Path(sys.argv[1]).write_text(json.dumps({
+              "runner": {
+                  "ready": True,
+                  "label": "ubuntu-latest",
+                  "evidence_ref": f"github-hosted://{repo}/actions/runs/{run_id}/ubuntu-latest",
+              },
+              "smtp_secrets": {
+                  "ready": all(os.environ.get(name) for name in (
+                      "ADP_SMTP_HOST",
+                      "ADP_SMTP_PORT",
+                      "ADP_SMTP_USERNAME",
+                      "ADP_SMTP_PASSWORD",
+                  )),
+                  "secret_names": [
+                      "ADP_SMTP_HOST",
+                      "ADP_SMTP_PORT",
+                      "ADP_SMTP_USERNAME",
+                      "ADP_SMTP_PASSWORD",
+                  ],
+                  "evidence_ref": f"github-actions://{repo}/actions/runs/{run_id}/secrets/smtp-names-only",
+              },
+              "release_target": {
+                  "ready": bool(release_target),
+                  "var_name": "ADP_RELEASE_TARGET",
+                  "target": release_target,
+                  "evidence_ref": f"github-actions://{repo}/actions/runs/{run_id}/vars/ADP_RELEASE_TARGET",
+              },
+              "workflow_vars": {
+                  "ready": True,
+                  "var_names": [
+                      "ADP_RELEASE_TARGET",
+                      "ADP_ALLOW_SMTP_SEND",
+                      "ADP_ALLOW_RELEASE_UPLOAD",
+                  ],
+                  "evidence_ref": f"github-actions://{repo}/actions/runs/{run_id}/vars/delivery-gates",
+              },
+          }, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
           PYTHONDONTWRITEBYTECODE=1 \
           PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_production_refs" \
           PYTHONPATH=arxiv-daily-push/src \
-            python3 -m arxiv_daily_push discover-production-refs \
-              --repo "${{ github.repository }}" \
-              --runner-label "${{ inputs.runner_label }}" \
+            python3 -m arxiv_daily_push plan-production-refs \
+              --readiness-input "$readiness_input" \
               --generated-at "${{ steps.generated_at.outputs.value }}" \
               --json > "$output"
           code=$?
@@ -261,6 +309,7 @@ jobs:
           artifact_dir="$RUNNER_TEMP/adp-trial-start-phase12-artifacts"
           queue_output="$RUNNER_TEMP/adp-trial-start-candidate-queue.json"
           max_results="${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3}"
+          polite_delay="${ADP_ARXIV_POLITE_DELAY_SECONDS:-3}"
           daily_date="$(python3 - "${{ steps.generated_at.outputs.value }}" <<'PY'
           from datetime import datetime
           from zoneinfo import ZoneInfo
@@ -293,6 +342,7 @@ jobs:
               --generated-at "${{ steps.generated_at.outputs.value }}" \
               --timezone "Australia/Sydney" \
               --max-results-per-category "$max_results" \
+              --polite-delay-seconds "$polite_delay" \
               --artifact-dir "$artifact_dir" \
               --queue-output "$queue_output" \
               "${queue_args[@]}" \
@@ -329,12 +379,54 @@ jobs:
           path: ${{ steps.source.outputs.candidate_queue_path }}
           if-no-files-found: error
           retention-days: 35
+      - name: Render trial start MP4 artifact
+        id: mp4
+        if: always() && steps.source.outputs.path != ''
+        shell: bash
+        run: |
+          set +e
+          video="$RUNNER_TEMP/adp-trial-start-daily-video.mp4"
+          report="$RUNNER_TEMP/adp-trial-start-daily-video-report.json"
+          transcript="$RUNNER_TEMP/adp-trial-start-daily-video.txt"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_mp4" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push render-lightweight-mp4 \
+              --daily-input "${{ steps.source.outputs.path }}" \
+              --output "$video" \
+              --generated-at "${{ steps.generated_at.outputs.value }}" \
+              --duration-seconds "${ADP_VIDEO_DURATION_SECONDS:-12}" \
+              --json > "$report"
+          code=$?
+          cat "$report"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          printf 'video_path=%s\n' "$video" >> "$GITHUB_OUTPUT"
+          printf 'report_path=%s\n' "$report" >> "$GITHUB_OUTPUT"
+          printf 'transcript_path=%s\n' "$transcript" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload trial start MP4 video
+        if: always() && steps.mp4.outputs.report_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-trial-start-mp4-video
+          path: |
+            ${{ steps.mp4.outputs.video_path }}
+            ${{ steps.mp4.outputs.report_path }}
+            ${{ steps.mp4.outputs.transcript_path }}
+          if-no-files-found: error
+          retention-days: 35
       - name: Stop if source ingest blocked
         if: steps.source.outputs.exit_code != '0'
         shell: bash
         run: |
           echo "all-arXiv Phase 12 source input blocked; stopping before SMTP, Release, or trial start gate work"
           exit "${{ steps.source.outputs.exit_code }}"
+      - name: Stop if MP4 render blocked
+        if: steps.mp4.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "trial start MP4 render blocked; stopping before SMTP, Release, or trial start gate work"
+          exit "${{ steps.mp4.outputs.exit_code }}"
       - name: Run SMTP delivery probe
         id: smtp
         shell: bash
@@ -388,6 +480,9 @@ jobs:
               --title "arXiv Daily Push trial start probe" \
               --notes "Trial start Release delivery probe" \
               --asset "$asset" \
+              --asset "${{ steps.mp4.outputs.video_path }}" \
+              --asset "${{ steps.mp4.outputs.report_path }}" \
+              --asset "${{ steps.mp4.outputs.transcript_path }}" \
               --generated-at "${{ steps.generated_at.outputs.value }}" \
               "${allow_args[@]}" \
               --json > "$output"
@@ -395,6 +490,9 @@ jobs:
           cat "$output"
           printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
           printf 'asset=%s\n' "$asset" >> "$GITHUB_OUTPUT"
+          printf 'video_path=%s\n' "${{ steps.mp4.outputs.video_path }}" >> "$GITHUB_OUTPUT"
+          printf 'video_report_path=%s\n' "${{ steps.mp4.outputs.report_path }}" >> "$GITHUB_OUTPUT"
+          printf 'transcript_path=%s\n' "${{ steps.mp4.outputs.transcript_path }}" >> "$GITHUB_OUTPUT"
           printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
           exit 0
       - name: Upload trial start Release delivery
@@ -405,6 +503,9 @@ jobs:
           path: |
             ${{ steps.release.outputs.path }}
             ${{ steps.release.outputs.asset }}
+            ${{ steps.release.outputs.video_path }}
+            ${{ steps.release.outputs.video_report_path }}
+            ${{ steps.release.outputs.transcript_path }}
           if-no-files-found: error
           retention-days: 35
       - name: Build trial start gate
@@ -441,7 +542,7 @@ jobs:
               --release-delivery "${{ steps.release.outputs.path }}" \
               --generated-at "${{ steps.generated_at.outputs.value }}" \
               --default-branch-ref "git://${{ github.repository }}/${{ github.ref_name }}@${{ github.sha }}" \
-              --runner-ref "github-runner://${{ inputs.runner_label }}/${RUNNER_NAME:-unknown}" \
+              --runner-ref "github-hosted://${{ github.repository }}/actions/runs/${{ github.run_id }}/ubuntu-latest/${RUNNER_NAME:-unknown}" \
               --preflight-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/adp-trial-start-preflight" \
               --source-ingest-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/adp-trial-start-all-arxiv-daily-input" \
               --smtp-ref "$smtp_ref" \

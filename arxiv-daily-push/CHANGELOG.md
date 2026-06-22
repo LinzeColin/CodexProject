@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.1 - 2026-06-22
+
+- Added Phase 12 cloud production-enablement workflow for GitHub-hosted live all-arXiv dry-run evidence across all 20 primary archive buckets.
+- Added `adp run-live-all-arxiv-dry-run` and `adp render-lightweight-mp4` evidence paths that produce a live-selected sample daily input and a real lightweight `.mp4` artifact.
+- Migrated arXiv Daily Push scheduled, trial-start, provisioning-audit, and production-trial workflows away from self-hosted runner targeting to GitHub-hosted `ubuntu-latest`.
+- Tightened email video-link gating so JSON video manifests no longer satisfy production-ready email evidence; a GitHub Release `.mp4` asset link is required.
+- Kept production schedule, SMTP sending, and Release uploading disabled by default pending cloud dry-run, Release, and manual Gmail SMTP evidence.
+
 ## 0.12.0 - 2026-06-22
 
 - Added Phase 12 all-arXiv primary archive scanning via `adp plan-all-arxiv-scan` and `adp build-all-arxiv-daily-input`.
