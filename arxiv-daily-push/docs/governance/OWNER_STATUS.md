@@ -96,7 +96,7 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:ac95efda75d050e738377f46a37992acfd9dad1a2fff047ccd3a9e40bde4ad9e`
+- source_snapshot_hash: `sha256:a8f3a229dfde51ded7413cb7761891c70b2dafdc572bb76b2e169caafae4b416`
 - snapshot_event_time: `2026-06-22T18:20:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.14.0`
