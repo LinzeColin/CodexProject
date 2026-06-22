@@ -555,6 +555,15 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         sync.root_sync_requirements(validation, ["governance/projects.yaml"], covered)
         self.assertFalse(validation.errors)
 
+    def test_review8_manifest_only_root_change_does_not_require_test_marker(self) -> None:
+        sync = load_sync_module()
+        changed = ["governance/run_manifests/GOV-REVIEW8-TEST.json"]
+        validation = sync.SyncValidation()
+
+        sync.root_sync_requirements(validation, changed, changed)
+
+        self.assertFalse(validation.errors)
+
     def test_sync_changed_only_semantic_checks_only_changed_projects(self) -> None:
         sync = load_sync_module()
         project_a = {"project_id": "A", "path": "A"}
