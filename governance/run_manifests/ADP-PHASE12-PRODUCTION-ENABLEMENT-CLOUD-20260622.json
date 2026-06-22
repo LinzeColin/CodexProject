@@ -81,7 +81,8 @@
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_refs_cloud PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_production_refs.py arxiv-daily-push/tests/test_production_launch.py -q",
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_all5 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_semantic6 python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_gov8 python3 scripts/validate_project_governance.py --changed-only --enforce-sync"
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_gov8 python3 scripts/validate_project_governance.py --changed-only --enforce-sync",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_cloud_pycache_push_trigger PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_cloud_dry_run_workflow.py -q"
   ],
   "test_results": [
     "focused scan/video/preflight/scheduler/cloud workflow tests: 23 tests OK",
@@ -99,7 +100,8 @@
     "final semantic extractor: 35 active formulas and 179 active parameters checked with no errors",
     "final changed-only governance sync: errors 0 warnings 0; all registered projects errors 0 warnings 0",
     "final manifest JSON, development_events JSONL, CSV width checks: pass",
-    "final git diff --check: pass"
+    "final git diff --check: pass",
+    "phase12 cloud dry-run push trigger workflow test: 1 test OK"
   ],
   "evidence_refs": [
     "arxiv-daily-push/docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md",

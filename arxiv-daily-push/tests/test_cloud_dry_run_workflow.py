@@ -13,6 +13,8 @@ class CloudDryRunWorkflowTests(unittest.TestCase):
         workflow = WORKFLOW.read_text(encoding="utf-8")
 
         self.assertIn("runs-on: ubuntu-latest", workflow)
+        self.assertIn("push:", workflow)
+        self.assertIn("adp-phase12-cloud-enable", workflow)
         self.assertNotIn("self-hosted", workflow)
         self.assertIn("contents: read", workflow)
         self.assertNotIn("contents: write", workflow)
