@@ -12,15 +12,15 @@ Governance spec version: `1.0.0`
 | C | Legacy Phase 5-6 evidence gate and text lesson | Claim Ledger and lesson verification pass |
 | D | Legacy Phase 7-10 TTS, video, local daily pipeline, and GitHub automation | media, resource, runner, and release gates pass |
 | E | Legacy Phase 11-12 weekly/monthly, all-arXiv queue delivery, manual delivery tests, and production handoff | operational acceptance remains blocked until final trial evidence passes |
-| S1-A | Review8 V4 Stage 1 Window A | arXiv single-source baseline, owner controls, local data model, runtime recovery, and migration package |
-| S2 | Review8 V4 Stage 2 | additional source/board promotion only after Stage 1 arXiv production acceptance |
+| S1-A | V5 Stage 1 Window A | B1/arXiv text-first baseline, owner controls, local data model, queue/ledger, B1 teaching email, runtime recovery, and migration package |
+| S2 | V5 Stage 2 | additional source/board promotion only after Stage 1 arXiv production acceptance |
 
 ## Task Summary
 
 machine_summary:
 
-- task_count: 58
-- acceptance_count: 53
+- task_count: 59
+- acceptance_count: 54
 
 ## Delivery Tasks
 
@@ -75,11 +75,12 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035 | E | completed | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | 0.12.4 repair merged to main and GitHub Actions manual delivery run 27932072771 completed successfully with Release/Gmail delivery artifacts; this is not 30-day production acceptance | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_INTERNAL_RELEASE_DEDUPE.md`; `https://github.com/LinzeColin/CodexProject/actions/runs/27932072771` |
 | S1-01-READONLY-AUDIT-001 | S1-A | completed | ADP-ACC-S1-01-READONLY-AUDIT | Review8 V4 package hashes, implementation gaps, current validation baseline, and GitHub run evidence verified without file edits | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S1-02-BASELINE-LOCK-TRACEABILITY-001 | S1-A | completed | ADP-ACC-S1-02-BASELINE-LOCK | V4 two-stage baseline imported with hash lock, version drift repaired, delivery/traceability updated, and initial project validation passed | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-02-V5-BASELINE-GOVERNANCE-CALIBRATION-001 | S1-A | completed | ADP-ACC-S1-02-V5-BASELINE-GOVERNANCE-CALIBRATION | V5 text-delivery baseline imported and locked; conflicting V4/media requirements demoted for current Stage 1; V5 hashes, focused owner/stage1/CLI tests, and semantic extraction pass | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/pursuing_goal/START_HERE_MASTER_TASK_PACK_TWO_STAGE_TEXT_DELIVERY_V5.md`; `docs/phase_records/PHASE_S1_02_V5_BASELINE_GOVERNANCE_CALIBRATION.md` |
 | S1-03-OWNER-CONTROLS-001 | S1-A | completed | ADP-ACC-S1-03-OWNER-CONTROLS | owner controls config validates, 10 weight groups pass, four owner views generate, semantic extractor checks 37 formulas/265 active parameters, and ADP project validation passes | `config/owner_controls.yaml`; `docs/owner/OWNER_CONSOLE.md`; `tests/test_owner_controls.py` |
 | S1-04-SQLITE-DATA-MODEL-001 | S1-A | completed | ADP-ACC-S1-04-SQLITE-DATA-MODEL | SQLite/WAL/FTS5 schema migration, inspection, SourceItem persistence, FTS search, rollback, semantic extraction, and focused storage/CLI tests pass without production side effects | `src/arxiv_daily_push/storage.py`; `tests/test_storage.py`; `governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json` |
 | S1-05-ARXIV-CONNECTOR-CONTRACT-001 | S1-A | completed | ADP-ACC-S1-05-ARXIV-CONNECTOR-CONTRACT | Stage 1 source registry, arXiv connector contract, owner-controls-backed source list, fixture validation, canary cap enforcement, CLI/schema/tests, and governance traceability pass without production side effects | `src/arxiv_daily_push/source_registry.py`; `tests/test_source_registry.py`; `governance/run_manifests/ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-20260622.json` |
-| S1-06-SCORING-QUEUE-LEDGER-001 | S1-A | ready | ADP-ACC-S1-06-SCORING-QUEUE-LEDGER | Research scoring, 10,000 queue behavior, and content ledger | `docs/pursuing_goal/BASELINE_LOCK.md` |
-| S1-07-B1_REPORT_EMAIL_MEDIA-001 | S1-A | planned | ADP-ACC-S1-07-B1-REPORT-EMAIL-MEDIA | B1 report, Claim evidence, email preview, and media interface | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-06-SCORING-QUEUE-LEDGER-001 | S1-A | completed | ADP-ACC-S1-06-SCORING-QUEUE-LEDGER | Stage 1 scoring, 10,000 active queue cap, 365-day boundary, reason codes, source cap fixture, stable tie ordering, and canonical CONTENT_LEDGER rows pass focused tests without production side effects | `src/arxiv_daily_push/stage1_queue.py`; `tests/test_stage1_queue.py`; `governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json` |
+| S1-07-B1_REPORT_EMAIL_TEXT-001 | S1-A | planned | ADP-ACC-S1-07-B1-REPORT-EMAIL-TEXT | B1/arXiv explanatory teaching report, Claim evidence, Chinese email text/HTML preview, and Markdown/HTML/JSON audit artifacts without video requirement | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S1-08-LOCAL_RUNTIME_RECOVERY-001 | S1-A | planned | ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY | Tick/watchdog, backup/restore, runtime audit, and scheduler controls | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S1-09-MIGRATION_PACKAGE-001 | S1-A | planned | ADP-ACC-S1-09-MIGRATION-PACKAGE | Low-resource integration evidence and new-machine migration checklist | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | daily email front-end now uses human-scannable Chinese sections, compact arXiv subject, 12-second video link, action guidance, concise evidence, and hides ROI scoring in backend artifacts | `docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md` |

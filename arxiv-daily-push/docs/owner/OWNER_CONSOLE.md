@@ -1,9 +1,9 @@
 # Owner Console
 
-- generated_at: 2026-06-22T16:30:00+10:00
+- generated_at: 2026-06-22T21:00:00+10:00
 - generated_from: `config/owner_controls.yaml`
 - config_version: `owner-controls-v1`
-- task_id: `S1-03-OWNER-CONTROLS-001`
+- task_id: `S1-06-SCORING-QUEUE-LEDGER-001`
 - model_id: `adp-owner-controls-v1`
 - validation_status: `pass`
 - production_enabled: `false`
@@ -25,12 +25,12 @@ Owner controls are installed for Stage 1 Window A. Production remains disabled; 
 - max_active_items: `10000`
 - max_temp_cache_gb: `2`
 - window_a_max_online_arxiv_metadata: `10`
-- ranking_change_preview: `NOT_RUN_UNTIL_S1_06_REPLAY_DATA_EXISTS`
+- ranking_change_preview: `S1_06_DETERMINISTIC_QUEUE_READY_NO_PRODUCTION_REPLAY_DATA`
 
 ## Required Human Decisions
 
 - No production enablement decision is accepted by this file alone.
-- S1-04 must add the unified local SQLite model before broad source ingestion or queue replay can be trusted.
+- S1-06 deterministic queue fixtures are available; production replay remains unclaimed until later runtime evidence exists.
 
 ## Commands
 
