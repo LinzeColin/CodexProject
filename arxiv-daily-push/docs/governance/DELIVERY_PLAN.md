@@ -158,7 +158,9 @@ The machine-readable task source is `delivery_tasks.yaml`.
 
 ### `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`
 
-- status: `planned`
+- status: `in_progress`
 - objective: collect controlled live B1/arXiv email delivery evidence across two real natural days on the target runner before production acceptance.
 - acceptance_ids: `ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS`
+- evidence: `github-actions://LinzeColin/CodexProject/actions/runs/27987189886/artifacts/7806168015`, `governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json`, `arxiv-daily-push/docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md`
+- current_result: `PREFLIGHT_ONLY`; GitHub-hosted live all-arXiv dry-run passed, but two natural-day controlled B1 Gmail SMTP delivery evidence is still missing.
 - target_version: `0.22.0`

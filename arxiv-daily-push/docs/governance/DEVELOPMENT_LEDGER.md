@@ -10,11 +10,11 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.21.0
 - Current phase: S1-A
-- Current gate: ADP-S1-11-HISTORICAL-B1-PREVIEWS-READY
-- Confirmed iteration count: 63
+- Current gate: ADP-S1-12-LIVE-ARXIV-PREFLIGHT-PARTIAL
+- Confirmed iteration count: 64
 - Reconstructed event count: 0
 - Current task: S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001
-- Blockers: two controlled live B1 email days, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
+- Blockers: two controlled live B1 email days, real Gmail SMTP delivery evidence, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
 
@@ -25,7 +25,7 @@ The append-only machine record is `development_events.jsonl`.
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
 | E | Weekly/monthly trial, all-arXiv queue delivery, and production handoff | completed | Phase 11 production gates plus Phase 12 all-arXiv scan, candidate queue, ROI ranking, daily lead, Release video-link email gate, and production blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`; `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
-| S1-A | Review8 V5 Stage 1 Window A | in_progress | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, and 30 historical B1 previews pass within low-resource limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md` |
+| S1-A | Review8 V5 Stage 1 Window A | in_progress | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, 30 historical B1 previews, live arXiv preflight, and two controlled live B1 email days pass within Stage 1 limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`; `docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md` |
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
@@ -1534,3 +1534,27 @@ None for this new project baseline.
 - Remaining risks: Historical fixtures can still overfit; S1-12 must prove live target-runner arXiv/network/SMTP evidence before owner-facing production claims.
 - Rollback: Remove `stage1_historical_previews.py`, historical preview CLI dispatch/tests, restore version 0.20.0, and revert S1-11 governance records and run manifest.
 - Next step: S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001
+
+### `ITER-20260623-S1-011`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from GitHub Actions PR #67 workflow run `27987189886`, job `82831357067`, artifact `7806168015`, and artifact JSON inspection.
+- Version before: 0.21.0
+- Version after: 0.21.0
+- Base commit: 4ef8e2f614a4ebfcbd6a81907049d63ad503b3c1
+- Result commit: PENDING
+- Task IDs: S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001
+- Goal: Record target-runner live arXiv preflight evidence for S1-12 without claiming controlled Gmail SMTP delivery or production acceptance.
+- Assumptions: PR #67 Phase 12 cloud dry-run is target-runner live arXiv evidence only; it does not prove B1 live email delivery, two natural-day delivery, real Gmail SMTP sending, scheduler enablement, Release upload, or `ARXIV_PRODUCTION_ACCEPTED`.
+- Files changed: S1-12 delivery task, delivery plan, version matrix current gate, phase preflight record, development ledger/event, run manifest, generated status views, and root governance test expectations.
+- Model changes: No model implementation changed; existing MOD-ADP-033 live all-arXiv dry-run evidence is referenced.
+- Formula changes: No formula implementation changed.
+- Parameter changes: No parameter value changed.
+- Commands run: GitHub Actions artifact inspection; project/all/changed-only governance validators; root governance tests; information quality validator; JSON/CSV parse checks; git diff check; cache hygiene check.
+- Test results: GitHub Actions PR #67 live all-ArXiv dry-run passed with 20/20 archives verified, max_results_per_category 1, artifact digest `sha256:2011bf655a2d8237b5c20f3111c70d6242a4b6582b5e90069d1f63d43a4da81a`, and SMTP/Release/scheduler disabled. Final local validator results are recorded in the run manifest.
+- Successes: S1-12 now has target-runner live arXiv preflight evidence and a durable artifact reference instead of a pure `NOT_RUN` task state.
+- Failures: Two real natural-day controlled B1 Gmail SMTP delivery evidence is still absent; this iteration remains `in_progress`.
+- Decisions: Keep product version at 0.21.0 because this iteration records governance evidence only and does not change product behavior, model formulas, or active parameters.
+- Remaining risks: The live arXiv preflight used all 20 primary archives while the S1 Window A low-resource guidance still requires careful operator control; real SMTP credentials and two-day delivery evidence remain the blocking gate.
+- Rollback: Revert the S1-12 preflight phase record, run manifest, delivery task status change, ledger/event entry, generated status views, and test expectation update.
+- Next step: Execute controlled B1 Gmail SMTP delivery evidence for day 1 of 2 on the target runner, with production scheduler still disabled.

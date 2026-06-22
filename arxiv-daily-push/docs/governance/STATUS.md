@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:3339f730e3fefa68b02e0f99f446252c0d1969c6b2f7327e80ed6efb38008172`
-- snapshot_event_time: `2026-06-23T07:30:00+10:00`
+- source_snapshot_hash: `sha256:e6305c6ad59a0a44bd930aa9f2db820b0564d3c754561443d9d26eed1e42559d`
+- snapshot_event_time: `2026-06-23T08:17:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.21.0`
-- Phase/Gate: `S1-A / ADP-S1-11-HISTORICAL-B1-PREVIEWS-READY`
+- Phase/Gate: `S1-A / ADP-S1-12-LIVE-ARXIV-PREFLIGHT-PARTIAL`
 - Models/Formulas/Parameters total: `44 / 46 / 348`
 - Active formulas/parameters: `46 / 331`
 - Machine checked formulas/parameters: `46 / 331`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `ADP-S1-11-HISTORICAL-B1-PREVIEWS-READY`
+- Release gate: `ADP-S1-12-LIVE-ARXIV-PREFLIGHT-PARTIAL`
 - Next executable task: `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`
-- Pending/stale events: `73`
+- Pending/stale events: `74`
 - Tree-bound events: `0`
 - Commit-bound events: `0`
 - Legacy unbound events: `54`

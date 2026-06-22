@@ -1623,7 +1623,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1-09-MIGRATION_PACKAGE-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-10-POST_MIGRATION_BOOTSTRAP-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-11-HISTORICAL_B1_PREVIEWS-001"]["status"], "completed")
-        self.assertEqual(task_by_id["S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"]["status"], "planned")
+        self.assertEqual(task_by_id["S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"]["status"], "in_progress")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "ready")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "ready")
 
@@ -1632,17 +1632,17 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-072")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-072")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-073")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-073")
         self.assertEqual(info["product_version"], "0.21.0")
-        self.assertEqual(info["current_gate"], "ADP-S1-11-HISTORICAL-B1-PREVIEWS-READY")
+        self.assertEqual(info["current_gate"], "ADP-S1-12-LIVE-ARXIV-PREFLIGHT-PARTIAL")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-S1-11-HISTORICAL-B1-PREVIEWS-20260623.json",
+            "governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json",
         )
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.21.0", rendered)
-        self.assertIn("ADP-S1-11-HISTORICAL-B1-PREVIEWS-READY", rendered)
+        self.assertIn("ADP-S1-12-LIVE-ARXIV-PREFLIGHT-PARTIAL", rendered)
         self.assertIn("S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001", rendered)
         self.assertIn("controlled live B1", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
