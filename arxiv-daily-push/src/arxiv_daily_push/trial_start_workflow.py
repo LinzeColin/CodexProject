@@ -18,15 +18,17 @@ REQUIRED_START_WORKFLOW_ARTIFACTS = (
     "adp-trial-start-launch-readiness",
     "adp-trial-start-bootstrap-plan",
     "adp-trial-start-scheduler-plan",
-    "adp-trial-start-source-batch",
+    "adp-trial-start-all-arxiv-daily-input",
+    "adp-trial-start-phase12-artifacts",
+    "adp-trial-start-candidate-queue",
     "adp-trial-start-smtp-delivery",
     "adp-trial-start-release-delivery",
     "adp-trial-start-gate",
 )
 REQUIRED_START_WORKFLOW_VARS = (
     "ADP_RELEASE_TARGET",
-    "ADP_ARXIV_QUERY",
-    "ADP_ARXIV_MAX_RESULTS",
+    "ADP_ARXIV_MAX_RESULTS_PER_CATEGORY",
+    "ADP_CANDIDATE_QUEUE_INPUT_PATH",
     "ADP_RECENT_SOURCE_IDS",
     "ADP_ALLOW_SMTP_SEND",
     "ADP_ALLOW_RELEASE_UPLOAD",
@@ -59,31 +61,36 @@ def build_trial_start_workflow_plan(path: Path | str | None = None, *, generated
         ),
         _check(
             "preflight_before_source_and_delivery",
-            _appears_before(workflow_text, "preflight-production", "Fetch live source batch")
+            _appears_before(workflow_text, "preflight-production", "Build all-arXiv trial input")
             and _appears_before(workflow_text, "Stop if preflight blocked", "Run SMTP delivery probe")
             and _appears_before(workflow_text, "Stop if preflight blocked", "Run Release delivery probe"),
             "workflow must run and pass preflight before source, SMTP, or Release probes",
         ),
         _check(
             "production_refs_before_source_and_delivery",
-            _appears_before(workflow_text, "discover-production-refs", "Fetch live source batch")
+            _appears_before(workflow_text, "discover-production-refs", "Build all-arXiv trial input")
             and _appears_before(workflow_text, "Stop if production refs blocked", "Run SMTP delivery probe")
             and _appears_before(workflow_text, "Stop if production refs blocked", "Run Release delivery probe"),
             "workflow must discover production refs before source, SMTP, or Release probes",
         ),
         _check(
             "launch_readiness_before_source_and_delivery",
-            _appears_before(workflow_text, "plan-production-launch", "Fetch live source batch")
-            and _appears_before(workflow_text, "--production-refs-report", "Fetch live source batch")
+            _appears_before(workflow_text, "plan-production-launch", "Build all-arXiv trial input")
+            and _appears_before(workflow_text, "--production-refs-report", "Build all-arXiv trial input")
             and _appears_before(workflow_text, "Stop if launch readiness blocked", "Run SMTP delivery probe")
             and _appears_before(workflow_text, "Stop if launch readiness blocked", "Run Release delivery probe"),
             "workflow must pass launch readiness before source, SMTP, or Release probes",
         ),
         _check(
             "source_before_delivery",
-            _appears_before(workflow_text, "fetch-arxiv-latest", "Run SMTP delivery probe")
+            _appears_before(workflow_text, "build-all-arxiv-daily-input", "Run SMTP delivery probe")
             and _appears_before(workflow_text, "Stop if source ingest blocked", "Run Release delivery probe"),
-            "workflow must pass live source ingest before SMTP or Release probes",
+            "workflow must pass all-arXiv Phase 12 source input before SMTP or Release probes",
+        ),
+        _check(
+            "legacy_cs_ai_default_absent",
+            "cat:cs.AI" not in workflow_text and "ADP_ARXIV_QUERY" not in workflow_text,
+            "trial start workflow must not default to the legacy cs.AI-only scan",
         ),
         _check(
             "trial_start_gate_invoked",

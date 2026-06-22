@@ -698,3 +698,37 @@ tasks:
     target_version: "0.11.27"
     completed_version: "0.11.27"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031"
+    phase: "E"
+    objective: "Upgrade scheduled production input from a legacy cs.AI-only default to all-arXiv primary archive scanning with candidate queue persistence, ROI ranking, one daily lead paper, Release-hosted video artifact link, and email queue summary."
+    scope: "Phase 12 global scan module, CLI commands, scheduled and trial-start workflows, scheduled execution delivery gates, runbook/config examples, tests, and governance records."
+    non_scope: "No production variable enablement, no real SMTP send, no real Release upload, no secret value read, no Codex auth read, no local media/model/cache retention, no real MP4 rendering claim, and no 30-day production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE11-SCHEDULED-EXECUTION-010", "ADP-PHASE11-PRODUCTION-SCHEDULER-009", "ADP-PHASE11-TRIAL-START-WORKFLOW-019"]
+    required_files: ["src/arxiv_daily_push/global_scan.py", "src/arxiv_daily_push/cli.py", "src/arxiv_daily_push/scheduled_execution.py", "src/arxiv_daily_push/production_scheduler.py", "src/arxiv_daily_push/trial_start.py", "src/arxiv_daily_push/trial_start_workflow.py", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml", "tests/test_global_scan.py", "tests/test_scheduled_execution.py", "tests/test_production_scheduler.py", "tests/test_trial_start_workflow.py", "docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE12-ALL-ARXIV-QUEUE-DELIVERY"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_phase12_pycache_trial PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_production_scheduler.py arxiv-daily-push/tests/test_trial_start.py arxiv-daily-push/tests/test_trial_start_workflow.py -q", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync", "git diff --check"]
+    test_results: ["focused Phase 12/trial/scheduler tests: 23 tests OK", "pending final changed-only governance validation", "pending final diff check"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml", "arxiv-daily-push/tests/test_global_scan.py"]
+    risk: "Phase 12 proves code and workflow gates locally with mocked source batches; real production still requires owner-provisioned runner networking/TLS, SMTP, Release target, default-branch workflow evidence, and later real MP4 rendering hardening."
+    rollback: "Remove global_scan.py, Phase 12 CLI commands, workflow updates, delivery-package gates, tests, runbook/config/governance updates, and restore version 0.11.27."
+    target_version: "0.12.0"
+    completed_version: "0.12.0"
+    unknown_task_ids: []
+  - task_id: "ADP-PHASE12-PRODUCTION-ENABLEMENT-032"
+    phase: "E"
+    objective: "Run Phase 12 on the owner-provisioned default branch runner and enable production variables only after all-arXiv scan, candidate queue, Release video link, and SMTP evidence pass."
+    scope: "Owner-provisioned default-branch GitHub Actions run evidence, live all-arXiv scan, candidate queue restore/persist, daily lead selection, Release-hosted video artifact link, Gmail SMTP delivery to linzezhang35@gmail.com, and explicit production variable enablement."
+    non_scope: "No local CPU/cache/storage/GPU use, no secret value logging, no video email attachment, no production enablement before evidence, and no 30-day acceptance claim."
+    status: "blocked"
+    dependencies: ["ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031", "GOV-SEMANTIC-ADP-001"]
+    required_files: ["docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml", "docs/governance/STATUS.md", "docs/governance/OWNER_STATUS.md"]
+    acceptance_ids: ["ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT"]
+    test_commands: ["python3 scripts/generate_governance_dashboard.py --write", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync", "git diff --check"]
+    test_results: ["blocked until PR CI passes and owner-provisioned default-branch runner, SMTP, Release video link, and production variable evidence exists"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md", "governance/run_manifests/ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-20260622.json", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml"]
+    risk: "Production remains blocked and variables must remain disabled until all-arXiv scan, candidate queue, Release-hosted video link, and SMTP evidence pass on the owner-provisioned default-branch runner."
+    rollback: "Keep production variables disabled and remove this Phase 12 production enablement tracking task; no external state is changed by this task record."
+    target_version: "0.12.0"
+    completed_version: ""
+    unknown_task_ids: []

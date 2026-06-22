@@ -53,14 +53,30 @@ def run_two_day_simulation(
             day_generated_at = f"{day.isoformat()}T05:00:00+10:00"
             daily_input = _daily_input(day, index=index, generated_at=day_generated_at)
             asset = tmp_path / f"adp-two-day-simulation-{day.isoformat()}.json"
+            video_asset = tmp_path / f"adp-two-day-simulation-video-{day.isoformat()}.json"
             asset.write_text(json.dumps(daily_input, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
+            video_asset.write_text(
+                json.dumps(
+                    {
+                        "artifact_type": "video_manifest",
+                        "mp4_rendered": False,
+                        "video_attachment_allowed": False,
+                        "release_storage_required": "github_release",
+                        "source_id": daily_input["source_item"]["source_id"],
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                    sort_keys=True,
+                ),
+                encoding="utf-8",
+            )
             scheduled = run_scheduled_execution(
                 mode="daily-run",
                 generated_at=day_generated_at,
                 preflight_report=preflight,
                 env=env,
                 daily_input=daily_input,
-                release_asset_paths=[asset],
+                release_asset_paths=[asset, video_asset],
                 smtp_factory=_FakeSMTP,
                 release_command_resolver=lambda _name: "/usr/bin/gh",
                 release_command_runner=lambda _command: {"returncode": 0},
@@ -236,6 +252,7 @@ def _daily_input(day: date, *, index: int, generated_at: str) -> dict[str, Any]:
     stable_id = f"2606.{index:05d}"
     source_id = f"arxiv:{stable_id}"
     canonical = f"https://arxiv.org/abs/{stable_id}"
+    primary_category = "stat.ML" if index % 2 else "q-fin.PM"
     return {
         "run_id": f"simulation-daily:{day.isoformat()}:{source_id}",
         "publication_id": f"pub:simulation:{day.isoformat()}:{source_id}",
@@ -252,8 +269,8 @@ def _daily_input(day: date, *, index: int, generated_at: str) -> dict[str, Any]:
             "canonical_url": canonical,
             "metadata": {
                 "arxiv": {
-                    "primary_category": "cs.AI",
-                    "categories": ["cs.AI"],
+                    "primary_category": primary_category,
+                    "categories": [primary_category],
                     "published": datetime.combine(day, datetime.min.time()).isoformat() + "Z",
                 }
             },
@@ -276,6 +293,18 @@ def _daily_input(day: date, *, index: int, generated_at: str) -> dict[str, Any]:
                 "support_status": "supported",
             },
         ],
+        "queue_summary": {
+            "queue_model_id": "adp-candidate-queue-v1",
+            "queued_item_count": 1,
+            "top_queued": [
+                {
+                    "source_id": f"arxiv:queued-{index}",
+                    "title": "Simulation queued all-arXiv high-value candidate",
+                    "roi_total_score": 72.0,
+                    "primary_category": "q-bio.NC" if index % 2 else "econ.EM",
+                }
+            ],
+        },
     }
 
 

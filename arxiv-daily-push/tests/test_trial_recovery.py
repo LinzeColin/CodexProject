@@ -79,6 +79,7 @@ def failure_execution_report(status: str = "failed", notification: dict | None =
             "email_body_logged": False,
             "gh_output_logged": False,
             "codex_auth_read": False,
+            "video_attachment_allowed": False,
         },
         "evidence_refs": {
             "daily_run_ref": "",
@@ -108,7 +109,7 @@ def failure_execution_report(status: str = "failed", notification: dict | None =
 
 def recovery_execution_report(*, production_ready: bool = True) -> dict:
     status = "succeeded" if production_ready else "degraded"
-    return {
+    report = {
         "execution_id": "scheduled-execution:arxiv-daily-push:daily-run:recovered",
         "validator_id": SCHEDULED_EXECUTION_MODEL_ID,
         "project_id": "arxiv-daily-push",
@@ -126,6 +127,7 @@ def recovery_execution_report(*, production_ready: bool = True) -> dict:
             "email_body_logged": False,
             "gh_output_logged": False,
             "codex_auth_read": False,
+            "video_attachment_allowed": False,
         },
         "evidence_refs": {
             "daily_run_ref": "run-record://daily:2026-07-01:recovered",
@@ -148,6 +150,16 @@ def recovery_execution_report(*, production_ready: bool = True) -> dict:
             "failure_generated_misleading_content": False,
         },
     }
+    if production_ready:
+        report["delivery_package"] = {
+            "video_link_ready": True,
+            "email_contains_chinese_lesson": True,
+            "email_contains_video_link": True,
+            "email_contains_candidate_queue_summary": True,
+            "video_attachment_allowed": False,
+        }
+    return report
+    return report
 
 
 class TrialRecoveryTests(unittest.TestCase):

@@ -12,6 +12,13 @@ from .arxiv_adapter import ArxivQuery, build_query_url, parse_atom_feed
 from .daily_input import build_daily_input_package, validate_daily_input_report
 from .doctor import doctor_report, render_report
 from .evidence_gate import gate_publication
+from .global_scan import (
+    ALL_ARXIV_MAX_RESULTS_PER_CATEGORY,
+    build_all_arxiv_daily_input,
+    build_all_arxiv_scan_plan,
+    validate_all_arxiv_daily_input_report,
+    validate_all_arxiv_scan_plan,
+)
 from .handoff import HandoffError, build_handoff, validate_handoff
 from .lesson import LessonGenerationError, generate_lesson
 from .narration import NarrationError, generate_narration_plan
@@ -119,6 +126,24 @@ def build_parser() -> argparse.ArgumentParser:
     fetch_arxiv.add_argument("--generated-at", required=True, help="Fetch timestamp used for SourceItems and batch evidence.")
     fetch_arxiv.add_argument("--seen-source-id", action="append", default=[], help="Previously published source_id to exclude.")
     fetch_arxiv.add_argument("--json", action="store_true", help="Print JSON source batch.")
+
+    all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
+    all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
+    all_arxiv_plan.add_argument("--json", action="store_true", help="Print JSON scan plan.")
+
+    all_arxiv_daily = subparsers.add_parser(
+        "build-all-arxiv-daily-input",
+        help="Build Phase 12 all-arXiv daily input with ROI ranking and candidate queue.",
+    )
+    all_arxiv_daily.add_argument("--date", required=True, help="Daily publication date in YYYY-MM-DD form.")
+    all_arxiv_daily.add_argument("--generated-at", required=True, help="Builder timestamp used for evidence claims.")
+    all_arxiv_daily.add_argument("--timezone", default="Australia/Sydney", help="Daily run timezone.")
+    all_arxiv_daily.add_argument("--queue-path", help="Existing candidate queue JSON. Missing path starts an empty queue.")
+    all_arxiv_daily.add_argument("--queue-output", help="Path to write updated candidate queue JSON.")
+    all_arxiv_daily.add_argument("--artifact-dir", help="Directory for daily input, queue, video artifact, and email brief JSON.")
+    all_arxiv_daily.add_argument("--recent-source-id", action="append", default=[], help="Source ID already selected recently.")
+    all_arxiv_daily.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
+    all_arxiv_daily.add_argument("--json", action="store_true", help="Print JSON Phase 12 daily input report.")
 
     build_daily_input = subparsers.add_parser(
         "build-daily-input",
@@ -284,7 +309,7 @@ def build_parser() -> argparse.ArgumentParser:
     trial_start.add_argument("--preflight-report", required=True, help="Passing production preflight report JSON.")
     trial_start.add_argument("--bootstrap-plan", required=True, help="Passing trial bootstrap plan JSON.")
     trial_start.add_argument("--scheduler-plan", required=True, help="Passing production scheduler plan JSON.")
-    trial_start.add_argument("--source-batch", required=True, help="Passing live arXiv source batch JSON.")
+    trial_start.add_argument("--source-batch", required=True, help="Passing live SourceBatch or Phase 12 all-arXiv daily input JSON.")
     trial_start.add_argument("--smtp-delivery", required=True, help="Real sent SMTP delivery report JSON.")
     trial_start.add_argument("--release-delivery", required=True, help="Real created Release delivery report JSON.")
     trial_start.add_argument("--generated-at", required=True, help="Trial start readiness timestamp.")
@@ -518,6 +543,56 @@ def main(argv: list[str] | None = None) -> int:
             for reason in batch["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if batch["status"] == "pass" else 2
+    if args.command == "plan-all-arxiv-scan":
+        plan = build_all_arxiv_scan_plan(max_results_per_category=args.max_results_per_category)
+        errors = validate_all_arxiv_scan_plan(plan)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            for archive in plan["archives"]:
+                print(f"{archive['archive_id']}\t{archive['query']}\t{archive['group']}")
+        return 0
+    if args.command == "build-all-arxiv-daily-input":
+        queue = None
+        if args.queue_path and Path(args.queue_path).is_file():
+            queue = load_json_mapping(args.queue_path)
+        report = build_all_arxiv_daily_input(
+            date=args.date,
+            generated_at=args.generated_at,
+            timezone=args.timezone,
+            queue=queue,
+            recent_source_ids=args.recent_source_id,
+            max_results_per_category=args.max_results_per_category,
+            artifact_dir=args.artifact_dir,
+            queue_output_path=args.queue_output,
+        )
+        errors = validate_all_arxiv_daily_input_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["daily_input_ready"]:
+            daily_input = report["daily_input"]
+            print(f"{daily_input['run_id']}\t{daily_input['source_item']['source_id']}")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["daily_input_ready"] else 2
     if args.command == "build-daily-input":
         source_batch = load_json_mapping(args.source_batch)
         report = build_daily_input_package(

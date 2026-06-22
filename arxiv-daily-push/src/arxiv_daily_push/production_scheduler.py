@@ -23,8 +23,8 @@ REQUIRED_SCHEDULER_VARS = (
     "ADP_RELEASE_TARGET",
     "ADP_SCHEDULED_RUN_ENABLED",
     "ADP_DAILY_INPUT_PATH",
-    "ADP_ARXIV_QUERY",
-    "ADP_ARXIV_MAX_RESULTS",
+    "ADP_ARXIV_MAX_RESULTS_PER_CATEGORY",
+    "ADP_CANDIDATE_QUEUE_INPUT_PATH",
     "ADP_RECENT_SOURCE_IDS",
     "ADP_TRIAL_EVIDENCE_INPUT_PATH",
     "ADP_TRIAL_ID",
@@ -82,11 +82,24 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
         ),
         _check(
             "daily_input_builder_present",
-            "fetch-arxiv-latest" in workflow_text
-            and "build-daily-input" in workflow_text
-            and "adp-scheduled-source-batch" in workflow_text
+            "build-all-arxiv-daily-input" in workflow_text
+            and "adp-phase12-delivery-artifacts" in workflow_text
+            and "adp-candidate-queue" in workflow_text
             and "adp-scheduled-daily-input" in workflow_text,
-            "workflow must build and upload scheduled daily input evidence when no override path is configured",
+            "workflow must build and upload all-arXiv Phase 12 daily input, delivery artifacts, and queue evidence when no override path is configured",
+        ),
+        _check(
+            "candidate_queue_persistence_present",
+            "Resolve candidate queue state" in workflow_text
+            and "ADP_CANDIDATE_QUEUE_INPUT_PATH" in workflow_text
+            and "gh run download" in workflow_text
+            and "adp-candidate-queue" in workflow_text,
+            "workflow must restore and persist candidate queue state across scheduled daily runs",
+        ),
+        _check(
+            "legacy_cs_ai_default_absent",
+            "cat:cs.AI" not in workflow_text and "ADP_ARXIV_QUERY" not in workflow_text,
+            "scheduled production workflow must not default to the legacy cs.AI-only scan",
         ),
         _check(
             "trial_ledger_update_present",
@@ -165,8 +178,8 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
         ],
         "next_external_actions": [
             "merge the workflow to the default branch before schedule triggers can run",
-            "configure ADP_PRODUCTION_ENABLED only after runner and preflight prerequisites pass",
-            "configure ADP_SCHEDULED_RUN_ENABLED only after daily production execution is implemented",
+            "configure ADP_PRODUCTION_ENABLED only after all-arXiv Phase 12 scan, queue, ROI ranking, Release link, SMTP, and runner prerequisites pass",
+            "configure ADP_SCHEDULED_RUN_ENABLED only after daily all-arXiv execution evidence is implemented and verified",
             "retain adp-trial-evidence-ledger artifacts so 30-day trial evidence can accumulate across runs",
             "keep Release upload and SMTP sending disabled until their explicit production enablement phase",
         ],

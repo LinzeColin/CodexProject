@@ -1,0 +1,103 @@
+{
+  "manifest_id": "ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-20260622",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031",
+  "iteration_id": "ITER-20260621-047",
+  "phase": "E",
+  "generated_at": "2026-06-22T07:30:00+10:00",
+  "actor": "Codex",
+  "fact_level": "EXTRACTED",
+  "version_before": "0.11.27",
+  "version_after": "0.12.0",
+  "base_commit": "c775a956b29e976c965c0c58e7ba25d250c70eae",
+  "result_commit": "PENDING",
+  "objective": "Upgrade arXiv Daily Push from legacy cs.AI-only production defaults to all-arXiv primary archive scanning with candidate queue persistence, ROI ranking, one daily lead paper, Release-hosted video artifact link, and email queue summary.",
+  "scope": [
+    "Phase 12 global scan module and CLI commands",
+    "scheduled workflow all-arXiv daily input and queue artifacts",
+    "trial-start workflow all-arXiv source input evidence",
+    "scheduled execution delivery package gates",
+    "runbook/config/docs/governance synchronization"
+  ],
+  "non_scope": [
+    "production variable enablement",
+    "real SMTP send",
+    "real GitHub Release upload",
+    "secret value read",
+    "Codex auth read",
+    "local media/model/cache retention",
+    "real MP4 rendering claim",
+    "30-day production acceptance claim"
+  ],
+  "model_delta": "Added MOD-ADP-032 adp-all-arxiv-scan-v1.",
+  "formula_delta": "Added FORM-ADP-034 Phase 12 all-arXiv scan queue delivery gate.",
+  "parameter_delta": "Added PARAM-ADP-170 through PARAM-ADP-176.",
+  "model_ids_changed": [
+    "MOD-ADP-032"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-034"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-170",
+    "PARAM-ADP-171",
+    "PARAM-ADP-172",
+    "PARAM-ADP-173",
+    "PARAM-ADP-174",
+    "PARAM-ADP-175",
+    "PARAM-ADP-176"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_phase12_pycache_all3 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_phase12_pycache_root3 python3 -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_arxiv_owner_status_uses_latest_event_manifest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_arxiv_daily_push_phase12_manifest_records_all_arxiv_queue_delivery -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_phase12_pycache_semantic_project3 python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_phase12_pycache_gov3 python3 scripts/validate_project_governance.py --changed-only --enforce-sync",
+    "rg -n \"ADP_ARXIV_QUERY|cat:cs\\.AI\" .github/workflows/arxiv-daily-push-scheduled.yml .github/workflows/arxiv-daily-push-trial-start.yml",
+    "python3 -m json.tool governance/run_manifests/ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-20260622.json",
+    "development_events JSONL parse and TRACEABILITY_MATRIX/parameter_registry CSV width check",
+    "git diff --check"
+  ],
+  "test_results": [
+    "arxiv-daily-push unit tests: 165 tests OK",
+    "targeted root governance manifest tests: 2 tests OK",
+    "semantic extractor: 34 active formulas and 175 active parameters checked with no errors",
+    "changed-only governance sync: errors 0 warnings 0; command continued to full registered-project validation and reported unrelated missing local project directories",
+    "scheduled/trial-start production workflows: no ADP_ARXIV_QUERY or cat:cs.AI entry found",
+    "manifest JSON, development_events JSONL, CSV width checks: pass",
+    "git diff --check: pass",
+    "no arxiv-daily-push __pycache__ or .pyc files; arxiv-daily-push 2.1M and .git 93M"
+  ],
+  "result": "pass",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md",
+    "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
+    ".github/workflows/arxiv-daily-push-scheduled.yml",
+    ".github/workflows/arxiv-daily-push-trial-start.yml",
+    "arxiv-daily-push/tests/test_global_scan.py",
+    "https://arxiv.org/category_taxonomy",
+    "https://info.arxiv.org/help/api/user-manual.html"
+  ],
+  "acceptance": {
+    "all_arxiv_scan": true,
+    "candidate_queue_persistence": true,
+    "roi_ranking": true,
+    "one_daily_lead": true,
+    "queue_fallback": true,
+    "release_video_artifact_link_required": true,
+    "email_candidate_queue_summary_required": true,
+    "legacy_cs_ai_production_default_removed": true,
+    "production_enabled": false,
+    "scheduled_run_enabled": false,
+    "allow_smtp_send": false,
+    "allow_release_upload": false
+  },
+  "risks": [
+    "Phase 12 proves code and workflow gates locally with mocked source batches only.",
+    "Real production still requires owner-provisioned runner networking and TLS, SMTP app password, Release target, default-branch workflow evidence, and later real MP4 rendering hardening."
+  ],
+  "rollback": "Remove global_scan.py, Phase 12 CLI commands, workflow updates, delivery-package gates, tests, runbook/config/governance updates, and restore version 0.11.27.",
+  "next_task": "OPEN_PHASE12_PR_AND_WAIT_FOR_CI_BEFORE_ENABLING_PRODUCTION",
+  "external_blockers": [
+    "Full CodexProject governance validation fails in this local checkout because registered project directories Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI/大数据模拟器, Serenity-Alipay, and whkmSalary are not present."
+  ]
+}

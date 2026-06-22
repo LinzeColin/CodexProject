@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from .config import DEFAULT_RECIPIENT
+from .global_scan import ALL_ARXIV_SCAN_MODEL_ID, validate_all_arxiv_daily_input_report
 from .production_preflight import validate_production_preflight
 from .production_scheduler import validate_production_scheduler_plan
 from .release_delivery import validate_release_delivery_report
@@ -177,6 +178,8 @@ def _scheduler_gate(plan: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _source_ingest_gate(batch: Mapping[str, Any]) -> dict[str, Any]:
+    if batch.get("model_id") == ALL_ARXIV_SCAN_MODEL_ID or "scan_plan" in batch:
+        return _all_arxiv_source_gate(batch)
     reasons = [f"source batch invalid: {error}" for error in validate_source_batch(batch)]
     if batch.get("status") != "pass":
         reasons.append("live arXiv source ingest must pass on the runner")
@@ -188,6 +191,27 @@ def _source_ingest_gate(batch: Mapping[str, Any]) -> dict[str, Any]:
     if int(batch.get("new_item_count") or 0) < 1:
         reasons.append("source ingest must return at least one unseen item before trial start")
     return _gate("live_source_ingest_passed", not reasons, reasons)
+
+
+def _all_arxiv_source_gate(report: Mapping[str, Any]) -> dict[str, Any]:
+    reasons = [f"all-arxiv source input invalid: {error}" for error in validate_all_arxiv_daily_input_report(report)]
+    if report.get("status") != "pass" or report.get("daily_input_ready") is not True:
+        reasons.append("all-arXiv daily input must pass before trial start")
+    scan = report.get("scan") if isinstance(report.get("scan"), Mapping) else {}
+    if int(scan.get("archive_count") or 0) < 20:
+        reasons.append("all-arXiv scan must cover the primary archive set before trial start")
+    if int(scan.get("candidate_count") or 0) < 1:
+        reasons.append("all-arXiv scan must return at least one selectable candidate before trial start")
+    daily_input = report.get("daily_input") if isinstance(report.get("daily_input"), Mapping) else {}
+    queue_summary = daily_input.get("queue_summary") if isinstance(daily_input.get("queue_summary"), Mapping) else {}
+    if not queue_summary:
+        reasons.append("all-arXiv daily input must include candidate queue summary")
+    requirements = report.get("delivery_requirements") if isinstance(report.get("delivery_requirements"), Mapping) else {}
+    if requirements.get("email_video_link_required") is not True:
+        reasons.append("all-arXiv trial start requires email video link delivery policy")
+    if requirements.get("video_attachment_allowed") is not False:
+        reasons.append("all-arXiv trial start must forbid video email attachments")
+    return _gate("all_arxiv_source_input_passed", not reasons, reasons)
 
 
 def _smtp_gate(report: Mapping[str, Any], expected_ref: str) -> dict[str, Any]:
