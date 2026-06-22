@@ -175,6 +175,7 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     exercise_live_official_capture_postgres_contracts()
     exercise_production_fact_version_contracts()
     exercise_domain_api_and_repository_contracts()
+    exercise_reviewed_relationship_source_withdrawal_fail_closed_contracts()
     exercise_reviewed_relationship_publication_contracts()
     exercise_background_scheduler_contracts()
     run_script("scripts/migrate.py", "downgrade", "--all")
@@ -1946,6 +1947,147 @@ def reviewed_publication_operation_log_counts(
                 decision_set_key,
             ),
         ).fetchone()
+
+
+def failed_reviewed_publication_result() -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [
+            sys.executable,
+            "scripts/publish_reviewed_relationship_facts.py",
+            "--review-decisions",
+            REVIEW_DECISION_FIXTURE_PATH,
+            "--snapshot-key",
+            REVIEWED_RELATIONSHIP_SNAPSHOT_KEY,
+            "--allow-fixture-review",
+        ],
+        cwd=os.getcwd(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def reviewed_source_withdrawal_target() -> tuple[str, str]:
+    with connect_database() as connection:
+        row = connection.execute(
+            """
+            SELECT iec.id, rss.id
+            FROM relationship_fact_candidate_evidence rfce
+            JOIN relationship_fact_candidates rfc ON rfc.id = rfce.candidate_id
+            JOIN ingestion_evidence_chain iec
+              ON iec.id = rfce.ingestion_evidence_chain_id
+            JOIN raw_source_snapshots rss ON rss.id = iec.raw_snapshot_id
+            WHERE rfc.candidate_key = 'GV-FACT-001'
+            ORDER BY rss.anchor_id
+            LIMIT 1
+            """
+        ).fetchone()
+    assert row is not None
+    return str(row[0]), str(row[1])
+
+
+def assert_reviewed_publication_state_unchanged(
+    before_counts: tuple[int, int, int, int],
+    before_log_counts: tuple[int, int, int, int, int, int, int],
+) -> None:
+    assert reviewed_publication_counts() == before_counts
+    assert (
+        reviewed_publication_operation_log_counts(
+            decision_set_key=REVIEWED_DECISION_SET_KEY,
+            expected_actor="integration-test-reviewer",
+        )
+        == before_log_counts
+    )
+
+
+def exercise_reviewed_relationship_source_withdrawal_fail_closed_contracts() -> None:
+    evidence_chain_id, raw_snapshot_id = reviewed_source_withdrawal_target()
+    before_counts = reviewed_publication_counts()
+    before_log_counts = reviewed_publication_operation_log_counts(
+        decision_set_key=REVIEWED_DECISION_SET_KEY,
+        expected_actor="integration-test-reviewer",
+    )
+
+    with connect_database() as connection:
+        connection.execute(
+            """
+            UPDATE raw_source_snapshots
+            SET review_status = 'disputed',
+                validation_status = 'source_withdrawal_rehearsal'
+            WHERE id = %s
+            """,
+            (raw_snapshot_id,),
+        )
+    disputed_raw_result = failed_reviewed_publication_result()
+    assert disputed_raw_result.returncode != 0
+    assert "disputed raw source snapshot evidence" in disputed_raw_result.stderr
+    assert_reviewed_publication_state_unchanged(before_counts, before_log_counts)
+    with connect_database() as connection:
+        connection.execute(
+            """
+            UPDATE raw_source_snapshots
+            SET review_status = 'machine_verified',
+                validation_status = 'verified_official'
+            WHERE id = %s
+            """,
+            (raw_snapshot_id,),
+        )
+
+    with connect_database() as connection:
+        connection.execute(
+            """
+            UPDATE ingestion_evidence_chain
+            SET review_status = 'disputed'
+            WHERE id = %s
+            """,
+            (evidence_chain_id,),
+        )
+    disputed_evidence_result = failed_reviewed_publication_result()
+    assert disputed_evidence_result.returncode != 0
+    assert "disputed evidence-chain support" in disputed_evidence_result.stderr
+    assert_reviewed_publication_state_unchanged(before_counts, before_log_counts)
+    with connect_database() as connection:
+        connection.execute(
+            """
+            UPDATE ingestion_evidence_chain
+            SET review_status = 'machine_verified'
+            WHERE id = %s
+            """,
+            (evidence_chain_id,),
+        )
+
+    with connect_database() as connection:
+        connection.execute(
+            """
+            UPDATE ingestion_evidence_chain
+            SET counter_evidence = %s
+            WHERE id = %s
+            """,
+            (
+                Jsonb(
+                    [
+                        {
+                            "type": "source_withdrawal_rehearsal",
+                            "reason": "A202 fail-closed contract test counter-evidence.",
+                        }
+                    ]
+                ),
+                evidence_chain_id,
+            ),
+        )
+    counter_evidence_result = failed_reviewed_publication_result()
+    assert counter_evidence_result.returncode != 0
+    assert "unreviewed evidence-chain counter evidence" in counter_evidence_result.stderr
+    assert_reviewed_publication_state_unchanged(before_counts, before_log_counts)
+    with connect_database() as connection:
+        connection.execute(
+            """
+            UPDATE ingestion_evidence_chain
+            SET counter_evidence = '[]'::jsonb
+            WHERE id = %s
+            """,
+            (evidence_chain_id,),
+        )
 
 
 def exercise_reviewed_relationship_publication_contracts() -> None:

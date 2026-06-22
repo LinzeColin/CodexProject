@@ -159,6 +159,7 @@ def validate_release_decision_bundle_for_publication(
         candidate_reviews[candidate_key] = {
             "supporting_anchor_ids": supporting_anchor_ids,
             "supporting_passage_locator": passage["supporting_passage_locator"],
+            "counter_evidence_reviewed": bool(passage["counter_evidence_reviewed"]),
             "passage_review_signature_hash": signed_entry_hash(
                 passage,
                 [
@@ -303,7 +304,11 @@ def candidate_evidence(connection: object, candidate_id: str) -> list[dict[str, 
           rfce.locator,
           rfce.support_excerpt,
           iec.structured_fact,
+          iec.review_status,
+          iec.counter_evidence,
           rss.ingestion_run_id,
+          rss.review_status,
+          rss.validation_status,
           sd.observed_at
         FROM relationship_fact_candidate_evidence rfce
         JOIN ingestion_evidence_chain iec ON iec.id = rfce.ingestion_evidence_chain_id
@@ -322,8 +327,12 @@ def candidate_evidence(connection: object, candidate_id: str) -> list[dict[str, 
             "locator": row[3],
             "support_excerpt": row[4],
             "structured_fact": row[5] or {},
-            "ingestion_run_id": str(row[6]) if row[6] else None,
-            "observed_at": row[7],
+            "evidence_review_status": row[6],
+            "evidence_counter_evidence": row[7] or [],
+            "ingestion_run_id": str(row[8]) if row[8] else None,
+            "raw_snapshot_review_status": row[9],
+            "raw_snapshot_validation_status": row[10],
+            "observed_at": row[11],
         }
         for row in rows
     ]
@@ -333,6 +342,7 @@ def validate_publishable(
     candidate: dict[str, Any],
     evidence: list[dict[str, Any]],
     decision: dict[str, Any],
+    release_review: dict[str, Any] | None = None,
 ) -> None:
     if candidate["record_mode"] != DEFAULT_RECORD_MODE:
         raise RuntimeError(f"{candidate['candidate_key']} has unsupported record_mode")
@@ -351,6 +361,23 @@ def validate_publishable(
         raise RuntimeError(f"{candidate['candidate_key']} has no evidence chain")
     if candidate["counter_evidence"] and not decision.get("counter_evidence_reviewed"):
         raise RuntimeError(f"{candidate['candidate_key']} has unreviewed counter evidence")
+    counter_evidence_reviewed = bool(
+        decision.get("counter_evidence_reviewed")
+        or (release_review or {}).get("counter_evidence_reviewed")
+    )
+    for row in evidence:
+        if row["raw_snapshot_review_status"] == "disputed":
+            raise RuntimeError(
+                f"{candidate['candidate_key']} has disputed raw source snapshot evidence"
+            )
+        if row["evidence_review_status"] == "disputed":
+            raise RuntimeError(
+                f"{candidate['candidate_key']} has disputed evidence-chain support"
+            )
+        if row["evidence_counter_evidence"] and not counter_evidence_reviewed:
+            raise RuntimeError(
+                f"{candidate['candidate_key']} has unreviewed evidence-chain counter evidence"
+            )
     source_min = int(candidate["structured_fact"].get("source_threshold_min", 2))
     if candidate["independent_source_count"] < source_min:
         if decision.get("source_threshold_override") is not True:
@@ -680,18 +707,18 @@ def publish_candidate(
     candidate = candidate_row(connection, decision["candidate_key"])
     ensure_candidate_endpoint_entities(connection, candidate)
     evidence = candidate_evidence(connection, candidate["id"])
-    validate_publishable(candidate, evidence, decision)
+    candidate_release_context = (
+        release_decision_context["candidate_reviews"][candidate["candidate_key"]]
+        if release_decision_context
+        else {}
+    )
+    validate_publishable(candidate, evidence, decision, candidate_release_context)
     reviewed_at = parse_dt(decision["reviewed_at"])
     relationship_id = reviewed_relationship_id(candidate["candidate_key"])
     source_min = int(candidate["structured_fact"].get("source_threshold_min", 2))
     primary_evidence = evidence[0]
     production_owner_signoff = bool(decision_set.get("production_owner_signoff"))
     signature_hash = owner_signature_hash(decision) if production_owner_signoff else None
-    candidate_release_context = (
-        release_decision_context["candidate_reviews"][candidate["candidate_key"]]
-        if release_decision_context
-        else {}
-    )
     publication_structured_fact = {
         "published_relationship_id": relationship_id,
         "publisher_version": PUBLISHER_VERSION,

@@ -4,17 +4,17 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:bd5a4d62acd9e10aeae4e543a2f39c316b685bd8b2a038ccbca62bf28af83c0b`
-- snapshot_event_time: `2026-06-22T23:04:30Z`
+- source_snapshot_hash: `sha256:0026fe0d4d249be6cc600bb95c58c920ae37a706cf44aa8f94958c817331b796`
+- snapshot_event_time: `2026-06-22T23:04:31Z`
 - generator_version: `4.0.0`
-- final_commit_binding: `CI_ATTESTED:cb8e096fd54508080d73a6e83c015c15cfd9bd9a`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T1301-A202-PUBLICATION-OPERATION-LOG-AUDIT-IN-PROGRESS`
+- Phase/Gate: `C / TASK-T1301-A202-SOURCE-WITHDRAWAL-FAIL-CLOSED-IN-PROGRESS`
 - Models/Formulas/Parameters total: `12 / 12 / 68`
 - Active formulas/parameters: `11 / 68`
 - Machine checked formulas/parameters: `10 / 61`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1301-A202-PUBLICATION-OPERATION-LOG-AUDIT-IN-PROGRESS`
+- Release gate: `TASK-T1301-A202-SOURCE-WITHDRAWAL-FAIL-CLOSED-IN-PROGRESS`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `37`
+- Pending/stale events: `38`
 - Tree-bound events: `0`
 - Commit-bound events: `9`
 - Legacy unbound events: `17`

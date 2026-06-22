@@ -27,6 +27,7 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-22 T1301/A202 plus T1309/A210 release-decision bundle adds governance contract parameter `PARAM-063` for `CONTRACT_SCHEMA_VERSION`; no scoring model, graph traversal formula, extraction formula, formula weight or runtime threshold changed.
 - 2026-06-22 T904/A026/A027 gold-quality evaluation adds governance gate parameters `PARAM-064` through `PARAM-068` for minimum gold-set sample count, precision and source coverage; no scoring model, graph traversal formula, extraction formula or formula weight changed.
 - 2026-06-22 T1301/A202 signed-bundle publication binding makes the production owner sign-off publication path require a signed A202/A210 release decision bundle and stores bundle/signature hashes in the evidence chain; no scoring model, graph traversal formula, extraction formula, formula weight or threshold value changed.
+- 2026-06-23 T1301/A202 source-withdrawal and counter-evidence fail-closed rehearsal adds publication-control checks for disputed raw source snapshots, disputed ingestion evidence-chain rows and unreviewed evidence-chain counter-evidence; no scoring model, graph traversal formula, extraction formula, formula weight or threshold value changed.
 
 ## A. Model Overview
 
