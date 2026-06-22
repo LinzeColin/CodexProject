@@ -1,0 +1,62 @@
+project_id: "Serenity-Alipay"
+as_of_event_id: "EVT-REVIEW6-FINAL-Serenity-Alipay-001"
+source_snapshot_hash: "sha256:5a65a85815a5e5f5b703ceed5c51a17fe746eab7f09bd8434baaac79009b504b"
+source_base_commit: "3ce9066664bab17253a25da11529d8146d8b314f"
+snapshot_event_time: "2026-06-22T00:24:25Z"
+generator_version: "2.0.0"
+final_commit_binding: "CI_ATTESTATION_REQUIRED"
+dimensions:
+  structural_validation:
+    status: "pass"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "scripts/validate_project_governance.py"
+  implementation_congruence:
+    status: "machine_verified"
+    fact_level: "EXTRACTED"
+    checked_active_parameters: 49
+    total_active_parameters: 49
+    checked_active_formulas: 12
+    total_active_formulas: 12
+    unresolved_fact_ids: []
+    evidence_refs:
+      - "Serenity-Alipay/docs/governance/parameter_registry.csv"
+      - "Serenity-Alipay/docs/governance/formula_registry.yaml"
+  empirical_validation:
+    status: "unknown"
+    fact_level: "UNKNOWN"
+    unresolved_fact_ids:
+      - "FACT-Serenity-Alipay-EMPIRICAL-EVIDENCE"
+    evidence_refs:
+      - "Serenity-Alipay/docs/governance/delivery_tasks.yaml"
+  operational_evidence:
+    status: "partial"
+    fact_level: "EXTRACTED"
+    unresolved_fact_ids:
+      - "FACT-Serenity-Alipay-OPERATIONAL-EVIDENCE"
+    evidence_refs:
+      - "Serenity-Alipay/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "conditional"
+  release_gate: "GOV-REVIEW6-B-SEMANTIC-EXTRACT"
+  blocker_ids:
+    - "FACT-Serenity-Alipay-EMPIRICAL-EVIDENCE"
+    - "FACT-Serenity-Alipay-OPERATIONAL-EVIDENCE"
+next_executable_task:
+  task_id: "TASK-A-001"
+  status: "in_progress"
+  reason: "Create the first CodexProject-auditable Serenity-Alipay governance baseline."
+  acceptance_ids:
+    - "ACC-A-001"
+    - "ACC-A-002"
+    - "ACC-A-003"
+  owner: "Codex/governance runner"
+  unblock_condition: "Run the listed test commands and attach evidence."
+owner_decision:
+  required: true
+  decision_id: "DEC-Serenity-Alipay-REVIEW6-001"
+  question: "是否启动 empirical calibration evidence task；实现一致性已经 machine verified。"
+  options:
+    - "A: fund evidence hardening"
+    - "B: keep blocked/conditional and defer"
+    - "C: de-scope this project from delivery claims"

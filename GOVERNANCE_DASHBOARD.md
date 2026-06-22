@@ -1,25 +1,26 @@
 # Governance Dashboard
 
-Generated: `DETERMINISTIC_GENERATION`
-Commit: `CURRENT_CHECKOUT`
-Tree hash: `CURRENT_CHECKOUT_TREE`
-Source: generated from machine governance registries and Git metadata. Do not hand-edit project counts here.
+- source_base_commit: `3ce9066664bab17253a25da11529d8146d8b314f`
+- source_snapshot_hash: `sha256:a5ab7e45036920e328322b88ed849c7737faa0f77a2d05015637e607328c0fdd`
+- snapshot_event_time: `2026-06-22T10:10:00+10:00`
+- generator_version: `2.0.0`
+- final_commit_binding: `CI_ATTESTATION_REQUIRED`
 
-| Project | Version | Model versions | Parameter versions | Semantic coverage | Iteration | Phase | Gate | Latest run | Model delta | Parameter delta | Blockers | Unbound events | CI | Next task |
-|---|---:|---|---|---|---|---|---|---|---|---|---|---:|---|---|
-| `Alpha` | `0.1.0` | MOD-001:strategy-tournament-v0, MOD-002:risk-score-v0, +7 | agent_loop:agent-loop-v0, paper_broker_defaults:paper-broker-v0, +2 | `in_progress` | `ITER-20260621-ALPHA-001` | `B` | `GOV-SEMANTIC-ALPHA-in-progress` | `EVENT-ALPHA-20260621-002` | No runtime model behavior change; validation confirms 9 active formula fingerprints match live code symbols. | No active value change; validation confirms 42 active parameter active values match live code/config selectors; 13 branch-rule parameters remain HUMAN_REVIEW_REQUIRED. | live execution policy and production validation remain blocked under `TASK-ALPHA-B-001`. | 2 | `required` | `TASK-ALPHA-B-001` |
-| `EEI` | `0.1.0` | MOD-001:business-empire-model-v2, MOD-002:business-empire-model-v2, +10 | balanced-v2:2, default-v2:2, +1 | `in_progress` | `ITER-20260621-017` | `C` | `TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL` | `EVENT-20260621-019` | No scoring formula change. | No canonical model parameter change; run environment used PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright. | A209/A206 remain open until 24h operator soak evidence is produced and CI-validated; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED. | 16 | `required` | `TASK-T1301` |
-| `EVA_OS` | `0.1.0` | MOD-001:0.0.0-provisional, MOD-002:0.0.0-provisional, +14 | default:param-profile-20260620, semantic_extractor_profile:param-semantic-profile-20260621 | `in_progress` | `ITER-20260621-EVA-003` | `B` | `GOV-SEMANTIC-EVA-001-in-progress` | `ITER-20260621-EVA-003` | MOD-001, MOD-002, MOD-003, +13 more | PARAM-001, PARAM-002, PARAM-003, +49 more | calibration/source rationale gaps tracked by `TASK-EVA-B-001` through `TASK-EVA-B-008` | 3 | `required` | `TASK-EVA-B-003` |
-| `FIFA` | `0.1.0` | MOD-001:0.0.0-provisional, MOD-002:0.0.0-provisional, +9 | active_profile:param-profile-20260620, legacy_profile:rules-v1.0.0 | `in_progress` | `ITER-20260621-FIFA-001` | `B` | `GOV-SEMANTIC-FIFA-in-progress` | `EVT-FIFA-GOV-20260621-001` | MOD-001, MOD-002, MOD-003, +7 more | PARAM-001..PARAM-108 | TASK-FIFA-B-001, TASK-FIFA-B-002, TASK-FIFA-C-001, TASK-FIFA-C-002, TASK-FIFA-D-001, TASK-FIFA-D-002, TASK-FIFA-E-001, TASK-FIFA-E-002 | 3 | `required` | `GOV-SEMANTIC-FIFA-001` |
-| `OpMe_System` | `1.0.0` | MOD-001:mod-001-v0, MOD-002:mod-002-v0, +5 | llm_router:opme-router-v0, offline_rules:opme-rules-v0 | `in_progress` | `ITER-20260621-OPME-001` | `B` | `GOV-SEMANTIC-OPME-in-progress` | `EVENT-OPME-20260621-003` | No runtime model behavior change; validation confirms 7 active formula fingerprints match live code symbols. | No active value change; validation confirms 49 active parameter active values match live code/config selectors. | `TASK-OPME-B-001` for calibration, prompt/provider governance, and signoff evidence. | 2 | `required` | `GOV-SEMANTIC-OPME-001` |
-| `OpenAIDatabase` | `0.2.0` | MOD-001:memory-candidate-v0, MOD-002:redaction-policy-v0, +9 | codex_sync:codex-sync-parameters-v0, memory_analysis:memory-analysis-parameters-v0, +3 | `in_progress` | `ITER-20260621-OAI-004` | `B` | `GOV-SEMANTIC-OAIDB-in-progress` | `GOV-SEMANTIC-OAIDB-STATUS-001` | UNKNOWN | UNKNOWN | remaining complex branch rules, TypeScript writeback semantics, and heuristic calibration evidence are HUMAN_REVIEW_REQUIRED or UNKNOWN under `GOV-SEMANTIC-OAIDB-001` and `TASK-OAI-B-001` | 6 | `required` | `TASK-OAI-B-001` |
-| `PFI_BIG_DATA_SIMULATOR` | `0.1.0` | MOD-001:0.0.0-provisional, MOD-002:0.0.0-provisional, +13 | default:param-profile-20260620 | `in_progress` | `ITER-20260621-PFI-001` | `B` | `GOV-SEMANTIC-PFI-in-progress` | `ITER-20260621-PFI-001` | MOD-001, MOD-002, MOD-003, +12 more | PARAM-001, PARAM-002, PARAM-003, +210 more | `PARAM-110` and `PARAM-111` remain HUMAN_REVIEW_REQUIRED; calibration/source rationale gaps tracked by `TASK-PFI-B-001` through `TASK-PFI-B-010` | 3 | `required` | `TASK-PFI-B-001` |
-| `Serenity-Alipay` | `0.1.0` | MOD-001:serenity-scoring-v1, MOD-002:serenity-ranking-v1, +3 | serenity-parameters:serenity-parameters-v1 | `machine_verified` | `ITER-20260621-002` | `B` | `GOV-REVIEW6-B-SEMANTIC-EXTRACT` | `ITER-20260621-002` | MOD-001, MOD-002, MOD-003, +2 more | PARAM-001, PARAM-002, PARAM-003, +46 more | semantic extractor pilot currently covers Serenity-Alipay only; other projects need separate migration tasks. | 3 | `required` | `TASK-B-001` |
-| `whkmSalary` | `0.0.0` | MOD-001:salary-logic-v0, MOD-002:streamlit-input-v0 | province_weights:salary-logic-v0, salary_logic_constants:salary-logic-v0, +1 | `in_progress` | `ITER-20260621-WHKM-001` | `B` | `GOV-SEMANTIC-WHKM-in-progress` | `EVENT-WHKM-20260621-001` | MOD-001, MOD-002 | PARAM-001, PARAM-002, PARAM-003, +77 more | `TASK-WHKM-B-001` for policy/source/effective date/rounding/boundary evidence; `GOV-SEMANTIC-WHKM-001` retains human review for `PARAM-004`, `PARAM-005`, and `FORM-010`. | 3 | `required` | `TASK-WHKM-B-001` |
-| `arxiv-daily-push` | `0.12.0` | MOD-ADP-001:adp-foundation-v1, MOD-ADP-002:adp-ranking-v1, +30 | adp-acceptance-parameters:adp-acceptance-parameters-v1.2, adp-all-arxiv-scan-parameters:adp-all-arxiv-scan-parameters-v1, +30 | `machine_verified` | `ITER-20260621-047` | `E` | `ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-PASS` | `EVENT-20260622-ADP-054` | Added MOD-ADP-032 adp-all-arxiv-scan-v1 for Phase 12 all-arXiv scan queue delivery. | Added PARAM-ADP-170 through PARAM-ADP-176 for all-arXiv model id, archive count, per-archive window, queue size, ROI thresholds, ROI weights, and mail video-link policy. | Phase 12 all-arXiv scan, candidate queue persistence, ROI ranking, daily lead selection, Release-hosted video artifact link gating, and email queue summary pass focused local tests. Production launch remains blocked by PR CI completion, owner-provisioned default-branch runner networking/TLS, durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, explicit launch confirmation, default-branch Phase 12 workflow evidence, real Gmail SMTP evidence to `linzezhang35@gmail.com`, real GitHub Release video-link evidence, resource telemetry, replay/recovery evidence, 30 unique daily production entries, and explicitly disabled production variables. | 54 | `required` | `ADP-PHASE12-PRODUCTION-ENABLEMENT-032` |
+| Project | Version | Phase | Impl | Empirical | Ops | Readiness | Next |
+|---|---|---|---|---|---|---|---|
+| `Alpha` | `0.1.0` | `B` | `partial` | `unknown` | `blocked` | `blocked` | `GOV-SEMANTIC-ALPHA-001` |
+| `EEI` | `0.1.0` | `C` | `partial` | `partial` | `partial` | `blocked` | `TASK-T1301` |
+| `EVA_OS` | `0.1.0` | `B` | `partial` | `unknown` | `blocked` | `blocked` | `GOV-SEMANTIC-EVA-001` |
+| `FIFA` | `0.1.0` | `B` | `partial` | `unknown` | `blocked` | `conditional` | `GOV-SEMANTIC-FIFA-001` |
+| `OpMe_System` | `1.0.0` | `B` | `machine_verified` | `unknown` | `blocked` | `conditional` | `GOV-SEMANTIC-OPME-001` |
+| `OpenAIDatabase` | `0.2.0` | `B` | `partial` | `unknown` | `blocked` | `blocked` | `GOV-SEMANTIC-OAIDB-001` |
+| `PFI_BIG_DATA_SIMULATOR` | `0.1.0` | `B` | `partial` | `unknown` | `blocked` | `conditional` | `GOV-SEMANTIC-PFI-001` |
+| `Serenity-Alipay` | `0.1.0` | `B` | `machine_verified` | `unknown` | `partial` | `conditional` | `TASK-A-001` |
+| `whkmSalary` | `0.0.0` | `B` | `partial` | `unknown` | `blocked` | `blocked` | `GOV-SEMANTIC-WHKM-001` |
+| `arxiv-daily-push` | `0.12.0` | `E` | `machine_verified` | `partial` | `partial` | `blocked` | `NONE` |
 
-## Audit Notes
+## Notes
 
-- `Unbound events` counts historical events that still use `git_commit: PENDING` without a concrete `result_commit`.
-- GitHub branch protection or ruleset status is an external repository setting. If it cannot be read with an authenticated API/UI check, report it as `UNVERIFIED` instead of claiming no-bypass enforcement.
-- Regenerate with `python3 scripts/generate_governance_dashboard.py --write`; verify determinism with `git diff --exit-code` after a second run.
+- Implementation congruence only means documented values and fingerprints match code/config sources.
+- Empirical validation and operational evidence are separate dimensions and may remain unknown, partial, or blocked.
+- Branch protection details remain `UNVERIFIED` unless checked by authenticated GitHub API or UI evidence.
