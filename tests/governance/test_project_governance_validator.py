@@ -1458,6 +1458,37 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertTrue((ROOT / "EEI" / "artifacts" / "tests" / "a209" / "t1307_operator_soak_4h.checkpoints.jsonl").is_file())
         self.assertFalse((ROOT / "EEI" / "artifacts" / "tests" / "a209" / "t1307_operator_soak_24h.json").exists())
 
+    def test_eei_dashboard_sync_manifest_binds_root_views(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-EEI-DASHBOARD-SYNC-20260622.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "root-governance")
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "README.md",
+            "GOVERNANCE_DASHBOARD.md",
+            "OWNER_PORTFOLIO.md",
+            "governance/binding_backlog.yaml",
+            "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+            "EEI/docs/governance/STATUS.md",
+            "EEI/docs/governance/OWNER_STATUS.md",
+            "EEI/CHECKSUMS.sha256",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
+        }:
+            self.assertIn(path, changed)
+
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads((ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text())
         for field in {
