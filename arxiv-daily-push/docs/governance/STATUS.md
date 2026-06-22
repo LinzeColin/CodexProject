@@ -13,11 +13,11 @@
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
-- Product version: `0.12.2`
-- Phase/Gate: `E / ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED`
-- Models/Formulas/Parameters total: `34 / 36 / 184`
-- Active formulas/parameters: `36 / 183`
-- Machine checked formulas/parameters: `36 / 183`
+- Product version: `0.12.3`
+- Phase/Gate: `E / ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PASS`
+- Models/Formulas/Parameters total: `34 / 36 / 185`
+- Active formulas/parameters: `36 / 184`
+- Machine checked formulas/parameters: `36 / 184`
 
 ## Assurance
 
@@ -34,7 +34,7 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED`
+- Release gate: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PASS`
 - Next executable task: `NONE`
 - Pending/stale events: `57`
 - Tree-bound events: `0`

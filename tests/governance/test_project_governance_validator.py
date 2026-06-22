@@ -1373,17 +1373,17 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-056")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-056")
-        self.assertEqual(info["product_version"], "0.12.2")
-        self.assertEqual(info["current_gate"], "ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-057")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-057")
+        self.assertEqual(info["product_version"], "0.12.3")
+        self.assertEqual(info["current_gate"], "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PASS")
         self.assertEqual(
             info["latest_manifest"]["_path"],
             "governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.12.2", rendered)
-        self.assertIn("ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED", rendered)
+        self.assertIn("0.12.3", rendered)
+        self.assertIn("ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PASS", rendered)
         self.assertIn("production trial not started", rendered)
         self.assertIn("30-day acceptance absent", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)

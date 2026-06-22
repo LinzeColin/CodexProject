@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.12.0`
+Active product version: `0.12.3`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.12.0
+- Product version: 0.12.3
 - Current phase: E
-- Current gate: ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-PASS
-- Confirmed iteration count: 47
+- Current gate: ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PASS
+- Confirmed iteration count: 50
 - Reconstructed event count: 0
-- Current task: ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031
-- Blockers: Phase 12 all-arXiv scan, candidate queue persistence, ROI ranking, daily lead selection, Release-hosted video artifact link gating, and email queue summary pass focused local tests. Production launch remains blocked by PR CI completion, owner-provisioned default-branch runner networking/TLS, durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, explicit launch confirmation, default-branch Phase 12 workflow evidence, real Gmail SMTP evidence to `linzezhang35@gmail.com`, real GitHub Release video-link evidence, resource telemetry, replay/recovery evidence, 30 unique daily production entries, and explicitly disabled production variables.
+- Current task: ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034
+- Blockers: Manual Release asset dedupe passes local code gates, but production launch remains blocked until this PR passes CI, is merged, the default-branch manual workflow reruns successfully, GitHub Release video-link evidence exists, Gmail SMTP sends to `linzezhang35@gmail.com`, the owner confirms the received email/link, and production variables are explicitly enabled in a separate decision.
 
 ## Phase Matrix
 
@@ -1159,6 +1159,30 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: GitHub workflow_dispatch availability requires the workflow on the default branch; missing/invalid Gmail app password or GitHub token Release permission will fail the manual test.
 - Rollback: Remove the manual delivery workflow, tests, version 0.12.2 governance records, and restore version 0.12.1 while keeping production variables disabled.
 - Next step: Commit and push this PR update, wait for PR CI green, merge the safe manual-test entrypoint to main, then run the GitHub Actions manual delivery workflow with the confirmation string.
+
+### `ITER-20260621-050`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from GitHub Actions run evidence, Release delivery implementation, focused tests, and full arXiv unit tests.
+- Version before: 0.12.2
+- Version after: 0.12.3
+- Base commit: 932446fd2154ac477ea0cb6862a60098b1e1ed55
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034
+- Goal: Repair the controlled manual GitHub Release plus Gmail SMTP test path after run 27926461430 blocked at `gh release create` before SMTP send.
+- Assumptions: Repeated identical asset paths can be safely deduplicated because they represent the same evidence file; different files with the same Release asset name must block before upload to avoid silently dropping evidence.
+- Files changed: Release delivery asset inspection, release delivery tests, version/changelog files, model/formula/parameter/traceability registries, delivery task, and governance records.
+- Model changes: Refreshed MOD-ADP-017 description for duplicate-asset safety.
+- Formula changes: Refreshed FORM-ADP-019 fingerprint and expression for path dedupe plus duplicate-name blocking.
+- Parameter changes: Added PARAM-ADP-185 for Release asset duplicate path/name policy.
+- Commands run: release delivery tests; scheduled/manual workflow focused tests; full arXiv unit test discovery; semantic extractor validation; changed-only governance validation; git diff check.
+- Test results: release delivery tests 6 OK; scheduled/manual workflow tests 8 OK; full arXiv unit tests 175 OK before governance update.
+- Successes: The Release command no longer receives repeated identical paths, and conflicting same-name assets fail closed before `gh` is invoked.
+- Failures: No real GitHub Release has been uploaded and no Gmail SMTP email has been sent by this PR; the prior manual test run remains failed until the repaired workflow is merged and rerun.
+- Decisions: Keep production schedule disabled; after PR CI is green and merged, rerun the manual delivery workflow before considering production enablement.
+- Remaining risks: Release creation can still fail for repository permission, tag collision, or GitHub service issues; SMTP can still fail if the Gmail app password is invalid or revoked.
+- Rollback: Revert release_delivery asset dedupe changes, release delivery tests, version 0.12.3 governance records, and keep production variables disabled.
+- Next step: Push PR update, wait for PR CI green, merge, then rerun `arXiv Daily Push manual Release and SMTP test` on `main` with the confirmation string.
 
 ## Unknown Historical Periods
 

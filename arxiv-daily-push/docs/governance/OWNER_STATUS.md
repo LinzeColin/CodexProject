@@ -9,17 +9,17 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，交付状�
 - source_snapshot_hash: `sha256:d9fd08e3bc397affffba771a50c66ff4790fb9f6efbb84ecd4fa0a02a2b057fb`
 - snapshot_event_time: `2026-06-22T12:18:37+10:00`
 - generator_version: `3.0.0`
-- version: `0.12.2`
-- phase/gate: `E / ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED`
+- version: `0.12.3`
+- phase/gate: `E / ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PASS`
 
 ## 2. This Run Change
 
-Generated owner-facing views now separate implementation congruence from parameter source quality, empirical validation, operational validation, delivery evidence, and evidence freshness.
+Manual delivery Release path now deduplicates repeated identical asset paths and blocks conflicting duplicate asset names before `gh release create`. This repairs the blocker from GitHub Actions run `27926461430`, but does not send email or enable production by itself.
 
 ## 3. Owner Impact
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (183/183 active parameters, 36/36 active formulas)
+- implementation_congruence: `VERIFIED` (184/184 active parameters, 36/36 active formulas)
 - parameter_source_quality: `VERIFIED`
 - empirical_validation: `PARTIAL`
 - operational_validation: `PARTIAL`
@@ -40,14 +40,15 @@ Generated owner-facing views now separate implementation congruence from paramet
 
 ## 6. Current Blockers
 
-1. production trial not started
-2. 30-day acceptance absent
-3. historical event binding backlog
+1. manual Release + Gmail SMTP test must be rerun after PR merge
+2. production trial not started
+3. 30-day acceptance absent
+4. historical event binding backlog
 
 ## 7. Evidence Required To Unblock
 
 - owner: project owner
-- unblock_condition: Unblock or define a ready/in_progress task with completed dependencies and evidence policy.
+- unblock_condition: Merge after PR CI green, rerun the manual Release plus Gmail SMTP workflow from `main`, and verify the received email plus Release/video link.
 - acceptance: none
 
 ## 8. Model Formula Parameter Change
@@ -55,14 +56,14 @@ Generated owner-facing views now separate implementation congruence from paramet
 - model_count: `34`
 - total_formulas: `36`
 - active_formulas: `36`
-- total_parameters: `184`
-- active_parameters: `183`
+- total_parameters: `185`
+- active_parameters: `184`
 - active_values_changed_by_this_view: `0`
 
 ## 9. Tests And Acceptance
 
-- required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED`
+- required_commands: `validate_project_governance --changed-only --enforce-sync --semantic`; `validate_information_quality --all --fast --fail-on-error`; `python3 -m unittest discover -s arxiv-daily-push/tests -q`
+- release_gate: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PASS`
 
 ## 10. Evidence Freshness
 
@@ -79,4 +80,4 @@ Generated owner-facing views now separate implementation congruence from paramet
 ## 12. Next Unique Task
 
 - task_id: `NONE`
-- reason: No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.
+- reason: No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands. Operationally, the next step is PR CI, merge, and controlled manual delivery rerun.

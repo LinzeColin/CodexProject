@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260622-ADP-056"
+as_of_event_id: "EVENT-20260622-ADP-057"
 source_snapshot_hash: "sha256:d9fd08e3bc397affffba771a50c66ff4790fb9f6efbb84ecd4fa0a02a2b057fb"
 source_base_commit: "932446fd2154ac477ea0cb6862a60098b1e1ed55"
 source_tree_hash: "a661be1db22d99ff3afe6183ac1ae8f4c444be18"
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 183
-    total_active_parameters: 183
+    checked_active_parameters: 184
+    total_active_parameters: 184
     checked_active_formulas: 36
     total_active_formulas: 36
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 183
-    total_active_parameters: 183
+    checked_active_parameters: 184
+    total_active_parameters: 184
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   empirical_validation:
@@ -61,7 +61,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "ADP-PHASE12-MANUAL-DELIVERY-TEST-PREPARED"
+  release_gate: "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PASS"
   blocker_ids:
     - "ADP-PHASE8-VIDEO-001"
     - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
@@ -69,10 +69,10 @@ delivery_readiness:
 next_executable_task:
   task_id: "NONE"
   status: "not_applicable"
-  reason: "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands."
+  reason: "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands. Operationally, merge after PR CI green, then rerun the manual Release plus Gmail SMTP workflow from main."
   acceptance_ids: []
   owner: "project owner"
-  unblock_condition: "Unblock or define a ready/in_progress task with completed dependencies and evidence policy."
+  unblock_condition: "Merge after PR CI green, then rerun the manual Release plus Gmail SMTP workflow and verify the received email plus Release/video link."
 owner_decision:
   required: true
   decision_id: "DEC-arxiv-daily-push-REVIEW6-001"

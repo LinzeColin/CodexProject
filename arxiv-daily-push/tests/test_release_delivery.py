@@ -101,6 +101,68 @@ class ReleaseDeliveryTests(unittest.TestCase):
         self.assertFalse(report["command"]["stdout_logged"])
         self.assertEqual(validate_release_delivery_report(report), [])
 
+    def test_release_delivery_deduplicates_asset_paths_before_gh(self):
+        commands = []
+
+        def fake_runner(command):
+            commands.append(list(command))
+            return {"returncode": 0}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            first_dir = Path(tmp) / "first"
+            second_dir = Path(tmp) / "second"
+            first_dir.mkdir()
+            second_dir.mkdir()
+            first = first_dir / "evidence.json"
+            other = second_dir / "other.json"
+            first.write_text('{"status":"pass"}\n', encoding="utf-8")
+            other.write_text('{"status":"other"}\n', encoding="utf-8")
+
+            report = deliver_release(
+                tag="adp-test-20260622",
+                title="ADP test release",
+                notes="Release notes",
+                asset_paths=[first, first, other],
+                generated_at="2026-06-22T02:55:00Z",
+                allow_upload=True,
+                env={"ADP_RELEASE_TARGET": "abc123"},
+                command_resolver=lambda _name: "/usr/bin/gh",
+                command_runner=fake_runner,
+            )
+
+        self.assertEqual(report["status"], "created")
+        self.assertEqual([asset["name"] for asset in report["assets"]], ["evidence.json", "other.json"])
+        asset_args = commands[0][4 : commands[0].index("--repo")]
+        self.assertEqual(asset_args, [str(first), str(other)])
+        self.assertEqual(validate_release_delivery_report(report), [])
+
+    def test_release_delivery_blocks_conflicting_duplicate_asset_names(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            first_dir = Path(tmp) / "first"
+            second_dir = Path(tmp) / "second"
+            first_dir.mkdir()
+            second_dir.mkdir()
+            first = first_dir / "evidence.json"
+            same_name = second_dir / "evidence.json"
+            first.write_text('{"status":"pass"}\n', encoding="utf-8")
+            same_name.write_text('{"status":"also-pass"}\n', encoding="utf-8")
+
+            report = deliver_release(
+                tag="adp-test-20260622",
+                title="ADP test release",
+                notes="Release notes",
+                asset_paths=[first, same_name],
+                generated_at="2026-06-22T02:55:00Z",
+                allow_upload=True,
+                env={"ADP_RELEASE_TARGET": "abc123"},
+                command_resolver=lambda _name: "/usr/bin/gh",
+                command_runner=lambda _command: self.fail("gh must not run for duplicate release asset names"),
+            )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertIn("duplicates", " ".join(report["blocking_reasons"]))
+        self.assertEqual(validate_release_delivery_report(report), [])
+
 
 if __name__ == "__main__":
     unittest.main()

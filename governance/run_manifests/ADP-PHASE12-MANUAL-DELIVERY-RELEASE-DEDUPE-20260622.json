@@ -1,0 +1,157 @@
+{
+  "schema_version": 2,
+  "run_id": "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-20260622",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034",
+  "acceptance_ids": [
+    "ACC-ADP-PHASE12-MANUAL-DELIVERY-RELEASE-ASSET-DEDUPE",
+    "ACC-ADP-PHASE12-MANUAL-DELIVERY-DUPLICATE-ASSET-NAME-BLOCK",
+    "ACC-ADP-PHASE12-GOVERNANCE-OWNER-STATUS-SYNC"
+  ],
+  "iteration_id": "ITER-20260621-050",
+  "generated_at": "2026-06-22T13:36:00+10:00",
+  "implementation_base_sha": "9764bf20ae43029d615d0bd02b4eb5b4a4c70ded",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:52e5ccd9058ba4445c8151f0d9dcd669f5d968d5b171cfa12c70fa5ed553de99",
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_release_delivery.py",
+    "governance/run_manifests/ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_release_delivery.py",
+    "governance/run_manifests/ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-20260622.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-20260622.json"
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-20260622.json"
+  ],
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_govtest_fix python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_fix_semantic3 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_fix_iq3 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+    "git diff --check",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_fix_gov4 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic"
+  ],
+  "test_results": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_govtest_fix python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 114 tests; OK"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_fix_semantic3 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "semantic_formulas_checked=36; semantic_parameters_checked=184"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_fix_iq3 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_information_quality.py --all --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS; errors=0; warnings=0"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_fix_gov4 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed_files included this manifest and root governance test; errors=0; warnings=0"
+    }
+  ],
+  "evidence_refs": [
+    "https://github.com/LinzeColin/CodexProject/actions/runs/27926461430",
+    "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py",
+    "arxiv-daily-push/tests/test_release_delivery.py",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "PR #46 Project Governance and arXiv Daily Push Phase 12 cloud dry-run checks bind the final commit after push.",
+  "ci_run_reference": "PRECOMMIT_PENDING_CI_ATTESTATION",
+  "result_commit": "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION",
+  "finished_at": "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION",
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "production_schedule_enabled": false,
+  "rollback": "Revert the release_delivery asset dedupe change, release delivery regression tests, version 0.12.3 governance records, and this run manifest while keeping production variables disabled.",
+  "next_task": "After PR #46 CI is green and merged to main, rerun the controlled manual GitHub Release plus Gmail SMTP workflow and verify the received email plus Release/video link.",
+  "risks": [
+    "Manual Release creation must be rerun from main after this PR merges.",
+    "SMTP can still fail if ADP_SMTP_PASSWORD is invalid or revoked.",
+    "Production scheduling remains disabled until manual Release and Gmail SMTP evidence passes and the owner separately approves production variables."
+  ],
+  "scope_boundary": "Release asset dedupe repair, regression tests, and governance status synchronization only. No production schedule enablement and no real SMTP send claimed."
+}

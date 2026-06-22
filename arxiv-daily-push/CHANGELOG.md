@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.12.3 - 2026-06-22
+
+- Fixed the manual GitHub Release + Gmail SMTP test path so repeated identical Release asset paths are deduplicated before `gh release create`.
+- Added a fail-closed guard for different files that would publish with the same GitHub Release asset name.
+- Kept production scheduling disabled; this change only repairs the controlled manual delivery test after the first post-merge run reached Release creation and blocked before SMTP send.
+
 ## 0.12.2 - 2026-06-22
 
 - Added a default-branch-only manual GitHub Actions workflow for one controlled GitHub Release plus Gmail SMTP delivery test.

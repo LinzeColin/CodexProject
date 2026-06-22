@@ -17,8 +17,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 44
-- acceptance_count: 44
+- task_count: 45
+- acceptance_count: 45
 
 ## Delivery Tasks
 
@@ -69,6 +69,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031 | E | completed | ADP-ACC-PHASE12-ALL-ARXIV-QUEUE-DELIVERY | 165 arXiv tests OK; semantic extractor 34 formulas/175 parameters OK; targeted root governance tests 2 OK; changed-only sync 0 errors/0 warnings before unrelated missing-project validation; all-arXiv scan, queue fallback, workflow guards, and mail video-link gates pass | `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
 | ADP-PHASE12-PRODUCTION-ENABLEMENT-032 | E | completed | ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT | PR cloud dry-run path passed on GitHub-hosted runner with 20/20 arXiv buckets and real MP4 artifact; production variables remain disabled | `docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md` |
 | ADP-PHASE12-MANUAL-DELIVERY-TEST-033 | E | prepared | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual workflow prepared for default-branch Release + Gmail SMTP test; real Release upload and real email send still require post-PR manual workflow dispatch | `docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md` |
+| ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034 | E | completed | ADP-ACC-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE | manual delivery Release creation now deduplicates repeated asset paths and blocks conflicting asset names before SMTP send | `src/arxiv_daily_push/release_delivery.py`; `tests/test_release_delivery.py` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates
@@ -114,6 +115,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 two-day simulation acceptance | two unique scheduled daily simulation runs, mocked SMTP/Release refs, ledger appends, and no production acceptance claim | pass; `run-two-day-simulation` produced 2 observed days for 2026-06-22 and 2026-06-23 |
 | Phase 12 all-arXiv queue delivery | all-arXiv primary archive scan, candidate queue persistence, ROI ranking, one daily lead, Release-hosted video artifact link gate, and email queue summary | pass for code and workflow contract; no production variables enabled |
 | Phase 12 production enablement | owner-provisioned default-branch runner evidence, live all-arXiv scan, queue persistence, Release-hosted video link, Gmail SMTP delivery, and explicit production variables | blocked; PR CI and owner-provisioned runtime evidence not yet complete |
+| Phase 12 manual Release asset dedupe | repeated identical Release assets from the manual delivery path are deduplicated, and conflicting duplicate asset names block before upload | pass for code gate; manual Release + Gmail SMTP test must be rerun after PR merge |
 | Semantic coverage rollout contract | task-bound machine checks for active parameter values and formula fingerprints | machine_verified; 168 active parameters and all 33 active formulas machine-check, 0 active rows remain HUMAN_REVIEW_REQUIRED |
 | Phase 11 production trial start | explicit confirmation, durable default branch, runner, SMTP, Release, workflow vars, and trial-start workflow refs | blocked; default branch and trial-start workflow refs recorded, while confirmation, runner, SMTP, Release, workflow-vars, and default-branch trial-start run evidence are not present |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |

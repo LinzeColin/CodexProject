@@ -749,3 +749,20 @@ tasks:
     target_version: "0.12.2"
     completed_version: "0.12.2"
     unknown_task_ids: []
+  - task_id: "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034"
+    phase: "E"
+    objective: "Repair the controlled manual Release plus Gmail SMTP test path after the first post-merge run blocked at GitHub Release creation because duplicate asset paths reached gh release create."
+    scope: "Release delivery asset inspection, exact-path deduplication, conflicting duplicate-name fail-closed behavior, focused release tests, full arxiv-daily-push regression tests, and governance records."
+    non_scope: "No production schedule enablement, no real SMTP send in this PR, no real Release upload in this PR, no secret value logging, no video email attachment, and no 30-day production acceptance claim."
+    status: "completed"
+    dependencies: ["ADP-PHASE12-MANUAL-DELIVERY-TEST-033"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/tests/test_release_delivery.py", "docs/governance"]
+    acceptance_ids: ["ADP-ACC-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_fix_release2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_release_delivery.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_fix_sched2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_manual_delivery_workflow.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_manual_fix_full2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "git diff --check"]
+    test_results: ["release delivery tests: 6 tests OK", "scheduled/manual workflow focused tests: 8 tests OK", "arxiv-daily-push unit tests: 175 tests OK", "git diff --check: PASS"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/tests/test_release_delivery.py", "https://github.com/LinzeColin/CodexProject/actions/runs/27926461430"]
+    risk: "The repair must be merged before rerunning the manual workflow; Gmail SMTP still will not send until Release creation succeeds and the workflow reaches the SMTP step."
+    rollback: "Revert release_delivery asset dedupe changes, release delivery tests, and version 0.12.3 governance records; keep production variables disabled."
+    target_version: "0.12.3"
+    completed_version: "0.12.3"
+    unknown_task_ids: []
