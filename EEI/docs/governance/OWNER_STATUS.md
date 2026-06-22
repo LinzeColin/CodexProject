@@ -5,8 +5,8 @@ EEI 当前治理结论：实现一致性为 `partial`，交付状态为 `blocked
 ## 1. Version, Phase, Gate
 
 - source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:b3ef4cb3148bd3da194634ca4a097e460ef1475ec9097b55f105bf2191ca7588`
-- snapshot_event_time: `2026-06-22T00:24:25Z`
+- source_snapshot_hash: `sha256:a1a6ded910036fbb09d39ee671540009baa8dbd850065cd3d470d8e85c0c59d1`
+- snapshot_event_time: `2026-06-22T00:42:00Z`
 - generator_version: `2.0.0`
 - version: `0.1.0`
 - phase/gate: `C / TASK-T1307-A209-4H-OPERATOR-SOAK-PARTIAL`
@@ -46,4 +46,4 @@ Current canonical registries separate implementation congruence from empirical a
 - owner: Codex/governance runner
 - unblock_condition: Run the listed test commands and attach evidence.
 - unresolved_fact_ids: `7`
-- pending_or_stale_events: `17`
+- pending_or_stale_events: `18`
