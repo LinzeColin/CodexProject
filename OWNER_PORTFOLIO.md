@@ -8,7 +8,7 @@ Review 7 governance is a portfolio control layer with automatic generated-view s
 
 - source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
 - source_tree_hash: `a661be1db22d99ff3afe6183ac1ae8f4c444be18`
-- source_snapshot_hash: `sha256:b4095f816a22599670f943335e40509b7f907a4079b16ee9e82a82a81b2b2291`
+- source_snapshot_hash: `sha256:e60ad62672fd60593aac5e304bed4e47f46f87c09169035e82b0a6c8bcde943b`
 - snapshot_event_time: `2026-06-22T13:05:00+10:00`
 - generator_version: `3.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
