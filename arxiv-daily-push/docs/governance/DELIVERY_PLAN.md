@@ -19,8 +19,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 60
-- acceptance_count: 55
+- task_count: 61
+- acceptance_count: 56
 
 ## Delivery Tasks
 
@@ -83,7 +83,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S1-07-B1_REPORT_EMAIL_TEXT-001 | S1-A | completed | ADP-ACC-S1-07-B1-REPORT-EMAIL-TEXT | B1/arXiv Chinese teaching report, supported claim evidence, plain/HTML email preview, candidate queue summary, and audit artifacts pass without video/SMTP/Release side effects | `src/arxiv_daily_push/stage1_b1_report.py`; `tests/test_stage1_b1_report.py`; `governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json` |
 | S1-08-LOCAL_RUNTIME_RECOVERY-001 | S1-A | completed | ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY | Tick/checkpoint, watchdog stale-state blocking, SQLite SHA256 backup/restore, runtime production-flag audit, and scheduler dry-run templates pass focused tests without production side effects | `src/arxiv_daily_push/stage1_runtime.py`; `tests/test_stage1_runtime.py`; `governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json` |
 | S1-09-MIGRATION_PACKAGE-001 | S1-A | completed | ADP-ACC-S1-09-MIGRATION-PACKAGE | focused migration/runtime/CLI tests 17 OK; low-resource migration package export and verify controls pass without production side effects | `src/arxiv_daily_push/stage1_migration.py`; `tests/test_stage1_migration.py`; `docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md` |
-| S1-10-POST_MIGRATION_BOOTSTRAP-001 | S1-A | planned | ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP | Verify the post-migration machine or cloud runner boundary before heavy historical previews and live-day evidence | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md` |
+| S1-10-POST_MIGRATION_BOOTSTRAP-001 | S1-A | completed | ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP | focused 16 OK; full 220 OK; semantic 45/322 OK; project/all/changed-only governance 0 errors | `governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json`; `docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md` |
 | ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | daily email front-end now uses human-scannable Chinese sections, compact arXiv subject, 12-second video link, action guidance, concise evidence, and hides ROI scoring in backend artifacts | `docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds the owner subject contract, Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger, ROI score, or numeric `x/5` score label | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |
@@ -139,3 +139,18 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Changed-only sync | validator output | pass |
 | Diff hygiene | `git diff --check` | pass |
 | Secrets/media guard | file review and `.gitignore` | pass |
+
+
+### `S1-10-POST_MIGRATION_BOOTSTRAP-001`
+
+- status: `completed`
+- acceptance_ids: `ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP`
+- evidence: `governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json`, `arxiv-daily-push/docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md`
+- completed_version: `0.20.0`
+
+### `S1-11-HISTORICAL_B1_PREVIEWS-001`
+
+- status: `planned`
+- objective: generate 30 independent historical B1/arXiv report and email preview packages without production side effects.
+- acceptance_ids: `ADP-ACC-S1-11-HISTORICAL-B1-PREVIEWS`
+- target_version: `0.21.0`

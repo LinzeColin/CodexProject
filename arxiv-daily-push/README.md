@@ -31,7 +31,10 @@ Implemented foundations now:
 - Stage 1 SQLite/WAL/FTS5 document and event storage model;
 - Stage 1 source registry contract with only `SRC-ARXIV / arxiv.atom.v1` active;
 - Stage 1 scoring, deterministic queue, and content ledger contract via
-  `adp stage1-queue`.
+  `adp stage1-queue`;
+- Stage 1 B1 report/email preview, local runtime recovery, migration package,
+  and post-migration bootstrap gates via `adp build-b1-report-email`,
+  `adp runtime-audit`, `adp migration`, and `adp post-migration-bootstrap`.
 
 Retained but inactive for V5 Stage 1 acceptance:
 
@@ -44,12 +47,9 @@ later owner decision explicitly restores them.
 
 Not accepted yet:
 
-- B1/arXiv text teaching report and email contract that meets the V5 quality
-  bar;
 - 30 independent historical B1 report/email previews;
 - two real natural days of B1 email delivery evidence;
-- local/cloud runtime recovery, backup, restore, watchdog, and scheduler proof;
-- migration package and durable cloud runner proof;
+- target-runner live network/SMTP readiness evidence when owner enables those checks;
 - `ARXIV_PRODUCTION_ACCEPTED`.
 
 ## Goal Baseline
@@ -82,6 +82,10 @@ Current V5 Stage 1 task sequence:
 - `S1-08-LOCAL_RUNTIME_RECOVERY-001`: tick, watchdog, backup, restore, runtime
   audit, and scheduler controls.
 - `S1-09-MIGRATION_PACKAGE-001`: low-resource integration and migration package.
+- `S1-10-POST_MIGRATION_BOOTSTRAP-001`: migration-bound target machine or
+  GitHub-hosted runner bootstrap.
+- `S1-11-HISTORICAL_B1_PREVIEWS-001`: planned 30 independent historical B1
+  report/email previews.
 
 ## Local Validation
 

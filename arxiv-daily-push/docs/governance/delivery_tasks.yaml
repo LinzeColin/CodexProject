@@ -958,16 +958,33 @@ tasks:
     objective: "Verify the post-migration machine or cloud runner bootstrap before heavy historical previews and live-day evidence."
     scope: "New-machine/cloud runtime prerequisites, explicit runner boundary, SSL/network readiness, low-resource smoke rerun from the migration package, and no-secret readiness evidence."
     non_scope: "No production scheduler enablement, no real SMTP send, no Release upload, no video generation, no 30-day replay, and no final production acceptance claim."
-    status: "planned"
+    status: "completed"
     dependencies: ["S1-09-MIGRATION_PACKAGE-001"]
-    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml", "arxiv-daily-push/tests/test_stage1_bootstrap.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP"]
-    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_bootstrap.py arxiv-daily-push/tests/test_stage1_migration.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_semantic PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_project PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
-    test_results: ["PENDING"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_focus3 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_bootstrap.py arxiv-daily-push/tests/test_stage1_migration.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_version PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push version", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_semantic3 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_project PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_allgov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --all", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_changed PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_root PYTHONPATH=scripts:arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_iq PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_information_quality.py --project arxiv-daily-push --fast --fail-on-error", "git diff --check"]
+    test_results: ["focused S1-10 bootstrap/migration/CLI tests: 16 tests OK", "version CLI: 0.20.0", "arxiv-daily-push unit tests: 220 tests OK", "semantic extractor: 45 active formulas and 322 active parameters checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "all-project governance validation: errors 0 warnings 0", "changed-only semantic governance sync: errors 0 warnings 0; projects changed arxiv-daily-push only", "root governance unit tests: 130 tests OK; missing-base line is an expected negative fixture with exit code 0", "information quality validation: PASS errors 0 warnings 0", "JSON/JSONL and CSV parse checks: PASS", "git diff --check: PASS", "cache hygiene: no __pycache__ or .pyc files under arxiv-daily-push or tests/governance"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py", "arxiv-daily-push/tests/test_stage1_bootstrap.py", ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml", "arxiv-daily-push/docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md", "governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json"]
     risk: "Bootstrap must prove the target runtime boundary and must not silently fall back to this Mac as a background production runner."
     rollback: "Revert S1-10 bootstrap files and governance updates."
     target_version: "0.20.0"
+    completed_version: "0.20.0"
+    unknown_task_ids: []
+  - task_id: "S1-11-HISTORICAL_B1_PREVIEWS-001"
+    phase: "S1-A"
+    objective: "Generate 30 independent historical B1/arXiv report and email preview packages from supported inputs without production side effects."
+    scope: "Historical fixture or replay-input selection, B1 report/email artifact generation, content ledger references, evidence manifests, and governance records for 30 independent previews."
+    non_scope: "No real SMTP send, no Release upload, no scheduler enablement, no video generation, no broad non-arXiv source expansion, and no final production acceptance claim."
+    status: "planned"
+    dependencies: ["S1-10-POST_MIGRATION_BOOTSTRAP-001"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-11-HISTORICAL-B1-PREVIEWS"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_stage1_queue.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_project PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["PENDING"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    risk: "Historical previews must be independent evidence packages and must not be confused with live delivery or final production acceptance."
+    rollback: "Revert S1-11 historical preview files and governance updates."
+    target_version: "0.21.0"
     completed_version: ""
     unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"

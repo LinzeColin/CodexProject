@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.20.0 - 2026-06-23
+
+- Added S1-10 post-migration bootstrap verification for the target machine or GitHub-hosted cloud runner.
+- Added `adp post-migration-bootstrap` to verify Python, Git checkout, SSL context, SQLite/FTS5, runtime smoke, GitHub Actions runner env, workflow runner contract, and secret-name-only readiness.
+- Added a GitHub-hosted Stage 1 bootstrap workflow that runs on `ubuntu-latest`, uploads JSON evidence, and keeps production schedule, SMTP send, Release upload, video, and large replay disabled.
+
 ## 0.19.0 - 2026-06-22
 
 - Added S1-09 low-resource migration package export and verification via `adp migration export|verify`.
