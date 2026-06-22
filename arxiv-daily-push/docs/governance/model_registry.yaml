@@ -192,6 +192,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     status: "active"
+  - assumption_id: "ASM-ADP-042"
+    statement: "Review8 Stage 1 local runtime recovery must provide explicit heartbeat/checkpoint, watchdog, backup, restore, runtime audit, and scheduler install/uninstall dry-run controls while keeping production scheduling, real SMTP, Release upload, video generation, and long-running local background work disabled."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -1019,3 +1024,30 @@ models:
     config_refs: ["NOT_APPLICABLE"]
     test_refs: ["arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
+  - model_id: "MOD-ADP-041"
+    name: "Review8 Stage 1 local runtime recovery controls"
+    kind: "deterministic local runtime and recovery gate"
+    purpose: "Provide low-resource tick, watchdog, backup, restore, runtime audit, and scheduler install/uninstall dry-run controls with explicit state/artifact paths and no production side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-stage1-local-runtime-recovery-v1"
+    assumption_ids: ["ASM-ADP-042", "ASM-ADP-038", "ASM-ADP-041"]
+    formula_ids: ["FORM-ADP-043"]
+    parameter_ids:
+      - "PARAM-ADP-316"
+      - "PARAM-ADP-317"
+      - "PARAM-ADP-318"
+      - "PARAM-ADP-319"
+      - "PARAM-ADP-320"
+      - "PARAM-ADP-321"
+      - "PARAM-ADP-322"
+      - "PARAM-ADP-323"
+      - "PARAM-ADP-324"
+      - "PARAM-ADP-325"
+    inputs: ["state_dir", "generated_at", "SQLite database path", "backup manifest", "scheduler platform", "explicit artifact paths"]
+    outputs: ["heartbeat.json", "checkpoint.json", "watchdog report", "backup manifest", "restore report", "runtime audit report", "scheduler dry-run templates"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["NOT_APPLICABLE"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json", "arxiv-daily-push/tests/test_stage1_runtime.py"]

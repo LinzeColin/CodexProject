@@ -774,10 +774,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:2b4510d2c4f6533e749c7c9ec162fbab0d47248cea27e7baadb472983aa77322"
+    implementation_fingerprint: "sha256:1c74af037d37aee26e948abbb491605789e16b64b1854681e48163013c866cad"
     last_verified_commit: "bbcdc21caab1c4377810d66bb95359ed3ef18611"
     verified_at: "2026-06-22T21:45:00+10:00"
-    evidence_hash: "sha256:a95d876e668861eae578701f83c6ffe9a443de7dfde52cb995d3971f64fc8c8a"
+    evidence_hash: "sha256:788e2272db89adbe9ba495e1252074260be2f2512cfb35a2ea8d686d1d3e756a"
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
     assumption_ids: ["ASM-ADP-026", "ASM-ADP-015", "ASM-ADP-025"]
@@ -1489,7 +1489,41 @@ formulas:
     evidence_refs: ["governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::build_b1_report_email_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::validate_b1_report_email_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_evidence_audit", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_report_markdown", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_email_plain", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_email_html", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_candidate_queue_summary", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_write_artifacts", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:15658c416e62aa47d2f5aa30dcc941c40daa41cc3c1c3af99f9ba3f2e6931a00"
+    implementation_fingerprint: "sha256:b295b58bb953a600e31ec7e4a654e4749ea3575610c3c437fe802582a62d2887"
     last_verified_commit: "bbcdc21caab1c4377810d66bb95359ed3ef18611"
     verified_at: "2026-06-22T21:45:00+10:00"
-    evidence_hash: "sha256:a87afea1969211b7d4542cfb77238146f3aa28c3d1f3228389d4e40f4732834b"
+    evidence_hash: "sha256:b40bc7dcb70fdcdb61635500ac4ea9a66871cf2f1c932b8fb9444c14ecc7c323"
+  - formula_id: "FORM-ADP-043"
+    model_id: "MOD-ADP-041"
+    assumption_ids: ["ASM-ADP-042", "ASM-ADP-038", "ASM-ADP-041"]
+    status: "active"
+    expression: "A Stage 1 local runtime recovery report passes only when tick writes explicit heartbeat/checkpoint state, watchdog rejects stale heartbeat or stale locks, backup copies a passing SQLite/WAL/FTS5 database and small supporting files into a SHA256 manifest below the backup byte cap, restore requires explicit confirmation and verifies the restored database, runtime audit blocks enabled production flags, and scheduler install/uninstall outputs dry-run templates only without applying OS scheduler changes."
+    variables:
+      - name: "state_dir"
+        data_type: "path"
+        unit: "explicit local state directory"
+        input_domain: "operator supplied path only"
+      - name: "db_path"
+        data_type: "path"
+        unit: "SQLite database"
+        input_domain: "migrated S1-04 database"
+      - name: "backup_manifest"
+        data_type: "object"
+        unit: "SHA256 manifest"
+        input_domain: "database and small supporting files under byte cap"
+      - name: "scheduler_platform"
+        data_type: "enum"
+        unit: "OS"
+        input_domain: "macos, linux, windows"
+    constraints: "S1-08 may write only explicit local state, backup, restore, or template paths; it must not install a scheduler, enable production flags, send SMTP, upload Releases, generate video, read secrets, or start long-running local background work."
+    missing_policy: "Missing heartbeat, stale heartbeat, existing unsafe restore target, invalid backup hash, missing confirmation, enabled production flag, or scheduler apply attempt returns blocked status."
+    output_range: "runtime report with status pass or blocked for runtime_audit, tick, watchdog, backup, restore, scheduler_install, or scheduler_uninstall"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json", "arxiv-daily-push/tests/test_stage1_runtime.py"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::build_runtime_audit", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::run_tick", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::run_watchdog", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::create_runtime_backup", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::restore_runtime_backup", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::build_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::validate_stage1_runtime_report", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
+    implementation_fingerprint: "sha256:55fb7d563ae96e4551e1de3f88785a5471b5a4e156b499665b787a3cd42e734d"
+    last_verified_commit: "5f4995964164cd70c9222bbba974bfa0892853a0"
+    verified_at: "2026-06-22T22:20:00+10:00"
+    evidence_hash: "sha256:8c29924584f6dcccb14295a199a265bffe764738a2114a6b77bf8853323104ab"
