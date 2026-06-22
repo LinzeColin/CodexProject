@@ -485,6 +485,20 @@ def event_binding_counts(events: list[dict[str, Any]]) -> dict[str, int]:
     return counts
 
 
+def final_commit_binding(events: list[dict[str, Any]]) -> str:
+    if not events:
+        return "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+    latest = events[-1]
+    commit = str(latest.get("result_commit") or latest.get("git_commit") or "").strip()
+    if re.fullmatch(r"[0-9a-f]{7,40}", commit):
+        ref = str(latest.get("ci_run_reference") or latest.get("ci_attestation_ref") or "").strip()
+        return f"CI_ATTESTED:{commit}" + (f" {ref}" if ref else "")
+    ref = str(latest.get("ci_attestation_ref") or "").strip()
+    if ref:
+        return f"CI_ATTESTED:{ref}"
+    return "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+
+
 def completed_task_ids(tasks: list[dict[str, Any]]) -> set[str]:
     return {
         str(task.get("task_id"))
@@ -729,7 +743,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         "source_tree_hash": tree_hash,
         "snapshot_event_time": max_event_time(events),
         "generator_version": GENERATOR_VERSION,
-        "final_commit_binding": "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION",
+        "final_commit_binding": final_commit_binding(events),
         "dimensions": {
             "structural_completeness": {
                 "status": "VERIFIED",
@@ -1120,7 +1134,7 @@ def render_status(item: dict[str, Any]) -> str:
 - source_snapshot_hash: `{assurance['source_snapshot_hash']}`
 - snapshot_event_time: `{assurance['snapshot_event_time']}`
 - generator_version: `{GENERATOR_VERSION}`
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `{assurance['final_commit_binding']}`
 
 ## Current State
 
@@ -1254,6 +1268,7 @@ Owner 视图现在把实现一致性、参数来源、方法依据、实证验�
 
 ## 14. Evidence Freshness
 
+- final_commit_binding: `{assurance['final_commit_binding']}`
 - tree_bound_events: `{item['event_binding_counts']['tree_bound_events']}`
 - commit_bound_events: `{item['event_binding_counts']['commit_bound_events']}`
 - legacy_unbound_events: `{item['event_binding_counts']['legacy_unbound_events']}`

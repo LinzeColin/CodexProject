@@ -11,11 +11,11 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1301-A202-SIGNED-BUNDLE-PUBLICATION-BINDING-IN-PROGRESS`
-- Confirmed iteration count: 24
-- Reconstructed development event count: 2
-- Current task: `TASK-T1301`
-- Blockers: A202 now requires a signed A202/A210 release decision bundle for the production owner sign-off publication path, but the committed signed bundle is a contract-test fixture only and does not close source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation or public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current gate: `TASK-T1301-T1302-T1303-CI-EVIDENCE-BINDING-IN-PROGRESS`
+- Confirmed iteration count: 25
+- Reconstructed development event count: 3
+- Current task: `TASK-T1301/TASK-T1302/TASK-T1303 governance evidence binding`
+- Blockers: commit `d009516c57c4908a025c401a711dfb4d599f7b73` is remote-CI bound by Project Governance run `27950933950` and EEI validation run `27950933933`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A204/A205 remain open until deployment wake, atomic refresh consistency and long-duration refresh evidence are current; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -571,6 +571,29 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the A202 publication script, signed fixture, unit/integration tests, release-decision artifact/status updates and regenerated release artifacts; rerun `make verify`.
 - Next step: run V5 sync, task-pack validation, release artifact regeneration, full local verification, commit/push and verify CI.
 
+### `ITER-20260623-001`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `d009516c57c4908a025c401a711dfb4d599f7b73`
+- Result commit: `d009516c57c4908a025c401a711dfb4d599f7b73` remote-CI attested; current governance repair commit still needs its own CI after push.
+- Task IDs: `TASK-T1301`, `TASK-T1302`, `TASK-T1303`, `TASK-T1307`, `TASK-T1309`
+- Goal: bind the `d009516c` Project Governance and EEI validation CI evidence into EEI governance status and add explicit T1302/T1303 delivery task contracts without waiting on A209 24h soak windows.
+- Assumptions: CI evidence proves the committed contracts and current branch regressions only; it does not approve production relationship publication, legal/source/brand clearance, model release-manager activation or A209 closure.
+- Files changed: governance generator, VERSION_MATRIX, delivery_tasks, development_events, acceptance/status ledgers, V5 sync record, generated EEI governance status files, run manifest and root governance tests.
+- Model changes: no scoring formula, graph traversal, extraction model or model-weight behavior changed.
+- Parameter changes: no active threshold value changed.
+- Commands run: local regeneration and validation are required for the current repair commit; remote evidence already exists for `d009516c` through Project Governance run `27950933950` and EEI validation run `27950933933`.
+- Test results: Project Governance run `27950933950` job `82707373153` PASS; EEI validation run `27950933933` job `82707372790` PASS, including Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E.
+- Successes: A202 signed-bundle publication binding and T1302 theme/facility scoring evidence are no longer marked as remote-CI pending; T1302 and T1303 now have bounded delivery contracts with Acceptance IDs, commands, risks and rollback.
+- Failures: A209 24h operator soak is still missing and must continue as a background independent evidence task; A202/A203/A204/A205/A210 remain in progress.
+- Decisions: do not block MVP feature development on the 288 five-minute A209 windows; keep 24h soak as a production-stability release gate; continue bounded MVP implementation in parallel.
+- Remaining risks: the current governance repair commit still needs local validation, push and GitHub CI; future operators must not read `CI_ATTESTED:d009516c` as full MVP completion.
+- Rollback: revert the generator, `ITER-20260623-001` event, T1302/T1303 delivery task sections, ledger/status updates, run manifest and root test changes; regenerate governance/release artifacts and rerun validation.
+- Next step: regenerate artifacts, run `make verify`, run governance sync and root governance tests, then commit/push and verify CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -603,6 +626,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260622-015`: governance sync coverage repair for the current EEI branch diff after adding the A026/A027 gold-quality contract.
 - `EVENT-20260622-016`: local T1302/A203 theme/facility scoring explain and eight-family score-result recompute extension.
 - `EVENT-20260622-018`: local T1301/A202 signed release decision bundle binding for production owner sign-off publication.
+- `EVENT-20260623-001`: remote CI evidence binding for `d009516c` and T1302/T1303 delivery task contract repair; A209 24h soak remains a background gate.
 
 ## Unknown Historical Periods
 
