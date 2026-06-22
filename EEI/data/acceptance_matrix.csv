@@ -1,4 +1,4 @@
-﻿acceptance_id,priority,category,criterion,verification,status
+acceptance_id,priority,category,criterion,verification,status
 A001,P0,planning,"Plan lists scope, files, commands, tests, risks, rollback and acceptance mapping",Review plan artifact,NOT STARTED
 A002,P0,planning,"ADRs cover graph budget, URL state, score versioning, append-only logs and 14-day calibration",ADR review,NOT STARTED
 A003,P0,planning,Prototype/MVP/robust tracks cannot silently change P0 Definition of Done,Plan review,NOT STARTED
@@ -202,11 +202,11 @@ A200,P0,release,clean-room 校验通过 Markdown/CSV/JSON/GitHub/原型/PDF/ZIP 
 A201,P0,database,"PostgreSQL production migrations are reversible and preserve separate fact, evidence, time validity and version layers",migration rollback + integrity test,DONE
 A202,P0,data,"Golden Vertical ingestion preserves raw snapshot, entity resolution confidence, evidence chain, parser version, review status, counter-evidence, dry-run full-text source health/retry metadata, live official retrieval adapter contract, selected-anchor live capture evidence, live capture PostgreSQL ingestion contract, reviewed-publication fact-version path and production owner sign-off publication metadata, operator/legal review packet fail-closed contract",ingestion integration test,IN PROGRESS
 A203,P0,api,"Production API, recursive graph query and scoring responses are snapshot-scoped, evidence-bearing and budget-bounded",contract + integration test,IN PROGRESS
-A204,P0,model,"Model config versions activate transactionally with operation log and failed activation leaves previous active version unchanged",transaction/rollback test,IN PROGRESS
-A205,P0,refresh,"Global model/data refresh atomically switches all visible modules and stale clients receive conflict or refresh semantics",cross-view E2E + cache invalidation test,IN PROGRESS
-A206,P0,scheduler,"Background jobs support lease, auto wake, idempotency key, heartbeat, retry cap, dead-letter and graceful shutdown",worker crash/retry integration test,IN PROGRESS
+A204,P0,model,Model config versions activate transactionally with operation log and failed activation leaves previous active version unchanged,transaction/rollback test,IN PROGRESS
+A205,P0,refresh,Global model/data refresh atomically switches all visible modules and stale clients receive conflict or refresh semantics,cross-view E2E + cache invalidation test,IN PROGRESS
+A206,P0,scheduler,"Background jobs support lease, auto wake, idempotency key, heartbeat, retry cap, dead-letter and graceful shutdown",worker crash/retry integration test,DONE
 A207,P0,saved-view,"Server saved views support optimistic conflict control, version history, recovery and schema migration",multi-session conflict + restore test,DONE
 A208,P0,scale,"10k, 100k and 1m relationship benchmarks record API, layout, render, memory, frame and long-task budgets with pass/fail output",performance benchmark,DONE
 A209,P0,soak,"4h and 24h browser and worker soak tests record heap, DOM, listener, timer, CPU, retry and recovery stability",soak suite,IN PROGRESS
-A210,P0,brand,"EEI formal brand legal and market clearance is complete for public launch or a signed risk waiver blocks/permits release explicitly",brand clearance evidence review,IN PROGRESS
+A210,P0,brand,EEI formal brand legal and market clearance is complete for public launch or a signed risk waiver blocks/permits release explicitly,brand clearance evidence review,IN PROGRESS
 A211,P0,frontend,"Production frontend is componentized with real routes, WorkspaceContext, real controls, disabled unfinished entries and persisted state/query wiring",component + route + E2E test,DONE

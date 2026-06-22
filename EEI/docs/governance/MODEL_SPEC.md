@@ -21,6 +21,10 @@ machine_summary:
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
+## Current Audit Note
+
+- 2026-06-22 T1304/A206 closure changes scheduler, retry and dead-letter delivery status only; no scoring model, graph traversal formula, extraction formula, formula weight or runtime model behavior changed.
+
 ## A. Model Overview
 
 ### `MOD-001` - 综合研究优先级

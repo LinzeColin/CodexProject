@@ -16,10 +16,10 @@
       "PARTIAL": 20
     },
     "implementation_status": {
-      "DONE": 4,
+      "DONE": 5,
       "N/A": 8,
       "NOT_STARTED": 14,
-      "PARTIAL": 20
+      "PARTIAL": 19
     },
     "validation_status": {
       "CATALOG_VALIDATED": 11,

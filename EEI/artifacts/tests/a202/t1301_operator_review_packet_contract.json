@@ -146,9 +146,9 @@
       "status": "missing"
     },
     {
-      "evidence": "required long-duration source-health/retry evidence",
-      "gate_id": "a206_retry_dead_letter_soak",
-      "status": "missing"
+      "evidence": "artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json",
+      "gate_id": "a206_scheduler_retry_dead_letter",
+      "status": "present"
     },
     {
       "evidence": "required long-duration operator stability evidence",
@@ -164,10 +164,10 @@
     "relationship_fact_candidates_allowed": 0,
     "relationships_publishable": 0
   },
-  "generated_at": "2026-06-22T05:35:13Z",
+  "generated_at": "2026-06-22T06:40:51Z",
   "parser_version": "nvidia-official-fulltext-live-v1",
   "publication_policy": {
-    "reason": "Live capture evidence is ready for review only; source-license, passage-level, owner, legal, A206 and A209 gates are not complete.",
+    "reason": "Live capture evidence is ready for review only; source-license, passage-level, owner, legal and A209 gates are not complete.",
     "relationship_edge_publication_allowed": false,
     "relationship_fact_publication_allowed": false,
     "release_clearance": false

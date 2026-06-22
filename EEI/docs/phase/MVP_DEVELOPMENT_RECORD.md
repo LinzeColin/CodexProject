@@ -4301,14 +4301,14 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A202 STILL IN PROGRESS
 ### Acceptance mapping
 
 - T1301 -> A202 for the real-data evidence-chain review handoff.
-- A202 remains `IN_PROGRESS`: this contract is review input only and does not provide source-license review, passage-level relationship approval, production owner sign-off, legal release clearance, A206 retry/dead-letter soak evidence or A209 24h operator soak evidence.
+- A202 remains `IN_PROGRESS`: this contract is review input only and does not provide source-license review, passage-level relationship approval, production owner sign-off, legal release clearance or A209 24h operator soak evidence. A206 scheduler/retry/dead-letter functionality is now a separate closed gate.
 
 ### Parameters and formulas
 
 - No scoring formula changed.
 - No canonical model parameter changed.
 - New fail-closed review-packet status: `PENDING_OWNER_LEGAL_CLEARANCE`.
-- Required gate set: `live_capture_ready_for_review`, `source_license_review`, `passage_level_relationship_review`, `production_owner_signoff`, `legal_release_clearance`, `a206_retry_dead_letter_soak`, `a209_24h_operator_soak`.
+- Required gate set: `live_capture_ready_for_review`, `source_license_review`, `passage_level_relationship_review`, `production_owner_signoff`, `legal_release_clearance`, `a206_scheduler_retry_dead_letter`, `a209_24h_operator_soak`.
 
 ### Validation
 
@@ -4325,3 +4325,38 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A202 STILL IN PROGRESS
 - Remove `artifacts/tests/a202/t1301_operator_review_packet_contract.json`.
 - Revert the unit-test, Makefile, acceptance, traceability and task-record updates.
 - Regenerate development, clean-room and release artifacts, then rerun validation.
+
+## 2026-06-22 - T1304/A206 scheduler closure decoupled from A209 soak
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A206 DONE; A209 STILL IN PROGRESS
+
+### Scope
+
+- Closed T1304/A206 as scheduler functionality: lease, auto wake, idempotency key, heartbeat, retry cap, dead-letter, graceful shutdown, transactional outbox dispatch, Docker Compose worker binding and worker supervisor execution.
+- Kept T1307/A209 as the separate long-duration stability gate for 24h operator soak evidence.
+- Updated `scripts/validate_v5_production_readiness_sync.py` so A206 is implemented while A209 remains partial.
+- Updated `data/task_backlog.csv`, `data/acceptance_matrix.csv`, `data/acceptance_traceability.csv`, `data/development_status_ledger.csv`, `artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json`, and the A202 operator-review packet gate status.
+
+### Acceptance mapping
+
+- T1304 -> A206 is now `DONE`.
+- T1307 -> A209 remains `IN_PROGRESS`; the failed/incomplete 24h operator run is a production stability gate, not a blocker for A206 functionality.
+- A202 remains `IN_PROGRESS` because source-license review, passage-level relationship review, production owner sign-off, legal release clearance and A209 24h operator soak are still missing.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No scheduler threshold changed.
+- A202 review packet required-gate count remains 7; the A206 gate changed from missing soak evidence to present scheduler/retry/dead-letter closure evidence.
+
+### Validation
+
+- Baseline GitHub Actions evidence before this status closure: EEI validation run `27934137278` / job `82651968987` passed Step 7 `make verify`, Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI PostgreSQL E2E on commit `f3fdd649`.
+- Project Governance run `27934137279` passed and produced artifact `project-governance-ci-attestation-27934137279-1`.
+- Final local validation for this status update is recorded in the run output and must be followed by remote CI for the closure commit.
+
+### Rollback
+
+- Revert the A206 status rows, validator move from implemented back to partial, A206 contract status change and A202 gate rename.
+- Regenerate A202 packet, development artifacts, clean-room package and release checksums.
+- Rerun `make verify` and keep A206 `IN_PROGRESS` if the scheduler closure evidence no longer validates.

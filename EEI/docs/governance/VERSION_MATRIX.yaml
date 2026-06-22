@@ -16,6 +16,7 @@ model_versions:
   MOD-011: "business-empire-model-v2"
   MOD-012: "operational-controls-v1"
 parameter_profile_versions:
+  a206-scheduler-closure: "1"
   balanced-v2: "2"
   default-v2: "2"
   model_runtime_defaults: "14"
