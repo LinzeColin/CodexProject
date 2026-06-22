@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.12.0`
+Active product version: `0.12.4`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.12.0
+- Product version: 0.12.4
 - Current phase: E
-- Current gate: ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-PASS
-- Confirmed iteration count: 47
+- Current gate: ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED
+- Confirmed iteration count: 51
 - Reconstructed event count: 0
-- Current task: ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031
-- Blockers: Phase 12 all-arXiv scan, candidate queue persistence, ROI ranking, daily lead selection, Release-hosted video artifact link gating, and email queue summary pass focused local tests. Production launch remains blocked by PR CI completion, owner-provisioned default-branch runner networking/TLS, durable readiness refs for `runner_ref`, `smtp_secret_ref`, `release_target_ref`, and `workflow_vars_ref`, explicit launch confirmation, default-branch Phase 12 workflow evidence, real Gmail SMTP evidence to `linzezhang35@gmail.com`, real GitHub Release video-link evidence, resource telemetry, replay/recovery evidence, 30 unique daily production entries, and explicitly disabled production variables.
+- Current task: ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035
+- Blockers: Controlled manual GitHub Release plus Gmail SMTP test still needs the 0.12.4 repair merged to `main` and rerun through workflow_dispatch. Production launch remains blocked by real Gmail SMTP evidence to `linzezhang35@gmail.com`, real GitHub Release video-link evidence, resource telemetry, replay/recovery evidence, 30 unique daily production entries, and explicitly disabled production variables.
 
 ## Phase Matrix
 
@@ -1183,6 +1183,30 @@ The append-only machine record is `development_events.jsonl`.
 - Remaining risks: A second manual workflow run can still fail on Release permissions, Gmail SMTP authentication, or provider policy.
 - Rollback: Revert version 0.12.3 workflow dedupe, tests, phase record, manifest, event, and restore version 0.12.2 while keeping production variables disabled.
 - Next step: Validate locally, open repair PR, wait for PR CI green, merge, then rerun the manual Release + Gmail SMTP workflow.
+
+### `ITER-20260621-051`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from GitHub Actions runs `27927785092` and `27928505758`, manual delivery execution artifact, release delivery implementation, cloud dry-run failure logs, and focused regression tests.
+- Version before: 0.12.3
+- Version after: 0.12.4
+- Base commit: 0da8463ad03c94c73c784213199bde8fee110a8d
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035
+- Goal: Repair the lower GitHub Release delivery boundary after the second controlled manual dispatch showed duplicate asset paths still reached `gh release create` from inside scheduled delivery, then harden the PR cloud dry-run against transient arXiv 429/timeout blocks.
+- Assumptions: The workflow-level filename dedupe passed, but the release transport boundary still needed to skip repeated identical paths and fail closed for distinct files that publish with the same Release asset filename. PR CI run `27928505758` also proved the live all-ArXiv dry-run can be partially successful and still fail closed on transient arXiv rate limits.
+- Files changed: release delivery code, live all-ArXiv retry code, focused release delivery/global scan tests, version/changelog files, model/formula/parameter/traceability registries, delivery task, phase record, event, run manifest, and generated governance status views.
+- Model changes: Refined MOD-ADP-017 to `adp-release-delivery-v1.1`.
+- Formula changes: Refreshed FORM-ADP-019 implementation evidence after release delivery asset dedupe and FORM-ADP-035 after bounded transient retry was added to live cloud dry-run.
+- Parameter changes: Added PARAM-ADP-185 for Release asset path dedupe.
+- Commands run: focused release delivery tests; focused global scan retry tests; semantic extractor; governance dashboard generation; full arXiv unit tests; root governance unit tests; final governance and information-quality validation pending in this PR preparation loop.
+- Test results: focused release delivery tests 6 OK; focused global scan tests 9 OK; semantic extractor checked 36 active formulas and 184 active parameters before final rerun; arXiv unit tests 176 OK before final rerun.
+- Successes: `release_delivery.py` now removes repeated identical asset paths before command construction and blocks conflicting duplicate Release filenames without logging secrets, `gh` stdout/stderr, or Release notes text. Live all-ArXiv cloud dry-run now retries bounded transient 429/timeout blocks while still requiring 20/20 archive buckets.
+- Failures: Second manual workflow run `27927785092` failed closed before this repair; PR CI run `27928505758` failed closed after arXiv returned HTTP 429 for later archive buckets; no real Release upload or Gmail SMTP send has passed yet after this repair.
+- Decisions: Keep production schedule disabled; rerun manual workflow only after this PR passes CI and merges to `main`.
+- Remaining risks: A third workflow_dispatch can still fail on GitHub Release permissions, Gmail SMTP authentication, provider policy, repeated upstream arXiv throttling, or a newly exposed runtime issue.
+- Rollback: Revert version 0.12.4 release delivery dedupe, tests, phase record, manifest, event, and restore version 0.12.3 while keeping production variables disabled.
+- Next step: Complete local validation, open repair PR, wait for PR CI green, merge, then rerun the manual Release + Gmail SMTP workflow.
 
 ## Unknown Historical Periods
 

@@ -39,7 +39,7 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (183/183 active parameters, 36/36 active formulas)
+- implementation_congruence: `VERIFIED` (184/184 active parameters, 36/36 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,22 +71,22 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 - model_count: `34`
 - total_formulas: `36`
 - active_formulas: `36`
-- total_parameters: `184`
-- active_parameters: `183`
+- total_parameters: `185`
+- active_parameters: `184`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED`
+- release_gate: `ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED`
 
 ## 14. Evidence Freshness
 
 - tree_bound_events: `0`
 - commit_bound_events: `0`
 - legacy_unbound_events: `54`
-- precommit_pending_events: `4`
-- pending_or_stale_events: `58`
+- precommit_pending_events: `5`
+- pending_or_stale_events: `59`
 
 ## 15. UNKNOWN
 
@@ -96,11 +96,11 @@ arxiv-daily-push remains FAILED for delivery readiness despite local simulations
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:b8140a5c3a5ac64af750a33d7384309d05c20c9b74ab1e9afaec37c7ee1b0a6b`
-- snapshot_event_time: `2026-06-22T13:05:00+10:00`
+- source_snapshot_hash: `sha256:199802b8d5dfccedd1a7e8f85bde80d3c0d4dfd432b1fc516146b0db3e889d2c`
+- snapshot_event_time: `2026-06-22T13:40:00+10:00`
 - generator_version: `4.0.0`
-- version: `0.12.3`
-- phase/gate: `E / ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED`
+- version: `0.12.4`
+- phase/gate: `E / ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED`
 
 ## 17. Next Unique Task
 

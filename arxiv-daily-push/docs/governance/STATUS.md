@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:b8140a5c3a5ac64af750a33d7384309d05c20c9b74ab1e9afaec37c7ee1b0a6b`
-- snapshot_event_time: `2026-06-22T13:05:00+10:00`
+- source_snapshot_hash: `sha256:199802b8d5dfccedd1a7e8f85bde80d3c0d4dfd432b1fc516146b0db3e889d2c`
+- snapshot_event_time: `2026-06-22T13:40:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -13,11 +13,11 @@
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
-- Product version: `0.12.3`
-- Phase/Gate: `E / ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED`
-- Models/Formulas/Parameters total: `34 / 36 / 184`
-- Active formulas/parameters: `36 / 183`
-- Machine checked formulas/parameters: `36 / 183`
+- Product version: `0.12.4`
+- Phase/Gate: `E / ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED`
+- Models/Formulas/Parameters total: `34 / 36 / 185`
+- Active formulas/parameters: `36 / 184`
+- Machine checked formulas/parameters: `36 / 184`
 
 ## Assurance
 
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-PREPARED`
+- Release gate: `ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-PREPARED`
 - Next executable task: `ADP-PHASE11-PRODUCTION-TRIAL-START-022`
-- Pending/stale events: `58`
+- Pending/stale events: `59`
 - Tree-bound events: `0`
 - Commit-bound events: `0`
 - Legacy unbound events: `54`

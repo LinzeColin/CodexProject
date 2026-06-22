@@ -2,8 +2,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:ab2856853003ce53e95b51b7837c499eec7ac8c6381f71ae93698c84e7d7c166`
-- snapshot_event_time: `2026-06-22T13:05:00+10:00`
+- source_snapshot_hash: `sha256:815e2d4acd9787e08bcc34709249062db1d700b3af425903626b7c1371af590d`
+- snapshot_event_time: `2026-06-22T13:40:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -18,7 +18,7 @@
 | `PFI_BIG_DATA_SIMULATOR` | `0.1.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `UNVERIFIED` | `TASK-PFI-B-001` |
 | `Serenity-Alipay` | `0.1.0` | `B` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `NONE` |
 | `whkmSalary` | `0.0.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `FAILED` | `TASK-WHKM-B-001` |
-| `arxiv-daily-push` | `0.12.3` | `E` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `FAILED` | `ADP-PHASE11-PRODUCTION-TRIAL-START-022` |
+| `arxiv-daily-push` | `0.12.4` | `E` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `FAILED` | `ADP-PHASE11-PRODUCTION-TRIAL-START-022` |
 
 ## Notes
 
