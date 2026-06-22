@@ -121,11 +121,10 @@ def main() -> int:
         return 0
 
     commands = [
-        [sys.executable, str(generator), "--write"],
+        [sys.executable, str(generator), "--write", "--changed-only"],
         [sys.executable, str(validator), "--changed-only", "--enforce-sync", "--semantic"],
-        [sys.executable, str(quality_validator), "--all", "--fast", "--fail-on-error"],
-        [sys.executable, str(validator), "--all", "--semantic", "--drift-report"],
-        [sys.executable, str(generator), "--write"],
+        [sys.executable, str(quality_validator), "--changed-only", "--fast", "--fail-on-error"],
+        [sys.executable, str(generator), "--write", "--changed-only"],
         [
             "git",
             "diff",

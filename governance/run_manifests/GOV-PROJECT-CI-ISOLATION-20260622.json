@@ -1,0 +1,112 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-PROJECT-CI-ISOLATION-20260622",
+  "project_id": "root-governance",
+  "task_id": "GOV-PROJECT-CI-ISOLATION-001",
+  "acceptance_ids": [
+    "ACC-PROJECT-CI-ISOLATION-001"
+  ],
+  "iteration_id": "ITER-20260622-CI-ISOLATION-001",
+  "generated_at": "2026-06-22T15:05:00+10:00",
+  "implementation_base_sha": "64f73f0999223b07caefc71ba202693ff7406d5c",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:ee1e64282f8cbc644de4cc0e3a97df234ee4ae79101bdd948b315356ed216ba4",
+  "changed_files_declared": [
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/project-governance.yml",
+    "governance/run_manifests/GOV-PROJECT-CI-ISOLATION-20260622.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/project-governance.yml",
+    "governance/run_manifests/GOV-PROJECT-CI-ISOLATION-20260622.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    ".github/workflows/project-governance.yml",
+    ".codex/hooks/governance_stop.py",
+    "scripts/validate_project_governance.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    ".github/workflows/project-governance.yml",
+    ".codex/hooks/governance_stop.py",
+    "scripts/validate_project_governance.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-PROJECT-CI-ISOLATION-20260622.json"
+  ],
+  "test_commands": [
+    "python3 -m py_compile scripts/validate_project_governance.py scripts/validate_governance_sync.py scripts/validate_information_quality.py scripts/generate_governance_dashboard.py .codex/hooks/governance_stop.py",
+    "python3 -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_changed_only_root_governance_change_does_not_select_all_projects tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_changed_only_root_governance_only_change_selects_no_projects tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_sync_changed_only_semantic_checks_only_changed_projects -q",
+    "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+    "python3 scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python3 scripts/generate_governance_dashboard.py --changed-only"
+  ],
+  "test_results": [
+    {
+      "command": "python3 -m py_compile scripts/validate_project_governance.py scripts/validate_governance_sync.py scripts/validate_information_quality.py scripts/generate_governance_dashboard.py .codex/hooks/governance_stop.py",
+      "exit_code": 0,
+      "summary": "syntax compile pass"
+    },
+    {
+      "command": "python3 -m unittest changed-only isolation tests",
+      "exit_code": 0,
+      "summary": "3 targeted tests pass"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "summary": "changed-only governance pass; projects checked none for root-only CI changes"
+    },
+    {
+      "command": "python3 scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "summary": "changed-only information quality pass"
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --write --changed-only && git diff --exit-code -- generated governance views",
+      "exit_code": 0,
+      "summary": "changed-only dashboard generation pass with outputs=[] for root-only changes"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+      "exit_code": 0,
+      "summary": "117 governance tests pass; missing-base line is an expected negative fixture"
+    }
+  ],
+  "evidence_refs": [
+    ".github/workflows/project-governance.yml",
+    ".codex/hooks/governance_stop.py",
+    "scripts/validate_project_governance.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "project-governance-ci-isolation",
+  "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI",
+  "result_commit": "PRECOMMIT_TREE_BOUND",
+  "finished_at": "2026-06-22T15:05:00+10:00",
+  "summary": "Decouple pull_request and local Stop Hook governance checks from all-project scans so unrelated projects do not block each other.",
+  "non_scope": [
+    "no EEI runtime or governance content repair",
+    "no arXiv Daily Push production enablement",
+    "no full portfolio health attestation"
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; final commit and CI binding are recorded by CI attestation."
+}
