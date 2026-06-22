@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.16.0 - 2026-06-22
+
+- Promoted the V5 two-stage text-delivery baseline for Stage 1 B1/arXiv and marked conflicting V4/media requirements as inactive for the current acceptance path.
+- Added the V5 Stage 1 scoring, 10,000 queue, 365-day window, reason-code, and text-first content-ledger contract.
+- Added `adp stage1-queue` JSON output plus deterministic tests for 10,001st-item eviction, 365-day boundary handling, soft quota borrowing, source-share cap enforcement, lifecycle reason codes, stable tie ordering, and canonical `CONTENT_LEDGER.csv` columns.
+- Updated generated owner ledger columns to use the Stage 1 text content-ledger contract while keeping production acceptance, scheduler, SMTP, Release upload, video generation, and broad source expansion disabled.
+
+## 0.15.0 - 2026-06-22
+
+- Added the Review8 Stage 1 source registry and arXiv connector contract for `SRC-ARXIV` / `arxiv.atom.v1`.
+- Added `adp source-registry validate` JSON output, source registry schema, offline fixture validation, and fail-closed connector contract tests.
+- Lowered the Stage 1 Window A online arXiv metadata canary cap from 25 to 10 without enabling PDFs, bulk harvest, SMTP, Release upload, scheduler, or production acceptance.
+
+## 0.14.1 - 2026-06-22
+
+- Rebuilt the daily email as a responsive HTML plus concise Chinese plain-text decision brief based on the V2 mockup: exact `YYYYMMDD -- Project Name -- arXiv Group -- Theme` subject, read/skim/skip, evidence level, reading time, first-principles chain, decision mapping, key questions, evidence gaps, minimal experiment, optional `.mp4` video link, and feedback actions.
+- Removed frontend numeric `x/5` score labels from the subject, plain-text body, and HTML body; ranking/ROI scores remain backend-only evidence.
+- Added a human-frontstage lesson payload so backend Claim Ledger and ROI details remain auditable while user-visible email hides Claim Ledger IDs, visible ROI scores, delivery policy text, Release landing-page clutter, and irrelevant q-fin candidate pollution.
+- Kept production schedule disabled; this change prepares the next PR CI and controlled manual Gmail SMTP plus GitHub Release rerun only.
+
 ## 0.14.0 - 2026-06-22
 
 - Added the Review8 Stage 1 local SQLite/WAL/FTS5 document and event storage model.

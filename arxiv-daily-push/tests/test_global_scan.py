@@ -280,19 +280,77 @@ class GlobalScanTests(unittest.TestCase):
         self.assertTrue(package["email_contains_video_link"])
         self.assertTrue(package["email_contains_candidate_queue_summary"])
         self.assertFalse(package["email_contains_release_landing_link"])
-        self.assertTrue(package["notification"].subject.startswith("20260701 -- arXiv Computer Science -- Computer Science --"))
-        self.assertIn("【视频文件】", package["notification"].body)
-        self.assertIn("正文是主交付", package["notification"].body)
+        self.assertTrue(package["email_contains_html"])
+        self.assertEqual(
+            package["notification"].subject,
+            "20260701 -- arXiv Computer Science -- Computer Science -- Foundation model agents for portfolio risk optimization",
+        )
+        self.assertIn("【视频入口】", package["notification"].body)
+        self.assertIn("45-60秒", package["notification"].body)
         self.assertIn("候选队列摘要", package["notification"].body)
+        self.assertIn("观看/下载", package["notification"].body)
+        self.assertLessEqual(len(package["notification"].body), 1500)
+        self.assertIn("<html", package["notification"].html_body)
+        self.assertIn("观看图解视频", package["notification"].html_body)
+        self.assertIn("这封推送如何", package["notification"].html_body)
         self.assertNotIn("【12秒视频】", package["notification"].body)
         self.assertNotIn("5分钟：先看", package["notification"].body)
         self.assertNotIn("Release 资料包", package["notification"].body)
         self.assertNotIn(links["release_url"], package["notification"].body)
+        self.assertNotIn(links["release_url"], package["notification"].html_body)
+        self.assertNotIn("Claim Ledger", package["notification"].body)
+        self.assertNotIn("摘要信号", package["notification"].body)
         self.assertNotIn("project:", package["notification"].body)
         self.assertNotIn("recipient:", package["notification"].body)
         self.assertNotIn("ROI score", package["notification"].body)
         self.assertNotIn("roi_total_score", package["notification"].body)
         self.assertNotIn("delivery_policy", package["notification"].body)
+        self.assertNotRegex(package["notification"].subject, r"\d(?:\.\d)?/5")
+        self.assertNotRegex(package["notification"].body, r"\d(?:\.\d)?/5")
+        self.assertNotRegex(package["notification"].html_body, r"\d(?:\.\d)?/5")
+
+    def test_quant_finance_email_filters_frontstage_candidate_pollution(self) -> None:
+        daily_input = {
+            "date": "2026-07-01",
+            "source_item": {
+                "source_id": "arxiv:2607.00009",
+                "title": "Optimal order in multi-agent systems and market fragility",
+                "canonical_url": "https://arxiv.org/abs/2607.00009",
+                "metadata": {
+                    "arxiv": {
+                        "primary_category": "q-fin.RM",
+                        "summary": "A theory paper about agent power, response functions, order, fragility, and market risk.",
+                    }
+                },
+            },
+            "queue_summary": {
+                "queued_item_count": 3,
+                "top_queued": [
+                    {"title": "Quantum algorithm for molecular light", "primary_category": "quant-ph", "roi_total_score": 91.0},
+                    {"title": "West Nile virus and quantum life game", "primary_category": "q-bio.PE", "roi_total_score": 90.0},
+                    {"title": "Market risk simulation benchmark for agent trading", "primary_category": "cs.AI", "roi_total_score": 89.0},
+                ],
+            },
+        }
+        daily_run_payload = {"lesson": {"language": "zh-CN", "sections": [{"title": "核心解释", "body": "中文讲解。"}]}}
+        release_report = {
+            "status": "created",
+            "repo": "LinzeColin/CodexProject",
+            "tag": "adp-daily-20260701",
+            "release_ref": "github-release://LinzeColin/CodexProject/adp-daily-20260701",
+            "assets": [{"name": "adp-daily-video.mp4"}],
+        }
+
+        package = build_daily_delivery_package(daily_run_payload, daily_input, release_report, generated_at=GENERATED_AT)
+
+        self.assertEqual(
+            package["notification"].subject,
+            "20260701 -- arXiv Quantitative Finance -- Quant Finance -- Optimal order in multi-agent systems and market fragility",
+        )
+        self.assertNotIn("Quantum algorithm for molecular light", package["notification"].body)
+        self.assertNotIn("West Nile virus", package["notification"].body)
+        self.assertIn("Market risk simulation benchmark", package["notification"].body)
+        self.assertIn("跨域候选", package["notification"].body)
 
     def test_release_video_link_requires_mp4_not_manifest(self) -> None:
         release_report = {

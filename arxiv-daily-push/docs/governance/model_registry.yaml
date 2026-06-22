@@ -177,6 +177,16 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/storage.py", "arxiv-daily-push/tests/test_storage.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     status: "active"
+  - assumption_id: "ASM-ADP-039"
+    statement: "Review8 Stage 1 Window A source registry must keep `config/owner_controls.yaml` as the single editable source list, enable only SRC-ARXIV with arxiv.atom.v1, cap online metadata canaries at 10, and block PDFs, bulk harvest, paid APIs, secrets, scheduler enablement, SMTP, Release upload, and production acceptance claims."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_registry.py", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/tests/test_source_registry.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    status: "active"
+  - assumption_id: "ASM-ADP-040"
+    statement: "Review8 Stage 1 scoring and queue behavior must use owner_controls.yaml as the active parameter source, keep at most 10000 active items, treat 365 days as an inclusive event-age boundary, retain deterministic reason codes for every non-active item, and emit the canonical content ledger columns without claiming production replay output."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -764,11 +774,11 @@ models:
   - model_id: "MOD-ADP-034"
     name: "Phase 12 manual Release and SMTP delivery test gate"
     kind: "deterministic GitHub Actions manual delivery workflow contract"
-    purpose: "Prepare a default-branch-only manual workflow that scans all arXiv, renders a real MP4, creates a GitHub Release with deduplicated asset names, and sends one Gmail SMTP test email where the human-scannable Chinese lesson text is the reading entry point, Release remains backend evidence/download storage, video is only an optional file link, backend ROI scoring is hidden from email and MP4 transcript, and scheduled production stays disabled."
+    purpose: "Prepare a default-branch-only manual workflow that scans all arXiv, renders a real MP4, creates a GitHub Release with deduplicated asset names, and sends one Gmail SMTP test email where the human-scannable Chinese lesson text is the reading entry point, the subject follows YYYYMMDD -- Project Name -- arXiv Group -- Theme, Release remains backend evidence/download storage, video is only an optional file link, the V2 decision-first email frontstage is consumed, backend ROI and numeric score labels are hidden from email and MP4 transcript, and scheduled production stays disabled."
     owner: "arxiv-daily-push"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "adp-manual-delivery-test-v1.3"
+    model_version: "adp-manual-delivery-test-v1.4"
     assumption_ids: ["ASM-ADP-036", "ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-022"]
     formula_ids: ["FORM-ADP-036"]
     parameter_ids: ["PARAM-ADP-181", "PARAM-ADP-182", "PARAM-ADP-183", "PARAM-ADP-184", "PARAM-ADP-186", "PARAM-ADP-267"]
@@ -777,7 +787,7 @@ models:
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
     config_refs: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml"]
     test_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_video.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
   - model_id: "MOD-ADP-035"
     name: "Review8 V4 owner controls and generated owner views"
     kind: "deterministic owner configuration validator and view generator"
@@ -900,3 +910,84 @@ models:
     config_refs: ["NOT_APPLICABLE"]
     test_refs: ["arxiv-daily-push/tests/test_storage.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json", "arxiv-daily-push/tests/test_storage.py"]
+  - model_id: "MOD-ADP-037"
+    name: "Phase 12 email decision UI V2"
+    kind: "deterministic human-frontstage email renderer"
+    purpose: "Render a Chinese, decision-first HTML email plus concise plain-text fallback from the all-arXiv daily package with YYYYMMDD -- Project Name -- arXiv Group -- Theme subject and no foreground numeric score labels, while keeping backend ROI and Claim Ledger evidence out of the user-facing foreground."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-email-decision-ui-v2"
+    assumption_ids: ["ASM-ADP-002", "ASM-ADP-035", "ASM-ADP-036"]
+    formula_ids: ["FORM-ADP-039"]
+    parameter_ids: ["PARAM-ADP-276", "PARAM-ADP-277", "PARAM-ADP-278", "PARAM-ADP-279"]
+    inputs: ["Lesson frontstage payload", "daily selected SourceItem", "ROI-ranked queue snapshot", "Release-hosted .mp4 link", "recipient email"]
+    outputs: ["multipart email notification", "Chinese plain-text fallback", "responsive HTML alternative", "delivery evidence with body hashes only"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
+    config_refs: ["arxiv-daily-push/schemas/lesson.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_video.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
+  - model_id: "MOD-ADP-038"
+    name: "Review8 Stage 1 source registry and arXiv connector contract"
+    kind: "deterministic source registry and connector contract validator"
+    purpose: "Bind the Stage 1 source registry to the single owner controls fact source, prove SRC-ARXIV/arxiv.atom.v1 is the only active connector, cap online canaries at 10 metadata records, and fail closed without PDFs, bulk harvest, secrets, production scheduler enablement, SMTP, Release upload, or production acceptance claims."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-source-registry-contract-v1"
+    assumption_ids: ["ASM-ADP-039", "ASM-ADP-037", "ASM-ADP-018"]
+    formula_ids: ["FORM-ADP-040"]
+    parameter_ids:
+      - "PARAM-ADP-280"
+      - "PARAM-ADP-281"
+      - "PARAM-ADP-282"
+      - "PARAM-ADP-283"
+      - "PARAM-ADP-284"
+      - "PARAM-ADP-285"
+      - "PARAM-ADP-286"
+    inputs: ["config/owner_controls.yaml", "fixture Atom XML", "generated_at", "source_ingest limits"]
+    outputs: ["source registry report", "connector contract section", "active source list", "active adapter descriptor", "fixture validation", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_registry.py", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/schemas/source_registry.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_source_registry.py", "arxiv-daily-push/tests/test_source_ingest.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-20260622.json", "arxiv-daily-push/tests/test_source_registry.py"]
+  - model_id: "MOD-ADP-039"
+    name: "Review8 Stage 1 scoring, queue, and content ledger contract"
+    kind: "deterministic weighted scoring, queue ranking, and ledger renderer"
+    purpose: "Score explicit Stage 1 research signals using frozen owner-controls weights, rank eligible items into a deterministic active queue capped at 10000 items and 365 event-age days, enforce multi-source share caps when feasible, preserve soft-quota borrowing evidence, and emit canonical CONTENT_LEDGER rows with reason codes for every non-active item."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-stage1-scoring-queue-ledger-v1"
+    assumption_ids: ["ASM-ADP-040", "ASM-ADP-037", "ASM-ADP-039"]
+    formula_ids: ["FORM-ADP-041"]
+    parameter_ids:
+      - "PARAM-ADP-287"
+      - "PARAM-ADP-288"
+      - "PARAM-ADP-289"
+      - "PARAM-ADP-290"
+      - "PARAM-ADP-291"
+      - "PARAM-ADP-292"
+      - "PARAM-ADP-293"
+      - "PARAM-ADP-294"
+      - "PARAM-ADP-295"
+      - "PARAM-ADP-296"
+      - "PARAM-ADP-297"
+      - "PARAM-ADP-298"
+      - "PARAM-ADP-299"
+      - "PARAM-ADP-300"
+      - "PARAM-ADP-301"
+      - "PARAM-ADP-302"
+      - "PARAM-ADP-303"
+      - "PARAM-ADP-304"
+      - "PARAM-ADP-305"
+      - "PARAM-ADP-306"
+      - "PARAM-ADP-307"
+      - "PARAM-ADP-308"
+      - "PARAM-ADP-309"
+    inputs: ["explicit item signals", "config/owner_controls.yaml", "as_of_date", "generated_at", "previous content ledger rows"]
+    outputs: ["research score snapshots", "queue report", "reason counts", "quota report", "canonical CONTENT_LEDGER.csv rows", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/config/owner_controls.yaml"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/tests/test_owner_controls.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json", "arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"]

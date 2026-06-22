@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 36
-- formula_count: 38
-- parameter_count: 275
+- model_count: 39
+- formula_count: 41
+- parameter_count: 309
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -56,9 +56,12 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-031 | Two-day simulation acceptance gate | deterministic simulation validator | Run the updated two-day Phase 11 simulation with mocked SMTP and Release boundaries while blocking network fetch, real side effects, secret reads, cache/media retention, and production acceptance claims | active | adp-two-day-simulation-v1 | `src/arxiv_daily_push/simulation.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-032 | All-arXiv Phase 12 scan queue delivery gate | deterministic source selection and delivery gate | Build all-arXiv daily input from bounded primary archive scans, persist ROI-ranked queue state, and require Release-hosted `.mp4` video artifact links before production email evidence can count | active | adp-all-arxiv-scan-v1 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/scheduled_execution.py`, `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | MOD-ADP-033 | Phase 12 cloud production enablement gate | deterministic cloud workflow and media evidence validator | Verify GitHub-hosted workflow contracts, live all-arXiv 20-bucket dry-run readiness, real lightweight MP4 artifact rendering, and disabled production side effects before Release/SMTP manual tests | active | adp-phase12-cloud-enablement-v1 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/video.py`, `.github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml` |
-| MOD-ADP-034 | Phase 12 manual Release and SMTP delivery test gate | deterministic manual workflow contract | Prepare a default-branch-only workflow that creates one GitHub Release and sends one Gmail SMTP test email with human-scannable Chinese lesson text, 12-second video link, concise evidence, candidate queue summary, hidden backend ROI scoring, and deduplicated Release assets without enabling scheduled production | active | adp-manual-delivery-test-v1.2 | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml`, `src/arxiv_daily_push/scheduled_execution.py`, `src/arxiv_daily_push/global_scan.py`, `tests/test_manual_delivery_workflow.py` |
+| MOD-ADP-034 | Phase 12 manual Release and SMTP delivery test gate | deterministic manual workflow contract | Prepare a default-branch-only workflow that creates one GitHub Release and sends one Gmail SMTP test email using the V2 decision-first frontstage and owner subject contract while keeping scheduled production disabled | active | adp-manual-delivery-test-v1.4 | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml`, `src/arxiv_daily_push/scheduled_execution.py`, `src/arxiv_daily_push/global_scan.py`, `tests/test_manual_delivery_workflow.py` |
 | MOD-ADP-035 | Review8 V4 owner controls and generated owner views | deterministic owner configuration validator and view generator | Validate the single owner-editable control file, preview no-side-effect impact, and generate four owner-readable files from machine facts | active | adp-owner-controls-v1 | `src/arxiv_daily_push/owner_controls.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-036 | Review8 Stage 1 SQLite document and event data model | deterministic local storage schema and migration gate | Create, inspect, validate, populate, search, and rollback the low-resource local SQLite/WAL/FTS5 document/event model | active | adp-sqlite-data-model-v1 | `src/arxiv_daily_push/storage.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-037 | Phase 12 email decision UI V2 | deterministic human-frontstage email renderer | Render a Chinese decision-first HTML email plus concise plain-text fallback from the all-arXiv daily package, with `YYYYMMDD -- Project Name -- arXiv Group -- Theme` subject and no foreground numeric score labels, while keeping backend ROI and Claim Ledger evidence out of the user-facing foreground | active | adp-email-decision-ui-v2 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/lesson.py`, `src/arxiv_daily_push/smtp_delivery.py`, `src/arxiv_daily_push/video.py` |
+| MOD-ADP-038 | Review8 Stage 1 source registry and arXiv connector contract | deterministic source registry and connector contract validator | Bind the source registry to owner controls, prove only SRC-ARXIV/arxiv.atom.v1 is active, and cap canaries at 10 metadata records without production side effects | active | adp-source-registry-contract-v1 | `src/arxiv_daily_push/source_registry.py`, `src/arxiv_daily_push/source_ingest.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-039 | Review8 Stage 1 scoring, queue, and content ledger contract | deterministic weighted scoring, queue ranking, and ledger renderer | Score explicit Stage 1 research signals, rank up to 10000 active items, enforce the 365-day window, record reason codes, and emit canonical CONTENT_LEDGER rows without production side effects | active | adp-stage1-scoring-queue-ledger-v1 | `src/arxiv_daily_push/stage1_queue.py`, `src/arxiv_daily_push/owner_controls.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -102,6 +105,8 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-036 | Controlled manual Release and Gmail SMTP testing may perform real side effects only from an explicit default-branch workflow_dispatch and must not enable scheduled production. | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml`, `tests/test_manual_delivery_workflow.py`, `docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md` | Phase 12 manual delivery test | active |
 | ASM-ADP-037 | Review8 V4 owner control must be a single human-editable YAML file, while owner-visible Markdown/CSV views are generated artifacts and not second editable fact sources. | `config/owner_controls.yaml`, `src/arxiv_daily_push/owner_controls.py`, `tests/test_owner_controls.py`, `docs/owner/OWNER_CONSOLE.md` | Review8 Stage 1 owner controls | active |
 | ASM-ADP-038 | Review8 Stage 1 Window A storage must remain local SQLite/WAL/FTS5 with deterministic migration and rollback, and must not perform bulk imports, PDF retention, production scheduler enablement, SMTP send, Release upload, or source expansion. | `src/arxiv_daily_push/storage.py`, `tests/test_storage.py`, `tests/test_cli.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 SQLite data model | active |
+| ASM-ADP-039 | Review8 Stage 1 Window A source registry must keep `config/owner_controls.yaml` as the single editable source list, enable only SRC-ARXIV with arxiv.atom.v1, cap canaries at 10, and block PDFs, bulk harvest, paid APIs, secrets, scheduler enablement, SMTP, Release upload, and production acceptance claims. | `src/arxiv_daily_push/source_registry.py`, `src/arxiv_daily_push/source_ingest.py`, `config/owner_controls.yaml`, `tests/test_source_registry.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 connector contract | active |
+| ASM-ADP-040 | Review8 Stage 1 scoring and queue behavior must use owner_controls.yaml as the active parameter source, keep at most 10000 active items, treat 365 days as an inclusive event-age boundary, retain deterministic reason codes for every non-active item, and emit canonical content ledger columns without claiming production replay output. | `src/arxiv_daily_push/stage1_queue.py`, `config/owner_controls.yaml`, `tests/test_stage1_queue.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 scoring and ledger | active |
 
 ## C. Functions and Formulas
 
@@ -145,6 +150,9 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
 - FORM-ADP-037 validates owner_controls schema, no-secret/no-paid-service policy, Window A resource caps, owner weight groups, no-side-effect impact preview, and generated owner views.
 - FORM-ADP-038 validates the local SQLite/WAL/FTS5 schema migration, inspection, rollback, SourceItem persistence, FTS search readiness, and no-side-effect Stage 1 storage boundary.
+- FORM-ADP-039 validates the V2 decision-first email frontstage: owner subject contract, Chinese plain text, responsive HTML, frontstage lesson payload, q-fin candidate filtering, optional MP4 link card, feedback actions, no foreground numeric score labels, and hidden backend ROI/Claim Ledger foreground details.
+- FORM-ADP-040 validates the Stage 1 source registry and connector contract: single owner-controls fact source, only SRC-ARXIV active, arxiv.atom.v1 adapter, canary max 10, no PDF/bulk/paid/secret/production side effects, and offline fixture SourceItem validation.
+- FORM-ADP-041 validates Stage 1 weighted research scoring, queue priority scoring, 10000 active-item cap, 365-day inclusive boundary, lifecycle reason codes, source-share cap behavior, stable tie ordering, and canonical content ledger rows.
 
 ## D. Parameters
 
@@ -186,6 +194,9 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 12 manual delivery test parameters: PARAM-ADP-181 through PARAM-ADP-184 plus PARAM-ADP-186 and PARAM-ADP-267.
 - Active Review8 Stage 1 owner controls parameters: PARAM-ADP-187 through PARAM-ADP-266.
 - Active Review8 Stage 1 SQLite storage parameters: PARAM-ADP-268 through PARAM-ADP-275.
+- Active Phase 12 email decision UI V2 parameters: PARAM-ADP-276 through PARAM-ADP-279.
+- Active Review8 Stage 1 source registry contract parameters: PARAM-ADP-280 through PARAM-ADP-286.
+- Active Review8 Stage 1 scoring queue ledger parameters: PARAM-ADP-287 through PARAM-ADP-309.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -382,6 +393,15 @@ does not fetch sources, download PDFs, send mail, upload Releases, enable
 scheduling, or claim production acceptance. Rollback supports target version 0
 only and drops the Stage 1 schema.
 
+The S1-05 source registry model uses `config/owner_controls.yaml` as the only
+editable source registry. `source_registry.py` renders a machine report from
+that config, validates the arXiv connector contract, and returns blocked status
+for any non-arXiv enabled source, wrong adapter, canary limit drift, fixture
+parse failure, production flag, or prohibited side effect. The model is a
+boundary and evidence contract; it does not add B1 non-arXiv ingestion, run a
+network canary during local validation, download PDFs, send mail, upload
+Releases, install a scheduler, or claim production acceptance.
+
 ## F. Strategy Logic
 
 - Unrecognized source or claim enum -> validation error.
@@ -450,13 +470,18 @@ only and drops the Stage 1 schema.
 - Production refs input without cloud runner evidence, missing SMTP secret names, missing workflow variables, empty `ADP_RELEASE_TARGET`, or secret-like input -> refs report blocked or redacted discovery error.
 - Phase 12 cloud dry-run without 20 verified primary archive buckets, sample daily input, or real MP4 render evidence -> production enablement blocked.
 - Owner controls with production enabled, paid service allowed, token-like value, wrong owner view list, Window A resource overrun, or weight total drift -> owner validation blocked.
-- Owner impact preview cannot claim replay/ranking changes until replay data exists in S1-06.
+- Owner impact preview can report S1-06 deterministic fixture queue readiness but cannot claim production replay or ranking impact until real replay data exists.
 - `docs/owner/*` files are regenerated from `config/owner_controls.yaml`; manual edits are drift, not facts.
 - SQLite storage migration without FTS5 support, WAL journal mode, schema version 1, all 18 object tables, or `document_fts` -> storage report blocked.
 - SQLite storage inspect on a missing database file -> blocked report with `blocking_reasons`.
 - SQLite storage rollback with target version other than 0 -> `StorageError`.
 - SourceItem storage before migration or with invalid generic SourceItem data -> `StorageError`.
 - SourceItem storage with the same content -> idempotent raw/canonical/version/FTS rows rather than duplicate document versions.
+- Source registry with any enabled source other than `SRC-ARXIV` -> blocked report.
+- Source registry with `SRC-ARXIV` not bound to B1, `official_atom_api`, or `arxiv.atom.v1` -> blocked report.
+- Source registry with `SOURCE_INGEST_MAX_RESULTS` or canary max above 10 -> blocked report.
+- Source registry with PDF download, bulk harvest, paid API, secret requirement, production enabled, or production acceptance claimed -> blocked report.
+- Source registry fixture Atom parse or SourceItem validation failure -> blocked report.
 - Production pass with any missing requirement -> acceptance validation error.
 
 ## G. Validation
@@ -466,6 +491,8 @@ Current focused validation:
 - `PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q`
 - `PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_owner_controls.py -q`
 - `PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_storage.py arxiv-daily-push/tests/test_cli.py -q`
+- `PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_queue.py arxiv-daily-push/tests/test_owner_controls.py -q`
+- `adp stage1-queue --input <fixture.json> --as-of-date 2026-06-22 --generated-at 2026-06-22T21:00:00+10:00 --json`
 - `adp owner validate`
 - `adp owner preview-impact --days 30`
 - `adp owner render-docs --write`

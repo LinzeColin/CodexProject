@@ -12,6 +12,7 @@ class EmailNotification:
     subject: str
     recipient: str
     body: str
+    html_body: str = ""
 
 
 def render_email(
@@ -47,4 +48,3 @@ def render_email(
         ]
     )
     return EmailNotification(subject=subject, recipient=recipient, body=body)
-

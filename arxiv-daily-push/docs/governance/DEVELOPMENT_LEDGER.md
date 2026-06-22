@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.14.0`
+Active product version: `0.16.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.14.0
+- Product version: 0.16.0
 - Current phase: S1-A
-- Current gate: ADP-S1-04-SQLITE-DATA-MODEL-READY
-- Confirmed iteration count: 56
+- Current gate: ADP-S1-06-SCORING-QUEUE-LEDGER-READY
+- Confirmed iteration count: 59
 - Reconstructed event count: 0
-- Current task: S1-04-SQLITE-DATA-MODEL-001
-- Blockers: S1-04 local storage is complete, but S1-05 connector contract, S1-06 scoring/queue/content ledger replay, S1-07 B1 report/email/media interface, S1-08 local runtime recovery, S1-09 migration package, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables still block final production acceptance.
+- Current task: S1-07-B1_REPORT_EMAIL_TEXT-001
+- Blockers: S1-07 B1 report/email text interface, S1-08 local runtime recovery, S1-09 migration package, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
 
@@ -25,10 +25,84 @@ The append-only machine record is `development_events.jsonl`.
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
 | E | Weekly/monthly trial, all-arXiv queue delivery, and production handoff | completed | Phase 11 production gates plus Phase 12 all-arXiv scan, candidate queue, ROI ranking, daily lead, Release video-link email gate, and production blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`; `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
-| S1-A | Review8 V4 Stage 1 Window A | in_progress | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email/media interface, runtime recovery, and migration package pass within low-resource limits | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-A | Review8 V5 Stage 1 Window A | in_progress | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, and migration package pass within low-resource limits | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260622-S1-005`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from `stage1_queue.py`, owner-controls-backed queue parameters, focused Stage 1 queue/owner tests, generated owner ledger, semantic extractor, and governance registry updates.
+- Version before: 0.15.0
+- Version after: 0.16.0
+- Base commit: 89fe618f953b73e168f4f218b8c3edfc0102f6f9
+- Result commit: PENDING
+- Task IDs: S1-06-SCORING-QUEUE-LEDGER-001
+- Goal: Add the Review8 Stage 1 scoring, 10000 active queue cap, 365-day inclusive event window, source-share cap fixture behavior, reason-code ledger rows, stable tie ordering, and canonical CONTENT_LEDGER output without production side effects.
+- Assumptions: S1-06 is a deterministic fixture and contract layer only; it does not run production replay, fetch sources, expand beyond Stage 1 arXiv scope, generate reports/media, send SMTP, upload Releases, enable scheduling, or claim production acceptance.
+- Files read: `AGENTS.md`, `arxiv-daily-push/AGENTS.md`, Review8 V4 baseline files, owner controls, ranking/global_scan/storage/CLI boundaries, owner docs generator, semantic extractor, existing governance registries, and focused owner/CLI tests.
+- Files changed: `stage1_queue.py`, Stage 1 queue CLI dispatch, owner content ledger column source, focused queue tests, owner controls tests, generated owner docs, version files, changelog, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, ledger/event records, and run manifest.
+- Model changes: Added MOD-ADP-039 `adp-stage1-scoring-queue-ledger-v1`.
+- Formula changes: Added FORM-ADP-041 for weighted research scoring, queue priority scoring, 10000 cap, 365-day boundary, lifecycle/source/capacity reason codes, stable ordering, and canonical content ledger rows.
+- Parameter changes: Added PARAM-ADP-287 through PARAM-ADP-309 for queue schema, max active items, max event age, source share cap, soft quotas, research weights, queue-priority weights, and ledger column count. No frozen owner control values were changed.
+- Commands run: focused Stage 1 queue/owner tests; owner docs render; semantic hash calculation for FORM-ADP-041 and PARAM-ADP-287 through PARAM-ADP-309. Final full tests and validators are recorded in the corresponding development event and run manifest.
+- Test results: focused Stage 1 queue/owner tests 12 OK before final validation.
+- Successes: Deterministic queue report handles 10001st-item eviction, 365/366-day boundary, soft quota borrowing, feasible multi-source 40% cap, lifecycle reactivation/retraction/supersession reason codes, prior ledger references, canonical CONTENT_LEDGER columns, and CLI JSON output.
+- Failures: Initial source-cap test used a mathematically impossible two-source 40% cap fixture; corrected to a feasible three-source fixture. Initial ledger implementation omitted the required video ledger columns; corrected before governance hash capture.
+- Decisions: Bump product version to 0.16.0 because S1-06 adds a backward-compatible Stage 1 scoring/queue/ledger CLI and contract while preserving disabled production side effects.
+- Remaining risks: S1-06 proves fixture-level deterministic behavior only; B1 report/email text interface, runtime recovery, migration package, real production trial start, and 30-day acceptance evidence remain incomplete.
+- Rollback: Remove `stage1_queue.py`, stage1-queue CLI dispatch/tests, restore owner ledger placeholder columns to the prior S1-03 form if reverting the contract, restore version 0.15.0, and revert S1-06 governance records and run manifest.
+- Next step: S1-07-B1_REPORT_EMAIL_TEXT-001.
+
+### `ITER-20260622-S1-004`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from `source_registry.py`, source-registry CLI dispatch, focused source registry/source ingest tests, full ADP unit tests, semantic extractor, and governance registry updates.
+- Version before: 0.14.1
+- Version after: 0.15.0
+- Base commit: 17afce7844f1fc67de0721940af3bda8eab582f9
+- Result commit: PENDING
+- Task IDs: S1-05-ARXIV-CONNECTOR-CONTRACT-001
+- Goal: Add the Review8 Stage 1 source registry and arXiv connector contract that proves the single owner-controls source list, SRC-ARXIV/arxiv.atom.v1 active adapter, offline fixture validation, and max 10 metadata canary cap without production side effects.
+- Assumptions: S1-05 is a connector boundary and evidence contract only; it does not enable B1 non-arXiv sources, run a live network canary during local validation, download PDFs, send SMTP, upload Releases, enable production scheduling, or claim production acceptance.
+- Files read: `AGENTS.md`, `arxiv-daily-push/AGENTS.md`, Review8 V4 baseline files, owner controls, source ingest, arXiv adapter, CLI, SourceItem contracts, existing governance registries, and focused source/CLI tests.
+- Files changed: `source_registry.py`, source-registry CLI dispatch, source ingest canary cap, source registry schema/tests, focused source ingest test, version files, changelog, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, ledger/event records, and run manifest.
+- Model changes: Added MOD-ADP-038 `adp-source-registry-contract-v1`.
+- Formula changes: Added FORM-ADP-040, updated FORM-ADP-017 max_results domain to 1..10, and refreshed FORM-ADP-024 implementation evidence because `cli.py::main` gained the source-registry subcommand.
+- Parameter changes: Updated PARAM-ADP-075 from 25 to 10 for Review8 Window A source ingest canary cap and added PARAM-ADP-280 through PARAM-ADP-286 for source registry schema, connector version, canonical config path, active source, active adapter, max canary results, and allowed enabled source count.
+- Commands run: focused source registry/source ingest/arXiv adapter/CLI unit tests; full arxiv-daily-push unit tests; semantic extractor; project governance validator; all-project governance validator; changed-only semantic sync validator; root governance unit tests; information-quality validator; source registry schema JSON parse; manifest JSON parse; CSV width checks.
+- Test results: focused source registry/source ingest/arXiv adapter/CLI tests 20 OK; arxiv-daily-push unit tests 193 OK; semantic extractor checked 40 active formulas and 285 active parameters with no errors; project governance errors 0 warnings 0; all-project governance errors 0 warnings 0; changed-only semantic sync errors 0 warnings 0; root governance tests 128 OK; information-quality PASS; source registry schema and manifest JSON parse OK; parameter registry and traceability CSV widths consistent.
+- Successes: Source registry report passes from `config/owner_controls.yaml` plus offline arXiv Atom fixture, blocks non-arXiv enabled sources in Window A, keeps PDF/bulk/paid/secret/production side effects disabled, and enforces max 10 metadata records.
+- Failures: The pre-rebase semantic extractor correctly caught PARAM-ADP-075 active value drift and FORM-ADP-024 CLI fingerprint drift before registry updates; the first full unit run caught the version command still expecting 0.14.0, fixed by updating the focused version test to 0.15.0.
+- Decisions: Bump product version to 0.15.0 because S1-05 adds a backward-compatible source registry CLI/schema/contract and changes the Review8 Window A active canary cap from 25 to 10 while preserving disabled production side effects.
+- Remaining risks: Queue/content ledger replay, B1 delivery interface, local runtime recovery, migration package, production trial start, and 30-day acceptance evidence remain incomplete.
+- Rollback: Remove source_registry module, source-registry CLI dispatch/tests/schema, restore SOURCE_INGEST_MAX_RESULTS to 25 if returning to pre-Review8 Window A semantics, restore version 0.14.1, and revert S1-05 governance records and run manifest.
+- Next step: S1-06-SCORING-QUEUE-LEDGER-001.
+
+### `ITER-20260621-055`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from owner V2 mockup/notes, email renderer code, SMTP multipart boundary, focused V2 tests, full ADP tests, semantic extractor, and governance validation.
+- Version before: 0.14.0
+- Version after: 0.14.1
+- Base commit: f6d6131a6f87274fbfa29edc587b1b5523f1c85c
+- Result commit: PENDING
+- Task IDs: ADP-PHASE12-EMAIL-DECISION-UI-V2-038
+- Goal: Rebuild the daily email as a Chinese decision-first HTML/plain-text frontstage with the exact `YYYYMMDD -- Project Name -- arXiv Group -- Theme` subject contract, optional Release-hosted MP4 link, q-fin candidate filtering, feedback actions, and hidden backend ROI/Claim Ledger foreground details.
+- Assumptions: This is a frontstage delivery-quality fix only; it does not enable scheduled production, send SMTP, upload Releases, reduce all-arXiv scan scope, change queue persistence, or log secrets.
+- Files changed: lesson frontstage, daily email renderer, SMTP HTML alternative boundary, video transcript wording, schema/tests, version files, governance registries, phase record, run manifest, and governance tests.
+- Model changes: Added MOD-ADP-037 `adp-email-decision-ui-v2`; refreshed MOD-ADP-034 to `adp-manual-delivery-test-v1.4`.
+- Formula changes: Added FORM-ADP-039; refreshed FORM-ADP-008, FORM-ADP-018, FORM-ADP-034, and FORM-ADP-036 evidence after renderer changes.
+- Parameter changes: Refreshed PARAM-ADP-186 and added PARAM-ADP-276 through PARAM-ADP-279 for HTML alternative, plain-text length, q-fin candidate filter, and lesson frontstage.
+- Commands run: focused email V2 tests, semantic extractor, full ADP tests, governance dashboard generation, root governance tests, changed-only semantic governance validation, information-quality validation, manifest JSON parse, diff check, and cache check.
+- Test results: focused email V2 tests 35 OK; semantic extractor checked 39 active formulas and 278 active parameters; arxiv-daily-push tests 189 OK; governance dashboard PASS; root governance tests 128 OK; changed-only governance sync errors 0 warnings 0; information quality PASS; manifest JSON and CSV width checks PASS; cache check PASS.
+- Successes: Email frontstage is no longer shaped like backend evidence; visible ROI, Claim Ledger, delivery policy, Release landing clutter, numeric `x/5` foreground scoring, and irrelevant q-fin candidate pollution are suppressed.
+- Failures: No revised-format real Gmail email has been sent yet after this correction.
+- Decisions: Keep production schedule disabled; open PR, wait for CI, merge, then perform one controlled manual Release plus Gmail SMTP rerun.
+- Remaining risks: Live Gmail rendering still needs the controlled manual workflow proof after PR CI and merge.
+- Rollback: Revert version 0.14.1 email decision UI V2 code, tests, schema updates, governance records, phase record, manifest, and event; restore version 0.14.0.
+- Next step: Open PR, wait for PR CI green, then controlled manual Release + Gmail SMTP rerun after merge.
 
 ### `ITER-20260622-S1-003`
 
@@ -47,7 +121,7 @@ The append-only machine record is `development_events.jsonl`.
 - Formula changes: Added FORM-ADP-038 and refreshed FORM-ADP-024 implementation evidence because `cli.py::main` gained storage subcommands.
 - Parameter changes: Added PARAM-ADP-268 through PARAM-ADP-275 for schema version, default DB filename, WAL mode, FTS5 requirement, rollback target, object table count, relation type count, and time field count.
 - Commands run: focused storage/CLI unit tests with ResourceWarning as error; full arxiv-daily-push unit tests; semantic extractor; project governance validator; all-project governance validator; changed-only semantic sync validator; root governance unit tests; information-quality validator; manifest JSON parse; CSV width checks.
-- Test results: focused storage/CLI tests 9 OK; arxiv-daily-push unit tests 186 OK; semantic extractor checked 38 active formulas and 274 active parameters with no errors; project governance errors 0 warnings 0; all-project governance errors 0 warnings 0; changed-only semantic sync errors 0 warnings 0; root governance tests 127 OK; information-quality PASS; manifest JSON parse OK; parameter registry and traceability CSV widths consistent.
+- Test results: focused storage/CLI tests 9 OK; arxiv-daily-push unit tests 186 OK; semantic extractor checked 38 active formulas and 274 active parameters with no errors; project governance errors 0 warnings 0; all-project governance errors 0 warnings 0; changed-only semantic sync errors 0 warnings 0; root governance tests 128 OK; information-quality PASS; manifest JSON parse OK; parameter registry and traceability CSV widths consistent.
 - Successes: Migration creates schema version 1 with WAL and FTS5, stores SourceItem data idempotently, supports FTS search, and rolls back to version 0.
 - Failures: First semantic extractor run caught FORM-ADP-024 CLI fingerprint drift after adding storage subcommands; fixed by refreshing FORM-ADP-024 machine evidence. Project governance initially caught ledger and generated assurance count drift; those generated views were refreshed.
 - Decisions: Bump product version to 0.14.0 because S1-04 adds a backward-compatible local storage CLI and schema capability while preserving disabled production side effects.
@@ -125,7 +199,7 @@ The append-only machine record is `development_events.jsonl`.
 - Successes: Owner controls validate, preview impact without side effects, generate four owner-readable files, and block bad owner scoring weights in regression tests.
 - Failures: Initial owner focused test caught an over-broad secret-key pattern that treated `max_context_tokens` as a token; fixed by narrowing secret-key matching. First semantic extractor run caught FORM-ADP-024 CLI fingerprint drift; fixed by refreshing the formula evidence.
 - Decisions: Bump product version to 0.13.0 because S1-03 adds a backward-compatible owner controls CLI/config/view capability while preserving disabled production side effects.
-- Remaining risks: SQLite/WAL/FTS5 model, arXiv connector contract hardening, queue replay, B1 report/email/media interface, local runtime recovery, migration package, real production trial start, two live days, and 30-day trial evidence remain incomplete.
+- Remaining risks: SQLite/WAL/FTS5 model, arXiv connector contract hardening, queue replay, B1 report/email text interface, local runtime recovery, migration package, real production trial start, two live days, and 30-day trial evidence remain incomplete.
 - Rollback: Revert version 0.13.0 owner_controls files, generated owner views, CLI subcommands, owner tests, and governance registry updates; restore version 0.12.5 while keeping production variables disabled.
 - Next step: Complete final validation and then continue with S1-04 SQLite data model.
 

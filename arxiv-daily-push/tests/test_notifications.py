@@ -1,7 +1,7 @@
 import unittest
 from email.message import EmailMessage
 
-from arxiv_daily_push.notifications import render_email
+from arxiv_daily_push.notifications import EmailNotification, render_email
 from arxiv_daily_push.smtp_delivery import deliver_notification, validate_smtp_delivery_report
 
 
@@ -99,6 +99,62 @@ class NotificationTests(unittest.TestCase):
         self.assertTrue(FakeSMTP.logged_in)
         self.assertEqual(FakeSMTP.sent_messages[0]["To"], "linzezhang35@gmail.com")
         self.assertNotIn("super-secret-password", str(report))
+        self.assertEqual(validate_smtp_delivery_report(report), [])
+
+    def test_smtp_delivery_sends_html_alternative_without_logging_body(self):
+        class FakeSMTP:
+            sent_messages: list[EmailMessage] = []
+
+            def __init__(self, host, port, timeout):
+                self.host = host
+                self.port = port
+                self.timeout = timeout
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, traceback):
+                return False
+
+            def starttls(self):
+                return None
+
+            def login(self, username, password):
+                return None
+
+            def send_message(self, message):
+                FakeSMTP.sent_messages.append(message)
+                return {}
+
+        env = {
+            "ADP_SMTP_HOST": "smtp.example.invalid",
+            "ADP_SMTP_PORT": "587",
+            "ADP_SMTP_USERNAME": "sender@example.invalid",
+            "ADP_SMTP_PASSWORD": "super-secret-password",
+        }
+        email = EmailNotification(
+            subject="20260701 -- arXiv Quantitative Finance -- Quant Finance -- 测试",
+            recipient="linzezhang35@gmail.com",
+            body="纯文本 fallback",
+            html_body="<html><body><b>HTML 正文</b></body></html>",
+        )
+        report = deliver_notification(
+            email,
+            generated_at="2026-06-21T05:00:00+10:00",
+            allow_send=True,
+            env=env,
+            smtp_factory=FakeSMTP,
+        )
+
+        message = FakeSMTP.sent_messages[0]
+        self.assertEqual(report["status"], "sent")
+        self.assertTrue(report["message"]["html_alternative_present"])
+        self.assertTrue(report["message"]["html_body_sha256"])
+        self.assertFalse(report["message"]["body_logged"])
+        self.assertTrue(message.is_multipart())
+        self.assertIn("纯文本 fallback", message.get_body(preferencelist=("plain",)).get_content())
+        self.assertIn("HTML 正文", message.get_body(preferencelist=("html",)).get_content())
+        self.assertNotIn("HTML 正文", str(report))
         self.assertEqual(validate_smtp_delivery_report(report), [])
 
 

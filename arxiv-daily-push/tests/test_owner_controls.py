@@ -31,7 +31,8 @@ class OwnerControlsTests(unittest.TestCase):
         self.assertEqual(report["owner_view_files"], list(OWNER_CONTROL_DOCS))
         totals = {item["group_id"]: item for item in report["weight_groups"]}
         self.assertEqual(totals["owner_sources"]["total"], 100.0)
-        self.assertEqual(totals["owner_scoring_phase12_roi"]["status"], "pass")
+        self.assertEqual(totals["owner_scoring_queue_priority"]["status"], "pass")
+        self.assertNotIn("owner_scoring_phase12_roi", totals)
 
     def test_weight_group_mismatch_blocks_validation(self):
         controls = load_owner_controls(CONTROLS)
@@ -46,7 +47,7 @@ class OwnerControlsTests(unittest.TestCase):
         preview = build_owner_impact_preview(controls, days=30)
         self.assertEqual(preview["status"], "pass")
         self.assertEqual(preview["days"], 30)
-        self.assertEqual(preview["ranking_change_preview"], "NOT_RUN_UNTIL_S1_06_REPLAY_DATA_EXISTS")
+        self.assertEqual(preview["ranking_change_preview"], "S1_06_DETERMINISTIC_QUEUE_READY_NO_PRODUCTION_REPLAY_DATA")
         self.assertIn("SRC-ARXIV", preview["enabled_sources"])
 
     def test_render_owner_documents_writes_four_generated_views(self):
@@ -68,7 +69,8 @@ class OwnerControlsTests(unittest.TestCase):
             ledger = Path(tmp) / "docs/owner/CONTENT_LEDGER.csv"
             rows = list(csv.DictReader(io.StringIO(ledger.read_text(encoding="utf-8"))))
             self.assertEqual(list(rows[0].keys()), list(CONTENT_LEDGER_COLUMNS))
-            self.assertEqual(rows[0]["item_id"], "NO_PRODUCTION_CONTENT_ROWS_S1_03")
+            self.assertEqual(rows[0]["item_id"], "NO_PRODUCTION_CONTENT_ROWS_S1_06")
+            self.assertNotIn("video_file_state", rows[0])
 
     def test_owner_cli_commands(self):
         commands = [
