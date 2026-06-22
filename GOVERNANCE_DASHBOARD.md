@@ -1,8 +1,8 @@
 # Governance Dashboard
 
 - source_base_commit: `05c69c6522a74901f33350e03046f03a6f47b061`
-- source_snapshot_hash: `sha256:71f0be99b3bca7568bfac775d37af0cb4430a4fdbe837292d97fea263d70da56`
-- snapshot_event_time: `2026-06-22T10:10:00+10:00`
+- source_snapshot_hash: `sha256:ad06cba425bb4f3defa60a2e3a4182aa46541b88f66349d5453f6f8419bff26a`
+- snapshot_event_time: `2026-06-22T12:18:37+10:00`
 - generator_version: `2.0.0`
 - final_commit_binding: `CI_ATTESTATION_REQUIRED`
 
@@ -17,7 +17,7 @@
 | `PFI_BIG_DATA_SIMULATOR` | `0.1.0` | `B` | `partial` | `unknown` | `blocked` | `conditional` | `GOV-SEMANTIC-PFI-001` |
 | `Serenity-Alipay` | `0.1.0` | `B` | `machine_verified` | `unknown` | `partial` | `conditional` | `TASK-A-001` |
 | `whkmSalary` | `0.0.0` | `B` | `partial` | `unknown` | `blocked` | `blocked` | `GOV-SEMANTIC-WHKM-001` |
-| `arxiv-daily-push` | `0.12.0` | `E` | `machine_verified` | `partial` | `partial` | `blocked` | `NONE` |
+| `arxiv-daily-push` | `0.12.2` | `E` | `machine_verified` | `partial` | `partial` | `blocked` | `NONE` |
 
 ## Notes
 

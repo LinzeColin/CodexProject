@@ -12,10 +12,12 @@ from arxiv_daily_push.global_scan import (
     ALL_ARXIV_ARCHIVES,
     ALL_ARXIV_SCAN_MODEL_ID,
     build_all_arxiv_daily_input,
+    build_live_all_arxiv_dry_run,
     build_all_arxiv_scan_plan,
     build_daily_delivery_package,
     release_links,
     validate_all_arxiv_daily_input_report,
+    validate_live_all_arxiv_dry_run_report,
     validate_all_arxiv_scan_plan,
 )
 from arxiv_daily_push.source_ingest import SOURCE_INGEST_MODEL_ID
@@ -109,6 +111,21 @@ class GlobalScanTests(unittest.TestCase):
         self.assertIn("q-fin", {item["archive_id"] for item in plan["archives"]})
         self.assertIn("quant-ph", {item["archive_id"] for item in plan["archives"]})
         self.assertNotEqual({item["query"] for item in plan["archives"]}, {"cat:cs.AI"})
+        queries = {item["archive_id"]: item["query"] for item in plan["archives"]}
+        self.assertIn("cat:q-fin.PM", queries["q-fin"])
+        self.assertIn("cat:stat.ML", queries["stat"])
+        self.assertIn("cat:nlin.CD", queries["nlin"])
+        self.assertIn("cat:physics.optics", queries["physics"])
+        self.assertIn("cat:cs.AI", queries["cs"])
+        self.assertIn("cat:econ.EM", queries["econ"])
+        self.assertIn("cat:eess.SY", queries["eess"])
+        self.assertIn("cat:math.AG", queries["math"])
+        self.assertNotEqual(queries["cs"], "cat:cs")
+        self.assertNotEqual(queries["econ"], "cat:econ")
+        self.assertNotEqual(queries["eess"], "cat:eess")
+        self.assertNotEqual(queries["math"], "cat:math")
+        self.assertNotEqual(queries["q-fin"], "cat:q-fin")
+        self.assertNotEqual(queries["stat"], "cat:stat")
         self.assertFalse(validate_all_arxiv_scan_plan(plan))
 
     def test_daily_input_selects_highest_roi_and_persists_queue_artifacts(self) -> None:
@@ -197,20 +214,33 @@ class GlobalScanTests(unittest.TestCase):
             "repo": "LinzeColin/CodexProject",
             "tag": "adp-daily-20260701",
             "release_ref": "github-release://LinzeColin/CodexProject/adp-daily-20260701",
-            "assets": [{"name": "adp-video-artifact.json"}],
+            "assets": [{"name": "adp-video-artifact.json"}, {"name": "adp-daily-video.mp4"}],
         }
 
         links = release_links(release_report)
         package = build_daily_delivery_package(daily_run_payload, daily_input, release_report, generated_at=GENERATED_AT)
 
         self.assertIn("/releases/tag/adp-daily-20260701", links["release_url"])
-        self.assertIn("/releases/download/adp-daily-20260701/adp-video-artifact.json", links["video_url"])
+        self.assertIn("/releases/download/adp-daily-20260701/adp-daily-video.mp4", links["video_url"])
         self.assertTrue(package["video_link_ready"])
         self.assertTrue(package["email_contains_chinese_lesson"])
         self.assertTrue(package["email_contains_video_link"])
         self.assertTrue(package["email_contains_candidate_queue_summary"])
         self.assertIn("视频观看/下载链接", package["notification"].body)
         self.assertIn("候选队列摘要", package["notification"].body)
+
+    def test_release_video_link_requires_mp4_not_manifest(self) -> None:
+        release_report = {
+            "status": "created",
+            "repo": "LinzeColin/CodexProject",
+            "tag": "adp-daily-20260701",
+            "release_ref": "github-release://LinzeColin/CodexProject/adp-daily-20260701",
+            "assets": [{"name": "adp-video-artifact.json"}],
+        }
+
+        links = release_links(release_report)
+
+        self.assertEqual(links["video_url"], "")
 
     def test_cli_plan_all_arxiv_scan_outputs_json(self) -> None:
         buffer = io.StringIO()
@@ -221,6 +251,50 @@ class GlobalScanTests(unittest.TestCase):
         self.assertEqual(result, 0)
         self.assertEqual(payload["model_id"], ALL_ARXIV_SCAN_MODEL_ID)
         self.assertEqual(payload["archive_count"], 20)
+
+    def test_live_all_arxiv_dry_run_requires_all_twenty_archive_buckets(self) -> None:
+        items_by_archive = {}
+        for index, archive in enumerate(ALL_ARXIV_ARCHIVES, start=1):
+            archive_id = archive["archive_id"]
+            items_by_archive[archive_id] = [
+                source_item(
+                    f"arxiv:2607.{index:05d}",
+                    f"Live fetch validation for {archive_id}",
+                    high_roi_summary(f"{archive_id} live fetch validation"),
+                    f"{archive_id}.LG",
+                    [archive_id],
+                )
+            ]
+
+        report = build_live_all_arxiv_dry_run(
+            generated_at=GENERATED_AT,
+            source_batches=source_batches(**items_by_archive),
+        )
+
+        self.assertFalse(validate_live_all_arxiv_dry_run_report(report))
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["live_dry_run_ready"])
+        self.assertEqual(report["archive_count"], 20)
+        self.assertEqual(report["verified_archive_count"], 20)
+        self.assertEqual(report["failed_archive_count"], 0)
+        self.assertTrue(report["sample_daily_input"]["source_item"]["source_id"].startswith("arxiv:"))
+        self.assertEqual(report["sample_daily_input"]["date"], "2026-07-01")
+        self.assertFalse(report["production_schedule_enabled"])
+        self.assertFalse(report["smtp_send_enabled"])
+        self.assertFalse(report["release_upload_enabled"])
+
+    def test_live_all_arxiv_dry_run_blocks_if_any_archive_bucket_fails(self) -> None:
+        report = build_live_all_arxiv_dry_run(
+            generated_at=GENERATED_AT,
+            source_batches=source_batches(),
+        )
+
+        self.assertFalse(validate_live_all_arxiv_dry_run_report(report))
+        self.assertEqual(report["status"], "blocked")
+        self.assertFalse(report["live_dry_run_ready"])
+        self.assertEqual(report["archive_count"], 20)
+        self.assertEqual(report["verified_archive_count"], 0)
+        self.assertEqual(report["failed_archive_count"], 20)
 
 
 if __name__ == "__main__":

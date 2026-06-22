@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.12.2 - 2026-06-22
+
+- Added a default-branch-only manual GitHub Actions workflow for one controlled GitHub Release plus Gmail SMTP delivery test.
+- The manual workflow scans all arXiv primary archive buckets, selects one ROI-ranked daily paper, renders a lightweight MP4, creates a Release with the MP4 and JSON artifacts, then sends one email to `linzezhang35@gmail.com` containing Chinese lesson text, Release link, video link, and candidate queue summary.
+- Kept scheduled production disabled: the workflow has no `schedule:` trigger, does not read repository production enablement variables, and requires the exact `SEND_TEST_EMAIL_TO_LINZEZHANG35_GMAIL_COM` confirmation string before side effects.
+
+## 0.12.1 - 2026-06-22
+
+- Added Phase 12 cloud production-enablement workflow for GitHub-hosted live all-arXiv dry-run evidence across all 20 primary archive buckets.
+- Added `adp run-live-all-arxiv-dry-run` and `adp render-lightweight-mp4` evidence paths that produce a live-selected sample daily input and a real lightweight `.mp4` artifact.
+- Migrated arXiv Daily Push scheduled, trial-start, provisioning-audit, and production-trial workflows away from self-hosted runner targeting to GitHub-hosted `ubuntu-latest`.
+- Tightened email video-link gating so JSON video manifests no longer satisfy production-ready email evidence; a GitHub Release `.mp4` asset link is required.
+- Kept production schedule, SMTP sending, and Release uploading disabled by default pending cloud dry-run, Release, and manual Gmail SMTP evidence.
+
 ## 0.12.0 - 2026-06-22
 
 - Added Phase 12 all-arXiv primary archive scanning via `adp plan-all-arxiv-scan` and `adp build-all-arxiv-daily-input`.

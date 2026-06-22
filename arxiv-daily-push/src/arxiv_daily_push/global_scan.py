@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -19,6 +20,7 @@ ALL_ARXIV_SCAN_MODEL_ID = "adp-all-arxiv-scan-v1"
 CANDIDATE_QUEUE_MODEL_ID = "adp-candidate-queue-v1"
 ROI_RANKING_MODEL_ID = "adp-roi-ranking-v1"
 MAIL_VIDEO_LINK_MODEL_ID = "adp-mail-video-link-v1"
+LIVE_ALL_ARXIV_DRY_RUN_MODEL_ID = "adp-live-all-arxiv-dry-run-v1"
 
 ALL_ARXIV_MAX_RESULTS_PER_CATEGORY = 3
 ALL_ARXIV_MAX_TOTAL_CANDIDATES = 120
@@ -28,26 +30,38 @@ ROI_SELECTION_MIN_SCORE = 50.0
 ROI_QUEUE_MIN_SCORE = 55.0
 
 ALL_ARXIV_ARCHIVES: tuple[dict[str, str], ...] = (
-    {"archive_id": "cs", "group": "Computer Science", "query": "cat:cs"},
-    {"archive_id": "econ", "group": "Economics", "query": "cat:econ"},
-    {"archive_id": "eess", "group": "Electrical Engineering and Systems Science", "query": "cat:eess"},
-    {"archive_id": "math", "group": "Mathematics", "query": "cat:math"},
-    {"archive_id": "astro-ph", "group": "Physics", "query": "cat:astro-ph"},
-    {"archive_id": "cond-mat", "group": "Physics", "query": "cat:cond-mat"},
+    {
+        "archive_id": "cs",
+        "group": "Computer Science",
+        "query": "cat:cs.AI OR cat:cs.AR OR cat:cs.CC OR cat:cs.CE OR cat:cs.CG OR cat:cs.CL OR cat:cs.CR OR cat:cs.CV OR cat:cs.CY OR cat:cs.DB OR cat:cs.DC OR cat:cs.DL OR cat:cs.DM OR cat:cs.DS OR cat:cs.ET OR cat:cs.FL OR cat:cs.GL OR cat:cs.GR OR cat:cs.GT OR cat:cs.HC OR cat:cs.IR OR cat:cs.IT OR cat:cs.LG OR cat:cs.LO OR cat:cs.MA OR cat:cs.MM OR cat:cs.MS OR cat:cs.NA OR cat:cs.NE OR cat:cs.NI OR cat:cs.OH OR cat:cs.OS OR cat:cs.PF OR cat:cs.PL OR cat:cs.RO OR cat:cs.SC OR cat:cs.SD OR cat:cs.SE OR cat:cs.SI OR cat:cs.SY",
+    },
+    {"archive_id": "econ", "group": "Economics", "query": "cat:econ.EM OR cat:econ.GN OR cat:econ.TH"},
+    {"archive_id": "eess", "group": "Electrical Engineering and Systems Science", "query": "cat:eess.AS OR cat:eess.IV OR cat:eess.SP OR cat:eess.SY"},
+    {
+        "archive_id": "math",
+        "group": "Mathematics",
+        "query": "cat:math.AC OR cat:math.AG OR cat:math.AP OR cat:math.AT OR cat:math.CA OR cat:math.CO OR cat:math.CT OR cat:math.CV OR cat:math.DG OR cat:math.DS OR cat:math.FA OR cat:math.GM OR cat:math.GN OR cat:math.GR OR cat:math.GT OR cat:math.HO OR cat:math.IT OR cat:math.KT OR cat:math.LO OR cat:math.MG OR cat:math.MP OR cat:math.NA OR cat:math.NT OR cat:math.OA OR cat:math.OC OR cat:math.PR OR cat:math.QA OR cat:math.RA OR cat:math.RT OR cat:math.SG OR cat:math.SP OR cat:math.ST",
+    },
+    {"archive_id": "astro-ph", "group": "Physics", "query": "cat:astro-ph.CO OR cat:astro-ph.EP OR cat:astro-ph.GA OR cat:astro-ph.HE OR cat:astro-ph.IM OR cat:astro-ph.SR"},
+    {"archive_id": "cond-mat", "group": "Physics", "query": "cat:cond-mat.dis-nn OR cat:cond-mat.mes-hall OR cat:cond-mat.mtrl-sci OR cat:cond-mat.other OR cat:cond-mat.quant-gas OR cat:cond-mat.soft OR cat:cond-mat.stat-mech OR cat:cond-mat.str-el OR cat:cond-mat.supr-con"},
     {"archive_id": "gr-qc", "group": "Physics", "query": "cat:gr-qc"},
     {"archive_id": "hep-ex", "group": "Physics", "query": "cat:hep-ex"},
     {"archive_id": "hep-lat", "group": "Physics", "query": "cat:hep-lat"},
     {"archive_id": "hep-ph", "group": "Physics", "query": "cat:hep-ph"},
     {"archive_id": "hep-th", "group": "Physics", "query": "cat:hep-th"},
     {"archive_id": "math-ph", "group": "Physics", "query": "cat:math-ph"},
-    {"archive_id": "nlin", "group": "Physics", "query": "cat:nlin"},
+    {"archive_id": "nlin", "group": "Physics", "query": "cat:nlin.AO OR cat:nlin.CD OR cat:nlin.CG OR cat:nlin.PS OR cat:nlin.SI"},
     {"archive_id": "nucl-ex", "group": "Physics", "query": "cat:nucl-ex"},
     {"archive_id": "nucl-th", "group": "Physics", "query": "cat:nucl-th"},
-    {"archive_id": "physics", "group": "Physics", "query": "cat:physics"},
+    {
+        "archive_id": "physics",
+        "group": "Physics",
+        "query": "cat:physics.acc-ph OR cat:physics.app-ph OR cat:physics.atm-clus OR cat:physics.atom-ph OR cat:physics.bio-ph OR cat:physics.chem-ph OR cat:physics.class-ph OR cat:physics.comp-ph OR cat:physics.data-an OR cat:physics.flu-dyn OR cat:physics.gen-ph OR cat:physics.geo-ph OR cat:physics.hist-ph OR cat:physics.ins-det OR cat:physics.med-ph OR cat:physics.optics OR cat:physics.plasm-ph OR cat:physics.pop-ph OR cat:physics.soc-ph OR cat:physics.space-ph",
+    },
     {"archive_id": "quant-ph", "group": "Physics", "query": "cat:quant-ph"},
-    {"archive_id": "q-bio", "group": "Quantitative Biology", "query": "cat:q-bio"},
-    {"archive_id": "q-fin", "group": "Quantitative Finance", "query": "cat:q-fin"},
-    {"archive_id": "stat", "group": "Statistics", "query": "cat:stat"},
+    {"archive_id": "q-bio", "group": "Quantitative Biology", "query": "cat:q-bio.BM OR cat:q-bio.CB OR cat:q-bio.GN OR cat:q-bio.MN OR cat:q-bio.NC OR cat:q-bio.OT OR cat:q-bio.PE OR cat:q-bio.QM OR cat:q-bio.SC OR cat:q-bio.TO"},
+    {"archive_id": "q-fin", "group": "Quantitative Finance", "query": "cat:q-fin.CP OR cat:q-fin.EC OR cat:q-fin.GN OR cat:q-fin.MF OR cat:q-fin.PM OR cat:q-fin.PR OR cat:q-fin.RM OR cat:q-fin.ST OR cat:q-fin.TR"},
+    {"archive_id": "stat", "group": "Statistics", "query": "cat:stat.AP OR cat:stat.CO OR cat:stat.ME OR cat:stat.ML OR cat:stat.OT OR cat:stat.TH"},
 )
 
 ROI_COMPONENT_WEIGHTS: dict[str, float] = {
@@ -173,6 +187,7 @@ def build_all_arxiv_daily_input(
     source_batches: Mapping[str, Mapping[str, Any]] | None = None,
     artifact_dir: str | Path | None = None,
     queue_output_path: str | Path | None = None,
+    polite_delay_seconds: float = 0.0,
 ) -> dict[str, Any]:
     """Build one all-arXiv daily input plus queue and delivery artifacts."""
 
@@ -182,7 +197,14 @@ def build_all_arxiv_daily_input(
         return _blocked_daily_report(date, generated_at, timezone, plan, [plan_errors[0]])
 
     recent = {str(item) for item in recent_source_ids if str(item)}
-    scan = _scan_archives(plan, generated_at=generated_at, recent_source_ids=recent, fetcher=fetcher, source_batches=source_batches)
+    scan = _scan_archives(
+        plan,
+        generated_at=generated_at,
+        recent_source_ids=recent,
+        fetcher=fetcher,
+        source_batches=source_batches,
+        polite_delay_seconds=polite_delay_seconds,
+    )
     queue_state = normalize_candidate_queue(queue, generated_at=generated_at)
     new_candidates = scan["candidates"]
     queued_candidates = [dict(item) for item in queue_state["items"]]
@@ -226,6 +248,133 @@ def build_all_arxiv_daily_input(
     if queue_output_path:
         Path(queue_output_path).write_text(json.dumps(updated_queue, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return report
+
+
+def build_live_all_arxiv_dry_run(
+    *,
+    generated_at: str,
+    date: str | None = None,
+    max_results_per_category: int = 1,
+    fetcher: FetchAtom | None = None,
+    source_batches: Mapping[str, Mapping[str, Any]] | None = None,
+    artifact_dir: str | Path | None = None,
+    polite_delay_seconds: float = 0.0,
+) -> dict[str, Any]:
+    """Run a live all-arXiv fetchability dry-run for every primary archive."""
+
+    plan = build_all_arxiv_scan_plan(max_results_per_category=max_results_per_category)
+    plan_errors = validate_all_arxiv_scan_plan(plan)
+    if plan_errors:
+        return {
+            "dry_run_id": "live-all-arxiv-dry-run:blocked",
+            "model_id": LIVE_ALL_ARXIV_DRY_RUN_MODEL_ID,
+            "project_id": "arxiv-daily-push",
+            "generated_at": generated_at,
+            "status": "blocked",
+            "live_dry_run_ready": False,
+            "scan_plan": plan,
+            "scan": {},
+            "archive_count": len(plan.get("archives") or []),
+            "verified_archive_count": 0,
+            "failed_archive_count": len(plan.get("archives") or []),
+            "blocking_reasons": plan_errors,
+            "sample_daily_input": {},
+            "artifact_paths": {},
+        }
+    scan = _scan_archives(
+        plan,
+        generated_at=generated_at,
+        recent_source_ids=set(),
+        fetcher=fetcher,
+        source_batches=source_batches,
+        polite_delay_seconds=polite_delay_seconds,
+    )
+    category_reports = scan.get("category_reports") if isinstance(scan.get("category_reports"), list) else []
+    verified = [item for item in category_reports if isinstance(item, Mapping) and item.get("status") == "pass" and int(item.get("new_item_count") or 0) > 0]
+    failed = [item for item in category_reports if item not in verified]
+    ready = len(verified) == len(ALL_ARXIV_ARCHIVES) and not failed
+    sample_daily_input: dict[str, Any] = {}
+    sample_reasons: list[str] = []
+    if ready:
+        selection = select_roi_candidate(scan.get("candidates") or [], [], recent_source_ids=set())
+        selected = selection.get("selected")
+        if isinstance(selected, Mapping):
+            queue = update_candidate_queue(
+                existing_items=[],
+                new_candidates=scan.get("candidates") or [],
+                selected_source_id=str(selected.get("source_id") or ""),
+                generated_at=generated_at,
+            )
+            sample_daily_input = _daily_input_from_selection(
+                selected,
+                date=str(date or generated_at[:10]),
+                generated_at=generated_at,
+                timezone=DEFAULT_TIMEZONE,
+                scan=scan,
+                queue=queue,
+            )
+        else:
+            sample_reasons = list(selection.get("blocking_reasons") or ["live dry-run could not select a sample daily input"])
+            ready = False
+    report: dict[str, Any] = {
+        "dry_run_id": "live-all-arxiv-dry-run:primary-archives",
+        "model_id": LIVE_ALL_ARXIV_DRY_RUN_MODEL_ID,
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": "pass" if ready else "blocked",
+        "live_dry_run_ready": ready,
+        "scan_plan": plan,
+        "scan": scan,
+        "archive_count": len(category_reports),
+        "verified_archive_count": len(verified),
+        "failed_archive_count": len(failed),
+        "max_results_per_category": int(max_results_per_category),
+        "pdf_download_enabled": False,
+        "bulk_harvest_enabled": False,
+        "production_schedule_enabled": False,
+        "smtp_send_enabled": False,
+        "release_upload_enabled": False,
+        "sample_daily_input": sample_daily_input,
+        "blocking_reasons": _live_dry_run_blockers(failed) + sample_reasons,
+        "artifact_paths": {},
+    }
+    if artifact_dir:
+        directory = Path(artifact_dir)
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / "adp-live-all-arxiv-dry-run.json"
+        daily_input_path = directory / "adp-live-daily-input.json"
+        if sample_daily_input:
+            daily_input_path.write_text(json.dumps(sample_daily_input, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            report["artifact_paths"]["sample_daily_input"] = str(daily_input_path)
+        path.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        report["artifact_paths"]["live_all_arxiv_dry_run"] = str(path)
+    return report
+
+
+def validate_live_all_arxiv_dry_run_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != LIVE_ALL_ARXIV_DRY_RUN_MODEL_ID:
+        errors.append("live all-arXiv dry-run model_id must be adp-live-all-arxiv-dry-run-v1")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("live all-arXiv dry-run status must be pass or blocked")
+    if int(report.get("archive_count") or 0) != len(ALL_ARXIV_ARCHIVES):
+        errors.append("live all-arXiv dry-run must cover all 20 primary archives")
+    for key in ("pdf_download_enabled", "bulk_harvest_enabled", "production_schedule_enabled", "smtp_send_enabled", "release_upload_enabled"):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for live all-arXiv dry-run")
+    if report.get("live_dry_run_ready") is True:
+        if int(report.get("verified_archive_count") or 0) != len(ALL_ARXIV_ARCHIVES):
+            errors.append("ready live dry-run requires 20 verified archives")
+        if int(report.get("failed_archive_count") or 0) != 0:
+            errors.append("ready live dry-run requires failed_archive_count 0")
+        if report.get("blocking_reasons"):
+            errors.append("ready live dry-run cannot include blocking_reasons")
+        if not isinstance(report.get("sample_daily_input"), Mapping) or not report.get("sample_daily_input"):
+            errors.append("ready live dry-run requires sample_daily_input")
+    else:
+        if not report.get("blocking_reasons"):
+            errors.append("blocked live dry-run requires blocking_reasons")
+    return errors
 
 
 def validate_all_arxiv_daily_input_report(report: Mapping[str, Any]) -> list[str]:
@@ -477,14 +626,8 @@ def release_links(release_report: Mapping[str, Any]) -> dict[str, str]:
     repo = str(release_report.get("repo") or "")
     tag = str(release_report.get("tag") or "")
     release_url = f"https://github.com/{repo}/releases/tag/{tag}" if repo and tag else ""
-    video_name = ""
-    for asset in release_report.get("assets") or []:
-        if not isinstance(asset, Mapping):
-            continue
-        name = str(asset.get("name") or "")
-        if name.lower().endswith(".mp4") or "video" in name.lower():
-            video_name = name
-            break
+    asset_names = [str(asset.get("name") or "") for asset in release_report.get("assets") or [] if isinstance(asset, Mapping)]
+    video_name = next((name for name in asset_names if name.lower().endswith(".mp4")), "")
     video_url = f"https://github.com/{repo}/releases/download/{tag}/{video_name}" if repo and tag and video_name else ""
     return {"release_url": release_url, "video_url": video_url}
 
@@ -496,12 +639,14 @@ def _scan_archives(
     recent_source_ids: set[str],
     fetcher: FetchAtom | None,
     source_batches: Mapping[str, Mapping[str, Any]] | None,
+    polite_delay_seconds: float = 0.0,
 ) -> dict[str, Any]:
     category_reports: list[dict[str, Any]] = []
     candidates: list[dict[str, Any]] = []
     candidate_errors: list[str] = []
     seen_candidate_ids: set[str] = set()
-    for archive in plan["archives"]:
+    archives = list(plan["archives"])
+    for index, archive in enumerate(archives):
         archive_id = str(archive["archive_id"])
         query = str(archive["query"])
         if source_batches and archive_id in source_batches:
@@ -540,6 +685,8 @@ def _scan_archives(
                 continue
             seen_candidate_ids.add(source_id)
             candidates.append(candidate)
+        if not source_batches and polite_delay_seconds > 0 and index < len(archives) - 1:
+            time.sleep(float(polite_delay_seconds))
     blocked_categories = [item for item in category_reports if item["status"] == "blocked"]
     return {
         "scan_id": "all-arxiv-scan:latest",
@@ -590,6 +737,21 @@ def _candidate_from_source_item(source_item: Mapping[str, Any], *, generated_at:
         },
         [],
     )
+
+
+def _live_dry_run_blockers(failed: Sequence[Mapping[str, Any]]) -> list[str]:
+    reasons: list[str] = []
+    for item in failed:
+        archive_id = str(item.get("archive_id") or "unknown")
+        detail = "; ".join(str(reason) for reason in item.get("blocking_reasons") or [])
+        count = int(item.get("new_item_count") or 0)
+        if detail:
+            reasons.append(f"{archive_id}: {detail}")
+        elif count <= 0:
+            reasons.append(f"{archive_id}: no live SourceItems returned")
+        else:
+            reasons.append(f"{archive_id}: live archive verification failed")
+    return reasons
 
 
 def _claims_from_source_item(source_item: Mapping[str, Any], *, summary: str, generated_at: str) -> list[dict[str, Any]]:

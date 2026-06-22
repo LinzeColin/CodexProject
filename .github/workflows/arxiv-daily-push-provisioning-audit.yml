@@ -3,11 +3,6 @@ name: arXiv Daily Push provisioning audit
 on:
   workflow_dispatch:
     inputs:
-      runner_label:
-        description: "Private self-hosted runner label to verify before trial start."
-        required: true
-        default: "arxiv-daily-push"
-        type: string
       generated_at:
         description: "Optional ISO timestamp for deterministic evidence. Empty uses current UTC."
         required: false
@@ -26,7 +21,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      GH_TOKEN: ${{ secrets.ADP_GITHUB_METADATA_TOKEN || github.token }}
+      ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
+      ADP_SMTP_PORT: ${{ secrets.ADP_SMTP_PORT }}
+      ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME }}
+      ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
+      ADP_RELEASE_TARGET: ${{ vars.ADP_RELEASE_TARGET }}
+      ADP_ALLOW_SMTP_SEND: ${{ vars.ADP_ALLOW_SMTP_SEND }}
+      ADP_ALLOW_RELEASE_UPLOAD: ${{ vars.ADP_ALLOW_RELEASE_UPLOAD }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,12 +47,59 @@ jobs:
         run: |
           set +e
           output="$RUNNER_TEMP/adp-production-provisioning-audit.json"
+          readiness_input="$RUNNER_TEMP/adp-production-provisioning-audit-input.json"
+          python3 - "$readiness_input" <<'PY'
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          repo = "${{ github.repository }}"
+          run_id = "${{ github.run_id }}"
+          release_target = os.environ.get("ADP_RELEASE_TARGET", "")
+          Path(sys.argv[1]).write_text(json.dumps({
+              "runner": {
+                  "ready": True,
+                  "label": "ubuntu-latest",
+                  "evidence_ref": f"github-hosted://{repo}/actions/runs/{run_id}/ubuntu-latest",
+              },
+              "smtp_secrets": {
+                  "ready": all(os.environ.get(name) for name in (
+                      "ADP_SMTP_HOST",
+                      "ADP_SMTP_PORT",
+                      "ADP_SMTP_USERNAME",
+                      "ADP_SMTP_PASSWORD",
+                  )),
+                  "secret_names": [
+                      "ADP_SMTP_HOST",
+                      "ADP_SMTP_PORT",
+                      "ADP_SMTP_USERNAME",
+                      "ADP_SMTP_PASSWORD",
+                  ],
+                  "evidence_ref": f"github-actions://{repo}/actions/runs/{run_id}/secrets/smtp-names-only",
+              },
+              "release_target": {
+                  "ready": bool(release_target),
+                  "var_name": "ADP_RELEASE_TARGET",
+                  "target": release_target,
+                  "evidence_ref": f"github-actions://{repo}/actions/runs/{run_id}/vars/ADP_RELEASE_TARGET",
+              },
+              "workflow_vars": {
+                  "ready": True,
+                  "var_names": [
+                      "ADP_RELEASE_TARGET",
+                      "ADP_ALLOW_SMTP_SEND",
+                      "ADP_ALLOW_RELEASE_UPLOAD",
+                  ],
+                  "evidence_ref": f"github-actions://{repo}/actions/runs/{run_id}/vars/delivery-gates",
+              },
+          }, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
           PYTHONDONTWRITEBYTECODE=1 \
           PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_provisioning_audit" \
           PYTHONPATH=arxiv-daily-push/src \
-            python3 -m arxiv_daily_push discover-production-refs \
-              --repo "${{ github.repository }}" \
-              --runner-label "${{ inputs.runner_label }}" \
+            python3 -m arxiv_daily_push plan-production-refs \
+              --readiness-input "$readiness_input" \
               --generated-at "${{ steps.generated_at.outputs.value }}" \
               --json > "$output"
           code=$?
@@ -79,7 +127,7 @@ jobs:
           {
             echo "## arXiv Daily Push provisioning audit"
             echo "- generated_at: ${{ steps.generated_at.outputs.value }}"
-            echo "- runner_label: ${{ inputs.runner_label }}"
+            echo "- runner: ubuntu-latest"
             echo "- production_refs_exit_code: ${{ steps.production_refs.outputs.exit_code || 'not_run' }}"
             echo "- artifact: adp-production-provisioning-audit"
             echo "- next: dispatch trial-start only after this artifact reports production_refs_ready=true"

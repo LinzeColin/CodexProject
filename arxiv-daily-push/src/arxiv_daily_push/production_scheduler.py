@@ -61,9 +61,9 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
             "scheduled workflow must skip by default unless ADP_PRODUCTION_ENABLED is true",
         ),
         _check(
-            "self_hosted_runner_targeted",
-            "self-hosted" in workflow_text and "arxiv-daily-push" in workflow_text,
-            "scheduled production work must target the private arxiv-daily-push self-hosted runner",
+            "github_hosted_runner_targeted",
+            "runs-on: ubuntu-latest" in workflow_text and "self-hosted" not in workflow_text,
+            "scheduled production work must target GitHub-hosted ubuntu-latest instead of a self-hosted runner",
         ),
         _check(
             "preflight_before_scheduled_mode",
@@ -87,6 +87,13 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
             and "adp-candidate-queue" in workflow_text
             and "adp-scheduled-daily-input" in workflow_text,
             "workflow must build and upload all-arXiv Phase 12 daily input, delivery artifacts, and queue evidence when no override path is configured",
+        ),
+        _check(
+            "real_mp4_render_present",
+            "render-lightweight-mp4" in workflow_text
+            and "adp-scheduled-mp4-video" in workflow_text
+            and ".mp4" in workflow_text,
+            "workflow must render and upload a real MP4 video artifact for daily-run mode",
         ),
         _check(
             "candidate_queue_persistence_present",
@@ -178,7 +185,7 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
         ],
         "next_external_actions": [
             "merge the workflow to the default branch before schedule triggers can run",
-            "configure ADP_PRODUCTION_ENABLED only after all-arXiv Phase 12 scan, queue, ROI ranking, Release link, SMTP, and runner prerequisites pass",
+            "configure ADP_PRODUCTION_ENABLED only after all-arXiv Phase 12 scan, queue, ROI ranking, Release link, SMTP, and GitHub-hosted runner prerequisites pass",
             "configure ADP_SCHEDULED_RUN_ENABLED only after daily all-arXiv execution evidence is implemented and verified",
             "retain adp-trial-evidence-ledger artifacts so 30-day trial evidence can accumulate across runs",
             "keep Release upload and SMTP sending disabled until their explicit production enablement phase",

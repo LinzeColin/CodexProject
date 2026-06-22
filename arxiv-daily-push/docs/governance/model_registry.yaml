@@ -156,6 +156,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/tests/test_global_scan.py"]
     status: "active"
+  - assumption_id: "ASM-ADP-036"
+    statement: "A controlled manual delivery test may create one GitHub Release and send one Gmail SMTP message only through an explicit workflow_dispatch confirmation on the default branch; it must not enable scheduled production."
+    fact_level: "EXTRACTED"
+    evidence_refs: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml", "arxiv-daily-push/tests/test_manual_delivery_workflow.py"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -723,3 +728,37 @@ models:
     config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/config/examples/sources.example.yaml", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml"]
     test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_trial_start_workflow.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md"]
+  - model_id: "MOD-ADP-033"
+    name: "Phase 12 cloud production enablement gate"
+    kind: "deterministic cloud workflow and media evidence validator"
+    purpose: "Move Phase 12 verification to GitHub-hosted runners, require live all-arXiv dry-run coverage across all 20 primary archive buckets, render a real lightweight MP4 artifact, and keep production schedule, SMTP, and Release uploads disabled until manual evidence passes."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-phase12-cloud-enablement-v1"
+    assumption_ids: ["ASM-ADP-035", "ASM-ADP-020", "ASM-ADP-021", "ASM-ADP-022"]
+    formula_ids: ["FORM-ADP-035"]
+    parameter_ids: ["PARAM-ADP-177", "PARAM-ADP-178", "PARAM-ADP-179", "PARAM-ADP-180"]
+    inputs: ["generated_at", "cloud workflow run", "live arXiv Atom fetches", "sample daily input", "ffmpeg runtime", "GitHub workflow variables"]
+    outputs: ["live all-arXiv dry-run report", "sample daily input", "MP4 render report", "MP4 artifact", "cloud workflow artifacts", "fail-closed production enablement status"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py"]
+    config_refs: [".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml", ".github/workflows/arxiv-daily-push-production-trial.yml", ".github/workflows/arxiv-daily-push-provisioning-audit.yml"]
+    test_refs: ["arxiv-daily-push/tests/test_cloud_dry_run_workflow.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_trial_start_workflow.py", "arxiv-daily-push/tests/test_production_refs.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md"]
+  - model_id: "MOD-ADP-034"
+    name: "Phase 12 manual Release and SMTP delivery test gate"
+    kind: "deterministic GitHub Actions manual delivery workflow contract"
+    purpose: "Prepare a default-branch-only manual workflow that scans all arXiv, renders a real MP4, creates a GitHub Release, and sends one Gmail SMTP test email with Chinese lesson text plus Release/video links while keeping scheduled production disabled."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-manual-delivery-test-v1"
+    assumption_ids: ["ASM-ADP-036", "ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-022"]
+    formula_ids: ["FORM-ADP-036"]
+    parameter_ids: ["PARAM-ADP-181", "PARAM-ADP-182", "PARAM-ADP-183", "PARAM-ADP-184"]
+    inputs: ["workflow_dispatch confirmation", "generated_at", "max_results_per_category", "GitHub token", "Gmail SMTP password secret", "all-arXiv Atom fetches"]
+    outputs: ["manual delivery preflight", "daily input", "candidate queue", "MP4 artifact", "GitHub Release", "SMTP delivery report", "scheduled execution evidence"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
+    config_refs: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml"]
+    test_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md"]

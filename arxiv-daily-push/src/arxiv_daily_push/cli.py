@@ -15,8 +15,10 @@ from .evidence_gate import gate_publication
 from .global_scan import (
     ALL_ARXIV_MAX_RESULTS_PER_CATEGORY,
     build_all_arxiv_daily_input,
+    build_live_all_arxiv_dry_run,
     build_all_arxiv_scan_plan,
     validate_all_arxiv_daily_input_report,
+    validate_live_all_arxiv_dry_run_report,
     validate_all_arxiv_scan_plan,
 )
 from .handoff import HandoffError, build_handoff, validate_handoff
@@ -59,6 +61,7 @@ from .trial_replay import build_trial_replay_evidence, validate_trial_replay_rep
 from .trial_start import build_trial_start_gate, validate_trial_start_report
 from .trial_start_workflow import build_trial_start_workflow_plan, validate_trial_start_workflow_plan
 from .video import VideoPlanError, generate_storyboard
+from .video import render_lightweight_mp4, validate_mp4_render_report
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -143,7 +146,19 @@ def build_parser() -> argparse.ArgumentParser:
     all_arxiv_daily.add_argument("--artifact-dir", help="Directory for daily input, queue, video artifact, and email brief JSON.")
     all_arxiv_daily.add_argument("--recent-source-id", action="append", default=[], help="Source ID already selected recently.")
     all_arxiv_daily.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
+    all_arxiv_daily.add_argument("--polite-delay-seconds", type=float, default=0.0, help="Optional delay between live archive fetches.")
     all_arxiv_daily.add_argument("--json", action="store_true", help="Print JSON Phase 12 daily input report.")
+
+    live_all_arxiv = subparsers.add_parser(
+        "run-live-all-arxiv-dry-run",
+        help="Fetch every arXiv primary archive once and fail closed unless all 20 archive buckets are reachable.",
+    )
+    live_all_arxiv.add_argument("--generated-at", required=True, help="Dry-run timestamp.")
+    live_all_arxiv.add_argument("--date", default="", help="Daily input date for the live-selected sample paper.")
+    live_all_arxiv.add_argument("--max-results-per-category", type=int, default=1)
+    live_all_arxiv.add_argument("--artifact-dir", help="Directory for the live all-arXiv dry-run report.")
+    live_all_arxiv.add_argument("--polite-delay-seconds", type=float, default=0.0, help="Optional delay between archive fetches.")
+    live_all_arxiv.add_argument("--json", action="store_true", help="Print JSON dry-run report.")
 
     build_daily_input = subparsers.add_parser(
         "build-daily-input",
@@ -182,6 +197,13 @@ def build_parser() -> argparse.ArgumentParser:
     storyboard.add_argument("--generated-at", required=True, help="Storyboard generation timestamp.")
     storyboard.add_argument("--check-path", default=".", help="Path used for media gate disk checks.")
     storyboard.add_argument("--json", action="store_true", help="Print JSON storyboard output.")
+
+    mp4 = subparsers.add_parser("render-lightweight-mp4", help="Render a lightweight real MP4 video artifact from a daily input JSON.")
+    mp4.add_argument("--daily-input", required=True, help="Daily input JSON or Phase 12 daily input report JSON.")
+    mp4.add_argument("--output", required=True, help="Output .mp4 path.")
+    mp4.add_argument("--generated-at", required=True, help="MP4 render timestamp.")
+    mp4.add_argument("--duration-seconds", type=int, default=12)
+    mp4.add_argument("--json", action="store_true", help="Print JSON MP4 render evidence.")
 
     pipeline = subparsers.add_parser("run-daily-dry-run", help="Run local daily dry-run pipeline from source/claims JSON.")
     pipeline.add_argument("--path", required=True, help="JSON file containing source_item, claims, run_id, publication_id, date, and generated_at.")
@@ -314,7 +336,7 @@ def build_parser() -> argparse.ArgumentParser:
     trial_start.add_argument("--release-delivery", required=True, help="Real created Release delivery report JSON.")
     trial_start.add_argument("--generated-at", required=True, help="Trial start readiness timestamp.")
     trial_start.add_argument("--default-branch-ref", default="", help="Durable default-branch commit/workflow ref.")
-    trial_start.add_argument("--runner-ref", default="", help="Durable private self-hosted runner ref.")
+    trial_start.add_argument("--runner-ref", default="", help="Durable GitHub-hosted runner ref.")
     trial_start.add_argument("--preflight-ref", default="", help="Durable archived production preflight ref.")
     trial_start.add_argument("--source-ingest-ref", default="", help="Durable archived live source ingest ref.")
     trial_start.add_argument("--smtp-ref", default="", help="Durable SMTP delivery ref matching the SMTP report.")
@@ -345,7 +367,7 @@ def build_parser() -> argparse.ArgumentParser:
         "print-production-refs-template",
         help="Print a no-secret JSON input template for plan-production-refs.",
     )
-    production_refs_template.add_argument("--runner-label", default="arxiv-daily-push", help="Self-hosted runner label placeholder.")
+    production_refs_template.add_argument("--runner-label", default="ubuntu-latest", help="GitHub-hosted runner label placeholder.")
     production_refs_template.add_argument("--release-target", default="", help="Optional ADP_RELEASE_TARGET placeholder.")
 
     production_refs_discovery = subparsers.add_parser(
@@ -353,7 +375,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="Use gh to discover no-secret GitHub Actions metadata and build a production refs report.",
     )
     production_refs_discovery.add_argument("--repo", default=DEFAULT_GITHUB_REPO, help="GitHub repo owner/name.")
-    production_refs_discovery.add_argument("--runner-label", default="arxiv-daily-push", help="Required self-hosted runner label.")
+    production_refs_discovery.add_argument("--runner-label", default="arxiv-daily-push", help="Legacy self-hosted runner label for metadata discovery.")
     production_refs_discovery.add_argument("--generated-at", required=True, help="Production refs report timestamp.")
     production_refs_discovery.add_argument("--gh-command", default="gh", help="gh executable name or path.")
     production_refs_discovery.add_argument("--json", action="store_true", help="Print JSON production refs report.")
@@ -377,7 +399,7 @@ def build_parser() -> argparse.ArgumentParser:
     production_launch.add_argument("--generated-at", required=True, help="Launch readiness timestamp.")
     production_launch.add_argument("--expected-head-sha", required=True, help="Expected PR head SHA to bind the launch audit.")
     production_launch.add_argument("--default-branch-ref", default="", help="Durable merged default-branch commit ref.")
-    production_launch.add_argument("--runner-ref", default="", help="Durable private self-hosted runner readiness ref.")
+    production_launch.add_argument("--runner-ref", default="", help="Durable GitHub-hosted runner readiness ref.")
     production_launch.add_argument("--smtp-secret-ref", default="", help="Durable GitHub SMTP secrets readiness ref without secret values.")
     production_launch.add_argument("--release-target-ref", default="", help="Durable GitHub Release target readiness ref.")
     production_launch.add_argument("--workflow-vars-ref", default="", help="Durable GitHub variables readiness ref.")
@@ -573,6 +595,7 @@ def main(argv: list[str] | None = None) -> int:
             max_results_per_category=args.max_results_per_category,
             artifact_dir=args.artifact_dir,
             queue_output_path=args.queue_output,
+            polite_delay_seconds=args.polite_delay_seconds,
         )
         errors = validate_all_arxiv_daily_input_report(report)
         if errors:
@@ -593,6 +616,32 @@ def main(argv: list[str] | None = None) -> int:
             for reason in report["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if report["daily_input_ready"] else 2
+    if args.command == "run-live-all-arxiv-dry-run":
+        report = build_live_all_arxiv_dry_run(
+            generated_at=args.generated_at,
+            date=args.date or None,
+            max_results_per_category=args.max_results_per_category,
+            artifact_dir=args.artifact_dir,
+            polite_delay_seconds=args.polite_delay_seconds,
+        )
+        errors = validate_live_all_arxiv_dry_run_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["live_dry_run_ready"]:
+            print(f"{report['dry_run_id']}\t{report['verified_archive_count']} archives")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["live_dry_run_ready"] else 2
     if args.command == "build-daily-input":
         source_batch = load_json_mapping(args.source_batch)
         report = build_daily_input_package(
@@ -711,6 +760,33 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"{storyboard['storyboard_id']}\t{len(storyboard['scenes'])} scenes")
         return 0
+    if args.command == "render-lightweight-mp4":
+        data = load_json_mapping(args.daily_input)
+        daily_input = data.get("daily_input", data) if isinstance(data, dict) else data
+        report = render_lightweight_mp4(
+            daily_input,
+            output_path=args.output,
+            generated_at=args.generated_at,
+            duration_seconds=args.duration_seconds,
+        )
+        errors = validate_mp4_render_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["mp4_rendered"]:
+            print(f"{report['render_id']}\t{report['video_path']}")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["mp4_rendered"] else 2
     if args.command == "run-daily-dry-run":
         data = json.loads(Path(args.path).read_text(encoding="utf-8"))
         try:
