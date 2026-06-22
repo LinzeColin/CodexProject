@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 40
-- formula_count: 42
-- parameter_count: 315
+- model_count: 41
+- formula_count: 43
+- parameter_count: 325
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -63,6 +63,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-038 | Review8 Stage 1 source registry and arXiv connector contract | deterministic source registry and connector contract validator | Bind the source registry to owner controls, prove only SRC-ARXIV/arxiv.atom.v1 is active, and cap canaries at 10 metadata records without production side effects | active | adp-source-registry-contract-v1 | `src/arxiv_daily_push/source_registry.py`, `src/arxiv_daily_push/source_ingest.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-039 | Review8 Stage 1 scoring, queue, and content ledger contract | deterministic weighted scoring, queue ranking, and ledger renderer | Score explicit Stage 1 research signals, rank up to 10000 active items, enforce the 365-day window, record reason codes, and emit canonical CONTENT_LEDGER rows without production side effects | active | adp-stage1-scoring-queue-ledger-v1 | `src/arxiv_daily_push/stage1_queue.py`, `src/arxiv_daily_push/owner_controls.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-040 | Review8 Stage 1 B1/arXiv report and email text package | deterministic Chinese teaching report and email renderer | Render B1/arXiv teaching report/email previews with supported claim evidence, candidate queue summary, human-frontstage wording, and no production side effects | active | adp-stage1-b1-report-email-v1 | `src/arxiv_daily_push/stage1_b1_report.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-041 | Review8 Stage 1 local runtime recovery controls | deterministic local runtime and recovery gate | Provide low-resource tick, watchdog, backup, restore, runtime audit, and scheduler install/uninstall dry-run controls with explicit state/artifact paths and no production side effects | active | adp-stage1-local-runtime-recovery-v1 | `src/arxiv_daily_push/stage1_runtime.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -109,6 +110,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-039 | Review8 Stage 1 Window A source registry must keep `config/owner_controls.yaml` as the single editable source list, enable only SRC-ARXIV with arxiv.atom.v1, cap canaries at 10, and block PDFs, bulk harvest, paid APIs, secrets, scheduler enablement, SMTP, Release upload, and production acceptance claims. | `src/arxiv_daily_push/source_registry.py`, `src/arxiv_daily_push/source_ingest.py`, `config/owner_controls.yaml`, `tests/test_source_registry.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 connector contract | active |
 | ASM-ADP-040 | Review8 Stage 1 scoring and queue behavior must use owner_controls.yaml as the active parameter source, keep at most 10000 active items, treat 365 days as an inclusive event-age boundary, retain deterministic reason codes for every non-active item, and emit canonical content ledger columns without claiming production replay output. | `src/arxiv_daily_push/stage1_queue.py`, `config/owner_controls.yaml`, `tests/test_stage1_queue.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 scoring and ledger | active |
 | ASM-ADP-041 | Review8 Stage 1 B1/arXiv text delivery must produce Chinese teaching report/email previews with supported claim evidence, candidate queue summary, human-frontstage wording, and no video, Release upload, real SMTP send, production scheduler enablement, or visible backend ROI/policy clutter. | `src/arxiv_daily_push/stage1_b1_report.py`, `tests/test_stage1_b1_report.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 B1 report/email text | active |
+| ASM-ADP-042 | Review8 Stage 1 local runtime recovery must provide explicit heartbeat/checkpoint, watchdog, backup, restore, runtime audit, and scheduler install/uninstall dry-run controls while keeping production scheduling, real SMTP, Release upload, video generation, and long-running local background work disabled. | `src/arxiv_daily_push/stage1_runtime.py`, `tests/test_stage1_runtime.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 local runtime recovery | active |
 
 ## C. Functions and Formulas
 
@@ -156,6 +158,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-040 validates the Stage 1 source registry and connector contract: single owner-controls fact source, only SRC-ARXIV active, arxiv.atom.v1 adapter, canary max 10, no PDF/bulk/paid/secret/production side effects, and offline fixture SourceItem validation.
 - FORM-ADP-041 validates Stage 1 weighted research scoring, queue priority scoring, 10000 active-item cap, 365-day inclusive boundary, lifecycle reason codes, source-share cap behavior, stable tie ordering, and canonical content ledger rows.
 - FORM-ADP-042 validates Stage 1 B1/arXiv report/email text delivery: supported daily input claims, 100% critical claim evidence coverage in audit fields, Chinese report/email previews, owner subject contract, candidate queue summary, hidden backend ROI/policy clutter, and no SMTP/Release/video/network side effects.
+- FORM-ADP-043 validates Stage 1 local runtime recovery: explicit heartbeat/checkpoint tick, watchdog stale-state rejection, SHA256 SQLite backup/restore with explicit confirmation, production flag audit, and scheduler dry-run templates without applying OS scheduler changes.
 
 ## D. Parameters
 
@@ -201,6 +204,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Review8 Stage 1 source registry contract parameters: PARAM-ADP-280 through PARAM-ADP-286.
 - Active Review8 Stage 1 scoring queue ledger parameters: PARAM-ADP-287 through PARAM-ADP-309.
 - Active Review8 Stage 1 B1 report/email text parameters: PARAM-ADP-310 through PARAM-ADP-315.
+- Active Review8 Stage 1 local runtime recovery parameters: PARAM-ADP-316 through PARAM-ADP-325.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

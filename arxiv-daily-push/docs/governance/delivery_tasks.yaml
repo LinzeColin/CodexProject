@@ -924,17 +924,17 @@ tasks:
     objective: "Add local runtime controls for tick, watchdog, backup, restore, runtime audit, and scheduler install/uninstall helpers."
     scope: "CLI commands, runtime audit, backup/restore tests, scheduler controls, runbook, and governance records."
     non_scope: "No production scheduler enablement before acceptance gates pass."
-    status: "planned"
+    status: "completed"
     dependencies: ["S1-07-B1_REPORT_EMAIL_TEXT-001"]
-    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY"]
-    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
-    test_results: ["not_run_yet"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_runtime.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
+    test_results: ["focused runtime recovery and CLI tests: 13 tests OK", "arxiv-daily-push unit tests: 210 tests OK", "semantic extractor: 43 active formulas and 308 active parameters checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "changed-only semantic governance sync: errors 0 warnings 0; projects changed arxiv-daily-push only", "root governance unit tests: 129 tests OK; missing-base line is an expected negative fixture with exit code 0", "information quality validation: PASS errors 0 warnings 0", "S1-08 run manifest JSON parse: OK", "git diff --check: PASS", "cache check: no __pycache__ or .pyc files found under arxiv-daily-push or tests/governance", "parameter_registry.csv: 326 rows width 36; TRACEABILITY_MATRIX.csv: 111 rows width 12"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/docs/phase_records/PHASE_S1_08_LOCAL_RUNTIME_RECOVERY.md", "governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json"]
     risk: "Recovery controls must be idempotent and not leak secrets or retain oversized artifacts."
     rollback: "Revert S1-08 CLI/runtime/recovery files and governance records."
     target_version: "0.18.0"
-    completed_version: ""
+    completed_version: "0.18.0"
     unknown_task_ids: []
   - task_id: "S1-09-MIGRATION_PACKAGE-001"
     phase: "S1-A"
@@ -950,7 +950,7 @@ tasks:
     evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     risk: "Migration readiness must not be confused with production acceptance."
     rollback: "Revert S1-09 migration package files and governance updates."
-    target_version: "0.12.4"
+    target_version: "0.19.0"
     completed_version: ""
     unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"

@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.17.0`
+Active product version: `0.18.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.17.0
+- Product version: 0.18.0
 - Current phase: S1-A
-- Current gate: ADP-S1-07-B1-REPORT-EMAIL-TEXT-READY
-- Confirmed iteration count: 60
+- Current gate: ADP-S1-08-LOCAL-RUNTIME-RECOVERY-READY
+- Confirmed iteration count: 61
 - Reconstructed event count: 0
-- Current task: S1-08-LOCAL_RUNTIME_RECOVERY-001
-- Blockers: S1-08 local runtime recovery, S1-09 migration package, 30 historical previews, two live production days, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
+- Current task: S1-09-MIGRATION_PACKAGE-001
+- Blockers: S1-09 migration package, 30 historical previews, two live production days, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
 
@@ -29,6 +29,31 @@ The append-only machine record is `development_events.jsonl`.
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260622-S1-007`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from `stage1_runtime.py`, focused runtime recovery tests, full ADP unit tests, semantic extractor, and governance registry updates.
+- Version before: 0.17.0
+- Version after: 0.18.0
+- Base commit: 5f4995964164cd70c9222bbba974bfa0892853a0
+- Result commit: PENDING
+- Task IDs: S1-08-LOCAL_RUNTIME_RECOVERY-001
+- Goal: Add the Review8 Stage 1 local runtime recovery controls for explicit tick heartbeat/checkpoint state, watchdog stale-state blocking, SQLite backup/restore with SHA256 manifest and explicit confirmation, runtime production-flag audit, and scheduler install/uninstall dry-run templates.
+- Assumptions: S1-08 is a deterministic local recovery interface only; it does not install a real scheduler, enable production scheduling, send Gmail SMTP, upload GitHub Releases, generate video, run a 30-day replay, start background work, or claim `ARXIV_PRODUCTION_ACCEPTED`.
+- Files read: `arxiv-daily-push/AGENTS.md`, V5 baseline lock and task pack, storage/database inspector, CLI, previous S1 governance records, semantic extractor, and focused tests.
+- Files changed: `stage1_runtime.py`, runtime CLI dispatch, focused runtime tests, version files, changelog, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, phase record, ledger/event records, generator S1 next-task policy, root governance test expectations, and run manifest.
+- Model changes: Added MOD-ADP-041 `adp-stage1-local-runtime-recovery-v1`.
+- Formula changes: Added FORM-ADP-043 and refreshed FORM-ADP-024/FORM-ADP-042 fingerprints because `cli.py::main` gained runtime recovery subcommands.
+- Parameter changes: Added PARAM-ADP-316 through PARAM-ADP-325 for runtime schema, acceptance ID, action count, backup byte cap, stale heartbeat threshold, disabled production flag count, OS task count, scheduler platform list, heartbeat filename, and lock filename.
+- Commands run: focused runtime recovery plus CLI tests; full arxiv-daily-push unit tests; semantic extractor.
+- Test results: focused runtime recovery and CLI tests 13 OK; arxiv-daily-push unit tests 210 OK; semantic extractor checked 43 active formulas and 308 active parameters with no errors.
+- Successes: The runtime surface writes only explicit state/artifact paths, blocks stale heartbeat and stale locks, refuses restore without explicit confirmation, verifies backup hashes, blocks enabled production side-effect flags, and keeps scheduler install/uninstall as template-only dry-runs.
+- Failures: No real scheduler was installed by design; no real Gmail email, GitHub Release, video, 30 historical previews, or live production days were executed in S1-08.
+- Decisions: Bump product version to 0.18.0 because S1-08 adds a backward-compatible local runtime recovery CLI and contract while preserving disabled production side effects.
+- Remaining risks: S1-09 migration package, 30 historical previews, two live production days, and production trial evidence remain incomplete before `ARXIV_PRODUCTION_ACCEPTED`.
+- Rollback: Remove `stage1_runtime.py`, runtime recovery CLI dispatch/tests, restore version 0.17.0, and revert S1-08 governance records and run manifest.
+- Next step: S1-09-MIGRATION_PACKAGE-001.
 
 ### `ITER-20260622-S1-006`
 
