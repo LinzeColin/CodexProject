@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260622-ADP-059"
-source_snapshot_hash: "sha256:b842113862e79bd5b0b43ab9f0e20110e5d1cc8623fe4cbeaf2e3e05446c1b7c"
+as_of_event_id: "EVENT-20260622-ADP-060"
+source_snapshot_hash: "sha256:ff0151e768fbae50b07564bdf6476e4adeda066593bcb5f42b5142874f4e2214"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-22T15:59:11+10:00"
+snapshot_event_time: "2026-06-22T16:20:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 184
-    total_active_parameters: 184
+    checked_active_parameters: 185
+    total_active_parameters: 185
     checked_active_formulas: 36
     total_active_formulas: 36
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 184
-    total_active_parameters: 184
+    checked_active_parameters: 185
+    total_active_parameters: 185
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,12 +64,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 0
     legacy_unbound_events: 54
-    precommit_pending_events: 6
+    precommit_pending_events: 7
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "S1-02-BASELINE-LOCK-TRACEABILITY"
+  release_gate: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-READY"
   blocker_ids:
     - "ADP-PHASE8-VIDEO-001"
     - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
@@ -114,4 +114,4 @@ owner_decision:
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-22T15:59:11+10:00"
+  last_reviewed_at: "2026-06-22T16:20:00+10:00"

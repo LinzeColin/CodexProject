@@ -19,7 +19,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 55
+- task_count: 56
 - acceptance_count: 53
 
 ## Delivery Tasks
@@ -82,6 +82,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S1-07-B1_REPORT_EMAIL_MEDIA-001 | S1-A | planned | ADP-ACC-S1-07-B1-REPORT-EMAIL-MEDIA | B1 report, Claim evidence, email preview, and media interface | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S1-08-LOCAL_RUNTIME_RECOVERY-001 | S1-A | planned | ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY | Tick/watchdog, backup/restore, runtime audit, and scheduler controls | `docs/pursuing_goal/BASELINE_LOCK.md` |
 | S1-09-MIGRATION_PACKAGE-001 | S1-A | planned | ADP-ACC-S1-09-MIGRATION-PACKAGE | Low-resource integration evidence and new-machine migration checklist | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | daily email front-end now uses human-scannable Chinese sections, compact arXiv subject, 12-second video link, action guidance, concise evidence, and hides ROI scoring in backend artifacts | `docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates

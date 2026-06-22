@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:b842113862e79bd5b0b43ab9f0e20110e5d1cc8623fe4cbeaf2e3e05446c1b7c`
-- snapshot_event_time: `2026-06-22T15:59:11+10:00`
+- source_snapshot_hash: `sha256:ff0151e768fbae50b07564bdf6476e4adeda066593bcb5f42b5142874f4e2214`
+- snapshot_event_time: `2026-06-22T16:20:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -13,11 +13,11 @@
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
-- Product version: `0.12.4`
-- Phase/Gate: `S1-A / S1-02-BASELINE-LOCK-TRACEABILITY`
-- Models/Formulas/Parameters total: `34 / 36 / 185`
-- Active formulas/parameters: `36 / 184`
-- Machine checked formulas/parameters: `36 / 184`
+- Product version: `0.12.5`
+- Phase/Gate: `E / ADP-PHASE12-EMAIL-HUMAN-FORMAT-READY`
+- Models/Formulas/Parameters total: `34 / 36 / 186`
+- Active formulas/parameters: `36 / 185`
+- Machine checked formulas/parameters: `36 / 185`
 
 ## Assurance
 
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `S1-02-BASELINE-LOCK-TRACEABILITY`
+- Release gate: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-READY`
 - Next executable task: `ADP-PHASE11-PRODUCTION-TRIAL-START-022`
-- Pending/stale events: `60`
+- Pending/stale events: `61`
 - Tree-bound events: `0`
 - Commit-bound events: `0`
 - Legacy unbound events: `54`
