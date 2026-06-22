@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
-import csv
-import io
 import json
 import re
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
+
+from .stage1_queue import (
+    STAGE1_CONTENT_LEDGER_COLUMNS,
+    placeholder_content_ledger_rows,
+    render_content_ledger_csv,
+)
 
 
 OWNER_CONTROLS_MODEL_ID = "adp-owner-controls-v1"
@@ -19,36 +23,7 @@ OWNER_CONTROL_DOCS: tuple[str, ...] = (
     "docs/owner/MODEL_AND_QUEUE.md",
     "docs/owner/CONTENT_LEDGER.csv",
 )
-CONTENT_LEDGER_COLUMNS: tuple[str, ...] = (
-    "item_id",
-    "document_id",
-    "event_id",
-    "theme_cluster_id",
-    "board_id",
-    "source_id",
-    "title",
-    "event_date",
-    "industry_tags",
-    "current_score",
-    "current_rank",
-    "previous_score",
-    "previous_rank",
-    "queue_state",
-    "explanation_state",
-    "reason_code",
-    "reason_detail",
-    "report_id",
-    "report_file_state",
-    "report_path",
-    "email_id",
-    "email_state",
-    "email_sent_at",
-    "video_id",
-    "video_state",
-    "video_path",
-    "evidence_ref",
-    "last_updated",
-)
+CONTENT_LEDGER_COLUMNS: tuple[str, ...] = STAGE1_CONTENT_LEDGER_COLUMNS
 SECRET_KEY_PATTERN = re.compile(
     r"(^|[_-])(password|token|secret|private[_-]?key|client[_-]?secret|credential)([_-]|$)",
     re.I,
@@ -166,7 +141,7 @@ def build_owner_impact_preview(controls: Mapping[str, Any], *, days: int = 30) -
         "source_or_board_changes": "NOT_COMPUTED_NO_PRIOR_OWNER_CONTROLS_BASELINE",
         "enabled_sources": [str(item.get("source_id")) for item in enabled_sources],
         "enabled_boards": [str(item.get("board_id")) for item in enabled_boards],
-        "ranking_change_preview": "NOT_RUN_UNTIL_S1_06_REPLAY_DATA_EXISTS",
+        "ranking_change_preview": "S1_06_DETERMINISTIC_QUEUE_READY_NO_PRODUCTION_REPLAY_DATA",
         "queue_change_preview": {
             "max_active_items": int(queue.get("max_active_items") or 0),
             "new_items": "NOT_COMPUTED_NO_REPLAY_DATA",
@@ -177,13 +152,12 @@ def build_owner_impact_preview(controls: Mapping[str, Any], *, days: int = 30) -
             "split_mode": str(email.get("split_mode") or ""),
             "send_order": [str(item) for item in _as_sequence(email.get("send_order"))],
             "report_enabled": bool(outputs.get("report_enabled")),
-            "video_enabled": bool(outputs.get("video_enabled")),
+            "audit_formats": ["markdown", "html", "json"],
         },
         "resource_estimate": {
             "max_fetch_concurrency": int(runtime.get("max_fetch_concurrency") or 0),
             "max_temp_cache_gb": float(runtime.get("max_temp_cache_gb") or 0),
             "window_a_max_online_arxiv_metadata": int(window.get("max_online_arxiv_metadata") or 0),
-            "window_a_media_smoke_max_seconds": int(window.get("media_smoke_max_seconds") or 0),
         },
         "rollback_config_version": validation["rollback_config_version"],
         "warnings": validation["warnings"],
@@ -268,7 +242,7 @@ def _render_owner_console(
         "## Required Human Decisions",
         "",
         "- No production enablement decision is accepted by this file alone.",
-        "- S1-04 must add the unified local SQLite model before broad source ingestion or queue replay can be trusted.",
+        "- S1-06 deterministic queue fixtures are available; production replay remains unclaimed until later runtime evidence exists.",
         "",
         "## Commands",
         "",
@@ -354,42 +328,7 @@ def _render_model_and_queue(
 
 
 def _render_content_ledger_csv(generated_at: str) -> str:
-    buffer = io.StringIO()
-    writer = csv.DictWriter(buffer, fieldnames=CONTENT_LEDGER_COLUMNS, lineterminator="\n")
-    writer.writeheader()
-    writer.writerow(
-        {
-            "item_id": "NO_PRODUCTION_CONTENT_ROWS_S1_03",
-            "document_id": "NOT_APPLICABLE",
-            "event_id": "S1-03-OWNER-CONTROLS-001",
-            "theme_cluster_id": "NOT_APPLICABLE",
-            "board_id": "NOT_APPLICABLE",
-            "source_id": "NOT_APPLICABLE",
-            "title": "Owner controls baseline generated; no production content ledger rows exist yet",
-            "event_date": "2026-06-22",
-            "industry_tags": "NOT_APPLICABLE",
-            "current_score": "NOT_APPLICABLE",
-            "current_rank": "NOT_APPLICABLE",
-            "previous_score": "NOT_APPLICABLE",
-            "previous_rank": "NOT_APPLICABLE",
-            "queue_state": "NOT_APPLICABLE",
-            "explanation_state": "NOT_APPLICABLE",
-            "reason_code": "GOVERNANCE_BASELINE",
-            "reason_detail": "S1-03 creates owner controls and generated owner views only",
-            "report_id": "NOT_APPLICABLE",
-            "report_file_state": "NOT_APPLICABLE",
-            "report_path": "NOT_APPLICABLE",
-            "email_id": "NOT_APPLICABLE",
-            "email_state": "NOT_APPLICABLE",
-            "email_sent_at": "NOT_APPLICABLE",
-            "video_id": "NOT_APPLICABLE",
-            "video_state": "NOT_APPLICABLE",
-            "video_path": "NOT_APPLICABLE",
-            "evidence_ref": "arxiv-daily-push/docs/governance/delivery_tasks.yaml::S1-03-OWNER-CONTROLS-001",
-            "last_updated": generated_at,
-        }
-    )
-    return buffer.getvalue()
+    return render_content_ledger_csv(placeholder_content_ledger_rows(generated_at=generated_at))
 
 
 def _weight_group_reports(controls: Mapping[str, Any]) -> list[dict[str, Any]]:
@@ -436,8 +375,6 @@ def _window_a_resource_messages(controls: Mapping[str, Any]) -> tuple[list[str],
         errors.append("runtime.window_a_resource_limits.max_online_arxiv_metadata must be <= 10")
     if float(window.get("max_temp_cache_gb") or 0) > 2:
         errors.append("runtime.window_a_resource_limits.max_temp_cache_gb must be <= 2")
-    if int(window.get("media_smoke_max_seconds") or 0) > 30:
-        errors.append("runtime.window_a_resource_limits.media_smoke_max_seconds must be <= 30")
     if window.get("large_pdf_download_allowed") is not False:
         errors.append("runtime.window_a_resource_limits.large_pdf_download_allowed must be false")
     if float(runtime.get("min_free_disk_gb") or 0) < 40:

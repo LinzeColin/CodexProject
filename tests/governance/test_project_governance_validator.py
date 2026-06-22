@@ -1600,6 +1600,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1-03-OWNER-CONTROLS-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-04-SQLITE-DATA-MODEL-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-05-ARXIV-CONNECTOR-CONTRACT-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-06-SCORING-QUEUE-LEDGER-001"]["status"], "completed")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "ready")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "ready")
 
@@ -1608,17 +1609,17 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-066")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-066")
-        self.assertEqual(info["product_version"], "0.15.0")
-        self.assertEqual(info["current_gate"], "ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-READY")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-067")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-067")
+        self.assertEqual(info["product_version"], "0.16.0")
+        self.assertEqual(info["current_gate"], "ADP-S1-06-SCORING-QUEUE-LEDGER-READY")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-20260622.json",
+            "governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.15.0", rendered)
-        self.assertIn("ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-READY", rendered)
+        self.assertIn("0.16.0", rendered)
+        self.assertIn("ADP-S1-06-SCORING-QUEUE-LEDGER-READY", rendered)
         self.assertIn("production trial not started", rendered)
         self.assertIn("30-day acceptance absent", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)

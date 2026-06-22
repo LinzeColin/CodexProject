@@ -1,7 +1,7 @@
 schema_version: 1
 config_version: "owner-controls-v1"
 last_updated: "2026-06-22"
-task_id: "S1-03-OWNER-CONTROLS-001"
+task_id: "S1-06-SCORING-QUEUE-LEDGER-001"
 
 project:
   display_name: "Multi-Source Daily Intelligence Push"
@@ -12,6 +12,7 @@ project:
 cost_policy:
   paid_data_api_allowed: false
   paid_cloud_compute_allowed: false
+  paid_openai_api_allowed: false
   free_official_api_allowed: true
   free_api_key_requires_owner_approval: true
   undocumented_endpoint_allowed: false
@@ -31,12 +32,11 @@ runtime:
   min_free_disk_gb: 120
   emergency_free_disk_gb: 40
   max_temp_cache_gb: 2
+  max_parallel_analysis_jobs: 1
   max_parallel_report_jobs: 1
-  max_parallel_video_jobs: 1
   window_a_resource_limits:
     max_online_arxiv_metadata: 10
     max_temp_cache_gb: 2
-    media_smoke_max_seconds: 30
     large_pdf_download_allowed: false
 
 intelligence_provider:
@@ -124,7 +124,6 @@ email:
     - "B5"
   historical_replay_send: false
   attach_markdown_report: true
-  attach_mobile_video_when_size_allows: false
   max_attachment_mb: 20
   require_message_hash: true
   retry_count: 3
@@ -137,23 +136,8 @@ email:
 outputs:
   report_enabled: true
   email_enabled: true
-  video_enabled: true
   owner_docs_generated: true
   production_acceptance_claimed: false
-
-video:
-  daily_enabled_boards:
-    - "B1"
-  daily_cross_board_video: false
-  historical_replay_video_boards:
-    - "B1"
-    - "B2"
-    - "B3"
-    - "B4"
-    - "B5"
-  keep_master_locally: true
-  make_mobile_copy: true
-  delete_intermediate_after_success: true
 
 queue:
   max_active_items: 10000
@@ -208,23 +192,6 @@ scoring:
     cross_board_linkage: 10
     waiting_credit: 5
     source_balance: 5
-  legacy_arxiv_ranking:
-    frontier_signal: 20
-    evidence_reliability: 20
-    novelty: 15
-    transfer_value: 15
-    problem_importance: 10
-    taxonomy_priority: 10
-    waiting_time: 5
-    diversity: 5
-  phase12_roi:
-    relevance: 20
-    learning_value: 20
-    economic_conversion_rate: 20
-    roi: 20
-    interdisciplinary_value: 10
-    explainability: 10
-
 us_attention_budget:
   innovation_breakthrough: 35
   finance_market_macro: 30
