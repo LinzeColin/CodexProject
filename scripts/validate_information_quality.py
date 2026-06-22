@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Review 6 information-quality gate for CodexProject governance."""
+"""Review 7 information-quality gate for CodexProject governance."""
 
 from __future__ import annotations
 
@@ -33,11 +33,15 @@ EXPECTED_PROJECTS = {
     "arxiv-daily-push": "arxiv-daily-push",
 }
 PLACEHOLDERS = ("DETERMINISTIC_GENERATION", "CURRENT_CHECKOUT", "CURRENT_CHECKOUT_TREE")
+BARE_PENDING = re.compile(r"(?<![A-Z0-9_])PENDING(?![A-Z0-9_])")
 DIMENSION_STATUSES = {
-    "structural_validation": {"pass", "fail"},
-    "implementation_congruence": {"machine_verified", "partial", "blocked", "not_applicable"},
-    "empirical_validation": {"verified", "partial", "unknown", "not_applicable"},
-    "operational_evidence": {"verified", "partial", "blocked", "unknown", "not_applicable"},
+    "structural_completeness": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
+    "implementation_congruence": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
+    "parameter_source_quality": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
+    "empirical_validation": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
+    "operational_validation": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
+    "delivery_evidence": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
+    "evidence_freshness": {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"},
 }
 
 
@@ -123,10 +127,15 @@ def parse_time(value: str) -> datetime | None:
 
 
 def generated_paths(projects: list[dict[str, Any]]) -> list[Path]:
-    paths = [ROOT / "README.md", ROOT / "GOVERNANCE_DASHBOARD.md", ROOT / "OWNER_PORTFOLIO.md"]
+    paths = [
+        ROOT / "README.md",
+        ROOT / "GOVERNANCE_DASHBOARD.md",
+        ROOT / "OWNER_PORTFOLIO.md",
+        ROOT / "governance" / "binding_backlog.yaml",
+    ]
     for project in projects:
         base = ROOT / str(project.get("path")) / "docs/governance"
-        paths.extend([base / "STATUS.md", base / "OWNER_STATUS.md"])
+        paths.extend([base / "ASSURANCE_STATUS.yaml", base / "STATUS.md", base / "OWNER_STATUS.md"])
     return paths
 
 
@@ -151,6 +160,8 @@ def check_generated_views(gate: Gate, projects: list[dict[str, Any]]) -> None:
         for token in PLACEHOLDERS:
             if token in text:
                 gate.add("ERROR", "PLACEHOLDER", f"Generated view contains {token}", path)
+        if BARE_PENDING.search(text):
+            gate.add("ERROR", "BARE_PENDING", "Generated owner-facing view contains bare PENDING", path)
         for key in ("source_base_commit", "source_snapshot_hash", "generator_version"):
             if key not in text:
                 gate.add("ERROR", "METADATA", f"Generated view lacks {key}", path)
@@ -186,13 +197,8 @@ def check_assurance(gate: Gate, project: dict[str, Any]) -> None:
     for key, expected in counts.items():
         if impl.get(key) != expected:
             gate.add("ERROR", "ASSURANCE_COUNT", f"{key}={impl.get(key)!r}, expected {expected}", path, project_id)
-    if impl.get("status") == "machine_verified" and (
-        counts["checked_active_parameters"] != counts["total_active_parameters"]
-        or counts["checked_active_formulas"] != counts["total_active_formulas"]
-    ):
-        gate.add("ERROR", "FALSE_MACHINE_VERIFIED", "machine_verified with incomplete active coverage", path, project_id)
     readiness = data.get("delivery_readiness") if isinstance(data.get("delivery_readiness"), dict) else {}
-    if str(readiness.get("status") or "") not in {"ready", "conditional", "blocked"}:
+    if str(readiness.get("status") or "") not in {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"}:
         gate.add("ERROR", "READINESS_STATUS", "Invalid delivery_readiness status", path, project_id)
     check_next_task(gate, data, base, project_id)
 

@@ -42,6 +42,25 @@ def payload_hash(payload: dict[str, Any]) -> str:
     return hashlib.sha256(blob).hexdigest()
 
 
+def generated_artifact_digest() -> str:
+    paths = [
+        ROOT / "README.md",
+        ROOT / "GOVERNANCE_DASHBOARD.md",
+        ROOT / "OWNER_PORTFOLIO.md",
+        ROOT / "governance" / "binding_backlog.yaml",
+    ]
+    paths.extend(sorted(ROOT.glob("*/docs/governance/ASSURANCE_STATUS.yaml")))
+    paths.extend(sorted(ROOT.glob("*/docs/governance/STATUS.md")))
+    paths.extend(sorted(ROOT.glob("*/docs/governance/OWNER_STATUS.md")))
+    digest = hashlib.sha256()
+    for path in sorted({p for p in paths if p.is_file()}, key=lambda item: str(item.relative_to(ROOT))):
+        digest.update(str(path.relative_to(ROOT)).encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes().replace(b"\r\n", b"\n"))
+        digest.update(b"\0")
+    return "sha256:" + digest.hexdigest()
+
+
 def build_attestation(args: argparse.Namespace) -> dict[str, Any]:
     payload: dict[str, Any] = {
         "schema_version": 1,
@@ -57,6 +76,9 @@ def build_attestation(args: argparse.Namespace) -> dict[str, Any]:
         "conclusion": args.conclusion,
         "finished_at": args.finished_at or datetime.now(UTC).replace(microsecond=0).isoformat(),
         "artifact_ref": args.artifact_ref or "NOT_APPLICABLE",
+        "validator_version": args.validator_version or "project-governance-v1",
+        "test_summary": args.test_summary or "Project Governance workflow completed successfully.",
+        "generated_artifact_digest": args.generated_artifact_digest or generated_artifact_digest(),
         "fact_level": "EXTRACTED",
     }
     payload["evidence_hash"] = payload_hash(payload)
@@ -74,6 +96,9 @@ def validate_payload(payload: dict[str, Any]) -> list[str]:
         "commit_sha",
         "conclusion",
         "finished_at",
+        "validator_version",
+        "test_summary",
+        "generated_artifact_digest",
         "evidence_hash",
     }
     missing = sorted(field for field in required if not payload.get(field))
@@ -136,6 +161,9 @@ def main(argv: list[str] | None = None) -> int:
     write_parser.add_argument("--conclusion", required=True, choices=sorted(VALID_CONCLUSIONS))
     write_parser.add_argument("--finished-at", default="")
     write_parser.add_argument("--artifact-ref", default="")
+    write_parser.add_argument("--validator-version", default="")
+    write_parser.add_argument("--test-summary", default="")
+    write_parser.add_argument("--generated-artifact-digest", default="")
     write_parser.add_argument("--output", required=True)
     validate_parser = subparsers.add_parser("validate")
     validate_parser.add_argument("--file", required=True)

@@ -359,7 +359,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         payload = json.loads(result.stdout)
         self.assertEqual(payload.get("decision"), "block")
-        self.assertIn("required validator is missing", payload.get("reason", ""))
+        self.assertIn("required governance scripts are missing", payload.get("reason", ""))
         self.assertIn("validate_project_governance.py", payload.get("reason", ""))
 
     def test_governance_stop_hook_rechecks_recursive_stop_pass(self) -> None:
@@ -376,6 +376,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             validator.write_text("import sys\nprint('still failing')\nsys.exit(1)\n", encoding="utf-8")
             quality = scripts / "validate_information_quality.py"
             quality.write_text("import sys\nprint('still failing')\nsys.exit(1)\n", encoding="utf-8")
+            generator = scripts / "generate_governance_dashboard.py"
+            generator.write_text("import sys\nprint('generated')\nsys.exit(0)\n", encoding="utf-8")
+            setup_doctor = scripts / "governance_setup_doctor.py"
+            setup_doctor.write_text("import sys\nprint('{\"status\":\"PASS\"}')\nsys.exit(0)\n", encoding="utf-8")
             subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
             subprocess.run(["git", "commit", "-m", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
             result = subprocess.run(
@@ -726,6 +730,209 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "required_failures_not_masked",
         }:
             self.assertTrue(checks[check_name], check_name)
+
+    def test_review7_stop_hook_runs_full_closure_contract(self) -> None:
+        text = STOP_HOOK.read_text(encoding="utf-8")
+        for marker in {
+            "generate_governance_dashboard.py",
+            "--changed-only",
+            "--enforce-sync",
+            "--semantic",
+            "validate_information_quality.py",
+            "--all",
+            "--drift-report",
+            "governance_setup_doctor.py",
+            "governance/binding_backlog.yaml",
+            "ASSURANCE_STATUS.yaml",
+        }:
+            self.assertIn(marker, text)
+        self.assertIn("This is a recursive Stop pass, but governance is still rechecked.", text)
+
+    def test_review7_setup_doctor_reports_missing_hooks_unverified(self) -> None:
+        doctor = load_setup_doctor_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            with patch.object(doctor, "ROOT", tmp_path):
+                status = doctor.hook_status()
+        self.assertEqual(status["hooks_enabled"], "UNVERIFIED")
+        self.assertEqual(status["stop_hook_loaded"], "UNVERIFIED")
+        self.assertEqual(status["repository_trusted"], "UNVERIFIED")
+
+    def test_review7_v2_manifest_requires_content_tree_hash(self) -> None:
+        sync = load_sync_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            manifests = tmp_path / "governance" / "run_manifests"
+            manifests.mkdir(parents=True)
+            manifest = {
+                "schema_version": 2,
+                "run_id": "GOV-REVIEW7-TEST",
+                "project_id": "root",
+                "task_id": "GOV-REVIEW7-TEST",
+                "acceptance_ids": ["ACC-REVIEW7-TEST"],
+                "iteration_id": "ITER-20260622-001",
+                "generated_at": "2026-06-22T00:00:00Z",
+                "implementation_base_sha": "a" * 40,
+                "content_tree_hash": "PENDING",
+                "changed_files_declared": ["README.md"],
+                "changed_files_actual": ["README.md", "governance/run_manifests/GOV-REVIEW7-TEST.json"],
+                "required_governance_files": ["README.md"],
+                "updated_governance_files": ["README.md"],
+                "test_commands": ["python3 scripts/validate_project_governance.py --all"],
+                "test_results": [{"command": "python3 scripts/validate_project_governance.py --all", "exit_code": 0}],
+                "evidence_refs": ["governance/run_manifests/GOV-REVIEW7-TEST.json"],
+                "binding_status": "PRECOMMIT_TREE_BOUND",
+                "ci_attestation_subject": "Project Governance workflow",
+                "ci_run_reference": "PRECOMMIT_PENDING_CI_ATTESTATION",
+            }
+            (manifests / "GOV-REVIEW7-TEST.json").write_text(json.dumps(manifest) + "\n", encoding="utf-8")
+            with patch.object(sync, "ROOT", tmp_path), patch.object(sync, "RUN_MANIFESTS_DIR", manifests):
+                validation = sync.SyncValidation()
+                sync.validate_run_manifests(validation, ["governance/run_manifests/GOV-REVIEW7-TEST.json"])
+        self.assertTrue(any("lacks content_tree_hash" in issue.message for issue in validation.errors), validation.errors)
+
+    def test_review7_v2_manifest_changed_files_actual_must_cover_diff(self) -> None:
+        sync = load_sync_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            manifests = tmp_path / "governance" / "run_manifests"
+            manifests.mkdir(parents=True)
+            manifest = {
+                "schema_version": 2,
+                "run_id": "GOV-REVIEW7-TEST",
+                "project_id": "root",
+                "task_id": "GOV-REVIEW7-TEST",
+                "acceptance_ids": ["ACC-REVIEW7-TEST"],
+                "iteration_id": "ITER-20260622-001",
+                "generated_at": "2026-06-22T00:00:00Z",
+                "implementation_base_sha": "a" * 40,
+                "content_tree_hash": "sha256:abcd",
+                "changed_files_declared": ["README.md"],
+                "changed_files_actual": ["governance/run_manifests/GOV-REVIEW7-TEST.json"],
+                "required_governance_files": ["README.md"],
+                "updated_governance_files": ["README.md"],
+                "test_commands": ["python3 scripts/validate_project_governance.py --all"],
+                "test_results": [{"command": "python3 scripts/validate_project_governance.py --all", "exit_code": 0}],
+                "evidence_refs": ["governance/run_manifests/GOV-REVIEW7-TEST.json"],
+                "binding_status": "PRECOMMIT_TREE_BOUND",
+                "ci_attestation_subject": "Project Governance workflow",
+                "ci_run_reference": "PRECOMMIT_PENDING_CI_ATTESTATION",
+            }
+            (manifests / "GOV-REVIEW7-TEST.json").write_text(json.dumps(manifest) + "\n", encoding="utf-8")
+            changed = ["README.md", "governance/run_manifests/GOV-REVIEW7-TEST.json"]
+            with patch.object(sync, "ROOT", tmp_path), patch.object(sync, "RUN_MANIFESTS_DIR", manifests):
+                validation = sync.SyncValidation()
+                sync.validate_run_manifests(validation, changed)
+        self.assertTrue(any("changed_files_actual does not cover" in issue.message for issue in validation.errors), validation.errors)
+
+    def test_review7_projects_yaml_stale_count_claim_fails(self) -> None:
+        validator = load_validator_module()
+        project = {"project_id": "P", "path": "P", "note": "Project currently has 2 active parameters."}
+        counts = {
+            "models": 1,
+            "total_formulas": 1,
+            "active_formulas": 1,
+            "total_parameters": 1,
+            "active_parameters": 1,
+            "tasks": 1,
+            "events": 1,
+        }
+        with patch.object(validator, "project_registry_counts", return_value=counts):
+            validation = validator.Validation()
+            validator.validate_projects_yaml_count_claims(validation, [project])
+        self.assertTrue(any("declares 2 active_parameters" in issue.message for issue in validation.errors), validation.errors)
+
+    def test_review7_readme_project_registry_drift_fails(self) -> None:
+        validator = load_validator_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            (tmp_path / "README.md").write_text("| Project | Path |\n|---|---|\n| `A` | `A` |\n", encoding="utf-8")
+            with patch.object(validator, "ROOT", tmp_path):
+                validation = validator.Validation()
+                validator.validate_readme_project_list(validation, [{"project_id": "A"}, {"project_id": "B"}])
+        self.assertTrue(any("README project list drift" in issue.message for issue in validation.errors), validation.errors)
+
+    def test_review7_assurance_status_rejects_legacy_machine_verified_status(self) -> None:
+        validator = load_validator_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            docs = tmp_path / "P" / "docs" / "governance"
+            docs.mkdir(parents=True)
+            (docs / "ASSURANCE_STATUS.yaml").write_text(
+                "\n".join(
+                    [
+                        "dimensions:",
+                        "  structural_completeness:",
+                        "    status: VERIFIED",
+                        "  implementation_congruence:",
+                        "    status: machine_verified",
+                        "    total_active_parameters: 0",
+                        "    total_active_formulas: 0",
+                        "  parameter_source_quality:",
+                        "    status: VERIFIED",
+                        "  empirical_validation:",
+                        "    status: VERIFIED",
+                        "  operational_validation:",
+                        "    status: VERIFIED",
+                        "  delivery_evidence:",
+                        "    status: VERIFIED",
+                        "  evidence_freshness:",
+                        "    status: VERIFIED",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            counts = {
+                "models": 0,
+                "total_formulas": 0,
+                "active_formulas": 0,
+                "total_parameters": 0,
+                "active_parameters": 0,
+                "tasks": 0,
+                "events": 0,
+            }
+            with patch.object(validator, "ROOT", tmp_path), patch.object(validator, "project_registry_counts", return_value=counts):
+                validation = validator.Validation()
+                validator.validate_assurance_status(validation, {"project_id": "P", "path": "P"})
+        self.assertTrue(any("legacy status machine_verified" in issue.message for issue in validation.errors), validation.errors)
+
+    def test_review7_generated_views_reject_checkout_and_bare_pending(self) -> None:
+        quality = load_information_quality_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            (tmp_path / "README.md").write_text(
+                "source_base_commit\nsource_snapshot_hash\ngenerator_version\nPENDING\n",
+                encoding="utf-8",
+            )
+            with patch.object(quality, "ROOT", tmp_path):
+                gate = quality.Gate()
+                quality.check_generated_views(gate, [])
+        self.assertTrue(any(item.code == "BARE_PENDING" for item in gate.errors), gate.errors)
+
+    def test_review7_binding_backlog_preserves_legacy_unbound_events(self) -> None:
+        dashboard = load_dashboard_module()
+        meta = {
+            "source_base_commit": "a" * 40,
+            "source_tree_hash": "b" * 40,
+            "source_snapshot_hash": "sha256:" + "c" * 64,
+        }
+        rendered = dashboard.render_binding_backlog(
+            [
+                {
+                    "project_id": "P",
+                    "event_binding_counts": {
+                        "tree_bound_events": 0,
+                        "commit_bound_events": 0,
+                        "legacy_unbound_events": 2,
+                        "precommit_pending_events": 0,
+                    },
+                }
+            ],
+            meta,
+        )
+        self.assertIn("legacy_unbound_events: 2", rendered)
+        self.assertIn("GOV-REVIEW7-BINDING-BACKLOG-001", rendered)
 
     def test_review6_serenity_semantic_extractors_pass_current_registry(self) -> None:
         semantic = load_semantic_module()
@@ -1129,13 +1336,15 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("PFI/大数据模拟器/docs/governance/OWNER_STATUS.md", owner_outputs)
         meta = {
             "source_base_commit": first["source_base_commit"],
+            "source_tree_hash": dashboard.current_tree_hash(),
             "source_snapshot_hash": first["source_snapshot_hash"],
             "snapshot_event_time": first["snapshot_event_time"],
         }
         rendered = dashboard.render_dashboard([dashboard.load_project(project) for project in dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")["projects"]], meta)
         self.assertIn("Implementation congruence", rendered)
         self.assertIn("Empirical", rendered)
-        self.assertIn("machine_verified", rendered)
+        self.assertIn("Param Source", rendered)
+        self.assertIn("Operational", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
 
     def test_review6_owner_status_is_readable_and_prioritized(self) -> None:
@@ -1145,15 +1354,16 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         info = dashboard.load_project(serenity)
         rendered = dashboard.render_owner_status(info)
         for marker in (
-            "## 1. Version, Phase, Gate",
-            "## 2. Assurance And Readiness",
-            "## 5. Owner Decision",
-            "## 6. Next Executable Task",
-            "## 7. Owner And Evidence Freshness",
+            "## 1. Current Conclusion",
+            "## 2. This Run Change",
+            "## 4. Decision Needed",
+            "## 5. A/B/C Choice Matrix",
+            "## 12. Next Unique Task",
         ):
             self.assertIn(marker, rendered)
         self.assertIn("实现一致性", rendered)
-        self.assertIn("machine_verified", rendered)
+        self.assertIn("empirical_validation", rendered)
+        self.assertIn("operational_validation", rendered)
         self.assertNotIn("['", rendered)
         self.assertNotIn("{'", rendered)
         self.assertEqual(info["assurance"]["next_executable_task"]["task_id"], "TASK-A-001")
