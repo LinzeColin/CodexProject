@@ -254,16 +254,19 @@ def _real_video_blockers(missing_commands: list[str], disk: Mapping[str, Any]) -
 def _video_transcript(daily_input: Mapping[str, Any]) -> str:
     source = daily_input.get("source_item") if isinstance(daily_input.get("source_item"), Mapping) else {}
     queue = daily_input.get("queue_summary") if isinstance(daily_input.get("queue_summary"), Mapping) else {}
+    frontstage = daily_input.get("frontstage") if isinstance(daily_input.get("frontstage"), Mapping) else {}
     title = str(source.get("title") or "arXiv Daily Push").strip()
     category = str((source.get("metadata") or {}).get("arxiv", {}).get("primary_category") or "").strip()
     queued = queue.get("queued_item_count", 0)
+    takeaway = str(frontstage.get("one_line_takeaway") or "Use the email first: decide whether this paper is worth deeper reading.").strip()
     lines = [
-        "arXiv Daily Push brief",
+        "arXiv Daily Push visual brief",
         title[:96],
-        f"arXiv category: {category or 'unknown'}",
-        f"Candidate queue: {queued} saved items",
-        "Read the email first: it is the human-facing Chinese brief.",
-        "This MP4 is an optional cloud-generated file index.",
+        f"Category: {category or 'unknown'}",
+        f"Decision: {takeaway[:120]}",
+        "Visual goal: variables -> feedback loop -> evidence gap -> one next experiment.",
+        f"Candidate queue: {queued} saved items; email shows only front-stage qualified candidates.",
+        "Read the Chinese email first. This MP4 is an optional 45-60 second explainer link, never an attachment.",
     ]
     return "\n".join(lines)
 

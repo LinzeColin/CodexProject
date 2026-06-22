@@ -232,10 +232,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/lesson.py::generate_lesson", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::validate_lesson_against_ledger", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::_build_sections"]
-    implementation_fingerprint: "sha256:8265df5f15ad1c5d669e1fe996e56bdf2003f7d19224d9055f63f463c9385aa5"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:ccf4fa34d4de9a928362eb6194cac1b8eea3e02545e09ef0974c3261aa4118ab"
+    implementation_fingerprint: "sha256:76f471f23a44a2f99bc52892bf1e806c928f5116eed4f747a8febaa904f52a13"
+    last_verified_commit: "f6d6131a6f87274fbfa29edc587b1b5523f1c85c"
+    verified_at: "2026-06-22T19:20:00+10:00"
+    evidence_hash: "sha256:c2186332c67a0b582096beb715154c54adae24e573066a67ad13fbf85e80cf71"
 
   - formula_id: "FORM-ADP-009"
     model_id: "MOD-ADP-007"
@@ -540,7 +540,7 @@ formulas:
     model_id: "MOD-ADP-016"
     assumption_ids: ["ASM-ADP-019", "ASM-ADP-002"]
     status: "active"
-    expression: "SMTP delivery evidence is dry-run by default. A real SMTP send is attempted only when allow_send is true, the recipient is the configured user email, all required SMTP environment keys are present, ADP_SMTP_PORT parses to 1..65535, TLS starts, login succeeds, and send_message returns no refused recipients. The report blocks on missing keys, invalid port, wrong recipient, SMTP exception, or refused recipient, and never logs SMTP secret values or email body text."
+    expression: "SMTP delivery evidence is dry-run by default. A real SMTP send is attempted only when allow_send is true, the recipient is the configured user email, all required SMTP environment keys are present, ADP_SMTP_PORT parses to 1..65535, TLS starts, login succeeds, and send_message returns no refused recipients. The report blocks on missing keys, invalid port, wrong recipient, SMTP exception, or refused recipient, and never logs SMTP secret values or email body text; if html_body is present it is sent as an HTML alternative and only html_body_sha256 is recorded."
     variables:
       - name: "allow_send"
         data_type: "bool"
@@ -566,10 +566,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::deliver_notification", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::validate_smtp_delivery_report", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_env_gate", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_email_message"]
-    implementation_fingerprint: "sha256:9334fb4227d32d6752cbb58ddd024b5306172b0d5afbc98decfce31772c42c3e"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:e2540a1415984f9249e372d8d97d71d0363960fb8db8fafe6e4efd13d1f04afa"
+    implementation_fingerprint: "sha256:51c885dd33f517af70b9909bea9940d8c546f4789bf28208a022dfd7c0a707ec"
+    last_verified_commit: "f6d6131a6f87274fbfa29edc587b1b5523f1c85c"
+    verified_at: "2026-06-22T19:20:00+10:00"
+    evidence_hash: "sha256:46271c051aeff349a3ac71e6968b9c5807d3ff8238d099166186313bb9a2414d"
 
   - formula_id: "FORM-ADP-019"
     model_id: "MOD-ADP-017"
@@ -1173,10 +1173,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_all_arxiv_scan_plan", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_all_arxiv_daily_input", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::select_roi_candidate", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_daily_delivery_package", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution"]
-    implementation_fingerprint: "sha256:e9d5bfb781fffcf23fd0b0fcf957ed0a45e569bf7f6f8ffa620d3eeef2728bce"
-    last_verified_commit: "ecd43e80a29193120d788ef8125d4ebca233dca3"
-    verified_at: "2026-06-22T17:20:00+10:00"
-    evidence_hash: "sha256:fcd546eb5652b942cbe8e0277ae6523fc66801922147902b87622f1a662a1813"
+    implementation_fingerprint: "sha256:d19f7c1acebe5bde467275d9f551bb24efeaa3f66523ea7ffdf82b21a308bc40"
+    last_verified_commit: "f6d6131a6f87274fbfa29edc587b1b5523f1c85c"
+    verified_at: "2026-06-22T19:20:00+10:00"
+    evidence_hash: "sha256:167d66803a189700a31947ad16ebede096614bcb938b131a6d9f0524d9a9d131"
   - formula_id: "FORM-ADP-035"
     model_id: "MOD-ADP-033"
     assumption_ids: ["ASM-ADP-035", "ASM-ADP-020", "ASM-ADP-021", "ASM-ADP-022"]
@@ -1215,7 +1215,7 @@ formulas:
     model_id: "MOD-ADP-034"
     assumption_ids: ["ASM-ADP-036", "ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-022"]
     status: "active"
-    expression: "Manual delivery testing may perform real side effects only after an explicit workflow_dispatch confirmation on the default branch; the workflow must use GitHub-hosted ubuntu-latest, build all-arXiv daily input, render MP4, run scheduled daily-run delivery with Release assets, send exactly to the configured recipient, render a human-scannable Chinese email with YYYYMMDD arXiv subject, make the email text the reading entry point, keep Release as backend evidence/download storage, expose video only as an optional file link, hide visible ROI scoring in email and MP4 transcript, and avoid enabling scheduled production."
+    expression: "Manual delivery testing may perform real side effects only after an explicit workflow_dispatch confirmation on the default branch; the workflow must use GitHub-hosted ubuntu-latest, build all-arXiv daily input, render MP4, run scheduled daily-run delivery with Release assets, send exactly to the configured recipient, render the V2 decision-first Chinese email frontstage with responsive HTML plus plain-text fallback, hide backend ROI/Claim Ledger foreground details, expose video only as an optional Release-hosted .mp4 link, and avoid enabling scheduled production."
     variables:
       - name: "confirm_manual_delivery_test"
         data_type: "string"
@@ -1242,13 +1242,13 @@ formulas:
     output_range: "manual workflow run status success only when Release-backed scheduled execution returns production_evidence_ready true; otherwise blocked or failed with artifacts"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
     test_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_video.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_daily_delivery_package", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution", "arxiv-daily-push/src/arxiv_daily_push/video.py::_video_transcript", "arxiv-daily-push/tests/test_manual_delivery_workflow.py::ManualDeliveryWorkflowTests"]
-    implementation_fingerprint: "sha256:4da5abab423fcb91392d372870ce6773b35086e5bb91ccd6991ffd213b3ef77c"
-    last_verified_commit: "ecd43e80a29193120d788ef8125d4ebca233dca3"
-    verified_at: "2026-06-22T17:20:00+10:00"
-    evidence_hash: "sha256:96c9d43338286622c51bce89676f946a8c00d004748d04c0cbdf76b5e52a3078"
+    implementation_fingerprint: "sha256:80e7ab73c6690433d0b785836c7d98a12da3dee06aebea333ec5859983856cb6"
+    last_verified_commit: "f6d6131a6f87274fbfa29edc587b1b5523f1c85c"
+    verified_at: "2026-06-22T19:20:00+10:00"
+    evidence_hash: "sha256:88eec959115ff194c0c505719a4d85c8eb679519f3ee98cdd21abfe4d61cea30"
   - formula_id: "FORM-ADP-037"
     model_id: "MOD-ADP-035"
     assumption_ids: ["ASM-ADP-037", "ASM-ADP-035", "ASM-ADP-020"]
@@ -1333,3 +1333,41 @@ formulas:
     last_verified_commit: "f05525698a51f88828cd5aeadac4c7c8859e74a2"
     verified_at: "2026-06-22T18:20:00+10:00"
     evidence_hash: "sha256:ea431baf43b82700d2e2909e8a61097c6cfdedde6ac4da7feb8dfe9cd14cd982"
+  - formula_id: "FORM-ADP-039"
+    model_id: "MOD-ADP-037"
+    assumption_ids: ["ASM-ADP-002", "ASM-ADP-035", "ASM-ADP-036"]
+    status: "active"
+    expression: "The Phase 12 V2 email is acceptable only when the daily package produces a multipart email with a concise Chinese plain-text fallback and responsive HTML alternative; the first screen surfaces read/skim/skip, relevance score, evidence level, estimated reading time, and one-line conclusion; the body uses a first-principles causal chain, finance/decision mapping, three key questions, evidence gaps, and a minimal experiment; video is represented as a Release-hosted .mp4 link card without attachment; q-fin emails hide irrelevant quant-ph/q-bio candidates unless an explicit finance/market mapping reason exists; user-visible body hides Claim Ledger IDs, backend ROI score, delivery policy, Release landing-page clutter, and repeated English summary; SMTP evidence stores hashes only, not body content."
+    variables:
+      - name: "lesson_frontstage"
+        data_type: "object"
+        unit: "email content contract"
+        input_domain: "decision, attention_score, evidence_level, reading time, takeaway, chain, mappings, questions, gaps, default action, video card"
+      - name: "plain_text_body"
+        data_type: "string"
+        unit: "Chinese characters"
+        input_domain: "less than or equal to 1500 user-visible chars in deterministic render tests"
+      - name: "html_alternative"
+        data_type: "string"
+        unit: "HTML email body"
+        input_domain: "responsive table/card-safe HTML with escaped values"
+      - name: "frontstage_candidates"
+        data_type: "list"
+        unit: "queue items"
+        input_domain: "same archive or explicit cross-domain finance/decision mapping reason"
+      - name: "delivery_evidence"
+        data_type: "object"
+        unit: "SMTP delivery report"
+        input_domain: "body_sha256, html_body_sha256, html_alternative_present, body_logged=false"
+    constraints: "This formula does not change all-arXiv scanning, candidate queue persistence, ROI ranking, SMTP enablement flags, Release upload flags, production schedule variables, or secret handling. It changes only the human-frontstage render path and regression tests."
+    missing_policy: "Missing frontstage payload, missing HTML alternative, plain text over the length cap, visible Claim Ledger/ROI/delivery policy text, video attachment, missing .mp4 link, polluted q-fin candidate summary, or logged email body blocks V2 email acceptance."
+    output_range: "email decision UI V2 ready or blocked; production remains disabled until a later controlled manual workflow and owner approval"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
+    test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_video.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_text", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_html", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_email_queue_items", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_cross_domain_reason", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_feedback_links", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_video_card", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::generate_lesson", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::_build_frontstage", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_email_message", "arxiv-daily-push/src/arxiv_daily_push/video.py::_video_transcript"]
+    implementation_fingerprint: "sha256:7bb2cb8394f33494252a250bfe10a8d548d8aeaa1263f920bb9c4605840e21df"
+    last_verified_commit: "f6d6131a6f87274fbfa29edc587b1b5523f1c85c"
+    verified_at: "2026-06-22T19:20:00+10:00"
+    evidence_hash: "sha256:e8e164ce5d722276879e57503d98fe5a3dfc6d053d2da45614b47567a1f4f7fd"

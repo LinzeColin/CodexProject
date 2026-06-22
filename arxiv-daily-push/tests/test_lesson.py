@@ -33,6 +33,21 @@ class LessonGenerationTests(unittest.TestCase):
                 self.assertIn(claim_id, lesson["claim_ids"])
                 self.assertIn(f"[{claim_id}]", section["body"])
 
+    def test_generate_lesson_adds_human_frontstage_without_claim_ledger_copy(self) -> None:
+        data = load_fixture()
+
+        lesson = generate_lesson(data["source_item"], data["claims"], generated_at=data["generated_at"])
+        frontstage = lesson["frontstage"]
+
+        self.assertIn(frontstage["decision"], {"读", "扫读", "跳过"})
+        self.assertGreater(frontstage["attention_score"], 0)
+        self.assertIn("摘要级", frontstage["evidence_level"])
+        self.assertTrue(frontstage["one_line_takeaway"])
+        self.assertGreaterEqual(len(frontstage["first_principles_chain"]), 2)
+        self.assertGreaterEqual(len(frontstage["domain_mappings"]), 1)
+        self.assertIn("default_action", frontstage)
+        self.assertNotIn("Claim Ledger", json.dumps(frontstage, ensure_ascii=False))
+
     def test_unverified_non_p0_claim_is_excluded_from_lesson(self) -> None:
         data = load_fixture()
 

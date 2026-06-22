@@ -67,6 +67,10 @@ def deliver_notification(
         },
         "message": {
             "body_sha256": hashlib.sha256(notification.body.encode("utf-8")).hexdigest(),
+            "html_body_sha256": hashlib.sha256(notification.html_body.encode("utf-8")).hexdigest()
+            if notification.html_body
+            else "",
+            "html_alternative_present": bool(notification.html_body),
             "body_logged": False,
             "message_id": delivery_id,
         },
@@ -139,6 +143,8 @@ def _email_message(notification: EmailNotification, *, sender: str, delivery_id:
     message["Subject"] = notification.subject
     message["X-ADP-Delivery-ID"] = delivery_id
     message.set_content(notification.body)
+    if notification.html_body:
+        message.add_alternative(notification.html_body, subtype="html")
     return message
 
 
