@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "artifact_id": "t1301-context-anchor-semantic-revision-contract",
+  "task_id": "T1301",
+  "acceptance_ids": [
+    "A202"
+  ],
+  "status": "LOCAL_CONTRACT_READY_A202_STILL_IN_PROGRESS",
+  "generated_at": "2026-06-22T03:51:19Z",
+  "system": {
+    "zh_name": "商域图谱",
+    "en_name": "Enterprise Ecosystem Intelligence",
+    "subtitle": "企业商业版图与供应链递归探索系统"
+  },
+  "anchor_id": "NVDA-ANCHOR-001",
+  "source_registry": "data/nvidia_public_source_anchors.csv",
+  "source_registry_sha256": "cf9013872f5b5e8a33367b583e6e5877a7c3d29cce45174728afd4d59871fc2d",
+  "semantic_revision": {
+    "before_expected_terms_removed": [
+      "wafer",
+      "chip",
+      "packaging/test",
+      "manufacturing",
+      "systems"
+    ],
+    "after_expected_terms_added": [
+      "AI infrastructure",
+      "ecosystem",
+      "Taiwan"
+    ],
+    "evidence_role": "context",
+    "publication_scope": "discovery_context_only",
+    "source_use_limit": "Discovery/context evidence only; not eligible for relationship_fact_candidates or graph-edge publication without separate passage-level support.",
+    "relationship_publication": false,
+    "release_clearance": false
+  },
+  "implemented_scope": [
+    "NVDA-ANCHOR-001 is retained as an official-source discovery anchor for ecosystem breadth.",
+    "The anchor no longer forces the precise packaging/test token contract because that term is not required for its context-only scope.",
+    "The ingestion paths persist anchor_scope metadata in raw payloads and evidence-chain structured facts.",
+    "No relationship_fact_candidates, published relationships, source-license clearance or release clearance are created by this revision."
+  ],
+  "validation_targets": [
+    "tests/unit/test_official_source_live_capture.py::test_nvda_anchor_001_is_context_only_without_packaging_test_requirement",
+    "tests/integration/test_database_migrations.py dry-run/operator/live candidate-count contracts",
+    "scripts/validate_v5_production_readiness_sync.py partial evidence registration"
+  ],
+  "remaining_gaps_before_a202_done": [
+    "Production owner sign-off for real relationship publication is still required.",
+    "Formal source-license/legal/release clearance is still required.",
+    "Selected live evidence remains context-only and cannot publish graph edges until reviewed.",
+    "A206/A209 long-duration retry, dead-letter and 24h soak evidence remain separate gates."
+  ],
+  "rollback": [
+    "Restore the prior NVDA-ANCHOR-001 expected_entities_or_stages value.",
+    "Remove anchor_scope persistence fields from the ingestion loaders.",
+    "Restore the previous candidate-count assertions and regenerate dependent artifacts."
+  ]
+}
