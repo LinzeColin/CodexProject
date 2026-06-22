@@ -197,6 +197,11 @@ assumptions:
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     status: "active"
+  - assumption_id: "ASM-ADP-043"
+    statement: "Review8 Stage 1 migration packaging must produce a low-resource, hash-verifiable package and new-machine checklist while keeping production scheduling, real SMTP, Release upload, video generation, 30-day replay, and secret-value persistence disabled."
+    fact_level: "EXTRACTED"
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    status: "active"
 models:
   - model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
@@ -1051,3 +1056,26 @@ models:
     config_refs: ["NOT_APPLICABLE"]
     test_refs: ["arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json", "arxiv-daily-push/tests/test_stage1_runtime.py"]
+  - model_id: "MOD-ADP-042"
+    name: "Review8 Stage 1 migration package and transfer checklist"
+    kind: "deterministic migration package and verification gate"
+    purpose: "Export and verify a low-resource Stage 1 migration package with source-file hashes, SQLite/runtime smoke evidence, restore instructions, and secret-name-only checklist while preserving disabled production side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-stage1-migration-package-v1"
+    assumption_ids: ["ASM-ADP-043", "ASM-ADP-042", "ASM-ADP-038"]
+    formula_ids: ["FORM-ADP-044"]
+    parameter_ids:
+      - "PARAM-ADP-326"
+      - "PARAM-ADP-327"
+      - "PARAM-ADP-328"
+      - "PARAM-ADP-329"
+      - "PARAM-ADP-330"
+      - "PARAM-ADP-331"
+    inputs: ["project_root", "output_dir", "SQLite database path", "generated_at", "required source file list", "explicit include paths"]
+    outputs: ["migration_manifest.json", "LOW_RESOURCE_SMOKE.json", "NEW_MACHINE_BOOTSTRAP_CHECKLIST.md", "SECRET_NAMES_CHECKLIST.md", "RESTORE_DRILL.md", "backup manifest", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["NOT_APPLICABLE"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-09-MIGRATION-PACKAGE-20260622.json", "arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md"]

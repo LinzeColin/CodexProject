@@ -941,16 +941,33 @@ tasks:
     objective: "Produce the low-resource integration evidence and new-machine migration checklist."
     scope: "Migration pack, checklist, low-resource smoke evidence, and governance records."
     non_scope: "No final production acceptance, no 30-day replay, and no source/board Stage 2 promotion."
-    status: "planned"
+    status: "completed"
     dependencies: ["S1-08-LOCAL_RUNTIME_RECOVERY-001"]
-    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-09-MIGRATION-PACKAGE"]
-    test_commands: ["PENDING"]
-    test_results: ["PENDING"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s109_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_migration.py arxiv-daily-push/tests/test_stage1_runtime.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s109_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s109_semantic PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s109_project PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s109_changed PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
+    test_results: ["focused migration/runtime/CLI tests: 17 tests OK", "arxiv-daily-push unit tests: 214 tests OK", "semantic extractor: 44 active formulas and 314 active parameters checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "all-project governance validation: errors 0 warnings 0", "changed-only semantic governance sync: errors 0 warnings 0; projects changed arxiv-daily-push only", "root governance unit tests: 129 tests OK; missing-base line is an expected negative fixture with exit code 0", "information quality validation: PASS errors 0 warnings 0", "S1-09 run manifest JSON parse: OK", "git diff --check: PASS", "cache check: no __pycache__ or .pyc files found under arxiv-daily-push or tests/governance", "parameter_registry.csv: 332 rows width 36; TRACEABILITY_MATRIX.csv: 115 rows width 12"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md", "arxiv-daily-push/docs/phase_records/PHASE_S1_09_MIGRATION_PACKAGE.md", "governance/run_manifests/ADP-S1-09-MIGRATION-PACKAGE-20260622.json"]
     risk: "Migration readiness must not be confused with production acceptance."
     rollback: "Revert S1-09 migration package files and governance updates."
     target_version: "0.19.0"
+    completed_version: "0.19.0"
+    unknown_task_ids: []
+  - task_id: "S1-10-POST_MIGRATION_BOOTSTRAP-001"
+    phase: "S1-A"
+    objective: "Verify the post-migration machine or cloud runner bootstrap before heavy historical previews and live-day evidence."
+    scope: "New-machine/cloud runtime prerequisites, explicit runner boundary, SSL/network readiness, low-resource smoke rerun from the migration package, and no-secret readiness evidence."
+    non_scope: "No production scheduler enablement, no real SMTP send, no Release upload, no video generation, no 30-day replay, and no final production acceptance claim."
+    status: "planned"
+    dependencies: ["S1-09-MIGRATION_PACKAGE-001"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_bootstrap.py arxiv-daily-push/tests/test_stage1_migration.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_semantic PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_project PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["PENDING"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    risk: "Bootstrap must prove the target runtime boundary and must not silently fall back to this Mac as a background production runner."
+    rollback: "Revert S1-10 bootstrap files and governance updates."
+    target_version: "0.20.0"
     completed_version: ""
     unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"
