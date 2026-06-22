@@ -324,6 +324,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "arxiv-daily-push remains at S1-08 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S1-10-POST_MIGRATION_BOOTSTRAP-001":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V5-S1-004",
+                "review_id": "REVIEW8",
+                "owner_role": "engineering_owner + operations_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+                "question": "是否继续执行 S1-10，在迁移后目标环境验证 runtime 边界，再进入历史预览和 live-day 证据。",
+                "recommendation": "A: run post-migration bootstrap before historical previews and live-day evidence",
+                "option_a": "继续 S1-10，验证新机器或云 runner 的 Python、Git、SSL、SQLite、runtime smoke、secret-name 和 no-production-side-effect 边界。",
+                "option_b": "暂停在 S1-09，只保留迁移包，不执行目标环境 bootstrap。",
+                "option_c": "跳过 bootstrap 直接做历史预览；不推荐，因为运行环境可能仍是本机或缺少可恢复证据。",
+                "effort": "P1; target runtime bootstrap and evidence collection",
+                "resource": "target runner smoke tests only; no production schedule install, no real SMTP, no Release upload, no large replay",
+                "benefit": "确认 arXiv Stage 1 后续长期运行不依赖当前 Mac 后台，并为重验证与生产验收建立目标环境证据。",
+                "risks": "wrong runner boundary, SSL/network failure, hidden local-state dependency, secret leakage, premature production enablement",
+                "evidence": "bootstrap report, migration verify report, runtime audit/tick/watchdog smoke, no-secret readiness refs, governance records",
+                "priority": "P1",
+                "no_decision": "arxiv-daily-push remains at S1-09 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
+            }
+        )
     return policy
 
 

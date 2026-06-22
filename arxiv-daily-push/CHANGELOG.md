@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.19.0 - 2026-06-22
+
+- Added S1-09 low-resource migration package export and verification via `adp migration export|verify`.
+- Added package manifest hash verification, new-machine bootstrap checklist, secret-name checklist, restore drill, and low-resource smoke artifact generation.
+- Kept production scheduling, real SMTP, Release upload, video generation, 30-day replay, and Stage 2 promotion disabled.
+
 ## 0.18.0 - 2026-06-22
 
 - Added S1-08 local runtime recovery controls for `adp tick`, `adp watchdog`, `adp backup`, `adp restore`, `adp runtime-audit`, and `adp scheduler install|uninstall`.

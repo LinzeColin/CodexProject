@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.18.0`
+Active product version: `0.19.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.18.0
+- Product version: 0.19.0
 - Current phase: S1-A
-- Current gate: ADP-S1-08-LOCAL-RUNTIME-RECOVERY-READY
-- Confirmed iteration count: 61
+- Current gate: ADP-S1-09-MIGRATION-PACKAGE-READY
+- Confirmed iteration count: 62
 - Reconstructed event count: 0
-- Current task: S1-09-MIGRATION_PACKAGE-001
-- Blockers: S1-09 migration package, 30 historical previews, two live production days, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
+- Current task: S1-10-POST_MIGRATION_BOOTSTRAP-001
+- Blockers: S1-10 post-migration bootstrap, 30 historical previews, two live production days, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
 
@@ -29,6 +29,31 @@ The append-only machine record is `development_events.jsonl`.
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260622-S1-008`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from `stage1_migration.py`, focused migration tests, runtime smoke primitives, semantic extractor, and governance registry updates.
+- Version before: 0.18.0
+- Version after: 0.19.0
+- Base commit: b754ef7552e41b9e9d34d06afe625bb9b3e5711b
+- Result commit: PENDING
+- Task IDs: S1-09-MIGRATION_PACKAGE-001
+- Goal: Add the Review8 Stage 1 migration package export and verification controls for a low-resource package, source-file hash inventory, SQLite/runtime smoke, backup manifest, restore drill, and secret-name-only checklist.
+- Assumptions: S1-09 is a deterministic migration-readiness interface only; it does not enable production scheduling, send Gmail SMTP, upload GitHub Releases, generate video, run a 30-day replay, start background work, or claim `ARXIV_PRODUCTION_ACCEPTED`.
+- Files read: S1-08 runtime controls, storage/database inspector, CLI, V5 baseline lock and task pack, previous S1 governance records, semantic extractor, and focused tests.
+- Files changed: `stage1_migration.py`, migration CLI dispatch, focused migration tests, migration runbook, version files, changelog, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, phase record, ledger/event records, generator S1 next-task policy, root governance test expectations, and run manifest.
+- Model changes: Added MOD-ADP-042 `adp-stage1-migration-package-v1`.
+- Formula changes: Added FORM-ADP-044 and refreshed FORM-ADP-024/FORM-ADP-042/FORM-ADP-043 fingerprints because `cli.py::main` gained migration subcommands.
+- Parameter changes: Added PARAM-ADP-326 through PARAM-ADP-331 for migration schema, acceptance ID, package byte cap, required secret-name count, required source-path count, and package file count.
+- Commands run: focused migration/runtime/CLI tests; version CLI; full arxiv-daily-push unit tests; semantic extractor; project governance; all-project governance; changed-only semantic governance; root governance tests; information quality validation; JSON manifest parse; diff/cache/CSV checks.
+- Test results: focused migration/runtime/CLI tests 17 OK; version CLI returned 0.19.0; arxiv-daily-push unit tests 214 OK; semantic extractor checked 44 active formulas and 314 active parameters with no errors; project governance 0 errors 0 warnings; all-project governance 0 errors 0 warnings; changed-only semantic governance 0 errors 0 warnings; root governance tests 129 OK; information quality PASS errors 0 warnings 0.
+- Successes: The migration surface writes only the explicit output directory, inventories source files by SHA256, inspects the Stage 1 SQLite database, runs low-resource runtime smoke, produces a backup manifest and restore checklist, verifies package hashes, scans outputs for obvious secret values, and blocks enabled production flags.
+- Failures: No new machine or cloud runner bootstrap was executed in S1-09 by design; no real Gmail email, GitHub Release, video, 30 historical previews, or live production days were executed.
+- Decisions: Bump product version to 0.19.0 because S1-09 adds a backward-compatible migration export/verify CLI and transfer contract while preserving disabled production side effects.
+- Remaining risks: S1-10 post-migration bootstrap, 30 historical previews, two live production days, and production trial evidence remain incomplete before `ARXIV_PRODUCTION_ACCEPTED`.
+- Rollback: Remove `stage1_migration.py`, migration CLI dispatch/tests/runbook, restore version 0.18.0, and revert S1-09 governance records and run manifest.
+- Next step: S1-10-POST_MIGRATION_BOOTSTRAP-001.
 
 ### `ITER-20260622-S1-007`
 
