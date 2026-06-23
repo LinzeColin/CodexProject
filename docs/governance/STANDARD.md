@@ -216,9 +216,10 @@ Scheduled and manual `scope=all` runs execute full information-quality,
 all-project semantic/drift validation, generated-view determinism checks, and CI
 attestation upload.
 
-The Stop Hook is advisory only. It may detect changed governance files and
-suggest commands. It must not run generators, validators, setup doctor,
-semantic extraction, receipt writing, attestation, or recursive repair loops.
+The Stop Hook is advisory only. It may suggest commands, but it must not run
+subprocesses, inspect git state, detect changed files, run generators,
+validators, setup doctor, semantic extraction, receipt writing, attestation, or
+recursive repair loops.
 
 If branch protection or ruleset details cannot be inspected with authenticated
 GitHub evidence, required-check and no-bypass status remain `UNVERIFIED`.

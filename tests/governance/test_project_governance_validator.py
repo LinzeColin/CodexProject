@@ -9,6 +9,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -1326,12 +1327,40 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "generate_governance_dashboard.py",
             "validate_information_quality.py",
             "governance_setup_doctor.py",
+            "subprocess",
+            "git_root",
+            "changed_files",
+            "status --porcelain",
             "write_receipt",
             "atomic_write_json",
             "decision\": \"block",
             "--all --semantic --drift-report",
         }:
             self.assertNotIn(forbidden, text)
+
+    def test_review9_s3_stop_hook_is_pure_advisory_under_one_second(self) -> None:
+        text = STOP_HOOK.read_text(encoding="utf-8")
+        for forbidden in {"subprocess", "git_root", "changed_files", "status --porcelain", "Path("}:
+            self.assertNotIn(forbidden, text)
+        started = time.perf_counter()
+        result = subprocess.run(
+            [sys.executable, str(STOP_HOOK)],
+            input=json.dumps({"cwd": str(ROOT), "stop_hook_active": True}),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        elapsed = time.perf_counter() - started
+        self.assertLess(elapsed, 1.0)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertTrue(payload.get("continue"))
+        hint = payload.get("governance_hint", {})
+        self.assertEqual(hint.get("mode"), "advisory")
+        self.assertIn("scripts/lean_governance.py ci --changed-only", " ".join(hint.get("suggested_commands", [])))
+        self.assertNotIn("changed_files", hint)
+        self.assertNotIn("governance_changed_files", hint)
 
     def test_review9_pr_governance_keeps_full_computation_out_of_pr_path(self) -> None:
         workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
