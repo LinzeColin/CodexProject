@@ -6,8 +6,8 @@
           {
             "type": "command",
             "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/governance_stop.py\"",
-            "timeout": 240,
-            "statusMessage": "Validating project governance"
+            "timeout": 5,
+            "statusMessage": "Checking governance hints"
           }
         ]
       }
