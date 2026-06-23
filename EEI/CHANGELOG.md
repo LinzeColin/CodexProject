@@ -31,6 +31,8 @@
 - Synchronized A209 heartbeat governance for CI: registered operational parameters `PARAM-069` through `PARAM-071`, refreshed clean-room release evidence to `package_paths=418`, and kept `release_gate_closed_by_background_heartbeat=false`.
 - Updated the T1303/A204-A205 release-manager activation validator so it accepts evidence-derived READY preflight states only when A202, A026/A027, A209 and A210 gate artifacts are all release-ready; the committed repository preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`.
 - Bound A209 background heartbeat into the T1303/A204-A205 release-manager preflight as source-hashed non-closure context; current heartbeat shows `92/288` windows PASS, `0` failed and `counts_as_release_ready=false`.
+- Added a T1302/A203 production API release preflight; it reports `api_surface_ready=true` for the current graph/path/catalog/scoring/evidence API surface while keeping `release_ready=false`, graph publication and score publication blocked until A202, A204/A205 and A209 are release-ready.
+- Refreshed the A209 background heartbeat during A203 work to `98/288` windows PASS, `0` failed, `190` remaining and `release_gate_closed_by_background_heartbeat=false`; A209 remains an active background 24h soak gate.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

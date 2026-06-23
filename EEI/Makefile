@@ -89,6 +89,12 @@ validate-governance-consistency:
 validate-v5-production-readiness-sync:
 	$(UV) run python scripts/validate_v5_production_readiness_sync.py
 
+generate-production-api-release-preflight:
+	$(UV) run python scripts/validate_production_api_release_preflight.py generate
+
+validate-production-api-release-preflight:
+	$(UV) run python scripts/validate_production_api_release_preflight.py validate
+
 validate-worker-deployment:
 	$(UV) run python scripts/validate_worker_deployment.py
 
@@ -194,7 +200,7 @@ copy-lint:
 	$(UV) run python scripts/validate_ui_copy.py
 
 lint:
-	$(UV) run ruff check apps tests scripts/db_tools.py scripts/env_doctor.py scripts/migrate.py scripts/load_seed_catalogs.py scripts/load_synthetic_fixtures.py scripts/load_curated_ingestion_anchors.py scripts/fetch_official_source_full_text.py scripts/load_operator_source_captures.py scripts/load_live_official_captures.py scripts/publish_reviewed_relationship_facts.py scripts/validate_a202_operator_review_packet.py scripts/validate_release_decision_bundle.py scripts/validate_release_manager_activation.py scripts/validate_gold_quality_evaluation.py scripts/validate_t905_release_rehearsal.py scripts/job_scheduler.py scripts/apply_model_config.py scripts/run_scale_benchmarks.py scripts/check_database_schema.py scripts/wait_for_database.py scripts/validate_contracts.py scripts/secret_scan.py scripts/validate_ui_copy.py scripts/validate_prototype_parity.py scripts/validate_github_governance.py scripts/validate_governance_consistency.py scripts/validate_v5_production_readiness_sync.py scripts/validate_worker_deployment.py scripts/validate_brand_clearance.py scripts/validate_operator_soak_evidence.py scripts/monitor_operator_soak.py scripts/supervise_operator_soak.py scripts/watch_operator_soak.py scripts/record_operator_soak_heartbeat.py scripts/manage_development_status_artifacts.py scripts/manage_risk_control_artifacts.py scripts/manage_clean_room_release.py scripts/manage_release_artifacts.py
+	$(UV) run ruff check apps tests scripts/db_tools.py scripts/env_doctor.py scripts/migrate.py scripts/load_seed_catalogs.py scripts/load_synthetic_fixtures.py scripts/load_curated_ingestion_anchors.py scripts/fetch_official_source_full_text.py scripts/load_operator_source_captures.py scripts/load_live_official_captures.py scripts/publish_reviewed_relationship_facts.py scripts/validate_a202_operator_review_packet.py scripts/validate_release_decision_bundle.py scripts/validate_release_manager_activation.py scripts/validate_production_api_release_preflight.py scripts/validate_gold_quality_evaluation.py scripts/validate_t905_release_rehearsal.py scripts/job_scheduler.py scripts/apply_model_config.py scripts/run_scale_benchmarks.py scripts/check_database_schema.py scripts/wait_for_database.py scripts/validate_contracts.py scripts/secret_scan.py scripts/validate_ui_copy.py scripts/validate_prototype_parity.py scripts/validate_github_governance.py scripts/validate_governance_consistency.py scripts/validate_v5_production_readiness_sync.py scripts/validate_worker_deployment.py scripts/validate_brand_clearance.py scripts/validate_operator_soak_evidence.py scripts/monitor_operator_soak.py scripts/supervise_operator_soak.py scripts/watch_operator_soak.py scripts/record_operator_soak_heartbeat.py scripts/manage_development_status_artifacts.py scripts/manage_risk_control_artifacts.py scripts/manage_clean_room_release.py scripts/manage_release_artifacts.py
 
 typecheck:
 	$(PNPM) --filter @eei/web typecheck

@@ -5424,3 +5424,57 @@ Status: LOCAL FOCUSED VALIDATED; A204/A205/A209 STILL IN PROGRESS
 ### Rollback
 
 - Revert `scripts/validate_release_manager_activation.py`, `tests/unit/test_release_manager_activation.py`, `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`, the heartbeat refresh and generated release artifacts; keep live A209 checkpoints/logs.
+
+## 2026-06-24 - T1302/A203 production API release preflight
+
+Status: LOCAL FOCUSED VALIDATED; A203/A209 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/validate_production_api_release_preflight.py`.
+- Generated `artifacts/tests/a203/t1302_production_api_release_preflight.json`.
+- Added `tests/unit/test_production_api_release_preflight.py`.
+- Wired `generate-production-api-release-preflight` and `validate-production-api-release-preflight` into `Makefile`.
+- Registered the preflight in `scripts/validate_v5_production_readiness_sync.py`.
+
+### Product and functional boundary
+
+- Covers the EEI navigation surfaces that depend on production graph/scoring/evidence APIs: 商业版图, 供应链, 资本网络, 控制关系, 证据中心, 模型中心 and 系统状态.
+- Confirms the A203 API surface is present for `/v1/explore`, `/v1/paths`, `/v1/catalogs`, `/v1/scoring/explain/{objectType}/{objectId}` and `/v1/evidence/{objectType}/{objectId}`.
+- Confirms scoring object-family coverage for `entity`, `theme`, `facility`, `event`, `industry`, `source_document`, `score_result`, `relationship_fact_candidate` and `relationship`.
+- Keeps relationship fact candidates outside production graph edges unless A202 publication clearance is real and current.
+
+### Acceptance mapping
+
+- T1302 -> A203.
+- T1301/A202, T1303/A204-A205 and T1307/A209 are upstream/downstream release gates referenced by this preflight.
+- A203 remains `IN_PROGRESS`: `api_surface_ready=true` does not imply `release_ready=true`, graph publication, score publication, legal/source clearance, owner approval or 24h soak closure.
+
+### Parameters and formulas
+
+- Added `PARAM-077` / `production_api.release_preflight_schema_version = eei-t1302-a203-production-api-release-preflight-v1`.
+- No scoring formula, graph traversal formula, extraction model, model weight, threshold value or runtime scoring behavior changed.
+- Release readiness formula is fail-closed: A203 contract status must be DONE or RELEASE_READY, required API paths and object families must be covered, candidate publication boundary must hold, A202 relationship publication must be allowed, A204/A205 release-manager activation must be allowed and A209 24h operator soak validator must pass.
+
+### A209 background status
+
+- Refreshed `artifacts/tests/a209/t1307_operator_soak_background_progress.json` to `98/288` successful windows, `0` failed, `34.03%` completion.
+- The detached watchdog and operator process remain the active A209 resolution path.
+- Heartbeat evidence remains `counts_as_release_ready=false` and does not close A209.
+
+### Validation
+
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a203-preflight-pycache python3 -m py_compile scripts/validate_production_api_release_preflight.py tests/unit/test_production_api_release_preflight.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache .venv/bin/ruff check scripts/validate_production_api_release_preflight.py tests/unit/test_production_api_release_preflight.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a203-preflight-pycache .venv/bin/python -m pytest -q tests/unit/test_production_api_release_preflight.py -p no:cacheprovider`: PASS, 2 passed.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a203-preflight-pycache .venv/bin/python scripts/validate_production_api_release_preflight.py validate`: PASS.
+
+### Remaining gaps
+
+- A203 is still blocked by missing production-approved relationship publication, A202 external source/legal/owner clearance, A204/A205 release-manager activation and A209 24h operator soak evidence.
+- A209 is actively running in the background but remains partial until all `288/288` windows and final release-ready validation pass.
+
+### Rollback
+
+- Revert `scripts/validate_production_api_release_preflight.py`, `tests/unit/test_production_api_release_preflight.py`, `artifacts/tests/a203/t1302_production_api_release_preflight.json`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance/documentation update.
+- Regenerate development, clean-room and release artifacts, then rerun focused A203 and A209 heartbeat validation.

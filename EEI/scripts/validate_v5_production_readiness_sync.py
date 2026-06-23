@@ -165,10 +165,13 @@ PARTIAL_EVIDENCE = {
         "apps/web/src/app/explore-api-client.ts",
         "apps/web/src/app/page.tsx",
         "scripts/job_scheduler.py",
+        "scripts/validate_production_api_release_preflight.py",
         "specs/api_contract.yaml",
         "tests/integration/test_database_migrations.py",
+        "tests/unit/test_production_api_release_preflight.py",
         "tests/e2e/state-contract.spec.ts",
         "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
+        "artifacts/tests/a203/t1302_production_api_release_preflight.json",
     },
     "T1303": {
         "infra/db/migrations/0006_model_activation_refresh_state/up.sql",

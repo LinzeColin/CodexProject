@@ -1059,6 +1059,33 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Rollback: revert the governance-sync row edits and regenerated release artifacts; keep the A209 live checkpoint/log files intact.
 - Next step: commit, push, bind GitHub CI and keep A209 background soak running.
 
+## 2026-06-24 - EVENT-20260624-017 - T1302/A203 production API release preflight
+
+- Goal: add a fail-closed A203 production API release preflight that separates API surface readiness from production release readiness while A209 continues as a background 24h soak task.
+- Assumptions: the current A203 graph/scoring/evidence API surface is locally contract-covered, but real publication clearance, release-manager activation and A209 24h evidence are still external gates.
+- Files changed: `scripts/validate_production_api_release_preflight.py`, `tests/unit/test_production_api_release_preflight.py`, `artifacts/tests/a203/t1302_production_api_release_preflight.json`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py`, A203/A209 traceability rows, governance parameter/traceability records, phase records and this ledger.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, threshold value or runtime scoring behavior changed.
+- Parameter changes: added `PARAM-077` for `production_api.release_preflight_schema_version = eei-t1302-a203-production-api-release-preflight-v1`.
+- A209 background state: refreshed heartbeat to `98/288` successful windows, `0` failed, `190` remaining and `34.03%` completion; heartbeat remains non-closure evidence.
+- Tests run so far: focused py_compile PASS, focused ruff PASS, A203 preflight unit tests PASS `2/2`, A203 preflight validate PASS, A209 heartbeat generate PASS.
+- Decisions: keep A203 `IN_PROGRESS`; keep A209 `IN_PROGRESS`; keep `api_surface_ready=true` separate from `release_ready=false`; do not block bounded MVP implementation on waiting for all 288 A209 windows.
+- Remaining risks: final release artifacts, `make verify`, root changed-only semantic governance and GitHub CI still need to bind this event; A202/A210/A026/A027/A204/A205/A209 remain release blockers.
+- Rollback: revert the A203 preflight script/test/artifact, Makefile/V5 sync changes, governance parameter/traceability rows and regenerated release artifacts; preserve live A209 checkpoints and logs.
+- Next step: regenerate release artifacts, run focused and full validation, commit/push and verify CI while the detached A209 soak continues.
+
+## 2026-06-24 - EVENT-20260624-018 - A203 preflight governance and release artifact sync
+
+- Goal: synchronize owner-facing status, model parameter counts, release artifacts and append-only evidence after adding the A203 production API release preflight.
+- Assumptions: this is governance and generated-artifact synchronization; no product runtime behavior, scoring formula, graph traversal formula, extraction model, model weight or threshold value changed.
+- Files changed: `CHANGELOG.md`, `CHECKSUMS.sha256`, `Makefile`, release/development artifacts, A203/A205/A209 evidence artifacts, acceptance traceability, assurance/status/version/model governance docs, delivery tasks, development events, phase records, A203 preflight script/test and V5 readiness sync validator.
+- Model changes: none.
+- Parameter changes: `PARAM-077` is now machine-extractable from `scripts/validate_production_api_release_preflight.py::SCHEMA_VERSION`; active parameter count is now `77`.
+- Test results: V5 sync PASS; semantic extractor PASS with `semantic_parameters_checked=77` and `semantic_formulas_checked=11`; release artifact regeneration PASS with clean-room `package_paths=422` and release `manifest_paths=429`; `make verify` PASS with 95 unit tests; `git diff --check` PASS.
+- Decisions: keep current release gate on T1302/A203 preflight sync for this iteration; keep delivery readiness FAILED/PARTIAL; keep A203 and A209 `IN_PROGRESS`.
+- Remaining risks: root changed-only semantic governance and GitHub CI still need to bind this final sync; A209 can still fail before all 288 windows complete.
+- Rollback: revert this governance sync and regenerated artifacts; keep live A209 checkpoint/log files intact.
+- Next step: rerun root changed-only semantic governance, commit, push and verify CI while A209 continues in the detached background process.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -1112,6 +1139,8 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - `EVENT-20260624-007`: local T904/A026-A027 production gold-label intake template; A026/A027 remain open until real operator-supplied labels pass validation.
 - `EVENT-20260624-008`: local A209 background heartbeat refresh during T904 work; heartbeat reports `72/288` successful windows and keeps A209 open.
 - `EVENT-20260624-009`: local governance registry and release-artifact sync for the T904 template plus A209 heartbeat refresh.
+- `EVENT-20260624-017`: local T1302/A203 production API release preflight; A203 API surface is locally ready but release remains blocked by A202/A204-A205/A209 gates.
+- `EVENT-20260624-018`: local governance and release-artifact sync for the A203 preflight; active machine-checked parameters now total 77.
 
 ## Unknown Historical Periods
 
