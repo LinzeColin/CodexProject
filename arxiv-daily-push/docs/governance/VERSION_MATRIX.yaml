@@ -97,7 +97,7 @@ parameter_profile_versions:
   adp-stage1-accelerated-acceptance-parameters: "adp-stage1-accelerated-acceptance-parameters-v1"
   adp-stage1-real-arxiv-replay-parameters: "adp-stage1-real-arxiv-replay-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260624-ADP-S1P5T04-POST-MERGE-TEST10-GATE-040"
+current_iteration: "ITER-20260624-ADP-S1P5T04-POST-MERGE-TEST10-040"
 current_phase: "S1-A"
 current_gate: "ARXIV_PRODUCTION_ACCEPTED"
 current_v6_task_id: "S1P5T04"

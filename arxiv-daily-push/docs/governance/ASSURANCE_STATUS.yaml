@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260624-ADP-082"
-source_snapshot_hash: "sha256:9a47cab9234c7cb0f931d28f30987b1852ea39cc9cbe70cb615f0995b50c1d15"
+as_of_event_id: "EVENT-20260624-ADP-083"
+source_snapshot_hash: "sha256:009708329b335e423040b86c28f4510954390e9ce4a96d77a759d62f62dd42f8"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-24T07:35:00+10:00"
+snapshot_event_time: "2026-06-24T07:52:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -61,7 +61,7 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 1
     legacy_unbound_events: 54
-    precommit_pending_events: 27
+    precommit_pending_events: 29
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
@@ -69,46 +69,46 @@ delivery_readiness:
   release_gate: "ARXIV_PRODUCTION_ACCEPTED"
   blocker_ids: []
 next_executable_task:
-  task_id: "ADP-S1P5T04-POST-MERGE-TEST10-040"
-  status: "ready"
-  reason: "PR #102 merged the Australia/Sydney service-date fix after GitHub/cloud CI passed; the next proof is one controlled manual Gmail SMTP test10 from main."
+  task_id: "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041"
+  status: "blocked"
+  reason: "Hold Stage 1 after accepted post-merge test10 and wait for an explicit owner decision before any production schedule enablement."
   acceptance_ids:
-    - "ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"
+    - "ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT"
   owner: "content_owner + product_owner"
   human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Owner triggers arXiv Daily Push manual B1 text SMTP test on main with confirm_manual_delivery_test=SEND_TEST_EMAIL_TO_LINZEZHANG35_GMAIL_COM, generated_at empty, and max_results_per_category=1; Codex then verifies subject date, scheduled-execution artifact, and no production schedule enablement."
+  unblock_condition: "Enabling ADP_PRODUCTION_ENABLED, ADP_SCHEDULED_RUN_ENABLED, ADP_ALLOW_SMTP_SEND, or ADP_ALLOW_RELEASE_UPLOAD without a separate owner decision would violate the Stage 1 fail-closed delivery boundary."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
       reason: "Legacy Phase 11 blocked trial task is superseded by V5/V6 Stage 1 accepted evidence; production variable enablement is tracked as a separate fail-closed operational action."
 owner_decision:
   required: true
-  decision_id: "DEC-arxiv-daily-push-SERVICE-DATE-TEST10-001"
+  decision_id: "DEC-arxiv-daily-push-PRODUCTION-SCHEDULE-001"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否现在从 main 触发一次受控 Gmail SMTP test10，以验证悉尼服务日期、中文教学邮件和云端 workflow。"
-  question: "是否现在从 main 触发一次受控 Gmail SMTP test10，以验证悉尼服务日期、中文教学邮件和云端 workflow。"
+  decision_question: "是否在 test10 已通过后单独启用每日生产定时。"
+  question: "是否在 test10 已通过后单独启用每日生产定时。"
   human_owner_role: "content_owner + product_owner"
-  human_assignment_status: "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT"
-  current_recommendation: "A: trigger controlled test10 from main; keep production disabled"
-  option_a: "从 main 触发一次 manual B1 text SMTP test10，验证邮件标题日期、中文正文和 artifact。"
-  option_b: "继续等待；安全但 Stage 1 邮件前台和日期修复缺少 post-merge 真实邮件证据。"
-  option_c: "直接启用 production schedule；禁止，因为 test10 尚未证明 post-merge 邮件路径。"
+  human_assignment_status: "OWNER_DECISION_REQUIRED"
+  current_recommendation: "A: keep production schedule disabled until a separate owner-approved enablement run"
+  option_a: "保持 production schedule disabled，先确认你确实要每天自动发送。"
+  option_b: "进入邮件模板质量优化，不改变 production flags。"
+  option_c: "启用生产定时；只允许在你明确批准并核对 GitHub variables/secrets 后执行。"
   options:
-    - "从 main 触发一次 manual B1 text SMTP test10，验证邮件标题日期、中文正文和 artifact。"
-    - "继续等待；安全但 Stage 1 邮件前台和日期修复缺少 post-merge 真实邮件证据。"
-    - "直接启用 production schedule；禁止，因为 test10 尚未证明 post-merge 邮件路径。"
-  estimated_effort: "P1; one GitHub Actions manual run plus artifact verification"
-  estimated_cost_or_resource: "GitHub Actions ubuntu-latest and one Gmail SMTP test email; no local background production process"
-  expected_benefit: "把已合并的悉尼服务日期修复、中文教学型邮件前台、全 arXiv daily input、候选队列摘要和 Gmail SMTP 云端发送闭环绑定到一次真实 post-merge 证据。"
-  principal_risks: "误选非 main 分支、重复发送测试邮件、过早启用 production schedule"
-  evidence_required: "manual test10 run id, scheduled-execution artifact, SMTP sent state, Sydney-date email subject, production scheduled job skipped or disabled"
+    - "保持 production schedule disabled，先确认你确实要每天自动发送。"
+    - "进入邮件模板质量优化，不改变 production flags。"
+    - "启用生产定时；只允许在你明确批准并核对 GitHub variables/secrets 后执行。"
+  estimated_effort: "P1; explicit owner decision plus GitHub variable/secret verification"
+  estimated_cost_or_resource: "GitHub Actions ubuntu-latest and Gmail SMTP; no local Mac background process"
+  expected_benefit: "把 Stage 1 已验收和真正每日自动发送分开，避免未授权生产邮件。"
+  principal_risks: "误启用 ADP_PRODUCTION_ENABLED 或 ADP_SCHEDULED_RUN_ENABLED 会造成每日真实发送；错误 SMTP/Release flags 会破坏 fail-closed 边界。"
+  evidence_required: "owner approval, repository variable state, scheduled workflow run evidence, SMTP sent artifact, no secret/body logging"
   decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "Stage 1 arXiv acceptance remains recorded, but post-merge test10 service-date/email proof remains incomplete."
-  unblock_task_id: "ADP-S1P5T04-POST-MERGE-TEST10-040"
+  consequence_of_no_decision: "Stage 1 remains accepted, but production schedule stays disabled and no daily automatic send occurs."
+  unblock_task_id: "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041"
   acceptance_ids:
-    - "ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"
+    - "ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-24T07:35:00+10:00"
+  last_reviewed_at: "2026-06-24T07:52:00+10:00"

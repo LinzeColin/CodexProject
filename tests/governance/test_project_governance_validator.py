@@ -3227,8 +3227,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-082")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-082")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-083")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-083")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
@@ -3236,18 +3236,19 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json",
+            "governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json",
         )
         self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
         self.assertEqual(info["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
         self.assertFalse(info["latest_manifest"].get("production_acceptance_claimed", False))
         self.assertFalse(info["latest_event"]["production_schedule_enabled"])
-        self.assertFalse(info["latest_event"]["real_smtp_sent"])
+        self.assertTrue(info["latest_event"]["real_smtp_sent"])
         self.assertFalse(info["latest_event"]["real_release_uploaded"])
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.23.0", rendered)
         self.assertIn("ARXIV_PRODUCTION_ACCEPTED", rendered)
-        self.assertIn("ADP-S1P5T04-POST-MERGE-TEST10-040", rendered)
+        self.assertIn("ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041", rendered)
+        self.assertIn("run `28059194999`", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)
         self.assertNotIn("是否继续执行 S1-09", rendered)
@@ -3260,7 +3261,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         expected = {
-            "arxiv-daily-push": "ADP-S1P5T04-POST-MERGE-TEST10-040",
+            "arxiv-daily-push": "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041",
             "OpenAIDatabase": "TASK-OAI-B-001",
             "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
             "whkmSalary": "TASK-WHKM-B-001",
