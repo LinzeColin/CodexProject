@@ -12,10 +12,10 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version status: `provisional`
 - Current phase: `C`
 - Current gate: `TASK-T1303-A204-A205-RELEASE-MANAGER-PREFLIGHT-IN-PROGRESS`
-- Confirmed iteration count: 30
+- Confirmed iteration count: 31
 - Reconstructed development event count: 3
 - Current task: `TASK-T1303/A204-A205 release-manager activation preflight`
-- Blockers: T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A204/A205 now have a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence, but the preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Blockers: T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A204/A205 now have a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence, and that blocked preflight is remote-CI bound by Project Governance run `27994465700` and EEI validation run `27994465691` job `82853640406`; the preflight still remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -703,6 +703,27 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the release-manager preflight script, unit test, artifact and governance/status updates; regenerate artifacts and rerun validation.
 - Next step: run broader local validation, regenerate release artifacts, commit/push and verify GitHub CI.
 
+### `ITER-20260623-007`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `baaaee0fd74a9435810eb005ebb5db5b7f1c2c9d`
+- Result commit: `baaaee0fd74a9435810eb005ebb5db5b7f1c2c9d` remote-CI attested for the release-manager preflight slice.
+- Task IDs: `TASK-T1303`, `TASK-T1301`, `TASK-T1307`, `TASK-T1309`, `TASK-T904`
+- Goal: bind remote CI proof for the A204/A205 release-manager activation preflight without marking external release gates complete.
+- Assumptions: Project Governance run `27994465700` and EEI validation run `27994465691` job `82853640406` are valid proof for the repository preflight only.
+- Files changed: `docs/governance/development_events.jsonl`, `docs/governance/DEVELOPMENT_LEDGER.md`, `docs/phase/MVP_DEVELOPMENT_RECORD.md`, `data/development_status_ledger.csv`, `artifacts/release_evidence_t1211.json`, and `governance/run_manifests/GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json`.
+- Commands run: GitHub Actions Project Governance run `27994465700`; GitHub Actions EEI validation run `27994465691` job `82853640406`.
+- Test results: Project Governance PASS; EEI validation PASS including Step 7 static/contract/lint/typecheck/unit, Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E.
+- Successes: `GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json` is now CI-attested for the blocked preflight state.
+- Failures: no real source-license review, legal/brand clearance, production owner approval, production gold labels, release-manager activation or 24h soak was added.
+- Decisions: keep A204/A205/A209/A210/A026/A027 `IN_PROGRESS`; keep A209 24h soak as a background long-running gate while bounded MVP delivery continues.
+- Remaining risks: CI-attested blocked preflight can still be misread as activation unless downstream code enforces `activation_ready=false`, `relationship_publication_allowed=false`, and `public_brand_launch_allowed=false`.
+- Rollback: revert this CI-binding governance update, restore the preflight manifest to remote-pending and rerun validation if the cited GitHub Actions evidence is invalidated.
+- Next step: continue A026/A027 production gold labels, A210 formal clearance, A202 real source/legal/owner closure or A209 24h soak evidence.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -741,6 +762,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260623-004`: local T1301/A202 publication operation-log audit; A202/A209/A210 remain open.
 - `EVENT-20260623-005`: remote-CI-bound T1301/A202 source-withdrawal and counter-evidence fail-closed publication rehearsal; A202/A209/A210 remain open.
 - `EVENT-20260623-006`: local T1303/A204-A205 release-manager activation preflight; A204/A205/A209/A210/A026/A027 remain open.
+- `EVENT-20260623-007`: remote CI binding for the T1303/A204-A205 release-manager activation preflight; A204/A205/A209/A210/A026/A027 remain open.
 
 ## Unknown Historical Periods
 

@@ -4716,7 +4716,7 @@ Status: REMOTE CI VALIDATED FOR THIS SLICE; A202/A209/A210 STILL IN PROGRESS
 
 ## 2026-06-23 - T1303/A204-A205 release-manager activation preflight
 
-Status: LOCAL VALIDATED; REMOTE CI PENDING; A204/A205/A209/A210/A026/A027 STILL IN PROGRESS
+Status: LOCAL VALIDATED; REMOTE CI ATTESTED BY FOLLOW-UP BINDING; A204/A205/A209/A210/A026/A027 STILL IN PROGRESS
 
 ### Scope
 
@@ -4754,3 +4754,37 @@ Status: LOCAL VALIDATED; REMOTE CI PENDING; A204/A205/A209/A210/A026/A027 STILL 
 
 - Remove `scripts/validate_release_manager_activation.py`, `tests/unit/test_release_manager_activation.py` and `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`.
 - Revert A204/A205 traceability, V5 sync, delivery task and generated release/governance artifacts, then rerun validation.
+
+## 2026-06-23 - T1303/A204-A205 release-manager preflight CI binding
+
+Status: REMOTE CI VALIDATED FOR THIS SLICE; A204/A205/A209/A210/A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Bound commit `baaaee0fd74a9435810eb005ebb5db5b7f1c2c9d` remote CI proof into the T1303/A204-A205 release-manager activation preflight.
+- Project Governance run `27994465700` completed successfully.
+- EEI validation run `27994465691` job `82853640406` completed successfully.
+- EEI validation Step 7 static/contract/lint/typecheck/unit, Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E all passed.
+
+### Acceptance mapping
+
+- T1303 -> A204/A205 evidence is stronger: the fail-closed release-manager activation preflight is no longer local-only or remote-pending.
+- T1301/T1307/T1309/T904 remain linked because A202 real source/legal/owner evidence, A209 24h soak, A210 formal clearance and A026/A027 production gold labels are still required before activation can be ready.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold or active parameter value changed.
+- This is a remote CI evidence-binding update only.
+
+### Remaining gaps
+
+- A204/A205 remain `IN_PROGRESS`: CI validation of a blocked preflight is not release-manager activation.
+- A202 still lacks real signed source-license review, passage-level relationship approval, production owner approval and legal release clearance.
+- A026/A027 still require production human-labeled gold cases.
+- A209 24h soak remains a background independent gate.
+- A210 formal brand legal/market clearance or signed risk waiver is still missing.
+
+### Rollback
+
+- Revert this CI-binding governance update and restore the preflight manifest to remote-pending if the cited GitHub Actions evidence is invalidated.

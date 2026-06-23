@@ -1670,7 +1670,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260623-006")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260623-007")
         self.assertEqual(
             matrix["current_gate"],
             "TASK-T1303-A204-A205-RELEASE-MANAGER-PREFLIGHT-IN-PROGRESS",
@@ -1759,7 +1759,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, changed)
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         eei_backlog = backlog_text.split('project_id: "EEI"', 1)[1].split('project_id: "EVA_OS"', 1)[0]
-        self.assertIn("precommit_pending_events: 21", eei_backlog)
+        self.assertIn("precommit_pending_events: 20", eei_backlog)
 
     def test_adp_s104_dashboard_sync_manifest_binds_root_views(self) -> None:
         manifest = json.loads(
