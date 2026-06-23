@@ -1,0 +1,204 @@
+schema_version: codexproject.roadmap_draft.v1
+project_id: Serenity-Alipay
+stage_id: S4
+phase_id: S4PA
+task_id: S4PAT03
+acceptance_id: ACC-S4PAT03
+source_evidence_index: Serenity-Alipay/docs/governance/evidence_index.yaml
+source_model_extraction: Serenity-Alipay/docs/governance/model_extraction.yaml
+purpose: "Draft the Serenity-Alipay Review9 Stage 4 Roadmap and event reconstruction while separating confirmed, reconstructed, and unknown history."
+estimate_policy:
+  source: "Review9 roadmap task table only"
+  historical_hours_inferred: false
+  git_commit_count_used_as_iteration_count: false
+current_position:
+  current_stage_id: S4
+  current_phase_id: S4PA
+  current_task_id: S4PAT03
+  current_status: in_progress
+roadmap_draft:
+  stage_id: S4
+  title: "Serenity-Alipay pilot migration and truth validation"
+  status: in_progress
+  estimated_hours: 32
+  estimated_pct: 16.33
+  stop_conditions:
+    - "Pilot introduces business behavior change"
+    - "Evidence-free model facts appear"
+    - "Human files remain compatibility indexes after S4PB"
+  stop_gate:
+    gate_id: S4-GATE
+    pass_conditions:
+      - "All pilot acceptance checks pass"
+      - "Owner explicitly accepts readability"
+      - "Migration mode is reusable"
+    evidence: [pilot_PR, owner_acceptance, migration_playbook]
+    fail_action: blocked
+  phases:
+    - phase_id: S4PA
+      title: "Directed fact extraction"
+      status: in_progress
+      estimated_hours: 14
+      stop_conditions:
+        - "Code/document contradiction is unmarked"
+        - "Technology stack is written as a model parameter"
+        - "Iteration or hour claims are invented"
+      stop_gate:
+        gate_id: S4PA-GATE
+        pass_conditions:
+          - "All active models have formulas or exact pseudocode"
+          - "Parameters have source and code references"
+          - "Roadmap satisfies ID and Gate rules"
+        evidence: [evidence_index, model_extraction, roadmap_draft]
+        fail_action: remain_in_phase
+      tasks:
+        - task_id: S4PAT01
+          title: "Bound read scope and create evidence index"
+          status: completed
+          estimated_hours: 4
+          estimated_pct: 2.04
+          depends_on: [S3-GATE]
+          acceptance_ids: [ACC-S4PAT01]
+          fact_level: VERIFIED
+          evidence_refs: [Serenity-Alipay/docs/governance/evidence_index.yaml, governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json, PR-95, commit:f1a0b2b2e26fad6691c9b8d8d3da3d235de5c373, ci_run:28027304921]
+        - task_id: S4PAT02
+          title: "Extract models, formulas, parameters, and strategies"
+          status: completed
+          estimated_hours: 6
+          estimated_pct: 3.06
+          depends_on: [S4PAT01]
+          acceptance_ids: [ACC-S4PAT02]
+          fact_level: VERIFIED
+          evidence_refs: [Serenity-Alipay/docs/governance/model_extraction.yaml, governance/run_manifests/GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623.json, PR-96, commit:5fc77fe002bd2822ccf960eb34beb637fca15b01, ci_run:28027843674]
+        - task_id: S4PAT03
+          title: "Reconstruct Roadmap and events honestly"
+          status: in_progress
+          estimated_hours: 4
+          estimated_pct: 2.04
+          depends_on: [S4PAT01]
+          acceptance_ids: [ACC-S4PAT03]
+          fact_level: EXTRACTED
+          evidence_refs: [Serenity-Alipay/docs/governance/roadmap_draft.yaml, Serenity-Alipay/docs/governance/development_events.jsonl, Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md]
+    - phase_id: S4PB
+      title: "Migration and generation"
+      status: planned
+      estimated_hours: 14
+      stop_conditions:
+        - "Focused tests fail"
+        - "Generated files and canonical facts disagree"
+      stop_gate:
+        gate_id: S4PB-GATE
+        pass_conditions:
+          - "Target project validation passes"
+          - "Three human files are byte-stable"
+          - "Business tests do not regress"
+        evidence: [validation_output, focused_test_output, diff_summary]
+        fail_action: remain_in_phase
+      tasks:
+        - task_id: S4PBT01
+          title: "Create project.yaml, roadmap.yaml, events.jsonl"
+          status: planned
+          estimated_hours: 6
+          estimated_pct: 3.06
+          depends_on: [S4PAT02, S4PAT03]
+          acceptance_ids: [ACC-S4PBT01]
+          fact_level: PROPOSED
+        - task_id: S4PBT02
+          title: "Generate three Chinese human entry files"
+          status: planned
+          estimated_hours: 4
+          estimated_pct: 2.04
+          depends_on: [S4PBT01]
+          acceptance_ids: [ACC-S4PBT02]
+          fact_level: PROPOSED
+        - task_id: S4PBT03
+          title: "Run focused tests, validate, and drift check"
+          status: planned
+          estimated_hours: 4
+          estimated_pct: 2.04
+          depends_on: [S4PBT02]
+          acceptance_ids: [ACC-S4PBT03]
+          fact_level: PROPOSED
+    - phase_id: S4PC
+      title: "Owner readability and cost acceptance"
+      status: planned
+      estimated_hours: 4
+      stop_conditions:
+        - "Owner cannot understand key model or next decision"
+        - "Governance cost exceeds budget without approved exception"
+      stop_gate:
+        gate_id: S4PC-GATE
+        pass_conditions:
+          - "ROA checklist passes"
+          - "Performance metrics meet target"
+          - "Rollback path is executable"
+        evidence: [owner_review, performance_report, rollback_test]
+        fail_action: remain_in_phase
+      tasks:
+        - task_id: S4PCT01
+          title: "Run two-minute Owner ROA review"
+          status: planned
+          estimated_hours: 2
+          estimated_pct: 1.02
+          depends_on: [S4PBT03]
+          acceptance_ids: [ACC-S4PCT01]
+          fact_level: PROPOSED
+        - task_id: S4PCT02
+          title: "Verify duration, token proxy, and rollback"
+          status: planned
+          estimated_hours: 2
+          estimated_pct: 1.02
+          depends_on: [S4PCT01]
+          acceptance_ids: [ACC-S4PCT02]
+          fact_level: PROPOSED
+confirmed_events:
+  - event_id: ITER-20260621-001
+    fact_level: EXTRACTED
+    binding_status: stale_unbound
+    source_refs: [Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md, Serenity-Alipay/docs/governance/development_events.jsonl]
+    summary: "First CodexProject-auditable governance baseline; result commit remains PENDING in legacy records and is not promoted."
+  - event_id: ITER-20260621-002
+    fact_level: EXTRACTED
+    binding_status: stale_unbound
+    source_refs: [Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md, Serenity-Alipay/docs/governance/development_events.jsonl]
+    summary: "Semantic extraction pilot verified 49 parameters and 12 formulas; FORM-008 caveat is preserved."
+  - event_id: REVIEW9-S4PAT01
+    fact_level: VERIFIED
+    binding_status: commit_and_ci_bound
+    source_refs: [PR-95, commit:f1a0b2b2e26fad6691c9b8d8d3da3d235de5c373, ci_run:28027304921, Serenity-Alipay/docs/governance/evidence_index.yaml]
+    summary: "Bounded evidence index created for Serenity-Alipay."
+  - event_id: REVIEW9-S4PAT02
+    fact_level: VERIFIED
+    binding_status: commit_and_ci_bound
+    source_refs: [PR-96, commit:5fc77fe002bd2822ccf960eb34beb637fca15b01, ci_run:28027843674, Serenity-Alipay/docs/governance/model_extraction.yaml]
+    summary: "Model extraction created for five active models, twelve formulas, forty-nine parameters, and five strategies."
+reconstructed_events:
+  - event_id: EVENT-RECON-20260612-001
+    fact_level: RECONSTRUCTED
+    source_refs: [Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md, Serenity-Alipay/HANDOFF.md]
+    summary: "MVP scoring, dry-run automation, OpenD/MooMoo lifecycle, and local-first safety behavior reconstructed from HANDOFF and current tests."
+  - event_id: EVENT-RECON-20260614-001
+    fact_level: RECONSTRUCTED
+    source_refs: [Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md, Serenity-Alipay/HANDOFF.md]
+    summary: "Delivery package, app entry, history-integrity, and production-readiness evidence reconstructed from HANDOFF."
+unknowns:
+  - unknown_id: UNKNOWN-SER-HISTORY-001
+    fact_level: UNKNOWN
+    statement: "Exact iteration boundaries before ITER-20260621-001 are unknown and are not inferred from Git commit count."
+    followup_task_id: S4PBT01
+  - unknown_id: UNKNOWN-SER-TEST-STDOUT-001
+    fact_level: UNKNOWN
+    statement: "Exact stdout for every historical test command in HANDOFF.md is not fully re-executed by this migration."
+    followup_task_id: S4PBT01
+  - unknown_id: UNKNOWN-SER-REMOTE-HEAD-001
+    fact_level: UNKNOWN
+    statement: "Remote LinzeColin/Serenity-Alipay main HEAD mentioned in HANDOFF.md is not verified in this run."
+    followup_task_id: S4PBT01
+acceptance:
+  status: READY_FOR_REVIEW
+  acceptance_id: ACC-S4PAT03
+  confirmed_and_reconstructed_separated: true
+  unknown_history_backlogged: true
+  roadmap_id_gate_rules_present: true
+  no_invented_iteration_or_hours: true
+  legacy_pending_not_promoted: true

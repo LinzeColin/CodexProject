@@ -93,6 +93,8 @@ PROJECT_GOVERNANCE_FILES = {
     "STATUS.md",
     "OWNER_STATUS.md",
     "evidence_index.yaml",
+    "model_extraction.yaml",
+    "roadmap_draft.yaml",
 }
 COMMON_REQUIRED_BY_CLASS = {
     "model_behavior_change": {
