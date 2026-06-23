@@ -18,7 +18,7 @@
 | `PFI_BIG_DATA_SIMULATOR` | `0.1.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `UNVERIFIED` | `TASK-PFI-B-001` |
 | `Serenity-Alipay` | `0.1.0` | `B` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `NONE` |
 | `whkmSalary` | `0.0.0` | `B` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `PARTIAL` | `FAILED` | `TASK-WHKM-B-001` |
-| `arxiv-daily-push` | `0.22.0` | `S1-A` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `FAILED` | `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001` |
+| `arxiv-daily-push` | `0.23.0` | `S1-A` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `PARTIAL` | `FAILED` | `S1P5T04` |
 
 ## Notes
 

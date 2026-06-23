@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260623-ADP-076"
-source_snapshot_hash: "sha256:48e00502a65973d52a3101ddcbe9e1cd547cf94a490cb22211bcac6ab2255b69"
+as_of_event_id: "EVENT-20260623-ADP-077"
+source_snapshot_hash: "sha256:6738cc8607c36f421f3f9c5d01fdb2bdbe793abb57a27700646a4ba7def71d09"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-23T09:55:00+10:00"
+snapshot_event_time: "2026-06-23T20:10:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 331
-    total_active_parameters: 331
-    checked_active_formulas: 46
-    total_active_formulas: 46
+    checked_active_parameters: 334
+    total_active_parameters: 334
+    checked_active_formulas: 47
+    total_active_formulas: 47
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 331
-    total_active_parameters: 331
+    checked_active_parameters: 334
+    total_active_parameters: 334
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -54,7 +54,7 @@ dimensions:
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
   delivery_evidence:
-    status: "PARTIAL"
+    status: "FAILED"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
@@ -64,12 +64,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 1
     legacy_unbound_events: 54
-    precommit_pending_events: 20
+    precommit_pending_events: 23
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS"
+  release_gate: "S1P5T04-ACCELERATED-REAL-ARXIV-ACCEPTANCE-PR-READY"
   blocker_ids:
     - "ADP-PHASE8-VIDEO-001"
     - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
@@ -77,12 +77,12 @@ delivery_readiness:
 next_executable_task:
   task_id: "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"
   status: "in_progress"
-  reason: "Two controlled GitHub/cloud-runner B1/arXiv SMTP sends are present; collect the second distinct natural-day evidence before ARXIV_PRODUCTION_ACCEPTED can be claimed."
+  reason: "Continue `S1P5T04`: collect controlled GitHub/cloud-runner B1/arXiv email delivery evidence before ARXIV_PRODUCTION_ACCEPTED can be claimed."
   acceptance_ids:
     - "ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"
   owner: "content_owner + engineering_owner + operations_owner"
   human_owner_role: "content_owner + engineering_owner + operations_owner"
-  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q` and attach the listed evidence refs."
+  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_accel_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial.py arxiv-daily-push/tests/test_stage1_accelerated_acceptance.py -q` and attach the listed evidence refs."
   stale_candidates: []
 owner_decision:
   required: true
@@ -114,4 +114,4 @@ owner_decision:
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-23T09:55:00+10:00"
+  last_reviewed_at: "2026-06-23T20:10:00+10:00"

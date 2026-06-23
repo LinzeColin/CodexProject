@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 44
-- formula_count: 46
-- parameter_count: 348
+- model_count: 45
+- formula_count: 47
+- parameter_count: 351
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -25,6 +25,12 @@ Fact levels follow `docs/governance/STANDARD.md`.
   `2026-06-23`, so `ARXIV_PRODUCTION_ACCEPTED` and production scheduling remain
   disabled. No model count, formula expression, parameter active value, or
   runtime behavior changed in this evidence sync.
+
+- `S1P5T04` / `0.23.0` adds `MOD-ADP-045`, an accelerated real-arXiv
+  acceptance evidence builder. It can only pass from a GitHub/cloud live
+  all-arXiv dry-run with at least 30 real candidates plus the existing
+  controlled SMTP refs; it sends no new email and keeps production scheduling
+  disabled.
 
 ## A. Model Overview
 
@@ -74,6 +80,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-042 | Review8 Stage 1 migration package and transfer checklist | deterministic migration package and verification gate | Export and verify a low-resource Stage 1 migration package with file hashes, SQLite/runtime smoke evidence, restore instructions, and secret-name-only checklist without production side effects | active | adp-stage1-migration-package-v1 | `src/arxiv_daily_push/stage1_migration.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-043 | Review8 Stage 1 post-migration bootstrap gate | deterministic target-runner bootstrap validator | Verify Python, Git checkout, SSL, SQLite/FTS5, runtime smoke, GitHub-hosted workflow runner boundary, GitHub Actions env names, and secret-name-only readiness without production side effects | active | adp-stage1-post-migration-bootstrap-v1 | `src/arxiv_daily_push/stage1_bootstrap.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-stage1-bootstrap.yml` |
 | MOD-ADP-044 | Review8 Stage 1 historical B1 preview batch | deterministic offline/input-backed B1 report and email preview evidence generator | Generate 30 independent historical B1/arXiv report/email preview packages from supported inputs or deterministic fixtures before live-day delivery while preserving no-production-side-effect and no-future-leakage gates | active | adp-stage1-historical-b1-previews-v1 | `src/arxiv_daily_push/stage1_historical_previews.py`, `src/arxiv_daily_push/stage1_b1_report.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-045 | S1P5T04 accelerated real arXiv acceptance evidence | deterministic accelerated acceptance evidence builder | Build Stage 1 acceptance readiness evidence from a passing live all-arXiv cloud dry-run, 30 real candidates, and controlled SMTP refs while preserving disabled production scheduling | active | adp-stage1-accelerated-acceptance-v1 | `src/arxiv_daily_push/stage1_accelerated_acceptance.py`, `src/arxiv_daily_push/trial.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -223,6 +230,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Review8 Stage 1 migration package parameters: PARAM-ADP-326 through PARAM-ADP-331.
 - Active Review8 Stage 1 post-migration bootstrap parameters: PARAM-ADP-332 through PARAM-ADP-339.
 - Active Review8 Stage 1 historical B1 preview parameters: PARAM-ADP-340 through PARAM-ADP-348.
+- Active S1P5T04 accelerated acceptance parameters: PARAM-ADP-349 through PARAM-ADP-351.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

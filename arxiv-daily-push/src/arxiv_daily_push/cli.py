@@ -71,6 +71,10 @@ from .stage1_historical_previews import (
     load_historical_daily_inputs,
     validate_historical_b1_previews,
 )
+from .stage1_accelerated_acceptance import (
+    build_stage1_accelerated_acceptance_report,
+    validate_stage1_accelerated_acceptance_report,
+)
 from .stage1_migration import build_migration_package, validate_stage1_migration_report, verify_migration_package
 from .stage1_queue import build_stage1_queue_report, validate_stage1_queue_report
 from .stage1_runtime import (
@@ -355,6 +359,22 @@ def build_parser() -> argparse.ArgumentParser:
     live_all_arxiv.add_argument("--artifact-dir", help="Directory for the live all-arXiv dry-run report.")
     live_all_arxiv.add_argument("--polite-delay-seconds", type=float, default=0.0, help="Optional delay between archive fetches.")
     live_all_arxiv.add_argument("--json", action="store_true", help="Print JSON dry-run report.")
+
+    accelerated_acceptance = subparsers.add_parser(
+        "build-stage1-accelerated-acceptance",
+        help="Build Stage 1 accelerated real-arXiv acceptance evidence without production side effects.",
+    )
+    accelerated_acceptance.add_argument("--live-dry-run", required=True, help="Passing live all-arXiv dry-run report JSON.")
+    accelerated_acceptance.add_argument("--controlled-smtp-manifest", required=True, help="Controlled SMTP evidence manifest JSON.")
+    accelerated_acceptance.add_argument("--generated-at", required=True, help="Evidence generation timestamp.")
+    accelerated_acceptance.add_argument("--expected-samples", type=int, default=30)
+    accelerated_acceptance.add_argument("--live-dry-run-ref", default="")
+    accelerated_acceptance.add_argument("--controlled-smtp-ref", default="")
+    accelerated_acceptance.add_argument("--scheduler-ref", default=".github/workflows/arxiv-daily-push-scheduled.yml")
+    accelerated_acceptance.add_argument("--resource-ref", default="")
+    accelerated_acceptance.add_argument("--recovery-ref", default="governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json")
+    accelerated_acceptance.add_argument("--artifact-dir", help="Directory for accelerated acceptance artifacts.")
+    accelerated_acceptance.add_argument("--json", action="store_true", help="Print JSON accelerated acceptance report.")
 
     build_daily_input = subparsers.add_parser(
         "build-daily-input",
@@ -1163,6 +1183,37 @@ def main(argv: list[str] | None = None) -> int:
             for reason in report["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if report["live_dry_run_ready"] else 2
+    if args.command == "build-stage1-accelerated-acceptance":
+        report = build_stage1_accelerated_acceptance_report(
+            load_json_mapping(args.live_dry_run),
+            load_json_mapping(args.controlled_smtp_manifest),
+            generated_at=args.generated_at,
+            expected_samples=args.expected_samples,
+            live_dry_run_ref=args.live_dry_run_ref,
+            controlled_smtp_ref=args.controlled_smtp_ref,
+            scheduler_ref=args.scheduler_ref,
+            resource_ref=args.resource_ref,
+            recovery_ref=args.recovery_ref,
+            artifact_dir=args.artifact_dir,
+        )
+        errors = validate_stage1_accelerated_acceptance_report(report)
+        if errors:
+            if args.json:
+                print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2, sort_keys=True))
+            else:
+                print("blocked")
+                for error in errors:
+                    print(f"- {error}")
+            return 2
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        elif report["accelerated_acceptance_ready"]:
+            print(f"{report['acceptance_id']}\tARXIV_PRODUCTION_ACCEPTED")
+        else:
+            print("blocked")
+            for reason in report["blocking_reasons"]:
+                print(f"- {reason}")
+        return 0 if report["accelerated_acceptance_ready"] else 2
     if args.command == "build-daily-input":
         source_batch = load_json_mapping(args.source_batch)
         report = build_daily_input_package(

@@ -1,0 +1,195 @@
+{
+  "acceptance_ids": [
+    "ADP-ACC-S1P5T04-ACCELERATED-REAL-ARXIV",
+    "ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "changed_files_actual": [
+    ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+    "GOVERNANCE_DASHBOARD.md",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/pyproject.toml",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_accelerated_acceptance.py",
+    "arxiv-daily-push/src/arxiv_daily_push/trial.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_stage1_accelerated_acceptance.py",
+    "arxiv-daily-push/tests/test_trial.py",
+    "governance/run_manifests/ADP-S1P5T04-ACCELERATED-ACCEPTANCE-PR-READY-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_declared": [
+    ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+    "GOVERNANCE_DASHBOARD.md",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/pyproject.toml",
+    "arxiv-daily-push/src/arxiv_daily_push/__init__.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_accelerated_acceptance.py",
+    "arxiv-daily-push/src/arxiv_daily_push/trial.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_stage1_accelerated_acceptance.py",
+    "arxiv-daily-push/tests/test_trial.py",
+    "governance/run_manifests/ADP-S1P5T04-ACCELERATED-ACCEPTANCE-PR-READY-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "ci_attestation_subject": "Project Governance PR pending",
+  "ci_run_reference": "PRECOMMIT_PENDING_CI_ATTESTATION",
+  "content_tree_hash": "PRECOMMIT_PENDING",
+  "controlled_smtp_delivery_refs": [
+    "github-actions://LinzeColin/CodexProject/actions/runs/28002478689/artifacts/7811543123",
+    "github-actions://LinzeColin/CodexProject/actions/runs/28002478689/artifacts/7816791617"
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json",
+    "github-actions://LinzeColin/CodexProject/actions/runs/28017119138/artifacts/7817129112",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_accelerated_acceptance.py",
+    "arxiv-daily-push/tests/test_stage1_accelerated_acceptance.py",
+    ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml"
+  ],
+  "generated_at": "2026-06-23T20:10:00+10:00",
+  "implementation_base_sha": "681cafd26dad312f78136fcb5ba095340e16e972",
+  "iteration_id": "ITER-20260623-S1P5T04-ACCELERATED-ACCEPTANCE",
+  "live_artifact_negative_control": {
+    "artifact_id": "7817129112",
+    "candidate_count": 16,
+    "expected_result": "blocked",
+    "max_results_per_category": 1,
+    "run_id": "28017119138"
+  },
+  "manifest_id": "ADP-S1P5T04-ACCELERATED-ACCEPTANCE-PR-READY-20260623",
+  "model_ids_changed": [
+    "MOD-ADP-045"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-014",
+    "FORM-ADP-024",
+    "FORM-ADP-042",
+    "FORM-ADP-043",
+    "FORM-ADP-044",
+    "FORM-ADP-045",
+    "FORM-ADP-046",
+    "FORM-ADP-047"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-349",
+    "PARAM-ADP-350",
+    "PARAM-ADP-351"
+  ],
+  "production_acceptance_claimed": false,
+  "production_schedule_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "real_release_uploaded": false,
+  "real_smtp_sent": false,
+  "remaining_blockers": [
+    "PR CI must produce a passing max=3 live all-arXiv accelerated acceptance artifact with at least 30 real candidates",
+    "ARXIV_PRODUCTION_ACCEPTED final acceptance claim must wait for that cloud artifact",
+    "production scheduler owner approval remains separate"
+  ],
+  "required_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "governance/run_manifests/ADP-S1P5T04-ACCELERATED-ACCEPTANCE-PR-READY-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "run_id": "ADP-S1P5T04-ACCELERATED-ACCEPTANCE-PR-READY-20260623",
+  "schema_version": 2,
+  "status": "in_progress",
+  "summary": "Implemented a fail-closed accelerated real-arXiv acceptance evidence path for S1P5T04. The path requires a GitHub/cloud live all-ArXiv dry-run with at least 30 real candidates and the existing two controlled SMTP refs, while production scheduling remains disabled.",
+  "task_id": "S1P5T04",
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_accel_pycompile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/trial.py arxiv-daily-push/src/arxiv_daily_push/stage1_accelerated_acceptance.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_trial.py arxiv-daily-push/tests/test_stage1_accelerated_acceptance.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_accel_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_trial.py arxiv-daily-push/tests/test_stage1_accelerated_acceptance.py -q",
+    "ruby -e 'require \"yaml\"; YAML.load_file(\".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml\")'",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_accel_cli_blocked PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push build-stage1-accelerated-acceptance --live-dry-run /tmp/adp_cloud_dry_28017119138/unzipped/adp-live-all-arxiv-dry-run.json --controlled-smtp-manifest governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json --generated-at 2026-06-23T10:00:00Z --json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_accel_semantic3 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"
+  ],
+  "test_results": [
+    {
+      "command": "focused accelerated acceptance and trial tests",
+      "exit_code": 0,
+      "summary": "6 tests OK"
+    },
+    {
+      "command": "workflow YAML parse",
+      "exit_code": 0,
+      "summary": "arxiv-daily-push-phase12-cloud-dry-run.yml parses"
+    },
+    {
+      "command": "negative-control CLI against PR #76 max=1 artifact",
+      "exit_code": 0,
+      "summary": "blocked as expected with candidate_count 16 below required 30"
+    },
+    {
+      "command": "semantic extractor",
+      "exit_code": 0,
+      "summary": "47 formulas and 334 parameters checked"
+    }
+  ],
+  "updated_governance_files": [
+    "GOVERNANCE_DASHBOARD.md",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/VERSION",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "governance/run_manifests/ADP-S1P5T04-ACCELERATED-ACCEPTANCE-PR-READY-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "version_after": "0.23.0",
+  "version_before": "0.22.0",
+  "video_generated": false
+}

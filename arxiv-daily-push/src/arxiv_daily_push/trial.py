@@ -11,6 +11,9 @@ from .config import DEFAULT_RECIPIENT, DEFAULT_TIMEZONE
 
 TRIAL_EVIDENCE_VALIDATOR_ID = "adp-trial-evidence-v1"
 TRIAL_DAYS_REQUIRED = 30
+TRIAL_ACCEPTANCE_MODE_CALENDAR = "calendar_day_trial"
+TRIAL_ACCEPTANCE_MODE_ACCELERATED = "accelerated_real_data_replay"
+TRIAL_ACCEPTANCE_MODES = {TRIAL_ACCEPTANCE_MODE_CALENDAR, TRIAL_ACCEPTANCE_MODE_ACCELERATED}
 TARGET_LOCAL_TIME = "05:00"
 HEALTH_CHECK_TIME = "04:45"
 PASSING_RUN_STATUSES = {"succeeded", "degraded"}
@@ -22,11 +25,14 @@ def evaluate_trial_evidence(evidence: Mapping[str, Any], *, generated_at: str) -
     trial_id = str(evidence.get("trial_id") or "trial:unknown")
     period = evidence.get("period") if isinstance(evidence.get("period"), Mapping) else {}
     expected_days = _positive_int(period.get("expected_days"), TRIAL_DAYS_REQUIRED)
-    daily = _evaluate_daily_runs(evidence.get("daily_runs"), expected_days=expected_days)
+    acceptance_mode = str(period.get("acceptance_mode") or TRIAL_ACCEPTANCE_MODE_CALENDAR)
+    if acceptance_mode not in TRIAL_ACCEPTANCE_MODES:
+        acceptance_mode = TRIAL_ACCEPTANCE_MODE_CALENDAR
+    daily = _evaluate_daily_runs(evidence.get("daily_runs"), expected_days=expected_days, acceptance_mode=acceptance_mode)
 
     weekly_monthly = _evaluate_weekly_monthly(evidence.get("weekly_monthly"))
     recovery = _evaluate_recovery(evidence.get("recovery"))
-    scheduler = _evaluate_scheduler(evidence.get("scheduler"), daily_passed=daily["passed"])
+    scheduler = _evaluate_scheduler(evidence.get("scheduler"), daily_passed=daily["passed"], acceptance_mode=acceptance_mode)
     text_artifacts = _evaluate_text_artifacts(evidence.get("text_artifacts"), daily_runs=daily["valid_runs"])
     email = _evaluate_email(evidence.get("email"), daily_runs=daily["valid_runs"])
     resource = _evaluate_resource(evidence.get("resource_pressure"), daily_runs=daily["valid_runs"])
@@ -55,6 +61,7 @@ def evaluate_trial_evidence(evidence: Mapping[str, Any], *, generated_at: str) -
         "generated_at": generated_at,
         "trial_id": trial_id,
         "timezone": str(evidence.get("timezone") or DEFAULT_TIMEZONE),
+        "acceptance_mode": acceptance_mode,
         "expected_days": expected_days,
         "observed_day_count": daily["observed_day_count"],
         "production_evidence_status": "pass" if production_ready else "blocked",
@@ -97,13 +104,15 @@ def validate_trial_evidence_report(report: Mapping[str, Any]) -> list[str]:
     return errors
 
 
-def _evaluate_daily_runs(value: Any, *, expected_days: int) -> dict[str, Any]:
+def _evaluate_daily_runs(value: Any, *, expected_days: int, acceptance_mode: str) -> dict[str, Any]:
     reasons: list[str] = []
     valid_runs: list[Mapping[str, Any]] = []
     if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
         return _check(False, "daily_runs must be a list", observed_day_count=0, valid_runs=[], summary={})
 
+    accelerated = acceptance_mode == TRIAL_ACCEPTANCE_MODE_ACCELERATED
     dates_seen: set[str] = set()
+    replay_slots_seen: set[int] = set()
     sources_seen: set[str] = set()
     publications_seen: set[str] = set()
     for index, run in enumerate(value):
@@ -115,9 +124,23 @@ def _evaluate_daily_runs(value: Any, *, expected_days: int) -> dict[str, Any]:
         run_date = str(run.get("date") or "")
         if not _valid_date(run_date):
             reasons.append(f"{prefix}.date must be ISO YYYY-MM-DD")
-        elif run_date in dates_seen:
+        elif run_date in dates_seen and not accelerated:
             reasons.append(f"{prefix}.date duplicates {run_date}")
         dates_seen.add(run_date)
+        if accelerated:
+            replay_day_index = _positive_int(run.get("replay_day_index"), 0)
+            if replay_day_index <= 0:
+                reasons.append(f"{prefix}.replay_day_index must be positive for accelerated replay")
+            elif replay_day_index in replay_slots_seen:
+                reasons.append(f"{prefix}.replay_day_index duplicates {replay_day_index}")
+            else:
+                replay_slots_seen.add(replay_day_index)
+            if run.get("accelerated_replay") is not True:
+                reasons.append(f"{prefix}.accelerated_replay must be true")
+            if run.get("real_source_id_verified") is not True:
+                reasons.append(f"{prefix}.real_source_id_verified must be true")
+            if not str(run.get("real_source_published_at") or "").strip():
+                reasons.append(f"{prefix}.real_source_published_at is required")
         source_id = str(run.get("source_id") or "")
         publication_id = str(run.get("publication_id") or "")
         if not source_id:
@@ -147,11 +170,16 @@ def _evaluate_daily_runs(value: Any, *, expected_days: int) -> dict[str, Any]:
             if not _ref(run.get(key)):
                 reasons.append(f"{prefix}.{key} is required")
 
-    if len(dates_seen) < expected_days:
-        reasons.append(f"observed unique trial days {len(dates_seen)} is below required {expected_days}")
+    observed_coverage = len(replay_slots_seen) if accelerated else len(dates_seen)
+    if observed_coverage < expected_days:
+        label = "accelerated replay slots" if accelerated else "unique trial days"
+        reasons.append(f"observed {label} {observed_coverage} is below required {expected_days}")
 
     summary = {
+        "acceptance_mode": acceptance_mode,
+        "coverage_count": observed_coverage,
         "unique_days": len(dates_seen),
+        "unique_replay_slots": len(replay_slots_seen),
         "unique_source_ids": len(sources_seen),
         "unique_publication_ids": len(publications_seen),
         "required_days": expected_days,
@@ -181,11 +209,17 @@ def _evaluate_recovery(value: Any) -> dict[str, Any]:
     return _check(not reasons, *reasons)
 
 
-def _evaluate_scheduler(value: Any, *, daily_passed: bool) -> dict[str, Any]:
+def _evaluate_scheduler(value: Any, *, daily_passed: bool, acceptance_mode: str) -> dict[str, Any]:
     data = value if isinstance(value, Mapping) else {}
     reasons = []
     if data.get("enabled") is not True:
-        reasons.append("scheduler.enabled must be true")
+        accelerated_contract_ok = (
+            acceptance_mode == TRIAL_ACCEPTANCE_MODE_ACCELERATED
+            and data.get("cloud_schedule_contract_verified") is True
+            and data.get("scheduled_production_enabled") is False
+        )
+        if not accelerated_contract_ok:
+            reasons.append("scheduler.enabled must be true")
     if data.get("target_local_time") != TARGET_LOCAL_TIME:
         reasons.append(f"scheduler.target_local_time must be {TARGET_LOCAL_TIME}")
     if data.get("health_check_time") != HEALTH_CHECK_TIME:

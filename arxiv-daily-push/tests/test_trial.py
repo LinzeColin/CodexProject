@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import unittest
 
-from arxiv_daily_push.trial import evaluate_trial_evidence, validate_trial_evidence_report
+from arxiv_daily_push.trial import (
+    TRIAL_ACCEPTANCE_MODE_ACCELERATED,
+    evaluate_trial_evidence,
+    validate_trial_evidence_report,
+)
 
 
 def evidence() -> dict:
@@ -35,6 +39,32 @@ class TrialEvidenceTests(unittest.TestCase):
         report = evaluate_trial_evidence(data, generated_at="2026-07-03T05:00:00+10:00")
         self.assertFalse(report["accepted_for_production"])
         self.assertIn("text_artifact_ref", " ".join(report["blocking_reasons"]))
+
+    def test_accelerated_replay_allows_cloud_scheduler_contract_without_enabling_schedule(self) -> None:
+        data = evidence()
+        data["period"] = {"expected_days": 2, "acceptance_mode": TRIAL_ACCEPTANCE_MODE_ACCELERATED}
+        for index, run in enumerate(data["daily_runs"], 1):
+            run["date"] = "2026-07-01"
+            run["replay_day_index"] = index
+            run["accelerated_replay"] = True
+            run["real_source_id_verified"] = True
+            run["real_source_published_at"] = "2026-07-01T00:00:00Z"
+        data["scheduler"] = {
+            "enabled": False,
+            "scheduled_production_enabled": False,
+            "cloud_schedule_contract_verified": True,
+            "target_local_time": "05:00",
+            "health_check_time": "04:45",
+            "manual_rerun_verified": True,
+            "ref": "github-actions://workflow/scheduled",
+        }
+
+        report = evaluate_trial_evidence(data, generated_at="2026-07-03T05:00:00+10:00")
+
+        self.assertTrue(report["accepted_for_production"])
+        self.assertEqual(report["acceptance_mode"], TRIAL_ACCEPTANCE_MODE_ACCELERATED)
+        self.assertEqual(report["daily_summary"]["coverage_count"], 2)
+        self.assertFalse(validate_trial_evidence_report(report))
 
 if __name__ == "__main__":
     unittest.main()

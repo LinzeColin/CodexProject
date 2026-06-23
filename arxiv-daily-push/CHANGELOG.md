@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.23.0 - 2026-06-23
+
+- Added `adp build-stage1-accelerated-acceptance` for S1P5T04 accelerated real-arXiv acceptance evidence.
+- Updated the live all-arXiv cloud dry-run workflow to collect up to 3 items per primary archive and build a 30-sample accelerated acceptance artifact on GitHub runner.
+- Kept production scheduling disabled, sent no new email, and preserved Stage 1 text-only/no-video/no-Release requirements.
+
 ## 0.22.0 - 2026-06-23
 
 - Converted S1-12 production enablement to Stage 1 text-only delivery: all-arXiv scan, candidate queue, ROI-ranked lead selection, Chinese teaching email, and GitHub Actions text artifacts.
