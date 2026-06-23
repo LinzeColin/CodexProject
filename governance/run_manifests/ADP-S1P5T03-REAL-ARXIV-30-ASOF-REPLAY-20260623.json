@@ -1,25 +1,10 @@
 {
-  "acceptance_artifact_summary": {
-    "accelerated_acceptance_ready": true,
-    "accepted_for_production": true,
-    "artifact_digest": "sha256:bcd9d799f8756927b4b16c9fdd502f6db7f9eb2d9595c6ed4d86f60aeb74a01d",
-    "artifact_id": "7818287996",
-    "artifact_name": "adp-phase12-cloud-dry-run",
-    "arxiv_production_acceptance_label": "ARXIV_PRODUCTION_ACCEPTED",
-    "candidate_count": 49,
-    "controlled_smtp_delivery_count": 2,
-    "live_archive_buckets_verified": 20,
-    "max_results_per_category": 3,
-    "selected_sample_count": 30,
-    "status": "pass"
-  },
   "acceptance_ids": [
-    "ADP-ACC-S1P5T04-ACCELERATED-REAL-ARXIV",
-    "ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"
+    "ADP-ACC-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY"
   ],
-  "accepted_for_production": true,
   "arxiv_production_acceptance_label": "ARXIV_PRODUCTION_ACCEPTED",
   "binding_status": "PRECOMMIT_TREE_BOUND",
+  "change_type": "adp_s1p5t03r_real_arxiv_30_day_backfill_and_ledger_reconcile",
   "changed_files_actual": [
     ".github/workflows/arxiv-daily-push-real-backfill.yml",
     ".github/workflows/arxiv-daily-push-scheduled.yml",
@@ -92,46 +77,128 @@
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
-  "ci_attestation_subject": "PR #82 cloud artifact accepted; post-acceptance governance sync PR pending",
-  "ci_run_reference": "github-actions://LinzeColin/CodexProject/actions/runs/28019921500",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:0e1f89584f36598b8a57bae08633648d643404584abf35be3f0a69f60a3044af",
-  "daily_input_summary": {
-    "candidate_queue_top_categories": [
-      "cs.LG",
-      "eess.SY",
-      "stat.ME",
-      "econ.GN",
-      "hep-ph"
-    ],
-    "date": "2026-06-23",
-    "primary_category": "q-fin.ST",
-    "selected_source_id": "arxiv:2606.23492",
-    "selected_stable_id": "2606.23492",
-    "selected_title": "Continuous Hidden Markov Models for Equity Returns: Heavy-Tail Emission Families and Regime-Conditional Value-at-Risk"
+  "ci_attestation_subject": "PR CI must run arxiv-daily-push-real-backfill on GitHub/cloud runner",
+  "ci_run_reference": "PENDING_PR_CI",
+  "cloud_artifact": {
+    "artifact_id": "PENDING_PR_CI",
+    "artifact_name": "adp-s1p5t03-real-arxiv-30-day-backfill",
+    "run_id": "PENDING_PR_CI"
   },
+  "content_ledger": {
+    "path": "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv",
+    "placeholder_row_present": false,
+    "queued_row_count": 269,
+    "row_count": 299,
+    "selected_row_count": 30,
+    "source": "local control run; must be reconciled with cloud artifact before strict acceptance is restored"
+  },
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:16eb0b15ca9fdff0e1329394b332334a36a463b2f44a9e75b59cae0b81130caa",
   "evidence_refs": [
-    "https://github.com/LinzeColin/CodexProject/pull/82",
-    "github-actions://LinzeColin/CodexProject/actions/runs/28019921535",
-    "github-actions://LinzeColin/CodexProject/actions/runs/28019921329",
-    "github-actions://LinzeColin/CodexProject/actions/runs/28019921500",
-    "github-actions://LinzeColin/CodexProject/actions/runs/28019921500/jobs/82933386527",
-    "github-actions://LinzeColin/CodexProject/actions/runs/28019921500/artifacts/7818287996",
-    "governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json",
-    "governance/run_manifests/ADP-S1P5T04-ACCELERATED-ACCEPTANCE-PR-READY-20260623.json"
+    ".github/workflows/arxiv-daily-push-real-backfill.yml",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py",
+    "arxiv-daily-push/tests/test_stage1_real_replay.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S1P5T03_REAL_ARXIV_30_ASOF_REPLAY.md",
+    "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"
   ],
-  "generated_at": "2026-06-23T20:45:00+10:00",
-  "implementation_base_sha": "6767bf37d125e475784eb80180ea2ca2ede89515",
-  "iteration_id": "ITER-20260623-S1P5T04-ARXIV-PRODUCTION-ACCEPTED",
-  "new_real_smtp_sent": false,
-  "production_acceptance_claimed": true,
+  "formula_ids_changed": [
+    "FORM-ADP-048"
+  ],
+  "generated_at": "2026-06-23T22:15:00+10:00",
+  "implementation_base_sha": "738887de4034ad42d90347d0fa0db6c0f3ed966f",
+  "iteration_id": "ITER-20260623-S1P5T03-R-REAL-ARXIV-30-ASOF-REPLAY",
+  "local_control_run": {
+    "artifact_dir": "/tmp/adp-real-replay-20260623",
+    "artifact_files": [
+      {
+        "name": "adp-real-historical-replay-manifest.json",
+        "sha256": "dafb5ca871461ef7af1d547a40e42fb9bdb4fddeed6f106ccefa7d4ee0018835",
+        "size_bytes": 519596
+      },
+      {
+        "name": "CONTENT_LEDGER.csv",
+        "sha256": "2893ff8d56a3fa3158c8873ead298c46cdd14709f9779d77e5b02575ece0fa84",
+        "size_bytes": 196143
+      },
+      {
+        "name": "daily_inputs.jsonl",
+        "sha256": "41cf9f2ca9421ae27d71adea61d7f6e32f4dd2d8bd0a7d59774551be4d2e7b49",
+        "size_bytes": 246641
+      },
+      {
+        "name": "reports.md",
+        "sha256": "98d6831521e9df59875203b5a69dcf2b1b9c6e09db9a6723a27cda8c955311c9",
+        "size_bytes": 95463
+      },
+      {
+        "name": "email_previews.txt",
+        "sha256": "7c4f218e0b04006b2fcedb9bea022a24632bd06f697e76e8d81147b62ab0510e",
+        "size_bytes": 43953
+      },
+      {
+        "name": "queue_ledgers.jsonl",
+        "sha256": "6e51b5ed5cdaf27314a51961f00e9b41600f323e47d3a48773e1f03a8ec26aa0",
+        "size_bytes": 34943
+      },
+      {
+        "name": "run_records.jsonl",
+        "sha256": "f907b9ae8da4bac99127f14d15ddff17f76b23268948015dff42897b87fccd03",
+        "size_bytes": 416677
+      }
+    ],
+    "first_selected": {
+      "date": "2026-05-24",
+      "primary_category": "math.PR",
+      "source_id": "arxiv:2605.25295"
+    },
+    "last_selected": {
+      "date": "2026-06-22",
+      "primary_category": "cs.CL",
+      "source_id": "arxiv:2606.22272"
+    },
+    "report_path": "/tmp/adp-real-replay-20260623/report.json",
+    "status": "pass",
+    "summary": {
+      "content_ledger_queued_row_count": 269,
+      "content_ledger_row_count": 299,
+      "content_ledger_selected_row_count": 30,
+      "daily_input_count": 30,
+      "duplicate_lead_count": 0,
+      "email_preview_count": 30,
+      "future_leakage_count": 0,
+      "queue_continuity_break_count": 0,
+      "queue_ledger_count": 30,
+      "real_arxiv_source_id_count": 30,
+      "report_count": 30,
+      "required_replay_count": 30,
+      "success_count": 30,
+      "unique_as_of_date_count": 30,
+      "unique_selected_source_count": 30,
+      "unsupported_p0_p1_count": 0
+    }
+  },
+  "model_ids_changed": [
+    "MOD-ADP-046"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-352",
+    "PARAM-ADP-353",
+    "PARAM-ADP-354",
+    "PARAM-ADP-355",
+    "PARAM-ADP-356",
+    "PARAM-ADP-357",
+    "PARAM-ADP-358",
+    "PARAM-ADP-359"
+  ],
+  "production_acceptance_claimed": false,
   "production_schedule_enabled": false,
   "project_id": "arxiv-daily-push",
   "real_release_uploaded": false,
-  "real_smtp_sent": true,
-  "remaining_operational_actions": [
-    "Verify repository variables ADP_PRODUCTION_ENABLED, ADP_SCHEDULED_RUN_ENABLED, ADP_ALLOW_SMTP_SEND, and ADP_ALLOW_RELEASE_UPLOAD before scheduled production send is enabled.",
-    "Keep video, MP4, Release upload, and media attachment out of Stage 1 V5 production acceptance unless a later owner decision restores them.",
-    "Defer email frontstage template redesign until after accepted evidence is synchronized."
+  "real_smtp_sent": false,
+  "remaining_blockers": [
+    "GitHub Actions/cloud runner must execute the same 30-as-of replay workflow",
+    "PR CI must upload the backfill artifact and pass all gates",
+    "CONTENT_LEDGER must be reconciled against the cloud artifact ledger",
+    "Strict ARXIV_PRODUCTION_ACCEPTED must remain false until that cloud evidence is inspected"
   ],
   "required_governance_files": [
     "arxiv-daily-push/AGENTS.md",
@@ -159,31 +226,32 @@
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
-  "run_id": "ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623",
+  "run_id": "ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623",
   "schema_version": 2,
-  "status": "pass",
-  "summary": "Recorded PR #82 post-merge Stage 1 arXiv acceptance evidence. GitHub/cloud runner live all-arXiv dry-run produced 49 real candidates across all 20 primary archive buckets with max_results_per_category 3, selected 30 samples, and passed accelerated acceptance with two existing controlled Gmail SMTP refs. Production scheduling remains disabled and fail-closed.",
-  "task_id": "S1P5T04",
+  "source_policy": {
+    "bulk_harvest_enabled": false,
+    "max_results_per_call": 10,
+    "pdf_download_enabled": false,
+    "query_policy": "submittedDate:[YYYYMMDD0000 TO YYYYMMDD2359]",
+    "source_type": "arxiv"
+  },
+  "status": "pending_cloud_ci",
+  "summary": "Reopened strict Stage 1 historical evidence and added a real arXiv 30 as-of-date replay plus persistent CONTENT_LEDGER reconciliation path. Local control run passed, but strict ARXIV_PRODUCTION_ACCEPTED is not restored until PR CI produces and validates the GitHub Actions/cloud artifact.",
+  "task_id": "S1P5T03-R REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE",
   "test_commands": [
-    "GitHub PR #82 CI: arXiv Daily Push Stage 1 bootstrap run 28019921535",
-    "GitHub PR #82 CI: Project Governance run 28019921329",
-    "GitHub PR #82 CI: arXiv Daily Push live all-ArXiv cloud dry-run run 28019921500",
-    "Inspect artifact 7818287996 adp-stage1-accelerated-acceptance.json",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_postaccel_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_production_scheduler.py arxiv-daily-push/tests/test_trial_start_workflow.py tests/governance/test_project_governance_validator.py -q",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_postaccel_semantic PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_postaccel_gov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
-    "git diff --check"
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_real_replay_tests5 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_real_replay.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_real_replay_live2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push real-historical-arxiv-replay --generated-at 2026-06-23T21:45:00+10:00 --start-date 2026-05-24 --end-date 2026-06-22 --count 30 --lookback-days 7 --max-results 10 --artifact-dir /tmp/adp-real-replay-20260623 --write --fetcher curl --polite-delay-seconds 3 --json"
   ],
   "test_results": [
     {
-      "command": "PR #82 GitHub Actions",
+      "command": "focused real replay tests",
       "exit_code": 0,
-      "summary": "Stage 1 bootstrap, Project Governance, and live all-arXiv cloud dry-run all completed success on commit 99f7588d1b78d0116482299dd608317836f7faca."
+      "summary": "4 tests OK after adding cloud workflow side-effect regression"
     },
     {
-      "command": "artifact 7818287996 inspection",
+      "command": "local live real replay control run",
       "exit_code": 0,
-      "summary": "adp-stage1-accelerated-acceptance.json reports status pass, accepted_for_production true, ARXIV_PRODUCTION_ACCEPTED, 49 real arXiv candidates, 30 selected samples, two controlled SMTP refs, no blockers, no release/video requirement, and production_schedule_enabled false."
+      "summary": "30/30 pass; 30 unique dates; 30 real arXiv selected IDs; no future leakage; no duplicate lead; queue continuity breaks 0; unsupported P0/P1 0; CONTENT_LEDGER rows 299"
     }
   ],
   "updated_governance_files": [

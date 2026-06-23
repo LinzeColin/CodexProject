@@ -387,6 +387,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "arxiv-daily-push remains at S1-11 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V6-S1P5T03R-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + engineering_owner + operations_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V6_CONTRACT",
+                "question": "是否继续执行 S1P5T03-R，在 GitHub/cloud runner 上补跑过去 30 个真实 arXiv as-of date 并持久化 CONTENT_LEDGER。",
+                "recommendation": "A: complete S1P5T03-R cloud backfill before restoring strict ARXIV_PRODUCTION_ACCEPTED",
+                "option_a": "继续 S1P5T03-R，等待 PR CI 生成 30 天真实 backfill artifact 并核对 CONTENT_LEDGER。",
+                "option_b": "暂停 strict acceptance，保留本地控制跑和代码但不恢复 production accepted。",
+                "option_c": "跳到邮件模板或 Stage 2；不推荐，因为用户已明确要求先补真实 30 天历史数据。",
+                "effort": "P0; cloud runner evidence and ledger reconciliation",
+                "resource": "GitHub Actions ubuntu-latest, live arXiv Atom API access, compact text artifacts only",
+                "benefit": "把一次性实时发送成功与长期候选队列/已讲未讲账本闭环区分开，避免伪 accepted。",
+                "risks": "arXiv API throttling, cloud artifact mismatch, CONTENT_LEDGER drift, premature production schedule enablement",
+                "evidence": "GitHub Actions run id, artifact id, 30/30 replay report, CONTENT_LEDGER selected/queued/email/artifact rows",
+                "priority": "P0",
+                "no_decision": "Strict Stage 1 remains reopened and ARXIV_PRODUCTION_ACCEPTED must not be restored.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {
@@ -856,6 +877,14 @@ def latest_manifest(project_id: str, events: list[dict[str, Any]]) -> dict[str, 
 def arxiv_stage1_acceptance_proven(project_id: str, events: list[dict[str, Any]], manifest: dict[str, Any]) -> bool:
     if project_id != "arxiv-daily-push":
         return False
+    if (
+        manifest.get("production_acceptance_claimed") is False
+        and (
+            str(manifest.get("task_id") or "").startswith("S1P5T03-R")
+            or str(manifest.get("status") or "").lower() == "pending_cloud_ci"
+        )
+    ):
+        return False
     manifest_claims_acceptance = (
         manifest.get("production_acceptance_claimed") is True
         and manifest.get("accepted_for_production") is True
@@ -865,6 +894,8 @@ def arxiv_stage1_acceptance_proven(project_id: str, events: list[dict[str, Any]]
     if manifest_claims_acceptance:
         return True
     for event in reversed(events):
+        if event.get("production_acceptance_claimed") is False and str(event.get("task_id") or "").startswith("S1P5T03-R"):
+            return False
         if (
             event.get("production_acceptance_claimed") is True
             and str(event.get("arxiv_production_acceptance_label") or "") == "ARXIV_PRODUCTION_ACCEPTED"
@@ -935,6 +966,13 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             "owner": str(decision_policy.get("owner_role")),
             "human_owner_role": str(decision_policy.get("owner_role")),
         }
+    release_gate = str(matrix.get("current_gate") or "UNKNOWN")
+    if (
+        project_id == "arxiv-daily-push"
+        and not arxiv_stage1_accepted
+        and str(next_task.get("task_id") or "").startswith("S1P5T03-R")
+    ):
+        release_gate = "STRICT_ARXIV_PRODUCTION_ACCEPTANCE_REOPENED_PENDING_S1P5T03R_CLOUD_CI"
     assurance = {
         "project_id": project_id,
         "as_of_event_id": str(events[-1].get("event_id") or events[-1].get("iteration_id") or "NONE") if events else "NONE",
@@ -1011,7 +1049,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         },
         "delivery_readiness": {
             "status": assurance_status(str(policy.get("readiness") or "blocked")),
-            "release_gate": str(matrix.get("current_gate") or "UNKNOWN"),
+            "release_gate": release_gate,
             "blocker_ids": unresolved[:8],
         },
         "next_executable_task": next_task,

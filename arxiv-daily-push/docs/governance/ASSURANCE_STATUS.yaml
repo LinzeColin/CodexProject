@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260623-ADP-078"
-source_snapshot_hash: "sha256:b0fc970a61d492b05327a04ca9f27a940426e0b854500263b7ddd0bfd8fa95a5"
+as_of_event_id: "EVENT-20260623-ADP-079"
+source_snapshot_hash: "sha256:f5c496ec8def199c4cee0c855c4a0f084e94a73340766e7d66b35a4fd33dc2e1"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-23T20:45:00+10:00"
+snapshot_event_time: "2026-06-23T22:15:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 334
-    total_active_parameters: 334
-    checked_active_formulas: 47
-    total_active_formulas: 47
+    checked_active_parameters: 342
+    total_active_parameters: 342
+    checked_active_formulas: 48
+    total_active_formulas: 48
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,31 +27,34 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 334
-    total_active_parameters: 334
+    checked_active_parameters: 342
+    total_active_parameters: 342
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
-    status: "VERIFIED"
-    fact_level: "EXTRACTED"
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
     machine_verified_means: "methodological, calibration, and baseline rationale are tracked separately from implementation congruence"
-    unresolved_fact_ids: []
+    unresolved_fact_ids:
+      - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
     evidence_refs:
       - "arxiv-daily-push/docs/governance/MODEL_SPEC.md"
   empirical_validation:
-    status: "VERIFIED"
+    status: "PARTIAL"
     fact_level: "EXTRACTED"
-    unresolved_fact_ids: []
+    unresolved_fact_ids:
+      - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
     evidence_refs:
       - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
   operational_validation:
-    status: "VERIFIED"
+    status: "PARTIAL"
     fact_level: "EXTRACTED"
-    unresolved_fact_ids: []
+    unresolved_fact_ids:
+      - "FACT-arxiv-daily-push-OPERATIONAL-EVIDENCE"
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
   delivery_evidence:
-    status: "VERIFIED"
+    status: "FAILED"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
@@ -61,54 +64,54 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 1
     legacy_unbound_events: 54
-    precommit_pending_events: 24
+    precommit_pending_events: 25
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "VERIFIED"
-  release_gate: "ARXIV_PRODUCTION_ACCEPTED"
-  blocker_ids: []
+  status: "FAILED"
+  release_gate: "STRICT_ARXIV_PRODUCTION_ACCEPTANCE_REOPENED_PENDING_S1P5T03R_CLOUD_CI"
+  blocker_ids:
+    - "ADP-PHASE8-VIDEO-001"
+    - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
+    - "FACT-arxiv-daily-push-OPERATIONAL-EVIDENCE"
 next_executable_task:
-  task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"
-  status: "ready"
-  reason: "Refine the daily email front-end into a human-scannable Chinese layout with compact subject, 12-second video link, actionable time guidance, concise evidence, and candidate queue summary while keeping ROI scoring in backend artifacts."
+  task_id: "S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE"
+  status: "in_progress"
+  reason: "Reopen strict Stage 1 historical evidence by replaying 30 past real arXiv as-of dates and reconciling the persistent CONTENT_LEDGER."
   acceptance_ids:
-    - "ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"
-  owner: "content_owner + product_owner"
-  human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_fmt_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_notifications.py -q` and attach the listed evidence refs."
-  stale_candidates:
-    -
-      task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
-      reason: "Legacy Phase 11 blocked trial task is superseded by V5/V6 Stage 1 accepted evidence; production variable enablement is tracked as a separate fail-closed operational action."
+    - "ADP-ACC-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY"
+  owner: "content_owner + engineering_owner + operations_owner"
+  human_owner_role: "content_owner + engineering_owner + operations_owner"
+  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_real_replay_tests5 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_real_replay.py -q` and attach the listed evidence refs."
+  stale_candidates: []
 owner_decision:
   required: true
-  decision_id: "DEC-arxiv-daily-push-V5-FRONTSTAGE-001"
+  decision_id: "DEC-arxiv-daily-push-V6-S1P5T03R-001"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否继续优化 arXiv 邮件前台模板，但不阻塞已通过的 Stage 1 arXiv 生产验收。"
-  question: "是否继续优化 arXiv 邮件前台模板，但不阻塞已通过的 Stage 1 arXiv 生产验收。"
-  human_owner_role: "content_owner + product_owner"
-  human_assignment_status: "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT"
-  current_recommendation: "A: defer template redesign until Stage 1 acceptance evidence is synchronized"
-  option_a: "保留当前可运行邮件模板，先完成 Stage 1 accepted 证据同步和生产开关核对。"
-  option_b: "进入邮件前台模板优化，按人类刻度、中文讲解密度和可操作性重做布局。"
-  option_c: "跳过模板优化直接扩大到 Stage 2；不推荐，因为用户已明确不满意前台体验。"
+  decision_question: "是否继续执行 S1P5T03-R，在 GitHub/cloud runner 上补跑过去 30 个真实 arXiv as-of date 并持久化 CONTENT_LEDGER。"
+  question: "是否继续执行 S1P5T03-R，在 GitHub/cloud runner 上补跑过去 30 个真实 arXiv as-of date 并持久化 CONTENT_LEDGER。"
+  human_owner_role: "content_owner + engineering_owner + operations_owner"
+  human_assignment_status: "CODEX_CAN_CONTINUE_WITH_V6_CONTRACT"
+  current_recommendation: "A: complete S1P5T03-R cloud backfill before restoring strict ARXIV_PRODUCTION_ACCEPTED"
+  option_a: "继续 S1P5T03-R，等待 PR CI 生成 30 天真实 backfill artifact 并核对 CONTENT_LEDGER。"
+  option_b: "暂停 strict acceptance，保留本地控制跑和代码但不恢复 production accepted。"
+  option_c: "跳到邮件模板或 Stage 2；不推荐，因为用户已明确要求先补真实 30 天历史数据。"
   options:
-    - "保留当前可运行邮件模板，先完成 Stage 1 accepted 证据同步和生产开关核对。"
-    - "进入邮件前台模板优化，按人类刻度、中文讲解密度和可操作性重做布局。"
-    - "跳过模板优化直接扩大到 Stage 2；不推荐，因为用户已明确不满意前台体验。"
-  estimated_effort: "P1; content/product iteration after acceptance"
-  estimated_cost_or_resource: "local rendering tests and one controlled manual email if template changes"
-  expected_benefit: "把已可运行的 arXiv 交付继续提升为高信息密度教学邮件，而不把模板问题误判为 Stage 1 acceptance blocker。"
-  principal_risks: "邮件可读性不足、信息密度低、过早进入 Stage 2、误开启生产定时"
-  evidence_required: "email render tests, scheduled_execution regression, controlled manual SMTP evidence if frontstage changes"
-  decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "Stage 1 arXiv acceptance remains recorded, but human-facing email quality stays below owner preference."
-  unblock_task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"
+    - "继续 S1P5T03-R，等待 PR CI 生成 30 天真实 backfill artifact 并核对 CONTENT_LEDGER。"
+    - "暂停 strict acceptance，保留本地控制跑和代码但不恢复 production accepted。"
+    - "跳到邮件模板或 Stage 2；不推荐，因为用户已明确要求先补真实 30 天历史数据。"
+  estimated_effort: "P0; cloud runner evidence and ledger reconciliation"
+  estimated_cost_or_resource: "GitHub Actions ubuntu-latest, live arXiv Atom API access, compact text artifacts only"
+  expected_benefit: "把一次性实时发送成功与长期候选队列/已讲未讲账本闭环区分开，避免伪 accepted。"
+  principal_risks: "arXiv API throttling, cloud artifact mismatch, CONTENT_LEDGER drift, premature production schedule enablement"
+  evidence_required: "GitHub Actions run id, artifact id, 30/30 replay report, CONTENT_LEDGER selected/queued/email/artifact rows"
+  decision_deadline_or_priority: "P0"
+  consequence_of_no_decision: "Strict Stage 1 remains reopened and ARXIV_PRODUCTION_ACCEPTED must not be restored."
+  unblock_task_id: "S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE"
   acceptance_ids:
-    - "ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"
+    - "ADP-ACC-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-23T20:45:00+10:00"
+  last_reviewed_at: "2026-06-23T22:15:00+10:00"

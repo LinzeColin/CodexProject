@@ -6,19 +6,19 @@
 - product_version: `0.23.0`
 - current_stage: `S1 - arXiv 单源完整纵向切片与生产验收`
 - current_phase: `S1P5 - 新电脑/云端部署、30 日重放、2 日真实运行与 Stage 1 验收`
-- current_task: `S1P5T04 - 连续 2 个真实自然日与 Stage 1 验收`
-- current_gate: `ARXIV_PRODUCTION_ACCEPTED`
-- next_unique_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`
+- current_task: `S1P5T03-R - REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE`
+- current_gate: `STRICT_ARXIV_PRODUCTION_ACCEPTANCE_REOPENED_PENDING_S1P5T03R_CLOUD_CI`
+- next_unique_task: `S1P5T03-R-PR-CI-CLOUD-BACKFILL-ARTIFACT`
 - roadmap_version: `V6`
 - roadmap_sha256: `76b2d29a6d5cd62de472f1a8c265a89fcf03dc7031f7d4e209f85c650b498f10`
-- progress: `Stage 1 accepted; Stage 2 not started`
-- blockers: `scheduled production variables/secrets not verified or enabled in this run; email frontstage quality deferred`
+- progress: `S1P5T03-R local control pass; cloud PR artifact pending; Stage 2 not started`
+- blockers: `GitHub Actions/cloud runner 30-day real backfill artifact not yet verified; production schedule disabled; email frontstage quality deferred`
 
 ## Stage Roadmap
 
 | Stage | Goal | Phase / Task | 工作量 | Exit Gate | 当前状态 |
 |---|---|---:|---:|---|---|
-| `S1` | arXiv 单源完整纵向切片与生产验收 | 5 / 19 | 30.0% | `ARXIV_PRODUCTION_ACCEPTED` | completed |
+| `S1` | arXiv 单源完整纵向切片与生产验收 | 5 / 19 | 30.0% | `ARXIV_PRODUCTION_ACCEPTED` | in_progress |
 | `S2` | 逐来源、逐板块晋升与全系统生产验收 | 7 / 30 | 70.0% | `PRODUCTION_ACCEPTED -> DAILY_OPERATION` | planned |
 
 ## Phase Roadmap
@@ -29,7 +29,7 @@
 | `S1P2` | 人工控制面与数据基础 | 4 | 6.5% | S1P1 通过 | `owner_controls.yaml`、人类查看文件、SQLite 统一模型、备份/恢复接口通过 | completed |
 | `S1P3` | arXiv 纵向切片核心 | 5 | 9.5% | S1P2 通过；仅允许 fixture 和小样本在线验证 | arXiv 从采集到 EvidencePacket/Claim/排序/队列全链可重复、可解释、可审计 | completed |
 | `S1P4` | 文本交付、邮件合同与本地运行代码 | 3 | 4.5% | S1P3 通过；低资源窗口 | B1 报告、邮件预览、调度/恢复/迁移包均通过低资源测试 | completed |
-| `S1P5` | 新电脑/云端部署、30 日重放、2 日真实运行与 Stage 1 验收 | 4 | 6.0% | S1P4 通过；GitHub/cloud runner 可用 | `ARXIV_PRODUCTION_ACCEPTED`，B1 arXiv 基线稳定 | completed |
+| `S1P5` | 新电脑/云端部署、30 日重放、2 日真实运行与 Stage 1 验收 | 4 | 6.0% | S1P4 通过；GitHub/cloud runner 可用 | `ARXIV_PRODUCTION_ACCEPTED`，B1 arXiv 基线稳定 | in_progress |
 | `S2P1` | B1 研究前沿来源逐源晋升 | 5 | 12.0% | `ARXIV_PRODUCTION_ACCEPTED` | B1 十来源完成来源级门禁 | planned |
 | `S2P2` | B2 顶级期刊晋升 | 4 | 6.5% | S2P1 核心框架稳定 | Nature、Science、The Lancet 主刊门禁通过 | planned |
 | `S2P3` | B3 中国 C0/C1 权威主干 | 4 | 8.5% | B1/B2 生产无回归 | 全国/中央来源、法律元数据、效力和版本关系通过 | planned |
@@ -59,8 +59,9 @@
 | `S1P4T03` | 本地调度、Watchdog、备份与迁移包 | 1.5% | tick/watchdog/backup、锁、heartbeat、bootstrap、Runbook | S1P4T02 通过 | 恢复、安装/卸载、补跑模拟通过 | completed |
 | `S1P5T01` | 新电脑 bootstrap 与资源/凭据预检 | 1.0% | CPU、RAM、磁盘、网络、SSL、SMTP、Codex 登录和 OS 调度 | S1P4 通过；目标 runner 可用 | 硬件/网络/凭据/权限有证据且秘密未泄漏 | completed |
 | `S1P5T02` | 真实 arXiv 单日全链预检与资源调优 | 1.0% | 真实抓取->数据库->评分->报告->邮件预览->状态账本 | S1P5T01 通过 | 一次完整真实 Run 成功，资源峰值可读 | completed |
-| `S1P5T03` | 30 个独立 arXiv 历史日重放与缺陷闭环 | 2.5% | 30 个 as-of 日、30 报告、30 邮件预览 | S1P5T02 通过 | 30/30 终态、未来泄漏 0、P0/P1=0 | completed |
-| `S1P5T04` | 连续 2 个真实自然日与 Stage 1 验收 | 1.5% | 验证真实调度、报告、邮件、恢复和验收 | S1P5T03 通过 | `ARXIV_PRODUCTION_ACCEPTED`，配置可回滚 | completed |
+| `S1P5T03` | 30 个独立 arXiv 历史日重放与缺陷闭环 | 2.5% | 30 个 as-of 日、30 报告、30 邮件预览 | S1P5T02 通过 | 30/30 终态、未来泄漏 0、P0/P1=0 | superseded_by_S1P5T03-R |
+| `S1P5T03-R` | 真实 arXiv 30 个历史 as-of date backfill 与账本闭环 | P0 | 30 个真实 daily input/report/email preview/queue ledger/CONTENT_LEDGER row | S1P5T03 口径纠偏 | PR CI artifact 30/30、真实 source id、无未来泄漏、无重复主讲、队列连续、P0/P1=0 | in_progress |
+| `S1P5T04` | 连续 2 个真实自然日与 Stage 1 验收 | 1.5% | 验证真实调度、报告、邮件、恢复和验收 | S1P5T03-R 通过 | `ARXIV_PRODUCTION_ACCEPTED`，配置可回滚 | in_progress |
 | `S2P1T01` | bioRxiv 与 medRxiv 晋升 | 2.5% | 生命科学和医学预印本 | Stage 1 通过 | 来源级门禁通过 | planned |
 | `S2P1T02` | PubMed 与 Europe PMC 增强源晋升 | 2.5% | 索引增强、PMID/DOI 对齐、开放全文和资助关系 | S2P1T01 或框架稳定 | 不重复生成原始论文 | planned |
 | `S2P1T03` | TechRxiv、ChemRxiv、EarthArXiv 晋升 | 2.5% | 工程、化学、材料、地球环境预印本 | 前两批来源门禁稳定 | 三个来源均可独立回退 | planned |
@@ -96,7 +97,8 @@
 
 | Event | 结果 | 证据 | 当前结论 |
 |---|---|---|---|
-| `EVENT-20260623-ADP-078` | completed | PR #82; run `28019921500`; artifact `7818287996` | `S1P5T04` 达到 `ARXIV_PRODUCTION_ACCEPTED`，生产定时仍 fail-closed |
+| `EVENT-20260623-ADP-079` | in_progress | local control run `/tmp/adp-real-replay-20260623`; pending PR CI artifact `adp-s1p5t03-real-arxiv-30-day-backfill` | 当前推进到 `S1P5T03-R`；strict `ARXIV_PRODUCTION_ACCEPTED` 待云端 30 天真实 backfill 证据恢复 |
+| `EVENT-20260623-ADP-078` | superseded_for_strict_gate | PR #82; run `28019921500`; artifact `7818287996` | 证明一次性云端实时抓取/排序/生成链路，但不证明 30 天真实历史 backfill 与 CONTENT_LEDGER 闭环 |
 
 ## 停止条件
 
