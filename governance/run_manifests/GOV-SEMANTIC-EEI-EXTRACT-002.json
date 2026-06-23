@@ -4,12 +4,13 @@
   ],
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "changed_files_actual": [
-    ".github/workflows/project-governance.yml",
     "EEI/CHANGELOG.md",
     "EEI/CHECKSUMS.sha256",
     "EEI/artifacts/release_evidence_t1211.json",
     "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
     "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
+    "EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json",
     "EEI/artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
     "EEI/docs/governance/ASSURANCE_STATUS.yaml",
     "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
@@ -24,24 +25,29 @@
     "EEI/docs/governance/model_registry.yaml",
     "EEI/docs/governance/parameter_registry.csv",
     "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
+    "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
+    "EEI/scripts/validate_a202_operator_review_packet.py",
     "EEI/scripts/validate_model_config.py",
+    "EEI/tests/unit/test_official_source_live_capture.py",
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
     "README.md",
     "governance/binding_backlog.yaml",
     "governance/projects.yaml",
+    "governance/run_manifests/GOV-EEI-T1301-A202-REVIEW-QUEUE-20260623.json",
     "governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-002.json",
     "scripts/governance_setup_doctor.py",
     "scripts/validate_information_quality.py",
     "tests/governance/test_project_governance_validator.py"
   ],
   "changed_files_declared": [
-    ".github/workflows/project-governance.yml",
     "EEI/CHANGELOG.md",
     "EEI/CHECKSUMS.sha256",
     "EEI/artifacts/release_evidence_t1211.json",
     "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
     "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
+    "EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json",
     "EEI/artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
     "EEI/docs/governance/ASSURANCE_STATUS.yaml",
     "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
@@ -56,12 +62,16 @@
     "EEI/docs/governance/model_registry.yaml",
     "EEI/docs/governance/parameter_registry.csv",
     "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
+    "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
+    "EEI/scripts/validate_a202_operator_review_packet.py",
     "EEI/scripts/validate_model_config.py",
+    "EEI/tests/unit/test_official_source_live_capture.py",
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
     "README.md",
     "governance/binding_backlog.yaml",
     "governance/projects.yaml",
+    "governance/run_manifests/GOV-EEI-T1301-A202-REVIEW-QUEUE-20260623.json",
     "governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-002.json",
     "scripts/governance_setup_doctor.py",
     "scripts/validate_information_quality.py",
@@ -69,7 +79,8 @@
   ],
   "ci_attestation_subject": "commit pending until push; expected Project Governance and EEI validation workflows",
   "ci_run_reference": "PENDING_GITHUB_ACTIONS_AFTER_PUSH",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:1842a55eb1ce30f9fd57d18d098a5d35b210fa7466281bbe41c38cc32a8ebe27",
+  "content_tree_file_count_excluding_this_manifest": 34,
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:c42ded67b9458178a54ff397926cdce24105cabb909ba14c74db71d305901b8b",
   "evidence_refs": [
     "EEI/config/ui/motion-tokens.json",
     "EEI/scripts/validate_model_config.py",
@@ -80,7 +91,7 @@
   ],
   "fact_level": "EXTRACTED",
   "finished_at": "LOCAL_VALIDATION_PASS_PENDING_CI",
-  "generated_at": "2026-06-23T04:05:00Z",
+  "generated_at": "2026-06-23T10:20:00Z",
   "implementation_base_sha": "df6f59f76014825d9aa028a38013d10ec23fc228",
   "iteration_id": "ITER-20260623-011",
   "model_delta": "No scoring formula, graph traversal, extraction model, model weight, threshold value or runtime default changed; FORM-012 deterministic config lookup now has machine implementation refs and evidence hash.",
@@ -88,7 +99,8 @@
     "This manifest proves active parameter/formula machine source binding only.",
     "PARAM-052 through PARAM-058 extract from EEI/config/ui/motion-tokens.json.",
     "FORM-012 is treated as a deterministic configuration lookup contract, not a scoring formula.",
-    "A026/A027, A202, A209, A210 and release-manager activation remain open production gates."
+    "A026/A027, A202, A209, A210 and release-manager activation remain open production gates.",
+    "Updated changed-file coverage after T1301/A202 operator review candidate queue binding."
   ],
   "observed_results": [
     "EEI_SEMANTIC_PARAMETERS_CHECKED_68",
@@ -127,18 +139,19 @@
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-governance-pycache python3 -m pytest -q tests/governance/test_project_governance_validator.py -p no:cacheprovider",
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-semantic-pycache python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
     ".venv/bin/python scripts/manage_clean_room_release.py validate",
-    ".venv/bin/python scripts/manage_release_artifacts.py validate"
+    ".venv/bin/python scripts/manage_release_artifacts.py validate",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify"
   ],
   "test_results": [
     "semantic extractor PASS semantic_parameters_checked=68 semantic_formulas_checked=11",
     "project EEI semantic validator PASS errors 0 warnings 0",
     "balanced-v2 model config PASS",
     "supply-chain-v3 model config PASS",
-    "root governance focused tests PASS 134 passed and 4 subtests",
+    "root governance focused tests PASS 136 passed and 4 subtests",
     "changed-only semantic governance PASS errors 0 warnings 0",
     "clean-room release validate PASS package_paths 412 package_sha256 7c6ef1f4b4b59b422ae446feac66c00eb71222c7308667355e835d62e4180c32",
     "release artifacts validate PASS manifest_paths 419 checksum_paths 418 remote_status PENDING",
-    "make verify PASS unit tests 68/68 typecheck PASS ruff PASS"
+    "make verify PASS: release artifacts valid, browser scale 10k/100k/1m PASS, soak smoke PASS, operator soak smoke PASS, secret scan PASS, UI copy PASS, ruff PASS, web typecheck PASS, unit tests PASS 69/69"
   ],
   "updated_governance_files": [
     "governance/projects.yaml",
@@ -147,6 +160,5 @@
     "EEI/docs/governance/development_events.jsonl",
     "EEI/docs/governance/formula_registry.yaml",
     "EEI/docs/governance/parameter_registry.csv"
-  ],
-  "content_tree_file_count_excluding_this_manifest": 29
+  ]
 }

@@ -12,10 +12,10 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version status: `provisional`
 - Current phase: `C`
 - Current gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
-- Confirmed iteration count: 35
+- Confirmed iteration count: 36
 - Reconstructed development event count: 3
-- Current task: `GOV-SEMANTIC-EEI-001 active parameter/formula machine binding closure`
-- Blockers: EEI active parameter/formula semantic coverage is now machine-verified for source binding, including PARAM-052 through PARAM-058 motion tokens and FORM-012 deterministic configuration lookup; this does not close production release gates. T1301/A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending; T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`; A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass; A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver.
+- Current task: `TASK-T1301 A202 operator review candidate queue binding`
+- Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
 
 ## Phase Matrix
 
@@ -799,6 +799,31 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the validator/registry/project-governance changes, reset `GOV-SEMANTIC-EEI-001` to in_progress, regenerate governance/release artifacts, and rerun semantic validation.
 - Next step: regenerate governance dashboards and release artifacts, run full EEI/root validation, then commit/push and bind CI.
 
+### `ITER-20260623-012`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `7460ae9329baaf79cf7a2ef1023009e199809aab`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`
+- Acceptance IDs: `ACC-A202`
+- Goal: bind the A202 operator/legal review packet directly to Golden Vertical relationship candidates and required official-source anchors, so human review receives the exact candidate/source decision queue instead of only selected live-capture anchor summaries.
+- Assumptions: `data/golden_vertical_fact_candidates.json` is the current machine source for Golden Vertical relationship candidates; selected live-capture anchors remain separate from publication-level `GV-SNAPSHOT-*` source anchors; the packet is review input only.
+- Files read: A202 operator packet validator, selected live capture artifact, Golden Vertical fact candidates, A202 unit tests, release decision bundle validator outputs, traceability matrix, delivery task registry, V5 synchronization record and current release-manager preflight.
+- Files changed: `EEI/scripts/validate_a202_operator_review_packet.py`, `EEI/tests/unit/test_official_source_live_capture.py`, `EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json`, dependent A202/A210 release-decision and T1303 preflight artifacts, this ledger, delivery task registry, traceability matrix, MVP development record, V5 synchronization record, version matrix, changelog, development event log and run manifests.
+- Model changes: no scoring formula, graph traversal, extraction model, model weight, threshold value or active runtime parameter changed.
+- Parameter changes: no active parameter value changed; `operator-review-packet` governance profile version moves from `1` to `2` because the packet now exposes `relationship_candidate_review_queue`.
+- Commands run: focused py_compile, focused ruff, `pytest tests/unit/test_official_source_live_capture.py`, A202 operator packet generate/validate, A202/A210 release-decision bundle generate/validate, signed fixture validation, release-manager activation preflight generate/validate, JSON syntax validation.
+- Test results: A202 operator review candidate queue unit tests PASS 13/13; py_compile PASS; focused ruff PASS; packet generate/validate PASS; release-decision bundle generate/validate PASS; signed fixture validation PASS with `release_ready=false` and `GV-SNAPSHOT-001..004` candidate-source coverage; release-manager preflight generate/validate PASS with release activation still blocked.
+- Successes: the review packet now lists `GV-FACT-001` and `GV-FACT-002`, their required source anchors `GV-SNAPSHOT-001..004`, required decision fields for source-license review, passage-level relationship review, owner sign-off and legal clearance, and fail-closed publication controls for every candidate.
+- Failures: none in focused local validation so far; full governance/release validation and GitHub CI still pending.
+- Decisions: keep A202, A209, A210, A026/A027 and release-manager activation open; do not treat candidate queue evidence as legal/source/owner clearance or public relationship publication.
+- Remaining risks: real source-license review, passage-level human approval, production owner sign-off, legal/brand clearance, A026/A027 production gold labels, A209 24h soak and final release-manager activation remain incomplete.
+- Rollback: revert the operator-review packet validator/test/artifact changes plus dependent A202/A210 and T1303 preflight artifacts and governance records, regenerate clean-room/release artifacts, and rerun the documented A202 validation subset.
+- Next step: regenerate clean-room/release artifacts and run focused plus root governance validation, then commit/push and bind CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -842,6 +867,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260623-009`: local T905/A119-A120 migration rollback and clean-start release rehearsal; remote PostgreSQL CI binding remains pending.
 - `EVENT-20260623-010`: local T1301/A202 candidate-source-anchor coverage for signed release decision bundles; A202/A209/A210 remain open.
 - `EVENT-20260623-011`: local GOV-SEMANTIC-EEI-001 closure for active parameter/formula machine extraction; production release gates remain open.
+- `EVENT-20260623-012`: local T1301/A202 operator review candidate queue binding; A202/A209/A210 remain open.
 
 ## Unknown Historical Periods
 

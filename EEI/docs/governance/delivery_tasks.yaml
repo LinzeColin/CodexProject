@@ -3350,7 +3350,7 @@ tasks:
     legacy_task_id: "T1301"
     phase: "C"
     objective: "Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical"
-    scope: "Current T1301/A202 implementation slice adds candidate-source-anchor coverage to the fail-closed A202/A210 release decision bundle on top of the operator/legal review packet, source-withdrawal/counter-evidence rehearsal and deterministic operation_logs audit path. Signed passage-level reviews must now cover each Golden Vertical relationship candidate's primary and supporting source anchors from data/golden_vertical_fact_candidates.json before production owner publication can proceed; A209 24h soak remains a separate background gate."
+    scope: "Current T1301/A202 implementation slice binds the fail-closed operator/legal review packet to the Golden Vertical relationship candidate queue from data/golden_vertical_fact_candidates.json, exposing GV-FACT-001..002 and required GV-SNAPSHOT-001..004 official-source anchors for human/legal review. It also keeps the candidate-source-anchor release-decision bundle coverage, source-withdrawal/counter-evidence rehearsal and deterministic operation_logs audit path. Signed passage-level reviews must cover each Golden Vertical relationship candidate's primary and supporting source anchors before production owner publication can proceed; A209 24h soak remains a separate background gate."
     non_scope: "Does not claim real source-license review, passage-level relationship approval, legal clearance, real operator production owner approval, trademark/market clearance, relationship publication, public brand launch, production MVP completion, A209 closure, or A202 closure."
     status: "in_progress"
     dependencies: []
@@ -3382,6 +3382,8 @@ tasks:
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest -q tests/integration/test_database_migrations.py"
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/pytest tests/unit/test_official_source_live_capture.py -q"
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_a202_operator_review_packet.py tests/unit/test_official_source_live_capture.py"
+      - "PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache .venv/bin/python -m py_compile scripts/validate_a202_operator_review_packet.py tests/unit/test_official_source_live_capture.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/unit/test_official_source_live_capture.py -p no:cacheprovider"
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_a202_operator_review_packet.py validate --packet artifacts/tests/a202/t1301_operator_review_packet_contract.json"
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_decision_bundle.py generate"
       - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_decision_bundle.py validate"
@@ -3419,6 +3421,8 @@ tasks:
       - "A202 source-withdrawal fail-closed rehearsal remote PostgreSQL CI PENDING: local host has no DATABASE_URL"
       - "A202 candidate-source-anchor release bundle contract local validation PASS: unit tests PASS 6/6, py_compile PASS, focused ruff PASS, generate/validate PASS, template validation PASS with release_ready=false, signed fixture validation PASS with GV-SNAPSHOT-001..004 coverage and release_ready=false"
       - "A202 candidate-source-anchor release bundle governance validation PASS: information-quality PASS; root governance tests PASS 130/130"
+      - "A202 operator review candidate queue local validation PASS: py_compile PASS, focused ruff PASS, unit tests PASS 13/13, packet generate/validate PASS"
+      - "A202 dependent release-decision bundle and release-manager preflight regeneration PASS; release_ready=false and release-manager activation remains blocked"
     evidence_refs:
       - "EEI/data/golden_vertical_fact_candidates.json"
       - "EEI/tests/integration/test_database_migrations.py"

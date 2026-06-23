@@ -4960,3 +4960,51 @@ Status: LOCAL VALIDATED; RELEASE GATES STILL OPEN
 
 - Revert the model-config validator, parameter/formula registry, governance project status, task status, and event/ledger records.
 - Regenerate governance, clean-room, and release artifacts, then rerun semantic validation.
+
+## 2026-06-23 - T1301/A202 operator review candidate queue binding
+
+Status: LOCAL FOCUSED VALIDATED; A202/A209/A210/A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Extended `scripts/validate_a202_operator_review_packet.py` so the A202 operator/legal review packet reads `data/golden_vertical_fact_candidates.json`.
+- Added `relationship_candidate_review_queue` to `artifacts/tests/a202/t1301_operator_review_packet_contract.json`.
+- Bound `GV-FACT-001` and `GV-FACT-002` to required official-source anchors `GV-SNAPSHOT-001..004`, with required source-license, passage-level relationship, production-owner and legal-clearance decision fields.
+- Preserved fail-closed publication controls: no relationship fact publication, no graph-edge publication, no release clearance and no production approval.
+- Regenerated the dependent A202/A210 release-decision bundle and T1303 release-manager activation preflight so downstream hashes remain current.
+
+### Acceptance mapping
+
+- T1301 -> A202.
+- A202 remains `IN_PROGRESS`: this is a review handoff queue, not real source-license review, passage approval, production owner approval, legal clearance, brand clearance, relationship publication or release-manager activation.
+- A209 24h soak remains a background release gate and does not block this bounded A202 review-packet hardening.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold value or active runtime parameter changed.
+- `operator-review-packet` governance profile version moves from `1` to `2` because the packet now exposes candidate-level review requirements.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache .venv/bin/python -m py_compile scripts/validate_a202_operator_review_packet.py tests/unit/test_official_source_live_capture.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_a202_operator_review_packet.py tests/unit/test_official_source_live_capture.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/unit/test_official_source_live_capture.py -p no:cacheprovider`: PASS, 13 passed.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_a202_operator_review_packet.py generate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_a202_operator_review_packet.py validate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_decision_bundle.py generate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_decision_bundle.py validate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_decision_bundle.py validate-bundle --bundle tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json`: PASS with `release_ready=false`.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_manager_activation.py generate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_manager_activation.py validate`: PASS with release-manager activation blocked.
+
+### Remaining gaps
+
+- Real source-license review, passage-level human approval, production owner sign-off, legal/brand clearance and relationship publication are still absent.
+- Production gold labels and A209 24h soak evidence remain external gates.
+- The operator review queue is machine-generated review input and cannot be treated as public-use clearance.
+
+### Rollback
+
+- Revert `scripts/validate_a202_operator_review_packet.py`, `tests/unit/test_official_source_live_capture.py`, the regenerated A202/A210 and T1303 preflight artifacts, and the governance records for this iteration.
+- Regenerate development, clean-room and release artifacts, then rerun the A202 validation subset and root governance validation.
