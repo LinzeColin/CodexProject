@@ -1,0 +1,2742 @@
+schema_version: "codexproject.project.v1"
+project_id: "OpenAIDatabase"
+project_name: "OpenAI Database Memory Analysis"
+summary: "OpenAIDatabase 是本地记忆分析、脱敏、检索、Memory Atlas、writeback proposal 与 personalization routing 系统；本迁移保留记忆治理真相，不把 partial semantic extraction、blocked calibration/privacy evidence 或 draft proposal 写成安全生产记忆能力。"
+version: "0.2.0"
+fact_level: "EXTRACTED"
+owner_role: "privacy_owner + product_owner"
+current_status: "failed_delivery_readiness"
+limitations:
+  -
+    statement: "实现一致性为 PARTIAL：28/92 active parameters 和 10/11 active formulas 有机器抽取/指纹证据；64 个 active parameters 与 FORM-010 仍为 HUMAN_REVIEW_REQUIRED。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+    unknown_task_ids:
+      - "GOV-SEMANTIC-OAIDB-001"
+  -
+    statement: "delivery_readiness 仍为 FAILED；TASK-OAI-B-001 因启发式权重/阈值缺校准证据而 blocked，隐私 owner 与 product owner 决策仍必需。"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+      - "EVID-OAIDB-DELIVERY-TASKS"
+      - "EVID-OAIDB-OWNER-STATUS"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+  -
+    statement: "本迁移不改 memory extraction、redaction、retrieval、Memory Atlas scoring、Codex sync、source registry、writeback proposal、personalization export、配置、数据、测试 fixture、前端、脚本或运行行为。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OAIDB-DEVELOPMENT-EVENTS"
+      - "EVID-REVIEW9-S5PBT03-MANIFEST"
+    unknown_task_ids: []
+features:
+  -
+    feature_id: "FEAT-OAIDB-001"
+    name: "记忆候选分类、脱敏与主动记忆"
+    description: "从脱敏 source chunks 生成 pending/active memory，并提供只读 SQLite search/fetch；这不证明可安全持久写入。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+      - "MOD-002"
+      - "MOD-003"
+      - "MOD-004"
+    formula_ids:
+      - "FORM-001"
+      - "FORM-002"
+      - "FORM-003"
+      - "FORM-004"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+    requirement_ids:
+      - "REQ-OAI-001"
+      - "REQ-OAI-002"
+      - "REQ-OAI-003"
+      - "REQ-OAI-004"
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:512"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:51"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1701"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2055"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:87"
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:112"
+    evidence_refs:
+      - "EVID-OAIDB-TRACEABILITY-MATRIX"
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-OAIDB-002"
+    name: "Memory Atlas 权重、ROI 与活动评分"
+    description: "计算 memory node weight、leverage、staleness 和 contribution activity；启发式权重/阈值仍缺校准证据。"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-005"
+      - "MOD-006"
+      - "MOD-007"
+    formula_ids:
+      - "FORM-005"
+      - "FORM-006"
+      - "FORM-007"
+    parameter_ids:
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+    requirement_ids:
+      - "REQ-OAI-005"
+      - "REQ-OAI-006"
+      - "REQ-OAI-007"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:380"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:387"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:462"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-TRACEABILITY-MATRIX"
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-OAIDB-003"
+    name: "Codex 本地行为同步与数据源注册"
+    description: "同步本地 Codex 行为摘要并注册 public snapshot/source registry，避免 planned source 被当作真实活动。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-008"
+      - "MOD-009"
+    formula_ids:
+      - "FORM-008"
+      - "FORM-009"
+    parameter_ids:
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+    requirement_ids:
+      - "REQ-OAI-008"
+      - "REQ-OAI-009"
+    code_refs:
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:279"
+      - "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py:86"
+    test_refs:
+      - "OpenAIDatabase/tests/test_codex_memory_sync.py:20"
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-TRACEABILITY-MATRIX"
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-OAIDB-004"
+    name: "Writeback proposal 版本链"
+    description: "创建本地 draft memory change proposals、revision、rollback 与 agent/human apply gate；FORM-010 仍需人工复核。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-010"
+    formula_ids:
+      - "FORM-010"
+    parameter_ids:
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+    requirement_ids:
+      - "REQ-OAI-010"
+    code_refs:
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2328"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_release_audit.py:24"
+    evidence_refs:
+      - "EVID-OAIDB-TRACEABILITY-MATRIX"
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-OAIDB-005"
+    name: "Personalization export 与资源路由"
+    description: "生成 ChatGPT/Codex personalization exports、资源路由、evaluation harness 和 run logs；仍受隐私 owner gate 约束。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-011"
+    formula_ids:
+      - "FORM-011"
+    parameter_ids:
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
+    requirement_ids:
+      - "REQ-OAI-011"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_personalization_exports.py:1;OpenAIDatabase/scripts/route_agent_resources.py:1;OpenAIDatabase/scripts/evaluate_personalization_context.py:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:1"
+    evidence_refs:
+      - "EVID-OAIDB-TRACEABILITY-MATRIX"
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+models:
+  -
+    model_id: "MOD-001"
+    name: "Memory candidate classification and tiering"
+    purpose: "Convert redacted source chunks into pending memory candidates with category, importance, validity, confidence, sensitivity, tier, evidence, and dedupe behavior."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-001"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:512"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:637"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:724"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    model_id: "MOD-002"
+    name: "Secret redaction and sensitivity policy"
+    purpose: "Detect secrets and PII, redact unsafe text, assign sensitivity, and emit secret_ref metadata instead of plaintext credentials."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-002"
+    parameter_ids:
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:51"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:271"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:661"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    model_id: "MOD-003"
+    name: "Active memory promotion and retrieval weight"
+    purpose: "Build active memory rows from candidates or review overrides and map tiers to retrieval weights and use constraints."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-003"
+    parameter_ids:
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1672"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1701"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1741"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:46"
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:87"
+    evidence_refs:
+      - "EVID-OAIDB-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    model_id: "MOD-004"
+    name: "Read-only SQLite search and fetch"
+    purpose: "Index redacted active and pending memory records and provide read-only search/fetch with secret filtering."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-004"
+    parameter_ids:
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1993"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2055"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2083"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:112"
+    evidence_refs:
+      - "EVID-OAIDB-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    model_id: "MOD-005"
+    name: "Memory Atlas weight score"
+    purpose: "Compute memory node weight from tier, importance, and confidence and map it into visual node size, brightness, orbit, and graph edge weights."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-005"
+    parameter_ids:
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:46"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:380"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:648"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    model_id: "MOD-006"
+    name: "ROI leverage and staleness score"
+    purpose: "Compute leverage score, staleness status, and recommended action for memory nodes."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-006"
+    parameter_ids:
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:387"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    model_id: "MOD-007"
+    name: "Contribution activity score"
+    purpose: "Aggregate conversations, messages, memory increments, decisions, tool calls, errors, and aborts into daily, weekly, monthly, and yearly activity levels."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-007"
+    parameter_ids:
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:462"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:530"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    model_id: "MOD-008"
+    name: "Codex local behavior summary"
+    purpose: "Summarize local Codex sessions into redacted manifests, daily activity, and personalization recommendations."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-008"
+    parameter_ids:
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+    code_refs:
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:43"
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:279"
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:334"
+    test_refs:
+      - "OpenAIDatabase/tests/test_codex_memory_sync.py:20"
+    evidence_refs:
+      - "EVID-OAIDB-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    model_id: "MOD-009"
+    name: "Data source registry and public snapshot gate"
+    purpose: "Register active and planned data sources, enforce canonical event fields, and keep planned sources out of homepage selector and fake activity."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-009"
+    parameter_ids:
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:156"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:1208"
+      - "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py:86"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+      - "OpenAIDatabase/tests/test_memory_atlas_acceptance_audit.py"
+    evidence_refs:
+      - "EVID-OAIDB-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    model_id: "MOD-010"
+    name: "Writeback proposal version chain"
+    purpose: "Create local draft memory change proposals with diff, revision, parent, rollback, safety metadata, and agent-apply gate."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    formula_ids:
+      - "FORM-010"
+    parameter_ids:
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:1227"
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2328"
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2374"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+      - "OpenAIDatabase/tests/test_memory_atlas_release_audit.py:24"
+    evidence_refs:
+      - "EVID-OAIDB-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    model_id: "MOD-011"
+    name: "Personalization export and resource routing"
+    purpose: "Map the three-layer private context source into ChatGPT and Codex personalization exports, route future agents to the smallest sufficient resources, and log sync/export/evaluation/agent runs."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-011"
+    parameter_ids:
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_personalization_exports.py:1"
+      - "OpenAIDatabase/scripts/route_agent_resources.py:1"
+      - "OpenAIDatabase/scripts/evaluate_personalization_context.py:1"
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:407"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:1"
+    evidence_refs:
+      - "EVID-OAIDB-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+formulas:
+  -
+    formula_id: "FORM-001"
+    model_id: "MOD-001"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "candidate = None if no trigger match or normalized statement length < 8. Else classify_chunk uses priority temporary_or_sensitive unless temp_is_rule, deprecated_info, security_boundary, decision, answering_rule, workflow, project_context, preference, else fact. Importance maps security_boundary/decision/answering_rule to 高, workflow/project_context/preference/deprecated_info to 中, else 低. Validity maps temporary_or_sensitive to 临时, project_context to 项目结束前, workflow/preference to 半年, else 长期. Confidence is high if trigger_count >= 3 or importance == 高, medium if trigger_count >= 1, else low. assign_memory_tier returns 临时 for sensitive/secret or 临时 validity, 核心画像 for preference/answering_rule/core profile regex, 一般 for decision/project_context/workflow/security_boundary or long/project/half-year validity, else 临时. merge key is category + normalized statement; evidence is capped at 10; medium confidence promotes to high after evidence_count >= 3."
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:512"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:637"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:724"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:735"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:68"
+    evidence_refs:
+      - "EVID-OAIDB-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    formula_id: "FORM-002"
+    model_id: "MOD-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "redact_text replaces SECRET_PATTERNS and PII_PATTERNS findings before candidate persistence. In make_candidate, secret_types excluding email/phone produce secret_ref = stable_id('secretref', source + conversation_id + normalized redacted text + secret types) and sensitivity secret. Non-secret defaults to private. temporary_or_sensitive becomes sensitive unless already secret and statement is replaced with a redacted_source_hash prefix of sha256(redacted)[:16]. OpenAI-export decision/project/workflow/deprecated candidates without meta_context become sensitive. security_boundary becomes sensitive unless secret. secret_ref candidates receive credential_policy plaintext_in_git=false, agent_access authorized_local_secret_resolver_only, requires_user_authorization=true, local_resolver_required=true, trading boundary fail closed."
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:51"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:63"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:661"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:712"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    formula_id: "FORM-003"
+    model_id: "MOD-003"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "normalized_memory_tier first demotes code/config noise to 临时, then applies aliases 重要中长期->一般 and 一般短期->临时, else uses stored tier if valid, else assign_memory_tier. retrieval_weight maps 核心画像 to high, 一般 to medium, all other tiers to low. build_active_memory_rows copies each candidate, normalizes tier, applies curation override fields, sets status active, review_status active_auto_promoted_from_full_flow, activation_mode user_authorized_full_flow, and derives use_when/do_not_use_for from tier and secret status."
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1672"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1701"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1710"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1741"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:46"
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:87"
+    evidence_refs:
+      - "EVID-OAIDB-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    formula_id: "FORM-004"
+    model_id: "MOD-004"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "build_sqlite_index creates memory table and inserts active/candidate records except rows where sensitivity == secret. query_index builds WHERE sensitivity != secret plus AND over query terms where each term matches statement OR category OR source via LIKE. SQL order is date DESC, importance ASC and LIMIT limit*5. Post-filter keeps rows with SENSITIVITY_RANK <= rank(sensitivity_max) until limit. fetch_index returns not_found when absent, redacted_secret when record sensitivity is secret, otherwise the redacted record JSON."
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1993"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2055"
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2083"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:112"
+    evidence_refs:
+      - "EVID-OAIDB-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    formula_id: "FORM-005"
+    model_id: "MOD-005"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "tier_score = TIER_WEIGHT.get(normalize_tier(memory_tier), 0.25); importance_score = IMPORTANCE_WEIGHT.get(importance, 0.35); confidence_score = CONFIDENCE_WEIGHT.get(confidence, 0.6); weight_score = round(tier_score*0.5 + importance_score*0.3 + confidence_score*0.2, 4). Memory node visual size = round(4 + weight_score*8, 3); brightness = confidence score rounded to 3; orbit_radius = round(30 + (1 - weight_score)*76, 3); theme/tier edges use round(weight_score, 4)."
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:46"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:380"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:669"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    formula_id: "FORM-006"
+    model_id: "MOD-006"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "recency_days = today - date when date exists. sensitivity_penalty = 0.35 for sensitive or secret else 0.1. staleness_status = stale_short_term when validity == 临时 and recency_days > 30; needs_review when recency_days > 180; current otherwise when date exists; missing-date branch when date is absent. decision_impact = 1 for category decision else 0. leverage_score = round(max(0.0, memory_weight(row) + decision_impact*0.15 - sensitivity_penalty), 4). Recommended action maps 核心画像 to keep_high_weight, 一般 to review_for_project_linkage, stale or needs_review to keep_low_weight_or_refresh, else keep_as_context."
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:387"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    formula_id: "FORM-007"
+    model_id: "MOD-007"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "activity_score = conversation_count*5 + message_count + memory_count*3 + candidate_count + decision_count*4 + tool_call_count*2 + error_event_count + abort_count*2. activity_level = 0 if score <= 0 or max_score <= 0 else ceil(score/max_score*5) bounded 1..5. Quantile p = sorted_scores[min(n-1, max(0, ceil(p*n)-1))]. Daily range is filled from min to max date and then aggregated to week/month/year."
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:462"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:475"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:481"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:530"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    formula_id: "FORM-008"
+    model_id: "MOD-008"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "For each Codex session, topic_labels are topic rules with matched counts; signal_labels are signal rules with matched counts. activity_score = message_count + user_message_count*2 + tool_call_count*3 + len(topic_labels)*4 + error_event_count*2. Daily buckets sum session activity_score and derive activity_level = 0 if score <= 0 or max_score <= 0 else max(1, min(5, ceil(score*5/max_score))). Session output stores redacted thread/cwd/model metadata, topic labels, preference signals, top tool counts, and backup_policy redacted_summary_only_no_raw_transcript_no_plaintext_secret."
+    code_refs:
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:43"
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:54"
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:279"
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:334"
+    test_refs:
+      - "OpenAIDatabase/tests/test_codex_memory_sync.py:20"
+    evidence_refs:
+      - "EVID-OAIDB-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    formula_id: "FORM-009"
+    model_id: "MOD-009"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "load_data_source_registry returns {} unless schema_version == memory_atlas_data_source_registry.v1 and sources is a list. registry_source_map keeps sources with non-empty id. Acceptance requires sources memory_atlas and codex active; wechat, xiaohongshu, douyin planned; canonical required fields include source_id, record_id, occurred_at, record_type, summary, sensitivity, dedupe_key; homepage data_sources exactly all, memory_atlas, codex with labels 总数据源, ChatGPT, Codex; planned sources must remain registry-only and ingestion_status planned_no_real_data. Static summaries redact private/sensitive/source details before public snapshot."
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:156"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:1208"
+      - "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py:86"
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:271"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+      - "OpenAIDatabase/tests/test_memory_atlas_acceptance_audit.py"
+    evidence_refs:
+      - "EVID-OAIDB-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    formula_id: "FORM-010"
+    model_id: "MOD-010"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    expression: "saveProposal requires editable and non-empty draft text. proposal_id = atlas_<compactTimestamp(now)>_<stableHash(node.id:text:nodeProposalCount+1)>; status = draft_pending_agent_apply; revision = latest.revision + 1 or 1; parent_proposal_id = latest proposal id or null; rollback_unit = policy.rollback_unit or per_memory_version; safety direct_frontend_mutation_of_active_memory=false, requires_conflict_check=true, requires_agent_or_human_apply=true, forbidden_payload from policy or plaintext secrets/raw conversation text/record hashes/local absolute paths. createRollbackProposal uses latest and previous/target, action rollback_to_version, revision latest+1, parent latest, supersedes latest, rollback_to_proposal_id target, and rollback_to_revision target revision."
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:1227"
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2308"
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2328"
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2374"
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:4477"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+      - "OpenAIDatabase/tests/test_memory_atlas_release_audit.py:24"
+    evidence_refs:
+      - "EVID-OAIDB-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    formula_id: "FORM-011"
+    model_id: "MOD-011"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "build_export_payload loads agent_context_pack plus three_layer_context and resource_routes. It copies layer metadata, sync_required_targets, run_log_categories, startup/chatgpt/codex/project/taste routes, profile, memory, preferences, meta_data, behavior, data_sources, and safety flags. render_chatgpt writes Core Profile, Preferences And Taste, History And Patterns, Project And Decision Context, Future Agent Sync Rules, and Meta Rules. render_codex writes Startup Read Order, Codex Route, Required Sync Targets, Four Run Log Categories, and Agent Rules. route_resources selects exactly one route by intent or fails with valid_intents. evaluate checks required files, required export sections, sync targets, run log categories, and forbidden plaintext patterns. sync_codex_memory_data --build-atlas now rebuilds agent context and personalization exports after Codex-derived data refresh."
+    code_refs:
+      - "OpenAIDatabase/scripts/build_personalization_exports.py:1"
+      - "OpenAIDatabase/scripts/route_agent_resources.py:1"
+      - "OpenAIDatabase/scripts/evaluate_personalization_context.py:1"
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:407"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:1"
+    evidence_refs:
+      - "EVID-OAIDB-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+parameters:
+  -
+    parameter_id: "PARAM-001"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "TRIGGER_PATTERNS"
+    name: "candidate trigger regex set"
+    value: "answering_rule;preference;decision;project_context;workflow;security_boundary;deprecated_info;temporary_or_sensitive"
+    source: "EXTRACTED from code trigger map"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:68"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-002"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "category_priority"
+    name: "classification category priority"
+    value: "temporary_or_sensitive;deprecated_info;security_boundary;decision;answering_rule;workflow;project_context;preference;fact"
+    source: "EXTRACTED from classify_chunk if/elif order"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:512"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-003"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "importance_map"
+    name: "category to importance mapping"
+    value: "security_boundary;decision;answering_rule=高;workflow;project_context;preference;deprecated_info=中;else=低"
+    source: "EXTRACTED from classify_chunk"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:536"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-004"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "validity_map"
+    name: "category to validity mapping"
+    value: "temporary_or_sensitive=临时;project_context=项目结束前;workflow;preference=半年;else=长期"
+    source: "EXTRACTED from classify_chunk"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:543"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-005"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "confidence_high_trigger_count"
+    name: "high confidence trigger threshold"
+    value: "3"
+    source: "EXTRACTED from classify_chunk"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:552"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-006"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "min_candidate_statement_length"
+    name: "minimum normalized statement length"
+    value: "8"
+    source: "EXTRACTED from make_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:651"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-007"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "statement_truncate_limit"
+    name: "candidate statement truncate limit"
+    value: "420"
+    source: "EXTRACTED from make_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:650"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-008"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "merge_confidence_evidence_threshold"
+    name: "evidence count for confidence promotion"
+    value: "3"
+    source: "EXTRACTED from merge_candidates"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:747"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:46"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-009"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "merge_evidence_cap"
+    name: "max evidence rows kept per candidate"
+    value: "10"
+    source: "EXTRACTED from merge_candidates"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:745"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:46"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-010"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "review_status_default"
+    name: "generated candidate review status"
+    value: "pending"
+    source: "EXTRACTED from make_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:701"
+    config_refs:
+      - "OpenAIDatabase/config/memory_schema.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-011"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "SECRET_PATTERNS"
+    name: "secret detection regex set"
+    value: "openai_api_key;github_token;aws_access_key;private_key;bearer_token;credential_assignment"
+    source: "EXTRACTED from code"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:51"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-012"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "PII_PATTERNS"
+    name: "PII detection regex set"
+    value: "email;phone"
+    source: "EXTRACTED from code"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:63"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-013"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "SENSITIVITY_RANK"
+    name: "sensitivity rank map"
+    value: "public=0;private=1;sensitive=2;secret=3"
+    source: "EXTRACTED from code"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:49"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:112"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-014"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "redacted_source_hash_length"
+    name: "temporary sensitive hash prefix length"
+    value: "16"
+    source: "EXTRACTED from make_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:673"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-015"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "security_boundary_sensitivity"
+    name: "security boundary sensitivity rule"
+    value: "sensitive unless secret"
+    source: "EXTRACTED from make_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:676"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-016"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "credential_policy_template"
+    name: "secret_ref credential policy"
+    value: "plaintext_in_git=false;agent_access=authorized_local_secret_resolver_only;requires_user_authorization=true;local_resolver_required=true;trading_boundary=fail_closed"
+    source: "EXTRACTED from make_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:714"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-017"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "secret_backup_status"
+    name: "secret backup status string"
+    value: "backed_up_redacted_secret_ref_only_with_encrypted_raw_reference"
+    source: "EXTRACTED from make_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:683"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:17"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-018"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "TIER_ALIASES"
+    name: "tier alias normalization map"
+    value: "重要中长期=一般;一般短期=临时"
+    source: "EXTRACTED from code"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:47"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:68"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-019"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "retrieval_weight_map"
+    name: "tier to retrieval weight map"
+    value: "核心画像=high;一般=medium;else=low"
+    source: "EXTRACTED from retrieval_weight"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1701"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:46"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-020"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "curation_override_fields"
+    name: "fields accepted from core profile review"
+    value: "statement;category;importance;validity;confidence;reason;memory_tier;sensitivity;backup_status"
+    source: "EXTRACTED from apply_curation_override"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1691"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:87"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-021"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "active_review_status"
+    name: "active row review status"
+    value: "active_auto_promoted_from_full_flow"
+    source: "EXTRACTED from build_active_memory_rows"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1756"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:46"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-022"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "activation_mode"
+    name: "active row activation mode"
+    value: "user_authorized_full_flow"
+    source: "EXTRACTED from build_active_memory_rows"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1757"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:46"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-023"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "code_noise_demote_rule"
+    name: "code or config noise demotion rule"
+    value: "true when looks_like_code_or_config_noise"
+    source: "EXTRACTED from normalized_memory_tier and build_active_memory_rows"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:622"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:68"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-024"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "sqlite_index_path"
+    name: "SQLite memory index path"
+    value: "data/processed/indexes/memory_index.sqlite"
+    source: "EXTRACTED from build_sqlite_index"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:1994"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:112"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-025"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "search_limit_default"
+    name: "CLI search result limit default"
+    value: "10"
+    source: "EXTRACTED from parser"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2532"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:112"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-026"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "search_overfetch_multiplier"
+    name: "SQL overfetch multiplier"
+    value: "5"
+    source: "EXTRACTED from query_index"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2071"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:112"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-027"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "search_sensitivity_max_default"
+    name: "search sensitivity max default"
+    value: "sensitive"
+    source: "EXTRACTED from query_index signature and parser"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2055"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:112"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-028"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "search_term_fields"
+    name: "LIKE term search fields"
+    value: "statement;category;source"
+    source: "EXTRACTED from query_index"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2066"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:112"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-029"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "search_sort_order"
+    name: "SQL result ordering"
+    value: "date DESC;importance ASC"
+    source: "EXTRACTED from query_index"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2070"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:112"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-030"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "fetch_secret_response"
+    name: "fetch response for secret record"
+    value: "redacted_secret"
+    source: "EXTRACTED from fetch_index"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py:2092"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_openai_memory_analysis.py:112"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-031"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "TIER_WEIGHT"
+    name: "tier score map"
+    value: "核心画像=1.0;一般=0.66;临时=0.28"
+    source: "EXTRACTED from code"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:47"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-032"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "IMPORTANCE_WEIGHT"
+    name: "importance score map"
+    value: "高=1.0;中=0.62;低=0.32"
+    source: "EXTRACTED from code"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:49"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-033"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "CONFIDENCE_WEIGHT"
+    name: "confidence score map"
+    value: "high=1.0;medium=0.72;low=0.45"
+    source: "EXTRACTED from code"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:50"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-034"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "w_tier"
+    name: "tier score coefficient"
+    value: "0.5"
+    source: "EXTRACTED from memory_weight"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:384"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-035"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "w_importance"
+    name: "importance score coefficient"
+    value: "0.3"
+    source: "EXTRACTED from memory_weight"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:384"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-036"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "w_confidence"
+    name: "confidence score coefficient"
+    value: "0.2"
+    source: "EXTRACTED from memory_weight"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:384"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-037"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "fallback_tier_score"
+    name: "unrecognized tier fallback score"
+    value: "0.25"
+    source: "EXTRACTED from memory_weight"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:381"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-038"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "fallback_importance_score"
+    name: "unrecognized importance fallback score"
+    value: "0.35"
+    source: "EXTRACTED from memory_weight"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:382"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-039"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "fallback_confidence_score"
+    name: "unrecognized confidence fallback score"
+    value: "0.6"
+    source: "EXTRACTED from memory_weight"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:383"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-040"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "weight_rounding_decimals"
+    name: "weight score rounding"
+    value: "4"
+    source: "EXTRACTED from memory_weight"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:384"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-041"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "node_size_base"
+    name: "visual node size base"
+    value: "4"
+    source: "EXTRACTED from node construction"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:673"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-042"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "node_size_multiplier"
+    name: "visual node size multiplier"
+    value: "8"
+    source: "EXTRACTED from node construction"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:673"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-043"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "orbit_radius_base"
+    name: "visual orbit radius base"
+    value: "30"
+    source: "EXTRACTED from node construction"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:675"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-044"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "orbit_radius_multiplier"
+    name: "visual orbit radius multiplier"
+    value: "76"
+    source: "EXTRACTED from node construction"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:675"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-045"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "sensitivity_penalty_sensitive"
+    name: "sensitive or secret ROI penalty"
+    value: "0.35"
+    source: "EXTRACTED from roi_metrics"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:390"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-046"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "sensitivity_penalty_other"
+    name: "non-sensitive ROI penalty"
+    value: "0.1"
+    source: "EXTRACTED from roi_metrics"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:390"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-047"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "decision_impact_multiplier"
+    name: "decision category leverage uplift"
+    value: "0.15"
+    source: "EXTRACTED from roi_metrics"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:400"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-048"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "leverage_floor"
+    name: "minimum leverage score"
+    value: "0.0"
+    source: "EXTRACTED from roi_metrics"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:400"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-049"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "stale_short_term_days"
+    name: "temporary stale threshold"
+    value: "30"
+    source: "EXTRACTED from roi_metrics"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:393"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-050"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "needs_review_days"
+    name: "needs review recency threshold"
+    value: "180"
+    source: "EXTRACTED from roi_metrics"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:395"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-051"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "recommended_action_map"
+    name: "ROI action mapping"
+    value: "核心画像=keep_high_weight;一般=review_for_project_linkage;stale_or_review=keep_low_weight_or_refresh;else=keep_as_context"
+    source: "EXTRACTED from roi_metrics"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:401"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-052"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "activity_score_coefficients"
+    name: "contribution activity score coefficients"
+    value: "conversation=5;message=1;memory=3;candidate=1;decision=4;tool=2;error=1;abort=2"
+    source: "EXTRACTED from add_activity_score"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:462"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-053"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "activity_level_max"
+    name: "max activity level"
+    value: "5"
+    source: "EXTRACTED from activity_level"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:478"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-054"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "quantile_percentiles"
+    name: "score quantile percentiles"
+    value: "p50=0.5;p75=0.75;p90=0.9;p95=0.95"
+    source: "EXTRACTED from score_quantiles"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:481"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-055"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "fill_daily_range_enabled"
+    name: "daily range gap fill behavior"
+    value: "true"
+    source: "EXTRACTED from fill_daily_range"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:493"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-056"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "score_version"
+    name: "activity score version label"
+    value: "activity_score.v2"
+    source: "EXTRACTED from build_contribution"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:589"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-057"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "TOPIC_RULES"
+    name: "Codex topic detection rules"
+    value: "memory_atlas;memory_database;codex_local;github_backup;delivery_quality;frontend_visual;security_boundary;finance_trading"
+    source: "EXTRACTED from code"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:43"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_codex_memory_sync.py:20"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-058"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "SIGNAL_RULES"
+    name: "Codex preference signal rules"
+    value: "prefer_chinese;real_data_required;github_as_memory_source;human_readable_reports;authorization_gate;agent_personalization;no_plaintext_secrets_in_git"
+    source: "EXTRACTED from code"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:54"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_codex_memory_sync.py:20"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-059"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "codex_redaction_limit"
+    name: "redacted text truncation limit"
+    value: "160"
+    source: "EXTRACTED from redact_text signature"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:138"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_codex_memory_sync.py:20"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-060"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "codex_activity_coefficients"
+    name: "Codex session activity coefficients"
+    value: "message=1;user_message=2;tool_call=3;topic_label=4;error_event=2"
+    source: "EXTRACTED from session summary"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:293"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_codex_memory_sync.py:20"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-061"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "codex_activity_level_formula"
+    name: "Codex daily level formula"
+    value: "ceil(score*5/max_score) bounded 1..5 else 0"
+    source: "EXTRACTED from activity_level"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:334"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_codex_memory_sync.py:20"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-062"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "codex_backup_policy"
+    name: "Codex sync backup policy"
+    value: "redacted_summary_only_no_raw_transcript_no_plaintext_secret"
+    source: "EXTRACTED from session summary"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:330"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_codex_memory_sync.py:20"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-063"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "codex_session_importance_thresholds"
+    name: "Codex session importance thresholds"
+    value: "高 if activity>=120 or signals>=3;中 if activity>=40 or any signal;else 低"
+    source: "EXTRACTED from codex_session_to_memory_row"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-OAI-B-001"
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:871"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-064"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "data_source_schema_version"
+    name: "source registry schema version"
+    value: "memory_atlas_data_source_registry.v1"
+    source: "EXTRACTED from config and loader"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:158"
+    config_refs:
+      - "OpenAIDatabase/config/data_sources/source_registry.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-065"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "data_source_contract_version"
+    name: "canonical event contract version"
+    value: "canonical_memory_event.v1"
+    source: "EXTRACTED from config"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/config/data_sources/source_registry.json:1"
+    config_refs:
+      - "OpenAIDatabase/config/data_sources/source_registry.json:2"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_acceptance_audit.py"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-066"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "active_source_ids"
+    name: "active source IDs"
+    value: "memory_atlas;codex"
+    source: "EXTRACTED from source_registry"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/config/data_sources/source_registry.json:1"
+    config_refs:
+      - "OpenAIDatabase/config/data_sources/source_registry.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-067"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "planned_source_ids"
+    name: "planned source IDs"
+    value: "wechat;xiaohongshu;douyin"
+    source: "EXTRACTED from source_registry and acceptance"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py:93"
+    config_refs:
+      - "OpenAIDatabase/config/data_sources/source_registry.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_acceptance_audit.py"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-068"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "canonical_required_fields"
+    name: "canonical event required fields"
+    value: "source_id;record_id;occurred_at;record_type;title;summary;topics;sensitivity;memory_tier;importance;confidence;dedupe_key"
+    source: "EXTRACTED from config"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/config/data_sources/source_registry.json:1"
+    config_refs:
+      - "OpenAIDatabase/config/data_sources/source_registry.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_acceptance_audit.py"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-069"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "homepage_visible_source_ids"
+    name: "homepage data source selector IDs"
+    value: "all;memory_atlas;codex"
+    source: "EXTRACTED from acceptance audit"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py:125"
+    config_refs:
+      - "OpenAIDatabase/config/data_sources/source_registry.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_acceptance_audit.py"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-070"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "homepage_source_labels"
+    name: "homepage data source labels"
+    value: "all=总数据源;memory_atlas=ChatGPT;codex=Codex"
+    source: "EXTRACTED from acceptance audit"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py:128"
+    config_refs:
+      - "OpenAIDatabase/config/data_sources/source_registry.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_acceptance_audit.py"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-071"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "planned_source_mock_policy"
+    name: "planned source no-fake policy"
+    value: "planned_sources_must_not_create_fake_nodes_or_activity"
+    source: "EXTRACTED from registry privacy contract and audit"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py:139"
+    config_refs:
+      - "OpenAIDatabase/config/data_sources/source_registry.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_acceptance_audit.py"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-072"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "static_summary_private_policy"
+    name: "public snapshot private summary policy"
+    value: "private original text omitted;authorized agent fetch required"
+    source: "EXTRACTED from static_summary"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:287"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-073"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "WRITEBACK_QUEUE_KEY"
+    name: "frontend writeback localStorage key"
+    value: "memory-atlas.writeback.proposals.v1"
+    source: "EXTRACTED from frontend"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:250"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-074"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "PROPOSAL_SCHEMA_VERSION"
+    name: "proposal schema version"
+    value: "memory_change_proposal.v1"
+    source: "EXTRACTED from build script and frontend fallback"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:30"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_release_audit.py:24"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-075"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "proposal_status"
+    name: "writeback proposal status"
+    value: "draft_pending_agent_apply"
+    source: "EXTRACTED from saveProposal and isWritebackProposal"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2336"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_release_audit.py:24"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-076"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "revision_increment"
+    name: "proposal revision increment rule"
+    value: "latest.revision + 1 else 1"
+    source: "EXTRACTED from saveProposal and rollback"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2353"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-077"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "rollback_unit"
+    name: "writeback rollback unit"
+    value: "git_commit_or_memory_version"
+    source: "EXTRACTED from source contract and frontend"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:1232"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-078"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "forbidden_payload_list"
+    name: "frontend forbidden proposal payload list"
+    value: "plaintext secrets;raw conversation text;record hashes;local absolute paths"
+    source: "EXTRACTED from saveProposal"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2363"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_release_audit.py:24"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-079"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "direct_frontend_mutation_flag"
+    name: "direct frontend active memory mutation flag"
+    value: "false"
+    source: "EXTRACTED from source contract and proposal safety"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_memory_atlas_data.py:1245"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_release_audit.py:24"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-080"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "requires_conflict_check"
+    name: "writeback requires conflict check"
+    value: "true"
+    source: "EXTRACTED from saveProposal"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2361"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-081"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "diff_segment_split_regex"
+    name: "proposal readable segment split regex"
+    value: "[。！？!?;；\\\\n]+"
+    source: "EXTRACTED from splitReadableSegments"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:4512"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-082"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "version_chain_display_limit"
+    name: "proposal version chain display limit"
+    value: "6"
+    source: "EXTRACTED from frontend"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/apps/memory-atlas/src/App.tsx:2315"
+    config_refs:
+      - "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "OpenAIDatabase/tests/test_memory_atlas_data.py:25"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-083"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "context_layer_ids"
+    name: "three-layer context IDs"
+    value: "L1_CORE_PROFILE;L2_PROJECT_MEMORY;L3_BEHAVIOR_HISTORY"
+    source: "EXTRACTED from three_layer_context config"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_personalization_exports.py:57"
+    config_refs:
+      - "OpenAIDatabase/config/context_sources/three_layer_context.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:1"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-084"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "sync_required_targets"
+    name: "required memory update targets"
+    value: "profile;preference;taste;history;pattern"
+    source: "EXTRACTED from config and AGENTS"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/evaluate_personalization_context.py:63"
+    config_refs:
+      - "OpenAIDatabase/config/context_sources/three_layer_context.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:100"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-085"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "personalization_export_targets"
+    name: "generated personalization output files"
+    value: "chatgpt_personalization.md;codex_personalization.md;personalization_export.json"
+    source: "EXTRACTED from script constants"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/build_personalization_exports.py:18"
+    config_refs:
+      - "OpenAIDatabase/config/evaluation/personalization_harness.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:117"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-086"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "codex_startup_read_order"
+    name: "Codex startup route read order"
+    value: "AGENTS.md;data/derived/personalization/codex_personalization.md"
+    source: "EXTRACTED from startup route config and focused test; deeper context files are conditional resources, not default startup read order."
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/route_agent_resources.py:22"
+    config_refs:
+      - "OpenAIDatabase/config/context_sources/resource_routes.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:116"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-087"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "resource_route_intents"
+    name: "registered resource routing intents"
+    value: "startup;chatgpt_personalization;codex_personalization;project_history;taste_profile;evaluation"
+    source: "EXTRACTED from route config"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/route_agent_resources.py:22"
+    config_refs:
+      - "OpenAIDatabase/config/context_sources/resource_routes.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:116"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-088"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "required_log_categories"
+    name: "four run log categories"
+    value: "sync_runs;export_runs;evaluation_runs;agent_runs"
+    source: "EXTRACTED from config and docs"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/evaluate_personalization_context.py:65"
+    config_refs:
+      - "OpenAIDatabase/config/evaluation/personalization_harness.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:122"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-089"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "evaluation_required_sections"
+    name: "required export Markdown sections"
+    value: "Core Profile;Preferences And Taste;History And Patterns;Project And Decision Context;Future Agent Sync Rules"
+    source: "EXTRACTED from harness"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/evaluate_personalization_context.py:55"
+    config_refs:
+      - "OpenAIDatabase/config/evaluation/personalization_harness.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:118"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-090"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "forbidden_plaintext_patterns"
+    name: "basic forbidden plaintext guardrail"
+    value: "sk-;BEGIN PRIVATE KEY;api_key=;password=;Bearer"
+    source: "EXTRACTED from harness"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/evaluate_personalization_context.py:56"
+    config_refs:
+      - "OpenAIDatabase/config/evaluation/personalization_harness.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:116"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-091"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "sync_chain_after_build_atlas"
+    name: "post-sync regeneration chain"
+    value: "build_memory_atlas_data;build_agent_context_pack;build_personalization_exports"
+    source: "EXTRACTED from sync script"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/sync_codex_memory_data.py:407"
+    config_refs:
+      - "OpenAIDatabase/config/codex/config.template.toml:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_codex_memory_sync.py:20"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    parameter_id: "PARAM-092"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "evaluation_status_success"
+    name: "evaluation pass status string"
+    value: "PASS"
+    source: "EXTRACTED from evaluator"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/scripts/evaluate_personalization_context.py:75"
+    config_refs:
+      - "OpenAIDatabase/config/evaluation/personalization_harness.json:1"
+    test_refs:
+      - "OpenAIDatabase/tests/test_personalization_architecture.py:117"
+    evidence_refs:
+      - "EVID-OAIDB-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-OAIDB-MANIFEST"
+strategies:
+  -
+    strategy_id: "STRAT-OAIDB-001"
+    name: "privacy_first_memory_validation"
+    status: "blocked"
+    fact_level: "UNKNOWN"
+    description: "需要去标识黄金集、隐私攻击测试、检索指标和人工写入批准日志后，才能声明安全记忆操作。"
+    evidence_refs:
+      - "EVID-OAIDB-OWNER-STATUS"
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    strategy_id: "STRAT-OAIDB-002"
+    name: "read_only_until_owner_gate"
+    status: "active"
+    fact_level: "EXTRACTED"
+    description: "当前应保持本地只读研究；writeback proposal 仍是 draft/agent-apply gate，不是直接持久写入。"
+    evidence_refs:
+      - "EVID-OAIDB-DELIVERY-TASKS"
+      - "EVID-OAIDB-TRACEABILITY-MATRIX"
+validations:
+  -
+    validation_id: "VAL-OAIDB-STRUCTURAL-COMPLETENESS"
+    name: "structural_completeness"
+    status: "VERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-OAIDB-IMPLEMENTATION-CONGRUENCE"
+    name: "implementation_congruence"
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-OAIDB-PARAMETER-SOURCE-QUALITY"
+    name: "parameter_source_quality"
+    status: "PARTIAL"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-OAIDB-METHODOLOGICAL-RATIONALE"
+    name: "methodological_rationale"
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-OAIDB-EMPIRICAL-VALIDATION"
+    name: "empirical_validation"
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-OAIDB-OPERATIONAL-VALIDATION"
+    name: "operational_validation"
+    status: "FAILED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-OAIDB-DELIVERY-EVIDENCE"
+    name: "delivery_evidence"
+    status: "FAILED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-OAIDB-EVIDENCE-FRESHNESS"
+    name: "evidence_freshness"
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OAIDB-ASSURANCE-STATUS"
+delivery_readiness:
+  status: "FAILED"
+  release_gate: "GOV-SEMANTIC-OAIDB-in-progress"
+  owner_decision_required: true
+  next_executable_task: "TASK-OAI-B-001"
+  blocked_requirements: 2
+  active_requirements: 9
+  evidence_refs:
+    - "EVID-OAIDB-ASSURANCE-STATUS"
+    - "EVID-OAIDB-TRACEABILITY-MATRIX"
+evidence_refs:
+  -
+    evidence_id: "EVID-OAIDB-MODEL-REGISTRY"
+    kind: "file"
+    ref: "OpenAIDatabase/docs/governance/model_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OAIDB-FORMULA-REGISTRY"
+    kind: "file"
+    ref: "OpenAIDatabase/docs/governance/formula_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OAIDB-PARAMETER-REGISTRY"
+    kind: "file"
+    ref: "OpenAIDatabase/docs/governance/parameter_registry.csv"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OAIDB-TRACEABILITY-MATRIX"
+    kind: "file"
+    ref: "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OAIDB-ASSURANCE-STATUS"
+    kind: "file"
+    ref: "OpenAIDatabase/docs/governance/ASSURANCE_STATUS.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OAIDB-DELIVERY-TASKS"
+    kind: "file"
+    ref: "OpenAIDatabase/docs/governance/delivery_tasks.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OAIDB-DEVELOPMENT-EVENTS"
+    kind: "file"
+    ref: "OpenAIDatabase/docs/governance/development_events.jsonl"
+    fact_level: "RECONSTRUCTED"
+  -
+    evidence_id: "EVID-OAIDB-OWNER-STATUS"
+    kind: "file"
+    ref: "OpenAIDatabase/docs/governance/OWNER_STATUS.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-SEMANTIC-OAIDB-MANIFEST"
+    kind: "manifest"
+    ref: "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-REVIEW9-S5PBT03-MANIFEST"
+    kind: "manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json"
+    fact_level: "PROPOSED"
