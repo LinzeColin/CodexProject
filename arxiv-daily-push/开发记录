@@ -6,13 +6,13 @@
 - product_version: `0.23.0`
 - current_stage: `S1 - arXiv 单源完整纵向切片与生产验收`
 - current_phase: `S1P5 - 新电脑/云端部署、30 日重放、2 日真实运行与 Stage 1 验收`
-- current_task: `S1P5T03-R - REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE`
+- current_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 - Stage 1 邮件前台中文讲解格式修复`
 - current_gate: `ARXIV_PRODUCTION_ACCEPTED`
-- next_unique_task: `WAIT_FOR_OWNER_DECISION_BEFORE_PRODUCTION_SCHEDULE_ENABLEMENT`
+- next_unique_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036-PR-CI`
 - roadmap_version: `V6`
 - roadmap_sha256: `76b2d29a6d5cd62de472f1a8c265a89fcf03dc7031f7d4e209f85c650b498f10`
-- progress: `S1P5T03-R cloud artifact passed; Stage 1 arXiv strict accepted restored; production schedule disabled; Stage 2 not started`
-- blockers: `S1P5T03-R 无剩余交付 blocker；production schedule disabled; email frontstage quality deferred`
+- progress: `S1P5T03-R cloud artifact passed; Stage 1 arXiv strict accepted restored; email human-format focused tests pass; production schedule disabled; Stage 2 not started`
+- blockers: `production schedule disabled by design; email human-format full tests/PR CI/controlled test email pending`
 
 ## Stage Roadmap
 
@@ -97,6 +97,7 @@
 
 | Event | 结果 | 证据 | 当前结论 |
 |---|---|---|---|
+| `EVENT-20260623-ADP-080` | implemented_pending_pr_ci | focused email tests 23 OK; `global_scan.py` renderer and email regression tests | 当前推进到 `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`；前台邮件已改为中文教学型，ROI/Release/video/delivery policy/后台措辞不外露；production schedule disabled |
 | `EVENT-20260623-ADP-079` | completed | PR #94 run `28027759062`, artifact `7821452823`; local control run `/tmp/adp-real-replay-20260623` | 当前推进到 `S1P5T03-R` 且已完成；strict `ARXIV_PRODUCTION_ACCEPTED` 已按云端 30 天真实 backfill 证据恢复；production schedule disabled |
 | `EVENT-20260623-ADP-078` | superseded_for_strict_gate | PR #82; run `28019921500`; artifact `7818287996` | 证明一次性云端实时抓取/排序/生成链路，但不证明 30 天真实历史 backfill 与 CONTENT_LEDGER 闭环 |
 

@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260623-ADP-079"
+as_of_event_id: "EVENT-20260623-ADP-080"
 source_snapshot_hash: "sha256:9a47cab9234c7cb0f931d28f30987b1852ea39cc9cbe70cb615f0995b50c1d15"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
@@ -61,7 +61,7 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 1
     legacy_unbound_events: 54
-    precommit_pending_events: 25
+    precommit_pending_events: 26
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
@@ -69,14 +69,14 @@ delivery_readiness:
   release_gate: "ARXIV_PRODUCTION_ACCEPTED"
   blocker_ids: []
 next_executable_task:
-  task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"
-  status: "planned"
-  reason: "Refine the daily email front-end into a human-scannable Chinese layout with compact subject, 12-second video link, actionable time guidance, concise evidence, and candidate queue summary while keeping ROI scoring in backend artifacts."
+  task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036-PR-CI"
+  status: "implemented_pending_pr_ci"
+  reason: "Run full validation and PR CI for the teaching-first Chinese Stage 1 email that hides ROI, Release, video, delivery-policy, and backend wording from the owner-facing frontstage."
   acceptance_ids:
     - "ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"
   owner: "content_owner + product_owner"
   human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_fmt_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_notifications.py -q` and attach the listed evidence refs."
+  unblock_condition: "Run full ADP tests, governance validation, open PR, and wait for PR CI before any controlled Gmail SMTP test."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -86,29 +86,29 @@ owner_decision:
   decision_id: "DEC-arxiv-daily-push-V5-FRONTSTAGE-001"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否继续优化 arXiv 邮件前台模板，但不阻塞已通过的 Stage 1 arXiv 生产验收。"
-  question: "是否继续优化 arXiv 邮件前台模板，但不阻塞已通过的 Stage 1 arXiv 生产验收。"
+  decision_question: "是否在 PR CI 通过后执行一次受控 Gmail SMTP 测试邮件，以验证新的中文教学型前台。"
+  question: "是否在 PR CI 通过后执行一次受控 Gmail SMTP 测试邮件，以验证新的中文教学型前台。"
   human_owner_role: "content_owner + product_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT"
-  current_recommendation: "A: defer template redesign until Stage 1 acceptance evidence is synchronized"
-  option_a: "保留当前可运行邮件模板，先完成 Stage 1 accepted 证据同步和生产开关核对。"
-  option_b: "进入邮件前台模板优化，按人类刻度、中文讲解密度和可操作性重做布局。"
+  current_recommendation: "A: open PR and wait for CI; keep production disabled"
+  option_a: "将本轮中文教学型邮件修复走 PR/CI，CI 绿后再由 owner 单独确认是否发受控测试邮件。"
+  option_b: "继续本地打磨模板但不走 PR；不推荐，会拖延验证。"
   option_c: "跳过模板优化直接扩大到 Stage 2；不推荐，因为用户已明确不满意前台体验。"
   options:
-    - "保留当前可运行邮件模板，先完成 Stage 1 accepted 证据同步和生产开关核对。"
-    - "进入邮件前台模板优化，按人类刻度、中文讲解密度和可操作性重做布局。"
+    - "将本轮中文教学型邮件修复走 PR/CI，CI 绿后再由 owner 单独确认是否发受控测试邮件。"
+    - "继续本地打磨模板但不走 PR；不推荐，会拖延验证。"
     - "跳过模板优化直接扩大到 Stage 2；不推荐，因为用户已明确不满意前台体验。"
-  estimated_effort: "P1; content/product iteration after acceptance"
-  estimated_cost_or_resource: "local rendering tests and one controlled manual email if template changes"
-  expected_benefit: "把已可运行的 arXiv 交付继续提升为高信息密度教学邮件，而不把模板问题误判为 Stage 1 acceptance blocker。"
+  estimated_effort: "P1; full tests, PR CI, then one controlled manual email if approved"
+  estimated_cost_or_resource: "local tests plus GitHub Actions PR CI; no local background production process"
+  expected_benefit: "把已可运行的 arXiv 交付继续提升为高信息密度教学邮件，而不把模板问题误判为 Stage 1 acceptance blocker。本轮代码已把邮件前台改为中文教学型，并隐藏 ROI/Release/video/delivery policy/后台措辞。"
   principal_risks: "邮件可读性不足、信息密度低、过早进入 Stage 2、误开启生产定时"
   evidence_required: "email render tests, scheduled_execution regression, controlled manual SMTP evidence if frontstage changes"
   decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "Stage 1 arXiv acceptance remains recorded, but human-facing email quality stays below owner preference."
-  unblock_task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"
+  consequence_of_no_decision: "Stage 1 arXiv acceptance remains recorded, but improved email quality remains unproven in cloud CI and real controlled email."
+  unblock_task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036-PR-CI"
   acceptance_ids:
     - "ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-23T22:15:00+10:00"
+  last_reviewed_at: "2026-06-23T23:00:00+10:00"

@@ -1,0 +1,108 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-ADP-EMAIL-HUMAN-FORMAT-036-ROOT-TEST-20260623",
+  "project_id": "root-governance",
+  "task_id": "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036",
+  "acceptance_ids": [
+    "ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"
+  ],
+  "iteration_id": "ITER-20260623-ADP-PHASE12-EMAIL-HUMAN-FORMAT-036",
+  "generated_at": "2026-06-23T23:00:00+10:00",
+  "implementation_base_sha": "3922760a3153a98e42ec48fa19f7353010e83efb",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 root governance assertion sync",
+  "ci_run_reference": "PRECOMMIT_PENDING_PR_CI_ATTESTATION",
+  "content_tree_hash": "PENDING_PRECOMMIT_TREE_HASH",
+  "changed_files_declared": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md",
+    "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
+    "arxiv-daily-push/tests/test_global_scan.py",
+    "arxiv-daily-push/tests/test_scheduled_execution.py",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-ADP-EMAIL-HUMAN-FORMAT-036-ROOT-TEST-20260623.json"
+  ],
+  "changed_files_actual": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md",
+    "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
+    "arxiv-daily-push/tests/test_global_scan.py",
+    "arxiv-daily-push/tests/test_scheduled_execution.py",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-ADP-EMAIL-HUMAN-FORMAT-036-ROOT-TEST-20260623.json"
+  ],
+  "required_governance_files": [
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-ADP-EMAIL-HUMAN-FORMAT-036-ROOT-TEST-20260623.json"
+  ],
+  "updated_governance_files": [
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-ADP-EMAIL-HUMAN-FORMAT-036-ROOT-TEST-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_test_sync",
+    "adp_email_human_format",
+    "no_production_side_effects"
+  ],
+  "model_delta": "No root runtime model change; root governance tests now expect ADP latest event EVENT-20260623-ADP-080 and the current ready status for ADP-PHASE12-EMAIL-HUMAN-FORMAT-036.",
+  "formula_delta": "No root governance formula change.",
+  "parameter_delta": "No root governance parameter change.",
+  "version_delta": "No product version change.",
+  "production_schedule_enabled": false,
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "video_generated": false,
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_human_rootgov PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_human_gov PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_human_rootgov PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root governance test suite passed locally after updating ADP latest-event assertions."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_human_gov PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-only governance validation with semantic checks passed after adding this root run manifest."
+    }
+  ],
+  "evidence_refs": [
+    "tests/governance/test_project_governance_validator.py",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md"
+  ],
+  "rollback": "Revert the root governance test expectation update and remove this run manifest with the ADP email human-format branch if abandoned.",
+  "summary": "Recorded the root governance test assertion sync required by ADP-PHASE12-EMAIL-HUMAN-FORMAT-036. This manifest documents root test changes only; it does not enable production scheduling, SMTP, Release upload, Stage 2, or video generation."
+}

@@ -5,6 +5,7 @@
 - Reopened strict Stage 1 acceptance for `S1P5T03-R REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE`.
 - Added cloud-runner real historical arXiv 30-day backfill workflow, replay CLI, tests, and persisted `CONTENT_LEDGER.csv` rows for 30 selected and 269 queued candidates.
 - Recorded GitHub/cloud run `28027759062` artifact `7821452823` as the strict 30-day backfill proof; kept production scheduling, SMTP send, Release upload, Stage 2, and video generation disabled.
+- Implemented `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`: Stage 1 owner email now renders as a Chinese teaching brief and hides ROI score, Release, video, delivery-policy, and backend wording from the frontstage.
 
 ## 0.23.0 - 2026-06-23
 

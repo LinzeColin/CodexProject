@@ -6,13 +6,13 @@
 - product_version: `0.23.0`
 - current_stage: `S1 - arXiv 单源完整纵向切片与生产验收`
 - current_phase: `S1P5`
-- current_task: `S1P5T03-R`
+- current_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`
 - current_gate: `ARXIV_PRODUCTION_ACCEPTED`
 - active_model_count: `46`
 - active_formula_count: `48`
 - active_parameter_count: `342`
-- next_unique_task: `WAIT_FOR_OWNER_DECISION_BEFORE_PRODUCTION_SCHEDULE_ENABLEMENT`
-- evidence_status: `LOCAL_AND_CLOUD_BACKFILL_VERIFIED`
+- next_unique_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036-PR-CI`
+- evidence_status: `LOCAL_AND_CLOUD_BACKFILL_VERIFIED; EMAIL_FOCUSED_TESTS_PASS`
 
 ## 证据
 
@@ -22,6 +22,7 @@
 | `EVID-FORMULA-001` | governance | `docs/governance/formula_registry.yaml` | active formulas | EXTRACTED |
 | `EVID-PARAM-001` | governance | `docs/governance/parameter_registry.csv` | active parameters | EXTRACTED |
 | `EVID-ACC-001` | run_manifest | `governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json` | `MOD-ADP-046`; `FORM-ADP-048`; `PARAM-ADP-352..359` | EXTRACTED |
+| `EVID-EMAIL-HUMAN-036-001` | local_test | focused email/scheduled/notification unit tests 23 OK | `MOD-ADP-034`; `MOD-ADP-037`; `PARAM-ADP-277` | EXTRACTED |
 
 ## 核心模型
 
@@ -111,7 +112,7 @@
 |---|---|---|---|---|
 | S1P5T03-R 云端 artifact | validation | PR #94 run `28027759062` artifact `7821452823` 通过；strict accepted restored | `ARXIV_PRODUCTION_ACCEPTED` | MACHINE_VERIFIED |
 | GitHub repo production variables/secrets | validation | 本轮未读取或启用；scheduled send 仍 fail-closed | production variable verification task after S1P5T03-R | EXTRACTED |
-| 邮件前台模板 | product_quality | 用户不满意，已从 Stage 1 acceptance blocker 中分离 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036` | EXTRACTED |
+| 邮件前台模板 | product_quality | 本轮已改为中文教学型并清洗 ROI/Release/video/delivery policy/后台词；全量验证和 PR CI 待跑 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036-PR-CI` | EXTRACTED |
 | Stage 2 多来源模型 | model_scope | planned，未进入 arXiv Stage 1 验收 | `S2P1` | EXTRACTED |
 
 ## 验证
@@ -120,3 +121,4 @@
 |---|---|---|---|---|---|---|
 | `VAL-S1P5T03R-001` | strict real historical replay | local live replay control run plus GitHub/cloud artifact | LOCAL PASS; CLOUD PASS | `test_stage1_real_replay.py` | `/tmp/adp-real-replay-20260623/report.json`; PR #94 run `28027759062` artifact `7821452823` | EXTRACTED |
 | `VAL-S1P5T04-001` | one-time live cloud chain | PR #82 GitHub Actions + artifact inspection | PASS but insufficient for strict 30-day backfill | `test_stage1_accelerated_acceptance.py` | artifact `7818287996` | EXTRACTED |
+| `VAL-EMAIL-HUMAN-036-001` | human-facing email format | focused unit tests plus full arxiv-daily-push suite | PASS 23 focused tests OK; 200 full tests OK | `test_global_scan.py`; `test_scheduled_execution.py`; `test_notifications.py`; `python3 -m unittest discover -s arxiv-daily-push/tests -q` | `/tmp/codex_adp_email_human_focus`; `/tmp/codex_adp_email_human_all`; no repo cache | EXTRACTED |

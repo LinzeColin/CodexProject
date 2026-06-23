@@ -291,7 +291,23 @@ class GlobalScanTests(unittest.TestCase):
                 "top_queued": [{"title": "Energy market benchmark", "primary_category": "eess.SY", "roi_total_score": 88.0}],
             },
         }
-        daily_run_payload = {"lesson": {"language": "zh-CN", "sections": [{"title": "核心解释", "body": "这篇文章适合学习如何把模型能力转换成真实 ROI。"}]}}
+        daily_run_payload = {
+            "lesson": {
+                "language": "zh-CN",
+                "frontstage": {
+                    "decision": "读",
+                    "evidence_level": "摘要级预印本",
+                    "estimated_reading_time": "8-15分钟",
+                    "one_line_takeaway": "这篇文章适合学习如何把模型能力转换成真实 ROI score。",
+                    "first_principles_chain": ["问题定义", "ROI评分", "可观察输出", "失败条件"],
+                    "domain_mappings": [{"paper_variable": "ROI score", "decision_mapping": "不要把 Release 资料包当阅读入口"}],
+                    "key_questions": ["这是不是可复验判断，而不是 delivery policy？"],
+                    "evidence_gaps": ["不要把 GitHub Release 或 12秒视频当作正文重点。"],
+                    "default_action": "把 ROI 转成一个最小验证问题，不展示 roi_total_score。",
+                },
+                "sections": [{"title": "核心解释", "body": "这篇文章适合学习如何把模型能力转换成真实 ROI。"}],
+            }
+        }
         release_report = {
             "status": "created",
             "repo": "LinzeColin/CodexProject",
@@ -316,14 +332,25 @@ class GlobalScanTests(unittest.TestCase):
             package["notification"].subject,
             "20260701 -- arXiv Computer Science -- Computer Science -- Foundation model agents for portfolio risk optimization",
         )
-        self.assertIn("【今天学什么】", package["notification"].body)
+        combined_body = package["notification"].body + package["notification"].html_body
+        self.assertIn("【今天讲透一个问题】", package["notification"].body)
+        self.assertIn("【为什么值得你看】", package["notification"].body)
+        self.assertIn("【怎么转成可用判断】", package["notification"].body)
         self.assertIn("候选队列摘要", package["notification"].body)
+        self.assertIn("已入队候选", package["notification"].body)
         self.assertNotIn("【视频入口】", package["notification"].body)
-        self.assertNotIn("观看/下载", package["notification"].body)
-        self.assertNotIn("Release 资料包", package["notification"].body)
+        self.assertNotIn("观看/下载", combined_body)
+        self.assertNotIn("Release 资料包", combined_body)
         self.assertNotIn(links["release_url"], package["notification"].body)
-        self.assertNotIn("ROI score", package["notification"].body)
-        self.assertNotIn("roi_total_score", package["notification"].body)
+        self.assertNotIn("GitHub Release", combined_body)
+        self.assertNotIn("12秒视频", combined_body)
+        self.assertNotIn("delivery policy", combined_body)
+        self.assertNotIn("ROI score", combined_body)
+        self.assertNotIn("ROI评分", combined_body)
+        self.assertNotIn("roi_total_score", combined_body)
+        self.assertNotIn("后台", combined_body)
+        self.assertNotIn("日报", combined_body)
+        self.assertNotIn("class=\"score\"", package["notification"].html_body)
         self.assertLessEqual(len(package["notification"].body), 1500)
         self.assertNotRegex(package["notification"].subject, r"\d(?:\.\d)?/5")
 
