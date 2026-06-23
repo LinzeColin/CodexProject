@@ -216,6 +216,8 @@ def build_all_arxiv_daily_input(
     artifact_dir: str | Path | None = None,
     queue_output_path: str | Path | None = None,
     polite_delay_seconds: float = 0.0,
+    transient_retry_count: int = LIVE_ARXIV_TRANSIENT_RETRY_COUNT,
+    transient_retry_delay_seconds: float = LIVE_ARXIV_TRANSIENT_RETRY_DELAY_SECONDS,
 ) -> dict[str, Any]:
     """Build one all-arXiv daily input plus queue and delivery artifacts."""
 
@@ -232,8 +234,22 @@ def build_all_arxiv_daily_input(
         fetcher=fetcher,
         source_batches=source_batches,
         polite_delay_seconds=polite_delay_seconds,
+        transient_retry_count=transient_retry_count,
+        transient_retry_delay_seconds=transient_retry_delay_seconds,
     )
     queue_state = normalize_candidate_queue(queue, generated_at=generated_at)
+    scan_blockers = _daily_scan_blockers(scan)
+    if scan_blockers:
+        report = _blocked_daily_report(date, generated_at, timezone, plan, scan_blockers)
+        report["scan"] = scan
+        report["candidate_queue"] = queue_state
+        report["selection"] = {
+            "model_id": ROI_RANKING_MODEL_ID,
+            "status": "blocked",
+            "selected": None,
+            "blocking_reasons": scan_blockers,
+        }
+        return report
     new_candidates = scan["candidates"]
     queued_candidates = [dict(item) for item in queue_state["items"]]
     selection = select_roi_candidate(new_candidates, queued_candidates, recent_source_ids=recent)
@@ -784,6 +800,19 @@ def _transient_source_batch_block(batch: Mapping[str, Any]) -> bool:
         "Remote end closed connection",
     )
     return any(marker.lower() in text.lower() for marker in transient_markers)
+
+
+def _daily_scan_blockers(scan: Mapping[str, Any]) -> list[str]:
+    if scan.get("status") != "blocked":
+        return []
+    reasons: list[str] = []
+    for item in scan.get("category_reports") or []:
+        if not isinstance(item, Mapping) or item.get("status") != "blocked":
+            continue
+        archive_id = str(item.get("archive_id") or "unknown")
+        detail = "; ".join(str(reason) for reason in item.get("blocking_reasons") or [] if str(reason))
+        reasons.append(f"all-arxiv scan blocked: {archive_id}: {detail or 'source fetch failed'}")
+    return reasons or ["all-arxiv scan blocked before ROI selection"]
 
 
 def _candidate_from_source_item(source_item: Mapping[str, Any], *, generated_at: str) -> tuple[dict[str, Any] | None, list[str]]:
