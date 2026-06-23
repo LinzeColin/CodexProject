@@ -1,0 +1,108 @@
+{
+  "acceptance_ids": [
+    "ACC-A202",
+    "ACC-ROOT-GOVERNANCE-DASHBOARD-SYNC"
+  ],
+  "base_commit": "bb0b9e065c40e34b2fd6675d6591367e3a38624e",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "change_classification": [
+    "generated_owner_views_sync",
+    "root_governance_dashboard_sync",
+    "governance_test_binding"
+  ],
+  "changed_files_actual": [
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-EEI-A202-DASHBOARD-SYNC-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_declared": [
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-EEI-A202-DASHBOARD-SYNC-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "ci_attestation_subject": "Project Governance main push dashboard verification after EEI A202 source-anchor coverage commit",
+  "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI; previous failure run 28000309121",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:f3b2e7cd64677903f74c08dd3280456465a96ab8ee8e744990fbd83709e3342a",
+  "evidence_refs": [
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-EEI-A202-DASHBOARD-SYNC-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "finished_at": "LOCAL_VALIDATION_PASS_PENDING_CI",
+  "generated_at": "2026-06-23T03:38:58+00:00",
+  "implementation_base_sha": "bb0b9e065c40e34b2fd6675d6591367e3a38624e",
+  "iteration_id": "ITER-20260623-ROOT-DASHBOARD-001",
+  "observed_results": [
+    "GitHub Actions Project Governance run 28000309121 failed at Verify generated governance dashboard after bb0b9e065c40e34b2fd6675d6591367e3a38624e.",
+    "Local dashboard generation rewrote only source_snapshot_hash fields in README.md, GOVERNANCE_DASHBOARD.md, OWNER_PORTFOLIO.md, governance/binding_backlog.yaml and EEI generated governance views.",
+    "LOCAL_DASHBOARD_SYNC_PASS",
+    "LOCAL_GOVERNANCE_TESTS_PASS_131"
+  ],
+  "project_id": "root-governance",
+  "required_governance_files": [
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-EEI-A202-DASHBOARD-SYNC-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "result_commit": "PRECOMMIT_TREE_BOUND",
+  "rollback": "Revert this manifest, the generated root/EEI dashboard views, and the governance test binding; rerun Project Governance.",
+  "run_id": "GOV-EEI-A202-DASHBOARD-SYNC-20260623",
+  "schema_version": 2,
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; CI attestation must bind the final commit after push.",
+  "summary": "Synchronize generated root and EEI governance dashboard source snapshot hashes after the EEI A202 source-anchor coverage commit changed generated governance inputs.",
+  "task_id": "GOV-EEI-A202-DASHBOARD-SYNC-20260623",
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-dashboard-sync-pycache python3 scripts/generate_governance_dashboard.py --write --all",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-dashboard-sync-pycache python3 scripts/validate_information_quality.py --changed-only --fast --fail-on-error --base-ref HEAD",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-dashboard-sync-pycache python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-dashboard-sync-pycache python3 -m pytest -q tests/governance/test_project_governance_validator.py -p no:cacheprovider",
+    "python3 -m json.tool governance/run_manifests/GOV-EEI-A202-DASHBOARD-SYNC-20260623.json",
+    "git diff --exit-code -- README.md GOVERNANCE_DASHBOARD.md OWNER_PORTFOLIO.md governance/binding_backlog.yaml ':(glob)**/docs/governance/ASSURANCE_STATUS.yaml' ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'"
+  ],
+  "test_results": [
+    "dashboard generation produced only generated source_snapshot_hash sync for root and EEI generated views",
+    "manifest JSON PASS",
+    "changed-only semantic governance PASS errors 0 warnings 0",
+    "information-quality changed-only PASS errors 0 warnings 0",
+    "governance tests PASS 131/131 plus 4 subtests"
+  ],
+  "unresolved_risks": [
+    "GitHub Actions must still attest the final pushed dashboard sync commit.",
+    "This repair does not close A202, A209, A210, production gold gates or release-manager activation."
+  ],
+  "updated_governance_files": [
+    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+    "EEI/docs/governance/OWNER_STATUS.md",
+    "EEI/docs/governance/STATUS.md",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "governance/binding_backlog.yaml",
+    "governance/run_manifests/GOV-EEI-A202-DASHBOARD-SYNC-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ]
+}
