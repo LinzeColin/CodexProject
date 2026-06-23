@@ -5052,3 +5052,47 @@ Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK RUNNING IN BAC
 
 - Revert `scripts/monitor_operator_soak.py`, `tests/unit/test_operator_soak_evidence.py`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance record.
 - Keep A209 `IN_PROGRESS`; do not remove valid partial checkpoint evidence unless it is corrupted or explicitly superseded.
+
+## 2026-06-23 - T1307/A209 operator soak supervisor and background recovery contract
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK RUNNING IN BACKGROUND
+
+### Scope
+
+- Added `scripts/supervise_operator_soak.py` as an explicit A209 background supervisor contract.
+- The supervisor consumes the existing 24h progress monitor payload, observes a live PID without launching a second process, and writes `release_gate_closed_by_supervisor=false`.
+- Paused runs are dry-run recovery candidates by default; actual launch requires both `--auto-resume` and `--execute`.
+- Failed checkpoint windows block recovery and require operator inspection before any resume.
+- Added `make supervise-operator-soak` as a safe default dry-run target and lint coverage for the supervisor.
+- Extended A209 unit tests for live-process observation, explicit auto-resume requirement, dry-run recovery and failed-window blocking.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- A209 remains `IN_PROGRESS`: supervisor evidence proves background recovery control only.
+- Partial 24h checkpoints remain local runtime evidence and must not be committed or treated as release-ready until all 288 windows pass and `scripts/validate_operator_soak_evidence.py validate --require-release-ready` passes.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold value or runtime parameter changed.
+- The supervisor reads existing soak parameters and command defaults: 24 hours total, 300 seconds per operator window.
+
+### Validation
+
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-supervisor-pycache .venv/bin/python -m py_compile scripts/supervise_operator_soak.py scripts/monitor_operator_soak.py tests/unit/test_operator_soak_evidence.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-supervisor-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/supervise_operator_soak.py scripts/monitor_operator_soak.py tests/unit/test_operator_soak_evidence.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-supervisor-pycache .venv/bin/python -m pytest -q tests/unit/test_operator_soak_evidence.py -p no:cacheprovider`: PASS, 12 passed.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-supervisor-pycache .venv/bin/python scripts/supervise_operator_soak.py --write-output /private/tmp/eei-a209-operator-soak-supervisor.json --quiet`: PASS; observed `observe_existing_run`, PID `12478`, `25/288` windows, `release_gate_closed_by_supervisor=false` and no second process launch.
+- Live checkpoint inspection after supervisor dry-run observed 25/288 PASS windows, latest window `index=25`, `worker_jobs_completed=12`, `worker_jobs_total=12`, `worker_event_loop_lag_p95_ms=2.8238`.
+
+### Remaining gaps
+
+- Full 24h evidence is still missing until 288 successful 300-second windows complete and the final summary JSON exists.
+- Release-manager activation remains blocked by A202, A209, A210 and production gold-label gates.
+- The supervisor must not be run with `--execute` while the existing PID is alive; the default target intentionally dry-runs.
+
+### Rollback
+
+- Revert `scripts/supervise_operator_soak.py`, `tests/unit/test_operator_soak_evidence.py`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance record.
+- Keep A209 `IN_PROGRESS`; do not remove valid partial checkpoint evidence unless it is corrupted or explicitly superseded.

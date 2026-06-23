@@ -1738,7 +1738,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260623-013")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260623-015")
         self.assertEqual(
             matrix["current_gate"],
             "TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS",

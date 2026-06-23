@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from scripts.monitor_operator_soak import build_progress_payload
+from scripts.supervise_operator_soak import build_supervisor_payload
 from scripts.validate_operator_soak_evidence import SoakRequirement, build_validation_payload
 
 PARAMETERS = {
@@ -223,3 +225,67 @@ def test_operator_soak_progress_monitor_reports_summary_pending(tmp_path: Path) 
     assert payload["status"] == "COMPLETE_SUMMARY_PENDING"
     assert payload["progress"]["windows_completed"] == 288
     assert payload["progress"]["completion_percent"] == 100.0
+
+
+def test_operator_soak_supervisor_observes_existing_running_process(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    pid_file = tmp_path / "operator_24h.pid"
+    write_checkpoint(checkpoint, index=1)
+    pid_file.write_text(f"{os.getpid()}\n", encoding="utf-8")
+    payload = build_supervisor_payload(
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=pid_file,
+        log_path=tmp_path / "operator_24h.log",
+    )
+    assert payload["status"] == "observe_existing_run"
+    assert payload["supervisor"]["launch_status"] == "NOT_REQUESTED"
+    assert payload["release_gate_closed_by_supervisor"] is False
+
+
+def test_operator_soak_supervisor_requires_explicit_auto_resume(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    write_checkpoint(checkpoint, index=1)
+    payload = build_supervisor_payload(
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=tmp_path / "operator_24h.pid",
+        log_path=tmp_path / "operator_24h.log",
+        auto_resume=False,
+    )
+    assert payload["status"] == "resume_paused_run"
+    assert payload["supervisor"]["launch_status"] == "DRY_RUN_REQUIRES_AUTO_RESUME"
+    assert "--resume" in payload["resume_command"]
+
+
+def test_operator_soak_supervisor_auto_resume_dry_run_keeps_release_gate_open(
+    tmp_path: Path,
+) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    write_checkpoint(checkpoint, index=1)
+    payload = build_supervisor_payload(
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=tmp_path / "operator_24h.pid",
+        log_path=tmp_path / "operator_24h.log",
+        auto_resume=True,
+        dry_run=True,
+    )
+    assert payload["status"] == "resume_paused_run"
+    assert payload["supervisor"]["launch_status"] == "DRY_RUN"
+    assert payload["supervisor"]["launched_pid"] is None
+    assert payload["a209_task_status_required"] == "IN_PROGRESS"
+
+
+def test_operator_soak_supervisor_failed_window_blocks_resume(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    write_checkpoint(checkpoint, index=1, status="FAIL")
+    payload = build_supervisor_payload(
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=tmp_path / "operator_24h.pid",
+        log_path=tmp_path / "operator_24h.log",
+        auto_resume=True,
+    )
+    assert payload["status"] == "operator_intervention_required"
+    assert payload["supervisor"]["launch_status"] == "NOT_REQUESTED"
