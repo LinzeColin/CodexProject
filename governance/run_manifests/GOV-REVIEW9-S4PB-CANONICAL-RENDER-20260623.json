@@ -1,0 +1,171 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623",
+  "project_id": "Serenity-Alipay",
+  "task_id": "S4PB",
+  "acceptance_ids": [
+    "ACC-S4PBT01",
+    "ACC-S4PBT02",
+    "ACC-S4PBT03"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S4PB",
+  "generated_at": "2026-06-24T00:45:00+10:00",
+  "implementation_base_sha": "e0a6782efee3c2945abaa261eb0b28fce7bff2df",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:a6285a729e9e92f21ed99cedc51f75e20284623a9b63f44a46b51807d779b830",
+  "changed_files_declared": [
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "scripts/lean_governance.py",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
+  ],
+  "changed_files_actual": [
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "scripts/lean_governance.py",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
+  ],
+  "required_governance_files": [
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "scripts/lean_governance.py",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
+  ],
+  "updated_governance_files": [
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "scripts/lean_governance.py",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
+  ],
+  "change_classification": [
+    "project_governance_change",
+    "root_governance_change",
+    "review9_stage4_pilot_migration",
+    "canonical_project_facts",
+    "canonical_roadmap_facts",
+    "canonical_events_jsonl",
+    "human_entry_render",
+    "render_drift_validation",
+    "no_business_behavior_change"
+  ],
+  "model_delta": "NOT_CHANGED: S4PB migrates existing Serenity-Alipay model facts into Lean v2 canonical governance and rendered human views.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_serenity_project_yaml_contains_canonical_model_facts tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_serenity_roadmap_tracks_canonical_render_phase tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_serenity_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_serenity_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_git_status_porcelain_decodes_chinese_paths_as_utf8 tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_canonical_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_manifest_records_canonical_render_scope -q",
+    "python -B scripts/lean_governance.py check-render --project Serenity-Alipay",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_serenity_project_yaml_contains_canonical_model_facts tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_serenity_roadmap_tracks_canonical_render_phase tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_serenity_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_serenity_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_git_status_porcelain_decodes_chinese_paths_as_utf8 tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_canonical_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pb_manifest_records_canonical_render_scope -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 7 tests in 0.071s; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project Serenity-Alipay",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0; checked Serenity-Alipay."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0 across root and all registered projects."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 161 tests in 9.054s; OK."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parsed as valid JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "duration_seconds=1.121; validation errors=0 warnings=0; check_render drift_count=0 reference_issue_count=0; zero_diff.clean=true changed_count=0."
+    }
+  ],
+  "evidence_refs": [
+    "Serenity-Alipay/docs/governance/evidence_index.yaml",
+    "Serenity-Alipay/docs/governance/model_extraction.yaml",
+    "Serenity-Alipay/docs/governance/roadmap_draft.yaml",
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "scripts/lean_governance.py",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S4PB Serenity-Alipay canonical facts and rendered human entries",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_AND_CLEAN_CI_BEFORE_PR",
+  "summary": "Create Serenity-Alipay Lean v2 canonical project, roadmap, and event facts, render the three Chinese human entry files, and verify zero render drift in one CI-safe S4PB package.",
+  "rollback": "Delete Serenity-Alipay/docs/governance/project.yaml, roadmap.yaml, and events.jsonl; restore the three Serenity-Alipay human entry files; remove canonical filenames from the governance-only classifier; remove S4PB focused tests and this manifest.",
+  "unresolved_risks": [
+    "S4PC still must record owner readability acceptance.",
+    "S4PC still must verify duration/token proxy and rollback.",
+    "S4-GATE still needs owner acceptance, reusable migration mode, and post-merge CI evidence."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

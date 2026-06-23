@@ -1,0 +1,333 @@
+schema_version: "codexproject.roadmap.v1"
+project_id: "Serenity-Alipay"
+total_estimated_hours: 32
+completed_estimated_hours: 24
+current_stage_id: "S4"
+current_phase_id: "S4PB"
+current_task_id: "S4PBT03"
+next_gate_id: "S4PB-GATE"
+stages:
+  -
+    stage_id: "S4"
+    name: "Serenity-Alipay pilot migration and truth validation"
+    person_goal: "Only migrate Serenity-Alipay and prove real scoring model facts, Roadmap facts, human readability, and low-cost sync without fake history."
+    status: "in_progress"
+    estimated_hours: 32
+    estimated_pct: 100
+    stop_conditions:
+      - "Pilot introduces business behavior change"
+      - "Evidence-free model facts appear"
+      - "Human files remain compatibility indexes after S4PB"
+    stop_gate:
+      gate_id: "S4-GATE"
+      pass_criteria:
+        - "All pilot acceptance checks pass"
+        - "Owner explicitly accepts readability"
+        - "Migration mode is reusable"
+      evidence:
+        - "pilot_PR"
+        - "owner_acceptance"
+        - "migration_playbook"
+      failure_action: "blocked"
+    phases:
+      -
+        phase_id: "S4PA"
+        name: "Directed fact extraction"
+        objective: "Extract bounded Serenity facts and reconstruct roadmap truth without invented history."
+        status: "completed"
+        estimated_hours: 14
+        estimated_pct: 43.75
+        stop_conditions:
+          - "Code/document contradiction is unmarked"
+          - "Technology stack is written as a model parameter"
+          - "Iteration or hour claims are invented"
+        stop_gate:
+          gate_id: "S4PA-GATE"
+          pass_criteria:
+            - "All active models have formulas or exact pseudocode"
+            - "Parameters have source and code references"
+            - "Roadmap satisfies ID and Gate rules"
+          evidence:
+            - "evidence_index"
+            - "model_extraction"
+            - "roadmap_draft"
+          failure_action: "remain_in_phase"
+        tasks:
+          -
+            task_id: "S4PAT01"
+            name: "Bound read scope and create evidence index"
+            objective: "Create a bounded evidence index for Serenity-Alipay."
+            status: "completed"
+            estimated_hours: 4
+            estimated_pct: 2.04
+            dependencies:
+              - "S3-GATE"
+            acceptance_ids:
+              - "ACC-S4PAT01"
+            acceptance:
+              -
+                acceptance_id: "ACC-S4PAT01"
+                description: "Create a bounded evidence index for Serenity-Alipay."
+                evidence_refs:
+                  - "Serenity-Alipay/docs/governance/evidence_index.yaml"
+                  - "PR-95"
+                  - "ci_run:28027304921"
+            test_commands:
+              - "See task run manifest and Project Governance CI."
+            test_results:
+              - "PASS evidence required before task is considered complete."
+            evidence_refs:
+              - "Serenity-Alipay/docs/governance/evidence_index.yaml"
+              - "PR-95"
+              - "ci_run:28027304921"
+            risks:
+              - "Evidence scope must remain bounded."
+            rollback: "Delete evidence_index.yaml and its tests."
+            completed_commit: "f1a0b2b2e26fad6691c9b8d8d3da3d235de5c373"
+          -
+            task_id: "S4PAT02"
+            name: "Extract models, formulas, parameters, and strategies"
+            objective: "Extract five active models, twelve formulas, forty-nine parameters, and strategies from existing Serenity evidence."
+            status: "completed"
+            estimated_hours: 6
+            estimated_pct: 3.06
+            dependencies:
+              - "S4PAT01"
+            acceptance_ids:
+              - "ACC-S4PAT02"
+            acceptance:
+              -
+                acceptance_id: "ACC-S4PAT02"
+                description: "Extract five active models, twelve formulas, forty-nine parameters, and strategies from existing Serenity evidence."
+                evidence_refs:
+                  - "Serenity-Alipay/docs/governance/model_extraction.yaml"
+                  - "PR-96"
+                  - "ci_run:28027843674"
+            test_commands:
+              - "See task run manifest and Project Governance CI."
+            test_results:
+              - "PASS evidence required before task is considered complete."
+            evidence_refs:
+              - "Serenity-Alipay/docs/governance/model_extraction.yaml"
+              - "PR-96"
+              - "ci_run:28027843674"
+            risks:
+              - "FORM-008 cap caveat must stay visible."
+            rollback: "Delete model_extraction.yaml and its tests."
+            completed_commit: "5fc77fe002bd2822ccf960eb34beb637fca15b01"
+          -
+            task_id: "S4PAT03"
+            name: "Reconstruct Roadmap and events honestly"
+            objective: "Separate verified, reconstructed, and unknown history before creating canonical Lean v2 files."
+            status: "completed"
+            estimated_hours: 4
+            estimated_pct: 2.04
+            dependencies:
+              - "S4PAT01"
+            acceptance_ids:
+              - "ACC-S4PAT03"
+            acceptance:
+              -
+                acceptance_id: "ACC-S4PAT03"
+                description: "Separate verified, reconstructed, and unknown history before creating canonical Lean v2 files."
+                evidence_refs:
+                  - "Serenity-Alipay/docs/governance/roadmap_draft.yaml"
+                  - "PR-97"
+                  - "ci_run:28028512167"
+            test_commands:
+              - "See task run manifest and Project Governance CI."
+            test_results:
+              - "PASS evidence required before task is considered complete."
+            evidence_refs:
+              - "Serenity-Alipay/docs/governance/roadmap_draft.yaml"
+              - "PR-97"
+              - "ci_run:28028512167"
+            risks:
+              - "Legacy pending events must not be promoted."
+            rollback: "Delete roadmap_draft.yaml and its tests."
+            completed_commit: "e0a6782efee3c2945abaa261eb0b28fce7bff2df"
+      -
+        phase_id: "S4PB"
+        name: "Migration and generation"
+        objective: "Create Lean v2 canonical facts, generate Chinese human entry files, and verify render drift."
+        status: "in_progress"
+        estimated_hours: 14
+        estimated_pct: 43.75
+        stop_conditions:
+          - "Focused tests fail"
+          - "Generated files and canonical facts disagree"
+        stop_gate:
+          gate_id: "S4PB-GATE"
+          pass_criteria:
+            - "Target project validation passes"
+            - "Three human files are byte-stable"
+            - "Business tests do not regress"
+          evidence:
+            - "validation_output"
+            - "focused_test_output"
+            - "diff_summary"
+          failure_action: "remain_in_phase"
+        tasks:
+          -
+            task_id: "S4PBT01"
+            name: "Create project.yaml, roadmap.yaml, events.jsonl"
+            objective: "Create Serenity-Alipay Lean v2 canonical project, roadmap, and event facts from S4PA evidence."
+            status: "completed"
+            estimated_hours: 6
+            estimated_pct: 3.06
+            dependencies:
+              - "S4PAT02"
+              - "S4PAT03"
+            acceptance_ids:
+              - "ACC-S4PBT01"
+            acceptance:
+              -
+                acceptance_id: "ACC-S4PBT01"
+                description: "Create Serenity-Alipay Lean v2 canonical project, roadmap, and event facts from S4PA evidence."
+                evidence_refs:
+                  - "Serenity-Alipay/docs/governance/project.yaml"
+                  - "Serenity-Alipay/docs/governance/roadmap.yaml"
+                  - "Serenity-Alipay/docs/governance/events.jsonl"
+            test_commands:
+              - "See task run manifest and Project Governance CI."
+            test_results:
+              - "PASS evidence required before task is considered complete."
+            evidence_refs:
+              - "Serenity-Alipay/docs/governance/project.yaml"
+              - "Serenity-Alipay/docs/governance/roadmap.yaml"
+              - "Serenity-Alipay/docs/governance/events.jsonl"
+            risks:
+              - "Canonical files must not invent iteration counts or unverified remote facts."
+            rollback: "Delete project.yaml, roadmap.yaml, and events.jsonl."
+          -
+            task_id: "S4PBT02"
+            name: "Generate three Chinese human entry files"
+            objective: "Render 功能清单, 开发记录, and 模型参数文件 from canonical Lean v2 facts."
+            status: "completed"
+            estimated_hours: 4
+            estimated_pct: 2.04
+            dependencies:
+              - "S4PBT01"
+            acceptance_ids:
+              - "ACC-S4PBT02"
+            acceptance:
+              -
+                acceptance_id: "ACC-S4PBT02"
+                description: "Render 功能清单, 开发记录, and 模型参数文件 from canonical Lean v2 facts."
+                evidence_refs:
+                  - "Serenity-Alipay/功能清单"
+                  - "Serenity-Alipay/开发记录"
+                  - "Serenity-Alipay/模型参数文件"
+            test_commands:
+              - "See task run manifest and Project Governance CI."
+            test_results:
+              - "PASS evidence required before task is considered complete."
+            evidence_refs:
+              - "Serenity-Alipay/功能清单"
+              - "Serenity-Alipay/开发记录"
+              - "Serenity-Alipay/模型参数文件"
+            risks:
+              - "Generated files must not be compatibility indexes."
+            rollback: "Restore prior human files and rerun render."
+          -
+            task_id: "S4PBT03"
+            name: "Run focused tests, validate, and drift check"
+            objective: "Verify canonical facts, generated files, changed-only sync, and render drift before S4PC."
+            status: "in_progress"
+            estimated_hours: 4
+            estimated_pct: 2.04
+            dependencies:
+              - "S4PBT02"
+            acceptance_ids:
+              - "ACC-S4PBT03"
+            acceptance:
+              -
+                acceptance_id: "ACC-S4PBT03"
+                description: "Verify canonical facts, generated files, changed-only sync, and render drift before S4PC."
+                evidence_refs:
+                  - "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
+            test_commands:
+              - "See task run manifest and Project Governance CI."
+            test_results:
+              - "PASS evidence required before task is considered complete."
+            evidence_refs:
+              - "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
+            risks:
+              - "PR/main CI still required before S4PB is fully complete."
+            rollback: "Remove S4PB canonical/render changes and tests."
+      -
+        phase_id: "S4PC"
+        name: "Owner readability and cost acceptance"
+        objective: "Confirm owner readability, token-cost behavior, and rollback path."
+        status: "planned"
+        estimated_hours: 4
+        estimated_pct: 12.5
+        stop_conditions:
+          - "Owner cannot understand key model or next decision"
+          - "Governance cost exceeds budget without approved exception"
+        stop_gate:
+          gate_id: "S4PC-GATE"
+          pass_criteria:
+            - "ROA checklist passes"
+            - "Performance metrics meet target"
+            - "Rollback path is executable"
+          evidence:
+            - "owner_review"
+            - "performance_report"
+            - "rollback_test"
+          failure_action: "remain_in_phase"
+        tasks:
+          -
+            task_id: "S4PCT01"
+            name: "Run two-minute Owner ROA review"
+            objective: "Check whether owner can understand the key model facts and next decision quickly."
+            status: "planned"
+            estimated_hours: 2
+            estimated_pct: 1.02
+            dependencies:
+              - "S4PBT03"
+            acceptance_ids:
+              - "ACC-S4PCT01"
+            acceptance:
+              -
+                acceptance_id: "ACC-S4PCT01"
+                description: "Check whether owner can understand the key model facts and next decision quickly."
+                evidence_refs:
+                  - "owner_review"
+            test_commands:
+              - "See task run manifest and Project Governance CI."
+            test_results:
+              - "PASS evidence required before task is considered complete."
+            evidence_refs:
+              - "owner_review"
+            risks:
+              - "Owner acceptance may require edits to human files."
+            rollback: "Revert owner-review updates."
+          -
+            task_id: "S4PCT02"
+            name: "Verify duration, token proxy, and rollback"
+            objective: "Validate cost/runtime proxy and executable rollback before S4 gate."
+            status: "planned"
+            estimated_hours: 2
+            estimated_pct: 1.02
+            dependencies:
+              - "S4PCT01"
+            acceptance_ids:
+              - "ACC-S4PCT02"
+            acceptance:
+              -
+                acceptance_id: "ACC-S4PCT02"
+                description: "Validate cost/runtime proxy and executable rollback before S4 gate."
+                evidence_refs:
+                  - "performance_report"
+                  - "rollback_test"
+            test_commands:
+              - "See task run manifest and Project Governance CI."
+            test_results:
+              - "PASS evidence required before task is considered complete."
+            evidence_refs:
+              - "performance_report"
+              - "rollback_test"
+            risks:
+              - "Remote CI and rollback proof must be concrete."
+            rollback: "Revert S4PC evidence updates."
