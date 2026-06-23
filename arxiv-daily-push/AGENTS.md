@@ -20,6 +20,9 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   or virtualenv directories.
 - V5 Stage 1 delivery is text-first: high-density reports, independent emails,
   Markdown/HTML/JSON audit artifacts, and no required video generation.
+- 30-day-grade evidence means 30 independent unique-date artifacts and coverage
+  checks, not waiting 30 wall-clock days when real-data evidence can be
+  generated and verified faster.
 - Email is the notification channel; dry-run rendering is allowed before real
   SMTP transport exists.
 - Any unsupported key factual claim must block publication.

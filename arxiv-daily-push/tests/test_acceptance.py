@@ -89,7 +89,7 @@ class AcceptanceTests(unittest.TestCase):
         self.assertEqual(package["production_acceptance_status"], "blocked")
         self.assertFalse(package["accepted_for_production"])
         self.assertTrue(package["no_claims"]["does_not_claim_30_day_trial"])
-        self.assertIn("missing 30-day live trial evidence", " ".join(package["blocking_reasons"]))
+        self.assertIn("missing 30 unique-date operational coverage evidence", " ".join(package["blocking_reasons"]))
         self.assertFalse(validate_acceptance_package(package))
 
     def test_acceptance_rejects_invalid_handoff(self) -> None:
@@ -151,7 +151,7 @@ class AcceptanceTests(unittest.TestCase):
 
         self.assertFalse(package["accepted_for_production"])
         self.assertEqual(package["production_acceptance_status"], "blocked")
-        self.assertIn("missing 30-day live trial evidence", " ".join(package["blocking_reasons"]))
+        self.assertIn("missing 30 unique-date operational coverage evidence", " ".join(package["blocking_reasons"]))
 
     def test_validation_rejects_false_production_pass(self) -> None:
         package = build_acceptance_package(handoff_payload(), generated_at="2026-06-21T06:00:00+10:00")

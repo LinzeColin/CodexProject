@@ -64,6 +64,8 @@ jobs:
       ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME || 'linzezhang35@gmail.com' }}
       ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
       ADP_ARXIV_POLITE_DELAY_SECONDS: "3"
+      ADP_ARXIV_TRANSIENT_RETRY_COUNT: "2"
+      ADP_ARXIV_TRANSIENT_RETRY_DELAY_SECONDS: "20"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -104,11 +106,60 @@ jobs:
           report="$RUNNER_TEMP/adp-manual-delivery-daily-input.json"
           queue="$RUNNER_TEMP/adp-candidate-queue.json"
           mkdir -p "$artifact_dir"
-          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_manual_delivery_input" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push build-all-arxiv-daily-input --date "${{ steps.generated_at.outputs.date }}" --generated-at "${{ steps.generated_at.outputs.value }}" --max-results-per-category "${{ inputs.max_results_per_category }}" --polite-delay-seconds "${ADP_ARXIV_POLITE_DELAY_SECONDS}" --artifact-dir "$artifact_dir" --queue-output "$queue" --json > "$report"
+          set +e
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_manual_delivery_input" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push build-all-arxiv-daily-input --date "${{ steps.generated_at.outputs.date }}" --generated-at "${{ steps.generated_at.outputs.value }}" --max-results-per-category "${{ inputs.max_results_per_category }}" --polite-delay-seconds "${ADP_ARXIV_POLITE_DELAY_SECONDS}" --transient-retry-count "${ADP_ARXIV_TRANSIENT_RETRY_COUNT}" --transient-retry-delay-seconds "${ADP_ARXIV_TRANSIENT_RETRY_DELAY_SECONDS}" --artifact-dir "$artifact_dir" --queue-output "$queue" --json > "$report"
+          code="$?"
+          set -e
+          python3 - "$report" "$code" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          report = pathlib.Path(sys.argv[1])
+          code = sys.argv[2]
+          print(f"daily_input_build_exit_code={code}")
+          if not report.is_file() or report.stat().st_size == 0:
+              print("daily_input_report=missing_or_empty")
+              raise SystemExit(0)
+          try:
+              data = json.loads(report.read_text(encoding="utf-8"))
+          except json.JSONDecodeError as exc:
+              print(f"daily_input_report=invalid_json:{exc}")
+              raise SystemExit(0)
+          scan = data.get("scan") if isinstance(data.get("scan"), dict) else {}
+          print(f"daily_input_status={data.get('status')}")
+          print(f"daily_input_ready={data.get('daily_input_ready')}")
+          print(f"scan_status={scan.get('status')}")
+          print(f"archive_count={scan.get('archive_count')}")
+          print(f"blocked_archive_count={scan.get('blocked_archive_count')}")
+          print(f"candidate_count={scan.get('candidate_count')}")
+          for reason in (data.get("blocking_reasons") or [])[:10]:
+              print(f"blocking_reason={reason}")
+          blocked = [
+              item for item in (scan.get("category_reports") or [])
+              if isinstance(item, dict) and item.get("status") == "blocked"
+          ]
+          for item in blocked[:8]:
+              reason = "; ".join(str(reason) for reason in (item.get("blocking_reasons") or [])[:2])
+              print(f"blocked_archive={item.get('archive_id')}:{reason}")
+          PY
           printf 'report=%s\n' "$report" >> "$GITHUB_OUTPUT"
           printf 'artifact_dir=%s\n' "$artifact_dir" >> "$GITHUB_OUTPUT"
           printf 'queue=%s\n' "$queue" >> "$GITHUB_OUTPUT"
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+      - name: Upload Stage 1 build report
+        if: always() && steps.daily_input.outputs.report != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-manual-delivery-daily-input-build-report
+          path: ${{ steps.daily_input.outputs.report }}
+          if-no-files-found: error
+      - name: Stop if Stage 1 text input blocked
+        if: steps.daily_input.outputs.exit_code != '0'
+        shell: bash
+        run: exit "${{ steps.daily_input.outputs.exit_code }}"
       - name: Verify Stage 1 text artifacts
+        if: steps.daily_input.outputs.exit_code == '0'
         shell: bash
         run: |
           test -s "${{ steps.daily_input.outputs.artifact_dir }}/adp-daily-input.json"
@@ -116,6 +167,7 @@ jobs:
           test -s "${{ steps.daily_input.outputs.artifact_dir }}/adp-text-delivery-policy.json"
           test -s "${{ steps.daily_input.outputs.artifact_dir }}/adp-email-brief.json"
       - name: Upload Stage 1 text artifacts
+        if: steps.daily_input.outputs.exit_code == '0'
         uses: actions/upload-artifact@v4
         with:
           name: adp-phase12-delivery-artifacts
@@ -125,6 +177,7 @@ jobs:
             ${{ steps.daily_input.outputs.queue }}
           if-no-files-found: error
       - name: Run scheduled production driver for manual SMTP test
+        if: steps.daily_input.outputs.exit_code == '0'
         id: scheduled
         shell: bash
         run: |

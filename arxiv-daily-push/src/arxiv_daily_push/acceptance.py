@@ -15,7 +15,7 @@ class AcceptanceError(ValueError):
 
 
 PRODUCTION_REQUIREMENTS = (
-    ("thirty_day_trial_passed", "30-day live trial evidence"),
+    ("thirty_day_trial_passed", "30 unique-date operational coverage evidence"),
     ("scheduler_operational", "05:00 scheduler and manual rerun evidence"),
     ("text_artifacts_verified", "Stage 1 text artifact evidence"),
     ("real_smtp_verified", "real SMTP notification evidence"),
@@ -81,7 +81,7 @@ def build_acceptance_package(
             "provision private self-hosted runner and scheduler evidence",
             "configure external SMTP secret and verify real notification delivery",
             "verify Stage 1 text artifacts in GitHub Actions artifacts",
-            "run and archive 30-day operational trial evidence",
+            "run and archive 30 unique-date operational coverage evidence",
             "rerun acceptance with operational_evidence refs before claiming production pass",
         ],
     }

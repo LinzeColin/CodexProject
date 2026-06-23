@@ -14,6 +14,8 @@ from .doctor import doctor_report, render_report
 from .evidence_gate import gate_publication
 from .global_scan import (
     ALL_ARXIV_MAX_RESULTS_PER_CATEGORY,
+    LIVE_ARXIV_TRANSIENT_RETRY_COUNT,
+    LIVE_ARXIV_TRANSIENT_RETRY_DELAY_SECONDS,
     build_all_arxiv_daily_input,
     build_live_all_arxiv_dry_run,
     build_all_arxiv_scan_plan,
@@ -339,6 +341,8 @@ def build_parser() -> argparse.ArgumentParser:
     all_arxiv_daily.add_argument("--recent-source-id", action="append", default=[], help="Source ID already selected recently.")
     all_arxiv_daily.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
     all_arxiv_daily.add_argument("--polite-delay-seconds", type=float, default=0.0, help="Optional delay between live archive fetches.")
+    all_arxiv_daily.add_argument("--transient-retry-count", type=int, default=LIVE_ARXIV_TRANSIENT_RETRY_COUNT)
+    all_arxiv_daily.add_argument("--transient-retry-delay-seconds", type=float, default=LIVE_ARXIV_TRANSIENT_RETRY_DELAY_SECONDS)
     all_arxiv_daily.add_argument("--json", action="store_true", help="Print JSON Phase 12 daily input report.")
 
     live_all_arxiv = subparsers.add_parser(
@@ -412,7 +416,7 @@ def build_parser() -> argparse.ArgumentParser:
     acceptance.add_argument("--operational-evidence", help="Optional JSON file with live operational evidence refs.")
     acceptance.add_argument("--json", action="store_true", help="Print JSON acceptance package.")
 
-    trial = subparsers.add_parser("evaluate-trial", help="Evaluate 30-day production trial evidence for Phase 11 acceptance.")
+    trial = subparsers.add_parser("evaluate-trial", help="Evaluate 30 unique-date operational evidence coverage for Phase 11 acceptance.")
     trial.add_argument("--path", required=True, help="JSON file containing 30-day trial evidence.")
     trial.add_argument("--generated-at", required=True, help="Trial evidence report generation timestamp.")
     trial.add_argument("--json", action="store_true", help="Print JSON trial evidence report.")
@@ -1111,6 +1115,8 @@ def main(argv: list[str] | None = None) -> int:
             artifact_dir=args.artifact_dir,
             queue_output_path=args.queue_output,
             polite_delay_seconds=args.polite_delay_seconds,
+            transient_retry_count=args.transient_retry_count,
+            transient_retry_delay_seconds=args.transient_retry_delay_seconds,
         )
         errors = validate_all_arxiv_daily_input_report(report)
         if errors:
