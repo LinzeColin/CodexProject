@@ -1630,3 +1630,27 @@ None for this new project baseline.
 - Remaining risks: Natural-day cadence proof, final acceptance report, and owner production-schedule approval remain open.
 - Rollback: Remove the S1P5T04 second SMTP evidence manifest and governance status updates.
 - Next step: Collect or explicitly owner-approve the remaining distinct natural-day evidence gate before evaluating `ARXIV_PRODUCTION_ACCEPTED`.
+
+### `ITER-20260623-S1P5T04-ACCELERATED-ACCEPTANCE`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from code, tests, semantic registry sync, PR #76 cloud artifact inspection, and the controlled SMTP manifest.
+- Version before: 0.22.0
+- Version after: 0.23.0
+- Base commit: 681cafd26dad312f78136fcb5ba095340e16e972
+- Result commit: PENDING
+- Task IDs: `S1P5T04`
+- Goal: Replace the stale natural-day wait with a fail-closed accelerated real-arXiv acceptance path that can be proven by GitHub/cloud PR CI without enabling production scheduling.
+- Assumptions: A same-day accelerated replay can satisfy the owner instruction only if it uses real arXiv candidates, controlled SMTP refs, target-runner artifacts, no secret leakage, and no production side effects.
+- Files changed: accelerated acceptance module/CLI/tests, trial evidence evaluator, cloud dry-run workflow, version files, formula/model/parameter registries, traceability/status views, and this run manifest.
+- Model changes: Added `MOD-ADP-045` / `adp-stage1-accelerated-acceptance-v1`.
+- Formula changes: Added `FORM-ADP-047`; updated `FORM-ADP-014` for accelerated replay slots and refreshed CLI-linked formula fingerprints.
+- Parameter changes: Added `PARAM-ADP-349` through `PARAM-ADP-351` for accelerated acceptance model ID, acceptance ID, and 30-sample real candidate requirement.
+- Commands run: py_compile for changed Python files; focused accelerated/trial tests; workflow YAML parse; semantic extractor; negative-control CLI against PR #76 max=1 artifact.
+- Test results: Focused tests: 6 OK; semantic extractor: 47 formulas and 334 parameters checked; negative-control artifact with 16 candidates correctly blocked.
+- Successes: Stage 1 now has a cloud-runner acceptance path that can pass in one PR CI run if live all-arXiv max=3 yields at least 30 real candidates.
+- Failures: `ARXIV_PRODUCTION_ACCEPTED` is not claimed in this commit; PR CI must still produce the passing 30-sample artifact.
+- Decisions: Keep production scheduler disabled and keep Gmail SMTP from sending during accelerated acceptance evidence generation.
+- Remaining risks: Live arXiv availability and candidate volume can still make PR CI fail closed; production-schedule owner approval remains separate.
+- Rollback: Revert `stage1_accelerated_acceptance.py`, trial accelerated-mode changes, workflow max=3 acceptance step, 0.23.0 version bump, and related governance records.
+- Next step: Open PR, wait for PR CI; if the cloud artifact passes with 30 real candidates, record the artifact and then evaluate `ARXIV_PRODUCTION_ACCEPTED`.

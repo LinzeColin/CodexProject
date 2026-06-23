@@ -1681,17 +1681,17 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-076")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-076")
-        self.assertEqual(info["product_version"], "0.22.0")
-        self.assertEqual(info["current_gate"], "S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-077")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-077")
+        self.assertEqual(info["product_version"], "0.23.0")
+        self.assertEqual(info["current_gate"], "S1P5T04-ACCELERATED-REAL-ARXIV-ACCEPTANCE-PR-READY")
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json",
+            "governance/run_manifests/ADP-S1P5T04-ACCELERATED-ACCEPTANCE-PR-READY-20260623.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.22.0", rendered)
-        self.assertIn("S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS", rendered)
+        self.assertIn("0.23.0", rendered)
+        self.assertIn("S1P5T04-ACCELERATED-REAL-ARXIV-ACCEPTANCE-PR-READY", rendered)
         self.assertIn("S1P5T04", rendered)
         self.assertIn("Stage 1 B1/arXiv", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
@@ -1887,7 +1887,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         }:
             self.assertIn(path, changed)
         dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
-        self.assertIn("| `arxiv-daily-push` | `0.22.0` |", dashboard_text)
+        self.assertIn("| `arxiv-daily-push` | `0.23.0` |", dashboard_text)
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         adp_backlog = backlog_text.split('project_id: "arxiv-daily-push"', 1)[1].split("next_task:", 1)[0]
         self.assertIn("precommit_pending_events: 20", adp_backlog)
