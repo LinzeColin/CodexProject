@@ -1,0 +1,139 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623",
+  "project_id": "Serenity-Alipay",
+  "task_id": "S4PAT01",
+  "acceptance_ids": [
+    "ACC-S4PAT01"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S4PAT01",
+  "generated_at": "2026-06-23T23:15:00+10:00",
+  "implementation_base_sha": "e38b1172813930fe93ac1cf24c40581bc1acd1ec",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:124a6d844cebe5eb4197303b27c63899a9bc2b47a0effd343aea6151d786336c",
+  "changed_files_declared": [
+    "Serenity-Alipay/docs/governance/evidence_index.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json"
+  ],
+  "changed_files_actual": [
+    "Serenity-Alipay/docs/governance/evidence_index.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json"
+  ],
+  "required_governance_files": [
+    "Serenity-Alipay/docs/governance/evidence_index.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json"
+  ],
+  "updated_governance_files": [
+    "Serenity-Alipay/docs/governance/evidence_index.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json"
+  ],
+  "change_classification": [
+    "project_governance_change",
+    "root_governance_change",
+    "review9_stage4_pilot_migration",
+    "bounded_evidence_index",
+    "evidence_index_classifier",
+    "no_business_behavior_change"
+  ],
+  "model_delta": "NOT_CHANGED: S4PAT01 creates only a bounded evidence index for later extraction.",
+  "formula_delta": "NOT_CHANGED: FORM-008 caveat is indexed as a watchlist item, not modified.",
+  "parameter_delta": "NOT_CHANGED: no runtime or model parameters changed.",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat01_serenity_evidence_index_bounds_read_scope tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat01_manifest_records_bounded_pilot_scope tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat01_evidence_index_is_project_governance_only -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat01_serenity_evidence_index_bounds_read_scope tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat01_manifest_records_bounded_pilot_scope tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat01_evidence_index_is_project_governance_only -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 3 S4PAT01 focused tests; evidence index scope, manifest scope, and evidence_index.yaml governance-only classification passed."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 146 governance tests locally; OK. Expected fixture output includes the missing-base negative test."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-only validation passed after evidence_index.yaml was classified as project governance only."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-only CI orchestration passed on a clean committed worktree in 1.03s; validation exit_code=0 and zero_diff clean=true."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Information quality returned PASS with 0 findings."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Full registered-scope governance validation passed for all 10 projects."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Run manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported; Git emitted LF-to-CRLF working-copy warnings only."
+    }
+  ],
+  "evidence_refs": [
+    "Serenity-Alipay/docs/governance/evidence_index.yaml",
+    "Serenity-Alipay/docs/governance/MODEL_SPEC.md",
+    "Serenity-Alipay/docs/governance/model_registry.yaml",
+    "Serenity-Alipay/docs/governance/formula_registry.yaml",
+    "Serenity-Alipay/docs/governance/parameter_registry.csv",
+    "Serenity-Alipay/app/core/scoring.py",
+    "Serenity-Alipay/app/core/pipeline.py",
+    "Serenity-Alipay/app/core/metrics.py",
+    "Serenity-Alipay/app/core/comparison.py",
+    "Serenity-Alipay/app/core/discipline.py",
+    "Serenity-Alipay/app/scheduler.py",
+    "Serenity-Alipay/app/core/scheduler_runner.py",
+    "Serenity-Alipay/app/core/automation_tick.py",
+    "Serenity-Alipay/app/config.py",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S4PAT01 Serenity-Alipay bounded evidence index",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Create the bounded evidence index for the Serenity-Alipay Stage 4 pilot without changing business behavior, runtime configuration, formulas, parameters, or human entry files.",
+  "rollback": "Delete Serenity-Alipay/docs/governance/evidence_index.yaml, remove the S4PAT01 tests, and delete this run manifest.",
+  "unresolved_risks": [
+    "S4PAT02 still must extract formulas, parameters, and strategies from the indexed evidence.",
+    "S4PAT03 still must reconstruct Roadmap events without invented hours or iterations.",
+    "Stage 4 final gate still needs generated Lean files, owner readability acceptance, reusable migration mode, and post-merge CI evidence."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
