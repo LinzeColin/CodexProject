@@ -1,13 +1,52 @@
-# whkmSalary 开发记录
+# 开发记录
 
-更新时间：2026-06-20
+## 摘要
 
-本文件是兼容入口。当前开发状态、迭代、事件、版本和验收以以下文件为准：
+- project_id: `whkmSalary`
+- product_version: `0.0.0`
+- current_stage: `S5`
+- current_phase: `S5PA`
+- current_task: `S5PAT04`
+- total_hours: `5.00`
+- completed_hours: `5.00`
+- progress: `100.00%`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PA-GATE-PENDING-MAIN-MERGE`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-- `docs/governance/DEVELOPMENT_LEDGER.md`
-- `docs/governance/development_events.jsonl`
-- `docs/governance/delivery_tasks.yaml`
-- `docs/governance/VERSION_MATRIX.yaml`
-- `CHANGELOG.md`
+## Roadmap
 
-Git 历史只作为 `RECONSTRUCTED` evidence；不得从 commit 数量推断迭代数量。
+Stage -> Phase -> Task
+
+### S5 项目迁移与三文件重建
+
+- person_goal: `逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。`
+- status: `in_progress`
+- derived_hours: `5.00`
+- derived_percent: `100.00%`
+- stop_conditions: `一次 PR 同时迁移多个项目, 无证据事实被写入 VERIFIED, 业务测试失败被忽略`
+- stop_gate: `S5-GATE`
+
+#### S5PA 模型密集项目迁移
+
+- objective: `优先处理模型、策略和参数复杂度高的项目。`
+- status: `in_progress`
+- derived_hours: `5.00`
+- derived_percent: `100.00%`
+- stop_conditions: `上一项目未通过 Gate, 批量脚本产生无证据事实`
+- stop_gate: `S5PA-GATE`
+
+| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
+|---|---|---|---:|---:|---|---|
+| S5PAT04 | 迁移 whkmSalary | completed | 5.00 | 100.00% | S5PAT03 | ACC-S5PAT04 |
+
+
+## 近期事件
+
+| 时间 | 类型 | 摘要 | 任务 | 事实等级 |
+|---|---|---|---|---|
+| 2026-06-20T00:00:00Z | governance_audit | P10/P11/P12 governance migration identified two active salary/UI models, ten formulas, and 80 parameters without changing calculation behavior. | TASK-WHKM-A-001 | RECONSTRUCTED |
+| 2026-06-21T12:45:05Z | semantic_extraction | Semantic extractors machine-verified 78 active parameters and 9 active formulas; PARAM-004, PARAM-005 and FORM-010 require human review. | GOV-SEMANTIC-WHKM-001 | RECONSTRUCTED |
+| 2026-06-22T00:24:25Z | owner_decision_required | Payroll, legal/policy, and product owners must provide authoritative policy, jurisdiction, tax, rounding, and reconciliation evidence before production payroll use. | TASK-WHKM-B-001 | UNKNOWN |
+| 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PAT04 proposes whkmSalary Lean v2 canonical files and rendered Chinese human entry files. | S5PAT04 | PROPOSED |
