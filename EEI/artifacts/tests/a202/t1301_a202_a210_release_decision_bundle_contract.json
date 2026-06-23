@@ -20,7 +20,17 @@
     "A210"
   ],
   "artifact_id": "t1301-a202-a210-release-decision-bundle-contract",
-  "generated_at": "2026-06-22T22:28:14Z",
+  "candidate_source_anchor_requirements": {
+    "GV-FACT-001": [
+      "GV-SNAPSHOT-001",
+      "GV-SNAPSHOT-003"
+    ],
+    "GV-FACT-002": [
+      "GV-SNAPSHOT-002",
+      "GV-SNAPSHOT-004"
+    ]
+  },
+  "generated_at": "2026-06-23T03:24:58Z",
   "non_claims": [
     "This contract does not certify legal clearance.",
     "This contract does not certify trademark or market clearance.",
@@ -70,10 +80,41 @@
   "schema_version": "eei-a202-a210-release-decision-bundle-contract-v1",
   "signed_contract_test_summary": {
     "brand_decision": "RISK_WAIVER_ACCEPTED",
+    "candidate_source_anchor_coverage": {
+      "GV-FACT-001": {
+        "missing_passage_anchor_ids": [],
+        "required_anchor_ids": [
+          "GV-SNAPSHOT-001",
+          "GV-SNAPSHOT-003"
+        ],
+        "supporting_anchor_ids": [
+          "GV-SNAPSHOT-001",
+          "GV-SNAPSHOT-003"
+        ]
+      },
+      "GV-FACT-002": {
+        "missing_passage_anchor_ids": [],
+        "required_anchor_ids": [
+          "GV-SNAPSHOT-002",
+          "GV-SNAPSHOT-004"
+        ],
+        "supporting_anchor_ids": [
+          "GV-SNAPSHOT-002",
+          "GV-SNAPSHOT-004"
+        ]
+      }
+    },
+    "fact_candidates": "data/golden_vertical_fact_candidates.json",
     "legal_clearance_status": "RISK_WAIVER_ACCEPTED",
     "owner_signoffs": 2,
     "passage_reviews": 2,
-    "source_license_reviews": 3
+    "required_source_anchor_ids": [
+      "GV-SNAPSHOT-001",
+      "GV-SNAPSHOT-002",
+      "GV-SNAPSHOT-003",
+      "GV-SNAPSHOT-004"
+    ],
+    "source_license_reviews": 4
   },
   "source_files": {
     "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
@@ -81,9 +122,11 @@
     "a210_brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
     "a210_brand_preflight_sha256": "f7a63f8d651a965c94c61a73b957b0df87fbdf5425efb735d55cf1f048c7aec4",
     "decision_bundle_template": "tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
-    "decision_bundle_template_sha256": "3bd00ed447cd32f44ae39f0f4f56e7120bea857b2e9e22c7507103a3d5f79775",
+    "decision_bundle_template_sha256": "72121e1349f136017a108d771b808ede120b3d2ec6331e688bf686c0921b69d6",
+    "golden_vertical_fact_candidates": "data/golden_vertical_fact_candidates.json",
+    "golden_vertical_fact_candidates_sha256": "bd6a53c6e83808582db172f5ceaf591e5c47e0330cea017ec6fa15d343de64a6",
     "signed_contract_test_bundle": "tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
-    "signed_contract_test_bundle_sha256": "3ff6bc855141661b183c1d64800dcaa1eb00060fed7c53b7226a61198869b091"
+    "signed_contract_test_bundle_sha256": "20bece9164778e85dcc0ff155d30344d9d304586f647375891bcd7660ae023ad"
   },
   "status": "PENDING_SIGNED_DECISIONS",
   "system_en_name": "Enterprise Ecosystem Intelligence",
@@ -98,6 +141,7 @@
     "default_publication_state": "fail_closed",
     "production_owner_publication_requires_signed_bundle": true,
     "production_owner_publication_writes_operation_log": true,
+    "publication_passage_reviews_must_cover_candidate_source_anchors": true,
     "signed_bundle_required_for_a202_a210_closure": true,
     "signed_contract_test_counts_as_clearance": false,
     "template_only_allowed_in_repository": true,

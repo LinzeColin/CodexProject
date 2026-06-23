@@ -19,39 +19,48 @@
   },
   "source_license_reviews": [
     {
-      "anchor_id": "NVDA-ANCHOR-002",
+      "anchor_id": "GV-SNAPSHOT-001",
       "reviewer": "contract-test-source-reviewer",
       "reviewed_at": "2026-06-22T00:00:00Z",
       "source_license_status": "approved_for_public_release",
       "allowed_use_scope": "EEI relationship review contract test only",
-      "evidence_uri": "internal://contract-test/source-license/NVDA-ANCHOR-002",
-      "signature": "contract-test-source-signature-nvda-anchor-002"
+      "evidence_uri": "internal://contract-test/source-license/GV-SNAPSHOT-001",
+      "signature": "contract-test-source-signature-gv-snapshot-001"
     },
     {
-      "anchor_id": "NVDA-ANCHOR-003",
+      "anchor_id": "GV-SNAPSHOT-002",
       "reviewer": "contract-test-source-reviewer",
       "reviewed_at": "2026-06-22T00:00:00Z",
       "source_license_status": "approved_for_public_release",
       "allowed_use_scope": "EEI relationship review contract test only",
-      "evidence_uri": "internal://contract-test/source-license/NVDA-ANCHOR-003",
-      "signature": "contract-test-source-signature-nvda-anchor-003"
+      "evidence_uri": "internal://contract-test/source-license/GV-SNAPSHOT-002",
+      "signature": "contract-test-source-signature-gv-snapshot-002"
     },
     {
-      "anchor_id": "NVDA-ANCHOR-004",
+      "anchor_id": "GV-SNAPSHOT-003",
       "reviewer": "contract-test-source-reviewer",
       "reviewed_at": "2026-06-22T00:00:00Z",
       "source_license_status": "approved_for_public_release",
       "allowed_use_scope": "EEI relationship review contract test only",
-      "evidence_uri": "internal://contract-test/source-license/NVDA-ANCHOR-004",
-      "signature": "contract-test-source-signature-nvda-anchor-004"
+      "evidence_uri": "internal://contract-test/source-license/GV-SNAPSHOT-003",
+      "signature": "contract-test-source-signature-gv-snapshot-003"
+    },
+    {
+      "anchor_id": "GV-SNAPSHOT-004",
+      "reviewer": "contract-test-source-reviewer",
+      "reviewed_at": "2026-06-22T00:00:00Z",
+      "source_license_status": "approved_for_public_release",
+      "allowed_use_scope": "EEI relationship review contract test only",
+      "evidence_uri": "internal://contract-test/source-license/GV-SNAPSHOT-004",
+      "signature": "contract-test-source-signature-gv-snapshot-004"
     }
   ],
   "passage_level_relationship_reviews": [
     {
       "candidate_key": "GV-FACT-001",
       "supporting_anchor_ids": [
-        "NVDA-ANCHOR-002",
-        "NVDA-ANCHOR-003"
+        "GV-SNAPSHOT-001",
+        "GV-SNAPSHOT-003"
       ],
       "supporting_passage_locator": "internal://contract-test/passage/GV-FACT-001",
       "counter_evidence_reviewed": true,
@@ -63,8 +72,8 @@
     {
       "candidate_key": "GV-FACT-002",
       "supporting_anchor_ids": [
-        "NVDA-ANCHOR-002",
-        "NVDA-ANCHOR-004"
+        "GV-SNAPSHOT-002",
+        "GV-SNAPSHOT-004"
       ],
       "supporting_passage_locator": "internal://contract-test/passage/GV-FACT-002",
       "counter_evidence_reviewed": true,

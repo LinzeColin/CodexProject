@@ -57,7 +57,7 @@
       "signed_decision_complete": true
     }
   },
-  "generated_at": "2026-06-23T01:47:12Z",
+  "generated_at": "2026-06-23T03:28:32Z",
   "missing_gates": [
     {
       "gate_id": "A202_source_license_reviews",
@@ -122,9 +122,9 @@
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "9d99ea2420567924a3659ad307aa11e97f0e93b93fc1a7ecd49726c56cdb55ba",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
-    "release_decision_contract_sha256": "bf78a72bb8b7a6ed175a5dac8c4471a96287b92dae1890e802739abf25a9fa38",
+    "release_decision_contract_sha256": "d168259dcb927e355c444659f1c152ff2ae7d63b0a6ef980d5e2cd9fa16ff3ff",
     "signed_decision_bundle": "tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
-    "signed_decision_bundle_sha256": "3ff6bc855141661b183c1d64800dcaa1eb00060fed7c53b7226a61198869b091"
+    "signed_decision_bundle_sha256": "20bece9164778e85dcc0ff155d30344d9d304586f647375891bcd7660ae023ad"
   },
   "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",

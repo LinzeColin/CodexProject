@@ -144,7 +144,13 @@ def has_explicit_pending_rationale(event: dict[str, Any]) -> bool:
         or "not fabricated" in rationale
         or "real release/smtp evidence is intentionally not claimed" in rationale
     )
-    return no_fabrication
+    explicit_pr_rerun_gate = (
+        "pending until committed" in rationale
+        and "pr ci passes" in rationale
+        and "merged to main" in rationale
+        and "workflow is rerun" in rationale
+    )
+    return no_fabrication or explicit_pr_rerun_gate
 
 
 ROOT_GENERATED_REL_PATHS = [

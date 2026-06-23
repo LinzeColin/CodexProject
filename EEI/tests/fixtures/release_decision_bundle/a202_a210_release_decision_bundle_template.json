@@ -19,7 +19,7 @@
   },
   "source_license_reviews": [
     {
-      "anchor_id": "NVDA-ANCHOR-002",
+      "anchor_id": "GV-SNAPSHOT-001",
       "reviewer": "",
       "reviewed_at": "",
       "source_license_status": "PENDING_REVIEW",
@@ -28,7 +28,7 @@
       "signature": ""
     },
     {
-      "anchor_id": "NVDA-ANCHOR-003",
+      "anchor_id": "GV-SNAPSHOT-002",
       "reviewer": "",
       "reviewed_at": "",
       "source_license_status": "PENDING_REVIEW",
@@ -37,7 +37,16 @@
       "signature": ""
     },
     {
-      "anchor_id": "NVDA-ANCHOR-004",
+      "anchor_id": "GV-SNAPSHOT-003",
+      "reviewer": "",
+      "reviewed_at": "",
+      "source_license_status": "PENDING_REVIEW",
+      "allowed_use_scope": "",
+      "evidence_uri": "",
+      "signature": ""
+    },
+    {
+      "anchor_id": "GV-SNAPSHOT-004",
       "reviewer": "",
       "reviewed_at": "",
       "source_license_status": "PENDING_REVIEW",
