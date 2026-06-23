@@ -1,17 +1,17 @@
 schema_version: "codexproject.roadmap.v1"
 project_id: "Serenity-Alipay"
 total_estimated_hours: 32
-completed_estimated_hours: 28
+completed_estimated_hours: 32
 current_stage_id: "S4"
 current_phase_id: "S4PC"
-current_task_id: "S4PCT01"
-next_gate_id: "S4PC-GATE"
+current_task_id: "S4PCT02"
+next_gate_id: "S4-GATE-PASSED"
 stages:
   -
     stage_id: "S4"
     name: "Serenity-Alipay pilot migration and truth validation"
     person_goal: "Only migrate Serenity-Alipay and prove real scoring model facts, Roadmap facts, human readability, and low-cost sync without fake history."
-    status: "in_progress"
+    status: "completed"
     estimated_hours: 32
     estimated_pct: 100
     stop_conditions:
@@ -263,7 +263,7 @@ stages:
         phase_id: "S4PC"
         name: "Owner readability and cost acceptance"
         objective: "Confirm owner readability, token-cost behavior, and rollback path."
-        status: "in_progress"
+        status: "completed"
         estimated_hours: 4
         estimated_pct: 12.5
         stop_conditions:
@@ -285,7 +285,7 @@ stages:
             task_id: "S4PCT01"
             name: "Run two-minute Owner ROA review"
             objective: "Check whether owner can understand the key model facts and next decision quickly."
-            status: "in_progress"
+            status: "completed"
             estimated_hours: 2
             estimated_pct: 1.02
             dependencies:
@@ -301,9 +301,10 @@ stages:
             test_commands:
               - "See task run manifest and Project Governance CI."
             test_results:
-              - "PENDING: owner_acceptance_status remains PENDING_OWNER_CONFIRMATION."
+              - "PASS: owner explicitly accepted S4PC readability in Codex thread on 2026-06-24."
             evidence_refs:
               - "Serenity-Alipay/docs/governance/owner_roa_review.yaml"
+              - "codex-thread://owner-message/2026-06-24-s4pc-readability-acceptance"
             risks:
               - "Owner acceptance may require edits to human files."
             rollback: "Revert owner-review updates."
@@ -311,7 +312,7 @@ stages:
             task_id: "S4PCT02"
             name: "Verify duration, token proxy, and rollback"
             objective: "Validate cost/runtime proxy and executable rollback before S4 gate."
-            status: "in_progress"
+            status: "completed"
             estimated_hours: 2
             estimated_pct: 1.02
             dependencies:
@@ -328,7 +329,7 @@ stages:
             test_commands:
               - "See task run manifest and Project Governance CI."
             test_results:
-              - "PASS_LOCAL: duration/token proxy and rollback check recorded; owner gate still pending."
+              - "PASS: duration/token proxy and rollback check recorded; owner acceptance recorded."
             evidence_refs:
               - "Serenity-Alipay/docs/governance/performance_report.yaml"
               - "Serenity-Alipay/docs/governance/rollback_test.yaml"

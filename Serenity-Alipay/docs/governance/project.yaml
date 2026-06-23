@@ -1779,6 +1779,16 @@ validations:
     evidence_refs:
       - "EVID-REVIEW9-S4PB-MANIFEST"
       - "EVID-REVIEW9-S4PB-CI"
+  -
+    validation_id: "VAL-SER-S4PC"
+    scope: "Owner readability acceptance, duration/token proxy, and rollback evidence"
+    method: "Owner explicitly accepted S4PC readability in Codex thread on 2026-06-24; local S4PC evidence was already validated by PR #99 and main Project Governance run 28030744188"
+    status: "active"
+    fact_level: "VERIFIED"
+    evidence_refs:
+      - "EVID-REVIEW9-S4PC-OWNER-ACCEPTED"
+      - "EVID-REVIEW9-S4PC-MANIFEST"
+      - "EVID-REVIEW9-S4PC-CI"
 evidence_refs:
   -
     evidence_id: "EVID-SER-README"
@@ -1857,6 +1867,24 @@ evidence_refs:
     ref: "github-actions://LinzeColin/CodexProject/actions/runs/28029791587"
     fact_level: "VERIFIED"
     notes: "Main push CI after PR #98 merge."
+  -
+    evidence_id: "EVID-REVIEW9-S4PC-OWNER-ACCEPTED"
+    kind: "owner"
+    ref: "codex-thread://owner-message/2026-06-24-s4pc-readability-acceptance"
+    fact_level: "VERIFIED"
+    notes: "Exact owner reply: ACCEPT S4PC owner readability for Serenity-Alipay Review9 Lean v2 migration."
+  -
+    evidence_id: "EVID-REVIEW9-S4PC-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S4PC-OWNER-ACCEPTANCE-20260623.json"
+    fact_level: "VERIFIED"
+    notes: "S4PC preparation package merged in PR #99; owner acceptance was recorded afterward by explicit owner reply."
+  -
+    evidence_id: "EVID-REVIEW9-S4PC-CI"
+    kind: "ci"
+    ref: "github-actions://LinzeColin/CodexProject/actions/runs/28030744188"
+    fact_level: "VERIFIED"
+    notes: "Main push CI after PR #99 merge."
 legacy_refs:
   -
     legacy_path: "Serenity-Alipay/docs/governance/model_registry.yaml"
