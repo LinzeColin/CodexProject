@@ -40,12 +40,11 @@ quality_result:
   render_drift: "PASS"
   reference_integrity: "PASS"
   windows_chinese_path_ci_fix: "PASS"
-  owner_acceptance_status: "PENDING_OWNER_CONFIRMATION"
+  owner_acceptance_status: "ACCEPTED"
 acceptance:
-  status: "LOCAL_EVIDENCE_READY"
+  status: "PASS_ACCEPTED"
   acceptance_id: "ACC-S4PCT02"
   duration_proxy_recorded: true
   token_proxy_recorded: true
   rollback_evidence_ref: "Serenity-Alipay/docs/governance/rollback_test.yaml"
-  owner_acceptance_recorded: false
-
+  owner_acceptance_recorded: true

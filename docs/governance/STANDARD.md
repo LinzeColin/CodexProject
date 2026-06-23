@@ -24,6 +24,14 @@ files:
 The three Chinese files are complete human views, not aliases, compatibility
 indexes, or links to `docs/governance/`.
 
+中文优先，默认全局中文 applies across the whole repository and every
+registered project. Unless the owner or a stricter project-specific contract
+explicitly requests another language, governance summaries, PR descriptions,
+CI-facing summaries, owner-facing documents, and project human-entry files use
+Chinese by default. Technical identifiers, code symbols, file paths, API names,
+and exact quoted source text may remain in their original language when that
+preserves accuracy.
+
 The Lean v2 canonical fact target for each project is:
 
 - `docs/governance/project.yaml`
