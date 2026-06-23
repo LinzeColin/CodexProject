@@ -132,6 +132,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "scripts/governance_setup_doctor.py",
             "governance/schemas/project.schema.json",
             "governance/schemas/roadmap.schema.json",
+            "governance/schemas/events.schema.json",
             "governance/schemas/ci_attestation.schema.json",
         }:
             self.assertIn(path, required)
@@ -194,6 +195,46 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("stop_gate", schema["$defs"]["phase"]["required"])
         self.assertIn("acceptance_ids", schema["$defs"]["task"]["required"])
         self.assertIn("rollback", schema["$defs"]["task"]["required"])
+
+    def test_review9_s2_events_schema_declares_meaningful_event_contract(self) -> None:
+        schema = json.loads((ROOT / "governance" / "schemas" / "events.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
+        self.assertEqual(schema["properties"]["schema_version"]["const"], "codexproject.event.v1")
+        self.assertFalse(schema["additionalProperties"])
+        for required in {
+            "event_id",
+            "project_id",
+            "occurred_at",
+            "event_type",
+            "summary",
+            "fact_level",
+            "task_id",
+            "acceptance_ids",
+            "changed_files",
+            "evidence_refs",
+        }:
+            self.assertIn(required, schema["required"])
+        self.assertEqual(schema["properties"]["task_id"]["pattern"], "^S[1-9][0-9]*P[A-Z]T[0-9]{2}$")
+        for event_type in {
+            "decision",
+            "implementation",
+            "validation",
+            "migration",
+            "release",
+            "incident",
+            "owner_acceptance",
+            "evidence_update",
+            "rollback",
+        }:
+            self.assertIn(event_type, schema["properties"]["event_type"]["enum"])
+        self.assertEqual(
+            set(schema["$defs"]["fact_level"]["enum"]),
+            {"VERIFIED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"},
+        )
+        evidence_ref = schema["$defs"]["evidence_ref"]
+        self.assertIn("kind", evidence_ref["required"])
+        self.assertIn("fact_level", evidence_ref["required"])
+        self.assertIn("unknown", evidence_ref["properties"]["kind"]["enum"])
 
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()

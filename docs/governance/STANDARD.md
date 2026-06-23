@@ -59,6 +59,13 @@ and Stop Gates. The schema stores estimate and percentage fields; deterministic
 recalculation and drift checks belong to the CLI/validator instead of manual
 editing.
 
+`governance/schemas/events.schema.json` defines one append-only
+`events.jsonl` event line. Events record meaningful decisions,
+implementations, validations, migrations, releases, incidents, owner
+acceptance, evidence updates, or rollbacks. They are not a transcript of every
+agent action. Event and evidence fact levels are limited to `VERIFIED`,
+`RECONSTRUCTED`, `PROPOSED`, and `UNKNOWN`.
+
 IDs:
 
 - Stage: `S1`, `S2`, ...
