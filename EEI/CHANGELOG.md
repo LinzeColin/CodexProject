@@ -32,8 +32,9 @@
 - Updated the T1303/A204-A205 release-manager activation validator so it accepts evidence-derived READY preflight states only when A202, A026/A027, A209 and A210 gate artifacts are all release-ready; the committed repository preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`.
 - Bound A209 background heartbeat into the T1303/A204-A205 release-manager preflight as source-hashed non-closure context; current heartbeat shows `92/288` windows PASS, `0` failed and `counts_as_release_ready=false`.
 - Added a T1302/A203 production API release preflight; it reports `api_surface_ready=true` for the current graph/path/catalog/scoring/evidence API surface while keeping `release_ready=false`, graph publication and score publication blocked until A202, A204/A205 and A209 are release-ready.
-- Refreshed the A209 background heartbeat during A203 work to `98/288` windows PASS, `0` failed, `190` remaining and `release_gate_closed_by_background_heartbeat=false`; A209 remains an active background 24h soak gate.
+- Refreshed the A209 background heartbeat during release-gate work to `110/288` windows PASS, `0` failed, `178` remaining and `release_gate_closed_by_background_heartbeat=false`; A209 remains an active background 24h soak gate.
 - Refreshed clean-room and release artifacts after the A203 preflight files became tracked, so fresh checkouts now validate `package_paths=425` and `manifest_paths=432`.
+- Added a T1303/A204-A205 MVP release-gate preflight that aggregates A202, A203, A204/A205, A209, A210 and A026/A027 into one fail-closed artifact; it reports `MVP_RELEASE_BLOCKED`, keeps every missing production gate visible, and refreshes staged clean-room/release evidence to `package_paths=428`, `manifest_paths=435` and `checksum_paths=434`.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

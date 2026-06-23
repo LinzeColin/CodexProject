@@ -5478,3 +5478,61 @@ Status: LOCAL FOCUSED VALIDATED; A203/A209 STILL IN PROGRESS
 
 - Revert `scripts/validate_production_api_release_preflight.py`, `tests/unit/test_production_api_release_preflight.py`, `artifacts/tests/a203/t1302_production_api_release_preflight.json`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance/documentation update.
 - Regenerate development, clean-room and release artifacts, then rerun focused A203 and A209 heartbeat validation.
+
+## 2026-06-24 - T1303/A204-A205 MVP release gate preflight
+
+Status: LOCAL FOCUSED VALIDATED; MVP RELEASE BLOCKED BY EXTERNAL GATES; A209 BACKGROUND SOAK STILL RUNNING
+
+### Scope
+
+- Added `scripts/validate_mvp_release_gate.py`.
+- Generated `artifacts/tests/a205/t1303_mvp_release_gate_preflight.json`.
+- Added `tests/unit/test_mvp_release_gate.py`.
+- Wired `generate-mvp-release-gate-preflight` and `validate-mvp-release-gate-preflight` into `Makefile` and `make verify`.
+- Registered the new artifact in `scripts/validate_v5_production_readiness_sync.py`.
+
+### Product and functional boundary
+
+- This is the final v0.1 release-readiness aggregator for EEI / 商域图谱, not a production release action.
+- It checks A202 relationship publication clearance, A203 production API release preflight, A204/A205 release-manager activation, A209 24h operator soak, A210 brand clearance or risk waiver, A026 entity-resolution production gold set and A027 relationship-extraction production gold set.
+- It intentionally keeps `release_ready=false`, `production_publication_allowed=false`, `score_publication_allowed=false` and `public_brand_launch_allowed=false` until every required external gate is real and current.
+
+### Acceptance mapping
+
+- T1303 -> A204, A205.
+- Upstream/downstream gates surfaced by this preflight: T1301/A202, T1302/A203, T1307/A209, T1309/A210 and T904/A026-A027.
+- Every proposed closure path remains bounded by the corresponding gate artifact and Acceptance ID; templates, fixtures and A209 heartbeat progress do not count as production clearance.
+
+### Parameters and formulas
+
+- Added `PARAM-078` / `mvp_release_gate.preflight_schema_version = eei-t1303-mvp-release-gate-preflight-v1`.
+- No scoring formula, graph traversal formula, extraction model, model weight, business threshold, route behavior or runtime scoring behavior changed.
+- Release readiness formula is fail-closed: all required gate IDs must pass and no `missing_gates` rows may remain.
+
+### A209 background status
+
+- Background process check at `2026-06-23T19:43:25Z`: screen PID `12452`, operator PID `12478` and watchdog PID `62233` were running.
+- Repository heartbeat was refreshed to `110/288` successful windows, `0` failed, `178` remaining and `38.19%` complete; the latest successful window recorded in the artifact is `operator_24h:window-110`.
+- A209 remains open until the full 24h summary and checkpoint evidence pass `validate_operator_soak_evidence.py` as release-ready.
+
+### Validation
+
+- `python3 -m py_compile scripts/validate_mvp_release_gate.py tests/unit/test_mvp_release_gate.py`: PASS.
+- focused `ruff check` for the new script/test: PASS.
+- `pytest -q tests/unit/test_mvp_release_gate.py`: PASS, 2 passed.
+- `scripts/validate_mvp_release_gate.py generate`: PASS; generated artifact status `MVP_RELEASE_BLOCKED` with seven explicit missing gates.
+- Semantic extractor: PASS with `semantic_parameters_checked=78` and `semantic_formulas_checked=11`.
+- Generated development/risk/clean-room/release artifacts after staging new files: PASS with `package_paths=428`, `manifest_paths=435` and `checksum_paths=434`.
+
+### Remaining gaps
+
+- A202 source/license/owner/legal relationship publication clearance is not supplied.
+- A210 brand legal/market clearance or signed risk waiver is not supplied.
+- A026/A027 production human-labeled gold sets are not supplied.
+- A204/A205 release-manager activation remains blocked until every external gate is real.
+- A209 24h soak is still running and has not completed `288/288` windows.
+
+### Rollback
+
+- Revert `scripts/validate_mvp_release_gate.py`, `tests/unit/test_mvp_release_gate.py`, `artifacts/tests/a205/t1303_mvp_release_gate_preflight.json`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance/documentation update.
+- Preserve live A209 checkpoint, log and watchdog artifacts so the background soak can continue independently.

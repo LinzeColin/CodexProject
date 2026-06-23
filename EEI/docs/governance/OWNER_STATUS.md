@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (77/77 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (78/78 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -56,7 +56,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 10. Current Blockers
 
-1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `98/288` PASS at `2026-06-23T18:52:45Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
+1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `110/288` PASS at `2026-06-23T19:52:48Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
 2. historical event binding backlog
 3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve; `EEI/artifacts/tests/a202/t1301_a202_release_decision_intake_template.json` is now available as the A202 source/license/owner/legal release-decision fill-in contract, `EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` is now available as the A026/A027 production gold-label fill-in contract, and `EEI/artifacts/tests/a210/t1309_brand_clearance_intake_template.json` is now available as the A210 brand-clearance / risk-waiver fill-in contract.
 
@@ -71,17 +71,18 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `77`
-- active_parameters: `77`
+- total_parameters: `78`
+- active_parameters: `78`
 - active_values_changed_by_this_view: `0`
 - latest_T1302_A203_preflight: `scripts/validate_production_api_release_preflight.py` now proves `api_surface_ready=true` while keeping `release_ready=false` until A202 publication clearance, A204/A205 activation and A209 24h soak are complete.
 - latest_T1303_operator_cli: `scripts/apply_model_config.py` now supports dry-run preview plus explicit PostgreSQL `--execute`; `scripts/validate_release_manager_activation.py` now validates evidence-derived READY preflight only when all external gates are real; `artifacts/model_config_import_preview.json` remains non-closure evidence for A204/A205.
+- latest_T1303_mvp_release_gate: `scripts/validate_mvp_release_gate.py` now aggregates A202/A203/A204-A205/A209/A210/A026/A027 into `MVP_RELEASE_BLOCKED` until every required external gate is real and current.
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1302-A203-PRODUCTION-API-RELEASE-PREFLIGHT-IN-PROGRESS`
-- latest_clean_room_sync: fresh checkout should validate `package_paths=425`, `manifest_paths=432`, `checksum_paths=431` after A203 preflight files became tracked.
+- release_gate: `TASK-T1303-MVP-RELEASE-GATE-PREFLIGHT-IN-PROGRESS`
+- latest_clean_room_sync: fresh checkout should validate `package_paths=428`, `manifest_paths=435`, `checksum_paths=434` after T1303 MVP release-gate preflight files became staged.
 
 ## 14. Evidence Freshness
 
@@ -104,7 +105,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - snapshot_event_time: `2026-06-23T04:05:00Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1302-A203-PRODUCTION-API-RELEASE-PREFLIGHT-IN-PROGRESS`
+- phase/gate: `C / TASK-T1303-MVP-RELEASE-GATE-PREFLIGHT-IN-PROGRESS`
 
 ## 17. Next Unique Task
 

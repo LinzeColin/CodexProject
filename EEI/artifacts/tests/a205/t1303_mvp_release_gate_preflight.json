@@ -1,0 +1,217 @@
+{
+  "acceptance_ids": [
+    "A202",
+    "A203",
+    "A204",
+    "A205",
+    "A209",
+    "A210",
+    "A026",
+    "A027"
+  ],
+  "artifact_id": "t1303-mvp-release-gate-preflight",
+  "gate_statuses": {
+    "brand": {
+      "a210_status": "IN_PROGRESS",
+      "formal_legal_clearance": "NOT_COMPLETE",
+      "market_clearance": "NOT_COMPLETE",
+      "owner_signoff": "NOT_PROVIDED",
+      "public_release_allowed": false,
+      "release_gate_status": "BLOCKING",
+      "signed_risk_waiver": "NOT_PROVIDED"
+    },
+    "entity_gold": {
+      "expected_acceptance_id": "A026",
+      "focus_acceptance_id": "A026",
+      "precision": 0.8,
+      "production_gold_set": false,
+      "release_gate_closure_allowed": false,
+      "sample_count": 6,
+      "status": "IN_PROGRESS",
+      "threshold_result": "FAIL_CLOSED"
+    },
+    "operator_soak": {
+      "operator_24h": "MISSING",
+      "operator_24h_windows_completed": null,
+      "operator_4h": "PASS",
+      "release_gate_closed_by_validator": false,
+      "status": "PARTIAL_OPERATOR_EVIDENCE"
+    },
+    "operator_soak_background_heartbeat": {
+      "completion_percent": 38.19,
+      "counts_as_release_ready": false,
+      "progress_status": "RUNNING_PARTIAL",
+      "release_gate_closed_by_background_heartbeat": false,
+      "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
+      "target_windows": 288,
+      "windows_completed": 110,
+      "windows_failed": 0,
+      "windows_remaining": 178
+    },
+    "production_api": {
+      "api_surface_ready": true,
+      "missing_gate_ids": [
+        "A203_contract_status",
+        "A202_relationship_publication_clearance",
+        "A204_A205_release_manager_activation",
+        "A209_24h_operator_soak"
+      ],
+      "production_graph_publication_allowed": false,
+      "release_ready": false,
+      "score_publication_allowed": false,
+      "status": "A203_PRODUCTION_API_RELEASE_BLOCKED"
+    },
+    "relationship_gold": {
+      "expected_acceptance_id": "A027",
+      "focus_acceptance_id": "A027",
+      "precision": 0.75,
+      "production_gold_set": false,
+      "release_gate_closure_allowed": false,
+      "sample_count": 6,
+      "status": "IN_PROGRESS",
+      "threshold_result": "FAIL_CLOSED"
+    },
+    "release_decision": {
+      "public_brand_launch_allowed": false,
+      "relationship_publication_allowed": false,
+      "release_gate_closed_by_contract": false,
+      "status": "PENDING_SIGNED_DECISIONS"
+    },
+    "release_manager": {
+      "activation_ready": false,
+      "missing_gate_ids": [
+        "A202_source_license_reviews",
+        "A202_passage_level_relationship_reviews",
+        "A202_production_owner_signoffs",
+        "A202_legal_release_clearance",
+        "A210_brand_clearance_or_risk_waiver",
+        "A026_entity_resolution_production_gold_set",
+        "A027_relationship_extraction_production_gold_set",
+        "A209_24h_operator_soak"
+      ],
+      "public_brand_launch_allowed": false,
+      "relationship_publication_allowed": false,
+      "release_manager_activation_allowed": false,
+      "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED"
+    }
+  },
+  "generated_at": "2026-06-23T19:52:49Z",
+  "missing_gates": [
+    {
+      "gate_id": "A202_relationship_publication_clearance",
+      "reason": "source-license, passage, owner and legal clearance is incomplete"
+    },
+    {
+      "gate_id": "A203_production_api_release_preflight",
+      "reason": "production API preflight is not release-ready"
+    },
+    {
+      "gate_id": "A204_A205_release_manager_activation",
+      "reason": "release-manager activation remains blocked"
+    },
+    {
+      "gate_id": "A209_24h_operator_soak",
+      "reason": "24h operator soak evidence is missing or not release-ready"
+    },
+    {
+      "gate_id": "A210_brand_clearance_or_risk_waiver",
+      "reason": "formal brand clearance or signed risk waiver is incomplete"
+    },
+    {
+      "gate_id": "A026_entity_resolution_production_gold_set",
+      "reason": "entity-resolution production gold threshold is not met"
+    },
+    {
+      "gate_id": "A027_relationship_extraction_production_gold_set",
+      "reason": "relationship extraction production gold threshold is not met"
+    }
+  ],
+  "non_claims": [
+    "This preflight does not execute a release.",
+    "This preflight does not certify legal, market or trademark clearance.",
+    "This preflight does not convert repository fixtures into production approval.",
+    "This preflight does not replace A209 24h operator soak evidence."
+  ],
+  "operator_next_actions": [
+    {
+      "action": "supply real signed evidence or complete the referenced gate artifact",
+      "gate_id": "A202_relationship_publication_clearance"
+    },
+    {
+      "action": "supply real signed evidence or complete the referenced gate artifact",
+      "gate_id": "A203_production_api_release_preflight"
+    },
+    {
+      "action": "supply real signed evidence or complete the referenced gate artifact",
+      "gate_id": "A204_A205_release_manager_activation"
+    },
+    {
+      "action": "supply real signed evidence or complete the referenced gate artifact",
+      "gate_id": "A209_24h_operator_soak"
+    },
+    {
+      "action": "supply real signed evidence or complete the referenced gate artifact",
+      "gate_id": "A210_brand_clearance_or_risk_waiver"
+    },
+    {
+      "action": "supply real signed evidence or complete the referenced gate artifact",
+      "gate_id": "A026_entity_resolution_production_gold_set"
+    },
+    {
+      "action": "supply real signed evidence or complete the referenced gate artifact",
+      "gate_id": "A027_relationship_extraction_production_gold_set"
+    }
+  ],
+  "production_publication_allowed": false,
+  "public_brand_launch_allowed": false,
+  "release_ready": false,
+  "required_gate_ids": [
+    "A202_relationship_publication_clearance",
+    "A203_production_api_release_preflight",
+    "A204_A205_release_manager_activation",
+    "A209_24h_operator_soak",
+    "A210_brand_clearance_or_risk_waiver",
+    "A026_entity_resolution_production_gold_set",
+    "A027_relationship_extraction_production_gold_set"
+  ],
+  "schema_version": "eei-t1303-mvp-release-gate-preflight-v1",
+  "score_publication_allowed": false,
+  "source_files": {
+    "brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
+    "brand_preflight_sha256": "f7a63f8d651a965c94c61a73b957b0df87fbdf5425efb735d55cf1f048c7aec4",
+    "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
+    "entity_gold_evaluation_sha256": "8ed692ff72c439c07debf1e8bb6c95e6dfc5e4167a6b2a9f640acb5b22fb5efc",
+    "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
+    "operator_soak_evidence_sha256": "9c6fc82383439164913b09ce05d4b558cfd51ccf7cfd1dfed053542251d80afa",
+    "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
+    "operator_soak_heartbeat_sha256": "2510e2b9bd768defd4c32cd94b5e5e9d717d46ebe5c6a0acae4fbbc7cdabd093",
+    "production_api_preflight": "artifacts/tests/a203/t1302_production_api_release_preflight.json",
+    "production_api_preflight_sha256": "711e7e78bd12a7cec7ba688f586ba14cd2ac77c49873c9622ca4a968bc4b3d82",
+    "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
+    "relationship_gold_evaluation_sha256": "9d99ea2420567924a3659ad307aa11e97f0e93b93fc1a7ecd49726c56cdb55ba",
+    "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
+    "release_decision_contract_sha256": "f11eb17e8242edd401e51ba76af4aa63e55081472822c2d0b030c067d8844027",
+    "release_manager_preflight": "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
+    "release_manager_preflight_sha256": "9c26d0c06bf3ed47ebd1b03975014fa5d5054b5d23908bf89716fa100c7f5258"
+  },
+  "status": "MVP_RELEASE_BLOCKED",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_ids": [
+    "T1301",
+    "T1302",
+    "T1303",
+    "T1307",
+    "T1309",
+    "T904"
+  ],
+  "validation_policy": {
+    "a209_background_heartbeat_counts_as_release_ready": false,
+    "all_required_gate_ids_must_pass": true,
+    "production_api_release_preflight_must_be_ready": true,
+    "release_manager_activation_must_be_allowed": true,
+    "repository_fixtures_count_as_clearance": false,
+    "templates_count_as_clearance": false
+  }
+}

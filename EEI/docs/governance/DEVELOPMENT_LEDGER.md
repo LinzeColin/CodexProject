@@ -1097,6 +1097,19 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Rollback: revert the artifact refresh and event sync; preserve live A209 checkpoints and logs.
 - Next step: regenerate release artifacts after this ledger update, commit, push and verify CI while A209 continues in the detached background process.
 
+## EVENT-20260624-020 - T1303/A204-A205 MVP Release Gate Preflight
+
+- Timestamp: `2026-06-23T19:43:25Z`
+- Base commit: `5ed9521940449d25e297368b02308d5dbca9de98`
+- Scope: added the final fail-closed MVP release-gate preflight script, unit tests, generated artifact and governance registry binding.
+- Files changed: `scripts/validate_mvp_release_gate.py`, `tests/unit/test_mvp_release_gate.py`, `artifacts/tests/a205/t1303_mvp_release_gate_preflight.json`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py`, A204/A205 traceability rows, governance parameter/traceability records and phase records.
+- Acceptance IDs: `A204`, `A205`; referenced blockers remain `A202`, `A203`, `A209`, `A210`, `A026`, `A027`.
+- Parameter changes: added `PARAM-078` for `mvp_release_gate.preflight_schema_version = eei-t1303-mvp-release-gate-preflight-v1`.
+- Test results so far: new script/test py_compile PASS; focused ruff PASS; `tests/unit/test_mvp_release_gate.py` PASS 2/2; semantic extractor PASS with 78 active parameters and 11 active formulas; preflight/artifact generation PASS with `MVP_RELEASE_BLOCKED`, `package_paths=428`, `manifest_paths=435` and `checksum_paths=434`.
+- A209 status: background screen PID `12452`, operator PID `12478` and watchdog PID `62233` were running; repository heartbeat was refreshed to `110/288` PASS with `0` failed, `178` remaining and `38.19%` completion.
+- Risks: A209 can still fail before 288 windows; A202/A210/A026/A027 remain external evidence blockers; release gate can be misread if heartbeat/template/fixture evidence is treated as clearance.
+- Rollback: revert the T1303 MVP release-gate preflight files and governance rows, regenerate release artifacts, and preserve live A209 checkpoint/log files.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
