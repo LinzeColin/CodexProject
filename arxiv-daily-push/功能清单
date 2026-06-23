@@ -7,10 +7,10 @@
 - product_version: `0.23.0`
 - current_stage: `S1 - arXiv 单源完整纵向切片与生产验收`
 - current_phase: `S1P5 - 新电脑/云端部署、重放、真实运行与 Stage 1 验收`
-- current_task: `S1P5T04 - 连续 2 个真实自然日与 Stage 1 验收`
-- current_gate: `ARXIV_PRODUCTION_ACCEPTED`
-- next_unique_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 - 邮件前台模板优化`
-- evidence_status: `VERIFIED`
+- current_task: `S1P5T03-R - REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE`
+- current_gate: `STRICT_ARXIV_PRODUCTION_ACCEPTANCE_REOPENED_PENDING_S1P5T03R_CLOUD_CI`
+- next_unique_task: `S1P5T03-R-PR-CI-CLOUD-BACKFILL-ARTIFACT`
+- evidence_status: `LOCAL_CONTROL_VERIFIED_CLOUD_CI_PENDING`
 - production_schedule_status: `DISABLED_FAIL_CLOSED`
 - notification_channel: `Gmail SMTP email`
 - recipient: `linzezhang35@gmail.com`
@@ -19,8 +19,8 @@
 
 | 决策 | 当前建议 | 优先级 | 证据 |
 |---|---|---|---|
-| `DEC-arxiv-daily-push-S1P5T04-ACCEPTED` | Stage 1 arXiv 验收已记录；不要在变量未核对前启用生产定时 | P0 | `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json` |
-| `DEC-arxiv-daily-push-V5-FRONTSTAGE-001` | 邮件模板质量单独优化，不阻塞 Stage 1 accepted | P1 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036` |
+| `DEC-arxiv-daily-push-S1P5T03R-STRICT-BACKFILL` | 先完成云端 30 天真实 backfill 与 CONTENT_LEDGER 闭环，再恢复 strict accepted | P0 | `governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json` |
+| `DEC-arxiv-daily-push-V5-FRONTSTAGE-001` | 邮件模板质量单独优化，当前不执行 | P1 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036` |
 
 ## 功能概览
 
@@ -31,21 +31,25 @@
 | `FEAT-ADP-003` | 中文讲解邮件 | completed | 用户每天只等邮件、读中文讲解 | Markdown/HTML/JSON 文本 artifact、Gmail SMTP | 视频附件、MP4 必需项 | EXTRACTED |
 | `FEAT-ADP-004` | GitHub/cloud runner 运行 | completed | 不依赖本机 Mac 后台 CPU/内存/缓存/显存 | GitHub Actions `ubuntu-latest` | self-hosted 本机 runner | EXTRACTED |
 | `FEAT-ADP-005` | 生产 fail-closed gate | completed | 变量未开启时不会误发生产邮件 | `ADP_PRODUCTION_ENABLED`、`ADP_SCHEDULED_RUN_ENABLED`、`ADP_ALLOW_SMTP_SEND` | 隐式开启生产定时 | EXTRACTED |
-| `FEAT-ADP-006` | Stage 1 验收证据 | completed | 证明 arXiv 单源可长期稳定作为第一板块 | PR #82、run `28019921500`、artifact `7818287996` | Stage 2 多来源验收 | EXTRACTED |
+| `FEAT-ADP-006` | Stage 1 严格验收证据 | in_progress | 证明 arXiv 单源可长期稳定作为第一板块 | S1P5T03-R 真实 30 天 backfill、CONTENT_LEDGER、PR CI artifact | Stage 2 多来源验收、邮件模板优化 | EXTRACTED |
+| `FEAT-ADP-007` | 真实 CONTENT_LEDGER 闭环 | in_progress | 记录已讲主讲、未讲候选、邮件预览状态和 artifact refs | 30 selected rows、269 queued rows、本地控制跑已生成，待云端 artifact reconcile | 生产邮件发送 | EXTRACTED |
 
 ## 关键证据
 
 | 证据 ID | 类型 | 引用 | 支持功能/任务 | 事实等级 |
 |---|---|---|---|---|
-| `EVID-S1P5T04-001` | ci | `github-actions://LinzeColin/CodexProject/actions/runs/28019921500` | `FEAT-ADP-001`; `S1P5T04` | EXTRACTED |
-| `EVID-S1P5T04-002` | artifact | `github-actions://LinzeColin/CodexProject/actions/runs/28019921500/artifacts/7818287996` | `FEAT-ADP-006`; `S1P5T04` | EXTRACTED |
-| `EVID-S1P5T04-003` | run_manifest | `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json` | `S1P5T04` | EXTRACTED |
+| `EVID-S1P5T03R-001` | local_control | `/tmp/adp-real-replay-20260623/report.json` | `FEAT-ADP-006`; `FEAT-ADP-007`; `S1P5T03-R` | EXTRACTED |
+| `EVID-S1P5T03R-002` | content_ledger | `arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv` | `FEAT-ADP-007`; `S1P5T03-R` | EXTRACTED |
+| `EVID-S1P5T03R-003` | pending_cloud_artifact | `adp-s1p5t03-real-arxiv-30-day-backfill` | `FEAT-ADP-006`; `S1P5T03-R` | PENDING |
+| `EVID-S1P5T04-001` | ci | `github-actions://LinzeColin/CodexProject/actions/runs/28019921500` | one-time live cloud chain; `S1P5T04` | EXTRACTED |
+| `EVID-S1P5T04-002` | artifact | `github-actions://LinzeColin/CodexProject/actions/runs/28019921500/artifacts/7818287996` | one-time live cloud chain; not strict 30-day backfill | EXTRACTED |
 | `EVID-S1P5T04-004` | run_manifest | `governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json` | Gmail SMTP refs | EXTRACTED |
 
 ## 限制与风险
 
 | 限制/风险 | 影响 | 缓解/下一任务 | 事实等级 |
 |---|---|---|---|
-| GitHub repo production variables/secrets 当前未在本轮启用或核对 | scheduled production send 可能仍 fail-closed | 单独核对 `ADP_PRODUCTION_ENABLED`、`ADP_SCHEDULED_RUN_ENABLED`、`ADP_ALLOW_SMTP_SEND`、`ADP_ALLOW_RELEASE_UPLOAD` | EXTRACTED |
+| S1P5T03-R 云端 artifact 未完成 | strict `ARXIV_PRODUCTION_ACCEPTED` 不得恢复 | 打开 PR，等待 GitHub Actions `adp-s1p5t03-real-arxiv-30-day-backfill` artifact 并核对 CONTENT_LEDGER | EXTRACTED |
+| GitHub repo production variables/secrets 当前未在本轮启用或核对 | scheduled production send 可能仍 fail-closed | S1P5T03-R 通过后再单独核对 `ADP_PRODUCTION_ENABLED`、`ADP_SCHEDULED_RUN_ENABLED`、`ADP_ALLOW_SMTP_SEND`、`ADP_ALLOW_RELEASE_UPLOAD` | EXTRACTED |
 | 邮件模板质量用户不满意 | 前台信息效率低，但不影响 Stage 1 accepted 证据 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036` | EXTRACTED |
 | Stage 2 多来源未开始 | 目前只保证板块一 arXiv | `S2P1` 后续来源晋升 | EXTRACTED |

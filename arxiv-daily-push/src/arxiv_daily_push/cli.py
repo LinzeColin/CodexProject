@@ -71,6 +71,12 @@ from .stage1_historical_previews import (
     load_historical_daily_inputs,
     validate_historical_b1_previews,
 )
+from .stage1_real_replay import (
+    build_real_historical_arxiv_replay,
+    fetch_atom_with_curl,
+    fetch_atom_with_urllib,
+    validate_real_historical_arxiv_replay_report,
+)
 from .stage1_accelerated_acceptance import (
     build_stage1_accelerated_acceptance_report,
     validate_stage1_accelerated_acceptance_report,
@@ -187,6 +193,23 @@ def build_parser() -> argparse.ArgumentParser:
     historical_previews.add_argument("--artifact-dir", help="Directory for preview artifacts and manifest.")
     historical_previews.add_argument("--write", action="store_true", help="Write preview artifacts to --artifact-dir.")
     historical_previews.add_argument("--json", action="store_true", help="Print JSON S1-11 preview report.")
+
+    real_replay = subparsers.add_parser(
+        "real-historical-arxiv-replay",
+        help="Backfill 30 historical as-of dates with real arXiv Atom data and Stage 1 text artifacts.",
+    )
+    real_replay.add_argument("--generated-at", required=True, help="Replay evidence generation timestamp.")
+    real_replay.add_argument("--start-date", help="First historical as-of date. Defaults from --end-date/--count.")
+    real_replay.add_argument("--end-date", help="Last historical as-of date. Defaults to generated-at date.")
+    real_replay.add_argument("--count", type=int, default=30, help="Number of as-of dates to replay.")
+    real_replay.add_argument("--lookback-days", type=int, default=7, help="Trailing submittedDate window per as-of date.")
+    real_replay.add_argument("--max-results", type=int, default=10, help="Max real arXiv Atom results per as-of date.")
+    real_replay.add_argument("--recipient", default="linzezhang35@gmail.com", help="Dry-run email recipient.")
+    real_replay.add_argument("--artifact-dir", help="Directory for compact replay artifacts.")
+    real_replay.add_argument("--write", action="store_true", help="Write compact replay artifacts to --artifact-dir.")
+    real_replay.add_argument("--fetcher", choices=("curl", "urllib"), default="curl", help="Real arXiv fetch implementation.")
+    real_replay.add_argument("--polite-delay-seconds", type=float, default=3.0, help="Delay between arXiv API calls.")
+    real_replay.add_argument("--json", action="store_true", help="Print JSON real replay report.")
 
     runtime_audit = subparsers.add_parser("runtime-audit", help="Audit Stage 1 local runtime readiness without side effects.")
     runtime_audit.add_argument("--state-dir", required=True, help="Explicit local runtime state directory.")
@@ -829,6 +852,41 @@ def main(argv: list[str] | None = None) -> int:
             )
             if manifest_path:
                 print(f"- manifest_path: {manifest_path}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "real-historical-arxiv-replay":
+        fetcher = fetch_atom_with_curl if args.fetcher == "curl" else fetch_atom_with_urllib
+        report = build_real_historical_arxiv_replay(
+            generated_at=args.generated_at,
+            start_date=args.start_date,
+            end_date=args.end_date,
+            count=args.count,
+            lookback_days=args.lookback_days,
+            max_results=args.max_results,
+            recipient=args.recipient,
+            artifact_dir=args.artifact_dir,
+            write=args.write,
+            fetcher=fetcher,
+            polite_delay_seconds=args.polite_delay_seconds,
+        )
+        errors = validate_real_historical_arxiv_replay_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- success_count: {report.get('success_count')}/{report.get('required_replay_count')}")
+            print(f"- unique_as_of_date_count: {report.get('unique_as_of_date_count')}")
+            print(f"- unique_selected_source_count: {report.get('unique_selected_source_count')}")
+            artifact_dir = (
+                (report.get("artifact_summary") or {}).get("artifact_dir")
+                if isinstance(report.get("artifact_summary"), dict)
+                else ""
+            )
+            if artifact_dir:
+                print(f"- artifact_dir: {artifact_dir}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- error: {reason}")
         return 0 if report["status"] == "pass" else 2
