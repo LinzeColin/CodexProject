@@ -61,6 +61,7 @@
 - `scripts/validate_production_api_release_preflight.py` now generates and validates `EEI/artifacts/tests/a203/t1302_production_api_release_preflight.json`.
 - The committed artifact reports `api_surface_ready=true` for the implemented graph, path, catalog, scoring explanation and evidence detail APIs, but `release_ready=false`, `production_graph_publication_allowed=false` and `score_publication_allowed=false`.
 - A203 remains `IN_PROGRESS` until A202 relationship publication clearance, A204/A205 release-manager activation and A209 24h operator soak evidence are real and current.
+- Clean-room and release artifacts have been refreshed after the A203 preflight files became tracked: expected fresh-checkout counts are `package_paths=425`, release `manifest_paths=432` and `checksum_paths=431`.
 
 ## T904 Gold-Label Intake Template Update
 

@@ -33,6 +33,7 @@
 - Bound A209 background heartbeat into the T1303/A204-A205 release-manager preflight as source-hashed non-closure context; current heartbeat shows `92/288` windows PASS, `0` failed and `counts_as_release_ready=false`.
 - Added a T1302/A203 production API release preflight; it reports `api_surface_ready=true` for the current graph/path/catalog/scoring/evidence API surface while keeping `release_ready=false`, graph publication and score publication blocked until A202, A204/A205 and A209 are release-ready.
 - Refreshed the A209 background heartbeat during A203 work to `98/288` windows PASS, `0` failed, `190` remaining and `release_gate_closed_by_background_heartbeat=false`; A209 remains an active background 24h soak gate.
+- Refreshed clean-room and release artifacts after the A203 preflight files became tracked, so fresh checkouts now validate `package_paths=425` and `manifest_paths=432`.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

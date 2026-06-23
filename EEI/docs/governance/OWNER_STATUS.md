@@ -80,7 +80,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1301-A202-RELEASE-DECISION-INTAKE-IN-PROGRESS`
+- release_gate: `TASK-T1302-A203-PRODUCTION-API-RELEASE-PREFLIGHT-IN-PROGRESS`
+- latest_clean_room_sync: fresh checkout should validate `package_paths=425`, `manifest_paths=432`, `checksum_paths=431` after A203 preflight files became tracked.
 
 ## 14. Evidence Freshness
 

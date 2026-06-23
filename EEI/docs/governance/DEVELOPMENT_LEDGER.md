@@ -1086,6 +1086,17 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Rollback: revert this governance sync and regenerated artifacts; keep live A209 checkpoint/log files intact.
 - Next step: rerun root changed-only semantic governance, commit, push and verify CI while A209 continues in the detached background process.
 
+## 2026-06-24 - EVENT-20260624-019 - A203 clean-room fresh-checkout artifact refresh
+
+- Goal: repair the EEI validation fresh-checkout failure where clean-room evidence category counts were stale after A203 preflight files became tracked.
+- Assumptions: this is a generated-artifact and governance-status sync only; no product runtime behavior, schema, scoring formula, graph traversal formula, extraction model, model weight or threshold value changed.
+- Files changed: `CHANGELOG.md`, `CHECKSUMS.sha256`, `DIRECTORY_TREE.txt`, `manifest.txt`, `artifacts/release_evidence_t1211.json`, `artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip`, `artifacts/tests/a200/t1215_clean_room_release.json`, governance status/version/owner files and development events.
+- Test results: clean-room release regeneration now reports `package_paths=425`, release artifact regeneration reports `manifest_paths=432` and `checksum_paths=431`; local `make verify` PASS with 95 unit tests; `git diff --check` PASS; root changed-only semantic governance PASS with errors 0 and warnings 0.
+- Decisions: keep this as artifact synchronization for the already-added A203 preflight; keep A203/A209 `IN_PROGRESS`.
+- Remaining risks: GitHub CI must pass after this sync.
+- Rollback: revert the artifact refresh and event sync; preserve live A209 checkpoints and logs.
+- Next step: regenerate release artifacts after this ledger update, commit, push and verify CI while A209 continues in the detached background process.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -1141,6 +1152,7 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - `EVENT-20260624-009`: local governance registry and release-artifact sync for the T904 template plus A209 heartbeat refresh.
 - `EVENT-20260624-017`: local T1302/A203 production API release preflight; A203 API surface is locally ready but release remains blocked by A202/A204-A205/A209 gates.
 - `EVENT-20260624-018`: local governance and release-artifact sync for the A203 preflight; active machine-checked parameters now total 77.
+- `EVENT-20260624-019`: clean-room fresh-checkout artifact refresh after A203 preflight files became tracked; expected package paths now total 425.
 
 ## Unknown Historical Periods
 
