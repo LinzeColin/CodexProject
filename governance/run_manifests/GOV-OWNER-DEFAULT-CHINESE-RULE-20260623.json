@@ -1,0 +1,109 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OWNER-DEFAULT-CHINESE-RULE-20260623",
+  "project_id": "root-governance",
+  "task_id": "OWNER-RULE-DEFAULT-CHINESE",
+  "acceptance_ids": [
+    "ACC-OWNER-DEFAULT-CHINESE"
+  ],
+  "iteration_id": "ITER-20260623-OWNER-DEFAULT-CHINESE",
+  "generated_at": "2026-06-23T22:15:00+10:00",
+  "implementation_base_sha": "651977fb6fbb826ee9c4902e0cd85c9ea15c1ba7",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:7ceac7b32072b3c312fa6343a6c3eb27c0c843fb288b7c0a44a2185444aca3ae",
+  "changed_files_declared": [
+    "AGENTS.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OWNER-DEFAULT-CHINESE-RULE-20260623.json"
+  ],
+  "changed_files_actual": [
+    "AGENTS.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OWNER-DEFAULT-CHINESE-RULE-20260623.json"
+  ],
+  "required_governance_files": [
+    "AGENTS.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OWNER-DEFAULT-CHINESE-RULE-20260623.json"
+  ],
+  "updated_governance_files": [
+    "AGENTS.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OWNER-DEFAULT-CHINESE-RULE-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "owner_rule",
+    "default_language_contract"
+  ],
+  "model_delta": "NOT_APPLICABLE: root communication governance only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_root_agents_declares_lean_v2_entry_contract -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B scripts/validate_project_governance.py --all",
+    "python -m json.tool governance/run_manifests/GOV-OWNER-DEFAULT-CHINESE-RULE-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_root_agents_declares_lean_v2_entry_contract -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root AGENTS contract test passed and now asserts the Chinese-first default-language rule."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Governance unit test suite passed locally."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-scope governance sync validation passed locally."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-scope information quality validation passed locally."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Full registered-scope governance validation passed locally."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-OWNER-DEFAULT-CHINESE-RULE-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Run manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported."
+    }
+  ],
+  "evidence_refs": [
+    "AGENTS.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OWNER-DEFAULT-CHINESE-RULE-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Owner rule: Chinese-first default global language",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Add the owner-requested root rule: Chinese-first, default global Chinese unless the user or a project-specific contract requests another language.",
+  "rollback": "Revert the AGENTS.md rule, the root contract assertion, and this run manifest.",
+  "unresolved_risks": [
+    "This PR only records the default-language contract; it does not change Stage 3 governance computation behavior."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
