@@ -34,6 +34,8 @@ class ProductionSchedulerTests(unittest.TestCase):
         self.assertNotIn("ADP_ALLOW_RELEASE", workflow)
         self.assertNotIn("ADP_RELEASE", workflow)
         self.assertIn("build-all-arxiv-daily-input", workflow)
+        self.assertIn("ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3", workflow)
+        self.assertNotIn("ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-1", workflow)
         self.assertIn("adp-text-delivery-policy.json", workflow)
         self.assertNotIn("render-lightweight-mp4", workflow)
         self.assertNotIn("ffmpeg", workflow)

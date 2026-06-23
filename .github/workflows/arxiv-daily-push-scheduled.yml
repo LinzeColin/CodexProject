@@ -129,7 +129,7 @@ jobs:
           queue_out="$RUNNER_TEMP/adp-candidate-queue.json"
           mkdir -p "$artifact_dir"
           queue_args=(); if [ -s "${{ steps.queue.outputs.path }}" ]; then queue_args+=(--queue-path "${{ steps.queue.outputs.path }}"); fi
-          max_results="${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-1}"
+          max_results="${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3}"
           polite_delay="${ADP_ARXIV_POLITE_DELAY_SECONDS:-3}"
           PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_input" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push build-all-arxiv-daily-input --date "${{ steps.generated_at.outputs.date }}" --generated-at "${{ steps.generated_at.outputs.value }}" --max-results-per-category "$max_results" --polite-delay-seconds "$polite_delay" --artifact-dir "$artifact_dir" --queue-output "$queue_out" "${queue_args[@]}" --json > "$report"
           printf 'report=%s\n' "$report" >> "$GITHUB_OUTPUT"

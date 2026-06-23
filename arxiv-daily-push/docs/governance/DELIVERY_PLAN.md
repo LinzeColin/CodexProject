@@ -158,9 +158,10 @@ The machine-readable task source is `delivery_tasks.yaml`.
 
 ### `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`
 
-- status: `in_progress`
-- objective: collect controlled live B1/arXiv email delivery evidence across two real natural days on the target runner before production acceptance.
+- status: `completed`
+- objective: record controlled GitHub/cloud-runner B1/arXiv Stage 1 acceptance evidence without enabling scheduled production.
 - acceptance_ids: `ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS`
-- evidence: `governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json`, `arxiv-daily-push/docs/phase_records/PHASE_S1_12_TEXT_ONLY_PRODUCTION_ENABLEMENT.md`, `github-actions://LinzeColin/CodexProject/actions/runs/27987189886/artifacts/7806168015`, `governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json`
-- current_result: `TEXT_ONLY_PR_READY`; Stage 1 implementation now requires all-arXiv text artifacts plus Gmail SMTP evidence and explicitly removes video/Release as production gates; manual SMTP test and two natural-day evidence are still missing.
-- target_version: `0.22.0`
+- evidence: `governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json`, `arxiv-daily-push/docs/phase_records/PHASE_S1_12_TEXT_ONLY_PRODUCTION_ENABLEMENT.md`, `github-actions://LinzeColin/CodexProject/actions/runs/27987189886/artifacts/7806168015`, `governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json`, `github-actions://LinzeColin/CodexProject/actions/runs/28019921500/artifacts/7818287996`, `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`
+- current_result: `ARXIV_PRODUCTION_ACCEPTED`; PR #82 artifact `7818287996` reports 49 real arXiv candidates, 30 selected samples, 20/20 primary archive buckets, two controlled SMTP refs, no blockers, no video/Release requirement, and `production_schedule_enabled=false`.
+- target_version: `0.23.0`
+- completed_version: `0.23.0`

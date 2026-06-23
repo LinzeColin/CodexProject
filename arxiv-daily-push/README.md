@@ -1,9 +1,9 @@
 # arXiv Daily Push
 
 `arXiv 日报推送 / arXiv Daily Push` is a private, evidence-first daily teaching
-pipeline. The current active target is V5 Stage 1: finish the B1/arXiv
-single-source vertical slice until it can truthfully reach
-`ARXIV_PRODUCTION_ACCEPTED`. Current V6 task pointer: `S1P5T04`.
+pipeline. V5 Stage 1 for the B1/arXiv single-source vertical slice is recorded
+as `ARXIV_PRODUCTION_ACCEPTED` from PR #82 evidence. Current V6 task pointer:
+`S1P5T04`.
 
 The user-facing product must be an explanatory Chinese learning email, not a
 shallow news digest. Stage 1 delivery is text-first: high-density Chinese
@@ -12,9 +12,10 @@ artifacts. Video, TTS, MP4 rendering, GitHub Release video links, and media
 attachments are historical/legacy capabilities only and are not Stage 1 V5
 acceptance requirements.
 
-Production is not accepted and scheduled production must stay disabled until
-the V5 gates pass. Current local work is still low-resource and must not rely on
-the user's Mac as a background production runner.
+Stage 1 acceptance is not the same as enabling scheduled sends. Scheduled
+production remains fail-closed until GitHub repository variables/secrets are
+explicitly verified or enabled. Current operation must not rely on the user's
+Mac as a background production runner.
 
 Baseline clarification: 30-day-grade Stage 1/2 evidence means 30 independent
 unique-date artifacts and replay/coverage checks generated from real data where
@@ -51,18 +52,20 @@ Retained but inactive for V5 Stage 1 acceptance:
 These are not current acceptance gates for `ARXIV_PRODUCTION_ACCEPTED` unless a
 later owner decision explicitly restores them.
 
-Completed but not final production acceptance:
+Completed Stage 1 acceptance evidence:
 
 - 30 independent historical B1 report/email previews.
-- One controlled manual Gmail SMTP test on GitHub/cloud runner:
-  `github-actions://LinzeColin/CodexProject/actions/runs/28002478689`,
-  with `notification_status=sent` to `linzezhang35@gmail.com`.
+- Two controlled Gmail SMTP refs on GitHub/cloud runner from run
+  `28002478689`, both sent to `linzezhang35@gmail.com`.
+- PR #82 live all-arXiv cloud dry-run artifact `7818287996`: 20/20 primary
+  archive buckets, 49 real candidates, 30 selected samples, and
+  `ARXIV_PRODUCTION_ACCEPTED`.
 
-Not accepted yet:
+Not enabled yet:
 
-- complete two-day controlled B1 email delivery evidence;
-- target-runner live network/SMTP readiness evidence when owner enables those checks;
-- `ARXIV_PRODUCTION_ACCEPTED`.
+- scheduled production repo variables/secrets;
+- automatic daily send on default branch;
+- deferred email frontstage template redesign.
 
 ## Goal Baseline
 
@@ -81,7 +84,8 @@ boards and sources.
 
 V6 task-numbering rule: every completion report must state the current Task ID.
 The current Task is `S1P5T04` - controlled live B1 email evidence and Stage 1
-acceptance. Stage 1 is not production accepted until the evidence gate closes.
+acceptance. Stage 1 arXiv is accepted; scheduled production remains a separate
+fail-closed enablement step.
 
 Current V5-to-V6 Stage 1 task continuity:
 
@@ -103,8 +107,8 @@ Current V5-to-V6 Stage 1 task continuity:
   GitHub-hosted runner bootstrap.
 - `S1-11-HISTORICAL_B1_PREVIEWS-001`: completed 30 independent historical B1
   report/email previews.
-- `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`: planned controlled live B1
-  email-day evidence on the target runner.
+- `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`: completed through the PR #82
+  accelerated real-arXiv acceptance artifact and existing controlled SMTP refs.
 
 ## Local Validation
 

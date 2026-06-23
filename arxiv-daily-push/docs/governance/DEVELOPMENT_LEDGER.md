@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.21.0`
+Active product version: `0.23.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.21.0
+- Product version: 0.23.0
 - Current phase: S1-A
-- Current gate: ADP-S1-12-LIVE-ARXIV-PREFLIGHT-PARTIAL
+- Current gate: ARXIV_PRODUCTION_ACCEPTED
 - Confirmed iteration count: 64
 - Reconstructed event count: 0
-- Current task: S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001
-- Blockers: two controlled live B1 email days, real Gmail SMTP delivery evidence, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
+- Current task: S1P5T04
+- Blockers: Stage 1 arXiv acceptance is recorded from PR #82; scheduled production send remains fail-closed until GitHub repository variables/secrets are verified or enabled. Email frontstage template quality remains a separate post-acceptance task.
 
 ## Phase Matrix
 
@@ -25,7 +25,7 @@ The append-only machine record is `development_events.jsonl`.
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
 | E | Weekly/monthly trial, all-arXiv queue delivery, and production handoff | completed | Phase 11 production gates plus Phase 12 all-arXiv scan, candidate queue, ROI ranking, daily lead, Release video-link email gate, and production blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`; `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
-| S1-A | Review8 V5 Stage 1 Window A | in_progress | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, 30 historical B1 previews, live arXiv preflight, and two controlled live B1 email days pass within Stage 1 limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`; `docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md` |
+| S1-A | Review8 V5 Stage 1 Window A | completed | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, 30 historical B1 previews, live arXiv preflight, controlled SMTP refs, and accelerated real-arXiv acceptance artifact pass within Stage 1 limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`; `docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md`; `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json` |
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
@@ -1654,3 +1654,27 @@ None for this new project baseline.
 - Remaining risks: Live arXiv availability and candidate volume can still make PR CI fail closed; production-schedule owner approval remains separate.
 - Rollback: Revert `stage1_accelerated_acceptance.py`, trial accelerated-mode changes, workflow max=3 acceptance step, 0.23.0 version bump, and related governance records.
 - Next step: Open PR, wait for PR CI; if the cloud artifact passes with 30 real candidates, record the artifact and then evaluate `ARXIV_PRODUCTION_ACCEPTED`.
+
+### `ITER-20260623-S1P5T04-ARXIV-PRODUCTION-ACCEPTED`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from PR #82, GitHub Actions runs `28019921535`, `28019921329`, `28019921500`, and artifact `7818287996`.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 6767bf37d125e475784eb80180ea2ca2ede89515
+- Result commit: PENDING
+- Task IDs: `S1P5T04`; `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`
+- Goal: Record the post-merge Stage 1 arXiv acceptance evidence and synchronize governance state without enabling scheduled production.
+- Assumptions: The owner-approved accelerated path can satisfy Stage 1 only when GitHub/cloud runner evidence uses real all-arXiv candidates, existing controlled SMTP refs, no secret leakage, no Release/video requirement, and no production scheduling side effects.
+- Files changed: workflow default sample count, production/trial workflow tests, governance generator, S1-12 task state, traceability/version/status views, root arXiv human entry files, and this accepted manifest.
+- Model changes: No model implementation changed; this iteration records the accepted PR #82 artifact for `MOD-ADP-045`.
+- Formula changes: No formula expression changed.
+- Parameter changes: No active parameter value changed; workflow default fallback now aligns with the accepted max_results_per_category `3` evidence path.
+- Commands run: GitHub PR #82 workflow inspection; artifact `7818287996` field inspection; focused scheduler/trial workflow tests pending local rerun after governance generation.
+- Test results: PR #82 Stage 1 bootstrap, Project Governance, and live all-ArXiv cloud dry-run all completed success. Artifact `7818287996` reports `status=pass`, `accepted_for_production=true`, `ARXIV_PRODUCTION_ACCEPTED`, 49 real arXiv candidates, 30 selected samples, 20/20 primary archive buckets, two controlled SMTP refs, no blockers, no video/Release requirement, and `production_schedule_enabled=false`.
+- Successes: Stage 1 arXiv acceptance is now recorded as `ARXIV_PRODUCTION_ACCEPTED`; production remains cloud/GitHub-runner based and does not depend on the user's Mac background process.
+- Failures: GitHub repository variables/secrets for scheduled production send are not inspected or enabled in this sync; email template quality remains owner-rejected and deferred.
+- Decisions: Keep production schedule disabled until repo variables `ADP_PRODUCTION_ENABLED`, `ADP_SCHEDULED_RUN_ENABLED`, `ADP_ALLOW_SMTP_SEND`, and `ADP_ALLOW_RELEASE_UPLOAD` are explicitly verified or enabled.
+- Remaining risks: Repo variable state may still block daily scheduled sends; Stage 2 source expansion must not start until the accepted arXiv baseline is stable; template redesign can change frontstage quality but not Stage 1 acceptance.
+- Rollback: Revert accepted manifest, event, S1-12 task completion, workflow fallback default, root human entry files, and generated governance status updates.
+- Next step: Verify or enable GitHub repo production variables/secrets for scheduled daily email, then optionally handle the deferred email frontstage template task.
