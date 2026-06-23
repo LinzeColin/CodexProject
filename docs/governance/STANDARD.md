@@ -217,15 +217,24 @@ governance_spec_version, root_governance.ci_mode,
 root_governance.required_files, project_governance_files, projects
 ```
 
-Each project requires:
+Each project registry entry is deliberately small:
 
 ```text
-project_id, path, ci_mode, status, semantic_coverage, model_behavior_globs
+project_id, path, ci_mode, migration.version
 ```
 
-During Lean v2 migration, the current v1 files remain valid until replaced by
-project-level `project.yaml`, `roadmap.yaml`, and `events.jsonl` through the
-approved Stage 4/5 migration tasks.
+Project entries must not carry semantic coverage, extractor state, model
+behavior globs, active-count claims, task targets, evidence summaries, or other
+computed governance state. Those facts remain in project-level governance
+files, run manifests, or later Lean v2 canonical facts, and are checked by
+explicit validation modes instead of being recomputed from the registry during
+every development action.
+
+During Lean v2 migration, `ci_mode` stays `advisory` for unmigrated projects.
+Only Stage 6 may switch a project to `required` after its Lean v2 migration
+gate passes and owner/branch-protection evidence exists. The current v1 files
+remain valid until replaced by project-level `project.yaml`, `roadmap.yaml`,
+and `events.jsonl` through the approved Stage 4/5 migration tasks.
 
 Current v1 required project governance files remain:
 
@@ -254,8 +263,8 @@ knowledge:
 - current iteration and gate agree with the latest extracted event;
 - active parameter values match extractors when semantic extraction is enabled;
 - active formula implementation fingerprints match extractors when enabled;
-- semantic coverage in `governance/projects.yaml` is explicit for every
-  registered project.
+- registry entries stay identity-only and do not store semantic coverage or
+  extractor rollout state.
 
 Facts that cannot be machine-verified remain `UNKNOWN`,
 `HUMAN_REVIEW_REQUIRED`, `PARTIALLY_VERIFIED`, or another non-active evidence
