@@ -98,11 +98,44 @@ def build_baseline(root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> di
     }
 
 
+def build_validate_argv(args: argparse.Namespace) -> list[str]:
+    validate_argv: list[str] = []
+    if args.all:
+        validate_argv.append("--all")
+    elif args.project:
+        validate_argv.extend(["--project", args.project])
+    elif args.changed_only:
+        validate_argv.append("--changed-only")
+    else:
+        validate_argv.append("--changed-only")
+    if args.mode:
+        validate_argv.extend(["--mode", args.mode])
+    if args.base_ref:
+        validate_argv.extend(["--base-ref", args.base_ref])
+    if args.enforce_sync:
+        validate_argv.append("--enforce-sync")
+    if args.semantic:
+        validate_argv.append("--semantic")
+    if args.drift_report:
+        validate_argv.append("--drift-report")
+    return validate_argv
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
     baseline = subparsers.add_parser("baseline", help="Print a read-only repository baseline summary.")
     baseline.add_argument("--all", action="store_true", help="Inspect root governance and all registered projects.")
+    validate = subparsers.add_parser("validate", help="Run governance structure and semantic validation.")
+    validate_scope = validate.add_mutually_exclusive_group()
+    validate_scope.add_argument("--all", action="store_true", help="Validate root governance and all registered projects.")
+    validate_scope.add_argument("--project", help="Validate one registered project by project_id or path.")
+    validate_scope.add_argument("--changed-only", action="store_true", help="Validate root governance and changed project scopes.")
+    validate.add_argument("--mode", choices=["advisory", "required"], help="Override project ci_mode.")
+    validate.add_argument("--base-ref", help="Explicit base commit/ref for changed-only diff validation.")
+    validate.add_argument("--enforce-sync", action="store_true", help="Enforce diff-driven governance update requirements.")
+    validate.add_argument("--semantic", action="store_true", help="Run semantic drift checks.")
+    validate.add_argument("--drift-report", action="store_true", help="Print a machine-readable semantic drift report.")
     args = parser.parse_args(argv)
     if args.command == "baseline":
         if not args.all:
@@ -110,6 +143,8 @@ def main(argv: list[str] | None = None) -> int:
         summary = build_baseline(ROOT, PROJECTS_FILE)
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
+    if args.command == "validate":
+        return governance.main(build_validate_argv(args))
     parser.error(f"Unsupported command: {args.command}")
     return 2
 

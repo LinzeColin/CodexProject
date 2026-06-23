@@ -395,6 +395,21 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(summary["totals"]["canonical_missing"], 2)
         self.assertEqual(summary["projects"][0]["project_id"], "ProjectA")
 
+    def test_review9_s3_validate_cli_reuses_existing_rules_and_exit_codes(self) -> None:
+        cli = load_lean_governance_module()
+        with patch.object(cli.governance, "main", return_value=7) as validator_main:
+            self.assertEqual(
+                cli.main(["validate", "--all", "--semantic", "--enforce-sync", "--base-ref", "origin/main"]),
+                7,
+            )
+        validator_main.assert_called_once_with(["--all", "--base-ref", "origin/main", "--enforce-sync", "--semantic"])
+
+    def test_review9_s3_validate_cli_defaults_to_changed_only(self) -> None:
+        cli = load_lean_governance_module()
+        with patch.object(cli.governance, "main", return_value=0) as validator_main:
+            self.assertEqual(cli.main(["validate"]), 0)
+        validator_main.assert_called_once_with(["--changed-only"])
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
