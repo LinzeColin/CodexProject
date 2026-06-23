@@ -80,10 +80,13 @@ class ScheduledExecutionTests(unittest.TestCase):
         self.assertFalse(report["delivery_package"]["release_required"])
         self.assertFalse(report["delivery_package"]["email_contains_video_link"])
         email_body = FakeSMTP.sent_messages[0].get_body(preferencelist=("plain",)).get_content()
-        self.assertIn("【今天学什么】", email_body)
+        self.assertIn("【今天讲透一个问题】", email_body)
+        self.assertIn("【为什么值得你看】", email_body)
         self.assertIn("候选队列摘要", email_body)
         self.assertNotIn("视频入口", email_body)
         self.assertNotIn("Release 资料包", email_body)
+        self.assertNotIn("ROI score", email_body)
+        self.assertNotIn("后台", email_body)
         self.assertFalse(validate_scheduled_execution_report(report))
 
     def test_cli_run_scheduled_production_outputs_json(self) -> None:

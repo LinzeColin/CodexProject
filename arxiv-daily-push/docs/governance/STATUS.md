@@ -36,8 +36,8 @@
 
 - Readiness: `VERIFIED`
 - Release gate: `ARXIV_PRODUCTION_ACCEPTED`
-- Next executable task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`
-- Pending/stale events: `79`
+- Next executable task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036-PR-CI`
+- Pending/stale events: `80`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
 - Legacy unbound events: `54`

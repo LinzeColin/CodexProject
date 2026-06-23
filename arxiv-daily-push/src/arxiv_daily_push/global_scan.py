@@ -1044,18 +1044,24 @@ def _frontstage_from_lesson(lesson: Mapping[str, Any], *, title: str) -> dict[st
     decision = str(frontstage.get("decision") or ("读" if score >= 4.2 else "扫读" if score >= 3.2 else "跳过"))
     if decision not in {"读", "扫读", "跳过"}:
         decision = "扫读"
-    one_line = _clean_text(str(frontstage.get("one_line_takeaway") or "先判断这篇论文是否提供新变量、新机制或新实验，而不是直接采纳摘要结论。"))
+    one_line = _frontstage_text(
+        frontstage.get("one_line_takeaway"),
+        fallback="先判断这篇论文是否提供新变量、新机制或新实验，而不是直接采纳摘要结论。",
+    )
     return {
         "decision": decision,
         "attention_score": score,
-        "evidence_level": _clean_text(str(frontstage.get("evidence_level") or "摘要级预印本")),
-        "estimated_reading_time": _clean_text(str(frontstage.get("estimated_reading_time") or "8-15分钟")),
+        "evidence_level": _frontstage_text(frontstage.get("evidence_level"), fallback="摘要级预印本"),
+        "estimated_reading_time": _frontstage_text(frontstage.get("estimated_reading_time"), fallback="8-15分钟"),
         "one_line_takeaway": one_line,
         "first_principles_chain": _text_list(frontstage.get("first_principles_chain"), ["问题定义", "关键变量", "方法机制", "可观察输出", "失败条件"]),
         "domain_mappings": _mapping_list(frontstage.get("domain_mappings")),
         "key_questions": _text_list(frontstage.get("key_questions"), ["它是否提供可复验增量？", "摘要主张是否有正文证据支撑？", "失败条件是什么？"]),
         "evidence_gaps": _text_list(frontstage.get("evidence_gaps"), ["当前只基于 arXiv 摘要和分类元数据，不能当作同行评审或实证验证。"]),
-        "default_action": _clean_text(str(frontstage.get("default_action") or "只做一个最小验证：列出输入、输出、失败条件和复现实验，再决定是否深读全文。")),
+        "default_action": _frontstage_text(
+            frontstage.get("default_action"),
+            fallback="只做一个最小验证：列出输入、输出、失败条件和复现实验，再决定是否深读全文。",
+        ),
     }
 
 
@@ -1082,8 +1088,8 @@ def _daily_email_text(
     feedback_options = " / ".join(str(item["label"]) for item in feedback_links)
     return "\n".join(
         [
-            "【今天学什么】",
-            f"建议：{frontstage['decision']} | 证据：{frontstage['evidence_level']} | 时间：{frontstage['estimated_reading_time']}",
+            "【今天讲透一个问题】",
+            f"建议：{frontstage['decision']} | 证据边界：{frontstage['evidence_level']} | 预计：{frontstage['estimated_reading_time']}",
             str(frontstage["one_line_takeaway"]),
             "",
             "【主讲论文】",
@@ -1091,10 +1097,14 @@ def _daily_email_text(
             f"栏目：{project_label} / {group_label}" + (f" / {category}" if category else ""),
             f"原文：{source_url}",
             "",
+            "【为什么值得你看】",
+            "- 重点不是论文标题，而是它是否给出可迁移的变量、机制或验证方法。",
+            "- 你要带走的是一个可复验判断，不是把摘要结论当成事实。",
+            "",
             "【第一性原理链条】",
             chain,
             "",
-            "【翻译成决策语言】",
+            "【怎么转成可用判断】",
             *mappings,
             "",
             "【真正值得追问】",
@@ -1107,11 +1117,11 @@ def _daily_email_text(
             str(frontstage["default_action"]),
             "",
             "【候选队列摘要】",
-            f"- 后台保留：{queued_count} 篇；本邮件只显示前台合格候选。",
+            f"- 已入队候选：{queued_count} 篇；这里只列最可能形成后续讲解的 1-2 篇。",
             *candidates,
             "",
-            "【反馈入口】",
-            f"- 回复本邮件或点击 HTML 按钮：{feedback_options}",
+            "【反馈】",
+            f"- 回复本邮件，或点击 HTML 按钮：{feedback_options}",
         ]
     )
 
@@ -1167,7 +1177,7 @@ h1{{font-size:23px;line-height:1.32;margin:12px 0 8px}}
 .pill{{display:inline-block;margin:0 6px 8px 0;padding:6px 9px;border-radius:999px;background:#edf2ff;color:#293f91;font-size:12px;font-weight:700}}
 .pill.ok{{background:#e7f6ee;color:#12683f}}.pill.warn{{background:#fff4dc;color:#865800}}.pill.gray{{background:#f0f2f5;color:#596275}}
 .decision{{border:1px solid #dde5f0;background:#fbfcff;border-radius:12px;padding:15px;margin:8px 0 18px}}
-.score{{float:right;font-size:25px;font-weight:800;color:#1f6f55}}
+.verdict{{float:right;font-size:25px;font-weight:800;color:#1f6f55}}
 h2{{font-size:17px;margin:24px 0 10px}}p,li{{font-size:14px;line-height:1.7}}ul{{padding-left:20px}}
 .chain{{margin:10px 0}}.node{{display:inline-block;background:#f1f4f9;border-radius:9px;padding:9px 10px;margin:0 4px 6px 0;font-size:13px;font-weight:700}}
 .kv{{border:1px solid #e1e7ef;border-radius:10px;padding:11px;margin:8px 0}}.kv b{{display:block;font-size:13px}}.kv span{{display:block;font-size:13px;color:#4d5870;margin-top:3px}}
@@ -1176,7 +1186,7 @@ h2{{font-size:17px;margin:24px 0 10px}}p,li{{font-size:14px;line-height:1.7}}ul{
 .btn.alt{{background:#edf1f7;color:#25344f!important}}
 .candidates li span{{display:block;color:#657187;font-size:12px}}.feedback{{background:#f7f9fc;border-top:1px solid #e4e9f1;padding:18px 24px}}.fb{{display:inline-block;text-decoration:none;border:1px solid #d5dce8;background:#fff;color:#26344f!important;padding:9px 11px;border-radius:8px;font-size:12px;font-weight:700;margin:5px 5px 0 0}}
 .muted{{color:#6b7589;font-size:13px}}
-@media(max-width:560px){{.wrap{{padding:0}}.card{{border-radius:0;border-left:0;border-right:0}}.head,.body,.feedback{{padding-left:17px;padding-right:17px}}h1{{font-size:21px}}.score{{float:none;display:block;margin-top:4px}}}}
+@media(max-width:560px){{.wrap{{padding:0}}.card{{border-radius:0;border-left:0;border-right:0}}.head,.body,.feedback{{padding-left:17px;padding-right:17px}}h1{{font-size:21px}}.verdict{{float:none;display:block;margin-top:4px}}}}
 </style>
 </head>
 <body>
@@ -1184,16 +1194,17 @@ h2{{font-size:17px;margin:24px 0 10px}}p,li{{font-size:14px;line-height:1.7}}ul{
 <div class="head"><span class="brand">{escape(project_label)} · {escape(group_label)}</span><span class="date">{escape(date)}</span><h1>{escape(str(frontstage["one_line_takeaway"]))}</h1><p class="lead">{escape(title)}</p></div>
 <div class="body">
 <span class="pill ok">建议：{escape(str(frontstage["decision"]))}</span><span class="pill warn">证据：{escape(str(frontstage["evidence_level"]))}</span><span class="pill gray">{escape(group_label)}{(" / " + escape(category)) if category else ""}</span>
-<div class="decision"><span class="score">{escape(str(frontstage["decision"]))}</span><b>今天值得投入多少注意力？</b><p>{escape(str(frontstage["one_line_takeaway"]))} 建议投入 {escape(str(frontstage["estimated_reading_time"]))}。</p></div>
+<div class="decision"><span class="verdict">{escape(str(frontstage["decision"]))}</span><b>今天怎么读？</b><p>{escape(str(frontstage["one_line_takeaway"]))} 建议投入 {escape(str(frontstage["estimated_reading_time"]))}。</p></div>
+<h2>为什么值得你看</h2><p>重点不是论文标题，而是它是否给出可迁移的变量、机制或验证方法。今天只带走一个可复验判断，不把摘要结论当成事实。</p>
 <h2>第一性原理链条</h2><div class="chain">{chain_nodes}</div>
-<h2>翻译成决策语言</h2>{mappings}
+<h2>怎么转成可用判断</h2>{mappings}
 <h2>真正值得追问的 3 个问题</h2><ul>{questions}</ul>
 <div class="callout"><b>先别相信的地方</b><ul>{gaps}</ul></div>
 <h2>默认动作</h2><p>{escape(str(frontstage["default_action"]))}</p>
 <div>{source_button}</div>
-<h2>候选队列摘要</h2><p class="muted">后台保留 {int(queued_count)} 篇；本邮件只显示前台合格候选。</p><ul class="candidates">{candidate_html}</ul>
+<h2>候选队列摘要</h2><p class="muted">已入队候选 {int(queued_count)} 篇；这里只列最可能形成后续讲解的 1-2 篇。</p><ul class="candidates">{candidate_html}</ul>
 </div>
-<div class="feedback"><b>这封推送如何？点击一次即可影响后续日报</b><br>{feedback_html}</div>
+<div class="feedback"><b>这封讲解如何？点击一次即可影响后续选题</b><br>{feedback_html}</div>
 </div></div>
 </body>
 </html>"""
@@ -1261,7 +1272,7 @@ def _bounded_score(value: Any) -> float:
 
 def _text_list(value: Any, fallback: Sequence[str]) -> list[str]:
     if isinstance(value, list):
-        items = [_clean_text(str(item)) for item in value if _clean_text(str(item))]
+        items = [_frontstage_text(item, fallback="") for item in value if _clean_text(str(item))]
         if items:
             return items
     return list(fallback)
@@ -1273,12 +1284,34 @@ def _mapping_list(value: Any) -> list[dict[str, str]]:
         for item in value:
             if not isinstance(item, Mapping):
                 continue
-            paper_variable = _clean_text(str(item.get("paper_variable") or "论文变量"))
-            decision_mapping = _clean_text(str(item.get("decision_mapping") or "决策映射待验证"))
+            paper_variable = _frontstage_text(item.get("paper_variable"), fallback="论文变量")
+            decision_mapping = _frontstage_text(item.get("decision_mapping"), fallback="决策映射待验证")
             rows.append({"paper_variable": paper_variable, "decision_mapping": decision_mapping})
         if rows:
             return rows
     return [{"paper_variable": "论文变量", "decision_mapping": "是否能转成可观测、可记录、可复验的指标"}]
+
+
+def _frontstage_text(value: Any, *, fallback: str) -> str:
+    text = _clean_text(str(value or fallback))
+    replacements = (
+        ("roi_total_score", "内部排序依据"),
+        ("ROI score", "内部排序依据"),
+        ("ROI评分", "内部排序依据"),
+        ("ROI 分数", "内部排序依据"),
+        ("ROI", "价值转化"),
+        ("Release 资料包", "归档资料"),
+        ("GitHub Release", "归档资料"),
+        ("release link", "归档链接"),
+        ("视频入口", "媒体入口"),
+        ("观看/下载", "查看"),
+        ("12-second video", "短讲解材料"),
+        ("12秒视频", "短讲解材料"),
+        ("delivery policy", "交付规则"),
+    )
+    for source, target in replacements:
+        text = text.replace(source, target)
+    return text
 
 
 def _video_card(value: Any, *, title: str) -> dict[str, str]:
