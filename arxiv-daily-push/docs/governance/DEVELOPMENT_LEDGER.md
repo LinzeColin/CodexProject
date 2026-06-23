@@ -1606,3 +1606,27 @@ None for this new project baseline.
 - Remaining risks: Need second controlled live-day evidence, final Stage 1 acceptance report, and production-schedule enablement gate; must not accidentally enable production scheduler early.
 - Rollback: Remove the V6 roadmap file, revert baseline/README/AGENTS/ledger edits, and continue with the previous V5 task labels.
 - Next step: Close the remaining `S1P5T04` evidence gap and only then evaluate `ARXIV_PRODUCTION_ACCEPTED`.
+
+### `ITER-20260623-S1P5T04-CONTROLLED-SMTP-EVIDENCE`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from GitHub Actions run `28002478689`, rerun job `82921274100`, and scheduled-execution artifacts `7811543123` and `7816791617`.
+- Version before: 0.22.0
+- Version after: 0.22.0
+- Base commit: 055ad784b379a282aea8530f2b22b29f0b62f300
+- Result commit: PENDING
+- Task IDs: `S1P5T04`
+- Goal: Record the second controlled GitHub/cloud-runner Gmail SMTP send evidence without enabling production scheduling or claiming Stage 1 acceptance.
+- Assumptions: Two controlled sends prove repeatable Gmail SMTP delivery on GitHub/cloud runner, but they do not prove two distinct natural days because both scheduled-execution reports use daily date `2026-06-23`.
+- Files changed: S1P5T04 evidence manifest, delivery task evidence refs, owner/status/assurance views, traceability row, model governance note, development event, and root governance test expectation.
+- Model changes: No runtime model behavior changed.
+- Formula changes: No formula implementation changed.
+- Parameter changes: No active parameter value changed.
+- Commands run: GitHub Actions rerun job `82921274100`; artifact inspection for `7811543123` and `7816791617` without printing email body or secrets.
+- Test results: Both scheduled-execution artifacts report `production_evidence_ready=true`, `notification_status=sent`, recipient `linzezhang35@gmail.com`, Chinese lesson true, candidate queue summary true, and video link false.
+- Successes: Controlled SMTP evidence count is now `2`; production schedule remains disabled; runner is GitHub/cloud, not local Mac.
+- Failures: Both sends share daily date `2026-06-23`; second distinct natural-day evidence and `ARXIV_PRODUCTION_ACCEPTED` remain incomplete.
+- Decisions: Keep `S1P5T04` in progress and do not enable production scheduling.
+- Remaining risks: Natural-day cadence proof, final acceptance report, and owner production-schedule approval remain open.
+- Rollback: Remove the S1P5T04 second SMTP evidence manifest and governance status updates.
+- Next step: Collect or explicitly owner-approve the remaining distinct natural-day evidence gate before evaluating `ARXIV_PRODUCTION_ACCEPTED`.

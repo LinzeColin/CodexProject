@@ -19,11 +19,12 @@ Fact levels follow `docs/governance/STANDARD.md`.
   ranking behavior, Claim Ledger gates, SMTP behavior, Release behavior,
   scheduler behavior, or media behavior.
 
-- `S1P5T04` imported the V6 task-numbering roadmap, recorded the first
-  controlled GitHub/cloud-runner Gmail SMTP send evidence from run
-  `28002478689`, and kept `ARXIV_PRODUCTION_ACCEPTED` plus production
-  scheduling disabled. No model count, formula expression, parameter
-  active value, or runtime behavior changed in this intake.
+- `S1P5T04` imported the V6 task-numbering roadmap and recorded two
+  controlled GitHub/cloud-runner Gmail SMTP send artifacts from run
+  `28002478689`: `7811543123` and `7816791617`. Both sends occurred on
+  `2026-06-23`, so `ARXIV_PRODUCTION_ACCEPTED` and production scheduling remain
+  disabled. No model count, formula expression, parameter active value, or
+  runtime behavior changed in this evidence sync.
 
 ## A. Model Overview
 
