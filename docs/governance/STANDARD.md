@@ -32,6 +32,12 @@ The Lean v2 canonical fact target for each project is:
 - `VERSION`
 - `CHANGELOG.md`
 
+`governance/schemas/project.schema.json` defines the Lean v2 project fact
+contract. It must be able to carry features, models, assumptions, formulas,
+parameters, strategies, validation records, and evidence references with
+explicit fact levels. `UNKNOWN` remains a first-class fact level and must not be
+collapsed into verified truth.
+
 During migration, existing v1 registries and status files remain governance
 truth. Do not delete, archive, or rewrite them until the project has passed its
 Lean v2 migration gate.
