@@ -184,6 +184,46 @@ class GlobalScanTests(unittest.TestCase):
             for path in report["artifact_paths"].values():
                 self.assertTrue(Path(path).is_file())
 
+    def test_daily_input_reports_scan_blockers_before_roi_selection(self) -> None:
+        batches = source_batches()
+        batches["cs"]["blocking_reasons"] = ["arXiv ingest failed: TLS certificate failure"]
+
+        report = build_all_arxiv_daily_input(
+            date="2026-07-01",
+            generated_at=GENERATED_AT,
+            source_batches=batches,
+        )
+
+        self.assertFalse(validate_all_arxiv_daily_input_report(report))
+        self.assertEqual(report["status"], "blocked")
+        self.assertFalse(report["daily_input_ready"])
+        self.assertEqual(report["scan"]["status"], "blocked")
+        self.assertIn("all-arxiv scan blocked: cs: arXiv ingest failed", report["blocking_reasons"][0])
+        self.assertNotIn("minimum ROI selection threshold", " ".join(report["blocking_reasons"]))
+
+    def test_daily_input_retries_transient_arxiv_errors(self) -> None:
+        attempts = {"count": 0}
+
+        def flaky_fetcher(_query):
+            attempts["count"] += 1
+            if attempts["count"] == 1:
+                raise RuntimeError("HTTP Error 429: Too Many Requests")
+            return atom_feed()
+
+        report = build_all_arxiv_daily_input(
+            date="2026-07-01",
+            generated_at=GENERATED_AT,
+            max_results_per_category=1,
+            fetcher=flaky_fetcher,
+            transient_retry_count=1,
+            transient_retry_delay_seconds=0,
+        )
+
+        self.assertFalse(validate_all_arxiv_daily_input_report(report))
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["scan"]["category_reports"][0]["retry_attempts"], 1)
+        self.assertGreaterEqual(attempts["count"], 21)
+
     def test_live_dry_run_retries_transient_arxiv_rate_limit(self) -> None:
         attempts = {"count": 0}
 
