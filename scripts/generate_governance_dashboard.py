@@ -429,6 +429,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "Stage 1 arXiv acceptance remains recorded, but controlled email cannot be accepted as daily-service evidence.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "ADP-S1P5T04-POST-MERGE-TEST10-040":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-SERVICE-DATE-TEST10-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V6_CONTRACT",
+                "question": "是否现在从 main 触发一次受控 Gmail SMTP test10，以验证悉尼服务日期、中文教学邮件和云端 workflow。",
+                "recommendation": "A: trigger controlled test10 from main; keep production disabled",
+                "option_a": "从 main 触发一次 manual B1 text SMTP test10，验证邮件标题日期、中文正文和 artifact。",
+                "option_b": "继续等待；安全但 Stage 1 邮件前台和日期修复缺少 post-merge 真实邮件证据。",
+                "option_c": "直接启用 production schedule；禁止，因为 test10 尚未证明 post-merge 邮件路径。",
+                "effort": "P1; one GitHub Actions manual run plus artifact verification",
+                "resource": "GitHub Actions ubuntu-latest and one Gmail SMTP test email; no local background production process",
+                "benefit": "把已合并的悉尼服务日期修复、中文教学型邮件前台、全 arXiv daily input、候选队列摘要和 Gmail SMTP 云端发送闭环绑定到一次真实 post-merge 证据。",
+                "risks": "误选非 main 分支、重复发送测试邮件、过早启用 production schedule",
+                "evidence": "manual test10 run id, scheduled-execution artifact, SMTP sent state, Sydney-date email subject, production scheduled job skipped or disabled",
+                "priority": "P1",
+                "no_decision": "Stage 1 arXiv acceptance remains recorded, but post-merge test10 proof remains incomplete.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {

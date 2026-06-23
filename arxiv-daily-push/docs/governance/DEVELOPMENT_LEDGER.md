@@ -11,10 +11,10 @@ The append-only machine record is `development_events.jsonl`.
 - Product version: 0.23.0
 - Current phase: S1-A
 - Current gate: ARXIV_PRODUCTION_ACCEPTED
-- Confirmed iteration count: 67
+- Confirmed iteration count: 68
 - Reconstructed event count: 0
-- Current task: `ADP-S1P5T04-SYDNEY-SERVICE-DATE-039` implemented locally; PR CI, merge, and any controlled test email remain pending.
-- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test9 (`28056192503`) proved cloud manual SMTP delivery but exposed a UTC service-date bug: the generated timestamp `2026-06-23T20:51:43Z` produced service date `2026-06-23` instead of Australia/Sydney date `2026-06-24`. Production schedule, SMTP send, Release upload, Stage 2, and video remain disabled or out of scope until a separate owner-approved task.
+- Current task: `ADP-S1P5T04-POST-MERGE-TEST10-040`; PR #102 merged the Sydney service-date fix and the remaining proof is one owner-triggered controlled manual test10 from `main`.
+- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test9 (`28056192503`) proved cloud manual SMTP delivery but exposed a UTC service-date bug; PR #102 fixed and merged that issue after CI success. GitHub API shows no manual run #10 yet, and the latest scheduled runs only executed the guard while the `scheduled` job was skipped. Production schedule, Release upload, Stage 2, and video remain disabled or out of scope until a separate owner-approved task.
 
 ## Phase Matrix
 
@@ -29,6 +29,30 @@ The append-only machine record is `development_events.jsonl`.
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260624-ADP-S1P5T04-POST-MERGE-TEST10-GATE-040`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from GitHub PR #102, GitHub Actions workflow/run API, `origin/main` workflow YAML, scheduled workflow job statuses, and existing Stage 1 governance records.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 255442601540040b9d20f1493f4afd44a28f5b3a
+- Result commit: PENDING
+- Task IDs: `ADP-S1P5T04-POST-MERGE-TEST10-040`; current V6 task remains `S1P5T04`
+- Goal: Advance Stage 1 from post-PR service-date correction to the exact controlled post-merge test10 gate without enabling production scheduling.
+- Assumptions: test10 must run from `main`, leave `generated_at` empty, use `max_results_per_category=1`, send only one Gmail SMTP test email to `linzezhang35@gmail.com`, and preserve fail-closed production scheduling.
+- Files changed: governance status, owner status, delivery plan/task records, development event, version matrix, dashboard decision policy, root governance test expectation, and this run manifest only.
+- Model changes: No ranking, queue, report, email content, workflow, SMTP, Release, Stage 2, or video model changed.
+- Formula changes: No formula expression changed.
+- Parameter changes: No active parameter value changed.
+- Commands run: GitHub API query for manual delivery workflow runs, scheduled workflow runs, scheduled job states, and PR #102 merge state; `origin/main` workflow inspection for `ZoneInfo("Australia/Sydney")`.
+- Test results: PR #102 merged as `ef64ba2777b318cc0c2bafbf03e1f85b1caf4eaa`; PR CI runs `28057755238`, `28057755234`, `28057755254`, and `28057755244` completed success; manual workflow has runs 1 through 9 only; scheduled runs `28057072176`, `28056782115`, and `28056430312` had `scheduled` job conclusion `skipped`.
+- Successes: `origin/main` contains the Sydney service-date conversion in manual and scheduled workflows; no post-merge test10 has been sent yet; production schedule remains fail-closed.
+- Failures: Stage 1 still lacks the post-merge controlled test10 email evidence.
+- Decisions: Keep production schedule disabled; next owner action is a single manual test10 trigger from `main`.
+- Remaining risks: The owner could select a non-main ref, fill `generated_at`, or trigger duplicate manual runs; Codex must verify artifact fields after test10 before any production-schedule decision.
+- Rollback: Revert this governance sync and return next task to `ADP-S1P5T04-SYDNEY-SERVICE-DATE-039`.
+- Next step: Owner triggers test10, then Codex verifies run id, artifacts, subject date, SMTP sent state, and scheduled production disabled/skipped state.
 
 ### `ITER-20260624-ADP-S1P5T04-SYDNEY-SERVICE-DATE-039`
 
