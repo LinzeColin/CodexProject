@@ -56,13 +56,13 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 10. Current Blockers
 
-1. 24h operator soak evidence (background run PID `12478`, checkpoint `25/288` PASS at `2026-06-23T12:43:25Z`; monitor/supervisor evidence is not release-ready closure)
+1. 24h operator soak evidence (background run PID `12478`, checkpoint `32/288` PASS at `2026-06-23T13:19:02Z`; monitor/supervisor and clean-room package evidence are not release-ready closure)
 2. historical event binding backlog
 3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
-- evidence_required: gold-set labels, precision/recall, source coverage, soak manifest, A209 monitor/supervisor snapshot, full 24h checkpoint validation
+- evidence_required: gold-set labels, precision/recall, source coverage, soak manifest, A209 monitor/supervisor snapshot, clean-room package inclusion evidence, full 24h checkpoint validation
 - principal_risks: source license limits, stale relationships, false relation assertions
 - generated_from_refs: `EEI/docs/governance/ASSURANCE_STATUS.yaml, EEI/docs/governance/delivery_tasks.yaml`
 

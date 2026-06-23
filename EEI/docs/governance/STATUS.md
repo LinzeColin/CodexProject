@@ -46,5 +46,5 @@
 ## A209 Background Soak Update
 
 - T1307/A209 24h operator soak is running as background production-stability evidence and remains non-blocking for other MVP development.
-- Latest local checkpoint before this governance repair: PID `12478`, `25/288` windows PASS, generated at `2026-06-23T12:43:25Z`.
-- Monitor contract: `EEI/scripts/monitor_operator_soak.py` reports `release_gate_closed_by_monitor=false`; supervisor contract `EEI/scripts/supervise_operator_soak.py` reports `release_gate_closed_by_supervisor=false`, observes the live PID without double-starting, and dry-runs recovery by default. A209 remains `IN_PROGRESS` until full 24h summary and checkpoint evidence validate.
+- Latest local checkpoint before this governance repair: PID `12478`, `32/288` windows PASS, generated at `2026-06-23T13:19:02Z`.
+- Monitor contract: `EEI/scripts/monitor_operator_soak.py` reports `release_gate_closed_by_monitor=false`; supervisor contract `EEI/scripts/supervise_operator_soak.py` reports `release_gate_closed_by_supervisor=false`, observes the live PID without double-starting, dry-runs recovery by default, and is included in clean-room release packaging. A209 remains `IN_PROGRESS` until full 24h summary and checkpoint evidence validate.

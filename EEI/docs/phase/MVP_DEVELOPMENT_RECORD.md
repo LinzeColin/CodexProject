@@ -5096,3 +5096,29 @@ Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK RUNNING IN BAC
 
 - Revert `scripts/supervise_operator_soak.py`, `tests/unit/test_operator_soak_evidence.py`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance record.
 - Keep A209 `IN_PROGRESS`; do not remove valid partial checkpoint evidence unless it is corrupted or explicitly superseded.
+
+## 2026-06-23 - T1307/A209 operator soak supervisor clean-room package binding
+
+Status: LOCAL VALIDATED; A209 STILL IN PROGRESS; 24H SOAK RUNNING IN BACKGROUND
+
+### Scope
+
+- Bound `scripts/supervise_operator_soak.py` into the clean-room release package boundary via `scripts/manage_clean_room_release.py`.
+- Regenerated clean-room ZIP, release evidence, checksums, manifest and directory tree so the release package includes the supervisor script.
+- Preserved A209 non-closure semantics: package inclusion proves deliverability of the supervisor, not completion of the 24h soak.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- A209 remains `IN_PROGRESS` until all 288 five-minute windows pass and the release-ready A209 validator passes.
+
+### Validation
+
+- `make validate-clean-room-release validate-release-artifacts`: PASS; clean-room package paths 414; release manifest paths 421; checksum paths 420.
+- `make verify`: PASS; includes clean-room validation, scale benchmark operator path, soak smoke, ruff, typecheck and 77 unit tests.
+- GitHub Actions `28029125423` previously failed before this binding because the clean-room ZIP missed `scripts/supervise_operator_soak.py`; this section records the local fix prepared for retry.
+
+### Remaining gaps
+
+- The background 24h soak remains partial runtime evidence until complete.
+- A209 monitor/supervisor/package evidence must not be used as release-ready A209 closure.

@@ -21,6 +21,7 @@
 - Added a T1301/A202 operator-review candidate queue: the packet now binds `GV-FACT-001..002` to required official-source anchors `GV-SNAPSHOT-001..004` for human/legal review, while publication, legal clearance and release readiness remain fail-closed.
 - Added a T1307/A209 operator-soak progress monitor: the detached 24h soak now has a read-only status contract for PID, successful windows, remaining windows, resume command and `release_gate_closed_by_monitor=false`; A209 remains open until full 24h evidence validates.
 - Added a T1307/A209 operator-soak supervisor: it observes the existing 24h PID without double-starting, dry-runs recovery by default, requires explicit `--auto-resume --execute` for paused-run recovery, and keeps `release_gate_closed_by_supervisor=false`.
+- Bound the A209 supervisor into clean-room release packaging and governance evidence so `scripts/supervise_operator_soak.py` is included in release artifacts while A209 remains open.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 
