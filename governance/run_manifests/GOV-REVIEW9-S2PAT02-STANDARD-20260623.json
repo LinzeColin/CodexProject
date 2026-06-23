@@ -1,0 +1,104 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S2PAT02-STANDARD-20260623",
+  "project_id": "root-governance",
+  "task_id": "S2PAT02",
+  "acceptance_ids": [
+    "ACC-S2PAT02"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S2PAT02",
+  "generated_at": "2026-06-23T19:52:00+10:00",
+  "implementation_base_sha": "9d13293ee4053441037ca4c1e7d3c2a9cb3e65c5",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:be11dbc4882560e15c290bd36e7a65940a62e2c49dd84dacc3eef108b2e061be",
+  "changed_files_declared": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT02-STANDARD-20260623.json"
+  ],
+  "changed_files_actual": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT02-STANDARD-20260623.json"
+  ],
+  "required_governance_files": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT02-STANDARD-20260623.json"
+  ],
+  "updated_governance_files": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT02-STANDARD-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_lean_governance_v2",
+    "standard_contract_update"
+  ],
+  "model_delta": "NOT_APPLICABLE: root governance standard only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_standard_is_lean_v2_contract -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S2PAT02-STANDARD-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_standard_is_lean_v2_contract -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "S2PAT02 STANDARD Lean v2 contract assertions passed."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "135 governance tests OK. The printed missing-base validation is an expected negative fixture inside the test suite."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed files STANDARD.md, run manifest, and governance test; errors 0 warnings 0."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status PASS, errors 0, warnings 0."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S2PAT02-STANDARD-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "manifest JSON parses."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT01-AGENTS-CONTRACT-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S2PAT02 Lean v2 STANDARD",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Shrink docs/governance/STANDARD.md into the Lean v2 standard while retaining required fields, changed-scope sync, run manifest, semantic accuracy, risk-tier, acceptance, and low-token rules.",
+  "rollback": "Revert docs/governance/STANDARD.md, the S2PAT02 governance test, and this run manifest.",
+  "unresolved_risks": [
+    "S2PAT03 must still simplify governance/projects.yaml and migration state.",
+    "Schema definitions remain planned for S2PB.",
+    "Project migrations remain locked until S2 and S3 gates pass."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
