@@ -1,22 +1,52 @@
-# FIFA 开发记录
+# 开发记录
 
-更新时间：2026-06-20
+## 摘要
 
-本文件是兼容入口，不再作为开发迭代或事件的独立事实源。
+- project_id: `FIFA`
+- product_version: `0.1.0`
+- current_stage: `S5`
+- current_phase: `S5PB`
+- current_task: `S5PBT02`
+- total_hours: `4.00`
+- completed_hours: `4.00`
+- progress: `100.00%`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PB-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-Canonical governance:
+## Roadmap
 
-- 开发台账：`docs/governance/DEVELOPMENT_LEDGER.md`
-- 追加式事件：`docs/governance/development_events.jsonl`
-- 版本矩阵：`docs/governance/VERSION_MATRIX.yaml`
-- 任务计划：`docs/governance/DELIVERY_PLAN.md`
+Stage -> Phase -> Task
 
-仍有效的历史摘要：
+### S5 项目迁移与三文件重建
 
-- FIFA 是本地 TAB FIFA betting-research 系统连续性仓库。
-- 当前正式 automation 状态在历史文档中为 blocked；research-only daily report 可作为 candidate。
-- 输出必须区分“研究可用”和“执行不可用”，不得把 blocked 包装成成功。
-- wrapper 没 stdout 时必须检查 artifacts/logs/health，不得假设成功。
-- 当前 safety boundary 不变：禁止下注自动化、禁止 Bet Slip mutation、禁止绕过 TAB access controls。
+- person_goal: `逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。`
+- status: `in_progress`
+- derived_hours: `4.00`
+- derived_percent: `100.00%`
+- stop_conditions: `一次 PR 同时迁移多个项目, 无证据事实被写入 VERIFIED, 业务测试失败被忽略`
+- stop_gate: `S5-GATE`
 
-验证命令入口已迁移到 `docs/governance/DELIVERY_PLAN.md`。
+#### S5PB 剩余项目治理压缩迁移
+
+- objective: `收敛现有大量治理文档，保留有用事实并恢复三文件。`
+- status: `in_progress`
+- derived_hours: `4.00`
+- derived_percent: `100.00%`
+- stop_conditions: `任何项目缺少 owner-readable 三文件, 未知事实被写成 VERIFIED`
+- stop_gate: `S5PB-GATE`
+
+| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
+|---|---|---|---:|---:|---|---|
+| S5PBT02 | 迁移 FIFA | completed | 4.00 | 100.00% | S5PBT01 | ACC-S5PBT02 |
+
+
+## 近期事件
+
+| 时间 | 类型 | 摘要 | 任务 | 事实等级 |
+|---|---|---|---|---|
+| 2026-06-21T14:22:12Z | semantic_extraction | Semantic extractor evidence covers 91 active parameters and 10 active formulas; 17 active parameters remain HUMAN_REVIEW_REQUIRED. | GOV-SEMANTIC-FIFA-001 | RECONSTRUCTED |
+| 2026-06-22T00:24:25Z | assurance_status_generation | Review6 generated ASSURANCE_STATUS and owner/engineering views while preserving FIFA delivery readiness as UNVERIFIED and operational validation as FAILED. | GOV-REVIEW6-FINAL-PORTFOLIO-001 | EXTRACTED |
+| 2026-06-22T00:24:25Z | owner_decision_required | Research and risk owners must decide whether to obtain authorized odds snapshots, calibration evidence and report fact checks while keeping stake/executable amount at 0. | TASK-FIFA-C-001 | UNKNOWN |
+| 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PBT02 proposes FIFA Lean v2 canonical files and rendered Chinese human entry files. | S5PBT02 | PROPOSED |

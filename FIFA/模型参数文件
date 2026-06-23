@@ -1,21 +1,298 @@
-# FIFA 模型参数文件
+# 模型参数文件
 
-更新时间：2026-06-20
+## 摘要
 
-本文件是兼容入口，不再作为模型参数的独立事实源。
+- project_id: `FIFA`
+- product_version: `0.1.0`
+- current_stage: `S5`
+- current_phase: `S5PB`
+- current_task: `S5PBT02`
+- active_model_count: `11`
+- active_formula_count: `11`
+- active_parameter_count: `108`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PB-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-Canonical governance:
+## 模型
 
-- 模型规范：`docs/governance/MODEL_SPEC.md`
-- 模型注册表：`docs/governance/model_registry.yaml`
-- 公式注册表：`docs/governance/formula_registry.yaml`
-- 参数台账：`docs/governance/parameter_registry.csv`
-- 追踪矩阵：`docs/governance/TRACEABILITY_MATRIX.csv`
+### MOD-001 Decimal Odds Validation and No-vig Probability Transform
 
-仍有效的历史摘要：
+- purpose: `Validate decimal odds, compute implied probability, and normalize market probabilities after removing overround.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-001`
+- parameter_refs: `PARAM-001, PARAM-002, PARAM-003, PARAM-004`
+- evidence_refs: `EVID-FIFA-MODEL-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
 
-- 默认模式：research-only。
-- 当前 executable new stake：`AUD 0`，除非 formal raw、private position、manual verification 和 automation gates 均通过。
-- 当前 public raw / Live discovery access policy：`ai_controlled_access_rejected` 必须 fail-closed。
-- 默认安全恢复路径：官方/授权 feed、用户导出导入、已有 fresh partial raw 的 research-only diagnostics。
-- 不允许保存或提交 TAB credentials、OTP、cookies、Chrome profiles、private stake details、未脱敏 My Bets raw text、自动下注、Bet Slip mutation 或 platform bypass 代码。
+### MOD-002 Market Probability, Poisson xG, Candidate Score and Stake Gate
+
+- purpose: `Turn market probabilities and curated overlays into candidate probabilities, EV, edge, decision, and research stake units.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-002`
+- parameter_refs: `PARAM-005, PARAM-006, PARAM-007, PARAM-008, PARAM-009, PARAM-010, PARAM-011, PARAM-012, PARAM-013, PARAM-014, PARAM-015, PARAM-016, PARAM-017, PARAM-018, PARAM-019, PARAM-020, PARAM-021, PARAM-022, PARAM-023, PARAM-024, PARAM-025, PARAM-026, PARAM-027, PARAM-028, PARAM-029, PARAM-030`
+- evidence_refs: `EVID-FIFA-MODEL-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### MOD-003 Bankroll Plan and Time-adjusted Stake Allocation
+
+- purpose: `Calculate uncommitted bankroll, cap current-window exposure, and allocate target exposure across research candidates.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-003`
+- parameter_refs: `PARAM-031, PARAM-032, PARAM-033, PARAM-034, PARAM-035, PARAM-036, PARAM-037, PARAM-038, PARAM-039, PARAM-040, PARAM-041, PARAM-042, PARAM-043`
+- evidence_refs: `EVID-FIFA-MODEL-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### MOD-004 Recommendation Model Consensus Enrichment
+
+- purpose: `Map recommendation selections to probability keys and enrich recommendations with current-market Poisson, goalmodel proxy, and Elo-Dixon-Coles comparison signals.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-004`
+- parameter_refs: `PARAM-044, PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051`
+- evidence_refs: `EVID-FIFA-MODEL-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### MOD-005 Raw Refresh Health and Access-policy Fail-closed Gate
+
+- purpose: `Classify raw refresh readiness, access-denied states, batch mismatches, route mismatches, stale raw, and safe recovery paths.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-005`
+- parameter_refs: `PARAM-052, PARAM-053, PARAM-054, PARAM-055, PARAM-056, PARAM-057, PARAM-058, PARAM-059`
+- evidence_refs: `EVID-FIFA-MODEL-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### MOD-006 Live Board Discovery and Unavailable Review Queue
+
+- purpose: `Compare expected FIFA boards with observed TAB live navigation and route missing boards to retry or unavailable review.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-006`
+- parameter_refs: `PARAM-060, PARAM-061, PARAM-062, PARAM-063`
+- evidence_refs: `EVID-FIFA-MODEL-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### MOD-007 Public Artifact and Private-data Safety Scanner
+
+- purpose: `Block automation or publication when outputs contain sensitive TAB account/session/private-position markers or unsafe local paths.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-007`
+- parameter_refs: `PARAM-064, PARAM-065, PARAM-066, PARAM-067, PARAM-068`
+- evidence_refs: `EVID-FIFA-MODEL-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### MOD-008 Provider Coverage, KPI, Credit, and Alternate-market Plan
+
+- purpose: `Score provider market coverage, summarize credit runway, and decide whether to continue small-batch probes, hold, or route to manual/official provider paths.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-008`
+- parameter_refs: `PARAM-069, PARAM-070, PARAM-071, PARAM-072, PARAM-073, PARAM-074, PARAM-075, PARAM-076, PARAM-077, PARAM-078, PARAM-079, PARAM-080, PARAM-081, PARAM-082, PARAM-083, PARAM-084, PARAM-085`
+- evidence_refs: `EVID-FIFA-MODEL-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### MOD-009 Manual Team Total Verification, Hash Gate, and Overlay Publish Preflight
+
+- purpose: `Validate manually entered Team Total O/U rows, compute canonical hashes, require user signature, and block formal publish until hashes and approvals match.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-009`
+- parameter_refs: `PARAM-086, PARAM-087, PARAM-088, PARAM-089, PARAM-090, PARAM-091, PARAM-092, PARAM-093, PARAM-094, PARAM-095, PARAM-096, PARAM-097, PARAM-098`
+- evidence_refs: `EVID-FIFA-MODEL-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### MOD-010 Automation Readiness and Research-only Candidate Gate
+
+- purpose: `Combine latest commit readiness, raw refresh, public safety, artifact safety, report index consistency, private bootstrap, and user authorization into automation status and next actions.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-010`
+- parameter_refs: `PARAM-099, PARAM-100, PARAM-101, PARAM-102, PARAM-103, PARAM-104, PARAM-105, PARAM-106, PARAM-107, PARAM-108`
+- evidence_refs: `EVID-FIFA-MODEL-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### MOD-011 Legacy Rules Softmax Football Prediction MVP
+
+- purpose: `Legacy MVP that scores home/draw/away outcomes from team statistics and backtests saved predictions.`
+- status: `deprecated`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-011`
+- parameter_refs: `PARAM-109, PARAM-110, PARAM-111, PARAM-112, PARAM-113, PARAM-114, PARAM-115, PARAM-116, PARAM-117`
+- evidence_refs: `EVID-FIFA-MODEL-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+## 公式
+
+### FORM-001
+
+- model_id: `MOD-001`
+- expression_or_pseudocode: `parse_decimal_odds rejects bool, non DECIMAL_ODDS_RE strings, non-finite values, and odds <= 1.0; implied_probability=1/odds; no_vig_probability_i=(1/odds_i)/sum_j(1/odds_j).`
+- evidence_refs: `EVID-FIFA-FORMULA-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### FORM-002
+
+- model_id: `MOD-002`
+- expression_or_pseudocode: `total_goals=clamp(0.7+3.4*(1-under_25_probability),1.1,3.6); ratio=clamp(home_market_probability/max(away_market_probability,0.01),0.15,6.0); home_share=1/(1+exp(-0.55*ln(ratio))); xg=max(0.2,total_goals*share); Poisson score probabilities multiply home and away Poisson masses; breakeven=1/odds; edge=model_probability-breakeven; EV=model_probability*odds-1; stake_policy applies quality gates and EV/edge thresholds.`
+- evidence_refs: `EVID-FIFA-FORMULA-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### FORM-003
+
+- model_id: `MOD-003`
+- expression_or_pseudocode: `uncommitted_budget=max(0,budget-open_stake); target=0 if uncommitted_mid<=0 or base_candidate_exposure<=0 else round10(min(base_candidate_exposure*2,uncommitted_mid*0.06,budget_mid*0.035,uncommitted_mid)); allocation_weight=base_stake*(1+min(EV,0.30)*2); if target < 10*n, keep only floor(target/10) highest weights; allocate proportional, round to nearest 5, rebalance, and cap to target.`
+- evidence_refs: `EVID-FIFA-FORMULA-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### FORM-004
+
+- model_id: `MOD-004`
+- expression_or_pseudocode: `Map recommendation market/selection to a probability key, collect non-missing probabilities from current_market_poisson, goalmodel_market_dc_proxy, and open_source_elo_dixon_coles, compare current selection with consensus.selection, carry max_abs_current_vs_elo_dc, and append a Chinese model-cross-validation summary.`
+- evidence_refs: `EVID-FIFA-FORMULA-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### FORM-005
+
+- model_id: `MOD-005`
+- expression_or_pseudocode: `raw_refresh_health aggregates target blocker codes, refresh errors, diagnostics access-policy markers, batch readiness flags, and partial research refresh summary; access_policy_status blocks automated public raw refresh when ai_controlled_access_rejected appears.`
+- evidence_refs: `EVID-FIFA-FORMULA-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### FORM-006
+
+- model_id: `MOD-006`
+- expression_or_pseudocode: `discovery_ready is true only when raw discovery is not failed and raw summary says ready; expected rows not listed become missing; full_expected_nav_ready=discovery_ready and expected_rows exists and no missing rows; missing rows route to unavailable_review_queue or discovery_retry_queue.`
+- evidence_refs: `EVID-FIFA-FORMULA-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### FORM-007
+
+- model_id: `MOD-007`
+- expression_or_pseudocode: `Scan candidate public/private artifacts for sensitive markers, private-output field markers, private path patterns, missing artifact errors, and permission issues; readiness is true only when the issue list is empty.`
+- evidence_refs: `EVID-FIFA-FORMULA-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### FORM-008
+
+- model_id: `MOD-008`
+- expression_or_pseudocode: `Coverage ratio=count/event_count; each market row compares ratio with required_ratio; provider KPI averages row scores; alternate plan marks Team Total fallback_required when enough event-market probes show zero Team Total availability; credit_policy sets recommended batch by remaining credit ratio and queue length; operational_decision routes to credit_safe_probe, manual/official, or hold.`
+- evidence_refs: `EVID-FIFA-FORMULA-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### FORM-009
+
+- model_id: `MOD-009`
+- expression_or_pseudocode: `Read manual import rows, validate rows against queue IDs and required fields, mark complete events when at least two valid rows include both Over and Under directions, canonicalize complete rows, hash canonical JSON with SHA256, and require approval fields matching refresh_id, board_id, market_family, manual_import_sha256, overlay_raw_sha256, approved_by_user, operator_initials, and signed_at_aest before publish preflight is ready.`
+- evidence_refs: `EVID-FIFA-FORMULA-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### FORM-010
+
+- model_id: `MOD-010`
+- expression_or_pseudocode: `Automation readiness combines latest commit consistency, raw_refresh_ready, output safety, artifact safety, report index consistency, technical preflight, private bootstrap, and explicit authorization. Status is research_only_daily_ready_formal_blocked when research-only report is ready but live artifacts are not; automation_ready requires live artifacts and automation entry authorization.`
+- evidence_refs: `EVID-FIFA-FORMULA-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+### FORM-011
+
+- model_id: `MOD-011`
+- expression_or_pseudocode: `Legacy scores start with home_win=0, draw=0.15, away_win=0; factor weights multiply recent form, attack, defense, ranking, home advantage, injury, fatigue, news, and trend features; draw receives max(0,0.45-abs(home-away))*0.6; probabilities=softmax(scores); confidence is high when top-two gap >=0.20, medium when >=0.10, otherwise low.`
+- evidence_refs: `EVID-FIFA-FORMULA-REGISTRY, EVID-SEMANTIC-FIFA-MANIFEST`
+
+## 参数
+
+| 参数 ID | 符号 | 名称 | 当前值 | 来源 | 事实等级 |
+|---|---|---|---|---|---|
+| PARAM-001 | DECIMAL_ODDS_RE | Decimal odds regex | ^\\d+(?:\\.\\d+)?$ | EXTRACTED from odds parser | EXTRACTED |
+| PARAM-002 | PRICE_LIKE_RE | Price-like regex | ^(?:\\d+(?:\\.\\d+)?|nan|inf|infinity|susp)$ | EXTRACTED from odds parser | EXTRACTED |
+| PARAM-003 | MIN_DECIMAL_ODDS | Minimum valid decimal odds | 1.0 | EXTRACTED from odds parser | EXTRACTED |
+| PARAM-004 | NO_VIG_TOTAL_MIN | No-vig inverse total minimum | 0.0 | EXTRACTED from no-vig transform | EXTRACTED |
+| PARAM-005 | TOTAL_GOALS_MIN | Minimum estimated total goals | 1.1 | EXTRACTED from estimate_xg | EXTRACTED |
+| PARAM-006 | TOTAL_GOALS_MAX | Maximum estimated total goals | 3.6 | EXTRACTED from estimate_xg | EXTRACTED |
+| PARAM-007 | TOTAL_GOALS_INTERCEPT | Total-goals intercept | 0.7 | EXTRACTED from estimate_xg | EXTRACTED |
+| PARAM-008 | TOTAL_GOALS_UNDER_SLOPE | Total-goals under probability slope | 3.4 | EXTRACTED from estimate_xg | EXTRACTED |
+| PARAM-009 | RATIO_MIN | Home-away probability ratio minimum | 0.15 | EXTRACTED from estimate_xg | EXTRACTED |
+| PARAM-010 | RATIO_MAX | Home-away probability ratio maximum | 6.0 | EXTRACTED from estimate_xg | EXTRACTED |
+| PARAM-011 | AWAY_PROB_FLOOR | Away probability denominator floor | 0.01 | EXTRACTED from estimate_xg | EXTRACTED |
+| PARAM-012 | HOME_SHARE_LOGIT_COEF | Home-share log-ratio coefficient | 0.55 | EXTRACTED from estimate_xg | EXTRACTED |
+| PARAM-013 | XG_FLOOR | Minimum pre-overlay xG per team | 0.2 | EXTRACTED from estimate_xg | EXTRACTED |
+| PARAM-014 | OVERLAY_XG_FLOOR | Minimum post-overlay xG per team | 0.1 | EXTRACTED from apply_quality_overlay | EXTRACTED |
+| PARAM-015 | ODDS_QUALITY_MIN | Minimum odds passing quality gate | 1.30 | EXTRACTED from passes_quality_gate | EXTRACTED |
+| PARAM-016 | RESULT_ODDS_MAX | Maximum Result odds passing gate | 15.0 | EXTRACTED from passes_quality_gate | EXTRACTED |
+| PARAM-017 | LONGSHOT_NOTE_ODDS_MIN | Longshot requires quality note threshold | 5.0 | EXTRACTED from passes_quality_gate | EXTRACTED |
+| PARAM-018 | HIGH_EV_THRESHOLD | Small-stake EV threshold | 0.08 | EXTRACTED from stake_policy | EXTRACTED |
+| PARAM-019 | HIGH_EDGE_THRESHOLD | Small-stake edge threshold | 0.025 | EXTRACTED from stake_policy | EXTRACTED |
+| PARAM-020 | SHORT_ODDS_CUTOFF | Short-odds stake cutoff | 4.0 | EXTRACTED from stake_policy | EXTRACTED |
+| PARAM-021 | HIGH_STAKE_UNIT_SHORT | Small-stake unit for odds <= 4 | 0.5 | EXTRACTED from stake_policy | EXTRACTED |
+| PARAM-022 | HIGH_STAKE_UNIT_LONG | Small-stake unit for odds > 4 | 0.25 | EXTRACTED from stake_policy | EXTRACTED |
+| PARAM-023 | MARGINAL_EV_THRESHOLD | Marginal stake EV threshold | 0.02 | EXTRACTED from stake_policy | EXTRACTED |
+| PARAM-024 | MARGINAL_EDGE_THRESHOLD | Marginal stake edge threshold | 0.01 | EXTRACTED from stake_policy | EXTRACTED |
+| PARAM-025 | MARGINAL_STAKE_UNIT | Marginal stake unit | 0.25 | EXTRACTED from stake_policy | EXTRACTED |
+| PARAM-026 | ZERO_STAKE_UNIT | Zero stake fallback | 0.0 | EXTRACTED from stake_policy | EXTRACTED |
+| PARAM-027 | MAX_POISSON_GOALS | Poisson grid maximum goals | 12 | EXTRACTED from poisson_distribution default | EXTRACTED |
+| PARAM-028 | QUALITY_OVERLAYS | Match quality overlay table | Mexico v South Africa;Canada v Bosn-Herzegovina;USA v Paraguay;Brazil v Morocco;Netherlands v Japan;France v Senegal;England v Croatia;Australia v Turkiye | EXTRACTED from QUALITY_OVERLAYS | EXTRACTED |
+| PARAM-029 | MODEL_QUALITY_NOTES | Selection quality note keys | Brazil v Morocco|Morocco;Netherlands v Japan|Japan;France v Senegal|Senegal;England v Croatia|Croatia;Belgium v Egypt|Under 2.5 Goals;South Korea v Czechia|Only One or Neither to score | EXTRACTED from MODEL_QUALITY_NOTES | EXTRACTED |
+| PARAM-030 | CURATED_TOTALS | Curated totals support keys | Belgium v Egypt|Under 2.5 Goals|Brazil v Morocco|Under 2.5 Goals|Mexico v South Africa|Only One or Neither to score|Netherlands v Japan|Only One or Neither to score|South Korea v Czechia|Only One or Neither to score | EXTRACTED from CURATED_TOTALS | EXTRACTED |
+| PARAM-031 | UNIT_AUD | Stake unit amount | 40.0 | EXTRACTED from bankroll default | EXTRACTED |
+| PARAM-032 | BUDGET_MIN_AUD | Minimum budget | 3000.0 | EXTRACTED from bankroll default | EXTRACTED |
+| PARAM-033 | BUDGET_MID_AUD | Mid budget | 4000.0 | EXTRACTED from bankroll default | EXTRACTED |
+| PARAM-034 | BUDGET_MAX_AUD | Maximum budget | 5000.0 | EXTRACTED from bankroll default | EXTRACTED |
+| PARAM-035 | UNCOMMITTED_CAP_RATIO | Uncommitted mid-budget cap | 0.06 | EXTRACTED from bankroll target cap | EXTRACTED |
+| PARAM-036 | PORTFOLIO_CAP_RATIO | Mid-budget portfolio cap | 0.035 | EXTRACTED from bankroll target cap | EXTRACTED |
+| PARAM-037 | TARGET_ROUND_STEP | Current-window target rounding step | 10.0 | EXTRACTED from bankroll target rounding | EXTRACTED |
+| PARAM-038 | ALLOCATION_EV_CAP | Allocation EV multiplier cap | 0.30 | EXTRACTED from allocation weight | EXTRACTED |
+| PARAM-039 | ALLOCATION_EV_MULTIPLIER | Allocation EV weight multiplier | 2.0 | EXTRACTED from allocation weight | EXTRACTED |
+| PARAM-040 | MIN_EXECUTABLE_STAKE_AUD | Minimum executable stake | 10.0 | EXTRACTED from allocation logic | EXTRACTED |
+| PARAM-041 | ACTIVE_COUNT_DIVISOR | Active candidate count divisor | 10.0 | EXTRACTED from allocation logic | EXTRACTED |
+| PARAM-042 | STAKE_ROUND_STEP_AUD | Stake allocation rounding step | 5.0 | EXTRACTED from allocation logic | EXTRACTED |
+| PARAM-043 | MIN_REDUCIBLE_STAKE_AUD | Minimum stake preserved while capping | 10.0 | EXTRACTED from cap_to_target | EXTRACTED |
+| PARAM-044 | CURRENT_MARKET_POISSON_SOURCE | Current market Poisson source key | current_market_poisson | EXTRACTED from recommendation signal | EXTRACTED |
+| PARAM-045 | GOALMODEL_DC_SOURCE | Goalmodel proxy source key | goalmodel_market_dc_proxy | EXTRACTED from recommendation signal | EXTRACTED |
+| PARAM-046 | ELO_DC_SOURCE | Elo-Dixon-Coles source key | open_source_elo_dixon_coles | EXTRACTED from recommendation signal | EXTRACTED |
+| PARAM-047 | RESULT_MARKET_LABEL | Result market label | Result | EXTRACTED from model_probability_key | EXTRACTED |
+| PARAM-048 | TOTALS_UNDER_LABEL | Totals under label fragment | Under 2.5 | EXTRACTED from model_probability_key | EXTRACTED |
+| PARAM-049 | BTTS_NO_LABEL | BTTS no label fragment | Only One or Neither | EXTRACTED from model_probability_key | EXTRACTED |
+| PARAM-050 | CONSENSUS_ALIGNMENT_RULE | Consensus alignment equality rule | selection equality | EXTRACTED from recommendation signal | EXTRACTED |
+| PARAM-051 | MISSING_CONFIDENCE_FALLBACK | Consensus confidence fallback text | unknown | EXTRACTED literal fallback string from summary builder; lower-case \"unknown\" is code text, not epistemic UNKNOWN. GOV-SEMANTIC-FIFA-001 tracks validator disambiguation. | EXTRACTED |
+| PARAM-052 | RAW_FRESHNESS_SLA_HOURS | Raw freshness SLA fallback | 4.0 | EXTRACTED from raw_refresh_health | EXTRACTED |
+| PARAM-053 | RAW_REFRESH_READY_FIELD | Raw refresh ready field | raw_refresh_ready | EXTRACTED from raw_refresh_health | EXTRACTED |
+| PARAM-054 | ACCESS_DENIED_MARKER | Access denied marker | Access Denied | EXTRACTED from raw refresh classifier | EXTRACTED |
+| PARAM-055 | AI_ACCESS_BLOCKER_CODE | AI controlled access blocker code | ai_controlled_access_rejected | EXTRACTED from raw refresh classifier | EXTRACTED |
+| PARAM-056 | AUTO_PUBLIC_RAW_ALLOWED_WHEN_BLOCKED | Automated public raw allowed when access blocked | false | EXTRACTED from access_policy_status | EXTRACTED |
+| PARAM-057 | FORBIDDEN_RECOVERY | Forbidden recovery list | headed_fallback|captcha_bypass|fingerprint_spoofing|stealth_browser | EXTRACTED from access_policy_status | EXTRACTED |
+| PARAM-058 | ALLOWED_RECOVERY | Allowed recovery list | official_data_feed|user_authorized_manual_export_import|research_only_from_existing_fresh_partial_raw | EXTRACTED from access_policy_status | EXTRACTED |
+| PARAM-059 | BATCH_MISMATCH_CODES | Batch mismatch blocker codes | batch_refresh_id_mismatch|batch_manifest_mismatch | EXTRACTED from raw_refresh_health | EXTRACTED |
+| PARAM-060 | OBSERVED_ROWS_CAP | Observed live links cap | 40 | EXTRACTED from normalize_observed_rows | EXTRACTED |
+| PARAM-061 | FULL_EXPECTED_NAV_READY_RULE | Full expected nav ready rule | discovery_ready and expected_rows and no missing_rows | EXTRACTED from live board summary | EXTRACTED |
+| PARAM-062 | DISCOVERY_FAILED_STATUSES | Discovery failed statuses | failed|blocked|error | EXTRACTED from discovery_raw_failed | EXTRACTED |
+| PARAM-063 | DISCOVERY_RETRY_DECISION | Discovery retry decision value | discovery_retry_required | EXTRACTED from discovery_retry_queue | EXTRACTED |
+| PARAM-064 | SENSITIVE_MARKERS | Sensitive UI marker list | sessionId|session_id|sid=|socket|logged_in|logged-in|customer|customerNumber|account|accountNumber|balance|Active Session|My Bets|Bet Slip|Pending Bets|My Offers|/accounts/|REDACTED_ACTIVE_SESSION|REDACTED_BS_LABEL|REDACTED_PENDING_BETS|REDACTED_MY_OFFERS|REDACTED_MB_LABEL | EXTRACTED from safety constants | EXTRACTED |
+| PARAM-065 | PRIVATE_OUTPUT_FIELD_MARKERS | Private output field marker list | placed_at_text|open_stake_aud|estimated_return_aud|estimated_return_if_all_win_aud|potential_profit_if_all_win_aud|tab_my_bets_positions|private_detail_path|positions_ready|private_detail_available|private_match_stakes|match_stakes|open_exposure_aud|remaining_budget_aud|target_new_exposure_aud|/work/private/ | EXTRACTED from safety constants | EXTRACTED |
+| PARAM-066 | PUBLIC_PATH_PATTERNS | Public path regex patterns | 7 regex patterns | EXTRACTED from safety constants | EXTRACTED |
+| PARAM-067 | MISSING_PUBLIC_ARTIFACT_MARKER | Missing public artifact marker | missing_public_artifact | EXTRACTED from public artifact safety | EXTRACTED |
+| PARAM-068 | PUBLIC_ARTIFACT_ISSUE_THRESHOLD | Public artifact tolerated issue count | 0 | EXTRACTED from public artifact safety | EXTRACTED |
+| PARAM-069 | RESULT_REQUIRED_RATIO | Result coverage required ratio | 0.90 | EXTRACTED from provider KPI | EXTRACTED |
+| PARAM-070 | HANDICAP_REQUIRED_RATIO | Handicap coverage required ratio | 0.50 | EXTRACTED from provider KPI | EXTRACTED |
+| PARAM-071 | TOTAL_OU_REQUIRED_RATIO | Total O/U coverage required ratio | 0.70 | EXTRACTED from provider KPI | EXTRACTED |
+| PARAM-072 | TEAM_TOTAL_REQUIRED_RATIO | Team Total O/U coverage required ratio | 0.50 | EXTRACTED from provider KPI | EXTRACTED |
+| PARAM-073 | PARTIAL_OK_SCORE | Partial-ok score | 0.55 | EXTRACTED from market_row | EXTRACTED |
+| PARAM-074 | PARTIAL_SCORE_MIN | Partial score minimum clamp | 0.25 | EXTRACTED from market_row | EXTRACTED |
+| PARAM-075 | PARTIAL_SCORE_MAX | Partial score maximum clamp | 0.75 | EXTRACTED from market_row | EXTRACTED |
+| PARAM-076 | KPI_CREDIT_READY_RATIO | Provider KPI credit ready ratio | 0.50 | EXTRACTED from credit_status | EXTRACTED |
+| PARAM-077 | TEAM_TOTAL_LOW_YIELD_PROBE_THRESHOLD | Team Total low-yield probe threshold | 3 | EXTRACTED from alternate plan | EXTRACTED |
+| PARAM-078 | DEFAULT_PRIMARY_REFRESH_CREDIT_FLOOR | Default primary refresh credit floor | 3 | EXTRACTED from alternate plan | EXTRACTED |
+| PARAM-079 | CREDIT_BATCH_UNKNOWN_MAX | Recommended batch when credit ratio missing | 3 | EXTRACTED from credit_policy | EXTRACTED |
+| PARAM-080 | CREDIT_BATCH_HIGH_RATIO | High-credit batch threshold and size | 0.80->5 | EXTRACTED from credit_policy | EXTRACTED |
+| PARAM-081 | CREDIT_BATCH_READY_RATIO | Ready-credit batch threshold and size | 0.50->3 | EXTRACTED from credit_policy | EXTRACTED |
+| PARAM-082 | CREDIT_BATCH_PARTIAL_RATIO | Partial-credit batch threshold and size | 0.20->1 | EXTRACTED from credit_policy | EXTRACTED |
+| PARAM-083 | CREDIT_BATCH_BLOCKED_SIZE | Blocked-credit batch size | 0 | EXTRACTED from credit_policy | EXTRACTED |
+| PARAM-084 | VALUE_SUPPORT_ROLE_BONUS | Value-support priority bonus | 0.02 | EXTRACTED from market_family_priority | EXTRACTED |
+| PARAM-085 | SCARCITY_PRIORITY_BONUS | Scarcity priority bonus | 0.01 | EXTRACTED from market_family_priority | EXTRACTED |
+| PARAM-086 | DEFAULT_IMPORT_RELATIVE_PATH | Manual import relative path | manual_verification/provider_team_total_manual_verification.csv | EXTRACTED from manual verification constant | EXTRACTED |
+| PARAM-087 | DEFAULT_OVERLAY_APPROVAL_RELATIVE_PATH | Overlay approval relative path | manual_verification/provider_team_total_overlay_approval.json | EXTRACTED from manual verification constant | EXTRACTED |
+| PARAM-088 | DEFAULT_WORKBENCH_BATCH_SIZE | Manual workbench batch size | 8 | EXTRACTED from manual workbench | EXTRACTED |
+| PARAM-089 | QUALITY_REQUIRED_FIELDS | Manual quality required fields | tab_match_name|team_scope|tab_market_name|selection_name|line|decimal_odds|observed_at_aest|operator_initials|evidence_note_or_screenshot_ref|verification_status | EXTRACTED from QUALITY_REQUIRED_FIELDS | EXTRACTED |
+| PARAM-090 | COMPLETE_PAIR_MIN_ROWS | Complete event minimum rows | 2 | EXTRACTED from audit_import_rows | EXTRACTED |
+| PARAM-091 | REQUIRED_DIRECTIONS | Required directions for complete pair | over|under | EXTRACTED from audit_import_rows | EXTRACTED |
+| PARAM-092 | PARTIAL_HASH_STATUS_RULE | Partial manual hash readiness rule | 0<complete_event_count<queue_count | EXTRACTED from hash_gate_status | EXTRACTED |
+| PARAM-093 | APPROVED_BY_USER_REQUIRED | Approval user flag requirement | true | EXTRACTED from validate_overlay_approval | EXTRACTED |
+| PARAM-094 | OPERATOR_INITIALS_REQUIRED | Operator initials required | true | EXTRACTED from validate_overlay_approval | EXTRACTED |
+| PARAM-095 | SIGNED_AT_AEST_REQUIRED | Signed-at AEST timestamp required | true | EXTRACTED from validate_overlay_approval | EXTRACTED |
+| PARAM-096 | CURRENT_EXECUTABLE_NEW_STAKE_LOCK | Executable new stake lock while manual gate pending | 0 | EXTRACTED from manual hash and preflight payloads | EXTRACTED |
+| PARAM-097 | FORMAL_PUBLISH_ALLOWED_DEFAULT | Formal publish allowed default | false | EXTRACTED from manual hash and preflight payloads | EXTRACTED |
+| PARAM-098 | FULL_AUTOMATION_ALLOWED_DEFAULT | Full automation allowed default | false | EXTRACTED from manual hash and preflight payloads | EXTRACTED |
+| PARAM-099 | DEFAULT_CADENCE | Automation candidate cadence | 4h | EXTRACTED from build_automation_candidate | EXTRACTED |
+| PARAM-100 | DEFAULT_TIMEZONE | Automation candidate timezone | Australia/Sydney | EXTRACTED from build_automation_candidate | EXTRACTED |
+| PARAM-101 | FOUR_HOUR_RRULE | Four-hour automation RRULE | FREQ=HOURLY;INTERVAL=4 | EXTRACTED from build_automation_candidate | EXTRACTED |
+| PARAM-102 | AUTO_WAGERING_ALLOWED | Auto wagering permission | false | EXTRACTED from automation candidate | EXTRACTED |
+| PARAM-103 | REQUIRES_USER_AUTHORIZATION | User authorization required | true | EXTRACTED from automation candidate | EXTRACTED |
+| PARAM-104 | RESEARCH_ONLY_FORMAL_BLOCKED_STATUS | Research-only formal-blocked status | research_only_daily_ready_formal_blocked | EXTRACTED from readiness_status | EXTRACTED |
+| PARAM-105 | AUTOMATION_ENTRYPOINT | Automation candidate entrypoint | scripts/run_tab_fifa_daily_automation.sh --allow-research-only-success | EXTRACTED from build_automation_candidate | EXTRACTED |
+| PARAM-106 | ARTIFACT_CHAIN_READY_RULE | Artifact chain readiness rule | latest_ready AND raw_ready AND output_safety AND artifact_safety AND no_report_index_issues | EXTRACTED from readiness summary | EXTRACTED |
+| PARAM-107 | EXPECTED_ARTIFACTS | Automation expected artifact list | 9 artifact names | EXTRACTED from automation_candidate | EXTRACTED |
+| PARAM-108 | TECHNICAL_PREFLIGHT_BLOCK_STATUS | Technical preflight blocked status | current_run_preflight_blocked | EXTRACTED from readiness_status | EXTRACTED |
