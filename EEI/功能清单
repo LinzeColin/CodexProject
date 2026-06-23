@@ -1,0 +1,41 @@
+# 功能清单
+
+## 摘要
+
+- project_id: `EEI`
+- product_version: `0.1.0`
+- current_stage: `S5`
+- current_phase: `S5PB`
+- current_task: `S5PBT01`
+- progress: `100.00%`
+- capability_count: `5`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PB-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
+
+## 功能概览
+
+| 功能 ID | 名称 | 状态 | 说明 | 证据等级 |
+|---|---|---|---|---|
+| FEAT-EEI-001 | 研究对象优先级、证据质量与时间衰减 | active | 汇总综合研究优先级、证据质量和时间相关性模型；用于排序、Watchlist 与证据解释，不证明投资回报或发布就绪。 | EXTRACTED |
+| FEAT-EEI-002 | 关系重要性与边显示控制 | active | 记录关系强度、战略依赖、交易重要性、证据质量和时间相关性对边显示、宽度与 Top-N 的影响。 | EXTRACTED |
+| FEAT-EEI-003 | 供应链、控制影响、资本动量、政策暴露与战略信号 | active | 迁移五个研究评分模型的表达式事实；它们是研究优先级/解释辅助，不是生产发布或法律结论。 | EXTRACTED |
+| FEAT-EEI-004 | 变化告警与 Watchlist 优先级 | active | 记录 score_delta、novelty、evidence_quality 和 watchlist_relevance 的告警优先级公式与参数。 | EXTRACTED |
+| FEAT-EEI-005 | 运行、视觉、发布决策与黄金集阈值控制 | active | 记录非评分阈值、motion、refresh、release-decision bundle、gold-quality 和 soak gate 参数；FORM-012 与 7 个 motion 参数仍需人工语义复核。 | RECONSTRUCTED |
+
+## 证据
+
+| 证据 ID | 类型 | 引用 | 事实等级 |
+|---|---|---|---|
+| EVID-EEI-MODEL-REGISTRY | legacy_registry | EEI/docs/governance/model_registry.yaml | EXTRACTED |
+| EVID-EEI-FORMULA-REGISTRY | legacy_registry | EEI/docs/governance/formula_registry.yaml | EXTRACTED |
+| EVID-EEI-PARAMETER-REGISTRY | legacy_registry | EEI/docs/governance/parameter_registry.csv | EXTRACTED |
+| EVID-EEI-MODEL-SPEC | legacy_spec | EEI/docs/governance/MODEL_SPEC.md | EXTRACTED |
+| EVID-EEI-DELIVERY-TASKS | legacy_plan | EEI/docs/governance/delivery_tasks.yaml | EXTRACTED |
+| EVID-EEI-ASSURANCE-STATUS | legacy_status | EEI/docs/governance/ASSURANCE_STATUS.yaml | EXTRACTED |
+| EVID-EEI-OWNER-STATUS | legacy_status | EEI/docs/governance/OWNER_STATUS.md | EXTRACTED |
+| EVID-EEI-STATUS | legacy_status | EEI/docs/governance/STATUS.md | EXTRACTED |
+| EVID-EEI-DEVELOPMENT-EVENTS | legacy_events | EEI/docs/governance/development_events.jsonl | EXTRACTED |
+| EVID-EEI-SEMANTIC-MANIFEST | run_manifest | governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-001.json | EXTRACTED |
+| EVID-REVIEW9-S5PBT01-MANIFEST | run_manifest | governance/run_manifests/GOV-REVIEW9-S5PBT01-EEI-CANONICAL-RENDER-20260624.json | PROPOSED |

@@ -236,9 +236,12 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── VERSION_MATRIX.yaml
 │   │   ├── delivery_tasks.yaml
 │   │   ├── development_events.jsonl
+│   │   ├── events.jsonl
 │   │   ├── formula_registry.yaml
 │   │   ├── model_registry.yaml
-│   │   └── parameter_registry.csv
+│   │   ├── parameter_registry.csv
+│   │   ├── project.yaml
+│   │   └── roadmap.yaml
 │   ├── phase
 │   │   ├── MVP_DEVELOPMENT_RECORD.md
 │   │   └── V5_TASK_PACK_SYNCHRONIZATION.md
@@ -451,6 +454,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── test_database_migrations.py
 │   └── unit
 │       ├── test_api_health.py
+│       ├── test_clean_room_release_paths.py
 │       ├── test_gold_quality_evaluation.py
 │       ├── test_official_source_live_capture.py
 │       ├── test_operator_soak_evidence.py
@@ -510,4 +514,7 @@ Enterprise_Ecosystem_Intelligence_release
 ├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
 ├── pyproject.toml
-└── uv.lock
+├── uv.lock
+├── 功能清单
+├── 开发记录
+└── 模型参数文件
