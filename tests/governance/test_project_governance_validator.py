@@ -1672,26 +1672,44 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1-09-MIGRATION_PACKAGE-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-10-POST_MIGRATION_BOOTSTRAP-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-11-HISTORICAL_B1_PREVIEWS-001"]["status"], "completed")
-        self.assertEqual(task_by_id["S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"]["status"], "in_progress")
+        self.assertEqual(task_by_id["S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"]["status"], "completed")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "ready")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "ready")
+
+    def test_arxiv_project_root_human_entry_files_include_v6_roadmap(self) -> None:
+        project_dir = ROOT / "arxiv-daily-push"
+        for name in ("功能清单", "开发记录", "模型参数文件"):
+            text = (project_dir / name).read_text(encoding="utf-8")
+            self.assertIn("arxiv-daily-push", text)
+            self.assertNotIn("TODO", text)
+        ledger = (project_dir / "开发记录").read_text(encoding="utf-8")
+        for required in {
+            "S1P5T04",
+            "ARXIV_PRODUCTION_ACCEPTED",
+            "S2P7T04",
+            "roadmap_sha256",
+            "76b2d29a6d5cd62de472f1a8c265a89fcf03dc7031f7d4e209f85c650b498f10",
+        }:
+            self.assertIn(required, ledger)
 
     def test_arxiv_owner_status_uses_latest_event_manifest(self) -> None:
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-077")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-077")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-078")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-078")
         self.assertEqual(info["product_version"], "0.23.0")
-        self.assertEqual(info["current_gate"], "S1P5T04-ACCELERATED-REAL-ARXIV-ACCEPTANCE-PR-READY")
+        self.assertEqual(info["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S1P5T04-ACCELERATED-ACCEPTANCE-PR-READY-20260623.json",
+            "governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json",
         )
+        self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
+        self.assertTrue(info["latest_manifest"]["production_acceptance_claimed"])
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.23.0", rendered)
-        self.assertIn("S1P5T04-ACCELERATED-REAL-ARXIV-ACCEPTANCE-PR-READY", rendered)
+        self.assertIn("ARXIV_PRODUCTION_ACCEPTED", rendered)
         self.assertIn("S1P5T04", rendered)
         self.assertIn("Stage 1 B1/arXiv", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
@@ -1705,7 +1723,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         expected = {
-            "arxiv-daily-push": "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001",
+            "arxiv-daily-push": "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036",
             "OpenAIDatabase": "TASK-OAI-B-001",
             "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
             "whkmSalary": "TASK-WHKM-B-001",

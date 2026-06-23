@@ -387,6 +387,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "arxiv-daily-push remains at S1-11 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V5-FRONTSTAGE-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+                "question": "是否继续优化 arXiv 邮件前台模板，但不阻塞已通过的 Stage 1 arXiv 生产验收。",
+                "recommendation": "A: defer template redesign until Stage 1 acceptance evidence is synchronized",
+                "option_a": "保留当前可运行邮件模板，先完成 Stage 1 accepted 证据同步和生产开关核对。",
+                "option_b": "进入邮件前台模板优化，按人类刻度、中文讲解密度和可操作性重做布局。",
+                "option_c": "跳过模板优化直接扩大到 Stage 2；不推荐，因为用户已明确不满意前台体验。",
+                "effort": "P1; content/product iteration after acceptance",
+                "resource": "local rendering tests and one controlled manual email if template changes",
+                "benefit": "把已可运行的 arXiv 交付继续提升为高信息密度教学邮件，而不把模板问题误判为 Stage 1 acceptance blocker。",
+                "risks": "邮件可读性不足、信息密度低、过早进入 Stage 2、误开启生产定时",
+                "evidence": "email render tests, scheduled_execution regression, controlled manual SMTP evidence if frontstage changes",
+                "priority": "P1",
+                "no_decision": "Stage 1 arXiv acceptance remains recorded, but human-facing email quality stays below owner preference.",
+            }
+        )
     return policy
 
 
@@ -640,6 +661,7 @@ def select_next_task(
     counts: dict[str, int],
     impl_status: str,
     current_phase: str = "",
+    arxiv_stage1_accepted: bool = False,
 ) -> dict[str, Any]:
     completed = completed_task_ids(tasks)
     candidates: list[dict[str, Any]] = []
@@ -647,18 +669,32 @@ def select_next_task(
     for task in tasks:
         if not isinstance(task, dict):
             continue
+        task_id = str(task.get("task_id") or "")
         status = str(task.get("status") or "")
         if status not in EXECUTABLE_TASK_STATES:
             continue
         stale_reason = task_is_stale_or_satisfied(project_id, task, counts, impl_status)
         if stale_reason:
-            stale.append({"task_id": str(task.get("task_id") or ""), "reason": stale_reason})
+            stale.append({"task_id": task_id, "reason": stale_reason})
             continue
         dependencies = [str(dep) for dep in structural.as_list(task.get("dependencies")) if str(dep)]
         unmet = [dep for dep in dependencies if dep not in completed]
         if unmet or not task.get("acceptance_ids"):
             continue
         if status != "blocked" and not task.get("test_commands"):
+            continue
+        if (
+            project_id == "arxiv-daily-push"
+            and arxiv_stage1_accepted
+            and status == "blocked"
+            and task_id.startswith("ADP-PHASE11-")
+        ):
+            stale.append(
+                {
+                    "task_id": task_id,
+                    "reason": "Legacy Phase 11 blocked trial task is superseded by V5/V6 Stage 1 accepted evidence; production variable enablement is tracked as a separate fail-closed operational action.",
+                }
+            )
             continue
         candidates.append(task)
     if not candidates:
@@ -817,6 +853,27 @@ def latest_manifest(project_id: str, events: list[dict[str, Any]]) -> dict[str, 
     return {}
 
 
+def arxiv_stage1_acceptance_proven(project_id: str, events: list[dict[str, Any]], manifest: dict[str, Any]) -> bool:
+    if project_id != "arxiv-daily-push":
+        return False
+    manifest_claims_acceptance = (
+        manifest.get("production_acceptance_claimed") is True
+        and manifest.get("accepted_for_production") is True
+        and str(manifest.get("arxiv_production_acceptance_label") or "") == "ARXIV_PRODUCTION_ACCEPTED"
+        and str(manifest.get("status") or "").lower() in {"pass", "completed"}
+    )
+    if manifest_claims_acceptance:
+        return True
+    for event in reversed(events):
+        if (
+            event.get("production_acceptance_claimed") is True
+            and str(event.get("arxiv_production_acceptance_label") or "") == "ARXIV_PRODUCTION_ACCEPTED"
+            and str(event.get("result") or "").lower() in {"pass", "completed"}
+        ):
+            return True
+    return False
+
+
 def load_project(project: dict[str, Any]) -> dict[str, Any]:
     project_id = structural.project_scope(project)
     project_path = ROOT / str(project.get("path") or "")
@@ -826,12 +883,31 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     events = load_events(project_path)
     matrix = parsed.get("version_matrix") if isinstance(parsed.get("version_matrix"), dict) else {}
     counts = active_registry_counts(project_path)
-    unresolved = collect_unresolved_fact_ids(project_id, parsed, counts)
+    manifest = latest_manifest(project_id, events)
     source_paths = canonical_input_paths(project_path)
     source_hash = source_snapshot_hash(source_paths)
     base_commit = configured_source_base() or existing_assurance_base(project_path) or current_commit()
     tree_hash = configured_source_tree() or existing_assurance_tree(project_path) or current_tree_hash()
-    policy = ASSURANCE_POLICY.get(project_id, {})
+    policy = dict(ASSURANCE_POLICY.get(project_id, {}))
+    arxiv_stage1_accepted = arxiv_stage1_acceptance_proven(project_id, events, manifest)
+    if arxiv_stage1_accepted:
+        policy.update(
+            {
+                "empirical": "verified",
+                "operational": "verified",
+                "readiness": "verified",
+                "decision": "Stage 1 arXiv accepted; production schedule remains controlled by GitHub Variables/Secrets and fail-closed gates.",
+                "blockers": [],
+            }
+        )
+    unresolved = collect_unresolved_fact_ids(project_id, parsed, counts)
+    if arxiv_stage1_accepted:
+        accepted_s1_resolved = {
+            "ADP-PHASE8-VIDEO-001",
+            "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE",
+            "FACT-arxiv-daily-push-OPERATIONAL-EVIDENCE",
+        }
+        unresolved = [item for item in unresolved if item not in accepted_s1_resolved]
     impl_status = (
         "NOT_APPLICABLE"
         if counts["active_parameters"] == 0 and counts["active_formulas"] == 0
@@ -844,7 +920,14 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     event_counts = event_binding_counts(events)
     evidence_freshness_status = "PARTIAL" if event_counts["legacy_unbound_events"] else "VERIFIED"
     methodological_status = "UNVERIFIED" if policy.get("empirical") in {"unknown", "partial"} else "VERIFIED"
-    next_task = select_next_task(project_id, tasks, counts, impl_status, str(matrix.get("current_phase") or ""))
+    next_task = select_next_task(
+        project_id,
+        tasks,
+        counts,
+        impl_status,
+        str(matrix.get("current_phase") or ""),
+        arxiv_stage1_accepted=arxiv_stage1_accepted,
+    )
     decision_policy = decision_policy_for(project_id, next_task)
     if decision_policy.get("owner_role") and str(next_task.get("task_id") or "") != "NONE":
         next_task = {
@@ -976,7 +1059,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         "tasks": tasks,
         "events": events,
         "latest_event": events[-1] if events else {},
-        "latest_manifest": latest_manifest(project_id, events),
+        "latest_manifest": manifest,
         "pending_event_count": pending_event_count(events),
         "event_binding_counts": event_counts,
         "unresolved_fact_ids": unresolved,
@@ -1301,11 +1384,23 @@ def render_owner_status(item: dict[str, Any]) -> str:
     option_a = decision["option_a"]
     option_b = decision["option_b"]
     option_c = decision["option_c"]
+    if assurance["delivery_readiness"]["status"] == "VERIFIED" and item["project_id"] == "arxiv-daily-push":
+        current_conclusion = (
+            f"{item['project_id']} 当前治理结论：`S1P5T04` / Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`；"
+            "实现一致性、实证、运行和交付证据均为 `VERIFIED`。"
+            "生产定时是否真正发送仍由 GitHub Variables/Secrets 与 fail-closed workflow gate 控制。"
+        )
+    else:
+        current_conclusion = (
+            f"{item['project_id']} 当前治理结论：实现一致性为 `{dims['implementation_congruence']['status']}`，"
+            f"方法/实证为 `{dims['methodological_rationale']['status']}` / `{dims['empirical_validation']['status']}`，"
+            f"交付状态为 `{assurance['delivery_readiness']['status']}`；这不是生产上线声明。"
+        )
     return f"""# OWNER_STATUS
 
 ## 1. 当前结论
 
-{item['project_id']} 当前治理结论：实现一致性为 `{dims['implementation_congruence']['status']}`，方法/实证为 `{dims['methodological_rationale']['status']}` / `{dims['empirical_validation']['status']}`，交付状态为 `{assurance['delivery_readiness']['status']}`；这不是生产上线声明。
+{current_conclusion}
 
 ## 2. 本次运行改变了什么
 

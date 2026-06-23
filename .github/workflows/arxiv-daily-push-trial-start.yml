@@ -149,7 +149,7 @@ jobs:
         shell: bash
         run: |
           artifact_dir="$RUNNER_TEMP/adp-trial-start-phase12-artifacts"; report="$RUNNER_TEMP/adp-trial-start-all-arxiv-daily-input.json"; queue="$RUNNER_TEMP/adp-candidate-queue.json"; mkdir -p "$artifact_dir"
-          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_source" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push build-all-arxiv-daily-input --date "${{ steps.generated_at.outputs.date }}" --generated-at "${{ steps.generated_at.outputs.value }}" --max-results-per-category "${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-1}" --polite-delay-seconds "${ADP_ARXIV_POLITE_DELAY_SECONDS:-3}" --artifact-dir "$artifact_dir" --queue-output "$queue" --json > "$report"
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_start_source" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push build-all-arxiv-daily-input --date "${{ steps.generated_at.outputs.date }}" --generated-at "${{ steps.generated_at.outputs.value }}" --max-results-per-category "${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3}" --polite-delay-seconds "${ADP_ARXIV_POLITE_DELAY_SECONDS:-3}" --artifact-dir "$artifact_dir" --queue-output "$queue" --json > "$report"
           printf 'report=%s\n' "$report" >> "$GITHUB_OUTPUT"; printf 'artifact_dir=%s\n' "$artifact_dir" >> "$GITHUB_OUTPUT"; printf 'queue=%s\n' "$queue" >> "$GITHUB_OUTPUT"
       - name: Stop if source ingest blocked
         if: steps.source.outcome != 'success'

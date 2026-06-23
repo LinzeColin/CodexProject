@@ -21,10 +21,12 @@ Fact levels follow `docs/governance/STANDARD.md`.
 
 - `S1P5T04` imported the V6 task-numbering roadmap and recorded two
   controlled GitHub/cloud-runner Gmail SMTP send artifacts from run
-  `28002478689`: `7811543123` and `7816791617`. Both sends occurred on
-  `2026-06-23`, so `ARXIV_PRODUCTION_ACCEPTED` and production scheduling remain
-  disabled. No model count, formula expression, parameter active value, or
-  runtime behavior changed in this evidence sync.
+  `28002478689`: `7811543123` and `7816791617`. PR #82 then produced the
+  post-merge cloud artifact `7818287996`, which reports
+  `ARXIV_PRODUCTION_ACCEPTED` with 49 real arXiv candidates, 30 selected samples,
+  20/20 primary archive buckets, and no production side effects. Production
+  scheduling remains disabled until GitHub repository variables/secrets are
+  explicitly enabled and verified.
 
 - `S1P5T04` / `0.23.0` adds `MOD-ADP-045`, an accelerated real-arXiv
   acceptance evidence builder. It can only pass from a GitHub/cloud live
@@ -554,4 +556,4 @@ Uncovered planned scenarios:
 
 - Stage 1 production readiness now requires all-arXiv source selection, candidate queue persistence, Chinese teaching email, HTML/plain text delivery, Gmail SMTP evidence, and GitHub Actions text artifacts.
 - Video generation, MP4 links, and GitHub Release upload are not Stage 1 production-readiness gates. Release delivery remains a legacy/optional transport module and must not be used to claim S1-12 completion.
-- Production schedule enablement and `ARXIV_PRODUCTION_ACCEPTED` remain blocked until PR CI, controlled manual SMTP evidence, and later acceptance gates pass.
+- `ARXIV_PRODUCTION_ACCEPTED` is evidenced by PR #82 artifact `7818287996`; production schedule enablement remains controlled by GitHub repository variables/secrets and fail-closed workflow gates.

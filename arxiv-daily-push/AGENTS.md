@@ -13,7 +13,10 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   `docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md` are legacy baselines,
   not the current execution contract.
 - Every implementation closeout must state the current V6 Task ID. Current task:
-  `S1P5T04` controlled live B1 email evidence and Stage 1 acceptance.
+  `S1P5T04` controlled live B1 email evidence and Stage 1 acceptance. Stage 1
+  arXiv acceptance is recorded as `ARXIV_PRODUCTION_ACCEPTED`; scheduled
+  production remains fail-closed until GitHub variables/secrets are verified or
+  enabled.
 - Stage 1 starts with arXiv as the only production-acceptance source; Stage 2
   may promote additional sources and boards only after the arXiv gates pass.
 - Do not use OpenAI Platform API keys or paid API fallbacks.

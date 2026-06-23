@@ -1,0 +1,51 @@
+# 功能清单
+
+## 摘要
+
+- project_id: `arxiv-daily-push`
+- project_name: `arXiv 日报推送 / arXiv Daily Push`
+- product_version: `0.23.0`
+- current_stage: `S1 - arXiv 单源完整纵向切片与生产验收`
+- current_phase: `S1P5 - 新电脑/云端部署、重放、真实运行与 Stage 1 验收`
+- current_task: `S1P5T04 - 连续 2 个真实自然日与 Stage 1 验收`
+- current_gate: `ARXIV_PRODUCTION_ACCEPTED`
+- next_unique_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 - 邮件前台模板优化`
+- evidence_status: `VERIFIED`
+- production_schedule_status: `DISABLED_FAIL_CLOSED`
+- notification_channel: `Gmail SMTP email`
+- recipient: `linzezhang35@gmail.com`
+
+## Owner 决策
+
+| 决策 | 当前建议 | 优先级 | 证据 |
+|---|---|---|---|
+| `DEC-arxiv-daily-push-S1P5T04-ACCEPTED` | Stage 1 arXiv 验收已记录；不要在变量未核对前启用生产定时 | P0 | `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json` |
+| `DEC-arxiv-daily-push-V5-FRONTSTAGE-001` | 邮件模板质量单独优化，不阻塞 Stage 1 accepted | P1 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036` |
+
+## 功能概览
+
+| 功能 ID | 名称 | 状态 | 价值 | 范围 | 非范围 | 证据等级 |
+|---|---|---|---|---|---|---|
+| `FEAT-ADP-001` | 全 arXiv 扫描 | completed | 每日从 arXiv 全站主档案桶取候选，不锁死 `cs.AI` | 20 个主档案桶、实时 arXiv 元数据、失败显式记录 | PDF 批量下载、大缓存、付费源 | EXTRACTED |
+| `FEAT-ADP-002` | 候选队列与 ROI/学习价值排序 | completed | 选 1 篇主讲，其余高价值候选入队 | 相关性、学习价值、经济转换、ROI、跨学科、可讲解性 | 前台展示 ROI 数字 | EXTRACTED |
+| `FEAT-ADP-003` | 中文讲解邮件 | completed | 用户每天只等邮件、读中文讲解 | Markdown/HTML/JSON 文本 artifact、Gmail SMTP | 视频附件、MP4 必需项 | EXTRACTED |
+| `FEAT-ADP-004` | GitHub/cloud runner 运行 | completed | 不依赖本机 Mac 后台 CPU/内存/缓存/显存 | GitHub Actions `ubuntu-latest` | self-hosted 本机 runner | EXTRACTED |
+| `FEAT-ADP-005` | 生产 fail-closed gate | completed | 变量未开启时不会误发生产邮件 | `ADP_PRODUCTION_ENABLED`、`ADP_SCHEDULED_RUN_ENABLED`、`ADP_ALLOW_SMTP_SEND` | 隐式开启生产定时 | EXTRACTED |
+| `FEAT-ADP-006` | Stage 1 验收证据 | completed | 证明 arXiv 单源可长期稳定作为第一板块 | PR #82、run `28019921500`、artifact `7818287996` | Stage 2 多来源验收 | EXTRACTED |
+
+## 关键证据
+
+| 证据 ID | 类型 | 引用 | 支持功能/任务 | 事实等级 |
+|---|---|---|---|---|
+| `EVID-S1P5T04-001` | ci | `github-actions://LinzeColin/CodexProject/actions/runs/28019921500` | `FEAT-ADP-001`; `S1P5T04` | EXTRACTED |
+| `EVID-S1P5T04-002` | artifact | `github-actions://LinzeColin/CodexProject/actions/runs/28019921500/artifacts/7818287996` | `FEAT-ADP-006`; `S1P5T04` | EXTRACTED |
+| `EVID-S1P5T04-003` | run_manifest | `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json` | `S1P5T04` | EXTRACTED |
+| `EVID-S1P5T04-004` | run_manifest | `governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json` | Gmail SMTP refs | EXTRACTED |
+
+## 限制与风险
+
+| 限制/风险 | 影响 | 缓解/下一任务 | 事实等级 |
+|---|---|---|---|
+| GitHub repo production variables/secrets 当前未在本轮启用或核对 | scheduled production send 可能仍 fail-closed | 单独核对 `ADP_PRODUCTION_ENABLED`、`ADP_SCHEDULED_RUN_ENABLED`、`ADP_ALLOW_SMTP_SEND`、`ADP_ALLOW_RELEASE_UPLOAD` | EXTRACTED |
+| 邮件模板质量用户不满意 | 前台信息效率低，但不影响 Stage 1 accepted 证据 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036` | EXTRACTED |
+| Stage 2 多来源未开始 | 目前只保证板块一 arXiv | `S2P1` 后续来源晋升 | EXTRACTED |

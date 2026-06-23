@@ -1,0 +1,112 @@
+# 开发记录
+
+## 摘要
+
+- project_id: `arxiv-daily-push`
+- product_version: `0.23.0`
+- current_stage: `S1 - arXiv 单源完整纵向切片与生产验收`
+- current_phase: `S1P5 - 新电脑/云端部署、30 日重放、2 日真实运行与 Stage 1 验收`
+- current_task: `S1P5T04 - 连续 2 个真实自然日与 Stage 1 验收`
+- current_gate: `ARXIV_PRODUCTION_ACCEPTED`
+- next_unique_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`
+- roadmap_version: `V6`
+- roadmap_sha256: `76b2d29a6d5cd62de472f1a8c265a89fcf03dc7031f7d4e209f85c650b498f10`
+- progress: `Stage 1 accepted; Stage 2 not started`
+- blockers: `scheduled production variables/secrets not verified or enabled in this run; email frontstage quality deferred`
+
+## Stage Roadmap
+
+| Stage | Goal | Phase / Task | 工作量 | Exit Gate | 当前状态 |
+|---|---|---:|---:|---|---|
+| `S1` | arXiv 单源完整纵向切片与生产验收 | 5 / 19 | 30.0% | `ARXIV_PRODUCTION_ACCEPTED` | completed |
+| `S2` | 逐来源、逐板块晋升与全系统生产验收 | 7 / 30 | 70.0% | `PRODUCTION_ACCEPTED -> DAILY_OPERATION` | planned |
+
+## Phase Roadmap
+
+| Phase | Goal | Task | 工作量 | Entry Gate | Exit / Stop Gate | 当前状态 |
+|---|---|---:|---:|---|---|---|
+| `S1P1` | 基线审计、治理校准与防漂移 | 3 | 3.5% | V5 Task Pack/Prompt 可读，仓库可访问 | 现状图、需求冻结、治理一致性与追踪链通过 | completed |
+| `S1P2` | 人工控制面与数据基础 | 4 | 6.5% | S1P1 通过 | `owner_controls.yaml`、人类查看文件、SQLite 统一模型、备份/恢复接口通过 | completed |
+| `S1P3` | arXiv 纵向切片核心 | 5 | 9.5% | S1P2 通过；仅允许 fixture 和小样本在线验证 | arXiv 从采集到 EvidencePacket/Claim/排序/队列全链可重复、可解释、可审计 | completed |
+| `S1P4` | 文本交付、邮件合同与本地运行代码 | 3 | 4.5% | S1P3 通过；低资源窗口 | B1 报告、邮件预览、调度/恢复/迁移包均通过低资源测试 | completed |
+| `S1P5` | 新电脑/云端部署、30 日重放、2 日真实运行与 Stage 1 验收 | 4 | 6.0% | S1P4 通过；GitHub/cloud runner 可用 | `ARXIV_PRODUCTION_ACCEPTED`，B1 arXiv 基线稳定 | completed |
+| `S2P1` | B1 研究前沿来源逐源晋升 | 5 | 12.0% | `ARXIV_PRODUCTION_ACCEPTED` | B1 十来源完成来源级门禁 | planned |
+| `S2P2` | B2 顶级期刊晋升 | 4 | 6.5% | S2P1 核心框架稳定 | Nature、Science、The Lancet 主刊门禁通过 | planned |
+| `S2P3` | B3 中国 C0/C1 权威主干 | 4 | 8.5% | B1/B2 生产无回归 | 全国/中央来源、法律元数据、效力和版本关系通过 | planned |
+| `S2P4` | B4 美国科技金融官方板块 | 4 | 8.5% | 通用来源/关系/评分框架稳定 | US-TA/US-LG/US-FM/US-TP 完成晋升 | planned |
+| `S2P5` | B3 中国 C2/C3/C4 全覆盖 | 5 | 15.0% | C0/C1 已稳定生产 | 省级、港澳、24 城市、C4 自动发现完成 | planned |
+| `S2P6` | 跨源知识图谱、B5、五封邮件与自动优化 | 4 | 9.5% | B1-B4 各自达到板块生产门禁 | 跨源关系图、B5 水位线、五封独立邮件通过 | planned |
+| `S2P7` | 全系统 30 日重放、2 日真实运行与生产切换 | 4 | 10.0% | S2P1-S2P6 全部通过 | `PRODUCTION_ACCEPTED -> DAILY_OPERATION` | planned |
+
+## Task Roadmap
+
+| Task ID | Task | 工作量 | Goal / 主要交付 | Entry Gate | Exit Gate | 当前状态 |
+|---|---|---:|---|---|---|---|
+| `S1P1T01` | 最小范围只读审计 | 1.5% | 现有代码、配置、治理、工作流、测试和数据流事实图 | V5 文件已放入目标项目 | 审计清单、现状图、风险清单和真实文件路径齐全 | completed |
+| `S1P1T02` | 治理事实源校准 | 1.0% | 统一版本、状态、计划和注册表 | S1P1T01 通过 | 版本/状态/计划/任务/模型一致 | completed |
+| `S1P1T03` | 需求追踪与防漂移门禁 | 1.0% | Requirement->Feature->Task->Config->Function->Test->Artifact->Evidence | S1P1T02 通过 | 追踪覆盖并阻止旧视频范围回归 | completed |
+| `S1P2T01` | owner_controls 与 Schema | 1.5% | 唯一人工控制文件及校验 | S1P1 通过 | 权重/队列/跨板块校验通过 | completed |
+| `S1P2T02` | 四个人类查看文件生成器 | 1.5% | OWNER_CONSOLE、SOURCE_CATALOG、MODEL_AND_QUEUE、CONTENT_LEDGER | S1P2T01 通过 | 四文件由事实源生成且漂移测试通过 | completed |
+| `S1P2T03` | SQLite WAL + FTS5 统一模型与迁移 | 2.5% | 文档、版本、事件、实体、关系、主题、Claim、分数、队列、报告、邮件、Manifest | S1P2T01 通过 | 迁移可前进/回滚，事务/FTS/幂等通过 | completed |
+| `S1P2T04` | 原始证据、内容哈希、备份恢复与旧数据 fixture | 1.0% | RawRecord、SHA256、备份/恢复和旧 arXiv 数据迁移夹具 | S1P2T03 通过 | 恢复后哈希一致，fixture 无重复 | completed |
+| `S1P3T01` | Source Registry 与 Connector Contract | 1.5% | 稳定来源 ID、限流、缓存、健康和许可字段 | S1P2 通过 | arXiv 可通过通用接口运行 | completed |
+| `S1P3T02` | arXiv Adapter 与小样本 fixture | 2.0% | RSS/OAI-PMH/官方列表优先与可测试回退 | S1P3T01 通过 | fixture 和小样本在线测试通过 | completed |
+| `S1P3T03` | 规范化、去重、版本、事件与 Taxonomy | 2.0% | CanonicalDocument/Version/Event 和分类映射 | S1P3T02 通过 | Canonical 重复 0，版本/事件/分类正确 | completed |
+| `S1P3T04` | 研究评分卡、贡献明细与 10,000 队列 | 1.5% | ROI/学习价值排序、队列和原因码 | S1P3T03 通过 | 同输入同配置同顺序，边界可复现 | completed |
+| `S1P3T05` | EvidencePacket、两遍分析与 Claim Ledger | 2.5% | 证据包缓存、版本 delta、反证审查、Claim/Evidence 绑定 | S1P3T03 与 S1P3T04 通过 | 关键 Claim 证据绑定 100%，静默丢失 0 | completed |
+| `S1P4T01` | B1 高密度文本报告合同 | 1.5% | Markdown/HTML/JSON 讲解报告 | S1P3 通过 | 报告合同、引用、密度和不确定性审计通过 | completed |
+| `S1P4T02` | 邮件预览、幂等和发送状态合同 | 1.5% | B1 邮件 HTML/Markdown、预览、哈希、重试、防重复 | S1P4T01 通过 | mock SMTP/preview 通过，同一 Run 不重复 | completed |
+| `S1P4T03` | 本地调度、Watchdog、备份与迁移包 | 1.5% | tick/watchdog/backup、锁、heartbeat、bootstrap、Runbook | S1P4T02 通过 | 恢复、安装/卸载、补跑模拟通过 | completed |
+| `S1P5T01` | 新电脑 bootstrap 与资源/凭据预检 | 1.0% | CPU、RAM、磁盘、网络、SSL、SMTP、Codex 登录和 OS 调度 | S1P4 通过；目标 runner 可用 | 硬件/网络/凭据/权限有证据且秘密未泄漏 | completed |
+| `S1P5T02` | 真实 arXiv 单日全链预检与资源调优 | 1.0% | 真实抓取->数据库->评分->报告->邮件预览->状态账本 | S1P5T01 通过 | 一次完整真实 Run 成功，资源峰值可读 | completed |
+| `S1P5T03` | 30 个独立 arXiv 历史日重放与缺陷闭环 | 2.5% | 30 个 as-of 日、30 报告、30 邮件预览 | S1P5T02 通过 | 30/30 终态、未来泄漏 0、P0/P1=0 | completed |
+| `S1P5T04` | 连续 2 个真实自然日与 Stage 1 验收 | 1.5% | 验证真实调度、报告、邮件、恢复和验收 | S1P5T03 通过 | `ARXIV_PRODUCTION_ACCEPTED`，配置可回滚 | completed |
+| `S2P1T01` | bioRxiv 与 medRxiv 晋升 | 2.5% | 生命科学和医学预印本 | Stage 1 通过 | 来源级门禁通过 | planned |
+| `S2P1T02` | PubMed 与 Europe PMC 增强源晋升 | 2.5% | 索引增强、PMID/DOI 对齐、开放全文和资助关系 | S2P1T01 或框架稳定 | 不重复生成原始论文 | planned |
+| `S2P1T03` | TechRxiv、ChemRxiv、EarthArXiv 晋升 | 2.5% | 工程、化学、材料、地球环境预印本 | 前两批来源门禁稳定 | 三个来源均可独立回退 | planned |
+| `S2P1T04` | SSRN 与 ChinaXiv 高风险来源晋升 | 3.0% | 条款、低频网页、中文元数据和页面稳定性 | 通用 HTML/许可/健康框架通过 | 条款可审计、中文字段和失败回退通过 | planned |
+| `S2P1T05` | B1 完整板块资格与生产邮件 | 1.5% | B1 十来源板块级重放、排序、报告和邮件 | S2P1T01-T04 通过或批准降级 | B1 30 日重放、2 日候选运行、旧 arXiv 无回归 | planned |
+| `S2P2T01` | Nature 主刊晋升 | 1.5% | 官方发现入口和文章类型 | B1 生产稳定 | 来源级重放/Shadow、DOI、类型、许可通过 | planned |
+| `S2P2T02` | Science 主刊晋升 | 1.5% | 主刊文章类型识别 | S2P2T01 框架稳定 | 来源级门禁通过且不影响 Nature/B1 | planned |
+| `S2P2T03` | The Lancet 主刊晋升 | 1.5% | Online First/PubMed 关系和医学文章类型 | S2P2T02 框架稳定 | 来源级门禁和许可通过 | planned |
+| `S2P2T04` | 顶刊 Profile、发表关系与 B2 晋升 | 2.0% | 原始研究/综述/社论/新闻/更正/撤回差异评分 | S2P2T01-T03 通过 | B2 30 日重放、2 日候选、邮件和强制事件通过 | planned |
+| `S2P3T01` | 中国 C0 全国权威主干 | 2.0% | 法律法规数据库、人大、国务院、公报、党内法规、两高 | 通用政府连接器可用 | 原始机关、文号、附件、日期可追溯 | planned |
+| `S2P3T02` | 中国 C1 中央机关与重点职能部门 | 3.0% | 治理、宏观、科技、产业、金融、市场和重点行业部门 | S2P3T01 通过 | 机构模板、别名、行业映射、官方域名完整 | planned |
+| `S2P3T03` | 中国法律元数据、版本效力与转载关系 | 2.0% | 草案/正式、修订/废止、实施/解释、中央/地方关系 | S2P3T01-T02 通过 | 关键法律字段完整，版本图触发重评分 | planned |
+| `S2P3T04` | B3 核心板块晋升与邮件 | 1.5% | C0/C1 首个中国政策生产板块 | S2P3T01-T03 通过 | B3 核心 30 日重放、2 日候选、报告/邮件通过 | planned |
+| `S2P4T01` | US-TA 科技创新与技术突破 | 2.5% | NSF、DARPA、DOE、NIH、NASA、NIST、USPTO、FDA 等 | 美国官方来源框架可用 | 创新信号、资助/专利/临床/标准关系和 35% 预算可审计 | planned |
+| `S2P4T02` | US-LG 跨机构法律主干 | 1.5% | Federal Register、Regulations.gov、GovInfo、Congress、White House、OMB、GAO | S2P4T01 框架稳定 | Docket/FR/GovInfo/法案关系正确 | planned |
+| `S2P4T03` | US-FM 金融、股票、基金与宏观 | 2.5% | SEC/EDGAR、Fed、Treasury、CFTC、OCC、FDIC、CFPB 等 | S2P4T02 通过 | SEC 表单、CIK、Accession、基金/公司/资产关系通过 | planned |
+| `S2P4T04` | US-TP 与 B4 整体晋升 | 2.0% | OSTP、BIS、FTC、FCC、CISA、CHIPS 等并完成 B4 | S2P4T01-T03 通过 | US-TP 20%、US-LG 15%、B4 重放/候选/邮件通过 | planned |
+| `S2P5T01` | 中国 C2 全部省级模板与核心覆盖 | 4.0% | 全部省级行政区域核心部门 | C0/C1 稳定生产 | 省级清单完整、官方域名和来源健康分层通过 | planned |
+| `S2P5T02` | 香港与澳门独立法律/政府 Profile | 1.0% | 独立法律和政府网站结构建模 | S2P5T01 模板可扩展 | 司法辖区、语言、法律状态和来源结构独立 | planned |
+| `S2P5T03` | 中国 C3 首批 24 个重点城市 | 4.0% | 24 类部门模板覆盖指定城市 | S2P5T01 通过 | 24 城市覆盖矩阵通过 | planned |
+| `S2P5T04` | 中国 C4 特殊功能区与垂直机构自动发现 | 4.0% | 自贸区、高新区、开发区、海关、税务、金融监管等 | S2P5T03 通过 | 候选自动生成、官方性验证、去重和父子关系通过 | planned |
+| `S2P5T05` | B3 全覆盖资格与地方来源治理 | 2.0% | C0-C4 板块级质量、配额、健康和邮件验收 | S2P5T01-T04 通过 | B3 完整重放/候选、来源平衡和淘汰解释通过 | planned |
+| `S2P6T01` | 跨源身份解析、知识图谱与主题聚类 | 3.0% | DOI/PMID/arXiv/文号/FR/CIK 关系图 | B1-B4 主要来源稳定 | 重复 Canonical 0，关系可解释 | planned |
+| `S2P6T02` | 跨板块校准、组合排序与 B5 报告 | 2.5% | 分位数校准、跨板块传导分析 | S2P6T01 通过 | B5 单板块 <=40%，四板块终态后才生成 | planned |
+| `S2P6T03` | 五封独立邮件、水位线与 CONTENT_LEDGER | 2.5% | B1-B5 独立发送、重试、哈希、状态和已讲/未讲账本 | S2P6T02 通过 | 五封邮件互不替代，重复邮件 0 | planned |
+| `S2P6T04` | 每周/半月优化与 owner 影响预览 | 1.5% | 每周一个问题 PR；每 14 天 30 日 A/B 和参数影响预览 | S2P6T03 通过 | 自动诊断可复现，PR 不自动合并 | planned |
+| `S2P7T01` | 全系统 30 个独立历史日重放 | 4.5% | B1-B5 全流程，150 报告和 150 邮件预览 | S2P1-S2P6 全部通过 | 30/30 独立 as-of、未来泄漏 0、P0/P1=0 | planned |
+| `S2P7T02` | 全系统连续 2 个真实自然日 | 2.0% | 每天 5 报告/5 邮件 | S2P7T01 通过 | 2 日共 10 报告/10 邮件 | planned |
+| `S2P7T03` | 韧性、容量、安全与回滚演练 | 2.5% | 10,001、365 天、限流、漂移、重启、磁盘、凭据、回滚 | S2P7T02 通过 | 强制故障演练有证据，恢复点和回滚可执行 | planned |
+| `S2P7T04` | 最终生产验收与 DAILY_OPERATION 切换 | 1.0% | 审计追踪、状态、文档、调度和 owner 操作面 | S2P7T01-T03 通过 | `PRODUCTION_ACCEPTED -> DAILY_OPERATION` | planned |
+
+## 最近事件
+
+| Event | 结果 | 证据 | 当前结论 |
+|---|---|---|---|
+| `EVENT-20260623-ADP-078` | completed | PR #82; run `28019921500`; artifact `7818287996` | `S1P5T04` 达到 `ARXIV_PRODUCTION_ACCEPTED`，生产定时仍 fail-closed |
+
+## 停止条件
+
+- `R-CONFLICT`: 需求冲突未决时停止。
+- `TRACE-FAIL`: Requirement/Feature/Task/Config/Function/Test/Artifact/Evidence 链不完整时停止。
+- `LIVE-FAIL`: 真实运行缺失、重复邮件、P0/P1 未清零时停止。
+- `OPS-FAIL`: 锁、heartbeat、补跑、备份、恢复或资源保护失效时停止。
+- `SECRET-FAIL`: secret、token、SMTP password、cookie、Codex auth 泄露时停止并建议 rotate。
+
+## 回滚
+
+- 回滚本轮状态同步：revert accepted manifest、`EVENT-20260623-ADP-078`、S1-12 task completion、workflow fallback `:-3`、三份中文入口文件和生成治理视图。
+- 生产调度回滚：保持或恢复 `ADP_PRODUCTION_ENABLED=false`、`ADP_SCHEDULED_RUN_ENABLED=false`、`ADP_ALLOW_SMTP_SEND=false`、`ADP_ALLOW_RELEASE_UPLOAD=false`。
