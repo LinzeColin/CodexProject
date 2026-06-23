@@ -1,0 +1,165 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624",
+  "project_id": "whkmSalary",
+  "task_id": "S5PAT04",
+  "acceptance_ids": [
+    "ACC-S5PAT04"
+  ],
+  "iteration_id": "ITER-20260624-REVIEW9-S5PAT04",
+  "generated_at": "2026-06-24T00:00:00+10:00",
+  "implementation_base_sha": "3efd68cf79935ebaf32bc3a088e01e501fc0c567",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:12a55330da41e7dc8cc2fcafb8be366af3d0ea7784876a6dba1c5953c56a119f",
+  "changed_files_declared": [
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/governance/roadmap.yaml",
+    "whkmSalary/docs/governance/events.jsonl",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json"
+  ],
+  "changed_files_actual": [
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/governance/roadmap.yaml",
+    "whkmSalary/docs/governance/events.jsonl",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json"
+  ],
+  "required_governance_files": [
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/governance/roadmap.yaml",
+    "whkmSalary/docs/governance/events.jsonl",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json"
+  ],
+  "updated_governance_files": [
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/governance/roadmap.yaml",
+    "whkmSalary/docs/governance/events.jsonl",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json"
+  ],
+  "change_classification": [
+    "project_governance_change",
+    "review9_stage5_single_project_migration",
+    "whkm_salary_only_scope",
+    "canonical_project_facts",
+    "canonical_roadmap_facts",
+    "canonical_events_jsonl",
+    "human_entry_render",
+    "render_drift_validation",
+    "no_business_behavior_change"
+  ],
+  "model_delta": "NOT_CHANGED: S5PAT04 migrates existing whkmSalary governance facts into Lean v2 canonical governance and rendered human views; it keeps payroll/legal/policy readiness failed rather than treating code constants as verified policy.",
+  "formula_delta": "NOT_CHANGED: 10 active formulas are documented from existing salary_logic.py and streamlit_app.py; FORM-010 remains HUMAN_REVIEW_REQUIRED.",
+  "parameter_delta": "NOT_CHANGED: 80 active parameters remain from existing registry; 78 are machine-verified implementation values, 2 require human review, and policy/legal meaning remains UNKNOWN under TASK-WHKM-B-001.",
+  "version_delta": "No product, salary formula, policy value, payroll data, deployment, or runtime behavior change.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_whkm_project_yaml_contains_salary_model_facts tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_whkm_roadmap_tracks_single_project_task tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_whkm_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_whkm_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_manifest_records_whkm_only_scope -q",
+    "python -B scripts/lean_governance.py check-render --project whkmSalary",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_whkm_project_yaml_contains_salary_model_facts tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_whkm_roadmap_tracks_single_project_task tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_whkm_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_whkm_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat04_manifest_records_whkm_only_scope -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 6 tests in 0.060s; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project whkmSalary",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0; projects changed: whkmSalary."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "duration_seconds=1.097; validation errors=0 warnings=0; check_render drift_count=0 reference_issue_count=0 for Alpha, EVA_OS, OpMe_System, Serenity and whkmSalary; zero_diff.clean=false only because working tree contains this task diff."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 192 tests in 10.830s; OK. The missing-base lines are expected fixture output from tests."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0 across root and all registered projects."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parsed as valid JSON after final result refresh."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors after final result refresh."
+    }
+  ],
+  "evidence_refs": [
+    "whkmSalary/docs/governance/MODEL_SPEC.md",
+    "whkmSalary/docs/governance/model_registry.yaml",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/parameter_registry.csv",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/ASSURANCE_STATUS.yaml",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/governance/roadmap.yaml",
+    "whkmSalary/docs/governance/events.jsonl",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S5PAT04 whkmSalary canonical facts and rendered Chinese human entries",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Create whkmSalary Lean v2 canonical project, roadmap, and event facts, render the three Chinese human entry files, and validate the S5PAT04 single-project scope without changing salary runtime behavior.",
+  "rollback": "Delete whkmSalary/docs/governance/project.yaml, roadmap.yaml, and events.jsonl; restore the three whkmSalary human entry files; remove S5PAT04 focused tests and this manifest.",
+  "unresolved_risks": [
+    "S5PA-GATE may be evaluated after this PR passes CI and is verified on main.",
+    "S5-GATE remains open until all 10 registered projects pass structure, accuracy, and human-readable acceptance.",
+    "whkmSalary delivery readiness remains FAILED; policy source, jurisdiction, effective date, tax basis, rounding, boundary behavior and TASK-WHKM-B-001 remain blocked."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

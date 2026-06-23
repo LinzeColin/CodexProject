@@ -1,0 +1,69 @@
+schema_version: "codexproject.roadmap.v1"
+project_id: "whkmSalary"
+current_stage_id: "S5"
+current_phase_id: "S5PA"
+current_task_id: "S5PAT04"
+next_gate_id: "S5PA-GATE-PENDING-MAIN-MERGE"
+total_estimated_hours: 5
+completed_estimated_hours: 5
+stages:
+  -
+    stage_id: "S5"
+    name: "项目迁移与三文件重建"
+    person_goal: "逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。"
+    status: "in_progress"
+    stop_conditions:
+      - "一次 PR 同时迁移多个项目"
+      - "无证据事实被写入 VERIFIED"
+      - "业务测试失败被忽略"
+    stop_gate:
+      gate_id: "S5-GATE"
+      status: "open"
+      pass_conditions:
+        - "10/10 项目通过结构、准确性和人类可读验收"
+        - "迁移过程中无批量空泛文档"
+      evidence_refs:
+        - "migration_PRs"
+        - "full_readonly_baseline"
+        - "project_acceptance_matrix"
+    phases:
+      -
+        phase_id: "S5PA"
+        name: "模型密集项目迁移"
+        objective: "优先处理模型、策略和参数复杂度高的项目。"
+        status: "in_progress"
+        stop_conditions:
+          - "上一项目未通过 Gate"
+          - "批量脚本产生无证据事实"
+        stop_gate:
+          gate_id: "S5PA-GATE"
+          status: "pending_main_merge"
+          pass_conditions:
+            - "4 个项目逐一验证通过"
+            - "每项有独立 diff/test/evidence"
+          evidence_refs:
+            - "four_project_PRs"
+            - "owner_reviews"
+        tasks:
+          -
+            task_id: "S5PAT04"
+            name: "迁移 whkmSalary"
+            objective: "提取薪资计算函数、参数、边界与验证。"
+            status: "completed"
+            estimated_hours: 5
+            total_hours_percent: "2.55%"
+            dependencies:
+              - "S5PAT03"
+            acceptance_ids:
+              - "ACC-S5PAT04"
+            test_commands:
+              - "python -B -m unittest ...test_review9_s5pat04_* -q"
+              - "python -B scripts/lean_governance.py check-render --project whkmSalary"
+              - "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main"
+            evidence_refs:
+              - "whkmSalary/docs/governance/project.yaml"
+              - "whkmSalary/docs/governance/roadmap.yaml"
+              - "whkmSalary/docs/governance/events.jsonl"
+              - "governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json"
+            risk: "范围扩张、事实失真或治理回归"
+            rollback: "Revert only this task commit; retain the read-only audit evidence."
